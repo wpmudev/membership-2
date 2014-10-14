@@ -22,6 +22,7 @@ module.exports = function( grunt ) {
 
 		css_files_compile: {
 			'app/assets/css/ms-admin.css':          'app/assets/css/sass/ms-admin.scss',
+			'app/assets/css/ms-public.css':         'app/assets/css/sass/ms-public.scss',
 			'app/assets/css/select2.css':           'app/assets/css/sass/select2/select2.scss',
 			'app/assets/css/font-awesome.css':      'app/assets/css/sass/font-awesome/font-awesome.scss',
 			'app/assets/css/jquery-ui.custom.css':  'app/assets/css/sass/jquery-ui/jquery-ui-1.10.4.custom.scss'

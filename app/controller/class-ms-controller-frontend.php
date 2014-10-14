@@ -600,7 +600,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$ms_pages->is_ms_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		if ( $is_ms_page ) {
-			wp_enqueue_style( 'membership-admin' );
+			wp_enqueue_style( 'ms-styles' );
 		}
 
 		if ( $is_profile ) {

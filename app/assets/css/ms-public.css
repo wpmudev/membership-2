@@ -1,0 +1,122 @@
+/**
+ * Collects all SASS files into a single css file.
+ *
+ * https://make.wordpress.org/core/handbook/coding-standards/css/
+ * The coding standard is applied to the SASS source files and formatting might
+ * be slightly changed by compilation into CSS files. However, there is a
+ * expanded dev-version of the CSS files and also a minified version without
+ * any comments.
+ */
+/**
+ * Admin-Bar module.
+ */
+#wpadminbar.simulation-mode {
+  background: #223D52;
+}
+
+#wpadminbar #wp-toolbar {
+  /* Button: Start/Stop Test-Mode */
+  /* Mode: View-Site-As */
+  /* General styles */
+}
+#wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item {
+  position: relative;
+  display: block;
+  background-color: transparent;
+  color: #F0F0F0;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item:after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  bottom: 3px;
+  right: 3px;
+  margin: 0;
+  z-index: -1;
+  background-color: #0A6C9C;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item {
+  color: #FFF;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item:after {
+  background-color: #0094DC;
+}
+#wpadminbar #wp-toolbar .ms-exit-memberships {
+  position: absolute;
+  right: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period {
+  margin-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-date,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-date {
+  display: inline;
+  width: 6em;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-small,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-small {
+  display: inline;
+  width: 2em;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-simulate-info,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-simulate-info {
+  padding-left: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period input,
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-simulate-period button,
+#wpadminbar #wp-toolbar .membership-view-site-as input,
+#wpadminbar #wp-toolbar .membership-view-site-as select,
+#wpadminbar #wp-toolbar .membership-view-site-as button {
+  height: 23px;
+  line-height: 21px;
+  margin: 4px;
+  box-sizing: border-box;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period input,
+#wpadminbar #wp-toolbar .membership-view-site-as input {
+  padding: 2px;
+  text-align: center;
+  border: none;
+  min-width: 2em;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-view-site-as select {
+  margin-right: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period button,
+#wpadminbar #wp-toolbar .membership-view-site-as button {
+  padding: 0 15px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period form,
+#wpadminbar #wp-toolbar .membership-simulate-period div,
+#wpadminbar #wp-toolbar .membership-simulate-period div.ab-item,
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-simulate-period small,
+#wpadminbar #wp-toolbar .membership-view-site-as form,
+#wpadminbar #wp-toolbar .membership-view-site-as div,
+#wpadminbar #wp-toolbar .membership-view-site-as div.ab-item,
+#wpadminbar #wp-toolbar .membership-view-site-as select,
+#wpadminbar #wp-toolbar .membership-view-site-as small {
+  display: inline-block;
+  max-height: 32px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period small,
+#wpadminbar #wp-toolbar .membership-view-site-as small {
+  font-size: 12px;
+  padding: 0 0 0 15px;
+  color: #aaa;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > .ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > .ab-item,
+#wpadminbar #wp-toolbar .membership-view-site-as:hover > .ab-item,
+#wpadminbar #wp-toolbar .membership-simulate-period:hover > .ab-item {
+  background-color: inherit;
+  color: inherit;
+}

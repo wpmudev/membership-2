@@ -111,7 +111,7 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		/** Settings controller */
 		$this->controllers['page'] = apply_filters( 'ms_controller_page', new MS_Controller_Page() );
-		
+
 		/** Communication controller */
 		$this->controllers['communication'] = apply_filters( 'ms_controller_communication', new MS_Controller_Communication() );
 
@@ -281,7 +281,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_styles() {
-		wp_enqueue_style( 'membership-shortcode' );
+		wp_enqueue_style( 'ms-styles' );
 	}
 
 	/**

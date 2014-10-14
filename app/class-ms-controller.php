@@ -417,14 +417,22 @@ class MS_Controller extends MS_Hooker {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 
+		// The main plugin style.
 		wp_register_style(
-			'jquery-ui',
-			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
-			null, $version
+			'ms-styles',
+			$plugin_url . 'app/assets/css/ms-public.css',
+			array( 'jquery-ui', 'jquery-chosen', 'membership-shortcode', 'membership-admin' ),
+			$version
 		);
+
 		wp_register_style(
 			'membership-admin',
 			$plugin_url . 'app/assets/css/ms-settings.css',
+			null, $version
+		);
+		wp_register_style(
+			'jquery-ui',
+			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
 			null, $version
 		);
 		wp_register_style(
