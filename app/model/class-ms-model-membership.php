@@ -810,6 +810,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				'orderby' => 'ID',
 				'post_status' => 'any',
 				'post_per_page' => -1,
+				'nopaging' => true,
 		) );
 
 		$args = wp_parse_args( $args, $defaults );
