@@ -678,7 +678,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		elseif( 'attachment' == $rule_type && isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] ) ) {
 			$rule = $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
 		}
-		/* 
+		/*
 		 * Create a new rule model object.
 		 */
 		else {
@@ -1047,7 +1047,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		foreach( $protected_content_rules as $rule_type => $protect_rule ) {
 			try {
 				if( MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
-					
+
 					if( ! empty( $this->rules[ $rule_type ] ) ) {
 						$rule = $this->get_rule( $rule_type );
 						$rule->merge_rule_values( $protect_rule );
@@ -1055,7 +1055,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					else {
 						$rule = clone $protect_rule;
 						$rule->rule_value_invert = false;
-						
+
 						$init_rule_value = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
 						if( self::TYPE_SIMPLE == $this->type ) {
 							$init_rule_value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
