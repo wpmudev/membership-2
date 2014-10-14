@@ -20,52 +20,153 @@
  *
 */
 
-
+/**
+ * Membership Simulation model.
+ *
+ * Persisted by parent class MS_Model_Transient.
+ *
+ * @since 1.0.0
+ * 
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Simulate extends MS_Model_Transient {
 
-	protected static $CLASS_NAME = __CLASS__;
+	/**
+	 * Simulation type constants.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @see $type property.
+	 * @var string
+	 */
+	const TYPE_DATE = 'type_date';
+	const TYPE_PERIOD = 'type_period';
 
+	/**
+	 * Singleton instance.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @staticvar MS_Model_Settings
+	 */
 	public static $instance;
 
-	protected $id = 'ms_model_simulate';
-
-	protected $name = 'Simulate Membership';
-
+	/**
+	 * The membership ID to simulate.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var int
+	 */
 	protected $membership_id;
 
+	/**
+	 * Simulation type.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var string
+	 */
+	protected $type = self::TYPE_PERIOD;
+	
+	/**
+	 * The period to simulate.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array {
+	 *		@type int $period_unit The period of time quantity.
+	 *		@type string $period_type The period type (days, weeks, months, years).
+	 * }
+	 */
 	protected $period;
 
+	/**
+	 * The date to simulate.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var string
+	 */
 	protected $date;
 
 	/**
+	 * Get simulation types.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @return string[] The simulation types.
+	 */
+	public static function get_simulation_types() {
+		static $types;
+		
+		if( empty( $types ) ) {
+			$types = array(
+					self::TYPE_DATE,
+					self::TYPE_PERIOD,
+			);
+		}
+		
+		return apply_filters( 'ms_model_simulate_get_simulation_types', $types );
+	}
+	
+	/**
+	 * Verify simulate type validation.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param string $type The type to verify validation.
+	 * @return bool True if valid.
+	 */
+	public static function is_valid_simulation_type( $type ) {
+		$valid = false;
+		
+		if( in_array( $type, self::get_simulation_types() ) ) {
+			$valid = true;
+		}
+		
+		return apply_filters( 'ms_model_simulate_get_simulation_types', $valid );
+	}
+	
+	/**
 	 * Check simulating status
+	 * 
+	 * @since 1.0.0
+	 * 
 	 * @return int The simulating membership_id
 	 */
 	public function is_simulating() {
+		
 		return $this->membership_id;
 	}
 
-	public function is_simulating_period() {
-		return $this->period;
-	}
-
-	public function is_simulating_date() {
-		return $this->date;
-	}
-
+	/**
+	 * Start simulation period/date.
+	 * 
+	 * @since 1.0.0
+	 */
 	public function start_simulation() {
-		if ( $this->is_simulating_period() ) {
-			$this->simulate_period();
+
+		if ( self::TYPE_PERIOD == $this->type ) {
+			$this->add_filter( 'ms_helper_period_current_date', 'simulate_period_filter' );
 		}
-		elseif ( $this->is_simulating_date() ) {
-			$this->simulate_date();
+		elseif ( self::TYPE_DATE == $this->type ) {
+			$this->add_filter( 'ms_helper_period_current_date', 'simulate_date_filter' );
 		}
 	}
 
-	public function simulate_period() {
-		$this->add_filter( 'ms_helper_period_current_date', 'simulate_period_filter' );
-	}
-
+	/**
+	 * Simulate period.
+	 * 
+	 * ** Hooks filter/actions: **
+	 * * ms_helper_period_current_date
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param string $current_date The date to filter.
+	 * @return string The filtered date.
+	 */
 	public function simulate_period_filter( $current_date ) {
 		if ( ! empty( $this->period ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
@@ -81,70 +182,159 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		return $current_date;
 	}
 
-	public function simulate_date() {
-		$this->add_filter( 'ms_helper_period_current_date', 'simulate_date_filter' );
-	}
-
+	/**
+	 * Simulate date.
+	 *
+	 * ** Hooks filter/actions: **
+	 * * ms_helper_period_current_date
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $current_date The date to filter.
+	 * @return string The filtered date.
+	 */
 	public function simulate_date_filter( $current_date ) {
 		if ( ! empty( $this->date ) ) {
 			$current_date = $this->date;
 		}
+
 		return $current_date;
 	}
-
+	
+	/**
+	 * Reset simulation.
+	 * 
+	 * @since 1.0.0
+	 */
 	public function reset_simulation() {
 		$this->membership_id = 0;
 		$this->date = null;
 		$this->period = null;
 		$this->remove_filter( 'ms_helper_period_current_date', 'simulate_date_filter' );
+		$this->remove_filter( 'ms_helper_period_current_date', 'simulate_period_filter' );
 		$this->save();
 	}
 
 	/**
+	 * Get simulation type.
+	 * Validate simulation type accordinly to membership.
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @return string The simulation type.
+	 */
+	public function get_simulation_type() {
+		
+		$membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
+		
+		if ( $membership->is_valid() ) {
+		
+			if ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
+				$this->type = MS_Model_Simulate::TYPE_DATE;
+			}
+			else {
+				switch( $membership->type ) {
+					case MS_Model_Membership::TYPE_DRIPPED:
+						if( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE == $membership->dripped_type ) {
+							$this->type = MS_Model_Simulate::TYPE_DATE;
+						}
+						else {
+							$this->type = MS_Model_Simulate::TYPE_PERIOD;
+						}
+						break;
+					default:
+						$this->type = MS_Model_Simulate::TYPE_PERIOD;
+						break;
+				}
+			}
+		}
+		
+		return apply_filters( 'ms_model_simulate_get_simulation_type', $this->type, $this );
+	}
+	
+	/**
+	 * Returns property associated with the render.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $property The name of a property.
+	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
+	 */
+	public function __get( $property ) {
+	
+		$value = null;
+	
+		if ( property_exists( $this, $property ) ) {
+			switch( $property ) {
+				case 'type':
+					$value = $this->get_simulation_type();
+					break;
+				case 'date':
+					if( empty( $this->date ) ) {
+						$this->date = MS_Helper_Period::current_date();
+					}
+					$value = $this->date;
+					break;
+				case 'period':
+					if( empty( $this->period ) ) {
+						$this->period = $this->validate_period( array(), 0 );
+					}
+					$value = $this->period;
+					break;
+				default:
+					$value = $this->$property;
+					break;
+			}
+		}
+			
+		return apply_filters( 'ms_model_simulate__get', $value, $property, $this );
+	}
+	
+	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $name The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( ! property_exists( $this, $property ) ) { return; }
+		if ( property_exists( $this, $property ) ) { 
 
-		switch ( $property ) {
-			case 'membership_id':
-				$this->$property = 0;
-				$id = absint( $value );
-				if ( 0 < $id ) {
-					$membership = MS_Factory::load( 'MS_Model_Membership', $id );
-					if ( 0 < $membership->id ) {
-						$this->$property = $id;
-						if ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
-							$this->date = $membership->period_date_start;
-						}
-						else {
-							$this->period = $this->validate_period( array(), 0 );
+			switch ( $property ) {
+				case 'membership_id':
+					$this->$property = 0;
+					$id = absint( $value );
+					if ( 0 < $id ) {
+						if ( MS_Model_Membership::is_valid_membership( $id ) ) {
+							$this->$property = $id;
+							$this->get_simulation_type();
 						}
 					}
-				}
-				break;
-
-			case 'period':
-				$this->$property = $this->validate_period( $value, 0 );
-				$this->date = null;
-				break;
-
-			case 'date':
-				if ( $date = $this->validate_date( $value ) ) {
-					$this->date = $value;
-					$this->period = null;
-				}
-				break;
-
-			default:
-				$this->$property = $value;
-				break;
+					break;
+	
+				case 'type': 
+					if( self::is_valid_simulation_type( $value ) ) {
+						$this->type = $value;
+					}
+					break;
+					
+				case 'period':
+					$this->$property = $this->validate_period( $value, 0 );
+					break;
+	
+				case 'date':
+					if ( $date = $this->validate_date( $value ) ) {
+						$this->date = $value;
+					}
+					break;
+	
+				default:
+					$this->$property = $value;
+					break;
+			}
 		}
+		
+		do_action( 'ms_model_simulate__set_after', $property, $value, $this );
 	}
 }

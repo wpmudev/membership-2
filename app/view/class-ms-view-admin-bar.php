@@ -21,13 +21,11 @@
 */
 
 /**
- * Renders Admin Bar.
+ * Renders Admin Bar's simulation.
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 1.0
- *
- * @return object
+ * @since 1.0.0
  */
 class MS_View_Admin_Bar extends MS_View {
 
@@ -36,49 +34,59 @@ class MS_View_Admin_Bar extends MS_View {
 	/**
 	 * Overrides parent's to_html() method.
 	 *
-	 * Creates an output buffer, outputs the HTML and grabs the buffer content before releasing it.
-	 * Creates a wrapper 'ms-wrap' HTML element to contain content and navigation. The content inside
-	 * the navigation gets loaded with dynamic method calls.
-	 * e.g. if key is 'settings' then render_settings() gets called, if 'bob' then render_bob().
+	 * @since 1.0.0
 	 *
-	 * @todo Could use callback functions to call dynamic methods from within the helper, thus
-	 * creating the navigation with a single method call and passing method pointers in the $tabs array.
-	 *
-	 * @since 1.0
-	 *
-	 * @return object
+	 * @return string
 	 */
 	public function to_html() {
+		
 		$fields = $this->prepare_fields();
+		
 		ob_start();
 		?>
 		<form action="" method="post">
 			<?php
-			if ( ! empty( $this->data['simulate_date'] ) ) {
+			if ( MS_Model_Simulate::TYPE_DATE == $this->data['simulate_type'] ) {
 				MS_Helper_Html::html_element( $fields['simulate_date'] );
 			}
-			elseif ( empty( $this->data['simulate_period_type'] ) ) {
-				MS_Helper_Html::html_element( $fields['simulate_period_unit'] );
-				MS_Helper_Html::html_element( $fields['simulate_period_type'] );
+			elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->data['simulate_type'] ) {
+				MS_Helper_Html::html_element( $fields['period_unit'] );
+				MS_Helper_Html::html_element( $fields['period_type'] );
 			}
+			MS_Helper_Html::html_element( $fields['simulate_type'] );
 			MS_Helper_Html::html_element( $fields['simulate_submit'] );
 			?>
 		</form>
 		<?php
 		$html = ob_get_clean();
-		return $html;
+		
+		return apply_filters( 'ms_view_admin_bar_to_html', $html, $this );
 	}
 
+	/**
+	 * Prepare html fields.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
 	public function prepare_fields() {
+
 		$fields = array(
-			'simulate_period_unit' => array(
-				'id' => 'simulate_period_unit',
+			'simulate_type' => array(
+					'id' => 'simulate_type',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $this->data['simulate_type'],
+					'class' => 'ms-admin-bar-date ms-date',
+			),
+			'period_unit' => array(
+				'id' => 'period_unit',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $this->data['period_unit'],
 				'class' => 'ms-admin-bar-period-unit ms-small',
 			),
-			'simulate_period_type' => array(
-				'id' => 'simulate_period_type',
+			'period_type' => array(
+				'id' => 'period_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $this->data['period_type'],
 				'field_options' => MS_Helper_Period::get_periods(),
@@ -97,6 +105,7 @@ class MS_View_Admin_Bar extends MS_View {
 				'class' => 'ms-admin-bar-submit',
 			),
 		);
-		return apply_filters( 'ms_view_admin_bar_prepare_fields', $fields );
+
+		return apply_filters( 'ms_view_admin_bar_prepare_fields', $fields, $this );
 	}
 }

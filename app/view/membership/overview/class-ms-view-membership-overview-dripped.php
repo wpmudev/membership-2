@@ -16,7 +16,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 			$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
 
 			foreach ( $contents as $content ) {
-				if ( $rule->has_dripped_rules( $content->id ) ) {
+				if ( $rule->has_dripped_rules( $content->id ) && $rule->has_access( $content->id ) ) {
 					if ( $rule->has_dripped_access( MS_Helper_Period::current_date(), $content->id ) ) {
 						$available[] = $content;
 					}
