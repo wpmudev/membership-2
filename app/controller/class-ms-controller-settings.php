@@ -70,7 +70,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 
 		// Add custom buttons to the MCE editor (insert variable).
-		$this->add_action( 'admin_head', 'add_mce_buttons' );
+		$this->add_action( 'admin_head-' . $hook, 'add_mce_buttons' );
 	}
 
 	/**
