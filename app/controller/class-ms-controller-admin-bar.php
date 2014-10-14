@@ -485,8 +485,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		wp_enqueue_script( 'ms-controller-admin-bar' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
-		wp_enqueue_style( 'ms-admin-bar' );
-		wp_enqueue_style( 'jquery-ui' );
+		wp_enqueue_style( 'ms-public' );
 
 	}
 }
