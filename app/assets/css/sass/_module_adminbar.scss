@@ -2,9 +2,17 @@
  * Admin-Bar module.
  */
 
+
 #wpadminbar {
-	.ab-top-menu > .ms-test-memberships,
-	.ab-top-menu > .ms-exit-memberships {
+	&.simulation-mode {
+		background: #223D52;
+	}
+}
+
+#wpadminbar #wp-toolbar {
+	/* Button: Start/Stop Test-Mode */
+	.ms-test-memberships,
+	.ms-exit-memberships {
 		& > a.ab-item {
 			position: relative;
 			display: block;
@@ -35,16 +43,99 @@
 		}
 	}
 
-	.ab-top-menu > .ms-exit-memberships {
+	.ms-exit-memberships {
 		position: absolute;
 		right: 10px;
 	}
 
-	.ab-top-menu > .membership-view-site-as {
+	/* Mode: View-Site-As */
+	.membership-simulate-period {
+		margin-left: 10px;
+		border-left: 1px solid rgba(255, 255, 255, 0.15);
+	}
+
+	.membership-simulate-period,
+	.membership-view-site-as {
+		.ms-date {
+			display: inline;
+			width: 105px;
+			padding-right: 25px;
+		}
+
+		.ms-small {
+			display: inline;
+			width: 2em;
+		}
+
+		.ms-simulate-info {
+			padding-left: 10px;
+		}
+
+		input,
+		select,
+		button,
+		.ms-field-input {
+			height: 23px;
+			line-height: 21px;
+			margin: 4px;
+			box-sizing: border-box;
+		}
+
+		.ms-field-input {
+			input,
+			select,
+			button {
+				margin: 0;
+			}
+		}
+
+		.ms-icon {
+			line-height: 24px;
+			height: 24px;
+			width: 18px;
+		}
+
+		input {
+			padding: 2px;
+			text-align: center;
+			border: none;
+			min-width: 2em;
+		}
+
+		select {
+			margin-right: 10px;
+		}
+
+		button {
+			padding: 0 15px;
+		}
+
+		form,
+		div,
+		div.ab-item,
+		select,
+		small {
+			display: inline-block;
+			max-height: 32px;
+		}
+
 		small {
 			font-size: 12px;
 			padding: 0 0 0 15px;
 			color: #aaa;
+		}
+	}
+
+
+
+	/* General styles */
+	.ms-test-memberships,
+	.ms-exit-memberships,
+	.membership-view-site-as,
+	.membership-simulate-period {
+		&:hover > .ab-item {
+			background-color: inherit;
+			color: inherit;
 		}
 	}
 }

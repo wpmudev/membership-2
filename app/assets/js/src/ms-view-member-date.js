@@ -5,9 +5,5 @@
 /*global ms_functions:false */
 
 window.ms_init.view_member_date = function init () {
-	var dp_config = {
-        dateFormat: 'yy-mm-dd' //TODO get wp configured date format
-    };
-
-	jQuery( '.ms-date' ).datepicker( dp_config );
+	jQuery( '.ms-date' ).ms_datepicker();
 };

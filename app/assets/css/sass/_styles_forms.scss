@@ -96,6 +96,7 @@
  * DATEPICKER *
  ***/
 
+#wpadminbar,
 .ms-wrap {
 	.ms-datepicker-wrapper {
 		display: inline-block;
@@ -112,6 +113,82 @@
 			text-align: left;
 			opacity: .5;
 			cursor: pointer;
+			color: #444;
+		}
+	}
+
+	/*
+	.ui-datepicker {
+		margin-top: 10px;
+	}
+	*/
+}
+
+.ui-datepicker.ms-datepicker {
+	padding: 0;
+	border: none;
+
+	/* Get rid of bevel corners */
+	.ui-datepicker-header,
+	&.ui-corner-all {
+		border-radius: 0;
+	}
+
+	/* New icons */
+	.ui-datepicker-prev span,
+	.ui-datepicker-next span,
+	.ui-state-hover .ui-icon,
+	.ui-state-focus .ui-icon,
+	.ui-widget-header .ui-icon,
+	.ui-icon {
+		background-image: url(../images/ui-icons-white.png);
+	}
+
+	.ui-datepicker-header {
+		padding: 0;
+		border: none;
+		background: #4F83AA;
+		color: #FFFFFF;
+		font-size: 0.9em;
+		font-weight: normal;
+	}
+
+	.ui-datepicker-calendar tbody td a,
+	td span,
+	td a {
+		padding: 8px;
+		text-align: center;
+		text-decoration: none;
+	}
+
+	.ui-datepicker-calendar {
+		padding: 3px;
+		background: #375D7A;
+
+		thead th {
+			padding: 3px 5px;
+			font-size: 0.9em;
+			font-weight: normal;
+			color: #FFFFFF;
+		}
+
+		tbody {
+			.ui-state-default,
+			.ui-widget-content .ui-state-default,
+			.ui-widget-header .ui-state-default {
+				border: 0;
+				background: #223D52;
+				color: #FFFFFF;
+			}
+
+			.ui-state-active,
+			.ui-widget-content .ui-state-active,
+			.ui-widget-header .ui-state-active,
+			.ui-state-hover,
+			.ui-widget-content .ui-state-hover,
+			.ui-widget-header .ui-state-hover {
+				background: #4F83AA;
+			}
 		}
 	}
 }

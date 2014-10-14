@@ -59,6 +59,10 @@
   clear: both;
 }
 
+.fa {
+  font-family: Fontawesome !important;
+}
+
 /**
  * Typographic styles
  */
@@ -513,10 +517,20 @@
 /***
  * DATEPICKER *
  ***/
+#wpadminbar,
+.ms-wrap {
+  /*
+  .ui-datepicker {
+  	margin-top: 10px;
+  }
+  */
+}
+#wpadminbar .ms-datepicker-wrapper,
 .ms-wrap .ms-datepicker-wrapper {
   display: inline-block;
   position: relative;
 }
+#wpadminbar .ms-datepicker-wrapper .ms-icon,
 .ms-wrap .ms-datepicker-wrapper .ms-icon {
   position: absolute;
   right: 0;
@@ -527,6 +541,65 @@
   text-align: left;
   opacity: .5;
   cursor: pointer;
+  color: #444;
+}
+
+.ui-datepicker.ms-datepicker {
+  padding: 0;
+  border: none;
+  /* Get rid of bevel corners */
+  /* New icons */
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-header, .ui-datepicker.ms-datepicker.ui-corner-all {
+  border-radius: 0;
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-prev span,
+.ui-datepicker.ms-datepicker .ui-datepicker-next span,
+.ui-datepicker.ms-datepicker .ui-state-hover .ui-icon,
+.ui-datepicker.ms-datepicker .ui-state-focus .ui-icon,
+.ui-datepicker.ms-datepicker .ui-widget-header .ui-icon,
+.ui-datepicker.ms-datepicker .ui-icon {
+  background-image: url(../images/ui-icons-white.png);
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-header {
+  padding: 0;
+  border: none;
+  background: #4F83AA;
+  color: #FFFFFF;
+  font-size: 0.9em;
+  font-weight: normal;
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody td a,
+.ui-datepicker.ms-datepicker td span,
+.ui-datepicker.ms-datepicker td a {
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar {
+  padding: 3px;
+  background: #375D7A;
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar thead th {
+  padding: 3px 5px;
+  font-size: 0.9em;
+  font-weight: normal;
+  color: #FFFFFF;
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-default,
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-default,
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
+  border: 0;
+  background: #223D52;
+  color: #FFFFFF;
+}
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-active,
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-active,
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-hover,
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover,
+.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
+  background: #4F83AA;
 }
 
 /***
@@ -1001,15 +1074,24 @@
 /**
  * Admin-Bar module.
  */
-#wpadminbar .ab-top-menu > .ms-test-memberships > a.ab-item,
-#wpadminbar .ab-top-menu > .ms-exit-memberships > a.ab-item {
+#wpadminbar.simulation-mode {
+  background: #223D52;
+}
+
+#wpadminbar #wp-toolbar {
+  /* Button: Start/Stop Test-Mode */
+  /* Mode: View-Site-As */
+  /* General styles */
+}
+#wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item {
   position: relative;
   display: block;
   background-color: transparent;
   color: #F0F0F0;
 }
-#wpadminbar .ab-top-menu > .ms-test-memberships > a.ab-item:after,
-#wpadminbar .ab-top-menu > .ms-exit-memberships > a.ab-item:after {
+#wpadminbar #wp-toolbar .ms-test-memberships > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-exit-memberships > a.ab-item:after {
   content: '';
   position: absolute;
   left: 3px;
@@ -1020,20 +1102,102 @@
   z-index: -1;
   background-color: #0A6C9C;
 }
-#wpadminbar .ab-top-menu > .ms-test-memberships:hover > a.ab-item,
-#wpadminbar .ab-top-menu > .ms-exit-memberships:hover > a.ab-item {
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item {
   color: #FFF;
 }
-#wpadminbar .ab-top-menu > .ms-test-memberships:hover > a.ab-item:after,
-#wpadminbar .ab-top-menu > .ms-exit-memberships:hover > a.ab-item:after {
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > a.ab-item:after,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > a.ab-item:after {
   background-color: #0094DC;
 }
-#wpadminbar .ab-top-menu > .ms-exit-memberships {
+#wpadminbar #wp-toolbar .ms-exit-memberships {
   position: absolute;
   right: 10px;
 }
-#wpadminbar .ab-top-menu > .membership-view-site-as small {
+#wpadminbar #wp-toolbar .membership-simulate-period {
+  margin-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-date,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-date {
+  display: inline;
+  width: 105px;
+  padding-right: 25px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-small,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-small {
+  display: inline;
+  width: 2em;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-simulate-info,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-simulate-info {
+  padding-left: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period input,
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-simulate-period button,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input,
+#wpadminbar #wp-toolbar .membership-view-site-as input,
+#wpadminbar #wp-toolbar .membership-view-site-as select,
+#wpadminbar #wp-toolbar .membership-view-site-as button,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input {
+  height: 23px;
+  line-height: 21px;
+  margin: 4px;
+  box-sizing: border-box;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input input,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input select,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input button,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input input,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input select,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input button {
+  margin: 0;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-icon {
+  line-height: 24px;
+  height: 24px;
+  width: 18px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period input,
+#wpadminbar #wp-toolbar .membership-view-site-as input {
+  padding: 2px;
+  text-align: center;
+  border: none;
+  min-width: 2em;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-view-site-as select {
+  margin-right: 10px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period button,
+#wpadminbar #wp-toolbar .membership-view-site-as button {
+  padding: 0 15px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period form,
+#wpadminbar #wp-toolbar .membership-simulate-period div,
+#wpadminbar #wp-toolbar .membership-simulate-period div.ab-item,
+#wpadminbar #wp-toolbar .membership-simulate-period select,
+#wpadminbar #wp-toolbar .membership-simulate-period small,
+#wpadminbar #wp-toolbar .membership-view-site-as form,
+#wpadminbar #wp-toolbar .membership-view-site-as div,
+#wpadminbar #wp-toolbar .membership-view-site-as div.ab-item,
+#wpadminbar #wp-toolbar .membership-view-site-as select,
+#wpadminbar #wp-toolbar .membership-view-site-as small {
+  display: inline-block;
+  max-height: 32px;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period small,
+#wpadminbar #wp-toolbar .membership-view-site-as small {
   font-size: 12px;
   padding: 0 0 0 15px;
   color: #aaa;
+}
+#wpadminbar #wp-toolbar .ms-test-memberships:hover > .ab-item,
+#wpadminbar #wp-toolbar .ms-exit-memberships:hover > .ab-item,
+#wpadminbar #wp-toolbar .membership-view-site-as:hover > .ab-item,
+#wpadminbar #wp-toolbar .membership-simulate-period:hover > .ab-item {
+  background-color: inherit;
+  color: inherit;
 }

@@ -40,6 +40,11 @@ window.ms_functions = {
 	processing_class: 'ms-processing',
 	radio_slider_on_class: 'on',
 	value: 0,
+	dp_config: {
+        dateFormat: 'yy-mm-dd', //TODO get wp configured date format
+        dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thy', 'Fri', 'Sat'],
+        custom_class: 'ms-datepicker' // Not a jQuery argument!
+    },
 	chosen_options: {
 		minimumResultsForSearch: 6,
 		dropdownAutoWidth: true,
@@ -302,7 +307,32 @@ window.ms_functions = {
 	}
 };
 
+// Add our own Datepicker-init function which extends the jQuery Datepicker.
+jQuery.fn.ms_datepicker = function( args ) {
+	var bs_callback = null,
+		fn = window.ms_functions,
+		config = jQuery.extend( fn.dp_config, args );
 
+	if ( 'function' === typeof config.beforeShow ) {
+		bs_callback = config.beforeShow;
+	}
+
+	config.beforeShow = function(input, inst) {
+		if ( undefined !== inst && undefined !== inst.dpDiv ) {
+			jQuery( inst.dpDiv ).addClass( config.custom_class );
+		}
+
+		if ( null !== bs_callback ) {
+			bs_callback( input, inst );
+		}
+	};
+
+	return this.each(function() {
+		jQuery( this ).datepicker( config );
+	});
+};
+
+// Do general initialization.
 jQuery( document ).ready( function() {
 	var fn = window.ms_functions;
 
@@ -338,6 +368,9 @@ jQuery( document ).ready( function() {
 	// Select all text inside <code> tags on click.
 	jQuery( '.ms-wrap' )
 		.on( 'click', 'code', function() { fn.select_all( this ); } );
+
+	// Initialize the datepickers.
+	jQuery( '.ms-datepicker' ).ms_datepicker();
 });
 
 /*global window:false */
@@ -346,11 +379,7 @@ jQuery( document ).ready( function() {
 /*global ms_functions:false */
 
 window.ms_init.view_member_date = function init () {
-	var dp_config = {
-        dateFormat: 'yy-mm-dd' //TODO get wp configured date format
-    };
-
-	jQuery( '.ms-date' ).datepicker( dp_config );
+	jQuery( '.ms-date' ).ms_datepicker();
 };
 
 /*global window:false */
@@ -520,10 +549,6 @@ window.ms_init.view_membership_setup_payment = function init () {
 		}
 	};
 
-	jQuery( '.ms-datepicker' ).datepicker({
-        dateFormat : 'yy-mm-dd' //TODO get wp configured date format
-    });
-
 	jQuery( 'input[name="is_free"]' ).change( function() {
 		ms_functions.is_free();
 	});
@@ -626,10 +651,6 @@ window.ms_init.view_settings_payment = function init() {
 			submitHandler: setting_submit
 		});
 	}
-
-	jQuery( '.ms-datepicker' ).datepicker({
-        dateFormat : 'yy-mm-dd' //TODO get wp configured date format
-    });
 
 	jQuery( '.ms-gateway-setings-form' ).each( setting_init );
 

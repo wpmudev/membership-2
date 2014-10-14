@@ -57,7 +57,8 @@
 #wpadminbar #wp-toolbar .membership-simulate-period .ms-date,
 #wpadminbar #wp-toolbar .membership-view-site-as .ms-date {
   display: inline;
-  width: 6em;
+  width: 105px;
+  padding-right: 25px;
 }
 #wpadminbar #wp-toolbar .membership-simulate-period .ms-small,
 #wpadminbar #wp-toolbar .membership-view-site-as .ms-small {
@@ -71,13 +72,29 @@
 #wpadminbar #wp-toolbar .membership-simulate-period input,
 #wpadminbar #wp-toolbar .membership-simulate-period select,
 #wpadminbar #wp-toolbar .membership-simulate-period button,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input,
 #wpadminbar #wp-toolbar .membership-view-site-as input,
 #wpadminbar #wp-toolbar .membership-view-site-as select,
-#wpadminbar #wp-toolbar .membership-view-site-as button {
+#wpadminbar #wp-toolbar .membership-view-site-as button,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input {
   height: 23px;
   line-height: 21px;
   margin: 4px;
   box-sizing: border-box;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input input,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input select,
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input button,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input input,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input select,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input button {
+  margin: 0;
+}
+#wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
+#wpadminbar #wp-toolbar .membership-view-site-as .ms-icon {
+  line-height: 24px;
+  height: 24px;
+  width: 18px;
 }
 #wpadminbar #wp-toolbar .membership-simulate-period input,
 #wpadminbar #wp-toolbar .membership-view-site-as input {

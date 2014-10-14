@@ -204,7 +204,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$title = __( 'View in: ', MS_TEXT_DOMAIN );
 			}
 			$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
-			var_dump( $view );
 			$html = $view->to_html();
 
 			if ( $html ) {

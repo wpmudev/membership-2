@@ -2,14 +2,11 @@ jQuery(document).ready(function($){
 	$('#wp-admin-bar-membership-simulate').find('a').click(function(e){
 		$('#wp-admin-bar-membership-simulate').removeClass('hover').find('> div').filter(':first-child').html( ms.switching_text );
 	});
-	$( '.ms-date' ).datepicker({
-        dateFormat : 'yy-mm-dd', //TODO get wp configured date format
-		dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thy', 'Fri', 'Sat']
-    });
+	$( '.ms-date' ).ms_datepicker();
 
 	$( '#wpadminbar #view-site-as' ).parents( '#wpadminbar' ).addClass('simulation-mode');
 
-	$( '#wpadminbar #view-as-selector' ).change( function( element ) { 
+	$( '#wpadminbar #view-as-selector' ).change( function( element ) {
 
 		// Get selected Membership ID
 		var membership_id = element.currentTarget.value;
@@ -22,7 +19,7 @@ jQuery(document).ready(function($){
 
 		// Submit form
 		$( '#wpadminbar #view-site-as' ).submit();
-		
+
 	} );
 
 });

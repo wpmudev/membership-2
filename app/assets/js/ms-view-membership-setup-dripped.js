@@ -3,13 +3,13 @@ jQuery( document ).ready( function( $ ) {
 	//global functions defined in ms-functions.js
 	ms_functions.change_dripped_type = function( obj ) {
 		var type = $( obj ).val();
-		
+
 		$( '.ms-dripped-edit-wrapper' ).hide();
 		$( '.ms-dripped-type-' + type ).show();
 	};
 	ms_functions.change_access = function( access, slider ) {
 		var type = $( 'input[name="dripped_type"]:checked').val();
-		
+
 		if( 1 == access ) {
 			$( slider ).parent().parent().find( '.dripped.column-dripped' ).css( 'visibility', 'visible' );
 		}
@@ -17,23 +17,21 @@ jQuery( document ).ready( function( $ ) {
 			$( slider ).parent().parent().find( '.dripped.column-dripped' ).css( 'visibility', 'hidden' );
 		}
 	};
-	
+
 	$( 'input[name="dripped_type"]').change( function() { ms_functions.change_dripped_type( this ) } );
 
-	$( '.ms-dripped-spec-date' ).datepicker({
-        dateFormat : 'yy-mm-dd' //TODO get wp configured date format
-    });
-	
+	$( '.ms-dripped-spec-date' ).ms_datepicker();
+
 	ms_functions.change_dripped_type( $( 'input[name="dripped_type"]:checked') );
 
 	$( '.ms-dripped-calendar' ).click( function() {
 		$( this ).parent().find( '.ms-dripped-spec-date.ms-ajax-update' ).datepicker( 'show' );
 	});
-	
+
 	$( '.ms-period-desc-wrapper' ).click( function() {
 		$( this ).parent().addClass( 'ms-dripped-edit' );
 	});
-	
+
 	$( 'input.ms-dripped-edit-ok' ).click( function() {
 		$( this ).parent().parent().removeClass( 'ms-dripped-edit' );
 		period_unit = $( this ).parent().find( 'input' );
@@ -43,11 +41,11 @@ jQuery( document ).ready( function( $ ) {
 		$( this ).parent().parent().find( '.ms-period-unit' ).text( period_unit.val() );
 		$( this ).parent().parent().find( '.ms-period-type' ).text( period_type.val() );
 	});
-	
+
 	$( '.ms-radio-slider' ).on( 'ms-radio-slider-updated', function( event, data ) {
 		ms_functions.change_access( data.value, event.target );
 	});
-	
+
 	$( '.ms-radio-slider' ).each( function() {
 		var value = ( true == $( this ).children( 'input' ).val() ) ? 1 : 0;
 		ms_functions.change_access( value, this );

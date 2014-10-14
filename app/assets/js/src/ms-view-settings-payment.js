@@ -28,10 +28,6 @@ window.ms_init.view_settings_payment = function init() {
 		});
 	}
 
-	jQuery( '.ms-datepicker' ).datepicker({
-        dateFormat : 'yy-mm-dd' //TODO get wp configured date format
-    });
-
 	jQuery( '.ms-gateway-setings-form' ).each( setting_init );
 
 	jQuery( '.ms-close-button' ).click( close_gateway_settings );

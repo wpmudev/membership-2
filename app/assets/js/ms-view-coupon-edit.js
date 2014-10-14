@@ -1,8 +1,6 @@
 jQuery( document ).ready(function( $ ) {
-	$( '.ms-date' ).datepicker({
-        dateFormat : 'yy-mm-dd' //TODO get wp configured date format
-    });
-	
+	$( '.ms-date' ).ms_datepicker();
+
 	$('.ms-form').validate({
 			onkeyup: false,
 			errorClass: 'ms-validation-error',

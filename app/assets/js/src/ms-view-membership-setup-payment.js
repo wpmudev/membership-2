@@ -32,10 +32,6 @@ window.ms_init.view_membership_setup_payment = function init () {
 		}
 	};
 
-	jQuery( '.ms-datepicker' ).datepicker({
-        dateFormat : 'yy-mm-dd' //TODO get wp configured date format
-    });
-
 	jQuery( 'input[name="is_free"]' ).change( function() {
 		ms_functions.is_free();
 	});
