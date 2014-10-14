@@ -148,18 +148,21 @@ class MS_Model_Pages extends MS_Model_Option {
 				$ms_page = $this->pages[ $page_type ];
 			}
 
-			if ( ! $ms_page->get_page() && $create_if_not_exists ) {
-				
-				$page_types = self::get_ms_page_types();
-				$ms_page = MS_Factory::create( 'MS_Model_Page' );
-				$ms_page->type = $page_type;
-				$ms_page->title = $page_types[ $page_type ];
-				$ms_page->slug = $page_type;
-				$ms_page->create_wp_page();
-				$this->pages[ $page_type ] = $ms_page;
-				$this->save();
-				
-				flush_rewrite_rules();
+			if( $create_if_not_exists ) {
+				/* Verify both ms_page model and the WP page */
+				if ( empty( $ms_page ) || ! $ms_page->get_page() ) {
+					
+					$page_types = self::get_ms_page_types();
+					$ms_page = MS_Factory::create( 'MS_Model_Page' );
+					$ms_page->type = $page_type;
+					$ms_page->title = $page_types[ $page_type ];
+					$ms_page->slug = $page_type;
+					$ms_page->create_wp_page();
+					$this->pages[ $page_type ] = $ms_page;
+					$this->save();
+					
+					flush_rewrite_rules();
+				}
 			}
 		}
 		else {
