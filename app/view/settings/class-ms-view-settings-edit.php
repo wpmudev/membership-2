@@ -615,7 +615,7 @@ class MS_View_Settings_Edit extends MS_View {
 		 * @see ms-view-settings-automated-msg.js
 		 */
 		$var_button = array(
-			'title' => __( 'Insert Variable', MS_TEXT_DOMAIN ),
+			'title' => __( 'Insert Membership Variables', MS_TEXT_DOMAIN ),
 			'items' => $comm->comm_vars,
 		);
 		printf(
