@@ -11,7 +11,11 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$membership = $this->data['membership'];
 		$gateway = $this->data['gateway'];
 
-		$inv_title = __( 'Invoice #', MS_TEXT_DOMAIN ) . esc_html( $invoice->id );
+		$inv_title = sprintf(
+			'<a href="%s">%s</a>',
+			get_permalink( $invoice->id ),
+			__( 'Invoice #', MS_TEXT_DOMAIN ) . esc_html( $invoice->id )
+		);
 
 		if ( $invoice->amount > 0 ) {
 			$inv_amount = sprintf(
@@ -87,23 +91,21 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			#invoice tr.ms-inv-sep th,
 			#invoice tr.ms-inv-sep td { line-height: 1px; height: 1px; padding: 0; border-bottom: 1px solid #DDD; background-color: #F9F9F9; }
 			#invoice .ms-inv-total .ms-inv-price { font-weight: bold; font-size: 18px; text-align: right; }
+			#invoice h2 { text-align: right; padding: 10px 10px 0 0; }
+			#invoice h2 a { color: #000; }
+			<?php do_action( 'ms_invoice_css' ) ?>
 			</style>
-			<h2>
-			<?php
-			printf(
-				'<a href="%s">%s</a>',
-				get_permalink( $invoice->id ),
-				$inv_title
-			);
-			?>
-			</h2>
 
 			<div class="ms-invoice-details ms-status-<?php echo esc_attr( $invoice->status ); ?>">
 				<table class="ms-purchase-table">
+					<tr class="ms-inv-title">
+						<td colspan="2"><h2><?php echo $inv_title; ?></h2></td>
+					</tr>
+
 					<?php if ( ! empty( $inv_from ) ) : ?>
 					<tr class="ms-inv-from">
 						<th><?php _e( 'Sender', MS_TEXT_DOMAIN ); ?></th>
-						<td class="ms-inv-text"><?php echo esc_html( $inv_from ); ?></td>
+						<td class="ms-inv-text"><?php echo $inv_from; ?></td>
 					</tr>
 					<?php endif; ?>
 
