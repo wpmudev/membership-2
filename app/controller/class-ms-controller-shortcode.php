@@ -53,6 +53,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, array( $this, 'membership_account' ) );
 
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_INVOICE, array( $this, 'membership_invoice' ) );
+		
+		add_shortcode( MS_Helper_Shortcode::SCODE_GREEN_NOTE, array( $this, 'ms_green_note' ) );
+		add_shortcode( MS_Helper_Shortcode::SCODE_RED_NOTE, array( $this, 'ms_red_note' ) );
 	}
 
 	/**
@@ -278,5 +281,19 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 			return $view->to_html();
 		}
+	}
+	
+	public function ms_green_note( $atts, $content = '' ) {
+		
+		$data = apply_filters( 'ms_controller_ms_green_note_atts',
+				shortcode_atts(
+						array(
+								'class' => 'ms-alert-box ms-alert-success',
+						),
+						$atts
+				)
+		);
+		
+		return sprintf( '<p class="%1$s"> %2$s </p> ', $data['class'], $content ); 
 	}
 }

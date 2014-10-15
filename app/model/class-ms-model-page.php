@@ -86,13 +86,47 @@ class MS_Model_Page extends MS_Model {
 						'post_type' => 'page',
 						'ping_status' => 'closed',
 						'comment_status' => 'closed',
-						'post_content' => '',
+						'post_content' => $this->get_ms_page_default_content(),
 				)
 		);
 		$id = wp_insert_post( $page_details );
 		$this->id = $id;
 		
 		do_action( 'ms_model_page_create_wp_page', $virtual, $this );
+	}
+	
+	/**
+	 * Get default content for plugin pages.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The default content.
+	 */
+	public function get_ms_page_default_content() {
+		$content = null;
+
+		switch( $this->type ) {
+			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
+				$content = sprintf( '[ms-green-note] %1$s [/ms-green-note]', 
+						__( 'We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN ) 
+				);
+				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				break;
+			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
+				break;
+			case MS_Model_Pages::MS_PAGE_ACCOUNT:
+				break;
+			case MS_Model_Pages::MS_PAGE_REGISTER:
+				$content = sprintf( '[ms-green-note] %1$s [/ms-green-note]', 
+						__( 'We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details.', MS_TEXT_DOMAIN ) 
+				);
+				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				break;
+			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
+				break;
+		}
+		
+		return apply_filters( 'ms_model_page_get_ms_page_default_content', $content, $this );
 	}
 	
 	/**

@@ -53,6 +53,10 @@ class MS_Helper_Shortcode extends MS_Helper {
 	
 	const SCODE_MS_INVOICE = 'ms-invoice';
 	
+	const SCODE_GREEN_NOTE = 'ms-green-note';
+	
+	const SCODE_RED_NOTE = 'ms-red-note';
+	
 	/**
 	 * This function searches content for the presence of a given short code.
 	 *
@@ -87,6 +91,8 @@ class MS_Helper_Shortcode extends MS_Helper {
 				self::SCODE_LOGIN,
 				self::SCODE_MS_ACCOUNT,
 				self::SCODE_MS_INVOICE,
+				self::SCODE_GREEN_NOTE,
+				self::SCODE_RED_NOTE,
 		) );
 	}
 }

@@ -10,42 +10,33 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		ob_start();
 		?>
 			<div class="ms-membership-form-wrapper">
-				<legend><?php _e( 'Membership Levels', MS_TEXT_DOMAIN ) ?></legend>
-				<p class="ms-alert-box <?php echo count( $this->data['ms_relationships'] > 0 ) ? 'ms-alert-success' : ''; ?>">
-					<?php
-						if( count( $this->data['ms_relationships'] ) > 0 ) {
-							
-	 						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
-	 						
-	 						foreach( $this->data['ms_relationships'] as $membership_id => $ms_relationship ){
-	 							$msg = $ms_relationship->get_status_description();
-	 							$membership = MS_Factory::load( 'MS_Model_Membership', $ms_relationship->membership_id );
-	 							
-	 							switch( $ms_relationship->status ) {
-	 								case MS_Model_Membership_Relationship::STATUS_CANCELED:
-	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg, $ms_relationship );
-	 									break;
-	 								case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg, $ms_relationship );
-	 									break;
-	 								case MS_Model_Membership_Relationship::STATUS_TRIAL:
-	 								case MS_Model_Membership_Relationship::STATUS_ACTIVE:
-	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg, $ms_relationship );
-	 									break;
-	 								case MS_Model_Membership_Relationship::STATUS_PENDING:
-	 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, $msg, $ms_relationship );
-	 									break;
-	 								default:
-	 									$this->membership_box_html( $ms_relationship, MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg, $ms_relationship );
-	 									break; 
-	 							}
-	 						}
-	 					}
-	 					else {
-	 						_e( 'We have the following subscriptions available for our site. To join, simply click on the <strong>Sign Up</strong> button and then complete the registration details.', MS_TEXT_DOMAIN );
-	 					}
-					?>
-				</p>
+				<?php
+					if( count( $this->data['ms_relationships'] ) > 0 ) {
+ 						foreach( $this->data['ms_relationships'] as $membership_id => $ms_relationship ){
+ 							$msg = $ms_relationship->get_status_description();
+ 							$membership = MS_Factory::load( 'MS_Model_Membership', $ms_relationship->membership_id );
+ 							
+ 							switch( $ms_relationship->status ) {
+ 								case MS_Model_Membership_Relationship::STATUS_CANCELED:
+ 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg, $ms_relationship );
+ 									break;
+ 								case MS_Model_Membership_Relationship::STATUS_EXPIRED:
+ 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW, $msg, $ms_relationship );
+ 									break;
+ 								case MS_Model_Membership_Relationship::STATUS_TRIAL:
+ 								case MS_Model_Membership_Relationship::STATUS_ACTIVE:
+ 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg, $ms_relationship );
+ 									break;
+ 								case MS_Model_Membership_Relationship::STATUS_PENDING:
+ 									$this->membership_box_html( $membership, MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP, $msg, $ms_relationship );
+ 									break;
+ 								default:
+ 									$this->membership_box_html( $ms_relationship, MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL, $msg, $ms_relationship );
+ 									break; 
+ 							}
+ 						}
+ 					}
+				?>
 				<?php
 					if( $this->data['member']->has_membership() && ! empty( $this->data['memberships'] ) ) {
 						?>
