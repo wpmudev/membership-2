@@ -354,7 +354,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_script(
 			'ms-view-billing-edit',
 			$plugin_url . 'app/assets/js/ms-view-billing-edit.js',
-			array( 'jquery' ), $version
+			array( 'jquery', 'ms-admin' ), $version
 		);
 	}
 	

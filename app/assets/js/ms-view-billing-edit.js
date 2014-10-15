@@ -5,15 +5,20 @@ jQuery( document ).ready(function( $ ) {
 			onkeyup: false,
 			errorClass: 'ms-validation-error',
 			rules: {
-				'membership_section[name]': 'required',
-				'billing_section[amount]': {
+				'name': 'required',
+				'user_id': {
+					'required': true,
+					'min': 1,
+				},
+				'membership_id': {
+					'required': true,
+					'min': 1,
+				},
+				'amount': {
 					'required': true,
 					'min': 0,
 				},
-				'billing_section[tax_rate]': {
-					'min': 0,
-				},
-				'billing_section[due_date]': {
+				'due_date': {
 					'required': true,
 					'dateISO': true,
 				},
