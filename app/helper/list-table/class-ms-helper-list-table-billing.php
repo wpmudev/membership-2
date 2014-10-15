@@ -47,11 +47,9 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			'user' => __( 'User', MS_TEXT_DOMAIN ),
 			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
 			'status' => __( 'Status', MS_TEXT_DOMAIN ),
-			'amount' => __( 'Amount', MS_TEXT_DOMAIN ) . " ($currency)",
-			'discount' => __( 'Discount', MS_TEXT_DOMAIN ) . " ($currency)",
-// 			'tax_name' => __( 'Tax name', MS_TEXT_DOMAIN ),
-// 			'tax_rate' => __( 'Tax rate (%)', MS_TEXT_DOMAIN ),
-			'total' => __( 'Total', MS_TEXT_DOMAIN ) . " ($currency)",
+			'amount' => sprintf( '%1$s (%2$s)', __( 'Amount', MS_TEXT_DOMAIN ), $currency ),
+			'discount' => sprintf( '%1$s (%2$s)', __( 'Discount', MS_TEXT_DOMAIN ), $currency ),
+			'total' => sprintf( '%1$s (%2$s)', __( 'Total', MS_TEXT_DOMAIN ), $currency ),
 			'due_date' => __( 'Due date', MS_TEXT_DOMAIN ),
 			'gateway_id' => __( 'Gateway', MS_TEXT_DOMAIN ),
 		) );
@@ -196,7 +194,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		$views = array();
 
 		$views['all'] = array(
-			'url' => remove_query_arg( array( 'status' ) ),
+			'url' => remove_query_arg( array( 'status', 'msg' ) ),
 			'label' => __( 'All', MS_TEXT_DOMAIN ),
 		);
 
@@ -206,7 +204,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			$count = MS_Model_Invoice::get_invoice_count( $args );
 
 			$views[ $status ] =	array(
-				'url' => add_query_arg( array( 'status' => $status ) ),
+				'url' => add_query_arg( array( 'status' => $status ), remove_query_arg( array( 'msg' ) ) ),
 				'label' => $desc,
 				'count' => $count,
 			);

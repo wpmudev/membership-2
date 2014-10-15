@@ -25,7 +25,8 @@
 /**
  * Controller to manage billing and invoices.
  *
- * @since 1.0
+ * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Controller
  */
@@ -34,7 +35,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Prepare the Billing manager.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -49,7 +50,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Show admin notices.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 */
 	public function print_admin_message() {
@@ -61,7 +62,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 *
 	 * Verifies GET and POST requests to manage billing.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function admin_billing_manager() {
 		$this->print_admin_message();
@@ -70,7 +71,7 @@ class MS_Controller_Billing extends MS_Controller {
 		/**
 		 * Save billing add/edit
 		 */
-		$fields = array( 'submit', 'user_id', 'membership_id' );
+		$fields = array( 'user_id', 'membership_id' );
 		if ( $this->validate_required( $fields ) && $this->verify_nonce() && $this->is_admin_user() ) {
 			$msg = $this->save_invoice( $_POST );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invoice_id') ) ) ) ;
@@ -88,7 +89,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Sets up the 'Billing' navigation and list page.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function admin_billing() {
 		$this->print_admin_message();
@@ -101,7 +102,6 @@ class MS_Controller_Billing extends MS_Controller {
 			$data['invoice'] =  MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
 			$data['action'] = $_GET['action'];
 			$data['users'] = MS_Model_Member::get_usernames();
-			$data['gateways'] = MS_Model_Gateway::get_gateway_names();
 			$data['memberships'] = MS_Model_Membership::get_membership_names( null, true );
 			$view = MS_Factory::create( 'MS_View_Billing_Edit' );
 			$view->data = apply_filters( 'ms_view_billing_edit_data',  $data );
@@ -116,17 +116,14 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Perform actions for each invoice.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 * @param string $action The action to perform on selected invoices
 	 * @param int[] $invoice_ids The list of invoices ids to process.
 	 */
 	public function billing_do_action( $action, $invoice_ids ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
-			return $msg;
-		}
-
-		if( is_array( $invoice_ids ) ) {
+		
+		if( $this->is_admin_user() && is_array( $invoice_ids ) ) {
 			foreach( $invoice_ids as $invoice_id ) {
 				switch( $action ) {
 					case 'delete':
@@ -140,24 +137,22 @@ class MS_Controller_Billing extends MS_Controller {
 				}
 			}
 		}
-		return $msg;
+		
+		return apply_filters( 'ms_controller_billing_billing_do_action', $msg, $action, $invoice_ids, $this );
 	}
 
 	/**
 	 * Save invoices using the invoices model.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
+	 * 
 	 * @param mixed $fields Transaction fields
 	 */
 	private function save_invoice( $fields ) {
 
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 
-		if( ! $this->is_admin_user() ) {
-			return $msg;
-		}
-
-		if( is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) ) {
+		if( $this->is_admin_user() && is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) ) {
 
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
@@ -193,13 +188,13 @@ class MS_Controller_Billing extends MS_Controller {
 			}
 		}
 
-		return $msg;
+		return apply_filters( 'ms_controller_billing_save_invoice', $msg, $fields, $this );
 	}
 
 	/**
 	 * Load Billing specific styles.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
 		if ( 'edit' == @$_GET['action'] ) {
@@ -210,7 +205,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Load Billing specific scripts.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		if ( 'edit' == @$_GET['action'] ) {
