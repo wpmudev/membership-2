@@ -192,40 +192,40 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$data['period_type'] = null;
 			$data['simulate_date'] = null;
 
-			if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
-				$data['simulate_date'] = $this->simulate->date;
-				$title = __( 'View on: ', MS_TEXT_DOMAIN );
+			if( $this->simulate->type ) {
+				if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
+					$data['simulate_date'] = $this->simulate->date;
+					$title = __( 'View on: ', MS_TEXT_DOMAIN );
+				}
+				elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
+					$data['period_unit'] = $this->simulate->period['period_unit'];
+					$data['period_type'] = $this->simulate->period['period_type'];
+					$title = __( 'View in: ', MS_TEXT_DOMAIN );
+				}
+				
+				$view = MS_Factory::create( 'MS_View_Admin_Bar' );
+				$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
+				$html = $view->to_html();
 			}
-			elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
-				$data['period_unit'] = $this->simulate->period['period_unit'];
-				$data['period_type'] = $this->simulate->period['period_type'];
-				$title = __( 'View in: ', MS_TEXT_DOMAIN );
-			}
-			
-			$view = MS_Factory::create( 'MS_View_Admin_Bar' );
-			$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
-			$html = $view->to_html();
-			
-			if ( $html ) {
-				$wp_admin_bar->add_menu(
-					apply_filters(
-						'ms_controller_admin_bar_simulate_node',
-						array(
-							'id'     => 'membership-simulate-period',
-							'title'  => $title,
-							'href'   => '',
-							'meta'   => array(
-								'html'  => $html,
-								'class' => apply_filters(
-									'ms_controller_admin_bar_simulate_period_class',
-									'membership-simulate-period'
-								),
-								'title' => __( 'Simulate period', MS_TEXT_DOMAIN ),
+						
+			$wp_admin_bar->add_menu(
+				apply_filters(
+					'ms_controller_admin_bar_simulate_node',
+					array(
+						'id'     => 'membership-simulate-period',
+						'title'  => $title,
+						'href'   => '',
+						'meta'   => array(
+							'html'  => $html,
+							'class' => apply_filters(
+								'ms_controller_admin_bar_simulate_period_class',
+								'membership-simulate-period'
 							),
-						)
+							'title' => __( 'Simulate period', MS_TEXT_DOMAIN ),
+						),
 					)
-				);
-			}
+				)
+			);
 		}
 	}
 

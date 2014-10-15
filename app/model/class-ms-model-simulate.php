@@ -68,7 +68,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * 
 	 * @var string
 	 */
-	protected $type = self::TYPE_PERIOD;
+	protected $type;
 	
 	/**
 	 * The period to simulate.
@@ -227,26 +227,16 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		
 		$membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
 		
-		if ( $membership->is_valid() ) {
-		
-			if ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
+		if ( $membership->is_valid() && MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
+			if( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE == $membership->dripped_type ) {
 				$this->type = MS_Model_Simulate::TYPE_DATE;
 			}
 			else {
-				switch( $membership->type ) {
-					case MS_Model_Membership::TYPE_DRIPPED:
-						if( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE == $membership->dripped_type ) {
-							$this->type = MS_Model_Simulate::TYPE_DATE;
-						}
-						else {
-							$this->type = MS_Model_Simulate::TYPE_PERIOD;
-						}
-						break;
-					default:
-						$this->type = MS_Model_Simulate::TYPE_PERIOD;
-						break;
-				}
+				$this->type = MS_Model_Simulate::TYPE_PERIOD;
 			}
+		}
+		else {
+			$this->type = null;
 		}
 		
 		return apply_filters( 'ms_model_simulate_get_simulation_type', $this->type, $this );
