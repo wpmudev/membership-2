@@ -258,7 +258,7 @@ class MS_Controller extends MS_Hooker {
 		wp_register_script(
 			'ms-controller-admin-bar',
 			$plugin_url . 'app/assets/js/ms-controller-admin-bar.js',
-			array( 'jquery' ), $version
+			array( 'jquery', 'ms-admin' ), $version
 		);
 
 		// View specific
