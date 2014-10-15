@@ -119,9 +119,9 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */
 	public function ajax_action_toggle_metabox_access() {
 
-		$fields = array( 'membership_id', 'post_type', 'post_id' );
+		$fields = array( 'membership_id', 'rule_type', 'post_id' );
 		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
-			$this->toggle_membership_access( $_POST['post_id'], $_POST['post_type'], $_POST['membership_id'] );
+			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
 			echo true;
 		}
 		exit;
@@ -156,49 +156,66 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		}
 		else {
 			$memberships = MS_Model_Membership::get_memberships();
-			foreach( $memberships as $membership ) {
-				$rule_type = $post->post_type;
-				switch( $rule_type ) {
-					case 'post':
-						$post_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
-						$category_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
-						$data['access'][ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $post->ID ) || $membership->rules['category']->has_access( $post->ID );
-						$data['access'][ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $post->ID );
-						break;
-					case 'attachment':
-						$parent_id = $post->post_parent;
-						$parent = get_post( $parent_id );
+			$protected_content = MS_Model_Membership::get_protected_content();
+			
+			$rule = $this->get_rule( $protected_content, $post );
+			$data['rule_type'] = $rule->rule_type;
+			if( $rule->has_access( $post->ID ) ) {
+				$data['not_protected'] = 1; 
+			}
+			else {
+				foreach( $memberships as $membership ) {
+					$rule = $this->get_rule( $membership, $post );
+					
+					$data['access'][ $membership->id ]['has_access'] =  $rule->has_access( $post->ID );
+					$data['access'][ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );
 
-						$post_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
-						$category_rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
-						$data['access'][ $membership->id ]['has_access'] =  $membership->rules['post']->has_access( $parent_id ) || $membership->rules['category']->has_access( $parent_id );
-						$data['access'][ $membership->id ]['dripped'] = $membership->rules['post']->has_dripped_rules( $parent_id );
-						break;
-					default:
-						if( in_array( $rule_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
-							$rule_cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
-							$rule_cpt_group = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
-							$data['access'][ $membership->id ]['has_access'] = $rule_cpt->has_access( $post->ID ) || $rule_cpt_group->has_access( $post->ID );
-							$data['access'][ $membership->id ]['dripped'] = false;
-						}
-						else {
-							$rule = $membership->get_rule( $rule_type );
-							$data['access'][ $membership->id ]['has_access'] = $rule->has_access( $post->ID );
-							$data['access'][ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );
-						}
-					break;
+					$data['access'][ $membership->id ]['name'] = $membership->name;
 				}
-				$data['access'][ $membership->id ]['name'] = $membership->name;
 			}
 		}
 		$data['post_id'] = $post->ID;
-		$data['post_type'] = $post->post_type;
+
 		$view->data = $data;
 		$view->read_only = $this->is_read_only( $post->post_type );
 
 		$view->render();
 	}
 
+	private function get_rule( $membership, $post ) {
+		$rule = null;
+		$post_type = null;
+		
+		if( 'attachment' == $post->post_type ) {
+			$parent_id = $post->post_parent;
+			$post_type = get_post_type( $parent_id );
+				
+		}
+		else {
+			$post_type = $post->post_type;
+		}
+		
+		switch( $post_type ) {
+			case 'post':
+				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
+				break;
+			default:
+				if( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
+					if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST) ) {
+						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
+					}
+					else {
+						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
+					}
+				}
+				else {
+					$rule = $membership->get_rule( $post_type );
+				}
+				break;
+		}
+		
+		return apply_filters( 'ms_controller_metabox_get_rule', $rule, $membership, $post, $this );
+	}
 	/**
 	 * Save the metabox data for given post.
 	 *
@@ -291,25 +308,21 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @since 4.0.0
 	 *
 	 * @param int $post_id The post id or attachment id to save access to.
-	 * @param string $post_type The post type dictates with rule_type is used.
+	 * @param string $rule_type The membership rule type.
 	 * @param array $membership_id The membership id to toggle access
 	 */
-	public function toggle_membership_access( $post_id, $post_type, $membership_id ) {
-		$rule_type = $post_type;
-		if( in_array( $post_type, $this->post_types ) ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			if( in_array( $rule_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
-				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
-			}
-			else {
-				$rule = $membership->get_rule( $rule_type );
-			}
-			if( $rule ) {
-				$rule->toggle_access( $post_id );
-				$membership->set_rule( $rule_type, $rule );
-				$membership->save();
-			}
+	public function toggle_membership_access( $post_id, $rule_type, $membership_id ) {
+
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		
+		$rule = $membership->get_rule( $rule_type );
+		
+		if( $rule ) {
+			$rule->toggle_access( $post_id );
+			$membership->set_rule( $rule_type, $rule );
+			$membership->save();
 		}
+
 	}
 
 	/**

@@ -4,6 +4,8 @@ class MS_View_Membership_Metabox extends MS_View {
 
 	const MEMBERSHIP_METABOX_NONCE = 'membership_metabox_save';
 	
+	protected $metabox_id = 'ms-metabox';
+	
 	protected $data;
 	
 	protected $read_only;
@@ -14,10 +16,21 @@ class MS_View_Membership_Metabox extends MS_View {
 		$dripped = array();
 		ob_start();
 		wp_nonce_field( self::MEMBERSHIP_METABOX_NONCE, self::MEMBERSHIP_METABOX_NONCE );
+		
+		$edit_link = array(
+				'id' => 'page_rule_edit',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Manage Protected Content', MS_TEXT_DOMAIN ),
+				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', $this->data['rule_type'] ),
+		);
+		
 		?>
-		<div id="<?php echo $this->metabox_id;?>" class="ms_metabox">
+		<div id="<?php echo $this->metabox_id;?>" class="ms_metabox ms-wrap">
 			<?php if( $this->special_page ): ?>
 				<div>Membership Special Page</div>
+			<?php elseif( ! empty( $this->data['not_protected'] ) ): ?>
+				<div>Not protected</div>
+				<?php MS_Helper_Html::html_element( $edit_link ); ?>
 			<?php else :?>
 				<table>
 					<tbody>
@@ -53,7 +66,7 @@ class MS_View_Membership_Metabox extends MS_View {
 												'data_ms' => array(
 														'action' => MS_Controller_Membership_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
 														'post_id' => $this->data['post_id'],
-														'post_type' => $this->data['post_type'],
+														'rule_type' => $this->data['rule_type'],
 														'membership_id' => $membership_id,
 												),
 										);
@@ -78,6 +91,6 @@ class MS_View_Membership_Metabox extends MS_View {
 		<div style='clear:both;'></div>
 		<?php 
 		$html = ob_get_clean();
-		echo $html;
+		return $html;
 	}
 }
