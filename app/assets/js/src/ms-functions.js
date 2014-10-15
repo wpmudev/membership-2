@@ -69,7 +69,7 @@ window.ms_functions = {
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! slider.hasClass( fn.processing_class ) ) {
+		if( ! slider.hasClass( fn.processing_class ) && ! slider.attr( 'readonly' ) ) {
 			info_field = fn.ajax_show_indicator( slider );
 
 			slider.addClass( fn.processing_class );
