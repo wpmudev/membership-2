@@ -109,8 +109,12 @@ class MS_Controller_Frontend extends MS_Controller {
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
 		switch( $ms_pages->is_ms_page() ) {
-			case MS_Model_Pages::MS_PAGE_REGISTER:
 			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
+				if( ! MS_Model_Member::is_logged_user() ) {
+					$this->add_filter( 'the_content', 'display_login_form' );
+					break;
+				}
+			case MS_Model_Pages::MS_PAGE_REGISTER:
 				if( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
 					$this->membership_cancel();
 				}
@@ -280,7 +284,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			return;
 		}
 		try {
-			$user = new MS_Model_Member();
+			$user = MS_Factory::create( 'MS_Model_Member' );
 			foreach( $_POST as $field => $value ) {
 				$user->$field = $value;
 			}
@@ -530,6 +534,28 @@ class MS_Controller_Frontend extends MS_Controller {
 		return $view->to_html();
 	}
 
+	/**
+	 * Display login form.
+	 *
+	 * Search for login shortcode, injecting if not found.
+	 *
+	 * **Hooks Filters: **
+	 * * the_content
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $content
+	 * @return string
+	 */
+	public function display_login_form( $content ) {
+	
+		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
+			$content .= do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
+		}
+	
+		return $content;
+	}
+	
 	/**
 	 * Get the URL the user used to register for a subscription.
 	 *
