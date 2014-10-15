@@ -38,12 +38,14 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 
 			// Call the appropriate form to render.
 			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
-			$render_callback = apply_filters(
-				'ms_view_membership_setup_protected_content_render_tab_callback',
-				array( $this, $callback_name ),
-				$active_tab, $this->data
-			);
-
+			if( method_exists( $this, $callback_name ) ) {
+				$render_callback = array( $this, $callback_name );
+			}
+			else {
+				$render_callback = array( $this, 'render_generic_tab' );
+			}
+			$render_callback = apply_filters( 'ms_view_membership_setup_protected_content_render_tab_callback', $render_callback, $active_tab, $this );
+			
 			$html = call_user_func( $render_callback );
 			$html = apply_filters( 'ms_view_membership_protected_content_' . $callback_name, $html );
 			echo $html;
@@ -238,6 +240,24 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		return $this->render_generic_tab( $title, $desc, $field );
 	}
 
+	/* ====================================================================== *
+	 *                               CPT
+	 * ====================================================================== */
+
+	public function render_tab_cpt() {
+		$title = __( 'Custom Post Types', MS_TEXT_DOMAIN );
+		$desc = __( 'Protected Custom Post Types are available for members only.', MS_TEXT_DOMAIN );
+
+		$field = array(
+			'type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE,
+			'id' => 'post',
+			'label_single' => __( 'CPT', MS_TEXT_DOMAIN ),
+			'label_plural' => __( 'CPTs', MS_TEXT_DOMAIN ),
+		);
+
+		return $this->render_generic_tab( $title, $desc, $field );
+	}
+	
 	/* ====================================================================== *
 	 *                               COMMENT, MORE, MENU
 	 * ====================================================================== */

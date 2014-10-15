@@ -244,4 +244,25 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		
 		return apply_filters( 'ms_model_rule_cpt_get_query_args', $args, $this );
 	}
+	
+	/**
+	 * Get cpt content array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $array The query args. @see self::get_query_args()
+	 * @return array {
+	 * 		@type int $key The content ID.
+	 * 		@type string $value The content title.
+	 * }
+	 */
+	public function get_content_array() {
+		$cont = array();
+		$contents = $this->get_contents();
+		foreach( $contents as $content ) {
+			$cont[ $content->id ] = $content->post_title;
+		}
+	
+		return apply_filters( 'ms_model_rule_cpt_get_content_array', $cont, $this );
+	}
 }
