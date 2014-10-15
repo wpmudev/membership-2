@@ -113,8 +113,10 @@ class MS_Model_Page extends MS_Model {
 				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
 			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
+				//The text in Settings > "Protection Messages" is added in front end controller
 				break;
 			case MS_Model_Pages::MS_PAGE_ACCOUNT:
+				$content = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']';
 				break;
 			case MS_Model_Pages::MS_PAGE_REGISTER:
 				$content = sprintf( '[ms-green-note] %1$s [/ms-green-note]', 
@@ -123,6 +125,14 @@ class MS_Model_Page extends MS_Model {
 				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
 			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
+				$content .= sprintf( '[ms-green-note] %1$s <br/> %2$s [/ms-green-note]',
+					__( 'Your request to join our Membership was successfully received!', MS_TEXT_DOMAIN ),
+					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN )
+				);
+				$content .= sprintf( '<a href="%s">%s</a>',
+					MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT, false, true ),
+					__( 'Visit your account page for more information.', MS_TEXT_DOMAIN )
+				);
 				break;
 		}
 		

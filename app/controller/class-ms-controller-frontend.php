@@ -129,7 +129,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				$this->add_filter( 'the_content', 'protected_page', 1 );
 				break;
 			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
-				$this->add_filter( 'the_content', 'welcome_page', 1 );
+				$this->add_filter( 'the_content', 'reg_complete_page', 1 );
 				break;
 			default:
 				break;
@@ -511,7 +511,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	}
 
 	/**
-	 * Show welcome page.
+	 * Show registration complete page.
 	 *
 	 * **Hooks Filters: **
 	 * * the_content
@@ -521,17 +521,9 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @param string $content
 	 * @return string
 	 */
-	public function welcome_page( $content ) {
-		$data = array();
-		$ms_relationship_id = 0;
-		if( ! empty( $_GET['ms_relationship_id'] ) ) {
-			$ms_relationship_id = $_GET['ms_relationship_id'];
-		}
-		$data['ms_relationship'] = MS_Factory::load( 'MS_Model_Membership_Relationship', $ms_relationship_id );
-
-		$view = MS_Factory::create( 'MS_View_Frontend_Welcome' );
-		$view->data = apply_filters( 'ms_view_frontend_welcome_data', $data );
-		return $view->to_html();
+	public function reg_complete_page( $content ) {
+		
+		return apply_filters( 'ms_controller_frontend_reg_complete_page', $content, $this );
 	}
 
 	/**
