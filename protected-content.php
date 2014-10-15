@@ -389,7 +389,7 @@ class MS_Plugin {
 	 	
 	 	/* Membership site pages.*/
 		add_rewrite_rule(
-			'^ms-page/(.+)/?$',
+			'^' . MS_Model_Pages::MS_PAGE_PREFIX . '/(.+)/?$',
 			'index.php?ms_page=$matches[1]',
 			'top'
 		);

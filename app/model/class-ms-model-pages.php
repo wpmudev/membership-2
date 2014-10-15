@@ -42,6 +42,15 @@ class MS_Model_Pages extends MS_Model_Option {
 	public static $instance;
 	
 	/**
+	 * Plugin pages prefix to avoid name conflict.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	const MS_PAGE_PREFIX = 'ms-page';
+	
+	/**
 	 * Plugin pages constants.
 	 *
 	 * @since 1.0.0
