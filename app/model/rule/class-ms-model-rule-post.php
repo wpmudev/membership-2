@@ -102,11 +102,13 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				 * Using filter 'posts_where' to include dripped content.
 				 * * @todo handle default rule value.
 				 */
-				foreach( $this->dripped[ $dripped_type ] as $post_id => $period ) {
-					if( ! $this->has_dripped_access( $this->start_date, $post_id ) ) {
-						$wp_query->query_vars['post__not_in'][] = $post_id;
-						if( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
-							unset( $wp_query->query_vars['post__in'][ $key ] );
+				if( ! empty( $this->dripped[ $dripped_type ] ) && is_array( $this->dripped[ $dripped_type ] ) ) {
+					foreach( $this->dripped[ $dripped_type ] as $post_id => $period ) {
+						if( ! $this->has_dripped_access( $this->start_date, $post_id ) ) {
+							$wp_query->query_vars['post__not_in'][] = $post_id;
+							if( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
+								unset( $wp_query->query_vars['post__in'][ $key ] );
+							}
 						}
 					}
 				}
@@ -145,9 +147,11 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				$dripped_type = $this->get_dripped_type();
 						
 				$posts = array();
-				foreach( $this->dripped[ $dripped_type ] as $post_id => $period ) {
-					if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
-						$posts[] = $post_id;
+				if( ! empty( $this->dripped[ $dripped_type ] ) && is_array( $this->dripped[ $dripped_type ] ) ) {
+					foreach( $this->dripped[ $dripped_type ] as $post_id => $period ) {
+						if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
+							$posts[] = $post_id;
+						}
 					}
 				}
 				if( ! empty( $posts ) ) {
