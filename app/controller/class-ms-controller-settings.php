@@ -188,9 +188,13 @@ class MS_Controller_Settings extends MS_Controller {
 		if( ! $membership->private ) {
 			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true );
 
+			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS, true );
+			$ms_page->set_page_status( 'publish' );
+
 			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
 			$ms_page->set_page_status( 'publish' );
 
+			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_REGISTER );
 		}
 		$settings->plugin_enabled = true;
