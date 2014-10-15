@@ -1,21 +1,38 @@
 <?php
-
+/**
+ * Render Membership Metabox
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage View
+ */
 class MS_View_Membership_Metabox extends MS_View {
 
-	const MEMBERSHIP_METABOX_NONCE = 'membership_metabox_save';
-	
+	/**
+	 * The metabox wrapper ID.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
 	protected $metabox_id = 'ms-metabox';
 	
+	/**
+	 * Data set by controller.
+	 *
+	 * @since 1.0.0
+	 * @var mixed $data
+	 */
 	protected $data;
 	
-	protected $read_only;
-	
-	protected $special_page;
-	
+	/**
+	 * Create view output.
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$dripped = array();
 		ob_start();
-		wp_nonce_field( self::MEMBERSHIP_METABOX_NONCE, self::MEMBERSHIP_METABOX_NONCE );
 		
 		$edit_link = array(
 				'id' => 'page_rule_edit',
@@ -26,7 +43,7 @@ class MS_View_Membership_Metabox extends MS_View {
 		
 		?>
 		<div id="<?php echo $this->metabox_id;?>" class="ms_metabox ms-wrap">
-			<?php if( $this->special_page ): ?>
+			<?php if( ! empty( $this->data['special_page'] ) ): ?>
 				<div>Membership Special Page</div>
 			<?php elseif( ! empty( $this->data['not_protected'] ) ): ?>
 				<div>Not protected</div>
@@ -62,7 +79,7 @@ class MS_View_Membership_Metabox extends MS_View {
 												'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 												'value' => $data['has_access'],
 												'class' => '',
-												'read_only' => $this->read_only,
+												'read_only' => ! empty( $this->data['read_only'] ),
 												'data_ms' => array(
 														'action' => MS_Controller_Membership_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
 														'post_id' => $this->data['post_id'],
@@ -91,6 +108,7 @@ class MS_View_Membership_Metabox extends MS_View {
 		<div style='clear:both;'></div>
 		<?php 
 		$html = ob_get_clean();
-		return $html;
+		
+		return apply_filters( 'ms_view_membership_metabox_to_html', $html );
 	}
 }

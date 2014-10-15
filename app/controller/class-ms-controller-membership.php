@@ -115,7 +115,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$msg = $this->membership_list_do_action( 'toggle_'. $_POST['field'], array( $_POST['membership_id'] ) );
 		}
 
-		do_action( 'ms_model_member_ajax_action_toggle_membership', $msg, $this );
+		do_action( 'ms_controller_membership_ajax_action_toggle_membership', $msg, $this );
 
 		echo $msg;
 		exit;
@@ -138,7 +138,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$msg = $this->save_membership( array( $_POST['field'] => $_POST['value'] ) );
 		}
 
-		do_action( 'ms_model_member_ajax_action_update_membership', $msg, $this );
+		do_action( 'ms_controller_membership_ajax_action_update_membership', $msg, $this );
 
 		echo $msg;
 		exit;
