@@ -27,7 +27,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			}
 			$html .= wp_login_form( array(
 					'echo'     => false,
-					'redirect' => ! empty( $redirect ) ? $redirect : home_url( $_SERVER['REQUEST_URI'] ),
+					'redirect' => ! empty( $redirect ) ? $redirect : MS_Helper_Utility::get_current_page_url(),
 				) 
 			);
 			if( ! empty( $lostpass ) ) {
