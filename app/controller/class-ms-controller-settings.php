@@ -308,7 +308,8 @@ class MS_Controller_Settings extends MS_Controller {
 						wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type'] ), remove_query_arg( 'msg' ) ) ) ;
 					}
 
-					if( $this->validate_required( array( 'save_email' ) ) ) {
+					$fields = array( 'type', 'subject', 'message' );
+					if( isset( $_POST['save_email'] ) && $this->validate_required( $fields ) ) {
 						$msg = $this->save_communication( $type, $_POST );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
 					}
