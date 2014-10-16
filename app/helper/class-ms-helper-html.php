@@ -366,13 +366,14 @@ class MS_Helper_Html extends MS_Helper {
 				self::html_element_desc( $desc );
 
 				printf(
-					'<div class="ms-radio-slider %1$s ms-slider-%5$s" %6$s><div class="ms-toggle" %2$s>%3$s</div>%4$s</div>',
+					'<div class="ms-radio-slider %1$s ms-slider-%5$s %7$s" %6$s><div class="ms-toggle" %2$s>%3$s</div>%4$s</div>',
 					esc_attr( $turned ),
 					$data_ms,
 					$link_url,
 					$attr_input,
 					esc_attr( $id ),
-					$read_only
+					$read_only,
+					esc_attr( $class )
 				);
 
 				self::html_element_hint( $title, $tooltip_output );

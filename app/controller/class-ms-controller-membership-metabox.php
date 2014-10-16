@@ -129,7 +129,13 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$fields = array( 'membership_id', 'rule_type', 'post_id' );
 		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
 			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
-			echo true;
+			if( $_POST['membership_id'] == MS_Model_Membership::get_protected_content()->id ) {
+				$post = get_post( $_POST['post_id'] );
+				$this->membership_metabox( $post );
+			}
+			else {
+				echo true;
+			}
 		}
 		
 		do_action( 'ms_controller_membership_metabox_ajax_action_toggle_metabox_access', $this );
@@ -162,26 +168,23 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$data = array();
 
 		if( 'page' == $post->post_type && MS_Factory::load( 'MS_Model_Pages')->is_ms_page( $post->ID ) ) {
-			$view->special_page = true;
+			$data['special_page'] = true;
 		}
 		else {
 			$memberships = MS_Model_Membership::get_memberships();
 			$protected_content = MS_Model_Membership::get_protected_content();
+			$data['protected_content'] = $protected_content;
+			$data['protected_content_enabled'] = ! $protected_content->has_access_to_post( $post->ID );
 			
 			$rule = $this->get_rule( $protected_content, $post );
 			$data['rule_type'] = $rule->rule_type;
-			if( $rule->has_access( $post->ID ) ) {
-				$data['not_protected'] = 1; 
-			}
-			else {
-				foreach( $memberships as $membership ) {
-					$rule = $this->get_rule( $membership, $post );
-					
-					$data['access'][ $membership->id ]['has_access'] =  $rule->has_access( $post->ID );
-					$data['access'][ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );
+			foreach( $memberships as $membership ) {
+				$rule = $this->get_rule( $membership, $post );
+				
+				$data['access'][ $membership->id ]['has_access'] =  $membership->has_access_to_post( $post->ID );
+				$data['access'][ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );
 
-					$data['access'][ $membership->id ]['name'] = $membership->name;
-				}
+				$data['access'][ $membership->id ]['name'] = $membership->name;
 			}
 		}
 		$data['post_id'] = $post->ID;
