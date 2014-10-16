@@ -29,7 +29,7 @@
  * Methods of this class will control the flow and behaviour of the plugin
  * by using MS_Model and MS_View objects.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @uses MS_Model
  * @uses MS_View
@@ -41,8 +41,8 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Capability required to use access metabox.
 	 *
-	 * @since 4.0.0
-	 * @access private
+	 * @since 1.0.0
+	 * 
 	 * @var $capability
 	 */
 	protected $capability = 'manage_options';
@@ -50,6 +50,8 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Ajax response flag.
 	 *
+	 * @since 1.0.0
+	 * 
 	 * @see _resp_ok()
 	 * @var bool
 	 */
@@ -58,6 +60,8 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Ajax response error-code.
 	 *
+	 * @since 1.0.0
+	 * 
 	 * @see _resp_code()
 	 * @var string
 	 */
@@ -66,7 +70,7 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Parent constuctor of all controllers.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 
@@ -76,31 +80,33 @@ class MS_Controller extends MS_Hooker {
 		 * @since 4.0.0
 		 * @param object $this The MS_Controller object.
 		 */
-		do_action( 'membership_parent_controller_construct', $this );
+		do_action( 'ms_controller_construct', $this );
 
 	}
 
 	/**
 	 * Get action from request.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
 	public function get_action() {
+		
 		$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : '';
-		return apply_filters( 'ms_controller_get_action', $action );
+		
+		return apply_filters( 'ms_controller_get_action', $action, $this );
 	}
 
 	/**
 	 * Verify nonce.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $action The action name to verify nonce.
 	 * @param string $request_method POST or GET
 	 * @param string $nonce_field The nonce field name
-	 * @return bool True if verified, false otherwise.
+	 * @return boolean True if verified, false otherwise.
 	 */
 	public function verify_nonce( $action = null, $request_method = 'POST', $nonce_field = '_wpnonce' ) {
 
@@ -113,25 +119,28 @@ class MS_Controller extends MS_Hooker {
 		if ( ! empty( $request_fields[ $nonce_field ] ) && wp_verify_nonce( $request_fields[ $nonce_field ], $action ) ) {
 			$verified = true;
 		}
-		return $verified;
+		
+		return apply_filters( 'ms_controller_verify_nonce', $verified, $action, $request_method, $nonce_field, $this );
 	}
 
 	/**
 	 * Verify if current user can perform management actions.
 	 *
-	 * @since 4.0.0
-	 * @return bool True if can, false otherwise.
+	 * @since 1.0.0
+	 * 
+	 * @return boolean True if can, false otherwise.
 	 */
 	public function is_admin_user() {
-		$is_admin_user = false;
+		
 		$is_admin_user = MS_Model_Member::is_admin_user( null, $this->capability );
+		
 		return apply_filters( 'ms_controller_current_user_can', $is_admin_user, $this->capability );
 	}
 
 	/**
 	 * Verify required fields aren't empty.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string[] $fields The array of fields to validate.
 	 * @param string $request_method POST or GET
@@ -139,8 +148,10 @@ class MS_Controller extends MS_Hooker {
 	 * @return bool True all fields are validated
 	 */
 	public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {
+		
 		$validated = true;
 		$request_fields = null;
+		
 		switch ( $request_method ) {
 			case 'GET':
 				$request_fields = $_GET;
@@ -170,13 +181,13 @@ class MS_Controller extends MS_Hooker {
 			}
 		}
 
-		return apply_filters( 'ms_controller_validate_required', $validated, $fields );
+		return apply_filters( 'ms_controller_validate_required', $validated, $fields, $this );
 	}
 
 	/**
 	 * Get field from request parameters.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $id The field ID
 	 * @param mixed $default The default value of the field.
@@ -184,8 +195,10 @@ class MS_Controller extends MS_Hooker {
 	 * @return mixed The value of the request field.
 	 */
 	public function get_request_field( $id, $default = '', $request_method = 'POST' ) {
+		
 		$value = $default;
 		$request_fields = null;
+		
 		switch ( $request_method ) {
 			case 'GET':
 				$request_fields = $_GET;
@@ -206,7 +219,7 @@ class MS_Controller extends MS_Hooker {
 			$value = $request_fields[ $id ];
 		}
 
-		return apply_filters( 'ms_controller_get_request_field', $value, $id, $default );
+		return apply_filters( 'ms_controller_get_request_field', $value, $id, $default, $this );
 	}
 
 	/**
@@ -233,7 +246,7 @@ class MS_Controller extends MS_Hooker {
 	 * @return bool
 	 */
 	protected function _resp_ok() {
-		return (true === $this->_resp_valid);
+		return ( true === $this->_resp_valid );
 	}
 
 	/**
