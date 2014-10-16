@@ -29,7 +29,7 @@
  * Methods of this class will prepare objects for the database and
  * manipulate data to be used in a MS_Controller.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @package Membership
  */
@@ -38,38 +38,44 @@ class MS_Model extends MS_Hooker {
 	/** 
 	 * ID of the model object.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * 
+	 * @var int|string
 	 */
 	protected $id;
 	
 	/** 
 	 * Model name.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * 
+	 * @var string
 	 */	
 	protected $name;
 
 	/** 
-	 * Excludes actions and filters from validation.
+	 * Non persisting fields.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * 
+	 * @var string[]
 	 */			
 	public $ignore_fields = array( 'actions', 'filters', 'ignore_fields' );
 
 	/**
 	 * MS_Model Contstuctor
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */	
 	public function __construct() {
 		
 		/**
 		 * Actions to execute when constructing the parent Model.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Model object.
 		 */
-		do_action( 'membership_parent_model_construct', $this );		
+		do_action( 'ms_model_construct', $this );		
 	}
 	
 	/**
@@ -77,7 +83,7 @@ class MS_Model extends MS_Hooker {
 	 * 
 	 * Used for loading from db.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
 	 * @param string $field
 	 * @param mixed $value
@@ -89,17 +95,19 @@ class MS_Model extends MS_Hooker {
 	}
 	
 	/**
-	 * Prepare data before saving model.
+	 * Called before saving model.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */		
-	public function before_save() {		
+	public function before_save() {
+		
+		do_action( 'ms_model_before_save', $this );	
 	}
 
 	/**
-	 * Abstract save method to save model data.
+	 * Abstract method to save model data.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */		
 	public function save() {
 		throw new Exception ("Method to be implemented in child class");
@@ -108,25 +116,27 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Called after saving model data.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */	
 	public function after_save() {
-	
+		
+		do_action( 'ms_model_after_save', $this );
 	}
 
 	/**
-	 * Prepare data bedfore loading the model.
+	 * Called before loading the model.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */		
 	public function before_load() {
 	
+		do_action( 'ms_model_before_load', $this );
 	}
 
 	/**
 	 * Load the model data.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */		
 	public function load( $model_id = false ) {
 		throw new Exception ("Method to be implemented in child class");
@@ -138,13 +148,13 @@ class MS_Model extends MS_Hooker {
 	 * @since 4.0.0
 	 */	
 	public function after_load() {
-	
+		do_action( 'ms_model_after_load', $this );
 	}
 
 	/**
 	 * Get object properties.
 	 * 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * 
 	 * @return array of fields.
 	 */
@@ -153,70 +163,64 @@ class MS_Model extends MS_Hooker {
 	}
 	
 	/**
-	 * Validate model properties.
-	 *
-	 * @since 4.0.0
-	 * @param mixed $value 
-	 * @param object $options 
-	 */		
-	public function validate_options( $value, $options ) {
-		if( in_array( $value, $options ) ) {
-			return $value;
-		}
-		else {
-			return reset( $options );
-		}
-	}
-
-	/**
 	 * Validate dates used within models.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @param string $date Date as a PHP date string
 	 * @param string $format Date format.
 	 */		
-	public function validate_date( $date, $format = 'Y-m-d') {
+	public function validate_date( $date, $format = 'Y-m-d' ) {
+		
+		$valid = null;
+		
 		$d = new DateTime( $date );
 		if ( $d && $d->format( $format ) == $date ) {
-			return $date;
+			$valid = $date;
 		}
-		else {
-			return null;
-		}
+		
+		return apply_filters( 'ms_model_validate_date', $valid, $date, $format, $this );
 	}
 
 	/**
 	 * Validate booleans.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @param bool $value Boolean to validate.
 	 */		
 	public function validate_bool( $value ) {
+		
 		$value = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
-		return $value;
+		
+		return apply_filters( 'ms_model_validate_bool', $value, $this );
 	}
 
 	/**
 	 * Validate minimum values.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * 
 	 * @param int $value Value to validate
 	 * @param int $min Minimum value
 	 */		
 	public function validate_min( $value, $min ) {
-		return intval( ( $value > $min ) ? $value : $min ); 
+		$valid = intval( ( $value > $min ) ? $value : $min );
+
+		return apply_filters( 'ms_model_validate_min', $valid, $value, $min, $this );
 	}
 
 	/**
-	 * Validate time periods used with models.
+	 * Validate time periods array structure.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
+	 * 
 	 * @param string $period Membership period to validate
 	 * @param int $default_period_unit Number of periods (e.g. number of days)
 	 * @param string $default_period_type (e.g. days, weeks, years)
 	 */		
 	public function validate_period( $period, $default_period_unit = 0, $default_period_type = MS_Helper_Period::PERIOD_TYPE_DAYS ) {
+		
 		$default = array( 'period_unit' => $default_period_unit, 'period_type' => $default_period_type );
+		
 		if( ! empty( $period['period_unit'] ) && ! empty( $period['period_type'] ) ) {
 			$period['period_unit'] = $this->validate_period_unit( $period['period_unit'] );
 			$period['period_type'] = $this->validate_period_type( $period['period_type'] );
@@ -224,22 +228,42 @@ class MS_Model extends MS_Hooker {
 		else {
 			$period = $default;
 		}
-		return $period;
+		
+		return apply_filters( 'ms_model_validate_period', $period, $this );
 	}
 	
+	/**
+	 * Validate period unit.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param string $period_unit The period quantity to validate.
+	 * @param int $default The default value when not validated. Default to 1.
+	 */		
 	public function validate_period_unit( $period_unit, $default = 1 ) {
+		
 		$period_unit = intval( $period_unit );
+		
 		if( $period_unit <= 0 ) {
 			$period_unit = $default;
 		}
-		return apply_filters( 'ms_model_validate_period_unit', $period_unit );
+		
+		return apply_filters( 'ms_model_validate_period_unit', $period_unit, $this );
 	}
 	
+	/**
+	 * Validate period type.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param string $period_type The period type to validate.
+	 * @param int $default The default value when not validated. Default to days.
+	 */		
 	public function validate_period_type( $period_type, $default = MS_Helper_Period::PERIOD_TYPE_DAYS ) {
 		if( ! in_array( $period_type, MS_Helper_Period::get_periods() ) ){
 			$period_type = $default;
 		}
 		
-		return apply_filters( 'ms_model_validate_period_type', $period_type );
+		return apply_filters( 'ms_model_validate_period_type', $period_type, $this );
 	}
 }
