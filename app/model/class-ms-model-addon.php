@@ -20,13 +20,34 @@
  *
 */
 
-
+/**
+ * Add-on model.
+ *
+ * Manage add-ons.
+ *
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Addon extends MS_Model_Option {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
+	/**
+	 * Singleton instance.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @staticvar MS_Model_Settings
+	 */
 	public static $instance;
 	
+	/**
+	 * Add-on name constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const ADDON_MULTI_MEMBERSHIPS = 'multi_memberships';
 	const ADDON_POST_BY_POST = 'post_by_post';
 	const ADDON_URL_GROUPS = 'url_groups';
@@ -40,13 +61,27 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_SHORTCODE = 'shortcode';
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	
-	protected $id =  'addon_options';
-	
-	protected $name = 'Add-on Options';
-	
+	/**
+	 * Add-ons array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array {
+	 * 		@type string $addon_type The add-on type.
+	 * 		@type boolean $enabled The add-on enbled status.
+	 * }
+	 */
 	protected $addons = array();
 	
+	/**
+	 * Get addon types.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string[] The add-on types array.
+	 */
 	public static function get_addon_types() {
+		
 		return apply_filters( 'ms_model_addon_get_addon_types', array( 
 				self::ADDON_MULTI_MEMBERSHIPS,
 				self::ADDON_TRIAL,
@@ -62,6 +97,14 @@ class MS_Model_Addon extends MS_Model_Option {
 		) );
 	}
 
+	/**
+	 * Verify if an add-on is enabled
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $addon The add-on type.
+	 * @return boolean True if enabled.
+	 */
 	public static function is_enabled( $addon ) {
 	
 		$model = MS_Factory::load( 'MS_Model_Addon' );
@@ -74,24 +117,60 @@ class MS_Model_Addon extends MS_Model_Option {
 		return apply_filters( 'ms_model_addon_is_enabled_' . $addon, $enabled );
 	}
 	
+	/**
+	 * Enable an add-on type in the plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $addon The add-on type.
+	 */
 	public function enable( $addon ) {
+		
 		if( in_array( $addon, self::get_addon_types() ) ) {
 			$this->addons[ $addon ] = true;
 		}
+		
+		do_action( 'ms_model_addon_enable', $addon, $this );
 	}
 
+	/**
+	 * Disable an add-on type in the plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $addon The add-on type.
+	 */
 	public function disable( $addon ) {
+		
 		if( in_array( $addon, self::get_addon_types() ) ) {
 			$this->addons[ $addon ] = false;
 		}
+		
+		do_action( 'ms_model_addon_disable', $addon, $this );
 	}
 	
+	/**
+	 * Toggle add-on type status in the plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $addon The add-on type.
+	 */
 	public function toggle_activation( $addon ) {
 		if( in_array( $addon, self::get_addon_types() ) ) {
 			$this->addons[ $addon ] = empty( $this->addons[ $addon ] );
 		}
+		
+		do_action( 'ms_model_addon_toggle_activation', $addon, $this );
 	}
 	
+	/**
+	 * Enable add-on necessary to membership.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $addon The add-on type.
+	 */
 	public function auto_config( $membership ) {
 		if( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
 			$this->enable( self::ADDON_MULTI_MEMBERSHIPS );	
@@ -99,8 +178,17 @@ class MS_Model_Addon extends MS_Model_Option {
 		if( $membership->trial_period_enabled ) {
 			$this->enable( self::ADDON_TRIAL );	
 		}
+		
+		do_action( 'ms_model_addon_auto_config', $membership, $this );
 	}
 	
+	/**
+	 * Enable add-on every time a membership setup is completed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $addon The add-on type.
+	 */
 	public function get_addon_list() {
 		return apply_filters( 'ms_model_addon_get_addon_list', array( 
 // 				self::ADDON_MULTI_MEMBERSHIPS => (object) array(
@@ -173,22 +261,4 @@ class MS_Model_Addon extends MS_Model_Option {
 		);
 	}
 	
-	/**
-	 * Set specific property.
-	 *
-	 * @since 4.0
-	 *
-	 * @access public
-	 * @param string $property The name of a property to associate.
-	 * @param mixed $value The value of a property.
-	 */
-	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			switch( $property ) {
-				default:
-					$this->$property = $value;
-					break;
-			}
-		}
-	}
 }
