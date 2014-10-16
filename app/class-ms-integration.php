@@ -23,57 +23,54 @@
 */
 
 /**
- * Abstract class for all Helpers.
+ * Integrations class.
  *
- * All Helpers will extend or inherit from the MS_Helper class.
- * Methods of this class will be used to identify the purpose and
- * and actions of a helper.
+ * Manage integration loading.
  *
- * Almost all functionality will be created with in an extended class.
- *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @package Membership
  */
 class MS_Integration extends MS_Hooker {
 	
+	/**
+	 * Integration name constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const AUTOMESSAGE = 'automessage';
-	
 	const BUDDYPRESS = 'buddypress';
-	
 	const BBPRESS = 'buddypress';
-	
 	const MAILCHIMP = 'mailchimp';
-	
 	const WPBE = 'wpbe';
-	
-	protected $id =  'integrations';
-	
-	protected $name = 'Integration manager';
 	
 	/**
 	 * Parent constuctor of all integrations.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */	
 	public function __construct() {
 		
-		/**
-		 * Actions to execute when constructing the parent helper.
-		 *
-		 * @since 4.0.0
-		 * @param object $this The MS_Helper object.
-		 */
-		do_action( 'ms_parent_integration_construct', $this );		
+		do_action( 'ms_integration_construct', $this );		
 	}
 	
+	/**
+	 * Load integrations.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	public static function load_integrations() {
-		return apply_filters( 'ms_integration_get_integrations', array(
-				self::AUTOMESSAGE => new MS_Integration_Automessage(),
-				self::BUDDYPRESS => new MS_Integration_Buddypress(),
-				self::BBPRESS => new MS_Integration_Bbpress(),
-				self::MAILCHIMP => new MS_Integration_Mailchimp(),
-				self::WPBE => new MS_Integration_Wpbe(),
+		
+		return apply_filters( 'ms_integration_load_integrations', array(
+// 				self::AUTOMESSAGE => MS_Factory::create( 'MS_Integration_Automessage' ), //further versions
+				self::BUDDYPRESS => MS_Factory::create( 'MS_Integration_Buddypress' ),
+				self::BBPRESS => MS_Factory::create( 'MS_Integration_Bbpress' ),
+				self::MAILCHIMP => MS_Factory::create( 'MS_Integration_Mailchimp' ),
+// 				self::WPBE => MS_Factory::create( 'MS_Integration_Wpbe' ), //further versions
 		) );
 	}
 }

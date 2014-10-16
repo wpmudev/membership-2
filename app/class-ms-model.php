@@ -166,6 +166,7 @@ class MS_Model extends MS_Hooker {
 	 * Validate dates used within models.
 	 *
 	 * @since 1.0.0
+	 * 
 	 * @param string $date Date as a PHP date string
 	 * @param string $format Date format.
 	 */		
@@ -185,7 +186,8 @@ class MS_Model extends MS_Hooker {
 	 * Validate booleans.
 	 *
 	 * @since 1.0.0
-	 * @param bool $value Boolean to validate.
+	 * 
+	 * @param bool $value The value to validate.
 	 */		
 	public function validate_bool( $value ) {
 		

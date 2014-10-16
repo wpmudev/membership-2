@@ -31,7 +31,7 @@
  *
  * Almost all functionality will be created with in an extended class.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @uses MS_Model
  * @uses MS_View
@@ -43,17 +43,17 @@ class MS_Helper extends MS_Hooker {
 	/**
 	 * Parent constuctor of all helpers.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */	
 	public function __construct() {
 		
 		/**
 		 * Actions to execute when constructing the parent helper.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Helper object.
 		 */
-		do_action( 'membership_parent_helper_construct', $this );		
+		do_action( 'ms_helper_construct', $this );		
 	}
 	
 

@@ -30,7 +30,8 @@
  *
  * The Membership base class all other classes build on. No hooks defined here.
  *
- * @since 3.5
+ * @since 1.0.0
+ * 
  * @package Membership
  */
 class MS_Hooker {
@@ -38,9 +39,8 @@ class MS_Hooker {
 	/**
 	 * The array of registered actions hooks.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
 	 *
-	 * @access private
 	 * @var array
 	 */
 	private $actions = array();
@@ -48,9 +48,8 @@ class MS_Hooker {
 	/**
 	 * The array of registered filters hooks.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
 	 *
-	 * @access private
 	 * @var array
 	 */
 	private $filters = array();
@@ -58,10 +57,8 @@ class MS_Hooker {
 	/**
 	 * Builds and returns hook key.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
 	 *
-	 * @static
-	 * @access private
 	 * @param array $args The hook arguments.
 	 * @return string The hook key.
 	 */
@@ -72,15 +69,15 @@ class MS_Hooker {
 	/**
 	 * Registers an action hook.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
+	 * 
 	 * @uses add_action() To register action hook.
 	 *
-	 * @access protected
 	 * @param string $tag The name of the action to which the $method is hooked.
 	 * @param string $method The name of the method to be called.
 	 * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
-	 * @return Membership_Module
+	 * @return MS_Hooker The Object.
 	 */
 	protected function add_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		$args = func_get_args();
@@ -93,15 +90,14 @@ class MS_Hooker {
 	/**
 	 * Removes an action hook.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
 	 * @uses remove_action() To remove action hook.
 	 *
-	 * @access protected
 	 * @param string $tag The name of the action to which the $method is hooked.
 	 * @param string $method The name of the method to be called.
 	 * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
-	 * @return Membership_Module
+	 * @return MS_Hooker
 	 */
 	protected function remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		remove_action( $tag, array( $this, ! empty( $method ) ? $method : $tag ), $priority, $accepted_args );
@@ -111,14 +107,13 @@ class MS_Hooker {
 	/**
 	 * Registers AJAX action hook.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $tag The name of the AJAX action to which the $method is hooked.
 	 * @param string $method Optional. The name of the method to be called. If the name of the method is not provided, tag name will be used as method name.
 	 * @param boolean $private Optional. Determines if we should register hook for logged in users.
 	 * @param boolean $public Optional. Determines if we should register hook for not logged in users.
-	 * @return Membership_Module
+	 * @return MS_Hooker
 	 */
 	protected function add_ajax_action( $tag, $method = '', $private = true, $public = false ) {
 		if ( $private ) {
@@ -135,14 +130,13 @@ class MS_Hooker {
 	/**
 	 * Removes AJAX action hook.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $tag The name of the AJAX action to which the $method is hooked.
 	 * @param string $method Optional. The name of the method to be called. If the name of the method is not provided, tag name will be used as method name.
 	 * @param boolean $private Optional. Determines if we should register hook for logged in users.
 	 * @param boolean $public Optional. Determines if we should register hook for not logged in users.
-	 * @return Membership_Module
+	 * @return MS_Hooker
 	 */
 	protected function remove_ajax_action( $tag, $method = '', $private = true, $public = false ) {
 		if ( $private ) {
@@ -159,15 +153,15 @@ class MS_Hooker {
 	/**
 	 * Registers a filter hook.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
+	 * 
 	 * @uses add_filter() To register filter hook.
 	 *
-	 * @access protected
 	 * @param string $tag The name of the filter to hook the $method to.
 	 * @param string $method The name of the method to be called when the filter is applied.
 	 * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
-	 * @return Membership_Module
+	 * @return MS_Hooker
 	 */
 	protected function add_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		$args = func_get_args();
@@ -180,7 +174,8 @@ class MS_Hooker {
 	/**
 	 * Removes a filter hook.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
+	 * 
 	 * @uses remove_filter() To remove filter hook.
 	 *
 	 * @access protected
@@ -188,7 +183,7 @@ class MS_Hooker {
 	 * @param string $method The name of the method to remove.
 	 * @param int $priority optional. The priority of the function (default: 10).
 	 * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
-	 * @return Membership_Module
+	 * @return MS_Hooker
 	 */
 	protected function remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		remove_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
@@ -198,11 +193,10 @@ class MS_Hooker {
 	/**
 	 * Unbinds all hooks previously registered for actions and/or filters.
 	 *
-	 * @since 3.5
+	 * @since 1.0.0
 	 *
-	 * @access public
-	 * @param boolean $actions TRUE to unbind all actions hooks.
-	 * @param boolean $filters TRUE to unbind all filters hooks.
+	 * @param boolean $actions Optional. TRUE to unbind all actions hooks.
+	 * @param boolean $filters Optional. TRUE to unbind all filters hooks.
 	 */
 	public function unbind( $actions = true, $filters = true ) {
 		$types = array();
@@ -221,12 +215,12 @@ class MS_Hooker {
 			}
 		}
 	}
+	
 	/**
 	 * Returns property associated with the render.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
@@ -239,9 +233,8 @@ class MS_Hooker {
 	/**
 	 * Associates the render with specific property.
 	 *
-	 * @since 4.0
+	 * @since 1.0.0
 	 *
-	 * @access public
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
