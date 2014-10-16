@@ -59,7 +59,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * 
 	 * @var string
 	 */
-	private $metabox_id = 'membership_access';
+	private $metabox_id = 'ms-membership-access';
 
 	/**
 	 * The metabox title.
@@ -131,6 +131,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
 			if( $_POST['membership_id'] == MS_Model_Membership::get_protected_content()->id ) {
 				$post = get_post( $_POST['post_id'] );
+				//membership metabox html returned via ajax response 
 				$this->membership_metabox( $post );
 			}
 			else {
@@ -182,7 +183,6 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 				$rule = $this->get_rule( $membership, $post );
 				
 				$data['access'][ $membership->id ]['has_access'] =  $membership->has_access_to_post( $post->ID );
-				$data['access'][ $membership->id ]['dripped'] = $rule->has_dripped_rules( $post->ID );
 
 				$data['access'][ $membership->id ]['name'] = $membership->name;
 			}
@@ -191,7 +191,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$data['read_only'] =$this->is_read_only( $post->post_type );
 		
 		$view = MS_Factory::create( 'MS_View_Membership_Metabox' );
-		$view->data = apply_filters( 'ms_view_membership_metabox_data', $data );
+		$view->data = apply_filters( 'ms_view_membership_metabox_data', $data, $this );
 		$view->render();
 	}
 

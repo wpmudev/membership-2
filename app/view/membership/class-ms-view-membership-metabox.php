@@ -23,7 +23,6 @@ class MS_View_Membership_Metabox extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$dripped = array();
 		ob_start();
 		?>
 		<div id="ms-metabox-wrapper" class="ms_metabox ms-wrap">
@@ -62,12 +61,6 @@ class MS_View_Membership_Metabox extends MS_View {
 							</tr>
 							
 							<?php foreach( $this->data['access'] as $membership_id => $data ): ?>
-								<?php
-									if( $data['dripped'] && $data['has_access'] ) {
-										// Using array to notify users which Memberships has dripped content.
-										$dripped[] = sprintf( __( '%s membership', MS_TEXT_DOMAIN ), $data['name'] );
-									} 
-								?>
 								<tr>
 									<td> 
 										<?php echo $data['name']; ?>
@@ -96,15 +89,6 @@ class MS_View_Membership_Metabox extends MS_View {
 					</tbody>
 					</table>
 				</div>
-				<?php if( count( $dripped ) > 0 ) : ?>
-						<div class="dripped" title="<?php printf( __( "Set as dripped in '%s'.", MS_TEXT_DOMAIN ), implode( "', '", $dripped ) ); ?>"><?php _e( 'This is dripped content.', MS_TEXT_DOMAIN ); ?>
-						<div class="tooltip">
-							<div class="tooltip-content">
-							<?php echo '- ' . implode( ',<br />- ', $dripped ); ?>
-							</div>
-						</div>
-						</div>
-				<?php endif; ?>
 			<?php endif;?>
 		</div>
 		<div style='clear:both;'></div>
