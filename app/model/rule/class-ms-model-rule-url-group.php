@@ -73,17 +73,22 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $id The content id to verify access.
+	 * @param int $post_id Optional. The post/CPT ID to verify access. Defaults to current URL. 
 	 * @return boolean True if has access, false otherwise.
 	 */
-	 public function has_access( $id = null ) {
+	 public function has_access( $post_id = null ) {
 
 	 	$has_access = false;
 	 	
 	 	if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 	 		
-			$url = MS_Helper_Utility::get_current_page_url();
-			
+	 		if( ! empty( $post_id ) ) {
+	 			$url = get_permalink( $post_id );
+	 		}
+	 		else {
+				$url = MS_Helper_Utility::get_current_page_url();
+	 		}
+	 		
 			if( $this->strip_query_string ) {
 				$url = current( explode(  '?', $url ) );
 			}
@@ -134,6 +139,30 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		}
 		
 		return apply_filters( 'ms_model_rule_url_group_has_access', $has_rules, $this );
+	}
+	
+	/**
+	 * Verify if a post/custom post type has protection rules.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return boolean True if has access, false otherwise.
+	 */
+	public function has_rule_for_post( $post_id ) {
+		$has_rules = false;
+		
+		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+			$url = get_permalink( $post_id );
+			if( $this->strip_query_string ) {
+				$url = current( explode(  '?', $url ) );
+			}
+				
+			if( $this->check_url_expression_match( $url, $this->rule_value ) ) {
+				$has_rules = true;
+			}
+		}
+		
+		return apply_filters( 'ms_model_rule_url_group_has_rule_for_post', $has_rules, $this );
 	}
 	
 	/**

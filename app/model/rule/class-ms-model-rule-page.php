@@ -133,6 +133,13 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		if( empty( $page_id ) ) {
 			$page_id = $this->get_current_page_id();
 		}
+		else {
+			$post = get_post( $page_id );
+			if( ! is_a( $post, 'WP_Post' ) || $post->post_type != 'page' )  {
+				$has_access = false;
+				$page_id = 0;
+			}
+		}
 
 		if( ! empty( $page_id ) ) {
 			$has_access = parent::has_access( $page_id );

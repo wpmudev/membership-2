@@ -1190,8 +1190,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
 
-		do_action( 'ms_model_membership_has_access_to_current_page_before', $ms_relationship, $post_id, $this );
-
 		$has_access = false;
 
 		/* Only verify access if membership is Active */
@@ -1201,7 +1199,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			foreach( $rules as $rule ) {
 				/* url groups have final decision */
 				if( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type && $rule->has_rule_for_current_url() ) {
-					$has_access = $rule->has_access();
+					$has_access = $rule->has_access( $post_id );
 					break;
 				}
 				else {
@@ -1229,7 +1227,41 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_membership_has_access_to_current_page', $has_access, $this );
+		return apply_filters( 'ms_model_membership_has_access_to_current_page', $has_access, $ms_relationship, $post_id, $this );
+	}
+	
+	/**
+	 * Verify access to post.
+	 *
+	 * Verify membership rules hierachyly for specific post or CPT.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @return boolean True if has access to current page. Default is false.
+	 */
+	public function has_access_to_post( $post_id ) {
+		
+		$has_access = false;
+		
+		/* If 'has access' is found in the hierarchy, it does have access. */
+		$rules = $this->get_rules_hierarchy();
+		foreach( $rules as $rule ) {
+			/* url groups have final decision */
+			if( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type && $rule->has_rule_for_post( $post_id ) ) {
+				$has_access = $rule->has_access( $post_id );
+				break;
+			}
+			else {
+				$has_access = ( $has_access || $rule->has_access( $post_id ) );
+			}
+			MS_Helper_Debug::log( "rule: $rule->rule_type, $has_access" );
+			if( $has_access ) {
+				break;
+			}
+		}
+		
+		return apply_filters( 'ms_model_membership_has_access_to_post', $has_access, $this );
 	}
 
 	/**
