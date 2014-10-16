@@ -344,7 +344,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_script(
 			'membership-metabox',
 			$plugin_url. 'app/assets/js/ms-view-membership-metabox.js',
-			array( 'jquery' ), $version
+			array( 'jquery', 'ms-admin' ), $version
 		);
 		wp_register_script(
 			'ms-view-coupon-edit',

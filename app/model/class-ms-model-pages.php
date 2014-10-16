@@ -42,15 +42,6 @@ class MS_Model_Pages extends MS_Model_Option {
 	public static $instance;
 	
 	/**
-	 * Plugin pages prefix to avoid name conflict.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
-	 */
-	const MS_PAGE_PREFIX = 'ms-page';
-	
-	/**
 	 * Plugin pages constants.
 	 *
 	 * @since 1.0.0
@@ -181,6 +172,28 @@ class MS_Model_Pages extends MS_Model_Option {
 		}
 		
 		return apply_filters( 'ms_model_page_get_ms_page', $ms_page, $this );
+	}
+	
+	/**
+	 * Get specific MS Page using slug information.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $slug The slug to find in ms pages.
+	 * @return null|MS_Model_Page The page model object.
+	 */
+	public function get_ms_page_by_slug( $slug ) {
+		$ms_page_found = null;
+		
+		$ms_pages = $this->get_ms_pages();
+		foreach( $ms_pages as $ms_page ) {
+			if( $slug == $ms_page->slug ) {
+				$ms_page_found = $ms_page;
+				break;
+			}
+		}
+		
+		return apply_filters( 'ms_model_page_get_ms_page_by_slug', $ms_page_found, $slug, $this );
 	}
 	
 	/**

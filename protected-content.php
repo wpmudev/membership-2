@@ -388,12 +388,18 @@ class MS_Plugin {
 	 public function add_rewrite_rules() {
 	 	
 	 	/* Membership site pages.*/
-		add_rewrite_rule(
-			'^' . MS_Model_Pages::MS_PAGE_PREFIX . '/(.+)/?$',
-			'index.php?ms_page=$matches[1]',
-			'top'
-		);
-		
+	 	$ms_pages = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
+	 	if( ! empty( $ms_pages ) ) {
+	 		foreach( $ms_pages as $ms_page ) {
+	 			add_rewrite_rule(
+		 			'^' . $ms_page->slug . '/?$',
+		 			'index.php?ms_page=' . $ms_page->slug,
+		 			'top'
+	 			);
+	 				
+	 		}
+	 	}
+	 	
 	 	/* Gateway return - IPN.*/
 		add_rewrite_rule(
 			'^ms-payment-return/(.+)/?$',
