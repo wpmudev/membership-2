@@ -86,7 +86,7 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 		
 		$this->subject = sprintf( __( 'Your %s membership has ended', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
 		$this->message = self::get_default_message();
-		$this->enabled = true;
+		$this->enabled = false;
 		$this->save();
 
 		do_action( 'ms_model_communication_reset_to_default_after', $this->type, $this );

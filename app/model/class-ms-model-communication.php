@@ -396,9 +396,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * 
 	 * @since 1.0.0
 	 * @param string $type The type of the communication.
+	 * @param boolean $create_if_not_exists Optional. Flag to create a comm type if not exists.
 	 * @return MS_Model_Communication The communication object.
 	 */
-	 public static function get_communication( $type ) {
+	 public static function get_communication( $type, $create_if_not_exists = false ) {
 		
 	 	$model = null;
 	 	 
@@ -430,7 +431,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				if( ! empty( $item[0] ) ) {
 					$model = MS_Factory::load( $comm_classes[ $type ], $item[0] );
 				}
-				else {
+				elseif( $create_if_not_exists ) {
 					$model = self::communication_factory( $type, $comm_classes[ $type ] );
 				}
 			}
@@ -472,14 +473,21 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Retrieve and return all communication types objects.  
 	 *
 	 * @since 1.0.0
+	 * 
+	 * @param boolean $create_if_not_exists Optional. Flag to create a comm type if not exists.
 	 * @return MS_Model_Communication[] The communication objects array. 
 	 */
-	public static function load_communications() {
+	public static function load_communications( $create_if_not_exists = false ) {
 		if( empty( self::$communications ) ) {
+
 			$comm_types = self::get_communication_types();
 			
 			foreach( $comm_types as $type ) {
-				self::$communications[ $type ] = self::get_communication( $type );
+				
+				$comm = self::get_communication( $type, $create_if_not_exists );
+				if( ! empty( $comm ) ) {
+					self::$communications[ $type ] = $comm;
+				} 
 			}
 		}
 	

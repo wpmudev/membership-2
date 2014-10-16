@@ -96,28 +96,18 @@ class MS_Controller_Communication extends MS_Controller {
 	 *
 	 * * ms_controller_membership_setup_completed
 	 *
-	 * @todo Customize settings enabled/disabled for each membership type.
-	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Membership $membership
 	 */
 	public function auto_setup_communications( $membership ) {
 
-		do_action( 'ms_controller_communication_auto_setup_communications_before', $membership, $this );
-
-		$comms = MS_Model_Communication::load_communications();
+		$comms = MS_Model_Communication::load_communications( true );
 
 		/* Private memberships don't have communications enabled */
 		if( ! $membership->is_private() ) {
-			switch( $membership->type ) {
-				case MS_Model_Membership::TYPE_SIMPLE:
-					break;
-				case MS_Model_Membership::TYPE_CONTENT_TYPE:
-					break;
-				case MS_Model_Membership::TYPE_TIER:
-					break;
-				case MS_Model_Membership::TYPE_DRIPPED:
-					break;
+			foreach( $comms as $comm ) {
+				$comm->enabled = true;
+				$comm->save();
 			}
 		}
 

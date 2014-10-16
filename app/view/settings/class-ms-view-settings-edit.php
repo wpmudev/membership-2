@@ -179,8 +179,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'read_only' => true,
 					'title' => sprintf( __( 'Select %s page', MS_TEXT_DOMAIN ), $ms_page->title ),
-					'desc' => sprintf( '/%1$s/', MS_Model_Pages::MS_PAGE_PREFIX ),
-					'value' => $ms_page->slug,
+					'value' => sprintf( '/%1$s/', $ms_page->slug ),
 					'class' => 'ms-ajax-update',
 					'data_ms' => array(
 							'page_type' => $ms_page->type,
@@ -419,6 +418,13 @@ class MS_View_Settings_Edit extends MS_View {
 				'id' => 'enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $comm->enabled,
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+						'type' => $comm->type,
+						'field' => 'enabled',
+						'action' => $action,
+						'_wpnonce' => $nonce,
+				),
 			),
 
 			'period_unit' => array(

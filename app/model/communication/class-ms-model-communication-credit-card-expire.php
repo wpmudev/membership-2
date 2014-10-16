@@ -86,7 +86,7 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	
 		$this->subject = __( 'Your credit card is about to expire', MS_TEXT_DOMAIN );
 		$this->message = self::get_default_message();
-		$this->enabled = true;
+		$this->enabled = false;
 		$this->period_enabled = true;
 		$this->save();
 	
