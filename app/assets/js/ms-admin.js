@@ -136,6 +136,7 @@ window.ms_functions = {
 
 						slider.removeClass( fn.processing_class );
 						slider.children( 'input' ).val( slider.hasClass( fn.radio_slider_on_class ) );
+						data.response = response;
 						slider.trigger( 'ms-radio-slider-updated', data );
 					}
 				);
