@@ -62,7 +62,7 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type_Group extends MS_Helper_List_Ta
 			$args['rule_status'] = $_GET['status'];
 		}
 	
-		if( ! $this->model->visitor_membership ) {
+		if( ! $this->model->protected_content ) {
 			$args['protected_content'] = 1;
 		}
 		$this->items = apply_filters( "ms_helper_list_table_{$this->id}_items", $this->model->get_contents( $args ) );

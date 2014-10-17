@@ -8,7 +8,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 		$available = array();
 		$soon = array();
 		$membership = $this->data['membership'];
-		$visitor_membership = MS_Model_Membership::get_visitor_membership();
+		$protected_content = MS_Model_Membership::get_protected_content();
 		$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
 
 		foreach ( $rule_types as $rule_type ) {

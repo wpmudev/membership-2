@@ -127,14 +127,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $private = true;
 
 	/**
-	 * Membership private status.
-	 *
-	 * @deprecated Use $protected_content instead
-	 * @since 1.0.0
-	 */
-	protected $visitor_membership = false;
-
-	/**
 	 * Protected Content Membership.
 	 *
 	 * It is the membership assigned to visitors.
@@ -142,7 +134,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var bool $protected_content.
 	 */
-	protected $protected_content = true;
+	protected $protected_content = false;
 
 	/**
 	 * Membership free status.
@@ -282,7 +274,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		parent::after_load();
 
 		/** validate rules using protected content rules */
-		if( ! $this->visitor_membership && $this->is_valid() ) {
+		if( ! $this->protected_content && $this->is_valid() ) {
 			$this->merge_protected_content_rules();
 		}
 	}
@@ -669,7 +661,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$rule = null;
 
 		if( isset( $this->rules[ $rule_type ] ) ) {
-			if( $this->visitor_membership ) {
+			if( $this->protected_content ) {
 				$this->rules[ $rule_type ]->rule_value_invert = true;
 				$this->rules[ $rule_type ]->rule_value_default = false;
 			}
@@ -684,7 +676,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		else {
 			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
 
-			if( $this->visitor_membership ) {
+			if( $this->protected_content ) {
 				$rule->rule_value_invert = true;
 				$rule->rule_value_default = false;
 			}
@@ -817,7 +809,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if( empty( $args['include_visitor'] ) ){
 			$args['meta_query']['visitor'] = array(
-				'key'     => 'visitor_membership',
+				'key'     => 'protected_content',
 				'value'   => '',
 			);
 		}
@@ -841,7 +833,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function get_after_ms_ends_options() {
 
 		$options = array(
-				self::get_visitor_membership()->id => __( 'Restrict access to Protected Content', MS_TEXT_DOMAIN ),
+				self::get_protected_content()->id => __( 'Restrict access to Protected Content', MS_TEXT_DOMAIN ),
 		);
 		switch( $this->type ) {
 			case self::TYPE_TIER:
@@ -975,15 +967,44 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Get protected content membership.
 	 *
-	 * It is the same as visitor membership.
-	 *
 	 * @since 1.0.0
 	 *
 	 * @return MS_Model_Membership The protected content.
 	 */
 	public static function get_protected_content() {
 
-		$protected_content = self::get_visitor_membership();
+		$args = array(
+				'post_type' => self::$POST_TYPE,
+				'post_status' => 'any',
+				'meta_query' => array(
+						array(
+								'key' => 'protected_content',
+								'value' => '1',
+								'compare' => '='
+						)
+				)
+		);
+		$query = new WP_Query( $args );
+		$item = $query->get_posts();
+		
+		$protected_content = null;
+		
+		if( ! empty( $item[0] ) ) {
+			$protected_content = MS_Factory::load( 'MS_Model_Membership', $item[0]->ID );
+		}
+		else {
+			$description = __( 'Protected content, and also a default membership for visitors', MS_TEXT_DOMAIN );
+			$protected_content = MS_Factory::create( 'MS_Model_Membership' );
+			$protected_content->name = __( 'Protected Content', MS_TEXT_DOMAIN );
+			$protected_content->payment_type = self::PAYMENT_TYPE_PERMANENT;
+			$protected_content->title = $description;
+			$protected_content->description = $description;
+			$protected_content->protected_content = true;
+			$protected_content->active = true;
+			$protected_content->private = true;
+			$protected_content->save();
+			$protected_content = MS_Factory::load( 'MS_Model_Membership', $protected_content->id );
+		}
 		return apply_filters( 'ms_model_membership_get_protected_content', $protected_content );
 	}
 
@@ -991,43 +1012,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Get membership assigned to visitors.
 	 *
 	 * Create a new membership if visitor membership does not exist.
+	 * It is the same as "protected content".
 	 *
 	 * @since 1.0.0
+	 * 
 	 * @return MS_Model_Membership The visitor membership.
 	 */
 	public static function get_visitor_membership() {
-		$args = array(
-				'post_type' => self::$POST_TYPE,
-				'post_status' => 'any',
-				'meta_query' => array(
-						array(
-								'key' => 'visitor_membership',
-								'value' => '1',
-								'compare' => '='
-						)
-				)
-		);
-		$query = new WP_Query($args);
-		$item = $query->get_posts();
 
-		$visitor_membership = null;
-		if( ! empty( $item[0] ) ) {
-			$visitor_membership = MS_Factory::load( 'MS_Model_Membership', $item[0]->ID );
-		}
-		else {
-			$description = __( 'Default visitor membership', MS_TEXT_DOMAIN );
-			$visitor_membership = MS_Factory::create( 'MS_Model_Membership' );
-			$visitor_membership->name = __( 'Protected Content', MS_TEXT_DOMAIN );
-			$visitor_membership->payment_type = self::PAYMENT_TYPE_PERMANENT;
-			$visitor_membership->title = $description;
-			$visitor_membership->description = $description;
-			$visitor_membership->visitor_membership = true;
-			$visitor_membership->protected_content = true;
-			$visitor_membership->active = true;
-			$visitor_membership->private = true;
-			$visitor_membership->save();
-			$visitor_membership = MS_Factory::load( 'MS_Model_Membership', $visitor_membership->id );
-		}
+		$visitor_membership = self::get_protected_content();
 
 		return apply_filters( 'ms_model_membership_get_visitor_membership', $visitor_membership );
 	}
@@ -1101,10 +1094,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if( ! empty( $this->id ) ) {
 			if( $this->get_members_count() > 0 && ! $force ) {
-				throw new Exception("Could not delete membership with members.");
+				throw new Exception( 'Could not delete membership with members.' );
 			}
-			elseif( $this->visitor_membership && ! $force ) {
-				throw new Exception("Visitor membership could not be deleted.");
+			elseif( $this->protected_content && ! $force ) {
+				throw new Exception( 'Protected Content / Visitor membership could not be deleted.' );
 			}
 			wp_delete_post( $this->id );
 		}
@@ -1379,7 +1372,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						throw new Exception( "Invalid membeship type." );
 					}
 					break;
-				case 'visitor_membership':
+				case 'protected_content':
 				case 'trial_period_enabled':
 				case 'active':
 				case 'public':

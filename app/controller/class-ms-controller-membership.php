@@ -413,7 +413,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
 		$data['show_next_button'] = !! MS_Plugin::instance()->settings->initial_setup;
 
-		$data['membership'] = MS_Model_Membership::get_visitor_membership();
+		$data['membership'] = MS_Model_Membership::get_protected_content();
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
@@ -889,7 +889,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$membership_id = $this->load_membership()->id;
 		$tabs = $this->get_protected_content_tabs();
-		$protected_content = MS_Model_Membership::get_visitor_membership();
+		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$step = $this->get_step();
 		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';

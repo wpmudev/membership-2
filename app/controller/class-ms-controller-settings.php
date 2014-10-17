@@ -339,7 +339,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", new MS_View_Settings_Edit() );
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
-		$data['membership'] = MS_Model_Membership::get_visitor_membership();
+
 
 		switch( $this->get_active_tab() ) {
 			case 'messages-automated':
@@ -353,6 +353,9 @@ class MS_Controller_Settings extends MS_Controller {
 			case 'pages':
 				$data['ms_pages'] = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages( true );
 				$data['page_types'] = MS_Model_Pages::get_ms_page_types();
+				break;
+			case 'messages-protection':
+				$data['membership'] = MS_Model_Membership::get_protected_content();
 				break;
 		}
 		$view->data = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_data", array_merge( $data, $view->data ) );

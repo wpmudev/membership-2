@@ -17,12 +17,12 @@ class MS_View_Membership_Overview_Content_Type extends MS_View_Membership_Overvi
 			<div class="ms-settings">
 				<?php
 				$membership = $this->data['child_membership'];
-				$visitor_membership = MS_Model_Membership::get_visitor_membership();
+				$protected_content = MS_Model_Membership::get_protected_content();
 				$rule_types = MS_Model_Rule::get_rule_types();
 
 				echo '<div class="ms-group">';
 				foreach ( $rule_types as $rule_type ) {
-					if ( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
+					if ( $protected_content->get_rule( $rule_type )->has_rules() ) {
 						$this->content_box_tags( $membership->get_rule( $rule_type ) );
 					}
 				}

@@ -195,7 +195,7 @@ class MS_View_Membership_Overview extends MS_View {
 
 	protected function available_content_panel_data() {
 		$membership = $this->data['membership'];
-		$visitor_membership = MS_Model_Membership::get_visitor_membership();
+		$protected_content = MS_Model_Membership::get_protected_content();
 		$rule_types = MS_Model_Rule::get_rule_types();
 
 		?>
@@ -208,7 +208,7 @@ class MS_View_Membership_Overview extends MS_View {
 			<div class="ms-group">
 			<?php
 			foreach ( $rule_types as $rule_type ) {
-				if ( $visitor_membership->get_rule( $rule_type )->has_rules() ) {
+				if ( $protected_content->get_rule( $rule_type )->has_rules() ) {
 					$this->content_box_tags( $membership->get_rule( $rule_type ), 4 );
 				}
 			}

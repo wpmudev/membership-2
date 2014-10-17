@@ -357,7 +357,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$action = $this->data['action'];
 		$nonce = wp_create_nonce( $action );
 
-		$protected_content = MS_Model_Membership::get_visitor_membership();
+		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );

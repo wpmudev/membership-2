@@ -109,6 +109,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		if( ! empty( $args['protected_content'] ) ) {
 			$menus = $this->get_menu_array();
 			foreach( $menus as $menu_id => $menu ) {
+				//recursive call.
 				$contents = array_merge( $contents, $this->get_contents( array( 'menu_id' => $menu_id ) ) );
 			}
 			return $contents;
@@ -138,7 +139,6 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		if( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
-		$ms = MS_Model_Membership::get_visitor_membership();
 
 		return apply_filters( 'ms_model_rule_menu_get_contents', $contents, $args, $this );
 	}
