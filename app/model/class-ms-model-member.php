@@ -419,15 +419,19 @@ class MS_Model_Member extends MS_Model {
 		if( ! $return_array ) {
 			$members = array();
 			foreach( $users as $user ) {
-				$members[] = array( 
-					'id' => $user->ID,
-					'text' => $user->user_login,
-				);
+				if( ! self::is_admin_user( $user->ID ) ) {
+					$members[] = array( 
+						'id' => $user->ID,
+						'text' => $user->user_login,
+					);
+				}
 			}
 		}
 		else {
 			foreach( $users as $user ) {
-				$members[ $user->ID ] = $user->user_login;
+				if( ! self::is_admin_user( $user->ID ) ) {
+					$members[ $user->ID ] = $user->user_login;
+				}
 			}
 		}
 				
