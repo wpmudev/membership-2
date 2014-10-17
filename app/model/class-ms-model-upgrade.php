@@ -20,67 +20,67 @@
  *
 */
 
-
+/**
+ * Upgrade DB model.
+ *
+ * Manages DB upgrading.
+ *
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Upgrade extends MS_Model {
 	
-	protected static $CLASS_NAME = __CLASS__;
-	
-	protected $id =  'ms_model_update';
-	
-	protected $name = 'Update DB';
-
-	protected $allowed_actions = array( 'cleanup_db', 'cleanup_settings' );
-	
-	public function __construct() {
-		$this->add_action( 'template_redirect', 'process_actions', 1 );	
-	}
-	
+	/**
+	 * Initialize upgrading check.
+	 * 
+	 * @since 1.0.0
+	 */
 	public static function init() {
 		self::upgrade();
-		new self();
+		
+		MS_Factory::load( 'Ms_Model_Upgrade' );
+		
+		do_action( 'ms_model_upgrade_init' );
 	}
-	
 	
 	/**
-	 * Handle URI actions for registration.
-	 *
-	 * Matches returned 'action' to method to execute.
-	 *
-	 * **Hooks Actions: **
-	 *
-	 * * template_redirect
-	 *
-	 * @todo Sanitize and protect from possible random function calls.
-	 *
-	 * @since 4.0.0
+	 * Upgrade database.
+	 * 
+	 * @since 1.0.0
 	 */
-	public function process_actions() {
-		$action = isset( $_GET['action'] ) ? $_GET['action'] : '';
-		/**
-		 * If $action is set, then call relevant method.
-		 */
-		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
-			$this->$action();
-		}
-	}
-	
 	public static function upgrade() {
+		
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		
 		/** Compare current src version to DB version */
-		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '!=' ) ) {
+		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
+			
+			//Upgrade logic
 			switch( $settings->version ) {
-				default:
+				case '0.0.0':
 					self::cleanup_db();
 					flush_rewrite_rules();
+						
+				default:
+					do_action( 'ms_model_upgrade_upgrade', $settings );
 					break;
 			}
+			
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$settings->version = MS_Plugin::instance()->version;
 			$settings->save();
 		}
 	}
 	
+	/**
+	 * Remove all plugin related content from database.
+	 * 
+	 * @since 1.0.0
+	 */
 	private static function cleanup_db() {
+		
 		$users = MS_Model_Member::get_members( );
 		foreach( $users as $user ) {
 			$user->delete_all_membership_usermeta();
@@ -114,6 +114,11 @@ class MS_Model_Upgrade extends MS_Model {
 		
 	}
 	
+	/**
+	 * Remove all plugin related settings from database.
+	 * 
+	 * @since 1.0.0
+	 */
 	private static function cleanup_settings() {
 		$gateways = MS_Model_Gateway::get_gateways();
 		foreach( $gateways as $gateway ) {
