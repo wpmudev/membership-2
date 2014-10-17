@@ -44,15 +44,21 @@ class MS_Controller_Page extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PAGE, 'ajax_action_update_page' );
 		
 		$this->add_action( 'pre_get_posts', 'ms_page_router', 1 );
-
-// 		$this->add_action( 'ms_controller_settings_admin_settings_manager_pages', 'update_page' );
 	}
 	
+	/**
+	 * Redirect to configured ms_page.
+	 *
+	 * ** Hooks Actions: **
+	 * * pre_get_posts
+	 * 
+	 * @since 1.0.0
+	 */
 	public function ms_page_router( $wp_query ) {
 		if( ! empty( $wp_query->query_vars['ms_page'] ) ) {
 			
 			$slug = $wp_query->query_vars['ms_page'];
-			$ms_pages = $this->get_ms_pages();
+			$ms_pages = $this->get_ms_pages_model();
 			$ms_page = $ms_pages->get_ms_page_by_slug( $slug );
 			
 			$wp_query->query_vars['post_type'] = 'page';
@@ -60,13 +66,29 @@ class MS_Controller_Page extends MS_Controller {
 		}
 	}
 
-	public function get_ms_pages() {
+	/**
+	 * Get ms_pages model.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @return MS_Model_Pages The ms pages model.
+	 */
+	public function get_ms_pages_model() {
 		
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		
-		return apply_filters( 'ms_controller_pages_get_ms_pages', $ms_pages, $this );
+		return apply_filters( 'ms_controller_pages_get_ms_pages_model', $ms_pages, $this );
 	}
 	
+	/**
+	 * Handle Ajax toggle action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_update_page
+	 *
+	 * @since 1.0.0
+	 */
 	public function ajax_action_update_page() {
 		$msg = 0;
 		$this->_resp_reset();
@@ -83,7 +105,7 @@ class MS_Controller_Page extends MS_Controller {
 			$field = $_POST['field'];
 			$value = $_POST['value'];
 			
-			$ms_pages = $this->get_ms_pages();
+			$ms_pages = $this->get_ms_pages_model();
 			
 			$ms_page = $ms_pages->get_ms_page( $page_type );
 			$ms_page->$field = $value;
