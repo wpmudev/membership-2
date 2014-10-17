@@ -117,7 +117,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		 * If $action is set, then call relevant method.
 		 *
 		 * Methods:
-		 * @see $allowed_methods property
+		 * @see $allowed_actions property
 		 *
 		 */
 		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {

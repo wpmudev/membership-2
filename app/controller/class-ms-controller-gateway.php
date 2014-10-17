@@ -25,22 +25,36 @@
 /**
  * Gateway controller.
  *
- * @since 1.0
+ * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Gateway extends MS_Controller {
 
+	/**
+	 * AJAX action constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const AJAX_ACTION_TOGGLE_GATEWAY = 'toggle_gateway';
-
 	const AJAX_ACTION_UPDATE_GATEWAY = 'update_gateway';
-
+	
+	/**
+	 * Allowed actions to execute in template_redirect hook.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	private $allowed_actions = array( 'update_card', 'purchase_button', 9 );
 
 	/**
 	 * Prepare the gateway controller.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -75,10 +89,18 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * * template_redirect
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function process_actions() {
+		
 		$action = $this->get_action();
+		/**
+		 * If $action is set, then call relevant method.
+		 *
+		 * Methods:
+		 * @see $allowed_actions property
+		 *
+		 */
 		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
 			$this->$action();
 		}
@@ -91,7 +113,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * * wp_ajax_toggle_gateway
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function toggle_ajax_action() {
 		$msg = 0;
@@ -112,7 +134,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * * wp_ajax_update_gateway
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_update_gateway() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -133,7 +155,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * * ms_controller_gateway_settings_render_view
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function gateway_settings_edit( $gateway_id ) {
 		if( ! empty( $gateway_id ) && MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
@@ -168,7 +190,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Handle Payment Gateway list actions.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param int[] $gateways The gateways IDs to process.
@@ -206,7 +228,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			}
 		}
 
-		return $msg;
+		return apply_filters( 'ms_controller_gateway_gateway_list_do_action', $msg, $action, $gateways, $fields, $this );
 	}
 
 	/**
@@ -218,7 +240,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * * ms_view_frontend_payment_purchase_button
 	 * * ms_view_shortcode_invoice_purchase_button
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function purchase_button( $ms_relationship ) {
 		/** Get only active gateways */
@@ -272,7 +294,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			if( ! empty( $view ) ) {
 				$view = apply_filters( 'ms_view_gateway_button', $view, $gateway->id );
 				$view->data = apply_filters( 'ms_view_gateway_button_data', $data, $gateway->id );
-				echo $view->to_html();
+				
+				echo apply_fitlers( 'ms_controller_gateway_purchase_button_'. $gateway->id, $view->to_html(), $ms_relationship, $this );
 			}
 		}
 
@@ -314,7 +337,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$button = $view->to_html();
 		}
 
-		return apply_filters( 'ms_controller_gateway_cancel_button', $button );
+		return apply_filters( 'ms_controller_gateway_cancel_button', $button, $ms_relationship, $this );
 	}
 
 	/**
@@ -323,9 +346,11 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * **Hooks Actions: **
 	 * * ms_controller_frontend_signup_gateway_form
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function gateway_form_mgr() {
+		
+		/* Display gateway form */
 		$this->add_filter( 'the_content', 'gateway_form', 10 );
 
 		/* Enqueue styles and scripts used  */
@@ -338,9 +363,12 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * **Hooks Filters: **
 	 * * the_content
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
+	 * 
+	 * @param string $content The page content to filter.
+	 * @return string The filtered content.
 	 */
-	public function gateway_form() {
+	public function gateway_form( $content ) {
 
 		$data = array();
 
@@ -374,7 +402,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			}
 			$view = apply_filters( 'ms_view_gateway_form', $view );
 			$view->data = apply_filters( 'ms_view_gateway_form_data', $data );
-			echo $view->to_html();
+			
+			return apply_filters( 'ms_controller_gateway_form', $view->to_html(), $this );
 		}
 	}
 
@@ -384,7 +413,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * **Hooks Actions: **
 	 * * ms_controller_frontend_signup_process_purchase
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function process_purchase() {
 		
@@ -441,6 +470,8 @@ class MS_Controller_Gateway extends MS_Controller {
 		global $wp_query;
 		$wp_query->query_vars['page_id'] = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER )->id;
 		$wp_query->query_vars['post_type'] = 'page';
+		
+		do_action( 'ms_controller_gateway_process_purchase_after', $this );
 	}
 
 	/**
@@ -451,11 +482,14 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * **Hooks Actions: **
 	 * * the_content
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
+	 * 
+	 * @param string $content The page content to filter.
+	 * @return string The filtered content.
 	 */
 	public function purchase_info_content( $content ) {
-		$content = apply_filters( 'ms_controller_gateway_purchase_info_content', $content );
-		return $content;
+		
+		return apply_filters( 'ms_controller_gateway_purchase_info_content', $content, $this );
 	}
 
 	/**
@@ -464,12 +498,12 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * **Hooks Actions: **
 	 * * the_content
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function purchase_error_content( $content ) {
-		$content = apply_filters( 'ms_controller_gateway_purchase_error_content',
-				__( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN ), $content );
-		return $content;
+		
+		return apply_filters( 'ms_controller_gateway_purchase_error_content',
+				__( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN ), $content, $this );
 	}
 
 	/**
@@ -483,10 +517,12 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @todo Review how this works when we use OAuth API's with gateways.
 	 *
-	 * @since 1.0
-	 * @param mixed $wp_query The WordPress query object
+	 * @since 1.0.0
+	 * 
+	 * @param WP_Query $wp_query The WordPress query object
 	 */
 	public function handle_payment_return( $wp_query ) {
+		
 		if( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			do_action( 'ms_model_gateway_handle_payment_return_' . $wp_query->query_vars['paymentgateway'] );
 		}
@@ -501,9 +537,12 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * * ms_view_shortcode_account_card_info
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
+	 * 
+	 * @param mixed $data The data passed to hooked view.
 	 */
 	public function card_info( $data = null ) {
+		
 		if( ! empty( $data['gateway'] ) && is_array( $data['gateway'] ) ) {
 			$gateways = array();
 			foreach( $data['gateway'] as $ms_relationship_id => $gateway ) {
@@ -560,7 +599,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * * template_redirect
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function update_card() {
 		if( ! empty( $_POST['gateway'] ) ) {
@@ -595,14 +634,14 @@ class MS_Controller_Gateway extends MS_Controller {
 					break;
 			}
 		}
+		
+		do_action( 'ms_controller_gateway_update_card', $this );
 	}
 
 	/**
 	 * Adds CSS and javascript
 	 *
-	 * @since 1.0
-	 *
-	 * @return void
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts( $step = null ) {
 		if ( empty( $step ) && ! empty( $_POST['step'] ) ) {
