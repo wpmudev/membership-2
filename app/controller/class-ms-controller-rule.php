@@ -159,7 +159,12 @@ class MS_Controller_Rule extends MS_Controller {
 
 		if ( $membership->is_valid() ) {
 			$rule = $membership->get_rule( $rule_type );
-			$rule->reset_rule_values();
+			if( MS_Model_Rule::RULE_TYPE_MENU == $rule->rule_type && ! empty( $_POST['menu_id'] ) ) {
+				$rule->reset_menu_rule_values( $_POST['menu_id'] );
+			}
+			else {
+				$rule->reset_rule_values();
+			}
 			if ( ! is_array( $rule_ids ) ) {
 				$rule_ids = array( $rule_ids );
 			}

@@ -391,6 +391,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					'membership_id' => $membership->id,
 					'rule_type' => MS_Model_Rule::RULE_TYPE_MENU,
 					'value' => 1,
+					'menu_id' => $this->data['menu_id'], 
 					'values' => array(),
 					'action' => $action,
 					'_wpnonce' => $nonce,

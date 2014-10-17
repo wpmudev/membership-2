@@ -81,7 +81,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 * @param object $menu The menu object.
 	 * @param mixed $args The menu select args.
 	 */
-	function filter_menus( $items, $menu, $args ) {
+	public function filter_menus( $items, $menu, $args ) {
 
 		if( ! empty( $items ) ) {
 			foreach( $items as $key => $item ) {
@@ -94,6 +94,26 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		return apply_filters( 'ms_model_rule_menu_filter_menus', $items, $menu, $args, $this );
 	}
 
+	/**
+	 * Reset the rule value data.
+	 *
+	 * @since 1.0.0
+	 * @param $menu_id The menu_id to reset children menu item rules.
+	 * @return array The reset rule value.
+	 */
+	public function reset_menu_rule_values( $menu_id ) {
+	
+		$items = wp_get_nav_menu_items( $menu_id );
+		
+		if( ! empty( $items ) ) {
+			foreach( $items as $item ) {
+				unset( $this->rule_value[ $item->ID ] );
+			}
+		}
+		
+		$this->rule_value = apply_filters( 'ms_model_rule_menu_reset_menu_rule_values', $this->rule_value, $this );
+	}
+	
 	/**
 	 * Get content to protect.
 	 *
