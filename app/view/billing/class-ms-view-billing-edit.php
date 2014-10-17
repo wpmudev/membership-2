@@ -46,7 +46,7 @@ class MS_View_Billing_Edit extends MS_View {
 					'id' => 'status',
 					'title' => __( 'Status', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'field_options' => MS_Model_Invoice::get_status(),
+					'field_options' => MS_Model_Invoice::get_status_types(),
 					'value' => $invoice->status,
 			),
 			'user_id' => array(

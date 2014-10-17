@@ -190,7 +190,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	}
 
 	public function get_views() {
-		$all_status = MS_Model_Invoice::get_status();
+		$all_status = MS_Model_Invoice::get_status_types();
 		$views = array();
 
 		$views['all'] = array(
