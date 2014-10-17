@@ -1,14 +1,33 @@
 <?php
 
+/**
+ * Render Invoice add/edit view.
+ *
+ * Extends MS_View for rendering methods and magic methods.
+ *
+ * @since 1.0.0
+ * 
+ * @package Membership
+ * @subpackage View
+ */
 class MS_View_Billing_Edit extends MS_View {
 
-	const BILLING_SECTION = 'billing_section';
-	const BILLING_NONCE = 'billing_nonce';
-	
-	protected $fields = array();
-	
+	/**
+	 * Data set by controller.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @var mixed $data
+	 */
 	protected $data;
-	
+
+	/**
+	 * Create view output.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @return string
+	 */
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		ob_start();
@@ -29,9 +48,17 @@ class MS_View_Billing_Edit extends MS_View {
 			</div>
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		
+		return apply_filters( 'ms_view_billing_edit_to_html', $html, $this );
 	}
 	
+	/**
+	 * Prepare html fields.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
 	function prepare_fields() {
 		$invoice = $this->data['invoice'];
 		$currency = MS_Plugin::instance()->settings->currency;
@@ -131,6 +158,6 @@ class MS_View_Billing_Edit extends MS_View {
 			$fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 		}
 		
-		return apply_filters( 'ms_view_billing_edit_prepare_fields', $fields );
+		return apply_filters( 'ms_view_billing_edit_prepare_fields', $fields, $this );
 	}
 }

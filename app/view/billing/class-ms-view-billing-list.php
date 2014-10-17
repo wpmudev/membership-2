@@ -25,26 +25,19 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 4.0.0
- *
- * @return object
+ * @since 1.0.0
+ * 
+ * @package Membership
+ * @subpackage View
  */
 class MS_View_Billing_List extends MS_View {
 		
 	/**
-	 * Overrides parent's to_html() method.
+	 * Create view output.
 	 *
-	 * Creates an output buffer, outputs the HTML and grabs the buffer content before releasing it.
-	 * Creates a wrapper 'ms-wrap' HTML element to contain content and navigation. The content inside
-	 * the navigation gets loaded with dynamic method calls.
-	 * e.g. if key is 'settings' then render_settings() gets called, if 'bob' then render_bob().
-	 *
-	 * @todo Could use callback functions to call dynamic methods from within the helper, thus
-	 * creating the navigation with a single method call and passing method pointers in the $tabs array.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return object
+	 * @since 1.0.0
+	 * 
+	 * @return string
 	 */
 	public function to_html() {		
 		$billing_list = new MS_Helper_List_Table_Billing();
@@ -57,21 +50,27 @@ class MS_View_Billing_List extends MS_View {
 				$title .= ' - '. $gateway->name;
 			}
 		}
-		$add_new = sprintf( '<a class="add-new-h2" href="admin.php?page=%s&action=edit&invoice_id=0">%s</a>',
-				MS_Controller_Plugin::MENU_SLUG . '-billing',
-				__( 'Add New', MS_TEXT_DOMAIN )
+		$add_new_button = array(
+				'id' => 'add_new',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'url' => sprintf( 'admin.php?page=%s&action=edit&invoice_id=0', MS_Controller_Plugin::MENU_SLUG . '-billing' ),
+				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+				'class' => 'button',
 		);
-
+		
 		ob_start();
 		?>
 		
 		<div class="wrap ms-wrap">
 			<?php 
 				MS_Helper_Html::settings_header( array(
-					'title' => $title . $add_new,
+					'title' => $title,
 					'title_icon_class' => 'fa fa-credit-card',
 				) ); 
 			?>
+			<div >
+				<?php MS_Helper_Html::html_element( $add_new_button );?>
+			</div>
 			<?php $billing_list->views(); ?>
 			<form action="" method="post">
 				<?php $billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search'); ?>
@@ -81,6 +80,7 @@ class MS_View_Billing_List extends MS_View {
 		
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		
+		return apply_filters( 'ms_view_billing_list', $html, $this );
 	}		
 }
