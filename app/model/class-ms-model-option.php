@@ -20,13 +20,34 @@
  *
 */
 
-
+/**
+ * Abstract Option model.
+ *
+ * @uses WP Option API to persist data into wp_option table.
+ * 
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Option extends MS_Model {
 	
-	protected static $CLASS_NAME = __CLASS__;
-
+	/**
+	 * Singleton instance.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @staticvar MS_Model_Option
+	 */
 	public static $instance;
 	
+	/** 
+	 * Save content in wp_option table.
+	 *
+	 * Update WP cache and instance singleton.
+	 * 
+	 * @since 1.0.0
+	 */
 	public function save() {
 		
 		$this->before_save();
@@ -51,8 +72,18 @@ class MS_Model_Option extends MS_Model {
 		wp_cache_set( $class, $this, 'MS_Model_Option' );
 	}
 	
+	/**
+	 * Delete from wp option table
+	 *
+	 * @since 1.0.0
+	 */
 	public function delete() {
+		
+		do_action( 'ms_model_option_delete_before', $this );
+		
 		$class = get_class( $this );
 		delete_option( $class );
+		
+		do_action( 'ms_model_option_delete_after', $this );
 	}
 }

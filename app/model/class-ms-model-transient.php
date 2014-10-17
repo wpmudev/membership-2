@@ -20,13 +20,34 @@
  *
 */
 
-
+/**
+ * Abstract Option model.
+ *
+ * @uses WP Transient API to persist data.
+ *
+ * @since 1.0.0
+ *
+ * @package Membership
+ * @subpackage Model
+ */
 class MS_Model_Transient extends MS_Model {
 	
-	protected static $CLASS_NAME = __CLASS__;
-
+	/**
+	 * Singleton instance.
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @staticvar MS_Model_Option
+	 */
 	public static $instance;
 	
+	/** 
+	 * Save content in wp_option table.
+	 *
+	 * Update WP cache and instance singleton.
+	 *  
+	 * @since 1.0.0
+	 */
 	public function save() {
 	
 		$this->before_save();
@@ -49,5 +70,21 @@ class MS_Model_Transient extends MS_Model {
 		$this->after_save();
 		
 		wp_cache_set( $class, $this, 'MS_Model_Transient' );
-	}	
+	}
+
+	/**
+	 * Delete transient.
+	 *
+	 * @since 1.0.0
+	 */
+	public function delete() {
+	
+		do_action( 'ms_model_transient_delete_before', $this );
+	
+		$class = get_class( $this );
+		delete_transient( $class );
+	
+		do_action( 'ms_model_transient_delete_after', $this );
+	}
+	
 }

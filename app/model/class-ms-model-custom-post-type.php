@@ -130,7 +130,9 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	
 	/** 
 	 * Save content in wp tables (wp_post and wp_postmeta).
-	 *
+	 * 
+	 * Update WP cache.
+	 * 
 	 * @since 1.0.0
 	 * 
 	 * @var string[]
@@ -188,13 +190,13 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 */
 	public function delete() {
 		
-		do_action( 'ms_model_custom_post_type_before_delete', $this );
+		do_action( 'ms_model_custom_post_type_delete_before', $this );
 		
 		if( ! empty( $this->id ) ) {
 			wp_delete_post( $this->id );
 		}
 		
-		do_action( 'ms_model_custom_post_type_after_delete', $this );
+		do_action( 'ms_model_custom_post_type_delete_after', $this );
 	}
 	
 	/**
