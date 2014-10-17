@@ -182,13 +182,13 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	}
 	
 	/**
-	 * Defines and return discount types.
+	 * Verify if is a valid coupon type
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $type The discount type to validate.
 	 * 
-	 * @return array The discount types array
+	 * @return boolean True if valid.
 	 */
 	public static function is_valid_discount_type( $type ) {
 		
@@ -228,6 +228,8 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param $args The query post args
+	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array The discount types array
 	 */
 	public static function get_coupon_count( $args = null ) {
