@@ -25,31 +25,29 @@
 /**
  * Controller for managing Members and Membership relationships.
  *
- * Focuses on the Member and the member's Memberships.
- * Handles Membership movements (add, cancel, move, etc.) and is responsible for the rendering of Member lists and management.
+ * Manages the Member and the member's Memberships.
  *
- * @since 4.0.0
+ * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Member extends MS_Controller {
 
+	/**
+	 * AJAX action constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const AJAX_ACTION_TOGGLE_MEMBER = 'toggle_member';
 	const AJAX_ACTION_GET_USERS = 'get_users';
 
 	/**
-	 * The model to use for loading/saving Member data.
-	 *
-	 * @since 4.0.0
-	 * @access private
-	 * @var $model
-	 */
-	private $model;
-
-	/**
 	 * Prepare the Member manager.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -63,7 +61,6 @@ class MS_Controller_Member extends MS_Controller {
 
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
-
 	}
 
 	/**
@@ -73,7 +70,7 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * * wp_ajax_toggle_member
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_member() {
 		$msg = 0;
@@ -105,7 +102,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Show admin notices.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 */
 	public function print_admin_message() {
@@ -120,7 +117,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member
 	 * 	membership fields (active, memberships, start, end, gateway)
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function members_admin_page_process() {
 		$this->print_admin_message();
@@ -197,7 +194,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Prepare and show action view.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param int $member_id User ID of the member.
@@ -275,14 +272,14 @@ class MS_Controller_Member extends MS_Controller {
 		}
 
 		$data['action'] = $action;
-		$view->data = $data;
+		$view->data = apply_filters( 'ms_view_member_data', $data, $this );
 		$view->render();
 	}
 
 	/**
 	 * Handles Member list actions.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param object[] $members Array of members.
@@ -339,13 +336,14 @@ class MS_Controller_Member extends MS_Controller {
 			}
 			$member->save();
 		}
-		return $msg;
+		
+		return apply_filters( 'ms_controller_member_member_list_do_action', $msg, $action, $members, $membership_id, $this );
 	}
 
 	/**
 	 * Load Member manager specific styles.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
 		wp_enqueue_style( 'jquery-ui' );
@@ -354,7 +352,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Load Member manager specific scripts.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		$data = array();
