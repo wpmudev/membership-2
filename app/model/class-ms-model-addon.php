@@ -82,7 +82,10 @@ class MS_Model_Addon extends MS_Model_Option {
 	 */
 	public static function get_addon_types() {
 		
-		return apply_filters( 'ms_model_addon_get_addon_types', array( 
+		static $types;
+		
+		if( empty( $types ) ) {
+			$types = array(
 				self::ADDON_MULTI_MEMBERSHIPS,
 				self::ADDON_TRIAL,
 				self::ADDON_COUPON,
@@ -94,7 +97,10 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_SHORTCODE,
 				self::ADDON_URL_GROUPS,
 				self::ADDON_AUTO_MSGS_PLUS,
-		) );
+			);
+		}
+		
+		return apply_filters( 'ms_model_addon_get_addon_types', $types ); 
 	}
 
 	/**

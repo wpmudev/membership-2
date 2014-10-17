@@ -54,7 +54,7 @@ class MS_Controller_Coupon extends MS_Controller {
 	 * @since 1.0
 	 */
 	public function admin_coupon_manager() {
-		MS_Helper_Debug::log($_POST);
+
 		/**
 		 * Save coupon add/edit
 		 */

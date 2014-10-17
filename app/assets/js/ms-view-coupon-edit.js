@@ -5,19 +5,19 @@ jQuery( document ).ready(function( $ ) {
 			onkeyup: false,
 			errorClass: 'ms-validation-error',
 			rules: {
-				'coupon_section[code]': 'required',
-				'coupon_section[discount]': {
+				'code': 'required',
+				'discount': {
 					'required': true,
 					'min': 0,
 				},
-				'coupon_section[max_uses]': {
+				'max_uses': {
 					'min': 0,
 				},
-				'coupon_section[start_date]': {
+				'start_date': {
 					'required': true,
 					'dateISO': true,
 				},
-				'coupon_section[expire_date]': {
+				'expire_date': {
 					'dateISO': true,
 				},
 			}

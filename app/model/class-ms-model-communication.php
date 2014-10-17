@@ -25,9 +25,8 @@
  *
  * Persisted by parent class MS_Model_Custom_Post_Type.
  *
- * @todo change to extend MS_Model_Option.
- * 
  * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Model
  */
