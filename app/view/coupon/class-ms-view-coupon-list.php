@@ -25,35 +25,31 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
- * @return object
+ * @package Membership
+ * @subpackage View
  */
 class MS_View_Coupon_List extends MS_View {
 		
 	/**
-	 * Overrides parent's to_html() method.
+	 * Create view output.
 	 *
-	 * Creates an output buffer, outputs the HTML and grabs the buffer content before releasing it.
-	 * Creates a wrapper 'ms-wrap' HTML element to contain content and navigation. The content inside
-	 * the navigation gets loaded with dynamic method calls.
-	 * e.g. if key is 'settings' then render_settings() gets called, if 'bob' then render_bob().
-	 *
-	 * @todo Could use callback functions to call dynamic methods from within the helper, thus
-	 * creating the navigation with a single method call and passing method pointers in the $tabs array.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @return object
+	 * @since 1.0.0
+	 * 
+	 * @return string
 	 */
 	public function to_html() {		
 		$coupon_list = new MS_Helper_List_Table_Coupon();
 		$coupon_list->prepare_items();
 
 		$title = __( 'Coupons', MS_TEXT_DOMAIN );
-		$add_new = sprintf( '<a class="add-new-h2" href="admin.php?page=%s&action=edit&coupon_id=0">%s</a>',
-				MS_Controller_Plugin::MENU_SLUG . '-coupons',
-				__( 'Add New', MS_TEXT_DOMAIN )
+		$add_new_button = array(
+				'id' => 'add_new',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'url' => sprintf( 'admin.php?page=%s&action=edit&coupon_id=0', MS_Controller_Plugin::MENU_SLUG . '-coupons' ),
+				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+				'class' => 'button',
 		);
 		
 		ob_start();
@@ -61,10 +57,14 @@ class MS_View_Coupon_List extends MS_View {
 		<div class="wrap ms-wrap">
 			<?php 
 				MS_Helper_Html::settings_header( array(
-					'title' => $title . $add_new,
+					'title' => $title,
 					'title_icon_class' => 'fa fa-credit-card',
 				) ); 
 			?>
+			<div>
+				<?php MS_Helper_Html::html_element( $add_new_button );?>
+			</div>
+			
 			<form action="" method="post">
 				<?php $coupon_list->display(); ?>
 			</form>
@@ -72,6 +72,7 @@ class MS_View_Coupon_List extends MS_View {
 		
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+		
+		return apply_filters( 'ms_view_coupon_list_to_html', $html, $this );
 	}		
 }
