@@ -27,42 +27,41 @@
  *
  * Manages the activating and deactivating of Memnbership addons.
  *
- * @since 1.0
+ * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Addon extends MS_Controller {
 
+	/**
+	 * AJAX action constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const AJAX_ACTION_TOGGLE_ADDON = 'toggle_addon';
 
 	/**
 	 * Prepare the Add-on manager.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
 
-		/**
-		 * Actions to execute when the Addon controller construction starts.
-		 *
-		 * @since 1.0
-		 * @param object $this The MS_Controller_Addon object.
-		 */
-		do_action( 'ms_controller_addon_construct', $this );
-
 		$addon_menu_hook = 'protected-content_page_protected-content-addon';
 
-		/** Load the add-on manager model. */
+		/* Load the add-on manager model. */
 		$this->add_action( 'load-' . $addon_menu_hook, 'admin_addon_process' );
 
 		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_addons' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ADDON, 'ajax_action_toggle_addon' );
 
-		/** Enqueue scripts and styles. */
+		/* Enqueue scripts and styles. */
 		$this->add_action( 'admin_print_scripts-' . $addon_menu_hook, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $addon_menu_hook, 'enqueue_styles' );
 	}
 
 	/**
@@ -72,10 +71,12 @@ class MS_Controller_Addon extends MS_Controller {
 	 *
 	 * * wp_ajax_toggle_gateway
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_addon() {
+		
 		$msg = 0;
+		
 		if( $this->verify_nonce() && ! empty( $_POST['addon'] ) && $this->is_admin_user() ) {
 			$msg = $this->save_addon( 'toggle_activation', array( $_POST['addon'] ) );
 		}
@@ -91,9 +92,10 @@ class MS_Controller_Addon extends MS_Controller {
 	 *
 	 * * ms_controller_membership_setup_completed
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function auto_setup_addons( $membership ) {
+		
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
 
 		$addon->auto_config( $membership );
@@ -105,7 +107,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 *
 	 * Handles activation/deactivation toggles and bulk update actions, then saves the model.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function admin_addon_process() {
 
@@ -119,7 +121,7 @@ class MS_Controller_Addon extends MS_Controller {
 		 * @since 1.0
 		 * @param object $this The MS_Controller_Addon object.
 		 */
-		do_action( 'ms_controller_addon_admin_addon', $this );
+		do_action( 'ms_controller_addon_admin_addon_process', $this );
 
 		$msg = 0;
 		$fields = array( 'addon', 'action', 'action2' );
@@ -134,7 +136,7 @@ class MS_Controller_Addon extends MS_Controller {
 	/**
 	 * Load and render the Add-on manager view.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function admin_addon() {
 
@@ -146,7 +148,7 @@ class MS_Controller_Addon extends MS_Controller {
 		 */
 		$view = MS_Factory::create( 'MS_View_Addon' );
 		$data = array( 'addon' => MS_Factory::load( 'MS_Model_Addon' ) );
-		$view->data = $data;
+		$view->data = apply_filters( 'ms_view_addon_data', $data );
 		$view->render();
 	}
 
@@ -155,7 +157,8 @@ class MS_Controller_Addon extends MS_Controller {
 	 *
 	 * Saves activation/deactivation settings.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
+	 * 
 	 * @param string $action The action to perform on the add-on
 	 * @param object[] $addon_types The add-on or add-ons types to update.
 	 */
@@ -178,22 +181,15 @@ class MS_Controller_Addon extends MS_Controller {
 					break;
 			}
 		}
+		
 		$addon->save();
 		return true;
 	}
 
 	/**
-	 * Load Add-on specific styles.
-	 *
-	 * @since 4.0.0
-	 */
-	public function enqueue_styles() {
-	}
-
-	/**
 	 * Load Add-on specific scripts.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'ms-admin' );

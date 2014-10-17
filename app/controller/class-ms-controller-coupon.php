@@ -25,7 +25,8 @@
 /**
  * Controller to manage Membership coupons.
  *
- * @since 1.0
+ * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Controller
  */
@@ -34,7 +35,7 @@ class MS_Controller_Coupon extends MS_Controller {
 	/**
 	 * Prepare the Coupon manager.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -51,7 +52,7 @@ class MS_Controller_Coupon extends MS_Controller {
 	 *
 	 * Verifies GET and POST requests to manage billing.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function admin_coupon_manager() {
 
@@ -84,7 +85,7 @@ class MS_Controller_Coupon extends MS_Controller {
 	 * Perform actions for each coupon.
 	 *
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @param string $action The action to perform on selected coupons
 	 * @param int[] $coupons The list of coupons ids to process.
 	 */
@@ -108,7 +109,7 @@ class MS_Controller_Coupon extends MS_Controller {
 	/**
 	 * Render the Coupon admin manager.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function admin_coupon() {
 		/**
@@ -138,40 +139,49 @@ class MS_Controller_Coupon extends MS_Controller {
 	/**
 	 * Save coupon using the coupon model.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
+	 * 
 	 * @param mixed $fields Coupon fields
+	 * @return boolean True in success saving.
 	 */
 	private function save_coupon( $fields ) {
-		if( ! $this->is_admin_user() ) {
-			return;
-		}
-
-		if( is_array( $fields ) ) {
-			$coupon_id = ( $fields['coupon_id'] ) ? $fields['coupon_id'] : 0;
-			$coupon = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
-
-			foreach( $fields as $field => $value ) {
-				$coupon->$field = $value;
+		
+		$coupon = null;
+		$msg = false;
+		
+		if( $this->is_admin_user() ) {
+			if( is_array( $fields ) ) {
+				$coupon_id = ( $fields['coupon_id'] ) ? $fields['coupon_id'] : 0;
+				$coupon = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
+	
+				foreach( $fields as $field => $value ) {
+					$coupon->$field = $value;
+				}
+				$coupon->save();
+				$msg = true;
 			}
-			$coupon->save();
 		}
+				
+		return apply_filters( 'ms_model_coupon_save_coupon', $msg, $fields, $coupon, $this );
 	}
 
 	/**
 	 * Load Coupon specific styles.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
 		if ( 'edit' == @$_GET['action'] ) {
 			wp_enqueue_style( 'jquery-ui' );
 		}
+		
+		do_action( 'ms_controller_coupon_enqueue_styles', $this );
 	}
 
 	/**
 	 * Load Coupon specific scripts.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		if ( 'edit' == @$_GET['action'] ) {
@@ -179,5 +189,7 @@ class MS_Controller_Coupon extends MS_Controller {
 			wp_enqueue_script( 'jquery-validate' );
 			wp_enqueue_script( 'ms-view-coupon-edit' );
 		}
+		
+		do_action( 'ms_controller_coupon_enqueue_scripts', $this );
 	}
 }
