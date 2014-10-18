@@ -32,6 +32,13 @@
  */
 class MS_Controller_Page extends MS_Controller {
 
+	/**
+	 * AJAX action constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const AJAX_ACTION_UPDATE_PAGE = 'update_page';
 
 	/**
