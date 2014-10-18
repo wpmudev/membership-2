@@ -25,27 +25,30 @@
 /**
  * Controller to manage billing and invoices.
  *
- * @since 4.0.0
+ * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Rule extends MS_Controller {
 
+	/**
+	 * AJAX action constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
-
 	const AJAX_ACTION_TOGGLE_RULE_DEFAULT = 'toggle_rule_default';
-
 	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
-
 	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
-
 	const AJAX_ACTION_UPDATE_FIELD = 'update_update_field';
-
 
 	/**
 	 * Prepare the Rule manager.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -69,7 +72,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * * wp_ajax_toggle_rule
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_rule() {
 		$msg = 0;
@@ -100,7 +103,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * * wp_ajax_toggle_rule_default
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_rule_default() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
@@ -124,6 +127,15 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 
+	/**
+	 * Handle Ajax update rule action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_update_rule
+	 *
+	 * @since 1.0.0
+	 */
 	public function ajax_action_update_rule() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$this->_resp_reset();
@@ -149,6 +161,18 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 
+	/**
+	 * Save rules for a rule type.
+	 * 
+	 * First reset all rules, then save the incoming rules.
+	 * The menu rule type is only reset for the parent menu_id group (clears all children submenus). 
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param string $rule_type The rule type to update.
+	 * @param string[] $rule_ids The content identifiers.
+	 * @param int|int[] $rule_values The rule values.
+	 */
 	private function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if ( ! $this->is_admin_user() ) {
@@ -183,9 +207,19 @@ class MS_Controller_Rule extends MS_Controller {
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
-		return $msg;
+		
+		return apply_filters( 'ms_controller_rule_save_rule_values', $msg, $rule_type, $rule_ids, $rule_values, $this );
 	}
 
+	/**
+	 * Handle Ajax update dripped rules action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_update_dripped
+	 *
+	 * @since 1.0.0
+	 */
 	public function ajax_action_update_dripped() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$this->_resp_reset();
@@ -219,6 +253,15 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 
+	/**
+	 * Handle Ajax to update rule model field.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_update_field
+	 *
+	 * @since 1.0.0
+	 */
 	public function ajax_action_update_field() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$this->_resp_reset();
@@ -261,10 +304,12 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * * ms_controller_membership_edit_manager
 
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function edit_rule_manager( $rule_type ) {
 
+		do_action( 'ms_controller_rule_edir_rule_manager', $rule_type, $this );
+		
 		/**
 		 * Rule single action
 		 */
@@ -293,7 +338,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Execute action in Rule model.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param int[] $items The item ids which action will be taken.
@@ -333,17 +378,18 @@ class MS_Controller_Rule extends MS_Controller {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 
-		return $msg;
+		return apply_filters( 'ms_controller_rule_rule_list_do_action', $msg, $action, $rule_type, $items, $this );
 	}
 
 	/**
 	 * Save Url Groups tab.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param array $fields The POST fields
 	 */
 	private function save_url_group( $fields ) {
+		
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if ( ! $this->is_admin_user() ) {
 			return $msg;
@@ -365,19 +411,21 @@ class MS_Controller_Rule extends MS_Controller {
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
-		return $msg;
-
+		
+		return apply_filters( 'ms_controller_rule_save_url_group', $msg );
 	}
 
 	/**
 	 * Get membership from request.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return MS_Model_Membership or null if not found.
 	 */
 	private function get_membership() {
+		
 		$membership_id = 0;
+		
 		if ( ! empty( $_GET['membership_id'] ) ) {
 			$membership_id = $_GET['membership_id'];
 		}
@@ -390,6 +438,6 @@ class MS_Controller_Rule extends MS_Controller {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		}
 
-		return apply_filters( 'ms_controller_rule_get_membership', $membership );
+		return apply_filters( 'ms_controller_rule_get_membership', $membership, $this );
 	}
 }
