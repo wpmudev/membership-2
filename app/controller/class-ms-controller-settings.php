@@ -23,37 +23,42 @@
  */
 
 /**
- * Controller for managing Membership Plugin settings.
+ * Controller for managing Plugin Settings.
  *
  * The primary entry point for managing Membership admin pages.
  *
- * @since 4.0.0
+ * @since 1.0.0
+ * 
  * @package Membership
  * @subpackage Controller
  */
 class MS_Controller_Settings extends MS_Controller {
 
+	/**
+	 * AJAX action constants.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
 	const AJAX_ACTION_TOGGLE_SETTINGS = 'toggle_settings';
-
 	const AJAX_ACTION_UPDATE_SETTING = 'update_setting';
-
 	const AJAX_ACTION_UPDATE_CUSTOM_SETTING = 'update_custom_setting';
-
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
 
 	/**
 	 * The current active tab in the vertical navigation.
 	 *
-	 * @since 1.0
-	 * @access private
-	 * @var $active_tab
+	 * @since 1.0.0
+	 * 
+	 * @var string
 	 */
 	private $active_tab = null;
 
 	/**
-	 * Prepare Membership settings manager.
+	 * Construct Settings manager.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -76,7 +81,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Get settings model
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @return MS_Model_Settings
 	 */
@@ -91,7 +96,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * * wp_ajax_toggle_settings
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_settings() {
 		$msg = 0;
@@ -112,7 +117,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * * wp_ajax_update_setting
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function ajax_action_update_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -126,6 +131,15 @@ class MS_Controller_Settings extends MS_Controller {
 		exit;
 	}
 
+	/**
+	 * Handle Ajax update custom setting action.
+	 *
+	 * **Hooks Actions: **
+	 *
+	 * * wp_ajax_update_custom_setting
+	 *
+	 * @since 1.0.0
+	 */
 	public function ajax_action_update_custom_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 
@@ -171,6 +185,18 @@ class MS_Controller_Settings extends MS_Controller {
 		exit;
 	}
 
+	/**
+	 * Auto setup settings.
+	 *
+	 * Fires after a membership setup is completed.
+	 *
+	 * **Hooks Actions: **
+	 * * ms_controller_membership_setup_completed
+	 *
+	 * @since 1.0.0
+	 * 
+	 * @param MS_Model_Membership $membership
+	 */
 	public function auto_setup_settings( $membership ) {
 
 		$settings = $this->get_model();
@@ -204,7 +230,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Show admin notices.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 */
 	public function print_admin_message() {
@@ -214,6 +240,8 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Get available tabs for editing the membership.
 	 *
+	 * @since 1.0.0
+	 * 
 	 * @return array The tabs configuration.
 	 */
 	public function get_tabs() {
@@ -247,15 +275,16 @@ class MS_Controller_Settings extends MS_Controller {
 			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%1$s&tab=%2$s', $page, $key );
 		}
 
-		return apply_filters( 'ms_controller_settings_get_tabs', $tabs );
+		return apply_filters( 'ms_controller_settings_get_tabs', $tabs, $this );
 	}
 
 	/**
 	 * Get the current active settings page/tab.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function get_active_tab() {
+		
 		if ( null === $this->active_tab ) {
 			$tabs = $this->get_tabs();
 
@@ -270,14 +299,16 @@ class MS_Controller_Settings extends MS_Controller {
 			}
 			$this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
 		}
-		return $this->active_tab;
+		
+		return apply_filters( 'ms_controller_settings_get_active_tab', $this->active_tab, $this );
 	}
 
 	/**
 	 * Manages settings actions.
 	 *
 	 * Verifies GET and POST requests to manage settings.
-	 * @since 1.0
+	 * 
+	 * @since 1.0.0
 	 */
 	public function admin_settings_manager() {
 		$this->print_admin_message();
@@ -329,17 +360,16 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * Menu Item: Membership > Settings
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function admin_settings() {
 		$action = ! empty( $_GET['action'] ) ? $_GET['action'] : '';
 
 		do_action( "ms_controller_settings_{$this->active_tab}_{$action}" );
 
-		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", new MS_View_Settings_Edit() );
+		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", MS_Factory::create( 'MS_View_Settings_Edit' ) );
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
-
 
 		switch( $this->get_active_tab() ) {
 			case 'messages-automated':
@@ -366,7 +396,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Save general tab settings.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param string $settings Array of settings to which action will be taken.
@@ -399,13 +429,14 @@ class MS_Controller_Settings extends MS_Controller {
 
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
-		return $msg;
+		
+		return apply_filters( 'ms_controller_settings_save_general', $msg, $action, $fields, $this );
 	}
 
 	/**
 	 * Handle saving of Communication settings.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param mixed[] $fields The data to process.
 	 */
@@ -430,13 +461,14 @@ class MS_Controller_Settings extends MS_Controller {
 			$comm->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
-		return $msg;
+		
+		return apply_filters( 'ms_controller_settings_save_communication', $type, $fields, $this );
 	}
 
 	/**
 	 * Load Membership admin scripts.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		do_action( 'ms_controller_settings_enqueue_scripts_' . $this->get_active_tab() );
@@ -502,6 +534,9 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Associate a javascript file with the new TinyMCE button.
 	 *
+	 * **Hooks Filters: **
+	 * * mce_external_plugins
+	 * 
 	 * @since 1.0.0
 	 *
 	 * @param  array $plugin_array List of default TinyMCE plugin scripts.
@@ -514,13 +549,17 @@ class MS_Controller_Settings extends MS_Controller {
 		// Actually this line would not be needed, but WordPress will not show
 		// our button when this is missing...
 		$plugin_array['ms_variable'] = $plugin_url . 'app/assets/js/ms-admin.js';
+		
 		return $plugin_array;
 	}
 
 	/**
 	 * Register new "Insert variables" button in the editor.
 	 *
-	 * @since  1.0.0
+	 * **Hooks Filters: **
+	 * * mce_buttons
+	 * 
+	 * @since 1.0.0
 	 *
 	 * @param  array $buttons List of default TinyMCE buttons.
 	 * @return array Updated list of TinyMCE buttons.
