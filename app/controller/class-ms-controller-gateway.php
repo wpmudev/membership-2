@@ -295,7 +295,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				$view = apply_filters( 'ms_view_gateway_button', $view, $gateway->id );
 				$view->data = apply_filters( 'ms_view_gateway_button_data', $data, $gateway->id );
 				
-				echo apply_fitlers( 'ms_controller_gateway_purchase_button_'. $gateway->id, $view->to_html(), $ms_relationship, $this );
+				echo apply_filters( 'ms_controller_gateway_purchase_button_'. $gateway->id, $view->to_html(), $ms_relationship, $this );
 			}
 		}
 
