@@ -334,7 +334,10 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$ms_page_types = MS_Model_Pages::get_ms_page_types();
 		$exclude = null;
 		foreach ( $ms_page_types as $type => $title ) {
-			$exclude[] = $ms_pages->get_ms_page_id( $type );
+			$ms_page_id = $ms_pages->get_ms_page_id( $type );
+			if( $ms_page_id ) {
+				$exclude[] = $ms_page_id;
+			}
 		}
 
 		return apply_filters( 'ms_model_rule_page_get_excluded_content', $exclude, $this );
