@@ -52,7 +52,7 @@ class MS_Controller_Member extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$hook = 'protected-content_page_protected-content-members';
+		$hook = 'protect-content_page_protected-content-members';
 
 		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
 

@@ -475,9 +475,14 @@ class MS_Model_Member extends MS_Model {
 				);
 				break;
 			case self::SEARCH_NOT_MEMBERS:
+				$args['meta_query']['relation'] = 'OR';
 				$args['meta_query']['is_member'] = array(
 						'key'     => 'ms_is_member',
 						'compare'   => 'NOT EXISTS',
+				);
+				$args['meta_query']['is_member1'] = array(
+						'key'     => 'ms_is_member',
+						'value'   => false,
 				);
 				break;
 			case self::SEARCH_ALL_USERS:

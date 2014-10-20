@@ -91,8 +91,10 @@ class MS_Model_Upgrade extends MS_Model {
 			$membership->delete( true );
 		}
 		$comms = MS_Model_Communication::load_communications();
-		foreach( $comms as $comm ) {
-			$comm->delete();
+		if( ! empty( $comms ) ) {
+			foreach( $comms as $comm ) {
+				$comm->delete();
+			}
 		}
 		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'status' => 'all' ) );
 		foreach( $ms_relationships as $ms_relationship ) {
