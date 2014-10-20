@@ -130,7 +130,6 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 				),
 				'exp_year' => array(
 						'id' => 'exp_year',
-						'title' => __( '', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'field_options' => $years,
 				),
