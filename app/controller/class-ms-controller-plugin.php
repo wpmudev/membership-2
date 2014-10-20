@@ -28,7 +28,7 @@
  * Responsible for flow control, navigation and invoking other controllers.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -91,7 +91,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		 */
 		$this->add_action( 'admin_enqueue_scripts', 'register_admin_scripts' );
 		$this->add_action( 'admin_enqueue_scripts', 'register_admin_styles' );
-		
+
 		/**
 		 * Register styles and scripts that are used on the front-end.
 		 *
@@ -99,7 +99,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		*/
 		$this->add_action( 'wp_enqueue_scripts', 'register_public_scripts' );
 		$this->add_action( 'wp_enqueue_scripts', 'register_public_styles' );
-		
+
 		/** Register admin styles (CSS) */
 		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
 
@@ -166,12 +166,12 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		/** Create primary menu item: Membership */
 		add_menu_page(
-				__( 'Protected Content', MS_TEXT_DOMAIN ),
-				__( 'Protected Content', MS_TEXT_DOMAIN ),
-				$this->capability,
-				self::MENU_SLUG,
-				null,
-				MS_Plugin::instance()->url . 'app/assets/images/members.png'
+			__( 'Protect Content', MS_TEXT_DOMAIN ),
+			__( 'Protect Content', MS_TEXT_DOMAIN ),
+			$this->capability,
+			self::MENU_SLUG,
+			null,
+			'dashicons-lock'
 		);
 
 		/** Submenus definition */
@@ -254,13 +254,13 @@ class MS_Controller_Plugin extends MS_Controller {
 		}
 
 		$pages = apply_filters( 'ms_plugin_menu_pages', $pages );
-		
+
 		/** Create submenus */
 		foreach( $pages as $page ) {
 			extract( $page );
 			add_submenu_page( $parent_slug, $page_title, $menu_title, $this->capability, $menu_slug, $function );
 		}
-		
+
 		do_action( 'ms_controller_plugin_add_menu_pages', $this );
 	}
 
@@ -286,12 +286,12 @@ class MS_Controller_Plugin extends MS_Controller {
 
 	/**
 	 * Add custom template for invoice cpt.
-	 * 
+	 *
 	 * ** Hooks Actions/Filters: *
 	 * * single_template
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $template The template path to filter.
 	 * @return string The template path.
 	 */
@@ -300,9 +300,9 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		/* Checks for invoice single template */
 		if( $post->post_type == MS_Model_Invoice::$POST_TYPE ) {
-			
+
 			$invoice_template = apply_filters( 'ms_controller_plugin_invoice_template', MS_Plugin::instance()->dir . 'app/template/single-invoice.php' );
-			
+
 			if( file_exists( $invoice_template ) ) {
 				$template = $invoice_template;
 			}
@@ -310,7 +310,7 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		return $template;
 	}
-	
+
 	/**
 	 * Register scripts that are used on the dashboard.
 	 *
@@ -320,14 +320,14 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
-	
+
 		// The main plugin script.
 		wp_register_script(
 			'ms-admin',
 			$plugin_url . 'app/assets/js/ms-admin.js',
 			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'jquery-plugins' ), $version
 		);
-	
+
 		wp_register_script(
 			'jquery-chosen',
 			$plugin_url . 'app/assets/js/select2.js',
@@ -348,7 +348,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/js/ms-controller-admin-bar.js',
 			array( 'jquery', 'ms-admin' ), $version
 		);
-	
+
 		// View specific
 		wp_register_script(
 			'ms-view-membership-overview',
@@ -391,7 +391,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery', 'ms-admin' ), $version
 		);
 	}
-	
+
 	/**
 	 * Register styles that are used on the dashboard.
 	 *
@@ -400,14 +400,14 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function register_admin_styles() {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
-	
+
 		// The main plugin style.
 		wp_register_style(
 			'ms-admin-styles',
 			$plugin_url . 'app/assets/css/ms-admin.css',
 			null, $version
 		);
-	
+
 		wp_register_style(
 			'jquery-ui',
 			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
@@ -439,7 +439,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			null, $version
 		);
 	}
-	
+
 	/**
 	 * Register scripts that are used on the front-end.
 	 *
@@ -448,8 +448,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function register_public_scripts() {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
-	
-		
+
+
 		// @todo REVIEW this block start
 		// The main plugin script.
 		wp_register_script(
@@ -457,7 +457,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/js/ms-admin.js',
 			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'jquery-plugins' ), $version
 		);
-		
+
 		wp_register_script(
 			'jquery-chosen',
 			$plugin_url . 'app/assets/js/select2.js',
@@ -479,7 +479,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery', 'ms-admin' ), $version
 		);
 		// @todo REVIEW this block end
-		
+
 		wp_register_script(
 			'jquery-validate',
 			$plugin_url . 'app/assets/js/jquery.validate.js',
@@ -511,7 +511,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery' ), $version
 		);
 	}
-	
+
 	/**
 	 * Register styles that are used on the front-end.
 	 *
@@ -520,7 +520,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function register_public_styles() {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
-	
+
 		// The main plugin style.
 		wp_register_style(
 			'ms-styles',
@@ -528,7 +528,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery-ui', 'jquery-chosen', 'membership-shortcode', 'membership-admin' ),
 			$version
 		);
-	
+
 		wp_register_style(
 			'membership-admin',
 			$plugin_url . 'app/assets/css/ms-settings.css',
@@ -550,7 +550,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			null, $version
 		);
 	}
-	
+
 	/**
 	 * Adds CSS for Membership settings pages.
 	 *

@@ -110,11 +110,6 @@ label.ms-validation-error:before {
 }
 
 /* Dripped icon indicator */
-div.dripped {
-	background: url("../images/dripped-icon.png") no-repeat 3px 1px #efefef;
-	padding: 2px 2px 2px 30px;
-	cursor: pointer;
-}
 div.dripped .tooltip {
 	display: none;
 }

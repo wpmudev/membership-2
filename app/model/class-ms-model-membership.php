@@ -1438,12 +1438,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			'show_ui' => false,
 			'show_in_menu' => false,
 			'menu_position' => 70, // below Users
-			'menu_icon' => MS_Plugin::instance()->url . "/assets/images/members.png",
+			'menu_icon' => 'dashicons-lock',
 			'public' => true,
 			'has_archive' => false,
 			'publicly_queryable' => false,
 			'supports' => false,
-			'hierarchical' => false
+			'hierarchical' => false,
 		);
 
 		return apply_filters( 'ms_model_membership_get_register_post_type_args', $args );
