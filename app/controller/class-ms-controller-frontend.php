@@ -598,7 +598,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function display_login_form( $content ) {
 	
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
-			$content .= do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
+			$content = do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
 		}
 	
 		return apply_filters( 'ms_controller_frontend_display_login_form', $content, $this );
