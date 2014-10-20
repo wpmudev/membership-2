@@ -379,7 +379,7 @@ class MS_Controller_Settings extends MS_Controller {
 				}
 				$comm = apply_filters(
 					'membership_model_communication',
-					MS_Model_Communication::get_communication( $type )
+					MS_Model_Communication::get_communication( $type, true )
 				);
 				$data['comm'] = $comm;
 				break;
