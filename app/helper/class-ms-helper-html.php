@@ -392,7 +392,7 @@ class MS_Helper_Html extends MS_Helper {
 					$value = array( $value );
 				}
 
-				if ( empty( $field_options) && empty( $value ) ) {
+				if ( empty( $field_options ) ) {
 					// No values available, display a note instead of the input elements.
 					printf(
 						'<div id="%1$s" class="ms-no-data ms-field-input %2$s">%3$s</div>',
@@ -487,6 +487,7 @@ class MS_Helper_Html extends MS_Helper {
 
 		foreach ( $list as $key => $option ) {
 			if ( is_array( $option ) ) {
+				if ( empty( $option ) ) { continue; }
 				$options .= sprintf(
 					'<optgroup label="%1$s">%2$s</optgroup>',
 					$key,

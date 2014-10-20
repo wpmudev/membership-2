@@ -110,10 +110,14 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 						__( 'Protected %s', MS_TEXT_DOMAIN ),
 						$item['label_plural']
 					);
-				$f_txt_empty = sprintf(
-					__( 'No %s available', MS_TEXT_DOMAIN ),
-					$item['label_plural']
-				);
+				if ( empty( $item['label_empty'] ) ) {
+					$f_txt_empty = sprintf(
+						__( 'No %s available', MS_TEXT_DOMAIN ),
+						$item['label_plural']
+					);
+				} else {
+					$f_txt_empty = $item['label_empty'];
+				}
 				$f_placeholder = sprintf(
 					__( 'Choose a %s', MS_TEXT_DOMAIN ),
 					$item['label_single']
@@ -259,6 +263,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			'id' => 'post',
 			'label_single' => __( 'CPT', MS_TEXT_DOMAIN ),
 			'label_plural' => __( 'CPTs', MS_TEXT_DOMAIN ),
+			'label_empty' => __( 'No content found. Please create some custom posts first', MS_TEXT_DOMAIN ),
 		);
 
 		return $this->render_generic_tab( $title, $desc, $field );
