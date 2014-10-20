@@ -28,7 +28,7 @@
  * The primary entry point for managing Membership admin pages.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -50,7 +50,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * The current active tab in the vertical navigation.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var string
 	 */
 	private $active_tab = null;
@@ -194,7 +194,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * * ms_controller_membership_setup_completed
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param MS_Model_Membership $membership
 	 */
 	public function auto_setup_settings( $membership ) {
@@ -241,7 +241,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Get available tabs for editing the membership.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return array The tabs configuration.
 	 */
 	public function get_tabs() {
@@ -284,7 +284,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function get_active_tab() {
-		
+
 		if ( null === $this->active_tab ) {
 			$tabs = $this->get_tabs();
 
@@ -299,7 +299,7 @@ class MS_Controller_Settings extends MS_Controller {
 			}
 			$this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
 		}
-		
+
 		return apply_filters( 'ms_controller_settings_get_active_tab', $this->active_tab, $this );
 	}
 
@@ -307,7 +307,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Manages settings actions.
 	 *
 	 * Verifies GET and POST requests to manage settings.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function admin_settings_manager() {
@@ -374,16 +374,21 @@ class MS_Controller_Settings extends MS_Controller {
 		switch( $this->get_active_tab() ) {
 			case 'messages-automated':
 				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
-				if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
+				if ( MS_Model_Communication::is_valid_communication_type( @$_GET['comm_type'] ) ) {
 					$type = $_GET['comm_type'];
 				}
-				$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
+				$comm = apply_filters(
+					'membership_model_communication',
+					MS_Model_Communication::get_communication( $type )
+				);
 				$data['comm'] = $comm;
 				break;
+
 			case 'pages':
 				$data['ms_pages'] = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages( true );
 				$data['page_types'] = MS_Model_Pages::get_ms_page_types();
 				break;
+
 			case 'messages-protection':
 				$data['membership'] = MS_Model_Membership::get_protected_content();
 				break;
@@ -429,7 +434,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
-		
+
 		return apply_filters( 'ms_controller_settings_save_general', $msg, $action, $fields, $this );
 	}
 
@@ -461,7 +466,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$comm->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
-		
+
 		return apply_filters( 'ms_controller_settings_save_communication', $type, $fields, $this );
 	}
 
@@ -536,7 +541,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * **Hooks Filters: **
 	 * * mce_external_plugins
-	 * 
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param  array $plugin_array List of default TinyMCE plugin scripts.
@@ -549,7 +554,7 @@ class MS_Controller_Settings extends MS_Controller {
 		// Actually this line would not be needed, but WordPress will not show
 		// our button when this is missing...
 		$plugin_array['ms_variable'] = $plugin_url . 'app/assets/js/ms-admin.js';
-		
+
 		return $plugin_array;
 	}
 
@@ -558,7 +563,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * **Hooks Filters: **
 	 * * mce_buttons
-	 * 
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param  array $buttons List of default TinyMCE buttons.

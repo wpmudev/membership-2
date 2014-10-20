@@ -398,7 +398,7 @@ class MS_View_Settings_Edit extends MS_View {
 			'comm_type' => array(
 				'id' => 'comm_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $comm->type,
+				'value' => @$comm->type,
 				'field_options' => $comm_titles,
 			),
 
@@ -411,16 +411,16 @@ class MS_View_Settings_Edit extends MS_View {
 			'type' => array(
 				'id' => 'type',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $comm->type,
+				'value' => @$comm->type,
 			),
 
 			'enabled' => array(
 				'id' => 'enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $comm->enabled,
+				'value' => @$comm->enabled,
 				'class' => 'ms-ajax-update',
 				'data_ms' => array(
-						'type' => $comm->type,
+						'type' => @$comm->type,
 						'field' => 'enabled',
 						'action' => $action,
 						'_wpnonce' => $nonce,
@@ -431,13 +431,13 @@ class MS_View_Settings_Edit extends MS_View {
 				'id' => 'period_unit',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
-				'value' => $comm->period['period_unit'],
+				'value' => @$comm->period['period_unit'],
 			),
 
 			'period_type' => array(
 				'id' => 'period_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $comm->period['period_type'],
+				'value' => @$comm->period['period_type'],
 				'field_options' => MS_Helper_Period::get_periods(),
 			),
 
@@ -445,14 +445,14 @@ class MS_View_Settings_Edit extends MS_View {
 				'id' => 'subject',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
-				'value' => $comm->subject,
+				'value' => @$comm->subject,
 				'class' => 'ms-comm-subject widefat',
 			),
 
 			'message' => array(
 				'id' => 'message',
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-				'value' => $comm->description,
+				'value' => @$comm->description,
 				'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
 			),
 
@@ -460,13 +460,13 @@ class MS_View_Settings_Edit extends MS_View {
 				'id' => 'cc_enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
-				'value' => $comm->cc_enabled,
+				'value' => @$comm->cc_enabled,
 			),
 
 			'cc_email' => array(
 				'id' => 'cc_email',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $comm->cc_email,
+				'value' => @$comm->cc_email,
 				'field_options' => MS_Model_Member::get_admin_user_emails(),
 			),
 
@@ -528,19 +528,21 @@ class MS_View_Settings_Edit extends MS_View {
 				MS_Helper_Html::html_element( $fields['nonce'] );
 				MS_Helper_Html::html_element( $fields['type'] );
 
-				printf(
-					'<h3>%1$s %2$s: %3$s</h3><div class="ms-description" style="margin-bottom:20px;">%4$s</div>',
-					esc_html( $comm_titles[ $comm->type ] ),
-					__( 'Message', MS_TEXT_DOMAIN ),
-					MS_Helper_Html::html_element( $fields['enabled'], true ),
-					$comm->get_description()
-				);
+				if ( is_a( $comm, 'MS_Model_Communication' ) ) {
+					printf(
+						'<h3>%1$s %2$s: %3$s</h3><div class="ms-description" style="margin-bottom:20px;">%4$s</div>',
+						esc_html( $comm_titles[ $comm->type ] ),
+						__( 'Message', MS_TEXT_DOMAIN ),
+						MS_Helper_Html::html_element( $fields['enabled'], true ),
+						$comm->get_description()
+					);
 
-				if ( $comm->period_enabled ) {
-					echo '<div class="ms-period-wrapper">';
-					MS_Helper_Html::html_element( $fields['period_unit'] );
-					MS_Helper_Html::html_element( $fields['period_type'] );
-					echo '</div>';
+					if ( $comm->period_enabled ) {
+						echo '<div class="ms-period-wrapper">';
+						MS_Helper_Html::html_element( $fields['period_unit'] );
+						MS_Helper_Html::html_element( $fields['period_type'] );
+						echo '</div>';
+					}
 				}
 
 				MS_Helper_Html::html_element( $fields['subject'] );
@@ -563,7 +565,7 @@ class MS_View_Settings_Edit extends MS_View {
 		 */
 		$var_button = array(
 			'title' => __( 'Insert Membership Variables', MS_TEXT_DOMAIN ),
-			'items' => $comm->comm_vars,
+			'items' => @$comm->comm_vars,
 		);
 		printf(
 			'<script>window.ms_data.var_button = %1$s;window.ms_data.lang_confirm = %2$s</script>',
