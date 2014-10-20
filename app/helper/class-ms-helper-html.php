@@ -402,25 +402,8 @@ class MS_Helper_Html extends MS_Helper {
 					);
 				} else {
 					// There are values to select or remove. Display the input elements.
-					foreach ( $field_options as $key => $option ) {
-						$is_selected = ( array_key_exists( $key, $value ) );
-						$attr_sel = selected( $is_selected, true, false );
-						$attr_show = ($is_selected ? 'disabled="disabled"' : '');
-
-						$options_selected .= sprintf(
-							'<option value="%1$s" %2$s>%3$s</option>',
-							esc_attr( $key ),
-							$attr_sel,
-							$option
-						);
-
-						$options_available .= sprintf(
-							'<option value="%1$s" %2$s>%3$s</option>',
-							esc_attr( $key ),
-							$attr_show,
-							$option
-						);
-					}
+					$options_selected = self::select_options( $field_options );
+					$options_available = self::select_options( $field_options, 'taglist' );
 
 					// First Select: The value selected here can be added to the tag-list.
 					printf(
@@ -487,7 +470,61 @@ class MS_Helper_Html extends MS_Helper {
 
 		// Return the output buffer
 		if ( $return ) { return ob_get_clean(); }
+	}
 
+	/**
+	 * Returns HTML code containing options used to build a select tag.
+	 *
+	 * @since  1.0.0
+	 * @param  array $list List items as 'key => value' pairs.
+	 * @param  array|string $value The selected value.
+	 * @param  string $type Either 'default' or 'taglist'.
+	 *
+	 * @return string
+	 */
+	private static function select_options( $list, $value = '', $type = 'default' ) {
+		$options = '';
+
+		foreach ( $list as $key => $option ) {
+			if ( is_array( $option ) ) {
+				$options .= sprintf(
+					'<optgroup label="%1$s">%2$s</optgroup>',
+					$key,
+					self::select_options( $option, $value, $type )
+				);
+			} else {
+				if ( is_array( $value ) ) {
+					$is_selected = ( array_key_exists( $key, $value ) );
+				}
+				else {
+					$is_selected = $key == $value;
+				}
+
+				switch ( $type ) {
+					case 'default':
+						$attr = selected( $is_selected, true, false );
+						$options .= sprintf(
+							'<option value="%1$s" %2$s>%3$s</option>',
+							esc_attr( $key ),
+							$attr,
+							$option
+						);
+						break;
+
+					case 'taglist':
+						$attr = ($is_selected ? 'disabled="disabled"' : '');
+						$options .= sprintf(
+							'<option value="%1$s" %2$s>%3$s</option>',
+							esc_attr( $key ),
+							$attr,
+							$option
+						);
+						break;
+				}
+			}
+		}
+
+		return $options;
 	}
 
 	/**

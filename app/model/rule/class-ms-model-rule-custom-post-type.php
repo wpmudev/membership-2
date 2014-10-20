@@ -260,7 +260,11 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		$contents = $this->get_contents();
 
 		foreach ( $contents as $content ) {
-			$cont[ $content->id ] = $content->post_title;
+			if ( ! is_array( $cont[ $content->post_type ] ) ) {
+				$cont[ $content->post_type ] = array();
+			}
+
+			$cont[ $content->post_type ][ $content->id ] = $content->post_title;
 		}
 
 		return apply_filters( 'ms_model_rule_cpt_get_content_array', $cont, $this );
