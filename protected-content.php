@@ -69,7 +69,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_VERSION', '1.0.0' );
+define( 'MS_PLUGIN_VERSION', '1.0.0.1' );
 
 /**
  * Hooks 'ms_class_path_overrides'.
