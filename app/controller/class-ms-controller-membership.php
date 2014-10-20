@@ -85,7 +85,7 @@ class MS_Controller_Membership extends MS_Controller {
 		parent::__construct();
 
 		$protected_content_menu_hook = 'toplevel_page_protected-content';
-		$protected_content_setup_hook = 'protected-content_page_protected-content-setup';
+		$protected_content_setup_hook = 'protect-content_page_protected-content-setup';
 
 		$this->add_action( 'load-' . $protected_content_menu_hook, 'membership_admin_page_process' );
 		$this->add_action( 'load-' . $protected_content_setup_hook, 'membership_admin_page_process' );

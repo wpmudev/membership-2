@@ -63,7 +63,7 @@ class MS_Controller_Settings extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$hook = 'protected-content_page_protected-content-settings';
+		$hook = 'protect-content_page_protected-content-settings';
 		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_settings' );
 

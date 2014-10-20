@@ -51,7 +51,7 @@ class MS_Controller_Addon extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$addon_menu_hook = 'protected-content_page_protected-content-addon';
+		$addon_menu_hook = 'protect-content_page_protected-content-addon';
 
 		/* Load the add-on manager model. */
 		$this->add_action( 'load-' . $addon_menu_hook, 'admin_addon_process' );

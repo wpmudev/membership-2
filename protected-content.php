@@ -41,12 +41,12 @@ Text Domain: wpmudev_protected_content
 global $wpmudev_notices;
 $wpmudev_notices[] = array( 'id'=> 928907, 'name'=> 'Protected Content', 'screens' => array( 
 		'toplevel_page_protected-content' , 
-		'protected-content_page_protected-content-members',
-		'protected-content_page_protected-content-setup',
-		'protected-content_page_protected-content-billing',
-		'protected-content_page_protected-content-coupons',
-		'protected-content_page_protected-content-addon',
-		'protected-content_page_protected-content-settings', 
+		'protect-content_page_protected-content-members',
+		'protect-content_page_protected-content-setup',
+		'protect-content_page_protected-content-billing',
+		'protect-content_page_protected-content-coupons',
+		'protect-content_page_protected-content-addon',
+		'protect-content_page_protected-content-settings', 
 ) );
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 

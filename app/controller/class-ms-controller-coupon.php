@@ -40,7 +40,7 @@ class MS_Controller_Coupon extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$hook = 'protected-content_page_protected-content-coupons';
+		$hook = 'protect-content_page_protected-content-coupons';
 		$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
