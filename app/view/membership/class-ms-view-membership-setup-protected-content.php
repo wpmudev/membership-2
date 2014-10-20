@@ -609,7 +609,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			$output .= sprintf(
 				'<div><hr /><h4>Found CPTs</h4><pre>%1$s</pre><h4>Excluded CPTs</h4><pre>%2$s</pre></div>',
 				print_r( get_post_types(), true ),
-				print_r( $rule::get_excluded_content(), true )
+				print_r( MS_Model_Rule_Custom_Post_Type_Group::get_excluded_content(), true )
 			);
 		}
 
