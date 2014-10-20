@@ -105,13 +105,14 @@ class MS_Model_Plugin extends MS_Model {
 			/* Deactivated status invalidates all memberships*/
 			if( false == $this->member->is_member || false == $this->member->active ) {
 				$this->member->ms_relationships = array();
+				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
 			/* Visitor: assign a Visitor Membership = Protected Content */
 			if( ! $this->member->has_membership() ){
 				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 			}
 		}
-		
+
 		do_action( 'ms_model_plugin_init_member_after', $this );
 	}
 	
