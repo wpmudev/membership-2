@@ -661,10 +661,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$rule = null;
 
 		if( isset( $this->rules[ $rule_type ] ) ) {
-			if( $this->protected_content ) {
-				$this->rules[ $rule_type ]->rule_value_invert = true;
-				$this->rules[ $rule_type ]->rule_value_default = false;
-			}
+
 			$rule = $this->rules[ $rule_type ];
 		}
 		elseif( 'attachment' == $rule_type && isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] ) ) {
@@ -676,11 +673,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		else {
 			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
 
-			if( $this->protected_content ) {
-				$rule->rule_value_invert = true;
-				$rule->rule_value_default = false;
-			}
 			$this->rules[ $rule_type ] = $rule;
+		}
+		//Default values for protected content and normal memberships.
+		if( $this->protected_content ) {
+			$rule->rule_value_invert = true;
+			$rule->rule_value_default = false;
+		}
+		else {
+			$rule->rule_value_invert = false;
+			$rule->rule_value_default = true;
 		}
 
 		return apply_filters( 'ms_model_membership_get_rule', $rule, $rule_type, $this );
