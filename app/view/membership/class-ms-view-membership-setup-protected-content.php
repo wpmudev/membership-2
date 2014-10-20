@@ -52,6 +52,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			);
 
 			$html = call_user_func( $render_callback );
+			$html .= $this->additional_information(); // Basic debugging infos.
 			$html = apply_filters( 'ms_view_membership_protected_content_' . $callback_name, $html );
 			echo $html;
 			?>
@@ -584,5 +585,29 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		</div>
 		<?php
 		return ob_get_clean();
+	}
+
+	/**
+	 * Used by function `to_html()` to append optional debugging information to
+	 * the HTML output.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return string
+	 */
+	protected function additional_information() {
+		$membership = $this->data['membership'];
+		$output = '';
+
+		if ( ! empty( $_GET['debug-cpt'] ) ) {
+			$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
+			$output .= sprintf(
+				'<div><hr /><h4>Found CPTs</h4><pre>%1$s</pre><h4>Excluded CPTs</h4><pre>%2$s</pre></div>',
+				print_r( get_post_types(), true ),
+				print_r( $rule::get_excluded_content(), true )
+			);
+		}
+
+		return $output;
 	}
 }
