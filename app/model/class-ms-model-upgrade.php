@@ -59,7 +59,7 @@ class MS_Model_Upgrade extends MS_Model {
 			
 			//Upgrade logic
 			switch( $settings->version ) {
-				case '0.0.0':
+				case '1.0.0':
 					self::cleanup_db();
 					flush_rewrite_rules();
 						
