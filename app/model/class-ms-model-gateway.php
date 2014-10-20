@@ -397,6 +397,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 				/* The trial period info gets updated after MS_Model_Membership_Relationship::config_period() */ 
 				$trial_period = $ms_relationship->is_trial_eligible();
 				$ms_relationship->current_invoice_number = max( $ms_relationship->current_invoice_number, $invoice->invoice_number + 1 );
+				$member->is_member = true;
 				$member->active = true;
 				$ms_relationship->config_period();
 				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
