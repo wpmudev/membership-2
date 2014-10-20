@@ -54,7 +54,7 @@ class MS_View_Membership_Choose_Type extends MS_View {
 				'field_options' => array(
 					MS_Model_Membership::TYPE_SIMPLE => array(
 						'text' => __( 'I simply want to protect some of my content.', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This is the most basic membership that creates as single membership level. Members will have access to all protected content.<p class="ms-italic">eg. Visitors don\'t see protected content, members access all protected content.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'This is the most basic membership that creates a single membership level. Members will have access to all protected content.<p class="ms-italic">eg. Visitors don\'t see protected content, members access all protected content.', MS_TEXT_DOMAIN ),
 					),
 					MS_Model_Membership::TYPE_CONTENT_TYPE => array(
 						'text' => __( 'I want to have different content available to different members.', MS_TEXT_DOMAIN ),
