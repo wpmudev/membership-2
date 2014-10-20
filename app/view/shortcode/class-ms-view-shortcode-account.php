@@ -6,7 +6,7 @@ class MS_View_Shortcode_Account extends MS_View {
 	
 	protected $fields;
 	
-	protected $personnal_info;
+	protected $personal_info;
 	
 	public function to_html() {
 		$this->prepare_fields();
@@ -56,7 +56,7 @@ class MS_View_Shortcode_Account extends MS_View {
 					?>
 				</h2>
 				<table>
-					<?php foreach( $this->personnal_info as $field => $title ): ?>
+					<?php foreach( $this->personal_info as $field => $title ): ?>
 						<tr>
 							<th class="ms-label-title"><?php echo $title; ?>: </th>
 							<td class="ms-label-field"><?php echo $this->data['member']->$field;?></td>
@@ -130,7 +130,7 @@ class MS_View_Shortcode_Account extends MS_View {
 	}
 	
 	public function prepare_fields() {
-		$this->personnal_info = array( 
+		$this->personal_info = array( 
 			'first_name' => __( 'First name', MS_TEXT_DOMAIN ), 
 			'last_name' => __( 'Last name', MS_TEXT_DOMAIN ),
 			'username' => __( 'Username', MS_TEXT_DOMAIN ),
