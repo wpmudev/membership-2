@@ -400,7 +400,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				$coupon->remove_coupon_application( $member->id, $membership_id );
 				$coupon = MS_Factory::create( ' MS_Model_Coupon' );
 			}
-			elseif( ! empty( $_POST['apply_coupon_code'] ) ) {
+			elseif( isset( $_POST['apply_coupon_code'] ) ) {
 				if( $coupon->is_valid_coupon() ) {
 					$coupon->save_coupon_application( $ms_relationship );
 					$data['coupon_valid'] = true;

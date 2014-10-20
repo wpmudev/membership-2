@@ -494,7 +494,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			delete_transient( $transient_name );
 		}
 
-		do_action( 'ms_model_coupon_remove_coupon_application', $ms_relationship, $this );
+		do_action( 'ms_model_coupon_remove_coupon_application', $user_id, $membership_id );
 	}
 	
 	/**
