@@ -865,7 +865,7 @@ class MS_Helper_Html extends MS_Helper {
 		reset( $tabs );
 		$first_key = key( $tabs );
 
-		/** Setup navigation tabs. */
+		// Setup navigation tabs.
 		if ( empty( $active_tab ) ) {
 			$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
 		}
@@ -874,15 +874,19 @@ class MS_Helper_Html extends MS_Helper {
 			$active_tab = $first_key;
 		}
 
-		/** Render tabbed interface. */
+		// Render tabbed interface.
 		?>
 		<div class="ms-tab-container">
 			<ul id="sortable-units" class="ms-tabs" style="">
 				<?php foreach ( $tabs as $tab_name => $tab ) :
 					$tab_class = $tab_name == $active_tab ? 'active' : '';
+					$url = $tab['url'];
+					if ( 1 == @$_GET['edit'] ) {
+						$url = add_query_arg( 'edit', 1, $url );
+					}
 					?>
 					<li class="ms-tab <?php echo esc_attr( $tab_class ); ?> ">
-						<a class="ms-tab-link" href="<?php echo esc_url( $tab['url'] ); ?>">
+						<a class="ms-tab-link" href="<?php echo esc_url( $url ); ?>">
 							<?php echo esc_html( $tab['title'] ); ?>
 						</a>
 					</li>
