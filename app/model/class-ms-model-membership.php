@@ -1237,6 +1237,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		
 		$has_access = false;
 		
+		if( ! empty( $post_id ) ) {
+			$post = get_post( $post_id );
+			if( 'attachment' == $post->post_type ) {
+				$post_id = get_post_field( 'post_parent', $post_id );
+			}
+		}
 		/* If 'has access' is found in the hierarchy, it does have access. */
 		$rules = $this->get_rules_hierarchy();
 		foreach( $rules as $rule ) {

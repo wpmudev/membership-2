@@ -306,9 +306,14 @@ class MS_Model_Pages extends MS_Model_Option {
 	 */
 	public function get_ms_page_id( $page_type, $create_if_not_exists = false ) {
 		
+		$ms_page_id = 0;
+
 		$ms_page = $this->get_ms_page( $page_type, $create_if_not_exists );
+		if( ! empty( $ms_page ) ) {
+			$ms_page_id = $ms_page->id;
+		}
 		
-		return apply_filters( 'ms_model_page_get_ms_page', $ms_page->id, $this );
+		return apply_filters( 'ms_model_page_get_ms_page', $ms_page_id, $create_if_not_exists, $this );
 	}
 	
 	/**

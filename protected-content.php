@@ -6,7 +6,7 @@ Plugin URI: http://premium.wpmudev.org/project/protected-content
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author: WPMU DEV
 Author URI: http://premium.wpmudev.org
-WDP ID:
+WDP ID: 928907
 License: GNU General Public License (Version 2 - GPLv2)
 Text Domain: wpmudev_protected_content
  */
@@ -15,7 +15,6 @@ Text Domain: wpmudev_protected_content
  * @copyright Incsub (http://incsub.com/)
  *
  * Authors: Fabio Jun Onishi, Philipp Stracker, Victor Ivanov, Jack Kitterhing, Rheinard Korf
- * Lead Developer: Fabio Jun Onishi
  * Contributors: Joji Mori, Patrick Cohen
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -39,6 +38,16 @@ Text Domain: wpmudev_protected_content
 /**
  * Include WPMUDev Dashboard
  */
+global $wpmudev_notices;
+$wpmudev_notices[] = array( 'id'=> 928907, 'name'=> 'Protected Content', 'screens' => array( 
+		'toplevel_page_protected-content' , 
+		'protected-content_page_protected-content-members',
+		'protected-content_page_protected-content-setup',
+		'protected-content_page_protected-content-billing',
+		'protected-content_page_protected-content-coupons',
+		'protected-content_page_protected-content-addon',
+		'protected-content_page_protected-content-settings', 
+) );
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 
 /**
@@ -60,7 +69,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_VERSION', '1.0.0.0.2' );
+define( 'MS_PLUGIN_VERSION', '1.0.0' );
 
 /**
  * Hooks 'ms_class_path_overrides'.

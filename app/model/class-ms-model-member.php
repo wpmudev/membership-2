@@ -73,13 +73,20 @@ class MS_Model_Member extends MS_Model {
 	 * @var boolean
 	 */
 	protected $is_member = false;
-	
-	/** 
-	 * Staus to activate or deactivate a user independently of the membership status. 
-	 * @deprecated Use $is_member.
-	 * */
+
+	/**
+	 * Active status.
+	 *
+	 * Staus to activate or deactivate a user independently of the membership status.
+	 * False indicates blocked members (if signed up for a membership).
+	 * For further use. (For temporary member blocking).
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var boolean
+	 */
 	protected $active = true;
-	
+
 	/**
 	 * Member's username.
 	 *
@@ -637,6 +644,7 @@ class MS_Model_Member extends MS_Model {
 		
 		$this->ms_relationships = array();
 		$this->gateway_profiles = array();
+		$this->is_member = false;
 		
 		do_action( 'ms_model_membership_delete_all_membership_usermeta', $this );
 	}

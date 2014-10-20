@@ -158,11 +158,15 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 			$fields['p1'] = array(
 					'id' => 'p1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => ! empty( $membership->trial_period['period_unit'] ) ? $membership->trial_period['period_unit']: 1,
+					'value' => MS_Helper_Period::get_period_value( $membership->trial_period, 'period_unit' ),
 			);
+			
+			$period_type = MS_Helper_Period::get_period_value( $membership->trial_period, 'period_type' );
+			$period_type = strtoupper( $period_type[0] );
 			$fields['t1'] = array(
 					'id' => 't1',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $period_type,
 					'value' => ! empty( $membership->trial_period['period_type'] ) ? strtoupper( $membership->trial_period['period_type'][0] ) : 'D',
 			);
 		}
@@ -178,46 +182,53 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		switch( $membership->payment_type ) {
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
 				$fields['p3'] = array(
-				'id' => 'p3',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => ! empty( $membership->pay_cycle_period['period_unit'] ) ? $membership->pay_cycle_period['period_unit']: 0,
+					'id' => 'p3',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => MS_Helper_Period::get_period_value( $membership->pay_cycle_period, 'period_unit' ),
 				);
+
+				$period_type = MS_Helper_Period::get_period_value( $membership->pay_cycle_period, 'period_type' );
+				$period_type = strtoupper( $period_type[0] );
+				
 				$fields['t3'] = array(
 						'id' => 't3',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => ! empty( $membership->pay_cycle_period['period_type'] ) ? strtoupper( $membership->pay_cycle_period['period_type'][0] ) : 'D',
+						'value' => $period_type,
 				);
 				$recurring = 1;
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				$fields['p3'] = array(
-				'id' => 'p3',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => ! empty( $membership->period['period_unit'] ) ? $membership->period['period_unit']: 1,
+						'id' => 'p3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => MS_Helper_Period::get_period_value( $membership->period, 'period_unit' ),
 				);
+				
+				$period_type = MS_Helper_Period::get_period_value( $membership->period, 'period_type' );
+				$period_type = strtoupper( $period_type[0] );
 				$fields['t3'] = array(
 						'id' => 't3',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
+						'value' => $period_type,
 				);
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				$fields['p3'] = array(
-				'id' => 'p3',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => MS_Helper_Period::subtract_dates( $membership->period_date_end, $membership->period_date_start ),
+						'id' => 'p3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => MS_Helper_Period::subtract_dates( $membership->period_date_end, $membership->period_date_start ),
 				);
 				$fields['t3'] = array(
 						'id' => 't3',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => ! empty( $membership->period['period_type'] ) ? strtoupper( $membership->period['period_type'][0] ) : 'D',
+						'value' => 'D',
 				);
 				break;
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 				$fields['p3'] = array(
-				'id' => 'p3',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => 5,
+						'id' => 'p3',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 5,
 				);
 				$fields['t3'] = array(
 						'id' => 't3',

@@ -180,7 +180,6 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			$rule = $this->get_rule( $protected_content, $post );
 			$data['rule_type'] = $rule->rule_type;
 			foreach( $memberships as $membership ) {
-				$rule = $this->get_rule( $membership, $post );
 				
 				$data['access'][ $membership->id ]['has_access'] =  $membership->has_access_to_post( $post->ID );
 
@@ -220,6 +219,9 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		switch( $post_type ) {
 			case 'post':
 				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
+				break;
+			case 'attachment':
+				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEDIA );
 				break;
 			default:
 				if( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
