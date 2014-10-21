@@ -366,7 +366,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	public function get_discount_value( $ms_relationship ) {
 		
 		$membership = $ms_relationship->get_membership();
-		$price = ( $ms_relationship->is_trial_eligible() ) ? $membership->trial_price : $membership->price;
+		$price = $membership->price;
 		$original_price = $price;
 		$discount = 0;
 

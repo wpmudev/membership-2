@@ -385,6 +385,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		elseif( ! empty( $_POST['ms_relationship_id'] ) ) {
 			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
 			$membership = $ms_relationship->get_membership();
+			$membership_id = $membership->id;
 			if( ! empty( $_POST['error'] ) ) {
 				$data['error'] = $_POST['error'];
 			}
@@ -417,7 +418,9 @@ class MS_Controller_Frontend extends MS_Controller {
 
 		$data['coupon'] = $coupon;
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$next_invoice = MS_Model_Invoice::get_next_invoice( $ms_relationship );
 		$data['invoice'] = $invoice;
+		$data['next_invoice'] = $next_invoice;
 
 		$data['membership'] = $membership;
 		$data['member'] = $member;
