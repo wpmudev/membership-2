@@ -295,7 +295,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
 			if ( ! array_key_exists( $active_tab, $tabs ) ) {
 				wp_safe_redirect( add_query_arg( array( 'tab' => $first_key ) ) );
-				die();
+				exit;
 			}
 			$this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
 		}
@@ -327,6 +327,7 @@ class MS_Controller_Settings extends MS_Controller {
 					if( $this->validate_required( $fields, 'GET' ) ) {
 						$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
 						wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
+						exit;
 					}
 					break;
 				case 'messages-automated':
@@ -337,12 +338,14 @@ class MS_Controller_Settings extends MS_Controller {
 					/** Load comm type from user select */
 					if( $this->validate_required( array( 'comm_type' ) ) && MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] ) ) {
 						wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type'] ), remove_query_arg( 'msg' ) ) ) ;
+						exit;
 					}
 
 					$fields = array( 'type', 'subject', 'message' );
 					if( isset( $_POST['save_email'] ) && $this->validate_required( $fields ) ) {
 						$msg = $this->save_communication( $type, $_POST );
-						wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) ) ;
+						wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) );
+						exit;
 					}
 					break;
 				case 'pages':

@@ -133,6 +133,7 @@ class MS_Controller_Member extends MS_Controller {
 				$msg = true;//TODO
 
 				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+				exit;
 			}
 			/**
 			 * Execute list table single action.
@@ -141,6 +142,7 @@ class MS_Controller_Member extends MS_Controller {
 			if( $this->verify_nonce( null, 'GET' ) && $this->validate_required( $fields, 'GET' ) ) {
 				$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
 				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
+				exit;
 			}
 			/**
 			 * Execute list table bulk actions.
@@ -150,6 +152,7 @@ class MS_Controller_Member extends MS_Controller {
 				if( $action == 'toggle_activation') {
 					$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
 					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+					exit;
 				}
 			}
 			/**
@@ -159,6 +162,7 @@ class MS_Controller_Member extends MS_Controller {
 				$member_ids = is_array( $_POST['member_id'] ) ? $_POST['member_id'] : explode( ',', $_POST['member_id'] );
 				$msg = $this->member_list_do_action( $_POST['action'], $member_ids, $_POST['membership_id'] );
 				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+				exit;
 			}
 		}
 

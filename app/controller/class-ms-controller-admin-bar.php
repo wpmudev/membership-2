@@ -120,6 +120,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$this->simulate->membership_id = $_GET['membership_id'];
 			$this->simulate->save();
 			wp_safe_redirect( wp_get_referer() );
+			exit;
 		}
 		
 		/* Check for simulation periods/dates in POST request */
@@ -143,6 +144,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			
 			$this->simulate->save();
 			wp_safe_redirect( wp_get_referer() );
+			exit;
 		}
 	}
 

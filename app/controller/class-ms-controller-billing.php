@@ -75,6 +75,7 @@ class MS_Controller_Billing extends MS_Controller {
 		if ( $this->validate_required( $fields ) && $this->verify_nonce() && $this->is_admin_user() ) {
 			$msg = $this->save_invoice( $_POST );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invoice_id') ) ) ) ;
+			exit;
 		}
 		/**
 		 * Execute bulk actions.
@@ -83,6 +84,7 @@ class MS_Controller_Billing extends MS_Controller {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+			exit;
 		}
 	}
 

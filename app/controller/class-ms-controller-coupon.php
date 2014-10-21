@@ -63,6 +63,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		if ( $this->validate_required( $isset, 'POST', false ) && $this->verify_nonce() && $this->is_admin_user() ) {
 			$msg = $this->save_coupon( $_POST );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'coupon_id') ) ) ) ;
+			exit;
 		}
 		/**
 		 * Execute table single action.
@@ -70,6 +71,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		elseif( $this->validate_required( array( 'coupon_id', 'action' ), 'GET' ) && $this->verify_nonce( $_GET['action'], 'GET' ) && $this->is_admin_user() ) {
 			$msg = $this->coupon_do_action( $_GET['action'], array( $_GET['coupon_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) ) ) );
+			exit;
 		}
 		/**
 		 * Execute bulk actions.
@@ -78,6 +80,7 @@ class MS_Controller_Coupon extends MS_Controller {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->coupon_do_action( $action, $_POST['coupon_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+			exit;
 		}
 	}
 
