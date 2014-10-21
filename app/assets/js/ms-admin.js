@@ -182,18 +182,22 @@ window.ms_functions = {
 
 		info_field = fn.ajax_show_indicator( me );
 		is_popup = me.parents( '.ms-dlg-wrap' ).length;
+		jQuery( document ).trigger( 'ms-ajax-form-send', [me, data, is_popup, info_field] );
 
 		jQuery.post(
 			window.ajaxurl,
 			data,
 			function( response ) {
-				if ( fn.ajax_error( response, info_field ) ) {
+				var is_err = fn.ajax_error( response, info_field );
+
+				if ( is_err ) {
 					// Reset the input control to previous value...
 				} else {
 					if ( is_popup ) {
 						fn.close_dialogs();
 					}
 				}
+				jQuery( document ).trigger( 'ms-ajax-form-done', [me, response, is_err, data, is_popup, info_field] );
 			}
 		);
 		return false;
@@ -397,23 +401,24 @@ window.ms_functions = {
 
 		data['action'] = 'ms_dialog';
 		data['dialog'] = me.attr( 'data-ms-dialog' );
+		jQuery( document ).trigger( 'ms-load-dialog', [data] );
 
 		jQuery.post(
 			window.ajaxurl,
 			data,
 			function( response ) {
-				var dlg, dlg_title, dlg_close, dlg_content, data = false;
+				var dlg, dlg_title, dlg_close, dlg_content, resp = false;
 
-				try { data = jQuery.parseJSON( response ); }
-				catch( err ) { data = false; }
+				try { resp = jQuery.parseJSON( response ); }
+				catch( err ) { resp = false; }
 
-				data.title = data.title || 'Dialog';
-				data.height = data.height || 100;
-				data.content = data.content || '';
+				resp.title = resp.title || 'Dialog';
+				resp.height = resp.height || 100;
+				resp.content = resp.content || '';
 
-				if ( data !== false ) {
-					if ( ! isNaN( data.height ) ) {
-						data.height += 51;
+				if ( resp !== false ) {
+					if ( ! isNaN( resp.height ) ) {
+						resp.height += 51;
 					}
 
 					// Close button
@@ -423,20 +428,22 @@ window.ms_functions = {
 					// Title
 					dlg_title = jQuery( '<div class="ms-dlg-title"></div>' );
 					dlg_title.append( '<span></span>' ).append( dlg_close );
-					dlg_title.find( 'span' ).html( data.title );
+					dlg_title.find( 'span' ).html( resp.title );
 
 					// Content
 					dlg_content = jQuery( '<div class="ms-dlg-content"></div>' );
-					dlg_content.html( data.content );
+					dlg_content.html( resp.content );
 
 					// Combine all dialog elements
 					dlg = jQuery( '<div class="ms-dlg"></div>' );
-					dlg.append( dlg_title ).append( dlg_content ).height( data.height );
+					dlg.append( dlg_title ).append( dlg_content ).height( resp.height );
 
 					fn.dlg_wrap.append( dlg ).show();
 
 					// Initialize UI components.
 					fn.init( dlg );
+
+					jQuery( document ).trigger( 'ms-open-dialog', [dlg, resp, data] );
 				}
 			}
 		);
@@ -448,14 +455,18 @@ window.ms_functions = {
 	 * Closes all open dialogs.
 	 */
 	close_dialogs: function() {
-		var fn = window.ms_functions;
+		var fn = window.ms_functions,
+			dlgs = [];
 
 		if ( undefined !== fn.dlg_wrap ) {
+			dlgs = fn.dlg_wrap.find( '.ms-dlg' );
+			jQuery( document ).trigger( 'ms-close-dialogs', [dlgs] );
+
 			// Hide all dialogs.
 			fn.dlg_wrap.hide();
 
 			// Remove all dialogs from DOM.
-			fn.dlg_wrap.find( '.ms-dlg' ).remove();
+			dlgs.remove();
 		}
 	}
 };
@@ -969,6 +980,17 @@ window.ms_init.view_settings_mailchimp = function init() {
 /*global ms_functions:false */
 
 window.ms_init.view_settings_payment = function init() {
+	function toggle_status( ev, form, response, is_err, data, is_popup, info_field ) {
+		var active = jQuery( '.ms-active-wrapper-' + data.gateway_id );
+
+		if ( ! is_err ) {
+			active.removeClass( 'ms-gateway-not-configured' )
+				.addClass( 'ms-gateway-configured' );
+		}
+	}
+
+	jQuery( document ).on( 'ms-ajax-form-done', toggle_status );
+	/*
 	function close_gateway_settings() {
 		window.self.parent.tb_remove();
 	}
@@ -995,6 +1017,7 @@ window.ms_init.view_settings_payment = function init() {
 	jQuery( '.ms-gateway-setings-form' ).each( setting_init );
 
 	jQuery( '.ms-close-button' ).click( close_gateway_settings );
+	*/
 };
 
 /*global window:false */

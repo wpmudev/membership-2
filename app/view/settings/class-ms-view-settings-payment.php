@@ -78,11 +78,7 @@ class MS_View_Settings_Payment extends MS_View {
 				<?php $gateway_list->display(); ?>
 			</div>
 
-			<?php /* foreach ( $gateways as $gateway ) : ?>
-				<div class="ms-gateway-settings-wrapper ms-half" id="ms-gateway-settings-<?php echo esc_attr( $gateway->id ); ?>">
-					<?php do_action( 'ms_controller_gateway_settings_render_view', $gateway->id ); ?>
-				</div>
-			<?php endforeach; */ ?>
+			<?php MS_Helper_Html::settings_footer( null, false ); ?>
 		</div>
 		<?php
 		$html = ob_get_clean();

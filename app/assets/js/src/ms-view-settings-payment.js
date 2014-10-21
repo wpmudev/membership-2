@@ -5,6 +5,17 @@
 /*global ms_functions:false */
 
 window.ms_init.view_settings_payment = function init() {
+	function toggle_status( ev, form, response, is_err, data, is_popup, info_field ) {
+		var active = jQuery( '.ms-active-wrapper-' + data.gateway_id );
+
+		if ( ! is_err ) {
+			active.removeClass( 'ms-gateway-not-configured' )
+				.addClass( 'ms-gateway-configured' );
+		}
+	}
+
+	jQuery( document ).on( 'ms-ajax-form-done', toggle_status );
+	/*
 	function close_gateway_settings() {
 		window.self.parent.tb_remove();
 	}
@@ -31,4 +42,5 @@ window.ms_init.view_settings_payment = function init() {
 	jQuery( '.ms-gateway-setings-form' ).each( setting_init );
 
 	jQuery( '.ms-close-button' ).click( close_gateway_settings );
+	*/
 };

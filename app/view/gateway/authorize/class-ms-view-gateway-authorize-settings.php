@@ -66,6 +66,12 @@ class MS_View_Gateway_Authorize_Settings extends MS_View {
 				'value' => 'Gateway_' . $gateway->id . '_Dialog',
 			),
 
+			'gateway_id' => array(
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'name' => 'gateway_id',
+				'value' => $gateway->id,
+			),
+
 			'separator' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			),

@@ -336,7 +336,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		);
 
 		foreach ( $fields as $key => $field ) {
-			if ( is_array( $field['data_ms'] ) ) {
+			if ( is_array( @$field['data_ms'] ) ) {
 				$fields[ $key ]['data_ms']['_wpnonce'] = $nonce;
 				$fields[ $key ]['data_ms']['action'] = $action;
 				$fields[ $key ]['data_ms']['membership_id'] = $membership->id;

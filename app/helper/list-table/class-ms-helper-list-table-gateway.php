@@ -46,9 +46,9 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	public function __construct(){
 		parent::__construct(
 			array(
-				'singular'  => 'gateway',
-				'plural'    => 'gateways',
-				'ajax'      => false,
+				'singular' => 'gateway',
+				'plural'   => 'gateways',
+				'ajax'     => false,
 			)
 		);
 	}
@@ -138,7 +138,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		$actions = array(
 				sprintf(
 					'<a href="#" data-ms-dialog="Gateway_%s_Dialog">%s</a>',
-					$item->id,
+					esc_attr( $item->id ),
 					__( 'Configure', MS_TEXT_DOMAIN )
 				),
 				sprintf(
@@ -190,7 +190,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		$html .= '<div class="ms-gateway-setup-wrapper">';
 		$html .= sprintf(
 			'<a class="button" href="#" data-ms-dialog="Gateway_%s_Dialog"><i class="fa fa-cog"></i> %s</a>',
-			$item->id,
+			esc_attr( $item->id ),
 			__( 'Configure', MS_TEXT_DOMAIN )
 		);
 		$html .= '</div></div>';

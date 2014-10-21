@@ -423,13 +423,17 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function process_purchase() {
-
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
-		if( $this->validate_required( $fields ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) &&
-				$this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
+		$valid = true;
+		$nonce_name = @$_POST['gateway'] . '_' . @$_POST['ms_relationship_id'];
 
+		if ( $valid && ! $this->validate_required( $fields ) ) { $valid = false; $err = 'GAT-01 (invalid fields)'; }
+		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) { $valid = false; $err = 'GAT-02 (invalid gateway)'; }
+		if ( $valid && ! $this->verify_nonce( $nonce_name ) ) { $valid = false; $err = 'GAT-03 (invalid nonce)'; }
+
+		if ( $valid ) {
 			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
 
 			$gateway_id = $_POST['gateway'];
@@ -437,31 +441,39 @@ class MS_Controller_Gateway extends MS_Controller {
 			try {
 				$invoice = $gateway->process_purchase( $ms_relationship );
 
-				/** If invoice is successfully paid, redirect to welcome page */
-				if( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
+				// If invoice is successfully paid, redirect to welcome page.
+				if ( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
 					$url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false, true );
 					$url = add_query_arg( array( 'ms_relationship_id' => $ms_relationship->id ), $url );
 					wp_safe_redirect( $url );
 					exit;
 				}
-				/** For manual gateway payments */
-				else{
+				// For manual gateway payments.
+				else {
 					$this->add_action( 'the_content', 'purchase_info_content' );
 				}
 			}
 			catch ( Exception $e ) {
+				/**
+				 * TODO: This try-catch seems to be also triggered by other plugins!
+				 * E.g. When I activate marketpress there sometimes is a warning generated,
+				 * and this warning also causes the payment to "not work"...
+				 */
 				MS_Helper_Debug::log( $e->getMessage() );
-				switch( $gateway_id ) {
+
+				switch ( $gateway_id ) {
 					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 						$_POST['auth_error'] = $e->getMessage();
-						/** call action to step back */
+						// call action to step back
 						do_action( 'ms_controller_frontend_signup_gateway_form' );
 						break;
+
 					case MS_Model_Gateway::GATEWAY_STRIPE:
 						$_POST['error'] = sprintf( __( 'Error: %s', MS_TEXT_DOMAIN ), $e->getMessage() );
-						/** Hack to send the error message back to the payment_table. */
+						// Hack to send the error message back to the payment_table.
 						MS_Plugin::instance()->controller->controllers['frontend']->add_action( 'the_content', 'payment_table', 1 );
 						break;
+
 					default:
 						do_action( 'ms_controller_gateway_form_error', $e );
 						$this->add_action( 'the_content', 'purchase_error_content' );
@@ -470,6 +482,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			}
 		}
 		else {
+			MS_Helper_Debug::log( 'Error Code ' . $err );
+
 			$this->add_action( 'the_content', 'purchase_error_content' );
 		}
 
@@ -508,9 +522,12 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function purchase_error_content( $content ) {
-
-		return apply_filters( 'ms_controller_gateway_purchase_error_content',
-				__( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN ), $content, $this );
+		return apply_filters(
+			'ms_controller_gateway_purchase_error_content',
+			__( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN ),
+			$content,
+			$this
+		);
 	}
 
 	/**
