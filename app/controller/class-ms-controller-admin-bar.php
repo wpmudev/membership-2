@@ -64,7 +64,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$this->simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
 
-		/* Hide WP toolbar in fron end to not admin users */
+		/* Hide WP toolbar in front end to not admin users */
 		if ( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
 			add_filter( 'show_admin_bar', '__return_false' );
 			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar_front', 999 );
@@ -117,14 +117,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		
 		/* Check for memberhship id simulation GET request */
 		if ( isset( $_GET['membership_id'] ) && $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
-			$this->simulate->membership_id = $_GET['membership_id'];
+			$this->simulate->membership_id = $_GET['membership_id']; //should these values be validated?
 			$this->simulate->save();
 			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
 		
 		/* Check for simulation periods/dates in POST request */
-		$isset = array( 'simulate_submit', 'simulate_type' ) ;
+		$isset = array( 'simulate_submit', 'simulate_type' );
 		if ( $this->validate_required( $isset, 'POST', false ) ) {
 
 			$this->simulate->type = $_POST['simulate_type'];
@@ -132,7 +132,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			if ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
 				$isset = array( 'period_unit', 'period_type' );
 				if ( $this->validate_required( $isset, 'POST', false ) ) {
-					$this->simulate->period = array( 'period_unit' => $_POST['period_unit'], 'period_type' => $_POST['period_type'] );
+					$this->simulate->period = array( 'period_unit' => $_POST['period_unit'], 'period_type' => $_POST['period_type'] );//should these values be validated?
 				}
 				
 			}

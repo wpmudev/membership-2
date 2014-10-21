@@ -2,10 +2,10 @@
 /*
 Plugin Name: Protected Content
 Version: 1.0
-Plugin URI: http://premium.wpmudev.org/project/protected-content
+Plugin URI: https://premium.wpmudev.org/project/protected-content/
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author: WPMU DEV
-Author URI: http://premium.wpmudev.org
+Author URI: http://premium.wpmudev.org/
 WDP ID: 928907
 License: GNU General Public License (Version 2 - GPLv2)
 Text Domain: wpmudev_protected_content
@@ -314,7 +314,7 @@ class MS_Plugin {
 
 		add_action( 'init', array( &$this, 'add_rewrite_tags' ), 1 );
 
-		/* Plugin acctivation Hook */
+		/* Plugin activation Hook */
 		register_activation_hook( __FILE__, array( &$this, 'plugin_activation' ) );
 
 		/**
@@ -428,7 +428,7 @@ class MS_Plugin {
 				'exclude_from_search' => false,
 				'show_in_admin_all_list' => false,
 				'show_in_admin_status_list' => true,
-				'label_count' => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>' ),
+				'label_count' => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>', MS_TEXT_DOMAIN ),
 			)
 		);
 	}
@@ -544,8 +544,8 @@ class MS_Plugin {
 		}
 
 		/**
-		 * Case 1: The class-path is explicitely defined in $Path_overrides.
-		 * Simpy use the defined path to load the class.
+		 * Case 1: The class-path is explicitly defined in $Path_overrides.
+		 * Simply use the defined path to load the class.
 		 */
 		if ( array_key_exists( $class, $Path_overrides ) ) {
 			$file_path = $basedir . '/' . $Path_overrides[ $class ];
@@ -558,7 +558,7 @@ class MS_Plugin {
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
-			if ( is_readable( $file_path ) ) {
+			if ( is_readable( $file_path ) ) { //unnecessary filesystem overhead. Just use include_once and fail gracefully
 				require_once $file_path;
 				return true;
 			}
@@ -583,7 +583,7 @@ class MS_Plugin {
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
-			if ( is_readable( $file_path ) ) {
+			if ( is_readable( $file_path ) ) {//unnecessary filesystem overhead. Just use include_once and fail gracefully
 				require_once $file_path;
 				return true;
 			}
@@ -597,7 +597,7 @@ class MS_Plugin {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $links Wordpress default array of links.
+	 * @param array $links WordPress default array of links.
 	 * @return array Array of links with settings page links added.
 	 */
 	public function plugin_settings_link( $links ) {
@@ -623,7 +623,7 @@ class MS_Plugin {
 	}
 
 	/**
-	 * Returns singletone instance of the plugin.
+	 * Returns singleton instance of the plugin.
 	 *
 	 * @since 1.0.0
 	 *

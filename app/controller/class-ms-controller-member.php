@@ -91,7 +91,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function ajax_action_get_users() {
-		$callback_name = @$_REQUEST['callback'];
+		$callback_name = @$_REQUEST['callback'];//this seems like a potential XSS vulnerability
 
 		$data = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS, false );
 		

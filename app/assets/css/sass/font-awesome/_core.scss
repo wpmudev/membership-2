@@ -3,6 +3,7 @@
 
 .#{$fa-css-prefix} {
   display: inline-block;
+  //The actual fontface name needs to be unique to avoid plugin conflicts that use different versions for FA
   font: normal normal normal 14px/1 FontAwesome; // shortening font declaration
   font-size: inherit; // can't have font-size inherit on line above, so need to override
   text-rendering: auto; // optimizelegibility throws things off #1094

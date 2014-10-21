@@ -866,7 +866,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
 		$url = admin_url( 'admin.php' );
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
+		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships'; //this could possibly be xss is you don't escape tab urls in view
 		foreach ( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = admin_url(
 				sprintf(
@@ -894,7 +894,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$step = $this->get_step();
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';
+		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';//this could possibly be xss is you don't escape tab urls in view
 
 		foreach ( $tabs as $tab => $info ) {
 			$rule = $protected_content->get_rule( $tab );
@@ -966,7 +966,7 @@ class MS_Controller_Membership extends MS_Controller {
 		);
 
 		$step = $this->get_step();
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content';
+		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content';//this could possibly be xss is you don't escape tab urls in view
 		foreach( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = admin_url( sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s',
 					$page,
@@ -1438,7 +1438,7 @@ class MS_Controller_Membership extends MS_Controller {
 							array(
 								'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),
 								'invalid_rule_msg' => __( 'Invalid', MS_TEXT_DOMAIN ),
-								'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ),
+								'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ), //wording confusing
 								'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
 							)
 						);

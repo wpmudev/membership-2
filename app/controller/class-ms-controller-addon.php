@@ -25,7 +25,7 @@
 /**
  * Controller for Membership add-ons.
  *
- * Manages the activating and deactivating of Memnbership addons.
+ * Manages the activating and deactivating of Membership addons.
  *
  * @since 1.0.0
  * 
@@ -112,7 +112,7 @@ class MS_Controller_Addon extends MS_Controller {
 	public function admin_addon_process() {
 
 		/**
-		 * Hook into the Addon reguest handler before processing.
+		 * Hook into the Addon request handler before processing.
 		 *
 		 * **Note:**
 		 * This action uses the "raw" request objects which could lead to SQL injections / XSS.
