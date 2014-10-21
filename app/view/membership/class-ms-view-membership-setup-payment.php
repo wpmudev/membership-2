@@ -179,16 +179,18 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			<div class="ms-after-end-wrapper">
 				<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
 			</div>
-			<div class="ms-trial-wrapper">
-				<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
-				<div id="ms-trial-period-wrapper">
-					<div class="ms-period-wrapper">
-						<?php MS_Helper_Html::html_element( $fields['trial_period_enabled'] );?>
-						<?php MS_Helper_Html::html_element( $fields['trial_period_unit'] );?>
-						<?php MS_Helper_Html::html_element( $fields['trial_period_type'] );?>
+			<?php if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
+				<div class="ms-trial-wrapper">
+					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
+					<div id="ms-trial-period-wrapper">
+						<div class="ms-period-wrapper">
+							<?php MS_Helper_Html::html_element( $fields['trial_period_enabled'] );?>
+							<?php MS_Helper_Html::html_element( $fields['trial_period_unit'] );?>
+							<?php MS_Helper_Html::html_element( $fields['trial_period_type'] );?>
+						</div>
 					</div>
 				</div>
-			</div>
+			<?php endif; ?>
 			<?php
 			MS_Helper_Html::save_text();
 			MS_Helper_Html::settings_box_footer();
