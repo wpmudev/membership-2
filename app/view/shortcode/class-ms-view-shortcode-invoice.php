@@ -6,6 +6,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 	public function to_html() {
 		$invoice = $this->data['invoice'];
+		$trial_invoice = $this->data['trial_invoice'];
 		$member = $this->data['member'];
 		$ms_relationship = $this->data['ms_relationship'];
 		$membership = $this->data['membership'];
@@ -59,14 +60,22 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_title = apply_filters( 'ms_invoice_title', $inv_title, $invoice );
 		$inv_from = apply_filters( 'ms_invoice_sender', MS_Plugin::instance()->settings->invoice_sender_name, $invoice );
 		$inv_to = apply_filters( 'ms_invoice_recipient', $member->username, $invoice, $member );
-		$inv_due_date = apply_filters( 'ms_invoice_due_date', $invoice->due_date, $invoice );
 		$inv_status = apply_filters( 'ms_invoice_status', $invoice->status, $invoice );
 		$inv_item_name = apply_filters( 'ms_invoice_item_name', $membership->name, $invoice, $membership );
-		$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice );
-		$inv_amount = apply_filters( 'my_invoice_amount', $inv_amount, $invoice );
-		$inv_discount = apply_filters( 'my_invoice_discount', $inv_discount, $invoice );
-		$inv_pro_rate = apply_filters( 'my_invoice_pro_rate', $inv_pro_rate, $invoice );
-		$inv_total = apply_filters( 'my_invoice_total', $inv_total, $invoice );
+		$inv_amount = apply_filters( 'ms_invoice_amount', $inv_amount, $invoice );
+		$inv_discount = apply_filters( 'ms_invoice_discount', $inv_discount, $invoice );
+		$inv_pro_rate = apply_filters( 'ms_invoice_pro_rate', $inv_pro_rate, $invoice );
+		$inv_total = apply_filters( 'ms_invoice_total', $inv_total, $invoice );
+
+		if ( ! empty( $trial_invoice ) ) {
+			$inv_details = apply_filters( 'ms_invoice_description', $trial_invoice->description, $trial_invoice, $invoice );
+			$inv_due_date = apply_filters( 'ms_invoice_due_date', $trial_invoice->due_date, $trial_invoice, $invoice );
+			$trial_date = apply_filters( 'ms_invoice_trial_date', $invoice->due_date, $trial_invoice, $invoice );
+		} else {
+			$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
+			$inv_due_date = apply_filters( 'ms_invoice_due_date', $invoice->due_date, $invoice, null );
+			$trial_date = '';
+		}
 
 		ob_start();
 		?>
@@ -152,6 +161,13 @@ class MS_View_Shortcode_Invoice extends MS_View {
 							<th><?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?></th>
 							<td class="ms-inv-price"><?php echo $inv_pro_rate; ?></td>
 						</tr>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $trial_invoice ) ) : ?>
+					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
+						<th><?php _e( 'Payment on', MS_TEXT_DOMAIN ); ?></th>
+						<td class="ms-inv-date"><?php echo $trial_date; ?></td>
+					</tr>
 					<?php endif; ?>
 
 					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">

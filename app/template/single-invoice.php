@@ -7,7 +7,10 @@ get_header(); ?>
 			<article>
 				<?php
 					global $post;
-					echo do_shortcode( '[' . MS_Helper_Shortcode::SCODE_MS_INVOICE . ' post_id="' . $post->ID .'"]' );
+
+					$attr = array( 'post_id' => $post->ID );
+					$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];
+					echo $scode->membership_invoice( $attr );
 				?>
 			</article>
 		</div><!-- #content -->

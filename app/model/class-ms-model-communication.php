@@ -652,16 +652,21 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @return bool True if sucessfully sent email.
 	 */
 	public function send_message( $ms_relationship ) {
-
 		do_action( 'ms_model_communication_send_message_before', $ms_relationship, $this );
 
 		$sent = false;
 
-		if( $this->enabled ) {
+		if ( $this->enabled ) {
 			$wp_user = new WP_User( $ms_relationship->user_id );
-			if( ! is_email( $wp_user->user_email ) ) {
-				MS_Helper_Debug::log( "Invalid user email. User_id: $ms_relationship->user_id, email: $wp_user->user_email" );
-				return;
+			if ( ! is_email( $wp_user->user_email ) ) {
+				MS_Helper_Debug::log(
+					sprintf(
+						'Invalid user email. User_id: %1$s, email: %2$s',
+						$ms_relationship->user_id,
+						$wp_user->user_email
+					)
+				);
+				return false;
 			}
 
 			$comm_vars = $this->get_comm_vars( $ms_relationship, $wp_user );
@@ -675,19 +680,19 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$subject = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $subject ) );
 
 			$message = $text_message;
-			if( 'text/html' == $this->get_mail_content_type() ) {
+			if ( 'text/html' == $this->get_mail_content_type() ) {
 				$this->add_filter( 'wp_mail_content_type', 'get_mail_content_type' );
 				$message = $html_message;
 			}
 
 			$recipients = array( $wp_user->user_email );
-			if( $this->cc_enabled ) {
+			if ( $this->cc_enabled ) {
 				$recipients[] = $this->cc_email;
 			}
 
 			$admin_emails = MS_Model_Member::get_admin_user_emails();
 			$headers = '';
-			if( ! empty( $admin_emails[0] ) ) {
+			if ( ! empty( $admin_emails[0] ) ) {
 				$headers = array(
 						sprintf( 'From: %s <%s> ', get_option( 'blogname' ), $admin_emails[0] )
 				);
@@ -701,7 +706,27 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 
 			$sent = @wp_mail( $recipients, $subject, $message, $headers );
 
-			if( 'text/html' == $this->get_mail_content_type() ) {
+			/*
+			-- Debugging code --
+
+			MS_Helper_Debug::log(
+				sprintf(
+					"Sent email %s to <%s>: %s\n%s",
+					$this->type,
+					implode( ', ', $recipients ),
+					(int) $sent,
+					$message
+				)
+			);
+			MS_Helper_Debug::log(
+				sprintf(
+					"Variables:\n%s",
+					print_r( $comm_vars, true )
+				)
+			);
+			*/
+
+			if ( 'text/html' == $this->get_mail_content_type() ) {
 				$this->remove_filter( 'wp_mail_content_type', 'get_mail_content_type' );
 			}
 		}
@@ -718,27 +743,27 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to send message to.
 	 * @param WP_User $wp_user The wordpress user object to get info from.
 	 * @return array {
-	 * 		Returns array of ( $var_name => $var_replace ).
+	 *     Returns array of ( $var_name => $var_replace ).
 	 *
-	 * 		@type string $var_name The variable name to replace.
-	 * 		@type string $var_replace The variable corresponding replace string.
+	 *     @type string $var_name The variable name to replace.
+	 *     @type string $var_replace The variable corresponding replace string.
 	 * }
 	 */
 	public function get_comm_vars( $ms_relationship, $wp_user ) {
-
 		$currency = MS_Plugin::instance()->settings->currency . ' ';
 		$membership = $ms_relationship->get_membership();
 
 		$class = get_class( $this );
 		$previous_invoice = array(
-				'MS_Model_Communication_Registration',
-				'MS_Model_Communication_Invoice',
-				'MS_Model_Communication_After_Payment_Made',
+			'MS_Model_Communication_Registration',
+			'MS_Model_Communication_Invoice',
+			'MS_Model_Communication_After_Payment_Made',
 		);
 
 		$invoice = null;
-		if( in_array( $class, $previous_invoice ) ) {
-			if( ! $invoice = MS_Model_Invoice::get_previous_invoice( $ms_relationship ) ) {
+
+		if ( in_array( $class, $previous_invoice ) ) {
+			if ( ! $invoice = MS_Model_Invoice::get_previous_invoice( $ms_relationship ) ) {
 				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 			}
 		}
@@ -753,65 +778,83 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				case self::COMM_VAR_BLOG_NAME:
 					$comm_vars[ $key ] = get_option( 'blogname' );
 					break;
+
 				case self::COMM_VAR_BLOG_URL:
 					$comm_vars[ $key ] = get_option( 'home' );
 					break;
+
 				case self::COMM_VAR_USERNAME:
 					$comm_vars[ $key ] = $wp_user->user_login;
 					break;
+
 				case self::COMM_VAR_USER_DISPLAY_NAME:
 					$comm_vars[ $key ] = $wp_user->display_name;
 					break;
+
 				case self::COMM_VAR_USER_FIRST_NAME:
 					$comm_vars[ $key ] = $wp_user->user_firstname;
 					break;
+
 				case self::COMM_VAR_USER_LAST_NAME:
 					$comm_vars[ $key ] = $wp_user->user_lastname;
 					break;
+
 				case self::COMM_VAR_NET_NAME:
 					$comm_vars[ $key ] = get_site_option( 'site_name' );
 					break;
+
 				case self::COMM_VAR_NET_URL:
 					$comm_vars[ $key ] = get_site_option( 'siteurl' );
 					break;
+
 				case self::COMM_VAR_MS_NAME:
-					if( $membership->name ) {
+					if ( $membership->name ) {
 						$comm_vars[ $key ] = $membership->name;
 					}
 					else {
 						$comm_vars[ $key ] = '';
 					}
 					break;
+
 				case self::COMM_VAR_MS_INVOICE:
-					if( isset( $invoice ) && $invoice->total > 0 ) {
-						$comm_vars[ $key ] = do_shortcode( sprintf( '[%s post_id="%s" pay_button="0"]',
-								MS_Helper_Shortcode::SCODE_MS_INVOICE,
-								$invoice->id
-						) );
+					if ( isset( $invoice ) && ( $invoice->total > 0 || $invoice->trial_period ) ) {
+						$attr = array( 'post_id' => $invoice->id, 'pay_button' => 0 );
+						$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];
+						$comm_vars[ $key ] = $scode->membership_invoice( $attr );
 					}
 					else {
 						$comm_vars[ $key ] = '';
 					}
 					break;
+
 				case self::COMM_VAR_MS_ACCOUNT_PAGE_URL:
-					$comm_vars[ $key ] = sprintf( '<a href="%s">%s</a>',
+					$comm_vars[ $key ] = sprintf(
+						'<a href="%s">%s</a>',
 						MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
 						__( 'account page', MS_TEXT_DOMAIN )
 					);
 					break;
+
 				case self::COMM_VAR_MS_REMAINING_DAYS:
 					$days = $ms_relationship->get_remaining_period();
 					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $days,  abs( $days ) > 1 ? 's': '' );
 					break;
+
 				case self::COMM_VAR_MS_REMAINING_TRIAL_DAYS:
 					$days = $ms_relationship->get_remaining_trial_period();
 					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $days,  abs( $days ) > 1 ? 's': '' );
 					break;
+
 				case self::COMM_VAR_MS_EXPIRY_DATE:
 					$comm_vars[ $key ] = $ms_relationship->expire_date;
 					break;
 			}
-			$comm_vars[ $key ] = apply_filters( "ms_model_communication_send_message_comm_var_$key", $comm_vars[ $key ], $ms_relationship );
+
+			$comm_vars[ $key ] = apply_filters(
+				'ms_model_communication_send_message_comm_var_' . $key,
+				$comm_vars[ $key ],
+				$ms_relationship
+			);
 		}
 
 		return apply_filters( 'ms_model_communication_get_comm_vars', $comm_vars );

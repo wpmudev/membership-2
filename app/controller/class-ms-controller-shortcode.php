@@ -26,7 +26,7 @@
  * Controller for managing Plugin Shortcodes.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -52,7 +52,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, array( $this, 'membership_account' ) );
 
 		add_shortcode( MS_Helper_Shortcode::SCODE_MS_INVOICE, array( $this, 'membership_invoice' ) );
-		
+
 		add_shortcode( MS_Helper_Shortcode::SCODE_GREEN_NOTE, array( $this, 'ms_green_note' ) );
 		add_shortcode( MS_Helper_Shortcode::SCODE_RED_NOTE, array( $this, 'ms_red_note' ) );
 	}
@@ -118,7 +118,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 
 		$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $data['ms_relationships'] ) );
-		
+
 		$data['memberships'] = $memberships;
 
 		/** When Multiple memberships is not enabled, a member should move to another membership. */
@@ -150,13 +150,13 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * Membership title shortcode callback function.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_title( $atts ) {
-		
+
 		$title = null;
-		
+
 		$data = apply_filters(
 				'ms_controller_shortcode_membership_title_atts',
 				shortcode_atts(
@@ -169,14 +169,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 		if( ! empty( $data['id'] ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
-			$title = sprintf( __( 'Membership title: %1$s', MS_TEXT_DOMAIN ), 
-					$membership->name 
+			$title = sprintf( __( 'Membership title: %1$s', MS_TEXT_DOMAIN ),
+					$membership->name
 			);
 		}
 		else {
 			$title = $data['title'];
 		}
-		
+
 		return apply_filters( 'ms_controller_shortcode_membership_title', $title, $atts, $this );
 	}
 
@@ -184,12 +184,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * Membership price shortcode callback function.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_price( $atts ) {
 		$price = 0;
-		
+
 		$data = apply_filters(
 				'ms_controller_shortcode_membership_price_atts',
 				shortcode_atts(
@@ -199,7 +199,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 						$atts
 				)
 		);
-		
+
 		if( ! empty( $data['id'] ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
 			$price = sprintf( __( 'Membership price: %1$s %2$s', MS_TEXT_DOMAIN ),
@@ -207,7 +207,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 					$membership->price
 			);
 		}
-		
+
 		return apply_filters( 'ms_controller_shortcode_membership_price', $price, $atts, $this );
 	}
 
@@ -215,7 +215,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * Membership login shortcode callback function.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_login( $atts ) {
@@ -241,7 +241,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_membership_login_data', $data, $this );
-		
+
 		return $view->to_html();
 	}
 
@@ -249,7 +249,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * Membership account page shortcode callback function.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_account( $atts ) {
@@ -281,10 +281,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'author' => $data['member']->id,
 				'posts_per_page' => 10,
 		) );
-		
+
 		$view = MS_Factory::create( 'MS_View_Shortcode_Account' );
 		$view->data = apply_filters( 'ms_view_shortcode_account_data', $data, $this );
-		
+
 		return $view->to_html();
 	}
 
@@ -296,25 +296,91 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_invoice( $atts ) {
-		$data = apply_filters( 'ms_controller_shortcode_invoice_atts',
-				shortcode_atts(
-						array(
-								'post_id' => 0,
-								'pay_button' => 1,
-						),
-						$atts,
-						MS_Helper_Shortcode::SCODE_MS_INVOICE
-				)
+		$data = apply_filters(
+			'ms_controller_shortcode_invoice_atts',
+			shortcode_atts(
+				array(
+					'post_id' => 0,
+					'pay_button' => 1,
+				),
+				$atts,
+				MS_Helper_Shortcode::SCODE_MS_INVOICE
+			)
 		);
 
-		if( ! empty( $data['post_id'] ) ) {
+		if ( ! empty( $data['post_id'] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $data['post_id'] );
+			$trial_invoice = null;
+
+			if ( $invoice->trial_period ) {
+				// This is the trial-period invoice. Use thethe first real invoice instead.
+				$paid_args = array(
+					'meta_query' => array(
+						'relation' => 'AND',
+						array(
+							'key' => 'ms_relationship_id',
+							'value' => $invoice->ms_relationship_id,
+							'compare' => '=',
+						),
+						array(
+							'key' => 'trial_period',
+							'value' => '',
+							'compare' => '=',
+						),
+						array(
+							'key' => 'invoice_number',
+							'value' => $invoice->invoice_number + 1,
+							'compare' => '=',
+						)
+					)
+				);
+				$paid_invoice = MS_Model_Invoice::get_invoices( $paid_args );
+
+				if ( ! empty( $paid_invoice ) ) {
+					$trial_invoice = $invoice;
+					$invoice = reset( $paid_invoice );
+				}
+			}
+
+			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
+
 			$data['invoice'] = $invoice;
 			$data['member'] = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
-			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
 			$data['ms_relationship'] = $ms_relationship;
 			$data['membership'] = $ms_relationship->get_membership();
 			$data['gateway'] = MS_Model_Gateway::factory( $invoice->gateway_id );
+
+			// Try to find a related trial-period invoice.
+			if ( null === $trial_invoice ) {
+				$trial_args = array(
+					'meta_query' => array(
+						'relation' => 'AND',
+						array(
+							'key' => 'ms_relationship_id',
+							'value' => $invoice->ms_relationship_id,
+							'compare' => '=',
+						),
+						array(
+							'key' => 'trial_period',
+							'value' => '',
+							'compare' => '!=',
+						),
+						array(
+							'key' => 'invoice_number',
+							'value' => $invoice->invoice_number,
+							'compare' => '<',
+							'type' => 'NUMERIC',
+						)
+					)
+				);
+				$trial_invoice = MS_Model_Invoice::get_invoices( $trial_args );
+
+				if ( ! empty( $trial_invoice ) ) {
+					$trial_invoice = reset( $trial_invoice );
+				}
+			}
+
+			$data['trial_invoice'] = $trial_invoice;
 
 			$view = MS_Factory::create( 'MS_View_Shortcode_Invoice' );
 			$view->data = apply_filters( 'ms_view_shortcode_invoice_data', $data, $this );
@@ -322,7 +388,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			return $view->to_html();
 		}
 	}
-	
+
 	/**
 	 * Green text note shortcode callback function.
 	 *
@@ -331,7 +397,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_green_note( $atts, $content = '' ) {
-		
+
 		$data = apply_filters( 'ms_controller_ms_green_note_atts',
 				shortcode_atts(
 						array(
@@ -340,9 +406,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 						$atts
 				)
 		);
-		
+
 		$content = sprintf( '<p class="%1$s"> %2$s </p> ', $data['class'], $content );
-		
-		return apply_filters( 'ms_controller_shortcode_ms_gren_note', $content, $this ); 
+
+		return apply_filters( 'ms_controller_shortcode_ms_gren_note', $content, $this );
 	}
 }
