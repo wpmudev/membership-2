@@ -7,7 +7,7 @@ class MS_View_Frontend_Payment extends MS_View {
 	public function to_html() {
 		$membership = $this->data['membership'];
 		$invoice = $this->data['invoice'];
-		$next_invoice = $this->data['next_invoice'];
+
 		$class = 'ms-alert-success';
 		$msg = __( 'Please check the details of the membership below and click on the relevant button to complete the signup.', MS_TEXT_DOMAIN );
 		if( ! empty( $this->data['error'] ) ) {
