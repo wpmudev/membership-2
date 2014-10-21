@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership Premium\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-21 21:11-0000\n"
-"PO-Revision-Date: 2014-10-21 21:12-0000\n"
+"POT-Creation-Date: 2014-10-21 18:36-0300\n"
+"PO-Revision-Date: 2014-10-21 18:37-0300\n"
 "Last-Translator: jun <contato@vendadesites.com.br>\n"
 "Language-Team: Incsub <devs@incsub.com>\n"
 "Language: en_US\n"
@@ -226,7 +226,7 @@ msgstr "Membership Levels"
 
 #: app/controller/class-ms-controller-membership.php:1250
 #: app/helper/list-table/class-ms-helper-list-table-rule.php:54
-#: app/model/class-ms-model-membership.php:299
+#: app/model/class-ms-model-membership.php:307
 #: app/view/membership/class-ms-view-membership-setup-dripped.php:18
 #, fuzzy
 msgid "Dripped Content"
@@ -274,7 +274,7 @@ msgstr "Content Protection"
 
 #: app/controller/class-ms-controller-plugin.php:199
 #: app/controller/class-ms-controller-plugin.php:252
-#: app/model/class-ms-model-membership.php:1000
+#: app/model/class-ms-model-membership.php:1009
 #: app/model/class-ms-model-pages.php:83
 msgid "Protected Content"
 msgstr "Protected Content"
@@ -306,7 +306,7 @@ msgstr "Settings"
 msgid "Set-up"
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:603
+#: app/controller/class-ms-controller-plugin.php:598
 #, fuzzy
 msgid "Are you sure you want to cancel?"
 msgstr "Are you sure you want to deactivate this level?"
@@ -747,7 +747,7 @@ msgstr "Add subscription"
 #: app/helper/list-table/class-ms-helper-list-table-membership-group.php:62
 #: app/helper/list-table/class-ms-helper-list-table-membership.php:48
 #: app/model/class-ms-model-membership_relationship.php:191
-#: app/view/membership/class-ms-view-membership-overview.php:37
+#: app/view/membership/class-ms-view-membership-overview.php:57
 msgid "Active"
 msgstr "Active"
 
@@ -770,7 +770,7 @@ msgstr ""
 
 #: app/helper/list-table/class-ms-helper-list-table-billing.php:47
 #: app/helper/list-table/class-ms-helper-list-table-event.php:45
-#: app/view/membership/class-ms-view-membership-overview.php:85
+#: app/view/membership/class-ms-view-membership-overview.php:130
 msgid "User"
 msgstr "User"
 
@@ -900,13 +900,13 @@ msgstr ""
 #: app/helper/list-table/rule/class-ms-helper-list-table-rule-media.php:41
 #: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:82
 #: app/view/frontend/class-ms-view-frontend-activities.php:20
-#: app/view/membership/class-ms-view-membership-overview.php:84
+#: app/view/membership/class-ms-view-membership-overview.php:129
 #: app/view/shortcode/class-ms-view-shortcode-account.php:106
 msgid "Date"
 msgstr "Date"
 
 #: app/helper/list-table/class-ms-helper-list-table-event.php:47
-#: app/view/membership/class-ms-view-membership-overview.php:86
+#: app/view/membership/class-ms-view-membership-overview.php:131
 msgid "Event"
 msgstr ""
 
@@ -1045,7 +1045,7 @@ msgid "Payment options"
 msgstr "Advanced Settings"
 
 #: app/helper/list-table/class-ms-helper-list-table-membership.php:185
-#: app/model/class-ms-model-membership.php:337
+#: app/model/class-ms-model-membership.php:345
 msgid "Private"
 msgstr "Private"
 
@@ -1063,6 +1063,8 @@ msgstr ""
 #: app/helper/list-table/class-ms-helper-list-table-membership.php:220
 #: app/view/frontend/class-ms-view-frontend-payment.php:53
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:29
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:64
+#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:89
 msgid "Free"
 msgstr ""
 
@@ -2582,75 +2584,75 @@ msgstr "That email address is already taken, sorry."
 msgid "Select an user"
 msgstr "Select a page"
 
-#: app/model/class-ms-model-membership.php:296
+#: app/model/class-ms-model-membership.php:304
 msgid "Simple"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:297
+#: app/model/class-ms-model-membership.php:305
 #, fuzzy
 msgid "Multiple Content Types"
 msgstr "Protected content page"
 
-#: app/model/class-ms-model-membership.php:298
+#: app/model/class-ms-model-membership.php:306
 msgid "Tier Based"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:360
+#: app/model/class-ms-model-membership.php:368
 msgid "Single payment for permanent access"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:361
+#: app/model/class-ms-model-membership.php:369
 msgid "Single payment for finite access"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:362
+#: app/model/class-ms-model-membership.php:370
 msgid "Single payment for date range access"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:363
+#: app/model/class-ms-model-membership.php:371
 #, fuzzy
 msgid "Recurring payment"
 msgstr "Recurring"
 
-#: app/model/class-ms-model-membership.php:379
+#: app/model/class-ms-model-membership.php:387
 msgid "N/A"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:383
+#: app/model/class-ms-model-membership.php:391
 #, fuzzy
 msgid "Single payment"
 msgstr "Recurring"
 
-#: app/model/class-ms-model-membership.php:388
+#: app/model/class-ms-model-membership.php:396
 #, php-format
 msgid "For %s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:395
+#: app/model/class-ms-model-membership.php:403
 #, php-format
 msgid "From %s to %s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:403
+#: app/model/class-ms-model-membership.php:411
 #, php-format
 msgid "Each %s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:838
+#: app/model/class-ms-model-membership.php:847
 #, fuzzy
 msgid "Restrict access to Protected Content"
 msgstr "Protected Content"
 
-#: app/model/class-ms-model-membership.php:851
+#: app/model/class-ms-model-membership.php:860
 #, fuzzy, php-format
 msgid "Downgrade to %s"
 msgstr "Upgrade from %s"
 
-#: app/model/class-ms-model-membership.php:998
+#: app/model/class-ms-model-membership.php:1007
 msgid "Protected content, and also a default membership for visitors"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1445
+#: app/model/class-ms-model-membership.php:1475
 #, fuzzy
 msgid "Memberships user can join to."
 msgstr "Membership Level activation toggled."
@@ -3533,7 +3535,7 @@ msgstr "Account"
 #: app/view/frontend/class-ms-view-frontend-activities.php:51
 #: app/view/frontend/class-ms-view-frontend-invoices.php:57
 #: app/view/shortcode/class-ms-view-shortcode-account.php:146
-#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:96
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:107
 #, fuzzy
 msgid ""
 "You are not currently logged in. Please login to view your membership "
@@ -4198,89 +4200,94 @@ msgstr "Basic protection"
 msgid "Membership News"
 msgstr "Membership Pages"
 
-#: app/view/membership/class-ms-view-membership-overview.php:36
-#: app/view/membership/class-ms-view-membership-overview.php:43
+#: app/view/membership/class-ms-view-membership-overview.php:56
+#: app/view/membership/class-ms-view-membership-overview.php:63
 #, fuzzy
 msgid "Membership is"
 msgstr "Membership"
 
-#: app/view/membership/class-ms-view-membership-overview.php:44
+#: app/view/membership/class-ms-view-membership-overview.php:64
 msgid "Disabled"
 msgstr "Disabled"
 
-#: app/view/membership/class-ms-view-membership-overview.php:52
+#: app/view/membership/class-ms-view-membership-overview.php:72
 #, fuzzy, php-format
 msgid "%s Overview"
 msgstr "Overview"
 
-#: app/view/membership/class-ms-view-membership-overview.php:53
+#: app/view/membership/class-ms-view-membership-overview.php:73
 msgid ""
 "Here you can view a quick summary of this membership, and alter any of its "
 "details."
 msgstr ""
 
-#: app/view/membership/class-ms-view-membership-overview.php:77
+#: app/view/membership/class-ms-view-membership-overview.php:91
+#, fuzzy
+msgid "(Description)"
+msgstr "Subscription"
+
+#: app/view/membership/class-ms-view-membership-overview.php:122
 msgid "News"
 msgstr "News"
 
-#: app/view/membership/class-ms-view-membership-overview.php:108
+#: app/view/membership/class-ms-view-membership-overview.php:153
 #, fuzzy
 msgid "View More News"
 msgstr "Membership"
 
-#: app/view/membership/class-ms-view-membership-overview.php:117
+#: app/view/membership/class-ms-view-membership-overview.php:162
 msgid "There will be some interesting news here when your site gets going."
 msgstr "There will be some interesting news here when your site gets going."
 
-#: app/view/membership/class-ms-view-membership-overview.php:129
+#: app/view/membership/class-ms-view-membership-overview.php:174
 #, fuzzy, php-format
 msgid "Members (%s)"
 msgstr "Members"
 
-#: app/view/membership/class-ms-view-membership-overview.php:141
+#: app/view/membership/class-ms-view-membership-overview.php:186
 #, fuzzy
 msgid "Edit Members"
 msgstr "Edit Members"
 
-#: app/view/membership/class-ms-view-membership-overview.php:150
+#: app/view/membership/class-ms-view-membership-overview.php:195
 #, fuzzy
 msgid "No members yet."
 msgstr "Membership"
 
-#: app/view/membership/class-ms-view-membership-overview.php:168
+#: app/view/membership/class-ms-view-membership-overview.php:213
 #, fuzzy
 msgid "Active Members"
 msgstr "Deactivated Members"
 
-#: app/view/membership/class-ms-view-membership-overview.php:182
+#: app/view/membership/class-ms-view-membership-overview.php:227
 #, fuzzy
 msgid "Available Content"
 msgstr "Dripped content site."
 
-#: app/view/membership/class-ms-view-membership-overview.php:185
+#: app/view/membership/class-ms-view-membership-overview.php:230
 #, php-format
 msgid ""
 "This is Protected Content which <span class=\"ms-bold\">%s</span> members "
 "has access to."
 msgstr ""
 
-#: app/view/membership/class-ms-view-membership-overview.php:204
+#: app/view/membership/class-ms-view-membership-overview.php:249
 #: app/view/membership/overview/class-ms-view-membership-overview-content-type.php:12
 #: app/view/membership/overview/class-ms-view-membership-overview-tier.php:12
 msgid "Accessible Content:"
 msgstr ""
 
-#: app/view/membership/class-ms-view-membership-overview.php:274
+#: app/view/membership/class-ms-view-membership-overview.php:319
 #, fuzzy, php-format
 msgid "Edit %s Access"
 msgstr "Accessible"
 
-#: app/view/membership/class-ms-view-membership-overview.php:310
+#: app/view/membership/class-ms-view-membership-overview.php:355
 #, fuzzy
 msgid "Post / Page Title"
 msgstr "Page title"
 
-#: app/view/membership/class-ms-view-membership-overview.php:311
+#: app/view/membership/class-ms-view-membership-overview.php:356
 #, fuzzy
 msgid "Content Available"
 msgstr "Content rules"
@@ -4784,8 +4791,8 @@ msgid "Invoice sender name"
 msgstr ""
 
 #: app/view/shortcode/class-ms-view-shortcode-account.php:20
-#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:16
-#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:94
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:17
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:105
 #, fuzzy
 msgid "Your Membership"
 msgstr "Membership"
@@ -4853,7 +4860,7 @@ msgstr ""
 msgid "Payment on"
 msgstr "Renew button"
 
-#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:20
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:21
 msgid ""
 "Your current subscriptions are listed here. You can renew, cancel or upgrade "
 "your subscriptions by using the forms below."
@@ -4861,7 +4868,7 @@ msgstr ""
 "Your current subscriptions are listed here. You can renew, cancel or upgrade "
 "your subscriptions by using the forms below."
 
-#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:26
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:27
 msgid ""
 "We have the following subscriptions available for our site. To join, simply "
 "click on the <strong>Sign Up</strong> button and then complete the "
@@ -4871,7 +4878,7 @@ msgstr ""
 "click on the <strong>Sign Up</strong> button and then complete the "
 "registration details."
 
-#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:34
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:33
 #, fuzzy
 msgid "Upgrade to"
 msgstr "Upgrade button"
@@ -4906,12 +4913,12 @@ msgstr "Choose a Username"
 msgid "Register My Account"
 msgstr "Register My Account"
 
-#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:46
+#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:52
 #, fuzzy
 msgid "Add Membership Level"
 msgstr "Membership levels"
 
-#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:49
+#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:55
 #, fuzzy
 msgid "Change Membership Level"
 msgstr "Enable Membership"
