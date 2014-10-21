@@ -49,21 +49,23 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade database.
 	 * 
 	 * @since 1.0.0
+	 * @todo update this method to not cleanup after release.
 	 */
 	public static function upgrade() {
 		
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		
 		/** Compare current src version to DB version */
-		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '>' ) ) {
+		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '!=' ) ) {
 			
 			//Upgrade logic
 			switch( $settings->version ) {
 				case '1.0.0':
-					self::cleanup_db();
-					flush_rewrite_rules();
-						
+				//@todo change this cleanup after release!!!		
 				default:
+					self::cleanup();
+					flush_rewrite_rules();
+					
 					do_action( 'ms_model_upgrade_upgrade', $settings );
 					break;
 			}
@@ -71,6 +73,26 @@ class MS_Model_Upgrade extends MS_Model {
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$settings->version = MS_Plugin::instance()->version;
 			$settings->save();
+		}
+	}
+	
+	/**
+	 * Remove all plugin related content from database.
+	 *
+	 * @since 1.0.0
+	 */
+	private static function cleanup() {
+		
+		global $wpdb;
+		$sql = array();
+		
+		$sql[] = "DELETE FROM $wpdb->options WHERE option_name LIKE 'ms_%';";
+		$sql[] = "DELETE FROM $wpdb->posts WHERE post_type LIKE 'ms_%';";
+		$sql[] = "DELETE FROM $wpdb->postmeta  WHERE NOT EXISTS (SELECT 1 FROM wp_posts tmp WHERE tmp.ID = post_id);";
+		$sql[] = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_%';";
+		
+		foreach( $sql as $s ) {
+			$wpdb->query( $s );
 		}
 	}
 	

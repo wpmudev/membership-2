@@ -26,11 +26,11 @@ class MS_View_Gateway_Stripe_Button extends MS_View {
 						    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 						    data-key="<?php echo $gateway->get_publishable_key(); ?>"
 						    data-amount="<?php echo $invoice->total * 100; //amount in cents ?>"
-						    data-name="<?php echo bloginfo( 'name' ); ?>"
-						    data-description="<?php echo $invoice->description; ?>"
-						    data-currency="<?php echo $invoice->currency; ?>"
-						    data-panel-label="<?php echo $gateway->pay_button_url; ?>"
-						    data-email="<?php echo $member->email; ?>"
+						    data-name="<?php echo esc_attr( bloginfo( 'name' ) ); ?>"
+						    data-description="<?php echo esc_attr( strip_tags( $invoice->description ) ); ?>"
+						    data-currency="<?php echo esc_attr( $invoice->currency ); ?>"
+						    data-panel-label="<?php echo esc_attr( $gateway->pay_button_url ); ?>"
+						    data-email="<?php echo esc_attr( $member->email ); ?>"
 						    >
 					  	</script>
 					</form>

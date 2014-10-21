@@ -179,7 +179,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php endif;?>
 					<div class="couponEntry">
 						<?php 
-							if( empty ( $this->data['coupon_valid'] ) ) {
+							if( ! isset( $this->data['coupon_valid'] ) ) {
 								echo "<div class='couponQuestion'>$have_coupon_message</div>";
 							}
 							foreach( $fields as $field ){

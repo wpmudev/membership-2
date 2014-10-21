@@ -324,6 +324,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	public function is_valid_coupon( $membership_id = 0 ) {
 
 		$valid = true;
+		$this->coupon_message = null;
 		
 		if ( empty( $this->code ) ) {
 			$this->coupon_message = __( 'Coupon code not found.', MS_TEXT_DOMAIN );

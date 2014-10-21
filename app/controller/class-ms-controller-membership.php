@@ -1458,7 +1458,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_SETUP_PAYMENT:
 				$data['ms_init'][] = 'view_membership_setup_payment';
-				$data['ms_init'][] = 'ms-view-settings-payment';
+				$data['ms_init'][] = 'view_settings_payment';
 
 				add_thickbox();
 				wp_enqueue_script( 'jquery-validate' );
