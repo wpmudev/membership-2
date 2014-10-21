@@ -6,7 +6,7 @@
 /* Ajax confirmation message */
 .ms-wrap {
 	.ms-save-text-wrapper {
-		display: inline-block;
+		display: none;
 		position: relative;
 
 		font-size: .9em;
@@ -25,6 +25,12 @@
 
 		.err-code {
 			display: block;
+		}
+
+		&.ms-processing,
+		&.okay,
+		&.error {
+			display: inline-block;
 		}
 
 		&.ms-processing {
@@ -67,7 +73,6 @@
 
 	.inside {
 		.ms-save-text-wrapper {
-			display: inline-block;
 			height: 28px;
 			line-height: 28px;
 			margin: 6px 6px 0 0;

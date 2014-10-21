@@ -6,20 +6,31 @@
 /* Global functions */
 
 window.ms_functions = {
-	data: [],
 	processing_class: 'ms-processing',
-	radio_slider_on_class: 'on',
-	value: 0,
+
 	dp_config: {
         dateFormat: 'yy-mm-dd', //TODO get wp configured date format
         dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thy', 'Fri', 'Sat'],
         custom_class: 'ms-datepicker' // Not a jQuery argument!
     },
+
 	chosen_options: {
 		minimumResultsForSearch: 6,
 		dropdownAutoWidth: true,
 		dropdownCssClass: 'ms-select2',
 		containerCssClass: 'ms-select2'
+	},
+
+	// Initialize some UI components.
+	init: function( scope ) {
+		var fn = window.ms_functions;
+
+		// Initialize all select boxes.
+		jQuery( '.ms-wrap select:not(.manual-init), .ms-wrap .chosen-select', scope )
+			.select2( fn.chosen_options );
+
+		// Initialize the datepickers.
+		jQuery( '.ms-datepicker', scope ).ms_datepicker();
 	},
 
 	ajax_update: function( obj ) {
@@ -73,12 +84,12 @@ window.ms_functions = {
 			info_field = fn.ajax_show_indicator( slider );
 
 			slider.addClass( fn.processing_class );
-			slider.toggleClass( fn.radio_slider_on_class );
+			slider.toggleClass( 'on' );
 
 			data = slider.children( '.ms-toggle' ).data( 'ms' );
 
 			if( null != data ) {
-				data.value = slider.hasClass( fn.radio_slider_on_class );
+				data.value = slider.hasClass( 'on' );
 
 				// Allow fields to pre-process the data before sending it.
 				if ( 'function' === typeof slider.data( 'before_ajax' ) ) {
@@ -90,19 +101,63 @@ window.ms_functions = {
 					data,
 					function( response ) {
 						if ( fn.ajax_error( response, info_field ) ) {
-							slider.togglesClass( fn.radio_slider_on_class );
+							slider.togglesClass( 'on' );
 						}
 
 						info_field.removeClass( fn.processing_class );
 
 						slider.removeClass( fn.processing_class );
-						slider.children( 'input' ).val( slider.hasClass( fn.radio_slider_on_class ) );
+						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
 						slider.trigger( 'ms-radio-slider-updated', data );
 					}
 				);
 			}
 		}
+	},
+
+	dynamic_form_submit: function( ev, el ) {
+		var i, field_value, field_key, is_popup, info_field,
+			fn = window.ms_functions,
+			me = jQuery( el ),
+			fields = me.serializeArray(),
+			data = {};
+
+		ev.preventDefault();
+
+		// Convert the form-data into an object.
+		for ( i = 0; i < fields.length; i += 1 ) {
+			field_key = fields[i].name;
+			field_value = fields[i].value;
+
+			if ( undefined === data[field_key] ) {
+				data[field_key] = field_value;
+			} else {
+				if ( ! data[field_key] instanceof Array ) {
+					data[field_key] = [ data[field_key] ];
+				}
+				data[field_key].push( field_value );
+			}
+		}
+		data['action'] = 'ms_submit';
+
+		info_field = fn.ajax_show_indicator( me );
+		is_popup = me.parents( '.ms-dlg-wrap' ).length;
+
+		jQuery.post(
+			window.ajaxurl,
+			data,
+			function( response ) {
+				if ( fn.ajax_error( response, info_field ) ) {
+					// Reset the input control to previous value...
+				} else {
+					if ( is_popup ) {
+						fn.close_dialogs();
+					}
+				}
+			}
+		);
+		return false;
 	},
 
 	/**
@@ -205,7 +260,7 @@ window.ms_functions = {
 	/**
 	 * Toggle the accordeon box state
 	 */
-	toggle_box: function( el ) {
+	toggle_box: function( ev, el ) {
 		var me = jQuery( el ),
 			box = me.closest( '.ms-settings-box' );
 
@@ -244,14 +299,14 @@ window.ms_functions = {
 		el_dst.val( list ).trigger( 'change' );
 		el_src.val( '' ).trigger( 'change' );
 
-		fn.tag_selector_refresh_source( this );
+		fn.tag_selector_refresh_source( ev, this );
 	},
 
 	/**
 	 * Tag-Selector component:
 	 * Disable or Enable options in the source list.
 	 */
-	tag_selector_refresh_source: function( el ) {
+	tag_selector_refresh_source: function( ev, el ) {
 		var i = 0, item = null,
 			me = jQuery( el ).closest( '.ms-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
@@ -275,6 +330,94 @@ window.ms_functions = {
 	 */
 	reload: function() {
 		window.location.reload();
+	},
+
+	/**
+	 * Load a popup dialog via ajax.
+	 */
+	show_dialog: function( ev ) {
+		var me = jQuery( this ),
+			fn = window.ms_functions,
+			data = { };
+
+		ev.preventDefault();
+
+		/**
+		 * Create container elements for the dialog.
+		 * This is done only when the first dialog is opened
+		 */
+		if ( undefined === fn.dlg_wrap ) {
+			fn.dlg_wrap = jQuery( '<div class="ms-dlg-wrap"></div>' );
+			fn.dlg_wrap.appendTo( 'body' );
+
+			fn.dlg_back = jQuery( '<div class="ms-dlg-back"></div>' );
+			fn.dlg_back.appendTo( fn.dlg_wrap ).click( fn.close_dialogs );
+
+			fn.dlg_wrap.on( 'click', '.ms-dlg-close', fn.close_dialogs );
+		}
+
+		data['action'] = 'ms_dialog';
+		data['dialog'] = me.attr( 'data-ms-dialog' );
+
+		jQuery.post(
+			window.ajaxurl,
+			data,
+			function( response ) {
+				var dlg, dlg_title, dlg_close, dlg_content, data = false;
+
+				try { data = jQuery.parseJSON( response ); }
+				catch( err ) { data = false; }
+
+				data.title = data.title || 'Dialog';
+				data.height = data.height || 100;
+				data.content = data.content || '';
+
+				if ( data !== false ) {
+					if ( ! isNaN( data.height ) ) {
+						data.height += 51;
+					}
+
+					// Close button
+					dlg_close = jQuery( '<div class="ms-dlg-close"></div>' );
+					dlg_close.html( '<i class="dashicons dashicons-no-alt"></i>' );
+
+					// Title
+					dlg_title = jQuery( '<div class="ms-dlg-title"></div>' );
+					dlg_title.append( '<span></span>' ).append( dlg_close );
+					dlg_title.find( 'span' ).html( data.title );
+
+					// Content
+					dlg_content = jQuery( '<div class="ms-dlg-content"></div>' );
+					dlg_content.html( data.content );
+
+					// Combine all dialog elements
+					dlg = jQuery( '<div class="ms-dlg"></div>' );
+					dlg.append( dlg_title ).append( dlg_content ).height( data.height );
+
+					fn.dlg_wrap.append( dlg ).show();
+
+					// Initialize UI components.
+					fn.init( dlg );
+				}
+			}
+		);
+
+		return false;
+	},
+
+	/**
+	 * Closes all open dialogs.
+	 */
+	close_dialogs: function() {
+		var fn = window.ms_functions;
+
+		if ( undefined !== fn.dlg_wrap ) {
+			// Hide all dialogs.
+			fn.dlg_wrap.hide();
+
+			// Remove all dialogs from DOM.
+			fn.dlg_wrap.find( '.ms-dlg' ).remove();
+		}
 	}
 };
 
@@ -303,43 +446,77 @@ jQuery.fn.ms_datepicker = function( args ) {
 	});
 };
 
-// Do general initialization.
+/**
+ * Do general initialization:
+ * Hook up various events with the plugin callback functions.
+ */
 jQuery( document ).ready( function() {
 	var fn = window.ms_functions;
 
+	jQuery( 'body' )
 	// Toggle radio-sliders on click.
-	jQuery( '.ms-radio-slider' )
-		.click( function() { fn.radio_slider_ajax_update( this ); } );
-
+	.on(
+		'click',
+		'.ms-radio-slider',
+		function( ev ) { fn.radio_slider_ajax_update( this ); }
+	)
 	// Toggle accordeon boxes on click.
-	jQuery( '.ms-settings-box .handlediv' )
-		.click( function() { fn.toggle_box( this ); } );
-
+	.on(
+		'click',
+		'.ms-settings-box .handlediv',
+		function( ev ) { fn.toggle_box( ev, this ); }
+	)
 	// Toggle datepickers when user clicks on icon.
-	jQuery( '.ms-datepicker-wrapper .ms-icon' )
-		.click( function() { fn.toggle_datepicker( this ); } );
-
-	// Initialize all select boxes.
-	jQuery( '.ms-wrap select:not(.manual-init), .ms-wrap .chosen-select' )
-		.select2( fn.chosen_options );
-
+	.on(
+		'click',
+		'.ms-datepicker-wrapper .ms-icon',
+		function( ev ) { fn.toggle_datepicker( this ); }
+	)
 	// Initialize the tag-select components.
-	jQuery( '.ms-tag-selector-wrapper .ms-tag-data ' )
-		.on( 'select2-opening', function( ev ) { ev.preventDefault(); } )
-		.on( 'change', function( ev ) { fn.tag_selector_refresh_source( this ); } );
-	jQuery( '.ms-tag-selector-wrapper .ms-tag-button' )
-		.click( fn.tag_selector_add );
-
+	.on(
+		'select2-opening',
+		'.ms-tag-selector-wrapper .ms-tag-data',
+		function( ev ) { ev.preventDefault(); }
+	)
+	.on(
+		'change',
+		'.ms-tag-selector-wrapper .ms-tag-data',
+		function( ev ) { fn.tag_selector_refresh_source( ev, this ); }
+	)
+	.on(
+		'click',
+		'.ms-tag-selector-wrapper .ms-tag-button',
+		fn.tag_selector_add
+	)
 	// Ajax-Submit data when ms-ajax-update fields are changed.
-	jQuery( 'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update' )
-		.change( function() { fn.ajax_update( this ); } );
-	jQuery( 'button.ms-ajax-update' )
-		.click( function() { fn.ajax_update( this ); } );
+	.on(
+		'change',
+		'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update',
+		function( ev ) { fn.ajax_update( this ); }
+	)
+	.on(
+		'click',
+		'button.ms-ajax-update',
+		function( ev ) { fn.ajax_update( this ); }
+	)
+	.on(
+		'submit',
+		'form.ms-ajax-update',
+		function( ev ) { fn.dynamic_form_submit( ev, this ); }
+	)
+	// Initialize popup dialogs.
+	.on(
+		'click',
+		'[data-ms-dialog]',
+		fn.show_dialog
+	);
 
 	// Select all text inside <code> tags on click.
-	jQuery( '.ms-wrap' )
-		.on( 'click', 'code', function() { fn.select_all( this ); } );
+	jQuery( '.ms-wrap' ).on(
+		'click',
+		'code',
+		function() { fn.select_all( this ); }
+	);
 
-	// Initialize the datepickers.
-	jQuery( '.ms-datepicker' ).ms_datepicker();
+	fn.init( 'body' );
 });

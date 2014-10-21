@@ -78,8 +78,11 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		/* Instantiate Plugin model - protection implementation */
+		// Instantiate Plugin model - protection implementation.
 		$this->model = MS_Factory::create( 'MS_Model_Plugin' );
+
+		// Instanticate dialog controller for ajax dialogs.
+		$this->dialogs = MS_Factory::create( 'MS_Controller_Dialog' );
 
 		/* Setup plugin admin UI */
 		$this->add_action( 'admin_menu', 'add_menu_pages' );

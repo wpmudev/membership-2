@@ -21,16 +21,28 @@
 */
 
 /**
- * Membership List Table
+ * Membership List Table to display payment gateways
  *
+ * @since 1.0.0
  *
- * @since 4.0.0
- *
+ * @return object
  */
 class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
-
+	/**
+	 * The list table id.
+	 *
+	 * @since 1.0.0
+	 * @var int
+	 * @access protected
+	 */
 	protected $id = 'gateway';
 
+	/**
+	 * Constructor containing list attributes.
+	 *
+	 * @param array $args An associative array with information about the current table
+	 * @access public
+	 */
 	public function __construct(){
 		parent::__construct(
 			array(
@@ -41,7 +53,16 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 	}
 
-	public function get_columns() {
+	/**
+	 * Get a list of columns. The format is:
+	 * 'internal-name' => 'Title'
+	 *
+	 * @since 1.0.0
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function get_columns() {
 		return apply_filters(
 			'membership_helper_list_table_gateway_columns',
 			array(
@@ -51,14 +72,43 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 	}
 
-	public function get_hidden_columns() {
+	/**
+	 * Get a list of hidden columns. The format is:
+	 * 'internal-name'
+	 *
+	 * @since 1.0.0
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function get_hidden_columns() {
 		return apply_filters( 'ms_helper_list_table_gateway_hidden_columns', array() );
 	}
 
-	public function get_sortable_columns() {
+	/**
+	 * Get a list of sortable columns. The format is:
+	 * 'internal-name' => 'orderby'
+	 * or
+	 * 'internal-name' => array( 'orderby', true )
+	 *
+	 * The second format will make the initial sorting order be descending
+	 *
+	 * @since 1.0.0
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function get_sortable_columns() {
 		return apply_filters( 'ms_helper_list_table_gateway_sortable_columns', array() );
 	}
 
+	/**
+	 * Prepares the list of items for displaying.
+	 * @uses WP_List_Table::set_pagination_args()
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 */
 	public function prepare_items() {
 		$this->_column_headers = array(
 			$this->get_columns(),
@@ -74,13 +124,20 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		unset( $this->items[ MS_Model_Gateway::GATEWAY_FREE ] );
 	}
 
-	public function column_name( $item ) {
+	/**
+	 * Return contents of the column "Name"
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 *
+	 * @param  MS_Model_Gateway $item A payment gateway.
+	 * @return string HTML code to display in the list.
+	 */
+	protected function column_name( MS_Model_Gateway $item ) {
 		$html = sprintf( '<div>%s %s</div>', $item->name, $item->description );
 		$actions = array(
 				sprintf(
-					'<a class="thickbox" href="?admin.php#TB_inline&width=%s&height=%s&inlineId=ms-gateway-settings-%s">%s</a>',
-					'500',
-					'700',
+					'<a href="#" data-ms-dialog="Gateway_%s_Dialog">%s</a>',
 					$item->id,
 					__( 'Configure', MS_TEXT_DOMAIN )
 				),
@@ -93,7 +150,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 
 		$actions = apply_filters(
-			"gateway_helper_list_table_{$this->id}_column_name_actions",
+			'gateway_helper_list_table_' . $this->id . '_column_name_actions',
 			$actions,
 			$item
 		);
@@ -101,15 +158,28 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		return sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
 	}
 
-	public function column_active( $item ) {
-
+	/**
+	 * Return contents of the column "Active"
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 *
+	 * @param  MS_Model_Gateway $item A payment gateway.
+	 * @return string HTML code to display in the list.
+	 */
+	protected function column_active( $item ) {
 		$class = $item->is_configured() ? 'ms-gateway-configured' : 'ms-gateway-not-configured';
-		$html = "<div class='$class ms-active-wrapper-{$item->id}'>";
+
+		$html = sprintf(
+			'<div class="%1$s ms-active-wrapper-%2$s">',
+			esc_attr( $class ),
+			esc_attr( $item->id )
+		);
+
 		$toggle = array(
 			'id' => 'ms-toggle-' . $item->id,
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 			'value' => $item->active,
-			'class' => '',
 			'data_ms' => array(
 				'action' => MS_Controller_Gateway::AJAX_ACTION_TOGGLE_GATEWAY,
 				'gateway_id' => $item->id,
@@ -117,32 +187,28 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 		$html .= MS_Helper_Html::html_element( $toggle, true );
 
+		$html .= '<div class="ms-gateway-setup-wrapper">';
 		$html .= sprintf(
-			'<div class="ms-gateway-setup-wrapper"><a class="button thickbox" href="#TB_inline?width=%s&height=%s&inlineId=ms-gateway-settings-%s"><i class="fa fa-cog"></i> %s</a></div>',
-			'500',
-			'700',
+			'<a class="button" href="#" data-ms-dialog="Gateway_%s_Dialog"><i class="fa fa-cog"></i> %s</a>',
 			$item->id,
 			__( 'Configure', MS_TEXT_DOMAIN )
 		);
-		$html .= '</div>';
+		$html .= '</div></div>';
 
 		return apply_filters( 'ms_helper_list_table_gateway_column_active', $html );
 	}
 
-	public function column_default( $item, $column_name ) {
-		$html = '';
-
-		switch ( $column_name ) {
-			default:
-				$html = $item->$column_name;
-				break;
-		}
-
-		return $html;
-	}
-
-	public function get_bulk_actions() {
+	/**
+	 * Get an associative array ( option_name => option_title ) with the list
+	 * of bulk actions available on this table.
+	 *
+	 * @since 1.0.0
+	 * @access protected
+	 *
+	 * @return array
+	 */
+	protected function get_bulk_actions() {
 		return array();
 	}
 
-}
+};

@@ -39,15 +39,20 @@ Text Domain: wpmudev_protected_content
  * Include WPMUDev Dashboard
  */
 global $wpmudev_notices;
-$wpmudev_notices[] = array( 'id'=> 928907, 'name'=> 'Protected Content', 'screens' => array( 
-		'toplevel_page_protected-content' , 
+$wpmudev_notices[] = array(
+	'id' => 928907,
+	'name' => 'Protected Content',
+	'screens' => array(
+		'toplevel_page_protected-content',
 		'protect-content_page_protected-content-members',
 		'protect-content_page_protected-content-setup',
 		'protect-content_page_protected-content-billing',
 		'protect-content_page_protected-content-coupons',
 		'protect-content_page_protected-content-addon',
-		'protect-content_page_protected-content-settings', 
-) );
+		'protect-content_page_protected-content-settings',
+	)
+);
+
 require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
 
 /**
@@ -55,7 +60,7 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
  *
  * @since 1.0.0
  */
-define('MS_TEXT_DOMAIN', 'wpmudev_protected_content' );
+define( 'MS_TEXT_DOMAIN', 'wpmudev_protected_content' );
 
 /**
  * Plugin name dir constant.
@@ -83,46 +88,69 @@ define( 'MS_PLUGIN_VERSION', '1.0.0.0' );
  * @return array(class=>path) Classes with new file paths.
  */
 function ms_class_path_overrides( $overrides ) {
+	// CONTROLLERS
+	$controllers_base = 'app/controller/';
+	$controllers = array(
+		'MS_Controller_Admin_Bar' => 'class-ms-controller-admin-bar.php',
+		'MS_Controller_Membership_Content_Type' => 'membership/class-ms-controller-membership-content-type.php',
+		'MS_Controller_Membership_Metabox' => 'class-ms-controller-membership-metabox.php',
+	);
 
-	$overrides['MS_Controller_Admin_Bar'] =  "app/controller/class-ms-controller-admin-bar.php";
-	$overrides['MS_Controller_Membership_Content_Type'] =  "app/controller/membership/class-ms-controller-membership-content-type.php";
-	$overrides['MS_Controller_Membership_Metabox'] =  "app/controller/class-ms-controller-membership-metabox.php";
-	$overrides['MS_Helper_List_Table'] =  "app/helper/class-ms-helper-list-table.php";
-	$overrides['MS_Helper_List_Table_Membership_Group'] =  "app/helper/list-table/class-ms-helper-list-table-membership-group.php";
-	$overrides['MS_Helper_List_Table_Rule_Buddypress_Blog'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-blog.php";
-	$overrides['MS_Helper_List_Table_Rule_Buddypress_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-group.php";
-	$overrides['MS_Helper_List_Table_Rule_Custom_Post_Type'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php";
-	$overrides['MS_Helper_List_Table_Rule_Custom_Post_Type_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php";
-	$overrides['MS_Helper_List_Table_Rule_Url_Group'] =  "app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php";
-	$overrides['MS_Model_Communication_After_Finishes'] =  "app/model/communication/class-ms-model-communication-after-finishes.php";
-	$overrides['MS_Model_Communication_After_Payment_Due'] =  "app/model/communication/class-ms-model-communication-after-payment-due.php";
-	$overrides['MS_Model_Communication_Before_Finishes'] =  "app/model/communication/class-ms-model-communication-before-finishes.php";
-	$overrides['MS_Model_Communication_Before_Payment_Due'] =  "app/model/communication/class-ms-model-communication-before-payment-due.php";
-	$overrides['MS_Model_Communication_Before_Trial_Finishes'] =  "app/model/communication/class-ms-model-communication-before-trial-finishes.php";
-	$overrides['MS_Model_Communication_Credit_Card_Expire'] =  "app/model/communication/class-ms-model-communication-credit-card-expire.php";
-	$overrides['MS_Model_Communication_Failed_Payment'] =  "app/model/communication/class-ms-model-communication-failed-payment.php";
-	$overrides['MS_Model_Communication_Info_Update'] =  "app/model/communication/class-ms-model-communication-info-update.php";
-	$overrides['MS_Model_Custom_Post_Type'] =  "app/model/class-ms-model-custom-post-type.php";
-	$overrides['MS_Model_Gateway_Paypal_Single'] =  "app/model/gateway/class-ms-model-gateway-paypal-single.php";
-	$overrides['MS_Model_Gateway_Paypal_Standard'] =  "app/model/gateway/class-ms-model-gateway-paypal-standard.php";
-	$overrides['MS_Model_Buddypress_Group_Creation'] = "app/model/rule/buddypress/class-ms-model-rule-buddypress-group-creation.php";
-	$overrides['MS_Model_Buddypress_Private_Msg'] = "app/model/rule/buddypress/class-ms-model-rule-buddypress-private-msg.php";
-	$overrides['MS_Model_Rule_Custom_Post_Type'] = "app/model/rule/class-ms-model-rule-custom-post-type.php";
-	$overrides['MS_Model_Rule_Custom_Post_Type_Group'] = "app/model/rule/class-ms-model-rule-custom-post-type-group.php";
-	$overrides['MS_Model_Rule_Url_Group'] = "app/model/rule/class-ms-model-rule-url-group.php";
-	$overrides['MS_Model_Membership_Relationship'] = "app/model/class-ms-model-membership_relationship.php";
-	$overrides['MS_View_Admin_Bar'] = "app/view/class-ms-view-admin-bar.php";
-	$overrides['MS_View_Membership_Accessible_Content'] = "app/view/membership/class-ms-view-membership-accessible-content.php";
-	$overrides['MS_View_Membership_Choose_Type'] = "app/view/membership/class-ms-view-membership-choose-type.php";
-	$overrides['MS_View_Membership_Overview_Content_Type'] = "app/view/membership/overview/class-ms-view-membership-overview-content-type.php";
-	$overrides['MS_View_Membership_Setup_Content_Type'] = "app/view/membership/class-ms-view-membership-setup-content-type.php";
-	$overrides['MS_View_Membership_Setup_Dripped'] = "app/view/membership/class-ms-view-membership-setup-dripped.php";
-	$overrides['MS_View_Membership_Setup_Payment'] = "app/view/membership/class-ms-view-membership-setup-payment.php";
-	$overrides['MS_View_Membership_Setup_Protected_Content'] = "app/view/membership/class-ms-view-membership-setup-protected-content.php";
-	$overrides['MS_View_Membership_Setup_Tier'] = "app/view/membership/class-ms-view-membership-setup-tier.php";
-	$overrides['MS_View_Shortcode_Membership_Signup'] =  "app/view/shortcode/class-ms-view-shortcode-membership-signup.php";
-	$overrides['MS_View_Shortcode_Membership_Login'] =  "app/view/shortcode/class-ms-view-shortcode-membership-login.php";
-	$overrides['MS_View_Shortcode_Membership_Register_User'] =  "app/view/shortcode/class-ms-view-shortcode-membership-register-user.php";
+	// HELPERS
+	$helpers_base = 'app/helper/';
+	$helpers = array(
+		'MS_Helper_List_Table' => 'class-ms-helper-list-table.php',
+		'MS_Helper_List_Table_Membership_Group' => 'list-table/class-ms-helper-list-table-membership-group.php',
+		'MS_Helper_List_Table_Rule_Buddypress_Blog' => 'list-table/rule/class-ms-helper-list-table-rule-buddypress-blog.php',
+		'MS_Helper_List_Table_Rule_Buddypress_Group' => 'list-table/rule/class-ms-helper-list-table-rule-buddypress-group.php',
+		'MS_Helper_List_Table_Rule_Custom_Post_Type' => 'list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php',
+		'MS_Helper_List_Table_Rule_Custom_Post_Type_Group' => 'list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php',
+		'MS_Helper_List_Table_Rule_Url_Group' => 'list-table/rule/class-ms-helper-list-table-rule-url-group.php',
+	);
+
+	// MODELS
+	$models_base = 'app/model/';
+	$models = array(
+		'MS_Model_Communication_After_Finishes' => 'communication/class-ms-model-communication-after-finishes.php',
+		'MS_Model_Communication_After_Payment_Due' => 'communication/class-ms-model-communication-after-payment-due.php',
+		'MS_Model_Communication_Before_Finishes' => 'communication/class-ms-model-communication-before-finishes.php',
+		'MS_Model_Communication_Before_Payment_Due' => 'communication/class-ms-model-communication-before-payment-due.php',
+		'MS_Model_Communication_Before_Trial_Finishes' => 'communication/class-ms-model-communication-before-trial-finishes.php',
+		'MS_Model_Communication_Credit_Card_Expire' => 'communication/class-ms-model-communication-credit-card-expire.php',
+		'MS_Model_Communication_Failed_Payment' => 'communication/class-ms-model-communication-failed-payment.php',
+		'MS_Model_Communication_Info_Update' => 'communication/class-ms-model-communication-info-update.php',
+		'MS_Model_Custom_Post_Type' => 'class-ms-model-custom-post-type.php',
+		'MS_Model_Gateway_Paypal_Single' => 'gateway/class-ms-model-gateway-paypal-single.php',
+		'MS_Model_Gateway_Paypal_Standard' => 'gateway/class-ms-model-gateway-paypal-standard.php',
+		'MS_Model_Buddypress_Group_Creation' => 'rule/buddypress/class-ms-model-rule-buddypress-group-creation.php',
+		'MS_Model_Buddypress_Private_Msg' => 'rule/buddypress/class-ms-model-rule-buddypress-private-msg.php',
+		'MS_Model_Rule_Custom_Post_Type' => 'rule/class-ms-model-rule-custom-post-type.php',
+		'MS_Model_Rule_Custom_Post_Type_Group' => 'rule/class-ms-model-rule-custom-post-type-group.php',
+		'MS_Model_Rule_Url_Group' => 'rule/class-ms-model-rule-url-group.php',
+		'MS_Model_Membership_Relationship' => 'class-ms-model-membership_relationship.php',
+	);
+
+	// VIEWS
+	$views_base = 'app/view/';
+	$views = array(
+		'MS_View_Admin_Bar' => 'class-ms-view-admin-bar.php',
+		'MS_View_Membership_Accessible_Content' => 'membership/class-ms-view-membership-accessible-content.php',
+		'MS_View_Membership_Choose_Type' => 'membership/class-ms-view-membership-choose-type.php',
+		'MS_View_Membership_Overview_Content_Type' => 'membership/overview/class-ms-view-membership-overview-content-type.php',
+		'MS_View_Membership_Setup_Content_Type' => 'membership/class-ms-view-membership-setup-content-type.php',
+		'MS_View_Membership_Setup_Dripped' => 'membership/class-ms-view-membership-setup-dripped.php',
+		'MS_View_Membership_Setup_Payment' => 'membership/class-ms-view-membership-setup-payment.php',
+		'MS_View_Membership_Setup_Protected_Content' => 'membership/class-ms-view-membership-setup-protected-content.php',
+		'MS_View_Membership_Setup_Tier' => 'membership/class-ms-view-membership-setup-tier.php',
+		'MS_View_Shortcode_Membership_Signup' => 'shortcode/class-ms-view-shortcode-membership-signup.php',
+		'MS_View_Shortcode_Membership_Login' => 'shortcode/class-ms-view-shortcode-membership-login.php',
+		'MS_View_Shortcode_Membership_Register_User' => 'shortcode/class-ms-view-shortcode-membership-register-user.php',
+	);
+
+	foreach ( $controllers as $key => $path ) { $overrides[ $key ] = $controllers_base . $path; }
+	foreach ( $helpers as $key => $path ) { $overrides[ $key ] = $helpers_base . $path; }
+	foreach ( $models as $key => $path ) { $overrides[ $key ] = $models_base . $path; }
+	foreach ( $views as $key => $path ) { $overrides[ $key ] = $views_base . $path; }
 
 	return $overrides;
 }
@@ -139,8 +167,7 @@ add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
  * @return array(class=>path) Classes with new file paths.
  */
 function ms_class_file_override( $file ) {
-
-	/** Override all list-table paths. */
+	// Override all list-table paths.
 	$file = str_replace( 'helper/list/table', 'helper/list-table', $file );
 	return $file;
 }
@@ -253,8 +280,8 @@ class MS_Plugin {
 		$this->name = MS_PLUGIN_NAME;
 		$this->version = MS_PLUGIN_VERSION;
 		$this->file = __FILE__;
-		$this->dir = plugin_dir_path(__FILE__);
-		$this->url = plugin_dir_url(__FILE__);
+		$this->dir = plugin_dir_path( __FILE__ );
+		$this->url = plugin_dir_url( __FILE__ );
 
 		/**
 		 * Filter the languages path before loading the textdomain.
@@ -264,7 +291,11 @@ class MS_Plugin {
 		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
-		load_plugin_textdomain( MS_TEXT_DOMAIN, false, apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this ) );
+		load_plugin_textdomain(
+			MS_TEXT_DOMAIN,
+			false,
+			apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this )
+		);
 
 		/** Creates the class autoloader */
 		spl_autoload_register( array( &$this, 'class_loader' ) );
@@ -275,17 +306,17 @@ class MS_Plugin {
 		add_action( 'init', array( &$this, 'register_custom_post_types' ), 1 );
 
 		add_action( 'init', array( &$this, 'register_post_status' ), 1 );
-		
+
 		/**
 		 * Hooks init to add rewrite rules and tags (both work in conjunction).
 		 */
 		add_action( 'init', array( &$this, 'add_rewrite_rules' ), 1 );
-		
+
 		add_action( 'init', array( &$this, 'add_rewrite_tags' ), 1 );
-		
+
 		/* Plugin acctivation Hook */
 		register_activation_hook( __FILE__, array( &$this, 'plugin_activation' ) );
-		
+
 		/**
 		 * Hooks init to create the primary plugin controller.
 		 */
@@ -307,8 +338,15 @@ class MS_Plugin {
 		 */
 		$this->addon = MS_Factory::load( 'MS_Model_Addon' );
 
-		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array( &$this,'plugin_settings_link' ) );
-		add_filter( 'network_admin_plugin_action_links_' . plugin_basename(__FILE__), array( &$this, 'plugin_settings_link' ) );
+		add_filter(
+			'plugin_action_links_' . plugin_basename( __FILE__ ),
+			array( &$this, 'plugin_settings_link' )
+		);
+
+		add_filter(
+			'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ),
+			array( &$this, 'plugin_settings_link' )
+		);
 
 		/** Grab instance of self. */
 		self::$instance = $this;
@@ -354,18 +392,21 @@ class MS_Plugin {
 	 * @return void
 	 */
 	public function register_custom_post_types() {
-
 		do_action( 'ms_plugin_register_custom_post_types', $this );
 
-		$cpts = apply_filters( 'ms_plugin_register_custom_post_types_ctps', array(
+		$cpts = apply_filters(
+			'ms_plugin_register_custom_post_types_ctps',
+			array(
 				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
 				MS_Model_Membership_Relationship::$POST_TYPE => MS_Model_Membership_Relationship::get_register_post_type_args(),
 				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
-		) );
-		foreach( $cpts as $cpt => $args ) {
+			)
+		);
+
+		foreach ( $cpts as $cpt => $args ) {
 			MS_Helper_Utility::register_post_type( $cpt, $args );
 		}
 	}
@@ -378,44 +419,47 @@ class MS_Plugin {
 	 */
 	public function register_post_status() {
 		/** post_status "virtual" for pages not to be displayed in the menus but that users should not be editing. */
-		register_post_status( 'virtual', array(
+		register_post_status(
+			'virtual',
+			array(
 				'label' => __( 'Virtual', MS_TEXT_DOMAIN ),
 				'public' => ( ! is_admin() ), //This trick prevents the virtual pages from appearing in the All Pages list but can be display on the front end.
 				'exclude_from_search' => false,
 				'show_in_admin_all_list' => false,
 				'show_in_admin_status_list' => true,
 				'label_count' => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>' ),
-		) );
+			)
+		);
 	}
-	
+
 	/**
 	 * Add rewrite rules.
 	 *
 	 * @since 1.0.0
 	 * @return void
 	 */
-	 public function add_rewrite_rules() {
-	 	
-	 	/* Membership site pages.*/
-	 	$ms_pages = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
-	 	if( ! empty( $ms_pages ) ) {
-	 		foreach( $ms_pages as $ms_page ) {
-	 			add_rewrite_rule(
-		 			'^' . $ms_page->slug . '/?$',
-		 			'index.php?ms_page=' . $ms_page->slug,
-		 			'top'
-	 			);
-	 				
-	 		}
-	 	}
-	 	
-	 	/* Gateway return - IPN.*/
+	public function add_rewrite_rules() {
+
+		/* Membership site pages.*/
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
+		if ( ! empty( $ms_pages ) ) {
+			foreach ( $ms_pages as $ms_page ) {
+				add_rewrite_rule(
+					'^' . $ms_page->slug . '/?$',
+					'index.php?ms_page=' . $ms_page->slug,
+					'top'
+				);
+
+			}
+		}
+
+		/* Gateway return - IPN.*/
 		add_rewrite_rule(
 			'^ms-payment-return/(.+)/?$',
 			'index.php?paymentgateway=$matches[1]',
 			'top'
 		);
-		
+
 		/* Media / download */
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		if ( ! empty( $settings->downloads['protection_enabled'] ) && ! empty( $settings->downloads['masked_url'] ) ) {
@@ -425,10 +469,10 @@ class MS_Plugin {
 				'top'
 			);
 		}
-		
+
 		do_action( 'ms_plugin_add_rewrite_rules', $this );
-	 }
-	
+	}
+
 	/**
 	 * Add rewrite tags.
 	 *
@@ -436,19 +480,19 @@ class MS_Plugin {
 	 * @return void
 	 */
 	public function add_rewrite_tags() {
-		
+
 		/* Membership site pages.*/
 		add_rewrite_tag( '%ms_page%', '(.+)' );
-		
+
 		/* Gateway return - IPN.*/
 		add_rewrite_tag( '%paymentgateway%', '(.+)' );
-		
+
 		/* Media / download */
 		add_rewrite_tag( '%protectedfile%', '(.+)' );
-		
+
 		do_action( 'ms_plugin_add_rewrite_tags', $this );
 	}
-	
+
 	/**
 	 * Actions executed in plugin activation.
 	 *
@@ -457,10 +501,10 @@ class MS_Plugin {
 	public function plugin_activation() {
 
 		flush_rewrite_rules();
-		
+
 		do_action( 'ms_plugin_activation ', $this );
 	}
-	
+
 	/**
 	 * Class autoloading callback function.
 	 *
@@ -475,6 +519,7 @@ class MS_Plugin {
 	 * @return boolean
 	 */
 	private function class_loader( $class ) {
+		static $Path_overrides = null;
 
 		/**
 		 * Actions to execute before the autoloader loads a class.
@@ -485,76 +530,61 @@ class MS_Plugin {
 		do_action( 'ms_plugin_class_loader_pre_processing', $this );
 
 		$basedir = dirname( __FILE__ );
-		$namespaces = array( 'MS_' );
+		$class = trim( $class );
+
+		if ( null === $Path_overrides ) {
+			/**
+			 * Adds and Filters class path overrides.
+			 *
+			 * @since 1.0.0
+			 * @param object $this The MS_Plugin object.
+			 */
+			$Path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
+		}
 
 		/**
-		 * Adds and Filters class path overrides.
-		 *
-		 * @since 1.0.0
-		 * @param object $this The MS_Plugin object.
+		 * Case 1: The class-path is explicitely defined in $Path_overrides.
+		 * Simpy use the defined path to load the class.
 		 */
-		$path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
+		if ( array_key_exists( $class, $Path_overrides ) ) {
+			$file_path = $basedir . '/' . $Path_overrides[ $class ];
 
+			/**
+			 * Overrides the filename and path.
+			 *
+			 * @since 1.0.0
+			 * @param object $this The MS_Plugin object.
+			 */
+			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
+
+			if ( is_readable( $file_path ) ) {
+				require_once $file_path;
+				return true;
+			}
+		}
 		/**
-		 * Restrict class autoloading to provided namespaces.
-		 *
-		 * This prevents autoloading from interfering with other plugins in their own namespaces.
-		 *
-		 * @since 1.0.0
+		 * Case 2: The class-path is not explicitely defined in $Path_overrides.
+		 * Use /app/ path and class-name to build the file-name.
 		 */
-		foreach ( $namespaces as $namespace ) {
-			switch ( $namespace ) {
-				/** Use /app/ path and structure only for MS_ classes */
-				case "MS_":
-					if( !array_key_exists( trim( $class ), $path_overrides ) ) {
-						if ( substr( $class, 0, strlen( $namespace ) ) == $namespace ) {
-							$sub_path = strtolower( str_replace( 'MS_', '', $class ) );
-							$path_array = explode( '_', $sub_path );
-							array_pop( $path_array );
-							$sub_path = implode( '_', $path_array );
-							$filename = $basedir . str_replace( '_', DIRECTORY_SEPARATOR, "_app_{$sub_path}_" ) . strtolower( str_replace( '_',
-							'-', "class-{$class}.php" ) );
+		else if ( substr( $class, 0, 3 ) == 'MS_' ) {
+			$path_array = explode( '_', $class );
+			array_shift( $path_array );
+			array_pop( $path_array );
+			$sub_path = implode( '/', $path_array );
+			$filename = str_replace( '_', '-', 'class-' . $class . '.php' );
+			$file_path = $basedir . '/app/' . strtolower( $sub_path . '/' . $filename );
 
-							/**
-							 * Overrides the filename and path.
-							 *
-							 * @since 1.0.0
-							 * @param object $this The MS_Plugin object.
-							 */
-							$filename = apply_filters( 'ms_class_file_override', $filename, $this );
+			/**
+			 * Overrides the filename and path.
+			 *
+			 * @since 1.0.0
+			 * @param object $this The MS_Plugin object.
+			 */
+			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
-							if( is_readable( $filename ) ) {
-								require_once $filename;
-								return true;
-							}
-						}
-					}
-					else {
-						$filename = $basedir . '/' . $path_overrides[ $class ];
-
-						/**
-						 * Overrides the filename and path.
-						 *
-						 * @since 1.0.0
-						 * @param object $this The MS_Plugin object.
-						 */
-						$filename = apply_filters( 'ms_class_file_override', $filename, $this );
-
-						if( is_readable( $filename ) ) {
-							require_once $filename;
-							return true;
-						}
-					}
-					break;
-				default:
-					/**
-					 * Actions to add additional namespaces to this autoloading function.
-					 *
-					 * @since 1.0.0
-					 * @param object $this The MS_Plugin object.
-					 */
-					do_action( 'ms_plugin_class_loader_namespace', $namespace, $this );
-				break;
+			if ( is_readable( $file_path ) ) {
+				require_once $file_path;
+				return true;
 			}
 		}
 
@@ -570,11 +600,11 @@ class MS_Plugin {
 	 * @return array Array of links with settings page links added.
 	 */
 	public function plugin_settings_link( $links ) {
-		if( ! is_network_admin() ) {
+		if ( ! is_network_admin() ) {
 			$text = __( 'Settings', MS_TEXT_DOMAIN );
 			$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG . '-settings' );
 
-			if( $this->settings->initial_setup ) {
+			if ( $this->settings->initial_setup ) {
 				$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG );
 			}
 
@@ -633,7 +663,7 @@ class MS_Plugin {
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
 	public function __get( $property ) {
-		if( property_exists( $this, $property ) ) {
+		if ( property_exists( $this, $property ) ) {
 			return $this->$property;
 		}
 	}
