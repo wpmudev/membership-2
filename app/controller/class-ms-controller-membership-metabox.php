@@ -151,7 +151,9 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	public function add_meta_boxes() {
 		
 		foreach( $this->post_types as $post_type ) {
-			add_meta_box( $this->metabox_id, $this->metabox_title, array( $this, 'membership_metabox' ), $post_type, $this->context, $this->priority );
+			if( ! $this->is_read_only( $post_type ) ) {
+				add_meta_box( $this->metabox_id, $this->metabox_title, array( $this, 'membership_metabox' ), $post_type, $this->context, $this->priority );
+			}
 		}
 
 		do_action( 'ms_controller_membership_metabox_add_meta_boxes', $this );
@@ -187,7 +189,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			}
 		}
 		$data['post_id'] = $post->ID;
-		$data['read_only'] =$this->is_read_only( $post->post_type );
+		$data['read_only'] = $this->is_read_only( $post->post_type );
 		
 		$view = MS_Factory::create( 'MS_View_Membership_Metabox' );
 		$view->data = apply_filters( 'ms_view_membership_metabox_data', $data, $this );
