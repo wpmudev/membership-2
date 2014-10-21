@@ -60,7 +60,7 @@ require_once dirname( __FILE__ ) . '/extra/wpmudev-dash-notification.php';
  *
  * @since 1.0.0
  */
-define( 'MS_TEXT_DOMAIN', 'wpmudev_protected_content' );
+define( 'MS_TEXT_DOMAIN', 'protected-content' );
 
 /**
  * Plugin name dir constant.
