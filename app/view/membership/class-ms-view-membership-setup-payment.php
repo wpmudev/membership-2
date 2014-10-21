@@ -5,8 +5,6 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	protected $data;
 
 	public function to_html() {
-		$this->data['is_global_payments_set'] = false; // DEBUGGING! REMOVE AGAIN
-
 		$fields = $this->get_fields();
 
 		$desc = MS_Helper_Html::html_element( $fields['is_free'], true );
