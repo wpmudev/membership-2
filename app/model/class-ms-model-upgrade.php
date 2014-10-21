@@ -49,7 +49,6 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade database.
 	 * 
 	 * @since 1.0.0
-	 * @todo update this method to not cleanup after release.
 	 */
 	public static function upgrade() {
 		
@@ -58,14 +57,12 @@ class MS_Model_Upgrade extends MS_Model {
 		/** Compare current src version to DB version */
 		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '!=' ) ) {
 			
-			//Upgrade logic
+			//Upgrade logic from specific version
 			switch( $settings->version ) {
-				case '1.0.0':
-				//@todo change this cleanup after release!!!		
-				default:
+				case '0.0.0':
 					self::cleanup();
 					flush_rewrite_rules();
-					
+				default:
 					do_action( 'ms_model_upgrade_upgrade', $settings );
 					break;
 			}
