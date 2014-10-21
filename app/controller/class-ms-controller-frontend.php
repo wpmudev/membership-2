@@ -372,6 +372,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$data = array();
 		$ms_relationship = null;
 		$member = MS_Model_Member::get_current_member();
+		$membership_id = 0;
 
 		/* First time loading */
 		if( ! empty( $_POST['membership_id'] ) ) {
@@ -401,7 +402,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				$coupon = MS_Factory::create( ' MS_Model_Coupon' );
 			}
 			elseif( isset( $_POST['apply_coupon_code'] ) ) {
-				if( $coupon->is_valid_coupon() ) {
+				if( $coupon->is_valid_coupon( $membership_id ) ) {
 					$coupon->save_coupon_application( $ms_relationship );
 					$data['coupon_valid'] = true;
 				}
@@ -417,9 +418,6 @@ class MS_Controller_Frontend extends MS_Controller {
 		$data['coupon'] = $coupon;
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$data['invoice'] = $invoice;
-		if( $invoice->coupon_id ) {
-			$data['coupon'] = MS_Factory::load( 'MS_Model_Coupon', $invoice->coupon_id );
-		}
 
 		$data['membership'] = $membership;
 		$data['member'] = $member;
