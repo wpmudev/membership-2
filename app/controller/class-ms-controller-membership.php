@@ -312,6 +312,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$goto_url = add_query_arg( $args, MS_Controller_Plugin::get_admin_url() );
 				$goto_url = apply_filters( 'ms_controller_membership_membership_admin_page_process_goto_url', $goto_url, $next_step );
 				wp_safe_redirect( $goto_url );
+				exit;
 			}
 		}
 		/* No action request found. Validate direct access. */
@@ -343,6 +344,7 @@ class MS_Controller_Membership extends MS_Controller {
 							}
 						}
 						wp_safe_redirect( add_query_arg( $args ) );
+						exit;
 					}
 					break;
 			}

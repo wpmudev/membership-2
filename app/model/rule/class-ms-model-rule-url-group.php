@@ -113,7 +113,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 			}
 	 	}
 	 	
-	 	return apply_filters( 'ms_model_rule_url_group_has_access', $has_access, $id, $this );
+	 	return apply_filters( 'ms_model_rule_url_group_has_access', $has_access, $post_id, $this );
 	}
 	
 	/**

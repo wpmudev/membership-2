@@ -638,6 +638,7 @@ class MS_Controller_Gateway extends MS_Controller {
 							MS_Model_Event::save_event( MS_Model_Event::TYPE_UPDATED_INFO, $ms_relationship );
 						}
 						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
+						exit;
 					}
 					break;
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
@@ -652,6 +653,7 @@ class MS_Controller_Gateway extends MS_Controller {
 							MS_Model_Event::save_event( MS_Model_Event::TYPE_UPDATED_INFO, $ms_relationship );
 						}
 						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
+						exit;
 					}
 					break;
 				default:
