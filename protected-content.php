@@ -392,10 +392,11 @@ class MS_Plugin {
 	 * @return void
 	 */
 	public function register_custom_post_types() {
-		do_action( 'ms_plugin_register_custom_post_types', $this );
+
+		do_action( 'ms_plugin_register_custom_post_types_before', $this );
 
 		$cpts = apply_filters(
-			'ms_plugin_register_custom_post_types_ctps',
+			'ms_plugin_register_custom_post_types',
 			array(
 				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
 				MS_Model_Membership_Relationship::$POST_TYPE => MS_Model_Membership_Relationship::get_register_post_type_args(),
