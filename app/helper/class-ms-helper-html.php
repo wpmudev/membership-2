@@ -402,8 +402,8 @@ class MS_Helper_Html extends MS_Helper {
 					);
 				} else {
 					// There are values to select or remove. Display the input elements.
-					$options_selected = self::select_options( $field_options );
-					$options_available = self::select_options( $field_options, 'taglist' );
+					$options_selected .= self::select_options( $field_options, $value );
+					$options_available .= self::select_options( $field_options, $value, 'taglist' );
 
 					// First Select: The value selected here can be added to the tag-list.
 					printf(
