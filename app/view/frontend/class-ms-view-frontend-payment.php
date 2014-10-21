@@ -7,6 +7,7 @@ class MS_View_Frontend_Payment extends MS_View {
 	public function to_html() {
 		$membership = $this->data['membership'];
 		$invoice = $this->data['invoice'];
+		$next_invoice = $this->data['next_invoice'];
 		$class = 'ms-alert-success';
 		$msg = __( 'Please check the details of the membership below and click on the relevant button to complete the signup.', MS_TEXT_DOMAIN );
 		if( ! empty( $this->data['error'] ) ) {
@@ -54,23 +55,6 @@ class MS_View_Frontend_Payment extends MS_View {
 						?>
 					</td>
 				</tr>
-				<?php if( $membership->trial_period_enabled && $invoice->trial_period ): ?>
-					<tr>
-						<td class='ms-title-column'>
-							<?php _e( 'Trial price', MS_TEXT_DOMAIN ); ?>
-						</td>
-						<td class='ms-price-column'>
-							<?php 
-								if ( $membership->trial_price > 0 ) {
-									echo $invoice->currency . ' '. number_format( $membership->trial_price, 2 );
-								} 
-								else {
-									echo __( 'Free', MS_TEXT_DOMAIN );
-								}
-							?>
-						</td>
-					</tr>
-				<?php endif;?>
 				<?php if( $invoice->discount ): ?>
 					<tr>
 						<td class='ms-title-column'>
@@ -99,6 +83,18 @@ class MS_View_Frontend_Payment extends MS_View {
 						<?php echo $invoice->currency . ' '. number_format( $invoice->total, 2 ); ?>
 					</td>
 				</tr>
+				<?php if( $membership->trial_period_enabled && $invoice->trial_period ): ?>
+					<tr>
+						<td class='ms-title-column'>
+							<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
+						</td>
+						<td class='ms-desc-column'>
+							<?php 
+								echo $this->data['ms_relationship']->calc_trial_expire_date( MS_Helper_Period::current_date() );
+							?>
+						</td>
+					</tr>
+				<?php endif;?>
 				<tr>
 					<td class='ms-desc-column' colspan='2'>
 						<span class="ms-membership-description"><?php echo $this->data['ms_relationship']->get_payment_description(); ?></span>
