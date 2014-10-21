@@ -82,7 +82,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var string $name
 	 */
-	protected $name;
+	protected $name = '';
+
+	/**
+	 * Membership description.
+	 *
+	 * @since 1.0.0
+	 * @var string $description
+	 */
+	protected $description = '';
 
 	/**
 	 * Membership type.
@@ -523,6 +531,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$child->id = 0;
 			$child->parent_id = $this->id;
 			$child->name = $name;
+			$child->description = '';
 			$child->save();
 		}
 
@@ -976,22 +985,22 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public static function get_protected_content() {
 
 		$args = array(
-				'post_type' => self::$POST_TYPE,
-				'post_status' => 'any',
-				'meta_query' => array(
-						array(
-								'key' => 'protected_content',
-								'value' => '1',
-								'compare' => '='
-						)
+			'post_type' => self::$POST_TYPE,
+			'post_status' => 'any',
+			'meta_query' => array(
+				array(
+					'key' => 'protected_content',
+					'value' => '1',
+					'compare' => '=',
 				)
+			)
 		);
 		$query = new WP_Query( $args );
 		$item = $query->get_posts();
-		
+
 		$protected_content = null;
-		
-		if( ! empty( $item[0] ) ) {
+
+		if ( ! empty( $item[0] ) ) {
 			$protected_content = MS_Factory::load( 'MS_Model_Membership', $item[0]->ID );
 		}
 		else {
@@ -1017,7 +1026,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * It is the same as "protected content".
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return MS_Model_Membership The visitor membership.
 	 */
 	public static function get_visitor_membership() {
@@ -1224,7 +1233,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		return apply_filters( 'ms_model_membership_has_access_to_current_page', $has_access, $ms_relationship, $post_id, $this );
 	}
-	
+
 	/**
 	 * Verify access to post.
 	 *
@@ -1236,9 +1245,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return boolean True if has access to current page. Default is false.
 	 */
 	public function has_access_to_post( $post_id ) {
-		
+
 		$has_access = false;
-		
+
 		if( ! empty( $post_id ) ) {
 			$post = get_post( $post_id );
 			if( 'attachment' == $post->post_type ) {
@@ -1261,7 +1270,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				break;
 			}
 		}
-		
+
 		return apply_filters( 'ms_model_membership_has_access_to_post', $has_access, $this );
 	}
 
@@ -1302,39 +1311,48 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$value = null;
 
-		switch( $property ) {
+		switch ( $property ) {
 			case 'payment_type':
-				if( empty( $this->payment_type ) ) {
+				if ( empty( $this->payment_type ) ) {
 					$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
 				}
 				$value = $this->payment_type;
 				break;
+
 			case 'type_description':
 				$value = $this->get_type_description();
 				break;
+
 			case 'private':
 				$value = $this->is_private();
 				break;
+
 			case 'period_unit':
 				$value = MS_Helper_Period::get_period_value( $this->period, 'period_unit' );
 				break;
+
 			case 'period_type':
 				$value = MS_Helper_Period::get_period_value( $this->period, 'period_type' );
 				break;
+
 			case 'pay_cycle_period_unit':
 				$value = MS_Helper_Period::get_period_value( $this->pay_cycle_period, 'period_unit' );
 				break;
+
 			case 'pay_cycle_period_type':
 				$value = MS_Helper_Period::get_period_value( $this->pay_cycle_period, 'period_type' );
 				break;
+
 			case 'trial_period_unit':
 				$value = MS_Helper_Period::get_period_value( $this->trial_period, 'period_unit' );
 				break;
+
 			case 'trial_period_type':
 				$value = MS_Helper_Period::get_period_value( $this->trial_period, 'period_type' );
 				break;
+
 			default:
-				if( property_exists( $this, $property ) ) {
+				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;
 				}
 				break;
@@ -1353,82 +1371,94 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function __set( $property, $value ) {
 
-		if( property_exists( $this, $property ) ) {
-			switch( $property ) {
+		if ( property_exists( $this, $property ) ) {
+			switch ( $property ) {
 				case 'name':
 				case 'title':
 				case 'description':
 					$this->$property = sanitize_text_field( $value );
 					break;
+
 				case 'type':
-					if( array_key_exists( $value, self::get_types() ) ) {
+					if ( array_key_exists( $value, self::get_types() ) ) {
 						$this->$property = $value;
 					}
 					break;
+
 				case 'payment_type':
-					if( array_key_exists( $value, self::get_payment_types() ) ) {
-						if( empty( $this->$property ) || empty( $this->id ) || 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
+					if ( array_key_exists( $value, self::get_payment_types() ) ) {
+						if ( empty( $this->$property ) || empty( $this->id ) || 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
 							$this->$property = $value;
 						}
-						elseif( $this->$property != $value ) {
-							$error = "Membership type cannot be changed after members have signed up.";
+						elseif ( $this->$property != $value ) {
+							$error = 'Membership type cannot be changed after members have signed up.';
 							MS_Helper_Debug::log( $error );
 							throw new Exception( $error );
 						}
 					}
 					else {
-						throw new Exception( "Invalid membeship type." );
+						throw new Exception( 'Invalid membeship type.' );
 					}
 					break;
+
 				case 'protected_content':
 				case 'trial_period_enabled':
 				case 'active':
 				case 'public':
 					$this->$property = $this->validate_bool( $value );
 					break;
+
 				case 'price':
 				case 'trial_price':
 					$this->$property = floatval( $value );
 					break;
+
 				case 'period':
 				case 'pay_cycle_period':
 				case 'trial_period':
 					$this->$property = $this->validate_period( $value );
 					break;
+
 				case 'period_date_start':
 				case 'period_date_end':
 					$this->$property = $this->validate_date( $value );
 					break;
+
 				case 'on_end_membership_id':
-					if( 0 < MS_Factory::load( 'MS_Model_Membership', $value )->id ) {
+					if ( 0 < MS_Factory::load( 'MS_Model_Membership', $value )->id ) {
 						$this->$property = $value;
 					}
+
 				default:
 					$this->$property = $value;
 					break;
 			}
 		}
 		else {
-			switch( $property ) {
+			switch ( $property ) {
 				case 'period_unit':
 					$this->period['period_unit'] = $this->validate_period_unit( $value );
 					break;
+
 				case 'period_type':
 					$this->period['period_type'] = $this->validate_period_type( $value );
 					break;
+
 				case 'pay_cycle_period_unit':
 					$this->pay_cycle_period['period_unit'] = $this->validate_period_unit( $value );
 					break;
+
 				case 'pay_cycle_period_type':
 					$this->pay_cycle_period['period_type'] = $this->validate_period_type( $value );
 					break;
+
 				case 'trial_period_unit':
 					$this->trial_period['period_unit'] = $this->validate_period_unit( $value );
 					break;
+
 				case 'trial_period_type':
 					$this->trial_period['period_type'] = $this->validate_period_type( $value );
 					break;
-
 			}
 		}
 

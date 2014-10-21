@@ -354,11 +354,6 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// View specific
 		wp_register_script(
-			'ms-view-membership-overview',
-			$plugin_url . 'app/assets/js/ms-view-membership-overview.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
 			'ms-view-membership-setup-protected-content',
 			$plugin_url . 'app/assets/js/ms-view-membership-setup-protected-content.js',
 			array( 'jquery' ), $version

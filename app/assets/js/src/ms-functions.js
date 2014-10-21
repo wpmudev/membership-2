@@ -64,12 +64,13 @@ window.ms_functions = {
 				window.ajaxurl,
 				data,
 				function( response ) {
-					if ( fn.ajax_error( response, info_field ) ) {
+					var is_err = fn.ajax_error( response, info_field );
+					if ( is_err ) {
 						// Reset the input control to previous value...
 					}
 
 					info_field.removeClass( fn.processing_class );
-					field.trigger( 'ms-ajax-updated', data, response );
+					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
 			);
 		}
@@ -100,7 +101,8 @@ window.ms_functions = {
 					window.ajaxurl,
 					data,
 					function( response ) {
-						if ( fn.ajax_error( response, info_field ) ) {
+						var is_err = fn.ajax_error( response, info_field );
+						if ( is_err ) {
 							slider.togglesClass( 'on' );
 						}
 
@@ -109,7 +111,7 @@ window.ms_functions = {
 						slider.removeClass( fn.processing_class );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
-						slider.trigger( 'ms-radio-slider-updated', data );
+						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
 					}
 				);
 			}

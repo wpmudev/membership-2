@@ -6,18 +6,38 @@ class MS_View_Membership_Overview extends MS_View {
 
 	public function to_html() {
 		$membership = $this->data['membership'];
+		if ( empty( $this->data['child_membership'] ) ) {
+			$child_membership = $membership;
+		} else {
+			$child_membership = $this->data['child_membership'];
+		}
 
 		$toggle = array(
-				'id' => 'ms-toggle-' . $membership->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $membership->active,
-				'class' => '',
-				'data_ms' => array(
-					'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
-					'field' => 'active',
-					'membership_id' => $membership->id,
-				),
+			'id' => 'ms-toggle-' . $membership->id,
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'value' => $membership->active,
+			'class' => '',
+			'data_ms' => array(
+				'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
+				'field' => 'active',
+				'membership_id' => $membership->id,
+			),
 		);
+
+		$field_desc = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+			'value' => $child_membership->description,
+			'class' => 'ms-ajax-update ms-center',
+			'data_ms' => array(
+				'action' => MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP,
+				'field' => 'description',
+				'membership_id' => $child_membership->id,
+			),
+		);
+
+		$desc = $child_membership->description;
+		$desc_empty_class = (empty( $desc ) ? '' : 'hidden');
+
 		$status_class = '';
 		if ( $membership->active ) {
 			$status_class = 'ms-active';
@@ -47,18 +67,43 @@ class MS_View_Membership_Overview extends MS_View {
 					</div>
 				</div>
 				<?php
-					MS_Helper_Html::settings_header(
-						array(
-							'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
-							'desc' => __( 'Here you can view a quick summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
-							'title_icon_class' => 'fa fa-dashboard',
-							'bread_crumbs' => $this->data['bread_crumbs'],
-						)
-					);
+				MS_Helper_Html::settings_header(
+					array(
+						'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
+						'desc' => __( 'Here you can view a quick summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
+						'title_icon_class' => 'fa fa-dashboard',
+						'bread_crumbs' => $this->data['bread_crumbs'],
+					)
+				);
 				?>
 				<div class="clear"></div>
-				<?php $this->news_panel(); ?>
-				<?php $this->members_panel(); ?>
+				<?php
+				MS_Helper_Html::html_separator();
+				if ( $child_membership->id != $membership->id ) : ?>
+					<div class="ms-subtitle">
+						<?php echo $child_membership->name; ?>
+					</div>
+				<?php endif; ?>
+
+				<div class="ms-settings-desc ms-description membership-description">
+					<span class="readonly show-editor">
+						<span class="empty <?php echo esc_attr( $desc_empty_class ); ?>">
+							<?php _e( '(Description)', MS_TEXT_DOMAIN ); ?>
+						</span>
+						<span class="value"><?php echo $child_membership->description; ?></span>
+						<i class="fa fa-pencil handlediv"></i>
+					</span>
+					<div class="hidden editor">
+						<?php MS_Helper_Html::html_element( $field_desc ); ?>
+						<?php MS_Helper_Html::save_text(); ?>
+					</div>
+				</div>
+				<div class="clear"></div>
+
+				<?php
+				$this->news_panel();
+				$this->members_panel();
+				?>
 			</div>
 			<div class="clear"></div>
 			<?php $this->available_content_panel(); ?>

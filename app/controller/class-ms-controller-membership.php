@@ -1420,7 +1420,7 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 
 			case self::STEP_OVERVIEW:
-				wp_enqueue_script( 'ms-view-membership-overview' );
+				$data['ms_init'][] = 'view_membership_overview';
 				break;
 
 			case self::STEP_SETUP_PROTECTED_CONTENT:
