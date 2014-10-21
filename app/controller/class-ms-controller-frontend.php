@@ -135,8 +135,17 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function check_for_membership_pages() {
+		
+		//For invoice page purchase process
+		global $post;
+		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
+		if( isset( $post->post_type) && $post->post_type == MS_Model_Invoice::$POST_TYPE && 
+			$this->validate_required( $fields ) && 'process_purchase' == $_POST['step'] ) {
+			
+			do_action( 'ms_controller_frontend_signup_process_purchase', $this );
+		}
+		
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-
 		switch( $ms_pages->is_ms_page() ) {
 			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
 				if( ! MS_Model_Member::is_logged_user() ) {
@@ -418,9 +427,12 @@ class MS_Controller_Frontend extends MS_Controller {
 
 		$data['coupon'] = $coupon;
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-		$next_invoice = MS_Model_Invoice::get_next_invoice( $ms_relationship );
 		$data['invoice'] = $invoice;
-		$data['next_invoice'] = $next_invoice;
+		
+		if( $invoice->trial_period ) {
+			$next_invoice = MS_Model_Invoice::get_next_invoice( $ms_relationship );
+			$data['next_invoice'] = $next_invoice;
+		}
 
 		$data['membership'] = $membership;
 		$data['member'] = $member;
