@@ -9,6 +9,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		}
 		else {
 			extract( $this->data );
+
 			if ( $header ) {
 				$html .= $this->login_header_html();
 			}
@@ -50,13 +51,17 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 	}
 
 	private function login_header_html() {
+		extract( $this->data );
+
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
-			<legend><?php echo $this->data['title']; ?></legend>
+			<legend><?php echo esc_html( $title ); ?></legend>
+			<?php if ( $show_note ) : ?>
 			<div class="ms-alert-box ms-alert-error">
 				<?php _e( 'You are not currently logged in. Please login to access the page.', MS_TEXT_DOMAIN ); ?>
 			</div>
+			<?php endif; ?>
 		</div>
 		<?php
 		$html = ob_get_clean();

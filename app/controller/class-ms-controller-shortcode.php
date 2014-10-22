@@ -246,10 +246,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'header'		=> true,
 					'register'		=> true,
 					'title'			=> '',
+					'show_note'		=> true,
 				),
 				$atts
 			)
 		);
+
+		$data['header'] = self::is_true( $data['header'] );
+		$data['register'] = self::is_true( $data['register'] );
+		$data['show_note'] = self::is_true( $data['show_note'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_membership_login_data', $data, $this );
@@ -433,5 +438,25 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$content = sprintf( '<p class="%1$s"> %2$s </p> ', $data['class'], $content );
 
 		return apply_filters( 'ms_controller_shortcode_ms_gren_note', $content, $this );
+	}
+
+	/**
+	 * Evaluates if the specified variable is a boolean TRUE value
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  mixed $value The variable to evaluate.
+	 * @return bool
+	 */
+	public static function is_true( $value ) {
+		if ( true === $value || false === $value ) {
+			return $value;
+		} else if ( is_string( $value ) ) {
+			return in_array( $value, array( '1', 'on', 'yes', 'true' ) );
+		} else if ( is_scalar( $value ) ) {
+			return ! ! $value;
+		} else {
+			return ! empty( $value );
+		}
 	}
 }
