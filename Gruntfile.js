@@ -17,6 +17,7 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-settings-payment.js',
 				'app/assets/js/src/ms-view-settings-protection.js'
 			],
+			'app/assets/js/ms-public-ajax.js': ['app/assets/js/src/ms-public-ajax.js'],
 			'app/assets/js/jquery.plugins.js': [
 				'app/assets/js/vendor/jquery.nearest.js'
 			],
