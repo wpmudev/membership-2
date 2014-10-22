@@ -334,6 +334,8 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function signon_user() {
 
+		$user = new WP_User( $this->id );
+		
 		if ( ! headers_sent() ) {
 			$user = @wp_signon( array(
 					'user_login'    => $this->username,
@@ -345,17 +347,14 @@ class MS_Model_Member extends MS_Model {
 			if ( is_wp_error( $user ) && method_exists( $user, 'get_error_message' ) ) {
 				return $user;
 			}
-			else {
-				/** Set the current user up */
-				wp_set_current_user( $this->id );
-			}
-		}
-		else {
-			/** Set the current user up */
-			wp_set_current_user( $this->id );
 		}
 
-		do_action( 'ms_model_member_signon_user', $this );
+		wp_set_current_user( $this->id );
+		wp_set_auth_cookie( $this->id );
+		
+		do_action( 'wp_login', $this->username, $user );
+		
+		do_action( 'ms_model_member_signon_user', $user, $this );
 	}
 
 	/**

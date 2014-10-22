@@ -360,14 +360,19 @@ class MS_Controller_Frontend extends MS_Controller {
 			}
 			do_action( 'ms_controller_frontend_register_user_complete', $user );
 
-			/** Go to membership signup payment form. */
-			$this->add_action( 'the_content', self::STEP_PAYMENT_TABLE, 1 );
+			// Go to membership signup payment form.
+			wp_safe_redirect( add_query_arg( array( 
+				'step' => self::STEP_PAYMENT_TABLE,
+				'membership_id' => @$_REQUEST['membership_id'],
+			) ) );
+			exit;
+				
 		}
 		catch( Exception $e ) {
 			$this->register_errors = $e->getMessage();
 			MS_Helper_Debug::log( $this->register_errors );
 
-			/** step back */
+			// step back
 			$this->add_action( 'the_content', self::STEP_REGISTER_FORM, 1 );
 			do_action( 'ms_controller_frontend_register_user_error', $this->register_errors );
 		}
@@ -392,10 +397,10 @@ class MS_Controller_Frontend extends MS_Controller {
 		$membership_id = 0;
 
 		/* First time loading */
-		if ( ! empty( $_POST['membership_id'] ) ) {
-			$membership_id = $_POST['membership_id'];
+		if ( ! empty( $_REQUEST['membership_id'] ) ) {
+			$membership_id = $_REQUEST['membership_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			$move_from_id = ! empty ( $_POST['move_from_id'] ) ? $_POST['move_from_id'] : 0;
+			$move_from_id = ! empty ( $_REQUEST['move_from_id'] ) ? $_REQUEST['move_from_id'] : 0;
 			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, '', $move_from_id );
 		}
 		/* Error path, showing payment table again with error msg */
