@@ -172,29 +172,28 @@ class MS_View_Settings_Edit extends MS_View {
 		$ms_pages = $this->data['ms_pages'];
 
 		$fields = array();
-		foreach( $ms_pages as $ms_page ) {
+		foreach ( $ms_pages as $ms_page ) {
 			$fields['pages'][ $ms_page->type ] = array(
-					'id' => $ms_page->type,
-					'page_id' => $ms_page->id,
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'read_only' => true,
-					'title' => sprintf( __( 'Select %s page', MS_TEXT_DOMAIN ), $ms_page->title ),
-					'value' => sprintf( '/%1$s/', $ms_page->slug ),
-					'class' => 'ms-ajax-update',
-					'data_ms' => array(
-							'page_type' => $ms_page->type,
-							'field' => 'slug',
-							'action' => $action,
-							'_wpnonce' => $nonce,
-					),
+				'id' => $ms_page->type,
+				'page_id' => $ms_page->id,
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'read_only' => true,
+				'title' => sprintf( __( 'Select %s page', MS_TEXT_DOMAIN ), $ms_page->title ),
+				'value' => sprintf( '/%1$s/', $ms_page->slug ),
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'page_type' => $ms_page->type,
+					'field' => 'slug',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
 			);
 			$fields['edit'][ $ms_page->type ] = array(
-					'id' => 'edit_slug_' . $ms_page->type,
-					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-					'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
-					'class' => 'ms-edit-url',
+				'id' => 'edit_slug_' . $ms_page->type,
+				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
+				'class' => 'ms-edit-url',
 			);
-
 		}
 
 		$fields = apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
@@ -203,19 +202,20 @@ class MS_View_Settings_Edit extends MS_View {
 		?>
 		<div class="ms-settings">
 			<?php
-				MS_Helper_Html::settings_tab_header( array(
+			MS_Helper_Html::settings_tab_header(
+				array(
 					'title' => __( 'Page Settings', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc.', MS_TEXT_DOMAIN ),
-				) );
+				)
+			);
 			?>
 			<div class="ms-separator"></div>
 
 			<form action="" method="post">
 
-				<?php foreach ( $fields['pages'] as $page_type => $field ) : ?>
-					<?php
-						MS_Helper_Html::html_element( $field );
-						MS_Helper_Html::html_element( $fields['edit'][ $page_type ] );
+				<?php foreach ( $fields['pages'] as $page_type => $field ) :
+					MS_Helper_Html::html_element( $field );
+					MS_Helper_Html::html_element( $fields['edit'][ $page_type ] );
 					?>
 					<div id="ms-settings-page-links-wrapper">
 						<?php
@@ -241,8 +241,7 @@ class MS_View_Settings_Edit extends MS_View {
 				<?php endforeach; ?>
 			</form>
 		</div>
-		<?php MS_Helper_Html::save_text(); ?>
-		<?php
+		<?php MS_Helper_Html::save_text();
 		return ob_get_clean();
 	}
 
