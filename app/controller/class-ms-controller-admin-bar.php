@@ -29,7 +29,7 @@
  * Adds ability for Membership users to test the behaviour for their end-users.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -39,16 +39,16 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * Details on current simulation mode
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var MS_Model_Simulate
 	 */
 	protected $simulate = null;
 
 	/**
 	 * List of all available memberships
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var MS_Model_Membership[]
 	 */
 	protected $memberships = null;
@@ -114,7 +114,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_bar_manager() {
-		
+
 		/* Check for memberhship id simulation GET request */
 		if ( isset( $_GET['membership_id'] ) && $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
 			$this->simulate->membership_id = $_GET['membership_id']; //should these values be validated?
@@ -122,26 +122,28 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
-		
+
 		/* Check for simulation periods/dates in POST request */
 		$isset = array( 'simulate_submit', 'simulate_type' );
 		if ( $this->validate_required( $isset, 'POST', false ) ) {
 
 			$this->simulate->type = $_POST['simulate_type'];
-			
+
 			if ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
 				$isset = array( 'period_unit', 'period_type' );
 				if ( $this->validate_required( $isset, 'POST', false ) ) {
-					$this->simulate->period = array( 'period_unit' => $_POST['period_unit'], 'period_type' => $_POST['period_type'] );//should these values be validated?
+					$this->simulate->period = array(
+						'period_unit' => absint( $_POST['period_unit'] ),
+						'period_type' => $_POST['period_type'],
+					);
 				}
-				
 			}
 			elseif ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
 				if ( ! empty( $_POST['simulate_date'] ) ) {
 					$this->simulate->date = $_POST['simulate_date'];
 				}
 			}
-			
+
 			$this->simulate->save();
 			wp_safe_redirect( wp_get_referer() );
 			exit;
@@ -152,7 +154,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * Remove all Admin Bar nodes.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string[] $exclude The node IDs to exclude.
 	 */
 	private function remove_admin_bar_nodes( $exclude = array() ) {
@@ -169,7 +171,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				}
 			}
 		}
-		
+
 		do_action( 'ms_controller_admin_bar_remove_admin_bar_nodes', $nodes, $exclude );
 	}
 
@@ -177,7 +179,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * Add simulation nodes.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 */
 	private function add_simulator_nodes() {
 		global $wp_admin_bar;
@@ -187,7 +189,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $this->simulate->membership_id );
 			$title = null;
 			$html = null;
-			
+
 			$data = array();
 			$data['simulate_type'] = $this->simulate->type;
 			$data['period_unit'] = null;
@@ -200,16 +202,16 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 					$title = __( 'View on: ', MS_TEXT_DOMAIN );
 				}
 				elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
-					$data['period_unit'] = $this->simulate->period['period_unit'];
+					$data['period_unit'] = absint( $this->simulate->period['period_unit'] );
 					$data['period_type'] = $this->simulate->period['period_type'];
 					$title = __( 'View in: ', MS_TEXT_DOMAIN );
 				}
-				
+
 				$view = MS_Factory::create( 'MS_View_Admin_Bar' );
 				$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
 				$html = $view->to_html();
 			}
-						
+
 			$wp_admin_bar->add_menu(
 				apply_filters(
 					'ms_controller_admin_bar_simulate_node',
@@ -237,7 +239,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * Switches simulation views.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 */
 	private function add_view_site_as_node() {
 		global $wp_admin_bar;
@@ -364,7 +366,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * Add 'Test Memberships' node.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 */
 	private function add_test_membership_node() {
 		global $wp_admin_bar;
@@ -400,7 +402,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * Add 'Test Memberships' node.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 */
 	private function add_exit_test_node() {
 		global $wp_admin_bar;
@@ -437,7 +439,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * * wp_before_admin_bar_render
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 */
 	public function customize_toolbar_front() {
 		if ( ! $this->is_admin_user() ) {
@@ -453,7 +455,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * * admin_head-profile.php
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 */
 	public function customize_admin_sidebar() {
 		global $menu;
