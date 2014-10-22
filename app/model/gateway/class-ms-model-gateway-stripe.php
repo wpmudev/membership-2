@@ -171,7 +171,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 			/* Send request to gateway */
 			else {
 				$charge = Stripe_Charge::create( array(
-						'amount' => number_format( $invoice->total * 100, 0 ), // Amount in cents!
+						'amount' => (int) $invoice->total * 100, // Amount in cents!
 						'currency' => strtolower( $invoice->currency ),
 						'customer' => $customer->id,
 						'description' => $invoice->name,
@@ -216,7 +216,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 					else {
 	
 						$charge = Stripe_Charge::create( array(
-								'amount' => $invoice->total * 100, // Amount in cents!
+								'amount' => (int) $invoice->total * 100, // Amount in cents!
 								'currency' => strtolower( $invoice->currency ),
 								'customer' => $customer->id,
 								'description' => $invoice->name,
