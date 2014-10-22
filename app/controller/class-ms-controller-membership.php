@@ -1433,6 +1433,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$data['ms_private_types'] = MS_Model_Membership::get_private_eligible_types();
 				$data['ms_pointer'] = $ms_pointer;
 				$data['ms_init'][] = 'view_membership_choose_type';
+				$data['initial_url'] = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG );
 				break;
 
 			case self::STEP_OVERVIEW:
