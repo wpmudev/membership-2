@@ -28,7 +28,7 @@
  * Manages the Member and the member's Memberships.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -74,7 +74,7 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function ajax_action_toggle_member() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['member_id'] ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce() && ! empty( $_POST['member_id'] ) && $this->is_admin_user() ) {
 			$msg = $this->member_list_do_action( 'toggle_activation', array( $_POST['member_id'] ) );
 		}
 
@@ -91,10 +91,10 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function ajax_action_get_users() {
-		$callback_name = @$_REQUEST['callback'];//this seems like a potential XSS vulnerability
+		$callback_name = sanitize_html_class( @$_REQUEST['callback'] );
 
 		$data = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS, false );
-		
+
 		printf( '%s(%s)', $callback_name, json_encode( $data ) );
 		exit;
 	}
@@ -115,13 +115,13 @@ class MS_Controller_Member extends MS_Controller {
 	 * Verifies GET and POST requests to manage members
 	 *
 	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member
-	 * 	membership fields (active, memberships, start, end, gateway)
+	 *     membership fields (active, memberships, start, end, gateway)
 	 *
 	 * @since 1.0.0
 	 */
 	public function members_admin_page_process() {
 		$this->print_admin_message();
-		
+
 		$msg = 0;
 		if( $this->is_admin_user() ) {
 
@@ -172,7 +172,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * Show member list.
 	 *
 	 * Menu Members, show all members available.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function admin_member_list() {
@@ -188,9 +188,9 @@ class MS_Controller_Member extends MS_Controller {
 			$data = array();
 			$data['usernames'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS );
 			$data['action'] ='add_member';
-			
+
 			$view = MS_Factory::create( 'MS_View_Member_List' );
-			$view->data = apply_filters( 'ms_view_member_list_data', $data ); 
+			$view->data = apply_filters( 'ms_view_member_list_data', $data );
 			$view->render();
 		}
 	}
@@ -340,7 +340,7 @@ class MS_Controller_Member extends MS_Controller {
 			}
 			$member->save();
 		}
-		
+
 		return apply_filters( 'ms_controller_member_member_list_do_action', $msg, $action, $members, $membership_id, $this );
 	}
 
