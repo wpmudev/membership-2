@@ -30,16 +30,18 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 				</p>
 				<?php if ( $this->data['member']->has_membership() && ! empty( $this->data['memberships'] ) ) { ?>
 					<legend class="ms-upgrade-from">
-						<?php echo __( 'Upgrade to', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'Upgrade to', MS_TEXT_DOMAIN ); ?>
 					</legend>
 				<?php } ?>
 				<form class="ms-membership-form" method="post">
 					<div class="ms-form-price-boxes">
-						<?php do_action( 'ms_membership_form_before_memberships' ); ?>
 						<?php
+						do_action( 'ms_membership_form_before_memberships' );
+
 						$membership_ids = array_keys( $this->data['member']->ms_relationships );
 						$move_from_id = reset( $membership_ids );
 						$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
+
 						if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) && $move_from_id ) {
 							$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
 						}
@@ -47,8 +49,9 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 						foreach ( $this->data['memberships'] as $membership ) {
 							$this->membership_box_html( $membership, $action, $move_from_id, $settings );
 						}
+
+						do_action( 'ms_membership_form_after_memberships' );
 						?>
-						<?php do_action( 'ms_membership_form_after_memberships' ) ?>
 					</div>
 				</form>
 			</div>

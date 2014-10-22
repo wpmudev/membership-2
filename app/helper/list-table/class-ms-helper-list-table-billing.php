@@ -158,11 +158,11 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	function column_invoice( $item ) {
 
 		$actions = array(
-				'edit' => sprintf( '<a href="?page=%s&action=%s&invoice_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
-				'view' => sprintf( '<a href="%s">%s</a>', get_permalink(  $item->id ),  __( 'View', MS_TEXT_DOMAIN ) ),
+			'edit' => sprintf( '<a href="?page=%s&action=%s&invoice_id=%s">%s</a>', $_REQUEST['page'], 'edit', $item->id, __('Edit', MS_TEXT_DOMAIN ) ),
+			'view' => sprintf( '<a href="%s">%s</a>', get_permalink(  $item->id ),  __( 'View', MS_TEXT_DOMAIN ) ),
 		);
 
-		echo sprintf( '%1$s %2$s', $item->id, $this->row_actions( $actions ) );
+		printf( '%1$s %2$s', $item->id, $this->row_actions( $actions ) );
 
 	}
 

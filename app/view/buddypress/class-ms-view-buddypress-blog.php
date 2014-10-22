@@ -17,8 +17,13 @@ class MS_View_Buddypress_Blog extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-settings'>
-				<h3><?php echo __( 'Buddypress blogs ', MS_TEXT_DOMAIN ) . $this->title; ?></h3>
-				<div class="settings-description ms-description"><?php _e( 'Select the comment settings below that you would like to give access to as part of this membership. Commenting access is turned off by default.', MS_TEXT_DOMAIN ); ?></div>
+				<h3><?php
+					_e( 'Buddypress blogs ', MS_TEXT_DOMAIN );
+					echo $this->title;
+				?></h3>
+				<div class="settings-description ms-description"><?php
+					_e( 'Select the comment settings below that you would like to give access to as part of this membership. Commenting access is turned off by default.', MS_TEXT_DOMAIN );
+				?></div>
 				<div class="ms-separator"></div>
 
 				<?php $list_table->views(); ?>
