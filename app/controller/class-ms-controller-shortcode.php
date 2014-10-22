@@ -246,7 +246,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'header'		=> true,
 					'register'		=> true,
 					'title'			=> '',
-					'show_note'		=> true,
+					'show_note'		=> true,   // Show the "you are not logged in" note?
+					'lost_pass'		=> false,  // Show the lost-password form by default?
 				),
 				$atts
 			)

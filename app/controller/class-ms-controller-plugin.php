@@ -456,6 +456,11 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/js/ms-admin.js',
 			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'jquery-plugins' ), $version
 		);
+		wp_register_script(
+			'ms-ajax-login',
+			$plugin_url . 'app/assets/js/ms-public-ajax.js',
+			array( 'jquery' ), $version, true // last param forces script to load in footer
+		);
 
 		wp_register_script(
 			'jquery-chosen',
