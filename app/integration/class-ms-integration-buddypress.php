@@ -83,8 +83,8 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	public function buddypress_addon_list( $list ) {
 		$list[ self::ADDON_BUDDYPRESS ] = (object) array(
 			'id' => self::ADDON_BUDDYPRESS,
-			'name' => __( 'Buddypress Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Enable buddypress rules integration.', MS_TEXT_DOMAIN ),
+			'name' => __( 'BuddyPress Integration', MS_TEXT_DOMAIN ),
+			'description' => __( 'Enable BuddyPress rules integration.', MS_TEXT_DOMAIN ),
 			'active' => MS_Model_Addon::is_enabled( self::ADDON_BUDDYPRESS ),
 		);
 
@@ -144,11 +144,11 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	 * @return array The filtered rule type titles.
 	 */
 	public function buddypress_rule_type_titles( $rules ) {
-		$rules[ self::RULE_TYPE_BUDDYPRESS  ] = __( 'Buddypress' , MS_TEXT_DOMAIN );
+		$rules[ self::RULE_TYPE_BUDDYPRESS  ] = __( 'BuddyPress' , MS_TEXT_DOMAIN );
 
 		/** @todo integrate it better in 4.1
-		$rules[ self::RULE_TYPE_BUDDYPRESS_BLOG  ] = __( 'Buddypress blog' , MS_TEXT_DOMAIN );
-		$rules[ self::RULE_TYPE_BUDDYPRESS_GROUP  ] = __( 'Buddypress group' , MS_TEXT_DOMAIN );
+		$rules[ self::RULE_TYPE_BUDDYPRESS_BLOG  ] = __( 'BuddyPress blog' , MS_TEXT_DOMAIN );
+		$rules[ self::RULE_TYPE_BUDDYPRESS_GROUP  ] = __( 'BuddyPress group' , MS_TEXT_DOMAIN );
 		*/
 
 		return $rules;
@@ -172,11 +172,11 @@ class MS_Integration_BuddyPress extends MS_Integration {
 		/** @todo integrate it better in 4.1
 		$rule = self::RULE_TYPE_BUDDYPRESS_BLOG;
 		$tabs[ $rule  ] = array(
-			'title' => __( 'Buddypress blog', MS_TEXT_DOMAIN ),
+			'title' => __( 'BuddyPress blog', MS_TEXT_DOMAIN ),
 		);
 		$rule = self::RULE_TYPE_BUDDYPRESS_GROUP;
 		$tabs[ $rule  ] = array(
-			'title' => __( 'Buddypress groups', MS_TEXT_DOMAIN ),
+			'title' => __( 'BuddyPress groups', MS_TEXT_DOMAIN ),
 		);
 		*/
 

@@ -118,7 +118,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		if ( ! $item->has_parent() ) {
 			$actions['overview'] = sprintf(
 				'<a href="?page=%s&step=%s&membership_id=%s">%s</a>',
-				$_REQUEST['page'],
+				$_REQUEST['page'],//XSS!!!!
 				MS_Controller_Membership::STEP_OVERVIEW,
 				$item->id,
 				__( 'Overview', MS_TEXT_DOMAIN )
@@ -126,7 +126,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		} else {
 			$actions['content'] = sprintf(
 				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
-				$_REQUEST['page'],
+				$_REQUEST['page'],//XSS!!!!
 				MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT,
 				$item->id,
 				__( 'Edit Content', MS_TEXT_DOMAIN )
@@ -135,7 +135,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 		$actions['payment'] = sprintf(
 			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
-			$_REQUEST['page'],
+			$_REQUEST['page'],//XSS!!!!
 			MS_Controller_Membership::STEP_SETUP_PAYMENT,
 			$item->id,
 			__( 'Payment options', MS_TEXT_DOMAIN )
@@ -146,7 +146,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			wp_nonce_url(
 				sprintf(
 					'?page=%s&membership_id=%s&action=%s',
-					$_REQUEST['page'],
+					$_REQUEST['page'],//XSS!!!!
 					$item->id,
 					'delete'
 					),

@@ -100,7 +100,7 @@ class MS_Helper_Period extends MS_Helper {
 	 * @since 4.0
 	 *  
 	 * @param Date $end_date The end date to subtract from in the format yyyy-mm-dd
-	 * @param Date $start_date The start date to subtractin the format yyyy-mm-dd
+	 * @param Date $start_date The start date to subtraction the format yyyy-mm-dd
 	 * @return string The resulting of the date subtraction.
 	 */
 	public static function subtract_dates( $end_date, $start_date ) {

@@ -34,7 +34,7 @@ class MS_Helper_List_Table_Rule_Buddypress_Group extends MS_Helper_List_Table_Ru
 	public function get_columns() {
 		return apply_filters( "membership_helper_list_table_{$this->id}_columns", array(
 			'cb'     => '<input type="checkbox" />',
-			'name' => __( 'Buddypress Group', MS_TEXT_DOMAIN ),
+			'name' => __( 'BuddyPress Group', MS_TEXT_DOMAIN ),
 			'access' => __( 'Access', MS_TEXT_DOMAIN ),
 		) );
 	}

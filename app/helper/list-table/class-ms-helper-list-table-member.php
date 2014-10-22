@@ -293,14 +293,14 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$actions = array(
 				'add' => sprintf(
 					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-					$_REQUEST['page'],
+					$_REQUEST['page'],//XSS!!!!
 					'add',
 					$item->id,
 					__( 'Add', MS_TEXT_DOMAIN )
 				),
 				'drop' => sprintf(
 					'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-					$_REQUEST['page'],
+					$_REQUEST['page'],//XSS!!!!
 					'drop',
 					$item->id,
 					__( 'Drop', MS_TEXT_DOMAIN )

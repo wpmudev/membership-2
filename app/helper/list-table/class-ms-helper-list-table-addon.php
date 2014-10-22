@@ -71,7 +71,7 @@ class MS_Helper_List_Table_Addon extends MS_Helper_List_Table {
 	}
 
 	public function column_addon_description( $item ) {
-		$html = "<div class='title'>{$item->name}</div>";
+		$html = "<div class='title'>{$item->name}</div>";//these should be escaped if not meant to contain html
 		$html .= "<span class='description'>{$item->description}</span>";
 		return $html;
 	}
