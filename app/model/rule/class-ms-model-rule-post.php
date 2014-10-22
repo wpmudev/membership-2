@@ -78,7 +78,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
-		
+
 		/* List rather than on a single post */
 		if ( ! $wp_query->is_singular && empty( $wp_query->query_vars['pagename'] )
 			&& ( ! isset( $wp_query->query_vars['post_type'] ) || in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) ) ) ) {
@@ -134,7 +134,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 	 * @return string The modified where clause.
 	 */
 	public function include_dripped( $where, $wp_query ) {
-		
+
 		do_action( 'ms_model_rule_post_include_dripped_before', $where, $wp_query, $this );
 		
 		global $wpdb;
@@ -147,8 +147,8 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				$dripped_type = $this->get_dripped_type();
 						
 				$posts = array();
-				if( ! empty( $this->dripped[ $dripped_type ] ) && is_array( $this->dripped[ $dripped_type ] ) ) {
-					foreach( $this->dripped[ $dripped_type ] as $post_id => $period ) {
+				if( ! empty( $this->rule_value ) && is_array( $this->rule_value ) ) {
+					foreach( $this->rule_value as $post_id => $value ) {
 						if( $this->has_dripped_access( $this->start_date, $post_id ) ) {
 							$posts[] = $post_id;
 						}

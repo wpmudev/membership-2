@@ -563,7 +563,7 @@ class MS_Model_Rule extends MS_Model {
 			else {
 				switch( $field ) {
 					case 'period_unit':
-						$value = $this->validate_period_unit( $value );
+						$value = $this->validate_period_unit( $value, 0 );
 					break;
 					case 'period_type':
 						$value = $this->validate_period_type( $value );

@@ -224,7 +224,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$this->_resp_reset();
 
-		$fields = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field', 'value' );
+		$fields = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field' );
 		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-dripped-01' ); }
 		if ( $this->_resp_ok() && ! $this->validate_required( $fields ) ) { $this->_resp_err( 'update-dripped-02' ); }
 		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-dripped-03' ); }
@@ -239,7 +239,7 @@ class MS_Controller_Rule extends MS_Controller {
 			$dripped_type = $_POST['dripped_type'];
 			$id = $_POST['id'];
 			$field = $_POST['field'];
-			$value = $_POST['value'];
+			$value = isset( $_POST['value'] ) ? $_POST['value'] : 0;
 			$rule = $membership->get_rule( $rule_type );
 
 			$rule->set_dripped_value( $dripped_type, $id, $field, $value );
