@@ -427,7 +427,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
 		$valid = true;
-		$nonce_name = @$_POST['gateway'] . '_' . @$_POST['ms_relationship_id'];
+		$nonce_name = $_POST['gateway'] . '_' . $_POST['ms_relationship_id'];
 
 		if ( $valid && ! $this->validate_required( $fields ) ) { $valid = false; $err = 'GAT-01 (invalid fields)'; }
 		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) { $valid = false; $err = 'GAT-02 (invalid gateway)'; }
@@ -484,6 +484,10 @@ class MS_Controller_Gateway extends MS_Controller {
 		else {
 			MS_Helper_Debug::log( 'Error Code ' . $err );
 
+			MS_Helper_Debug::log( $_POST );
+			MS_Helper_Debug::log( "nonce action: $nonce_name, nonce: ". wp_create_nonce( $nonce_name ) );
+			MS_Helper_Debug::debug_trace();
+			
 			$this->add_action( 'the_content', 'purchase_error_content' );
 		}
 

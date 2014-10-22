@@ -267,6 +267,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 			$ms_relationship->save();
 		}
+		else {
+			MS_Helper_Debug::log( "Invalid membership_id: $membership_id, ms_relationship not created for $user_id, $gateway_id, $move_from_id" );
+			MS_Helper_Debug::debug_trace();
+		}
 		
 		return apply_filters( 'ms_model_membership_relationship_create_ms_relationship', $ms_relationship, $membership_id, $user_id, $gateway_id, $move_from_id );
 	}
