@@ -38,17 +38,37 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 					<?php $this->content_box_date( $soon ); ?>
 
 					<div class="ms-protection-edit-wrapper">
-						<?php MS_Helper_Html::html_element(
+						<?php
+						MS_Helper_Html::html_element(
 							array(
 								'id' => 'edit_dripped',
 								'type' => MS_Helper_Html::TYPE_HTML_LINK,
 								'value' => __( 'Edit Dripped Content', MS_TEXT_DOMAIN ),
 								'url' => add_query_arg(
-									array( 'step' => MS_Controller_Membership::STEP_SETUP_DRIPPED )
+									array(
+										'step' => MS_Controller_Membership::STEP_SETUP_DRIPPED,
+										'edit' => 1,
+									)
 								),
 								'class' => 'ms-link-button button',
 							)
-						); ?>
+						);
+
+						MS_Helper_Html::html_element(
+							array(
+								'id' => 'setup_payment',
+								'type' => MS_Helper_Html::TYPE_HTML_LINK,
+								'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+								'url' => add_query_arg(
+									array(
+										'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
+										'edit' => 1,
+									)
+								),
+								'class' => 'ms-link-button button',
+							)
+						);
+						?>
 					</div>
 				</div>
 			</div>

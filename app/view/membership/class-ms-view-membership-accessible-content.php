@@ -12,14 +12,6 @@
 class MS_View_Membership_Accessible_Content extends MS_View {
 
 	/**
-	 * Data set by controller.
-	 *
-	 * @since 1.0.0
-	 * @var mixed $data
-	 */
-	protected $data;
-
-	/**
 	 * Create view output.
 	 *
 	 * @since 1.0.0
@@ -33,7 +25,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		}
 
 		ob_start();
-		/* Render tabbed interface. */
+		// Render tabbed interface.
 		?>
 		<div class="ms-wrap wrap">
 			<?php
@@ -52,7 +44,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			$active_tab = $this->data['active_tab'];
 			MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
 
-			/* Call the appropriate form to render. */
+			// Call the appropriate form to render.
 			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
 			$render_callback = apply_filters(
 				'ms_view_membership_accessible_content_render_tab_callback',
@@ -194,7 +186,10 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				</div>
 			<?php endif; ?>
 		</div>
-		<?php MS_Helper_Html::settings_footer();
+		<?php MS_Helper_Html::settings_footer(
+			null,
+			$this->data['show_next_button']
+		);
 		return ob_get_clean();
 	}
 
