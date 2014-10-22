@@ -99,7 +99,7 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	 * @since 1.0.0
 	 * @return string The email message.
 	 */
-	public static function get_default_message() {
+	public static function get_default_message() { //i18n
 		
 		ob_start();
 		?>

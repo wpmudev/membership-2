@@ -57,7 +57,7 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	 * @return string The description.
 	 */
 	public function get_description() {
-		return __( 'Sent a predefined numer of days before the membership finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN );
+		return __( 'Sent a predefined number of days before the membership finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN );
 	}
 	
 	/**
@@ -84,7 +84,7 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	 * @since 1.0.0
 	 * @return string The email message.
 	 */
-	public static function get_default_message() {
+	public static function get_default_message() { //i18n please
 		ob_start();
 		?>
 			<h2> Hi, <?php echo self::COMM_VAR_USERNAME; ?>,</h2>
