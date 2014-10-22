@@ -28,7 +28,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'fa fa-pencil-square',
+					'title_icon_class' => 'ms-fa ms-fa-pencil-square',
 					'desc' => $description,
 				)
 			);

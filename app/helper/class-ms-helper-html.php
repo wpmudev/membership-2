@@ -173,7 +173,7 @@ class MS_Helper_Html extends MS_Helper {
 				self::html_element_desc( $desc );
 
 				printf(
-					'<span class="ms-datepicker-wrapper ms-field-input"><input class="ms-datepicker %1$s" type="text" id="%2$s" name="%3$s" value="%4$s" %5$s /><i class="ms-icon fa fa-calendar"></i></span>',
+					'<span class="ms-datepicker-wrapper ms-field-input"><input class="ms-datepicker %1$s" type="text" id="%2$s" name="%3$s" value="%4$s" %5$s /><i class="ms-icon ms-fa ms-fa-calendar"></i></span>',
 					esc_attr( $class ),
 					esc_attr( $id ),
 					esc_attr( $name ),
@@ -914,7 +914,7 @@ class MS_Helper_Html extends MS_Helper {
 		if ( $return ) { ob_start(); }
 		?>
 		<div class="ms-tooltip-wrapper">
-		<div class="ms-tooltip-info"><i class="fa fa-info-circle"></i></div>
+		<div class="ms-tooltip-info"><i class="ms-fa ms-fa-info-circle"></i></div>
 		<div class="ms-tooltip">
 			<div class="ms-tooltip-button">&times;</div>
 			<div class="ms-tooltip-content">

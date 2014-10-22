@@ -64,7 +64,7 @@ class MS_View_Settings_Edit extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'fa fa-cog',
+					'title_icon_class' => 'ms-fa ms-fa-cog',
 				)
 			);
 			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );

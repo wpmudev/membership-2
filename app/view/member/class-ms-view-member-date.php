@@ -1,11 +1,11 @@
 <?php
 
 class MS_View_Member_Date extends MS_View {
-				
+
 	protected $fields;
-	
+
 	protected $data;
-	
+
 	public function to_html() {
 		$this->prepare_fields();
 		ob_start();
@@ -14,23 +14,23 @@ class MS_View_Member_Date extends MS_View {
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
 				<h2 class='ms-settings-title'>
-					<i class="fa fa-pencil-square"></i>
+					<i class="ms-fa ms-fa-pencil-square"></i>
 					<?php _e( 'Edit membership dates', MS_TEXT_DOMAIN ); ?>
 				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
 					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
 					<?php MS_Helper_Html::html_element( $this->fields['member_id'] ); ?>
-					<?php 
+					<?php
 						foreach ( $this->fields['membership_id'] as $field ){
-							MS_Helper_Html::html_element( $field );	
-						} 
+							MS_Helper_Html::html_element( $field );
+						}
 					?>
 					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
 					<?php
 						MS_Helper_Html::settings_box_header(
-							__( 'Membership dates', MS_TEXT_DOMAIN ), 
+							__( 'Membership dates', MS_TEXT_DOMAIN ),
 							'',
-							array( 'label_element' => 'h3' ) 
+							array( 'label_element' => 'h3' )
 						);
 					?>
 					<table class="form-table">
@@ -42,7 +42,7 @@ class MS_View_Member_Date extends MS_View {
 										<?php MS_Helper_Html::html_element( $field ); ?>
 										<span><?php _e( 'Start date', MS_TEXT_DOMAIN ); ?></span>
 										<?php MS_Helper_Html::html_element( $this->fields['dates'][$membership_id]['start_date'] ); ?>
-										
+
 										<?php if( $this->fields['dates'][$membership_id]['expire_date']['value']): ?>
 											<span><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></span>
 											<?php MS_Helper_Html::html_element( $this->fields['dates'][$membership_id]['expire_date'] ); ?>
@@ -68,7 +68,7 @@ class MS_View_Member_Date extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	function prepare_fields() {
 		$this->fields = array(
 			'member_id' => array(
@@ -94,7 +94,7 @@ class MS_View_Member_Date extends MS_View {
 				'value' => $this->data['action'],
 			),
 		);
-		
+
 		foreach( $this->data['ms_relationships'] as $ms_relationship ) {
 			$membership_id = $ms_relationship->membership_id;
 			$this->fields['membership_id'][] = array(

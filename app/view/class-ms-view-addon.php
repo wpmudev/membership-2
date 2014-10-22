@@ -3,20 +3,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
@@ -32,7 +32,7 @@
 class MS_View_Addon extends MS_View {
 
 	protected $data;
-	
+
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -48,14 +48,14 @@ class MS_View_Addon extends MS_View {
 	 *
 	 * @return object
 	 */
-	public function to_html() {		
+	public function to_html() {
 		ob_start();
 		$list_table = new MS_Helper_List_Table_Addon( $this->data['addon'] );
 		$list_table->prepare_items();
-		
+
 		?>
 		<div class='ms-wrap'>
-			<h2 class='ms-settings-title'><i class="fa fa-puzzle-piece"></i> <?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>		
+			<h2 class='ms-settings-title'><i class="ms-fa ms-fa-puzzle-piece"></i> <?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>
 			<form action="" method="post">
 				<?php $list_table->display(); ?>
 			</form>

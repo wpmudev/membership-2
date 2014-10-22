@@ -71,7 +71,7 @@ class MS_View_Membership_Overview extends MS_View {
 					array(
 						'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
 						'desc' => __( 'Here you can view a quick summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
-						'title_icon_class' => 'fa fa-dashboard',
+						'title_icon_class' => 'ms-fa ms-fa-dashboard',
 						'bread_crumbs' => $this->data['bread_crumbs'],
 					)
 				);
@@ -91,7 +91,7 @@ class MS_View_Membership_Overview extends MS_View {
 							<?php _e( '(Description)', MS_TEXT_DOMAIN ); ?>
 						</span>
 						<span class="value"><?php echo $child_membership->description; ?></span>
-						<i class="fa fa-pencil handlediv"></i>
+						<i class="ms-fa ms-fa-pencil handlediv"></i>
 					</span>
 					<div class="hidden editor">
 						<?php MS_Helper_Html::html_element( $field_desc ); ?>
@@ -119,7 +119,7 @@ class MS_View_Membership_Overview extends MS_View {
 		?>
 		<div class="ms-half ms-settings-box ms-fixed-height">
 			<div class="ms-divider"></div>
-			<h3><i class="ms-low fa fa-globe"></i> <?php _e( 'News', MS_TEXT_DOMAIN ); ?></h3>
+			<h3><i class="ms-low ms-fa ms-fa-globe"></i> <?php _e( 'News', MS_TEXT_DOMAIN ); ?></h3>
 
 			<div class="inside group">
 				<?php if ( ! empty( $this->data['events'] ) ) : ?>
@@ -171,7 +171,7 @@ class MS_View_Membership_Overview extends MS_View {
 		$count = count( $this->data['members'] );
 		?>
 		<div class="ms-half ms-settings-box ms-fixed-height">
-			<h3><i class="ms-low fa fa-user"></i> <?php printf( __( 'Members (%s)', MS_TEXT_DOMAIN ), $count ); ?></h3>
+			<h3><i class="ms-low ms-fa ms-fa-user"></i> <?php printf( __( 'Members (%s)', MS_TEXT_DOMAIN ), $count ); ?></h3>
 
 			<div class="inside group">
 			<?php if ( $count > 0 ) : ?>

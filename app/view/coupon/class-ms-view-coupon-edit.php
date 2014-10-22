@@ -16,7 +16,7 @@ class MS_View_Coupon_Edit extends MS_View {
 	 * Data set by controller.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var mixed $data
 	 */
 	protected $data;
@@ -25,7 +25,7 @@ class MS_View_Coupon_Edit extends MS_View {
 	 * Create view output.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string
 	 */
 	public function to_html() {
@@ -34,13 +34,13 @@ class MS_View_Coupon_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<?php 
+				<?php
 					$text = $this->data['coupon']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
 					MS_Helper_Html::settings_header( array(
 						'title' => sprintf( __( ' %s Coupon', MS_TEXT_DOMAIN ), $text ),
-						'title_icon_class' => 'fa fa-pencil-square',
-					) ); 
-				?>	
+						'title_icon_class' => 'ms-fa ms-fa-pencil-square',
+					) );
+				?>
 				<form action="<?php echo remove_query_arg( array( 'action', 'coupon_id' ) ); ?>" method="post" class="ms-form">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
 				</form>
@@ -48,10 +48,10 @@ class MS_View_Coupon_Edit extends MS_View {
 			</div>
 		<?php
 		$html = ob_get_clean();
-		
+
 		return apply_filters( 'ms_view_coupon_edit_to_html', $html, $this );
 	}
-	
+
 	/**
 	 * Prepare html fields.
 	 *
@@ -117,7 +117,7 @@ class MS_View_Coupon_Edit extends MS_View {
 					'id' => '_wpnonce',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => wp_create_nonce( $this->data['action'] ),
-			),				
+			),
 			'action' => array(
 					'id' => 'action',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -140,7 +140,7 @@ class MS_View_Coupon_Edit extends MS_View {
 					'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
-		
+
 		return apply_filters( 'ms_view_coupon_edit_prepare_fields', $fields, $this );
 	}
 }

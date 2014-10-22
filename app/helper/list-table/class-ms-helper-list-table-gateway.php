@@ -189,7 +189,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 
 		$html .= '<div class="ms-gateway-setup-wrapper">';
 		$html .= sprintf(
-			'<a class="button" href="#" data-ms-dialog="Gateway_%s_Dialog"><i class="fa fa-cog"></i> %s</a>',
+			'<a class="button" href="#" data-ms-dialog="Gateway_%s_Dialog"><i class="ms-fa ms-fa-cog"></i> %s</a>',
 			esc_attr( $item->id ),
 			__( 'Configure', MS_TEXT_DOMAIN )
 		);

@@ -6,7 +6,7 @@
  * Extends MS_View for rendering methods and magic methods.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage View
  */
@@ -16,7 +16,7 @@ class MS_View_Billing_Edit extends MS_View {
 	 * Data set by controller.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var mixed $data
 	 */
 	protected $data;
@@ -25,7 +25,7 @@ class MS_View_Billing_Edit extends MS_View {
 	 * Create view output.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return string
 	 */
 	public function to_html() {
@@ -34,12 +34,12 @@ class MS_View_Billing_Edit extends MS_View {
 		/** Render tabbed interface. */
 		?>
 			<div class='ms-wrap'>
-				<?php 
+				<?php
 					$text = $this->data['invoice']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
 					MS_Helper_Html::settings_header( array(
 						'title' => sprintf( __( ' %s Billing', MS_TEXT_DOMAIN ), $text ),
-						'title_icon_class' => 'fa fa-pencil-square',
-					) ); 
+						'title_icon_class' => 'ms-fa ms-fa-pencil-square',
+					) );
 				?>
 				<form action="<?php echo remove_query_arg( array( 'action', 'invoice_id' ) ); ?>" method="post" class="ms-form">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
@@ -48,10 +48,10 @@ class MS_View_Billing_Edit extends MS_View {
 			</div>
 		<?php
 		$html = ob_get_clean();
-		
+
 		return apply_filters( 'ms_view_billing_edit_to_html', $html, $this );
 	}
-	
+
 	/**
 	 * Prepare html fields.
 	 *
@@ -107,7 +107,7 @@ class MS_View_Billing_Edit extends MS_View {
 					'title' => sprintf( __( 'Discount (%s)', MS_TEXT_DOMAIN ), $currency ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'value' => $invoice->discount,
-			),				
+			),
 			'due_date' => array(
 					'id' => 'due_date',
 					'title' => __( 'Due date', MS_TEXT_DOMAIN ),
@@ -157,7 +157,7 @@ class MS_View_Billing_Edit extends MS_View {
 			$fields['user_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN ;
 			$fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 		}
-		
+
 		return apply_filters( 'ms_view_billing_edit_prepare_fields', $fields, $this );
 	}
 }

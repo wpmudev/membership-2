@@ -40,7 +40,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Accessible content', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'fa fa-cog',
+					'title_icon_class' => 'ms-fa ms-fa-cog',
 					'desc' => sprintf(
 						__( 'Setup which Protected Content is available to <span class="ms-bold">%s</span> members.', MS_TEXT_DOMAIN ),
 						esc_html( $this->data['membership']->name )

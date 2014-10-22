@@ -1,11 +1,11 @@
 <?php
 
 class MS_View_Member_Membership extends MS_View {
-	
+
 	protected $data;
-	
+
 	protected $fields;
-	
+
 	public function to_html() {
 		$this->prepare_fields();
 		ob_start();
@@ -14,7 +14,7 @@ class MS_View_Member_Membership extends MS_View {
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
 				<h2 class="ms-settings-title">
-					<i class="fa fa-pencil-square"></i> 
+					<i class="ms-fa ms-fa-pencil-square"></i>
 					<?php echo $this->data['title'] . __( ' Membership', MS_TEXT_DOMAIN ); ?>
 				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
@@ -23,9 +23,9 @@ class MS_View_Member_Membership extends MS_View {
 					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
 					<?php
 						MS_Helper_Html::settings_box_header(
-							sprintf( __( 'Membership to %s', MS_TEXT_DOMAIN ), $this->data['title'] ), 
+							sprintf( __( 'Membership to %s', MS_TEXT_DOMAIN ), $this->data['title'] ),
 							'',
-							array( 'label_element' => 'h3' ) 
+							array( 'label_element' => 'h3' )
 						);
 					?>
 					<table class="form-table">
@@ -35,8 +35,8 @@ class MS_View_Member_Membership extends MS_View {
 									<?php
 										if( ! empty( $this->data['memberships_move'] ) ) {
 											MS_Helper_Html::html_element( $this->fields['membership_move'] );
-										} 
-										MS_Helper_Html::html_element( $this->fields['membership_list'] ); 
+										}
+										MS_Helper_Html::html_element( $this->fields['membership_list'] );
 									?>
 								</td>
 							</tr>
@@ -58,7 +58,7 @@ class MS_View_Member_Membership extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	function prepare_fields() {
 		$action_label = array(
 				'add' => __( 'Add', MS_TEXT_DOMAIN ),
@@ -66,7 +66,7 @@ class MS_View_Member_Membership extends MS_View {
 				'drop' => __( 'Drop', MS_TEXT_DOMAIN ),
 				'move' => __( 'Move', MS_TEXT_DOMAIN ),
 			);
-		$this->data['title'] = $action_label[ $this->data['action'] ]; 
+		$this->data['title'] = $action_label[ $this->data['action'] ];
 		$this->fields = array(
 			'membership_list' => array(
 				'id' => 'membership_id',

@@ -16,7 +16,7 @@ protected $fields = array();
 				<?php
 					MS_Helper_Html::settings_header( array(
 						'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
-						'title_icon_class' => 'fa fa-cog',
+						'title_icon_class' => 'ms-fa ms-fa-cog',
 						'desc' => sprintf( __( 'Setup which Protected Content will become available to %s members.', MS_TEXT_DOMAIN ), $this->data['membership']->name ),
 						'bread_crumbs' => $this->data['bread_crumbs'],
 					) );
