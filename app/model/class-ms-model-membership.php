@@ -1152,6 +1152,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$rule_types = MS_Model_Rule::get_rule_types();
 
+		if ( self::TYPE_DRIPPED == $this->type && ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			$rule_types = array( 0 => MS_Model_Rule::RULE_TYPE_POST ) + $rule_types;
+		}
+
 		foreach( $rule_types as $rule_type ) {
 			$rules[ $rule_type ] = $this->get_rule( $rule_type );
 		}
@@ -1208,6 +1212,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				}
 				else {
 					$has_access = ( $has_access || $rule->has_access( $post_id ) );
+					MS_Helper_Debug::log( "$this->name: $this->id; rule: $rule->rule_type, has: $has_access ");
 				}
 				if( $has_access ) {
 					break;

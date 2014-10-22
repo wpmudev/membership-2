@@ -169,3 +169,6 @@ input.ms-dripped-spec-date {
     top: 0;
 }
 
+#the-list-membership .ms-radio-slider-wrapper {
+	float: left;
+}
