@@ -558,10 +558,8 @@ class MS_Plugin {
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
-			if ( is_readable( $file_path ) ) { //unnecessary filesystem overhead. Just use include_once and fail gracefully
-				require_once $file_path;
-				return true;
-			}
+			@include_once $file_path;
+			return true;
 		}
 		/**
 		 * Case 2: The class-path is not explicitely defined in $Path_overrides.
@@ -583,10 +581,8 @@ class MS_Plugin {
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
-			if ( is_readable( $file_path ) ) {//unnecessary filesystem overhead. Just use include_once and fail gracefully
-				require_once $file_path;
-				return true;
-			}
+			@include_once $file_path;
+			return true;
 		}
 
 		return false;
