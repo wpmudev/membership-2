@@ -111,7 +111,8 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function ajax_action_toggle_membership() {
 		$msg = 0;
-		if( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['field'] ) && $this->is_admin_user() ) {
+
+		if ( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['field'] ) && $this->is_admin_user() ) {
 			$msg = $this->membership_list_do_action( 'toggle_'. $_POST['field'], array( $_POST['membership_id'] ) );
 		}
 
@@ -134,7 +135,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 
 		$required = array( 'membership_id', 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $required, 'POST', false ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce() && $this->validate_required( $required, 'POST', false ) && $this->is_admin_user() ) {
 			$msg = $this->save_membership( array( $_POST['field'] => $_POST['value'] ) );
 		}
 
@@ -155,12 +156,12 @@ class MS_Controller_Membership extends MS_Controller {
 	public function load_membership() {
 		$membership_id = 0;
 
-		if( empty( $this->model ) || ! $this->model->is_valid() ) {
-			if( ! empty( $_GET['membership_id'] ) ) {
-				$membership_id = $_GET['membership_id'];
+		if ( empty( $this->model ) || ! $this->model->is_valid() ) {
+			if ( ! empty( $_GET['membership_id'] ) ) {
+				$membership_id = absint( $_GET['membership_id'] );
 			}
-			elseif( ! empty( $_POST['membership_id'] ) ) {
-				$membership_id = $_POST['membership_id'];
+			elseif ( ! empty( $_POST['membership_id'] ) ) {
+				$membership_id = absint( $_POST['membership_id'] );
 			}
 
 			$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
@@ -196,7 +197,10 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_MS_LIST:
 					$fields = array( 'action', 'membership_id' );
 					if( $this->validate_required( $fields, 'GET' ) ) {
-						$msg = $this->membership_list_do_action( $_GET['action'], array( $_GET['membership_id'] ) );
+						$msg = $this->membership_list_do_action(
+							$_GET['action'],
+							array( absint( $_GET['membership_id'] ) )
+						);
 						$next_step = self::STEP_MS_LIST;
 					}
 					break;
@@ -320,14 +324,21 @@ class MS_Controller_Membership extends MS_Controller {
 			switch( $step ) {
 				/** Child overview page is shown in parent's overview, redirect */
 				case self::STEP_OVERVIEW:
-					if( $membership->has_parent() && empty( $_GET['tab'] ) ) {
-						wp_safe_redirect( add_query_arg( array( 'membership_id' => $membership->parent_id, 'tab' => $membership->id ) ) );
+					if ( $membership->has_parent() && empty( $_GET['tab'] ) ) {
+						$new_url = add_query_arg(
+							array(
+								'membership_id' => $membership->parent_id,
+								'tab' => $membership->id
+							)
+						);
+						wp_safe_redirect( $new_url );
 						exit;
 					}
 					break;
+
 				case self::STEP_ACCESSIBLE_CONTENT:
 					/* Parent membership can not edit rules */
-					if( $membership->can_have_children() ) {
+					if ( $membership->can_have_children() ) {
 
 						$args = array();
 						$child = $membership->get_last_descendant();
@@ -724,19 +735,17 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function get_step() {
 
-		/* Initial step */
+		// Initial step
 		$step = self::STEP_MS_LIST;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$membership = $this->load_membership();
 
-		/* Get current step from request */
+		// Get current step from request
 		if( ! empty( $_REQUEST['step'] ) && self::is_valid_step( $_REQUEST['step'] ) ) {
 			$step = $_REQUEST['step'];
 		}
 
-		/*
-		 * If user has left before completing the wizard, try to recover last wizard step.
-		 */
+		// If user has left before completing the wizard, try to recover last wizard step.
 		elseif( $settings->initial_setup ) {
 			$wizard_steps = apply_filters( 'ms_controller_membership_wizard_steps', array( self::STEP_SETUP_PROTECTED_CONTENT, self::STEP_CHOOSE_MS_TYPE ) );
 			if( $settings->wizard_step && in_array( $settings->wizard_step, $wizard_steps ) ) {
@@ -747,23 +756,24 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		}
 
-		/* Hack to use same page in two different menus */
-		if( ! empty( $_GET['page'] )  && MS_Controller_Plugin::MENU_SLUG . '-setup' == $_GET['page'] ) {
+		// Hack to use same page in two different menus
+		$the_page = sanitize_html_class( @$_GET['page'] );
+		if ( MS_Controller_Plugin::MENU_SLUG . '-setup' == $the_page ) {
 			$step = self::STEP_SETUP_PROTECTED_CONTENT;
 		}
 
-		/* If trying to setup children of not supported type, or already is a child (grand child not allowed) */
-		if( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) ) && ! $membership->can_have_children() ) {
+		// If trying to setup children of not supported type, or already is a child (grand child not allowed)
+		if ( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) ) && ! $membership->can_have_children() ) {
 			$step = self::STEP_OVERVIEW;
 		}
 
-		/* Accessible content page is not available to dripped type */
-		if( self::STEP_ACCESSIBLE_CONTENT == $step && MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
+		// Accessible content page is not available to dripped type
+		if ( self::STEP_ACCESSIBLE_CONTENT == $step && MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
 			$step = self::STEP_SETUP_DRIPPED;
 		}
 
-		/* Can't modify membership type */
-		if( self::STEP_CHOOSE_MS_TYPE == $step && $membership->is_valid() ) {
+		// Can't modify membership type
+		if ( self::STEP_CHOOSE_MS_TYPE == $step && $membership->is_valid() ) {
 			$step = self::STEP_OVERVIEW;
 		}
 
@@ -866,7 +876,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
 		$url = admin_url( 'admin.php' );
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships'; //this could possibly be xss is you don't escape tab urls in view
+		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );
 		foreach ( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = admin_url(
 				sprintf(
@@ -894,7 +904,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$step = $this->get_step();
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content-memberships';//this could possibly be xss is you don't escape tab urls in view
+		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );
 
 		foreach ( $tabs as $tab => $info ) {
 			$rule = $protected_content->get_rule( $tab );
@@ -957,23 +967,27 @@ class MS_Controller_Membership extends MS_Controller {
 		$membership_id = $this->load_membership()->id;
 
 		$tabs = array(
-				'post' => array(
-						'title' => __( 'Posts', MS_TEXT_DOMAIN ),
-				),
-				'page' => array(
-						'title' => __( 'Pages', MS_TEXT_DOMAIN ),
-				),
+			'post' => array(
+				'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+			),
+			'page' => array(
+				'title' => __( 'Pages', MS_TEXT_DOMAIN ),
+			),
 		);
 
 		$step = $this->get_step();
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : 'protected-content';//this could possibly be xss is you don't escape tab urls in view
-		foreach( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = admin_url( sprintf( 'admin.php?page=%s&step=%s&tab=%s&membership_id=%s',
+		$page = sanitize_html_class( @$_GET['page'], 'protected-content' );
+
+		foreach ( $tabs as $tab => $info ) {
+			$tabs[ $tab ]['url'] = admin_url(
+				sprintf(
+					'admin.php?page=%s&step=%s&tab=%s&membership_id=%s',
 					$page,
 					$step,
 					$tab,
 					$membership_id
-			) );
+				)
+			);
 		}
 
 		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
@@ -992,10 +1006,10 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$membership = $this->load_membership();
 		$children = $membership->get_children();
-		foreach( $children as $child ) {
+		foreach ( $children as $child ) {
 			$tabs[ $child->id ] = array(
-					'title' => $child->name,
-					'url' => add_query_arg( array( 'tab' => $child->id ) ),
+				'title' => $child->name,
+				'url' => add_query_arg( array( 'tab' => $child->id ) ),
 			);
 		}
 
@@ -1014,32 +1028,35 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 		$tabs = array();
 
-		if( self::STEP_SETUP_PROTECTED_CONTENT == $step ) {
+		if ( self::STEP_SETUP_PROTECTED_CONTENT == $step ) {
 			$tabs = $this->get_protected_content_tabs();
 		}
-		elseif( self::STEP_ACCESSIBLE_CONTENT == $step ) {
+		elseif ( self::STEP_ACCESSIBLE_CONTENT == $step ) {
 			$tabs = $this->get_accessible_content_tabs();
 		}
-		elseif( self::STEP_SETUP_DRIPPED == $step ) {
+		elseif ( self::STEP_SETUP_DRIPPED == $step ) {
 			$tabs = $this->get_setup_dripped_tabs();
 		}
-		elseif( self::STEP_OVERVIEW == $step ) {
+		elseif ( self::STEP_OVERVIEW == $step ) {
 			$tabs = $this->get_children_tabs();
 		}
 		reset( $tabs );
 		$first_key = key( $tabs );
 
-		/** Setup navigation tabs. */
-		$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+		// Setup navigation tabs.
+		$active_tab = sanitize_html_class( @$_GET['tab'], $first_key );
+
 		if ( ! array_key_exists( $active_tab, $tabs ) ) {
-			switch( $active_tab ) {
+			switch ( $active_tab ) {
 				case 'cpt_group':
 					$active_tab = 'category';
 					break;
+
 				case 'menu':
 				case 'more_tag':
 					$active_tab = 'comment';
 					break;
+
 				default:
 					$active_tab = $first_key;
 					break;
