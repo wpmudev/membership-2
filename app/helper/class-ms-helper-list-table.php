@@ -2,9 +2,9 @@
 /**
  * Base class for displaying a list of items in an ajaxified HTML table.
  *
- * Modifications to use more than a list table within a page, avoiding element-id colisions.
+ * Modifications to use more than a list table within a page, avoiding element-id collisions.
  *
- * Copied from WordPress 3.8.3 as its recomendation
+ * Copied from WordPress 3.8.3 as its recommendation
  * http://codex.wordpress.org/Class_Reference/WP_List_Table
  * This class's access is marked as private. That means it is not intended for use by plugin
  * and theme developers as it is subject to change without warning in any future WordPress release.

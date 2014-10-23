@@ -742,7 +742,7 @@ class MS_Helper_Html extends MS_Helper {
 	/**
 	 * Echo the header of a content box. That box has a similar layout to a
 	 * normal WordPress meta-box.
-	 * The box has a title and desription and can optionally be collapsable.
+	 * The box has a title and description and can optionally be collapsible.
 	 *
 	 * @since  1.0.0
 	 * @param  string $title Box title displayed in the top
@@ -823,11 +823,11 @@ class MS_Helper_Html extends MS_Helper {
 	/**
 	 * Method for creating html link.
 	 *
-	 * Pass in array with link arguments. See $defaults for argmuments.
+	 * Pass in array with link arguments. See $defaults for arguments.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return void But does output HTML.
+	 * @return string But does output HTML.
 	 */
 	public static function html_link( $args = array(), $return = false ) {
 		$defaults = array(
@@ -904,7 +904,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return void But does output HTML.
+	 * @return string But does output HTML.
 	 */
 	public static function tooltip( $tip = '', $return = false ) {
 		if ( empty( $tip ) ) {

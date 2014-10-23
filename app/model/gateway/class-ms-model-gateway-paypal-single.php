@@ -68,7 +68,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 * @var string $name
 	 */
-	protected $name = 'PayPal Single Gateway';
+	protected $name = 'PayPal Single Gateway';//i18n please, you'll have to set via __construct()
 	
 	/**
 	 * Gateway description.

@@ -57,7 +57,7 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	 * @return string The description.
 	 */
 	public function get_description() {
-		return __( 'Sent a predefined numer of days after the membership finishes. You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN );
+		return __( 'Sent a predefined number of days after the membership finishes. You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN );
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 		
 		parent::reset_to_default();
 		
-		$this->subject = sprintf( __( 'Remainder: your %s membership has ended', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
+		$this->subject = sprintf( __( 'Reminder: your %s membership has ended', MS_TEXT_DOMAIN ), self::COMM_VAR_MS_NAME );
 		$this->message = self::get_default_message();
 		$this->enabled = false;
 		$this->period_enabled = true;
@@ -84,7 +84,7 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	 * @since 1.0.0
 	 * @return string The email message.
 	 */
-	public static function get_default_message() {
+	public static function get_default_message() { //default email text should be i18n
 		
 		ob_start();
 		?>

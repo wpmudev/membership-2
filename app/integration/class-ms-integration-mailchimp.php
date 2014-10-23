@@ -151,8 +151,8 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	public function mailchimp_addon_list( $list ) {
 		$list[ self::ADDON_MAILCHIMP ] = (object) array(
 				'id' => self::ADDON_MAILCHIMP,
-				'name' => __( 'Mailchimp Integration', MS_TEXT_DOMAIN ),
-				'description' => __( 'Enable mailchimp integration.', MS_TEXT_DOMAIN ),
+				'name' => __( 'MailChimp Integration', MS_TEXT_DOMAIN ),
+				'description' => __( 'Enable MailChimp integration.', MS_TEXT_DOMAIN ),
 				'active' => MS_Model_Addon::is_enabled( self::ADDON_MAILCHIMP ),
 		);
 
@@ -173,7 +173,7 @@ class MS_Integration_Mailchimp extends MS_Integration {
 	public function mailchimp_settings_tabs( $tabs ) {
 
 		$tabs[ self::ADDON_MAILCHIMP  ] = array(
-				'title' => __( 'Mailchimp', MS_TEXT_DOMAIN ),
+				'title' => __( 'MailChimp', MS_TEXT_DOMAIN ),
 				'url' => 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&tab=' . self::ADDON_MAILCHIMP,
 		);
 

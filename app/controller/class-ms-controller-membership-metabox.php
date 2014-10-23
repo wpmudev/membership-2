@@ -197,7 +197,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	}
 
 	/**
-	 * Get rule accordinly to post type.
+	 * Get rule accordingly to post type.
 	 *
 	 * @since 1.0.0
 	 *

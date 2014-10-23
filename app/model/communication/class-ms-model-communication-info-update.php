@@ -84,7 +84,7 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	
 		parent::reset_to_default();
 		
-		$this->subject = __( 'Your billing details has been changed.', MS_TEXT_DOMAIN );
+		$this->subject = __( 'Your billing details have been changed.', MS_TEXT_DOMAIN );
 		$this->message = self::get_default_message();
 		$this->enabled = false;
 		$this->save();
@@ -98,7 +98,7 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	 * @since 1.0.0
 	 * @return string The email message.
 	 */
-	public static function get_default_message() {
+	public static function get_default_message() {//i18n please
 		
 		ob_start();
 		?>

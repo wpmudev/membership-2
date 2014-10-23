@@ -53,7 +53,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 * @var string $name
 	 */
-	protected $name = 'Stripe Gateway';
+	protected $name = 'Stripe Gateway';//i18n please, you'll have to set via __construct()
 	
 	/**
 	 * Gateway description.

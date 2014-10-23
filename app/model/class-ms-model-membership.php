@@ -1212,7 +1212,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				}
 				else {
 					$has_access = ( $has_access || $rule->has_access( $post_id ) );
-					MS_Helper_Debug::log( "$this->name: $this->id; rule: $rule->rule_type, has: $has_access ");
 				}
 				if( $has_access ) {
 					break;

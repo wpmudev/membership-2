@@ -81,7 +81,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		// Instantiate Plugin model - protection implementation.
 		$this->model = MS_Factory::create( 'MS_Model_Plugin' );
 
-		// Instanticate dialog controller for ajax dialogs.
+		// Instantiate dialog controller for ajax dialogs.
 		$this->dialogs = MS_Factory::create( 'MS_Controller_Dialog' );
 
 		/* Setup plugin admin UI */
@@ -92,7 +92,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		 *
 		 * @since 1.0.0
 		 */
-		$this->add_action( 'admin_enqueue_scripts', 'register_admin_scripts' );
+		$this->add_action( 'admin_enqueue_scripts', 'register_admin_scripts' ); //can these be limited to just our admin pages? Or if not only load a specific global one.
 		$this->add_action( 'admin_enqueue_scripts', 'register_admin_styles' );
 
 		/**
@@ -100,7 +100,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		 *
 		 * @since 1.0.0
 		*/
-		$this->add_action( 'wp_enqueue_scripts', 'register_public_scripts' );
+		$this->add_action( 'wp_enqueue_scripts', 'register_public_scripts' ); /* same, it's very important to limit frontend scripts/styles to just the pages that need it.
+ Really the only exceptions are admin bars and widgets, in which case only enqueue what is needed for them globally.*/
 		$this->add_action( 'wp_enqueue_scripts', 'register_public_styles' );
 
 		/** Register admin styles (CSS) */
@@ -109,7 +110,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		/** Register styles used in the front end (CSS) */
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
 
-		/** Enque admin scripts (JS) */
+		/** Enqueue admin scripts (JS) */
 		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_scripts' );
 
 		/** Register scripts used in the front end (JS) */

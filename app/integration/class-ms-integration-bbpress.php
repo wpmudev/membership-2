@@ -136,7 +136,7 @@ class MS_Integration_Bbpress extends MS_Integration {
 	 * @return array The filtered rule type titles.
 	 */
 	public function bbpress_rule_type_titles( $rules ) {
-		$rules[ self::RULE_TYPE_BBPRESS  ] = __( 'BBPress' , MS_TEXT_DOMAIN );
+		$rules[ self::RULE_TYPE_BBPRESS  ] = __( 'bbPress' , MS_TEXT_DOMAIN );
 
 		return $rules;
 	}

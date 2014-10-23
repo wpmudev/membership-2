@@ -55,7 +55,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 * @var string $name
 	 */
-	protected $name = 'Manual Gateway';
+	protected $name = 'Manual Gateway';//i18n please, you'll have to set via __construct()
 
 	/**
 	 * Gateway description.
@@ -63,7 +63,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 * @var string $description
 	 */
-	protected $description = '(Bank orders, cash, etc)';
+	protected $description = '(Bank orders, cash, etc)';//i18n please, you'll have to set via __construct()
 
 	/**
 	 * Gateway active status.
@@ -135,7 +135,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			$link = admin_url( sprintf( 'admin.php?page=%s&tab=payment', MS_Controller_Plugin::MENU_SLUG . '-settings' ) );
 			ob_start();
 			?>
-				<?php _e( 'It is only an example of manual payment gateway instructions', MS_TEXT_DOMAIN ); ?>
+				<?php _e( 'This is only an example of manual payment gateway instructions', MS_TEXT_DOMAIN ); ?>
 				<br />
 				<?php printf(
 					'%s <a href="%s">%s</a>',
@@ -148,7 +148,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 				<br />
 				<?php _e( 'Bank: Example bank.', MS_TEXT_DOMAIN ); ?>
 				<br />
-				<?php _e( 'Bank account: Example bank acount 1234.', MS_TEXT_DOMAIN ); ?>
+				<?php _e( 'Bank account: Example bank account 1234.', MS_TEXT_DOMAIN ); ?>
 				<br />
 			<?php
 			$this->payment_info = ob_get_clean();

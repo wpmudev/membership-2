@@ -43,13 +43,13 @@ class MS_Helper_Settings extends MS_Helper {
 				self::SETTINGS_MSG_UPDATED => __( 'Setting updated.', MS_TEXT_DOMAIN ),
 				self::SETTINGS_MSG_ACTIVATION_TOGGLED => __( 'Setting activation toggled.', MS_TEXT_DOMAIN ),
 				self::SETTINGS_MSG_STATUS_TOGGLED => __( 'Setting status toggled.', MS_TEXT_DOMAIN ),
-				self::SETTINGS_MSG_BULK_UPDATED => __( 'Settings bulk updated.', MS_TEXT_DOMAIN ),
+				self::SETTINGS_MSG_BULK_UPDATED => __( 'Bulk settings updated.', MS_TEXT_DOMAIN ),
 				self::SETTINGS_MSG_NOT_ADDED => __( 'Setting not added.', MS_TEXT_DOMAIN ),
 				self::SETTINGS_MSG_NOT_DELETED => __( 'Setting not deleted.', MS_TEXT_DOMAIN ),
 				self::SETTINGS_MSG_NOT_UPDATED => __( 'Setting not updated.', MS_TEXT_DOMAIN ),
 				self::SETTINGS_MSG_ACTIVATION_NOT_TOGGLED => __( 'Setting activation not toggled.', MS_TEXT_DOMAIN ),
 				self::SETTINGS_MSG_STATUS_NOT_TOGGLED => __( 'Setting status not toggled.', MS_TEXT_DOMAIN ),
-				self::SETTINGS_MSG_BULK_NOT_UPDATED => __( 'Settings bulk not updated.', MS_TEXT_DOMAIN ),
+				self::SETTINGS_MSG_BULK_NOT_UPDATED => __( 'Bulk settings not updated.', MS_TEXT_DOMAIN ),
 			)
 		);
 	

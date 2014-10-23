@@ -89,7 +89,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 	function column_code( $item ) {
 		$actions = array(
 			'edit' => sprintf(
-				'<a href="?page=%s&action=%s&coupon_id=%s">%s</a>',
+				'<a href="?page=%s&action=%s&coupon_id=%s">%s</a>', //XSS!!!!
 				$_REQUEST['page'],
 				'edit',
 				$item->id,
@@ -100,7 +100,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 				wp_nonce_url(
 					sprintf(
 						'?page=%s&coupon_id=%s&action=%s',
-						$_REQUEST['page'],
+						$_REQUEST['page'],//XSS!!!!
 						$item->id,
 						'delete'
 					),

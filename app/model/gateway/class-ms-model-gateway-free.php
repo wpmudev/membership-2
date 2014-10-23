@@ -55,7 +55,7 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 * @var string $name
 	 */
-	protected $name = 'Free Gateway';
+	protected $name = 'Free Gateway';//i18n please, you'll have to set via __construct()
 	
 	/**
 	 * Gateway description.
