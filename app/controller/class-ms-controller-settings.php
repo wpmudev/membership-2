@@ -189,40 +189,42 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Auto setup settings.
 	 *
 	 * Fires after a membership setup is completed.
+	 * This hook is executed every time a new membership is created.
 	 *
-	 * **Hooks Actions: **
-	 * * ms_controller_membership_setup_completed
+	 * Related Action Hooks:
+	 * - ms_controller_membership_setup_completed
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param MS_Model_Membership $membership
 	 */
 	public function auto_setup_settings( $membership ) {
-
 		$settings = $this->get_model();
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
-		/** Create menus/special pages */
-		$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, true );//is this redundant as it's overwritten?
+		// Create special pages.
+		$pg_prot_cont = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, true );
+		$pg_acco = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_ACCOUNT, true );
+		$pg_regi = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
+		$pg_regi_comp = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true );
+		$pg_memb = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS, true );
 
-		$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_ACCOUNT, true );
-		$ms_page->set_page_status( 'publish' );
+		// Publish special pages.
+		// Tipp: Only pages must be published that are added to the menu.
+		$pg_acco->set_page_status( 'publish' );
+		if ( ! $membership->private ) {
+			$pg_memb->set_page_status( 'publish' );
+			$pg_regi->set_page_status( 'publish' );
+		}
 
+		// Create new WordPress menu-items.
 		$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_ACCOUNT );
-
-		/** Create additional menus */
-		if( ! $membership->private ) {
-			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true ); //is this redundant as it's overwritten?
-
-			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS, true );
-			$ms_page->set_page_status( 'publish' );
-
-			$ms_page = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
-			$ms_page->set_page_status( 'publish' );
-
+		if ( ! $membership->private ) {
 			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_REGISTER );
 		}
+
+		// Enable Protected Content.
 		$settings->plugin_enabled = true;
 		$settings->save();
 	}
