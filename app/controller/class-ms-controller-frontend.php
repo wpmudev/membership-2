@@ -56,6 +56,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	const ACTION_EDIT_PROFILE = 'edit_profile';
 	const ACTION_VIEW_INVOICES = 'view_invoices';
 	const ACTION_VIEW_ACTIVITIES = 'view_activities';
+	const ACTION_VIEW_RESETPASS = 'rp';
 
 	/**
 	 * User registration errors.
@@ -131,9 +132,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Check pages for the presence of Membership special pages.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * template_redirect
+	 * Related Action Hooks:
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
@@ -161,7 +161,7 @@ class MS_Controller_Frontend extends MS_Controller {
 					$this->add_filter( 'the_content', 'display_login_form' );
 					break;
 				}
-				// no break; !
+				// no break;
 
 			case MS_Model_Pages::MS_PAGE_REGISTER:
 				if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
@@ -613,6 +613,21 @@ class MS_Controller_Frontend extends MS_Controller {
 				$view->add_filter( 'the_content', 'to_html', 1 );
 				break;
 
+			case self::ACTION_VIEW_RESETPASS:
+				/**
+				 * Reset password action.
+				 * This action is accessed via the password-reset email
+				 * @see  class-ms-controller-dialog.php
+				 *
+				 * The action is targeted to the Account-page but actually calls
+				 * the Login-Shortcode.
+				 */
+				$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
+				$view->data = array( 'action' => 'resetpass' );
+
+				$view->add_filter( 'the_content', 'to_html', 1 );
+				break;
+
 			default:
 				do_action( 'ms_controller_frontend_user_account_mgr_' . $action, $this );
 				$this->add_filter( 'the_content', 'user_account', 1 );
@@ -652,8 +667,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for login shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
-	 * * the_content
+	 * Related Filter Hooks:
+	 * - the_content
 	 *
 	 * @since 1.0.0
 	 *
@@ -662,7 +677,9 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function protected_page( $content ) {
 		$setting = MS_Plugin::instance()->settings;
-		$protection_msg = $setting->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT );
+		$protection_msg = $setting->get_protection_message(
+			MS_Model_Settings::PROTECTION_MSG_CONTENT
+		);
 
 		if ( ! empty( $protection_msg ) ) {
 			$content .= $protection_msg;

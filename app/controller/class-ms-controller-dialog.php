@@ -190,12 +190,23 @@ class MS_Controller_Dialog extends MS_Controller {
 		$hashed = $wp_hasher->HashPassword( $key );
 		$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user_login ) );
 
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$reset_url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT, null, true );
+		$reset_url = add_query_arg(
+			array(
+				'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,
+				'key' => $key,
+				'login' => rawurlencode( $user_login ),
+			),
+			$reset_url
+		);
+
 		$message = __( 'Someone requested that the password be reset for the following account:' ) . "\r\n\r\n";
 		$message .= network_home_url( '/' ) . "\r\n\r\n";
 		$message .= sprintf( __( 'Username: %s' ), $user_login ) . "\r\n\r\n";
 		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.' ) . "\r\n\r\n";
 		$message .= __( 'To reset your password, visit the following address:' ) . "\r\n\r\n";
-		$message .= '<' . network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . ">\r\n";
+		$message .= '<' . $reset_url . ">\r\n";
 
 		if ( is_multisite() ) {
 			$blogname = $GLOBALS['current_site']->site_name;
@@ -206,13 +217,14 @@ class MS_Controller_Dialog extends MS_Controller {
 		$title = sprintf( __( '[%s] Password Reset' ), $blogname );
 
 		$title = apply_filters( 'retrieve_password_title', $title );
-		$message = apply_filters( 'retrieve_password_message', $message, $key );
+		$message = apply_filters( 'retrieve_password_message', $message, $key, $reset_url );
 
 		if ( $message && ! wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
 			$resp['error'] = __( 'The e-mail could not be sent.' ) . '<br />' .
 				__( 'Possible reason: your host may have disabled the mail() function.' );
 		} else {
 			$resp['success'] = __( 'Check your e-mail for the confirmation link.', MS_TEXT_DOMAIN );
+			$resp['success'] .= '<hr>' . $message;
 		}
 
 		$this->respond( $resp );

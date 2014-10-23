@@ -92,6 +92,11 @@ jQuery( function() {
 				if ( data.loggedin ) {
 					document.location.href = redirect.val();
 				}
+			},
+			error: function() {
+				var data = { error: ms_ajax.errormessage };
+				enable_form( frm_login );
+				show_message( sts_login, data );
 			}
 		});
 
@@ -117,6 +122,11 @@ jQuery( function() {
 				'_wpnonce': nonce.val()
 			},
 			success: function( data ) {
+				enable_form( frm_lost );
+				show_message( sts_lost, data );
+			},
+			error: function() {
+				var data = { error: ms_ajax.errormessage };
 				enable_form( frm_lost );
 				show_message( sts_lost, data );
 			}

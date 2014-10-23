@@ -311,18 +311,18 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @since 1.0.0
 	 *
 	 * @param string $page_type The page type.
-	 * @param boolean $ssl If wanted a SSL url.
+	 * @param boolean $ssl If wanted a SSL url. Set to null to use auto detection.
 	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
 	 * @return string The MS Page URL.
 	 */
-	public function get_ms_page_url( $page_type, $ssl = false, $create_if_not_exists = false ) {
+	public function get_ms_page_url( $page_type, $ssl = null, $create_if_not_exists = false ) {
 		$url = null;
 		$page_id = $this->get_ms_page_id( $page_type, $create_if_not_exists );
 
 		if ( ! empty( $page_id ) ) {
 			$url = get_permalink( $page_id );
 
-			if ( $ssl ) {
+			if ( true === $ssl || ( null === $ssl && is_ssl() ) ) {
 				$url = MS_Helper_Utility::get_ssl_url( $url );
 			}
 		}

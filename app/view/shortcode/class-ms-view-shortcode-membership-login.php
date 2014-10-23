@@ -9,6 +9,9 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		if ( MS_Model_Member::is_logged_user() ) {
 			return $this->logout_form();
 		}
+		elseif ( 'resetpass' == @$this->data['action'] ) {
+			return $this->reset_form();
+		}
 		else {
 			extract( $this->data );
 			if ( empty( $redirect ) ) {
@@ -60,19 +63,22 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			if ( $register ) {
 				$html .= wp_register( '', '', false );
 			}
+
+			// Load the ajax script that handles the Ajax login functions.
+			wp_enqueue_script( 'ms-ajax-login' );
+
+			wp_localize_script(
+				'ms-ajax-login',
+				'ms_ajax_login',
+				array(
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+					'loadingmessage' => __( 'Please wait...', MS_TEXT_DOMAIN ),
+					'errormessage' => __( 'Request failed, please try again.', MS_TEXT_DOMAIN ),
+				)
+			);
 		}
-
-		// Load the ajax script that handles the Ajax login functions.
-		wp_enqueue_script( 'ms-ajax-login' );
-
-		wp_localize_script(
-			'ms-ajax-login',
-			'ms_ajax_login',
-			array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				'loadingmessage' => __( 'Please wait...', MS_TEXT_DOMAIN ),
-			)
-		);
+		// Remove linebreaks to bypass the "wpautop" filter.
+		$html = str_replace( array( "\r\n", "\r", "\n" ), '', $html );
 
 		return $html;
 	}
@@ -93,7 +99,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			<legend><?php echo esc_html( $title ); ?></legend>
 			<?php if ( $show_note ) : ?>
 			<div class="ms-alert-box ms-alert-error">
-				<?php _e( 'You are not currently logged in. Please login to access the page.', MS_TEXT_DOMAIN ); ?>
+				<?php _e( 'Please log in to access this page.', MS_TEXT_DOMAIN ); ?>
 			</div>
 			<?php endif; ?>
 		</div>
@@ -262,5 +268,94 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		);
 
 		return $html;
+	}
+
+	/**
+	 * Returns HTML partial that contains password-reset form.
+	 * Based on WordPress core code from wp-login.php
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return string
+	 */
+	private function reset_form() {
+		ob_start();
+
+		$rp_login = wp_unslash( @$_GET['login'] );
+		$rp_key = wp_unslash( @$_GET['key'] );
+		$err_msg = false;
+
+		// Get the user object and validate the key.
+		if ( $rp_login && $rp_key ) {
+			$user = check_password_reset_key( $rp_key, $rp_login );
+		} else {
+			$user = false;
+		}
+
+		// If the user was not found then redirect to an error page.
+		if ( ! $user || is_wp_error( $user ) ) {
+			if ( $user && $user->get_error_code() === 'expired_key' ) {
+				$err_msg = __( 'The password-reset key is already expired.', MS_TEXT_DOMAIN );
+			}
+			else {
+				$err_msg = __( 'The password-reset key is invalid or missing.', MS_TEXT_DOMAIN );
+			}
+			return sprintf(
+				'<p>%s</p><p><a href="%s">%s</a>',
+				$err_msg,
+				remove_query_arg( array( 'action', 'key', 'login' ) ),
+				__( 'Request a new password-reset key', MS_TEXT_DOMAIN )
+			);
+		} else {
+			// If the user provided a new password, then check it now.
+			if ( isset( $_POST['pass1'] ) && $_POST['pass1'] != $_POST['pass2'] ) {
+				$err_msg = __( 'The passwords do not match.', MS_TEXT_DOMAIN );
+			}
+		}
+
+		// This action is documented in wp-login.php
+		do_action( 'validate_password_reset', $err_msg, $user );
+
+		if ( ! $err_msg
+			&& isset( $_POST['pass1'] ) && ! empty( $_POST['pass1'] )
+		) {
+			reset_password( $user, $_POST['pass1'] );
+
+			// All done!
+			return __( 'Your Password has been reset.' );
+		}
+
+		wp_enqueue_script( 'utils' );
+		wp_enqueue_script( 'user-profile' );
+
+		if ( $err_msg ) {
+			echo '<p class="error">' . $err_msg . '</p>';
+		}
+		?>
+		<form name="resetpassform" id="resetpassform" action="" method="post" autocomplete="off">
+			<input type="hidden" id="user_login" value="<?php echo esc_attr( $rp_login ); ?>" autocomplete="off" />
+
+			<p>
+				<label for="pass1"><?php _e( 'New password' ) ?><br />
+				<input type="password" name="pass1" id="pass1" class="input" size="20" value="" autocomplete="off" /></label>
+			</p>
+			<p>
+				<label for="pass2"><?php _e( 'Confirm new password' ) ?><br />
+				<input type="password" name="pass2" id="pass2" class="input" size="20" value="" autocomplete="off" /></label>
+			</p>
+
+			<div id="pass-strength-result" class="hide-if-no-js"><?php _e( 'Strength indicator' ); ?></div>
+			<p class="description indicator-hint"><?php _e( 'Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! " ? $ % ^ &amp; ).' ); ?></p>
+
+			<br class="clear" />
+
+			<?php
+			// This action is documented in wp-login.php
+			do_action( 'resetpass_form', $user );
+			?>
+			<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e( 'Reset Password' ); ?>" /></p>
+		</form>
+		<?php
+		return ob_get_clean();
 	}
 }
