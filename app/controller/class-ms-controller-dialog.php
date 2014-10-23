@@ -114,6 +114,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		if ( is_wp_error( $user_signon ) ) {
 			$resp['error'] = __( 'Wrong username or password', MS_TEXT_DOMAIN );
 		} else {
+			$resp['loggedin'] = true;
 			$resp['success'] = __( 'Logging in...', MS_TEXT_DOMAIN );
 		}
 
