@@ -141,7 +141,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		 */
 		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			/**
-			 * Verify post access accordinly to category rules.
+			 * Verify post access accordingly to category rules.
 			 */
 			if( ! empty( $post_id ) || ( is_single() && in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) ) {
 				if( empty( $post_id ) ) {

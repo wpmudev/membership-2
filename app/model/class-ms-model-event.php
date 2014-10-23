@@ -161,7 +161,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	 * @return array {
 	 * 		array{ 
 	 * 			@type string $topic The topic name.
-	 * 			@type string $desc The topid description.
+	 * 			@type string $desc The topic description.
 	 * 		} 
 	 * } 
 	 */

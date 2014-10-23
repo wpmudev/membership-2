@@ -468,7 +468,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			$coupon->coupon_message = $transient_value['coupon_message'];
 		}
 		
-		return apply_filters( 'ms_model_coupon_get_coupon_aplication', $coupon, $user_id, $membership_id );
+		return apply_filters( 'ms_model_coupon_get_coupon_application', $coupon, $user_id, $membership_id );
 	}
 	
 	/**

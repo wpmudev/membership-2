@@ -127,7 +127,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param array $atts The shortcode attributes.
-	 * @param string $content The content inside the shorcode.
+	 * @param string $content The content inside the shortcode.
 	 * @param string $code The shortcode code.
 	 * @return string The shortcode output
 	 */

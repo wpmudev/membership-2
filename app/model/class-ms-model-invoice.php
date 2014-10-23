@@ -291,6 +291,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param mixed $args The arguments to select data.
+	 * @return array $invoices
 	 */
 	public static function get_invoices( $args = null ) {
 		$defaults = array(
@@ -320,7 +321,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $ms_relatiobship_id The membership relationship id.
+	 * @param int $ms_relationship_id The membership relationship id.
 	 * @param int $invoice_number Optional. The invoice number. Get the current number if null.
 	 * @param string $status Optional. The invoice status.
 	 * @return MS_Model_Invoice The found invoice or null if not found.
@@ -478,7 +479,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
-	 * @param optional string $status The invoice status to find.
+	 * @param string $status The invoice status to find. Optional
 	 * @return MS_Model_Invoice
 	 */
 	public static function get_previous_invoice( $ms_relationship, $status = null ) {
@@ -498,6 +499,8 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership to create invoice for.
 	 * @param int $invoice_number Optional. The invoice number.
 	 * @param boolean $update_existing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
+	 *
+	 * @return object $invoice
 	 */
 	public static function create_invoice( $ms_relationship, $invoice_number = false, $update_existing = true ) {
 
@@ -699,7 +702,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @since 4.0
 	 *
 	 * @access public
-	 * @param string $name The name of a property to associate.
+	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {

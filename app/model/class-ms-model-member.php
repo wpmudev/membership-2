@@ -414,7 +414,7 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_usernames( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS, $return_array = true ) {
 
-		$members = array( 0 => __( 'Select an user', MS_TEXT_DOMAIN ) );
+		$members = array( 0 => __( 'Select a user', MS_TEXT_DOMAIN ) );
 		$args['fields'] = array( 'ID', 'user_login' );
 
 		$args = self::get_query_args( $args, $search_option );
@@ -504,11 +504,12 @@ class MS_Model_Member extends MS_Model {
 	 * @since 1.0.0
 	 *
 	 * @param int $membership_id The membership id to add to.
-	 * @param string $gateway Optional. The gateway used to add the membership.
+	 * @param string $gateway_id Optional. The gateway used to add the membership.
 	 * @param int $move_from_id Optional. The membership id to move from if any.
+	 *
+	 * @return object|null $ms_relationship
 	 */
-	public function add_membership( $membership_id, $gateway_id = 'admin', $move_from_id = 0 )
-	{
+	public function add_membership( $membership_id, $gateway_id = 'admin', $move_from_id = 0 ) {
 		$ms_relationship = null;
 
 		if( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
@@ -590,7 +591,7 @@ class MS_Model_Member extends MS_Model {
 			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVED, $this->ms_relationships[ $move_to_id ] );
 		}
 
-		do_action( 'ms_model_membership_move_membership', $membership_id, $this );
+		do_action( 'ms_model_membership_move_membership', $membership_id, $this );//$membership_id is undefined
 	}
 
 	/**
@@ -674,7 +675,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @todo modify this when implementing network/multisites handling.
 	 *
-	 * @param int $user_id Optional. The user ID. Default to current user.
+	 * @param int|bool $user_id Optional. The user ID. Default to current user.
 	 * @param string $capability The capability to check for admin users.
 	 * @return boolean True if user is admin.
 	 */
@@ -816,7 +817,7 @@ class MS_Model_Member extends MS_Model {
 			$validation_errors->add( 'emailnotvalid', __( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN ) );
 		}
 		if( $this->password != $this->password2 ) {
-			MS_Helper_Debug::log("no macth");
+			MS_Helper_Debug::log("no password match");
 			$validation_errors->add( 'passmatch', __( 'Please ensure the passwords match.', MS_TEXT_DOMAIN ) );
 		}
 

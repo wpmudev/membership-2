@@ -1184,19 +1184,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$marked = true;
 		}
 
-		return apply_filters( 'ms_model_memberhsip_mark_setup_completed', $marked, $this );
+		return apply_filters( 'ms_model_membership_mark_setup_completed', $marked, $this );
 	}
 
 	/**
 	 * Verify access to current page.
 	 *
-	 * Verify membership rules hierachyly for content accessed directly.
+	 * Verify membership rules hierarchy for content accessed directly.
 	 * If 'has access' is found, it does have access.
 	 * Only for active memberships.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param int $post_id
 	 * @return boolean True if has access to current page. Default is false.
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
@@ -1227,7 +1228,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$dripped = MS_Model_Rule::get_dripped_rule_types();
 
 			/*
-			 * Verify membership dripped rules hierachyly.
+			 * Verify membership dripped rules hierarchy.
 			 * Dripped has the final decision.
 			 */
 			foreach( $dripped as $rule_type ) {
@@ -1244,11 +1245,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Verify access to post.
 	 *
-	 * Verify membership rules hierachyly for specific post or CPT.
+	 * Verify membership rules hierarchy for specific post or CPT.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param int $post_id ID of specific post
 	 * @return boolean True if has access to current page. Default is false.
 	 */
 	public function has_access_to_post( $post_id ) {
@@ -1373,7 +1374,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $name The name of a property to associate.
+	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
@@ -1404,7 +1405,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						}
 					}
 					else {
-						throw new Exception( 'Invalid membeship type.' );
+						throw new Exception( 'Invalid membership type.' );
 					}
 					break;
 

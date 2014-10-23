@@ -166,7 +166,7 @@ class MS_Model_Rule extends MS_Model {
 
 		parent::__construct();
 		
-		 $this->membership_id = apply_filters( 'ms_model_rule_contructor_membership_id', $membership_id, $this );
+		 $this->membership_id = apply_filters( 'ms_model_rule_constructor_membership_id', $membership_id, $this );
 	}
 	
 	/**
@@ -325,7 +325,7 @@ class MS_Model_Rule extends MS_Model {
 	 * Validate dripped type.
 	 *
 	 * @since 1.0.0
-	 * @param string $rule_type The rule type to validate.
+	 * @param string $type The rule type to validate.
 	 * @return bool True if is a valid dripped type.
 	 */
 	public static function is_valid_dripped_type( $type ) {
@@ -523,7 +523,9 @@ class MS_Model_Rule extends MS_Model {
 	 * 
 	 * @since 1.0.0
 	 * @param string $start_date The start date of the member membership.
-	 * @param string $id The content id to verify dripped acccess. 
+	 * @param string $id The content id to verify dripped acccess.
+	 *
+	 * @return bool $has_dripped_access
 	 */
 	public function has_dripped_access( $start_date, $id ) {
 		
@@ -550,8 +552,10 @@ class MS_Model_Rule extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 * @param string $dripped_type The dripped type.
-	 * @param $id The content id to verify dripped acccess.
+	 * @param $id The content id to verify dripped access.
 	 * @param $field The field to get from dripped type data.
+	 *
+	 * @return bool $value
 	 */
 	public function get_dripped_value( $dripped_type, $id, $field ) {
 		$value = null;
@@ -585,7 +589,7 @@ class MS_Model_Rule extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 * @param string $dripped_type The dripped type.
-	 * @param $id The content id to set dripped acccess.
+	 * @param $id The content id to set dripped access.
 	 * @param $field The field to set in dripped type data.
 	 * @param $value The value to set for $field.
 	 */
@@ -608,7 +612,7 @@ class MS_Model_Rule extends MS_Model {
 	 * Get dripped content available date.
 	 *
 	 * @since 1.0.0
-	 * @param string $id The content id to verify dripped acccess.
+	 * @param string $id The content id to verify dripped access.
 	 * @param string $start_date The start date of the member membership.
 	 */
 	public function get_dripped_avail_date( $id, $start_date = null ) {
@@ -774,7 +778,7 @@ class MS_Model_Rule extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 * @param string $id The content id to set access to.
-	 * @param int $has_access The access status to set. 
+	 * @param int $access The access status to set.
 	 */
 	public function set_access( $id, $access ) {
 		

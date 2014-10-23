@@ -126,7 +126,7 @@ class MS_Model_Page extends MS_Model {
 				break;
 			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
 				$content .= sprintf( '[ms-green-note] %1$s <br/> %2$s [/ms-green-note]',
-					__( 'Your request to join our Membership was successfully received!', MS_TEXT_DOMAIN ),
+					__( 'Your request to join the membership was successfully received!', MS_TEXT_DOMAIN ),
 					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN )
 				);
 				$content .= sprintf( '<a href="%s">%s</a>',
