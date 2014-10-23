@@ -59,10 +59,19 @@ class MS_Model_Upgrade extends MS_Model {
 			
 			//Upgrade logic from specific version
 			switch( $settings->version ) {
-				case '0.0.0':
-					self::cleanup();
-					flush_rewrite_rules();
+				case '1.0.0.0':
+					$args = array();
+					$args['post_parent__not_in'] = array( 0 );
+					$memberships = MS_Model_Membership::get_memberships( $args );
+					foreach( $memberships as $membership ) {
+						$parent = MS_Factory::load( 'MS_Model_Membership', $membership->parent_id );
+						if( ! $parent->is_valid() ) {
+							$membership->delete();
+						}
+					}					
+					break;
 				default:
+					flush_rewrite_rules();
 					do_action( 'ms_model_upgrade_upgrade', $settings );
 					break;
 			}

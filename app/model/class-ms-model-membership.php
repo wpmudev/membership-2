@@ -1105,10 +1105,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if( ! empty( $this->id ) ) {
 			if( $this->get_members_count() > 0 && ! $force ) {
-				throw new Exception( 'Could not delete membership with members.' );
+				throw new Exception( 'Can not delete membership with existing members.' );
 			}
 			elseif( $this->protected_content && ! $force ) {
 				throw new Exception( 'Protected Content / Visitor membership could not be deleted.' );
+			}
+			elseif( $this->get_children_count() > 0 && ! $force ) {
+				throw new Exception( 'Can not delete membership level with children. Delete children membership levels first.' );
 			}
 			wp_delete_post( $this->id );
 		}
