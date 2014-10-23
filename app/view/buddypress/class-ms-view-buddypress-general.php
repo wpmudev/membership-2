@@ -19,7 +19,7 @@ class MS_View_Buddypress_General extends MS_View {
 		$edit_link = array(
 				'id' => 'buddypress_rule_edit',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Manage Protected Buddypress Content', MS_TEXT_DOMAIN ),
+				'value' => __( 'Manage Protected BuddyPress Content', MS_TEXT_DOMAIN ),
 				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS ),
 		);
 

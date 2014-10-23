@@ -154,7 +154,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 				$fields['submit'] = array(
 						'id' => 'submit',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => $gateway->pay_button_url ? $gateway->pay_button_url : __( 'Paypal', MS_TEXT_DOMAIN ),
+						'value' => $gateway->pay_button_url ? $gateway->pay_button_url : __( 'PayPal', MS_TEXT_DOMAIN ),
 				);
 			}
 		}

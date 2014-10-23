@@ -44,7 +44,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 		if ( $gateway->id == MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE ) {
 			$merchant_id_field = array(
 				'id' => 'paypal_email',
-				'title' => __( 'Paypal Email', MS_TEXT_DOMAIN ),
+				'title' => __( 'PayPal Email', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->paypal_email,
 				'class' => 'required',

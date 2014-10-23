@@ -1,0 +1,4619 @@
+# Copyright (C) 2014 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://premium.wpmudev.org/\n"
+"POT-Creation-Date: 2014-10-23 23:07:06+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: app/controller/class-ms-controller-admin-bar.php:202
+msgid "View on: "
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:207
+msgid "View in: "
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:228
+msgid "Simulate period"
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:247
+msgid "View site as: "
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:358
+msgid "Select a membership to view your site as"
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:388
+msgid "Test Memberships"
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:392
+#: app/controller/class-ms-controller-admin-bar.php:426
+msgid "Membership Simulation Menu"
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:422
+msgid "Exit Test Mode"
+msgstr ""
+
+#: app/controller/class-ms-controller-admin-bar.php:485
+msgid "Switching..."
+msgstr ""
+
+#: app/controller/class-ms-controller-coupon.php:126
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:145
+msgid "Any"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:115
+msgid "Wrong username or password"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:118
+msgid "Logging in..."
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:141
+msgid "Enter a username or e-mail address."
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:145
+msgid "There is no user registered with that email address."
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:159
+msgid "Invalid username or e-mail."
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:173
+msgid "Password reset is not allowed for this user"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:204
+msgid "Someone requested that the password be reset for the following account:"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:206
+msgid "Username: %s"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:207
+msgid "If this was a mistake, just ignore this email and nothing will happen."
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:208
+msgid "To reset your password, visit the following address:"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:217
+msgid "[%s] Password Reset"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:223
+msgid "The e-mail could not be sent."
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:224
+msgid "Possible reason: your host may have disabled the mail() function."
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:226
+msgid "Check your e-mail for the confirmation link."
+msgstr ""
+
+#: app/controller/class-ms-controller-gateway.php:472
+msgid "Error: %s"
+msgstr ""
+
+#: app/controller/class-ms-controller-gateway.php:531
+msgid "Sorry, your signup request has failed. Try again."
+msgstr ""
+
+#: app/controller/class-ms-controller-member.php:216
+#: app/controller/class-ms-controller-member.php:241
+msgid "Select Membership to add"
+msgstr ""
+
+#: app/controller/class-ms-controller-member.php:219
+#: app/controller/class-ms-controller-member.php:246
+msgid "Select Membership to cancel"
+msgstr ""
+
+#: app/controller/class-ms-controller-member.php:222
+#: app/controller/class-ms-controller-member.php:251
+msgid "Select Membership to drop"
+msgstr ""
+
+#: app/controller/class-ms-controller-member.php:226
+#: app/controller/class-ms-controller-member.php:256
+msgid "Select Membership to move from"
+msgstr ""
+
+#: app/controller/class-ms-controller-member.php:229
+#: app/controller/class-ms-controller-member.php:260
+msgid "Select Membership to move to"
+msgstr ""
+
+#: app/controller/class-ms-controller-member.php:373
+msgid "Select an User"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership-metabox.php:101
+msgid "Membership Access"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:824
+#: app/controller/class-ms-controller-membership.php:973
+#: app/view/membership/class-ms-view-membership-setup-dripped.php:96
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:222
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:229
+msgid "Pages"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:827
+msgid "Categories, Custom Post Types"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:830
+#: app/controller/class-ms-controller-membership.php:970
+#: app/view/membership/class-ms-view-membership-setup-dripped.php:126
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:240
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:247
+msgid "Posts"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:833
+#: app/controller/class-ms-controller-membership.php:853
+#: app/view/membership/class-ms-view-membership-accessible-content.php:143
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:204
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:210
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:258
+msgid "Custom Post Types"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:836
+msgid "Comments, More Tag, Menus"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:839
+#: app/view/membership/class-ms-view-membership-accessible-content.php:530
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:439
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:446
+msgid "Shortcodes"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:842
+#: app/view/membership/class-ms-view-membership-accessible-content.php:636
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:558
+msgid "URL Groups"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:850
+#: app/view/membership/class-ms-view-membership-accessible-content.php:140
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:192
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:198
+msgid "Categories"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1132
+#: app/controller/class-ms-controller-plugin.php:190
+#: app/controller/class-ms-controller-plugin.php:191
+#: app/helper/class-ms-helper-membership.php:109
+#: app/model/class-ms-model-pages.php:81
+#: app/view/coupon/class-ms-view-coupon-edit.php:100
+msgid "Memberships"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1161
+#: app/controller/class-ms-controller-membership.php:1287
+#: app/helper/list-table/class-ms-helper-list-table-membership-group.php:56
+msgid "Tier Levels"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1174
+#: app/controller/class-ms-controller-membership.php:1224
+#: app/controller/class-ms-controller-membership.php:1300
+#: app/helper/list-table/class-ms-helper-list-table-membership-group.php:52
+msgid "Content Types"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1187
+msgid "%s Accessible Content"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1205
+msgid "Accessible Content"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1228
+#: app/controller/class-ms-controller-membership.php:1249
+#: app/controller/class-ms-controller-membership.php:1269
+#: app/controller/class-ms-controller-membership.php:1312
+#: app/controller/class-ms-controller-settings.php:276
+#: app/view/membership/class-ms-view-membership-setup-payment.php:24
+msgid "Payment"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1246
+msgid "Membership Tiers"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1266
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:54
+#: app/model/class-ms-model-membership.php:307
+#: app/view/membership/class-ms-view-membership-setup-dripped.php:52
+msgid "Dripped Content"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1424
+msgid "You can add / remove and modify your Protected Content at anytime here"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1456
+msgid "Valid"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1457
+msgid "Invalid"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1458
+msgid "Add Page URLs to the group in case you want to test it against"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1459
+msgid "Enter an URL above to test against rules in the group"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:156
+#: app/controller/class-ms-controller-plugin.php:157
+msgid "Protect Content"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:169
+#: app/controller/class-ms-controller-plugin.php:170
+msgid "Set-up"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:178
+#: app/controller/class-ms-controller-plugin.php:204
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:30
+msgid "Select Content to Protect"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:179
+#: app/controller/class-ms-controller-plugin.php:205
+#: app/model/class-ms-model-membership.php:1009
+#: app/model/class-ms-model-pages.php:82
+msgid "Protected Content"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:197
+#: app/controller/class-ms-controller-plugin.php:198
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:49
+#: app/view/member/class-ms-view-member-list.php:39
+msgid "Members"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:211
+#: app/controller/class-ms-controller-plugin.php:212
+#: app/view/billing/class-ms-view-billing-list.php:46
+msgid "Billing"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:218
+#: app/controller/class-ms-controller-plugin.php:219
+#: app/view/coupon/class-ms-view-coupon-list.php:46
+msgid "Coupons"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:225
+#: app/controller/class-ms-controller-plugin.php:226
+msgid "Add-ons"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:232
+#: app/controller/class-ms-controller-plugin.php:233 protected-content.php:601
+msgid "Settings"
+msgstr ""
+
+#: app/controller/class-ms-controller-plugin.php:604
+msgid "Are you sure you want to cancel?"
+msgstr ""
+
+#: app/controller/class-ms-controller-settings.php:270
+msgid "General"
+msgstr ""
+
+#: app/controller/class-ms-controller-settings.php:273
+msgid "Membership Site Pages"
+msgstr ""
+
+#: app/controller/class-ms-controller-settings.php:279
+#: app/helper/class-ms-helper-membership.php:96
+#: app/view/settings/class-ms-view-settings-edit.php:350
+msgid "Protection Messages"
+msgstr ""
+
+#: app/controller/class-ms-controller-settings.php:282
+msgid "Automated Email Responses"
+msgstr ""
+
+#: app/controller/class-ms-controller-settings.php:285
+msgid "Media / Downloads"
+msgstr ""
+
+#: app/controller/class-ms-controller-shortcode.php:136
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-button.php:71
+#: app/view/gateway/class-ms-view-gateway-button.php:68
+msgid "Signup"
+msgstr ""
+
+#: app/controller/class-ms-controller-shortcode.php:137
+#: app/view/shortcode/class-ms-view-shortcode-account.php:22
+msgid "Change"
+msgstr ""
+
+#: app/controller/class-ms-controller-shortcode.php:138
+#: app/view/billing/class-ms-view-billing-edit.php:145
+#: app/view/billing/class-ms-view-billing-edit.php:146
+#: app/view/coupon/class-ms-view-coupon-edit.php:132
+#: app/view/coupon/class-ms-view-coupon-edit.php:133
+#: app/view/frontend/class-ms-view-frontend-profile.php:14
+#: app/view/frontend/class-ms-view-frontend-profile.php:15
+#: app/view/gateway/class-ms-view-gateway-settings.php:54
+#: app/view/gateway/class-ms-view-gateway-settings.php:55
+#: app/view/member/class-ms-view-member-date.php:81
+#: app/view/member/class-ms-view-member-date.php:82
+#: app/view/member/class-ms-view-member-membership.php:65
+#: app/view/member/class-ms-view-member-membership.php:88
+#: app/view/member/class-ms-view-member-membership.php:89
+#: app/view/membership/class-ms-view-membership-choose-type.php:113
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:22
+msgid "Cancel"
+msgstr ""
+
+#: app/controller/class-ms-controller-shortcode.php:139
+msgid "Renew"
+msgstr ""
+
+#: app/controller/class-ms-controller-shortcode.php:213
+msgid "Membership title: %1$s"
+msgstr ""
+
+#: app/controller/class-ms-controller-shortcode.php:247
+msgid "Membership price: %1$s %2$s"
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:38
+msgid "Billing added."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:39
+msgid "Billing deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:40
+msgid "Billing updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:41
+msgid "Billing bulk deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:42
+msgid "Billing not added."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:43
+msgid "Billing not deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:44
+msgid "Billing not updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:45
+msgid "Billing bulk not deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-billing.php:46
+msgid "Billing not added. User not a member of selected Membership."
+msgstr ""
+
+#: app/helper/class-ms-helper-html.php:628
+msgid "Next"
+msgstr ""
+
+#: app/helper/class-ms-helper-html.php:664
+#: app/helper/class-ms-helper-html.php:954
+msgid "Saving changes..."
+msgstr ""
+
+#: app/helper/class-ms-helper-html.php:665
+#: app/helper/class-ms-helper-html.php:955
+msgid "All changes saved."
+msgstr ""
+
+#: app/helper/class-ms-helper-html.php:666
+#: app/helper/class-ms-helper-html.php:956
+msgid "Could not save changes."
+msgstr ""
+
+#: app/helper/class-ms-helper-html.php:760
+msgid "Click to toggle"
+msgstr ""
+
+#: app/helper/class-ms-helper-html.php:810
+#: app/view/billing/class-ms-view-billing-edit.php:153
+#: app/view/coupon/class-ms-view-coupon-edit.php:140
+#: app/view/frontend/class-ms-view-frontend-profile.php:80
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-settings.php:89
+#: app/view/gateway/class-ms-view-gateway-settings.php:63
+#: app/view/gateway/manual/class-ms-view-gateway-manual-settings.php:78
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:116
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:105
+#: app/view/settings/class-ms-view-settings-edit.php:474
+msgid "Save Changes"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:208
+msgid "No items found."
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:360
+#: app/helper/list-table/class-ms-helper-list-table-member.php:404
+msgid "Bulk Actions"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:376
+#: app/helper/list-table/class-ms-helper-list-table-member.php:435
+msgid "Apply"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:475
+msgid "Show all dates"
+msgstr ""
+
+#. translators: 1: month name, 2: 4-digit year
+
+#: app/helper/class-ms-helper-list-table.php:490
+msgid "%1$s %2$d"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:506
+msgid "List View"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:507
+msgid "Excerpt View"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:533
+msgid "%s pending"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:630
+#: app/helper/class-ms-helper-list-table.php:1092
+msgid "1 item"
+msgid_plural "%s items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/helper/class-ms-helper-list-table.php:654
+msgid "Go to the first page"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:662
+msgid "Go to the previous page"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:673
+msgid "Current page"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:680
+msgctxt "paging"
+msgid "%1$s of %2$s"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:685
+msgid "Go to the next page"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:693
+msgid "Go to the last page"
+msgstr ""
+
+#: app/helper/class-ms-helper-list-table.php:843
+msgid "Select All"
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:39
+msgid "Membership added."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:40
+#: app/helper/class-ms-helper-membership.php:48
+msgid "Membership deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:41
+msgid "Member updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:42
+msgid "Member activation toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:43
+msgid "Members bulk updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:44
+#: app/helper/class-ms-helper-membership.php:53
+msgid "Membership not added."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:45
+#: app/helper/class-ms-helper-membership.php:54
+msgid "Membership not deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:46
+msgid "Member not updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:47
+msgid "Member activation not toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-member.php:48
+msgid "Members bulk not updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:47
+msgid "You have successfully set up <span class=\"ms-high\">%s</span>."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:49
+msgid "Membership updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:50
+msgid "Membership activation toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:51
+msgid "Membership status toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:52
+msgid "Memberships bulk updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:55
+msgid "Membership not updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:56
+msgid "Membership activation not toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:57
+msgid "Membership status not toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:58
+msgid "Memberships bulk not updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:59
+msgid "Memberships partially updated. Some fields could not be changed after members have signed up."
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:95
+msgid "Membership Pages"
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:97
+msgid "E-mail Responses"
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:100
+msgid "here"
+msgstr ""
+
+#: app/helper/class-ms-helper-membership.php:113
+msgid "Congratulations!"
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:41
+msgid "Setting added."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:42
+msgid "Setting deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:43
+msgid "Setting updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:44
+msgid "Setting activation toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:45
+msgid "Setting status toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:46
+msgid "Bulk settings updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:47
+msgid "Setting not added."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:48
+msgid "Setting not deleted."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:49
+msgid "Setting not updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:50
+msgid "Setting activation not toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:51
+msgid "Setting status not toggled."
+msgstr ""
+
+#: app/helper/class-ms-helper-settings.php:52
+msgid "Bulk settings not updated."
+msgstr ""
+
+#: app/helper/class-ms-helper-utility.php:53
+msgid "WARNING: MS_Helper_Utility::array_intersect_assoc_deep() Expected parameter 1 to be an array."
+msgstr ""
+
+#: app/helper/class-ms-helper-utility.php:56
+msgid "WARNING: MS_Helper_Utility::array_intersect_assoc_deep() Expected parameter 2 to be an array."
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-addon.php:51
+msgid "Add-on description"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-addon.php:52
+#: app/helper/list-table/class-ms-helper-list-table-gateway.php:70
+#: app/helper/list-table/class-ms-helper-list-table-membership-group.php:62
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:48
+#: app/model/class-ms-model-membership_relationship.php:191
+#: app/view/membership/class-ms-view-membership-overview.php:57
+msgid "Active"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-addon.php:131
+msgid "Enable"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-addon.php:132
+msgid "Disable"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:51
+#: app/view/frontend/class-ms-view-frontend-invoices.php:20
+#: app/view/shortcode/class-ms-view-shortcode-account.php:85
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:18
+msgid "Invoice #"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:52
+#: app/helper/list-table/class-ms-helper-list-table-event.php:45
+#: app/view/membership/class-ms-view-membership-overview.php:130
+msgid "User"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:53
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:53
+#: app/helper/list-table/class-ms-helper-list-table-event.php:46
+#: app/helper/list-table/class-ms-helper-list-table-member.php:65
+#: app/helper/list-table/class-ms-helper-list-table-member.php:470
+#: app/view/billing/class-ms-view-billing-edit.php:88
+#: app/view/frontend/class-ms-view-frontend-invoices.php:27
+#: app/view/member/class-ms-view-member-date.php:108
+#: app/view/membership/class-ms-view-membership-metabox.php:56
+#: app/view/shortcode/class-ms-view-shortcode-account.php:92
+msgid "Membership"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:54
+#: app/view/billing/class-ms-view-billing-edit.php:74
+#: app/view/frontend/class-ms-view-frontend-invoices.php:21
+#: app/view/shortcode/class-ms-view-shortcode-account.php:29
+#: app/view/shortcode/class-ms-view-shortcode-account.php:86
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:130
+msgid "Status"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:55
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:146
+msgid "Amount"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:56
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:50
+#: app/view/coupon/class-ms-view-coupon-edit.php:73
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:154
+msgid "Discount"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:57
+#: app/view/frontend/class-ms-view-frontend-invoices.php:24
+#: app/view/frontend/class-ms-view-frontend-payment.php:80
+#: app/view/shortcode/class-ms-view-shortcode-account.php:89
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:174
+msgid "Total"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:58
+#: app/view/billing/class-ms-view-billing-edit.php:113
+#: app/view/frontend/class-ms-view-frontend-invoices.php:28
+#: app/view/shortcode/class-ms-view-shortcode-account.php:93
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:126
+msgid "Due date"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:59
+msgid "Gateway"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:196
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:117
+#: app/helper/list-table/class-ms-helper-list-table-member.php:266
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-bbpress.php:52
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php:81
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:97
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:114
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php:45
+#: app/view/billing/class-ms-view-billing-edit.php:38
+#: app/view/coupon/class-ms-view-coupon-edit.php:38
+#: app/view/shortcode/class-ms-view-shortcode-account.php:62
+msgid "Edit"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:201
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-bbpress.php:56
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php:85
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:101
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:118
+msgid "View"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:233
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:130
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:181
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:166
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php:55
+msgid "Delete"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-billing.php:244
+#: app/helper/list-table/class-ms-helper-list-table-member.php:556
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:309
+msgid "All"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:49
+msgid "Coupon Code"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:51
+#: app/view/coupon/class-ms-view-coupon-edit.php:86
+#: app/view/member/class-ms-view-member-date.php:43
+msgid "Start date"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:52
+#: app/view/coupon/class-ms-view-coupon-edit.php:93
+#: app/view/member/class-ms-view-member-date.php:47
+#: app/view/shortcode/class-ms-view-shortcode-account.php:33
+msgid "Expire date"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:54
+msgid "Used"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:55
+msgid "Remaining uses"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-coupon.php:166
+msgid "No expire"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-event.php:44
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-media.php:41
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:82
+#: app/view/frontend/class-ms-view-frontend-activities.php:20
+#: app/view/membership/class-ms-view-membership-overview.php:129
+#: app/view/shortcode/class-ms-view-shortcode-account.php:123
+msgid "Date"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-event.php:47
+#: app/view/membership/class-ms-view-membership-overview.php:131
+msgid "Event"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-gateway.php:69
+msgid "Gateway Name"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-gateway.php:142
+#: app/helper/list-table/class-ms-helper-list-table-gateway.php:194
+msgid "Configure"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-gateway.php:148
+msgid "View Transactions"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:63
+#: app/model/class-ms-model-communication.php:223
+#: app/model/class-ms-model-member.php:268
+#: app/view/billing/class-ms-view-billing-edit.php:81
+#: app/view/shortcode/class-ms-view-shortcode-account.php:151
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:127
+msgid "Username"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:64
+msgid "E-mail"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:290
+msgid "Admin User"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:311
+#: app/view/billing/class-ms-view-billing-edit.php:38
+#: app/view/coupon/class-ms-view-coupon-edit.php:38
+#: app/view/member/class-ms-view-member-membership.php:64
+msgid "Add"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:318
+#: app/view/member/class-ms-view-member-membership.php:66
+msgid "Drop"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:364
+msgid "Toggle Activation"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:366
+msgid "Add membership"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:367
+msgid "Cancel membership"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:368
+msgid "Move membership"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:369
+msgid "Drop membership"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:466
+msgid "Username / E-mail"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:467
+msgid "Nickname"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:468
+#: app/view/frontend/class-ms-view-frontend-profile.php:48
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:140
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:80
+msgid "First Name"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-member.php:469
+#: app/view/frontend/class-ms-view-frontend-profile.php:54
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:145
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:87
+msgid "Last Name"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership-group.php:116
+msgid "Edit Accessible Content"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:46
+msgid "Membership Name"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:47
+msgid "Type of Membership"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:50
+msgid "Cost"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:51
+msgid "Payment Structure"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:52
+msgid "Membership Shortcode"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:135
+msgid "Overview"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:143
+msgid "Edit Content"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:152
+msgid "Payment options"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:204
+#: app/model/class-ms-model-membership.php:345
+msgid "Private"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:227
+msgid "Varied"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-membership.php:241
+#: app/view/frontend/class-ms-view-frontend-payment.php:53
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:29
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:67
+#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:89
+msgid "Free"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:52
+msgid "Content"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:53
+msgid "Rule type"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:72
+msgid "Give access"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:73
+msgid "Remove access"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:77
+msgid "Protect content"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:78
+msgid "Remove protection"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:224
+msgid "Ok"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:234
+msgid "on"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:240
+msgid " after registration"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:251
+msgid "in"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:289
+msgid "Has Access"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:290
+msgid "Access Restricted"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:295
+msgid "Protected content"
+msgstr ""
+
+#: app/helper/list-table/class-ms-helper-list-table-rule.php:296
+msgid "Not protected"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-bbpress.php:37
+#: app/view/frontend/class-ms-view-frontend-payment.php:27
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:134
+msgid "Name"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-bbpress.php:39
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-blog.php:38
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-group.php:38
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress.php:38
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-category.php:37
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php:37
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php:39
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-media.php:39
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-shortcode.php:38
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php:38
+#: app/view/membership/class-ms-view-membership-metabox.php:59
+msgid "Access"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-blog.php:37
+msgid "Blog Name"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress-group.php:37
+msgid "BuddyPress Group"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-buddypress.php:37
+msgid "Type"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-category.php:36
+msgid "Category name"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php:36
+#: app/model/class-ms-model-rule.php:277
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:209
+msgid "Custom Post Type"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php:37
+msgid "Custom Post Title"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php:38
+msgid "Post Type"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-media.php:38
+msgid "File"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-media.php:40
+msgid "Uploaded to"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-media.php:81
+msgid "Unattached"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-menu.php:45
+msgid "Menu title"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-menu.php:46
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:81
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:38
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:48
+#: app/view/membership/class-ms-view-membership-accessible-content.php:573
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:466
+msgid "Members Access"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:80
+msgid "Page title"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:83
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:41
+msgid "When to Reveal Content"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-page.php:132
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:155
+msgid "Filter"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:37
+msgid "Post title"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-post.php:40
+msgid "Post date"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-shortcode.php:37
+#: app/model/class-ms-model-rule.php:275
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:445
+msgid "Shortcode"
+msgstr ""
+
+#: app/helper/list-table/rule/class-ms-helper-list-table-rule-url-group.php:37
+msgid "Page URL"
+msgstr ""
+
+#: app/integration/class-ms-integration-bbpress.php:88
+msgid "bbPress Integration"
+msgstr ""
+
+#: app/integration/class-ms-integration-bbpress.php:89
+msgid "Enable bbPress rules integration."
+msgstr ""
+
+#: app/integration/class-ms-integration-bbpress.php:139
+#: app/integration/class-ms-integration-bbpress.php:157
+#: app/view/bbpress/class-ms-view-bbpress-general.php:24
+msgid "bbPress"
+msgstr ""
+
+#: app/integration/class-ms-integration-buddypress.php:86
+msgid "BuddyPress Integration"
+msgstr ""
+
+#: app/integration/class-ms-integration-buddypress.php:87
+msgid "Enable BuddyPress rules integration."
+msgstr ""
+
+#: app/integration/class-ms-integration-buddypress.php:147
+#: app/integration/class-ms-integration-buddypress.php:170
+#: app/view/buddypress/class-ms-view-buddypress-general.php:26
+msgid "BuddyPress"
+msgstr ""
+
+#: app/integration/class-ms-integration-mailchimp.php:154
+msgid "MailChimp Integration"
+msgstr ""
+
+#: app/integration/class-ms-integration-mailchimp.php:155
+msgid "Enable MailChimp integration."
+msgstr ""
+
+#: app/integration/class-ms-integration-mailchimp.php:176
+msgid "MailChimp"
+msgstr ""
+
+#: app/integration/class-ms-integration-mailchimp.php:285
+msgid "none"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:208
+msgid "Trial Period"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:209
+msgid "Enable trial period in membership levels."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:214
+msgid "Coupon"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:215
+msgid "Enable discount coupons."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:226
+msgid "Post by Post Protection"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:227
+msgid "Protect content post by post instead of post categories."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:232
+msgid "Custom Post Type Protection - Post by Post "
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:233
+msgid "Protect custom post type post by post instead of post type groups."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:238
+msgid "Media Protection"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:239
+msgid "Enable protected post and page media protection."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:244
+msgid "Media Protection - additional protection methods"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:245
+msgid "Enable additional protection method (Basic, Complete, Hybrid)."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:250
+msgid "Shortcode Protection"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:251
+msgid "Enable shortcode protection."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:256
+msgid "Url Groups Protection"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:257
+msgid "Enable Url Groups protection. This protection will override all other rules. Use it carefully."
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:262
+msgid "Additional Automated Messages"
+msgstr ""
+
+#: app/model/class-ms-model-addon.php:263
+msgid "Enable additional automated emails."
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:214
+#: app/view/shortcode/class-ms-view-shortcode-account.php:28
+msgid "Membership name"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:215
+msgid "Invoice details"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:216
+msgid "Account page url"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:217
+msgid "Membership remaining days"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:218
+msgid "Membership remaining trial days"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:219
+msgid "Membership expiration date"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:220
+msgid "User display name"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:221
+msgid "User first name"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:222
+msgid "User last name"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:224
+msgid "Blog/site name"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:225
+msgid "Blog/site url"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:226
+msgid "Network name"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:227
+msgid "Network url"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:353
+msgid "Signup completed"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:354
+msgid "Invoice/Receipt"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:355
+msgid "Before Membership finishes"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:356
+msgid "Membership finished"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:357
+msgid "After Membership finishes"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:358
+msgid "Membership cancelled"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:359
+msgid "Before Trial finishes"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:360
+msgid "Billing details updated"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:361
+msgid "Credit card is about to expire"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:362
+msgid "Failed payment"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:363
+msgid "Before payment due"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:364
+msgid "After payment due"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:505
+msgid "Override this description in child class"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:541
+msgid "[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:834
+msgid "account page"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:840
+#: app/model/class-ms-model-communication.php:845
+msgid "%s day%s"
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:176
+msgid "$"
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:177
+msgid "%"
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:330
+msgid "Coupon code not found."
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:334
+msgid "No Coupons remaining for this code."
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:339
+msgid "This Coupon is not valid yet."
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:343
+msgid "This Coupon has expired."
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:347
+msgid "This Coupon is not valid for this membership."
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:385
+msgid "Using Coupon code: %s. Discount applied: %s %s"
+msgstr ""
+
+#: app/model/class-ms-model-coupon.php:516
+msgid "Unlimited"
+msgstr ""
+
+#: app/model/class-ms-model-event.php:176
+msgid "Has registered."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:180
+msgid "Has updated billing information."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:184
+msgid "Member's credit card expire warning date."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:192
+msgid "Has signed up to membership %s."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:196
+msgid "Has moved to membership %s."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:200
+msgid "Membership %s has expired."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:204
+msgid "Membership %s dropped."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:208
+msgid "Membership %s renewed"
+msgstr ""
+
+#: app/model/class-ms-model-event.php:212
+msgid "Membership %s deactivated"
+msgstr ""
+
+#: app/model/class-ms-model-event.php:216
+msgid "Membership %s cancelled."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:224
+msgid "Membership %s about to finish warning date."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:229
+msgid "Membership %s finished warning date."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:233
+msgid "Membership % s trial about to finish warning date."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:241
+msgid "Invoice #%2$s for membership %1$s - Paid."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:245
+msgid "Invoice #%2$s for membership %1$s - Payment Failed."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:249
+msgid "Invoice #%2$s for membership %1$s - Payment Pending."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:253
+msgid "Invoice #%2$s for membership %1$s - Payment Denied."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:257
+msgid "Invoice #%2$s before due date for membership %1$s warning."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:261
+msgid "Invoice #%2$s after due date for membership %1$s warning."
+msgstr ""
+
+#: app/model/class-ms-model-event.php:478
+msgid "Invalid Membership Relationship"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:459
+msgid "Live Site"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:460
+msgid "Sandbox Mode (test)"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:534
+msgid "Select country"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:535
+msgid "ÃLAND ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:536
+msgid "ALBANIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:537
+msgid "ALGERIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:538
+msgid "AMERICAN SAMOA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:539
+msgid "ANDORRA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:540
+msgid "ANGUILLA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:541
+msgid "ANTARCTICA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:542
+msgid "ANTIGUA AND BARBUDA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:543
+msgid "ARGENTINA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:544
+msgid "ARMENIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:545
+msgid "ARUBA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:546
+msgid "AUSTRALIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:547
+msgid "AUSTRIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:548
+msgid "AZERBAIJAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:549
+msgid "BAHAMAS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:550
+msgid "BAHRAIN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:551
+msgid "BANGLADESH"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:552
+msgid "BARBADOS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:553
+msgid "BELGIUM"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:554
+msgid "BELIZE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:555
+msgid "BENIN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:556
+msgid "BERMUDA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:557
+msgid "BHUTAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:558
+msgid "BOSNIA-HERZEGOVINA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:559
+msgid "BOTSWANA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:560
+msgid "BOUVET ISLAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:561
+msgid "BRAZIL"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:562
+msgid "BRITISH INDIAN OCEAN TERRITORY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:563
+msgid "BRUNEI DARUSSALAM"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:564
+msgid "BULGARIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:565
+msgid "BURKINA FASO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:566
+msgid "CANADA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:567
+msgid "CAPE VERDE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:568
+msgid "CAYMAN ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:569
+msgid "CENTRAL AFRICAN REPUBLIC"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:570
+msgid "CHILE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:571
+msgid "CHINA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:572
+msgid "CHRISTMAS ISLAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:573
+msgid "COCOS (KEELING) ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:574
+msgid "COLOMBIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:575
+msgid "COOK ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:576
+msgid "COSTA RICA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:577
+msgid "CYPRUS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:578
+msgid "CZECH REPUBLIC"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:579
+msgid "DENMARK"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:580
+msgid "DJIBOUTI"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:581
+msgid "DOMINICA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:582
+msgid "DOMINICAN REPUBLIC"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:583
+msgid "ECUADOR"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:584
+msgid "EGYPT"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:585
+msgid "EL SALVADOR"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:586
+msgid "ESTONIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:587
+msgid "FALKLAND ISLANDS (MALVINAS)"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:588
+msgid "FAROE ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:589
+msgid "FIJI"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:590
+msgid "FINLAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:591
+msgid "FRANCE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:592
+msgid "FRENCH GUIANA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:593
+msgid "FRENCH POLYNESIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:594
+msgid "FRENCH SOUTHERN TERRITORIES"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:595
+msgid "GABON"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:596
+msgid "GAMBIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:597
+msgid "GEORGIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:598
+msgid "GERMANY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:599
+msgid "GHANA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:600
+msgid "GIBRALTAR"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:601
+msgid "GREECE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:602
+msgid "GREENLAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:603
+msgid "GRENADA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:604
+msgid "GUADELOUPE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:605
+msgid "GUAM"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:606
+msgid "GUERNSEY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:607
+msgid "GUYANA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:608
+msgid "HEARD ISLAND AND MCDONALD ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:609
+msgid "HOLY SEE (VATICAN CITY STATE)"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:610
+msgid "HONDURAS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:611
+msgid "HONG KONG"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:612
+msgid "HUNGARY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:613
+msgid "ICELAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:614
+msgid "INDIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:615
+msgid "INDONESIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:616
+msgid "IRELAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:617
+msgid "ISLE OF MAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:618
+msgid "ISRAEL"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:619
+msgid "ITALY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:620
+msgid "JAMAICA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:621
+msgid "JAPAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:622
+msgid "JERSEY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:623
+msgid "JORDAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:624
+msgid "KAZAKHSTAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:625
+msgid "KIRIBATI"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:626
+msgid "KOREA, REPUBLIC OF"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:627
+msgid "KUWAIT"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:628
+msgid "KYRGYZSTAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:629
+msgid "LATVIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:630
+msgid "LESOTHO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:631
+msgid "LIECHTENSTEIN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:632
+msgid "LITHUANIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:633
+msgid "LUXEMBOURG"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:634
+msgid "MACAO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:635
+msgid "MACEDONIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:636
+msgid "MADAGASCAR"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:637
+msgid "MALAWI"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:638
+msgid "MALAYSIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:639
+msgid "MALTA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:640
+msgid "MARSHALL ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:641
+msgid "MARTINIQUE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:642
+msgid "MAURITANIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:643
+msgid "MAURITIUS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:644
+msgid "MAYOTTE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:645
+msgid "MEXICO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:646
+msgid "MICRONESIA, FEDERATED STATES OF"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:647
+msgid "MOLDOVA, REPUBLIC OF"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:648
+msgid "MONACO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:649
+msgid "MONGOLIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:650
+msgid "MONTENEGRO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:651
+msgid "MONTSERRAT"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:652
+msgid "MOROCCO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:653
+msgid "MOZAMBIQUE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:654
+msgid "NAMIBIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:655
+msgid "NAURU"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:656
+msgid "NEPAL"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:657
+msgid "NETHERLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:658
+msgid "NETHERLANDS ANTILLES"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:659
+msgid "NEW CALEDONIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:660
+msgid "NEW ZEALAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:661
+msgid "NICARAGUA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:662
+msgid "NIGER"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:663
+msgid "NIUE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:664
+msgid "NORFOLK ISLAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:665
+msgid "NORTHERN MARIANA ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:666
+msgid "NORWAY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:667
+msgid "OMAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:668
+msgid "PALAU"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:669
+msgid "PALESTINE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:670
+msgid "PANAMA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:671
+msgid "PARAGUAY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:672
+msgid "PERU"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:673
+msgid "PHILIPPINES"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:674
+msgid "PITCAIRN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:675
+msgid "POLAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:676
+msgid "PORTUGAL"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:677
+msgid "PUERTO RICO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:678
+msgid "QATAR"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:679
+msgid "REUNION"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:680
+msgid "ROMANIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:681
+msgid "RUSSIAN FEDERATION"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:682
+msgid "RWANDA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:683
+msgid "SAINT HELENA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:684
+msgid "SAINT KITTS AND NEVIS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:685
+msgid "SAINT LUCIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:686
+msgid "SAINT PIERRE AND MIQUELON"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:687
+msgid "SAINT VINCENT AND THE GRENADINES"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:688
+msgid "SAMOA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:689
+msgid "SAN MARINO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:690
+msgid "SAO TOME AND PRINCIPE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:691
+msgid "SAUDI ARABIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:692
+msgid "SENEGAL"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:693
+msgid "SERBIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:694
+msgid "SEYCHELLES"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:695
+msgid "SINGAPORE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:696
+msgid "SLOVAKIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:697
+msgid "SLOVENIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:698
+msgid "SOLOMON ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:699
+msgid "SOUTH AFRICA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:700
+msgid "SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:701
+msgid "SPAIN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:702
+msgid "SURINAME"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:703
+msgid "SVALBARD AND JAN MAYEN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:704
+msgid "SWAZILAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:705
+msgid "SWEDEN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:706
+msgid "SWITZERLAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:707
+msgid "TAIWAN, PROVINCE OF CHINA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:708
+msgid "TANZANIA, UNITED REPUBLIC OF"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:709
+msgid "THAILAND"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:710
+msgid "TIMOR-LESTE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:711
+msgid "TOGO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:712
+msgid "TOKELAU"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:713
+msgid "TONGA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:714
+msgid "TRINIDAD AND TOBAGO"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:715
+msgid "TUNISIA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:716
+msgid "TURKEY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:717
+msgid "TURKMENISTAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:718
+msgid "TURKS AND CAICOS ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:719
+msgid "TUVALU"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:720
+msgid "UGANDA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:721
+msgid "UKRAINE"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:722
+msgid "UNITED ARAB EMIRATES"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:723
+msgid "UNITED KINGDOM"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:724
+msgid "UNITED STATES"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:725
+msgid "UNITED STATES MINOR OUTLYING ISLANDS"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:726
+msgid "URUGUAY"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:727
+msgid "UZBEKISTAN"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:728
+msgid "VANUATU"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:729
+msgid "VENEZUELA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:730
+msgid "VIET NAM"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:731
+msgid "VIRGIN ISLANDS, BRITISH"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:732
+msgid "VIRGIN ISLANDS, U.S."
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:733
+msgid "WALLIS AND FUTUNA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:734
+msgid "WESTERN SAHARA"
+msgstr ""
+
+#: app/model/class-ms-model-gateway.php:735
+msgid "ZAMBIA"
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:259
+msgid "Billed"
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:260
+msgid "Paid"
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:261
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:159
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:148
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:43
+msgid "Failed"
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:262
+#: app/model/class-ms-model-membership_relationship.php:190
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:162
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:151
+msgid "Pending"
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:263
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:164
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:153
+msgid "Denied"
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:541
+msgid "Invoice for %s - %s"
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:554
+msgid "Pro rate discount: %s %s. "
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:562
+msgid "Coupon %s, discount: %s %s. "
+msgstr ""
+
+#: app/model/class-ms-model-invoice.php:758
+msgid "user invoices"
+msgstr ""
+
+#: app/model/class-ms-model-member.php:269
+msgid "Email address"
+msgstr ""
+
+#: app/model/class-ms-model-member.php:270
+#: app/view/frontend/class-ms-view-frontend-profile.php:66
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:128
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:108
+msgid "Password"
+msgstr ""
+
+#: app/model/class-ms-model-member.php:271
+msgid "Password confirmation"
+msgstr ""
+
+#: app/model/class-ms-model-member.php:277
+msgid "Please ensure that the <span class=\"ms-bold\">%s</span> information is completed."
+msgstr ""
+
+#: app/model/class-ms-model-member.php:284
+#: app/model/class-ms-model-member.php:821
+msgid "Please ensure the passwords match."
+msgstr ""
+
+#: app/model/class-ms-model-member.php:288
+msgid "The username is not valid, sorry."
+msgstr ""
+
+#: app/model/class-ms-model-member.php:292
+msgid "That username is already taken, sorry."
+msgstr ""
+
+#: app/model/class-ms-model-member.php:296
+#: app/model/class-ms-model-member.php:817
+msgid "The email address is not valid, sorry."
+msgstr ""
+
+#: app/model/class-ms-model-member.php:300
+msgid "That email address is already taken, sorry."
+msgstr ""
+
+#: app/model/class-ms-model-member.php:417
+msgid "Select a user"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:304
+msgid "Simple"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:305
+msgid "Multiple Content Types"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:306
+msgid "Tier Based"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:368
+msgid "Single payment for permanent access"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:369
+msgid "Single payment for finite access"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:370
+msgid "Single payment for date range access"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:371
+msgid "Recurring payment"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:387
+msgid "N/A"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:391
+msgid "Single payment"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:396
+msgid "For %s"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:403
+msgid "From %s to %s"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:411
+msgid "Each %s"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:847
+msgid "Restrict access to Protected Content"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:860
+msgid "Downgrade to %s"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:1007
+msgid "Protected content, and also a default membership for visitors"
+msgstr ""
+
+#: app/model/class-ms-model-membership.php:1483
+msgid "Memberships user can join to."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:192
+msgid "Trial"
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:193
+msgid "Trial Expired"
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:194
+msgid "Expired"
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:195
+msgid "Deactivated"
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:196
+msgid "Canceled"
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:812
+msgid "You will pay %s %s "
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:816
+msgid "for permanent access."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:819
+msgid "for access until %s."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:822
+msgid "to access from %s to %s."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:827
+msgid "each %s %s."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:835
+msgid " <br />In the trial period of %s %s, you will pay %s %s."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:1043
+msgid "Pending payment."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:1046
+msgid "Membership level trial expires on: "
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:1050
+msgid "Membership level expires on: "
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:1053
+msgid "Permanent access."
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:1058
+msgid "Membership expired on: "
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:1061
+msgid "Membership canceled, valid until it expires on: "
+msgstr ""
+
+#: app/model/class-ms-model-membership_relationship.php:1064
+msgid "Membership deactivated."
+msgstr ""
+
+#: app/model/class-ms-model-page.php:111
+msgid "We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below."
+msgstr ""
+
+#: app/model/class-ms-model-page.php:123
+msgid "We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details."
+msgstr ""
+
+#: app/model/class-ms-model-page.php:129
+msgid "Your request to join the membership was successfully received!"
+msgstr ""
+
+#: app/model/class-ms-model-page.php:130
+msgid "The Payment Gateway could take a couple of minutes to process and return the payment status."
+msgstr ""
+
+#: app/model/class-ms-model-page.php:134
+msgid "Visit your account page for more information."
+msgstr ""
+
+#: app/model/class-ms-model-pages.php:83
+msgid "Account"
+msgstr ""
+
+#: app/model/class-ms-model-pages.php:84
+msgid "Register"
+msgstr ""
+
+#: app/model/class-ms-model-pages.php:85
+msgid "Registration Complete"
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:246
+msgid "Every 6 Hours"
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:250
+msgid "Every 60 Mins"
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:254
+msgid "Every 30 Mins"
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:258
+msgid "Every 15 Mins"
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:262
+msgid "Every 10 Mins"
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:266
+msgid "Every 5 Mins"
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:270
+msgid "Every Minute"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:268
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:197
+msgid "Category"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:269
+msgid "Comment"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:270
+msgid "Media"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:271
+msgid "Menu"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:272
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:228
+msgid "Page"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:273
+msgid "More Tag"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:274
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:246
+msgid "Post"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:276
+msgid "Url Group"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:278
+msgid "CPT Group"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:316
+msgid "Reveal Dripped Content on specific dates"
+msgstr ""
+
+#: app/model/class-ms-model-rule.php:318
+msgid "Reveal Dripped Content 'X' days from user registration"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:276
+msgid "The content you are trying to access is only available to members. Sorry."
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:335
+msgid "AUD - Australian Dollar"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:336
+msgid "BRL - Brazilian Real"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:337
+msgid "CAD - Canadian Dollar"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:338
+msgid "CHF - Swiss Franc"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:339
+msgid "CZK - Czech Koruna"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:340
+msgid "DKK - Danish Krone"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:341
+msgid "EUR - Euro"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:342
+msgid "GBP - Pound Sterling"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:343
+msgid "HKD - Hong Kong Dollar"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:344
+msgid "HUF - Hungarian Forint"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:345
+msgid "ILS - Israeli Shekel"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:346
+msgid "JPY - Japanese Yen"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:347
+msgid "MYR - Malaysian Ringgits"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:348
+msgid "MXN - Mexican Peso"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:349
+msgid "NOK - Norwegian Krone"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:350
+msgid "NZD - New Zealand Dollar"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:351
+msgid "PHP - Philippine Pesos"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:352
+msgid "PLN - Polish Zloty"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:353
+msgid "RUB - Russian Ruble"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:354
+msgid "SEK - Swedish Krona"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:355
+msgid "SGD - Singapore Dollar"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:356
+msgid "TWD - Taiwan New Dollars"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:357
+msgid "THB - Thai Baht"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:358
+msgid "USD - U.S. Dollar"
+msgstr ""
+
+#: app/model/class-ms-model-settings.php:359
+msgid "ZAR - South African Rand"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-finishes.php:60
+msgid "Sent a predefined number of days after the membership finishes. You must decide how many days after a message is to be sent."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-finishes.php:74
+msgid "Reminder: your %s membership has ended"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-finishes.php:97
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:90
+#: app/model/communication/class-ms-model-communication-before-finishes.php:97
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:94
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:97
+#: app/model/communication/class-ms-model-communication-cancelled.php:112
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:105
+#: app/model/communication/class-ms-model-communication-failed-payment.php:110
+#: app/model/communication/class-ms-model-communication-finished.php:113
+#: app/model/communication/class-ms-model-communication-info-update.php:110
+#: app/model/communication/class-ms-model-communication-invoice.php:112
+#: app/model/communication/class-ms-model-communication-registration.php:117
+msgid "Hi %1$s,"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-finishes.php:101
+msgid "This is a reminder that your %1$s membership at %2$s has ended on %3$s."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-finishes.php:107
+#: app/model/communication/class-ms-model-communication-finished.php:123
+msgid "You can renew your membership here: %1$s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:60
+msgid "Sent a predefined number of days after the payment is due. You must decide how many days after a message is to be sent."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:73
+msgid "Membership payment due"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:94
+msgid "This is a reminder that the payment for your %1$s membership at %2$s is now due (%3$s)."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:99
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:103
+msgid "Here are your latest invoice details:"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-finishes.php:60
+msgid "Sent a predefined number of days before the membership finishes. You must decide how many days beforehand a message is to be sent."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-finishes.php:74
+msgid "Your %s membership will end soon"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-finishes.php:101
+msgid "This is just a reminder that your %1$s membership at %2$s will end in %3$s."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:60
+msgid "Sent a predefined number of days before the payment is due. You must decide how many days beforehand a message is to be sent."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:73
+msgid "Membership payment due soon"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:98
+msgid "This is a reminder that the next payment for your %1$s membership at %2$s will be due on (%3$s)."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:60
+msgid "Sent a predefined number of days before the trial period finishes. You must decide how many days beforehand a message is to be sent."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:74
+msgid "Your %s membership trial will end soon"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:101
+msgid "This is a reminder that your %1$s trial membership at %2$s wil end in %3$s."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-cancelled.php:77
+msgid "Sent when membership is cancelled."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-cancelled.php:89
+msgid "Your %s membership was canceled"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-cancelled.php:116
+msgid "Your %1$s membership at %2$s was successfully cancelled."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-cancelled.php:121
+msgid "Should you change your mind, you can renew your membership here: %1$s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-cancelled.php:124
+#: app/model/communication/class-ms-model-communication-invoice.php:120
+#: app/model/communication/class-ms-model-communication-registration.php:129
+msgid "Here are your latest payment details:"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:77
+msgid "A notice to indicate that the member's credit card is about to expire."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:88
+msgid "Your credit card is about to expire"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:108
+msgid "This is a reminder that your credit card is about to expire."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:110
+msgid "To continue your %1$s membership at %2$s, please update your card details before your next payment is due here: %3$s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-failed-payment.php:77
+msgid "Sent when a member automatic recurring payment fails."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-failed-payment.php:90
+msgid "Your membership payment has failed"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-failed-payment.php:114
+msgid "Unfortunately, your recurring payment for your %1$s membership at %2$s has failed."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-failed-payment.php:119
+msgid "To continue as a member, please review and edit your billing information as necessary in your account here: %1$s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-failed-payment.php:122
+msgid "Here is your latest invoice which is due now:"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-finished.php:77
+msgid "Sent as soon as the membership is deactivated."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-finished.php:91
+msgid "Your %s membership has ended"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-finished.php:117
+msgid "Your %1$s membership at %2$s has ended on %3$s."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-info-update.php:77
+msgid "Sent when a member updates any personal information (e.g. credit card, name, address details etc.)"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-info-update.php:90
+msgid "Your billing details have been changed."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-info-update.php:113
+msgid "This is to confirm that your billing information has been changed."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-info-update.php:115
+msgid "You can review your account details here: %1$s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-invoice.php:77
+msgid "Sent each time a payment has been made."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-invoice.php:90
+msgid "Your %s membership receipt"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-invoice.php:116
+msgid "We've received your payment for your %1$s membership at %2$s. Thanks!"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-registration.php:80
+msgid "Sent when a member completes the signup for a membership."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-registration.php:95
+msgid "Confirmation of your membership at %s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-registration.php:121
+msgid "You have successfully subscribed to our %1$s membership level at %2$s."
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-registration.php:126
+msgid "You can review and edit your membership details here: %1$s"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:148
+msgid "Authorize.net Gateway"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:165
+msgid "You must use HTTPS in order to do this"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:183
+msgid "The selected payment profile is invalid, enter a new credit card"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:258
+msgid "Total is zero. Payment approved. Not sent to gateway."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:266
+msgid "Sandbox"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:294
+msgid "Payment Failed: code %s, subcode %s, reason code %, reason %s"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:305
+msgid "Payment Failed: "
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:517
+msgid "Payment failed due to CIM profile not created: "
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:561
+msgid "Payment failed due to CIM profile not updated: "
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-authorize.php:620
+msgid "CIM Payment profile not found"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-free.php:96
+msgid "Free Gateway"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:115
+msgid "Manual Gateway"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:116
+msgid "(Bank orders, cash, etc)"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:152
+msgid "This is only an example of manual payment gateway instructions"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:156
+msgid "Edit it"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:158
+msgid "here."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:161
+msgid "Name: Example name."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:163
+msgid "Bank: Example bank."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:165
+msgid "Bank account: Example bank account 1234."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-manual.php:179
+msgid "Total value"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:136
+msgid "PayPal Single Gateway"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:160
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:149
+msgid "Reversed"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:161
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:150
+msgid "Refunded"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:163
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:152
+msgid "Dispute"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:246
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:240
+msgid "Payment amount differs from invoice total."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:252
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:246
+msgid "Last transaction has been reversed. Reason: Payment has been reversed (charge back). "
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:257
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:251
+msgid "Last transaction has been reversed. Reason: Payment has been refunded"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:262
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:256
+msgid "Last transaction has been reversed. Reason: Payment Denied"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:268
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:262
+msgid "Customer did not include a confirmed shipping address"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:269
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:263
+msgid "Funds not captured yet"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:270
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:264
+msgid "eCheck that has not cleared yet"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:271
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:265
+msgid "Payment waiting for aproval by service provider"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:272
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:266
+msgid "Payment waiting for service provider to handle multi-currency process"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:273
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:267
+msgid "Customer did not register or confirm his/her email yet"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:274
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:268
+msgid "Waiting for service provider to upgrade the PayPal account"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:275
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:269
+msgid "Waiting for service provider to verify his/her PayPal account"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:280
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:274
+msgid "Last transaction is pending. Reason: "
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-single.php:323
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:360
+msgid "Error: Missing POST variables. Identification is not possible."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:125
+msgid "PayPal Standard Gateway"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:282
+msgid "Not handling payment_status: "
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:294
+msgid "Paypal subscripton profile has been created."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:301
+msgid "Paypal subscription profile has been modified."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:306
+msgid "Paypal subscription profile has been canceled."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:312
+msgid "Paypal subscription profile has been suspended."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:318
+msgid "Paypal subscription profile has failed."
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-paypal-standard.php:328
+msgid "Not handling txn_type: "
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-stripe.php:146
+msgid "Stripe Gateway"
+msgstr ""
+
+#: app/model/gateway/class-ms-model-gateway-stripe.php:208
+msgid "Stripe gateway token not found."
+msgstr ""
+
+#: app/model/rule/buddypress/class-ms-model-rule-buddypress-friendship.php:39
+#: app/model/rule/buddypress/class-ms-model-rule-buddypress-group-creation.php:39
+#: app/model/rule/buddypress/class-ms-model-rule-buddypress-private-msg.php:39
+msgid "User can read and make comments on posts."
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-buddypress.php:213
+msgid "Friendship request"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-buddypress.php:215
+msgid "Allows the sending of friendship requests to be limited to members."
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-buddypress.php:221
+msgid "Group creation"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-buddypress.php:223
+msgid "Allows group creation to be limited to members."
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-buddypress.php:228
+msgid "Private messaging"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-buddypress.php:230
+msgid "Allows the sending of private messages to be limited to members."
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-comment.php:273
+msgid "Read and Write Access"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-comment.php:274
+msgid "Read Only Access"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-comment.php:275
+msgid "No Access to Comments"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-media.php:102
+msgid "Basic protection"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-media.php:103
+msgid "Complete protection"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-media.php:104
+msgid "Hybrid protection"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-menu.php:199
+msgid "No menus found."
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-more.php:153
+msgid "User can read full post content beyond the More tag."
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-more.php:176
+#: app/view/membership/class-ms-view-membership-setup-payment.php:75
+msgid "Yes"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-more.php:177
+#: app/view/membership/class-ms-view-membership-setup-payment.php:76
+msgid "No"
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-shortcode.php:114
+msgid "Shortcode content protected."
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-shortcode.php:156
+msgid "No access to members of: "
+msgstr ""
+
+#: app/model/rule/class-ms-model-rule-shortcode.php:173
+msgid "Content protected to members of: "
+msgstr ""
+
+#: app/view/bbpress/class-ms-view-bbpress-general.php:16
+msgid "Manage Protected bbPress Forums"
+msgstr ""
+
+#: app/view/bbpress/class-ms-view-bbpress-general.php:27
+msgid "Give access to protected bbPress content to %s members."
+msgstr ""
+
+#: app/view/bbpress/class-ms-view-bbpress-general.php:32
+msgid "Protect the following bbPress content to members only."
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-edit.php:40
+msgid " %s Billing"
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-edit.php:68
+msgid "Execute status change actions (add/remove membership)."
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-edit.php:95
+#: app/view/frontend/class-ms-view-frontend-payment.php:36
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:140
+msgid "Description"
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-edit.php:101
+msgid "Amount (%s)"
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-edit.php:107
+msgid "Discount (%s)"
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-edit.php:120
+msgid "Notes"
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-list.php:57
+#: app/view/coupon/class-ms-view-coupon-list.php:51
+msgid "Add New"
+msgstr ""
+
+#: app/view/billing/class-ms-view-billing-list.php:76
+#: app/view/membership/class-ms-view-membership-news.php:25
+msgid "Search user"
+msgstr ""
+
+#: app/view/buddypress/class-ms-view-buddypress-blog.php:21
+msgid "BuddyPress blogs "
+msgstr ""
+
+#: app/view/buddypress/class-ms-view-buddypress-blog.php:25
+#: app/view/buddypress/class-ms-view-buddypress-group.php:25
+msgid "Select the comment settings below that you would like to give access to as part of this membership. Commenting access is turned off by default."
+msgstr ""
+
+#: app/view/buddypress/class-ms-view-buddypress-general.php:22
+msgid "Manage Protected BuddyPress Content"
+msgstr ""
+
+#: app/view/buddypress/class-ms-view-buddypress-general.php:28
+msgid "Give access to protected BuddyPress content to %s members."
+msgstr ""
+
+#: app/view/buddypress/class-ms-view-buddypress-general.php:31
+msgid "Protect the following BuddyPress content to members only. "
+msgstr ""
+
+#: app/view/buddypress/class-ms-view-buddypress-group.php:21
+msgid "BuddyPress groups "
+msgstr ""
+
+#: app/view/class-ms-view-addon.php:58
+msgid "Membership Add-ons"
+msgstr ""
+
+#: app/view/class-ms-view-admin-bar.php:104
+msgid "Go"
+msgstr ""
+
+#: app/view/coupon/class-ms-view-coupon-edit.php:40
+msgid " %s Coupon"
+msgstr ""
+
+#: app/view/coupon/class-ms-view-coupon-edit.php:67
+msgid "Coupon code"
+msgstr ""
+
+#: app/view/coupon/class-ms-view-coupon-edit.php:79
+msgid "Discount Type"
+msgstr ""
+
+#: app/view/coupon/class-ms-view-coupon-edit.php:107
+msgid "Max uses"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-activities.php:15
+#: app/view/frontend/class-ms-view-frontend-activities.php:21
+#: app/view/shortcode/class-ms-view-shortcode-account.php:124
+msgid "Activity"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-activities.php:36
+#: app/view/frontend/class-ms-view-frontend-invoices.php:46
+#: app/view/shortcode/class-ms-view-shortcode-account.php:138
+msgid "Your account"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-activities.php:49
+#: app/view/frontend/class-ms-view-frontend-invoices.php:59
+#: app/view/shortcode/class-ms-view-shortcode-account.php:159
+msgid "Your Account"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-activities.php:51
+#: app/view/frontend/class-ms-view-frontend-invoices.php:61
+#: app/view/shortcode/class-ms-view-shortcode-account.php:161
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:110
+msgid "You are not currently logged in. Please login to view your membership information."
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-invoices.php:15
+msgid "Invoice"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:12
+msgid "Please check the details of the membership below and click on the relevant button to complete the signup."
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:20
+msgid "Join Membership"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:45
+msgid "Price"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:61
+msgid "Coupon discount"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:71
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:161
+msgid "Pro rate discount"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:89
+msgid "Trial until"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:131
+msgid "Remove Coupon"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:145
+msgid "Apply Coupon"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-payment.php:150
+msgid "Have a coupon code?"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-profile.php:24
+msgid "Edit profile"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-profile.php:60
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:101
+msgid "Email Address"
+msgstr ""
+
+#: app/view/frontend/class-ms-view-frontend-profile.php:73
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:115
+msgid "Confirm Password"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-card.php:16
+msgid "Authorize.net credit card info"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-card.php:20
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:117
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-card.php:16
+msgid "Card Number"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-card.php:21
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-card.php:17
+msgid "Card Expiration date"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-card.php:71
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-card.php:39
+msgid "Change card number"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-dialog.php:34
+#: app/view/gateway/class-ms-view-gateway-settings.php:16
+#: app/view/gateway/manual/class-ms-view-gateway-manual-dialog.php:34
+#: app/view/gateway/paypal/single/class-ms-view-gateway-paypal-single-dialog.php:34
+#: app/view/gateway/paypal/standard/class-ms-view-gateway-paypal-standard-dialog.php:34
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-dialog.php:34
+msgid "%s settings"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:27
+msgid "Credit Card Information"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:48
+msgid "Billing Information"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:64
+msgid "Change card"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:65
+msgid "Pay now"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:106
+msgid "Month"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:110
+msgid "Year"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:122
+msgid "Security Code"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:127
+msgid "Expiration Date"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:181
+msgid "Country"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:225
+msgid "Enter a new credit card"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-form.php:234
+msgid "Credit card:"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-settings.php:34
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:34
+msgid "Mode"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-settings.php:42
+msgid "API Login ID"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-settings.php:50
+msgid "API Transaction Key"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-settings.php:58
+msgid "Payment button"
+msgstr ""
+
+#: app/view/gateway/authorize/class-ms-view-gateway-authorize-settings.php:82
+#: app/view/gateway/manual/class-ms-view-gateway-manual-settings.php:71
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:109
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:98
+msgid "Close"
+msgstr ""
+
+#: app/view/gateway/class-ms-view-gateway-settings.php:31
+#: app/view/gateway/manual/class-ms-view-gateway-manual-settings.php:47
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:85
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:74
+msgid "Payment button label or url"
+msgstr ""
+
+#: app/view/gateway/manual/class-ms-view-gateway-manual-settings.php:20
+msgid "Please instruct how to proceed with manual payments, informing bank account number and email to send payment confirmation."
+msgstr ""
+
+#: app/view/gateway/manual/class-ms-view-gateway-manual-settings.php:38
+msgid "Payment Info"
+msgstr ""
+
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:23
+msgid "In order for Membership to function correctly you must setup an IPN listening URL with PayPal. Failure to do so will prevent your site from being notified when a member cancels their subscription."
+msgstr ""
+
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:24
+msgid "Your IPN listening URL is:"
+msgstr ""
+
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:27
+msgid "Instructions »"
+msgstr ""
+
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:47
+msgid "PayPal Email"
+msgstr ""
+
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:56
+msgid "PayPal Merchant Account ID"
+msgstr ""
+
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:67
+msgid "PayPal Site"
+msgstr ""
+
+#: app/view/gateway/paypal/class-ms-view-gateway-paypal-settings.php:76
+msgid "PayPal Mode"
+msgstr ""
+
+#: app/view/gateway/paypal/single/class-ms-view-gateway-paypal-single-button.php:146
+#: app/view/gateway/paypal/standard/class-ms-view-gateway-paypal-standard-button.php:134
+msgid "PayPal - The safer, easier way to pay online"
+msgstr ""
+
+#: app/view/gateway/paypal/single/class-ms-view-gateway-paypal-single-button.php:157
+msgid "PayPal"
+msgstr ""
+
+#: app/view/gateway/paypal/standard/class-ms-view-gateway-paypal-standard-button.php:145
+msgid "Paypal"
+msgstr ""
+
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-card.php:12
+msgid "Stripe credit card info"
+msgstr ""
+
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-card.php:36
+msgid "Just change card"
+msgstr ""
+
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-card.php:37
+msgid "Change credit card"
+msgstr ""
+
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:42
+msgid "API Test Secret Key"
+msgstr ""
+
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:50
+msgid "API Test Publishable Key"
+msgstr ""
+
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:58
+msgid "API Live Secret Key"
+msgstr ""
+
+#: app/view/gateway/stripe/class-ms-view-gateway-stripe-settings.php:66
+msgid "API Live Publishable Key"
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:15
+msgid "MailChimp Settings"
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:42
+msgid "MailChimp API test status: "
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:43
+msgid "Verified"
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:50
+msgid "MailChimp API Key"
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:68
+msgid "Automatically opt-in new users to the mailing list."
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:69
+msgid "Users will not receive an email confirmation. Use at your own risk."
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:86
+msgid "Registered users mailing list (not members)"
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:102
+msgid "Members mailing list"
+msgstr ""
+
+#: app/view/mailchimp/class-ms-view-mailchimp-general.php:117
+msgid "Deactivated memberships mailing list"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-date.php:18
+msgid "Edit membership dates"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-date.php:31
+msgid "Membership dates"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-date.php:88
+msgid "Change Date"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-list.php:41
+msgid "Here you can manage your Members and Add New Members from your Users list."
+msgstr ""
+
+#: app/view/member/class-ms-view-member-list.php:77
+msgid "Add from your Users list:"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-list.php:83
+msgid "Add User to Members"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-membership.php:18
+msgid " Membership"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-membership.php:26
+msgid "Membership to %s"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-membership.php:67
+msgid "Move"
+msgstr ""
+
+#: app/view/member/class-ms-view-member-membership.php:95
+msgid "OK"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:34
+msgid "Accessible content"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:37
+msgid "Setup which Protected Content is available to <span class=\"ms-bold\">%s</span> members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:79
+msgid "Manage Protected Content"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:88
+msgid "You do not have any protection rules set."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:115
+msgid "Manage Protected Categories"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:122
+#: app/view/membership/class-ms-view-membership-accessible-content.php:307
+msgid "Manage Protected Custom Post Types"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:146
+msgid "Give access to protected %s to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:150
+msgid "%s Access"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:164
+msgid "Protected Categories:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:179
+msgid "Protected Custom Post Types:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:211
+msgid "Manage Protected Pages"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:215
+msgid "Pages "
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:217
+msgid "Give access to following Pages to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:229
+msgid "Search Pages"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:259
+msgid "Manage Protected Posts"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:263
+msgid "Posts "
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:265
+msgid "Give access to following Posts to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:277
+#: app/view/membership/class-ms-view-membership-accessible-content.php:325
+msgid "Search Posts"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:311
+msgid "Custom Post Types "
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:313
+msgid "Give access to following Custom Post Types to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:364
+#: app/view/membership/class-ms-view-membership-accessible-content.php:438
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:357
+msgid "Comments:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:365
+msgid "Members have:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:381
+msgid "Edit Comments Restrictions"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:388
+#: app/view/membership/class-ms-view-membership-accessible-content.php:449
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:374
+msgid "More Tag:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:389
+msgid "Members can read full post (beyond the More Tag):"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:405
+msgid "Edit More Tag Restrictions"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:411
+msgid "Menus:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:412
+msgid "Select menu to load:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:422
+msgid "Edit Menu Restrictions"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:439
+msgid "Members can Read & Post comments"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:450
+msgid "Members can read full post (beyond the More Tag)"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:462
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:287
+msgid "Comments, More Tag & Menus"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:464
+msgid "Give access to protected Comments, More Tag & Menus to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:526
+msgid "Manage Protected Shortcodes"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:532
+msgid "Give access to protected Shortcodes to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:588
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:509
+msgid "Page URLs"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:632
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:550
+msgid "Edit URL Group Restrictions"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:638
+msgid "Give access to protected URL Groups to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:665
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:581
+msgid "Enter an URL to test against rules in the group"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-accessible-content.php:670
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:586
+msgid "Test URL group"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:15
+msgid "Choose a membership type suitable to your project"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:21
+msgid "What kind of membership do you want to set up?"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:56
+msgid "I simply want to protect some of my content."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:57
+msgid "This is the most basic membership that creates a single membership level. Members will have access to all protected content.<p class=\"ms-italic\">eg. Visitors don't see protected content, members access all protected content."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:60
+msgid "I want to have different content available to different members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:61
+msgid "This option is for when you have different types of content that you want to make available to different type of members.<p class=\"ms-italic\">eg. Music members get access to Guitar Courses, Cooking members get access to Recipes."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:64
+msgid "I want to set up a Tier Level-based membership."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:65
+msgid "This options allows you to set up different tier level membership.<p class=\"ms-italic\">eg. Silver &rarr; Gold &rarr; Platinum. The higher the level, the more content members will have access to."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:68
+msgid "I want to set up a Dripped Content membership."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:69
+msgid "This option will allow you to set up a membership where content will be revelead to users over a period of time.<p class=\"ms-italic\">eg. A weekly training / excercize program."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:76
+msgid "Choose a name for your membership:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:79
+msgid "Choose a good name that will identify this membership..."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:84
+msgid "Make this membership private (No registration, no payment)"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:85
+msgid "Choosing this option assumes that you will manually set up users who can access your content.<br /><span class=\"ms-bold\">No registration page will be created and there will be no payment options.</span>"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-choose-type.php:123
+msgid "Save and continue"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-list.php:18
+msgid "Create New Membership"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-metabox.php:30
+msgid "Membership Special Page"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-metabox.php:37
+msgid "Enable Protection"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-news.php:22
+msgid "Membership News"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:56
+#: app/view/membership/class-ms-view-membership-overview.php:63
+msgid "Membership is"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:64
+msgid "Disabled"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:72
+msgid "%s Overview"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:73
+msgid "Here you can view a quick summary of this membership, and alter any of its details."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:91
+msgid "(Description)"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:122
+msgid "News"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:153
+msgid "View More News"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:162
+msgid "There will be some interesting news here when your site gets going."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:174
+msgid "Members (%s)"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:186
+msgid "Edit Members"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:195
+msgid "No members yet."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:213
+msgid "Active Members"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:227
+msgid "Available Content"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:230
+msgid "This is Protected Content which <span class=\"ms-bold\">%s</span> members has access to."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:249
+#: app/view/membership/overview/class-ms-view-membership-overview-content-type.php:12
+#: app/view/membership/overview/class-ms-view-membership-overview-tier.php:12
+msgid "Accessible Content:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:319
+msgid "Edit %s Access"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:355
+msgid "Post / Page Title"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-overview.php:356
+msgid "Content Available"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-content-type.php:27
+msgid "Set Up Content Types"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-content-type.php:30
+msgid "Here you can set-up different types of content to be available to different types of %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-content-type.php:33
+msgid "(eg. Cooking recipes for Cooking Members, PHP tutorials for Programming Members)"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-content-type.php:72
+msgid "Name Your Content Type:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-content-type.php:76
+msgid "eg. Cooking recipes"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-content-type.php:80
+#: app/view/membership/class-ms-view-membership-setup-tier.php:68
+msgid "Add Content Type"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-dripped.php:55
+msgid "Setup which Protected Content will become available to %s members."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-dripped.php:99
+msgid "Give access to protected Pages to %s members. "
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-dripped.php:129
+msgid "Give access to protected Posts to %s members. "
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:72
+msgid "Do you want to accept payments for this membership?"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:146
+msgid "<span class=\"ms-item-name\">%s</span> Specific Payment Settings:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:150
+msgid "Payment Settings for <span class=\"ms-bold\">%s</span>."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:184
+msgid "Membership Trial:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:222
+msgid "Payment Structure:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:242
+msgid "Period"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:261
+msgid "Payment Cycle"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:279
+msgid "Date range"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:282
+msgid "Start Date..."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:290
+msgid "End Date..."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:296
+msgid "After this membership ends:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-payment.php:305
+msgid "Offer Free Trial lasting"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:12
+msgid "Hello and welcome to Protected Content by WPMU DEV."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:13
+msgid "Let's begin by setting up the content you want to protect. Please select at least 1 page or category to protect."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:18
+msgid "Choose what content of your site is protected."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:19
+msgid "Unprotected Content is available for everyone while Protected Content can be assigned to a Membership."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:105
+msgid "Protect %s:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:110
+msgid "Protected %s"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:115
+msgid "No %s available"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:122
+msgid "Choose a %s"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:126
+msgid "Protect %s"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:193
+msgid "The easiest way to restrict content is by setting up a category that you can then use to mark content you want restricted."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:205
+msgid "You can choose Custom Post Type(s) to be restricted (eg. Products or Events)."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:223
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:241
+msgid "Protected Pages are available for members only."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:259
+msgid "Protected Custom Post Types are available for members only."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:264
+msgid "CPT"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:265
+msgid "CPTs"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:266
+msgid "No content found. Please create some custom posts first"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:288
+msgid "Protected Comments, More Tag & Menus are available for members only."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:358
+msgid "Visitors have:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:375
+msgid "Only Members can read full post (beyond the More Tag):"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:392
+msgid "Protect Menu-Items of %s"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:395
+msgid "Protected Menu-Items:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:398
+msgid "Choose a Menu-Item"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:399
+msgid "Protect Menu-Item"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:400
+msgid "No Menu-Items available"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:440
+msgid "Protected Shortcodes are available for members only."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:481
+msgid "Strip query strings from URL"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:495
+msgid "Is regular expression"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-protected-content.php:559
+msgid "Protected URLs can be accessed by members only. "
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-tier.php:22
+msgid "Set Up Membership Tiers"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-tier.php:24
+msgid "Set up different Tier Levels for %s."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-tier.php:25
+msgid "You can have as many Tier Levels as you want, though remember, less is more."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-tier.php:26
+msgid "Begin with your lowest Tier Level and move up."
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-tier.php:60
+msgid "Tier Level name:"
+msgstr ""
+
+#: app/view/membership/class-ms-view-membership-setup-tier.php:64
+msgid "eg. Bronze"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-content-type.php:11
+msgid "Content Type:"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-content-type.php:40
+msgid "Edit Content Types"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-content-type.php:56
+#: app/view/membership/overview/class-ms-view-membership-overview-dripped.php:61
+#: app/view/membership/overview/class-ms-view-membership-overview-tier.php:55
+msgid "Payment Options"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-dripped.php:35
+msgid "Soon to be available content:"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-dripped.php:46
+msgid "Edit Dripped Content"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-dripped.php:79
+msgid "Already available content:"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-tier.php:11
+msgid "Tier Level:"
+msgstr ""
+
+#: app/view/membership/overview/class-ms-view-membership-overview-tier.php:39
+msgid "Edit Tiers"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:66
+msgid "Protect Content Settings"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:100
+msgid "This setting enable/disable the membership plugin protection."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:111
+msgid "Hide admin bar for non administrator users."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:122
+msgid "Enable wizard."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:136
+msgid "General Settings"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:144
+msgid "Enable plugin"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:149
+msgid "Hide admin bar"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:154
+msgid "Enable wizard"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:181
+msgid "Select %s page"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:194
+msgid "Edit URL"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:207
+msgid "Page Settings"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:208
+msgid "Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:226
+msgid "View Page"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:236
+msgid "Edit Page"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:280
+msgid "Message displayed when not having access to a protected content."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:287
+#: app/view/settings/class-ms-view-settings-edit.php:308
+#: app/view/settings/class-ms-view-settings-edit.php:329
+msgid "Save"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:301
+msgid "Message displayed when not having access to a protected shortcode content."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:322
+msgid "Message displayed when not having access to a protected content under more tag."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:358
+msgid "Content protection message"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:365
+msgid "Shortcode protection message"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:373
+msgid "More tag protection message"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:407
+msgid "Load Email"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:432
+msgid "Period after/before"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:446
+msgid "Message Subject"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:461
+msgid "Send copy to Administrator"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:511
+msgid "Automated Messages"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:534
+msgid "Message"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:566
+msgid "Insert Membership Variables"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:573
+msgid "You have made changes that are not saved yet. Do you want to discard those changes?"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:593
+msgid "Media / Downloads protection"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:606
+msgid "Protection method"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:620
+msgid "Masked download URL:"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-edit.php:641
+msgid "Media / Download Settings"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-payment.php:61
+msgid "Global Payment Settings"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-payment.php:62
+msgid "These are shared across all memberships."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-payment.php:74
+msgid "Payment Gateways:"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-payment.php:75
+msgid "You need to set-up at least one Payment Gateway to be able to process payments."
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-payment.php:106
+msgid "Select payment currency"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-payment.php:119
+msgid "Invoice sender name"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:20
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:17
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:108
+msgid "Your Membership"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:31
+msgid "Trial expire date"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:46
+msgid "No trial"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:55
+msgid "No memberships"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:60
+msgid "Personal details"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:77
+msgid "Invoices"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:79
+#: app/view/shortcode/class-ms-view-shortcode-account.php:117
+msgid "View all"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:115
+msgid "Activities"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:149
+msgid "First name"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:150
+msgid "Last name"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-account.php:152
+msgid "Email"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:116
+msgid "Sender"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:122
+msgid "Invoice to"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:168
+msgid "Payment on"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:21
+msgid "Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:27
+msgid "We have the following subscriptions available for our site. To join, simply click on the <strong>Sign Up</strong> button and then complete the registration details."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-form.php:33
+msgid "Upgrade to"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:27
+msgid "Lost password?"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:75
+msgid "Please wait..."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:76
+msgid "Request failed, please try again."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:102
+msgid "Please log in to access this page."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:129
+msgid "Remember Me"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:130
+msgid "Log In"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:186
+msgid "Lost your password?"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:203
+msgid "Username or E-mail:"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:204
+msgid "Get New Password"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:249
+msgid "Log in"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:267
+msgid "Logout"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:298
+msgid "The password-reset key is already expired."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:301
+msgid "The password-reset key is invalid or missing."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:307
+msgid "Request a new password-reset key"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:312
+msgid "The passwords do not match."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:325
+msgid "Your Password has been reset."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:339
+msgid "New password"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:343
+msgid "Confirm new password"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:347
+msgid "Strength indicator"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:348
+msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! \" ? $ % ^ &amp; )."
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-login.php:356
+msgid "Reset Password"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:29
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:37
+msgid "Login"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:40
+msgid "Already have a user account?"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:50
+msgid "Create an Account"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:94
+msgid "Choose a Username"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-register-user.php:123
+msgid "Register My Account"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:52
+msgid "Add Membership Level"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-membership-signup.php:55
+msgid "Change Membership Level"
+msgstr ""
+
+#: protected-content.php:426
+msgid "Virtual"
+msgstr ""
+
+#: protected-content.php:431
+msgid "Virtual <span class=\"count\">(%s)</span>"
+msgid_plural "Virtual <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""

@@ -12,7 +12,7 @@ class MS_View_Mailchimp_General extends MS_View {
 		?>
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
-				<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'Mailchimp Settings', MS_TEXT_DOMAIN ) ) ); ?>
+				<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'MailChimp Settings', MS_TEXT_DOMAIN ) ) ); ?>
 				<div class="ms-separator"></div>
 
 				<form action="" method="post">
@@ -39,7 +39,7 @@ class MS_View_Mailchimp_General extends MS_View {
 				'mailchimp_api_test' => array(
 						'id' => 'mailchimp_api_test',
 						'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-						'title' => __( 'Mailchimp API test status: ', MS_TEXT_DOMAIN ),
+						'title' => __( 'MailChimp API test status: ', MS_TEXT_DOMAIN ),
 						'value' => ( $api_status ) ? __( 'Verified', MS_TEXT_DOMAIN ) : __( 'Failed', MS_TEXT_DOMAIN ),
 						'class' => ( $api_status ) ? 'ms-ok' : 'ms-nok',
 				),
@@ -47,8 +47,8 @@ class MS_View_Mailchimp_General extends MS_View {
 						'id' => 'mailchimp_api_key',
 						'name' => 'custom[mailchimp][api_key]',
 						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'title' => __( 'Mailchimp API Key', MS_TEXT_DOMAIN ),
-						'desc' => '<div>Visit your <a target="_blank" href="http://admin.mailchimp.com/account/api">your API dashboard</a> to create an API Key.</div>',
+						'title' => __( 'MailChimp API Key', MS_TEXT_DOMAIN ),
+						'desc' => '<div>Visit your <a target="_blank" href="http://admin.mailchimp.com/account/api">your API dashboard</a> to create an API Key.</div>', //i18n here please!
 						'value' => $settings->get_custom_setting( 'mailchimp', 'api_key' ),
 						'class' => 'ms-ajax-update ms-text-medium',
 						'data_ms' => array(

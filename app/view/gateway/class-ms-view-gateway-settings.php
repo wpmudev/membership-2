@@ -13,7 +13,7 @@ class MS_View_Gateway_Settings extends MS_View {
 		?>
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
-				<h2><?php echo esc_html( $this->data['model']->name ); ?> settings</h2>
+				<h2><?php printf( __( '%s settings', MS_TEXT_DOMAIN ), esc_html( $this->data['model']->name ) ); ?> </h2>
 				<form action="<?php echo esc_url( remove_query_arg( array( 'action', 'gateway_id' ) ) ); ?>" method="post" class="ms-form">
 					<?php MS_Helper_Html::settings_box( $this->fields ); ?>
 				</form>

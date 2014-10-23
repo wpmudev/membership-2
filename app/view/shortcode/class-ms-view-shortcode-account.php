@@ -57,7 +57,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				<h2>
 					<?php printf(
 						'%s <a href="%s" class="ms-edit-profile">%s</a>',
-						__( 'Personnal details', MS_TEXT_DOMAIN ),
+						__( 'Personal details', MS_TEXT_DOMAIN ),
 						add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE ) ),
 						__( 'Edit', MS_TEXT_DOMAIN )
 					); ?>
@@ -121,7 +121,7 @@ class MS_View_Shortcode_Account extends MS_View {
 					<thead>
 						<tr>
 							<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Actvity', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Activity', MS_TEXT_DOMAIN ); ?></th>
 						</tr>
 					</thead>
 					<tbody>

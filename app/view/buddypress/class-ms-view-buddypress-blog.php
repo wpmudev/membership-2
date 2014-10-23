@@ -18,7 +18,7 @@ class MS_View_Buddypress_Blog extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php
-					_e( 'Buddypress blogs ', MS_TEXT_DOMAIN );
+					_e( 'BuddyPress blogs ', MS_TEXT_DOMAIN );
 					echo $this->title;
 				?></h3>
 				<div class="settings-description ms-description"><?php

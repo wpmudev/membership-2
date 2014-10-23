@@ -9,7 +9,7 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-wrap ms-card-info-wrapper'>
-				<h2><?php _e( 'Stripe credit card info', MS_TEXT_DOMAIN ); ?> </h2>
+				<h2><?php _e( 'Stripe credit card info', MS_TEXT_DOMAIN );//genericize here? ?> </h2>
 				<table class="ms-table">
 					<tbody>
 						<tr>
@@ -30,13 +30,13 @@ class MS_View_Gateway_Stripe_Card extends MS_View {
 					?>
 					<script
 						src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-						data-key="<?php echo esc_js( $this->data['publishable_key'] ); ?>"
+						data-key="<?php echo esc_attr( $this->data['publishable_key'] ); ?>"
 						data-amount="0"
-						data-name="<?php echo bloginfo( 'name' ); ?>"
-						data-description="<?php _e( 'Just change card', MS_TEXT_DOMAIN ); ?>"
-						data-panel-label="<?php _e( 'Change credit card', MS_TEXT_DOMAIN ); ?>"
-						data-email="<?php echo esc_js( $this->data['member']->email ); ?>"
-						data-label="<?php _e( 'Change card number', MS_TEXT_DOMAIN ); ?>"
+						data-name="<?php echo esc_attr( bloginfo( 'name' ) ); ?>"
+						data-description="<?php esc_attr_e( 'Just change card', MS_TEXT_DOMAIN ); ?>"
+						data-panel-label="<?php esc_attr_e( 'Change credit card', MS_TEXT_DOMAIN ); ?>"
+						data-email="<?php echo esc_attr( $this->data['member']->email ); ?>"
+						data-label="<?php esc_attr_e( 'Change card number', MS_TEXT_DOMAIN ); ?>"
 						>
 					</script>
 				</form>
