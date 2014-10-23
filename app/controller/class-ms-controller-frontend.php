@@ -111,7 +111,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function process_actions() {
-
 		$action = $this->get_action();
 
 		/**
@@ -121,7 +120,10 @@ class MS_Controller_Frontend extends MS_Controller {
 		 * @see $allowed_actions property
 		 *
 		 */
-		if ( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
+		if ( ! empty( $action )
+			&& method_exists( $this, $action )
+			&& in_array( $action, $this->allowed_actions )
+		) {
 			$this->$action();
 		}
 	}
@@ -136,23 +138,31 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function check_for_membership_pages() {
-
 		//For invoice page purchase process
 		global $post;
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
-		if ( isset( $post->post_type) && $post->post_type == MS_Model_Invoice::$POST_TYPE &&
-			$this->validate_required( $fields ) && 'process_purchase' == $_POST['step'] ) {
 
-			do_action( 'ms_controller_frontend_signup_process_purchase', $this );
+		if ( isset( $post->post_type)
+			&& $post->post_type == MS_Model_Invoice::$POST_TYPE
+			&& $this->validate_required( $fields )
+			&& 'process_purchase' == $_POST['step']
+		) {
+			do_action(
+				'ms_controller_frontend_signup_process_purchase',
+				$this
+			);
 		}
 
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
 		switch ( $ms_pages->is_ms_page() ) {
 			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
 				if ( ! MS_Model_Member::is_logged_user() ) {
 					$this->add_filter( 'the_content', 'display_login_form' );
 					break;
 				}
+				// no break; !
+
 			case MS_Model_Pages::MS_PAGE_REGISTER:
 				if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
 					$this->membership_cancel();
@@ -161,15 +171,19 @@ class MS_Controller_Frontend extends MS_Controller {
 					$this->signup_process();
 				}
 				break;
+
 			case MS_Model_Pages::MS_PAGE_ACCOUNT:
 				$this->user_account_mgr();
 				break;
+
 			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
 				$this->add_filter( 'the_content', 'protected_page', 1 );
 				break;
+
 			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
 				$this->add_filter( 'the_content', 'reg_complete_page', 1 );
 				break;
+
 			default:
 				break;
 		}
@@ -181,7 +195,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function signup_process() {
-
 		$step = $this->get_signup_step();
 
 		switch ( $step ) {
@@ -191,24 +204,28 @@ class MS_Controller_Frontend extends MS_Controller {
 			case self::STEP_CHOOSE_MEMBERSHIP:
 				$this->add_filter( 'the_content', self::STEP_CHOOSE_MEMBERSHIP, 1 );
 				break;
+
 			/**
 			 * If not registered.
 			 */
 			case self::STEP_REGISTER_FORM:
 				$this->add_filter( 'the_content', self::STEP_REGISTER_FORM, 1 );
 				break;
+
 			/**
 			 * Process user registration.
 			 */
 			case self::STEP_REGISTER_SUBMIT:
 				$this->register_user();
 				break;
+
 			/**
 			 * Show payment table.
 			 */
 			case self::STEP_PAYMENT_TABLE:
 				$this->add_filter( 'the_content', self::STEP_PAYMENT_TABLE, 1 );
 				break;
+
 			/**
 			 * Show gateway extra form.
 			 * Handled by MS_Controller_Gateway.
@@ -216,6 +233,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			case self::STEP_GATEWAY_FORM:
 				do_action( 'ms_controller_frontend_signup_gateway_form', $this );
 				break;
+
 			/**
 			 * Process the purchase action.
 			 * Handled by MS_Controller_Gateway.
@@ -223,6 +241,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			case self::STEP_PROCESS_PURCHASE:
 				do_action( 'ms_controller_frontend_signup_process_purchase', $this );
 				break;
+
 			default:
 				MS_Helper_Debug::log( "No handler for step: $step" );
 				break;
@@ -237,7 +256,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The current signup step after validation.
 	 */
 	private function get_signup_step() {
-
 		static $steps;
 
 		if ( empty( $steps ) ) {
@@ -276,7 +294,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			$step = self::STEP_PAYMENT_TABLE;
 		}
 
-		return apply_filters( 'ms_controller_frontend_get_signup_step', $step, $this );
+		return apply_filters(
+			'ms_controller_frontend_get_signup_step',
+			$step,
+			$this
+		);
 	}
 
 	/**
@@ -299,7 +321,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_SIGNUP .']' );
 		}
 
-		return apply_filters( 'ms_controller_frontend_choose_membership_content', $content, $this );
+		return apply_filters(
+			'ms_controller_frontend_choose_membership_content',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -319,9 +345,12 @@ class MS_Controller_Frontend extends MS_Controller {
 		remove_filter( 'the_content', 'wpautop' );
 
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER, $content ) ) {
-			$reg_form = do_shortcode(
-				'[' . MS_Helper_Shortcode::SCODE_REGISTER_USER . ' errors="' . esc_attr( $this->register_errors ) . '"]'
+			$scode = sprintf(
+				'[%s errors="%s"]',
+				MS_Helper_Shortcode::SCODE_REGISTER_USER,
+				esc_attr( $this->register_errors )
 			);
+			$reg_form = do_shortcode( $scode );
 
 			if ( ! MS_Model_Member::is_logged_user() ) {
 				$content = $reg_form;
@@ -331,7 +360,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			}
 		}
 
-		return apply_filters( 'ms_controller_frontend_register_form_content', $content, $this );
+		return apply_filters(
+			'ms_controller_frontend_register_form_content',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -342,7 +375,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function register_user() {
-
 		do_action( 'ms_controller_frontend_register_user_before', $this );
 
 		if ( ! $this->verify_nonce() ) {
@@ -350,23 +382,30 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 		try {
 			$user = MS_Factory::create( 'MS_Model_Member' );
+
 			foreach ( $_REQUEST as $field => $value ) {
 				$user->$field = $value;
 			}
+
 			$user->save();
 			$user->signon_user();
+
 			if ( ! MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
 				wp_new_user_notification( $user->id, $user->password );
 			}
+
 			do_action( 'ms_controller_frontend_register_user_complete', $user );
 
 			// Go to membership signup payment form.
-			wp_safe_redirect( add_query_arg( array( 
-				'step' => self::STEP_PAYMENT_TABLE,
-				'membership_id' => @$_REQUEST['membership_id'],
-			) ) );
+			$redirect = add_query_arg(
+				array(
+					'step' => self::STEP_PAYMENT_TABLE,
+					'membership_id' => absint( @$_REQUEST['membership_id'] ),
+				)
+			);
+			wp_safe_redirect( $redirect );
 			exit;
-				
+
 		}
 		catch( Exception $e ) {
 			$this->register_errors = $e->getMessage();
@@ -374,15 +413,18 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			// step back
 			$this->add_action( 'the_content', self::STEP_REGISTER_FORM, 1 );
-			do_action( 'ms_controller_frontend_register_user_error', $this->register_errors );
+			do_action(
+				'ms_controller_frontend_register_user_error',
+				$this->register_errors
+			);
 		}
 	}
 
 	/**
 	 * Render membership payment information.
 	 *
-	 * **Hooks Filters: **
-	 * * the_content
+	 * Related Filter Hooks:
+	 * - the_content
 	 *
 	 * @since 1.0.0
 	 *
@@ -390,24 +432,32 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The filtered content.
 	 */
 	public function payment_table( $content ) {
-
 		$data = array();
 		$ms_relationship = null;
 		$member = MS_Model_Member::get_current_member();
 		$membership_id = 0;
 
-		/* First time loading */
+		// First time loading
 		if ( ! empty( $_REQUEST['membership_id'] ) ) {
 			$membership_id = $_REQUEST['membership_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			$move_from_id = ! empty ( $_REQUEST['move_from_id'] ) ? $_REQUEST['move_from_id'] : 0;
-			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, '', $move_from_id );
+			$move_from_id = absint( @$_REQUEST['move_from_id'] );
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship(
+				$membership_id,
+				$member->id,
+				'',
+				$move_from_id
+			);
 		}
-		/* Error path, showing payment table again with error msg */
+		// Error path, showing payment table again with error msg
 		elseif ( ! empty( $_POST['ms_relationship_id'] ) ) {
-			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
+			$ms_relationship = MS_Factory::load(
+				'MS_Model_Membership_Relationship',
+				absint( $_POST['ms_relationship_id'] )
+			);
 			$membership = $ms_relationship->get_membership();
 			$membership_id = $membership->id;
+
 			if ( ! empty( $_POST['error'] ) ) {
 				$data['error'] = $_POST['error'];
 			}
@@ -419,7 +469,11 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 
 		if ( ! empty( $_POST['coupon_code'] ) ) {
-			$coupon = apply_filters( 'ms_model_coupon', MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] ) );
+			$coupon = apply_filters(
+				'ms_model_coupon',
+				MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] )
+			);
+
 			if ( ! empty( $_POST['remove_coupon_code'] ) ) {
 				$coupon->remove_coupon_application( $member->id, $membership_id );
 				$coupon = MS_Factory::create( ' MS_Model_Coupon' );
@@ -454,7 +508,11 @@ class MS_Controller_Frontend extends MS_Controller {
 		$view = MS_Factory::create( 'MS_View_Frontend_Payment' );
 		$view->data = apply_filters( 'ms_view_frontend_payment_data', $data, $this );
 
-		return apply_filters( 'ms_controller_frontend_payment_table', $view->to_html(), $this );
+		return apply_filters(
+			'ms_controller_frontend_payment_table',
+			$view->to_html(),
+			$this
+		);
 	}
 
 	/**
@@ -463,14 +521,14 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function membership_cancel() {
-
 		if ( ! empty( $_POST['membership_id'] ) && $this->verify_nonce() ) {
-			$membership_id = $_POST['membership_id'];
+			$membership_id = absint( $_POST['membership_id'] );
 			$member = MS_Model_Member::get_current_member();
 			$member->cancel_membership( $membership_id );
 			$member->save();
 
-			$url = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+			$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+			$url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 			wp_safe_redirect( $url );
 			exit;
 		}
@@ -483,13 +541,13 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 */
 	public function user_account_mgr() {
-
 		$action = $this->get_action();
 		$member = MS_Model_Member::get_current_member();
 
 		switch ( $action ) {
 			case self::ACTION_EDIT_PROFILE:
 				$data = array();
+
 				if ( $this->verify_nonce() ) {
 					if ( is_array( $_POST ) ) {
 						foreach ( $_POST as $field => $value ) {
@@ -530,7 +588,11 @@ class MS_Controller_Frontend extends MS_Controller {
 				);
 
 				$view = MS_Factory::create( 'MS_View_Frontend_Invoices' );
-				$view->data = apply_filters( 'ms_view_frontend_frontend_invoices', $data, $this );
+				$view->data = apply_filters(
+					'ms_view_frontend_frontend_invoices',
+					$data,
+					$this
+				);
 				$view->add_filter( 'the_content', 'to_html', 1 );
 				break;
 
@@ -543,7 +605,11 @@ class MS_Controller_Frontend extends MS_Controller {
 				);
 
 				$view = MS_Factory::create( 'MS_View_Frontend_Activities' );
-				$view->data = apply_filters( 'ms_view_frontend_frontend_activities', $data, $this );
+				$view->data = apply_filters(
+					'ms_view_frontend_frontend_activities',
+					$data,
+					$this
+				);
 				$view->add_filter( 'the_content', 'to_html', 1 );
 				break;
 
@@ -574,7 +640,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']' );
 		}
 
-		return apply_filters( 'ms_controller_frontend_user_account', $content, $this );
+		return apply_filters(
+			'ms_controller_frontend_user_account',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -591,18 +661,23 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The filtered content.
 	 */
 	public function protected_page( $content ) {
-
-		$protection_msg = MS_Plugin::instance()->settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT );
+		$setting = MS_Plugin::instance()->settings;
+		$protection_msg = $setting->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT );
 
 		if ( ! empty( $protection_msg ) ) {
 			$content .= $protection_msg;
 		}
 
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
-			$content .= do_shortcode( '['.MS_Helper_Shortcode::SCODE_LOGIN .']' );
+			$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
+			$content .= do_shortcode( $scode );
 		}
 
-		return apply_filters( 'ms_controller_frontend_protected_page', $content, $this );
+		return apply_filters(
+			'ms_controller_frontend_protected_page',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -617,8 +692,11 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The filtered content.
 	 */
 	public function reg_complete_page( $content ) {
-
-		return apply_filters( 'ms_controller_frontend_reg_complete_page', $content, $this );
+		return apply_filters(
+			'ms_controller_frontend_reg_complete_page',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -636,10 +714,15 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function display_login_form( $content ) {
 		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
-			$content = do_shortcode( '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']' );
+			$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
+			$content = do_shortcode( $scode );
 		}
 
-		return apply_filters( 'ms_controller_frontend_display_login_form', $content, $this );
+		return apply_filters(
+			'ms_controller_frontend_display_login_form',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -658,17 +741,21 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return The new signup url.
 	 */
 	public function signup_location( $url ) {
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 
-		$url = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
-
-		return apply_filters( 'ms_controller_frontend_signup_location', $url, $this );
+		return apply_filters(
+			'ms_controller_frontend_signup_location',
+			$url,
+			$this
+		);
 	}
 
 	/**
 	 * Propagates SSL cookies when user logs in.
 	 *
-	 * ** Hooks Actions: **
-	 * * wp_login
+	 * Related Action Hooks:
+	 * - wp_login
 	 *
 	 * @since 1.0.0
 	 *
@@ -676,12 +763,16 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @param WP_User $user The user to login.
 	 */
 	public function propagate_ssl_cookie( $login, WP_User $user ) {
-
 		if ( ! is_ssl() ) {
 			wp_set_auth_cookie( $user->ID, true, true );
 		}
 
-		do_action( 'ms_controller_frontend_propagate_ssl_cookie', $login, $user, $this );
+		do_action(
+			'ms_controller_frontend_propagate_ssl_cookie',
+			$login,
+			$user,
+			$this
+		);
 	}
 
 	/**
@@ -697,12 +788,21 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The redirect url.
 	 */
 	public function login_redirect( $redirect_to, $request, $user ) {
-
-		if ( ! empty( $user->ID ) && ! MS_Model_Member::is_admin_user( $user->ID ) && ( empty( $redirect_to ) || admin_url() == $redirect_to ) ) {
-			$redirect_to = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		if ( ! empty( $user->ID )
+			&& ! MS_Model_Member::is_admin_user( $user->ID )
+			&& ( empty( $redirect_to ) || admin_url() == $redirect_to )
+		) {
+			$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+			$redirect_to = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		}
 
-		return apply_filters( 'ms_controller_frontend_login_redirect', $redirect_to, $request, $user, $this );
+		return apply_filters(
+			'ms_controller_frontend_login_redirect',
+			$redirect_to,
+			$request,
+			$user,
+			$this
+		);
 	}
 
 	/**
@@ -713,13 +813,17 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_scripts() {
-
-		do_action( 'ms_controller_frontend_enqueue_scripts', $this->get_signup_step(), $this->get_action(), $this );
+		do_action(
+			'ms_controller_frontend_enqueue_scripts',
+			$this->get_signup_step(),
+			$this->get_action(),
+			$this
+		);
 
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$is_ms_page = $ms_pages->is_ms_page();
-		$is_profile = self::ACTION_EDIT_PROFILE == $this->get_action() &&
-			$ms_pages->is_ms_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
+		$is_profile = self::ACTION_EDIT_PROFILE == $this->get_action()
+			&& $ms_pages->is_ms_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		if ( $is_ms_page ) {
 			wp_enqueue_style( 'ms-styles' );

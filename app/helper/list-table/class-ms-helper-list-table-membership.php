@@ -43,20 +43,26 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function get_columns() {
 		$columns = array(
-				'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
-				'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
-				'active' => __( 'Active', MS_TEXT_DOMAIN ),
-				'members' => __( 'Members', MS_TEXT_DOMAIN ),
-				'price' => __( 'Cost', MS_TEXT_DOMAIN ),
-				'payment_structure' => __( 'Payment Structure', MS_TEXT_DOMAIN ),
-				'shortcode' => __( 'Membership Shortcode', MS_TEXT_DOMAIN ),
+			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
+			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
+			'active' => __( 'Active', MS_TEXT_DOMAIN ),
+			'members' => __( 'Members', MS_TEXT_DOMAIN ),
+			'price' => __( 'Cost', MS_TEXT_DOMAIN ),
+			'payment_structure' => __( 'Payment Structure', MS_TEXT_DOMAIN ),
+			'shortcode' => __( 'Membership Shortcode', MS_TEXT_DOMAIN ),
 		);
 
-		return apply_filters( 'membership_helper_list_table_membership_columns', $columns );
+		return apply_filters(
+			'membership_helper_list_table_membership_columns',
+			$columns
+		);
 	}
 
 	public function get_hidden_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_hidden_columns', array() );
+		return apply_filters(
+			'membership_helper_list_table_membership_hidden_columns',
+			array()
+		);
 	}
 
 	public function get_sortable_columns() {
@@ -72,23 +78,27 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function column_active( $item ) {
 		$toggle = array(
-				'id' => 'ms-toggle-' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $item->active,
-				'class' => '',
-				'data_ms' => array(
-						'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
-						'field' => 'active',
-						'membership_id' => $item->id,
-				),
+			'id' => 'ms-toggle-' . $item->id,
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'value' => $item->active,
+			'data_ms' => array(
+				'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
+				'field' => 'active',
+				'membership_id' => $item->id,
+			),
 		);
+
 		$html = MS_Helper_Html::html_element( $toggle, true );
 
 		return $html;
 	}
 
 	public function prepare_items() {
-		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
+		$this->_column_headers = array(
+			$this->get_columns(),
+			$this->get_hidden_columns(),
+			$this->get_sortable_columns(),
+		);
 
 		$args = array();
 
@@ -96,14 +106,15 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			$args['orderby'] = $_REQUEST['orderby'];
 			$args['order'] = $_REQUEST['order'];
 		}
+
 		/**
 		 * Prepare order by statement.
 		 */
-		if ( ! empty( $args['orderby'] ) ) {
-			if ( property_exists( 'MS_Model_Membership', $args['orderby'] ) ) {
-				$args['meta_key'] = $args['orderby'];
-				$args['orderby'] = 'meta_value';
-			}
+		if ( ! empty( $args['orderby'] )
+			&& property_exists( 'MS_Model_Membership', $args['orderby'] )
+		) {
+			$args['meta_key'] = $args['orderby'];
+			$args['orderby'] = 'meta_value';
 		}
 
 		$this->items = apply_filters(
@@ -118,26 +129,26 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		if ( ! $item->has_parent() ) {
 			$actions['overview'] = sprintf(
 				'<a href="?page=%s&step=%s&membership_id=%s">%s</a>',
-				$_REQUEST['page'],//XSS!!!!
+				esc_attr( $_REQUEST['page'] ),
 				MS_Controller_Membership::STEP_OVERVIEW,
-				$item->id,
+				esc_attr( $item->id ),
 				__( 'Overview', MS_TEXT_DOMAIN )
 			);
 		} else {
 			$actions['content'] = sprintf(
 				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
-				$_REQUEST['page'],//XSS!!!!
+				esc_attr( $_REQUEST['page'] ),
 				MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT,
-				$item->id,
+				esc_attr( $item->id ),
 				__( 'Edit Content', MS_TEXT_DOMAIN )
 			);
 		}
 
 		$actions['payment'] = sprintf(
 			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
-			$_REQUEST['page'],//XSS!!!!
+			esc_attr( $_REQUEST['page'] ),
 			MS_Controller_Membership::STEP_SETUP_PAYMENT,
-			$item->id,
+			esc_attr( $item->id ),
 			__( 'Payment options', MS_TEXT_DOMAIN )
 		);
 
@@ -146,8 +157,8 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			wp_nonce_url(
 				sprintf(
 					'?page=%s&membership_id=%s&action=%s',
-					$_REQUEST['page'],//XSS!!!!
-					$item->id,
+					esc_attr( $_REQUEST['page'] ),
+					esc_attr( $item->id ),
 					'delete'
 					),
 				'delete'
@@ -155,13 +166,19 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			__( 'Delete', MS_TEXT_DOMAIN )
 		);
 
-		$actions = apply_filters( "ms_helper_list_table_{$this->id}_column_name_actions", $actions, $item );
+		$actions = apply_filters(
+			'ms_helper_list_table_' . $this->id . '_column_name_actions',
+			$actions,
+			$item
+		);
+
 		return sprintf( '%1$s %2$s', $item->name, $this->row_actions( $actions ) );
 
 	}
 
 	public function column_default( $item, $column_name ) {
 		$html = '';
+
 		switch ( $column_name ) {
 			case 'members':
 				$html = $item->get_members_count();
@@ -174,11 +191,13 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 						esc_attr( $item->type )
 					);
 				}
+
 				$html .= sprintf(
 					'<span class="ms-type-desc ms-%1$s"><span>%2$s<span></span>',
 					esc_attr( $item->type ),
 					esc_html( $item->type_description )
 				);
+
 				if ( $item->private ) {
 					$html .= sprintf(
 						'<span class="ms-is-private">, %s</span>',
@@ -193,9 +212,10 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				} else {
 					$class = 'ms-low';
 				}
+
 				$html = sprintf(
 					'<span class="%1$s">%2$s</span>',
-					$class,
+					esc_attr( $class ),
 					$item->get_payment_type_desc()
 				);
 				break;
@@ -209,10 +229,11 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				}
 				elseif ( $item->price > 0 ) {
 					$html = sprintf(
-						__( '<span class="ms-bold"><span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span></span>', MS_TEXT_DOMAIN ),
+						'<span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span>',
 						MS_Plugin::instance()->settings->currency_symbol,
 						number_format_i18n( $item->price, 2 )
 					);
+					$html = '<span class="ms-bold">' . $html . '</span>';
 				}
 				else {
 					$html = sprintf(
@@ -223,18 +244,26 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				break;
 
 			case 'shortcode':
-				$html = '<code>[' . MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE . ' id="' . $item->id . '"]</code>';
+				$html = sprintf(
+					'<code>[%1$s id="%2$s"]</code>',
+					MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+					esc_attr( $item->id )
+				);
 				break;
 
 			default:
 				$html = $item->$column_name;
 				break;
 		}
+
 		return $html;
 	}
 
 	public function get_bulk_actions() {
-		return apply_filters( 'ms_helper_list_table_membership_bulk_actions', array() );
+		return apply_filters(
+			'ms_helper_list_table_membership_bulk_actions',
+			array()
+		);
 	}
 
 	/**

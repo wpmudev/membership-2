@@ -102,7 +102,10 @@ class MS_Controller_Settings extends MS_Controller {
 		$msg = 0;
 
 		$fields = array( 'setting' );
-		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $fields )
+			&& $this->is_admin_user()
+		) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
 		}
 
@@ -123,8 +126,14 @@ class MS_Controller_Settings extends MS_Controller {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 
 		$isset = array( 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
-			$msg = $this->save_general( $_POST['action'], array( $_POST['field'] => $_POST['value'] ) );
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $isset, 'POST', false )
+			&& $this->is_admin_user()
+		) {
+			$msg = $this->save_general(
+				$_POST['action'],
+				array( $_POST['field'] => $_POST['value'] )
+			);
 		}
 
 		echo $msg;
@@ -144,7 +153,10 @@ class MS_Controller_Settings extends MS_Controller {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 
 		$isset = array( 'group', 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $isset, 'POST', false )
+			&& $this->is_admin_user()
+		) {
 			$settings = $this->get_model();
 			$settings->set_custom_setting( $_POST['group'], $_POST['field'], $_POST['value'] );
 			$settings->save();
@@ -166,15 +178,18 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function ajax_action_update_protection_msg() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
+
+		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 		$settings = $this->get_model();
 
 		$isset = array( 'type', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) &&
-				$this->is_admin_user() && MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] ) ) {
-
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $isset, 'POST', false )
+			&& $this->is_admin_user()
+			&& MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] )
+		) {
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$settings->set_protection_message( $_POST['type'], $_POST['value'] );
 			$settings->save();
@@ -236,7 +251,10 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 */
 	public function print_admin_message() {
-		add_action( 'admin_notices', array( 'MS_Helper_Settings', 'print_admin_message' ) );
+		add_action(
+			'admin_notices',
+			array( 'MS_Helper_Settings', 'print_admin_message' )
+		);
 	}
 
 	/**
@@ -248,33 +266,39 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function get_tabs() {
 		$tabs = array(
-				'general' => array(
-						'title' =>	__( 'General', MS_TEXT_DOMAIN ),
-				),
-				'pages' => array(
-						'title' =>	__( 'Membership Site Pages', MS_TEXT_DOMAIN ),
-				),
-				'payment' => array(
-						'title' =>	__( 'Payment', MS_TEXT_DOMAIN ),
-				),
-				'messages-protection' => array(
-						'title' =>	__( 'Protection Messages', MS_TEXT_DOMAIN ),
-				),
-				'messages-automated' => array(
-						'title' =>	__( 'Automated Email Responses', MS_TEXT_DOMAIN ),
-				),
-				'downloads' => array(
-						'title' =>	__( 'Media / Downloads', MS_TEXT_DOMAIN ),
-				),
+			'general' => array(
+				'title' => __( 'General', MS_TEXT_DOMAIN ),
+			),
+			'pages' => array(
+				'title' => __( 'Membership Site Pages', MS_TEXT_DOMAIN ),
+			),
+			'payment' => array(
+				'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+			),
+			'messages-protection' => array(
+				'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ),
+			),
+			'messages-automated' => array(
+				'title' => __( 'Automated Email Responses', MS_TEXT_DOMAIN ),
+			),
+			'downloads' => array(
+				'title' => __( 'Media / Downloads', MS_TEXT_DOMAIN ),
+			),
 		);
 
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			unset( $tabs['downloads'] );
 		}
 
-		$page = ! empty( $_GET['page'] ) ? $_GET['page'] : MS_Controller_Plugin::MENU_SLUG . '-settings';
-		foreach( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = sprintf( 'admin.php?page=%1$s&tab=%2$s', $page, $key );
+		$def_key = MS_Controller_Plugin::MENU_SLUG . '-settings';
+		$page = sanitize_html_class( @$_GET['page'], $def_key );
+
+		foreach ( $tabs as $key => $tab ) {
+			$tabs[ $key ]['url'] = sprintf(
+				'admin.php?page=%1$s&tab=%2$s',
+				esc_attr( $page ),
+				esc_attr( $key )
+			);
 		}
 
 		return apply_filters( 'ms_controller_settings_get_tabs', $tabs, $this );
@@ -286,23 +310,30 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function get_active_tab() {
-
 		if ( null === $this->active_tab ) {
 			$tabs = $this->get_tabs();
 
 			reset( $tabs );
 			$first_key = key( $tabs );
 
-			/** Setup navigation tabs. */
-			$active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : $first_key;
+			// Setup navigation tabs.
+			$active_tab = sanitize_html_class( @$_GET['tab'], $first_key );
 			if ( ! array_key_exists( $active_tab, $tabs ) ) {
 				wp_safe_redirect( add_query_arg( array( 'tab' => $first_key ) ) );
 				exit;
+			} else {
+				$this->active_tab = apply_filters(
+					'ms_controller_settings_get_active_tab',
+					$active_tab
+				);
 			}
-			$this->active_tab = apply_filters( 'ms_controller_settings_get_active_tab', $active_tab );
 		}
 
-		return apply_filters( 'ms_controller_settings_get_active_tab', $this->active_tab, $this );
+		return apply_filters(
+			'ms_controller_settings_get_active_tab',
+			$this->active_tab,
+			$this
+		);
 	}
 
 	/**
@@ -317,39 +348,54 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->get_active_tab();
 
 		$msg = 0;
+		$redirect = false;
 		do_action( 'ms_controller_settings_admin_settings_manager_' . $this->active_tab );
 
-		if( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
-			switch( $this->active_tab ) {
+		if ( $this->is_admin_user()
+			&& ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) )
+		) {
+			switch ( $this->active_tab ) {
 				case 'general':
-					/**
-					 * Admin bar enable request.
-					 */
+					// Admin bar enable request.
 					$fields = array( 'action', 'setting' );
-					if( $this->validate_required( $fields, 'GET' ) ) {
+
+					if ( $this->validate_required( $fields, 'GET' ) ) {
 						$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
-						wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', '_wpnonce', 'setting' ) ) ) ) ;
-						exit;
+
+						$redirect = remove_query_arg( array( 'action', '_wpnonce', 'setting' ) );
+						$redirect = add_query_arg( 'msg', $msg, $redirect );
+						break;
 					}
 					break;
+
 				case 'messages-automated':
 					$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
-					if( ! empty( $_GET['comm_type'] ) && MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] ) ) {
+					if ( ! empty( $_GET['comm_type'] )
+						&& MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] )
+					) {
 						$type = $_GET['comm_type'];
 					}
-					/** Load comm type from user select */
-					if( $this->validate_required( array( 'comm_type' ) ) && MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] ) ) {
-						wp_safe_redirect( add_query_arg( array( 'comm_type' => $_POST['comm_type'] ), remove_query_arg( 'msg' ) ) ) ;
-						exit;
+
+					// Load comm type from user select
+					if ( $this->validate_required( array( 'comm_type' ) )
+						&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
+					) {
+						$redirect = add_query_arg( 'comm_type', $_POST['comm_type'] );
+						$redirect = remove_query_arg( 'msg', $redirect );
+						break;
 					}
 
 					$fields = array( 'type', 'subject', 'message' );
-					if( isset( $_POST['save_email'] ) && $this->validate_required( $fields ) ) {
+					if ( isset( $_POST['save_email'] )
+						&& $this->validate_required( $fields )
+					) {
 						$msg = $this->save_communication( $type, $_POST );
-						wp_safe_redirect( add_query_arg( array( 'msg' => $msg, 'comm_type' => $_POST['type'] ) ) );
-						exit;
+						$redirect = add_query_arg( 'comm_type', $_POST['type'] );
+						$redirect = add_query_arg( 'msg', $msg, $redirect );
+						break;
 					}
 					break;
+
 				case 'pages':
 				case 'payment':
 				case 'messages-protection':
@@ -357,6 +403,11 @@ class MS_Controller_Settings extends MS_Controller {
 				default:
 					break;
 			}
+		}
+
+		if ( $redirect ) {
+			wp_safe_redirect( esc_url( $redirect ) );
+			exit();
 		}
 	}
 
@@ -368,24 +419,29 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_settings() {
-		$action = ! empty( $_GET['action'] ) ? $_GET['action'] : '';
+		$action = @$_GET['action'];
+		$hook = 'ms_controller_settings_' . $this->active_tab . '_' . $action;
 
-		do_action( "ms_controller_settings_{$this->active_tab}_{$action}" );
+		do_action( $hook );
 
-		$view = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_view", MS_Factory::create( 'MS_View_Settings_Edit' ) );
+		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
+		$view = apply_filters( $hook . '_view', $view );
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
 
-		switch( $this->get_active_tab() ) {
+		switch ( $this->get_active_tab() ) {
 			case 'messages-automated':
 				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+
 				if ( MS_Model_Communication::is_valid_communication_type( @$_GET['comm_type'] ) ) {
 					$type = $_GET['comm_type'];
 				}
+
 				$comm = apply_filters(
 					'membership_model_communication',
 					MS_Model_Communication::get_communication( $type, true )
 				);
+
 				$data['comm'] = $comm;
 				break;
 
@@ -398,7 +454,9 @@ class MS_Controller_Settings extends MS_Controller {
 				$data['membership'] = MS_Model_Membership::get_protected_content();
 				break;
 		}
-		$view->data = apply_filters( "ms_controller_settings_{$this->active_tab}_{$action}_data", array_merge( $data, $view->data ) );
+
+		$data = array_merge( $data, $view->data );
+		$view->data = apply_filters( $hook . '_data', $data );
 		$view->model = $this->get_model();
 		$view->render();
 	}
@@ -413,18 +471,21 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function save_general( $action, $fields ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
+
+		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
+
 		$settings = $this->get_model();
 
-		if( is_array( $fields ) ) {
-			foreach( $fields as $field => $value ) {
-				switch( $action ) {
+		if ( is_array( $fields ) ) {
+			foreach ( $fields as $field => $value ) {
+				switch ( $action ) {
 					case 'toggle_activation':
 					case 'toggle_settings':
 						$settings->$field = ! $settings->$field;
 						break;
+
 					case 'save_general':
 					case 'submit_payment':
 					case 'save_downloads':
@@ -440,7 +501,13 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		return apply_filters( 'ms_controller_settings_save_general', $msg, $action, $fields, $this );
+		return apply_filters(
+			'ms_controller_settings_save_general',
+			$msg,
+			$action,
+			$fields,
+			$this
+		);
 	}
 
 	/**
@@ -452,27 +519,33 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function save_communication( $type, $fields ) {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
+
+		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 
 		$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
 
-		if( ! empty( $fields ) ) {
+		if ( ! empty( $fields ) ) {
 			$period = array();
 			$comm->enabled = ! empty( $fields['enabled'] );
-			$comm->subject = ! empty( $fields['subject'] ) ? $fields['subject'] : '';
-			$comm->message = ! empty( $fields['message'] ) ? $fields['message'] : '';
-			$period['period_unit'] = ! empty( $fields['period_unit'] ) ? $fields['period_unit'] : '';
-			$period['period_type'] = ! empty( $fields['period_type'] ) ? $fields['period_type'] : '';
+			$comm->subject = @$fields['subject'];
+			$comm->message = @$fields['message'];
+			$period['period_unit'] = @$fields['period_unit'];
+			$period['period_type'] = @$fields['period_type'];
 			$comm->period = $period;
 			$comm->cc_enabled = ! empty( $fields['cc_enabled'] );
-			$comm->cc_email = ! empty( $fields['cc_email'] ) ? $fields['cc_email'] : '';
+			$comm->cc_email = @$fields['cc_email'];
 			$comm->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		return apply_filters( 'ms_controller_settings_save_communication', $type, $fields, $this );
+		return apply_filters(
+			'ms_controller_settings_save_communication',
+			$type,
+			$fields,
+			$this
+		);
 	}
 
 	/**
@@ -481,7 +554,8 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		do_action( 'ms_controller_settings_enqueue_scripts_' . $this->get_active_tab() );
+		$active_tab = $this->get_active_tab();
+		do_action( 'ms_controller_settings_enqueue_scripts_' . $active_tab );
 
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
@@ -494,7 +568,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$data['ms_init'][] = 'view_settings';
 
-		switch ( $this->get_active_tab() ) {
+		switch ( $active_tab ) {
 			case 'payment':
 				add_thickbox();
 				$data['ms_init'][] = 'view_settings_payment';
@@ -523,7 +597,9 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function add_mce_buttons() {
 		// Check user permissions.
-		if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) ) {
+		if ( ! current_user_can( 'edit_posts' )
+			&& ! current_user_can( 'edit_pages' )
+		) {
 			return;
 		}
 

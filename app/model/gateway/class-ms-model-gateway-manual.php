@@ -55,7 +55,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 * @var string $name
 	 */
-	protected $name = 'Manual Gateway';//i18n please, you'll have to set via __construct()
+	protected $name = '';
 
 	/**
 	 * Gateway description.
@@ -63,7 +63,7 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 * @var string $description
 	 */
-	protected $description = '(Bank orders, cash, etc)';//i18n please, you'll have to set via __construct()
+	protected $description = '';
 
 	/**
 	 * Gateway active status.
@@ -102,17 +102,24 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	 */
 	protected $payment_info;
 
+
 	/**
 	 * Hook to show payment info.
+	 * This is called by the MS_Factory
 	 *
 	 * @since 1.0.0
 	 */
 	public function after_load() {
-
 		parent::after_load();
 
-		if( $this->active ) {
-			$this->add_action( 'ms_controller_gateway_purchase_info_content', 'purchase_info_content' );
+		$this->name = __( 'Manual Gateway', MS_TEXT_DOMAIN );
+		$this->description = __( '(Bank orders, cash, etc)', MS_TEXT_DOMAIN );
+
+		if ( $this->active ) {
+			$this->add_action(
+				'ms_controller_gateway_purchase_info_content',
+				'purchase_info_content'
+			);
 		}
 	}
 
@@ -128,11 +135,18 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	 * @return string The payment info.
 	 */
 	public function purchase_info_content() {
+		do_action(
+			'ms_model_gateway_manual_purchase_info_content_before',
+			$this
+		);
 
-		do_action( 'ms_model_gateway_manual_purchase_info_content_before', $this );
-
-		if( empty( $this->payment_info ) ) {
-			$link = admin_url( sprintf( 'admin.php?page=%s&tab=payment', MS_Controller_Plugin::MENU_SLUG . '-settings' ) );
+		if ( empty( $this->payment_info ) ) {
+			$link = admin_url(
+				sprintf(
+					'admin.php?page=%s&tab=payment',
+					MS_Controller_Plugin::MENU_SLUG . '-settings'
+				)
+			);
 			ob_start();
 			?>
 				<?php _e( 'This is only an example of manual payment gateway instructions', MS_TEXT_DOMAIN ); ?>
@@ -153,13 +167,25 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 			<?php
 			$this->payment_info = ob_get_clean();
 		}
-		if( ! empty( $_POST['ms_relationship_id'] ) ) {
-			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
+
+		if ( ! empty( $_POST['ms_relationship_id'] ) ) {
+			$ms_relationship = MS_Factory::load(
+				'MS_Model_Membership_Relationship',
+				$_POST['ms_relationship_id']
+			);
 			$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-			$this->payment_info .= sprintf( '<br />%s: %s%s', __( 'Total value', MS_TEXT_DOMAIN ), $invoice->currency, $invoice->total );
+			$this->payment_info .= sprintf(
+				'<br />%s: %s%s',
+				__( 'Total value', MS_TEXT_DOMAIN ),
+				$invoice->currency,
+				$invoice->total
+			);
 		}
 
-		return apply_filters( 'ms_model_gateway_manual_purchase_info_content', wpautop( $this->payment_info ) );
+		return apply_filters(
+			'ms_model_gateway_manual_purchase_info_content',
+			wpautop( $this->payment_info )
+		);
 	}
 
 	/**
@@ -171,14 +197,18 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	public function is_configured() {
 		$is_configured = true;
 		$required = array( 'payment_info' );
-		foreach( $required as $field ) {
-			if( empty( $this->$field ) ) {
+
+		foreach ( $required as $field ) {
+			if ( empty( $this->$field ) ) {
 				$is_configured = false;
 				break;
 			}
 		}
 
-		return apply_filters( 'ms_model_gateway_manual_is_configured', $is_configured );
+		return apply_filters(
+			'ms_model_gateway_manual_is_configured',
+			$is_configured
+		);
 	}
 
 	/**
@@ -192,17 +222,23 @@ class MS_Model_Gateway_Manual extends MS_Model_Gateway {
 	 */
 	public function __set( $property, $value ) {
 		if ( property_exists( $this, $property ) ) {
-			switch( $property ) {
+			switch ( $property ) {
 				case 'payment_info':
 					$this->$property = wp_kses_post( $value );
 					break;
+
 				default:
 					parent::__set( $property, $value );
 					break;
 			}
 		}
 
-		do_action( 'ms_model_gateway_manual__set_after', $property, $value, $this );
+		do_action(
+			'ms_model_gateway_manual__set_after',
+			$property,
+			$value,
+			$this
+		);
 	}
 
 }

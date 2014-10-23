@@ -32,82 +32,102 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 	protected $id = 'coupon';
 
 	public function __construct(){
-		parent::__construct( array(
-				'singular'  => 'coupon',
-				'plural'    => 'coupons',
-				'ajax'      => false
-		) );
+		parent::__construct(
+			array(
+				'singular' => 'coupon',
+				'plural'   => 'coupons',
+				'ajax'     => false,
+			)
+		);
 	}
 
 	public function get_columns() {
-		return apply_filters( 'membership_helper_list_table_coupon_columns', array(
-			'cb'     => '<input type="checkbox" />',
-			'code' => __( 'Coupon Code', MS_TEXT_DOMAIN ),
-			'discount' => __( 'Discount', MS_TEXT_DOMAIN ),
-			'start_date' => __( 'Start date', MS_TEXT_DOMAIN ),
-			'expire_date' => __( 'Expire date', MS_TEXT_DOMAIN ),
-			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
-			'used' => __( 'Used', MS_TEXT_DOMAIN ),
-			'remaining_uses' => __( 'Remaining uses', MS_TEXT_DOMAIN ),
-		) );
+		return apply_filters(
+			'membership_helper_list_table_coupon_columns',
+			array(
+				'cb' => '<input type="checkbox" />',
+				'code' => __( 'Coupon Code', MS_TEXT_DOMAIN ),
+				'discount' => __( 'Discount', MS_TEXT_DOMAIN ),
+				'start_date' => __( 'Start date', MS_TEXT_DOMAIN ),
+				'expire_date' => __( 'Expire date', MS_TEXT_DOMAIN ),
+				'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'used' => __( 'Used', MS_TEXT_DOMAIN ),
+				'remaining_uses' => __( 'Remaining uses', MS_TEXT_DOMAIN ),
+			)
+		);
 	}
 
 	public function get_hidden_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_hidden_columns', array() );
+		return apply_filters(
+			'membership_helper_list_table_membership_hidden_columns',
+			array()
+		);
 	}
 
 	public function get_sortable_columns() {
-		return apply_filters( 'membership_helper_list_table_membership_sortable_columns', array() );
+		return apply_filters(
+			'membership_helper_list_table_membership_sortable_columns',
+			array()
+		);
 	}
 
 	public function prepare_items() {
+		$this->_column_headers = array(
+			$this->get_columns(),
+			$this->get_hidden_columns(),
+			$this->get_sortable_columns(),
+		);
 
-		$this->_column_headers = array( $this->get_columns(), $this->get_hidden_columns(), $this->get_sortable_columns() );
-
-		$total_items =  MS_Model_Coupon::get_coupon_count();
+		$total_items = MS_Model_Coupon::get_coupon_count();
 		$per_page = $this->get_items_per_page( 'coupon_per_page', 10 );
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-				'posts_per_page' => $per_page,
-				'offset' => ( $current_page - 1 ) * $per_page,
-			);
+			'posts_per_page' => $per_page,
+			'offset' => ( $current_page - 1 ) * $per_page,
+		);
 
-		$this->items = apply_filters( 'membership_helper_list_table_coupon_items', MS_Model_Coupon::get_coupons( $args ) );
+		$this->items = apply_filters(
+			'membership_helper_list_table_coupon_items',
+			MS_Model_Coupon::get_coupons( $args )
+		);
 
-		$this->set_pagination_args( array(
-					'total_items' => $total_items,
-					'per_page' => $per_page,
-				)
-			);
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page' => $per_page,
+			)
+		);
 	}
 
-	function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="coupon_id[]" value="%1$s" />', $item->id );
+	public function column_cb( $item ) {
+		return sprintf(
+			'<input type="checkbox" name="coupon_id[]" value="%1$s" />',
+			esc_attr( $item->id )
+		);
 	}
 
-	function column_code( $item ) {
-		$actions = array(
-			'edit' => sprintf(
-				'<a href="?page=%s&action=%s&coupon_id=%s">%s</a>', //XSS!!!!
-				$_REQUEST['page'],
-				'edit',
-				$item->id,
-				__( 'Edit', MS_TEXT_DOMAIN )
-			),
-			'delete' => sprintf(
-				'<span class="delete"><a href="%s">%s</a></span>',
-				wp_nonce_url(
-					sprintf(
-						'?page=%s&coupon_id=%s&action=%s',
-						$_REQUEST['page'],//XSS!!!!
-						$item->id,
-						'delete'
-					),
+	public function column_code( $item ) {
+		$actions = array();
+		$actions['edit'] = sprintf(
+			'<a href="?page=%s&action=%s&coupon_id=%s">%s</a>',
+			esc_attr( $_REQUEST['page'] ),
+			'edit',
+			esc_attr( $item->id ),
+			__( 'Edit', MS_TEXT_DOMAIN )
+		);
+		$actions['delete'] = sprintf(
+			'<span class="delete"><a href="%s">%s</a></span>',
+			wp_nonce_url(
+				sprintf(
+					'?page=%s&coupon_id=%s&action=%s',
+					esc_attr( $_REQUEST['page'] ),
+					esc_attr( $item->id ),
 					'delete'
 				),
-				__( 'Delete', MS_TEXT_DOMAIN )
+				'delete'
 			),
+			__( 'Delete', MS_TEXT_DOMAIN )
 		);
 
 		printf( '%1$s %2$s', $item->name, $this->row_actions( $actions ) );
@@ -115,9 +135,9 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 
 	public function column_default( $item, $column_name ) {
 		$html = '';
-		switch( $column_name ) {
+		switch ( $column_name ) {
 			case 'membership':
-				if( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
+				if ( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
 					$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_id );
 					$html = $membership->name;
 				}
@@ -125,20 +145,28 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 					$html = __( 'Any', MS_TEXT_DOMAIN );
 				}
 				break;
+
 			case 'discount':
-				if( MS_Model_Coupon::TYPE_VALUE == $item->discount_type ) {
+				if ( MS_Model_Coupon::TYPE_VALUE == $item->discount_type ) {
 					$html = MS_Plugin::instance()->settings->currency . ' ' . $item->discount;
 				}
-				elseif( MS_Model_Coupon::TYPE_PERCENT == $item->discount_type ) {
+				elseif ( MS_Model_Coupon::TYPE_PERCENT == $item->discount_type ) {
 					$html = $item->discount . '%';
 				}
 				else {
 					$html = apply_filters( 'ms_helper_list_table_column_discount', $item->discount );
 				}
 				break;
+
 			case 'expire_date':
-				$html = ( $item->expire_date ) ? $item->expire_date : __( 'No expire', MS_TEXT_DOMAIN );
+				if ( $item->expire_date ) {
+					$html = $item->expire_date;
+				}
+				else {
+					$html = __( 'No expire', MS_TEXT_DOMAIN );
+				}
 				break;
+
 			default:
 				$html = $item->$column_name;
 				break;
@@ -147,9 +175,12 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 	}
 
 	public function get_bulk_actions() {
-		return apply_filters( 'membership_helper_list_table_membership_bulk_actions', array(
-			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
-		) );
+		return apply_filters(
+			'membership_helper_list_table_membership_bulk_actions',
+			array(
+				'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
+			)
+		);
 	}
 
 }
