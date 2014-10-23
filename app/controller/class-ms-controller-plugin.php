@@ -84,81 +84,64 @@ class MS_Controller_Plugin extends MS_Controller {
 		// Instantiate dialog controller for ajax dialogs.
 		$this->dialogs = MS_Factory::create( 'MS_Controller_Dialog' );
 
-		/* Setup plugin admin UI */
+		// Register all available styles and scripts. Nothing is enqueued.
+		$this->add_action( 'wp_loaded', 'wp_loaded' );
+
+		// Setup plugin admin UI.
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
 
-		/**
-		 * Register styles and scripts that are used in the dashboard.
-		 *
-		 * @since 1.0.0
-		 */
-		$this->add_action( 'admin_enqueue_scripts', 'register_admin_scripts' ); //can these be limited to just our admin pages? Or if not only load a specific global one.
-		$this->add_action( 'admin_enqueue_scripts', 'register_admin_styles' );
+		$this->add_action( 'ms_register_admin_scripts', 'register_admin_scripts' );
+		$this->add_action( 'ms_register_admin_scripts', 'register_admin_styles' );
+		$this->add_action( 'ms_register_public_scripts', 'register_public_scripts' );
+		$this->add_action( 'ms_register_public_scripts', 'register_public_styles' );
 
-		/**
-		 * Register styles and scripts that are used on the front-end.
-		 *
-		 * @since 1.0.0
-		*/
-		$this->add_action( 'wp_enqueue_scripts', 'register_public_scripts' ); /* same, it's very important to limit frontend scripts/styles to just the pages that need it.
- Really the only exceptions are admin bars and widgets, in which case only enqueue what is needed for them globally.*/
-		$this->add_action( 'wp_enqueue_scripts', 'register_public_styles' );
-
-		/** Register admin styles (CSS) */
-		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
-
-		/** Register styles used in the front end (CSS) */
-		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
-
-		/** Enqueue admin scripts (JS) */
-		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_scripts' );
-
-		/** Register scripts used in the front end (JS) */
-		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts' );
-
-		/** Membership controller */
+		// Initialize core controllers that are available on every page.
 		$this->controllers['membership'] = MS_Factory::create( 'MS_Controller_Membership' );
-
-		/** Rule controller */
 		$this->controllers['rule'] = MS_Factory::create( 'MS_Controller_Rule' );
-
-		/** Member controller */
 		$this->controllers['member'] = MS_Factory::create( 'MS_Controller_Member' );
-
-		/** Billing controller */
 		$this->controllers['billing'] = MS_Factory::create( 'MS_Controller_Billing' );
-
-		/** Coupon controller */
 		$this->controllers['coupon'] = MS_Factory::create( 'MS_Controller_Coupon' );
-
-		/** Add-on controller */
 		$this->controllers['addon'] = MS_Factory::create( 'MS_Controller_Addon' );
-
-		/** Settings controller */
 		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
-
-		/** Settings controller */
 		$this->controllers['page'] = MS_Factory::create( 'MS_Controller_Page' );
-
-		/** Communication controller */
 		$this->controllers['communication'] = MS_Factory::create( 'MS_Controller_Communication' );
-
-		/** Gateway controller */
 		$this->controllers['gateway'] = MS_Factory::create( 'MS_Controller_Gateway' );
-
-		/** Admin bar controller */
 		$this->controllers['admin_bar'] = MS_Factory::create( 'MS_Controller_Admin_Bar' );
-
-		/** Membership metabox controller */
 		$this->controllers['membership_metabox'] = MS_Factory::create( 'MS_Controller_Membership_Metabox' );
-
-		/** Membership shortcode controller - front end */
 		$this->controllers['membership_shortcode'] = MS_Factory::create( 'MS_Controller_Shortcode' );
-
-		/** Membership registration controller - front end */
 		$this->controllers['frontend'] = MS_Factory::create( 'MS_Controller_Frontend' );
 
+		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_template' );
+
+		// TODO: Review these hooks; possibly we can enqueue stuff in more specific files
+
+		// Register admin styles (CSS)
+		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
+
+		// Register styles used in the front end (CSS)
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
+
+		// Enqueue admin scripts (JS)
+		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_scripts' );
+
+		// Register scripts used in the front end (JS)
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts' );
+
+		// TODO END ------------------------------------------------------------
+	}
+
+	/**
+	 * Register scripts and styles
+	 *
+	 * @since  1.0.0
+	 */
+	public function wp_loaded() {
+		if ( is_admin() ) {
+			do_action( 'ms_register_admin_scripts' );
+		} else {
+			do_action( 'ms_register_public_scripts' );
+		}
 	}
 
 	/**
@@ -168,7 +151,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function add_menu_pages() {
 
-		/** Create primary menu item: Membership */
+		// Create primary menu item: Membership.
 		add_menu_page(
 			__( 'Protect Content', MS_TEXT_DOMAIN ),
 			__( 'Protect Content', MS_TEXT_DOMAIN ),
@@ -178,91 +161,98 @@ class MS_Controller_Plugin extends MS_Controller {
 			'dashicons-lock'
 		);
 
-		/** Submenus definition */
-		$pages = array(
+		if ( MS_Factory::load( 'MS_Model_Settings' )->initial_setup ) {
+			// Submenus definition: Wizard mode
+			$pages = array(
+				'setup' => array(
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG,
+					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
+				),
+			);
+			if ( MS_Controller_Membership::STEP_CHOOSE_MS_TYPE == MS_Plugin::instance()->settings->wizard_step ) {
+				$pages['protected-content'] = array(
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-setup',
+					'function' => array( $this->controllers['membership'], 'page_setup_protected_content' ),
+				);
+			}
+		}
+		else {
+			// Submenus definition: Normal mode
+			$pages = array(
 				'memberships' => array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG,
-						'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG,
+					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
 				),
 				'members' => array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Members', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Members', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG . '-members',
-						'function' => array( $this->controllers['member'], 'admin_member_list' ),
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Members', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Members', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-members',
+					'function' => array( $this->controllers['member'], 'admin_member_list' ),
 				),
 				'protected-content' => array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG . '-setup',
-						'function' => array( $this->controllers['membership'], 'page_setup_protected_content' ),
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-setup',
+					'function' => array( $this->controllers['membership'], 'page_setup_protected_content' ),
 				),
 				'billing' => array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Billing', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Billing', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG . '-billing',
-						'function' => array( $this->controllers['billing'], 'admin_billing' ),
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Billing', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Billing', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-billing',
+					'function' => array( $this->controllers['billing'], 'admin_billing' ),
 				),
 				'coupons' => array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG . '-coupons',
-						'function' => array( $this->controllers['coupon'], 'admin_coupon' ),
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-coupons',
+					'function' => array( $this->controllers['coupon'], 'admin_coupon' ),
 				),
 				'addon' => array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG . '-addon',
-						'function' => array( $this->controllers['addon'], 'admin_addon' ),
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-addon',
+					'function' => array( $this->controllers['addon'], 'admin_addon' ),
 				),
 				'settings' => array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Settings', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Settings', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG . '-settings',
-						'function' => array( $this->controllers['settings'], 'admin_settings' ),
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Settings', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Settings', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-settings',
+					'function' => array( $this->controllers['settings'], 'admin_settings' ),
 				),
-
-		);
-
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
-			unset( $pages['coupons'] );
-		}
-
-		if( MS_Factory::load( 'MS_Model_Settings' )->initial_setup ) {
-			$pages = array(
-					'setup' => array(
-							'parent_slug' => self::MENU_SLUG,
-							'page_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
-							'menu_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
-							'menu_slug' => self::MENU_SLUG,
-							'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
-					),
 			);
-			if( MS_Controller_Membership::STEP_CHOOSE_MS_TYPE == MS_Plugin::instance()->settings->wizard_step ) {
-				$pages['protected-content'] = array(
-						'parent_slug' => self::MENU_SLUG,
-						'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-						'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
-						'menu_slug' => self::MENU_SLUG . '-setup',
-						'function' => array( $this->controllers['membership'], 'page_setup_protected_content' ),
-				);
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
+				unset( $pages['coupons'] );
 			}
 		}
 
 		$pages = apply_filters( 'ms_plugin_menu_pages', $pages );
 
-		/** Create submenus */
-		foreach( $pages as $page ) {
-			extract( $page );
-			add_submenu_page( $parent_slug, $page_title, $menu_title, $this->capability, $menu_slug, $function );
+		// Create submenus
+		foreach ( $pages as $page ) {
+			add_submenu_page(
+				$page['parent_slug'],
+				$page['page_title'],
+				$page['menu_title'],
+				$this->capability,
+				$page['menu_slug'],
+				$page['function']
+			);
 		}
 
 		do_action( 'ms_controller_plugin_add_menu_pages', $this );
@@ -275,7 +265,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 */
 	public static function get_admin_url() {
-		return apply_filters( 'ms_controller_plugin_get_admin_url', admin_url( 'admin.php?page=' . self::MENU_SLUG ) );
+		return apply_filters(
+			'ms_controller_plugin_get_admin_url',
+			admin_url( 'admin.php?page=' . self::MENU_SLUG )
+		);
 	}
 
 	/**
@@ -285,11 +278,16 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 */
 	public static function get_admin_settings_url() {
-		return apply_filters( 'ms_controller_plugin_get_admin_url', admin_url( 'admin.php?page=' . self::MENU_SLUG . '-settings') );
+		return apply_filters(
+			'ms_controller_plugin_get_admin_url',
+			admin_url( 'admin.php?page=' . self::MENU_SLUG . '-settings' )
+		);
 	}
 
 	/**
 	 * Add custom template for invoice cpt.
+	 * This replaces the themes "Single" template with our invoice form when
+	 * an invoice is displayed.
 	 *
 	 * ** Hooks Actions/Filters: *
 	 * * single_template
@@ -302,12 +300,14 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function custom_template( $template ) {
 		global $post;
 
-		/* Checks for invoice single template */
-		if( $post->post_type == MS_Model_Invoice::$POST_TYPE ) {
+		// Checks for invoice single template.
+		if ( $post->post_type == MS_Model_Invoice::$POST_TYPE ) {
+			$invoice_template = apply_filters(
+				'ms_controller_plugin_invoice_template',
+				MS_Plugin::instance()->dir . 'app/template/single-invoice.php'
+			);
 
-			$invoice_template = apply_filters( 'ms_controller_plugin_invoice_template', MS_Plugin::instance()->dir . 'app/template/single-invoice.php' );
-
-			if( file_exists( $invoice_template ) ) {
+			if ( file_exists( $invoice_template ) ) {
 				$template = $invoice_template;
 			}
 		}
