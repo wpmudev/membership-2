@@ -84,26 +84,6 @@ class MS_Model_Upgrade extends MS_Model {
 	
 	/**
 	 * Remove all plugin related content from database.
-	 *
-	 * @since 1.0.0
-	 */
-	private static function cleanup() {
-		
-		global $wpdb;
-		$sql = array();
-		//these are not persistent object cache friendly! And could catch other plugin stuff
-		$sql[] = "DELETE FROM $wpdb->options WHERE option_name LIKE 'ms_%';";
-		$sql[] = "DELETE FROM $wpdb->posts WHERE post_type LIKE 'ms_%';";
-		$sql[] = "DELETE FROM $wpdb->postmeta  WHERE NOT EXISTS (SELECT 1 FROM wp_posts tmp WHERE tmp.ID = post_id);";
-		$sql[] = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_%';";
-		
-		foreach( $sql as $s ) {
-			$wpdb->query( $s );
-		}
-	}
-	
-	/**
-	 * Remove all plugin related content from database.
 	 * 
 	 * @since 1.0.0
 	 */
