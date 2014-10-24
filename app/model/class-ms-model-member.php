@@ -684,7 +684,7 @@ class MS_Model_Member extends MS_Model {
 			);
 		}
 
-		do_action( 'ms_model_membership_move_membership', $move_to_id, $this );
+		do_action( 'ms_model_membership_move_membership', $move_from_id, $move_to_id, $this );
 	}
 
 	/**

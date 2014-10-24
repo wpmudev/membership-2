@@ -86,7 +86,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 */
-	public static function cleanup() {
+	private static function cleanup_db() {
 		global $wpdb;
 		$sql = array();
 

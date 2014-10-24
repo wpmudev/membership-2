@@ -707,7 +707,9 @@ class MS_Controller_Frontend extends MS_Controller {
 			$content .= $protection_msg;
 		}
 
-		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
+		if ( ! MS_Model_Member::is_logged_user() 
+			&& ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
+			
 			$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
 			$content .= do_shortcode( $scode );
 		}
