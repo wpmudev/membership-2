@@ -2,11 +2,14 @@
   "name": "protected-content",
   "title": "Protected Content",
   "description": "The most powerful, easy to use and flexible membership plugin for WordPress sites available.",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "homepage": "https://premium.wpmudev.org/project/membership/",
   "author": [
     {
       "name": "Fabio Jun Onishi"
+    },
+    {
+      "name": "Philipp Stracker"
     },
     {
       "name": "Victor Ivanov"
@@ -19,9 +22,6 @@
     }
   ],
   "contributors": [
-    {
-      "name": "Philipp Stracker"
-    },
     {
       "name": "Joji Mori"
     },
