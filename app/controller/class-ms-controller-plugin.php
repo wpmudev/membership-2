@@ -316,6 +316,18 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	/**
+	 * Returns information on current memberships and access to current page.
+	 *
+	 * Wrapper for MS_Model_Plugin->get_access_info()
+	 *
+	 * @since  1.0.1.1
+	 * @return array
+	 */
+	public function get_access_info() {
+		return $this->model->get_access_info();
+	}
+
+	/**
 	 * Register scripts that are used on the dashboard.
 	 *
 	 * @since  1.0.0

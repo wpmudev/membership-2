@@ -90,6 +90,9 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this->add_action( 'template_redirect', 'process_actions', 1 );
 			$this->add_action( 'template_redirect', 'check_for_membership_pages', 1 );
 
+			// Add classes for all memberships the user is registered to.
+			$this->add_filter( 'body_class', 'body_class' );
+
 			$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
 			$this->add_filter( 'register_url', 'signup_location', 999 );
 			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
@@ -187,6 +190,29 @@ class MS_Controller_Frontend extends MS_Controller {
 			default:
 				break;
 		}
+	}
+
+	/**
+	 * Appends classes to the HTML body that identify all memberships that the
+	 * current user is registered to. This allows webdesigners to adjust layout
+	 * or hide elements based on the membership a user has.
+	 *
+	 * @since  1.0.1.1
+	 *
+	 * @param  array $class Class-names to attach to the body.
+	 * @return array Modified class-names to attach to the body.
+	 */
+	public function body_class( $class ) {
+		if ( ! is_user_logged_in() ) {
+			$class[] = 'ms-0';  // Membership 0 means "guest user"
+		} else {
+			$info = MS_Plugin::instance()->controller->get_access_info();
+			foreach ( $info['memberships'] as $membership_id ) {
+				$class[] = 'ms-' . absint( $membership_id );
+			}
+		}
+
+		return $class;
 	}
 
 	/**

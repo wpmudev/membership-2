@@ -115,11 +115,60 @@ class MS_Model_Plugin extends MS_Model {
 	}
 
 	/**
+	 * Returns an array with access-information on the current page/user
+	 *
+	 * @since  1.0.1.1
+	 *
+	 * @return array {
+	 *     Access information
+	 *
+	 *     @type bool $has_access If the current user can view the current page.
+	 *     @type array $memberships List of active membership-IDs the user has
+	 *         registered to.
+	 * }
+	 */
+	public function get_access_info() {
+		static $Info = null;
+
+		if ( null === $Info ) {
+			$Info = array(
+				'has_access' => false,
+				'memberships' => array(),
+			);
+
+			// Front page / home / not found are always public.
+			if ( is_home() || is_front_page() || is_404() ) {
+				$Info['has_access'] = true;
+			}
+
+			// Build a list of memberships the user belongs to and check permission.
+			foreach ( $this->member->ms_relationships as $ms_relationship ) {
+				// Verify status of the membership.
+				// Only active, trial or canceled (until it expires) status memberships.
+				if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+					continue;
+				}
+
+				$Info['memberships'][] = $ms_relationship->membership_id;
+
+				// If permission is not clear yet then check current membership...
+				if ( ! $Info['has_access'] ) {
+					$membership = $ms_relationship->get_membership();
+					$Info['has_access'] = $membership->has_access_to_current_page( $ms_relationship );
+				}
+			}
+
+			$Info = apply_filters( 'ms_model_plugin_get_access_info', $Info );
+		}
+
+		return $Info;
+	}
+
+	/**
 	 * Checks member permissions and protects current page.
 	 *
-	 * ** Hooks Action **
-	 *
-	 * * template_redirect
+	 * Related Action Hooks:
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
@@ -135,31 +184,9 @@ class MS_Model_Plugin extends MS_Model {
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$has_access = false;
+		$access = $this->get_access_info();
 
-		// Front page / home / not found are always public.
-		if ( is_home() || is_front_page() || is_404() ) {
-			$has_access = true;
-		} else {
-			// Search permissions through all memberships joined.
-			foreach ( $this->member->ms_relationships as $ms_relationship ) {
-				// Verify status of the membership.
-				// Only active, trial or canceled (until it expires) status memberships.
-				if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
-					continue;
-				}
-
-				$membership = $ms_relationship->get_membership();
-				$has_access = $membership->has_access_to_current_page( $ms_relationship );
-
-				// Found a membership that gives access. Stop searching.
-				if ( $has_access ) {
-					break;
-				}
-			}
-		}
-
-		if ( ! $has_access ) {
+		if ( ! $access['has_access'] ) {
 			$no_access_page_url = $ms_pages->get_ms_page_url(
 				MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT,
 				false,

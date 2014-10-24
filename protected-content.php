@@ -180,6 +180,9 @@ add_filter( 'ms_class_file_override', 'ms_class_file_override' );
  * Control of plugin is passed to the MVC implementation found
  * inside the /app/ folder.
  *
+ * Note: Even all properties are marked private, they are made public via the
+ * magic __get() function.
+ *
  * @since 1.0.0
  *
  * @return object Plugin instance.
@@ -260,13 +263,22 @@ class MS_Plugin {
 	private $addon;
 
 	/**
+	 * The main controller of the plugin.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 * @var controller
+	 */
+	private $controller;
+
+	/**
 	 * Plugin constructor.
 	 *
 	 * Set properties, registers hooks and loads the plugin.
 	 *
 	 * @since 1.0.0
 	 */
-	function __construct() {
+	public function __construct() {
 
 		/**
 		 * Actions to execute before the plugin construction starts.
@@ -297,7 +309,7 @@ class MS_Plugin {
 			apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this )
 		);
 
-		/** Creates the class autoloader */
+		// Creates the class autoloader
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
 		/**
