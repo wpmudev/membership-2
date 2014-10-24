@@ -591,7 +591,7 @@ class MS_Model_Member extends MS_Model {
 			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_MOVED, $this->ms_relationships[ $move_to_id ] );
 		}
 
-		do_action( 'ms_model_membership_move_membership', $membership_id, $this );//$membership_id is undefined
+		do_action( 'ms_model_membership_move_membership', $move_from_id, $move_to_id, $this );
 	}
 
 	/**
