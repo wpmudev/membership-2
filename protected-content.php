@@ -119,6 +119,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Model_Communication_Credit_Card_Expire' => 'communication/class-ms-model-communication-credit-card-expire.php',
 		'MS_Model_Communication_Failed_Payment' => 'communication/class-ms-model-communication-failed-payment.php',
 		'MS_Model_Communication_Info_Update' => 'communication/class-ms-model-communication-info-update.php',
+		'MS_Model_Communication_Registration_Free' => 'communication/class-ms-model-communication-registration-free.php',
 		'MS_Model_Custom_Post_Type' => 'class-ms-model-custom-post-type.php',
 		'MS_Model_Gateway_Paypal_Single' => 'gateway/class-ms-model-gateway-paypal-single.php',
 		'MS_Model_Gateway_Paypal_Standard' => 'gateway/class-ms-model-gateway-paypal-standard.php',
