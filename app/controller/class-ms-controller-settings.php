@@ -319,7 +319,8 @@ class MS_Controller_Settings extends MS_Controller {
 			// Setup navigation tabs.
 			$active_tab = sanitize_html_class( @$_GET['tab'], $first_key );
 			if ( ! array_key_exists( $active_tab, $tabs ) ) {
-				wp_safe_redirect( add_query_arg( array( 'tab' => $first_key ) ) );
+				$new_url = add_query_arg( array( 'tab' => $first_key ) );
+				wp_safe_redirect( $new_url );
 				exit;
 			} else {
 				$this->active_tab = apply_filters(
@@ -406,7 +407,7 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 
 		if ( $redirect ) {
-			wp_safe_redirect( esc_url( $redirect ) );
+			wp_safe_redirect( $redirect );
 			exit();
 		}
 	}

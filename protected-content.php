@@ -452,9 +452,9 @@ class MS_Plugin {
 	 * @return void
 	 */
 	public function add_rewrite_rules() {
-
-		/* Membership site pages.*/
+		// Membership site pages.
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
+
 		if ( ! empty( $ms_pages ) ) {
 			foreach ( $ms_pages as $ms_page ) {
 				add_rewrite_rule(

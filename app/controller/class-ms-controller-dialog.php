@@ -92,7 +92,7 @@ class MS_Controller_Dialog extends MS_Controller {
 	}
 
 	/**
-	 * Ajax handler. Used by shortcode `ms-membership-login` to login via ajax
+	 * Ajax handler. Used by shortcode `ms-membership-login` to login via ajax.
 	 *
 	 * @since  1.0.0
 	 * @access public
@@ -114,6 +114,14 @@ class MS_Controller_Dialog extends MS_Controller {
 		if ( is_wp_error( $user_signon ) ) {
 			$resp['error'] = __( 'Wrong username or password', MS_TEXT_DOMAIN );
 		} else {
+			$member = MS_Factory::load( 'MS_Model_Member', $user_signon->ID );
+
+			// Also used in class-ms-model-member.php (signon_user)
+			wp_set_current_user( $member->id );
+			wp_set_auth_cookie( $member->id );
+			do_action( 'wp_login', $member->username, $user_signon );
+			do_action( 'ms_model_member_signon_user', $user_signon, $member );
+
 			$resp['loggedin'] = true;
 			$resp['success'] = __( 'Logging in...', MS_TEXT_DOMAIN );
 		}

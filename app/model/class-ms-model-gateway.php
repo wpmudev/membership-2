@@ -3,36 +3,36 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
 /**
  * Gateway parent model.
- * 
+ *
  * Register valid gateways.
  *
- * Persisted by parent class MS_Model_Option. Singleton. 
+ * Persisted by parent class MS_Model_Option. Singleton.
  *
  * @since 1.0.0
  * @package Membership
  * @subpackage Model
  */
 class MS_Model_Gateway extends MS_Model_Option {
-	
+
 	/**
 	 * Gateway opertaion mode contants.
 	 *
@@ -42,7 +42,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	const MODE_SANDBOX = 'sandbox';
 	const MODE_LIVE    = 'live';
-	
+
 	/**
 	 * Gateway types contants.
 	 *
@@ -56,7 +56,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	const GATEWAY_PAYPAL_STANDARD = 'paypal_standard';
 	const GATEWAY_AUTHORIZE = 'authorize';
 	const GATEWAY_STRIPE = 'stripe';
-	
+
 	/**
 	 * Singleton object.
 	 *
@@ -65,58 +65,58 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @var string The singleton object.
 	 */
 	public static $instance;
-	
+
 	/**
-	 * Gateway ID. 
-	 * 
+	 * Gateway ID.
+	 *
 	 * @since 1.0.0
 	 * @var int $id
 	 */
 	protected $id = 'admin';
-	
+
 	/**
-	 * Gateway name. 
-	 * 
+	 * Gateway name.
+	 *
 	 * @since 1.0.0
 	 * @var string $name
 	 */
-	protected $name = 'Abstract Gateway';
-	
+	protected $name = '';
+
 	/**
-	 * Gateway description. 
-	 * 
+	 * Gateway description.
+	 *
 	 * @since 1.0.0
 	 * @var string $description
 	 */
-	protected $description = 'Abstract Gateway Desc';
-	
+	protected $description = '';
+
 	/**
-	 * Gateway active status. 
-	 * 
+	 * Gateway active status.
+	 *
 	 * @since 1.0.0
 	 * @var string $active
 	 */
 	protected $active = false;
-	
+
 	/**
 	 * Manual payment indicator.
-	 * 
+	 *
 	 * If the gateway does not allow automatic reccuring billing.
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @var bool $manual_payment
 	 */
 	protected $manual_payment = true;
-	
+
 	/**
 	 * Gateway allow Pro rating.
-	 * 
+	 *
 	 * @todo To be released in further versions.
 	 * @since 1.0.0
 	 * @var bool $pro_rate
 	 */
 	protected $pro_rate = false;
-	
+
 	/**
 	 * Custom payment button text or url.
 	 *
@@ -126,7 +126,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @var string $pay_button_url The url or button label (text).
 	 */
 	protected $pay_button_url;
-	
+
 	/**
 	 * Custom cancel button text or url.
 	 *
@@ -136,7 +136,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @var string $cancel_button_url The url or button label (text).
 	 */
 	protected $cancel_button_url;
-	
+
 	/**
 	 * Gateway operation mode.
 	 *
@@ -146,7 +146,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @var string $mode
 	 */
 	protected $mode;
-	
+
 	/**
 	 * Gateway list singleton instances.
 	 *
@@ -154,96 +154,103 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @var string $gateways
 	 */
 	protected static $gateways;
-	
+
 	/**
 	 * Hook to process gateway returns (IPN).
 	 *
 	 * @since 1.0.0
 	 */
 	public function after_load() {
-		
 		do_action( 'ms_model_gateway_after_load', $this );
-		
+
 		if( $this->active ) {
-			$this->add_action( "ms_model_gateway_handle_payment_return_{$this->id}", 'handle_return' );
+			$this->add_action(
+				'ms_model_gateway_handle_payment_return_' . $this->id,
+				'handle_return'
+			);
 		}
 	}
-	
+
 	/**
 	 * Load and get all registered gateways.
 	 *
 	 * @since 1.0.0
-	 * @param bool $only_active Optional. When to return only activated gateways. 
+	 * @param bool $only_active Optional. When to return only activated gateways.
 	 */
 	public static function get_gateways( $only_active = false ) {
-		if( empty( self::$gateways ) ) {
+		if ( empty( self::$gateways ) ) {
 			self::$gateways = array(
-					self::GATEWAY_PAYPAL_STANDARD => MS_Factory::load( 'MS_Model_Gateway_Paypal_Standard' ),
-					self::GATEWAY_PAYPAL_SINGLE => MS_Factory::load( 'MS_Model_Gateway_Paypal_Single' ),
-					self::GATEWAY_AUTHORIZE => MS_Factory::load( 'MS_Model_Gateway_Authorize' ),
-					self::GATEWAY_MANUAL => MS_Factory::load( 'MS_Model_Gateway_Manual' ),
-					self::GATEWAY_FREE => MS_Factory::load( 'MS_Model_Gateway_Free' ),
-					self::GATEWAY_STRIPE => MS_Factory::load( 'MS_Model_Gateway_Stripe' ),
+				self::GATEWAY_PAYPAL_STANDARD => MS_Factory::load( 'MS_Model_Gateway_Paypal_Standard' ),
+				self::GATEWAY_PAYPAL_SINGLE => MS_Factory::load( 'MS_Model_Gateway_Paypal_Single' ),
+				self::GATEWAY_AUTHORIZE => MS_Factory::load( 'MS_Model_Gateway_Authorize' ),
+				self::GATEWAY_MANUAL => MS_Factory::load( 'MS_Model_Gateway_Manual' ),
+				self::GATEWAY_FREE => MS_Factory::load( 'MS_Model_Gateway_Free' ),
+				self::GATEWAY_STRIPE => MS_Factory::load( 'MS_Model_Gateway_Stripe' ),
 			);
 		}
-		
-		if( $only_active ) {
+
+		if ( $only_active ) {
 			$gateways = self::$gateways;
-			foreach( $gateways as $id => $gateway ) {
-				if( ! $gateway->active ) {
+			foreach ( $gateways as $id => $gateway ) {
+				if ( ! $gateway->active ) {
 					unset( $gateways[ $id ] );
 				}
 			}
-			return apply_filters( 'ms_model_gateway_get_gateways_active', $gateways );
+			return apply_filters(
+				'ms_model_gateway_get_gateways_active',
+				$gateways
+			);
 		}
-		
-		return apply_filters( 'ms_model_gateway_get_gateways', self::$gateways );
+
+		return apply_filters(
+			'ms_model_gateway_get_gateways',
+			self::$gateways
+		);
 	}
-	
+
 	/**
 	 * Get all registered gateway names.
 	 *
 	 * @since 1.0.0
 	 * @param bool $only_active Optional. False (default) returns only activated gateways.
-	 * @param bool $include_gateway_free Optional. True (default) includes Gateway Free. 
+	 * @param bool $include_gateway_free Optional. True (default) includes Gateway Free.
 	 */
 	public static function get_gateway_names( $only_active = false, $include_gateway_free = false ) {
-		
 		$gateways = self::get_gateways( $only_active );
 		$names = array();
-		
+
 		foreach( $gateways as $gateway ) {
 			$names[ $gateway->id ] = $gateway->name;
 		}
 		if( ! $include_gateway_free ) {
 			unset( $names[ self::GATEWAY_FREE ] );
 		}
-		
+
 		return apply_filters( 'ms_model_gateway_get_gateway_names' , $names );
 	}
-	
+
 	/**
 	 * Validate gateway.
 	 *
 	 * @since 1.0.0
-	 * @param string $gateway_id The gateway ID to validate. 
+	 * @param string $gateway_id The gateway ID to validate.
 	 */
 	public static function is_valid_gateway( $gateway_id ) {
-		
+
 		$valid = array_key_exists( $gateway_id, self::get_gateways() );
-		
+
 		return apply_filters( 'ms_model_gateway_is_valid_gateway', $valid );
 	}
-	
+
 	/**
 	 * Gateway factory.
 	 *
 	 * @since 1.0.0
-	 * @param string $gateway_id The gateway ID to create. 
+	 * @param string $gateway_id The gateway ID to create.
 	 */
 	public static function factory( $gateway_id ) {
 		$gateway = null;
-		
+
 		if( 'admin' == $gateway_id || empty( $gateway_id ) || 'gateway' == $gateway_id ) {
 			$gateway = MS_Factory::create( 'MS_Model_Gateway' );
 		}
@@ -251,75 +258,75 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$gateways = self::get_gateways();
 			$gateway = $gateways[ $gateway_id ];
 		}
-		
+
 		return apply_filters( 'ms_model_gateway_factory', $gateway, $gateway_id );
 	}
-	
+
 	/**
 	 * Processes gateway IPN return.
 	 *
 	 * Overridden in child gateway classes.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function handle_return() {
-		
+
 		do_action( 'ms_model_gateway_handle_return', $ms_relationship, $this );
 	}
-	
+
 	/**
 	 * Processes purchase action.
 	 *
-	 * Overridden in child classes. 
+	 * Overridden in child classes.
 	 * This parent method only covers free purchases.
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Membership_Relationship $ms_relationship The related membership relationship.
 	 */
 	public function process_purchase( $ms_relationship ) {
-		
+
 		do_action( 'ms_model_gateway_process_purchase_before', $ms_relationship, $this );
-		
+
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
-		
+
 		if( 0 == $invoice->total ) {
 			$this->process_transaction( $invoice );
 		}
-		
+
 		return apply_filters( 'ms_model_gateway_process_purchase', $invoice );
 	}
-		
+
 	/**
 	 * Propagate membership cancelation to the gateway.
 	 *
-	 * Overridden in child classes. 
-	 * 
+	 * Overridden in child classes.
+	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function cancel_membership( $ms_relationship ) {
-		
+
 		do_action( 'ms_model_gateway_cancel_membership', $ms_relationship, $this );
 	}
-	
+
 	/**
 	 * Request automatic payment to the gateway.
 	 *
 	 * Overridden in child gateway classes.
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function request_payment( $ms_relationship ) {
-		
+
 		do_action( 'ms_model_gateway_request_payment', $ms_relationship, $this );
 	}
-	
+
 	/**
 	 * Check for card expiration date.
-	 * 
+	 *
 	 * Save event for card expire soon.
 	 *
 	 * @since 1.0.0
@@ -330,22 +337,22 @@ class MS_Model_Gateway extends MS_Model_Option {
 	public function check_card_expiration( $ms_relationship ) {
 
 		do_action( 'ms_model_gateway_check_card_expiration_before', $this );
-		
+
 		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
 		$card_exp = $member->get_gateway_profile( $this->id, 'card_exp' );
 		if( ! empty( $card_exp ) ) {
 			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
-		
+
 			$days = MS_Helper_Period::get_period_in_days( $comm->period );
 			$card_expire_days = MS_Helper_Period::subtract_dates( $card_exp, MS_Helper_Period::current_date() );
 			if( $card_expire_days < 0 || ( $days == $card_expire_days ) ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
 			}
 		}
-		
+
 		do_action( 'ms_model_gateway_check_card_expiration_after', $this );
 	}
-	
+
 	/**
 	 * Process transaction.
 	 *
@@ -357,13 +364,13 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @return MS_Model_Invoice The processed invoice.
 	 */
 	public function process_transaction( $invoice ) {
-	
+
 		do_action( 'ms_model_gateway_process_transaction_before', $this );
-		
+
 		$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
 		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
 		$membership = $ms_relationship->get_membership();
-		
+
 		switch( $invoice->status ) {
 			case MS_Model_Invoice::STATUS_BILLED:
 				break;
@@ -379,7 +386,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 				}
 
 				/** Check for moving memberships */
-				if( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status && $ms_relationship->move_from_id && 
+				if( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status && $ms_relationship->move_from_id &&
 					! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 					$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
 					if( $move_from->is_valid() ) {
@@ -394,14 +401,14 @@ class MS_Model_Gateway extends MS_Model_Option {
 						$move_from->save();
 					}
 				}
-				/* The trial period info gets updated after MS_Model_Membership_Relationship::config_period() */ 
+				/* The trial period info gets updated after MS_Model_Membership_Relationship::config_period() */
 				$trial_period = $ms_relationship->is_trial_eligible();
 				$ms_relationship->current_invoice_number = max( $ms_relationship->current_invoice_number, $invoice->invoice_number + 1 );
 				$member->is_member = true;
 				$member->active = true;
 				$ms_relationship->config_period();
 				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
-				
+
 				/** Generate next invoice */
 				if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $trial_period ) {
 					$next_invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
@@ -411,10 +418,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 				break;
 			case MS_Model_Invoice::STATUS_FAILED:
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
-				break;	
+				break;
 			case MS_Model_Invoice::STATUS_DENIED:
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
-				break;	
+				break;
 			case MS_Model_Invoice::STATUS_PENDING:
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $ms_relationship );
 				break;
@@ -430,20 +437,20 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 		return apply_filters( 'ms_model_gateway_processed_transaction', $invoice, $this );
 	}
-	
+
 	/**
 	 * Url that fires handle_return of this gateway (IPN).
-	 * 
+	 *
 	 * @since 1.0.0
 	 * @return string The return url.
 	 */
 	public function get_return_url() {
-		
+
 		$return_url = site_url( '/ms-payment-return/' . $this->id );
-		
+
 		return apply_filters( 'ms_model_gateway_get_return_url', $return_url, $this );
 	}
-	
+
 	/**
 	 * Get gateway mode types.
 	 *
@@ -459,25 +466,25 @@ class MS_Model_Gateway extends MS_Model_Option {
 				self::MODE_LIVE => __( 'Live Site', MS_TEXT_DOMAIN ),
 				self::MODE_SANDBOX => __( 'Sandbox Mode (test)', MS_TEXT_DOMAIN ),
 		);
-		
+
 		return apply_filters( 'ms_model_gateway_get_mode_types', $mode_types, $this );
 	}
-	
+
 	/**
 	 * Return if is live mode.
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return boolean True if is in live mode.
 	 */
 	public function is_live_mode() {
 		$is_live_mode = ( self::MODE_LIVE == $this->mode );
 		return apply_filters( 'ms_model_gateway_is_live_mode', $is_live_mode );
 	}
-	
+
 	/**
 	 * Verify required fields.
-	 * 
+	 *
 	 * To be overridden in children classes.
 	 *
 	 * @since 1.0
@@ -488,7 +495,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		MS_Helper_Debug::log( __( 'Override the is_configured method of the child gateway: '. $this->id, MS_TEXT_DOMAIN ) );
 		return false;
 	}
-	
+
 	/**
 	 * Validate specific property before set.
 	 *
@@ -514,10 +521,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 					break;
 			}
 		}
-		
+
 		do_action( 'ms_model_gateway__set_after', $property, $value, $this );
 	}
-	
+
 	/**
 	 * Get countries code and names.
 	 *
@@ -734,7 +741,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			'EH' => __( 'WESTERN SAHARA', MS_TEXT_DOMAIN ),
 			'ZM' => __( 'ZAMBIA', MS_TEXT_DOMAIN ),
 		);
-		
+
 		return apply_filters( 'ms_model_gateway_get_country_codes', $countries );
 	}
 }
