@@ -18,7 +18,7 @@ class MS_View_Frontend_Activities extends MS_View {
 					<thead>
 						<tr>
 							<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Actvity', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Activity', MS_TEXT_DOMAIN ); ?></th>
 						</tr>
 					</thead>
 					<tbody>

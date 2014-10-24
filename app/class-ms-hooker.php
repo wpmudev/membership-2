@@ -23,6 +23,8 @@
 */
 
 /**
+ * Call when you really need a hooker...
+ *
  * Base hooker class provides generic interface to hook on actions and filters.
  *
  * This file is the base object of all other objects in the Membership plugin. 

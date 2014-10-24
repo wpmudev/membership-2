@@ -177,7 +177,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * 
 	 * @since 1.0.0
 	 * @param string $start_date The start date of the member membership.
-	 * @param string $id The content id to verify dripped acccess. 
+	 * @param string $id The content id to verify dripped access.
 	 */
 	public function has_dripped_access( $start_date, $page_id = null ) {
 	

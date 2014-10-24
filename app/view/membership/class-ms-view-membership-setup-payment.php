@@ -107,12 +107,12 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			),
 		);
 
-		return apply_filters( 'ms_view_memebrship_setup_payment_get_fields', $fields );
+		return apply_filters( 'ms_view_membership_setup_payment_get_fields', $fields );
 	}
 
 	/**
 	 * Render the Payment settings the first time the user creates a membership.
-	 * After the user set up a payment gateway these options are not dispalayed
+	 * After the user set up a payment gateway these options are not displayed
 	 * anymore
 	 *
 	 * @since  1.0.0
@@ -345,7 +345,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			}
 		}
 
-		return apply_filters( 'ms_view_memebrship_setup_payment_get_global_fields', $fields );
+		return apply_filters( 'ms_view_membership_setup_payment_get_global_fields', $fields );
 	}
 
 }

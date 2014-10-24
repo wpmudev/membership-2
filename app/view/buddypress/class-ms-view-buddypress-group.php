@@ -18,7 +18,7 @@ class MS_View_Buddypress_Group extends MS_View {
 		?>
 			<div class='ms-settings'>
 				<h3><?php
-					_e( 'Buddypress groups ', MS_TEXT_DOMAIN );
+					_e( 'BuddyPress groups ', MS_TEXT_DOMAIN );
 					echo $this->title;
 				?></h3>
 				<div class="settings-description ms-description"><?php

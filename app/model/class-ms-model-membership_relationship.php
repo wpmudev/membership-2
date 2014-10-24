@@ -1061,7 +1061,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$desc = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) . $this->expire_date;
 				break;
 			case self::STATUS_DEACTIVATED:
-				$desc = __( 'Memberhship deactivated.', MS_TEXT_DOMAIN );
+				$desc = __( 'Membership deactivated.', MS_TEXT_DOMAIN );
 				break;
 		}
 		

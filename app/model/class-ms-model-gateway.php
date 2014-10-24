@@ -505,7 +505,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 					break;
 				case 'description':
 				case 'pay_button_url':
-				case 'upggrade_button_url':
+				case 'upgrade_button_url':
 				case 'cancel_button_url':
 					$this->$property = sanitize_text_field( $value );
 					break;

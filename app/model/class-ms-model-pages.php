@@ -293,6 +293,8 @@ class MS_Model_Pages extends MS_Model_Option {
 	 *
 	 * @param string $page_type The page type.
 	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
+	 *
+	 * @return int $ms_page_id
 	 */
 	public function get_ms_page_id( $page_type, $create_if_not_exists = false ) {
 		$ms_page_id = 0;

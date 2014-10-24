@@ -91,7 +91,7 @@ class MS_Model_Upgrade extends MS_Model {
 		
 		global $wpdb;
 		$sql = array();
-		
+		//these are not persistent object cache friendly! And could catch other plugin stuff
 		$sql[] = "DELETE FROM $wpdb->options WHERE option_name LIKE 'ms_%';";
 		$sql[] = "DELETE FROM $wpdb->posts WHERE post_type LIKE 'ms_%';";
 		$sql[] = "DELETE FROM $wpdb->postmeta  WHERE NOT EXISTS (SELECT 1 FROM wp_posts tmp WHERE tmp.ID = post_id);";

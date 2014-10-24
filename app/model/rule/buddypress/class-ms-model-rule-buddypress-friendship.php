@@ -36,7 +36,7 @@ class MS_Model_Rule_Buddypress_Friendship extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$content = new StdClass();
 		$content->id = 1;
-		$content->name = __( 'User gets read and make comments of posts.', MS_TEXT_DOMAIN );
+		$content->name = __( 'User can read and make comments on posts.', MS_TEXT_DOMAIN );
 
 		if( in_array( $content->id, $this->rule_value ) ) {
 			$content->access = true;
