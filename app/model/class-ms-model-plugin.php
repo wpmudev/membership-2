@@ -133,28 +133,52 @@ class MS_Model_Plugin extends MS_Model {
 		if ( null === $Info ) {
 			$Info = array(
 				'has_access' => false,
+				'is_admin' => false,
 				'memberships' => array(),
 			);
 
-			// Front page / home / not found are always public.
-			if ( is_home() || is_front_page() || is_404() ) {
-				$Info['has_access'] = true;
-			}
+			// The ID of the main protected-content.
+			$base_id = MS_Model_Membership::get_protected_content()->id;
 
-			// Build a list of memberships the user belongs to and check permission.
-			foreach ( $this->member->ms_relationships as $ms_relationship ) {
-				// Verify status of the membership.
-				// Only active, trial or canceled (until it expires) status memberships.
-				if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
-					continue;
+			if ( $this->member->is_admin_user()
+				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
+			) {
+				// Admins have access to ALL memberships.
+				$Info['is_admin'] = true;
+				$Info['has_access'] = true;
+
+				$memberships = MS_Model_Membership::get_memberships();
+				foreach ( $memberships as $membership ) {
+					$Info['memberships'][] = $membership->id;
+				}
+			} else {
+				// Front page / home / not found are always public.
+				if ( is_home() || is_front_page() || is_404() ) {
+					$Info['has_access'] = true;
 				}
 
-				$Info['memberships'][] = $ms_relationship->membership_id;
+				// Build a list of memberships the user belongs to and check permission.
+				foreach ( $this->member->ms_relationships as $ms_relationship ) {
+					// Verify status of the membership.
+					// Only active, trial or canceled (until it expires) status memberships.
+					if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+						continue;
+					}
 
-				// If permission is not clear yet then check current membership...
-				if ( ! $Info['has_access'] ) {
-					$membership = $ms_relationship->get_membership();
-					$Info['has_access'] = $membership->has_access_to_current_page( $ms_relationship );
+					if ( $base_id !== $ms_relationship->membership_id ) {
+						$Info['memberships'][] = $ms_relationship->membership_id;
+					}
+
+					// If permission is not clear yet then check current membership...
+					if ( ! $Info['has_access'] ) {
+						$membership = $ms_relationship->get_membership();
+						$Info['has_access'] = $membership->has_access_to_current_page( $ms_relationship );
+					}
+				}
+
+				// "membership-id: 0" means: User does not belong to any membership.
+				if ( ! count( $Info['memberships'] ) ) {
+					$Info['memberships'][] = 0;
 				}
 			}
 

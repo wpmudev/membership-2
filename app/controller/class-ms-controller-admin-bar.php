@@ -64,14 +64,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$this->simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
 
-		/* Hide WP toolbar in front end to not admin users */
+		// Hide WP toolbar in front end to not admin users
 		if ( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
 			add_filter( 'show_admin_bar', '__return_false' );
 			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar_front', 999 );
 			$this->add_action( 'admin_head-profile.php', 'customize_admin_sidebar', 999 );
 		}
 
-		/* Customize WP toolbar for admin users */
+		// Customize WP toolbar for admin users
 		if ( $this->is_admin_user() ) {
 			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar', 999 );
 			$this->add_action( 'add_admin_bar_menus', 'admin_bar_manager' );
@@ -90,8 +90,10 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function customize_toolbar() {
-
-		if ( MS_Model_Member::is_admin_user() && MS_Plugin::is_enabled() && ! is_network_admin() ) {
+		if ( MS_Model_Member::is_admin_user()
+			&& MS_Plugin::is_enabled()
+			&& ! is_network_admin()
+		) {
 			if ( $this->simulate->is_simulating() ) {
 				$this->remove_admin_bar_nodes();
 				$this->add_view_site_as_node();
@@ -114,19 +116,17 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_bar_manager() {
-
-		/* Check for memberhship id simulation GET request */
-		if ( isset( $_GET['membership_id'] ) && $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
-			$this->simulate->membership_id = $_GET['membership_id']; //should these values be validated?
+		// Check for memberhship id simulation GET request
+		if ( $this->verify_nonce( 'ms_simulate-' . @$_GET['membership_id'], 'GET' ) ) {
+			$this->simulate->membership_id = absint( $_GET['membership_id'] );
 			$this->simulate->save();
 			wp_safe_redirect( wp_get_referer() );
 			exit;
 		}
 
-		/* Check for simulation periods/dates in POST request */
+		// Check for simulation periods/dates in POST request
 		$isset = array( 'simulate_submit', 'simulate_type' );
 		if ( $this->validate_required( $isset, 'POST', false ) ) {
-
 			$this->simulate->type = $_POST['simulate_type'];
 
 			if ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
@@ -162,7 +162,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		$nodes = $wp_admin_bar->get_nodes();
 
-		$exclude = apply_filters( 'ms_controller_admin_bar_remove_admin_bar_nodes_exclude', $exclude, $nodes );
+		$exclude = apply_filters(
+			'ms_controller_admin_bar_remove_admin_bar_nodes_exclude',
+			$exclude,
+			$nodes
+		);
 
 		if ( is_array( $nodes ) ) {
 			foreach ( $nodes as $node ) {
@@ -172,7 +176,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			}
 		}
 
-		do_action( 'ms_controller_admin_bar_remove_admin_bar_nodes', $nodes, $exclude );
+		do_action(
+			'ms_controller_admin_bar_remove_admin_bar_nodes',
+			$nodes,
+			$exclude
+		);
 	}
 
 	/**
@@ -185,8 +193,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		global $wp_admin_bar;
 
 		if ( $this->simulate->is_simulating() ) {
+			$membership = MS_Factory::load(
+				'MS_Model_Membership',
+				$this->simulate->membership_id
+			);
 
-			$membership = MS_Factory::load( 'MS_Model_Membership', $this->simulate->membership_id );
 			$title = null;
 			$html = null;
 
@@ -250,8 +261,12 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		$parents = array();
 		$current = null;
 
+		// The ID of the main protected-content.
+		$base_id = MS_Model_Membership::get_protected_content()->id;
+
 		foreach ( $this->memberships as $membership ) {
 			$item_parent = $membership->get_parent();
+
 			if ( $item_parent && ! isset( $parents[ $item_parent->id ] ) ) {
 				$parents[ $item_parent->id ] = $item_parent;
 			}
@@ -260,14 +275,23 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			$nonce = wp_create_nonce( 'ms_simulate-' . $membership->id );
 
 			// Create options for <select>
-			if ( empty( $select_groups[ $membership->parent_id ] ) || ! is_array( $select_groups[ $membership->parent_id ] ) ) {
+			if ( empty( $select_groups[ $membership->parent_id ] )
+				|| ! is_array( $select_groups[ $membership->parent_id ] )
+			) {
 				$select_groups[ $membership->parent_id ] = array();
 			}
+
+			if ( $base_id == $membership->id ) {
+				$label = __( 'No membership / Visitor', MS_TEXT_DOMAIN );
+			} else {
+				$label = $membership->name;
+			}
+
 			$select_groups[ $membership->parent_id ][ $membership->id ] = array(
 				'id' => $membership->id,
 				'selected' => ( $this->simulate->membership_id == $membership->id ),
 				'nonce' => $nonce,
-				'label' => $membership->name,
+				'label' => $label,
 			);
 
 			if ( $this->simulate->membership_id == $membership->id ) {
@@ -309,6 +333,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 						esc_attr( $parents[ $parent_id ]->name )
 					);
 				}
+				sort( $group );
 				foreach ( $group as $option ) {
 					printf(
 						'<option value="%1$s" nonce="%2$s" %3$s>%4$s</option>',
