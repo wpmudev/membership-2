@@ -454,11 +454,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				}
 			}
 			catch ( Exception $e ) {
-				/**
-				 * TODO: This try-catch seems to be also triggered by other plugins!
-				 * E.g. When I activate marketpress there sometimes is a warning generated,
-				 * and this warning also causes the payment to "not work"...
-				 */
+				
 				MS_Helper_Debug::log( $e->getMessage() );
 
 				switch ( $gateway_id ) {
@@ -484,14 +480,10 @@ class MS_Controller_Gateway extends MS_Controller {
 		else {
 			MS_Helper_Debug::log( 'Error Code ' . $err );
 
-			MS_Helper_Debug::log( $_POST );
-			MS_Helper_Debug::log( "nonce action: $nonce_name, nonce: ". wp_create_nonce( $nonce_name ) );
-			MS_Helper_Debug::debug_trace();
-			
 			$this->add_action( 'the_content', 'purchase_error_content' );
 		}
 
-		/** Hack to show signup page in case of errors*/
+		// Hack to show signup page in case of errors
 		global $wp_query;
 		$wp_query->query_vars['page_id'] = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER )->id;
 		$wp_query->query_vars['post_type'] = 'page';
