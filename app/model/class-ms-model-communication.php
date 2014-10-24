@@ -136,7 +136,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var array
 	 */
-	protected $period = array( 'period_unit' => 1, 'period_type' => MS_Helper_Period::PERIOD_TYPE_DAYS );
+	protected $period = array(
+		'period_unit' => 1,
+		'period_type' => MS_Helper_Period::PERIOD_TYPE_DAYS,
+	);
 
 	/**
 	 * Communication enabled status.
@@ -202,7 +205,16 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var string[] The fields to ignore when persisting.
 	 */
-	public $ignore_fields = array( 'message', 'description', 'name', 'actions', 'filters', 'ignore_fields', 'post_type', 'comm_vars' );
+	public $ignore_fields = array(
+		'message',
+		'description',
+		'name',
+		'actions',
+		'filters',
+		'ignore_fields',
+		'post_type',
+		'comm_vars',
+	);
 
 	/**
 	 * Communication constructor.
@@ -212,20 +224,20 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	public function __construct() {
 
 		$this->comm_vars = array(
-				 self::COMM_VAR_MS_NAME => __( 'Membership name', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_MS_INVOICE => __( 'Invoice details', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Account page url', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_MS_REMAINING_DAYS => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Membership remaining trial days', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_MS_EXPIRY_DATE => __( 'Membership expiration date', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_USER_DISPLAY_NAME => __( 'User display name', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_USER_FIRST_NAME => __( 'User first name', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_USER_LAST_NAME => __( 'User last name', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_USERNAME => __( 'Username', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_BLOG_NAME => __( 'Blog/site name', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_BLOG_URL => __( 'Blog/site url', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_NET_NAME => __( 'Network name', MS_TEXT_DOMAIN ),
-				 self::COMM_VAR_NET_URL => __( 'Network url', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_MS_NAME => __( 'Membership name', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_MS_INVOICE => __( 'Invoice details', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Account page url', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_MS_REMAINING_DAYS => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Membership remaining trial days', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_MS_EXPIRY_DATE => __( 'Membership expiration date', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_USER_DISPLAY_NAME => __( 'User display name', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_USER_FIRST_NAME => __( 'User first name', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_USER_LAST_NAME => __( 'User last name', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_USERNAME => __( 'Username', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_BLOG_NAME => __( 'Blog/site name', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_BLOG_URL => __( 'Blog/site url', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_NET_NAME => __( 'Network name', MS_TEXT_DOMAIN ),
+				self::COMM_VAR_NET_URL => __( 'Network url', MS_TEXT_DOMAIN ),
 		);
 	}
 
@@ -235,7 +247,6 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function before_save() {
-
 		parent::before_save();
 		$this->description = $this->message;
 
@@ -249,12 +260,14 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function after_load() {
-
 		parent::after_load();
 
 		$this->message = $this->description;
-		if( $this->enabled ) {
-			$this->add_action( 'ms_model_plugin_process_communications', 'process_communication' );
+		if ( $this->enabled ) {
+			$this->add_action(
+				'ms_model_plugin_process_communications',
+				'process_communication'
+			);
 		}
 	}
 
@@ -262,14 +275,14 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Get communication types.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @return array The communication types.
 	 */
 	public static function get_communication_types() {
-
 		static $types;
 
-		if( empty( $types ) ) {
-			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
+		if ( empty( $types ) ) {
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
 				$types = array(
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_REGISTRATION_FREE,
@@ -299,24 +312,28 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_communication_get_communication_types', $types );
+		return apply_filters(
+			'ms_model_communication_get_communication_types',
+			$types
+		);
 	}
 
 	/**
 	 * Get Communication types and respective classes.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @return array {
-	 *   	Return array of $type => $class_name.
-	 * 		@type string $type The communication type.
-	 * 		@type string $class_name The class name of the communication type.
+	 *     Return array of $type => $class_name.
+	 *
+	 *     @type string $type The communication type.
+	 *     @type string $class_name The class name of the communication type.
 	 * }
 	 */
 	public static function get_communication_type_classes() {
-
 		static $type_classes;
 
-		if( empty( $type_classes ) ) {
+		if ( empty( $type_classes ) ) {
 			$type_classes = array(
 				self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
 				self::COMM_TYPE_REGISTRATION_FREE => 'MS_Model_Communication_Registration_Free',
@@ -334,24 +351,28 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			);
 		}
 
-		return apply_filters( 'ms_model_communication_get_communication_type_classes', $type_classes );
+		return apply_filters(
+			'ms_model_communication_get_communication_type_classes',
+			$type_classes
+		);
 	}
 
 	/**
 	 * Get Communication types and respective titles.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @return array {
-	 *   	Return array of $type => $title.
-	 * 		@type string $type The communication type.
-	 * 		@type string $title The title of the communication type.
+	 *     Return array of $type => $title.
+	 *
+	 *     @type string $type The communication type.
+	 *     @type string $title The title of the communication type.
 	 * }
 	 */
 	public static function get_communication_type_titles() {
-
 		static $type_titles;
 
-		if( empty( $type_titles ) ) {
+		if ( empty( $type_titles ) ) {
 			$type_titles = array(
 				self::COMM_TYPE_REGISTRATION => __( 'Signup completed', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup completed for a free membership', MS_TEXT_DOMAIN ),
@@ -368,28 +389,36 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'After payment due', MS_TEXT_DOMAIN ),
 			);
 
-			foreach( $type_titles as $type => $title ) {
-				if( ! self::is_valid_communication_type( $type) ) {
+			foreach ( $type_titles as $type => $title ) {
+				if ( ! self::is_valid_communication_type( $type ) ) {
 					unset( $type_titles[ $type ] );
 				}
 			}
 		}
 
-		return apply_filters( 'ms_model_communication_get_communication_type_titles', $type_titles );
+		return apply_filters(
+			'ms_model_communication_get_communication_type_titles',
+			$type_titles
+		);
 	}
 
 	/**
 	 * Validate communication type.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $type The type to validate.
 	 * @return bool True if is valid.
 	 */
 	public static function is_valid_communication_type( $type ) {
+		$valid = ! empty( $type )
+			&& in_array( $type, self::get_communication_types() );
 
-		$valid = ! empty( $type ) && in_array( $type, self::get_communication_types() );
-
-		return apply_filters( 'ms_model_communication_is_valid_communication_type', $valid, $type );
+		return apply_filters(
+			'ms_model_communication_is_valid_communication_type',
+			$valid,
+			$type
+		);
 	}
 
 	/**
@@ -398,49 +427,63 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Load from DB if exists, create a new one if not.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $type The type of the communication.
 	 * @param boolean $create_if_not_exists Optional. Flag to create a comm type if not exists.
 	 * @return MS_Model_Communication The communication object.
 	 */
-	 public static function get_communication( $type, $create_if_not_exists = false ) {
-
+	public static function get_communication( $type, $create_if_not_exists = false ) {
 		$model = null;
 
-		if( self::is_valid_communication_type( $type ) ) {
-
-			if( ! empty( self::$communications[ $type ] ) ) {
+		if ( self::is_valid_communication_type( $type ) ) {
+			if ( ! empty( self::$communications[ $type ] ) ) {
 				$model = self::$communications[ $type ];
 			}
 			else {
 				$args = array(
-						'post_type' => self::$POST_TYPE,
-						'post_status' => 'any',
-						'fields' => 'ids',
-						'order' => 'DESC',
-						'orderby' => 'ID',
-						'meta_query' => array(
-								array(
-										'key' => 'type',
-										'value' => $type,
-										'compare' => '='
-								)
-						)
+					'post_type' => self::$POST_TYPE,
+					'post_status' => 'any',
+					'fields' => 'ids',
+					'order' => 'DESC',
+					'orderby' => 'ID',
+					'meta_query' => array(
+						array(
+							'key' => 'type',
+							'value' => $type,
+							'compare' => '=',
+						),
+					)
 				);
-				$args = apply_filters( 'ms_model_communication_get_communication_args', $args );
+
+				$args = apply_filters(
+					'ms_model_communication_get_communication_args',
+					$args
+				);
+
 				$query = new WP_Query( $args );
 				$item = $query->get_posts();
 
 				$comm_classes = self::get_communication_type_classes();
-				if( ! empty( $item[0] ) ) {
-					$model = MS_Factory::load( $comm_classes[ $type ], $item[0] );
+
+				if ( ! empty( $item[0] ) ) {
+					$model = MS_Factory::load(
+						$comm_classes[ $type ],
+						$item[0]
+					);
 				}
-				elseif( $create_if_not_exists ) {
-					$model = self::communication_factory( $type, $comm_classes[ $type ] );
+				elseif ( $create_if_not_exists ) {
+					$model = self::communication_factory(
+						$type,
+						$comm_classes[ $type ]
+					);
 				}
 			}
 		}
 
-		return apply_filters( 'ms_model_communication_get_communication_' . $type, $model );
+		return apply_filters(
+			'ms_model_communication_get_communication_' . $type,
+			$model
+		);
 	}
 
 	/**
@@ -449,16 +492,21 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Create a new communication object.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $type The type of the communication.
 	 * @param string $class The communication type class.
 	 * @return MS_Model_Communication The communication object.
 	 */
 	public static function communication_factory( $type, $class ) {
-
 		$model = MS_Factory::create( $class );
 		$model->reset_to_default();
 
-		return apply_filters( 'ms_model_communication_communication_factory', $model, $type, $class );
+		return apply_filters(
+			'ms_model_communication_communication_factory',
+			$model,
+			$type,
+			$class
+		);
 	}
 
 	/**
@@ -469,7 +517,11 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function reset_to_default() {
-		do_action( 'ms_model_communication_reset_to_default', $this->type, $this );
+		do_action(
+			'ms_model_communication_reset_to_default',
+			$this->type,
+			$this
+		);
 	}
 
 	/**
@@ -481,20 +533,22 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Communication[] The communication objects array.
 	 */
 	public static function load_communications( $create_if_not_exists = false ) {
-		if( empty( self::$communications ) ) {
-
+		if ( empty( self::$communications ) ) {
 			$comm_types = self::get_communication_types();
 
-			foreach( $comm_types as $type ) {
-
+			foreach ( $comm_types as $type ) {
 				$comm = self::get_communication( $type, $create_if_not_exists );
-				if( ! empty( $comm ) ) {
+
+				if ( ! empty( $comm ) ) {
 					self::$communications[ $type ] = $comm;
 				}
 			}
 		}
 
-		return apply_filters( 'ms_model_communication_communication_set_factory', self::$communications );
+		return apply_filters(
+			'ms_model_communication_communication_set_factory',
+			self::$communications
+		);
 	}
 
 	/**
@@ -503,11 +557,16 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Override it in children classes.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @return string The description.
 	 */
 	public function get_description() {
 		$description = __( 'Override this description in child class', MS_TEXT_DOMAIN );
-		return apply_filters( 'ms_model_communication_get_description', $description );
+
+		return apply_filters(
+			'ms_model_communication_get_description',
+			$description
+		);
 	}
 
 	/**
@@ -518,35 +577,48 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function process_communication() {
+		do_action(
+			'ms_model_communication_process_communication_before',
+			$this
+		);
 
-		do_action( 'ms_model_communication_process_communication_before', $this );
-
-		if( $this->enabled && ! $this->check_object_lock() ) {
-
+		if ( $this->enabled && ! $this->check_object_lock() ) {
 			$this->set_object_lock();
 
-			/* max emails that could be sent in each call. */
-			$max_emails_qty = apply_filters( 'ms_model_communication_process_communication_max_email_qty', 50 );
+			// Max emails that are sent in one process call.
+			$max_emails_qty = apply_filters(
+				'ms_model_communication_process_communication_max_email_qty',
+				50
+			);
 			$count = 0;
 
-			/* max seconds for processing */
-			$time_limit = apply_filters( 'ms_model_communication_process_communication_time_limit', 10 );
+			// Email-processing timeout, in seconds.
+			$time_limit = apply_filters(
+				'ms_model_communication_process_communication_time_limit',
+				10
+			);
 			$start_time = time();
 
-			foreach( $this->queue as $ms_relationship_id => $date ) {
-				if( ( time() > $start_time + $time_limit ) || ( ++$count > $max_emails_qty ) ) {
+			foreach ( $this->queue as $ms_relationship_id => $date ) {
+				if ( time() > $start_time + $time_limit
+					|| ++$count > $max_emails_qty
+				) {
 					break;
 				}
+
 				$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $ms_relationship_id );
-				if( $this->send_message( $ms_relationship ) ) {
+				if ( $this->send_message( $ms_relationship ) ) {
 					$this->remove_from_queue( $ms_relationship_id );
 				}
 				else {
-					MS_Helper_Debug::log( sprintf( __( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
+					MS_Helper_Debug::log(
+						sprintf(
+							__( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
 							$this->type,
 							$ms_relationship->id,
 							$ms_relationship->user_id
-					) );
+						)
+					);
 				}
 			}
 
@@ -562,19 +634,18 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 *
 	 * Base for child classes.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_model_event_{$comm_type}
+	 * Related Action Hooks:
+	 * - ms_model_event_{$comm_type}
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param MS_Model_Event $event The event object.
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to send message to.
 	 */
 	public function enqueue_messages( $event, $ms_relationship ) {
-
 		do_action( 'ms_model_communication_enqueue_messages_before', $this );
 
-		if(  $this->enabled ) {
+		if (  $this->enabled ) {
 			$this->add_to_queue( $ms_relationship->id );
 			$this->save();
 		}
@@ -586,14 +657,15 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Add a message in the "send queue".
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param int $ms_relationship_id The membership relationship ID to add to queue.
 	 */
 	public function add_to_queue( $ms_relationship_id ) {
-
 		do_action( 'ms_model_communication_add_to_queue_before', $this );
 
-		if( $this->enabled && ! array_key_exists( $ms_relationship_id, $this->queue ) ) {
-
+		if ( $this->enabled
+			&& ! array_key_exists( $ms_relationship_id, $this->queue )
+		) {
 			$can_add = true;
 
 			/*
@@ -601,22 +673,22 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			 * Uncomment this if needing less emails.
 			 */
 			/*
-			if( array_key_exists( $ms_relationship_id, $this->sent_queue ) ) {
-
+			if ( array_key_exists( $ms_relationship_id, $this->sent_queue ) ) {
 				$min_days_before_resend = apply_filters( 'ms_model_communication_add_to_queue_min_days_before_resend', 1 );
 				$sent_date = $this->sent_queue[ $ms_relationship_id ];
 				$now = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
 
-				if( MS_Helper_Period::subtract_dates( $now, $sent_date ) < $min_days_before_resend ) {
+				if ( MS_Helper_Period::subtract_dates( $now, $sent_date ) < $min_days_before_resend ) {
 					$can_add = false;
 				}
 			}
 			*/
 
-			if( $can_add ) {
-				$this->queue[ $ms_relationship_id ] = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
+			if ( $can_add ) {
+				$this->queue[ $ms_relationship_id ] = MS_Helper_Period::current_date(
+					MS_Helper_Period::DATE_FORMAT_SHORT
+				);
 			}
-
 		}
 
 		do_action( 'ms_model_communication_add_to_queue_after', $this );
@@ -628,19 +700,30 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Delete history of sent messages after max is reached.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param int $ms_relationship_id The membership relationship ID to remove from queue.
 	 */
 	public function remove_from_queue( $ms_relationship_id ) {
-
 		do_action( 'ms_model_communication_remove_from_queue_before', $this );
 
-		$this->sent_queue[ $ms_relationship_id ] = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
+		$this->sent_queue[ $ms_relationship_id ] = MS_Helper_Period::current_date(
+			MS_Helper_Period::DATE_FORMAT_SHORT
+		);
 		unset( $this->queue[ $ms_relationship_id ] );
 
-		$max_history = apply_filters( 'ms_model_communication_sent_queue_max_history', 300 );
-		/* Delete history */
-		if( count( $this->sent_queue ) > $max_history ) {
-			$this->sent_queue = array_slice( $this->sent_queue, -100, $max_history, true );
+		$max_history = apply_filters(
+			'ms_model_communication_sent_queue_max_history',
+			300
+		);
+
+		// Delete history
+		if ( count( $this->sent_queue ) > $max_history ) {
+			$this->sent_queue = array_slice(
+				$this->sent_queue,
+				-100,
+				$max_history,
+				true
+			);
 		}
 
 		do_action( 'ms_model_communication_remove_from_queue_after', $this );
@@ -652,16 +735,22 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Delete history of sent messages after max is reached.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to send message to.
 	 * @return bool True if successfully sent email.
 	 */
 	public function send_message( $ms_relationship ) {
-		do_action( 'ms_model_communication_send_message_before', $ms_relationship, $this );
+		do_action(
+			'ms_model_communication_send_message_before',
+			$ms_relationship,
+			$this
+		);
 
 		$sent = false;
 
 		if ( $this->enabled ) {
 			$wp_user = new WP_User( $ms_relationship->user_id );
+
 			if ( ! is_email( $wp_user->user_email ) ) {
 				MS_Helper_Debug::log(
 					sprintf(
@@ -675,15 +764,25 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 
 			$comm_vars = $this->get_comm_vars( $ms_relationship, $wp_user );
 
-			/* Replace the email variables. */
-			$message = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->message ) );
-			$subject = str_replace( array_keys( $comm_vars ), array_values( $comm_vars ), stripslashes( $this->subject ) );
+			// Replace the email variables.
+			$message = str_replace(
+				array_keys( $comm_vars ),
+				array_values( $comm_vars ),
+				stripslashes( $this->message )
+			);
+
+			$subject = str_replace(
+				array_keys( $comm_vars ),
+				array_values( $comm_vars ),
+				stripslashes( $this->subject )
+			);
 
 			$html_message = wpautop( $message );
 			$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
 			$subject = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $subject ) );
 
 			$message = $text_message;
+
 			if ( 'text/html' == $this->get_mail_content_type() ) {
 				$this->add_filter( 'wp_mail_content_type', 'get_mail_content_type' );
 				$message = $html_message;
@@ -696,17 +795,43 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 
 			$admin_emails = MS_Model_Member::get_admin_user_emails();
 			$headers = '';
+
 			if ( ! empty( $admin_emails[0] ) ) {
 				$headers = array(
-						sprintf( 'From: %s <%s> ', get_option( 'blogname' ), $admin_emails[0] )
+					sprintf( 'From: %s <%s> ', get_option( 'blogname' ), $admin_emails[0] )
 				);
 			}
 
-			$recipients = apply_filters( 'ms_model_communication_send_message_html_message', $recipients, $this, $ms_relationship );
-			$html_message = apply_filters( 'ms_model_communication_send_message_html_message', $html_message, $this, $ms_relationship );
-			$text_message = apply_filters( 'ms_model_communication_send_message_text_message', $text_message, $this, $ms_relationship );
-			$subject = apply_filters( 'ms_model_communication_send_message_subject', $subject, $this, $ms_relationship );
-			$headers = apply_filters( 'ms_model_communication_send_message_headers', $headers, $this, $ms_relationship );
+			$recipients = apply_filters(
+				'ms_model_communication_send_message_html_message',
+				$recipients,
+				$this,
+				$ms_relationship
+			);
+			$html_message = apply_filters(
+				'ms_model_communication_send_message_html_message',
+				$html_message,
+				$this,
+				$ms_relationship
+			);
+			$text_message = apply_filters(
+				'ms_model_communication_send_message_text_message',
+				$text_message,
+				$this,
+				$ms_relationship
+			);
+			$subject = apply_filters(
+				'ms_model_communication_send_message_subject',
+				$subject,
+				$this,
+				$ms_relationship
+			);
+			$headers = apply_filters(
+				'ms_model_communication_send_message_headers',
+				$headers,
+				$this,
+				$ms_relationship
+			);
 
 			$sent = @wp_mail( $recipients, $subject, $message, $headers );
 
@@ -731,11 +856,18 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			//*/
 
 			if ( 'text/html' == $this->get_mail_content_type() ) {
-				$this->remove_filter( 'wp_mail_content_type', 'get_mail_content_type' );
+				$this->remove_filter(
+					'wp_mail_content_type',
+					'get_mail_content_type'
+				);
 			}
 		}
 
-		do_action( 'ms_model_communication_send_message_before', $ms_relationship, $this );
+		do_action(
+			'ms_model_communication_send_message_before',
+			$ms_relationship,
+			$this
+		);
 
 		return $sent;
 	}
@@ -744,6 +876,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * Replace comm_vars with corresponding values.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to send message to.
 	 * @param WP_User $wp_user The wordpress user object to get info from.
 	 * @return array {
@@ -775,7 +908,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		}
 
-		$comm_vars = apply_filters( 'ms_model_communication_comm_vars', $this->comm_vars );
+		$comm_vars = apply_filters(
+			'ms_model_communication_comm_vars',
+			$this->comm_vars
+		);
 
 		foreach ( $comm_vars as $key => $description ) {
 			switch ( $key ) {
@@ -861,7 +997,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			);
 		}
 
-		return apply_filters( 'ms_model_communication_get_comm_vars', $comm_vars );
+		return apply_filters(
+			'ms_model_communication_get_comm_vars',
+			$comm_vars
+		);
 	}
 
 	/**
@@ -874,8 +1013,10 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @return string
 	 */
 	public function get_mail_content_type() {
-
-		$this->content_type = apply_filters( 'ms_model_communication_set_html_content_type', 'text/html' );
+		$this->content_type = apply_filters(
+			'ms_model_communication_set_html_content_type',
+			'text/html'
+		);
 
 		return $this->content_type;
 	}
@@ -889,44 +1030,55 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 */
 	public function __set( $property, $value ) {
 		if ( property_exists( $this, $property ) ) {
-			switch( $property ) {
+			switch ( $property ) {
 				case 'type':
-					if( $this->is_valid_communication_type( $value ) ) {
+					if ( $this->is_valid_communication_type( $value ) ) {
 						$this->$property = $value;
 					}
 					break;
+
 				case 'subject':
 					$this->$property = sanitize_text_field( $value );
 					break;
+
 				case 'cc_email':
-					if( is_email( $value ) ) {
+					if ( is_email( $value ) ) {
 						$this->$property = $value;
 					}
 					break;
+
 				case 'enabled':
 				case 'cc_enabled':
 					$this->$property = $this->validate_bool( $value );
 					break;
+
 				case 'period':
 					$this->$property = $this->validate_period( $value );
 					break;
+
 				default:
 					$this->$property = $value;
 					break;
 			}
 		}
 		else {
-			switch( $property ) {
+			switch ( $property ) {
 				case 'period_unit':
 					$this->period['period_unit'] = $this->validate_period_unit( $value );
 					break;
+
 				case 'period_type':
 					$this->period['period_type'] = $this->validate_period_type( $value );
 					break;
 			}
 		}
 
-		do_action( 'ms_model_communication__set_after', $property, $value, $this );
+		do_action(
+			'ms_model_communication__set_after',
+			$property,
+			$value,
+			$this
+		);
 	}
 
-}
+};
