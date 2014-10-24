@@ -13,7 +13,7 @@ class MS_View_Gateway_Authorize_Card extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-wrap ms-card-info-wrapper'>
-				<h2><?php _e( 'Authorize.net credit card info', MS_TEXT_DOMAIN ); //should this be generic if shown to users? ?> </h2>
+				<h2><?php _e( 'Credit card info', MS_TEXT_DOMAIN ); ?> </h2>
 				<table class="ms-table">
 					<tbody>
 						<tr>
