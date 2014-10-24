@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Protected Content
-Version: 1.0.1
+Version: 1.0.2
 Plugin URI: https://premium.wpmudev.org/project/protected-content/
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author: WPMU DEV
@@ -74,7 +74,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_VERSION', '1.0.1' );
+define( 'MS_PLUGIN_VERSION', '1.0.2' );
 
 /**
  * Hooks 'ms_class_path_overrides'.

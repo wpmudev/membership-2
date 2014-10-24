@@ -117,7 +117,7 @@ class MS_Model_Plugin extends MS_Model {
 	/**
 	 * Returns an array with access-information on the current page/user
 	 *
-	 * @since  1.0.1.1
+	 * @since  1.0.2
 	 *
 	 * @return array {
 	 *     Access information

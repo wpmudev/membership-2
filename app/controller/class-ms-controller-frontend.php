@@ -197,7 +197,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * current user is registered to. This allows webdesigners to adjust layout
 	 * or hide elements based on the membership a user has.
 	 *
-	 * @since  1.0.1.1
+	 * @since  1.0.2
 	 *
 	 * @param  array $class Class-names to attach to the body.
 	 * @return array Modified class-names to attach to the body.
@@ -707,9 +707,9 @@ class MS_Controller_Frontend extends MS_Controller {
 			$content .= $protection_msg;
 		}
 
-		if ( ! MS_Model_Member::is_logged_user() 
+		if ( ! MS_Model_Member::is_logged_user()
 			&& ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
-			
+
 			$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
 			$content .= do_shortcode( $scode );
 		}

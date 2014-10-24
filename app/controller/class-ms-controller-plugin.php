@@ -320,7 +320,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * Wrapper for MS_Model_Plugin->get_access_info()
 	 *
-	 * @since  1.0.1.1
+	 * @since  1.0.2
 	 * @return array
 	 */
 	public function get_access_info() {
