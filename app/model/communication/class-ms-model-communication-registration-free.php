@@ -21,7 +21,7 @@
 */
 
 /**
- * Communication model - before trial finishes.
+ * Communication model - registration for free membership.
  *
  * Persisted by parent class MS_Model_Custom_Post_Type.
  *
@@ -29,15 +29,35 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communication {
+class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Registration {
 
 	/**
-	 * Communication type.
+	 * Add action to credit card expire event.
+	 *
+	 * Related Action Hooks:
+	 * - ms_model_event_paid
 	 *
 	 * @since 1.0.0
 	 * @var string The communication type.
 	 */
-	protected $type = self::COMM_TYPE_BEFORE_TRIAL_FINISHES;
+	protected $type = self::COMM_TYPE_REGISTRATION_FREE;
+
+	/**
+	 * Add action to signup event.
+	 *
+	 * @since 1.0.0
+	 * @var string The communication type.
+	 */
+	public function after_load() {
+		parent::after_load();
+
+		if ( $this->enabled ) {
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP,
+				'process_communication_registration', 10, 2
+			);
+		}
+	}
 
 	/**
 	 * Get communication description.
@@ -47,7 +67,7 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	 */
 	public function get_description() {
 		return __(
-			'Sent a predefined number of days before the trial period finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN
+			'Sent when a member completes the signup for a free membership.', MS_TEXT_DOMAIN
 		);
 	}
 
@@ -60,12 +80,11 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Your %s membership trial will end soon', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_NAME
+			__( 'Confirmation of your membership at %s', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_BLOG_NAME
 		);
 		$this->message = self::get_default_message();
 		$this->enabled = false;
-		$this->period_enabled = true;
 		$this->save();
 
 		do_action(
@@ -87,13 +106,12 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'This is a reminder that your %1$s trial membership at %2$s wil end in %3$s.', MS_TEXT_DOMAIN ),
+			__( 'You have successfully subscribed to our free %1$s membership level at %2$s.', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_MS_NAME,
-			self::COMM_VAR_BLOG_NAME,
-			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS
+			self::COMM_VAR_BLOG_NAME
 		);
-		$body_renew = sprintf(
-			'You can renew and edit your membership details here: %1$s',
+		$body_account = sprintf(
+			__( 'You can review and edit your membership details here: %1$s', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
 
@@ -101,12 +119,46 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s',
 			$subject,
 			$body_notice,
-			$body_renew
+			$body_account
 		);
 
 		return apply_filters(
-			'ms_model_communication_before_trial_finishes_get_default_message',
+			'ms_model_communication_registration_get_default_message',
 			$html
+		);
+	}
+
+	/**
+	 * Process communication registration.
+	 *
+	 * Related Action Hooks:
+	 * - ms_model_event_signed_up
+	 *
+	 * @since 1.0.0
+	 * @var string The communication type.
+	 */
+	public function process_communication_registration( $event, $ms_relationship ) {
+		$membership = $ms_relationship->get_membership();
+		$is_free = (int) $membership->price == 0 || $membership->is_free;
+
+		// Only process Free memberships here!
+		// Email for paid memberships is in MS_Model_Communiction_Registration
+		if ( ! $is_free ) { return; }
+
+		do_action(
+			'ms_model_communication_registration_process_before',
+			$ms_relationship,
+			$event,
+			$this
+		);
+
+		$this->send_message( $ms_relationship );
+
+		do_action(
+			'ms_model_communication_registration_process_after',
+			$ms_relationship,
+			$event,
+			$this
 		);
 	}
 }

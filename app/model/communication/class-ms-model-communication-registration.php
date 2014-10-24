@@ -32,21 +32,10 @@
 class MS_Model_Communication_Registration extends MS_Model_Communication {
 
 	/**
-	 * Model custom post type.
-	 *
-	 * Both static and class property are used to handle php 5.2 limitations.
-	 *
-	 * @since 1.0.0
-	 * @var string $POST_TYPE
-	 * @var string $post_type is inherited.
-	 */
-	public static $POST_TYPE = 'ms_communication';
-
-	/**
 	 * Add action to credit card expire event.
 	 *
-	 * *Hooks Actions: *
-	 * * ms_model_event_paid
+	 * Related Action Hooks:
+	 * - ms_model_event_paid
 	 *
 	 * @since 1.0.0
 	 * @var string The communication type.
@@ -88,7 +77,6 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	 * @since 1.0.0
 	 */
 	public function reset_to_default() {
-
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
@@ -153,6 +141,13 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	 * @var string The communication type.
 	 */
 	public function process_communication_registration( $event, $ms_relationship ) {
+		$membership = $ms_relationship->get_membership();
+		$is_free = (int) $membership->price == 0 || $membership->is_free;
+
+		// Only process Paid memberships here!
+		// Email for free memberships is in MS_Model_Communiction_Registration_Free
+		if ( $is_free ) { return; }
+
 		do_action(
 			'ms_model_communication_registration_process_before',
 			$ms_relationship,

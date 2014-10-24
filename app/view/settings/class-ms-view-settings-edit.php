@@ -419,10 +419,10 @@ class MS_View_Settings_Edit extends MS_View {
 				'value' => @$comm->enabled,
 				'class' => 'ms-ajax-update',
 				'data_ms' => array(
-						'type' => @$comm->type,
-						'field' => 'enabled',
-						'action' => $action,
-						'_wpnonce' => $nonce,
+					'type' => @$comm->type,
+					'field' => 'enabled',
+					'action' => $action,
+					'_wpnonce' => $nonce,
 				),
 			),
 

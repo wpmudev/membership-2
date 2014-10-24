@@ -32,17 +32,6 @@
 class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 
 	/**
-	 * Model custom post type.
-	 *
-	 * Both static and class property are used to handle php 5.2 limitations.
-	 *
-	 * @since 1.0.0
-	 * @var string $POST_TYPE
-	 * @var string $post_type is inherited.
-	 */
-	public static $POST_TYPE = 'ms_communication';
-
-	/**
 	 * Communication type.
 	 *
 	 * @since 1.0.0

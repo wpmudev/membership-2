@@ -59,6 +59,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @var string The communication type
 	 */
 	const COMM_TYPE_REGISTRATION = 'type_registration';
+	const COMM_TYPE_REGISTRATION_FREE = 'type_registration_free';
 	const COMM_TYPE_INVOICE = 'type_invoice';
 	const COMM_TYPE_BEFORE_FINISHES = 'type_before_finishes';
 	const COMM_TYPE_FINISHED = 'type_finished';
@@ -270,29 +271,30 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		if( empty( $types ) ) {
 			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
 				$types = array(
-						self::COMM_TYPE_REGISTRATION,
-						self::COMM_TYPE_INVOICE,
-						self::COMM_TYPE_BEFORE_FINISHES,
-						self::COMM_TYPE_FINISHED,
-						self::COMM_TYPE_AFTER_FINISHES,
-						self::COMM_TYPE_CANCELLED,
-						self::COMM_TYPE_BEFORE_TRIAL_FINISHES,
-						self::COMM_TYPE_INFO_UPDATE,
-						self::COMM_TYPE_CREDIT_CARD_EXPIRE,
-						self::COMM_TYPE_FAILED_PAYMENT,
-						self::COMM_TYPE_BEFORE_PAYMENT_DUE,
-						self::COMM_TYPE_AFTER_PAYMENT_DUE,
+					self::COMM_TYPE_REGISTRATION,
+					self::COMM_TYPE_REGISTRATION_FREE,
+					self::COMM_TYPE_INVOICE,
+					self::COMM_TYPE_BEFORE_FINISHES,
+					self::COMM_TYPE_FINISHED,
+					self::COMM_TYPE_AFTER_FINISHES,
+					self::COMM_TYPE_CANCELLED,
+					self::COMM_TYPE_BEFORE_TRIAL_FINISHES,
+					self::COMM_TYPE_INFO_UPDATE,
+					self::COMM_TYPE_CREDIT_CARD_EXPIRE,
+					self::COMM_TYPE_FAILED_PAYMENT,
+					self::COMM_TYPE_BEFORE_PAYMENT_DUE,
+					self::COMM_TYPE_AFTER_PAYMENT_DUE,
 				);
 			}
 			else {
 				$types = array(
-						self::COMM_TYPE_REGISTRATION,
-						self::COMM_TYPE_INVOICE,
-						self::COMM_TYPE_FINISHED,
-						self::COMM_TYPE_CANCELLED,
-						self::COMM_TYPE_INFO_UPDATE,
-						self::COMM_TYPE_CREDIT_CARD_EXPIRE,
-						self::COMM_TYPE_FAILED_PAYMENT,
+					self::COMM_TYPE_REGISTRATION,
+					self::COMM_TYPE_INVOICE,
+					self::COMM_TYPE_FINISHED,
+					self::COMM_TYPE_CANCELLED,
+					self::COMM_TYPE_INFO_UPDATE,
+					self::COMM_TYPE_CREDIT_CARD_EXPIRE,
+					self::COMM_TYPE_FAILED_PAYMENT,
 				);
 			}
 		}
@@ -317,6 +319,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		if( empty( $type_classes ) ) {
 			$type_classes = array(
 				self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
+				self::COMM_TYPE_REGISTRATION_FREE => 'MS_Model_Communication_Registration_Free',
 				self::COMM_TYPE_INVOICE => 'MS_Model_Communication_Invoice',
 				self::COMM_TYPE_BEFORE_FINISHES => 'MS_Model_Communication_Before_Finishes',
 				self::COMM_TYPE_FINISHED => 'MS_Model_Communication_Finished',
@@ -351,6 +354,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		if( empty( $type_titles ) ) {
 			$type_titles = array(
 				self::COMM_TYPE_REGISTRATION => __( 'Signup completed', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup completed for a free membership', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_INVOICE => __( 'Invoice/Receipt', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_BEFORE_FINISHES => __( 'Before Membership finishes', MS_TEXT_DOMAIN ),
 				self::COMM_TYPE_FINISHED => __( 'Membership finished', MS_TEXT_DOMAIN ),
@@ -707,11 +711,11 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			$sent = @wp_mail( $recipients, $subject, $message, $headers );
 
 			/*
-			-- Debugging code --
+			// -- Debugging code --
 
 			MS_Helper_Debug::log(
 				sprintf(
-					"Sent email %s to <%s>: %s\n%s",
+					"Sent email [%s] to <%s>: %s\n%s",
 					$this->type,
 					implode( ', ', $recipients ),
 					(int) $sent,
@@ -724,7 +728,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					print_r( $comm_vars, true )
 				)
 			);
-			*/
+			//*/
 
 			if ( 'text/html' == $this->get_mail_content_type() ) {
 				$this->remove_filter( 'wp_mail_content_type', 'get_mail_content_type' );
