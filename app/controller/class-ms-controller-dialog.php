@@ -224,7 +224,6 @@ class MS_Controller_Dialog extends MS_Controller {
 				__( 'Possible reason: your host may have disabled the mail() function.' );
 		} else {
 			$resp['success'] = __( 'Check your e-mail for the confirmation link.', MS_TEXT_DOMAIN );
-			$resp['success'] .= '<hr>' . $message;
 		}
 
 		$this->respond( $resp );
