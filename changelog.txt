@@ -2,6 +2,8 @@
 * Add class to page body to indentify membership of the current user
 * Fix image-url of loading animation in one css file
 * Fix logout word showing in protected-content page
+* Fix undefined variable in members model
+* Fix credit card info text
 
 ==1.0.1==
 * Fix slow Ajax Login
