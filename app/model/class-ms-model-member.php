@@ -250,7 +250,7 @@ class MS_Model_Member extends MS_Model {
 					|| $user_details[ "ms_$field" ][0] != $this->$field
 				)
 			) {
-				update_user_meta( $this->id, 'ms_$field', $this->$field );
+				update_user_meta( $this->id, "ms_$field", $this->$field );
 			}
 		}
 
@@ -442,7 +442,8 @@ class MS_Model_Member extends MS_Model {
 		$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
 		$wp_user_search = new WP_User_Query( $args );
 		$users = $wp_user_search->get_results();
-
+		MS_Helper_Debug::log( $args );
+		MS_Helper_Debug::log( $users );
 		foreach ( $users as $user_id ) {
 			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
 		}
