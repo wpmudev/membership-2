@@ -87,8 +87,8 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( MS_Plugin::instance()->settings->plugin_enabled ) {
 			do_action( 'ms_controller_frontend_construct', $this );
 
-			$this->add_action( 'template_redirect', 'process_actions', 1 );
-			$this->add_action( 'template_redirect', 'check_for_membership_pages', 1 );
+			$this->add_action( 'parse_query', 'process_actions', 1 );
+			$this->add_action( 'parse_query', 'check_for_membership_pages', 1 );
 
 			// Add classes for all memberships the user is registered to.
 			$this->add_filter( 'body_class', 'body_class' );
@@ -108,9 +108,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Matches returned 'action' to method to execute.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * template_redirect
+	 * Related Action Hooks:
+	 * - parse_query
 	 *
 	 * @since 1.0.0
 	 */
@@ -136,17 +135,16 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Check pages for the presence of Membership special pages.
 	 *
 	 * Related Action Hooks:
-	 * - template_redirect
+	 * - parse_query
 	 *
 	 * @since 1.0.0
 	 */
-	public function check_for_membership_pages() {
+	public function check_for_membership_pages( $query ) {
 		//For invoice page purchase process
 		global $post;
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
-		$replace_content = false;
 
-		if ( isset( $post->post_type)
+		if ( isset( $post->post_type )
 			&& $post->post_type == MS_Model_Invoice::$POST_TYPE
 			&& $this->validate_required( $fields )
 			&& 'process_purchase' == $_POST['step']
@@ -158,12 +156,20 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$ms_page_slug = $ms_pages->is_ms_page();
 
-		switch ( $ms_pages->is_ms_page() ) {
+		// Fix the main query flags for best theme support
+		if ( $ms_page_slug ) {
+			$query->query_vars['pagename'] = $ms_pages->is_ms_page();
+			$query->is_page = true;
+			$query->is_singular = true;
+			$query->tax_query = null;
+		}
+
+		switch ( $ms_page_slug ) {
 			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
 				if ( ! MS_Model_Member::is_logged_user() ) {
 					$this->add_filter( 'the_content', 'display_login_form' );
-					$replace_content = true;
 					break;
 				}
 				// no break;
@@ -183,21 +189,14 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
 				$this->add_filter( 'the_content', 'protected_page', 1 );
-				$replace_content = true;
 				break;
 
 			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
 				$this->add_filter( 'the_content', 'reg_complete_page', 1 );
-				$replace_content = true;
 				break;
 
 			default:
 				break;
-		}
-
-		if ( $replace_content ) {
-			// Upfront integration
-			$this->add_action( 'upfront-layout-applied', 'terminate_output_upfront' );
 		}
 	}
 
@@ -357,20 +356,6 @@ class MS_Controller_Frontend extends MS_Controller {
 			$content,
 			$this
 		);
-	}
-
-	/**
-	 * Outputs the page contents and then terminates the request.
-	 *
-	 * Related Action Hooks:
-	 * - upfront-layout-applied
-	 *
-	 * @since  1.0.4
-	 */
-	public function terminate_output_upfront() {
-		echo apply_filters( 'the_content' );
-		get_footer();
-		exit;
 	}
 
 	/**
