@@ -1,4 +1,4 @@
-/*! Protected Content - v1.0.2
+/*! Protected Content - v1.0.4
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2014; * Licensed GPLv2+ */
 /*global window:false */
