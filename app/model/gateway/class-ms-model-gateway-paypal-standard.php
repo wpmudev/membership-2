@@ -403,7 +403,8 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 					MS_Model_Event::TYPE_PAYMENT_DENIED,
 					$ms_relationship
 				);
-				$member->active = false;
+				//Disable user @todo 
+// 				$member->active = false;
 				break;
 
 			default:

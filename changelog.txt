@@ -1,6 +1,9 @@
 ==1.0.4==
 * Fix assignment of private memberships via members-list
 
+==1.0.3==
+* Fix member model fields not persisting
+
 ==1.0.2==
 * Add class to page body to indentify membership of the current user
 * Add option to send different email when registering for a free membership
