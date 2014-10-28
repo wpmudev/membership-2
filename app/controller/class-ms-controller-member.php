@@ -123,47 +123,79 @@ class MS_Controller_Member extends MS_Controller {
 		$this->print_admin_message();
 
 		$msg = 0;
-		if( $this->is_admin_user() ) {
+		$redirect = false;
 
-			$fields = array( 'new_member', 'action' );
-			if( $this->verify_nonce( 'add_member' ) && $this->validate_required( $fields ) ) {
-				$member = MS_Factory::load( 'MS_Model_Member', $_POST['new_member'] );
+		if ( $this->is_admin_user() ) {
+			$fields_new = array( 'new_member', 'action' );
+			$fields_edit = array( 'member_id', 'action' );
+
+			if ( $this->verify_nonce( 'add_member' )
+				&& $this->validate_required( $fields_new )
+			) {
+				$member = MS_Factory::load(
+					'MS_Model_Member',
+					$_POST['new_member']
+				);
+
 				$member->is_member = true;
 				$member->save();
-				$msg = true;//TODO
+				$msg = true; //TODO
 
-				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-				exit;
+				$redirect = add_query_arg( array( 'msg' => $msg ) );
 			}
-			/**
-			 * Execute list table single action.
-			 */
-			$fields = array( 'member_id', 'action' );
-			if( $this->verify_nonce( null, 'GET' ) && $this->validate_required( $fields, 'GET' ) ) {
-				$msg = $this->member_list_do_action( $_GET['action'], array( $_GET['member_id'] ) );
-				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'member_id', 'action', '_wpnonce' ) ) ) );
-				exit;
+
+			// Execute list table single action.
+			else if ( $this->verify_nonce( null, 'GET' )
+				&& $this->validate_required( $fields_edit, 'GET' )
+			) {
+				$msg = $this->member_list_do_action(
+					$_GET['action'],
+					array( $_GET['member_id'] )
+				);
+
+				$redirect = remove_query_arg(
+					array( 'member_id', 'action', '_wpnonce' )
+				);
+
+				$redirect = add_query_arg( array( 'msg' => $msg ), $redirect );
 			}
-			/**
-			 * Execute list table bulk actions.
-			 */
-			elseif( $this->verify_nonce( 'bulk-members' ) && $this->validate_required( $fields, 'POST' ) ) {
+
+			// Execute list table bulk actions.
+			elseif ( $this->verify_nonce( 'bulk-members' )
+				&& $this->validate_required( $fields_edit, 'POST' )
+			) {
 				$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-				if( $action == 'toggle_activation') {
+				if ( $action == 'toggle_activation' ) {
 					$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
-					wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-					exit;
+
+					$redirect = add_query_arg( array( 'msg' => $msg ) );
 				}
 			}
-			/**
-			 * Execute edit view page action submit.
-			 */
-			elseif( ! empty( $_POST['submit'] ) && $this->verify_nonce() && $this->validate_required( $fields, 'POST' ) ) {
-				$member_ids = is_array( $_POST['member_id'] ) ? $_POST['member_id'] : explode( ',', $_POST['member_id'] );
-				$msg = $this->member_list_do_action( $_POST['action'], $member_ids, $_POST['membership_id'] );
-				wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-				exit;
+
+			// Execute edit view page action submit.
+			elseif ( isset( $_POST['submit'] )
+				&& $this->verify_nonce()
+				&& $this->validate_required( $fields_edit, 'POST' )
+			) {
+				if ( is_array( $_POST['member_id'] ) ) {
+					$member_ids = $_POST['member_id'];
+				} else {
+					$member_ids = explode( ',', $_POST['member_id'] );
+				}
+
+				$msg = $this->member_list_do_action(
+					$_POST['action'],
+					$member_ids,
+					$_POST['membership_id']
+				);
+
+				$redirect = add_query_arg( array( 'msg' => $msg ) );
 			}
+		}
+
+		if ( $redirect ) {
+			wp_safe_redirect( $redirect );
+			exit;
 		}
 
 	}
@@ -176,18 +208,15 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_member_list() {
-
-		/**
-		 * Action view edit page request
-		 */
+		// Action view edit page request
 		$fields = array( 'member_id', 'action' );
-		if( $this->validate_required( $fields, 'REQUEST' ) ) {
+		if ( $this->validate_required( $fields, 'REQUEST' ) ) {
 			$this->prepare_action_view( $_REQUEST['action'], $_REQUEST['member_id'] );
 		}
 		else {
 			$data = array();
 			$data['usernames'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS );
-			$data['action'] ='add_member';
+			$data['action'] = 'add_member';
 
 			$view = MS_Factory::create( 'MS_View_Member_List' );
 			$view->data = apply_filters( 'ms_view_member_list_data', $data );
@@ -207,20 +236,24 @@ class MS_Controller_Member extends MS_Controller {
 		$view = null;
 		$data = array();
 
-		/** Bulk actions */
-		if( is_array( $member_id ) ) {
+		// Bulk actions
+		if ( is_array( $member_id ) ) {
 			$memberships = MS_Model_Membership::get_membership_names();
 			$data['member_id'] = $member_id;
-			switch( $action ) {
+
+			switch ( $action ) {
 				case 'add':
 					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
 					break;
+
 				case 'cancel':
 					$memberships[0] = __( 'Select Membership to cancel', MS_TEXT_DOMAIN );
 					break;
+
 				case 'drop':
 					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
 					break;
+
 				case 'move':
 					$memberships_move = $memberships;
 					$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
@@ -230,47 +263,86 @@ class MS_Controller_Member extends MS_Controller {
 					break;
 			}
 		}
-		/** Single action */
+
+		// Single action
 		else {
-			/** Member Model */
+			// Member Model
 			$member = apply_filters( 'membership_member_model', MS_Factory::load( 'MS_Model_Member', $member_id ) );
 			$data['member_id'] = array( $member_id );
-			switch( $action ) {
+
+			switch ( $action ) {
 				case 'add':
-					$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $member->ms_relationships ), true );
-					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
+					$memberships = MS_Model_Membership::get_signup_membership_list(
+						null,
+						array_keys( $member->ms_relationships ),
+						true,
+						true
+					);
+					$memberships = array_unshift_assoc(
+						$memberships,
+						0,
+						__( '- Select Membership to add -', MS_TEXT_DOMAIN )
+					);
 					break;
+
 				case 'cancel':
-					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
+					$args = array(
+						'post__in' => array_keys( $member->ms_relationships ),
+					);
 					$memberships = MS_Model_Membership::get_membership_names( $args );
-					$memberships[0] = __( 'Select Membership to cancel', MS_TEXT_DOMAIN );
+					$memberships = array_unshift_assoc(
+						$memberships,
+						0,
+						__( '- Select Membership to cancel -', MS_TEXT_DOMAIN )
+					);
 					break;
+
 				case 'drop':
-					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
+					$args = array(
+						'post__in' => array_keys( $member->ms_relationships ),
+					);
 					$memberships = MS_Model_Membership::get_membership_names( $args, true );
-					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
+					$memberships = array_unshift_assoc(
+						$memberships,
+						0,
+						__( '- Select Membership to drop -', MS_TEXT_DOMAIN )
+					);
 					break;
+
 				case 'move':
-					$args = array( 'post__in' => array_keys( $member->ms_relationships ) );
+					$args = array(
+						'post__in' => array_keys( $member->ms_relationships ),
+					);
 					$memberships_move = MS_Model_Membership::get_membership_names( $args );
-					$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
+					$memberships_move = array_unshift_assoc(
+						$memberships_move,
+						0,
+						__( '- Select Membership to move from -', MS_TEXT_DOMAIN )
+					);
 
 					$memberships = MS_Model_Membership::get_membership_names( null, true );
 					$memberships = array_diff_key( $memberships, $member->ms_relationships );
-					$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
+					$memberships = array_unshift_assoc(
+						$memberships,
+						0,
+						__( '- Select Membership to move to -', MS_TEXT_DOMAIN )
+					);
 					break;
+
 				case 'edit_date':
 					$view = MS_Factory::create( 'MS_View_Member_Date' );
 					$data['member_id'] = $member_id;
-					$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships( array( 'user_id' => $member->id ) );
+					$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships(
+						array( 'user_id' => $member->id )
+					);
 					break;
 			}
 		}
 
-		if( in_array( $action, array( 'add', 'move', 'drop', 'cancel' ) ) ) {
+		if ( in_array( $action, array( 'add', 'move', 'drop', 'cancel' ) ) ) {
 			$view = MS_Factory::create( 'MS_View_Member_Membership' );
 			$data['memberships'] = $memberships;
-			if( 'move' == $action ){
+			if ( 'move' == $action ){
 				$data['memberships_move'] = $memberships_move;
 			}
 		}

@@ -904,59 +904,94 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Get membership eligible to signup.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @param int[] $exclude_ids Optional. The membership ids to exclude.
 	 * @param bool $only_names Optional. Return only array {
-	 *		@type int $membership_id The membership ID.
-	 *		@type string $membership_name The membership name.
+	 *     @type int $membership_id The membership ID.
+	 *     @type string $membership_name The membership name.
 	 * }
+	 * @param bool $include_private If private memberships should be listed
+	 *     This param is only recognized in the admin section so admins can
+	 *     manually assign a private membership to a user.
 	 * @return array {
-	 *		Returns array of $membership_id => $membership
-	 *		@type int $membership_id The membership Id.
-	 *		@type MS_Model_Membership The membership model object.
+	 *     Returns array of $membership_id => $membership
+	 *     @type int $membership_id The membership Id.
+	 *     @type MS_Model_Membership The membership model object.
 	 * }
 	 */
-	public static function get_signup_membership_list( $args = null, $exclude_ids = null, $only_names = false ) {
-
+	public static function get_signup_membership_list(
+		$args = null,
+		$exclude_ids = null,
+		$only_names = false,
+		$include_private = false
+	) {
 		$not_in = array();
-		if( is_array( $exclude_ids ) ) {
+		if ( is_array( $exclude_ids ) ) {
 			$not_in = $exclude_ids;
 		}
 		$not_in[] = MS_Model_Membership::get_visitor_membership()->id;
-		$args['post__not_in'] = array_unique ( $not_in );
+		$args['post__not_in'] = array_unique( $not_in );
 
-		/* Retrieve memberships user is not part of, using selected args */
+		if ( ! is_admin() ) {
+			$include_private = false;
+		}
+		// List of private memberships (they are grouped in own array).
+		$private = array();
+
+		// Retrieve memberships user is not part of, using selected args
 		$memberships = MS_Model_Membership::get_grouped_memberships( $args );
 
 		$parent_ids = array();
-		foreach( $memberships as $key => $membership ) {
-			if( $membership->can_have_children() ) {
-				if( ! $membership->active ) {
+		foreach ( $memberships as $key => $membership ) {
+			if ( $membership->can_have_children() ) {
+				if ( ! $membership->active ) {
 					$parent_ids[] = $membership->id;
 				}
-				/* Remove parent memberships */
+				// Remove parent memberships
 				unset( $memberships[ $key ] );
 			}
-			/* If parent is disabled, remove all children */
-			if( in_array( $membership->parent_id, $parent_ids ) ) {
+			// Remove all children if parent is disabled
+			if ( in_array( $membership->parent_id, $parent_ids ) ) {
 				unset( $memberships[ $key ] );
 			}
-			/* if private or not active, remove */
-			if( ! $membership->active || $membership->private ) {
+			// Remove if not active.
+			if ( ! $membership->active ) {
+				unset( $memberships[ $key ] );
+			}
+			if ( $membership->private ) {
+				if ( $include_private ) {
+					// Move the private memberships to a option-group.
+					$private[ $key ] = $memberships[ $key ];
+				}
 				unset( $memberships[ $key ] );
 			}
 		}
 
-		if( $only_names ) {
+		if ( $only_names ) {
 			$ms_names = array();
-			foreach( $memberships as $ms ) {
+			foreach ( $memberships as $ms ) {
 				$ms_names[ $ms->id ] = $ms->name;
 			}
+			if ( ! empty( $private ) ) {
+				$priv_key = __( 'Private Memberships', MS_TEXT_DOMAIN );
+				$ms_names[ $priv_key ] = array();
+				foreach ( $private as $ms ) {
+					$ms_names[ $priv_key ][ $ms->id ] = $ms->name;
+				}
+			}
 			$memberships = $ms_names;
+		} else {
+			$memberships = array_merge( $memberships, $private );
 		}
 
-		return apply_filters( 'ms_model_membership_get_signup_membership_list', $memberships, $exclude_ids, $only_names );
+		return apply_filters(
+			'ms_model_membership_get_signup_membership_list',
+			$memberships,
+			$exclude_ids,
+			$only_names
+		);
 	}
 
 	/**

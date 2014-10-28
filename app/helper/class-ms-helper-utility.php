@@ -1,24 +1,24 @@
 <?php
 /**
  * This file defines the MS_Helper_Utility class.
- * 
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
  */
 
@@ -30,7 +30,7 @@
  * @subpackage Helper
  */
 class MS_Helper_Utility extends MS_Helper {
-	
+
 	/**
 	 * Implements a multi-dimensional array_intersect_assoc.
 	 *
@@ -41,10 +41,10 @@ class MS_Helper_Utility extends MS_Helper {
 	 *
 	 * @since 4.0.0
 	 * @param  mixed $arr1 First array to intersect.
-	 * @param  mixed $arr2 Second array to intersect.	
+	 * @param  mixed $arr2 Second array to intersect.
 	 */
 	public static function array_intersect_assoc_deep(&$arr1, &$arr2) {
-		
+
 		// If not arrays, at least associate the strings this gives the recursive answer
 		// If 1 argument is an array and the other not throw error.
 		if ( ! is_array( $arr1 ) && ! is_array( $arr2 ) ) {
@@ -54,13 +54,13 @@ class MS_Helper_Utility extends MS_Helper {
 			return false;
 		} elseif ( ! is_array( $arr2 ) && is_array( $arr1 ) ) {
 			MS_Helper_Debug::log( __( "WARNING: MS_Helper_Utility::array_intersect_assoc_deep() Expected parameter 2 to be an array.", MS_TEXT_DOMAIN ), true );
-			return false;			
+			return false;
 		}
-		
+
 	    $intersections = array_intersect( array_keys( $arr1 ), array_keys( $arr2 ) );
-	    
+
 		$assoc_array = array();
-		
+
 		// Time to recursively run through the arrays
 	    foreach ( $intersections as $key ) {
 			$result = MS_Helper_Utility::array_intersect_assoc_deep( $arr1[ $key ], $arr2[ $key ] );
@@ -68,37 +68,37 @@ class MS_Helper_Utility extends MS_Helper {
 				$assoc_array[ $key ] = $result;
 			}
 	    }
-		
+
 	    return apply_filters( 'ms_helper_utility_array_intersect_assoc_deep', $assoc_array );
 	}
-	
+
 	/**
 	 * Get the current page url.
-	 * 
+	 *
 	 * @since 4.0.0
-	 * 
+	 *
 	 * @return string The url.
 	 */
 	public static function get_current_page_url( $force_ssl = false ) {
-		
+
 		$current_page_url = 'http://';
-		
+
 		if( $force_ssl || 'on' == @$_SERVER['HTTPS'] ) {
 			$current_page_url = 'https://';
 		}
-		
+
 		if ( $_SERVER['SERVER_PORT'] != '80' ) {
 			$current_page_url .= $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'];
 		}
 		else {
 			$current_page_url .= $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 		}
-		
+
 		return apply_filters( 'ms_helper_utility_get_current_page_url', $current_page_url );
 	}
 
 	/**
-	 * Replace http protocol to https 
+	 * Replace http protocol to https
 	 *
 	 * @since 4.0.0
 	 *
@@ -108,7 +108,7 @@ class MS_Helper_Utility extends MS_Helper {
 	public static function get_ssl_url( $url ) {
 		return apply_filters( 'ms_helper_utility_get_ssl_url', preg_replace( '|^http://|', 'https://', $url ), $url );
 	}
-	
+
 	/**
 	 * Returns user IP address.
 	 *
@@ -129,7 +129,7 @@ class MS_Helper_Utility extends MS_Helper {
 				'HTTP_FORWARDED',
 				'REMOTE_ADDR',
 		);
-	
+
 		$remote_ip = false;
 		foreach ( $keys as $key ) {
 			if ( array_key_exists( $key, $_SERVER ) === true ) {
@@ -141,12 +141,12 @@ class MS_Helper_Utility extends MS_Helper {
 				}
 			}
 		}
-	
+
 		return $remote_ip;
 	}
-	
+
 	public static function register_post_type( $post_type, $args = null ) {
-		
+
 		$defaults = array(
 			'public' => false,
 			'has_archive' => false,
@@ -155,10 +155,28 @@ class MS_Helper_Utility extends MS_Helper {
 // 			'capability_type' => apply_filters( $post_type, '_capability', 'page' ),
 			'hierarchical' => false
 		);
-		
+
 		$args = wp_parse_args( $args, $defaults );
-		
+
 		register_post_type( $post_type, $args );
 	}
-	
+
+}
+
+if ( ! function_exists( 'array_unshift_assoc' ) ) {
+	/**
+	 * Appends an item to the beginning of an associative array while preserving
+	 * the array keys.
+	 *
+	 * @since  1.0.3
+	 * @param  array $arr
+	 * @param  scalar $key
+	 * @param  mixed $val
+	 * @return array
+	 */
+	function array_unshift_assoc( &$arr, $key, $val ) {
+		$arr = array_reverse( $arr, true );
+		$arr[$key] = $val;
+		return array_reverse( $arr, true );
+	}
 }

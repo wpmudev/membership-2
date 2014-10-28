@@ -204,29 +204,16 @@ class MS_Helper_Html extends MS_Helper {
 				self::html_element_label( $title, $label_element, $id, $tooltip_output );
 				self::html_element_desc( $desc );
 
+				$options .= self::select_options( $field_options, $value );
+
 				printf(
-					'<select id="%1$s" class="ms-field-input ms-select %2$s" name="%3$s" %4$s>',
+					'<select id="%1$s" class="ms-field-input ms-select %2$s" name="%3$s" %4$s>%5$s</select>',
 					esc_attr( $id ),
 					esc_attr( $class ),
 					esc_attr( $name ),
-					$multiple . $read_only . $attr_data_placeholder . $data_ms
+					$multiple . $read_only . $attr_data_placeholder . $data_ms,
+					$options
 				);
-				foreach ( $field_options as $key => $option ) {
-					$selected = '';
-					if ( is_array( $value ) ) {
-						$selected = selected( array_key_exists( $key, $value ), true, false );
-					}
-					else {
-						$selected = selected( $key, $value, false );
-					}
-					printf(
-						'<option %1$s value="%2$s">%3$s</option>',
-						$selected,
-						esc_attr( $key ),
-						$option
-					);
-				}
-				echo '</select>';
 
 				self::html_element_hint( $title, $tooltip_output );
 				break;
@@ -839,6 +826,8 @@ class MS_Helper_Html extends MS_Helper {
 		);
 
 		extract( wp_parse_args( $args, $defaults ) );
+
+		if ( empty( $title ) ) { $title = $value; }
 
 		if ( $return ) { ob_start(); }
 		printf(
