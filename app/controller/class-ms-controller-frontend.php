@@ -144,6 +144,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		//For invoice page purchase process
 		global $post;
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
+		$replace_content = false;
 
 		if ( isset( $post->post_type)
 			&& $post->post_type == MS_Model_Invoice::$POST_TYPE
@@ -162,6 +163,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
 				if ( ! MS_Model_Member::is_logged_user() ) {
 					$this->add_filter( 'the_content', 'display_login_form' );
+					$replace_content = true;
 					break;
 				}
 				// no break;
@@ -181,14 +183,21 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
 				$this->add_filter( 'the_content', 'protected_page', 1 );
+				$replace_content = true;
 				break;
 
 			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
 				$this->add_filter( 'the_content', 'reg_complete_page', 1 );
+				$replace_content = true;
 				break;
 
 			default:
 				break;
+		}
+
+		if ( $replace_content ) {
+			// Upfront integration
+			$this->add_action( 'upfront-layout-applied', 'terminate_output_upfront' );
 		}
 	}
 
@@ -348,6 +357,20 @@ class MS_Controller_Frontend extends MS_Controller {
 			$content,
 			$this
 		);
+	}
+
+	/**
+	 * Outputs the page contents and then terminates the request.
+	 *
+	 * Related Action Hooks:
+	 * - upfront-layout-applied
+	 *
+	 * @since  1.0.4
+	 */
+	public function terminate_output_upfront() {
+		echo apply_filters( 'the_content' );
+		get_footer();
+		exit;
 	}
 
 	/**
