@@ -1,5 +1,6 @@
 ==1.0.4==
 * Fix assignment of private memberships via members-list
+* Fix membership status-flag in database
 
 ==1.0.3==
 * Fix member model fields not persisting

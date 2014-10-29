@@ -1050,6 +1050,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$protected_content->private = true;
 			$protected_content->save();
 			$protected_content = MS_Factory::load( 'MS_Model_Membership', $protected_content->id );
+
+			// It is important! The Protected Content membership must be public
+			// so that the membership options are available for guest users.
+			wp_publish_post( $protected_content->id );
 		}
 		return apply_filters( 'ms_model_membership_get_protected_content', $protected_content );
 	}
