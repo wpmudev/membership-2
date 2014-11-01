@@ -73,12 +73,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 	 * @since 1.0.0
 	 */
 	public function render_tab_() {
-		$menu_link = array(
-			'id' => 'menu_link',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Manage Protected Content', MS_TEXT_DOMAIN ),
-			'url' => sprintf( 'admin.php?page=%s', MS_Controller_Plugin::MENU_SLUG . '-setup' ),
-		);
+		$menu_link = $this->restriction_link();
 
 		ob_start();
 		?>
@@ -109,39 +104,39 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$nonce = wp_create_nonce( $action );
 
 		$fields = array(
-			'category_rule_edit' => array(
-				'id' => 'category_rule_edit',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Manage Protected Categories', MS_TEXT_DOMAIN ),
-				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CATEGORY ),
-			),
-
-			'cpt_group_rule_edit' => array(
-				'id' => 'cpt_group_rule_edit',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
-				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP ),
-			),
+			'category_rule_edit' => $this->restriction_link( MS_Model_Rule::RULE_TYPE_CATEGORY ),
+			'cpt_group_rule_edit' => $this->restriction_link( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP ),
 		);
 
-		$fields = apply_filters( 'ms_view_membership_setup_protected_content_get_category_fields', $fields );
+		$fields = apply_filters(
+			'ms_view_membership_setup_protected_content_get_category_fields',
+			$fields
+		);
 
 		$rule_cat = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
-		$category_rule_list_table = new MS_Helper_List_Table_Rule_Category( $rule_cat, $membership );
+		$category_rule_list_table = new MS_Helper_List_Table_Rule_Category(
+			$rule_cat,
+			$membership
+		);
 		$category_rule_list_table->prepare_items();
 
 		$rule_cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
-		$cpt_rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type_Group( $rule_cpt, $membership );
+		$cpt_rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type_Group(
+			$rule_cpt,
+			$membership
+		);
 		$cpt_rule_list_table->prepare_items();
 
 		$title = array();
 		$desc = '';
+
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
 		}
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 		}
+
 		$desc = sprintf(
 			__( 'Give access to protected %s to %s members.', MS_TEXT_DOMAIN ),
 			implode( ' & ', $title ),
@@ -205,12 +200,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
 		$rule_list_table->prepare_items();
 
-		$edit_link = array(
-			'id' => 'page_rule_edit',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Manage Protected Pages', MS_TEXT_DOMAIN ),
-			'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_PAGE ),
-		);
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_PAGE );
 
 		$title = __( 'Pages ', MS_TEXT_DOMAIN );
 		$desc = sprintf(
@@ -253,12 +243,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $rule, $membership );
 		$rule_list_table->prepare_items();
 
-		$edit_link = array(
-			'id' => 'page_rule_edit',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Manage Protected Posts', MS_TEXT_DOMAIN ),
-			'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_POST ),
-		);
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_POST );
 
 		$title = __( 'Posts ', MS_TEXT_DOMAIN );
 		$desc = sprintf(
@@ -301,12 +286,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $rule, $membership );
 		$rule_list_table->prepare_items();
 
-		$edit_link = array(
-			'id' => 'page_rule_edit',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
-			'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE ),
-		);
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
 
 		$title = __( 'Custom Post Types ', MS_TEXT_DOMAIN );
 		$desc = sprintf(
@@ -375,12 +355,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				),
 			),
 
-			'comment_rule_edit' => array(
-				'id' => 'comment_rule_edit',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Edit Comments Restrictions', MS_TEXT_DOMAIN ),
-				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_COMMENT ),
-			),
+			'comment_rule_edit' => $this->restriction_link( MS_Model_Rule::RULE_TYPE_COMMENT ),
 
 			'more_tag' => array(
 				'id' => 'more_tag',
@@ -399,12 +374,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				),
 			),
 
-			'more_tag_rule_edit' => array(
-				'id' => 'more_tag_rule_edit',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Edit More Tag Restrictions', MS_TEXT_DOMAIN ),
-				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_MORE_TAG ),
-			),
+			'more_tag_rule_edit' => $this->restriction_link( MS_Model_Rule::RULE_TYPE_MORE_TAG ),
 
 			'menu_id' => array(
 				'id' => 'menu_id',
@@ -416,12 +386,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'class' => 'chosen-select',
 			),
 
-			'menu_rule_edit' => array(
-				'id' => 'menu_rule_edit',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Edit Menu Restrictions', MS_TEXT_DOMAIN ),
-				'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_MENU ),
-			),
+			'menu_rule_edit' => $this->restriction_link( MS_Model_Rule::RULE_TYPE_MENU ),
 
 			'step' => array(
 				'id' => 'step',
@@ -520,12 +485,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $rule, $membership );
 		$rule_list_table->prepare_items();
 
-		$edit_link = array(
-			'id' => 'shortcode_rule_edit',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Manage Protected Shortcodes', MS_TEXT_DOMAIN ),
-			'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_SHORTCODE ),
-		);
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_SHORTCODE );
 
 		$title = __( 'Shortcodes', MS_TEXT_DOMAIN );
 		$desc = sprintf(
@@ -626,12 +586,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 
 		$fields = apply_filters( 'ms_view_membership_setup_protected_content_get_tab_urlgroup_fields', $fields );
 
-		$edit_link = array(
-			'id' => 'menu_rule_edit',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Edit URL Group Restrictions', MS_TEXT_DOMAIN ),
-			'url' => sprintf( 'admin.php?page=%s&tab=%s', MS_Controller_Plugin::MENU_SLUG . '-setup', MS_Model_Rule::RULE_TYPE_URL_GROUP ),
-		);
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_URL_GROUP );
 
 		$title = __( 'URL Groups', MS_TEXT_DOMAIN );
 		$desc = sprintf(
@@ -694,6 +649,34 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		);
 
 		return apply_filters( 'ms_view_membership_setup_protected_content_get_control_fields', $fields );
+	}
+
+	protected function restriction_link( $rule = '' ) {
+		$titles = array(
+			MS_Model_Rule::RULE_TYPE_PAGE => __( 'Manage Protected Pages', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_CATEGORY => __( 'Manage Protected Categories', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_POST => __( 'Manage Protected Posts', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_COMMENT => __( 'Edit Comments Restrictions', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_MORE_TAG => __( 'Edit More Tag Restrictions', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_MENU => __( 'Edit Menu Restrictions', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_SHORTCODE => __( 'Manage Protected Shortcodes', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_URL_GROUP => __( 'Edit URL Group Restrictions', MS_TEXT_DOMAIN ),
+			'' => __( 'Manage Protected Content', MS_TEXT_DOMAIN ),
+		);
+
+		return array(
+			'id' => 'rule_edit_' . $rule,
+			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'value' => $titles[ $rule ],
+			'url' => sprintf(
+				'admin.php?page=%s&tab=%s&from=%s',
+				MS_Controller_Plugin::MENU_SLUG . '-setup',
+				$rule,
+				base64_encode( MS_Helper_Utility::get_current_url() )
+			),
+		);
 	}
 
 }

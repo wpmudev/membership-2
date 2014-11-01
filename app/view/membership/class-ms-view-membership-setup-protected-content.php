@@ -7,6 +7,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	public function to_html() {
 		$tabs = $this->data['tabs'];
 
+
 		if ( ! empty( $this->data['initial_setup'] ) ) {
 			$description = array(
 				__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
@@ -20,7 +21,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			);
 		}
 
-		/** Render tabbed interface. */
+		// Render tabbed interface.
 		ob_start();
 		?>
 		<div class="ms-wrap wrap">
@@ -34,7 +35,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			);
 
 			$active_tab = $this->data['active_tab'];
-			MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
+			MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab, array( 'edit', 'from' ) );
 
 			// Call the appropriate form to render.
 			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
@@ -58,6 +59,18 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			?>
 		</div>
 		<?php
+
+		if ( @$_REQUEST['from'] ) {
+			$field = array(
+				'id'    => 'go_back',
+				'type'  => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( '&laquo; Back', MS_TEXT_DOMAIN ),
+				'url'   => base64_decode( $_REQUEST['from'] ),
+				'class' => 'button',
+			);
+			MS_Helper_Html::html_element( $field );
+		}
+
 		$html = ob_get_clean();
 		return $html;
 	}

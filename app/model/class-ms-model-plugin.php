@@ -216,7 +216,7 @@ class MS_Model_Plugin extends MS_Model {
 				false,
 				true
 			);
-			$current_page_url = MS_Helper_Utility::get_current_page_url();
+			$current_page_url = MS_Helper_Utility::get_current_url();
 
 			// Don't (re-)redirect the protection page.
 			if ( ! $ms_pages->is_ms_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {

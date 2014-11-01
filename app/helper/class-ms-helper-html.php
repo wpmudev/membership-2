@@ -848,9 +848,12 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @since 4.0.0
 	 *
+	 * @param  array $tabs
+	 * @param  string $active_tab
+	 * @param  array $persistent
 	 * @return string Active tab.
 	 */
-	public static function html_admin_vertical_tabs( $tabs, $active_tab = null ) {
+	public static function html_admin_vertical_tabs( $tabs, $active_tab = null, $persistent = array( 'edit' ) ) {
 		reset( $tabs );
 		$first_key = key( $tabs );
 
@@ -870,8 +873,10 @@ class MS_Helper_Html extends MS_Helper {
 				<?php foreach ( $tabs as $tab_name => $tab ) :
 					$tab_class = $tab_name == $active_tab ? 'active' : '';
 					$url = $tab['url'];
-					if ( 1 == @$_GET['edit'] ) {
-						$url = add_query_arg( 'edit', 1, $url );
+
+					foreach ( $persistent as $param ) {
+						$value = @$_REQUEST[ $param ];
+						$url = add_query_arg( $param, $value, $url );
 					}
 					?>
 					<li class="ms-tab <?php echo esc_attr( $tab_class ); ?> ">
@@ -884,7 +889,7 @@ class MS_Helper_Html extends MS_Helper {
 		</div>
 		<?php
 
-		/** Return current active tab. */
+		// Return current active tab.
 		return $active_tab;
 	}
 

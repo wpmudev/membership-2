@@ -15,7 +15,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		else {
 			extract( $this->data );
 			if ( empty( $redirect ) ) {
-				$redirect = MS_Helper_Utility::get_current_page_url();
+				$redirect = MS_Helper_Utility::get_current_url();
 			}
 
 			// Build the Login Form.
