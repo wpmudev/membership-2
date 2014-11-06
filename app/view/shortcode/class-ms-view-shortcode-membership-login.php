@@ -6,14 +6,27 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		$html = '';
 		$form = '';
 
-		if ( MS_Model_Member::is_logged_user() ) {
+		extract( $this->data );
+
+		if ( ! isset( $form ) ) {
+			if ( MS_Model_Member::is_logged_user() ) {
+				$form = 'logout';
+			}
+			elseif ( isset( $action ) && 'resetpass' === $action ) {
+				$form = 'reset';
+			}
+			else {
+				$form = 'login';
+			}
+		}
+
+		if ( 'logout' === $form ) {
 			return $this->logout_form();
 		}
-		elseif ( 'resetpass' == @$this->data['action'] ) {
+		elseif ( 'reset' === $form ) {
 			return $this->reset_form();
 		}
 		else {
-			extract( $this->data );
 			if ( empty( $redirect ) ) {
 				$redirect = MS_Helper_Utility::get_current_url();
 			}
@@ -22,10 +35,6 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			$form .= $prefix;
 			$form .= $this->login_form( $redirect );
 			$form .= $this->lostpass_form();
-
-			if ( ! empty( $lostpass ) ) {
-				$form .= sprintf( '<a href="%s">%s</a>', esc_url( $lostpass ), __( 'Lost password?', MS_TEXT_DOMAIN ) );
-			}
 
 			// Wrap form in optional wrappers.
 			if ( ! empty( $wrapwith ) ) {
@@ -150,7 +159,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 
 		extract( $args );
 
-		$show_form = $lost_pass ? 'display:none' : '';
+		$show_form = 'login' === $form ? '' : 'display:none';
 
 		ob_start();
 		?>
@@ -220,7 +229,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 
 		extract( $args );
 
-		$show_form = $lost_pass ? '' : 'display:none';
+		$show_form = 'lost' === $form ? '' : 'display:none';
 
 		ob_start();
 
@@ -261,11 +270,28 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 	 * @return string
 	 */
 	private function logout_form() {
+		if ( ! MS_Model_Member::is_logged_user() ) { return ''; }
+
+		extract( $this->data );
+
+		if ( empty( $redirect ) ) {
+			$redirect = home_url();
+		}
+
 		$html = sprintf(
 			'<a class="login_button" href="%s">%s</a>',
-			wp_logout_url( home_url() ),
-			_e( 'Logout' )
+			wp_logout_url( $redirect ),
+			__( 'Logout' )
 		);
+
+		if ( ! empty( $holder ) ) {
+			$html = sprintf(
+				'<%1$s class="%2$s">%3$s</%1$s>',
+				esc_attr( $holder ),
+				esc_attr( $holderclass ),
+				$html
+			);
+		}
 
 		return $html;
 	}

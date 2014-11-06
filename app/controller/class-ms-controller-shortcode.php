@@ -44,14 +44,17 @@ class MS_Controller_Shortcode extends MS_Controller {
 			MS_Helper_Shortcode::SCODE_REGISTER_USER,
 			array( $this, 'membership_register_user' )
 		);
+
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_SIGNUP,
 			array( $this, 'membership_signup' )
 		);
+
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_UPGRADE,
 			array( $this, 'membership_upgrade' )
 		);
+
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_RENEW,
 			array( $this, 'membership_renew' )
@@ -61,6 +64,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			MS_Helper_Shortcode::SCODE_MS_TITLE,
 			array( $this, 'membership_title' )
 		);
+
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_MS_PRICE,
 			array( $this, 'membership_price' )
@@ -70,6 +74,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 			MS_Helper_Shortcode::SCODE_LOGIN,
 			array( $this, 'membership_login' )
 		);
+
+		add_shortcode(
+			MS_Helper_Shortcode::SCODE_LOGOUT,
+			array( $this, 'membership_logout' )
+		);
+
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
 			array( $this, 'membership_account' )
@@ -84,6 +94,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			MS_Helper_Shortcode::SCODE_GREEN_NOTE,
 			array( $this, 'ms_green_note' )
 		);
+
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_RED_NOTE,
 			array( $this, 'ms_red_note' )
@@ -274,12 +285,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'wrapwith'      => '',
 					'wrapwithclass' => '',
 					'redirect'      => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
-					'lostpass'      => '',
 					'header'		=> true,
 					'register'		=> true,
 					'title'			=> '',
 					'show_note'		=> true,   // Show the "you are not logged in" note?
-					'lost_pass'		=> false,  // Show the lost-password form by default?
+					'form'			=> 'login',  // [login|lost|reset|logout]
 				),
 				$atts
 			)
@@ -291,6 +301,35 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_membership_login_data', $data, $this );
+
+		return $view->to_html();
+	}
+
+	/**
+	 * Membership logout shortcode callback function.
+	 *
+	 * @since 1.0.1
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function membership_logout( $atts ) {
+		$data = apply_filters(
+			'ms_controller_shortcode_membership_logout_atts',
+			shortcode_atts(
+				array(
+					'holder'        => 'div',
+					'holderclass'   => 'ms-logout-form',
+					'redirect'      => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
+				),
+				$atts
+			)
+		);
+
+		// The form attribute triggers the logout-link to be displayed.
+		$data['form'] = 'logout';
+
+		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
+		$view->data = apply_filters( 'ms_view_shortcode_membership_logout_data', $data, $this );
 
 		return $view->to_html();
 	}

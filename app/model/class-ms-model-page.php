@@ -118,7 +118,8 @@ class MS_Model_Page extends MS_Model {
 				break;
 
 			case MS_Model_Pages::MS_PAGE_ACCOUNT:
-				$content = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']';
+				$content = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']<hr />';
+				$content .= '['. MS_Helper_Shortcode::SCODE_LOGOUT .']';
 				break;
 
 			case MS_Model_Pages::MS_PAGE_REGISTER:
