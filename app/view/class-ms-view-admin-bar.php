@@ -39,9 +39,8 @@ class MS_View_Admin_Bar extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		
 		$fields = $this->prepare_fields();
-		
+
 		ob_start();
 		?>
 		<form action="" method="post">
@@ -59,7 +58,7 @@ class MS_View_Admin_Bar extends MS_View {
 		</form>
 		<?php
 		$html = ob_get_clean();
-		
+
 		return apply_filters( 'ms_view_admin_bar_to_html', $html, $this );
 	}
 
@@ -71,20 +70,21 @@ class MS_View_Admin_Bar extends MS_View {
 	 * @return array
 	 */
 	public function prepare_fields() {
-
 		$fields = array(
 			'simulate_type' => array(
-					'id' => 'simulate_type',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $this->data['simulate_type'],
-					'class' => 'ms-admin-bar-date ms-date',
+				'id' => 'simulate_type',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $this->data['simulate_type'],
+				'class' => 'ms-admin-bar-date ms-date',
 			),
+
 			'period_unit' => array(
 				'id' => 'period_unit',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $this->data['period_unit'],
 				'class' => 'ms-admin-bar-period-unit ms-small',
 			),
+
 			'period_type' => array(
 				'id' => 'period_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
@@ -92,12 +92,14 @@ class MS_View_Admin_Bar extends MS_View {
 				'field_options' => MS_Helper_Period::get_periods(),
 				'class' => 'ms-admin-bar-period-type',
 			),
+
 			'simulate_date' => array(
 				'id' => 'simulate_date',
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $this->data['simulate_date'],
 				'class' => 'ms-admin-bar-date ms-date',
 			),
+
 			'simulate_submit' => array(
 				'id' => 'simulate_submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,

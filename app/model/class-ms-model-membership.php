@@ -257,6 +257,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $rules = array();
 
 	/**
+	 * Used in simulation mode explaining why a page is allowed or denied.
+	 *
+	 * @since 1.0.1
+	 * @var array
+	 */
+	public $access_reason = array();
+
+	/**
 	 * Set rules membership_id before saving.
 	 *
 	 * @since 1.0.0
@@ -1239,45 +1247,71 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return boolean True if has access to current page. Default is false.
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
-
 		$has_access = false;
+		$this->access_reason = array();
 
-		/* Only verify access if membership is Active */
-		if( $this->active ) {
-			/* If 'has access' is found in the hierarchy, it does have access. */
+		// Only verify access if membership is Active.
+		if ( $this->active ) {
+
+			// If 'has access' is found in the hierarchy, it does have access.
 			$rules = $this->get_rules_hierarchy();
-			foreach( $rules as $rule ) {
-				/* url groups have final decision */
-				if( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type && $rule->has_rule_for_current_url() ) {
-					$has_access = $rule->has_access( $post_id );
+			foreach ( $rules as $rule ) {
+				$rule_access = $rule->has_access( $post_id );
+				$this->access_reason[] = sprintf(
+					__( '%s: Rule "%s"', MS_TEXT_DOMAIN ),
+					$rule_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
+					$rule->rule_type
+				);
+
+				// url groups have final decision.
+				if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type
+					&& $rule->has_rule_for_current_url()
+				) {
+					$has_access = $rule_access;
 					break;
 				}
 				else {
-					$has_access = ( $has_access || $rule->has_access( $post_id ) );
+					$has_access = ( $has_access || $rule_access );
 				}
-				if( $has_access ) {
+
+				if ( $has_access ) {
 					break;
 				}
 			}
 
-			/*
-			 * Search for dripped rules.
-			 */
+			// Search for dripped rules.
 			$dripped = MS_Model_Rule::get_dripped_rule_types();
 
 			/*
 			 * Verify membership dripped rules hierarchy.
 			 * Dripped has the final decision.
 			 */
-			foreach( $dripped as $rule_type ) {
+			foreach ( $dripped as $rule_type ) {
 				$rule = $this->get_rule( $rule_type );
-				if( $rule->has_dripped_rules( $post_id ) ) {
-					$has_access = $rule->has_dripped_access( $ms_relationship->start_date, $post_id, $this->dripped_type );
+
+				if ( $rule->has_dripped_rules( $post_id ) ) {
+					$dripped_access = $rule->has_dripped_access(
+						$ms_relationship->start_date,
+						$post_id,
+						$this->dripped_type
+					);
+					$has_access = $dripped_access;
+
+					$this->access_reason[] = sprintf(
+						__( '%s: Dripped Content', MS_TEXT_DOMAIN ),
+						$dripped_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN )
+					);
 				}
 			}
 		}
 
-		return apply_filters( 'ms_model_membership_has_access_to_current_page', $has_access, $ms_relationship, $post_id, $this );
+		return apply_filters(
+			'ms_model_membership_has_access_to_current_page',
+			$has_access,
+			$ms_relationship,
+			$post_id,
+			$this
+		);
 	}
 
 	/**

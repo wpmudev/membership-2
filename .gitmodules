@@ -1,8 +1,6 @@
 [submodule "extra/wpmudev-dashboard"]
 	path = extra/wpmudev-dashboard
 	url = git@bitbucket.org:incsub/wpmudev-dashboard-notification.git
-	branch = master
 [submodule "extra/wpmu-lib"]
-	path = inc/external/wpmu-lib
+	path = extra/wpmu-lib
 	url = git@bitbucket.org:incsub/wpmu-lib.git
-	branch = master

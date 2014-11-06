@@ -135,10 +135,19 @@ class MS_Model_Plugin extends MS_Model {
 				'has_access' => false,
 				'is_admin' => false,
 				'memberships' => array(),
+				'url' => MS_Helper_Utility::get_current_url(),
 			);
 
 			// The ID of the main protected-content.
 			$base_id = MS_Model_Membership::get_protected_content()->id;
+
+			$simulation = $this->member->is_admin_user()
+				&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
+
+			if ( $simulation ) {
+				$Info['reason'] = array();
+				$Info['reason'][] = __( 'Deny: Default mode', MS_TEXT_DOMAIN );
+			}
 
 			if ( $this->member->is_admin_user()
 				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
@@ -146,6 +155,10 @@ class MS_Model_Plugin extends MS_Model {
 				// Admins have access to ALL memberships.
 				$Info['is_admin'] = true;
 				$Info['has_access'] = true;
+
+				if ( $simulation ) {
+					$Info['reason'][] = __( 'Allow: Admin-User always has access', MS_TEXT_DOMAIN );
+				}
 
 				$memberships = MS_Model_Membership::get_memberships();
 				foreach ( $memberships as $membership ) {
@@ -155,6 +168,10 @@ class MS_Model_Plugin extends MS_Model {
 				// Front page / home / not found are always public.
 				if ( is_home() || is_front_page() || is_404() ) {
 					$Info['has_access'] = true;
+
+					if ( $simulation ) {
+						$Info['reason'][] = __( 'Allow: Special page is always available', MS_TEXT_DOMAIN );
+					}
 				}
 
 				// Build a list of memberships the user belongs to and check permission.
@@ -162,6 +179,13 @@ class MS_Model_Plugin extends MS_Model {
 					// Verify status of the membership.
 					// Only active, trial or canceled (until it expires) status memberships.
 					if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+						if ( $simulation ) {
+							$Info['reason'][] = sprintf(
+								__( 'Skipped: Not a member of "%s"', MS_TEXT_DOMAIN ),
+								$ms_relationship->get_membership()->name
+							);
+						}
+
 						continue;
 					}
 
@@ -172,7 +196,18 @@ class MS_Model_Plugin extends MS_Model {
 					// If permission is not clear yet then check current membership...
 					if ( ! $Info['has_access'] ) {
 						$membership = $ms_relationship->get_membership();
-						$Info['has_access'] = $membership->has_access_to_current_page( $ms_relationship );
+						$access = $membership->has_access_to_current_page( $ms_relationship );
+
+						if ( $simulation ) {
+							$Info['reason'][] = sprintf(
+								__( '%s: Membership "%s"', MS_TEXT_DOMAIN ),
+								$access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
+								$membership->name
+							);
+							$Info['reason'][] = $membership->access_reason;
+						}
+
+						$Info['has_access'] = $access;
 					}
 				}
 
@@ -183,6 +218,16 @@ class MS_Model_Plugin extends MS_Model {
 			}
 
 			$Info = apply_filters( 'ms_model_plugin_get_access_info', $Info );
+
+			if ( $simulation ) {
+				$access = WDev()->store_get_clear( 'ms-access' );
+				WDev()->store_add( 'ms-access', $Info );
+				for ( $i = 0; $i < 9; $i += 1 ) {
+					if ( isset( $access[$i] ) ) {
+						WDev()->store_add( 'ms-access', $access[$i] );
+					}
+				}
+			}
 		}
 
 		return $Info;

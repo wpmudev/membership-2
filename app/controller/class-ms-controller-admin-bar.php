@@ -83,9 +83,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Customize the Admin Toolbar.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_before_admin_bar_render
+	 * Related Action Hooks:
+	 * - wp_before_admin_bar_render
 	 *
 	 * @since 1.0.0
 	 */
@@ -98,6 +97,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$this->remove_admin_bar_nodes();
 				$this->add_view_site_as_node();
 				$this->add_simulator_nodes();
+				$this->add_detail_nodes();
 				$this->add_exit_test_node();
 			}
 			else {
@@ -109,9 +109,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Process GET and POST requests
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * add_admin_bar_menus
+	 * Related Action Hooks:
+	 * - add_admin_bar_menus
 	 *
 	 * @since 1.0.0
 	 */
@@ -160,6 +159,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	private function remove_admin_bar_nodes( $exclude = array() ) {
 		global $wp_admin_bar;
 
+		if ( ! $this->simulate->is_simulating() ) { return; }
+
 		$nodes = $wp_admin_bar->get_nodes();
 
 		$exclude = apply_filters(
@@ -187,61 +188,60 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * Add simulation nodes.
 	 *
 	 * @since 1.0.0
-	 *
 	 */
 	private function add_simulator_nodes() {
 		global $wp_admin_bar;
 
-		if ( $this->simulate->is_simulating() ) {
-			$membership = MS_Factory::load(
-				'MS_Model_Membership',
-				$this->simulate->membership_id
-			);
+		if ( ! $this->simulate->is_simulating() ) { return; }
 
-			$title = null;
-			$html = null;
+		$membership = MS_Factory::load(
+			'MS_Model_Membership',
+			$this->simulate->membership_id
+		);
 
-			$data = array();
-			$data['simulate_type'] = $this->simulate->type;
-			$data['period_unit'] = null;
-			$data['period_type'] = null;
-			$data['simulate_date'] = null;
+		$title = null;
+		$html = null;
 
-			if( $this->simulate->type ) {
-				if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
-					$data['simulate_date'] = $this->simulate->date;
-					$title = __( 'View on: ', MS_TEXT_DOMAIN );
-				}
-				elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
-					$data['period_unit'] = absint( $this->simulate->period['period_unit'] );
-					$data['period_type'] = $this->simulate->period['period_type'];
-					$title = __( 'View in: ', MS_TEXT_DOMAIN );
-				}
+		$data = array();
+		$data['simulate_type'] = $this->simulate->type;
+		$data['period_unit'] = null;
+		$data['period_type'] = null;
+		$data['simulate_date'] = null;
 
-				$view = MS_Factory::create( 'MS_View_Admin_Bar' );
-				$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
-				$html = $view->to_html();
+		if ( $this->simulate->type ) {
+			if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
+				$data['simulate_date'] = $this->simulate->date;
+				$title = __( 'View on: ', MS_TEXT_DOMAIN );
+			}
+			elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
+				$data['period_unit'] = absint( $this->simulate->period['period_unit'] );
+				$data['period_type'] = $this->simulate->period['period_type'];
+				$title = __( 'View in: ', MS_TEXT_DOMAIN );
 			}
 
-			$wp_admin_bar->add_menu(
-				apply_filters(
-					'ms_controller_admin_bar_simulate_node',
-					array(
-						'id'     => 'membership-simulate-period',
-						'title'  => $title,
-						'href'   => '',
-						'meta'   => array(
-							'html'  => $html,
-							'class' => apply_filters(
-								'ms_controller_admin_bar_simulate_period_class',
-								'membership-simulate-period'
-							),
-							'title' => __( 'Simulate period', MS_TEXT_DOMAIN ),
-						),
-					)
-				)
-			);
+			$view = MS_Factory::create( 'MS_View_Admin_Bar' );
+			$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
+			$html = $view->to_html();
 		}
+
+		$wp_admin_bar->add_menu(
+			apply_filters(
+				'ms_controller_admin_bar_simulate_node',
+				array(
+					'id'     => 'membership-simulate-period',
+					'title'  => $title,
+					'href'   => '',
+					'meta'   => array(
+						'html'  => $html,
+						'class' => apply_filters(
+							'ms_controller_admin_bar_simulate_period_class',
+							'membership-simulate-period'
+						),
+						'title' => __( 'Simulate period', MS_TEXT_DOMAIN ),
+					),
+				)
+			)
+		);
 	}
 
 	/**
@@ -254,6 +254,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	private function add_view_site_as_node() {
 		global $wp_admin_bar;
+
+		if ( ! $this->simulate->is_simulating() ) { return; }
 
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
 
@@ -396,10 +398,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	private function add_test_membership_node() {
 		global $wp_admin_bar;
 
+		if ( $this->simulate->is_simulating() ) { return; }
+
 		$id = ! empty( $this->memberships ) ? $this->memberships[0]->id : false;
 
 		if ( $id ) {
-
 			$link_url = wp_nonce_url(
 				admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
 				"ms_simulate-{$id}"
@@ -432,7 +435,9 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	private function add_exit_test_node() {
 		global $wp_admin_bar;
 
-		/* reset simulation */
+		if ( ! $this->simulate->is_simulating() ) { return; }
+
+		// reset simulation.
 		$id = 0;
 		$link_url = wp_nonce_url(
 			admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
@@ -457,11 +462,81 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	}
 
 	/**
+	 * Add membership description nodes.
+	 *
+	 * @since 1.0.1
+	 *
+	 */
+	private function add_detail_nodes() {
+		global $wp_admin_bar;
+
+		if ( ! $this->simulate->is_simulating() ) { return; }
+
+		$membership = MS_Factory::load(
+			'MS_Model_Membership',
+			$this->simulate->membership_id
+		);
+
+		$wp_admin_bar->add_menu(
+			array(
+				'id'     => 'membership-details',
+				'title'  => __( 'Infos', MS_TEXT_DOMAIN ),
+				'href'   => '#',
+			)
+		);
+
+		$details = WDev()->store_get( 'ms-access' );
+		$parent1 = '';
+		$parent2 = '';
+
+		foreach ( $details as $req_ind => $request ) {
+			if ( ! is_array( $request ) ) { continue; }
+			$parent1 = 'membership-details-' . $req_ind;
+
+			$url = explode( '?', $request['url'] );
+			$url = str_replace( site_url(), '', reset( $url ) );
+
+			$wp_admin_bar->add_node(
+				array(
+					'id'     => $parent1,
+					'parent' => 'membership-details',
+					'title'  => (1 + $req_ind) . ': ' . $url,
+					'href'   => $request['url'],
+				)
+			);
+
+			if ( isset( $request['reason'] ) ) {
+				foreach ( $request['reason'] as $key => $item ) {
+					if ( is_array( $item ) ) {
+						foreach ( $item as $child => $note ) {
+							$wp_admin_bar->add_node(
+								array(
+									'id'     => $parent2 . '-' . $child,
+									'parent' => $parent2,
+									'title'  => $note,
+								)
+							);
+						}
+					} else {
+						$parent2 = $parent1 . '-' . $key;
+						$wp_admin_bar->add_node(
+							array(
+								'id'     => $parent2,
+								'parent' => $parent1,
+								'title'  => $item,
+							)
+						);
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Customize the Admin Toolbar for front end users.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_before_admin_bar_render
+	 * Related Action Hooks:
+	 * - wp_before_admin_bar_render
 	 *
 	 * @since 1.0.0
 	 *
@@ -475,9 +550,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Customize the Admin sidebar for front end users.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * admin_head-profile.php
+	 * Related Action Hooks:
+	 * - admin_head-profile.php
 	 *
 	 * @since 1.0.0
 	 *
@@ -495,10 +569,9 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	/**
 	 * Enqueues necessary scripts and styles.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_enqueue_scripts
-	 * * admin_enqueue_scripts
+	 * Related Action Hooks:
+	 * - wp_enqueue_scripts
+	 * - admin_enqueue_scripts
 	 *
 	 * @since 1.0.0
 	 */
@@ -515,6 +588,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
 		wp_enqueue_style( 'ms-public' );
-
 	}
+
 }

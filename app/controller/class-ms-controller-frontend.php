@@ -114,6 +114,9 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function process_actions() {
+		// Only execute this handler once!
+		$this->remove_action( 'parse_query', 'process_actions', 1 );
+
 		$action = $this->get_action();
 
 		/**
@@ -140,6 +143,9 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function check_for_membership_pages( $query ) {
+		// Only execute this handler once!
+		$this->remove_action( 'parse_query', 'check_for_membership_pages', 1 );
+
 		//For invoice page purchase process
 		global $post;
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
@@ -158,11 +164,15 @@ class MS_Controller_Frontend extends MS_Controller {
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$ms_page_slug = $ms_pages->is_ms_page();
 
-		// Fix the main query flags for best theme support
 		if ( $ms_page_slug ) {
+			// Fix the main query flags for best theme support:
+			// Our Membership-Pages are always single pages...
+
 			$query->query_vars['pagename'] = $ms_pages->is_ms_page();
 			$query->is_page = true;
 			$query->is_singular = true;
+			$query->is_home = false;
+			$query->is_frontpage = false;
 			$query->tax_query = null;
 		}
 
