@@ -890,7 +890,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * }
 	 */
 	public static function get_membership_names( $args = null, $exclude_visitor_membership = false ) {
-
 		$args['order'] = 'ASC';
 		$args = self::get_query_args( $args );
 
@@ -1263,16 +1262,24 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					$rule->rule_type
 				);
 
-				// url groups have final decision.
-				if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type
+				// URL groups have final decission.
+				if ( MS_Model_Rule::RULE_TYPE_URL_GROUP === $rule->rule_type
 					&& $rule->has_rule_for_current_url()
 				) {
 					$has_access = $rule_access;
 					break;
 				}
-				else {
-					$has_access = ( $has_access || $rule_access );
+
+				// Special pages have final decission after URL groups.
+				if ( MS_Model_Rule::RULE_TYPE_SPECIAL === $rule->rule_type
+					&& $rule->has_rule_for_current_page()
+				) {
+					$has_access = $rule_access;
+					$this->access_reason[] = $rule->matched_type;
+					break;
 				}
+
+				$has_access = ( $has_access || $rule_access );
 
 				if ( $has_access ) {
 					break;

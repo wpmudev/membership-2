@@ -246,6 +246,24 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	}
 
 	/* ====================================================================== *
+	 *                               SPECIAL PAGES
+	 * ====================================================================== */
+
+	public function render_tab_special() {
+		$title = __( 'Special Pages', MS_TEXT_DOMAIN );
+		$desc = __( 'Protected Pages are available for members only.', MS_TEXT_DOMAIN );
+
+		$field = array(
+			'type' => MS_Model_Rule::RULE_TYPE_SPECIAL,
+			'id' => 'special',
+			'label_single' => __( 'Special Page', MS_TEXT_DOMAIN ),
+			'label_plural' => __( 'Special Pages', MS_TEXT_DOMAIN ),
+		);
+
+		return $this->render_generic_tab( $title, $desc, $field );
+	}
+
+	/* ====================================================================== *
 	 *                               POSTS
 	 * ====================================================================== */
 

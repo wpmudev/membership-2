@@ -1,15 +1,15 @@
 <?php
-/*
+/**
 Plugin Name: Protected Content
-Version: 1.0.4-BETA
-Plugin URI: https://premium.wpmudev.org/project/protected-content/
+Plugin URI:  https://premium.wpmudev.org/project/protected-content/
+Version:     1.0.4-BETA
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
-Author: WPMU DEV
-Author URI: http://premium.wpmudev.org/
-WDP ID: 928907
-License: GNU General Public License (Version 2 - GPLv2)
+Author:      WPMU DEV
+Author URI:  http://premium.wpmudev.org/
+WDP ID:      928907
+License:     GNU General Public License (Version 2 - GPLv2)
 Text Domain: wpmudev_protected_content
- */
+*/
 
 /**
  * @copyright Incsub (http://incsub.com/)
@@ -81,7 +81,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_VERSION', '1.0.3' );
+define( 'MS_PLUGIN_VERSION', '1.0.4' );
 
 /**
  * Hooks 'ms_class_path_overrides'.

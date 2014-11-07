@@ -232,6 +232,49 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 	}
 
 	/* ====================================================================== *
+	 *                               SPECIAL PAGES
+	 * ====================================================================== */
+
+	public function render_tab_special() {
+		$fields = $this->get_control_fields();
+
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_SPECIAL );
+
+		$rule_list_table = new MS_Helper_List_Table_Rule_Special( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_SPECIAL );
+
+		$title = __( 'Special Pages ', MS_TEXT_DOMAIN );
+		$desc = sprintf(
+			__( 'Give access to following Special Pages to %s members.', MS_TEXT_DOMAIN ),
+			$this->data['membership']->name
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
+			<div class="ms-separator"></div>
+
+			<?php $rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php $rule_list_table->display(); ?>
+				<div class="ms-protection-edit-link">
+					<?php MS_Helper_Html::html_element( $edit_link ); ?>
+				</div>
+			</form>
+		</div>
+		<?php
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
+	}
+
+	/* ====================================================================== *
 	 *                               POSTS
 	 * ====================================================================== */
 
@@ -654,6 +697,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 	protected function restriction_link( $rule = '' ) {
 		$titles = array(
 			MS_Model_Rule::RULE_TYPE_PAGE => __( 'Manage Protected Pages', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_SPECIAL => __( 'Manage Protected Special Pages', MS_TEXT_DOMAIN ),
 			MS_Model_Rule::RULE_TYPE_CATEGORY => __( 'Manage Protected Categories', MS_TEXT_DOMAIN ),
 			MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Manage Protected Custom Post Types', MS_TEXT_DOMAIN ),
 			MS_Model_Rule::RULE_TYPE_POST => __( 'Manage Protected Posts', MS_TEXT_DOMAIN ),

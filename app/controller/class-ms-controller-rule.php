@@ -26,7 +26,7 @@
  * Controller to manage billing and invoices.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -163,12 +163,12 @@ class MS_Controller_Rule extends MS_Controller {
 
 	/**
 	 * Save rules for a rule type.
-	 * 
+	 *
 	 * First reset all rules, then save the incoming rules.
-	 * The menu rule type is only reset for the parent menu_id group (clears all children submenus). 
+	 * The menu rule type is only reset for the parent menu_id group (clears all children submenus).
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $rule_type The rule type to update.
 	 * @param string[] $rule_ids The content identifiers.
 	 * @param int|int[] $rule_values The rule values.
@@ -207,7 +207,7 @@ class MS_Controller_Rule extends MS_Controller {
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
-		
+
 		return apply_filters( 'ms_controller_rule_save_rule_values', $msg, $rule_type, $rule_ids, $rule_values, $this );
 	}
 
@@ -309,7 +309,7 @@ class MS_Controller_Rule extends MS_Controller {
 	public function edit_rule_manager( $rule_type ) {
 
 		do_action( 'ms_controller_rule_edir_rule_manager', $rule_type, $this );
-		
+
 		/**
 		 * Rule single action
 		 */
@@ -365,12 +365,15 @@ class MS_Controller_Rule extends MS_Controller {
 					case 'give_access':
 						$rule->give_access( $item );
 						break;
+
 					case 'no_access':
 						$rule->remove_access( $item );
 						break;
+
 					case 'toggle_access':
 						$rule->toggle_access( $item );
 						break;
+
 					case self::AJAX_ACTION_TOGGLE_RULE_DEFAULT:
 						$rule->rule_value_default = ! $rule->rule_value_default;
 						break;
@@ -381,7 +384,14 @@ class MS_Controller_Rule extends MS_Controller {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 
-		return apply_filters( 'ms_controller_rule_rule_list_do_action', $msg, $action, $rule_type, $items, $this );
+		return apply_filters(
+			'ms_controller_rule_rule_list_do_action',
+			$msg,
+			$action,
+			$rule_type,
+			$items,
+			$this
+		);
 	}
 
 	/**
@@ -392,7 +402,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @param array $fields The POST fields
 	 */
 	private function save_url_group( $fields ) {
-		
+
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if ( ! $this->is_admin_user() ) {
 			return $msg;
@@ -414,7 +424,7 @@ class MS_Controller_Rule extends MS_Controller {
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
-		
+
 		return apply_filters( 'ms_controller_rule_save_url_group', $msg );
 	}
 
@@ -426,9 +436,9 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @return MS_Model_Membership or null if not found.
 	 */
 	private function get_membership() {
-		
+
 		$membership_id = 0;
-		
+
 		if ( ! empty( $_GET['membership_id'] ) ) {
 			$membership_id = $_GET['membership_id'];
 		}

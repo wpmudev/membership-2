@@ -57,7 +57,7 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '!=' ) ) {
 
 			// Upgrade logic from 1.0.0.0
-			if ( '1.0.0.0' == $settings->version ) {
+			if ( version_compare( '1.0.0.0', $settings->version, '=' ) ) {
 				$args = array();
 				$args['post_parent__not_in'] = array( 0 );
 				$memberships = MS_Model_Membership::get_memberships( $args );

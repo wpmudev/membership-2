@@ -165,8 +165,21 @@ class MS_Model_Plugin extends MS_Model {
 					$Info['memberships'][] = $membership->id;
 				}
 			} else {
-				// Front page / home / not found are always public.
-				if ( is_home() || is_front_page() || is_404() ) {
+				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
+					$special_page = false;
+				} else {
+					$special_page = is_home()
+						|| is_front_page()
+						|| is_404()
+						|| is_search()
+						|| is_archive()
+						|| is_author()
+						|| is_date()
+						|| is_time();
+				}
+
+				// Front page, etc. are public by default.
+				if ( $special_page ) {
 					$Info['has_access'] = true;
 
 					if ( $simulation ) {

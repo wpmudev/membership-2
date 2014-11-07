@@ -816,7 +816,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return array The tabs configuration.
 	 */
 	public function get_protected_content_tabs() {
-
 		$membership_id = $this->load_membership()->id;
 
 		$tabs = array(
@@ -841,6 +840,9 @@ class MS_Controller_Membership extends MS_Controller {
 			'url_group' => array(
 				'title' => __( 'URL Groups', MS_TEXT_DOMAIN ),
 			),
+			'special' => array(
+				'title' => __( 'Special Pages', MS_TEXT_DOMAIN ),
+			),
 		);
 
 		$title = array();
@@ -849,26 +851,33 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['post'] );
 			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
 		}
+
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 		}
+
 		$tabs['category']['title'] = implode( ', ', $title );
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) &&
 			MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST	) ) {
 			unset( $tabs['category'] );
 		}
 
-		/* Enable / Disable custom post by post tab. */
+		// Add the special-pages protection.
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
+			unset( $tabs['special'] );
+		}
+
+		// Enable / Disable custom post by post tab.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			unset( $tabs['cpt'] );
 		}
 
-		/* Disable urlgroup tab. */
+		// Disable urlgroup tab.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 			unset( $tabs['url_group'] );
 		}
 
-		/* Disable shortcode tab.*/
+		// Disable shortcode tab.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
 			unset( $tabs['shortcode'] );
 		}
@@ -876,6 +885,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
 		$url = admin_url( 'admin.php' );
 		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );
+
 		foreach ( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = admin_url(
 				sprintf(
@@ -897,7 +907,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return array The tabs configuration.
 	 */
 	public function get_accessible_content_tabs() {
-
 		$membership_id = $this->load_membership()->id;
 		$tabs = $this->get_protected_content_tabs();
 		$protected_content = MS_Model_Membership::get_protected_content();
