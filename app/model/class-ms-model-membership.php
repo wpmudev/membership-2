@@ -657,10 +657,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public static function get_private_eligible_types() {
 
-		/** Private memberships can only be enabled in these types */
+		// Private memberships can only be enabled in these types.
 		$private_eligible_types = array(
-				self::TYPE_SIMPLE,
-				self::TYPE_CONTENT_TYPE,
+			self::TYPE_SIMPLE,
+			self::TYPE_CONTENT_TYPE,
 		);
 
 		return apply_filters( 'ms_model_membership_get_private_eligible_types', $private_eligible_types );
@@ -677,32 +677,37 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function get_rule( $rule_type ) {
 		$rule = null;
 
-		if( isset( $this->rules[ $rule_type ] ) ) {
-
+		if ( isset( $this->rules[ $rule_type ] ) ) {
 			$rule = $this->rules[ $rule_type ];
 		}
-		elseif( 'attachment' == $rule_type && isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] ) ) {
+		elseif ( 'attachment' === $rule_type
+			&& isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] )
+		) {
 			$rule = $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
 		}
-		/*
-		 * Create a new rule model object.
-		 */
+		// Create a new rule model object.
 		else {
 			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
-
 			$this->rules[ $rule_type ] = $rule;
 		}
-		//Default values for protected content and normal memberships.
-		if( $this->protected_content ) {
+
+		if ( $this->protected_content ) {
+			// This is the base membership "Protected Content".
 			$rule->rule_value_invert = true;
 			$rule->rule_value_default = false;
 		}
 		else {
+			// This is a normal membership created by the Admin.
 			$rule->rule_value_invert = false;
 			$rule->rule_value_default = true;
 		}
 
-		return apply_filters( 'ms_model_membership_get_rule', $rule, $rule_type, $this );
+		return apply_filters(
+			'ms_model_membership_get_rule',
+			$rule,
+			$rule_type,
+			$this
+		);
 	}
 
 	/**
@@ -900,7 +905,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		foreach ( $items as $item ) {
 			$memberships[ $item->ID ] = $item->name;
 		}
-		if( $exclude_visitor_membership ) {
+		if ( $exclude_visitor_membership ) {
 			unset( $memberships[ self::get_visitor_membership()->id ] );
 		}
 
@@ -1025,44 +1030,92 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Membership The protected content.
 	 */
 	public static function get_protected_content() {
+		static $Protected_content = null;
 
-		$args = array(
-			'post_type' => self::$POST_TYPE,
-			'post_status' => 'any',
-			'meta_query' => array(
-				array(
-					'key' => 'protected_content',
-					'value' => '1',
-					'compare' => '=',
-				)
-			)
-		);
-		$query = new WP_Query( $args );
-		$item = $query->get_posts();
+		if ( null === $Protected_content ) {
+			global $wpdb;
 
-		$protected_content = null;
+			/*
+			 * We are using a normal SQL query instead of using the WP_Query object
+			 * here, because the WP_Query object does some strange things sometimes:
+			 * In some cases new Protected Content memberships were created when a
+			 * guest accessed the page.
+			 *
+			 * By using a manual query we are very certain that only one
+			 * base-membership exists on the database.
+			 */
+			$sql = "
+				SELECT ID
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} m ON m.post_id = p.ID
+				WHERE
+					p.post_type = %s
+					AND m.meta_key = %s
+					AND m.meta_value = %s
+			";
 
-		if ( ! empty( $item[0] ) ) {
-			$protected_content = MS_Factory::load( 'MS_Model_Membership', $item[0]->ID );
+			$sql = $wpdb->prepare( $sql, self::$POST_TYPE, 'protected_content', 1 );
+			$item = $wpdb->get_results( $sql );
+			$base = array_shift( $item ); // Remove the base membership from the results
+
+			if ( ! empty( $base ) ) {
+				$Protected_content = MS_Factory::load( 'MS_Model_Membership', $base->ID );
+
+				// If more than one base memberships were found we fix the issue here!
+				// This could happen in versions 1.0.0 - 1.0.4
+				if ( count( $item ) ) {
+					// Change the excess base-memberships into normal memberships
+					foreach ( $item as $membership ) {
+						update_post_meta( $membership->ID, 'protected_content', '' );
+						wp_update_post(
+							array(
+								'ID' => $membership->ID,
+								'post_title' => __( '(Invalid membership found)', MS_TEXT_DOMAIN ),
+							)
+						);
+					}
+
+					if ( MS_Model_Member::is_admin_user() ) {
+						// Display a notification about the DB changes to Admin users only.
+						WDev()->message(
+							sprintf(
+								__(
+								'<b>Please check your Protected Content settings</b><br />' .
+								'We found and fixed invalid content in your Database. ' .
+								'However, plugin settings might have changed due to this change.<br />' .
+								'You can review and delete the invalid content in the ' .
+								'<a href="admin.php?page=%s">Memberships section</a>.',
+								MS_TEXT_DOMAIN
+								),
+								MS_Controller_Plugin::MENU_SLUG
+							)
+						);
+					}
+				}
+				// End of DB-correction part.
+			}
+			else {
+				$description = __( 'Protected content, and also a default membership for visitors', MS_TEXT_DOMAIN );
+				$Protected_content = MS_Factory::create( 'MS_Model_Membership' );
+				$Protected_content->name = __( 'Protected Content', MS_TEXT_DOMAIN );
+				$Protected_content->payment_type = self::PAYMENT_TYPE_PERMANENT;
+				$Protected_content->title = $description;
+				$Protected_content->description = $description;
+				$Protected_content->protected_content = true;
+				$Protected_content->active = true;
+				$Protected_content->private = true;
+				$Protected_content->save();
+				$Protected_content = MS_Factory::load( 'MS_Model_Membership', $Protected_content->id );
+
+				// It is important! The Protected Content membership must be public
+				// so that the membership options are available for guest users.
+				wp_publish_post( $Protected_content->id );
+			}
+
+			$Protected_content = apply_filters( 'ms_model_membership_get_protected_content', $Protected_content );
 		}
-		else {
-			$description = __( 'Protected content, and also a default membership for visitors', MS_TEXT_DOMAIN );
-			$protected_content = MS_Factory::create( 'MS_Model_Membership' );
-			$protected_content->name = __( 'Protected Content', MS_TEXT_DOMAIN );
-			$protected_content->payment_type = self::PAYMENT_TYPE_PERMANENT;
-			$protected_content->title = $description;
-			$protected_content->description = $description;
-			$protected_content->protected_content = true;
-			$protected_content->active = true;
-			$protected_content->private = true;
-			$protected_content->save();
-			$protected_content = MS_Factory::load( 'MS_Model_Membership', $protected_content->id );
 
-			// It is important! The Protected Content membership must be public
-			// so that the membership options are available for guest users.
-			wp_publish_post( $protected_content->id );
-		}
-		return apply_filters( 'ms_model_membership_get_protected_content', $protected_content );
+		return $Protected_content;
 	}
 
 	/**
