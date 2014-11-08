@@ -429,22 +429,43 @@ class MS_Controller_Gateway extends MS_Controller {
 		$valid = true;
 		$nonce_name = $_POST['gateway'] . '_' . $_POST['ms_relationship_id'];
 
-		if ( $valid && ! $this->validate_required( $fields ) ) { $valid = false; $err = 'GAT-01 (invalid fields)'; }
-		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) { $valid = false; $err = 'GAT-02 (invalid gateway)'; }
-		if ( $valid && ! $this->verify_nonce( $nonce_name ) ) { $valid = false; $err = 'GAT-03 (invalid nonce)'; }
+		if ( $valid && ! $this->validate_required( $fields ) ) {
+			$valid = false; $err = 'GAT-01 (invalid fields)';
+		}
+		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
+			$valid = false; $err = 'GAT-02 (invalid gateway)';
+		}
+		if ( $valid && ! $this->verify_nonce( $nonce_name ) ) {
+			$valid = false; $err = 'GAT-03 (invalid nonce)';
+		}
 
 		if ( $valid ) {
-			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
+			$ms_relationship = MS_Factory::load(
+				'MS_Model_Membership_Relationship',
+				$_POST['ms_relationship_id']
+			);
 
 			$gateway_id = $_POST['gateway'];
 			$gateway = MS_Model_Gateway::factory( $gateway_id );
+
 			try {
 				$invoice = $gateway->process_purchase( $ms_relationship );
 
 				// If invoice is successfully paid, redirect to welcome page.
 				if ( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
-					$url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false, true );
-					$url = add_query_arg( array( 'ms_relationship_id' => $ms_relationship->id ), $url );
+					// Make sure to respect the single-membership rule
+					$this->validate_membership_states( $ms_relationship );
+
+					// Redirect user to the Payment-Completed page.
+					$url = $ms_pages->get_ms_page_url(
+						MS_Model_Pages::MS_PAGE_REG_COMPLETE,
+						false,
+						true
+					);
+					$url = add_query_arg(
+						array( 'ms_relationship_id' => $ms_relationship->id ),
+						$url
+					);
 					wp_safe_redirect( $url );
 					exit;
 				}
@@ -454,7 +475,6 @@ class MS_Controller_Gateway extends MS_Controller {
 				}
 			}
 			catch ( Exception $e ) {
-				
 				MS_Helper_Debug::log( $e->getMessage() );
 
 				switch ( $gateway_id ) {
@@ -466,8 +486,12 @@ class MS_Controller_Gateway extends MS_Controller {
 
 					case MS_Model_Gateway::GATEWAY_STRIPE:
 						$_POST['error'] = sprintf( __( 'Error: %s', MS_TEXT_DOMAIN ), $e->getMessage() );
+
 						// Hack to send the error message back to the payment_table.
-						MS_Plugin::instance()->controller->controllers['frontend']->add_action( 'the_content', 'payment_table', 1 );
+						MS_Plugin::instance()->controller->controllers['frontend']->add_action(
+							'the_content',
+							'payment_table', 1
+						);
 						break;
 
 					default:
@@ -489,6 +513,35 @@ class MS_Controller_Gateway extends MS_Controller {
 		$wp_query->query_vars['post_type'] = 'page';
 
 		do_action( 'ms_controller_gateway_process_purchase_after', $this );
+	}
+
+	/**
+	 * Make sure that we respect the Single-Membership rule.
+	 * This rule is active when the "Multiple-Memberships" Add-on is DISABLED.
+	 *
+	 * @since  1.0.4
+	 *
+	 * @param  MS_Model_Membership_Relationship $new_relationship
+	 */
+	protected function validate_membership_states( $new_relationship ) {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+			// Multiple memberships allowed. No need to check anything.
+			return;
+		}
+
+		$cancel_these = array(
+			MS_Model_Membership_Relationship::STATUS_TRIAL,
+			MS_Model_Membership_Relationship::STATUS_ACTIVE,
+			MS_Model_Membership_Relationship::STATUS_PENDING,
+		);
+
+		$member = $new_relationship->get_member();
+		foreach ( $member->ms_relationships as $ms_relationship ) {
+			if ( $ms_relationship->id === $new_relationship->id ) { continue; }
+			if ( in_array( $ms_relationship->status, $cancel_these ) ) {
+				$ms_relationship->cancel_membership();
+			}
+		}
 	}
 
 	/**

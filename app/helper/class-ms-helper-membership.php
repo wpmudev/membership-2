@@ -26,6 +26,7 @@ class MS_Helper_Membership extends MS_Helper {
 	const MEMBERSHIP_ACTION_MOVE = 'membership_move';
 	const MEMBERSHIP_ACTION_CANCEL = 'membership_cancel';
 	const MEMBERSHIP_ACTION_RENEW = 'membership_renew';
+	const MEMBERSHIP_ACTION_PAY = 'membership_pay';
 
 	const MEMBERSHIP_MSG_ADDED = 1;
 	const MEMBERSHIP_MSG_DELETED = 2;

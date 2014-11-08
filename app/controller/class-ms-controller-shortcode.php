@@ -148,6 +148,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 					MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE . '_text' => __( 'Change', MS_TEXT_DOMAIN ),
 					MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL . '_text' => __( 'Cancel', MS_TEXT_DOMAIN ),
 					MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW . '_text' => __( 'Renew', MS_TEXT_DOMAIN ),
+					MS_Helper_Membership::MEMBERSHIP_ACTION_PAY . '_text' => __( 'Complete Payment', MS_TEXT_DOMAIN ),
 				),
 				$atts
 			)
@@ -192,7 +193,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Signup' );
-		$view->data = apply_filters( 'ms_view_shortcode_membership_signup_data', $data, $this );
+		$view->data = apply_filters(
+			'ms_view_shortcode_membership_signup_data',
+			$data,
+			$this
+		);
 
 		return $view->to_html();
 	}
