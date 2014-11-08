@@ -1,23 +1,39 @@
-==1.0.4==
-* Fix assignment of private memberships via members-list
-* Fix membership status-flag in database
+Plugin Name: Protected Content
+Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 
-==1.0.3==
-* Fix member model fields not persisting
+Change Log:
+----------------------------------------------------------------------
 
-==1.0.2==
-* Add class to page body to indentify membership of the current user
-* Add option to send different email when registering for a free membership
-* Fix image-url of loading animation in one css file
-* Fix logout word showing in protected-content page
-* Fix undefined variable in members model
-* Fix credit card info text
+1.0.4
+----------------------------------------------------------------------
+- Add new Add-on that allows to disable Multiple-Membership mode
+- Add new Add-on to change protection of special pages (e.g. search results)
+- Add Simulation Infos to explain which rule protected a certain page
+- Fix default protection of special pages
+- Fix assignment of private memberships via members-list
+- Fix membership status-flag in database
+- Fix access to unprotected pages is now possible
 
-==1.0.1==
-* Fix slow Ajax Login
-* Add handler for password reset
-* Fix orphan children when deleting parent membership
-* Refactories
+1.0.3
+----------------------------------------------------------------------
+- Fix member model fields not persisting
 
-==1.0.0 ==
-* Initial version.
+1.0.2
+----------------------------------------------------------------------
+- Add class to page body to indentify membership of the current user
+- Add option to send different email when registering for a free membership
+- Fix image-url of loading animation in one css file
+- Fix logout word showing in protected-content page
+- Fix undefined variable in members model
+- Fix credit card info text
+
+1.0.1
+----------------------------------------------------------------------
+- Fix slow Ajax Login
+- Add handler for password reset
+- Fix orphan children when deleting parent membership
+- Refactories
+
+1.0.0
+----------------------------------------------------------------------
+- Initial version.

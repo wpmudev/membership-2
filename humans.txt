@@ -6,5 +6,10 @@
 
 	Developer: Rheinard Khorf
 	Contact:
-	Twitter: 
+	Twitter:
+	Location:
+
+	Developer: Philipp Stracker
+	Contact:
+	Twitter:
 	Location:
