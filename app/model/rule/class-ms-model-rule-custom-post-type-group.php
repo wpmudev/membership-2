@@ -65,7 +65,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		$post_type = $wp_query->get( 'post_type' );
 		$apply = true;
 
-		/**
+		/*
 		 * Only protect if cpt group.
 		 * Protect in list rather than on a single post.
 		 * Workaroudn to invalidate the query.
@@ -90,10 +90,11 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param string $post_id The content id to verify access.
-	 * @return boolean True if has access, false otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $post_id = null ) {
-		$has_access = false;
+		$has_access = null;
 
 		// Only verify permission if NOT ruled by cpt post by post.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
@@ -113,12 +114,17 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			if ( in_array( $post_type, self::get_ms_post_types() ) ) {
 				$has_access = true;
 			}
-			elseif ( in_array( $post_type, self::get_custom_post_types() ) && parent::has_access( $post_type ) )  {
-				$has_access = true;
+			elseif ( in_array( $post_type, self::get_custom_post_types() ) ) {
+				$has_access = parent::has_access( $post_type );
 			}
 		}
 
-		return apply_filters( 'ms_model_rule_custom_post_type_group_has_access', $has_access, $post_id, $this );
+		return apply_filters(
+			'ms_model_rule_custom_post_type_group_has_access',
+			$has_access,
+			$post_id,
+			$this
+		);
 	}
 
 	/**
@@ -135,7 +141,9 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		$contents = array();
 
 		foreach ( $cpts as $key => $content ) {
-			if ( ! empty( $args['protected_content'] ) && ! $this->has_rule( $key ) ) {
+			if ( ! empty( $args['protected_content'] )
+				&& ! $this->has_rule( $key )
+			) {
 				continue;
 			}
 
@@ -178,7 +186,11 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			$cont[ $content->id ] = $content->name;
 		}
 
-		return apply_filters( 'ms_model_rule_comment_get_content_array', $cont, $this );
+		return apply_filters(
+			'ms_model_rule_comment_get_content_array',
+			$cont,
+			$this
+		);
 	}
 
 	/**
@@ -202,7 +214,10 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			self::get_ms_post_types()
 		);
 
-		return apply_filters( 'ms_model_rule_custom_post_type_group_get_excluded_content', $exclude );
+		return apply_filters(
+			'ms_model_rule_custom_post_type_group_get_excluded_content',
+			$exclude
+		);
 	}
 
 	/**
@@ -222,7 +237,10 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			MS_Model_Event::$POST_TYPE,
 		);
 
-		return apply_filters( 'ms_model_rule_custom_post_type_group_get_ms_post_types', $cpts );
+		return apply_filters(
+			'ms_model_rule_custom_post_type_group_get_ms_post_types',
+			$cpts
+		);
 	}
 
 	/**

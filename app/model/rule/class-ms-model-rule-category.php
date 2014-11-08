@@ -66,13 +66,10 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
-		/**
-		 * Only verify permission if ruled by categories.
-		 */
+		// Only verify permission if ruled by categories.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 
 			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' ) ) ) {
-
 				$categories = array();
 				$contents = $this->get_contents();
 				$contents = get_categories( 'get=all' );
@@ -107,19 +104,22 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	public function protect_categories( $terms, $taxonomies ) {
 		$new_terms = array();
 
-		// bail - not fetching category taxonomy.
+		// Bail - not fetching category taxonomy.
 		if ( ! in_array( 'category', $taxonomies ) ) {
 			return $terms;
 		}
 
-		foreach ( (array) $terms as $key => $term ) {
-			if ( ! empty( $term->taxonomy ) && 'category' == $term->taxonomy ) {
+		if ( ! is_array( $terms ) ) {
+			$terms = (array) $terms;
+		}
+
+		foreach ( $terms as $key => $term ) {
+			if ( ! empty( $term->taxonomy ) && 'category' === $term->taxonomy ) {
 				if ( parent::has_access( $term->term_id ) ) {
 					$new_terms[ $key ] = $term;
 				}
-			}
-			else {
-				// this taxonomy isn't category so add it so custom taxonomies don't break.
+			} else {
+				// Taxonomy is no category: Add it so custom taxonomies don't break.
 				$new_terms[ $key ] = $term;
 			}
 		}
@@ -135,22 +135,20 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return boolean True if has access to current content.
+	 * @param int $post_id Optional. The current post_id.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $post_id = null ) {
-		$has_access = false;
+		$has_access = null;
 
-		/**
-		 * Only verify permissions if ruled by categories.
-		 */
+		// Only verify permissions if ruled by categories.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			/**
-			 * Verify post access accordingly to category rules.
-			 */
+			$taxonomies = get_object_taxonomies( get_post_type() );
+
+			// Verify post access accordingly to category rules.
 			if ( ! empty( $post_id )
-				|| ( is_single()
-					&& in_array( 'category', get_object_taxonomies( get_post_type() ) )
-				)
+				|| ( is_single() && in_array( 'category', $taxonomies ) )
 			) {
 				if ( empty( $post_id ) ) {
 					$post_id = get_the_ID();
@@ -158,16 +156,14 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 
 				$categories = wp_get_post_categories( $post_id );
 				foreach ( $categories as $category_id ) {
-					$has_access = $has_access || parent::has_access( $category_id );
+					$has_access = parent::has_access( $category_id );
 
 					if ( $has_access ) {
 						break;
 					}
 				}
 			}
-			/**
-			 * Category page.
-			 */
+			// Category page.
 			elseif ( is_category() ) {
 				$has_access = parent::has_access( get_queried_object_id() );
 			}

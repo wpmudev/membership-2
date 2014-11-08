@@ -44,14 +44,22 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	/**
 	 * Verify access to the current content.
 	 *
+	 * This rule will return NULL (not relevant), because the menus are
+	 * protected via a wordpress hook instead of protecting the current page.
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $id The content id to verify access.
-	 * @return boolean True if has access, false otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id = null ) {
-
-		return apply_filters( 'ms_model_rule_menu_has_access', false, $id, $this );
+		return apply_filters(
+			'ms_model_rule_menu_has_access',
+			null,
+			$id,
+			$this
+		);
 	}
 
 	/**
@@ -62,7 +70,6 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship.
 	 */
 	public function protect_content( $ms_relationship = false ) {
-
 		parent::protect_content( $ms_relationship );
 
 		$this->add_filter( 'wp_get_nav_menu_items', 'filter_menus', 10, 3 );
@@ -71,9 +78,8 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * **Hooks Actions/Filters: **
-	 *
-	 * * filter_menus
+	 * Relevant Action Hooks:
+	 * - filter_menus
 	 *
 	 * @since 1.0.0
 	 *
@@ -82,16 +88,25 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 * @param mixed $args The menu select args.
 	 */
 	public function filter_menus( $items, $menu, $args ) {
-
-		if( ! empty( $items ) ) {
-			foreach( $items as $key => $item ) {
-				if( ! parent::has_access( $item->ID ) || ( ! empty( $item->menu_item_parent ) && ! parent::has_access( $item->menu_item_parent ) ) ) {
+		if ( ! empty( $items ) ) {
+			foreach ( $items as $key => $item ) {
+				if ( ! parent::has_access( $item->ID )
+					|| ( ! empty( $item->menu_item_parent )
+						&& ! parent::has_access( $item->menu_item_parent )
+					)
+				) {
 					unset( $items[ $key ] );
 				}
 			}
 		}
 
-		return apply_filters( 'ms_model_rule_menu_filter_menus', $items, $menu, $args, $this );
+		return apply_filters(
+			'ms_model_rule_menu_filter_menus',
+			$items,
+			$menu,
+			$args,
+			$this
+		);
 	}
 
 	/**
@@ -102,43 +117,49 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 * @return array The reset rule value.
 	 */
 	public function reset_menu_rule_values( $menu_id ) {
-	
 		$items = wp_get_nav_menu_items( $menu_id );
-		
-		if( ! empty( $items ) ) {
-			foreach( $items as $item ) {
+
+		if ( ! empty( $items ) ) {
+			foreach ( $items as $item ) {
 				unset( $this->rule_value[ $item->ID ] );
 			}
 		}
-		
-		$this->rule_value = apply_filters( 'ms_model_rule_menu_reset_menu_rule_values', $this->rule_value, $this );
+
+		$this->rule_value = apply_filters(
+			'ms_model_rule_menu_reset_menu_rule_values',
+			$this->rule_value,
+			$this
+		);
 	}
-	
+
 	/**
 	 * Get content to protect.
 	 *
 	 * @since 1.0.0
 	 * @param $args The query post args
-	 *              @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-
 		$contents = array();
 
-		if( ! empty( $args['protected_content'] ) ) {
+		if ( ! empty( $args['protected_content'] ) ) {
 			$menus = $this->get_menu_array();
-			foreach( $menus as $menu_id => $menu ) {
+			foreach ( $menus as $menu_id => $menu ) {
 				//recursive call.
-				$contents = array_merge( $contents, $this->get_contents( array( 'menu_id' => $menu_id ) ) );
+				$contents = array_merge(
+					$contents,
+					$this->get_contents( array( 'menu_id' => $menu_id ) )
+				);
 			}
 			return $contents;
 		}
-		elseif( ! empty( $args['menu_id'] ) ) {
+		elseif ( ! empty( $args['menu_id'] ) ) {
 			$menu_id = $args['menu_id'];
 			$items = wp_get_nav_menu_items( $menu_id );
-			if( ! empty( $items ) ) {
-				foreach( $items as $item ) {
+
+			if ( ! empty( $items ) ) {
+				foreach ( $items as $item ) {
 					$item_id = $item->ID;
 					$contents[ $item_id ] = $item;
 					$contents[ $item_id ]->id = $item_id;
@@ -151,16 +172,21 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 			}
 		}
 
-		/** If not visitor membership, just show protected content */
-		if( ! $this->rule_value_invert ) {
+		// If not visitor membership, just show protected content
+		if ( ! $this->rule_value_invert ) {
 			$contents = array_intersect_key( $contents,  $this->rule_value );
 		}
 
-		if( ! empty( $args['rule_status'] ) ) {
+		if ( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
-		return apply_filters( 'ms_model_rule_menu_get_contents', $contents, $args, $this );
+		return apply_filters(
+			'ms_model_rule_menu_get_contents',
+			$contents,
+			$args,
+			$this
+		);
 	}
 
 	/**
@@ -182,7 +208,11 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 			$cont[ $content->id ] = $content->name;
 		}
 
-		return apply_filters( 'ms_model_rule_menu_get_content_array', $cont, $this );
+		return apply_filters(
+			'ms_model_rule_menu_get_content_array',
+			$cont,
+			$this
+		);
 	}
 
 	/**
@@ -199,14 +229,18 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		$contents = array( __( 'No menus found.', MS_TEXT_DOMAIN ) );
 		$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
 
-		if( ! empty( $navs ) ) {
+		if ( ! empty( $navs ) ) {
 			$contents = array();
-			foreach( $navs as $nav ) {
+			foreach ( $navs as $nav ) {
 				$contents[ $nav->term_id ] = esc_html( $nav->name );
 			}
 		}
 
-		return apply_filters( 'ms_model_rule_menu_get_menu_array', $contents, $this );
+		return apply_filters(
+			'ms_model_rule_menu_get_menu_array',
+			$contents,
+			$this
+		);
 	}
 
 }

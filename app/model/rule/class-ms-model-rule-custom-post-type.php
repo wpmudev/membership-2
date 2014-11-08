@@ -86,7 +86,11 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			}
 		}
 
-		do_action( 'ms_model_rule_custom_post_type_protect_posts', $wp_query, $this );
+		do_action(
+			'ms_model_rule_custom_post_type_protect_posts',
+			$wp_query,
+			$this
+		);
 	}
 
 	/**
@@ -99,15 +103,28 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 	 */
 	public function get_rule_value( $id ) {
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : $this->rule_value_default;
-		}
-		else {
+			if ( isset( $this->rule_value[ $id ] ) ) {
+				$value = $this->rule_value[ $id ];
+			} else {
+				$value = $this->rule_value_default;
+			}
+		} else {
 			$membership = $this->get_membership();
 			$cpt_group = $membership->get_rule( self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
-			$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : $cpt_group->has_access( $id );
+
+			if ( isset( $this->rule_value[ $id ] ) ) {
+				$value = $this->rule_value[ $id ];
+			} else {
+				$value = $cpt_group->has_access( $id );
+			}
 		}
 
-		return apply_filters( 'ms_model_rule_cpt_get_rule_value', $value, $id, $this );
+		return apply_filters(
+			'ms_model_rule_cpt_get_rule_value',
+			$value,
+			$id,
+			$this
+		);
 	}
 
 	/**
@@ -116,10 +133,11 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param string $post_id The content id to verify access.
-	 * @return boolean True if has access, false otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $post_id = null ) {
-		$has_access = false;
+		$has_access = null;
 
 		// Only verify permission if ruled by cpt post by post.
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
@@ -128,12 +146,16 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			}
 
 			if ( ! empty( $post_id ) ) {
-				$post_type = get_post_type( $post_id );
+				$has_access = false;
 
-				if ( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_ms_post_types() ) ) {
+				$post_type = get_post_type( $post_id );
+				$mspt = MS_Model_Rule_Custom_Post_Type_Group::get_ms_post_types();
+				$cpt = MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types();
+
+				if ( in_array( $post_type, $mspt ) ) {
 					$has_access = true;
 				}
-				elseif ( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
+				elseif ( in_array( $post_type, $cpt ) ) {
 					$has_access = parent::has_access( $post_id  );
 				}
 			}
@@ -162,7 +184,11 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			$post_id = $post->ID;
 		}
 
-		return apply_filters( 'ms_model_rule_custom_post_type_get_current_post_id', $post_id, $this );
+		return apply_filters(
+			'ms_model_rule_custom_post_type_get_current_post_id',
+			$post_id,
+			$this
+		);
 	}
 
 	/**
@@ -179,7 +205,12 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		$query = new WP_Query( $args );
 		$count = $query->found_posts;
 
-		return apply_filters( 'ms_model_rule_custom_post_type_gget_content_count', $count, $args, $this );
+		return apply_filters(
+			'ms_model_rule_custom_post_type_gget_content_count',
+			$count,
+			$args,
+			$this
+		);
 	}
 
 	/**
@@ -211,7 +242,12 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
-		return apply_filters( 'ms_model_rule_custom_post_type_get_contents', $contents, $args, $this );
+		return apply_filters(
+			'ms_model_rule_custom_post_type_get_contents',
+			$contents,
+			$args,
+			$this
+		);
 	}
 
 	/**
@@ -226,7 +262,6 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 	 * @return array $args The parsed args.
 	 */
 	public function get_query_args( $args = null ) {
-
 		$cpts = MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types();
 
 		$defaults = array(
@@ -241,7 +276,11 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 		$args = wp_parse_args( $args, $defaults );
 		$args = parent::get_query_args( $args );
 
-		return apply_filters( 'ms_model_rule_cpt_get_query_args', $args, $this );
+		return apply_filters(
+			'ms_model_rule_cpt_get_query_args',
+			$args,
+			$this
+		);
 	}
 
 	/**
@@ -267,6 +306,10 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			$cont[ $content->post_type ][ $content->id ] = $content->post_title;
 		}
 
-		return apply_filters( 'ms_model_rule_cpt_get_content_array', $cont, $this );
+		return apply_filters(
+			'ms_model_rule_cpt_get_content_array',
+			$cont,
+			$this
+		);
 	}
 }

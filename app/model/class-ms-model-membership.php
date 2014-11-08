@@ -1296,10 +1296,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 * @param int $post_id
-	 * @return boolean True if has access to current page. Default is false.
+	 * @return bool|null True if has access to current page. Default is false.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
-		$has_access = false;
+		$has_access = null;
 		$this->access_reason = array();
 
 		// Only verify access if membership is Active.
@@ -1309,6 +1310,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$rules = $this->get_rules_hierarchy();
 			foreach ( $rules as $rule ) {
 				$rule_access = $rule->has_access( $post_id );
+
+				if ( null === $rule_access ) {
+					$this->access_reason[] = sprintf(
+						__( 'Ignored: Rule "%s"', MS_TEXT_DOMAIN ),
+						$rule->rule_type
+					);
+					continue;
+				}
+
 				$this->access_reason[] = sprintf(
 					__( '%s: Rule "%s"', MS_TEXT_DOMAIN ),
 					$rule_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
@@ -1316,17 +1326,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				);
 
 				// URL groups have final decission.
-				if ( MS_Model_Rule::RULE_TYPE_URL_GROUP === $rule->rule_type
-					&& $rule->has_rule_for_current_url()
-				) {
+				if ( MS_Model_Rule::RULE_TYPE_URL_GROUP === $rule->rule_type ) {
 					$has_access = $rule_access;
 					break;
 				}
 
 				// Special pages have final decission after URL groups.
-				if ( MS_Model_Rule::RULE_TYPE_SPECIAL === $rule->rule_type
-					&& $rule->has_rule_for_current_page()
-				) {
+				if ( MS_Model_Rule::RULE_TYPE_SPECIAL === $rule->rule_type ) {
 					$has_access = $rule_access;
 					$this->access_reason[] = $rule->matched_type;
 					break;
@@ -1334,7 +1340,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 				$has_access = ( $has_access || $rule_access );
 
-				if ( $has_access ) {
+				if ( $has_access === true ) {
 					break;
 				}
 			}

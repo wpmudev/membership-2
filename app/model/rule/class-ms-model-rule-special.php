@@ -94,12 +94,15 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 	 * @since 1.0.4
 	 *
 	 * @param int $page_id Optional. The page_id to verify access.
-	 * @return boolean True if has access, false otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $page_id = null ) {
-		$has_access = false;
+		$has_access = null;
 
-		if ( $this->has_rule_for_current_page() ) {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
+			if ( ! $this->has_rule_for_current_page() ) { return null; }
+
 			$has_access = $this->check_current_page( $this->rule_value );
 		}
 

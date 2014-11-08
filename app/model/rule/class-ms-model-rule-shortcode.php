@@ -53,14 +53,22 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	/**
 	 * Verify access to the current content.
 	 *
+	 * This rule will return NULL (not relevant), because shortcodes are
+	 * replaced inside the page content instead of protecting the whole page.
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $id The content id to verify access.
-	 * @return boolean True if has access, false otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id = null ) {
-
-		return apply_filters( 'ms_model_rule_shortcode_has_access', false, $id, $this );
+		return apply_filters(
+			'ms_model_rule_shortcode_has_access',
+			null,
+			$id,
+			$this
+		);
 	}
 
 	/**
@@ -73,23 +81,28 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @param MS_Model_Membership_Relationship $ms_relationship The user membership details.
 	 */
 	public function protect_content( $ms_relationship = false ) {
-
 		parent::protect_content( $ms_relationship );
 
 		$this->membership_id = $ms_relationship->membership_id;
 
-		add_shortcode( self::PROTECT_CONTENT_SHORTCODE, array( $this, 'protect_content_shorcode') );
+		add_shortcode(
+			self::PROTECT_CONTENT_SHORTCODE,
+			array( $this, 'protect_content_shorcode')
+		);
 
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
 			global $shortcode_tags;
 			$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
 
-			foreach( $shortcode_tags as $shortcode => $callback_funciton ) {
-				if( in_array( $shortcode, $exclude ) ) {
+			foreach ( $shortcode_tags as $shortcode => $callback_funciton ) {
+				if ( in_array( $shortcode, $exclude ) ) {
 					continue;
 				}
-				if( ! parent::has_access( $shortcode ) ) {
-					$shortcode_tags[ $shortcode ] = array( &$this, 'do_protected_shortcode' );
+				if ( ! parent::has_access( $shortcode ) ) {
+					$shortcode_tags[ $shortcode ] = array(
+						&$this,
+						'do_protected_shortcode',
+					);
 				}
 			}
 		}
@@ -103,18 +116,22 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 *  @since 1.0.0
 	 */
 	public function do_protected_shortcode() {
-
 		$content = null;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$msg = $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE );
 
-		if( $msg = $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE ) ) {
+		if ( $msg ) {
 			$content = $msg;
 		}
 		else {
 			$content = __( 'Shortcode content protected.', MS_TEXT_DOMAIN );
 		}
 
-		return apply_filters( 'ms_model_shortcode_do_protected_shortcode_content', $content, $this );
+		return apply_filters(
+			'ms_model_shortcode_do_protected_shortcode_content',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -132,51 +149,71 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @return string The shortcode output
 	 */
 	public function protect_content_shorcode( $atts, $content = null, $code = '' ) {
+		$atts = apply_filters(
+			'ms_model_shortcode_protect_content_shorcode_atts',
+			shortcode_atts(
+				array(
+					'id' => '',
+					'access' => 1,
+				),
+				$atts
+			)
+		);
 
-		$atts = apply_filters( 'ms_model_shortcode_protect_content_shorcode_atts', shortcode_atts( array(
-							'id' => '',
-							'access' => 1,
-					),
-					$atts
-		) );
 		$membership_ids = explode( ',', $atts['id'] );
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$msg = $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE );
 
-		/** No access to member of membership_ids */
-		if( in_array( $atts['access'], array( 'false', false, 0, '0' ) ) ) {
-			if( ! empty( $membership_ids ) && in_array( $this->membership_id, $membership_ids ) ) {
+		// No access to member of membership_ids
+		if ( in_array( $atts['access'], array( 'false', false, 0, '0' ) ) ) {
+			if ( ! empty( $membership_ids )
+				&& in_array( $this->membership_id, $membership_ids )
+			) {
 				$content = '<br />';
-				if( ! empty( $msg ) ) {
+				if ( ! empty( $msg ) ) {
 					$content .= $msg;
 				}
 				else {
-					$membership_names = MS_Model_Membership::get_membership_names( array( 'post__in' => $membership_ids ) );
+					$membership_names = MS_Model_Membership::get_membership_names(
+						array( 'post__in' => $membership_ids )
+					);
 					$content .= __( 'No access to members of: ', MS_TEXT_DOMAIN );
 					$content .= implode( ', ', $membership_names );
 				}
 			}
 		}
-		/** Give access to member of membership_ids */
+		// Give access to member of membership_ids
 		else {
-			if( ! empty( $membership_ids ) && ! in_array( $this->membership_id, $membership_ids ) ) {
+			if ( ! empty( $membership_ids )
+				&& ! in_array( $this->membership_id, $membership_ids )
+			) {
 				$content = '<br />';
 
-				$membership_names = MS_Model_Membership::get_membership_names( array( 'post__in' => $membership_ids ) );
-				if( ! empty( $msg ) ) {
+				$membership_names = MS_Model_Membership::get_membership_names(
+					array( 'post__in' => $membership_ids )
+				);
+				if ( ! empty( $msg ) ) {
 					$content .= $msg;
-					MS_Helper_Debug::log("protecte contn22");
 				}
 				else {
-					$membership_names = MS_Model_Membership::get_membership_names( array( 'post__in' => $membership_ids ) );
+					$membership_names = MS_Model_Membership::get_membership_names(
+						array( 'post__in' => $membership_ids )
+					);
 					$content .= __( 'Content protected to members of: ', MS_TEXT_DOMAIN );
 					$content .= implode( ', ', $membership_names );
 				}
 			}
 		}
 
-		return apply_filters( 'ms_model_rule_shortcode_protect_content_shorcode_content', $content, $atts, $content, $code, $this );
+		return apply_filters(
+			'ms_model_rule_shortcode_protect_content_shorcode_content',
+			$content,
+			$atts,
+			$content,
+			$code,
+			$this
+		);
 	}
 
 	/**
@@ -188,10 +225,13 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-
 		$count = count( $this->get_contents() );
 
-		return apply_filters( 'ms_model_rule_shortcode_get_content_count', $count, $this );
+		return apply_filters(
+			'ms_model_rule_shortcode_get_content_count',
+			$count,
+			$this
+		);
 	}
 
 	/**
@@ -203,16 +243,16 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-
 		global $shortcode_tags;
 
 		$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
 
 		$contents = array();
-		foreach( $shortcode_tags as $key => $function ) {
-			if( in_array( $key, $exclude ) ) {
+		foreach ( $shortcode_tags as $key => $function ) {
+			if ( in_array( $key, $exclude ) ) {
 				continue;
 			}
+
 			$id = esc_html( trim( $key ) );
 			$contents[ $id ] = new StdClass();
 			$contents[ $id ]->id = $id;
@@ -221,22 +261,25 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$contents[ $id ]->access = $this->get_rule_value( $id );
 		}
 
-		/* If not visitor membership, just show protected content */
-		if( ! $this->rule_value_invert ) {
+		// If not visitor membership, just show protected content
+		if ( ! $this->rule_value_invert ) {
 			$contents = array_intersect_key( $contents,  $this->rule_value );
 		}
 
-		if( ! empty( $args['rule_status'] ) ) {
+		if ( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
-		if( ! empty( $args['posts_per_page'] ) ) {
+		if ( ! empty( $args['posts_per_page'] ) ) {
 			$total = $args['posts_per_page'];
 			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
 			$contents = array_slice( $contents, $offset, $total );
 		}
 
-		return apply_filters( 'ms_model_rule_shortcode_get_contents', $contents );
+		return apply_filters(
+			'ms_model_rule_shortcode_get_contents',
+			$contents
+		);
 	}
 
 	/**
@@ -260,7 +303,11 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			foreach ( $data as $item ) {
 				$Cont[ $item->id ] = $item->name;
 			}
-			$Cont = apply_filters( 'ms_model_rule_shortcode_get_content_array', $Cont, $this );
+			$Cont = apply_filters(
+				'ms_model_rule_shortcode_get_content_array',
+				$Cont,
+				$this
+			);
 		}
 
 		return $Cont;

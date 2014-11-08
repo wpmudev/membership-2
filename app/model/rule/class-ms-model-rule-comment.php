@@ -75,13 +75,22 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	/**
 	 * Verify access to the current content.
 	 *
+	 * This rule will return NULL (not relevant), because the comments are
+	 * protected via WordPress hooks instead of protecting the whole page.
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $id The content id to verify access.
-	 * @return boolean True if has access, false otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id = null ) {
-		return apply_filters( 'ms_model_rule_comment_has_access', false, $id, $this );
+		return apply_filters(
+			'ms_model_rule_comment_has_access',
+			null,
+			$id,
+			$this
+		);
 	}
 
 	/**
@@ -93,9 +102,17 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 * @return boolean The rule value for the requested content. Default $rule_value_default.
 	 */
 	public function get_rule_value( $id ) {
-		$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : 0;
+		$value = 0;
+		if ( isset( $this->rule_value[ $id ] ) ) {
+			$value = $this->rule_value[ $id ];
+		}
 
-		return apply_filters( 'ms_model_rule_comment_get_rule_value', $value, $id, $this );
+		return apply_filters(
+			'ms_model_rule_comment_get_rule_value',
+			$value,
+			$id,
+			$this
+		);
 	}
 
 	/**
@@ -117,7 +134,10 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 			self::$comment_access = $rule_value;
 		}
 
-		$this->add_action( 'ms_model_plugin_setup_protection_after', 'protect_comments' );
+		$this->add_action(
+			'ms_model_plugin_setup_protection_after',
+			'protect_comments'
+		);
 	}
 
 	/**
@@ -169,7 +189,11 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 			$open = false;
 		}
 
-		return apply_filters( 'ms_model_rule_comment_read_only_comments', $open, $this );
+		return apply_filters(
+			'ms_model_rule_comment_read_only_comments',
+			$open,
+			$this
+		);
 	}
 
 	/**
@@ -181,30 +205,36 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 * @return string The reply (blank) link after filter.
 	 */
 	public function comment_reply_link( $link ) {
-		return apply_filters( 'ms_model_rule_comment_comment_reply_link', '', $this );
+		return apply_filters(
+			'ms_model_rule_comment_comment_reply_link',
+			'',
+			$this
+		);
 	}
 
 	/**
 	 * Workaround to hide existing comments.
 	 *
-	 * **Hooks Filters: **
-	 *
-	 * * get_comments_number
+	 * Related Action Hooks:
+	 * - get_comments_number
 	 *
 	 * @since 1.0
 	 *
 	 * @return int The zero count.
 	 */
 	public function get_comments_number() {
-		return apply_filters( 'ms_model_rule_comment_get_comments_number', 0, $this );
+		return apply_filters(
+			'ms_model_rule_comment_get_comments_number',
+			0,
+			$this
+		);
 	}
 
 	/**
 	 * Close comments for membership special pages.
 	 *
-	 * **Hooks Filters: **
-	 *
-	 * * the_content
+	 * Related Action Hooks:
+	 * - the_content
 	 *
 	 * @since 1.0.0
 	 *
@@ -215,7 +245,11 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 			add_filter( 'comments_open', '__return_false', 100 );
 		}
 
-		return apply_filters( 'ms_model_rule_comment_check_special_page', $content, $this );
+		return apply_filters(
+			'ms_model_rule_comment_check_special_page',
+			$content,
+			$this
+		);
 	}
 
 	/**
@@ -230,7 +264,11 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 		$count = 0;
 		$count = count( $this->rule_value );
 
-		return apply_filters( 'ms_model_rule_comment_count_rules', $count, $this );
+		return apply_filters(
+			'ms_model_rule_comment_count_rules',
+			$count,
+			$this
+		);
 	}
 
 	/**
@@ -254,7 +292,12 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 			$contents[] = $content;
 		}
 
-		return apply_filters( 'ms_model_rule_comment_get_content', $contents, $args, $this );
+		return apply_filters(
+			'ms_model_rule_comment_get_content',
+			$contents,
+			$args,
+			$this
+		);
 	}
 
 	/**
@@ -275,7 +318,11 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 			self::RULE_VALUE_NO_ACCESS => __( 'No Access to Comments', MS_TEXT_DOMAIN ),
 		);
 
-		return apply_filters( 'ms_model_rule_comment_get_content_array', $contents, $this );
+		return apply_filters(
+			'ms_model_rule_comment_get_content_array',
+			$contents,
+			$this
+		);
 	}
 
 }

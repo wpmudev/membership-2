@@ -132,7 +132,7 @@ class MS_Model_Plugin extends MS_Model {
 
 		if ( null === $Info ) {
 			$Info = array(
-				'has_access' => false,
+				'has_access' => null,
 				'is_admin' => false,
 				'memberships' => array(),
 				'url' => MS_Helper_Utility::get_current_url(),
@@ -144,10 +144,7 @@ class MS_Model_Plugin extends MS_Model {
 			$simulation = $this->member->is_admin_user()
 				&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
 
-			if ( $simulation ) {
-				$Info['reason'] = array();
-				$Info['reason'][] = __( 'Deny: Default mode', MS_TEXT_DOMAIN );
-			}
+			if ( $simulation ) { $Info['reason'] = array(); }
 
 			if ( $this->member->is_admin_user()
 				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
@@ -207,9 +204,20 @@ class MS_Model_Plugin extends MS_Model {
 					}
 
 					// If permission is not clear yet then check current membership...
-					if ( ! $Info['has_access'] ) {
+					if ( $Info['has_access'] !== true ) {
 						$membership = $ms_relationship->get_membership();
 						$access = $membership->has_access_to_current_page( $ms_relationship );
+
+						if ( null === $access ) {
+							if ( $simulation ) {
+								$Info['reason'][] = sprintf(
+									__( 'Ignored: Membership "%s"', MS_TEXT_DOMAIN ),
+									$membership->name
+								);
+								$Info['reason'][] = $membership->access_reason;
+							}
+							continue;
+						}
 
 						if ( $simulation ) {
 							$Info['reason'][] = sprintf(
@@ -221,6 +229,14 @@ class MS_Model_Plugin extends MS_Model {
 						}
 
 						$Info['has_access'] = $access;
+					}
+				}
+
+				if ( null === $Info['has_access'] ) {
+					$Info['has_access'] = true;
+
+					if ( $simulation ) {
+						$Info['reason'][] = __( 'Allow: Page is not protected', MS_TEXT_DOMAIN );
 					}
 				}
 

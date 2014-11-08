@@ -74,13 +74,14 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param int $post_id Optional. The post/CPT ID to verify access. Defaults to current URL.
-	 * @return boolean True if has access, false otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $post_id = null ) {
-
-		$has_access = false;
+		$has_access = null;
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+			if ( ! $this->has_rule_for_current_url() ) { return null; }
 
 			if ( ! empty( $post_id ) ) {
 				$url = get_permalink( $post_id );
@@ -95,16 +96,12 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 
 			$exclude = apply_filters( 'ms_model_rule_url_group_excluded_urls', array() );
 
-			/**
-			 * Check for exclude list.
-			 */
+			// Check for exclude list.
 			if ( $this->check_url_expression_match( $url, $exclude ) ) {
 				$has_access = true;
 			}
 
-			/**
-			 * Check for url group.
-			 */
+			// Check for url group.
 			if ( $this->check_url_expression_match( $url, $this->rule_value ) ) {
 				$has_access = $this->access;
 				if ( $this->rule_value_invert ) {
@@ -113,7 +110,12 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 			}
 		}
 
-		return apply_filters( 'ms_model_rule_url_group_has_access', $has_access, $post_id, $this );
+		return apply_filters(
+			'ms_model_rule_url_group_has_access',
+			$has_access,
+			$post_id,
+			$this
+		);
 	}
 
 	/**
@@ -123,8 +125,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 	 *
 	 * @return boolean True if has access, false otherwise.
 	 */
-	public function has_rule_for_current_url() {
-
+	protected function has_rule_for_current_url() {
 		$has_rules = false;
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
