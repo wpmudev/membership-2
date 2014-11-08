@@ -56,7 +56,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_TRIAL = 'trial';
 	const ADDON_MEDIA = 'media';
 	const ADDON_MEDIA_PLUS = 'media_plus';
-	const ADDON_PRIVATE_MEMBERSHIPS = 'private_memberships';
 	const ADDON_PRO_RATE = 'pro_rate';
 	const ADDON_SHORTCODE = 'shortcode';
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
@@ -89,7 +88,6 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_MULTI_MEMBERSHIPS,
 				self::ADDON_TRIAL,
 				self::ADDON_COUPON,
-				self::ADDON_PRIVATE_MEMBERSHIPS,
 				self::ADDON_POST_BY_POST,
 				self::ADDON_CPT_POST_BY_POST,
 				self::ADDON_MEDIA,
@@ -213,12 +211,6 @@ class MS_Model_Addon extends MS_Model_Option {
 						'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
 						'active' => self::is_enabled( self::ADDON_COUPON ),
 				),
-//				self::ADDON_PRIVATE_MEMBERSHIPS => (object) array(
-//						'id' => self::ADDON_PRIVATE_MEMBERSHIPS,
-//						'name' => __( 'Private Memberships', MS_TEXT_DOMAIN ),
-//						'description' => __( 'Enable private membership levels.', MS_TEXT_DOMAIN ),
-//						'active' => self::is_enabled( self::ADDON_PRIVATE_MEMBERSHIPS ),
-//				),
 				self::ADDON_POST_BY_POST => (object) array(
 					'id' => self::ADDON_POST_BY_POST,
 					'name' => __( 'Post by Post Protection', MS_TEXT_DOMAIN ),
