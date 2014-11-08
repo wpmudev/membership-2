@@ -456,9 +456,9 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 *
 	 * @since 1.0.0
 	 * @return array {
-	 * 		Returns array of ( $mode_type => $description ).
-	 * 		@type string $mode_type The mode type.
-	 * 		@type string $description The mode type description.
+	 *     Returns array of ( $mode_type => $description ).
+	 *     @type string $mode_type The mode type.
+	 *     @type string $description The mode type description.
 	 * }
 	 */
 	public function get_mode_types() {
@@ -531,15 +531,15 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @since 1.0.0
 	 *
 	 * @return array {
-	 * 		Returns array of ( $code => $name ).
-	 * 		@type string $code The country code.
-	 * 		@type string $name The country name.
+	 *     Returns array of ( $code => $name ).
+	 *     @type string $code The country code.
+	 *     @type string $name The country name.
 	 * }
 	 */
 	public function get_country_codes() {
 		$countries = array(
 			'' => __( 'Select country', MS_TEXT_DOMAIN ),
-			'AX' => __( 'ÃLAND ISLANDS', MS_TEXT_DOMAIN ),
+			'AX' => __( 'ALAND ISLANDS', MS_TEXT_DOMAIN ),
 			'AL' => __( 'ALBANIA', MS_TEXT_DOMAIN ),
 			'DZ' => __( 'ALGERIA', MS_TEXT_DOMAIN ),
 			'AS' => __( 'AMERICAN SAMOA', MS_TEXT_DOMAIN ),

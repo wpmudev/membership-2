@@ -24,7 +24,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 						__( 'Your IPN listening URL is:', MS_TEXT_DOMAIN ),
 						$this->data['model']->get_return_url(),
 						'https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNSetup/',
-						__( 'Instructions »', MS_TEXT_DOMAIN )
+						__( 'Instructions &raquo;', MS_TEXT_DOMAIN )
 					);
 				}
 				MS_Helper_Html::settings_box( $this->fields, '', $description );
