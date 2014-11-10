@@ -204,7 +204,7 @@ class MS_Helper_Html extends MS_Helper {
 				self::html_element_label( $title, $label_element, $id, $tooltip_output );
 				self::html_element_desc( $desc );
 
-				$options .= self::select_options( $field_options, $value );
+				$options = self::select_options( $field_options, $value );
 
 				printf(
 					'<select id="%1$s" class="ms-field-input ms-select %2$s" name="%3$s" %4$s>%5$s</select>',

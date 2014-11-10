@@ -4,6 +4,11 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.4.1
+----------------------------------------------------------------------
+- Fix error when testing memberships
+- Fix PHP notices
+
 1.0.4
 ----------------------------------------------------------------------
 - Add new Add-on that allows to disable Multiple-Membership mode
