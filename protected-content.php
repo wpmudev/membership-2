@@ -2,7 +2,7 @@
 /**
 Plugin Name: Protected Content
 Plugin URI:  https://premium.wpmudev.org/project/protected-content/
-Version:     1.0.4.1
+Version:     1.0.4.2
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author:      WPMU DEV
 Author URI:  http://premium.wpmudev.org/
@@ -81,7 +81,7 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_VERSION', '1.0.4.1' );
+define( 'MS_PLUGIN_VERSION', '1.0.4.2' );
 
 /**
  * Hooks 'ms_class_path_overrides'.
@@ -113,6 +113,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Helper_List_Table_Rule_Custom_Post_Type' => 'list-table/rule/class-ms-helper-list-table-rule-custom-post-type.php',
 		'MS_Helper_List_Table_Rule_Custom_Post_Type_Group' => 'list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php',
 		'MS_Helper_List_Table_Rule_Url_Group' => 'list-table/rule/class-ms-helper-list-table-rule-url-group.php',
+		'MS_Helper_List_Table_Rule_Replace_Menu' => 'list-table/rule/class-ms-helper-list-table-rule-replace-menu.php',
 	);
 
 	// MODELS
@@ -135,6 +136,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Model_Rule_Custom_Post_Type' => 'rule/class-ms-model-rule-custom-post-type.php',
 		'MS_Model_Rule_Custom_Post_Type_Group' => 'rule/class-ms-model-rule-custom-post-type-group.php',
 		'MS_Model_Rule_Url_Group' => 'rule/class-ms-model-rule-url-group.php',
+		'MS_Model_Rule_Replace_Menu' => 'rule/class-ms-model-rule-replace-menu.php',
 		'MS_Model_Membership_Relationship' => 'class-ms-model-membership_relationship.php',
 	);
 

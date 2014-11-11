@@ -42,6 +42,7 @@ class MS_Controller_Rule extends MS_Controller {
 	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
 	const AJAX_ACTION_TOGGLE_RULE_DEFAULT = 'toggle_rule_default';
 	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
+	const AJAX_ACTION_UPDATE_MATCHING = 'update_matching';
 	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
 	const AJAX_ACTION_UPDATE_FIELD = 'update_update_field';
 
@@ -57,6 +58,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, 'ajax_action_toggle_rule_default' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MATCHING, 'ajax_action_update_matching' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_FIELD, 'ajax_action_update_field' );
 
@@ -68,9 +70,8 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_rule
+	 * Related Action Hooks:
+	 * - wp_ajax_toggle_rule
 	 *
 	 * @since 1.0.0
 	 */
@@ -99,9 +100,8 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_rule_default
+	 * Related Action Hooks:
+	 * - wp_ajax_toggle_rule_default
 	 *
 	 * @since 1.0.0
 	 */
@@ -130,9 +130,8 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Handle Ajax update rule action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_update_rule
+	 * Related Action Hooks:
+	 * - wp_ajax_update_rule
 	 *
 	 * @since 1.0.0
 	 */
@@ -162,6 +161,40 @@ class MS_Controller_Rule extends MS_Controller {
 	}
 
 	/**
+	 * Handle Ajax update rule-matchong action.
+	 *
+	 * Related Action Hooks:
+	 * - wp_ajax_update_matching
+	 *
+	 * @since 1.0.4.2
+	 */
+	public function ajax_action_update_matching() {
+		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+		$this->_resp_reset();
+
+		$required = array( 'membership_id', 'rule_type' );
+		$isset = array( 'item', 'value' );
+
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-matching-01' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'update-matching-02' ); }
+		if ( $this->_resp_ok() && ! $this->validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-matching-03' ); }
+
+		if ( $this->_resp_ok() ) {
+			$rule_type = $_POST['rule_type'];
+			$msg = $this->save_rule_values(
+				$rule_type,
+				$_POST['item'],
+				$_POST['value'],
+				false
+			);
+		}
+		$msg .= $this->_resp_code();
+
+		echo $msg;
+		exit;
+	}
+
+	/**
 	 * Save rules for a rule type.
 	 *
 	 * First reset all rules, then save the incoming rules.
@@ -172,8 +205,9 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @param string $rule_type The rule type to update.
 	 * @param string[] $rule_ids The content identifiers.
 	 * @param int|int[] $rule_values The rule values.
+	 * @param bool $reset If set to false then the exiting rule values will be kept.
 	 */
-	private function save_rule_values( $rule_type, $rule_ids, $rule_values ) {
+	private function save_rule_values( $rule_type, $rule_ids, $rule_values, $reset = true ) {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		if ( ! $this->is_admin_user() ) {
 			return $msg;
@@ -183,21 +217,26 @@ class MS_Controller_Rule extends MS_Controller {
 
 		if ( $membership->is_valid() ) {
 			$rule = $membership->get_rule( $rule_type );
-			if( MS_Model_Rule::RULE_TYPE_MENU == $rule->rule_type && ! empty( $_POST['menu_id'] ) ) {
-				$rule->reset_menu_rule_values( $_POST['menu_id'] );
+
+			if ( $reset ) {
+				if ( MS_Model_Rule::RULE_TYPE_MENU === $rule->rule_type
+					&& ! empty( $_POST['menu_id'] )
+				) {
+					$rule->reset_menu_rule_values( $_POST['menu_id'] );
+				} else {
+					$rule->reset_rule_values();
+				}
 			}
-			else {
-				$rule->reset_rule_values();
-			}
+
 			if ( ! is_array( $rule_ids ) ) {
 				$rule_ids = array( $rule_ids );
 			}
+
 			foreach ( $rule_ids as $id ) {
 				if ( ! empty( $id ) ) {
 					if ( is_array( $rule_values ) ) {
 						$rule_value = $rule_values[ $id ];
-					}
-					else {
+					} else {
 						$rule_value = $rule_values;
 					}
 					$rule->set_access( $id, $rule_value );
@@ -208,15 +247,21 @@ class MS_Controller_Rule extends MS_Controller {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 
-		return apply_filters( 'ms_controller_rule_save_rule_values', $msg, $rule_type, $rule_ids, $rule_values, $this );
+		return apply_filters(
+			'ms_controller_rule_save_rule_values',
+			$msg,
+			$rule_type,
+			$rule_ids,
+			$rule_values,
+			$this
+		);
 	}
 
 	/**
 	 * Handle Ajax update dripped rules action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_update_dripped
+	 * Related Action Hooks:
+	 * - wp_ajax_update_dripped
 	 *
 	 * @since 1.0.0
 	 */
@@ -256,9 +301,8 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Handle Ajax to update rule model field.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_update_field
+	 * Related Action Hooks:
+	 * - wp_ajax_update_field
 	 *
 	 * @since 1.0.0
 	 */
@@ -300,9 +344,8 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Handles Membership Rule form submissions.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_controller_membership_edit_manager
+	 * Related Action Hooks:
+	 * - ms_controller_membership_edit_manager
 
 	 * @since 1.0.0
 	 */

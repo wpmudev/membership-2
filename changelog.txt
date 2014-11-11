@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.4.2
+----------------------------------------------------------------------
+- Add new Add-on to replace whole menus per membership-level
+
 1.0.4.1
 ----------------------------------------------------------------------
 - Fix error when testing memberships

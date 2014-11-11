@@ -60,6 +60,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_SHORTCODE = 'shortcode';
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	const ADDON_SPECIAL_PAGES = 'special_pages';
+	const ADDON_REPLACE_MENUS = 'replace_menus';
 
 	/**
 	 * Add-ons array.
@@ -96,6 +97,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_URL_GROUPS,
 				self::ADDON_AUTO_MSGS_PLUS,
 				self::ADDON_SPECIAL_PAGES,
+				self::ADDON_REPLACE_MENUS,
 			);
 		}
 
@@ -192,83 +194,74 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 */
 	public function get_addon_list() {
-		return apply_filters( 'ms_model_addon_get_addon_list', array(
-				self::ADDON_MULTI_MEMBERSHIPS => (object) array(
-					'id' => self::ADDON_MULTI_MEMBERSHIPS,
-					'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ),
-					'description' => __( 'Allow members to join multiple membership levels.', MS_TEXT_DOMAIN ),
-					#'description' => __( 'Your members can join more than one membership level at the same time.', MS_TEXT_DOMAIN ),
-					'active' => self::is_enabled( self::ADDON_MULTI_MEMBERSHIPS ),
-				),
-				self::ADDON_TRIAL => (object) array(
-						'id' => self::ADDON_TRIAL,
-						'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable trial period in membership levels.', MS_TEXT_DOMAIN ),
-						#'description' => __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership level.', MS_TEXT_DOMAIN ),
-						'active' => self::is_enabled( self::ADDON_TRIAL ),
-				),
-				self::ADDON_COUPON => (object) array(
-						'id' => self::ADDON_COUPON,
-						'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
-						'active' => self::is_enabled( self::ADDON_COUPON ),
-				),
-				self::ADDON_POST_BY_POST => (object) array(
-					'id' => self::ADDON_POST_BY_POST,
-					'name' => __( 'Post by Post Protection', MS_TEXT_DOMAIN ),
-					'description' => __( 'Protect content post by post instead of post categories.', MS_TEXT_DOMAIN ),
-					'active' => self::is_enabled( self::ADDON_POST_BY_POST ),
-				),
-				self::ADDON_CPT_POST_BY_POST => (object) array(
-					'id' => self::ADDON_CPT_POST_BY_POST,
-					'name' => __( 'Custom Post Type Protection - Post by Post ', MS_TEXT_DOMAIN ),
-					'description' => __( 'Protect custom post type post by post instead of post type groups.', MS_TEXT_DOMAIN ),
-					'active' => self::is_enabled( self::ADDON_CPT_POST_BY_POST ),
-				),
-				self::ADDON_MEDIA => (object) array(
-					'id' => self::ADDON_MEDIA,
-					'name' => __( 'Media Protection', MS_TEXT_DOMAIN ),
-					'description' => __( 'Enable protected post and page media protection.', MS_TEXT_DOMAIN ),
-					#'description' => __( 'Protect Images and other Media-Library content.', MS_TEXT_DOMAIN ),
-					'active' => self::is_enabled( self::ADDON_MEDIA ),
-				),
-				self::ADDON_MEDIA_PLUS => (object) array(
-					'id' => self::ADDON_MEDIA_PLUS,
-					'name' => __( 'Media Protection - additional protection methods', MS_TEXT_DOMAIN ),
-					'description' => __( 'Enable additional protection method (Basic, Complete, Hybrid).', MS_TEXT_DOMAIN ),
-					#'description' => __( 'Extends the Media Protection. Enable these additional protection methods: Basic, Complete, Hybrid.', MS_TEXT_DOMAIN ),
-					'active' => self::is_enabled( self::ADDON_MEDIA_PLUS ),
-				),
-				self::ADDON_SHORTCODE => (object) array(
-					'id' => self::ADDON_SHORTCODE,
-					'name' => __( 'Shortcode Protection', MS_TEXT_DOMAIN ),
-					'description' => __( 'Enable shortcode protection.', MS_TEXT_DOMAIN ),
-					#'description' => __( 'Protect shortcodes-output via membership levels.', MS_TEXT_DOMAIN ),
-					'active' => self::is_enabled( self::ADDON_SHORTCODE ),
-				),
-				self::ADDON_URL_GROUPS => (object) array(
-						'id' => self::ADDON_URL_GROUPS,
-						'name' => __( 'Url Groups Protection', MS_TEXT_DOMAIN ),
-						#'name' => __( 'URL Protection', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable Url Groups protection. This protection will override all other rules. Use it carefully.', MS_TEXT_DOMAIN ),
-						#'description' => __( 'URL Protection will protect pages by the URL. This rule overrides all other rules, so use it carefully.', MS_TEXT_DOMAIN ),
-						'active' => self::is_enabled( self::ADDON_URL_GROUPS ),
-				),
-				self::ADDON_AUTO_MSGS_PLUS => (object) array(
-						'id' => self::ADDON_AUTO_MSGS_PLUS,
-						'name' => __( 'Additional Automated Messages', MS_TEXT_DOMAIN ),
-						'description' => __( 'Enable additional automated emails.', MS_TEXT_DOMAIN ),
-						#'description' => __( 'Send your members automated Email responses for various additional events.', MS_TEXT_DOMAIN ),
-						'active' => self::is_enabled( self::ADDON_AUTO_MSGS_PLUS ),
-				),
-				self::ADDON_SPECIAL_PAGES => (object) array(
-						'id' => self::ADDON_SPECIAL_PAGES,
-						'name' => __( 'Protect Special Pages', MS_TEXT_DOMAIN ),
-						'description' => __( 'Change protection of special pages such as the search results.', MS_TEXT_DOMAIN ),
-						'active' => self::is_enabled( self::ADDON_SPECIAL_PAGES ),
-				),
-			)
+		$list = array();
+
+		$list[self::ADDON_MULTI_MEMBERSHIPS] = (object) array(
+			'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ),
+			'description' => __( 'Your members can join more than one membership level at the same time.', MS_TEXT_DOMAIN ),
 		);
+
+		$list[self::ADDON_TRIAL] = (object) array(
+			'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
+			'description' => __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership level.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_COUPON] = (object) array(
+			'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
+			'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_POST_BY_POST] = (object) array(
+			'name' => __( 'Post by Post Protection', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect content post by post instead of post categories.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_CPT_POST_BY_POST] = (object) array(
+			'name' => __( 'Custom Post Type Protection - Post by Post ', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect custom post type post by post instead of post type groups.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_MEDIA] = (object) array(
+			'name' => __( 'Media Protection', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect Images and other Media-Library content.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_MEDIA_PLUS] = (object) array(
+			'name' => __( 'Media Protection - additional protection methods', MS_TEXT_DOMAIN ),
+			'description' => __( 'Extends the Media Protection. Enable these additional protection methods: Basic, Complete, Hybrid.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_SHORTCODE] = (object) array(
+			'name' => __( 'Shortcode Protection', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect shortcodes-output via membership levels.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_URL_GROUPS] = (object) array(
+			'name' => __( 'URL Protection', MS_TEXT_DOMAIN ),
+			'description' => __( 'URL Protection will protect pages by the URL. This rule overrides all other rules, so use it carefully.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_AUTO_MSGS_PLUS] = (object) array(
+			'name' => __( 'Additional Automated Messages', MS_TEXT_DOMAIN ),
+			'description' => __( 'Send your members automated Email responses for various additional events.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_SPECIAL_PAGES] = (object) array(
+			'name' => __( 'Protect Special Pages', MS_TEXT_DOMAIN ),
+			'description' => __( 'Change protection of special pages such as the search results.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_REPLACE_MENUS] = (object) array(
+			'name' => __( 'Replace menus', MS_TEXT_DOMAIN ),
+			'description' => __( 'Clean up your menus by replaceing default WordPress menus with custom menus on membership basis.', MS_TEXT_DOMAIN ),
+		);
+
+		foreach ( $list as $key => $data ) {
+			$list[$key]->id = $key;
+			$list[$key]->active = self::is_enabled( $key );
+		}
+
+		return apply_filters( 'ms_model_addon_get_addon_list', $list );
 	}
 
 }

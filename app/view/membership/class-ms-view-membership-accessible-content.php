@@ -375,10 +375,20 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$action = $this->data['action'];
 		$nonce = wp_create_nonce( $action );
 
+		$replace_menus = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_REPLACE_MENUS );
 		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
+
+		if ( $replace_menus ) {
+			$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENUS );
+		} else {
+			$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
+		}
+
+		$val_comment = $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID );
+		$val_more_tag = absint( $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) );
 
 		$fields = array(
 			'comment' => array(
@@ -386,7 +396,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
 				'desc' => __( 'Members have:', MS_TEXT_DOMAIN ),
-				'value' => $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID ),
+				'value' => $val_comment,
 				'field_options' => $rule_comment->get_content_array(),
 				'class' => 'chosen-select',
 				'data_ms' => array(
@@ -405,7 +415,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
 				'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
-				'value' => $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ? 1 : 0,
+				'value' => $val_more_tag,
 				'field_options' => $rule_more_tag->get_options_array(),
 				'class' => 'ms-more-tag ms-ajax-update',
 				'data_ms' => array(
@@ -419,18 +429,6 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 
 			'more_tag_rule_edit' => $this->restriction_link( MS_Model_Rule::RULE_TYPE_MORE_TAG ),
 
-			'menu_id' => array(
-				'id' => 'menu_id',
-				'title' => __( 'Menus:', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Select menu to load:', MS_TEXT_DOMAIN ),
-				'value' => $this->data['menu_id'],
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'field_options' => $this->data['menus'],
-				'class' => 'chosen-select',
-			),
-
-			'menu_rule_edit' => $this->restriction_link( MS_Model_Rule::RULE_TYPE_MENU ),
-
 			'step' => array(
 				'id' => 'step',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -438,8 +436,21 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			),
 		);
 
+		if ( ! $replace_menus ) {
+			$fields['menu_id'] = array(
+				'id' => 'menu_id',
+				'title' => __( 'Menus:', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Select menu to load:', MS_TEXT_DOMAIN ),
+				'value' => $this->data['menu_id'],
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => $this->data['menus'],
+				'class' => 'chosen-select',
+			);
 
-		if ( MS_Model_Rule_Comment::RULE_VALUE_WRITE == $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT )->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID ) ) {
+			$fields['menu_rule_edit'] = $this->restriction_link( MS_Model_Rule::RULE_TYPE_MENU );
+		}
+
+		if ( MS_Model_Rule_Comment::RULE_VALUE_WRITE === $val_comment ) {
 			$fields['comment'] = array(
 				'id' => 'comment',
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
@@ -450,7 +461,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			);
 		}
 
-		if ( ! $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ) {
+		if ( $val_more_tag ) {
 			$fields['more_tag'] = array(
 				'id' => 'more_tag',
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
@@ -461,10 +472,24 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			);
 		}
 
-		$fields = apply_filters( 'ms_view_membership_setup_protected_content_get_tab_comment_fields', $fields );
+		$fields = apply_filters(
+			'ms_view_membership_setup_protected_content_get_tab_comment_fields',
+			$fields
+		);
 
-		$rule = $membership->get_rule( 'menu' );
-		$rule_list_table = new MS_Helper_List_Table_Rule_Menu( $rule, $membership, $this->data['menu_id'] );
+
+		if ( $replace_menus ) {
+			$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menu(
+				$rule_menu,
+				$membership
+			);
+		} else {
+			$rule_list_table = new MS_Helper_List_Table_Rule_Menu(
+				$rule_menu,
+				$membership,
+				$this->data['menu_id']
+			);
+		}
 		$rule_list_table->prepare_items();
 
 		$title = __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN );
@@ -476,35 +501,51 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => $title, 'desc' => $desc )
+			); ?>
 			<div class="ms-separator"></div>
 
-			<div class="ms-half space">
-				<div class="inside">
-					<?php MS_Helper_Html::html_element( $fields['comment'] ); ?>
-					<div class="ms-protection-edit-link">
-						<?php MS_Helper_Html::html_element( $fields['comment_rule_edit'] ); ?>
+			<div class="ms-group">
+				<div class="ms-half">
+					<div class="inside">
+						<?php MS_Helper_Html::html_element( $fields['comment'] ); ?>
+						<?php MS_Helper_Html::save_text(); ?>
+						<div class="ms-protection-edit-link">
+							<?php MS_Helper_Html::html_element( $fields['comment_rule_edit'] ); ?>
+						</div>
+						<?php MS_Helper_Html::html_separator( 'vertical' ); ?>
 					</div>
-					<?php MS_Helper_Html::html_separator( 'vertical' ); ?>
+				</div>
+
+				<div class="ms-half">
+					<div class="inside">
+						<?php MS_Helper_Html::html_element( $fields['more_tag'] ); ?>
+						<?php MS_Helper_Html::save_text(); ?>
+						<div class="ms-protection-edit-link">
+							<?php MS_Helper_Html::html_element( $fields['more_tag_rule_edit'] ); ?>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<div class="ms-half">
-				<div class="inside">
-					<?php MS_Helper_Html::html_element( $fields['more_tag'] ); ?>
-					<div class="ms-protection-edit-link">
-						<?php MS_Helper_Html::html_element( $fields['more_tag_rule_edit'] ); ?>
-					</div>
-				</div>
-			</div>
+			<div class="ms-separator"></div>
 
 			<div class="ms-group">
-				<form id="ms-menu-form" method="post">
-					<?php MS_Helper_Html::html_element( $fields['menu_id'] ); ?>
-				</form>
-				<?php $rule_list_table->display(); ?>
-				<div class="ms-protection-edit-link">
-					<?php MS_Helper_Html::html_element( $fields['menu_rule_edit'] ); ?>
+				<div class="ms-inside">
+
+				<?php if ( $replace_menus ) : ?>
+					<?php $rule_list_table->display(); ?>
+				<?php else : ?>
+					<form id="ms-menu-form" method="post">
+						<?php MS_Helper_Html::html_element( $fields['menu_id'] ); ?>
+					</form>
+					<?php $rule_list_table->display(); ?>
+					<div class="ms-protection-edit-link">
+						<?php MS_Helper_Html::html_element( $fields['menu_rule_edit'] ); ?>
+					</div>
+				<?php endif ; ?>
+
 				</div>
 			</div>
 		</div>

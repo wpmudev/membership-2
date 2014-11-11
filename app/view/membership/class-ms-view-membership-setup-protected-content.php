@@ -313,7 +313,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	public function render_tab_comment() {
 		$fields = $this->get_tab_comment_fields();
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( 'menu' );
+		$protect_menu_items = ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_REPLACE_MENUS );
 
 		$title = __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN );
 		$desc = __( 'Protected Comments, More Tag & Menus are available for members only.', MS_TEXT_DOMAIN );
@@ -342,6 +342,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 
 			<div class="ms-separator"></div>
 
+			<?php if ( $protect_menu_items ) : ?>
 			<div class="ms-group">
 				<div class="inside">
 					<form id="ms-menu-form" method="post">
@@ -349,6 +350,12 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 					</form>
 				</div>
 			</div>
+			<?php else : ?>
+			<p><em>
+				<?php _e( 'No options available. Menu access is defined on membership-level.', MS_TEXT_DOMAIN ); ?>
+			</em></p>
+			<?php endif; ?>
+
 		</div>
 		<?php
 		MS_Helper_Html::settings_footer(

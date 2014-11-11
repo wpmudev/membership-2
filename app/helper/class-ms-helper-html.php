@@ -942,8 +942,9 @@ class MS_Helper_Html extends MS_Helper {
 	 * @since  1.0.0
 	 *
 	 * @param  array $texts Optionally override the default save-texts.
+	 * @param  bool $return If set to true the HTML code will be returned.
 	 */
-	public static function save_text( $texts = array() ) {
+	public static function save_text( $texts = array(), $return = false ) {
 		$defaults = array(
 			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
 			'saved_text' => __( 'All changes saved.', MS_TEXT_DOMAIN ),
@@ -951,7 +952,13 @@ class MS_Helper_Html extends MS_Helper {
 		);
 		extract( wp_parse_args( $texts, $defaults ) );
 
-		printf(
+		if ( $return ) {
+			$command = 'sprintf';
+		} else {
+			$command = 'printf';
+		}
+
+		return $command(
 			'<span class="ms-save-text-wrapper">
 				<span class="ms-saving-text"><div class="loading-animation"></div> %1$s</span>
 				<span class="ms-saved-text">%2$s</span>

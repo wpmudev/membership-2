@@ -22,7 +22,19 @@ class MS_View_Membership_Overview_Content_Type extends MS_View_Membership_Overvi
 
 				echo '<div class="ms-group">';
 				foreach ( $rule_types as $rule_type ) {
-					if ( $protected_content->get_rule( $rule_type )->has_rules() ) {
+					$rule = false;
+
+					switch ( $rule_type ) {
+						case MS_Model_Rule::RULE_TYPE_REPLACE_MENUS:
+							$rule = $membership->get_rule( $rule_type );
+							break;
+
+						default:
+							$rule = $protected_content->get_rule( $rule_type );
+							break;
+					}
+
+					if ( $rule && $rule->has_rules() ) {
 						$this->content_box_tags( $membership->get_rule( $rule_type ) );
 					}
 				}
