@@ -21,12 +21,12 @@
 */
 
 /**
- * Settings model. 
+ * Settings model.
  *
  * Singleton. Persisted by parent class MS_Model_Option.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Model
  */
@@ -36,7 +36,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Singleton instance.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @staticvar MS_Model_Settings
 	 */
 	public static $instance;
@@ -45,7 +45,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Protection Message Type constants.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var string
 	 */
 	const PROTECTION_MSG_CONTENT = 'content';
@@ -56,7 +56,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * ID of the model object.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var int
 	 */
 	protected $id = 'ms_plugin_settings';
@@ -65,8 +65,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Model name.
 	 *
 	 * @since 1.0.0
-	 * 
-	 * @var string 
+	 *
+	 * @var string
 	 */
 	protected $name = 'Plugin settings';
 
@@ -74,8 +74,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Current db version.
 	 *
 	 * @since 1.0.0
-	 * 
-	 * @var string 
+	 *
+	 * @var string
 	 */
 	protected $version;
 
@@ -83,8 +83,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Plugin enabled status indicator.
 	 *
 	 * @since 1.0.0
-	 * 
-	 * @var boolean 
+	 *
+	 * @var boolean
 	 */
 	protected $plugin_enabled = false;
 
@@ -92,10 +92,10 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Initial setup status indicator.
 	 *
 	 * Wizard mode.
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
-	 * @var boolean 
+	 *
+	 * @var boolean
 	 */
 	protected $initial_setup = true;
 
@@ -103,10 +103,10 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * Wizard step tracker.
 	 *
 	 * Indicate which step of the wizard.
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
-	 * @var boolean 
+	 *
+	 * @var boolean
 	 */
 	protected $wizard_step;
 
@@ -178,6 +178,15 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $protection_messages = array();
 
 	/**
+	 * How menu items are protected.
+	 *
+	 * @since 1.0.4.2
+	 *
+	 * @var string
+	 */
+	protected $menu_protection = 'item';
+
+	/**
 	 * Media / Downloads settings.
 	 *
 	 * @since 1.0.0
@@ -192,14 +201,13 @@ class MS_Model_Settings extends MS_Model_Option {
 
 	/**
 	 * Get setting.
-	 * 
+	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $field The setting to retrieve.
 	 * @return mixed The setting value.
 	 */
 	public static function get_setting( $field ) {
-		
 		$value = null;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
@@ -219,10 +227,11 @@ class MS_Model_Settings extends MS_Model_Option {
 	 */
 	public static function get_protection_msg_types() {
 		$types = array(
-				self::PROTECTION_MSG_CONTENT,
-				self::PROTECTION_MSG_SHORTCODE,
-				self::PROTECTION_MSG_MORE_TAG,
+			self::PROTECTION_MSG_CONTENT,
+			self::PROTECTION_MSG_SHORTCODE,
+			self::PROTECTION_MSG_MORE_TAG,
 		);
+
 		return apply_filters( 'ms_model_settings_get_protection_msg_types', $types );
 	}
 
@@ -235,10 +244,12 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @return boolean True if valid.
 	 */
 	public static function is_valid_protection_msg_type( $type ) {
-		
 		$types = self::get_protection_msg_types();
-		
-		return apply_filters( 'ms_model_settings_is_valid_protection_msg_type', in_array( $type, $types ) );
+
+		return apply_filters(
+			'ms_model_settings_is_valid_protection_msg_type',
+			in_array( $type, $types )
+		);
 	}
 
 	/**
@@ -250,12 +261,16 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @param string $msg The protection message.
 	 */
 	public function set_protection_message( $type, $msg ) {
-		
 		if ( self::is_valid_protection_msg_type( $type ) ) {
 			$this->protection_messages[ $type ] = stripslashes( wp_kses_post( $msg ) );
 		}
 
-		do_action( 'ms_model_settings_set_protection_message', $type, $msg, $this );
+		do_action(
+			'ms_model_settings_set_protection_message',
+			$type,
+			$msg,
+			$this
+		);
 	}
 
 	/**
@@ -277,7 +292,12 @@ class MS_Model_Settings extends MS_Model_Option {
 			}
 		}
 
-		return apply_filters( 'ms_model_settings_get_protection_message', $msg, $type, $this );
+		return apply_filters(
+			'ms_model_settings_get_protection_message',
+			$msg,
+			$type,
+			$this
+		);
 	}
 
 	/**
@@ -290,9 +310,13 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @param mixed $value The custom setting value.
 	 */
 	public function set_custom_setting( $group, $field, $value ) {
-		
-		$this->custom[ $group ][ $field ] = apply_filters( 'ms_model_settings_set_custom_setting', $value, $group, $field, $this );
-		
+		$this->custom[ $group ][ $field ] = apply_filters(
+			'ms_model_settings_set_custom_setting',
+			$value,
+			$group,
+			$field,
+			$this
+		);
 	}
 
 	/**
@@ -305,14 +329,19 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @return mixed $value The custom setting value.
 	 */
 	public function get_custom_setting( $group, $field ) {
-		
 		$value = '';
-		
+
 		if ( ! empty( $this->custom[ $group ][ $field ] ) ) {
 			$value = $this->custom[ $group ][ $field ];
 		}
-		
-		return apply_filters( 'ms_model_settings_get_custom_setting', $value, $group, $field, $this );
+
+		return apply_filters(
+			'ms_model_settings_get_custom_setting',
+			$value,
+			$group,
+			$field,
+			$this
+		);
 	}
 
 	/**
@@ -321,8 +350,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @since 1.0.0
 	 *
 	 * @return array {
-	 * 		@type string $currency The currency.
-	 * 		@type string $title The currency title.
+	 *     @type string $currency The currency.
+	 *     @type string $title The currency title.
 	 * }
 	 */
 	public static function get_currencies() {
@@ -380,14 +409,17 @@ class MS_Model_Settings extends MS_Model_Option {
 						$this->$property = $value;
 					}
 					break;
+
 				case 'invoice_sender_name':
 					$this->$property = sanitize_text_field( $value );
 					break;
+
 				case 'plugin_enabled':
 				case 'initial_setup':
 				case 'hide_admin_bar':
 					$this->$property = $this->validate_bool( $value );
 					break;
+
 				default:
 					$this->$property = $value;
 					break;
@@ -397,13 +429,15 @@ class MS_Model_Settings extends MS_Model_Option {
 			switch ( $property ) {
 				case 'protection_enabled':
 					$this->downloads['protection_enabled'] = $this->validate_bool( $value );
-					MS_Helper_Debug::log( $this->downloads);
+					MS_Helper_Debug::log( $this->downloads );
 					break;
+
 				case 'protection_type':
 					if ( MS_Model_Rule_Media::is_valid_protection_type( $value ) ) {
 						$this->downloads['protection_type'] = $value;
 					}
 					break;
+
 				case 'masked_url':
 					$this->downloads['masked_url'] = sanitize_text_field( $value );
 					break;
@@ -420,27 +454,37 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @return mixed $value The value of a property.
 	 */
 	public function __get( $property ) {
-		
 		$value = null;
-		
-		if ( property_exists( $this, $property ) ) {
-			$value = $this->$property;
-		}
-		else {
-			switch ( $property ) {
-				case 'currency_symbol':
-					// Same translation table in:
-					// -> ms-view-membership-setup-payment.js
-					$symbol = $this->currency;
-					switch ( $symbol ) {
-						case 'USD': $symbol = '$'; break;
-						case 'EUR': $symbol = '€'; break;
-						case 'JPY': $symbol = '¥'; break;
+
+		switch ( $property ) {
+			case 'menu_protection':
+				if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADV_MENUS ) ) {
+					$value = 'item';
+				} else {
+					$value = $this->menu_protection;
+				}
+				break;
+
+			default:
+				if ( property_exists( $this, $property ) ) {
+					$value = $this->$property;
+				}
+				else {
+					switch ( $property ) {
+						case 'currency_symbol':
+							// Same translation table in:
+							// -> ms-view-membership-setup-payment.js
+							$symbol = $this->currency;
+							switch ( $symbol ) {
+								case 'USD': $symbol = '$'; break;
+								case 'EUR': $symbol = '€'; break;
+								case 'JPY': $symbol = '¥'; break;
+							}
+							$value = $symbol;
 					}
-					$value = $symbol;
-			}
+				}
 		}
-		
+
 		return apply_filters( 'ms_model_settings__get', $value, $property, $this );
 	}
 }

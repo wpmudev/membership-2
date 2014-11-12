@@ -114,6 +114,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Helper_List_Table_Rule_Custom_Post_Type_Group' => 'list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php',
 		'MS_Helper_List_Table_Rule_Url_Group' => 'list-table/rule/class-ms-helper-list-table-rule-url-group.php',
 		'MS_Helper_List_Table_Rule_Replace_Menu' => 'list-table/rule/class-ms-helper-list-table-rule-replace-menu.php',
+		'MS_Helper_List_Table_Rule_Replace_Menulocation' => 'list-table/rule/class-ms-helper-list-table-rule-replace-menulocation.php',
 	);
 
 	// MODELS
@@ -137,6 +138,7 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Model_Rule_Custom_Post_Type_Group' => 'rule/class-ms-model-rule-custom-post-type-group.php',
 		'MS_Model_Rule_Url_Group' => 'rule/class-ms-model-rule-url-group.php',
 		'MS_Model_Rule_Replace_Menu' => 'rule/class-ms-model-rule-replace-menu.php',
+		'MS_Model_Rule_Replace_Menulocation' => 'rule/class-ms-model-rule-replace-menulocation.php',
 		'MS_Model_Membership_Relationship' => 'class-ms-model-membership_relationship.php',
 	);
 

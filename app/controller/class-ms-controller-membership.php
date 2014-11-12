@@ -336,7 +336,7 @@ class MS_Controller_Membership extends MS_Controller {
 						$new_url = add_query_arg(
 							array(
 								'membership_id' => $membership->parent_id,
-								'tab' => $membership->id
+								'tab' => $membership->id,
 							)
 						);
 						wp_safe_redirect( $new_url );
@@ -377,7 +377,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function membership_admin_page_router() {
-
 		$this->wizard_tracker();
 		$step = $this->get_step();
 
@@ -408,7 +407,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return int $msg The action status message code.
 	 */
 	private function mark_setup_completed() {
-
 		$msg = 0;
 		$membership = $this->load_membership();
 
@@ -426,20 +424,20 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function page_setup_protected_content() {
-
 		$data = array();
 		$data['tabs'] = $this->get_protected_content_tabs();
 		$data['active_tab'] = $this->get_active_tab();
 		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
 		$data['show_next_button'] = ! ! MS_Plugin::instance()->settings->initial_setup;
+		$data['settings'] = MS_Plugin::instance()->settings;
 
 		$data['membership'] = MS_Model_Membership::get_protected_content();
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
-		$data['initial_setup'] = MS_Factory::load( 'MS_Model_Settings' )->initial_setup;
+		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
 
 		$view = MS_Factory::create( 'MS_View_Membership_Setup_Protected_Content' );
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data, $this );
@@ -452,7 +450,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function page_choose_ms_type() {
-
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
@@ -469,7 +466,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function page_accessible_content() {
-
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
@@ -478,6 +474,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['active_tab'] = $this->get_active_tab();
 		$data['membership'] = $this->load_membership();
 		$data['show_next_button'] = true;
+		$data['settings'] = MS_Plugin::instance()->settings;
 
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
@@ -495,7 +492,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function page_ms_list() {
-
 		$membership = $this->load_membership();
 
 		$data = array();
@@ -503,7 +499,10 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['action'] = 'save_membership';
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $membership;
-		$data['create_new_url'] = add_query_arg( array( 'step' => self::STEP_CHOOSE_MS_TYPE ), MS_Controller_Plugin::get_admin_url() );
+		$data['create_new_url'] = add_query_arg(
+			array( 'step' => self::STEP_CHOOSE_MS_TYPE ),
+			MS_Controller_Plugin::get_admin_url()
+		);
 
 		$view = MS_Factory::create( 'MS_View_Membership_List' );
 		$view->data = apply_filters( 'ms_view_membership_list_data', $data, $this );
@@ -516,8 +515,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function page_setup_payment() {
-
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$membership = $this->load_membership();
 
 		$data = array();
@@ -525,7 +522,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['action'] = 'save_payment_settings';
 		$data['membership'] = $membership;
 		$data['children'] = $membership->get_children();
-		$data['is_global_payments_set'] = $settings->is_global_payments_set;
+		$data['is_global_payments_set'] = MS_Plugin::instance()->settings->is_global_payments_set;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 		$data['show_next_button'] = true;
 
@@ -1071,6 +1068,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 				case 'menu':
 				case 'replace_menu':
+				case 'replace_menulocation':
 				case 'more_tag':
 					$active_tab = 'comment';
 					break;

@@ -60,7 +60,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_SHORTCODE = 'shortcode';
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	const ADDON_SPECIAL_PAGES = 'special_pages';
-	const ADDON_REPLACE_MENUS = 'replace_menus';
+	const ADDON_ADV_MENUS = 'adv_menus';
 
 	/**
 	 * Add-ons array.
@@ -97,7 +97,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_URL_GROUPS,
 				self::ADDON_AUTO_MSGS_PLUS,
 				self::ADDON_SPECIAL_PAGES,
-				self::ADDON_REPLACE_MENUS,
+				self::ADDON_ADV_MENUS,
 			);
 		}
 
@@ -251,9 +251,9 @@ class MS_Model_Addon extends MS_Model_Option {
 			'description' => __( 'Change protection of special pages such as the search results.', MS_TEXT_DOMAIN ),
 		);
 
-		$list[self::ADDON_REPLACE_MENUS] = (object) array(
-			'name' => __( 'Replace menus', MS_TEXT_DOMAIN ),
-			'description' => __( 'Clean up your menus by replaceing default WordPress menus with custom menus on membership basis.', MS_TEXT_DOMAIN ),
+		$list[self::ADDON_ADV_MENUS] = (object) array(
+			'name' => __( 'Advanced menu protection', MS_TEXT_DOMAIN ),
+			'description' => __( 'Adds a new option to the General Settings that controls how WordPress menus are protected.<br />Protect individual Menu-Items, replace the contents of WordPress Menu-Locations or replace each Menu individually.', MS_TEXT_DOMAIN ),
 		);
 
 		foreach ( $list as $key => $data ) {

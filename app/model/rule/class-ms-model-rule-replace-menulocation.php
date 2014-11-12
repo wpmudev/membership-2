@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
+class MS_Model_Rule_Replace_Menulocation extends MS_Model_Rule {
 
 	/**
 	 * Rule type.
@@ -39,19 +39,13 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_REPLACE_MENUS;
+	protected $rule_type = self::RULE_TYPE_REPLACE_MENULOCATIONS;
 
 	/**
 	 * An array of all available menu items.
 	 * @var array
 	 */
 	protected $menus = array();
-
-	/**
-	 * Mapping of menu_ids that should be replaced.
-	 * @var array
-	 */
-	protected $replacements;
 
 	/**
 	 * Verify access to the current content.
@@ -67,7 +61,7 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 	 */
 	public function has_access( $id = null ) {
 		return apply_filters(
-			'ms_model_rule_replace_menu_has_access',
+			'ms_model_rule_replace_menulocation_has_access',
 			null,
 			$id,
 			$this
@@ -85,83 +79,38 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 		parent::protect_content( $ms_relationship );
 
 		/*
-		 * Replace the "menu" attribute of the wp_nav_menu() call
+		 * This filter is called by get_theme_mod() in wp-includes/theme.php
+		 * get_theme_mod( 'nav_menu_locations' ) returns an array of theme
+		 * menu-areas and assigned custom menus. Our function modifies the
+		 * assigned menus to reflect the specified matching table.
 		 */
-		$this->add_filter( 'wp_nav_menu_args', 'replace_menus' );
+		$this->add_filter( 'theme_mod_nav_menu_locations', 'replace_menus' );
 	}
 
 	/**
 	 * Replace specific menus for certain members.
 	 *
 	 * Relevant Action Hooks:
-	 * - wp_nav_menu_args
+	 * - theme_mod_nav_menu_locations
 	 *
 	 * @since 1.0.4.2
 	 *
-	 * @param mixed $args Attributes of the call to wp_nav_menu().
-	 * @return mixed The updated attributes.
+	 * @param array $default The default menu assignment array.
 	 */
-	public function replace_menus( $args ) {
-		$id = $args['menu'];
+	public function replace_menus( $defaults ) {
+		foreach ( $defaults as $key => $menu ) {
+			$replacement = $this->get_rule_value( $key );
 
-		if ( ! is_numeric( $id ) ) {
-			// Get the nav menu based on the theme_location
-			$locations = get_nav_menu_locations();
-			if ( $args['theme_location'] && isset( $locations[ $args['theme_location'] ] ) ) {
-				$id = $locations[ $args['theme_location'] ];
-			}
-		}
-
-		if ( is_numeric( $id ) ) {
-			$replacements = $this->get_replacements();
-
-			if ( isset( $replacements[ $id ] ) ) {
-				$args['menu'] = $replacements[ $id ];
-				$args['theme_location'] = '';
+			if ( is_numeric( $replacement ) && $replacement > 0 ) {
+				$defaults[ $key ] = intval( $replacement );
 			}
 		}
 
 		return apply_filters(
-			'ms_model_rule_replace_menu_replace_menus',
-			$args,
+			'ms_model_rule_replace_menulocation_replace_menus',
+			$defaults,
 			$this
 		);
-	}
-
-	/**
-	 * Get menu array.
-	 *
-	 * @since 1.0.4.2
-	 *
-	 * @return array {
-	 *      @type string $menu_id The menu id.
-	 *      @type string $name The menu name.
-	 * }
-	 */
-	public function get_contents_array() {
-		if ( empty( $this->menus ) ) {
-			$this->menus = array(
-				__( 'No menus found.', MS_TEXT_DOMAIN ),
-			);
-
-			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
-
-			if ( ! empty( $navs ) ) {
-				$this->menus = array();
-
-				foreach ( $navs as $nav ) {
-					$this->menus[ $nav->term_id ] = $nav->name;
-				}
-			}
-
-			$this->menus = apply_filters(
-				'ms_model_rule_replace_menu_get_contents_array',
-				$this->menus,
-				$this
-			);
-		}
-
-		return $this->menus;
 	}
 
 	/**
@@ -174,10 +123,11 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		$menus = $this->get_contents_array();
+		$areas = $this->get_nav_array();
+		$menus = $this->get_menu_array();
 
-		if ( is_array( $menus ) ) {
-			foreach ( $menus as $key => $name ) {
+		if ( is_array( $areas ) ) {
+			foreach ( $areas as $key => $description ) {
 				$val = 0;
 				$saved = $this->get_rule_value( $key );
 				$post_title = '';
@@ -188,14 +138,14 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 					$access = true;
 					$post_title = sprintf(
 						'%s &rarr; %s',
-						strip_tags( $name ),
+						strip_tags( $description ),
 						$menus[$saved]
 					);
 				}
 
 				$contents[ $key ] = (object) array(
 					'access' => $access,
-					'title' => $name,
+					'title' => $description,
 					'value' => $val,
 					'post_title' => $post_title,
 					'id' => $key,
@@ -209,36 +159,11 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_replace_menu_get_contents',
+			'ms_model_rule_replace_menulocation_get_contents',
 			$contents,
 			$args,
 			$this
 		);
-	}
-
-	/**
-	 * Returns an array that contains menu_ids that should be replaced.
-	 *
-	 * @since  1.0.4.2
-	 * @return array {
-	 *     $original => $replacement
-	 * }
-	 */
-	protected function get_replacements() {
-		if ( ! is_array( $this->replacements ) ) {
-			$this->replacements = array();
-			$menus = $this->get_contents_array();
-
-			foreach ( $menus as $menu_id => $name ) {
-				$replacement = $this->get_rule_value( $menu_id );
-
-				if ( is_numeric( $replacement ) && $replacement > 0 ) {
-					$this->replacements[ $menu_id ] = intval( $replacement );
-				}
-			}
-		}
-
-		return $this->replacements;
 	}
 
 	/**
@@ -250,13 +175,13 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 	 */
 	public function get_matching_options( $args = null ) {
 		$options = array(
-			0 => __( '( No replacement )', MS_TEXT_DOMAIN ),
+			0 => __( '( Default Menu )', MS_TEXT_DOMAIN ),
 		);
 
-		$options += $this->get_contents_array();
+		$options += $this->get_menu_array();
 
 		return apply_filters(
-			'ms_model_rule_replace_menu_get_matching_options',
+			'ms_model_rule_replace_menulocation_get_matching_options',
 			$options,
 			$args,
 			$this
@@ -283,8 +208,72 @@ class MS_Model_Rule_Replace_Menu extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_replace_menu_get_content_array',
+			'ms_model_rule_replace_menulocation_get_content_array',
 			$cont,
+			$this
+		);
+	}
+
+	/**
+	 * Get menu array.
+	 *
+	 * @since 1.0.4.2
+	 *
+	 * @return array {
+	 *      @type string $menu_id The menu id.
+	 *      @type string $name The menu name.
+	 * }
+	 */
+	public function get_menu_array() {
+		if ( empty( $this->menus ) ) {
+			$this->menus = array(
+				__( 'No menus found.', MS_TEXT_DOMAIN ),
+			);
+
+			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+
+			if ( ! empty( $navs ) ) {
+				$this->menus = array();
+
+				foreach ( $navs as $nav ) {
+					$this->menus[ $nav->term_id ] = $nav->name;
+				}
+			}
+
+			$this->menus = apply_filters(
+				'ms_model_rule_replace_menulocation_get_menu_array',
+				$this->menus,
+				$this
+			);
+		}
+
+		return $this->menus;
+	}
+
+	/**
+	 * Get navigational areas.
+	 *
+	 * @since 1.0.4.2
+	 *
+	 * @return array {
+	 *      @type string $menu_id The menu id.
+	 *      @type string $name The menu name.
+	 * }
+	 */
+	public function get_nav_array() {
+		$contents = array(
+			__( 'No menus found.', MS_TEXT_DOMAIN ),
+		);
+
+		$areas = get_registered_nav_menus();
+
+		if ( ! empty( $areas ) ) {
+			$contents = $areas;
+		}
+
+		return apply_filters(
+			'ms_model_rule_replace_menulocation_get_nav_array',
+			$contents,
 			$this
 		);
 	}

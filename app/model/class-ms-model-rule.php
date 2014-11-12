@@ -50,6 +50,7 @@ class MS_Model_Rule extends MS_Model {
 	const RULE_TYPE_URL_GROUP = 'url_group';
 	const RULE_TYPE_SPECIAL = 'special';
 	const RULE_TYPE_REPLACE_MENUS = 'replace_menu';
+	const RULE_TYPE_REPLACE_MENULOCATIONS = 'replace_menulocation';
 
 	/**
 	 * Rule value constants.
@@ -188,55 +189,74 @@ class MS_Model_Rule extends MS_Model {
 	 * }
 	 */
 	public static function get_rule_types() {
-		$rule_types = array(
-			-10 => self::RULE_TYPE_URL_GROUP,
-			0 => self::RULE_TYPE_SPECIAL,
-			1 => self::RULE_TYPE_POST,
-			10 => self::RULE_TYPE_CATEGORY,
-			20 => self::RULE_TYPE_CUSTOM_POST_TYPE,
-			30 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-			40 => self::RULE_TYPE_PAGE,
-			50 => self::RULE_TYPE_MORE_TAG,
-			60 => self::RULE_TYPE_MENU,
-			70 => self::RULE_TYPE_SHORTCODE,
-			80 => self::RULE_TYPE_COMMENT,
-			90 => self::RULE_TYPE_MEDIA,
-		);
+		static $Types = null;
 
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			unset( $rule_types[10] );
-		}
-		else {
-			unset( $rule_types[0] );
+		if ( null === $Types ) {
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+			$rule_types = array(
+				-10 => self::RULE_TYPE_URL_GROUP,
+				0 => self::RULE_TYPE_SPECIAL,
+				1 => self::RULE_TYPE_POST,
+				10 => self::RULE_TYPE_CATEGORY,
+				20 => self::RULE_TYPE_CUSTOM_POST_TYPE,
+				30 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
+				40 => self::RULE_TYPE_PAGE,
+				50 => self::RULE_TYPE_MORE_TAG,
+				60 => self::RULE_TYPE_MENU,
+				70 => self::RULE_TYPE_SHORTCODE,
+				80 => self::RULE_TYPE_COMMENT,
+				90 => self::RULE_TYPE_MEDIA,
+			);
+
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+				unset( $rule_types[10] );
+			}
+			else {
+				unset( $rule_types[0] );
+			}
+
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+				unset( $rule_types[30] );
+			}
+			else {
+				unset( $rule_types[20] );
+			}
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+				unset( $rule_types[90] );
+			}
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
+				unset( $rule_types[70] );
+			}
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+				unset( $rule_types[-10] );
+			}
+
+			switch ( $settings->menu_protection ) {
+				case 'item':
+					$rule_types[60] = self::RULE_TYPE_MENU;
+					break;
+
+				case 'menu':
+					$rule_types[60] = self::RULE_TYPE_REPLACE_MENUS;
+					break;
+
+				case 'location':
+					$rule_types[60] = self::RULE_TYPE_REPLACE_MENULOCATIONS;
+					break;
+
+			}
+
+			$rule_types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
+			$rule_type = ksort( $rule_types );
+
+			$Types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
 		}
 
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			unset( $rule_types[30] );
-		}
-		else {
-			unset( $rule_types[20] );
-		}
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			unset( $rule_types[90] );
-		}
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
-			unset( $rule_types[70] );
-		}
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
-			unset( $rule_types[-10] );
-		}
-
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_REPLACE_MENUS ) ) {
-			$rule_types[60] = self::RULE_TYPE_REPLACE_MENUS;
-		}
-
-		$rule_types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
-		$rule_type = ksort( $rule_types );
-
-		return apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
+		return $Types;
 	}
 
 	/**
@@ -259,6 +279,7 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_MORE_TAG => 'MS_Model_Rule_More',
 			self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
 			self::RULE_TYPE_REPLACE_MENUS => 'MS_Model_Rule_Replace_Menu',
+			self::RULE_TYPE_REPLACE_MENULOCATIONS => 'MS_Model_Rule_Replace_Menulocation',
 			self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
 			self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
 			self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
@@ -284,7 +305,8 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_COMMENT => __( 'Comment', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MENU => __( 'Menu', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_REPLACE_MENUS => __( 'Replaced Menus', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_REPLACE_MENUS => __( 'Menu', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_REPLACE_MENULOCATIONS => __( 'Menu', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_PAGE => __( 'Page', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MORE_TAG => __( 'More Tag', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),

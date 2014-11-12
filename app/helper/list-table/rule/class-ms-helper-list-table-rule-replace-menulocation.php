@@ -27,9 +27,9 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Replace_Menu extends MS_Helper_List_Table_Matching {
+class MS_Helper_List_Table_Rule_Replace_Menulocation extends MS_Helper_List_Table_Matching {
 
-	protected $id = MS_Model_Rule::RULE_TYPE_REPLACE_MENUS;
+	protected $id = MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS;
 
 	/**
 	 * Constructor.
@@ -54,8 +54,8 @@ class MS_Helper_List_Table_Rule_Replace_Menu extends MS_Helper_List_Table_Matchi
 		$label = '';
 
 		switch ( $col ) {
-			case 'item': $label = __( 'Menu', MS_TEXT_DOMAIN ); break;
-			case 'match': $label = __( 'Show this menu to members instead', MS_TEXT_DOMAIN ); break;
+			case 'item': $label = __( 'Menu Location', MS_TEXT_DOMAIN ); break;
+			case 'match': $label = __( 'Show this menu to members', MS_TEXT_DOMAIN ); break;
 		}
 
 		return $label;

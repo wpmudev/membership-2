@@ -375,16 +375,37 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$action = $this->data['action'];
 		$nonce = wp_create_nonce( $action );
 
-		$replace_menus = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_REPLACE_MENUS );
+		$menu_protection = $this->data['settings']->menu_protection;
 		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
 
-		if ( $replace_menus ) {
-			$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENUS );
-		} else {
-			$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
+		switch ( $menu_protection ) {
+			case 'item':
+				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
+				$rule_list_table = new MS_Helper_List_Table_Rule_Menu(
+					$rule_menu,
+					$membership,
+					$this->data['menu_id']
+				);
+				break;
+
+			case 'menu':
+				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENUS );
+				$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menu(
+					$rule_menu,
+					$membership
+				);
+				break;
+
+			case 'location':
+				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS );
+				$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menulocation(
+					$rule_menu,
+					$membership
+				);
+				break;
 		}
 
 		$val_comment = $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID );
@@ -478,18 +499,6 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		);
 
 
-		if ( $replace_menus ) {
-			$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menu(
-				$rule_menu,
-				$membership
-			);
-		} else {
-			$rule_list_table = new MS_Helper_List_Table_Rule_Menu(
-				$rule_menu,
-				$membership,
-				$this->data['menu_id']
-			);
-		}
 		$rule_list_table->prepare_items();
 
 		$title = __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN );
@@ -534,9 +543,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			<div class="ms-group">
 				<div class="ms-inside">
 
-				<?php if ( $replace_menus ) : ?>
-					<?php $rule_list_table->display(); ?>
-				<?php else : ?>
+				<?php if ( 'item' === $menu_protection ) : ?>
 					<form id="ms-menu-form" method="post">
 						<?php MS_Helper_Html::html_element( $fields['menu_id'] ); ?>
 					</form>
@@ -544,7 +551,14 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 					<div class="ms-protection-edit-link">
 						<?php MS_Helper_Html::html_element( $fields['menu_rule_edit'] ); ?>
 					</div>
-				<?php endif ; ?>
+				<?php else : ?>
+					<?php $rule_list_table->display(); ?>
+					<?php if ( 'menu' === $menu_protection ) : ?>
+						<p>
+							<?php _e( 'Hint: Only one replacement rule is applied to each menu.', MS_TEXT_DOMAIN ); ?>
+						</p>
+					<?php endif; ?>
+				<?php endif; ?>
 
 				</div>
 			</div>

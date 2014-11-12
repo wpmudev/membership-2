@@ -253,19 +253,22 @@ class MS_View_Membership_Overview extends MS_View {
 			<div class="ms-group">
 			<?php
 			foreach ( $rule_types as $rule_type ) {
-				$rule = false;
+				$has_rules = false;
 
 				switch ( $rule_type ) {
 					case MS_Model_Rule::RULE_TYPE_REPLACE_MENUS:
+					case MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS:
 						$rule = $membership->get_rule( $rule_type );
+						$has_rules = true;
 						break;
 
 					default:
 						$rule = $protected_content->get_rule( $rule_type );
+						$has_rules = $rule->has_rules();
 						break;
 				}
 
-				if ( $rule && $rule->has_rules() ) {
+				if ( $has_rules ) {
 					$this->content_box_tags( $membership->get_rule( $rule_type ), 4 );
 				}
 			}

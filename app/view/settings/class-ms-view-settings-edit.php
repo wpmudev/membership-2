@@ -93,6 +93,12 @@ class MS_View_Settings_Edit extends MS_View {
 
 	public function render_tab_general() {
 		$settings = $this->data['settings'];
+		$menu_protection_options = array(
+			'item' => __( 'Protect single Menu Items', MS_TEXT_DOMAIN ),
+			'menu' => __( 'Replace individual Menus', MS_TEXT_DOMAIN ),
+			'location' => __( 'Overwrite contents of Menu Locations', MS_TEXT_DOMAIN ),
+		);
+
 		$fields = array(
 			'plugin_enabled' => array(
 				'id' => 'plugin_enabled',
@@ -126,7 +132,21 @@ class MS_View_Settings_Edit extends MS_View {
 					'setting' => 'initial_setup',
 				),
 			),
+
+			'menu_protection' => array(
+				'id' => 'menu_protection',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' => __( 'Choose how you want to protect your WordPress menus.', MS_TEXT_DOMAIN ),
+				'value' => $settings->menu_protection,
+				'field_options' => $menu_protection_options,
+				'class' => 'ms-ajax-update',
+				'data_ms' => array(
+					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+					'field' => 'menu_protection',
+				),
+			),
 		);
+
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
 
 		ob_start();
@@ -153,6 +173,13 @@ class MS_View_Settings_Edit extends MS_View {
 					array( $fields['initial_setup'] ),
 					__( 'Enable wizard', MS_TEXT_DOMAIN )
 				);
+
+				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADV_MENUS ) ) {
+					MS_Helper_Html::settings_box(
+						array( $fields['menu_protection'] ),
+						__( 'Advanced menu protection', MS_TEXT_DOMAIN )
+					);
+				}
 				?>
 			</form>
 		</div>
