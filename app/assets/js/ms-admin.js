@@ -938,7 +938,7 @@ window.ms_init.view_settings = function init () {
 	});
 
 	// Reload the page when Wizard mode is activated.
-	jQuery( '.ms-slider-initial_setup' ).on( 'ms-radio-slider-updated', function() {
+	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', function() {
 		window.location = ms_data.initial_url;
 	});
 
