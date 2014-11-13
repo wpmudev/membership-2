@@ -33,6 +33,15 @@
 class MS_Model_Rule_Menu extends MS_Model_Rule {
 
 	/**
+	 * An array that holds all menu-IDs that are available for the current user.
+	 * This is static, so it has correct values even when multiple memberships
+	 * are evaluated.
+	 *
+	 * @var array
+	 */
+	static protected $allowed_items = array();
+
+	/**
 	 * Rule type.
 	 *
 	 * @since 1.0.0
@@ -72,14 +81,70 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
 
-		$this->add_filter( 'wp_get_nav_menu_items', 'filter_menus', 10, 3 );
+		$this->add_filter( 'wp_setup_nav_menu_item', 'prepare_menuitem', 10, 3 );
+		$this->add_filter( 'wp_get_nav_menu_items', 'protect_menuitems', 10, 3 );
 	}
 
 	/**
-	 * Set initial protection.
+	 * Checks if the specified menu-ID is allowed by this rule.
+	 *
+	 * @since  1.0.4.3
+	 *
+	 * @param  object $item The menu item object.
+	 * @return bool
+	 */
+	protected function can_access_menu( $item ) {
+		$result = false;
+
+		if ( parent::has_access( $item->ID ) ) {
+			$result = true;
+		} else if ( ! empty( $item->post_parent ) ) {
+			$parent = get_post( $item->post_parent );
+			$result = $this->can_access_menu( $parent );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Set the protection flag for each menu item.
+	 *
+	 * This function is called before function protect_menuitems() below.
+	 * Here we evaluate each menu item by itself to see if the user has access
+	 * to the menu item and collect all accessible menu items in a static/shared
+	 * array so we have correct information when evaluating multiple memberships.
 	 *
 	 * Relevant Action Hooks:
-	 * - filter_menus
+	 * - wp_setup_nav_menu_item
+	 *
+	 * @since 1.0.4.3
+	 *
+	 * @param array $item A single menu item.
+	 * @param mixed $args The menu select args.
+	 */
+	public function prepare_menuitem( $item ) {
+		if ( ! empty( $item ) ) {
+			if ( $this->can_access_menu( $item ) ) {
+				self::$allowed_items[$item->ID] = $item->ID;
+			}
+		}
+
+		return apply_filters(
+			'ms_model_rule_menu_prepare_menuitems',
+			$item,
+			$this
+		);
+	}
+
+	/**
+	 * Remove menu items that are protected.
+	 *
+	 * Menu-Item protection is split into two steps to ensure correct
+	 * menu-visibility when users are members of multiple memberships.
+	 * http://premium.wpmudev.org/forums/topic/multiple-membership-types-defaults-to-less-access-protected-content
+	 *
+	 * Relevant Action Hooks:
+	 * - wp_get_nav_menu_items
 	 *
 	 * @since 1.0.0
 	 *
@@ -87,21 +152,17 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 * @param object $menu The menu object.
 	 * @param mixed $args The menu select args.
 	 */
-	public function filter_menus( $items, $menu, $args ) {
+	public function protect_menuitems( $items, $menu, $args ) {
 		if ( ! empty( $items ) ) {
 			foreach ( $items as $key => $item ) {
-				if ( ! parent::has_access( $item->ID )
-					|| ( ! empty( $item->menu_item_parent )
-						&& ! parent::has_access( $item->menu_item_parent )
-					)
-				) {
+				if ( ! isset( self::$allowed_items[ $item->ID ] ) ) {
 					unset( $items[ $key ] );
 				}
 			}
 		}
 
 		return apply_filters(
-			'ms_model_rule_menu_filter_menus',
+			'ms_model_rule_menu_protect_menuitems',
 			$items,
 			$menu,
 			$args,

@@ -6,6 +6,7 @@ Change Log:
 
 1.0.4.3
 ----------------------------------------------------------------------
+- Fix protection of menu-items when user has multiple memberships
 - Fix permission issues with protection shortcode
 - Fix small bugs with several shortcodes
 
