@@ -167,9 +167,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 		// No access to member of membership_ids
 		if ( in_array( $atts['access'], array( 'false', false, 0, '0' ) ) ) {
-			if ( ! empty( $membership_ids )
-				&& in_array( $this->membership_id, $membership_ids )
-			) {
+			if ( ! $this->is_member_of( $membership_ids ) ) {
 				$content = '<br />';
 				if ( ! empty( $msg ) ) {
 					$content .= $msg;
@@ -185,9 +183,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		}
 		// Give access to member of membership_ids
 		else {
-			if ( ! empty( $membership_ids )
-				&& ! in_array( $this->membership_id, $membership_ids )
-			) {
+			if ( ! $this->is_member_of( $membership_ids ) ) {
 				$content = '<br />';
 
 				$membership_names = MS_Model_Membership::get_membership_names(
@@ -214,6 +210,48 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 			$code,
 			$this
 		);
+	}
+
+	/**
+	 * Returns true when the current user is a member of one of the specified
+	 * memberships.
+	 *
+	 * @since  1.0.4.2
+	 *
+	 * @return bool
+	 */
+	protected function is_member_of( $ids ) {
+		$result = false;
+
+		if ( empty( $ids ) ) {
+			$result = true;
+		} else {
+			if ( ! is_array( $ids ) ) {
+				$ids = array( $ids );
+			}
+
+			if ( in_array( $this->membership_id, $ids ) ) {
+				$result = true;
+			} else {
+				$cur_membership = $this->get_membership();
+
+				foreach ( $ids as $id ) {
+					$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+
+					if ( $membership->type === MS_Model_Membership::TYPE_TIER
+						|| $membership->type === MS_Model_Membership::TYPE_CONTENT_TYPE
+					) {
+						// Check if the current membership is a child of the specified membership.
+						if ( $cur_membership->parent_id === $id ) {
+							$result = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	/**

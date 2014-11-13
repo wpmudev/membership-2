@@ -227,10 +227,6 @@ class MS_Model_Rule extends MS_Model {
 				unset( $rule_types[90] );
 			}
 
-			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
-				unset( $rule_types[70] );
-			}
-
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 				unset( $rule_types[-10] );
 			}
