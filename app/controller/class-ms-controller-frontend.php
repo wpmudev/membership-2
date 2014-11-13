@@ -84,7 +84,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		if ( MS_Plugin::instance()->settings->plugin_enabled ) {
+		if ( MS_Plugin::is_enabled() ) {
 			do_action( 'ms_controller_frontend_construct', $this );
 
 			$this->add_action( 'parse_query', 'process_actions', 1 );

@@ -404,14 +404,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		if ( $this->simulate->is_simulating() ) { return; }
 
-		$id = ! empty( $this->memberships ) ? $this->memberships[0]->id : false;
-
-		if ( $id ) {
-			$link_url = wp_nonce_url(
-				admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
-				"ms_simulate-{$id}"
-			);
-
+		// Protection is disabled
+		/*if ( MS_Plugin::instance()->settings->plugin_enabled ) {
 			$wp_admin_bar->add_node(
 				apply_filters(
 					'ms_controller_admin_bar_add_test_membership_node',
@@ -428,6 +422,33 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				)
 			);
 		}
+		// Protection is enabled
+		else {*/
+			$id = ! empty( $this->memberships ) ? $this->memberships[0]->id : false;
+
+			if ( $id ) {
+				$link_url = wp_nonce_url(
+					admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
+					"ms_simulate-{$id}"
+				);
+
+				$wp_admin_bar->add_node(
+					apply_filters(
+						'ms_controller_admin_bar_add_test_membership_node',
+						array(
+							'id'     => 'ms-test-memberships',
+							'title'  => __( 'Test Memberships', MS_TEXT_DOMAIN ),
+							'href'   => $link_url,
+							'meta'   => array(
+								'class'    => 'ms-test-memberships',
+								'title'    => __( 'Membership Simulation Menu', MS_TEXT_DOMAIN ),
+								'tabindex' => '1',
+							),
+						)
+					)
+				);
+			}
+		#}
 	}
 
 	/**

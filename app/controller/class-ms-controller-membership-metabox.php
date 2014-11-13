@@ -28,7 +28,7 @@
  * Creates simple access control UI for Posts/Page edit pages.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -47,7 +47,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * The custom post type used with Memberships and access.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var array
 	 */
 	private $post_types;
@@ -56,7 +56,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * The metabox ID.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var string
 	 */
 	private $metabox_id = 'ms-membership-access';
@@ -65,7 +65,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * The metabox title.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var string
 	 */
 	private $metabox_title;
@@ -74,7 +74,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * Context for showing the metabox.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var string
 	 */
 	private $context = 'side';
@@ -85,7 +85,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * Effects position in the metabox hierarchy.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @var string
 	 */
 	private $priority = 'high';
@@ -106,11 +106,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		);
 		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', $post_types );
 
-		if( MS_Plugin::instance()->settings->plugin_enabled ) {
+		if( MS_Plugin::is_enabled() ) {
 			$this->add_action( 'add_meta_boxes', 'add_meta_boxes', 10 );
 
 			$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
-			
+
 			$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ACCESS, 'ajax_action_toggle_metabox_access' );
 		}
 	}
@@ -131,14 +131,14 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
 			if( $_POST['membership_id'] == MS_Model_Membership::get_protected_content()->id ) {
 				$post = get_post( $_POST['post_id'] );
-				//membership metabox html returned via ajax response 
+				//membership metabox html returned via ajax response
 				$this->membership_metabox( $post );
 			}
 			else {
 				echo true;
 			}
 		}
-		
+
 		do_action( 'ms_controller_membership_metabox_ajax_action_toggle_metabox_access', $this );
 		exit;
 	}
@@ -149,7 +149,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function add_meta_boxes() {
-		
+
 		foreach( $this->post_types as $post_type ) {
 			if( ! $this->is_read_only( $post_type ) ) {
 				add_meta_box( $this->metabox_id, $this->metabox_title, array( $this, 'membership_metabox' ), $post_type, $this->context, $this->priority );
@@ -163,11 +163,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * Membership metabox callback function for displaying the UI.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param object $post The current post object.
 	 */
 	public function membership_metabox( $post ) {
-		
+
 		$data = array();
 
 		if( 'page' == $post->post_type && MS_Factory::load( 'MS_Model_Pages')->is_ms_page( $post->ID ) ) {
@@ -178,11 +178,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			$protected_content = MS_Model_Membership::get_protected_content();
 			$data['protected_content'] = $protected_content;
 			$data['protected_content_enabled'] = ! $protected_content->has_access_to_post( $post->ID );
-			
+
 			$rule = $this->get_rule( $protected_content, $post );
 			$data['rule_type'] = $rule->rule_type;
 			foreach( $memberships as $membership ) {
-				
+
 				$data['access'][ $membership->id ]['has_access'] =  $membership->has_access_to_post( $post->ID );
 
 				$data['access'][ $membership->id ]['name'] = $membership->name;
@@ -190,7 +190,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		}
 		$data['post_id'] = $post->ID;
 		$data['read_only'] = $this->is_read_only( $post->post_type );
-		
+
 		$view = MS_Factory::create( 'MS_View_Membership_Metabox' );
 		$view->data = apply_filters( 'ms_view_membership_metabox_data', $data, $this );
 		$view->render();
@@ -208,16 +208,16 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	private function get_rule( $membership, $post ) {
 		$rule = null;
 		$post_type = null;
-		
+
 		if( 'attachment' == $post->post_type ) {
 			$parent_id = $post->post_parent;
 			$post_type = get_post_type( $parent_id );
-				
+
 		}
 		else {
 			$post_type = $post->post_type;
 		}
-		
+
 		switch( $post_type ) {
 			case 'post':
 				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
@@ -239,7 +239,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 				}
 				break;
 		}
-		
+
 		return apply_filters( 'ms_controller_metabox_get_rule', $rule, $membership, $post, $this );
 	}
 
@@ -256,16 +256,16 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 
 		if( $this->is_admin_user() ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			
+
 			$rule = $membership->get_rule( $rule_type );
-			
+
 			if( $rule ) {
 				$rule->toggle_access( $post_id );
 				$membership->set_rule( $rule_type, $rule );
 				$membership->save();
 			}
 		}
-				
+
 		do_action( 'ms_controller_membership_metabox_toggle_membership_access', $post_id, $rule_type, $membership_id, $this );
 	}
 

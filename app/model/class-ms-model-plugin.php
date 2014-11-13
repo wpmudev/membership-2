@@ -48,7 +48,7 @@ class MS_Model_Plugin extends MS_Model {
 		// Upgrade membership database if needs to.
 		MS_Model_Upgrade::init();
 
-		if ( MS_Plugin::instance()->settings->plugin_enabled ) {
+		if ( MS_Plugin::is_enabled() ) {
 			$this->add_filter( 'cron_schedules', 'cron_time_period' );
 			$this->init_member();
 

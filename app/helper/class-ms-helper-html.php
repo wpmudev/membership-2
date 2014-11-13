@@ -90,6 +90,8 @@ class MS_Helper_Html extends MS_Helper {
 			'data_placeholder' => '',
 			'data_ms'       => '',
 			'label_element' => 'label',
+			// Specific for type 'button', 'submit':
+			'button_value' => '',
 			// Specific for type 'tag_select':
 			'title_selected'  => '',
 			'empty_text'  => '',
@@ -294,32 +296,43 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 
 			case self::INPUT_TYPE_BUTTON:
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
 				printf(
-					'<button class="ms-field-input button %1$s" type="button" id="%2$s" name="%3$s" %5$s>%4$s</button>',
+					'<button class="ms-field-input button %1$s" type="button" id="%2$s" name="%3$s" value="%6$s" %5$s>%4$s</button>',
 					esc_attr( $class ),
 					esc_attr( $id ),
 					esc_attr( $name ),
 					$value,
-					$data_ms
+					$data_ms,
+					$button_value
 				);
 
 				self::html_element_hint( $title, $tooltip_output );
 				break;
 
 			case self::INPUT_TYPE_SUBMIT:
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
 				printf(
-					'<button class="ms-field-input ms-submit button-primary %1$s" type="submit" id="%2$s" name="%3$s" %5$s>%4$s</button>',
+					'<button class="ms-field-input ms-submit button-primary %1$s" type="submit" id="%2$s" name="%3$s" value="%6$s" %5$s>%4$s</button>',
 					esc_attr( $class ),
 					esc_attr( $id ),
 					esc_attr( $name ),
 					$value,
-					$data_ms
+					$data_ms,
+					$button_value
 				);
 
 				self::html_element_hint( $title, $tooltip_output );
 				break;
 
 			case self::INPUT_TYPE_IMAGE:
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
 				printf(
 					'<input type="image" class="ms-field-input ms-input-image %1$s" id="%2$s" name="%3$s" border="0" src="%4$s" alt="%5$s" %6$s/>',
 					esc_attr( $class ),
@@ -428,6 +441,9 @@ class MS_Helper_Html extends MS_Helper {
 				break;
 
 			case self::TYPE_HTML_LINK:
+				self::html_element_label( $title, $label_element, $id, $tooltip_output );
+				self::html_element_desc( $desc );
+
 				self::html_link( $field_args );
 				break;
 

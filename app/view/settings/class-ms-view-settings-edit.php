@@ -103,8 +103,8 @@ class MS_View_Settings_Edit extends MS_View {
 			'plugin_enabled' => array(
 				'id' => 'plugin_enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'This setting enable/disable the membership plugin protection.', MS_TEXT_DOMAIN ),
-				'value' => $settings->plugin_enabled,
+				'title' => __( 'This setting toggles the content protection on this site.', MS_TEXT_DOMAIN ),
+				'value' => MS_Plugin::is_enabled(),
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 					'setting' => 'plugin_enabled',
@@ -114,7 +114,7 @@ class MS_View_Settings_Edit extends MS_View {
 			'hide_admin_bar' => array(
 				'id' => 'hide_admin_bar',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Hide admin bar for non administrator users.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Hide the admin toolbar for non administrator users.', MS_TEXT_DOMAIN ),
 				'value' => $settings->hide_admin_bar,
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
@@ -124,12 +124,14 @@ class MS_View_Settings_Edit extends MS_View {
 
 			'initial_setup' => array(
 				'id' => 'initial_setup',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Enable wizard.', MS_TEXT_DOMAIN ),
-				'value' => $settings->initial_setup,
+				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'title' => __( 'Use the wizard to setup a new membership.', MS_TEXT_DOMAIN ),
+				'value' => __( 'Activate the Wizard', MS_TEXT_DOMAIN ),
+				'button_value' => 1,
+				'class' => 'ms-ajax-update',
 				'data_ms' => array(
-					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
-					'setting' => 'initial_setup',
+					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+					'field' => 'initial_setup',
 				),
 			),
 
@@ -161,17 +163,17 @@ class MS_View_Settings_Edit extends MS_View {
 				<?php
 				MS_Helper_Html::settings_box(
 					array( $fields['plugin_enabled'] ),
-					__( 'Enable plugin', MS_TEXT_DOMAIN )
+					__( 'Content Protection', MS_TEXT_DOMAIN )
 				);
 
 				MS_Helper_Html::settings_box(
 					array( $fields['hide_admin_bar'] ),
-					__( 'Hide admin bar', MS_TEXT_DOMAIN )
+					__( 'Hide admin toolbar', MS_TEXT_DOMAIN )
 				);
 
 				MS_Helper_Html::settings_box(
 					array( $fields['initial_setup'] ),
-					__( 'Enable wizard', MS_TEXT_DOMAIN )
+					__( 'Setup Wizard', MS_TEXT_DOMAIN )
 				);
 
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADV_MENUS ) ) {
