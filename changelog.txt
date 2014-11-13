@@ -6,6 +6,7 @@ Change Log:
 
 1.0.4.3
 ----------------------------------------------------------------------
+- Fix permission issues with protection shortcode
 - Fix small bugs with login shortcode
 
 1.0.4.2
