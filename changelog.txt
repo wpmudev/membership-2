@@ -9,6 +9,7 @@ Change Log:
 - Fix protection of menu-items when user has multiple memberships
 - Fix permission issues with protection shortcode
 - Fix small bugs with several shortcodes
+- Remove access to registration page while plugin is disabled
 
 1.0.4.2
 ----------------------------------------------------------------------

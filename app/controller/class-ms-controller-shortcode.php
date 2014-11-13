@@ -40,65 +40,86 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_REGISTER_USER,
-			array( $this, 'membership_register_user' )
-		);
+		if ( MS_Plugin::is_enabled() ) {
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_REGISTER_USER,
+				array( $this, 'membership_register_user' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_SIGNUP,
-			array( $this, 'membership_signup' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_SIGNUP,
+				array( $this, 'membership_signup' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_UPGRADE,
-			array( $this, 'membership_upgrade' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_UPGRADE,
+				array( $this, 'membership_upgrade' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_RENEW,
-			array( $this, 'membership_renew' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_RENEW,
+				array( $this, 'membership_renew' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_MS_TITLE,
-			array( $this, 'membership_title' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_TITLE,
+				array( $this, 'membership_title' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_MS_PRICE,
-			array( $this, 'membership_price' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_PRICE,
+				array( $this, 'membership_price' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_LOGIN,
-			array( $this, 'membership_login' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_LOGIN,
+				array( $this, 'membership_login' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_LOGOUT,
-			array( $this, 'membership_logout' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_LOGOUT,
+				array( $this, 'membership_logout' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
-			array( $this, 'membership_account' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
+				array( $this, 'membership_account' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_MS_INVOICE,
-			array( $this, 'membership_invoice' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_INVOICE,
+				array( $this, 'membership_invoice' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_GREEN_NOTE,
-			array( $this, 'ms_green_note' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_GREEN_NOTE,
+				array( $this, 'ms_green_note' )
+			);
 
-		add_shortcode(
-			MS_Helper_Shortcode::SCODE_RED_NOTE,
-			array( $this, 'ms_red_note' )
-		);
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_RED_NOTE,
+				array( $this, 'ms_red_note' )
+			);
+		} else {
+			$shortcodes = array(
+				MS_Helper_Shortcode::SCODE_REGISTER_USER,
+				MS_Helper_Shortcode::SCODE_SIGNUP,
+				MS_Helper_Shortcode::SCODE_UPGRADE,
+				MS_Helper_Shortcode::SCODE_RENEW,
+				MS_Helper_Shortcode::SCODE_MS_TITLE,
+				MS_Helper_Shortcode::SCODE_MS_PRICE,
+				MS_Helper_Shortcode::SCODE_LOGIN,
+				MS_Helper_Shortcode::SCODE_LOGOUT,
+				MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
+				MS_Helper_Shortcode::SCODE_MS_INVOICE,
+				MS_Helper_Shortcode::SCODE_GREEN_NOTE,
+				MS_Helper_Shortcode::SCODE_RED_NOTE,
+			);
+
+			foreach ( $shortcodes as $shortcode ) {
+				add_shortcode( $shortcode, array( $this, 'ms_no_value' ) );
+			}
+		}
 	}
 
 	/**
@@ -490,7 +511,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$data['trial_invoice'] = $trial_invoice;
 
 			$view = MS_Factory::create( 'MS_View_Shortcode_Invoice' );
-			$view->data = apply_filters( 'ms_view_shortcode_invoice_data', $data, $this );
+			$view->data = apply_filters(
+				'ms_view_shortcode_invoice_data',
+				$data,
+				$this
+			);
 
 			return $view->to_html();
 		}
@@ -504,7 +529,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_green_note( $atts, $content = '' ) {
-
 		$data = apply_filters(
 			'ms_controller_ms_green_note_atts',
 			shortcode_atts(
@@ -517,7 +541,75 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$content = sprintf( '<p class="%1$s"> %2$s </p> ', $data['class'], $content );
 
-		return apply_filters( 'ms_controller_shortcode_ms_gren_note', $content, $this );
+		return apply_filters(
+			'ms_controller_shortcode_ms_green_note',
+			$content,
+			$this
+		);
+	}
+
+	/**
+	 * Green text note shortcode callback function.
+	 *
+	 * @since 1.0.4.3
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function ms_red_note( $atts, $content = '' ) {
+		$data = apply_filters(
+			'ms_controller_ms_green_note_atts',
+			shortcode_atts(
+				array(
+					'class' => 'ms-alert-box ms-alert-error',
+				),
+				$atts
+			)
+		);
+
+		$content = sprintf( '<p class="%1$s"> %2$s </p> ', $data['class'], $content );
+
+		return apply_filters(
+			'ms_controller_shortcode_ms_red_note',
+			$content,
+			$this
+		);
+	}
+
+	/**
+	 * Replace shortcodes with empty value.
+	 *
+	 * All Shortcodes use this callback function when Content Protection is
+	 * disabled.
+	 *
+	 * @since 1.0.4.3
+	 */
+	public function ms_no_value( $atts, $content = '' ) {
+		static $Done = false;
+
+		if ( $Done ) { return ''; }
+		$Done = true;
+
+		if ( MS_Model_Member::is_admin_user() ) {
+			$content = sprintf(
+				'<p class="ms-alert-box ms-alert-error ms-unprotected">%s<br /><br /><em>(%s)</em></p>',
+				__(
+					'Content Protection is disabled. Please enable the protection to see this shortcode.',
+					MS_TEXT_DOMAIN
+				),
+				__(
+					'This message is only displayed to Site Administrators',
+					MS_TEXT_DOMAIN
+				)
+			);
+		} else {
+			$content = '';
+		}
+
+		return apply_filters(
+			'ms_controller_shortcode_ms_no_value',
+			$content,
+			$this
+		);
 	}
 
 	/**
