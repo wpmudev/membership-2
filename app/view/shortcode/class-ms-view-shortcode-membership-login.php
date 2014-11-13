@@ -184,7 +184,6 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="status" style="display:none"></div>
 				<?php endif; ?>
-				<div class="status" style="display:none"></div>
 				<p class="login-username ms-field">
 					<?php if ( $show_labels ) : ?>
 						<label for="<?php echo esc_attr( $id_username ); ?>">
