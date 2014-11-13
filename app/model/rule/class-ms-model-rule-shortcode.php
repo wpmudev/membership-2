@@ -204,7 +204,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 		return apply_filters(
 			'ms_model_rule_shortcode_protect_content_shorcode_content',
-			$content,
+			do_shortcode( $content ),
 			$atts,
 			$content,
 			$code,
