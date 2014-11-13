@@ -415,7 +415,11 @@ class MS_Controller_Membership extends MS_Controller {
 			do_action( 'ms_controller_membership_setup_completed', $membership );
 		}
 
-		return apply_filters( 'ms_controller_membership_mark_setup_completed', $msg, $this );
+		return apply_filters(
+			'ms_controller_membership_mark_setup_completed',
+			$msg,
+			$this
+		);
 	}
 
 	/**
@@ -429,7 +433,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['active_tab'] = $this->get_active_tab();
 		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
-		$data['show_next_button'] = ! ! MS_Plugin::instance()->settings->initial_setup;
+		$data['show_next_button'] = MS_Plugin::is_wizard();
 		$data['settings'] = MS_Plugin::instance()->settings;
 
 		$data['membership'] = MS_Model_Membership::get_protected_content();
@@ -437,7 +441,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
-		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		$data['initial_setup'] = MS_Plugin::is_wizard();
 
 		$view = MS_Factory::create( 'MS_View_Membership_Setup_Protected_Content' );
 		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data, $this );
@@ -547,14 +551,15 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 
 		$data['members'] = array();
-		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership->id ) );
+		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+			array( 'membership_id' => $membership->id )
+		);
 
 		foreach ( $ms_relationships as $ms_relationship ) {
 			$data['members'][] = $ms_relationship->get_member();
 		}
 
 		switch ( $membership->type ) {
-
 			case MS_Model_Membership::TYPE_DRIPPED:
 				$view = MS_Factory::create( 'MS_View_Membership_Overview_Dripped' );
 				break;
@@ -565,7 +570,10 @@ class MS_Controller_Membership extends MS_Controller {
 				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
 				$data['child_membership'] = $child;
 				$membership_id = $child->id;
-				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership_id ) );
+				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+					array( 'membership_id' => $membership_id )
+				);
+
 				foreach ( $ms_relationships as $ms_relationship ) {
 					$data['members'][] = $ms_relationship->get_member();
 				}
@@ -577,7 +585,10 @@ class MS_Controller_Membership extends MS_Controller {
 				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
 				$data['child_membership'] = $child;
 				$membership_id = $child->id;
-				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( array( 'membership_id' => $membership_id ) );
+				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+					array( 'membership_id' => $membership_id )
+				);
+
 				foreach ( $ms_relationships as $ms_relationship ) {
 					$data['members'][] = $ms_relationship->get_member();
 				}
@@ -613,7 +624,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = '';
 		$data['membership'] = $this->load_membership();
-		$args = apply_filters( 'ms_controller_membership_page_ms_news_event_args', array( 'posts_per_page' => -1 ) );
+
+		$args = apply_filters(
+			'ms_controller_membership_page_ms_news_event_args',
+			array( 'posts_per_page' => -1 )
+		);
 		$data['events'] = MS_Model_Event::get_events( $args );
 
 		$view = MS_Factory::create( 'MS_View_Membership_News' );
@@ -631,7 +646,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = 'create_content_type';
 		$data['membership'] = $this->load_membership();
-		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		$data['initial_setup'] = MS_Plugin::is_wizard();
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 		$data['show_next_button'] = true;
 
@@ -650,7 +665,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = 'create_tier';
 		$data['membership'] = $this->load_membership();
-		$data['initial_setup'] = MS_Plugin::instance()->settings->initial_setup;
+		$data['initial_setup'] = MS_Plugin::is_wizard();
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 		$data['show_next_button'] = true;
 
@@ -686,7 +701,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return string[] The existing steps.
 	 */
 	public static function get_steps() {
-
 		static $steps;
 
 		if ( empty( $steps ) ) {
@@ -716,7 +730,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return boolean True if valid step.
 	 */
 	public static function is_valid_step( $step ) {
-
 		$valid = false;
 
 		$steps = self::get_steps();
@@ -724,7 +737,11 @@ class MS_Controller_Membership extends MS_Controller {
 			$valid = true;
 		}
 
-		return apply_filters( 'ms_controller_membership_is_valid_step', $valid, $step );
+		return apply_filters(
+			'ms_controller_membership_is_valid_step',
+			$valid,
+			$step
+		);
 	}
 
 	/**
@@ -738,7 +755,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return string The current step.
 	 */
 	public function get_step() {
-
 		// Initial step
 		$step = self::STEP_MS_LIST;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
@@ -750,9 +766,15 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 
 		// If user has left before completing the wizard, try to recover last wizard step.
-		elseif ( $settings->initial_setup ) {
-			$wizard_steps = apply_filters( 'ms_controller_membership_wizard_steps', array( self::STEP_SETUP_PROTECTED_CONTENT, self::STEP_CHOOSE_MS_TYPE ) );
-			if ( $settings->wizard_step && in_array( $settings->wizard_step, $wizard_steps ) ) {
+		elseif ( MS_Plugin::is_wizard() ) {
+			$wizard_steps = apply_filters(
+				'ms_controller_membership_wizard_steps',
+				array( self::STEP_SETUP_PROTECTED_CONTENT, self::STEP_CHOOSE_MS_TYPE )
+			);
+
+			if ( $settings->wizard_step
+				&& in_array( $settings->wizard_step, $wizard_steps )
+			) {
 				$step = $settings->wizard_step;
 			}
 			else {
@@ -762,17 +784,21 @@ class MS_Controller_Membership extends MS_Controller {
 
 		// Hack to use same page in two different menus
 		$the_page = sanitize_html_class( @$_GET['page'] );
-		if ( MS_Controller_Plugin::MENU_SLUG . '-setup' == $the_page ) {
+		if ( MS_Controller_Plugin::MENU_SLUG . '-setup' === $the_page ) {
 			$step = self::STEP_SETUP_PROTECTED_CONTENT;
 		}
 
 		// If trying to setup children of not supported type, or already is a child (grand child not allowed)
-		if ( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) ) && ! $membership->can_have_children() ) {
+		if ( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) )
+			&& ! $membership->can_have_children()
+		) {
 			$step = self::STEP_OVERVIEW;
 		}
 
 		// Accessible content page is not available to dripped type
-		if ( self::STEP_ACCESSIBLE_CONTENT == $step && MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
+		if ( self::STEP_ACCESSIBLE_CONTENT === $step
+			&& MS_Model_Membership::TYPE_DRIPPED === $membership->type
+		) {
 			$step = self::STEP_SETUP_DRIPPED;
 		}
 
@@ -781,7 +807,11 @@ class MS_Controller_Membership extends MS_Controller {
 			$step = self::STEP_OVERVIEW;
 		}
 
-		return apply_filters( 'ms_controller_membership_get_next_step', $step, $this );
+		return apply_filters(
+			'ms_controller_membership_get_next_step',
+			$step,
+			$this
+		);
 	}
 
 	/**
@@ -796,21 +826,27 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return string The current step.
 	 */
 	public function wizard_tracker( $step = null, $end_wizard = false ) {
-
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		if ( empty( $step ) ) {
 			$step = $this->get_step();
 		}
-		if ( $settings->initial_setup ) {
+		if ( MS_Plugin::is_wizard() ) {
 			$settings->wizard_step = $step;
+
 			if ( $end_wizard ) {
 				$settings->initial_setup = false;
 			}
 			$settings->save();
 		}
 
-		do_action( 'ms_controller_membership_wizard_tracker', $step, $end_wizard, $settings, $this );
+		do_action(
+			'ms_controller_membership_wizard_tracker',
+			$step,
+			$end_wizard,
+			$settings,
+			$this
+		);
 	}
 
 	/**

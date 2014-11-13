@@ -14,6 +14,17 @@ window.ms_init.view_settings = function init () {
 		window.location = ms_data.initial_url;
 	});
 
+	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', function(ev, data) {
+		// Show/Hide the Toolbar menu for protected content.
+		if ( data.value ) {
+			jQuery( '#wp-admin-bar-ms-unprotected' ).hide();
+			jQuery( '#wp-admin-bar-ms-test-memberships' ).show();
+		} else {
+			jQuery( '#wp-admin-bar-ms-unprotected' ).show();
+			jQuery( '#wp-admin-bar-ms-test-memberships' ).hide();
+		}
+	});
+
 	jQuery( '.ms-edit-url' ).click( function() {
 		var text_id = jQuery( this ).prop( 'id' );
 

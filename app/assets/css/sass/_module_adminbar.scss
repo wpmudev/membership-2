@@ -12,7 +12,8 @@
 #wpadminbar #wp-toolbar {
 	/* Button: Start/Stop Test-Mode */
 	.ms-test-memberships,
-	.ms-exit-memberships {
+	.ms-exit-memberships,
+	.ms-unprotected {
 		& > a.ab-item {
 			position: relative;
 			display: block;
@@ -39,6 +40,20 @@
 
 			&:after {
 				background-color: #0094DC;
+			}
+		}
+	}
+
+	.ms-unprotected {
+		& > a.ab-item {
+			&:after {
+				background-color: #9C2C0A;
+			}
+		}
+
+		&:hover > a.ab-item {
+			&:after {
+				background-color: #CC4C32;
 			}
 		}
 	}

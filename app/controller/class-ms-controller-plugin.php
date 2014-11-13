@@ -150,7 +150,6 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function add_menu_pages() {
-
 		// Create primary menu item: Membership.
 		add_menu_page(
 			__( 'Protect Content', MS_TEXT_DOMAIN ),
@@ -161,7 +160,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			'dashicons-lock'
 		);
 
-		if ( MS_Factory::load( 'MS_Model_Settings' )->initial_setup ) {
+		if ( MS_Plugin::is_wizard() ) {
 			// Submenus definition: Wizard mode
 			$pages = array(
 				'setup' => array(

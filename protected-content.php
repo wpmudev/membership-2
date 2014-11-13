@@ -675,6 +675,20 @@ class MS_Plugin {
 	}
 
 	/**
+	 * Returns plugin wizard status.
+	 *
+	 * @since 1.0.4.3
+	 * @access public
+	 *
+	 * @static
+	 *
+	 * @return bool The status.
+	 */
+	public static function is_wizard() {
+		return ! ! self::instance()->settings->initial_setup;
+	}
+
+	/**
 	 * Returns property associated with the plugin.
 	 *
 	 * @since 1.0.0

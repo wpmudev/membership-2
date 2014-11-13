@@ -103,6 +103,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			else {
 				$this->add_test_membership_node();
 			}
+		} else if ( ! MS_Plugin::is_enabled() ) {
+			$this->add_unprotected_node();
 		}
 	}
 
@@ -404,8 +406,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		if ( $this->simulate->is_simulating() ) { return; }
 
-		// Protection is disabled
-		/*if ( MS_Plugin::instance()->settings->plugin_enabled ) {
+		$id = ! empty( $this->memberships ) ? $this->memberships[0]->id : false;
+
+		if ( $id ) {
+			$link_url = wp_nonce_url(
+				admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
+				"ms_simulate-{$id}"
+			);
+
 			$wp_admin_bar->add_node(
 				apply_filters(
 					'ms_controller_admin_bar_add_test_membership_node',
@@ -422,33 +430,39 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				)
 			);
 		}
-		// Protection is enabled
-		else {*/
-			$id = ! empty( $this->memberships ) ? $this->memberships[0]->id : false;
+	}
 
-			if ( $id ) {
-				$link_url = wp_nonce_url(
-					admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
-					"ms_simulate-{$id}"
-				);
+	/**
+	 * Add 'Unprotected' node.
+	 *
+	 * @since 1.0.0
+	 *
+	 */
+	private function add_unprotected_node() {
+		global $wp_admin_bar;
 
-				$wp_admin_bar->add_node(
-					apply_filters(
-						'ms_controller_admin_bar_add_test_membership_node',
-						array(
-							'id'     => 'ms-test-memberships',
-							'title'  => __( 'Test Memberships', MS_TEXT_DOMAIN ),
-							'href'   => $link_url,
-							'meta'   => array(
-								'class'    => 'ms-test-memberships',
-								'title'    => __( 'Membership Simulation Menu', MS_TEXT_DOMAIN ),
-								'tabindex' => '1',
-							),
-						)
-					)
-				);
-			}
-		#}
+		if ( MS_Plugin::is_enabled() ) { return; }
+		if ( MS_Plugin::is_wizard() ) { return; }
+
+		$link_url = admin_url(
+			'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings'
+		);
+
+		$wp_admin_bar->add_node(
+			apply_filters(
+				'ms_controller_admin_bar_add_unprotected_node',
+				array(
+					'id'     => 'ms-unprotected',
+					'title'  => __( 'Content Protection is disabled', MS_TEXT_DOMAIN ),
+					'href'   => $link_url,
+					'meta'   => array(
+						'class'    => 'ms-unprotected',
+						'title'    => __( 'Content of this site is unprotected', MS_TEXT_DOMAIN ),
+						'tabindex' => '1',
+					),
+				)
+			)
+		);
 	}
 
 	/**
