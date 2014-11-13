@@ -294,7 +294,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'register'		=> true,
 					'title'			=> '',
 					'show_note'		=> true,   // Show the "you are not logged in" note?
-					'form'			=> 'login',  // [login|lost|reset|logout]
+					'form'			=> '',  // [login|lost|reset|logout]
+					'show_labels'	=> false,
+					'nav_pos'		=> 'top', // [top|bottom]
 				),
 				$atts
 			)
@@ -303,6 +305,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['header'] = self::is_true( $data['header'] );
 		$data['register'] = self::is_true( $data['register'] );
 		$data['show_note'] = self::is_true( $data['show_note'] );
+		$data['show_labels'] = self::is_true( $data['show_labels'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_membership_login_data', $data, $this );

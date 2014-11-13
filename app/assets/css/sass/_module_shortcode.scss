@@ -134,6 +134,14 @@ label.ms-validation-error {
 .ms-login-form {
 	margin: 1em;
 
+	.ms-field {
+		&:after {
+			content: '';
+			display: table;
+			clear: both;
+		}
+	}
+
 	input {
 		float: right;
 

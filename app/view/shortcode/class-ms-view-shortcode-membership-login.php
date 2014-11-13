@@ -3,12 +3,19 @@
 class MS_View_Shortcode_Membership_Login extends MS_View {
 
 	public function to_html() {
-		$html = '';
-		$form = '';
+		$res_html = '';
+		$res_form = '';
+
+		$valid_forms = array(
+			'login',
+			'logout',
+			'reset',
+			'lost',
+		);
 
 		extract( $this->data );
 
-		if ( ! isset( $form ) ) {
+		if ( ! isset( $form ) || ! in_array( $form, $valid_forms ) ) {
 			if ( MS_Model_Member::is_logged_user() ) {
 				$form = 'logout';
 			}
@@ -18,6 +25,8 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			else {
 				$form = 'login';
 			}
+
+			$this->data['form'] = $form;
 		}
 
 		if ( 'logout' === $form ) {
@@ -32,34 +41,34 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			}
 
 			// Build the Login Form.
-			$form .= $prefix;
-			$form .= $this->login_form( $redirect );
-			$form .= $this->lostpass_form();
+			$res_form .= $prefix;
+			$res_form .= $this->login_form( $redirect );
+			$res_form .= $this->lostpass_form();
 
 			// Wrap form in optional wrappers.
 			if ( ! empty( $wrapwith ) ) {
-				$form .= sprintf( '<%s class="%s">', esc_attr( $wrapwith ), esc_attr( $wrapwithclass ) );
-				$form = sprintf(
+				$res_form .= sprintf( '<%s class="%s">', esc_attr( $wrapwith ), esc_attr( $wrapwithclass ) );
+				$res_form = sprintf(
 					'<%1$s class="%2$s">%3$s</%1$s>',
 					esc_attr( $wrapwith ),
 					esc_attr( $wrapwithclass ),
-					$form
+					$res_form
 				);
 			}
 			if ( ! empty( $item ) ) {
-				$form = sprintf(
+				$res_form = sprintf(
 					'<%1$s class="%2$s">%3$s</%1$s>',
 					esc_attr( $item ),
 					esc_attr( $itemclass ),
-					$form
+					$res_form
 				);
 			}
 			if ( ! empty( $holder ) ) {
-				$form = sprintf(
+				$res_form = sprintf(
 					'<%1$s class="%2$s">%3$s</%1$s>',
 					esc_attr( $holder ),
 					esc_attr( $holderclass ),
-					$form
+					$res_form
 				);
 			}
 
@@ -67,9 +76,9 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			if ( $header ) {
 				$html .= $this->login_header_html();
 			}
-			$html .= $form;
+			$html .= $res_form;
 
-			if ( $register ) {
+			if ( $register && ! MS_Model_Member::is_logged_user() ) {
 				$html .= wp_register( '', '', false );
 			}
 
@@ -132,16 +141,16 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 
 		$defaults = array(
 			'redirect' => $redirect_to,
-			'form_id' => 'loginform',
 			'label_username' => __( 'Username' ),
 			'label_password' => __( 'Password' ),
 			'label_remember' => __( 'Remember Me' ),
 			'label_log_in' => __( 'Log In' ),
+			'id_login_form' => 'loginform',
 			'id_username' => 'user_login',
 			'id_password' => 'user_pass',
 			'id_remember' => 'rememberme',
-			'id_submit' => 'wp-submit',
-			'remember' => true,
+			'id_login' => 'wp-submit',
+			'show_remember' => true,
 			'value_username' => '',
 			'value_remember' => false, // Set this to true to default the "Remember me" checkbox to checked
 		);
@@ -163,36 +172,84 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 
 		ob_start();
 		?>
-		<form name="<?php echo esc_attr( $form_id ); ?>" id="<?php echo esc_attr( $form_id ); ?>" action="login" method="post" style="<?php echo esc_attr( $show_form ); ?>">
+		<form
+			name="<?php echo esc_attr( $id_login_form ); ?>"
+			id="<?php echo esc_attr( $id_login_form ); ?>"
+			action="login" method="post"
+			style="<?php echo esc_attr( $show_form ); ?>">
+
 			<div class="form">
 				<?php wp_nonce_field( 'ms-ajax-login' ); ?>
 				<?php echo apply_filters( 'login_form_top', '', $args ); ?>
-				<p class="login-username">
-					<label for="<?php echo esc_attr( $id_username ); ?>"><?php echo esc_html( $label_username ); ?></label>
-					<input type="text" name="log" id="<?php echo esc_attr( $id_username ); ?>" class="input" value="<?php echo esc_attr( $value_username ); ?>" size="20">
+				<?php if ( 'top' === $nav_pos ) : ?>
+					<div class="status" style="display:none"></div>
+				<?php endif; ?>
+				<div class="status" style="display:none"></div>
+				<p class="login-username ms-field">
+					<?php if ( $show_labels ) : ?>
+						<label for="<?php echo esc_attr( $id_username ); ?>">
+						<?php echo esc_html( $label_username ); ?>
+						</label>
+					<?php endif; ?>
+					<input
+						type="text"
+						name="log"
+						id="<?php echo esc_attr( $id_username ); ?>"
+						class="input"
+						value="<?php echo esc_attr( $value_username ); ?>"
+						size="20"
+						placeholder="<?php echo esc_html( $label_username ); ?>">
 				</p>
-				<p class="login-password">
-					<label for="<?php echo esc_attr( $id_password ); ?>"><?php echo esc_html( $label_password ); ?></label>
-					<input type="password" name="pwd" id="<?php echo esc_attr( $id_password ); ?>" class="input" value="" size="20">
+				<p class="login-password ms-field">
+					<?php if ( $show_labels ) : ?>
+						<label for="<?php echo esc_attr( $id_password ); ?>">
+						<?php echo esc_html( $label_password ); ?>
+						</label>
+					<?php endif; ?>
+					<input
+						type="password"
+						name="pwd"
+						id="<?php echo esc_attr( $id_password ); ?>"
+						class="input"
+						value=""
+						size="20"
+						placeholder="<?php echo esc_html( $label_password ); ?>">
 				</p>
 				<?php echo apply_filters( 'login_form_middle', '', $args ); ?>
-				<?php if ( $remember ) : ?>
-				<p class="login-remember">
+				<?php if ( 'top' === $nav_pos ) : ?>
+					<div class="nav">
+						<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?' ); ?></a></p>
+					</div>
+				<?php endif; ?>
+				<?php if ( $show_remember ) : ?>
+				<p class="login-remember ms-field">
 					<label>
-						<input name="rememberme" type="checkbox" id="<?php echo esc_attr( $id_remember ); ?>" value="forever" <?php checked( $value_remember ); ?> />
+						<input
+							name="rememberme"
+							type="checkbox"
+							id="<?php echo esc_attr( $id_remember ); ?>"
+							value="forever"
+							<?php checked( $value_remember ); ?> />
 						<?php echo esc_html( $label_remember ); ?>
 					</label>
 				</p>
 				<?php endif; ?>
 				<p class="login-submit">
-					<input type="submit" name="wp-submit" id="<?php echo esc_attr( $id_submit ); ?>" class="button-primary" value="<?php echo esc_attr( $label_log_in ); ?>" />
+					<input
+						type="submit"
+						name="wp-submit"
+						id="<?php echo esc_attr( $id_login ); ?>"
+						class="button-primary"
+						value="<?php echo esc_attr( $label_login ); ?>" />
 					<input type="hidden" name="redirect_to" value="<?php echo esc_url( $redirect ); ?>" />
 				</p>
 				<?php echo apply_filters( 'login_form_bottom', '', $args ); ?>
+			<?php if ( 'bottom' === $nav_pos ) : ?>
 				<div class="status" style="display:none"></div>
 			</div>
 			<div class="nav">
-				<a class="lost" href="#lostpassword"><?php _e( 'Lost your password?' ); ?></a>
+				<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?' ); ?></a></p>
+			<?php endif; ?>
 			</div>
 		</form>
 		<?php
@@ -208,11 +265,11 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 	 */
 	private function lostpass_form() {
 		$defaults = array(
-			'form_id' => 'lostpasswordform',
-			'label_username' => __( 'Username or E-mail:' ),
-			'label_reset' => __( 'Get New Password' ),
-			'id_username' => 'user_login',
-			'id_submit' => 'wp-submit',
+			'label_lost_username' => __( 'Username or E-mail' ),
+			'label_lostpass' => __( 'Get New Password' ),
+			'id_lost_form' => 'lostpasswordform',
+			'id_lost_username' => 'user_login',
+			'id_lostpass' => 'wp-submit',
 			'value_username' => '',
 		);
 
@@ -235,13 +292,39 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 
 		do_action( 'lost_password' );
 		?>
-		<form name="<?php echo esc_attr( $form_id ); ?>" id="<?php echo esc_attr( $form_id ); ?>" action="lostpassword" method="post" style="<?php echo esc_attr( $show_form ); ?>">
+		<form
+			name="<?php echo esc_attr( $id_lost_form ); ?>"
+			id="<?php echo esc_attr( $id_lost_form ); ?>"
+			action="lostpassword"
+			method="post"
+			style="<?php echo esc_attr( $show_form ); ?>">
 			<div class="form">
 				<?php wp_nonce_field( 'ms-ajax-lostpass' ); ?>
-				<p class="lostpassword-username">
-					<label for="<?php echo esc_attr( $id_username ); ?>" ><?php echo esc_html( $label_username ); ?></label>
-					<input type="text" name="user_login" id="<?php echo esc_attr( $id_username ); ?>" class="input" value="<?php echo esc_attr( $value_username ); ?>" size="20" />
+				<?php echo apply_filters( 'lostpass_form_top', '', $args ); ?>
+				<?php if ( 'top' === $nav_pos ) : ?>
+					<div class="status" style="display:none"></div>
+				<?php endif; ?>
+				<p class="lostpassword-username ms-field">
+					<?php if ( $show_labels ) : ?>
+						<label for="<?php echo esc_attr( $id_lost_username ); ?>" >
+						<?php echo esc_html( $label_lost_username ); ?>
+						</label>
+					<?php endif; ?>
+					<input
+						type="text"
+						name="user_login"
+						id="<?php echo esc_attr( $id_lost_username ); ?>"
+						class="input"
+						value="<?php echo esc_attr( $value_username ); ?>"
+						size="20"
+						placeholder="<?php echo esc_html( $label_lost_username ); ?>" />
 				</p>
+				<?php echo apply_filters( 'lostpass_form_middle', '', $args ); ?>
+				<?php if ( 'top' === $nav_pos ) : ?>
+					<div class="nav">
+						<p><a class="login" href="#login"><?php _e( 'Log in' ); ?></a></p>
+					</div>
+				<?php endif; ?>
 				<?php
 				/**
 				 * Fires inside the lostpassword <form> tags, before the hidden fields.
@@ -250,13 +333,21 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 				 */
 				do_action( 'lostpassword_form' ); ?>
 				<p class="submit">
-					<input type="submit" name="wp-submit" id="<?php echo esc_attr( $id_submit ); ?>" class="button-primary" value="<?php echo esc_attr( $label_reset ); ?>" />
+					<input
+						type="submit"
+						name="wp-submit"
+						id="<?php echo esc_attr( $id_lostpass ); ?>"
+						class="button-primary"
+						value="<?php echo esc_attr( $label_lostpass ); ?>" />
 				</p>
+				<?php echo apply_filters( 'lostpass_form_bottom', '', $args ); ?>
+			<?php if ( 'bottom' === $nav_pos ) : ?>
 				<div class="status" style="display:none"></div>
 			</div>
-			<p class="nav">
-				<a class="login" href="#login"><?php _e( 'Log in' ); ?></a>
-			</p>
+			<div class="nav">
+				<p><a class="login" href="#login"><?php _e( 'Log in' ); ?></a></p>
+			<?php endif; ?>
+			</div>
 		</form>
 		<?php
 		return ob_get_clean();
@@ -271,6 +362,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 	 */
 	private function logout_form() {
 		if ( ! MS_Model_Member::is_logged_user() ) { return ''; }
+		$member = MS_Model_Member::get_current_member();
 
 		extract( $this->data );
 
@@ -278,8 +370,14 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			$redirect = home_url();
 		}
 
+		$yourname = sprintf(
+			__( 'You are logged in as %s.', MS_TEXT_DOMAIN ),
+			ucfirst( $member->name )
+		);
+
 		$html = sprintf(
-			'<a class="login_button" href="%s">%s</a>',
+			'%1$s <a class="login_button" href="%2$s">%3$s</a>',
+			$yourname,
 			wp_logout_url( $redirect ),
 			__( 'Logout' )
 		);

@@ -261,6 +261,11 @@ label.ms-validation-error:before {
 .ms-login-form {
   margin: 1em;
 }
+.ms-login-form .ms-field:after {
+  content: '';
+  display: table;
+  clear: both;
+}
 .ms-login-form input {
   float: right;
 }
