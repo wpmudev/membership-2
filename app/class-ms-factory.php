@@ -284,6 +284,7 @@ class MS_Factory {
 				$model->name = $wp_user->user_nicename;
 				$model->first_name = $wp_user->first_name;
 				$model->last_name = $wp_user->last_name;
+				$model->wp_user = $wp_user;
 
 				$model->is_admin = $model->is_admin_user( $user_id );
 

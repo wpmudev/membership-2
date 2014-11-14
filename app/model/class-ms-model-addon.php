@@ -61,6 +61,9 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	const ADDON_SPECIAL_PAGES = 'special_pages';
 	const ADDON_ADV_MENUS = 'adv_menus';
+	// New since 1.1
+	const ADDON_ADMINSIDE = 'adminside';
+	const ADDON_MEMBERCAPS = 'membercaps';
 
 	/**
 	 * Add-ons array.
@@ -98,6 +101,8 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_AUTO_MSGS_PLUS,
 				self::ADDON_SPECIAL_PAGES,
 				self::ADDON_ADV_MENUS,
+				self::ADDON_ADMINSIDE,
+				self::ADDON_MEMBERCAPS,
 			);
 		}
 
@@ -254,6 +259,17 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_ADV_MENUS] = (object) array(
 			'name' => __( 'Advanced menu protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Adds a new option to the General Settings that controls how WordPress menus are protected.<br />Protect individual Menu-Items, replace the contents of WordPress Menu-Locations or replace each Menu individually.', MS_TEXT_DOMAIN ),
+		);
+
+		// New since 1.1
+		$list[self::ADDON_ADMINSIDE] = (object) array(
+			'name' => __( 'Admin Side Protection', MS_TEXT_DOMAIN ),
+			'description' => __( 'Control the pages and even Meta boxes that members can access on the admin side.', MS_TEXT_DOMAIN ),
+		);
+
+		$list[self::ADDON_MEMBERCAPS] = (object) array(
+			'name' => __( 'Member Capabilities', MS_TEXT_DOMAIN ),
+			'description' => __( 'Manage user-capabilities on membership level.', MS_TEXT_DOMAIN ),
 		);
 
 		foreach ( $list as $key => $data ) {

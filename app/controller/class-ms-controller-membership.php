@@ -859,6 +859,8 @@ class MS_Controller_Membership extends MS_Controller {
 	public function get_protected_content_tabs() {
 		$membership_id = $this->load_membership()->id;
 
+		// First create a list including all possible tabs.
+
 		$tabs = array(
 			'page' => array(
 				'title' => __( 'Pages', MS_TEXT_DOMAIN ),
@@ -884,7 +886,17 @@ class MS_Controller_Membership extends MS_Controller {
 			'special' => array(
 				'title' => __( 'Special Pages', MS_TEXT_DOMAIN ),
 			),
+
+			// New since 1.1
+			'adminside' => array(
+				'title' => __( 'Admin Side', MS_TEXT_DOMAIN ),
+			),
+			'membercaps' => array(
+				'title' => __( 'Member Capabilities', MS_TEXT_DOMAIN ),
+			),
 		);
+
+		// Now remove items from the list that are not available.
 
 		$title = array();
 		// Enable / Disable post by post tab.
@@ -896,7 +908,6 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 		}
-
 
 		$tabs['category']['title'] = implode( ', ', $title );
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) &&
@@ -924,6 +935,14 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['shortcode'] );
 		}
 
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADMINSIDE ) ) {
+			unset( $tabs['adminside'] );
+		}
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
+			unset( $tabs['membercaps'] );
+		}
+
 		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
 		$url = admin_url( 'admin.php' );
 		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );
@@ -938,7 +957,12 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 		}
 
-		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id, $this );
+		return apply_filters(
+			'ms_controller_membership_get_tabs',
+			$tabs,
+			$membership_id,
+			$this
+		);
 	}
 
 	/**
@@ -991,6 +1015,7 @@ class MS_Controller_Membership extends MS_Controller {
 					break;
 			}
 		}
+
 		foreach ( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = admin_url(
 				sprintf(
@@ -1003,7 +1028,12 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 		}
 
-		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id, $this );
+		return apply_filters(
+			'ms_controller_membership_get_tabs',
+			$tabs,
+			$membership_id,
+			$this
+		);
 	}
 
 	/**

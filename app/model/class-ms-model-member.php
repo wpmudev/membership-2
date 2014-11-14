@@ -207,7 +207,17 @@ class MS_Model_Member extends MS_Model {
 		'actions',
 		'filters',
 		'ignore_fields',
+		'wp_user',
 	);
+
+	/**
+	 * The associated WP_User object
+	 *
+	 * @since 1.1
+	 *
+	 * @var WP_User
+	 */
+	protected $wp_user;
 
 	/**
 	 * Get current member.

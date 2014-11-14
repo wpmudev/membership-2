@@ -246,6 +246,42 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	}
 
 	/* ====================================================================== *
+	 *                               ADMIN SIDE
+	 * ====================================================================== */
+
+	public function render_tab_adminside() {
+		$title = __( 'Admin Side Protection', MS_TEXT_DOMAIN );
+		$desc = __( 'Protected Admin Side pages are only available for members. The below list contains all possible menu items that WordPress knows about - some of these items might not be available on your installation.', MS_TEXT_DOMAIN );
+
+		$field = array(
+			'type' => MS_Model_Rule::RULE_TYPE_ADMINSIDE,
+			'id' => 'adminside',
+			'label_single' => __( 'Admin Page', MS_TEXT_DOMAIN ),
+			'label_plural' => __( 'Admin Pages', MS_TEXT_DOMAIN ),
+		);
+
+		return $this->render_generic_tab( $title, $desc, $field );
+	}
+
+	/* ====================================================================== *
+	 *                               MEMBER CAPS
+	 * ====================================================================== */
+
+	public function render_tab_membercaps() {
+		$title = __( 'Member Capabilities', MS_TEXT_DOMAIN );
+		$desc = __( 'Protected Capabilities will be removed from all users. Memberships control, which of these Capabilities are granted again.', MS_TEXT_DOMAIN );
+
+		$field = array(
+			'type' => MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+			'id' => 'membercaps',
+			'label_single' => __( 'Capability', MS_TEXT_DOMAIN ),
+			'label_plural' => __( 'Capabilities', MS_TEXT_DOMAIN ),
+		);
+
+		return $this->render_generic_tab( $title, $desc, $field );
+	}
+
+	/* ====================================================================== *
 	 *                               SPECIAL PAGES
 	 * ====================================================================== */
 

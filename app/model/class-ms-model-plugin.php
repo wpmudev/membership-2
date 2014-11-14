@@ -33,9 +33,22 @@ class MS_Model_Plugin extends MS_Model {
 	 * Current Member object.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @var string $member
 	 */
 	private $member;
+
+	/**
+	 * Full admin menu, used by the Adminside rule.
+	 * This property cannot be initialized in the rule-model itself because the
+	 * rule is loaded long after the menu is rendered and therefore does not
+	 * have access to the full list of menu items.
+	 *
+	 * @since 1.1
+	 *
+	 * @var array
+	 */
+	protected $admin_menu = array();
 
 	/**
 	 * Prepare object.
@@ -66,8 +79,19 @@ class MS_Model_Plugin extends MS_Model {
 			// cron service action
 			$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 
-			//for testing
-			//$this->check_membership_status();
+			/*
+			 * Create our own copy of the full admin menu to be used in the
+			 * Protected Content settings.
+			 *
+			 * These hooks are only executed in the admin side.
+			 */
+			$this->add_action( '_network_admin_menu', 'store_admin_menu', 1 );
+			$this->add_action( '_user_admin_menu', 'store_admin_menu', 1 );
+			$this->add_action( '_admin_menu', 'store_admin_menu', 1 );
+
+			$this->add_action( 'network_admin_menu', 'store_admin_menu', 99999 );
+			$this->add_action( 'user_admin_menu', 'store_admin_menu', 99999 );
+			$this->add_action( 'admin_menu', 'store_admin_menu', 99999 );
 		}
 	}
 
@@ -460,4 +484,44 @@ class MS_Model_Plugin extends MS_Model {
 
 		do_action( 'ms_model_plugin_check_membership_status_after', $this );
 	}
+
+	/**
+	 * Copies the full WordPress Admin menu before any restriction is applied
+	 * by WordPress or an Plugin. This menu-information is used on the
+	 * Protected Content/Accessible Content settings pages
+	 *
+	 * @since  1.1
+	 * @global array $menu
+	 * @global array $submenu
+	 */
+	public function store_admin_menu() {
+		global $menu, $submenu;
+
+		if ( ! isset( $this->admin_menu['main'] ) ) {
+			$this->admin_menu = array(
+				'main' => $menu,
+				'sub' => $submenu,
+			);
+		} else {
+			foreach ( $menu as $pos => $item ) {
+				$this->admin_menu['main'][$pos] = $item;
+			}
+			foreach ( $submenu as $parent => $item ) {
+				$this->admin_menu['sub'][$parent] = $item;
+			}
+			ksort( $this->admin_menu['main'] );
+		}
+	}
+
+	/**
+	 * Returns the previously stored admin menu items.
+	 *
+	 * @since  1.1
+	 *
+	 * @return array
+	 */
+	public function get_admin_menu() {
+		return $this->admin_menu;
+	}
+
 }

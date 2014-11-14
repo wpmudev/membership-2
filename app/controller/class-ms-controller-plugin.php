@@ -62,15 +62,6 @@ class MS_Controller_Plugin extends MS_Controller {
 	protected $controllers = array();
 
 	/**
-	 * Pointer array for all Admin pages.
-	 *
-	 * @since 1.0.0
-	 * @access private
-	 * @var $admin_pages
-	 */
-	private $admin_pages = array();
-
-	/**
 	 * Constructs the primary Plugin controller.
 	 *
 	 * @since 1.0.0
@@ -324,6 +315,18 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function get_access_info() {
 		return $this->model->get_access_info();
+	}
+
+	/**
+	 * Returns a list with complete admin menu items.
+	 *
+	 * Wrapper for MS_Model_Plugin->get_admin_menu()
+	 *
+	 * @since  1.1
+	 * @return array
+	 */
+	public function get_admin_menu() {
+		return $this->model->get_admin_menu();
 	}
 
 	/**

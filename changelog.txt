@@ -4,6 +4,11 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1
+----------------------------------------------------------------------
+- New Add-on: Admin Side Protection
+- New Add-on: Member Capabilities
+
 1.0.4.3
 ----------------------------------------------------------------------
 - Fix protection of menu-items when user has multiple memberships

@@ -51,6 +51,9 @@ class MS_Model_Rule extends MS_Model {
 	const RULE_TYPE_SPECIAL = 'special';
 	const RULE_TYPE_REPLACE_MENUS = 'replace_menu';
 	const RULE_TYPE_REPLACE_MENULOCATIONS = 'replace_menulocation';
+	// New since 1.1
+	const RULE_TYPE_ADMINSIDE = 'adminside';
+	const RULE_TYPE_MEMBERCAPS = 'membercaps';
 
 	/**
 	 * Rule value constants.
@@ -173,6 +176,23 @@ class MS_Model_Rule extends MS_Model {
 			$membership_id,
 			$this
 		);
+
+		$this->initialize();
+	}
+
+	/**
+	 * Called by the constructor.
+	 *
+	 * This function offers a save way for each rule to initialize itself if
+	 * required.
+	 *
+	 * This function is executed in Admin and Front-End, so it should only
+	 * initialize stuff that is really needed!
+	 *
+	 * @since  1.1
+	 */
+	protected function initialize() {
+		// Can be overwritten by child classes
 	}
 
 	/**
@@ -194,8 +214,12 @@ class MS_Model_Rule extends MS_Model {
 		if ( null === $Types ) {
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
 
+			// Always start by first creating the full list including all add-ons
+
 			$rule_types = array(
 				-10 => self::RULE_TYPE_URL_GROUP,
+				-9 => self::RULE_TYPE_MEMBERCAPS,
+				-1 => self::RULE_TYPE_ADMINSIDE,
 				0 => self::RULE_TYPE_SPECIAL,
 				1 => self::RULE_TYPE_POST,
 				10 => self::RULE_TYPE_CATEGORY,
@@ -209,17 +233,25 @@ class MS_Model_Rule extends MS_Model {
 				90 => self::RULE_TYPE_MEDIA,
 			);
 
+			// Then we remove/replace items that are not activated
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
+				unset( $rule_types[-9] );
+			}
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADMINSIDE ) ) {
+				unset( $rule_types[-1] );
+			}
+
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 				unset( $rule_types[10] );
-			}
-			else {
+			} else {
 				unset( $rule_types[0] );
 			}
 
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				unset( $rule_types[30] );
-			}
-			else {
+			} else {
 				unset( $rule_types[20] );
 			}
 
@@ -280,6 +312,9 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
 			self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
 			self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
+			// New since 1.1
+			self::RULE_TYPE_ADMINSIDE => 'MS_Model_Rule_Adminside',
+			self::RULE_TYPE_MEMBERCAPS => 'MS_Model_Rule_Membercaps',
 		);
 
 		return apply_filters( 'ms_model_rule_get_rule_type_classes', $classes );
@@ -310,6 +345,8 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'CPT Group', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_ADMINSIDE => __( 'Admin Side', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_MEMBERCAPS => __( 'Capabilities', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters( 'ms_model_rule_get_rule_type_titles', $titles );
@@ -377,10 +414,11 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function rule_factory( $rule_type, $membership_id ) {
 		if ( self::is_valid_rule_type( $rule_type ) ) {
-
 			$rule_types = self::get_rule_type_classes();
 			$class = $rule_types[ $rule_type ];
 			$rule = new $class( $membership_id );
+
+			$rule->initialize();
 
 			return apply_filters(
 				'ms_model_rule_rule_factory',
