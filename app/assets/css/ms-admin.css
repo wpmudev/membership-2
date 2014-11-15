@@ -175,6 +175,16 @@
 .ms-wrap .tablenav.bottom {
   display: none;
 }
+.ms-wrap .subsubsub {
+  cursor: default;
+}
+.ms-wrap .subsubsub .group-label {
+  padding: 0 4px 0 8px;
+  color: #999;
+}
+.ms-wrap .subsubsub a {
+  cursor: pointer;
+}
 
 /* Simple List Tables */
 .ms-wrap .ms-list-table {

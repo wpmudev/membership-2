@@ -138,9 +138,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$args['order'] = $_REQUEST['order'];
 		}
 
-		/**
-		 * Prepare order by statement.
-		 */
+		// Prepare order by statement.
 		if ( ! empty( $args['orderby'] )
 			&& ! in_array( $args['orderby'], array( 'login', 'email' ) )
 			&& property_exists( 'MS_Model_Member', $args['orderby'] )
@@ -149,13 +147,12 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$args['orderby'] = 'meta_value';
 		}
 
-		/**
-		 * Search string.
-		 */
+		// Search string.
+		WDev()->load_request_fields( 'membership', 'status', 's' );
 		if ( ! empty( $_REQUEST['search_options'] ) ) {
+
 			$search_options = $_REQUEST['search_options'];
 			$search_value = $_REQUEST['s'];
-			$membership = $_REQUEST['membership_filter'];
 
 			switch ( $search_options ) {
 				case 'email':
@@ -164,9 +161,19 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 					break;
 
 				case 'membership':
+					$membership = $_REQUEST['membership'];
+					$status = $_REQUEST['status'];
+
 					$members = array();
+					$filter = array();
+					if ( ! empty( $membership ) ) {
+						$filter['membership_id'] = $membership;
+					}
+					if ( ! empty( $status ) ) {
+						$filter['status'] = $status;
+					}
 					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
-						array( 'membership_id' => $membership )
+						$filter
 					);
 
 					foreach ( $ms_relationships as $ms_relationship ) {
@@ -213,13 +220,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 * @param string $column_name The column to display.
 	 */
 	public function column_default( $item, $column_name ) {
-		$html = '';
-
-		switch ( $column_name ) {
-			default:
-				$html = $item->$column_name;
-				break;
-		}
+		$html = $item->$column_name;
 
 		echo apply_filters(
 			'ms_helper_list_table_member_column_default',
@@ -283,16 +284,27 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 *
 	 * @todo implement ajax updating.
 	 *
-	 * @param MS_Model_Member $item The member object.
+	 * @param MS_Model_Member $member The member object.
 	 */
-	public function column_membership( $item ) {
-		if ( MS_Model_Member::is_admin_user( $item->id ) ) {
-			$html = __( 'Admin User', MS_TEXT_DOMAIN );
+	public function column_membership( $member ) {
+		if ( MS_Model_Member::is_admin_user( $member->id ) ) {
+			$html = '<b>' . __( 'Admin User', MS_TEXT_DOMAIN ) . '</b>';
 		}
 		else {
 			$html = array();
 
-			foreach ( $item->ms_relationships as $id => $membership_relationship ) {
+			if ( ! empty( $_REQUEST['status'] ) ) {
+				$memberships = MS_Model_Membership_Relationship::get_membership_relationships(
+					array(
+						'user_id' => $member->id,
+						'status' => $_REQUEST['status'],
+					)
+				);
+			} else {
+				$memberships = $member->ms_relationships;
+			}
+
+			foreach ( $memberships as $id => $membership_relationship ) {
 				$membership = $membership_relationship->get_membership();
 				$html[] = sprintf(
 					'%s (%s)',
@@ -307,14 +319,14 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
 				esc_attr( $_REQUEST['page'] ),
 				'add',
-				esc_attr( $item->id ),
+				esc_attr( $member->id ),
 				__( 'Add', MS_TEXT_DOMAIN )
 			);
 			$actions['drop'] = sprintf(
 				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
 				esc_attr( $_REQUEST['page'] ),
 				'drop',
-				esc_attr( $item->id ),
+				esc_attr( $member->id ),
 				__( 'Drop', MS_TEXT_DOMAIN )
 			);
 
@@ -323,7 +335,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
 			);
 
-			if ( count( $item->ms_relationships ) > 0 ) {
+			if ( count( $member->ms_relationships ) > 0 ) {
 				if ( ! $multiple_membership ) {
 					unset( $actions['add'] );
 				}
@@ -344,7 +356,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		echo apply_filters(
 			'ms_helper_list_table_member_column_membership',
 			$html,
-			$item,
+			$member,
 			$this
 		);
 	}
@@ -543,25 +555,49 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 *
 	 */
 	public function get_views() {
-		$total = MS_Model_Member::get_members_count();
 		$memberships = MS_Model_Membership::get_signup_membership_list();
 
+		$list_views = array();
+
+		// Active Memberships.
 		$status_url = admin_url(
 			'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-members'
 		);
+		$count = MS_Model_Member::get_members_count();
+		$list_views['all'] = array(
+			'url' => $status_url,
+			'label' => __( 'Active', MS_TEXT_DOMAIN ),
+			'count' => $count,
+		);
 
-		$list_views = array(
-			'all' => array(
-				'url' => $status_url,
-				'label' => __( 'All', MS_TEXT_DOMAIN ),
-				'count' => $total,
-			),
+		// Pending Memberships.
+		$status_url = admin_url(
+			sprintf(
+				'admin.php?page=%s&search_options=membership&status=%s&s=%s',
+				MS_Controller_Plugin::MENU_SLUG . '-members',
+				MS_Model_Membership_Relationship::STATUS_PENDING,
+				esc_attr( __( 'Pending', MS_TEXT_DOMAIN ) )
+			)
+		);
+		$count = MS_Model_Membership_Relationship::get_membership_relationship_count(
+			array( 'status' => MS_Model_Membership_Relationship::STATUS_PENDING )
+		);
+		$list_views['pending'] = array(
+			'url' => $status_url,
+			'label' => __( 'Pending', MS_TEXT_DOMAIN ),
+			'count' => $count,
+			'separator' => false,
+		);
+
+		// List of all Membership Levels.
+		$list_views['label'] = array(
+			'label' => __( 'Memberships', MS_TEXT_DOMAIN ) . ':',
 		);
 
 		foreach ( $memberships as $id => $membership ) {
 			$status_url = admin_url(
 				sprintf(
-					'admin.php?page=%s&search_options=membership&membership_filter=%s&s=%s',
+					'admin.php?page=%s&search_options=membership&membership=%s&s=%s',
 					MS_Controller_Plugin::MENU_SLUG . '-members',
 					esc_attr( $membership->id ),
 					esc_attr( $membership->name )

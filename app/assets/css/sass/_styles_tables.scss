@@ -82,6 +82,19 @@
 			display: none;
 		}
 	}
+
+	.subsubsub {
+		cursor: default;
+
+		.group-label {
+			padding: 0 4px 0 8px;
+			color: #999;
+		}
+
+		a {
+			cursor: pointer;
+		}
+	}
 }
 
 /* Simple List Tables */

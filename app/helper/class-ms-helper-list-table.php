@@ -292,17 +292,31 @@ class MS_Helper_List_Table {
 
 		echo '<ul class="subsubsub">';
 		foreach ( $views as $class => $data ) {
-			$sep = ($last_class == $class ? '' : '|');
+			WDev()->load_fields( $data, 'label', 'url' );
+
+			$sep = '|';
+			if ( $last_class === $class ) { $sep = ''; }
+			if ( isset( $data['separator'] ) && false === $data['separator'] ) { $sep = ''; }
+
 			$count = (empty( $data['count'] ) ? '' : '(' . $data['count'] . ')');
 
-			printf(
-				'<li class="%1$s"><a href="%2$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',
-				esc_attr( $class ),
-				@$data['url'],
-				@$data['label'],
-				$count,
-				esc_html( $sep )
-			);
+			if ( empty( $data['url'] ) ) {
+				printf(
+					'<li class="%1$s"><span class="group-label">%2$s</span></li>',
+					esc_attr( $class ),
+					$data['label'],
+					esc_html( $sep )
+				);
+			} else {
+				printf(
+					'<li class="%1$s"><a href="%2$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',
+					esc_attr( $class ),
+					$data['url'],
+					$data['label'],
+					$count,
+					esc_html( $sep )
+				);
+			}
 		}
 		echo '</ul>';
 	}

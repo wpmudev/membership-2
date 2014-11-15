@@ -567,23 +567,26 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		}
 
 		if ( ! empty( $args['status'] ) ) {
-			if ( 'valid' == $args['status'] ) {
+			// Allowed status filters:
+			// 'valid' .. all status values except Deactivated
+			// <any other value except 'all'>
+			if ( 'valid' === $args['status'] ) {
 				$args['meta_query']['status'] = array(
 					'key' => 'status',
 					'value' => self::STATUS_DEACTIVATED,
 					'compare' => 'NOT LIKE',
 				);
-			}
-			elseif ( 'all' != $args['status'] ) {
+			} elseif ( 'all' !== $args['status'] ) {
 				$args['meta_query']['status'] = array(
 					'key' => 'status',
 					'value' => $args['status'],
 					'compare' => 'LIKE',
 				);
 			}
+
+			// This is only reached when status === 'all'
 			unset( $args['status'] );
-		}
-		else {
+		} else {
 			$args['meta_query']['status'] = array(
 				'key' => 'status',
 				'value' => array( self::STATUS_DEACTIVATED, self::STATUS_PENDING ),
