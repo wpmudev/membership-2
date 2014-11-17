@@ -48,6 +48,10 @@ class MS_Helper_List_Table_Rule_Adminside extends MS_Helper_List_Table_Rule {
 			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
+		if ( ! empty( $_GET['status'] ) ) {
+			$args['rule_status'] = $_GET['status'];
+		}
+
 		$total_items = $this->model->get_content_count( $args );
 		$this->items = apply_filters(
 			"ms_helper_list_table_{$this->id}_items",
@@ -65,7 +69,7 @@ class MS_Helper_List_Table_Rule_Adminside extends MS_Helper_List_Table_Rule {
 	public function get_columns() {
 		$columns = array(
 			'cb' => '<input type="checkbox" />',
-			'name' => __( 'Page title', MS_TEXT_DOMAIN ),
+			'name' => __( 'Admin Side Page', MS_TEXT_DOMAIN ),
 			'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
 		);
 

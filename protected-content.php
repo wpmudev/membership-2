@@ -342,7 +342,7 @@ class MS_Plugin {
 		/**
 		 * Hooks init to create the primary plugin controller.
 		 */
-		add_action( 'init', array( &$this, 'ms_plugin_constructing' ) );
+		add_action( 'plugins_loaded', array( &$this, 'ms_plugin_constructing' ) );
 
 		/**
 		 * Creates and Filters the Settings Model.

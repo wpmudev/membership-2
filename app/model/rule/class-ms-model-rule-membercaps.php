@@ -42,6 +42,28 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	protected $rule_type = self::RULE_TYPE_MEMBERCAPS;
 
 	/**
+	 * List of capabilities that are effectively used for the current user
+	 *
+	 * @since 1.1
+	 *
+	 * @var array
+	 */
+	static protected $real_caps = null;
+
+	/**
+	 * Initializes the object as early as possible
+	 *
+	 * @since  1.1
+	 */
+	public function prepare_obj() {
+		/*
+		 * Find out which menu items are allowed.
+		 */
+		$this->add_filter( 'user_has_cap', 'prepare_caps', 1, 3 );
+		$this->add_filter( 'user_has_cap', 'modify_caps', 2, 3 );
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * Always returns null since this rule modifies the capabilities of the
@@ -53,8 +75,6 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access() {
-		wp_die( 'protect Admin Side' );
-
 		return apply_filters(
 			'ms_model_rule_membercaps_has_access',
 			null,
@@ -64,19 +84,35 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	}
 
 	/**
-	 * Set initial protection.
+	 * Prepares the list of effective capabilities to use
+	 *
+	 * Relevant Action Hooks:
+	 * - user_has_cap
 	 *
 	 * @since 1.1
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship.
+	 * @param array   $allcaps An array of all the role's capabilities.
+	 * @param array   $caps    Actual capabilities for meta capability.
+	 * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function prepare_caps( $allcaps, $caps, $args ) {
+		// Only run this filter once!
+		$this->remove_filter( 'user_has_cap', 'prepare_caps', 1, 3 );
 
-		/*
-		 * Find out which menu items are allowed.
-		 */
-		$this->add_action( 'user_has_cap', 'modify_caps' );
+		if ( null === self::$real_caps ) {
+			// First get a list of all capabilities.
+			self::$real_caps = $allcaps;
+
+			// Use the permissions of the first rule without checking.
+			foreach ( $this->rule_value as $key => $value ) {
+				self::$real_caps[$key] = $value;
+			}
+		} else {
+			// Only grant additional capabilities...
+			foreach ( $this->rule_value as $key => $value ) {
+				if ( $value ) { self::$real_caps[$key] = 1; }
+			}
+		}
 	}
 
 	/**
@@ -90,17 +126,13 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 * @param array   $allcaps An array of all the role's capabilities.
 	 * @param array   $caps    Actual capabilities for meta capability.
 	 * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
-	 * @param WP_User $user    The user object.
 	 */
-	public function modify_caps( $allcaps, $caps, $args, $user ) {
-		$new_caps = $allcaps;
-
+	public function modify_caps( $allcaps, $caps, $args ) {
 		return apply_filters(
 			'ms_model_rule_membercaps_modify_caps',
-			$new_caps,
+			self::$real_caps,
 			$caps,
 			$args,
-			$user,
 			$this
 		);
 	}
@@ -140,9 +172,14 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		$capslist = array_keys( $capslist );
 		$contents = array_combine( $capslist, $capslist );
 
+		// If not visitor membership, just show protected content
+		if ( ! $this->rule_value_invert ) {
+			$contents = array_intersect_key( $contents, $this->rule_value );
+		}
+
 		return apply_filters(
 			'ms_model_rule_membercaps_get_content_array',
-			$capslist,
+			$contents,
 			$this
 		);
 	}
@@ -156,6 +193,33 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$contents = array();
+		$caps = $this->get_content_array( $args );
+
+		foreach ( $caps as $key => $item ) {
+			$content = (object) array();
+
+			$content->id = $item;
+			$content->title = $item;
+			$content->name = $item;
+			$content->post_title = $item;
+			$content->type = $this->rule_type;
+			$content->access = $this->get_rule_value( $key );
+
+			$contents[ $key ] = $content;
+		}
+
+		// If not visitor membership, just show protected content
+		if ( ! $this->rule_value_invert ) {
+			$keys = $this->rule_value;
+			if ( isset( $args['rule_status'] ) ) {
+				switch ( $args['rule_status'] ) {
+					case 'no_access': $keys = array_fill_keys( array_keys( $keys, false ), 0 ); break;
+					case 'has_access': $keys = array_fill_keys( array_keys( $keys, true ), 1 ); break;
+				}
+			}
+
+			$contents = array_intersect_key( $contents, $keys );
+		}
 
 		if ( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
@@ -164,6 +228,25 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		return apply_filters(
 			'ms_model_rule_membercaps_get_contents',
 			$contents,
+			$args,
+			$this
+		);
+	}
+
+	/**
+	 * Get total content count.
+	 *
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The content count.
+	 */
+	public function get_content_count( $args = null ) {
+		$count = count( $this->rule_value );
+
+		return apply_filters(
+			'ms_model_rule_membercaps_get_contents',
+			$count,
 			$args,
 			$this
 		);

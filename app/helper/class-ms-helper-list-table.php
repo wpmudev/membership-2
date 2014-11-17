@@ -294,12 +294,14 @@ class MS_Helper_List_Table {
 		foreach ( $views as $class => $data ) {
 			$sep = ($last_class == $class ? '' : '|');
 			$count = (empty( $data['count'] ) ? '' : '(' . $data['count'] . ')');
+			if ( ! isset( $data['url'] ) ) { $data['url'] = ''; }
+			if ( ! isset( $data['label'] ) ) { $data['label'] = ''; }
 
 			printf(
 				'<li class="%1$s"><a href="%2$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',
 				esc_attr( $class ),
-				@$data['url'],
-				@$data['label'],
+				$data['url'],
+				$data['label'],
 				$count,
 				esc_html( $sep )
 			);
@@ -1014,15 +1016,27 @@ class MS_Helper_List_Table {
 	 * @since 3.1.0
 	 * @access protected
 	 *
-	 * @param object $item The current item
+	 * @param object $item The current item.
 	 */
 	protected function single_row( $item ) {
 		static $row_class = '';
-		$row_class = ( $row_class == '' ? ' class="alternate"' : '' );
+		$row_class = ( $row_class === '' ? 'alternate ' : '' );
 
-		echo '<tr' . $row_class . '>';
+		echo '<tr class="' . $row_class . $this->single_row_class( $item ) . '">';
 		$this->single_row_columns( $item );
 		echo '</tr>';
+	}
+
+	/**
+	 * Returns the row-class to be used for the specified table item.
+	 *
+	 * @since  1.1
+	 * @param  object $item The current item.
+	 * @return string Class to be added to the table row.
+	 */
+	protected function single_row_class( $item ) {
+		$class = '';
+		return $class; // Can be overridden by child classes.
 	}
 
 	/**

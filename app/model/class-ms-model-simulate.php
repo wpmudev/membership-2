@@ -92,6 +92,32 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	protected $date;
 
 	/**
+	 * Initialization that runs as soon as this file is loaded by WordPress.
+	 * This is used to initialize the class (not an object!) as early as possible.
+	 *
+	 * @since  1.1
+	 */
+	public function after_load() {
+		if ( $this->is_simulating() ) {
+			add_filter(
+				'pre_site_option_site_admins',
+				array( self, 'admin_filter' )
+			);
+		}
+	}
+
+	/**
+	 * Makes the current user a non-admin user during simulation
+	 *
+	 * @since  1.1
+	 * @param  string $result Set to False to use default WordPress value.
+	 * @return string Empty value means "no Administrator on this installation".
+	 */
+	public function admin_filter( $result ) {
+		return '';
+	}
+
+	/**
 	 * Get simulation types.
 	 *
 	 * @since 1.0.0

@@ -232,6 +232,91 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 	}
 
 	/* ====================================================================== *
+	 *                               ADMIN SIDE
+	 * ====================================================================== */
+
+	public function render_tab_adminside() {
+		$fields = $this->get_control_fields();
+
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_ADMINSIDE );
+
+		$rule_list_table = new MS_Helper_List_Table_Rule_Adminside( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_ADMINSIDE );
+
+		$title = __( 'Admin Side Protection', MS_TEXT_DOMAIN );
+		$desc = sprintf(
+			__( 'Give access to following Admin Side pages to %s members.', MS_TEXT_DOMAIN ),
+			$this->data['membership']->name
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
+			<div class="ms-separator"></div>
+
+			<?php $rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php $rule_list_table->display(); ?>
+				<div class="ms-protection-edit-link">
+					<?php MS_Helper_Html::html_element( $edit_link ); ?>
+				</div>
+			</form>
+		</div>
+		<?php
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
+	}
+
+	/* ====================================================================== *
+	 *                               MEMBER CAPS
+	 * ====================================================================== */
+
+	public function render_tab_membercaps() {
+		$fields = $this->get_control_fields();
+
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
+
+		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
+
+		$title = __( 'Member Capabilities', MS_TEXT_DOMAIN );
+		$desc = sprintf(
+			__( 'All %s members are granted the following Capabilities.', MS_TEXT_DOMAIN ),
+			$this->data['membership']->name
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
+			<div class="ms-separator"></div>
+
+			<?php $rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php $rule_list_table->display(); ?>
+				<div class="ms-protection-edit-link">
+					<?php MS_Helper_Html::html_element( $edit_link ); ?>
+				</div>
+			</form>
+		</div>
+		<?php
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
+	}
+	/* ====================================================================== *
 	 *                               SPECIAL PAGES
 	 * ====================================================================== */
 
@@ -762,6 +847,8 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			MS_Model_Rule::RULE_TYPE_MENU => __( 'Edit Menu Restrictions', MS_TEXT_DOMAIN ),
 			MS_Model_Rule::RULE_TYPE_SHORTCODE => __( 'Manage Protected Shortcodes', MS_TEXT_DOMAIN ),
 			MS_Model_Rule::RULE_TYPE_URL_GROUP => __( 'Edit URL Group Restrictions', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_ADMINSIDE => __( 'Edit Admin Side Restrictions', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_MEMBERCAPS => __( 'Edit Capability Restrictions', MS_TEXT_DOMAIN ),
 			'' => __( 'Manage Protected Content', MS_TEXT_DOMAIN ),
 		);
 

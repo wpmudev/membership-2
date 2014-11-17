@@ -109,7 +109,7 @@ class MS_Model extends MS_Hooker {
 	 * @since 1.0.0
 	 */
 	public function save() {
-		throw new Exception ( 'Method to be implemented in child class' );
+		throw new Exception( 'Method to be implemented in child class' );
 	}
 
 	/**
@@ -118,36 +118,7 @@ class MS_Model extends MS_Hooker {
 	 * @since 1.0.0
 	 */
 	public function after_save() {
-
 		do_action( 'ms_model_after_save', $this );
-	}
-
-	/**
-	 * Called before loading the model.
-	 *
-	 * @since 1.0.0
-	 */
-	public function before_load() {
-
-		do_action( 'ms_model_before_load', $this );
-	}
-
-	/**
-	 * Load the model data.
-	 *
-	 * @since 1.0.0
-	 */
-	public function load( $model_id = false ) {
-		throw new Exception ("Method to be implemented in child class");
-	}
-
-	/**
-	 * Called after loading model data.
-	 *
-	 * @since 4.0.0
-	 */
-	public function after_load() {
-		do_action( 'ms_model_after_load', $this );
 	}
 
 	/**

@@ -73,7 +73,10 @@ class MS_Model_Plugin extends MS_Model {
 
 			$this->setup_cron_services();
 
+			$this->add_action( 'plugins_loaded', 'setup_rules', 2 );
+
 			$this->add_action( 'parse_request', 'setup_protection', 2 );
+			$this->add_action( 'admin_init', 'setup_admin_protection', 2 );
 			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 
 			// cron service action
@@ -337,14 +340,36 @@ class MS_Model_Plugin extends MS_Model {
 	}
 
 	/**
-	 * Setup initial protection.
+	 * Load all the rules that are used by the plugin.
+	 *
+	 * Related Action Hooks:
+	 * - plugins_loaded
+	 *
+	 * @since 1.1
+	 */
+	public function setup_rules(){
+		do_action( 'ms_model_plugin_load_rules_before', $this );
+
+		$rule_types = MS_Model_Rule::get_rule_types();
+
+		foreach ( $this->member->ms_relationships as $ms_relationship ) {
+			foreach ( $rule_types as $rule_type ) {
+				$rule = $ms_relationship->get_membership()->get_rule( $rule_type );
+				$rule->prepare_obj();
+			}
+		}
+
+		do_action( 'ms_model_plugin_load_rules_after', $this );
+	}
+
+	/**
+	 * Setup initial protection for the front-end.
 	 *
 	 * Hide menu and pages, protect media donwload and feeds.
 	 * Protect feeds.
 	 *
-	 * ** Hooks Action **
-	 *
-	 * * parse_request
+	 * Related Action Hooks:
+	 * - parse_request
 	 *
 	 * @since 1.0.0
 	 * @param WP $wp Instance of WP class.
@@ -359,9 +384,6 @@ class MS_Model_Plugin extends MS_Model {
 			return true;
 		}
 
-		$settings = MS_Plugin::instance()->settings;
-		$has_access = false;
-
 		// Search permissions through all memberships joined.
 		foreach ( $this->member->ms_relationships as $ms_relationship ) {
 			// Verify status of the membership.
@@ -375,6 +397,39 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		do_action( 'ms_model_plugin_setup_protection_after', $wp, $this );
+	}
+
+	/**
+	 * Setup initial protection for the admin-side.
+	 *
+	 * Related Action Hooks:
+	 * - admin_init
+	 *
+	 * @since 1.1
+	 */
+	public function setup_admin_protection(){
+		do_action( 'ms_model_plugin_setup_admin_protection_before', $this );
+
+		// Admin user has access to everything
+		if ( $this->member->is_admin_user()
+			&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
+		) {
+			return true;
+		}
+
+		// Search permissions through all memberships joined.
+		foreach ( $this->member->ms_relationships as $ms_relationship ) {
+			// Verify status of the membership.
+			// Only active, trial or canceled (until it expires) status memberships.
+			if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+				continue;
+			}
+
+			$membership = $ms_relationship->get_membership();
+			$membership->protect_admin_content( $ms_relationship );
+		}
+
+		do_action( 'ms_model_plugin_setup_admin_protection_after', $this );
 	}
 
 	/**

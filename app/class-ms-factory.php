@@ -50,6 +50,13 @@ class MS_Factory {
 			throw new Exception( 'Class ' . $class . ' does not exist.' );
 		}
 
+		/**
+		 * Option to initialize objects.
+		 *
+		 * @since  1.1
+		 */
+		$obj->prepare_obj();
+
 		return apply_filters( 'ms_factory_create_'. $class, $obj );
 	}
 
@@ -68,6 +75,7 @@ class MS_Factory {
 
 		if ( class_exists( $class ) ) {
 			$model = new $class();
+			$model->before_load();
 
 			if ( $model instanceof MS_Model_Option ) {
 				$model = self::load_from_wp_option( $model );
@@ -87,7 +95,16 @@ class MS_Factory {
 			elseif ( $model instanceof MS_Model_Transient ) {
 				$model = self::load_from_wp_transient( $model, $model_id );
 			}
+
+			$model->after_load();
 		}
+
+		/**
+		 * New option to initialize objects as early as possible
+		 *
+		 * @since  1.1
+		 */
+		$model->prepare_obj();
 
 		return apply_filters(
 			'ms_factory_load_' . $class,
@@ -111,7 +128,6 @@ class MS_Factory {
 		$class = get_class( $model );
 
 		if ( empty( $model->instance ) ) {
-			$model->before_load();
 			$cache = wp_cache_get( $class, 'MS_Model_Option' );
 
 			if ( $cache ) {
@@ -131,7 +147,6 @@ class MS_Factory {
 				}
 			}
 
-			$model->after_load();
 			$model->instance = $model;
 		}
 		else {
@@ -160,7 +175,6 @@ class MS_Factory {
 		$class = get_class( $model );
 
 		if ( empty( $model->instance ) ) {
-			$model->before_load();
 			$cache = wp_cache_get( $class, 'MS_Model_Transient' );
 
 			if ( $cache ) {
@@ -180,7 +194,6 @@ class MS_Factory {
 					}
 				}
 
-				$model->after_load();
 				$model->instance = $model;
 			}
 		}
@@ -208,7 +221,6 @@ class MS_Factory {
 	 * @return MS_Model_Custom_Post_Type The retrieved object.
 	 */
 	protected static function load_from_wp_custom_post_type( $model, $model_id = 0 ) {
-		$model->before_load();
 		$class = get_class( $model );
 
 		if ( ! empty( $model_id ) ) {
@@ -243,8 +255,6 @@ class MS_Factory {
 				}
 			}
 		}
-
-		$model->after_load();
 
 		return apply_filters(
 			'ms_factory_load_from_custom_post_type',

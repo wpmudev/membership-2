@@ -42,13 +42,13 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	protected $rule_type = self::RULE_TYPE_ADMINSIDE;
 
 	/**
-	 * An array of all available menu items.
+	 * An array of all menu items that are not allowed for the current user.
 	 *
 	 * @since 1.1
 	 *
 	 * @var array
 	 */
-	protected $available_menus = array();
+	static protected $denied_items = null;
 
 	/**
 	 * Verify access to the current content.
@@ -83,43 +83,18 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 *
 	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function protect_admin_content( $ms_relationship = false ) {
+		parent::protect_admin_content( $ms_relationship );
 
 		/*
 		 * Find out which menu items are allowed.
 		 */
-		$this->add_action( 'network_admin_menu', 'prepare_protection', 1 );
-		$this->add_action( 'user_admin_menu', 'prepare_protection', 1 );
-		$this->add_action( 'admin_menu', 'prepare_protection', 1 );
+		$this->add_action( 'current_screen', 'prepare_protection', 1 );
 
 		/*
 		 * Remove menu items that are not allowed.
 		 */
-		$this->add_action( 'network_admin_menu', 'protect_menus', 10 );
-		$this->add_action( 'user_admin_menu', 'protect_menus', 10 );
-		$this->add_action( 'admin_menu', 'protect_menus', 10 );
-	}
-
-	/**
-	 * Checks if the specified menu-ID is allowed by this rule.
-	 *
-	 * @since  1.1
-	 *
-	 * @param  object $item The menu item object.
-	 * @return bool
-	 */
-	protected function can_access_menu( $item ) {
-		$result = false;
-
-		if ( parent::has_access( $item->ID ) ) {
-			$result = true;
-		} else if ( ! empty( $item->post_parent ) ) {
-			$parent = get_post( $item->post_parent );
-			$result = $this->can_access_menu( $parent );
-		}
-
-		return $result;
+		$this->add_action( 'current_screen', 'protect_menus', 10 );
 	}
 
 	/**
@@ -139,17 +114,15 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 * @global array $menu
 	 */
 	public function prepare_protection() {
-		global $menu;
+		if ( null === self::$denied_items ) {
+			self::$denied_items = array_fill_keys( array_keys( $this->rule_value ), 0 );
+		}
 
-		WDev()->debug( $menu );
+		foreach ( $this->rule_value as $url => $allowed ) {
+			if ( ! $allowed ) { continue; }
+			if ( ! isset( self::$denied_items[$url] ) ) { continue; }
 
-		foreach ( $menu as $key => $item ) {
-			if ( empty( $item ) ) { continue; }
-
-			$has_access = parent::has_access( $key );
-			if ( $this->can_access_menu( $item ) ) {
-				self::$allowed_items[$key] = $key;
-			}
+			unset( self::$denied_items[$url] );
 		}
 	}
 
@@ -169,23 +142,39 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 * @global array $menu
 	 */
 	public function protect_menus() {
-		global $menu;
+		global $menu, $submenu;
 		static $Done = false;
 
 		// Only remove menu items once.
 		if ( $Done ) { return; }
 		$Done = true;
 
-		$allowed = apply_filters(
-			'ms_model_rule_adminside_allowed_items',
-			self::$allowed_items,
+		$denied = apply_filters(
+			'ms_model_rule_adminside_denied_items',
+			self::$denied_items,
 			$this
 		);
 
-		foreach ( $menu as $key => $item ) {
-			if ( ! isset( $allowed[ $key ] ) ) {
+		// Protect the main menu.
+		foreach ( $menu as $main_key => $main_item ) {
+			$main_url = $main_item[2];
+
+			if ( isset( $denied[ $main_url ] ) ) {
 				// Remove protected items from the global array.
-				unset( $menu[ $key ] );
+				unset( $menu[ $main_key ] );
+				unset( $submenu[ $main_key ] );
+				continue;
+			}
+
+			if ( ! isset( $submenu[$main_url] ) ) { continue; }
+
+			// Protect sub menus.
+			foreach ( $submenu[$main_url] as $child_key => $child_item ) {
+				$child_url = $main_url . ':' . $child_item[2];
+				if ( isset( $denied[ $child_url ] ) ) {
+					// Remove protected items from the global array.
+					unset( $submenu[$main_url][ $child_key ] );
+				}
 			}
 		}
 	}
@@ -207,21 +196,32 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 		$main = __( 'Main Menu', MS_TEXT_DOMAIN );
 		$contents[$main] = array();
 		foreach ( $full_menu['main'] as $pos => $item ) {
-			// Skip separators
+			// Skip separators.
 			if ( empty( $item[0] ) ) { continue; }
 
-			$contents[$main][$item[2]] = trim( array_shift( explode( '<', $item[0] ) ) );
+			// Don't show the Protected Content plugin menu.
+			if ( MS_Controller_Plugin::MENU_SLUG === $item[2] ) { continue; }
+
+			$parts = explode( '<', $item[0] );
+
+			$contents[$main][$item[2]] = trim( array_shift( $parts ) );
 		}
 
 		foreach ( $full_menu['sub'] as $url => $items ) {
-			$parent = $contents[$main][$url];
-			if ( empty( $parent ) ) { continue; }
+			if ( empty( $contents[$main][$url] ) ) { continue; }
 
+			$parent = $contents[$main][$url];
 			$contents[$parent] = array();
 
 			foreach ( $items as $pos => $item ) {
-				$contents[$parent][$item[2]] = array_shift( explode( '<', $item[0] ) );
+				$parts = explode( '<', $item[0] );
+				$contents[$parent][$url . ':' . $item[2]] = $parent . ' &rarr; ' . trim( array_shift( $parts ) );
 			}
+		}
+
+		// If not visitor membership, just show protected content
+		if ( ! $this->rule_value_invert ) {
+			$contents = array_intersect_key( $contents, $this->rule_value );
 		}
 
 		return apply_filters(
@@ -240,6 +240,53 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$contents = array();
+		$full_menu = MS_Plugin::instance()->controller->get_admin_menu();
+
+		foreach ( $full_menu['main'] as $pos => $item ) {
+			// Skip separators
+			if ( empty( $item[0] ) ) { continue; }
+			$parts = explode( '<', $item[0] );
+
+			$contents[$item[2]] = (object) array(
+				'name' => trim( array_shift( $parts ) ),
+				'parent_id' => 0,
+			);
+
+			if ( isset( $full_menu['sub'][$item[2]] ) ) {
+				$parent = $contents[$item[2]]->name;
+				$children = $full_menu['sub'][$item[2]];
+
+				foreach ( $children as $pos => $child ) {
+					$parts = explode( '<', $child[0] );
+					$contents[$item[2] . ':' . $child[2]] = (object) array(
+						'name' => $parent . ' &rarr; ' . trim( array_shift( $parts ) ),
+						'parent_id' => $item[2],
+					);
+				}
+			}
+		}
+
+		foreach ( $contents as $key => $item ) {
+			$contents[ $key ] = $item;
+			$contents[ $key ]->id = $key;
+			$contents[ $key ]->title = $contents[ $key ]->name;
+			$contents[ $key ]->post_title = $contents[ $key ]->name;
+			$contents[ $key ]->type = $this->rule_type;
+			$contents[ $key ]->access = $this->get_rule_value( $key );
+		}
+
+		// If not visitor membership, just show protected content
+		if ( ! $this->rule_value_invert ) {
+			$keys = $this->rule_value;
+			if ( isset( $args['rule_status'] ) ) {
+				switch ( $args['rule_status'] ) {
+					case 'no_access': $keys = array_fill_keys( array_keys( $keys, false ), 0 ); break;
+					case 'has_access': $keys = array_fill_keys( array_keys( $keys, true ), 1 ); break;
+				}
+			}
+
+			$contents = array_intersect_key( $contents, $keys );
+		}
 
 		if ( ! empty( $args['rule_status'] ) ) {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
@@ -253,4 +300,22 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 		);
 	}
 
+	/**
+	 * Get total content count.
+	 *
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The content count.
+	 */
+	public function get_content_count( $args = null ) {
+		$count = count( $this->rule_value );
+
+		return apply_filters(
+			'ms_model_rule_adminside_get_contents',
+			$count,
+			$args,
+			$this
+		);
+	}
 }

@@ -1238,10 +1238,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	private function get_rules_hierarchy() {
-
 		$rule_types = MS_Model_Rule::get_rule_types();
 
-		if ( self::TYPE_DRIPPED == $this->type && ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+		if ( self::TYPE_DRIPPED == $this->type
+			&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST )
+		) {
 			$rule_types = array( 0 => MS_Model_Rule::RULE_TYPE_POST ) + $rule_types;
 		}
 
@@ -1409,7 +1410,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
-	 * Set initial protection.
+	 * Set initial protection for front-end.
 	 *
 	 * Hide restricted content for this membership.
 	 *
@@ -1417,20 +1418,52 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
 	 */
 	public function protect_content( $ms_relationship ) {
-
-		do_action( 'ms_model_membership_protect_content_before', $ms_relationship, $this );
+		do_action(
+			'ms_model_membership_protect_content_before',
+			$ms_relationship,
+			$this
+		);
 
 		$rules = $this->get_rules_hierarchy();
 
-		/**
-		 * Set initial protection.
-		 * Hide content.
-		*/
+		// Apply protection settings of all rules (replace/hide contents, ...)
 		foreach ( $rules as $rule ) {
 			$rule->protect_content( $ms_relationship );
 		}
 
-		do_action( 'ms_model_membership_protect_content_after', $ms_relationship, $this );
+		do_action(
+			'ms_model_membership_protect_content_after',
+			$ms_relationship,
+			$this
+		);
+	}
+
+	/**
+	 * Set initial protection for admin side.
+	 *
+	 * Hide restricted content for this membership.
+	 *
+	 * @since 1.1
+	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 */
+	public function protect_admin_content( $ms_relationship ) {
+		do_action(
+			'ms_model_membership_protect_content_before',
+			$ms_relationship,
+			$this
+		);
+
+		$rules = $this->get_rules_hierarchy();
+
+		foreach ( $rules as $rule ) {
+			$rule->protect_admin_content( $ms_relationship );
+		}
+
+		do_action(
+			'ms_model_membership_protect_content_after',
+			$ms_relationship,
+			$this
+		);
 	}
 
 	/**

@@ -192,7 +192,16 @@ class MS_Model_Rule extends MS_Model {
 	 * @since  1.1
 	 */
 	protected function initialize() {
-		// Can be overwritten by child classes
+		// Can be overwritten by child classes.
+	}
+
+	/**
+	 * Option to initialize objects.
+	 *
+	 * @since  1.1
+	 */
+	public function prepare_obj() {
+		// Can be overwritten by child classes.
 	}
 
 	/**
@@ -418,6 +427,13 @@ class MS_Model_Rule extends MS_Model {
 			$class = $rule_types[ $rule_type ];
 			$rule = new $class( $membership_id );
 
+			/**
+			 * Option to initialize objects.
+			 *
+			 * @since  1.1
+			 */
+			$rule->prepare_obj();
+
 			$rule->initialize();
 
 			return apply_filters(
@@ -445,7 +461,7 @@ class MS_Model_Rule extends MS_Model {
 	}
 
 	/**
-	 * Set initial protection.
+	 * Set initial protection for front-end.
 	 *
 	 * To be overridden by children classes.
 	 *
@@ -453,8 +469,27 @@ class MS_Model_Rule extends MS_Model {
 	 * @param MS_Model_Membership_Relationship The membership relationship to protect content from.
 	 */
 	public function protect_content( $ms_relationship = false ) {
-		do_action( 'ms_model_rule_protect_content', $ms_relationship, $this );
+		do_action(
+			'ms_model_rule_protect_content',
+			$ms_relationship,
+			$this
+		);
+	}
 
+	/**
+	 * Set initial protection for admin side.
+	 *
+	 * To be overridden by children classes.
+	 *
+	 * @since 1.1
+	 * @param MS_Model_Membership_Relationship The membership relationship to protect content from.
+	 */
+	public function protect_admin_content( $ms_relationship = false ) {
+		do_action(
+			'ms_model_rule_protect_admin_content',
+			$ms_relationship,
+			$this
+		);
 	}
 
 	/**
@@ -801,9 +836,9 @@ class MS_Model_Rule extends MS_Model {
 		}
 
 		$count = array(
-				'total' => $total,
-				'accessible' => $count_accessible,
-				'restricted' => $count_restricted,
+			'total' => $total,
+			'accessible' => $count_accessible,
+			'restricted' => $count_restricted,
 		);
 
 		return apply_filters( 'ms_model_rule_count_item_access', $count );

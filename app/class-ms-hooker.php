@@ -5,20 +5,20 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
 */
 
@@ -27,13 +27,13 @@
  *
  * Base hooker class provides generic interface to hook on actions and filters.
  *
- * This file is the base object of all other objects in the Membership plugin. 
+ * This file is the base object of all other objects in the Membership plugin.
  * All Membership objects inherit from this class.
  *
  * The Membership base class all other classes build on. No hooks defined here.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  */
 class MS_Hooker {
@@ -57,6 +57,42 @@ class MS_Hooker {
 	private $filters = array();
 
 	/**
+	 * Called before loading the model.
+	 *
+	 * @since 1.1
+	 */
+	public function before_load() {
+		do_action( 'ms_hooker_before_load', $this );
+	}
+
+	/**
+	 * Load the model data.
+	 *
+	 * @since 1.1
+	 */
+	public function load( $model_id = false ) {
+		throw new Exception( 'Method to be implemented in child class' );
+	}
+
+	/**
+	 * Called after loading model data.
+	 *
+	 * @since 1.1
+	 */
+	public function after_load() {
+		do_action( 'ms_hooker_after_load', $this );
+	}
+
+	/**
+	 * Called after the object was either created or loaded.
+	 *
+	 * @since 1.1
+	 */
+	public function prepare_obj() {
+		do_action( 'ms_hooker_prepare_obj', $this );
+	}
+
+	/**
 	 * Builds and returns hook key.
 	 *
 	 * @since 1.0.0
@@ -72,7 +108,7 @@ class MS_Hooker {
 	 * Registers an action hook.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @uses add_action() To register action hook.
 	 *
 	 * @param string $tag The name of the action to which the $method is hooked.
@@ -85,7 +121,13 @@ class MS_Hooker {
 		$args = func_get_args();
 		$this->actions[ self::get_hook_key( $args ) ] = $args;
 
-		add_action( $tag, array( $this, ! empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		add_action(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
+
 		return $this;
 	}
 
@@ -102,7 +144,13 @@ class MS_Hooker {
 	 * @return MS_Hooker
 	 */
 	protected function remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		remove_action( $tag, array( $this, ! empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		remove_action(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
+
 		return $this;
 	}
 
@@ -156,7 +204,7 @@ class MS_Hooker {
 	 * Registers a filter hook.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @uses add_filter() To register filter hook.
 	 *
 	 * @param string $tag The name of the filter to hook the $method to.
@@ -169,7 +217,12 @@ class MS_Hooker {
 		$args = func_get_args();
 		$this->filters[ self::get_hook_key( $args ) ] = $args;
 
-		add_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		add_filter(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
 		return $this;
 	}
 
@@ -177,7 +230,7 @@ class MS_Hooker {
 	 * Removes a filter hook.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @uses remove_filter() To remove filter hook.
 	 *
 	 * @access protected
@@ -188,7 +241,12 @@ class MS_Hooker {
 	 * @return MS_Hooker
 	 */
 	protected function remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		remove_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		remove_filter(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
 		return $this;
 	}
 
@@ -217,7 +275,7 @@ class MS_Hooker {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns property associated with the render.
 	 *
@@ -231,7 +289,7 @@ class MS_Hooker {
 			return $this->$property;
 		}
 	}
-	
+
 	/**
 	 * Associates the render with specific property.
 	 *
