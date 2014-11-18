@@ -10,8 +10,13 @@ Change Log:
 - New Add-on: Member Capabilities
 - New layout of the Add-on page
 
+1.0.4.4
+----------------------------------------------------------------------
+- Add column with gateway status to the payment settings
+
 1.0.4.3
 ----------------------------------------------------------------------
+- Add new Member-Filter that displays users with pending payments
 - Fix protection of menu-items when user has multiple memberships
 - Fix permission issues with protection shortcode
 - Fix small bugs with several shortcodes

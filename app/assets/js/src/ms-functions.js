@@ -6,8 +6,6 @@
 /* Global functions */
 
 window.ms_functions = {
-	processing_class: 'ms-processing',
-
 	dp_config: {
         dateFormat: 'yy-mm-dd', //TODO get wp configured date format
         dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thy', 'Fri', 'Sat'],
@@ -38,7 +36,7 @@ window.ms_functions = {
 			field = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! field.hasClass( fn.processing_class ) ) {
+		if( ! field.hasClass( 'ms-processing' ) ) {
 			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
@@ -69,7 +67,7 @@ window.ms_functions = {
 						// Reset the input control to previous value...
 					}
 
-					info_field.removeClass( fn.processing_class );
+					info_field.removeClass( 'ms-processing wpmui-loading' );
 					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
 			);
@@ -81,10 +79,10 @@ window.ms_functions = {
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! slider.hasClass( fn.processing_class ) && ! slider.attr( 'readonly' ) ) {
+		if( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
 			info_field = fn.ajax_show_indicator( slider );
 
-			slider.addClass( fn.processing_class );
+			slider.addClass( 'ms-processing wpmui-loading' );
 			slider.toggleClass( 'on' );
 
 			data = slider.children( '.ms-toggle' ).data( 'ms' );
@@ -106,9 +104,9 @@ window.ms_functions = {
 							slider.togglesClass( 'on' );
 						}
 
-						info_field.removeClass( fn.processing_class );
+						info_field.removeClass( 'ms-processing' );
 
-						slider.removeClass( fn.processing_class );
+						slider.removeClass( 'ms-processing wpmui-loading' );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
 						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
@@ -221,7 +219,7 @@ window.ms_functions = {
 			info_field.data( 'msg_timeout', null );
 		}
 
-		info_field.addClass( fn.processing_class );
+		info_field.addClass( 'ms-processing' );
 		info_field.removeClass( 'error okay' );
 		return info_field;
 	},

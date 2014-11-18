@@ -163,6 +163,21 @@
   display: block;
   margin-bottom: 5px;
 }
+.ms-membership-form-wrapper .sandbox-mode {
+  background-color: #FFC;
+}
+.ms-membership-form-wrapper .sandbox-mode .ms-buy-now-column {
+  position: relative;
+}
+.ms-membership-form-wrapper .sandbox-mode .ms-buy-now-column:after {
+  content: 'Sandbox';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  margin-top: -12px;
+  line-height: 24px;
+  color: #AA6;
+}
 
 .ms-membership-details-wrapper {
   position: relative;
@@ -291,4 +306,155 @@ label.ms-validation-error:before {
 .ms-edit-profile {
   float: right;
   font-weight: 100;
+}
+
+/* Payment buttons */
+input[type="image"] {
+  border: 0;
+  padding: 0;
+}
+
+/**
+ * Settings module.
+ */
+.ms-wrap {
+  /** Settings Box **/
+  /** Member search */
+  /** jquery validation */
+  /** radio slider */
+  /* Dripped icon indicator */
+  /* Settings Page Settings */
+  /* SETTING: GENERAL */
+  /* SETTINGS GATEWAY */
+  /* MEMBERS LIST */
+  /* MEDIA /DOWNLOADS TAB */
+}
+.ms-wrap .ms-settings .settings-description {
+  margin: 1em 0;
+}
+.ms-wrap .ms-label {
+  display: block;
+  padding-bottom: 5px;
+}
+.ms-wrap .ms-margin-right {
+  margin-right: 10px;
+}
+.ms-wrap .ms-postbox.ms-default-margin {
+  margin-right: 15px;
+  margin-left: 15px;
+  margin-top: 5px;
+}
+.ms-wrap .ms-text-label,
+.ms-wrap .ms-ok,
+.ms-wrap .ms-nok {
+  color: #222;
+  font-size: 1em;
+  font-style: normal;
+  font-weight: 600;
+  margin-top: 10px;
+}
+.ms-wrap .ms-ok {
+  color: #7ad03a;
+}
+.ms-wrap .ms-nok {
+  color: red;
+}
+.ms-wrap .ms-settings .ms-settings-box h3.ms-field-input-label {
+  border: none;
+  padding: 0;
+  font-size: 1.1em;
+  cursor: default;
+  margin-top: 15px;
+}
+.ms-wrap #member-search-options {
+  position: relative;
+  top: -2px;
+  font-size: 13px;
+  height: 28px;
+  line-height: 26px;
+  margin: 0;
+  padding: 0 10px 1px;
+}
+@media (max-width: 900px) {
+  .ms-wrap .ms-tabs {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 100px;
+  }
+  .ms-wrap .ms-tabs a {
+    padding: 5px;
+    min-height: 40px;
+  }
+  .ms-wrap .ms-settings {
+    min-height: 350px;
+  }
+}
+.ms-wrap .ms-validation-error {
+  color: #e46c6e !important;
+}
+.ms-wrap label.ms-validation-error {
+  background: #ffefef;
+  border: 1px solid #ffd2d2;
+  color: #666;
+  font-size: 0.9em;
+  margin: 5px;
+  padding: 2px;
+  position: absolute;
+  width: auto;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.ms-wrap label.ms-validation-error:before {
+  content: '';
+  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
+  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
+  background-position: -640px -138px;
+  display: inline-block;
+  height: 20px;
+  position: relative;
+  top: 1px;
+  width: 20px;
+}
+.ms-wrap #membership_access .ms-radio-slider {
+  margin: 10px 20px;
+}
+.ms-wrap div.dripped .tooltip {
+  display: none;
+}
+.ms-wrap #ms-settings-page-links-wrapper {
+  margin: .5em;
+}
+.ms-wrap textarea.ms-field-input {
+  min-width: 80%;
+  display: block;
+}
+.ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
+.ms-wrap .gateways .not-configured .ms-radio-slider {
+  display: none;
+}
+.ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {
+  display: block;
+}
+.ms-wrap .gateways .mode-unknown,
+.ms-wrap .gateways .mode-sandbox,
+.ms-wrap .gateways .mode-live {
+  display: none;
+}
+.ms-wrap .gateways .not-configured .mode-unknown,
+.ms-wrap .gateways .is-configured.is-sandbox .mode-sandbox,
+.ms-wrap .gateways .is-configured.is-live .mode-live {
+  display: block;
+}
+.ms-wrap .gateways .mode-live {
+  font-weight: bold;
+}
+.ms-wrap #search_options {
+  float: left;
+  height: 28px;
+  margin: 0 4px 0 0;
+}
+.ms-wrap #masked_url {
+  display: inline;
 }

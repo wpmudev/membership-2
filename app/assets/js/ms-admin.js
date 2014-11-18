@@ -45,8 +45,6 @@ jQuery(function() {
 /* Global functions */
 
 window.ms_functions = {
-	processing_class: 'ms-processing',
-
 	dp_config: {
         dateFormat: 'yy-mm-dd', //TODO get wp configured date format
         dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thy', 'Fri', 'Sat'],
@@ -77,7 +75,7 @@ window.ms_functions = {
 			field = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! field.hasClass( fn.processing_class ) ) {
+		if( ! field.hasClass( 'ms-processing' ) ) {
 			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
@@ -108,7 +106,7 @@ window.ms_functions = {
 						// Reset the input control to previous value...
 					}
 
-					info_field.removeClass( fn.processing_class );
+					info_field.removeClass( 'ms-processing wpmui-loading' );
 					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
 			);
@@ -120,10 +118,10 @@ window.ms_functions = {
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! slider.hasClass( fn.processing_class ) && ! slider.attr( 'readonly' ) ) {
+		if( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
 			info_field = fn.ajax_show_indicator( slider );
 
-			slider.addClass( fn.processing_class );
+			slider.addClass( 'ms-processing wpmui-loading' );
 			slider.toggleClass( 'on' );
 
 			data = slider.children( '.ms-toggle' ).data( 'ms' );
@@ -145,9 +143,9 @@ window.ms_functions = {
 							slider.togglesClass( 'on' );
 						}
 
-						info_field.removeClass( fn.processing_class );
+						info_field.removeClass( 'ms-processing' );
 
-						slider.removeClass( fn.processing_class );
+						slider.removeClass( 'ms-processing wpmui-loading' );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
 						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
@@ -260,7 +258,7 @@ window.ms_functions = {
 			info_field.data( 'msg_timeout', null );
 		}
 
-		info_field.addClass( fn.processing_class );
+		info_field.addClass( 'ms-processing' );
 		info_field.removeClass( 'error okay' );
 		return info_field;
 	},
@@ -1058,43 +1056,21 @@ window.ms_init.view_settings_mailchimp = function init() {
 
 window.ms_init.view_settings_payment = function init() {
 	function toggle_status( ev, form, response, is_err, data, is_popup, info_field ) {
-		var active = jQuery( '.ms-active-wrapper-' + data.gateway_id );
+		var row = jQuery( '.gateway-' + data.gateway_id );
 
 		if ( ! is_err ) {
-			active.removeClass( 'ms-gateway-not-configured' )
-				.addClass( 'ms-gateway-configured' );
+			row.removeClass( 'not-configured' )
+				.addClass( 'is-configured' );
+
+			if ( undefined !== data.mode && 'sandbox' === data.mode ) {
+				row.removeClass( 'is-live' ).addClass( 'is-sandbox' );
+			} else {
+				row.removeClass( 'is-sandbox' ).addClass( 'is-live' );
+			}
 		}
 	}
 
 	jQuery( document ).on( 'ms-ajax-form-done', toggle_status );
-	/*
-	function close_gateway_settings() {
-		window.self.parent.tb_remove();
-	}
-
-	function setting_submit( form ) {
-		var gateway, wrapper;
-
-		gateway = jQuery( form ).data( 'ms');
-		wrapper = jQuery( '.ms-active-wrapper-' + gateway );
-		wrapper.removeClass( 'ms-gateway-not-configured' );
-		wrapper.addClass( 'ms-gateway-configured' );
-
-		close_gateway_settings();
-	}
-
-	function setting_init() {
-		jQuery( this ).validate({
-			onkeyup: false,
-			errorClass: 'ms-validation-error',
-			submitHandler: setting_submit
-		});
-	}
-
-	jQuery( '.ms-gateway-setings-form' ).each( setting_init );
-
-	jQuery( '.ms-close-button' ).click( close_gateway_settings );
-	*/
 };
 
 /*global window:false */

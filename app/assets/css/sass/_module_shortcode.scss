@@ -16,6 +16,24 @@
 		display: block;
 		margin-bottom: 5px;
 	}
+
+	.sandbox-mode {
+		background-color: #FFC;
+
+		.ms-buy-now-column {
+			position: relative;
+
+			&:after {
+				content: 'Sandbox';
+				position: absolute;
+				top: 50%;
+				right: 10px;
+				margin-top: -12px;
+				line-height: 24px;
+				color: #AA6;
+			}
+		}
+	}
 }
 
 .ms-membership-details-wrapper {
@@ -162,3 +180,12 @@ label.ms-validation-error {
 	float: right;
 	font-weight: 100;
 }
+
+
+/* Payment buttons */
+
+input[type="image"] {
+	border: 0;
+	padding: 0;
+}
+
