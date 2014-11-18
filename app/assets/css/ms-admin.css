@@ -70,7 +70,7 @@
  * Typographic styles
  */
 .ms-wrap {
-  font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /*font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
 }
 .ms-wrap h3 {
   margin: 0 0 4px 0;
@@ -851,6 +851,7 @@
   position: relative;
   font-size: .9em;
   font-weight: 500;
+  max-width: 100%;
 }
 .ms-wrap .ms-save-text-wrapper .ms-error-text,
 .ms-wrap .ms-save-text-wrapper .loading-animation {
@@ -860,6 +861,7 @@
 .ms-wrap .ms-save-text-wrapper .ms-saved-text {
   display: none;
   width: 155px;
+  max-width: 100%;
 }
 .ms-wrap .ms-save-text-wrapper .err-code {
   display: block;

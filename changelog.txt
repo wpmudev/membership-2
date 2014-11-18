@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - New Add-on: Admin Side Protection
 - New Add-on: Member Capabilities
+- New layout of the Add-on page
 
 1.0.4.3
 ----------------------------------------------------------------------

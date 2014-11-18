@@ -31,8 +31,6 @@
  */
 class MS_View_Addon extends MS_View {
 
-	protected $data;
-
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -49,15 +47,27 @@ class MS_View_Addon extends MS_View {
 	 * @return object
 	 */
 	public function to_html() {
-		ob_start();
-		$list_table = new MS_Helper_List_Table_Addon( $this->data['addon'] );
-		$list_table->prepare_items();
+		$items = $this->data['addon']->get_addon_list();
+		$lang = (object) array(
+			'active_badge' => __( 'ACTIVE', MS_TEXT_DOMAIN ),
+			'show_details' => __( 'Details...', MS_TEXT_DOMAIN ),
+			'close_details' => __( 'Close', MS_TEXT_DOMAIN ),
+		);
+		$filters = array(
+			'all' => __( 'All', MS_TEXT_DOMAIN ),
+			'active' => __( 'Active', MS_TEXT_DOMAIN ),
+			'inactive' => __( 'Inactive', MS_TEXT_DOMAIN ),
+		);
 
+		ob_start();
 		?>
-		<div class='ms-wrap'>
-			<h2 class='ms-settings-title'><i class="ms-fa ms-fa-puzzle-piece"></i> <?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>
+		<div class="ms-wrap">
+			<h2 class="ms-settings-title">
+				<i class="ms-fa ms-fa-puzzle-piece"></i>
+				<?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ); ?>
+			</h2>
 			<form action="" method="post">
-				<?php $list_table->display(); ?>
+				<?php WDev()->html->plugin_list( $items, $lang, $filters ); ?>
 			</form>
 		</div>
 		<?php

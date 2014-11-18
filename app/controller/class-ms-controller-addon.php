@@ -28,7 +28,7 @@
  * Manages the activating and deactivating of Membership addons.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -53,31 +53,43 @@ class MS_Controller_Addon extends MS_Controller {
 
 		$addon_menu_hook = 'protect-content_page_protected-content-addon';
 
-		/* Load the add-on manager model. */
-		$this->add_action( 'load-' . $addon_menu_hook, 'admin_addon_process' );
+		// Load the add-on manager model.
+		$this->add_action(
+			'load-' . $addon_menu_hook,
+			'admin_addon_process'
+		);
 
-		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_addons' );
+		$this->add_action(
+			'ms_controller_membership_setup_completed',
+			'auto_setup_addons'
+		);
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ADDON, 'ajax_action_toggle_addon' );
+		$this->add_action(
+			'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ADDON,
+			'ajax_action_toggle_addon'
+		);
 
-		/* Enqueue scripts and styles. */
-		$this->add_action( 'admin_print_scripts-' . $addon_menu_hook, 'enqueue_scripts' );
+		// Enqueue scripts and styles.
+		$this->add_action(
+			'admin_print_scripts-' . $addon_menu_hook,
+			'enqueue_scripts'
+		);
 	}
 
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_gateway
+	 * Related Action Hooks:
+	 * - wp_ajax_toggle_gateway
 	 *
 	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_addon() {
-		
 		$msg = 0;
-		
-		if( $this->verify_nonce() && ! empty( $_POST['addon'] ) && $this->is_admin_user() ) {
+
+		if ( $this->verify_nonce()
+			&& ! empty( $_POST['addon'] ) && $this->is_admin_user()
+		) {
 			$msg = $this->save_addon( 'toggle_activation', array( $_POST['addon'] ) );
 		}
 
@@ -88,14 +100,12 @@ class MS_Controller_Addon extends MS_Controller {
 	/**
 	 * Auto setup addons when membership setup is completed.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_controller_membership_setup_completed
+	 * Related Action Hooks:
+	 * - ms_controller_membership_setup_completed
 	 *
 	 * @since 1.0.0
 	 */
 	public function auto_setup_addons( $membership ) {
-		
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
 
 		$addon->auto_config( $membership );
@@ -110,7 +120,6 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_addon_process() {
-
 		/**
 		 * Hook into the Addon request handler before processing.
 		 *
@@ -118,17 +127,20 @@ class MS_Controller_Addon extends MS_Controller {
 		 * This action uses the "raw" request objects which could lead to SQL injections / XSS.
 		 * By hooking this action you need to take **responsibility** for filtering user input.
 		 *
-		 * @since 1.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Controller_Addon object.
 		 */
 		do_action( 'ms_controller_addon_admin_addon_process', $this );
 
 		$msg = 0;
 		$fields = array( 'addon', 'action', 'action2' );
-		if( $this->verify_nonce( 'bulk-addons' ) && $this->validate_required( $fields ) ) {
+
+		if ( $this->verify_nonce( 'bulk-addons' )
+			&& $this->validate_required( $fields )
+		) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->save_addon( $action, $_POST['addon'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg) ) ) ;
+			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
 			exit;
 		}
 	}
@@ -140,15 +152,17 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_addon() {
-
 		/**
 		 * Create / Filter the Addon admin view.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Controller_Addon object.
 		 */
 		$view = MS_Factory::create( 'MS_View_Addon' );
-		$data = array( 'addon' => MS_Factory::load( 'MS_Model_Addon' ) );
+		$data = array(
+			'addon' => MS_Factory::load( 'MS_Model_Addon' ),
+		);
+
 		$view->data = apply_filters( 'ms_view_addon_data', $data );
 		$view->render();
 	}
@@ -159,30 +173,33 @@ class MS_Controller_Addon extends MS_Controller {
 	 * Saves activation/deactivation settings.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $action The action to perform on the add-on
 	 * @param object[] $addon_types The add-on or add-ons types to update.
 	 */
 	public function save_addon( $action, $addon_types ) {
-		if( ! $this->is_admin_user() ) {
+		if ( ! $this->is_admin_user() ) {
 			return;
 		}
 
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
-		foreach( $addon_types as $addon_type ) {
-			switch( $action ) {
+
+		foreach ( $addon_types as $addon_type ) {
+			switch ( $action ) {
 				case 'enable':
 					$addon->enable( $addon_type );
 					break;
+
 				case 'disable':
 					$addon->disable( $addon_type );
 					break;
+
 				case 'toggle_activation':
 					$addon->toggle_activation( $addon_type );
 					break;
 			}
 		}
-		
+
 		$addon->save();
 		return true;
 	}

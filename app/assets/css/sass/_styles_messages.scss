@@ -11,6 +11,7 @@
 
 		font-size: .9em;
 		font-weight: 500;
+		max-width: 100%;
 
 		.ms-error-text,
 		.loading-animation {
@@ -21,6 +22,7 @@
 		.ms-saved-text {
 			display: none;
 			width: 155px;
+			max-width: 100%;
 		}
 
 		.err-code {

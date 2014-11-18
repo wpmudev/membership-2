@@ -272,12 +272,30 @@ class MS_Model_Addon extends MS_Model_Option {
 			'description' => __( 'Manage user-capabilities on membership level.', MS_TEXT_DOMAIN ),
 		);
 
+		$list = apply_filters( 'ms_model_addon_get_addon_list', $list );
+
 		foreach ( $list as $key => $data ) {
 			$list[$key]->id = $key;
 			$list[$key]->active = self::is_enabled( $key );
+			$list[$key]->title = $data->name;
+
+			$list[$key]->icon = '<i class="ms-fa ms-fa-puzzle-piece"></i>';
+			$list[$key]->action = array();
+			$list[$key]->action[] = array(
+				'id' => 'ms-toggle-' . $key,
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $list[$key]->active,
+				'class' => 'toggle-plugin',
+				'data_ms' => array(
+					'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+					'field' => 'active',
+					'addon' => $key,
+				),
+			);
+			$list[$key]->action[] = MS_Helper_Html::save_text( null, true );
 		}
 
-		return apply_filters( 'ms_model_addon_get_addon_list', $list );
+		return $list;
 	}
 
 }
