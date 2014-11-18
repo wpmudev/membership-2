@@ -463,8 +463,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	public function get_mode_types() {
 		$mode_types = array(
-				self::MODE_LIVE => __( 'Live Site', MS_TEXT_DOMAIN ),
-				self::MODE_SANDBOX => __( 'Sandbox Mode (test)', MS_TEXT_DOMAIN ),
+			self::MODE_LIVE => __( 'Live Site', MS_TEXT_DOMAIN ),
+			self::MODE_SANDBOX => __( 'Sandbox Mode (test)', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters( 'ms_model_gateway_get_mode_types', $mode_types, $this );
@@ -478,7 +478,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * @return boolean True if is in live mode.
 	 */
 	public function is_live_mode() {
-		$is_live_mode = ( self::MODE_LIVE == $this->mode );
+		$is_live_mode = ( self::MODE_SANDBOX !== $this->mode );
 		return apply_filters( 'ms_model_gateway_is_live_mode', $is_live_mode );
 	}
 

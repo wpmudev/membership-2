@@ -250,12 +250,16 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function purchase_button( $ms_relationship ) {
-		/** Get only active gateways */
+		// Get only active gateways
 		$gateways = MS_Model_Gateway::get_gateways( true );
+		$data = array();
 
-		/** show gateway purchase button for every active gateway */
-		foreach( $gateways as $gateway ) {
+		// show gateway purchase button for every active gateway
+		foreach ( $gateways as $gateway ) {
 			$view = null;
+
+			// Skip gateways that are not configured.
+			if ( ! $gateway->is_configured() ) { continue; }
 
 			$data['ms_relationship'] = $ms_relationship;
 			$data['gateway'] = $gateway;
@@ -263,18 +267,18 @@ class MS_Controller_Gateway extends MS_Controller {
 
 			$membership = $ms_relationship->get_membership();
 
-			/** Free membership, show only free gateway */
-			if( 0 == $membership->price || $membership->is_free ) {
-				if( MS_Model_Gateway::GATEWAY_FREE != $gateway->id ) {
+			// Free membership, show only free gateway
+			if ( 0 === $membership->price || $membership->is_free ) {
+				if ( MS_Model_Gateway::GATEWAY_FREE !== $gateway->id ) {
 					continue;
 				}
 			}
-			/** Skip free gateway */
-			elseif( MS_Model_Gateway::GATEWAY_FREE == $gateway->id ) {
+			// Skip free gateway
+			elseif ( MS_Model_Gateway::GATEWAY_FREE === $gateway->id ) {
 				continue;
 			}
 
-			switch( $gateway->id ) {
+			switch ( $gateway->id ) {
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					$view = MS_Factory::create( 'MS_View_Gateway_Authorize_Button' );
 					/**
@@ -283,26 +287,45 @@ class MS_Controller_Gateway extends MS_Controller {
 					 */
 					$data['step'] = 'gateway_form';
 					break;
+
 				case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
 					$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Single_Button' );
 					break;
+
 				case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
 					$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Standard_Button' );
 					break;
+
 				case MS_Model_Gateway::GATEWAY_STRIPE:
 					$view = MS_Factory::create( 'MS_View_Gateway_Stripe_Button' );
 					break;
+
 				case MS_Model_Gateway::GATEWAY_FREE:
 				case MS_Model_Gateway::GATEWAY_MANUAL:
 				default:
 					$view = MS_Factory::create( 'MS_View_Gateway_Button' );
 					break;
 			}
-			if( ! empty( $view ) ) {
-				$view = apply_filters( 'ms_view_gateway_button', $view, $gateway->id );
-				$view->data = apply_filters( 'ms_view_gateway_button_data', $data, $gateway->id );
 
-				echo apply_filters( 'ms_controller_gateway_purchase_button_'. $gateway->id, $view->to_html(), $ms_relationship, $this );
+			if ( ! empty( $view ) ) {
+				$view = apply_filters(
+					'ms_view_gateway_button',
+					$view,
+					$gateway->id
+				);
+
+				$view->data = apply_filters(
+					'ms_view_gateway_button_data',
+					$data,
+					$gateway->id
+				);
+
+				echo apply_filters(
+					'ms_controller_gateway_purchase_button_'. $gateway->id,
+					$view->to_html(),
+					$ms_relationship,
+					$this
+				);
 			}
 		}
 

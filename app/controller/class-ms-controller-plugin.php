@@ -424,11 +424,6 @@ class MS_Controller_Plugin extends MS_Controller {
 			null, $version
 		);
 		wp_register_style(
-			'membership-admin',
-			$plugin_url . 'app/assets/css/ms-settings.css',
-			null, $version
-		);
-		wp_register_style(
 			'font-awesome',
 			$plugin_url . 'app/assets/css/font-awesome.css',
 			null, $version
@@ -540,15 +535,10 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_style(
 			'ms-styles',
 			$plugin_url . 'app/assets/css/ms-public.css',
-			array( 'jquery-ui', 'jquery-chosen', 'membership-admin' ),
+			array( 'jquery-ui', 'jquery-chosen' ),
 			$version
 		);
 
-		wp_register_style(
-			'membership-admin',
-			$plugin_url . 'app/assets/css/ms-settings.css',
-			null, $version
-		);
 		wp_register_style(
 			'jquery-ui',
 			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
@@ -568,9 +558,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function enqueue_plugin_admin_styles() {
 		wp_enqueue_style( 'ms-admin-styles' );
-		wp_enqueue_style( 'membership-admin' );
 		wp_enqueue_style( 'font-awesome' );
 		wp_enqueue_style( 'jquery-chosen' );
+
+		WDev()->add_ui();
 	}
 
 	/**

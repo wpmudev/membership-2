@@ -67,6 +67,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 			'membership_helper_list_table_gateway_columns',
 			array(
 				'name' => __( 'Gateway Name', MS_TEXT_DOMAIN ),
+				'mode' => __( 'Status', MS_TEXT_DOMAIN ),
 				'active' => __( 'Active', MS_TEXT_DOMAIN ),
 			)
 		);
@@ -159,6 +160,37 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	}
 
 	/**
+	 * Return contents of the column "Mode"
+	 *
+	 * @since  1.0.4.4
+	 * @access protected
+	 *
+	 * @param  MS_Model_Gateway $item A payment gateway.
+	 * @return string HTML code to display in the list.
+	 */
+	protected function column_mode( MS_Model_Gateway $item ) {
+		$html = sprintf(
+			'<span class="%s">%s</span>',
+			'mode-unknown',
+			__( '(unknown)', MS_TEXT_DOMAIN )
+		);
+
+		$html .= sprintf(
+			'<span class="%s">%s</span>',
+			'mode-sandbox',
+			__( 'Sandbox', MS_TEXT_DOMAIN )
+		);
+
+		$html .= sprintf(
+			'<span class="%s">%s</span>',
+			'mode-live',
+			__( 'Live', MS_TEXT_DOMAIN )
+		);
+
+		return $html;
+	}
+
+	/**
 	 * Return contents of the column "Active"
 	 *
 	 * @since  1.0.0
@@ -167,7 +199,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @param  MS_Model_Gateway $item A payment gateway.
 	 * @return string HTML code to display in the list.
 	 */
-	protected function column_active( $item ) {
+	protected function column_active( MS_Model_Gateway $item ) {
 		$class = $item->is_configured() ? 'ms-gateway-configured' : 'ms-gateway-not-configured';
 
 		$html = sprintf(
@@ -196,6 +228,31 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		$html .= '</div></div>';
 
 		return apply_filters( 'ms_helper_list_table_gateway_column_active', $html );
+	}
+
+	/**
+	 * Sets the initial row class of the gateway item.
+	 *
+	 * @since  1.0.4.4
+	 * @param  MS_Model_Gateway $item
+	 * @return string
+	 */
+	public function single_row_class( MS_Model_Gateway $item ) {
+		$class = 'gateway-' . $item->id;
+
+		if ( $item->is_configured() ) {
+			$class .= ' is-configured';
+		} else {
+			$class .= ' not-configured';
+		}
+
+		if ( $item->is_live_mode() ) {
+			$class .= ' is-live';
+		} else {
+			$class .= ' is-sandbox';
+		}
+
+		return $class;
 	}
 
 	/**

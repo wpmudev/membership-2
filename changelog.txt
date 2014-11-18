@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.4.4
+----------------------------------------------------------------------
+- Add column with gateway status to the payment settings
+
 1.0.4.3
 ----------------------------------------------------------------------
 - Add new Member-Filter that displays users with pending payments
