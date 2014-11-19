@@ -2,36 +2,34 @@
 
 class MS_View_Membership_Choose_Type extends MS_View {
 
-	protected $fields = array();
-
-	protected $data;
-
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		?>
 			<div class='ms-wrap'>
 				<?php
-					MS_Helper_Html::settings_header( array(
-						'title' => __( 'Choose a membership type suitable to your project', MS_TEXT_DOMAIN ),
-					) );
+					MS_Helper_Html::settings_header(
+						array(
+							'title' => __( 'Choose a membership type suitable to your project', MS_TEXT_DOMAIN ),
+						)
+					);
 				?>
 				<div class="ms-settings ms-settings-type">
 					<form action="" method="post" id="ms-choose-type-form">
 						<div class="ms-type-wrapper">
 							<h3><?php _e( 'What kind of membership do you want to set up?', MS_TEXT_DOMAIN ); ?></h3>
-							<?php MS_Helper_Html::html_element( $this->fields['type'] ); ?>
+							<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
 						</div>
 						<div class="ms-separator"></div>
 
 						<div class="ms-name-wrapper">
-							<?php MS_Helper_Html::html_element( $this->fields['name'] ); ?>
+							<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
 						</div>
 						<div class="ms-private-wrapper">
-							<?php MS_Helper_Html::html_element( $this->fields['private'] ); ?>
+							<?php MS_Helper_Html::html_element( $fields['private'] ); ?>
 						</div>
 						<div class="ms-control-fields-wrapper">
 							<?php
-								foreach( $this->fields['control_fields'] as $field ) {
+								foreach ( $fields['control_fields'] as $field ) {
 									MS_Helper_Html::html_element( $field );
 								}
 							?>
@@ -45,7 +43,7 @@ class MS_View_Membership_Choose_Type extends MS_View {
 	public function prepare_fields() {
 		$membership = $this->data['membership'];
 
-		$this->fields = array(
+		$fields = array(
 			'type' => array(
 				'id' => 'type',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
@@ -128,8 +126,9 @@ class MS_View_Membership_Choose_Type extends MS_View {
 		// Wizard can only be cancelled when at least one membership exists in DB.
 		$count = MS_Model_Membership::get_membership_count();
 		if ( ! $count ) {
-			unset( $this->fields['control_fields']['cancel'] );
+			unset( $fields['control_fields']['cancel'] );
 		}
 
+		return $fields;
 	}
 }

@@ -24,10 +24,12 @@ class MS_View_Membership_List extends MS_View {
 
 		<div class="wrap ms-wrap">
 			<?php
-				MS_Helper_Html::settings_header( array(
-					'title' => $title,
-					'desc' => $admin_message,
-				) );
+			MS_Helper_Html::settings_header(
+				array(
+				'title' => $title,
+				'desc' => $admin_message,
+				)
+			);
 			?>
 			<form action="" method="post">
 				<div class="ms-list-table-wrapper">

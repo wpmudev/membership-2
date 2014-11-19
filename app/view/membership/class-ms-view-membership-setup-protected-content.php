@@ -2,19 +2,15 @@
 
 class MS_View_Membership_Setup_Protected_Content extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
 		$tabs = $this->data['tabs'];
-
 
 		if ( ! empty( $this->data['initial_setup'] ) ) {
 			$description = array(
 				__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
 				__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
 			);
-		}
-		else {
+		} else {
 			$description = array(
 				__( 'Choose what content of your site is protected.', MS_TEXT_DOMAIN ),
 				__( 'Unprotected Content is available for everyone while Protected Content can be assigned to a Membership.', MS_TEXT_DOMAIN ),

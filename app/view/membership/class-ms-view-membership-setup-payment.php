@@ -2,8 +2,6 @@
 
 class MS_View_Membership_Setup_Payment extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
 		$fields = $this->get_fields();
 
@@ -179,7 +177,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			<div class="ms-after-end-wrapper">
 				<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
 			</div>
-			<?php if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
+			<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
 				<div class="ms-trial-wrapper">
 					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
 					<div id="ms-trial-period-wrapper">
