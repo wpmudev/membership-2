@@ -467,7 +467,7 @@
  * GENERAL STYLES *
  ***/
 .ms-wrap .ms-field-description {
-  display: inline-block;
+  display: block;
   margin: 10px 4px 10px 0;
   color: #666;
   font-size: 0.9em;

@@ -358,8 +358,14 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'CPT Group', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_ADMINSIDE => __( 'Admin Side', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_MEMBERCAPS => __( 'Capabilities', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_MEMBERCAPS => __( 'User Role', MS_TEXT_DOMAIN ),
 		);
+
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS )
+			&& MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV )
+		) {
+			$titles[self::RULE_TYPE_MEMBERCAPS] = __( 'Capabilities', MS_TEXT_DOMAIN );
+		}
 
 		return apply_filters( 'ms_model_rule_get_rule_type_titles', $titles );
 	}

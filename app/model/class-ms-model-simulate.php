@@ -103,6 +103,12 @@ class MS_Model_Simulate extends MS_Model_Transient {
 				'pre_site_option_site_admins',
 				array( self, 'admin_filter' )
 			);
+
+			add_filter(
+				'ms_model_membership_relationship_get_membership_relationships',
+				array( $this, 'add_simulation_membership' ),
+				10, 2
+			);
 		}
 	}
 
@@ -115,6 +121,23 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 */
 	public function admin_filter( $result ) {
 		return '';
+	}
+
+	/**
+	 * Add the simulated relationship to the current users memberships
+	 *
+	 * @since 1.1.0
+	 */
+	public function add_simulation_membership( $ms_relationships ) {
+		if ( ! isset( $ms_relationships[ $this->membership_id ] ) ) {
+			$ms_relationship = MS_Factory::load(
+				'MS_Model_Membership_Relationship',
+				$this->membership_id
+			);
+			$ms_relationships[ $this->membership_id ] = $ms_relationship;
+		}
+
+		return $ms_relationships;
 	}
 
 	/**
@@ -178,7 +201,6 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since 1.0.0
 	 */
 	public function start_simulation() {
-
 		if ( self::TYPE_PERIOD == $this->type ) {
 			$this->add_filter(
 				'ms_helper_period_current_date',

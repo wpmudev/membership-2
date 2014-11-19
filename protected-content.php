@@ -395,8 +395,10 @@ class MS_Plugin {
 	/**
 	 * Loads primary plugin controllers.
 	 *
+	 * Related Action Hooks:
+	 * - setup_theme
+	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function ms_plugin_constructing() {
 		/**
@@ -415,7 +417,6 @@ class MS_Plugin {
 	 * Register plugin custom post types.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function register_custom_post_types() {
 		do_action( 'ms_plugin_register_custom_post_types_before', $this );
@@ -441,7 +442,6 @@ class MS_Plugin {
 	 * Register plugin custom post status.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function register_post_status() {
 		/*
@@ -471,7 +471,6 @@ class MS_Plugin {
 	 * Add rewrite rules.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function add_rewrite_rules() {
 		// Membership site pages.
@@ -513,7 +512,6 @@ class MS_Plugin {
 	 * Add rewrite tags.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function add_rewrite_tags() {
 		// Membership site pages.

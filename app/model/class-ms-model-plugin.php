@@ -61,41 +61,51 @@ class MS_Model_Plugin extends MS_Model {
 		// Upgrade membership database if needs to.
 		MS_Model_Upgrade::init();
 
-		if ( MS_Plugin::is_enabled() ) {
-			$this->add_filter( 'cron_schedules', 'cron_time_period' );
-			$this->init_member();
+		if ( ! MS_Plugin::is_enabled() ) { return; }
 
-			// Init gateways to enable hooking actions/filters
-			MS_Model_Gateway::get_gateways();
+		$this->add_filter( 'cron_schedules', 'cron_time_period' );
+		$this->init_member();
 
-			// Init communications to enable hooking actions/filters
-			MS_Model_Communication::load_communications();
+		// Init gateways to enable hooking actions/filters
+		MS_Model_Gateway::get_gateways();
 
-			$this->setup_cron_services();
+		// Init communications to enable hooking actions/filters
+		MS_Model_Communication::load_communications();
 
-			$this->add_action( 'plugins_loaded', 'setup_rules', 2 );
+		$this->setup_cron_services();
 
-			$this->add_action( 'parse_request', 'setup_protection', 2 );
-			$this->add_action( 'admin_init', 'setup_admin_protection', 2 );
-			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
+		$this->add_action( 'plugins_loaded', 'setup_rules', 2 );
 
-			// cron service action
-			$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
-
-			/*
-			 * Create our own copy of the full admin menu to be used in the
-			 * Protected Content settings.
-			 *
-			 * These hooks are only executed in the admin side.
-			 */
-			$this->add_action( '_network_admin_menu', 'store_admin_menu', 1 );
-			$this->add_action( '_user_admin_menu', 'store_admin_menu', 1 );
-			$this->add_action( '_admin_menu', 'store_admin_menu', 1 );
-
-			$this->add_action( 'network_admin_menu', 'store_admin_menu', 99999 );
-			$this->add_action( 'user_admin_menu', 'store_admin_menu', 99999 );
-			$this->add_action( 'admin_menu', 'store_admin_menu', 99999 );
+		/*
+		 * Some plugins (such as MarketPress) can trigger the set_current_user
+		 * action hook before this object is initialized.
+		 */
+		if ( ! did_action( 'set_current_user' ) ) {
+			$this->add_action( 'set_current_user', 'setup_protection', 2 );
+			$this->add_action( 'set_current_user', 'setup_admin_protection', 2 );
+		} else {
+			$this->setup_protection();
+			$this->setup_admin_protection();
 		}
+
+		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
+
+		// cron service action
+		$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
+
+		/*
+		 * Create our own copy of the full admin menu to be used in the
+		 * Protected Content settings.
+		 *
+		 * These hooks are only executed in the admin side.
+		 */
+		$this->add_action( '_network_admin_menu', 'store_admin_menu', 1 );
+		$this->add_action( '_user_admin_menu', 'store_admin_menu', 1 );
+		$this->add_action( '_admin_menu', 'store_admin_menu', 1 );
+
+		$this->add_action( 'network_admin_menu', 'store_admin_menu', 99999 );
+		$this->add_action( 'user_admin_menu', 'store_admin_menu', 99999 );
+		$this->add_action( 'admin_menu', 'store_admin_menu', 99999 );
 	}
 
 	/**
@@ -111,9 +121,8 @@ class MS_Model_Plugin extends MS_Model {
 	public function init_member() {
 		do_action( 'ms_model_plugin_init_member_before', $this );
 
-		$this->member = MS_Model_Member::get_current_member();
-
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
+		$this->member = MS_Model_Member::get_current_member();
 
 		// Admin user simulating membership
 		if ( MS_Model_Member::is_admin_user() ) {
@@ -369,13 +378,14 @@ class MS_Model_Plugin extends MS_Model {
 	 * Protect feeds.
 	 *
 	 * Related Action Hooks:
-	 * - parse_request
+	 * - set_current_user
 	 *
 	 * @since 1.0.0
-	 * @param WP $wp Instance of WP class.
 	 */
-	public function setup_protection( WP $wp ){
-		do_action( 'ms_model_plugin_setup_protection_before', $wp, $this );
+	public function setup_protection() {
+		if ( is_admin() ) { return; }
+
+		do_action( 'ms_model_plugin_setup_protection_before', $this );
 
 		// Admin user has access to everything
 		if ( $this->member->is_admin_user()
@@ -383,12 +393,13 @@ class MS_Model_Plugin extends MS_Model {
 		) {
 			return true;
 		}
-
+WDev()->debug( $this->member->ms_relationships );
 		// Search permissions through all memberships joined.
 		foreach ( $this->member->ms_relationships as $ms_relationship ) {
 			// Verify status of the membership.
 			// Only active, trial or canceled (until it expires) status memberships.
 			if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+				WDev()->debug( 'Skip membership ' . $ms_relationship->membership_id );
 				continue;
 			}
 
@@ -396,18 +407,20 @@ class MS_Model_Plugin extends MS_Model {
 			$membership->protect_content( $ms_relationship );
 		}
 
-		do_action( 'ms_model_plugin_setup_protection_after', $wp, $this );
+		do_action( 'ms_model_plugin_setup_protection_after', $this );
 	}
 
 	/**
 	 * Setup initial protection for the admin-side.
 	 *
 	 * Related Action Hooks:
-	 * - admin_init
+	 * - set_current_user
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
-	public function setup_admin_protection(){
+	public function setup_admin_protection() {
+		if ( ! is_admin() ) { return; }
+
 		do_action( 'ms_model_plugin_setup_admin_protection_before', $this );
 
 		// Admin user has access to everything

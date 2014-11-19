@@ -64,6 +64,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Constructs the primary Plugin controller.
 	 *
+	 * Created by the MS_Plugin object during the setup_theme action.
+	 *
 	 * @since 1.0.0
 	 */
 	public function __construct() {

@@ -284,16 +284,45 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
 
+		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$title = __( 'Member Capabilities', MS_TEXT_DOMAIN );
+			$desc = sprintf(
+				__( 'All %s members are granted the following Capabilities.', MS_TEXT_DOMAIN ),
+				$this->data['membership']->name
+			);
+		} else {
+			$title = __( 'User Roles', MS_TEXT_DOMAIN );
+			$desc = sprintf(
+				__( 'All %s members are assigned to the following User Role.', MS_TEXT_DOMAIN ),
+				$this->data['membership']->name
+			);
+
+			$input_desc = '';
+			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+				$input_desc = __( 'Tipp: If a member belongs to more than one membership then the User Role capabilities of both roles are merged.', MS_TEXT_DOMAIN );
+			}
+			$options = array( '' => __( '(Don\'t change the members role)', MS_TEXT_DOMAIN ) );
+			$options += $rule->get_content_array();
+
+			$role_selection = array(
+				'id' => 'ms-user-role',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+				'desc' => $input_desc,
+				'value' => $rule->user_role,
+				'field_options' => $options,
+				'ajax_data' => array(
+					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
+					'membership_id' => $membership->id,
+					'rule_type' => $rule->rule_type,
+					'field' => 'user_role',
+				),
+			);
+		}
+
 		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
 		$rule_list_table->prepare_items();
 
 		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
-
-		$title = __( 'Member Capabilities', MS_TEXT_DOMAIN );
-		$desc = sprintf(
-			__( 'All %s members are granted the following Capabilities.', MS_TEXT_DOMAIN ),
-			$this->data['membership']->name
-		);
 
 		ob_start();
 		?>
@@ -301,13 +330,17 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
 			<div class="ms-separator"></div>
 
-			<?php $rule_list_table->views(); ?>
-			<form action="" method="post">
-				<?php $rule_list_table->display(); ?>
-				<div class="ms-protection-edit-link">
-					<?php MS_Helper_Html::html_element( $edit_link ); ?>
-				</div>
-			</form>
+			<?php if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) : ?>
+				<?php $rule_list_table->views(); ?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+					<div class="ms-protection-edit-link">
+						<?php MS_Helper_Html::html_element( $edit_link ); ?>
+					</div>
+				</form>
+			<?php else : ?>
+				<?php MS_Helper_Html::html_element( $role_selection ); ?>
+			<?php endif; ?>
 		</div>
 		<?php
 		MS_Helper_Html::settings_footer(

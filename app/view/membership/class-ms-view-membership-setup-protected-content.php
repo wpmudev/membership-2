@@ -268,15 +268,27 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_membercaps() {
-		$title = __( 'Member Capabilities', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Capabilities will be removed from all users. Memberships control, which of these Capabilities are granted again.', MS_TEXT_DOMAIN );
+		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$title = __( 'Member Capabilities', MS_TEXT_DOMAIN );
+			$desc = __( 'Protected Capabilities will be removed from all users. Memberships control, which of these Capabilities are granted again.', MS_TEXT_DOMAIN );
 
-		$field = array(
-			'type' => MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
-			'id' => 'membercaps',
-			'label_single' => __( 'Capability', MS_TEXT_DOMAIN ),
-			'label_plural' => __( 'Capabilities', MS_TEXT_DOMAIN ),
-		);
+			$field = array(
+				'type' => MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+				'id' => 'membercaps',
+				'label_single' => __( 'Capability', MS_TEXT_DOMAIN ),
+				'label_plural' => __( 'Capabilities', MS_TEXT_DOMAIN ),
+			);
+		} else {
+			$title = __( 'User Roles', MS_TEXT_DOMAIN );
+			$desc = __( 'Protected User Roles can be assigned to a Membership.', MS_TEXT_DOMAIN );
+
+			$field = array(
+				'type' => MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+				'id' => 'membercaps',
+				'label_single' => __( 'User Role', MS_TEXT_DOMAIN ),
+				'label_plural' => __( 'User Roles', MS_TEXT_DOMAIN ),
+			);
+		}
 
 		return $this->render_generic_tab( $title, $desc, $field );
 	}

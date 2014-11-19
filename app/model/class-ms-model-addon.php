@@ -64,6 +64,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	// New since 1.1
 	const ADDON_ADMINSIDE = 'adminside';
 	const ADDON_MEMBERCAPS = 'membercaps';
+	const ADDON_MEMBERCAPS_ADV = 'membercaps_advanced';
 
 	/**
 	 * Add-ons array.
@@ -103,6 +104,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_ADV_MENUS,
 				self::ADDON_ADMINSIDE,
 				self::ADDON_MEMBERCAPS,
+				self::ADDON_MEMBERCAPS_ADV,
 			);
 		}
 
@@ -235,7 +237,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'title' => __( 'Additional Protection Methods', MS_TEXT_DOMAIN ),
 					'desc' => __( 'Extends the Media Protection by providing additional protection methods: Basic, Complete, Hybrid', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'value' => $list[self::ADDON_MEDIA_PLUS]->active,
+					'value' => self::is_enabled( self::ADDON_MEDIA_PLUS ),
 					'class' => 'toggle-plugin',
 					'ajax_data' => array(
 						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
@@ -280,6 +282,21 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_MEMBERCAPS] = (object) array(
 			'name' => __( 'Member Capabilities', MS_TEXT_DOMAIN ),
 			'description' => __( 'Manage user-capabilities on membership level.', MS_TEXT_DOMAIN ),
+			'details' => array(
+				array(
+					'id' => 'ms-toggle-' . self::ADDON_MEMBERCAPS_ADV,
+					'title' => __( 'Advanced Capability protection', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Allows you to protect individual WordPress Capabilities. A new tab will be added in the Protected Content screen and also in the Content Selection of each membership.', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'value' => self::is_enabled( self::ADDON_MEMBERCAPS_ADV ),
+					'class' => 'toggle-plugin',
+					'ajax_data' => array(
+						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' => 'active',
+						'addon' => self::ADDON_MEMBERCAPS_ADV,
+					),
+				),
+			),
 		);
 
 		$list = apply_filters( 'ms_model_addon_get_addon_list', $list );
@@ -294,7 +311,7 @@ class MS_Model_Addon extends MS_Model_Option {
 			$list[$key]->action[] = array(
 				'id' => 'ms-toggle-' . $key,
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $list[$key]->active,
+				'value' => self::is_enabled( $key ),
 				'class' => 'toggle-plugin',
 				'ajax_data' => array(
 					'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,

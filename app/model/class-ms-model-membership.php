@@ -1382,7 +1382,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return boolean True if has access to current page. Default is false.
 	 */
 	public function has_access_to_post( $post_id ) {
-
 		$has_access = false;
 
 		if ( ! empty( $post_id ) ) {
@@ -1391,15 +1390,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$post_id = get_post_field( 'post_parent', $post_id );
 			}
 		}
-		/* If 'has access' is found in the hierarchy, it does have access. */
+
+		// If 'has access' is found in the hierarchy, it does have access.
 		$rules = $this->get_rules_hierarchy();
 		foreach ( $rules as $rule ) {
-			/* url groups have final decision */
+			// url groups have final decision
 			if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type && $rule->has_rule_for_post( $post_id ) ) {
 				$has_access = $rule->has_access( $post_id );
 				break;
-			}
-			else {
+			} else {
 				$has_access = ( $has_access || $rule->has_access( $post_id ) );
 			}
 

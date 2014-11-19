@@ -892,7 +892,7 @@ class MS_Controller_Membership extends MS_Controller {
 				'title' => __( 'Admin Side', MS_TEXT_DOMAIN ),
 			),
 			'membercaps' => array(
-				'title' => __( 'Member Capabilities', MS_TEXT_DOMAIN ),
+				'title' => __( 'User Roles', MS_TEXT_DOMAIN ),
 			),
 		);
 
@@ -941,6 +941,9 @@ class MS_Controller_Membership extends MS_Controller {
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
 			unset( $tabs['membercaps'] );
+		}
+		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$tabs['membercaps']['title'] = __( 'Member Capabilities', MS_TEXT_DOMAIN );
 		}
 
 		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );

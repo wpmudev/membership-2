@@ -291,6 +291,9 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$label = __( 'No membership / Visitor', MS_TEXT_DOMAIN );
 			} else {
 				$label = $membership->name;
+				if ( ! $membership->active ) {
+					$label .= ' ' . __( '(Inactive)', MS_TEXT_DOMAIN );
+				}
 			}
 
 			$select_groups[ $membership->parent_id ][ $membership->id ] = array(

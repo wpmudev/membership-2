@@ -63,10 +63,8 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 		if ( is_admin() ) {
 			$allow = null;
 		} else {
-			$allwo = false;
+			$allow = false;
 		}
-
-		wp_die( 'protect Admin Side' );
 
 		return apply_filters(
 			'ms_model_rule_adminside_has_access',

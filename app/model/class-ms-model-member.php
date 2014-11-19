@@ -663,7 +663,7 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id The membership id to drop.
 	 */
 	public function cancel_membership( $membership_id ) {
-		if ( array_key_exists( $membership_id,  $this->ms_relationships ) ) {
+		if ( array_key_exists( $membership_id, $this->ms_relationships ) ) {
 			do_action(
 				'ms_model_membership_cancel_membership',
 				$this->ms_relationships[ $membership_id ],
