@@ -341,8 +341,12 @@ class MS_Plugin {
 
 		/**
 		 * Hooks init to create the primary plugin controller.
+		 *
+		 * We use the setup_theme hook because plugins_loaded is too early:
+		 * wp_redirect (used by the update model) is initialized after
+		 * plugins_loaded but before setup_theme.
 		 */
-		add_action( 'plugins_loaded', array( &$this, 'ms_plugin_constructing' ) );
+		add_action( 'setup_theme', array( &$this, 'ms_plugin_constructing' ) );
 
 		/**
 		 * Creates and Filters the Settings Model.
