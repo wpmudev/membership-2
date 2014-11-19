@@ -56,6 +56,12 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 * @since  1.1
 	 */
 	public function prepare_obj() {
+		if ( $this->_prepared ) { return; }
+		$this->_prepared = true;
+
+		$value = array_intersect_key( $this->rule_value, $this->get_content_array() );
+		$this->rule_value = WDev()->get_array( $value );
+
 		/*
 		 * Find out which menu items are allowed.
 		 */

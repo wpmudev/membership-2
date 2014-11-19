@@ -57,6 +57,14 @@ class MS_Hooker {
 	private $filters = array();
 
 	/**
+	 * Flag if object was initialized already via prepare_obj().
+	 *
+	 * @since 1.1.0
+	 * @var bool $_prepared
+	 */
+	protected $_prepared = false;
+
+	/**
 	 * Called before loading the model.
 	 *
 	 * @since 1.1
@@ -89,6 +97,9 @@ class MS_Hooker {
 	 * @since 1.1
 	 */
 	public function prepare_obj() {
+		if ( $this->_prepared ) { return; }
+		$this->_prepared = true;
+
 		do_action( 'ms_hooker_prepare_obj', $this );
 	}
 

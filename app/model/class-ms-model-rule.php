@@ -201,6 +201,9 @@ class MS_Model_Rule extends MS_Model {
 	 * @since  1.1
 	 */
 	public function prepare_obj() {
+		if ( $this->_prepared ) { return; }
+		$this->_prepared = true;
+
 		// Can be overwritten by child classes.
 	}
 
@@ -433,8 +436,6 @@ class MS_Model_Rule extends MS_Model {
 			 * @since  1.1
 			 */
 			$rule->prepare_obj();
-
-			$rule->initialize();
 
 			return apply_filters(
 				'ms_model_rule_rule_factory',

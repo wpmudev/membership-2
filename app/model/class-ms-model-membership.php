@@ -287,7 +287,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function after_load() {
 		parent::after_load();
 
-		/** validate rules using protected content rules */
+		// validate rules using protected content rules
 		if ( ! $this->protected_content && $this->is_valid() ) {
 			$this->merge_protected_content_rules();
 		}
@@ -684,6 +684,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$rule->rule_value_invert = false;
 			$rule->rule_value_default = true;
 		}
+
+		$rule->prepare_obj();
 
 		return apply_filters(
 			'ms_model_membership_get_rule',
