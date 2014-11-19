@@ -229,11 +229,21 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_MEDIA] = (object) array(
 			'name' => __( 'Media Protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Protect Images and other Media-Library content.', MS_TEXT_DOMAIN ),
-		);
-
-		$list[self::ADDON_MEDIA_PLUS] = (object) array(
-			'name' => __( 'Media Protection - additional protection methods', MS_TEXT_DOMAIN ),
-			'description' => __( 'Extends the Media Protection. Enable these additional protection methods: Basic, Complete, Hybrid.', MS_TEXT_DOMAIN ),
+			'details' => array(
+				array(
+					'id' => 'ms-toggle-' . self::ADDON_MEDIA_PLUS,
+					'title' => __( 'Additional Protection Methods', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Extends the Media Protection by providing additional protection methods: Basic, Complete, Hybrid', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'value' => $list[self::ADDON_MEDIA_PLUS]->active,
+					'class' => 'toggle-plugin',
+					'ajax_data' => array(
+						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' => 'active',
+						'addon' => self::ADDON_MEDIA_PLUS,
+					),
+				),
+			),
 		);
 
 		$list[self::ADDON_SHORTCODE] = (object) array(
@@ -286,7 +296,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $list[$key]->active,
 				'class' => 'toggle-plugin',
-				'data_ms' => array(
+				'ajax_data' => array(
 					'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
 					'field' => 'active',
 					'addon' => $key,
