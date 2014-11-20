@@ -258,8 +258,6 @@ class MS_Factory {
 				$model->last_name = $wp_user->last_name;
 				$model->wp_user = $wp_user;
 
-				$model->is_admin = $model->is_admin_user( $user_id );
-
 				self::populate_model( $model, $member_details, 'ms_' );
 
 				// Load membership_relationships

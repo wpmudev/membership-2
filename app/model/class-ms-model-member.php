@@ -42,6 +42,42 @@ class MS_Model_Member extends MS_Model {
 	const SEARCH_ALL_USERS = 'all_users';
 
 	/**
+	 * Cache for function is_admin_user()
+	 *
+	 * @since  1.1.0
+	 *
+	 * @var bool[]
+	 */
+	static protected $_is_admin_user = array();
+
+	/**
+	 * Cache for function is_normal_admin()
+	 *
+	 * @since  1.1.0
+	 *
+	 * @var bool[]
+	 */
+	static protected $_is_normal_admin = array();
+
+	/**
+	 * Cache for function is_simulated_user()
+	 *
+	 * @since  1.1.0
+	 *
+	 * @var bool[]
+	 */
+	static protected $_is_simulated_user = array();
+
+	/**
+	 * Cache for function is_normal_user()
+	 *
+	 * @since  1.1.0
+	 *
+	 * @var bool[]
+	 */
+	static protected $_is_normal_user = array();
+
+	/**
 	 * Member's Membership Relationships.
 	 *
 	 * @since 1.0.0
@@ -52,15 +88,6 @@ class MS_Model_Member extends MS_Model {
 	 * }
 	 */
 	protected $ms_relationships = array();
-
-	/**
-	 * Admin member indicator.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var boolean
-	 */
-	protected $is_admin = false;
 
 	/**
 	 * Is member indicator.
@@ -603,14 +630,14 @@ class MS_Model_Member extends MS_Model {
 					$move_from_id
 				);
 
-				if ( 'admin' != $gateway_id ) {
+				if ( 'admin' !== $gateway_id ) {
 					MS_Model_Invoice::get_current_invoice( $ms_relationship );
 				}
-				if ( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
+
+				if ( MS_Model_Membership_Relationship::STATUS_PENDING !== $ms_relationship->status ) {
 					$this->ms_relationships[ $membership_id ] = $ms_relationship;
 				}
-			}
-			else {
+			} else {
 				$ms_relationship = $this->ms_relationships[ $membership_id ];
 			}
 		}
@@ -732,9 +759,8 @@ class MS_Model_Member extends MS_Model {
 				MS_Model_Membership_Relationship::STATUS_CANCELED,
 			)
 		);
-		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 
-		if ( $this->is_admin && ! $simulate->is_simulating() ) {
+		if ( $this->is_normal_admin() ) {
 			$has_membership = true;
 		}
 
@@ -744,8 +770,7 @@ class MS_Model_Member extends MS_Model {
 			) {
 				$has_membership = true;
 			}
-		}
-		elseif ( ! empty ( $this->ms_relationships ) ) {
+		} elseif ( ! empty ( $this->ms_relationships ) ) {
 			foreach ( $this->ms_relationships as $membership_relationship ) {
 				if ( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
 					$has_membership = true;
@@ -799,40 +824,106 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @todo modify this when implementing network/multisites handling.
 	 *
-	 * @param int|bool $user_id Optional. The user ID. Default to current user.
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
 	 * @param string $capability The capability to check for admin users.
 	 * @return boolean True if user is admin.
 	 */
-	public static function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
-		$is_admin = false;
-
-		if ( is_super_admin( $user_id ) ) {
-			$is_admin = true;
+	static public function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
+		if ( empty( $user_id ) ) {
+			$user_id = get_current_user_id();
 		}
 
-		$capability = apply_filters(
-			'ms_model_member_is_admin_user_capability',
-			$capability
-		);
+		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
+			$is_admin = false;
 
-		if ( ! empty( $capability ) ) {
-			$wp_user = null;
-
-			if ( empty( $user_id ) ) {
-				$wp_user = wp_get_current_user();
+			if ( is_super_admin( $user_id ) ) {
+				$is_admin = true;
 			}
-			else {
+
+			$capability = apply_filters(
+				'ms_model_member_is_admin_user_capability',
+				$capability
+			);
+
+			if ( ! empty( $capability ) ) {
 				$wp_user = new WP_User( $user_id );
+
+				$is_admin = $wp_user->has_cap( $capability );
 			}
 
-			$is_admin = $wp_user->has_cap( $capability );
+			self::$_is_admin_user[ $user_id ] = apply_filters(
+				'ms_model_member_is_admin_user',
+				$is_admin,
+				$user_id
+			);
 		}
 
-		return apply_filters(
-			'ms_model_member_is_admin_user',
-			$is_admin,
-			$user_id
-		);
+		return self::$_is_admin_user[ $user_id ];
+	}
+
+	/**
+	 * Verify is user is Admin user and simulation mode is deactivated.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
+	 * @return boolean
+	 */
+	static public function is_normal_admin( $user_id = false ) {
+		if ( empty( $user_id ) ) {
+			$user_id = get_current_user_id();
+		}
+
+		if ( ! isset( self::$_is_normal_admin[$user_id] ) ) {
+			self::$_is_normal_admin[$user_id] =
+				self::is_admin_user( $user_id )
+				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
+		}
+
+		return self::$_is_normal_admin[$user_id];
+	}
+
+	/**
+	 * Verify is user is Admin user and simulation mode is active.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
+	 * @return boolean
+	 */
+	static public function is_simulated_user( $user_id = false ) {
+		if ( empty( $user_id ) ) {
+			$user_id = get_current_user_id();
+		}
+
+		if ( ! isset( self::$_is_simulated_user[$user_id] ) ) {
+			self::$_is_simulated_user[$user_id] =
+				self::is_admin_user( $user_id )
+				&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
+		}
+
+		return self::$_is_simulated_user[$user_id];
+	}
+
+	/**
+	 * Verify is user is not Admin user and simulation mode is deactivated.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
+	 * @return boolean
+	 */
+	static public function is_normal_user( $user_id = false ) {
+		if ( empty( $user_id ) ) {
+			$user_id = get_current_user_id();
+		}
+
+		if ( ! isset( self::$_is_normal_user[$user_id] ) ) {
+			// Simlation is only activated when the current user is an Admin.
+			self::$_is_normal_user[$user_id] = ! self::is_admin_user( $user_id );
+		}
+
+		return self::$_is_normal_user[$user_id];
 	}
 
 	/**

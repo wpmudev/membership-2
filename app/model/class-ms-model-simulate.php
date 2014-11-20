@@ -92,6 +92,15 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	protected $date;
 
 	/**
+	 * If current user is admin.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var bool
+	 */
+	protected $_is_admin;
+
+	/**
 	 * Initialization that runs as soon as this file is loaded by WordPress.
 	 * This is used to initialize the class (not an object!) as early as possible.
 	 *
@@ -130,8 +139,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 */
 	public function add_simulation_membership( $ms_relationships ) {
 		if ( ! isset( $ms_relationships[ $this->membership_id ] ) ) {
-			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship(
 				$this->membership_id
 			);
 			$ms_relationships[ $this->membership_id ] = $ms_relationship;
@@ -185,6 +193,22 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	}
 
 	/**
+	 * Checks if the current user is allowed to start simulation (only admin
+	 * users are allowed). Reset simulation in case the user is not allowed.
+	 *
+	 * @since  1.1.0
+	 */
+	protected function check_permissions() {
+		if ( null === $this->_is_admin ) {
+			$this->_is_admin = MS_Model_Member::is_admin_user();
+		}
+
+		if ( ! $this->_is_admin ) {
+			$this->reset_simulation();
+		}
+	}
+
+	/**
 	 * Check simulating status
 	 *
 	 * @since 1.0.0
@@ -192,6 +216,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @return int The simulating membership_id
 	 */
 	public function is_simulating() {
+		$this->check_permissions();
+
 		return $this->membership_id;
 	}
 
@@ -201,6 +227,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since 1.0.0
 	 */
 	public function start_simulation() {
+		$this->check_permissions();
+
 		if ( self::TYPE_PERIOD == $this->type ) {
 			$this->add_filter(
 				'ms_helper_period_current_date',

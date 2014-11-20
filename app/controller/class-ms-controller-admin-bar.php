@@ -512,6 +512,13 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	private function add_detail_nodes() {
 		global $wp_admin_bar;
 
+		/**
+		 * Info menu is currently only available on the front-end.
+		 *
+		 * @todo add information also for admin side (Admin-Protection/Capabilities)
+		 */
+		if ( is_admin() ) { return; }
+
 		if ( ! $this->simulate->is_simulating() ) { return; }
 
 		$membership = MS_Factory::load(

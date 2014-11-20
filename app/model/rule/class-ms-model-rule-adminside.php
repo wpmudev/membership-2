@@ -87,12 +87,12 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 		/*
 		 * Find out which menu items are allowed.
 		 */
-		$this->add_action( 'current_screen', 'prepare_protection', 1 );
+		$this->add_filter( 'custom_menu_order', 'prepare_protection', 1 );
 
 		/*
 		 * Remove menu items that are not allowed.
 		 */
-		$this->add_action( 'current_screen', 'protect_menus', 10 );
+		$this->add_filter( 'custom_menu_order', 'protect_menus', 10 );
 	}
 
 	/**
@@ -111,7 +111,7 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 * @since 1.1
 	 * @global array $menu
 	 */
-	public function prepare_protection() {
+	public function prepare_protection( $ignore ) {
 		if ( null === self::$denied_items ) {
 			self::$denied_items = array_fill_keys( array_keys( $this->rule_value ), 0 );
 		}
@@ -122,6 +122,8 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 
 			unset( self::$denied_items[$url] );
 		}
+
+		return $ignore;
 	}
 
 	/**
@@ -139,8 +141,8 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 * @since 1.1
 	 * @global array $menu
 	 */
-	public function protect_menus() {
-		global $menu, $submenu;
+	public function protect_menus( $ignore ) {
+		global $menu, $submenu, $_wp_submenu_nopriv, $_wp_menu_nopriv;
 		static $Done = false;
 
 		// Only remove menu items once.
@@ -161,6 +163,7 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 				// Remove protected items from the global array.
 				unset( $menu[ $main_key ] );
 				unset( $submenu[ $main_key ] );
+				$_wp_menu_nopriv[$main_url] = true;
 				continue;
 			}
 
@@ -172,9 +175,24 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 				if ( isset( $denied[ $child_url ] ) ) {
 					// Remove protected items from the global array.
 					unset( $submenu[$main_url][ $child_key ] );
+					$_wp_submenu_nopriv[$main_url][$child_item[2]] = true;
 				}
 			}
 		}
+
+		// Remove submenu items that have same URL as the top-menu item
+		foreach ( $submenu as $main_key => $children ) {
+			foreach ( $children as $child_key => $child_item ) {
+				if ( isset( $denied[ $child_item[2] ] ) ) {
+					// Remove protected items from the global array.
+					unset( $submenu[ $main_key ][ $child_key ] );
+					$_wp_submenu_nopriv[ $main_key ][ $child_key ] = true;
+					continue;
+				}
+			}
+		}
+
+		return $ignore;
 	}
 
 	/**

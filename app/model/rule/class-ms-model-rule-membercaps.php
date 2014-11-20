@@ -87,8 +87,8 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
 
-		$this->add_action( 'user_has_cap', 'prepare_caps', 1 );
-		$this->add_action( 'user_has_cap', 'modify_caps', 10 );
+		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
+		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
 	}
 
 	/**
@@ -101,8 +101,8 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	public function protect_admin_content( $ms_relationship = false ) {
 		parent::protect_admin_content( $ms_relationship );
 
-		$this->add_action( 'user_has_cap', 'prepare_caps', 1 );
-		$this->add_action( 'user_has_cap', 'modify_caps', 10 );
+		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
+		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
 	}
 
 	/**
@@ -155,7 +155,6 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 			}
 		}
 		$caps = WDev()->get_array( $caps );
-		WDev()->debug( 'Prepare CAPS', $this, $caps, $this->user_role );
 
 		if ( null === self::$real_caps ) {
 			// First get a list of the users default capabilities.
@@ -171,8 +170,6 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 				if ( $value ) { self::$real_caps[$key] = 1; }
 			}
 		}
-
-		#WDev()->debug( 'Final CAPS', self::$real_caps );
 	}
 
 	/**
@@ -188,7 +185,6 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
 	 */
 	public function modify_caps( $allcaps, $caps, $args ) {
-		echo '<div>Has Cap? ' . json_encode($args) . '</div>';
 		return apply_filters(
 			'ms_model_rule_membercaps_modify_caps',
 			self::$real_caps,

@@ -124,27 +124,14 @@ class MS_Model_Plugin extends MS_Model {
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->member = MS_Model_Member::get_current_member();
 
-		// Admin user simulating membership
-		if ( MS_Model_Member::is_admin_user() ) {
-			if ( $simulate->is_simulating() ) {
-				$this->member->add_membership( $simulate->membership_id );
-				$simulate->start_simulation();
-			}
+		// Deactivated status invalidates all memberships
+		if ( ! $this->member->is_member || ! $this->member->active ) {
+			$this->member->ms_relationships = array();
 		}
-		else {
-			// Deactivated status invalidates all memberships
-			if ( false == $this->member->is_member
-				|| false == $this->member->active
-			) {
-				$this->member->ms_relationships = array();
-			}
 
-			// Visitor: assign a Visitor Membership = Protected Content
-			if ( ! $this->member->has_membership()
-				|| 0 == count( $this->member->ms_relationships )
-			) {
-				$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
-			}
+		// Visitor: assign a Visitor Membership = Protected Content
+		if ( ! $this->member->has_membership() ) {
+			$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
 		}
 
 		do_action( 'ms_model_plugin_init_member_after', $this );
@@ -177,14 +164,10 @@ class MS_Model_Plugin extends MS_Model {
 			// The ID of the main protected-content.
 			$base_id = MS_Model_Membership::get_protected_content()->id;
 
-			$simulation = $this->member->is_admin_user()
-				&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
-
+			$simulation = $this->member->is_simulated_user();
 			if ( $simulation ) { $Info['reason'] = array(); }
 
-			if ( $this->member->is_admin_user()
-				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
-			) {
+			if ( $this->member->is_normal_admin() ) {
 				// Admins have access to ALL memberships.
 				$Info['is_admin'] = true;
 				$Info['has_access'] = true;
@@ -310,9 +293,7 @@ class MS_Model_Plugin extends MS_Model {
 		do_action( 'ms_model_plugin_protect_current_page_before', $this );
 
 		// Admin user has access to everything
-		if ( $this->member->is_admin_user()
-			&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
-		) {
+		if ( $this->member->is_normal_admin() ) {
 			return;
 		}
 
@@ -388,18 +369,15 @@ class MS_Model_Plugin extends MS_Model {
 		do_action( 'ms_model_plugin_setup_protection_before', $this );
 
 		// Admin user has access to everything
-		if ( $this->member->is_admin_user()
-			&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
-		) {
+		if ( $this->member->is_normal_admin() ) {
 			return true;
 		}
-WDev()->debug( $this->member->ms_relationships );
+
 		// Search permissions through all memberships joined.
 		foreach ( $this->member->ms_relationships as $ms_relationship ) {
 			// Verify status of the membership.
 			// Only active, trial or canceled (until it expires) status memberships.
 			if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
-				WDev()->debug( 'Skip membership ' . $ms_relationship->membership_id );
 				continue;
 			}
 
@@ -424,9 +402,7 @@ WDev()->debug( $this->member->ms_relationships );
 		do_action( 'ms_model_plugin_setup_admin_protection_before', $this );
 
 		// Admin user has access to everything
-		if ( $this->member->is_admin_user()
-			&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
-		) {
+		if ( $this->member->is_normal_admin() ) {
 			return true;
 		}
 
@@ -502,9 +478,7 @@ WDev()->debug( $this->member->ms_relationships );
 	public function setup_cron_services() {
 		do_action( 'ms_model_plugin_setup_cron_services_before', $this );
 
-		if ( ! $this->member->is_admin_user()
-			|| ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating()
-		) {
+		if ( $this->member->is_normal_user() ) {
 			// Check for membership status.
 			$checkperiod = '6hours';
 			if ( ! wp_next_scheduled( 'ms_model_plugin_check_membership_status' ) ) {
@@ -534,9 +508,7 @@ WDev()->debug( $this->member->ms_relationships );
 	public function check_membership_status() {
 		do_action( 'ms_model_plugin_check_membership_status_before', $this );
 
-		if ( ( $this->member->is_admin_user()
-			&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating() )
-		) {
+		if ( $this->member->is_simulated_user() ) {
 			return;
 		}
 
