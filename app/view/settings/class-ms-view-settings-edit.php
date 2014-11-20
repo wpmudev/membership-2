@@ -80,7 +80,7 @@ class MS_View_Settings_Edit extends MS_View {
 
 			$html = call_user_func( $render_callback );
 			$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
-			echo $html;
+			echo '' . $html;
 			?>
 		</div>
 		<?php
@@ -289,7 +289,7 @@ class MS_View_Settings_Edit extends MS_View {
 			</div>
 		</div>
 		<?php
-		echo ob_get_clean();
+		echo '' . ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -618,16 +618,16 @@ class MS_View_Settings_Edit extends MS_View {
 
 		$fields = array(
 			'protection_enabled' => array(
-					'id' => 'protection_enabled',
-					'title' => __( 'Media / Downloads protection', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'value' => $settings->downloads['protection_enabled'],
-					'class' => '',
-					'data_ms' => array(
-							'field' => 'protection_enabled',
-							'action' => $action,
-							'_wpnonce' => $nonce,
-					),
+				'id' => 'protection_enabled',
+				'title' => __( 'Media / Downloads protection', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $settings->downloads['protection_enabled'],
+				'class' => '',
+				'data_ms' => array(
+					'field' => 'protection_enabled',
+					'action' => $action,
+					'_wpnonce' => $nonce,
+				),
 			),
 			'protection_type' => array(
 				'id' => 'protection_type',
@@ -674,6 +674,49 @@ class MS_View_Settings_Edit extends MS_View {
 			<div>
 				<form action="" method="post">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
+				</form>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/* ====================================================================== *
+	 *                               IMPORT
+	 * ====================================================================== */
+
+	public function render_tab_import() {
+		$export_action = MS_Controller_Dialog::AJAX_EXPORT;
+
+		$export_fields = array(
+			'export' => array(
+				'id' => 'btn_export',
+				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'value' => 'Export',
+			),
+			'action' => array(
+				'id' => 'action',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $export_action,
+			),
+			'nonce' => array(
+				'id' => '_wpnonce',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => wp_create_nonce( $export_action ),
+			),
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => __( 'Import Tool', MS_TEXT_DOMAIN ) )
+			); ?>
+			<div class="ms-separator"></div>
+
+			<div>
+				<form action="" method="post">
+					<?php MS_Helper_Html::settings_box( $export_fields ); ?>
 				</form>
 			</div>
 		</div>

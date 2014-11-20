@@ -6,9 +6,11 @@ Change Log:
 
 1.1
 ----------------------------------------------------------------------
+- New Import Tool to create export files and import data
 - New Add-on: Admin Side Protection
 - New Add-on: Member Capabilities
 - New layout of the Add-on page
+- Many small bugfixes and layout improvements
 
 1.0.4.4
 ----------------------------------------------------------------------

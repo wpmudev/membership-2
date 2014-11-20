@@ -594,8 +594,8 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'id' => 'comment',
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
-				'value' => __( 'Members can Read & Post comments', MS_TEXT_DOMAIN ),
-				'class' => 'ms-field-description',
+				'value' => __( 'Members can Read and Post comments', MS_TEXT_DOMAIN ),
+				'class' => 'wpmui-field-description',
 				'wrapper' => 'div',
 			);
 		}
@@ -606,7 +606,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
 				'value' => __( 'Members can read full post (beyond the More Tag)', MS_TEXT_DOMAIN ),
-				'class' => 'ms-field-description',
+				'class' => 'wpmui-field-description',
 				'wrapper' => 'div',
 			);
 		}

@@ -284,6 +284,9 @@ class MS_Controller_Settings extends MS_Controller {
 			'downloads' => array(
 				'title' => __( 'Media / Downloads', MS_TEXT_DOMAIN ),
 			),
+			'import' => array(
+				'title' => __( 'Import Tool', MS_TEXT_DOMAIN ),
+			),
 		);
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
@@ -395,6 +398,11 @@ class MS_Controller_Settings extends MS_Controller {
 						$redirect = add_query_arg( 'msg', $msg, $redirect );
 						break;
 					}
+					break;
+
+				case 'import':
+					$tool = MS_Factory::create( 'MS_Model_Import' );
+					$tool->process();
 					break;
 
 				case 'pages':

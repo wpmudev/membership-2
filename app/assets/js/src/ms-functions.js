@@ -36,15 +36,14 @@ window.ms_functions = {
 			field = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! field.hasClass( 'ms-processing' ) ) {
+		if ( ! field.hasClass( 'ms-processing' ) ) {
 			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
 
-			if( field.is( ':checkbox' ) ) {
+			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
-			}
-			else {
+			} else {
 				val = field.val();
 				if ( val instanceof Array || val instanceof Object || null === val ) {
 					data.values = val;
@@ -79,7 +78,7 @@ window.ms_functions = {
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
+		if ( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
 			info_field = fn.ajax_show_indicator( slider );
 
 			slider.addClass( 'ms-processing wpmui-loading' );
@@ -87,7 +86,7 @@ window.ms_functions = {
 
 			data = slider.children( '.ms-toggle' ).data( 'ms' );
 
-			if( null != data ) {
+			if ( null != data ) {
 				data.value = slider.hasClass( 'on' );
 
 				// Allow fields to pre-process the data before sending it.
@@ -250,11 +249,11 @@ window.ms_functions = {
 		var range;
 		el = jQuery( el )[0];
 
-		if( document.selection ) {
+		if ( document.selection ) {
 			range = document.body.createTextRange();
 			range.moveToElementText( el );
 			range.select();
-		} else if( window.getSelection ) {
+		} else if ( window.getSelection ) {
 			range = document.createRange();
 			range.selectNode( el );
 			window.getSelection().addRange( range );

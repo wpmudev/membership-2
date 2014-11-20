@@ -75,15 +75,14 @@ window.ms_functions = {
 			field = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! field.hasClass( 'ms-processing' ) ) {
+		if ( ! field.hasClass( 'ms-processing' ) ) {
 			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
 
-			if( field.is( ':checkbox' ) ) {
+			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
-			}
-			else {
+			} else {
 				val = field.val();
 				if ( val instanceof Array || val instanceof Object || null === val ) {
 					data.values = val;
@@ -118,7 +117,7 @@ window.ms_functions = {
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
+		if ( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
 			info_field = fn.ajax_show_indicator( slider );
 
 			slider.addClass( 'ms-processing wpmui-loading' );
@@ -126,7 +125,7 @@ window.ms_functions = {
 
 			data = slider.children( '.ms-toggle' ).data( 'ms' );
 
-			if( null != data ) {
+			if ( null != data ) {
 				data.value = slider.hasClass( 'on' );
 
 				// Allow fields to pre-process the data before sending it.
@@ -289,11 +288,11 @@ window.ms_functions = {
 		var range;
 		el = jQuery( el )[0];
 
-		if( document.selection ) {
+		if ( document.selection ) {
 			range = document.body.createTextRange();
 			range.moveToElementText( el );
 			range.select();
-		} else if( window.getSelection ) {
+		} else if ( window.getSelection ) {
 			range = document.createRange();
 			range.selectNode( el );
 			window.getSelection().addRange( range );
@@ -931,27 +930,7 @@ window.ms_init.view_membership_setup_payment = function init () {
 /*global ms_functions:false */
 
 window.ms_init.view_settings = function init () {
-	jQuery( '#comm_type' ).change( function() {
-		jQuery( '#ms-comm-type-form' ).submit();
-	});
-
-	// Reload the page when Wizard mode is activated.
-	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', function() {
-		window.location = ms_data.initial_url;
-	});
-
-	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', function(ev, data) {
-		// Show/Hide the Toolbar menu for protected content.
-		if ( data.value ) {
-			jQuery( '#wp-admin-bar-ms-unprotected' ).hide();
-			jQuery( '#wp-admin-bar-ms-test-memberships' ).show();
-		} else {
-			jQuery( '#wp-admin-bar-ms-unprotected' ).show();
-			jQuery( '#wp-admin-bar-ms-test-memberships' ).hide();
-		}
-	});
-
-	jQuery( '.ms-edit-url' ).click( function() {
+	function edit_url() {
 		var text_id = jQuery( this ).prop( 'id' );
 
 		text_id = '#' + text_id.replace( 'edit_slug_', '' );
@@ -966,7 +945,36 @@ window.ms_init.view_settings = function init () {
 		jQuery( text_id ).focusout( function() {
 			jQuery( this ).prop( 'readonly', true );
 		});
-	});
+	}
+
+	function submit_comm_change() {
+		jQuery( '#ms-comm-type-form' ).submit();
+	}
+
+	function reload_window() {
+		window.location = ms_data.initial_url;
+	}
+
+	function update_toolbar( ev, data ) {
+		// Show/Hide the Toolbar menu for protected content.
+		if ( data.value ) {
+			jQuery( '#wp-admin-bar-ms-unprotected' ).hide();
+			jQuery( '#wp-admin-bar-ms-test-memberships' ).show();
+		} else {
+			jQuery( '#wp-admin-bar-ms-unprotected' ).show();
+			jQuery( '#wp-admin-bar-ms-test-memberships' ).hide();
+		}
+	}
+
+	jQuery( '#comm_type' ).change( submit_comm_change );
+
+	// Reload the page when Wizard mode is activated.
+	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
+
+	// Hide/Show the "Test Membership" button in the toolbar.
+	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
+
+	jQuery( '.ms-edit-url' ).click( edit_url );
 };
 
 /*global window:false */
