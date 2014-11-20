@@ -8,7 +8,7 @@
  ***/
 
 .ms-wrap {
-	.ms-field-description {
+	.wpmui-field-description {
 		display: block;
 		margin: 10px 4px 10px 0;
 		color: #666;
@@ -16,9 +16,10 @@
 		font-weight: normal;
 	}
 
-	.ms-field-input {
+	.wpmui-field-input {
 		margin-top: 6px;
 		margin-bottom: 6px;
+		vertical-align: top;
 	}
 
 	.button,
@@ -30,11 +31,8 @@
 		margin: 10px 0;
 	}
 
-	.ms-field-label {
+	.wpmui-field-label {
 		display: block;
-	}
-
-	.ms-field-input-label {
 		margin: 2px 0;
 		font-style: normal;
 		color: #222;
@@ -97,6 +95,17 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
+	}
+
+	.wpmui-label-before,
+	.wpmui-label-after {
+		display: inline-block;
+		margin: 6px;
+		line-height: 28px;
+	}
+
+	.wpmui-label-before {
+		margin-left: 0;
 	}
 }
 
@@ -239,19 +248,20 @@
  ***/
 
 .ms-wrap {
-	.ms-checkbox {
-		margin: 2px 4px 0 0;
+	.wpmui-field-checkbox {
+		margin: 6px 4px 0 0;
 		position: absolute;
 		left: 0;
 		top: 0;
 	}
 
-	.ms-checkbox-wrapper {
-		margin: 0 auto;
+	.wpmui-checkbox-wrapper {
+		margin: 6px auto;
 		position: relative;
 		display: inline-block;
+		line-height: 28px;
 
-		.ms-checkbox-caption {
+		.wpmui-checkbox-caption {
 			padding-left: 24px;
 			font-weight: 500;
 		}
@@ -443,11 +453,44 @@
 			.select2-choices {
 				background: transparent;
 				border: 0;
+
+				.select2-search-choice-close {
+					left: 0;
+					top: 3px;
+					width: 16px;
+					height: 16px;
+
+					background: transparent url(../images/membership_sprite.svg) no-repeat;
+					background-position: -242px -143px;
+					opacity: 0.6;
+
+					&:hover {
+						opacity: 1;
+						background-position: -42px -143px;
+					}
+				}
 			}
 
 			.select2-search-choice {
+				float: none;
+				display: block;
 				margin-left: 0;
 				margin-right: 3px;
+				line-height: 22px;
+				padding-top: 0;
+				padding-bottom: 0;
+
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				border: 1px solid transparent;
+				box-shadow: 0 0 0 transparent;
+				background: transparent;
+
+				&.select2-search-choice-focus {
+					background: #f8f8f8;
+					border-color: #e5e5e5;
+				}
 			}
 
 			.select2-search-field {

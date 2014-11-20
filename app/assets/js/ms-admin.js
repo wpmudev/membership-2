@@ -921,7 +921,7 @@ window.ms_init.view_membership_setup_payment = function init () {
 			case 'JPY': currency = '&yen;'; break;
 		}
 
-		items.find( '.ms-field-description' ).html( currency );
+		items.find( '.wpmui-field-description' ).html( currency );
 	});
 
 };

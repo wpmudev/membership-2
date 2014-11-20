@@ -41,7 +41,7 @@
 		color: red;
 	}
 
-	.ms-settings .ms-settings-box h3.ms-field-input-label {
+	.ms-settings .ms-settings-box h3.wpmui-field-label {
 		border: none;
 		padding: 0;
 		font-size: 1.1em;
@@ -129,7 +129,7 @@
 	}
 
 	/* SETTING: GENERAL */
-	textarea.ms-field-input {
+	textarea.wpmui-field-input {
 		min-width: 80%;
 		display: block;
 	}

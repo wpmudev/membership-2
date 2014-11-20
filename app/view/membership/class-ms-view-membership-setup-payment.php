@@ -179,9 +179,9 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			<div class="ms-after-end-wrapper">
 				<?php MS_Helper_Html::html_element( $fields['on_end_membership_id'] );?>
 			</div>
-			<?php if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
+			<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
 				<div class="ms-trial-wrapper">
-					<div class="ms-field-label ms-field-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
+					<div class="wpmui-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
 					<div id="ms-trial-period-wrapper">
 						<div class="ms-period-wrapper">
 							<?php MS_Helper_Html::html_element( $fields['trial_period_enabled'] );?>
@@ -220,9 +220,9 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'id' => 'price_' . $membership->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Payment Structure:', MS_TEXT_DOMAIN ),
-				'desc' => MS_Plugin::instance()->settings->currency_symbol,
+				'before' => MS_Plugin::instance()->settings->currency_symbol,
 				'value' => $membership->price,
-				'class' => 'ms-field-input-price ms-text-small ms-ajax-update',
+				'class' => 'ms-text-small ms-ajax-update',
 				'placeholder' => '0' . $wp_locale->number_format['decimal_point'] . '00',
 				'data_ms' => array( 'field' => 'price' ),
 			),
@@ -232,7 +232,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'value' => $membership->payment_type,
 				'field_options' => MS_Model_Membership::get_payment_types(),
 				'read_only' => ( $membership->get_members_count() > 0 ) ? 'disabled' : '',
-				'class' => 'ms-field-input-membership-type ms-payment-type ms-ajax-update',
+				'class' => 'ms-payment-type ms-ajax-update',
 				'data_ms' => array( 'field' => 'payment_type' ),
 			),
 			'period_unit' => array(
@@ -241,7 +241,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Period', MS_TEXT_DOMAIN ),
 				'value' => $membership->period_unit,
-				'class' => 'ms-field-input-period-unit ms-text-small ms-ajax-update',
+				'class' => 'ms-text-small ms-ajax-update',
 				'placeholder' => '0',
 				'data_ms' => array( 'field' => 'period_unit' ),
 			),
@@ -251,7 +251,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->period_type,
 				'field_options' => MS_Helper_Period::get_periods(),
-				'class' => 'ms-field-input-period-type ms-ajax-update',
+				'class' => 'ms-ajax-update',
 				'data_ms' => array( 'field' => 'period_type' ),
 			),
 			'pay_cycle_period_unit' => array(
@@ -260,7 +260,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Payment Cycle', MS_TEXT_DOMAIN ),
 				'value' => $membership->pay_cycle_period_unit,
-				'class' => 'ms-field-input-pay-cycle-period-unit ms-text-small ms-ajax-update',
+				'class' => 'ms-text-small ms-ajax-update',
 				'placeholder' => '0',
 				'data_ms' => array( 'field' => 'pay_cycle_period_unit' ),
 			),
@@ -270,7 +270,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->pay_cycle_period_type,
 				'field_options' => MS_Helper_Period::get_periods(),
-				'class' => 'ms-field-input-pay-cycle-period-type ms-ajax-update',
+				'class' => 'ms-ajax-update',
 				'data_ms' => array( 'field' => 'pay_cycle_period_type' ),
 			),
 			'period_date_start' => array(
@@ -296,7 +296,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'title' => __( 'After this membership ends:', MS_TEXT_DOMAIN ),
 				'value' => $membership->on_end_membership_id,
 				'field_options' => $membership->get_after_ms_ends_options(),
-				'class' => 'ms-field-input-on-end-membership ms-ajax-update',
+				'class' => 'ms-ajax-update',
 				'data_ms' => array( 'field' => 'on_end_membership_id' ),
 			),
 			'trial_period_enabled' => array(
@@ -304,7 +304,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'title' => __( 'Offer Free Trial lasting', MS_TEXT_DOMAIN ),
 				'value' => $membership->trial_period_enabled,
-				'class' => 'ms-field-input-trial-period-enabled ms-ajax-update',
+				'class' => 'ms-ajax-update',
 				'data_ms' => array( 'field' => 'trial_period_enabled' ),
 			),
 			'trial_period_unit' => array(
@@ -312,7 +312,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'name' => '[trial_period][period_unit]',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $membership->trial_period_unit,
-				'class' => 'ms-field-input-trial-period-unit ms-text-small ms-ajax-update',
+				'class' => 'ms-text-small ms-ajax-update',
 				'placeholder' => '0',
 				'data_ms' => array( 'field' => 'trial_period_unit' ),
 			),
@@ -322,7 +322,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->trial_period_type,
 				'field_options' => MS_Helper_Period::get_periods(),
-				'class' => 'ms-field-input-trial-period-type ms-ajax-update',
+				'class' => 'ms-ajax-update',
 				'data_ms' => array( 'field' => 'trial_period_type' ),
 			),
 			'membership_id' => array(

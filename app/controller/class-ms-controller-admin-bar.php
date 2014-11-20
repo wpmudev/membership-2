@@ -334,7 +334,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		ob_start();
 		?>
 		<form id="view-site-as" method="GET">
-			<select id="view-as-selector" class="ms-field-input ms-select ab-select" name="view-as-selector">
+			<select id="view-as-selector" class="wpmui-field-input wpmui-field-select ab-select" name="view-as-selector">
 			<?php foreach ( $parents as $parent_id => $parent ) {
 				if ( $parent_id ) {
 					printf(

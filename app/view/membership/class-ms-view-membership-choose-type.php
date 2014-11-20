@@ -75,7 +75,7 @@ class MS_View_Membership_Choose_Type extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Choose a name for your membership:', MS_TEXT_DOMAIN ),
 				'value' => $membership->name,
-				'class' => 'ms-field-input-name ms-text-large',
+				'class' => 'ms-text-large',
 				'placeholder' => __( 'Choose a good name that will identify this membership...', MS_TEXT_DOMAIN ),
 			),
 			'private' => array(
@@ -84,7 +84,6 @@ class MS_View_Membership_Choose_Type extends MS_View {
 				'title' => __( 'Make this membership private (No registration, no payment)', MS_TEXT_DOMAIN ),
 				'desc' => __( 'Choosing this option assumes that you will manually set up users who can access your content.<br /><span class="ms-bold">No registration page will be created and there will be no payment options.</span>', MS_TEXT_DOMAIN ),
 				'value' => $membership->private,
-				'class' => 'ms-field-input-trial-period-enabled',
 			),
 			'control_fields' => array(
 					'membership_id' => array(

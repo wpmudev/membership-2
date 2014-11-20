@@ -28,7 +28,7 @@
  *
  * @todo Create add methods to parent class or remove 'extends MS_Helper' to use standalone.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  * @return object
  */
@@ -302,24 +302,25 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * Pass in array with field arguments. See $defaults for argmuments.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return void But does output HTML.
 	 */
-	public static function html_submit( $field_args = array() ) {
+	public static function html_submit( $args = array(), $return = false ) {
 		$defaults = array(
 			'id'        => 'submit',
 			'value'     => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			'class'     => 'button button-primary',
-			);
-		extract( wp_parse_args( $field_args, $defaults ) );
-
-		printf(
-			'<input class="ms-field-input ms-submit %1$s" type="submit" id="%2$s" name="%2$s" value="%3$s" />',
-			esc_attr( $class ),
-			esc_attr( $id ),
-			esc_attr( $value )
 		);
+		wp_parse_args( $args, $defaults );
+
+		$args['type'] = self::INPUT_TYPE_SUBMIT;
+
+		if ( $return ) {
+			return self::html_element( $args );
+		} else {
+			echo '' . self::html_element( $args );
+		}
 	}
 
 	/**
@@ -327,7 +328,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * Pass in array with link arguments. See $defaults for arguments.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return string But does output HTML.
 	 */
@@ -339,21 +340,15 @@ class MS_Helper_Html extends MS_Helper {
 			'class' => '',
 			'url'   => '',
 		);
+		wp_parse_args( $args, $defaults );
 
-		extract( wp_parse_args( $args, $defaults ) );
+		$args['type'] = self::TYPE_HTML_LINK;
 
-		if ( empty( $title ) ) { $title = $value; }
-
-		if ( $return ) { ob_start(); }
-		printf(
-			'<a id="%1$s" title="%2$s" class="ms-link %3$s" href="%4$s">%5$s</a>',
-			esc_attr( $id ),
-			esc_attr( $title ),
-			esc_attr( $class ),
-			esc_url( $url ),
-			$value
-		);
-		if ( $return ) { return ob_get_clean(); }
+		if ( $return ) {
+			return self::html_element( $args );
+		} else {
+			echo '' . self::html_element( $args );
+		}
 	}
 
 	/**
@@ -361,7 +356,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * Returns the active tab key. Vertical tabs need to be wrapped in additional code.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @param  array $tabs
 	 * @param  string $active_tab
@@ -411,7 +406,7 @@ class MS_Helper_Html extends MS_Helper {
 	/**
 	 * Method for outputting tooltips.
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 *
 	 * @return string But does output HTML.
 	 */

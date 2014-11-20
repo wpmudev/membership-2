@@ -82,22 +82,22 @@
 #wpadminbar #wp-toolbar .membership-simulate-period input,
 #wpadminbar #wp-toolbar .membership-simulate-period select,
 #wpadminbar #wp-toolbar .membership-simulate-period button,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input,
 #wpadminbar #wp-toolbar .membership-view-site-as input,
 #wpadminbar #wp-toolbar .membership-view-site-as select,
 #wpadminbar #wp-toolbar .membership-view-site-as button,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input {
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input {
   height: 23px;
   line-height: 21px;
   margin: 4px;
   box-sizing: border-box;
 }
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input input,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input select,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input button,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input input,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input select,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input button {
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input input,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input select,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input button,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input input,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input select,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input button {
   margin: 0;
 }
 #wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
@@ -359,7 +359,7 @@ input[type="image"] {
 .ms-wrap .ms-nok {
   color: red;
 }
-.ms-wrap .ms-settings .ms-settings-box h3.ms-field-input-label {
+.ms-wrap .ms-settings .ms-settings-box h3.wpmui-field-label {
   border: none;
   padding: 0;
   font-size: 1.1em;
@@ -426,7 +426,7 @@ input[type="image"] {
 .ms-wrap #ms-settings-page-links-wrapper {
   margin: .5em;
 }
-.ms-wrap textarea.ms-field-input {
+.ms-wrap textarea.wpmui-field-input {
   min-width: 80%;
   display: block;
 }

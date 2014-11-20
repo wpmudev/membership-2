@@ -120,7 +120,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				);
 				$f_title_sel = '<i class="ms-img ms-img-lock"></i> ' .
 					sprintf(
-						__( 'Protected %s', MS_TEXT_DOMAIN ),
+						__( 'Protected %s:', MS_TEXT_DOMAIN ),
 						$item['label_plural']
 					);
 				if ( empty( $item['label_empty'] ) ) {

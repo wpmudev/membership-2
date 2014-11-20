@@ -155,7 +155,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
 				<div class="ms-group">
 					<div class="inside">
-						<div class="ms-field-input-label">
+						<div class="wpmui-field-label">
 							<?php _e( 'Protected Categories:', MS_TEXT_DOMAIN ); ?>
 						</div>
 						<?php $category_rule_list_table->display(); ?>
@@ -170,7 +170,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) : ?>
 				<div class="ms-group">
 					<div class="inside">
-						<div class="ms-field-input-label">
+						<div class="wpmui-field-label">
 							<?php _e( 'Protected Custom Post Types:', MS_TEXT_DOMAIN ); ?>
 						</div>
 						<?php $cpt_rule_list_table->display(); ?>

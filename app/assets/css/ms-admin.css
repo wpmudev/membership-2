@@ -164,10 +164,10 @@
 }
 .ms-wrap .tablenav input,
 .ms-wrap .tablenav select,
-.ms-wrap .tablenav .ms-field-input,
+.ms-wrap .tablenav .wpmui-field-input,
 .ms-wrap p.search-box input,
 .ms-wrap p.search-box select,
-.ms-wrap p.search-box .ms-field-input {
+.ms-wrap p.search-box .wpmui-field-input {
   margin-top: 0 !important;
   /* important: Some WordPress fields have a margin that needs to be cleared here */
   margin-bottom: 0 !important;
@@ -466,16 +466,17 @@
 /***
  * GENERAL STYLES *
  ***/
-.ms-wrap .ms-field-description {
+.ms-wrap .wpmui-field-description {
   display: block;
   margin: 10px 4px 10px 0;
   color: #666;
   font-size: 0.9em;
   font-weight: normal;
 }
-.ms-wrap .ms-field-input {
+.ms-wrap .wpmui-field-input {
   margin-top: 6px;
   margin-bottom: 6px;
+  vertical-align: top;
 }
 .ms-wrap .button,
 .ms-wrap .button-primary {
@@ -484,10 +485,8 @@
 .ms-wrap .ms-field-container {
   margin: 10px 0;
 }
-.ms-wrap .ms-field-label {
+.ms-wrap .wpmui-field-label {
   display: block;
-}
-.ms-wrap .ms-field-input-label {
   margin: 2px 0;
   font-style: normal;
   color: #222;
@@ -536,6 +535,15 @@
 .ms-wrap textarea.ms-center {
   margin-left: auto;
   margin-right: auto;
+}
+.ms-wrap .wpmui-label-before,
+.ms-wrap .wpmui-label-after {
+  display: inline-block;
+  margin: 6px;
+  line-height: 28px;
+}
+.ms-wrap .wpmui-label-before {
+  margin-left: 0;
 }
 
 /***
@@ -653,18 +661,19 @@
 /***
  * CHECKBOX *
  ***/
-.ms-wrap .ms-checkbox {
-  margin: 2px 4px 0 0;
+.ms-wrap .wpmui-field-checkbox {
+  margin: 6px 4px 0 0;
   position: absolute;
   left: 0;
   top: 0;
 }
-.ms-wrap .ms-checkbox-wrapper {
-  margin: 0 auto;
+.ms-wrap .wpmui-checkbox-wrapper {
+  margin: 6px auto;
   position: relative;
   display: inline-block;
+  line-height: 28px;
 }
-.ms-wrap .ms-checkbox-wrapper .ms-checkbox-caption {
+.ms-wrap .wpmui-checkbox-wrapper .wpmui-checkbox-caption {
   padding-left: 24px;
   font-weight: 500;
 }
@@ -815,9 +824,37 @@
   background: transparent;
   border: 0;
 }
+.ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-choices .select2-search-choice-close {
+  left: 0;
+  top: 3px;
+  width: 16px;
+  height: 16px;
+  background: transparent url(../images/membership_sprite.svg) no-repeat;
+  background-position: -242px -143px;
+  opacity: 0.6;
+}
+.ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-choices .select2-search-choice-close:hover {
+  opacity: 1;
+  background-position: -42px -143px;
+}
 .ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-search-choice {
+  float: none;
+  display: block;
   margin-left: 0;
   margin-right: 3px;
+  line-height: 22px;
+  padding-top: 0;
+  padding-bottom: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 transparent;
+  background: transparent;
+}
+.ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-search-choice.select2-search-choice-focus {
+  background: #f8f8f8;
+  border-color: #e5e5e5;
 }
 .ms-wrap .ms-tag-selector-wrapper .ms-tag-data .select2-search-field {
   display: none;
@@ -1230,7 +1267,7 @@
   width: 135px;
   text-align: center;
 }
-.ms-wrap .ms-global-payment-wrapper .ms-field-input {
+.ms-wrap .ms-global-payment-wrapper .wpmui-field-input {
   width: 100%;
 }
 .ms-wrap .ms-item-name {
@@ -1285,7 +1322,7 @@
 .ms-wrap .ms-nok {
   color: red;
 }
-.ms-wrap .ms-settings .ms-settings-box h3.ms-field-input-label {
+.ms-wrap .ms-settings .ms-settings-box h3.wpmui-field-label {
   border: none;
   padding: 0;
   font-size: 1.1em;
@@ -1352,7 +1389,7 @@
 .ms-wrap #ms-settings-page-links-wrapper {
   margin: .5em;
 }
-.ms-wrap textarea.ms-field-input {
+.ms-wrap textarea.wpmui-field-input {
   min-width: 80%;
   display: block;
 }
@@ -1460,22 +1497,22 @@
 #wpadminbar #wp-toolbar .membership-simulate-period input,
 #wpadminbar #wp-toolbar .membership-simulate-period select,
 #wpadminbar #wp-toolbar .membership-simulate-period button,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input,
 #wpadminbar #wp-toolbar .membership-view-site-as input,
 #wpadminbar #wp-toolbar .membership-view-site-as select,
 #wpadminbar #wp-toolbar .membership-view-site-as button,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input {
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input {
   height: 23px;
   line-height: 21px;
   margin: 4px;
   box-sizing: border-box;
 }
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input input,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input select,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input button,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input input,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input select,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input button {
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input input,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input select,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input button,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input input,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input select,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input button {
   margin: 0;
 }
 #wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
