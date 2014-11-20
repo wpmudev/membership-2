@@ -444,8 +444,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $post_id );
 				if ( ! empty( $args['author'] ) ) {
 					$ms_relationships[ $ms_relationship->membership_id ] = $ms_relationship;
-				}
-				else {
+				} else {
 					$ms_relationships[ $post_id ] = $ms_relationship;
 				}
 			}
@@ -987,6 +986,31 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		return apply_filters(
 			'ms_model_membership_relationship_get_member',
 			$member
+		);
+	}
+
+	/**
+	 * Get a list of all invoices linked to this relationship
+	 *
+	 * @since  1.1.0
+	 * @return MS_Model_Invoice[]
+	 */
+	public function get_invoices() {
+		$invoices = MS_Model_Invoice::get_invoices(
+			array(
+				'nopaging' => true,
+				'meta_query' => array(
+					array(
+						'key'     => 'ms_relationship_id',
+						'value'   => $this->id,
+					),
+				),
+			)
+		);
+
+		return apply_filters(
+			'ms_model_membership_relationship_get_invoices',
+			$invoices
 		);
 	}
 

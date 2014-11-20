@@ -233,7 +233,7 @@ class MS_Model_Plugin extends MS_Model {
 									__( 'Ignored: Membership "%s"', MS_TEXT_DOMAIN ),
 									$membership->name
 								);
-								$Info['reason'][] = $membership->access_reason;
+								$Info['reason'][] = $membership->_access_reason;
 							}
 							continue;
 						}
@@ -244,7 +244,7 @@ class MS_Model_Plugin extends MS_Model {
 								$access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
 								$membership->name
 							);
-							$Info['reason'][] = $membership->access_reason;
+							$Info['reason'][] = $membership->_access_reason;
 						}
 
 						$Info['has_access'] = $access;

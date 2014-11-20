@@ -1006,8 +1006,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( empty( $field ) ) {
 			$profile = $this->gateway_profiles[ $gateway ];
-		}
-		else {
+		} else {
 			if ( ! isset( $this->gateway_profiles[ $gateway ][ $field ] ) ) {
 				$this->gateway_profiles[ $gateway ][ $field ] = '';
 			}
@@ -1070,8 +1069,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
-		}
-		else {
+		} else {
 			return true;
 		}
 	}

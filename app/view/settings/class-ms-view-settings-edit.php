@@ -686,13 +686,15 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_import() {
-		$export_action = MS_Controller_Dialog::AJAX_EXPORT;
+		$export_action = MS_Model_Import::ACTION_EXPORT;
 
 		$export_fields = array(
 			'export' => array(
 				'id' => 'btn_export',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => 'Export',
+				'value' => __( 'Generate Export', MS_TEXT_DOMAIN ),
+				'title' => __( 'Export', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Generate an export/backup file with the current membership settings.', MS_TEXT_DOMAIN ),
 			),
 			'action' => array(
 				'id' => 'action',

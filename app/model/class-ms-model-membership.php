@@ -262,7 +262,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.1
 	 * @var array
 	 */
-	public $access_reason = array();
+	public $_access_reason = array();
 
 	/**
 	 * Set rules membership_id before saving.
@@ -773,25 +773,29 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		// Get children memberships.
 		if ( ! empty( $args['post__not_in'] ) ) {
 			$args = array( 'post__not_in' => $args['post__not_in'] );
-		}
-		else {
+		} else {
 			$args = array();
 		}
 		$args['post_parent__not_in'] = array( 0 );
 		$args['order'] = 'ASC';
 		$children = self::get_memberships( $args );
+
 		foreach ( $children as $child ) {
 			$new = array();
 			foreach ( $memberships as $ms ){
 				$new[] = $ms;
-				if ( $ms->id == $child->parent_id ) {
+				if ( $ms->id === $child->parent_id ) {
 					$new[ $child->id ] = $child;
 				}
 			}
 			$memberships = $new;
 		}
 
-		return apply_filters( 'ms_model_membership_get_grouped_memberships', $memberships, $args );
+		return apply_filters(
+			'ms_model_membership_get_grouped_memberships',
+			$memberships,
+			$args
+		);
 	}
 
 	/**
@@ -1292,7 +1296,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
 		$has_access = null;
-		$this->access_reason = array();
+		$this->_access_reason = array();
 
 		// Only verify access if membership is Active.
 		if ( $this->active ) {
@@ -1303,14 +1307,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$rule_access = $rule->has_access( $post_id );
 
 				if ( null === $rule_access ) {
-					$this->access_reason[] = sprintf(
+					$this->_access_reason[] = sprintf(
 						__( 'Ignored: Rule "%s"', MS_TEXT_DOMAIN ),
 						$rule->rule_type
 					);
 					continue;
 				}
 
-				$this->access_reason[] = sprintf(
+				$this->_access_reason[] = sprintf(
 					__( '%s: Rule "%s"', MS_TEXT_DOMAIN ),
 					$rule_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
 					$rule->rule_type
@@ -1325,7 +1329,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				// Special pages have final decission after URL groups.
 				if ( MS_Model_Rule::RULE_TYPE_SPECIAL === $rule->rule_type ) {
 					$has_access = $rule_access;
-					$this->access_reason[] = $rule->matched_type;
+					$this->_access_reason[] = $rule->matched_type;
 					break;
 				}
 
@@ -1354,7 +1358,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					);
 					$has_access = $dripped_access;
 
-					$this->access_reason[] = sprintf(
+					$this->_access_reason[] = sprintf(
 						__( '%s: Dripped Content', MS_TEXT_DOMAIN ),
 						$dripped_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN )
 					);

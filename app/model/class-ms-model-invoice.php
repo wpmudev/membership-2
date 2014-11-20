@@ -273,16 +273,22 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 */
 	public static function get_invoice_count( $args = null ) {
-
 		$defaults = array(
-				'post_type' => self::$POST_TYPE,
-				'post_status' => 'any',
+			'post_type' => self::$POST_TYPE,
+			'post_status' => 'any',
 		);
-		$args = apply_filters( 'ms_model_invoice_get_invoice_count_args', wp_parse_args( $args, $defaults ) );
+		$args = apply_filters(
+			'ms_model_invoice_get_invoice_count_args',
+			wp_parse_args( $args, $defaults )
+		);
 
 		$query = new WP_Query( $args );
 
-		return apply_filters( 'ms_model_invoice_get_invoice_count', $query->found_posts, $args );
+		return apply_filters(
+			'ms_model_invoice_get_invoice_count',
+			$query->found_posts,
+			$args
+		);
 	}
 
 	/**
@@ -302,7 +308,10 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			'order' => 'DESC',
 			'orderby' => 'ID',
 		);
-		$args = apply_filters( 'ms_model_invoice_get_invoices_args', wp_parse_args( $args, $defaults ) );
+		$args = apply_filters(
+			'ms_model_invoice_get_invoices_args',
+			wp_parse_args( $args, $defaults )
+		);
 
 		$query = new WP_Query( $args );
 		$items = $query->get_posts();
@@ -311,7 +320,12 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		foreach ( $items as $item ) {
 			$invoices[] = MS_Factory::load( 'MS_Model_Invoice', $item );
 		}
-		return apply_filters( 'ms_model_invoice_get_invoices', $invoices, $args );
+
+		return apply_filters(
+			'ms_model_invoice_get_invoices',
+			$invoices,
+			$args
+		);
 	}
 
 	/**
@@ -328,26 +342,26 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 */
 	public static function get_invoice( $ms_relationship_id, $invoice_number = null, $status = null ) {
 		$args = array(
-				'post_type' => self::$POST_TYPE,
-				'post_status' => 'any',
-				'fields' => 'ids',
-				'order' => 'DESC',
+			'post_type' => self::$POST_TYPE,
+			'post_status' => 'any',
+			'fields' => 'ids',
+			'order' => 'DESC',
 		);
 
 		$args['meta_query']['ms_relationship_id'] = array(
-				'key'     => 'ms_relationship_id',
-				'value'   => $ms_relationship_id,
+			'key'     => 'ms_relationship_id',
+			'value'   => $ms_relationship_id,
 		);
-		if( ! empty( $status ) ) {
+		if ( ! empty( $status ) ) {
 			$args['meta_query']['status'] = array(
-					'key'     => 'status',
-					'value'   => $status,
+				'key'     => 'status',
+				'value'   => $status,
 			);
 		}
-		if( ! empty( $invoice_number ) ) {
+		if ( ! empty( $invoice_number ) ) {
 			$args['meta_query']['invoice_number'] = array(
-					'key'     => 'invoice_number',
-					'value'   => $invoice_number,
+				'key'     => 'invoice_number',
+				'value'   => $invoice_number,
 			);
 		}
 
@@ -356,11 +370,17 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		$item = $query->get_posts();
 
 		$invoice = null;
-		if( ! empty( $item[0] ) ) {
+		if ( ! empty( $item[0] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $item[0] );
 		}
 
-		return apply_filters( 'ms_model_invoice_get_invoice', $invoice, $ms_relationship_id, $invoice_number, $status );
+		return apply_filters(
+			'ms_model_invoice_get_invoice',
+			$invoice,
+			$ms_relationship_id,
+			$invoice_number,
+			$status
+		);
 	}
 
 	/**
@@ -374,31 +394,39 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 */
 	public static function load_by_external_id( $external_id, $gateway_id ) {
 		$args = array(
-				'post_type' => self::$POST_TYPE,
-				'posts_per_page' => 1,
-				'meta_query' => array(
-						array(
-							'key'     => 'external_id',
-							'value'   => $external_id,
-						),
-						array(
-							'key'     => 'gateway_id',
-							'value'   => $gateway_id,
-						),
-				)
+			'post_type' => self::$POST_TYPE,
+			'posts_per_page' => 1,
+			'meta_query' => array(
+				array(
+					'key'     => 'external_id',
+					'value'   => $external_id,
+				),
+				array(
+					'key'     => 'gateway_id',
+					'value'   => $gateway_id,
+				),
+			),
 		);
 
-		$args = apply_filters( 'ms_model_invoice_load_by_external_id_args', $args );
+		$args = apply_filters(
+			'ms_model_invoice_load_by_external_id_args',
+			$args
+		);
 		$query = new WP_Query( $args );
 
 		$item = $query->get_posts();
 		$invoice = null;
 
-		if( ! empty( $item[0] ) ) {
+		if ( ! empty( $item[0] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $item[0]->ID );
 		}
 
-		return apply_filters( 'ms_model_invoice_load_by_external_id', $invoice , $external_id, $gateway_id );
+		return apply_filters(
+			'ms_model_invoice_load_by_external_id',
+			$invoice,
+			$external_id,
+			$gateway_id
+		);
 	}
 
 	/**
@@ -409,8 +437,11 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @param string $notes
 	 */
 	public function add_notes( $notes ) {
-
-		$this->notes[] = apply_filters( 'ms_model_invoice_add_notes', $notes, $this );
+		$this->notes[] = apply_filters(
+			'ms_model_invoice_add_notes',
+			$notes,
+			$this
+		);
 	}
 
 	/**
@@ -421,10 +452,16 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @return string The notes as text description.
 	 */
 	public function get_notes_desc() {
+		$desc = $this->notes;
+		if ( is_array( $desc ) ) {
+			$desc = implode( '\n', $desc );
+		}
 
-		$desc = is_array( $this->notes ) ? implode( '\n', $this->notes ) : $this->notes;
-
-		return apply_filters( 'ms_model_invoice_get_notes_desc', $desc, $this );
+		return apply_filters(
+			'ms_model_invoice_get_notes_desc',
+			$desc,
+			$this
+		);
 	}
 
 	/**
@@ -441,13 +478,26 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Invoice
 	 */
 	public static function get_current_invoice( $ms_relationship, $update_existing = true, $status = null ) {
+		$invoice = self::get_invoice(
+			$ms_relationship->id,
+			$ms_relationship->current_invoice_number,
+			$status
+		);
 
-		$invoice = self::get_invoice( $ms_relationship->id, $ms_relationship->current_invoice_number, $status );
-		if( empty( $invoice ) || $update_existing ) {
-			$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number );
+		if ( empty( $invoice ) || $update_existing ) {
+			$invoice = self::create_invoice(
+				$ms_relationship,
+				$ms_relationship->current_invoice_number
+			);
 		}
 
-		return apply_filters( 'ms_model_invoice_get_current_invoice', $invoice, $ms_relationship, $update_existing, $status );
+		return apply_filters(
+			'ms_model_invoice_get_current_invoice',
+			$invoice,
+			$ms_relationship,
+			$update_existing,
+			$status
+		);
 	}
 
 	/**
@@ -460,17 +510,28 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Invoice
 	 */
 	public static function get_next_invoice( $ms_relationship, $update_existing = true ) {
+		$invoice = self::get_invoice(
+			$ms_relationship->id,
+			$ms_relationship->current_invoice_number + 1
+		);
 
-		$invoice = self::get_invoice( $ms_relationship->id, $ms_relationship->current_invoice_number + 1 );
-		if( empty( $invoice ) || $update_existing ) {
-			$invoice = self::create_invoice( $ms_relationship, $ms_relationship->current_invoice_number + 1 );
+		if ( empty( $invoice ) || $update_existing ) {
+			$invoice = self::create_invoice(
+				$ms_relationship,
+				$ms_relationship->current_invoice_number + 1
+			);
 		}
 
 		$invoice->discount = 0;
 		$invoice->pro_rate = 0;
 		$invoice->notes = array();
 
-		return apply_filters( 'ms_model_invoice_get_next_invoice', $invoice, $ms_relationship, $update_existing );
+		return apply_filters(
+			'ms_model_invoice_get_next_invoice',
+			$invoice,
+			$ms_relationship,
+			$update_existing
+		);
 	}
 
 	/**
@@ -483,10 +544,18 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Invoice
 	 */
 	public static function get_previous_invoice( $ms_relationship, $status = null ) {
+		$invoice = self::get_invoice(
+			$ms_relationship->id,
+			$ms_relationship->current_invoice_number - 1,
+			$status
+		);
 
-		$invoice = self::get_invoice( $ms_relationship->id, $ms_relationship->current_invoice_number - 1, $status );
-
-		return apply_filters( 'ms_model_invoice_get_previous_invoice', $invoice, $ms_relationship, $status );
+		return apply_filters(
+			'ms_model_invoice_get_previous_invoice',
+			$invoice,
+			$ms_relationship,
+			$status
+		);
 	}
 
 	/**
@@ -503,10 +572,9 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @return object $invoice
 	 */
 	public static function create_invoice( $ms_relationship, $invoice_number = false, $update_existing = true ) {
-
 		$membership = $ms_relationship->get_membership();
 
-		if( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
+		if ( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			throw new Exception( 'Invalid Membership.' );
 		}
 
@@ -516,50 +584,87 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		$notes = null;
 		$due_date = null;
 
-		if( empty( $invoice_number ) ) {
+		if ( empty( $invoice_number ) ) {
 			$invoice_number = $ms_relationship->current_invoice_number;
 		}
 
 		/* Search for existing invoice */
-		if( $update_existing ) {
+		if ( $update_existing ) {
 			$invoice = self::get_invoice( $ms_relationship->id, $invoice_number );
 		}
 
-		/* No existing invoice, create a new one. */
-		if( empty( $invoice ) ) {
-			$invoice = apply_filters( 'ms_model_invoice', new self() );
+		// No existing invoice, create a new one.
+		if ( empty( $invoice ) ) {
+			$invoice = new MS_Model_Invoice();
+			$invoice = apply_filters( 'ms_model_invoice', $invoice );
 		}
 		$tax = MS_Plugin::instance()->settings->tax;
 
-		/* Update invoice info.*/
+		// Update invoice info.
 		$invoice->ms_relationship_id = $ms_relationship->id;
 		$invoice->gateway_id = $ms_relationship->gateway_id;
 		$invoice->status = $invoice_status;
 		$invoice->membership_id = $membership->id;
 		$invoice->currency = MS_Plugin::instance()->settings->currency;
 		$invoice->user_id = $member->id;
-		$invoice->name = apply_filters( 'ms_model_invoice_name', sprintf( __( 'Invoice for %s - %s', MS_TEXT_DOMAIN ), $membership->name, $member->username ) );
-		$invoice->description = apply_filters( 'ms_model_invoice_description', $ms_relationship->get_payment_description() );
+		$invoice->name = apply_filters(
+			'ms_model_invoice_name',
+			sprintf(
+				__( 'Invoice for %s - %s', MS_TEXT_DOMAIN ),
+				$membership->name,
+				$member->username
+			)
+		);
+		$invoice->description = apply_filters(
+			'ms_model_invoice_description',
+			$ms_relationship->get_payment_description()
+		);
 		$invoice->tax_name = $tax['tax_name'];
 		$invoice->tax_rate = $tax['tax_rate'];
 
 		$invoice->invoice_number = $invoice_number;
 		$invoice->discount = 0;
 
-		/* Calc pro rate discount if moving from another membership. */
-		if(  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE) && $ms_relationship->move_from_id ) {
-			$move_from = MS_Model_Membership_Relationship::get_membership_relationship( $ms_relationship->user_id, $ms_relationship->move_from_id );
-			if( ! empty( $move_from->id ) && ! empty( $gateway ) && $gateway->pro_rate && $pro_rate = self::calculate_pro_rate( $move_from ) ) {
-				$invoice->pro_rate = $pro_rate;
-				$notes[] = sprintf( __( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ), $invoice->currency, $pro_rate );
+		// Calc pro rate discount if moving from another membership.
+		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE )
+			&& $ms_relationship->move_from_id
+		) {
+			$move_from = MS_Model_Membership_Relationship::get_membership_relationship(
+				$ms_relationship->user_id,
+				$ms_relationship->move_from_id
+			);
+
+			if ( ! empty( $move_from->id )
+				&& ! empty( $gateway )
+				&& $gateway->pro_rate
+			) {
+				$pro_rate = self::calculate_pro_rate( $move_from );
+
+				if ( $pro_rate ) {
+					$invoice->pro_rate = $pro_rate;
+					$notes[] = sprintf(
+						__( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ),
+						$invoice->currency,
+						$pro_rate
+					);
+				}
 			}
 		}
-		/* Apply coupon discount. */
-		if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) && $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id ) ) {
+
+		// Apply coupon discount.
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON )
+			&& $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id )
+		) {
 			$invoice->coupon_id = $coupon->id;
 			$discount = $coupon->get_discount_value( $ms_relationship );
 			$invoice->discount = $discount;
-			$notes[] = sprintf( __( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ), $coupon->code, $invoice->currency, $discount );
+
+			$notes[] = sprintf(
+				__( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ),
+				$coupon->code,
+				$invoice->currency,
+				$discount
+			);
 		}
 		$invoice->notes = $notes;
 
@@ -584,7 +689,9 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		$invoice->due_date = $due_date;
 
 		// Check for trial period in the first period.
-		if ( $ms_relationship->is_trial_eligible() && $invoice_number == $ms_relationship->current_invoice_number ) {
+		if ( $ms_relationship->is_trial_eligible()
+			&& $invoice_number === $ms_relationship->current_invoice_number
+		) {
 			$invoice->amount = $membership->trial_price;
 			$invoice->trial_period = true;
 		}
@@ -600,7 +707,13 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 
 		$invoice->save();
 
-		return apply_filters( 'ms_model_membership_relationship_create_invoice', $invoice, $ms_relationship, $invoice_number, $update_existing );
+		return apply_filters(
+			'ms_model_membership_relationship_create_invoice',
+			$invoice,
+			$ms_relationship,
+			$invoice_number,
+			$update_existing
+		);
 	}
 
 	/**
@@ -617,27 +730,38 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		$value = 0;
 		$membership = $ms_relationship->get_membership();
 
-		if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) && MS_Model_Membership::PAYMENT_TYPE_PERMANENT != $membership->payment_type ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+			&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT !== $membership->payment_type
+		) {
 			$invoice = self::get_previous_invoice( $ms_relationship );
-			if( ! empty( $invoice ) && self::STATUS_PAID == $invoice->status ) {
-				switch( $ms_relationship->get_status() ) {
+
+			if ( ! empty( $invoice ) && self::STATUS_PAID === $invoice->status ) {
+				switch ( $ms_relationship->get_status() ) {
 					case MS_Model_Membership_Relationship::STATUS_TRIAL:
-						if( $invoice->trial_period ) {
+						if ( $invoice->trial_period ) {
 							$remaining_days = $ms_relationship->get_remaining_trial_period();
-							$total_days = MS_Helper_Period::subtract_dates(  $ms_relationship->trial_expire_date, $ms_relationship->start_date );
+							$total_days = MS_Helper_Period::subtract_dates(
+								$ms_relationship->trial_expire_date,
+								$ms_relationship->start_date
+							);
 							$value = $remaining_days / $total_days;
 							$value *= $invoice->total;
 						}
 						break;
+
 					case MS_Model_Membership_Relationship::STATUS_ACTIVE:
 					case MS_Model_Membership_Relationship::STATUS_CANCELED:
-						if( ! $invoice->trial_period ) {
+						if ( ! $invoice->trial_period ) {
 							$remaining_days = $ms_relationship->get_remaining_period();
-							$total_days = MS_Helper_Period::subtract_dates( $ms_relationship->expire_date, $ms_relationship->start_date );
+							$total_days = MS_Helper_Period::subtract_dates(
+								$ms_relationship->expire_date,
+								$ms_relationship->start_date
+							);
 							$value = $remaining_days / $total_days;
 							$value *= $invoice->total;
 						}
 						break;
+
 					default:
 						$value = 0;
 						break;
@@ -645,7 +769,11 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_invoice_calculate_pro_rate_value', $value, $ms_relationship );
+		return apply_filters(
+			'ms_model_invoice_calculate_pro_rate_value',
+			$value,
+			$ms_relationship
+		);
 	}
 
 	/**
@@ -657,13 +785,20 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function get_total() {
+		$this->total = $this->amount; // Net amount
+		$this->total += $this->amount * $this->tax_rate / 100; // Add taxes
+		$this->total -= $this->discount; // Remove discount
+		$this->totyl -= $this->pro_rate; // Remove Pro-Rate
 
-		$this->total = $this->amount + $this->tax_rate/100 * $this->amount - $this->discount - $this->pro_rate;
-
-		if( $this->total < 0 ) {
+		if ( $this->total < 0 ) {
 			$this->total = 0;
 		}
-		return apply_filters( 'ms_model_invoice_get_total', $this->total, $this );
+
+		return apply_filters(
+			'ms_model_invoice_get_total',
+			$this->total,
+			$this
+		);
 	}
 
 	/**
@@ -680,13 +815,15 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		$value = null;
 
 		if ( property_exists( $this, $property ) ) {
-			switch( $property ) {
+			switch ( $property ) {
 				case 'total':
 					$value = $this->get_total();
 					break;
+
 				case 'invoice':
 					$value = $this->id;
 					break;
+
 				default:
 					$value = $this->$property;
 					break;
@@ -707,31 +844,35 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 */
 	public function __set( $property, $value ) {
 		if ( property_exists( $this, $property ) ) {
-			switch( $property ) {
+			switch ( $property ) {
 				case 'name':
 				case 'currency':
-				case 'notes':
 				case 'tax_name':
 					$this->$property = sanitize_text_field( $value );
+					break;
+
 				case 'notes':
-					if( is_array( $value ) ) {
+					if ( is_array( $value ) ) {
 						$this->notes = array_map( 'sanitize_text_field', $value );
-					}
-					else {
+					} else {
 						$this->notes = array( sanitize_text_field( $value ) );
 					}
 					break;
+
 				case 'status':
-					if( array_key_exists( $value, self::get_status_types() ) ) {
+					if ( array_key_exists( $value, self::get_status_types() ) ) {
 						$this->$property = $value;
 					}
 					break;
+
 				case 'due_date':
 					$this->$property = $this->validate_date( $value );
 					break;
+
 				case 'taxable':
 					$this->$property = $this->validate_bool( $value );
 					break;
+
 				case 'amount':
 				case 'tax_rate':
 				case 'discount':
@@ -739,13 +880,19 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 					$this->$property = floatval( $value );
 					$this->get_total();
 					break;
+
 				default:
 					$this->$property = $value;
 					break;
 			}
 		}
 
-		do_action( 'ms_model_invoice__set_after', $property, $value, $this );
+		do_action(
+			'ms_model_invoice__set_after',
+			$property,
+			$value,
+			$this
+		);
 	}
 
 	/**
@@ -754,7 +901,9 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public static function get_register_post_type_args() {
-		return apply_filters( 'ms_register_post_type_' . self::$POST_TYPE, array(
+		return apply_filters(
+			'ms_register_post_type_' . self::$POST_TYPE,
+			array(
 				'description' => __( 'user invoices', MS_TEXT_DOMAIN ),
 				'public' => true,
 				'show_ui' => false,
@@ -763,6 +912,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 				'publicly_queryable' => true,
 				'supports' => false,
 				'hierarchical' => false,
-		) );
+			)
+		);
 	}
 }
