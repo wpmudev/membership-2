@@ -41,10 +41,11 @@ class MS_Model_Import_Export extends MS_Model {
 		$data = (object) array();
 		$data->source = 'Protected Content';
 		$data->plugin_version = MS_PLUGIN_VERSION;
+		$data->export_time = date( 'Y-m-d H:i' );
 
 		// Export the base membership (i.e. the Protected Content settings)
 		$membership = MS_Model_Membership::get_protected_content();
-		$data->protected_content = $this->export_membership( $membership->id, false );
+		$data->protected_content = (object) array(); //$this->export_membership( $membership->id, false );
 
 		// Export all memberships.
 		$memberships = MS_Model_Membership::get_memberships( array( 'post_parent' => 0 ) );
@@ -69,6 +70,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$coupons = MS_Model_Coupon::get_coupons( array( 'nopaging' => true ) );
 		$data->coupons = array();
 		foreach ( $coupons as $coupon ) {
+			if ( intval( $coupon->max_uses ) <= intval( $coupon->used ) ) { continue; }
 			$data->coupons[] = $this->export_coupon( $coupon->id );
 		}
 
@@ -247,7 +249,23 @@ class MS_Model_Import_Export extends MS_Model {
 	 * @return object Export data
 	 */
 	protected function export_coupon( $coupon_id ) {
-		return (object) array( 'coupon' . $coupon_id );
+		$src = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
+
+		$obj = (object) array();
+		$obj->id = $this->exp_id( 'coupon', $src->code );
+		$obj->code = $src->code;
+		$obj->type = $src->discount_type;
+		$obj->discount = $src->discount;
+		$obj->start = $src->start_date;
+		$obj->end = $src->expire_date;
+
+		if ( $src->membership_id ) {
+			$obj->membership = $this->exp_id( 'membership', $src->membership_id );
+		}
+
+		$obj->max_uses = intval( $src->max_uses ) - intval( $src->used );
+
+		return $obj;
 	}
 
 	/**
@@ -257,7 +275,15 @@ class MS_Model_Import_Export extends MS_Model {
 	 * @return object Export data
 	 */
 	protected function export_settings() {
-		return (object) array( 'settings' );
+		$src = MS_Factory::load( 'MS_Model_settings' );
+
+		$obj = (object) array();
+		$obj->enabled = $src->plugin_enabled;
+		$obj->hide_toolbar = $src->hide_admin_bar;
+		$obj->currency = $src->currency;
+		$obj->invoice_sender = $src->invoice_sender_name;
+
+		return $obj;
 	}
 
 	/**
@@ -273,11 +299,13 @@ class MS_Model_Import_Export extends MS_Model {
 	 * @return int Export-ID
 	 */
 	protected function exp_id( $type, $internal_id ) {
+		static $Counter = 10000;
 		static $Ids = array();
 
 		$Ids[$type] = WDev()->get_array( $Ids[$type] );
 		if ( ! isset( $Ids[$type][$internal_id] ) ) {
-			$Ids[$type][$internal_id] = count( $Ids[$type] );
+			$Ids[$type][$internal_id] = $Counter;
+			$Counter += 1;
 		}
 
 		return $Ids[$type][$internal_id];

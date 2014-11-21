@@ -33,10 +33,6 @@
  */
 class MS_View_Settings_Edit extends MS_View {
 
-	protected $fields;
-
-	protected $data;
-
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -686,15 +682,25 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_import() {
-		$export_action = MS_Model_Import::ACTION_EXPORT;
+		$export_action = MS_Controller_Import::ACTION_EXPORT;
+		$import_action = MS_Controller_Import::ACTION_PREVIEW;
+		$messages = $this->data['message'];
+
+		$preview = false;
+		if ( isset( $messages['preview'] ) ) {
+			$preview = $messages['preview'];
+		}
 
 		$export_fields = array(
 			'export' => array(
 				'id' => 'btn_export',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Generate Export', MS_TEXT_DOMAIN ),
-				'title' => __( 'Export', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Generate an export/backup file with the current membership settings.', MS_TEXT_DOMAIN ),
+				'desc' => __(
+					'Generate an export file with the current membership settings. ' .
+					'<em>Note that this is not a full backup of the plugin settings.</em>',
+					MS_TEXT_DOMAIN
+				),
 			),
 			'action' => array(
 				'id' => 'action',
@@ -708,6 +714,52 @@ class MS_View_Settings_Edit extends MS_View {
 			),
 		);
 
+		$file_field = array(
+			'id' => 'upload',
+			'type' => MS_Helper_Html::INPUT_TYPE_FILE,
+			'title' => __( 'From export file', MS_TEXT_DOMAIN ),
+		);
+		$import_options = array(
+			'File' => MS_Helper_Html::html_element( $file_field, true ),
+			'Membership' => __( 'Membership 3.5 (WPMU Dev)', MS_TEXT_DOMAIN ),
+		);
+
+		$sel_source = 'File';
+		if ( isset( $_POST['import_source'] )
+			&& isset( $import_options[ $_POST['import_source'] ] )
+		) {
+			$sel_source = $_POST['import_source'];
+		}
+
+		$import_fields = array(
+			'source' => array(
+				'id' => 'import_source',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+				'title' => __( 'Choose an import source', MS_TEXT_DOMAIN ),
+				'field_options' => $import_options,
+				'value' => $sel_source,
+			),
+			'import' => array(
+				'id' => 'btn_import',
+				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'value' => __( 'Preview Import', MS_TEXT_DOMAIN ),
+				'desc' => __(
+					'Import data into this installation.',
+					MS_TEXT_DOMAIN
+				),
+			),
+			'action' => array(
+				'id' => 'action',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $import_action,
+			),
+			'nonce' => array(
+				'id' => '_wpnonce',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => wp_create_nonce( $import_action ),
+			),
+		);
+
 		ob_start();
 		?>
 		<div class="ms-settings">
@@ -717,9 +769,24 @@ class MS_View_Settings_Edit extends MS_View {
 			<div class="ms-separator"></div>
 
 			<div>
-				<form action="" method="post">
-					<?php MS_Helper_Html::settings_box( $export_fields ); ?>
-				</form>
+				<?php if ( $preview ) : ?>
+					<form action="" method="post">
+						<?php echo '' . $preview; ?>
+					</form>
+				<?php else : ?>
+					<form action="" method="post" enctype="multipart/form-data">
+						<?php MS_Helper_Html::settings_box(
+							$import_fields,
+							__( 'Import data', MS_TEXT_DOMAIN )
+						); ?>
+					</form>
+					<form action="" method="post">
+						<?php MS_Helper_Html::settings_box(
+							$export_fields,
+							__( 'Export data', MS_TEXT_DOMAIN )
+						); ?>
+					</form>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php

@@ -59,7 +59,7 @@ class MS_View_Membership_Overview_Tier extends MS_View_Membership_Overview {
 						'edit' => 1,
 					)
 				),
-				'class' => 'ms-link-button button',
+				'class' => 'wpmui-field-button button',
 			)
 		);
 
@@ -75,7 +75,7 @@ class MS_View_Membership_Overview_Tier extends MS_View_Membership_Overview {
 						'edit' => 1,
 					)
 				),
-				'class' => 'ms-link-button button',
+				'class' => 'wpmui-field-button button',
 			)
 		);
 	}

@@ -1,11 +1,11 @@
 <?php
 
 class MS_View_Frontend_Profile extends MS_View {
-	
+
 	protected $data;
-	
+
 	protected $fields;
-	
+
 	public function to_html() {
 		$this->prepare_fields();
 		$cancel = array(
@@ -14,7 +14,7 @@ class MS_View_Frontend_Profile extends MS_View {
 				'title' => __('Cancel', MS_TEXT_DOMAIN ),
 				'value' => __('Cancel', MS_TEXT_DOMAIN ),
 				'url' => remove_query_arg( array( 'action' ) ),
-				'class' => 'ms-link-button button',
+				'class' => 'wpmui-field-button button',
 		);
 		ob_start();
 		?>
@@ -38,10 +38,10 @@ class MS_View_Frontend_Profile extends MS_View {
 		$html = ob_get_clean();
 		return $html;
 	}
-	
+
 	public function prepare_fields() {
 		$member = $this->data['member'];
-		
+
 		$this->fields = array(
 				'first_name' => array(
 						'id' => 'first_name',

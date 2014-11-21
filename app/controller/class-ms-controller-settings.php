@@ -401,7 +401,7 @@ class MS_Controller_Settings extends MS_Controller {
 					break;
 
 				case 'import':
-					$tool = MS_Factory::create( 'MS_Model_Import' );
+					$tool = MS_Factory::create( 'MS_Controller_Import' );
 					$tool->process();
 					break;
 
@@ -435,8 +435,15 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
 		$view = apply_filters( $hook . '_view', $view );
+
+		$data = array();
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
+		$data['message'] = self::_message();
+
+		if ( isset( $data['message']['error'] ) ) {
+			WDev()->message( $data['message']['error'], 'err' );
+		}
 
 		switch ( $this->get_active_tab() ) {
 			case 'messages-automated':

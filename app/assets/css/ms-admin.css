@@ -466,30 +466,12 @@
 /***
  * GENERAL STYLES *
  ***/
-.ms-wrap .wpmui-field-description {
-  display: block;
-  margin: 10px 4px 10px 0;
-  color: #666;
-  font-size: 0.9em;
-  font-weight: normal;
-}
-.ms-wrap .wpmui-field-input {
-  margin-top: 6px;
-  margin-bottom: 6px;
-  vertical-align: top;
-}
 .ms-wrap .button,
 .ms-wrap .button-primary {
   margin-right: 6px;
 }
 .ms-wrap .ms-field-container {
   margin: 10px 0;
-}
-.ms-wrap .wpmui-field-label {
-  display: block;
-  margin: 2px 0;
-  font-style: normal;
-  color: #222;
 }
 .ms-wrap .ms-field-wp-editor {
   height: 5em;
@@ -535,15 +517,6 @@
 .ms-wrap textarea.ms-center {
   margin-left: auto;
   margin-right: auto;
-}
-.ms-wrap .wpmui-label-before,
-.ms-wrap .wpmui-label-after {
-  display: inline-block;
-  margin: 6px;
-  line-height: 28px;
-}
-.ms-wrap .wpmui-label-before {
-  margin-left: 0;
 }
 
 /***
@@ -656,26 +629,6 @@
   position: relative;
   float: left;
   width: 100%;
-}
-
-/***
- * CHECKBOX *
- ***/
-.ms-wrap .wpmui-field-checkbox {
-  margin: 6px 4px 0 0;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.ms-wrap .wpmui-checkbox-wrapper {
-  margin: 6px auto;
-  position: relative;
-  display: inline-block;
-  line-height: 28px;
-}
-.ms-wrap .wpmui-checkbox-wrapper .wpmui-checkbox-caption {
-  padding-left: 24px;
-  font-weight: 500;
 }
 
 /***
@@ -1280,7 +1233,7 @@
 /**
  * Settings module.
  */
-.ms-wrap {
+#wpwrap .ms-wrap {
   /** Settings Box **/
   /** Member search */
   /** jquery validation */
@@ -1288,48 +1241,49 @@
   /* Dripped icon indicator */
   /* Settings Page Settings */
   /* SETTING: GENERAL */
+  /* SETTINGS: IMPORT */
   /* SETTINGS GATEWAY */
   /* MEMBERS LIST */
   /* MEDIA /DOWNLOADS TAB */
 }
-.ms-wrap .ms-settings .settings-description {
+#wpwrap .ms-wrap .ms-settings .settings-description {
   margin: 1em 0;
 }
-.ms-wrap .ms-label {
+#wpwrap .ms-wrap .ms-label {
   display: block;
   padding-bottom: 5px;
 }
-.ms-wrap .ms-margin-right {
+#wpwrap .ms-wrap .ms-margin-right {
   margin-right: 10px;
 }
-.ms-wrap .ms-postbox.ms-default-margin {
+#wpwrap .ms-wrap .ms-postbox.ms-default-margin {
   margin-right: 15px;
   margin-left: 15px;
   margin-top: 5px;
 }
-.ms-wrap .ms-text-label,
-.ms-wrap .ms-ok,
-.ms-wrap .ms-nok {
+#wpwrap .ms-wrap .ms-text-label,
+#wpwrap .ms-wrap .ms-ok,
+#wpwrap .ms-wrap .ms-nok {
   color: #222;
   font-size: 1em;
   font-style: normal;
   font-weight: 600;
   margin-top: 10px;
 }
-.ms-wrap .ms-ok {
+#wpwrap .ms-wrap .ms-ok {
   color: #7ad03a;
 }
-.ms-wrap .ms-nok {
+#wpwrap .ms-wrap .ms-nok {
   color: red;
 }
-.ms-wrap .ms-settings .ms-settings-box h3.wpmui-field-label {
+#wpwrap .ms-wrap .ms-settings .ms-settings-box h3.wpmui-field-label {
   border: none;
   padding: 0;
   font-size: 1.1em;
   cursor: default;
   margin-top: 15px;
 }
-.ms-wrap #member-search-options {
+#wpwrap .ms-wrap #member-search-options {
   position: relative;
   top: -2px;
   font-size: 13px;
@@ -1339,24 +1293,24 @@
   padding: 0 10px 1px;
 }
 @media (max-width: 900px) {
-  .ms-wrap .ms-tabs {
+  #wpwrap .ms-wrap .ms-tabs {
     float: left;
     margin: 0;
     padding: 0;
     width: 100px;
   }
-  .ms-wrap .ms-tabs a {
+  #wpwrap .ms-wrap .ms-tabs a {
     padding: 5px;
     min-height: 40px;
   }
-  .ms-wrap .ms-settings {
+  #wpwrap .ms-wrap .ms-settings {
     min-height: 350px;
   }
 }
-.ms-wrap .ms-validation-error {
+#wpwrap .ms-wrap .ms-validation-error {
   color: #e46c6e !important;
 }
-.ms-wrap label.ms-validation-error {
+#wpwrap .ms-wrap label.ms-validation-error {
   background: #ffefef;
   border: 1px solid #ffd2d2;
   color: #666;
@@ -1369,7 +1323,7 @@
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
-.ms-wrap label.ms-validation-error:before {
+#wpwrap .ms-wrap label.ms-validation-error:before {
   content: '';
   background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
   background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
@@ -1380,45 +1334,75 @@
   top: 1px;
   width: 20px;
 }
-.ms-wrap #membership_access .ms-radio-slider {
+#wpwrap .ms-wrap #membership_access .ms-radio-slider {
   margin: 10px 20px;
 }
-.ms-wrap div.dripped .tooltip {
+#wpwrap .ms-wrap div.dripped .tooltip {
   display: none;
 }
-.ms-wrap #ms-settings-page-links-wrapper {
+#wpwrap .ms-wrap #ms-settings-page-links-wrapper {
   margin: .5em;
 }
-.ms-wrap textarea.wpmui-field-input {
+#wpwrap .ms-wrap textarea.wpmui-field-input {
   min-width: 80%;
   display: block;
 }
-.ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
-.ms-wrap .gateways .not-configured .ms-radio-slider {
-  display: none;
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio {
+  margin-top: 10px;
 }
-.ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {
-  display: block;
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  line-height: 24px;
 }
-.ms-wrap .gateways .mode-unknown,
-.ms-wrap .gateways .mode-sandbox,
-.ms-wrap .gateways .mode-live {
-  display: none;
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption label,
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption .wpmui-field-input {
+  width: auto;
+  margin: 0 12px 0 0;
 }
-.ms-wrap .gateways .not-configured .mode-unknown,
-.ms-wrap .gateways .is-configured.is-sandbox .mode-sandbox,
-.ms-wrap .gateways .is-configured.is-live .mode-live {
-  display: block;
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-label {
+  width: 150px;
+  text-align: left;
 }
-.ms-wrap .gateways .mode-live {
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-name {
   font-weight: bold;
 }
-.ms-wrap #search_options {
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-count {
+  text-align: center;
+  width: 150px;
+}
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview.wpmui-html-table {
+  margin: -10px;
+  border: 0;
+  box-shadow: 0 0 0 transparent;
+  width: calc(100% + 20px);
+}
+#wpwrap .ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
+#wpwrap .ms-wrap .gateways .not-configured .ms-radio-slider {
+  display: none;
+}
+#wpwrap .ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {
+  display: block;
+}
+#wpwrap .ms-wrap .gateways .mode-unknown,
+#wpwrap .ms-wrap .gateways .mode-sandbox,
+#wpwrap .ms-wrap .gateways .mode-live {
+  display: none;
+}
+#wpwrap .ms-wrap .gateways .not-configured .mode-unknown,
+#wpwrap .ms-wrap .gateways .is-configured.is-sandbox .mode-sandbox,
+#wpwrap .ms-wrap .gateways .is-configured.is-live .mode-live {
+  display: block;
+}
+#wpwrap .ms-wrap .gateways .mode-live {
+  font-weight: bold;
+}
+#wpwrap .ms-wrap #search_options {
   float: left;
   height: 28px;
   margin: 0 4px 0 0;
 }
-.ms-wrap #masked_url {
+#wpwrap .ms-wrap #masked_url {
   display: inline;
 }
 

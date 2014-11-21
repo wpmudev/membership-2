@@ -45,6 +45,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_BUTTON = 'button';
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
 	const INPUT_TYPE_IMAGE = 'image';
+	const INPUT_TYPE_FILE = 'file';
 
 	/* Constants for advanced HTML input elements. */
 	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
@@ -56,6 +57,7 @@ class MS_Helper_Html extends MS_Helper {
 	const TYPE_HTML_LINK = 'html_link';
 	const TYPE_HTML_SEPARATOR = 'html_separator';
 	const TYPE_HTML_TEXT = 'html_text';
+	const TYPE_HTML_TABLE = 'html_table';
 
 	/**
 	 * Method for creating HTML elements/fields.

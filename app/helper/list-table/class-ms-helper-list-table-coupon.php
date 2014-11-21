@@ -46,7 +46,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 			'membership_helper_list_table_coupon_columns',
 			array(
 				'cb' => '<input type="checkbox" />',
-				'code' => __( 'Coupon Code', MS_TEXT_DOMAIN ),
+				'ccode' => __( 'Coupon Code', MS_TEXT_DOMAIN ),
 				'discount' => __( 'Discount', MS_TEXT_DOMAIN ),
 				'start_date' => __( 'Start date', MS_TEXT_DOMAIN ),
 				'expire_date' => __( 'Expire date', MS_TEXT_DOMAIN ),
@@ -107,8 +107,9 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 		);
 	}
 
-	public function column_code( $item ) {
+	public function column_ccode( $item ) {
 		$actions = array();
+
 		$actions['edit'] = sprintf(
 			'<a href="?page=%s&action=%s&coupon_id=%s">%s</a>',
 			esc_attr( $_REQUEST['page'] ),
@@ -130,47 +131,73 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 			__( 'Delete', MS_TEXT_DOMAIN )
 		);
 
-		printf( '%1$s %2$s', $item->name, $this->row_actions( $actions ) );
+		printf( '<code>%1$s</code> %2$s', $item->name, $this->row_actions( $actions ) );
 	}
 
-	public function column_default( $item, $column_name ) {
+	public function column_membership( $item, $column_name ) {
 		$html = '';
-		switch ( $column_name ) {
-			case 'membership':
-				if ( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
-					$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_id );
-					$html = $membership->name;
-				}
-				else {
-					$html = __( 'Any', MS_TEXT_DOMAIN );
-				}
-				break;
 
-			case 'discount':
-				if ( MS_Model_Coupon::TYPE_VALUE == $item->discount_type ) {
-					$html = MS_Plugin::instance()->settings->currency . ' ' . $item->discount;
-				}
-				elseif ( MS_Model_Coupon::TYPE_PERCENT == $item->discount_type ) {
-					$html = $item->discount . '%';
-				}
-				else {
-					$html = apply_filters( 'ms_helper_list_table_column_discount', $item->discount );
-				}
-				break;
-
-			case 'expire_date':
-				if ( $item->expire_date ) {
-					$html = $item->expire_date;
-				}
-				else {
-					$html = __( 'No expire', MS_TEXT_DOMAIN );
-				}
-				break;
-
-			default:
-				$html = $item->$column_name;
-				break;
+		if ( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_id );
+			$html = sprintf(
+				'<span class="ms-bold">%s</span>',
+				$membership->name
+			);
+		} else {
+			$html = sprintf(
+				'<span class="ms-low">%s</span>',
+				__( 'Any', MS_TEXT_DOMAIN )
+			);
 		}
+
+		return $html;
+	}
+
+	public function column_discount( $item, $column_name ) {
+		$html = '';
+
+		if ( MS_Model_Coupon::TYPE_VALUE == $item->discount_type ) {
+			$html = sprintf(
+				'%s %s',
+				MS_Plugin::instance()->settings->currency,
+				number_format( $item->discount, 2 )
+			);
+		} elseif ( MS_Model_Coupon::TYPE_PERCENT == $item->discount_type ) {
+			$html = $item->discount . ' %';
+		} else {
+			$html = apply_filters( 'ms_helper_list_table_column_discount', $item->discount );
+		}
+
+		return $html;
+	}
+
+	public function column_start_date( $item, $column_name ) {
+		$html = $item->start_date;
+
+		return $html;
+	}
+
+	public function column_expire_date( $item, $column_name ) {
+		$html = '';
+
+		if ( $item->expire_date ) {
+			$html = $item->expire_date;
+		} else {
+			$html = __( 'No expire', MS_TEXT_DOMAIN );
+		}
+
+		return $html;
+	}
+
+	public function column_used( $item, $column_name ) {
+		$html = $item->used;
+
+		return $html;
+	}
+
+	public function column_remaining_uses( $item, $column_name ) {
+		$html = $item->remaining_uses;
+
 		return $html;
 	}
 

@@ -54,7 +54,7 @@ class MS_View_Gateway_Settings extends MS_View {
 				'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
 				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
 				'url' => remove_query_arg( array( 'action', 'gateway_id' ) ),
-				'class' => 'ms-link-button button',
+				'class' => 'wpmui-field-button button',
 				'label_element' => 'h3',
 			),
 			'submit_gateway' => array(

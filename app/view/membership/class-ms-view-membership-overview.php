@@ -152,7 +152,7 @@ class MS_View_Membership_Overview extends MS_View {
 								'type' => MS_Helper_Html::TYPE_HTML_LINK,
 								'value' => __( 'View More News', MS_TEXT_DOMAIN ),
 								'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) ),
-								'class' => 'ms-link-button button',
+								'class' => 'wpmui-field-button button',
 							)
 						);
 						?>
@@ -185,7 +185,7 @@ class MS_View_Membership_Overview extends MS_View {
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'value' => __( 'Edit Members', MS_TEXT_DOMAIN ),
 							'url' => admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-members' ),
-							'class' => 'ms-link-button button',
+							'class' => 'wpmui-field-button button',
 						)
 					);
 					?>
@@ -340,7 +340,7 @@ class MS_View_Membership_Overview extends MS_View {
 										'edit' => 1,
 									)
 								),
-								'class' => 'ms-link-button button',
+								'class' => 'wpmui-field-button button',
 							)
 						);
 					?>

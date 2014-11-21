@@ -65,6 +65,17 @@ class MS_Hooker {
 	protected $_prepared = false;
 
 	/**
+	 * Internal list of messages which is passed between functions.
+	 * The message list is shared between all controller objects!
+	 *
+	 * @since 1.1.0
+	 *
+	 * @see _message()
+	 * @var array
+	 */
+	static private $_messages = array();
+
+	/**
 	 * Called before loading the model.
 	 *
 	 * @since 1.1
@@ -312,6 +323,45 @@ class MS_Hooker {
 	public function __set( $property, $value ) {
 		if ( property_exists( $this, $property ) ) {
 			$this->$property = $value;
+		}
+	}
+
+	/**
+	 * Reset the message array.
+	 *
+	 * The _message_ functions are used to set and pass data between functions;
+	 * the data is meant to be displayed and is not stored in the database.
+	 *
+	 * @since  1.1.0
+	 */
+	static protected function _message_reset() {
+		MS_Hooker::$_messages = array();
+	}
+
+	/**
+	 * Get or set a message.
+	 *
+	 * _message() .. return the array with all messages
+	 * _message( 'key' ) .. return the message 'key'
+	 * _message( 'key', 'value' ) .. set 'value' as message 'key'
+	 *
+	 * @since  1.1.0
+	 */
+	static protected function _message( $key = null, $value = null ) {
+		if ( ! is_array( MS_Hooker::$_messages ) ) {
+			$this->_message_reset();
+		}
+
+		if ( null === $key ) {
+			return MS_Hooker::$_messages;
+		} else if ( null !== $key && null === $value ) {
+			if ( isset( MS_Hooker::$_messages[$key] ) ) {
+				return MS_Hooker::$_messages[$key];
+			} else {
+				return '';
+			}
+		} else if ( null !== $key && null !== $value ) {
+			MS_Hooker::$_messages[$key] = $value;
 		}
 	}
 

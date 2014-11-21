@@ -8,20 +8,6 @@
  ***/
 
 .ms-wrap {
-	.wpmui-field-description {
-		display: block;
-		margin: 10px 4px 10px 0;
-		color: #666;
-		font-size: 0.9em;
-		font-weight: normal;
-	}
-
-	.wpmui-field-input {
-		margin-top: 6px;
-		margin-bottom: 6px;
-		vertical-align: top;
-	}
-
 	.button,
 	.button-primary {
 		margin-right: 6px;
@@ -29,13 +15,6 @@
 
 	.ms-field-container {
 		margin: 10px 0;
-	}
-
-	.wpmui-field-label {
-		display: block;
-		margin: 2px 0;
-		font-style: normal;
-		color: #222;
 	}
 
 	.ms-field-wp-editor {
@@ -95,17 +74,6 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
-	}
-
-	.wpmui-label-before,
-	.wpmui-label-after {
-		display: inline-block;
-		margin: 6px;
-		line-height: 28px;
-	}
-
-	.wpmui-label-before {
-		margin-left: 0;
 	}
 }
 
@@ -238,32 +206,6 @@
 			position: relative;
 			float: left;
 			width: 100%;
-		}
-	}
-}
-
-
-/***
- * CHECKBOX *
- ***/
-
-.ms-wrap {
-	.wpmui-field-checkbox {
-		margin: 6px 4px 0 0;
-		position: absolute;
-		left: 0;
-		top: 0;
-	}
-
-	.wpmui-checkbox-wrapper {
-		margin: 6px auto;
-		position: relative;
-		display: inline-block;
-		line-height: 28px;
-
-		.wpmui-checkbox-caption {
-			padding-left: 24px;
-			font-weight: 500;
 		}
 	}
 }

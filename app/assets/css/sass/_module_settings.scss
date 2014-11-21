@@ -2,7 +2,7 @@
  * Settings module.
  */
 
-.ms-wrap {
+#wpwrap .ms-wrap {
 	.ms-settings .settings-description {
 		margin: 1em 0;
 	}
@@ -132,6 +132,50 @@
 	textarea.wpmui-field-input {
 		min-width: 80%;
 		display: block;
+	}
+
+	/* SETTINGS: IMPORT */
+	.wrapper-import_source {
+		.ms-radio {
+			margin-top: 10px;
+		}
+
+		.ms-radio-caption {
+			padding-top: 6px;
+			padding-bottom: 6px;
+			line-height: 24px;
+
+			label,
+			.wpmui-field-input {
+				width: auto;
+				margin: 0 12px 0 0;
+			}
+		}
+	}
+
+	.ms-settings-box {
+		.ms-import-preview {
+			.preview-label {
+				width: 150px;
+				text-align: left;
+			}
+
+			.preview-name {
+				font-weight: bold;
+			}
+
+			.preview-count {
+				text-align: center;
+				width: 150px;
+			}
+
+			&.wpmui-html-table {
+				margin: -10px;
+				border: 0;
+				box-shadow: 0 0 0 transparent;
+				width: calc(100% + 20px);
+			}
+		}
 	}
 
 	/* SETTINGS GATEWAY */
