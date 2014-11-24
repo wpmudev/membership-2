@@ -324,6 +324,8 @@ class MS_Plugin {
 		// Creates the class autoloader
 		spl_autoload_register( array( &$this, 'class_loader' ) );
 
+		add_action( 'wp_loaded', array( &$this, 'maybe_flush_rewrite_rules' ), 1 );
+
 		/**
 		 * Hooks init to register custom post types.
 		 */
@@ -524,10 +526,37 @@ class MS_Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_activation() {
-
 		flush_rewrite_rules();
 
 		do_action( 'ms_plugin_activation ', $this );
+	}
+
+	/**
+	 * Redirect page and request plugin to flush the WordPress rewrite rules
+	 * on next request.
+	 *
+	 * @since  1.0.4.4
+	 * @param string $url The URL to load after flushing the rewrite rules.
+	 */
+	static public function flush_rewrite_rules( $url = false ) {
+		$url = add_query_arg( 'ms-update-rules', 1, $url );
+		wp_safe_redirect( $url );
+		exit;
+	}
+
+	/**
+	 * Flush the WordPress rewrite rules.
+	 *
+	 * @since  1.0.4.4
+	 */
+	public function maybe_flush_rewrite_rules() {
+		if ( isset( $_GET['ms-update-rules'] ) ) {
+			flush_rewrite_rules();
+
+			$url = remove_query_arg( 'ms-update-rules' );
+			wp_safe_redirect( $url );
+			exit;
+		}
 	}
 
 	/**
@@ -635,7 +664,11 @@ class MS_Plugin {
 			 * @since 1.0.0
 			 * @param object $this The MS_Plugin object.
 			 */
-			$settings_link = apply_filters( 'ms_plugin_settings_link', sprintf( '<a href="%s">%s</a>', $url, $text ), $this );
+			$settings_link = apply_filters(
+				'ms_plugin_settings_link',
+				sprintf( '<a href="%s">%s</a>', $url, $text ),
+				$this
+			);
 			array_unshift( $links, $settings_link );
 		}
 
