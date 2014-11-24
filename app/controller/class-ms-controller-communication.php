@@ -49,9 +49,15 @@ class MS_Controller_Communication extends MS_Controller {
 
 		do_action( 'ms_controller_communication_before', $this );
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_COMM, 'ajax_action_update_communication' );
+		$this->add_action(
+			'wp_ajax_' . self::AJAX_ACTION_UPDATE_COMM,
+			'ajax_action_update_communication'
+		);
 
-		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_communications' );
+		$this->add_action(
+			'ms_controller_membership_setup_completed',
+			'auto_setup_communications'
+		);
 
 		do_action( 'ms_controller_communication_after', $this );
 	}
@@ -59,20 +65,24 @@ class MS_Controller_Communication extends MS_Controller {
 	/**
 	 * Handle Ajax update comm field action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_update_comm
+	 * Related Action Hooks:
+	 * - wp_ajax_update_comm
 	 *
 	 * @since 1.0.0
 	 */
 	public function ajax_action_update_communication() {
-
-		do_action( 'ms_controller_communication_ajax_action_update_communication_before', $this );
+		do_action(
+			'ms_controller_communication_ajax_action_update_communication_before',
+			$this
+		);
 
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 
 		$isset = array( 'type', 'field', 'value' );
-		if( $this->verify_nonce() && $this->validate_required( $isset, 'POST', false ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $isset, 'POST', false )
+			&& $this->is_admin_user()
+		) {
 			$comm = MS_Model_Communication::get_communication( $_POST['type'] );
 			$field = $_POST['field'];
 			$value = $_POST['value'];
@@ -81,9 +91,16 @@ class MS_Controller_Communication extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		do_action( 'ms_controller_communication_ajax_action_update_communication_after', $this );
+		do_action(
+			'ms_controller_communication_ajax_action_update_communication_after',
+			$this
+		);
 
-		echo apply_filters( 'ms_controller_commnucation_ajax_action_update_communication_msg', $msg, $this );
+		echo apply_filters(
+			'ms_controller_commnucation_ajax_action_update_communication_msg',
+			$msg,
+			$this
+		);
 		exit;
 	}
 
@@ -92,26 +109,28 @@ class MS_Controller_Communication extends MS_Controller {
 	 *
 	 * Fires after a membership setup is completed.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_controller_membership_setup_completed
+	 * Related Action Hooks:
+	 * - ms_controller_membership_setup_completed
 	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Membership $membership
 	 */
 	public function auto_setup_communications( $membership ) {
-
 		$comms = MS_Model_Communication::load_communications( true );
 
-		/* Private memberships don't have communications enabled */
-		if( ! $membership->is_private() ) {
-			foreach( $comms as $comm ) {
+		// Private memberships don't have communications enabled
+		if ( ! $membership->is_private() ) {
+			foreach ( $comms as $comm ) {
 				$comm->enabled = true;
 				$comm->save();
 			}
 		}
 
-		do_action( 'ms_controller_communication_auto_setup_communications_after', $membership, $this );
+		do_action(
+			'ms_controller_communication_auto_setup_communications_after',
+			$membership,
+			$this
+		);
 	}
 
 }
