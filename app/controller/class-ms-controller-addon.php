@@ -88,7 +88,8 @@ class MS_Controller_Addon extends MS_Controller {
 		$msg = 0;
 
 		if ( $this->verify_nonce()
-			&& ! empty( $_POST['addon'] ) && $this->is_admin_user()
+			&& ! empty( $_POST['addon'] )
+			&& $this->is_admin_user()
 		) {
 			$msg = $this->save_addon( 'toggle_activation', array( $_POST['addon'] ) );
 		}

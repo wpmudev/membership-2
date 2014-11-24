@@ -2,8 +2,6 @@
 
 class MS_View_Membership_Overview extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
 		$membership = $this->data['membership'];
 		if ( empty( $this->data['child_membership'] ) ) {

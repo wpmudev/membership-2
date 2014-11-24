@@ -242,6 +242,8 @@ class MS_Controller_Settings extends MS_Controller {
 		// Enable Protected Content.
 		$settings->plugin_enabled = true;
 		$settings->save();
+
+		MS_Plugin::flush_rewrite_rules();
 	}
 
 	/**

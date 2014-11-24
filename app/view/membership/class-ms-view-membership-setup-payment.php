@@ -2,8 +2,6 @@
 
 class MS_View_Membership_Setup_Payment extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
 		$fields = $this->get_fields();
 

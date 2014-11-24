@@ -161,8 +161,13 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
+		$post_id = null;
+		if ( $query->is_singular && is_a( $query->queried_object, 'WP_Post' ) ) {
+			$post_id = $query->queried_object_id;
+		}
+
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$ms_page_slug = $ms_pages->is_ms_page();
+		$ms_page_slug = $ms_pages->is_ms_page( $post_id );
 
 		if ( $ms_page_slug ) {
 			// Fix the main query flags for best theme support:

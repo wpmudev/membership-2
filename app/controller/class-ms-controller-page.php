@@ -26,7 +26,7 @@
  * Controller to manage Plugin Pages.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -47,27 +47,28 @@ class MS_Controller_Page extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PAGE, 'ajax_action_update_page' );
-		
+		$this->add_action(
+			'wp_ajax_' . self::AJAX_ACTION_UPDATE_PAGE,
+			'ajax_action_update_page'
+		);
+
 		$this->add_action( 'pre_get_posts', 'ms_page_router', 1 );
 	}
-	
+
 	/**
 	 * Redirect to configured ms_page.
 	 *
 	 * ** Hooks Actions: **
 	 * * pre_get_posts
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function ms_page_router( $wp_query ) {
-		if( ! empty( $wp_query->query_vars['ms_page'] ) ) {
-			
+		if ( ! empty( $wp_query->query_vars['ms_page'] ) ) {
 			$slug = $wp_query->query_vars['ms_page'];
 			$ms_pages = $this->get_ms_pages_model();
 			$ms_page = $ms_pages->get_ms_page_by_slug( $slug );
-			
+
 			$wp_query->query_vars['post_type'] = 'page';
 			$wp_query->query_vars['page_id'] = $ms_page->id;
 		}
@@ -77,16 +78,19 @@ class MS_Controller_Page extends MS_Controller {
 	 * Get ms_pages model.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return MS_Model_Pages The ms pages model.
 	 */
 	public function get_ms_pages_model() {
-		
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		
-		return apply_filters( 'ms_controller_pages_get_ms_pages_model', $ms_pages, $this );
+
+		return apply_filters(
+			'ms_controller_pages_get_ms_pages_model',
+			$ms_pages,
+			$this
+		);
 	}
-	
+
 	/**
 	 * Handle Ajax toggle action.
 	 *
@@ -107,21 +111,21 @@ class MS_Controller_Page extends MS_Controller {
 		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-page-03' ); }
 
 		if ( $this->_resp_ok() ) {
-			
+
 			$page_type = $_POST['page_type'];
 			$field = $_POST['field'];
 			$value = $_POST['value'];
-			
+
 			$ms_pages = $this->get_ms_pages_model();
-			
+
 			$ms_page = $ms_pages->get_ms_page( $page_type );
 			$ms_page->$field = $value;
-			
+
 			$ms_pages->set_ms_page( $page_type, $ms_page );
 			$ms_pages->save();
-			
-			/* If slug is changed, need to flush rewrite rules.*/
-			if( 'slug' == $field ) {
+
+			// If slug is changed, need to flush rewrite rules.
+			if ( 'slug' === $field ) {
 				flush_rewrite_rules();
 			}
 		}

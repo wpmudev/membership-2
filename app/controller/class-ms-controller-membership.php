@@ -103,16 +103,19 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_membership
+	 * Related Action Hooks:
+	 * - wp_ajax_toggle_membership
 	 *
 	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_membership() {
 		$msg = 0;
 
-		if ( $this->verify_nonce() && ! empty( $_POST['membership_id'] ) && ! empty( $_POST['field'] ) && $this->is_admin_user() ) {
+		$required = array( 'membership_id', 'field' );
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $required, 'POST', false )
+			&& $this->is_admin_user()
+		) {
 			$msg = $this->membership_list_do_action( 'toggle_'. $_POST['field'], array( $_POST['membership_id'] ) );
 		}
 
@@ -125,9 +128,8 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_update_membership
+	 * Related Action Hooks:
+	 * - wp_ajax_update_membership
 	 *
 	 * @since 1.0.0
 	 */
@@ -135,7 +137,10 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 
 		$required = array( 'membership_id', 'field', 'value' );
-		if ( $this->verify_nonce() && $this->validate_required( $required, 'POST', false ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $required, 'POST', false )
+			&& $this->is_admin_user()
+		) {
 			$msg = $this->save_membership( array( $_POST['field'] => $_POST['value'] ) );
 		}
 
@@ -391,8 +396,7 @@ class MS_Controller_Membership extends MS_Controller {
 				do_action( 'ms_controller_membership_admin_page_router_' . $step, $this );
 				MS_Helper_Debug::log( "Method $method not found for step $step" );
 			}
-		}
-		else {
+		} else {
 			MS_Helper_Debug::log( "Invalid step: $step" );
 		}
 

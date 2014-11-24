@@ -15,6 +15,8 @@ Change Log:
 1.0.4.4
 ----------------------------------------------------------------------
 - Add column with gateway status to the payment settings
+- Fix bug where registration did not work directly after initial setup
+- Fix caption of the "Login" button in the login page
 
 1.0.4.3
 ----------------------------------------------------------------------
