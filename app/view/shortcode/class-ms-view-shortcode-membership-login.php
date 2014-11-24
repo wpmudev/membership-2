@@ -239,7 +239,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 						name="wp-submit"
 						id="<?php echo esc_attr( $id_login ); ?>"
 						class="button-primary"
-						value="<?php echo esc_attr( $label_login ); ?>" />
+						value="<?php echo esc_attr( $label_log_in ); ?>" />
 					<input type="hidden" name="redirect_to" value="<?php echo esc_url( $redirect ); ?>" />
 				</p>
 				<?php echo apply_filters( 'login_form_bottom', '', $args ); ?>
