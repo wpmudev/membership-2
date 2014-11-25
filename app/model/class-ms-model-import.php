@@ -99,21 +99,30 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		if ( $args['clear_all'] ) {
-			WDev()->message( '1. Clear all' );
+			$count = 0;
+			$memberships = MS_Model_Membership::get_memberships();
+
+			foreach ( $memberships as $membership ) {
+				if ( $membership->delete( true ) ) {
+					$count += 1;
+				}
+			}
+
+			WDev()->message( __( 'Cleared current data', MS_TEXT_DOMAIN ) );
 		}
 
 		// First create Memberships
 		foreach ( $data->memberships as $obj ) {
 			$membership = MS_Factory::create( 'MS_Model_Membership' );
 			$this->populate_membership( $membership, $obj );
-			#WDev()->debug( $membership );
+			WDev()->message( 'Import ' . $membership->name );
 			$membership->save();
 
 			if ( ! empty( $obj->children ) ) {
 				foreach ( $obj->children as $child_obj ) {
 					$child = $membership->create_child( 'import_item' );
 					$this->populate_membership( $child, $child_obj );
-					#WDev()->debug( $child );
+					WDev()->message( 'Import ' . $membership->name . ' > ' . $child->name );
 					$child->save();
 				}
 			}

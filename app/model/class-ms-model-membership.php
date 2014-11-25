@@ -224,7 +224,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 * @var string $dripped_type The dripped type used in this membership.
-	 *				@see MS_Model_Rule::get_dripped_rule_types()
+	 *     @see MS_Model_Rule::get_dripped_rule_types()
 	 */
 	protected $dripped_type;
 
@@ -541,7 +541,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Model_Membership[] The children memberships.
 	 */
 	public function get_children( $args = null ) {
@@ -549,14 +549,19 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if ( ! $this->has_parent() ) {
 			$args['meta_query']['children'] = array(
-					'key'     => 'parent_id',
-					'value'   => $this->id,
+				'key'   => 'parent_id',
+				'value' => $this->id,
 			);
 
 			$children = self::get_memberships( $args );
 		}
 
-		return apply_filters( 'ms_model_membership_get_children', $children, $this, $args );
+		return apply_filters(
+			'ms_model_membership_get_children',
+			$children,
+			$this,
+			$args
+		);
 	}
 
 	/**
@@ -575,13 +580,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$child = $this->get_children( array( 'post_per_page' => 1 ) );
 			if ( isset( $child[0] ) ) {
 				$last = $child[0];
-			}
-			else {
+			} else {
 				$last = $this;
 			}
 		}
 
-		return apply_filters( 'ms_model_membership_get_last_descendant', $last, $this );
+		return apply_filters(
+			'ms_model_membership_get_last_descendant',
+			$last,
+			$this
+		);
 	}
 
 	/**
@@ -595,7 +603,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$children = $this->get_children();
 		$count = count( $children );
 
-		return apply_filters( 'ms_model_membership_get_children_count', $count, $this );
+		return apply_filters(
+			'ms_model_membership_get_children_count',
+			$count,
+			$this
+		);
 	}
 
 	/**
@@ -612,7 +624,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$private = true;
 		}
 
-		return apply_filters( 'ms_model_membership_is_private', $private, $this );
+		return apply_filters(
+			'ms_model_membership_is_private',
+			$private,
+			$this
+		);
 	}
 
 	/**
@@ -629,7 +645,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$is_private_eligible = true;
 		}
 
-		return apply_filters( 'ms_model_membership_is_private_eligible', $is_private_eligible, $this );
+		return apply_filters(
+			'ms_model_membership_is_private_eligible',
+			$is_private_eligible,
+			$this
+		);
 	}
 
 	/**
@@ -646,7 +666,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			self::TYPE_CONTENT_TYPE,
 		);
 
-		return apply_filters( 'ms_model_membership_get_private_eligible_types', $private_eligible_types );
+		return apply_filters(
+			'ms_model_membership_get_private_eligible_types',
+			$private_eligible_types
+		);
 	}
 
 	/**
@@ -662,14 +685,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if ( isset( $this->rules[ $rule_type ] ) ) {
 			$rule = $this->rules[ $rule_type ];
-		}
-		elseif ( 'attachment' === $rule_type
+		} elseif ( 'attachment' === $rule_type
 			&& isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] )
 		) {
 			$rule = $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
-		}
-		// Create a new rule model object.
-		else {
+		} else {
+			// Create a new rule model object.
 			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
 			$this->rules[ $rule_type ] = $rule;
 		}
@@ -678,8 +699,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			// This is the base membership "Protected Content".
 			$rule->rule_value_invert = true;
 			$rule->rule_value_default = false;
-		}
-		else {
+		} else {
 			// This is a normal membership created by the Admin.
 			$rule->rule_value_invert = false;
 			$rule->rule_value_default = true;
@@ -720,7 +740,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return int The membership count.
 	 */
 	public static function get_membership_count( $args = null ) {
@@ -729,16 +749,25 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$count = $query->found_posts;
 
-		return apply_filters( 'ms_model_membership_get_membership_count', $count, $args );
+		return apply_filters(
+			'ms_model_membership_get_membership_count',
+			$count,
+			$args
+		);
 	}
 
 	/**
 	 * Get Memberships models.
 	 *
+	 * When no $args are specified then all memberships except the base
+	 * membership will be returned.
+	 * To include the base membership use:
+	 * $args = array( 'include_visitor' => 1 )
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
 	public static function get_memberships( $args = null ) {
@@ -751,7 +780,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$memberships[] = MS_Factory::load( 'MS_Model_Membership', $item->ID );
 		}
 
-		return apply_filters( 'ms_model_membership_get_memberships', $memberships, $args );
+		return apply_filters(
+			'ms_model_membership_get_memberships',
+			$memberships,
+			$args
+		);
 	}
 
 	/**
@@ -762,7 +795,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
 	public static function get_grouped_memberships( $args ) {
@@ -776,6 +809,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		} else {
 			$args = array();
 		}
+
 		$args['post_parent__not_in'] = array( 0 );
 		$args['order'] = 'ASC';
 		$children = self::get_memberships( $args );
@@ -806,7 +840,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array $args The parsed args.
 	 */
 	public static function get_query_args( $args = null ) {
@@ -824,14 +858,18 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		if ( empty( $args['include_visitor'] ) ){
+		if ( empty( $args['include_visitor'] ) ) {
 			$args['meta_query']['visitor'] = array(
 				'key'     => 'protected_content',
 				'value'   => '',
 			);
 		}
 
-		return apply_filters( 'ms_model_membership_get_query_args', $args, $defaults );
+		return apply_filters(
+			'ms_model_membership_get_query_args',
+			$args,
+			$defaults
+		);
 	}
 
 	/**
@@ -864,7 +902,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					if ( $child->id >= $this->id ) {
 						continue;
 					}
-					$options[ $child->id ] = sprintf( __( 'Downgrade to %s', MS_TEXT_DOMAIN ), $child->name );
+					$options[ $child->id ] = sprintf(
+						__( 'Downgrade to %s', MS_TEXT_DOMAIN ),
+						$child->name
+					);
 				}
 				break;
 
@@ -872,7 +913,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				break;
 		}
 
-		return apply_filters( 'ms_model_membership_get_membership_names', $options, $this );
+		return apply_filters(
+			'ms_model_membership_get_membership_names',
+			$options,
+			$this
+		);
 	}
 
 	/**
@@ -880,7 +925,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @param bool $exclude_visitor_membership Exclude visitor membership from the list.
 	 * @return array {
 	 *		Returns array of $membership_id => $name
@@ -903,7 +948,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			unset( $memberships[ self::get_visitor_membership()->id ] );
 		}
 
-		return apply_filters( 'ms_model_membership_get_membership_names', $memberships, $args, $exclude_visitor_membership );
+		return apply_filters(
+			'ms_model_membership_get_membership_names',
+			$memberships,
+			$args,
+			$exclude_visitor_membership
+		);
 	}
 
 	/**
@@ -1010,10 +1060,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return bool True if is valid.
 	 */
 	public static function is_valid_membership( $membership_id ) {
-
 		$valid = ( MS_Factory::load( 'MS_Model_Membership', $membership_id )->id > 0 );
 
-		return apply_filters( 'ms_model_membership_is_valid_membership', $valid, $membership_id );
+		return apply_filters(
+			'ms_model_membership_is_valid_membership',
+			$valid,
+			$membership_id
+		);
 	}
 
 	/**
@@ -1123,10 +1176,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Membership The visitor membership.
 	 */
 	public static function get_visitor_membership() {
-
 		$visitor_membership = self::get_protected_content();
 
-		return apply_filters( 'ms_model_membership_get_visitor_membership', $visitor_membership );
+		return apply_filters(
+			'ms_model_membership_get_visitor_membership',
+			$visitor_membership
+		);
 	}
 
 	/**
@@ -1138,7 +1193,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function merge_protected_content_rules() {
-
 		$protected_content_rules = self::get_protected_content()->rules;
 
 		foreach ( $protected_content_rules as $rule_type => $protect_rule ) {
@@ -1148,8 +1202,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					if ( ! empty( $this->rules[ $rule_type ] ) ) {
 						$rule = $this->get_rule( $rule_type );
 						$rule->merge_rule_values( $protect_rule );
-					}
-					else {
+					} else {
 						$rule = clone $protect_rule;
 						$rule->rule_value_invert = false;
 
@@ -1157,6 +1210,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						if ( self::TYPE_SIMPLE == $this->type ) {
 							$init_rule_value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
 						}
+
 						foreach ( $rule->rule_value as $id => $val ) {
 							$rule->set_access( $id, $init_rule_value );
 						}
@@ -1169,7 +1223,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		$this->rules = apply_filters( 'ms_model_membership_merge_protected_content_rules', $this->rules, $this );
+		$this->rules = apply_filters(
+			'ms_model_membership_merge_protected_content_rules',
+			$this->rules,
+			$this
+		);
 	}
 
 	/**
@@ -1179,10 +1237,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return int The members count.
 	 */
 	public function get_members_count() {
+		$count = MS_Model_Membership_Relationship::get_membership_relationship_count(
+			array( 'membership_id' => $this->id )
+		);
 
-		$count = MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) );
-
-		return apply_filters( 'ms_model_membership_get_members_count', $count );
+		return apply_filters(
+			'ms_model_membership_get_members_count',
+			$count
+		);
 	}
 
 	/**
@@ -1190,25 +1252,55 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param $force To force delete memberships with members, visitor or default memberships.
+	 * @param  $force To force delete memberships with members or children.
+	 * @return bool
 	 */
 	public function delete( $force = false ) {
 		do_action( 'ms_model_membership_before_delete', $this );
+		$res = false;
 
-		if ( ! empty( $this->id ) ) {
-			if ( $this->get_members_count() > 0 && ! $force ) {
-				throw new Exception( 'Can not delete membership with existing members.' );
-			}
-			elseif ( $this->protected_content && ! $force ) {
-				throw new Exception( 'Protected Content / Visitor membership could not be deleted.' );
-			}
-			elseif ( $this->get_children_count() > 0 && ! $force ) {
-				throw new Exception( 'Can not delete membership level with children. Delete children membership levels first.' );
-			}
-			wp_delete_post( $this->id );
+		if ( $this->protected_content ) {
+			throw new Exception(
+				'Base membership could not be deleted.'
+			);
 		}
 
-		do_action( 'ms_model_membership_after_delete', $this );
+		if ( ! empty( $this->id ) ) {
+			if ( $this->get_members_count() > 0 ) {
+				if ( $force ) {
+					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+						array( 'membership_id' => $this->id )
+					);
+
+					foreach ( $ms_relationships as $ms_relationship ) {
+						$ms_relationship->delete();
+					}
+				} else {
+					throw new Exception(
+						'Can not delete membership with existing members.'
+					);
+				}
+			}
+
+			if ( $this->get_children_count() > 0 ) {
+				if ( $force ) {
+					$children = $this->get_children();
+
+					foreach ( $children as $child ) {
+						$child->delete( true );
+					}
+				} else {
+					throw new Exception(
+						'Can not delete membership level with children. Delete children membership levels first.'
+					);
+				}
+			}
+
+			$res = ( false !== wp_delete_post( $this->id, true ) );
+		}
+
+		do_action( 'ms_model_membership_after_delete', $this, $res );
+		return $res;
 	}
 
 	/**
@@ -1221,7 +1313,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return boolean
 	 */
 	public function has_dripped_content() {
-
 		$has_dripped = false;
 		$dripped = array( 'post', 'page' );
 
@@ -1232,7 +1323,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_membership_has_dripped_content', $has_dripped, $this );
+		return apply_filters(
+			'ms_model_membership_has_dripped_content',
+			$has_dripped,
+			$this
+		);
 	}
 
 	/**
