@@ -818,7 +818,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$new = array();
 			foreach ( $memberships as $ms ){
 				$new[] = $ms;
-				if ( $ms->id === $child->parent_id ) {
+				if ( $ms->id == $child->parent_id ) {
 					$new[ $child->id ] = $child;
 				}
 			}
