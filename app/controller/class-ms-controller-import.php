@@ -53,11 +53,12 @@ class MS_Controller_Import extends MS_Controller {
 				break;
 
 			case self::ACTION_PREVIEW:
-				$model = 'MS_Model_Import_' . $_POST['import_source'];
-				$handler = null;
+				$view = MS_Factory::create( 'MS_View_Settings_Import' );
+				$model_name = 'MS_Model_Import_' . $_POST['import_source'];
+				$model = null;
 
 				try {
-					$handler = MS_Factory::create( $model );
+					$model = MS_Factory::create( $model_name );
 				} catch( Exception $ex ) {
 					self::_message(
 						'error',
@@ -65,16 +66,37 @@ class MS_Controller_Import extends MS_Controller {
 					);
 				}
 
-				if ( is_a( $handler, 'MS_Model_Import' ) ) {
-					$handler->process();
+				if ( is_a( $model, 'MS_Model_Import' ) ) {
+					if ( $model->prepare() ) {
+						$data = array(
+							'model' => $model,
+						);
+
+						$view->data = apply_filters(
+							'ms_view_import_data',
+							$data
+						);
+
+						self::_message(
+							'preview',
+							apply_filters(
+								'ms_view_import_preview',
+								$view->to_html()
+							)
+						);
+					}
 				}
 				break;
 
 			case self::ACTION_IMPORT:
-				self::_message(
-					'error',
-					__( 'Coming soon: Importing data is not supported yet...', MS_TEXT_DOMAIN )
+				WDev()->load_post_fields( 'object', 'clear_all' );
+				$data = json_decode( stripslashes( $_POST['object'] ) );
+				$args = array(
+					'clear_all' => (bool) $_POST['clear_all'],
 				);
+
+				$model = MS_Factory::create( 'MS_Model_Import' );
+				$model->import_data( $data, $args );
 				break;
 		}
 	}

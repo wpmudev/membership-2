@@ -404,6 +404,8 @@ class MS_Controller_Settings extends MS_Controller {
 
 				case 'import':
 					$tool = MS_Factory::create( 'MS_Controller_Import' );
+
+					// Output is passed to the view via self::_message()
 					$tool->process();
 					break;
 
@@ -542,7 +544,10 @@ class MS_Controller_Settings extends MS_Controller {
 			return $msg;
 		}
 
-		$comm = apply_filters( 'membership_model_communication', MS_Model_Communication::get_communication( $type ) );
+		$comm = apply_filters(
+			'membership_model_communication',
+			MS_Model_Communication::get_communication( $type )
+		);
 
 		if ( ! empty( $fields ) ) {
 			$period = array();

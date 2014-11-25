@@ -30,26 +30,30 @@
 class MS_Model_Import_File extends MS_Model_Import {
 
 	/**
-	 * This function has to be implemented by child classes
+	 * This function parses the Import source (i.e. an file-upload) and returns
+	 * true in case the source data is valid. When returning true then the
+	 * $source property of the model is set to the sanitized import source data.
 	 *
 	 * @since  1.1.0
+	 *
+	 * @return bool
 	 */
-	public function process() {
+	public function prepare() {
 		self::_message( 'preview', false );
 
 		if ( empty( $_FILES ) || ! isset( $_FILES['upload'] ) ) {
 			self::_message( 'error', __( 'No file was uploaded, please try again.', MS_TEXT_DOMAIN ) );
-			return;
+			return false;
 		}
 
 		$file = $_FILES['upload'];
 		if ( empty( $file['name'] ) ) {
 			self::_message( 'error', __( 'Please upload an export file.', MS_TEXT_DOMAIN ) );
-			return;
+			return false;
 		}
 		if ( empty( $file['size'] ) ) {
 			self::_message( 'error', __( 'The uploaded file is empty, please try again.', MS_TEXT_DOMAIN ) );
-			return;
+			return false;
 		}
 
 		$content = file_get_contents( $file['tmp_name'] );
@@ -63,10 +67,11 @@ class MS_Model_Import_File extends MS_Model_Import {
 
 		if ( empty( $data ) ) {
 			self::_message( 'error', __( 'No valid export file uploaded, please try again.', MS_TEXT_DOMAIN ) );
-			return;
+			return false;;
 		}
 
-		self::_message( 'preview', $this->preview_object( $data ) );
+		$this->source = $data;
+		return true;
 	}
 
 }
