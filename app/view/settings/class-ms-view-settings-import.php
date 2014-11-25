@@ -218,7 +218,6 @@ class MS_View_Settings_Import extends MS_View {
 
 		$fields['import'] = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'class' => 'disabled',
 			'value' => __( 'Import', MS_TEXT_DOMAIN ),
 		);
 

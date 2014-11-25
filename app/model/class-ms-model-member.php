@@ -398,8 +398,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
-		}
-		else {
+		} else {
 			$user_id = wp_create_user( $this->username, $this->password, $this->email );
 
 			if ( is_wp_error( $user_id ) ) {
@@ -563,9 +562,7 @@ class MS_Model_Member extends MS_Model {
 
 		switch ( $search_option ) {
 			case self::SEARCH_ONLY_MEMBERS:
-				if ( ! is_array( $args['meta_query'] ) ) {
-					$args['meta_query'] = array();
-				}
+				$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
 
 				$args['meta_query']['is_member'] = array(
 					'key'   => 'ms_is_member',
@@ -574,9 +571,7 @@ class MS_Model_Member extends MS_Model {
 				break;
 
 			case self::SEARCH_NOT_MEMBERS:
-				if ( ! is_array( $args['meta_query'] ) ) {
-					$args['meta_query'] = array();
-				}
+				$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
 
 				$args['meta_query']['relation'] = 'OR';
 				$args['meta_query']['is_member'] = array(
