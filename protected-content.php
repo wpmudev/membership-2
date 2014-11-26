@@ -430,6 +430,7 @@ class MS_Plugin {
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
+				MS_Model_Page::$POST_TYPE => MS_Model_Page::get_register_post_type_args(),
 			)
 		);
 

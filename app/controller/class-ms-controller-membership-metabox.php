@@ -104,42 +104,56 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			array( 'page', 'post', 'attachment' ),
 			MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types()
 		);
-		$this->post_types = apply_filters( 'ms_controller_membership_metabox_add_meta_boxes_post_types', $post_types );
 
-		if( MS_Plugin::is_enabled() ) {
-			$this->add_action( 'add_meta_boxes', 'add_meta_boxes', 10 );
+		$this->post_types = apply_filters(
+			'ms_controller_membership_metabox_add_meta_boxes_post_types',
+			$post_types
+		);
 
-			$this->add_action( 'admin_enqueue_scripts', 'admin_enqueue_scripts' );
+		if ( MS_Plugin::is_enabled() ) {
+			$this->add_action(
+				'add_meta_boxes',
+				'add_meta_boxes',
+				10
+			);
 
-			$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ACCESS, 'ajax_action_toggle_metabox_access' );
+			$this->add_action(
+				'admin_enqueue_scripts',
+				'admin_enqueue_scripts'
+			);
+
+			$this->add_action(
+				'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ACCESS,
+				'ajax_action_toggle_metabox_access'
+			);
 		}
 	}
 
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_metabox_access
+	 * Related Action Hooks:
+	 * - wp_ajax_toggle_metabox_access
 	 *
 	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_metabox_access() {
-
 		$fields = array( 'membership_id', 'rule_type', 'post_id' );
-		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
 			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
-			if( $_POST['membership_id'] == MS_Model_Membership::get_protected_content()->id ) {
+			if ( $_POST['membership_id'] == MS_Model_Membership::get_protected_content()->id ) {
 				$post = get_post( $_POST['post_id'] );
 				//membership metabox html returned via ajax response
 				$this->membership_metabox( $post );
-			}
-			else {
+			} else {
 				echo true;
 			}
 		}
 
-		do_action( 'ms_controller_membership_metabox_ajax_action_toggle_metabox_access', $this );
+		do_action(
+			'ms_controller_membership_metabox_ajax_action_toggle_metabox_access',
+			$this
+		);
 		exit;
 	}
 
@@ -149,14 +163,23 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function add_meta_boxes() {
-
-		foreach( $this->post_types as $post_type ) {
-			if( ! $this->is_read_only( $post_type ) ) {
-				add_meta_box( $this->metabox_id, $this->metabox_title, array( $this, 'membership_metabox' ), $post_type, $this->context, $this->priority );
+		foreach ( $this->post_types as $post_type ) {
+			if ( ! $this->is_read_only( $post_type ) ) {
+				add_meta_box(
+					$this->metabox_id,
+					$this->metabox_title,
+					array( $this, 'membership_metabox' ),
+					$post_type,
+					$this->context,
+					$this->priority
+				);
 			}
 		}
 
-		do_action( 'ms_controller_membership_metabox_add_meta_boxes', $this );
+		do_action(
+			'ms_controller_membership_metabox_add_meta_boxes',
+			$this
+		);
 	}
 
 	/**
@@ -167,13 +190,11 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @param object $post The current post object.
 	 */
 	public function membership_metabox( $post ) {
-
 		$data = array();
 
-		if( 'page' == $post->post_type && MS_Factory::load( 'MS_Model_Pages')->is_ms_page( $post->ID ) ) {
+		if ( MS_Model_Page::$POST_TYPE == $post->post_type ) {
 			$data['special_page'] = true;
-		}
-		else {
+		} else {
 			$memberships = MS_Model_Membership::get_memberships();
 			$protected_content = MS_Model_Membership::get_protected_content();
 			$data['protected_content'] = $protected_content;
@@ -181,10 +202,9 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 
 			$rule = $this->get_rule( $protected_content, $post );
 			$data['rule_type'] = $rule->rule_type;
-			foreach( $memberships as $membership ) {
 
-				$data['access'][ $membership->id ]['has_access'] =  $membership->has_access_to_post( $post->ID );
-
+			foreach ( $memberships as $membership ) {
+				$data['access'][ $membership->id ]['has_access'] = $membership->has_access_to_post( $post->ID );
 				$data['access'][ $membership->id ]['name'] = $membership->name;
 			}
 		}
@@ -209,38 +229,42 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$rule = null;
 		$post_type = null;
 
-		if( 'attachment' == $post->post_type ) {
+		if ( 'attachment' == $post->post_type ) {
 			$parent_id = $post->post_parent;
 			$post_type = get_post_type( $parent_id );
-
-		}
-		else {
+		} else {
 			$post_type = $post->post_type;
 		}
 
-		switch( $post_type ) {
+		switch ( $post_type ) {
 			case 'post':
 				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
 				break;
+
 			case 'attachment':
 				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEDIA );
 				break;
+
 			default:
-				if( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
-					if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST) ) {
+				if ( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
+					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST) ) {
 						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
-					}
-					else {
+					} else {
 						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
 					}
-				}
-				else {
+				} else {
 					$rule = $membership->get_rule( $post_type );
 				}
 				break;
 		}
 
-		return apply_filters( 'ms_controller_metabox_get_rule', $rule, $membership, $post, $this );
+		return apply_filters(
+			'ms_controller_metabox_get_rule',
+			$rule,
+			$membership,
+			$post,
+			$this
+		);
 	}
 
 	/**
@@ -253,20 +277,25 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @param array $membership_id The membership id to toggle access
 	 */
 	public function toggle_membership_access( $post_id, $rule_type, $membership_id ) {
-
-		if( $this->is_admin_user() ) {
+		if ( $this->is_admin_user() ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 
 			$rule = $membership->get_rule( $rule_type );
 
-			if( $rule ) {
+			if ( $rule ) {
 				$rule->toggle_access( $post_id );
 				$membership->set_rule( $rule_type, $rule );
 				$membership->save();
 			}
 		}
 
-		do_action( 'ms_controller_membership_metabox_toggle_membership_access', $post_id, $rule_type, $membership_id, $this );
+		do_action(
+			'ms_controller_membership_metabox_toggle_membership_access',
+			$post_id,
+			$rule_type,
+			$membership_id,
+			$this
+		);
 	}
 
 	/**
@@ -277,25 +306,28 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 * @return bool
 	 */
 	public function is_read_only( $post_type ) {
-		if( 'post' == $post_type && ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+		if ( 'post' == $post_type
+			&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST )
+		) {
 			$read_only = true;
-		}
-		elseif( 'attachment' == $post_type ) {
+		} elseif ( 'attachment' == $post_type ) {
 			$read_only = true;
-		}
-		elseif( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
-			if( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+		} elseif ( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$read_only = false;
-			}
-			else {
+			} else {
 				$read_only = true;
 			}
-		}
-		else {
+		} else {
 			$read_only = false;
 		}
 
-		return apply_filters( 'ms_controller_membership_metabox_is_read_only', $read_only, $post_type, $this );
+		return apply_filters(
+			'ms_controller_membership_metabox_is_read_only',
+			$read_only,
+			$post_type,
+			$this
+		);
 	}
 
 	/**
@@ -305,12 +337,13 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */
 	public function admin_enqueue_scripts() {
 		global $post_type;
-		if ( in_array( $post_type, $this->post_types ) && ! $this->is_read_only( $post_type ) ) {
+
+		if ( in_array( $post_type, $this->post_types )
+			&& ! $this->is_read_only( $post_type )
+		) {
 			wp_enqueue_script( 'membership-metabox' );
 			wp_enqueue_script( 'ms-admin' );
 		}
-
 	}
-}
 
-?>
+}

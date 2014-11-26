@@ -94,9 +94,8 @@ class MS_Controller_Page extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_update_page
+	 * Related Action hooks:
+	 * - wp_ajax_update_page
 	 *
 	 * @since 1.0.0
 	 */
