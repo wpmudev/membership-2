@@ -1384,19 +1384,21 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if ( ! empty( $post_id ) ) {
 			$post = get_post( $post_id );
-			if ( 'attachment' == $post->post_type ) {
+			if ( 'attachment' === $post->post_type ) {
 				$post_id = get_post_field( 'post_parent', $post_id );
 			}
 		}
-		/* If 'has access' is found in the hierarchy, it does have access. */
+
+		// If 'has access' is found in the hierarchy, it does have access.
 		$rules = $this->get_rules_hierarchy();
 		foreach ( $rules as $rule ) {
-			/* url groups have final decision */
-			if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type && $rule->has_rule_for_post( $post_id ) ) {
+			// url groups have final decision
+			if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type
+				&& $rule->has_rule_for_post( $post_id )
+			) {
 				$has_access = $rule->has_access( $post_id );
 				break;
-			}
-			else {
+			} else {
 				$has_access = ( $has_access || $rule->has_access( $post_id ) );
 			}
 
@@ -1405,7 +1407,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_membership_has_access_to_post', $has_access, $this );
+		return apply_filters(
+			'ms_model_membership_has_access_to_post',
+			$has_access,
+			$this
+		);
 	}
 
 	/**

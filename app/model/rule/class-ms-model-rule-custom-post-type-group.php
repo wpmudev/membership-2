@@ -81,7 +81,11 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			}
 		}
 
-		do_action( 'ms_model_rule_custom_post_type_group_protect_posts', $wp_query, $this );
+		do_action(
+			'ms_model_rule_custom_post_type_group_protect_posts',
+			$wp_query,
+			$this
+		);
 	}
 
 	/**
@@ -98,11 +102,9 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 
 		// Only verify permission if NOT ruled by cpt post by post.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			$has_access = false;
 			if ( ! empty( $post_id ) ) {
 				$post = get_post( $post_id );
-			}
-			else {
+			} else {
 				$post = get_queried_object();
 			}
 
@@ -112,10 +114,14 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			}
 
 			if ( in_array( $post_type, self::get_ms_post_types() ) ) {
+				// Always allow access to Protected Content pages.
 				$has_access = true;
-			}
-			elseif ( in_array( $post_type, self::get_custom_post_types() ) ) {
+			} elseif ( in_array( $post_type, self::get_custom_post_types() ) ) {
+				// Custom post type
 				$has_access = parent::has_access( $post_type );
+			} else {
+				// WordPress core pages are ignored by this rule.
+				$has_access = null;
 			}
 		}
 
@@ -133,7 +139,6 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param string $args Optional. Not used.
-	 *
 	 * @return array The content.
 	 */
 	public function get_contents( $args = null ) {

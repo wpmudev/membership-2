@@ -351,7 +351,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for signup shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -378,7 +378,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for register user shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -685,7 +685,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for account shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -747,7 +747,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Show registration complete page.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -768,7 +768,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for login shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -794,7 +794,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Uses the default registration page unless the registration was embedded on another page (e.g. using a shortcode).
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 *
 	 * * wp_signup_location
 	 * * register_url
