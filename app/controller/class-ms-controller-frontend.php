@@ -168,8 +168,13 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$ms_page_filter = null;
 		if ( isset( $query->query[ MS_Model_Page::$POST_TYPE ] ) ) {
-			$ms_page = $ms_pages->current_page_info( false, $query->query[ MS_Model_Page::$POST_TYPE ] );
+			$ms_page_filter = $query->query[ MS_Model_Page::$POST_TYPE ];
+		}
+
+		if ( ! empty( $ms_page_filter ) ) {
+			$ms_page = $ms_pages->current_page_info( $ms_page_filter );
 		} else {
 			$ms_page = $ms_pages->current_page_info();
 		}

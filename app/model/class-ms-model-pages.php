@@ -270,38 +270,36 @@ class MS_Model_Pages extends MS_Model_Option {
 	public function current_page_info( $page_id = false, $page_type = null ) {
 		global $wp_query;
 		static $Res = array();
+		$key = json_encode( $page_id ) . json_encode( $page_type );
 
-		if ( ! isset( $Res[$page_id] ) ) {
+		if ( ! isset( $Res[$key] ) ) {
 			$this_page = false;
 
 			if ( ! empty( $page_id ) || ! empty( $page_type ) ) {
-				// We have a page_type but no page_id? Use current page_id!
-				if ( empty( $page_id ) ) {
-					$page_id = get_the_ID();
-				}
-				$page_id = absint( $page_id );
-
 				/*
-				 * We have a page_id:
+				 * We have a page_type:
 				 * Get infos of that page!
 				 */
 				if ( ! empty( $page_type ) ) {
 					$ms_page = $this->get_ms_page( $page_type );
 					$query_slug = $wp_query->query_vars['ms_page'];
 
-					if ( $page_id === $ms_page->id ||
-						$query_slug === $page_type
+					if ( $page_id == $ms_page->id
+						|| $query_slug == $page_type
 					) {
 						$this_page = $ms_page;
 					}
 				} else {
-					$pages = self::get_ms_pages();
-
-					foreach ( $pages as $ms_page ) {
-						if ( $page_id === $ms_page->id ) {
-							$this_page = $ms_page;
-							break;
-						}
+					/*
+					 * We don't have the page_type:
+					 * Use current page_id or the specified page_id/slug!
+					 */
+					if ( empty( $page_id ) ) {
+						$this_page = $this->get_ms_page_by( 'id', get_the_ID() );
+					} else if ( is_numeric( $page_id ) ) {
+						$this_page = $this->get_ms_page_by( 'id', $page_id );
+					} else {
+						$this_page = $this->get_ms_page_by( 'slug', $page_id );
 					}
 				}
 			} else {
@@ -321,10 +319,10 @@ class MS_Model_Pages extends MS_Model_Option {
 				}
 			}
 
-			$Res[$page_id] = $this_page;
+			$Res[$key] = $this_page;
 		}
 
-		return $Res[$page_id];
+		return $Res[$key];
 	}
 
 	/**
