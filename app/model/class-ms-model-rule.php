@@ -329,7 +329,10 @@ class MS_Model_Rule extends MS_Model {
 			MS_Model_Rule::RULE_TYPE_POST,
 		);
 
-		return apply_filters( 'ms_model_rule_get_dripped_rule_types', $dripped );
+		return apply_filters(
+			'ms_model_rule_get_dripped_rule_types',
+			$dripped
+		);
 	}
 
 	/**
@@ -350,7 +353,10 @@ class MS_Model_Rule extends MS_Model {
 			self::DRIPPED_TYPE_FROM_REGISTRATION => __( "Reveal Dripped Content 'X' days from user registration", MS_TEXT_DOMAIN ),
 		);
 
-		return apply_filters( 'ms_model_rule_get_dripped_types', $dripped_types );
+		return apply_filters(
+			'ms_model_rule_get_dripped_types',
+			$dripped_types
+		);
 	}
 
 	/**
@@ -377,7 +383,6 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function rule_factory( $rule_type, $membership_id ) {
 		if ( self::is_valid_rule_type( $rule_type ) ) {
-
 			$rule_types = self::get_rule_type_classes();
 			$class = $rule_types[ $rule_type ];
 			$rule = new $class( $membership_id );
@@ -389,7 +394,9 @@ class MS_Model_Rule extends MS_Model {
 				$membership_id
 			);
 		} else {
-			throw new Exception( 'Rule factory - rule type not found: ' . $rule_type  );
+			throw new Exception(
+				'Rule factory - rule type not found: ' . $rule_type
+			);
 		}
 	}
 
@@ -443,12 +450,9 @@ class MS_Model_Rule extends MS_Model {
 
 		if ( $has_access_only ) {
 			foreach ( $this->rule_value as $val ) {
-				if ( $val ) {
-					$count++;
-				}
+				if ( $val ) { $count++; }
 			}
-		}
-		else {
+		} else {
 			$count = count( $this->rule_value );
 		}
 
@@ -488,7 +492,11 @@ class MS_Model_Rule extends MS_Model {
 	 * @return boolean The rule value for the requested content. Default $rule_value_default.
 	 */
 	public function get_rule_value( $id ) {
-		$value = isset( $this->rule_value[ $id ] ) ? $this->rule_value[ $id ] : $this->rule_value_default;
+		if ( isset( $this->rule_value[ $id ] ) ) {
+			$value = $this->rule_value[ $id ];
+		} else {
+			$value = $this->rule_value_default;
+		}
 
 		return apply_filters(
 			'ms_model_rule_get_rule_value',
@@ -559,7 +567,9 @@ class MS_Model_Rule extends MS_Model {
 		$has_dripped = false;
 		$dripped_type = $this->get_dripped_type();
 
-		if ( ! empty( $id ) && ! empty( $this->dripped[ $dripped_type ][ $id ] ) ) {
+		if ( ! empty( $id )
+			&& ! empty( $this->dripped[ $dripped_type ][ $id ] )
+		) {
 			$has_dripped = true;
 		}
 
@@ -591,7 +601,7 @@ class MS_Model_Rule extends MS_Model {
 		}
 
 		$has_access = $this->has_access( $id );
-		/* Result is a logic AND between dripped and has access */
+		// Result is a logic AND between dripped and has access.
 		$has_dripped_access = $has_dripped_access && $has_access;
 
 		return apply_filters(
@@ -620,20 +630,19 @@ class MS_Model_Rule extends MS_Model {
 		if ( self::is_valid_dripped_type( $dripped_type ) ) {
 			if ( isset( $this->dripped[ $dripped_type ][ $id ][ $field ] ) ) {
 				$value = $this->dripped[ $dripped_type ][ $id ][ $field ];
-			}
-			else {
+			} else {
 				switch ( $field ) {
 					case 'period_unit':
 						$value = $this->validate_period_unit( $value, 0 );
-					break;
+						break;
 
 					case 'period_type':
 						$value = $this->validate_period_type( $value );
-					break;
+						break;
 
 					case 'spec_date':
 						$value = MS_Helper_Period::current_date();
-					break;
+						break;
 				}
 			}
 		}
@@ -658,7 +667,14 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public function set_dripped_value( $dripped_type, $id, $field = 'spec_date', $value ) {
 		if ( self::is_valid_dripped_type( $dripped_type ) ) {
-			$this->dripped[ $dripped_type ][ $id ][ $field ] = apply_filters( 'ms_model_rule_set_dripped_value', $value, $dripped_type, $id, $field );
+			$this->dripped[ $dripped_type ][ $id ][ $field ] = apply_filters(
+				'ms_model_rule_set_dripped_value',
+				$value,
+				$dripped_type,
+				$id,
+				$field
+			);
+
 			$this->dripped['dripped_type'] = $dripped_type;
 			$this->dripped['modified'] = MS_Helper_Period::current_date( null, false );
 
@@ -691,14 +707,27 @@ class MS_Model_Rule extends MS_Model {
 
 		switch ( $dripped_type ) {
 			case self::DRIPPED_TYPE_SPEC_DATE:
-				$avail_date = $this->get_dripped_value( $dripped_type, $id, 'spec_date' );
+				$avail_date = $this->get_dripped_value(
+					$dripped_type,
+					$id,
+					'spec_date'
+				);
 				break;
 
 			case self::DRIPPED_TYPE_FROM_TODAY:
-				$modified = ! empty( $this->dripped['modified'] ) ? $this->dripped['modified'] : MS_Helper_Period::current_date( null, false );
+				if ( ! empty( $this->dripped['modified'] ) ) {
+					$modified = $this->dripped['modified'];
+				} else {
+					$modified = MS_Helper_Period::current_date( null, false );
+				}
+
 				$period_unit = $this->get_dripped_value( $dripped_type, $id, 'period_unit' );
 				$period_type = $this->get_dripped_value( $dripped_type, $id, 'period_type' );
-				$avail_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $modified );
+				$avail_date = MS_Helper_Period::add_interval(
+					$period_unit,
+					$period_type,
+					$modified
+				);
 				break;
 
 			case self::DRIPPED_TYPE_FROM_REGISTRATION:
@@ -749,23 +778,21 @@ class MS_Model_Rule extends MS_Model {
 		foreach ( $contents as $id => $content ) {
 			if ( $content->access ) {
 				$count_accessible++;
-			}
-			else {
+			} else {
 				$count_restricted++;
 			}
 		}
 
 		if ( $this->rule_value_default ) {
 			$count_accessible = $total - $count_restricted;
-		}
-		else {
+		} else {
 			$count_restricted = $total - $count_accessible;
 		}
 
 		$count = array(
-				'total' => $total,
-				'accessible' => $count_accessible,
-				'restricted' => $count_restricted,
+			'total' => $total,
+			'accessible' => $count_accessible,
+			'restricted' => $count_restricted,
 		);
 
 		return apply_filters( 'ms_model_rule_count_item_access', $count );
@@ -857,7 +884,11 @@ class MS_Model_Rule extends MS_Model {
 			 * Intersect to preserve only protected rules overrides;
 			 * Merge preserving keys;
 			 */
-			$this->rule_value = array_intersect_key( $rule_value,  $src_rule_value ) + $src_rule_value;
+			$this->rule_value = array_intersect_key(
+				$rule_value,
+				$src_rule_value
+			);
+			$this->rule_value += $src_rule_value;
 		}
 
 		do_action( 'ms_model_rule_merge_rule_values', $src_rule, $this );
@@ -872,12 +903,18 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public function set_access( $id, $access ) {
 		if ( is_bool( $access ) ) {
-			$access = $access ? self::RULE_VALUE_HAS_ACCESS : self::RULE_VALUE_NO_ACCESS;
+			if ( $access ) {
+				$access = self::RULE_VALUE_HAS_ACCESS;
+			} else {
+				$access = self::RULE_VALUE_NO_ACCESS;
+			}
 		}
 
 		$this->rule_value[ $id ] = $access;
 
-		if ( $this->rule_value_invert && $access == self::RULE_VALUE_NO_ACCESS ) {
+		if ( $this->rule_value_invert
+			&& $access == self::RULE_VALUE_NO_ACCESS
+		) {
 			unset( $this->rule_value[ $id ] );
 		}
 
@@ -891,7 +928,6 @@ class MS_Model_Rule extends MS_Model {
 	 * @param string $id The content id to give access.
 	 */
 	public function give_access( $id ) {
-
 		$this->set_access( $id, self::RULE_VALUE_HAS_ACCESS );
 
 		do_action( 'ms_model_rule_give_access', $id, $this );
@@ -968,7 +1004,9 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public function validate_query_args( $args ) {
 		// Cannot use post__in and post_not_in at the same time.
-		if ( ! empty( $args['post__in'] ) && ! empty( $args['post__not_in'] ) ) {
+		if ( ! empty( $args['post__in'] )
+			&& ! empty( $args['post__not_in'] )
+		) {
 			$include = $args['post__in'];
 			$exclude = $args['post__not_in'];
 
@@ -979,13 +1017,17 @@ class MS_Model_Rule extends MS_Model {
 			unset( $args['post__not_in'] );
 		}
 
-		if ( ! empty( $args['show_all'] ) || ! empty( $args['category__in'] ) ) {
+		if ( ! empty( $args['show_all'] )
+			|| ! empty( $args['category__in'] )
+		) {
 			unset( $args['post__in'] );
 			unset( $args['post__not_in'] );
 			unset( $args['show_all'] );
 		}
 
-		if ( isset( $args['post__in'] ) && count( $args['post__in'] ) == 0 ) {
+		if ( isset( $args['post__in'] )
+			&& count( $args['post__in'] ) == 0
+		) {
 			$args['post__in'] = array( -1 );
 		}
 
@@ -1047,7 +1089,10 @@ class MS_Model_Rule extends MS_Model {
 	 * @return MS_Model_Membership The membership object.
 	 */
 	public function get_membership() {
-		$membership = MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
+		$membership = MS_Factory::load(
+			'MS_Model_Membership',
+			$this->membership_id
+		);
 
 		return apply_filters( 'ms_model_rule_get_membership', $membership );
 	}
@@ -1063,9 +1108,7 @@ class MS_Model_Rule extends MS_Model {
 		$value = null;
 		switch ( $property ) {
 			case 'rule_value':
-				if ( ! is_array( $this->rule_value ) ) {
-					$this->rule_value = array();
-				}
+				$this->rule_value = WDev()->get_array( $this->rule_value );
 				$value = $this->rule_value;
 				break;
 

@@ -1007,7 +1007,12 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 		}
 
-		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id, $this );
+		return apply_filters(
+			'ms_controller_membership_get_tabs',
+			$tabs,
+			$membership_id,
+			$this
+		);
 	}
 
 	/**
