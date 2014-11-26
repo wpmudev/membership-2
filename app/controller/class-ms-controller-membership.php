@@ -860,7 +860,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @return array The tabs configuration.
 	 */
-	public function get_protected_content_tabs() {
+	public function get_protection_tabs() {
 		$membership_id = $this->load_membership()->id;
 
 		$tabs = array(
@@ -942,7 +942,30 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 		}
 
-		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id, $this );
+		return apply_filters(
+			'ms_controller_membership_get_protection_tabs',
+			$tabs,
+			$membership_id,
+			$this
+		);
+	}
+
+	/**
+	 * Get available tabs for Protected Content page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array The tabs configuration.
+	 */
+	public function get_protected_content_tabs() {
+		$tabs = $this->get_protection_tabs();
+
+		return apply_filters(
+			'ms_controller_membership_get_protected_content_tabs',
+			$tabs,
+			$membership_id,
+			$this
+		);
 	}
 
 	/**
@@ -954,7 +977,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function get_accessible_content_tabs() {
 		$membership_id = $this->load_membership()->id;
-		$tabs = $this->get_protected_content_tabs();
+		$tabs = $this->get_protection_tabs();
 		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$step = $this->get_step();
@@ -967,6 +990,7 @@ class MS_Controller_Membership extends MS_Controller {
 				case 'category':
 					$cnt_category = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY )->count_rules();
 					$cnt_cpt = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->count_rules();
+
 					if ( ! $cnt_category && ! $cnt_cpt ) {
 						unset( $tabs[ $tab ] );
 					}
@@ -976,6 +1000,7 @@ class MS_Controller_Membership extends MS_Controller {
 					$cnt_comment = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT )->count_rules();
 					$cnt_more_tag = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->count_rules();
 					$cnt_menu = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->count_rules();
+
 					if ( ! $cnt_comment && ! $cnt_more_tag && ! $cnt_menu ) {
 						unset( $tabs[ $tab ] );
 					}
@@ -983,7 +1008,8 @@ class MS_Controller_Membership extends MS_Controller {
 
 				case 'url_group':
 					$cnt_url_group = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP )->count_rules();
-					if ( ! $cnt_url_group || ! $rule->access ) {
+
+					if ( ! $cnt_url_group ) {
 						unset( $tabs[ $tab ] );
 					}
 					break;
@@ -995,6 +1021,7 @@ class MS_Controller_Membership extends MS_Controller {
 					break;
 			}
 		}
+
 		foreach ( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = admin_url(
 				sprintf(

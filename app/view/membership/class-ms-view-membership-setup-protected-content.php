@@ -496,21 +496,6 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP );
 
 		$fields = array(
-			'access' => array(
-				'id' => 'access',
-				'title' => __( 'Members Access', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $rule->access,
-				'class' => '',
-				'data_ms' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'field' => 'access',
-					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
-					'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
-				),
-			),
-
 			'strip_query_string' => array(
 				'id' => 'strip_query_string',
 				'title' => __( 'Strip query strings from URL', MS_TEXT_DOMAIN ),
@@ -558,37 +543,9 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['step'],
 			),
-			/*
-			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $nonce,
-			),
-			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $action,
-			),
-			'membership_id' => array(
-				'id' => 'membership_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $membership->id,
-			),
-			*/
 		);
 
 		$fields = apply_filters( 'ms_view_membership_setup_protected_content_get_tab_urlgroup_fields', $fields );
-
-		$edit_link = array(
-			'id'    => 'menu_rule_edit',
-			'type'  => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Edit URL Group Restrictions', MS_TEXT_DOMAIN ),
-			'url'   => sprintf(
-				'admin.php?page=%s&tab=%s',
-				MS_Controller_Plugin::MENU_SLUG . '-setup',
-				MS_Model_Rule::RULE_TYPE_URL_GROUP
-			),
-		);
 
 		$title = __( 'URL Groups', MS_TEXT_DOMAIN );
 		$desc = __( 'Protected URLs can be accessed by members only. ', MS_TEXT_DOMAIN );

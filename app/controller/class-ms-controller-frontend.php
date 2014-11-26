@@ -174,9 +174,9 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 
 		if ( ! empty( $ms_page_filter ) ) {
-			$ms_page = $ms_pages->current_page_info( $ms_page_filter );
+			$ms_page = $ms_pages->current_page( $ms_page_filter );
 		} else {
-			$ms_page = $ms_pages->current_page_info();
+			$ms_page = $ms_pages->current_page();
 		}
 
 		if ( $ms_page ) {
@@ -202,38 +202,38 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			$query->queried_object = get_post( $ms_page->id );
 			$query->queried_object_id = $ms_page->id;
-		}
 
-		switch ( $ms_page->type ) {
-			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
-				if ( ! MS_Model_Member::is_logged_user() ) {
-					$this->add_filter( 'the_content', 'display_login_form' );
+			switch ( $ms_page->type ) {
+				case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
+					if ( ! MS_Model_Member::is_logged_user() ) {
+						$this->add_filter( 'the_content', 'display_login_form' );
+						break;
+					}
+					// no break;
+
+				case MS_Model_Pages::MS_PAGE_REGISTER:
+					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
+						$this->membership_cancel();
+					} else {
+						$this->signup_process();
+					}
 					break;
-				}
-				// no break;
 
-			case MS_Model_Pages::MS_PAGE_REGISTER:
-				if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
-					$this->membership_cancel();
-				} else {
-					$this->signup_process();
-				}
-				break;
+				case MS_Model_Pages::MS_PAGE_ACCOUNT:
+					$this->user_account_mgr();
+					break;
 
-			case MS_Model_Pages::MS_PAGE_ACCOUNT:
-				$this->user_account_mgr();
-				break;
+				case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
+					$this->add_filter( 'the_content', 'protected_page', 1 );
+					break;
 
-			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
-				$this->add_filter( 'the_content', 'protected_page', 1 );
-				break;
+				case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
+					$this->add_filter( 'the_content', 'reg_complete_page', 1 );
+					break;
 
-			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
-				$this->add_filter( 'the_content', 'reg_complete_page', 1 );
-				break;
-
-			default:
-				break;
+				default:
+					break;
+			}
 		}
 	}
 

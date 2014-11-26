@@ -231,7 +231,8 @@ class MS_Model_Pages extends MS_Model_Option {
 			$Page_list[$field][ $value ] = apply_filters(
 				'ms_model_page_get_ms_page_by_id',
 				$ms_page_found,
-				$slug,
+				$field,
+				$value,
 				$this
 			);
 		}
@@ -267,7 +268,7 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @since  1.0.4.4
 	 * @return object|false
 	 */
-	public function current_page_info( $page_id = false, $page_type = null ) {
+	public function current_page( $page_id = false, $page_type = null ) {
 		global $wp_query;
 		static $Res = array();
 		$key = json_encode( $page_id ) . json_encode( $page_type );
@@ -308,8 +309,8 @@ class MS_Model_Pages extends MS_Model_Option {
 				 * Get infos based on the current URL!
 				 */
 				$pages = self::get_ms_pages();
-				$url = WDev()->current_url();
-				$url = array_shift( explode( '?', $url ) );
+				$url_parts = explode( '?', WDev()->current_url() );
+				$url = array_shift( $url_parts );
 
 				foreach ( $pages as $ms_page ) {
 					if ( $url === $ms_page->url ) {
@@ -336,59 +337,38 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @param string $page_type Optional. The page type to verify. If null, test it against all ms pages.
 	 */
 	public function is_ms_page( $page_id = null, $page_type = null ) {
-		global $wp_query;
-		$is_ms_page = false;
+		$ms_page_type = false;
+		$ms_page = $this->current_page( $page_id );
 
-		if ( empty( $page_id ) && is_page() ) {
-			$page_id = get_the_ID();
-		}
+		if ( empty( $page_type ) ) {
+			if ( $ms_page ) {
+				$ms_page_type = $ms_page->type;
+			}
+		} else {
+			if ( empty( $page_id ) && is_page() ) {
+				$page_id = get_the_ID();
+			}
 
-		if ( ! empty( $page_id ) ) {
-			if ( ! empty( $page_type ) ) {
-
+			if ( ! empty( $page_id ) ) {
 				$ms_page->id = $this->get_ms_page( $page_type );
 				if ( $page_id == $ms_page->id ) {
-					$is_ms_page = $page_type;
+					$ms_page_type = $page_type;
 				}
-			}
-			else {
-				$page_types = self::get_ms_page_types();
-
-				foreach ( $page_types as $page_type => $title ) {
-					$ms_page->id = $this->get_ms_page( $page_type );
-
-					if ( $page_id == $ms_page->id ) {
-						$is_ms_page = $page_type;
-						break;
-					}
-				}
-			}
-		}
-		elseif ( isset( $wp_query->query_vars['ms_page'] ) ) {
-			$slug = $wp_query->query_vars['ms_page'];
-
-			if ( ! empty( $page_type ) ) {
+			} elseif ( $ms_page ) {
+				$slug = $ms_page->slug;
 				$ms_page_slug = $this->get_ms_page_slug( $page_type );
 
 				if ( $slug == $ms_page_slug ) {
-					$is_ms_page = $page_type;
-				}
-			}
-			else {
-				$page_types = self::get_ms_page_types();
-
-				foreach ( $page_types as $page_type => $title ) {
-					$ms_page_slug = $this->get_ms_page_slug( $page_type );
-
-					if ( $slug == $ms_page_slug ) {
-						$is_ms_page = $page_type;
-						break;
-					}
+					$ms_page_type = $page_type;
 				}
 			}
 		}
 
-		return apply_filters( 'ms_model_page_is_ms_page', $is_ms_page, $this );
+		return apply_filters(
+			'ms_model_page_is_ms_page',
+			$ms_page_type,
+			$this
+		);
 	}
 
 	/**
