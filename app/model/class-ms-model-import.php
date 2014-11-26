@@ -177,7 +177,6 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		WDev()->message( __( 'Data imported!', MS_TEXT_DOMAIN ) );
-		WDev()->debug(  self::$cache );
 	}
 
 	/**
