@@ -191,30 +191,52 @@ class MS_Model_Pages extends MS_Model_Option {
 	}
 
 	/**
-	 * Get specific MS Page using slug information.
+	 * Get specific MS Page using either ID or slug information.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0.4.4
 	 *
-	 * @param string $slug The slug to find in ms pages.
+	 * @param string $field The field to check. [id|slug]
+	 * @param string $value The field value
 	 * @return null|MS_Model_Page The page model object.
 	 */
-	public function get_ms_page_by_slug( $slug ) {
-		$ms_page_found = null;
+	public function get_ms_page_by( $field, $value ) {
+		static $Page_list = array();
 
-		$ms_pages = $this->get_ms_pages();
-		foreach ( $ms_pages as $ms_page ) {
-			if ( $slug === $ms_page->slug ) {
-				$ms_page_found = $ms_page;
-				break;
-			}
+		if ( ! isset( $Page_list[$field] ) ) {
+			$Page_list[$field] = array();
 		}
 
-		return apply_filters(
-			'ms_model_page_get_ms_page_by_slug',
-			$ms_page_found,
-			$slug,
-			$this
-		);
+		if ( ! isset( $Page_list[$field][ $value ] ) ) {
+			$ms_page_found = null;
+
+			switch ( $field ) {
+				case 'id': $value = absint( $value ); break;
+			}
+
+			$ms_pages = $this->get_ms_pages();
+			$found = false;
+
+			foreach ( $ms_pages as $ms_page ) {
+				switch ( $field ) {
+					case 'id':   $found = ($value === absint( $ms_page->id ) ); break;
+					case 'slug': $found = ($value === $ms_page->slug ); break;
+				}
+
+				if ( $found ) {
+					$ms_page_found = $ms_page;
+					break;
+				}
+			}
+
+			$Page_list[$field][ $value ] = apply_filters(
+				'ms_model_page_get_ms_page_by_id',
+				$ms_page_found,
+				$slug,
+				$this
+			);
+		}
+
+		return $Page_list[$field][ $value ];
 	}
 
 	/**
@@ -418,36 +440,43 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @since 1.0.0
 	 *
 	 * @param string $page_type The page type to create menu.
+	 * @param string $update_only Only used by the upgrade class.
+	 * @param string $type Only used by the upgrade class.
 	 */
-	public function create_menu( $page_type ) {
+	public function create_menu( $page_type, $update_only = null, $update_type = null ) {
 		if ( self::is_valid_ms_page_type( $page_type ) ) {
-			$ms_page = $this->get_ms_page( $page_type, true );
-			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+			if ( $update_only && empty( $update_type ) ) {
+				$this->create_menu( $page_type, true, 'page' );
+				$this->create_menu( $page_type, true, 'ms_page' );
+			} else {
+				$ms_page = $this->get_ms_page( $page_type, true );
+				$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+				$object_type = empty( $update_type ) ? 'ms_page' : $update_type;
 
-			foreach ( $navs as $nav ) {
-				$args['meta_query'] = array(
-					array(
-						'key' => '_menu_item_object_id',
-						'value' => $ms_page->id,
-					),
-					array(
-						'key' => '_menu_item_object',
-						'value' => 'page',
-					),
-					array(
-						'key' => '_menu_item_type',
-						'value' => 'post_type',
-					),
-				);
+				foreach ( $navs as $nav ) {
+					$args['meta_query'] = array(
+						array(
+							'key' => '_menu_item_object_id',
+							'value' => $ms_page->id,
+						),
+						array(
+							'key' => '_menu_item_object',
+							'value' => $object_type,
+						),
+						array(
+							'key' => '_menu_item_type',
+							'value' => 'post_type',
+						),
+					);
 
-				// Search for existing menu item and create it if not found
-				$items = wp_get_nav_menu_items( $nav, $args );
-				if ( empty( $items ) ) {
+					// Search for existing menu item and create it if not found
+					$items = wp_get_nav_menu_items( $nav, $args );
+
 					$menu_item = apply_filters(
 						'ms_model_settings_create_menu_item',
 						array(
-							'menu-item-object-id' => $ms_page->ID,
-							'menu-item-object' => 'page',
+							'menu-item-object-id' => $ms_page->id,
+							'menu-item-object' => 'ms_page',
 							'menu-item-parent-id' => 0,
 							'menu-item-position' => 0,
 							'menu-item-type' => 'post_type',
@@ -456,7 +485,13 @@ class MS_Model_Pages extends MS_Model_Option {
 							'menu-item-status' => 'publish',
 						)
 					);
-					wp_update_nav_menu_item( $nav->term_id, 0, $menu_item );
+
+					$item = ! is_array( $items ) ? false : array_shift( $items );
+					$db_id = empty( $item ) ? 0 : $item->db_id;
+
+					if ( $db_id || ! $update_only ) {
+						wp_update_nav_menu_item( $nav->term_id, $db_id, $menu_item );
+					}
 				}
 			}
 		}

@@ -100,6 +100,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this->add_filter( 'login_redirect', 'login_redirect', 10, 3 );
 
 			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
+
+			// Return correct permalink for MS Pages.
+			$this->add_filter( 'wp_get_nav_menu_items', 'custom_menulinks' );
+			$this->add_filter( 'wp_setup_nav_menu_item', 'custom_menulink' );
 		}
 	}
 
@@ -226,6 +230,43 @@ class MS_Controller_Frontend extends MS_Controller {
 			default:
 				break;
 		}
+	}
+
+	/**
+	 * Modifies all MS Page menu items and adjusts the URL.
+	 *
+	 * @since  1.0.4.4
+	 *
+	 * @param  array $items List of all menu items.
+	 * @return array
+	 */
+	public function custom_menulinks( $items ) {
+		foreach ( $items as $key => $item ) {
+			$items[$key] = $this->custom_menulink( $item );
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Modifies the menu item and adjusts the URL for MS Pages.
+	 *
+	 * @since  1.0.4.4
+	 *
+	 * @param  WP_Post $item Menu item (augmented WP_Post object).
+	 * @return WP_Post The updated menu item.
+	 */
+	public function custom_menulink( $item ) {
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
+		if ( $item->object === MS_Model_Page::$POST_TYPE ) {
+			$ms_page = $ms_pages->get_ms_page_by( 'id', $item->object_id );
+			if ( $ms_page ) {
+				$item->url = $ms_page->url;
+			}
+		}
+
+		return $item;
 	}
 
 	/**

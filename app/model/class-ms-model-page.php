@@ -94,6 +94,9 @@ class MS_Model_Page extends MS_Model_Custom_Post_Type {
 		return apply_filters(
 			'ms_model_page_register_post_type_args',
 			array(
+				'labels' => array(
+					'name' => __( 'Membership Pages', MS_TEXT_DOMAIN ),
+				),
 				'public' => false,
 				'publicly_queriable' => true,
 				'show_ui' => false,

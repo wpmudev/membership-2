@@ -67,7 +67,7 @@ class MS_Controller_Page extends MS_Controller {
 		if ( ! empty( $wp_query->query_vars['ms_page'] ) ) {
 			$slug = $wp_query->query_vars['ms_page'];
 			$ms_pages = $this->get_ms_pages_model();
-			$ms_page = $ms_pages->get_ms_page_by_slug( $slug );
+			$ms_page = $ms_pages->get_ms_page_by( 'slug', $slug );
 
 			$wp_query->query_vars['post_type'] = 'page';
 			$wp_query->query_vars['page_id'] = $ms_page->id;
