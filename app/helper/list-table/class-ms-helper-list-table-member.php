@@ -555,8 +555,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 *
 	 */
 	public function get_views() {
-		$memberships = MS_Model_Membership::get_signup_membership_list();
-
 		$list_views = array();
 
 		// Active Memberships.
@@ -579,9 +577,11 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				esc_attr( __( 'Pending', MS_TEXT_DOMAIN ) )
 			)
 		);
+
 		$count = MS_Model_Membership_Relationship::get_membership_relationship_count(
 			array( 'status' => MS_Model_Membership_Relationship::STATUS_PENDING )
 		);
+
 		$list_views['pending'] = array(
 			'url' => $status_url,
 			'label' => __( 'Pending', MS_TEXT_DOMAIN ),
@@ -594,19 +594,83 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'label' => __( 'Memberships', MS_TEXT_DOMAIN ) . ':',
 		);
 
+		// Get all memberships.
+		$memberships = MS_Model_Membership::get_memberships();
+
+		// Count memberships that are displayed.
+		$count = 0;
 		foreach ( $memberships as $id => $membership ) {
-			$status_url = admin_url(
+			if ( $membership->can_have_children() ) { continue; }
+			$count += 1;
+		}
+
+		if ( 5 >= $count ) {
+			foreach ( $memberships as $id => $membership ) {
+				if ( $membership->can_have_children() ) { continue; }
+				$status_url = admin_url(
+					sprintf(
+						'admin.php?page=%s&search_options=membership&membership=%s&s=%s',
+						MS_Controller_Plugin::MENU_SLUG . '-members',
+						esc_attr( $membership->id ),
+						esc_attr( $membership->name )
+					)
+				);
+				$list_views[ $id ] = array(
+					'url' => $status_url,
+					'label' => $membership->name,
+					'count' => $membership->get_members_count(),
+				);
+			}
+		} else {
+			$grouped = array(
+				0 => __( '(Select a membership)', MS_TEXT_DOMAIN ),
+			);
+			$grouped += MS_Model_Membership::get_membership_hierarchy();
+
+			foreach ( $grouped as $id => $item ) {
+				if ( empty( $id ) ) { continue; }
+
+				if ( is_array( $item ) ) {
+					foreach ( $item as $child_id => $child ) {
+						$ms = MS_Factory::load( 'MS_Model_Membership', $child_id );
+						$count = $ms->get_members_count();
+						if ( $count ) {
+							$grouped[$id][$child_id] .= '  (' . $count . ')';
+						}
+					}
+				} else {
+					$ms = MS_Factory::load( 'MS_Model_Membership', $id );
+					$count = $ms->get_members_count();
+					if ( $count ) {
+						$grouped[$id] .= '  (' . $count . ')';
+					}
+				}
+			}
+
+			$url = admin_url(
 				sprintf(
-					'admin.php?page=%s&search_options=membership&membership=%s&s=%s',
-					MS_Controller_Plugin::MENU_SLUG . '-members',
-					esc_attr( $membership->id ),
-					esc_attr( $membership->name )
+					'admin.php?page=%s&search_options=membership&membership=',
+					MS_Controller_Plugin::MENU_SLUG . '-members'
 				)
 			);
-			$list_views[ $id ] = array(
-				'url' => $status_url,
-				'label' => $membership->name,
-				'count' => $membership->get_members_count(),
+			$value = 0;
+			if ( isset( $_GET['membership'] ) ) {
+				$value = $_GET['membership'];
+			}
+
+			$field = array(
+				'id' => 'view_membership',
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => $grouped,
+				'data_ms' => array( 'url' => $url ),
+				'value' => $value,
+			);
+			$code = MS_Helper_Html::html_element( $field, true );
+
+			$list_views[ 'membership' ] = array(
+				'url' => false,
+				'label' => $code,
+				'count' => false,
 			);
 		}
 

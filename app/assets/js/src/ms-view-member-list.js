@@ -59,4 +59,17 @@ window.ms_init.view_member_list = function init () {
 	jQuery( '#new_member' ).select2( s2_config ).change( enable_add_button );
 	jQuery( '#add_member' ).click( submit_add_form );
 	enable_add_button();
+
+	// Change the view (show members of different membership)
+	function change_view() {
+		var list = jQuery( '#view_membership' ),
+			new_id = parseInt( list.val() ),
+			data = list.data('ms'),
+			url = data.url + new_id;
+
+		if ( new_id <= 0 ) { return; }
+		window.location = url;
+	}
+
+	jQuery('#view_membership').change( change_view );
 };
