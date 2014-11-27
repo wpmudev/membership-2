@@ -51,7 +51,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	protected $start_date;
 
 	/**
-	 * Set initial protection.
+	 * Set initial protection (front-end only)
 	 *
 	 * @since 1.0.0
 	 *
@@ -69,9 +69,8 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * get_pages
+	 * Related action hook:
+	 * - get_pages
 	 *
 	 * @param array $pages The array of pages to filter.
 	 * @return array Filtered array which doesn't include prohibited pages.
@@ -222,15 +221,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
 		$count = 0;
 		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
+		$posts = get_pages( $args );
 
-		$count = $query->found_posts;
+		$count = count( $posts );
 
 		return apply_filters(
 			'ms_model_rule_page_get_content_count',
@@ -244,15 +243,13 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
 		$args = self::get_query_args( $args );
 
-		$query = new WP_Query( $args );
-		$contents = array();
-		$pages = $query->get_posts();
+		$pages = get_pages( $args );
 
 		foreach ( $pages as $content ) {
 			$content->id = $content->ID;
@@ -283,53 +280,47 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param string $args The query post args.
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
 	 * @return array The parsed args.
 	 */
 	public function get_query_args( $args = null ) {
 		$defaults = array(
-			'posts_per_page' => -1,
-			'offset'      => 0,
-			'orderby'     => 'ID',
-			'order'       => 'DESC',
-			'post_type'   => 'page',
-			//custom "virtual" status for special pages (classifieds plugin)
-			'post_status' => array( 'publish', 'virtual' ),
-			'post__not_in'     => $this->get_excluded_content(),
+			'number' => false,
+			'offset' => 0,
+			'hierarchical' => 1,
+			'sort_column' => 'post_title',
+			'sort_order' => 'ASC',
+			'post_type' => 'page',
 		);
 
 		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
 
 		switch ( $status ) {
 			case MS_Model_Rule::FILTER_HAS_ACCESS;
-				$args['post__in'] = array_keys( $this->rule_value, true );
+				$args['include'] = array_keys( $this->rule_value, true );
 				break;
 
 			case MS_Model_Rule::FILTER_NO_ACCESS;
-				$args['post__in'] = array_keys( $this->rule_value, false );
+				$args['include'] = array_keys( $this->rule_value, false );
 				break;
 
 			case MS_Model_Rule::FILTER_PROTECTED;
-				$args['post__in'] = array_keys( $this->rule_value, true );
+				$args['include'] = array_keys( $this->rule_value, true );
 				break;
 
 			case MS_Model_Rule::FILTER_NOT_PROTECTED;
-				$args['post__not_in'] = array_merge(
-					$this->get_excluded_content(),
-					array_keys( $this->rule_value, true )
-				);
+				$args['exclude'] = array_keys( $this->rule_value, true );
 				break;
 
 			default:
 				// If not visitor membership, just show protected content
 				if ( ! $this->rule_value_invert ) {
-					$args['post__in'] = array_keys( $this->rule_value );
+					$args['include'] = array_keys( $this->rule_value );
 				}
 				break;
 		}
 
 		$args = wp_parse_args( $args, $defaults );
-		$args = $this->validate_query_args( $args );
 
 		return apply_filters(
 			'ms_model_rule_page_get_query_args',
@@ -352,11 +343,22 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	public function get_content_array( $args = null ) {
 		$cont = array();
 		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
-		$contents = $query->get_posts();
+		$contents = get_pages( $args );
+		$pages = array();
 
 		foreach ( $contents as $content ) {
-			$cont[ $content->ID ] = $content->post_title;
+			$pages[$content->ID] = $content;
+		}
+
+		foreach ( $contents as $page_id => $content ) {
+			$level = 0;
+			$parent = $content;
+			while ( $parent->post_parent ) {
+				$parent = $pages[$parent->post_parent];
+				$level += 1;
+			}
+
+			$cont[ $content->ID ] = str_repeat( '&nbsp;&mdash;&nbsp;', $level ) . $content->post_title;
 		}
 
 		return apply_filters(
@@ -366,31 +368,4 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		);
 	}
 
-	/**
-	 * Get pages that should not be protected.
-	 *
-	 * Settings pages like protected, subscribe, welcome page, account page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array The page ids.
-	 */
-	private function get_excluded_content() {
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$ms_page_types = MS_Model_Pages::get_ms_page_types();
-		$exclude = null;
-
-		foreach ( $ms_page_types as $type => $title ) {
-			$ms_page = $ms_pages->get_ms_page( $type );
-			if ( $ms_page->id ) {
-				$exclude[] = $ms_page->id;
-			}
-		}
-
-		return apply_filters(
-			'ms_model_rule_page_get_excluded_content',
-			$exclude,
-			$this
-		);
-	}
 }
