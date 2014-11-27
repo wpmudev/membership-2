@@ -737,113 +737,46 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_url_group() {
+		$fields = $this->get_control_fields();
+
 		$membership = $this->data['membership'];
 		$action = $this->data['action'];
 		$nonce = wp_create_nonce( $action );
 
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP );
-
-		$fields = array(
-			'access' => array(
-				'id' => 'access',
-				'title' => __( 'Members Access', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $rule->access,
-				'class' => '',
-				'data_ms' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'field' => 'access',
-					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
-					'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
-				),
-			),
-
-			'rule_value' => array(
-				'id' => 'rule_value',
-				'title' => __( 'Page URLs', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-				'value' => implode( PHP_EOL, $rule->rule_value ),
-				'class' => 'ms-textarea-medium ms-ajax-update',
-				'read_only' => true,
-				'data_ms' => array(
-						'membership_id' => $membership->id,
-						'rule_type' => $rule->rule_type,
-						'field' => 'rule_value',
-						'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
-						'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
-				),
-			),
-
-			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $nonce,
-			),
-
-			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $action,
-			),
-
-			'step' => array(
-				'id' => 'step',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['step'],
-			),
-
-			'membership_id' => array(
-				'id' => 'membership_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $membership->id,
-			),
-		);
-
-		$fields = apply_filters( 'ms_view_membership_setup_protected_content_get_tab_urlgroup_fields', $fields );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Url_Group( $rule, $membership );
+		$rule_list_table->prepare_items();
 
 		$edit_link = $this->restriction_link( MS_Model_Rule::RULE_TYPE_URL_GROUP );
 
-		$title = __( 'URL Groups', MS_TEXT_DOMAIN );
+		$title = __( 'URL Protection', MS_TEXT_DOMAIN );
 		$desc = sprintf(
-			__( 'Give access to protected URL Groups to %s members.', MS_TEXT_DOMAIN ),
+			__( 'Give access to protected URLs to %s members.', MS_TEXT_DOMAIN ),
 			$this->data['membership']->name
 		);
 
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
+			<?php MS_Helper_Html::settings_tab_header(
+				array( 'title' => $title, 'desc' => $desc )
+			); ?>
 			<div class="ms-separator"></div>
 
-			<form action="" method="post" class="ms-form">
-				<?php MS_Helper_Html::settings_box( $fields ); ?>
+			<?php $rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php $rule_list_table->search_box( __( 'Search URLs', MS_TEXT_DOMAIN ), 'search' ); ?>
+				<?php $rule_list_table->display(); ?>
+				<div class="ms-protection-edit-link">
+					<?php MS_Helper_Html::html_element( $edit_link ); ?>
+				</div>
 			</form>
-			<div class="clear"></div>
-			<div class="ms-protection-edit-link">
-				<?php MS_Helper_Html::html_element( $edit_link ); ?>
-			</div>
-			<?php
-			MS_Helper_Html::settings_footer(
-				array( $fields['step'] ),
-				$this->data['show_next_button']
-			);
-
-			MS_Helper_Html::settings_box(
-				array(
-					array(
-						'id' => 'url_test',
-						'desc' => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
-						'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'class' => 'widefat',
-					),
-				),
-				__( 'Test URL group', MS_TEXT_DOMAIN )
-			);
-			?>
-			<div id="url-test-results-wrapper"></div>
 		</div>
 		<?php
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
 		return ob_get_clean();
 	}
 

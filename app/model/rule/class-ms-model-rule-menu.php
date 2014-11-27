@@ -207,15 +207,14 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		if ( ! empty( $args['protected_content'] ) ) {
 			$menus = $this->get_menu_array();
 			foreach ( $menus as $menu_id => $menu ) {
-				//recursive call.
+				// Recursive call.
 				$contents = array_merge(
 					$contents,
 					$this->get_contents( array( 'menu_id' => $menu_id ) )
 				);
 			}
 			return $contents;
-		}
-		elseif ( ! empty( $args['menu_id'] ) ) {
+		} elseif ( ! empty( $args['menu_id'] ) ) {
 			$menu_id = $args['menu_id'];
 			$items = wp_get_nav_menu_items( $menu_id );
 
@@ -235,7 +234,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 
 		// If not visitor membership, just show protected content
 		if ( ! $this->rule_value_invert ) {
-			$contents = array_intersect_key( $contents,  $this->rule_value );
+			$contents = array_intersect_key( $contents, $this->rule_value );
 		}
 
 		if ( ! empty( $args['rule_status'] ) ) {

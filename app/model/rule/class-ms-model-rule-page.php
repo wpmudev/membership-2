@@ -381,9 +381,9 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 		$exclude = null;
 
 		foreach ( $ms_page_types as $type => $title ) {
-			$ms_page_id = $ms_pages->get_ms_page_id( $type );
-			if ( $ms_page_id ) {
-				$exclude[] = $ms_page_id;
+			$ms_page = $ms_pages->get_ms_page( $type );
+			if ( $ms_page->id ) {
+				$exclude[] = $ms_page->id;
 			}
 		}
 

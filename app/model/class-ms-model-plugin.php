@@ -201,6 +201,16 @@ class MS_Model_Plugin extends MS_Model {
 					if ( $simulation ) {
 						$Info['reason'][] = __( 'Allow: Special page is always available', MS_TEXT_DOMAIN );
 					}
+				} else {
+					$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+					$ms_page = $ms_pages->current_page();
+					if ( $ms_page ) {
+						$Info['has_access'] = true;
+
+						if ( $simulation ) {
+							$Info['reason'][] = __( 'Allow: This is a Membership Page', MS_TEXT_DOMAIN );
+						}
+					}
 				}
 
 				// Build a list of memberships the user belongs to and check permission.

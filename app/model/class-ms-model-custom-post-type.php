@@ -232,7 +232,6 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		if ( $this->is_valid()
 			&& $lock = get_post_meta( $this->id, '_ms_edit_lock', true )
 		) {
-
 			$time = $lock;
 			$time_window = apply_filters(
 				'ms_model_custom_post_type_check_object_lock_window',

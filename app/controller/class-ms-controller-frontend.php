@@ -88,7 +88,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			do_action( 'ms_controller_frontend_construct', $this );
 
 			$this->add_action( 'parse_query', 'process_actions', 1 );
-			$this->add_action( 'parse_query', 'check_for_membership_pages', 1 );
+			$this->add_action( 'pre_get_posts', 'check_for_membership_pages', 1 );
 
 			// Add classes for all memberships the user is registered to.
 			$this->add_filter( 'body_class', 'body_class' );
@@ -100,6 +100,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this->add_filter( 'login_redirect', 'login_redirect', 10, 3 );
 
 			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
+
+			// Return correct permalink for MS Pages.
+			$this->add_filter( 'wp_get_nav_menu_items', 'custom_menulinks' );
+			$this->add_filter( 'wp_setup_nav_menu_item', 'custom_menulink' );
 		}
 	}
 
@@ -138,16 +142,18 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Check pages for the presence of Membership special pages.
 	 *
 	 * Related Action Hooks:
-	 * - parse_query
+	 * - pre_get_posts
 	 *
 	 * @since 1.0.0
 	 */
-	public function check_for_membership_pages( $query ) {
+	public function check_for_membership_pages( &$query ) {
+		global $post;
+		if ( ! is_main_query() ) { return; }
+
 		// Only execute this handler once!
-		$this->remove_action( 'parse_query', 'check_for_membership_pages', 1 );
+		$this->remove_action( 'pre_get_posts', 'check_for_membership_pages', 1 );
 
 		//For invoice page purchase process
-		global $post;
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
 
 		if ( isset( $post->post_type )
@@ -161,58 +167,111 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
-		$post_id = null;
-		if ( $query->is_singular && is_a( $query->queried_object, 'WP_Post' ) ) {
-			$post_id = $query->queried_object_id;
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$ms_page_filter = null;
+		if ( isset( $query->query[ MS_Model_Page::$POST_TYPE ] ) ) {
+			$ms_page_filter = $query->query[ MS_Model_Page::$POST_TYPE ];
 		}
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$ms_page_slug = $ms_pages->is_ms_page( $post_id );
+		if ( ! empty( $ms_page_filter ) ) {
+			$ms_page = $ms_pages->current_page( $ms_page_filter );
+		} else {
+			$ms_page = $ms_pages->current_page();
+		}
 
-		if ( $ms_page_slug ) {
+		if ( $ms_page ) {
 			// Fix the main query flags for best theme support:
 			// Our Membership-Pages are always single pages...
 
-			$query->query_vars['pagename'] = $ms_pages->is_ms_page();
+			$query->query_vars['page'] = $ms_page->slug;
+			$query->query_vars['pagename'] = $ms_page->slug;
+			$query->query_vars['post_type'] = $ms_page->post_type;
+			unset( $query->query_vars['name'] );
+
+			$query->query['page'] = $ms_page->slug;
+			$query->query['pagename'] = $ms_page->slug;
+			$query->query['post_type'] = $ms_page->post_type;
+			unset( $query->query['name'] );
+
+			$query->is_single = false;
 			$query->is_page = true;
 			$query->is_singular = true;
 			$query->is_home = false;
 			$query->is_frontpage = false;
 			$query->tax_query = null;
-		}
 
-		switch ( $ms_page_slug ) {
-			case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
-				if ( ! MS_Model_Member::is_logged_user() ) {
-					$this->add_filter( 'the_content', 'display_login_form' );
+			$query->queried_object = get_post( $ms_page->id );
+			$query->queried_object_id = $ms_page->id;
+
+			switch ( $ms_page->type ) {
+				case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
+					if ( ! MS_Model_Member::is_logged_user() ) {
+						$this->add_filter( 'the_content', 'display_login_form' );
+						break;
+					}
+					// no break;
+
+				case MS_Model_Pages::MS_PAGE_REGISTER:
+					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
+						$this->membership_cancel();
+					} else {
+						$this->signup_process();
+					}
 					break;
-				}
-				// no break;
 
-			case MS_Model_Pages::MS_PAGE_REGISTER:
-				if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
-					$this->membership_cancel();
-				}
-				else {
-					$this->signup_process();
-				}
-				break;
+				case MS_Model_Pages::MS_PAGE_ACCOUNT:
+					$this->user_account_mgr();
+					break;
 
-			case MS_Model_Pages::MS_PAGE_ACCOUNT:
-				$this->user_account_mgr();
-				break;
+				case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
+					$this->add_filter( 'the_content', 'protected_page', 1 );
+					break;
 
-			case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
-				$this->add_filter( 'the_content', 'protected_page', 1 );
-				break;
+				case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
+					$this->add_filter( 'the_content', 'reg_complete_page', 1 );
+					break;
 
-			case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
-				$this->add_filter( 'the_content', 'reg_complete_page', 1 );
-				break;
-
-			default:
-				break;
+				default:
+					break;
+			}
 		}
+	}
+
+	/**
+	 * Modifies all MS Page menu items and adjusts the URL.
+	 *
+	 * @since  1.0.4.4
+	 *
+	 * @param  array $items List of all menu items.
+	 * @return array
+	 */
+	public function custom_menulinks( $items ) {
+		foreach ( $items as $key => $item ) {
+			$items[$key] = $this->custom_menulink( $item );
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Modifies the menu item and adjusts the URL for MS Pages.
+	 *
+	 * @since  1.0.4.4
+	 *
+	 * @param  WP_Post $item Menu item (augmented WP_Post object).
+	 * @return WP_Post The updated menu item.
+	 */
+	public function custom_menulink( $item ) {
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
+		if ( $item->object === MS_Model_Page::$POST_TYPE ) {
+			$ms_page = $ms_pages->get_ms_page_by( 'id', $item->object_id );
+			if ( $ms_page ) {
+				$item->url = $ms_page->url;
+			}
+		}
+
+		return $item;
 	}
 
 	/**
@@ -351,7 +410,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for signup shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -378,7 +437,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for register user shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -685,7 +744,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for account shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -747,7 +806,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Show registration complete page.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -768,7 +827,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Search for login shortcode, injecting if not found.
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 * * the_content
 	 *
 	 * @since 1.0.0
@@ -794,7 +853,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Uses the default registration page unless the registration was embedded on another page (e.g. using a shortcode).
 	 *
-	 * **Hooks Filters: **
+	 * Related Filter Hooks:
 	 *
 	 * * wp_signup_location
 	 * * register_url

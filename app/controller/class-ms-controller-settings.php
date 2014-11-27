@@ -272,7 +272,7 @@ class MS_Controller_Settings extends MS_Controller {
 				'title' => __( 'General', MS_TEXT_DOMAIN ),
 			),
 			'pages' => array(
-				'title' => __( 'Membership Site Pages', MS_TEXT_DOMAIN ),
+				'title' => __( 'Membership Pages', MS_TEXT_DOMAIN ),
 			),
 			'payment' => array(
 				'title' => __( 'Payment', MS_TEXT_DOMAIN ),

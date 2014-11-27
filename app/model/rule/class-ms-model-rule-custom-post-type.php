@@ -146,17 +146,19 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			}
 
 			if ( ! empty( $post_id ) ) {
-				$has_access = false;
-
 				$post_type = get_post_type( $post_id );
 				$mspt = MS_Model_Rule_Custom_Post_Type_Group::get_ms_post_types();
 				$cpt = MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types();
 
 				if ( in_array( $post_type, $mspt ) ) {
+					// Always allow access to Protected Content pages.
 					$has_access = true;
-				}
-				elseif ( in_array( $post_type, $cpt ) ) {
+				} elseif ( in_array( $post_type, $cpt ) ) {
+					// Custom post type
 					$has_access = parent::has_access( $post_id  );
+				} else {
+					// WordPress core pages are ignored by this rule.
+					$has_access = null;
 				}
 			}
 		}

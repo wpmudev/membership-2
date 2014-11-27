@@ -203,7 +203,7 @@ class MS_View_Settings_Edit extends MS_View {
 				'page_id' => $ms_page->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'read_only' => true,
-				'title' => sprintf( __( 'Select %s page', MS_TEXT_DOMAIN ), $ms_page->title ),
+				'title' => sprintf( __( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ), $ms_page->title ),
 				'value' => sprintf( '/%1$s/', $ms_page->slug ),
 				'class' => 'ms-ajax-update',
 				'data_ms' => array(
@@ -263,6 +263,7 @@ class MS_View_Settings_Edit extends MS_View {
 						);
 						?>
 					</div>
+					<?php MS_Helper_Html::html_separator(); ?>
 				<?php endforeach; ?>
 			</form>
 		</div>

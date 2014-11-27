@@ -385,8 +385,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 		if ( ! empty( $wp_query->query_vars['protectedfile'] ) ) {
 			$protected = explode( '/', $wp_query->query_vars['protectedfile'] );
 			$protected = array_pop( $protected );
-		}
-		elseif ( ! empty( $_GET['ms_file'] )
+		} elseif ( ! empty( $_GET['ms_file'] )
 			&& self::PROTECTION_TYPE_HYBRID === $download_settings['protection_type']
 		) {
 			$protected = $_GET['ms_file'];
@@ -428,8 +427,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 					$upload_dir = wp_upload_dir();
 					$file = trailingslashit( $upload_dir['basedir'] ) . $image;
 					$this->output_file( $file );
-				}
-				else {
+				} else {
 					$this->show_no_access_image();
 				}
 			}
@@ -600,8 +598,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 			$content->id = $content->ID;
 			if ( in_array( $content->id, $this->rule_value ) ) {
 				$content->access = true;
-			}
-			else {
+			} else {
 				$content->access = false;
 			}
 		}

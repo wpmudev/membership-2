@@ -683,12 +683,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function get_rule( $rule_type ) {
 		$rule = null;
 
+		if ( 'attachment' === $rule_type ) {
+			$rule_type = MS_Model_Rule::RULE_TYPE_MEDIA;
+		}
+
 		if ( isset( $this->rules[ $rule_type ] ) ) {
+			// Rule was already initialized. Use this
 			$rule = $this->rules[ $rule_type ];
-		} elseif ( 'attachment' === $rule_type
-			&& isset( $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ] )
-		) {
-			$rule = $this->rules[ MS_Model_Rule::RULE_TYPE_MEDIA ];
 		} else {
 			// Create a new rule model object.
 			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
@@ -1351,7 +1352,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$rules[ $rule_type ] = $this->get_rule( $rule_type );
 		}
 
-		return apply_filters( 'ms_model_membership_get_rules_hierarchy', $rules, $this );
+		return apply_filters(
+			'ms_model_membership_get_rules_hierarchy',
+			$rules,
+			$this
+		);
 	}
 
 	/**
@@ -1364,7 +1369,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return bool $marked True in the first time setup is finished.
 	 */
 	public function mark_setup_completed() {
-
 		$marked = false;
 
 		if ( ! $this->is_setup_completed ) {
@@ -1372,7 +1376,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$marked = true;
 		}
 
-		return apply_filters( 'ms_model_membership_mark_setup_completed', $marked, $this );
+		return apply_filters(
+			'ms_model_membership_mark_setup_completed',
+			$marked,
+			$this
+		);
 	}
 
 	/**
@@ -1485,7 +1493,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if ( ! empty( $post_id ) ) {
 			$post = get_post( $post_id );
-			if ( 'attachment' == $post->post_type ) {
+			if ( 'attachment' === $post->post_type ) {
 				$post_id = get_post_field( 'post_parent', $post_id );
 			}
 		}
@@ -1494,7 +1502,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$rules = $this->get_rules_hierarchy();
 		foreach ( $rules as $rule ) {
 			// url groups have final decision
-			if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type && $rule->has_rule_for_post( $post_id ) ) {
+			if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type
+				&& $rule->has_rule_for_post( $post_id )
+			) {
 				$has_access = $rule->has_access( $post_id );
 				break;
 			} else {
@@ -1506,7 +1516,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_membership_has_access_to_post', $has_access, $this );
+		return apply_filters(
+			'ms_model_membership_has_access_to_post',
+			$has_access,
+			$this
+		);
 	}
 
 	/**
@@ -1636,7 +1650,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-
 		if ( property_exists( $this, $property ) ) {
 			switch ( $property ) {
 				case 'name':
@@ -1647,22 +1660,25 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 				case 'type':
 					if ( array_key_exists( $value, self::get_types() ) ) {
-						$this->$property = $value;
+						$this->type = $value;
 					}
 					break;
 
 				case 'payment_type':
 					if ( array_key_exists( $value, self::get_payment_types() ) ) {
-						if ( empty( $this->$property ) || empty( $this->id ) || 0 == MS_Model_Membership_Relationship::get_membership_relationship_count( array( 'membership_id' => $this->id ) ) ) {
-							$this->$property = $value;
-						}
-						elseif ( $this->$property != $value ) {
+						if ( empty( $this->payment_type )
+							|| empty( $this->id )
+							|| 0 == MS_Model_Membership_Relationship::get_membership_relationship_count(
+								array( 'membership_id' => $this->id )
+							)
+						) {
+							$this->payment_type = $value;
+						} elseif ( $this->payment_type != $value ) {
 							$error = 'Membership type cannot be changed after members have signed up.';
 							MS_Helper_Debug::log( $error );
 							throw new Exception( $error );
 						}
-					}
-					else {
+					} else {
 						throw new Exception( 'Invalid membership type.' );
 					}
 					break;
@@ -1699,8 +1715,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					$this->$property = $value;
 					break;
 			}
-		}
-		else {
+		} else {
 			switch ( $property ) {
 				case 'period_unit':
 					$this->period['period_unit'] = $this->validate_period_unit( $value );
@@ -1728,7 +1743,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		do_action( 'ms_model_membership__set_after', $property, $value, $this );
+		do_action(
+			'ms_model_membership__set_after',
+			$property,
+			$value,
+			$this
+		);
 	}
 
 	/**
@@ -1750,6 +1770,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			'hierarchical' => false,
 		);
 
-		return apply_filters( 'ms_model_membership_get_register_post_type_args', $args );
+		return apply_filters(
+			'ms_model_membership_get_register_post_type_args',
+			$args
+		);
 	}
 }

@@ -40,7 +40,7 @@ class MS_Model_Upgrade extends MS_Model {
 	public static function init() {
 		self::upgrade();
 
-		MS_Factory::load( 'Ms_Model_Upgrade' );
+		MS_Factory::load( 'MS_Model_Upgrade' );
 
 		do_action( 'ms_model_upgrade_init' );
 	}
@@ -70,12 +70,31 @@ class MS_Model_Upgrade extends MS_Model {
 				}
 			}
 
+			// Upgrade from pre-1.0.4.4
+			if ( version_compare( '1.0.4.3', $settings->version, '=' ) ) {
+				$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
+				foreach ( $ms_pages->pages as $ms_page ) {
+					// Convert the virtual pages to real MS Pages (custom post type)
+					wp_update_post(
+						array(
+							'ID' => $ms_page->id,
+							'post_type' => $ms_page->post_type,
+						)
+					);
+
+					// Update the WordPress menus...
+					$ms_pages->create_menu( $ms_page->type, true );
+				}
+			}
+
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$settings->version = MS_Plugin::instance()->version;
 			$settings->save();
 
-			flush_rewrite_rules();
 			do_action( 'ms_model_upgrade_upgrade', $settings );
+
+			MS_Plugin::flush_rewrite_rules(); // This will reload the current page
 		}
 	}
 

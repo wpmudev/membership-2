@@ -28,25 +28,18 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Page extends MS_Model {
+class MS_Model_Page extends MS_Model_Custom_Post_Type {
 
 	/**
-	 * ID of the model object.
+	 * Model custom post type.
+	 *
+	 * Both static and class property are used to handle php 5.2 limitations.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @var int
+	 * @var string $POST_TYPE
 	 */
-	protected $id;
-
-	/**
-	 * Title of the model object.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
-	 */
-	protected $title;
+	public static $POST_TYPE = 'ms_page';
+	public $post_type = 'ms_page';
 
 	/**
 	 * MS Page Type.
@@ -69,29 +62,52 @@ class MS_Model_Page extends MS_Model {
 	protected $slug;
 
 	/**
+	 * The full URL to this MS Page
+	 *
+	 * @since 1.0.4.4
+	 *
+	 * @var string
+	 */
+	protected $url;
+
+	/**
 	 * Create WP page.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param boolean $virtual Optional. Default true. Create with virtual status.
 	 */
-	public function create_wp_page( $virtual = true ) {
-		$page_details = apply_filters(
-			'ms_model_settings_create_' . $this->type,
+	public function create_wp_page() {
+		$this->name = $this->title;
+		$this->description = $this->get_ms_page_default_content();
+		$this->save();
+
+		$this->set_page_status( 'publish' );
+
+		do_action( 'ms_model_page_create_wp_page', $this );
+	}
+
+	/**
+	 * Get custom register post type args for this model.
+	 *
+	 * @since 1.0.0 register_post_type
+	 */
+	public static function get_register_post_type_args() {
+		return apply_filters(
+			'ms_model_page_register_post_type_args',
 			array(
-				'post_title' => $this->title,
-				'post_name' => $this->title,
-				'post_status' => ( $virtual ) ? 'virtual' : 'publish',
-				'post_type' => 'page',
-				'ping_status' => 'closed',
-				'comment_status' => 'closed',
-				'post_content' => $this->get_ms_page_default_content(),
+				'labels' => array(
+					'name' => __( 'Membership Pages', MS_TEXT_DOMAIN ),
+				),
+				'public' => false,
+				'publicly_queriable' => true,
+				'show_ui' => false,
+				'show_in_menu' => false,
+				'exclude_from_search' => true,
+				'show_in_nav_menus' => true, // Add pages in Front-end menus
+				'rewrite' => array( 'slug' => 'member', 'with_front' => false ),
+				'has_archive' => false,
+				'supports' => array( 'title', 'editor', 'revisions' ),
 			)
 		);
-		$id = wp_insert_post( $page_details );
-		$this->id = $id;
-
-		do_action( 'ms_model_page_create_wp_page', $virtual, $this );
 	}
 
 	/**
@@ -164,29 +180,11 @@ class MS_Model_Page extends MS_Model {
 			$page['ID'] = $this->id;
 			$page['post_status'] = $status;
 			wp_update_post( $page );
+
+			$this->status = $status;
 		}
 
 		do_action( 'ms_model_page_set_page_status', $status, $this );
-	}
-
-	/**
-	 * Get WP page object.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return null|WP_Post The WP page.
-	 */
-	public function get_page() {
-		$page = null;
-
-		if ( ! empty( $this->id ) ) {
-			$page = get_post( $this->id );
-			if ( empty( $page->ID ) || 'trash' == $page->post_status ) {
-				$page = null;
-			}
-		}
-
-		return apply_filters( 'ms_model_page_get_page', $page, $this );
 	}
 
 	/**
@@ -201,11 +199,14 @@ class MS_Model_Page extends MS_Model {
 		if ( property_exists( $this, $property ) ) {
 			switch ( $property ) {
 				case 'id':
-					$this->$property = $this->validate_min( $value, 0 );
+					$this->id = $this->validate_min( $value, 0 );
 					break;
 
 				case 'slug':
-					$this->$property = sanitize_title( $value );
+					$value = untrailingslashit( $value );
+					$this->slug = sanitize_title( $value );
+
+					$this->url = home_url( $this->slug . '/' );
 					break;
 
 				default:
@@ -215,5 +216,34 @@ class MS_Model_Page extends MS_Model {
 		}
 
 		do_action( 'ms_model_page__set_after', $property, $value, $this );
+	}
+
+	/**
+	 * Get specific properties.
+	 *
+	 * @since 1.0.4.4
+	 *
+	 * @param string $property The name of a property to associate.
+	 * @return mixed $value The value of a property.
+	 */
+	public function __get( $property ) {
+		$value = null;
+
+		if ( property_exists( $this, $property ) ) {
+			switch ( $property ) {
+				case 'url':
+					if ( empty( $this->url ) ) {
+						$this->url = home_url( $this->slug . '/' );
+					}
+					$value = $this->url;
+					break;
+
+				default:
+					$value = $this->$property;
+					break;
+			}
+		}
+
+		return apply_filters( 'ms_model_page__get', $value, $property, $this );
 	}
 }
