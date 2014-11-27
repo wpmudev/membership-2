@@ -100,7 +100,7 @@ class MS_View_Membership_Setup_Dripped extends MS_View {
 					$membership->name
 				); ?>
 			</div>
-			<div class="ms-separator"></div>
+			<?php MS_Helper_Html::html_separator(); ?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -130,7 +130,7 @@ class MS_View_Membership_Setup_Dripped extends MS_View {
 					$membership->name
 				); ?>
 			</div>
-			<div class="ms-separator"></div>
+			<?php MS_Helper_Html::html_separator(); ?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">

@@ -12,13 +12,15 @@ class MS_View_Mailchimp_General extends MS_View {
 		?>
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
-				<?php MS_Helper_Html::settings_tab_header( array( 'title' => __( 'MailChimp Settings', MS_TEXT_DOMAIN ) ) ); ?>
-				<div class="ms-separator"></div>
+				<?php
+				MS_Helper_Html::settings_tab_header(
+					array( 'title' => __( 'MailChimp Settings', MS_TEXT_DOMAIN ) )
+				);
+				MS_Helper_Html::html_separator();
+				?>
 
 				<form action="" method="post">
-					<?php
-						MS_Helper_Html::settings_box( $this->fields );
-					?>
+					<?php MS_Helper_Html::settings_box( $this->fields ); ?>
 				</form>
 				<?php MS_Helper_Html::settings_footer( null, false ); ?>
 			</div>

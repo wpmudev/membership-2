@@ -291,7 +291,7 @@ window.ms_functions = {
 	 */
 	tag_selector_add: function( ev ) {
 		var fn = window.ms_functions,
-			me = jQuery( this ).closest( '.ms-tag-selector-wrapper' ),
+			me = jQuery( this ).closest( '.wpmui-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
 			list = el_dst.val() || [];
@@ -311,7 +311,7 @@ window.ms_functions = {
 	 */
 	tag_selector_refresh_source: function( ev, el ) {
 		var i = 0, item = null,
-			me = jQuery( el ).closest( '.ms-tag-selector-wrapper' ),
+			me = jQuery( el ).closest( '.wpmui-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_src_items = el_src.find( 'option' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
@@ -485,17 +485,17 @@ jQuery( document ).ready( function() {
 	// Initialize the tag-select components.
 	.on(
 		'select2-opening',
-		'.ms-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .ms-tag-data',
 		function( ev ) { ev.preventDefault(); }
 	)
 	.on(
 		'change',
-		'.ms-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .ms-tag-data',
 		function( ev ) { fn.tag_selector_refresh_source( ev, this ); }
 	)
 	.on(
 		'click',
-		'.ms-tag-selector-wrapper .ms-tag-button',
+		'.wpmui-tag-selector-wrapper .ms-tag-button',
 		fn.tag_selector_add
 	)
 	// Ajax-Submit data when ms-ajax-update fields are changed.

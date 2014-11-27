@@ -441,11 +441,12 @@ class MS_Helper_Html extends MS_Helper {
 	 * @param  string $type Either 'horizontal' or 'vertical'
 	 */
 	public static function html_separator( $type = 'horizontal' ) {
-		if ( 'v' === $type[0] ) {
-			echo '<div class="ms-divider"></div>';
-		} else {
-			echo '<div class="ms-separator"></div>';
-		}
+		WDev()->html->element(
+			array(
+				'type' => self::TYPE_HTML_SEPARATOR,
+				'value' => $type,
+			)
+		);
 	}
 
 	/**

@@ -34,22 +34,6 @@
 		visibility: hidden;
 	}
 
-	/* horizontal separator */
-	.ms-separator {
-		border-bottom: 1px solid #E5E5E5;
-		margin: 15px 0;
-	}
-
-	/* vertical separator */
-	.ms-divider {
-		position: absolute;
-		right: 20px;
-		top: 0;
-		bottom: 0;
-
-		border-right: 1px solid #E5E5E5;
-	}
-
 	.ms-group {
 		clear: both;
 
@@ -65,6 +49,6 @@
 	}
 }
 
-.fa {
-	font-family: Fontawesome !important;
+.ms-fa {
+	font-family: Fontawesome420 !important;
 }

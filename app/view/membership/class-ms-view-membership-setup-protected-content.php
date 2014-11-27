@@ -100,12 +100,13 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => implode( ' & ', $title ), 'desc' => $desc )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
 
-			<?php for ( $page = 2; $page < $arg_count; $page += 1 ) :
+			for ( $page = 2; $page < $arg_count; $page += 1 ) :
 				$item = $args[ $page ];
 				if ( empty( $item ) ) { continue; }
 
@@ -368,9 +369,9 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php MS_Helper_Html::settings_tab_header(
 				array( 'title' => $title, 'desc' => $desc )
-			); ?>
-			<div class="ms-separator"></div>
-
+			);
+			MS_Helper_Html::html_separator();
+			?>
 			<div class="ms-group">
 				<div class="ms-half">
 					<div class="inside">
@@ -385,9 +386,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				</div>
 			</div>
 
-			<div class="ms-separator"></div>
-
-			<?php if ( 'item' === $menu_protection ) : ?>
+			<?php
+			MS_Helper_Html::html_separator();
+			if ( 'item' === $menu_protection ) :
+			?>
 			<div class="ms-group">
 				<div class="inside">
 					<form id="ms-menu-form" method="post">
@@ -601,8 +603,10 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-			<div class="ms-separator"></div>
+			<?php
+			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::html_separator();
+			?>
 
 			<form action="" method="post" class="ms-form ms-group">
 				<?php MS_Helper_Html::settings_box( $fields ); ?>

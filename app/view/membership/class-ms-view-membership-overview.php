@@ -116,7 +116,7 @@ class MS_View_Membership_Overview extends MS_View {
 	public function news_panel() {
 		?>
 		<div class="ms-half ms-settings-box ms-fixed-height">
-			<div class="ms-divider"></div>
+			<?php MS_Helper_Html::html_separator( 'vertical' ); ?>
 			<h3><i class="ms-low ms-fa ms-fa-globe"></i> <?php _e( 'News', MS_TEXT_DOMAIN ); ?></h3>
 
 			<div class="inside group">
