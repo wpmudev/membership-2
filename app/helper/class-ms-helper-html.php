@@ -455,8 +455,9 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * @param  array $texts Optionally override the default save-texts.
 	 * @param  bool $return If set to true the HTML code will be returned.
+	 * @param  bool $animation If an animation should be displayed while saving.
 	 */
-	public static function save_text( $texts = array(), $return = false ) {
+	public static function save_text( $texts = array(), $animation = false, $return = false ) {
 		$defaults = array(
 			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
 			'saved_text' => __( 'All changes saved.', MS_TEXT_DOMAIN ),
@@ -470,9 +471,13 @@ class MS_Helper_Html extends MS_Helper {
 			$command = 'printf';
 		}
 
+		if ( $animation ) {
+			$saving_text = '<div class="loading-animation"></div> ' . $saved_text;
+		}
+
 		return $command(
 			'<span class="ms-save-text-wrapper">
-				<span class="ms-saving-text"><div class="loading-animation"></div> %1$s</span>
+				<span class="ms-saving-text">%1$s</span>
 				<span class="ms-saved-text">%2$s</span>
 				<span class="ms-error-text">%3$s<span class="err-code"></span></span>
 			</span>',

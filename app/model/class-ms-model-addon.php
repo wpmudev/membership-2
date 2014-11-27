@@ -203,6 +203,11 @@ class MS_Model_Addon extends MS_Model_Option {
 	public function get_addon_list() {
 		$list = array();
 
+		$settings_text = sprintf(
+			'<i class="dashicons dashicons dashicons-admin-settings"></i> %s',
+			__( 'Options available', MS_TEXT_DOMAIN )
+		);
+
 		$list[self::ADDON_MULTI_MEMBERSHIPS] = (object) array(
 			'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ),
 			'description' => __( 'Your members can join more than one membership level at the same time.', MS_TEXT_DOMAIN ),
@@ -216,6 +221,7 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_COUPON] = (object) array(
 			'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
 			'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
+			'icon' => 'ms-fa ms-fa-ticket',
 		);
 
 		$list[self::ADDON_POST_BY_POST] = (object) array(
@@ -231,6 +237,9 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_MEDIA] = (object) array(
 			'name' => __( 'Media Protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Protect Images and other Media-Library content.', MS_TEXT_DOMAIN ),
+			'footer' => $settings_text,
+			'icon' => 'dashicons dashicons-admin-media',
+			'class' => 'ms-options',
 			'details' => array(
 				array(
 					'id' => 'ms-toggle-' . self::ADDON_MEDIA_PLUS,
@@ -251,21 +260,25 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_SHORTCODE] = (object) array(
 			'name' => __( 'Shortcode Protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Protect shortcodes-output via membership levels.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-editor-code',
 		);
 
 		$list[self::ADDON_URL_GROUPS] = (object) array(
 			'name' => __( 'URL Protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'URL Protection will protect pages by the URL. This rule overrides all other rules, so use it carefully.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-admin-links',
 		);
 
 		$list[self::ADDON_AUTO_MSGS_PLUS] = (object) array(
 			'name' => __( 'Additional Automated Messages', MS_TEXT_DOMAIN ),
 			'description' => __( 'Send your members automated Email responses for various additional events.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-email',
 		);
 
 		$list[self::ADDON_SPECIAL_PAGES] = (object) array(
 			'name' => __( 'Protect Special Pages', MS_TEXT_DOMAIN ),
 			'description' => __( 'Change protection of special pages such as the search results.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-admin-home',
 		);
 
 		$list[self::ADDON_ADV_MENUS] = (object) array(
@@ -277,16 +290,20 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_ADMINSIDE] = (object) array(
 			'name' => __( 'Admin Side Protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Control the pages and even Meta boxes that members can access on the admin side.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-admin-network',
 		);
 
 		$list[self::ADDON_MEMBERCAPS] = (object) array(
 			'name' => __( 'Member Capabilities', MS_TEXT_DOMAIN ),
 			'description' => __( 'Manage user-capabilities on membership level.', MS_TEXT_DOMAIN ),
+			'footer' => $settings_text,
+			'class' => 'ms-options',
+			'icon' => 'dashicons dashicons-admin-users',
 			'details' => array(
 				array(
 					'id' => 'ms-toggle-' . self::ADDON_MEMBERCAPS_ADV,
 					'title' => __( 'Advanced Capability protection', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Allows you to protect individual WordPress Capabilities. A new tab will be added in the Protected Content screen and also in the Content Selection of each membership.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Allows you to protect individual WordPress Capabilities. When activated then the "User Roles" tab is replaced by a "Member Capabilities" tab where you can protect and assign individual WordPress Capabilities instead of roles.', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 					'value' => self::is_enabled( self::ADDON_MEMBERCAPS_ADV ),
 					'class' => 'toggle-plugin',
@@ -306,7 +323,12 @@ class MS_Model_Addon extends MS_Model_Option {
 			$list[$key]->active = self::is_enabled( $key );
 			$list[$key]->title = $data->name;
 
-			$list[$key]->icon = '<i class="ms-fa ms-fa-puzzle-piece"></i>';
+			if ( isset( $list[$key]->icon ) ) {
+				$list[$key]->icon = '<i class="' . $list[$key]->icon . '"></i>';
+			} else {
+				$list[$key]->icon = '<i class="ms-fa ms-fa-puzzle-piece"></i>';
+			}
+
 			$list[$key]->action = array();
 			$list[$key]->action[] = array(
 				'id' => 'ms-toggle-' . $key,
@@ -319,7 +341,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'addon' => $key,
 				),
 			);
-			$list[$key]->action[] = MS_Helper_Html::save_text( null, true );
+			$list[$key]->action[] = MS_Helper_Html::save_text( null, false, true );
 		}
 
 		return $list;

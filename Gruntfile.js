@@ -12,6 +12,7 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-membership-overview.js',
 				'app/assets/js/src/ms-view-membership-setup-payment.js',
 				'app/assets/js/src/ms-view-settings.js',
+				'app/assets/js/src/ms-view-addons.js',
 				'app/assets/js/src/ms-view-settings-automated-msg.js',
 				'app/assets/js/src/ms-view-settings-mailchimp.js',
 				'app/assets/js/src/ms-view-settings-payment.js',

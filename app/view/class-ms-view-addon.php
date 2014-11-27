@@ -57,6 +57,7 @@ class MS_View_Addon extends MS_View {
 			'all' => __( 'All', MS_TEXT_DOMAIN ),
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
 			'inactive' => __( 'Inactive', MS_TEXT_DOMAIN ),
+			'options' => __( 'With options', MS_TEXT_DOMAIN ),
 		);
 
 		ob_start();

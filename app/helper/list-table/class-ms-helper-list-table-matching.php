@@ -218,7 +218,7 @@ class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
 			),
 		);
 		$html = MS_Helper_Html::html_element( $list, true );
-		$html .= MS_Helper_Html::save_text( array(), true );
+		$html .= MS_Helper_Html::save_text( null, false, true );
 
 		return $html;
 	}
