@@ -480,11 +480,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function can_have_children() {
 		$can_have_children = false;
 
-		if ( ! $this->has_parent() && in_array( $this->type, self::get_parent_eligible_types() ) ) {
+		if ( ! $this->has_parent()
+			&& in_array( $this->type, self::get_parent_eligible_types() )
+		) {
 			$can_have_children = true;
 		}
 
-		return apply_filters( 'ms_model_membership_can_have_children', $can_have_children, $this );
+		return apply_filters(
+			'ms_model_membership_can_have_children',
+			$can_have_children,
+			$this
+		);
 	}
 
 	/**
@@ -500,7 +506,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			self::TYPE_TIER,
 		);
 
-		return apply_filters( 'ms_model_membership_get_parent_eligible_types', $parent_eligible_types );
+		return apply_filters(
+			'ms_model_membership_get_parent_eligible_types',
+			$parent_eligible_types
+		);
 	}
 
 	/**

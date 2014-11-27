@@ -66,16 +66,21 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_member
+	 * Related action hooks:
+	 * - wp_ajax_toggle_member
 	 *
 	 * @since 1.0.0
 	 */
 	public function ajax_action_toggle_member() {
 		$msg = 0;
-		if ( $this->verify_nonce() && ! empty( $_POST['member_id'] ) && $this->is_admin_user() ) {
-			$msg = $this->member_list_do_action( 'toggle_activation', array( $_POST['member_id'] ) );
+		if ( $this->verify_nonce()
+			&& ! empty( $_POST['member_id'] )
+			&& $this->is_admin_user()
+		) {
+			$msg = $this->member_list_do_action(
+				'toggle_activation',
+				array( $_POST['member_id'] )
+			);
 		}
 
 		echo $msg;
@@ -91,11 +96,29 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function ajax_action_get_users() {
-		$callback_name = sanitize_html_class( @$_REQUEST['callback'] );
+		WDev()->load_request_fields( 'callback', 'filter' );
 
-		$data = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS, false );
+		$callback_name = sanitize_html_class( $_REQUEST['callback'] );
+		$filter = $_REQUEST['filter'];
 
-		printf( '%s(%s)', $callback_name, json_encode( $data ) );
+		$args = array(
+			'number' => false,
+			'orderby' => 'user_name',
+			'search' => '*' . $filter . '*',
+			'search_columns' => array( 'user_login' ),
+		);
+
+		$data = MS_Model_Member::get_usernames(
+			$args,
+			MS_Model_Member::SEARCH_NOT_MEMBERS,
+			false
+		);
+
+		printf(
+			'%s(%s)',
+			$callback_name,
+			json_encode( $data )
+		);
 		exit;
 	}
 

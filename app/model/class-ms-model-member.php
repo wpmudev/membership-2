@@ -520,16 +520,12 @@ class MS_Model_Member extends MS_Model {
 			)
 		);
 
-		if ( ! is_array( $args ) ) {
-			$args = array();
-		}
+		$args = WDev()->get_array( $args );
+		WDev()->load_fields( $args, 'meta_query');
+		$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
 
 		switch ( $search_option ) {
 			case self::SEARCH_ONLY_MEMBERS:
-				if ( ! is_array( $args['meta_query'] ) ) {
-					$args['meta_query'] = array();
-				}
-
 				$args['meta_query']['is_member'] = array(
 					'key'   => 'ms_is_member',
 					'value' => true,
@@ -537,10 +533,6 @@ class MS_Model_Member extends MS_Model {
 				break;
 
 			case self::SEARCH_NOT_MEMBERS:
-				if ( ! is_array( $args['meta_query'] ) ) {
-					$args['meta_query'] = array();
-				}
-
 				$args['meta_query']['relation'] = 'OR';
 				$args['meta_query']['is_member'] = array(
 					'key'     => 'ms_is_member',

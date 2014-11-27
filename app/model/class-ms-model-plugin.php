@@ -65,9 +65,6 @@ class MS_Model_Plugin extends MS_Model {
 
 			// cron service action
 			$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
-
-			//for testing
-			//$this->check_membership_status();
 		}
 	}
 
