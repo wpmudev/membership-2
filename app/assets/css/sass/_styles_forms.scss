@@ -264,6 +264,14 @@
  ***/
 
 .ms-select2 {
+
+	&.select2-container-multi {
+		.select2-choices .select2-search-field input {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+	}
+
 	&.select2-container {
 		margin-right: .5em;
 

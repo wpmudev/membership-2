@@ -42,10 +42,11 @@ window.ms_init.view_member_list = function init () {
 	s2_config.minimumResultsForSearch = 0;
 	s2_config.placeholder = window.ms_data.lang.select_user;
 	s2_config.allowClear = true;
+	s2_config.multiple = true;
 	s2_config.ajax = {
 		url: window.ajaxurl,
 		dataType: 'jsonp',
-		quietMillis: 200,
+		quietMillis: 500,
 		data: function (term, page) {
 			return {
 				filter: term, // search term
@@ -56,6 +57,7 @@ window.ms_init.view_member_list = function init () {
 			return {results: data};
 		}
 	};
+
 	jQuery( '#new_member' ).select2( s2_config ).change( enable_add_button );
 	jQuery( '#add_member' ).click( submit_add_form );
 	enable_add_button();

@@ -833,7 +833,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
-	public static function get_membership_hierarchy( $args ) {
+	public static function get_membership_hierarchy( $args = array() ) {
 		$memberships = self::get_grouped_memberships( $args );
 
 		$list = array();

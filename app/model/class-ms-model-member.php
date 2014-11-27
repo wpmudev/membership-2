@@ -366,10 +366,16 @@ class MS_Model_Member extends MS_Model {
 			$user_id = wp_create_user( $this->username, $this->password, $this->email );
 
 			if ( is_wp_error( $user_id ) ) {
-				$validation_errors->add( 'userid', $user_id->get_error_message() );
+				$validation_errors->add(
+					'userid',
+					$user_id->get_error_message()
+				);
 
 				throw new Exception(
-					implode( '<br/>', $validation_errors->get_error_messages() )
+					implode(
+						'<br/>',
+						$validation_errors->get_error_messages()
+					)
 				);
 			}
 			$this->id = $user_id;
@@ -428,6 +434,40 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Get members IDs.
+	 * The IDs are cached and only fetched once for each set of $args.
+	 *
+	 * @since 1.0.4.4
+	 *
+	 * @param $args The query user args
+	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
+	 * @return array List of member IDs
+	 */
+	public static function get_member_ids( $args = null ) {
+		static $Members = array();
+		$key = json_encode( $args );
+
+		if ( ! isset( $Members[$key] ) ) {
+			$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
+			$wp_user_search = new WP_User_Query( $args );
+			$users = $wp_user_search->get_results();
+			$members = array();
+
+			foreach ( $users as $user_id ) {
+				$members[] = $user_id;
+			}
+
+			$Members[$key] = apply_filters(
+				'ms_model_member_get_member_ids',
+				$members,
+				$args
+			);
+		}
+
+		return $Members[$key];
+	}
+
+	/**
 	 * Get members.
 	 *
 	 * @since 1.0.0
@@ -438,17 +478,18 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_members( $args = null ) {
 		$members = array();
+		$ids = self::get_member_ids( $args );
 
-		$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
-		$wp_user_search = new WP_User_Query( $args );
-		$users = $wp_user_search->get_results();
-		MS_Helper_Debug::log( $args );
-		MS_Helper_Debug::log( $users );
-		foreach ( $users as $user_id ) {
+		foreach ( $ids as $user_id ) {
 			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
 		}
 
-		return apply_filters( 'ms_model_member_get_members', $members );
+		return apply_filters(
+			'ms_model_member_get_members',
+			$members,
+			$ids,
+			$args
+		);
 	}
 
 	/**
@@ -521,27 +562,27 @@ class MS_Model_Member extends MS_Model {
 		);
 
 		$args = WDev()->get_array( $args );
-		WDev()->load_fields( $args, 'meta_query');
+		WDev()->load_fields( $args, 'meta_query' );
 		$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
 
 		switch ( $search_option ) {
 			case self::SEARCH_ONLY_MEMBERS:
-				$args['meta_query']['is_member'] = array(
-					'key'   => 'ms_is_member',
-					'value' => true,
+				$args['meta_query'] = array(
+					array(
+						'key'   => 'ms_is_member',
+						'value' => true,
+					),
 				);
 				break;
 
 			case self::SEARCH_NOT_MEMBERS:
-				$args['meta_query']['relation'] = 'OR';
-				$args['meta_query']['is_member'] = array(
-					'key'     => 'ms_is_member',
-					'compare' => 'NOT EXISTS',
-				);
-				$args['meta_query']['is_member1'] = array(
-					'key'     => 'ms_is_member',
-					'value'   => false,
-				);
+				/*
+				 * This does a recursive call with
+				 * $search_option = self::SEARCH_ONLY_MEMBERS
+				 */
+				$members = self::get_member_ids();
+
+				$args['exclude'] = $members;
 				break;
 
 			case self::SEARCH_ALL_USERS:
@@ -947,7 +988,6 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		if ( $this->password != $this->password2 ) {
-			MS_Helper_Debug::log( 'no password match' );
 			$validation_errors->add(
 				'passmatch',
 				__( 'Please ensure the passwords match.', MS_TEXT_DOMAIN )
@@ -961,8 +1001,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
-		}
-		else {
+		} else {
 			return true;
 		}
 	}

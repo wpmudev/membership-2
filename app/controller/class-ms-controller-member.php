@@ -129,7 +129,10 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 */
 	public function print_admin_message() {
-		add_action( 'admin_notices', array( 'MS_Helper_Member', 'print_admin_message' ) );
+		add_action(
+			'admin_notices',
+			array( 'MS_Helper_Member', 'print_admin_message' )
+		);
 	}
 
 	/**
@@ -155,14 +158,17 @@ class MS_Controller_Member extends MS_Controller {
 			if ( $this->verify_nonce( 'add_member' )
 				&& $this->validate_required( $fields_new )
 			) {
-				$member = MS_Factory::load(
-					'MS_Model_Member',
-					$_POST['new_member']
-				);
+				$ids = explode( ',', $_POST['new_member'] );
+				foreach ( $ids as $id ) {
+					$member = MS_Factory::load(
+						'MS_Model_Member',
+						$id
+					);
 
-				$member->is_member = true;
-				$member->save();
-				$msg = true; //TODO
+					$member->is_member = true;
+					$member->save();
+				}
+				$msg = MS_Helper_Member::MSG_MEMBER_USER_ADDED;
 
 				$redirect = add_query_arg( array( 'msg' => $msg ) );
 			}
@@ -235,10 +241,12 @@ class MS_Controller_Member extends MS_Controller {
 		$fields = array( 'member_id', 'action' );
 		if ( $this->validate_required( $fields, 'REQUEST' ) ) {
 			$this->prepare_action_view( $_REQUEST['action'], $_REQUEST['member_id'] );
-		}
-		else {
+		} else {
 			$data = array();
-			$data['usernames'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_NOT_MEMBERS );
+			$data['usernames'] = MS_Model_Member::get_usernames(
+				null,
+				MS_Model_Member::SEARCH_NOT_MEMBERS
+			);
 			$data['action'] = 'add_member';
 
 			$view = MS_Factory::create( 'MS_View_Member_List' );
@@ -290,7 +298,10 @@ class MS_Controller_Member extends MS_Controller {
 		// Single action
 		else {
 			// Member Model
-			$member = apply_filters( 'membership_member_model', MS_Factory::load( 'MS_Model_Member', $member_id ) );
+			$member = apply_filters(
+				'membership_member_model',
+				MS_Factory::load( 'MS_Model_Member', $member_id )
+			);
 			$data['member_id'] = array( $member_id );
 
 			switch ( $action ) {
@@ -371,7 +382,11 @@ class MS_Controller_Member extends MS_Controller {
 		}
 
 		$data['action'] = $action;
-		$view->data = apply_filters( 'ms_view_member_data', $data, $this );
+		$view->data = apply_filters(
+			'ms_view_member_data',
+			$data,
+			$this
+		);
 		$view->render();
 	}
 
@@ -386,46 +401,55 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function member_list_do_action( $action, $members, $membership_id = null ) {
 		$msg = MS_Helper_Member::MSG_MEMBER_NOT_UPDATED;
-		if( ! $this->is_admin_user() ) {
+		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
 
-		foreach( $members as $member_id ){
-			/** Member Model */
+		foreach ( $members as $member_id ){
+			// Member Model
 			$member = MS_Factory::load( 'MS_Model_Member', $member_id );
-			switch( $action ) {
+			switch ( $action ) {
 				case 'add':
 					$member->add_membership( $membership_id );
 					$msg = MS_Helper_Member::MSG_MEMBER_ADDED;
 					break;
+
 				case 'cancel':
 					$member->cancel_membership( $membership_id );
 					$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
 					break;
+
 				case 'drop':
 					$member->drop_membership( $membership_id );
 					$msg = MS_Helper_Member::MSG_MEMBER_DELETED;
 					break;
+
 				case 'move':
-					if( ! empty( $_POST['membership_move_from_id'] ) ) {
-						$member->move_membership( $_POST['membership_move_from_id'], $_POST['membership_id'] );
+					if ( ! empty( $_POST['membership_move_from_id'] ) ) {
+						$member->move_membership(
+							$_POST['membership_move_from_id'],
+							$_POST['membership_id']
+						);
 						$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
 					}
 					break;
+
 				case 'toggle_activation':
 					$member->active = ! $member->active;
 					$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
 					break;
+
 				case 'edit_date':
-					if( is_array( $membership_id ) ) {
+					if ( is_array( $membership_id ) ) {
 						foreach ( $membership_id as $id ) {
 							$ms_relationship = $member->ms_relationships[ $id ];
-							if( ! empty( $_POST[ "start_date_$id" ] ) ){
-								$ms_relationship->start_date = $_POST[ "start_date_$id" ];
+							if ( ! empty( $_POST[ 'start_date_' . $id ] ) ){
+								$ms_relationship->start_date = $_POST[ 'start_date_' . $id ];
 								$ms_relationship->set_trial_expire_date();
 							}
-							if( ! empty( $_POST[ "expire_date_$id" ] ) ){
-								$ms_relationship->expire_date = $_POST[ "expire_date_$id" ];
+
+							if ( ! empty( $_POST[ 'expire_date_' . $id ] ) ){
+								$ms_relationship->expire_date = $_POST[ 'expire_date_' . $id ];
 							}
 							$ms_relationship->save();
 						}
@@ -436,7 +460,14 @@ class MS_Controller_Member extends MS_Controller {
 			$member->save();
 		}
 
-		return apply_filters( 'ms_controller_member_member_list_do_action', $msg, $action, $members, $membership_id, $this );
+		return apply_filters(
+			'ms_controller_member_member_list_do_action',
+			$msg,
+			$action,
+			$members,
+			$membership_id,
+			$this
+		);
 	}
 
 	/**
@@ -456,13 +487,12 @@ class MS_Controller_Member extends MS_Controller {
 	public function enqueue_scripts() {
 		$data = array();
 
-		/* Start and expire date edit */
 		if ( 'edit_date' == @$_GET['action'] ) {
+			// Start and expire date edit
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			$data['ms_init'] = 'view_member_date';
-		}
-		/* Members list */
-		else {
+		} else {
+			// Members list
 			$data['ms_init'][] = 'view_member_list';
 			$data['lang'] = array(
 				'select_user' => __( 'Select an User', MS_TEXT_DOMAIN ),
