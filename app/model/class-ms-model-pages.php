@@ -82,7 +82,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		</style><?php
 		}
 
-		return $post->post_type . $return;
+		return $return;
 	}
 
 	/**
