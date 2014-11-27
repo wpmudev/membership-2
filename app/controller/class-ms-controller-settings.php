@@ -283,17 +283,10 @@ class MS_Controller_Settings extends MS_Controller {
 			'messages-automated' => array(
 				'title' => __( 'Automated Email Responses', MS_TEXT_DOMAIN ),
 			),
-			'downloads' => array(
-				'title' => __( 'Media / Downloads', MS_TEXT_DOMAIN ),
-			),
 			'import' => array(
 				'title' => __( 'Import Tool', MS_TEXT_DOMAIN ),
 			),
 		);
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			unset( $tabs['downloads'] );
-		}
 
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-settings';
 		$page = sanitize_html_class( @$_GET['page'], $def_key );
@@ -412,7 +405,6 @@ class MS_Controller_Settings extends MS_Controller {
 				case 'pages':
 				case 'payment':
 				case 'messages-protection':
-				case 'downloads':
 				default:
 					break;
 			}

@@ -424,8 +424,18 @@ input[type="image"] {
 #wpwrap .ms-wrap div.dripped .tooltip {
   display: none;
 }
-#wpwrap .ms-wrap #ms-settings-page-links-wrapper {
-  margin: .5em;
+#wpwrap .ms-wrap .ms-settings-page-wrapper {
+  padding: 5px 10px;
+  border-bottom: 1px solid #E5E5E5;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper .ms-action {
+  opacity: 0;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover {
+  background-color: #FAFAFA;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover .ms-action {
+  opacity: 1;
 }
 #wpwrap .ms-wrap textarea.wpmui-field-input {
   min-width: 80%;
@@ -486,6 +496,6 @@ input[type="image"] {
   height: 28px;
   margin: 0 4px 0 0;
 }
-#wpwrap .ms-wrap #masked_url {
-  display: inline;
+#wpwrap .ms-wrap .wpmui-description-masked_url {
+  display: inline-block;
 }

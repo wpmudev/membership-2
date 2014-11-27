@@ -89,11 +89,6 @@ class MS_View_Settings_Edit extends MS_View {
 
 	public function render_tab_general() {
 		$settings = $this->data['settings'];
-		$menu_protection_options = array(
-			'item' => __( 'Protect single Menu Items', MS_TEXT_DOMAIN ),
-			'menu' => __( 'Replace individual Menus', MS_TEXT_DOMAIN ),
-			'location' => __( 'Overwrite contents of Menu Locations', MS_TEXT_DOMAIN ),
-		);
 
 		$fields = array(
 			'plugin_enabled' => array(
@@ -130,19 +125,6 @@ class MS_View_Settings_Edit extends MS_View {
 					'field' => 'initial_setup',
 				),
 			),
-
-			'menu_protection' => array(
-				'id' => 'menu_protection',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Choose how you want to protect your WordPress menus.', MS_TEXT_DOMAIN ),
-				'value' => $settings->menu_protection,
-				'field_options' => $menu_protection_options,
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-					'field' => 'menu_protection',
-				),
-			),
 		);
 
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
@@ -150,10 +132,12 @@ class MS_View_Settings_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
+			?>
 
 			<form action="" method="post">
 				<?php
@@ -171,13 +155,6 @@ class MS_View_Settings_Edit extends MS_View {
 					array( $fields['initial_setup'] ),
 					__( 'Setup Wizard', MS_TEXT_DOMAIN )
 				);
-
-				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADV_MENUS ) ) {
-					MS_Helper_Html::settings_box(
-						array( $fields['menu_protection'] ),
-						__( 'Advanced menu protection', MS_TEXT_DOMAIN )
-					);
-				}
 				?>
 			</form>
 		</div>
@@ -212,12 +189,16 @@ class MS_View_Settings_Edit extends MS_View {
 					'action' => $action,
 					'_wpnonce' => $nonce,
 				),
-			);
-			$fields['edit'][ $ms_page->type ] = array(
-				'id' => 'edit_slug_' . $ms_page->type,
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
-				'class' => 'ms-edit-url',
+				'before' => esc_html( trailingslashit( get_option( 'home' ) ) ),
+				'after' => MS_Helper_Html::html_element(
+					array(
+						'id' => 'edit_slug_' . $ms_page->type,
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
+						'class' => 'ms-edit-url ms-action',
+					),
+					true
+				),
 			);
 		}
 
@@ -233,37 +214,36 @@ class MS_View_Settings_Edit extends MS_View {
 					'desc' => __( 'Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc.', MS_TEXT_DOMAIN ),
 				)
 			);
+			MS_Helper_Html::html_separator();
 			?>
-			<div class="ms-separator"></div>
 
 			<form action="" method="post">
 
-				<?php foreach ( $fields['pages'] as $page_type => $field ) :
-					MS_Helper_Html::html_element( $field );
-					MS_Helper_Html::html_element( $fields['edit'][ $page_type ] );
-					?>
-					<div id="ms-settings-page-links-wrapper">
-						<?php
-						MS_Helper_Html::html_link(
-							array(
-								'id' => 'url_page_' . $field['page_id'],
-								'url' => get_permalink( $field['page_id'] ),
-								'value' => __( 'View Page', MS_TEXT_DOMAIN ),
-							)
-						);
-						?>
-						<span> | </span>
-						<?php
-						MS_Helper_Html::html_link(
-							array(
-								'id' => 'edit_url_page_' . $field['page_id'],
-								'url' => get_edit_post_link( $field['page_id'] ),
-								'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
-							)
-						);
-						?>
+				<?php foreach ( $fields['pages'] as $page_type => $field ) : ?>
+					<div class="ms-settings-page-wrapper">
+						<?php MS_Helper_Html::html_element( $field ); ?>
+						<div class="ms-action">
+							<?php
+							MS_Helper_Html::html_link(
+								array(
+									'id' => 'url_page_' . $field['page_id'],
+									'url' => get_permalink( $field['page_id'] ),
+									'value' => __( 'View Page', MS_TEXT_DOMAIN ),
+								)
+							);
+							?>
+							<span> | </span>
+							<?php
+							MS_Helper_Html::html_link(
+								array(
+									'id' => 'edit_url_page_' . $field['page_id'],
+									'url' => get_edit_post_link( $field['page_id'] ),
+									'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
+								)
+							);
+							?>
+						</div>
 					</div>
-					<?php MS_Helper_Html::html_separator(); ?>
 				<?php endforeach; ?>
 			</form>
 		</div>
@@ -372,10 +352,12 @@ class MS_View_Settings_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
+			?>
 
 			<form class="ms-form" action="" method="post">
 				<?php
@@ -533,10 +515,12 @@ class MS_View_Settings_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
+			?>
 
 			<form id="ms-comm-type-form" action="" method="post">
 				<?php MS_Helper_Html::html_element( $fields['load_action'] ); ?>
@@ -545,7 +529,7 @@ class MS_View_Settings_Edit extends MS_View {
 				<?php MS_Helper_Html::html_element( $fields['switch_comm_type'] ); ?>
 			</form>
 
-			<div class="ms-separator"></div>
+			<?php MS_Helper_Html::html_separator(); ?>
 
 			<form action="" method="post" class="ms-editor-form">
 				<?php
@@ -600,81 +584,6 @@ class MS_View_Settings_Edit extends MS_View {
 			)
 		);
 
-		return ob_get_clean();
-	}
-
-	/* ====================================================================== *
-	 *                               MEDIA / DOWNLOADS
-	 * ====================================================================== */
-
-	public function render_tab_downloads() {
-		$settings = $this->data['settings'];
-
-		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING;
-		$nonce = wp_create_nonce( $action );
-
-		$fields = array(
-			'protection_enabled' => array(
-				'id' => 'protection_enabled',
-				'title' => __( 'Media / Downloads protection', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $settings->downloads['protection_enabled'],
-				'class' => '',
-				'data_ms' => array(
-					'field' => 'protection_enabled',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
-			),
-			'protection_type' => array(
-				'id' => 'protection_type',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-				'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
-				'value' => $settings->downloads['protection_type'],
-				'field_options' => MS_Model_Rule_Media::get_protection_types(),
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'field' => 'protection_type',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
-			),
-			'masked_url' => array(
-				'id' => 'masked_url',
-				'desc' => esc_html( trailingslashit( get_option( 'home' ) ) ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Masked download URL:', MS_TEXT_DOMAIN ),
-				'value' => $settings->downloads['masked_url'],
-				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'field' => 'masked_url',
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
-			),
-		);
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA_PLUS ) ) {
-			unset( $fields['protection_type'] );
-		}
-
-		$fields = apply_filters( 'ms_view_settings_prepare_downloads_fields', $fields );
-
-		ob_start();
-		?>
-		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'Media / Download Settings', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
-
-			<div>
-				<form action="" method="post">
-					<?php MS_Helper_Html::settings_box( $fields ); ?>
-				</form>
-			</div>
-		</div>
-		<?php
 		return ob_get_clean();
 	}
 
@@ -764,10 +673,12 @@ class MS_View_Settings_Edit extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => __( 'Import Tool', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
+			?>
 
 			<div>
 				<?php if ( $preview ) : ?>

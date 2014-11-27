@@ -124,8 +124,20 @@
 	}
 
 	/* Settings Page Settings */
-	#ms-settings-page-links-wrapper {
-		margin: .5em;
+	.ms-settings-page-wrapper {
+		padding: 5px 10px;
+		border-bottom: 1px solid #E5E5E5;
+
+		.ms-action {
+			opacity: 0;
+		}
+
+		&:hover {
+			background-color: #FAFAFA;
+			.ms-action {
+				opacity: 1;
+			}
+		}
 	}
 
 	/* SETTING: GENERAL */
@@ -215,7 +227,7 @@
 	}
 
 	/* MEDIA /DOWNLOADS TAB */
-	#masked_url {
-		display: inline;
+	.wpmui-description-masked_url {
+		display: inline-block;
 	}
 }

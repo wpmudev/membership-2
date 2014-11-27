@@ -194,7 +194,6 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var array
 	 */
 	protected $downloads = array(
-		'protection_enabled' => false,
 		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_COMPLETE,
 		'masked_url' => 'downloads',
 	);
@@ -427,11 +426,6 @@ class MS_Model_Settings extends MS_Model_Option {
 		}
 		else {
 			switch ( $property ) {
-				case 'protection_enabled':
-					$this->downloads['protection_enabled'] = $this->validate_bool( $value );
-					MS_Helper_Debug::log( $this->downloads );
-					break;
-
 				case 'protection_type':
 					if ( MS_Model_Rule_Media::is_valid_protection_type( $value ) ) {
 						$this->downloads['protection_type'] = $value;
@@ -465,11 +459,14 @@ class MS_Model_Settings extends MS_Model_Option {
 				}
 				break;
 
+			case 'protection_enabled':
+				$value = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA );
+				break;
+
 			default:
 				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;
-				}
-				else {
+				} else {
 					switch ( $property ) {
 						case 'currency_symbol':
 							// Same translation table in:

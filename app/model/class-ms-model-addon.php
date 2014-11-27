@@ -55,7 +55,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_COUPON = 'coupon';
 	const ADDON_TRIAL = 'trial';
 	const ADDON_MEDIA = 'media';
-	const ADDON_MEDIA_PLUS = 'media_plus';
 	const ADDON_PRO_RATE = 'pro_rate';
 	const ADDON_SHORTCODE = 'shortcode';
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
@@ -96,7 +95,6 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_POST_BY_POST,
 				self::ADDON_CPT_POST_BY_POST,
 				self::ADDON_MEDIA,
-				self::ADDON_MEDIA_PLUS,
 				self::ADDON_SHORTCODE,
 				self::ADDON_URL_GROUPS,
 				self::ADDON_AUTO_MSGS_PLUS,
@@ -203,7 +201,9 @@ class MS_Model_Addon extends MS_Model_Option {
 	public function get_addon_list() {
 		$list = array();
 
-		$settings_text = sprintf(
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		$options_text = sprintf(
 			'<i class="dashicons dashicons dashicons-admin-settings"></i> %s',
 			__( 'Options available', MS_TEXT_DOMAIN )
 		);
@@ -237,21 +237,34 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_MEDIA] = (object) array(
 			'name' => __( 'Media Protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Protect Images and other Media-Library content.', MS_TEXT_DOMAIN ),
-			'footer' => $settings_text,
+			'footer' => $options_text,
 			'icon' => 'dashicons dashicons-admin-media',
 			'class' => 'ms-options',
 			'details' => array(
 				array(
-					'id' => 'ms-toggle-' . self::ADDON_MEDIA_PLUS,
-					'title' => __( 'Additional Protection Methods', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Extends the Media Protection by providing additional protection methods: Basic, Complete, Hybrid', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'value' => self::is_enabled( self::ADDON_MEDIA_PLUS ),
-					'class' => 'toggle-plugin',
-					'ajax_data' => array(
-						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-						'field' => 'active',
-						'addon' => self::ADDON_MEDIA_PLUS,
+					'id' => 'masked_url',
+					'before' => esc_html( trailingslashit( get_option( 'home' ) ) ),
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => __( 'Mask download URL:', MS_TEXT_DOMAIN ),
+					'value' => $settings->downloads['masked_url'],
+					'class' => 'ms-ajax-update',
+					'data_ms' => array(
+						'field' => 'masked_url',
+						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' => wp_create_nonce( MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING ),
+					),
+				),
+				array(
+					'id' => 'protection_type',
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+					'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
+					'value' => $settings->downloads['protection_type'],
+					'field_options' => MS_Model_Rule_Media::get_protection_types(),
+					'class' => 'ms-ajax-update',
+					'data_ms' => array(
+						'field' => 'protection_type',
+						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' => wp_create_nonce( MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING ),
 					),
 				),
 			),
@@ -284,6 +297,26 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_ADV_MENUS] = (object) array(
 			'name' => __( 'Advanced menu protection', MS_TEXT_DOMAIN ),
 			'description' => __( 'Adds a new option to the General Settings that controls how WordPress menus are protected.<br />Protect individual Menu-Items, replace the contents of WordPress Menu-Locations or replace each Menu individually.', MS_TEXT_DOMAIN ),
+			'footer' => $options_text,
+			'class' => 'ms-options',
+			'details' => array(
+				array(
+					'id' => 'menu_protection',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' => __( 'Choose how you want to protect your WordPress menus.', MS_TEXT_DOMAIN ),
+					'value' => $settings->menu_protection,
+					'field_options' => array(
+						'item' => __( 'Protect single Menu Items', MS_TEXT_DOMAIN ),
+						'menu' => __( 'Replace individual Menus', MS_TEXT_DOMAIN ),
+						'location' => __( 'Overwrite contents of Menu Locations', MS_TEXT_DOMAIN ),
+					),
+					'class' => 'ms-ajax-update',
+					'data_ms' => array(
+						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'field' => 'menu_protection',
+					),
+				),
+			),
 		);
 
 		// New since 1.1
@@ -296,7 +329,7 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_MEMBERCAPS] = (object) array(
 			'name' => __( 'Member Capabilities', MS_TEXT_DOMAIN ),
 			'description' => __( 'Manage user-capabilities on membership level.', MS_TEXT_DOMAIN ),
-			'footer' => $settings_text,
+			'footer' => $options_text,
 			'class' => 'ms-options',
 			'icon' => 'dashicons dashicons-admin-users',
 			'details' => array(

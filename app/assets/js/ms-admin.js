@@ -73,9 +73,21 @@ window.ms_functions = {
 	ajax_update: function( obj ) {
 		var data, val, info_field,
 			field = jQuery( obj ),
-			fn = window.ms_functions;
+			fn = window.ms_functions,
+			anim = field;
 
 		if ( ! field.hasClass( 'ms-processing' ) ) {
+			if ( anim.parents( '.wpmui-radio-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-radio-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-radio-slider-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-radio-slider-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-input-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-input-wrapper' ).first();
+			} else if ( anim.parents( 'label' ).length ) {
+				anim = anim.parents( 'label' ).first();
+			}
+
+			anim.addClass( 'wpmui-loading' );
 			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
@@ -105,7 +117,8 @@ window.ms_functions = {
 						// Reset the input control to previous value...
 					}
 
-					info_field.removeClass( 'ms-processing wpmui-loading' );
+					anim.removeClass( 'wpmui-loading' );
+					info_field.removeClass( 'ms-processing' );
 					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
 			);

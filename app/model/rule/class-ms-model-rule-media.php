@@ -106,7 +106,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 	 */
 	public static function get_protection_types() {
 		$protection_types = array(
-			self::PROTECTION_TYPE_BASIC => __( 'Basic protection', MS_TEXT_DOMAIN ),
+			self::PROTECTION_TYPE_BASIC => __( 'Basic protection (default)', MS_TEXT_DOMAIN ),
 			self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', MS_TEXT_DOMAIN ),
 			self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ),
 		);
@@ -178,7 +178,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 
 		$download_settings = MS_Plugin::instance()->settings->downloads;
 
-		if ( empty( $download_settings['protection_enabled'] ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			return $the_content;
 		}
 
@@ -378,7 +378,7 @@ class MS_Model_Rule_Media extends MS_Model_Rule {
 
 		$download_settings = MS_Plugin::instance()->settings->downloads;
 
-		if ( empty( $download_settings['protection_enabled'] ) ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			return;
 		}
 

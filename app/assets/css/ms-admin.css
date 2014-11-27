@@ -597,24 +597,27 @@
 /***
  * RADIO BUTTONS *
  ***/
-.ms-wrap .ms-radio {
-  margin: 2px 4px 0 0;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
 .ms-wrap .wpmui-radio-wrapper {
   margin: 0 auto;
   position: relative;
   display: inline-block;
 }
-.ms-wrap .wpmui-radio-wrapper .ms-radio-caption {
+
+#wpwrap .ms-wrap .ms-radio {
+  margin: 2px 4px 0 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#wpwrap .ms-wrap .ms-radio-caption {
   padding-left: 24px;
   font-weight: 500;
+  margin: 8px 0 2px;
+  display: block;
 }
-.ms-wrap .wpmui-radio-wrapper label {
+#wpwrap .ms-wrap label {
   position: relative;
-  float: left;
+  display: block;
   width: 100%;
 }
 
@@ -1327,8 +1330,18 @@
 #wpwrap .ms-wrap div.dripped .tooltip {
   display: none;
 }
-#wpwrap .ms-wrap #ms-settings-page-links-wrapper {
-  margin: .5em;
+#wpwrap .ms-wrap .ms-settings-page-wrapper {
+  padding: 5px 10px;
+  border-bottom: 1px solid #E5E5E5;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper .ms-action {
+  opacity: 0;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover {
+  background-color: #FAFAFA;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover .ms-action {
+  opacity: 1;
 }
 #wpwrap .ms-wrap textarea.wpmui-field-input {
   min-width: 80%;
@@ -1389,8 +1402,8 @@
   height: 28px;
   margin: 0 4px 0 0;
 }
-#wpwrap .ms-wrap #masked_url {
-  display: inline;
+#wpwrap .ms-wrap .wpmui-description-masked_url {
+  display: inline-block;
 }
 
 /**

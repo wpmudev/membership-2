@@ -185,6 +185,14 @@
  ***/
 
 .ms-wrap {
+	.wpmui-radio-wrapper {
+		margin: 0 auto;
+		position: relative;
+		display: inline-block;
+	}
+}
+
+#wpwrap .ms-wrap {
 	.ms-radio {
 		margin: 2px 4px 0 0;
 		position: absolute;
@@ -192,21 +200,17 @@
 		top: 0;
 	}
 
-	.wpmui-radio-wrapper {
-		margin: 0 auto;
+	.ms-radio-caption {
+		padding-left: 24px;
+		font-weight: 500;
+		margin: 8px 0 2px;
+		display: block;
+	}
+
+	label {
 		position: relative;
-		display: inline-block;
-
-		.ms-radio-caption {
-			padding-left: 24px;
-			font-weight: 500;
-		}
-
-		label {
-			position: relative;
-			float: left;
-			width: 100%;
-		}
+		display: block;
+		width: 100%;
 	}
 }
 
