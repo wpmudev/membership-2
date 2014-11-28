@@ -1073,18 +1073,25 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Verify if membership was not deleted, trying to load from DB.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param int $membership_id The membership id to verify.
 	 * @return bool True if is valid.
 	 */
 	public static function is_valid_membership( $membership_id ) {
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$valid = ( $membership->id > 0 );
 
-		$valid = ( MS_Factory::load( 'MS_Model_Membership', $membership_id )->id > 0 );
-
-		return apply_filters( 'ms_model_membership_is_valid_membership', $valid, $membership_id );
+		return apply_filters(
+			'ms_model_membership_is_valid_membership',
+			$valid,
+			$membership_id
+		);
 	}
 
 	/**
 	 * Get protected content membership.
+	 *
+	 * Create a new membership if membership does not exist.
 	 *
 	 * @since 1.0.0
 	 *
@@ -1154,8 +1161,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					}
 				}
 				// End of DB-correction part.
-			}
-			else {
+			} else {
 				$description = __( 'Protected content, and also a default membership for visitors', MS_TEXT_DOMAIN );
 				$Protected_content = MS_Factory::create( 'MS_Model_Membership' );
 				$Protected_content->name = __( 'Protected Content', MS_TEXT_DOMAIN );
@@ -1166,34 +1172,34 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$Protected_content->active = true;
 				$Protected_content->private = true;
 				$Protected_content->save();
-				$Protected_content = MS_Factory::load( 'MS_Model_Membership', $Protected_content->id );
+				$Protected_content = MS_Factory::load(
+					'MS_Model_Membership',
+					$Protected_content->id
+				);
 
 				// It is important! The Protected Content membership must be public
 				// so that the membership options are available for guest users.
 				wp_publish_post( $Protected_content->id );
 			}
 
-			$Protected_content = apply_filters( 'ms_model_membership_get_protected_content', $Protected_content );
+			$Protected_content = apply_filters(
+				'ms_model_membership_get_protected_content',
+				$Protected_content
+			);
 		}
 
 		return $Protected_content;
 	}
 
 	/**
-	 * Get membership assigned to visitors.
-	 *
-	 * Create a new membership if visitor membership does not exist.
-	 * It is the same as "protected content".
+	 * Alias for get_protected_content()
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return MS_Model_Membership The visitor membership.
 	 */
 	public static function get_visitor_membership() {
-
-		$visitor_membership = self::get_protected_content();
-
-		return apply_filters( 'ms_model_membership_get_visitor_membership', $visitor_membership );
+		return self::get_protected_content();
 	}
 
 	/**

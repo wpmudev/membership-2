@@ -216,8 +216,7 @@ class MS_Factory {
 
 			if ( $cache ) {
 				$model = $cache;
-			}
-			else {
+			} else {
 				$post = get_post( $model_id );
 
 				if ( ! empty( $post ) && $model->post_type == $post->post_type ) {
@@ -272,8 +271,7 @@ class MS_Factory {
 
 		if ( $cache ) {
 			$model = $cache;
-		}
-		else {
+		} else {
 			$wp_user = new WP_User( $user_id, $name );
 
 			if ( ! empty( $wp_user->ID ) ) {

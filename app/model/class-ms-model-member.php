@@ -246,11 +246,11 @@ class MS_Model_Member extends MS_Model {
 			}
 
 			if ( isset( $this->$field )
-				&& ( ! isset( $user_details[ "ms_$field" ][0] )
-					|| $user_details[ "ms_$field" ][0] != $this->$field
+				&& ( ! isset( $user_details[ 'ms_' . $field ][0] )
+					|| $user_details[ 'ms_' . $field ][0] != $this->$field
 				)
 			) {
-				update_user_meta( $this->id, "ms_$field", $this->$field );
+				update_user_meta( $this->id, 'ms_' . $field, $this->$field );
 			}
 		}
 
@@ -632,8 +632,7 @@ class MS_Model_Member extends MS_Model {
 				if ( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
 					$this->ms_relationships[ $membership_id ] = $ms_relationship;
 				}
-			}
-			else {
+			} else {
 				$ms_relationship = $this->ms_relationships[ $membership_id ];
 			}
 		}
