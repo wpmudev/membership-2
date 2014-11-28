@@ -173,7 +173,19 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 		foreach ( $rules as $key => $active ) {
 			if ( ! $active ) { continue; }
 
+			/*
+			 * The item order is critical, in case a page has multiple flags
+			 * like "Front" and "Home" and "Archive".
+			 * In this example "Archive" might be denied but "Front" allowed,
+			 * so we have to define a hierarchy which flag is actually used.
+			 */
 			switch ( $key ) {
+				case 'front': $result = is_front_page(); break;
+				case 'home': $result = is_home(); break;
+				case 'notfound': $result = is_404(); break;
+				case 'search': $result = is_search(); break;
+				case 'attachment': $result = is_attachment(); break;
+				case 'single': $result = is_singular(); break;
 				case 'archive': $result = is_archive(); break;
 				case 'author': $result = is_author(); break;
 				case 'date': $result = is_date(); break;
@@ -181,12 +193,6 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				case 'month': $result = is_month(); break;
 				case 'day': $result = is_day(); break;
 				case 'time': $result = is_time(); break;
-				case 'front': $result = is_front_page(); break;
-				case 'home': $result = is_home(); break;
-				case 'notfound': $result = is_404(); break;
-				case 'search': $result = is_search(); break;
-				case 'single': $result = is_singular(); break;
-				case 'attachment': $result = is_attachment(); break;
 			}
 
 			if ( $result ) {
