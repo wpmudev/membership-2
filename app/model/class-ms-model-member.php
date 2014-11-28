@@ -1006,6 +1006,56 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Search for orphaned relationships and remove them.
+	 *
+	 * We write a custom SQL query for this, as solving it with a meta-query
+	 * structure is very performance intense and requires at least two queries
+	 * and a loop...
+	 *
+	 * For additional performance we will only do this check once every hour.
+	 *
+	 * @since  1.0.4.4
+	 */
+	static public function clean_db() {
+		$timestamp = absint( get_transient( 'ms_member_clean_db' ) );
+		$elapsed = time() - $timestamp;
+
+		if ( $elapsed > 3600 ) {
+			// Last check is longer than 1 hour ago. Check again.
+			set_transient( 'ms_member_clean_db', time(), 3600 );
+		} else {
+			// Last check was within past hour. Do nothing yet...
+			return;
+		}
+
+		global $wpdb;
+
+		// Find all Relationships that have no post-author.
+		$sql = "
+		SELECT p.ID
+		FROM {$wpdb->posts} p
+		WHERE p.post_type=%s
+		AND NOT EXISTS (
+			SELECT 1
+			FROM {$wpdb->users} u
+			WHERE u.ID = p.post_author
+		);
+		";
+
+		$sql = $wpdb->prepare(
+			$sql,
+			MS_Model_Membership_Relationship::$POST_TYPE
+		);
+
+		// Delete these Relationships!
+		$items = $wpdb->get_results( $sql );
+		foreach ( $items as $item ) {
+			$junk = MS_Factory::load( 'MS_Model_Membership_Relationship', $item->ID );
+			$junk->delete();
+		}
+	}
+
+	/**
 	 * Set specific property.
 	 *
 	 * @since 1.0.0

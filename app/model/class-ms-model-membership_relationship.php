@@ -547,6 +547,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',
 				'fields' => 'ids',
+				'nopaging' => true,
 			)
 		);
 
