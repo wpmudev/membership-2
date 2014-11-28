@@ -283,11 +283,11 @@ class MS_Model_Member extends MS_Model {
 			}
 
 			if ( isset( $this->$field )
-				&& ( ! isset( $user_details[ "ms_$field" ][0] )
-					|| $user_details[ "ms_$field" ][0] != $this->$field
+				&& ( ! isset( $user_details[ 'ms_' . $field ][0] )
+					|| $user_details[ 'ms_' . $field ][0] != $this->$field
 				)
 			) {
-				update_user_meta( $this->id, "ms_$field", $this->$field );
+				update_user_meta( $this->id, 'ms_' . $field, $this->$field );
 			}
 		}
 
@@ -402,10 +402,16 @@ class MS_Model_Member extends MS_Model {
 			$user_id = wp_create_user( $this->username, $this->password, $this->email );
 
 			if ( is_wp_error( $user_id ) ) {
-				$validation_errors->add( 'userid', $user_id->get_error_message() );
+				$validation_errors->add(
+					'userid',
+					$user_id->get_error_message()
+				);
 
 				throw new Exception(
-					implode( '<br/>', $validation_errors->get_error_messages() )
+					implode(
+						'<br/>',
+						$validation_errors->get_error_messages()
+					)
 				);
 			}
 			$this->id = $user_id;
@@ -464,6 +470,40 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Get members IDs.
+	 * The IDs are cached and only fetched once for each set of $args.
+	 *
+	 * @since 1.0.4.4
+	 *
+	 * @param $args The query user args
+	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
+	 * @return array List of member IDs
+	 */
+	public static function get_member_ids( $args = null ) {
+		static $Members = array();
+		$key = json_encode( $args );
+
+		if ( ! isset( $Members[$key] ) ) {
+			$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
+			$wp_user_search = new WP_User_Query( $args );
+			$users = $wp_user_search->get_results();
+			$members = array();
+
+			foreach ( $users as $user_id ) {
+				$members[] = $user_id;
+			}
+
+			$Members[$key] = apply_filters(
+				'ms_model_member_get_member_ids',
+				$members,
+				$args
+			);
+		}
+
+		return $Members[$key];
+	}
+
+	/**
 	 * Get members.
 	 *
 	 * @since 1.0.0
@@ -474,17 +514,18 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_members( $args = null ) {
 		$members = array();
+		$ids = self::get_member_ids( $args );
 
-		$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
-		$wp_user_search = new WP_User_Query( $args );
-		$users = $wp_user_search->get_results();
-		MS_Helper_Debug::log( $args );
-		MS_Helper_Debug::log( $users );
-		foreach ( $users as $user_id ) {
+		foreach ( $ids as $user_id ) {
 			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
 		}
 
-		return apply_filters( 'ms_model_member_get_members', $members );
+		return apply_filters(
+			'ms_model_member_get_members',
+			$members,
+			$ids,
+			$args
+		);
 	}
 
 	/**
@@ -556,32 +597,28 @@ class MS_Model_Member extends MS_Model {
 			)
 		);
 
-		if ( ! is_array( $args ) ) {
-			$args = array();
-		}
+		$args = WDev()->get_array( $args );
+		WDev()->load_fields( $args, 'meta_query' );
+		$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
 
 		switch ( $search_option ) {
 			case self::SEARCH_ONLY_MEMBERS:
-				$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
-
-				$args['meta_query']['is_member'] = array(
-					'key'   => 'ms_is_member',
-					'value' => true,
+				$args['meta_query'] = array(
+					array(
+						'key'   => 'ms_is_member',
+						'value' => true,
+					),
 				);
 				break;
 
 			case self::SEARCH_NOT_MEMBERS:
-				$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
+				/*
+				 * This does a recursive call with
+				 * $search_option = self::SEARCH_ONLY_MEMBERS
+				 */
+				$members = self::get_member_ids();
 
-				$args['meta_query']['relation'] = 'OR';
-				$args['meta_query']['is_member'] = array(
-					'key'     => 'ms_is_member',
-					'compare' => 'NOT EXISTS',
-				);
-				$args['meta_query']['is_member1'] = array(
-					'key'     => 'ms_is_member',
-					'value'   => false,
-				);
+				$args['exclude'] = $members;
 				break;
 
 			case self::SEARCH_ALL_USERS:
@@ -1050,7 +1087,6 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		if ( $this->password != $this->password2 ) {
-			MS_Helper_Debug::log( 'no password match' );
 			$validation_errors->add(
 				'passmatch',
 				__( 'Please ensure the passwords match.', MS_TEXT_DOMAIN )
@@ -1066,6 +1102,61 @@ class MS_Model_Member extends MS_Model {
 			throw new Exception( implode( '<br/>', $errors ) );
 		} else {
 			return true;
+		}
+	}
+
+	/**
+	 * Search for orphaned relationships and remove them.
+	 *
+	 * We write a custom SQL query for this, as solving it with a meta-query
+	 * structure is very performance intense and requires at least two queries
+	 * and a loop...
+	 *
+	 * For additional performance we will only do this check once every hour.
+	 *
+	 * Note: We cannot use the hook 'delete_user' to do this, because in
+	 * Multisite users are deleted via the Main network admin; however, there
+	 * we do not have access to the site data; especially if Plugin is not
+	 * network enabled...
+	 *
+	 * @since  1.0.4.4
+	 */
+	static public function clean_db() {
+		$timestamp = absint( get_transient( 'ms_member_clean_db' ) );
+		$elapsed = time() - $timestamp;
+
+		if ( $elapsed > 3600 ) {
+			// Last check is longer than 1 hour ago. Check again.
+			set_transient( 'ms_member_clean_db', time(), 3600 );
+		} else {
+			// Last check was within past hour. Do nothing yet...
+			return;
+		}
+
+		global $wpdb;
+
+		// Find all Relationships that have no post-author.
+		$sql = "
+		SELECT p.ID
+		FROM {$wpdb->posts} p
+		WHERE p.post_type=%s
+		AND NOT EXISTS (
+			SELECT 1
+			FROM {$wpdb->users} u
+			WHERE u.ID = p.post_author
+		);
+		";
+
+		$sql = $wpdb->prepare(
+			$sql,
+			MS_Model_Membership_Relationship::$POST_TYPE
+		);
+
+		// Delete these Relationships!
+		$items = $wpdb->get_results( $sql );
+		foreach ( $items as $item ) {
+			$junk = MS_Factory::load( 'MS_Model_Membership_Relationship', $item->ID );
+			$junk->delete();
 		}
 	}
 

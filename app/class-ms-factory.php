@@ -244,8 +244,7 @@ class MS_Factory {
 
 		if ( $cache ) {
 			$model = $cache;
-		}
-		else {
+		} else {
 			$wp_user = new WP_User( $user_id, $name );
 
 			if ( ! empty( $wp_user->ID ) ) {

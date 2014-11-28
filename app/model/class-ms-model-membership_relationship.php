@@ -386,11 +386,16 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			$this->status = self::STATUS_DEACTIVATED;
 			$this->save();
 			if ( $generate_event ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_DEACTIVATED, $this );
+				MS_Model_Event::save_event(
+					MS_Model_Event::TYPE_MS_DEACTIVATED,
+					$this
+				);
 			}
 		}
 		catch( Exception $e ) {
-			MS_Helper_Debug::log( '[Error deactivating membership]: '. $e->getMessage() );
+			MS_Helper_Debug::log(
+				'[Error deactivating membership]: '. $e->getMessage()
+			);
 		}
 
 		do_action(
@@ -445,7 +450,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 		if ( ! empty( $posts ) ) {
 			foreach ( $posts as $post_id ) {
-				$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $post_id );
+				$ms_relationship = MS_Factory::load(
+					'MS_Model_Membership_Relationship',
+					$post_id
+				);
+
 				if ( ! empty( $args['author'] ) ) {
 					$ms_relationships[ $ms_relationship->membership_id ] = $ms_relationship;
 				} else {
@@ -542,6 +551,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				'post_type' => self::$POST_TYPE,
 				'post_status' => 'any',
 				'fields' => 'ids',
+				'nopaging' => true,
 			)
 		);
 

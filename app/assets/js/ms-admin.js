@@ -717,10 +717,14 @@ window.ms_init.view_member_list = function init () {
 	s2_config.minimumResultsForSearch = 0;
 	s2_config.placeholder = window.ms_data.lang.select_user;
 	s2_config.allowClear = true;
+	s2_config.multiple = true;
+	s2_config.minimumInputLength = 1;
+	s2_config.closeOnSelect = false;
 	s2_config.ajax = {
 		url: window.ajaxurl,
 		dataType: 'jsonp',
-		quietMillis: 200,
+		cache: true,
+		quietMillis: 500,
 		data: function (term, page) {
 			return {
 				filter: term, // search term
@@ -731,9 +735,23 @@ window.ms_init.view_member_list = function init () {
 			return {results: data};
 		}
 	};
+
 	jQuery( '#new_member' ).select2( s2_config ).change( enable_add_button );
 	jQuery( '#add_member' ).click( submit_add_form );
 	enable_add_button();
+
+	// Change the view (show members of different membership)
+	function change_view() {
+		var list = jQuery( '#view_membership' ),
+			new_id = parseInt( list.val() ),
+			data = list.data('ms'),
+			url = data.url + new_id;
+
+		if ( new_id <= 0 ) { return; }
+		window.location = url;
+	}
+
+	jQuery('#view_membership').change( change_view );
 };
 
 /*global window:false */

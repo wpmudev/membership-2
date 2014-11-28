@@ -130,6 +130,10 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 
 		$rule_value = $this->get_rule_value( self::CONTENT_ID );
 
+		/*
+		 * This is a static variable so it can collect the most generous
+		 * permission of any rule that is applied for the current user.
+		 */
 		if ( self::$comment_access > $rule_value ) {
 			self::$comment_access = $rule_value;
 		}
@@ -153,81 +157,38 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 
 		switch ( self::$comment_access ) {
 			case self::RULE_VALUE_WRITE:
-				add_filter( 'comments_open', '__return_true', 99 );
+				// Don't change the inherent comment status.
 				break;
 
 			case self::RULE_VALUE_READ:
-				$this->add_filter( 'comment_reply_link', 'comment_reply_link', 99 );
-				$this->add_filter( 'comments_open', 'read_only_comments', 99 );
+				$this->add_filter( 'comment_form_before', 'hide_form_start', 1 );
+				$this->add_filter( 'comment_form_after', 'hide_form_end', 99 );
+				add_filter( 'comment_reply_link', '__return_null', 99 );
 				break;
 
 			case self::RULE_VALUE_NO_ACCESS:
 				add_filter( 'comments_open', '__return_false', 99 );
-				$this->add_filter( 'get_comments_number', 'get_comments_number' );
+				add_filter( 'get_comments_number', '__return_zero', 99 );
 				break;
 		}
 	}
 
 	/**
-	 * Workaround to enable read only comments.
+	 * Before the comment form is output we start buffering.
 	 *
-	 * @todo find a better way to allow read only comments.
-	 *
-	 * **Hooks Filters: **
-	 *
-	 * * comments_open
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param boolean $open The open status before filter.
-	 * @return boolean The open status after filter.
+	 * @since  1.0.4.4
 	 */
-	public function read_only_comments( $open ) {
-		$traces = MS_Helper_Debug::debug_trace( true );
-
-		if ( false !== strpos( $traces, 'function: comment_form' ) ) {
-			$open = false;
-		}
-
-		return apply_filters(
-			'ms_model_rule_comment_read_only_comments',
-			$open,
-			$this
-		);
+	public function hide_form_start() {
+		ob_start();
 	}
 
 	/**
-	 * Workaround to hide reply link when in read only mode.
+	 * At the end of the comment form we clear the buffer: The form is gone!
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $link The reply link before filter.
-	 * @return string The reply (blank) link after filter.
+	 * @since  1.0.4.4
 	 */
-	public function comment_reply_link( $link ) {
-		return apply_filters(
-			'ms_model_rule_comment_comment_reply_link',
-			'',
-			$this
-		);
-	}
-
-	/**
-	 * Workaround to hide existing comments.
-	 *
-	 * Related Action Hooks:
-	 * - get_comments_number
-	 *
-	 * @since 1.0
-	 *
-	 * @return int The zero count.
-	 */
-	public function get_comments_number() {
-		return apply_filters(
-			'ms_model_rule_comment_get_comments_number',
-			0,
-			$this
-		);
+	public function hide_form_end() {
+		ob_end_clean();
 	}
 
 	/**

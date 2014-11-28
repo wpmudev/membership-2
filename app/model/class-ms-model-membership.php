@@ -480,11 +480,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public function can_have_children() {
 		$can_have_children = false;
 
-		if ( ! $this->has_parent() && in_array( $this->type, self::get_parent_eligible_types() ) ) {
+		if ( ! $this->has_parent()
+			&& in_array( $this->type, self::get_parent_eligible_types() )
+		) {
 			$can_have_children = true;
 		}
 
-		return apply_filters( 'ms_model_membership_can_have_children', $can_have_children, $this );
+		return apply_filters(
+			'ms_model_membership_can_have_children',
+			$can_have_children,
+			$this
+		);
 	}
 
 	/**
@@ -500,7 +506,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			self::TYPE_TIER,
 		);
 
-		return apply_filters( 'ms_model_membership_get_parent_eligible_types', $parent_eligible_types );
+		return apply_filters(
+			'ms_model_membership_get_parent_eligible_types',
+			$parent_eligible_types
+		);
 	}
 
 	/**
@@ -778,7 +787,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$memberships = array();
 		foreach ( $items as $item ) {
-			$memberships[] = MS_Factory::load( 'MS_Model_Membership', $item->ID );
+			$memberships[] = MS_Factory::load(
+				'MS_Model_Membership',
+				$item->ID
+			);
 		}
 
 		return apply_filters(
@@ -792,6 +804,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Get grouped Memberships models.
 	 *
 	 * Used in admin list table to show parent and children memberships grouped.
+	 * This is not an hierarchial group, but only sorts memberships in the
+	 * result array in a certain way.
 	 *
 	 * @since 1.0.0
 	 *
@@ -799,8 +813,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
-	public static function get_grouped_memberships( $args ) {
+	public static function get_grouped_memberships( $args = array() ) {
 		// Get parent memberships.
+		$args = WDev()->get_array( $args );
 		$args['post_parent'] = 0;
 		$memberships = self::get_memberships( $args );
 
@@ -830,6 +845,46 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			'ms_model_membership_get_grouped_memberships',
 			$memberships,
 			$args
+		);
+	}
+
+	/**
+	 * Get memberships in a hierarchial structure.
+	 *
+	 * The array only contains the membership ID and name, not full
+	 * MS_Model_Membership objects.
+	 *
+	 * @since  1.0.4.4
+	 *
+	 * @param $args The query post args
+	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return MS_Model_Membership[] The selected memberships.
+	 */
+	public static function get_membership_hierarchy( $args = array() ) {
+		$memberships = self::get_grouped_memberships( $args );
+
+		$list = array();
+
+		foreach ( $memberships as $membership ) {
+			if ( $membership->can_have_children() ) {
+				continue;
+			}
+
+			$parent = $membership->get_parent();
+
+			if ( $parent ) {
+				$list[$parent->name] = WDev()->get_array( $list[$parent->name] );
+				$list[$parent->name][$membership->id] = $membership->name;
+			} else {
+				$list[$membership->id] = $membership->name;
+			}
+		}
+
+		return apply_filters(
+			'ms_model_membership_get_membership_hierarchy',
+			$list,
+			$args,
+			$memberships
 		);
 	}
 
@@ -1057,11 +1112,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Verify if membership was not deleted, trying to load from DB.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param int $membership_id The membership id to verify.
 	 * @return bool True if is valid.
 	 */
 	public static function is_valid_membership( $membership_id ) {
-		$valid = ( MS_Factory::load( 'MS_Model_Membership', $membership_id )->id > 0 );
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$valid = ( $membership->id > 0 );
 
 		return apply_filters(
 			'ms_model_membership_is_valid_membership',
@@ -1072,6 +1129,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 	/**
 	 * Get protected content membership.
+	 *
+	 * Create a new membership if membership does not exist.
 	 *
 	 * @since 1.0.0
 	 *
@@ -1141,8 +1200,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					}
 				}
 				// End of DB-correction part.
-			}
-			else {
+			} else {
 				$description = __( 'Protected content, and also a default membership for visitors', MS_TEXT_DOMAIN );
 				$Protected_content = MS_Factory::create( 'MS_Model_Membership' );
 				$Protected_content->name = __( 'Protected Content', MS_TEXT_DOMAIN );
@@ -1153,36 +1211,34 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$Protected_content->active = true;
 				$Protected_content->private = true;
 				$Protected_content->save();
-				$Protected_content = MS_Factory::load( 'MS_Model_Membership', $Protected_content->id );
+				$Protected_content = MS_Factory::load(
+					'MS_Model_Membership',
+					$Protected_content->id
+				);
 
 				// It is important! The Protected Content membership must be public
 				// so that the membership options are available for guest users.
 				wp_publish_post( $Protected_content->id );
 			}
 
-			$Protected_content = apply_filters( 'ms_model_membership_get_protected_content', $Protected_content );
+			$Protected_content = apply_filters(
+				'ms_model_membership_get_protected_content',
+				$Protected_content
+			);
 		}
 
 		return $Protected_content;
 	}
 
 	/**
-	 * Get membership assigned to visitors.
-	 *
-	 * Create a new membership if visitor membership does not exist.
-	 * It is the same as "protected content".
+	 * Alias for get_protected_content()
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return MS_Model_Membership The visitor membership.
 	 */
 	public static function get_visitor_membership() {
-		$visitor_membership = self::get_protected_content();
-
-		return apply_filters(
-			'ms_model_membership_get_visitor_membership',
-			$visitor_membership
-		);
+		return self::get_protected_content();
 	}
 
 	/**

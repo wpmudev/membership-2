@@ -60,6 +60,7 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 				switch ( $component ) {
 					// Private messaging direct access.
 					case 'messages':
+						$has_access = false;
 						if ( 'compose' === $bp->current_action
 							&& parent::has_access( MS_Integration_BuddyPress::RULE_TYPE_BUDDYPRESS_PRIVATE_MSG )
 						) {
@@ -71,9 +72,9 @@ class MS_Model_Rule_Buddypress extends MS_Model_Rule {
 					case 'groups':
 						break;
 
-					// Other BP pages have access.
+					// Other BP pages can be handled by other rules.
 					default:
-						$has_access = true;
+						$has_access = null;
 						break;
 				}
 			}

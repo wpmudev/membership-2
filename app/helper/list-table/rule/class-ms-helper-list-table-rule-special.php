@@ -38,7 +38,8 @@ class MS_Helper_List_Table_Rule_Special extends MS_Helper_List_Table_Rule {
 			$this->get_sortable_columns(),
 		);
 
-		$per_page = $this->get_items_per_page( "{$this->id}_per_page", 5 );
+		// Set items-per-page to 50: Never use pagination!
+		$per_page = $this->get_items_per_page( "{$this->id}_per_page", 50 );
 		$current_page = $this->get_pagenum();
 
 		$args = array(

@@ -573,9 +573,12 @@ class MS_Helper_List_Table {
 	 * @return int
 	 */
 	protected function get_pagenum() {
-		$pagenum = isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 0;
+		WDev()->load_request_fields( 'paged' );
+		$pagenum = absint( $_REQUEST['paged'] );
 
-		if ( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] ) {
+		if ( isset( $this->_pagination_args['total_pages'] )
+			&& $pagenum > $this->_pagination_args['total_pages']
+		) {
 			$pagenum = $this->_pagination_args['total_pages'];
 		}
 
