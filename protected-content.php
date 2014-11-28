@@ -8,7 +8,7 @@ Author:      WPMU DEV
 Author URI:  http://premium.wpmudev.org/
 WDP ID:      928907
 License:     GNU General Public License (Version 2 - GPLv2)
-Text Domain: wpmudev_protected_content
+Text Domain: protected-content
 */
 
 /**
