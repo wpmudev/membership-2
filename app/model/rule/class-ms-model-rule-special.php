@@ -43,28 +43,51 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 
 	/**
 	 * Available special pages
+	 *
+	 * @since 1.0.4
+	 *
 	 * @var array
 	 */
-	protected $content = null;
+	protected $_content = null;
 
 	/**
 	 * Analysis information on which page type was detected.
+	 *
+	 * @since 1.0.4
+	 *
 	 * @var string
 	 */
-	public $matched_type = '';
+	public $_matched_type = '';
+
+	/**
+	 * Cache the result of is_special_page
+	 *
+	 * @since 1.0.4.4
+	 *
+	 * @var bool
+	 */
+	public $_is_special = null;
+
+	/**
+	 * Cache the result of has_rule_for_current_page
+	 *
+	 * @since 1.0.4.4
+	 *
+	 * @var bool
+	 */
+	public $_has_rule = null;
 
 	/**
 	 * Checks if the current page is a special page that can be handled by this
 	 * rule
 	 *
 	 * @since  1.0.4
+	 *
 	 * @return bool
 	 */
 	static public function is_special_page() {
-		static $Result = null;
-
-		if ( null === $Result ) {
-			$Result = is_home()
+		if ( null === $this->_is_special ) {
+			$this->_is_special = is_home()
 				|| is_front_page()
 				|| is_404()
 				|| is_search()
@@ -74,7 +97,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				|| is_time();
 		}
 
-		return $Result;
+		return $this->_is_special;
 	}
 
 	/**
@@ -119,28 +142,28 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 	 * protected by this rule.
 	 *
 	 * @since  1.0.4
+	 *
 	 * @return bool
 	 */
 	public function has_rule_for_current_page() {
-		static $Result = null;
-
-		if ( null === $Result ) {
+		if ( null === $this->_has_rule ) {
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
-				$Result = false;
+				$this->_has_rule = false;
 			} else {
 				$base = $this->get_membership()->get_protected_content();
 				$base_rule = $base->get_rule( $this->rule_type );
-				$Result = $this->check_current_page( $base_rule->rule_value );
+				$this->_has_rule = $this->check_current_page( $base_rule->rule_value );
 			}
 		}
 
-		return $Result;
+		return $this->_has_rule;
 	}
 
 	/**
 	 * Checks if the current page can be accessed by the specified rules
 	 *
 	 * @since  1.0.4
+	 *
 	 * @param  array $rules List of allowed pages.
 	 * @return bool
 	 */
@@ -183,13 +206,14 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 	 * Returns a list of special pages that can be configured by this rule.
 	 *
 	 * @since  1.0.4
+	 *
 	 * @param  bool $flat If set to true then all pages are in the same
 	 *      hierarchy (no sub-arrays).
 	 * @return array List of special pages.
 	 */
 	protected function get_special_pages( $flat = false ) {
-		if ( ! is_array( $this->content ) ) {
-			$this->content = array();
+		#if ( ! is_array( $this->_content ) ) {
+			$this->_content = array();
 			$front_type = get_option( 'show_on_front' );
 
 			$front_url = get_home_url();
@@ -199,7 +223,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$home_url = $front_url;
 			}
 
-			$base = $this->get_membership()->get_protected_content();
+			$base = MS_Model_Membership::get_protected_content();
 			$show_all = $this->membership_id === $base->id;
 
 			$arch_year = get_year_link( '' );
@@ -207,59 +231,59 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			$arch_day = get_day_link( '', '', '' );
 			$arch_hour = add_query_arg( 'hour', '15', $arch_day );
 
-			$this->content['archive'] = array();
-			$this->content['single'] = array();
+			$this->_content['archive'] = array();
+			$this->_content['single'] = array();
 
-			$this->content['archive']['archive'] = (object) array(
+			$this->_content['archive']['archive'] = (object) array(
 				'label' => __( 'Any Archive page', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
-			$this->content['archive']['author'] = (object) array(
+			$this->_content['archive']['author'] = (object) array(
 				'label' => __( 'Author Archives', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
-			$this->content['archive']['date'] = (object) array(
+			$this->_content['archive']['date'] = (object) array(
 				'label' => __( 'Any Date or Time Archive', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
-			$this->content['archive']['year'] = (object) array(
+			$this->_content['archive']['year'] = (object) array(
 				'label' => __( 'Archive: Year', MS_TEXT_DOMAIN ),
 				'url' => $arch_year,
 			);
-			$this->content['archive']['month'] = (object) array(
+			$this->_content['archive']['month'] = (object) array(
 				'label' => __( 'Archive: Month', MS_TEXT_DOMAIN ),
 				'url' => $arch_month,
 			);
-			$this->content['archive']['day'] = (object) array(
+			$this->_content['archive']['day'] = (object) array(
 				'label' => __( 'Archive: Day', MS_TEXT_DOMAIN ),
 				'url' => $arch_day,
 			);
-			$this->content['archive']['time'] = (object) array(
+			$this->_content['archive']['time'] = (object) array(
 				'label' => __( 'Archive: Time', MS_TEXT_DOMAIN ),
 				'url' => $arch_hour,
 			);
 
-			$this->content['single']['front'] = (object) array(
+			$this->_content['single']['front'] = (object) array(
 				'label' => __( 'Front Page', MS_TEXT_DOMAIN ),
 				'url' => $front_url,
 			);
-			$this->content['single']['home'] = (object) array(
+			$this->_content['single']['home'] = (object) array(
 				'label' => __( 'Blog Index', MS_TEXT_DOMAIN ),
 				'url' => $home_url,
 			);
-			$this->content['single']['notfound'] = (object) array(
+			$this->_content['single']['notfound'] = (object) array(
 				'label' => __( '404 Not Found', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
-			$this->content['single']['search'] = (object) array(
+			$this->_content['single']['search'] = (object) array(
 				'label' => __( 'Search Results', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
-			$this->content['single']['single'] = (object) array(
+			$this->_content['single']['single'] = (object) array(
 				'label' => __( 'Any single page or post', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
-			$this->content['single']['attachment'] = (object) array(
+			$this->_content['single']['attachment'] = (object) array(
 				'label' => __( 'Any attachment page', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
@@ -268,26 +292,26 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$base_rule = $base->get_rule( $this->rule_type );
 				$base_values = $base_rule->rule_value;
 
-				foreach ( $this->content['archive'] as $key => $val ) {
-					if ( ! isset( $base_values[$key] ) ) { unset( $this->content['archive'][$key] ); }
+				foreach ( $this->_content['archive'] as $key => $val ) {
+					if ( ! isset( $base_values[$key] ) ) { unset( $this->_content['archive'][$key] ); }
 				}
-				foreach ( $this->content['single'] as $key => $val ) {
-					if ( ! isset( $base_values[$key] ) ) { unset( $this->content['single'][$key] ); }
+				foreach ( $this->_content['single'] as $key => $val ) {
+					if ( ! isset( $base_values[$key] ) ) { unset( $this->_content['single'][$key] ); }
 				}
 			}
-		}
+		#}
 
 		if ( $flat ) {
-			$special_pages = $this->content['single'] + $this->content['archive'];
+			$special_pages = $this->_content['single'] + $this->_content['archive'];
 		} else {
 			$special_pages = array();
-			foreach ( $this->content['single'] as $key => $item ) {
+			foreach ( $this->_content['single'] as $key => $item ) {
 				$special_pages[$key] = $item->label;
 			}
 
 			$archive_key = __( 'Archives', MS_TEXT_DOMAIN );
 			$special_pages[$archive_key] = array();
-			foreach ( $this->content['archive'] as $key => $item ) {
+			foreach ( $this->_content['archive'] as $key => $item ) {
 				$special_pages[$archive_key][$key] = $item->label;
 			}
 		}
@@ -331,6 +355,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 	 * Used in Dashboard to display a list of special pages.
 	 *
 	 * @since 1.0.4
+	 *
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array The contents array.

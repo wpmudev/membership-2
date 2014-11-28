@@ -211,15 +211,13 @@ class MS_Model_Rule extends MS_Model {
 
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 				unset( $rule_types[10] );
-			}
-			else {
-				unset( $rule_types[0] );
+			} else {
+				unset( $rule_types[1] );
 			}
 
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				unset( $rule_types[30] );
-			}
-			else {
+			} else {
 				unset( $rule_types[20] );
 			}
 
