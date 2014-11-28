@@ -6,9 +6,13 @@ Change Log:
 
 1.0.4.4
 ----------------------------------------------------------------------
+- Add individual URL group permissions on membership level
 - Add column with gateway status to the payment settings
 - Fix bug where registration did not work directly after initial setup
 - Fix caption of the "Login" button in the login page
+- Fix a lot of small issues in the Members page
+- Fix BuddyPress permissions (Add-on)
+- Many small improvements and bugfixes all over the place
 
 1.0.4.3
 ----------------------------------------------------------------------

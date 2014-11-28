@@ -706,9 +706,12 @@ window.ms_init.view_member_list = function init () {
 	s2_config.placeholder = window.ms_data.lang.select_user;
 	s2_config.allowClear = true;
 	s2_config.multiple = true;
+	s2_config.minimumInputLength = 1;
+	s2_config.closeOnSelect = false;
 	s2_config.ajax = {
 		url: window.ajaxurl,
 		dataType: 'jsonp',
+		cache: true,
 		quietMillis: 500,
 		data: function (term, page) {
 			return {
