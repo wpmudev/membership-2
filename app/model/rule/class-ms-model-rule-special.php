@@ -163,6 +163,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				case 'notfound': $result = is_404(); break;
 				case 'search': $result = is_search(); break;
 				case 'single': $result = is_singular(); break;
+				case 'attachment': $result = is_attachment(); break;
 			}
 
 			if ( $result ) {
@@ -256,6 +257,10 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			);
 			$this->content['single']['single'] = (object) array(
 				'label' => __( 'Any single page or post', MS_TEXT_DOMAIN ),
+				'url' => '',
+			);
+			$this->content['single']['attachment'] = (object) array(
+				'label' => __( 'Any attachment page', MS_TEXT_DOMAIN ),
 				'url' => '',
 			);
 
