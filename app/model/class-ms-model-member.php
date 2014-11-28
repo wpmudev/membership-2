@@ -1014,6 +1014,11 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * For additional performance we will only do this check once every hour.
 	 *
+	 * Note: We cannot use the hook 'delete_user' to do this, because in
+	 * Multisite users are deleted via the Main network admin; however, there
+	 * we do not have access to the site data; especially if Plugin is not
+	 * network enabled...
+	 *
 	 * @since  1.0.4.4
 	 */
 	static public function clean_db() {
