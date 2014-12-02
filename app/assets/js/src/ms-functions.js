@@ -87,7 +87,7 @@ window.ms_functions = {
 	},
 
 	radio_slider_ajax_update: function( obj ) {
-		var data, info_field,
+		var data, info_field, toggle, states, state,
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
@@ -96,11 +96,22 @@ window.ms_functions = {
 
 			slider.addClass( 'ms-processing wpmui-loading' );
 			slider.toggleClass( 'on' );
+			slider.parent().toggleClass( 'on' );
+			slider.trigger( 'change' );
 
-			data = slider.children( '.ms-toggle' ).data( 'ms' );
+			toggle = slider.children( '.ms-toggle' );
+			data = toggle.data( 'ms' );
+			states = toggle.data( 'states' );
 
 			if ( null != data ) {
-				data.value = slider.hasClass( 'on' );
+				state = slider.hasClass( 'on' );
+				if ( undefined !== states.active && state ) {
+					data.value = states.active;
+				} else if ( undefined !== states.inactive && ! state ) {
+					data.value = states.inactive;
+				} else {
+					data.value = state;
+				}
 
 				// Allow fields to pre-process the data before sending it.
 				if ( 'function' === typeof slider.data( 'before_ajax' ) ) {

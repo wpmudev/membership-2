@@ -59,16 +59,20 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	private function get_fields() {
 		$membership = $this->data['membership'];
 
-		$action = MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP;
+		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
 
 		$fields = array(
 			'is_free' => array(
 				'id' => 'is_free',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'before' => 'Free',
-				'after' => 'Paid',
+				'before' => __( 'Free', MS_TEXT_DOMAIN ),
+				'after' => __( 'Paid', MS_TEXT_DOMAIN ),
 				'value' => (bool) $membership->is_free,
+				'field_options' => array(
+					'active' => 0,
+					'inactive' => 1,
+				),
 				'desc' => __( 'Do you want to accept payments for this membership?', MS_TEXT_DOMAIN ),
 				'class' => 'ms-payments-choice ms-ajax-update',
 				'data_ms' => array(
