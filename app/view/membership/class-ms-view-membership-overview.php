@@ -234,6 +234,22 @@ class MS_View_Membership_Overview extends MS_View {
 			</div>
 		</div>
 		<?php
+
+		MS_Helper_Html::html_element(
+			array(
+				'id' => 'setup_payment',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+				'url' => add_query_arg(
+					array(
+						'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
+						'membership_id' => $this->data['membership']->id,
+						'edit' => 1,
+					)
+				),
+				'class' => 'wpmui-field-button button',
+			)
+		);
 	}
 
 	protected function available_content_panel_data() {
