@@ -246,6 +246,18 @@ class MS_View_Settings_Edit extends MS_View {
 								)
 							);
 							?>
+							<span> | </span>
+							<?php
+							MS_Helper_Html::html_link(
+								array(
+									'id' => 'reset_page_' . $field['value'],
+									'url' => '',
+									'value' => __( 'Show default content', MS_TEXT_DOMAIN ),
+									'target' => '_blank',
+									'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&ms-default=1&post=' ) ),
+								)
+							);
+							?>
 						</div>
 					</div>
 				<?php endforeach; ?>

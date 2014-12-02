@@ -54,6 +54,7 @@ class MS_Model_Pages extends MS_Model_Option {
 	const MS_PAGE_REGISTER = 'register';
 	const MS_PAGE_REG_COMPLETE = 'registration-complete';
 
+
 	/**
 	 * Get MS Page types
 	 *
