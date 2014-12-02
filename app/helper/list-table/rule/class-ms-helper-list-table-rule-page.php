@@ -152,7 +152,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 			'id' => 'filter_button',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			'value' => __( 'Filter', MS_TEXT_DOMAIN ),
-			'class' => 'button',
+			'button_type' => 'button',
 		);
 
 		if ( ! $echo ) { ob_start(); }
