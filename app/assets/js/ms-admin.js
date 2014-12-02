@@ -918,7 +918,6 @@ window.ms_init.view_membership_setup_payment = function init () {
 
 		all_settings.hide();
 		active_settings.show();
-		window.console.log( pay_type, active_settings );
 
 		if ( 'permanent' === pay_type ) {
 			after_end.hide();
@@ -932,10 +931,8 @@ window.ms_init.view_membership_setup_payment = function init () {
 			pay_settings = jQuery( '#ms-payment-settings-wrapper' );
 
 		if ( pay_type ) {
-		window.console.log( 'Show the box' );
 			pay_settings.show();
 		} else {
-		window.console.log( 'HIDE IT' );
 			pay_settings.hide();
 		}
 	}
