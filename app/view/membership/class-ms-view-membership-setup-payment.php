@@ -59,20 +59,18 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 	private function get_fields() {
 		$membership = $this->data['membership'];
 
-		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
+		$action = MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
 
 		$fields = array(
 			'is_free' => array(
 				'id' => 'is_free',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-				'value' => ( ! $membership->is_free ? 0 : 1),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'before' => 'Free',
+				'after' => 'Paid',
+				'value' => (bool) $membership->is_free,
 				'desc' => __( 'Do you want to accept payments for this membership?', MS_TEXT_DOMAIN ),
 				'class' => 'ms-payments-choice ms-ajax-update',
-				'field_options' => array(
-					0 => __( 'Yes', MS_TEXT_DOMAIN ),
-					1 => __( 'No', MS_TEXT_DOMAIN ),
-				),
 				'data_ms' => array(
 					'field' => 'is_free',
 					'_wpnonce' => $nonce,
@@ -105,7 +103,10 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			),
 		);
 
-		return apply_filters( 'ms_view_membership_setup_payment_get_fields', $fields );
+		return apply_filters(
+			'ms_view_membership_setup_payment_get_fields',
+			$fields
+		);
 	}
 
 	/**
@@ -343,7 +344,10 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 			}
 		}
 
-		return apply_filters( 'ms_view_membership_setup_payment_get_global_fields', $fields );
+		return apply_filters(
+			'ms_view_membership_setup_payment_get_global_fields',
+			$fields
+		);
 	}
 
 }
