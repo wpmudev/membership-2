@@ -121,10 +121,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Membership active status.
 	 *
+	 * By default a new membership is active.
+	 *
 	 * @since 1.0.0
 	 * @var bool $active
 	 */
-	protected $active = false;
+	protected $active = true;
 
 	/**
 	 * Membership private status.
