@@ -47,6 +47,8 @@ class MS_Helper_Shortcode extends MS_Helper {
 
 	const SCODE_MS_BUTTON = 'ms-membership-button';
 
+	const SCODE_PROTECTED = 'ms-protected-content';
+
 	const SCODE_LOGIN = 'ms-membership-login';
 
 	const SCODE_LOGOUT = 'ms-membership-logout';
@@ -92,6 +94,7 @@ class MS_Helper_Shortcode extends MS_Helper {
 				self::SCODE_MS_DETAILS,
 				self::SCODE_MS_PRICE,
 				self::SCODE_MS_BUTTON,
+				self::SCODE_PROTECTED,
 				self::SCODE_LOGIN,
 				self::SCODE_LOGOUT,
 				self::SCODE_MS_ACCOUNT,

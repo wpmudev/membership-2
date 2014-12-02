@@ -87,19 +87,27 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( MS_Plugin::is_enabled() ) {
 			do_action( 'ms_controller_frontend_construct', $this );
 
+			// Process actions like register new account.
 			$this->add_action( 'parse_query', 'process_actions', 1 );
+
+			// Check if the current page is a Membership Page.
 			$this->add_action( 'parse_query', 'check_for_membership_pages', 2 );
+
+			// Propagates SSL cookies when user logs in.
+			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
+
+			// Enqueue scripts.
+			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 
 			// Add classes for all memberships the user is registered to.
 			$this->add_filter( 'body_class', 'body_class' );
 
+			// Set the registration URL to the 'Register' Membership Page.
 			$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
 			$this->add_filter( 'register_url', 'signup_location', 999 );
-			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
 
+			// Redirect users to their Account page after login.
 			$this->add_filter( 'login_redirect', 'login_redirect', 10, 3 );
-
-			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		}
 	}
 
@@ -199,7 +207,9 @@ class MS_Controller_Frontend extends MS_Controller {
 					break;
 
 				case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
-					$this->add_filter( 'the_content', 'protected_page', 1 );
+					// Set up the protection shortcode.
+					$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];
+					$scode->page_is_protected();
 					break;
 
 				case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
@@ -705,43 +715,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	}
 
 	/**
-	 * Show protected page.
-	 *
-	 * Search for login shortcode, injecting if not found.
-	 *
-	 * Related Filter Hooks:
-	 * - the_content
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $content The page content to filter.
-	 * @return string The filtered content.
-	 */
-	public function protected_page( $content ) {
-		$setting = MS_Plugin::instance()->settings;
-		$protection_msg = $setting->get_protection_message(
-			MS_Model_Settings::PROTECTION_MSG_CONTENT
-		);
-
-		if ( ! empty( $protection_msg ) ) {
-			$content .= $protection_msg;
-		}
-
-		if ( ! MS_Model_Member::is_logged_user()
-			&& ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
-
-			$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
-			$content .= do_shortcode( $scode );
-		}
-
-		return apply_filters(
-			'ms_controller_frontend_protected_page',
-			$content,
-			$this
-		);
-	}
-
-	/**
 	 * Show registration complete page.
 	 *
 	 * Related Filter Hooks:
@@ -789,12 +762,12 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Get the URL the user used to register for a subscription.
 	 *
-	 * Uses the default registration page unless the registration was embedded on another page (e.g. using a shortcode).
+	 * Uses the default registration page unless the registration was embedded
+	 * on another page (e.g. using a shortcode).
 	 *
 	 * Related Filter Hooks:
-	 *
-	 * * wp_signup_location
-	 * * register_url
+	 * - wp_signup_location
+	 * - register_url
 	 *
 	 * @since 1.0.0
 	 *

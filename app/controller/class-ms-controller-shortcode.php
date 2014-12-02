@@ -40,6 +40,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		// By default assume no content for the protected-content code
+		add_shortcode(
+			MS_Helper_Shortcode::SCODE_PROTECTED,
+			array( $this, '__return_null' )
+		);
+
 		if ( MS_Plugin::is_enabled() ) {
 			add_shortcode(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
@@ -120,6 +126,26 @@ class MS_Controller_Shortcode extends MS_Controller {
 				add_shortcode( $shortcode, array( $this, 'ms_no_value' ) );
 			}
 		}
+	}
+
+	/**
+	 * Set up the protected-content shortcode to display the protection message.
+	 *
+	 * This function is only called from the Frontend-Controller when the
+	 * Membership Page "protected content" is displayed.
+	 *
+	 * @since  1.1.0
+	 */
+	public function page_is_protected() {
+		remove_shortcode(
+			MS_Helper_Shortcode::SCODE_PROTECTED,
+			array( $this, '__return_null' )
+		);
+
+		add_shortcode(
+			MS_Helper_Shortcode::SCODE_PROTECTED,
+			array( $this, 'protected_content' )
+		);
 	}
 
 	/**
@@ -287,7 +313,52 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 		}
 
-		return apply_filters( 'ms_controller_shortcode_membership_price', $price, $atts, $this );
+		return apply_filters(
+			'ms_controller_shortcode_membership_price',
+			$price,
+			$atts,
+			$this
+		);
+	}
+
+	/**
+	 * Display the "protected content" message.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function protected_content( $atts ) {
+		global $post;
+
+		$setting = MS_Plugin::instance()->settings;
+		$protection_msg = $setting->get_protection_message(
+			MS_Model_Settings::PROTECTION_MSG_CONTENT
+		);
+
+		$html = '<div class="ms-protected-content">';
+		if ( ! empty( $protection_msg ) ) {
+			$html .= $protection_msg;
+		}
+
+		if ( ! MS_Model_Member::is_logged_user() ) {
+			$has_login_form = MS_Helper_Shortcode::has_shortcode(
+				MS_Helper_Shortcode::SCODE_LOGIN,
+				$post->post_content
+			);
+
+			if ( ! $has_login_form ) {
+				$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
+				$html .= do_shortcode( $scode );
+			}
+		}
+		$html .= '</div>';
+
+		return apply_filters(
+			'ms_controller_shortcode_protected_content',
+			$html,
+			$this
+		);
 	}
 
 	/**
