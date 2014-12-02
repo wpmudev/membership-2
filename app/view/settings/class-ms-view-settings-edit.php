@@ -252,7 +252,7 @@ class MS_View_Settings_Edit extends MS_View {
 								array(
 									'id' => 'reset_page_' . $field['value'],
 									'url' => '',
-									'value' => __( 'Show default content', MS_TEXT_DOMAIN ),
+									'value' => __( 'Default Content', MS_TEXT_DOMAIN ),
 									'target' => '_blank',
 									'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&ms-default=1&post=' ) ),
 								)

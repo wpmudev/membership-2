@@ -368,7 +368,8 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			$Message = true;
 			WDev()->message(
 				__(
-					'Tipp: The page content is reset to the default content but is <em>not saved yet</em>!<br />' .
+					'<strong>Tipp</strong>:<br />' .
+					'The page content is reset to the default content but is <em>not saved yet</em>!<br />' .
 					'You can simply close this page to keep your current page contents.',
 					MS_TEXT_DOMAIN
 				)
