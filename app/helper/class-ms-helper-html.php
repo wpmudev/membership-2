@@ -52,6 +52,7 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_DATEPICKER = 'datepicker';
 	const INPUT_TYPE_RADIO_SLIDER = 'radio_slider';
 	const INPUT_TYPE_TAG_SELECT = 'tag_select';
+	const INPUT_TYPE_WP_PAGES = 'wp_pages';
 
 	/* Constants for default HTML elements. */
 	const TYPE_HTML_LINK = 'html_link';

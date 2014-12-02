@@ -423,8 +423,7 @@ class MS_Model_Settings extends MS_Model_Option {
 					$this->$property = $value;
 					break;
 			}
-		}
-		else {
+		} else {
 			switch ( $property ) {
 				case 'protection_type':
 					if ( MS_Model_Rule_Media::is_valid_protection_type( $value ) ) {

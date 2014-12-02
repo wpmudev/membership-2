@@ -92,8 +92,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
+	 * Related action hooks:
 	 * * wp_ajax_toggle_settings
 	 *
 	 * @since 1.0.0
@@ -116,8 +115,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Handle Ajax update setting action.
 	 *
-	 * **Hooks Actions: **
-	 *
+	 * Related action hooks:
 	 * * wp_ajax_update_setting
 	 *
 	 * @since 1.0.0
@@ -143,8 +141,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Handle Ajax update custom setting action.
 	 *
-	 * **Hooks Actions: **
-	 *
+	 * Related action hooks:
 	 * * wp_ajax_update_custom_setting
 	 *
 	 * @since 1.0.0
@@ -170,8 +167,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Handle Ajax update protection msg.
 	 *
-	 * **Hooks Actions: **
-	 *
+	 * Related action hooks:
 	 * * wp_ajax_update_protection_msg
 	 *
 	 * @since 1.0
@@ -218,18 +214,19 @@ class MS_Controller_Settings extends MS_Controller {
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
 		// Create special pages.
-		$pg_prot_cont = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT, true );
-		$pg_acco = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_ACCOUNT, true );
-		$pg_regi = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER, true );
-		$pg_regi_comp = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE, true );
-		$pg_memb = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS, true );
+		$ms_pages->create_missing_pages();
+		$pg_prot_cont = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
+		$pg_acco = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		$pg_regi = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REGISTER );
+		$pg_regi_comp = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE );
+		$pg_memb = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 
 		// Publish special pages.
 		// Tipp: Only pages must be published that are added to the menu.
-		$pg_acco->set_page_status( 'publish' );
+		wp_publish_post( $pg_acco->ID );
 		if ( ! $membership->private ) {
-			$pg_memb->set_page_status( 'publish' );
-			$pg_regi->set_page_status( 'publish' );
+			wp_publish_post( $pg_memb->ID );
+			wp_publish_post( $pg_regi->ID );
 		}
 
 		// Create new WordPress menu-items.
@@ -430,6 +427,7 @@ class MS_Controller_Settings extends MS_Controller {
 		do_action( $hook );
 
 		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
+		$ms_pages = MS_Factory::create( 'MS_Model_Pages' );
 		$view = apply_filters( $hook . '_view', $view );
 
 		$data = array();
@@ -445,8 +443,9 @@ class MS_Controller_Settings extends MS_Controller {
 			case 'messages-automated':
 				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
 
-				if ( MS_Model_Communication::is_valid_communication_type( @$_GET['comm_type'] ) ) {
-					$type = $_GET['comm_type'];
+				$temp_type = isset( $_GET['comm_type'] ) ? $_GET['comm_type'] : '';
+				if ( MS_Model_Communication::is_valid_communication_type( $temp_type ) ) {
+					$type = $temp_type;
 				}
 
 				$comm = apply_filters(
@@ -458,8 +457,7 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 
 			case 'pages':
-				$data['ms_pages'] = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages( true );
-				$data['page_types'] = MS_Model_Pages::get_ms_page_types();
+				$data['page_types'] = $ms_pages->get_page_types();
 				break;
 
 			case 'messages-protection':

@@ -120,7 +120,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		return apply_filters(
 			'ms_model_rule_membercaps_has_access',
 			null,
-			$id,
+			null,
 			$this
 		);
 	}

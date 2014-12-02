@@ -5,20 +5,34 @@
 /*global ms_functions:false */
 
 window.ms_init.view_settings = function init () {
-	function edit_url() {
-		var text_id = jQuery( this ).prop( 'id' );
+	function page_changed( event, data, response, is_err ) {
+		var lists = jQuery( 'select.wpmui-wp-pages' ),
+			cur_pages = lists.map(function() { return jQuery(this).val(); });
 
-		text_id = '#' + text_id.replace( 'edit_slug_', '' );
+		lists.each(function() {
+			var ind,
+				me = jQuery( this ),
+				options = me.find( 'option' ),
+				row = me.parents( '.ms-settings-page-wrapper' ).first(),
+				actions = row.find( '.ms-action a' ),
+				val = me.val();
 
-		jQuery( text_id ).prop( 'readonly', false );
-		jQuery( text_id ).focus();
+			// Disable the pages that are used already.
+			options.prop( 'disabled', false );
+			for ( ind = 0; ind < cur_pages.length; ind += 1 ) {
+				if ( val === cur_pages[ind] ) { continue; }
+				options.filter( '[value="' + cur_pages[ind] + '"]' )
+					.prop( 'disabled', true );
+			}
 
-		jQuery( text_id ).change( function() {
-			jQuery( this ).prop( 'readonly', true );
-		});
+			// Update the view/edit links
+			actions.each(function() {
+				var link = jQuery( this ),
+					data = link.data('ms'),
+					url = data.base + val;
 
-		jQuery( text_id ).focusout( function() {
-			jQuery( this ).prop( 'readonly', true );
+				link.attr( 'href', url );
+			});
 		});
 	}
 
@@ -41,13 +55,16 @@ window.ms_init.view_settings = function init () {
 		}
 	}
 
-	jQuery( '#comm_type' ).change( submit_comm_change );
-
 	// Reload the page when Wizard mode is activated.
 	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
 	// Hide/Show the "Test Membership" button in the toolbar.
 	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
 
-	jQuery( '.ms-edit-url' ).click( edit_url );
+	// Membership Pages: Update contents after a page was saved
+	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
+	page_changed();
+
+	// Select new Communication type
+	jQuery( '#comm_type' ).change( submit_comm_change );
 };

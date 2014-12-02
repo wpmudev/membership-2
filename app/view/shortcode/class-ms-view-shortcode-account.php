@@ -2,13 +2,10 @@
 
 class MS_View_Shortcode_Account extends MS_View {
 
-	protected $fields;
-
-	protected $personal_info;
-
 	public function to_html() {
-		$this->prepare_fields();
-		$signup_url = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+		$fields = $this->prepare_fields();
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$signup_url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 
 		ob_start();
 		?>
@@ -36,24 +33,25 @@ class MS_View_Shortcode_Account extends MS_View {
 							$ms_relationship = $this->data['member']->ms_relationships[ $membership->id ];
 							?>
 							<tr>
-								<td><?php echo $membership->name; ?></td>
-								<td><?php echo $ms_relationship->status; ?></td>
+								<td><?php echo esc_html( $membership->name ); ?></td>
+								<td><?php echo esc_html( $ms_relationship->status ); ?></td>
 								<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
 									<td><?php
 									if ( $ms_relationship->trial_expire_date ) {
-										echo $ms_relationship->trial_expire_date;
+										echo esc_html( $ms_relationship->trial_expire_date );
 									} else {
 										_e( 'No trial', MS_TEXT_DOMAIN );
 									}
 									?></td>
 								<?php endif; ?>
-								<td><?php echo $ms_relationship->expire_date; ?></td>
+								<td><?php echo esc_html( $ms_relationship->expire_date ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</table>
 				<?php else : ?>
 					<?php _e( 'No memberships', MS_TEXT_DOMAIN ); ?>
 				<?php endif; ?>
+
 				<h2>
 					<?php printf(
 						'%s <a href="%s" class="ms-edit-profile">%s</a>',
@@ -63,10 +61,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					); ?>
 				</h2>
 				<table>
-					<?php foreach ( $this->personal_info as $field => $title ) : ?>
+					<?php foreach ( $fields['personal_info'] as $field => $title ) : ?>
 						<tr>
-							<th class="ms-label-title"><?php echo $title; ?>: </th>
-							<td class="ms-label-field"><?php echo $this->data['member']->$field; ?></td>
+							<th class="ms-label-title"><?php echo esc_html( $title ); ?>: </th>
+							<td class="ms-label-field"><?php echo esc_html( $this->data['member']->$field ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</table>
@@ -95,16 +93,17 @@ class MS_View_Shortcode_Account extends MS_View {
 					</thead>
 					<tbody>
 					<?php foreach ( $this->data['invoices'] as $invoice ) : ?>
+						<?php $inv_membership = MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id ); ?>
 						<tr>
 							<td><?php printf(
 								'<a href="%s">%s</a>',
 								get_permalink(  $invoice->id ),
 								$invoice->id
 							); ?></td>
-							<td><?php echo $invoice->status; ?></td>
-							<td><?php echo $invoice->total; ?></td>
-							<td><?php echo MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id )->name; ?></td>
-							<td><?php echo $invoice->due_date; ?></td>
+							<td><?php echo esc_html( $invoice->status ); ?></td>
+							<td><?php echo esc_html( $invoice->total ); ?></td>
+							<td><?php echo esc_html( $inv_membership->name ); ?></td>
+							<td><?php echo esc_html( $invoice->due_date ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -127,8 +126,8 @@ class MS_View_Shortcode_Account extends MS_View {
 					<tbody>
 					<?php foreach ( $this->data['events'] as $event ) : ?>
 						<tr>
-							<td><?php echo $event->post_modified; ?></td>
-							<td><?php echo $event->description; ?></td>
+							<td><?php echo esc_html( $event->post_modified ); ?></td>
+							<td><?php echo esc_html( $event->description ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -145,12 +144,16 @@ class MS_View_Shortcode_Account extends MS_View {
 	}
 
 	public function prepare_fields() {
-		$this->personal_info = array(
-			'first_name' => __( 'First name', MS_TEXT_DOMAIN ),
-			'last_name' => __( 'Last name', MS_TEXT_DOMAIN ),
-			'username' => __( 'Username', MS_TEXT_DOMAIN ),
-			'email' => __( 'Email', MS_TEXT_DOMAIN ),
+		$fields = array(
+			'personal_info' => array(
+				'first_name' => __( 'First name', MS_TEXT_DOMAIN ),
+				'last_name' => __( 'Last name', MS_TEXT_DOMAIN ),
+				'username' => __( 'Username', MS_TEXT_DOMAIN ),
+				'email' => __( 'Email', MS_TEXT_DOMAIN ),
+			)
 		);
+
+		return $fields;
 	}
 
 	private function login_html() {

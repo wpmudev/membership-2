@@ -167,42 +167,42 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_pages() {
-
-		$action = MS_Controller_Page::AJAX_ACTION_UPDATE_PAGE;
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
 		$nonce = wp_create_nonce( $action );
 
-		$ms_pages = $this->data['ms_pages'];
+		$settings = $this->data['settings'];
+		$page_types = $this->data['page_types'];
 
 		$fields = array();
-		foreach ( $ms_pages as $ms_page ) {
-			$fields['pages'][ $ms_page->type ] = array(
-				'id' => $ms_page->type,
-				'page_id' => $ms_page->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'read_only' => true,
-				'title' => sprintf( __( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ), $ms_page->title ),
-				'value' => sprintf( '/%1$s/', $ms_page->slug ),
+		foreach ( $page_types as $type => $label ) {
+			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
+			$title = sprintf(
+				__( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ),
+				$label
+			);
+
+			$fields[ $type ] = array(
+				'id' => $type,
+				'type' => MS_Helper_Html::INPUT_TYPE_WP_PAGES,
+				'title' => $title,
+				'value' => $page_id,
 				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'page_type' => $ms_page->type,
-					'field' => 'slug',
+				'field_options' => array(
+					'no_item' => __( '- Select a page -', MS_TEXT_DOMAIN ),
+				),
+				'ajax_data' => array(
+					'group' => 'ms_pages',
+					'field' => $type,
 					'action' => $action,
 					'_wpnonce' => $nonce,
-				),
-				'before' => esc_html( trailingslashit( get_option( 'home' ) ) ),
-				'after' => MS_Helper_Html::html_element(
-					array(
-						'id' => 'edit_slug_' . $ms_page->type,
-						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-						'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
-						'class' => 'ms-edit-url ms-action',
-					),
-					true
 				),
 			);
 		}
 
-		$fields = apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
+		$fields = apply_filters(
+			'ms_view_settings_prepare_pages_fields',
+			$fields
+		);
 
 		ob_start();
 		?>
@@ -219,16 +219,18 @@ class MS_View_Settings_Edit extends MS_View {
 
 			<form action="" method="post">
 
-				<?php foreach ( $fields['pages'] as $page_type => $field ) : ?>
+				<?php foreach ( $fields as $page_type => $field ) : ?>
 					<div class="ms-settings-page-wrapper">
 						<?php MS_Helper_Html::html_element( $field ); ?>
 						<div class="ms-action">
 							<?php
 							MS_Helper_Html::html_link(
 								array(
-									'id' => 'url_page_' . $field['page_id'],
-									'url' => get_permalink( $field['page_id'] ),
+									'id' => 'url_page_' . $field['value'],
+									'url' => '',
 									'value' => __( 'View Page', MS_TEXT_DOMAIN ),
+									'target' => '_blank',
+									'data_ms' => array( 'base' => home_url( '?p=' ) ),
 								)
 							);
 							?>
@@ -236,9 +238,11 @@ class MS_View_Settings_Edit extends MS_View {
 							<?php
 							MS_Helper_Html::html_link(
 								array(
-									'id' => 'edit_url_page_' . $field['page_id'],
-									'url' => get_edit_post_link( $field['page_id'] ),
+									'id' => 'edit_url_page_' . $field['value'],
+									'url' => '',
 									'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
+									'target' => '_blank',
+									'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
 								)
 							);
 							?>

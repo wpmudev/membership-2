@@ -432,7 +432,6 @@ class MS_Plugin {
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
-				MS_Model_Page::$POST_TYPE => MS_Model_Page::get_register_post_type_args(),
 			)
 		);
 
@@ -476,19 +475,6 @@ class MS_Plugin {
 	 * @since 1.0.0
 	 */
 	public function add_rewrite_rules() {
-		// Membership site pages.
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
-
-		if ( ! empty( $ms_pages ) ) {
-			foreach ( $ms_pages as $ms_page ) {
-				add_rewrite_rule(
-					'^' . $ms_page->slug . '/?$',
-					'index.php?ms_page=' . $ms_page->slug,
-					'top'
-				);
-			}
-		}
-
 		// Gateway return - IPN.
 		add_rewrite_rule(
 			'^ms-payment-return/(.+)/?$',

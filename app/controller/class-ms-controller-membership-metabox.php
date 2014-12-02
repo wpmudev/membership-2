@@ -191,8 +191,9 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */
 	public function membership_metabox( $post ) {
 		$data = array();
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
-		if ( MS_Model_Page::$POST_TYPE == $post->post_type ) {
+		if ( $ms_pages->is_membership_page() ) {
 			$data['special_page'] = true;
 		} else {
 			$memberships = MS_Model_Membership::get_memberships();

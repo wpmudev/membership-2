@@ -55,7 +55,6 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 *
 	 * @since 1.1
 	 *
-	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
@@ -69,7 +68,7 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 		return apply_filters(
 			'ms_model_rule_adminside_has_access',
 			$allow,
-			$id,
+			null,
 			$this
 		);
 	}
