@@ -224,9 +224,7 @@ class MS_Controller_Settings extends MS_Controller {
 		// Publish special pages.
 		// Tipp: Only pages must be published that are added to the menu.
 		wp_publish_post( $pg_acco->ID );
-		WDev()->message( 'Create menu page: Account' );
 		if ( ! $membership->private ) {
-			WDev()->message( 'Create menu page: Register' );
 			wp_publish_post( $pg_memb->ID );
 			wp_publish_post( $pg_regi->ID );
 		}
