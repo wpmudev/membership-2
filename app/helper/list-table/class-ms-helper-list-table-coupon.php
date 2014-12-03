@@ -134,7 +134,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 		printf( '<code>%1$s</code> %2$s', $item->name, $this->row_actions( $actions ) );
 	}
 
-	public function column_membership( $item, $column_name ) {
+	public function column_membership( $item ) {
 		$html = '';
 
 		if ( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
@@ -153,7 +153,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 		return $html;
 	}
 
-	public function column_discount( $item, $column_name ) {
+	public function column_discount( $item ) {
 		$html = '';
 
 		if ( MS_Model_Coupon::TYPE_VALUE == $item->discount_type ) {
@@ -171,13 +171,13 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 		return $html;
 	}
 
-	public function column_start_date( $item, $column_name ) {
+	public function column_start_date( $item ) {
 		$html = $item->start_date;
 
 		return $html;
 	}
 
-	public function column_expire_date( $item, $column_name ) {
+	public function column_expire_date( $item ) {
 		$html = '';
 
 		if ( $item->expire_date ) {
@@ -189,13 +189,13 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 		return $html;
 	}
 
-	public function column_used( $item, $column_name ) {
+	public function column_used( $item ) {
 		$html = $item->used;
 
 		return $html;
 	}
 
-	public function column_remaining_uses( $item, $column_name ) {
+	public function column_remaining_uses( $item ) {
 		$html = $item->remaining_uses;
 
 		return $html;

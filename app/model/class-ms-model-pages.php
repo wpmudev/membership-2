@@ -502,7 +502,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			} else {
 				$ms_page = $this->get_page( $page_type, true );
 				$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
-				$object_type = empty( $update_type ) ? 'ms_page' : $update_type;
+				$object_type = empty( $update_type ) ? 'page' : $update_type;
 				$page_url = $this->get_page_url( $ms_page );
 
 				foreach ( $navs as $nav ) {
@@ -528,7 +528,7 @@ class MS_Model_Pages extends MS_Model_Option {
 						'ms_model_settings_create_menu_item',
 						array(
 							'menu-item-object-id' => $ms_page->ID,
-							'menu-item-object' => 'ms_page',
+							'menu-item-object' => 'page',
 							'menu-item-parent-id' => 0,
 							'menu-item-position' => 0,
 							'menu-item-type' => 'post_type',

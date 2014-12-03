@@ -4,6 +4,13 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.4.5
+----------------------------------------------------------------------
+- Add new Help section with documentation of shortcodes
+- Fix Membership Pages: Use default WordPress posts instead of URL
+- Fix: Menu items are correctly generated when a Membership is created
+- Improvement: New Memberships are automatically activated
+
 1.0.4.4
 ----------------------------------------------------------------------
 - Add individual URL group permissions on membership level
