@@ -429,11 +429,6 @@ class MS_Controller_Settings extends MS_Controller {
 		$data = array();
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
-		$data['message'] = self::_message();
-
-		if ( isset( $data['message']['error'] ) ) {
-			WDev()->message( $data['message']['error'], 'err' );
-		}
 
 		switch ( $this->get_active_tab() ) {
 			case 'messages-automated':

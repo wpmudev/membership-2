@@ -70,10 +70,8 @@ class MS_Model_Plugin extends MS_Model {
 		 */
 		if ( ! did_action( 'set_current_user' ) ) {
 			$this->add_action( 'set_current_user', 'setup_protection', 2 );
-			$this->add_action( 'set_current_user', 'setup_admin_protection', 2 );
 		} else {
 			$this->setup_protection();
-			$this->setup_admin_protection();
 		}
 
 			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
@@ -346,8 +344,8 @@ class MS_Model_Plugin extends MS_Model {
 	 * @since 1.0.0
 	 * @param WP $wp Instance of WP class.
 	 */
-	public function setup_protection( WP $wp ){
-		do_action( 'ms_model_plugin_setup_protection_before', $wp, $this );
+	public function setup_protection(){
+		do_action( 'ms_model_plugin_setup_protection_before', $this );
 
 		// Admin user has access to everything
 		if ( $this->member->is_admin_user()
@@ -371,7 +369,7 @@ class MS_Model_Plugin extends MS_Model {
 			$membership->protect_content( $ms_relationship );
 		}
 
-		do_action( 'ms_model_plugin_setup_protection_after', $wp, $this );
+		do_action( 'ms_model_plugin_setup_protection_after', $this );
 	}
 
 	/**
