@@ -632,57 +632,6 @@ class MS_View_Help extends MS_View {
 
 		<?php
 		/*********
-		**********   ms-membership-logout   ************************************
-		*********/
-		?>
-
-		<div class="ms-help-box">
-			<h3><code>[ms-membership-logout]</code></h3>
-
-			<?php _ex( 'Displays a logout link. When the user is not logged in then the shortcode will return an empty string.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
-			<div class="ms-help-details" style="display:none">
-				<h4><?php _ex( 'Common options', 'help', MS_TEXT_DOMAIN ); ?></h4>
-				<ul>
-					<li>
-						<code>redirect</code>
-						<?php _ex( '(URL)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'The page to display after the user was logged out.', 'help', MS_TEXT_DOMAIN ); ?>
-						<span class="ms-help-default">
-							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							Home URL
-						</span>
-					</li>
-				</ul>
-
-				<h4><?php _ex( 'More options', 'help', MS_TEXT_DOMAIN ); ?></h4>
-				<ul>
-					<li>
-						<code>holder</code>
-						<?php _ex( 'Wrapper element (div, span, p).', 'help', MS_TEXT_DOMAIN ); ?>
-						<span class="ms-help-default">
-							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							"div"
-						</span>
-					</li>
-					<li>
-						<code>holder_class</code>
-						<?php _ex( 'Class for the wrapper.', 'help', MS_TEXT_DOMAIN ); ?>
-						<span class="ms-help-default">
-							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							"ms-logout-form"
-						</span>
-					</li>
-				</ul>
-
-				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
-				<p><code>[ms-membership-logout]</code></p>
-			</div>
-		</div>
-
-
-		<?php
-		/*********
 		**********   ms-green-note   *******************************************
 		*********/
 		?>
@@ -851,6 +800,57 @@ class MS_View_Help extends MS_View {
 		<hr />
 
 		<h2><?php _ex( 'Less common shortcodes', 'help', MS_TEXT_DOMAIN ); ?></h2>
+
+
+		<?php
+		/*********
+		**********   ms-membership-logout   ************************************
+		*********/
+		?>
+
+		<div class="ms-help-box">
+			<h3><code>[ms-membership-logout]</code></h3>
+
+			<?php _ex( 'Displays a logout link. When the user is not logged in then the shortcode will return an empty string.', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<h4><?php _ex( 'Common options', 'help', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>redirect</code>
+						<?php _ex( '(URL)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The page to display after the user was logged out.', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							Home URL
+						</span>
+					</li>
+				</ul>
+
+				<h4><?php _ex( 'More options', 'help', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>holder</code>
+						<?php _ex( 'Wrapper element (div, span, p).', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"div"
+						</span>
+					</li>
+					<li>
+						<code>holder_class</code>
+						<?php _ex( 'Class for the wrapper.', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"ms-logout-form"
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p><code>[ms-membership-logout]</code></p>
+			</div>
+		</div>
 
 
 		<?php
