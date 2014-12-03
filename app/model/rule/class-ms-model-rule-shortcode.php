@@ -165,14 +165,20 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$msg = $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE );
 
-		// No access to member of membership_ids
-		if ( in_array( $atts['access'], array( 'false', false, 0, '0' ) ) ) {
-			if ( ! $this->is_member_of( $membership_ids ) ) {
+
+		$access = WDev()->is_true( $atts['access'] );
+
+		if ( ! $access ) {
+			// No access to member of membership_ids
+
+			if ( $this->is_member_of( $membership_ids ) ) {
+				// User belongs to these memberships and therefore cannot see
+				// this content...
+
 				$content = '<br />';
 				if ( ! empty( $msg ) ) {
 					$content .= $msg;
-				}
-				else {
+				} else {
 					$membership_names = MS_Model_Membership::get_membership_names(
 						array( 'post__in' => $membership_ids )
 					);
@@ -180,19 +186,17 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 					$content .= implode( ', ', $membership_names );
 				}
 			}
-		}
-		// Give access to member of membership_ids
-		else {
-			if ( ! $this->is_member_of( $membership_ids ) ) {
-				$content = '<br />';
+		} else {
+			// Give access to member of membership_ids
 
-				$membership_names = MS_Model_Membership::get_membership_names(
-					array( 'post__in' => $membership_ids )
-				);
+			if ( ! $this->is_member_of( $membership_ids ) ) {
+				// User does not belong to these memberships and therefore
+				// cannot see this content...
+
+				$content = '<br />';
 				if ( ! empty( $msg ) ) {
 					$content .= $msg;
-				}
-				else {
+				} else {
 					$membership_names = MS_Model_Membership::get_membership_names(
 						array( 'post__in' => $membership_ids )
 					);

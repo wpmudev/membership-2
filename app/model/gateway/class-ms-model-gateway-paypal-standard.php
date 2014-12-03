@@ -79,6 +79,16 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	protected $description = '';
 
 	/**
+	 * Manual payment indicator.
+	 *
+	 * If the gateway does not allow automatic reccuring billing.
+	 *
+	 * @since 1.0.0
+	 * @var bool $manual_payment
+	 */
+	protected $manual_payment = true;
+
+	/**
 	 * Gateway allow Pro rating.
 	 *
 	 * @todo To be released in further versions.
@@ -403,7 +413,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 					MS_Model_Event::TYPE_PAYMENT_DENIED,
 					$ms_relationship
 				);
-				//Disable user @todo 
+				//Disable user @todo
 // 				$member->active = false;
 				break;
 

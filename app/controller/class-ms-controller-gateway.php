@@ -480,10 +480,10 @@ class MS_Controller_Gateway extends MS_Controller {
 					$this->validate_membership_states( $ms_relationship );
 
 					// Redirect user to the Payment-Completed page.
-					$url = $ms_pages->get_ms_page_url(
+					$ms_pages->create_missing_pages();
+					$url = $ms_pages->get_page_url(
 						MS_Model_Pages::MS_PAGE_REG_COMPLETE,
-						false,
-						true
+						false
 					);
 					$url = add_query_arg(
 						array( 'ms_relationship_id' => $ms_relationship->id ),
@@ -491,9 +491,8 @@ class MS_Controller_Gateway extends MS_Controller {
 					);
 					wp_safe_redirect( $url );
 					exit;
-				}
-				// For manual gateway payments.
-				else {
+				} else {
+					// For manual gateway payments.
 					$this->add_action( 'the_content', 'purchase_info_content' );
 				}
 			}
@@ -523,8 +522,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						break;
 				}
 			}
-		}
-		else {
+		} else {
 			MS_Helper_Debug::log( 'Error Code ' . $err );
 
 			$this->add_action( 'the_content', 'purchase_error_content' );
@@ -532,10 +530,14 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		// Hack to show signup page in case of errors
 		global $wp_query;
-		$wp_query->query_vars['page_id'] = $ms_pages->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER )->id;
+		$ms_page = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REGISTER );
+		$wp_query->query_vars['page_id'] = $ms_page->ID;
 		$wp_query->query_vars['post_type'] = 'page';
 
-		do_action( 'ms_controller_gateway_process_purchase_after', $this );
+		do_action(
+			'ms_controller_gateway_process_purchase_after',
+			$this
+		);
 	}
 
 	/**

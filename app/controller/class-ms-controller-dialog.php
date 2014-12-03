@@ -199,7 +199,8 @@ class MS_Controller_Dialog extends MS_Controller {
 		$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user_login ) );
 
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$reset_url = $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT, null, true );
+		$ms_pages->create_missing_pages();
+		$reset_url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		$reset_url = add_query_arg(
 			array(
 				'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,

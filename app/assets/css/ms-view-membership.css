@@ -85,18 +85,18 @@
 }
 .ms-overview-content-box-wrapper {
 	border-right: 1px solid #ccc;
-    float: left;
-    margin: 10px;
-    min-height: 230px;
-    width: 22%;
+	float: left;
+	margin: 10px;
+	min-height: 230px;
+	width: 22%;
 }
 .ms-content-desc {
-    background: none repeat scroll 0 0 #888;
-    border-radius: 5px;
-    color: #fff;
-    display: inline-block;
-    margin: 5px 5px 5px 0;
-    padding: 5px;
+	background: none repeat scroll 0 0 #888;
+	border-radius: 5px;
+	color: #fff;
+	display: inline-block;
+	margin: 5px 5px 5px 0;
+	padding: 5px;
 }
 
 /* Setup Dripped Page */
@@ -135,19 +135,19 @@ input.ms-dripped-spec-date {
 	width: 6em;
 }
 .ms-dripped-calendar:after {
-    color: #0094dc;
-    content: "\f145";
-    font-family: "dashicons";
-    font-size: 2em;
-    position: relative;
-    top: 5px;
+	color: #0094dc;
+	content: "\f145";
+	font-family: "dashicons";
+	font-size: 2em;
+	position: relative;
+	top: 5px;
 }
 .ms-dripped-pen:after {
 	content:'';
 	display: inline-block;
 	background:url(../images/membership_sprite.png);
-  	background:url(../images/membership_sprite.svg), none;
-  	background-position: -329px -130px;
+	background:url(../images/membership_sprite.svg), none;
+	background-position: -329px -130px;
 	position: relative;
 	top: 5px;
 	width:30px;
@@ -166,9 +166,9 @@ input.ms-dripped-spec-date {
 .ms-pointer-wrapper .wp-pointer-buttons{
 	position: absolute;
 	right: 0;
-    top: 0;
+	top: 0;
 }
 
-#the-list-membership .ms-radio-slider-wrapper {
+#the-list-membership .wpmui-radio-slider-wrapper {
 	float: left;
 }

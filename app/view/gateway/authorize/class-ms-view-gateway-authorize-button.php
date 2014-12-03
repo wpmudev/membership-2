@@ -5,9 +5,9 @@ class MS_View_Gateway_Authorize_Button extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 
-		$pages = MS_Factory::load( 'MS_Model_Pages' );
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		// Force ssl url
-		$action_url = $pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER, true );
+		$action_url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER, true );
 		$action_url = apply_filters(
 			'ms_view_gateway_authorize_button_form_action_url',
 			$action_url

@@ -209,7 +209,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'id' => 'period_unit_' . $item->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $period_from_reg['period_unit'],
-				'class' => 'ms-dripped-value ms-dripped-from-registration ms-field-input-period-unit ms-ajax-update',
+				'class' => 'ms-dripped-value ms-dripped-from-registration ms-ajax-update',
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
@@ -226,7 +226,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $period_from_reg['period_type'],
 				'field_options' => MS_Helper_Period::get_periods(),
-				'class' => 'ms-field-input-period-type ms-ajax-update',
+				'class' => 'ms-ajax-update',
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
@@ -242,7 +242,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'id' => 'period_unit_' . $item->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $period_from_today['period_unit'],
-				'class' => 'ms-dripped-value ms-dripped-from-registration ms-field-input-period-unit ms-ajax-update',
+				'class' => 'ms-dripped-value ms-dripped-from-registration ms-ajax-update',
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
@@ -259,7 +259,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $period_from_today['period_type'],
 				'field_options' => MS_Helper_Period::get_periods(),
-				'class' => 'ms-field-input-period-type ms-ajax-update',
+				'class' => 'ms-ajax-update',
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,

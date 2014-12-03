@@ -5,9 +5,6 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 
-		#$ms_page = MS_Factory::load( 'MS_Model_Pages' )->get_ms_page( MS_Model_Pages::MS_PAGE_REGISTER );
-		#$permalink = get_permalink( $ms_page->id );
-
 		// When redirecting to login form we want to keep the previously submitted form data.
 		$url_data = $_POST;
 		$url_data['do-login'] = '1';

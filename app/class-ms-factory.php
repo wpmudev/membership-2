@@ -45,8 +45,7 @@ class MS_Factory {
 
 		if ( class_exists( $class ) ) {
 			$obj = new $class();
-		}
-		else {
+		} else {
 			throw new Exception( 'Class ' . $class . ' does not exist.' );
 		}
 
@@ -71,11 +70,9 @@ class MS_Factory {
 
 			if ( $model instanceof MS_Model_Option ) {
 				$model = self::load_from_wp_option( $model );
-			}
-			elseif ( $model instanceof MS_Model_Custom_Post_Type ) {
+			} elseif ( $model instanceof MS_Model_Custom_Post_Type ) {
 				$model = self::load_from_wp_custom_post_type( $model, $model_id );
-			}
-			elseif ( $model instanceof MS_Model_Member ) {
+			} elseif ( $model instanceof MS_Model_Member ) {
 				$args = func_get_args();
 
 				$name = null;
@@ -83,8 +80,7 @@ class MS_Factory {
 					$name = $args[2];
 				}
 				$model = self::load_from_wp_user( $model, $model_id, $name );
-			}
-			elseif ( $model instanceof MS_Model_Transient ) {
+			} elseif ( $model instanceof MS_Model_Transient ) {
 				$model = self::load_from_wp_transient( $model, $model_id );
 			}
 		}
@@ -94,6 +90,15 @@ class MS_Factory {
 			$model,
 			$model_id
 		);
+	}
+
+	/**
+	 * Clears the factory cache.
+	 *
+	 * @since  1.1.0
+	 */
+	public function clear() {
+		wp_cache_flush();
 	}
 
 	/**

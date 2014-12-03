@@ -291,6 +291,9 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$label = __( 'No membership / Visitor', MS_TEXT_DOMAIN );
 			} else {
 				$label = $membership->name;
+				if ( ! $membership->active ) {
+					$label .= ' ' . __( '(Inactive)', MS_TEXT_DOMAIN );
+				}
 			}
 
 			$select_groups[ $membership->parent_id ][ $membership->id ] = array(
@@ -331,7 +334,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		ob_start();
 		?>
 		<form id="view-site-as" method="GET">
-			<select id="view-as-selector" class="ms-field-input ms-select ab-select" name="view-as-selector">
+			<select id="view-as-selector" class="wpmui-field-input wpmui-field-select ab-select" name="view-as-selector">
 			<?php foreach ( $parents as $parent_id => $parent ) {
 				if ( $parent_id ) {
 					printf(
@@ -508,6 +511,13 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	private function add_detail_nodes() {
 		global $wp_admin_bar;
+
+		/**
+		 * Info menu is currently only available on the front-end.
+		 *
+		 * @todo add information also for admin side (Admin-Protection/Capabilities)
+		 */
+		if ( is_admin() ) { return; }
 
 		if ( ! $this->simulate->is_simulating() ) { return; }
 

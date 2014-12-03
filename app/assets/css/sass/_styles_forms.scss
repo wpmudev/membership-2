@@ -8,19 +8,6 @@
  ***/
 
 .ms-wrap {
-	.ms-field-description {
-		display: inline-block;
-		margin: 10px 4px 10px 0;
-		color: #666;
-		font-size: 0.9em;
-		font-weight: normal;
-	}
-
-	.ms-field-input {
-		margin-top: 6px;
-		margin-bottom: 6px;
-	}
-
 	.button,
 	.button-primary {
 		margin-right: 6px;
@@ -28,16 +15,6 @@
 
 	.ms-field-container {
 		margin: 10px 0;
-	}
-
-	.ms-field-label {
-		display: block;
-	}
-
-	.ms-field-input-label {
-		margin: 2px 0;
-		font-style: normal;
-		color: #222;
 	}
 
 	.ms-field-wp-editor {
@@ -208,6 +185,14 @@
  ***/
 
 .ms-wrap {
+	.wpmui-radio-wrapper {
+		margin: 0 auto;
+		position: relative;
+		display: inline-block;
+	}
+}
+
+#wpwrap .ms-wrap {
 	.ms-radio {
 		margin: 2px 4px 0 0;
 		position: absolute;
@@ -215,46 +200,17 @@
 		top: 0;
 	}
 
-	.ms-radio-wrapper {
-		margin: 0 auto;
-		position: relative;
-		display: inline-block;
-
-		.ms-radio-caption {
-			padding-left: 24px;
-			font-weight: 500;
-		}
-
-		label {
-			position: relative;
-			float: left;
-			width: 100%;
-		}
-	}
-}
-
-
-/***
- * CHECKBOX *
- ***/
-
-.ms-wrap {
-	.ms-checkbox {
-		margin: 2px 4px 0 0;
-		position: absolute;
-		left: 0;
-		top: 0;
+	.ms-radio-caption {
+		padding-left: 24px;
+		font-weight: 500;
+		margin: 8px 0 2px;
+		display: block;
 	}
 
-	.ms-checkbox-wrapper {
-		margin: 0 auto;
+	label {
 		position: relative;
-		display: inline-block;
-
-		.ms-checkbox-caption {
-			padding-left: 24px;
-			font-weight: 500;
-		}
+		display: block;
+		width: 100%;
 	}
 }
 
@@ -374,7 +330,7 @@
  ***/
 
 .ms-wrap {
-	.ms-radio-slider-wrapper {
+	.wpmui-radio-slider-wrapper {
 		clear: both;
 	}
 
@@ -431,7 +387,7 @@
 		cursor: wait;
 	}
 
-	h3 .ms-radio-slider-wrapper {
+	h3 .wpmui-radio-slider-wrapper {
 		display: inline-block;
 		position: relative;
 		top: 8px;
@@ -444,18 +400,51 @@
  ***/
 
 .ms-wrap {
-	.ms-tag-selector-wrapper {
+	.wpmui-tag-selector-wrapper {
 		.ms-tag-data {
 			display: block;
 
 			.select2-choices {
 				background: transparent;
 				border: 0;
+
+				.select2-search-choice-close {
+					left: 0;
+					top: 3px;
+					width: 16px;
+					height: 16px;
+
+					background: transparent url(../images/membership_sprite.svg) no-repeat;
+					background-position: -242px -143px;
+					opacity: 0.6;
+
+					&:hover {
+						opacity: 1;
+						background-position: -42px -143px;
+					}
+				}
 			}
 
 			.select2-search-choice {
+				float: none;
+				display: block;
 				margin-left: 0;
 				margin-right: 3px;
+				line-height: 22px;
+				padding-top: 0;
+				padding-bottom: 0;
+
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				border: 1px solid transparent;
+				box-shadow: 0 0 0 transparent;
+				background: transparent;
+
+				&.select2-search-choice-focus {
+					background: #f8f8f8;
+					border-color: #e5e5e5;
+				}
 			}
 
 			.select2-search-field {

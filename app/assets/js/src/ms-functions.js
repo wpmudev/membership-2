@@ -34,17 +34,28 @@ window.ms_functions = {
 	ajax_update: function( obj ) {
 		var data, val, info_field,
 			field = jQuery( obj ),
-			fn = window.ms_functions;
+			fn = window.ms_functions,
+			anim = field;
 
-		if( ! field.hasClass( 'ms-processing' ) ) {
+		if ( ! field.hasClass( 'ms-processing' ) ) {
+			if ( anim.parents( '.wpmui-radio-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-radio-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-radio-slider-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-radio-slider-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-input-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-input-wrapper' ).first();
+			} else if ( anim.parents( 'label' ).length ) {
+				anim = anim.parents( 'label' ).first();
+			}
+
+			anim.addClass( 'wpmui-loading' );
 			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
 
-			if( field.is( ':checkbox' ) ) {
+			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
-			}
-			else {
+			} else {
 				val = field.val();
 				if ( val instanceof Array || val instanceof Object || null === val ) {
 					data.values = val;
@@ -67,7 +78,8 @@ window.ms_functions = {
 						// Reset the input control to previous value...
 					}
 
-					info_field.removeClass( 'ms-processing wpmui-loading' );
+					anim.removeClass( 'wpmui-loading' );
+					info_field.removeClass( 'ms-processing' );
 					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
 			);
@@ -75,20 +87,31 @@ window.ms_functions = {
 	},
 
 	radio_slider_ajax_update: function( obj ) {
-		var data, info_field,
+		var data, info_field, toggle, states, state,
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
+		if ( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
 			info_field = fn.ajax_show_indicator( slider );
 
 			slider.addClass( 'ms-processing wpmui-loading' );
 			slider.toggleClass( 'on' );
+			slider.parent().toggleClass( 'on' );
+			slider.trigger( 'change' );
 
-			data = slider.children( '.ms-toggle' ).data( 'ms' );
+			toggle = slider.children( '.ms-toggle' );
+			data = toggle.data( 'ms' );
+			states = toggle.data( 'states' );
 
-			if( null != data ) {
-				data.value = slider.hasClass( 'on' );
+			if ( null != data ) {
+				state = slider.hasClass( 'on' );
+				if ( undefined !== states.active && state ) {
+					data.value = states.active;
+				} else if ( undefined !== states.inactive && ! state ) {
+					data.value = states.inactive;
+				} else {
+					data.value = state;
+				}
 
 				// Allow fields to pre-process the data before sending it.
 				if ( 'function' === typeof slider.data( 'before_ajax' ) ) {
@@ -250,11 +273,11 @@ window.ms_functions = {
 		var range;
 		el = jQuery( el )[0];
 
-		if( document.selection ) {
+		if ( document.selection ) {
 			range = document.body.createTextRange();
 			range.moveToElementText( el );
 			range.select();
-		} else if( window.getSelection ) {
+		} else if ( window.getSelection ) {
 			range = document.createRange();
 			range.selectNode( el );
 			window.getSelection().addRange( range );
@@ -292,7 +315,7 @@ window.ms_functions = {
 	 */
 	tag_selector_add: function( ev ) {
 		var fn = window.ms_functions,
-			me = jQuery( this ).closest( '.ms-tag-selector-wrapper' ),
+			me = jQuery( this ).closest( '.wpmui-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
 			list = el_dst.val() || [];
@@ -312,7 +335,7 @@ window.ms_functions = {
 	 */
 	tag_selector_refresh_source: function( ev, el ) {
 		var i = 0, item = null,
-			me = jQuery( el ).closest( '.ms-tag-selector-wrapper' ),
+			me = jQuery( el ).closest( '.wpmui-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_src_items = el_src.find( 'option' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
@@ -486,17 +509,17 @@ jQuery( document ).ready( function() {
 	// Initialize the tag-select components.
 	.on(
 		'select2-opening',
-		'.ms-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .ms-tag-data',
 		function( ev ) { ev.preventDefault(); }
 	)
 	.on(
 		'change',
-		'.ms-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .ms-tag-data',
 		function( ev ) { fn.tag_selector_refresh_source( ev, this ); }
 	)
 	.on(
 		'click',
-		'.ms-tag-selector-wrapper .ms-tag-button',
+		'.wpmui-tag-selector-wrapper .ms-tag-button',
 		fn.tag_selector_add
 	)
 	// Ajax-Submit data when ms-ajax-update fields are changed.

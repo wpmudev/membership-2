@@ -23,7 +23,7 @@
 /**
  * Plugin Pages model.
  *
- * Main MS Pages class, composition of MS_Model_Page objects.
+ * Main MS Pages class, contains any Membership page functions.
  *
  * @since 1.0.0
  *
@@ -54,36 +54,6 @@ class MS_Model_Pages extends MS_Model_Option {
 	const MS_PAGE_REGISTER = 'register';
 	const MS_PAGE_REG_COMPLETE = 'registration-complete';
 
-	/**
-	 * Plugin pages composition.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var MS_Model_Page[]
-	 */
-	protected $pages;
-
-	public function __construct() {
-		// Hide the slug editor in MS Page editor.
-		$this->add_filter( 'get_sample_permalink_html', 'no_permalink' );
-	}
-
-	/**
-	 * Hides the Permalink box from the MS Page editor
-	 *
-	 * @since  1.0.4.4
-	 */
-	public function no_permalink( $return ){
-		global $post;
-
-		if ( $post->post_type === MS_Model_Page::$POST_TYPE ) {
-		?><style type="text/css">
-		#titlediv{margin-bottom: 10px;}#edit-slug-box{display: none;}
-		</style><?php
-		}
-
-		return $return;
-	}
 
 	/**
 	 * Get MS Page types
@@ -95,7 +65,7 @@ class MS_Model_Pages extends MS_Model_Option {
 	 *     @type string $title The page type title.
 	 * }
 	 */
-	public static function get_ms_page_types() {
+	public function get_page_types() {
 		static $Page_types;
 
 		if ( empty( $Page_types ) ) {
@@ -108,7 +78,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			);
 
 			$Page_types = apply_filters(
-				'ms_model_page_get_ms_page_types',
+				'ms_model_pages_get_page_types',
 				$Page_types
 			);
 		}
@@ -124,10 +94,19 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @param string $type The page type to validate.
 	 * @return boolean True if valid.
 	 */
-	public static function is_valid_ms_page_type( $type ) {
-		$valid = array_key_exists( $type, self::get_ms_page_types() );
+	public function is_valid_type( $type ) {
+		static $Res = array();
 
-		return apply_filters( 'ms_model_page_is_valid_ms_page_type', $valid );
+		if ( ! isset( $Res[$type] ) ) {
+			$Res[$type] = array_key_exists( $type, $this->get_page_types() );
+
+			$Res[$type] = apply_filters(
+				'ms_model_pages_is_valid_type',
+				$Res[$type]
+			);
+		}
+
+		return $Res[$type];
 	}
 
 	/**
@@ -136,20 +115,40 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @since 1.0.0
 	 *
 	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
-	 * @return MS_Model_Page[] The page model objects.
+	 * @return WP_Post[] The page model objects.
 	 */
-	public function get_ms_pages( $create_if_not_exists = false ) {
-		$page_types = self::get_ms_page_types();
+	public function get_pages( $create_if_not_exists = false ) {
+		static $Pages = null;
 
-		foreach ( $page_types as $page_type => $title ) {
-			$this->get_ms_page( $page_type, $create_if_not_exists );
+		if ( null === $Pages ) {
+			$page_types = $this->get_page_types();
+
+			if ( $create_if_not_exists ) {
+				$this->create_missing_pages();
+			}
+
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			foreach ( $page_types as $page_type => $title ) {
+				$page_id = $settings->get_custom_setting( 'ms_pages', $page_type );
+				$the_page = get_post( $page_id );
+
+				$Pages[$page_type] = apply_filters(
+					'ms_model_pages_get_pages_item',
+					$the_page,
+					$page_type,
+					$page_id,
+					$this
+				);
+			}
+
+			$Pages = apply_filters(
+				'ms_model_pages_get_pages',
+				$Pages,
+				$this
+			);
 		}
 
-		return apply_filters(
-			'ms_model_page_get_ms_page',
-			$this->pages,
-			$this
-		);
+		return $Pages;
 	}
 
 	/**
@@ -158,36 +157,26 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @since 1.0.0
 	 *
 	 * @param string $page_type The page type to retrieve the page.
-	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
-	 * @return MS_Model_Page The page model object.
+	 * @return WP_Post The page model object.
 	 */
-	public function get_ms_page( $page_type, $create_if_not_exists = false ) {
-		$ms_page = null;
+	public function get_page( $page_type ) {
+		$result = null;
 
-		if ( self::is_valid_ms_page_type( $page_type ) ) {
-			if ( ! empty( $this->pages[ $page_type ] ) ) {
-				$ms_page = $this->pages[ $page_type ];
-			}
+		if ( self::is_valid_type( $page_type ) ) {
+			$pages = $this->get_pages();
 
-			if ( $create_if_not_exists && empty( $ms_page ) ) {
-				$page_types = self::get_ms_page_types();
-				$ms_page = MS_Factory::create( 'MS_Model_Page' );
-				$ms_page->type = $page_type;
-				$ms_page->title = $page_types[ $page_type ];
-				$ms_page->slug = $page_type;
-				$ms_page->create_wp_page();
-
-				$this->pages[ $page_type ] = $ms_page;
-				$this->save();
-
-				flush_rewrite_rules();
+			if ( ! empty( $pages[ $page_type ] ) ) {
+				$result = $pages[ $page_type ];
 			}
 		} else {
 			MS_Helper_Debug::log( 'ms_model_pages_get_page error: invalid page type: ' . $page_type );
-			$ms_page = MS_Factory::create( 'MS_Model_Page' );
 		}
 
-		return apply_filters( 'ms_model_page_get_ms_page', $ms_page, $this );
+		return apply_filters(
+			'ms_model_pages_get_page',
+			$result,
+			$this
+		);
 	}
 
 	/**
@@ -197,9 +186,9 @@ class MS_Model_Pages extends MS_Model_Option {
 	 *
 	 * @param string $field The field to check. [id|slug]
 	 * @param string $value The field value
-	 * @return null|MS_Model_Page The page model object.
+	 * @return null|WP_Post The page object.
 	 */
-	public function get_ms_page_by( $field, $value ) {
+	public function get_page_by( $field, $value ) {
 		static $Page_list = array();
 
 		if ( ! isset( $Page_list[$field] ) ) {
@@ -207,30 +196,30 @@ class MS_Model_Pages extends MS_Model_Option {
 		}
 
 		if ( ! isset( $Page_list[$field][ $value ] ) ) {
-			$ms_page_found = null;
+			$page_found = null;
 
 			switch ( $field ) {
 				case 'id': $value = absint( $value ); break;
 			}
 
-			$ms_pages = $this->get_ms_pages();
+			$ms_pages = $this->get_pages( true );
 			$found = false;
 
-			foreach ( $ms_pages as $ms_page ) {
+			foreach ( $ms_pages as $type => $page ) {
 				switch ( $field ) {
-					case 'id':   $found = ($value === absint( $ms_page->id ) ); break;
-					case 'slug': $found = ($value === $ms_page->slug ); break;
+					case 'id':   $found = ($value === absint( $page->ID ) ); break;
+					case 'slug': $found = ($value === $page->post_name ); break;
 				}
 
 				if ( $found ) {
-					$ms_page_found = $ms_page;
+					$page_found = $page;
 					break;
 				}
 			}
 
 			$Page_list[$field][ $value ] = apply_filters(
-				'ms_model_page_get_ms_page_by_id',
-				$ms_page_found,
+				'ms_model_pages_get_page_by_id',
+				$page_found,
 				$field,
 				$value,
 				$this
@@ -241,22 +230,29 @@ class MS_Model_Pages extends MS_Model_Option {
 	}
 
 	/**
-	 * Set specific MS Page.
+	 * Returns the page_id that is identified by the specified filter.
+	 * Filter can be either a type-name, post-ID or WP_Post (in that order)
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $page_type The page type to set.
-	 * @param MS_Model_Page The page model object to set.
+	 * @since  1.1.0
+	 * @param  mixed $filter The filter to translate into a post_id
+	 * @return int
 	 */
-	public function set_ms_page( $page_type, $ms_page ) {
-		if ( self::is_valid_ms_page_type( $page_type ) ) {
-			$this->pages[ $page_type ] = $ms_page;
+	public function get_page_id( $filter ) {
+		$page_id = 0;
+
+		if ( is_string( $filter ) ) {
+			$page = $this->get_page( $filter );
+			$page_id = $page->ID;
+		} elseif ( is_numeric( $filter ) ) {
+			$page_id = $filter;
+		} elseif ( is_a( $filter, 'WP_Post' ) ) {
+			$page_id = $filter->ID;
 		}
 
-		do_action(
-			'ms_model_pages_set_ms_page',
-			$page_type,
-			$ms_page,
+		return apply_filters(
+			'ms_model_pages_get_page_id',
+			$page_id,
+			$filter,
 			$this
 		);
 	}
@@ -266,7 +262,8 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * If yes, then some basic information on this page are returned.
 	 *
 	 * @since  1.0.4.4
-	 * @return object|false
+	 * @param  int $page_id Optional. The page_id to fetch.
+	 * @return WP_Post|null
 	 */
 	public function current_page( $page_id = false, $page_type = null ) {
 		global $wp_query;
@@ -274,53 +271,37 @@ class MS_Model_Pages extends MS_Model_Option {
 		$key = json_encode( $page_id ) . json_encode( $page_type );
 
 		if ( ! isset( $Res[$key] ) ) {
-			$this_page = false;
+			$this_page = null;
 
-			if ( ! empty( $page_id ) || ! empty( $page_type ) ) {
+			if ( ! empty( $page_type ) ) {
 				/*
 				 * We have a page_type:
 				 * Get infos of that page!
 				 */
-				if ( ! empty( $page_type ) ) {
-					$ms_page = $this->get_ms_page( $page_type );
-					$query_slug = $wp_query->query_vars['ms_page'];
+				$expected_page = $this->get_page( $page_type );
 
-					if ( $page_id == $ms_page->id
-						|| $query_slug == $page_type
-					) {
-						$this_page = $ms_page;
-					}
-				} else {
-					/*
-					 * We don't have the page_type:
-					 * Use current page_id or the specified page_id/slug!
-					 */
-					if ( empty( $page_id ) ) {
-						$this_page = $this->get_ms_page_by( 'id', get_the_ID() );
-					} else if ( is_numeric( $page_id ) ) {
-						$this_page = $this->get_ms_page_by( 'id', $page_id );
-					} else {
-						$this_page = $this->get_ms_page_by( 'slug', $page_id );
-					}
+				if ( $page_id == $expected_page->ID ) {
+					$this_page = $expected_page;
 				}
 			} else {
 				/*
-				 * No page_id provided:
-				 * Get infos based on the current URL!
+				 * We don't have the page_type:
+				 * Use current page_id or the specified page_id/slug!
 				 */
-				$pages = self::get_ms_pages();
-				$url_parts = explode( '?', WDev()->current_url() );
-				$url = array_shift( $url_parts );
-
-				foreach ( $pages as $ms_page ) {
-					if ( $url === $ms_page->url ) {
-						$this_page = $ms_page;
-						break;
-					}
+				if ( empty( $page_id ) ) {
+					$this_page = $this->get_page_by( 'id', get_the_ID() );
+				} else if ( is_numeric( $page_id ) ) {
+					$this_page = $this->get_page_by( 'id', $page_id );
+				} else {
+					$this_page = $this->get_page_by( 'slug', $page_id );
 				}
 			}
 
-			$Res[$key] = $this_page;
+			$Res[$key] = apply_filters(
+				'ms_model_pages_current_page',
+				$this_page,
+				$this
+			);
 		}
 
 		return $Res[$key];
@@ -336,13 +317,13 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @param int $page_id Optional. The page id to verify. Default to current page.
 	 * @param string $page_type Optional. The page type to verify. If null, test it against all ms pages.
 	 */
-	public function is_ms_page( $page_id = null, $page_type = null ) {
+	public function is_membership_page( $page_id = null, $page_type = null ) {
 		$ms_page_type = false;
-		$ms_page = $this->current_page( $page_id );
+		$page = $this->current_page( $page_id );
 
 		if ( empty( $page_type ) ) {
-			if ( $ms_page ) {
-				$ms_page_type = $ms_page->type;
+			if ( $page ) {
+				$ms_page_type = $this->get_page_type( $page->ID );
 			}
 		} else {
 			if ( empty( $page_id ) && is_page() ) {
@@ -350,40 +331,26 @@ class MS_Model_Pages extends MS_Model_Option {
 			}
 
 			if ( ! empty( $page_id ) ) {
-				$ms_page->id = $this->get_ms_page( $page_type );
+				$ms_page->id = $this->get_page( $page_type );
 				if ( $page_id == $ms_page->id ) {
 					$ms_page_type = $page_type;
 				}
 			} elseif ( $ms_page ) {
 				$slug = $ms_page->slug;
-				$ms_page_slug = $this->get_ms_page_slug( $page_type );
+				$expected_page = $this->get_page( $page_type );
+				$expected_slug = $expected_page->post_name;
 
-				if ( $slug == $ms_page_slug ) {
+				if ( $slug == $expected_slug ) {
 					$ms_page_type = $page_type;
 				}
 			}
 		}
 
 		return apply_filters(
-			'ms_model_page_is_ms_page',
+			'ms_model_pages_is_membership_page',
 			$ms_page_type,
 			$this
 		);
-	}
-
-	/**
-	 * Get MS Page slug.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $page_type The page type.
-	 * @return string The page slug.
-	 */
-	public function get_ms_page_slug( $page_type ) {
-		$slug = $this->get_ms_page( $page_type )->slug;
-
-		return apply_filters( 'ms_model_page_get_ms_page_slug', $slug );
-
 	}
 
 	/**
@@ -391,25 +358,131 @@ class MS_Model_Pages extends MS_Model_Option {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $page_type The page type.
+	 * @param string|WP_Post $page_type The page type name or a WP_Post object.
 	 * @param boolean $ssl If wanted a SSL url. Set to null to use auto detection.
-	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
 	 * @return string The MS Page URL.
 	 */
-	public function get_ms_page_url( $page_type, $ssl = null, $create_if_not_exists = false ) {
-		$url = null;
-		$page = $this->get_ms_page( $page_type, $create_if_not_exists );
-		$page_id = $page->id;
+	public function get_page_url( $page_type, $ssl = null ) {
+		static $Urls = array();
 
-		if ( ! empty( $page_id ) ) {
-			$url = $page->url;
+		$page_id = $this->get_page_id( $page_type );
 
-			if ( true === $ssl || ( null === $ssl && is_ssl() ) ) {
+		if ( ! isset( $Urls[$page_id] ) ) {
+			$url = get_permalink( $page_id );
+			if ( null === $ssl ) { $ssl = is_ssl(); }
+
+			if ( $ssl ) {
 				$url = MS_Helper_Utility::get_ssl_url( $url );
+			}
+
+			$Urls[$page_id] = apply_filters(
+				'ms_model_pages_get_ms_page_url',
+				$url,
+				$page_id,
+				$this
+			);
+		}
+
+		return $Urls[$page_id];
+	}
+
+	/**
+	 * Get MS Page type by ID.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string|WP_Post $page_type The page type name or a WP_Post object.
+	 * @return string The MS Page type name.
+	 */
+	public function get_page_type( $page_id ) {
+		static $Types = array();
+
+		$page_id = $this->get_page_id( $page_id );
+		$pages = $this->get_pages();
+
+		if ( ! isset( $Types[$page_id] ) ) {
+			$type = '';
+			foreach ( $pages as $page_type => $page ) {
+				if ( $page->ID === $page_id ) {
+					$type = $page_type;
+					break;
+				}
+			}
+
+			$Types[$page_id] = apply_filters(
+				'ms_model_pages_get_ms_page_type',
+				$type,
+				$page_id,
+				$this
+			);
+		}
+
+		return $Types[$page_id];
+	}
+
+	/**
+	 * Creates any missing Membership pages.
+	 *
+	 * @since  1.1.0
+	 */
+	public function create_missing_pages() {
+		static $Done = false;
+
+		if ( $Done ) { return; }
+		$Done = true;
+
+		$types = $this->get_page_types();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$modified = false;
+
+		foreach ( $types as $type => $title ) {
+			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
+
+			// If the post_id does not exist then create a new page
+			if ( empty( $page_id ) || empty( get_post( $page_id ) ) ) {
+				$data = array(
+					'post_title' => $title,
+					'post_name' => $type,
+					'post_content' => $this->get_default_content( $type ),
+					'post_type' => 'page',
+					'post_status' => 'published',
+				);
+				$new_id = wp_insert_post( $data );
+
+				/**
+				 * Filter the new page_id
+				 *
+				 * @since 1.1.0
+				 */
+				$new_id = apply_filters(
+					'ms_model_pages_create_missing_page',
+					$new_id,
+					$type,
+					$data,
+					$this
+				);
+
+				if ( is_numeric( $new_id ) ) {
+					$settings->set_custom_setting( 'ms_pages', $type, $new_id );
+					$modified = true;
+
+					/**
+					 * Trigger action to allow modifications to the page
+					 *
+					 * @since 1.1.0
+					 */
+					do_action(
+						'ms_model_pages_create_wp_page',
+						$new_id,
+						$this
+					);
+				}
 			}
 		}
 
-		return apply_filters( 'ms_model_page_get_ms_page_url', $url, $this );
+		if ( $modified ) {
+			$settings->save();
+		}
 	}
 
 	/**
@@ -422,20 +495,21 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @param string $type Only used by the upgrade class.
 	 */
 	public function create_menu( $page_type, $update_only = null, $update_type = null ) {
-		if ( self::is_valid_ms_page_type( $page_type ) ) {
+		if ( self::is_valid_type( $page_type ) ) {
 			if ( $update_only && empty( $update_type ) ) {
 				$this->create_menu( $page_type, true, 'page' );
 				$this->create_menu( $page_type, true, 'ms_page' );
 			} else {
-				$ms_page = $this->get_ms_page( $page_type, true );
+				$ms_page = $this->get_page( $page_type, true );
 				$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
 				$object_type = empty( $update_type ) ? 'ms_page' : $update_type;
+				$page_url = $this->get_page_url( $ms_page );
 
 				foreach ( $navs as $nav ) {
 					$args['meta_query'] = array(
 						array(
 							'key' => '_menu_item_object_id',
-							'value' => $ms_page->id,
+							'value' => $ms_page->ID,
 						),
 						array(
 							'key' => '_menu_item_object',
@@ -453,13 +527,13 @@ class MS_Model_Pages extends MS_Model_Option {
 					$menu_item = apply_filters(
 						'ms_model_settings_create_menu_item',
 						array(
-							'menu-item-object-id' => $ms_page->id,
+							'menu-item-object-id' => $ms_page->ID,
 							'menu-item-object' => 'ms_page',
 							'menu-item-parent-id' => 0,
 							'menu-item-position' => 0,
 							'menu-item-type' => 'post_type',
 							'menu-item-title' => $ms_page->post_title,
-							'menu-item-url' => $ms_page->url,
+							'menu-item-url' => $page_url,
 							'menu-item-status' => 'publish',
 						)
 					);
@@ -473,6 +547,69 @@ class MS_Model_Pages extends MS_Model_Option {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Get default content for membership pages.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  string $type The page type name.
+	 * @return string The default content.
+	 */
+	public function get_default_content( $type ) {
+		$content = null;
+
+		switch ( $type ) {
+			case self::MS_PAGE_MEMBERSHIPS:
+				$content = sprintf(
+					'[ms-green-note] %1$s [/ms-green-note]',
+					__( 'We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN )
+				);
+				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				break;
+
+			case self::MS_PAGE_PROTECTED_CONTENT:
+				// The text in Settings > "Protection Messages" is added in
+				// front end controller. This page has no default content.
+				$content = '';
+				break;
+
+			case self::MS_PAGE_ACCOUNT:
+				$content = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']<hr />';
+				$content .= '['. MS_Helper_Shortcode::SCODE_LOGOUT .']';
+				break;
+
+			case self::MS_PAGE_REGISTER:
+				$content = sprintf(
+					'[ms-green-note] %1$s [/ms-green-note]',
+					__( 'We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details.', MS_TEXT_DOMAIN )
+				);
+				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				break;
+
+			case self::MS_PAGE_REG_COMPLETE:
+				$this->create_missing_pages();
+
+				$content .= sprintf(
+					'[ms-green-note] %1$s <br/> %2$s [/ms-green-note]',
+					__( 'Your request to join the membership was successfully received!', MS_TEXT_DOMAIN ),
+					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN )
+				);
+				$content .= sprintf(
+					'<a href="%s">%s</a>',
+					$this->get_page_url( self::MS_PAGE_ACCOUNT, false ),
+					__( 'Visit your account page for more information.', MS_TEXT_DOMAIN )
+				);
+				break;
+		}
+
+		return apply_filters(
+			'ms_model_pages_get_default_content',
+			$content,
+			$this
+		);
 	}
 
 };

@@ -147,15 +147,17 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => $title, 'desc' => $desc )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
+			?>
 
 			<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
 				<div class="ms-group">
 					<div class="inside">
-						<div class="ms-field-input-label">
+						<div class="wpmui-field-label">
 							<?php _e( 'Protected Categories:', MS_TEXT_DOMAIN ); ?>
 						</div>
 						<?php $category_rule_list_table->display(); ?>
@@ -170,7 +172,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			<?php if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) : ?>
 				<div class="ms-group">
 					<div class="inside">
-						<div class="ms-field-input-label">
+						<div class="wpmui-field-label">
 							<?php _e( 'Protected Custom Post Types:', MS_TEXT_DOMAIN ); ?>
 						</div>
 						<?php $cpt_rule_list_table->display(); ?>
@@ -211,8 +213,10 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-			<div class="ms-separator"></div>
+			<?php
+			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::html_separator();
+			?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -255,8 +259,10 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-			<div class="ms-separator"></div>
+			<?php
+			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::html_separator();
+			?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -297,8 +303,10 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-			<div class="ms-separator"></div>
+			<?php
+			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::html_separator();
+			?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -340,8 +348,10 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-			<div class="ms-separator"></div>
+			<?php
+			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::html_separator();
+			?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -476,8 +486,8 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'id' => 'comment',
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
-				'value' => __( 'Members can Read & Post comments', MS_TEXT_DOMAIN ),
-				'class' => 'ms-field-description',
+				'value' => __( 'Members can Read and Post comments', MS_TEXT_DOMAIN ),
+				'class' => 'wpmui-field-description',
 				'wrapper' => 'div',
 			);
 		}
@@ -488,7 +498,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
 				'value' => __( 'Members can read full post (beyond the More Tag)', MS_TEXT_DOMAIN ),
-				'class' => 'ms-field-description',
+				'class' => 'wpmui-field-description',
 				'wrapper' => 'div',
 			);
 		}
@@ -510,10 +520,12 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => $title, 'desc' => $desc )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
+			?>
 
 			<div class="ms-group">
 				<div class="ms-half">
@@ -538,7 +550,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				</div>
 			</div>
 
-			<div class="ms-separator"></div>
+			<?php MS_Helper_Html::html_separator(); ?>
 
 			<div class="ms-group">
 				<div class="ms-inside">
@@ -594,8 +606,10 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) ); ?>
-			<div class="ms-separator"></div>
+			<?php
+			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::html_separator();
+			?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">
@@ -640,10 +654,12 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
+			<?php
+			MS_Helper_Html::settings_tab_header(
 				array( 'title' => $title, 'desc' => $desc )
-			); ?>
-			<div class="ms-separator"></div>
+			);
+			MS_Helper_Html::html_separator();
+			?>
 
 			<?php $rule_list_table->views(); ?>
 			<form action="" method="post">

@@ -85,7 +85,13 @@ class MS_Hooker {
 		$args = func_get_args();
 		$this->actions[ self::get_hook_key( $args ) ] = $args;
 
-		add_action( $tag, array( $this, ! empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		add_action(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
+
 		return $this;
 	}
 
@@ -102,7 +108,13 @@ class MS_Hooker {
 	 * @return MS_Hooker
 	 */
 	protected function remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		remove_action( $tag, array( $this, ! empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		remove_action(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
+
 		return $this;
 	}
 
@@ -169,7 +181,12 @@ class MS_Hooker {
 		$args = func_get_args();
 		$this->filters[ self::get_hook_key( $args ) ] = $args;
 
-		add_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		add_filter(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
 		return $this;
 	}
 
@@ -188,7 +205,12 @@ class MS_Hooker {
 	 * @return MS_Hooker
 	 */
 	protected function remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		remove_filter( $tag, array( $this, !empty( $method ) ? $method : $tag ), $priority, $accepted_args );
+		remove_filter(
+			$tag,
+			array( $this, ! empty( $method ) ? $method : $tag ),
+			$priority,
+			$accepted_args
+		);
 		return $this;
 	}
 

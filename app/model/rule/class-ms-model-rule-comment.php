@@ -202,7 +202,8 @@ class MS_Model_Rule_Comment extends MS_Model_Rule {
 	 * @param string $content The content to filter.
 	 */
 	public function check_special_page( $content ) {
-		if ( MS_Factory::load( 'MS_Model_Pages' )->is_ms_page() ) {
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		if ( $ms_pages->is_membership_page() ) {
 			add_filter( 'comments_open', '__return_false', 100 );
 		}
 

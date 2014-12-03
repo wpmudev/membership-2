@@ -44,9 +44,8 @@ class MS_View_Member_List extends MS_View {
 					'desc' => __( 'Here you can manage your Members and Add New Members from your Users list.', MS_TEXT_DOMAIN ),
 				)
 			);
+			MS_Helper_Html::html_separator();
 			?>
-
-			<div class="ms-separator"></div>
 			<div>
 				<?php $this->render_add_member_form(); ?>
 			</div>

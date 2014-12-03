@@ -45,21 +45,26 @@ class MS_View_Coupon_List extends MS_View {
 
 		$title = __( 'Coupons', MS_TEXT_DOMAIN );
 		$add_new_button = array(
-				'id' => 'add_new',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'url' => sprintf( 'admin.php?page=%s&action=edit&coupon_id=0', MS_Controller_Plugin::MENU_SLUG . '-coupons' ),
-				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
-				'class' => 'button',
+			'id' => 'add_new',
+			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'url' => sprintf(
+				'admin.php?page=%s&action=edit&coupon_id=0',
+				MS_Controller_Plugin::MENU_SLUG . '-coupons'
+			),
+			'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+			'class' => 'button',
 		);
 
 		ob_start();
 		?>
 		<div class="wrap ms-wrap">
 			<?php
-				MS_Helper_Html::settings_header( array(
+			MS_Helper_Html::settings_header(
+				array(
 					'title' => $title,
 					'title_icon_class' => 'ms-fa ms-fa-credit-card',
-				) );
+				)
+			);
 			?>
 			<div>
 				<?php MS_Helper_Html::html_element( $add_new_button );?>

@@ -33,10 +33,6 @@
  */
 class MS_View_Settings_Edit extends MS_View {
 
-	protected $fields;
-
-	protected $data;
-
 	/**
 	 * Overrides parent's to_html() method.
 	 *
@@ -77,11 +73,14 @@ class MS_View_Settings_Edit extends MS_View {
 				$active_tab,
 				$this->data
 			);
-
-			$html = call_user_func( $render_callback );
-			$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
-			echo $html;
 			?>
+			<div class="ms-settings">
+				<?php
+				$html = call_user_func( $render_callback );
+				$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
+				echo '' . $html;
+				?>
+			</div>
 		</div>
 		<?php
 		return ob_get_clean();
@@ -152,29 +151,29 @@ class MS_View_Settings_Edit extends MS_View {
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
 
 		ob_start();
+
+		MS_Helper_Html::settings_tab_header(
+			array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) )
+		);
+		MS_Helper_Html::html_separator();
 		?>
-		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
 
-			<form action="" method="post">
-				<?php
-				MS_Helper_Html::settings_box(
-					array( $fields['plugin_enabled'] ),
-					__( 'Content Protection', MS_TEXT_DOMAIN )
-				);
+		<form action="" method="post">
+			<?php
+			MS_Helper_Html::settings_box(
+				array( $fields['plugin_enabled'] ),
+				__( 'Content Protection', MS_TEXT_DOMAIN )
+			);
 
-				MS_Helper_Html::settings_box(
-					array( $fields['hide_admin_bar'] ),
-					__( 'Hide admin toolbar', MS_TEXT_DOMAIN )
-				);
+			MS_Helper_Html::settings_box(
+				array( $fields['hide_admin_bar'] ),
+				__( 'Hide admin toolbar', MS_TEXT_DOMAIN )
+			);
 
-				MS_Helper_Html::settings_box(
-					array( $fields['initial_setup'] ),
-					__( 'Setup Wizard', MS_TEXT_DOMAIN )
-				);
+			MS_Helper_Html::settings_box(
+				array( $fields['initial_setup'] ),
+				__( 'Setup Wizard', MS_TEXT_DOMAIN )
+			);
 
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADV_MENUS ) ) {
 					MS_Helper_Html::settings_box(
@@ -182,9 +181,8 @@ class MS_View_Settings_Edit extends MS_View {
 						__( 'Advanced menu protection', MS_TEXT_DOMAIN )
 					);
 				}
-				?>
-			</form>
-		</div>
+			?>
+		</form>
 		<?php
 		return ob_get_clean();
 	}
@@ -194,65 +192,68 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_pages() {
-
-		$action = MS_Controller_Page::AJAX_ACTION_UPDATE_PAGE;
+		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
 		$nonce = wp_create_nonce( $action );
 
-		$ms_pages = $this->data['ms_pages'];
+		$settings = $this->data['settings'];
+		$page_types = $this->data['page_types'];
 
 		$fields = array();
-		foreach ( $ms_pages as $ms_page ) {
-			$fields['pages'][ $ms_page->type ] = array(
-				'id' => $ms_page->type,
-				'page_id' => $ms_page->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'read_only' => true,
-				'title' => sprintf( __( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ), $ms_page->title ),
-				'value' => sprintf( '/%1$s/', $ms_page->slug ),
+		foreach ( $page_types as $type => $label ) {
+			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
+			$title = sprintf(
+				__( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ),
+				$label
+			);
+
+			$fields[ $type ] = array(
+				'id' => $type,
+				'type' => MS_Helper_Html::INPUT_TYPE_WP_PAGES,
+				'title' => $title,
+				'value' => $page_id,
 				'class' => 'ms-ajax-update',
-				'data_ms' => array(
-					'page_type' => $ms_page->type,
-					'field' => 'slug',
+				'field_options' => array(
+					'no_item' => __( '- Select a page -', MS_TEXT_DOMAIN ),
+				),
+				'ajax_data' => array(
+					'group' => 'ms_pages',
+					'field' => $type,
 					'action' => $action,
 					'_wpnonce' => $nonce,
 				),
 			);
-			$fields['edit'][ $ms_page->type ] = array(
-				'id' => 'edit_slug_' . $ms_page->type,
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Edit URL', MS_TEXT_DOMAIN ),
-				'class' => 'ms-edit-url',
-			);
 		}
 
-		$fields = apply_filters( 'ms_view_settings_prepare_pages_fields', $fields );
+		$fields = apply_filters(
+			'ms_view_settings_prepare_pages_fields',
+			$fields
+		);
 
 		ob_start();
+
+		MS_Helper_Html::settings_tab_header(
+			array(
+				'title' => __( 'Page Settings', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc.', MS_TEXT_DOMAIN ),
+			)
+		);
+		MS_Helper_Html::html_separator();
 		?>
-		<div class="ms-settings">
-			<?php
-			MS_Helper_Html::settings_tab_header(
-				array(
-					'title' => __( 'Page Settings', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc.', MS_TEXT_DOMAIN ),
-				)
-			);
-			?>
-			<div class="ms-separator"></div>
 
-			<form action="" method="post">
+		<form action="" method="post">
 
-				<?php foreach ( $fields['pages'] as $page_type => $field ) :
-					MS_Helper_Html::html_element( $field );
-					MS_Helper_Html::html_element( $fields['edit'][ $page_type ] );
-					?>
-					<div id="ms-settings-page-links-wrapper">
+			<?php foreach ( $fields as $page_type => $field ) : ?>
+				<div class="ms-settings-page-wrapper">
+					<?php MS_Helper_Html::html_element( $field ); ?>
+					<div class="ms-action">
 						<?php
 						MS_Helper_Html::html_link(
 							array(
-								'id' => 'url_page_' . $field['page_id'],
-								'url' => get_permalink( $field['page_id'] ),
+								'id' => 'url_page_' . $field['value'],
+								'url' => '',
 								'value' => __( 'View Page', MS_TEXT_DOMAIN ),
+								'target' => '_blank',
+								'data_ms' => array( 'base' => home_url( '?p=' ) ),
 							)
 						);
 						?>
@@ -260,17 +261,30 @@ class MS_View_Settings_Edit extends MS_View {
 						<?php
 						MS_Helper_Html::html_link(
 							array(
-								'id' => 'edit_url_page_' . $field['page_id'],
-								'url' => get_edit_post_link( $field['page_id'] ),
+								'id' => 'edit_url_page_' . $field['value'],
+								'url' => '',
 								'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
+								'target' => '_blank',
+								'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
+							)
+						);
+						?>
+						<span> | </span>
+						<?php
+						MS_Helper_Html::html_link(
+							array(
+								'id' => 'reset_page_' . $field['value'],
+								'url' => '',
+								'value' => __( 'Default Content', MS_TEXT_DOMAIN ),
+								'target' => '_blank',
+								'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&ms-default=1&post=' ) ),
 							)
 						);
 						?>
 					</div>
-					<?php MS_Helper_Html::html_separator(); ?>
-				<?php endforeach; ?>
-			</form>
-		</div>
+				</div>
+			<?php endforeach; ?>
+		</form>
 		<?php MS_Helper_Html::save_text();
 		return ob_get_clean();
 	}
@@ -284,13 +298,11 @@ class MS_View_Settings_Edit extends MS_View {
 
 		ob_start();
 		?>
-		<div class="ms-settings">
-			<div id="ms-payment-settings-wrapper">
-				<?php $view->render(); ?>
-			</div>
+		<div id="ms-payment-settings-wrapper">
+			<?php $view->render(); ?>
 		</div>
 		<?php
-		echo ob_get_clean();
+		echo '' . ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -374,40 +386,39 @@ class MS_View_Settings_Edit extends MS_View {
 		$has_more = $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID );
 
 		ob_start();
+
+		MS_Helper_Html::settings_tab_header(
+			array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) )
+		);
+		MS_Helper_Html::html_separator();
 		?>
-		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
 
-			<form class="ms-form" action="" method="post">
-				<?php
+		<form class="ms-form" action="" method="post">
+			<?php
+			MS_Helper_Html::settings_box(
+				$fields['content'],
+				__( 'Content protection message', MS_TEXT_DOMAIN ),
+				'',
+				'open'
+			);
+
+			MS_Helper_Html::settings_box(
+				$fields['shortcode'],
+				__( 'Shortcode protection message', MS_TEXT_DOMAIN ),
+				'',
+				'open'
+			);
+
+			if ( $has_more ) {
 				MS_Helper_Html::settings_box(
-					$fields['content'],
-					__( 'Content protection message', MS_TEXT_DOMAIN ),
+					$fields['more_tag'],
+					__( 'More tag protection message', MS_TEXT_DOMAIN ),
 					'',
 					'open'
 				);
-
-				MS_Helper_Html::settings_box(
-					$fields['shortcode'],
-					__( 'Shortcode protection message', MS_TEXT_DOMAIN ),
-					'',
-					'open'
-				);
-
-				if ( $has_more ) {
-					MS_Helper_Html::settings_box(
-						$fields['more_tag'],
-						__( 'More tag protection message', MS_TEXT_DOMAIN ),
-						'',
-						'open'
-					);
-				}
-				?>
-			</form>
-		</div>
+			}
+			?>
+		</form>
 		<?php
 		return ob_get_clean();
 	}
@@ -535,56 +546,55 @@ class MS_View_Settings_Edit extends MS_View {
 		$fields = apply_filters( 'ms_view_settings_prepare_messages_automated_fields', $fields );
 
 		ob_start();
+
+		MS_Helper_Html::settings_tab_header(
+			array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) )
+		);
+		MS_Helper_Html::html_separator();
 		?>
-		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) )
-			); ?>
-			<div class="ms-separator"></div>
 
-			<form id="ms-comm-type-form" action="" method="post">
-				<?php MS_Helper_Html::html_element( $fields['load_action'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['load_nonce'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['comm_type'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['switch_comm_type'] ); ?>
-			</form>
+		<form id="ms-comm-type-form" action="" method="post">
+			<?php MS_Helper_Html::html_element( $fields['load_action'] ); ?>
+			<?php MS_Helper_Html::html_element( $fields['load_nonce'] ); ?>
+			<?php MS_Helper_Html::html_element( $fields['comm_type'] ); ?>
+			<?php MS_Helper_Html::html_element( $fields['switch_comm_type'] ); ?>
+		</form>
 
-			<div class="ms-separator"></div>
+		<?php MS_Helper_Html::html_separator(); ?>
 
-			<form action="" method="post" class="ms-editor-form">
-				<?php
-				MS_Helper_Html::html_element( $fields['action'] );
-				MS_Helper_Html::html_element( $fields['nonce'] );
-				MS_Helper_Html::html_element( $fields['type'] );
+		<form action="" method="post" class="ms-editor-form">
+			<?php
+			MS_Helper_Html::html_element( $fields['action'] );
+			MS_Helper_Html::html_element( $fields['nonce'] );
+			MS_Helper_Html::html_element( $fields['type'] );
 
-				if ( is_a( $comm, 'MS_Model_Communication' ) ) {
-					printf(
-						'<h3>%1$s %2$s: %3$s</h3><div class="ms-description" style="margin-bottom:20px;">%4$s</div>',
-						esc_html( $comm_titles[ $comm->type ] ),
-						__( 'Message', MS_TEXT_DOMAIN ),
-						MS_Helper_Html::html_element( $fields['enabled'], true ),
-						$comm->get_description()
-					);
+			if ( is_a( $comm, 'MS_Model_Communication' ) ) {
+				printf(
+					'<h3>%1$s %2$s: %3$s</h3><div class="ms-description" style="margin-bottom:20px;">%4$s</div>',
+					esc_html( $comm_titles[ $comm->type ] ),
+					__( 'Message', MS_TEXT_DOMAIN ),
+					MS_Helper_Html::html_element( $fields['enabled'], true ),
+					$comm->get_description()
+				);
 
-					if ( $comm->period_enabled ) {
-						echo '<div class="ms-period-wrapper">';
-						MS_Helper_Html::html_element( $fields['period_unit'] );
-						MS_Helper_Html::html_element( $fields['period_type'] );
-						echo '</div>';
-					}
+				if ( $comm->period_enabled ) {
+					echo '<div class="ms-period-wrapper">';
+					MS_Helper_Html::html_element( $fields['period_unit'] );
+					MS_Helper_Html::html_element( $fields['period_type'] );
+					echo '</div>';
 				}
+			}
 
-				MS_Helper_Html::html_element( $fields['subject'] );
-				MS_Helper_Html::html_element( $fields['message'] );
+			MS_Helper_Html::html_element( $fields['subject'] );
+			MS_Helper_Html::html_element( $fields['message'] );
 
-				MS_Helper_Html::html_element( $fields['cc_enabled'] );
-				echo ' &nbsp; ';
-				MS_Helper_Html::html_element( $fields['cc_email'] );
-				MS_Helper_Html::html_separator();
-				MS_Helper_Html::html_element( $fields['save_email'] );
-				?>
-			</form>
-		</div>
+			MS_Helper_Html::html_element( $fields['cc_enabled'] );
+			echo ' &nbsp; ';
+			MS_Helper_Html::html_element( $fields['cc_email'] );
+			MS_Helper_Html::html_separator();
+			MS_Helper_Html::html_element( $fields['save_email'] );
+			?>
+		</form>
 		<?php
 		/**
 		 * Print JS details for the custom TinyMCE "Insert Variable" button
@@ -654,7 +664,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'field' => 'masked_url',
 					'action' => $action,
 					'_wpnonce' => $nonce,
-				),
+			),
 			),
 		);
 
@@ -672,7 +682,7 @@ class MS_View_Settings_Edit extends MS_View {
 			); ?>
 			<div class="ms-separator"></div>
 
-			<div>
+		<div>
 				<form action="" method="post">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
 				</form>

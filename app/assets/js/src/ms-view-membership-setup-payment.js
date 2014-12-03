@@ -6,49 +6,36 @@
 
 window.ms_init.view_membership_setup_payment = function init () {
 
-	//global functions defined in ms-functions.js
-	ms_functions.payment_type = function( obj ) {
-		var payment_type, after_end;
+	function payment_type() {
+		var me = jQuery( this ),
+			block = me.parent().parent(),
+			pay_type = me.val(),
+			all_settings = block.find( '.ms-payment-type-wrapper' ),
+			active_settings = block.find( '.ms-payment-type-' + pay_type ),
+			after_end = block.find( '.ms-after-end-wrapper' );
 
-		jQuery( obj ).parent().parent().find( '.ms-payment-type-wrapper' ).hide();
-		payment_type = jQuery( obj ).val();
-		jQuery( obj ).parent().parent().find( '.ms-payment-type-' + payment_type ).show();
+		all_settings.hide();
+		active_settings.show();
 
-		after_end = jQuery( obj ).parent().parent().find( '.ms-after-end-wrapper' );
-		if( 'permanent' === payment_type ) {
+		if ( 'permanent' === pay_type ) {
 			after_end.hide();
-		}
-		else {
+		} else {
 			after_end.show();
 		}
-	};
+	}
 
-	ms_functions.is_free = function() {
-		if( '0' === jQuery( 'input[name="is_free"]:checked' ).val() ) {
-			jQuery( '#ms-payment-settings-wrapper' ).show();
+	function is_free() {
+		var pay_type = jQuery( '.ms-payments-choice' ).hasClass( 'on' ),
+			pay_settings = jQuery( '#ms-payment-settings-wrapper' );
+
+		if ( pay_type ) {
+			pay_settings.show();
+		} else {
+			pay_settings.hide();
 		}
-		else {
-			jQuery( '#ms-payment-settings-wrapper' ).hide();
-		}
-	};
+	}
 
-	jQuery( 'input[name="is_free"]' ).change( function() {
-		ms_functions.is_free();
-	});
-
-	jQuery( '.ms-payment-type' ).change( function() {
-		ms_functions.payment_type( this );
-	});
-
-	// initial event fire
-	jQuery( '.ms-payment-type' ).each( function() {
-		ms_functions.payment_type( this );
-	});
-
-	ms_functions.is_free();
-
-	// Update currency symbols in payment descriptions.
-	jQuery( '#currency' ).change(function() {
+	function show_currency() {
 		var currency = jQuery( this ).val(),
 			items = jQuery( '.ms-payment-structure-wrapper' );
 
@@ -60,7 +47,19 @@ window.ms_init.view_membership_setup_payment = function init () {
 			case 'JPY': currency = '&yen;'; break;
 		}
 
-		items.find( '.ms-field-description' ).html( currency );
-	});
+		items.find( '.wpmui-field-description' ).html( currency );
+	}
+
+
+	// Show the correct payment options
+	jQuery( '.ms-payment-type' ).change( payment_type );
+	jQuery( '.ms-payment-type' ).each( payment_type );
+
+	// Change the "Free/Paid" flag
+	jQuery( '.ms-payments-choice' ).change( is_free );
+	is_free();
+
+	// Update currency symbols in payment descriptions.
+	jQuery( '#currency' ).change( show_currency );
 
 };

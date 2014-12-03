@@ -126,6 +126,12 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 				'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ACCESS,
 				'ajax_action_toggle_metabox_access'
 			);
+
+			// Populates the WP editor with default contents of a page
+			$this->add_action(
+				'the_editor_content',
+				'show_default_content'
+			);
 		}
 	}
 
@@ -191,8 +197,9 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */
 	public function membership_metabox( $post ) {
 		$data = array();
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
-		if ( MS_Model_Page::$POST_TYPE == $post->post_type ) {
+		if ( $ms_pages->is_membership_page() ) {
 			$data['special_page'] = true;
 		} else {
 			$memberships = MS_Model_Membership::get_memberships();
@@ -328,6 +335,48 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			$post_type,
 			$this
 		);
+	}
+
+	/**
+	 * Filter returns the default contents of a Membership Page if the URL param
+	 * &ms-default=1 is set.
+	 *
+	 * Effectively this will display the default contents inside the Post-Editor
+	 * without changing the page itself. Only after the user saves the content
+	 * it will affect the Membership page
+	 *
+	 * @since  1.1.0
+	 * @param  string $content Default page content.
+	 * @return string Modified page content.
+	 */
+	public function show_default_content( $content ) {
+		static $Message = false;
+		global $post, $post_type;
+
+		if ( ! isset( $_GET['ms-default'] ) ) { return $content; }
+		if ( '1' != $_GET['ms-default'] ) { return $content; }
+		if ( 'page' != $post_type ) { return $content; }
+
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$ms_page = $ms_pages->get_page_by( 'id', $post->ID );
+
+		if ( empty( $ms_page ) ) { return $content; }
+
+		$type = $ms_pages->get_page_type( $ms_page );
+
+		if ( ! $Message ) {
+			$Message = true;
+			WDev()->message(
+				__(
+					'<strong>Tipp</strong>:<br />' .
+					'The page content is reset to the default content but is <em>not saved yet</em>!<br />' .
+					'You can simply close this page to keep your current page contents.',
+					MS_TEXT_DOMAIN
+				)
+			);
+		}
+
+		return $ms_pages->get_default_content( $type );
 	}
 
 	/**

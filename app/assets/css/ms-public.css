@@ -82,22 +82,22 @@
 #wpadminbar #wp-toolbar .membership-simulate-period input,
 #wpadminbar #wp-toolbar .membership-simulate-period select,
 #wpadminbar #wp-toolbar .membership-simulate-period button,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input,
 #wpadminbar #wp-toolbar .membership-view-site-as input,
 #wpadminbar #wp-toolbar .membership-view-site-as select,
 #wpadminbar #wp-toolbar .membership-view-site-as button,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input {
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input {
   height: 23px;
   line-height: 21px;
   margin: 4px;
   box-sizing: border-box;
 }
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input input,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input select,
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-field-input button,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input input,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input select,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-field-input button {
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input input,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input select,
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-field-input button,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input input,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input select,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input button {
   margin: 0;
 }
 #wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
@@ -317,7 +317,7 @@ input[type="image"] {
 /**
  * Settings module.
  */
-.ms-wrap {
+#wpwrap .ms-wrap {
   /** Settings Box **/
   /** Member search */
   /** jquery validation */
@@ -325,48 +325,49 @@ input[type="image"] {
   /* Dripped icon indicator */
   /* Settings Page Settings */
   /* SETTING: GENERAL */
+  /* SETTINGS: IMPORT */
   /* SETTINGS GATEWAY */
   /* MEMBERS LIST */
   /* MEDIA /DOWNLOADS TAB */
 }
-.ms-wrap .ms-settings .settings-description {
+#wpwrap .ms-wrap .ms-settings .settings-description {
   margin: 1em 0;
 }
-.ms-wrap .ms-label {
+#wpwrap .ms-wrap .ms-label {
   display: block;
   padding-bottom: 5px;
 }
-.ms-wrap .ms-margin-right {
+#wpwrap .ms-wrap .ms-margin-right {
   margin-right: 10px;
 }
-.ms-wrap .ms-postbox.ms-default-margin {
+#wpwrap .ms-wrap .ms-postbox.ms-default-margin {
   margin-right: 15px;
   margin-left: 15px;
   margin-top: 5px;
 }
-.ms-wrap .ms-text-label,
-.ms-wrap .ms-ok,
-.ms-wrap .ms-nok {
+#wpwrap .ms-wrap .ms-text-label,
+#wpwrap .ms-wrap .ms-ok,
+#wpwrap .ms-wrap .ms-nok {
   color: #222;
   font-size: 1em;
   font-style: normal;
   font-weight: 600;
   margin-top: 10px;
 }
-.ms-wrap .ms-ok {
+#wpwrap .ms-wrap .ms-ok {
   color: #7ad03a;
 }
-.ms-wrap .ms-nok {
+#wpwrap .ms-wrap .ms-nok {
   color: red;
 }
-.ms-wrap .ms-settings .ms-settings-box h3.ms-field-input-label {
+#wpwrap .ms-wrap .ms-settings .ms-settings-box h3.wpmui-field-label {
   border: none;
   padding: 0;
   font-size: 1.1em;
   cursor: default;
   margin-top: 15px;
 }
-.ms-wrap #member-search-options {
+#wpwrap .ms-wrap #member-search-options {
   position: relative;
   top: -2px;
   font-size: 13px;
@@ -376,24 +377,24 @@ input[type="image"] {
   padding: 0 10px 1px;
 }
 @media (max-width: 900px) {
-  .ms-wrap .ms-tabs {
+  #wpwrap .ms-wrap .ms-tabs {
     float: left;
     margin: 0;
     padding: 0;
     width: 100px;
   }
-  .ms-wrap .ms-tabs a {
+  #wpwrap .ms-wrap .ms-tabs a {
     padding: 5px;
     min-height: 40px;
   }
-  .ms-wrap .ms-settings {
+  #wpwrap .ms-wrap .ms-settings {
     min-height: 350px;
   }
 }
-.ms-wrap .ms-validation-error {
+#wpwrap .ms-wrap .ms-validation-error {
   color: #e46c6e !important;
 }
-.ms-wrap label.ms-validation-error {
+#wpwrap .ms-wrap label.ms-validation-error {
   background: #ffefef;
   border: 1px solid #ffd2d2;
   color: #666;
@@ -406,7 +407,7 @@ input[type="image"] {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
-.ms-wrap label.ms-validation-error:before {
+#wpwrap .ms-wrap label.ms-validation-error:before {
   content: '';
   background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
   background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
@@ -417,44 +418,84 @@ input[type="image"] {
   top: 1px;
   width: 20px;
 }
-.ms-wrap #membership_access .ms-radio-slider {
+#wpwrap .ms-wrap #membership_access .ms-radio-slider {
   margin: 10px 20px;
 }
-.ms-wrap div.dripped .tooltip {
+#wpwrap .ms-wrap div.dripped .tooltip {
   display: none;
 }
-.ms-wrap #ms-settings-page-links-wrapper {
-  margin: .5em;
+#wpwrap .ms-wrap .ms-settings-page-wrapper {
+  padding: 5px 10px;
+  border-bottom: 1px solid #E5E5E5;
 }
-.ms-wrap textarea.ms-field-input {
+#wpwrap .ms-wrap .ms-settings-page-wrapper .ms-action {
+  opacity: 0;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover {
+  background-color: #FAFAFA;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover .ms-action {
+  opacity: 1;
+}
+#wpwrap .ms-wrap textarea.wpmui-field-input {
   min-width: 80%;
   display: block;
 }
-.ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
-.ms-wrap .gateways .not-configured .ms-radio-slider {
-  display: none;
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio {
+  margin-top: 10px;
 }
-.ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {
-  display: block;
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  line-height: 24px;
 }
-.ms-wrap .gateways .mode-unknown,
-.ms-wrap .gateways .mode-sandbox,
-.ms-wrap .gateways .mode-live {
-  display: none;
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption label,
+#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption .wpmui-field-input {
+  width: auto;
+  margin: 0 12px 0 0;
 }
-.ms-wrap .gateways .not-configured .mode-unknown,
-.ms-wrap .gateways .is-configured.is-sandbox .mode-sandbox,
-.ms-wrap .gateways .is-configured.is-live .mode-live {
-  display: block;
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-label {
+  width: 150px;
+  text-align: left;
 }
-.ms-wrap .gateways .mode-live {
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-name {
   font-weight: bold;
 }
-.ms-wrap #search_options {
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-count {
+  text-align: center;
+  width: 150px;
+}
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview.wpmui-html-table {
+  margin: -10px;
+  border: 0;
+  box-shadow: 0 0 0 transparent;
+  width: calc(100% + 20px);
+}
+#wpwrap .ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
+#wpwrap .ms-wrap .gateways .not-configured .ms-radio-slider {
+  display: none;
+}
+#wpwrap .ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {
+  display: block;
+}
+#wpwrap .ms-wrap .gateways .mode-unknown,
+#wpwrap .ms-wrap .gateways .mode-sandbox,
+#wpwrap .ms-wrap .gateways .mode-live {
+  display: none;
+}
+#wpwrap .ms-wrap .gateways .not-configured .mode-unknown,
+#wpwrap .ms-wrap .gateways .is-configured.is-sandbox .mode-sandbox,
+#wpwrap .ms-wrap .gateways .is-configured.is-live .mode-live {
+  display: block;
+}
+#wpwrap .ms-wrap .gateways .mode-live {
+  font-weight: bold;
+}
+#wpwrap .ms-wrap #search_options {
   float: left;
   height: 28px;
   margin: 0 4px 0 0;
 }
-.ms-wrap #masked_url {
-  display: inline;
+#wpwrap .ms-wrap .wpmui-description-masked_url {
+  display: inline-block;
 }

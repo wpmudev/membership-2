@@ -87,13 +87,13 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => add_query_arg(
 					array( 'ms_relationship_id' => $ms_relationship->id ),
-					$ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false, true )
+					$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
 				),
 			),
 			'cancel_return' => array(
 				'id' => 'cancel_return',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $ms_pages->get_ms_page_url( MS_Model_Pages::MS_PAGE_REGISTER ),
+				'value' => $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER ),
 			),
 			'notify_url' => array(
 				'id' => 'notify_url',

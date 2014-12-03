@@ -431,6 +431,10 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Retrieve membership relationships.
 	 *
+	 * By default returns a list of relationships that are not "pending" or
+	 * "deactivated". To get a list of all relationships use this:
+	 * $args = array( 'status' => 'all' )
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
@@ -816,8 +820,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		 */
 		if ( $this->is_trial_eligible() && ! empty( $gateway->manual_payment ) ) {
 			$expire_date = $trial_expire_date;
-		}
-		else {
+		} else {
 			switch ( $membership->payment_type ){
 				case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 					$expire_date = false;

@@ -903,8 +903,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 			if ( ! $invoice = MS_Model_Invoice::get_previous_invoice( $ms_relationship ) ) {
 				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 			}
-		}
-		else {
+		} else {
 			$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		}
 
@@ -950,39 +949,49 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 				case self::COMM_VAR_MS_NAME:
 					if ( $membership->name ) {
 						$comm_vars[ $key ] = $membership->name;
-					}
-					else {
+					} else {
 						$comm_vars[ $key ] = '';
 					}
 					break;
 
 				case self::COMM_VAR_MS_INVOICE:
-					if ( isset( $invoice ) && ( $invoice->total > 0 || $invoice->trial_period ) ) {
+					if ( isset( $invoice )
+						&& ( $invoice->total > 0 || $invoice->trial_period )
+					) {
 						$attr = array( 'post_id' => $invoice->id, 'pay_button' => 0 );
 						$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];
 						$comm_vars[ $key ] = $scode->membership_invoice( $attr );
-					}
-					else {
+					} else {
 						$comm_vars[ $key ] = '';
 					}
 					break;
 
 				case self::COMM_VAR_MS_ACCOUNT_PAGE_URL:
+					$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
 					$comm_vars[ $key ] = sprintf(
 						'<a href="%s">%s</a>',
-						MS_Factory::load( 'MS_Model_Pages' )->get_ms_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
+						$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
 						__( 'account page', MS_TEXT_DOMAIN )
 					);
 					break;
 
 				case self::COMM_VAR_MS_REMAINING_DAYS:
 					$days = $ms_relationship->get_remaining_period();
-					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $days,  abs( $days ) > 1 ? 's': '' );
+					$comm_vars[ $key ] = sprintf(
+						__( '%s day%s', MS_TEXT_DOMAIN ),
+						$days,
+						abs( $days ) > 1 ? 's': ''
+					);
 					break;
 
 				case self::COMM_VAR_MS_REMAINING_TRIAL_DAYS:
 					$days = $ms_relationship->get_remaining_trial_period();
-					$comm_vars[ $key ] = sprintf( __( '%s day%s', MS_TEXT_DOMAIN ), $days,  abs( $days ) > 1 ? 's': '' );
+					$comm_vars[ $key ] = sprintf(
+						__( '%s day%s', MS_TEXT_DOMAIN ),
+						$days,
+						abs( $days ) > 1 ? 's': ''
+					);
 					break;
 
 				case self::COMM_VAR_MS_EXPIRY_DATE:

@@ -291,4 +291,5 @@ class MS_Controller extends MS_Hooker {
 		$this->_resp_valid = false;
 		$this->_resp_code = (string) $code;
 	}
+
 }

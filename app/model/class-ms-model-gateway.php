@@ -101,7 +101,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * Manual payment indicator.
 	 *
-	 * If the gateway does not allow automatic reccuring billing.
+	 * True: Recurring payments need to be made manually.
+	 * False: Gateway is capable of automatic recurring payments.
 	 *
 	 * @since 1.0.0
 	 * @var bool $manual_payment

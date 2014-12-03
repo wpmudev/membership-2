@@ -330,14 +330,12 @@ class MS_Plugin {
 		 * Hooks init to register custom post types.
 		 */
 		add_action( 'init', array( &$this, 'register_custom_post_types' ), 1 );
-
 		add_action( 'init', array( &$this, 'register_post_status' ), 1 );
 
 		/**
 		 * Hooks init to add rewrite rules and tags (both work in conjunction).
 		 */
 		add_action( 'init', array( &$this, 'add_rewrite_rules' ), 1 );
-
 		add_action( 'init', array( &$this, 'add_rewrite_tags' ), 1 );
 
 		/* Plugin activation Hook */
@@ -345,8 +343,12 @@ class MS_Plugin {
 
 		/**
 		 * Hooks init to create the primary plugin controller.
+		 *
+		 * We use the setup_theme hook because plugins_loaded is too early:
+		 * wp_redirect (used by the update model) is initialized after
+		 * plugins_loaded but before setup_theme.
 		 */
-		add_action( 'init', array( &$this, 'ms_plugin_constructing' ) );
+		add_action( 'setup_theme', array( &$this, 'ms_plugin_constructing' ) );
 
 		/**
 		 * Creates and Filters the Settings Model.
@@ -374,7 +376,7 @@ class MS_Plugin {
 			array( &$this, 'plugin_settings_link' )
 		);
 
-		/** Grab instance of self. */
+		// Grab instance of self.
 		self::$instance = $this;
 
 		/**
@@ -395,8 +397,10 @@ class MS_Plugin {
 	/**
 	 * Loads primary plugin controllers.
 	 *
+	 * Related Action Hooks:
+	 * - setup_theme
+	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function ms_plugin_constructing() {
 		/**
@@ -415,10 +419,8 @@ class MS_Plugin {
 	 * Register plugin custom post types.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function register_custom_post_types() {
-
 		do_action( 'ms_plugin_register_custom_post_types_before', $this );
 
 		$cpts = apply_filters(
@@ -430,7 +432,6 @@ class MS_Plugin {
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
-				MS_Model_Page::$POST_TYPE => MS_Model_Page::get_register_post_type_args(),
 			)
 		);
 
@@ -443,19 +444,27 @@ class MS_Plugin {
 	 * Register plugin custom post status.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function register_post_status() {
-		/** post_status "virtual" for pages not to be displayed in the menus but that users should not be editing. */
+		/*
+		 * post_status "Virtual" for pages not to be displayed in the menus but
+		 * that users should not be editing.
+		 */
 		register_post_status(
 			'virtual',
 			array(
 				'label' => __( 'Virtual', MS_TEXT_DOMAIN ),
-				'public' => ( ! is_admin() ), //This trick prevents the virtual pages from appearing in the All Pages list but can be display on the front end.
+				// This trick prevents the virtual pages from appearing in the
+				// All Pages list but can be display on the front end.
+				'public' => ( ! is_admin() ),
 				'exclude_from_search' => false,
 				'show_in_admin_all_list' => false,
 				'show_in_admin_status_list' => true,
-				'label_count' => _n_noop( 'Virtual <span class="count">(%s)</span>', 'Virtual <span class="count">(%s)</span>', MS_TEXT_DOMAIN ),
+				'label_count' => _n_noop(
+					'Virtual <span class="count">(%s)</span>',
+					'Virtual <span class="count">(%s)</span>',
+					MS_TEXT_DOMAIN
+				),
 			)
 		);
 	}
@@ -464,33 +473,20 @@ class MS_Plugin {
 	 * Add rewrite rules.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function add_rewrite_rules() {
-		// Membership site pages.
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' )->get_ms_pages();
-
-		if ( ! empty( $ms_pages ) ) {
-			foreach ( $ms_pages as $ms_page ) {
-				add_rewrite_rule(
-					'^' . $ms_page->slug . '/?$',
-					'index.php?ms_page=' . $ms_page->slug,
-					'top'
-				);
-
-			}
-		}
-
-		/* Gateway return - IPN.*/
+		// Gateway return - IPN.
 		add_rewrite_rule(
 			'^ms-payment-return/(.+)/?$',
 			'index.php?paymentgateway=$matches[1]',
 			'top'
 		);
 
-		/* Media / download */
+		// Media / download
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		if ( ! empty( $settings->downloads['protection_enabled'] ) && ! empty( $settings->downloads['masked_url'] ) ) {
+		if ( ! empty( $settings->downloads['protection_enabled'] )
+			&& ! empty( $settings->downloads['masked_url'] )
+		) {
 			add_rewrite_rule(
 				sprintf( '^%1$s(.*)/?$', $settings->downloads['masked_url'] ),
 				'index.php?protectedfile=$matches[1]',
@@ -505,17 +501,15 @@ class MS_Plugin {
 	 * Add rewrite tags.
 	 *
 	 * @since 1.0.0
-	 * @return void
 	 */
 	public function add_rewrite_tags() {
-
-		/* Membership site pages.*/
+		// Membership site pages.
 		add_rewrite_tag( '%ms_page%', '(.+)' );
 
-		/* Gateway return - IPN.*/
+		// Gateway return - IPN.
 		add_rewrite_tag( '%paymentgateway%', '(.+)' );
 
-		/* Media / download */
+		// Media / download
 		add_rewrite_tag( '%protectedfile%', '(.+)' );
 
 		do_action( 'ms_plugin_add_rewrite_tags', $this );
@@ -689,9 +683,14 @@ class MS_Plugin {
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new MS_Plugin();
+
+			self::$instance = apply_filters(
+				'ms_plugin_instance',
+				self::$instance
+			);
 		}
 
-		return apply_filters( 'ms_plugin_instance', self::$instance );
+		return self::$instance;
 	}
 
 	/**

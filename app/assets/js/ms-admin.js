@@ -1,4 +1,4 @@
-/*! Protected Content - v1.0.44
+/*! Protected Content - v1.1.0
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2014; * Licensed GPLv2+ */
 /*global window:false */
@@ -73,17 +73,28 @@ window.ms_functions = {
 	ajax_update: function( obj ) {
 		var data, val, info_field,
 			field = jQuery( obj ),
-			fn = window.ms_functions;
+			fn = window.ms_functions,
+			anim = field;
 
-		if( ! field.hasClass( 'ms-processing' ) ) {
+		if ( ! field.hasClass( 'ms-processing' ) ) {
+			if ( anim.parents( '.wpmui-radio-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-radio-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-radio-slider-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-radio-slider-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-input-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-input-wrapper' ).first();
+			} else if ( anim.parents( 'label' ).length ) {
+				anim = anim.parents( 'label' ).first();
+			}
+
+			anim.addClass( 'wpmui-loading' );
 			info_field = fn.ajax_show_indicator( field );
 
 			data = field.data( 'ms' );
 
-			if( field.is( ':checkbox' ) ) {
+			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
-			}
-			else {
+			} else {
 				val = field.val();
 				if ( val instanceof Array || val instanceof Object || null === val ) {
 					data.values = val;
@@ -106,7 +117,8 @@ window.ms_functions = {
 						// Reset the input control to previous value...
 					}
 
-					info_field.removeClass( 'ms-processing wpmui-loading' );
+					anim.removeClass( 'wpmui-loading' );
+					info_field.removeClass( 'ms-processing' );
 					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
 			);
@@ -114,20 +126,31 @@ window.ms_functions = {
 	},
 
 	radio_slider_ajax_update: function( obj ) {
-		var data, info_field,
+		var data, info_field, toggle, states, state,
 			slider = jQuery( obj ),
 			fn = window.ms_functions;
 
-		if( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
+		if ( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
 			info_field = fn.ajax_show_indicator( slider );
 
 			slider.addClass( 'ms-processing wpmui-loading' );
 			slider.toggleClass( 'on' );
+			slider.parent().toggleClass( 'on' );
+			slider.trigger( 'change' );
 
-			data = slider.children( '.ms-toggle' ).data( 'ms' );
+			toggle = slider.children( '.ms-toggle' );
+			data = toggle.data( 'ms' );
+			states = toggle.data( 'states' );
 
-			if( null != data ) {
-				data.value = slider.hasClass( 'on' );
+			if ( null != data ) {
+				state = slider.hasClass( 'on' );
+				if ( undefined !== states.active && state ) {
+					data.value = states.active;
+				} else if ( undefined !== states.inactive && ! state ) {
+					data.value = states.inactive;
+				} else {
+					data.value = state;
+				}
 
 				// Allow fields to pre-process the data before sending it.
 				if ( 'function' === typeof slider.data( 'before_ajax' ) ) {
@@ -289,11 +312,11 @@ window.ms_functions = {
 		var range;
 		el = jQuery( el )[0];
 
-		if( document.selection ) {
+		if ( document.selection ) {
 			range = document.body.createTextRange();
 			range.moveToElementText( el );
 			range.select();
-		} else if( window.getSelection ) {
+		} else if ( window.getSelection ) {
 			range = document.createRange();
 			range.selectNode( el );
 			window.getSelection().addRange( range );
@@ -331,7 +354,7 @@ window.ms_functions = {
 	 */
 	tag_selector_add: function( ev ) {
 		var fn = window.ms_functions,
-			me = jQuery( this ).closest( '.ms-tag-selector-wrapper' ),
+			me = jQuery( this ).closest( '.wpmui-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
 			list = el_dst.val() || [];
@@ -351,7 +374,7 @@ window.ms_functions = {
 	 */
 	tag_selector_refresh_source: function( ev, el ) {
 		var i = 0, item = null,
-			me = jQuery( el ).closest( '.ms-tag-selector-wrapper' ),
+			me = jQuery( el ).closest( '.wpmui-tag-selector-wrapper' ),
 			el_src = me.find( 'select.ms-tag-source' ),
 			el_src_items = el_src.find( 'option' ),
 			el_dst = me.find( 'select.ms-tag-data' ),
@@ -525,17 +548,17 @@ jQuery( document ).ready( function() {
 	// Initialize the tag-select components.
 	.on(
 		'select2-opening',
-		'.ms-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .ms-tag-data',
 		function( ev ) { ev.preventDefault(); }
 	)
 	.on(
 		'change',
-		'.ms-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .ms-tag-data',
 		function( ev ) { fn.tag_selector_refresh_source( ev, this ); }
 	)
 	.on(
 		'click',
-		'.ms-tag-selector-wrapper .ms-tag-button',
+		'.wpmui-tag-selector-wrapper .ms-tag-button',
 		fn.tag_selector_add
 	)
 	// Ajax-Submit data when ms-ajax-update fields are changed.
@@ -652,6 +675,23 @@ jQuery(function init_tooltip () {
 	});
 
 });
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_help = function init () {
+	function toggle_section() {
+		var me = jQuery( this ),
+			block = me.parents( '.ms-help-box' ).first(),
+			details = block.find( '.ms-help-details' );
+
+		details.toggle();
+	}
+
+	jQuery( '.ms-help-toggle' ).click( toggle_section );
+};
 
 /*global window:false */
 /*global document:false */
@@ -885,49 +925,36 @@ window.ms_init.view_membership_overview = function init () {
 
 window.ms_init.view_membership_setup_payment = function init () {
 
-	//global functions defined in ms-functions.js
-	ms_functions.payment_type = function( obj ) {
-		var payment_type, after_end;
+	function payment_type() {
+		var me = jQuery( this ),
+			block = me.parent().parent(),
+			pay_type = me.val(),
+			all_settings = block.find( '.ms-payment-type-wrapper' ),
+			active_settings = block.find( '.ms-payment-type-' + pay_type ),
+			after_end = block.find( '.ms-after-end-wrapper' );
 
-		jQuery( obj ).parent().parent().find( '.ms-payment-type-wrapper' ).hide();
-		payment_type = jQuery( obj ).val();
-		jQuery( obj ).parent().parent().find( '.ms-payment-type-' + payment_type ).show();
+		all_settings.hide();
+		active_settings.show();
 
-		after_end = jQuery( obj ).parent().parent().find( '.ms-after-end-wrapper' );
-		if( 'permanent' === payment_type ) {
+		if ( 'permanent' === pay_type ) {
 			after_end.hide();
-		}
-		else {
+		} else {
 			after_end.show();
 		}
-	};
+	}
 
-	ms_functions.is_free = function() {
-		if( '0' === jQuery( 'input[name="is_free"]:checked' ).val() ) {
-			jQuery( '#ms-payment-settings-wrapper' ).show();
+	function is_free() {
+		var pay_type = jQuery( '.ms-payments-choice' ).hasClass( 'on' ),
+			pay_settings = jQuery( '#ms-payment-settings-wrapper' );
+
+		if ( pay_type ) {
+			pay_settings.show();
+		} else {
+			pay_settings.hide();
 		}
-		else {
-			jQuery( '#ms-payment-settings-wrapper' ).hide();
-		}
-	};
+	}
 
-	jQuery( 'input[name="is_free"]' ).change( function() {
-		ms_functions.is_free();
-	});
-
-	jQuery( '.ms-payment-type' ).change( function() {
-		ms_functions.payment_type( this );
-	});
-
-	// initial event fire
-	jQuery( '.ms-payment-type' ).each( function() {
-		ms_functions.payment_type( this );
-	});
-
-	ms_functions.is_free();
-
-	// Update currency symbols in payment descriptions.
-	jQuery( '#currency' ).change(function() {
+	function show_currency() {
 		var currency = jQuery( this ).val(),
 			items = jQuery( '.ms-payment-structure-wrapper' );
 
@@ -939,8 +966,20 @@ window.ms_init.view_membership_setup_payment = function init () {
 			case 'JPY': currency = '&yen;'; break;
 		}
 
-		items.find( '.ms-field-description' ).html( currency );
-	});
+		items.find( '.wpmui-field-description' ).html( currency );
+	}
+
+
+	// Show the correct payment options
+	jQuery( '.ms-payment-type' ).change( payment_type );
+	jQuery( '.ms-payment-type' ).each( payment_type );
+
+	// Change the "Free/Paid" flag
+	jQuery( '.ms-payments-choice' ).change( is_free );
+	is_free();
+
+	// Update currency symbols in payment descriptions.
+	jQuery( '#currency' ).change( show_currency );
 
 };
 /*global window:false */
@@ -949,16 +988,46 @@ window.ms_init.view_membership_setup_payment = function init () {
 /*global ms_functions:false */
 
 window.ms_init.view_settings = function init () {
-	jQuery( '#comm_type' ).change( function() {
+	function page_changed( event, data, response, is_err ) {
+		var lists = jQuery( 'select.wpmui-wp-pages' ),
+			cur_pages = lists.map(function() { return jQuery(this).val(); });
+
+		lists.each(function() {
+			var ind,
+				me = jQuery( this ),
+				options = me.find( 'option' ),
+				row = me.parents( '.ms-settings-page-wrapper' ).first(),
+				actions = row.find( '.ms-action a' ),
+				val = me.val();
+
+			// Disable the pages that are used already.
+			options.prop( 'disabled', false );
+			for ( ind = 0; ind < cur_pages.length; ind += 1 ) {
+				if ( val === cur_pages[ind] ) { continue; }
+				options.filter( '[value="' + cur_pages[ind] + '"]' )
+					.prop( 'disabled', true );
+			}
+
+			// Update the view/edit links
+			actions.each(function() {
+				var link = jQuery( this ),
+					data = link.data('ms'),
+					url = data.base + val;
+
+				link.attr( 'href', url );
+			});
+		});
+	}
+
+	function submit_comm_change() {
 		jQuery( '#ms-comm-type-form' ).submit();
-	});
+	}
 
-	// Reload the page when Wizard mode is activated.
-	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', function() {
+	function reload_window() {
 		window.location = ms_data.initial_url;
-	});
+	}
 
-	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', function(ev, data) {
+	function update_toolbar( ev, data ) {
 		// Show/Hide the Toolbar menu for protected content.
 		if ( data.value ) {
 			jQuery( '#wp-admin-bar-ms-unprotected' ).hide();
@@ -967,24 +1036,39 @@ window.ms_init.view_settings = function init () {
 			jQuery( '#wp-admin-bar-ms-unprotected' ).show();
 			jQuery( '#wp-admin-bar-ms-test-memberships' ).hide();
 		}
-	});
+	}
 
-	jQuery( '.ms-edit-url' ).click( function() {
-		var text_id = jQuery( this ).prop( 'id' );
+	// Reload the page when Wizard mode is activated.
+	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
-		text_id = '#' + text_id.replace( 'edit_slug_', '' );
+	// Hide/Show the "Test Membership" button in the toolbar.
+	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
 
-		jQuery( text_id ).prop( 'readonly', false );
-		jQuery( text_id ).focus();
+	// Membership Pages: Update contents after a page was saved
+	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
+	page_changed();
 
-		jQuery( text_id ).change( function() {
-			jQuery( this ).prop( 'readonly', true );
-		});
+	// Select new Communication type
+	jQuery( '#comm_type' ).change( submit_comm_change );
+};
 
-		jQuery( text_id ).focusout( function() {
-			jQuery( this ).prop( 'readonly', true );
-		});
-	});
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_addons = function init () {
+
+	function filter_addons( event, filter, items ) {
+		switch ( filter ) {
+			case 'options':
+				items.hide().filter( '.ms-options' ).show();
+				break;
+		}
+	}
+
+	jQuery( document ).on( 'list-filter', filter_addons );
+
 };
 
 /*global window:false */

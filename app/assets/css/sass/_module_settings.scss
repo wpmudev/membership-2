@@ -2,7 +2,7 @@
  * Settings module.
  */
 
-.ms-wrap {
+#wpwrap .ms-wrap {
 	.ms-settings .settings-description {
 		margin: 1em 0;
 	}
@@ -41,7 +41,7 @@
 		color: red;
 	}
 
-	.ms-settings .ms-settings-box h3.ms-field-input-label {
+	.ms-settings .ms-settings-box h3.wpmui-field-label {
 		border: none;
 		padding: 0;
 		font-size: 1.1em;
@@ -124,14 +124,70 @@
 	}
 
 	/* Settings Page Settings */
-	#ms-settings-page-links-wrapper {
-		margin: .5em;
+	.ms-settings-page-wrapper {
+		padding: 5px 10px;
+		border-bottom: 1px solid #E5E5E5;
+
+		.ms-action {
+			opacity: 0;
+		}
+
+		&:hover {
+			background-color: #FAFAFA;
+			.ms-action {
+				opacity: 1;
+			}
+		}
 	}
 
 	/* SETTING: GENERAL */
-	textarea.ms-field-input {
+	textarea.wpmui-field-input {
 		min-width: 80%;
 		display: block;
+	}
+
+	/* SETTINGS: IMPORT */
+	.wrapper-import_source {
+		.ms-radio {
+			margin-top: 10px;
+		}
+
+		.ms-radio-caption {
+			padding-top: 6px;
+			padding-bottom: 6px;
+			line-height: 24px;
+
+			label,
+			.wpmui-field-input {
+				width: auto;
+				margin: 0 12px 0 0;
+			}
+		}
+	}
+
+	.ms-settings-box {
+		.ms-import-preview {
+			.preview-label {
+				width: 150px;
+				text-align: left;
+			}
+
+			.preview-name {
+				font-weight: bold;
+			}
+
+			.preview-count {
+				text-align: center;
+				width: 150px;
+			}
+
+			&.wpmui-html-table {
+				margin: -10px;
+				border: 0;
+				box-shadow: 0 0 0 transparent;
+				width: calc(100% + 20px);
+			}
+		}
 	}
 
 	/* SETTINGS GATEWAY */
@@ -171,7 +227,7 @@
 	}
 
 	/* MEDIA /DOWNLOADS TAB */
-	#masked_url {
-		display: inline;
+	.wpmui-description-masked_url {
+		display: inline-block;
 	}
 }

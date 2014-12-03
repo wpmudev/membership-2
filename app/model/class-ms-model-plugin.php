@@ -33,6 +33,7 @@ class MS_Model_Plugin extends MS_Model {
 	 * Current Member object.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @var string $member
 	 */
 	private $member;
@@ -48,7 +49,8 @@ class MS_Model_Plugin extends MS_Model {
 		// Upgrade membership database if needs to.
 		MS_Model_Upgrade::init();
 
-		if ( MS_Plugin::is_enabled() ) {
+		if ( ! MS_Plugin::is_enabled() ) { return; }
+
 			$this->add_filter( 'cron_schedules', 'cron_time_period' );
 			$this->init_member();
 
@@ -60,13 +62,25 @@ class MS_Model_Plugin extends MS_Model {
 
 			$this->setup_cron_services();
 
-			$this->add_action( 'parse_request', 'setup_protection', 2 );
+		$this->add_action( 'plugins_loaded', 'setup_rules', 2 );
+
+		/*
+		 * Some plugins (such as MarketPress) can trigger the set_current_user
+		 * action hook before this object is initialized.
+		 */
+		if ( ! did_action( 'set_current_user' ) ) {
+			$this->add_action( 'set_current_user', 'setup_protection', 2 );
+			$this->add_action( 'set_current_user', 'setup_admin_protection', 2 );
+		} else {
+			$this->setup_protection();
+			$this->setup_admin_protection();
+		}
+
 			$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 
 			// cron service action
 			$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 		}
-	}
 
 	/**
 	 * Initialise current member.
@@ -221,7 +235,7 @@ class MS_Model_Plugin extends MS_Model {
 									__( 'Ignored: Membership "%s"', MS_TEXT_DOMAIN ),
 									$membership->name
 								);
-								$Info['reason'][] = $membership->access_reason;
+								$Info['reason'][] = $membership->_access_reason;
 							}
 							continue;
 						}
@@ -232,7 +246,7 @@ class MS_Model_Plugin extends MS_Model {
 								$access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
 								$membership->name
 							);
-							$Info['reason'][] = $membership->access_reason;
+							$Info['reason'][] = $membership->_access_reason;
 						}
 
 						$Info['has_access'] = $access;
@@ -292,15 +306,15 @@ class MS_Model_Plugin extends MS_Model {
 		$access = $this->get_access_info();
 
 		if ( ! $access['has_access'] ) {
-			$no_access_page_url = $ms_pages->get_ms_page_url(
+			$ms_pages->create_missing_pages();
+			$no_access_page_url = $ms_pages->get_page_url(
 				MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT,
-				false,
-				true
+				false
 			);
 			$current_page_url = MS_Helper_Utility::get_current_url();
 
 			// Don't (re-)redirect the protection page.
-			if ( ! $ms_pages->is_ms_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
+			if ( ! $ms_pages->is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
 				$no_access_page_url = add_query_arg(
 					array( 'redirect_to' => $current_page_url ),
 					$no_access_page_url

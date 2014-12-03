@@ -190,15 +190,19 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 * Delete post from wp table
 	 *
 	 * @since 1.0.0
+	 *
+	 * @return bool
 	 */
 	public function delete() {
 		do_action( 'ms_model_custom_post_type_delete_before', $this );
+		$res = false;
 
 		if ( ! empty( $this->id ) ) {
-			wp_delete_post( $this->id );
+			$res = ( false !== wp_delete_post( $this->id, true ) );
 		}
 
-		do_action( 'ms_model_custom_post_type_delete_after', $this );
+		do_action( 'ms_model_custom_post_type_delete_after', $this, $res );
+		return $res;
 	}
 
 	/**

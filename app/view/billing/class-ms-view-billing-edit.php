@@ -145,7 +145,7 @@ class MS_View_Billing_Edit extends MS_View {
 					'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
 					'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
 					'url' => remove_query_arg( array( 'action', 'invoice_id' ) ),
-					'class' => 'ms-link-button button',
+					'class' => 'wpmui-field-button button',
 			),
 			'submit' => array(
 					'id' => 'submit',

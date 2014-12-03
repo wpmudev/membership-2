@@ -299,6 +299,8 @@ class MS_Helper_List_Table {
 			if ( isset( $data['separator'] ) && false === $data['separator'] ) { $sep = ''; }
 
 			$count = (empty( $data['count'] ) ? '' : '(' . $data['count'] . ')');
+			if ( ! isset( $data['url'] ) ) { $data['url'] = ''; }
+			if ( ! isset( $data['label'] ) ) { $data['label'] = ''; }
 
 			if ( empty( $data['url'] ) ) {
 				printf(
@@ -1031,11 +1033,11 @@ class MS_Helper_List_Table {
 	 * @since 1.0.0
 	 * @access protected
 	 *
-	 * @param object $item The current item
+	 * @param object $item The current item.
 	 */
 	protected function single_row( $item ) {
 		static $row_class = '';
-		$row_class = ( $row_class === '' ? 'alternate' : '' );
+		$row_class = ( $row_class === '' ? 'alternate ' : '' );
 
 		echo '<tr class="' . esc_attr( $row_class . ' ' . $this->single_row_class( $item ) ) . '">';
 		$this->single_row_columns( $item );
@@ -1043,15 +1045,17 @@ class MS_Helper_List_Table {
 	}
 
 	/**
-	 * Allows child classes to customize the row class
+	 * Returns the row-class to be used for the specified table item.
 	 *
-	 * @since 1.0.4.4
+	 * @since  1.0.4.4
 	 * @access protected
 	 *
-	 * @param object $item The current item
+	 * @param  object $item The current item.
+	 * @return string Class to be added to the table row.
 	 */
 	protected function single_row_class( $item ) {
-		return '';
+		$class = '';
+		return $class; // Can be overridden by child classes.
 	}
 
 	/**

@@ -361,8 +361,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
-		}
-		else {
+		} else {
 			$user_id = wp_create_user( $this->username, $this->password, $this->email );
 
 			if ( is_wp_error( $user_id ) ) {
@@ -626,10 +625,11 @@ class MS_Model_Member extends MS_Model {
 					$move_from_id
 				);
 
-				if ( 'admin' != $gateway_id ) {
+				if ( 'admin' !== $gateway_id ) {
 					MS_Model_Invoice::get_current_invoice( $ms_relationship );
 				}
-				if ( MS_Model_Membership_Relationship::STATUS_PENDING != $ms_relationship->status ) {
+
+				if ( MS_Model_Membership_Relationship::STATUS_PENDING !== $ms_relationship->status ) {
 					$this->ms_relationships[ $membership_id ] = $ms_relationship;
 				}
 			} else {
@@ -766,8 +766,7 @@ class MS_Model_Member extends MS_Model {
 			) {
 				$has_membership = true;
 			}
-		}
-		elseif ( ! empty ( $this->ms_relationships ) ) {
+		} elseif ( ! empty ( $this->ms_relationships ) ) {
 			foreach ( $this->ms_relationships as $membership_relationship ) {
 				if ( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
 					$has_membership = true;
@@ -821,11 +820,11 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @todo modify this when implementing network/multisites handling.
 	 *
-	 * @param int|bool $user_id Optional. The user ID. Default to current user.
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
 	 * @param string $capability The capability to check for admin users.
 	 * @return boolean True if user is admin.
 	 */
-	public static function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
+	static public function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
 		$is_admin = false;
 
 		if ( is_super_admin( $user_id ) ) {
@@ -937,8 +936,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( empty( $field ) ) {
 			$profile = $this->gateway_profiles[ $gateway ];
-		}
-		else {
+		} else {
 			if ( ! isset( $this->gateway_profiles[ $gateway ][ $field ] ) ) {
 				$this->gateway_profiles[ $gateway ][ $field ] = '';
 			}

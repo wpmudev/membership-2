@@ -116,7 +116,7 @@ class MS_View_Membership_Overview extends MS_View {
 	public function news_panel() {
 		?>
 		<div class="ms-half ms-settings-box ms-fixed-height">
-			<div class="ms-divider"></div>
+			<?php MS_Helper_Html::html_separator( 'vertical' ); ?>
 			<h3><i class="ms-low ms-fa ms-fa-globe"></i> <?php _e( 'News', MS_TEXT_DOMAIN ); ?></h3>
 
 			<div class="inside group">
@@ -150,7 +150,7 @@ class MS_View_Membership_Overview extends MS_View {
 								'type' => MS_Helper_Html::TYPE_HTML_LINK,
 								'value' => __( 'View More News', MS_TEXT_DOMAIN ),
 								'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) ),
-								'class' => 'ms-link-button button',
+								'class' => 'wpmui-field-button button',
 							)
 						);
 						?>
@@ -183,7 +183,7 @@ class MS_View_Membership_Overview extends MS_View {
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'value' => __( 'Edit Members', MS_TEXT_DOMAIN ),
 							'url' => admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-members' ),
-							'class' => 'ms-link-button button',
+							'class' => 'wpmui-field-button button',
 						)
 					);
 					?>
@@ -234,6 +234,22 @@ class MS_View_Membership_Overview extends MS_View {
 			</div>
 		</div>
 		<?php
+
+		MS_Helper_Html::html_element(
+			array(
+				'id' => 'setup_payment',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+				'url' => add_query_arg(
+					array(
+						'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
+						'membership_id' => $this->data['membership']->id,
+						'edit' => 1,
+					)
+				),
+				'class' => 'wpmui-field-button button',
+			)
+		);
 	}
 
 	protected function available_content_panel_data() {
@@ -338,7 +354,7 @@ class MS_View_Membership_Overview extends MS_View {
 										'edit' => 1,
 									)
 								),
-								'class' => 'ms-link-button button',
+								'class' => 'wpmui-field-button button',
 							)
 						);
 					?>

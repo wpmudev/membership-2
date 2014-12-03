@@ -40,6 +40,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		// By default assume no content for the protected-content code
+		add_shortcode(
+			MS_Helper_Shortcode::SCODE_PROTECTED,
+			array( $this, '__return_null' )
+		);
+
 		if ( MS_Plugin::is_enabled() ) {
 			add_shortcode(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
@@ -52,16 +58,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			add_shortcode(
-				MS_Helper_Shortcode::SCODE_UPGRADE,
-				array( $this, 'membership_upgrade' )
-			);
-
-			add_shortcode(
-				MS_Helper_Shortcode::SCODE_RENEW,
-				array( $this, 'membership_renew' )
-			);
-
-			add_shortcode(
 				MS_Helper_Shortcode::SCODE_MS_TITLE,
 				array( $this, 'membership_title' )
 			);
@@ -69,6 +65,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 			add_shortcode(
 				MS_Helper_Shortcode::SCODE_MS_PRICE,
 				array( $this, 'membership_price' )
+			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_DETAILS,
+				array( $this, 'membership_details' )
 			);
 
 			add_shortcode(
@@ -120,6 +121,26 @@ class MS_Controller_Shortcode extends MS_Controller {
 				add_shortcode( $shortcode, array( $this, 'ms_no_value' ) );
 			}
 		}
+	}
+
+	/**
+	 * Set up the protected-content shortcode to display the protection message.
+	 *
+	 * This function is only called from the Frontend-Controller when the
+	 * Membership Page "protected content" is displayed.
+	 *
+	 * @since  1.1.0
+	 */
+	public function page_is_protected() {
+		remove_shortcode(
+			MS_Helper_Shortcode::SCODE_PROTECTED,
+			array( $this, '__return_null' )
+		);
+
+		add_shortcode(
+			MS_Helper_Shortcode::SCODE_PROTECTED,
+			array( $this, 'protected_content' )
+		);
 	}
 
 	/**
@@ -231,14 +252,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_title( $atts ) {
-		$title = null;
+		$code = '';
 
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_title_atts',
 			shortcode_atts(
 				array(
 					'id' => 0,
-					'title' => '',
+					'label' => __( 'Membership title:', MS_TEXT_DOMAIN ),
+					'title' => '', // deprecated @since 1.1.0
 				),
 				$atts
 			)
@@ -246,16 +268,23 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( ! empty( $data['id'] ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
-			$title = sprintf(
-				__( 'Membership title: %1$s', MS_TEXT_DOMAIN ),
+			$code = sprintf(
+				'%1$s %1$s',
+				$data['label'],
 				$membership->name
 			);
-		}
-		else {
-			$title = $data['title'];
+
+			$code = trim( $code );
+		} else {
+			$code = $data['title'];
 		}
 
-		return apply_filters( 'ms_controller_shortcode_membership_title', $title, $atts, $this );
+		return apply_filters(
+			'ms_controller_shortcode_membership_title',
+			$code,
+			$atts,
+			$this
+		);
 	}
 
 	/**
@@ -273,6 +302,56 @@ class MS_Controller_Shortcode extends MS_Controller {
 			shortcode_atts(
 				array(
 					'id' => 0,
+					'currency' => true,
+					'label' => __( 'Membership price:', MS_TEXT_DOMAIN ),
+				),
+				$atts
+			)
+		);
+
+		if ( ! empty( $data['id'] ) ) {
+			if ( WDev()->is_true( $data['currency'] ) ) {
+				$settings = MS_Factory::load( 'MS_Model_Settings' );
+				$currency = $settings->currency;
+			} else {
+				$currency = '';
+			}
+
+			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
+			$price = sprintf(
+				'%1$s %2$s %3$s',
+				$data['label'],
+				$currency,
+				$membership->price
+			);
+
+			$price = trim( $price );
+		}
+
+		return apply_filters(
+			'ms_controller_shortcode_membership_price',
+			$price,
+			$atts,
+			$this
+		);
+	}
+
+	/**
+	 * Membership details shortcode callback function.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function membership_details( $atts ) {
+		$code = '';
+
+		$data = apply_filters(
+			'ms_controller_shortcode_membership_details_atts',
+			shortcode_atts(
+				array(
+					'id' => 0,
+					'label' => __( 'Membership details:', MS_TEXT_DOMAIN ),
 				),
 				$atts
 			)
@@ -280,14 +359,61 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( ! empty( $data['id'] ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
-			$price = sprintf(
-				__( 'Membership price: %1$s %2$s', MS_TEXT_DOMAIN ),
-				MS_Factory::load( 'MS_Model_Settings' )->currency,
-				$membership->price
+			$code = sprintf(
+				'%1$s %1$s',
+				$data['label'],
+				$membership->description
 			);
+
+			$code = trim( $code );
 		}
 
-		return apply_filters( 'ms_controller_shortcode_membership_price', $price, $atts, $this );
+		return apply_filters(
+			'ms_controller_shortcode_membership_details',
+			$code,
+			$atts,
+			$this
+		);
+	}
+
+	/**
+	 * Display the "protected content" message.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function protected_content( $atts ) {
+		global $post;
+
+		$setting = MS_Plugin::instance()->settings;
+		$protection_msg = $setting->get_protection_message(
+			MS_Model_Settings::PROTECTION_MSG_CONTENT
+		);
+
+		$html = '<div class="ms-protected-content">';
+		if ( ! empty( $protection_msg ) ) {
+			$html .= $protection_msg;
+		}
+
+		if ( ! MS_Model_Member::is_logged_user() ) {
+			$has_login_form = MS_Helper_Shortcode::has_shortcode(
+				MS_Helper_Shortcode::SCODE_LOGIN,
+				$post->post_content
+			);
+
+			if ( ! $has_login_form ) {
+				$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
+				$html .= do_shortcode( $scode );
+			}
+		}
+		$html .= '</div>';
+
+		return apply_filters(
+			'ms_controller_shortcode_protected_content',
+			$html,
+			$this
+		);
 	}
 
 	/**
@@ -323,10 +449,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 			)
 		);
 
-		$data['header'] = self::is_true( $data['header'] );
-		$data['register'] = self::is_true( $data['register'] );
-		$data['show_note'] = self::is_true( $data['show_note'] );
-		$data['show_labels'] = self::is_true( $data['show_labels'] );
+		$data['header'] = WDev()->is_true( $data['header'] );
+		$data['register'] = WDev()->is_true( $data['register'] );
+		$data['show_note'] = WDev()->is_true( $data['show_note'] );
+		$data['show_labels'] = WDev()->is_true( $data['show_labels'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_membership_login_data', $data, $this );
@@ -429,12 +555,17 @@ class MS_Controller_Shortcode extends MS_Controller {
 			shortcode_atts(
 				array(
 					'post_id' => 0,
+					'id' => 0,
 					'pay_button' => 1,
 				),
 				$atts,
 				MS_Helper_Shortcode::SCODE_MS_INVOICE
 			)
 		);
+
+		if ( ! empty( $data['id'] ) ) {
+			$data['post_id'] = $data['id'];
+		}
 
 		if ( ! empty( $data['post_id'] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $data['post_id'] );
@@ -529,17 +660,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_green_note( $atts, $content = '' ) {
-		$data = apply_filters(
-			'ms_controller_ms_green_note_atts',
-			shortcode_atts(
-				array(
-					'class' => 'ms-alert-box ms-alert-success',
-				),
-				$atts
-			)
+		$content = sprintf(
+			'<p class="%1$s">%2$s</p> ',
+			'ms-alert-box ms-alert-success',
+			$content
 		);
-
-		$content = sprintf( '<p class="%1$s"> %2$s </p> ', $data['class'], $content );
 
 		return apply_filters(
 			'ms_controller_shortcode_ms_green_note',
@@ -556,17 +681,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_red_note( $atts, $content = '' ) {
-		$data = apply_filters(
-			'ms_controller_ms_green_note_atts',
-			shortcode_atts(
-				array(
-					'class' => 'ms-alert-box ms-alert-error',
-				),
-				$atts
-			)
+		$content = sprintf(
+			'<p class="%1$s">%2$s</p> ',
+			'ms-alert-box ms-alert-error',
+			$content
 		);
-
-		$content = sprintf( '<p class="%1$s"> %2$s </p> ', $data['class'], $content );
 
 		return apply_filters(
 			'ms_controller_shortcode_ms_red_note',

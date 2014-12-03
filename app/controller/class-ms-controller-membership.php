@@ -190,6 +190,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$goto_url = null;
 		$membership = $this->load_membership();
 		$membership_id = $membership->id;
+		$completed = false;
 
 		// MS_Controller_Rule is executed using this action
 		do_action( 'ms_controller_membership_admin_page_process_'. $step, $this->get_active_tab() );
@@ -197,6 +198,8 @@ class MS_Controller_Membership extends MS_Controller {
 		// Verify intent in request, only accessible to admin users
 		if ( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
 			// Take next actions based in current step.
+
+
 			switch ( $step ) {
 				case self::STEP_MS_LIST:
 					$fields = array( 'action', 'membership_id' );
@@ -255,24 +258,27 @@ class MS_Controller_Membership extends MS_Controller {
 								$membership_id = $membership->parent_id;
 							}
 							break;
+
 						case MS_Model_Membership::TYPE_TIER:
 							$next_step = self::STEP_SETUP_MS_TIERS;
 							if ( $membership->parent_id ) {
 								$membership_id = $membership->parent_id;
 							}
 							break;
+
 						case MS_Model_Membership::TYPE_SIMPLE:
 							if ( $membership->private ) {
 								$next_step = self::STEP_MS_LIST;
 								$msg = $this->mark_setup_completed();
-							}
-							else {
+								$completed = true;
+							} else {
 								$next_step = self::STEP_SETUP_PAYMENT;
 							}
 							break;
 						default:
 							$next_step = self::STEP_MS_LIST;
 							$msg = $this->mark_setup_completed();
+							$completed = true;
 							break;
 					}
 					break;
@@ -280,6 +286,7 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_SETUP_PAYMENT:
 					$next_step = self::STEP_MS_LIST;
 					$msg = $this->mark_setup_completed();
+					$completed = true;
 					break;
 
 				case self::STEP_SETUP_CONTENT_TYPES:
@@ -292,8 +299,8 @@ class MS_Controller_Membership extends MS_Controller {
 						if ( $membership->private ) {
 							$next_step = self::STEP_MS_LIST;
 							$msg = $this->mark_setup_completed();
-						}
-						else {
+							$completed = true;
+						} else {
 							$next_step = self::STEP_SETUP_PAYMENT;
 						}
 					}
@@ -326,9 +333,23 @@ class MS_Controller_Membership extends MS_Controller {
 				if ( ! empty( $msg ) ) {
 					$args['msg'] = $msg;
 				}
-				$goto_url = add_query_arg( $args, MS_Controller_Plugin::get_admin_url() );
-				$goto_url = apply_filters( 'ms_controller_membership_membership_admin_page_process_goto_url', $goto_url, $next_step );
-				wp_safe_redirect( $goto_url );
+
+				$goto_url = add_query_arg(
+					$args,
+					MS_Controller_Plugin::get_admin_url()
+				);
+
+				$goto_url = apply_filters(
+					'ms_controller_membership_membership_admin_page_process_goto_url',
+					$goto_url,
+					$next_step
+				);
+
+				if ( $completed ) {
+					MS_Plugin::flush_rewrite_rules( $goto_url );
+				} else {
+					wp_safe_redirect( $goto_url );
+				}
 				exit;
 			}
 		}
@@ -358,12 +379,10 @@ class MS_Controller_Membership extends MS_Controller {
 
 						if ( $child->id != $membership->id ) {
 							$args['membership_id'] = $child->id;
-						}
-						else {
+						} else {
 							if ( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
 								$args['step'] = self::STEP_SETUP_CONTENT_TYPES;
-							}
-							elseif ( MS_Model_Membership::TYPE_TIER == $membership->type ) {
+							} elseif ( MS_Model_Membership::TYPE_TIER == $membership->type ) {
 								$args['step'] = self::STEP_SETUP_MS_TIERS;
 							}
 						}
@@ -389,18 +408,28 @@ class MS_Controller_Membership extends MS_Controller {
 
 			$method = "page_{$step}";
 			if ( method_exists( $this, $method ) ) {
-				$callback = apply_filters( 'ms_controller_membership_admin_page_router_callback', array( $this, $method ), $this );
+				$callback = apply_filters(
+					'ms_controller_membership_admin_page_router_callback',
+					array( $this, $method ),
+					$this
+				);
 				call_user_func( $callback );
-			}
-			else {
-				do_action( 'ms_controller_membership_admin_page_router_' . $step, $this );
+			} else {
+				do_action(
+					'ms_controller_membership_admin_page_router_' . $step,
+					$this
+				);
 				MS_Helper_Debug::log( "Method $method not found for step $step" );
 			}
 		} else {
 			MS_Helper_Debug::log( "Invalid step: $step" );
 		}
 
-		do_action( 'ms_controller_membership_admin_page_router', $step, $this );
+		do_action(
+			'ms_controller_membership_admin_page_router',
+			$step,
+			$this
+		);
 	}
 
 	/**
@@ -416,7 +445,10 @@ class MS_Controller_Membership extends MS_Controller {
 
 		if ( $membership->mark_setup_completed() ) {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ADDED;
-			do_action( 'ms_controller_membership_setup_completed', $membership );
+			do_action(
+				'ms_controller_membership_setup_completed',
+				$membership
+			);
 		}
 
 		return apply_filters(
@@ -532,7 +564,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['children'] = $membership->get_children();
 		$data['is_global_payments_set'] = MS_Plugin::instance()->settings->is_global_payments_set;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
-		$data['show_next_button'] = true;
+		$data['show_next_button'] = array(
+			'id' => 'next',
+			'value' => __( 'Finish', MS_TEXT_DOMAIN ),
+			'action' => 'next',
+		);
 
 		$view = MS_Factory::create( 'MS_View_Membership_Setup_Payment' );
 		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data, $this );
@@ -780,8 +816,7 @@ class MS_Controller_Membership extends MS_Controller {
 				&& in_array( $settings->wizard_step, $wizard_steps )
 			) {
 				$step = $settings->wizard_step;
-			}
-			else {
+			} else {
 				$step = self::STEP_SETUP_PROTECTED_CONTENT;
 			}
 		}
@@ -863,6 +898,8 @@ class MS_Controller_Membership extends MS_Controller {
 	public function get_protection_tabs() {
 		$membership_id = $this->load_membership()->id;
 
+		// First create a list including all possible tabs.
+
 		$tabs = array(
 			'page' => array(
 				'title' => __( 'Pages', MS_TEXT_DOMAIN ),
@@ -900,7 +937,6 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 		}
-
 
 		$tabs['category']['title'] = implode( ', ', $title );
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) &&
