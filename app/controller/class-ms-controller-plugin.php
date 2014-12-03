@@ -102,6 +102,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['membership_metabox'] = MS_Factory::create( 'MS_Controller_Membership_Metabox' );
 		$this->controllers['membership_shortcode'] = MS_Factory::create( 'MS_Controller_Shortcode' );
 		$this->controllers['frontend'] = MS_Factory::create( 'MS_Controller_Frontend' );
+		$this->controllers['help'] = MS_Factory::create( 'MS_Controller_Help' );
 
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_template' );
@@ -224,6 +225,13 @@ class MS_Controller_Plugin extends MS_Controller {
 					'menu_title' => __( 'Settings', MS_TEXT_DOMAIN ),
 					'menu_slug' => self::MENU_SLUG . '-settings',
 					'function' => array( $this->controllers['settings'], 'admin_settings' ),
+				),
+				'help' => array(
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Help', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Help', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-help',
+					'function' => array( $this->controllers['help'], 'admin_help' ),
 				),
 			);
 

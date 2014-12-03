@@ -74,8 +74,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					<?php
 					if ( empty( $this->data['move_from_id'] ) ) {
 						_e( 'Add Membership Level', MS_TEXT_DOMAIN );
-					}
-					else {
+					} else {
 						_e( 'Change Membership Level', MS_TEXT_DOMAIN );
 					}
 					?>
@@ -89,8 +88,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 
 				if ( ! empty( $this->data['move_from_id'] ) ) {
 					$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
-				}
-				else {
+				} else {
 					$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 				}
 

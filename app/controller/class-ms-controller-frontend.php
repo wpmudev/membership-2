@@ -406,8 +406,7 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			if ( ! MS_Model_Member::is_logged_user() ) {
 				$content = $reg_form;
-			}
-			else {
+			} else {
 				$content .= $reg_form;
 			}
 		}

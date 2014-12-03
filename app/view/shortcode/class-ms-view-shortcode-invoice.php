@@ -24,8 +24,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 				$invoice->currency,
 				number_format( $invoice->amount, 2 )
 			);
-		}
-		else {
+		} else {
 			$inv_amount = __( 'Free', MS_TEXT_DOMAIN );
 		}
 
@@ -35,8 +34,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 				$invoice->currency,
 				number_format( $invoice->discount, 2 )
 			);
-		}
-		else {
+		} else {
 			$inv_discount = '';
 		}
 
@@ -46,8 +44,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 				$invoice->currency,
 				number_format( $invoice->pro_rate, 2 )
 			);
-		}
-		else {
+		} else {
 			$inv_pro_rate = '';
 		}
 
@@ -178,15 +175,19 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					<tr class="ms-inv-sep sep"><td colspan="2"></td></tr>
 
 					<?php
-					$inv_buy_now = '';
-					if ( $gateway->manual_payment && '1' == $this->data['pay_button'] && $invoice->status != MS_Model_Invoice::STATUS_PAID ) {
-						ob_start();
-						do_action( 'ms_view_shortcode_invoice_purchase_button', $ms_relationship );
-						$inv_buy_now = ob_get_clean();
+					$show_button = WDev()->is_true( $this->data['pay_button'] );
+
+					if ( $invoice->status == MS_Model_Invoice::STATUS_PAID ) {
+						// Invoice is already paid. We don't need a payment
+						// button...
+						$show_button = false;
 					}
 
-					if ( ! empty( $inv_buy_now ) ) {
-						echo $inv_buy_now;
+					if ( $show_button ) {
+						do_action(
+							'ms_view_shortcode_invoice_purchase_button',
+							$ms_relationship
+						);
 					}
 					?>
 				</table>

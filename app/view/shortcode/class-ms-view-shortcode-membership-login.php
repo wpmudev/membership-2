@@ -18,11 +18,9 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		if ( ! isset( $form ) || ! in_array( $form, $valid_forms ) ) {
 			if ( MS_Model_Member::is_logged_user() ) {
 				$form = 'logout';
-			}
-			elseif ( isset( $action ) && 'resetpass' === $action ) {
+			} elseif ( isset( $action ) && 'resetpass' === $action ) {
 				$form = 'reset';
-			}
-			else {
+			} else {
 				$form = 'login';
 			}
 
@@ -31,11 +29,9 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 
 		if ( 'logout' === $form ) {
 			return $this->logout_form();
-		}
-		elseif ( 'reset' === $form ) {
+		} elseif ( 'reset' === $form ) {
 			return $this->reset_form();
-		}
-		else {
+		} else {
 			if ( empty( $redirect ) ) {
 				$redirect = MS_Helper_Utility::get_current_url();
 			}

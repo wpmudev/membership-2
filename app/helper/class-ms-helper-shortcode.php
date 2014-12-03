@@ -35,19 +35,13 @@ class MS_Helper_Shortcode extends MS_Helper {
 
 	const SCODE_SIGNUP = 'ms-membership-signup';
 
-	const SCODE_UPGRADE = 'ms-membership-upgrade';
-
-	const SCODE_RENEW = 'ms-membership-renew';
-
 	const SCODE_MS_TITLE = 'ms-membership-title';
 
 	const SCODE_MS_DETAILS = 'ms-membership-details';
 
 	const SCODE_MS_PRICE = 'ms-membership-price';
 
-	const SCODE_MS_BUTTON = 'ms-membership-button';
-
-	const SCODE_PROTECTED = 'ms-protected-content';
+	const SCODE_PROTECTED = 'ms-protection-message';
 
 	const SCODE_LOGIN = 'ms-membership-login';
 
@@ -88,12 +82,9 @@ class MS_Helper_Shortcode extends MS_Helper {
 			array(
 				self::SCODE_REGISTER_USER,
 				self::SCODE_SIGNUP,
-				self::SCODE_UPGRADE,
-				self::SCODE_RENEW,
 				self::SCODE_MS_TITLE,
 				self::SCODE_MS_DETAILS,
 				self::SCODE_MS_PRICE,
-				self::SCODE_MS_BUTTON,
 				self::SCODE_PROTECTED,
 				self::SCODE_LOGIN,
 				self::SCODE_LOGOUT,
