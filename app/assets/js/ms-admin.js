@@ -1,4 +1,4 @@
-/*! Protected Content - v1.1.0
+/*! Protected Content - v1.0.45
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2014; * Licensed GPLv2+ */
 /*global window:false */
@@ -1050,25 +1050,6 @@ window.ms_init.view_settings = function init () {
 
 	// Select new Communication type
 	jQuery( '#comm_type' ).change( submit_comm_change );
-};
-
-/*global window:false */
-/*global document:false */
-/*global ms_data:false */
-/*global ms_functions:false */
-
-window.ms_init.view_addons = function init () {
-
-	function filter_addons( event, filter, items ) {
-		switch ( filter ) {
-			case 'options':
-				items.hide().filter( '.ms-options' ).show();
-				break;
-		}
-	}
-
-	jQuery( document ).on( 'list-filter', filter_addons );
-
 };
 
 /*global window:false */
