@@ -330,7 +330,6 @@ class MS_Plugin {
 		 * Hooks init to register custom post types.
 		 */
 		add_action( 'init', array( &$this, 'register_custom_post_types' ), 1 );
-		add_action( 'init', array( &$this, 'register_post_status' ), 1 );
 
 		/**
 		 * Hooks init to add rewrite rules and tags (both work in conjunction).
@@ -438,35 +437,6 @@ class MS_Plugin {
 		foreach ( $cpts as $cpt => $args ) {
 			MS_Helper_Utility::register_post_type( $cpt, $args );
 		}
-	}
-
-	/**
-	 * Register plugin custom post status.
-	 *
-	 * @since 1.0.0
-	 */
-	public function register_post_status() {
-		/*
-		 * post_status "Virtual" for pages not to be displayed in the menus but
-		 * that users should not be editing.
-		 */
-		register_post_status(
-			'virtual',
-			array(
-				'label' => __( 'Virtual', MS_TEXT_DOMAIN ),
-				// This trick prevents the virtual pages from appearing in the
-				// All Pages list but can be display on the front end.
-				'public' => ( ! is_admin() ),
-				'exclude_from_search' => false,
-				'show_in_admin_all_list' => false,
-				'show_in_admin_status_list' => true,
-				'label_count' => _n_noop(
-					'Virtual <span class="count">(%s)</span>',
-					'Virtual <span class="count">(%s)</span>',
-					MS_TEXT_DOMAIN
-				),
-			)
-		);
 	}
 
 	/**
