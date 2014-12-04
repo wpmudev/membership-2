@@ -576,7 +576,7 @@ class MS_Plugin {
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
-			@include_once $file_path;
+			include_once $file_path;
 			return true;
 		}
 		/**
@@ -599,7 +599,7 @@ class MS_Plugin {
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
-			@include_once $file_path;
+			include_once $file_path;
 			return true;
 		}
 
