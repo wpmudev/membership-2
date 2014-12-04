@@ -105,9 +105,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$shortcodes = array(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
 				MS_Helper_Shortcode::SCODE_SIGNUP,
-				MS_Helper_Shortcode::SCODE_RENEW,
 				MS_Helper_Shortcode::SCODE_MS_TITLE,
 				MS_Helper_Shortcode::SCODE_MS_PRICE,
+				MS_Helper_Shortcode::SCODE_MS_DETAILS,
 				MS_Helper_Shortcode::SCODE_LOGIN,
 				MS_Helper_Shortcode::SCODE_LOGOUT,
 				MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
