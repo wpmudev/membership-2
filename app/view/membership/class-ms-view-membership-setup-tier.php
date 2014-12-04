@@ -45,7 +45,10 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 				</form>
 				<?php $list_table->display(); ?>
 				<?php
-					MS_Helper_Html::settings_footer( array( $fields['step'] ) );
+					MS_Helper_Html::settings_footer(
+						array( $fields['step'] ),
+						$this->data['show_next_button']
+					);
 				?>
 			</div>
 			<div class="clear"></div>

@@ -9,10 +9,6 @@ class MS_View_Membership_Setup_Content_Type extends MS_View {
 		$list_table = new MS_Helper_List_Table_Membership_Group( $membership );
 		$list_table->prepare_items();
 
-		if ( 1 == @$_GET['edit'] ) {
-			$this->data[ 'show_next_button' ] = false;
-		}
-
 		ob_start();
 		?>
 

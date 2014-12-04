@@ -20,10 +20,6 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 	public function to_html() {
 		$tabs = $this->data['tabs'];
 
-		if ( 1 == @$_GET['edit'] ) {
-			$this->data[ 'show_next_button' ] = false;
-		}
-
 		ob_start();
 		// Render tabbed interface.
 		?>
