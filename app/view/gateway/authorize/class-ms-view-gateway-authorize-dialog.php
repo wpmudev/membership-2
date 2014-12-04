@@ -34,7 +34,7 @@ class MS_View_Gateway_authorize_Dialog extends MS_Dialog {
 		$this->title = sprintf( __( '%s settings', MS_TEXT_DOMAIN ), $gateway->name );
 
 		// Dialog Size
-		$this->height = 420;
+		$this->height = 400;
 
 		// Contents
 		$this->content = $view->to_html();

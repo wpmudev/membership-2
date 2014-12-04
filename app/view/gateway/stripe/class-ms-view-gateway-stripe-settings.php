@@ -2,12 +2,8 @@
 
 class MS_View_Gateway_Stripe_Settings extends MS_View {
 
-	protected $fields = array();
-
-	protected $data;
-
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		$gateway = $this->data['model'];
 
 		ob_start();
@@ -15,7 +11,11 @@ class MS_View_Gateway_Stripe_Settings extends MS_View {
 		?>
 		<div class="ms-wrap">
 			<form class="ms-gateway-setings-form ms-form ms-ajax-update" data-ms="<?php echo esc_attr( $gateway->id ); ?>">
-				<?php MS_Helper_Html::settings_box( $this->fields ); ?>
+				<?php
+				foreach ( $fields as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
+				?>
 			</form>
 		</div>
 		<?php
@@ -28,7 +28,7 @@ class MS_View_Gateway_Stripe_Settings extends MS_View {
 		$action = MS_Controller_Gateway::AJAX_ACTION_UPDATE_GATEWAY;
 		$nonce = wp_create_nonce( $action );
 
-		$this->fields = array(
+		$fields = array(
 			'mode' => array(
 				'id' => 'mode',
 				'title' => __( 'Mode', MS_TEXT_DOMAIN ),
@@ -96,7 +96,7 @@ class MS_View_Gateway_Stripe_Settings extends MS_View {
 				'id' => 'close',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 				'value' => __( 'Close', MS_TEXT_DOMAIN ),
-				'class' => 'ms-dlg-close',
+				'class' => 'close',
 			),
 
 			'save' => array(
@@ -105,6 +105,8 @@ class MS_View_Gateway_Stripe_Settings extends MS_View {
 				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
+
+		return $fields;
 	}
 
 }

@@ -41,6 +41,7 @@ jQuery(function() {
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
+/*global wpmUi:false */
 
 /* Global functions */
 
@@ -179,7 +180,7 @@ window.ms_functions = {
 	},
 
 	dynamic_form_submit: function( ev, el ) {
-		var i, field_value, field_key, is_popup, info_field,
+		var i, field_value, field_key, is_popup, info_field, popup,
 			fn = window.ms_functions,
 			me = jQuery( el ),
 			fields = me.serializeArray(),
@@ -203,8 +204,14 @@ window.ms_functions = {
 		}
 		data['action'] = 'ms_submit';
 
-		info_field = fn.ajax_show_indicator( me );
-		is_popup = me.parents( '.ms-dlg-wrap' ).length;
+		popup = me.parents( '.wpmui-wnd' );
+		is_popup = popup.length;
+		if ( ! is_popup ) {
+			info_field = fn.ajax_show_indicator( me );
+		} else {
+			popup.addClass( 'wpmui-loading' );
+		}
+
 		jQuery( document ).trigger( 'ms-ajax-form-send', [me, data, is_popup, info_field] );
 
 		jQuery.post(
@@ -212,6 +219,10 @@ window.ms_functions = {
 			data,
 			function( response ) {
 				var is_err = fn.ajax_error( response, info_field );
+
+				if ( popup.length ) {
+					popup.removeClass( 'wpmui-loading' );
+				}
 
 				if ( is_err ) {
 					// Reset the input control to previous value...
@@ -250,19 +261,23 @@ window.ms_functions = {
 
 		if ( code < 0 ) {
 			// Negative number as response code is an error-indicator.
-			info_field.removeClass( 'okay' ).addClass( 'error' );
-			info_field.find( '.err-code' ).text( msg );
+			if ( info_field ) {
+				info_field.removeClass( 'okay' ).addClass( 'error' );
+				info_field.find( '.err-code' ).text( msg );
 
-			// Automatically hide success message after a longer timeout.
-			fn.ajax_hide_message( 8000, info_field );
+				// Automatically hide success message after a longer timeout.
+				fn.ajax_hide_message( 8000, info_field );
+			}
 			return true;
 		} else {
-			// No response code or positive number is interpreted as success.
-			info_field.removeClass( 'error' ).addClass( 'okay' );
-			info_field.find( '.err-code' ).text( '' );
+			if ( info_field ) {
+				// No response code or positive number is interpreted as success.
+				info_field.removeClass( 'error' ).addClass( 'okay' );
+				info_field.find( '.err-code' ).text( '' );
 
-			// Automatically hide success message after short timeout.
-			fn.ajax_hide_message( 4000, info_field );
+				// Automatically hide success message after short timeout.
+				fn.ajax_hide_message( 4000, info_field );
+			}
 			return false;
 		}
 	},
@@ -408,20 +423,6 @@ window.ms_functions = {
 
 		ev.preventDefault();
 
-		/**
-		 * Create container elements for the dialog.
-		 * This is done only when the first dialog is opened
-		 */
-		if ( undefined === fn.dlg_wrap ) {
-			fn.dlg_wrap = jQuery( '<div class="ms-dlg-wrap"></div>' );
-			fn.dlg_wrap.appendTo( 'body' );
-
-			fn.dlg_back = jQuery( '<div class="ms-dlg-back"></div>' );
-			fn.dlg_back.appendTo( fn.dlg_wrap ).click( fn.close_dialogs );
-
-			fn.dlg_wrap.on( 'click', '.ms-dlg-close', fn.close_dialogs );
-		}
-
 		data['action'] = 'ms_dialog';
 		data['dialog'] = me.attr( 'data-ms-dialog' );
 		jQuery( document ).trigger( 'ms-load-dialog', [data] );
@@ -430,7 +431,7 @@ window.ms_functions = {
 			window.ajaxurl,
 			data,
 			function( response ) {
-				var dlg, dlg_title, dlg_close, dlg_content, resp = false;
+				var dlg, resp = false;
 
 				try { resp = jQuery.parseJSON( response ); }
 				catch( err ) { resp = false; }
@@ -439,35 +440,12 @@ window.ms_functions = {
 				resp.height = resp.height || 100;
 				resp.content = resp.content || '';
 
-				if ( resp !== false ) {
-					if ( ! isNaN( resp.height ) ) {
-						resp.height += 51;
-					}
-
-					// Close button
-					dlg_close = jQuery( '<div class="ms-dlg-close"></div>' );
-					dlg_close.html( '<i class="dashicons dashicons-no-alt"></i>' );
-
-					// Title
-					dlg_title = jQuery( '<div class="ms-dlg-title"></div>' );
-					dlg_title.append( '<span></span>' ).append( dlg_close );
-					dlg_title.find( 'span' ).html( resp.title );
-
-					// Content
-					dlg_content = jQuery( '<div class="ms-dlg-content"></div>' );
-					dlg_content.html( resp.content );
-
-					// Combine all dialog elements
-					dlg = jQuery( '<div class="ms-dlg"></div>' );
-					dlg.append( dlg_title ).append( dlg_content ).height( resp.height );
-
-					fn.dlg_wrap.append( dlg ).show();
-
-					// Initialize UI components.
-					fn.init( dlg );
-
-					jQuery( document ).trigger( 'ms-open-dialog', [dlg, resp, data] );
-				}
+				dlg = wpmUi.popup()
+					.modal( true )
+					.title( resp.title )
+					.size( undefined, resp.height )
+					.content( resp.content )
+					.show();
 			}
 		);
 
@@ -478,18 +456,10 @@ window.ms_functions = {
 	 * Closes all open dialogs.
 	 */
 	close_dialogs: function() {
-		var fn = window.ms_functions,
-			dlgs = [];
+		var id, popups = wpmUi.popups();
 
-		if ( undefined !== fn.dlg_wrap ) {
-			dlgs = fn.dlg_wrap.find( '.ms-dlg' );
-			jQuery( document ).trigger( 'ms-close-dialogs', [dlgs] );
-
-			// Hide all dialogs.
-			fn.dlg_wrap.hide();
-
-			// Remove all dialogs from DOM.
-			dlgs.remove();
+		for ( id in popups ) {
+			popups[id].close();
 		}
 	}
 };

@@ -278,7 +278,9 @@ class MS_Helper_Html extends MS_Helper {
 					<?php if ( ! empty( $title ) ) : ?>
 						<h3><?php printf( $title ); ?></h3>
 					<?php endif; ?>
-					<span class="ms-settings-description ms-description"><?php printf( $description ); ?></span>
+					<?php if ( ! empty( $description ) ) : ?>
+						<span class="ms-settings-description ms-description"><?php echo '' . $description; ?></span>
+					<?php endif; ?>
 				</div>
 				<div class="inside">
 		<?php

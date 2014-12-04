@@ -902,6 +902,18 @@
   padding-top: 20px;
 }
 
+/***
+ * POPUP *
+ ***/
+.wpmui-wnd .ms-description {
+  margin-bottom: 10px;
+  display: block;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  color: #000;
+  font-size: 12px;
+}
+
 /**
  * Confirmation messages
  */
@@ -960,88 +972,6 @@
 }
 .ms-wrap .inside .ms-save-text-wrapper .loading-animation {
   margin-top: 4px;
-}
-
-/**
- * Popup dialogs
- */
-/* Dialog */
-.ms-dlg-wrap {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9995;
-  /* Needs to be lower than 9998 to make select2-boxes work! */
-  overflow: auto;
-}
-.ms-dlg-wrap .ms-dlg-back {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  background: #000;
-  opacity: .6;
-}
-.ms-dlg-wrap .ms-dlg {
-  position: absolute;
-  left: 50%;
-  top: 25%;
-  box-sizing: border-box;
-  margin-left: -350px;
-  width: 700px;
-  min-height: 100px;
-  z-index: 2;
-  background: #FFF;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-}
-.ms-dlg-wrap .ms-dlg-title {
-  height: 50px;
-  display: block;
-  padding: 0 70px 0 20px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index: 5;
-  background: #F8F8F8;
-  border-bottom: 1px solid #E5E5E5;
-  white-space: nowrap;
-  line-height: 50px;
-  font-size: 23px;
-  font-weight: 100;
-}
-.ms-dlg-wrap .ms-dlg-title .ms-dlg-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50px;
-  height: 50px;
-  z-index: 10;
-  text-align: center;
-  text-decoration: none;
-  line-height: 50px;
-  color: #666;
-  border-left: 1px solid #E5E5E5;
-  cursor: pointer;
-}
-.ms-dlg-wrap .ms-dlg-title .ms-dlg-close:hover, .ms-dlg-wrap .ms-dlg-title .ms-dlg-close:focus, .ms-dlg-wrap .ms-dlg-title .ms-dlg-close:active {
-  background: #FCFCFC;
-  color: #333;
-}
-.ms-dlg-wrap .ms-dlg-title .ms-dlg-close .dashicons {
-  line-height: 50px;
-}
-.ms-dlg-wrap .ms-dlg-content {
-  position: absolute;
-  top: 51px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-  padding: 20px 20px 20px 20px;
-  z-index: 1;
 }
 
 /**
