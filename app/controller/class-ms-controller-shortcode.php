@@ -98,6 +98,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			add_shortcode(
+				MS_Helper_Shortcode::SCODE_NOTE,
+				array( $this, 'ms_note' )
+			);
+
+			add_shortcode(
 				MS_Helper_Shortcode::SCODE_GREEN_NOTE,
 				array( $this, 'ms_green_note' )
 			);
@@ -118,6 +123,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
 				MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK,
 				MS_Helper_Shortcode::SCODE_MS_INVOICE,
+				MS_Helper_Shortcode::SCODE_NOTE,
 				MS_Helper_Shortcode::SCODE_GREEN_NOTE,
 				MS_Helper_Shortcode::SCODE_RED_NOTE,
 			);
@@ -693,18 +699,62 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Green text note shortcode callback function.
+	 * Text note shortcode callback function.
+	 *
+	 * @since 1.0.4.5
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function ms_note( $atts, $content = '' ) {
+		$atts = apply_filters(
+			'ms_controller_shortcode_note_atts',
+			shortcode_atts(
+				array(
+					'type' => 'info',
+					'class' => '',
+				),
+				$atts,
+				MS_Helper_Shortcode::SCODE_NOTE
+			)
+		);
+
+		$class = $atts['class'];
+
+		switch ( $atts['type'] ) {
+			case 'info':
+			case 'success':
+				$class .= ' ms-alert-success';
+				break;
+
+			case 'error':
+			case 'warning':
+				$class .= ' ms-alert-error';
+				break;
+		}
+
+		$content = sprintf(
+			'<p class="ms-alert-box %1$s">%2$s</p> ',
+			$class,
+			$content
+		);
+
+		return apply_filters(
+			'ms_controller_shortcode_ms_note',
+			$content,
+			$this
+		);
+	}
+
+	/**
+	 * Display a green text note.
 	 *
 	 * @since 1.0.0
+	 * @deprecated  since 1.0.4.5
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_green_note( $atts, $content = '' ) {
-		$content = sprintf(
-			'<p class="%1$s">%2$s</p> ',
-			'ms-alert-box ms-alert-success',
-			$content
-		);
+		$content = $this->ms_note( array( 'type' => 'info' ), $content );
 
 		return apply_filters(
 			'ms_controller_shortcode_ms_green_note',
@@ -714,18 +764,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Green text note shortcode callback function.
+	 * Display a red text note.
 	 *
-	 * @since 1.0.4.3
+	 * @since 1.0.0
+	 * @deprecated  since 1.0.4.5
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_red_note( $atts, $content = '' ) {
-		$content = sprintf(
-			'<p class="%1$s">%2$s</p> ',
-			'ms-alert-box ms-alert-error',
-			$content
-		);
+		$content = $this->ms_note( array( 'type' => 'warning' ), $content );
 
 		return apply_filters(
 			'ms_controller_shortcode_ms_red_note',

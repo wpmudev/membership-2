@@ -215,6 +215,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		// Create special pages.
 		$ms_pages->create_missing_pages();
+
 		$pg_prot_cont = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
 		$pg_acco = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		$pg_regi = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REGISTER );

@@ -564,7 +564,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		switch ( $type ) {
 			case self::MS_PAGE_MEMBERSHIPS:
 				$lines[] = sprintf(
-					'['. MS_Helper_Shortcode::SCODE_GREEN_NOTE .'] %1$s [/'. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']',
+					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
 					__( 'We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN )
 				);
 				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
@@ -583,7 +583,7 @@ class MS_Model_Pages extends MS_Model_Option {
 
 			case self::MS_PAGE_REGISTER:
 				$lines[] = sprintf(
-					'['. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']%1$s[/'. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']',
+					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
 					__( 'We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details.', MS_TEXT_DOMAIN )
 				);
 				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
@@ -591,7 +591,7 @@ class MS_Model_Pages extends MS_Model_Option {
 
 			case self::MS_PAGE_REG_COMPLETE:
 				$lines[] = sprintf(
-					'['. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']%1$s<br/>%2$s[/'. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']',
+					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s<br/>%2$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
 					__( 'Your request to join the membership was successfully received!', MS_TEXT_DOMAIN ),
 					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN )
 				);
