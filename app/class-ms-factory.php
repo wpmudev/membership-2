@@ -123,16 +123,7 @@ class MS_Factory {
 				$model = $cache;
 			} else {
 				$settings = get_option( $class );
-
-				$fields = $model->get_object_vars();
-				foreach ( $fields as $field => $val ) {
-					if ( in_array( $field, $model->ignore_fields ) ) {
-						continue;
-					}
-					if ( isset( $settings[ $field ] ) ) {
-						$model->set_field( $field, $settings[ $field ] );
-					}
-				}
+				self::populate_model( $model, $settings );
 			}
 
 			$model->after_load();
@@ -170,17 +161,7 @@ class MS_Factory {
 				$model = $cache;
 			} else {
 				$settings = get_transient( $class );
-				$fields = $model->get_object_vars();
-
-				foreach ( $fields as $field => $val ) {
-					if ( in_array( $field, $model->ignore_fields ) ) {
-						continue;
-					}
-
-					if ( isset( $settings[ $field ] ) ) {
-						$model->set_field( $field, $settings[ $field ] );
-					}
-				}
+				self::populate_model( $model, $settings );
 
 				$model->after_load();
 				$model->instance = $model;
@@ -222,20 +203,7 @@ class MS_Factory {
 
 				if ( ! empty( $post ) && $model->post_type === $post->post_type ) {
 					$post_meta = get_post_meta( $model_id );
-					$fields = $model->get_object_vars();
-
-					foreach ( $fields as $field => $val ) {
-						if ( in_array( $field, $model->ignore_fields ) ) {
-							continue;
-						}
-
-						if ( isset( $post_meta[ $field ][ 0 ] ) ) {
-							$model->set_field(
-								$field,
-								maybe_unserialize( $post_meta[ $field ][ 0 ] )
-							);
-						}
-					}
+					self::populate_model( $model, $post_meta, true );
 
 					$model->id = $post->ID;
 					$model->description = $post->post_content;
@@ -283,23 +251,9 @@ class MS_Factory {
 				$model->name = $wp_user->user_nicename;
 				$model->first_name = $wp_user->first_name;
 				$model->last_name = $wp_user->last_name;
+				$model->wp_user = $wp_user;
 
-				$model->is_admin = $model->is_admin_user( $user_id );
-
-				$fields = $model->get_object_vars();
-
-				foreach ( $fields as $field => $val ) {
-					if ( in_array( $field, $model->ignore_fields ) ) {
-						continue;
-					}
-
-					if ( isset( $member_details[ 'ms_' . $field ][0] ) ) {
-						$model->set_field(
-							$field,
-							maybe_unserialize( $member_details[ 'ms_' . $field ][0] )
-						);
-					}
-				}
+				self::populate_model( $model, $member_details, 'ms_' );
 
 				// Load membership_relationships
 				$model->ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
@@ -314,5 +268,46 @@ class MS_Factory {
 			$class,
 			$user_id
 		);
+	}
+
+	/**
+	 * Populate fields of the model
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param  MS_Model $model
+	 * @param  array $settings
+	 * @param  bool $postmeta
+	 */
+	static protected function populate_model( &$model, $settings, $postmeta = false ) {
+		$fields = $model->get_object_vars();
+
+		foreach ( $fields as $field => $val ) {
+			if ( in_array( $field, $model->ignore_fields )
+				|| $field[0] === '_'
+			) {
+				continue;
+			}
+
+			$value = null;
+
+			if ( false === $postmeta ) {
+				if ( isset( $settings[ $field ] ) ) {
+					$value = $settings[ $field ];
+				}
+			} else if ( true === $postmeta ) {
+				if ( isset( $settings[ $field ][0] ) ) {
+					$value = maybe_unserialize( $settings[ $field ][ 0 ] );
+				}
+			} else if ( is_string( $postmeta ) ) {
+				if ( isset( $settings[ $postmeta . $field ][0] ) ) {
+					$value = maybe_unserialize( $settings[ $postmeta . $field ][ 0 ] );
+				}
+			}
+
+			if ( null !== $value ) {
+				$model->set_field( $field, $value );
+			}
+		}
 	}
 }
