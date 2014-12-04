@@ -66,6 +66,17 @@ class MS_Factory {
 		$model = null;
 
 		if ( class_exists( $class ) ) {
+			/*
+			 * We create a new object here so we can test via instanceof if
+			 * the object has a certain parent class.
+			 *
+			 * The created object might be replaced by the load_from_...
+			 * function.
+			 *
+			 * Tipp: The __constructor() functions of these objects should not
+			 * exist or contain very lightweight code, never attach any
+			 * filters/hooks, etc. as the object can be dumped a few lines later.
+			 */
 			$model = new $class();
 
 			if ( $model instanceof MS_Model_Option ) {
@@ -105,6 +116,7 @@ class MS_Factory {
 	 * Load MS_Model_Option object.
 	 *
 	 * MS_Model_Option objects are singletons.
+	 * @todo : this singleton implementation is very bad and needs to be fixed!!
 	 *
 	 * @since 1.0.0
 	 *
@@ -143,6 +155,7 @@ class MS_Factory {
 	 * Load MS_Model_Transient object.
 	 *
 	 * MS_Transient objects are singletons.
+	 * @todo : this singleton implementation is very bad and needs to be fixed!!
 	 *
 	 * @since 1.0.0
 	 *

@@ -89,6 +89,11 @@ class MS_Model extends MS_Hooker {
 	 * @param mixed $value
 	 */
 	public function set_field( $field, $value ) {
+		// Don't deserialize values of "private" fields.
+		if ( $field[0] === '_' ) {
+			return;
+		}
+
 		if ( property_exists( $this, $field ) ) {
 			$this->$field = $value;
 		}
