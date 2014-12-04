@@ -439,7 +439,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
 
 			// If the post_id does not exist then create a new page
-			if ( empty( $page_id ) || empty( get_post( $page_id ) ) ) {
+			if ( empty( $page_id ) || ! get_post( $page_id ) ) {
 				$data = array(
 					'post_title' => $title,
 					'post_name' => $type,
@@ -612,4 +612,4 @@ class MS_Model_Pages extends MS_Model_Option {
 		);
 	}
 
-};
+}
