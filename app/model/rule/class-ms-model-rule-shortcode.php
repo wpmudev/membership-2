@@ -87,7 +87,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 		add_shortcode(
 			self::PROTECT_CONTENT_SHORTCODE,
-			array( $this, 'protect_content_shorcode')
+			array( $this, 'protect_content_shortcode')
 		);
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
@@ -122,8 +122,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 		if ( $msg ) {
 			$content = $msg;
-		}
-		else {
+		} else {
 			$content = __( 'Shortcode content protected.', MS_TEXT_DOMAIN );
 		}
 
@@ -148,25 +147,32 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @param string $code The shortcode code.
 	 * @return string The shortcode output
 	 */
-	public function protect_content_shorcode( $atts, $content = null, $code = '' ) {
+	public function protect_content_shortcode( $atts, $content = null, $code = '' ) {
 		$atts = apply_filters(
-			'ms_model_shortcode_protect_content_shorcode_atts',
+			'ms_model_shortcode_protect_content_shortcode_atts',
 			shortcode_atts(
 				array(
 					'id' => '',
-					'access' => 1,
+					'access' => true,
+					'silent' => false,
 				),
 				$atts
 			)
 		);
+		extract( $atts );
 
-		$membership_ids = explode( ',', $atts['id'] );
+		$membership_ids = explode( ',', $id );
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$msg = $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE );
+		$msg = '';
 
+		if ( ! $silent ) {
+			$msg = $settings->get_protection_message(
+				MS_Model_Settings::PROTECTION_MSG_SHORTCODE
+			);
+		}
 
-		$access = WDev()->is_true( $atts['access'] );
+		$access = WDev()->is_true( $access );
 
 		if ( ! $access ) {
 			// No access to member of membership_ids
@@ -175,15 +181,20 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 				// User belongs to these memberships and therefore cannot see
 				// this content...
 
-				$content = '<br />';
-				if ( ! empty( $msg ) ) {
-					$content .= $msg;
+				if ( $silent ) {
+					// Silent protection: Do not show a message, simply hide it
+					$content = '';
 				} else {
-					$membership_names = MS_Model_Membership::get_membership_names(
-						array( 'post__in' => $membership_ids )
-					);
-					$content .= __( 'No access to members of: ', MS_TEXT_DOMAIN );
-					$content .= implode( ', ', $membership_names );
+					$content = '<br />';
+					if ( ! empty( $msg ) ) {
+						$content .= $msg;
+					} else {
+						$membership_names = MS_Model_Membership::get_membership_names(
+							array( 'post__in' => $membership_ids )
+						);
+						$content .= __( 'No access to members of: ', MS_TEXT_DOMAIN );
+						$content .= implode( ', ', $membership_names );
+					}
 				}
 			}
 		} else {
@@ -193,21 +204,26 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 				// User does not belong to these memberships and therefore
 				// cannot see this content...
 
-				$content = '<br />';
-				if ( ! empty( $msg ) ) {
-					$content .= $msg;
+				if ( $silent ) {
+					// Silent protection: Do not show a message, simply hide it
+					$content = '';
 				} else {
-					$membership_names = MS_Model_Membership::get_membership_names(
-						array( 'post__in' => $membership_ids )
-					);
-					$content .= __( 'Content protected to members of: ', MS_TEXT_DOMAIN );
-					$content .= implode( ', ', $membership_names );
+					$content = '<br />';
+					if ( ! empty( $msg ) ) {
+						$content .= $msg;
+					} else {
+						$membership_names = MS_Model_Membership::get_membership_names(
+							array( 'post__in' => $membership_ids )
+						);
+						$content .= __( 'Content protected to members of: ', MS_TEXT_DOMAIN );
+						$content .= implode( ', ', $membership_names );
+					}
 				}
 			}
 		}
 
 		return apply_filters(
-			'ms_model_rule_shortcode_protect_content_shorcode_content',
+			'ms_model_rule_shortcode_protect_content_shortcode_content',
 			do_shortcode( $content ),
 			$atts,
 			$content,

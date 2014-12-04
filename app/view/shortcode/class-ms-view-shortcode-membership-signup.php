@@ -10,7 +10,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<?php
 			if ( count( $this->data['ms_relationships'] ) > 0 ) {
-				foreach ( $this->data['ms_relationships'] as $membership_id => $ms_relationship ){
+				foreach ( $this->data['ms_relationships'] as $membership_id => $ms_relationship ) {
 					$msg = $ms_relationship->get_status_description();
 
 					$membership = MS_Factory::load(
@@ -101,6 +101,48 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		</div>
 
 		<div style="clear:both;"></div>
+		<?php
+		$html = ob_get_clean();
+
+		return $html;
+	}
+
+	/**
+	 * Generate a standalone "Sign up for Membership" button.
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @param  MS_Model_Membership $membership The membership to sign up for.
+	 * @param  string $label The button label.
+	 * @return string
+	 */
+	public function signup_form( $membership, $label ) {
+		$fields = $this->prepare_fields(
+			$membership->id,
+			$this->data['action']
+		);
+
+		$button = array(
+			'id' => 'submit',
+			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' => esc_html( $label ),
+		);
+
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+
+		ob_start();
+		?>
+		<form class="ms-membership-form" method="post" action="<?php echo esc_url( $url ); ?>">
+			<?php
+			wp_nonce_field( $fields['action']['value'] );
+
+			foreach ( $fields as $field ) {
+				MS_Helper_Html::html_element( $field );
+			}
+			?>
+			<?php MS_Helper_Html::html_element( $button ); ?>
+		</form>
 		<?php
 		$html = ob_get_clean();
 

@@ -68,6 +68,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_BUY,
+				array( $this, 'membership_buy' )
+			);
+
+			add_shortcode(
 				MS_Helper_Shortcode::SCODE_MS_DETAILS,
 				array( $this, 'membership_details' )
 			);
@@ -242,7 +247,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			}
 		}
 
-		$data['action'] = 'membership_signup';
+		$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 		$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Signup' );
@@ -280,7 +285,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		if ( ! empty( $data['id'] ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
 			$code = sprintf(
-				'%1$s %1$s',
+				'%1$s %2$s',
 				$data['label'],
 				$membership->name
 			);
@@ -342,6 +347,50 @@ class MS_Controller_Shortcode extends MS_Controller {
 		return apply_filters(
 			'ms_controller_shortcode_membership_price',
 			$price,
+			$atts,
+			$this
+		);
+	}
+
+	/**
+	 * Buy membership button.
+	 *
+	 * @since 1.0.4.5
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function membership_buy( $atts ) {
+		$code = '';
+
+		$data = apply_filters(
+			'ms_controller_shortcode_membership_buy_atts',
+			shortcode_atts(
+				array(
+					'id' => 0,
+					'label' => __( 'Signup', MS_TEXT_DOMAIN ),
+				),
+				$atts
+			)
+		);
+
+		if ( ! empty( $data['id'] ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
+			$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
+			$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
+
+			$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Signup' );
+			$view->data = apply_filters(
+				'ms_view_shortcode_membership_signup_data',
+				$data,
+				$this
+			);
+
+			$code = $view->signup_form( $membership, $data['label'] );
+		}
+
+		return apply_filters(
+			'ms_controller_shortcode_membership_buy',
+			$code,
 			$atts,
 			$this
 		);
