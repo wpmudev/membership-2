@@ -121,8 +121,7 @@ class MS_Factory {
 
 			if ( $cache ) {
 				$model = $cache;
-			}
-			else {
+			} else {
 				$settings = get_option( $class );
 
 				$fields = $model->get_object_vars();
@@ -138,8 +137,7 @@ class MS_Factory {
 
 			$model->after_load();
 			$model->instance = $model;
-		}
-		else {
+		} else {
 			$model = $model->instance;
 		}
 
@@ -170,8 +168,7 @@ class MS_Factory {
 
 			if ( $cache ) {
 				$model = $cache;
-			}
-			else {
+			} else {
 				$settings = get_transient( $class );
 				$fields = $model->get_object_vars();
 
@@ -188,8 +185,7 @@ class MS_Factory {
 				$model->after_load();
 				$model->instance = $model;
 			}
-		}
-		else {
+		} else {
 			$model = $model->instance;
 		}
 
@@ -224,7 +220,7 @@ class MS_Factory {
 			} else {
 				$post = get_post( $model_id );
 
-				if ( ! empty( $post ) && $model->post_type == $post->post_type ) {
+				if ( ! empty( $post ) && $model->post_type === $post->post_type ) {
 					$post_meta = get_post_meta( $model_id );
 					$fields = $model->get_object_vars();
 
