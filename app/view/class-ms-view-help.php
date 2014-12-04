@@ -195,6 +195,15 @@ class MS_View_Help extends MS_View {
 							no
 						</span>
 					</li>
+					<li>
+						<code>msg</code>
+						<?php _ex( '(Text)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Provide a custom protection message. <em>This will only be displayed when silent is not true</em>', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
+						</span>
+					</li>
 				</ul>
 
 				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>

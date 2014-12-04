@@ -155,6 +155,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 					'id' => '',
 					'access' => true,
 					'silent' => false,
+					'msg' => false,
 				),
 				$atts
 			)
@@ -163,13 +164,15 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 		$membership_ids = explode( ',', $id );
 
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$msg = '';
-
-		if ( ! $silent ) {
-			$msg = $settings->get_protection_message(
-				MS_Model_Settings::PROTECTION_MSG_SHORTCODE
-			);
+		if ( $silent ) {
+			$msg = '';
+		} else {
+			if ( ! is_string( $msg ) || ! strlen( $msg ) ) {
+				$settings = MS_Factory::load( 'MS_Model_Settings' );
+				$msg = $settings->get_protection_message(
+					MS_Model_Settings::PROTECTION_MSG_SHORTCODE
+				);
+			}
 		}
 
 		$access = WDev()->is_true( $access );
@@ -185,7 +188,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 					// Silent protection: Do not show a message, simply hide it
 					$content = '';
 				} else {
-					$content = '<br />';
+					$content = '<div class="ms-protection-msg">';
 					if ( ! empty( $msg ) ) {
 						$content .= $msg;
 					} else {
@@ -195,6 +198,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 						$content .= __( 'No access to members of: ', MS_TEXT_DOMAIN );
 						$content .= implode( ', ', $membership_names );
 					}
+					$content .= '</div>';
 				}
 			}
 		} else {
@@ -208,7 +212,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 					// Silent protection: Do not show a message, simply hide it
 					$content = '';
 				} else {
-					$content = '<br />';
+					$content = '<div class="ms-protection-msg">';
 					if ( ! empty( $msg ) ) {
 						$content .= $msg;
 					} else {
@@ -218,6 +222,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 						$content .= __( 'Content protected to members of: ', MS_TEXT_DOMAIN );
 						$content .= implode( ', ', $membership_names );
 					}
+					$content .= '</div>';
 				}
 			}
 		}
