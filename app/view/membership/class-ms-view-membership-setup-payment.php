@@ -175,7 +175,6 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				</div>
 				<div class="ms-payment-type-wrapper ms-payment-type-date-range">
 					<?php MS_Helper_Html::html_element( $fields['period_date_start'] );?>
-					<span> to </span>
 					<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
 				</div>
 			</div>
@@ -289,6 +288,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'id' => 'period_date_end_' . $membership->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $membership->period_date_end,
+				'before' => _x( 'to', 'date range', MS_TEXT_DOMAIN ),
 				'class' => 'ms-ajax-update',
 				'placeholder' => __( 'End Date...', MS_TEXT_DOMAIN ),
 				'data_ms' => array( 'field' => 'period_date_end' ),
