@@ -389,36 +389,48 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_payment_type_desc() {
 		$desc = __( 'N/A', MS_TEXT_DOMAIN );
+		$has_payment = true;
 
-		switch ( $this->payment_type ) {
-			case self::PAYMENT_TYPE_PERMANENT:
-				$desc = __( 'Single payment', MS_TEXT_DOMAIN );
-				break;
+		if ( $this->is_free ) { $has_payment = false; }
+		elseif ( empty( $this->price ) ) { $has_payment = false; }
+		elseif ( $this->can_have_children() ) { $has_payment = false; }
 
-			case self::PAYMENT_TYPE_FINITE:
-				$desc = sprintf(
-					__( 'For %s', MS_TEXT_DOMAIN ),
-					MS_Helper_Period::get_period_desc( $this->period )
-				);
-				break;
+		if ( $has_payment ) {
+			switch ( $this->payment_type ) {
+				case self::PAYMENT_TYPE_FINITE:
+					$desc = sprintf(
+						__( 'For %s', MS_TEXT_DOMAIN ),
+						MS_Helper_Period::get_period_desc( $this->period )
+					);
+					break;
 
-			case self::PAYMENT_TYPE_DATE_RANGE:
-				$desc = sprintf(
-					__( 'From %s to %s', MS_TEXT_DOMAIN ),
-					$this->period_date_start,
-					$this->period_date_end
-				);
-				break;
+				case self::PAYMENT_TYPE_DATE_RANGE:
+					$desc = sprintf(
+						__( 'From %s to %s', MS_TEXT_DOMAIN ),
+						$this->period_date_start,
+						$this->period_date_end
+					);
+					break;
 
-			case self::PAYMENT_TYPE_RECURRING:
-				$desc = sprintf(
-					__( 'Each %s', MS_TEXT_DOMAIN ),
-					MS_Helper_Period::get_period_desc( $this->pay_cycle_period )
-				);
-				break;
+				case self::PAYMENT_TYPE_RECURRING:
+					$desc = sprintf(
+						__( 'Each %s', MS_TEXT_DOMAIN ),
+						MS_Helper_Period::get_period_desc( $this->pay_cycle_period )
+					);
+					break;
+
+				case self::PAYMENT_TYPE_PERMANENT:
+				default:
+					$desc = __( 'Single payment', MS_TEXT_DOMAIN );
+					break;
+			}
 		}
 
-		return apply_filters( 'ms_model_membership_get_payment_type_desc', $desc, $this );
+		return apply_filters(
+			'ms_model_membership_get_payment_type_desc',
+			$desc,
+			$this
+		);
 	}
 
 	/**
@@ -429,11 +441,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return bool True if payment information are available.
 	 */
 	public function has_payment() {
-		if ( $this->payment_type === self::PAYMENT_TYPE_PERMANENT ) { return true; }
-		if ( $this->payment_type === self::PAYMENT_TYPE_FINITE ) { return true; }
-		if ( $this->payment_type === self::PAYMENT_TYPE_DATE_RANGE ) { return true; }
-		if ( $this->payment_type === self::PAYMENT_TYPE_RECURRING ) { return true; }
-		return false;
+		if ( $this->is_free ) { return false; }
+		if ( empty( $this->price ) ) { return false; }
+
+		return true;
 	}
 
 	/**
@@ -450,7 +461,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$has_parent = true;
 		}
 
-		return apply_filters( 'ms_model_membership_has_parent', $has_parent, $this );
+		return apply_filters(
+			'ms_model_membership_has_parent',
+			$has_parent,
+			$this
+		);
 	}
 
 	/**
@@ -1612,6 +1627,34 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
+	 * Checks if the user is allowed to change the payment details for the
+	 * current membership.
+	 *
+	 * Payment details can only be changed when
+	 * (A) no payment details were saved yet  - OR -
+	 * (B) no members signed up for the memberhips
+	 *
+	 * @since  1.0.4.5
+	 * @return bool
+	 */
+	public function can_change_payment() {
+		// Allow if Membership is new/unsaved.
+		if ( empty( $this->id ) ) { return true; }
+
+		// Allow if no payment detail was entered yet (incomplete setup).
+		if ( empty( $this->payment_type ) ) { return true; }
+
+		// Allow if no members signed up yet.
+		$members = MS_Model_Membership_Relationship::get_membership_relationship_count(
+			array( 'membership_id' => $this->id )
+		);
+		if ( empty( $members ) ) { return true; }
+
+		// Otherwise payment details cannot be changed anymore.
+		return false;
+	}
+
+	/**
 	 * Returns property associated with the render.
 	 *
 	 * @since 1.0.0
@@ -1624,7 +1667,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		switch ( $property ) {
 			case 'payment_type':
-				if ( empty( $this->payment_type ) ) {
+				$types = self::get_payment_types();
+				if ( ! in_array( $this->payment_type, $types ) ) {
 					$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
 				}
 				$value = $this->payment_type;
@@ -1669,7 +1713,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				break;
 		}
 
-		return apply_filters( 'ms_model_membership__get', $value, $property, $this );
+		return apply_filters(
+			'ms_model_membership__get',
+			$value,
+			$property,
+			$this
+		);
 	}
 
 	/**
@@ -1696,13 +1745,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					break;
 
 				case 'payment_type':
-					if ( array_key_exists( $value, self::get_payment_types() ) ) {
-						if ( empty( $this->payment_type )
-							|| empty( $this->id )
-							|| 0 == MS_Model_Membership_Relationship::get_membership_relationship_count(
-								array( 'membership_id' => $this->id )
-							)
-						) {
+					$types = self::get_payment_types();
+					if ( array_key_exists( $value, $types ) ) {
+						if ( $this->can_change_payment() ) {
 							$this->payment_type = $value;
 						} elseif ( $this->payment_type != $value ) {
 							$error = 'Membership type cannot be changed after members have signed up.';
