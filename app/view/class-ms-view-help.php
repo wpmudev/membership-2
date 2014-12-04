@@ -98,17 +98,51 @@ class MS_View_Help extends MS_View {
 		</p>
 		<hr />
 		<h2>
-			<?php _ex( 'Help topics', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php _ex( 'Plugin menu', 'help', MS_TEXT_DOMAIN ); ?>
 		</h2>
-		<p>
-			<?php printf(
-				'<a href="admin.php?page=%1$s&tab=%2$s">%3$s</a>',
-				esc_attr( $_GET['page'] ),
-				esc_attr( 'shortcodes' ),
-				__( 'Shortcodes', MS_TEXT_DOMAIN )
-			); ?>:
-			<?php _ex( 'A complete list of all shortcodes and their attribues', 'help', MS_TEXT_DOMAIN ); ?>
-		</p>
+		<table cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<span class="top-menu">
+					<div class="menu-image dashicons dashicons-lock"></div>
+					<?php _e( 'Protect Content', MS_TEXT_DOMAIN ); ?>
+					</span>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Memberships', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for. Here you can grant access to previously protected content (<em>see "Protected Content" below</em>)', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Lists all your WordPress users and allows you to manage their Memberships', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Protected Content', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Set the global protection options, i.e. which pages are protected', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Billing', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Manage sent invoices, including details such as the payment status. <em>Only visible when you have at least one paid membership</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Coupons', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Manage your discount coupons. <em>Requires Add-on "Coupons"</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Add-ons', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Activate Add-ons', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Settings', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Global plugin options, such as Membership pages, payment options and email templates', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><strong><?php _e( 'Help', MS_TEXT_DOMAIN ); ?></strong></span></td>
+				<td><?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+		</table>
 		<?php
 		return ob_get_clean();
 	}

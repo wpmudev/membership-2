@@ -458,6 +458,52 @@
 .ms-wrap .ms-help-content hr {
   margin: 0 0 40px 0;
 }
+.ms-wrap .ms-help-content .top-menu {
+  display: inline-block;
+  position: relative;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  margin: 0 20px 0 0;
+  width: 160px;
+  background: #0074a2;
+  color: #fff;
+}
+.ms-wrap .ms-help-content .top-menu:after {
+  right: 0;
+  border: 8px solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-right-color: #FFF;
+  top: 50%;
+  margin-top: -8px;
+}
+.ms-wrap .ms-help-content .top-menu .menu-image {
+  float: left;
+  width: 36px;
+  height: 18px;
+  margin: 0;
+  text-align: center;
+  color: #fff;
+}
+.ms-wrap .ms-help-content .menu-item {
+  display: inline-block;
+  position: relative;
+  padding: 6px 12px;
+  font-size: 13px;
+  line-height: 1.2;
+  margin: 0 20px 0 0;
+  background-color: #333;
+  width: 160px;
+  color: #bbb;
+}
+.ms-wrap .ms-help-content .menu-item strong {
+  color: #FFF;
+}
 
 /**
  * Navigational elements.
