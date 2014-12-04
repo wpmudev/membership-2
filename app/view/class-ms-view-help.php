@@ -339,7 +339,7 @@ class MS_View_Help extends MS_View {
 
 		<?php
 		/*********
-		**********   ms-   *****************************
+		**********   ms-membership-login   *************************************
 		*********/
 		?>
 
@@ -883,6 +883,39 @@ class MS_View_Help extends MS_View {
 
 				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
 				<p><code>[ms-membership-logout]</code></p>
+			</div>
+		</div>
+
+
+		<?php
+		/*********
+		**********   ms-membership-account-link   ******************************
+		*********/
+		?>
+
+		<div class="ms-help-box">
+			<h3><code>[ms-membership-account-link]</code></h3>
+
+			<?php _ex( 'Inserts a simple link to the Account page.', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<ul>
+					<li>
+						<code>label</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The contents of the link.', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Visit your account page for more information.', MS_TEXT_DOMAIN ) ?>"
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p>
+					<?php _ex( 'Manage subscriptions in', 'help', MS_TEXT_DOMAIN ); ?>
+					<code>[ms-membership-account-link label="<?php _ex( 'your Account', 'help', MS_TEXT_DOMAIN ); ?>"]!</code>
+				</p>
 			</div>
 		</div>
 

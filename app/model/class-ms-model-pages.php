@@ -123,11 +123,10 @@ class MS_Model_Pages extends MS_Model_Option {
 		if ( null === $Pages ) {
 			$page_types = $this->get_page_types();
 
-			if ( $create_if_not_exists ) {
-				$this->create_missing_pages();
-			}
+			$this->create_missing_pages();
 
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
+
 			foreach ( $page_types as $page_type => $title ) {
 				$page_id = $settings->get_custom_setting( 'ms_pages', $page_type );
 				$the_page = get_post( $page_id );
@@ -241,11 +240,12 @@ class MS_Model_Pages extends MS_Model_Option {
 		$page_id = 0;
 
 		if ( is_string( $filter ) ) {
-			$page = $this->get_page( $filter );
-			$page_id = $page->ID;
+			$filter = $this->get_page( $filter );
 		} elseif ( is_numeric( $filter ) ) {
 			$page_id = $filter;
-		} elseif ( is_a( $filter, 'WP_Post' ) ) {
+		}
+
+		if ( is_a( $filter, 'WP_Post' ) ) {
 			$page_id = $filter->ID;
 		}
 
@@ -559,51 +559,47 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @return string The default content.
 	 */
 	public function get_default_content( $type ) {
-		$content = null;
+		$lines = array();
 
 		switch ( $type ) {
 			case self::MS_PAGE_MEMBERSHIPS:
-				$content = sprintf(
-					'[ms-green-note] %1$s [/ms-green-note]',
+				$lines[] = sprintf(
+					'['. MS_Helper_Shortcode::SCODE_GREEN_NOTE .'] %1$s [/'. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']',
 					__( 'We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN )
 				);
-				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
 
 			case self::MS_PAGE_PROTECTED_CONTENT:
 				// The text in Settings > "Protection Messages" is added in
 				// front end controller. This page has no default content.
-				$content = '';
+				$lines = array();
 				break;
 
 			case self::MS_PAGE_ACCOUNT:
-				$content = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']<hr />';
-				$content .= '['. MS_Helper_Shortcode::SCODE_LOGOUT .']';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']<hr />';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_LOGOUT .']';
 				break;
 
 			case self::MS_PAGE_REGISTER:
-				$content = sprintf(
-					'[ms-green-note] %1$s [/ms-green-note]',
+				$lines[] = sprintf(
+					'['. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']%1$s[/'. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']',
 					__( 'We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details.', MS_TEXT_DOMAIN )
 				);
-				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
 
 			case self::MS_PAGE_REG_COMPLETE:
-				$this->create_missing_pages();
-
-				$content .= sprintf(
-					'[ms-green-note] %1$s <br/> %2$s [/ms-green-note]',
+				$lines[] = sprintf(
+					'['. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']%1$s<br/>%2$s[/'. MS_Helper_Shortcode::SCODE_GREEN_NOTE .']',
 					__( 'Your request to join the membership was successfully received!', MS_TEXT_DOMAIN ),
 					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN )
 				);
-				$content .= sprintf(
-					'<a href="%s">%s</a>',
-					$this->get_page_url( self::MS_PAGE_ACCOUNT, false ),
-					__( 'Visit your account page for more information.', MS_TEXT_DOMAIN )
-				);
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK .']';
 				break;
 		}
+
+		$content = implode( "\n", $lines );
 
 		return apply_filters(
 			'ms_model_pages_get_default_content',

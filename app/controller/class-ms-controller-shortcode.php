@@ -88,6 +88,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK,
+				array( $this, 'membership_account_link' )
+			);
+
+			add_shortcode(
 				MS_Helper_Shortcode::SCODE_MS_INVOICE,
 				array( $this, 'membership_invoice' )
 			);
@@ -111,6 +116,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Helper_Shortcode::SCODE_LOGIN,
 				MS_Helper_Shortcode::SCODE_LOGOUT,
 				MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
+				MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK,
 				MS_Helper_Shortcode::SCODE_MS_INVOICE,
 				MS_Helper_Shortcode::SCODE_GREEN_NOTE,
 				MS_Helper_Shortcode::SCODE_RED_NOTE,
@@ -539,6 +545,41 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$view->data = apply_filters( 'ms_view_shortcode_account_data', $data, $this );
 
 		return $view->to_html();
+	}
+
+	/**
+	 * Link to the Membership account page shortcode.
+	 *
+	 * @since 1.0.4.5
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function membership_account_link( $atts ) {
+		$html = '';
+
+		$data = apply_filters(
+			'ms_controller_shortcode_membership_account_link_atts',
+			shortcode_atts(
+				array(
+					'label' => __( 'Visit your account page for more information.', MS_TEXT_DOMAIN ),
+				),
+				$atts
+			)
+		);
+
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
+		$html = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			$ms_pages->get_page_url( self::MS_PAGE_ACCOUNT ),
+			$data['label']
+		);
+
+		return apply_filters(
+			'ms_controller_shortcode_protected_content',
+			$html,
+			$this
+		);
 	}
 
 	/**
