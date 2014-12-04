@@ -571,7 +571,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$html = sprintf(
 			'<a href="%1$s">%2$s</a>',
-			$ms_pages->get_page_url( self::MS_PAGE_ACCOUNT ),
+			$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
 			$data['label']
 		);
 
