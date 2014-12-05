@@ -192,15 +192,15 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_pages() {
-		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
+		$action = MS_Controller_Pages::AJAX_ACTION_UPDATE_PAGES;
 		$nonce = wp_create_nonce( $action );
 
-		$settings = $this->data['settings'];
+		$ms_pages = $this->data['ms_pages'];
 		$page_types = $this->data['page_types'];
 
 		$fields = array();
 		foreach ( $page_types as $type => $label ) {
-			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
+			$page_id = $ms_pages->get_setting( $type );
 			$title = sprintf(
 				__( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ),
 				$label
@@ -216,7 +216,6 @@ class MS_View_Settings_Edit extends MS_View {
 					'no_item' => __( '- Select a page -', MS_TEXT_DOMAIN ),
 				),
 				'ajax_data' => array(
-					'group' => 'ms_pages',
 					'field' => $type,
 					'action' => $action,
 					'_wpnonce' => $nonce,

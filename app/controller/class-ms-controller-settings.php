@@ -108,8 +108,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -134,8 +133,7 @@ class MS_Controller_Settings extends MS_Controller {
 			);
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -160,8 +158,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -192,8 +189,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -424,12 +420,13 @@ class MS_Controller_Settings extends MS_Controller {
 		do_action( $hook );
 
 		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
-		$ms_pages = MS_Factory::create( 'MS_Model_Pages' );
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$view = apply_filters( $hook . '_view', $view );
 
 		$data = array();
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
+		$data['ms_pages'] = $ms_pages;
 
 		switch ( $this->get_active_tab() ) {
 			case 'messages-automated':

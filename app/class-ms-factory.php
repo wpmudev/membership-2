@@ -32,16 +32,40 @@
 class MS_Factory {
 
 	/**
+	 * Holds a list of all singleton objects
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @var array
+	 */
+	static protected $singleton = array();
+
+	/**
 	 * Create an MS Object.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param string $class The class to create object from.
-	 *
 	 * @return object The created object.
 	 */
 	public static function create( $class ) {
+		$singletons = array(
+			'MS_Model_Pages',
+			'MS_Model_Settings',
+			'MS_Model_Addon',
+			'MS_Model_Coupon',
+			'MS_Model_Simulate',
+		);
+
 		$class = trim( $class );
+
+		if ( in_array( $class, $singletons ) ) {
+			_doing_it_wrong(
+				'MS_Factory::create()',
+				'This class is a singleton and should be fetched via MS_Factory::load() -> ' . $class,
+				'1.0.4.5'
+			);
+		}
 
 		if ( class_exists( $class ) ) {
 			$obj = new $class();
@@ -49,7 +73,10 @@ class MS_Factory {
 			throw new Exception( 'Class ' . $class . ' does not exist.' );
 		}
 
-		return apply_filters( 'ms_factory_create_'. $class, $obj );
+		return apply_filters(
+			'ms_factory_create_'. $class,
+			$obj
+		);
 	}
 
 	/**
@@ -59,13 +86,13 @@ class MS_Factory {
 	 *
 	 * @param string $class The class to load object from.
 	 * @param int $model_id Retrieve model object using ID.
-	 *
 	 * @return object The retrieved model.
 	 */
 	public static function load( $class, $model_id = 0 ) {
 		$model = null;
+		$key = $class . '-' . $model_id;
 
-		if ( class_exists( $class ) ) {
+		if ( class_exists( $class ) && ! isset( self::$singleton[$key] ) ) {
 			/*
 			 * We create a new object here so we can test via instanceof if
 			 * the object has a certain parent class.
@@ -94,21 +121,28 @@ class MS_Factory {
 			} elseif ( $model instanceof MS_Model_Transient ) {
 				$model = self::load_from_wp_transient( $model, $model_id );
 			}
+
+			// Store the new object
+			self::$singleton[$key] = apply_filters(
+				'ms_factory_load_' . $class,
+				$model,
+				$model_id
+			);
 		}
 
-		return apply_filters(
-			'ms_factory_load_' . $class,
-			$model,
-			$model_id
-		);
+		if ( ! isset( self::$singleton[$key] ) ) {
+			self::$singleton[$key] = null;
+		}
+
+		return self::$singleton[$key];
 	}
 
 	/**
 	 * Clears the factory cache.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.4.5
 	 */
-	public function clear() {
+	static public function clear() {
 		wp_cache_flush();
 	}
 
@@ -116,33 +150,26 @@ class MS_Factory {
 	 * Load MS_Model_Option object.
 	 *
 	 * MS_Model_Option objects are singletons.
-	 * @todo : this singleton implementation is very bad and needs to be fixed!!
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param MS_Model_option $model The empty model instance.
-	 *
 	 * @return MS_Model_Option The retrieved object.
 	 */
 	protected static function load_from_wp_option( $model ) {
 		$class = get_class( $model );
 
-		if ( empty( $model->instance ) ) {
-			$model->before_load();
-			$cache = wp_cache_get( $class, 'MS_Model_Option' );
+		$model->before_load();
+		$cache = wp_cache_get( $class, 'MS_Model_Option' );
 
-			if ( $cache ) {
-				$model = $cache;
-			} else {
-				$settings = get_option( $class );
-				self::populate_model( $model, $settings );
-			}
-
-			$model->after_load();
-			$model->instance = $model;
+		if ( $cache ) {
+			$model = $cache;
 		} else {
-			$model = $model->instance;
+			$settings = get_option( $class );
+			self::populate_model( $model, $settings );
 		}
+
+		$model->after_load();
 
 		return apply_filters(
 			'ms_factory_load_from_wp_option',
@@ -155,32 +182,25 @@ class MS_Factory {
 	 * Load MS_Model_Transient object.
 	 *
 	 * MS_Transient objects are singletons.
-	 * @todo : this singleton implementation is very bad and needs to be fixed!!
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param MS_Model_Transient $model The empty model instance.
-	 *
 	 * @return MS_Model_Transient The retrieved object.
 	 */
 	public static function load_from_wp_transient( $model ) {
 		$class = get_class( $model );
 
-		if ( empty( $model->instance ) ) {
-			$model->before_load();
-			$cache = wp_cache_get( $class, 'MS_Model_Transient' );
+		$model->before_load();
+		$cache = wp_cache_get( $class, 'MS_Model_Transient' );
 
-			if ( $cache ) {
-				$model = $cache;
-			} else {
-				$settings = get_transient( $class );
-				self::populate_model( $model, $settings );
-
-				$model->after_load();
-				$model->instance = $model;
-			}
+		if ( $cache ) {
+			$model = $cache;
 		} else {
-			$model = $model->instance;
+			$settings = get_transient( $class );
+			self::populate_model( $model, $settings );
+
+			$model->after_load();
 		}
 
 		return apply_filters(
@@ -286,19 +306,23 @@ class MS_Factory {
 	/**
 	 * Populate fields of the model
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.4.5
 	 *
 	 * @param  MS_Model $model
 	 * @param  array $settings
 	 * @param  bool $postmeta
 	 */
-	static protected function populate_model( &$model, $settings, $postmeta = false ) {
+	static public function populate_model( &$model, $settings, $postmeta = false ) {
 		$fields = $model->get_object_vars();
 
+		$ignore = $model->ignore_fields;
+		$ignore[] = 'instance'; // Don't deserialize the double-serialized model!
+		$ignore[] = 'actions';
+		$ignore[] = 'filters';
+		$ignore[] = 'ignore_fields';
+
 		foreach ( $fields as $field => $val ) {
-			if ( in_array( $field, $model->ignore_fields )
-				|| $field[0] === '_'
-			) {
+			if ( $field[0] === '_' || in_array( $field, $ignore ) ) {
 				continue;
 			}
 
@@ -322,5 +346,34 @@ class MS_Factory {
 				$model->set_field( $field, $value );
 			}
 		}
+	}
+
+	/**
+	 * Converts an MS_Model into an array
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @param  MS_Model $model
+	 * @return array
+	 */
+	static public function serialize_model( &$model ) {
+		$data = array();
+		$fields = $model->get_object_vars();
+
+		$ignore = $model->ignore_fields;
+		$ignore[] = 'instance'; // Don't double-serialize the model!
+		$ignore[] = 'actions';
+		$ignore[] = 'filters';
+		$ignore[] = 'ignore_fields';
+
+		foreach ( $fields as $field => $val ) {
+			if ( $field[0] === '_' || in_array( $field, $ignore ) ) {
+				continue;
+			}
+
+			$data[ $field ] = $model->$field;
+		}
+
+		return $data;
 	}
 }

@@ -95,6 +95,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['billing'] = MS_Factory::create( 'MS_Controller_Billing' );
 		$this->controllers['coupon'] = MS_Factory::create( 'MS_Controller_Coupon' );
 		$this->controllers['addon'] = MS_Factory::create( 'MS_Controller_Addon' );
+		$this->controllers['pages'] = MS_Factory::create( 'MS_Controller_Pages' );
 		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
 		$this->controllers['communication'] = MS_Factory::create( 'MS_Controller_Communication' );
 		$this->controllers['gateway'] = MS_Factory::create( 'MS_Controller_Gateway' );

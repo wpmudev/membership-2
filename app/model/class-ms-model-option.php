@@ -52,21 +52,26 @@ class MS_Model_Option extends MS_Model {
 		$this->before_save();
 
 		$class = get_class( $this );
-		$settings = array();
-
-		$fields = get_object_vars( $this );
-		foreach ( $fields as $field => $val ) {
-			if ( in_array( $field, $this->ignore_fields ) ) {
-				continue;
-			}
-			$settings[ $field ] = $this->$field;
-		}
+		$settings = MS_Factory::serialize_model( $this );
 
 		update_option( $class, $settings );
 
 		$this->instance = $this;
-
 		$this->after_save();
+
+		wp_cache_set( $class, $this, 'MS_Model_Option' );
+	}
+
+	/**
+	 * Reads the options from options table
+	 *
+	 * @since 1.0.4.5
+	 */
+	public function refresh() {
+		$class = get_class( $this );
+
+		$settings = get_option( $class );
+		MS_Factory::populate_model( $this, $settings );
 
 		wp_cache_set( $class, $this, 'MS_Model_Option' );
 	}

@@ -54,6 +54,54 @@ class MS_Model_Pages extends MS_Model_Option {
 	const MS_PAGE_REGISTER = 'register';
 	const MS_PAGE_REG_COMPLETE = 'registration-complete';
 
+	/**
+	 * Association between membership page-types and WordPress post_ids.
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @var array
+	 */
+	public $settings = array();
+
+	/**
+	 * Returns a MS_Model_Pages setting value (these are the association between
+	 * our Membership Page types and WordPress posts)
+	 *
+	 * @since  1.0.4.5
+	 * @param  string $key The setting key.
+	 * @return any The setting value. A post_id or 0.
+	 */
+	public function get_setting( $key ) {
+		if ( ! isset( $this->settings[ $key ] ) ) {
+			$this->settings[$key] = 0;
+		}
+
+		return apply_filters(
+			'ms_model_pages_get_setting',
+			$this->settings[$key],
+			$key,
+			$this
+		);
+	}
+
+	/**
+	 * Saves a MS_Model_Pages setting value.
+	 *
+	 * @since  1.0.4.5
+	 * @param  string $key The setting key.
+	 * @param  any $value The new setting value.
+	 */
+	public function set_setting( $key, $value ) {
+		$value = apply_filters(
+			'ms_model_pages_set_setting',
+			$value,
+			$key,
+			$this
+		);
+
+		$this->settings[$key] = $value;
+		$this->save();
+	}
 
 	/**
 	 * Get MS Page types
@@ -114,22 +162,21 @@ class MS_Model_Pages extends MS_Model_Option {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
 	 * @return WP_Post[] The page model objects.
 	 */
-	public function get_pages( $create_if_not_exists = false ) {
+	public function get_pages() {
 		static $Pages = null;
 
 		if ( null === $Pages ) {
+			$Pages = array();
 			$page_types = $this->get_page_types();
 
-			$this->create_missing_pages();
-
-			$settings = MS_Factory::load( 'MS_Model_Settings' );
-
 			foreach ( $page_types as $page_type => $title ) {
-				$page_id = $settings->get_custom_setting( 'ms_pages', $page_type );
+				$page_id = $this->get_setting( $page_type );
+				if ( empty( $page_id ) ) { continue; }
+
 				$the_page = get_post( $page_id );
+				if ( empty ( $the_page ) ) { continue; }
 
 				$Pages[$page_type] = apply_filters(
 					'ms_model_pages_get_pages_item',
@@ -162,6 +209,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		$result = null;
 
 		if ( self::is_valid_type( $page_type ) ) {
+			// Get a list of all WP_Post items.
 			$pages = $this->get_pages();
 
 			if ( ! empty( $pages[ $page_type ] ) ) {
@@ -201,7 +249,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				case 'id': $value = absint( $value ); break;
 			}
 
-			$ms_pages = $this->get_pages( true );
+			$ms_pages = $this->get_pages();
 			$found = false;
 
 			foreach ( $ms_pages as $type => $page ) {
@@ -431,21 +479,22 @@ class MS_Model_Pages extends MS_Model_Option {
 		if ( $Done ) { return; }
 		$Done = true;
 
+		if ( empty( get_current_user_id() ) ) { return; }
+
 		$types = $this->get_page_types();
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$modified = false;
 
 		foreach ( $types as $type => $title ) {
-			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
+			$page_id = $this->get_setting( $type );
 
 			// If the post_id does not exist then create a new page
-			if ( empty( $page_id ) || ! get_post( $page_id ) ) {
+			if ( empty( $page_id ) ) {
 				$data = array(
 					'post_title' => $title,
 					'post_name' => $type,
 					'post_content' => $this->get_default_content( $type ),
 					'post_type' => 'page',
-					'post_status' => 'published',
+					'post_status' => 'publish',
+					'post_author' => get_current_user_id(),
 				);
 				$new_id = wp_insert_post( $data );
 
@@ -463,8 +512,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				);
 
 				if ( is_numeric( $new_id ) ) {
-					$settings->set_custom_setting( 'ms_pages', $type, $new_id );
-					$modified = true;
+					$this->set_setting( $type, $new_id );
 
 					/**
 					 * Trigger action to allow modifications to the page
@@ -478,10 +526,6 @@ class MS_Model_Pages extends MS_Model_Option {
 					);
 				}
 			}
-		}
-
-		if ( $modified ) {
-			$settings->save();
 		}
 	}
 
