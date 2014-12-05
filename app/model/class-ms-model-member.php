@@ -841,8 +841,7 @@ class MS_Model_Member extends MS_Model {
 
 			if ( empty( $user_id ) ) {
 				$wp_user = wp_get_current_user();
-			}
-			else {
+			} else {
 				$wp_user = new WP_User( $user_id );
 			}
 

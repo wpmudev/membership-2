@@ -47,6 +47,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		if ( MS_Plugin::is_enabled() ) {
+			$simulate = MS_Factory::load( 'MS_Model_Simulate' );
+			if ( MS_Model_Member::is_admin_user() && ! $simulate->is_simulating() ) {
+				add_shortcode(
+					MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+					array( $this, 'hide_shortcode')
+				);
+			}
+
 			add_shortcode(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
 				array( $this, 'membership_register_user' )
@@ -136,6 +144,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 			foreach ( $shortcodes as $shortcode ) {
 				add_shortcode( $shortcode, array( $this, 'ms_no_value' ) );
 			}
+
+			add_shortcode(
+				MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+				array( $this, 'hide_shortcode')
+			);
 		}
 	}
 
@@ -824,6 +837,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$content
 		);
 
+		$content = do_shortcode( $content );
+
 		return apply_filters(
 			'ms_controller_shortcode_ms_note',
 			$content,
@@ -878,7 +893,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 *     All Shortcodes use this callback function
 	 *     when Content Protection is DISABLED!
 	 *
-	 * @since 1.0.4.3
+	 * @since  1.0.4.3
+	 * @param  mixed[] $atts Shortcode attributes.
+	 * @param  string $content
+	 * @return string
 	 */
 	public function ms_no_value( $atts, $content = '' ) {
 		static $Done = false;
@@ -907,6 +925,21 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$content,
 			$this
 		);
+	}
+
+	/**
+	 * Special Shortcode Callback: Strip the shortcode tag without changing the
+	 * original content.
+	 *
+	 * This is used for Admin users to strip all content-protection tags.
+	 *
+	 * @since  1.0.4.5
+	 * @param  mixed[] $atts Shortcode attributes.
+	 * @param  string $content
+	 * @return string
+	 */
+	public function hide_shortcode( $atts, $content = '' ) {
+		return do_shortcode( $content );
 	}
 
 }
