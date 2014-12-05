@@ -95,8 +95,9 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				foreach ( $this->data['memberships'] as $membership ) {
 					$this->membership_box_html( $membership, $action, null, null );
 				}
+
+				do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' );
 				?>
-				<?php do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' ) ?>
 			</div>
 		</div>
 
@@ -248,8 +249,9 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 							$this
 						);
 					} elseif ( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY === $action ) {
+						// Display a Cancel button for pending memberships.
+
 						$cancel_action = MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL;
-						// Also display a Cancel button
 						$url = $this->get_action_url(
 							$membership->id,
 							$cancel_action,

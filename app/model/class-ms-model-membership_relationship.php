@@ -343,6 +343,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 
 			$this->status = self::STATUS_CANCELED;
+			$this->status = $this->calculate_status();
 			$this->save();
 
 			// Cancel subscription in the gateway.
@@ -1183,8 +1184,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_status() {
 		// No further validations for these status
-		$allowed_status = apply_filters(
-			'ms_model_membership_relationship_get_status_allowed_status',
+		$ignored_status = apply_filters(
+			'ms_model_membership_relationship_get_status_ignored_status',
 			array(
 				self::STATUS_DEACTIVATED,
 				self::STATUS_PENDING,
@@ -1193,12 +1194,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		);
 
 		// Validate current status and handle status change
-		if ( ! in_array( $this->status, $allowed_status ) ) {
+		if ( ! in_array( $this->status, $ignored_status ) ) {
 			$status = $this->calculate_status();
 			if ( MS_Model_Member::is_admin_user( $this->user_id ) ) {
 				$this->status = $status;
-			}
-			else {
+			} else {
 				$this->handle_status_change( $status );
 			}
 		}
@@ -1242,8 +1242,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
 		) {
 			$status = self::STATUS_ACTIVE;
-		}
-		else {
+		} else {
 			$status = self::STATUS_EXPIRED;
 		}
 
@@ -1256,8 +1255,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				|| MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
 			) {
 				$status = self::STATUS_DEACTIVATED;
-			}
-			else {
+			} else {
 				$status = self::STATUS_CANCELED;
 			}
 		}
