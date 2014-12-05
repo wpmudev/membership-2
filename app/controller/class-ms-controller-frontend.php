@@ -163,7 +163,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( ! empty( $post ) && isset( $post->post_type )
 			&& $post->post_type == MS_Model_Invoice::$POST_TYPE
 			&& $this->validate_required( $fields )
-			&& 'process_purchase' == $_POST['step']
+			&& self::STEP_PROCESS_PURCHASE == $_POST['step']
 		) {
 			do_action(
 				'ms_controller_frontend_signup_process_purchase',
@@ -254,14 +254,14 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Initial state.
 			 */
 			case self::STEP_CHOOSE_MEMBERSHIP:
-				$this->add_filter( 'the_content', self::STEP_CHOOSE_MEMBERSHIP, 1 );
+				$this->add_filter( 'the_content', 'choose_membership', 1 );
 				break;
 
 			/**
 			 * If not registered.
 			 */
 			case self::STEP_REGISTER_FORM:
-				$this->add_filter( 'the_content', self::STEP_REGISTER_FORM, 1 );
+				$this->add_filter( 'the_content', 'register_form', 1 );
 				break;
 
 			/**
@@ -275,7 +275,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Show payment table.
 			 */
 			case self::STEP_PAYMENT_TABLE:
-				$this->add_filter( 'the_content', self::STEP_PAYMENT_TABLE, 1 );
+				$this->add_filter(  'the_content', 'payment_table', 1 );
 				break;
 
 			/**
@@ -283,7 +283,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Handled by MS_Controller_Gateway.
 			 */
 			case self::STEP_GATEWAY_FORM:
-				do_action( 'ms_controller_frontend_signup_gateway_form', $this );
+				do_action(
+					'ms_controller_frontend_signup_gateway_form',
+					$this
+				);
 				break;
 
 			/**
@@ -291,7 +294,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Handled by MS_Controller_Gateway.
 			 */
 			case self::STEP_PROCESS_PURCHASE:
-				do_action( 'ms_controller_frontend_signup_process_purchase', $this );
+				do_action(
+					'ms_controller_frontend_signup_process_purchase',
+					$this
+				);
 				break;
 
 			default:

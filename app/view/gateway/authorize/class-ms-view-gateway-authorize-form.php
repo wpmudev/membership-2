@@ -3,13 +3,13 @@
 class MS_View_Gateway_Authorize_Form extends MS_View {
 
 	protected $data;
-	
+
 	public function to_html() {
 		// let 3rd party themes/plugins use their own form
 		if ( ! apply_filters( 'ms_view_gateway_authorize_form_to_html', true, $this ) ) {
 			return;
 		}
-		
+
 		$fields = $this->prepare_fields();
 		ob_start();
 		/** Render tabbed interface. */
@@ -58,12 +58,12 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 							</tbody>
 						</table>
 					</div>
-					<?php 
-						MS_Helper_Html::html_submit( array( 
-							'value' => ( 'update_card' == $this->data['action'] ) 
-								? __( 'Change card', MS_TEXT_DOMAIN ) 
-								: __( 'Pay now', MS_TEXT_DOMAIN ), 
-						) ); 
+					<?php
+						MS_Helper_Html::html_submit( array(
+							'value' => ( 'update_card' == $this->data['action'] )
+								? __( 'Change card', MS_TEXT_DOMAIN )
+								: __( 'Pay now', MS_TEXT_DOMAIN ),
+						) );
 					?>
 				</form>
 				<div class="clear"></div>
@@ -72,7 +72,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 		$html = ob_get_clean();
 		echo $html;
 	}
-	
+
 	public function prepare_fields() {
 		$currency = MS_Plugin::instance()->settings->currency;
 		$fields['hidden'] = array(
@@ -99,13 +99,13 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 				'step' => array(
 						'id' => 'step',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 'process_purchase',
+						'value' => MS_Controller_Frontend::STEP_PROCESS_PURCHASE,
 				),
 		);
-		
+
 		$months = array( '' => __( 'Month', MS_TEXT_DOMAIN ) );
 		for( $i = 1, $date = new DateTime( '01-01-1970' ); $i <= 12; $date->setDate( 2013, ++$i, 1 ) ) {
-			$months[ $i ] = $date->format( 'm - M' ); 
+			$months[ $i ] = $date->format( 'm - M' );
 		}
 		$years = array( '' => __( 'Year', MS_TEXT_DOMAIN ) );
 		for( $i = gmdate( 'Y' ), $maxYear = $i + 15; $i <= $maxYear; $i++ ) {
@@ -184,10 +184,10 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 					'class' => 'chosen-select',
 			),
 		);
-		
+
 		return apply_filters( 'ms_view_gateway_authorize_form_prepare_fields', $fields );
 	}
-	
+
 	/**
 	 * Renders Authorize.net CIM profiles.
 	 *
@@ -201,14 +201,14 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 			return;
 		}
 		$cim_profiles = $this->data['cim_profiles'];
-			
+
 		// if we have one record in profile, then wrap it into array to make it
 		// compatible with case when we have more then one payment methods added
 		if ( isset( $cim_profiles['billTo'] ) ) {
 			$cim_profiles = array( $cim_profiles );
 		}
-	
-		$first_key = null; 
+
+		$first_key = null;
 		foreach ( $cim_profiles as $index => $profile ) {
 			if ( is_array( $profile ) && ! empty( $profile['customerPaymentProfileId'] ) ) {
 				$options[ $profile['customerPaymentProfileId'] ] =	esc_html( sprintf(
@@ -228,7 +228,7 @@ class MS_View_Gateway_Authorize_Form extends MS_View {
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 			'field_options' => $options,
 			'value' => ( $this->data['cim_payment_profile_id'] ) ? $this->data['cim_payment_profile_id'] : $first_key,
-		); 
+		);
 		?>
 			<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
 				<div class="authorize-form-block-title"><?php _e( 'Credit card:', MS_TEXT_DOMAIN ); ?></div>

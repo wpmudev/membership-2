@@ -128,7 +128,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 				'step' => array(
 					'id' => 'step',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => 'process_purchase',
+					'value' => MS_Controller_Frontend::STEP_PROCESS_PURCHASE,
 				),
 				'_wpnonce' => array(
 					'id' => '_wpnonce',

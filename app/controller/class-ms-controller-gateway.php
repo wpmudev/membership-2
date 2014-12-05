@@ -85,15 +85,14 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * Matches returned 'action' to method to execute.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * template_redirect
+	 * Related action hooks:
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
 	public function process_actions() {
-
 		$action = $this->get_action();
+
 		/**
 		 * If $action is set, then call relevant method.
 		 *
@@ -101,7 +100,10 @@ class MS_Controller_Gateway extends MS_Controller {
 		 * @see $allowed_actions property
 		 *
 		 */
-		if( ! empty( $action ) && method_exists( $this, $action ) && in_array( $action, $this->allowed_actions ) ) {
+		if ( ! empty( $action )
+			&& method_exists( $this, $action )
+			&& in_array( $action, $this->allowed_actions )
+		) {
 			$this->$action();
 		}
 	}
@@ -109,9 +111,8 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Handle Ajax toggle action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_toggle_gateway
+	 * Related action hooks:
+	 * - wp_ajax_toggle_gateway
 	 *
 	 * @since 1.0.0
 	 */
@@ -119,20 +120,24 @@ class MS_Controller_Gateway extends MS_Controller {
 		$msg = 0;
 
 		$fields = array( 'gateway_id' );
-		if( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
-			$msg = $this->gateway_list_do_action( 'toggle_activation', array( $_POST['gateway_id'] ) );
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $fields )
+			&& $this->is_admin_user()
+		) {
+			$msg = $this->gateway_list_do_action(
+				'toggle_activation',
+				array( $_POST['gateway_id'] )
+			);
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
 	 * Handle Ajax update gateway action.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * wp_ajax_update_gateway
+	 * Related action hooks:
+	 * - wp_ajax_update_gateway
 	 *
 	 * @since 1.0.0
 	 */
@@ -140,26 +145,35 @@ class MS_Controller_Gateway extends MS_Controller {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 
 		$fields = array( 'action', 'gateway_id', 'field' );
-		if( $this->verify_nonce() && $this->validate_required( $fields ) && isset( $_POST['value'] ) && $this->is_admin_user() ) {
-			$msg = $this->gateway_list_do_action( $_POST['action'], array( $_POST['gateway_id'] ), array( $_POST['field'] => $_POST['value'] ) );
+		if ( $this->verify_nonce()
+			&& $this->validate_required( $fields )
+			&& isset( $_POST['value'] )
+			&& $this->is_admin_user()
+		) {
+			$msg = $this->gateway_list_do_action(
+				$_POST['action'],
+				array( $_POST['gateway_id'] ),
+				array( $_POST['field'] => $_POST['value'] )
+			);
 		}
-		echo $msg;
-		exit;
+
+		exit( $msg );
 	}
 
 	/**
 	 * Show gateway settings page.
 	 *
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_controller_gateway_settings_render_view
+	 * Related action hooks:
+	 * - ms_controller_gateway_settings_render_view
 	 *
 	 * @since 1.0.0
 	 */
 	public function gateway_settings_edit( $gateway_id ) {
-		if ( ! empty( $gateway_id ) && MS_Model_Gateway::is_valid_gateway( $gateway_id ) ) {
-			switch( $gateway_id ) {
+		if ( ! empty( $gateway_id )
+			&& MS_Model_Gateway::is_valid_gateway( $gateway_id )
+		) {
+			switch ( $gateway_id ) {
 				case MS_Model_Gateway::GATEWAY_MANUAL:
 					$view = MS_Factory::create( 'MS_View_Gateway_Manual_Settings' );
 					break;
@@ -181,13 +195,22 @@ class MS_Controller_Gateway extends MS_Controller {
 					$view = MS_Factory::create( 'MS_View_Gateway_Settings' );
 					break;
 			}
+
 			$data = array(
 				'model' => MS_Model_Gateway::factory( $gateway_id ),
 				'action' => 'edit',
 			);
 
-			$view->data = apply_filters( 'ms_view_gateway_settings_edit_data', $data );
-			$view = apply_filters( 'ms_view_gateway_settings_edit', $view, $gateway_id ); ;
+			$view->data = apply_filters(
+				'ms_view_gateway_settings_edit_data',
+				$data
+			);
+			$view = apply_filters(
+				'ms_view_gateway_settings_edit',
+				$view,
+				$gateway_id
+			);
+
 			$view->render();
 		}
 	}
@@ -224,7 +247,10 @@ class MS_Controller_Gateway extends MS_Controller {
 					}
 					$gateway->save();
 
-					/** $settings->is_global_payments_set is used to hide global payment settings in the membership setup payment step */
+					/*
+					 * $settings->is_global_payments_set is used to hide global
+					 * payment settings in the membership setup payment step
+					 */
 					if ( $gateway->is_configured() ) {
 						$settings = MS_Factory::load( 'MS_Model_Settings' );
 						$settings->is_global_payments_set = true;
@@ -235,17 +261,22 @@ class MS_Controller_Gateway extends MS_Controller {
 			}
 		}
 
-		return apply_filters( 'ms_controller_gateway_gateway_list_do_action', $msg, $action, $gateways, $fields, $this );
+		return apply_filters(
+			'ms_controller_gateway_gateway_list_do_action',
+			$msg,
+			$action,
+			$gateways,
+			$fields,
+			$this
+		);
 	}
 
 	/**
 	 * Show gateway purchase button.
 	 *
-	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_view_frontend_payment_purchase_button
-	 * * ms_view_shortcode_invoice_purchase_button
+	 * Related action hooks:
+	 * - ms_view_frontend_payment_purchase_button
+	 * - ms_view_shortcode_invoice_purchase_button
 	 *
 	 * @since 1.0.0
 	 */
@@ -263,7 +294,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 			$data['ms_relationship'] = $ms_relationship;
 			$data['gateway'] = $gateway;
-			$data['step'] = 'process_purchase';
+			$data['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
 
 			$membership = $ms_relationship->get_membership();
 
@@ -320,12 +351,14 @@ class MS_Controller_Gateway extends MS_Controller {
 					$gateway->id
 				);
 
-				echo apply_filters(
+				$html = apply_filters(
 					'ms_controller_gateway_purchase_button_'. $gateway->id,
 					$view->to_html(),
 					$ms_relationship,
 					$this
 				);
+
+				echo '' . $html;
 			}
 		}
 
@@ -334,24 +367,22 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Show gateway purchase button.
 	 *
-	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_view_shortcode_membership_signup_cancel_button
+	 * Related action hooks:
+	 * - ms_view_shortcode_membership_signup_cancel_button
 	 *
 	 * @since 1.0.0
 	 */
 	public function cancel_button( $button, $ms_relationship ) {
-
 		$view = null;
 		$data = array();
 		$data['ms_relationship'] = $ms_relationship;
 
-		switch( $ms_relationship->gateway_id ) {
+		switch ( $ms_relationship->gateway_id ) {
 			case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
 				$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Standard_Cancel' );
 				$data['gateway'] = $ms_relationship->get_gateway();
 				break;
+
 			case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 			case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
 			case MS_Model_Gateway::GATEWAY_STRIPE:
@@ -362,36 +393,42 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 		$view = apply_filters( 'ms_view_gateway_cancel_button', $view );
 
-		if( ! empty( $view ) ) {
-			$view->data = apply_filters( 'ms_view_gateway_cancel_button_data', $data );
+		if ( ! empty( $view ) ) {
+			$view->data = apply_filters(
+				'ms_view_gateway_cancel_button_data',
+				$data
+			);
 			$button = $view->to_html();
 		}
 
-		return apply_filters( 'ms_controller_gateway_cancel_button', $button, $ms_relationship, $this );
+		return apply_filters(
+			'ms_controller_gateway_cancel_button',
+			$button,
+			$ms_relationship,
+			$this
+		);
 	}
 
 	/**
 	 * Set hook to handle gateway extra form to commit payments.
 	 *
-	 * **Hooks Actions: **
-	 * * ms_controller_frontend_signup_gateway_form
+	 * Related action hooks:
 	 *
 	 * @since 1.0.0
 	 */
 	public function gateway_form_mgr() {
-
-		/* Display gateway form */
+		// Display gateway form
 		$this->add_filter( 'the_content', 'gateway_form', 10 );
 
-		/* Enqueue styles and scripts used  */
+		// Enqueue styles and scripts used
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 	}
 
 	/**
 	 * Handles gateway extra form to commit payments.
 	 *
-	 * **Hooks Filters: **
-	 * * the_content
+	 * Related filter hooks:
+	 * - the_content
 	 *
 	 * @since 1.0.0
 	 *
@@ -399,15 +436,21 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @return string The filtered content.
 	 */
 	public function gateway_form( $content ) {
-
 		$data = array();
 
 		$fields = array( 'gateway', 'ms_relationship_id' );
-		if( $this->validate_required( $fields ) && MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
+		if ( $this->validate_required( $fields )
+			&& MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] )
+		) {
 			$data['gateway'] = $_POST['gateway'];
 			$data['ms_relationship_id'] = $_POST['ms_relationship_id'];
-			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
-			switch( $_POST['gateway'] ) {
+
+			$ms_relationship = MS_Factory::load(
+				'MS_Model_Membership_Relationship',
+				$_POST['ms_relationship_id']
+			);
+
+			switch ( $_POST['gateway'] ) {
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 					$member = $ms_relationship->get_member();
 					$view = MS_Factory::create( 'MS_View_Gateway_Authorize_Form' );
@@ -415,18 +458,19 @@ class MS_Controller_Gateway extends MS_Controller {
 					$data['countries'] = $gateway->get_country_codes();
 
 					$data['action'] = $this->get_action();
-					/** Only new card option available on update card action.*/
-					if( 'update_card' == $this->get_action() ) {
+
+					if ( 'update_card' == $this->get_action() ) {
+						// Only new card option available on update card action.
 						$data['cim_profiles'] = array();
-					}
-					/** show existing credit card. */
-					else {
+					} else {
+						// show existing credit card.
 						$data['cim_profiles'] = $gateway->get_cim_profile( $member );
 					}
 
 					$data['cim_payment_profile_id'] = $gateway->get_cim_payment_profile_id( $member );
 					$data['auth_error'] = ! empty( $_POST['auth_error'] ) ? $_POST['auth_error'] : '';
 					break;
+
 				default:
 					break;
 			}
@@ -440,8 +484,8 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Process purchase using gateway.
 	 *
-	 * **Hooks Actions: **
-	 * * ms_controller_frontend_signup_process_purchase
+	 * Related Action Hooks:
+	 * - ms_controller_frontend_signup_process_purchase
 	 *
 	 * @since 1.0.0
 	 */
@@ -507,7 +551,10 @@ class MS_Controller_Gateway extends MS_Controller {
 						break;
 
 					case MS_Model_Gateway::GATEWAY_STRIPE:
-						$_POST['error'] = sprintf( __( 'Error: %s', MS_TEXT_DOMAIN ), $e->getMessage() );
+						$_POST['error'] = sprintf(
+							__( 'Error: %s', MS_TEXT_DOMAIN ),
+							$e->getMessage()
+						);
 
 						// Hack to send the error message back to the payment_table.
 						MS_Plugin::instance()->controller->controllers['frontend']->add_action(
@@ -574,8 +621,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * This is used by manual gateway (overridden) to show payment info.
 	 *
-	 * **Hooks Actions: **
-	 * * the_content
+	 * Related action hooks:
 	 *
 	 * @since 1.0.0
 	 *
@@ -583,15 +629,17 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @return string The filtered content.
 	 */
 	public function purchase_info_content( $content ) {
-
-		return apply_filters( 'ms_controller_gateway_purchase_info_content', $content, $this );
+		return apply_filters(
+			'ms_controller_gateway_purchase_info_content',
+			$content,
+			$this
+		);
 	}
 
 	/**
 	 * Show error message in the signup page.
 	 *
-	 * **Hooks Actions: **
-	 * * the_content
+	 * Related action hooks:
 	 *
 	 * @since 1.0.0
 	 */
@@ -609,9 +657,8 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * Used by Paypal gateways.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * pre_get_posts
+	 * Related action hooks:
+	 * - pre_get_posts
 	 *
 	 * @todo Review how this works when we use OAuth API's with gateways.
 	 *
@@ -621,8 +668,11 @@ class MS_Controller_Gateway extends MS_Controller {
 	 */
 	public function handle_payment_return( $wp_query ) {
 
-		if( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
-			do_action( 'ms_model_gateway_handle_payment_return_' . $wp_query->query_vars['paymentgateway'] );
+		if ( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
+			$gateway = $wp_query->query_vars['paymentgateway'];
+			do_action(
+				'ms_model_gateway_handle_payment_return_' . $gateway
+			);
 		}
 	}
 
@@ -631,58 +681,78 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * If a card is used, show it in account's page.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * ms_view_shortcode_account_card_info
+	 * Related action hooks:
+	 * - ms_view_shortcode_account_card_info
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param mixed $data The data passed to hooked view.
 	 */
 	public function card_info( $data = null ) {
-
-		if( ! empty( $data['gateway'] ) && is_array( $data['gateway'] ) ) {
+		if ( ! empty( $data['gateway'] ) && is_array( $data['gateway'] ) ) {
 			$gateways = array();
-			foreach( $data['gateway'] as $ms_relationship_id => $gateway ) {
-				/** avoid duplicates */
-				if( ! in_array( $gateway->id, $gateways ) ) {
+
+			foreach ( $data['gateway'] as $ms_relationship_id => $gateway ) {
+				// avoid duplicates
+				if ( ! in_array( $gateway->id, $gateways ) ) {
 					$gateways[] = $gateway->id;
-				}
-				else {
+				} else {
 					continue;
 				}
 				$view = null;
-				switch( $gateway->id ) {
+
+				switch ( $gateway->id ) {
 					case MS_Model_Gateway::GATEWAY_STRIPE:
 						$member = MS_Model_Member::get_current_member();
-						$data['stripe'] = $member->get_gateway_profile( $gateway->id );
-						if( empty( $data['stripe']['card_exp'] ) ) {
+						$data['stripe'] = $member->get_gateway_profile(
+							$gateway->id
+						);
+
+						if ( empty( $data['stripe']['card_exp'] ) ) {
 							continue 2;
 						}
+
 						$view = MS_Factory::create( 'MS_View_Gateway_Stripe_Card' );
 						$data['member'] = $member;
 						$data['publishable_key'] = $gateway->get_publishable_key();
 						$data['ms_relationship_id'] = $ms_relationship_id;
 						$data['gateway'] = $gateway;
 						break;
+
 					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
 						$member = MS_Model_Member::get_current_member();
-						$data['authorize'] = $member->get_gateway_profile( $gateway->id );
-						if( empty( $data['authorize']['card_exp'] ) ) {
+						$data['authorize'] = $member->get_gateway_profile(
+							$gateway->id
+						);
+
+						if ( empty( $data['authorize']['card_exp'] ) ) {
 							continue 2;
 						}
+
 						$view = MS_Factory::create( 'MS_View_Gateway_Authorize_Card' );
 						$data['member'] = $member;
 						$data['ms_relationship_id'] = $ms_relationship_id;
 						$data['gateway'] = $gateway;
 						break;
+
 					default:
 						break;
 				}
-				if( ! empty( $view ) ) {
-					$view = apply_filters( 'ms_view_gateway_change_card', $view, $gateway->id );
-					$view->data = apply_filters( 'ms_view_gateway_change_card_data', $data, $gateway->id );
-					echo $view->to_html();
+
+				if ( ! empty( $view ) ) {
+					$view = apply_filters(
+						'ms_view_gateway_change_card',
+						$view,
+						$gateway->id
+					);
+					$view->data = apply_filters(
+						'ms_view_gateway_change_card_data',
+						$data,
+						$gateway->id
+					);
+
+					$html = $view->to_html();
+					echo '' . $html;
 				}
 			}
 		}
@@ -693,49 +763,76 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * Used to change credit card info in account's page.
 	 *
-	 * **Hooks Actions: **
-	 *
-	 * * template_redirect
+	 * Related action hooks:
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
 	public function update_card() {
-		if( ! empty( $_POST['gateway'] ) ) {
+		if ( ! empty( $_POST['gateway'] ) ) {
 			$gateway = MS_Model_Gateway::factory( $_POST['gateway'] );
 			$member = MS_Model_Member::get_current_member();
-			switch( $gateway->id ) {
+
+			switch ( $gateway->id ) {
 				case MS_Model_Gateway::GATEWAY_STRIPE:
-					if( ! empty( $_POST['stripeToken'] ) && $this->verify_nonce() ) {
+					if ( ! empty( $_POST['stripeToken'] ) && $this->verify_nonce() ) {
 						$gateway->add_card( $member, $_POST['stripeToken'] );
-						if( ! empty( $_POST['ms_relationship_id'] ) ) {
-							$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
-							MS_Model_Event::save_event( MS_Model_Event::TYPE_UPDATED_INFO, $ms_relationship );
+						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
+							$ms_relationship = MS_Factory::load(
+								'MS_Model_Membership_Relationship',
+								$_POST['ms_relationship_id']
+							);
+							MS_Model_Event::save_event(
+								MS_Model_Event::TYPE_UPDATED_INFO,
+								$ms_relationship
+							);
 						}
-						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
+
+						wp_safe_redirect(
+							add_query_arg( array( 'msg' => 1 ) )
+						);
 						exit;
 					}
 					break;
+
 				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
-					if( $this->verify_nonce() ) {
-						do_action( 'ms_controller_frontend_signup_gateway_form', $this );
-					}
-					elseif( ! empty( $_POST['ms_relationship_id'] ) && $this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] ) ) {
+					if ( $this->verify_nonce() ) {
+						do_action(
+							'ms_controller_frontend_signup_gateway_form',
+							$this
+						);
+					} elseif ( ! empty( $_POST['ms_relationship_id'] )
+						&& $this->verify_nonce( $_POST['gateway'] .'_' . $_POST['ms_relationship_id'] )
+					) {
 						$gateway->update_cim_profile( $member );
 						$gateway->save_card_info( $member );
-						if( ! empty( $_POST['ms_relationship_id'] ) ) {
-							$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $_POST['ms_relationship_id'] );
-							MS_Model_Event::save_event( MS_Model_Event::TYPE_UPDATED_INFO, $ms_relationship );
+						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
+							$ms_relationship = MS_Factory::load(
+								'MS_Model_Membership_Relationship',
+								$_POST['ms_relationship_id']
+							);
+							MS_Model_Event::save_event(
+								MS_Model_Event::TYPE_UPDATED_INFO,
+								$ms_relationship
+							);
 						}
-						wp_safe_redirect( add_query_arg( array( 'msg' => 1 ) ) );
+
+						wp_safe_redirect(
+							add_query_arg( array( 'msg' => 1 ) )
+						);
 						exit;
 					}
 					break;
+
 				default:
 					break;
 			}
 		}
 
-		do_action( 'ms_controller_gateway_update_card', $this );
+		do_action(
+			'ms_controller_gateway_update_card',
+			$this
+		);
 	}
 
 	/**
@@ -752,7 +849,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		switch ( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:
-				if( MS_Model_Gateway::GATEWAY_AUTHORIZE == $gateway_id ) {
+				if ( MS_Model_Gateway::GATEWAY_AUTHORIZE == $gateway_id ) {
 					wp_enqueue_script( 'jquery-validate' );
 					wp_enqueue_script( 'ms-view-gateway-authorize' );
 				}
