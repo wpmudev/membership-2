@@ -386,7 +386,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Search for register user shortcode, injecting if not found.
 	 *
 	 * Related Filter Hooks:
-	 * * the_content
+	 * - the_content
 	 *
 	 * @since 1.0.0
 	 *

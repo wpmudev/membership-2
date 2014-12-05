@@ -48,6 +48,13 @@
 .ms-wrap .handlediv {
   cursor: pointer;
 }
+.ms-wrap .disabled,
+.ms-wrap .disabled:hover,
+.ms-wrap .disabled:active,
+.ms-wrap .disabled:focus {
+  color: #999;
+  cursor: not-allowed;
+}
 
 .ms-fa {
   font-family: Fontawesome420 !important;

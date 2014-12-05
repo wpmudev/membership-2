@@ -47,6 +47,14 @@
 	.handlediv {
 		cursor: pointer;
 	}
+
+	.disabled,
+	.disabled:hover,
+	.disabled:active,
+	.disabled:focus {
+		color: #999;
+		cursor: not-allowed;
+	}
 }
 
 .ms-fa {

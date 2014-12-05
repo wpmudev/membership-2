@@ -63,6 +63,15 @@ class MS_Helper_Shortcode extends MS_Helper {
 	// deprecated, replaced by SCODE_NOTE
 	const SCODE_RED_NOTE = 'ms-red-note';
 
+	/**
+	 * Holds an array of all replaced Protected Content shortcodes.
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @var array
+	 */
+	protected static $did_shortcodes = array();
+
 
 	/**
 	 * This function searches content for the presence of a given short code.
@@ -75,8 +84,26 @@ class MS_Helper_Shortcode extends MS_Helper {
 	 * @return boolean
 	 */
 	public static function has_shortcode( $shortcode, $content ) {
-		$pattern = "/\[${shortcode}.*\]/im";
-		return preg_match( $pattern, $content );
+		$result = false;
+
+		if ( isset( self::$did_shortcodes[$shortcode] ) ) {
+			$result = self::$did_shortcodes[$shortcode];
+		} else {
+			$pattern = "/\[${shortcode}.*\]/im";
+			$result = preg_match( $pattern, $content );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Remembers that a shortcode was inserted already.
+	 *
+	 * @since  1.0.4.5
+	 * @param  string $shortcode The Protected Content shortcode.
+	 */
+	public static function did_shortcode( $shortcode ) {
+		self::$did_shortcodes[$shortcode] = true;
 	}
 
 	/**

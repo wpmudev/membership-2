@@ -159,6 +159,17 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 	}
 
+
+	/*========================================*\
+	============================================
+	==                                        ==
+	==           SHORTCODE HANDLERS           ==
+	==                                        ==
+	============================================
+	\*========================================*/
+
+
+
 	/**
 	 * Membership register callback function.
 	 *
@@ -167,6 +178,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_register_user( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_register_user_atts',
 			shortcode_atts(
@@ -198,6 +211,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_signup( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_SIGNUP );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_signup_atts',
 			shortcode_atts(
@@ -268,6 +283,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_title( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_TITLE );
+
 		$code = '';
 
 		$data = apply_filters(
@@ -311,6 +328,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_price( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_PRICE );
+
 		$price = 0;
 
 		$data = apply_filters(
@@ -360,6 +379,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_buy( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_BUY );
+
 		$code = '';
 
 		$data = apply_filters(
@@ -404,6 +425,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_details( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_DETAILS );
+
 		$code = '';
 
 		$data = apply_filters(
@@ -444,6 +467,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function protected_content( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_PROTECTED );
+
 		global $post;
 
 		$setting = MS_Plugin::instance()->settings;
@@ -484,6 +509,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_login( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_LOGIN );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_login_atts',
 			shortcode_atts(
@@ -528,6 +555,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_logout( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_LOGOUT );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_logout_atts',
 			shortcode_atts(
@@ -557,6 +586,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_account( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_account_atts',
 			shortcode_atts(
@@ -610,6 +641,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_account_link( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK );
+
 		$html = '';
 
 		$data = apply_filters(
@@ -645,6 +678,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_invoice( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_INVOICE );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_invoice_atts',
 			shortcode_atts(
@@ -755,6 +790,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_note( $atts, $content = '' ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_NOTE );
+
 		$atts = apply_filters(
 			'ms_controller_shortcode_note_atts',
 			shortcode_atts(
@@ -803,6 +840,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_green_note( $atts, $content = '' ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_GREEN_NOTE );
+
 		$content = $this->ms_note( array( 'type' => 'info' ), $content );
 
 		return apply_filters(
@@ -821,6 +860,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_red_note( $atts, $content = '' ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_RED_NOTE );
+
 		$content = $this->ms_note( array( 'type' => 'warning' ), $content );
 
 		return apply_filters(
@@ -830,11 +871,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 	}
 
+
 	/**
-	 * Replace shortcodes with empty value.
+	 * Special Shortcode Callback: Replace shortcodes with empty value.
 	 *
-	 * All Shortcodes use this callback function when Content Protection is
-	 * disabled.
+	 *     All Shortcodes use this callback function
+	 *     when Content Protection is DISABLED!
 	 *
 	 * @since 1.0.4.3
 	 */
@@ -867,23 +909,4 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 	}
 
-	/**
-	 * Evaluates if the specified variable is a boolean TRUE value
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  mixed $value The variable to evaluate.
-	 * @return bool
-	 */
-	public static function is_true( $value ) {
-		if ( true === $value || false === $value ) {
-			return $value;
-		} else if ( is_string( $value ) ) {
-			return in_array( $value, array( '1', 'on', 'yes', 'true' ) );
-		} else if ( is_scalar( $value ) ) {
-			return ! ! $value;
-		} else {
-			return ! empty( $value );
-		}
-	}
 }
