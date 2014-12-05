@@ -413,6 +413,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Set hook to handle gateway extra form to commit payments.
 	 *
 	 * Related action hooks:
+	 * - ms_controller_frontend_signup_gateway_form
 	 *
 	 * @since 1.0.0
 	 */
