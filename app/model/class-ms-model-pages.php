@@ -314,7 +314,6 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @return WP_Post|null
 	 */
 	public function current_page( $page_id = false, $page_type = null ) {
-		global $wp_query;
 		static $Res = array();
 		$key = json_encode( $page_id ) . json_encode( $page_type );
 
@@ -336,12 +335,19 @@ class MS_Model_Pages extends MS_Model_Option {
 				 * We don't have the page_type:
 				 * Use current page_id or the specified page_id/slug!
 				 */
-				if ( empty( $page_id ) ) {
-					$this_page = $this->get_page_by( 'id', get_the_ID() );
-				} else if ( is_numeric( $page_id ) ) {
-					$this_page = $this->get_page_by( 'id', $page_id );
-				} else {
-					$this_page = $this->get_page_by( 'slug', $page_id );
+				if ( empty( $page_id ) ) { $page_id = get_the_ID(); }
+				if ( empty( $page_id ) ) { $page_id = get_queried_object_id(); }
+				if ( empty( $page_id ) && did_action( 'setup_theme' ) ) {
+					$url = WDev()->current_url();
+					$page_id = url_to_postid( $url );
+				}
+
+				if ( ! empty( $page_id ) ) {
+					if ( is_numeric( $page_id ) ) {
+						$this_page = $this->get_page_by( 'id', $page_id );
+					} else {
+						$this_page = $this->get_page_by( 'slug', $page_id );
+					}
 				}
 			}
 

@@ -88,10 +88,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			do_action( 'ms_controller_frontend_construct', $this );
 
 			// Process actions like register new account.
-			$this->add_action( 'parse_query', 'process_actions', 1 );
+			$this->add_action( 'template_redirect', 'process_actions', 1 );
 
 			// Check if the current page is a Membership Page.
-			$this->add_action( 'parse_query', 'check_for_membership_pages', 2 );
+			$this->add_action( 'template_redirect', 'check_for_membership_pages', 2 );
 
 			// Propagates SSL cookies when user logs in.
 			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
@@ -117,13 +117,13 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Matches returned 'action' to method to execute.
 	 *
 	 * Related Action Hooks:
-	 * - parse_query
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
 	public function process_actions() {
 		// Only execute this handler once!
-		$this->remove_action( 'parse_query', 'process_actions', 1 );
+		$this->remove_action( 'template_redirect', 'process_actions', 1 );
 
 		$action = $this->get_action();
 
@@ -146,16 +146,15 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Check pages for the presence of Membership special pages.
 	 *
 	 * Related Action Hooks:
-	 * - parse_query
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
 	public function check_for_membership_pages() {
 		global $post, $wp_query;
-		if ( ! $wp_query->is_main_query() ) { return; }
 
 		// Only execute this handler once!
-		$this->remove_action( 'parse_query', 'check_for_membership_pages', 2 );
+		$this->remove_action( 'template_redirect', 'check_for_membership_pages', 2 );
 
 		// For invoice page purchase process
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
