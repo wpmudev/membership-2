@@ -475,10 +475,15 @@ class MS_Controller_Gateway extends MS_Controller {
 				default:
 					break;
 			}
+
 			$view = apply_filters( 'ms_view_gateway_form', $view );
 			$view->data = apply_filters( 'ms_view_gateway_form_data', $data );
 
-			return apply_filters( 'ms_controller_gateway_form', $view->to_html(), $this );
+			return apply_filters(
+				'ms_controller_gateway_form',
+				$view->to_html(),
+				$this
+			);
 		}
 	}
 
