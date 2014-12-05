@@ -485,7 +485,8 @@ class MS_Model_Pages extends MS_Model_Option {
 		if ( $Done ) { return; }
 		$Done = true;
 
-		if ( empty( get_current_user_id() ) ) { return; }
+		$user_id = get_current_user_id();
+		if ( empty( $user_id ) ) { return; }
 
 		$types = $this->get_page_types();
 
@@ -500,7 +501,7 @@ class MS_Model_Pages extends MS_Model_Option {
 					'post_content' => $this->get_default_content( $type ),
 					'post_type' => 'page',
 					'post_status' => 'publish',
-					'post_author' => get_current_user_id(),
+					'post_author' => $user_id,
 				);
 				$new_id = wp_insert_post( $data );
 
