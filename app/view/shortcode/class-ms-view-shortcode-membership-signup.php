@@ -122,29 +122,26 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			$this->data['action']
 		);
 
-		$button = array(
-			'id' => 'submit',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => esc_html( $label ),
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$url = add_query_arg(
+			'_wpnonce',
+			wp_create_nonce( $this->data['action'] ),
+			$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS )
 		);
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+		foreach ( $fields as $field ) {
+			$url = add_query_arg(
+				$field['id'],
+				$field['value'],
+				$url
+			);
+		}
 
-		ob_start();
-		?>
-		<form class="ms-membership-form" method="post" action="<?php echo esc_url( $url ); ?>">
-			<?php
-			wp_nonce_field( $fields['action']['value'] );
-
-			foreach ( $fields as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
-			?>
-			<?php MS_Helper_Html::html_element( $button ); ?>
-		</form>
-		<?php
-		$html = ob_get_clean();
+		$html = sprintf(
+			'<a href="%1$s" class="ms-button button">%2$s</a>',
+			$url,
+			esc_html( $label )
+		);
 
 		return $html;
 	}
