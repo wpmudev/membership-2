@@ -1024,6 +1024,16 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
+	 * Returns true if the related membership is the base-membership.
+	 *
+	 * @since  1.0.4.5
+	 * @return bool
+	 */
+	public function is_visitor_membership() {
+		return $this->get_membership()->is_visitor_membership();
+	}
+
+	/**
 	 * Get related gateway model.
 	 *
 	 * @since 1.0.0

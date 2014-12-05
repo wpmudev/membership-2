@@ -254,7 +254,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 		}
 
-		$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $data['ms_relationships'] ) );
+		$memberships = MS_Model_Membership::get_signup_membership_list(
+			null,
+			array_keys( $data['ms_relationships'] )
+		);
 
 		$data['memberships'] = $memberships;
 
@@ -268,6 +271,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			foreach ( $data['member']->ms_relationships as $ms_relationship ) {
+				if ( $ms_relationship->is_visitor_membership() ) { continue; }
+
 				if ( in_array( $ms_relationship->status, $valid_status ) ) {
 					$data['move_from_id'] = $ms_relationship->membership_id;
 					break;

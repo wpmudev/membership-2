@@ -1143,6 +1143,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
+	 * Returns true if the membership is the base-membership.
+	 *
+	 * @since  1.0.4.5
+	 * @return bool
+	 */
+	public function is_visitor_membership() {
+		return WDev()->is_true( $this->protected_content );
+	}
+
+	/**
 	 * Get protected content membership.
 	 *
 	 * Create a new membership if membership does not exist.
