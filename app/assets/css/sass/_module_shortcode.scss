@@ -1,7 +1,6 @@
 /**
  * Shortcode Styles
  */
-
 .ms-membership-form-wrapper {
 	legend {
 		display: block;
@@ -32,6 +31,23 @@
 				line-height: 24px;
 				color: #AA6;
 			}
+		}
+	}
+
+	.ms-signup-button {
+		float: right;
+		height: auto;
+	}
+
+	.ms-cancel-button {
+		height: auto;
+		line-height: normal;
+		background: #999;
+
+		&:hover,
+		&:focus,
+		&:active {
+			background: #AAA;
 		}
 	}
 }
@@ -92,11 +108,6 @@
 	padding: 10px;
 	min-height: 1em;
 	list-style-type: none;
-}
-
-.ms-signup-button {
-	float: right;
-	height: auto;
 }
 
 .ms-form-element {

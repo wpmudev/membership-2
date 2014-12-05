@@ -43,6 +43,7 @@ class MS_Model_Member extends MS_Model {
 
 	/**
 	 * Member's Membership Relationships.
+	 * This field is populated manually in MS_Factory
 	 *
 	 * @since 1.0.0
 	 *
@@ -685,7 +686,7 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id The membership id to drop.
 	 */
 	public function cancel_membership( $membership_id ) {
-		if ( array_key_exists( $membership_id,  $this->ms_relationships ) ) {
+		if ( array_key_exists( $membership_id, $this->ms_relationships ) ) {
 			do_action(
 				'ms_model_membership_cancel_membership',
 				$this->ms_relationships[ $membership_id ],
@@ -693,6 +694,17 @@ class MS_Model_Member extends MS_Model {
 			);
 
 			$this->ms_relationships[ $membership_id ]->cancel_membership( false );
+		} else {
+			// The membership might be on status "PENDING" which is not included
+			// in $this->ms_relationships.
+			$relationship = MS_Model_Membership_Relationship::get_membership_relationship(
+				$this->id,
+				$membership_id
+			);
+
+			if ( $relationship->user_id == $this->id ) {
+				$relationship->cancel_membership( false );
+			}
 		}
 
 		do_action(

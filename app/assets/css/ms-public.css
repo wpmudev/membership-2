@@ -178,6 +178,18 @@
   line-height: 24px;
   color: #AA6;
 }
+.ms-membership-form-wrapper .ms-signup-button {
+  float: right;
+  height: auto;
+}
+.ms-membership-form-wrapper .ms-cancel-button {
+  height: auto;
+  line-height: normal;
+  background: #999;
+}
+.ms-membership-form-wrapper .ms-cancel-button:hover, .ms-membership-form-wrapper .ms-cancel-button:focus, .ms-membership-form-wrapper .ms-cancel-button:active {
+  background: #AAA;
+}
 
 .ms-membership-details-wrapper {
   position: relative;
@@ -230,11 +242,6 @@
   padding: 10px;
   min-height: 1em;
   list-style-type: none;
-}
-
-.ms-signup-button {
-  float: right;
-  height: auto;
 }
 
 .ms-form-element {

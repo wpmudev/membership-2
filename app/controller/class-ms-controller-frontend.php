@@ -577,8 +577,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function membership_cancel() {
-		if ( ! empty( $_POST['membership_id'] ) && $this->verify_nonce() ) {
-			$membership_id = absint( $_POST['membership_id'] );
+		if ( ! empty( $_REQUEST['membership_id'] ) && $this->verify_nonce( null, 'any' ) ) {
+			$membership_id = absint( $_REQUEST['membership_id'] );
 			$member = MS_Model_Member::get_current_member();
 			$member->cancel_membership( $membership_id );
 			$member->save();
