@@ -118,6 +118,8 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	 * @return string
 	 */
 	public function signup_form( $membership, $label ) {
+		$html = '';
+
 		$url = $this->get_action_url(
 			$membership->id,
 			$this->data['action'],

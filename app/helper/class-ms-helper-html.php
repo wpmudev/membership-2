@@ -322,9 +322,9 @@ class MS_Helper_Html extends MS_Helper {
 		$args['type'] = self::INPUT_TYPE_SUBMIT;
 
 		if ( $return ) {
-			return self::html_element( $args );
+			return self::html_element( $args, true );
 		} else {
-			echo '' . self::html_element( $args );
+			self::html_element( $args );
 		}
 	}
 
@@ -350,9 +350,9 @@ class MS_Helper_Html extends MS_Helper {
 		$args['type'] = self::TYPE_HTML_LINK;
 
 		if ( $return ) {
-			return self::html_element( $args );
+			return self::html_element( $args, true );
 		} else {
-			echo '' . self::html_element( $args );
+			self::html_element( $args );
 		}
 	}
 
