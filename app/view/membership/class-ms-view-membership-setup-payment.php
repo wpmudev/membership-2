@@ -33,8 +33,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						foreach ( $this->data['children'] as $child ) {
 							$this->specific_payment_settings( $child );
 						}
-					}
-					else {
+					} else {
 						$this->specific_payment_settings( $this->data['membership'] );
 					}
 					?>
@@ -142,13 +141,14 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		static $First = true;
 
 		$title = sprintf(
-			__( '<span class="ms-item-name">%s</span> Specific Payment Settings:', MS_TEXT_DOMAIN ),
-			$membership->name
+			__( '%s specific payment settings:', MS_TEXT_DOMAIN ),
+			'<span class="ms-item-name">' . $membership->name . '</span>'
 		);
 		$desc = sprintf(
-			__( 'Payment Settings for <span class="ms-bold">%s</span>.', MS_TEXT_DOMAIN ),
-			$membership->name
+			__( 'Payment settings for %s.', MS_TEXT_DOMAIN ),
+			'<span class="ms-bold">' . $membership->name . '</span>'
 		);
+
 		$fields = $this->get_specific_payment_fields( $membership );
 		$type_class = $this->data['is_global_payments_set'] ? '' : 'ms-half right';
 		$state = ($First ? 'open' : 'closed');

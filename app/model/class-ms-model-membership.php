@@ -376,7 +376,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			self::PAYMENT_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
 		);
 
-		return apply_filters( 'ms_model_membership_get_payment_types', $payment_types );
+		return apply_filters(
+			'ms_model_membership_get_payment_types',
+			$payment_types
+		);
 	}
 
 	/**
@@ -1678,10 +1681,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		switch ( $property ) {
 			case 'payment_type':
 				$types = self::get_payment_types();
-				if ( ! in_array( $this->payment_type, $types ) ) {
-					$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
+				if ( ! array_key_exists( $this->$property, $types ) ) {
+					$this->$property = self::PAYMENT_TYPE_PERMANENT;
 				}
-				$value = $this->payment_type;
+				$value = $this->$property;
 				break;
 
 			case 'type_description':
