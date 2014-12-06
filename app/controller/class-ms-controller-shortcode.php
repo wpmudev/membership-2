@@ -326,19 +326,26 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			)
 		);
+		extract( $data );
 
-		if ( ! empty( $data['id'] ) ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
+		if ( ! empty( $id ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 			$code = sprintf(
 				'%1$s %2$s',
-				$data['label'],
+				$label,
 				$membership->name
 			);
 
 			$code = trim( $code );
 		} else {
-			$code = $data['title'];
+			$code = $title;
 		}
+
+		$code = sprintf(
+			'<span class="ms-membership-title ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
 
 		return apply_filters(
 			'ms_controller_shortcode_membership_title',
@@ -358,7 +365,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function membership_price( $atts ) {
 		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_PRICE );
 
-		$price = 0;
+		$code = 0;
 
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_price_atts',
@@ -371,29 +378,36 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			)
 		);
+		extract( $data );
 
-		if ( ! empty( $data['id'] ) ) {
-			if ( WDev()->is_true( $data['currency'] ) ) {
+		if ( ! empty( $id ) ) {
+			if ( WDev()->is_true( $currency ) ) {
 				$settings = MS_Factory::load( 'MS_Model_Settings' );
 				$currency = $settings->currency;
 			} else {
 				$currency = '';
 			}
 
-			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
-			$price = sprintf(
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+			$code = sprintf(
 				'%1$s %2$s %3$s',
-				$data['label'],
+				$label,
 				$currency,
 				$membership->price
 			);
 
-			$price = trim( $price );
+			$code = trim( $code );
 		}
+
+		$code = sprintf(
+			'<span class="ms-membership-price ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
 
 		return apply_filters(
 			'ms_controller_shortcode_membership_price',
-			$price,
+			$code,
 			$atts,
 			$this
 		);
@@ -421,9 +435,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			)
 		);
+		extract( $data );
 
-		if ( ! empty( $data['id'] ) ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
+		if ( ! empty( $id ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 			$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 			$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
@@ -434,8 +449,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$this
 			);
 
-			$code = $view->signup_form( $membership, $data['label'] );
+			$code = $view->signup_form( $membership, $label );
 		}
+
+		$code = sprintf(
+			'<span class="ms-membership-buy ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
 
 		return apply_filters(
 			'ms_controller_shortcode_membership_buy',
@@ -467,17 +488,24 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			)
 		);
+		extract( $data );
 
-		if ( ! empty( $data['id'] ) ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
+		if ( ! empty( $id ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 			$code = sprintf(
 				'%1$s %2$s',
-				$data['label'],
+				$label,
 				$membership->description
 			);
 
 			$code = trim( $code );
 		}
+
+		$code = sprintf(
+			'<span class="ms-membership-details ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
 
 		return apply_filters(
 			'ms_controller_shortcode_membership_details',
