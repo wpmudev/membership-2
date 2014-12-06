@@ -57,6 +57,8 @@ class MS_Helper_Shortcode extends MS_Helper {
 
 	const SCODE_NOTE = 'ms-note';
 
+	const SCODE_USER = 'ms-user';
+
 	// deprecated, replaced by SCODE_NOTE
 	const SCODE_GREEN_NOTE = 'ms-green-note';
 
@@ -129,6 +131,7 @@ class MS_Helper_Shortcode extends MS_Helper {
 				self::SCODE_MS_ACCOUNT_LINK,
 				self::SCODE_MS_INVOICE,
 				self::SCODE_NOTE,
+				self::SCODE_USER,
 				self::SCODE_GREEN_NOTE /* deprecated, replaced by SCODE_NOTE */,
 				self::SCODE_RED_NOTE /* deprecated, replaced by SCODE_NOTE */,
 			)

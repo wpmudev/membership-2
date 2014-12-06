@@ -124,6 +124,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Helper_Shortcode::SCODE_RED_NOTE,
 				array( $this, 'ms_red_note' )
 			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_USER,
+				array( $this, 'show_to_user' )
+			);
 		} else {
 			$shortcodes = array(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
@@ -147,6 +152,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 			add_shortcode(
 				MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+				array( $this, 'hide_shortcode')
+			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_USER,
 				array( $this, 'hide_shortcode')
 			);
 		}
@@ -886,6 +896,78 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		return apply_filters(
 			'ms_controller_shortcode_ms_red_note',
+			$content,
+			$this
+		);
+	}
+
+	/**
+	 * Shortcode callback: Show message only to certain users.
+	 *
+	 * @since 1.0.4.5
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function show_to_user( $atts, $content = '' ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_USER );
+
+		$data = apply_filters(
+			'ms_controller_shortcode_show_to_user_atts',
+			shortcode_atts(
+				array(
+					'type'     => 'loggedin',
+					'msg'      => '',
+				),
+				$atts
+			)
+		);
+
+		extract( $data );
+		$access = false;
+
+		$user_type = 'guest';
+		if ( is_user_logged_in() ) {
+			$user_type = 'loggedin';
+
+			if ( MS_Model_Member::is_admin_user() ) {
+				$user_type = 'admin';
+			}
+		}
+
+		$class = 'ms-user-is-' . $user_type;
+
+		switch ( $type ) {
+			case 'all':
+				$access = true;
+				break;
+
+			case 'loggedin':
+			case 'login':
+				$access = in_array( $user_type, array( 'loggedin', 'admin' ) );
+				break;
+
+			case 'guest':
+				$access = ($user_type === 'guest' );
+				break;
+
+			case 'admin':
+				$access = ( $user_type === 'admin' );
+				break;
+		}
+
+		if ( ! $access ) {
+			$content = $msg;
+			$class .= ' ms-user-not-' . $type;
+		}
+
+		$content = sprintf(
+			'<div class="ms-user %1$s">%2$s</div>',
+			esc_attr( $class ),
+			do_shortcode( $content )
+		);
+
+		return apply_filters(
+			'ms_controller_shortcode_show_to_user',
 			$content,
 			$this
 		);

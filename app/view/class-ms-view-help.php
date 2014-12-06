@@ -167,7 +167,7 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-protect-content]</code></h3>
 
-			<?php _ex( 'Wrap this around any content to protect it', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php _ex( 'Wrap this around any content to protect it for/from certain members (based on their Membership level)', 'help', MS_TEXT_DOMAIN ); ?>
 			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
@@ -216,6 +216,54 @@ class MS_View_Help extends MS_View {
 					<code>[ms-protect-content id="2,3" access="no" silent="yes"]</code>
 					<?php _ex( 'Everybody except members of memberships 2 or 3 can see this!', 'help', MS_TEXT_DOMAIN ); ?>
 					<code>[/ms-protect-content]</code>
+				</p>
+			</div>
+		</div>
+
+
+		<?php
+		/*********
+		**********   ms-user   *************************************************
+		*********/
+		?>
+
+		<div class="ms-help-box">
+			<h3><code>[ms-user]</code></h3>
+
+			<?php _ex( 'Shows the content only to certain users (ignoring the Membership level)', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<ul>
+					<li>
+						<code>type</code>
+						<?php _ex( '(all|loggedin|guest|admin)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Decide, which type of users will see the message', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"loggedin"
+						</span>
+					</li>
+					<li>
+						<code>msg</code>
+						<?php _ex( '(Text)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Provide a custom protection message that is displayed to users that have no access to the content', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p>
+					<code>[ms-user]</code>
+					<?php _ex( 'You are logged in', 'help', MS_TEXT_DOMAIN ); ?>
+					<code>[/ms-user]</code>
+				</p>
+				<p>
+					<code>[ms-user type="guest"]</code>
+					<?php printf( htmlspecialchars( _x( '<a href="">Sign up now</a>! <a href="">Already have an account</a>?', 'help', MS_TEXT_DOMAIN ) ) ); ?>
+					<code>[/ms-user]</code>
 				</p>
 			</div>
 		</div>
@@ -289,7 +337,7 @@ class MS_View_Help extends MS_View {
 
 		<?php
 		/*********
-		**********   ms-   *****************************
+		**********   ms-membership-signup   ************************************
 		*********/
 		?>
 
