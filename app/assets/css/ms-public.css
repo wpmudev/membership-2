@@ -290,19 +290,33 @@ label.ms-validation-error:before {
 }
 
 /* Login Form */
-.ms-login-form {
+.ms-form {
   margin: 1em;
 }
-.ms-login-form .ms-field:after {
+.ms-form .ms-field:after {
   content: '';
   display: table;
   clear: both;
 }
-.ms-login-form input {
+.ms-form p:first-child {
+  margin-top: 0;
+}
+.ms-form p:last-child {
+  margin-bottom: 0;
+}
+.ms-form.ms-has-labels input {
   float: right;
 }
-.ms-login-form input[type="checkbox"] {
+.ms-form.ms-has-labels input[type="checkbox"] {
   float: none;
+}
+.ms-form.ms-no-labels p {
+  text-align: center;
+}
+.ms-form:after {
+  content: '';
+  display: table;
+  clear: both;
 }
 
 /* Account */

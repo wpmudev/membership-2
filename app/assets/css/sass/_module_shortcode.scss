@@ -160,7 +160,7 @@ label.ms-validation-error {
 
 /* Login Form */
 
-.ms-login-form {
+.ms-form {
 	margin: 1em;
 
 	.ms-field {
@@ -171,12 +171,34 @@ label.ms-validation-error {
 		}
 	}
 
-	input {
-		float: right;
+	p:first-child {
+		margin-top: 0;
+	}
 
-		&[type="checkbox"] {
-			float: none;
+	p:last-child {
+		margin-bottom: 0;
+	}
+
+	&.ms-has-labels {
+		input {
+			float: right;
+
+			&[type="checkbox"] {
+				float: none;
+			}
 		}
+	}
+
+	&.ms-no-labels {
+		p {
+			text-align: center;
+		}
+	}
+
+	&:after {
+		content: '';
+		display: table;
+		clear: both;
 	}
 }
 
