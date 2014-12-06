@@ -205,9 +205,11 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			);
 		}
 		$price = apply_filters( 'ms_membership_price', $price, $membership );
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 
 		?>
-		<form class="ms-membership-form" method="post">
+		<form action="<?php echo esc_url( $url ); ?>" class="ms-membership-form" method="post">
 			<?php
 			wp_nonce_field( $fields['action']['value'] );
 
