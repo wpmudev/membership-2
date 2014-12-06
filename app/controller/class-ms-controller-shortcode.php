@@ -471,7 +471,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		if ( ! empty( $data['id'] ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
 			$code = sprintf(
-				'%1$s %1$s',
+				'%1$s %2$s',
 				$data['label'],
 				$membership->description
 			);
@@ -656,7 +656,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Account' );
-		$view->data = apply_filters( 'ms_view_shortcode_account_data', $data, $this );
+		$view->data = apply_filters(
+			'ms_view_shortcode_account_data',
+			$data,
+			$this
+		);
 
 		return $view->to_html();
 	}
