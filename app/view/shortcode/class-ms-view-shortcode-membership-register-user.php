@@ -37,15 +37,18 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 			'value' => __( 'Already have a user account?', MS_TEXT_DOMAIN ),
 		);
 
+		$title = $this->data['title'];
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors(); ?>
 			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo esc_url( add_query_arg( 'action', 'register_user' ) ); ?>" method="post">
 				<?php wp_nonce_field( $this->data['action'] ); ?>
-				<legend>
-					<?php _e( 'Create an Account', MS_TEXT_DOMAIN ); ?>
-				</legend>
+				<?php if ( ! empty( $title ) ) : ?>
+					<legend>
+						<?php echo '' . $title; ?>
+					</legend>
+				<?php endif; ?>
 				<?php foreach ( $fields as $field ) { ?>
 					<div class="ms-form-element">
 						<?php MS_Helper_Html::html_element( $field ); ?>
@@ -56,7 +59,11 @@ class MS_View_Shortcode_Membership_Register_User extends MS_View {
 				do_action( 'ms_view_shortcode_membership_register_user_extra_fields', $this->error );
 				?>
 			</form>
-			<?php MS_Helper_Html::html_link( $login_link ); ?>
+			<?php
+			if ( $this->data['loginlink'] ) {
+				MS_Helper_Html::html_link( $login_link );
+			}
+			?>
 		</div>
 		<?php
 		return ob_get_clean();

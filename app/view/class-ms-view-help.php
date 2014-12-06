@@ -283,6 +283,15 @@ class MS_View_Help extends MS_View {
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
+						<code>title</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the register form', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Create an Account', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
 						<code>first_name</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Initial value for first name', 'help', MS_TEXT_DOMAIN ); ?>
@@ -325,6 +334,15 @@ class MS_View_Help extends MS_View {
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
+						</span>
+					</li>
+					<li>
+						<code>loginlink</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display a login-link below the form', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"yes"
 						</span>
 					</li>
 				</ul>

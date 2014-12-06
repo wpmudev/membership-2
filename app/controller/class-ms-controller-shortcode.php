@@ -212,6 +212,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'username' => substr( trim( filter_input( INPUT_POST, 'username' ) ), 0, 50 ),
 					'email' => substr( trim( filter_input( INPUT_POST, 'email' ) ), 0, 50 ),
 					'membership_id' => filter_input( INPUT_POST, 'membership_id' ),
+					'title' => _e( 'Create an Account', MS_TEXT_DOMAIN ),
+					'loginlink' => true,
 					'errors' => '',
 				),
 				$atts
@@ -219,6 +221,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 		$data['action'] = 'register_user';
 		$data['step'] = MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
+		$data['loginlink'] = WDev()->is_true( $data['loginlink'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Register_User' );
 		$view->data = apply_filters( 'ms_view_shortcode_membership_register_user_data', $data, $this );
