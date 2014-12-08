@@ -420,11 +420,13 @@ class MS_Model_Member extends MS_Model {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query user args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
 	 * @return int The count.
 	 */
 	public static function get_members_count( $args = null ) {
 		$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
+		$args['number'] = 0;
+		$args['count_total'] = true;
 		$wp_user_search = new WP_User_Query( $args );
 
 		return apply_filters(
@@ -555,7 +557,7 @@ class MS_Model_Member extends MS_Model {
 			array(
 				'order' => 'DESC',
 				'orderby' => 'ID',
-				'number' => 10,
+				'number' => 20,
 				'offset' => 0,
 				'fields' => 'ID',
 			)
@@ -563,31 +565,36 @@ class MS_Model_Member extends MS_Model {
 
 		$args = WDev()->get_array( $args );
 		WDev()->load_fields( $args, 'meta_query' );
-		$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
 
-		switch ( $search_option ) {
-			case self::SEARCH_ONLY_MEMBERS:
-				$args['meta_query'] = array(
-					array(
-						'key'   => 'ms_is_member',
-						'value' => true,
-					),
-				);
-				break;
+		if ( 'none' !== $args['meta_query'] ) {
+			$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
 
-			case self::SEARCH_NOT_MEMBERS:
-				/*
-				 * This does a recursive call with
-				 * $search_option = self::SEARCH_ONLY_MEMBERS
-				 */
-				$members = self::get_member_ids();
+			switch ( $search_option ) {
+				case self::SEARCH_ONLY_MEMBERS:
+					$args['meta_query'] = array(
+						array(
+							'key'   => 'ms_is_member',
+							'value' => true,
+						),
+					);
+					break;
 
-				$args['exclude'] = $members;
-				break;
+				case self::SEARCH_NOT_MEMBERS:
+					/*
+					 * This does a recursive call with
+					 * $search_option = self::SEARCH_ONLY_MEMBERS
+					 */
+					$members = self::get_member_ids();
 
-			case self::SEARCH_ALL_USERS:
-			default:
-				break;
+					$args['exclude'] = $members;
+					break;
+
+				case self::SEARCH_ALL_USERS:
+				default:
+					break;
+			}
+		} else {
+			unset( $args['meta_query'] );
 		}
 
 		$args = wp_parse_args( $args, $defaults );
