@@ -31,7 +31,11 @@ class MS_View_Shortcode_Account extends MS_View {
 							<?php endif; ?>
 							<th><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></th>
 						</tr>
-						<?php foreach ( $this->data['membership'] as $membership ) :
+						<?php
+						$empty = true;
+						foreach ( $this->data['membership'] as $membership ) :
+							if ( $membership->is_visitor_membership() ) { continue; }
+							$empty = false;
 							$ms_relationship = $this->data['member']->ms_relationships[ $membership->id ];
 							?>
 							<tr>
@@ -48,7 +52,22 @@ class MS_View_Shortcode_Account extends MS_View {
 								<?php endif; ?>
 								<td><?php echo esc_html( $ms_relationship->expire_date ); ?></td>
 							</tr>
-						<?php endforeach; ?>
+						<?php
+						endforeach;
+
+						if ( $empty ) {
+							$cols = 3;
+							if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+								$cols += 1;
+							}
+
+							printf(
+								'<tr><td colspan="%1$s">%2$s</td></tr>',
+								$cols,
+								__( '(No Membership)', MS_TEXT_DOMAIN )
+							);
+						}
+						?>
 					</table>
 				<?php else : ?>
 					<?php _e( 'No memberships', MS_TEXT_DOMAIN ); ?>
