@@ -488,8 +488,8 @@ class MS_View_Settings_Edit extends MS_View {
 				'class' => 'ms-comm-subject widefat',
 			),
 
-			'message' => array(
-				'id' => 'message',
+			'email_body' => array(
+				'id' => 'email_body',
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
 				'value' => @$comm->description,
 				'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
