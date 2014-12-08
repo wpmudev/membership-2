@@ -153,10 +153,16 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			$step
 		);
 
+		if ( is_user_logged_in() ) {
+			$current = MS_Model_Pages::MS_PAGE_MEMBERSHIPS;
+		} else {
+			$current = MS_Model_Pages::MS_PAGE_REGISTER;
+		}
+
 		$url = add_query_arg(
 			'_wpnonce',
 			wp_create_nonce( $action ),
-			$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS )
+			$ms_pages->get_page_url( $current )
 		);
 
 		foreach ( $fields as $field ) {
@@ -205,8 +211,15 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			);
 		}
 		$price = apply_filters( 'ms_membership_price', $price, $membership );
+
+		if ( is_user_logged_in() ) {
+			$current = MS_Model_Pages::MS_PAGE_MEMBERSHIPS;
+		} else {
+			$current = MS_Model_Pages::MS_PAGE_REGISTER;
+		}
+
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+		$url = $ms_pages->get_page_url( $current );
 
 		?>
 		<form action="<?php echo esc_url( $url ); ?>" class="ms-membership-form" method="post">
