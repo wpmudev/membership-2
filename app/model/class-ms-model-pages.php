@@ -385,7 +385,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			}
 
 			if ( ! empty( $page_id ) ) {
-				$ms_page->id = $this->get_page( $page_type );
+				$ms_page = $this->get_page( $page_type );
 				if ( $page_id == $ms_page->id ) {
 					$ms_page_type = $page_type;
 				}
