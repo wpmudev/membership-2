@@ -380,7 +380,7 @@ class MS_Controller_Settings extends MS_Controller {
 						break;
 					}
 
-					$fields = array( 'type', 'subject', 'message' );
+					$fields = array( 'type', 'subject', 'email_body' );
 					if ( isset( $_POST['save_email'] )
 						&& $this->validate_required( $fields )
 					) {
@@ -532,7 +532,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$period = array();
 			$comm->enabled = ! empty( $fields['enabled'] );
 			$comm->subject = @$fields['subject'];
-			$comm->message = @$fields['message'];
+			$comm->message = @$fields['email_body'];
 			$period['period_unit'] = @$fields['period_unit'];
 			$period['period_type'] = @$fields['period_type'];
 			$comm->period = $period;

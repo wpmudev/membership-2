@@ -492,7 +492,10 @@ class MS_View_Settings_Edit extends MS_View {
 				'id' => 'email_body',
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
 				'value' => @$comm->description,
-				'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
+				'field_options' => array(
+					'media_buttons' => false,
+					'editor_class' => 'ms-ajax-update',
+				),
 			),
 
 			'cc_enabled' => array(
@@ -585,7 +588,7 @@ class MS_View_Settings_Edit extends MS_View {
 			}
 
 			MS_Helper_Html::html_element( $fields['subject'] );
-			MS_Helper_Html::html_element( $fields['message'] );
+			MS_Helper_Html::html_element( $fields['email_body'] );
 
 			MS_Helper_Html::html_element( $fields['cc_enabled'] );
 			echo ' &nbsp; ';
