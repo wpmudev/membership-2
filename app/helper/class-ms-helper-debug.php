@@ -26,6 +26,10 @@ if ( ! defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
 	define( 'DEBUG_BACKTRACE_IGNORE_ARGS', 2 );
 }
 
+if ( ! defined( 'WP_DEBUG' ) ) {
+	define( 'WP_DEBUG', false );
+}
+
 if ( ! defined( 'WDEV_DEBUG' ) ) {
 	define( 'WDEV_DEBUG', false );
 }
@@ -87,7 +91,7 @@ class MS_Helper_Debug extends MS_Helper {
 			'function',
 			'class',
 		);
-		$log = array( '**************************** Trace start ****************************' );
+		$log = array( '---------------------------- Trace start ----------------------------' );
 
 		foreach ( $traces as $i => $trace ) {
 			$line = array();
@@ -132,7 +136,7 @@ class MS_Helper_Debug extends MS_Helper {
 		self::debug_trace();
 
 		if ( $fatal ) {
-			exit(1);
+			exit( 1 );
 		}
 	}
 
@@ -141,4 +145,5 @@ class MS_Helper_Debug extends MS_Helper {
 set_error_handler(
 	array( 'MS_Helper_Debug', 'process_error_backtrace')
 );
-
+MS_Helper_Debug::log( '**************************** REQUEST START ****************************' );
+MS_Helper_Debug::log( '***** URL: ' . WDev()->current_url() );
