@@ -183,6 +183,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$args['meta_query']['status']['compare'] = 'IN';
 			$bill_count = MS_Model_Invoice::get_invoice_count( $args );
 			if ( $bill_count > 99 ) { $bill_count = '99+'; }
+			elseif ( ! $bill_count ) { $bill_count = ''; }
 
 			// Submenus definition: Normal mode
 			$pages = array(
@@ -211,9 +212,10 @@ class MS_Controller_Plugin extends MS_Controller {
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Billing', MS_TEXT_DOMAIN ),
 					'menu_title' => sprintf(
-						'%1$s <span class="awaiting-mod"><span class="pending-count">%2$s</span></span>',
+						'%1$s <span class="awaiting-mod count-%3$s"><span class="pending-count">%2$s</span></span>',
 						__( 'Billing', MS_TEXT_DOMAIN ),
-						$bill_count
+						$bill_count,
+						sanitize_html_class( $bill_count, '0' )
 					),
 					'menu_slug' => self::MENU_SLUG . '-billing',
 					'function' => array( $this->controllers['billing'], 'admin_billing' ),
