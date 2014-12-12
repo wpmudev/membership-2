@@ -124,6 +124,8 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	}
 
 	private function get_query_args() {
+		$defaults = MS_Model_Invoice::get_query_args();
+
 		$per_page = $this->get_items_per_page( 'invoice_per_page', 10 );
 		$current_page = $this->get_pagenum();
 
@@ -132,56 +134,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
-		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
-			$args['orderby'] = $_REQUEST['orderby'];
-			$args['order'] = $_REQUEST['order'];
-		}
-
-		/**
-		 * Prepare order by statement.
-		 */
-		$orderby = @$args['orderby'];
-		if ( ! empty( $orderby )
-			&& ! in_array( $orderby, array( 'ID', 'author' ) )
-			&& property_exists( 'MS_Model_Invoice', $orderby )
-		) {
-			$args['meta_key'] = $orderby;
-			if ( in_array( $orderby, array( 'amount', 'total', 'tax_rate' ) ) ) {
-				$args['orderby'] = 'meta_value_num';
-			}
-			else {
-				$args['orderby'] = 'meta_value';
-			}
-		}
-
-		/**
-		 * Search string.
-		 */
-		if ( ! empty( $_REQUEST['s'] ) ) {
-			$args['author_name'] = $_REQUEST['s'];
-		}
-
-		$args['meta_query'] = array();
-
-		/**
-		 * Gateway filter.
-		*/
-		if ( ! empty( $_REQUEST['gateway_id'] ) ) {
-			$args['meta_query']['gateway_id'] = array(
-				'key' => 'gateway_id',
-				'value' => $_REQUEST['gateway_id'],
-			);
-		}
-
-		/**
-		 * Payment status filter.
-		 */
-		if ( ! empty( $_REQUEST['status'] ) ) {
-			$args['meta_query']['status'] = array(
-				'key' => 'status',
-				'value' => $_REQUEST['status'],
-			);
-		}
+		$args = wp_parse_args( $args, $defaults );
 
 		return $args;
 	}
@@ -239,9 +192,28 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		$all_status = MS_Model_Invoice::get_status_types();
 		$views = array();
 
+		$args = $this->get_query_args();
+		$url = remove_query_arg( array( 'status', 'msg' ) );
+		$count = MS_Model_Invoice::get_invoice_count( $args );
 		$views['all'] = array(
-			'url' => remove_query_arg( array( 'status', 'msg' ) ),
+			'url' => $url,
 			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'count' => $count,
+		);
+
+		$url = remove_query_arg( array( 'status', 'msg' ) );
+		$url = add_query_arg( 'status', 'open', $url );
+		$args = $this->get_query_args();
+		$args['meta_query']['status']['value'] = array(
+			MS_Model_Invoice::STATUS_BILLED,
+			MS_Model_Invoice::STATUS_PENDING,
+		);
+		$args['meta_query']['status']['compare'] = 'IN';
+		$count = MS_Model_Invoice::get_invoice_count( $args );
+		$views['open'] = array(
+			'url' => $url,
+			'label' => __( 'Billed or Pending', MS_TEXT_DOMAIN ),
+			'count' => $count,
 		);
 
 		foreach ( $all_status as $status => $desc ) {

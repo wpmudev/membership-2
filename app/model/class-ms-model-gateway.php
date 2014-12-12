@@ -397,93 +397,97 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$this
 		);
 
-		$ms_relationship = MS_Factory::load(
-			'MS_Model_Membership_Relationship',
-			$invoice->ms_relationship_id
-		);
-		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
-		$membership = $ms_relationship->get_membership();
+		if ( ! $invoice->ms_relationship_id ) {
+			MS_Helper_Debug::log( 'Cannot process transaction: No relationship defined (inv #' . $invoice->id  .')' );
+		} else {
+			$ms_relationship = MS_Factory::load(
+				'MS_Model_Membership_Relationship',
+				$invoice->ms_relationship_id
+			);
+			$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
+			$membership = $ms_relationship->get_membership();
 
-		switch ( $invoice->status ) {
-			case MS_Model_Invoice::STATUS_BILLED:
-				break;
+			switch ( $invoice->status ) {
+				case MS_Model_Invoice::STATUS_BILLED:
+					break;
 
-			case MS_Model_Invoice::STATUS_PAID:
-				if ( $invoice->total > 0 ) {
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $ms_relationship );
-				}
-				if ( $invoice->coupon_id ) {
-					$coupon = MS_Factory::load( 'MS_Model_Coupon', $invoice->coupon_id );
-					$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
-					$coupon->used++;
-					$coupon->save();
-				}
-
-				// Check for moving memberships
-				if ( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status
-					&& $ms_relationship->move_from_id
-					&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
-				) {
-					$move_from = MS_Model_Membership_Relationship::get_membership_relationship(
-						$ms_relationship->user_id,
-						$ms_relationship->move_from_id
-					);
-
-					if ( $move_from->is_valid() ) {
-						if ( $this->pro_rate && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE ) ) {
-							// if allow pro rate, immediatly deactivate
-							$move_from->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
-						} else {
-							// if not, cancel it, and allow using it until expires
-							$move_from->set_status( MS_Model_Membership_Relationship::STATUS_CANCELED );
-						}
-						$move_from->save();
+				case MS_Model_Invoice::STATUS_PAID:
+					if ( $invoice->total > 0 ) {
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $ms_relationship );
 					}
-				}
+					if ( $invoice->coupon_id ) {
+						$coupon = MS_Factory::load( 'MS_Model_Coupon', $invoice->coupon_id );
+						$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
+						$coupon->used++;
+						$coupon->save();
+					}
 
-				// The trial period info gets updated after MS_Model_Membership_Relationship::config_period()
-				$trial_period = $ms_relationship->is_trial_eligible();
-				$ms_relationship->current_invoice_number = max(
-					$ms_relationship->current_invoice_number,
-					$invoice->invoice_number + 1
-				);
-				$member->is_member = true;
-				$member->active = true;
-				$ms_relationship->config_period();
-				$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
+					// Check for moving memberships
+					if ( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status
+						&& $ms_relationship->move_from_id
+						&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+					) {
+						$move_from = MS_Model_Membership_Relationship::get_membership_relationship(
+							$ms_relationship->user_id,
+							$ms_relationship->move_from_id
+						);
 
-				// Generate next invoice
-				if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
-					|| $trial_period
-				) {
-					$next_invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-					$next_invoice->gateway_id = $this->id;
-					$next_invoice->save();
-				}
-				break;
+						if ( $move_from->is_valid() ) {
+							if ( $this->pro_rate && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE ) ) {
+								// if allow pro rate, immediatly deactivate
+								$move_from->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
+							} else {
+								// if not, cancel it, and allow using it until expires
+								$move_from->set_status( MS_Model_Membership_Relationship::STATUS_CANCELED );
+							}
+							$move_from->save();
+						}
+					}
 
-			case MS_Model_Invoice::STATUS_FAILED:
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
-				break;
+					// The trial period info gets updated after MS_Model_Membership_Relationship::config_period()
+					$trial_period = $ms_relationship->is_trial_eligible();
+					$ms_relationship->current_invoice_number = max(
+						$ms_relationship->current_invoice_number,
+						$invoice->invoice_number + 1
+					);
+					$member->is_member = true;
+					$member->active = true;
+					$ms_relationship->config_period();
+					$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
 
-			case MS_Model_Invoice::STATUS_DENIED:
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
-				break;
+					// Generate next invoice
+					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
+						|| $trial_period
+					) {
+						$next_invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+						$next_invoice->gateway_id = $this->id;
+						$next_invoice->save();
+					}
+					break;
 
-			case MS_Model_Invoice::STATUS_PENDING:
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $ms_relationship );
-				break;
+				case MS_Model_Invoice::STATUS_FAILED:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
+					break;
 
-			default:
-				do_action( 'ms_model_gateway_process_transaction', $invoice );
-				break;
+				case MS_Model_Invoice::STATUS_DENIED:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
+					break;
+
+				case MS_Model_Invoice::STATUS_PENDING:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $ms_relationship );
+					break;
+
+				default:
+					do_action( 'ms_model_gateway_process_transaction', $invoice );
+					break;
+			}
+
+			$member->save();
+			$ms_relationship->gateway_id = $this->id;
+			$ms_relationship->save();
+			$invoice->gateway_id = $this->id;
+			$invoice->save();
 		}
-
-		$member->save();
-		$ms_relationship->gateway_id = $this->id;
-		$ms_relationship->save();
-		$invoice->gateway_id = $this->id;
-		$invoice->save();
 
 		return apply_filters(
 			'ms_model_gateway_processed_transaction',

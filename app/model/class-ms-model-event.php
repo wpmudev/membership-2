@@ -482,8 +482,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 								$membership->name
 							);
 						}
-					}
-					else {
+					} else {
 						throw new Exception(
 							__( 'Invalid Membership Relationship', MS_TEXT_DOMAIN )
 						);

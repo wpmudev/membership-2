@@ -174,8 +174,16 @@ class MS_Controller_Plugin extends MS_Controller {
 					'function' => array( $this->controllers['membership'], 'page_setup_protected_content' ),
 				);
 			}
-		}
-		else {
+		} else {
+			$args = MS_Model_Invoice::get_query_args();
+			$args['meta_query']['status']['value'] = array(
+				MS_Model_Invoice::STATUS_BILLED,
+				MS_Model_Invoice::STATUS_PENDING,
+			);
+			$args['meta_query']['status']['compare'] = 'IN';
+			$bill_count = MS_Model_Invoice::get_invoice_count( $args );
+			if ( $bill_count > 99 ) { $bill_count = 99; }
+
 			// Submenus definition: Normal mode
 			$pages = array(
 				'memberships' => array(
@@ -202,7 +210,11 @@ class MS_Controller_Plugin extends MS_Controller {
 				'billing' => array(
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Billing', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Billing', MS_TEXT_DOMAIN ),
+					'menu_title' => sprintf(
+						'%1$s <span class="badge">%2$s</span>',
+						__( 'Billing', MS_TEXT_DOMAIN ),
+						$bill_count
+					),
 					'menu_slug' => self::MENU_SLUG . '-billing',
 					'function' => array( $this->controllers['billing'], 'admin_billing' ),
 				),
