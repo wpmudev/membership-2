@@ -517,8 +517,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			if ( ! empty( $_POST['error'] ) ) {
 				$data['error'] = $_POST['error'];
 			}
-		}
-		else {
+		} else {
 			MS_Helper_Debug::log( 'Error: missing POST params' );
 			MS_Helper_Debug::log( $_POST );
 			return $content;
@@ -532,9 +531,8 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			if ( ! empty( $_POST['remove_coupon_code'] ) ) {
 				$coupon->remove_coupon_application( $member->id, $membership_id );
-				$coupon = MS_Factory::create( ' MS_Model_Coupon' );
-			}
-			elseif ( isset( $_POST['apply_coupon_code'] ) ) {
+				$coupon = MS_Factory::load( 'MS_Model_Coupon' );
+			} elseif ( isset( $_POST['apply_coupon_code'] ) ) {
 				if ( $coupon->is_valid_coupon( $membership_id ) ) {
 					$coupon->save_coupon_application( $ms_relationship );
 					$data['coupon_valid'] = true;
@@ -543,9 +541,8 @@ class MS_Controller_Frontend extends MS_Controller {
 					$data['coupon_valid'] = false;
 				}
 			}
-		}
-		else {
-			$coupon = MS_Factory::create( 'MS_Model_Coupon' );
+		} else {
+			$coupon = MS_Factory::load( 'MS_Model_Coupon' );
 		}
 
 		$data['coupon'] = $coupon;
@@ -561,8 +558,12 @@ class MS_Controller_Frontend extends MS_Controller {
 		$data['member'] = $member;
 		$data['ms_relationship'] = $ms_relationship;
 
-		$view = MS_Factory::create( 'MS_View_Frontend_Payment' );
-		$view->data = apply_filters( 'ms_view_frontend_payment_data', $data, $this );
+		$view = MS_Factory::load( 'MS_View_Frontend_Payment' );
+		$view->data = apply_filters(
+			'ms_view_frontend_payment_data',
+			$data,
+			$this
+		);
 
 		return apply_filters(
 			'ms_controller_frontend_payment_table',
