@@ -318,11 +318,13 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 			$u_agent = $_SERVER['HTTP_USER_AGENT'];
 			if ( false === strpos( $u_agent, 'PayPal' ) ) {
 				// Very likely someone tried to open the URL manually. Redirect to home page
+				$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
+				MS_Helper_Debug::log( $notes );
 				wp_safe_redirect( home_url() );
 				exit;
 			} else {
-				header( 'Status: 404 Not Found' );
-				$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
+				status_header( 404 );
+				$notes = 'Error: Missing POST variables. Identification is not possible.';
 				MS_Helper_Debug::log( $notes );
 				exit;
 			}
@@ -381,7 +383,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					$ms_relationship
 				);
 				//Disable user @todo
-// 				$member->active = false;
+//				$member->active = false;
 				break;
 
 			default:

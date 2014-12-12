@@ -135,7 +135,10 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		$this->name = __( 'PayPal Standard Gateway', MS_TEXT_DOMAIN );
 
 		if ( $this->active ) {
-			$this->add_filter( 'ms_model_invoice_get_status', 'gateway_custom_status' );
+			$this->add_filter(
+				'ms_model_invoice_get_status',
+				'gateway_custom_status'
+			);
 		}
 	}
 
@@ -366,12 +369,14 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 			$u_agent = $_SERVER['HTTP_USER_AGENT'];
 			if ( false === strpos( $u_agent, 'PayPal' ) ) {
 				// Very likely someone tried to open the URL manually. Redirect to home page
+				$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
+				MS_Helper_Debug::log( $notes );
 				wp_safe_redirect( home_url() );
 				exit;
 			} else {
 				// PayPal did provide invalid details...
-				header( 'Status: 404 Not Found' );
-				$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
+				status_header( 404 );
+				$notes = 'Error: Missing POST variables. Identification is not possible.';
 				MS_Helper_Debug::log( $notes );
 			}
 			exit;
