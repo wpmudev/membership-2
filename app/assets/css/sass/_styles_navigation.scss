@@ -20,35 +20,3 @@
 		}
 	}
 }
-
-/* Badges in the WP Admin Menu */
-#adminmenu {
-	.wp-submenu {
-		li {
-			position: relative;
-
-			.badge {
-				background: #999;
-				color: #FFF;
-				padding: 0 4px;
-				float: right;
-				border-radius: 20px;
-				text-align: center;
-				max-width: 15px;
-				white-space: nowrap;
-				line-height: 19px;
-				position: absolute;
-				right: 5px;
-				top: 3px;
-				font-size: 11px;
-			}
-
-			&.current,
-			&:hover {
-				.badge {
-					background: #A30;
-				}
-			}
-		}
-	}
-}
