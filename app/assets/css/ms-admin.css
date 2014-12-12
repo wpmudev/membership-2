@@ -1404,6 +1404,20 @@
 #wpwrap .ms-wrap .gateways .mode-live {
   font-weight: bold;
 }
+#wpwrap .ms-wrap .gateways .offline-flag {
+  display: none;
+}
+#wpwrap .ms-wrap .gateways .is-offline {
+  /* PayPal Standard does not work in offline mode */
+}
+#wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_standard .offline-flag, #wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_single .offline-flag {
+  display: inline-block;
+}
+#wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_standard .offline-flag:before, #wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_single .offline-flag:before {
+  content: '\f071';
+  margin-left: 6px;
+  color: #B30;
+}
 #wpwrap .ms-wrap #search_options {
   float: left;
   height: 28px;

@@ -100,7 +100,10 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @return array
 	 */
 	protected function get_sortable_columns() {
-		return apply_filters( 'ms_helper_list_table_gateway_sortable_columns', array() );
+		return apply_filters(
+			'ms_helper_list_table_gateway_sortable_columns',
+			array()
+		);
 	}
 
 	/**
@@ -135,19 +138,25 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @return string HTML code to display in the list.
 	 */
 	protected function column_name( MS_Model_Gateway $item ) {
-		$html = sprintf( '<div>%s %s</div>', $item->name, $item->description );
+		$html = sprintf(
+			'<span class="title">%1$s %2$s<span class="ms-fa offline-flag" title="%3$s"></span></span>',
+			$item->name,
+			$item->description,
+			__( 'Website seems to be not publicly available. This payment method might not work.', MS_TEXT_DOMAIN )
+		);
+
 		$actions = array(
-				sprintf(
-					'<a href="#" data-ms-dialog="Gateway_%s_Dialog">%s</a>',
-					esc_attr( $item->id ),
-					__( 'Configure', MS_TEXT_DOMAIN )
-				),
-				sprintf(
-					'<a href="?page=%s&gateway_id=%s">%s</a>',
-					MS_Controller_Plugin::MENU_SLUG . '-billing',
-					$item->id,
-					__( 'View Transactions', MS_TEXT_DOMAIN )
-				),
+			sprintf(
+				'<a href="#" data-ms-dialog="Gateway_%s_Dialog">%s</a>',
+				esc_attr( $item->id ),
+				__( 'Configure', MS_TEXT_DOMAIN )
+			),
+			sprintf(
+				'<a href="?page=%s&gateway_id=%s">%s</a>',
+				MS_Controller_Plugin::MENU_SLUG . '-billing',
+				$item->id,
+				__( 'View Transactions', MS_TEXT_DOMAIN )
+			),
 		);
 
 		$actions = apply_filters(
@@ -156,7 +165,11 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 			$item
 		);
 
-		return sprintf( '%1$s %2$s', $html, $this->row_actions( $actions ) );
+		return sprintf(
+			'%1$s %2$s',
+			$html,
+			$this->row_actions( $actions )
+		);
 	}
 
 	/**
@@ -237,8 +250,9 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @param  MS_Model_Gateway $item
 	 * @return string
 	 */
-	public function single_row_class( MS_Model_Gateway $item ) {
+	public function single_row_class( $item ) {
 		$class = 'gateway-' . $item->id;
+		$is_online = WDev()->is_online( home_url() );
 
 		if ( $item->is_configured() ) {
 			$class .= ' is-configured';
@@ -250,6 +264,12 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 			$class .= ' is-live';
 		} else {
 			$class .= ' is-sandbox';
+		}
+
+		if ( ! $is_online ) {
+			$class .= ' is-offline';
+		} else {
+			$class .= ' is-online';
 		}
 
 		return $class;

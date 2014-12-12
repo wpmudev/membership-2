@@ -662,6 +662,9 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Handle payment gateway return IPNs.
 	 *
 	 * Used by Paypal gateways.
+	 * A redirection rule is set up in the main MS_Plugin object
+	 * (protected-content.php):
+	 * /ms-payment-return/XYZ becomes index.php?paymentgateway=XYZ
 	 *
 	 * Related action hooks:
 	 * - pre_get_posts
@@ -673,7 +676,6 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @param WP_Query $wp_query The WordPress query object
 	 */
 	public function handle_payment_return( $wp_query ) {
-
 		if ( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			$gateway = $wp_query->query_vars['paymentgateway'];
 			do_action(

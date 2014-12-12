@@ -181,14 +181,13 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 		if ( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) )
 			&& ! empty( $_POST['custom'] )
 		) {
-			if ( self::MODE_LIVE == $this->mode ) {
+			if ( $this->is_live_mode() ) {
 				$domain = 'https://www.paypal.com';
-			}
-			else {
+			} else {
 				$domain = 'https://www.sandbox.paypal.com';
 			}
 
-			//Paypal post authenticity verification
+			// Paypal post authenticity verification
 			$ipn_data = (array) stripslashes_deep( $_POST );
 			$ipn_data['cmd'] = '_notify-validate';
 			$response = wp_remote_post(
@@ -207,13 +206,11 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				&& 'VERIFIED' == $response['body']
 			) {
 				MS_Helper_Debug::log( 'PayPal Transaction Verified' );
-			}
-			else {
+			} else {
 				$error = 'Response Error: Unexpected transaction response';
 				MS_Helper_Debug::log( $error );
 				MS_Helper_Debug::log( $response );
-				echo $error;
-				exit;
+				exit( $error );
 			}
 
 			if ( empty( $_POST['custom'] ) ) {
@@ -245,8 +242,7 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 					case 'Processed':
 						if ( $amount == $invoice->total ) {
 							$status = MS_Model_Invoice::STATUS_PAID;
-						}
-						else {
+						} else {
 							$notes = __( 'Payment amount differs from invoice total.', MS_TEXT_DOMAIN );
 							$status = self::STATUS_DENIED;
 						}
@@ -358,21 +354,33 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				$this->process_transaction( $invoice );
 				$invoice->save();
 			}
+
 			do_action(
 				'ms_model_gateway_paypal_standard_payment_processed_' . $status,
 				$invoice,
 				$ms_relationship
 			);
-		}
-		else {
+		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
-			header( 'Status: 404 Not Found' );
-			$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
-			MS_Helper_Debug::log( $notes );
+
+			$u_agent = $_SERVER['HTTP_USER_AGENT'];
+			if ( false === strpos( $u_agent, 'PayPal' ) ) {
+				// Very likely someone tried to open the URL manually. Redirect to home page
+				wp_safe_redirect( home_url() );
+				exit;
+			} else {
+				// PayPal did provide invalid details...
+				header( 'Status: 404 Not Found' );
+				$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
+				MS_Helper_Debug::log( $notes );
+			}
 			exit;
 		}
 
-		do_action( 'ms_model_gateway_paypal_standard_handle_return_after', $this );
+		do_action(
+			'ms_model_gateway_paypal_standard_handle_return_after',
+			$this
+		);
 	}
 
 	/**
