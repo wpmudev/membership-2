@@ -446,6 +446,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			$event = MS_Factory::create( 'MS_Model_Event' );
 			$event->type = $type;
 			$event->topic = self::get_topic( $type );
+			$description = '';
 
 			switch ( $event->topic ) {
 				case self::TOPIC_PAYMENT:
@@ -469,14 +470,13 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 						);
 
 						if ( self::TOPIC_PAYMENT == $event->topic ) {
-							$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+							$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship, false );
 							$description = sprintf(
 								self::get_description( $type ),
 								$membership->name,
 								$invoice->id
 							);
-						}
-						else {
+						} else {
 							$description = sprintf(
 								self::get_description( $type ),
 								$membership->name
@@ -498,8 +498,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 							$member->name,
 							$type
 						);
-					}
-					elseif ( $data instanceof MS_Model_Membership_Relationship ) {
+					} elseif ( $data instanceof MS_Model_Membership_Relationship ) {
 						$ms_relationship = $data;
 						$membership = $ms_relationship->get_membership();
 						$member = MS_Factory::load(
@@ -531,12 +530,9 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 			if ( ! self::is_duplicate( $event, $data ) ) {
 				$event->save();
 
-				/*
-				 *  Hook to these actions to handle event notifications. e.g. auto communication.
-				 */
+				//  Hook to these actions to handle event notifications. e.g. auto communication.
 				do_action( "ms_model_event_$type", $event, $data );
-			}
-			else {
+			} else {
 				$event = null;
 			}
 		}

@@ -2,30 +2,32 @@
 
 class MS_View_Shortcode_Membership_Form extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$relationships = $this->data['member']->ms_relationships;
+		$class = $this->data['member']->has_membership() ? 'ms-alert-success' : '';
 
 		ob_start();
 		if ( ! MS_Model_Member::is_logged_user() ) {
 			$this->login_html();
-		}
-		else {
+		} else {
 			?>
 			<div class="ms-membership-form-wrapper">
 				<legend><?php _e( 'Your Membership', MS_TEXT_DOMAIN ) ?></legend>
-				<p class="ms-alert-box <?php echo $this->data['member']->has_membership() ? 'ms-alert-success' : ''; ?>">
+				<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
 					<?php
-						if ( $this->data['member']->has_membership() ) {
-							_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
-							foreach ( $this->data['member']->ms_relationships as $membership_relationship ){
-								$this->membership_box_html( $membership_relationship->get_membership(), MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL );
-							}
+					if ( $this->data['member']->has_membership() ) {
+						_e( 'Your current subscriptions are listed here. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN );
+
+						foreach ( $relationships as $membership_relationship ) {
+							$this->membership_box_html(
+								$membership_relationship->get_membership(),
+								MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL
+							);
 						}
-						else {
-							_e( 'We have the following subscriptions available for our site. To join, simply click on the <strong>Sign Up</strong> button and then complete the registration details.', MS_TEXT_DOMAIN );
-						}
+					} else {
+						_e( 'We have the following subscriptions available for our site. To join, simply click on the <strong>Sign Up</strong> button and then complete the registration details.', MS_TEXT_DOMAIN );
+					}
 					?>
 				</p>
 				<?php if ( $this->data['member']->has_membership() && ! empty( $this->data['memberships'] ) ) { ?>
@@ -75,23 +77,30 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 		$price = apply_filters( 'ms_membership_price', $price, $membership );
 
 		?>
-		<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ) ?>" class="ms-membership-details-wrapper">
+		<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ) ?>"
+			class="ms-membership-details-wrapper ms-memberships">
 			<div class="ms-top-bar">
-				<span class="ms-title"><?php echo $membership->name; ?></span>
+				<span class="ms-title"><?php echo esc_html( $membership->name ); ?></span>
 			</div>
 			<div class="ms-price-details">
-				<div class="ms-description"><?php echo $membership->description; ?></div>
-				<div class="ms-price"><?php echo $price; ?></div>
+				<div class="ms-description"><?php echo '' . $membership->description; ?></div>
+				<div class="ms-price"><?php echo esc_html( $price ); ?></div>
 			</div>
 			<div class="ms-bottom-bar">
 				<span class="ms-link">
 				<?php
-					$query_args = array( 'action' => $action, 'membership' => $membership->id ) ;
-					if ( ! empty( $move_from_id ) ) {
-						$query_args[ 'move_from' ] = $move_from_id;
-					}
-					$link = wp_nonce_url( add_query_arg( $query_args ), $action );
-					$class = apply_filters( 'ms_membership_form_button_class', 'ms-signup-button' );
+				$query_args = array(
+					'action' => $action,
+					'membership' => $membership->id,
+				);
+				if ( ! empty( $move_from_id ) ) {
+					$query_args[ 'move_from' ] = $move_from_id;
+				}
+				$link = wp_nonce_url( add_query_arg( $query_args ), $action );
+				$class = apply_filters(
+					'ms_membership_form_button_class',
+					'ms-signup-button'
+				);
 				?>
 				<a href="<?php echo esc_url( $link ) ?>" class="<?php echo esc_attr( $class ); ?>">
 					<?php echo esc_html( $this->data[ "{$action}_text" ] ); ?>
@@ -109,7 +118,7 @@ class MS_View_Shortcode_Membership_Form extends MS_View {
 			<div class="ms-alert-box ms-alert-error">
 				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
 			</div>
-			<?php echo do_shortcode( '[ms-membership-login]' ); ?>
+			<?php echo '' . do_shortcode( '[ms-membership-login]' ); ?>
 		</div>
 		<?php
 		}

@@ -231,7 +231,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			}
 			?>
 			<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ); ?>"
-				class="ms-membership-details-wrapper">
+				class="ms-membership-details-wrapper ms-signup">
 				<div class="ms-top-bar">
 					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
 				</div>
@@ -259,6 +259,11 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					);
 
 					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL === $action ) {
+						/**
+						 * PayPal Standard Gateway uses a special Cancel button.
+						 *
+						 * @see MS_Controller_Gateway
+						 */
 						$button = apply_filters(
 							'ms_view_shortcode_membership_signup_cancel_button',
 							$button,

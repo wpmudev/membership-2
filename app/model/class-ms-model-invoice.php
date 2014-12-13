@@ -522,7 +522,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	public function get_notes_desc() {
 		$desc = $this->notes;
 		if ( is_array( $desc ) ) {
-			$desc = implode( '\n', $desc );
+			$desc = implode( "\n", $desc );
 		}
 
 		return apply_filters(
@@ -879,7 +879,6 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
 	public function __get( $property ) {
-
 		$value = null;
 
 		if ( property_exists( $this, $property ) ) {
@@ -898,7 +897,12 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_invoice__get', $value, $property, $this );
+		return apply_filters(
+			'ms_model_invoice__get',
+			$value,
+			$property,
+			$this
+		);
 	}
 
 	/**

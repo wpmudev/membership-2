@@ -398,12 +398,16 @@ class MS_Controller_Gateway extends MS_Controller {
 				'ms_view_gateway_cancel_button_data',
 				$data
 			);
-			$button = $view->to_html();
+			$new_button = $view->get_button();
+		}
+
+		if ( ! $new_button ) {
+			$new_button = $button;
 		}
 
 		return apply_filters(
 			'ms_controller_gateway_cancel_button',
-			$button,
+			$new_button,
 			$ms_relationship,
 			$this
 		);

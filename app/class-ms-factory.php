@@ -90,6 +90,8 @@ class MS_Factory {
 	 */
 	public static function load( $class, $model_id = 0 ) {
 		$model = null;
+		$class = trim( $class );
+		$model_id = absint( $model_id );
 		$key = $class . '-' . $model_id;
 
 		if ( class_exists( $class ) && ! isset( self::$singleton[$key] ) ) {

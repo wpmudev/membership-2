@@ -139,12 +139,10 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 				),
 			);
 			$this->data['action_url'] = null;
-		}
-		else {
+		} else {
 			if ( $gateway->is_live_mode() ) {
 				$this->data['action_url'] = 'https://www.paypal.com/cgi-bin/webscr';
-			}
-			else {
+			} else {
 				$this->data['action_url'] = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 			}
 		}
@@ -157,17 +155,15 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 		);
 
 		// custom pay button defined in gateway settings
-		if ( ! empty( $gateway->pay_button_url ) ) {
-			if ( strpos( $gateway->pay_button_url, 'http' ) !== 0 ) {
-				$fields['submit']['value'] = $gateway->pay_button_url;
-			}
-			else {
+		$custom_label = $gateway->pay_button_url;
+		if ( ! empty( $custom_label ) ) {
+			if ( strpos( $custom_label, 'http' ) === 0 ) {
+				$fields['submit']['value'] = $custom_label;
+			} else {
 				$fields['submit'] = array(
 					'id' => 'submit',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => $gateway->pay_button_url
-						? $gateway->pay_button_url
-						: __( 'PayPal', MS_TEXT_DOMAIN ),
+					'value' => $custom_label,
 				);
 			}
 		}

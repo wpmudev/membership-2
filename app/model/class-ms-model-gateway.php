@@ -415,6 +415,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 					if ( $invoice->total > 0 ) {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $ms_relationship );
 					}
+
 					if ( $invoice->coupon_id ) {
 						$coupon = MS_Factory::load( 'MS_Model_Coupon', $invoice->coupon_id );
 						$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
