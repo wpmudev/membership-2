@@ -45,7 +45,7 @@ class MS_View_Frontend_Payment extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<legend><?php _e( 'Join Membership', MS_TEXT_DOMAIN ) ?></legend>
 			<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
-				<?php echo $msg; ?>
+				<?php echo '' . $msg; ?>
 			</p>
 			<table class="ms-purchase-table">
 				<tr>
@@ -64,7 +64,7 @@ class MS_View_Frontend_Payment extends MS_View {
 						</td>
 						<td class="ms-desc-column" colspan="2">
 							<span class="ms-membership-description"><?php
-								echo $membership->description;
+								echo '' . $membership->description;
 							?></span>
 						</td>
 					</tr>
@@ -77,9 +77,12 @@ class MS_View_Frontend_Payment extends MS_View {
 					<td class="ms-details-column">
 						<?php
 						if ( $membership->price > 0 ) {
-							echo $invoice->currency . ' ' . number_format( $membership->price, 2 );
-						}
-						else {
+							printf(
+								'%s %s',
+								$invoice->currency,
+								number_format( $membership->price, 2 )
+							);
+						} else {
 							_e( 'Free', MS_TEXT_DOMAIN );
 						}
 						?>
@@ -113,7 +116,11 @@ class MS_View_Frontend_Payment extends MS_View {
 						<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
 					</td>
 					<td class="ms-price-column ms-total">
-						<?php echo $invoice->currency . ' '. number_format( $invoice->total, 2 ); ?>
+						<?php printf(
+							'%s %s',
+							$invoice->currency,
+							number_format( $invoice->total, 2 )
+						); ?>
 					</td>
 				</tr>
 
@@ -123,7 +130,7 @@ class MS_View_Frontend_Payment extends MS_View {
 							<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
 						</td>
 						<td class="ms-desc-column"><?php
-							echo $this->data['ms_relationship']->calc_trial_expire_date(
+							echo '' . $this->data['ms_relationship']->calc_trial_expire_date(
 								MS_Helper_Period::current_date()
 							);
 						?></td>
@@ -132,7 +139,7 @@ class MS_View_Frontend_Payment extends MS_View {
 				<tr>
 					<td class="ms-desc-column" colspan="2">
 						<span class="ms-membership-description"><?php
-							echo $this->data['ms_relationship']->get_payment_description();
+							echo '' . $this->data['ms_relationship']->get_payment_description( $invoice );
 						?></span>
 					</td>
 				</tr>
@@ -234,10 +241,10 @@ class MS_View_Frontend_Payment extends MS_View {
 				<form method="post">
 					<?php if ( $coupon_message ) : ?>
 						<p class="ms-alert-box <?php echo esc_attr( $class ); ?>"><?php
-							echo $coupon_message;
+							echo '' . $coupon_message;
 						?></p>
 					<?php endif; ?>
-					<div class="couponEntry">
+					<div class="coupon-entry">
 						<?php if ( ! isset( $this->data['coupon_valid'] ) ) : ?>
 							<div class="coupon-question"><?php
 							_e( 'Have a coupon code?', MS_TEXT_DOMAIN );

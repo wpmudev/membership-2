@@ -685,7 +685,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		);
 		$invoice->description = apply_filters(
 			'ms_model_invoice_description',
-			$ms_relationship->get_payment_description()
+			$ms_relationship->get_payment_description( $invoice )
 		);
 		$invoice->tax_name = $tax['tax_name'];
 		$invoice->tax_rate = $tax['tax_rate'];
