@@ -5,6 +5,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 	public function to_html() {
 		$res_html = '';
 		$res_form = '';
+		$html = '';
 
 		$valid_forms = array(
 			'login',
