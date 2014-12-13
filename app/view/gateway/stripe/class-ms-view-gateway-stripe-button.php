@@ -23,7 +23,7 @@ class MS_View_Gateway_Stripe_Button extends MS_View {
 		ob_start();
 		?>
 		<tr class="<?php echo esc_attr( $row_class ); ?>">
-			<td class='ms-buy-now-column' colspan='2' >
+			<td class="ms-buy-now-column" colspan="2" >
 				<form action="<?php echo esc_url( $action_url ); ?>" method="post">
 					<?php
 					foreach ( $fields as $field ) {
@@ -33,11 +33,12 @@ class MS_View_Gateway_Stripe_Button extends MS_View {
 					<script
 						src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 						data-key="<?php echo esc_attr( $gateway->get_publishable_key() ); ?>"
-						data-amount="<?php echo esc_attr( $invoice->total * 100 ); //amount in cents ?>"
+						data-amount="<?php echo esc_attr( absint( $invoice->total * 100 ) ); //amount in cents ?>"
 						data-name="<?php echo esc_attr( bloginfo( 'name' ) ); ?>"
 						data-description="<?php echo esc_attr( strip_tags( $invoice->description ) ); ?>"
 						data-currency="<?php echo esc_attr( $invoice->currency ); ?>"
 						data-panel-label="<?php echo esc_attr( $gateway->pay_button_url ); ?>"
+						data-label="<?php echo esc_attr( $gateway->pay_button_url ); ?>"
 						data-email="<?php echo esc_attr( $member->email ); ?>"
 						>
 					</script>

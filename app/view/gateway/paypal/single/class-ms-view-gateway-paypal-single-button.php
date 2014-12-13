@@ -75,7 +75,7 @@ class MS_View_Gateway_Paypal_Single_Button extends MS_View {
 			'amount' => array(
 				'id' => 'amount',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $invoice->total,
+				'value' => number_format( $invoice->total ),
 			),
 			'currency_code' => array(
 				'id' => 'currency_code',

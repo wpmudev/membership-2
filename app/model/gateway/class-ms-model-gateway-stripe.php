@@ -239,8 +239,7 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 				if ( ! empty( $customer ) ) {
 					if ( 0 == $invoice->total ) {
 						$this->process_transaction( $invoice );
-					}
-					else {
+					} else {
 						$charge = Stripe_Charge::create(
 							array(
 								'amount' => (int) $invoice->total * 100, // Amount in cents!
@@ -257,12 +256,10 @@ class MS_Model_Gateway_Stripe extends MS_Model_Gateway {
 							$this->process_transaction( $invoice );
 						}
 					}
-				}
-				else {
+				} else {
 					MS_Helper_Debug::log( "Stripe customer is empty for user $member->username" );
 				}
-			}
-			catch( Exception $e ) {
+			} catch( Exception $e ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
 				MS_Helper_Debug::log( $e->getMessage() );
 			}

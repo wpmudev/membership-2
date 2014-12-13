@@ -862,6 +862,9 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			$this->total = 0;
 		}
 
+		// Set precission to 2 decimal points.
+		$this->total = round( $this->total, 2 );
+
 		return apply_filters(
 			'ms_model_invoice_get_total',
 			$this->total,

@@ -210,6 +210,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		} else {
 			$membership_price = $regular_invoice->total;
 		}
+		$membership_price = number_format( $membership_price, 2 );
 
 		$fields['a3'] = array(
 			'id' => 'a3',
