@@ -536,8 +536,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					// Redirect user to the Payment-Completed page.
 					$ms_pages->create_missing_pages();
 					$url = $ms_pages->get_page_url(
-						MS_Model_Pages::MS_PAGE_REG_COMPLETE,
-						false
+						MS_Model_Pages::MS_PAGE_REG_COMPLETE
 					);
 					$url = add_query_arg(
 						array( 'ms_relationship_id' => $ms_relationship->id ),
