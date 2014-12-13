@@ -252,7 +252,7 @@ class MS_View_Settings_Edit extends MS_View {
 								'url' => '',
 								'value' => __( 'View Page', MS_TEXT_DOMAIN ),
 								'target' => '_blank',
-								'data_ms' => array( 'base' => home_url( '?p=' ) ),
+								'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
 							)
 						);
 						?>
