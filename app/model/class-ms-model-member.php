@@ -880,10 +880,6 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean True if user is admin.
 	 */
 	static public function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
-		if ( empty( $user_id ) ) {
-			$user_id = get_current_user_id();
-		}
-
 		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
 			$is_admin = false;
 
@@ -902,11 +898,16 @@ class MS_Model_Member extends MS_Model {
 				$is_admin = $wp_user->has_cap( $capability );
 			}
 
-			self::$_is_admin_user[ $user_id ] = apply_filters(
+			$res = apply_filters(
 				'ms_model_member_is_admin_user',
 				$is_admin,
 				$user_id
 			);
+			self::$_is_admin_user[ $user_id ] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_admin_user[ get_current_user_id() ] = $res;
+			}
 		}
 
 		return self::$_is_admin_user[ $user_id ];
@@ -921,14 +922,14 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean
 	 */
 	static public function is_normal_admin( $user_id = false ) {
-		if ( empty( $user_id ) ) {
-			$user_id = get_current_user_id();
-		}
-
 		if ( ! isset( self::$_is_normal_admin[$user_id] ) ) {
-			self::$_is_normal_admin[$user_id] =
-				self::is_admin_user( $user_id )
+			$res = self::is_admin_user( $user_id )
 				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
+			self::$_is_normal_admin[$user_id] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_normal_admin[ get_current_user_id() ] = $res;
+			}
 		}
 
 		return self::$_is_normal_admin[$user_id];
@@ -943,14 +944,14 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean
 	 */
 	static public function is_simulated_user( $user_id = false ) {
-		if ( empty( $user_id ) ) {
-			$user_id = get_current_user_id();
-		}
-
 		if ( ! isset( self::$_is_simulated_user[$user_id] ) ) {
-			self::$_is_simulated_user[$user_id] =
-				self::is_admin_user( $user_id )
+			$res = self::is_admin_user( $user_id )
 				&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
+			self::$_is_simulated_user[$user_id] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_simulated_user[ get_current_user_id() ] = $res;
+			}
 		}
 
 		return self::$_is_simulated_user[$user_id];
@@ -965,13 +966,14 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean
 	 */
 	static public function is_normal_user( $user_id = false ) {
-		if ( empty( $user_id ) ) {
-			$user_id = get_current_user_id();
-		}
-
 		if ( ! isset( self::$_is_normal_user[$user_id] ) ) {
 			// Simlation is only activated when the current user is an Admin.
-			self::$_is_normal_user[$user_id] = ! self::is_admin_user( $user_id );
+			$res = ! self::is_admin_user( $user_id );
+			self::$_is_normal_user[$user_id] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_normal_user[ get_current_user_id() ] = $res;
+			}
 		}
 
 		return self::$_is_normal_user[$user_id];
