@@ -10,7 +10,7 @@ Change Log:
 - Fix: Membership Pages use default WordPress posts instead of URL
 - Fix: Menu items are correctly generated when a Membership is created
 - Memberships with pending payments can be cancelled by the member
-- Many small bugfixes and minor improvements
+- A ton of small bugfixes and minor improvements
 
 1.0.4.4
 ----------------------------------------------------------------------
