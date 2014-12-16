@@ -216,6 +216,24 @@
 		.mode-live {
 			font-weight: bold;
 		}
+
+		.offline-flag {
+			display: none;
+		}
+
+		.is-offline {
+			/* PayPal Standard does not work in offline mode */
+			&.gateway-paypal_standard .offline-flag,
+			&.gateway-paypal_single .offline-flag {
+				display: inline-block;
+
+				&:before {
+					content: '\f071';
+					margin-left: 6px;
+					color: #B30;
+				}
+			}
+		}
 	}
 
 

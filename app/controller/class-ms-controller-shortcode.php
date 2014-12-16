@@ -47,6 +47,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		if ( MS_Plugin::is_enabled() ) {
+			$simulate = MS_Factory::load( 'MS_Model_Simulate' );
+			if ( MS_Model_Member::is_admin_user() && ! $simulate->is_simulating() ) {
+				add_shortcode(
+					MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+					array( $this, 'hide_shortcode')
+				);
+			}
+
 			add_shortcode(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
 				array( $this, 'membership_register_user' )
@@ -65,6 +73,16 @@ class MS_Controller_Shortcode extends MS_Controller {
 			add_shortcode(
 				MS_Helper_Shortcode::SCODE_MS_PRICE,
 				array( $this, 'membership_price' )
+			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_BUY,
+				array( $this, 'membership_buy' )
+			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_DETAILS,
+				array( $this, 'membership_details' )
 			);
 
 			add_shortcode(
@@ -88,8 +106,18 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK,
+				array( $this, 'membership_account_link' )
+			);
+
+			add_shortcode(
 				MS_Helper_Shortcode::SCODE_MS_INVOICE,
 				array( $this, 'membership_invoice' )
+			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_NOTE,
+				array( $this, 'ms_note' )
 			);
 
 			add_shortcode(
@@ -101,18 +129,24 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Helper_Shortcode::SCODE_RED_NOTE,
 				array( $this, 'ms_red_note' )
 			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_USER,
+				array( $this, 'show_to_user' )
+			);
 		} else {
 			$shortcodes = array(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
 				MS_Helper_Shortcode::SCODE_SIGNUP,
-				MS_Helper_Shortcode::SCODE_UPGRADE,
-				MS_Helper_Shortcode::SCODE_RENEW,
 				MS_Helper_Shortcode::SCODE_MS_TITLE,
 				MS_Helper_Shortcode::SCODE_MS_PRICE,
+				MS_Helper_Shortcode::SCODE_MS_DETAILS,
 				MS_Helper_Shortcode::SCODE_LOGIN,
 				MS_Helper_Shortcode::SCODE_LOGOUT,
 				MS_Helper_Shortcode::SCODE_MS_ACCOUNT,
+				MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK,
 				MS_Helper_Shortcode::SCODE_MS_INVOICE,
+				MS_Helper_Shortcode::SCODE_NOTE,
 				MS_Helper_Shortcode::SCODE_GREEN_NOTE,
 				MS_Helper_Shortcode::SCODE_RED_NOTE,
 			);
@@ -120,6 +154,16 @@ class MS_Controller_Shortcode extends MS_Controller {
 			foreach ( $shortcodes as $shortcode ) {
 				add_shortcode( $shortcode, array( $this, 'ms_no_value' ) );
 			}
+
+			add_shortcode(
+				MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+				array( $this, 'hide_shortcode')
+			);
+
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_USER,
+				array( $this, 'hide_shortcode')
+			);
 		}
 	}
 
@@ -143,6 +187,17 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 	}
 
+
+	/*========================================*\
+	============================================
+	==                                        ==
+	==           SHORTCODE HANDLERS           ==
+	==                                        ==
+	============================================
+	\*========================================*/
+
+
+
 	/**
 	 * Membership register callback function.
 	 *
@@ -151,6 +206,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_register_user( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_register_user_atts',
 			shortcode_atts(
@@ -160,6 +217,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'username' => substr( trim( filter_input( INPUT_POST, 'username' ) ), 0, 50 ),
 					'email' => substr( trim( filter_input( INPUT_POST, 'email' ) ), 0, 50 ),
 					'membership_id' => filter_input( INPUT_POST, 'membership_id' ),
+					'title' => _e( 'Create an Account', MS_TEXT_DOMAIN ),
+					'loginlink' => true,
 					'errors' => '',
 				),
 				$atts
@@ -167,6 +226,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 		$data['action'] = 'register_user';
 		$data['step'] = MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
+		$data['loginlink'] = WDev()->is_true( $data['loginlink'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Register_User' );
 		$view->data = apply_filters( 'ms_view_shortcode_membership_register_user_data', $data, $this );
@@ -182,6 +242,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_signup( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_SIGNUP );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_signup_atts',
 			shortcode_atts(
@@ -210,7 +272,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 		}
 
-		$memberships = MS_Model_Membership::get_signup_membership_list( null, array_keys( $data['ms_relationships'] ) );
+		$memberships = MS_Model_Membership::get_signup_membership_list(
+			null,
+			array_keys( $data['ms_relationships'] )
+		);
 
 		$data['memberships'] = $memberships;
 
@@ -224,6 +289,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			foreach ( $data['member']->ms_relationships as $ms_relationship ) {
+				if ( $ms_relationship->is_visitor_membership() ) { continue; }
+
 				if ( in_array( $ms_relationship->status, $valid_status ) ) {
 					$data['move_from_id'] = $ms_relationship->membership_id;
 					break;
@@ -231,7 +298,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			}
 		}
 
-		$data['action'] = 'membership_signup';
+		$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 		$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Signup' );
@@ -252,6 +319,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_title( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_TITLE );
+
 		$code = '';
 
 		$data = apply_filters(
@@ -265,19 +334,26 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			)
 		);
+		extract( $data );
 
-		if ( ! empty( $data['id'] ) ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
+		if ( ! empty( $id ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 			$code = sprintf(
-				'%1$s %1$s',
-				$data['label'],
+				'%1$s %2$s',
+				$label,
 				$membership->name
 			);
 
 			$code = trim( $code );
 		} else {
-			$code = $data['title'];
+			$code = $title;
 		}
+
+		$code = sprintf(
+			'<span class="ms-membership-title ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
 
 		return apply_filters(
 			'ms_controller_shortcode_membership_title',
@@ -295,7 +371,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_price( $atts ) {
-		$price = 0;
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_PRICE );
+
+		$code = 0;
 
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_price_atts',
@@ -308,29 +386,89 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			)
 		);
+		extract( $data );
 
-		if ( ! empty( $data['id'] ) ) {
-			if ( WDev()->is_true( $data['currency'] ) ) {
+		if ( ! empty( $id ) ) {
+			if ( WDev()->is_true( $currency ) ) {
 				$settings = MS_Factory::load( 'MS_Model_Settings' );
 				$currency = $settings->currency;
 			} else {
 				$currency = '';
 			}
 
-			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
-			$price = sprintf(
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+			$code = sprintf(
 				'%1$s %2$s %3$s',
-				$data['label'],
+				$label,
 				$currency,
 				$membership->price
 			);
 
-			$price = trim( $price );
+			$code = trim( $code );
 		}
+
+		$code = sprintf(
+			'<span class="ms-membership-price ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
 
 		return apply_filters(
 			'ms_controller_shortcode_membership_price',
-			$price,
+			$code,
+			$atts,
+			$this
+		);
+	}
+
+	/**
+	 * Buy membership button.
+	 *
+	 * @since 1.0.4.5
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function membership_buy( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_BUY );
+
+		$code = '';
+
+		$data = apply_filters(
+			'ms_controller_shortcode_membership_buy_atts',
+			shortcode_atts(
+				array(
+					'id' => 0,
+					'label' => __( 'Signup', MS_TEXT_DOMAIN ),
+				),
+				$atts
+			)
+		);
+		extract( $data );
+
+		if ( ! empty( $id ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+			$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
+			$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
+
+			$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Signup' );
+			$view->data = apply_filters(
+				'ms_view_shortcode_membership_signup_data',
+				$data,
+				$this
+			);
+
+			$code = $view->signup_form( $membership, $label );
+		}
+
+		$code = sprintf(
+			'<span class="ms-membership-buy ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
+
+		return apply_filters(
+			'ms_controller_shortcode_membership_buy',
+			$code,
 			$atts,
 			$this
 		);
@@ -344,6 +482,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_details( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_DETAILS );
+
 		$code = '';
 
 		$data = apply_filters(
@@ -356,17 +496,24 @@ class MS_Controller_Shortcode extends MS_Controller {
 				$atts
 			)
 		);
+		extract( $data );
 
-		if ( ! empty( $data['id'] ) ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $data['id'] );
+		if ( ! empty( $id ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 			$code = sprintf(
-				'%1$s %1$s',
-				$data['label'],
+				'%1$s %2$s',
+				$label,
 				$membership->description
 			);
 
 			$code = trim( $code );
 		}
+
+		$code = sprintf(
+			'<span class="ms-membership-details ms-membership-%1$s">%2$s</span>',
+			esc_attr( $id ),
+			$code
+		);
 
 		return apply_filters(
 			'ms_controller_shortcode_membership_details',
@@ -384,6 +531,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function protected_content( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_PROTECTED );
+
 		global $post;
 
 		$setting = MS_Plugin::instance()->settings;
@@ -410,8 +559,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$html .= '</div>';
 
 		return apply_filters(
-			'ms_controller_shortcode_protected_content',
-			$html,
+			'ms_controller_shortcode_membership_price',
+			$price,
+			$atts,
 			$this
 		);
 	}
@@ -424,6 +574,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_login( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_LOGIN );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_login_atts',
 			shortcode_atts(
@@ -468,6 +620,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_logout( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_LOGOUT );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_logout_atts',
 			shortcode_atts(
@@ -497,6 +651,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_account( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_account_atts',
 			shortcode_atts(
@@ -537,9 +693,50 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Account' );
-		$view->data = apply_filters( 'ms_view_shortcode_account_data', $data, $this );
+		$view->data = apply_filters(
+			'ms_view_shortcode_account_data',
+			$data,
+			$this
+		);
 
 		return $view->to_html();
+	}
+
+	/**
+	 * Link to the Membership account page shortcode.
+	 *
+	 * @since 1.0.4.5
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function membership_account_link( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK );
+
+		$html = '';
+
+		$data = apply_filters(
+			'ms_controller_shortcode_membership_account_link_atts',
+			shortcode_atts(
+				array(
+					'label' => __( 'Visit your account page for more information.', MS_TEXT_DOMAIN ),
+				),
+				$atts
+			)
+		);
+
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
+		$html = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
+			$data['label']
+		);
+
+		return apply_filters(
+			'ms_controller_shortcode_protected_content',
+			$html,
+			$this
+		);
 	}
 
 	/**
@@ -550,6 +747,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function membership_invoice( $atts ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MS_INVOICE );
+
 		$data = apply_filters(
 			'ms_controller_shortcode_invoice_atts',
 			shortcode_atts(
@@ -653,18 +852,68 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Green text note shortcode callback function.
+	 * Text note shortcode callback function.
+	 *
+	 * @since 1.0.4.5
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function ms_note( $atts, $content = '' ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_NOTE );
+
+		$atts = apply_filters(
+			'ms_controller_shortcode_note_atts',
+			shortcode_atts(
+				array(
+					'type' => 'info',
+					'class' => '',
+				),
+				$atts,
+				MS_Helper_Shortcode::SCODE_NOTE
+			)
+		);
+
+		$class = $atts['class'];
+
+		switch ( $atts['type'] ) {
+			case 'info':
+			case 'success':
+				$class .= ' ms-alert-success';
+				break;
+
+			case 'error':
+			case 'warning':
+				$class .= ' ms-alert-error';
+				break;
+		}
+
+		$content = sprintf(
+			'<p class="ms-alert-box %1$s">%2$s</p> ',
+			$class,
+			$content
+		);
+
+		$content = do_shortcode( $content );
+
+		return apply_filters(
+			'ms_controller_shortcode_ms_note',
+			$content,
+			$this
+		);
+	}
+
+	/**
+	 * Display a green text note.
 	 *
 	 * @since 1.0.0
+	 * @deprecated  since 1.0.4.5
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_green_note( $atts, $content = '' ) {
-		$content = sprintf(
-			'<p class="%1$s">%2$s</p> ',
-			'ms-alert-box ms-alert-success',
-			$content
-		);
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_GREEN_NOTE );
+
+		$content = $this->ms_note( array( 'type' => 'info' ), $content );
 
 		return apply_filters(
 			'ms_controller_shortcode_ms_green_note',
@@ -674,18 +923,17 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Green text note shortcode callback function.
+	 * Display a red text note.
 	 *
-	 * @since 1.0.4.3
+	 * @since 1.0.0
+	 * @deprecated  since 1.0.4.5
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
 	public function ms_red_note( $atts, $content = '' ) {
-		$content = sprintf(
-			'<p class="%1$s">%2$s</p> ',
-			'ms-alert-box ms-alert-error',
-			$content
-		);
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_RED_NOTE );
+
+		$content = $this->ms_note( array( 'type' => 'warning' ), $content );
 
 		return apply_filters(
 			'ms_controller_shortcode_ms_red_note',
@@ -695,12 +943,88 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Replace shortcodes with empty value.
+	 * Shortcode callback: Show message only to certain users.
 	 *
-	 * All Shortcodes use this callback function when Content Protection is
-	 * disabled.
+	 * @since 1.0.4.5
 	 *
-	 * @since 1.0.4.3
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function show_to_user( $atts, $content = '' ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_USER );
+
+		$data = apply_filters(
+			'ms_controller_shortcode_show_to_user_atts',
+			shortcode_atts(
+				array(
+					'type'     => 'loggedin',
+					'msg'      => '',
+				),
+				$atts
+			)
+		);
+
+		extract( $data );
+		$access = false;
+
+		$user_type = 'guest';
+		if ( is_user_logged_in() ) {
+			$user_type = 'loggedin';
+
+			if ( MS_Model_Member::is_admin_user() ) {
+				$user_type = 'admin';
+			}
+		}
+
+		$class = 'ms-user-is-' . $user_type;
+
+		switch ( $type ) {
+			case 'all':
+				$access = true;
+				break;
+
+			case 'loggedin':
+			case 'login':
+				$access = in_array( $user_type, array( 'loggedin', 'admin' ) );
+				break;
+
+			case 'guest':
+				$access = ($user_type === 'guest' );
+				break;
+
+			case 'admin':
+				$access = ( $user_type === 'admin' );
+				break;
+		}
+
+		if ( ! $access ) {
+			$content = $msg;
+			$class .= ' ms-user-not-' . $type;
+		}
+
+		$content = sprintf(
+			'<div class="ms-user %1$s">%2$s</div>',
+			esc_attr( $class ),
+			do_shortcode( $content )
+		);
+
+		return apply_filters(
+			'ms_controller_shortcode_show_to_user',
+			$content,
+			$this
+		);
+	}
+
+
+	/**
+	 * Special Shortcode Callback: Replace shortcodes with empty value.
+	 *
+	 *     All Shortcodes use this callback function
+	 *     when Content Protection is DISABLED!
+	 *
+	 * @since  1.0.4.3
+	 * @param  mixed[] $atts Shortcode attributes.
+	 * @param  string $content
+	 * @return string
 	 */
 	public function ms_no_value( $atts, $content = '' ) {
 		static $Done = false;
@@ -732,22 +1056,18 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Evaluates if the specified variable is a boolean TRUE value
+	 * Special Shortcode Callback: Strip the shortcode tag without changing the
+	 * original content.
 	 *
-	 * @since  1.0.0
+	 * This is used for Admin users to strip all content-protection tags.
 	 *
-	 * @param  mixed $value The variable to evaluate.
-	 * @return bool
+	 * @since  1.0.4.5
+	 * @param  mixed[] $atts Shortcode attributes.
+	 * @param  string $content
+	 * @return string
 	 */
-	public static function is_true( $value ) {
-		if ( true === $value || false === $value ) {
-			return $value;
-		} else if ( is_string( $value ) ) {
-			return in_array( $value, array( '1', 'on', 'yes', 'true' ) );
-		} else if ( is_scalar( $value ) ) {
-			return ! ! $value;
-		} else {
-			return ! empty( $value );
-		}
+	public function hide_shortcode( $atts, $content = '' ) {
+		return do_shortcode( $content );
 	}
+
 }

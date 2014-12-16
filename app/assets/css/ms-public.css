@@ -178,6 +178,18 @@
   line-height: 24px;
   color: #AA6;
 }
+.ms-membership-form-wrapper .ms-signup-button {
+  float: right;
+  height: auto;
+}
+.ms-membership-form-wrapper .ms-cancel-button {
+  height: auto;
+  line-height: normal;
+  background: #999;
+}
+.ms-membership-form-wrapper .ms-cancel-button:hover, .ms-membership-form-wrapper .ms-cancel-button:focus, .ms-membership-form-wrapper .ms-cancel-button:active {
+  background: #AAA;
+}
 
 .ms-membership-details-wrapper {
   position: relative;
@@ -232,11 +244,6 @@
   list-style-type: none;
 }
 
-.ms-signup-button {
-  float: right;
-  height: auto;
-}
-
 .ms-form-element {
   margin: 1em;
 }
@@ -283,19 +290,33 @@ label.ms-validation-error:before {
 }
 
 /* Login Form */
-.ms-login-form {
+.ms-form {
   margin: 1em;
 }
-.ms-login-form .ms-field:after {
+.ms-form .ms-field:after {
   content: '';
   display: table;
   clear: both;
 }
-.ms-login-form input {
+.ms-form p:first-child {
+  margin-top: 0;
+}
+.ms-form p:last-child {
+  margin-bottom: 0;
+}
+.ms-form.ms-has-labels input {
   float: right;
 }
-.ms-login-form input[type="checkbox"] {
+.ms-form.ms-has-labels input[type="checkbox"] {
   float: none;
+}
+.ms-form.ms-no-labels p {
+  text-align: center;
+}
+.ms-form:after {
+  content: '';
+  display: table;
+  clear: both;
 }
 
 /* Account */
@@ -490,6 +511,20 @@ input[type="image"] {
 }
 #wpwrap .ms-wrap .gateways .mode-live {
   font-weight: bold;
+}
+#wpwrap .ms-wrap .gateways .offline-flag {
+  display: none;
+}
+#wpwrap .ms-wrap .gateways .is-offline {
+  /* PayPal Standard does not work in offline mode */
+}
+#wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_standard .offline-flag, #wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_single .offline-flag {
+  display: inline-block;
+}
+#wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_standard .offline-flag:before, #wpwrap .ms-wrap .gateways .is-offline.gateway-paypal_single .offline-flag:before {
+  content: '\f071';
+  margin-left: 6px;
+  color: #B30;
 }
 #wpwrap .ms-wrap #search_options {
   float: left;

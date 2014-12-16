@@ -8,10 +8,6 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		$desc = MS_Helper_Html::html_element( $fields['is_free'], true );
 		$wrapper_class = $this->data['is_global_payments_set'] ? '' : 'wide';
 
-		if ( 1 == @$_GET['edit'] ) {
-			$this->data[ 'show_next_button' ] = false;
-		}
-
 		ob_start();
 		?>
 
@@ -37,8 +33,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 						foreach ( $this->data['children'] as $child ) {
 							$this->specific_payment_settings( $child );
 						}
-					}
-					else {
+					} else {
 						$this->specific_payment_settings( $this->data['membership'] );
 					}
 					?>
@@ -146,13 +141,14 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		static $First = true;
 
 		$title = sprintf(
-			__( '<span class="ms-item-name">%s</span> Specific Payment Settings:', MS_TEXT_DOMAIN ),
-			$membership->name
+			__( '%s specific payment settings:', MS_TEXT_DOMAIN ),
+			'<span class="ms-item-name">' . $membership->name . '</span>'
 		);
 		$desc = sprintf(
-			__( 'Payment Settings for <span class="ms-bold">%s</span>.', MS_TEXT_DOMAIN ),
-			$membership->name
+			__( 'Payment settings for %s.', MS_TEXT_DOMAIN ),
+			'<span class="ms-bold">' . $membership->name . '</span>'
 		);
+
 		$fields = $this->get_specific_payment_fields( $membership );
 		$type_class = $this->data['is_global_payments_set'] ? '' : 'ms-half right';
 		$state = ($First ? 'open' : 'closed');
@@ -175,7 +171,6 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				</div>
 				<div class="ms-payment-type-wrapper ms-payment-type-date-range">
 					<?php MS_Helper_Html::html_element( $fields['period_date_start'] );?>
-					<span> to </span>
 					<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
 				</div>
 			</div>
@@ -289,6 +284,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 				'id' => 'period_date_end_' . $membership->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $membership->period_date_end,
+				'before' => _x( 'to', 'date range', MS_TEXT_DOMAIN ),
 				'class' => 'ms-ajax-update',
 				'placeholder' => __( 'End Date...', MS_TEXT_DOMAIN ),
 				'data_ms' => array( 'field' => 'period_date_end' ),

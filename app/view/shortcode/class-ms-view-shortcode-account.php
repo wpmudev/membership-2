@@ -3,6 +3,8 @@
 class MS_View_Shortcode_Account extends MS_View {
 
 	public function to_html() {
+		global $post;
+
 		$fields = $this->prepare_fields();
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$signup_url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
@@ -29,7 +31,11 @@ class MS_View_Shortcode_Account extends MS_View {
 							<?php endif; ?>
 							<th><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></th>
 						</tr>
-						<?php foreach ( $this->data['membership'] as $membership ) :
+						<?php
+						$empty = true;
+						foreach ( $this->data['membership'] as $membership ) :
+							if ( $membership->is_visitor_membership() ) { continue; }
+							$empty = false;
 							$ms_relationship = $this->data['member']->ms_relationships[ $membership->id ];
 							?>
 							<tr>
@@ -46,7 +52,22 @@ class MS_View_Shortcode_Account extends MS_View {
 								<?php endif; ?>
 								<td><?php echo esc_html( $ms_relationship->expire_date ); ?></td>
 							</tr>
-						<?php endforeach; ?>
+						<?php
+						endforeach;
+
+						if ( $empty ) {
+							$cols = 3;
+							if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+								$cols += 1;
+							}
+
+							printf(
+								'<tr><td colspan="%1$s">%2$s</td></tr>',
+								$cols,
+								__( '(No Membership)', MS_TEXT_DOMAIN )
+							);
+						}
+						?>
 					</table>
 				<?php else : ?>
 					<?php _e( 'No memberships', MS_TEXT_DOMAIN ); ?>
@@ -133,9 +154,22 @@ class MS_View_Shortcode_Account extends MS_View {
 					</tbody>
 				</table>
 			<?php else :
-				$redirect = add_query_arg( array() );
-				$title = __( 'Your account', MS_TEXT_DOMAIN );
-				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
+				$has_login_form = MS_Helper_Shortcode::has_shortcode(
+					MS_Helper_Shortcode::SCODE_LOGIN,
+					$post->post_content
+				);
+
+				if ( ! $has_login_form ) {
+					$redirect = add_query_arg( array() );
+					$title = __( 'Your account', MS_TEXT_DOMAIN );
+					$scode = sprintf(
+						'[%1$s redirect="%2$s" title="%3$s"]',
+						MS_Helper_Shortcode::SCODE_LOGIN,
+						esc_url( $redirect ),
+						esc_attr( $title )
+					);
+					echo '' . do_shortcode( $scode );
+				}
 			endif; ?>
 		</div>
 		<?php
@@ -154,21 +188,6 @@ class MS_View_Shortcode_Account extends MS_View {
 		);
 
 		return $fields;
-	}
-
-	private function login_html() {
-		?>
-		<div class="ms-membership-form-wrapper">
-			<legend><?php _e( 'Your Account', MS_TEXT_DOMAIN ) ?></legend>
-			<div class="ms-alert-box ms-alert-error">
-				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
-			</div>
-			<?php
-			$redirect = add_query_arg( array() );
-			echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
-			?>
-		</div>
-		<?php
 	}
 
 }

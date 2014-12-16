@@ -167,15 +167,15 @@ class MS_View_Settings_Edit extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_pages() {
-		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
+		$action = MS_Controller_Pages::AJAX_ACTION_UPDATE_PAGES;
 		$nonce = wp_create_nonce( $action );
 
-		$settings = $this->data['settings'];
+		$ms_pages = $this->data['ms_pages'];
 		$page_types = $this->data['page_types'];
 
 		$fields = array();
 		foreach ( $page_types as $type => $label ) {
-			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
+			$page_id = $ms_pages->get_setting( $type );
 			$title = sprintf(
 				__( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ),
 				$label
@@ -191,7 +191,6 @@ class MS_View_Settings_Edit extends MS_View {
 					'no_item' => __( '- Select a page -', MS_TEXT_DOMAIN ),
 				),
 				'ajax_data' => array(
-					'group' => 'ms_pages',
 					'field' => $type,
 					'action' => $action,
 					'_wpnonce' => $nonce,
@@ -228,7 +227,7 @@ class MS_View_Settings_Edit extends MS_View {
 								'url' => '',
 								'value' => __( 'View Page', MS_TEXT_DOMAIN ),
 								'target' => '_blank',
-								'data_ms' => array( 'base' => home_url( '?p=' ) ),
+								'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
 							)
 						);
 						?>
@@ -464,11 +463,14 @@ class MS_View_Settings_Edit extends MS_View {
 				'class' => 'ms-comm-subject widefat',
 			),
 
-			'message' => array(
-				'id' => 'message',
+			'email_body' => array(
+				'id' => 'email_body',
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
 				'value' => @$comm->description,
-				'field_options' => array( 'media_buttons' => false, 'editor_class' => 'ms-ajax-update' ),
+				'field_options' => array(
+					'media_buttons' => false,
+					'editor_class' => 'ms-ajax-update',
+				),
 			),
 
 			'cc_enabled' => array(
@@ -561,7 +563,7 @@ class MS_View_Settings_Edit extends MS_View {
 			}
 
 			MS_Helper_Html::html_element( $fields['subject'] );
-			MS_Helper_Html::html_element( $fields['message'] );
+			MS_Helper_Html::html_element( $fields['email_body'] );
 
 			MS_Helper_Html::html_element( $fields['cc_enabled'] );
 			echo ' &nbsp; ';

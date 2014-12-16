@@ -108,7 +108,21 @@ class MS_Controller extends MS_Hooker {
 	 */
 	public function verify_nonce( $action = null, $request_method = 'POST', $nonce_field = '_wpnonce' ) {
 		$verified = false;
-		$request_fields = ( 'POST' == $request_method ) ? $_POST : $_GET;
+		switch ( $request_method ) {
+			case 'GET':
+				$request_fields = $_GET;
+				break;
+
+			case 'REQUEST':
+			case 'any':
+				$request_fields = $_REQUEST;
+				break;
+
+			case 'POST':
+			default:
+				$request_fields = $_POST;
+				break;
+		}
 
 		if ( empty( $action ) ) {
 			$action = ! empty( $request_fields['action'] ) ? $request_fields['action'] : '';

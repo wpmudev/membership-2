@@ -150,52 +150,13 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		// Search string.
 		WDev()->load_request_fields( 'membership', 'status', 's' );
 		if ( ! empty( $_REQUEST['search_options'] ) ) {
-
-			$search_options = $_REQUEST['search_options'];
-			$search_value = $_REQUEST['s'];
-
-			switch ( $search_options ) {
-				case 'email':
-				case 'username':
-					$args['search'] = sprintf( '*%s*', $search_value );
-					break;
-
-				case 'membership':
-					$membership = $_REQUEST['membership'];
-					$status = $_REQUEST['status'];
-
-					$members = array();
-					$filter = array();
-					if ( ! empty( $membership ) ) {
-						$filter['membership_id'] = $membership;
-					}
-					if ( ! empty( $status ) ) {
-						$filter['status'] = $status;
-					}
-					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
-						$filter
-					);
-
-					foreach ( $ms_relationships as $ms_relationship ) {
-						$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
-					}
-
-					// Workaround to invalidate query
-					if ( empty( $members ) ) {
-						$members[0] = 0;
-					}
-
-					$args['include'] = $members;
-					break;
-
-				default:
-					$args['meta_query'][ $search_options ] = array(
-						'key' => $search_options,
-						'value' => $search_value,
-						'compare' => 'LIKE',
-					);
-					break;
-			}
+			$query = $this->prepare_query_args(
+				$_REQUEST['search_options'],
+				$_REQUEST['s'],
+				$_REQUEST['membership'],
+				$_REQUEST['status']
+			);
+			$args = wp_parse_args( $query, $args );
 		}
 
 		$total_items = MS_Model_Member::get_members_count( $args );
@@ -209,6 +170,62 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		);
 
 		do_action( 'ms_helper_list_table_member_prepare_items', $this );
+	}
+
+	/**
+	 * Returns a query arg structure tailored to give the defined results
+	 *
+	 * @since  1.0.4.5
+	 * @return array Query args
+	 */
+	protected function prepare_query_args( $option, $value, $membership, $status ) {
+		$args = array();
+
+		switch ( $option ) {
+			case 'email':
+			case 'username':
+				$args['search'] = sprintf( '*%s*', $value );
+				break;
+
+			case 'membership':
+				$membership = $membership;
+				$status = $status;
+
+				$members = array();
+				$filter = array();
+				if ( ! empty( $membership ) ) {
+					$filter['membership_id'] = $membership;
+				}
+				if ( ! empty( $status ) ) {
+					$filter['status'] = $status;
+				}
+				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+					$filter
+				);
+
+				foreach ( $ms_relationships as $ms_relationship ) {
+					$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
+				}
+
+				// Workaround to invalidate query
+				if ( empty( $members ) ) {
+					$members[0] = 0;
+				}
+
+				$args['include'] = $members;
+				$args['meta_query'] = 'none';  // No other meta query
+				break;
+
+			default:
+				$args['meta_query'][ $option ] = array(
+					'key' => $option,
+					'value' => $value,
+					'compare' => 'LIKE',
+				);
+				break;
+		}
+
+		return $args;
 	}
 
 	/**
@@ -552,7 +569,6 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 	 *     @type string label The view label.
 	 *     @type int count The view count.
 	 * }
-	 *
 	 */
 	public function get_views() {
 		$list_views = array();
@@ -578,9 +594,13 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			)
 		);
 
-		$count = MS_Model_Membership_Relationship::get_membership_relationship_count(
-			array( 'status' => MS_Model_Membership_Relationship::STATUS_PENDING )
+		$args = $this->prepare_query_args(
+			'membership',
+			'',
+			'',
+			MS_Model_Membership_Relationship::STATUS_PENDING
 		);
+		$count = MS_Model_Member::get_members_count( $args );
 
 		$list_views['pending'] = array(
 			'url' => $status_url,
@@ -674,6 +694,9 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			);
 		}
 
-		return apply_filters( 'ms_helper_list_table_member_views', $list_views );
+		return apply_filters(
+			'ms_helper_list_table_member_views',
+			$list_views
+		);
 	}
 }

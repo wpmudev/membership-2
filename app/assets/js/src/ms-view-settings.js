@@ -31,9 +31,24 @@ window.ms_init.view_settings = function init () {
 					data = link.data('ms'),
 					url = data.base + val;
 
-				link.attr( 'href', url );
+				if ( undefined === val || isNaN(val) || val < 1 ) {
+					link.addClass( 'disabled' );
+					link.attr( 'href', '' );
+				} else {
+					link.removeClass( 'disabled' );
+					link.attr( 'href', url );
+				}
 			});
 		});
+	}
+
+	function ignore_disabled( ev ) {
+		var me = jQuery( this );
+
+		if ( me.hasClass( 'disabled' ) || ! me.attr( 'href' ).length ) {
+			ev.preventDefault();
+			return false;
+		}
 	}
 
 	function submit_comm_change() {
@@ -63,7 +78,8 @@ window.ms_init.view_settings = function init () {
 
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
-	page_changed();
+	jQuery( '.ms-action a' ).on( 'click', ignore_disabled );
+	jQuery(function() { page_changed(); });
 
 	// Select new Communication type
 	jQuery( '#comm_type' ).change( submit_comm_change );

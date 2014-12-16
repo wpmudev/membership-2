@@ -11,35 +11,28 @@
 class MS_View_Gateway_Paypal_Standard_Cancel extends MS_View {
 
 	/**
-	 * Data set by controller.
-	 *
-	 * @since 1.0.0
-	 * @var mixed $data
-	 */
-	protected $data;
-	
-	/**
-	 * Create view output.
+	 * Create the Cancel Button.
 	 *
 	 * @since 1.0.0
 	 * @return string
 	 */
-	public function to_html() {
-		
+	public function get_button() {
 		$gateway = $this->data['gateway'];
 		$button = null;
-		
-		if( ! empty( $this->data['ms_relationship'] ) ) {
+
+		if ( ! empty( $this->data['ms_relationship'] ) ) {
 			$ms_relationship = $this->data['ms_relationship'];
 			$membership = $ms_relationship->get_membership();
-			if( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type || $membership->trial_period_enabled ) {
-	
-				if( MS_Model_Gateway::MODE_LIVE == $gateway->mode ) {
+
+			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
+				|| $membership->trial_period_enabled
+			) {
+				if ( MS_Model_Gateway::MODE_LIVE == $gateway->mode ) {
 					$cancel_url = 'https://www.paypal.com/cgi-bin/webscr';
-				}
-				else {
+				} else {
 					$cancel_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 				}
+
 				$button = array(
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,
 					'url' => $cancel_url . '?cmd=_subscr-find&alias=' . $gateway->merchant_id,
@@ -48,6 +41,10 @@ class MS_View_Gateway_Paypal_Standard_Cancel extends MS_View {
 			}
 		}
 
-		return apply_filters( 'ms_model_gateway_paypal_standard_cancel_button', $button, $this );
+		return apply_filters(
+			'ms_model_gateway_paypal_standard_cancel_button',
+			$button,
+			$this
+		);
 	}
 }

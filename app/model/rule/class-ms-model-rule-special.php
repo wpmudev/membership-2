@@ -124,9 +124,15 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 		$has_access = null;
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
-			if ( ! $this->has_rule_for_current_page() ) { return null; }
+			if ( $this->has_rule_for_current_page() ) {
+				$has_access = false;
 
-			$has_access = $this->check_current_page( $this->rule_value );
+				if ( $this->check_current_page( $this->rule_value ) ) {
+					if ( ! $this->get_membership()->is_visitor_membership() ) {
+						$has_access = true;
+					}
+				}
+			}
 		}
 
 		return apply_filters(

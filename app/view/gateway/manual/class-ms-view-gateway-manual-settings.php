@@ -2,23 +2,29 @@
 
 class MS_View_Gateway_Manual_Settings extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$gateway = $this->data['model'];
 
+		$msg = __( 'Please instruct how to proceed with manual payments, informing bank account number and email to send payment confirmation.', MS_TEXT_DOMAIN ) .
+			'<br /><em>' .
+			__( 'When using this payment method then the user will only see the payment instructions but the membership will not be activated for the user. You have to manually check if the payment was made and set the members bill to "paid" to complete the payment.', MS_TEXT_DOMAIN ) .
+			'</em>';
+
 		ob_start();
-		/** Render tabbed interface. */
+		// Render tabbed interface.
 		?>
 		<div class="ms-wrap">
 			<form class="ms-gateway-setings-form ms-form ms-ajax-update" data-ms="<?php echo esc_attr( $gateway->id ); ?>">
 				<?php
-				MS_Helper_Html::settings_box(
-					$fields,
+				MS_Helper_Html::settings_box_header(
 					'',
-					__( 'Please instruct how to proceed with manual payments, informing bank account number and email to send payment confirmation.', MS_TEXT_DOMAIN )
+					$msg
 				);
+
+				foreach ( $fields as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
 				?>
 			</form>
 		</div>
@@ -69,7 +75,7 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 				'id' => 'close',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 				'value' => __( 'Close', MS_TEXT_DOMAIN ),
-				'class' => 'ms-dlg-close',
+				'class' => 'close',
 			),
 
 			'save' => array(
@@ -79,6 +85,9 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 			),
 		);
 
-		return apply_filters( 'ms_view_gateway_manual_settings_prepare_fields', $fields );
+		return apply_filters(
+			'ms_view_gateway_manual_settings_prepare_fields',
+			$fields
+		);
 	}
 }

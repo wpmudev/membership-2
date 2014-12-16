@@ -278,7 +278,9 @@ class MS_Helper_Html extends MS_Helper {
 					<?php if ( ! empty( $title ) ) : ?>
 						<h3><?php printf( $title ); ?></h3>
 					<?php endif; ?>
-					<span class="ms-settings-description ms-description"><?php printf( $description ); ?></span>
+					<?php if ( ! empty( $description ) ) : ?>
+						<span class="ms-settings-description ms-description"><?php echo '' . $description; ?></span>
+					<?php endif; ?>
 				</div>
 				<div class="inside">
 		<?php
@@ -320,9 +322,9 @@ class MS_Helper_Html extends MS_Helper {
 		$args['type'] = self::INPUT_TYPE_SUBMIT;
 
 		if ( $return ) {
-			return self::html_element( $args );
+			return self::html_element( $args, true );
 		} else {
-			echo '' . self::html_element( $args );
+			self::html_element( $args );
 		}
 	}
 
@@ -348,9 +350,9 @@ class MS_Helper_Html extends MS_Helper {
 		$args['type'] = self::TYPE_HTML_LINK;
 
 		if ( $return ) {
-			return self::html_element( $args );
+			return self::html_element( $args, true );
 		} else {
-			echo '' . self::html_element( $args );
+			self::html_element( $args );
 		}
 	}
 

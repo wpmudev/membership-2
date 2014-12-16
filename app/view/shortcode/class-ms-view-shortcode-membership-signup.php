@@ -10,7 +10,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<?php
 			if ( count( $this->data['ms_relationships'] ) > 0 ) {
-				foreach ( $this->data['ms_relationships'] as $membership_id => $ms_relationship ){
+				foreach ( $this->data['ms_relationships'] as $membership_id => $ms_relationship ) {
 					$msg = $ms_relationship->get_status_description();
 
 					$membership = MS_Factory::load(
@@ -95,8 +95,9 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				foreach ( $this->data['memberships'] as $membership ) {
 					$this->membership_box_html( $membership, $action, null, null );
 				}
+
+				do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' );
 				?>
-				<?php do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' ) ?>
 			</div>
 		</div>
 
@@ -105,6 +106,80 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		$html = ob_get_clean();
 
 		return $html;
+	}
+
+	/**
+	 * Generate a standalone "Sign up for Membership" button.
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @param  MS_Model_Membership $membership The membership to sign up for.
+	 * @param  string $label The button label.
+	 * @return string
+	 */
+	public function signup_form( $membership, $label ) {
+		$html = '';
+
+		$url = $this->get_action_url(
+			$membership->id,
+			$this->data['action'],
+			$this->data['step']
+		);
+
+		$link = array(
+			'url' => $url,
+			'class' => 'ms-pay-button button',
+			'value' => $label,
+		);
+		$html = MS_Helper_Html::html_link( $link, true );
+
+		return $html;
+	}
+
+	/**
+	 * Returns a URL to trigger the specified membership action.
+	 *
+	 * The URL can be used in a link or a form with only a submit button.
+	 *
+	 * @since  1.0.4.5
+	 * @param  string $action
+	 * @return string The URL.
+	 */
+	public function get_action_url( $membership_id, $action, $step ) {
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$fields = $this->prepare_fields(
+			$membership_id,
+			$action,
+			$step
+		);
+
+		if ( is_user_logged_in() ) {
+			$current = MS_Model_Pages::MS_PAGE_MEMBERSHIPS;
+		} else {
+			$current = MS_Model_Pages::MS_PAGE_REGISTER;
+		}
+
+		$url = add_query_arg(
+			'_wpnonce',
+			wp_create_nonce( $action ),
+			$ms_pages->get_page_url( $current )
+		);
+
+		foreach ( $fields as $field ) {
+			$url = add_query_arg(
+				$field['id'],
+				$field['value'],
+				$url
+			);
+		}
+
+		return apply_filters(
+			'ms_view_shortcode_membership_signup_action_url',
+			$url,
+			$action,
+			$membership_id,
+			$this
+		);
 	}
 
 	/**
@@ -119,7 +194,11 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	 * @param  MS_Model_Relationship $ms_relationship
 	 */
 	private function membership_box_html( $membership, $action, $msg = null, $ms_relationship = null ) {
-		$fields = $this->prepare_fields( $membership->id, $action );
+		$fields = $this->prepare_fields(
+			$membership->id,
+			$action,
+			$this->data['step']
+		);
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		if ( 0 == $membership->price ) {
@@ -133,8 +212,17 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		}
 		$price = apply_filters( 'ms_membership_price', $price, $membership );
 
+		if ( is_user_logged_in() ) {
+			$current = MS_Model_Pages::MS_PAGE_MEMBERSHIPS;
+		} else {
+			$current = MS_Model_Pages::MS_PAGE_REGISTER;
+		}
+
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+		$url = $ms_pages->get_page_url( $current );
+
 		?>
-		<form class="ms-membership-form" method="post">
+		<form action="<?php echo esc_url( $url ); ?>" class="ms-membership-form" method="post">
 			<?php
 			wp_nonce_field( $fields['action']['value'] );
 
@@ -143,16 +231,16 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			}
 			?>
 			<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ); ?>"
-				class="ms-membership-details-wrapper">
+				class="ms-membership-details-wrapper ms-signup">
 				<div class="ms-top-bar">
 					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
 				</div>
 				<div class="ms-price-details">
-					<div class="ms-description"><?php echo $membership->description; ?></div>
+					<div class="ms-description"><?php echo '' . $membership->description; ?></div>
 					<div class="ms-price"><?php echo esc_html( $price ); ?></div>
 
 					<?php if ( $msg ) : ?>
-						<div class="ms-bottom-msg"><?php echo $msg; ?></div>
+						<div class="ms-bottom-msg"><?php echo '' . $msg; ?></div>
 					<?php endif; ?>
 				</div>
 
@@ -171,13 +259,35 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					);
 
 					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL === $action ) {
+						/**
+						 * PayPal Standard Gateway uses a special Cancel button.
+						 *
+						 * @see MS_Controller_Gateway
+						 */
 						$button = apply_filters(
 							'ms_view_shortcode_membership_signup_cancel_button',
 							$button,
 							$ms_relationship,
 							$this
 						);
+					} elseif ( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY === $action ) {
+						// Display a Cancel button for pending memberships.
+
+						$cancel_action = MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL;
+						$url = $this->get_action_url(
+							$membership->id,
+							$cancel_action,
+							'' // step is not required for cancel
+						);
+
+						$link = array(
+							'url' => $url,
+							'class' => 'ms-cancel-button button',
+							'value' => esc_html( $this->data[ "{$cancel_action}_text" ] ),
+						);
+						MS_Helper_Html::html_link( $link );
 					}
+
 					MS_Helper_Html::html_element( $button );
 					?>
 				</div>
@@ -196,7 +306,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 	 * @param  string $action
 	 * @return array Field definitions
 	 */
-	private function prepare_fields( $membership_id, $action ) {
+	private function prepare_fields( $membership_id, $action, $step ) {
 		$fields = array(
 			'membership_id' => array(
 				'id' => 'membership_id',
@@ -206,12 +316,12 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			'action' => array(
 				'id' => 'action',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['action'],
+				'value' => $action,
 			),
 			'step' => array(
 				'id' => 'step',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['step'],
+				'value' => $step,
 			),
 		);
 
@@ -224,7 +334,6 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 		}
 
 		if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $action ) {
-			$fields['action']['value'] = $action;
 			unset( $fields['step'] );
 		}
 

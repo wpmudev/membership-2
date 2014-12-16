@@ -41,6 +41,8 @@ class MS_Helper_Shortcode extends MS_Helper {
 
 	const SCODE_MS_PRICE = 'ms-membership-price';
 
+	const SCODE_MS_BUY = 'ms-membership-buy';
+
 	const SCODE_PROTECTED = 'ms-protection-message';
 
 	const SCODE_LOGIN = 'ms-membership-login';
@@ -49,11 +51,29 @@ class MS_Helper_Shortcode extends MS_Helper {
 
 	const SCODE_MS_ACCOUNT = 'ms-membership-account';
 
+	const SCODE_MS_ACCOUNT_LINK = 'ms-membership-account-link';
+
 	const SCODE_MS_INVOICE = 'ms-invoice';
 
+	const SCODE_NOTE = 'ms-note';
+
+	const SCODE_USER = 'ms-user';
+
+	// deprecated, replaced by SCODE_NOTE
 	const SCODE_GREEN_NOTE = 'ms-green-note';
 
+	// deprecated, replaced by SCODE_NOTE
 	const SCODE_RED_NOTE = 'ms-red-note';
+
+	/**
+	 * Holds an array of all replaced Protected Content shortcodes.
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @var array
+	 */
+	protected static $did_shortcodes = array();
+
 
 	/**
 	 * This function searches content for the presence of a given short code.
@@ -66,8 +86,26 @@ class MS_Helper_Shortcode extends MS_Helper {
 	 * @return boolean
 	 */
 	public static function has_shortcode( $shortcode, $content ) {
-		$pattern = "/\[${shortcode}.*\]/im";
-		return preg_match( $pattern, $content );
+		$result = false;
+
+		if ( isset( self::$did_shortcodes[$shortcode] ) ) {
+			$result = self::$did_shortcodes[$shortcode];
+		} else {
+			$pattern = "/\[${shortcode}.*\]/im";
+			$result = preg_match( $pattern, $content );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Remembers that a shortcode was inserted already.
+	 *
+	 * @since  1.0.4.5
+	 * @param  string $shortcode The Protected Content shortcode.
+	 */
+	public static function did_shortcode( $shortcode ) {
+		self::$did_shortcodes[$shortcode] = true;
 	}
 
 	/**
@@ -85,13 +123,17 @@ class MS_Helper_Shortcode extends MS_Helper {
 				self::SCODE_MS_TITLE,
 				self::SCODE_MS_DETAILS,
 				self::SCODE_MS_PRICE,
+				self::SCODE_MS_BUY,
 				self::SCODE_PROTECTED,
 				self::SCODE_LOGIN,
 				self::SCODE_LOGOUT,
 				self::SCODE_MS_ACCOUNT,
+				self::SCODE_MS_ACCOUNT_LINK,
 				self::SCODE_MS_INVOICE,
-				self::SCODE_GREEN_NOTE,
-				self::SCODE_RED_NOTE,
+				self::SCODE_NOTE,
+				self::SCODE_USER,
+				self::SCODE_GREEN_NOTE /* deprecated, replaced by SCODE_NOTE */,
+				self::SCODE_RED_NOTE /* deprecated, replaced by SCODE_NOTE */,
 			)
 		);
 	}

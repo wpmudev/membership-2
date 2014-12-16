@@ -343,6 +343,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			}
 
 			$this->status = self::STATUS_CANCELED;
+			$this->status = $this->calculate_status();
 			$this->save();
 
 			// Cancel subscription in the gateway.
@@ -1049,6 +1050,16 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
+	 * Returns true if the related membership is the base-membership.
+	 *
+	 * @since  1.0.4.5
+	 * @return bool
+	 */
+	public function is_visitor_membership() {
+		return $this->get_membership()->is_visitor_membership();
+	}
+
+	/**
 	 * Get related gateway model.
 	 *
 	 * @since 1.0.0
@@ -1068,33 +1079,50 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Get payment information description.
 	 *
 	 * @since 1.0.0
-	 *
+	 * @param  MS_Model_Invoice $invoice Optional. Specific invoice that defines the price.
+	 * @param  MS_Model_Invoice $trial_invoice Optional. Invoice for the trial price.
 	 * @return string The description.
 	 */
-	public function get_payment_description() {
+	public function get_payment_description( $invoice = null, $trial_invoice = null ) {
 		$currency = MS_Plugin::instance()->settings->currency;
 		$membership = $this->get_membership();
-		$desc = sprintf(
-			__( 'You will pay %s %s ', MS_TEXT_DOMAIN ),
-			$currency,
-			number_format( $membership->price, 2 )
-		);
+		$desc = '';
+
+		if ( null !== $invoice ) {
+			$total_price = $invoice->total;
+		} else {
+			$total_price = $membership->price;
+		}
+
+		if ( null !== $trial_invoice ) {
+			$trial_price = $trial_invoice->total;
+		} else {
+			$trial_price = $membership->trial_price;
+		}
+		$total_price = number_format( $total_price, 2 );
+		$trial_price = number_format( $trial_price, 2 );
 
 		switch ( $membership->payment_type ){
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
-				$desc .= __( 'for permanent access.', MS_TEXT_DOMAIN );
+				$desc = sprintf(
+					__( 'You will pay %1$s %2$s for permanent access.', MS_TEXT_DOMAIN ),
+					$currency,
+					$total_price
+				);
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				$desc .= sprintf(
-					__( 'for access until %s.', MS_TEXT_DOMAIN ),
+					__( 'You will pay %1$s %2$s for access until %3$s.', MS_TEXT_DOMAIN ),
 					$this->calc_expire_date( $this->expire_date )
 				);
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				$desc .= sprintf(
-					__( 'to access from %s to %s.', MS_TEXT_DOMAIN ),
+					__( 'You will pay %1$s %2$s to access from %3$s to %4$s.', MS_TEXT_DOMAIN ),
+					$currency,
+					$total_price,
 					$membership->period_date_start,
 					$membership->period_date_end
 				);
@@ -1110,7 +1138,9 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					'period_type'
 				);
 				$desc .= sprintf(
-					__( 'each %s %s.', MS_TEXT_DOMAIN ),
+					__( 'You will pay %1$s %2$s each %3$s %4$s.', MS_TEXT_DOMAIN ),
+					$currency,
+					$total_price,
 					$period_unit,
 					$period_type
 				);
@@ -1128,11 +1158,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			);
 
 			$desc .= sprintf(
-				__( ' <br />In the trial period of %s %s, you will pay %s %s.', MS_TEXT_DOMAIN ),
+				__( ' <br />In the trial period of %1$s %2$s, you will pay %3$s %4$s.', MS_TEXT_DOMAIN ),
 				$period_unit,
 				$period_type,
 				$currency,
-				number_format( $membership->trial_price, 2 )
+				$trial_price
 			);
 		}
 
@@ -1198,8 +1228,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_status() {
 		// No further validations for these status
-		$allowed_status = apply_filters(
-			'ms_model_membership_relationship_get_status_allowed_status',
+		$ignored_status = apply_filters(
+			'ms_model_membership_relationship_get_status_ignored_status',
 			array(
 				self::STATUS_DEACTIVATED,
 				self::STATUS_PENDING,
@@ -1208,12 +1238,11 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		);
 
 		// Validate current status and handle status change
-		if ( ! in_array( $this->status, $allowed_status ) ) {
+		if ( ! in_array( $this->status, $ignored_status ) ) {
 			$status = $this->calculate_status();
 			if ( MS_Model_Member::is_admin_user( $this->user_id ) ) {
 				$this->status = $status;
-			}
-			else {
+			} else {
 				$this->handle_status_change( $status );
 			}
 		}
@@ -1257,8 +1286,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
 		) {
 			$status = self::STATUS_ACTIVE;
-		}
-		else {
+		} else {
 			$status = self::STATUS_EXPIRED;
 		}
 
@@ -1271,8 +1299,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				|| MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
 			) {
 				$status = self::STATUS_DEACTIVATED;
-			}
-			else {
+			} else {
 				$status = self::STATUS_CANCELED;
 			}
 		}

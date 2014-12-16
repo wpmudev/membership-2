@@ -108,8 +108,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -134,8 +133,7 @@ class MS_Controller_Settings extends MS_Controller {
 			);
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -160,8 +158,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -192,8 +189,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -215,6 +211,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		// Create special pages.
 		$ms_pages->create_missing_pages();
+
 		$pg_prot_cont = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
 		$pg_acco = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		$pg_regi = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REGISTER );
@@ -379,7 +376,7 @@ class MS_Controller_Settings extends MS_Controller {
 						break;
 					}
 
-					$fields = array( 'type', 'subject', 'message' );
+					$fields = array( 'type', 'subject', 'email_body' );
 					if ( isset( $_POST['save_email'] )
 						&& $this->validate_required( $fields )
 					) {
@@ -425,12 +422,14 @@ class MS_Controller_Settings extends MS_Controller {
 		do_action( $hook );
 
 		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
-		$ms_pages = MS_Factory::create( 'MS_Model_Pages' );
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$view = apply_filters( $hook . '_view', $view );
 
 		$data = array();
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
+		$data['ms_pages'] = $ms_pages;
+
 		$data['message'] = self::_message();
 
 		if ( isset( $data['message']['error'] ) ) {
@@ -541,7 +540,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$period = array();
 			$comm->enabled = ! empty( $fields['enabled'] );
 			$comm->subject = @$fields['subject'];
-			$comm->message = @$fields['message'];
+			$comm->message = @$fields['email_body'];
 			$period['period_unit'] = @$fields['period_unit'];
 			$period['period_type'] = @$fields['period_type'];
 			$comm->period = $period;

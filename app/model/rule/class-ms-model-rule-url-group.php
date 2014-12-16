@@ -107,7 +107,12 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 
 				// Check for URL group.
 				if ( $this->check_url_expression_match( $url, $this->get_allowed_urls() ) ) {
-					$has_access = true;
+					if ( $this->get_membership()->is_visitor_membership() ) {
+						// For guests all defined URL groups are denied.
+						$has_access = false;
+					} else {
+						$has_access = true;
+					}
 				}
 			}
 		}

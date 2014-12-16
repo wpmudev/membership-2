@@ -5,6 +5,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 	public function to_html() {
 		$res_html = '';
 		$res_form = '';
+		$html = '';
 
 		$valid_forms = array(
 			'login',
@@ -165,6 +166,12 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		extract( $args );
 
 		$show_form = 'login' === $form ? '' : 'display:none';
+		$form_class = 'ms-form ms-form-login';
+		if ( $show_labels ) {
+			$form_class .= ' ms-has-labels';
+		} else {
+			$form_class .= ' ms-no-labels';
+		}
 
 		ob_start();
 		?>
@@ -172,6 +179,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			name="<?php echo esc_attr( $id_login_form ); ?>"
 			id="<?php echo esc_attr( $id_login_form ); ?>"
 			action="login" method="post"
+			class="<?php echo esc_attr( $form_class ); ?>"
 			style="<?php echo esc_attr( $show_form ); ?>">
 
 			<div class="form">
@@ -282,9 +290,14 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 		extract( $args );
 
 		$show_form = 'lost' === $form ? '' : 'display:none';
+		$form_class = 'ms-form ms-form-lost';
+		if ( $show_labels ) {
+			$form_class .= ' ms-has-labels';
+		} else {
+			$form_class .= ' ms-no-labels';
+		}
 
 		ob_start();
-
 		do_action( 'lost_password' );
 		?>
 		<form
@@ -292,6 +305,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			id="<?php echo esc_attr( $id_lost_form ); ?>"
 			action="lostpassword"
 			method="post"
+			class="<?php echo esc_attr( $form_class ); ?>"
 			style="<?php echo esc_attr( $show_form ); ?>">
 			<div class="form">
 				<?php wp_nonce_field( 'ms-ajax-lostpass' ); ?>

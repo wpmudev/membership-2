@@ -88,10 +88,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			do_action( 'ms_controller_frontend_construct', $this );
 
 			// Process actions like register new account.
-			$this->add_action( 'parse_query', 'process_actions', 1 );
+			$this->add_action( 'template_redirect', 'process_actions', 1 );
 
 			// Check if the current page is a Membership Page.
-			$this->add_action( 'parse_query', 'check_for_membership_pages', 2 );
+			$this->add_action( 'template_redirect', 'check_for_membership_pages', 2 );
 
 			// Propagates SSL cookies when user logs in.
 			$this->add_action( 'wp_login', 'propagate_ssl_cookie', 10, 2 );
@@ -117,13 +117,13 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Matches returned 'action' to method to execute.
 	 *
 	 * Related Action Hooks:
-	 * - parse_query
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
 	public function process_actions() {
 		// Only execute this handler once!
-		$this->remove_action( 'parse_query', 'process_actions', 1 );
+		$this->remove_action( 'template_redirect', 'process_actions', 1 );
 
 		$action = $this->get_action();
 
@@ -146,16 +146,15 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Check pages for the presence of Membership special pages.
 	 *
 	 * Related Action Hooks:
-	 * - parse_query
+	 * - template_redirect
 	 *
 	 * @since 1.0.0
 	 */
 	public function check_for_membership_pages() {
 		global $post, $wp_query;
-		if ( ! $wp_query->is_main_query() ) { return; }
 
 		// Only execute this handler once!
-		$this->remove_action( 'parse_query', 'check_for_membership_pages', 2 );
+		$this->remove_action( 'template_redirect', 'check_for_membership_pages', 2 );
 
 		// For invoice page purchase process
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
@@ -163,7 +162,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( ! empty( $post ) && isset( $post->post_type )
 			&& $post->post_type == MS_Model_Invoice::$POST_TYPE
 			&& $this->validate_required( $fields )
-			&& 'process_purchase' == $_POST['step']
+			&& self::STEP_PROCESS_PURCHASE == $_POST['step']
 		) {
 			do_action(
 				'ms_controller_frontend_signup_process_purchase',
@@ -254,14 +253,14 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Initial state.
 			 */
 			case self::STEP_CHOOSE_MEMBERSHIP:
-				$this->add_filter( 'the_content', self::STEP_CHOOSE_MEMBERSHIP, 1 );
+				$this->add_filter( 'the_content', 'choose_membership', 1 );
 				break;
 
 			/**
 			 * If not registered.
 			 */
 			case self::STEP_REGISTER_FORM:
-				$this->add_filter( 'the_content', self::STEP_REGISTER_FORM, 1 );
+				$this->add_filter( 'the_content', 'register_form', 1 );
 				break;
 
 			/**
@@ -275,7 +274,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Show payment table.
 			 */
 			case self::STEP_PAYMENT_TABLE:
-				$this->add_filter( 'the_content', self::STEP_PAYMENT_TABLE, 1 );
+				$this->add_filter(  'the_content', 'payment_table', 1 );
 				break;
 
 			/**
@@ -283,7 +282,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Handled by MS_Controller_Gateway.
 			 */
 			case self::STEP_GATEWAY_FORM:
-				do_action( 'ms_controller_frontend_signup_gateway_form', $this );
+				do_action(
+					'ms_controller_frontend_signup_gateway_form',
+					$this
+				);
 				break;
 
 			/**
@@ -291,7 +293,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Handled by MS_Controller_Gateway.
 			 */
 			case self::STEP_PROCESS_PURCHASE:
-				do_action( 'ms_controller_frontend_signup_process_purchase', $this );
+				do_action(
+					'ms_controller_frontend_signup_process_purchase',
+					$this
+				);
 				break;
 
 			default:
@@ -386,7 +391,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Search for register user shortcode, injecting if not found.
 	 *
 	 * Related Filter Hooks:
-	 * * the_content
+	 * - the_content
 	 *
 	 * @since 1.0.0
 	 *
@@ -512,8 +517,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			if ( ! empty( $_POST['error'] ) ) {
 				$data['error'] = $_POST['error'];
 			}
-		}
-		else {
+		} else {
 			MS_Helper_Debug::log( 'Error: missing POST params' );
 			MS_Helper_Debug::log( $_POST );
 			return $content;
@@ -527,9 +531,8 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			if ( ! empty( $_POST['remove_coupon_code'] ) ) {
 				$coupon->remove_coupon_application( $member->id, $membership_id );
-				$coupon = MS_Factory::create( ' MS_Model_Coupon' );
-			}
-			elseif ( isset( $_POST['apply_coupon_code'] ) ) {
+				$coupon = MS_Factory::load( 'MS_Model_Coupon' );
+			} elseif ( isset( $_POST['apply_coupon_code'] ) ) {
 				if ( $coupon->is_valid_coupon( $membership_id ) ) {
 					$coupon->save_coupon_application( $ms_relationship );
 					$data['coupon_valid'] = true;
@@ -538,9 +541,8 @@ class MS_Controller_Frontend extends MS_Controller {
 					$data['coupon_valid'] = false;
 				}
 			}
-		}
-		else {
-			$coupon = MS_Factory::create( 'MS_Model_Coupon' );
+		} else {
+			$coupon = MS_Factory::load( 'MS_Model_Coupon' );
 		}
 
 		$data['coupon'] = $coupon;
@@ -556,8 +558,12 @@ class MS_Controller_Frontend extends MS_Controller {
 		$data['member'] = $member;
 		$data['ms_relationship'] = $ms_relationship;
 
-		$view = MS_Factory::create( 'MS_View_Frontend_Payment' );
-		$view->data = apply_filters( 'ms_view_frontend_payment_data', $data, $this );
+		$view = MS_Factory::load( 'MS_View_Frontend_Payment' );
+		$view->data = apply_filters(
+			'ms_view_frontend_payment_data',
+			$data,
+			$this
+		);
 
 		return apply_filters(
 			'ms_controller_frontend_payment_table',
@@ -572,8 +578,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function membership_cancel() {
-		if ( ! empty( $_POST['membership_id'] ) && $this->verify_nonce() ) {
-			$membership_id = absint( $_POST['membership_id'] );
+		if ( ! empty( $_REQUEST['membership_id'] ) && $this->verify_nonce( null, 'any' ) ) {
+			$membership_id = absint( $_REQUEST['membership_id'] );
 			$member = MS_Model_Member::get_current_member();
 			$member->cancel_membership( $membership_id );
 			$member->save();

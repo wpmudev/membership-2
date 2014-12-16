@@ -1,35 +1,43 @@
 <?php
 /**
  * This file defines the MS_Helper_Debug class.
- * 
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License, version 2, as  
- * published by the Free Software Foundation.                           
  *
- * This program is distributed in the hope that it will be useful,      
- * but WITHOUT ANY WARRANTY; without even the implied warranty of       
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
- * GNU General Public License for more details.                         
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
  *
- * You should have received a copy of the GNU General Public License    
- * along with this program; if not, write to the Free Software          
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,               
- * MA 02110-1301 USA                                                    
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+ * MA 02110-1301 USA
  *
  */
-/** @todo FJ: I guess this issue just occurs in my dev */
-if( ! defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
-	define ('DEBUG_BACKTRACE_IGNORE_ARGS', 2);
+
+if ( ! defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
+	define( 'DEBUG_BACKTRACE_IGNORE_ARGS', 2 );
+}
+
+if ( ! defined( 'WP_DEBUG' ) ) {
+	define( 'WP_DEBUG', false );
+}
+
+if ( ! defined( 'WDEV_DEBUG' ) ) {
+	define( 'WDEV_DEBUG', false );
 }
 
 /**
  * This Helper creates utility functions for debugging.
  *
- * @since 4.0.0
+ * @since 1.0.0
  * @package Membership
  * @subpackage Controller
  */
@@ -41,13 +49,13 @@ class MS_Helper_Debug extends MS_Helper {
 	 * or elsewhere where turning on and off debugging makes sense.
 	 *
 	 *     // Essential
-	 *     define('WP_DEBUG', true);  
+	 *     define('WP_DEBUG', true);
 	 *     // Enables logging to /wp-content/debug.log
-	 *     define('WP_DEBUG_LOG', true);  
+	 *     define('WP_DEBUG_LOG', true);
 	 *     // Force debug messages in WordPress to be turned off (using logs instead)
-	 *     define('WP_DEBUG_DISPLAY', false);  
+	 *     define('WP_DEBUG_DISPLAY', false);
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @param  mixed $message Array, object or text to output to log.
 	 */
 	public static function log( $message, $echo_file = false ) {
@@ -58,25 +66,23 @@ class MS_Helper_Debug extends MS_Helper {
 		$exception = $exception->getTrace();
 		$callee = array_shift( $exception );
 
-		if ( true === WP_DEBUG ) {
+		if ( true === WP_DEBUG || true === WDEV_DEBUG ) {
+			$msg = isset( $caller['class'] ) ? $caller['class'] . '[' . $callee['line'] . ']: ' : '';
+
 			if ( is_array( $message ) || is_object( $message ) ) {
-				$class = isset( $caller['class'] ) ? $caller['class'] . '[' . $callee['line'] . '] ' : '';
-				if ( $echo_file ) {
-					error_log( $class . print_r( $message, true ) . 'In ' . $callee['file'] . ' on line ' . $callee['line'] );	
-				} else {
-					error_log( $class . print_r( $message, true ) );	
-				}
+				$msg .= print_r( $message, true );
 			} else {
-				$class = isset( $caller['class'] ) ? $caller['class'] . '[' . $callee['line'] . ']: ' : '';
-				if ( $echo_file ) {
-					error_log( $class . $message . ' In ' . $callee['file'] . ' on line ' . $callee['line']);					
-				} else {
-					error_log( $class . $message );					
-				}
+				$msg .= $message;
 			}
+
+			if ( $echo_file ) {
+				$msg .= "\nIn " . $callee['file'] . ' on line ' . $callee['line'];
+			}
+
+			error_log( $msg );
 		}
 	}
-	
+
 	public static function debug_trace( $return = false ) {
 		$traces = debug_backtrace();
 		$fields = array(
@@ -85,29 +91,31 @@ class MS_Helper_Debug extends MS_Helper {
 			'function',
 			'class',
 		);
-		$log = array( "**************************** Trace start ****************************" );
-		foreach( $traces as $i => $trace ) {
+		$log = array( '---------------------------- Trace start ----------------------------' );
+
+		foreach ( $traces as $i => $trace ) {
 			$line = array();
-			foreach( $fields as $field ) {
-				if( ! empty( $trace[ $field ] ) ) {
+			foreach ( $fields as $field ) {
+				if ( ! empty( $trace[ $field ] ) ) {
 					$line[] = "$field: {$trace[ $field ]}";
 				}
 			}
 			$log[] = "  [$i]". implode( '; ', $line );
 		}
-		if( $return ) {
-			return implode( "\n", $log);	
-		}
-		else {
-			error_log( implode( "\n", $log) );
+
+		if ( $return ) {
+			return implode( "\n", $log );
+		} else {
+			error_log( implode( "\n", $log ) );
 		}
 	}
-	
+
 	public static function process_error_backtrace( $errno, $errstr, $errfile, $errline, $errcontext ) {
-		if( ! ( error_reporting() & $errno ) ) {
+		if ( ! ( error_reporting() & $errno ) ) {
 			return;
 		}
-		switch( $errno ) {
+
+		switch ( $errno ) {
 			case E_WARNING      :
 			case E_USER_WARNING :
 			case E_STRICT       :
@@ -116,21 +124,26 @@ class MS_Helper_Debug extends MS_Helper {
 				$type = 'warning';
 				$fatal = false;
 				break;
+
 			default             :
 				$type = 'fatal error';
 				$fatal = true;
 				break;
 		}
+
 		$message = "[$type]: '$errstr' file: $errfile, line: $errline";
 		error_log( $message );
 		self::debug_trace();
-		
-		if( $fatal ) {
-			exit(1);
+
+		if ( $fatal ) {
+			exit( 1 );
 		}
 	}
-	
+
 }
 
-set_error_handler( array( 'MS_Helper_Debug', 'process_error_backtrace') );
-
+set_error_handler(
+	array( 'MS_Helper_Debug', 'process_error_backtrace')
+);
+MS_Helper_Debug::log( '**************************** REQUEST START ****************************' );
+MS_Helper_Debug::log( '***** URL: ' . WDev()->current_url() );

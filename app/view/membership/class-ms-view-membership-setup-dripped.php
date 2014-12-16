@@ -38,10 +38,6 @@ class MS_View_Membership_Setup_Dripped extends MS_View {
 			),
 		);
 
-		if ( 1 == @$_GET['edit'] ) {
-			$this->data[ 'show_next_button' ] = false;
-		}
-
 		ob_start();
 		// Render tabbed interface.
 		?>

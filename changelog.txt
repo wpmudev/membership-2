@@ -12,6 +12,14 @@ Change Log:
 - New layout of the Add-on page
 - Many small bugfixes and layout improvements
 
+1.0.4.5
+----------------------------------------------------------------------
+- Add new Help section with documentation of shortcodes
+- Fix: Membership Pages use default WordPress posts instead of URL
+- Fix: Menu items are correctly generated when a Membership is created
+- Memberships with pending payments can be cancelled by the member
+- A ton of small bugfixes and minor improvements
+
 1.0.4.4
 ----------------------------------------------------------------------
 - Add individual URL group permissions on membership level

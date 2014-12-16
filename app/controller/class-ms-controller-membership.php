@@ -513,8 +513,9 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['active_tab'] = $this->get_active_tab();
 		$data['membership'] = $this->load_membership();
-		$data['show_next_button'] = true;
 		$data['settings'] = MS_Plugin::instance()->settings;
+
+		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
@@ -564,11 +565,16 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['children'] = $membership->get_children();
 		$data['is_global_payments_set'] = MS_Plugin::instance()->settings->is_global_payments_set;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
-		$data['show_next_button'] = array(
-			'id' => 'next',
-			'value' => __( 'Finish', MS_TEXT_DOMAIN ),
-			'action' => 'next',
-		);
+
+		if ( isset( $_GET['edit'] ) ) {
+			$data['show_next_button'] = false;
+		} else {
+			$data['show_next_button'] = array(
+				'id' => 'next',
+				'value' => __( 'Finish', MS_TEXT_DOMAIN ),
+				'action' => 'next',
+			);
+		}
 
 		$view = MS_Factory::create( 'MS_View_Membership_Setup_Payment' );
 		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data, $this );
@@ -688,7 +694,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['membership'] = $this->load_membership();
 		$data['initial_setup'] = MS_Plugin::is_wizard();
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
-		$data['show_next_button'] = true;
+
+		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
 		$view = MS_Factory::create( 'MS_View_Membership_Setup_Content_Type' );
 		$view->data = apply_filters( 'ms_view_membership_setup_content_types_data', $data, $this );
@@ -707,7 +714,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['membership'] = $this->load_membership();
 		$data['initial_setup'] = MS_Plugin::is_wizard();
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
-		$data['show_next_button'] = true;
+
+		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
 		$view = MS_Factory::create( 'MS_View_Membership_Setup_Tier' );
 		$view->data = apply_filters( 'ms_view_membership_ms_tiers_data', $data, $this );
@@ -726,7 +734,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['membership'] = $this->load_membership();
 		$data['tabs'] = $this->get_setup_dripped_tabs();
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
-		$data['show_next_button'] = true;
+
+		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
 		$view = MS_Factory::create( 'MS_View_Membership_Setup_Dripped' );
 		$view->data = apply_filters( 'ms_view_membership_setup_dripped_data', $data, $this );
@@ -1460,7 +1469,7 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 
 		// Add the "edit" param if it is set.
-		if ( 1 == @$_GET['edit'] ) {
+		if ( isset( $_GET['edit'] ) ) {
 			foreach ( $bread_crumbs as $key => $data ) {
 				if ( isset( $bread_crumbs[$key]['url'] ) ) {
 					$bread_crumbs[$key]['url'] .= '&edit=1';

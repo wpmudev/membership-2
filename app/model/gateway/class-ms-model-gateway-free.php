@@ -96,4 +96,15 @@ class MS_Model_Gateway_Free extends MS_Model_Gateway {
 		$this->name = __( 'Free Gateway', MS_TEXT_DOMAIN );
 	}
 
+	/**
+	 * Return status if all fields are configured
+	 *
+	 * @since  1.0.4.5
+	 * @return bool
+	 */
+	public function is_configured() {
+		// Free products need no payment-configuration. Always true.
+		return true;
+	}
+
 }

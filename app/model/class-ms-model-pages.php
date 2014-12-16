@@ -54,6 +54,54 @@ class MS_Model_Pages extends MS_Model_Option {
 	const MS_PAGE_REGISTER = 'register';
 	const MS_PAGE_REG_COMPLETE = 'registration-complete';
 
+	/**
+	 * Association between membership page-types and WordPress post_ids.
+	 *
+	 * @since  1.0.4.5
+	 *
+	 * @var array
+	 */
+	public $settings = array();
+
+	/**
+	 * Returns a MS_Model_Pages setting value (these are the association between
+	 * our Membership Page types and WordPress posts)
+	 *
+	 * @since  1.0.4.5
+	 * @param  string $key The setting key.
+	 * @return any The setting value. A post_id or 0.
+	 */
+	public function get_setting( $key ) {
+		if ( ! isset( $this->settings[ $key ] ) ) {
+			$this->settings[$key] = 0;
+		}
+
+		return apply_filters(
+			'ms_model_pages_get_setting',
+			$this->settings[$key],
+			$key,
+			$this
+		);
+	}
+
+	/**
+	 * Saves a MS_Model_Pages setting value.
+	 *
+	 * @since  1.0.4.5
+	 * @param  string $key The setting key.
+	 * @param  any $value The new setting value.
+	 */
+	public function set_setting( $key, $value ) {
+		$value = apply_filters(
+			'ms_model_pages_set_setting',
+			$value,
+			$key,
+			$this
+		);
+
+		$this->settings[$key] = $value;
+		$this->save();
+	}
 
 	/**
 	 * Get MS Page types
@@ -114,23 +162,21 @@ class MS_Model_Pages extends MS_Model_Option {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param boolean $create_if_not_exists Optional. Flag to create a page if not exists.
 	 * @return WP_Post[] The page model objects.
 	 */
-	public function get_pages( $create_if_not_exists = false ) {
+	public function get_pages() {
 		static $Pages = null;
 
 		if ( null === $Pages ) {
+			$Pages = array();
 			$page_types = $this->get_page_types();
 
-			if ( $create_if_not_exists ) {
-				$this->create_missing_pages();
-			}
-
-			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			foreach ( $page_types as $page_type => $title ) {
-				$page_id = $settings->get_custom_setting( 'ms_pages', $page_type );
+				$page_id = $this->get_setting( $page_type );
+				if ( empty( $page_id ) ) { continue; }
+
 				$the_page = get_post( $page_id );
+				if ( empty ( $the_page ) ) { continue; }
 
 				$Pages[$page_type] = apply_filters(
 					'ms_model_pages_get_pages_item',
@@ -163,6 +209,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		$result = null;
 
 		if ( self::is_valid_type( $page_type ) ) {
+			// Get a list of all WP_Post items.
 			$pages = $this->get_pages();
 
 			if ( ! empty( $pages[ $page_type ] ) ) {
@@ -202,7 +249,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				case 'id': $value = absint( $value ); break;
 			}
 
-			$ms_pages = $this->get_pages( true );
+			$ms_pages = $this->get_pages();
 			$found = false;
 
 			foreach ( $ms_pages as $type => $page ) {
@@ -241,11 +288,12 @@ class MS_Model_Pages extends MS_Model_Option {
 		$page_id = 0;
 
 		if ( is_string( $filter ) ) {
-			$page = $this->get_page( $filter );
-			$page_id = $page->ID;
+			$filter = $this->get_page( $filter );
 		} elseif ( is_numeric( $filter ) ) {
 			$page_id = $filter;
-		} elseif ( is_a( $filter, 'WP_Post' ) ) {
+		}
+
+		if ( is_a( $filter, 'WP_Post' ) ) {
 			$page_id = $filter->ID;
 		}
 
@@ -266,7 +314,6 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @return WP_Post|null
 	 */
 	public function current_page( $page_id = false, $page_type = null ) {
-		global $wp_query;
 		static $Res = array();
 		$key = json_encode( $page_id ) . json_encode( $page_type );
 
@@ -288,12 +335,19 @@ class MS_Model_Pages extends MS_Model_Option {
 				 * We don't have the page_type:
 				 * Use current page_id or the specified page_id/slug!
 				 */
-				if ( empty( $page_id ) ) {
-					$this_page = $this->get_page_by( 'id', get_the_ID() );
-				} else if ( is_numeric( $page_id ) ) {
-					$this_page = $this->get_page_by( 'id', $page_id );
-				} else {
-					$this_page = $this->get_page_by( 'slug', $page_id );
+				if ( empty( $page_id ) ) { $page_id = get_the_ID(); }
+				if ( empty( $page_id ) ) { $page_id = get_queried_object_id(); }
+				if ( empty( $page_id ) && did_action( 'setup_theme' ) ) {
+					$url = WDev()->current_url();
+					$page_id = url_to_postid( $url );
+				}
+
+				if ( ! empty( $page_id ) ) {
+					if ( is_numeric( $page_id ) ) {
+						$this_page = $this->get_page_by( 'id', $page_id );
+					} else {
+						$this_page = $this->get_page_by( 'slug', $page_id );
+					}
 				}
 			}
 
@@ -331,7 +385,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			}
 
 			if ( ! empty( $page_id ) ) {
-				$ms_page->id = $this->get_page( $page_type );
+				$ms_page = $this->get_page( $page_type );
 				if ( $page_id == $ms_page->id ) {
 					$ms_page_type = $page_type;
 				}
@@ -431,21 +485,23 @@ class MS_Model_Pages extends MS_Model_Option {
 		if ( $Done ) { return; }
 		$Done = true;
 
+		$user_id = get_current_user_id();
+		if ( empty( $user_id ) ) { return; }
+
 		$types = $this->get_page_types();
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$modified = false;
 
 		foreach ( $types as $type => $title ) {
-			$page_id = $settings->get_custom_setting( 'ms_pages', $type );
+			$page_id = $this->get_setting( $type );
 
 			// If the post_id does not exist then create a new page
-			if ( empty( $page_id ) || empty( get_post( $page_id ) ) ) {
+			if ( empty( $page_id ) ) {
 				$data = array(
 					'post_title' => $title,
 					'post_name' => $type,
 					'post_content' => $this->get_default_content( $type ),
 					'post_type' => 'page',
-					'post_status' => 'published',
+					'post_status' => 'publish',
+					'post_author' => $user_id,
 				);
 				$new_id = wp_insert_post( $data );
 
@@ -463,8 +519,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				);
 
 				if ( is_numeric( $new_id ) ) {
-					$settings->set_custom_setting( 'ms_pages', $type, $new_id );
-					$modified = true;
+					$this->set_setting( $type, $new_id );
 
 					/**
 					 * Trigger action to allow modifications to the page
@@ -478,10 +533,6 @@ class MS_Model_Pages extends MS_Model_Option {
 					);
 				}
 			}
-		}
-
-		if ( $modified ) {
-			$settings->save();
 		}
 	}
 
@@ -502,7 +553,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			} else {
 				$ms_page = $this->get_page( $page_type, true );
 				$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
-				$object_type = empty( $update_type ) ? 'ms_page' : $update_type;
+				$object_type = empty( $update_type ) ? 'page' : $update_type;
 				$page_url = $this->get_page_url( $ms_page );
 
 				foreach ( $navs as $nav ) {
@@ -528,7 +579,7 @@ class MS_Model_Pages extends MS_Model_Option {
 						'ms_model_settings_create_menu_item',
 						array(
 							'menu-item-object-id' => $ms_page->ID,
-							'menu-item-object' => 'ms_page',
+							'menu-item-object' => 'page',
 							'menu-item-parent-id' => 0,
 							'menu-item-position' => 0,
 							'menu-item-type' => 'post_type',
@@ -559,51 +610,47 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @return string The default content.
 	 */
 	public function get_default_content( $type ) {
-		$content = null;
+		$lines = array();
 
 		switch ( $type ) {
 			case self::MS_PAGE_MEMBERSHIPS:
-				$content = sprintf(
-					'[ms-green-note] %1$s [/ms-green-note]',
+				$lines[] = sprintf(
+					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
 					__( 'We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN )
 				);
-				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
 
 			case self::MS_PAGE_PROTECTED_CONTENT:
 				// The text in Settings > "Protection Messages" is added in
 				// front end controller. This page has no default content.
-				$content = '';
+				$lines = array();
 				break;
 
 			case self::MS_PAGE_ACCOUNT:
-				$content = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']<hr />';
-				$content .= '['. MS_Helper_Shortcode::SCODE_LOGOUT .']';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']<hr />';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_LOGOUT .']';
 				break;
 
 			case self::MS_PAGE_REGISTER:
-				$content = sprintf(
-					'[ms-green-note] %1$s [/ms-green-note]',
+				$lines[] = sprintf(
+					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
 					__( 'We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details.', MS_TEXT_DOMAIN )
 				);
-				$content .= '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
 
 			case self::MS_PAGE_REG_COMPLETE:
-				$this->create_missing_pages();
-
-				$content .= sprintf(
-					'[ms-green-note] %1$s <br/> %2$s [/ms-green-note]',
+				$lines[] = sprintf(
+					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s<br/>%2$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
 					__( 'Your request to join the membership was successfully received!', MS_TEXT_DOMAIN ),
 					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN )
 				);
-				$content .= sprintf(
-					'<a href="%s">%s</a>',
-					$this->get_page_url( self::MS_PAGE_ACCOUNT, false ),
-					__( 'Visit your account page for more information.', MS_TEXT_DOMAIN )
-				);
+				$lines[] = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK .']';
 				break;
 		}
+
+		$content = implode( "\n", $lines );
 
 		return apply_filters(
 			'ms_model_pages_get_default_content',
@@ -612,4 +659,4 @@ class MS_Model_Pages extends MS_Model_Option {
 		);
 	}
 
-};
+}

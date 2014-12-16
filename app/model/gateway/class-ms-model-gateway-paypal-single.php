@@ -186,8 +186,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 		) {
 			if ( $this->is_live_mode() ) {
 				$domain = 'https://www.paypal.com';
-			}
-			else {
+			} else {
 				$domain = 'https://www.sandbox.paypal.com';
 			}
 
@@ -210,13 +209,11 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				&& 'VERIFIED' == $response['body']
 			) {
 				MS_Helper_Debug::log( 'PayPal Transaction Verified' );
-			}
-			else {
+			} else {
 				$error = 'Response Error: Unexpected transaction response';
 				MS_Helper_Debug::log( $error );
 				MS_Helper_Debug::log( $response );
-				echo $error;
-				exit;
+				exit( $error );
 			}
 
 			$new_status = false;
@@ -241,8 +238,7 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				case 'Processed':
 					if ( $amount == $invoice->total ) {
 						$status = MS_Model_Invoice::STATUS_PAID;
-					}
-					else {
+					} else {
 						$notes = __( 'Payment amount differs from invoice total.', MS_TEXT_DOMAIN );
 						$status = self::STATUS_DENIED;
 					}
@@ -316,13 +312,22 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 				$invoice,
 				$ms_relationship
 			);
-		}
-		else {
+		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
-			header( 'Status: 404 Not Found' );
-			$notes = __( 'Error: Missing POST variables. Identification is not possible.', MS_TEXT_DOMAIN );
-			MS_Helper_Debug::log( $notes );
-			exit;
+
+			$u_agent = $_SERVER['HTTP_USER_AGENT'];
+			if ( false === strpos( $u_agent, 'PayPal' ) ) {
+				// Very likely someone tried to open the URL manually. Redirect to home page
+				$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
+				MS_Helper_Debug::log( $notes );
+				wp_safe_redirect( home_url() );
+				exit;
+			} else {
+				status_header( 404 );
+				$notes = 'Error: Missing POST variables. Identification is not possible.';
+				MS_Helper_Debug::log( $notes );
+				exit;
+			}
 		}
 
 		do_action(
@@ -377,8 +382,8 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					MS_Model_Event::TYPE_PAYMENT_DENIED,
 					$ms_relationship
 				);
-				//Disable user @todo 
-// 				$member->active = false;
+				//Disable user @todo
+//				$member->active = false;
 				break;
 
 			default:

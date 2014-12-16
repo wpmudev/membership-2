@@ -2,12 +2,8 @@
 
 class MS_View_Gateway_Paypal_Settings extends MS_View {
 
-	protected $fields = array();
-
-	protected $data;
-
 	public function to_html() {
-		$this->prepare_fields();
+		$fields = $this->prepare_fields();
 		$gateway = $this->data['model'];
 
 		ob_start();
@@ -27,7 +23,11 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 						__( 'Instructions &raquo;', MS_TEXT_DOMAIN )
 					);
 				}
-				MS_Helper_Html::settings_box( $this->fields, '', $description );
+
+				MS_Helper_Html::settings_box_header( '', $description );
+				foreach ( $fields as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
 				?>
 			</form>
 		</div>
@@ -49,8 +49,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 				'value' => $gateway->paypal_email,
 				'class' => 'required',
 			);
-		}
-		else {
+		} else {
 			$merchant_id_field = array(
 				'id' => 'merchant_id',
 				'title' => __( 'PayPal Merchant Account ID', MS_TEXT_DOMAIN ),
@@ -60,7 +59,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 			);
 		}
 
-		$this->fields = array(
+		$fields = array(
 			'merchant_id' => $merchant_id_field,
 			'paypal_site' => array(
 				'id' => 'paypal_site',
@@ -107,7 +106,7 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 				'id' => 'close',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 				'value' => __( 'Close', MS_TEXT_DOMAIN ),
-				'class' => 'ms-dlg-close',
+				'class' => 'close',
 			),
 
 			'save' => array(
@@ -116,6 +115,8 @@ class MS_View_Gateway_Paypal_Settings extends MS_View {
 				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
+
+		return $fields;
 	}
 
 }

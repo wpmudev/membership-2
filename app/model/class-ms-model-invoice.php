@@ -256,13 +256,81 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		return apply_filters(
 			'ms_model_invoice_get_status_types',
 			array(
-				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
-				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
+				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
+				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
 				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
 			)
 		);
+	}
+
+	/**
+	 * Returns the default query-arg array
+	 *
+	 * @since  1.0.4.5
+	 * @return array
+	 */
+	public static function get_query_args() {
+		$args = array();
+
+		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
+			$args['orderby'] = $_REQUEST['orderby'];
+			$args['order'] = $_REQUEST['order'];
+		} else {
+			$args['orderby'] = 'ID';
+			$args['order'] = 'DESC';
+		}
+
+		// Prepare order by statement.
+		$orderby = $args['orderby'];
+		if ( ! empty( $orderby )
+			&& ! in_array( $orderby, array( 'ID', 'author' ) )
+			&& property_exists( 'MS_Model_Invoice', $orderby )
+		) {
+			$args['meta_key'] = $orderby;
+			if ( in_array( $orderby, array( 'amount', 'total', 'tax_rate' ) ) ) {
+				$args['orderby'] = 'meta_value_num';
+			} else {
+				$args['orderby'] = 'meta_value';
+			}
+		}
+
+		// Search string.
+		if ( ! empty( $_REQUEST['s'] ) ) {
+			$args['author_name'] = $_REQUEST['s'];
+		}
+
+		$args['meta_query'] = array();
+
+		// Gateway filter.
+		if ( ! empty( $_REQUEST['gateway_id'] ) ) {
+			$args['meta_query']['gateway_id'] = array(
+				'key' => 'gateway_id',
+				'value' => $_REQUEST['gateway_id'],
+			);
+		}
+
+		// Payment status filter.
+		if ( ! empty( $_REQUEST['status'] ) ) {
+			if ( 'open' === $_REQUEST['status'] ) {
+				$args['meta_query']['status'] = array(
+					'key' => 'status',
+					'value' => array(
+						MS_Model_Invoice::STATUS_BILLED,
+						MS_Model_Invoice::STATUS_PENDING,
+					),
+					'compare' => 'IN',
+				);
+			} else {
+				$args['meta_query']['status'] = array(
+					'key' => 'status',
+					'value' => $_REQUEST['status'],
+				);
+			}
+		}
+
+		return $args;
 	}
 
 	/**
@@ -454,7 +522,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	public function get_notes_desc() {
 		$desc = $this->notes;
 		if ( is_array( $desc ) ) {
-			$desc = implode( '\n', $desc );
+			$desc = implode( "\n", $desc );
 		}
 
 		return apply_filters(
@@ -617,7 +685,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		);
 		$invoice->description = apply_filters(
 			'ms_model_invoice_description',
-			$ms_relationship->get_payment_description()
+			$ms_relationship->get_payment_description( $invoice )
 		);
 		$invoice->tax_name = $tax['tax_name'];
 		$invoice->tax_rate = $tax['tax_rate'];
@@ -794,6 +862,9 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			$this->total = 0;
 		}
 
+		// Set precission to 2 decimal points.
+		$this->total = round( $this->total, 2 );
+
 		return apply_filters(
 			'ms_model_invoice_get_total',
 			$this->total,
@@ -811,7 +882,6 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
 	public function __get( $property ) {
-
 		$value = null;
 
 		if ( property_exists( $this, $property ) ) {
@@ -830,7 +900,12 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		return apply_filters( 'ms_model_invoice__get', $value, $property, $this );
+		return apply_filters(
+			'ms_model_invoice__get',
+			$value,
+			$property,
+			$this
+		);
 	}
 
 	/**

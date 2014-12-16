@@ -59,6 +59,8 @@ class MS_Controller_Member extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBER, 'ajax_action_toggle_member' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_GET_USERS, 'ajax_action_get_users' );
 
+		$this->add_action( 'ms_controller_membership_setup_completed', 'add_current_user' );
+
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
@@ -83,8 +85,7 @@ class MS_Controller_Member extends MS_Controller {
 			);
 		}
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -133,6 +134,24 @@ class MS_Controller_Member extends MS_Controller {
 			'admin_notices',
 			array( 'MS_Helper_Member', 'print_admin_message' )
 		);
+	}
+
+	/**
+	 * Add the current user to the Members-List.
+	 *
+	 * This does NOT assign any membership to the user, but ensures that the
+	 * admin user appears in the Members-List
+	 *
+	 * @since 1.0.4.5
+	 */
+	public function add_current_user() {
+		$member = MS_Factory::load(
+			'MS_Model_Member',
+			get_current_user_id()
+		);
+
+		$member->is_member = true;
+		$member->save();
 	}
 
 	/**

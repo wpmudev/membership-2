@@ -98,17 +98,51 @@ class MS_View_Help extends MS_View {
 		</p>
 		<hr />
 		<h2>
-			<?php _ex( 'Help topics', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php _ex( 'Plugin menu', 'help', MS_TEXT_DOMAIN ); ?>
 		</h2>
-		<p>
-			<?php printf(
-				'<a href="admin.php?page=%1$s&tab=%2$s">%3$s</a>',
-				esc_attr( $_GET['page'] ),
-				esc_attr( 'shortcodes' ),
-				__( 'Shortcodes', MS_TEXT_DOMAIN )
-			); ?>:
-			<?php _ex( 'A complete list of all shortcodes and their attribues', 'help', MS_TEXT_DOMAIN ); ?>
-		</p>
+		<table cellspacing="0" cellpadding="0">
+			<tr>
+				<td>
+					<span class="top-menu">
+					<div class="menu-image dashicons dashicons-lock"></div>
+					<?php _e( 'Protect Content', MS_TEXT_DOMAIN ); ?>
+					</span>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Memberships', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for. Here you can grant access to previously protected content (<em>see "Protected Content" below</em>)', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Lists all your WordPress users and allows you to manage their Memberships', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Protected Content', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Set the global protection options, i.e. which pages are protected', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Billing', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Manage sent invoices, including details such as the payment status. <em>Only visible when you have at least one paid membership</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Coupons', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Manage your discount coupons. <em>Requires Add-on "Coupons"</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Add-ons', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Activate Add-ons', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><?php _e( 'Settings', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Global plugin options, such as Membership pages, payment options and email templates', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr>
+				<td><span class="menu-item"><strong><?php _e( 'Help', MS_TEXT_DOMAIN ); ?></strong></span></td>
+				<td><?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+		</table>
 		<?php
 		return ob_get_clean();
 	}
@@ -133,8 +167,8 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-protect-content]</code></h3>
 
-			<?php _ex( 'Wrap this around any content to protect it.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Wrap this around any content to protect it for/from certain members (based on their Membership level)', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
@@ -146,10 +180,28 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>access</code>
 						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Defines if members of the memberships can see or not see the content.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Defines if members of the memberships can see or not see the content', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							yes
+						</span>
+					</li>
+					<li>
+						<code>silent</code>
+						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Silent protection removes content without displaying any message to the user', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							no
+						</span>
+					</li>
+					<li>
+						<code>msg</code>
+						<?php _ex( '(Text)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Provide a custom protection message. <em>This will only be displayed when silent is not true</em>', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
 						</span>
 					</li>
 				</ul>
@@ -161,9 +213,57 @@ class MS_View_Help extends MS_View {
 					<code>[/ms-protect-content]</code>
 				</p>
 				<p>
-					<code>[ms-protect-content id="2,3" access="no"]</code>
+					<code>[ms-protect-content id="2,3" access="no" silent="yes"]</code>
 					<?php _ex( 'Everybody except members of memberships 2 or 3 can see this!', 'help', MS_TEXT_DOMAIN ); ?>
 					<code>[/ms-protect-content]</code>
+				</p>
+			</div>
+		</div>
+
+
+		<?php
+		/*********
+		**********   ms-user   *************************************************
+		*********/
+		?>
+
+		<div class="ms-help-box">
+			<h3><code>[ms-user]</code></h3>
+
+			<?php _ex( 'Shows the content only to certain users (ignoring the Membership level)', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<ul>
+					<li>
+						<code>type</code>
+						<?php _ex( '(all|loggedin|guest|admin)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Decide, which type of users will see the message', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"loggedin"
+						</span>
+					</li>
+					<li>
+						<code>msg</code>
+						<?php _ex( '(Text)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Provide a custom protection message that is displayed to users that have no access to the content', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p>
+					<code>[ms-user]</code>
+					<?php _ex( 'You are logged in', 'help', MS_TEXT_DOMAIN ); ?>
+					<code>[/ms-user]</code>
+				</p>
+				<p>
+					<code>[ms-user type="guest"]</code>
+					<?php printf( htmlspecialchars( _x( '<a href="">Sign up now</a>! <a href="">Already have an account</a>?', 'help', MS_TEXT_DOMAIN ) ) ); ?>
+					<code>[/ms-user]</code>
 				</p>
 			</div>
 		</div>
@@ -178,14 +278,23 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-register-user]</code></h3>
 
-			<?php _ex( 'Displays a registration form. Visitors can create a WordPress user account with this form.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays a registration form. Visitors can create a WordPress user account with this form', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
+						<code>title</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the register form', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Create an Account', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
 						<code>first_name</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Initial value for first name.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Initial value for first name', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
@@ -194,7 +303,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>last_name</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Initial value for last name.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Initial value for last name', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
@@ -203,7 +312,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>username</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Initial value for username.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Initial value for username', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
@@ -212,7 +321,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>email</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Initial value for email address.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Initial value for email address', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
@@ -221,10 +330,19 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>membership_id</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Membership ID to assign to the new user. This field is hidden and cannot be changed during registration. <em>Note: If this membership requires payment, the user will be redirected to the payment gateway after registration</em>.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Membership ID to assign to the new user. This field is hidden and cannot be changed during registration. <em>Note: If this membership requires payment, the user will be redirected to the payment gateway after registration</em>', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
+						</span>
+					</li>
+					<li>
+						<code>loginlink</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display a login-link below the form', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"yes"
 						</span>
 					</li>
 				</ul>
@@ -237,22 +355,22 @@ class MS_View_Help extends MS_View {
 
 		<?php
 		/*********
-		**********   ms-   *****************************
+		**********   ms-membership-signup   ************************************
 		*********/
 		?>
 
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-signup]</code></h3>
 
-			<?php _ex( 'Shows a list of all memberships which the current user can sign up for.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Shows a list of all memberships which the current user can sign up for', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<h4><?php _ex( 'Common options', 'help', MS_TEXT_DOMAIN ); ?></h4>
 				<ul>
 					<li>
 						<code><?php echo esc_html( MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP ); ?>_text</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Button label.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Button label', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Signup', MS_TEXT_DOMAIN ); ?>"
@@ -261,7 +379,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code><?php echo esc_html( MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE ); ?>_text</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Button label.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Button label', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Change', MS_TEXT_DOMAIN ); ?>"
@@ -270,7 +388,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code><?php echo esc_html( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL ); ?>_text</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Button label.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Button label', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Cancel', MS_TEXT_DOMAIN ); ?>"
@@ -279,7 +397,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code><?php echo esc_html( MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW  ); ?>_text</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Button label.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Button label', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Renew', MS_TEXT_DOMAIN ); ?>"
@@ -288,7 +406,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code><?php echo esc_html( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY ); ?>_text</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Button label.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Button label', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Complete Payment', MS_TEXT_DOMAIN ); ?>"
@@ -305,22 +423,22 @@ class MS_View_Help extends MS_View {
 
 		<?php
 		/*********
-		**********   ms-   *****************************
+		**********   ms-membership-login   *************************************
 		*********/
 		?>
 
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-login]</code></h3>
 
-			<?php _ex( 'Displays the login/lost-password form, or for logged in users a logout link.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays the login/lost-password form, or for logged in users a logout link', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<h4><?php _ex( 'Common options', 'help', MS_TEXT_DOMAIN ); ?></h4>
 				<ul>
 					<li>
 						<code>title</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'The title above the login form.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The title above the login form', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
@@ -329,7 +447,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>show_labels</code>
 						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Set to "yes" to display the labels for username and password in front of the input fields.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Set to "yes" to display the labels for username and password in front of the input fields', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							no
@@ -338,7 +456,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>redirect</code>
 						<?php _ex( '(URL)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'The page to display after the user was logged in or logged out.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The page to display after the user was logged in or logged out', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							Home URL
@@ -431,7 +549,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>form</code>
 						<?php _ex( '(login|lost|logout)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Defines which form should be displayed. An empty value allows the plugin to automatically choose between login/logout.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Defines which form should be displayed. An empty value allows the plugin to automatically choose between login/logout', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
@@ -457,7 +575,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>show_note</code>
 						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Show a "You are not logged in" note above the login form.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Show a "You are not logged in" note above the login form', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							yes
@@ -632,95 +750,48 @@ class MS_View_Help extends MS_View {
 
 		<?php
 		/*********
-		**********   ms-membership-logout   ************************************
+		**********   ms-note   *************************************************
 		*********/
 		?>
 
 		<div class="ms-help-box">
-			<h3><code>[ms-membership-logout]</code></h3>
+			<h3><code>[ms-note]</code></h3>
 
-			<?php _ex( 'Displays a logout link. When the user is not logged in then the shortcode will return an empty string.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays a info/success message to the user', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
-				<h4><?php _ex( 'Common options', 'help', MS_TEXT_DOMAIN ); ?></h4>
 				<ul>
 					<li>
-						<code>redirect</code>
-						<?php _ex( '(URL)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'The page to display after the user was logged out.', 'help', MS_TEXT_DOMAIN ); ?>
+						<code>type</code>
+						<?php _ex( '(info|warning)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The type of the notice. Info is green and warning red', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							Home URL
-						</span>
-					</li>
-				</ul>
-
-				<h4><?php _ex( 'More options', 'help', MS_TEXT_DOMAIN ); ?></h4>
-				<ul>
-					<li>
-						<code>holder</code>
-						<?php _ex( 'Wrapper element (div, span, p).', 'help', MS_TEXT_DOMAIN ); ?>
-						<span class="ms-help-default">
-							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							"div"
+							"info"
 						</span>
 					</li>
 					<li>
-						<code>holder_class</code>
-						<?php _ex( 'Class for the wrapper.', 'help', MS_TEXT_DOMAIN ); ?>
+						<code>class</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'An additional CSS class that should be added to the notice', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							"ms-logout-form"
+							""
 						</span>
 					</li>
 				</ul>
 
 				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
-				<p><code>[ms-membership-logout]</code></p>
-			</div>
-		</div>
-
-
-		<?php
-		/*********
-		**********   ms-green-note   *******************************************
-		*********/
-		?>
-
-		<div class="ms-help-box">
-			<h3><code>[ms-green-note]</code></h3>
-
-			<?php _ex( 'Displays a info/success message to the user.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
-			<div class="ms-help-details" style="display:none">
-				<ul>
-					<li><em><?php _ex( 'no arguments', 'help', MS_TEXT_DOMAIN ); ?></em></li>
-				</ul>
-
-				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
-				<p><code>[ms-green-note]</code>Thanks for joining our Premium Membership!<code>[/ms-green-note]</code></p>
-			</div>
-		</div>
-
-
-		<?php
-		/*********
-		**********   ms-red-note   *********************************************
-		*********/
-		?>
-
-		<div class="ms-help-box">
-			<h3><code>[ms-red-note]</code></h3>
-
-			<?php _ex( 'Displays a error/warning message to the user.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
-			<div class="ms-help-details" style="display:none">
-				<ul>
-					<li><em><?php _ex( 'no arguments', 'help', MS_TEXT_DOMAIN ); ?></em></li>
-				</ul>
-
-				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
-				<p><code>[ms-red-note]</code>Please log in to see this page.<code>[/ms-red-note]</code></p>
+				<p>
+					<code>[ms-note type="info"]</code>
+					<?php _ex( 'Thanks for joining our Premium Membership!', 'help', MS_TEXT_DOMAIN ); ?>
+					<code>[/ms-note]</code>
+				</p>
+				<p>
+					<code>[ms-note type="warning"]</code>
+					<?php _ex( 'Please log in to access this page!', 'help', MS_TEXT_DOMAIN ); ?>
+					<code>[/ms-note]</code>
+				</p>
 			</div>
 		</div>
 
@@ -740,8 +811,8 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-title]</code></h3>
 
-			<?php _ex( 'Displays the name of a specific membership.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays the name of a specific membership', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
@@ -753,7 +824,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Displayed in front of the title.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Displayed in front of the title', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Membership title:', MS_TEXT_DOMAIN ) ?>"
@@ -776,8 +847,8 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-price]</code></h3>
 
-			<?php _ex( 'Displays the price of a specific membership.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays the price of a specific membership', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
@@ -797,7 +868,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Displayed in front of the price.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Displayed in front of the price', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Membership price:', MS_TEXT_DOMAIN ) ?>"
@@ -820,8 +891,8 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-details]</code></h3>
 
-			<?php _ex( 'Displays the description of a specific membership.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays the description of a specific membership', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
@@ -833,7 +904,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Displayed in front of the description.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Displayed in front of the description', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							"<?php _e( 'Membership details:', MS_TEXT_DOMAIN ) ?>"
@@ -847,10 +918,130 @@ class MS_View_Help extends MS_View {
 		</div>
 
 
+		<?php
+		/*********
+		**********   ms-membership-buy   *************************************
+		*********/
+		?>
+
+		<div class="ms-help-box">
+			<h3><code>[ms-membership-buy]</code></h3>
+
+			<?php _ex( 'Displays a button to buy/sign-up for the specified membership', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<ul>
+					<li>
+						<code>id</code>
+						<?php _ex( '(Single ID)', 'help', MS_TEXT_DOMAIN ); ?>
+						<strong><?php _ex( 'Required', 'help', MS_TEXT_DOMAIN ); ?></strong>.
+						<?php _ex( 'The membership ID', 'help', MS_TEXT_DOMAIN ); ?>
+					</li>
+					<li>
+						<code>label</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The button label', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Signup', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p><code>[ms-membership-buy id="5" label="Buy now!"]</code></p>
+			</div>
+		</div>
+
+
 
 		<hr />
 
 		<h2><?php _ex( 'Less common shortcodes', 'help', MS_TEXT_DOMAIN ); ?></h2>
+
+
+		<?php
+		/*********
+		**********   ms-membership-logout   ************************************
+		*********/
+		?>
+
+		<div class="ms-help-box">
+			<h3><code>[ms-membership-logout]</code></h3>
+
+			<?php _ex( 'Displays a logout link. When the user is not logged in then the shortcode will return an empty string', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<h4><?php _ex( 'Common options', 'help', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>redirect</code>
+						<?php _ex( '(URL)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The page to display after the user was logged out', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							Home URL
+						</span>
+					</li>
+				</ul>
+
+				<h4><?php _ex( 'More options', 'help', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>holder</code>
+						<?php _ex( 'Wrapper element (div, span, p)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"div"
+						</span>
+					</li>
+					<li>
+						<code>holder_class</code>
+						<?php _ex( 'Class for the wrapper', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"ms-logout-form"
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p><code>[ms-membership-logout]</code></p>
+			</div>
+		</div>
+
+
+		<?php
+		/*********
+		**********   ms-membership-account-link   ******************************
+		*********/
+		?>
+
+		<div class="ms-help-box">
+			<h3><code>[ms-membership-account-link]</code></h3>
+
+			<?php _ex( 'Inserts a simple link to the Account page', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<ul>
+					<li>
+						<code>label</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The contents of the link', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Visit your account page for more information', MS_TEXT_DOMAIN ) ?>"
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p>
+					<?php _ex( 'Manage subscriptions in', 'help', MS_TEXT_DOMAIN ); ?>
+					<code>[ms-membership-account-link label="<?php _ex( 'your Account', 'help', MS_TEXT_DOMAIN ); ?>"]!</code>
+				</p>
+			</div>
+		</div>
 
 
 		<?php
@@ -862,8 +1053,8 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-protection-message]</code></h3>
 
-			<?php _ex( 'Displays the protection message on pages that the user cannot access. This shortcode should only be used on the Membership Page "Protected Content".', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays the protection message on pages that the user cannot access. This shortcode should only be used on the Membership Page "Protected Content"', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li><em><?php _ex( 'no arguments', 'help', MS_TEXT_DOMAIN ); ?></em></li>
@@ -887,8 +1078,8 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-account]</code></h3>
 
-			<?php _ex( 'Displays the user account page of a specific user.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Displays the user account page of a specific user', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
@@ -914,8 +1105,8 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-invoice]</code></h3>
 
-			<?php _ex( 'Display an invoice to the user. Not very useful in most cases, as the invoice can only be viewed by the invoice recipient.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Details', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Display an invoice to the user. Not very useful in most cases, as the invoice can only be viewed by the invoice recipient', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
@@ -927,7 +1118,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>pay_button</code>
 						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'If the invoice should contain a "Pay" button.', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'If the invoice should contain a "Pay" button', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							yes
