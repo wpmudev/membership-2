@@ -91,8 +91,8 @@ class MS_Helper_Shortcode extends MS_Helper {
 		if ( isset( self::$did_shortcodes[$shortcode] ) ) {
 			$result = self::$did_shortcodes[$shortcode];
 		} else {
-			$pattern = "/\[${shortcode}.*\]/im";
-			$result = preg_match( $pattern, $content );
+			// Use WP core function `has_shortcode` instead of own logic.
+			$result = has_shortcode( $content, $shortcode );
 		}
 
 		return $result;
