@@ -47,8 +47,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		if ( MS_Plugin::is_enabled() ) {
-			$simulate = MS_Factory::load( 'MS_Model_Simulate' );
-			if ( MS_Model_Member::is_admin_user() && ! $simulate->is_simulating() ) {
+			if ( MS_Model_Member::is_normal_admin() ) {
 				add_shortcode(
 					MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
 					array( $this, 'hide_shortcode')
