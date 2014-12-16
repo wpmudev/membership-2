@@ -213,7 +213,6 @@ class MS_Controller_Addon extends MS_Controller {
 	public function enqueue_scripts() {
 		$data = array(
 			'ms_init' => array(),
-			'initial_url' => $initial_url,
 		);
 
 		$data['ms_init'][] = 'view_addons';
