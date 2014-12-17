@@ -511,8 +511,7 @@ class MS_Plugin {
 	public function plugin_activation() {
 		// Prevent recursion during plugin activation.
 		$refresh = WDev()->store_get( 'refresh_url_rules' );
-		$did_refresh = WDev()->store_get( 'did_refresh_url_rules' );
-		if ( $refresh || $did_refresh ) { return; }
+		if ( $refresh ) { return; }
 
 		// Update the Protected Content database entries after activation.
 		MS_Model_Upgrade::update( true );
@@ -529,8 +528,7 @@ class MS_Plugin {
 	 */
 	static public function flush_rewrite_rules( $url = false ) {
 		$refresh = WDev()->store_get( 'refresh_url_rules' );
-		$did_refresh = WDev()->store_get_clear( 'did_refresh_url_rules' );
-		if ( $refresh || $did_refresh ) { return; }
+		if ( $refresh ) { return; }
 
 		WDev()->store_add( 'refresh_url_rules', true );
 		$url = add_query_arg( 'ms_ts', time(), $url );
@@ -546,7 +544,6 @@ class MS_Plugin {
 	public function maybe_flush_rewrite_rules() {
 		$refresh = WDev()->store_get_clear( 'refresh_url_rules' );
 		if ( ! $refresh ) { return; }
-		WDev()->store_add( 'did_refresh_url_rules', true );
 
 		flush_rewrite_rules();
 
