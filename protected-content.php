@@ -318,27 +318,43 @@ class MS_Plugin {
 		load_plugin_textdomain(
 			MS_TEXT_DOMAIN,
 			false,
-			apply_filters( 'ms_plugin_languages_path', $this->name . '/languages/', $this )
+			apply_filters(
+				'ms_plugin_languages_path',
+				$this->name . '/languages/',
+				$this
+			)
 		);
 
-		// Creates the class autoloader
-		spl_autoload_register( array( &$this, 'class_loader' ) );
+		// Creates the class autoloader.
+		spl_autoload_register( array( $this, 'class_loader' ) );
 
-		add_action( 'wp_loaded', array( &$this, 'maybe_flush_rewrite_rules' ), 1 );
+		// Might refresh the Rewrite-Rules and reloads the page.
+		add_action(
+			'wp_loaded',
+			array( $this, 'maybe_flush_rewrite_rules' ),
+			1
+		);
 
-		/**
+		/*
 		 * Hooks init to register custom post types.
 		 */
-		add_action( 'init', array( &$this, 'register_custom_post_types' ), 1 );
+		add_action(
+			'init',
+			array( $this, 'register_custom_post_types' ),
+			1
+		);
 
-		/**
+		/*
 		 * Hooks init to add rewrite rules and tags (both work in conjunction).
 		 */
-		add_action( 'init', array( &$this, 'add_rewrite_rules' ), 1 );
-		add_action( 'init', array( &$this, 'add_rewrite_tags' ), 1 );
+		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1 );
+		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1 );
 
-		/* Plugin activation Hook */
-		register_activation_hook( __FILE__, array( &$this, 'plugin_activation' ) );
+		// Plugin activation Hook
+		register_activation_hook(
+			__FILE__,
+			array( $this, 'plugin_activation' )
+		);
 
 		/**
 		 * Hooks init to create the primary plugin controller.
@@ -347,7 +363,10 @@ class MS_Plugin {
 		 * wp_redirect (used by the update model) is initialized after
 		 * plugins_loaded but before setup_theme.
 		 */
-		add_action( 'setup_theme', array( &$this, 'ms_plugin_constructing' ) );
+		add_action(
+			'setup_theme',
+			array( $this, 'ms_plugin_constructing' )
+		);
 
 		/**
 		 * Creates and Filters the Settings Model.
@@ -367,18 +386,18 @@ class MS_Plugin {
 
 		add_filter(
 			'plugin_action_links_' . plugin_basename( __FILE__ ),
-			array( &$this, 'plugin_settings_link' )
+			array( $this, 'plugin_settings_link' )
 		);
 
 		add_filter(
 			'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ),
-			array( &$this, 'plugin_settings_link' )
+			array( $this, 'plugin_settings_link' )
 		);
 
 		// Grab instance of self.
 		self::$instance = $this;
 
-		/**
+		/*
 		 * Load membership integrations.
 		 */
 		MS_Integration::load_integrations();
@@ -390,7 +409,6 @@ class MS_Plugin {
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'ms_plugin_construct_end', $this );
-
 	}
 
 	/**
@@ -407,7 +425,7 @@ class MS_Plugin {
 		 *
 		 * Main entry point controller for plugin.
 		 *
-		 * @uses MS_Controller_Plugin
+		 * @uses  MS_Controller_Plugin
 		 * @since 1.0.0
 		 * @param object $this The MS_Plugin object.
 		 */
