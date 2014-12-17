@@ -52,6 +52,10 @@ class MS_Model_Upgrade extends MS_Model {
 	 * @param  bool $force Also execute update logic when version did not change.
 	 */
 	public static function update( $force = false ) {
+		static $Done = false;
+
+		if ( $Done ) { return; }
+
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$old_version = $settings->version; // Old: The version in DB.
 		$new_version = MS_Plugin::instance()->version; // New: Version in file.
@@ -60,6 +64,7 @@ class MS_Model_Upgrade extends MS_Model {
 		$version_changed = version_compare( $old_version, $new_version, '!=' );
 
 		if ( $force || $version_changed ) {
+			$Done = true;
 			$msg = array();
 
 			/*
@@ -130,7 +135,7 @@ class MS_Model_Upgrade extends MS_Model {
 			$settings->save();
 
 			// Display a message after the page is reloaded.
-			WDev()->message( implode( '<br>', $msg ) );
+			WDev()->message( implode( '<br>', $msg ), '', '', 'ms-update' );
 
 			do_action(
 				'ms_model_upgrade_after_update',
