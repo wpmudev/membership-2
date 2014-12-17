@@ -212,7 +212,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'username' => substr( trim( filter_input( INPUT_POST, 'username' ) ), 0, 50 ),
 					'email' => substr( trim( filter_input( INPUT_POST, 'email' ) ), 0, 50 ),
 					'membership_id' => filter_input( INPUT_POST, 'membership_id' ),
-					'title' => _e( 'Create an Account', MS_TEXT_DOMAIN ),
+					'title' => __( 'Create an Account', MS_TEXT_DOMAIN ),
 					'loginlink' => true,
 					'errors' => '',
 				),
