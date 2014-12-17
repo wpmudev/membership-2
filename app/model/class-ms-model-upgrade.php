@@ -53,28 +53,53 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	public static function update( $force = false ) {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$old_version = MS_Plugin::instance()->version;
+		$new_version = $settings->version;
 
 		// Compare current src version to DB version
-		$version_changed = version_compare(
-			MS_Plugin::instance()->version,
-			$settings->version,
-			'!='
-		);
+		$version_changed = version_compare( $old_version, $new_version, '!=' );
 
 		if ( $force || $version_changed ) {
+			$msg = array();
 
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
 
-			do_action( 'ms_model_upgrade_before_update', $settings );
+			do_action(
+				'ms_model_upgrade_before_update',
+				$settings,
+				$old_version,
+				$new_version,
+				$force
+			);
+
+			// Prepare the Update message.
+			if ( ! $version_changed ) {
+				$msg[] = sprintf(
+					__( '<strong>Protected Content</strong> is set up for version %1$s!' , MS_TEXT_DOMAIN ),
+					$new_version
+				);
+			} else {
+				$msg[] = sprintf(
+					__( '<strong>Protected Content</strong> was updated to version %1$s!' , MS_TEXT_DOMAIN ),
+					$new_version
+				);
+			}
 
 			// Every time the plugin is updated we clear the cache.
 			MS_Factory::clear();
 
 			// Create missing Membership pages.
 			$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-			$ms_pages->create_missing_pages();
+			$new_pages = $ms_pages->create_missing_pages();
+
+			if ( ! empty( $new_pages ) ) {
+				$msg[] = sprintf(
+					__( 'New Membership pages created: "%1$s".', MS_TEXT_DOMAIN ),
+					implode( '", "', $new_pages )
+				);
+			}
 
 			// Note: We do not create menu items on upgrade! Users might have
 			// intentionally removed the items from the menu...
@@ -84,7 +109,7 @@ class MS_Model_Upgrade extends MS_Model {
 			 */
 
 			// Upgrade logic from 1.0.0.0
-			if ( version_compare( '1.0.0.0', $settings->version, '=' ) ) {
+			if ( version_compare( '1.0.0.0', $new_version, '=' ) ) {
 				$args = array();
 				$args['post_parent__not_in'] = array( 0 );
 				$memberships = MS_Model_Membership::get_memberships( $args );
@@ -101,17 +126,19 @@ class MS_Model_Upgrade extends MS_Model {
 			 * ----- General update logic, executed on every update ------------
 			 */
 
-			$settings->version = MS_Plugin::instance()->version;
+			$settings->version = $new_version;
 			$settings->save();
 
 			// Display a message after the page is reloaded.
-			$msg = sprintf(
-				__( 'Protected Content was updated to version %1$s!' , MS_TEXT_DOMAIN ),
-				$settings->version
-			);
-			WDev()->message( $msg );
+			WDev()->message( implode( '<br>', $msg ) );
 
-			do_action( 'ms_model_upgrade_after_update', $settings );
+			do_action(
+				'ms_model_upgrade_after_update',
+				$settings,
+				$old_version,
+				$new_version,
+				$force
+			);
 
 			// This will reload the current page.
 			MS_Plugin::flush_rewrite_rules();
