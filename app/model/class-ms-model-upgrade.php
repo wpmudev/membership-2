@@ -53,8 +53,8 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	public static function update( $force = false ) {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$old_version = MS_Plugin::instance()->version;
-		$new_version = $settings->version;
+		$old_version = $settings->version; // Old: The version in DB.
+		$new_version = MS_Plugin::instance()->version; // New: Version in file.
 
 		// Compare current src version to DB version
 		$version_changed = version_compare( $old_version, $new_version, '!=' );
