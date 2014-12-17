@@ -7,7 +7,7 @@ Change Log:
 1.0.4.6
 ----------------------------------------------------------------------
 - Fix problems with plugin settings after upgrading
-- Fix issue were Front-End pages were not working (e.g. with Jetpack)
+- Fix issue where Front-End pages were not working (e.g. with Jetpack)
 
 1.0.4.5
 ----------------------------------------------------------------------
