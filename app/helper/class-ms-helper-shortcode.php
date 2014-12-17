@@ -99,6 +99,19 @@ class MS_Helper_Shortcode extends MS_Helper {
 	}
 
 	/**
+	 * Resets the shortcode-memory.
+	 *
+	 * This is required when a page has multiple calls to the_content - if the
+	 * usage would not be reset, then only the first call to the_content would
+	 * actually add certain shortcodes.
+	 *
+	 * @since  1.0.4.6
+	 */
+	public static function reset_shortcode_usage() {
+		self::$did_shortcodes = array();
+	}
+
+	/**
 	 * Remembers that a shortcode was inserted already.
 	 *
 	 * @since  1.0.4.5
