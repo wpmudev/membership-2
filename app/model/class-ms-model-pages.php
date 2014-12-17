@@ -478,20 +478,32 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * Creates any missing Membership pages.
 	 *
 	 * @since  1.1.0
+	 * @return array|false Titles of the created pages
 	 */
 	public function create_missing_pages() {
 		static $Done = false;
+		$res = false;
 
-		if ( $Done ) { return; }
+		if ( $Done ) { return $res; }
 		$Done = true;
 
 		$user_id = get_current_user_id();
-		if ( empty( $user_id ) ) { return; }
+		if ( empty( $user_id ) ) { return $res; }
 
 		$types = $this->get_page_types();
 
+		$res = array();
 		foreach ( $types as $type => $title ) {
 			$page_id = $this->get_setting( $type );
+			$status = get_post_status( $page_id );
+
+			if ( ! $status || 'trash' == $status ) {
+				// Page does not exist or was deleted. Create new page.
+				$page_id = 0;
+			} elseif ( 'publish' != $status ) {
+				// The page exists but is not published. Publish now.
+				wp_publish_post( $page_id );
+			}
 
 			// If the post_id does not exist then create a new page
 			if ( empty( $page_id ) ) {
@@ -520,6 +532,7 @@ class MS_Model_Pages extends MS_Model_Option {
 
 				if ( is_numeric( $new_id ) ) {
 					$this->set_setting( $type, $new_id );
+					$res[$new_id] = $title;
 
 					/**
 					 * Trigger action to allow modifications to the page
@@ -534,6 +547,12 @@ class MS_Model_Pages extends MS_Model_Option {
 				}
 			}
 		}
+
+		return apply_filters(
+			'ms_model_pages_create_missing_page',
+			$res,
+			$this
+		);
 	}
 
 	/**
