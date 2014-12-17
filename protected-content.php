@@ -491,7 +491,8 @@ class MS_Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_activation() {
-		flush_rewrite_rules();
+		// Update the Protected Content database entries after activation.
+		MS_Model_Upgrade::update( true );
 
 		do_action( 'ms_plugin_activation ', $this );
 	}
@@ -504,7 +505,7 @@ class MS_Plugin {
 	 * @param string $url The URL to load after flushing the rewrite rules.
 	 */
 	static public function flush_rewrite_rules( $url = false ) {
-		$url = add_query_arg( 'ms-update-rules', 1, $url );
+		$url = add_query_arg( 'ms-update-rewrite-rules', 1, $url );
 		wp_safe_redirect( $url );
 		exit;
 	}
@@ -515,10 +516,10 @@ class MS_Plugin {
 	 * @since  1.0.4.4
 	 */
 	public function maybe_flush_rewrite_rules() {
-		if ( isset( $_GET['ms-update-rules'] ) ) {
+		if ( isset( $_GET['ms-update-rewrite-rules'] ) ) {
 			flush_rewrite_rules();
 
-			$url = remove_query_arg( 'ms-update-rules' );
+			$url = remove_query_arg( 'ms-update-rewrite-rules' );
 			wp_safe_redirect( $url );
 			exit;
 		}

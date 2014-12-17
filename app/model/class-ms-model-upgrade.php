@@ -38,7 +38,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * @since 1.0.0
 	 */
 	public static function init() {
-		self::upgrade();
+		self::update();
 
 		MS_Factory::load( 'MS_Model_Upgrade' );
 
@@ -49,12 +49,19 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade database.
 	 *
 	 * @since 1.0.0
+	 * @param  bool $force Also execute update logic when version did not change.
 	 */
-	public static function upgrade() {
+	public static function update( $force = false ) {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		// Compare current src version to DB version
-		if ( version_compare( MS_Plugin::instance()->version, $settings->version, '!=' ) ) {
+		$version_changed = version_compare(
+			MS_Plugin::instance()->version,
+			$settings->version,
+			'!='
+		);
+
+		if ( $force || $version_changed ) {
 
 			/*
 			 * ----- General update logic, executed on every update ------------
