@@ -509,6 +509,9 @@ class MS_Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_activation() {
+		// Prevent recursion during plugin activation.
+		if ( isset( $_GET['ms-update-rewrite-rules'] ) ) { return; }
+
 		// Update the Protected Content database entries after activation.
 		MS_Model_Upgrade::update( true );
 
