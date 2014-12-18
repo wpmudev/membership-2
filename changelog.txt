@@ -6,6 +6,7 @@ Change Log:
 
 1.0.4.7
 ----------------------------------------------------------------------
+- Fix rewrite rules on plugin update/activation (solves payment-issues)
 - Fix PayPal Single settings did not save email address in rare cases
 
 1.0.4.6

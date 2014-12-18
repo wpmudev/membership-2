@@ -545,7 +545,14 @@ class MS_Plugin {
 		$refresh = WDev()->store_get_clear( 'refresh_url_rules' );
 		if ( ! $refresh ) { return; }
 
+		// Flush WP rewrite rules.
 		flush_rewrite_rules();
+
+		// Set up the plugin specific rewrite rules again.
+		$this->add_rewrite_rules();
+		$this->add_rewrite_tags();
+
+		do_action( 'ms_plugin_flush_rewrite_rules', $this );
 
 		$url = remove_query_arg( 'ms_ts' );
 		wp_safe_redirect( $url );
