@@ -178,9 +178,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 	 * @since 1.0.0
 	 */
 	public function handle_return() {
-		MS_Helper_Debug::log( 'Paypal standard IPN POST:' );
-		MS_Helper_Debug::log( $_POST );
-
 		if ( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) )
 			&& ! empty( $_POST['custom'] )
 		) {
@@ -388,8 +385,6 @@ class MS_Model_Gateway_Paypal_Standard extends MS_Model_Gateway {
 				$invoice->status = $status;
 				$this->process_transaction( $invoice );
 				$invoice->save();
-
-				MS_Helper_Debug::log( 'Desired invoice status: "' . $status . '" / Actual invoice status: "' . $invoice->status . '"' );
 			}
 
 			do_action(
