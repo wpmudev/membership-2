@@ -203,15 +203,23 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function membership_register_user( $atts ) {
 		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER );
 
+		WDev()->load_request_fields(
+			'first_name',
+			'last_name',
+			'username',
+			'email',
+			'membership_id'
+		);
+
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_register_user_atts',
 			shortcode_atts(
 				array(
-					'first_name' => substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 ),
-					'last_name' => substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 ),
-					'username' => substr( trim( filter_input( INPUT_POST, 'username' ) ), 0, 50 ),
-					'email' => substr( trim( filter_input( INPUT_POST, 'email' ) ), 0, 50 ),
-					'membership_id' => filter_input( INPUT_POST, 'membership_id' ),
+					'first_name' => substr( trim( $_REQUEST['first_name'] ), 0, 50 ),
+					'last_name' => substr( trim( $_REQUEST['last_name'] ), 0, 50 ),
+					'username' => substr( trim( $_REQUEST['username'] ), 0, 50 ),
+					'email' => substr( trim( $_REQUEST['email'] ), 0, 50 ),
+					'membership_id' => $_REQUEST['membership_id'],
 					'title' => __( 'Create an Account', MS_TEXT_DOMAIN ),
 					'loginlink' => true,
 					'errors' => '',
