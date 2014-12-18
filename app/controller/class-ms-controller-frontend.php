@@ -557,8 +557,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				if ( $coupon->is_valid_coupon( $membership_id ) ) {
 					$coupon->save_coupon_application( $ms_relationship );
 					$data['coupon_valid'] = true;
-				}
-				else {
+				} else {
 					$data['coupon_valid'] = false;
 				}
 			}

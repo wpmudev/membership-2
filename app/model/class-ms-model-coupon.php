@@ -375,12 +375,12 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$discount = 0;
 
 		if ( $this->is_valid_coupon( $membership->id ) ) {
-			if ( self::TYPE_PERCENT == $this->discount_type && $this->discount < 100 ) {
-				$price = $price - $price * $this->discount / 100;
+			$discount = $this->discount;
+
+			if ( self::TYPE_PERCENT == $this->discount_type ) {
+				$discount = $price * $discount / 100;
 			}
-			elseif ( self::TYPE_VALUE == $this->discount_type ) {
-				$price = $price - $this->discount;
-			}
+			$price -= $discount;
 
 			if ( $price < 0 ) {
 				$price = 0;
@@ -411,7 +411,6 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param int $membership_id The membership id to apply the coupon.
-	 * @param float $discount The discount value.
 	 */
 	public function save_coupon_application( $ms_relationship ) {
 		global $blog_id;
@@ -423,7 +422,10 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		/** @todo Handle for network/multsite mode.*/
 		$global = false;
 
-		$time = apply_filters( 'ms_model_coupon_save_coupon_application_redemption_time', self::COUPON_REDEMPTION_TIME );
+		$time = apply_filters(
+			'ms_model_coupon_save_coupon_application_redemption_time',
+			self::COUPON_REDEMPTION_TIME
+		);
 
 		/** Grab the user account as we should be logged in by now */
 		$user = MS_Model_Member::get_current_member();
@@ -451,7 +453,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 		$this->save();
 
-		do_action( 'ms_model_coupon_save_coupon_application', $ms_relationship, $this );
+		do_action(
+			'ms_model_coupon_save_coupon_application',
+			$ms_relationship,
+			$this
+		);
 	}
 
 	/**
@@ -486,7 +492,12 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			$coupon->coupon_message = $transient_value['coupon_message'];
 		}
 
-		return apply_filters( 'ms_model_coupon_get_coupon_application', $coupon, $user_id, $membership_id );
+		return apply_filters(
+			'ms_model_coupon_get_coupon_application',
+			$coupon,
+			$user_id,
+			$membership_id
+		);
 	}
 
 	/**
@@ -514,7 +525,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			delete_transient( $transient_name );
 		}
 
-		do_action( 'ms_model_coupon_remove_coupon_application', $user_id, $membership_id );
+		do_action(
+			'ms_model_coupon_remove_coupon_application',
+			$user_id,
+			$membership_id
+		);
 	}
 
 	/**
@@ -535,12 +550,35 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 				}
 				break;
 
+			case 'discount':
+				$value = $this->discount;
+				if ( $value < 0 ) {
+					$value = 0;
+				}
+
+				if ( self::TYPE_PERCENT == $this->discount_type ) {
+					if ( $value > 100 ) {
+						$value = 100;
+					}
+				}
+
+				if ( $value != $this->discount ) {
+					$this->discount = $value;
+					$this->save();
+				}
+				break;
+
 			default:
 				$value = $this->$property;
 				break;
 		}
 
-		return apply_filters( 'ms_model_coupon__get', $value, $property, $this );
+		return apply_filters(
+			'ms_model_coupon__get',
+			$value,
+			$property,
+			$this
+		);
 	}
 
 	/**
@@ -602,6 +640,11 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		do_action( 'ms_model_coupon__set_after', $property, $value, $this );
+		do_action(
+			'ms_model_coupon__set_after',
+			$property,
+			$value,
+			$this
+		);
 	}
 }
