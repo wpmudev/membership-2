@@ -389,14 +389,6 @@ class MS_Model_Pages extends MS_Model_Option {
 				if ( $page_id == $ms_page->id ) {
 					$ms_page_type = $page_type;
 				}
-			} elseif ( $ms_page ) {
-				$slug = $ms_page->slug;
-				$expected_page = $this->get_page( $page_type );
-				$expected_slug = $expected_page->post_name;
-
-				if ( $slug == $expected_slug ) {
-					$ms_page_type = $page_type;
-				}
 			}
 		}
 
