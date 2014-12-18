@@ -243,7 +243,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				case 'edit':
 				case 'update_gateway':
 					foreach ( $fields as $field => $value ) {
-						$gateway->$field = $value;
+						$gateway->$field = trim( $value );
 					}
 					$gateway->save();
 
