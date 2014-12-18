@@ -178,6 +178,7 @@ class MS_Controller extends MS_Hooker {
 				break;
 
 			case 'REQUEST':
+			case 'any':
 				$request_fields = $_REQUEST;
 				break;
 
@@ -192,11 +193,12 @@ class MS_Controller extends MS_Hooker {
 			if ( $not_empty ) {
 				if ( empty( $request_fields[ $field ] ) ) {
 					$validated = false;
+					break;
 				}
-			}
-			else {
+			} else {
 				if ( ! isset( $request_fields[ $field ] ) ) {
 					$validated = false;
+					break;
 				}
 			}
 		}

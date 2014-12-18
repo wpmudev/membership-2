@@ -345,12 +345,12 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
-		if ( in_array( @$_REQUEST['step'], $steps ) ) {
-			$step = $_REQUEST['step'];
-		}
+		WDev()->load_request_fields( 'step', 'membership_id' );
 
-		// Initial step
-		else {
+		if ( in_array( $_REQUEST['step'], $steps ) ) {
+			$step = $_REQUEST['step'];
+		} else {
+			// Initial step
 			$step = self::STEP_CHOOSE_MEMBERSHIP;
 		}
 
@@ -358,7 +358,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			if ( ! MS_Model_Member::is_logged_user() ) {
 				$step = self::STEP_REGISTER_FORM;
 			}
-			if ( ! MS_Model_Membership::is_valid_membership( @$_REQUEST['membership_id'] ) ) {
+			if ( ! MS_Model_Membership::is_valid_membership( $_REQUEST['membership_id'] ) ) {
 				$step = self::STEP_CHOOSE_MEMBERSHIP;
 			}
 		}

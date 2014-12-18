@@ -11,6 +11,7 @@ class MS_View_Frontend_Payment extends MS_View {
 	public function to_html() {
 		$membership = $this->data['membership'];
 		$invoice = $this->data['invoice'];
+		$ms_relationship = $this->data['ms_relationship'];
 
 		$class = 'ms-alert-success';
 		$msg = __(
@@ -32,12 +33,33 @@ class MS_View_Frontend_Payment extends MS_View {
 				MS_Model_Membership_Relationship::STATUS_PENDING,
 			);
 
-			foreach ( $this->data['member']->ms_relationships as $ms_relationship ) {
-				if ( in_array( $ms_relationship->status, $valid_status ) ) {
+			foreach ( $this->data['member']->ms_relationships as $tmp_relationship ) {
+				if ( $tmp_relationship->is_visitor_membership() ) { continue; }
+				if ( in_array( $tmp_relationship->status, $valid_status ) ) {
 					$cancel_warning = true;
 					break;
 				}
 			}
+		}
+
+		if ( ! $cancel_warning && $membership->is_free() ) {
+			// No confirmation required. Simply register for this membership!
+
+			$args = array();
+			$args['ms_relationship_id'] = $ms_relationship->id;
+			$args['gateway'] = MS_Model_Gateway::GATEWAY_FREE;
+			$args['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
+			$args['_wpnonce'] = wp_create_nonce( $args['gateway'] . '_' . $args['ms_relationship_id'] );
+			$url = add_query_arg( $args );
+
+			/*
+			 * Very likely the html output has already began.
+			 * So we redirect by using javascript.
+			 */
+			?>
+			<script>window.location.href = '<?php echo '' . $url; ?>';</script>
+			<?php
+			exit;
 		}
 
 		ob_start();
@@ -70,79 +92,81 @@ class MS_View_Frontend_Payment extends MS_View {
 					</tr>
 				<?php endif; ?>
 
-				<tr>
-					<td class="ms-title-column">
-						<?php _e( 'Price', MS_TEXT_DOMAIN ); ?>
-					</td>
-					<td class="ms-details-column">
-						<?php
-						if ( $membership->price > 0 ) {
-							printf(
+				<?php if ( $membership->has_payment() ) : ?>
+					<tr>
+						<td class="ms-title-column">
+							<?php _e( 'Price', MS_TEXT_DOMAIN ); ?>
+						</td>
+						<td class="ms-details-column">
+							<?php
+							if ( $membership->price > 0 ) {
+								printf(
+									'%s %s',
+									$invoice->currency,
+									number_format( $membership->price, 2 )
+								);
+							} else {
+								_e( 'Free', MS_TEXT_DOMAIN );
+							}
+							?>
+						</td>
+					</tr>
+
+					<?php if ( $invoice->discount ) : ?>
+						<tr>
+							<td class="ms-title-column">
+								<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
+							</td>
+							<td class="ms-price-column">
+								<?php printf( '%s -%s', $invoice->currency, number_format( $invoice->discount, 2 ) ); ?>
+							</td>
+						</tr>
+					<?php endif; ?>
+
+					<?php if ( $invoice->pro_rate ) : ?>
+						<tr>
+							<td class="ms-title-column">
+								<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>
+							</td>
+							<td class="ms-price-column">
+								<?php printf( '%s -%s', $invoice->currency, number_format( $invoice->pro_rate, 2 ) ); ?>
+							</td>
+						</tr>
+					<?php endif; ?>
+
+					<tr>
+						<td class="ms-title-column">
+							<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
+						</td>
+						<td class="ms-price-column ms-total">
+							<?php printf(
 								'%s %s',
 								$invoice->currency,
-								number_format( $membership->price, 2 )
-							);
-						} else {
-							_e( 'Free', MS_TEXT_DOMAIN );
-						}
-						?>
-					</td>
-				</tr>
-
-				<?php if ( $invoice->discount ) : ?>
-					<tr>
-						<td class="ms-title-column">
-							<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
+								number_format( $invoice->total, 2 )
+							); ?>
 						</td>
-						<td class="ms-price-column">
-							<?php printf( '%s -%s', $invoice->currency, number_format( $invoice->discount, 2 ) ); ?>
+					</tr>
+
+					<?php if ( $membership->trial_period_enabled && $invoice->trial_period ) : ?>
+						<tr>
+							<td class="ms-title-column">
+								<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
+							</td>
+							<td class="ms-desc-column"><?php
+								echo '' . $ms_relationship->calc_trial_expire_date(
+									MS_Helper_Period::current_date()
+								);
+							?></td>
+						</tr>
+					<?php endif; ?>
+					<tr>
+						<td class="ms-desc-column" colspan="2">
+							<span class="ms-membership-description"><?php
+								echo '' . $ms_relationship->get_payment_description( $invoice );
+							?></span>
 						</td>
 					</tr>
 				<?php endif; ?>
-
-				<?php if ( $invoice->pro_rate ) : ?>
-					<tr>
-						<td class="ms-title-column">
-							<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>
-						</td>
-						<td class="ms-price-column">
-							<?php printf( '%s -%s', $invoice->currency, number_format( $invoice->pro_rate, 2 ) ); ?>
-						</td>
-					</tr>
-				<?php endif; ?>
-
-				<tr>
-					<td class="ms-title-column">
-						<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
-					</td>
-					<td class="ms-price-column ms-total">
-						<?php printf(
-							'%s %s',
-							$invoice->currency,
-							number_format( $invoice->total, 2 )
-						); ?>
-					</td>
-				</tr>
-
-				<?php if ( $membership->trial_period_enabled && $invoice->trial_period ) : ?>
-					<tr>
-						<td class="ms-title-column">
-							<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
-						</td>
-						<td class="ms-desc-column"><?php
-							echo '' . $this->data['ms_relationship']->calc_trial_expire_date(
-								MS_Helper_Period::current_date()
-							);
-						?></td>
-					</tr>
-				<?php endif; ?>
-				<tr>
-					<td class="ms-desc-column" colspan="2">
-						<span class="ms-membership-description"><?php
-							echo '' . $this->data['ms_relationship']->get_payment_description( $invoice );
-						?></span>
-					</td>
-				</tr>
 
 				<?php if ( $cancel_warning ) : ?>
 					<tr>
@@ -156,9 +180,13 @@ class MS_View_Frontend_Payment extends MS_View {
 							?></span>
 						</td>
 					</tr>
-				<?php endif; ?>
+				<?php endif;
 
-				<?php do_action( 'ms_view_frontend_payment_purchase_button', $this->data['ms_relationship'] ); ?>
+				do_action(
+					'ms_view_frontend_payment_purchase_button',
+					$ms_relationship
+				);
+				?>
 			</table>
 		</div>
 		<?php $this->coupon_html(); ?>
