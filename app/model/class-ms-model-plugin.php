@@ -178,10 +178,7 @@ class MS_Model_Plugin extends MS_Model {
 						|| is_front_page()
 						|| is_404()
 						|| is_search()
-						|| is_archive()
-						|| is_author()
-						|| is_date()
-						|| is_time();
+						|| is_archive();
 				}
 
 				// Front page, etc. are public by default.
