@@ -247,7 +247,7 @@ class MS_Model_Rule extends MS_Model {
 			$rule_types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
 			$rule_type = ksort( $rule_types );
 
-			$Types = apply_filters( 'ms_model_rule_get_rule_types', $rule_types );
+			$Types = $rule_types;
 		}
 
 		return $Types;

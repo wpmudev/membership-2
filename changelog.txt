@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - Fix rewrite rules on plugin update/activation (solves payment-issues)
 - Fix PayPal Single settings did not save email address in rare cases
+- Fix duplicate display of BuddyPress/bbPress rules in overview
 - Improve the [ms-memberhship-buy] shortcode to also work for guests
 - Improve subscription to free memberships: payment screen is skipped
 
