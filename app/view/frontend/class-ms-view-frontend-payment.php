@@ -25,7 +25,9 @@ class MS_View_Frontend_Payment extends MS_View {
 		}
 
 		$cancel_warning = false;
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+		if ( ! MS_Model_Member::is_admin_user()
+			&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+		) {
 			// Member can only sign up to one membership.
 			$valid_status = array(
 				MS_Model_Membership_Relationship::STATUS_TRIAL,
@@ -42,7 +44,10 @@ class MS_View_Frontend_Payment extends MS_View {
 			}
 		}
 
-		if ( ! $cancel_warning && $membership->is_free() ) {
+		if ( ! MS_Model_Member::is_admin_user()
+			&& ! $cancel_warning
+			&& $membership->is_free()
+		) {
 			// No confirmation required. Simply register for this membership!
 
 			$args = array();
@@ -182,16 +187,27 @@ class MS_View_Frontend_Payment extends MS_View {
 					</tr>
 				<?php endif;
 
-				do_action(
-					'ms_view_frontend_payment_purchase_button',
-					$ms_relationship
-				);
+				if ( MS_Model_Member::is_admin_user() ) : ?>
+					<tr>
+						<td class="ms-desc-adminnote" colspan="2">
+							<em><?php
+							_e( 'As admin user you already have access to this membership', MS_TEXT_DOMAIN );
+							?></em>
+						</td>
+					</tr>
+				<?php else :
+					do_action(
+						'ms_view_frontend_payment_purchase_button',
+						$ms_relationship
+					);
+				endif;
 				?>
 			</table>
 		</div>
 		<?php $this->coupon_html(); ?>
 		<div style="clear:both;"></div>
 		<?php
+
 		return ob_get_clean();
 	}
 

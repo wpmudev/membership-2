@@ -65,7 +65,7 @@ class MS_View_Frontend_Profile extends MS_View {
 						'id' => 'password',
 						'title' => __( 'Password', MS_TEXT_DOMAIN ),
 						'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
-// 						'desc' => __( 'Hint: The password should be at least 5 characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).', MS_TEXT_DOMAIN ),
+//						'desc' => __( 'Hint: The password should be at least 5 characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ &amp; ).', MS_TEXT_DOMAIN ),
 						'value' => '',
 				),
 				'password2' => array(
