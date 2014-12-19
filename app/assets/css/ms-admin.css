@@ -1271,7 +1271,7 @@
 }
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper label {
   padding-top: 80px;
-  height: 280px;
+  height: 300px;
 }
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper label:before {
   display: inline-block;
@@ -1317,10 +1317,18 @@
 .ms-wrap .ms-locked .wpmui-radio-caption {
   opacity: 0.45;
   cursor: not-allowed;
+  filter: blur(2px);
+  -moz-filter: blur(2px);
+  -webkit-filter: blur(2px);
 }
 .ms-wrap .ms-locked .wpmui-input-description {
   color: #CCC !important;
   cursor: not-allowed;
+}
+.ms-wrap .ms-locked .locked-blur {
+  filter: blur(2px);
+  -moz-filter: blur(2px);
+  -webkit-filter: blur(2px);
 }
 .ms-wrap .ms-locked .locked-info {
   position: absolute;

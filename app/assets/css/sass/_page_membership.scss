@@ -88,7 +88,7 @@
 
 		label {
 			padding-top: 80px;
-			height: 280px;
+			height: 300px;
 
 			&:before {
 				display: inline-block;
@@ -146,11 +146,21 @@
 		.wpmui-radio-caption {
 			opacity: 0.45;
 			cursor: not-allowed;
+
+			filter: blur(2px);
+			-moz-filter: blur(2px);
+			-webkit-filter: blur(2px);
 		}
 
 		.wpmui-input-description {
 			color: #CCC !important;
 			cursor: not-allowed;
+		}
+
+		.locked-blur {
+			filter: blur(2px);
+			-moz-filter: blur(2px);
+			-webkit-filter: blur(2px);
 		}
 
 		.locked-info {
