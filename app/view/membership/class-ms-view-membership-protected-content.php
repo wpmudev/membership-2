@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_MembershipSetup_Protected_Content extends MS_View {
+class MS_View_Membership_Protected_Content extends MS_View {
 
 	public function to_html() {
 		$tabs = $this->data['tabs'];

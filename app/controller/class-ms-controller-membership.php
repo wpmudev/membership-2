@@ -53,13 +53,13 @@ class MS_Controller_Membership extends MS_Controller {
 	const STEP_OVERVIEW = 'ms_overview';
 	const STEP_NEWS = 'ms_news';
 	const STEP_WELCOME_SCREEN = 'welcome';
-	const STEP_SETUP_PROTECTED_CONTENT = 'setup_protected_content';
+	const STEP_SETUP_PROTECTED_CONTENT = 'protected_content';
 	const STEP_CHOOSE_MS_TYPE = 'choose_ms_type';
 	const STEP_ACCESSIBLE_CONTENT = 'accessible_content';
-	const STEP_SETUP_PAYMENT = 'setup_payment';
-	const STEP_SETUP_CONTENT_TYPES = 'setup_content_types';
-	const STEP_SETUP_MS_TIERS = 'setup_ms_tiers';
-	const STEP_SETUP_DRIPPED = 'setup_dripped';
+	const STEP_SETUP_PAYMENT = 'payment';
+	const STEP_SETUP_CONTENT_TYPES = 'content_types';
+	const STEP_SETUP_MS_TIERS = 'ms_tiers';
+	const STEP_SETUP_DRIPPED = 'dripped';
 
 	/**
 	 * The model to use for loading/saving Membership data.
@@ -177,15 +177,21 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( empty( $this->model ) || ! $this->model->is_valid() ) {
 			if ( ! empty( $_GET['membership_id'] ) ) {
 				$membership_id = absint( $_GET['membership_id'] );
-			}
-			elseif ( ! empty( $_POST['membership_id'] ) ) {
+			} elseif ( ! empty( $_POST['membership_id'] ) ) {
 				$membership_id = absint( $_POST['membership_id'] );
 			}
 
-			$this->model = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			$this->model = MS_Factory::load(
+				'MS_Model_Membership',
+				$membership_id
+			);
 		}
 
-		return apply_filters( 'ms_controller_membership_load_membership', $this->model, $this );
+		return apply_filters(
+			'ms_controller_membership_load_membership',
+			$this->model,
+			$this
+		);
 	}
 
 	/**
@@ -248,12 +254,15 @@ class MS_Controller_Membership extends MS_Controller {
 						case MS_Model_Membership::TYPE_CONTENT_TYPE:
 							$next_step = self::STEP_SETUP_CONTENT_TYPES;
 							break;
+
 						case MS_Model_Membership::TYPE_TIER:
 							$next_step = self::STEP_SETUP_MS_TIERS;
 							break;
+
 						case MS_Model_Membership::TYPE_DRIPPED:
 							$next_step = self::STEP_SETUP_DRIPPED;
 							break;
+
 						default:
 							$next_step = self::STEP_ACCESSIBLE_CONTENT;
 							break;
@@ -365,9 +374,9 @@ class MS_Controller_Membership extends MS_Controller {
 				}
 				exit;
 			}
-		}
-		// No action request found. Validate direct access.
-		else {
+		} else {
+			// No action request found. Validate direct access.
+
 			switch ( $step ) {
 				// Child overview page is shown in parent's overview, redirect.
 				case self::STEP_OVERVIEW:
@@ -418,8 +427,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 
 		if ( self::is_valid_step( $step ) ) {
-
 			$method = "page_{$step}";
+
 			if ( method_exists( $this, $method ) ) {
 				$callback = apply_filters(
 					'ms_controller_membership_admin_page_router_callback',
@@ -476,7 +485,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function page_setup_protected_content() {
+	public function page_protected_content() {
 		$data = array();
 		$data['tabs'] = $this->get_protected_content_tabs();
 		$data['active_tab'] = $this->get_active_tab();
@@ -568,7 +577,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function page_setup_payment() {
+	public function page_payment() {
 		$membership = $this->load_membership();
 
 		$data = array();
@@ -715,7 +724,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function page_setup_content_types() {
+	public function page_content_types() {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'create_content_type';
@@ -735,7 +744,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function page_setup_ms_tiers() {
+	public function page_ms_tiers() {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'create_tier';
@@ -755,7 +764,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function page_setup_dripped() {
+	public function page_dripped() {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_membership';
@@ -918,6 +927,7 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( empty( $step ) ) {
 			$step = $this->get_step();
 		}
+
 		if ( MS_Plugin::is_wizard() ) {
 			$settings->wizard_step = $step;
 
