@@ -585,7 +585,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			),
 		);
 
-		if ( ! $replace_menus ) {
+		if ( 'item' === $menu_protection ) {
 			$fields['menu_id'] = array(
 				'id' => 'menu_id',
 				'title' => __( 'Menus:', MS_TEXT_DOMAIN ),
