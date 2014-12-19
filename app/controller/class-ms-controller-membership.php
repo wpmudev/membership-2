@@ -492,8 +492,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
 		$data['initial_setup'] = MS_Plugin::is_wizard();
 
-		$view = MS_Factory::create( 'MS_View_Membership_Setup_Protected_Content' );
-		$view->data = apply_filters( 'ms_view_membership_setup_protected_content_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Membership_Protected_Content' );
+		$view->data = apply_filters( 'ms_view_membership_protected_content_data', $data, $this );
 		$view->render();
 	}
 
@@ -589,8 +589,8 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 		}
 
-		$view = MS_Factory::create( 'MS_View_Membership_Setup_Payment' );
-		$view->data = apply_filters( 'ms_view_membership_setup_payment_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Membership_Payment' );
+		$view->data = apply_filters( 'ms_view_membership_payment_data', $data, $this );
 		$view->render();
 	}
 
@@ -725,8 +725,8 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
-		$view = MS_Factory::create( 'MS_View_Membership_Setup_Content_Type' );
-		$view->data = apply_filters( 'ms_view_membership_setup_content_types_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Membership_Content_Type' );
+		$view->data = apply_filters( 'ms_view_membership_content_types_data', $data, $this );
 		$view->render();
 	}
 
@@ -745,8 +745,8 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
-		$view = MS_Factory::create( 'MS_View_Membership_Setup_Tier' );
-		$view->data = apply_filters( 'ms_view_membership_ms_tiers_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Membership_Tier' );
+		$view->data = apply_filters( 'ms_view_membership_tier_data', $data, $this );
 		$view->render();
 	}
 
@@ -765,8 +765,8 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
-		$view = MS_Factory::create( 'MS_View_Membership_Setup_Dripped' );
-		$view->data = apply_filters( 'ms_view_membership_setup_dripped_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Membership_Dripped' );
+		$view->data = apply_filters( 'ms_view_membership_dripped_data', $data, $this );
 		$view->render();
 	}
 

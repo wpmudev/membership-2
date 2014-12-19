@@ -9,7 +9,7 @@
  * @package Membership
  * @subpackage View
  */
-class MS_View_Membership_Setup_Dripped extends MS_View {
+class MS_View_Membership_Dripped extends MS_View {
 
 	/**
 	 * Create view output.
@@ -64,20 +64,20 @@ class MS_View_Membership_Setup_Dripped extends MS_View {
 			// Call the appropriate form to render.
 			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
 			$render_callback = apply_filters(
-				'ms_view_membership_setup_dripped_render_tab_callback',
+				'ms_view_membership_dripped_render_tab_callback',
 				array( $this, $callback_name ),
 				$active_tab, $this
 			);
 
 			$html = call_user_func( $render_callback );
-			$html = apply_filters( 'ms_view_membership_setup_dripped_' . $callback_name, $html );
+			$html = apply_filters( 'ms_view_membership_dripped_' . $callback_name, $html );
 			echo $html;
 			?>
 		</div>
 		<?php
 		$html = ob_get_clean();
 
-		return apply_filters( 'ms_view_membership_setup_dripped_content_to_html', $html, $this );
+		return apply_filters( 'ms_view_membership_dripped_content_to_html', $html, $this );
 	}
 
 	public function render_tab_page() {

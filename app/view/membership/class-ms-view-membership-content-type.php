@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Membership_Setup_Tier extends MS_View {
+class MS_View_Membership_Content_Type extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();
@@ -16,26 +16,20 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 			<?php
 				MS_Helper_Html::settings_header(
 					array(
-						'title' => __( 'Set Up Membership Tiers', MS_TEXT_DOMAIN ),
+						'title' => __( 'Set Up Content Types', MS_TEXT_DOMAIN ),
 						'desc' => array(
 							sprintf(
-								__( 'Set up different Tier Levels for %s.', MS_TEXT_DOMAIN ),
+								__( 'Here you can set-up different types of content to be available to different types of %s members.', MS_TEXT_DOMAIN ),
 								$membership->name
 							),
-							__(
-								'You can have as many Tier Levels as you want, though remember, less is more.',
-								MS_TEXT_DOMAIN
-							),
-							__(
-								'Begin with your lowest Tier Level and move up.',
-								MS_TEXT_DOMAIN
-							),
+							__( '(eg. Cooking recipes for Cooking Members, PHP tutorials for Programming Members)', MS_TEXT_DOMAIN ),
 						),
 						'bread_crumbs' => $this->data['bread_crumbs'],
 					)
 				);
 			?>
-			<div class="ms-tier-wrapper ms-wrapper-center">
+			<div class="clear"></div>
+			<div class="ms-content-type-wrapper ms-wrapper-center">
 				<form action="" method="post" id="ms-create-child-form" >
 					<?php MS_Helper_Html::html_element( $fields['action'] ); ?>
 					<?php MS_Helper_Html::html_element( $fields['step'] ); ?>
@@ -43,12 +37,12 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 					<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
 					<?php MS_Helper_Html::html_element( $fields['submit_content_type'] ); ?>
 				</form>
-				<?php $list_table->display(); ?>
 				<?php
-					MS_Helper_Html::settings_footer(
-						array( $fields['step'] ),
-						$this->data['show_next_button']
-					);
+				$list_table->display();
+				MS_Helper_Html::settings_footer(
+					array( $fields['step'] ),
+					$this->data['show_next_button']
+				);
 				?>
 			</div>
 			<div class="clear"></div>
@@ -67,11 +61,11 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 		$fields = array(
 			'name' => array(
 				'id' => 'name',
-				'title' => __( 'Tier Level name:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Name Your Content Type:', MS_TEXT_DOMAIN ),
 				'value' => '',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'class' => 'ms-text-large',
-				'placeholder' => __( 'eg. Bronze', MS_TEXT_DOMAIN ),
+				'placeholder' => __( 'eg. Cooking recipes', MS_TEXT_DOMAIN ),
 			),
 			'submit_content_type' => array(
 				'id' => 'submit_content_type',
@@ -99,4 +93,3 @@ class MS_View_Membership_Setup_Tier extends MS_View {
 		return $fields;
 	}
 }
-

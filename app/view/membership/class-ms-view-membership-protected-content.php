@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Membership_Setup_Protected_Content extends MS_View {
+class MS_View_MembershipSetup_Protected_Content extends MS_View {
 
 	public function to_html() {
 		$tabs = $this->data['tabs'];
@@ -42,7 +42,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				$render_callback = array( $this, 'render_generic_tab' );
 			}
 			$render_callback = apply_filters(
-				'ms_view_membership_setup_protected_content_render_tab_callback',
+				'ms_view_membership_protected_content_render_tab_callback',
 				$render_callback,
 				$active_tab,
 				$this
@@ -158,7 +158,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 				);
 
 				$field = apply_filters(
-					'ms_view_membership_setup_protected_content_' . $item['type'] . '_field',
+					'ms_view_membership_protected_content_' . $item['type'] . '_field',
 					$field
 				);
 
@@ -513,7 +513,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			*/
 		);
 
-		return apply_filters( 'ms_view_membership_setup_protected_content_get_tab_comment_fields', $fields );
+		return apply_filters( 'ms_view_membership_protected_content_get_tab_comment_fields', $fields );
 	}
 
 	/* ====================================================================== *
@@ -595,7 +595,7 @@ class MS_View_Membership_Setup_Protected_Content extends MS_View {
 			),
 		);
 
-		$fields = apply_filters( 'ms_view_membership_setup_protected_content_get_tab_urlgroup_fields', $fields );
+		$fields = apply_filters( 'ms_view_membership_protected_content_get_tab_urlgroup_fields', $fields );
 
 		$title = __( 'URL Groups', MS_TEXT_DOMAIN );
 		$desc = __( 'Protected URLs can be accessed by members only. ', MS_TEXT_DOMAIN );

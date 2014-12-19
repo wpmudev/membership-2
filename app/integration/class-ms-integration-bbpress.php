@@ -52,7 +52,7 @@ class MS_Integration_Bbpress extends MS_Integration {
 			$this->add_filter( 'ms_model_rule_get_rule_type_classes', 'bbpress_rule_type_classes' );
 			$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
 			$this->add_filter( 'ms_controller_membership_tabs', 'bbpress_rule_tabs' );
-			$this->add_filter( 'ms_view_membership_setup_protected_content_render_tab_callback', 'bbpress_manage_render_callback', 10, 3 );
+			$this->add_filter( 'ms_view_membership_protected_content_render_tab_callback', 'bbpress_manage_render_callback', 10, 3 );
 			$this->add_filter( 'ms_view_membership_accessible_content_render_tab_callback', 'bbpress_manage_render_callback', 10, 3 );
 		}
 	}
@@ -164,12 +164,12 @@ class MS_Integration_Bbpress extends MS_Integration {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @filter ms_view_membership_setup_protected_content_render_tab_callback
+	 * @filter ms_view_membership_protected_content_render_tab_callback
 	 * @filter ms_view_membership_accessible_content_render_tab_callback
 	 *
 	 * @param array $callback The current function callback.
 	 * @param string $tab The current membership rule tab.
-	 * @param MS_View_Membership_Setup_Protected_Content $obj The protected-content view object.
+	 * @param MS_View_Membership_Protected_Content $obj The protected-content view object.
 	 * @return array The filtered callback.
 	 */
 	public function bbpress_manage_render_callback( $callback, $tab, $obj ) {

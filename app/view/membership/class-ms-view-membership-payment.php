@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Membership_Setup_Payment extends MS_View {
+class MS_View_Membership_Payment extends MS_View {
 
 	public function to_html() {
 		$fields = $this->get_fields();
@@ -103,7 +103,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		);
 
 		return apply_filters(
-			'ms_view_membership_setup_payment_get_fields',
+			'ms_view_membership_payment_get_fields',
 			$fields
 		);
 	}
@@ -345,7 +345,7 @@ class MS_View_Membership_Setup_Payment extends MS_View {
 		}
 
 		return apply_filters(
-			'ms_view_membership_setup_payment_get_global_fields',
+			'ms_view_membership_payment_get_global_fields',
 			$fields
 		);
 	}

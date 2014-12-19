@@ -105,7 +105,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		);
 
 		$fields = apply_filters(
-			'ms_view_membership_setup_protected_content_get_category_fields',
+			'ms_view_membership_protected_content_get_category_fields',
 			$fields
 		);
 
@@ -622,7 +622,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 		}
 
 		$fields = apply_filters(
-			'ms_view_membership_setup_protected_content_get_tab_comment_fields',
+			'ms_view_membership_protected_content_get_tab_comment_fields',
 			$fields
 		);
 
@@ -813,7 +813,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			),
 		);
 
-		return apply_filters( 'ms_view_membership_setup_protected_content_get_control_fields', $fields );
+		return apply_filters( 'ms_view_membership_protected_content_get_control_fields', $fields );
 	}
 
 	protected function restriction_link( $rule = '' ) {
