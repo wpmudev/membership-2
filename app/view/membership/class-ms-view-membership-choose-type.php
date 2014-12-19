@@ -9,24 +9,28 @@ class MS_View_Membership_Choose_Type extends MS_View {
 				<?php
 					MS_Helper_Html::settings_header(
 						array(
-							'title' => __( 'Choose a membership type suitable to your project', MS_TEXT_DOMAIN ),
+							'title' => __( 'Create your membership', MS_TEXT_DOMAIN ),
+							'desc' => __( 'First up choose a name and a type for your membership site.', MS_TEXT_DOMAIN ),
 						)
 					);
 				?>
-				<div class="ms-settings ms-settings-type">
-					<form action="" method="post" id="ms-choose-type-form">
+				<form action="" method="post" id="ms-choose-type-form">
+					<div class="ms-settings ms-settings-type">
+						<div class="ms-group">
+							<div class="ms-name-wrapper">
+								<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
+							</div>
+							<div class="ms-private-wrapper">
+								<?php MS_Helper_Html::html_element( $fields['private'] ); ?>
+							</div>
+						</div>
+
+						<?php MS_Helper_Html::html_separator(); ?>
 						<div class="ms-type-wrapper">
-							<h3><?php _e( 'What kind of membership do you want to set up?', MS_TEXT_DOMAIN ); ?></h3>
+							<h3><?php _e( 'Choose a membership type:', MS_TEXT_DOMAIN ); ?></h3>
 							<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
 						</div>
-						<?php MS_Helper_Html::html_separator(); ?>
 
-						<div class="ms-name-wrapper">
-							<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
-						</div>
-						<div class="ms-private-wrapper">
-							<?php MS_Helper_Html::html_element( $fields['private'] ); ?>
-						</div>
 						<div class="ms-control-fields-wrapper">
 							<?php
 								foreach ( $fields['control_fields'] as $field ) {
@@ -34,8 +38,8 @@ class MS_View_Membership_Choose_Type extends MS_View {
 								}
 							?>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		<?php
 	}
@@ -48,7 +52,7 @@ class MS_View_Membership_Choose_Type extends MS_View {
 				'id' => 'type',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 				'value' => ( $membership->type ) ? $membership->type : MS_Model_Membership::TYPE_SIMPLE,
-				'class' => 'ms-chose-type',
+				'class' => 'ms-choose-type',
 				'field_options' => array(
 					MS_Model_Membership::TYPE_SIMPLE => array(
 						'text' => __( 'I simply want to protect some of my content.', MS_TEXT_DOMAIN ),
@@ -60,29 +64,41 @@ class MS_View_Membership_Choose_Type extends MS_View {
 					),
 					MS_Model_Membership::TYPE_TIER => array(
 						'text' => __( 'I want to set up a Tier Level-based membership.', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This options allows you to set up different tier level membership.<p class="ms-italic">eg. Silver &rarr; Gold &rarr; Platinum. The higher the level, the more content members will have access to.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'This options allows you to set up different tier level membership.<p class="ms-italic">eg. Silver &rarr; Gold &rarr; Platinum. The higher the level, the more content members will have access to.', MS_TEXT_DOMAIN )
+						. sprintf(
+							'<span class="locked-info" style="display:none">%1$s</span>',
+							__( 'This Membership Type is only available to Public Memberships', MS_TEXT_DOMAIN )
+						),
 					),
 					MS_Model_Membership::TYPE_DRIPPED => array(
 						'text' => __( 'I want to set up a Dripped Content membership.', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This option will allow you to set up a membership where content will be revelead to users over a period of time.<p class="ms-italic">eg. A weekly training / excercize program.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'This option will allow you to set up a membership where content will be revelead to users over a period of time.<p class="ms-italic">eg. A weekly training / excercize program.', MS_TEXT_DOMAIN )
+						. sprintf(
+							'<span class="locked-info" style="display:none">%1$s</span>',
+							__( 'This Membership Type is only available to Public Memberships', MS_TEXT_DOMAIN )
+						),
 					),
 				),
 			),
+
 			'name' => array(
 				'id' => 'name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Choose a name for your membership:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Choose a name for your new membership:', MS_TEXT_DOMAIN ),
 				'value' => $membership->name,
 				'class' => 'ms-text-large',
 				'placeholder' => __( 'Choose a good name that will identify this membership...', MS_TEXT_DOMAIN ),
+				'label_type' => 'h3',
 			),
+
 			'private' => array(
 				'id' => 'private',
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'title' => __( 'Make this membership private (No registration, no payment)', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Choosing this option assumes that you will manually set up users who can access your content.<br /><span class="ms-bold">No registration page will be created and there will be no payment options.</span>', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Choosing this option assumes that you will manually set-up users who can access your content.<br />A registration page will not be created and there will be no payment options.', MS_TEXT_DOMAIN ),
 				'value' => $membership->private,
 			),
+
 			'control_fields' => array(
 					'membership_id' => array(
 						'id' => 'membership_id',
@@ -117,7 +133,7 @@ class MS_View_Membership_Choose_Type extends MS_View {
 					'save' => array(
 						'id' => 'save',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Save and continue', MS_TEXT_DOMAIN ),
+						'value' => __( 'Save and continue', MS_TEXT_DOMAIN ) . ' &raquo;',
 					),
 			),
 		);

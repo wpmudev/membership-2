@@ -172,7 +172,7 @@ window.ms_functions = {
 						slider.removeClass( 'ms-processing wpmui-loading' );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
-						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
+						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
 					}
 				);
 			}
@@ -500,7 +500,7 @@ jQuery( document ).ready( function() {
 	// Toggle radio-sliders on click.
 	.on(
 		'click',
-		'.ms-radio-slider',
+		'.wpmui-radio-slider',
 		function( ev ) { fn.radio_slider_ajax_update( this ); }
 	)
 	// Toggle accordeon boxes on click.
@@ -771,18 +771,38 @@ window.ms_init.view_membership_choose_type = function init () {
 		}
 	});
 
-	jQuery( 'input[name="type"]' ).click( function() {
-		if( jQuery.inArray( jQuery( this ).val(), ms_data.ms_private_types ) > -1 ) {
-			el_private.removeClass( 'disabled' );
-			el_private.find( 'input' ).prop( 'disabled', false );
-		}
-		else {
-			el_private.addClass( 'disabled' );
-			el_private.find( 'input' ).prop( 'disabled', true ).prop( 'checked', false );
+	jQuery( '#private' ).change( function() {
+		var me = jQuery( this ),
+			is_private = me.prop( 'checked' ),
+			types = jQuery( 'input[name="type"]' ),
+			cur_type = types.filter( ':checked' ).val();
+
+		if ( is_private ) {
+			if ( 'simple' !== cur_type && 'content_type' !== cur_type ) {
+				types.filter( '[value="simple"]' )
+				.prop( 'checked', true )
+				.trigger( 'click' );
+			}
+
+			types.filter( '[value="tier"]' ).prop( 'disabled', true );
+			types.filter( '[value="dripped"]' ).prop( 'disabled', true );
+			jQuery( '.wpmui-tier' ).addClass( 'ms-locked' );
+			jQuery( '.wpmui-dripped' ).addClass( 'ms-locked' );
+		} else {
+			types.filter( '[value="tier"]' ).prop( 'disabled', false );
+			types.filter( '[value="dripped"]' ).prop( 'disabled', false );
+			jQuery( '.wpmui-tier' ).removeClass( 'ms-locked' );
+			jQuery( '.wpmui-dripped' ).removeClass( 'ms-locked' );
 		}
 	});
 
-	jQuery( 'input[name="type"]' ).first().click();
+	jQuery( 'input[name="type"]' ).click(function() {
+		var types = jQuery( 'input[name="type"]' ),
+			cur_type = types.filter( ':checked' );
+
+		types.closest( '.wpmui-radio-input-wrapper' ).removeClass( 'active' );
+		cur_type.closest( '.wpmui-radio-input-wrapper' ).addClass( 'active' );
+	}).first().trigger( 'click' );
 
 	// Cancel the wizard.
 	jQuery( '#cancel' ).click( function() {
@@ -836,7 +856,7 @@ window.ms_init.view_membership_overview = function init () {
 		ms_editor = ms_desc.find( '.editor' ),
 		txt_editor = ms_editor.find( 'textarea' );
 
-	jQuery( '.ms-radio-slider' ).on( 'ms-radio-slider-updated', function() {
+	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function() {
 		var object = this,
 			obj = jQuery( '#ms-membership-status' );
 
@@ -1027,7 +1047,7 @@ window.ms_init.view_settings = function init () {
 	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
 	// Hide/Show the "Test Membership" button in the toolbar.
-	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
+	jQuery( '.wpmui-slider-plugin_enabled').on( 'wpmui-radio-slider-updated', update_toolbar );
 
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );

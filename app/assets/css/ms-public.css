@@ -439,7 +439,7 @@ input[type="image"] {
   top: 1px;
   width: 20px;
 }
-#wpwrap .ms-wrap #membership_access .ms-radio-slider {
+#wpwrap .ms-wrap #membership_access .wpmui-radio-slider {
   margin: 10px 20px;
 }
 #wpwrap .ms-wrap div.dripped .tooltip {
@@ -462,16 +462,16 @@ input[type="image"] {
   min-width: 80%;
   display: block;
 }
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio {
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio {
   margin-top: 10px;
 }
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption {
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio-caption {
   padding-top: 6px;
   padding-bottom: 6px;
   line-height: 24px;
 }
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption label,
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption .wpmui-field-input {
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio-caption label,
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio-caption .wpmui-field-input {
   width: auto;
   margin: 0 12px 0 0;
 }
@@ -493,7 +493,7 @@ input[type="image"] {
   width: calc(100% + 20px);
 }
 #wpwrap .ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
-#wpwrap .ms-wrap .gateways .not-configured .ms-radio-slider {
+#wpwrap .ms-wrap .gateways .not-configured .wpmui-radio-slider {
   display: none;
 }
 #wpwrap .ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {

@@ -114,7 +114,7 @@
 
 	/** radio slider */
 
-	#membership_access .ms-radio-slider {
+	#membership_access .wpmui-radio-slider {
 		margin:10px 20px;
 	}
 
@@ -148,11 +148,11 @@
 
 	/* SETTINGS: IMPORT */
 	.wrapper-import_source {
-		.ms-radio {
+		.wpmui-radio {
 			margin-top: 10px;
 		}
 
-		.ms-radio-caption {
+		.wpmui-radio-caption {
 			padding-top: 6px;
 			padding-bottom: 6px;
 			line-height: 24px;
@@ -193,7 +193,7 @@
 	/* SETTINGS GATEWAY */
 	.gateways {
 		.is-configured .ms-gateway-setup-wrapper,
-		.not-configured .ms-radio-slider {
+		.not-configured .wpmui-radio-slider {
 			display: none;
 		}
 

@@ -1,4 +1,4 @@
-/* Protected Content Page*/
+/* Protected Content Page* /
 .ms-rule-wrapper {
 	width: 49%;
 	float: left;
@@ -14,7 +14,10 @@
 	font-size: 0.8em;
 	margin: 1em 0;
 }
-/* url group tab */
+
+
+
+/* url group tab * /
 #url-test-results-wrapper {
 	margin: 10px 0;
 	border: 1px dotted #ddd;
@@ -36,31 +39,12 @@
 .ms-rule-invalid {
 	color: red;
 }
-/* choose membership */
-.ms-type-wrapper{
-	position: relative;
 
-}
-.ms-name-wrapper{
-	clear: both;
-	display: block;
-	float: left;
-	width: 45%;
-	height: 7em;
-}
-.ms-private-wrapper{
-	float: left;
-	width: 45%;
-	height: 7em;
-}
-.ms-radio-description .ms-italic {
-	margin: 1em 0;
-}
-.ms-control-fields-wrapper {
-	clear: both;
-}
 
-/* Overview Page */
+
+
+
+/* Overview Page * /
 .ms-membership-status-wrapper {
 	width: 15em;
 	position: absolute;
@@ -99,7 +83,7 @@
 	padding: 5px;
 }
 
-/* Setup Dripped Page */
+/* Setup Dripped Page * /
 .ms-dripped-type {
 	display: inline-block;
 	margin: 1em;
@@ -155,7 +139,7 @@ input.ms-dripped-spec-date {
 	background-color: transparent;
 }
 
-/* Admin pointer */
+/* Admin pointer * /
 .ms-pointer-wrapper {
 	font-weight: bold;
 }
@@ -172,3 +156,4 @@ input.ms-dripped-spec-date {
 #the-list-membership .wpmui-radio-slider-wrapper {
 	float: left;
 }
+*/

@@ -133,7 +133,7 @@ window.ms_functions = {
 						slider.removeClass( 'ms-processing wpmui-loading' );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
-						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
+						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
 					}
 				);
 			}
@@ -461,7 +461,7 @@ jQuery( document ).ready( function() {
 	// Toggle radio-sliders on click.
 	.on(
 		'click',
-		'.ms-radio-slider',
+		'.wpmui-radio-slider',
 		function( ev ) { fn.radio_slider_ajax_update( this ); }
 	)
 	// Toggle accordeon boxes on click.

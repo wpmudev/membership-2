@@ -42,11 +42,11 @@ jQuery( document ).ready( function( $ ) {
 		$( this ).parent().parent().find( '.ms-period-type' ).text( period_type.val() );
 	});
 
-	$( '.ms-radio-slider' ).on( 'ms-radio-slider-updated', function( event, data ) {
+	$( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
 		ms_functions.change_access( data.value, event.target );
 	});
 
-	$( '.ms-radio-slider' ).each( function() {
+	$( '.wpmui-radio-slider' ).each( function() {
 		var value = ( true == $( this ).children( 'input' ).val() ) ? 1 : 0;
 		ms_functions.change_access( value, this );
 	});
