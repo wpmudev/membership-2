@@ -218,7 +218,6 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( $this->is_admin_user() && ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) ) {
 			// Take next actions based in current step.
 
-
 			switch ( $step ) {
 				case self::STEP_MS_LIST:
 					$fields = array( 'action', 'membership_id' );
@@ -231,12 +230,12 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 					break;
 
-				case self::STEP_SETUP_PROTECTED_CONTENT:
-					$next_step = self::STEP_CHOOSE_MS_TYPE;
+				case self::STEP_CHOOSE_MS_TYPE:
+					$next_step = self::STEP_SETUP_PROTECTED_CONTENT;
 					$this->wizard_tracker( $next_step );
 					break;
 
-				case self::STEP_CHOOSE_MS_TYPE:
+				case self::STEP_SETUP_PROTECTED_CONTENT:
 					$this->wizard_tracker( $step, true );
 					$fields = $_POST;
 
