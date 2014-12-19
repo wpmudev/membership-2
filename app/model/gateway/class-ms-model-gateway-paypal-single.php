@@ -444,12 +444,6 @@ class MS_Model_Gateway_Paypal_Single extends MS_Model_Gateway {
 					}
 					break;
 
-				case 'paypal_email':
-					if ( is_email( $value ) ) {
-						$this->$property = $value;
-					}
-					break;
-
 				default:
 					parent::__set( $property, $value );
 					break;

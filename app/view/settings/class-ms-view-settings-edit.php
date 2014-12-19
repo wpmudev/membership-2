@@ -172,6 +172,7 @@ class MS_View_Settings_Edit extends MS_View {
 
 		$ms_pages = $this->data['ms_pages'];
 		$page_types = $this->data['page_types'];
+		$ms_pages->create_missing_pages();
 
 		$fields = array();
 		foreach ( $page_types as $type => $label ) {

@@ -12,6 +12,20 @@ Change Log:
 - New layout of the Add-on page
 - Many small bugfixes and layout improvements
 
+1.0.4.7
+----------------------------------------------------------------------
+- Fix rewrite rules on plugin update/activation (solves payment-issues)
+- Fix PayPal Single settings did not save email address in rare cases
+- Fix duplicate display of BuddyPress/bbPress rules in overview
+- Fix coupons with 100% reduction are working correctly now
+- Improve the [ms-memberhship-buy] shortcode to also work for guests
+- Improve subscription to free memberships: payment screen is skipped
+
+1.0.4.6
+----------------------------------------------------------------------
+- Fix problems with plugin settings after upgrading
+- Fix issue where Front-End pages were not working (e.g. with Jetpack)
+
 1.0.4.5
 ----------------------------------------------------------------------
 - Add new Help section with documentation of shortcodes

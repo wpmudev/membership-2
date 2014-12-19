@@ -79,7 +79,7 @@ class MS_View_Coupon_Edit extends MS_View {
 				'title' => __( 'Discount Type', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $coupon->get_discount_types(),
-				'value' => $coupon->discount,
+				'value' => $coupon->discount_type,
 			),
 			'start_date' => array(
 				'id' => 'start_date',

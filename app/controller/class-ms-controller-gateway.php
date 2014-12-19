@@ -243,7 +243,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				case 'edit':
 				case 'update_gateway':
 					foreach ( $fields as $field => $value ) {
-						$gateway->$field = $value;
+						$gateway->$field = trim( $value );
 					}
 					$gateway->save();
 
@@ -299,7 +299,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$membership = $ms_relationship->get_membership();
 
 			// Free membership, show only free gateway
-			if ( 0 === $membership->price || $membership->is_free ) {
+			if ( $membership->is_free() ) {
 				if ( MS_Model_Gateway::GATEWAY_FREE !== $gateway->id ) {
 					continue;
 				}
@@ -376,6 +376,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$view = null;
 		$data = array();
 		$data['ms_relationship'] = $ms_relationship;
+		$new_button = null;
 
 		switch ( $ms_relationship->gateway_id ) {
 			case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
@@ -503,26 +504,28 @@ class MS_Controller_Gateway extends MS_Controller {
 		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
-		$valid = true;
-		$nonce_name = $_POST['gateway'] . '_' . $_POST['ms_relationship_id'];
+		WDev()->load_request_fields( 'gateway', 'ms_relationship_id' );
 
-		if ( $valid && ! $this->validate_required( $fields ) ) {
+		$valid = true;
+		$nonce_name = $_REQUEST['gateway'] . '_' . $_REQUEST['ms_relationship_id'];
+
+		if ( $valid && ! $this->validate_required( $fields, 'any' ) ) {
 			$valid = false; $err = 'GAT-01 (invalid fields)';
 		}
-		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] ) ) {
+		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_REQUEST['gateway'] ) ) {
 			$valid = false; $err = 'GAT-02 (invalid gateway)';
 		}
-		if ( $valid && ! $this->verify_nonce( $nonce_name ) ) {
+		if ( $valid && ! $this->verify_nonce( $nonce_name, 'any' ) ) {
 			$valid = false; $err = 'GAT-03 (invalid nonce)';
 		}
 
 		if ( $valid ) {
 			$ms_relationship = MS_Factory::load(
 				'MS_Model_Membership_Relationship',
-				$_POST['ms_relationship_id']
+				$_REQUEST['ms_relationship_id']
 			);
 
-			$gateway_id = $_POST['gateway'];
+			$gateway_id = $_REQUEST['gateway'];
 			$gateway = MS_Model_Gateway::factory( $gateway_id );
 
 			try {

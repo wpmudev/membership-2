@@ -21,57 +21,67 @@ class MS_View_Shortcode_Account extends MS_View {
 						__( 'Change', MS_TEXT_DOMAIN )
 					); ?>
 				</h2>
-				<?php if ( ! empty( $this->data['membership'] ) ) : ?>
-					<table>
-						<tr>
-							<th><?php _e( 'Membership name', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
-							<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) :  ?>
-								<th><?php _e( 'Trial expire date', MS_TEXT_DOMAIN ); ?></th>
-							<?php endif; ?>
-							<th><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></th>
-						</tr>
-						<?php
-						$empty = true;
-						foreach ( $this->data['membership'] as $membership ) :
-							if ( $membership->is_visitor_membership() ) { continue; }
-							$empty = false;
-							$ms_relationship = $this->data['member']->ms_relationships[ $membership->id ];
-							?>
-							<tr>
-								<td><?php echo esc_html( $membership->name ); ?></td>
-								<td><?php echo esc_html( $ms_relationship->status ); ?></td>
-								<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
-									<td><?php
-									if ( $ms_relationship->trial_expire_date ) {
-										echo esc_html( $ms_relationship->trial_expire_date );
-									} else {
-										_e( 'No trial', MS_TEXT_DOMAIN );
-									}
-									?></td>
-								<?php endif; ?>
-								<td><?php echo esc_html( $ms_relationship->expire_date ); ?></td>
-							</tr>
-						<?php
-						endforeach;
 
-						if ( $empty ) {
-							$cols = 3;
-							if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-								$cols += 1;
-							}
-
-							printf(
-								'<tr><td colspan="%1$s">%2$s</td></tr>',
-								$cols,
-								__( '(No Membership)', MS_TEXT_DOMAIN )
-							);
-						}
+				<?php
+				if ( MS_Model_Member::is_admin_user() ) {
+					_e( 'You are an admin user and have access to all memberships', MS_TEXT_DOMAIN );
+				} else {
+					if ( ! empty( $this->data['membership'] ) ) {
 						?>
-					</table>
-				<?php else : ?>
-					<?php _e( 'No memberships', MS_TEXT_DOMAIN ); ?>
-				<?php endif; ?>
+						<table>
+							<tr>
+								<th><?php _e( 'Membership name', MS_TEXT_DOMAIN ); ?></th>
+								<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
+								<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) :  ?>
+									<th><?php _e( 'Trial expire date', MS_TEXT_DOMAIN ); ?></th>
+								<?php endif; ?>
+								<th><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></th>
+							</tr>
+							<?php
+							$empty = true;
+
+							foreach ( $this->data['membership'] as $membership ) :
+								if ( $membership->is_visitor_membership() ) { continue; }
+								$empty = false;
+								$ms_relationship = $this->data['member']->ms_relationships[ $membership->id ];
+								?>
+								<tr>
+									<td><?php echo esc_html( $membership->name ); ?></td>
+									<td><?php echo esc_html( $ms_relationship->status ); ?></td>
+									<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
+										<td><?php
+										if ( $ms_relationship->trial_expire_date ) {
+											echo esc_html( $ms_relationship->trial_expire_date );
+										} else {
+											_e( 'No trial', MS_TEXT_DOMAIN );
+										}
+										?></td>
+									<?php endif; ?>
+									<td><?php echo esc_html( $ms_relationship->expire_date ); ?></td>
+								</tr>
+							<?php
+							endforeach;
+
+							if ( $empty ) {
+								$cols = 3;
+								if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+									$cols += 1;
+								}
+
+								printf(
+									'<tr><td colspan="%1$s">%2$s</td></tr>',
+									$cols,
+									__( '(No Membership)', MS_TEXT_DOMAIN )
+								);
+							}
+							?>
+						</table>
+					<?php
+					} else {
+						_e( 'No memberships', MS_TEXT_DOMAIN );
+					}
+				}
+				?>
 
 				<h2>
 					<?php printf(

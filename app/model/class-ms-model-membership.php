@@ -392,11 +392,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_payment_type_desc() {
 		$desc = __( 'N/A', MS_TEXT_DOMAIN );
-		$has_payment = true;
-
-		if ( $this->is_free ) { $has_payment = false; }
-		elseif ( empty( $this->price ) ) { $has_payment = false; }
-		elseif ( $this->can_have_children() ) { $has_payment = false; }
+		$has_payment = ! $this->is_free();
 
 		if ( $has_payment ) {
 			switch ( $this->payment_type ) {
@@ -437,6 +433,37 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
+	 * Returns true if the current membership is free.
+	 *
+	 * A membership is free when...
+	 * ... it is explicitely marked as "free"
+	 * ... the price is 0.00
+	 * ... it is a parent membership that cannot be signed up for
+	 *
+	 * @since  1.0.4.7
+	 * @return bool
+	 */
+	public function is_free() {
+		$result = false;
+
+		if ( $this->is_free ) { $result = true; }
+		elseif ( empty( $this->price ) ) { $result = true; }
+		elseif ( $this->can_have_children() ) { $result = true; }
+
+		$result = apply_filters(
+			'ms_model_membership_is_free',
+			$result,
+			$this
+		);
+
+		if ( $result && $this->is_free ) {
+			$this->is_free = $result;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Information if payment information are defined for this membership.
 	 *
 	 * @since  1.0.0
@@ -444,10 +471,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return bool True if payment information are available.
 	 */
 	public function has_payment() {
-		if ( $this->is_free ) { return false; }
-		if ( empty( $this->price ) ) { return false; }
-
-		return true;
+		return ! $this->is_free();
 	}
 
 	/**

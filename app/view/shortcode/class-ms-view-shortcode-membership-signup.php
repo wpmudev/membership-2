@@ -48,12 +48,16 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 							break;
 
 						case MS_Model_Membership_Relationship::STATUS_PENDING:
-							$this->membership_box_html(
-								$membership,
-								MS_Helper_Membership::MEMBERSHIP_ACTION_PAY,
-								$msg,
-								$ms_relationship
-							);
+							if ( $membership->is_free() ) {
+								$this->data['memberships'][] = $membership;
+							} else {
+								$this->membership_box_html(
+									$membership,
+									MS_Helper_Membership::MEMBERSHIP_ACTION_PAY,
+									$msg,
+									$ms_relationship
+								);
+							}
 							break;
 
 						default:
@@ -271,7 +275,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 							$this
 						);
 					} elseif ( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY === $action ) {
-						// Display a Cancel button for pending memberships.
+						// Paid membership: Display a Cancel button
 
 						$cancel_action = MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL;
 						$url = $this->get_action_url(

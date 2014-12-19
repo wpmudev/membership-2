@@ -591,11 +591,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 				case 'pay_button_url':
 				case 'upgrade_button_url':
 				case 'cancel_button_url':
-					$this->$property = sanitize_text_field( $value );
+					$this->$property = trim( sanitize_text_field( $value ) );
 					break;
 
 				default:
-					$this->$property = $value;
+					$this->$property = trim( $value );
 					break;
 			}
 		}
@@ -604,6 +604,30 @@ class MS_Model_Gateway extends MS_Model_Option {
 			'ms_model_gateway__set_after',
 			$property,
 			$value,
+			$this
+		);
+	}
+
+	/**
+	 * Return a property value
+	 *
+	 * @since 1.0.0
+	 *
+	 * @access public
+	 * @param  string $name The name of a property to associate.
+	 * @return mixed The value of a property.
+	 */
+	public function __get( $property ) {
+		$value = null;
+
+		if ( property_exists( $this, $property ) ) {
+			$value = trim( $this->$property );
+		}
+
+		return apply_filters(
+			'ms_model_gateway__get',
+			$value,
+			$property,
 			$this
 		);
 	}

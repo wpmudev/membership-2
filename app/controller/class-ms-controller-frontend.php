@@ -102,6 +102,9 @@ class MS_Controller_Frontend extends MS_Controller {
 			// Add classes for all memberships the user is registered to.
 			$this->add_filter( 'body_class', 'body_class' );
 
+			// Clears the shortcode memory at the beginning of the_content
+			$this->add_filter( 'the_content', 'clear_content_memory', 1 );
+
 			// Set the registration URL to the 'Register' Membership Page.
 			$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
 			$this->add_filter( 'register_url', 'signup_location', 999 );
@@ -241,6 +244,19 @@ class MS_Controller_Frontend extends MS_Controller {
 	}
 
 	/**
+	 * Clears the shortcode memory at the beginning of each call to the_content.
+	 *
+	 * @since  1.0.4.6
+	 * @param  string $content The page content
+	 * @return string Value of $content (unmodified)
+	 */
+	public function clear_content_memory( $content ) {
+		MS_Helper_Shortcode::reset_shortcode_usage();
+
+		return $content;
+	}
+
+	/**
 	 * Handle entire signup process.
 	 *
 	 * @since 1.0.0
@@ -329,12 +345,12 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
-		if ( in_array( @$_REQUEST['step'], $steps ) ) {
-			$step = $_REQUEST['step'];
-		}
+		WDev()->load_request_fields( 'step', 'membership_id' );
 
-		// Initial step
-		else {
+		if ( in_array( $_REQUEST['step'], $steps ) ) {
+			$step = $_REQUEST['step'];
+		} else {
+			// Initial step
 			$step = self::STEP_CHOOSE_MEMBERSHIP;
 		}
 
@@ -342,7 +358,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			if ( ! MS_Model_Member::is_logged_user() ) {
 				$step = self::STEP_REGISTER_FORM;
 			}
-			if ( ! MS_Model_Membership::is_valid_membership( @$_REQUEST['membership_id'] ) ) {
+			if ( ! MS_Model_Membership::is_valid_membership( $_REQUEST['membership_id'] ) ) {
 				$step = self::STEP_CHOOSE_MEMBERSHIP;
 			}
 		}
@@ -401,7 +417,12 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function register_form( $content ) {
 		remove_filter( 'the_content', 'wpautop' );
 
-		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER, $content ) ) {
+		$did_form = MS_Helper_Shortcode::has_shortcode(
+			MS_Helper_Shortcode::SCODE_REGISTER_USER,
+			$content
+		);
+
+		if ( ! $did_form ) {
 			$scode = sprintf(
 				'[%s errors="%s"]',
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
@@ -536,8 +557,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				if ( $coupon->is_valid_coupon( $membership_id ) ) {
 					$coupon->save_coupon_application( $ms_relationship );
 					$data['coupon_valid'] = true;
-				}
-				else {
+				} else {
 					$data['coupon_valid'] = false;
 				}
 			}
