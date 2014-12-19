@@ -60,6 +60,8 @@ class MS_Model_Upgrade extends MS_Model {
 		$old_version = $settings->version; // Old: The version in DB.
 		$new_version = MS_Plugin::instance()->version; // New: Version in file.
 
+		$is_new_setup = empty( $old_version );
+
 		// Compare current src version to DB version
 		$version_changed = version_compare( $old_version, $new_version, '!=' );
 
@@ -135,7 +137,9 @@ class MS_Model_Upgrade extends MS_Model {
 			$settings->save();
 
 			// Display a message after the page is reloaded.
-			WDev()->message( implode( '<br>', $msg ), '', '', 'ms-update' );
+			if ( ! $is_new_setup ) {
+				WDev()->message( implode( '<br>', $msg ), '', '', 'ms-update' );
+			}
 
 			do_action(
 				'ms_model_upgrade_after_update',
