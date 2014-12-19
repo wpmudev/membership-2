@@ -126,7 +126,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 *
 	 * @var string[]
 	 */
-	public $ignore_fields = array( 'actions', 'filters', 'ignore_fields', 'post_type' );
+	public $ignore_fields = array( 'post_type' );
 
 	/**
 	 * Save content in wp tables (wp_post and wp_postmeta).

@@ -156,9 +156,6 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 */
 	public $ignore_fields = array(
 		'coupon_message',
-		'actions',
-		'filters',
-		'ignore_fields',
 		'post_type',
 	);
 

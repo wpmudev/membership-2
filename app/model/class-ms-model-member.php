@@ -232,9 +232,6 @@ class MS_Model_Member extends MS_Model {
 		'last_name',
 		'password',
 		'password2',
-		'actions',
-		'filters',
-		'ignore_fields',
 		'wp_user',
 	);
 

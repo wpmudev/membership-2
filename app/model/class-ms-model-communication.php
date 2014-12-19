@@ -209,9 +209,6 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		'message',
 		'description',
 		'name',
-		'actions',
-		'filters',
-		'ignore_fields',
 		'post_type',
 		'comm_vars',
 	);
@@ -438,8 +435,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 		if ( self::is_valid_communication_type( $type ) ) {
 			if ( ! empty( self::$communications[ $type ] ) ) {
 				$model = self::$communications[ $type ];
-			}
-			else {
+			} else {
 				$args = array(
 					'post_type' => self::$POST_TYPE,
 					'post_status' => 'any',
@@ -467,14 +463,13 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 
 				if ( ! empty( $item[0] ) ) {
 					$model = MS_Factory::load(
-						$comm_classes[ $type ],
+						$comm_classes[$type],
 						$item[0]
 					);
-				}
-				elseif ( $create_if_not_exists ) {
+				} elseif ( $create_if_not_exists ) {
 					$model = self::communication_factory(
 						$type,
-						$comm_classes[ $type ]
+						$comm_classes[$type]
 					);
 				}
 			}

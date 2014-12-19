@@ -175,9 +175,6 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 */
 	public $ignore_fields = array(
 		'membership',
-		'actions',
-		'filters',
-		'ignore_fields',
 		'post_type',
 	);
 

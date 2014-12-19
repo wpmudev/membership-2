@@ -39,24 +39,6 @@
 class MS_Hooker {
 
 	/**
-	 * The array of registered actions hooks.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var array
-	 */
-	private $actions = array();
-
-	/**
-	 * The array of registered filters hooks.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var array
-	 */
-	private $filters = array();
-
-	/**
 	 * Flag if object was initialized already via prepare_obj().
 	 *
 	 * @since 1.1.0
@@ -115,15 +97,21 @@ class MS_Hooker {
 	}
 
 	/**
-	 * Builds and returns hook key.
+	 * Returns the callback array for the specified method
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $args The hook arguments.
-	 * @return string The hook key.
+	 * @since  1.1.0
+	 * @param  string $tag The tag that is addressed by the callback.
+	 * @param  string|array $method The callback method.
+	 * @return array A working callback.
 	 */
-	private static function get_hook_key( array $args ) {
-		return md5( implode( '/', $args ) );
+	private function get_callback( $tag, $method ) {
+		if ( is_array( $method ) ) {
+			$callback = $method;
+		} else {
+			$callback = array( $this, ! empty( $method ) ? $method : $tag );
+		}
+
+		return $callback;
 	}
 
 	/**
@@ -141,11 +129,10 @@ class MS_Hooker {
 	 */
 	protected function add_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		$args = func_get_args();
-		$this->actions[ self::get_hook_key( $args ) ] = $args;
 
 		add_action(
 			$tag,
-			array( $this, ! empty( $method ) ? $method : $tag ),
+			$this->get_callback( $tag, $method ),
 			$priority,
 			$accepted_args
 		);
@@ -168,7 +155,7 @@ class MS_Hooker {
 	protected function remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		remove_action(
 			$tag,
-			array( $this, ! empty( $method ) ? $method : $tag ),
+			$this->get_callback( $tag, $method ),
 			$priority,
 			$accepted_args
 		);
@@ -237,11 +224,10 @@ class MS_Hooker {
 	 */
 	protected function add_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		$args = func_get_args();
-		$this->filters[ self::get_hook_key( $args ) ] = $args;
 
 		add_filter(
 			$tag,
-			array( $this, ! empty( $method ) ? $method : $tag ),
+			$this->get_callback( $tag, $method ),
 			$priority,
 			$accepted_args
 		);
@@ -265,7 +251,7 @@ class MS_Hooker {
 	protected function remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
 		remove_filter(
 			$tag,
-			array( $this, ! empty( $method ) ? $method : $tag ),
+			$this->get_callback( $tag, $method ),
 			$priority,
 			$accepted_args
 		);
