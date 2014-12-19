@@ -64,34 +64,44 @@ class MS_Model_Plugin extends MS_Model {
 		if ( ! MS_Plugin::is_enabled() ) { return; }
 
 		$this->add_filter( 'cron_schedules', 'cron_time_period' );
-		$this->init_member();
-
-		// Init gateways to enable hooking actions/filters
-		MS_Model_Gateway::get_gateways();
-
-		// Init communications to enable hooking actions/filters
-		MS_Model_Communication::load_communications();
-
-		$this->setup_cron_services();
 
 		$this->add_action( 'plugins_loaded', 'setup_rules', 2 );
+		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
+		$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 
 		/*
 		 * Some plugins (such as MarketPress) can trigger the set_current_user
 		 * action hook before this object is initialized.
+		 *
+		 * Most of the plugin logic requires the current user to be known,
+		 * that's why we do a explicit check here to make sure we have a valid
+		 * user.
 		 */
 		if ( ! did_action( 'set_current_user' ) ) {
-			$this->add_action( 'set_current_user', 'setup_protection', 2 );
-			$this->add_action( 'set_current_user', 'setup_admin_protection', 2 );
+			// Initialize the current member
+			$this->add_action( 'set_current_user', 'init_member', 1 );
+			$this->add_action( 'set_current_user', 'setup_cron_services', 1 );
+
+			// Init gateways and communications to register actions/filters
+			$this->add_action( 'set_current_user', array( 'MS_Model_Gateway', 'get_gateways' ), 2 );
+			$this->add_action( 'set_current_user', array( 'MS_Model_Communication', 'load_communications' ), 2 );
+
+			// Setup the page protection
+			$this->add_action( 'set_current_user', 'setup_protection', 3 );
+			$this->add_action( 'set_current_user', 'setup_admin_protection', 3 );
 		} else {
+			// Initialize the current member
+			$this->init_member();
+			$this->setup_cron_services();
+
+			// Init gateways and communications to register actions/filters
+			MS_Model_Gateway::get_gateways();
+			MS_Model_Communication::load_communications();
+
+			// Setup the page protection
 			$this->setup_protection();
 			$this->setup_admin_protection();
 		}
-
-		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
-
-		// cron service action
-		$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 
 		/*
 		 * Create our own copy of the full admin menu to be used in the
@@ -131,7 +141,9 @@ class MS_Model_Plugin extends MS_Model {
 
 		// Visitor: assign a Visitor Membership = Protected Content
 		if ( ! $this->member->has_membership() ) {
-			$this->member->add_membership( MS_Model_Membership::get_visitor_membership()->id );
+			$this->member->add_membership(
+				MS_Model_Membership::get_visitor_membership()->id
+			);
 		}
 
 		do_action( 'ms_model_plugin_init_member_after', $this );

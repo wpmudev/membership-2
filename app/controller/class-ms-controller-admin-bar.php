@@ -61,6 +61,15 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		$this->add_action( 'setup_current_user', 'init' );
+	}
+
+	/**
+	 * Initialize the Admin-Bar after we have determined the current user.
+	 *
+	 * @since  1.1.0
+	 */
+	public function init() {
 		$this->simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
 

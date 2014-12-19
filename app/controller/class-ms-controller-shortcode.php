@@ -39,7 +39,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
+		$this->add_action( 'setup_current_user', 'init' );
+	}
 
+	/**
+	 * Initialize the Shortcodes after we have determined the current user.
+	 *
+	 * @since  1.1.0
+	 */
+	public function init() {
 		// By default assume no content for the protected-content code
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_PROTECTED,
