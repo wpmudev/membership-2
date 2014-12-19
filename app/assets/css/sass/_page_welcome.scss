@@ -1,0 +1,37 @@
+/**
+ * Special styles used on "Welcome" page
+ */
+
+.ms-wrap {
+	.ms-welcome-box {
+		text-align: center;
+
+		.ms-welcome-title {
+			font-size: 44px;
+			font-weight: bold;
+			margin: 40px 0 32px;
+		}
+
+		.ms-welcome-text {
+			margin-bottom: 24px;
+		}
+
+		.ms-welcome-image-box {
+			position: relative;
+			min-height: 60px;
+		}
+
+		.ms-welcome-image {
+			max-width: 80%;
+			width: 200px;
+		}
+
+		.ms-welcome-start {
+			padding: 11px 40px;
+			font-size: 16px;
+			height: auto;
+			position: relative;
+			top: -60px;
+		}
+	}
+}

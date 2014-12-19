@@ -52,6 +52,7 @@ class MS_Controller_Membership extends MS_Controller {
 	const STEP_MS_LIST = 'ms_list';
 	const STEP_OVERVIEW = 'ms_overview';
 	const STEP_NEWS = 'ms_news';
+	const STEP_WELCOME_SCREEN = 'welcome';
 	const STEP_SETUP_PROTECTED_CONTENT = 'setup_protected_content';
 	const STEP_CHOOSE_MS_TYPE = 'choose_ms_type';
 	const STEP_ACCESSIBLE_CONTENT = 'accessible_content';
@@ -112,17 +113,24 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 
 		$required = array( 'membership_id', 'field' );
+
 		if ( $this->verify_nonce()
 			&& $this->validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			$msg = $this->membership_list_do_action( 'toggle_'. $_POST['field'], array( $_POST['membership_id'] ) );
+			$msg = $this->membership_list_do_action(
+				'toggle_' . $_POST['field'],
+				array( $_POST['membership_id'] )
+			);
 		}
 
-		do_action( 'ms_controller_membership_ajax_action_toggle_membership', $msg, $this );
+		do_action(
+			'ms_controller_membership_ajax_action_toggle_membership',
+			$msg,
+			$this
+		);
 
-		echo $msg;
-		exit;
+		exit( $msg );
 	}
 
 	/**
@@ -137,18 +145,23 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 
 		$required = array( 'membership_id', 'field', 'value' );
+
 		if ( $this->verify_nonce()
 			&& $this->validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			$msg = $this->save_membership( array( $_POST['field'] => $_POST['value'] ) );
+			$msg = $this->save_membership(
+				array( $_POST['field'] => $_POST['value'] )
+			);
 		}
 
-		do_action( 'ms_controller_membership_ajax_action_update_membership', $msg, $this );
+		do_action(
+			'ms_controller_membership_ajax_action_update_membership',
+			$msg,
+			$this
+		);
 
-		echo $msg;
-		exit;
-
+		exit( $msg );
 	}
 
 	/**
@@ -683,6 +696,21 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
+	 * Display a welcome screen.
+	 *
+	 * @since 1.1.0
+	 */
+	public function page_welcome() {
+		$data = array();
+		$data['step'] = $this->get_step();
+		$data['action'] = 'start';
+
+		$view = MS_Factory::create( 'MS_View_Welcome' );
+		$view->data = apply_filters( 'ms_view_welcome_data', $data, $this );
+		$view->render();
+	}
+
+	/**
 	 * Display Setup Content Types page.
 	 *
 	 * @since 1.0.0
@@ -765,9 +793,16 @@ class MS_Controller_Membership extends MS_Controller {
 				self::STEP_ACCESSIBLE_CONTENT,
 				self::STEP_SETUP_PAYMENT,
 			);
+
+			if ( MS_Plugin::is_wizard() ) {
+				$steps[] = self::STEP_WELCOME_SCREEN;
+			}
 		}
 
-		return apply_filters( 'ms_controller_membership_get_steps', $steps );
+		return apply_filters(
+			'ms_controller_membership_get_steps',
+			$steps
+		);
 	}
 
 	/**
@@ -818,7 +853,11 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif ( MS_Plugin::is_wizard() ) {
 			$wizard_steps = apply_filters(
 				'ms_controller_membership_wizard_steps',
-				array( self::STEP_SETUP_PROTECTED_CONTENT, self::STEP_CHOOSE_MS_TYPE )
+				array(
+					self::STEP_WELCOME_SCREEN,
+					self::STEP_CHOOSE_MS_TYPE,
+					self::STEP_SETUP_PROTECTED_CONTENT,
+				)
 			);
 
 			if ( $settings->wizard_step
@@ -826,7 +865,7 @@ class MS_Controller_Membership extends MS_Controller {
 			) {
 				$step = $settings->wizard_step;
 			} else {
-				$step = self::STEP_SETUP_PROTECTED_CONTENT;
+				$step = self::STEP_WELCOME_SCREEN;
 			}
 		}
 
