@@ -30,6 +30,11 @@
 	.ms-settings-type {
 		max-width: 1200px;
 		margin: 1em auto 0;
+
+		.wpmui-input-name {
+			font-size: 13px;
+			padding: 5px 10px;
+		}
 	}
 
 	.wrapper-type {
@@ -61,7 +66,7 @@
 		}
 
 		&:hover:before {
-			background: #fcfcfc;
+			background: #fbfbfb;
 			box-shadow: 0 0 0 1px #CCC;
 		}
 
@@ -76,7 +81,9 @@
 		}
 
 		.wpmui-radio-caption {
-			padding-left: 0 !important;
+			padding: 6px 0 !important;
+			text-align: center;
+			border-bottom: 1px solid #EEE;
 		}
 
 		label {

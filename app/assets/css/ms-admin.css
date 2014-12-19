@@ -1225,6 +1225,10 @@
   max-width: 1200px;
   margin: 1em auto 0;
 }
+.ms-wrap .ms-settings-type .wpmui-input-name {
+  font-size: 13px;
+  padding: 5px 10px;
+}
 .ms-wrap .wrapper-type {
   margin-left: 10px;
 }
@@ -1250,7 +1254,7 @@
   box-shadow: 0 0 0 1px #EEE;
 }
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper:hover:before {
-  background: #fcfcfc;
+  background: #fbfbfb;
   box-shadow: 0 0 0 1px #CCC;
 }
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.active:before, .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.active:hover:before {
@@ -1261,7 +1265,9 @@
   opacity: 0;
 }
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
-  padding-left: 0 !important;
+  padding: 6px 0 !important;
+  text-align: center;
+  border-bottom: 1px solid #EEE;
 }
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper label {
   padding-top: 80px;
