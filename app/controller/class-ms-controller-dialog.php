@@ -103,6 +103,31 @@ class MS_Controller_Dialog extends MS_Controller {
 		// First check the nonce, if it fails the function will break
 		check_ajax_referer( 'ms-ajax-login' );
 
+		/*
+		 * The login fields have alternative names:
+		 * - username or log
+		 * - password or pwd
+		 * - remember or rememberme
+		 */
+		WDev()->load_post_fields(
+			'username',
+			'password',
+			'remember',
+			'log',
+			'pwd',
+			'rememberme'
+		);
+
+		if ( empty( $_POST['username'] ) && ! empty( $_POST['log'] ) ) {
+			$_POST['username'] = $_POST['log'];
+		}
+		if ( empty( $_POST['password'] ) && ! empty( $_POST['pwd'] ) ) {
+			$_POST['password'] = $_POST['pwd'];
+		}
+		if ( empty( $_POST['remember'] ) && ! empty( $_POST['rememberme'] ) ) {
+			$_POST['remember'] = $_POST['rememberme'];
+		}
+
 		// Nonce is checked, get the POST data and sign user on
 		$info = array(
 			'user_login' => @$_POST['username'],
