@@ -67,26 +67,26 @@ jQuery( function() {
 
 	// Login Handler
 	frm_login.on( 'submit', function( ev ){
-		var username = frm_login.find( 'input[name="log"]' ),
-			password = frm_login.find( 'input[name="pwd"]' ),
-			rememberme = frm_login.find( 'input[name="rememberme"]' ),
-			nonce = frm_login.find( 'input[name="_wpnonce"]' ),
+		var key, data = {},
+			fields = frm_login.serializeArray(),
 			redirect = frm_login.find( 'input[name="redirect_to"]' );
 
 		sts_login.removeClass( 'error' ).show().text( ms_ajax.loadingmessage );
 		disable_form( frm_login );
 
+		// Very simple serialization. Since the form is simple it will work...
+		for ( key in fields ) {
+			if ( fields.hasOwnProperty( key ) ) {
+				data[fields[key].name] = fields[key].value;
+			}
+		}
+		data['action'] = 'ms_login'; // calls wp_ajax_nopriv_ms_login
+
 		jQuery.ajax({
 			type: 'POST',
 			dataType: 'json',
 			url: ms_ajax.ajaxurl,
-			data: {
-				'action': 'ms_login', //calls wp_ajax_nopriv_ms_login
-				'username': username.val(),
-				'password': password.val(),
-				'remember': rememberme.prop( 'checked' ),
-				'_wpnonce': nonce.val()
-			},
+			data: data,
 			success: function( data ) {
 				enable_form( frm_login );
 				show_message( sts_login, data );
@@ -108,21 +108,25 @@ jQuery( function() {
 
 	// Lost-Pass Handler
 	frm_lost.on( 'submit', function( ev ){
-		var username = frm_lost.find( 'input[name="user_login"]' ),
-			nonce = frm_lost.find( 'input[name="_wpnonce"]' );
+		var key, data = {},
+			fields = frm_lost.serializeArray();
 
 		sts_lost.removeClass( 'error' ).show().text( ms_ajax.loadingmessage );
 		disable_form( frm_lost );
+
+		// Very simple serialization. Since the form is simple it will work...
+		for ( key in fields ) {
+			if ( fields.hasOwnProperty( key ) ) {
+				data[fields[key].name] = fields[key].value;
+			}
+		}
+		data['action'] = 'ms_lostpass'; // calls wp_ajax_nopriv_ms_login
 
 		jQuery.ajax({
 			type: 'POST',
 			dataType: 'json',
 			url: ms_ajax.ajaxurl,
-			data: {
-				'action': 'ms_lostpass', //calls wp_ajax_nopriv_ms_login
-				'user_login': username.val(),
-				'_wpnonce': nonce.val()
-			},
+			data: data,
 			success: function( data ) {
 				enable_form( frm_lost );
 				show_message( sts_lost, data );
