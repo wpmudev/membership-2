@@ -77,7 +77,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 		if ( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
 			add_filter( 'show_admin_bar', '__return_false' );
 			$this->add_action( 'wp_before_admin_bar_render', 'customize_toolbar_front', 999 );
-			$this->add_action( 'admin_head-profile.php', 'customize_admin_sidebar', 999 );
 		}
 
 		// Customize WP toolbar for admin users
@@ -602,25 +601,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	public function customize_toolbar_front() {
 		if ( ! $this->is_admin_user() ) {
 			$this->remove_admin_bar_nodes();
-		}
-	}
-
-	/**
-	 * Customize the Admin sidebar for front end users.
-	 *
-	 * Related Action Hooks:
-	 * - admin_head-profile.php
-	 *
-	 * @since 1.0.0
-	 *
-	 */
-	public function customize_admin_sidebar() {
-		global $menu;
-
-		if ( ! $this->is_admin_user() ) {
-			foreach ( $menu as $key => $menu_item ) {
-				unset( $menu[ $key ] );
-			}
 		}
 	}
 
