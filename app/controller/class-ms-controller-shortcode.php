@@ -39,7 +39,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->add_action( 'setup_current_user', 'init' );
+		$this->init();
 	}
 
 	/**
@@ -55,13 +55,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		if ( MS_Plugin::is_enabled() ) {
-			if ( MS_Model_Member::is_normal_admin() ) {
-				add_shortcode(
-					MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
-					array( $this, 'hide_shortcode')
-				);
-			}
-
 			add_shortcode(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
 				array( $this, 'membership_register_user' )
