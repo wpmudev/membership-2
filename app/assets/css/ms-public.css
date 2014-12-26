@@ -100,8 +100,8 @@
 #wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input button {
   margin: 0;
 }
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-icon {
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-icon,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-icon {
   line-height: 24px;
   height: 24px;
   width: 18px;

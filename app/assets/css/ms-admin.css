@@ -52,10 +52,6 @@
   cursor: not-allowed;
 }
 
-.ms-fa {
-  font-family: Fontawesome420 !important;
-}
-
 /**
  * Typographic styles
  */
@@ -564,7 +560,7 @@
   height: 5em;
   width: 100%;
 }
-.ms-wrap .ms-text {
+.ms-wrap .wpmui-text {
   display: inline-block;
 }
 .ms-wrap .ms-text-small {
@@ -590,13 +586,13 @@
 .ms-wrap input[disabled] {
   cursor: default;
 }
-.ms-wrap .ms-no-data {
+.ms-wrap .wpmui-no-data {
   font-style: italic;
   padding: 3px 0;
   line-height: 24px;
   opacity: .6;
 }
-.ms-wrap .ms-no-data:before, .ms-wrap .ms-no-data:after {
+.ms-wrap .wpmui-no-data:before, .ms-wrap .wpmui-no-data:after {
   content: ' - ';
 }
 .ms-wrap input.ms-center,
@@ -617,13 +613,13 @@
   }
   */
 }
-#wpadminbar .ms-datepicker-wrapper,
-.ms-wrap .ms-datepicker-wrapper {
+#wpadminbar .wpmui-datepicker-wrapper,
+.ms-wrap .wpmui-datepicker-wrapper {
   display: inline-block;
   position: relative;
 }
-#wpadminbar .ms-datepicker-wrapper .ms-icon,
-.ms-wrap .ms-datepicker-wrapper .ms-icon {
+#wpadminbar .wpmui-datepicker-wrapper .wpmui-icon,
+.ms-wrap .wpmui-datepicker-wrapper .wpmui-icon {
   position: absolute;
   right: 0;
   top: 0;
@@ -636,24 +632,24 @@
   color: #444;
 }
 
-.ui-datepicker.ms-datepicker {
+.ui-datepicker.wpmui-datepicker {
   padding: 0;
   border: none;
   /* Get rid of bevel corners */
   /* New icons */
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-header, .ui-datepicker.ms-datepicker.ui-corner-all {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-header, .ui-datepicker.wpmui-datepicker.ui-corner-all {
   border-radius: 0;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-prev span,
-.ui-datepicker.ms-datepicker .ui-datepicker-next span,
-.ui-datepicker.ms-datepicker .ui-state-hover .ui-icon,
-.ui-datepicker.ms-datepicker .ui-state-focus .ui-icon,
-.ui-datepicker.ms-datepicker .ui-widget-header .ui-icon,
-.ui-datepicker.ms-datepicker .ui-icon {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-prev span,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-next span,
+.ui-datepicker.wpmui-datepicker .ui-state-hover .ui-icon,
+.ui-datepicker.wpmui-datepicker .ui-state-focus .ui-icon,
+.ui-datepicker.wpmui-datepicker .ui-widget-header .ui-icon,
+.ui-datepicker.wpmui-datepicker .ui-icon {
   background-image: url(../images/ui-icons-white.png);
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-header {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-header {
   padding: 0;
   border: none;
   background: #4F83AA;
@@ -661,36 +657,36 @@
   font-size: 0.9em;
   font-weight: normal;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody td a,
-.ui-datepicker.ms-datepicker td span,
-.ui-datepicker.ms-datepicker td a {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody td a,
+.ui-datepicker.wpmui-datepicker td span,
+.ui-datepicker.wpmui-datepicker td a {
   padding: 8px;
   text-align: center;
   text-decoration: none;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar {
   padding: 3px;
   background: #375D7A;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar thead th {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar thead th {
   padding: 3px 5px;
   font-size: 0.9em;
   font-weight: normal;
   color: #FFFFFF;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-default,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-default,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-default,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-default,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
   border: 0;
   background: #223D52;
   color: #FFFFFF;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-active,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-active,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-hover,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-active,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-active,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-hover,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
   background: #4F83AA;
 }
 
@@ -830,7 +826,7 @@
   cursor: pointer;
   opacity: 1;
 }
-.ms-wrap .wpmui-radio-slider .ms-toggle {
+.ms-wrap .wpmui-radio-slider .wpmui-toggle {
   position: absolute;
   display: inline-block;
   left: 0;
@@ -841,12 +837,12 @@
   border-radius: 50%;
   transition: all .2s ease-in-out;
 }
-.ms-wrap .wpmui-radio-slider .ms-toggle:hover {
+.ms-wrap .wpmui-radio-slider .wpmui-toggle:hover {
   -webkit-transform: scale(1.1);
   -ms-transform: scale(1.1);
   transform: scale(1.1);
 }
-.ms-wrap .wpmui-radio-slider.on .ms-toggle {
+.ms-wrap .wpmui-radio-slider.on .wpmui-toggle {
   left: 21px;
 }
 .ms-wrap .wpmui-radio-slider.on {
@@ -865,14 +861,14 @@
 /***
  * TAG SELECT *
  ***/
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data {
   display: block;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-choices {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices {
   background: transparent;
   border: 0;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-choices .select2-search-choice-close {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices .select2-search-choice-close {
   left: 0;
   top: 3px;
   width: 16px;
@@ -881,11 +877,11 @@
   background-position: -242px -143px;
   opacity: 0.6;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-choices .select2-search-choice-close:hover {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices .select2-search-choice-close:hover {
   opacity: 1;
   background-position: -42px -143px;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-search-choice {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-choice {
   float: none;
   display: block;
   margin-left: 0;
@@ -900,17 +896,17 @@
   box-shadow: 0 0 0 transparent;
   background: transparent;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-search-choice.select2-search-choice-focus {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-choice.select2-search-choice-focus {
   background: #f8f8f8;
   border-color: #e5e5e5;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-search-field {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-field {
   display: none;
 }
-.ms-wrap .ms-tag-label {
+.ms-wrap .wpmui-tag-label {
   margin: 10px 0 5px;
 }
-.ms-wrap .ms-tag-label .ms-img {
+.ms-wrap .wpmui-tag-label .ms-img {
   float: left;
 }
 
@@ -1013,12 +1009,12 @@
  * Tooltip elements
  */
 /* The "Info" icon */
-.ms-tooltip-wrapper {
+.wpmui-tooltip-wrapper {
   display: inline;
   position: relative;
   z-index: 100;
 }
-.ms-tooltip-wrapper .ms-tooltip-info {
+.wpmui-tooltip-wrapper .wpmui-tooltip-info {
   display: inline;
   min-width: 20px;
   border-radius: 20px;
@@ -1029,7 +1025,7 @@
 }
 
 /* The actual tooltip */
-.ms-tooltip {
+.wpmui-tooltip {
   display: none;
   position: absolute;
   width: 325px;
@@ -1042,7 +1038,7 @@
   box-shadow: rgba(0, 0, 0, 0.12) -3px 0px 10px 1px;
   /** Add left arrow. */
 }
-.ms-tooltip:before {
+.wpmui-tooltip:before {
   position: absolute;
   content: ' ';
   left: -8px;
@@ -1051,14 +1047,14 @@
   border-right: 10px solid #fafafa;
   /* bottom, add background color here */
 }
-.ms-tooltip .ms-tooltip-button {
+.wpmui-tooltip .wpmui-tooltip-button {
   position: absolute;
   top: 10px;
   right: 10px;
   font: 16px/12px bold "Helvetica";
   cursor: pointer;
 }
-.ms-tooltip .ms-tooltip-content {
+.wpmui-tooltip .wpmui-tooltip-content {
   padding: 20px;
 }
 
@@ -1673,8 +1669,8 @@
 #wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input button {
   margin: 0;
 }
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-icon {
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-icon,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-icon {
   line-height: 24px;
   height: 24px;
   width: 18px;

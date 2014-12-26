@@ -25,7 +25,7 @@ jQuery( document ).ready( function( $ ) {
 	ms_functions.change_dripped_type( $( 'input[name="dripped_type"]:checked') );
 
 	$( '.ms-dripped-calendar' ).click( function() {
-		$( this ).parent().find( '.ms-dripped-spec-date.ms-ajax-update' ).datepicker( 'show' );
+		$( this ).parent().find( '.ms-dripped-spec-date.wpmui-ajax-update' ).datepicker( 'show' );
 	});
 
 	$( '.ms-period-desc-wrapper' ).click( function() {
