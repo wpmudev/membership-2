@@ -256,14 +256,13 @@ module.exports = function( grunt ) {
 
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-autoprefixer');
-	grunt.loadNpmTasks('grunt-contrib-compass');
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 
-	grunt.registerTask( 'notes', 'Show release notes', function() {
+	grunt.registerTask( 'release_notes', 'Show release notes', function() {
 		grunt.log.subhead( 'Release notes' );
 		grunt.log.writeln( '  1. Check BITBUCKET for pull-requests' );
 		grunt.log.writeln( '  2. Check ASANA for high-priority bugs' );
@@ -278,9 +277,8 @@ module.exports = function( grunt ) {
 
 	// Default task.
 
-	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'notes'] );
-
-	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress', 'notes'] );
+	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'release_notes'] );
+	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress', 'release_notes'] );
 
 	grunt.util.linefeed = '\n';
 };
