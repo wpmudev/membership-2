@@ -11,7 +11,7 @@ jQuery(function init_tooltip () {
 		function hide_tooltip() {
 			var el = jQuery( this ),
 				stamp = el.attr('timestamp'),
-				parent = jQuery( '.ms-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
+				parent = jQuery( '.wpmui-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
 
 			el.hide();
 
@@ -20,15 +20,15 @@ jQuery(function init_tooltip () {
 		}
 
 		// Hide multiple tooltips
-		jQuery( '.ms-tooltip[timestamp]').each( hide_tooltip );
+		jQuery( '.wpmui-tooltip[timestamp]').each( hide_tooltip );
 	});
 
 	// Hide single tooltip when Close-Button is clicked.
-	jQuery( '.ms-tooltip-button' ).click(function() {
+	jQuery( '.wpmui-tooltip-button' ).click(function() {
 		var el = jQuery( this ),
-			parent = el.parents( '.ms-tooltip' ),
+			parent = el.parents( '.wpmui-tooltip' ),
 			stamp = jQuery( parent ).attr( 'timestamp' ),
-			super_parent = jQuery( '.ms-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
+			super_parent = jQuery( '.wpmui-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
 
 		jQuery( parent ).hide();
 
@@ -37,12 +37,12 @@ jQuery(function init_tooltip () {
 	});
 
 	// Don't propagate click events inside the tooltip to the document.
-	jQuery( '.ms-tooltip' ).click(function(e) {
+	jQuery( '.wpmui-tooltip' ).click(function(e) {
 		e.stopPropagation();
 	});
 
 	// Toggle a tooltip
-	jQuery('.ms-tooltip-info').click(function( event ) {
+	jQuery('.wpmui-tooltip-info').click(function( event ) {
 		var parent, stamp, sibling, newpos, tooltip,
 			el = jQuery( this );
 
@@ -50,9 +50,9 @@ jQuery(function init_tooltip () {
 
 		if ( ! el.hasClass( 'open' ) ) {
 			// HIDE
-			parent = el.parents( '.ms-tooltip-wrapper' );
+			parent = el.parents( '.wpmui-tooltip-wrapper' );
 			stamp = jQuery( parent ).attr( 'timestamp' );
-			sibling = jQuery( '.ms-tooltip[timestamp="' + stamp + '"]' ).first();
+			sibling = jQuery( '.wpmui-tooltip[timestamp="' + stamp + '"]' ).first();
 
 			jQuery( sibling ).hide();
 
@@ -60,9 +60,9 @@ jQuery(function init_tooltip () {
 			jQuery( sibling ).appendTo( jQuery( parent ) );
 		} else {
 			// SHOW
-			el.parents('.ms-tooltip-wrapper').attr( 'timestamp', event.timeStamp );
+			el.parents('.wpmui-tooltip-wrapper').attr( 'timestamp', event.timeStamp );
 			event.stopPropagation();
-			tooltip = el.siblings( '.ms-tooltip' );
+			tooltip = el.siblings( '.wpmui-tooltip' );
 
 			tooltip.attr( 'timestamp', event.timeStamp );
 

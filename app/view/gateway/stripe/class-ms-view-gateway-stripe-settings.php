@@ -10,7 +10,7 @@ class MS_View_Gateway_Stripe_Settings extends MS_View {
 		/** Render tabbed interface. */
 		?>
 		<div class="ms-wrap">
-			<form class="ms-gateway-setings-form ms-form ms-ajax-update" data-ms="<?php echo esc_attr( $gateway->id ); ?>">
+			<form class="ms-gateway-setings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
 				<?php
 				foreach ( $fields as $field ) {
 					MS_Helper_Html::html_element( $field );

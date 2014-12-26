@@ -62,7 +62,7 @@ class MS_View_Coupon_List extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => $title,
-					'title_icon_class' => 'ms-fa ms-fa-credit-card',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-credit-card',
 				)
 			);
 			?>

@@ -25,7 +25,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'ms-fa ms-fa-pencil-square',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-pencil-square',
 					'desc' => $description,
 				)
 			);
@@ -460,7 +460,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 				'desc' => __( 'Only Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
 				'value' => $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ? 1 : 0,
 				'field_options' => $rule_more_tag->get_options_array(),
-				'class' => 'ms-more-tag ms-ajax-update',
+				'class' => 'ms-more-tag',
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => MS_Model_Rule::RULE_TYPE_MORE_TAG,
@@ -579,7 +579,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 				'title' => __( 'Page URLs', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 				'value' => implode( PHP_EOL, $rule->rule_value ),
-				'class' => 'ms-textarea-medium ms-ajax-update',
+				'class' => 'ms-textarea-medium',
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,

@@ -60,7 +60,7 @@ class MS_View_Settings_Edit extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'ms-fa ms-fa-cog',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
 				)
 			);
 			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
@@ -122,7 +122,6 @@ class MS_View_Settings_Edit extends MS_View {
 				'title' => __( 'Use the wizard to setup a new membership.', MS_TEXT_DOMAIN ),
 				'value' => __( 'Activate the Wizard', MS_TEXT_DOMAIN ),
 				'button_value' => 1,
-				'class' => 'ms-ajax-update',
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 					'field' => 'initial_setup',
@@ -187,7 +186,6 @@ class MS_View_Settings_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_PAGES,
 				'title' => $title,
 				'value' => $page_id,
-				'class' => 'ms-ajax-update',
 				'field_options' => array(
 					'no_item' => __( '- Select a page -', MS_TEXT_DOMAIN ),
 				),
@@ -302,7 +300,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => 'save_content',
 					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 					'value' => __( 'Save', MS_TEXT_DOMAIN ),
-					'class' => 'button-primary ms-ajax-update',
+					'class' => 'button-primary',
 					'data_ms' => array(
 						'type' => 'content',
 						'action' => $action,
@@ -323,7 +321,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => 'save_content',
 					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 					'value' => __( 'Save', MS_TEXT_DOMAIN ),
-					'class' => 'button-primary ms-ajax-update',
+					'class' => 'button-primary',
 					'data_ms' => array(
 						'type' => 'shortcode',
 						'action' => $action,
@@ -344,7 +342,7 @@ class MS_View_Settings_Edit extends MS_View {
 					'id' => 'save_content',
 					'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 					'value' => __( 'Save', MS_TEXT_DOMAIN ),
-					'class' => 'button-primary ms-ajax-update',
+					'class' => 'button-primary',
 					'data_ms' => array(
 						'type' => 'more_tag',
 						'action' => $action,
@@ -433,7 +431,6 @@ class MS_View_Settings_Edit extends MS_View {
 				'id' => 'enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => @$comm->enabled,
-				'class' => 'ms-ajax-update',
 				'data_ms' => array(
 					'type' => @$comm->type,
 					'field' => 'enabled',
@@ -470,7 +467,7 @@ class MS_View_Settings_Edit extends MS_View {
 				'value' => @$comm->description,
 				'field_options' => array(
 					'media_buttons' => false,
-					'editor_class' => 'ms-ajax-update',
+					'editor_class' => 'wpmui-ajax-update',
 				),
 			),
 

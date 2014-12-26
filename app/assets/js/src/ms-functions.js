@@ -10,7 +10,7 @@ window.ms_functions = {
 	dp_config: {
         dateFormat: 'yy-mm-dd', //TODO get wp configured date format
         dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thy', 'Fri', 'Sat'],
-        custom_class: 'ms-datepicker' // Not a jQuery argument!
+        custom_class: 'wpmui-datepicker' // Not a jQuery argument!
     },
 
 	chosen_options: {
@@ -29,7 +29,7 @@ window.ms_functions = {
 			.select2( fn.chosen_options );
 
 		// Initialize the datepickers.
-		jQuery( '.ms-datepicker', scope ).ms_datepicker();
+		jQuery( '.wpmui-datepicker', scope ).ms_datepicker();
 	},
 
 	ajax_update: function( obj ) {
@@ -52,7 +52,7 @@ window.ms_functions = {
 			anim.addClass( 'wpmui-loading' );
 			info_field = fn.ajax_show_indicator( field );
 
-			data = field.data( 'ms' );
+			data = field.data( 'ajax' );
 
 			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
@@ -100,8 +100,8 @@ window.ms_functions = {
 			slider.parent().toggleClass( 'on' );
 			slider.trigger( 'change' );
 
-			toggle = slider.children( '.ms-toggle' );
-			data = toggle.data( 'ms' );
+			toggle = slider.children( '.wpmui-toggle' );
+			data = toggle.data( 'ajax' );
 			states = toggle.data( 'states' );
 
 			if ( null != data ) {
@@ -319,7 +319,7 @@ window.ms_functions = {
 	 */
 	toggle_datepicker: function( el ) {
 		var me = jQuery( el ),
-			dp = me.closest( '.ms-datepicker-wrapper' ).find( '.ms-datepicker' );
+			dp = me.closest( '.wpmui-datepicker-wrapper' ).find( '.wpmui-datepicker' );
 
 		dp.datepicker( 'show' );
 	},
@@ -331,8 +331,8 @@ window.ms_functions = {
 	tag_selector_add: function( ev ) {
 		var fn = window.ms_functions,
 			me = jQuery( this ).closest( '.wpmui-tag-selector-wrapper' ),
-			el_src = me.find( 'select.ms-tag-source' ),
-			el_dst = me.find( 'select.ms-tag-data' ),
+			el_src = me.find( 'select.wpmui-tag-source' ),
+			el_dst = me.find( 'select.wpmui-tag-data' ),
 			list = el_dst.val() || [];
 
 		if ( ! el_src.val().length ) { return; }
@@ -351,9 +351,9 @@ window.ms_functions = {
 	tag_selector_refresh_source: function( ev, el ) {
 		var i = 0, item = null,
 			me = jQuery( el ).closest( '.wpmui-tag-selector-wrapper' ),
-			el_src = me.find( 'select.ms-tag-source' ),
+			el_src = me.find( 'select.wpmui-tag-source' ),
 			el_src_items = el_src.find( 'option' ),
-			el_dst = me.find( 'select.ms-tag-data' ),
+			el_dst = me.find( 'select.wpmui-tag-data' ),
 			list = el_dst.val() || [];
 
 		for ( i = 0; i < el_src_items.length; i += 1 ) {
@@ -473,39 +473,39 @@ jQuery( document ).ready( function() {
 	// Toggle datepickers when user clicks on icon.
 	.on(
 		'click',
-		'.ms-datepicker-wrapper .ms-icon',
+		'.wpmui-datepicker-wrapper .wpmui-icon',
 		function( ev ) { fn.toggle_datepicker( this ); }
 	)
 	// Initialize the tag-select components.
 	.on(
 		'select2-opening',
-		'.wpmui-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .wpmui-tag-data',
 		function( ev ) { ev.preventDefault(); }
 	)
 	.on(
 		'change',
-		'.wpmui-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .wpmui-tag-data',
 		function( ev ) { fn.tag_selector_refresh_source( ev, this ); }
 	)
 	.on(
 		'click',
-		'.wpmui-tag-selector-wrapper .ms-tag-button',
+		'.wpmui-tag-selector-wrapper .wpmui-tag-button',
 		fn.tag_selector_add
 	)
 	// Ajax-Submit data when ms-ajax-update fields are changed.
 	.on(
 		'change',
-		'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update',
+		'input.wpmui-ajax-update, select.wpmui-ajax-update, textarea.wpmui-ajax-update',
 		function( ev ) { fn.ajax_update( this ); }
 	)
 	.on(
 		'click',
-		'button.ms-ajax-update',
+		'button.wpmui-ajax-update',
 		function( ev ) { fn.ajax_update( this ); }
 	)
 	.on(
 		'submit',
-		'form.ms-ajax-update',
+		'form.wpmui-ajax-update',
 		function( ev ) { fn.dynamic_form_submit( ev, this ); }
 	)
 	// Initialize popup dialogs.

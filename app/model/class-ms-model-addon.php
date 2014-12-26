@@ -221,7 +221,7 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_COUPON] = (object) array(
 			'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
 			'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
-			'icon' => 'ms-fa ms-fa-ticket',
+			'icon' => 'wpmui-fa wpmui-fa-ticket',
 		);
 
 		$list[self::ADDON_POST_BY_POST] = (object) array(
@@ -247,7 +247,6 @@ class MS_Model_Addon extends MS_Model_Option {
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'title' => __( 'Mask download URL:', MS_TEXT_DOMAIN ),
 					'value' => $settings->downloads['masked_url'],
-					'class' => 'ms-ajax-update',
 					'data_ms' => array(
 						'field' => 'masked_url',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
@@ -260,7 +259,6 @@ class MS_Model_Addon extends MS_Model_Option {
 					'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
 					'value' => $settings->downloads['protection_type'],
 					'field_options' => MS_Model_Rule_Media::get_protection_types(),
-					'class' => 'ms-ajax-update',
 					'data_ms' => array(
 						'field' => 'protection_type',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
@@ -310,7 +308,6 @@ class MS_Model_Addon extends MS_Model_Option {
 						'menu' => __( 'Replace individual Menus', MS_TEXT_DOMAIN ),
 						'location' => __( 'Overwrite contents of Menu Locations', MS_TEXT_DOMAIN ),
 					),
-					'class' => 'ms-ajax-update',
 					'data_ms' => array(
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 						'field' => 'menu_protection',
@@ -359,7 +356,7 @@ class MS_Model_Addon extends MS_Model_Option {
 			if ( isset( $list[$key]->icon ) ) {
 				$list[$key]->icon = '<i class="' . $list[$key]->icon . '"></i>';
 			} else {
-				$list[$key]->icon = '<i class="ms-fa ms-fa-puzzle-piece"></i>';
+				$list[$key]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
 			}
 
 			$list[$key]->action = array();

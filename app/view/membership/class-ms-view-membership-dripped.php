@@ -29,7 +29,7 @@ class MS_View_Membership_Dripped extends MS_View {
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 			'value' => $membership->dripped_type,
 			'field_options' => MS_Model_Rule::get_dripped_types(),
-			'class' => 'ms-dripped-type ms-ajax-update',
+			'class' => 'ms-dripped-type',
 			'data_ms' => array(
 				'membership_id' => $membership->id,
 				'field' => 'dripped_type',
@@ -46,7 +46,7 @@ class MS_View_Membership_Dripped extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'ms-fa ms-fa-cog',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
 					'desc' => sprintf(
 						__( 'Setup which Protected Content will become available to %s members.', MS_TEXT_DOMAIN ),
 						$this->data['membership']->name

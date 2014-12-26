@@ -22,7 +22,7 @@
 		width: 100%;
 	}
 
-	.ms-text {
+	.wpmui-text {
 		display: inline-block;
 	}
 
@@ -55,7 +55,7 @@
 		cursor: default;
 	}
 
-	.ms-no-data {
+	.wpmui-no-data {
 		font-style: italic;
 		padding: 3px 0;
 		line-height: 24px;
@@ -84,11 +84,11 @@
 
 #wpadminbar,
 .ms-wrap {
-	.ms-datepicker-wrapper {
+	.wpmui-datepicker-wrapper {
 		display: inline-block;
 		position: relative;
 
-		.ms-icon {
+		.wpmui-icon {
 			position: absolute;
 			right: 0;
 			top: 0;
@@ -110,7 +110,7 @@
 	*/
 }
 
-.ui-datepicker.ms-datepicker {
+.ui-datepicker.wpmui-datepicker {
 	padding: 0;
 	border: none;
 
@@ -358,7 +358,7 @@
 		opacity:1;
 	}
 
-	.wpmui-radio-slider .ms-toggle {
+	.wpmui-radio-slider .wpmui-toggle {
 		position: absolute;
 		display: inline-block;
 
@@ -372,11 +372,11 @@
 		transition: all .2s ease-in-out;
 	}
 
-	.wpmui-radio-slider .ms-toggle:hover {
+	.wpmui-radio-slider .wpmui-toggle:hover {
 		transform: scale(1.1);
 	}
 
-	.wpmui-radio-slider.on .ms-toggle {
+	.wpmui-radio-slider.on .wpmui-toggle {
 		left: 21px;
 	}
 
@@ -402,7 +402,7 @@
 
 .ms-wrap {
 	.wpmui-tag-selector-wrapper {
-		.ms-tag-data {
+		.wpmui-tag-data {
 			display: block;
 
 			.select2-choices {
@@ -454,7 +454,7 @@
 		}
 	}
 
-	.ms-tag-label {
+	.wpmui-tag-label {
 		margin: 10px 0 5px;
 
 		.ms-img {

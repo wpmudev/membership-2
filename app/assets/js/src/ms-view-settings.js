@@ -28,7 +28,7 @@ window.ms_init.view_settings = function init () {
 			// Update the view/edit links
 			actions.each(function() {
 				var link = jQuery( this ),
-					data = link.data('ms'),
+					data = link.data('ajax'),
 					url = data.base + val;
 
 				if ( undefined === val || isNaN(val) || val < 1 ) {

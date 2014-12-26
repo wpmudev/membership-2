@@ -28,7 +28,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Accessible content', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'ms-fa ms-fa-cog',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
 					'desc' => sprintf(
 						__( 'Setup which Protected Content is available to <span class="ms-bold">%s</span> members.', MS_TEXT_DOMAIN ),
 						esc_html( $this->data['membership']->name )
@@ -566,7 +566,7 @@ class MS_View_Membership_Accessible_Content extends MS_View {
 				'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
 				'value' => $val_more_tag,
 				'field_options' => $rule_more_tag->get_options_array(),
-				'class' => 'ms-more-tag ms-ajax-update',
+				'class' => 'ms-more-tag',
 				'data_ms' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => MS_Model_Rule::RULE_TYPE_MORE_TAG,

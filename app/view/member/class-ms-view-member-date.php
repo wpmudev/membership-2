@@ -14,7 +14,7 @@ class MS_View_Member_Date extends MS_View {
 		<div class='ms-wrap'>
 			<div class='ms-settings'>
 				<h2 class='ms-settings-title'>
-					<i class="ms-fa ms-fa-pencil-square"></i>
+					<i class="wpmui-fa wpmui-fa-pencil-square"></i>
 					<?php _e( 'Edit membership dates', MS_TEXT_DOMAIN ); ?>
 				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">

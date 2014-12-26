@@ -885,6 +885,8 @@ class MS_Controller_Frontend extends MS_Controller {
 			&& $ms_pages->is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		if ( $is_ms_page ) {
+			WDev()->add_ui( 'select' );
+			WDev()->add_ui( 'jquery-ui' );
 			wp_enqueue_style( 'ms-styles' );
 		}
 

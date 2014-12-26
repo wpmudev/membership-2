@@ -55,7 +55,7 @@ class MS_View_Help extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Help and documentation', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'ms-fa ms-fa-info-circle',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-info-circle',
 				)
 			);
 			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
