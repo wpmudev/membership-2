@@ -263,11 +263,24 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 
+	grunt.registerTask( 'notes', 'Show release notes', function() {
+		grunt.log.subhead( 'Release notes' );
+		grunt.log.writeln( '  1. Check BITBUCKET for pull-requests' );
+		grunt.log.writeln( '  2. Check ASANA for high-priority bugs' );
+		grunt.log.writeln( '  3. Check EMAILS for high-priority bugs' );
+		grunt.log.writeln( '  4. Check FORUM for open threads' );
+		grunt.log.writeln( '  5. REPLY to forum threads + unsubscribe' );
+		grunt.log.writeln( '  6. Update the TRANSLATION files' );
+		grunt.log.writeln( '  7. Generate ARCHIVE' );
+		grunt.log.writeln( '  8. INSTALL on a clean WordPress installation' );
+		grunt.log.writeln( '  9. RELEASE the plugin!' );
+	});
+
 	// Default task.
 
-	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', /*'uglify',*/ 'sass', 'autoprefixer'/*, 'cssmin'*/] );
+	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'notes'] );
 
-	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress'] );
+	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress', 'notes'] );
 
 	grunt.util.linefeed = '\n';
 };
