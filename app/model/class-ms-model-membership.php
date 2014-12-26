@@ -337,24 +337,25 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return string The membership type description.
 	 */
 	public function get_type_description() {
-		$description = array();
+		$desc = '';
 
 		if ( self::is_valid_type( $this->type ) && empty( $this->parent_id ) ) {
 			$types = self::get_types();
 			$desc = $types[ $this->type ];
+
 			if ( $this->can_have_children() ) {
-				$desc .= sprintf( ' (%s)', $this->get_children_count() );
-			}
-			$description[] = $desc;
-			if ( $this->is_private_eligible() ) {
-				if ( $this->is_private() ) {
-					$description[] = __( 'Private', MS_TEXT_DOMAIN );
-				}
+				$desc .= sprintf(
+					' <span class="ms-count">(%s)</span>',
+					$this->get_children_count()
+				);
 			}
 		}
-		$description = join( ', ', $description );
 
-		return apply_filters( 'ms_model_membership_get_type_description', $description, $this );
+		return apply_filters(
+			'ms_model_membership_get_type_description',
+			$desc,
+			$this
+		);
 	}
 
 	/**

@@ -186,6 +186,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 			case 'type_description':
 				if ( ! $item->parent_id ) {
+					// Only show the type-icon for top-level memberships
 					$html .= sprintf(
 						'<span class="ms-img-type-%1$s small"></span> ',
 						esc_attr( $item->type )
@@ -193,14 +194,14 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				}
 
 				$html .= sprintf(
-					'<span class="ms-type-desc ms-%1$s"><span>%2$s<span></span>',
+					'<span class="ms-type-desc ms-%1$s">%2$s</span>',
 					esc_attr( $item->type ),
 					esc_html( $item->type_description )
 				);
 
 				if ( $item->private ) {
 					$html .= sprintf(
-						'<span class="ms-is-private">, %s</span>',
+						'<span class="ms-is-private">, <span>%s</span></span>',
 						__( 'Private', MS_TEXT_DOMAIN )
 					);
 				}

@@ -106,6 +106,12 @@ class MS_View_Membership_Choose_Type extends MS_View {
 			),
 
 			'control_fields' => array(
+					'private_flag' => array(
+						// See MS_Controller_Membership->membership_admin_page_process()
+						'id' => 'set_private_flag',
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => 1,
+					),
 					'membership_id' => array(
 						'id' => 'membership_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
