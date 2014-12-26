@@ -19,19 +19,13 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-settings-payment.js',
 				'app/assets/js/src/ms-view-settings-protection.js'
 			],
-			'app/assets/js/ms-public-ajax.js': ['app/assets/js/src/ms-public-ajax.js'],
-			'app/assets/js/jquery.plugins.js': [
-				'app/assets/js/vendor/jquery.nearest.js'
-			],
-			'app/assets/js/select2.js': ['app/assets/js/vendor/select2.js']
+			'app/assets/js/jquery.plugins.js': [ 'app/assets/js/vendor/jquery.nearest.js' ],
+			'app/assets/js/ms-public-ajax.js': ['app/assets/js/src/ms-public-ajax.js']
 		},
 
 		css_files_compile: {
 			'app/assets/css/ms-admin.css':          'app/assets/css/sass/ms-admin.scss',
-			'app/assets/css/ms-public.css':         'app/assets/css/sass/ms-public.scss',
-			'app/assets/css/select2.css':           'app/assets/css/sass/select2/select2.scss',
-			'app/assets/css/font-awesome.css':      'app/assets/css/sass/font-awesome/font-awesome.scss',
-			'app/assets/css/jquery-ui.custom.css':  'app/assets/css/sass/jquery-ui/jquery-ui-1.10.4.custom.scss'
+			'app/assets/css/ms-public.css':         'app/assets/css/sass/ms-public.scss'
 		},
 
 		plugin_dir: 'protected-content/'
