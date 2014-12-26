@@ -40,7 +40,10 @@ class MS_Helper_List_Table_Rule_Adminside extends MS_Helper_List_Table_Rule {
 			$this->get_sortable_columns(),
 		);
 
-		$per_page = $this->get_items_per_page( "{$this->id}_per_page", 10 );
+		$per_page = $this->get_items_per_page(
+			"{$this->id}_per_page",
+			self::DEFAULT_PAGE_SIZE
+		);
 		$current_page = $this->get_pagenum();
 
 		$args = array(

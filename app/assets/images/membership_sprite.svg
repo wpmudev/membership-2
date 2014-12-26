@@ -1,833 +1,495 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="800px"
-	 height="400px" viewBox="0 0 800 400" enable-background="new 0 0 800 400" xml:space="preserve">
-<g id="Layer_2" display="none">
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M0,0v100h100V0H0z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M100,0v100h100V0H100z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M200,0v100h100V0H200z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M300,0v100h100V0H300z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M400,0v100h100V0H400z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M500,0v100h100V0H500z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M600,0v100h100V0H600z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M700,0v100h100V0H700z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M0,100v100h100V100H0z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M100,100v100h100V100H100z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M200,100v100h100V100H200z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M300,100v100h100V100H300z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M400,100v100h100V100H400z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M500,100v100h100V100H500z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M700,100v100h100V100H700z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M600,100v100h100V100H600z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M0,200v100h100V200H0z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M100,200v100h100V200H100z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M200,200v100h100V200H200z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M300,200v100h100V200H300z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M400,200v100h100V200H400z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M500,200v100h100V200H500z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M600,200v100h100V200H600z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M700,200v100h100V200H700z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M0,300v100h100V300H0z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M100,300v100h100V300H100z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M200,300v100h100V300H200z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M300,300v100h100V300H300z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M400,300v100h100V300H400z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M500,300v100h100V300H500z"/>
-	<path display="inline" opacity="0" fill="#BDCCD4" d="M700,300v100h100V300H700z"/>
-	<path display="inline" opacity="0.5" fill="#BDCCD4" d="M600,300v100h100V300H600z"/>
-</g>
-<g id="Layer_1">
-	<g>
-		<g>
-			<g>
-				<defs>
-					<polygon id="SVGID_1_" points="59,29 70,40 59,40 					"/>
-				</defs>
-				<clipPath id="SVGID_2_">
-					<use xlink:href="#SVGID_1_"  overflow="visible"/>
-				</clipPath>
-				
-					<rect x="54" y="24" clip-path="url(#SVGID_2_)" fill-rule="evenodd" clip-rule="evenodd" fill="#81BCEE" width="21" height="21"/>
-			</g>
-		</g>
-	</g>
-	<g>
-		<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#81BCEE" points="454,38 454,44 460,44 		"/>
-		<g>
-			<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M450,51c-1.104,0-2,0.896-2,2c0,0.738,0.404,1.376,1,1.723V56
-				c0,0.552,0.447,1,1,1s1-0.448,1-1v-1.277c0.596-0.347,1-0.984,1-1.723C452,51.896,451.104,51,450,51z"/>
-			<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M450,45c-1.104,0-2,0.896-2,2v3h4v-3
-				C452,45.896,451.104,45,450,45z"/>
-			<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M454,44v-6h-14v24h20V44H454z M455,56c0,0,0,2-2,2s-4,0-6,0
-				s-2-2-2-2v-6h1v-3c0-2.209,1.791-4,4-4s4,1.791,4,4v3h1V56z"/>
-		</g>
-	</g>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#6BBB1A" d="M48,150v-3h0c0-1.104,0.895-2,2-2s2,0.896,2,2
-		c0,0.001,0,0.003,0,0.005V148h2v-0.993c0-0.002,0-0.005,0-0.007c0-2.209-1.791-4-4-4s-4,1.791-4,4h0v3h-1c0,0,0,5,0,6s1,2,2,2
-		s5.001,0,6,0s2-1,2-2s0-6,0-6H48z M51,154.723V156c0,0.552-0.448,1-1,1s-1-0.448-1-1v-1.277c-0.595-0.347-1-0.984-1-1.723
-		c0-1.104,0.896-2,2-2s2,0.896,2,2C52,153.738,51.595,154.376,51,154.723z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M154,150v-2.993c0-0.002,0-0.005,0-0.007c0-2.209-1.791-4-4-4
-		s-4,1.791-4,4h0v3h-1c0,0,0,5,0,6s1,2,2,2s5.001,0,6,0s2-1,2-2s0-6,0-6H154z M151,154.723V156c0,0.552-0.448,1-1,1s-1-0.448-1-1
-		v-1.277c-0.595-0.347-1-0.984-1-1.723c0-1.104,0.896-2,2-2s2,0.896,2,2C152,153.738,151.595,154.376,151,154.723z M148,150v-3h0
-		c0-1.104,0.895-2,2-2s2,0.896,2,2c0,0.001,0,0.003,0,0.005V150H148z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#808080" d="M254,150v-2.993c0-0.002,0-0.005,0-0.007c0-2.209-1.791-4-4-4
-		s-4,1.791-4,4h0v3h-1c0,0,0,5,0,6s1,2,2,2s5.001,0,6,0s2-1,2-2s0-6,0-6H254z M251,154.723V156c0,0.552-0.448,1-1,1s-1-0.448-1-1
-		v-1.277c-0.595-0.347-1-0.984-1-1.723c0-1.104,0.896-2,2-2s2,0.896,2,2C252,153.738,251.595,154.376,251,154.723z M248,150v-3h0
-		c0-1.104,0.895-2,2-2s2,0.896,2,2c0,0.001,0,0.003,0,0.005V150H248z"/>
-	<g>
-		
-			<rect x="350.379" y="146.086" transform="matrix(0.7071 0.7071 -0.7071 0.7071 207.5431 -206.0534)" fill-rule="evenodd" clip-rule="evenodd" fill="#0073A4" width="4.243" height="2.828"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#0073A4" d="M352,151l-3-3l-5,5v3h3L352,151z M345,153l1-1l2,2l-1,1h-2V153z"
-			/>
-		<rect x="344" y="157" fill-rule="evenodd" clip-rule="evenodd" fill="#BDCDD1" width="11" height="1"/>
-	</g>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M450,144c-3.866,0-7,3.134-7,7s3.134,7,7,7s7-3.134,7-7
-		S453.866,144,450,144z M451,156h-3v-1l1-5h-2l1-1h3v1l-1,5h2L451,156z M451,148.278c-0.707,0-1.278-0.572-1.278-1.278
-		s0.571-1.278,1.278-1.278s1.278,0.572,1.278,1.278S451.707,148.278,451,148.278z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M550,144c-3.866,0-7,3.134-7,7s3.134,7,7,7s7-3.134,7-7
-		S553.866,144,550,144z M551,156h-2v-2h2V156z M551,153h-2c0-3,2.331-2.438,2.331-4.125c0-0.858-0.331-1.196-1.331-1.196
-		c-1.484,0-1.443,1.321-1.443,1.321h-1.914c0-1,0.857-3,3.357-3c2.297,0,3.357,1.266,3.357,3C553.357,151,551,151,551,153z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M650,143c-2.4,0-6.771,9.984-7.737,11.984
-		c-0.968,2,0.982,3.016,1.935,3.016c0.951,0,10.638,0,11.605,0c0.967,0,2.901-1.015,1.934-3.016C656.77,152.984,652.399,143,650,143
-		z M650,157c-0.966,0-1.75-0.784-1.75-1.75c0-0.966,0.784-1.75,1.75-1.75c0.967,0,1.75,0.784,1.75,1.75
-		C651.75,156.216,650.967,157,650,157z M650,153c-1.361,0-1.454-4.963-1.454-5.516S649,146,650,146s1.439,0.932,1.439,1.484
-		S651.36,153,650,153z"/>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#808080" d="M750,143c-4.418,0-8,3.582-8,8s3.582,8,8,8s8-3.582,8-8
-		S754.418,143,750,143z M753,149l-2,2l2,2v1h-1l-2-2l-2,2h-1v-1l2-2l-2-2v-1h1l2,2l2-2h1V149z"/>
-	<g>
-		<g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_3_" d="M151,45h-14V21h14v5.993L157,27v6c-2.761,0-5,2.238-5,5v2h-1V45z"/>
-					</defs>
-					<clipPath id="SVGID_4_">
-						<use xlink:href="#SVGID_3_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="132" y="16" clip-path="url(#SVGID_4_)" fill-rule="evenodd" clip-rule="evenodd" fill="#ECF0F1" width="30" height="34"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<polygon id="SVGID_5_" points="151,21 157,27 151,27 						"/>
-					</defs>
-					<clipPath id="SVGID_6_">
-						<use xlink:href="#SVGID_5_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="146" y="16" clip-path="url(#SVGID_6_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="16" height="16"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_7_" d="M158,45.722V47c0,0.552-0.448,1-1,1c-0.554,0-1-0.448-1-1v-0.002v-1.275c-0.597-0.346-1-0.983-1-1.723
-							c0-1.105,0.895-2,2-2c1.103,0,2,0.895,2,2C159,44.738,158.595,45.376,158,45.722z M157,36c1.103,0,2,0.896,2,2v3h-4v-3
-							C155,36.896,155.896,36,157,36z M161,41v-3c0-2.209-1.791-4-4-4c-2.21,0-4,1.791-4,4v0.007V41h-1v6c0,1.104,0.896,2,2,2h6
-							c1.104,0,2-0.896,2-2v-6H161z"/>
-					</defs>
-					<clipPath id="SVGID_8_">
-						<use xlink:href="#SVGID_7_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="147" y="29" clip-path="url(#SVGID_8_)" fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" width="20" height="25"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_9_" d="M134,76h-14V52h14v5.993L140,58v6c-2.761,0-5,2.238-5,5v2h-1V76z"/>
-					</defs>
-					<clipPath id="SVGID_10_">
-						<use xlink:href="#SVGID_9_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="115" y="47" clip-path="url(#SVGID_10_)" fill-rule="evenodd" clip-rule="evenodd" fill="#ECF0F1" width="30" height="34"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<polygon id="SVGID_11_" points="134,52 140,58 134,58 						"/>
-					</defs>
-					<clipPath id="SVGID_12_">
-						<use xlink:href="#SVGID_11_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="129" y="47" clip-path="url(#SVGID_12_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="16" height="16"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_13_" d="M141,76.722V78c0,0.552-0.448,1-1,1c-0.554,0-1-0.448-1-1v-0.002v-1.275c-0.597-0.346-1-0.983-1-1.723
-							c0-1.105,0.895-2,2-2c1.103,0,2,0.895,2,2C142,75.738,141.595,76.376,141,76.722z M140,67c1.103,0,2,0.896,2,2v3h-4v-3
-							C138,67.896,138.896,67,140,67z M144,72v-3c0-2.209-1.791-4-4-4c-2.21,0-4,1.791-4,4v0.007V72h-1v6c0,1.104,0.896,2,2,2h6
-							c1.104,0,2-0.896,2-2v-6H144z"/>
-					</defs>
-					<clipPath id="SVGID_14_">
-						<use xlink:href="#SVGID_13_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="130" y="60" clip-path="url(#SVGID_14_)" fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" width="20" height="25"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_15_" d="M168,76h-14V52h14v5.993L174,58v6c-2.761,0-5,2.238-5,5v2h-1V76z"/>
-					</defs>
-					<clipPath id="SVGID_16_">
-						<use xlink:href="#SVGID_15_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="149" y="47" clip-path="url(#SVGID_16_)" fill-rule="evenodd" clip-rule="evenodd" fill="#ECF0F1" width="30" height="34"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<polygon id="SVGID_17_" points="168,52 174,58 168,58 						"/>
-					</defs>
-					<clipPath id="SVGID_18_">
-						<use xlink:href="#SVGID_17_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="163" y="47" clip-path="url(#SVGID_18_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="16" height="16"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_19_" d="M175,76.722V78c0,0.552-0.448,1-1,1c-0.554,0-1-0.448-1-1v-0.002v-1.275c-0.597-0.346-1-0.983-1-1.723
-							c0-1.105,0.895-2,2-2c1.103,0,2,0.895,2,2C176,75.738,175.595,76.376,175,76.722z M174,67c1.103,0,2,0.896,2,2v3h-4v-3
-							C172,67.896,172.896,67,174,67z M178,72v-3c0-2.209-1.791-4-4-4c-2.21,0-4,1.791-4,4v0.007V72h-1v6c0,1.104,0.896,2,2,2h6
-							c1.104,0,2-0.896,2-2v-6H178z"/>
-					</defs>
-					<clipPath id="SVGID_20_">
-						<use xlink:href="#SVGID_19_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="164" y="60" clip-path="url(#SVGID_20_)" fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" width="20" height="25"/>
-				</g>
-			</g>
-		</g>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M129,66v1h2v-1H129z M131,64v2h1v-2H131z M129,63v1h2v-1H129z
-			 M131,62v1h1v-1H131z M129,61v1h2v-1H129z M128,61v6h1v-6H128z M130,59c-2.761,0-5,2.244-5,5c0,2.762,2.244,5,5,5
-			c2.761,0,5-2.244,5-5C135,61.238,132.756,59,130,59z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M146,33v1h2v-1H146z M148,31v5h1v-5H148z M146,30v1h2v-1H146z
-			 M145,31v5h1v-5H145z M147,28c-2.761,0-5,2.244-5,5c0,2.762,2.244,5,5,5c2.761,0,5-2.244,5-5C152,30.238,149.756,28,147,28z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M163,66v1h2v-1H163z M165,65v1h1v-1H165z M165,62v1h1v-1H165z
-			 M163,61v1h2v-1H163z M162,62v4h1v-4H162z M164,59c-2.761,0-5,2.244-5,5c0,2.762,2.244,5,5,5c2.761,0,5-2.244,5-5
-			C169,61.238,166.756,59,164,59z"/>
-	</g>
-	<g>
-		<g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_21_" d="M220,71.722V73c0,0.552-0.448,1-1,1c-0.555,0-1-0.448-1-1v-0.002v-1.275c-0.598-0.346-1-0.983-1-1.723
-							c0-1.105,0.895-2,2-2c1.104,0,2,0.895,2,2C221,70.738,220.596,71.376,220,71.722z M219,62c1.104,0,2,0.896,2,2v3h-4v-3
-							C217,62.896,217.896,62,219,62z M223,67v-3c0-2.209-1.791-4-4-4c-2.21,0-4,1.791-4,4v0.007V67h-1v6c0,1.104,0.896,2,2,2h6
-							c1.104,0,2-0.896,2-2v-6H223z"/>
-					</defs>
-					<clipPath id="SVGID_22_">
-						<use xlink:href="#SVGID_21_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="209" y="55" clip-path="url(#SVGID_22_)" fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" width="20" height="25"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_23_" d="M247,71.722V73c0,0.552-0.448,1-1,1c-0.555,0-1-0.448-1-1v-0.002v-1.275c-0.598-0.346-1-0.983-1-1.723
-							c0-1.105,0.895-2,2-2c1.104,0,2,0.895,2,2C248,70.738,247.596,71.376,247,71.722z M246,62c1.104,0,2,0.896,2,2v3h-4v-3
-							C244,62.896,244.896,62,246,62z M250,67v-3c0-2.209-1.791-4-4-4c-2.21,0-4,1.791-4,4v0.007V67h-1v6c0,1.104,0.896,2,2,2h6
-							c1.104,0,2-0.896,2-2v-6H250z"/>
-					</defs>
-					<clipPath id="SVGID_24_">
-						<use xlink:href="#SVGID_23_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="236" y="55" clip-path="url(#SVGID_24_)" fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" width="20" height="25"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_25_" d="M274,71.722V73c0,0.552-0.448,1-1,1c-0.555,0-1-0.448-1-1v-0.002v-1.275c-0.598-0.346-1-0.983-1-1.723
-							c0-1.105,0.895-2,2-2c1.104,0,2,0.895,2,2C275,70.738,274.596,71.376,274,71.722z M273,62c1.104,0,2,0.896,2,2v3h-4v-3
-							C271,62.896,271.896,62,273,62z M277,67v-3c0-2.209-1.791-4-4-4c-2.21,0-4,1.791-4,4v0.007V67h-1v6c0,1.104,0.896,2,2,2h6
-							c1.104,0,2-0.896,2-2v-6H277z"/>
-					</defs>
-					<clipPath id="SVGID_26_">
-						<use xlink:href="#SVGID_25_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="263" y="55" clip-path="url(#SVGID_26_)" fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" width="20" height="25"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_27_" d="M276,40v1h2v-1H276z M278,38v2h1v-2H278z M276,37v1h2v-1H276z M278,36v1h1v-1H278z M276,35v1h2v-1H276
-							z M275,35v6h1v-6H275z M273,34v8h8v-8H273z"/>
-					</defs>
-					<clipPath id="SVGID_28_">
-						<use xlink:href="#SVGID_27_"  overflow="visible"/>
-					</clipPath>
-				</g>
-			</g>
-		</g>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M218,47v1h2v-1H218z M220,45v5h1v-5H220z M218,44v1h2v-1H218z
-			 M217,45v5h1v-5H217z M215,43v8h8v-8H215z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M244,38v1h2v-1H244z M246,36v5h1v-5H246z M244,35v1h2v-1H244z
-			 M243,36v5h1v-5H243z M241,34v8h8v-8H241z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M240,49v1h2v-1H240z M242,47v2h1v-2H242z M240,46v1h2v-1H240z
-			 M242,45v1h1v-1H242z M240,44v1h2v-1H240z M239,44v6h1v-6H239z M237,43v8h8v-8H237z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M249,49v1h2v-1H249z M251,47v2h1v-2H251z M249,46v1h2v-1H249z
-			 M251,45v1h1v-1H251z M249,44v1h2v-1H249z M248,44v6h1v-6H248z M246,43v8h8v-8H246z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M271,29v1h2v-1H271z M273,27v5h1v-5H273z M271,26v1h2v-1H271z
-			 M270,27v5h1v-5H270z M268,25v8h8v-8H268z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M267,40v1h2v-1H267z M269,38v2h1v-2H269z M267,37v1h2v-1H267z
-			 M269,36v1h1v-1H269z M267,35v1h2v-1H267z M266,35v6h1v-6H266z M264,34v8h8v-8H264z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M276,40v1h2v-1H276z M278,38v2h1v-2H278z M276,37v1h2v-1H276z
-			 M278,36v1h1v-1H278z M276,35v1h2v-1H276z M275,35v6h1v-6H275z M273,34v8h8v-8H273z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M263,49v1h2v-1H263z M265,48v1h1v-1H265z M265,45v1h1v-1H265z
-			 M263,44v1h2v-1H263z M262,45v4h1v-4H262z M260,43v8h8v-8H260z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M272,49v1h2v-1H272z M274,48v1h1v-1H274z M274,45v1h1v-1H274z
-			 M272,44v1h2v-1H272z M271,45v4h1v-4H271z M269,43v8h8v-8H269z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M281,49v1h2v-1H281z M283,48v1h1v-1H283z M283,45v1h1v-1H283z
-			 M281,44v1h2v-1H281z M280,45v4h1v-4H280z M278,43v8h8v-8H278z"/>
-	</g>
-	<g>
-		<g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_29_" d="M323,44v29.001c0,2.761,2.234,4.999,5.008,4.999h43.984c2.766,0,5.008-2.23,5.008-4.999V44H323z"/>
-					</defs>
-					<clipPath id="SVGID_30_">
-						<use xlink:href="#SVGID_29_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="318" y="39" clip-path="url(#SVGID_30_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="64" height="44"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_31_" d="M323,42v30.998c0,1.658,1.335,3.002,3,3.002h48c1.657,0,3-1.344,3-3.002V42H323z"/>
-					</defs>
-					<clipPath id="SVGID_32_">
-						<use xlink:href="#SVGID_31_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="318" y="37" clip-path="url(#SVGID_32_)" fill-rule="evenodd" clip-rule="evenodd" fill="#ECF0F1" width="64" height="44"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_33_" x="326" y="45" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_34_">
-						<use xlink:href="#SVGID_33_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="321" y="40" clip-path="url(#SVGID_34_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_35_" x="336" y="45" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_36_">
-						<use xlink:href="#SVGID_35_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="331" y="40" clip-path="url(#SVGID_36_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_37_" x="346" y="45" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_38_">
-						<use xlink:href="#SVGID_37_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="341" y="40" clip-path="url(#SVGID_38_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_39_" x="366" y="45" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_40_">
-						<use xlink:href="#SVGID_39_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="361" y="40" clip-path="url(#SVGID_40_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_41_" x="326" y="55" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_42_">
-						<use xlink:href="#SVGID_41_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="321" y="50" clip-path="url(#SVGID_42_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_43_" x="346" y="55" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_44_">
-						<use xlink:href="#SVGID_43_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="341" y="50" clip-path="url(#SVGID_44_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_45_" x="356" y="55" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_46_">
-						<use xlink:href="#SVGID_45_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="351" y="50" clip-path="url(#SVGID_46_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_47_" x="366" y="55" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_48_">
-						<use xlink:href="#SVGID_47_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="361" y="50" clip-path="url(#SVGID_48_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_49_" x="326" y="65" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_50_">
-						<use xlink:href="#SVGID_49_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="321" y="60" clip-path="url(#SVGID_50_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_51_" x="336" y="65" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_52_">
-						<use xlink:href="#SVGID_51_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="331" y="60" clip-path="url(#SVGID_52_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_53_" x="346" y="65" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_54_">
-						<use xlink:href="#SVGID_53_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="341" y="60" clip-path="url(#SVGID_54_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_55_" x="356" y="65" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_56_">
-						<use xlink:href="#SVGID_55_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="351" y="60" clip-path="url(#SVGID_56_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_57_" d="M326,30c-1.657,0-3,1.342-3,2.997V42h54v-9.003c0-1.655-1.335-2.997-3-2.997H326z"/>
-					</defs>
-					<clipPath id="SVGID_58_">
-						<use xlink:href="#SVGID_57_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="318" y="25" clip-path="url(#SVGID_58_)" fill-rule="evenodd" clip-rule="evenodd" fill="#E94B35" width="64" height="22"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<circle id="SVGID_59_" cx="335" cy="36" r="3"/>
-					</defs>
-					<clipPath id="SVGID_60_">
-						<use xlink:href="#SVGID_59_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="327" y="28" clip-path="url(#SVGID_60_)" fill-rule="evenodd" clip-rule="evenodd" fill="#C23824" width="16" height="16"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_61_" d="M337,35c0,1.104-0.896,2-2,2s-2-0.896-2-2V25c0-1.104,0.896-2,2-2s2,0.896,2,2V35z"/>
-					</defs>
-					<clipPath id="SVGID_62_">
-						<use xlink:href="#SVGID_61_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="328" y="18" clip-path="url(#SVGID_62_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="14" height="24"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<circle id="SVGID_63_" cx="365" cy="36" r="3"/>
-					</defs>
-					<clipPath id="SVGID_64_">
-						<use xlink:href="#SVGID_63_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="357" y="28" clip-path="url(#SVGID_64_)" fill-rule="evenodd" clip-rule="evenodd" fill="#C23824" width="16" height="16"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_65_" d="M367,35c0,1.104-0.896,2-2,2s-2-0.896-2-2V25c0-1.104,0.896-2,2-2s2,0.896,2,2V35z"/>
-					</defs>
-					<clipPath id="SVGID_66_">
-						<use xlink:href="#SVGID_65_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="358" y="18" clip-path="url(#SVGID_66_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="14" height="24"/>
-				</g>
-			</g>
-		</g>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M359,49v1h2v-1H359z M361,47v5h1v-5H361z M359,46v1h2v-1H359z
-			 M358,47v5h1v-5H358z M356,45v8h8v-8H356z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M339,61v1h2v-1H339z M341,59v2h1v-2H341z M339,58v1h2v-1H339z
-			 M341,57v1h1v-1H341z M339,56v1h2v-1H339z M338,56v6h1v-6H338z M336,55v8h8v-8H336z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M369,71v1h2v-1H369z M371,70v1h1v-1H371z M371,67v1h1v-1H371z
-			 M369,66v1h2v-1H369z M368,67v4h1v-4H368z M366,65v8h8v-8H366z"/>
-	</g>
-	<g>
-		<g>
-			<g>
-				<defs>
-					<path id="SVGID_67_" d="M670,52v1h2v-1H670z M672,50v2h1v-2H672z M670,49v1h2v-1H670z M672,48v1h1v-1H672z M670,47v1h2v-1H670z
-						 M669,47v6h1v-6H669z M667,46v8h8v-8H667z"/>
-				</defs>
-				<clipPath id="SVGID_68_">
-					<use xlink:href="#SVGID_67_"  overflow="visible"/>
-				</clipPath>
-			</g>
-		</g>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M622,59v1h2v-1H622z M624,57v5h1v-5H624z M622,56v1h2v-1H622z
-			 M621,57v5h1v-5H621z M619,55v8h8v-8H619z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M639,50v1h2v-1H639z M641,48v5h1v-5H641z M639,47v1h2v-1H639z
-			 M638,48v5h1v-5H638z M636,46v8h8v-8H636z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M635,61v1h2v-1H635z M637,59v2h1v-2H637z M635,58v1h2v-1H635z
-			 M637,57v1h1v-1H637z M635,56v1h2v-1H635z M634,56v6h1v-6H634z M632,55v8h8v-8H632z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M644,61v1h2v-1H644z M646,59v2h1v-2H646z M644,58v1h2v-1H644z
-			 M646,57v1h1v-1H646z M644,56v1h2v-1H644z M643,56v6h1v-6H643z M641,55v8h8v-8H641z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M665,41v1h2v-1H665z M667,39v5h1v-5H667z M665,38v1h2v-1H665z
-			 M664,39v5h1v-5H664z M662,37v8h8v-8H662z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M661,52v1h2v-1H661z M663,50v2h1v-2H663z M661,49v1h2v-1H661z
-			 M663,48v1h1v-1H663z M661,47v1h2v-1H661z M660,47v6h1v-6H660z M658,46v8h8v-8H658z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M670,52v1h2v-1H670z M672,50v2h1v-2H672z M670,49v1h2v-1H670z
-			 M672,48v1h1v-1H672z M670,47v1h2v-1H670z M669,47v6h1v-6H669z M667,46v8h8v-8H667z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M657,61v1h2v-1H657z M659,60v1h1v-1H659z M659,57v1h1v-1H659z
-			 M657,56v1h2v-1H657z M656,57v4h1v-4H656z M654,55v8h8v-8H654z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M666,61v1h2v-1H666z M668,60v1h1v-1H668z M668,57v1h1v-1H668z
-			 M666,56v1h2v-1H666z M665,57v4h1v-4H665z M663,55v8h8v-8H663z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M675,61v1h2v-1H675z M677,60v1h1v-1H677z M677,57v1h1v-1H677z
-			 M675,56v1h2v-1H675z M674,57v4h1v-4H674z M672,55v8h8v-8H672z"/>
-	</g>
-	<g>
-		<g>
-			<polygon fill-rule="evenodd" clip-rule="evenodd" fill="#D1D8DC" points="557,42 557,39 551,38.993 551,33 541,33 541,43 546,48 
-				546,57 552,57 552,42 			"/>
-			<g>
-				<g>
-					<g>
-						<defs>
-							<polygon id="SVGID_69_" points="551,33 557,39 551,39 							"/>
-						</defs>
-						<clipPath id="SVGID_70_">
-							<use xlink:href="#SVGID_69_"  overflow="visible"/>
-						</clipPath>
-						
-							<rect x="546" y="28" clip-path="url(#SVGID_70_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="16" height="16"/>
-					</g>
-				</g>
-				<g>
-					<g>
-						<defs>
-							<polygon id="SVGID_71_" points="563,43 553,43 553,67 569,67 569,49 563,48.993 							"/>
-						</defs>
-						<clipPath id="SVGID_72_">
-							<use xlink:href="#SVGID_71_"  overflow="visible"/>
-						</clipPath>
-						
-							<rect x="548" y="38" clip-path="url(#SVGID_72_)" fill-rule="evenodd" clip-rule="evenodd" fill="#D1D8DC" width="26" height="34"/>
-					</g>
-				</g>
-				<g>
-					<g>
-						<defs>
-							<polygon id="SVGID_73_" points="563,43 569,49 563,49 							"/>
-						</defs>
-						<clipPath id="SVGID_74_">
-							<use xlink:href="#SVGID_73_"  overflow="visible"/>
-						</clipPath>
-						
-							<rect x="558" y="38" clip-path="url(#SVGID_74_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="16" height="16"/>
-					</g>
-				</g>
-				<g>
-					<g>
-						<defs>
-							<polygon id="SVGID_75_" points="539,43 529,43 529,67 545,67 545,49 539,48.993 							"/>
-						</defs>
-						<clipPath id="SVGID_76_">
-							<use xlink:href="#SVGID_75_"  overflow="visible"/>
-						</clipPath>
-						
-							<rect x="524" y="38" clip-path="url(#SVGID_76_)" fill-rule="evenodd" clip-rule="evenodd" fill="#D1D8DC" width="26" height="34"/>
-					</g>
-				</g>
-				<g>
-					<g>
-						<defs>
-							<polygon id="SVGID_77_" points="539,43 545,49 539,49 							"/>
-						</defs>
-						<clipPath id="SVGID_78_">
-							<use xlink:href="#SVGID_77_"  overflow="visible"/>
-						</clipPath>
-						
-							<rect x="534" y="38" clip-path="url(#SVGID_78_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="16" height="16"/>
-					</g>
-				</g>
-			</g>
-			<g>
-				<path fill="#D0021B" d="M549,40c-2.762,0-5,2.244-5,5c0,0.396,0.058,0.775,0.145,1.145L546,48v0.976
-					c0.838,0.634,1.87,1.024,3,1.024c1.131,0,2.162-0.391,3-1.024V42h0.976C552.062,40.792,550.627,40,549,40z M551,48h-1v-2h-2v2
-					h-1v-5h1v-1h2v1h1V48z"/>
-				<rect x="548" y="43" fill="#D0021B" width="2" height="2"/>
-			</g>
-		</g>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M536,57v1h2v-1H536z M538,55v2h1v-2H538z M536,54v1h2v-1H536z
-			 M538,53v1h1v-1H538z M536,52v1h2v-1H536z M535,52v6h1v-6H535z M537,50c-2.762,0-5,2.244-5,5c0,2.762,2.244,5,5,5
-			c2.762,0,5-2.244,5-5C542,52.238,539.756,50,537,50z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#E08B00" d="M560,57v1h2v-1H560z M562,56v1h1v-1H562z M562,53v1h1v-1H562z
-			 M560,52v1h2v-1H560z M559,53v4h1v-4H559z M561,50c-2.762,0-5,2.244-5,5c0,2.762,2.244,5,5,5c2.762,0,5-2.244,5-5
-			C566,52.238,563.756,50,561,50z"/>
-	</g>
-	<g>
-		<g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_79_" d="M733.994,39c-2.205,0-3.994,1.794-3.994,3.997v20.006c0,2.208,1.785,3.997,3.994,3.997h29.012
-							c2.205,0,3.994-1.794,3.994-3.997V42.997c0-2.208-1.785-3.997-3.994-3.997H733.994z"/>
-					</defs>
-					<clipPath id="SVGID_80_">
-						<use xlink:href="#SVGID_79_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="725" y="34" clip-path="url(#SVGID_80_)" fill-rule="evenodd" clip-rule="evenodd" fill="#E3E3E3" width="47" height="38"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_81_" d="M733.994,38c-2.205,0-3.994,1.792-3.994,3.998v19.004c0,2.208,1.785,3.998,3.994,3.998h29.012
-							c2.205,0,3.994-1.792,3.994-3.998V41.998c0-2.208-1.785-3.998-3.994-3.998H733.994z"/>
-					</defs>
-					<clipPath id="SVGID_82_">
-						<use xlink:href="#SVGID_81_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="725" y="33" clip-path="url(#SVGID_82_)" fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" width="47" height="37"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_83_" x="731" y="46" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_84_">
-						<use xlink:href="#SVGID_83_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="726" y="41" clip-path="url(#SVGID_84_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_85_" x="740" y="46" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_86_">
-						<use xlink:href="#SVGID_85_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="735" y="41" clip-path="url(#SVGID_86_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_87_" x="749" y="46" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_88_">
-						<use xlink:href="#SVGID_87_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="744" y="41" clip-path="url(#SVGID_88_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_89_" x="731" y="55" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_90_">
-						<use xlink:href="#SVGID_89_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="726" y="50" clip-path="url(#SVGID_90_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_91_" x="758" y="55" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_92_">
-						<use xlink:href="#SVGID_91_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="753" y="50" clip-path="url(#SVGID_92_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<rect id="SVGID_93_" x="749" y="55" width="8" height="8"/>
-					</defs>
-					<clipPath id="SVGID_94_">
-						<use xlink:href="#SVGID_93_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="744" y="50" clip-path="url(#SVGID_94_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="18" height="18"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_95_" d="M733.498,38c-1.932,0-3.498,1.571-3.498,3.5V45h37v-3.5c0-1.933-1.566-3.5-3.498-3.5H733.498z"/>
-					</defs>
-					<clipPath id="SVGID_96_">
-						<use xlink:href="#SVGID_95_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="725" y="33" clip-path="url(#SVGID_96_)" fill-rule="evenodd" clip-rule="evenodd" fill="#E94B35" width="47" height="17"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<circle id="SVGID_97_" cx="739" cy="41" r="3"/>
-					</defs>
-					<clipPath id="SVGID_98_">
-						<use xlink:href="#SVGID_97_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="731" y="33" clip-path="url(#SVGID_98_)" fill-rule="evenodd" clip-rule="evenodd" fill="#C23824" width="16" height="16"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<circle id="SVGID_99_" cx="758" cy="41" r="3"/>
-					</defs>
-					<clipPath id="SVGID_100_">
-						<use xlink:href="#SVGID_99_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="750" y="33" clip-path="url(#SVGID_100_)" fill-rule="evenodd" clip-rule="evenodd" fill="#C23824" width="16" height="16"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_101_" d="M741,40c0,1.104-0.896,2-2,2s-2-0.896-2-2v-5c0-1.104,0.896-2,2-2s2,0.896,2,2V40z"/>
-					</defs>
-					<clipPath id="SVGID_102_">
-						<use xlink:href="#SVGID_101_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="732" y="28" clip-path="url(#SVGID_102_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="14" height="19"/>
-				</g>
-			</g>
-			<g>
-				<g>
-					<defs>
-						<path id="SVGID_103_" d="M760,40c0,1.104-0.896,2-2,2s-2-0.896-2-2v-5c0-1.104,0.896-2,2-2s2,0.896,2,2V40z"/>
-					</defs>
-					<clipPath id="SVGID_104_">
-						<use xlink:href="#SVGID_103_"  overflow="visible"/>
-					</clipPath>
-					
-						<rect x="751" y="28" clip-path="url(#SVGID_104_)" fill-rule="evenodd" clip-rule="evenodd" fill="#BDC3C7" width="14" height="19"/>
-				</g>
-			</g>
-		</g>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#D0021B" d="M761,50v1h2v-1H761z M763,48v5h1v-5H763z M761,47v1h2v-1H761z
-			 M760,48v5h1v-5H760z M758,46v8h8v-8H758z"/>
-		<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M743,61v1h2v-1H743z M745,59v2h1v-2H745z M743,58v1h2v-1H743z
-			 M745,57v1h1v-1H745z M743,56v1h2v-1H743z M742,56v6h1v-6H742z M740,55v8h8v-8H740z"/>
-	</g>
-	<path fill-rule="evenodd" clip-rule="evenodd" fill="#379BEE" d="M53,56.722V58c0,0.552-0.448,1-1,1c-0.554,0-1-0.448-1-1v-0.002
-		v-1.275c-0.597-0.346-1-0.983-1-1.723c0-1.105,0.895-2,2-2c1.103,0,2,0.895,2,2C54,55.738,53.595,56.376,53,56.722z M52,47
-		c1.103,0,2,0.896,2,2v3h-4v-3C50,47.896,50.896,47,52,47z M56,52v-3c0-2.209-1.791-4-4-4c-2.21,0-4,1.791-4,4v0.007V52h-1v6
-		c0,1.104,0.896,2,2,2h6c1.104,0,2-0.896,2-2v-6H56z M59.026,29H34v44h36V40.013H59.026V29z"/>
-</g>
-<g id="SIZE-MARKERS">
-	<rect opacity="0.1" fill="#BDCCD4" width="1" height="1"/>
-	<rect x="799" y="399" opacity="0.1" fill="#BDCCD4" width="1" height="1"/>
-</g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="800px" height="400px" viewBox="0 0 800 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+    <title>Untitled</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path id="path-1" d="M0,0 L11,11 L0,11 L0,0 Z"></path>
+        <path id="path-3" d="M14,24 L0,24 L0,0 L14,0 L14,5.993 L20,6 L20,12 C17.239,12 15,14.238 15,17 L15,19 L14,19 L14,24 L14,24 Z"></path>
+        <path id="path-5" d="M0,0 L6,6 L0,6 L0,0 Z"></path>
+        <path d="M6,11.722 L6,13 C6,13.552 5.552,14 5,14 C4.446,14 4,13.552 4,13 L4,12.998 L4,11.723 C3.403,11.377 3,10.74 3,10 C3,8.895 3.895,8 5,8 C6.103,8 7,8.895 7,10 C7,10.738 6.595,11.376 6,11.722 L6,11.722 Z M5,2 C6.103,2 7,2.896 7,4 L7,7 L3,7 L3,4 C3,2.896 3.896,2 5,2 L5,2 Z M9,7 L9,4 C9,1.791 7.209,0 5,0 C2.79,0 1,1.791 1,4 L1,4.007 L1,7 L0,7 L0,13 C0,14.104 0.896,15 2,15 L8,15 C9.104,15 10,14.104 10,13 L10,7 L9,7 L9,7 Z" id="path-7"></path>
+        <path id="path-9" d="M14,24 L0,24 L0,0 L14,0 L14,5.993 L20,6 L20,12 C17.239,12 15,14.238 15,17 L15,19 L14,19 L14,24 L14,24 Z"></path>
+        <path id="path-11" d="M0,0 L6,6 L0,6 L0,0 Z"></path>
+        <path d="M6,11.722 L6,13 C6,13.552 5.552,14 5,14 C4.446,14 4,13.552 4,13 L4,12.998 L4,11.723 C3.403,11.377 3,10.74 3,10 C3,8.895 3.895,8 5,8 C6.103,8 7,8.895 7,10 C7,10.738 6.595,11.376 6,11.722 L6,11.722 Z M5,2 C6.103,2 7,2.896 7,4 L7,7 L3,7 L3,4 C3,2.896 3.896,2 5,2 L5,2 Z M9,7 L9,4 C9,1.791 7.209,0 5,0 C2.79,0 1,1.791 1,4 L1,4.007 L1,7 L0,7 L0,13 C0,14.104 0.896,15 2,15 L8,15 C9.104,15 10,14.104 10,13 L10,7 L9,7 L9,7 Z" id="path-13"></path>
+        <path id="path-15" d="M14,24 L0,24 L0,0 L14,0 L14,5.993 L20,6 L20,12 C17.239,12 15,14.238 15,17 L15,19 L14,19 L14,24 L14,24 Z"></path>
+        <path id="path-17" d="M0,0 L6,6 L0,6 L0,0 Z"></path>
+        <path d="M6,11.722 L6,13 C6,13.552 5.552,14 5,14 C4.446,14 4,13.552 4,13 L4,12.998 L4,11.723 C3.403,11.377 3,10.74 3,10 C3,8.895 3.895,8 5,8 C6.103,8 7,8.895 7,10 C7,10.738 6.595,11.376 6,11.722 L6,11.722 Z M5,2 C6.103,2 7,2.896 7,4 L7,7 L3,7 L3,4 C3,2.896 3.896,2 5,2 L5,2 Z M9,7 L9,4 C9,1.791 7.209,0 5,0 C2.79,0 1,1.791 1,4 L1,4.007 L1,7 L0,7 L0,13 C0,14.104 0.896,15 2,15 L8,15 C9.104,15 10,14.104 10,13 L10,7 L9,7 L9,7 Z" id="path-19"></path>
+        <path d="M6,11.722 L6,13 C6,13.552 5.552,14 5,14 C4.445,14 4,13.552 4,13 L4,12.998 L4,11.723 C3.402,11.377 3,10.74 3,10 C3,8.895 3.895,8 5,8 C6.104,8 7,8.895 7,10 C7,10.738 6.596,11.376 6,11.722 L6,11.722 Z M5,2 C6.104,2 7,2.896 7,4 L7,7 L3,7 L3,4 C3,2.896 3.896,2 5,2 L5,2 Z M9,7 L9,4 C9,1.791 7.209,0 5,0 C2.79,0 1,1.791 1,4 L1,4.007 L1,7 L0,7 L0,13 C0,14.104 0.896,15 2,15 L8,15 C9.104,15 10,14.104 10,13 L10,7 L9,7 L9,7 Z" id="path-21"></path>
+        <path d="M6,11.722 L6,13 C6,13.552 5.552,14 5,14 C4.445,14 4,13.552 4,13 L4,12.998 L4,11.723 C3.402,11.377 3,10.74 3,10 C3,8.895 3.895,8 5,8 C6.104,8 7,8.895 7,10 C7,10.738 6.596,11.376 6,11.722 L6,11.722 Z M5,2 C6.104,2 7,2.896 7,4 L7,7 L3,7 L3,4 C3,2.896 3.896,2 5,2 L5,2 Z M9,7 L9,4 C9,1.791 7.209,0 5,0 C2.79,0 1,1.791 1,4 L1,4.007 L1,7 L0,7 L0,13 C0,14.104 0.896,15 2,15 L8,15 C9.104,15 10,14.104 10,13 L10,7 L9,7 L9,7 Z" id="path-23"></path>
+        <path d="M6,11.722 L6,13 C6,13.552 5.552,14 5,14 C4.445,14 4,13.552 4,13 L4,12.998 L4,11.723 C3.402,11.377 3,10.74 3,10 C3,8.895 3.895,8 5,8 C6.104,8 7,8.895 7,10 C7,10.738 6.596,11.376 6,11.722 L6,11.722 Z M5,2 C6.104,2 7,2.896 7,4 L7,7 L3,7 L3,4 C3,2.896 3.896,2 5,2 L5,2 Z M9,7 L9,4 C9,1.791 7.209,0 5,0 C2.79,0 1,1.791 1,4 L1,4.007 L1,7 L0,7 L0,13 C0,14.104 0.896,15 2,15 L8,15 C9.104,15 10,14.104 10,13 L10,7 L9,7 L9,7 Z" id="path-25"></path>
+        <path id="path-27" d="M0,0 L0,29.001 C0,31.762 2.234,34 5.008,34 L48.992,34 C51.758,34 54,31.77 54,29.001 L54,0 L0,0 L0,0 Z"></path>
+        <path id="path-29" d="M0,0 L0,30.998 C0,32.656 1.335,34 3,34 L51,34 C52.657,34 54,32.656 54,30.998 L54,0 L0,0 L0,0 Z"></path>
+        <rect id="path-31" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-33" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-35" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-37" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-39" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-41" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-43" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-45" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-47" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-49" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-51" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-53" x="0" y="0" width="8" height="8"></rect>
+        <path id="path-55" d="M3,0 C1.343,0 0,1.342 0,2.997 L0,12 L54,12 L54,2.997 C54,1.342 52.665,0 51,0 L3,0 L3,0 Z"></path>
+        <circle id="path-57" cx="3" cy="3" r="3"></circle>
+        <path id="path-59" d="M4,12 C4,13.104 3.104,14 2,14 C0.896,14 0,13.104 0,12 L0,2 C0,0.896 0.896,0 2,0 C3.104,0 4,0.896 4,2 L4,12 L4,12 Z"></path>
+        <circle id="path-61" cx="3" cy="3" r="3"></circle>
+        <path id="path-63" d="M4,12 C4,13.104 3.104,14 2,14 C0.896,14 0,13.104 0,12 L0,2 C0,0.896 0.896,0 2,0 C3.104,0 4,0.896 4,2 L4,12 L4,12 Z"></path>
+        <path id="path-65" d="M0,0 L6,6 L0,6 L0,0 Z"></path>
+        <path id="path-67" d="M10,0 L0,0 L0,24 L16,24 L16,6 L10,5.993 L10,0 Z"></path>
+        <path id="path-69" d="M0,0 L6,6 L0,6 L0,0 Z"></path>
+        <path id="path-71" d="M10,0 L0,0 L0,24 L16,24 L16,6 L10,5.993 L10,0 Z"></path>
+        <path id="path-73" d="M0,0 L6,6 L0,6 L0,0 Z"></path>
+        <path id="path-75" d="M3.994,0 C1.789,0 0,1.794 0,3.997 L0,24.003 C0,26.211 1.785,28 3.994,28 L33.006,28 C35.211,28 37,26.206 37,24.003 L37,3.997 C37,1.789 35.215,0 33.006,0 L3.994,0 L3.994,0 Z"></path>
+        <path id="path-77" d="M3.994,0 C1.789,0 0,1.792 0,3.998 L0,23.002 C0,25.21 1.785,27 3.994,27 L33.006,27 C35.211,27 37,25.208 37,23.002 L37,3.998 C37,1.79 35.215,0 33.006,0 L3.994,0 L3.994,0 Z"></path>
+        <rect id="path-79" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-81" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-83" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-85" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-87" x="0" y="0" width="8" height="8"></rect>
+        <rect id="path-89" x="0" y="0" width="8" height="8"></rect>
+        <path id="path-91" d="M3.498,0 C1.566,0 0,1.571 0,3.5 L0,7 L37,7 L37,3.5 C37,1.567 35.434,0 33.502,0 L3.498,0 L3.498,0 Z"></path>
+        <circle id="path-93" cx="3" cy="3" r="3"></circle>
+        <circle id="path-95" cx="3" cy="3" r="3"></circle>
+        <path id="path-97" d="M4,7 C4,8.104 3.104,9 2,9 C0.896,9 0,8.104 0,7 L0,2 C0,0.896 0.896,0 2,0 C3.104,0 4,0.896 4,2 L4,7 L4,7 Z"></path>
+        <path id="path-99" d="M4,7 C4,8.104 3.104,9 2,9 C0.896,9 0,8.104 0,7 L0,2 C0,0.896 0.896,0 2,0 C3.104,0 4,0.896 4,2 L4,7 L4,7 Z"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="membership_sprite" sketch:type="MSLayerGroup">
+            <g id="Layer_1" transform="translate(34.000000, 21.000000)">
+                <g id="Clipped" transform="translate(25.000000, 8.000000)">
+                    <mask id="mask-2" sketch:name="SVGID_1_" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="SVGID_1_"></g>
+                    <rect id="Rectangle-path" fill="#81BCEE" sketch:type="MSShapeGroup" mask="url(#mask-2)" x="-5" y="-5" width="21" height="21"></rect>
+                </g>
+                <g id="Group" transform="translate(406.000000, 17.000000)" sketch:type="MSShapeGroup">
+                    <path d="M14,0 L14,6 L20,6 L14,0 Z" id="Shape" fill="#81BCEE"></path>
+                    <g id="Shape" fill="#379BEE">
+                        <path d="M10,13 C8.896,13 8,13.896 8,15 C8,15.738 8.404,16.376 9,16.723 L9,18 C9,18.552 9.447,19 10,19 C10.553,19 11,18.552 11,18 L11,16.723 C11.596,16.376 12,15.739 12,15 C12,13.896 11.104,13 10,13 L10,13 Z"></path>
+                        <path d="M10,7 C8.896,7 8,7.896 8,9 L8,12 L12,12 L12,9 C12,7.896 11.104,7 10,7 L10,7 Z"></path>
+                        <path d="M14,6 L14,0 L0,0 L0,24 L20,24 L20,6 L14,6 L14,6 Z M15,18 C15,18 15,20 13,20 L7,20 C5,20 5,18 5,18 L5,12 L6,12 L6,9 C6,6.791 7.791,5 10,5 C12.209,5 14,6.791 14,9 L14,12 L15,12 L15,18 L15,18 Z"></path>
+                    </g>
+                </g>
+                <path d="M14,229 L14,226 C14,224.896 14.895,224 16,224 C17.105,224 18,224.896 18,226 L18,226.005 L18,227 L20,227 L20,226.007 L20,226 C20,223.791 18.209,222 16,222 C13.791,222 12,223.791 12,226 L12,226 L12,229 L11,229 L11,235 C11,236 12,237 13,237 L19,237 C19.999,237 21,236 21,235 L21,229 L14,229 L14,229 Z M17,233.723 L17,235 C17,235.552 16.552,236 16,236 C15.448,236 15,235.552 15,235 L15,233.723 C14.405,233.376 14,232.739 14,232 C14,230.896 14.896,230 16,230 C17.104,230 18,230.896 18,232 C18,232.738 17.595,233.376 17,233.723 L17,233.723 Z" id="unlock-grey" fill="#808080" sketch:type="MSShapeGroup"></path>
+                <path d="M14,129 L14,126 C14,124.896 14.895,124 16,124 C17.105,124 18,124.896 18,126 L18,126.005 L18,127 L20,127 L20,126.007 L20,126 C20,123.791 18.209,122 16,122 C13.791,122 12,123.791 12,126 L12,126 L12,129 L11,129 L11,135 C11,136 12,137 13,137 L19,137 C19.999,137 21,136 21,135 L21,129 L14,129 L14,129 Z M17,133.723 L17,135 C17,135.552 16.552,136 16,136 C15.448,136 15,135.552 15,135 L15,133.723 C14.405,133.376 14,132.739 14,132 C14,130.896 14.896,130 16,130 C17.104,130 18,130.896 18,132 C18,132.738 17.595,133.376 17,133.723 L17,133.723 Z" id="unlock" fill="#6BBB1A" sketch:type="MSShapeGroup"></path>
+                <path d="M120,229 L120,226.007 L120,226 C120,223.791 118.209,222 116,222 C113.791,222 112,223.791 112,226 L112,226 L112,229 L111,229 L111,235 C111,236 112,237 113,237 L119,237 C119.999,237 121,236 121,235 L121,229 L120,229 L120,229 Z M117,233.723 L117,235 C117,235.552 116.552,236 116,236 C115.448,236 115,235.552 115,235 L115,233.723 C114.405,233.376 114,232.739 114,232 C114,230.896 114.896,230 116,230 C117.104,230 118,230.896 118,232 C118,232.738 117.595,233.376 117,233.723 L117,233.723 Z M114,229 L114,226 C114,224.896 114.895,224 116,224 C117.105,224 118,224.896 118,226 L118,226.005 L118,229 L114,229 L114,229 Z" id="lock-grey" fill="#808080" sketch:type="MSShapeGroup"></path>
+                <path d="M120,129 L120,126.007 L120,126 C120,123.791 118.209,122 116,122 C113.791,122 112,123.791 112,126 L112,126 L112,129 L111,129 L111,135 C111,136 112,137 113,137 L119,137 C119.999,137 121,136 121,135 L121,129 L120,129 L120,129 Z M117,133.723 L117,135 C117,135.552 116.552,136 116,136 C115.448,136 115,135.552 115,135 L115,133.723 C114.405,133.376 114,132.739 114,132 C114,130.896 114.896,130 116,130 C117.104,130 118,130.896 118,132 C118,132.738 117.595,133.376 117,133.723 L117,133.723 Z M114,129 L114,126 C114,124.896 114.895,124 116,124 C117.105,124 118,124.896 118,126 L118,126.005 L118,129 L114,129 L114,129 Z" id="lock" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                <g id="Group" transform="translate(310.000000, 123.000000)" sketch:type="MSShapeGroup">
+                    <rect id="Rectangle-path" fill="#0073A4" transform="translate(8.498954, 3.496954) rotate(45.000000) translate(-8.498954, -3.496954) " x="6.3774739" y="2.08296711" width="4.24295931" height="2.82797288"></rect>
+                    <path d="M8,7 L5,4 L0,9 L0,12 L3,12 L8,7 L8,7 Z M1,9 L2,8 L4,10 L3,11 L1,11 L1,9 L1,9 Z" id="Shape" fill="#0073A4"></path>
+                    <rect id="Rectangle-path" fill="#BDCDD1" x="0" y="13" width="11" height="1"></rect>
+                </g>
+                <path d="M416,123 C412.134,123 409,126.134 409,130 C409,133.866 412.134,137 416,137 C419.866,137 423,133.866 423,130 C423,126.134 419.866,123 416,123 L416,123 Z M417,135 L414,135 L414,134 L415,129 L413,129 L414,128 L417,128 L417,129 L416,134 L418,134 L417,135 L417,135 Z M417,127.278 C416.293,127.278 415.722,126.706 415.722,126 C415.722,125.294 416.293,124.722 417,124.722 C417.707,124.722 418.278,125.294 418.278,126 C418.278,126.706 417.707,127.278 417,127.278 L417,127.278 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                <path d="M516,123 C512.134,123 509,126.134 509,130 C509,133.866 512.134,137 516,137 C519.866,137 523,133.866 523,130 C523,126.134 519.866,123 516,123 L516,123 Z M517,135 L515,135 L515,133 L517,133 L517,135 L517,135 Z M517,132 L515,132 C515,129 517.331,129.562 517.331,127.875 C517.331,127.017 517,126.679 516,126.679 C514.516,126.679 514.557,128 514.557,128 L512.643,128 C512.643,127 513.5,125 516,125 C518.297,125 519.357,126.266 519.357,128 C519.357,130 517,130 517,132 L517,132 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                <path d="M616,122 C613.6,122 609.229,131.984 608.263,133.984 C607.295,135.984 609.245,137 610.198,137 L621.803,137 C622.77,137 624.704,135.985 623.737,133.984 C622.77,131.984 618.399,122 616,122 L616,122 Z M616,136 C615.034,136 614.25,135.216 614.25,134.25 C614.25,133.284 615.034,132.5 616,132.5 C616.967,132.5 617.75,133.284 617.75,134.25 C617.75,135.216 616.967,136 616,136 L616,136 Z M616,132 C614.639,132 614.546,127.037 614.546,126.484 C614.546,125.931 615,125 616,125 C617,125 617.439,125.932 617.439,126.484 C617.439,127.036 617.36,132 616,132 L616,132 Z" id="Shape" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                <path d="M716,122 C711.582,122 708,125.582 708,130 C708,134.418 711.582,138 716,138 C720.418,138 724,134.418 724,130 C724,125.582 720.418,122 716,122 L716,122 Z M719,128 L717,130 L719,132 L719,133 L718,133 L716,131 L714,133 L713,133 L713,132 L715,130 L713,128 L713,127 L714,127 L716,129 L718,127 L719,127 L719,128 L719,128 Z" id="Shape" fill="#808080" sketch:type="MSShapeGroup"></path>
+                <g id="Group" transform="translate(86.000000, 0.000000)">
+                    <g id="Clipped">
+                        <g transform="translate(17.000000, 0.000000)">
+                            <mask id="mask-4" sketch:name="SVGID_3_" fill="white">
+                                <use xlink:href="#path-3"></use>
+                            </mask>
+                            <g id="SVGID_3_"></g>
+                            <rect id="Rectangle-path" fill="#ECF0F1" sketch:type="MSShapeGroup" mask="url(#mask-4)" x="-5" y="-5" width="30" height="34"></rect>
+                        </g>
+                        <g transform="translate(31.000000, 0.000000)">
+                            <mask id="mask-6" sketch:name="SVGID_5_" fill="white">
+                                <use xlink:href="#path-5"></use>
+                            </mask>
+                            <g id="SVGID_5_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-6)" x="-5" y="-5" width="16" height="16"></rect>
+                        </g>
+                        <g transform="translate(32.000000, 13.000000)">
+                            <mask id="mask-8" sketch:name="SVGID_7_" fill="white">
+                                <use xlink:href="#path-7"></use>
+                            </mask>
+                            <g id="SVGID_7_"></g>
+                            <rect id="Rectangle-path" fill="#D0021B" sketch:type="MSShapeGroup" mask="url(#mask-8)" x="-5" y="-5" width="20" height="25"></rect>
+                        </g>
+                        <g transform="translate(0.000000, 31.000000)">
+                            <mask id="mask-10" sketch:name="SVGID_9_" fill="white">
+                                <use xlink:href="#path-9"></use>
+                            </mask>
+                            <g id="SVGID_9_"></g>
+                            <rect id="Rectangle-path" fill="#ECF0F1" sketch:type="MSShapeGroup" mask="url(#mask-10)" x="-5" y="-5" width="30" height="34"></rect>
+                        </g>
+                        <g transform="translate(14.000000, 31.000000)">
+                            <mask id="mask-12" sketch:name="SVGID_11_" fill="white">
+                                <use xlink:href="#path-11"></use>
+                            </mask>
+                            <g id="SVGID_11_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-12)" x="-5" y="-5" width="16" height="16"></rect>
+                        </g>
+                        <g transform="translate(15.000000, 44.000000)">
+                            <mask id="mask-14" sketch:name="SVGID_13_" fill="white">
+                                <use xlink:href="#path-13"></use>
+                            </mask>
+                            <g id="SVGID_13_"></g>
+                            <rect id="Rectangle-path" fill="#379BEE" sketch:type="MSShapeGroup" mask="url(#mask-14)" x="-5" y="-5" width="20" height="25"></rect>
+                        </g>
+                        <g transform="translate(34.000000, 31.000000)">
+                            <mask id="mask-16" sketch:name="SVGID_15_" fill="white">
+                                <use xlink:href="#path-15"></use>
+                            </mask>
+                            <g id="SVGID_15_"></g>
+                            <rect id="Rectangle-path" fill="#ECF0F1" sketch:type="MSShapeGroup" mask="url(#mask-16)" x="-5" y="-5" width="30" height="34"></rect>
+                        </g>
+                        <g transform="translate(48.000000, 31.000000)">
+                            <mask id="mask-18" sketch:name="SVGID_17_" fill="white">
+                                <use xlink:href="#path-17"></use>
+                            </mask>
+                            <g id="SVGID_17_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-18)" x="-5" y="-5" width="16" height="16"></rect>
+                        </g>
+                        <g transform="translate(49.000000, 44.000000)">
+                            <mask id="mask-20" sketch:name="SVGID_19_" fill="white">
+                                <use xlink:href="#path-19"></use>
+                            </mask>
+                            <g id="SVGID_19_"></g>
+                            <rect id="Rectangle-path" fill="#E08B00" sketch:type="MSShapeGroup" mask="url(#mask-20)" x="-5" y="-5" width="20" height="25"></rect>
+                        </g>
+                    </g>
+                    <path d="M9,45 L9,46 L11,46 L11,45 L9,45 L9,45 Z M11,43 L11,45 L12,45 L12,43 L11,43 L11,43 Z M9,42 L9,43 L11,43 L11,42 L9,42 L9,42 Z M11,41 L11,42 L12,42 L12,41 L11,41 L11,41 Z M9,40 L9,41 L11,41 L11,40 L9,40 L9,40 Z M8,40 L8,46 L9,46 L9,40 L8,40 L8,40 Z M10,38 C7.239,38 5,40.244 5,43 C5,45.762 7.244,48 10,48 C12.761,48 15,45.756 15,43 C15,40.238 12.756,38 10,38 L10,38 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                    <path d="M26,12 L26,13 L28,13 L28,12 L26,12 L26,12 Z M28,10 L28,15 L29,15 L29,10 L28,10 L28,10 Z M26,9 L26,10 L28,10 L28,9 L26,9 L26,9 Z M25,10 L25,15 L26,15 L26,10 L25,10 L25,10 Z M27,7 C24.239,7 22,9.244 22,12 C22,14.762 24.244,17 27,17 C29.761,17 32,14.756 32,12 C32,9.238 29.756,7 27,7 L27,7 Z" id="Shape" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                    <path d="M43,45 L43,46 L45,46 L45,45 L43,45 L43,45 Z M45,44 L45,45 L46,45 L46,44 L45,44 L45,44 Z M45,41 L45,42 L46,42 L46,41 L45,41 L45,41 Z M43,40 L43,41 L45,41 L45,40 L43,40 L43,40 Z M42,41 L42,45 L43,45 L43,41 L42,41 L42,41 Z M44,38 C41.239,38 39,40.244 39,43 C39,45.762 41.244,48 44,48 C46.761,48 49,45.756 49,43 C49,40.238 46.756,38 44,38 L44,38 Z" id="Shape" fill="#E08B00" sketch:type="MSShapeGroup"></path>
+                </g>
+                <g id="Group" transform="translate(180.000000, 4.000000)">
+                    <g transform="translate(0.000000, 35.000000)" id="Clipped">
+                        <g>
+                            <mask id="mask-22" sketch:name="SVGID_21_" fill="white">
+                                <use xlink:href="#path-21"></use>
+                            </mask>
+                            <g id="SVGID_21_"></g>
+                            <rect id="Rectangle-path" fill="#D0021B" sketch:type="MSShapeGroup" mask="url(#mask-22)" x="-5" y="-5" width="20" height="25"></rect>
+                        </g>
+                        <g transform="translate(27.000000, 0.000000)">
+                            <mask id="mask-24" sketch:name="SVGID_23_" fill="white">
+                                <use xlink:href="#path-23"></use>
+                            </mask>
+                            <g id="SVGID_23_"></g>
+                            <rect id="Rectangle-path" fill="#379BEE" sketch:type="MSShapeGroup" mask="url(#mask-24)" x="-5" y="-5" width="20" height="25"></rect>
+                        </g>
+                        <g transform="translate(54.000000, 0.000000)">
+                            <mask id="mask-26" sketch:name="SVGID_25_" fill="white">
+                                <use xlink:href="#path-25"></use>
+                            </mask>
+                            <g id="SVGID_25_"></g>
+                            <rect id="Rectangle-path" fill="#E08B00" sketch:type="MSShapeGroup" mask="url(#mask-26)" x="-5" y="-5" width="20" height="25"></rect>
+                        </g>
+                    </g>
+                    <path d="M4,22 L4,23 L6,23 L6,22 L4,22 L4,22 Z M6,20 L6,25 L7,25 L7,20 L6,20 L6,20 Z M4,19 L4,20 L6,20 L6,19 L4,19 L4,19 Z M3,20 L3,25 L4,25 L4,20 L3,20 L3,20 Z M1,18 L1,26 L9,26 L9,18 L1,18 L1,18 Z" id="Shape" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                    <path d="M30,13 L30,14 L32,14 L32,13 L30,13 L30,13 Z M32,11 L32,16 L33,16 L33,11 L32,11 L32,11 Z M30,10 L30,11 L32,11 L32,10 L30,10 L30,10 Z M29,11 L29,16 L30,16 L30,11 L29,11 L29,11 Z M27,9 L27,17 L35,17 L35,9 L27,9 L27,9 Z" id="Shape" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                    <path d="M26,24 L26,25 L28,25 L28,24 L26,24 L26,24 Z M28,22 L28,24 L29,24 L29,22 L28,22 L28,22 Z M26,21 L26,22 L28,22 L28,21 L26,21 L26,21 Z M28,20 L28,21 L29,21 L29,20 L28,20 L28,20 Z M26,19 L26,20 L28,20 L28,19 L26,19 L26,19 Z M25,19 L25,25 L26,25 L26,19 L25,19 L25,19 Z M23,18 L23,26 L31,26 L31,18 L23,18 L23,18 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                    <path d="M35,24 L35,25 L37,25 L37,24 L35,24 L35,24 Z M37,22 L37,24 L38,24 L38,22 L37,22 L37,22 Z M35,21 L35,22 L37,22 L37,21 L35,21 L35,21 Z M37,20 L37,21 L38,21 L38,20 L37,20 L37,20 Z M35,19 L35,20 L37,20 L37,19 L35,19 L35,19 Z M34,19 L34,25 L35,25 L35,19 L34,19 L34,19 Z M32,18 L32,26 L40,26 L40,18 L32,18 L32,18 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                    <path d="M57,4 L57,5 L59,5 L59,4 L57,4 L57,4 Z M59,2 L59,7 L60,7 L60,2 L59,2 L59,2 Z M57,1 L57,2 L59,2 L59,1 L57,1 L57,1 Z M56,2 L56,7 L57,7 L57,2 L56,2 L56,2 Z M54,0 L54,8 L62,8 L62,0 L54,0 L54,0 Z" id="Shape" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                    <path d="M53,15 L53,16 L55,16 L55,15 L53,15 L53,15 Z M55,13 L55,15 L56,15 L56,13 L55,13 L55,13 Z M53,12 L53,13 L55,13 L55,12 L53,12 L53,12 Z M55,11 L55,12 L56,12 L56,11 L55,11 L55,11 Z M53,10 L53,11 L55,11 L55,10 L53,10 L53,10 Z M52,10 L52,16 L53,16 L53,10 L52,10 L52,10 Z M50,9 L50,17 L58,17 L58,9 L50,9 L50,9 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                    <path d="M62,15 L62,16 L64,16 L64,15 L62,15 L62,15 Z M64,13 L64,15 L65,15 L65,13 L64,13 L64,13 Z M62,12 L62,13 L64,13 L64,12 L62,12 L62,12 Z M64,11 L64,12 L65,12 L65,11 L64,11 L64,11 Z M62,10 L62,11 L64,11 L64,10 L62,10 L62,10 Z M61,10 L61,16 L62,16 L62,10 L61,10 L61,10 Z M59,9 L59,17 L67,17 L67,9 L59,9 L59,9 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                    <path d="M49,24 L49,25 L51,25 L51,24 L49,24 L49,24 Z M51,23 L51,24 L52,24 L52,23 L51,23 L51,23 Z M51,20 L51,21 L52,21 L52,20 L51,20 L51,20 Z M49,19 L49,20 L51,20 L51,19 L49,19 L49,19 Z M48,20 L48,24 L49,24 L49,20 L48,20 L48,20 Z M46,18 L46,26 L54,26 L54,18 L46,18 L46,18 Z" id="Shape" fill="#E08B00" sketch:type="MSShapeGroup"></path>
+                    <path d="M58,24 L58,25 L60,25 L60,24 L58,24 L58,24 Z M60,23 L60,24 L61,24 L61,23 L60,23 L60,23 Z M60,20 L60,21 L61,21 L61,20 L60,20 L60,20 Z M58,19 L58,20 L60,20 L60,19 L58,19 L58,19 Z M57,20 L57,24 L58,24 L58,20 L57,20 L57,20 Z M55,18 L55,26 L63,26 L63,18 L55,18 L55,18 Z" id="Shape" fill="#E08B00" sketch:type="MSShapeGroup"></path>
+                    <path d="M67,24 L67,25 L69,25 L69,24 L67,24 L67,24 Z M69,23 L69,24 L70,24 L70,23 L69,23 L69,23 Z M69,20 L69,21 L70,21 L70,20 L69,20 L69,20 Z M67,19 L67,20 L69,20 L69,19 L67,19 L67,19 Z M66,20 L66,24 L67,24 L67,20 L66,20 L66,20 Z M64,18 L64,26 L72,26 L72,18 L64,18 L64,18 Z" id="Shape" fill="#E08B00" sketch:type="MSShapeGroup"></path>
+                </g>
+                <g id="Group" transform="translate(289.000000, 2.000000)">
+                    <g id="Clipped">
+                        <g transform="translate(0.000000, 21.000000)">
+                            <mask id="mask-28" sketch:name="SVGID_29_" fill="white">
+                                <use xlink:href="#path-27"></use>
+                            </mask>
+                            <g id="SVGID_29_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-28)" x="-5" y="-5" width="64" height="44"></rect>
+                        </g>
+                        <g transform="translate(0.000000, 19.000000)">
+                            <mask id="mask-30" sketch:name="SVGID_31_" fill="white">
+                                <use xlink:href="#path-29"></use>
+                            </mask>
+                            <g id="SVGID_31_"></g>
+                            <rect id="Rectangle-path" fill="#ECF0F1" sketch:type="MSShapeGroup" mask="url(#mask-30)" x="-5" y="-5" width="64" height="44"></rect>
+                        </g>
+                        <g transform="translate(3.000000, 22.000000)">
+                            <mask id="mask-32" sketch:name="SVGID_33_" fill="white">
+                                <use xlink:href="#path-31"></use>
+                            </mask>
+                            <g id="SVGID_33_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-32)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(13.000000, 22.000000)">
+                            <mask id="mask-34" sketch:name="SVGID_35_" fill="white">
+                                <use xlink:href="#path-33"></use>
+                            </mask>
+                            <g id="SVGID_35_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-34)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(23.000000, 22.000000)">
+                            <mask id="mask-36" sketch:name="SVGID_37_" fill="white">
+                                <use xlink:href="#path-35"></use>
+                            </mask>
+                            <g id="SVGID_37_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-36)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(43.000000, 22.000000)">
+                            <mask id="mask-38" sketch:name="SVGID_39_" fill="white">
+                                <use xlink:href="#path-37"></use>
+                            </mask>
+                            <g id="SVGID_39_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-38)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(3.000000, 32.000000)">
+                            <mask id="mask-40" sketch:name="SVGID_41_" fill="white">
+                                <use xlink:href="#path-39"></use>
+                            </mask>
+                            <g id="SVGID_41_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-40)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(23.000000, 32.000000)">
+                            <mask id="mask-42" sketch:name="SVGID_43_" fill="white">
+                                <use xlink:href="#path-41"></use>
+                            </mask>
+                            <g id="SVGID_43_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-42)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(33.000000, 32.000000)">
+                            <mask id="mask-44" sketch:name="SVGID_45_" fill="white">
+                                <use xlink:href="#path-43"></use>
+                            </mask>
+                            <g id="SVGID_45_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-44)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(43.000000, 32.000000)">
+                            <mask id="mask-46" sketch:name="SVGID_47_" fill="white">
+                                <use xlink:href="#path-45"></use>
+                            </mask>
+                            <g id="SVGID_47_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-46)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(3.000000, 42.000000)">
+                            <mask id="mask-48" sketch:name="SVGID_49_" fill="white">
+                                <use xlink:href="#path-47"></use>
+                            </mask>
+                            <g id="SVGID_49_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-48)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(13.000000, 42.000000)">
+                            <mask id="mask-50" sketch:name="SVGID_51_" fill="white">
+                                <use xlink:href="#path-49"></use>
+                            </mask>
+                            <g id="SVGID_51_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-50)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(23.000000, 42.000000)">
+                            <mask id="mask-52" sketch:name="SVGID_53_" fill="white">
+                                <use xlink:href="#path-51"></use>
+                            </mask>
+                            <g id="SVGID_53_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-52)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(33.000000, 42.000000)">
+                            <mask id="mask-54" sketch:name="SVGID_55_" fill="white">
+                                <use xlink:href="#path-53"></use>
+                            </mask>
+                            <g id="SVGID_55_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-54)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(0.000000, 7.000000)">
+                            <mask id="mask-56" sketch:name="SVGID_57_" fill="white">
+                                <use xlink:href="#path-55"></use>
+                            </mask>
+                            <g id="SVGID_57_"></g>
+                            <rect id="Rectangle-path" fill="#E94B35" sketch:type="MSShapeGroup" mask="url(#mask-56)" x="-5" y="-5" width="64" height="22"></rect>
+                        </g>
+                        <g transform="translate(9.000000, 10.000000)">
+                            <mask id="mask-58" sketch:name="SVGID_59_" fill="white">
+                                <use xlink:href="#path-57"></use>
+                            </mask>
+                            <g id="SVGID_59_"></g>
+                            <rect id="Rectangle-path" fill="#C23824" sketch:type="MSShapeGroup" mask="url(#mask-58)" x="-5" y="-5" width="16" height="16"></rect>
+                        </g>
+                        <g transform="translate(10.000000, 0.000000)">
+                            <mask id="mask-60" sketch:name="SVGID_61_" fill="white">
+                                <use xlink:href="#path-59"></use>
+                            </mask>
+                            <g id="SVGID_61_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-60)" x="-5" y="-5" width="14" height="24"></rect>
+                        </g>
+                        <g transform="translate(39.000000, 10.000000)">
+                            <mask id="mask-62" sketch:name="SVGID_63_" fill="white">
+                                <use xlink:href="#path-61"></use>
+                            </mask>
+                            <g id="SVGID_63_"></g>
+                            <rect id="Rectangle-path" fill="#C23824" sketch:type="MSShapeGroup" mask="url(#mask-62)" x="-5" y="-5" width="16" height="16"></rect>
+                        </g>
+                        <g transform="translate(40.000000, 0.000000)">
+                            <mask id="mask-64" sketch:name="SVGID_65_" fill="white">
+                                <use xlink:href="#path-63"></use>
+                            </mask>
+                            <g id="SVGID_65_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-64)" x="-5" y="-5" width="14" height="24"></rect>
+                        </g>
+                    </g>
+                    <path d="M36,26 L36,27 L38,27 L38,26 L36,26 L36,26 Z M38,24 L38,29 L39,29 L39,24 L38,24 L38,24 Z M36,23 L36,24 L38,24 L38,23 L36,23 L36,23 Z M35,24 L35,29 L36,29 L36,24 L35,24 L35,24 Z M33,22 L33,30 L41,30 L41,22 L33,22 L33,22 Z" id="Shape" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                    <path d="M16,38 L16,39 L18,39 L18,38 L16,38 L16,38 Z M18,36 L18,38 L19,38 L19,36 L18,36 L18,36 Z M16,35 L16,36 L18,36 L18,35 L16,35 L16,35 Z M18,34 L18,35 L19,35 L19,34 L18,34 L18,34 Z M16,33 L16,34 L18,34 L18,33 L16,33 L16,33 Z M15,33 L15,39 L16,39 L16,33 L15,33 L15,33 Z M13,32 L13,40 L21,40 L21,32 L13,32 L13,32 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                    <path d="M46,48 L46,49 L48,49 L48,48 L46,48 L46,48 Z M48,47 L48,48 L49,48 L49,47 L48,47 L48,47 Z M48,44 L48,45 L49,45 L49,44 L48,44 L48,44 Z M46,43 L46,44 L48,44 L48,43 L46,43 L46,43 Z M45,44 L45,48 L46,48 L46,44 L45,44 L45,44 Z M43,42 L43,50 L51,50 L51,42 L43,42 L43,42 Z" id="Shape" fill="#E08B00" sketch:type="MSShapeGroup"></path>
+                </g>
+                <g id="Group" transform="translate(585.000000, 16.000000)" sketch:type="MSShapeGroup">
+                    <path d="M3,22 L3,23 L5,23 L5,22 L3,22 L3,22 Z M5,20 L5,25 L6,25 L6,20 L5,20 L5,20 Z M3,19 L3,20 L5,20 L5,19 L3,19 L3,19 Z M2,20 L2,25 L3,25 L3,20 L2,20 L2,20 Z M0,18 L0,26 L8,26 L8,18 L0,18 L0,18 Z" id="Shape" fill="#D0021B"></path>
+                    <path d="M20,13 L20,14 L22,14 L22,13 L20,13 L20,13 Z M22,11 L22,16 L23,16 L23,11 L22,11 L22,11 Z M20,10 L20,11 L22,11 L22,10 L20,10 L20,10 Z M19,11 L19,16 L20,16 L20,11 L19,11 L19,11 Z M17,9 L17,17 L25,17 L25,9 L17,9 L17,9 Z" id="Shape" fill="#D0021B"></path>
+                    <path d="M16,24 L16,25 L18,25 L18,24 L16,24 L16,24 Z M18,22 L18,24 L19,24 L19,22 L18,22 L18,22 Z M16,21 L16,22 L18,22 L18,21 L16,21 L16,21 Z M18,20 L18,21 L19,21 L19,20 L18,20 L18,20 Z M16,19 L16,20 L18,20 L18,19 L16,19 L16,19 Z M15,19 L15,25 L16,25 L16,19 L15,19 L15,19 Z M13,18 L13,26 L21,26 L21,18 L13,18 L13,18 Z" id="Shape" fill="#379BEE"></path>
+                    <path d="M25,24 L25,25 L27,25 L27,24 L25,24 L25,24 Z M27,22 L27,24 L28,24 L28,22 L27,22 L27,22 Z M25,21 L25,22 L27,22 L27,21 L25,21 L25,21 Z M27,20 L27,21 L28,21 L28,20 L27,20 L27,20 Z M25,19 L25,20 L27,20 L27,19 L25,19 L25,19 Z M24,19 L24,25 L25,25 L25,19 L24,19 L24,19 Z M22,18 L22,26 L30,26 L30,18 L22,18 L22,18 Z" id="Shape" fill="#379BEE"></path>
+                    <path d="M46,4 L46,5 L48,5 L48,4 L46,4 L46,4 Z M48,2 L48,7 L49,7 L49,2 L48,2 L48,2 Z M46,1 L46,2 L48,2 L48,1 L46,1 L46,1 Z M45,2 L45,7 L46,7 L46,2 L45,2 L45,2 Z M43,0 L43,8 L51,8 L51,0 L43,0 L43,0 Z" id="Shape" fill="#D0021B"></path>
+                    <path d="M42,15 L42,16 L44,16 L44,15 L42,15 L42,15 Z M44,13 L44,15 L45,15 L45,13 L44,13 L44,13 Z M42,12 L42,13 L44,13 L44,12 L42,12 L42,12 Z M44,11 L44,12 L45,12 L45,11 L44,11 L44,11 Z M42,10 L42,11 L44,11 L44,10 L42,10 L42,10 Z M41,10 L41,16 L42,16 L42,10 L41,10 L41,10 Z M39,9 L39,17 L47,17 L47,9 L39,9 L39,9 Z" id="Shape" fill="#379BEE"></path>
+                    <path d="M51,15 L51,16 L53,16 L53,15 L51,15 L51,15 Z M53,13 L53,15 L54,15 L54,13 L53,13 L53,13 Z M51,12 L51,13 L53,13 L53,12 L51,12 L51,12 Z M53,11 L53,12 L54,12 L54,11 L53,11 L53,11 Z M51,10 L51,11 L53,11 L53,10 L51,10 L51,10 Z M50,10 L50,16 L51,16 L51,10 L50,10 L50,10 Z M48,9 L48,17 L56,17 L56,9 L48,9 L48,9 Z" id="Shape" fill="#379BEE"></path>
+                    <path d="M38,24 L38,25 L40,25 L40,24 L38,24 L38,24 Z M40,23 L40,24 L41,24 L41,23 L40,23 L40,23 Z M40,20 L40,21 L41,21 L41,20 L40,20 L40,20 Z M38,19 L38,20 L40,20 L40,19 L38,19 L38,19 Z M37,20 L37,24 L38,24 L38,20 L37,20 L37,20 Z M35,18 L35,26 L43,26 L43,18 L35,18 L35,18 Z" id="Shape" fill="#E08B00"></path>
+                    <path d="M47,24 L47,25 L49,25 L49,24 L47,24 L47,24 Z M49,23 L49,24 L50,24 L50,23 L49,23 L49,23 Z M49,20 L49,21 L50,21 L50,20 L49,20 L49,20 Z M47,19 L47,20 L49,20 L49,19 L47,19 L47,19 Z M46,20 L46,24 L47,24 L47,20 L46,20 L46,20 Z M44,18 L44,26 L52,26 L52,18 L44,18 L44,18 Z" id="Shape" fill="#E08B00"></path>
+                    <path d="M56,24 L56,25 L58,25 L58,24 L56,24 L56,24 Z M58,23 L58,24 L59,24 L59,23 L58,23 L58,23 Z M58,20 L58,21 L59,21 L59,20 L58,20 L58,20 Z M56,19 L56,20 L58,20 L58,19 L56,19 L56,19 Z M55,20 L55,24 L56,24 L56,20 L55,20 L55,20 Z M53,18 L53,26 L61,26 L61,18 L53,18 L53,18 Z" id="Shape" fill="#E08B00"></path>
+                </g>
+                <g id="Group" transform="translate(495.000000, 12.000000)">
+                    <g>
+                        <path d="M28,9 L28,6 L22,5.993 L22,0 L12,0 L12,10 L17,15 L17,24 L23,24 L23,9 L28,9 Z" id="Shape" fill="#D1D8DC" sketch:type="MSShapeGroup"></path>
+                        <g id="Clipped">
+                            <g transform="translate(22.000000, 0.000000)">
+                                <mask id="mask-66" sketch:name="SVGID_69_" fill="white">
+                                    <use xlink:href="#path-65"></use>
+                                </mask>
+                                <g id="SVGID_69_"></g>
+                                <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-66)" x="-5" y="-5" width="16" height="16"></rect>
+                            </g>
+                            <g transform="translate(24.000000, 10.000000)">
+                                <mask id="mask-68" sketch:name="SVGID_71_" fill="white">
+                                    <use xlink:href="#path-67"></use>
+                                </mask>
+                                <g id="SVGID_71_"></g>
+                                <rect id="Rectangle-path" fill="#D1D8DC" sketch:type="MSShapeGroup" mask="url(#mask-68)" x="-5" y="-5" width="26" height="34"></rect>
+                            </g>
+                            <g transform="translate(34.000000, 10.000000)">
+                                <mask id="mask-70" sketch:name="SVGID_73_" fill="white">
+                                    <use xlink:href="#path-69"></use>
+                                </mask>
+                                <g id="SVGID_73_"></g>
+                                <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-70)" x="-5" y="-5" width="16" height="16"></rect>
+                            </g>
+                            <g transform="translate(0.000000, 10.000000)">
+                                <mask id="mask-72" sketch:name="SVGID_75_" fill="white">
+                                    <use xlink:href="#path-71"></use>
+                                </mask>
+                                <g id="SVGID_75_"></g>
+                                <rect id="Rectangle-path" fill="#D1D8DC" sketch:type="MSShapeGroup" mask="url(#mask-72)" x="-5" y="-5" width="26" height="34"></rect>
+                            </g>
+                            <g transform="translate(10.000000, 10.000000)">
+                                <mask id="mask-74" sketch:name="SVGID_77_" fill="white">
+                                    <use xlink:href="#path-73"></use>
+                                </mask>
+                                <g id="SVGID_77_"></g>
+                                <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-74)" x="-5" y="-5" width="16" height="16"></rect>
+                            </g>
+                        </g>
+                        <g transform="translate(15.000000, 7.000000)" fill="#D0021B" sketch:type="MSShapeGroup">
+                            <path d="M5,0 C2.238,0 0,2.244 0,5 C0,5.396 0.058,5.775 0.145,6.145 L2,8 L2,8.976 C2.838,9.61 3.87,10 5,10 C6.131,10 7.162,9.609 8,8.976 L8,2 L8.976,2 C8.062,0.792 6.627,0 5,0 L5,0 Z M7,8 L6,8 L6,6 L4,6 L4,8 L3,8 L3,3 L4,3 L4,2 L6,2 L6,3 L7,3 L7,8 L7,8 Z" id="Shape"></path>
+                            <rect id="Rectangle-path" x="4" y="3" width="2" height="2"></rect>
+                        </g>
+                    </g>
+                    <path d="M7,24 L7,25 L9,25 L9,24 L7,24 L7,24 Z M9,22 L9,24 L10,24 L10,22 L9,22 L9,22 Z M7,21 L7,22 L9,22 L9,21 L7,21 L7,21 Z M9,20 L9,21 L10,21 L10,20 L9,20 L9,20 Z M7,19 L7,20 L9,20 L9,19 L7,19 L7,19 Z M6,19 L6,25 L7,25 L7,19 L6,19 L6,19 Z M8,17 C5.238,17 3,19.244 3,22 C3,24.762 5.244,27 8,27 C10.762,27 13,24.756 13,22 C13,19.238 10.756,17 8,17 L8,17 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                    <path d="M31,24 L31,25 L33,25 L33,24 L31,24 L31,24 Z M33,23 L33,24 L34,24 L34,23 L33,23 L33,23 Z M33,20 L33,21 L34,21 L34,20 L33,20 L33,20 Z M31,19 L31,20 L33,20 L33,19 L31,19 L31,19 Z M30,20 L30,24 L31,24 L31,20 L30,20 L30,20 Z M32,17 C29.238,17 27,19.244 27,22 C27,24.762 29.244,27 32,27 C34.762,27 37,24.756 37,22 C37,19.238 34.756,17 32,17 L32,17 Z" id="Shape" fill="#E08B00" sketch:type="MSShapeGroup"></path>
+                </g>
+                <g id="Group" transform="translate(696.000000, 12.000000)">
+                    <g id="Clipped">
+                        <g transform="translate(0.000000, 6.000000)">
+                            <mask id="mask-76" sketch:name="SVGID_79_" fill="white">
+                                <use xlink:href="#path-75"></use>
+                            </mask>
+                            <g id="SVGID_79_"></g>
+                            <rect id="Rectangle-path" fill="#E3E3E3" sketch:type="MSShapeGroup" mask="url(#mask-76)" x="-5" y="-5" width="47" height="38"></rect>
+                        </g>
+                        <g transform="translate(0.000000, 5.000000)">
+                            <mask id="mask-78" sketch:name="SVGID_81_" fill="white">
+                                <use xlink:href="#path-77"></use>
+                            </mask>
+                            <g id="SVGID_81_"></g>
+                            <rect id="Rectangle-path" fill="#FFFFFF" sketch:type="MSShapeGroup" mask="url(#mask-78)" x="-5" y="-5" width="47" height="37"></rect>
+                        </g>
+                        <g transform="translate(1.000000, 13.000000)">
+                            <mask id="mask-80" sketch:name="SVGID_83_" fill="white">
+                                <use xlink:href="#path-79"></use>
+                            </mask>
+                            <g id="SVGID_83_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-80)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(10.000000, 13.000000)">
+                            <mask id="mask-82" sketch:name="SVGID_85_" fill="white">
+                                <use xlink:href="#path-81"></use>
+                            </mask>
+                            <g id="SVGID_85_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-82)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(19.000000, 13.000000)">
+                            <mask id="mask-84" sketch:name="SVGID_87_" fill="white">
+                                <use xlink:href="#path-83"></use>
+                            </mask>
+                            <g id="SVGID_87_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-84)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(1.000000, 22.000000)">
+                            <mask id="mask-86" sketch:name="SVGID_89_" fill="white">
+                                <use xlink:href="#path-85"></use>
+                            </mask>
+                            <g id="SVGID_89_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-86)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(28.000000, 22.000000)">
+                            <mask id="mask-88" sketch:name="SVGID_91_" fill="white">
+                                <use xlink:href="#path-87"></use>
+                            </mask>
+                            <g id="SVGID_91_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-88)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(19.000000, 22.000000)">
+                            <mask id="mask-90" sketch:name="SVGID_93_" fill="white">
+                                <use xlink:href="#path-89"></use>
+                            </mask>
+                            <g id="SVGID_93_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-90)" x="-5" y="-5" width="18" height="18"></rect>
+                        </g>
+                        <g transform="translate(0.000000, 5.000000)">
+                            <mask id="mask-92" sketch:name="SVGID_95_" fill="white">
+                                <use xlink:href="#path-91"></use>
+                            </mask>
+                            <g id="SVGID_95_"></g>
+                            <rect id="Rectangle-path" fill="#E94B35" sketch:type="MSShapeGroup" mask="url(#mask-92)" x="-5" y="-5" width="47" height="17"></rect>
+                        </g>
+                        <g transform="translate(6.000000, 5.000000)">
+                            <mask id="mask-94" sketch:name="SVGID_97_" fill="white">
+                                <use xlink:href="#path-93"></use>
+                            </mask>
+                            <g id="SVGID_97_"></g>
+                            <rect id="Rectangle-path" fill="#C23824" sketch:type="MSShapeGroup" mask="url(#mask-94)" x="-5" y="-5" width="16" height="16"></rect>
+                        </g>
+                        <g transform="translate(25.000000, 5.000000)">
+                            <mask id="mask-96" sketch:name="SVGID_99_" fill="white">
+                                <use xlink:href="#path-95"></use>
+                            </mask>
+                            <g id="SVGID_99_"></g>
+                            <rect id="Rectangle-path" fill="#C23824" sketch:type="MSShapeGroup" mask="url(#mask-96)" x="-5" y="-5" width="16" height="16"></rect>
+                        </g>
+                        <g transform="translate(7.000000, 0.000000)">
+                            <mask id="mask-98" sketch:name="SVGID_101_" fill="white">
+                                <use xlink:href="#path-97"></use>
+                            </mask>
+                            <g id="SVGID_101_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-98)" x="-5" y="-5" width="14" height="19"></rect>
+                        </g>
+                        <g transform="translate(26.000000, 0.000000)">
+                            <mask id="mask-100" sketch:name="SVGID_103_" fill="white">
+                                <use xlink:href="#path-99"></use>
+                            </mask>
+                            <g id="SVGID_103_"></g>
+                            <rect id="Rectangle-path" fill="#BDC3C7" sketch:type="MSShapeGroup" mask="url(#mask-100)" x="-5" y="-5" width="14" height="19"></rect>
+                        </g>
+                    </g>
+                    <path d="M31,17 L31,18 L33,18 L33,17 L31,17 L31,17 Z M33,15 L33,20 L34,20 L34,15 L33,15 L33,15 Z M31,14 L31,15 L33,15 L33,14 L31,14 L31,14 Z M30,15 L30,20 L31,20 L31,15 L30,15 L30,15 Z M28,13 L28,21 L36,21 L36,13 L28,13 L28,13 Z" id="Shape" fill="#D0021B" sketch:type="MSShapeGroup"></path>
+                    <path d="M13,28 L13,29 L15,29 L15,28 L13,28 L13,28 Z M15,26 L15,28 L16,28 L16,26 L15,26 L15,26 Z M13,25 L13,26 L15,26 L15,25 L13,25 L13,25 Z M15,24 L15,25 L16,25 L16,24 L15,24 L15,24 Z M13,23 L13,24 L15,24 L15,23 L13,23 L13,23 Z M12,23 L12,29 L13,29 L13,23 L12,23 L12,23 Z M10,22 L10,30 L18,30 L18,22 L10,22 L10,22 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+                </g>
+                <path d="M19,35.722 L19,37 C19,37.552 18.552,38 18,38 C17.446,38 17,37.552 17,37 L17,36.998 L17,35.723 C16.403,35.377 16,34.74 16,34 C16,32.895 16.895,32 18,32 C19.103,32 20,32.895 20,34 C20,34.738 19.595,35.376 19,35.722 L19,35.722 Z M18,26 C19.103,26 20,26.896 20,28 L20,31 L16,31 L16,28 C16,26.896 16.896,26 18,26 L18,26 Z M22,31 L22,28 C22,25.791 20.209,24 18,24 C15.79,24 14,25.791 14,28 L14,28.007 L14,31 L13,31 L13,37 C13,38.104 13.896,39 15,39 L21,39 C22.104,39 23,38.104 23,37 L23,31 L22,31 L22,31 Z M25.026,8 L0,8 L0,52 L36,52 L36,19.013 L25.026,19.013 L25.026,8 L25.026,8 Z" id="Shape" fill="#379BEE" sketch:type="MSShapeGroup"></path>
+            </g>
+        </g>
+    </g>
 </svg>

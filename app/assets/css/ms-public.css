@@ -354,6 +354,9 @@ input[type="image"] {
 #wpwrap .ms-wrap .ms-settings .settings-description {
   margin: 1em 0;
 }
+#wpwrap .ms-wrap .ms-settings-desc-wrapper {
+  margin-bottom: 20px;
+}
 #wpwrap .ms-wrap .ms-label {
   display: block;
   padding-bottom: 5px;

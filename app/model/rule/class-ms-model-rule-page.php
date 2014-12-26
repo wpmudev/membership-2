@@ -227,6 +227,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 */
 	public function get_content_count( $args = null ) {
 		$count = 0;
+		unset( $args['number'] );
 		$args = self::get_query_args( $args );
 		$posts = get_pages( $args );
 
@@ -250,6 +251,10 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$args = self::get_query_args( $args );
 
+		if ( isset( $args['s'] ) ) {
+			$matches = get_posts( $args );
+			WDev()->debug( $matches );
+		}
 		$pages = get_pages( $args );
 
 		foreach ( $pages as $content ) {

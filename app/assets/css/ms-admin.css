@@ -154,6 +154,7 @@
 .ms-wrap p.search-box input,
 .ms-wrap p.search-box select,
 .ms-wrap p.search-box .wpmui-field-input {
+  float: none !important;
   margin-top: 0 !important;
   /* important: Some WordPress fields have a margin that needs to be cleared here */
   margin-bottom: 0 !important;
@@ -605,14 +606,6 @@
 /***
  * DATEPICKER *
  ***/
-#wpadminbar,
-.ms-wrap {
-  /*
-  .ui-datepicker {
-  	margin-top: 10px;
-  }
-  */
-}
 #wpadminbar .wpmui-datepicker-wrapper,
 .ms-wrap .wpmui-datepicker-wrapper {
   display: inline-block;
@@ -804,6 +797,10 @@
 /***
  * RADIO SLIDER *
  ***/
+.ms-wrap {
+  /* PROTECTION radio-sliders */
+  /* ACCESS radio-sliders */
+}
 .ms-wrap .wpmui-radio-slider-wrapper {
   clear: both;
 }
@@ -820,7 +817,7 @@
   border-radius: 10px;
   background: #b0b0b0;
   opacity: .8;
-  overflow: hidden;
+  overflow: visible;
 }
 .ms-wrap .wpmui-radio-slider:hover {
   cursor: pointer;
@@ -856,6 +853,92 @@
   position: relative;
   top: 8px;
   margin: -8px 0 0 40px;
+}
+.ms-wrap .wpmui-radio-slider .before,
+.ms-wrap .wpmui-radio-slider .after {
+  transition: opacity .2s;
+}
+.ms-wrap .ms-edit-protection .wpmui-radio-slider-wrapper {
+  padding: 0 20px;
+}
+.ms-wrap .ms-edit-protection .wpmui-radio-slider .before,
+.ms-wrap .ms-edit-protection .wpmui-radio-slider .after {
+  position: absolute;
+  top: 1px;
+  width: 16px;
+  height: 16px;
+  background: transparent url(../images/membership_sprite.png) no-repeat;
+  background: transparent url(../images/membership_sprite.svg) no-repeat;
+}
+.ms-wrap .ms-edit-protection .wpmui-radio-slider .before {
+  left: -20px;
+  background-position: -42px -243px;
+  /* grey unlock */
+  opacity: 1;
+  filter: none;
+  -webkit-filter: none;
+}
+.ms-wrap .ms-edit-protection .wpmui-radio-slider .after {
+  left: 44px;
+  background-position: -142px -243px;
+  /* grey lock */
+  opacity: 0.25;
+  filter: blur(1px);
+  -webkit-filter: blur(1px);
+}
+.ms-wrap .ms-edit-protection .wpmui-radio-slider.on {
+  background-color: #D0021B;
+}
+.ms-wrap .ms-edit-protection .wpmui-radio-slider.on .before {
+  opacity: 0.25;
+  filter: blur(1px);
+  -webkit-filter: blur(1px);
+}
+.ms-wrap .ms-edit-protection .wpmui-radio-slider.on .after {
+  background-position: -142px -143px;
+  /* lock red */
+  opacity: 1;
+  filter: none;
+  -webkit-filter: none;
+}
+.ms-wrap .ms-edit-access .wpmui-radio-slider-wrapper {
+  padding: 0 20px;
+}
+.ms-wrap .ms-edit-access .wpmui-radio-slider .before,
+.ms-wrap .ms-edit-access .wpmui-radio-slider .after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  width: 16px;
+  height: 16px;
+  background: transparent url(../images/membership_sprite.png) no-repeat;
+  background: transparent url(../images/membership_sprite.svg) no-repeat;
+}
+.ms-wrap .ms-edit-access .wpmui-radio-slider .before {
+  left: -20px;
+  background-position: -142px -243px;
+  /* grey lock */
+  opacity: 1;
+  filter: none;
+  -webkit-filter: none;
+}
+.ms-wrap .ms-edit-access .wpmui-radio-slider .after {
+  left: 44px;
+  background-position: -42px -143px;
+  /* unlock green */
+  opacity: 0.25;
+  filter: blur(1px);
+  -webkit-filter: blur(1px);
+}
+.ms-wrap .ms-edit-access .wpmui-radio-slider.on .before {
+  opacity: 0.25;
+  filter: blur(1px);
+  -webkit-filter: blur(1px);
+}
+.ms-wrap .ms-edit-access .wpmui-radio-slider.on .after {
+  opacity: 1;
+  filter: none;
+  -webkit-filter: none;
 }
 
 /***
@@ -1128,6 +1211,7 @@
   margin-top: -5px;
 }
 .ms-wrap .ms-img-unlock,
+.ms-wrap .ms-img-unlock-grey,
 .ms-wrap .ms-img-lock,
 .ms-wrap .ms-img-lock-grey,
 .ms-wrap .ms-img-edit,
@@ -1141,11 +1225,14 @@
 .ms-wrap .ms-img-unlock {
   background-position: -42px -143px;
 }
+.ms-wrap .ms-img-unlock-grey {
+  background-position: -42px -243px;
+}
 .ms-wrap .ms-img-lock {
   background-position: -142px -143px;
 }
 .ms-wrap .ms-img-lock-grey {
-  background-position: -242px -143px;
+  background-position: -142px -243px;
 }
 .ms-wrap .ms-img-edit {
   background-position: -342px -143px;
@@ -1394,6 +1481,9 @@
 }
 #wpwrap .ms-wrap .ms-settings .settings-description {
   margin: 1em 0;
+}
+#wpwrap .ms-wrap .ms-settings-desc-wrapper {
+  margin-bottom: 20px;
 }
 #wpwrap .ms-wrap .ms-label {
   display: block;

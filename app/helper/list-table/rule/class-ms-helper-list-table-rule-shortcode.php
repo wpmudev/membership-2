@@ -60,12 +60,15 @@ class MS_Helper_List_Table_Rule_Shortcode extends MS_Helper_List_Table_Rule {
 		);
 
 		$total_items = $this->model->get_content_count();
-		$per_page = $this->get_items_per_page( "{$this->id}_per_page", 10 );
+		$per_page = $this->get_items_per_page(
+			"{$this->id}_per_page",
+			self::DEFAULT_PAGE_SIZE
+		);
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-				'posts_per_page' => $per_page,
-				'offset' => ( $current_page - 1 ) * $per_page,
+			'posts_per_page' => $per_page,
+			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
 		if ( ! empty( $_GET['status'] ) ) {

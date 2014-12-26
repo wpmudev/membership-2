@@ -39,7 +39,10 @@ class MS_Helper_List_Table_Rule_Special extends MS_Helper_List_Table_Rule {
 		);
 
 		// Set items-per-page to 50: Never use pagination!
-		$per_page = $this->get_items_per_page( "{$this->id}_per_page", 50 );
+		$per_page = $this->get_items_per_page(
+			"{$this->id}_per_page",
+			self::DEFAULT_PAGE_SIZE
+		);
 		$current_page = $this->get_pagenum();
 
 		$args = array(

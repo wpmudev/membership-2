@@ -51,7 +51,6 @@ class MS_View extends MS_Hooker {
 	 * @param array $data The data what has to be associated with this render.
 	 */
 	public function __construct( $data = array() ) {
-		
 		$this->data = $data;
 
 		/**

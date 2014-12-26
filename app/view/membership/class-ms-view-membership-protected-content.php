@@ -1,62 +1,75 @@
 <?php
 
+/**
+ * Render Accessible Content page.
+ *
+ * Extends MS_View for rendering methods and magic methods.
+ *
+ * @since 1.0.0
+ * @package Membership
+ * @subpackage View
+ */
 class MS_View_Membership_Protected_Content extends MS_View {
 
+	/**
+	 * Create view output.
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
 	public function to_html() {
+		// Modify the section header texts.
+		$this->remove_filter( 'ms_view_membership_protected_content_header' );
+		$this->add_filter(
+			'ms_view_membership_protected_content_header',
+			'list_header',
+			10, 3
+		);
+
 		$tabs = $this->data['tabs'];
 
-		if ( ! empty( $this->data['initial_setup'] ) ) {
-			$description = array(
-				__( 'Hello and welcome to Protected Content by WPMU DEV.', MS_TEXT_DOMAIN ),
-				__( 'Let\'s begin by setting up the content you want to protect. Please select at least 1 page or category to protect.', MS_TEXT_DOMAIN ),
-			);
-		} else {
-			$description = array(
-				__( 'Choose what content of your site is protected.', MS_TEXT_DOMAIN ),
-				__( 'Unprotected Content is available for everyone while Protected Content can be assigned to a Membership.', MS_TEXT_DOMAIN ),
-			);
-		}
+		$desc = array(
+			__( 'In order to set-up Memberships you need to first decidewhat content you want to protect.', MS_TEXT_DOMAIN ),
+			__( 'This is the content that will not be accessible to Guests / Logged out users.', MS_TEXT_DOMAIN ),
+		);
 
-		// Render tabbed interface.
 		ob_start();
+		// Render tabbed interface.
 		?>
 		<div class="ms-wrap wrap">
-			<?php
-			MS_Helper_Html::settings_header(
-				array(
-					'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'wpmui-fa wpmui-fa-pencil-square',
-					'desc' => $description,
-				)
-			);
+			<div class="ms-protected-content ms-edit-protection">
+				<?php
+				MS_Helper_Html::settings_header(
+					array(
+						'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
+						'desc' => $desc,
+					)
+				);
 
-			$active_tab = $this->data['active_tab'];
-			MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab, array( 'edit', 'from' ) );
+				$active_tab = $this->data['active_tab'];
+				MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
 
-			// Call the appropriate form to render.
-			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
-			if ( method_exists( $this, $callback_name ) ) {
-				$render_callback = array( $this, $callback_name );
-			}
-			else {
-				$render_callback = array( $this, 'render_generic_tab' );
-			}
-			$render_callback = apply_filters(
-				'ms_view_membership_protected_content_render_tab_callback',
-				$render_callback,
-				$active_tab,
-				$this
-			);
+				// Call the appropriate form to render.
+				$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
+				$render_callback = apply_filters(
+					'ms_view_membership_protected_content_render_tab_callback',
+					array( $this, $callback_name ),
+					$active_tab, $this
+				);
 
-			$html = call_user_func( $render_callback );
-			$html .= $this->additional_information(); // Basic debugging infos.
-			$html = apply_filters( 'ms_view_membership_protected_content_' . $callback_name, $html );
-			echo $html;
-			?>
+				$html = call_user_func( $render_callback );
+				$html = apply_filters(
+					'ms_view_membership_protected_' . $callback_name,
+					$html
+				);
+				echo '' . $html;
+				?>
+			</div>
 		</div>
 		<?php
 
-		if ( @$_REQUEST['from'] ) {
+		// Only in "Protected Content" - not in "Accessible Content"
+		if ( isset( $_REQUEST['from'] ) ) {
 			$field = array(
 				'id'    => 'go_back',
 				'type'  => MS_Helper_Html::TYPE_HTML_LINK,
@@ -68,160 +81,122 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		}
 
 		$html = ob_get_clean();
-		return $html;
+
+		return apply_filters(
+			'ms_view_membership_protected_content_to_html',
+			$html,
+			$this
+		);
 	}
 
-	/**
-	 * Echo default tab contents for the specified fields.
-	 *
-	 * The function is optimized to avoid redundancy and therefore can contain
-	 * only tag-select components.
-	 *
-	 * @since  1.0.0
-	 */
-	protected function render_generic_tab( $title = '', $desc = '', $contents = array() ) {
-		$membership = $this->data['membership'];
-		$action = $this->data['action'];
-		$nonce = wp_create_nonce( $action );
 
-		if ( ! is_array( $title ) ) { $title = array( $title ); }
-		if ( ! is_array( $desc ) ) { $desc = array( $desc ); }
-
-		$field_step = array(
-			'id' => 'step',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->data['step'],
-		);
-
-		$args = func_get_args();
-		$arg_count = func_num_args();
-		$odd = true;
-
-		ob_start();
-		?>
-		<div class="ms-settings">
-			<?php
-			MS_Helper_Html::settings_tab_header(
-				array( 'title' => implode( ' & ', $title ), 'desc' => $desc )
-			);
-			MS_Helper_Html::html_separator();
-
-			for ( $page = 2; $page < $arg_count; $page += 1 ) :
-				$item = $args[ $page ];
-				if ( empty( $item ) ) { continue; }
-
-				$rule = $membership->get_rule( $item['type'] );
-				$f_title = sprintf(
-					__( 'Protect %s:', MS_TEXT_DOMAIN ),
-					$item['label_plural']
-				);
-				$f_title_sel = '<i class="ms-img ms-img-lock"></i> ' .
-					sprintf(
-						__( 'Protected %s:', MS_TEXT_DOMAIN ),
-						$item['label_plural']
-					);
-				if ( empty( $item['label_empty'] ) ) {
-					$f_txt_empty = sprintf(
-						__( 'No %s available', MS_TEXT_DOMAIN ),
-						$item['label_plural']
-					);
-				} else {
-					$f_txt_empty = $item['label_empty'];
-				}
-				$f_placeholder = sprintf(
-					__( 'Choose a %s', MS_TEXT_DOMAIN ),
-					$item['label_single']
-				);
-				$f_txt_button = sprintf(
-					__( 'Protect %s', MS_TEXT_DOMAIN ),
-					$item['label_single']
-				);
-
-				$field = array(
-					'id' => $item['id'],
-					'type' => MS_Helper_Html::INPUT_TYPE_TAG_SELECT,
-					'title' => $f_title,
-					'title_selected' => $f_title_sel,
-					'value' => $rule->rule_value,
-					'field_options' => $rule->get_content_array(),
-					'data_placeholder' => $f_placeholder,
-					'button_text' => $f_txt_button,
-					'empty_text' => $f_txt_empty,
-					'data_ms' => array(
-						'membership_id' => $membership->id,
-						'rule_type' => $item['type'],
-						'value' => 1,
-						'values' => array(),
-						'_wpnonce' => $nonce,
-						'action' => $action,
-					),
-				);
-
-				$field = apply_filters(
-					'ms_view_membership_protected_content_' . $item['type'] . '_field',
-					$field
-				);
-
-				?>
-				<div class="ms-half space">
-					<div class="inside">
-						<?php
-						MS_Helper_Html::html_element( $field );
-						if ( $odd ) {
-							MS_Helper_Html::html_separator( 'vertical' );
-							$odd = false;
-						} else {
-							$odd = true;
-						}
-						?>
-					</div>
-				</div>
-			<?php endfor; ?>
-		</div>
-
-		<?php
-		MS_Helper_Html::settings_footer(
-			array( $field_step ),
-			$this->data['show_next_button']
-		);
-		return ob_get_clean();
-	}
 
 
 	/* ====================================================================== *
 	 *                               CATEGORY
 	 * ====================================================================== */
 
+	/**
+	 * Render category tab.
+	 *
+	 * @since 1.0.0
+	 */
 	public function render_tab_category() {
-		$title = array();
-		$desc = array();
-		$field1 = false;
-		$field2 = false;
+		$membership = $this->data['membership'];
+		$action = $this->data['action'];
+		$nonce = wp_create_nonce( $action );
+
+		$rule_cat = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY );
+		$category_rule_list_table = new MS_Helper_List_Table_Rule_Category(
+			$rule_cat,
+			$membership
+		);
+		$category_rule_list_table->prepare_items();
+
+		$rule_cpt = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
+		$cpt_rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type_Group(
+			$rule_cpt,
+			$membership
+		);
+		$cpt_rule_list_table->prepare_items();
+
+		$parts = array();
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$title[] = __( 'Categories', MS_TEXT_DOMAIN );
-			$desc[] = __( 'The easiest way to restrict content is by setting up a category that you can then use to mark content you want restricted.', MS_TEXT_DOMAIN );
-			$field1 = array(
-				'type' => MS_Model_Rule::RULE_TYPE_CATEGORY,
-				'id' => 'category',
-				'label_single' => __( 'Category', MS_TEXT_DOMAIN ),
-				'label_plural' => __( 'Categories', MS_TEXT_DOMAIN ),
-			);
-			MS_Model_Rule::RULE_TYPE_CATEGORY;
+			$parts['category'] = __( 'Categories', MS_TEXT_DOMAIN );
 		}
-
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			$title[] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
-			$desc[] = __( 'You can choose Custom Post Type(s) to be restricted (eg. Products or Events).', MS_TEXT_DOMAIN );
-			$field2 = array(
-				'type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
-				'id' => 'cpt',
-				'label_single' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
-				'label_plural' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
-			);
+			$parts['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 		}
 
-		return $this->render_generic_tab( $title, $desc, $field1, $field2 );
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_CATEGORY,
+			array(
+				'membership' => $this->data['membership'],
+				'parts' => $parts,
+			),
+			$this
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
+				<div class="ms-group">
+					<div class="inside">
+						<div class="wpmui-field-label">
+							<?php _e( 'Protected Categories:', MS_TEXT_DOMAIN ); ?>
+						</div>
+						<?php
+						$category_rule_list_table->display();
+
+						do_action(
+							'ms_view_membership_protected_content_footer',
+							MS_Model_Rule::RULE_TYPE_CATEGORY,
+							$this
+						);
+
+						MS_Helper_Html::html_separator();
+						?>
+					</div>
+				</div>
+			<?php
+			endif;
+
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) : ?>
+				<div class="ms-group">
+					<div class="inside">
+						<div class="wpmui-field-label">
+							<?php _e( 'Protected Custom Post Types:', MS_TEXT_DOMAIN ); ?>
+						</div>
+						<?php
+						$cpt_rule_list_table->display();
+
+						do_action(
+							'ms_view_membership_protected_content_footer',
+							MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
+							$this
+						);
+						?>
+					</div>
+				</div>
+			<?php
+			endif;
+			?>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			null,
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -229,17 +204,52 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_page() {
-		$title = __( 'Pages', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Pages are available for members only.', MS_TEXT_DOMAIN );
+		$fields = $this->get_control_fields();
 
-		$field = array(
-			'type' => MS_Model_Rule::RULE_TYPE_PAGE,
-			'id' => 'page',
-			'label_single' => __( 'Page', MS_TEXT_DOMAIN ),
-			'label_plural' => __( 'Pages', MS_TEXT_DOMAIN ),
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Page( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_PAGE,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
 		);
 
-		return $this->render_generic_tab( $title, $desc, $field );
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views();
+			?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->search_box( __( 'Search Pages', MS_TEXT_DOMAIN ), 'search' );
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_PAGE,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -247,17 +257,52 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_adminside() {
-		$title = __( 'Admin Side Protection', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Admin Side pages are only available for members. The below list contains all possible menu items that WordPress knows about - some of these items might not be available on your installation.', MS_TEXT_DOMAIN );
+		$fields = $this->get_control_fields();
 
-		$field = array(
-			'type' => MS_Model_Rule::RULE_TYPE_ADMINSIDE,
-			'id' => 'adminside',
-			'label_single' => __( 'Admin Page', MS_TEXT_DOMAIN ),
-			'label_plural' => __( 'Admin Pages', MS_TEXT_DOMAIN ),
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_ADMINSIDE );
+
+		$rule_list_table = new MS_Helper_List_Table_Rule_Adminside( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_ADMINSIDE,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
 		);
 
-		return $this->render_generic_tab( $title, $desc, $field );
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views();
+			?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_ADMINSIDE,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -265,47 +310,136 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_membercaps() {
-		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$title = __( 'Member Capabilities', MS_TEXT_DOMAIN );
-			$desc = __( 'Protected Capabilities will be removed from all users. Memberships control, which of these Capabilities are granted again.', MS_TEXT_DOMAIN );
+		$fields = $this->get_control_fields();
 
-			$field = array(
-				'type' => MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
-				'id' => 'membercaps',
-				'label_single' => __( 'Capability', MS_TEXT_DOMAIN ),
-				'label_plural' => __( 'Capabilities', MS_TEXT_DOMAIN ),
-			);
-		} else {
-			$title = __( 'User Roles', MS_TEXT_DOMAIN );
-			$desc = __( 'Protected User Roles can be assigned to a Membership.', MS_TEXT_DOMAIN );
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
 
-			$field = array(
-				'type' => MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
-				'id' => 'membercaps',
-				'label_single' => __( 'User Role', MS_TEXT_DOMAIN ),
-				'label_plural' => __( 'User Roles', MS_TEXT_DOMAIN ),
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$input_desc = '';
+			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+				$input_desc = __( 'Tipp: If a member belongs to more than one membership then the User Role capabilities of both roles are merged.', MS_TEXT_DOMAIN );
+			}
+			$options = array( '' => __( '(Don\'t change the members role)', MS_TEXT_DOMAIN ) );
+			$options += $rule->get_content_array();
+
+			$role_selection = array(
+				'id' => 'ms-user-role',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+				'desc' => $input_desc,
+				'value' => $rule->user_role,
+				'field_options' => $options,
+				'ajax_data' => array(
+					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
+					'membership_id' => $membership->id,
+					'rule_type' => $rule->rule_type,
+					'field' => 'user_role',
+				),
 			);
 		}
 
-		return $this->render_generic_tab( $title, $desc, $field );
-	}
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
+		);
 
+		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+				$rule_list_table->views();
+				?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+					<div class="ms-protection-edit-link">
+						<?php
+						MS_Helper_Html::html_element( $edit_link );
+
+						do_action(
+							'ms_view_membership_protected_content_footer',
+							MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+							$this
+						);
+						?>
+					</div>
+				</form>
+				<?php
+			} else {
+				MS_Helper_Html::html_element( $role_selection );
+			}
+			?>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
+	}
 	/* ====================================================================== *
 	 *                               SPECIAL PAGES
 	 * ====================================================================== */
 
 	public function render_tab_special() {
-		$title = __( 'Special Pages', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Pages are available for members only.', MS_TEXT_DOMAIN );
+		$fields = $this->get_control_fields();
 
-		$field = array(
-			'type' => MS_Model_Rule::RULE_TYPE_SPECIAL,
-			'id' => 'special',
-			'label_single' => __( 'Special Page', MS_TEXT_DOMAIN ),
-			'label_plural' => __( 'Special Pages', MS_TEXT_DOMAIN ),
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_SPECIAL );
+
+		$rule_list_table = new MS_Helper_List_Table_Rule_Special( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_SPECIAL,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
 		);
 
-		return $this->render_generic_tab( $title, $desc, $field );
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views();
+			?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_SPECIAL,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -313,36 +447,103 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_post() {
-		$title = __( 'Posts', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Pages are available for members only.', MS_TEXT_DOMAIN );
+		$fields = $this->get_control_fields();
 
-		$field = array(
-			'type' => MS_Model_Rule::RULE_TYPE_POST,
-			'id' => 'post',
-			'label_single' => __( 'Post', MS_TEXT_DOMAIN ),
-			'label_plural' => __( 'Posts', MS_TEXT_DOMAIN ),
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Post( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_POST,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
 		);
 
-		return $this->render_generic_tab( $title, $desc, $field );
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' );
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_POST,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
-	 *                               CPT
+	 *                               CUSTOM POST TYPE
 	 * ====================================================================== */
 
 	public function render_tab_cpt() {
-		$title = __( 'Custom Post Types', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Custom Post Types are available for members only.', MS_TEXT_DOMAIN );
+		$fields = $this->get_control_fields();
 
-		$field = array(
-			'type' => MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE,
-			'id' => 'post',
-			'label_single' => __( 'CPT', MS_TEXT_DOMAIN ),
-			'label_plural' => __( 'CPTs', MS_TEXT_DOMAIN ),
-			'label_empty' => __( 'No content found. Please create some custom posts first', MS_TEXT_DOMAIN ),
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
 		);
 
-		return $this->render_generic_tab( $title, $desc, $field );
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->search_box( __( 'Search Posts', MS_TEXT_DOMAIN ), 'search' );
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -356,92 +557,53 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * @since  1.0.0
 	 */
 	public function render_tab_comment() {
-		$fields = $this->get_tab_comment_fields();
 		$membership = $this->data['membership'];
+		$action = $this->data['action'];
+		$nonce = wp_create_nonce( $action );
 
 		$menu_protection = $this->data['settings']->menu_protection;
+		$protected_content = MS_Model_Membership::get_protected_content();
 
-		$title = __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Comments, More Tag & Menus are available for members only.', MS_TEXT_DOMAIN );
-
-		ob_start();
-		?>
-		<div class="ms-settings">
-			<?php MS_Helper_Html::settings_tab_header(
-				array( 'title' => $title, 'desc' => $desc )
-			);
-			MS_Helper_Html::html_separator();
-			?>
-			<div class="ms-group">
-				<div class="ms-half">
-					<div class="inside">
-						<?php MS_Helper_Html::html_element( $fields['comment'] ); ?>
-					</div>
-				</div>
-
-				<div class="ms-half">
-					<div class="inside">
-						<?php MS_Helper_Html::html_element( $fields['more_tag'] ); ?>
-					</div>
-				</div>
-			</div>
-
-			<?php
-			MS_Helper_Html::html_separator();
-			if ( 'item' === $menu_protection ) :
-			?>
-			<div class="ms-group">
-				<div class="inside">
-					<form id="ms-menu-form" method="post">
-					<?php MS_Helper_Html::html_element( $fields['menu_data'] ); ?>
-					</form>
-				</div>
-			</div>
-			<?php else : ?>
-			<p><em>
-				<?php _e( 'No options available. Menu access is defined on membership-level.', MS_TEXT_DOMAIN ); ?>
-			</em></p>
-			<?php endif; ?>
-
-		</div>
-		<?php
-		MS_Helper_Html::settings_footer(
-			array( $fields['step'] ),
-			$this->data['show_next_button']
-		);
-		return ob_get_clean();
-	}
-
-	/**
-	 * Prepare tab fields for:
-	 * Comments, More tag, Menus
-	 *
-	 * @since  1.0.0
-	 */
-	public function get_tab_comment_fields() {
-		$membership = $this->data['membership'];
-		$nonce = wp_create_nonce( $this->data['action'] );
-		$action = $this->data['action'];
-
-		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
-		$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
+		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
 
-		$field_menu_id = array(
-			'id' => 'menu_id',
-			'value' => $this->data['menu_id'],
-			'field_options' => $this->data['menus'],
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-		);
-		$menu_selector = MS_Helper_Html::html_element( $field_menu_id, true );
+		switch ( $menu_protection ) {
+			case 'item':
+				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
+				$rule_list_table = new MS_Helper_List_Table_Rule_Menu(
+					$rule_menu,
+					$membership,
+					$this->data['menu_id']
+				);
+				break;
+
+			case 'menu':
+				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENUS );
+				$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menu(
+					$rule_menu,
+					$membership
+				);
+				break;
+
+			case 'location':
+				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS );
+				$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menulocation(
+					$rule_menu,
+					$membership
+				);
+				break;
+		}
+
+		$val_comment = $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID );
+		$val_more_tag = absint( $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) );
 
 		$fields = array(
 			'comment' => array(
 				'id' => 'comment',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Visitors have:', MS_TEXT_DOMAIN ),
-				'value' => $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID ),
+				'desc' => __( 'Members have:', MS_TEXT_DOMAIN ),
+				'value' => $val_comment,
 				'field_options' => $rule_comment->get_content_array(),
 				'class' => 'chosen-select',
 				'data_ms' => array(
@@ -457,8 +619,8 @@ class MS_View_Membership_Protected_Content extends MS_View {
 				'id' => 'more_tag',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Only Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
-				'value' => $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) ? 1 : 0,
+				'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
+				'value' => $val_more_tag,
 				'field_options' => $rule_more_tag->get_options_array(),
 				'class' => 'ms-more-tag',
 				'data_ms' => array(
@@ -470,50 +632,146 @@ class MS_View_Membership_Protected_Content extends MS_View {
 				),
 			),
 
-			'menu_data' => array(
-				'id' => 'menu_data',
-				'type' => MS_Helper_Html::INPUT_TYPE_TAG_SELECT,
-				'title' => sprintf(
-					__( 'Protect Menu-Items of %s', MS_TEXT_DOMAIN ),
-					$menu_selector
-				),
-				'title_selected' => '<i class="ms-img ms-img-lock"></i> ' . __( 'Protected Menu-Items:', MS_TEXT_DOMAIN ),
-				'value' => $rule_menu->rule_value,
-				'field_options' => $rule_menu->get_options_array( array( 'menu_id' => $this->data['menu_id'] ) ),
-				'data_placeholder' => __( 'Choose a Menu-Item', MS_TEXT_DOMAIN ),
-				'button_text' => __( 'Protect Menu-Item', MS_TEXT_DOMAIN ),
-				'empty_text' => __( 'No Menu-Items available', MS_TEXT_DOMAIN ),
-				'data_ms' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => MS_Model_Rule::RULE_TYPE_MENU,
-					'value' => 1,
-					'menu_id' => $this->data['menu_id'],
-					'values' => array(),
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
-			),
-
 			'step' => array(
 				'id' => 'step',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['step'],
 			),
-			/*
-			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $action,
-			),
-			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $nonce,
-			),
-			*/
 		);
 
-		return apply_filters( 'ms_view_membership_protected_content_get_tab_comment_fields', $fields );
+		if ( 'item' === $menu_protection ) {
+			$fields['menu_id'] = array(
+				'id' => 'menu_id',
+				'title' => __( 'Menus:', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Select menu to load:', MS_TEXT_DOMAIN ),
+				'value' => $this->data['menu_id'],
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => $this->data['menus'],
+				'class' => 'chosen-select',
+			);
+		}
+
+		if ( MS_Model_Rule_Comment::RULE_VALUE_WRITE === $val_comment ) {
+			$fields['comment'] = array(
+				'id' => 'comment',
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
+				'value' => __( 'Members can Read and Post comments', MS_TEXT_DOMAIN ),
+				'class' => 'wpmui-field-description',
+				'wrapper' => 'div',
+			);
+		}
+
+		if ( $val_more_tag ) {
+			$fields['more_tag'] = array(
+				'id' => 'more_tag',
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
+				'value' => __( 'Members can read full post (beyond the More Tag)', MS_TEXT_DOMAIN ),
+				'class' => 'wpmui-field-description',
+				'wrapper' => 'div',
+			);
+		}
+
+		$fields = apply_filters(
+			'ms_view_membership_protected_content_get_tab_comment_fields',
+			$fields
+		);
+
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_COMMENT,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+			?>
+
+			<div class="ms-group">
+				<div class="ms-half">
+					<div class="inside">
+						<?php
+						MS_Helper_Html::html_element( $fields['comment'] );
+						MS_Helper_Html::save_text();
+
+						do_action(
+							'ms_view_membership_protected_content_footer',
+							MS_Model_Rule::RULE_TYPE_COMMENT,
+							$this
+						);
+
+						MS_Helper_Html::html_separator( 'vertical' );
+						?>
+					</div>
+				</div>
+
+				<div class="ms-half">
+					<div class="inside">
+						<?php
+						MS_Helper_Html::html_element( $fields['more_tag'] );
+						MS_Helper_Html::save_text();
+
+						do_action(
+							'ms_view_membership_protected_content_footer',
+							MS_Model_Rule::RULE_TYPE_MORE_TAG,
+							$this
+						);
+						?>
+					</div>
+				</div>
+			</div>
+
+			<?php MS_Helper_Html::html_separator(); ?>
+
+			<div class="ms-group">
+				<div class="ms-inside">
+
+				<?php if ( 'item' === $menu_protection ) {
+					?>
+					<form id="ms-menu-form" method="post">
+						<?php MS_Helper_Html::html_element( $fields['menu_id'] ); ?>
+					</form>
+					<?php
+					$rule_list_table->display();
+
+					do_action(
+						'ms_view_membership_protected_content_footer',
+						MS_Model_Rule::RULE_TYPE_MENU,
+						$this
+					);
+				} else {
+					$rule_list_table->display();
+					if ( 'menu' === $menu_protection ) {
+						?>
+						<p>
+							<?php _e( 'Hint: Only one replacement rule is applied to each menu.', MS_TEXT_DOMAIN ); ?>
+						</p>
+						<?php
+					}
+				}
+				?>
+
+				</div>
+			</div>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -521,17 +779,50 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_shortcode() {
-		$title = __( 'Shortcodes', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected Shortcodes are available for members only.', MS_TEXT_DOMAIN );
+		$fields = $this->get_control_fields();
 
-		$field = array(
-			'type' => MS_Model_Rule::RULE_TYPE_SHORTCODE,
-			'id' => 'shortcode',
-			'label_single' => __( 'Shortcode', MS_TEXT_DOMAIN ),
-			'label_plural' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_SHORTCODE );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Shortcode( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_SHORTCODE,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
 		);
 
-		return $this->render_generic_tab( $title, $desc, $field );
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views(); ?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_SHORTCODE,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
 	}
 
 	/* ====================================================================== *
@@ -539,55 +830,67 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_url_group() {
+		$fields = $this->get_control_fields();
+
 		$membership = $this->data['membership'];
 		$action = $this->data['action'];
 		$nonce = wp_create_nonce( $action );
 
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Url_Group( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_URL_GROUP,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views();
+			?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->search_box( __( 'Search URLs', MS_TEXT_DOMAIN ), 'search' );
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_URL_GROUP,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
+	}
+
+	/* ====================================================================== *
+	 *                               SHARED
+	 * ====================================================================== */
+
+	public function get_control_fields() {
+		$membership = $this->data['membership'];
+		$action = $this->data['action'];
+		$nonce = wp_create_nonce( $action );
 
 		$fields = array(
-			'strip_query_string' => array(
-				'id' => 'strip_query_string',
-				'title' => __( 'Strip query strings from URL', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $rule->strip_query_string,
-				'data_ms' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'field' => 'strip_query_string',
-					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
-					'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
-				),
-			),
-
-			'is_regex' => array(
-				'id' => 'is_regex',
-				'title' => __( 'Is regular expression', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $rule->is_regex,
-				'data_ms' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'field' => 'is_regex',
-					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
-					'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
-				),
-			),
-
-			'rule_value' => array(
-				'id' => 'rule_value',
-				'title' => __( 'Page URLs', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-				'value' => implode( PHP_EOL, $rule->rule_value ),
-				'class' => 'ms-textarea-medium',
-				'data_ms' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'field' => 'rule_value',
-					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
-					'_wpnonce' => wp_create_nonce( MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD ),
-				),
-			),
 			'step' => array(
 				'id' => 'step',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -595,68 +898,128 @@ class MS_View_Membership_Protected_Content extends MS_View {
 			),
 		);
 
-		$fields = apply_filters( 'ms_view_membership_protected_content_get_tab_urlgroup_fields', $fields );
-
-		$title = __( 'URL Groups', MS_TEXT_DOMAIN );
-		$desc = __( 'Protected URLs can be accessed by members only. ', MS_TEXT_DOMAIN );
-
-		ob_start();
-		?>
-		<div class="ms-settings">
-			<?php
-			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
-			MS_Helper_Html::html_separator();
-			?>
-
-			<form action="" method="post" class="ms-form ms-group">
-				<?php MS_Helper_Html::settings_box( $fields ); ?>
-			</form>
-
-			<?php
-			MS_Helper_Html::settings_footer(
-				array( $fields['step'] ),
-				$this->data['show_next_button']
-			);
-
-			MS_Helper_Html::settings_box(
-				array(
-					array(
-						'id'    => 'url_test',
-						'title'  => __( 'Enter an URL to test against rules in the group', MS_TEXT_DOMAIN ),
-						'type'  => MS_Helper_Html::INPUT_TYPE_TEXT,
-						'class' => 'widefat',
-					),
-				),
-				__( 'Test URL group', MS_TEXT_DOMAIN )
-			);
-			?>
-			<div id="url-test-results-wrapper"></div>
-		</div>
-		<?php
-		return ob_get_clean();
+		return apply_filters(
+			'ms_view_membership_protected_content_get_control_fields',
+			$fields
+		);
 	}
 
 	/**
-	 * Used by function `to_html()` to append optional debugging information to
-	 * the HTML output.
+	 * Modifies the title/description of the list header
 	 *
-	 * @since  1.0.0
+	 * @since  1.1.0
+	 * @param  array $header_data The original header details.
+	 * @param  string $rule ID of the list that is displayed.
+	 * @param  array $args Additional arguments, specific to $rule.
+	 * @return array {
+	 *     The new title/description
 	 *
-	 * @return string
+	 *     title
+	 *     desc
+	 * }
 	 */
-	protected function additional_information() {
-		$membership = $this->data['membership'];
-		$output = '';
+	public function list_header( $header_data, $rule, $args ) {
+		switch ( $rule ) {
+			case MS_Model_Rule::RULE_TYPE_CATEGORY:
+				$args['parts'] = WDev()->get_array( $args['parts'] );
 
-		if ( ! empty( $_GET['debug-cpt'] ) ) {
-			$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
-			$output .= sprintf(
-				'<div><hr /><h4>Found CPTs</h4><pre>%1$s</pre><h4>Excluded CPTs</h4><pre>%2$s</pre></div>',
-				print_r( get_post_types(), true ),
-				print_r( MS_Model_Rule_Custom_Post_Type_Group::get_excluded_content(), true )
-			);
+				$header_data['title'] = sprintf(
+					__( '%s Access', MS_TEXT_DOMAIN ),
+					implode( ', ', $args['parts'] )
+				);
+				$header_data['desc'] = sprintf(
+					__( 'Give access to protected %2$s to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name,
+					implode( ' & ', $args['parts'] )
+				);
+				break;
+
+			case MS_Model_Rule::RULE_TYPE_PAGE:
+				$header_data['title'] = __( 'Choose Pages you want to protect', MS_TEXT_DOMAIN );
+				$header_data['desc'] = '';
+				break;
+
+
+			case MS_Model_Rule::RULE_TYPE_ADMINSIDE:
+				$header_data['title'] = __( 'Admin Side Protection', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'Give access to following Admin Side pages to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
+
+
+			case MS_Model_Rule::RULE_TYPE_MEMBERCAPS:
+				if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+					$header_data['title'] = __( 'Member Capabilities', MS_TEXT_DOMAIN );
+					$header_data['desc'] = sprintf(
+						__( 'All %1$s members are granted the following Capabilities.', MS_TEXT_DOMAIN ),
+						$args['membership']->name
+					);
+				} else {
+					$header_data['title'] = __( 'User Roles', MS_TEXT_DOMAIN );
+					$header_data['desc'] = sprintf(
+						__( 'All %1$s members are assigned to the following User Role.', MS_TEXT_DOMAIN ),
+						$args['membership']->name
+					);
+				}
+				break;
+
+			case MS_Model_Rule::RULE_TYPE_SPECIAL:
+				$header_data['title'] = __( 'Special Pages', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'Give access to following Special Pages to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
+
+
+			case MS_Model_Rule::RULE_TYPE_POST:
+				$header_data['title'] = __( 'Posts', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'Give access to following Posts to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
+
+
+			case MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE:
+				$header_data['title'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'Give access to following Custom Post Types to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
+
+
+			case MS_Model_Rule::RULE_TYPE_COMMENT:
+				$header_data['title'] = __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'Give access to protected Comments, More Tag & Menus to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
+
+
+			case MS_Model_Rule::RULE_TYPE_SHORTCODE:
+				$header_data['title'] = __( 'Shortcodes', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'Give access to protected Shortcodes to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
+
+
+			case MS_Model_Rule::RULE_TYPE_URL_GROUP:
+				$header_data['title'] = __( 'URL Protection', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'Give access to protected URLs to %1$s members.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
 		}
 
-		return $output;
+		return $header_data;
 	}
+
 }

@@ -152,13 +152,17 @@ class MS_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return MS_Hooker
 	 */
-	protected function remove_action( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		remove_action(
-			$tag,
-			$this->get_callback( $tag, $method ),
-			$priority,
-			$accepted_args
-		);
+	protected function remove_action( $tag, $method = null, $priority = 10, $accepted_args = 1 ) {
+		if ( null === $method ) {
+			remove_all_actions( $tag );
+		} else {
+			remove_action(
+				$tag,
+				$this->get_callback( $tag, $method ),
+				$priority,
+				$accepted_args
+			);
+		}
 
 		return $this;
 	}
@@ -197,7 +201,7 @@ class MS_Hooker {
 	 * @param boolean $public Optional. Determines if we should register hook for not logged in users.
 	 * @return MS_Hooker
 	 */
-	protected function remove_ajax_action( $tag, $method = '', $private = true, $public = false ) {
+	protected function remove_ajax_action( $tag, $method = null, $private = true, $public = false ) {
 		if ( $private ) {
 			$this->remove_action( 'wp_ajax_' . $tag, $method );
 		}
@@ -248,13 +252,18 @@ class MS_Hooker {
 	 * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
 	 * @return MS_Hooker
 	 */
-	protected function remove_filter( $tag, $method = '', $priority = 10, $accepted_args = 1 ) {
-		remove_filter(
-			$tag,
-			$this->get_callback( $tag, $method ),
-			$priority,
-			$accepted_args
-		);
+	protected function remove_filter( $tag, $method = null, $priority = 10, $accepted_args = 1 ) {
+		if ( null === $method ) {
+			remove_all_filters( $tag );
+		} else {
+			remove_filter(
+				$tag,
+				$this->get_callback( $tag, $method ),
+				$priority,
+				$accepted_args
+			);
+		}
+
 		return $this;
 	}
 

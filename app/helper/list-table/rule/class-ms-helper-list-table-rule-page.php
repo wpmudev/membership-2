@@ -42,13 +42,14 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 
 		$per_page = $this->get_items_per_page(
 			"{$this->id}_per_page",
-			10
+			self::DEFAULT_PAGE_SIZE
 		);
 
 		$current_page = $this->get_pagenum();
 
 		$args = array(
 			'posts_per_page' => $per_page,
+			'number' => $per_page,
 			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
@@ -56,16 +57,12 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 			$args['rule_status'] = $_GET['status'];
 		}
 
-		/**
-		 * Search string.
-		 */
+		// Search string.
 		if ( ! empty( $_REQUEST['s'] ) ) {
 			$args['s'] = $_REQUEST['s'];
 		}
 
-		/**
-		 * Month filter.
-		 */
+		// Month filter.
 		if ( ! empty( $_REQUEST['m'] ) && strlen( $_REQUEST['m'] ) == 6 ) {
 			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );

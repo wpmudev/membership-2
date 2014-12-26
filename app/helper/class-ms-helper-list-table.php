@@ -11,14 +11,23 @@
  * If you would still like to make use of the class, you should make a copy to use and distribute
  * with your own project, or else use it at your own risk.
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
 class MS_Helper_List_Table {
+
+	/**
+	 * The default number of items per list page.
+	 *
+	 * @since 1.1.0
+	 * @var   int
+	 */
+	const DEFAULT_PAGE_SIZE = 20;
+
 	/**
 	 * The list table id
 	 *
-	 * @since 4.0.0
+	 * @since 1.0.0
 	 * @var array
 	 * @access protected
 	 */
@@ -221,6 +230,7 @@ class MS_Helper_List_Table {
 		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
 			return;
 		}
+
 		if ( ! $this->need_pagination() ) {
 			return;
 		}
@@ -241,9 +251,11 @@ class MS_Helper_List_Table {
 		}
 		?>
 		<p class="search-box">
-			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ) ?>"><?php echo $text; ?>:</label>
-			<input type="search" id="<?php echo esc_attr( $input_id ) ?>" name="s" value="<?php _admin_search_query(); ?>" />
-			<?php submit_button( $text, 'button', false, false, array('id' => 'search-submit') ); ?>
+			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ) ?>">
+				<?php echo esc_html( $text ); ?>:
+			</label>
+			<input type="search" id="<?php echo esc_attr( $input_id ) ?>" name="s" value="<?php echo esc_attr( _admin_search_query() ); ?>" />
+			<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
 		</p>
 		<?php
 	}
@@ -622,7 +634,11 @@ class MS_Helper_List_Table {
 	 * @return bool True if the table has more than 1 page.
 	 */
 	public function need_pagination() {
-		$total = (int) @$this->_pagination_args['total_pages'];
+		if ( ! isset( $this->_pagination_args['total_pages'] ) ) {
+			$this->_pagination_args['total_pages'] = 1;
+		}
+
+		$total = (int) $this->_pagination_args['total_pages'];
 		return $total >= 2;
 	}
 
@@ -1087,12 +1103,12 @@ class MS_Helper_List_Table {
 			elseif ( method_exists( $this, 'column_' . $column_name ) ) {
 				echo "<td $attributes>";
 				echo call_user_func( array( $this, 'column_' . $column_name ), $item );
-				echo "</td>";
+				echo '</td>';
 			}
 			else {
 				echo "<td $attributes>";
 				echo $this->column_default( $item, $column_name );
-				echo "</td>";
+				echo '</td>';
 			}
 		}
 	}

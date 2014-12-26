@@ -89,6 +89,7 @@
 
 	/* 16 x 16 */
 	.ms-img-unlock,
+	.ms-img-unlock-grey,
 	.ms-img-lock,
 	.ms-img-lock-grey,
 	.ms-img-edit,
@@ -104,12 +105,16 @@
 		background-position: -42px -143px;
 	}
 
+	.ms-img-unlock-grey {
+		background-position: -42px -243px;
+	}
+
 	.ms-img-lock {
 		background-position: -142px -143px;
 	}
 
 	.ms-img-lock-grey {
-		background-position: -242px -143px;
+		background-position: -142px -243px;
 	}
 
 	.ms-img-edit {
