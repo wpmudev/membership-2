@@ -145,10 +145,10 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		$cpts = self::get_custom_post_types();
 		$contents = array();
 
+		$is_base = ! empty( $args['protected_content'] );
+
 		foreach ( $cpts as $key => $content ) {
-			if ( ! empty( $args['protected_content'] )
-				&& ! $this->has_rule( $key )
-			) {
+			if ( ! $is_base && ! $this->has_rule( $key ) ) {
 				continue;
 			}
 

@@ -75,6 +75,39 @@
 			margin-right: auto;
 		}
 	}
+
+	.search-box {
+		float: right;
+		margin: 0;
+	}
+
+	.ms-search-info {
+		margin: 8px 0 0 20px;
+		display: inline-block;
+		padding: .2em 5px .2em 8px;
+		line-height: 22px;
+		font-size: 14px;
+		color: #777;
+		background: #F4F2E0;
+		border-radius: 5px;
+		cursor: default;
+	}
+
+	.ms-clear-search {
+		color: #999;
+		text-decoration: none;
+
+		&:hover,
+		&:focus,
+		&:active {
+			color: #666;
+		}
+
+		.dashicons {
+			font-size: 16px;
+			line-height: 20px;
+		}
+	}
 }
 
 
@@ -395,67 +428,20 @@
 			transition: opacity .2s;
 		}
 	}
+}
 
-	/* PROTECTION radio-sliders */
+/* Special radio-slider layouts */
+#wpwrap {
+	.ms-edit-access,
 	.ms-edit-protection {
 		.wpmui-radio-slider-wrapper {
 			padding: 0 20px;
-		}
+			display: block;
 
-		.wpmui-radio-slider {
-			.before,
-			.after {
-				position: absolute;
-				top: 1px;
-				width: 16px;
-				height: 16px;
-
-				background: transparent url(../images/membership_sprite.png) no-repeat;
-				background: transparent url(../images/membership_sprite.svg) no-repeat;
+			.wpmui-field-label {
+				margin-left: -20px;
+				margin-right: -20px;
 			}
-
-			.before {
-				left: -20px;
-				background-position: -42px -243px; /* grey unlock */
-
-				opacity: 1;
-				filter: none;
-				-webkit-filter: none;
-			}
-
-			.after {
-				left: 44px;
-				background-position: -142px -243px; /* grey lock */
-
-				opacity: 0.25;
-				filter: blur( 1px );
-				-webkit-filter: blur( 1px );
-			}
-		}
-
-		.wpmui-radio-slider.on {
-			background-color: #D0021B;
-
-			.before {
-				opacity: 0.25;
-				filter: blur( 1px );
-				-webkit-filter: blur( 1px );
-			}
-
-			.after {
-				background-position: -142px -143px; /* lock red */
-
-				opacity: 1;
-				filter: none;
-				-webkit-filter: none;
-			}
-		}
-	}
-
-	/* ACCESS radio-sliders */
-	.ms-edit-access {
-		.wpmui-radio-slider-wrapper {
-			padding: 0 20px;
 		}
 
 		.wpmui-radio-slider {
@@ -473,7 +459,6 @@
 
 			.before {
 				left: -20px;
-				background-position: -142px -243px; /* grey lock */
 
 				opacity: 1;
 				filter: none;
@@ -482,7 +467,6 @@
 
 			.after {
 				left: 44px;
-				background-position: -42px -143px; /* unlock green */
 
 				opacity: 0.25;
 				filter: blur( 1px );
@@ -501,6 +485,41 @@
 				opacity: 1;
 				filter: none;
 				-webkit-filter: none;
+			}
+		}
+	}
+
+
+	/* PROTECTION radio-sliders */
+	.ms-edit-protection {
+		.wpmui-radio-slider {
+			.before {
+				background-position: -42px -243px; /* grey unlock */
+			}
+
+			.after {
+				background-position: -142px -243px; /* grey lock */
+			}
+		}
+
+		.wpmui-radio-slider.on {
+			background-color: #D0021B;
+
+			.after {
+				background-position: -142px -143px; /* lock red */
+			}
+		}
+	}
+
+	/* ACCESS radio-sliders */
+	.ms-edit-access {
+		.wpmui-radio-slider {
+			.before {
+				background-position: -142px -243px; /* grey lock */
+			}
+
+			.after {
+				background-position: -42px -143px; /* unlock green */
 			}
 		}
 	}

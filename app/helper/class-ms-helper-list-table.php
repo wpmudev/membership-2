@@ -22,7 +22,7 @@ class MS_Helper_List_Table {
 	 * @since 1.1.0
 	 * @var   int
 	 */
-	const DEFAULT_PAGE_SIZE = 20;
+	const DEFAULT_PAGE_SIZE = 5;
 
 	/**
 	 * The list table id
@@ -86,6 +86,14 @@ class MS_Helper_List_Table {
 	 * @access private
 	 */
 	private $_pagination;
+
+
+	/**
+	 * If the user did a search, this is the search term
+	 *
+	 * @var string
+	 */
+	protected $search_string = '';
 
 	/**
 	 * Constructor. The child class should call this constructor from its own constructor
@@ -214,7 +222,11 @@ class MS_Helper_List_Table {
 	 * @access public
 	 */
 	public function no_items() {
-		_e( 'No items found.' );
+		if ( $this->is_search() ) {
+			_e( 'No items found.' );
+		} else {
+			_e( 'No items available.' );
+		}
 	}
 
 	/**
@@ -226,38 +238,82 @@ class MS_Helper_List_Table {
 	 * @param string $text The search button text
 	 * @param string $input_id The search input id
 	 */
-	public function search_box( $text, $input_id ) {
+	public function search_box( $text = null, $input_id = 'search' ) {
 		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
 			return;
 		}
 
-		if ( ! $this->need_pagination() ) {
-			return;
-		}
+		if ( $this->need_pagination() || $this->is_search() ) {
+			if ( empty( $text ) ) {
+				$text = __( 'Search', MS_TEXT_DOMAIN );
+			} else {
+				$text = sprintf(
+					__( 'Search %1$s', MS_TEXT_DOMAIN ),
+					$text
+				);
+			}
 
-		$input_id = $input_id . '-search-input';
+			$input_id = $input_id . '-search-input';
+			$fields = array(
+				'orderby',
+				'order',
+				'post_mime_type',
+				'detached',
+			);
 
-		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			echo '<input type="hidden" name="orderby" value="' . esc_attr( $_REQUEST['orderby'] ) . '" />';
+			if ( $this->is_search() ) {
+				?>
+				<span class="ms-search-info">
+					<?php
+					printf(
+						__( 'Search results for &#8220;%s&#8221;' ),
+						sprintf(
+							'<span class="ms-search-term" title="%1$s">%2$s</span>',
+							esc_attr( $this->search_string ),
+							$this->display_search()
+						)
+					);
+					printf(
+						' <a href="%1$s" title="%3$s" class="ms-clear-search">%2$s</a>',
+						WDev()->current_url(),
+						'<span class="dashicons dashicons-dismiss"></span>',
+						__( 'Clear search results', MS_TEXT_DOMAIN )
+					);
+					?>
+				</span>
+				<?php
+			}
+			?>
+			<form class="search-box" action="" method="post">
+				<?php
+				foreach ( $fields as $field ) {
+					if ( ! empty( $_REQUEST[$field] ) ) {
+						$value = $_REQUEST[$field];
+					} else {
+						$value = '';
+					}
+
+					printf(
+						'<input type="hidden" name="%1$s" value="%2$s" />',
+						esc_attr( $field ),
+						esc_attr( $value )
+					);
+				}
+
+				?>
+				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ) ?>">
+					<?php echo esc_html( $text ); ?>:
+				</label>
+				<input
+					type="search"
+					id="<?php echo esc_attr( $input_id ) ?>"
+					name="s"
+					value="<?php echo esc_attr( _admin_search_query() ); ?>"
+					/>
+				<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
+			</form>
+			<?php
 		}
-		if ( ! empty( $_REQUEST['order'] ) ) {
-			echo '<input type="hidden" name="order" value="' . esc_attr( $_REQUEST['order'] ) . '" />';
-		}
-		if ( ! empty( $_REQUEST['post_mime_type'] ) ) {
-			echo '<input type="hidden" name="post_mime_type" value="' . esc_attr( $_REQUEST['post_mime_type'] ) . '" />';
-		}
-		if ( ! empty( $_REQUEST['detached'] ) ) {
-			echo '<input type="hidden" name="detached" value="' . esc_attr( $_REQUEST['detached'] ) . '" />';
-		}
-		?>
-		<p class="search-box">
-			<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ) ?>">
-				<?php echo esc_html( $text ); ?>:
-			</label>
-			<input type="search" id="<?php echo esc_attr( $input_id ) ?>" name="s" value="<?php echo esc_attr( _admin_search_query() ); ?>" />
-			<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
-		</p>
-		<?php
 	}
 
 	/**
@@ -280,6 +336,10 @@ class MS_Helper_List_Table {
 	 * @access public
 	 */
 	public function views() {
+		if ( ! $this->is_search() && ! $this->has_items() ) {
+			return '';
+		}
+
 		$views = $this->get_views();
 
 		/**
@@ -288,7 +348,7 @@ class MS_Helper_List_Table {
 		 * The dynamic portion of the hook name, $this->screen->id, refers
 		 * to the ID of the current screen, usually a string.
 		 *
-		 * @since 3.5.0
+		 * @since 1.0.0
 		 *
 		 * @param array $views An array of available list table views.
 		 */
@@ -322,17 +382,42 @@ class MS_Helper_List_Table {
 					esc_html( $sep )
 				);
 			} else {
+				$is_current = $this->is_current_view( $data['url'] );
+
 				printf(
-					'<li class="%1$s"><a href="%2$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',
+					'<li class="%1$s"><a href="%2$s" class="%6$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',
 					esc_attr( $class ),
 					$data['url'],
 					$data['label'],
 					$count,
-					esc_html( $sep )
+					esc_html( $sep ),
+					( $is_current ? 'current' : '')
 				);
 			}
 		}
 		echo '</ul>';
+	}
+
+	/**
+	 * Determine if the user currently is on the specified URL
+	 *
+	 * @since  1.1.0
+	 * @access protected
+	 *
+	 * @return bool
+	 */
+	protected function is_current_view( $url ) {
+		static $Cur_url = null;
+
+		if ( null === $Cur_url ) {
+			$query_string = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
+			parse_str( $query_string, $Cur_url );
+		}
+
+		$query_string = parse_url( $url, PHP_URL_QUERY );
+		parse_str( $query_string, $params );
+
+		return ( $params == $Cur_url );
 	}
 
 	/**
@@ -357,6 +442,10 @@ class MS_Helper_List_Table {
 	 * @param  bool $echo Output or return the HTML code? Default is output.
 	 */
 	public function bulk_actions( $echo = true ) {
+		if ( ! $this->is_search() && ! $this->has_items() ) {
+			return '';
+		}
+
 		if ( is_null( $this->_actions ) ) {
 			$no_new_actions = $this->_actions = $this->get_bulk_actions();
 			/**
@@ -367,7 +456,7 @@ class MS_Helper_List_Table {
 			 *
 			 * This filter can currently only be used to remove bulk actions.
 			 *
-			 * @since 3.5.0
+			 * @since 1.0.0
 			 *
 			 * @param array $actions An array of the available bulk actions.
 			 */
@@ -605,10 +694,11 @@ class MS_Helper_List_Table {
 	 *
 	 * @return int
 	 */
-	protected function get_items_per_page( $option, $default = 20 ) {
+	protected function get_items_per_page( $option ) {
 		$per_page = (int) get_user_option( $option );
+
 		if ( empty( $per_page ) || $per_page < 1 ) {
-			$per_page = $default;
+			$per_page = self::DEFAULT_PAGE_SIZE;
 		}
 
 		/**
@@ -643,6 +733,36 @@ class MS_Helper_List_Table {
 	}
 
 	/**
+	 * Checks if the current list displays search results.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return bool
+	 */
+	public function is_search() {
+		return ! empty( $this->search_string );
+	}
+
+	/**
+	 * Returns the current search-string for display.
+	 *
+	 * @since  1.1.0
+	 * @return string
+	 */
+	public function display_search() {
+		$term = wp_unslash( $this->search_string );
+		$ext = '';
+		$max_len = 30;
+
+		if ( strlen( $term ) > $max_len ) {
+			$term = substr( $term, 0, $max_len );
+			$ext = '&hellip;';
+		}
+
+		return htmlspecialchars( $term ) . $ext;
+	}
+
+	/**
 	 * Display the pagination.
 	 *
 	 * @since 1.0.0
@@ -655,98 +775,107 @@ class MS_Helper_List_Table {
 		if ( empty( $this->_pagination_args ) ) {
 			return;
 		}
-		if ( ! $this->need_pagination() ) {
+		if ( ! $this->need_pagination() && ! $this->is_search() && ! $this->has_items() ) {
 			return;
+		}
+
+		if ( $this->is_search()
+			|| ! isset( $this->_pagination_args['total_items'] )
+		) {
+			$this->_pagination_args['total_items'] = count( $this->items );
 		}
 
 		extract( $this->_pagination_args, EXTR_SKIP );
 
 		$output = '<span class="displaying-num">' .
-			sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) ) .
+			sprintf(
+				_n( '1 item', '%s items', $total_items ),
+				number_format_i18n( $total_items )
+			) .
 			'</span>';
 
-		$current = $this->get_pagenum();
+		if ( $this->need_pagination() && ! $this->is_search() ) {
+			$current = $this->get_pagenum();
 
-		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+			$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 
-		$current_url = remove_query_arg(
-			array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url
-		);
-
-		$page_links = array();
-
-		$disable_first = $disable_last = '';
-		if ( $current == 1 ) {
-			$disable_first = ' disabled';
-		}
-		if ( $current == $total_pages ) {
-			$disable_last = ' disabled';
-		}
-
-		$page_links[] = sprintf(
-			'<a class="%s" title="%s" href="%s">%s</a>',
-			'first-page' . $disable_first,
-			esc_attr__( 'Go to the first page' ),
-			esc_url( remove_query_arg( 'paged', $current_url ) ),
-			'&laquo;'
-		);
-
-		$page_links[] = sprintf(
-			'<a class="%s" title="%s" href="%s">%s</a>',
-			'prev-page' . $disable_first,
-			esc_attr__( 'Go to the previous page' ),
-			esc_url( add_query_arg( 'paged', max( 1, $current - 1 ), $current_url ) ),
-			'&lsaquo;'
-		);
-
-		if ( 'bottom' == $which ){
-			$html_current_page = $current;
-		}
-		else {
-			$html_current_page = sprintf(
-				'<input class="current-page" title="%s" type="text" name="paged" value="%s" size="%d" />',
-				esc_attr__( 'Current page' ),
-				$current,
-				strlen( $total_pages )
+			$current_url = remove_query_arg(
+				array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url
 			);
+
+			$page_links = array();
+
+			$disable_first = $disable_last = '';
+			if ( $current == 1 ) {
+				$disable_first = ' disabled';
+			}
+			if ( $current == $total_pages ) {
+				$disable_last = ' disabled';
+			}
+
+			$page_links[] = sprintf(
+				'<a class="%s" title="%s" href="%s">%s</a>',
+				'first-page' . $disable_first,
+				esc_attr__( 'Go to the first page' ),
+				esc_url( remove_query_arg( 'paged', $current_url ) ),
+				'&laquo;'
+			);
+
+			$page_links[] = sprintf(
+				'<a class="%s" title="%s" href="%s">%s</a>',
+				'prev-page' . $disable_first,
+				esc_attr__( 'Go to the previous page' ),
+				esc_url( add_query_arg( 'paged', max( 1, $current - 1 ), $current_url ) ),
+				'&lsaquo;'
+			);
+
+			if ( 'bottom' == $which ){
+				$html_current_page = $current;
+			} else {
+				$html_current_page = sprintf(
+					'<input class="current-page" title="%s" type="text" name="paged" value="%s" size="%d" />',
+					esc_attr__( 'Current page' ),
+					$current,
+					strlen( $total_pages )
+				);
+			}
+
+			$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
+			$page_links[] = '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
+
+			$page_links[] = sprintf(
+				'<a class="%s" title="%s" href="%s">%s</a>',
+				'next-page' . $disable_last,
+				esc_attr__( 'Go to the next page' ),
+				esc_url( add_query_arg( 'paged', min( $total_pages, $current + 1 ), $current_url ) ),
+				'&rsaquo;'
+			);
+
+			$page_links[] = sprintf(
+				'<a class="%s" title="%s" href="%s">%s</a>',
+				'last-page' . $disable_last,
+				esc_attr__( 'Go to the last page' ),
+				esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
+				'&raquo;'
+			);
+
+			$pagination_links_class = 'pagination-links';
+			if ( ! empty( $infinite_scroll ) ) {
+				$pagination_links_class = ' hide-if-js';
+			}
+			$output .= "\n<span class='$pagination_links_class'>" . join( "\n", $page_links ) . '</span>';
 		}
-
-		$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
-		$page_links[] = '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
-
-		$page_links[] = sprintf(
-			'<a class="%s" title="%s" href="%s">%s</a>',
-			'next-page' . $disable_last,
-			esc_attr__( 'Go to the next page' ),
-			esc_url( add_query_arg( 'paged', min( $total_pages, $current + 1 ), $current_url ) ),
-			'&rsaquo;'
-		);
-
-		$page_links[] = sprintf(
-			'<a class="%s" title="%s" href="%s">%s</a>',
-			'last-page' . $disable_last,
-			esc_attr__( 'Go to the last page' ),
-			esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
-			'&raquo;'
-		);
-
-		$pagination_links_class = 'pagination-links';
-		if ( ! empty( $infinite_scroll ) ) {
-			$pagination_links_class = ' hide-if-js';
-		}
-		$output .= "\n<span class='$pagination_links_class'>" . join( "\n", $page_links ) . '</span>';
 
 		if ( $total_pages ) {
 			$page_class = $total_pages < 2 ? ' one-page' : '';
-		}
-		else {
+		} else {
 			$page_class = ' no-pages';
 		}
 
 		$this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
 
 		if ( $echo ) {
-			echo $this->_pagination;
+			echo '' . $this->_pagination;
 		} else {
 			return $this->_pagination;
 		}
@@ -806,7 +935,7 @@ class MS_Helper_List_Table {
 		 * The dynamic portion of the hook name, $this->screen->id, refers
 		 * to the ID of the current screen, usually a string.
 		 *
-		 * @since 3.5.0
+		 * @since 1.0.0
 		 *
 		 * @param array $sortable_columns An array of sortable columns.
 		 */
@@ -862,21 +991,23 @@ class MS_Helper_List_Table {
 
 		if ( isset( $_GET['orderby'] ) ) {
 			$current_orderby = $_GET['orderby'];
-		}
-		else {
+		} else {
 			$current_orderby = '';
 		}
 
 		if ( isset( $_GET['order'] ) && 'desc' == $_GET['order'] ) {
 			$current_order = 'desc';
-		}
-		else {
+		} else {
 			$current_order = 'asc';
 		}
 
 		if ( ! empty( $columns['cb'] ) ) {
-			$columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
-				. '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
+			$columns['cb'] = sprintf(
+				'<label class="screen-reader-text" for="cb-select-all-%1$s">%2$s</label>' .
+				'<input id="cb-select-all-%1$s" type="checkbox" />',
+				$cb_counter,
+				__( 'Select All' )
+			);
 			$cb_counter++;
 		}
 
@@ -892,8 +1023,7 @@ class MS_Helper_List_Table {
 
 			if ( 'cb' == $column_key ) {
 				$class[] = 'check-column';
-			}
-			elseif ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) ) {
+			} elseif ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) ) {
 				$class[] = 'num';
 			}
 
@@ -910,16 +1040,27 @@ class MS_Helper_List_Table {
 					$class[] = $desc_first ? 'asc' : 'desc';
 				}
 
-				$column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
+				$column_display_name = sprintf(
+					'<a href="%1$s"><span>%2$s</span><span class="sorting-indicator"></span></a>',
+					esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ),
+					$column_display_name
+				);
 			}
 
-			$id = $with_id ? "id='$column_key'" : '';
+			$id = $with_id ? $column_key : '';
 
 			if ( ! empty( $class ) ) {
-				$class = "class='" . join( ' ', $class ) . "'";
+				$class = join( ' ', $class );
+			} else {
+				$class = '';
 			}
 
-			echo "<th scope='col' $id $class $style>$column_display_name</th>";
+			printf(
+				'<th scope="col" id="%2$s" class="%3$s" $style>%1$s</th>',
+				$column_display_name,
+				esc_attr( $id ),
+				esc_attr( $class )
+			);
 		}
 	}
 
@@ -933,6 +1074,11 @@ class MS_Helper_List_Table {
 		extract( $this->_args );
 
 		$this->display_tablenav( 'top' );
+
+		$attr = '';
+		if ( $singular ) {
+			$attr = sprintf( 'data-wp-lists="list:%1$s"', $singular );
+		}
 
 		?>
 		<table class="wp-list-table <?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>" cellspacing="0">
@@ -948,7 +1094,7 @@ class MS_Helper_List_Table {
 			</tr>
 			</tfoot>
 
-			<tbody id="the-list-<?php echo esc_attr( $this->id ); ?>"<?php if ( $singular ) echo " data-wp-lists='list:$singular'"; ?>>
+			<tbody id="the-list-<?php echo esc_attr( $this->id ); ?>" <?php echo '' . $attr; ?>>
 				<?php $this->display_rows_or_placeholder(); ?>
 			</tbody>
 		</table>
@@ -992,10 +1138,10 @@ class MS_Helper_List_Table {
 		<div class="tablenav <?php echo esc_attr( $which ); ?>">
 
 			<div class="alignleft actions bulkactions">
-				<?php echo $bulk_actions; ?>
+				<?php echo '' . $bulk_actions; ?>
 			</div>
 			<?php
-			echo $extra . $pagination;
+			echo '' . $extra . $pagination;
 			?>
 
 			<br class="clear" />
@@ -1086,29 +1232,38 @@ class MS_Helper_List_Table {
 		list( $columns, $hidden ) = $this->get_column_info();
 
 		foreach ( $columns as $column_name => $column_display_name ) {
-			$class = "class='$column_name column-$column_name'";
-
-			$style = '';
-			if ( in_array( $column_name, $hidden ) ) {
-				$style = ' style="display:none;"';
-			}
-
-			$attributes = "$class$style";
-
 			if ( 'cb' == $column_name ) {
-				echo '<th scope="row" class="check-column">';
-				echo $this->column_cb( $item );
-				echo '</th>';
-			}
-			elseif ( method_exists( $this, 'column_' . $column_name ) ) {
-				echo "<td $attributes>";
-				echo call_user_func( array( $this, 'column_' . $column_name ), $item );
-				echo '</td>';
-			}
-			else {
-				echo "<td $attributes>";
-				echo $this->column_default( $item, $column_name );
-				echo '</td>';
+				printf(
+					'<th scope="row" class="check-column">%1$s</th>',
+					$this->column_cb( $item )
+				);
+			} else {
+				$class = "$column_name column-$column_name";
+
+				$style = '';
+				if ( in_array( $column_name, $hidden ) ) {
+					$style = 'display:none;';
+				}
+
+				if ( method_exists( $this, 'column_' . $column_name ) ) {
+					$code = call_user_func(
+						array( $this, 'column_' . $column_name ),
+						$item,
+						$column_name
+					);
+				} else {
+					$code = $this->column_default(
+						$item,
+						$column_name
+					);
+				}
+
+				printf(
+					'<td class="%1$s" style="%3$s">%2$s</td>',
+					esc_attr( $class ),
+					$code,
+					$style
+				);
 			}
 		}
 	}

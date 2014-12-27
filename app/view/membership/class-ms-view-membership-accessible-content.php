@@ -50,36 +50,34 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 		// Render tabbed interface.
 		?>
 		<div class="ms-wrap wrap">
-			<div class="ms-accessible-content ms-edit-access">
-				<?php
-				MS_Helper_Html::settings_header(
-					array(
-						'title' => __( 'Accessible content', MS_TEXT_DOMAIN ),
-						'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
-						'desc' => $desc,
-						'bread_crumbs' => $bread_crumbs,
-					)
-				);
+			<?php
+			MS_Helper_Html::settings_header(
+				array(
+					'title' => __( 'Accessible content', MS_TEXT_DOMAIN ),
+					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
+					'desc' => $desc,
+					'bread_crumbs' => $bread_crumbs,
+				)
+			);
 
-				$active_tab = $this->data['active_tab'];
-				MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
+			$active_tab = $this->data['active_tab'];
+			MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
 
-				// Call the appropriate form to render.
-				$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
-				$render_callback = apply_filters(
-					'ms_view_membership_accessible_content_render_tab_callback',
-					array( $this, $callback_name ),
-					$active_tab, $this
-				);
+			// Call the appropriate form to render.
+			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
+			$render_callback = apply_filters(
+				'ms_view_membership_accessible_content_render_tab_callback',
+				array( $this, $callback_name ),
+				$active_tab, $this
+			);
 
-				$html = call_user_func( $render_callback );
-				$html = apply_filters(
-					'ms_view_membership_accessible_' . $callback_name,
-					$html
-				);
-				echo '' . $html;
-				?>
-			</div>
+			$html = call_user_func( $render_callback );
+			$html = apply_filters(
+				'ms_view_membership_accessible_' . $callback_name,
+				$html
+			);
+			echo '' . $html;
+			?>
 		</div>
 		<?php
 
@@ -107,6 +105,8 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 	 * }
 	 */
 	public function list_header( $header_data, $rule, $args ) {
+		$header_data['class'] = 'ms-edit-access';
+
 		switch ( $rule ) {
 			case MS_Model_Rule::RULE_TYPE_CATEGORY:
 				$args['parts'] = WDev()->get_array( $args['parts'] );
@@ -294,6 +294,62 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 			</div>
 		</div>
 		<?php
+		return ob_get_clean();
+	}
+
+	/* ====================================================================== *
+	 *                               URL GROUP
+	 * ====================================================================== */
+
+	public function render_tab_url_group() {
+		$fields = $this->get_control_fields();
+
+		$membership = $this->data['membership'];
+		$action = $this->data['action'];
+		$nonce = wp_create_nonce( $action );
+
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP );
+		$rule_list_table = new MS_Helper_List_Table_Rule_Url_Group( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_URL_GROUP,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
+		);
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			$rule_list_table->views();
+			?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->search_box( __( 'Search URLs', MS_TEXT_DOMAIN ), 'search' );
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_URL_GROUP,
+					$this
+				);
+				?>
+			</form>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
 		return ob_get_clean();
 	}
 

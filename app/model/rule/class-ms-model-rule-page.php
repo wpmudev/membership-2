@@ -299,19 +299,17 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			'post_type' => 'page',
 		);
 
+		unset( $args['posts_per_page'] );
 		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
 
 		switch ( $status ) {
 			case MS_Model_Rule::FILTER_HAS_ACCESS;
+			case MS_Model_Rule::FILTER_PROTECTED;
 				$args['include'] = array_keys( $this->rule_value, true );
 				break;
 
 			case MS_Model_Rule::FILTER_NO_ACCESS;
 				$args['include'] = array_keys( $this->rule_value, false );
-				break;
-
-			case MS_Model_Rule::FILTER_PROTECTED;
-				$args['include'] = array_keys( $this->rule_value, true );
 				break;
 
 			case MS_Model_Rule::FILTER_NOT_PROTECTED;
@@ -324,6 +322,15 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 					$args['include'] = array_keys( $this->rule_value );
 				}
 				break;
+		}
+
+		if ( ! empty( $args['number'] ) ) {
+			/*
+			 * 'hierarchical' and 'child_of' must be empty in order for
+			 * offset/number to work correctly.
+			 */
+			$args['hierarchical'] = false;
+			$args['child_of'] = false;
 		}
 
 		$args = wp_parse_args( $args, $defaults );

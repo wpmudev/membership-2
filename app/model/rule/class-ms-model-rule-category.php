@@ -186,32 +186,31 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @return array The content.
 	 */
 	public function get_contents( $args = null ) {
-		$contents = get_categories( 'get=all' );
+		$args = self::get_query_args( $args );
 
-		foreach ( $contents as $key => $content ) {
-			$content->id = $content->term_id;
-			if ( ! $this->has_rule( $content->id ) ) {
-				unset( $contents[ $key ] );
-				continue;
+		$categories = get_categories( $args );
+		$cont = array();
+
+		foreach ( $categories as $key => $category ) {
+			$category->id = $category->term_id;
+
+			$category->type = MS_Model_RULE::RULE_TYPE_CATEGORY;
+			$category->access = $this->get_rule_value( $category->id );
+
+			if ( array_key_exists( $category->id, $this->dripped ) ) {
+				$category->delayed_period =
+					$this->dripped[ $category->id ]['period_unit'] . ' ' .
+					$this->dripped[ $category->id ]['period_type'];
+				$category->dripped = $this->dripped[ $category->id ];
+			} else {
+				$category->delayed_period = '';
 			}
 
-			$content->type = MS_Model_RULE::RULE_TYPE_CATEGORY;
-			$content->access = $this->get_rule_value( $content->id );
-
-			if ( array_key_exists( $content->id, $this->dripped ) ) {
-				$content->delayed_period =
-					$this->dripped[ $content->id ]['period_unit'] . ' ' .
-					$this->dripped[ $content->id ]['period_type'];
-				$content->dripped = $this->dripped[ $content->id ];
-			}
-			else {
-				$content->delayed_period = '';
-			}
+			$cont[ $key ] = $category;
 		}
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
-		}
-		return $contents;
+
+
+		return $cont;
 	}
 
 	/**
@@ -221,16 +220,111 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @since 1.0.0
 	 * @return array of id => category name
 	 */
-	public function get_content_array() {
+	public function get_content_array( $args = null ) {
+		$args = self::get_query_args( $args );
+		$categories = get_categories( $args );
 		$cont = array();
-		$contents = get_categories( 'get=all' );
 
-		foreach ( $contents as $key => $content ) {
-			$cont[ $content->term_id ] = $content->name;
+		foreach ( $categories as $key => $category ) {
+			$cont[ $category->term_id ] = $category->name;
 		}
+
 		return apply_filters(
 			'ms_model_rule_category_get_content_array',
 			$cont
+		);
+	}
+
+	/**
+	 * Get the total content count.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param $args The query post args
+	 * @return int The total content count.
+	 */
+	public function get_content_count( $args = null ) {
+		$count = 0;
+		unset( $args['number'] );
+		$args = self::get_query_args( $args );
+		$posts = get_pages( $args );
+
+		$count = count( $posts );
+
+		return apply_filters(
+			'ms_model_rule_category_get_content_count',
+			$count,
+			$args
+		);
+	}
+
+	/**
+	 * Get the default query args.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $args The query post args.
+	 * @return array The parsed args.
+	 */
+	public function get_query_args( $args = null ) {
+		$defaults = array(
+			'number' => false,
+			'offset' => 0,
+			'get' => 'all', // interpreted by get_terms()
+		);
+
+		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
+		$include = array();
+		$exclude = array();
+
+		switch ( $status ) {
+			case MS_Model_Rule::FILTER_HAS_ACCESS;
+			case MS_Model_Rule::FILTER_PROTECTED;
+				$include = array_keys( $this->rule_value, true );
+				$include = array_keys( $this->rule_value, true );
+				break;
+
+			case MS_Model_Rule::FILTER_NO_ACCESS;
+				$include = array_keys( $this->rule_value, false );
+				break;
+
+			case MS_Model_Rule::FILTER_NOT_PROTECTED;
+				$exclude = array_keys( $this->rule_value, true );
+				break;
+
+			default:
+				// If not visitor membership, just show protected content
+				if ( ! $this->rule_value_invert ) {
+					$include = array_keys( $this->rule_value );
+				}
+				break;
+		}
+
+		if ( isset( $args['s'] ) ) {
+			$args['search'] = $args['s'];
+		}
+
+		if ( ! empty( $args['number'] ) ) {
+			/*
+			 * 'hierarchical' and 'child_of' must be empty in order for
+			 * offset/number to work correctly.
+			 */
+			$args['hierarchical'] = false;
+			$args['child_of'] = false;
+		}
+
+		if ( ! empty( $include ) ) {
+			$args['include'] = $include;
+		} elseif ( ! empty( $exclude ) ) {
+			$args['exclude'] = $exclude;
+		}
+
+		$args = wp_parse_args( $args, $defaults );
+
+		return apply_filters(
+			'ms_model_rule_category_get_query_args',
+			$args,
+			$this
 		);
 	}
 

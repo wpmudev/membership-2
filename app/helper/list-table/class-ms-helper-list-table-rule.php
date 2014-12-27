@@ -29,11 +29,27 @@
  */
 class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
+	/**
+	 * ID of the rule. This is overwritten by each rule!
+	 *
+	 * @var string
+	 */
 	protected $id = 'rule';
 
+	/**
+	 * The rule model
+	 *
+	 * @var MS_Model_Rule
+	 */
 	protected $model;
 
+	/**
+	 * The membership object linked to the rule
+	 *
+	 * @var MS_Model_Membership
+	 */
 	protected $membership;
+
 
 	public function __construct( $model, $membership = null ) {
 		parent::__construct(
@@ -99,19 +115,62 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 	public function prepare_items() {
 		$args = null;
-		if ( ! empty( $_GET['status'] ) ) {
-			$args['rule_status'] = $_GET['status'];
-		}
-
-		$this->items = apply_filters(
-			"ms_helper_list_table_{$this->id}_items",
-			$this->model->get_contents( $args )
-		);
 
 		$this->_column_headers = array(
 			$this->get_columns(),
 			$this->get_hidden_columns(),
 			$this->get_sortable_columns(),
+		);
+
+		// Initialize current pagination Page
+		$per_page = $this->get_items_per_page(
+			"{$this->id}_per_page",
+			self::DEFAULT_PAGE_SIZE
+		);
+
+		$current_page = $this->get_pagenum();
+
+		$args = array(
+			'posts_per_page' => $per_page,
+			'number' => $per_page,
+			'offset' => ( $current_page - 1 ) * $per_page,
+		);
+
+		// Add a status filter
+		if ( ! empty( $_GET['status'] ) ) {
+			$args['rule_status'] = $_GET['status'];
+		}
+
+		// Search string.
+		if ( ! empty( $_REQUEST['s'] ) ) {
+			$this->search_string = $_REQUEST['s'];
+			$args['s'] = $_REQUEST['s'];
+			$args['posts_per_page'] = false;
+			$args['number'] = false;
+			$args['offset'] = 0;
+		}
+
+		// Month filter.
+		if ( ! empty( $_REQUEST['m'] ) && strlen( $_REQUEST['m'] ) == 6 ) {
+			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
+			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
+		}
+
+		// Count items
+		$total_items = $this->model->get_content_count( $args );
+
+		// List available items
+		$this->items = apply_filters(
+			"ms_helper_list_table_{$this->id}_items",
+			$this->model->get_contents( $args )
+		);
+
+		// Prepare the table pagination
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page' => $per_page,
+			)
 		);
 	}
 
@@ -286,26 +345,38 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		</div>
 		<div class="ms-dripped-edit-wrapper ms-period-edit-wrapper ms-period-wrapper <?php echo 'ms-dripped-type-' . MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION; ?>">
 			<div class="ms-period-desc-wrapper">
-				<?php echo MS_Helper_Html::period_desc( $period_from_reg, 'ms-dripped-period' ); ?>
-				<?php _e( ' after registration', MS_TEXT_DOMAIN ); ?>
+				<?php
+				printf(
+					__( '%1$s after registration', MS_TEXT_DOMAIN ),
+					MS_Helper_Html::period_desc( $period_from_reg, 'ms-dripped-period' )
+				);
+				?>
 				<span class="ms-dripped-pen"></span>
 			</div>
 			<div class="ms-period-editor-wrapper">
-				<?php MS_Helper_Html::html_element( $fields['period_unit_from_reg'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['period_type_from_reg'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['ok'] ); ?>
+				<?php
+				MS_Helper_Html::html_element( $fields['period_unit_from_reg'] );
+				MS_Helper_Html::html_element( $fields['period_type_from_reg'] );
+				MS_Helper_Html::html_element( $fields['ok'] );
+				?>
 			</div>
 		</div>
 		<div class="ms-dripped-edit-wrapper ms-period-edit-wrapper ms-period-wrapper <?php echo 'ms-dripped-type-' . MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY; ?>">
 			<div class="ms-period-desc-wrapper">
-				<?php _e( 'in', MS_TEXT_DOMAIN ); ?>
-				<?php echo MS_Helper_Html::period_desc( $period_from_today, 'ms-dripped-period' ); ?>
+				<?php
+				printf(
+					__( 'in %1$s', MS_TEXT_DOMAIN ),
+					MS_Helper_Html::period_desc( $period_from_today, 'ms-dripped-period' )
+				);
+				?>
 				<span class="ms-dripped-pen"></span>
 			</div>
 			<div class="ms-period-editor-wrapper">
-				<?php MS_Helper_Html::html_element( $fields['period_unit_from_today'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['period_type_from_today'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['ok'] ); ?>
+				<?php
+				MS_Helper_Html::html_element( $fields['period_unit_from_today'] );
+				MS_Helper_Html::html_element( $fields['period_type_from_today'] );
+				MS_Helper_Html::html_element( $fields['ok'] );
+				?>
 			</div>
 		</div>
 		<?php
@@ -333,8 +404,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 		if ( ! empty( $this->membership ) && $this->membership->is_valid() ) {
 			$membership_id = $this->membership->id;
-		}
-		elseif ( ! empty( $_REQUEST['membership_id'] ) ) {
+		} elseif ( ! empty( $_REQUEST['membership_id'] ) ) {
 			$membership_id = $_REQUEST['membership_id'];
 		}
 

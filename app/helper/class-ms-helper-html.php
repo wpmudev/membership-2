@@ -176,15 +176,16 @@ class MS_Helper_Html extends MS_Helper {
 		unset( $args['fields'] );
 
 		?>
-		<div class="ms-settings-footer">
-			<form method="post" action="">
-				<?php
-				foreach ( $fields as $field ) {
-					MS_Helper_Html::html_element( $field );
-				}
-				self::save_text( $args );
-				?>
-			</form>
+			<div class="ms-settings-footer">
+				<form method="post" action="">
+					<?php
+					foreach ( $fields as $field ) {
+						MS_Helper_Html::html_element( $field );
+					}
+					self::save_text( $args );
+					?>
+				</form>
+			</div>
 		</div>
 		<?php
 	}
@@ -193,7 +194,9 @@ class MS_Helper_Html extends MS_Helper {
 		$defaults = array(
 			'title' => '',
 			'desc' => '',
+			'class' => '',
 		);
+
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
 		extract( $args );
@@ -201,19 +204,21 @@ class MS_Helper_Html extends MS_Helper {
 		if ( ! is_array( $desc ) ) {
 			$desc = array( $desc );
 		}
+
 		?>
-		<div class="ms-header">
-			<div class="ms-settings-tab-title">
-				<h3><?php printf( $title ); ?></h3>
+		<div class="ms-settings-wrapper <?php echo esc_attr( $class ); ?>">
+			<div class="ms-header">
+				<div class="ms-settings-tab-title">
+					<h3><?php printf( $title ); ?></h3>
+				</div>
+				<div class="ms-settings-description">
+					<?php foreach ( $desc as $description ): ?>
+						<div class="ms-description">
+							<?php printf( $description ); ?>
+						</div>
+					<?php endforeach; ?>
+				</div>
 			</div>
-			<div class="ms-settings-description">
-				<?php foreach ( $desc as $description ): ?>
-					<div class="ms-description">
-						<?php printf( $description ); ?>
-					</div>
-				<?php endforeach; ?>
-			</div>
-		</div>
 		<?php
 	}
 

@@ -69,6 +69,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 		}
 
 		$total_items = $this->model->get_content_count( $args );
+
 		$this->items = apply_filters(
 			"ms_helper_list_table_{$this->id}_items",
 			$this->model->get_contents( $args )
@@ -84,7 +85,7 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 
 	public function get_columns() {
 		$columns = array(
-			'cb'     => '<input type="checkbox" />',
+			'cb' => '<input type="checkbox" />',
 			'name' => __( 'Page title', MS_TEXT_DOMAIN ),
 			'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
 			'post_date' => __( 'Date', MS_TEXT_DOMAIN ),
