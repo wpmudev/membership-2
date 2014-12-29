@@ -422,11 +422,11 @@ class MS_Helper_Html extends MS_Helper {
 
 		if ( $return ) { ob_start(); }
 		?>
-		<div class="ms-tooltip-wrapper">
-		<div class="ms-tooltip-info"><i class="ms-fa ms-fa-info-circle"></i></div>
-		<div class="ms-tooltip">
-			<div class="ms-tooltip-button">&times;</div>
-			<div class="ms-tooltip-content">
+		<div class="wpmui-tooltip-wrapper">
+		<div class="wpmui-tooltip-info"><i class="wpmui-fa wpmui-fa-info-circle"></i></div>
+		<div class="wpmui-tooltip">
+			<div class="wpmui-tooltip-button">&times;</div>
+			<div class="wpmui-tooltip-content">
 			<?php printf( $tip ); ?>
 			</div>
 		</div>

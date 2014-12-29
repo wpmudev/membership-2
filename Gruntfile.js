@@ -13,24 +13,19 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-membership-overview.js',
 				'app/assets/js/src/ms-view-membership-setup-payment.js',
 				'app/assets/js/src/ms-view-settings.js',
+				'app/assets/js/src/ms-view-addons.js',
 				'app/assets/js/src/ms-view-settings-automated-msg.js',
 				'app/assets/js/src/ms-view-settings-mailchimp.js',
 				'app/assets/js/src/ms-view-settings-payment.js',
 				'app/assets/js/src/ms-view-settings-protection.js'
 			],
-			'app/assets/js/ms-public-ajax.js': ['app/assets/js/src/ms-public-ajax.js'],
-			'app/assets/js/jquery.plugins.js': [
-				'app/assets/js/vendor/jquery.nearest.js'
-			],
-			'app/assets/js/select2.js': ['app/assets/js/vendor/select2.js']
+			'app/assets/js/jquery.plugins.js': [ 'app/assets/js/vendor/jquery.nearest.js' ],
+			'app/assets/js/ms-public-ajax.js': ['app/assets/js/src/ms-public-ajax.js']
 		},
 
 		css_files_compile: {
 			'app/assets/css/ms-admin.css':          'app/assets/css/sass/ms-admin.scss',
-			'app/assets/css/ms-public.css':         'app/assets/css/sass/ms-public.scss',
-			'app/assets/css/select2.css':           'app/assets/css/sass/select2/select2.scss',
-			'app/assets/css/font-awesome.css':      'app/assets/css/sass/font-awesome/font-awesome.scss',
-			'app/assets/css/jquery-ui.custom.css':  'app/assets/css/sass/jquery-ui/jquery-ui-1.10.4.custom.scss'
+			'app/assets/css/ms-public.css':         'app/assets/css/sass/ms-public.scss'
 		},
 
 		plugin_dir: 'protected-content/'
@@ -255,18 +250,29 @@ module.exports = function( grunt ) {
 
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-autoprefixer');
-	grunt.loadNpmTasks('grunt-contrib-compass');
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 
+	grunt.registerTask( 'release_notes', 'Show release notes', function() {
+		grunt.log.subhead( 'Release notes' );
+		grunt.log.writeln( '  1. Check BITBUCKET for pull-requests' );
+		grunt.log.writeln( '  2. Check ASANA for high-priority bugs' );
+		grunt.log.writeln( '  3. Check EMAILS for high-priority bugs' );
+		grunt.log.writeln( '  4. Check FORUM for open threads' );
+		grunt.log.writeln( '  5. REPLY to forum threads + unsubscribe' );
+		grunt.log.writeln( '  6. Update the TRANSLATION files' );
+		grunt.log.writeln( '  7. Generate ARCHIVE' );
+		grunt.log.writeln( '  8. INSTALL on a clean WordPress installation' );
+		grunt.log.writeln( '  9. RELEASE the plugin!' );
+	});
+
 	// Default task.
 
-	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', /*'uglify',*/ 'sass', 'autoprefixer'/*, 'cssmin'*/] );
-
-	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress'] );
+	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'release_notes'] );
+	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress', 'release_notes'] );
 
 	grunt.util.linefeed = '\n';
 };

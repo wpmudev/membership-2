@@ -40,7 +40,7 @@ class MS_View_Member_List extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Members', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'ms-fa ms-fa-users',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-users',
 					'desc' => __( 'Here you can manage your Members and Add New Members from your Users list.', MS_TEXT_DOMAIN ),
 				)
 			);

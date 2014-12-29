@@ -25,7 +25,7 @@ class MS_View_Membership_Overview extends MS_View {
 		$field_desc = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 			'value' => $child_membership->description,
-			'class' => 'ms-ajax-update ms-center',
+			'class' => 'ms-center',
 			'data_ms' => array(
 				'action' => MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP,
 				'field' => 'description',
@@ -69,7 +69,7 @@ class MS_View_Membership_Overview extends MS_View {
 					array(
 						'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
 						'desc' => __( 'Here you can view a quick summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
-						'title_icon_class' => 'ms-fa ms-fa-dashboard',
+						'title_icon_class' => 'wpmui-fa wpmui-fa-dashboard',
 						'bread_crumbs' => $this->data['bread_crumbs'],
 					)
 				);
@@ -89,7 +89,7 @@ class MS_View_Membership_Overview extends MS_View {
 							<?php _e( '(Description)', MS_TEXT_DOMAIN ); ?>
 						</span>
 						<span class="value"><?php echo $child_membership->description; ?></span>
-						<i class="ms-fa ms-fa-pencil handlediv"></i>
+						<i class="wpmui-fa wpmui-fa-pencil handlediv"></i>
 					</span>
 					<div class="hidden editor">
 						<?php MS_Helper_Html::html_element( $field_desc ); ?>
@@ -117,7 +117,7 @@ class MS_View_Membership_Overview extends MS_View {
 		?>
 		<div class="ms-half ms-settings-box ms-fixed-height">
 			<?php MS_Helper_Html::html_separator( 'vertical' ); ?>
-			<h3><i class="ms-low ms-fa ms-fa-globe"></i> <?php _e( 'News', MS_TEXT_DOMAIN ); ?></h3>
+			<h3><i class="ms-low wpmui-fa wpmui-fa-globe"></i> <?php _e( 'News', MS_TEXT_DOMAIN ); ?></h3>
 
 			<div class="inside group">
 				<?php if ( ! empty( $this->data['events'] ) ) : ?>
@@ -169,7 +169,7 @@ class MS_View_Membership_Overview extends MS_View {
 		$count = count( $this->data['members'] );
 		?>
 		<div class="ms-half ms-settings-box ms-fixed-height">
-			<h3><i class="ms-low ms-fa ms-fa-user"></i> <?php printf( __( 'Members (%s)', MS_TEXT_DOMAIN ), $count ); ?></h3>
+			<h3><i class="ms-low wpmui-fa wpmui-fa-user"></i> <?php printf( __( 'Members (%s)', MS_TEXT_DOMAIN ), $count ); ?></h3>
 
 			<div class="inside group">
 			<?php if ( $count > 0 ) : ?>

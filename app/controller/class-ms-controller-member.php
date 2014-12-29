@@ -495,7 +495,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( 'jquery-ui' );
+		WDev()->add_ui( 'jquery-ui' );
 	}
 
 	/**

@@ -107,7 +107,7 @@ class MS_View_Settings_Payment extends MS_View {
 				'value' => $settings->currency,
 				'field_options' => $settings->get_currencies(),
 				'class' => '',
-				'class' => 'chosen-select ms-ajax-update',
+				'class' => 'chosen-select',
 				'data_ms' => array(
 					'field' => 'currency',
 				),
@@ -118,7 +118,6 @@ class MS_View_Settings_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Invoice sender name', MS_TEXT_DOMAIN ),
 				'value' => $settings->invoice_sender_name,
-				'class' => 'ms-ajax-update',
 				'data_ms' => array(
 					'field' => 'invoice_sender_name',
 				),

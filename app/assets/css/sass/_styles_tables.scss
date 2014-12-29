@@ -68,10 +68,11 @@
 	}
 
 	.tablenav,
-	p.search-box {
+	.search-box {
 		input,
 		select,
 		.wpmui-field-input {
+			float: none !important;
 			margin-top: 0 !important; /* important: Some WordPress fields have a margin that needs to be cleared here */
 			margin-bottom: 0 !important;
 		}

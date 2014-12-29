@@ -15,7 +15,7 @@ class MS_View_Gateway_Manual_Settings extends MS_View {
 		// Render tabbed interface.
 		?>
 		<div class="ms-wrap">
-			<form class="ms-gateway-setings-form ms-form ms-ajax-update" data-ms="<?php echo esc_attr( $gateway->id ); ?>">
+			<form class="ms-gateway-setings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
 				<?php
 				MS_Helper_Html::settings_box_header(
 					'',

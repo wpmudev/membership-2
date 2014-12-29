@@ -22,7 +22,7 @@
 		width: 100%;
 	}
 
-	.ms-text {
+	.wpmui-text {
 		display: inline-block;
 	}
 
@@ -55,7 +55,7 @@
 		cursor: default;
 	}
 
-	.ms-no-data {
+	.wpmui-no-data {
 		font-style: italic;
 		padding: 3px 0;
 		line-height: 24px;
@@ -84,11 +84,11 @@
 
 #wpadminbar,
 .ms-wrap {
-	.ms-datepicker-wrapper {
+	.wpmui-datepicker-wrapper {
 		display: inline-block;
 		position: relative;
 
-		.ms-icon {
+		.wpmui-icon {
 			position: absolute;
 			right: 0;
 			top: 0;
@@ -102,15 +102,9 @@
 			color: #444;
 		}
 	}
-
-	/*
-	.ui-datepicker {
-		margin-top: 10px;
-	}
-	*/
 }
 
-.ui-datepicker.ms-datepicker {
+.ui-datepicker.wpmui-datepicker {
 	padding: 0;
 	border: none;
 
@@ -193,14 +187,14 @@
 }
 
 #wpwrap .ms-wrap {
-	.ms-radio {
+	.wpmui-radio {
 		margin: 2px 4px 0 0;
 		position: absolute;
 		left: 0;
 		top: 0;
 	}
 
-	.ms-radio-caption {
+	.wpmui-radio-caption {
 		padding-left: 24px;
 		font-weight: 500;
 		margin: 8px 0 2px;
@@ -334,12 +328,12 @@
 		clear: both;
 	}
 
-	.ms-radio-slider:focus {
+	.wpmui-radio-slider:focus {
 		background:none;
 		outline:none;
 	}
 
-	.ms-radio-slider {
+	.wpmui-radio-slider {
 		position: relative;
 		display: inline-block;
 
@@ -350,15 +344,15 @@
 		border-radius: 10px;
 		background: rgb(176, 176, 176);
 		opacity: .8;
-		overflow: hidden;
+		overflow: visible;
 	}
 
-	.ms-radio-slider:hover {
+	.wpmui-radio-slider:hover {
 		cursor: pointer;
 		opacity:1;
 	}
 
-	.ms-radio-slider .ms-toggle {
+	.wpmui-radio-slider .wpmui-toggle {
 		position: absolute;
 		display: inline-block;
 
@@ -372,19 +366,19 @@
 		transition: all .2s ease-in-out;
 	}
 
-	.ms-radio-slider .ms-toggle:hover {
+	.wpmui-radio-slider .wpmui-toggle:hover {
 		transform: scale(1.1);
 	}
 
-	.ms-radio-slider.on .ms-toggle {
+	.wpmui-radio-slider.on .wpmui-toggle {
 		left: 21px;
 	}
 
-	.ms-radio-slider.on {
+	.wpmui-radio-slider.on {
 		background: rgb(107,187,26);
 	}
 
-	.ms-radio-slider.ms-processing {
+	.wpmui-radio-slider.ms-processing {
 		cursor: wait;
 	}
 
@@ -402,7 +396,7 @@
 
 .ms-wrap {
 	.wpmui-tag-selector-wrapper {
-		.ms-tag-data {
+		.wpmui-tag-data {
 			display: block;
 
 			.select2-choices {
@@ -416,7 +410,7 @@
 		}
 	}
 
-	.ms-tag-label {
+	.wpmui-tag-label {
 		margin: 10px 0 5px;
 
 		.ms-img {

@@ -69,7 +69,7 @@ window.ms_init.view_member_list = function init () {
 	function change_view() {
 		var list = jQuery( '#view_membership' ),
 			new_id = parseInt( list.val() ),
-			data = list.data('ms'),
+			data = list.data('ajax'),
 			url = data.url + new_id;
 
 		if ( new_id <= 0 ) { return; }

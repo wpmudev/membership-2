@@ -209,7 +209,6 @@ class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'value' => $item->value,
 			'field_options' => $this->matching_options,
-			'class' => 'ms-ajax-update',
 			'data_ms' => array(
 				'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_MATCHING,
 				'membership_id' => $this->get_membership_id(),

@@ -355,14 +355,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_script(
 			'ms-admin',
 			$plugin_url . 'app/assets/js/ms-admin.js',
-			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'jquery-plugins' ), $version
+			array( 'jquery', 'jquery-validate', 'jquery-plugins' ), $version
 		);
 
-		wp_register_script(
-			'jquery-chosen',
-			$plugin_url . 'app/assets/js/select2.js',
-			array( 'jquery' ), $version
-		);
 		wp_register_script(
 			'jquery-plugins',
 			$plugin_url . 'app/assets/js/jquery.plugins.js',
@@ -434,21 +429,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		);
 
 		wp_register_style(
-			'jquery-ui',
-			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
-			null, $version
-		);
-		wp_register_style(
-			'font-awesome',
-			$plugin_url . 'app/assets/css/font-awesome.css',
-			null, $version
-		);
-		wp_register_style(
-			'jquery-chosen',
-			$plugin_url . 'app/assets/css/select2.css',
-			null, $version
-		);
-		wp_register_style(
 			'ms_view_membership',
 			$plugin_url . 'app/assets/css/ms-view-membership.css',
 			null, $version
@@ -475,7 +455,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_script(
 			'ms-admin',
 			$plugin_url . 'app/assets/js/ms-admin.js',
-			array( 'jquery', 'jquery-chosen', 'jquery-validate', 'jquery-plugins' ), $version
+			array( 'jquery', 'jquery-validate', 'jquery-plugins' ), $version
 		);
 		wp_register_script(
 			'ms-ajax-login',
@@ -483,11 +463,6 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery' ), $version, true // last param forces script to load in footer
 		);
 
-		wp_register_script(
-			'jquery-chosen',
-			$plugin_url . 'app/assets/js/select2.js',
-			array( 'jquery' ), $version
-		);
 		wp_register_script(
 			'jquery-plugins',
 			$plugin_url . 'app/assets/js/jquery.plugins.js',
@@ -521,11 +496,6 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery-validate' ), $version
 		);
 		wp_register_script(
-			'jquery-chosen',
-			$plugin_url . 'app/assets/js/select2.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
 			'ms-view-gateway-authorize',
 			$plugin_url . 'app/assets/js/ms-view-gateway-authorize.js',
 			array( 'jquery' ), $version
@@ -550,19 +520,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_style(
 			'ms-styles',
 			$plugin_url . 'app/assets/css/ms-public.css',
-			array( 'jquery-ui', 'jquery-chosen' ),
+			array(),
 			$version
-		);
-
-		wp_register_style(
-			'jquery-ui',
-			$plugin_url . 'app/assets/css/jquery-ui.custom.css',
-			null, $version
-		);
-		wp_register_style(
-			'jquery-chosen',
-			$plugin_url . 'app/assets/css/select2.css',
-			null, $version
 		);
 	}
 
@@ -573,10 +532,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function enqueue_plugin_admin_styles() {
 		wp_enqueue_style( 'ms-admin-styles' );
-		wp_enqueue_style( 'font-awesome' );
-		wp_enqueue_style( 'jquery-chosen' );
 
 		WDev()->add_ui();
+		WDev()->add_ui( 'select' );
+		WDev()->add_ui( 'fontawesome' );
 	}
 
 	/**
@@ -587,6 +546,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_styles() {
+		WDev()->add_ui( 'select' );
+		WDev()->add_ui( 'jquery-ui' );
 		wp_enqueue_style( 'ms-styles' );
 	}
 
@@ -598,7 +559,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_admin_scripts() {
-		wp_enqueue_script( 'jquery-chosen' );
+		WDev()->add_ui( 'select' );
 	}
 
 	/**

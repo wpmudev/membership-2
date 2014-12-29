@@ -3,12 +3,12 @@
  */
 
 /* The "Info" icon */
-.ms-tooltip-wrapper {
+.wpmui-tooltip-wrapper {
 	display:inline;
 	position: relative;
 	z-index: 100;
 
-	.ms-tooltip-info {
+	.wpmui-tooltip-info {
 		display: inline;
 		min-width: 20px;
 
@@ -21,7 +21,7 @@
 }
 
 /* The actual tooltip */
-.ms-tooltip {
+.wpmui-tooltip {
 	display: none;
 	position: absolute;
 	width: 325px;
@@ -45,7 +45,7 @@
 		border-right: 10px solid #fafafa; /* bottom, add background color here */
 	}
 
-	.ms-tooltip-button {
+	.wpmui-tooltip-button {
 		position: absolute;
 		top: 10px;
 		right: 10px;
@@ -54,7 +54,7 @@
 		cursor: pointer;
 	}
 
-	.ms-tooltip-content {
+	.wpmui-tooltip-content {
 		padding: 20px;
 	}
 }

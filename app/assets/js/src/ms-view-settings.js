@@ -17,7 +17,6 @@ window.ms_init.view_settings = function init () {
 				actions = row.find( '.ms-action a' ),
 				val = me.val();
 
-
 			// Disable the pages that are used already.
 			options.prop( 'disabled', false );
 			for ( ind = 0; ind < cur_pages.length; ind += 1 ) {
@@ -29,7 +28,7 @@ window.ms_init.view_settings = function init () {
 			// Update the view/edit links
 			actions.each(function() {
 				var link = jQuery( this ),
-					data = link.data('ms'),
+					data = link.data('ajax'),
 					url = data.base + val;
 
 				if ( undefined === val || isNaN(val) || val < 1 ) {
@@ -75,7 +74,7 @@ window.ms_init.view_settings = function init () {
 	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
 	// Hide/Show the "Test Membership" button in the toolbar.
-	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
+	jQuery( '.wpmui-slider-plugin_enabled').on( 'wpmui-radio-slider-updated', update_toolbar );
 
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );

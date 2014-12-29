@@ -54,8 +54,11 @@ class MS_View_Addon extends MS_View {
 		$list_table->prepare_items();
 
 		?>
-		<div class='ms-wrap'>
-			<h2 class='ms-settings-title'><i class="ms-fa ms-fa-puzzle-piece"></i> <?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ) ; ?></h2>
+		<div class="ms-wrap">
+			<h2 class="ms-settings-title">
+				<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>
+				<?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ); ?>
+			</h2>
 			<form action="" method="post">
 				<?php $list_table->display(); ?>
 			</form>

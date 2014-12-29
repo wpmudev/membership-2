@@ -19,5 +19,5 @@ window.ms_init.view_settings_protection = function init () {
 		return data;
 	}
 
-	jQuery( '.button-primary.ms-ajax-update' ).data( 'before_ajax', before_ajax );
+	jQuery( '.button-primary.wpmui-ajax-update' ).data( 'before_ajax', before_ajax );
 };

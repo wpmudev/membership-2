@@ -26,7 +26,7 @@
  * Controller to manage billing and invoices.
  *
  * @since 1.0.0
- * 
+ *
  * @package Membership
  * @subpackage Controller
  */
@@ -124,7 +124,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 */
 	public function billing_do_action( $action, $invoice_ids ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
-		
+
 		if( $this->is_admin_user() && is_array( $invoice_ids ) ) {
 			foreach( $invoice_ids as $invoice_id ) {
 				switch( $action ) {
@@ -139,7 +139,7 @@ class MS_Controller_Billing extends MS_Controller {
 				}
 			}
 		}
-		
+
 		return apply_filters( 'ms_controller_billing_billing_do_action', $msg, $action, $invoice_ids, $this );
 	}
 
@@ -147,7 +147,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 * Save invoices using the invoices model.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param mixed $fields Transaction fields
 	 */
 	private function save_invoice( $fields ) {
@@ -200,7 +200,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 */
 	public function enqueue_styles() {
 		if ( 'edit' == @$_GET['action'] ) {
-			wp_enqueue_style( 'jquery-ui' );
+			WDev()->add_ui( 'jquery-ui' );
 		}
 	}
 

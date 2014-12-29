@@ -25,7 +25,7 @@
 		clear: both;
 	}
 
-	.ms-chose-type.ms-radio-input-wrapper {
+	.ms-choose-type.wpmui-radio-input-wrapper {
 		position: relative;
 		float: left;
 
@@ -53,23 +53,23 @@
 			background: url(../images/membership_sprite.svg), none;
 		}
 
-		&.ms-simple label:before {
+		&.wpmui-simple label:before {
 			background-position: 0 -30px;
 		}
 
-		&.ms-content_type label:before {
+		&.wpmui-content_type label:before {
 			background-position: -100px -20px;
 		}
 
-		&.ms-tier label:before {
+		&.wpmui-tier label:before {
 			background-position: -200px -18px;
 		}
 
-		&.ms-dripped label:before {
+		&.wpmui-dripped label:before {
 			background-position: -300px -20px;
 		}
 
-		.ms-radio-caption {
+		.wpmui-radio-caption {
 			margin-bottom: 1em;
 		}
 	}

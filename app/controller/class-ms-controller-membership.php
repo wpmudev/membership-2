@@ -1525,7 +1525,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		switch ( $this->get_active_tab() ) {
 			default:
-				wp_enqueue_style( 'jquery-ui' );
+				WDev()->add_ui( 'jquery-ui' );
 				break;
 		}
 

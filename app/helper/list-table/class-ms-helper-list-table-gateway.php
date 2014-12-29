@@ -139,7 +139,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 */
 	protected function column_name( MS_Model_Gateway $item ) {
 		$html = sprintf(
-			'<span class="title">%1$s %2$s<span class="ms-fa offline-flag" title="%3$s"></span></span>',
+			'<span class="title">%1$s %2$s<span class="wpmui-fa offline-flag" title="%3$s"></span></span>',
 			$item->name,
 			$item->description,
 			__( 'Website seems to be not publicly available. This payment method might not work.', MS_TEXT_DOMAIN )
@@ -234,7 +234,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 
 		$html .= '<div class="ms-gateway-setup-wrapper">';
 		$html .= sprintf(
-			'<a class="button" href="#" data-ms-dialog="Gateway_%s_Dialog"><i class="ms-fa ms-fa-cog"></i> %s</a>',
+			'<a class="button" href="#" data-ms-dialog="Gateway_%s_Dialog"><i class="wpmui-fa wpmui-fa-cog"></i> %s</a>',
 			esc_attr( $item->id ),
 			__( 'Configure', MS_TEXT_DOMAIN )
 		);

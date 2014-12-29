@@ -11,7 +11,7 @@ window.ms_init.view_membership_overview = function init () {
 		ms_editor = ms_desc.find( '.editor' ),
 		txt_editor = ms_editor.find( 'textarea' );
 
-	jQuery( '.ms-radio-slider' ).on( 'ms-radio-slider-updated', function() {
+	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function() {
 		var object = this,
 			obj = jQuery( '#ms-membership-status' );
 

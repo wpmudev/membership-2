@@ -37,7 +37,7 @@ class MS_View_Coupon_Edit extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => $title,
-					'title_icon_class' => 'ms-fa ms-fa-pencil-square',
+					'title_icon_class' => 'wpmui-fa wpmui-fa-pencil-square',
 				)
 			);
 			?>

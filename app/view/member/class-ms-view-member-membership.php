@@ -22,7 +22,7 @@ class MS_View_Member_Membership extends MS_View {
 		<div class="ms-wrap">
 			<div class="ms-settings">
 				<h2 class="ms-settings-title">
-					<i class="ms-fa ms-fa-pencil-square"></i>
+					<i class="wpmui-fa wpmui-fa-pencil-square"></i>
 					<?php echo esc_html( $this->data['title'] ); ?>
 				</h2>
 

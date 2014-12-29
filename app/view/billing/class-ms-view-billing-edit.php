@@ -38,7 +38,7 @@ class MS_View_Billing_Edit extends MS_View {
 					$text = $this->data['invoice']->is_valid() ? __( 'Add', MS_TEXT_DOMAIN ) : __( 'Edit', MS_TEXT_DOMAIN );
 					MS_Helper_Html::settings_header( array(
 						'title' => sprintf( __( ' %s Billing', MS_TEXT_DOMAIN ), $text ),
-						'title_icon_class' => 'ms-fa ms-fa-pencil-square',
+						'title_icon_class' => 'wpmui-fa wpmui-fa-pencil-square',
 					) );
 				?>
 				<form action="<?php echo remove_query_arg( array( 'action', 'invoice_id' ) ); ?>" method="post" class="ms-form">
