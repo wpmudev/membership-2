@@ -633,6 +633,8 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			)
 		);
 
+		WDev()->add_ui( 'select' );
+
 		wp_enqueue_script( 'ms-controller-admin-bar' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
