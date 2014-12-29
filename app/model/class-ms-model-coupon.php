@@ -387,10 +387,10 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			}
 			$discount = $original_price - $price;
 			$this->coupon_message = sprintf(
-				__( 'Using Coupon code: %s. Discount applied: %s %s', MS_TEXT_DOMAIN ),
+				__( 'Using Coupon code: %1$s. Discount applied: %2$s %3$s', MS_TEXT_DOMAIN ),
 				$this->code,
 				MS_Plugin::instance()->settings->currency,
-				$discount
+				number_format( $discount, 2 )
 			);
 		}
 

@@ -49,7 +49,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	private $allowed_actions = array( 'update_card', 'purchase_button', 9 );
+	private $allowed_actions = array( 'update_card', 'purchase_button' );
 
 	/**
 	 * Prepare the gateway controller.
@@ -63,8 +63,8 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$this->add_action( 'ms_controller_gateway_settings_render_view', 'gateway_settings_edit' );
 
-		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button' );
-		$this->add_action( 'ms_view_frontend_payment_purchase_button', 'purchase_button' );
+		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button', 10, 2 );
+		$this->add_action( 'ms_view_frontend_payment_purchase_button', 'purchase_button', 10, 2 );
 		$this->add_action( 'ms_controller_frontend_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_frontend_signup_process_purchase', 'process_purchase', 1 );
 		$this->add_filter( 'ms_view_shortcode_membership_signup_cancel_button', 'cancel_button', 10, 2 );
@@ -280,7 +280,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function purchase_button( $ms_relationship ) {
+	public function purchase_button( $ms_relationship, $invoice ) {
 		// Get only active gateways
 		$gateways = MS_Model_Gateway::get_gateways( true );
 		$data = array();
@@ -299,7 +299,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$membership = $ms_relationship->get_membership();
 
 			// Free membership, show only free gateway
-			if ( $membership->is_free() ) {
+			if ( $membership->is_free() || 0 == $invoice->total ) {
 				if ( MS_Model_Gateway::GATEWAY_FREE !== $gateway->id ) {
 					continue;
 				}

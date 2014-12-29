@@ -198,7 +198,8 @@ class MS_View_Frontend_Payment extends MS_View {
 				<?php else :
 					do_action(
 						'ms_view_frontend_payment_purchase_button',
-						$ms_relationship
+						$ms_relationship,
+						$invoice
 					);
 				endif;
 				?>
