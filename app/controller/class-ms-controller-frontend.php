@@ -125,9 +125,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function process_actions() {
-		// Only execute this handler once!
-		$this->remove_action( 'template_redirect', 'process_actions', 1 );
-
 		$action = $this->get_action();
 
 		/**
@@ -155,9 +152,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function check_for_membership_pages() {
 		global $post, $wp_query;
-
-		// Only execute this handler once!
-		$this->remove_action( 'template_redirect', 'check_for_membership_pages', 2 );
 
 		// For invoice page purchase process
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );

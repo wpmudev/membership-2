@@ -149,18 +149,16 @@ class MS_Hooker {
 	 * @param string $tag The name of the action to which the $method is hooked.
 	 * @param string $method The name of the method to be called.
 	 * @param int $priority optional. Used to specify the order in which the functions associated with a particular action are executed (default: 10). Lower numbers correspond with earlier execution, and functions with the same priority are executed in the order in which they were added to the action.
-	 * @param int $accepted_args optional. The number of arguments the function accept (default 1).
 	 * @return MS_Hooker
 	 */
-	protected function remove_action( $tag, $method = null, $priority = 10, $accepted_args = 1 ) {
+	protected function remove_action( $tag, $method = null, $priority = 10 ) {
 		if ( null === $method ) {
 			remove_all_actions( $tag );
 		} else {
 			remove_action(
 				$tag,
 				$this->get_callback( $tag, $method ),
-				$priority,
-				$accepted_args
+				$priority
 			);
 		}
 
@@ -249,18 +247,16 @@ class MS_Hooker {
 	 * @param string $tag The name of the filter to remove the $method to.
 	 * @param string $method The name of the method to remove.
 	 * @param int $priority optional. The priority of the function (default: 10).
-	 * @param int $accepted_args optional. The number of arguments the function accepts (default: 1).
 	 * @return MS_Hooker
 	 */
-	protected function remove_filter( $tag, $method = null, $priority = 10, $accepted_args = 1 ) {
+	protected function remove_filter( $tag, $method = null, $priority = 10 ) {
 		if ( null === $method ) {
 			remove_all_filters( $tag );
 		} else {
 			remove_filter(
 				$tag,
 				$this->get_callback( $tag, $method ),
-				$priority,
-				$accepted_args
+				$priority
 			);
 		}
 

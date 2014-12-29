@@ -356,7 +356,7 @@ class MS_Model_Plugin extends MS_Model {
 	 *
 	 * @since 1.1
 	 */
-	public function setup_rules(){
+	public function setup_rules() {
 		do_action( 'ms_model_plugin_load_rules_before', $this );
 
 		$rule_types = MS_Model_Rule::get_rule_types();
