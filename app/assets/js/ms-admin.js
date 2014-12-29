@@ -49,7 +49,7 @@ window.ms_functions = {
 	dp_config: {
         dateFormat: 'yy-mm-dd', //TODO get wp configured date format
         dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thy', 'Fri', 'Sat'],
-        custom_class: 'ms-datepicker' // Not a jQuery argument!
+        custom_class: 'wpmui-datepicker' // Not a jQuery argument!
     },
 
 	chosen_options: {
@@ -68,7 +68,7 @@ window.ms_functions = {
 			.select2( fn.chosen_options );
 
 		// Initialize the datepickers.
-		jQuery( '.ms-datepicker', scope ).ms_datepicker();
+		jQuery( '.wpmui-datepicker', scope ).ms_datepicker();
 	},
 
 	ajax_update: function( obj ) {
@@ -91,7 +91,7 @@ window.ms_functions = {
 			anim.addClass( 'wpmui-loading' );
 			info_field = fn.ajax_show_indicator( field );
 
-			data = field.data( 'ms' );
+			data = field.data( 'ajax' );
 
 			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
@@ -139,8 +139,8 @@ window.ms_functions = {
 			slider.parent().toggleClass( 'on' );
 			slider.trigger( 'change' );
 
-			toggle = slider.children( '.ms-toggle' );
-			data = toggle.data( 'ms' );
+			toggle = slider.children( '.wpmui-toggle' );
+			data = toggle.data( 'ajax' );
 			states = toggle.data( 'states' );
 
 			if ( null != data ) {
@@ -172,7 +172,7 @@ window.ms_functions = {
 						slider.removeClass( 'ms-processing wpmui-loading' );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
-						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
+						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
 					}
 				);
 			}
@@ -358,7 +358,7 @@ window.ms_functions = {
 	 */
 	toggle_datepicker: function( el ) {
 		var me = jQuery( el ),
-			dp = me.closest( '.ms-datepicker-wrapper' ).find( '.ms-datepicker' );
+			dp = me.closest( '.wpmui-datepicker-wrapper' ).find( '.wpmui-datepicker' );
 
 		dp.datepicker( 'show' );
 	},
@@ -370,8 +370,8 @@ window.ms_functions = {
 	tag_selector_add: function( ev ) {
 		var fn = window.ms_functions,
 			me = jQuery( this ).closest( '.wpmui-tag-selector-wrapper' ),
-			el_src = me.find( 'select.ms-tag-source' ),
-			el_dst = me.find( 'select.ms-tag-data' ),
+			el_src = me.find( 'select.wpmui-tag-source' ),
+			el_dst = me.find( 'select.wpmui-tag-data' ),
 			list = el_dst.val() || [];
 
 		if ( ! el_src.val().length ) { return; }
@@ -390,9 +390,9 @@ window.ms_functions = {
 	tag_selector_refresh_source: function( ev, el ) {
 		var i = 0, item = null,
 			me = jQuery( el ).closest( '.wpmui-tag-selector-wrapper' ),
-			el_src = me.find( 'select.ms-tag-source' ),
+			el_src = me.find( 'select.wpmui-tag-source' ),
 			el_src_items = el_src.find( 'option' ),
-			el_dst = me.find( 'select.ms-tag-data' ),
+			el_dst = me.find( 'select.wpmui-tag-data' ),
 			list = el_dst.val() || [];
 
 		for ( i = 0; i < el_src_items.length; i += 1 ) {
@@ -500,7 +500,7 @@ jQuery( document ).ready( function() {
 	// Toggle radio-sliders on click.
 	.on(
 		'click',
-		'.ms-radio-slider',
+		'.wpmui-radio-slider',
 		function( ev ) { fn.radio_slider_ajax_update( this ); }
 	)
 	// Toggle accordeon boxes on click.
@@ -512,39 +512,39 @@ jQuery( document ).ready( function() {
 	// Toggle datepickers when user clicks on icon.
 	.on(
 		'click',
-		'.ms-datepicker-wrapper .ms-icon',
+		'.wpmui-datepicker-wrapper .wpmui-icon',
 		function( ev ) { fn.toggle_datepicker( this ); }
 	)
 	// Initialize the tag-select components.
 	.on(
 		'select2-opening',
-		'.wpmui-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .wpmui-tag-data',
 		function( ev ) { ev.preventDefault(); }
 	)
 	.on(
 		'change',
-		'.wpmui-tag-selector-wrapper .ms-tag-data',
+		'.wpmui-tag-selector-wrapper .wpmui-tag-data',
 		function( ev ) { fn.tag_selector_refresh_source( ev, this ); }
 	)
 	.on(
 		'click',
-		'.wpmui-tag-selector-wrapper .ms-tag-button',
+		'.wpmui-tag-selector-wrapper .wpmui-tag-button',
 		fn.tag_selector_add
 	)
 	// Ajax-Submit data when ms-ajax-update fields are changed.
 	.on(
 		'change',
-		'input.ms-ajax-update, select.ms-ajax-update, textarea.ms-ajax-update',
+		'input.wpmui-ajax-update, select.wpmui-ajax-update, textarea.wpmui-ajax-update',
 		function( ev ) { fn.ajax_update( this ); }
 	)
 	.on(
 		'click',
-		'button.ms-ajax-update',
+		'button.wpmui-ajax-update',
 		function( ev ) { fn.ajax_update( this ); }
 	)
 	.on(
 		'submit',
-		'form.ms-ajax-update',
+		'form.wpmui-ajax-update',
 		function( ev ) { fn.dynamic_form_submit( ev, this ); }
 	)
 	// Initialize popup dialogs.
@@ -576,7 +576,7 @@ jQuery(function init_tooltip () {
 		function hide_tooltip() {
 			var el = jQuery( this ),
 				stamp = el.attr('timestamp'),
-				parent = jQuery( '.ms-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
+				parent = jQuery( '.wpmui-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
 
 			el.hide();
 
@@ -585,15 +585,15 @@ jQuery(function init_tooltip () {
 		}
 
 		// Hide multiple tooltips
-		jQuery( '.ms-tooltip[timestamp]').each( hide_tooltip );
+		jQuery( '.wpmui-tooltip[timestamp]').each( hide_tooltip );
 	});
 
 	// Hide single tooltip when Close-Button is clicked.
-	jQuery( '.ms-tooltip-button' ).click(function() {
+	jQuery( '.wpmui-tooltip-button' ).click(function() {
 		var el = jQuery( this ),
-			parent = el.parents( '.ms-tooltip' ),
+			parent = el.parents( '.wpmui-tooltip' ),
 			stamp = jQuery( parent ).attr( 'timestamp' ),
-			super_parent = jQuery( '.ms-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
+			super_parent = jQuery( '.wpmui-tooltip-wrapper[timestamp="' + stamp + '"]' ).first();
 
 		jQuery( parent ).hide();
 
@@ -602,12 +602,12 @@ jQuery(function init_tooltip () {
 	});
 
 	// Don't propagate click events inside the tooltip to the document.
-	jQuery( '.ms-tooltip' ).click(function(e) {
+	jQuery( '.wpmui-tooltip' ).click(function(e) {
 		e.stopPropagation();
 	});
 
 	// Toggle a tooltip
-	jQuery('.ms-tooltip-info').click(function( event ) {
+	jQuery('.wpmui-tooltip-info').click(function( event ) {
 		var parent, stamp, sibling, newpos, tooltip,
 			el = jQuery( this );
 
@@ -615,9 +615,9 @@ jQuery(function init_tooltip () {
 
 		if ( ! el.hasClass( 'open' ) ) {
 			// HIDE
-			parent = el.parents( '.ms-tooltip-wrapper' );
+			parent = el.parents( '.wpmui-tooltip-wrapper' );
 			stamp = jQuery( parent ).attr( 'timestamp' );
-			sibling = jQuery( '.ms-tooltip[timestamp="' + stamp + '"]' ).first();
+			sibling = jQuery( '.wpmui-tooltip[timestamp="' + stamp + '"]' ).first();
 
 			jQuery( sibling ).hide();
 
@@ -625,9 +625,9 @@ jQuery(function init_tooltip () {
 			jQuery( sibling ).appendTo( jQuery( parent ) );
 		} else {
 			// SHOW
-			el.parents('.ms-tooltip-wrapper').attr( 'timestamp', event.timeStamp );
+			el.parents('.wpmui-tooltip-wrapper').attr( 'timestamp', event.timeStamp );
 			event.stopPropagation();
-			tooltip = el.siblings( '.ms-tooltip' );
+			tooltip = el.siblings( '.wpmui-tooltip' );
 
 			tooltip.attr( 'timestamp', event.timeStamp );
 
@@ -742,7 +742,7 @@ window.ms_init.view_member_list = function init () {
 	function change_view() {
 		var list = jQuery( '#view_membership' ),
 			new_id = parseInt( list.val() ),
-			data = list.data('ms'),
+			data = list.data('ajax'),
 			url = data.url + new_id;
 
 		if ( new_id <= 0 ) { return; }
@@ -836,7 +836,7 @@ window.ms_init.view_membership_overview = function init () {
 		ms_editor = ms_desc.find( '.editor' ),
 		txt_editor = ms_editor.find( 'textarea' );
 
-	jQuery( '.ms-radio-slider' ).on( 'ms-radio-slider-updated', function() {
+	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function() {
 		var object = this,
 			obj = jQuery( '#ms-membership-status' );
 
@@ -970,7 +970,6 @@ window.ms_init.view_settings = function init () {
 				actions = row.find( '.ms-action a' ),
 				val = me.val();
 
-
 			// Disable the pages that are used already.
 			options.prop( 'disabled', false );
 			for ( ind = 0; ind < cur_pages.length; ind += 1 ) {
@@ -982,7 +981,7 @@ window.ms_init.view_settings = function init () {
 			// Update the view/edit links
 			actions.each(function() {
 				var link = jQuery( this ),
-					data = link.data('ms'),
+					data = link.data('ajax'),
 					url = data.base + val;
 
 				if ( undefined === val || isNaN(val) || val < 1 ) {
@@ -1028,7 +1027,7 @@ window.ms_init.view_settings = function init () {
 	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
 	// Hide/Show the "Test Membership" button in the toolbar.
-	jQuery( '.ms-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
+	jQuery( '.wpmui-slider-plugin_enabled').on( 'wpmui-radio-slider-updated', update_toolbar );
 
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
@@ -1163,5 +1162,5 @@ window.ms_init.view_settings_protection = function init () {
 		return data;
 	}
 
-	jQuery( '.button-primary.ms-ajax-update' ).data( 'before_ajax', before_ajax );
+	jQuery( '.button-primary.wpmui-ajax-update' ).data( 'before_ajax', before_ajax );
 };

@@ -33,10 +33,6 @@
   margin: 1em 0;
   padding: 0.5em 0;
 }
-.ms-wrap .ms-hidden {
-  display: none;
-  visibility: hidden;
-}
 .ms-wrap .ms-group {
   clear: both;
 }
@@ -54,10 +50,6 @@
 .ms-wrap .disabled:focus {
   color: #999;
   cursor: not-allowed;
-}
-
-.ms-fa {
-  font-family: Fontawesome420 !important;
 }
 
 /**
@@ -159,9 +151,10 @@
 .ms-wrap .tablenav input,
 .ms-wrap .tablenav select,
 .ms-wrap .tablenav .wpmui-field-input,
-.ms-wrap p.search-box input,
-.ms-wrap p.search-box select,
-.ms-wrap p.search-box .wpmui-field-input {
+.ms-wrap .search-box input,
+.ms-wrap .search-box select,
+.ms-wrap .search-box .wpmui-field-input {
+  float: none !important;
   margin-top: 0 !important;
   /* important: Some WordPress fields have a margin that needs to be cleared here */
   margin-bottom: 0 !important;
@@ -568,7 +561,7 @@
   height: 5em;
   width: 100%;
 }
-.ms-wrap .ms-text {
+.ms-wrap .wpmui-text {
   display: inline-block;
 }
 .ms-wrap .ms-text-small {
@@ -594,13 +587,13 @@
 .ms-wrap input[disabled] {
   cursor: default;
 }
-.ms-wrap .ms-no-data {
+.ms-wrap .wpmui-no-data {
   font-style: italic;
   padding: 3px 0;
   line-height: 24px;
   opacity: .6;
 }
-.ms-wrap .ms-no-data:before, .ms-wrap .ms-no-data:after {
+.ms-wrap .wpmui-no-data:before, .ms-wrap .wpmui-no-data:after {
   content: ' - ';
 }
 .ms-wrap input.ms-center,
@@ -613,21 +606,13 @@
 /***
  * DATEPICKER *
  ***/
-#wpadminbar,
-.ms-wrap {
-  /*
-  .ui-datepicker {
-  	margin-top: 10px;
-  }
-  */
-}
-#wpadminbar .ms-datepicker-wrapper,
-.ms-wrap .ms-datepicker-wrapper {
+#wpadminbar .wpmui-datepicker-wrapper,
+.ms-wrap .wpmui-datepicker-wrapper {
   display: inline-block;
   position: relative;
 }
-#wpadminbar .ms-datepicker-wrapper .ms-icon,
-.ms-wrap .ms-datepicker-wrapper .ms-icon {
+#wpadminbar .wpmui-datepicker-wrapper .wpmui-icon,
+.ms-wrap .wpmui-datepicker-wrapper .wpmui-icon {
   position: absolute;
   right: 0;
   top: 0;
@@ -640,24 +625,24 @@
   color: #444;
 }
 
-.ui-datepicker.ms-datepicker {
+.ui-datepicker.wpmui-datepicker {
   padding: 0;
   border: none;
   /* Get rid of bevel corners */
   /* New icons */
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-header, .ui-datepicker.ms-datepicker.ui-corner-all {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-header, .ui-datepicker.wpmui-datepicker.ui-corner-all {
   border-radius: 0;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-prev span,
-.ui-datepicker.ms-datepicker .ui-datepicker-next span,
-.ui-datepicker.ms-datepicker .ui-state-hover .ui-icon,
-.ui-datepicker.ms-datepicker .ui-state-focus .ui-icon,
-.ui-datepicker.ms-datepicker .ui-widget-header .ui-icon,
-.ui-datepicker.ms-datepicker .ui-icon {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-prev span,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-next span,
+.ui-datepicker.wpmui-datepicker .ui-state-hover .ui-icon,
+.ui-datepicker.wpmui-datepicker .ui-state-focus .ui-icon,
+.ui-datepicker.wpmui-datepicker .ui-widget-header .ui-icon,
+.ui-datepicker.wpmui-datepicker .ui-icon {
   background-image: url(../images/ui-icons-white.png);
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-header {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-header {
   padding: 0;
   border: none;
   background: #4F83AA;
@@ -665,36 +650,36 @@
   font-size: 0.9em;
   font-weight: normal;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody td a,
-.ui-datepicker.ms-datepicker td span,
-.ui-datepicker.ms-datepicker td a {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody td a,
+.ui-datepicker.wpmui-datepicker td span,
+.ui-datepicker.wpmui-datepicker td a {
   padding: 8px;
   text-align: center;
   text-decoration: none;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar {
   padding: 3px;
   background: #375D7A;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar thead th {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar thead th {
   padding: 3px 5px;
   font-size: 0.9em;
   font-weight: normal;
   color: #FFFFFF;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-default,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-default,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-default,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-default,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
   border: 0;
   background: #223D52;
   color: #FFFFFF;
 }
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-active,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-active,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-state-hover,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover,
-.ui-datepicker.ms-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-active,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-active,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-hover,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover,
+.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
   background: #4F83AA;
 }
 
@@ -707,13 +692,13 @@
   display: inline-block;
 }
 
-#wpwrap .ms-wrap .ms-radio {
+#wpwrap .ms-wrap .wpmui-radio {
   margin: 2px 4px 0 0;
   position: absolute;
   left: 0;
   top: 0;
 }
-#wpwrap .ms-wrap .ms-radio-caption {
+#wpwrap .ms-wrap .wpmui-radio-caption {
   padding-left: 24px;
   font-weight: 500;
   margin: 8px 0 2px;
@@ -815,11 +800,11 @@
 .ms-wrap .wpmui-radio-slider-wrapper {
   clear: both;
 }
-.ms-wrap .ms-radio-slider:focus {
+.ms-wrap .wpmui-radio-slider:focus {
   background: none;
   outline: none;
 }
-.ms-wrap .ms-radio-slider {
+.ms-wrap .wpmui-radio-slider {
   position: relative;
   display: inline-block;
   width: 40px;
@@ -828,13 +813,13 @@
   border-radius: 10px;
   background: #b0b0b0;
   opacity: .8;
-  overflow: hidden;
+  overflow: visible;
 }
-.ms-wrap .ms-radio-slider:hover {
+.ms-wrap .wpmui-radio-slider:hover {
   cursor: pointer;
   opacity: 1;
 }
-.ms-wrap .ms-radio-slider .ms-toggle {
+.ms-wrap .wpmui-radio-slider .wpmui-toggle {
   position: absolute;
   display: inline-block;
   left: 0;
@@ -845,18 +830,18 @@
   border-radius: 50%;
   transition: all .2s ease-in-out;
 }
-.ms-wrap .ms-radio-slider .ms-toggle:hover {
+.ms-wrap .wpmui-radio-slider .wpmui-toggle:hover {
   -webkit-transform: scale(1.1);
   -ms-transform: scale(1.1);
   transform: scale(1.1);
 }
-.ms-wrap .ms-radio-slider.on .ms-toggle {
+.ms-wrap .wpmui-radio-slider.on .wpmui-toggle {
   left: 21px;
 }
-.ms-wrap .ms-radio-slider.on {
+.ms-wrap .wpmui-radio-slider.on {
   background: #6bbb1a;
 }
-.ms-wrap .ms-radio-slider.ms-processing {
+.ms-wrap .wpmui-radio-slider.ms-processing {
   cursor: wait;
 }
 .ms-wrap h3 .wpmui-radio-slider-wrapper {
@@ -869,20 +854,20 @@
 /***
  * TAG SELECT *
  ***/
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data {
   display: block;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-choices {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices {
   background: transparent;
   border: 0;
 }
-.ms-wrap .wpmui-tag-selector-wrapper .ms-tag-data .select2-search-field {
+.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-field {
   display: none;
 }
-.ms-wrap .ms-tag-label {
+.ms-wrap .wpmui-tag-label {
   margin: 10px 0 5px;
 }
-.ms-wrap .ms-tag-label .ms-img {
+.ms-wrap .wpmui-tag-label .ms-img {
   float: left;
 }
 
@@ -985,12 +970,12 @@
  * Tooltip elements
  */
 /* The "Info" icon */
-.ms-tooltip-wrapper {
+.wpmui-tooltip-wrapper {
   display: inline;
   position: relative;
   z-index: 100;
 }
-.ms-tooltip-wrapper .ms-tooltip-info {
+.wpmui-tooltip-wrapper .wpmui-tooltip-info {
   display: inline;
   min-width: 20px;
   border-radius: 20px;
@@ -1001,7 +986,7 @@
 }
 
 /* The actual tooltip */
-.ms-tooltip {
+.wpmui-tooltip {
   display: none;
   position: absolute;
   width: 325px;
@@ -1014,7 +999,7 @@
   box-shadow: rgba(0, 0, 0, 0.12) -3px 0px 10px 1px;
   /** Add left arrow. */
 }
-.ms-tooltip:before {
+.wpmui-tooltip:before {
   position: absolute;
   content: ' ';
   left: -8px;
@@ -1023,14 +1008,14 @@
   border-right: 10px solid #fafafa;
   /* bottom, add background color here */
 }
-.ms-tooltip .ms-tooltip-button {
+.wpmui-tooltip .wpmui-tooltip-button {
   position: absolute;
   top: 10px;
   right: 10px;
   font: 16px/12px bold "Helvetica";
   cursor: pointer;
 }
-.ms-tooltip .ms-tooltip-content {
+.wpmui-tooltip .wpmui-tooltip-content {
   padding: 20px;
 }
 
@@ -1159,7 +1144,7 @@
 .ms-wrap .ms-control-fields-wrapper {
   clear: both;
 }
-.ms-wrap .ms-chose-type.ms-radio-input-wrapper {
+.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper {
   position: relative;
   float: left;
   margin: 1em 0 0;
@@ -1170,7 +1155,7 @@
   background-color: transparent;
   outline: none;
 }
-.ms-wrap .ms-chose-type.ms-radio-input-wrapper label:before {
+.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper label:before {
   display: inline-block;
   position: absolute;
   content: '';
@@ -1182,19 +1167,19 @@
   background: url(../images/membership_sprite.png);
   background: url(../images/membership_sprite.svg), none;
 }
-.ms-wrap .ms-chose-type.ms-radio-input-wrapper.ms-simple label:before {
+.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-simple label:before {
   background-position: 0 -30px;
 }
-.ms-wrap .ms-chose-type.ms-radio-input-wrapper.ms-content_type label:before {
+.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-content_type label:before {
   background-position: -100px -20px;
 }
-.ms-wrap .ms-chose-type.ms-radio-input-wrapper.ms-tier label:before {
+.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-tier label:before {
   background-position: -200px -18px;
 }
-.ms-wrap .ms-chose-type.ms-radio-input-wrapper.ms-dripped label:before {
+.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-dripped label:before {
   background-position: -300px -20px;
 }
-.ms-wrap .ms-chose-type.ms-radio-input-wrapper .ms-radio-caption {
+.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
   margin-bottom: 1em;
 }
 
@@ -1331,7 +1316,7 @@
   top: 1px;
   width: 20px;
 }
-#wpwrap .ms-wrap #membership_access .ms-radio-slider {
+#wpwrap .ms-wrap #membership_access .wpmui-radio-slider {
   margin: 10px 20px;
 }
 #wpwrap .ms-wrap div.dripped .tooltip {
@@ -1354,16 +1339,16 @@
   min-width: 80%;
   display: block;
 }
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio {
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio {
   margin-top: 10px;
 }
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption {
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio-caption {
   padding-top: 6px;
   padding-bottom: 6px;
   line-height: 24px;
 }
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption label,
-#wpwrap .ms-wrap .wrapper-import_source .ms-radio-caption .wpmui-field-input {
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio-caption label,
+#wpwrap .ms-wrap .wrapper-import_source .wpmui-radio-caption .wpmui-field-input {
   width: auto;
   margin: 0 12px 0 0;
 }
@@ -1385,7 +1370,7 @@
   width: calc(100% + 20px);
 }
 #wpwrap .ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
-#wpwrap .ms-wrap .gateways .not-configured .ms-radio-slider {
+#wpwrap .ms-wrap .gateways .not-configured .wpmui-radio-slider {
   display: none;
 }
 #wpwrap .ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {
@@ -1520,8 +1505,8 @@
 #wpadminbar #wp-toolbar .membership-view-site-as .wpmui-field-input button {
   margin: 0;
 }
-#wpadminbar #wp-toolbar .membership-simulate-period .ms-icon,
-#wpadminbar #wp-toolbar .membership-view-site-as .ms-icon {
+#wpadminbar #wp-toolbar .membership-simulate-period .wpmui-icon,
+#wpadminbar #wp-toolbar .membership-view-site-as .wpmui-icon {
   line-height: 24px;
   height: 24px;
   width: 18px;
