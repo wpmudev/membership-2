@@ -1111,6 +1111,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				$desc .= sprintf(
 					__( 'You will pay %1$s %2$s for access until %3$s.', MS_TEXT_DOMAIN ),
+					$currency,
+					$total_price,
 					$this->calc_expire_date( $this->expire_date )
 				);
 				break;
