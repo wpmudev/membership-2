@@ -12,6 +12,12 @@ Change Log:
 - New layout of the Add-on page
 - Many small bugfixes and layout improvements
 
+1.0.4.8
+----------------------------------------------------------------------
+- Fix incompatibility with E-Newsletter plugin
+- Fix incompatibility with PopUp Pro and Google Maps
+- Fix PHP warning displayed to some users when signing up to Membership
+
 1.0.4.7
 ----------------------------------------------------------------------
 - Fix rewrite rules on plugin update/activation (solves payment-issues)
