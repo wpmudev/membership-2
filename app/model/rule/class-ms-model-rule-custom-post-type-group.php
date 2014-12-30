@@ -62,7 +62,6 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
-		$post_type = $wp_query->get( 'post_type' );
 		$apply = true;
 
 		/*
@@ -71,9 +70,25 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		 * Workaroudn to invalidate the query.
 		 */
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			$post_type = $wp_query->get( 'post_type' );
+
+			if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
+				$post_type = $wp_query->queried_object->post_type;
+			}
+
+			// Single pages are protected with function `has_access()` below.
 			if ( $apply && $wp_query->is_singular ) { $apply = false; }
-			if ( $apply && empty( $wp_query->query_vars['pagename'] ) ) { $apply = false; }
-			if ( $apply && in_array( @$post_type, self::get_custom_post_types() ) ) { $apply = false; }
+
+			// A pagename also indicates a single post...
+			if ( $apply && isset( $wp_query->query->pagename ) ) { $apply = false; }
+
+			// Do not protect anything if post-type is unknown
+			if ( $apply && empty( $post_type ) ) { $apply = false; }
+
+			// Do not protect special "Protected Content" or default WordPress content
+			if ( $apply && in_array( $post_type, self::get_excluded_content() ) ) { $apply = false; }
+
+			// Do not protect if the post-type is published
 			if ( $apply && ! parent::has_access( $post_type ) ) { $apply = false; }
 
 			if ( $apply )  {

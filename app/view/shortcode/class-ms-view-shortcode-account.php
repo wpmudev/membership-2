@@ -132,7 +132,7 @@ class MS_View_Shortcode_Account extends MS_View {
 								$invoice->id
 							); ?></td>
 							<td><?php echo esc_html( $invoice->status ); ?></td>
-							<td><?php echo esc_html( $invoice->total ); ?></td>
+							<td><?php echo esc_html( number_format( $invoice->total, 2 ) ); ?></td>
 							<td><?php echo esc_html( $inv_membership->name ); ?></td>
 							<td><?php echo esc_html( $invoice->due_date ); ?></td>
 						</tr>

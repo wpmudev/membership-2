@@ -1101,30 +1101,49 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 		switch ( $membership->payment_type ){
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
-				$desc = sprintf(
-					__( 'You will pay %1$s %2$s for permanent access.', MS_TEXT_DOMAIN ),
-					$currency,
-					$total_price
-				);
+				if ( 0 == $total_price ) {
+					$desc = __( 'You will pay nothing for permanent access.', MS_TEXT_DOMAIN );
+				} else {
+					$desc = sprintf(
+						__( 'You will pay %1$s %2$s for permanent access.', MS_TEXT_DOMAIN ),
+						$currency,
+						$total_price
+					);
+				}
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-				$desc .= sprintf(
-					__( 'You will pay %1$s %2$s for access until %3$s.', MS_TEXT_DOMAIN ),
-					$currency,
-					$total_price,
-					$this->calc_expire_date( $this->expire_date )
-				);
+				if ( 0 == $total_price ) {
+					$desc = sprintf(
+						__( 'You will pay nothing for access until %1$s.', MS_TEXT_DOMAIN ),
+						$this->calc_expire_date( $this->expire_date )
+					);
+				} else {
+					$desc .= sprintf(
+						__( 'You will pay %1$s %2$s for access until %3$s.', MS_TEXT_DOMAIN ),
+						$currency,
+						$total_price,
+						$this->calc_expire_date( $this->expire_date )
+					);
+				}
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
-				$desc .= sprintf(
-					__( 'You will pay %1$s %2$s to access from %3$s to %4$s.', MS_TEXT_DOMAIN ),
-					$currency,
-					$total_price,
-					$membership->period_date_start,
-					$membership->period_date_end
-				);
+				if ( 0 == $total_price ) {
+					$desc = sprintf(
+						__( 'You will pay nothing for access from %1$s until %2$s.', MS_TEXT_DOMAIN ),
+						$membership->period_date_start,
+						$membership->period_date_end
+					);
+				} else {
+					$desc .= sprintf(
+						__( 'You will pay %1$s %2$s to access from %3$s to %4$s.', MS_TEXT_DOMAIN ),
+						$currency,
+						$total_price,
+						$membership->period_date_start,
+						$membership->period_date_end
+					);
+				}
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
@@ -1136,6 +1155,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$membership->pay_cycle_period,
 					'period_type'
 				);
+
 				$desc .= sprintf(
 					__( 'You will pay %1$s %2$s each %3$s %4$s.', MS_TEXT_DOMAIN ),
 					$currency,

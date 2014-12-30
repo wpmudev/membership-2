@@ -68,28 +68,35 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	public function protect_posts( $wp_query ) {
 		// Only verify permission if ruled by categories.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			$post_type = $wp_query->get( 'post_type' );
 
-			if ( in_array( $wp_query->get( 'post_type' ), array( 'post', '' ) ) ) {
-				$categories = array();
-				$contents = $this->get_contents();
+			if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
+				$post_type = $wp_query->queried_object->post_type;
+			}
+
+			/*
+			 * '' .. when post type is unknown assume 'post'
+			 * 'post' .. obviously protect certain posts
+			 * 'page' .. when front page is set to static page
+			 */
+			if ( in_array( $post_type, array( 'post', 'page', '' ) ) ) {
+				// This list is already filtered (see the get_terms filter!)
 				$contents = get_categories( 'get=all' );
-				$limited = false;
+				$categories = array();
 
 				foreach ( $contents as $content ) {
-					if ( parent::has_access( $content->term_id ) ) {
-						$categories[] = $content->term_id;
-					} else {
-						$limited = true;
-					}
+					$categories[] = absint( $content->term_id );
 				}
 
-				if ( $limited ) {
-					$wp_query->query_vars['category__in'] = $categories;
-				}
+				$wp_query->query_vars['category__in'] = $categories;
 			}
 		}
 
-		do_action( 'ms_model_rule_category_protect_posts', $wp_query, $this );
+		do_action(
+			'ms_model_rule_category_protect_posts',
+			$wp_query,
+			$this
+		);
 	}
 
 	/**

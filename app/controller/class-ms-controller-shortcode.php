@@ -86,11 +86,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			add_shortcode(
-				MS_Helper_Shortcode::SCODE_MS_DETAILS,
-				array( $this, 'membership_details' )
-			);
-
-			add_shortcode(
 				MS_Helper_Shortcode::SCODE_LOGIN,
 				array( $this, 'membership_login' )
 			);
@@ -567,9 +562,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$html .= '</div>';
 
 		return apply_filters(
-			'ms_controller_shortcode_membership_price',
-			$price,
-			$atts,
+			'ms_controller_shortcode_protected_content',
+			$html,
 			$this
 		);
 	}
