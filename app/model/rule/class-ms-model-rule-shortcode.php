@@ -288,7 +288,9 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = count( $this->get_contents() );
+		$args['posts_per_page'] = 0;
+		$args['offset'] = false;
+		$count = count( $this->get_contents( $args ) );
 
 		return apply_filters(
 			'ms_model_rule_shortcode_get_content_count',
@@ -314,6 +316,13 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		foreach ( $shortcode_tags as $key => $function ) {
 			if ( in_array( $key, $exclude ) ) {
 				continue;
+			}
+
+			// Search the shortcode-tag...
+			if ( ! empty( $args['s'] ) ) {
+				if ( stripos( $key, $args['s'] ) === false ) {
+					continue;
+				}
 			}
 
 			$id = esc_html( trim( $key ) );
