@@ -75,6 +75,12 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 
 		$value = array_intersect_key( $this->rule_value, $this->get_content_array() );
 		$this->rule_value = WDev()->get_array( $value );
+
+		MS_Model_Membership::get_core_membership( 'Guest' );
+		$roles = $this->get_role_content_array();
+		foreach ( $roles as $id => $role ) {
+			MS_Model_Membership::get_core_membership( $role );
+		}
 	}
 
 	/**

@@ -107,9 +107,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			$args['order'] = $_REQUEST['order'];
 		}
 
-		/**
-		 * Prepare order by statement.
-		 */
+		// Prepare order by statement.
 		if ( ! empty( $args['orderby'] )
 			&& property_exists( 'MS_Model_Membership', $args['orderby'] )
 		) {
@@ -144,27 +142,33 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			);
 		}
 
-		$actions['payment'] = sprintf(
-			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
-			esc_attr( $_REQUEST['page'] ),
-			MS_Controller_Membership::STEP_SETUP_PAYMENT,
-			esc_attr( $item->id ),
-			__( 'Payment options', MS_TEXT_DOMAIN )
-		);
+		if ( ! $item->is_special() ) {
+			$name = $item->name;
 
-		$actions['delete'] = sprintf(
-			'<span class="delete"><a href="%s">%s</a></span>',
-			wp_nonce_url(
-				sprintf(
-					'?page=%s&membership_id=%s&action=%s',
-					esc_attr( $_REQUEST['page'] ),
-					esc_attr( $item->id ),
-					'delete'
+			$actions['payment'] = sprintf(
+				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
+				esc_attr( $_REQUEST['page'] ),
+				MS_Controller_Membership::STEP_SETUP_PAYMENT,
+				esc_attr( $item->id ),
+				__( 'Payment options', MS_TEXT_DOMAIN )
+			);
+
+			$actions['delete'] = sprintf(
+				'<span class="delete"><a href="%s">%s</a></span>',
+				wp_nonce_url(
+					sprintf(
+						'?page=%s&membership_id=%s&action=%s',
+						esc_attr( $_REQUEST['page'] ),
+						esc_attr( $item->id ),
+						'delete'
 					),
-				'delete'
+					'delete'
 				),
-			__( 'Delete', MS_TEXT_DOMAIN )
-		);
+				__( 'Delete', MS_TEXT_DOMAIN )
+			);
+		} else {
+			$name = __( $item->name );
+		}
 
 		$actions = apply_filters(
 			'ms_helper_list_table_' . $this->id . '_column_name_actions',
@@ -172,92 +176,112 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			$item
 		);
 
-		return sprintf( '%1$s %2$s', $item->name, $this->row_actions( $actions ) );
-
+		return sprintf(
+			'%1$s %2$s',
+			$name,
+			$this->row_actions( $actions )
+		);
 	}
 
-	public function column_default( $item, $column_name ) {
+	public function column_members( $item, $column_name ) {
 		$html = '';
 
-		switch ( $column_name ) {
-			case 'members':
-				$html = $item->get_members_count();
-				break;
-
-			case 'type_description':
-				if ( ! $item->parent_id ) {
-					// Only show the type-icon for top-level memberships
-					$html .= sprintf(
-						'<span class="ms-img-type-%1$s small"></span> ',
-						esc_attr( $item->type )
-					);
-				}
-
-				$html .= sprintf(
-					'<span class="ms-type-desc ms-%1$s">%2$s</span>',
-					esc_attr( $item->type ),
-					esc_html( $item->type_description )
-				);
-
-				if ( $item->private ) {
-					$html .= sprintf(
-						'<span class="ms-is-private">, <span>%s</span></span>',
-						__( 'Private', MS_TEXT_DOMAIN )
-					);
-				}
-				break;
-
-			case 'payment_structure':
-				if ( $item->has_payment() ) {
-					$class = 'ms-bold';
-				} else {
-					$class = 'ms-low';
-				}
-
-				$html = sprintf(
-					'<span class="%1$s">%2$s</span>',
-					esc_attr( $class ),
-					$item->get_payment_type_desc()
-				);
-				break;
-
-			case 'price':
-				if ( $item->can_have_children() ) {
-					$html = sprintf(
-						'<span class="ms-low">%1$s</span>',
-						__( 'Varied', MS_TEXT_DOMAIN )
-					);
-				}
-				elseif ( $item->price > 0 ) {
-					$html = sprintf(
-						'<span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span>',
-						MS_Plugin::instance()->settings->currency_symbol,
-						number_format_i18n( $item->price, 2 )
-					);
-					$html = '<span class="ms-bold">' . $html . '</span>';
-				}
-				else {
-					$html = sprintf(
-						'<span class="ms-low">%1$s</span>',
-						__( 'Free', MS_TEXT_DOMAIN )
-					);
-				}
-				break;
-
-			case 'shortcode':
-				$html = sprintf(
-					'<code>[%1$s id="%2$s"]</code>',
-					MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
-					esc_attr( $item->id )
-				);
-				break;
-
-			default:
-				$html = $item->$column_name;
-				break;
+		if ( ! $item->is_special() ) {
+			$html = $item->get_members_count();
 		}
 
 		return $html;
+	}
+
+	public function column_type_description( $item, $column_name ) {
+		$html = '';
+
+		if ( ! $item->parent_id ) {
+			// Only show the type-icon for top-level memberships
+			$html .= sprintf(
+				'<span class="ms-img-type-%1$s small"></span> ',
+				esc_attr( $item->type )
+			);
+		}
+
+		$desc = $item->type_description;
+		if ( ! empty( $desc ) ) {
+			$html .= sprintf(
+				'<span class="ms-type-desc ms-%1$s">%2$s</span>',
+				esc_attr( $item->type ),
+				$desc
+			);
+		}
+
+		if ( $item->private ) {
+			$prefix = '';
+			if ( ! empty( $html ) ) {
+				$prefix = ', ';
+			}
+
+			$html .= sprintf(
+				'<span class="ms-is-private">%2$s<span>%1$s</span></span>',
+				__( 'Private', MS_TEXT_DOMAIN ),
+				$prefix
+			);
+		}
+
+		return $html;
+	}
+
+	public function column_payment_structure( $item, $column_name ) {
+		$html = '';
+
+		if ( ! $item->is_special() ) {
+			if ( $item->has_payment() ) {
+				$class = 'ms-bold';
+			} else {
+				$class = 'ms-low';
+			}
+
+			$html = sprintf(
+				'<span class="%1$s">%2$s</span>',
+				esc_attr( $class ),
+				$item->get_payment_type_desc()
+			);
+		}
+
+		return $html;
+	}
+
+	public function column_price( $item, $column_name ) {
+		$html = '';
+
+		if ( ! $item->is_special() ) {
+			if ( $item->can_have_children() ) {
+				$html = sprintf(
+					'<span class="ms-low">%1$s</span>',
+					__( 'Varied', MS_TEXT_DOMAIN )
+				);
+			} elseif ( $item->price > 0 ) {
+				$html = sprintf(
+					'<span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span>',
+					MS_Plugin::instance()->settings->currency_symbol,
+					number_format_i18n( $item->price, 2 )
+				);
+				$html = '<span class="ms-bold">' . $html . '</span>';
+			} else {
+				$html = sprintf(
+					'<span class="ms-low">%1$s</span>',
+					__( 'Free', MS_TEXT_DOMAIN )
+				);
+			}
+		}
+
+		return $html;
+	}
+
+	public function column_shortcode( $item, $column_name ) {
+		return sprintf(
+			'<code>[%1$s id="%2$s"]</code>',
+			MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+			esc_attr( $item->id )
+		);
 	}
 
 	public function get_bulk_actions() {
