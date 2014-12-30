@@ -7,13 +7,10 @@ class MS_View_Buddypress_General extends MS_View {
 	public function render_rule_tab() {
 		$fields = $this->get_control_fields();
 
-		$base_membership = MS_Model_Membership::get_protected_content();
 		$membership = $this->data['membership'];
-		$is_base = $membership->id === $base_membership->id;
 
 		$rule = $membership->get_rule( MS_Integration_Buddypress::RULE_TYPE_BUDDYPRESS );
 		$rule_list_table = new MS_Helper_List_Table_Rule_Buddypress( $rule, $membership );
-		$rule_list_table->is_base_list( $is_base );
 		$rule_list_table->prepare_items();
 
 		$edit_link = array(
@@ -28,7 +25,7 @@ class MS_View_Buddypress_General extends MS_View {
 		);
 
 		$title = __( 'BuddyPress', MS_TEXT_DOMAIN );
-		if ( $is_base ) {
+		if ( $membership->is_visitor_membership() ) {
 			$desc = __( 'Protect the following BuddyPress content. ', MS_TEXT_DOMAIN );
 		} else {
 			$desc = sprintf(
@@ -49,7 +46,7 @@ class MS_View_Buddypress_General extends MS_View {
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
 			</form>
-			<?php if ( ! $is_base ) : ?>
+			<?php if ( ! $membership->is_visitor_membership() ) : ?>
 				<div class="ms-protection-edit-link">
 					<?php MS_Helper_Html::html_element( $edit_link ); ?>
 				</div>
@@ -62,7 +59,7 @@ class MS_View_Buddypress_General extends MS_View {
 		);
 
 		$html = ob_get_clean();
-		echo apply_filters(
+		echo '' . apply_filters(
 			'ms_view_buddypress_general_render_tab_shortcode',
 			$html
 		);

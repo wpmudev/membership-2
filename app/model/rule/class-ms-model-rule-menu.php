@@ -204,7 +204,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		if ( ! empty( $args['protected_content'] ) ) {
+		if ( $args['get_base_list'] ) {
 			$menus = $this->get_menu_array();
 			foreach ( $menus as $menu_id => $menu ) {
 				// Recursive call.

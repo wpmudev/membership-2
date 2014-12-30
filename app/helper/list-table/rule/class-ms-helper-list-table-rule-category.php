@@ -36,7 +36,7 @@ class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table_Rule {
 			"membership_helper_list_table_{$this->id}_columns",
 			array(
 				'name' => __( 'Category name', MS_TEXT_DOMAIN ),
-				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'access' => true,
 			)
 		);
 	}
@@ -51,15 +51,8 @@ class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table_Rule {
 		);
 	}
 
-	public function column_default( $item, $column_name ) {
-		$html = '';
-
-		switch ( $column_name ) {
-			default:
-				$html = $item->$column_name;
-				break;
-		}
-
-		return $html;
+	public function column_name( $item, $column_name ) {
+		return $item->name;
 	}
+
 }

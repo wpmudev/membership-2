@@ -35,9 +35,9 @@ class MS_Helper_List_Table_Rule_Buddypress_Blog extends MS_Helper_List_Table_Rul
 		return apply_filters(
 			"membership_helper_list_table_{$this->id}_columns",
 			array(
-				'cb'     => '<input type="checkbox" />',
+				'cb'   => true,
 				'name' => __( 'Blog Name', MS_TEXT_DOMAIN ),
-				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'access' => true,
 			)
 		);
 	}
@@ -49,20 +49,8 @@ class MS_Helper_List_Table_Rule_Buddypress_Blog extends MS_Helper_List_Table_Rul
 		);
 	}
 
-	public function column_default( $item, $column_name ) {
-		$html = '';
-
-		switch ( $column_name ) {
-			case 'name':
-				$html = $item->name;
-				break;
-
-			default:
-				$html = print_r( $item, true );
-				break;
-		}
-
-		return $html;
+	public function column_name( $item, $column_name ) {
+		return $item->name;
 	}
 
 	public function get_views() {

@@ -35,26 +35,15 @@ class MS_Helper_List_Table_Rule_Url_Group extends MS_Helper_List_Table_Rule {
 		return apply_filters(
 			'membership_helper_list_table_' . $this->id . '_columns',
 			array(
-				'cb' => '<input type="checkbox" />',
+				'cb' => true,
 				'url' => __( 'Page URL', MS_TEXT_DOMAIN ),
-				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'access' => true,
 			)
 		);
 	}
 
 	public function column_url( $item ) {
 		return $item->url;
-	}
-
-	public function column_default( $item, $column_name ) {
-		$html = print_r( $item, true );
-		return $html;
-	}
-
-	public function get_views(){
-		$views = parent::get_views();
-		unset( $views['dripped'] );
-		return $views;
 	}
 
 }

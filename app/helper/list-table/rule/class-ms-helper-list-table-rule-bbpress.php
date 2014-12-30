@@ -35,9 +35,9 @@ class MS_Helper_List_Table_Rule_Bbpress extends MS_Helper_List_Table_Rule {
 		return apply_filters(
 			"ms_helper_list_table_{$this->id}_columns",
 			array(
-				'cb'     => '<input type="checkbox" />',
+				'cb' => true,
 				'name' => __( 'Name', MS_TEXT_DOMAIN ),
-				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'access' => true,
 			)
 		);
 	}
@@ -74,18 +74,6 @@ class MS_Helper_List_Table_Rule_Bbpress extends MS_Helper_List_Table_Rule {
 			$item->post_title,
 			$this->row_actions( $actions )
 		);
-	}
-
-	public function column_default( $item, $column_name ) {
-		$html = '';
-
-		switch ( $column_name ) {
-			default:
-				$html = $item->$column_name;
-				break;
-		}
-
-		return $html;
 	}
 
 	public function get_views() {

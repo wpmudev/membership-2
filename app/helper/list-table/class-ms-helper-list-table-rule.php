@@ -100,7 +100,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			'no_access' => __( 'Remove access', MS_TEXT_DOMAIN ),
 		);
 
-		if ( $this->membership->protected_content ) {
+		if ( $this->membership->is_visitor_membership() ) {
 			$bulk_actions = array(
 				'give_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
 				'no_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
@@ -121,6 +121,27 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			$this->get_hidden_columns(),
 			$this->get_sortable_columns(),
 		);
+
+		if ( MS_Model_Membership::TYPE_DRIPPED != $this->membership->type ) {
+			unset( $this->_column_headers[0]['dripped'] );
+		}
+
+		// Some columns have a pre-defined title that cannot be changed.
+		if ( isset( $this->_column_headers[0]['cb'] ) ) {
+			$this->_column_headers[0]['cb'] = '<input type="checkbox" />';
+		}
+
+		if ( isset( $this->_column_headers[0]['dripped'] ) ) {
+			$this->_column_headers[0]['dripped'] = __( 'When to Reveal Content', MS_TEXT_DOMAIN );
+		}
+
+		if ( isset( $this->_column_headers[0]['access'] ) ) {
+			if ( $this->membership->is_visitor_membership() ) {
+				$this->_column_headers[0]['access'] = __( 'Content Protection', MS_TEXT_DOMAIN );
+			} else {
+				$this->_column_headers[0]['access'] = __( 'Members Access', MS_TEXT_DOMAIN );
+			}
+		}
 
 		// Initialize current pagination Page
 		$per_page = $this->get_items_per_page(
@@ -156,6 +177,17 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
 		}
 
+		// show all content instead of protected only for dripped
+		if ( MS_Model_Membership::TYPE_DRIPPED == $this->membership->type ) {
+			$args['show_all'] = 1;
+		}
+
+		// Flag if we want to get the protected or the accessible content.
+		$args['get_base_list'] = $this->membership->is_visitor_membership();
+
+		// Allow other helper list tables to customize the args array.
+		$args = $this->prepare_items_args( $args );
+
 		// Count items
 		$total_items = $this->model->get_content_count( $args );
 
@@ -174,14 +206,19 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		);
 	}
 
-	public function column_default( $item, $column_name ) {
-		$html = '';
+	/**
+	 * Can be overwritten to customize the args array for prepare_items()
+	 *
+	 * @since  1.1.0
+	 * @param  array $defaults
+	 * @return array
+	 */
+	public function prepare_items_args( $defaults ) {
+		return $defaults;
+	}
 
-		switch ( $column_name ) {
-			default:
-				$html = print_r( $item, true );
-				break;
-		}
+	public function column_default( $item, $column_name ) {
+		$html = print_r( $item, true );
 
 		return $html;
 	}
@@ -421,7 +458,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$has_access_status = MS_Model_Rule::FILTER_HAS_ACCESS;
 		$no_access_status = MS_Model_Rule::FILTER_NO_ACCESS;
 
-		if ( $this->membership->protected_content ) {
+		if ( $this->membership->is_visitor_membership() ) {
 			$has_access_desc = __( 'Protected content', MS_TEXT_DOMAIN );
 			$no_access_desc = __( 'Not protected', MS_TEXT_DOMAIN );
 			$has_access_status = MS_Model_Rule::FILTER_PROTECTED;

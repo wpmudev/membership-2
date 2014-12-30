@@ -31,39 +31,13 @@ class MS_Helper_List_Table_Rule_Buddypress extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_buddypress';
 
-	/**
-	 * Flag, if the list is the base list (protected content/TRUE) or a
-	 * membership list (accessible content/FALSE)
-	 *
-	 * @since 1.0.4.4
-	 *
-	 * @var bool
-	 */
-	protected $base_list = false;
-
-	/**
-	 * Sets the base_list flag
-	 *
-	 * @since  1.0.4.4
-	 * @param  bool $state
-	 */
-	public function is_base_list( $state ) {
-		$this->base_list = (bool) $state;
-	}
-
 	public function get_columns() {
-		if ( $this->base_list ) {
-			$access_label = __( 'Protect Content', MS_TEXT_DOMAIN );
-		} else {
-			$access_label = __( 'Access', MS_TEXT_DOMAIN );
-		}
-
 		return apply_filters(
 			"ms_helper_list_table_{$this->id}_columns",
 			array(
-				'cb'     => '<input type="checkbox" />',
+				'cb' => true,
 				'name' => __( 'Type', MS_TEXT_DOMAIN ),
-				'access' => $access_label,
+				'access' => true,
 			)
 		);
 	}
@@ -82,11 +56,6 @@ class MS_Helper_List_Table_Rule_Buddypress extends MS_Helper_List_Table_Rule {
 			$item->description
 		);
 
-		return $html;
-	}
-
-	public function column_default( $item, $column_name ) {
-		$html = print_r( $item, true );
 		return $html;
 	}
 

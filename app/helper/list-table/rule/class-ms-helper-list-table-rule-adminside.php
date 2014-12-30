@@ -31,49 +31,11 @@ class MS_Helper_List_Table_Rule_Adminside extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_adminside';
 
-	protected $membership;
-
-	public function prepare_items() {
-		$this->_column_headers = array(
-			$this->get_columns(),
-			$this->get_hidden_columns(),
-			$this->get_sortable_columns(),
-		);
-
-		$per_page = $this->get_items_per_page(
-			"{$this->id}_per_page",
-			self::DEFAULT_PAGE_SIZE
-		);
-		$current_page = $this->get_pagenum();
-
-		$args = array(
-			'posts_per_page' => $per_page,
-			'offset' => ( $current_page - 1 ) * $per_page,
-		);
-
-		if ( ! empty( $_GET['status'] ) ) {
-			$args['rule_status'] = $_GET['status'];
-		}
-
-		$total_items = $this->model->get_content_count( $args );
-		$this->items = apply_filters(
-			"ms_helper_list_table_{$this->id}_items",
-			$this->model->get_contents( $args )
-		);
-
-		$this->set_pagination_args(
-			array(
-				'total_items' => $total_items,
-				'per_page' => $per_page,
-			)
-		);
-	}
-
 	public function get_columns() {
 		$columns = array(
-			'cb' => '<input type="checkbox" />',
+			'cb' => true,
 			'name' => __( 'Admin Side Page', MS_TEXT_DOMAIN ),
-			'access' => __( 'Members Access', MS_TEXT_DOMAIN ),
+			'access' => true,
 		);
 
 		return apply_filters(
@@ -84,11 +46,6 @@ class MS_Helper_List_Table_Rule_Adminside extends MS_Helper_List_Table_Rule {
 
 	public function column_name( $item ) {
 		return $item->post_title;
-	}
-
-	public function column_default( $item, $column_name ) {
-		$html = $item->$column_name;
-		return $html;
 	}
 
 }

@@ -35,10 +35,10 @@ class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
 		return apply_filters(
 			"membership_helper_list_table_{$this->id}_columns",
 			array(
-				'cb'     => '<input type="checkbox" />',
+				'cb' => true,
 				'icon' => '',
 				'file' => __( 'File', MS_TEXT_DOMAIN ),
-				'access' => __( 'Access', MS_TEXT_DOMAIN ),
+				'access' => true,
 				'uploaded' => __( 'Uploaded to', MS_TEXT_DOMAIN ),
 				'date' => __( 'Date', MS_TEXT_DOMAIN ),
 			)
@@ -57,53 +57,49 @@ class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
 		);
 	}
 
-	public function column_default( $item, $column_name ) {
+	public function column_file( $item, $column_name ) {
+		return $item->post_title;
+	}
+
+	public function column_date( $item, $column_name ) {
+		return $item->post_date;
+	}
+
+	public function column_icon( $item, $column_name ) {
 		$html = '';
+		$thumb = wp_get_attachment_image( $item->ID, array( 80, 60 ), true );
 
-		switch ( $column_name ) {
-			case 'file':
-				$html = $item->post_title;
-				break;
-
-			case 'date':
-				$html = $item->post_date;
-				break;
-
-			case 'icon':
-				if ( $thumb = wp_get_attachment_image( $item->ID, array( 80, 60 ), true ) ) {
-					$html = $thumb;
-				}
-				break;
-
-			case 'uploaded':
-				if ( $item->post_parent > 0 ) {
-					$parent = get_post( $item->post_parent );
-				} else {
-					$parent = false;
-				}
-
-				if ( $parent ) {
-					$title = _draft_or_post_title( $item->post_parent );
-					$parent_type = get_post_type_object( $parent->post_type );
-					$url = get_post_permalink( $parent->ID );
-					$html = "<a href='$url'>$title</a>";
-				} else {
-					$html = __( 'Unattached', MS_TEXT_DOMAIN );
-				}
-				break;
-
-			default:
-				$html = print_r( $item, true );
-				break;
+		if ( $thumb ) {
+			$html = $thumb;
 		}
 
 		return $html;
 	}
 
-	public function get_views(){
-		$views = parent::get_views();
-		unset( $views['dripped'] );
-		return $views;
+	public function column_uploaded( $item, $column_name ) {
+		$html = '';
+
+		if ( $item->post_parent > 0 ) {
+			$parent = get_post( $item->post_parent );
+		} else {
+			$parent = false;
+		}
+
+		if ( $parent ) {
+			$title = _draft_or_post_title( $item->post_parent );
+			$parent_type = get_post_type_object( $parent->post_type );
+			$url = get_post_permalink( $parent->ID );
+
+			$html = sprintf(
+				'<a href="%1$s">$2%s</a>',
+				esc_attr( $url ),
+				esc_attr( $title )
+			);
+		} else {
+			$html = __( 'Unattached', MS_TEXT_DOMAIN );
+		}
+
+		return $html;
 	}
 
 }
