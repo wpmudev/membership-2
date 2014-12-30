@@ -76,13 +76,16 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 				$post_type = $wp_query->queried_object->post_type;
 			}
 
-			// Do not protect single pages (only archives)
+			// Single pages are protected with function `has_access()` below.
 			if ( $apply && $wp_query->is_singular ) { $apply = false; }
 
-			// Do not protect default WordPress pages
+			// A pagename also indicates a single post...
 			if ( $apply && isset( $wp_query->query->pagename ) ) { $apply = false; }
 
-			// Do not protect special "Protected Content" content
+			// Do not protect anything if post-type is unknown
+			if ( $apply && empty( $post_type ) ) { $apply = false; }
+
+			// Do not protect special "Protected Content" or default WordPress content
 			if ( $apply && in_array( $post_type, self::get_excluded_content() ) ) { $apply = false; }
 
 			// Do not protect if the post-type is published

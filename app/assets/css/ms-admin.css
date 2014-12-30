@@ -1144,7 +1144,7 @@
 .ms-wrap .ms-control-fields-wrapper {
   clear: both;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper {
+.ms-wrap .ms-chose-type.wpmui-radio-input-wrapper {
   position: relative;
   float: left;
   margin: 1em 0 0;
@@ -1155,7 +1155,7 @@
   background-color: transparent;
   outline: none;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper label:before {
+.ms-wrap .ms-chose-type.wpmui-radio-input-wrapper label:before {
   display: inline-block;
   position: absolute;
   content: '';
@@ -1167,19 +1167,19 @@
   background: url(../images/membership_sprite.png);
   background: url(../images/membership_sprite.svg), none;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-simple label:before {
+.ms-wrap .ms-chose-type.wpmui-radio-input-wrapper.wpmui-simple label:before {
   background-position: 0 -30px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-content_type label:before {
+.ms-wrap .ms-chose-type.wpmui-radio-input-wrapper.wpmui-content_type label:before {
   background-position: -100px -20px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-tier label:before {
+.ms-wrap .ms-chose-type.wpmui-radio-input-wrapper.wpmui-tier label:before {
   background-position: -200px -18px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-dripped label:before {
+.ms-wrap .ms-chose-type.wpmui-radio-input-wrapper.wpmui-dripped label:before {
   background-position: -300px -20px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
+.ms-wrap .ms-chose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
   margin-bottom: 1em;
 }
 

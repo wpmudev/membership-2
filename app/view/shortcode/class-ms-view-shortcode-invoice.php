@@ -186,7 +186,8 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					if ( $show_button ) {
 						do_action(
 							'ms_view_shortcode_invoice_purchase_button',
-							$ms_relationship
+							$ms_relationship,
+							$invoice
 						);
 					}
 					?>
