@@ -370,7 +370,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 		foreach ( $special_pages as $id => $data ) {
 			$content = (object) array();
 
-			// Search the shortcode-tag...
+			// Search the special page name...
 			if ( ! empty( $args['s'] ) ) {
 				if ( stripos( $data->label, $args['s'] ) === false ) {
 					continue;

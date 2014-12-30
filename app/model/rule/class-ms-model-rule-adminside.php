@@ -261,20 +261,39 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 			// Skip separators
 			if ( empty( $item[0] ) ) { continue; }
 			$parts = explode( '<', $item[0] );
+			$parent_name = trim( array_shift( $parts ) );
+			$skip_parent = false;
 
-			$contents[$item[2]] = (object) array(
-				'name' => trim( array_shift( $parts ) ),
-				'parent_id' => 0,
-			);
+			// Search the submenu name...
+			if ( ! empty( $args['s'] ) ) {
+				if ( stripos( $parent_name, $args['s'] ) === false ) {
+					$skip_parent = true;
+				}
+			}
+
+			if ( ! $skip_parent ) {
+				$contents[$item[2]] = (object) array(
+					'name' => $parent_name,
+					'parent_id' => 0,
+				);
+			}
 
 			if ( isset( $full_menu['sub'][$item[2]] ) ) {
-				$parent = $contents[$item[2]]->name;
 				$children = $full_menu['sub'][$item[2]];
 
 				foreach ( $children as $pos => $child ) {
 					$parts = explode( '<', $child[0] );
+					$child_name = trim( array_shift( $parts ) );
+
+					// Search the submenu name...
+					if ( $skip_parent && ! empty( $args['s'] ) ) {
+						if ( stripos( $child_name, $args['s'] ) === false ) {
+							continue;
+						}
+					}
+
 					$contents[$item[2] . ':' . $child[2]] = (object) array(
-						'name' => $parent . ' &rarr; ' . trim( array_shift( $parts ) ),
+						'name' => $parent_name . ' &rarr; ' . $child_name,
 						'parent_id' => $item[2],
 					);
 				}
@@ -307,6 +326,12 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
+		if ( ! empty( $args['posts_per_page'] ) ) {
+			$total = $args['posts_per_page'];
+			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
+			$contents = array_slice( $contents, $offset, $total );
+		}
+
 		return apply_filters(
 			'ms_model_rule_adminside_get_contents',
 			$contents,
@@ -324,7 +349,9 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 	 * @return int The content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = count( $this->rule_value );
+		$args['posts_per_page'] = 0;
+		$args['offset'] = false;
+		$count = count( $this->get_contents( $args ) );
 
 		return apply_filters(
 			'ms_model_rule_adminside_get_contents',
