@@ -224,7 +224,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 	 * @return array List of special pages.
 	 */
 	protected function get_special_pages( $flat = false ) {
-		#if ( ! is_array( $this->_content ) ) {
+		if ( ! is_array( $this->_content ) ) {
 			$this->_content = array();
 			$front_type = get_option( 'show_on_front' );
 
@@ -311,7 +311,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 					if ( ! isset( $base_values[$key] ) ) { unset( $this->_content['single'][$key] ); }
 				}
 			}
-		#}
+		}
 
 		if ( $flat ) {
 			$special_pages = $this->_content['single'] + $this->_content['archive'];
@@ -342,18 +342,9 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$special_pages = $this->get_special_pages( true );
-		$count = count( $special_pages );
-
-		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
-		switch ( $status ) {
-			case MS_Model_Rule::FILTER_HAS_ACCESS:
-			case MS_Model_Rule::FILTER_NO_ACCESS:
-			case MS_Model_Rule::FILTER_PROTECTED:
-			case MS_Model_Rule::FILTER_NOT_PROTECTED:
-			default:
-				break;
-		}
+		$args['posts_per_page'] = 0;
+		$args['offset'] = false;
+		$count = count( $this->get_contents( $args ) );
 
 		return apply_filters(
 			'ms_model_rule_special_get_content_count',
@@ -379,6 +370,13 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 		foreach ( $special_pages as $id => $data ) {
 			$content = (object) array();
 
+			// Search the shortcode-tag...
+			if ( ! empty( $args['s'] ) ) {
+				if ( stripos( $data->label, $args['s'] ) === false ) {
+					continue;
+				}
+			}
+
 			$content->id = $id;
 			$content->type = MS_Model_RULE::RULE_TYPE_SPECIAL;
 			$content->name = $data->label;
@@ -393,6 +391,21 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			);
 
 			$contents[ $content->id ] = $content;
+		}
+
+		// If not visitor membership, just show protected content
+		if ( ! $this->rule_value_invert ) {
+			$contents = array_intersect_key( $contents,  $this->rule_value );
+		}
+
+		if ( ! empty( $args['rule_status'] ) ) {
+			$contents = $this->filter_content( $args['rule_status'], $contents );
+		}
+
+		if ( ! empty( $args['posts_per_page'] ) ) {
+			$total = $args['posts_per_page'];
+			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
+			$contents = array_slice( $contents, $offset, $total );
 		}
 
 		return apply_filters(
