@@ -1213,7 +1213,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			if ( null === $roles ) {
 				$role_rule = $this->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
 				$roles = $role_rule->get_role_content_array();
-				$roles[] = 'Guest';
+				$roles[] = '(Guest)';
+				$roles[] = '(Logged in)';
 				$roles[] = 'WordPress Roles';
 			}
 

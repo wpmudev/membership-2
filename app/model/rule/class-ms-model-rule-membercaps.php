@@ -77,7 +77,8 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		$this->rule_value = WDev()->get_array( $value );
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES ) ) {
-			MS_Model_Membership::get_role_membership( 'Guest' );
+			MS_Model_Membership::get_role_membership( '(Guest)' );
+			MS_Model_Membership::get_role_membership( '(Logged in)' );
 			$roles = $this->get_role_content_array();
 			foreach ( $roles as $id => $role ) {
 				MS_Model_Membership::get_role_membership( $role );
