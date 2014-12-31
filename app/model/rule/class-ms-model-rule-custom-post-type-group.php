@@ -89,7 +89,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			if ( $apply && in_array( $post_type, self::get_excluded_content() ) ) { $apply = false; }
 
 			// Do not protect if the post-type is published
-			if ( $apply && ! parent::has_access( $post_type ) ) { $apply = false; }
+			if ( $apply && parent::has_access( $post_type ) ) { $apply = false; }
 
 			if ( $apply )  {
 				$wp_query->query_vars['post__in'] = array( 0 => 0 );
