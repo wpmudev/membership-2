@@ -298,6 +298,92 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 	}
 
 	/* ====================================================================== *
+	 *                               MEMBER CAPS
+	 * ====================================================================== */
+
+	public function render_tab_membercaps() {
+		$fields = $this->get_control_fields();
+
+		$membership = $this->data['membership'];
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$input_desc = '';
+			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+				$input_desc = __( 'Tipp: If a member belongs to more than one membership then the User Role capabilities of both roles are merged.', MS_TEXT_DOMAIN );
+			}
+			$options = array( '' => __( '(Don\'t change the members role)', MS_TEXT_DOMAIN ) );
+			$options += $rule->get_content_array();
+
+			$role_selection = array(
+				'id' => 'ms-user-role',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+				'desc' => $input_desc,
+				'value' => $rule->user_role,
+				'field_options' => $options,
+				'ajax_data' => array(
+					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
+					'membership_id' => $membership->id,
+					'rule_type' => $rule->rule_type,
+					'field' => 'user_role',
+				),
+			);
+		}
+
+		$header_data = apply_filters(
+			'ms_view_membership_protected_content_header',
+			array(),
+			MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+			array(
+				'membership' => $this->data['membership'],
+			),
+			$this
+		);
+
+		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
+		$rule_list_table->prepare_items();
+
+		ob_start();
+		?>
+		<div class="ms-settings">
+			<?php
+			MS_Helper_Html::settings_tab_header( $header_data );
+			MS_Helper_Html::html_separator();
+
+			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+				$rule_list_table->views();
+				$rule_list_table->search_box( __( 'Capabilities', MS_TEXT_DOMAIN ) );
+				?>
+				<form action="" method="post">
+					<?php $rule_list_table->display(); ?>
+					<div class="ms-protection-edit-link">
+						<?php
+						MS_Helper_Html::html_element( $edit_link );
+
+						do_action(
+							'ms_view_membership_protected_content_footer',
+							MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+							$this
+						);
+						?>
+					</div>
+				</form>
+				<?php
+			} else {
+				MS_Helper_Html::html_element( $role_selection );
+			}
+			?>
+		</div>
+		<?php
+
+		MS_Helper_Html::settings_footer(
+			array( $fields['step'] ),
+			$this->data['show_next_button']
+		);
+		return ob_get_clean();
+	}
+
+	/* ====================================================================== *
 	 *                               URL GROUP
 	 * ====================================================================== */
 
