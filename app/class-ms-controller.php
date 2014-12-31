@@ -127,6 +127,7 @@ class MS_Controller extends MS_Hooker {
 		if ( empty( $action ) ) {
 			$action = ! empty( $request_fields['action'] ) ? $request_fields['action'] : '';
 		}
+
 		if ( ! empty( $request_fields[ $nonce_field ] ) && wp_verify_nonce( $request_fields[ $nonce_field ], $action ) ) {
 			$verified = true;
 		}

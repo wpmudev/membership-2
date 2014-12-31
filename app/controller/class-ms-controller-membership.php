@@ -1335,8 +1335,8 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return number Resulting message id.
 	 */
 	private function membership_list_do_action( $action, $membership_ids ) {
-
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
+
 		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
@@ -1344,6 +1344,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 		foreach ( $membership_ids as $membership_id ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+
 			switch ( $action ) {
 				case 'toggle_active':
 				case 'toggle_activation':
@@ -1351,13 +1352,15 @@ class MS_Controller_Membership extends MS_Controller {
 					$membership->save();
 					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ACTIVATION_TOGGLED;
 					break;
+
 				case 'toggle_public':
 					$membership->private = ! $membership->private;
 					$membership->save();
 					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_STATUS_TOGGLED;
 					break;
+
 				case 'delete':
-					try{
+					try {
 						$membership->delete();
 						$msg = MS_Helper_Membership::MEMBERSHIP_MSG_DELETED;
 					}

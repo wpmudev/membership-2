@@ -890,9 +890,11 @@ class MS_Model_Member extends MS_Model {
 			);
 
 			if ( ! empty( $capability ) ) {
-				$wp_user = new WP_User( $user_id );
-
-				$is_admin = $wp_user->has_cap( $capability );
+				if ( empty( $user_id ) ) {
+					$is_admin = current_user_can( $capability );
+				} else {
+					$is_admin = user_can( $user_id, $capability );
+				}
 			}
 
 			$res = apply_filters(
@@ -1021,6 +1023,16 @@ class MS_Model_Member extends MS_Model {
 			$member->username,
 			$user_id
 		);
+	}
+
+	/**
+	 * Returns the WP_User object that is linked to the current member
+	 *
+	 * @since  1.1.0
+	 * @return WP_User
+	 */
+	public function get_user() {
+		return $this->wp_user;
 	}
 
 	/**

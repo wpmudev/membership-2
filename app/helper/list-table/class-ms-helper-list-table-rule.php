@@ -100,7 +100,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			'no_access' => __( 'Remove access', MS_TEXT_DOMAIN ),
 		);
 
-		if ( $this->membership->is_visitor_membership() ) {
+		if ( $this->membership->is_special( 'base' ) ) {
 			$bulk_actions = array(
 				'give_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
 				'no_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
@@ -458,7 +458,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$has_access_status = MS_Model_Rule::FILTER_HAS_ACCESS;
 		$no_access_status = MS_Model_Rule::FILTER_NO_ACCESS;
 
-		if ( $this->membership->is_visitor_membership() ) {
+		if ( $this->membership->is_special( 'base' ) ) {
 			$has_access_desc = __( 'Protected content', MS_TEXT_DOMAIN );
 			$no_access_desc = __( 'Not protected', MS_TEXT_DOMAIN );
 			$has_access_status = MS_Model_Rule::FILTER_PROTECTED;

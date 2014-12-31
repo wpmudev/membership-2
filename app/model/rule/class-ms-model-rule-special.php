@@ -128,7 +128,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$has_access = false;
 
 				if ( $this->check_current_page( $this->rule_value ) ) {
-					if ( ! $this->get_membership()->is_visitor_membership() ) {
+					if ( ! $this->get_membership()->is_special( 'base' ) ) {
 						$has_access = true;
 					}
 				}
@@ -235,8 +235,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$home_url = $front_url;
 			}
 
-			$base = MS_Model_Membership::get_protected_content();
-			$show_all = $this->membership_id === $base->id;
+			$show_all = $this->get_membership()->is_special( 'base' );
 
 			$arch_year = get_year_link( '' );
 			$arch_month = get_month_link( '', '' );
@@ -301,6 +300,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			);
 
 			if ( ! $show_all ) {
+				$base = MS_Model_Membership::get_protected_content();
 				$base_rule = $base->get_rule( $this->rule_type );
 				$base_values = $base_rule->rule_value;
 

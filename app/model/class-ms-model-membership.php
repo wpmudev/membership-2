@@ -137,14 +137,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $private = true;
 
 	/**
-	 * Protected Content Membership.
+	 * Marks a Protected Content special membership.
 	 *
-	 * It is the membership assigned to visitors.
+	 * Special memberships cannot be created or deleted manually but are
+	 * maintained by the plugin. Such special memberships include:
+	 * - The base "Protected Content" membership
+	 * - WordPress User-Role memberships
 	 *
-	 * @since 1.0.0
-	 * @var bool $protected_content.
+	 * @since 1.1.0
+	 * @var string $special.
 	 */
-	protected $protected_content = false;
+	protected $special = '';
 
 	/**
 	 * Membership free status.
@@ -290,7 +293,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		parent::after_load();
 
 		// validate rules using protected content rules
-		if ( ! $this->protected_content && $this->is_valid() ) {
+		if ( ! $this->is_special( 'base' ) && $this->is_valid() ) {
 			$this->merge_protected_content_rules();
 		}
 	}
@@ -750,7 +753,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$this->rules[ $rule_type ] = $rule;
 		}
 
-		if ( $this->protected_content ) {
+		if ( $this->is_special( 'base' ) ) {
 			// This is the base membership "Protected Content".
 			$rule->rule_value_invert = true;
 			$rule->rule_value_default = false;
@@ -817,7 +820,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * When no $args are specified then all memberships except the base
 	 * membership will be returned.
 	 * To include the base membership use:
-	 * $args = array( 'include_visitor' => 1 )
+	 * $args = array( 'include_special' => 1 )
 	 *
 	 * @since 1.0.0
 	 *
@@ -859,8 +862,19 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
 	public static function get_grouped_memberships( $args = array() ) {
-		// Get parent memberships.
 		$args = WDev()->get_array( $args );
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES ) ) {
+			$role_base = self::get_role_membership();
+
+			if ( is_array( $args['post__not_in'] ) ) {
+				$args['post__not_in'][] = $role_base->id;
+			} else {
+				$args['post__not_in'] = array( $role_base->id );
+			}
+		}
+
+		// Get parent memberships.
 		$args['post_parent'] = 0;
 		$memberships = self::get_memberships( $args );
 
@@ -959,10 +973,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		if ( empty( $args['include_visitor'] ) ) {
+		if ( ! WDev()->is_true( $args['include_special'] ) ) {
 			$args['meta_query']['visitor'] = array(
-				'key'     => 'protected_content',
-				'value'   => '',
+				'key'     => 'special',
+				'value'   => 'protected_content',
+				'compare' => '!=',
 			);
 		}
 
@@ -1098,7 +1113,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$private = array();
 
 		// Retrieve memberships user is not part of, using selected args
-		$memberships = MS_Model_Membership::get_grouped_memberships( $args );
+		$memberships = self::get_grouped_memberships( $args );
 
 		$parent_ids = array();
 		foreach ( $memberships as $key => $membership ) {
@@ -1176,10 +1191,72 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Returns true if the membership is the base-membership.
 	 *
 	 * @since  1.0.4.5
+	 * @deprecated since 1.1.0, replaced by is_special().
 	 * @return bool
 	 */
 	public function is_visitor_membership() {
-		return WDev()->is_true( $this->protected_content );
+		_doing_it_wrong( 'is_visitor_membership', 'Deprecated. Use is_special("protected_content") instead', '1.1.0' );
+		return $this->is_special( 'protected_content' );
+	}
+
+	/**
+	 * Returns true if the membership is a core-membership.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	protected function is_role_membership() {
+		static $roles = null;
+		$res = false;
+
+		if ( $this->special == 'role' ) {
+			if ( null === $roles ) {
+				$role_rule = $this->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
+				$roles = $role_rule->get_role_content_array();
+				$roles[] = 'Guest';
+				$roles[] = 'WordPress Roles';
+			}
+
+			$res = in_array( $this->name, $roles );
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Returns true if the membership a core membership or visitor membership.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param  string $type Optional. Check for a special membership type.
+	 * @return bool
+	 */
+	public function is_special( $type = null ) {
+		$res = false;
+
+		if ( empty( $type ) ) {
+			$res = ! empty( $this->special );
+		} else {
+			switch ( $type ) {
+				case 'role':
+					$res = $this->is_role_membership();
+					break;
+
+				case 'base':
+				case 'protected_content':
+				default:
+					$type = 'protected_content';
+					$res = $this->special == $type;
+					break;
+			}
+		}
+
+		return apply_filters(
+			'ms_model_membership_is_special',
+			$res,
+			$type,
+			$this
+		);
 	}
 
 	/**
@@ -1187,14 +1264,21 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * Create a new membership if membership does not exist.
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 *
+	 * @param  string $type The membership to load [protected_content|role]
+	 * @param  string $key Name of the special membership
+	 * @param  book $create_missing If set to false then missing special
+	 *           memberships are not created.
 	 * @return MS_Model_Membership The protected content.
 	 */
-	public static function get_protected_content() {
-		static $Protected_content = null;
+	protected static function get_special_membership( $type, $key = '', $create_missing = true ) {
+		static $Special_Membership = array();
+		$comp_key = $type . $key;
+		$membership = null;
 
-		if ( null === $Protected_content ) {
+		if ( ! isset( $Special_Membership[$comp_key] ) ) {
+			$membership = null;
 			global $wpdb;
 
 			/*
@@ -1209,26 +1293,45 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$sql = "
 				SELECT ID
 				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} m ON m.post_id = p.ID
+				INNER JOIN {$wpdb->postmeta} m_type ON m_type.post_id = p.ID
 				WHERE
 					p.post_type = %s
-					AND m.meta_key = %s
-					AND m.meta_value = %s
+					AND m_type.meta_key = %s
+					AND m_type.meta_value = %s
 			";
+			$values = array(
+				self::$POST_TYPE,
+				'special',
+				$type,
+			);
 
-			$sql = $wpdb->prepare( $sql, self::$POST_TYPE, 'protected_content', 1 );
+			if ( ! empty( $key ) ) {
+				$sql .= "
+					AND EXISTS (
+						SELECT 1
+						FROM {$wpdb->postmeta} m_name
+						WHERE m_name.post_id = p.ID
+							AND m_name.meta_key = %s
+							AND m_name.meta_value = %s
+					)
+				";
+				$values[] = 'name';
+				$values[] = $key;
+			}
+
+			$sql = $wpdb->prepare( $sql, $values );
 			$item = $wpdb->get_results( $sql );
 			$base = array_shift( $item ); // Remove the base membership from the results
 
 			if ( ! empty( $base ) ) {
-				$Protected_content = MS_Factory::load( 'MS_Model_Membership', $base->ID );
+				$membership = MS_Factory::load( 'MS_Model_Membership', $base->ID );
 
 				// If more than one base memberships were found we fix the issue here!
 				// This could happen in versions 1.0.0 - 1.0.4
-				if ( count( $item ) ) {
+				if ( 'protected_content' == $type && count( $item ) ) {
 					// Change the excess base-memberships into normal memberships
 					foreach ( $item as $membership ) {
-						update_post_meta( $membership->ID, 'protected_content', '' );
+						update_post_meta( $membership->ID, 'special', '' );
 						wp_update_post(
 							array(
 								'ID' => $membership->ID,
@@ -1255,26 +1358,75 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					}
 				}
 				// End of DB-correction part.
-			} else {
-				$description = __( 'Protected content, and also a default membership for visitors', MS_TEXT_DOMAIN );
-				$Protected_content = MS_Factory::create( 'MS_Model_Membership' );
-				$Protected_content->name = __( 'Protected Content', MS_TEXT_DOMAIN );
-				$Protected_content->payment_type = self::PAYMENT_TYPE_PERMANENT;
-				$Protected_content->title = $description;
-				$Protected_content->description = $description;
-				$Protected_content->protected_content = true;
-				$Protected_content->active = true;
-				$Protected_content->private = true;
-				$Protected_content->save();
-				$Protected_content = MS_Factory::load(
+			} else if ( $create_missing ) {
+				$description = __( 'Protected Content core membership', MS_TEXT_DOMAIN );
+				$membership = MS_Factory::create( 'MS_Model_Membership' );
+				$membership->name = $key;
+				$membership->title = 'Protected Content ' . ucwords( $key );
+				$membership->post_name = sanitize_html_class( $membership->title );
+				$membership->payment_type = self::PAYMENT_TYPE_PERMANENT;
+				$membership->description = $description;
+				$membership->special = $type;
+				$membership->active = true;
+				$membership->private = true;
+				$membership->price = 0;
+				$membership->is_free = 1;
+				$membership->post_author = get_current_user_id();
+				$membership->parent_id = 0;
+
+				switch ( $type ) {
+					case 'protected_content':
+						$membership->type = self::TYPE_SIMPLE;
+						break;
+
+					case 'role':
+						$membership->type = self::TYPE_CONTENT_TYPE;
+						if ( $key !== 'WordPress Roles' ) {
+							$parent = self::get_special_membership( 'role', 'WordPress Roles' );
+							$membership->parent_id = $parent->id;
+						}
+						break;
+				}
+				$membership->post_parent = $membership->parent_id;
+
+				$membership->save();
+
+				$membership = MS_Factory::load(
 					'MS_Model_Membership',
-					$Protected_content->id
+					$membership->id
 				);
 
 				// It is important! The Protected Content membership must be public
 				// so that the membership options are available for guest users.
-				wp_publish_post( $Protected_content->id );
+				wp_publish_post( $membership->id );
 			}
+
+			$Special_Membership[$comp_key] = apply_filters(
+				'ms_model_membership_get_special_membership',
+				$membership,
+				$type
+			);
+		}
+
+		return $Special_Membership[$comp_key];
+	}
+
+	/**
+	 * Get protected content membership.
+	 *
+	 * Create a new membership if membership does not exist.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return MS_Model_Membership The protected content.
+	 */
+	public static function get_protected_content() {
+		static $Protected_content = null;
+
+		if ( null === $Protected_content ) {
+			$Protected_content = self::get_special_membership(
+				'protected_content'
+			);
 
 			$Protected_content = apply_filters(
 				'ms_model_membership_get_protected_content',
@@ -1294,6 +1446,41 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public static function get_visitor_membership() {
 		return self::get_protected_content();
+	}
+
+	/**
+	 * Get special role membership for a certain user role.
+	 *
+	 * Create a new membership if membership does not exist.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  string $role A WordPress user-role.
+	 * @return MS_Model_Membership The core membership.
+	 */
+	public static function get_role_membership( $role = null ) {
+		static $Role_Membership = array();
+
+		if ( empty( $role ) ) {
+			$role = 'WordPress Roles';
+		}
+
+		if ( ! isset( $Role_Membership[$role] ) ) {
+			$create_missing = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES );
+
+			$Role_Membership[$role] = self::get_special_membership(
+				'role',
+				$role,
+				$create_missing
+			);
+
+			$Role_Membership[$role] = apply_filters(
+				'ms_model_membership_get_role_membership',
+				$Role_Membership[$role]
+			);
+		}
+
+		return $Role_Membership[$role];
 	}
 
 	/**
@@ -1371,9 +1558,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		do_action( 'ms_model_membership_before_delete', $this );
 		$res = false;
 
-		if ( $this->protected_content ) {
+		if ( $this->is_special() ) {
 			throw new Exception(
-				'Base membership could not be deleted.'
+				'Can not delete a system membership.'
 			);
 		}
 
@@ -1824,7 +2011,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					}
 					break;
 
-				case 'protected_content':
 				case 'trial_period_enabled':
 				case 'active':
 				case 'public':
