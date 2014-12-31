@@ -1026,6 +1026,16 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Returns the WP_User object that is linked to the current member
+	 *
+	 * @since  1.1.0
+	 * @return WP_User
+	 */
+	public function get_user() {
+		return $this->wp_user;
+	}
+
+	/**
 	 * Verify if current object is valid.
 	 *
 	 * @since 1.0.0

@@ -146,6 +146,19 @@ class MS_Model_Plugin extends MS_Model {
 			);
 		}
 
+		// Add the relevant role-specific membership to the user membership list
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES ) ) {
+			if ( is_user_logged_in() ) {
+				$the_roles = WDev()->get_array( $this->member->get_user()->roles );
+				$the_role = array_shift( $the_roles );
+			} else {
+				$the_role = 'guest';
+			}
+
+			$role_membership = MS_Model_Membership::get_role_membership( $the_role );
+			$this->member->add_membership( $role_membership->id );
+		}
+
 		do_action( 'ms_model_plugin_init_member_after', $this );
 	}
 

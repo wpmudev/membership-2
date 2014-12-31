@@ -128,7 +128,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$has_access = false;
 
 				if ( $this->check_current_page( $this->rule_value ) ) {
-					if ( ! $this->get_membership()->is_visitor_membership() ) {
+					if ( ! $this->get_membership()->is_special( 'base' ) ) {
 						$has_access = true;
 					}
 				}
@@ -235,7 +235,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$home_url = $front_url;
 			}
 
-			$show_all = $this->get_membership()->is_visitor_membership();
+			$show_all = $this->get_membership()->is_special( 'base' );
 
 			$arch_year = get_year_link( '' );
 			$arch_month = get_month_link( '', '' );

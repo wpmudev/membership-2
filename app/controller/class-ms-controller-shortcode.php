@@ -292,7 +292,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			);
 
 			foreach ( $data['member']->ms_relationships as $ms_relationship ) {
-				if ( $ms_relationship->is_visitor_membership() ) { continue; }
+				if ( $ms_relationship->is_special() ) { continue; }
 
 				if ( in_array( $ms_relationship->status, $valid_status ) ) {
 					$data['move_from_id'] = $ms_relationship->membership_id;

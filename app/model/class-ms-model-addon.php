@@ -64,6 +64,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_ADMINSIDE = 'adminside';
 	const ADDON_MEMBERCAPS = 'membercaps';
 	const ADDON_MEMBERCAPS_ADV = 'membercaps_advanced';
+	const ADDON_MEMBERCAPS_ROLES = 'membercaps_roles';
 
 	/**
 	 * Add-ons array.
@@ -103,10 +104,42 @@ class MS_Model_Addon extends MS_Model_Option {
 				self::ADDON_ADMINSIDE,
 				self::ADDON_MEMBERCAPS,
 				self::ADDON_MEMBERCAPS_ADV,
+				self::ADDON_MEMBERCAPS_ROLES,
 			);
 		}
 
 		return apply_filters( 'ms_model_addon_get_addon_types', $types );
+	}
+
+	/**
+	 * Get addon parents.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  string $addon The add-on to check
+	 * @return false|string The parent add-on of the specified add-on or false.
+	 */
+	public static function get_parent( $addon ) {
+		static $Parents;
+		$res = false;
+
+		if ( empty( $Parents ) ) {
+			$Parents = array(
+				self::ADDON_MEMBERCAPS_ADV => self::ADDON_MEMBERCAPS,
+				self::ADDON_MEMBERCAPS_ROLES => self::ADDON_MEMBERCAPS,
+			);
+
+			$Parents = apply_filters(
+				'ms_model_addon_get_parent_list',
+				$Parents
+			);
+		}
+
+		if ( isset( $Parents[$addon] ) ) {
+			$res = $Parents[$addon];
+		}
+
+		return $res;
 	}
 
 	/**
@@ -123,9 +156,17 @@ class MS_Model_Addon extends MS_Model_Option {
 
 		if ( in_array( $addon, self::get_addon_types() ) ) {
 			$enabled = ! empty( $model->addons[ $addon ] );
+
+			$parent = self::get_parent( $addon );
+			if ( $enabled && $parent ) {
+				$enabled = self::is_enabled( $parent );
+			}
 		}
 
-		return apply_filters( 'ms_model_addon_is_enabled_' . $addon, $enabled );
+		return apply_filters(
+			'ms_model_addon_is_enabled_' . $addon,
+			$enabled
+		);
 	}
 
 	/**
@@ -341,6 +382,19 @@ class MS_Model_Addon extends MS_Model_Option {
 						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
 						'field' => 'active',
 						'addon' => self::ADDON_MEMBERCAPS_ADV,
+					),
+				),
+				array(
+					'id' => 'ms-toggle-' . self::ADDON_MEMBERCAPS_ROLES,
+					'title' => __( 'Protect content based on WordPress user Roles', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Special memberships will be displayed in the Membership list that represent the WordPress User-Roles, including Guest Users.', MS_TEXT_DOMAIN ),
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'value' => self::is_enabled( self::ADDON_MEMBERCAPS_ROLES ),
+					'class' => 'toggle-plugin',
+					'ajax_data' => array(
+						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' => 'active',
+						'addon' => self::ADDON_MEMBERCAPS_ROLES,
 					),
 				),
 			),

@@ -71,7 +71,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 */
 	public function init() {
 		$this->simulate = MS_Factory::load( 'MS_Model_Simulate' );
-		$this->memberships = MS_Model_Membership::get_memberships( array( 'include_visitor' => 1 ) );
+		$this->memberships = MS_Model_Membership::get_memberships( array( 'include_special' => 1 ) );
 
 		// Hide WP toolbar in front end to not admin users
 		if ( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
