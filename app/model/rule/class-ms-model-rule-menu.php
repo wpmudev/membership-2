@@ -98,9 +98,6 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 
 		if ( parent::has_access( $item->ID ) ) {
 			$result = true;
-		} else if ( ! empty( $item->post_parent ) ) {
-			$parent = get_post( $item->post_parent );
-			$result = $this->can_access_menu( $parent );
 		}
 
 		return $result;
