@@ -61,7 +61,11 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_action( 'setup_current_user', 'init' );
+		if ( did_action( 'set_current_user' ) ) {
+			$this->init_adminbar();
+		} else {
+			$this->add_action( 'set_current_user', 'init_adminbar' );
+		}
 	}
 
 	/**
@@ -69,7 +73,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 *
 	 * @since  1.1.0
 	 */
-	public function init() {
+	public function init_adminbar() {
 		$this->simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->memberships = MS_Model_Membership::get_memberships( array( 'include_special' => 1 ) );
 
