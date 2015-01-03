@@ -63,4 +63,8 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 		return $item->title;
 	}
 
+	protected function get_items_per_page() {
+		return 0;
+	}
+
 }

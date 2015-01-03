@@ -290,7 +290,8 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 	public function get_content_count( $args = null ) {
 		$args['posts_per_page'] = 0;
 		$args['offset'] = false;
-		$count = count( $this->get_contents( $args ) );
+		$items = $this->get_contents( $args );
+		$count = count( $items );
 
 		return apply_filters(
 			'ms_model_rule_shortcode_get_content_count',
@@ -335,7 +336,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 		// If not visitor membership, just show protected content
 		if ( ! $this->rule_value_invert ) {
-			$contents = array_intersect_key( $contents,  $this->rule_value );
+			$contents = array_intersect_key( $contents, $this->rule_value );
 		}
 
 		if ( ! empty( $args['rule_status'] ) ) {

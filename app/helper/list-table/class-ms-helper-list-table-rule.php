@@ -507,4 +507,14 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			$views
 		);
 	}
+
+	/**
+	 * Return true if the current list is a view except "all"
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	public function is_view() {
+		return ! empty( $_GET['status'] );
+	}
 }

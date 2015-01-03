@@ -510,11 +510,11 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		?>
 		<div class="ms-settings">
 			<?php
-			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
+			MS_Helper_Html::settings_tab_header( $header_data );
 			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
-			$rule_list_table->search_box( __( 'Post Types', MS_TEXT_DOMAIN ) );
+			$rule_list_table->search_box( __( 'Posts', MS_TEXT_DOMAIN ) );
 			?>
 			<form action="" method="post">
 				<?php

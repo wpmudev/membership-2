@@ -338,7 +338,7 @@ class MS_Helper_List_Table {
 	 * @access public
 	 */
 	public function views() {
-		if ( ! $this->is_search() && ! $this->has_items() ) {
+		if ( ! $this->is_search() && ! $this->has_items() && ! $this->is_view() ) {
 			return '';
 		}
 
@@ -393,7 +393,7 @@ class MS_Helper_List_Table {
 					$data['label'],
 					$count,
 					esc_html( $sep ),
-					( $is_current ? 'current' : '')
+					( $is_current ? 'current' : '' )
 				);
 			}
 		}
@@ -719,7 +719,7 @@ class MS_Helper_List_Table {
 		 *
 		 * @param int $per_page Number of items to be displayed. Default 20.
 		 */
-		return (int) apply_filters( $per_page, $option, $default_value );
+		return (int) apply_filters( $option, $per_page, $default_value );
 	}
 
 	/**
@@ -747,6 +747,18 @@ class MS_Helper_List_Table {
 	 */
 	public function is_search() {
 		return ! empty( $this->search_string );
+	}
+
+	/**
+	 * Return true if the current list is a view except "all"
+	 *
+	 * Override this in the specific class!
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	public function is_view() {
+		return false;
 	}
 
 	/**

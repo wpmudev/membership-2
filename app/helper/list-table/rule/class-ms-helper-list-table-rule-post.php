@@ -86,7 +86,8 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 	}
 
 	public function column_post_date( $item, $column_name ) {
-		return $item->post_date;
+		$date = strtotime( $item->post_date );
+		return date_i18n( get_option( 'date_format' ), $date );
 	}
 
 	public function column_category( $item, $column_name ) {

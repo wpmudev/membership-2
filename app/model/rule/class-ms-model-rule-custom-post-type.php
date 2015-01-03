@@ -272,7 +272,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			'orderby'     => 'post_date',
 			'order'       => 'DESC',
 			'post_type'   => $cpts,
-			'post_status' => 'publish',
+			'post_status' => 'any',
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -280,8 +280,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 
 		return apply_filters(
 			'ms_model_rule_cpt_get_query_args',
-			$args,
-			$this
+			$args
 		);
 	}
 
@@ -290,7 +289,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $array The query args. @see self::get_query_args()
+	 * @param array $array The query args. @see $this->get_query_args()
 	 * @return array {
 	 *     @type int $key The content ID.
 	 *     @type string $value The content title.

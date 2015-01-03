@@ -847,6 +847,8 @@ class MS_Model_Rule extends MS_Model {
 			$args['default'] = 1;
 		}
 
+		$args['posts_per_page'] = 0;
+		$args['offset'] = false;
 		$total = $this->get_content_count( $args );
 		$contents = $this->get_contents( $args );
 		$count_accessible = 0;
