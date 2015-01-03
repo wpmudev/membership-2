@@ -422,6 +422,47 @@ window.ms_functions = {
 		for ( id in popups ) {
 			popups[id].close();
 		}
+	},
+
+	/**
+	 * Update the view-counter when protection inside a view list-table is changed
+	 */
+	update_view_count: function( event, data, is_err ) {
+		var me = jQuery( this ),
+			table = me.closest( '.wp-list-table' ),
+			form = table.closest( 'form' ),
+			box = form.parent(),
+			views = box.find( '.subsubsub' ).first(),
+			el_open = views.find( '.has_access .count' ),
+			el_locked = views.find( '.no_access .count' ),
+			num_open = parseInt( el_open.text().replace(/\D/, '') ),
+			num_locked = parseInt( el_locked.text().replace(/\D/, '') );
+
+		if ( isNaN( num_open ) ) { num_open = 0; }
+		if ( isNaN( num_locked ) ) { num_locked = 0; }
+
+		if ( data.value ) {
+			num_locked -= 1;
+			num_open += 1;
+		} else {
+			num_locked += 1;
+			num_open -= 1;
+		}
+
+		if ( num_open < 0 ) { num_open = 0; }
+		if ( num_locked < 0 ) { num_locked = 0; }
+
+		if ( num_open === 0 ) {
+			el_open.text( '' );
+		} else {
+			el_open.text( '(' + num_open + ')' );
+		}
+
+		if ( num_locked === 0 ) {
+			el_locked.text( '' );
+		} else {
+			el_locked.text( '(' + num_locked + ')' );
+		}
 	}
 };
 
@@ -513,7 +554,14 @@ jQuery( document ).ready( function() {
 		'click',
 		'[data-ms-dialog]',
 		fn.show_dialog
-	);
+	)
+	// Update counter of the views in rule list-tables
+	.on(
+		'wpmui-radio-slider-updated',
+		'.wp-list-table.rules .wpmui-radio-slider',
+		fn.update_view_count
+	)
+	;
 
 	// Select all text inside <code> tags on click.
 	jQuery( '.ms-wrap' ).on(
