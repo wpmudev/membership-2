@@ -173,6 +173,8 @@ class MS_Helper_List_Table {
 
 		if ( ! $args['total_pages'] && $args['per_page'] > 0 ) {
 			$args['total_pages'] = ceil( $args['total_items'] / $args['per_page'] );
+		} else {
+			$args['total_pages'] = 1;
 		}
 
 		// redirect if page number is invalid and headers are not already sent
@@ -694,11 +696,15 @@ class MS_Helper_List_Table {
 	 *
 	 * @return int
 	 */
-	protected function get_items_per_page( $option ) {
+	protected function get_items_per_page( $option, $default_value = null ) {
 		$per_page = (int) get_user_option( $option );
 
 		if ( empty( $per_page ) || $per_page < 1 ) {
-			$per_page = self::DEFAULT_PAGE_SIZE;
+			if ( is_numeric( $default_value ) ) {
+				$per_page = $default_value;
+			} else {
+				$per_page = self::DEFAULT_PAGE_SIZE;
+			}
 		}
 
 		/**
@@ -709,11 +715,11 @@ class MS_Helper_List_Table {
 		 * 'edit_comments_per_page', 'sites_network_per_page', 'site_themes_network_per_page',
 		 * 'themes_netework_per_page', 'users_network_per_page', 'edit_{$post_type}', etc.
 		 *
-		 * @since 2.9.0
+		 * @since 1.0.0
 		 *
 		 * @param int $per_page Number of items to be displayed. Default 20.
 		 */
-		return (int) apply_filters( $option, $per_page );
+		return (int) apply_filters( $per_page, $option, $default_value );
 	}
 
 	/**
@@ -780,9 +786,18 @@ class MS_Helper_List_Table {
 		}
 
 		if ( $this->is_search()
-			|| ! isset( $this->_pagination_args['total_items'] )
+			|| empty( $this->_pagination_args['total_items'] )
 		) {
 			$this->_pagination_args['total_items'] = count( $this->items );
+
+			if ( empty( $this->_pagination_args['per_page'] ) ) {
+				$this->_pagination_args['total_pages'] = 1;
+			} else {
+				$this->_pagination_args['total_pages'] = ceil(
+					$this->_pagination_args['total_items'] /
+					$this->_pagination_args['per_page']
+				);
+			}
 		}
 
 		extract( $this->_pagination_args, EXTR_SKIP );
@@ -871,6 +886,7 @@ class MS_Helper_List_Table {
 		} else {
 			$page_class = ' no-pages';
 		}
+
 
 		$this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
 

@@ -139,12 +139,12 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		// Check for simulation periods/dates in POST request
 		$isset = array( 'simulate_submit', 'simulate_type' );
-		if ( $this->validate_required( $isset, 'POST', false ) ) {
+		if ( self::validate_required( $isset, 'POST', false ) ) {
 			$this->simulate->type = $_POST['simulate_type'];
 
 			if ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
 				$isset = array( 'period_unit', 'period_type' );
-				if ( $this->validate_required( $isset, 'POST', false ) ) {
+				if ( self::validate_required( $isset, 'POST', false ) ) {
 					$this->simulate->period = array(
 						'period_unit' => absint( $_POST['period_unit'] ),
 						'period_type' => $_POST['period_type'],

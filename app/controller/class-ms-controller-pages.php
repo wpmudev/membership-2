@@ -76,7 +76,7 @@ class MS_Controller_Pages extends MS_Controller {
 
 		$isset = array( 'field', 'value' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $isset, 'POST', false )
+			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
 			$ms_pages = $this->get_model();

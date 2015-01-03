@@ -175,7 +175,7 @@ class MS_Controller_Member extends MS_Controller {
 			$fields_edit = array( 'member_id', 'action' );
 
 			if ( $this->verify_nonce( 'add_member' )
-				&& $this->validate_required( $fields_new )
+				&& self::validate_required( $fields_new )
 			) {
 				$ids = explode( ',', $_POST['new_member'] );
 				foreach ( $ids as $id ) {
@@ -194,7 +194,7 @@ class MS_Controller_Member extends MS_Controller {
 
 			// Execute list table single action.
 			else if ( $this->verify_nonce( null, 'GET' )
-				&& $this->validate_required( $fields_edit, 'GET' )
+				&& self::validate_required( $fields_edit, 'GET' )
 			) {
 				$msg = $this->member_list_do_action(
 					$_GET['action'],
@@ -210,7 +210,7 @@ class MS_Controller_Member extends MS_Controller {
 
 			// Execute list table bulk actions.
 			elseif ( $this->verify_nonce( 'bulk-members' )
-				&& $this->validate_required( $fields_edit, 'POST' )
+				&& self::validate_required( $fields_edit, 'POST' )
 			) {
 				$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 				if ( $action == 'toggle_activation' ) {
@@ -223,7 +223,7 @@ class MS_Controller_Member extends MS_Controller {
 			// Execute edit view page action submit.
 			elseif ( isset( $_POST['submit'] )
 				&& $this->verify_nonce()
-				&& $this->validate_required( $fields_edit, 'POST' )
+				&& self::validate_required( $fields_edit, 'POST' )
 			) {
 				if ( is_array( $_POST['member_id'] ) ) {
 					$member_ids = $_POST['member_id'];
@@ -258,7 +258,7 @@ class MS_Controller_Member extends MS_Controller {
 	public function admin_member_list() {
 		// Action view edit page request
 		$fields = array( 'member_id', 'action' );
-		if ( $this->validate_required( $fields, 'REQUEST' ) ) {
+		if ( self::validate_required( $fields, 'REQUEST' ) ) {
 			$this->prepare_action_view( $_REQUEST['action'], $_REQUEST['member_id'] );
 		} else {
 			$data = array();

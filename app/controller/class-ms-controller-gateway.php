@@ -121,7 +121,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$fields = array( 'gateway_id' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $fields )
+			&& self::validate_required( $fields )
 			&& $this->is_admin_user()
 		) {
 			$msg = $this->gateway_list_do_action(
@@ -146,7 +146,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$fields = array( 'action', 'gateway_id', 'field' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $fields )
+			&& self::validate_required( $fields )
 			&& isset( $_POST['value'] )
 			&& $this->is_admin_user()
 		) {
@@ -445,7 +445,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$data = array();
 
 		$fields = array( 'gateway', 'ms_relationship_id' );
-		if ( $this->validate_required( $fields )
+		if ( self::validate_required( $fields )
 			&& MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] )
 		) {
 			$data['gateway'] = $_POST['gateway'];
@@ -509,7 +509,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$valid = true;
 		$nonce_name = $_REQUEST['gateway'] . '_' . $_REQUEST['ms_relationship_id'];
 
-		if ( $valid && ! $this->validate_required( $fields, 'any' ) ) {
+		if ( $valid && ! self::validate_required( $fields, 'any' ) ) {
 			$valid = false; $err = 'GAT-01 (invalid fields)';
 		}
 		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_REQUEST['gateway'] ) ) {

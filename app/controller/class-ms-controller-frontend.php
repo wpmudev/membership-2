@@ -158,7 +158,7 @@ class MS_Controller_Frontend extends MS_Controller {
 
 		if ( ! empty( $post ) && isset( $post->post_type )
 			&& $post->post_type == MS_Model_Invoice::$POST_TYPE
-			&& $this->validate_required( $fields )
+			&& self::validate_required( $fields )
 			&& self::STEP_PROCESS_PURCHASE == $_POST['step']
 		) {
 			do_action(

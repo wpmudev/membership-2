@@ -80,7 +80,7 @@ class MS_Controller_Communication extends MS_Controller {
 
 		$isset = array( 'type', 'field', 'value' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $isset, 'POST', false )
+			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
 			$comm = MS_Model_Communication::get_communication( $_POST['type'] );

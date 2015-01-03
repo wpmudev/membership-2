@@ -270,6 +270,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public $_access_reason = array();
 
 	/**
+	 * Sub-objects that need to be reset when de-serializing the object
+	 *
+	 * @since 1.1.0
+	 * @var array
+	 */
+	public $_subobjects = array( 'rules' );
+
+	/**
 	 * Set rules membership_id before saving.
 	 *
 	 * @since 1.0.0
@@ -1493,6 +1501,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function merge_protected_content_rules() {
+		if ( $this->is_special( 'base' ) ) {
+			// This is the visitor membership, no need to merge anything.
+			return;
+		}
+
 		$protected_content_rules = self::get_protected_content()->rules;
 
 		foreach ( $protected_content_rules as $rule_type => $protect_rule ) {
@@ -1500,9 +1513,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				if ( MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
 
 					if ( ! empty( $this->rules[ $rule_type ] ) ) {
+						// The membership has granted access to some rule items.
 						$rule = $this->get_rule( $rule_type );
 						$rule->merge_rule_values( $protect_rule );
 					} else {
+						// This membership does not change the default protection.
 						$rule = clone $protect_rule;
 						$rule->rule_value_invert = false;
 

@@ -169,7 +169,7 @@ class MS_Controller extends MS_Hooker {
 	 * @param bool $not_empty if true use empty method, else use isset method.
 	 * @return bool True all fields are validated
 	 */
-	public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {
+	static public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {
 		$validated = true;
 		$request_fields = null;
 
@@ -207,8 +207,7 @@ class MS_Controller extends MS_Hooker {
 		return apply_filters(
 			'ms_controller_validate_required',
 			$validated,
-			$fields,
-			$this
+			$fields
 		);
 	}
 
@@ -222,7 +221,7 @@ class MS_Controller extends MS_Hooker {
 	 * @param string $request_method POST or GET
 	 * @return mixed The value of the request field.
 	 */
-	public function get_request_field( $id, $default = '', $request_method = 'POST' ) {
+	static public function get_request_field( $id, $default = '', $request_method = 'POST' ) {
 		$value = $default;
 		$request_fields = null;
 
@@ -250,8 +249,7 @@ class MS_Controller extends MS_Hooker {
 			'ms_controller_get_request_field',
 			$value,
 			$id,
-			$default,
-			$this
+			$default
 		);
 	}
 

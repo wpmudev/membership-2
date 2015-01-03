@@ -35,7 +35,8 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type_Group extends MS_Helper_List_Ta
 		return apply_filters(
 			"membership_helper_list_table_{$this->id}_columns",
 			array(
-				'id' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
+				'cb' => true,
+				'name' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 				'access' => true,
 			)
 		);
@@ -49,6 +50,10 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type_Group extends MS_Helper_List_Ta
 				'access' => 'access',
 			)
 		);
+	}
+
+	public function column_name( $item, $column_name ) {
+		return $item->name;
 	}
 
 }

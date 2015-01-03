@@ -81,7 +81,7 @@ class MS_Controller_Rule extends MS_Controller {
 
 		$required = array( 'membership_id', 'rule', 'item' );
 		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'toggle-rule-01' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'toggle-rule-02' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'toggle-rule-02' ); }
 		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'toggle-rule-03' ); }
 
 		if ( $this->_resp_ok() ) {
@@ -143,8 +143,8 @@ class MS_Controller_Rule extends MS_Controller {
 		$isset = array( 'values', 'value' );
 
 		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-rule-01' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'update-rule-02' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-rule-03' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'update-rule-02' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-rule-03' ); }
 
 		if ( $this->_resp_ok() ) {
 			$rule_type = $_POST['rule_type'];
@@ -176,8 +176,8 @@ class MS_Controller_Rule extends MS_Controller {
 		$isset = array( 'item', 'value' );
 
 		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-matching-01' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'update-matching-02' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-matching-03' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'update-matching-02' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-matching-03' ); }
 
 		if ( $this->_resp_ok() ) {
 			$rule_type = $_POST['rule_type'];
@@ -271,7 +271,7 @@ class MS_Controller_Rule extends MS_Controller {
 
 		$fields = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field' );
 		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-dripped-01' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $fields ) ) { $this->_resp_err( 'update-dripped-02' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $fields ) ) { $this->_resp_err( 'update-dripped-02' ); }
 		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-dripped-03' ); }
 
 		if ( $this->_resp_ok() ) {
@@ -314,8 +314,8 @@ class MS_Controller_Rule extends MS_Controller {
 		$isset = array( 'value' );
 
 		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-field-01' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $required ) ) { $this->_resp_err( 'update-field-02' ); }
-		if ( $this->_resp_ok() && ! $this->validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-field-03' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'update-field-02' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-field-03' ); }
 		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-field-04' ); }
 
 		if ( $this->_resp_ok() ) {
@@ -350,6 +350,10 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function edit_rule_manager( $rule_type ) {
+
+		if ( isset( $_POST['rule'] ) ) {
+			$rule_type = $_POST['rule'];
+		}
 
 		do_action( 'ms_controller_rule_edir_rule_manager', $rule_type, $this );
 

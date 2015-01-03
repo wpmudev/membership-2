@@ -102,7 +102,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$fields = array( 'setting' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $fields )
+			&& self::validate_required( $fields )
 			&& $this->is_admin_user()
 		) {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
@@ -124,7 +124,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$isset = array( 'field', 'value' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $isset, 'POST', false )
+			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
 			$msg = $this->save_general(
@@ -149,7 +149,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$isset = array( 'group', 'field', 'value' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $isset, 'POST', false )
+			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
 			$settings = $this->get_model();
@@ -179,7 +179,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$isset = array( 'type', 'value' );
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $isset, 'POST', false )
+			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 			&& MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] )
 		) {
@@ -350,7 +350,7 @@ class MS_Controller_Settings extends MS_Controller {
 					// Admin bar enable request.
 					$fields = array( 'action', 'setting' );
 
-					if ( $this->validate_required( $fields, 'GET' ) ) {
+					if ( self::validate_required( $fields, 'GET' ) ) {
 						$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
 
 						$redirect = remove_query_arg( array( 'action', '_wpnonce', 'setting' ) );
@@ -368,7 +368,7 @@ class MS_Controller_Settings extends MS_Controller {
 					}
 
 					// Load comm type from user select
-					if ( $this->validate_required( array( 'comm_type' ) )
+					if ( self::validate_required( array( 'comm_type' ) )
 						&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
 					) {
 						$redirect = add_query_arg( 'comm_type', $_POST['comm_type'] );
@@ -378,7 +378,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 					$fields = array( 'type', 'subject', 'email_body' );
 					if ( isset( $_POST['save_email'] )
-						&& $this->validate_required( $fields )
+						&& self::validate_required( $fields )
 					) {
 						$msg = $this->save_communication( $type, $_POST );
 						$redirect = add_query_arg( 'comm_type', $_POST['type'] );

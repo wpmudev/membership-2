@@ -122,7 +122,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$required = array( 'membership_id', 'field' );
 
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $required, 'POST', false )
+			&& self::validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
 			$msg = $this->membership_list_do_action(
@@ -154,7 +154,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$required = array( 'membership_id', 'field', 'value' );
 
 		if ( $this->verify_nonce()
-			&& $this->validate_required( $required, 'POST', false )
+			&& self::validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
 			$msg = $this->save_membership(
@@ -184,6 +184,8 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( empty( $this->model ) ) {
 			if ( ! empty( $_REQUEST['membership_id'] ) ) {
 				$membership_id = absint( $_REQUEST['membership_id'] );
+			} elseif ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] === 'protected-content-setup' ) {
+				$membership_id = MS_Model_Membership::get_visitor_membership()->id;
 			}
 
 			$this->model = MS_Factory::load(
@@ -259,7 +261,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 					$fields = array( 'action', 'membership_id' );
 
-					if ( $this->validate_required( $fields, 'GET' ) ) {
+					if ( self::validate_required( $fields, 'GET' ) ) {
 						$msg = $this->membership_list_do_action(
 							$_GET['action'],
 							array( absint( $_GET['membership_id'] ) )
@@ -305,7 +307,7 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_SETUP_CONTENT_TYPES:
 					// Create a Content-Type child
 
-					if ( $this->validate_required( array( 'name' ) )
+					if ( self::validate_required( array( 'name' ) )
 						&& 'create_content_type' == $_POST['action']
 					) {
 						$child = $this->create_child_membership(  $_POST['name'] );
@@ -325,7 +327,7 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_SETUP_MS_TIERS:
 					// Create a Tier child
 
-					if ( $this->validate_required( array( 'name' ) )
+					if ( self::validate_required( array( 'name' ) )
 						&& 'create_tier' == $_POST['action']
 					) {
 						$child = $this->create_child_membership(  $_POST['name'] );
@@ -482,7 +484,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 
 		if ( self::is_valid_step( $step ) ) {
-			$method = "page_{$step}";
+			$method = 'page_' . $step;
 
 			if ( method_exists( $this, $method ) ) {
 				$callback = apply_filters(
@@ -553,7 +555,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
-		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
+		$data['menu_id'] = self::get_request_field( 'menu_id', $first_value, 'REQUEST' );
 		$data['initial_setup'] = MS_Plugin::is_wizard();
 
 		$view = MS_Factory::create( 'MS_View_Membership_Protected_Content' );
@@ -591,13 +593,12 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['active_tab'] = $this->get_active_tab();
 		$data['membership'] = $this->load_membership();
 		$data['settings'] = MS_Plugin::instance()->settings;
-
 		$data['show_next_button'] = ! isset( $_GET['edit'] );
 
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
-		$data['menu_id'] = $this->get_request_field( 'menu_id', $first_value, 'REQUEST' );
+		$data['menu_id'] = self::get_request_field( 'menu_id', $first_value, 'REQUEST' );
 
 		$view = MS_Factory::create( 'MS_View_Membership_Accessible_Content' );
 		$view->data = apply_filters( 'ms_view_membership_setup_accessible_content_data', $data, $this );
@@ -1009,7 +1010,9 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return array The tabs configuration.
 	 */
 	public function get_protection_tabs() {
-		$membership_id = $this->load_membership()->id;
+		$membership = $this->load_membership();
+		$membership_id = $membership->id;
+		$is_base = $membership->is_special( 'base' );
 
 		// First create a list including all possible tabs.
 
@@ -1094,13 +1097,18 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
 			unset( $tabs['membercaps'] );
 		}
-		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
 			$tabs['membercaps']['title'] = __( 'Member Capabilities', MS_TEXT_DOMAIN );
+		} else {
+			if ( $is_base ) {
+				unset( $tabs['membercaps'] );
+			}
 		}
 
+		WDev()->load_fields( $_GET, 'page' );
 		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
 		$url = admin_url( 'admin.php' );
-		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );
+		$page = sanitize_html_class( $_GET['page'], 'protected-content-memberships' );
 
 		foreach ( $tabs as $tab => $info ) {
 			$tabs[ $tab ]['url'] = admin_url(
@@ -1181,6 +1189,10 @@ class MS_Controller_Membership extends MS_Controller {
 					if ( ! $cnt_url_group ) {
 						unset( $tabs[ $tab ] );
 					}
+					break;
+
+				case 'membercaps':
+					// Always display this tab when the Add-on is active
 					break;
 
 				default:

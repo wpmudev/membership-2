@@ -145,7 +145,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 	 */
 	public function ajax_action_toggle_metabox_access() {
 		$fields = array( 'membership_id', 'rule_type', 'post_id' );
-		if ( $this->verify_nonce() && $this->validate_required( $fields ) && $this->is_admin_user() ) {
+		if ( $this->verify_nonce() && self::validate_required( $fields ) && $this->is_admin_user() ) {
 			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
 			if ( $_POST['membership_id'] == MS_Model_Membership::get_protected_content()->id ) {
 				$post = get_post( $_POST['post_id'] );

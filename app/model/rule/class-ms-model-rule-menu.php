@@ -51,6 +51,15 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	protected $rule_type = self::RULE_TYPE_MENU;
 
 	/**
+	 * Initialize the rule
+	 *
+	 * @since  1.1.0
+	 */
+	public function prepare_obj() {
+		$this->add_filter( 'ms_helper_list_table_rule_menu_url', 'view_url' );
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * This rule will return NULL (not relevant), because the menus are
@@ -191,6 +200,30 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	}
 
 	/**
+	 * Menu table always displays all menu items on one page.
+	 *
+	 * @since  1.1.0
+	 * @param  array $option [description]
+	 * @return int Number of items to display on one page
+	 */
+	protected function get_items_per_page( $option ) {
+		return 0;
+	}
+
+	/**
+	 * Customize the URL used for the view-list
+	 *
+	 * @since  1.1.0
+	 * @param  string $url The URL
+	 * @return string The URL
+	 */
+	public function view_url( $url ) {
+		$menu_id = MS_Controller::get_request_field( 'menu_id', 0, 'REQUEST' );
+		$url = add_query_arg( 'menu_id', $menu_id, $url );
+		return $url;
+	}
+
+	/**
 	 * Get content to protect.
 	 *
 	 * @since 1.0.0
@@ -201,7 +234,9 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		if ( $args['get_base_list'] ) {
+		$is_base = $this->get_membership()->is_special( 'base' );
+
+		if ( $is_base && ! isset( $args['menu_id'] ) ) {
 			$menus = $this->get_menu_array();
 			foreach ( $menus as $menu_id => $menu ) {
 				// Recursive call.
@@ -273,6 +308,27 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	}
 
 	/**
+	 * Get the total content count.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param $args The query post args
+	 * @return int The total content count.
+	 */
+	public function get_content_count( $args = null ) {
+		$count = 0;
+		$items = $this->get_contents( $args );
+
+		$count = count( $items );
+
+		return apply_filters(
+			'ms_model_rule_menu_get_content_count',
+			$count,
+			$args
+		);
+	}
+
+	/**
 	 * Get menu array.
 	 *
 	 * @since 1.0.0
@@ -289,7 +345,19 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 		if ( ! empty( $navs ) ) {
 			$contents = array();
 			foreach ( $navs as $nav ) {
-				$contents[ $nav->term_id ] = esc_html( $nav->name );
+				$items = $this->get_contents( array( 'menu_id' => $nav->term_id, 'rule_status' => 'protected' ) );
+				$total = $this->get_content_count( array( 'menu_id' => $nav->term_id ) );
+
+				$protected = count( $items );
+				$unprotected = max( 0, $total - $protected );
+
+				$title = sprintf(
+					'%1$s &nbsp; &nbsp; [%2$s | %3$s]',
+					esc_html( $nav->name ),
+					$protected,
+					$unprotected
+				);
+				$contents[ $nav->term_id ] = $title;
 			}
 		}
 

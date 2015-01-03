@@ -32,23 +32,32 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	/**
 	 * ID of the rule. This is overwritten by each rule!
 	 *
-	 * @var string
+	 * @var   string
 	 */
 	protected $id = 'rule';
 
 	/**
 	 * The rule model
 	 *
-	 * @var MS_Model_Rule
+	 * @var   MS_Model_Rule
 	 */
 	protected $model;
 
 	/**
 	 * The membership object linked to the rule
 	 *
-	 * @var MS_Model_Membership
+	 * @var   MS_Model_Membership
 	 */
 	protected $membership;
+
+	/**
+	 * The `prepare_items()` function stores the prepared filter args in this
+	 * member variable for later usage.
+	 *
+	 * @var   array
+	 * @since 1.1.0
+	 */
+	protected $prepared_args = array();
 
 
 	public function __construct( $model, $membership = null ) {
@@ -136,7 +145,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		}
 
 		if ( isset( $this->_column_headers[0]['access'] ) ) {
-			if ( $this->membership->is_visitor_membership() ) {
+			if ( $this->membership->is_special( 'base' ) ) {
 				$this->_column_headers[0]['access'] = __( 'Content Protection', MS_TEXT_DOMAIN );
 			} else {
 				$this->_column_headers[0]['access'] = __( 'Members Access', MS_TEXT_DOMAIN );
@@ -182,9 +191,6 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			$args['show_all'] = 1;
 		}
 
-		// Flag if we want to get the protected or the accessible content.
-		$args['get_base_list'] = $this->membership->is_visitor_membership();
-
 		// Allow other helper list tables to customize the args array.
 		$args = $this->prepare_items_args( $args );
 
@@ -196,6 +202,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			"ms_helper_list_table_{$this->id}_items",
 			$this->model->get_contents( $args )
 		);
+
+		// Save the args for use in later functions
+		$this->prepared_args = $args;
 
 		// Prepare the table pagination
 		$this->set_pagination_args(
@@ -452,7 +461,10 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	}
 
 	public function get_views() {
-		$count = $this->model->count_item_access();
+		$count_args = $this->prepared_args;
+		unset( $count_args['rule_status'] );
+		$count = $this->model->count_item_access( $count_args );
+
 		$has_access_desc = __( 'Has Access', MS_TEXT_DOMAIN );
 		$no_access_desc = __( 'Access Restricted', MS_TEXT_DOMAIN );
 		$has_access_status = MS_Model_Rule::FILTER_HAS_ACCESS;

@@ -254,6 +254,18 @@ class MS_Factory {
 					$model->description = $post->post_content;
 					$model->user_id = $post->post_author;
 				}
+
+				if ( is_array( $model->_subobjects ) ) {
+					foreach ( $model->_subobjects as $obj ) {
+						if ( property_exists( $model, $obj ) ) {
+							$items = $model->$obj;
+							foreach ( $items as $m_key => $m_obj ) {
+								$items[$m_key]->_prepared = false;
+							}
+							$model->$obj = $items;
+						}
+					}
+				}
 			}
 		}
 

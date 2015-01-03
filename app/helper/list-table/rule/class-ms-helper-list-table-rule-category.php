@@ -35,6 +35,7 @@ class MS_Helper_List_Table_Rule_Category extends MS_Helper_List_Table_Rule {
 		return apply_filters(
 			"membership_helper_list_table_{$this->id}_columns",
 			array(
+				'cb' => true,
 				'name' => __( 'Category name', MS_TEXT_DOMAIN ),
 				'access' => true,
 			)

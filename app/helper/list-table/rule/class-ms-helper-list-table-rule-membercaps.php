@@ -32,9 +32,15 @@ class MS_Helper_List_Table_Rule_Membercaps extends MS_Helper_List_Table_Rule {
 	protected $id = 'rule_membercaps';
 
 	public function get_columns() {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$name_label = __( 'Capability', MS_TEXT_DOMAIN );
+		} else {
+			$name_label = __( 'Role', MS_TEXT_DOMAIN );
+		}
+
 		$columns = array(
 			'cb' => true,
-			'name' => __( 'Capability', MS_TEXT_DOMAIN ),
+			'name' => $name_label,
 			'access' => true,
 		);
 

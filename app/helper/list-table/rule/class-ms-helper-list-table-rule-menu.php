@@ -43,20 +43,10 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 		return apply_filters(
 			'membership_helper_list_table_' . $this->id . '_columns',
 			array(
-				'title' => sprintf(
-					'<span class="ms-menu-name">%s</span> - %s',
-					$menus[ $this->menu_id ],
-					__( 'Menu title', MS_TEXT_DOMAIN )
-				),
+				'cb' => true,
+				'title' => __( 'Menu title', MS_TEXT_DOMAIN ),
 				'access' => true,
 			)
-		);
-	}
-
-	public function get_bulk_actions() {
-		return apply_filters(
-			'membership_helper_list_table_' . $this->id . '_bulk_actions',
-			array()
 		);
 	}
 

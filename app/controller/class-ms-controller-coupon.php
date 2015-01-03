@@ -60,7 +60,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		 * Save coupon add/edit
 		 */
 		$isset = array( 'submit', 'membership_id' );
-		if ( $this->validate_required( $isset, 'POST', false ) && $this->verify_nonce() && $this->is_admin_user() ) {
+		if ( self::validate_required( $isset, 'POST', false ) && $this->verify_nonce() && $this->is_admin_user() ) {
 			$msg = $this->save_coupon( $_POST );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'coupon_id') ) ) ) ;
 			exit;
@@ -68,7 +68,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		/**
 		 * Execute table single action.
 		 */
-		elseif( $this->validate_required( array( 'coupon_id', 'action' ), 'GET' ) && $this->verify_nonce( $_GET['action'], 'GET' ) && $this->is_admin_user() ) {
+		elseif( self::validate_required( array( 'coupon_id', 'action' ), 'GET' ) && $this->verify_nonce( $_GET['action'], 'GET' ) && $this->is_admin_user() ) {
 			$msg = $this->coupon_do_action( $_GET['action'], array( $_GET['coupon_id'] ) );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) ) ) );
 			exit;
@@ -76,7 +76,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		/**
 		 * Execute bulk actions.
 		 */
-		elseif( $this->validate_required( array( 'coupon_id' ) ) && $this->verify_nonce( 'bulk-coupons' ) && $this->is_admin_user() ) {
+		elseif( self::validate_required( array( 'coupon_id' ) ) && $this->verify_nonce( 'bulk-coupons' ) && $this->is_admin_user() ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->coupon_do_action( $action, $_POST['coupon_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -119,7 +119,7 @@ class MS_Controller_Coupon extends MS_Controller {
 		 * Edit action view page request
 		 */
 		$isset = array( 'action', 'coupon_id' );
-		if( $this->validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
+		if( self::validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
 			$coupon_id = ! empty( $_GET['coupon_id'] ) ? $_GET['coupon_id'] : 0;
 			$data['coupon'] = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
 			$data['memberships'] = MS_Model_Membership::get_membership_names();

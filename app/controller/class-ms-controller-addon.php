@@ -137,7 +137,7 @@ class MS_Controller_Addon extends MS_Controller {
 		$fields = array( 'addon', 'action', 'action2' );
 
 		if ( $this->verify_nonce( 'bulk-addons' )
-			&& $this->validate_required( $fields )
+			&& self::validate_required( $fields )
 		) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->save_addon( $action, $_POST['addon'] );

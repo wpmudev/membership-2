@@ -72,7 +72,7 @@ class MS_Controller_Billing extends MS_Controller {
 		 * Save billing add/edit
 		 */
 		$fields = array( 'user_id', 'membership_id' );
-		if ( $this->validate_required( $fields ) && $this->verify_nonce() && $this->is_admin_user() ) {
+		if ( self::validate_required( $fields ) && $this->verify_nonce() && $this->is_admin_user() ) {
 			$msg = $this->save_invoice( $_POST );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invoice_id') ) ) ) ;
 			exit;
@@ -80,7 +80,7 @@ class MS_Controller_Billing extends MS_Controller {
 		/**
 		 * Execute bulk actions.
 		 */
-		elseif( $this->validate_required( array( 'invoice_id' ) ) && $this->verify_nonce( 'bulk-billings' ) && $this->is_admin_user() ) {
+		elseif( self::validate_required( array( 'invoice_id' ) ) && $this->verify_nonce( 'bulk-billings' ) && $this->is_admin_user() ) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
 			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
@@ -99,7 +99,7 @@ class MS_Controller_Billing extends MS_Controller {
 		 * Action view page request
 		 */
 		$isset = array( 'action', 'invoice_id' );
-		if( $this->validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
+		if( self::validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
 			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
 			$data['invoice'] =  MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
 			$data['action'] = $_GET['action'];

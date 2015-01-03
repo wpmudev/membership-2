@@ -254,9 +254,9 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		$count = 0;
 		unset( $args['number'] );
 		$args = self::get_query_args( $args );
-		$posts = get_pages( $args );
+		$categories = get_categories( $args );
 
-		$count = count( $posts );
+		$count = count( $categories );
 
 		return apply_filters(
 			'ms_model_rule_category_get_content_count',

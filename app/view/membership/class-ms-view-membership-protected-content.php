@@ -327,27 +327,13 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
 
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$input_desc = '';
-			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
-				$input_desc = __( 'Tipp: If a member belongs to more than one membership then the User Role capabilities of both roles are merged.', MS_TEXT_DOMAIN );
-			}
-			$options = array( '' => __( '(Don\'t change the members role)', MS_TEXT_DOMAIN ) );
-			$options += $rule->get_content_array();
+		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
+		$rule_list_table->prepare_items();
 
-			$role_selection = array(
-				'id' => 'ms-user-role',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-				'desc' => $input_desc,
-				'value' => $rule->user_role,
-				'field_options' => $options,
-				'ajax_data' => array(
-					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_FIELD,
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'field' => 'user_role',
-				),
-			);
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$search_label = __( 'Capability', MS_TEXT_DOMAIN );
+		} else {
+			$search_label = __( 'Role', MS_TEXT_DOMAIN );
 		}
 
 		$header_data = apply_filters(
@@ -360,9 +346,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 			$this
 		);
 
-		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
-		$rule_list_table->prepare_items();
-
 		ob_start();
 		?>
 		<div class="ms-settings">
@@ -370,29 +353,20 @@ class MS_View_Membership_Protected_Content extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 			MS_Helper_Html::html_separator();
 
-			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-				$rule_list_table->views();
-				$rule_list_table->search_box( __( 'Capabilities', MS_TEXT_DOMAIN ) );
-				?>
-				<form action="" method="post">
-					<?php $rule_list_table->display(); ?>
-					<div class="ms-protection-edit-link">
-						<?php
-						MS_Helper_Html::html_element( $edit_link );
-
-						do_action(
-							'ms_view_membership_protected_content_footer',
-							MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
-							$this
-						);
-						?>
-					</div>
-				</form>
-				<?php
-			} else {
-				MS_Helper_Html::html_element( $role_selection );
-			}
+			$rule_list_table->views();
+			$rule_list_table->search_box( $search_label );
 			?>
+			<form action="" method="post">
+				<?php
+				$rule_list_table->display();
+
+				do_action(
+					'ms_view_membership_protected_content_footer',
+					MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+					$this
+				);
+				?>
+			</form>
 		</div>
 		<?php
 
@@ -402,6 +376,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		);
 		return ob_get_clean();
 	}
+
 	/* ====================================================================== *
 	 *                               SPECIAL PAGES
 	 * ====================================================================== */
@@ -578,37 +553,9 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		$nonce = wp_create_nonce( $action );
 
 		$menu_protection = $this->data['settings']->menu_protection;
-		$protected_content = MS_Model_Membership::get_protected_content();
 
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
-
-		switch ( $menu_protection ) {
-			case 'item':
-				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
-				$rule_list_table = new MS_Helper_List_Table_Rule_Menu(
-					$rule_menu,
-					$membership,
-					$this->data['menu_id']
-				);
-				break;
-
-			case 'menu':
-				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENUS );
-				$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menu(
-					$rule_menu,
-					$membership
-				);
-				break;
-
-			case 'location':
-				$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS );
-				$rule_list_table = new MS_Helper_List_Table_Rule_Replace_Menulocation(
-					$rule_menu,
-					$membership
-				);
-				break;
-		}
 
 		$val_comment = $rule_comment->get_rule_value( MS_Model_Rule_Comment::CONTENT_ID );
 		$val_more_tag = absint( $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID ) );
@@ -618,7 +565,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 				'id' => 'comment',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Members have:', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Visitors have:', MS_TEXT_DOMAIN ),
 				'value' => $val_comment,
 				'field_options' => $rule_comment->get_content_array(),
 				'class' => 'chosen-select',
@@ -635,7 +582,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 				'id' => 'more_tag',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Only Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
 				'value' => $val_more_tag,
 				'field_options' => $rule_more_tag->get_options_array(),
 				'class' => 'ms-more-tag',
@@ -656,36 +603,27 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		);
 
 		if ( 'item' === $menu_protection ) {
+			$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
+			$rule_list_table = new MS_Helper_List_Table_Rule_Menu(
+				$rule_menu,
+				$membership,
+				$this->data['menu_id']
+			);
+
 			$fields['menu_id'] = array(
 				'id' => 'menu_id',
-				'title' => __( 'Menus:', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Select menu to load:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protect menu items', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Select menu to protect:', MS_TEXT_DOMAIN ),
 				'value' => $this->data['menu_id'],
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $this->data['menus'],
 				'class' => 'chosen-select',
 			);
-		}
-
-		if ( MS_Model_Rule_Comment::RULE_VALUE_WRITE === $val_comment ) {
-			$fields['comment'] = array(
-				'id' => 'comment',
-				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'Comments:', MS_TEXT_DOMAIN ),
-				'value' => __( 'Members can Read and Post comments', MS_TEXT_DOMAIN ),
-				'class' => 'wpmui-field-description',
-				'wrapper' => 'div',
-			);
-		}
-
-		if ( $val_more_tag ) {
-			$fields['more_tag'] = array(
-				'id' => 'more_tag',
-				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
-				'value' => __( 'Members can read full post (beyond the More Tag)', MS_TEXT_DOMAIN ),
-				'class' => 'wpmui-field-description',
-				'wrapper' => 'div',
+			$fields['rule_menu'] = array(
+				'id' => 'rule_menu',
+				'name' => 'rule',
+				'value' => 'menu',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			);
 		}
 
@@ -750,36 +688,39 @@ class MS_View_Membership_Protected_Content extends MS_View {
 
 			<?php MS_Helper_Html::html_separator(); ?>
 
-			<div class="ms-group">
+			<div class="ms-group ms-group-menu ms-protect-<?php echo esc_attr( $menu_protection ); ?>">
 				<div class="ms-inside">
 
 				<?php if ( 'item' === $menu_protection ) {
+					$menu_url = add_query_arg( array( 'menu_id' => $this->data['menu_id'] ) );
 					?>
 					<form id="ms-menu-form" method="post">
 						<?php MS_Helper_Html::html_element( $fields['menu_id'] ); ?>
 					</form>
+
+					<form id="ms-menu-form" method="post" action="<?php echo '' . $menu_url; ?>">
+						<?php
+						MS_Helper_Html::html_element( $fields['rule_menu'] );
+						$rule_list_table->views();
+						$rule_list_table->display();
+						?>
+					</form>
 					<?php
-					$rule_list_table->display();
 
 					do_action(
 						'ms_view_membership_protected_content_footer',
 						MS_Model_Rule::RULE_TYPE_MENU,
 						$this
 					);
-				} else {
-					$rule_list_table->display();
-					if ( 'menu' === $menu_protection ) {
-						?>
-						<p>
-							<?php _e( 'Hint: Only one replacement rule is applied to each menu.', MS_TEXT_DOMAIN ); ?>
-						</p>
-						<?php
-					}
-				}
-				?>
 
+				} else { ?>
+					<p><em>
+						<?php _e( 'No options available. Menu access is defined on membership-level.', MS_TEXT_DOMAIN ); ?>
+					</em></p>
+				<?php } ?>
 				</div>
 			</div>
+
 		</div>
 		<?php
 

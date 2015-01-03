@@ -160,7 +160,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		$cpts = self::get_custom_post_types();
 		$contents = array();
 
-		$is_base = $args['get_base_list'];
+		$is_base = $this->get_membership()->is_special( 'base' );
 
 		foreach ( $cpts as $key => $content ) {
 			if ( ! $is_base && ! $this->has_rule( $key ) ) {
@@ -198,7 +198,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 *     @type string $description The rule description.
 	 * }
 	 */
-	public function get_content_array() {
+	public function get_content_array( $args = null ) {
 		$cont = array();
 		$contents = $this->get_contents();
 
@@ -210,6 +210,27 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			'ms_model_rule_comment_get_content_array',
 			$cont,
 			$this
+		);
+	}
+
+	/**
+	 * Get the total content count.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param $args The query post args
+	 * @return int The total content count.
+	 */
+	public function get_content_count( $args = null ) {
+		$count = 0;
+		$items = self::get_custom_post_types();
+
+		$count = count( $items );
+
+		return apply_filters(
+			'ms_model_rule_custom_post_type_group_get_content_count',
+			$count,
+			$args
 		);
 	}
 

@@ -72,6 +72,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	public function prepare_obj() {
 		if ( $this->_prepared ) { return; }
 		$this->_prepared = true;
+		$this->_content_array = null;
 
 		$value = array_intersect_key( $this->rule_value, $this->get_content_array() );
 		$this->rule_value = WDev()->get_array( $value );
@@ -218,14 +219,15 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		if ( null === $this->_content_array ) {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
 				$this->_content_array = $this->get_caps_content_array();
-			} else {
-				$this->_content_array = $this->get_role_content_array();
-			}
-			$this->_content_array = WDev()->get_array( $this->_content_array );
+				$this->_content_array = WDev()->get_array( $this->_content_array );
 
-			// If not visitor membership, just show protected content
-			if ( ! $this->rule_value_invert ) {
-				$this->_content_array = array_intersect_key( $this->_content_array, $this->rule_value );
+				// If not visitor membership, just show protected content
+				if ( ! $this->rule_value_invert ) {
+					$this->_content_array = array_intersect_key( $this->_content_array, $this->rule_value );
+				}
+			} else {
+				// User-Roles are only available in Accessible Content tab, so always display all roles.
+				$this->_content_array = $this->get_role_content_array();
 			}
 
 			$this->_content_array = apply_filters(
@@ -249,25 +251,26 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		$contents = array();
 		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
 			$contents = $this->get_caps_contents( $args );
-		} else {
-			$contents = $this->get_role_contents( $args );
-		}
 
-		// If not visitor membership, just show protected content
-		if ( ! $this->rule_value_invert ) {
-			$keys = $this->rule_value;
-			if ( isset( $args['rule_status'] ) ) {
-				switch ( $args['rule_status'] ) {
-					case 'no_access': $keys = array_fill_keys( array_keys( $keys, false ), 0 ); break;
-					case 'has_access': $keys = array_fill_keys( array_keys( $keys, true ), 1 ); break;
+			// If not visitor membership, just show protected content
+			if ( ! $this->get_membership()->is_special( 'base' ) ) {
+				$keys = $this->rule_value;
+				if ( isset( $args['rule_status'] ) ) {
+					switch ( $args['rule_status'] ) {
+						case 'no_access': $keys = array_fill_keys( array_keys( $keys, false ), 0 ); break;
+						case 'has_access': $keys = array_fill_keys( array_keys( $keys, true ), 1 ); break;
+					}
 				}
+
+				$contents = array_intersect_key( $contents, $keys );
 			}
 
-			$contents = array_intersect_key( $contents, $keys );
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
+			if ( ! empty( $args['rule_status'] ) ) {
+				$contents = $this->filter_content( $args['rule_status'], $contents );
+			}
+		} else {
+			// User-Roles are only available in Accessible Content tab, so always display all roles.
+			$contents = $this->get_role_contents( $args );
 		}
 
 		return apply_filters(
@@ -311,10 +314,16 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	public function get_role_content_array() {
 		global $wp_roles;
 
+		$exclude = apply_filters(
+			'ms_model_rule_membercaps_exclude_roles',
+			array( 'administrator' )
+		);
+
 		$contents = array();
 		$all_roles = $wp_roles->roles;
 
 		foreach ( $all_roles as $key => $role ) {
+			if ( in_array( $key, $exclude ) ) { continue; }
 			$contents[$key] = $role['name'];
 		}
 
@@ -331,10 +340,16 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	public function get_role_contents( $args = null ) {
 		global $wp_roles;
 
+		$exclude = apply_filters(
+			'ms_model_rule_membercaps_exclude_roles',
+			array( 'administrator' )
+		);
+
 		$contents = array();
 		$all_roles = $wp_roles->roles;
 
 		foreach ( $all_roles as $key => $role ) {
+			if ( in_array( $key, $exclude ) ) { continue; }
 			$content = (object) array();
 
 			$content->id = $key;
