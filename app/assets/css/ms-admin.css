@@ -1450,6 +1450,14 @@
 .ms-wrap .ms-locked:hover .locked-info {
   display: inline-block !important;
 }
+.ms-wrap .column-collapse {
+  width: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.ms-wrap .ms-pointer {
+  cursor: pointer;
+}
 
 /* Page: Payment options */
 .ms-wrap .wrapper-is_free {

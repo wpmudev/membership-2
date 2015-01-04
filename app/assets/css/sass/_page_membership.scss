@@ -186,6 +186,16 @@
 			display: inline-block !important;
 		}
 	}
+
+	.column-collapse {
+		width: 20px;
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+
+	.ms-pointer {
+		cursor: pointer;
+	}
 }
 
 /* Page: Payment options */

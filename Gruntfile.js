@@ -10,6 +10,7 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-member-date.js',
 				'app/assets/js/src/ms-view-member-list.js',
 				'app/assets/js/src/ms-view-membership-choose-type.js',
+				'app/assets/js/src/ms-view-membership-list.js',
 				'app/assets/js/src/ms-view-membership-overview.js',
 				'app/assets/js/src/ms-view-membership-setup-payment.js',
 				'app/assets/js/src/ms-view-settings.js',

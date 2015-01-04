@@ -1683,7 +1683,9 @@ class MS_Controller_Membership extends MS_Controller {
 			'ms_init' => array(),
 		);
 
-		switch ( $this->get_step() ) {
+		$step = $this->get_step();
+
+		switch ( $step ) {
 			case self::STEP_CHOOSE_MS_TYPE:
 				wp_enqueue_style( 'wp-pointer' );
 				wp_enqueue_script( 'wp-pointer' );
@@ -1749,13 +1751,15 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_SETUP_PAYMENT:
 				$data['ms_init'][] = 'view_membership_setup_payment';
 				$data['ms_init'][] = 'view_settings_payment';
-
-				add_thickbox();
 				wp_enqueue_script( 'jquery-validate' );
 				break;
 
 			case self::STEP_SETUP_DRIPPED:
 				wp_enqueue_script( 'ms-view-membership-setup-dripped' );
+				break;
+
+			case self::STEP_MS_LIST:
+				$data['ms_init'][] = 'view_membership_list';
 				break;
 		}
 

@@ -43,6 +43,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function get_columns() {
 		$columns = array(
+			'collapse' => '',
 			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
 			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
@@ -74,6 +75,16 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				'active' => array( 'active', true ),
 			)
 		);
+	}
+
+	public function column_collapse( $item ) {
+		$html = '';
+
+		if ( ! $item->has_parent() && $item->can_have_children() ) {
+			$html = '<i class="wpmui-fa wpmui-fa-caret-down toggle-children"></i>';
+		}
+
+		return $html;
 	}
 
 	public function column_active( $item ) {
@@ -142,7 +153,8 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			);
 		}
 
-		if ( ! $item->is_special() ) {
+		$special = $item->is_special( 'role' );
+		if ( ! $special ) {
 			$name = $item->name;
 
 			$actions['payment'] = sprintf(
