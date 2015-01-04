@@ -1678,33 +1678,16 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-
 		$data = array(
 			'ms_init' => array(),
 		);
 
 		$step = $this->get_step();
+		$show_pointer = true;
 
 		switch ( $step ) {
 			case self::STEP_CHOOSE_MS_TYPE:
-				wp_enqueue_style( 'wp-pointer' );
-				wp_enqueue_script( 'wp-pointer' );
-
-				$ms_pointer = array(
-					'hide_wizard_pointer' => MS_Model_Settings::get_setting( 'hide_wizard_pointer' ),
-					'message' => sprintf(
-						'<div class="ms-pointer-text">%s</div>',
-						__( 'You can add / remove and modify your Protected Content at anytime here', MS_TEXT_DOMAIN )
-					),
-					'pointer_class' => 'ms-pointer-wrapper',
-					'field' => 'hide_wizard_pointer',
-					'value' => true,
-					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-					'nonce' => wp_create_nonce( MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING ),
-				);
-
-				$data['ms_private_types'] = MS_Model_Membership::get_private_eligible_types();
-				$data['ms_pointer'] = $ms_pointer;
+				$show_pointer = false;
 				$data['ms_init'][] = 'view_membership_choose_type';
 				$data['initial_url'] = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG );
 				break;
@@ -1761,6 +1744,15 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_MS_LIST:
 				$data['ms_init'][] = 'view_membership_list';
 				break;
+		}
+
+		if ( $show_pointer ) {
+			WDev()->html->pointer(
+				'hide_wizard_pointer', // ID
+				'a[href="admin.php?page=protected-content-setup"]',
+				false,
+				__( 'You can add / remove and modify your Protected Content at anytime here', MS_TEXT_DOMAIN )
+			);
 		}
 
 		wp_localize_script( 'ms-admin', 'ms_data', $data );
