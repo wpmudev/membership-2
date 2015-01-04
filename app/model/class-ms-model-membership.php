@@ -1219,8 +1219,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if ( $this->special == 'role' ) {
 			if ( null === $roles ) {
-				$role_rule = $this->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
-				$roles = $role_rule->get_role_content_array();
+				$role_rule = $this->get_rule( MS_Model_Rule::RULE_TYPE_ROLEMEMBERS );
+				$roles = $role_rule->get_roles();
 				$roles[] = '(Guest)';
 				$roles[] = '(Logged in)';
 				$roles[] = 'WordPress Roles';
@@ -1244,7 +1244,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$res = false;
 
 		if ( empty( $type ) ) {
-			$res = ! empty( $this->special );
+			if ( $this->is_special( 'base' ) ) { $res = true; }
+			elseif ( $this->is_special( 'role' ) ) { $res = true; }
 		} else {
 			switch ( $type ) {
 				case 'role':

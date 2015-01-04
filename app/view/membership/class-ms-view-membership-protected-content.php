@@ -324,17 +324,16 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	public function render_tab_membercaps() {
 		$fields = $this->get_control_fields();
 
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			// The Member-Roles are only available in Accessible content.
+			return;
+		}
+
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
 
 		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
 		$rule_list_table->prepare_items();
-
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$search_label = __( 'Capability', MS_TEXT_DOMAIN );
-		} else {
-			$search_label = __( 'Role', MS_TEXT_DOMAIN );
-		}
 
 		$header_data = apply_filters(
 			'ms_view_membership_protected_content_header',
@@ -354,7 +353,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
-			$rule_list_table->search_box( $search_label );
+			$rule_list_table->search_box( __( 'Capability', MS_TEXT_DOMAIN ) );
 			?>
 			<form action="" method="post">
 				<?php

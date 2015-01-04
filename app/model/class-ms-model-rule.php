@@ -54,6 +54,8 @@ class MS_Model_Rule extends MS_Model {
 	// New since 1.1
 	const RULE_TYPE_ADMINSIDE = 'adminside';
 	const RULE_TYPE_MEMBERCAPS = 'membercaps';
+	const RULE_TYPE_MEMBERROLES = 'memberroles';
+	const RULE_TYPE_ROLEMEMBERS = 'rolemembers';
 
 	/**
 	 * Rule value constants.
@@ -231,6 +233,8 @@ class MS_Model_Rule extends MS_Model {
 			$rule_types = array(
 				-10 => self::RULE_TYPE_URL_GROUP,
 				-9 => self::RULE_TYPE_MEMBERCAPS,
+				-8 => self::RULE_TYPE_MEMBERROLES,
+				-7 => self::RULE_TYPE_ROLEMEMBERS,
 				-1 => self::RULE_TYPE_ADMINSIDE,
 				0 => self::RULE_TYPE_SPECIAL,
 				1 => self::RULE_TYPE_POST,
@@ -327,6 +331,8 @@ class MS_Model_Rule extends MS_Model {
 			// New since 1.1
 			self::RULE_TYPE_ADMINSIDE => 'MS_Model_Rule_Adminside',
 			self::RULE_TYPE_MEMBERCAPS => 'MS_Model_Rule_Membercaps',
+			self::RULE_TYPE_MEMBERROLES => 'MS_Model_Rule_Memberroles',
+			self::RULE_TYPE_ROLEMEMBERS => 'MS_Model_Rule_Rolemembers',
 		);
 
 		return apply_filters( 'ms_model_rule_get_rule_type_classes', $classes );
@@ -358,14 +364,10 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'CPT Group', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_ADMINSIDE => __( 'Admin Side', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_MEMBERCAPS => __( 'User Role', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_MEMBERCAPS => __( 'Capabilities', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_MEMBERROLES => __( 'User Role', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_ROLEMEMBERS => __( 'Role Memberships', MS_TEXT_DOMAIN ),
 		);
-
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS )
-			&& MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV )
-		) {
-			$titles[self::RULE_TYPE_MEMBERCAPS] = __( 'Capabilities', MS_TEXT_DOMAIN );
-		}
 
 		return apply_filters( 'ms_model_rule_get_rule_type_titles', $titles );
 	}

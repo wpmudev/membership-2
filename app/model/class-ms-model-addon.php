@@ -384,20 +384,13 @@ class MS_Model_Addon extends MS_Model_Option {
 						'addon' => self::ADDON_MEMBERCAPS_ADV,
 					),
 				),
-				array(
-					'id' => 'ms-toggle-' . self::ADDON_MEMBERCAPS_ROLES,
-					'title' => __( 'Protect content based on WordPress user Roles', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Special memberships will be displayed in the Membership list that represent the WordPress User-Roles, including Guest Users.', MS_TEXT_DOMAIN ),
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'value' => self::is_enabled( self::ADDON_MEMBERCAPS_ROLES ),
-					'class' => 'toggle-plugin',
-					'ajax_data' => array(
-						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-						'field' => 'active',
-						'addon' => self::ADDON_MEMBERCAPS_ROLES,
-					),
-				),
 			),
+		);
+
+		$list[self::ADDON_MEMBERCAPS_ROLES] = (object) array(
+			'name' => __( 'User-Role Memberships', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect content based on a users role / for guests.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-admin-users',
 		);
 
 		$list = apply_filters( 'ms_model_addon_get_addon_list', $list );

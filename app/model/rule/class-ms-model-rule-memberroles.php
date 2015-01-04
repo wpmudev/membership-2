@@ -21,7 +21,7 @@
 */
 
 /**
- * Membership Member Capabilities Rule class.
+ * Membership Member Roles Rule class.
  *
  * Persisted by Membership class.
  *
@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Rule_Membercaps extends MS_Model_Rule {
+class MS_Model_Rule_Memberroles extends MS_Model_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_MEMBERCAPS;
+	protected $rule_type = self::RULE_TYPE_MEMBERROLES;
 
 	/**
 	 * List of capabilities that are effectively used for the current user
@@ -49,6 +49,13 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 * @var array
 	 */
 	static protected $real_caps = null;
+
+	/**
+	 * The assigned user role
+	 *
+	 * @var string
+	 */
+	protected $user_role = null;
 
 	/**
 	 * Caches the get_content_array output
@@ -109,7 +116,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 */
 	public function has_access() {
 		return apply_filters(
-			'ms_model_rule_membercaps_has_access',
+			'ms_model_rule_memberroles_has_access',
 			null,
 			null,
 			$this
@@ -134,7 +141,14 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		// Only run this filter once!
 		$this->remove_filter( 'user_has_cap', 'prepare_caps', 1, 3 );
 
-		$caps = $this->rule_value;
+		$all_roles = $wp_roles->roles;
+
+		if ( isset( $all_roles[ $this->user_role ] )
+			&& is_array( $all_roles[ $this->user_role ]['capabilities'] )
+		) {
+			$caps = $all_roles[ $this->user_role ]['capabilities'];
+		}
+		$caps = WDev()->get_array( $caps );
 
 		if ( null === self::$real_caps ) {
 			// First get a list of the users default capabilities.
@@ -166,7 +180,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 */
 	public function modify_caps( $allcaps, $caps, $args ) {
 		return apply_filters(
-			'ms_model_rule_membercaps_modify_caps',
+			'ms_model_rule_memberroles_modify_caps',
 			self::$real_caps,
 			$caps,
 			$args,
@@ -185,85 +199,40 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 *      @type string $name The name.
 	 * }
 	 */
-	public function get_content_array( $args = null ) {
-		if ( null === $this->_content_array ) {
-			$this->_content_array = array();
-			$member = MS_Model_Member::get_current_member();
-			$capslist = $member->wp_user->allcaps;
+	public function get_content_array() {
+		global $wp_roles;
 
-			$ignored_caps = array(
-				'level_10' => 1,
-				'level_9' => 1,
-				'level_8' => 1,
-				'level_7' => 1,
-				'level_6' => 1,
-				'level_5' => 1,
-				'level_4' => 1,
-				'level_3' => 1,
-				'level_2' => 1,
-				'level_1' => 1,
-				'level_0' => 1,
-				'administrator' => 1,
+		if ( null === $this->_content_array ) {
+			// User-Roles are only available in Accessible Content tab, so always display all roles.
+			$this->_content_array = array();
+
+			$exclude = apply_filters(
+				'ms_model_rule_memberroles_exclude_roles',
+				array( 'administrator' )
 			);
-			$capslist = array_diff_assoc( $capslist, $ignored_caps );
-			$capslist = array_keys( $capslist );
-			$this->_content_array = array_combine( $capslist, $capslist );
+
+			$all_roles = $wp_roles->roles;
 
 			// Make sure the rule_value only contains valid items.
 			$rule_value = array_intersect_key(
 				$this->rule_value,
-				$this->_content_array
+				$all_roles
 			);
 			$this->rule_value = WDev()->get_array( $rule_value );
 
-			// If not visitor membership, just show protected content
-			if ( ! $this->get_membership()->is_special( 'base' ) ) {
-				$this->_content_array = array_intersect_key(
-					$this->_content_array,
-					$this->rule_value
-				);
+			foreach ( $all_roles as $key => $role ) {
+				if ( in_array( $key, $exclude ) ) { continue; }
+				$this->_content_array[$key] = $role['name'];
 			}
 
 			$this->_content_array = apply_filters(
-				'ms_model_rule_membercaps_get_content_array',
+				'ms_model_rule_memberroles_get_content_array',
 				$this->_content_array,
 				$this
 			);
 		}
 
 		$contents = $this->_content_array;
-
-		// Search the shortcode-tag...
-		if ( ! empty( $args['s'] ) ) {
-			foreach ( $contents as $key => $name ) {
-				if ( stripos( $name, $args['s'] ) === false ) {
-					unset( $contents[$key] );
-				}
-			}
-		}
-
-		// If not visitor membership, just show protected content
-		if ( ! $this->get_membership()->is_special( 'base' ) ) {
-			$keys = $this->rule_value;
-			if ( isset( $args['rule_status'] ) ) {
-				switch ( $args['rule_status'] ) {
-					case 'no_access': $keys = array_fill_keys( array_keys( $keys, false ), 0 ); break;
-					case 'has_access': $keys = array_fill_keys( array_keys( $keys, true ), 1 ); break;
-				}
-			}
-
-			$contents = array_intersect_key( $contents, $keys );
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
-		}
-
-		if ( ! empty( $args['posts_per_page'] ) ) {
-			$total = $args['posts_per_page'];
-			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
-			$contents = array_slice( $contents, $offset, $total );
-		}
 
 		return $contents;
 	}
@@ -276,16 +245,26 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-		$contents = array();
-		$caps = $this->get_content_array( $args );
+		global $wp_roles;
 
-		foreach ( $caps as $key => $item ) {
+		$contents = array();
+		// User-Roles are only available in Accessible Content tab, so always display all roles.
+
+		$exclude = apply_filters(
+			'ms_model_rule_memberroles_exclude_roles',
+			array( 'administrator' )
+		);
+
+		$all_roles = $wp_roles->roles;
+
+		foreach ( $all_roles as $key => $role ) {
+			if ( in_array( $key, $exclude ) ) { continue; }
 			$content = (object) array();
 
-			$content->id = $item;
-			$content->title = $item;
-			$content->name = $item;
-			$content->post_title = $item;
+			$content->id = $key;
+			$content->title = $role['name'];
+			$content->name = $role['name'];
+			$content->post_title = $role['name'];
 			$content->type = $this->rule_type;
 			$content->access = $this->get_rule_value( $key );
 
@@ -293,7 +272,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_membercaps_get_contents',
+			'ms_model_rule_memberroles_get_contents',
 			$contents,
 			$args,
 			$this

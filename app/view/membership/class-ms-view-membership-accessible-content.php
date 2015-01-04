@@ -141,19 +141,19 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 
 
 			case MS_Model_Rule::RULE_TYPE_MEMBERCAPS:
-				if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-					$header_data['title'] = __( 'Member Capabilities', MS_TEXT_DOMAIN );
-					$header_data['desc'] = sprintf(
-						__( 'All %1$s members are granted the following Capabilities.', MS_TEXT_DOMAIN ),
-						$args['membership']->name
-					);
-				} else {
-					$header_data['title'] = __( 'User Roles', MS_TEXT_DOMAIN );
-					$header_data['desc'] = sprintf(
-						__( 'All %1$s members are assigned to the following User Role.', MS_TEXT_DOMAIN ),
-						$args['membership']->name
-					);
-				}
+				$header_data['title'] = __( 'Member Capabilities', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'All %1$s members are granted the following Capabilities.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
+				break;
+
+			case MS_Model_Rule::RULE_TYPE_MEMBERROLES:
+				$header_data['title'] = __( 'User Roles', MS_TEXT_DOMAIN );
+				$header_data['desc'] = sprintf(
+					__( 'All %1$s members are assigned to the following User Role.', MS_TEXT_DOMAIN ),
+					$args['membership']->name
+				);
 				break;
 
 			case MS_Model_Rule::RULE_TYPE_SPECIAL:
@@ -223,6 +223,7 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 	 */
 	public function list_footer( $rule ) {
 		$edit_link = $this->restriction_link( $rule );
+		if ( empty( $edit_link ) ) { return; }
 
 		?>
 		<div class="ms-protection-edit-link">
@@ -253,22 +254,29 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 			MS_Model_Rule::RULE_TYPE_URL_GROUP => __( 'Edit URL Group Restrictions', MS_TEXT_DOMAIN ),
 			MS_Model_Rule::RULE_TYPE_ADMINSIDE => __( 'Edit Admin Side Restrictions', MS_TEXT_DOMAIN ),
 			MS_Model_Rule::RULE_TYPE_MEMBERCAPS => __( 'Edit Capability Restrictions', MS_TEXT_DOMAIN ),
-			'' => __( 'Manage Protected Content', MS_TEXT_DOMAIN ),
+			MS_Model_Rule::RULE_TYPE_MEMBERROLES => false, // No Protected Content settings!
+			'' => false, // No Protected Content settings!
 		);
 
-		$url = sprintf(
-			'admin.php?page=%s&tab=%s&from=%s',
-			MS_Controller_Plugin::MENU_SLUG . '-setup',
-			$rule,
-			base64_encode( MS_Helper_Utility::get_current_url() )
-		);
+		$link = '';
 
-		return array(
-			'id' => 'rule_edit_' . $rule,
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => $titles[ $rule ],
-			'url' => $url,
-		);
+		if ( ! empty( $titles[ $rule ] ) ) {
+			$url = sprintf(
+				'admin.php?page=%s&tab=%s&from=%s',
+				MS_Controller_Plugin::MENU_SLUG . '-setup',
+				$rule,
+				base64_encode( MS_Helper_Utility::get_current_url() )
+			);
+
+			$link = array(
+				'id' => 'rule_edit_' . $rule,
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => $titles[ $rule ],
+				'url' => $url,
+			);
+		}
+
+		return $link;
 	}
 
 	/* ====================================================================== *
@@ -305,9 +313,16 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 		$fields = $this->get_control_fields();
 
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERCAPS );
 
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$rule_id = MS_Model_Rule::RULE_TYPE_MEMBERCAPS;
+			$rule = $membership->get_rule( $rule_id );
+			$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
+			$rule_list_table->prepare_items();
+		} else {
+			$rule_id = MS_Model_Rule::RULE_TYPE_MEMBERROLES;
+			$rule = $membership->get_rule( $rule_id );
+
 			$input_desc = '';
 			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 				$input_desc = __( 'Tipp: If a member belongs to more than one membership then the User Role capabilities of both roles are merged.', MS_TEXT_DOMAIN );
@@ -333,15 +348,12 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 		$header_data = apply_filters(
 			'ms_view_membership_protected_content_header',
 			array(),
-			MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+			$rule_id,
 			array(
 				'membership' => $this->data['membership'],
 			),
 			$this
 		);
-
-		$rule_list_table = new MS_Helper_List_Table_Rule_Membercaps( $rule, $membership );
-		$rule_list_table->prepare_items();
 
 		ob_start();
 		?>
@@ -350,23 +362,20 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 			MS_Helper_Html::settings_tab_header( $header_data );
 			MS_Helper_Html::html_separator();
 
-			if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
 				$rule_list_table->views();
 				$rule_list_table->search_box( __( 'Capabilities', MS_TEXT_DOMAIN ) );
 				?>
 				<form action="" method="post">
-					<?php $rule_list_table->display(); ?>
-					<div class="ms-protection-edit-link">
-						<?php
-						MS_Helper_Html::html_element( $edit_link );
+					<?php
+					$rule_list_table->display();
 
-						do_action(
-							'ms_view_membership_protected_content_footer',
-							MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
-							$this
-						);
-						?>
-					</div>
+					do_action(
+						'ms_view_membership_protected_content_footer',
+						MS_Model_Rule::RULE_TYPE_MEMBERCAPS,
+						$this
+					);
+					?>
 				</form>
 				<?php
 			} else {
