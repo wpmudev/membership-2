@@ -1,6 +1,6 @@
-/*! Protected Content - v1.0.48
+/*! Protected Content - v1.0.49
  * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2014; * Licensed GPLv2+ */
+ * Copyright (c) 2015; * Licensed GPLv2+ */
 /*!------------------------------------------------------
  * jQuery nearest v1.0.3
  * http://github.com/jjenzz/jQuery.nearest
