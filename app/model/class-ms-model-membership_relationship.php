@@ -312,8 +312,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		if ( 'admin' == $gateway_id ) {
 			$ms_relationship->config_period();
 			$ms_relationship->status = self::STATUS_ACTIVE;
-		}
-		else {
+		} else {
 			// Force status calculation.
 			$ms_relationship->get_status();
 		}

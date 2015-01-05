@@ -61,7 +61,7 @@ class MS_View_Gateway_Button extends MS_View {
 			),
 		);
 
-		if ( strpos( $this->pay_button_url, 'http' ) === 0 ) {
+		if ( strpos( $gateway->pay_button_url, '://' ) !== false ) {
 			$fields['submit'] = array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,

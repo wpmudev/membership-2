@@ -7,6 +7,7 @@ Change Log:
 1.0.4.9
 ----------------------------------------------------------------------
 - Fix an JavaScript error in the page front-end
+- Fix Manual gateway Purchase button to correctly display images (URL)
 
 1.0.4.8
 ----------------------------------------------------------------------
