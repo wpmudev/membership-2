@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.4.9
+----------------------------------------------------------------------
+- Fix an JavaScript error in the page front-end
+
 1.0.4.8
 ----------------------------------------------------------------------
 - Fix 100 % discount logic; payment gateway is skipped now
