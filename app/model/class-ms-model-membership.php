@@ -1224,9 +1224,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$roles[] = '(Guest)';
 				$roles[] = '(Logged in)';
 				$roles[] = 'WordPress Roles';
+
+				$roles = array_map( 'strtolower', $roles );
 			}
 
-			$res = in_array( $this->name, $roles );
+			$key = strtolower( $this->name );
+			$res = in_array( $key, $roles );
 		}
 
 		return $res;
