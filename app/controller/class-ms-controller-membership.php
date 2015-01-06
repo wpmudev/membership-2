@@ -222,6 +222,18 @@ class MS_Controller_Membership extends MS_Controller {
 		$is_wizard = MS_Plugin::is_wizard();
 		$save_data = array();
 
+		$setup = MS_Factory::create( 'MS_View_Settings_Setup' );
+		$popup = array();
+		$popup['title'] =
+			'<i class="dashicons dashicons-yes"></i> Congratulations!<br />' .
+			'<small>You have successfully set up <strong>Membership_Name</strong>.';
+		$popup['body'] = $setup->to_html() .
+			'<div><button class="button-primary close">' . __( 'Save and Finish', MS_TEXT_DOMAIN ) . '</button></div>';
+		$popup['modal'] = true;
+		$popup['close'] = false;
+		$popup['class'] = 'ms-setup-done';
+		WDev()->popup( $popup );
+
 		// MS_Controller_Rule is executed using this action.
 		do_action(
 			'ms_controller_membership_admin_page_process_' . $step,

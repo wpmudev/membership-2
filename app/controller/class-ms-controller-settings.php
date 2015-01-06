@@ -263,9 +263,6 @@ class MS_Controller_Settings extends MS_Controller {
 			'general' => array(
 				'title' => __( 'General', MS_TEXT_DOMAIN ),
 			),
-			'pages' => array(
-				'title' => __( 'Membership Pages', MS_TEXT_DOMAIN ),
-			),
 			'payment' => array(
 				'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 			),
@@ -394,7 +391,6 @@ class MS_Controller_Settings extends MS_Controller {
 					$tool->process();
 					break;
 
-				case 'pages':
 				case 'payment':
 				case 'messages-protection':
 				default:
@@ -422,13 +418,11 @@ class MS_Controller_Settings extends MS_Controller {
 		do_action( $hook );
 
 		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$view = apply_filters( $hook . '_view', $view );
 
 		$data = array();
 		$data['tabs'] = $this->get_tabs();
 		$data['settings'] = $this->get_model();
-		$data['ms_pages'] = $ms_pages;
 
 		$data['message'] = self::_message();
 
@@ -451,10 +445,6 @@ class MS_Controller_Settings extends MS_Controller {
 				);
 
 				$data['comm'] = $comm;
-				break;
-
-			case 'pages':
-				$data['page_types'] = $ms_pages->get_page_types();
 				break;
 
 			case 'messages-protection':

@@ -193,7 +193,7 @@ class MS_Helper_Html extends MS_Helper {
 	public static function settings_tab_header( $args = null ) {
 		$defaults = array(
 			'title' => '',
-			'desc' => '',
+			'desc' => array(),
 			'class' => '',
 		);
 
@@ -204,21 +204,33 @@ class MS_Helper_Html extends MS_Helper {
 		if ( ! is_array( $desc ) ) {
 			$desc = array( $desc );
 		}
+		foreach ( $desc as $id => $text ) {
+			if ( empty( $text ) ) { unset( $desc[$id] ); }
+		}
 
 		?>
 		<div class="ms-settings-wrapper <?php echo esc_attr( $class ); ?>">
+			<?php if ( ! empty( $title ) || ! empty( $desc ) ) : ?>
 			<div class="ms-header">
+				<?php if ( ! empty( $title ) ) : ?>
 				<div class="ms-settings-tab-title">
 					<h3><?php printf( $title ); ?></h3>
 				</div>
+				<?php endif; ?>
+
+				<?php if ( ! empty( $desc ) ) : ?>
 				<div class="ms-settings-description">
 					<?php foreach ( $desc as $description ): ?>
 						<div class="ms-description">
-							<?php printf( $description ); ?>
+							<?php echo '' . $description; ?>
 						</div>
 					<?php endforeach; ?>
 				</div>
+				<?php endif; ?>
+
+				<?php self::html_separator(); ?>
 			</div>
+			<?php endif; ?>
 		<?php
 	}
 

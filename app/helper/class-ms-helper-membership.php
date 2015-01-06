@@ -43,8 +43,9 @@ class MS_Helper_Membership extends MS_Helper {
 	const MEMBERSHIP_MSG_PARTIALLY_UPDATED = -8;
 
 	public static function get_admin_messages( $msg = 0 ) {
-
-		$messages = apply_filters( 'ms_helper_membership_get_admin_messages', array(
+		$messages = apply_filters(
+			'ms_helper_membership_get_admin_messages',
+			array(
 				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up <span class="ms-high">%s</span>.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_UPDATED => __( 'Membership updated.', MS_TEXT_DOMAIN ),
@@ -63,8 +64,9 @@ class MS_Helper_Membership extends MS_Helper {
 
 		if ( array_key_exists( $msg, $messages ) ) {
 			return $messages[ $msg ];
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	public static function print_admin_message() {
@@ -73,45 +75,58 @@ class MS_Helper_Membership extends MS_Helper {
 		$class = ( $msg > 0 ) ? 'updated' : 'error';
 
 		if ( $msg = self::get_admin_messages( $msg ) ) {
-			echo "<div id='message' class='$class'><p>$msg</p></div>";
+			WDev()->message( $msg, $class );
 		}
 
 	}
 
 	public static function get_admin_message( $args = null, $membership = null ) {
-
 		$msg = '';
 		$msg_id = self::get_msg_id();
+
 		if ( $msg = self::get_admin_messages( $msg_id ) ) {
-			if( ! empty( $args ) && $count = substr_count( $msg, '%s' ) ) {
+			if ( ! empty( $args ) && $count = substr_count( $msg, '%s' ) ) {
 				$msg = array( vsprintf( $msg, $args ) );
 			}
-			if( self::MEMBERSHIP_MSG_ADDED == $msg_id && ! empty( $membership ) && empty( $membership->private ) ) {
-				if( ! is_array( $msg ) ) {
+
+			// When the first membership was created show a popup to the user
+			$is_first = true;
+			if ( $is_first
+				&& self::MEMBERSHIP_MSG_ADDED == $msg_id
+				&& ! empty( $membership )
+			) {
+				if ( ! is_array( $msg ) ) {
 					$msg = array( $msg );
 				}
 				$url = MS_Controller_Plugin::get_admin_settings_url();
 
-				$msg[] = sprintf( 'We have automatically created %s, %s & %s for you.',
-						sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'pages'), $url ), __( 'Membership Pages', MS_TEXT_DOMAIN ) ),
-						sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'messages-protection'), $url ), __( 'Protection Messages', MS_TEXT_DOMAIN ) ),
-						sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'messages-automated'), $url ), __( 'E-mail Responses', MS_TEXT_DOMAIN ) )
+				WDev()->popup( );
+
+				$msg[] = sprintf(
+					'We have automatically created %s, %s & %s for you.',
+					sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'pages'), $url ), __( 'Membership Pages', MS_TEXT_DOMAIN ) ),
+					sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'messages-protection'), $url ), __( 'Protection Messages', MS_TEXT_DOMAIN ) ),
+					sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'messages-automated'), $url ), __( 'E-mail Responses', MS_TEXT_DOMAIN ) )
 				);
-				$msg[] = sprintf( 'Please check & modify them %s, and once satisfied, activate your membership.',
-						sprintf( '<a href="%s">%s</a>', $url, __( 'here', MS_TEXT_DOMAIN ) )
+				$msg[] = sprintf(
+					'Please check & modify them %s, and once satisfied, activate your membership.',
+					sprintf( '<a href="%s">%s</a>', $url, __( 'here', MS_TEXT_DOMAIN ) )
 				);
 			}
 		}
 
-		return apply_filters( 'ms_helper_membership_get_admin_message', $msg );
+		return apply_filters(
+			'ms_helper_membership_get_admin_message',
+			$msg
+		);
 	}
 
 	public static function get_admin_title() {
 		$title = __( 'Memberships', MS_TEXT_DOMAIN );
 
 		$msg = self::get_msg_id();
-		if( self::MEMBERSHIP_MSG_ADDED == $msg ) {
-			$title = __( 'Congratulations!', MS_TEXT_DOMAIN ) ;
+		if ( self::MEMBERSHIP_MSG_ADDED == $msg ) {
+			$title = __( 'Congratulations!', MS_TEXT_DOMAIN );
 		}
 		return apply_filters( 'ms_helper_membership_get_admin_title', $title );
 	}

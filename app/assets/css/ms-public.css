@@ -351,6 +351,29 @@ input[type="image"] {
   /* MEMBERS LIST */
   /* MEDIA /DOWNLOADS TAB */
 }
+#wpwrap .ms-wrap .ms-settings-wrapper .plugin_enabled-wrapper,
+#wpwrap .ms-wrap .ms-settings-wrapper .hide_admin_bar-wrapper,
+#wpwrap .ms-wrap .ms-setup-form .ms-settings-page-wrapper {
+  float: left;
+  width: 48%;
+  min-width: 320px;
+  max-width: 640px;
+  clear: none;
+}
+#wpwrap .ms-wrap .ms-settings-wrapper .plugin_enabled-wrapper .wpmui-field-label,
+#wpwrap .ms-wrap .ms-settings-wrapper .hide_admin_bar-wrapper .wpmui-field-label {
+  font-weight: bold;
+  font-size: 15px;
+}
+#wpwrap .ms-wrap .ms-setup-form .ms-icon {
+  opacity: .5;
+}
+#wpwrap .ms-wrap .ms-setup-form .ms-description {
+  margin-bottom: 10px;
+}
+#wpwrap .ms-wrap .ms-settings-general {
+  max-width: 1280px;
+}
 #wpwrap .ms-wrap .ms-settings .settings-description {
   margin: 1em 0;
 }
@@ -450,16 +473,25 @@ input[type="image"] {
 }
 #wpwrap .ms-wrap .ms-settings-page-wrapper {
   padding: 5px 10px;
-  border-bottom: 1px solid #E5E5E5;
 }
 #wpwrap .ms-wrap .ms-settings-page-wrapper .ms-action {
-  opacity: 0;
+  opacity: 0.7;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper .ms-action a {
+  color: #467;
+  text-decoration: none;
 }
 #wpwrap .ms-wrap .ms-settings-page-wrapper:hover {
   background-color: #FAFAFA;
 }
 #wpwrap .ms-wrap .ms-settings-page-wrapper:hover .ms-action {
   opacity: 1;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover .ms-action a {
+  color: #0074a2;
+}
+#wpwrap .ms-wrap .ms-settings-page-wrapper:hover .ms-action a:hover {
+  color: #2ea2cc;
 }
 #wpwrap .ms-wrap textarea.wpmui-field-input {
   min-width: 80%;

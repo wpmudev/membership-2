@@ -3,6 +3,38 @@
  */
 
 #wpwrap .ms-wrap {
+	.ms-settings-wrapper .plugin_enabled-wrapper,
+	.ms-settings-wrapper .hide_admin_bar-wrapper,
+	.ms-setup-form .ms-settings-page-wrapper {
+		float: left;
+		width: 48%;
+		min-width: 320px;
+		max-width: 640px;
+		clear: none;
+	}
+
+	.ms-settings-wrapper .plugin_enabled-wrapper,
+	.ms-settings-wrapper .hide_admin_bar-wrapper {
+		.wpmui-field-label {
+			font-weight: bold;
+			font-size: 15px;
+		}
+	}
+
+	.ms-setup-form {
+		.ms-icon {
+			opacity: .5;
+		}
+
+		.ms-description {
+			margin-bottom: 10px;
+		}
+	}
+
+	.ms-settings-general {
+		max-width: 1280px;
+	}
+
 	.ms-settings .settings-description {
 		margin: 1em 0;
 	}
@@ -130,16 +162,28 @@
 	/* Settings Page Settings */
 	.ms-settings-page-wrapper {
 		padding: 5px 10px;
-		border-bottom: 1px solid #E5E5E5;
 
 		.ms-action {
-			opacity: 0;
+			opacity: 0.7;
+
+			a {
+				color: #467;
+				text-decoration: none;
+			}
 		}
 
 		&:hover {
 			background-color: #FAFAFA;
 			.ms-action {
 				opacity: 1;
+
+				a {
+					color: #0074a2;
+
+					&:hover {
+						color: #2ea2cc;
+					}
+				}
 			}
 		}
 	}

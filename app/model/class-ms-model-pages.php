@@ -120,9 +120,9 @@ class MS_Model_Pages extends MS_Model_Option {
 			$Page_types = array(
 				self::MS_PAGE_MEMBERSHIPS => __( 'Memberships', MS_TEXT_DOMAIN ),
 				self::MS_PAGE_PROTECTED_CONTENT => __( 'Protected Content', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_ACCOUNT => __( 'Account', MS_TEXT_DOMAIN ),
 				self::MS_PAGE_REGISTER => __( 'Register', MS_TEXT_DOMAIN ),
 				self::MS_PAGE_REG_COMPLETE => __( 'Registration Complete', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_ACCOUNT => __( 'Account', MS_TEXT_DOMAIN ),
 			);
 
 			$Page_types = apply_filters(
@@ -132,6 +132,38 @@ class MS_Model_Pages extends MS_Model_Option {
 		}
 
 		return $Page_types;
+	}
+
+	/**
+	 * Returns a longer description for a page-type
+	 *
+	 * @since  1.1.0
+	 * @param  string $type The page-type
+	 * @return string The full description
+	 */
+	public function get_description( $type ) {
+		static $Description = null;
+
+		if ( null === $Description ) {
+			$Description = array(
+				self::MS_PAGE_MEMBERSHIPS => __( 'A list with all public memberships.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_PROTECTED_CONTENT => __( 'Displayed when a user cannot access the requested page.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_REGISTER => __( 'Guests can register a new account here.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_REG_COMPLETE => __( 'Thank you page after registration is completed.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_ACCOUNT => __( 'Shows details about the current user.', MS_TEXT_DOMAIN ),
+			);
+
+			$Description = apply_filters(
+				'ms_model_pages_get_description',
+				$Description
+			);
+		}
+
+		if ( ! isset( $Description[$type] ) ) {
+			$Description[$type] = '';
+		}
+
+		return $Description[$type];
 	}
 
 	/**

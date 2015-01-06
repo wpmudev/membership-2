@@ -66,7 +66,8 @@ class MS_View_Settings_Edit extends MS_View {
 			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
 
 			// Call the appropriate form to render.
-			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
+			$tab_name = str_replace( '-', '_', $active_tab );
+			$callback_name = 'render_tab_' . $tab_name;
 			$render_callback = apply_filters(
 				'ms_view_settings_edit_render_callback',
 				array( $this, $callback_name ),
@@ -74,7 +75,7 @@ class MS_View_Settings_Edit extends MS_View {
 				$this->data
 			);
 			?>
-			<div class="ms-settings">
+			<div class="ms-settings ms-settings-<?php echo esc_attr( $tab_name ); ?>">
 				<?php
 				$html = call_user_func( $render_callback );
 				$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
@@ -97,8 +98,10 @@ class MS_View_Settings_Edit extends MS_View {
 			'plugin_enabled' => array(
 				'id' => 'plugin_enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'This setting toggles the content protection on this site.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Content Protection', MS_TEXT_DOMAIN ),
+				'desc' => __( 'This setting toggles the content protection on this site.', MS_TEXT_DOMAIN ),
 				'value' => MS_Plugin::is_enabled(),
+				'class' => 'ms-half',
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 					'setting' => 'plugin_enabled',
@@ -108,157 +111,39 @@ class MS_View_Settings_Edit extends MS_View {
 			'hide_admin_bar' => array(
 				'id' => 'hide_admin_bar',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Hide the admin toolbar for non administrator users.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Hide admin toolbar', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Hide the admin toolbar for non administrator users.', MS_TEXT_DOMAIN ),
 				'value' => $settings->hide_admin_bar,
+				'class' => 'ms-half',
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
 					'setting' => 'hide_admin_bar',
 				),
 			),
 
-			'initial_setup' => array(
-				'id' => 'initial_setup',
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'title' => __( 'Use the wizard to setup a new membership.', MS_TEXT_DOMAIN ),
-				'value' => __( 'Activate the Wizard', MS_TEXT_DOMAIN ),
-				'button_value' => 1,
-				'data_ms' => array(
-					'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-					'field' => 'initial_setup',
-				),
-			),
 		);
 
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
+		$setup = MS_Factory::create( 'MS_View_Settings_Setup' );
 
 		ob_start();
 
-		MS_Helper_Html::settings_tab_header(
-			array( 'title' => __( 'General Settings', MS_TEXT_DOMAIN ) )
-		);
-		MS_Helper_Html::html_separator();
+		MS_Helper_Html::settings_tab_header();
 		?>
 
 		<form action="" method="post">
+			<div class="cf">
+				<?php
+				MS_Helper_Html::html_element( $fields['plugin_enabled'] );
+				MS_Helper_Html::html_element( $fields['hide_admin_bar'] );
+				?>
+			</div>
 			<?php
-			MS_Helper_Html::settings_box(
-				array( $fields['plugin_enabled'] ),
-				__( 'Content Protection', MS_TEXT_DOMAIN )
-			);
-
-			MS_Helper_Html::settings_box(
-				array( $fields['hide_admin_bar'] ),
-				__( 'Hide admin toolbar', MS_TEXT_DOMAIN )
-			);
-
-			MS_Helper_Html::settings_box(
-				array( $fields['initial_setup'] ),
-				__( 'Setup Wizard', MS_TEXT_DOMAIN )
-			);
+			MS_Helper_Html::html_separator();
+			MS_Helper_Html::html_element( $setup->to_html() );
 			?>
 		</form>
 		<?php
-		return ob_get_clean();
-	}
-
-	/* ====================================================================== *
-	 *                               PAGES
-	 * ====================================================================== */
-
-	public function render_tab_pages() {
-		$action = MS_Controller_Pages::AJAX_ACTION_UPDATE_PAGES;
-		$nonce = wp_create_nonce( $action );
-
-		$ms_pages = $this->data['ms_pages'];
-		$page_types = $this->data['page_types'];
-		$ms_pages->create_missing_pages();
-
-		$fields = array();
-		foreach ( $page_types as $type => $label ) {
-			$page_id = $ms_pages->get_setting( $type );
-			$title = sprintf(
-				__( 'Page: <strong>%s</strong>', MS_TEXT_DOMAIN ),
-				$label
-			);
-
-			$fields[ $type ] = array(
-				'id' => $type,
-				'type' => MS_Helper_Html::INPUT_TYPE_WP_PAGES,
-				'title' => $title,
-				'value' => $page_id,
-				'field_options' => array(
-					'no_item' => __( '- Select a page -', MS_TEXT_DOMAIN ),
-				),
-				'ajax_data' => array(
-					'field' => $type,
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
-			);
-		}
-
-		$fields = apply_filters(
-			'ms_view_settings_prepare_pages_fields',
-			$fields
-		);
-
-		ob_start();
-
-		MS_Helper_Html::settings_tab_header(
-			array(
-				'title' => __( 'Page Settings', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Set Up plugin pages that will be displayed on your website. Membership Page, Registration Page etc.', MS_TEXT_DOMAIN ),
-			)
-		);
-		MS_Helper_Html::html_separator();
-		?>
-
-		<form action="" method="post">
-
-			<?php foreach ( $fields as $page_type => $field ) : ?>
-				<div class="ms-settings-page-wrapper">
-					<?php MS_Helper_Html::html_element( $field ); ?>
-					<div class="ms-action">
-						<?php
-						MS_Helper_Html::html_link(
-							array(
-								'id' => 'url_page_' . $field['value'],
-								'url' => '',
-								'value' => __( 'View Page', MS_TEXT_DOMAIN ),
-								'target' => '_blank',
-								'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
-							)
-						);
-						?>
-						<span> | </span>
-						<?php
-						MS_Helper_Html::html_link(
-							array(
-								'id' => 'edit_url_page_' . $field['value'],
-								'url' => '',
-								'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
-								'target' => '_blank',
-								'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
-							)
-						);
-						?>
-						<span> | </span>
-						<?php
-						MS_Helper_Html::html_link(
-							array(
-								'id' => 'reset_page_' . $field['value'],
-								'url' => '',
-								'value' => __( 'Default Content', MS_TEXT_DOMAIN ),
-								'target' => '_blank',
-								'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&ms-default=1&post=' ) ),
-							)
-						);
-						?>
-					</div>
-				</div>
-			<?php endforeach; ?>
-		</form>
-		<?php MS_Helper_Html::save_text();
 		return ob_get_clean();
 	}
 
