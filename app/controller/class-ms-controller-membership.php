@@ -1686,6 +1686,10 @@ class MS_Controller_Membership extends MS_Controller {
 		$show_pointer = true;
 
 		switch ( $step ) {
+			case self::STEP_WELCOME_SCREEN:
+				$show_pointer = false;
+				break;
+
 			case self::STEP_CHOOSE_MS_TYPE:
 				$show_pointer = false;
 				$data['ms_init'][] = 'view_membership_choose_type';
