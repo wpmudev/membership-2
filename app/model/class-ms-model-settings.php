@@ -100,6 +100,15 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $initial_setup = true;
 
 	/**
+	 * Is set to false when the first membership was created.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var boolean
+	 */
+	protected $is_first_membership = true;
+
+	/**
 	 * Wizard step tracker.
 	 *
 	 * Indicate which step of the wizard.
@@ -415,6 +424,7 @@ class MS_Model_Settings extends MS_Model_Option {
 
 				case 'plugin_enabled':
 				case 'initial_setup':
+				case 'is_first_membership':
 				case 'hide_admin_bar':
 					$this->$property = $this->validate_bool( $value );
 					break;

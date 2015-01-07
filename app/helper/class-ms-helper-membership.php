@@ -100,18 +100,7 @@ class MS_Helper_Membership extends MS_Helper {
 				}
 				$url = MS_Controller_Plugin::get_admin_settings_url();
 
-				WDev()->popup( );
-
-				$msg[] = sprintf(
-					'We have automatically created %s, %s & %s for you.',
-					sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'pages'), $url ), __( 'Membership Pages', MS_TEXT_DOMAIN ) ),
-					sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'messages-protection'), $url ), __( 'Protection Messages', MS_TEXT_DOMAIN ) ),
-					sprintf( '<a href="%s">%s</a>', add_query_arg( array( 'tab' => 'messages-automated'), $url ), __( 'E-mail Responses', MS_TEXT_DOMAIN ) )
-				);
-				$msg[] = sprintf(
-					'Please check & modify them %s, and once satisfied, activate your membership.',
-					sprintf( '<a href="%s">%s</a>', $url, __( 'here', MS_TEXT_DOMAIN ) )
-				);
+				self::show_setup_note( $membership );
 			}
 		}
 
@@ -134,5 +123,59 @@ class MS_Helper_Membership extends MS_Helper {
 	public static function get_msg_id() {
 		$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
 		return apply_filters( 'ms_helper_membership_get_msg_id', $msg );
+	}
+
+	/**
+	 * Displays a PopUp to the user that shows a sumary of the setup wizard
+	 * including possible next steps for configuration.
+	 *
+	 * @since  1.1.0
+	 * @param  MS_Model_Membership $membership The membership that was created.
+	 */
+	public static function show_setup_note( $membership ) {
+		$count = MS_Model_Membership::get_membership_count();
+
+		if ( $count === 1 ) {
+			$settings = MS_Plugin::instance()->settings;
+
+			if ( $settings->is_first_membership ) {
+				$settings->is_first_membership = false;
+				$settings->save();
+
+				$setup = MS_Factory::create( 'MS_View_Settings_Setup' );
+
+				$popup = array();
+
+				$popup['title'] = sprintf(
+					'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
+					__( 'Congratulations!', MS_TEXT_DOMAIN ),
+					sprintf(
+						__( 'You have successfully set up <strong>%1$s</strong>.', MS_TEXT_DOMAIN ),
+						$membership->name
+					)
+				);
+				$popup['body'] = $setup->to_html() .
+					'<div class="buttons"><button class="button-primary close">' .
+					__( 'Save and Finish', MS_TEXT_DOMAIN ) .
+					'</button></div>';
+				$popup['modal'] = true;
+				$popup['close'] = false;
+				$popup['sticky'] = false;
+				$popup['class'] = 'ms-setup-done';
+				$popup['height'] = 412;
+
+				WDev()->popup( $popup );
+			} else {
+				$popup = array();
+
+				$popup['title'] = 'not first';
+				$popup['body'] = 'this is not the first membership anymore...';
+				$popup['modal'] = true;
+				$popup['sticky'] = false;
+				$popup['class'] = 'ms-setup-done';
+
+				WDev()->popup( $popup );
+			}
+		}
 	}
 }
