@@ -238,3 +238,49 @@
 		margin-top: 15px;
 	}
 }
+
+/* Membership Details ("Overview" page) */
+.ms-wrap {
+	.ms-membership-status-wrapper {
+		position: absolute;
+		padding: 10px;
+		left: 0;
+		top: 10px;
+		background-color: #FFF;
+		min-width: 180px;
+		text-align: center;
+
+		.wpmui-radio-slider {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: 5px;
+		}
+
+		.ms-membership-status {
+			& > div {
+				display: block;
+			}
+			& .ms-active {
+				display: none;
+			}
+
+			&.ms-active {
+				& > div {
+					display: none;
+				}
+				& .ms-active {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+/* Protected Content page */
+.ms-wrap {
+	.ms-more-tag {
+		display: inline-block;
+		margin: 0 20px 0 0;
+	}
+}
