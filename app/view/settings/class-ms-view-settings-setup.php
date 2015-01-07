@@ -52,7 +52,11 @@ class MS_View_Settings_Setup extends MS_View {
 				<?php
 				printf(
 					__( 'You can always change those later by going to %1$s in your admin sidebar.', MS_TEXT_DOMAIN ),
-					__( 'Appearance' ) . ' &raquo; ' . __( 'Menus' )
+					sprintf(
+						'<a href="%1$s" target="_blank">%2$s</a>',
+						admin_url( 'nav-menus.php' ),
+						__( 'Appearance' ) . ' &raquo; ' . __( 'Menus' )
+					)
 				);
 				?>
 			</div>
@@ -72,37 +76,56 @@ class MS_View_Settings_Setup extends MS_View {
 			</div>
 			<?php
 
-			foreach ( $fields['pages'] as $field ) :
-				?>
-				<div class="ms-settings-page-wrapper">
-					<?php MS_Helper_Html::html_element( $field ); ?>
-					<div class="ms-action">
-						<?php
-						MS_Helper_Html::html_link(
-							array(
-								'id' => 'url_page_' . $field['value'],
-								'url' => '',
-								'value' => __( 'View Page', MS_TEXT_DOMAIN ),
-								'target' => '_blank',
-								'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
-							)
-						);
-						?>
-						<span> | </span>
-						<?php
-						MS_Helper_Html::html_link(
-							array(
-								'id' => 'edit_url_page_' . $field['value'],
-								'url' => '',
-								'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
-								'target' => '_blank',
-								'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
-							)
-						);
-						?>
+			$page_types = array_keys( $fields['pages'] );
+			$page_types_menu = array(
+				'memberships',
+				'register',
+				'account',
+			);
+			$page_types_rest = array_diff( $page_types, $page_types_menu );
+			$groups = array(
+				'in-menu' => $page_types_menu,
+				'no-menu' => $page_types_rest,
+			);
+
+			foreach ( $groups as $group_key => $group_items ) :
+				printf( '<div class="ms-pages-group %1$s">', esc_attr( $group_key ) );
+
+				foreach ( $group_items as $key ) :
+					$field = $fields['pages'][$key];
+					?>
+					<div class="ms-settings-page-wrapper">
+						<?php MS_Helper_Html::html_element( $field ); ?>
+						<div class="ms-action">
+							<?php
+							MS_Helper_Html::html_link(
+								array(
+									'id' => 'url_page_' . $field['value'],
+									'url' => '',
+									'value' => __( 'View Page', MS_TEXT_DOMAIN ),
+									'target' => '_blank',
+									'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
+								)
+							);
+							?>
+							<span> | </span>
+							<?php
+							MS_Helper_Html::html_link(
+								array(
+									'id' => 'edit_url_page_' . $field['value'],
+									'url' => '',
+									'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
+									'target' => '_blank',
+									'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
+								)
+							);
+							?>
+						</div>
 					</div>
-				</div>
-				<?php
+					<?php
+				endforeach;
+
+				echo '</div>';
 			endforeach;
 			?>
 		</div>
@@ -128,8 +151,35 @@ class MS_View_Settings_Setup extends MS_View {
 		// Prepare the return value.
 		$nav = array();
 		$pages = array();
+		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
+
+		$ms_pages->create_missing_pages();
+		$page_types = $ms_pages->get_page_types();
+		$page_types_menu = array(
+			'memberships',
+			'register',
+			'account',
+		);
+		$page_types_rest = array_diff( $page_types, $page_types_menu );
 
 		// Prepare NAV fields.
+		$menu_action = MS_Controller_Pages::AJAX_ACTION_TOGGLE_MENU;
+		$menu_nonce = wp_create_nonce( $menu_action );
+		foreach ( $page_types_menu as $type ) {
+			$nav_exists = $ms_pages->has_menu( $type );
+			$nav[$type] = array(
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'id' => 'nav_' . $type,
+				'value' => $nav_exists,
+				'title' => $page_types[$type],
+				'ajax_data' => array(
+					'action' => $menu_action,
+					'item' => $type,
+					'_wpnonce' => $menu_nonce,
+				),
+			);
+		}
+
 		$nav['sep'] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 		);
@@ -138,14 +188,10 @@ class MS_View_Settings_Setup extends MS_View {
 		$pages_action = MS_Controller_Pages::AJAX_ACTION_UPDATE_PAGES;
 		$pages_nonce = wp_create_nonce( $pages_action );
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$ms_pages->create_missing_pages();
-		$page_types = $ms_pages->get_page_types();
-
 		foreach ( $page_types as $type => $label ) {
 			$page_id = $ms_pages->get_setting( $type );
 			$title = sprintf(
-				'<strong>%1$s</strong>: %2$s',
+				'<strong>%1$s</strong><span class="lbl-details">: %2$s</span>',
 				$label,
 				$ms_pages->get_description( $type )
 			);

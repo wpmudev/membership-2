@@ -7,6 +7,7 @@
  * GENERAL STYLES *
  ***/
 
+.wpmui-wnd,
 .ms-wrap {
 	.button,
 	.button-primary {
@@ -116,6 +117,7 @@
  ***/
 
 #wpadminbar,
+.wpmui-wnd,
 .ms-wrap {
 	.wpmui-datepicker-wrapper {
 		display: inline-block;
@@ -211,6 +213,7 @@
  * RADIO BUTTONS *
  ***/
 
+.wpmui-wnd,
 .ms-wrap {
 	.wpmui-radio-wrapper {
 		margin: 0 auto;
@@ -247,7 +250,6 @@
  ***/
 
 .ms-select2 {
-
 	&.select2-container-multi {
 		.select2-choices .select2-search-field input {
 			padding-top: 0;
@@ -356,6 +358,7 @@
  * RADIO SLIDER *
  ***/
 
+.wpmui-wnd,
 .ms-wrap {
 	.wpmui-radio-slider-wrapper {
 		clear: both;
@@ -431,6 +434,7 @@
 }
 
 /* Special radio-slider layouts */
+.wpmui-wnd,
 #wpwrap {
 	.ms-edit-access,
 	.ms-edit-protection {
@@ -529,6 +533,7 @@
  * TAG SELECT *
  ***/
 
+.wpmui-wnd,
 .ms-wrap {
 	.wpmui-tag-selector-wrapper {
 		.wpmui-tag-data {
@@ -596,6 +601,7 @@
  * BUTTONS *
  ***/
 
+.wpmui-wnd,
 .ms-wrap {
 	.button-primary {
 		min-width: 120px;
@@ -612,6 +618,7 @@
  * WP EDITOR *
  ***/
 
+.wpmui-wnd,
 .ms-wrap {
 	#wp-content-editor-tools {
 		background-color: transparent;

@@ -2,10 +2,11 @@
  * Settings module.
  */
 
+.wpmui-wnd,
 #wpwrap .ms-wrap {
 	.ms-settings-wrapper .plugin_enabled-wrapper,
 	.ms-settings-wrapper .hide_admin_bar-wrapper,
-	.ms-setup-form .ms-settings-page-wrapper {
+	.ms-setup-form .ms-pages-group {
 		float: left;
 		width: 48%;
 		min-width: 320px;
@@ -23,11 +24,31 @@
 
 	.ms-setup-form {
 		.ms-icon {
-			opacity: .5;
+			opacity: .35;
 		}
 
 		.ms-description {
 			margin-bottom: 10px;
+		}
+
+		.ms-title {
+			font-size: 14px;
+			color: #000;
+			font-weight: bold;
+		}
+
+		.nav_memberships-wrapper,
+		.nav_register-wrapper,
+		.nav_account-wrapper {
+			display: inline-block;
+			width: auto;
+
+			.wpmui-field-label {
+				float: right;
+				width: auto;
+				margin-left: 5px;
+				margin-right: 25px;
+			}
 		}
 	}
 
@@ -295,5 +316,77 @@
 	/* MEDIA /DOWNLOADS TAB */
 	.wpmui-description-masked_url {
 		display: inline-block;
+	}
+}
+
+.wpmui-wnd.ms-setup-done {
+	.the-title {
+		display: block;
+		text-align: center;
+
+		.dashicons {
+			line-height: 54px;
+			font-size: 26px;
+			height: 50px;
+			color: #6bbb1a;
+		}
+
+		.subtitle {
+			font-size: 15px;
+			line-height: 1em;
+			margin-bottom: 10px;
+		}
+	}
+
+	& > .buttons {
+		text-align: center;
+	}
+
+	.ms-setup-form {
+		.ms-description {
+			padding-bottom: 0;
+			border: 0;
+			color: #888;
+			font-size: 0.9em;
+		}
+
+		.wpmui-separator {
+			border: 0;
+			height: 20px;
+			line-height: 20px;
+			margin: 0;
+			padding: 0;
+		}
+
+		.ms-pages-group {
+			float: none;
+			clear: both;
+			width: 100%;
+			min-width: 0;
+			max-width: none;
+		}
+
+		.ms-settings-page-wrapper {
+			float: left;
+			width: 213px;
+			min-width: 200px;
+
+			&:hover {
+				background-color: transparent;
+			}
+
+			.ms-action {
+				opacity: 1;
+			}
+
+			select,
+			.select2-container {
+				display: none;
+			}
+
+			.lbl-details {
+				display: none;
+			}
+		}
 	}
 }
