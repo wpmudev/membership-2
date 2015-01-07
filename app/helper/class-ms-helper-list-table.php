@@ -22,7 +22,7 @@ class MS_Helper_List_Table {
 	 * @since 1.1.0
 	 * @var   int
 	 */
-	const DEFAULT_PAGE_SIZE = 5;
+	const DEFAULT_PAGE_SIZE = 20;
 
 	/**
 	 * The list table id
