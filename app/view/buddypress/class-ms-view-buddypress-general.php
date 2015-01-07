@@ -39,10 +39,9 @@ class MS_View_Buddypress_General extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
-			MS_Helper_Html::html_separator();
-			?>
 
-			<?php $rule_list_table->views(); ?>
+			$rule_list_table->views();
+			?>
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
 			</form>

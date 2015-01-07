@@ -18,20 +18,20 @@ class MS_View_Member_Date extends MS_View {
 					<?php _e( 'Edit membership dates', MS_TEXT_DOMAIN ); ?>
 				</h2>
 				<form action="<?php echo remove_query_arg( array( 'action', 'member_id' ) ); ?>" method="post">
-					<?php wp_nonce_field( $this->fields['action']['value'] ); ?>
-					<?php MS_Helper_Html::html_element( $this->fields['member_id'] ); ?>
 					<?php
-						foreach ( $this->fields['membership_id'] as $field ){
-							MS_Helper_Html::html_element( $field );
-						}
-					?>
-					<?php MS_Helper_Html::html_element( $this->fields['action'] ); ?>
-					<?php
-						MS_Helper_Html::settings_box_header(
-							__( 'Membership dates', MS_TEXT_DOMAIN ),
-							'',
-							array( 'label_element' => 'h3' )
-						);
+					wp_nonce_field( $this->fields['action']['value'] );
+					MS_Helper_Html::html_element( $this->fields['member_id'] );
+
+					foreach ( $this->fields['membership_id'] as $field ){
+						MS_Helper_Html::html_element( $field );
+					}
+
+					MS_Helper_Html::html_element( $this->fields['action'] );
+					MS_Helper_Html::settings_box_header(
+						__( 'Membership dates', MS_TEXT_DOMAIN ),
+						'',
+						array( 'label_element' => 'h3' )
+					);
 					?>
 					<table class="form-table">
 						<tbody>

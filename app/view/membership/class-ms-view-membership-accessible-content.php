@@ -360,7 +360,6 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
 				$rule_list_table->views();
@@ -547,7 +546,6 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 			?>
 
 			<div class="ms-group">
@@ -664,7 +662,6 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			?>

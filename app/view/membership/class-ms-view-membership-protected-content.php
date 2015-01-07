@@ -143,7 +143,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings ">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) : ?>
 				<div class="ms-group">
@@ -237,7 +236,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			$rule_list_table->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
@@ -291,7 +289,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			$rule_list_table->search_box();
@@ -350,7 +347,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			$rule_list_table->search_box( __( 'Capability', MS_TEXT_DOMAIN ) );
@@ -404,7 +400,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			$rule_list_table->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
@@ -457,7 +452,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			$rule_list_table->search_box( __( 'Posts', MS_TEXT_DOMAIN ) );
@@ -510,7 +504,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			$rule_list_table->search_box( __( 'Posts', MS_TEXT_DOMAIN ) );
@@ -648,7 +641,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 			?>
 
 			<div class="ms-group">
@@ -757,7 +749,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 
 			$rule_list_table->views();
 			$rule_list_table->search_box( __( 'Shortcodes', MS_TEXT_DOMAIN ) );
@@ -864,7 +855,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		<div class="ms-settings">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
-			MS_Helper_Html::html_separator();
 			?>
 
 			<form action="" method="post" class="ms-form ms-group">

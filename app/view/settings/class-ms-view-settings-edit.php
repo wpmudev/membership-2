@@ -248,7 +248,6 @@ class MS_View_Settings_Edit extends MS_View {
 		MS_Helper_Html::settings_tab_header(
 			array( 'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ) )
 		);
-		MS_Helper_Html::html_separator();
 		?>
 
 		<form class="ms-form" action="" method="post">
@@ -410,7 +409,6 @@ class MS_View_Settings_Edit extends MS_View {
 		MS_Helper_Html::settings_tab_header(
 			array( 'title' => __( 'Automated Messages', MS_TEXT_DOMAIN ) )
 		);
-		MS_Helper_Html::html_separator();
 		?>
 
 		<form id="ms-comm-type-form" action="" method="post">
@@ -565,7 +563,6 @@ class MS_View_Settings_Edit extends MS_View {
 		MS_Helper_Html::settings_tab_header(
 			array( 'title' => __( 'Import Tool', MS_TEXT_DOMAIN ) )
 		);
-		MS_Helper_Html::html_separator();
 		?>
 
 		<div>

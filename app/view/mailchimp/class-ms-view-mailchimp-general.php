@@ -16,7 +16,6 @@ class MS_View_Mailchimp_General extends MS_View {
 				MS_Helper_Html::settings_tab_header(
 					array( 'title' => __( 'MailChimp Settings', MS_TEXT_DOMAIN ) )
 				);
-				MS_Helper_Html::html_separator();
 				?>
 
 				<form action="" method="post">
