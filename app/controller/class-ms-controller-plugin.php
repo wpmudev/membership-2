@@ -253,6 +253,9 @@ class MS_Controller_Plugin extends MS_Controller {
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
 				unset( $pages['coupons'] );
 			}
+			if ( ! MS_Model_Membership::have_paid_membership() ) {
+				unset( $pages['billing'] );
+			}
 		}
 
 		$pages = apply_filters( 'ms_plugin_menu_pages', $pages );

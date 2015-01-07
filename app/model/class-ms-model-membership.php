@@ -67,6 +67,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	const PAYMENT_TYPE_RECURRING = 'recurring';
 
 	/**
+	 * Set to true when the installation contains at least one paid membership.
+	 *
+	 * @since 1.1.0
+	 * @var   bool
+	 */
+	static $_have_paid = null;
+
+	/**
 	 * ID of the model object.
 	 *
 	 * Saved as WP post ID.
@@ -854,6 +862,52 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			$memberships,
 			$args
 		);
+	}
+
+	/**
+	 * Find out if the installation has at least one paid membership
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool
+	 */
+	public static function have_paid_membership() {
+		if ( null === self::$_have_paid ) {
+			global $wpdb;
+			// Using a custom WPDB query because building the meta-query is more
+			// complex than really required here...
+			$sql = "
+			SELECT COUNT( 1 )
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} priv ON priv.post_id = p.ID AND priv.meta_key = %s
+			INNER JOIN {$wpdb->postmeta} free ON free.post_id = p.ID AND free.meta_key = %s
+			INNER JOIN {$wpdb->postmeta} pric ON pric.post_id = p.ID AND pric.meta_key = %s
+			WHERE
+				p.post_type = %s
+				AND priv.meta_value != '1'
+				AND NOT (
+					free.meta_value = '1'
+					OR pric.meta_value = '0'
+				)
+			";
+
+			$sql = $wpdb->prepare(
+				$sql,
+				'private',       // INNER JOIN
+				'is_free',       // INNER JOIN
+				'price',         // INNER JOIN
+				self::$POST_TYPE // WHERE condition
+			);
+
+			$res = $wpdb->get_var( $sql );
+
+			self::$_have_paid = apply_filters(
+				'ms_model_membership_have_paid_membership',
+				intval( $res ) > 0
+			);
+		}
+
+		return self::$_have_paid;
 	}
 
 	/**
