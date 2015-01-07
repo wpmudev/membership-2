@@ -164,7 +164,7 @@ window.ms_functions = {
 					function( response ) {
 						var is_err = fn.ajax_error( response, info_field );
 						if ( is_err ) {
-							slider.togglesClass( 'on' );
+							slider.toggleClass( 'on' );
 						}
 
 						info_field.removeClass( 'ms-processing' );
