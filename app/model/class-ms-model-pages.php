@@ -587,8 +587,11 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @param string $page_type The page type to create menu.
 	 * @param string $update_only Only used by the upgrade class.
 	 * @param string $type Only used by the upgrade class.
+	 * @return bool True means that at least one menu item was created.
 	 */
 	public function create_menu( $page_type, $update_only = null, $update_type = null ) {
+		$res = false;
+
 		if ( self::is_valid_type( $page_type ) ) {
 			if ( $update_only && empty( $update_type ) ) {
 				$this->create_menu( $page_type, true, 'page' );
@@ -637,10 +640,86 @@ class MS_Model_Pages extends MS_Model_Option {
 
 					if ( $db_id || ! $update_only ) {
 						wp_update_nav_menu_item( $nav->term_id, $db_id, $menu_item );
+						$this->set_setting( 'has_nav_' . $page_type, true );
+						$res = true;
 					}
 				}
 			}
 		}
+
+		return $res;
+	}
+
+	/**
+	 * Remove MS Pages from Menus.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $page_type The page type to create menu.
+	 * @return bool True means that at least one menu item was deleted.
+	 */
+	public function drop_menu( $page_type ) {
+		$res = false;
+
+		if ( self::is_valid_type( $page_type ) ) {
+			$ms_page = $this->get_page( $page_type, true );
+			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+
+			foreach ( $navs as $nav ) {
+				$args['meta_query'] = array(
+					array(
+						'key' => '_menu_item_object_id',
+						'value' => $ms_page->ID,
+					),
+					array(
+						'key' => '_menu_item_object',
+						'value' => 'page',
+					),
+					array(
+						'key' => '_menu_item_type',
+						'value' => 'post_type',
+					),
+				);
+
+				// Search for existing menu item and create it if not found
+				$items = wp_get_nav_menu_items( $nav, $args );
+
+				$item = ! is_array( $items ) ? false : array_shift( $items );
+				$db_id = empty( $item ) ? 0 : $item->db_id;
+
+				if ( $db_id ) {
+					if ( false !== wp_delete_post( $db_id ) ) {
+						$this->set_setting( 'has_nav_' . $page_type, false );
+						$res = true;
+					}
+				}
+			}
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Returns the current menu state: If a specific page is added to the menu,
+	 * this state is saved in the settings. So when the user removes a menu item
+	 * manually we still have the "inserted" flag in DB.
+	 *
+	 * We do this, because the menu items are added to all existing nav menus
+	 * and the user might remove them from one nav menu but not from all...
+	 *
+	 * @since  1.1.0
+	 * @param  string $page_type
+	 * @return bool
+	 */
+	public function has_menu( $page_type ) {
+		$state = false;
+
+		if ( self::is_valid_type( $page_type ) ) {
+			$state = $this->get_setting( 'has_nav_' . $page_type );
+			$state = WDev()->is_true( $state );
+		}
+
+		return $state;
 	}
 
 

@@ -39,7 +39,8 @@ class MS_Controller_Pages extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_UPDATE_PAGES = 'update_pages';
+	const AJAX_ACTION_UPDATE_PAGES = 'pages_update';
+	const AJAX_ACTION_TOGGLE_MENU = 'pages_toggle_menu';
 
 	/**
 	 * Construct Settings manager.
@@ -50,6 +51,7 @@ class MS_Controller_Pages extends MS_Controller {
 		parent::__construct();
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PAGES, 'ajax_action_update_pages' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MENU, 'ajax_action_toggle_menu' );
 	}
 
 	/**
@@ -82,6 +84,41 @@ class MS_Controller_Pages extends MS_Controller {
 			$ms_pages = $this->get_model();
 			$ms_pages->set_setting( $_POST['field'], $_POST['value'] );
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+		}
+
+		echo '' . $msg;
+		exit;
+	}
+
+	/**
+	 * Handle Ajax toggle menu items.
+	 *
+	 * Related action hooks:
+	 * - wp_ajax_toggle_menu
+	 *
+	 * @since 1.1.0
+	 */
+	public function ajax_action_toggle_menu() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+
+		$isset = array( 'item', 'value' );
+		if ( $this->verify_nonce()
+			&& self::validate_required( $isset, 'POST', false )
+			&& $this->is_admin_user()
+		) {
+			$ms_pages = $this->get_model();
+			$item = $_POST['item'];
+			$res = false;
+
+			if ( WDev()->is_true( $_POST['value'] ) ) {
+				$res = $ms_pages->create_menu( $item );
+			} else {
+				$res = $ms_pages->drop_menu( $item );
+			}
+
+			if ( $res ) {
+				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+			}
 		}
 
 		echo '' . $msg;
