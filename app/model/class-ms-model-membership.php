@@ -1035,6 +1035,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		$args = wp_parse_args( $args, $defaults );
 
+		WDev()->load_fields( $args, 'include_special' );
+
 		if ( ! WDev()->is_true( $args['include_special'] ) ) {
 			$args['meta_query']['visitor'] = array(
 				'key'     => 'special',
