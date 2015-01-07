@@ -47,6 +47,7 @@ class MS_View_Settings_Import extends MS_View {
 				$fields['clear_all'],
 				$fields['back'],
 				$fields['import'],
+				$fields['download'],
 				$fields['nonce'],
 				$fields['action'],
 			),
@@ -217,8 +218,18 @@ class MS_View_Settings_Import extends MS_View {
 		);
 
 		$fields['import'] = array(
+			'name' => 'submit',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			'value' => __( 'Import', MS_TEXT_DOMAIN ),
+			'button_value' => MS_Controller_Import::ACTION_IMPORT,
+		);
+
+		$fields['download'] = array(
+			'name' => 'submit',
+			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' => __( 'Download as Export File', MS_TEXT_DOMAIN ),
+			'button_value' => MS_Controller_Import::ACTION_DOWNLOAD,
+			'class' => 'button-link',
 		);
 
 		$fields['action'] = array(
