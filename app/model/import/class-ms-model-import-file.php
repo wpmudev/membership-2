@@ -67,7 +67,7 @@ class MS_Model_Import_File extends MS_Model_Import {
 
 		if ( empty( $data ) ) {
 			self::_message( 'error', __( 'No valid export file uploaded, please try again.', MS_TEXT_DOMAIN ) );
-			return false;;
+			return false;
 		}
 
 		$this->source = $data;
