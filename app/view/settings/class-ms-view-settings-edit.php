@@ -523,7 +523,7 @@ class MS_View_Settings_Edit extends MS_View {
 				'disabled' => ! MS_Model_Import_File::present(),
 			),
 			'membership' => array(
-				'text' => __( 'Membership 3.5 (WPMU Dev)', MS_TEXT_DOMAIN ),
+				'text' => __( 'Membership (WPMU Dev)', MS_TEXT_DOMAIN ),
 				'disabled' => ! MS_Model_Import_Membership::present(),
 			),
 		);
