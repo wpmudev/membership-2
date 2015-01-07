@@ -74,6 +74,19 @@ class MS_Model_Import extends MS_Model {
 	}
 
 	/**
+	 * Returns true if the specific import-source is present and can be used
+	 * for import.
+	 *
+	 * Must be implemented by the child classes.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function present() {
+		return false;
+	}
+
+	/**
 	 * Checks if the provided data is a recognized import object.
 	 * If not an import object then FALSE will be returned, otherwise the
 	 * object itself.

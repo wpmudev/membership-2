@@ -518,11 +518,17 @@ class MS_View_Settings_Edit extends MS_View {
 			'title' => __( 'From export file', MS_TEXT_DOMAIN ),
 		);
 		$import_options = array(
-			'File' => MS_Helper_Html::html_element( $file_field, true ),
-			'Membership' => __( 'Membership 3.5 (WPMU Dev)', MS_TEXT_DOMAIN ),
+			'file' => array(
+				'text' => MS_Helper_Html::html_element( $file_field, true ),
+				'disabled' => ! MS_Model_Import_File::present(),
+			),
+			'membership' => array(
+				'text' => __( 'Membership 3.5 (WPMU Dev)', MS_TEXT_DOMAIN ),
+				'disabled' => ! MS_Model_Import_Membership::present(),
+			),
 		);
 
-		$sel_source = 'File';
+		$sel_source = 'file';
 		if ( isset( $_POST['import_source'] )
 			&& isset( $import_options[ $_POST['import_source'] ] )
 		) {

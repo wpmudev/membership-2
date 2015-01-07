@@ -21,13 +21,22 @@
 */
 
 /**
- * Base class for all import handlers.
+ * Imports data from WPMU DEV Membership plugin.
  *
  * @since 1.1.0
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Import_File extends MS_Model_Import {
+class MS_Model_Import_Membership extends MS_Model_Import {
+
+	/**
+	 * Stores the result of present() call
+	 *
+	 * @since  1.1.0
+	 *
+	 * @var bool
+	 */
+	static protected $is_present = null;
 
 	/**
 	 * This function parses the Import source (i.e. an file-upload) and returns
@@ -39,39 +48,6 @@ class MS_Model_Import_File extends MS_Model_Import {
 	 * @return bool
 	 */
 	public function prepare() {
-		self::_message( 'preview', false );
-
-		if ( empty( $_FILES ) || ! isset( $_FILES['upload'] ) ) {
-			self::_message( 'error', __( 'No file was uploaded, please try again.', MS_TEXT_DOMAIN ) );
-			return false;
-		}
-
-		$file = $_FILES['upload'];
-		if ( empty( $file['name'] ) ) {
-			self::_message( 'error', __( 'Please upload an export file.', MS_TEXT_DOMAIN ) );
-			return false;
-		}
-		if ( empty( $file['size'] ) ) {
-			self::_message( 'error', __( 'The uploaded file is empty, please try again.', MS_TEXT_DOMAIN ) );
-			return false;
-		}
-
-		$content = file_get_contents( $file['tmp_name'] );
-		try {
-			$data = json_decode( $content );
-		} catch( Exception $ex ) {
-			$data = (object) array();
-		}
-
-		$data = $this->validate_object( $data );
-
-		if ( empty( $data ) ) {
-			self::_message( 'error', __( 'No valid export file uploaded, please try again.', MS_TEXT_DOMAIN ) );
-			return false;;
-		}
-
-		$this->source = $data;
-		return true;
 	}
 
 	/**
@@ -82,7 +58,16 @@ class MS_Model_Import_File extends MS_Model_Import {
 	 * @return bool
 	 */
 	static public function present() {
-		return true;
+		if ( null === self::$is_present ) {
+			global $wpdb;
+			$rule_table = $wpdb->prefix . 'm_membership_rules';
+
+			$sql = 'SHOW TABLES LIKE %s;';
+			$sql = $wpdb->prepare( $sql, $rule_table );
+			self::$is_present = $wpdb->get_var( $sql ) == $rule_table;
+		}
+
+		return self::$is_present;
 	}
 
 }
