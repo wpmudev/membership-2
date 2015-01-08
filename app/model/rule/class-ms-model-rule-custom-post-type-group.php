@@ -172,7 +172,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			$contents[ $key ]->name = $content;
 			$contents[ $key ]->type = $this->rule_type;
 
-			$contents[ $key ]->access = parent::has_access( $key );
+			$contents[ $key ]->access = $this->get_rule_value( $key );
 		}
 
 		if ( ! empty( $args['rule_status'] ) ) {
