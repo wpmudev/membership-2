@@ -21,6 +21,120 @@
 */
 
 /**
+********************************************************************************
+Import Data Structure
+
+- source          <string>  Name of the source plugin
+
+********************************************************************************
+
+- plugin_version  <string>  Version of the source plugin
+
+********************************************************************************
+
+- export_time     <yyyy-mm-dd hh:mm>  "2015-01-08 18:37"
+
+********************************************************************************
+
+- notes           <string>  Notes to display in the import preview
+
+********************************************************************************
+
+- memberships     <array>
+    - id                 <int>  Export-ID
+    - name               <string>  Membership name (see notes for `special`)
+    - description        <string>  Membership description
+    - type               [simple|content_type|tier|dripped]
+    - active             <bool>
+    - private            <bool>
+    - free               <bool>
+    - dripped            [empty|specific_date|from_registration]
+    - special            [empty|base|role]
+                         For "role": `name` must match a WordPress user-role or "(Guest)/(Logged in)"
+    - children           <array of memberships>  Only 1 Level of children allowed
+
+    If `free` is false:
+    - price              <float>
+    - trial              <bool>
+    - payment_type       [permanent|finite|date-range|recurring]
+
+    If `payment_type` is 'finite' and 'recurring':
+    - period_unit        <int>  Number of days/weeks/months
+    - period_type        [d|w|m|y]
+
+    If `payment_type` is 'date-range':
+    - period_start       <yyyy-mm-dd>
+    - period_end         <yyyy-mm-dd>
+
+    If `trial` is true:
+    - trial_price        <float>
+    - trial_period_unit  <int>  Number of days/weeks/months
+    - trial_period_type  [d|w|m|y]
+
+********************************************************************************
+
+- members         <array>
+    - id              <int>  Export-ID
+    - email           <string>  If not found in WP_Users then a new user is created
+    - username        <string>  Login name (if a new user needs to be created)
+    - payment         <array>  Payment details of the user.
+        - stripe_card_exp                <string>
+        - stripe_card_num                <string>
+        - stripe_customer                <string>
+        - authorize_card_exp             <string>
+        - authorize_card_num             <string>
+        - authorize_cim_profile          <string>
+        - authorize_cim_payment_profile  <string>
+
+    - subscriptions   <array of objects> A list of subscriptions (i.e. linked memberships)
+
+        Structure of a subscription object:
+        - id              <int>  Export ID
+        - membership      <int>  Membership Export ID
+        - status          [pending|active|trial|trial_expired|expired|deactivated|canceled]
+        - gateway         [admin|free|manual|paypal_single|paypal_standard|authorize|stripe]
+        - start           <yyyy-mm-dd>
+        - expire          <yyyy-mm-dd>
+        - trial_finished  <bool>
+        - trial_end       <yyyy-mm-dd> If `trial_finished` is false
+
+        - invoices <array of objects>
+
+            Structure of an invoice object:
+			- id                  <int>  Export ID
+			- invoice_number      <string>  The invoice number
+			- external_id         <string>  Gateway-specific invoice reference
+			- gateway             [paypal_single|paypal_standard|authorize|stripe]
+			- status              [billed|paid|failed|pending|denied]
+			- coupon              <string>  Coupon code, if applicable
+			- currency            <string>  Currency of invoice
+			- amount              <string>  Membership base-price
+			- discount            <float>  Discounted amount (price, not percentage!)
+			- discount2           <float>  Second discount amount
+			- total               <float>  Totally billed amount
+			- for_trial           <bool> True means this invoice is for a trial period
+			- due                 <yyyy-mm-dd>
+			- notes               <string>
+			- taxable             <bool>
+
+			If `taxable` is true:
+			- tax_rate            <float>  Tax percentage
+			- tax_name            <string>  Display name
+
+********************************************************************************
+
+- settings     <array>
+    - addons      <array>  Change the active state of addons
+        - <addon name>  <bool>  Activate or deactivate one addon
+
+********************************************************************************
+
+- coupons         <array>
+
+********************************************************************************
+ */
+
+/**
  * Class that handles Export functions.
  *
  * @since 1.1.0
@@ -42,14 +156,22 @@ class MS_Model_Import_Export extends MS_Model {
 		$data->source = 'Protected Content';
 		$data->plugin_version = MS_PLUGIN_VERSION;
 		$data->export_time = date( 'Y-m-d H:i' );
+		$data->notes = array(
+			__( 'Exported data:', MS_TEXT_DOMAIN ),
+			__( '- Memberships (without protection rules)', MS_TEXT_DOMAIN ),
+			__( '- Members (including Stripe/Authorize payment settings)', MS_TEXT_DOMAIN ),
+			__( '- Subscriptions (link between Members and Memberships)', MS_TEXT_DOMAIN ),
+			__( '- Invoices', MS_TEXT_DOMAIN ),
+		);
+
+		$data->memberships = array();
 
 		// Export the base membership (i.e. the Protected Content settings)
 		$membership = MS_Model_Membership::get_protected_content();
-		$data->protected_content = (object) array(); // $this->export_membership( $membership->id, false );
+		$data->memberships[] = $this->export_membership( $membership->id );
 
 		// Export all memberships.
 		$memberships = MS_Model_Membership::get_memberships( array( 'post_parent' => 0 ) );
-		$data->memberships = array();
 		foreach ( $memberships as $membership ) {
 			$data->memberships[] = $this->export_membership( $membership->id );
 		}
@@ -96,6 +218,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->private = (bool) $src->private;
 		$obj->free = (bool) $src->is_free;
 		$obj->dripped = $src->dripped_type;
+		$obj->special = $src->special;
 
 		if ( ! $obj->free ) {
 			$obj->pay_type = $src->payment_type;
@@ -104,7 +227,8 @@ class MS_Model_Import_Export extends MS_Model {
 
 			switch ( $obj->pay_type ) {
 				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-					$obj->period = $src->period;
+					$obj->period_unit = $src->period['period_unit'];
+					$obj->period_type = $src->period['period_type'];
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
@@ -113,13 +237,15 @@ class MS_Model_Import_Export extends MS_Model {
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-					$obj->period_cycle = $src->pay_cycle_period;
+					$obj->period_unit = $src->pay_cycle_period['period_unit'];
+					$obj->period_type = $src->pay_cycle_period['period_type'];
 					break;
 			}
 
 			if ( $obj->trial ) {
 				$obj->trial_price = $src->trial_price;
-				$obj->trial_period = $src->trial_period;
+				$obj->trial_period_unit = $src->trial_period['period_unit'];
+				$obj->trial_period_type = $src->trial_period['period_type'];
 			}
 		}
 
@@ -168,9 +294,9 @@ class MS_Model_Import_Export extends MS_Model {
 			'authorize_cim_payment_profile' => $src->get_gateway_profile( $gw_auth, 'cim_payment_profile_id' ),
 		);
 
-		$obj->registrations = array();
+		$obj->subscriptions = array();
 		foreach ( $src->ms_relationships as $membership_id => $registration ) {
-			$obj->registrations[] = $this->export_relationship( $registration );
+			$obj->subscriptions[] = $this->export_relationship( $registration );
 		}
 
 		return $obj;
@@ -225,7 +351,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->currency = $src->currency;
 		$obj->amount = $src->amount;
 		$obj->discount = $src->discount;
-		$obj->pro_rate = $src->pro_rate;
+		$obj->discount2 = $src->pro_rate;
 		$obj->total = $src->total;
 
 		$obj->for_trial = (bool) $src->trial_period;

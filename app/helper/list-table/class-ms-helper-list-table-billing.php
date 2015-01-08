@@ -154,7 +154,11 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			__( 'View', MS_TEXT_DOMAIN )
 		);
 
-		printf( '%1$s %2$s', $item->id, $this->row_actions( $actions ) );
+		return sprintf(
+			'%1$s %2$s',
+			$item->id,
+			$this->row_actions( $actions )
+		);
 	}
 
 	public function column_default( $item, $column_name ) {

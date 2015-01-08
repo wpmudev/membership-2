@@ -1884,6 +1884,28 @@
   box-shadow: 0 0 0 transparent;
   width: calc(100% + 20px);
 }
+.wpmui-wnd .ms-import-notes,
+#wpwrap .ms-wrap .ms-import-notes {
+  margin: 0;
+  line-height: 1.15em;
+  border-left: 2px solid #EE8800;
+  background-color: #FFF6F0;
+  padding: 5px 5px 5px 20px;
+}
+.wpmui-wnd .ms-import-notes li,
+#wpwrap .ms-wrap .ms-import-notes li {
+  padding: 3px 0;
+  margin: 0;
+}
+.wpmui-wnd .ms-import-notes ul,
+#wpwrap .ms-wrap .ms-import-notes ul {
+  list-style: disc;
+  margin-bottom: 3px;
+}
+.wpmui-wnd .ms-import-notes ul li,
+#wpwrap .ms-wrap .ms-import-notes ul li {
+  margin-left: 20px;
+}
 .wpmui-wnd .gateways .is-configured .ms-gateway-setup-wrapper,
 .wpmui-wnd .gateways .not-configured .wpmui-radio-slider,
 #wpwrap .ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,

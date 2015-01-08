@@ -103,7 +103,7 @@ class MS_Model_Import extends MS_Model {
 			|| ! isset( $data->source )
 			|| ! isset( $data->plugin_version )
 			|| ! isset( $data->export_time )
-			|| ! isset( $data->protected_content )
+			|| ! isset( $data->notes )
 			|| ! isset( $data->memberships )
 			|| ! isset( $data->members )
 			|| ! isset( $data->settings )
@@ -152,7 +152,7 @@ class MS_Model_Import extends MS_Model {
 	public function import_data( $data, $args ) {
 		$this->errors = array();
 
-		// Make sure the Import object can be parsed
+		// Make sure the Import object can be parsed.
 		$data = $this->validate_object( $data );
 		if ( empty( $data ) ) {
 			WDev()->message(
@@ -164,7 +164,7 @@ class MS_Model_Import extends MS_Model {
 
 		// Clear current data, if the user wants it.
 		if ( $args['clear_all'] ) {
-			// Delete all Relationships
+			// Delete all Relationships.
 			$relationships = MS_Model_Membership_Relationship::get_membership_relationships(
 				array( 'status' => 'all' )
 			);
@@ -172,21 +172,27 @@ class MS_Model_Import extends MS_Model {
 				$relatioship->delete();
 			}
 
-			// Delete all Memberships
+			// Delete all Memberships.
 			$memberships = MS_Model_Membership::get_memberships();
 			foreach ( $memberships as $membership ) {
+				if ( $membership->is_special() ) { continue; }
 				$membership->delete( true );
 			}
 		}
 
-		// Import Memberships
+		// Import Memberships.
 		foreach ( $data->memberships as $obj ) {
 			$this->import_membership( $obj );
 		}
 
-		// Import Members
+		// Import Members.
 		foreach ( $data->members as $obj ) {
 			$this->import_member( $obj );
+		}
+
+		// Import other settings.
+		foreach ( $data->settings as $setting => $value ) {
+			$this->import_setting( $setting, $value );
 		}
 
 		WDev()->message( __( 'Data imported!', MS_TEXT_DOMAIN ) );
@@ -217,6 +223,28 @@ class MS_Model_Import extends MS_Model {
 	}
 
 	/**
+	 * Makes sure the specified period-type is a recognized value.
+	 *
+	 * @since  1.1.0
+	 * @param  string $period_type An unvalidated period string
+	 * @return string A valid period-type string
+	 */
+	protected function valid_period( $period_type ) {
+		$res = 'days';
+
+		if ( strlen( $period_type ) > 0 ) {
+			switch ( $period_type[0] ) {
+				case 'd': $res = 'days'; break;
+				case 'w': $res = 'weeks'; break;
+				case 'm': $res = 'months'; break;
+				case 'y': $res = 'years'; break;
+			}
+		}
+
+		return $res;
+	}
+
+	/**
 	 * Helper function used by import_membership
 	 * This is a separate function because it is used to populate normal
 	 * memberships and also child memberships
@@ -231,34 +259,68 @@ class MS_Model_Import extends MS_Model {
 		$membership->private = (bool) $obj->private;
 		$membership->is_free = (bool) $obj->free;
 		$membership->dripped_type = $obj->dripped;
+		$membership->is_setup_complete = true;
+
+		if ( isset( $obj->period_type ) ) {
+			$obj->period_type = $this->valid_period( $obj->period_type );
+		}
+		if ( isset( $obj->trial_period_type ) ) {
+			$obj->trial_period_type = $this->valid_period( $obj->trial_period_type );
+		}
 
 		if ( isset( $obj->pay_type ) ) {
 			$membership->payment_type = $obj->pay_type;
+			if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
+				$membership->period = array();
+				if ( isset( $obj->period_unit ) ) {
+					$membership->period['period_unit'] = $obj->period_unit;
+				}
+				if ( isset( $obj->period_type ) ) {
+					$membership->period['period_type'] = $obj->period_type;
+				}
+			} elseif ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING ) {
+				$membership->pay_cycle_period = array();
+				if ( isset( $obj->period_unit ) ) {
+					$membership->pay_cycle_period['period_unit'] = $obj->period_unit;
+				}
+				if ( isset( $obj->period_type ) ) {
+					$membership->pay_cycle_period['period_type'] = $obj->period_type;
+				}
+			} elseif ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE ) {
+				if ( isset( $obj->period_start ) ) {
+					$membership->period_date_start = $obj->period_start;
+				}
+				if ( isset( $obj->period_end ) ) {
+					$membership->period_date_end = $obj->period_end;
+				}
+			}
 		}
-		if ( isset( $obj->price ) ) {
-			$membership->price = $obj->price;
+
+		if ( ! $membership->is_free ) {
+			if ( isset( $obj->price ) ) {
+				$membership->price = $obj->price;
+			}
 		}
+
 		if ( isset( $obj->trial ) ) {
 			$membership->trial_period_enabled = (bool) $obj->trial;
 		}
-		if ( isset( $obj->period ) ) {
-			$membership->period = $obj->period;
+
+		if ( $membership->trial_period_enabled ) {
+			$membership->trial_period = array();
+			if ( isset( $obj->trial_price ) ) {
+				$membership->trial_price = $obj->trial_price;
+			}
+			if ( isset( $obj->trial_period_unit ) ) {
+				$membership->trial_period['period_unit'] = $obj->trial_period_unit;
+			}
+			if ( isset( $obj->trial_period_type ) ) {
+				$membership->trial_period['period_type'] = $obj->trial_period_type;
+			}
 		}
-		if ( isset( $obj->period_start ) ) {
-			$membership->period_date_start = $obj->period_start;
-		}
-		if ( isset( $obj->period_end ) ) {
-			$membership->period_date_end = $obj->period_end;
-		}
-		if ( isset( $obj->period_cycle ) ) {
-			$membership->pay_cycle_period = (array) $obj->period_cycle;
-		}
-		if ( isset( $obj->trial_price ) ) {
-			$membership->trial_price = $obj->trial_price;
-		}
-		if ( isset( $obj->trial_period ) ) {
-			$membership->trial_period = (array) $obj->trial_period;
-		}
+
+		// We set this last because it might change some other values as well...
+		$membership->special = $obj->special;
 	}
 
 	/**
@@ -309,7 +371,7 @@ class MS_Model_Import extends MS_Model {
 		$this->import_obj( 'member', $obj->id, $member );
 
 		// Import all memberships of the member
-		foreach ( $obj->registrations as $registration ) {
+		foreach ( $obj->subscriptions as $registration ) {
 			$this->import_registration( $member, $registration );
 		}
 	}
@@ -329,7 +391,16 @@ class MS_Model_Import extends MS_Model {
 				esc_attr( $obj->username ),
 				esc_attr( $obj->email )
 			);
-			continue;
+			return;
+		}
+
+		if ( ! empty( $membership->special ) ) {
+			$this->errors[] = sprintf(
+				__( 'Did not import the special membership %2$s for <strong>%1$s</strong>', MS_TEXT_DOMAIN ),
+				esc_attr( $obj->username ),
+				esc_attr( $membership->name )
+			);
+			return;
 		}
 
 		$ms_relationship = $member->add_membership( $membership->id );
@@ -358,7 +429,7 @@ class MS_Model_Import extends MS_Model {
 		$ms_invoice->currency = $obj->currency;
 		$ms_invoice->amount = $obj->amount;
 		$ms_invoice->discount = $obj->discount;
-		$ms_invoice->pro_rate = $obj->pro_rate;
+		$ms_invoice->pro_rate = $obj->discount2;
 		$ms_invoice->total = $obj->total;
 		$ms_invoice->trial_period = $obj->for_trial;
 		$ms_invoice->due_date = $obj->due;
@@ -375,5 +446,28 @@ class MS_Model_Import extends MS_Model {
 		$this->import_obj( 'invoice', $obj->id, $ms_invoice );
 
 		$ms_invoice->save();
+	}
+
+	/**
+	 * Import specific data: A single setting
+	 *
+	 * @since  1.1.0
+	 * @param  object $obj The import object
+	 */
+	protected function import_setting( $setting, $value ) {
+		switch ( $setting ) {
+			// Import Add-On states.
+			case 'addons':
+				$model = MS_Factory::load( 'MS_Model_Addon' );
+				foreach ( $value as $addon => $state ) {
+					if ( $state ) {
+						$model->enable( $addon );
+					} else {
+						$model->disable( $addon );
+					}
+				}
+				$model->save();
+				break;
+		}
 	}
 }

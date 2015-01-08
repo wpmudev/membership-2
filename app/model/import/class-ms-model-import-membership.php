@@ -48,6 +48,15 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	static protected $plugin_data = null;
 
 	/**
+	 * The import data object
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array
+	 */
+	protected $data = array();
+
+	/**
 	 * This function parses the Import source (i.e. an file-upload) and returns
 	 * true in case the source data is valid. When returning true then the
 	 * $source property of the model is set to the sanitized import source data.
@@ -59,16 +68,15 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	public function prepare() {
 		self::_message( 'preview', false );
 
-		$data = $this->get_import_struct();
+		$this->prepare_import_struct();
+		$this->data = $this->validate_object( $this->data );
 
-		$data = $this->validate_object( $data );
-
-		if ( empty( $data ) ) {
+		if ( empty( $this->data ) ) {
 			self::_message( 'error', __( 'Hmmm, we could not import the Membership data...', MS_TEXT_DOMAIN ) );
 			return false;
 		}
 
-		$this->source = $data;
+		$this->source = $this->data;
 		return true;
 	}
 
@@ -131,24 +139,221 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 * @since  1.1.0
 	 * @return object
 	 */
-	protected function get_import_struct() {
+	protected function prepare_import_struct() {
 		$plugin = self::plugin_data();
-		$data = (object) array();
+		$this->data = (object) array();
 
-		$data->source = sprintf(
+		$this->data->source = sprintf(
 			'%s (%s)',
 			$plugin['Name'],
 			$plugin['Author']
 		);
-		$data->plugin_version = $plugin['Version'];
-		$data->export_time = date( 'Y-m-d H:i' );
+		$this->data->plugin_version = $plugin['Version'];
+		$this->data->export_time = date( 'Y-m-d H:i' );
+		$this->data->notes = array(
+			__( 'Exported data:', MS_TEXT_DOMAIN ),
+			__( '- Subscription Plans (without level rules)', MS_TEXT_DOMAIN ),
+			__( '- Members', MS_TEXT_DOMAIN ),
+			__( '- Registrations (link between Members and Subscription Plans)', MS_TEXT_DOMAIN ),
+			__( '- Transactions', MS_TEXT_DOMAIN ),
+			__( 'Each Subscription-Level is imported as a individual Membership.', MS_TEXT_DOMAIN ),
+			__( 'Transactions are converted to invoices. Data like tax-rate or applied coupons are not available.', MS_TEXT_DOMAIN ),
+		);
 
-		$data->protected_content = array();
-		$data->memberships = array();
-		$data->members = array();
-		$data->settings = array();
+		$this->data->memberships = array();
+		$this->data->members = array();
+		$this->data->settings = array();
 
-		return $data;
+		$this->add_memberships();
+		$this->add_members();
+
+		$this->activate_addon( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES );
+
+		return $this->data;
+	}
+
+	/**
+	 * Generates a list of all default membership objects that can be imported.
+	 * The Protected Content base membership is not included!
+	 *
+	 * @since 1.1.0
+	 */
+	protected function add_memberships() {
+		global $wpdb;
+
+		/*
+		 * Notes:
+		 * Child memberships are not possible
+		 * Trial period is not possible
+		 */
+
+		$sql = "
+		SELECT DISTINCT
+			subsc.id * 1000 + suble.level_id AS id,
+			TRIM( CONCAT( subsc.sub_name, ': ', memle.level_title ) ) AS `name`,
+			subsc.sub_description AS `description`,
+			'simple' AS `type`,
+			subsc.sub_active AS `active`,
+			IF ( subsc.sub_public = 0, 1, 0 ) AS `private`,
+			IF ( suble.level_price = 0, 1, 0 ) AS `free`,
+			'' AS `dripped`,
+			'' AS `special`,
+			suble.level_price AS `price`,
+			0 AS `trial`,
+			CASE suble.sub_type
+				WHEN 'indefinite' THEN 'permanent'
+				WHEN 'finite' THEN 'finite'
+				WHEN 'SERIAL' THEN 'recurring'
+				ELSE 'permanent'
+			END AS `payment_type`,
+			suble.level_period AS `period_unit`,
+			suble.level_period_unit AS `period_type`
+		FROM `{$wpdb->prefix}m_subscriptions` subsc
+			INNER JOIN `{$wpdb->prefix}m_subscriptions_levels` suble ON suble.sub_id = subsc.id
+			INNER JOIN `{$wpdb->prefix}m_membership_levels` memle ON memle.id = suble.level_id
+		";
+		$res = $wpdb->get_results( $sql );
+
+		foreach ( $res as $mem ) {
+			$this->data->memberships[] = $mem;
+		}
+	}
+
+	/**
+	 * Generates a list of all members that have a membership
+	 *
+	 * @since 1.1.0
+	 */
+	protected function add_members() {
+		global $wpdb;
+
+		$sql = "
+		SELECT DISTINCT
+			wpuser.id AS `id`,
+			wpuser.user_email AS `email`,
+			wpuser.user_login AS `username`
+		FROM {$wpdb->prefix}m_membership_relationships member
+		INNER JOIN {$wpdb->users} wpuser ON wpuser.id = member.user_id
+		";
+		$res = $wpdb->get_results( $sql );
+
+		foreach ( $res as $mem ) {
+			$this->data->members[$mem->id] = $mem;
+			$this->add_subscriptions( $mem->id );
+		}
+	}
+
+	/**
+	 * Generates a list of subscriptions for the specified member
+	 *
+	 * @since 1.1.0
+	 * @param int $member_id The member-ID
+	 */
+	protected function add_subscriptions( $member_id ) {
+		global $wpdb;
+
+		$sql = "
+		SELECT DISTINCT
+			CONCAT( member.user_id * 10, member.sub_id * 1000 + member.level_id ) AS `id`,
+			member.sub_id AS `sub_id`,
+			member.level_id AS `level_id`,
+			member.sub_id * 1000 + member.level_id AS membership,
+			CASE
+				WHEN member.expirydate < CURRENT_DATE() THEN 'active'
+				ELSE 'expired'
+			END AS `status`,
+			CASE member.usinggateway
+				WHEN 'paypalsolo' THEN 'paypal_single'
+				WHEN 'paypalexpress' THEN 'paypal_standard'
+				WHEN 'twocheckout' THEN '2checkout'
+				WHEN 'freesubscriptions' THEN 'free'
+				WHEN 'authorizenetarb' THEN 'authorize'
+				WHEN 'authorizenetaim' THEN 'authorize'
+				WHEN 'authorize' THEN 'authorize'
+				ELSE 'admin'
+			END AS `gateway`,
+			DATE_FORMAT( member.startdate, '%%Y-%%m-%%d' ) AS `start`,
+			DATE_FORMAT( member.expirydate, '%%Y-%%m-%%d' ) AS `end`
+		FROM {$wpdb->prefix}m_membership_relationships member
+		WHERE member.user_id = %s
+		";
+		$sql = $wpdb->prepare( $sql, $member_id );
+		$res = $wpdb->get_results( $sql );
+
+		$this->data->members[$member_id]->subscriptions = array();
+		foreach ( $res as $sub ) {
+			$this->data->members[$member_id]->subscriptions[$sub->id] = $sub;
+			$this->add_invoices( $member_id, $sub->sub_id, $sub->id );
+		}
+	}
+
+	/**
+	 * Generates a list of invoices for the specified subscription
+	 *
+	 * @since 1.1.0
+	 * @param int $member_id The member-ID
+	 * @param int $subscription The subscription plan-ID
+	 * @param int $exp_id The export ID of the subscription object
+	 */
+	protected function add_invoices( $member_id, $subscription, $exp_id ) {
+		global $wpdb;
+
+		$sql = "
+		SELECT DISTINCT
+			CONCAT( member.user_id * 10, member.sub_id * 1000 + member.level_id ) AS `subscription_id`,
+			inv.transaction_id AS `id`,
+			CONCAT( member.user_id, '-', LPAD( inv.transaction_id, 3, '0') ) AS `invoice_number`,
+			inv.transaction_paypal_ID AS `external_id`,
+			CASE inv.transaction_gateway
+				WHEN 'paypalsolo' THEN 'paypal_single'
+				WHEN 'paypalexpress' THEN 'paypal_standard'
+				WHEN 'twocheckout' THEN '2checkout'
+				WHEN 'freesubscriptions' THEN 'free'
+				WHEN 'authorizenetarb' THEN 'authorize'
+				WHEN 'authorizenetaim' THEN 'authorize'
+				WHEN 'authorize' THEN 'authorize'
+				ELSE 'admin'
+			END AS `gateway`,
+			CASE inv.transaction_status
+				WHEN 'Partially-Refunded' THEN 'failed'
+				WHEN 'Refunded' THEN 'failed'
+				WHEN 'Reversed' THEN 'failed'
+				WHEN 'Pending' THEN 'pending'
+				WHEN 'In-Progress' THEN 'pending'
+				WHEN 'Denied' THEN 'denied'
+				WHEN 'Completed' THEN 'paid'
+				WHEN 'Processed' THEN 'paid'
+				ELSE 'paid'
+			END AS `status`,
+			inv.transaction_currency AS `currency`,
+			inv.transaction_total_amount / 100 AS `amount`,
+			inv.transaction_total_amount / 100 AS `total`,
+			FROM_UNIXTIME( inv.transaction_stamp, '%%Y-%%m-%%d' ) AS `due`,
+			inv.transaction_note AS `notes`
+		FROM {$wpdb->prefix}m_membership_relationships member
+		INNER JOIN {$wpdb->prefix}m_subscription_transaction inv ON inv.transaction_user_id = member.user_id AND inv.transaction_subscription_ID = member.sub_id
+		WHERE
+			member.user_id = %s
+			AND member.sub_id = %s
+		";
+		$sql = $wpdb->prepare( $sql, $member_id, $subscription );
+		$res = $wpdb->get_results( $sql );
+
+		$this->data->members[$member_id]->subscriptions[$exp_id]->invoices = array();
+		foreach ( $res as $inv ) {
+			$this->data->members[$member_id]->subscriptions[$exp_id]->invoices[] = $inv;
+		}
+	}
+
+	/**
+	 * Adds activation details for a single add-on to the import object
+	 *
+	 * @since  1.1.0
+	 * @param  string $name The add-on name
+	 */
+	protected function activate_addon( $name ) {
+		$this->data->settings['addons'] = WDev()->get_array( $this->data->settings['addons'] );
+		$this->data->settings['addons'][$name] = true;
 	}
 
 }

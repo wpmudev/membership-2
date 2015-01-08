@@ -56,14 +56,21 @@ class MS_View_Settings_Import extends MS_View {
 
 		MS_Helper_Html::settings_box(
 			array( $fields['memberships'] ),
-			__( 'List of all memberships', MS_TEXT_DOMAIN ),
+			__( 'List of all Memberships', MS_TEXT_DOMAIN ),
 			'',
 			'open'
 		);
 
 		MS_Helper_Html::settings_box(
 			array( $fields['members'] ),
-			__( 'List of all members', MS_TEXT_DOMAIN ),
+			__( 'List of all Members', MS_TEXT_DOMAIN ),
+			'',
+			'open'
+		);
+
+		MS_Helper_Html::settings_box(
+			array( $fields['settings'] ),
+			__( 'Imported Settings', MS_TEXT_DOMAIN ),
 			'',
 			'open'
 		);
@@ -108,12 +115,21 @@ class MS_View_Settings_Import extends MS_View {
 				$item->type = MS_Model_Membership::TYPE_SIMPLE;
 			}
 
-			$memberships[] = array(
-				$item->name,
-				$ms_types[$item->type],
-				$item->description,
-				is_array( $item->children ) ? count( $item->children ) : '',
-			);
+			if ( ! empty( $item->special ) ) {
+				$memberships[] = array(
+					'<em>' . __( '(Special Membership)', MS_TEXT_DOMAIN ) . '</em>',
+					'-',
+					$item->description,
+					is_array( $item->children ) ? count( $item->children ) : '',
+				);
+			} else {
+				$memberships[] = array(
+					$item->name,
+					$ms_types[$item->type],
+					$item->description,
+					is_array( $item->children ) ? count( $item->children ) : '',
+				);
+			}
 		}
 
 		// Prepare the "Members" table
@@ -128,16 +144,43 @@ class MS_View_Settings_Import extends MS_View {
 
 		foreach ( $data->members as $item ) {
 			$inv_count = 0;
-			foreach ( $item->registrations as $registration ) {
-				$inv_count += count( $registration->invoices );
+			if ( isset( $item->subscriptions )
+				&& is_array( $item->subscriptions )
+			) {
+				foreach ( $item->subscriptions as $registration ) {
+					$inv_count += count( $registration->invoices );
+				}
 			}
 
 			$members[] = array(
 				$item->username,
 				$item->email,
-				count( $item->registrations ),
+				count( $item->subscriptions ),
 				$inv_count,
 			);
+		}
+
+		$settings = array();
+		foreach ( $data->settings as $setting => $value ) {
+			switch ( $setting ) {
+				case 'addons':
+					$model = MS_Factory::load( 'MS_Model_Addon' );
+					$list = $model->get_addon_list();
+					$code = '';
+					foreach ( $value as $addon => $state ) {
+						if ( $state ) {
+							$code .= __( 'Activate: ', MS_TEXT_DOMAIN );
+						} else {
+							$code .= __( 'Dectivate: ', MS_TEXT_DOMAIN );
+						}
+						$code .= $list[$addon]->name . '<br/>';
+					}
+					$settings[] = array(
+						__( 'Add-Ons' ),
+						$code,
+					);
+					break;
+			}
 		}
 
 		// Prepare the return value.
@@ -149,25 +192,66 @@ class MS_View_Settings_Import extends MS_View {
 			'value' => json_encode( $data ),
 		);
 
+		// Export-Notes
+		$notes = '';
+		if ( isset( $data->notes ) ) {
+			if ( is_scalar( $data->notes ) ) {
+				$notes = array( $data->notes );
+			}
+
+			$in_sub = false;
+			$notes = '<ul class="ms-import-notes">';
+			foreach ( $data->notes as $line => $text ) {
+				$is_sub = ( strpos( $text, '- ' ) === 0 );
+				if ( $in_sub != $is_sub ) {
+					$in_sub = $is_sub;
+					if ( $is_sub ) {
+						$notes .= '<ul>';
+					} else {
+						$notes .= '</ul>';
+					}
+				}
+				if ( $in_sub ) {
+					$text = substr( $text, 2 );
+				}
+				$notes .= '<li>' . $text;
+			}
+			$notes .= '</ul>';
+		}
+
 		$fields['details'] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_TABLE,
 			'class' => 'ms-import-preview',
 			'value' => array(
 				array(
 					__( 'Data source', MS_TEXT_DOMAIN ),
-					$data->source,
+					$data->source .
+					' &emsp; <small>' .
+					sprintf(
+						__( 'exported on %1$s', MS_TEXT_DOMAIN ),
+						$data->export_time
+					) .
+					'</small>',
 				),
 				array(
-					__( 'Export time', MS_TEXT_DOMAIN ),
-					$data->export_time,
-				),
-				array(
-					__( 'Memberships', MS_TEXT_DOMAIN ),
-					count( $data->memberships ),
-				),
-				array(
-					__( 'Members', MS_TEXT_DOMAIN ),
-					count( $data->members ),
+					__( 'Content', MS_TEXT_DOMAIN ),
+					sprintf(
+						_n(
+							'%1$s Membership',
+							'%1$s Memberships',
+							count( $data->memberships ),
+							MS_TEXT_DOMAIN
+						),
+						'<b>' . count( $data->memberships ) . '</b>'
+					) . ' / ' . sprintf(
+						_n(
+							'%1$s Member',
+							'%1$s Members',
+							count( $data->members ),
+							MS_TEXT_DOMAIN
+						),
+						'<b>' . count( $data->members ) . '</b>'
+					),
 				),
 			),
 			'field_options' => array(
@@ -176,6 +260,13 @@ class MS_View_Settings_Import extends MS_View {
 				'col_class' => array( 'preview-label', 'preview-data' ),
 			)
 		);
+
+		if ( ! empty( $notes ) ) {
+			$fields['details']['value'][] = array(
+				__( 'Please note', MS_TEXT_DOMAIN ),
+				$notes,
+			);
+		}
 
 		$fields['clear_all'] = array(
 			'id' => 'clear_all',
@@ -203,6 +294,16 @@ class MS_View_Settings_Import extends MS_View {
 				'head_col' => false,
 				'head_row' => true,
 				'col_class' => array( 'preview-name', 'preview-email', 'preview-count', 'preview-count' ),
+			)
+		);
+
+		$fields['settings'] = array(
+			'type' => MS_Helper_Html::TYPE_HTML_TABLE,
+			'class' => 'ms-import-preview',
+			'value' => $settings,
+			'field_options' => array(
+				'head_col' => true,
+				'head_row' => false,
 			)
 		);
 

@@ -259,6 +259,28 @@
 		}
 	}
 
+	.ms-import-notes {
+		margin: 0;
+		line-height: 1.15em;
+		border-left: 2px solid #EE8800;
+		background-color: #FFF6F0;
+		padding: 5px 5px 5px 20px;
+
+		li {
+			padding: 3px 0;
+			margin: 0;
+		}
+
+		ul {
+			list-style: disc;
+			margin-bottom: 3px;
+
+			li {
+				margin-left: 20px;
+			}
+		}
+	}
+
 	/* SETTINGS GATEWAY */
 	.gateways {
 		.is-configured .ms-gateway-setup-wrapper,

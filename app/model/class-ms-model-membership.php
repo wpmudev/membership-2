@@ -82,7 +82,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var int $id
 	 */
-	protected $id;
+	protected $id = 0;
 
 	/**
 	 * Membership name.
@@ -106,7 +106,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var string $type
 	 */
-	protected $type;
+	protected $type = self::TYPE_SIMPLE;
 
 	/**
 	 * Membership payment type.
@@ -114,7 +114,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var string $payment_type
 	 */
-	protected $payment_type;
+	protected $payment_type = self::PAYMENT_TYPE_PERMANENT;
 
 	/**
 	 * Membership parent.
@@ -182,7 +182,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *		@type string $period_type The period type (days, weeks, months, years).
 	 * }
 	 */
-	protected $period;
+	protected $period = array( 'period_unit' => 1, 'period_type' => 'days' );
 
 	/**
 	 * Membership payment recurring period cycle.
@@ -190,7 +190,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var array $pay_cycle_period @see $period.
 	 */
-	protected $pay_cycle_period;
+	protected $pay_cycle_period = array( 'period_unit' => 1, 'period_type' => 'days' );
 
 	/**
 	 * Membership start date for date range payment type.
@@ -198,7 +198,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var string The membership start date.
 	 */
-	protected $period_date_start;
+	protected $period_date_start = '';
 
 	/**
 	 * Membership end date for date range payment type.
@@ -206,7 +206,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var string The membership end date.
 	 */
-	protected $period_date_end;
+	protected $period_date_end = '';
 
 	/**
 	 * Membership trial period enabled indicator.
@@ -214,7 +214,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var bool $trial_period_enabled.
 	 */
-	protected $trial_period_enabled;
+	protected $trial_period_enabled = false;
 
 	/**
 	 * Membership trial price value.
@@ -230,7 +230,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var array $trial_period @see $period.
 	 */
-	protected $trial_period;
+	protected $trial_period = array( 'period_unit' => 1, 'period_type' => 'days' );
 
 	/**
 	 * Membership dripped type.
@@ -239,7 +239,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @var string $dripped_type The dripped type used in this membership.
 	 *     @see MS_Model_Rule::get_dripped_rule_types()
 	 */
-	protected $dripped_type;
+	protected $dripped_type = MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE;
 
 	/**
 	 * Move to Membership when the current one expires.
@@ -249,7 +249,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var int $on_end_membership_id.
 	 */
-	protected $on_end_membership_id;
+	protected $on_end_membership_id = 0;
 
 	/**
 	 * Membership setup completed flag.
@@ -257,7 +257,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var bool $is_setup_completed.
 	 */
-	protected $is_setup_completed;
+	protected $is_setup_completed = false;
 
 	/**
 	 * Membership composite Rules.
@@ -1270,25 +1270,37 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return bool
 	 */
 	protected function is_role_membership() {
-		static $roles = null;
 		$res = false;
 
 		if ( $this->special == 'role' ) {
-			if ( null === $roles ) {
-				$role_rule = $this->get_rule( MS_Model_Rule::RULE_TYPE_ROLEMEMBERS );
-				$roles = $role_rule->get_roles();
-				$roles[] = '(Guest)';
-				$roles[] = '(Logged in)';
-				$roles[] = 'WordPress Roles';
-
-				$roles = array_map( 'strtolower', $roles );
-			}
-
+			$roles = $this->get_role_names();
 			$key = strtolower( $this->name );
 			$res = in_array( $key, $roles );
 		}
 
 		return $res;
+	}
+
+	/**
+	 * Returns a list with all valid role-membership names.
+	 *
+	 * @since  1.1.0
+	 * @return array List of valid role-names
+	 */
+	protected function get_role_names() {
+		static $Roles = null;
+
+		if ( null === $Roles ) {
+			$role_rule = $this->get_rule( MS_Model_Rule::RULE_TYPE_ROLEMEMBERS );
+			$Roles = $role_rule->get_roles();
+			$Roles[] = '(Guest)';
+			$Roles[] = '(Logged in)';
+			$Roles[] = 'WordPress Roles';
+
+			$Roles = array_map( 'strtolower', $Roles );
+		}
+
+		return $Roles;
 	}
 
 	/**
@@ -1432,16 +1444,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$membership = MS_Factory::create( 'MS_Model_Membership' );
 				$membership->name = $key;
 				$membership->title = 'Protected Content ' . ucwords( $key );
-				$membership->post_name = sanitize_html_class( $membership->title );
-				$membership->payment_type = self::PAYMENT_TYPE_PERMANENT;
 				$membership->description = $description;
 				$membership->special = $type;
-				$membership->active = true;
-				$membership->private = true;
-				$membership->price = 0;
-				$membership->is_free = 1;
-				$membership->post_author = get_current_user_id();
-				$membership->parent_id = 0;
 
 				switch ( $type ) {
 					case 'protected_content':
@@ -2113,6 +2117,51 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					if ( 0 < MS_Factory::load( 'MS_Model_Membership', $value )->id ) {
 						$this->$property = $value;
 					}
+
+				case 'special':
+					switch ( $value ) {
+						case 'role':
+							$key = strtolower( $this->name );
+							$roles = $this->get_role_names();
+
+							if ( in_array( $key, $roles ) ) {
+								$this->type = self::TYPE_CONTENT_TYPE;
+								if ( $key !== 'WordPress Roles' ) {
+									$parent = self::get_special_membership( 'role', 'WordPress Roles' );
+									$this->parent_id = $parent->id;
+								} else {
+									$this->parent_id = 0;
+								}
+							} else {
+								$value = '';
+							}
+							break;
+
+						case 'base':
+						case 'protected_content':
+							$value = 'protected_content';
+							$this->type = self::TYPE_SIMPLE;
+							$this->parent_id = 0;
+							break;
+
+						default:
+							$value = '';
+							break;
+					}
+
+					if ( ! empty( $value ) ) {
+						$this->active = true;
+						$this->private = true;
+						$this->is_free = true;
+						$this->price = 0;
+						$this->post_parent = $this->parent_id;
+						$this->post_name = sanitize_html_class( $this->title );
+						$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
+						$this->post_author = get_current_user_id();
+					}
+
+					$this->$property = $value;
+					break;
 
 				default:
 					$this->$property = $value;
