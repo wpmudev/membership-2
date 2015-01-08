@@ -196,7 +196,7 @@ class MS_Model_Plugin extends MS_Model {
 			// The ID of the main protected-content.
 			$base_id = MS_Model_Membership::get_protected_content()->id;
 
-			$simulation = $this->member->is_simulated_user();
+			$simulation = $this->member->is_simulated_user() || isset( $_GET['why-not'] );
 			if ( $simulation ) { $Info['reason'] = array(); }
 
 			if ( $this->member->is_normal_admin() ) {
@@ -313,6 +313,11 @@ class MS_Model_Plugin extends MS_Model {
 					if ( isset( $access[$i] ) ) {
 						WDev()->store_add( 'ms-access', $access[$i] );
 					}
+				}
+
+				if ( ! $Info['has_access'] && isset( $_GET['why-not'] ) ) {
+					WDev()->debug( $access );
+					die();
 				}
 			}
 		}
