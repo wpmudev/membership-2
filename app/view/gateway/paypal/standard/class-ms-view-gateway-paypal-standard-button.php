@@ -155,7 +155,7 @@ class MS_View_Gateway_Paypal_Standard_Button extends MS_View {
 		// custom pay button defined in gateway settings
 		$custom_label = $gateway->pay_button_url;
 		if ( ! empty( $custom_label ) ) {
-			if ( strpos( $custom_label, 'http' ) === 0 ) {
+			if ( strpos( $custom_label, '://' ) !== false ) {
 				$fields['submit']['value'] = $custom_label;
 			} else {
 				$fields['submit'] = array(

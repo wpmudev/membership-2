@@ -12,6 +12,11 @@ Change Log:
 - New layout of the Add-on page
 - Many small bugfixes and layout improvements
 
+1.0.4.9
+----------------------------------------------------------------------
+- Fix an JavaScript error in the page front-end
+- Fix Manual gateway Purchase button to correctly display images (URL)
+
 1.0.4.8
 ----------------------------------------------------------------------
 - Fix 100 % discount logic; payment gateway is skipped now
