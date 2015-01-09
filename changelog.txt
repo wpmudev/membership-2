@@ -7,8 +7,11 @@ Change Log:
 1.1
 ----------------------------------------------------------------------
 - New Import Tool to create export files and import data
+- New Import-From-Memberships interface
 - New Add-on: Admin Side Protection
 - New Add-on: Member Capabilities
+- New Add-on: User-Role Memberships
+- New Add-on: Taxamo (addresses EU VAT regulations)
 - New layout of the Add-on page
 - Many small bugfixes and layout improvements
 
