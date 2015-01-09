@@ -41,8 +41,7 @@ class MS_Integration_Bbpress extends MS_Integration {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_filter( 'ms_model_addon_get_addon_types', 'bbpress_addon' );
-		$this->add_filter( 'ms_model_addon_get_addon_list', 'bbpress_addon_list' );
+		$this->add_filter( 'ms_model_addon_register', 'register' );
 
 		// Always remove bbpress from MS_Model_Rule_Custom_Post_Type_Group.
 		$this->add_filter( 'ms_model_rule_custom_post_type_group_get_excluded_content', 'exclude_bbpress_cpts' );
@@ -58,31 +57,16 @@ class MS_Integration_Bbpress extends MS_Integration {
 	}
 
 	/**
-	 * Add bbpress add-on type.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @filter ms_model_addon_get_addon_types
-	 *
-	 * @param array $addons The current add-ons.
-	 * @return string
-	 */
-	public function bbpress_addon( $addons ) {
-		$addons[] = self::ADDON_BBPRESS;
-		return $addons;
-	}
-
-	/**
 	 * Add bbpress add-on info.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @filter ms_model_addon_get_addon_list
+	 * @filter ms_model_addon_register
 	 *
 	 * @param array $list The current list of add-ons.
 	 * @return array The filtered add-on list.
 	 */
-	public function bbpress_addon_list( $list ) {
+	public function register( $list ) {
 		$list[ self::ADDON_BBPRESS ] = (object) array(
 			'id' => self::ADDON_BBPRESS,
 			'name' => __( 'bbPress Integration', MS_TEXT_DOMAIN ),

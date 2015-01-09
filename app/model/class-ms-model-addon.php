@@ -21,9 +21,12 @@
 */
 
 /**
- * Add-on model.
+ * Manage Add-ons.
  *
- * Manage add-ons.
+ * Add-ons are stored in the directory /app/addon/<addon_name>/
+ * Each Add-on must provide a file called `addon-<addon_name>.php`
+ * This file must define class MS_Addon_<addon_name>.
+ * This object is reponsible to initialize the the add-on logic.
  *
  * @since 1.0.0
  *
@@ -43,6 +46,10 @@ class MS_Model_Addon extends MS_Model_Option {
 
 	/**
 	 * Add-on name constants.
+	 *
+	 * @deprecated Since 1.1.0 the Add-On constants are deprecated.
+	 *             Use the appropriate hooks to register new addons!
+	 *             Example: See the "Taxamo" addon
 	 *
 	 * @since 1.0.0
 	 *
@@ -67,16 +74,208 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_MEMBERCAPS_ROLES = 'membercaps_roles';
 
 	/**
+	 * List of all registered Add-ons
+	 *
+	 * Related hook: ms_model_addon_register
+	 *
+	 * @var array {
+	 *     @key <string> The add-on ID.
+	 *     @value object {
+	 *         The add-on data.
+	 *
+	 *         $name  <string>  Display name
+	 *         $parent  <string>  Empty/The Add-on ID of the parent
+	 *         $description  <string>  Description
+	 *         $footer  <string>  For the Add-ons list
+	 *         $icon  <string>  For the Add-ons list
+	 *         $class  <string>  For the Add-ons list
+	 *         $details  <array of HTML elements>  For the Add-ons list
+	 *     }
+	 * }
+	 */
+	static private $_registered = array();
+
+	/**
+	 * List of add-on files to load when plugin is initialized.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array of file-paths
+	 */
+	protected $addon_files = array();
+
+	/**
 	 * Add-ons array.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @var array {
-	 *     @type string $addon_type The add-on type.
-	 *     @type boolean $enabled The add-on enbled status.
+	 *     @key <string> The add-on ID.
+	 *     @value <boolean> The add-on enbled status (always true).
 	 * }
 	 */
-	protected $addons = array();
+	protected $active = array();
+
+	/**
+	 * Returns a list of all registered Add-Ons
+	 *
+	 * @since  1.1.0
+	 * @param  string $id Optional. If specified then a single add-on is returned.
+	 * @return array Depending on $id: Add-on list / Single Add-on or null
+	 */
+	static public function get_addons( $id = null ) {
+		static $Done = false;
+		$res = null;
+
+		if ( ! $Done ) {
+			self::$_registered = array();
+			$addons = array();
+			$Done = true;
+			self::load_core_addons();
+
+			// Legacy registration - don't add new addons here
+			$addons = self::get_legacy_list();
+
+			/**
+			 * Register new addons.
+			 *
+			 * @since 1.1.0
+			 */
+			$addons = apply_filters(
+				'ms_model_addon_register',
+				$addons
+			);
+
+			// Sanitation and populate default fields.
+			foreach ( $addons as $key => $data ) {
+				self::$_registered[$key] = $data->name;
+
+				$addons[$key]->id = $key;
+				$addons[$key]->active = self::is_enabled( $key );
+				$addons[$key]->title = $data->name;
+
+				if ( isset( $addons[$key]->icon ) ) {
+					$addons[$key]->icon = '<i class="' . $addons[$key]->icon . '"></i>';
+				} else {
+					$addons[$key]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
+				}
+
+				$addons[$key]->action = array();
+				$addons[$key]->action[] = array(
+					'id' => 'ms-toggle-' . $key,
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'value' => self::is_enabled( $key ),
+					'class' => 'toggle-plugin',
+					'ajax_data' => array(
+						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' => 'active',
+						'addon' => $key,
+					),
+				);
+				$addons[$key]->action[] = MS_Helper_Html::save_text( null, false, true );
+
+				/**
+				 * Add custom Actions or remove default actions
+				 *
+				 * @since 1.1.0
+				 */
+				$addons[$key]->action = apply_filters(
+					'ms_model_addon_action-' . $key,
+					$addons[$key]->action,
+					$addons[$key]
+				);
+			}
+
+			asort( self::$_registered );
+			foreach ( self::$_registered as $key => $dummy ) {
+				self::$_registered[$key] = $addons[$key];
+			}
+
+			/**
+			 * The Add-on list is prepared. Initialize the addons now.
+			 *
+			 * @since 1.1.0
+			 */
+			do_action( 'ms_model_addon_initialize' );
+		}
+
+		if ( empty( $id ) ) {
+			// No ID requested: Return whole list.
+			$res = self::$_registered;
+		} elseif ( isset( self::$_registered[$id] ) ) {
+			// Valid ID requested: Return single item.
+			$res = self::$_registered[$id];
+		} else {
+			// Invalid ID requested: Return null.
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Checks the /app/addon directory for a list of all addons and loads these
+	 * files.
+	 *
+	 * @since  1.1.0
+	 */
+	static protected function load_core_addons() {
+		$model = MS_Factory::load( 'MS_Model_Addon' );
+		$root_path = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
+		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $root_path ) );
+		$addon_dir = $plugin_dir . 'app/addon/';
+
+		if ( empty( $model->addon_files ) || is_admin() ) {
+			// In Admin dashboard we always refresh the addon-list...
+
+			$mask = $root_path . $addon_dir . '*/addon-*.php';
+			$addons = glob( $mask );
+
+			$model->addon_files = array();
+			foreach ( $addons as $file ) {
+				$model->addon_files[] = substr( $file, strlen( $root_path ) );
+			}
+
+			/**
+			 * Allow other plugins/themes to register custom addons
+			 *
+			 * @since 1.1.0
+			 *
+			 * @var array
+			 */
+			$model->addon_files = apply_filters(
+				'ms_model_addon_files',
+				$model->addon_files
+			);
+
+			$model->save();
+		}
+
+		// Loop all recignized Add-ons and initialize them.
+		foreach ( $model->addon_files as $file ) {
+			$addon = $root_path . $file;
+
+			// Get class-name from file-name
+			$class = basename( $file );
+			$class = str_replace( '.php', '', $class );
+			$class = implode( '_', array_map( 'ucfirst', explode( '-', $class ) ) );
+			$class = 'MS_' . $class;
+
+			if ( file_exists( $addon ) ) {
+				include_once $addon;
+
+				if ( class_exists( $class ) ) {
+					MS_Factory::load( $class );
+				}
+			}
+		}
+
+		/**
+		 * Allow custom addon-initialization code to run
+		 *
+		 * @since 1.1.0
+		 */
+		do_action( 'ms_model_addon_load' );
+	}
 
 	/**
 	 * Get addon types.
@@ -86,29 +285,14 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string[] The add-on types array.
 	 */
 	public static function get_addon_types() {
-		static $types;
+		static $Types;
 
-		if ( empty( $types ) ) {
-			$types = array(
-				self::ADDON_MULTI_MEMBERSHIPS,
-				self::ADDON_TRIAL,
-				self::ADDON_COUPON,
-				self::ADDON_POST_BY_POST,
-				self::ADDON_CPT_POST_BY_POST,
-				self::ADDON_MEDIA,
-				self::ADDON_SHORTCODE,
-				self::ADDON_URL_GROUPS,
-				self::ADDON_AUTO_MSGS_PLUS,
-				self::ADDON_SPECIAL_PAGES,
-				self::ADDON_ADV_MENUS,
-				self::ADDON_ADMINSIDE,
-				self::ADDON_MEMBERCAPS,
-				self::ADDON_MEMBERCAPS_ADV,
-				self::ADDON_MEMBERCAPS_ROLES,
-			);
+		if ( empty( $Types ) ) {
+			$items = self::get_addons();
+			$Types = array_keys( $items );
 		}
 
-		return apply_filters( 'ms_model_addon_get_addon_types', $types );
+		return $Types;
 	}
 
 	/**
@@ -126,7 +310,6 @@ class MS_Model_Addon extends MS_Model_Option {
 		if ( empty( $Parents ) ) {
 			$Parents = array(
 				self::ADDON_MEMBERCAPS_ADV => self::ADDON_MEMBERCAPS,
-				self::ADDON_MEMBERCAPS_ROLES => self::ADDON_MEMBERCAPS,
 			);
 
 			$Parents = apply_filters(
@@ -143,6 +326,18 @@ class MS_Model_Addon extends MS_Model_Option {
 	}
 
 	/**
+	 * Checks, if the specified Add-on is a valid, registered Add-on
+	 *
+	 * @since  1.1.0
+	 * @param  string $addon The Add-on ID
+	 * @return bool True, if the Add-on is registered
+	 */
+	static public function is_registered( $addon ) {
+		$item = self::get_addons( $addon );
+		return ! empty ( $item );
+	}
+
+	/**
 	 * Verify if an add-on is enabled
 	 *
 	 * @since 1.0.0
@@ -150,12 +345,12 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 * @return boolean True if enabled.
 	 */
-	public static function is_enabled( $addon ) {
+	static public function is_enabled( $addon ) {
 		$model = MS_Factory::load( 'MS_Model_Addon' );
 		$enabled = false;
 
-		if ( in_array( $addon, self::get_addon_types() ) ) {
-			$enabled = ! empty( $model->addons[ $addon ] );
+		if ( self::is_registered( $addon ) ) {
+			$enabled = ! empty( $model->active[ $addon ] );
 
 			$parent = self::get_parent( $addon );
 			if ( $enabled && $parent ) {
@@ -177,8 +372,8 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 */
 	public function enable( $addon ) {
-		if ( in_array( $addon, self::get_addon_types() ) ) {
-			$this->addons[ $addon ] = true;
+		if ( self::is_registered( $addon ) ) {
+			$this->active[ $addon ] = true;
 		}
 
 		do_action( 'ms_model_addon_enable', $addon, $this );
@@ -192,8 +387,8 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 */
 	public function disable( $addon ) {
-		if ( in_array( $addon, self::get_addon_types() ) ) {
-			$this->addons[ $addon ] = false;
+		if ( self::is_registered( $addon ) ) {
+			unset( $this->active[ $addon ] );
 		}
 
 		do_action( 'ms_model_addon_disable', $addon, $this );
@@ -207,8 +402,10 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 */
 	public function toggle_activation( $addon ) {
-		if ( in_array( $addon, self::get_addon_types() ) ) {
-			$this->addons[ $addon ] = empty( $this->addons[ $addon ] );
+		if ( self::is_enabled( $addon ) ) {
+			$this->disable( $addon );
+		} else {
+			$this->enable( $addon );
 		}
 
 		do_action( 'ms_model_addon_toggle_activation', $addon, $this );
@@ -233,15 +430,25 @@ class MS_Model_Addon extends MS_Model_Option {
 	}
 
 	/**
-	 * Enable add-on every time a membership setup is completed.
+	 * Returns a list of all registered Add-Ons.
+	 * Alias for the `get_addons()` function.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @var string $addon The add-on type.
+	 * @since  1.0.0
+	 * @return array List of all registered Add-ons.
 	 */
 	public function get_addon_list() {
-		$list = array();
+		return self::get_addons();
+	}
 
+	/**
+	 * Returns Add-On details for the core add-ons in legacy format.
+	 * New Add-ons are stored in the /app/addon folder and use the
+	 * ms_model_addon_register hook to provide these informations.
+	 *
+	 * @since  1.1.0
+	 * @return array List of Add-ons
+	 */
+	public function get_legacy_list() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		$options_text = sprintf(
@@ -291,7 +498,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'data_ms' => array(
 						'field' => 'masked_url',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'_wpnonce' => wp_create_nonce( MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING ),
+						'_wpnonce' => true, // Nonce will be generated from 'action'
 					),
 				),
 				array(
@@ -303,7 +510,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'data_ms' => array(
 						'field' => 'protection_type',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'_wpnonce' => wp_create_nonce( MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING ),
+						'_wpnonce' => true, // Nonce will be generated from 'action'
 					),
 				),
 			),
@@ -392,34 +599,6 @@ class MS_Model_Addon extends MS_Model_Option {
 			'description' => __( 'Protect content based on a users role / for guests.', MS_TEXT_DOMAIN ),
 			'icon' => 'dashicons dashicons-admin-users',
 		);
-
-		$list = apply_filters( 'ms_model_addon_get_addon_list', $list );
-
-		foreach ( $list as $key => $data ) {
-			$list[$key]->id = $key;
-			$list[$key]->active = self::is_enabled( $key );
-			$list[$key]->title = $data->name;
-
-			if ( isset( $list[$key]->icon ) ) {
-				$list[$key]->icon = '<i class="' . $list[$key]->icon . '"></i>';
-			} else {
-				$list[$key]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
-			}
-
-			$list[$key]->action = array();
-			$list[$key]->action[] = array(
-				'id' => 'ms-toggle-' . $key,
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => self::is_enabled( $key ),
-				'class' => 'toggle-plugin',
-				'ajax_data' => array(
-					'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-					'field' => 'active',
-					'addon' => $key,
-				),
-			);
-			$list[$key]->action[] = MS_Helper_Html::save_text( null, false, true );
-		}
 
 		return $list;
 	}

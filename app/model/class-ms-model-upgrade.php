@@ -168,6 +168,14 @@ class MS_Model_Upgrade extends MS_Model {
 				if ( ! empty( $base ) ) {
 					update_post_meta( $base->ID, 'special', 'protected_content' );
 				}
+
+				// Rename the Add-On variable
+				$data = get_option( 'MS_Model_Addon' );
+				if ( ! isset( $data['active'] ) && isset( $data['addons'] ) ) {
+					$data['active'] = $data['addons'];
+					unset( $data['addons'] );
+					update_option( 'MS_Model_Addon', $data );
+				}
 			}
 
 			/*

@@ -42,8 +42,7 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_filter( 'ms_model_addon_get_addon_types', 'buddypress_addon' );
-		$this->add_filter( 'ms_model_addon_get_addon_list', 'buddypress_addon_list' );
+		$this->add_filter( 'ms_model_addon_register', 'register' );
 
 		if ( MS_Model_Addon::is_enabled( self::ADDON_BUDDYPRESS ) ) {
 			$this->add_filter( 'ms_model_rule_get_rule_types', 'buddypress_rule_types' );
@@ -56,31 +55,16 @@ class MS_Integration_BuddyPress extends MS_Integration {
 	}
 
 	/**
-	 * Add buddypress add-on type.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @filter ms_model_addon_get_addon_types
-	 *
-	 * @param array $addons The current add-ons.
-	 * @return string
-	 */
-	public function buddypress_addon( $addons ) {
-		$addons[] = self::ADDON_BUDDYPRESS;
-		return $addons;
-	}
-
-	/**
 	 * Add buddypress add-on info.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @filter ms_model_addon_get_addon_list
+	 * @filter ms_model_addon_register
 	 *
 	 * @param array $list The current list of add-ons.
 	 * @return array The filtered add-on list.
 	 */
-	public function buddypress_addon_list( $list ) {
+	public function register( $list ) {
 		$list[ self::ADDON_BUDDYPRESS ] = (object) array(
 			'id' => self::ADDON_BUDDYPRESS,
 			'name' => __( 'BuddyPress Integration', MS_TEXT_DOMAIN ),
