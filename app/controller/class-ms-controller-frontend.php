@@ -815,8 +815,12 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @param type $login The login info.
 	 * @param WP_User $user The user to login.
 	 */
-	public function propagate_ssl_cookie( $login, WP_User $user ) {
-		if ( ! is_ssl() ) {
+	public function propagate_ssl_cookie( $login, $user = null ) {
+		if ( empty( $user ) || ! is_a( $user, 'WP_User' ) ) {
+			$user = get_user_by( 'login', $login );
+		}
+
+		if ( is_a( $user, 'WP_User' ) && ! is_ssl() ) {
 			wp_set_auth_cookie( $user->ID, true, true );
 		}
 
