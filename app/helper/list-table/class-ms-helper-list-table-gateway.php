@@ -125,7 +125,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 			MS_Model_Gateway::get_gateways()
 		);
 
-		unset( $this->items[ MS_Model_Gateway::GATEWAY_FREE ] );
+		unset( $this->items[ MS_Gateway_Free::ID ] );
 	}
 
 	/**
@@ -134,10 +134,10 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @since  1.0.0
 	 * @access protected
 	 *
-	 * @param  MS_Model_Gateway $item A payment gateway.
+	 * @param  MS_Gateway $item A payment gateway.
 	 * @return string HTML code to display in the list.
 	 */
-	protected function column_name( MS_Model_Gateway $item ) {
+	protected function column_name( MS_Gateway $item ) {
 		$html = sprintf(
 			'<span class="title">%1$s %2$s<span class="wpmui-fa offline-flag" title="%3$s"></span></span>',
 			$item->name,
@@ -147,8 +147,8 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 
 		$actions = array(
 			sprintf(
-				'<a href="#" data-ms-dialog="Gateway_%s_Dialog">%s</a>',
-				esc_attr( $item->id ),
+				'<a href="#" data-ms-dialog="Gateway_%s_View_Dialog">%s</a>',
+				ucwords( esc_attr( $item->id ) ),
 				__( 'Configure', MS_TEXT_DOMAIN )
 			),
 			sprintf(
@@ -178,10 +178,10 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @since  1.0.4.4
 	 * @access protected
 	 *
-	 * @param  MS_Model_Gateway $item A payment gateway.
+	 * @param  MS_Gateway $item A payment gateway.
 	 * @return string HTML code to display in the list.
 	 */
-	protected function column_mode( MS_Model_Gateway $item ) {
+	protected function column_mode( MS_Gateway $item ) {
 		$html = sprintf(
 			'<span class="%s">%s</span>',
 			'mode-unknown',
@@ -209,10 +209,10 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @since  1.0.0
 	 * @access protected
 	 *
-	 * @param  MS_Model_Gateway $item A payment gateway.
+	 * @param  MS_Gateway $item A payment gateway.
 	 * @return string HTML code to display in the list.
 	 */
-	protected function column_active( MS_Model_Gateway $item ) {
+	protected function column_active( MS_Gateway $item ) {
 		$class = $item->is_configured() ? 'ms-gateway-configured' : 'ms-gateway-not-configured';
 
 		$html = sprintf(
@@ -247,10 +247,10 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * Sets the initial row class of the gateway item.
 	 *
 	 * @since  1.0.4.4
-	 * @param  MS_Model_Gateway $item
+	 * @param  MS_Gateway $item
 	 * @return string
 	 */
-	public function single_row_class( $item ) {
+	public function single_row_class( MS_Gateway $item ) {
 		$class = 'gateway-' . $item->id;
 		$is_online = WDev()->is_online( home_url() );
 

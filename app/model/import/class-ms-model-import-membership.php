@@ -263,8 +263,8 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 				ELSE 'expired'
 			END AS `status`,
 			CASE member.usinggateway
-				WHEN 'paypalsolo' THEN 'paypal_single'
-				WHEN 'paypalexpress' THEN 'paypal_standard'
+				WHEN 'paypalsolo' THEN 'paypalsingle'
+				WHEN 'paypalexpress' THEN 'paypalstandard'
 				WHEN 'twocheckout' THEN '2checkout'
 				WHEN 'freesubscriptions' THEN 'free'
 				WHEN 'authorizenetarb' THEN 'authorize'
@@ -305,8 +305,8 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			CONCAT( member.user_id, '-', LPAD( inv.transaction_id, 3, '0') ) AS `invoice_number`,
 			inv.transaction_paypal_ID AS `external_id`,
 			CASE inv.transaction_gateway
-				WHEN 'paypalsolo' THEN 'paypal_single'
-				WHEN 'paypalexpress' THEN 'paypal_standard'
+				WHEN 'paypalsolo' THEN 'paypalsingle'
+				WHEN 'paypalexpress' THEN 'paypalstandard'
 				WHEN 'twocheckout' THEN '2checkout'
 				WHEN 'freesubscriptions' THEN 'free'
 				WHEN 'authorizenetarb' THEN 'authorize'

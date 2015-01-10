@@ -62,17 +62,21 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * @access public
 	 */
 	public function ajax_dialog() {
-		$dialog = @$_REQUEST['dialog'];
-		$dlg = MS_Factory::create( 'MS_View_' . $dialog );
+		$data = '';
 
-		$dlg->prepare();
+		if ( isset( $_REQUEST['dialog'] ) ) {
+			$dialog = $_REQUEST['dialog'];
+			$dlg = MS_Factory::create( 'MS_' . $dialog );
 
-		$data = array(
-			'id' => $dialog,
-			'title' => $dlg->title,
-			'content' => $dlg->content,
-			'height' => $dlg->height,
-		);
+			$dlg->prepare();
+
+			$data = array(
+				'id' => $dialog,
+				'title' => $dlg->title,
+				'content' => $dlg->content,
+				'height' => $dlg->height,
+			);
+		}
 
 		$this->respond( $data );
 	}
@@ -85,10 +89,15 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * @access public
 	 */
 	public function ajax_submit() {
-		$dialog = @$_REQUEST['dialog'];
-		$dlg = MS_Factory::create( 'MS_View_' . $dialog );
+		$data = '';
 
-		$this->respond( $dlg->submit() );
+		if ( isset( $_REQUEST['dialog'] ) ) {
+			$dialog = $_REQUEST['dialog'];
+			$dlg = MS_Factory::create( 'MS_' . $dialog );
+			$data = $dlg->submit();
+		}
+
+		$this->respond( $data );
 	}
 
 	/**

@@ -131,7 +131,7 @@ class MS_View_Settings_Payment extends MS_View {
 			}
 		}
 
-		return apply_filters( 'ms_view_gateway_get_global_payment_fields', $fields );
+		return apply_filters( 'ms_gateway_view_get_global_payment_fields', $fields );
 	}
 
 }

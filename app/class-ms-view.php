@@ -70,7 +70,7 @@ class MS_View extends MS_Hooker {
 	 * @return string
 	 */
 	protected function to_html() {
-		/* This function is implemented different in each child class. */
+		// This function is implemented different in each child class.
 		return apply_filters( 'ms_view_to_html', '' );
 	}
 
@@ -80,9 +80,8 @@ class MS_View extends MS_Hooker {
 	 * @since 1.0.0
 	 */
 	public function render() {
-
 		$html = $this->to_html();
 
-		echo apply_filters( 'ms_view_render', $html );
+		echo '' . apply_filters( 'ms_view_render', $html );
 	}
 }

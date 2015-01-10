@@ -174,25 +174,29 @@ class MS_Controller_Gateway extends MS_Controller {
 			&& MS_Model_Gateway::is_valid_gateway( $gateway_id )
 		) {
 			switch ( $gateway_id ) {
-				case MS_Model_Gateway::GATEWAY_MANUAL:
-					$view = MS_Factory::create( 'MS_View_Gateway_Manual_Settings' );
+				case MS_Gateway_Manual::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Manual_View_Settings' );
 					break;
 
-				case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
-				case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
-					$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Settings' );
+				case MS_Gateway_Paypalsingle::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Paypalsingle_View_Settings' );
 					break;
 
-				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
-					$view = MS_Factory::create( 'MS_View_Gateway_Authorize_Settings' );
+				case MS_Gateway_Paypalstandard::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Paypalstandard_View_Settings' );
 					break;
 
-				case MS_Model_Gateway::GATEWAY_STRIPE:
-					$view = MS_Factory::create( 'MS_View_Gateway_Stripe_Settings' );
+				case MS_Gateway_Authorize::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Settings' );
+					break;
+
+				case MS_Gateway_Stripe::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Stripe_View_Settings' );
 					break;
 
 				default:
-					$view = MS_Factory::create( 'MS_View_Gateway_Settings' );
+					// Empty form...
+					$view = MS_Factory::create( 'MS_View' );
 					break;
 			}
 
@@ -202,11 +206,11 @@ class MS_Controller_Gateway extends MS_Controller {
 			);
 
 			$view->data = apply_filters(
-				'ms_view_gateway_settings_edit_data',
+				'ms_gateway_view_settings_edit_data',
 				$data
 			);
 			$view = apply_filters(
-				'ms_view_gateway_settings_edit',
+				'ms_gateway_view_settings_edit',
 				$view,
 				$gateway_id
 			);
@@ -300,18 +304,18 @@ class MS_Controller_Gateway extends MS_Controller {
 
 			// Free membership, show only free gateway
 			if ( $membership->is_free() || 0 == $invoice->total ) {
-				if ( MS_Model_Gateway::GATEWAY_FREE !== $gateway->id ) {
+				if ( MS_Gateway_Free::ID !== $gateway->id ) {
 					continue;
 				}
 			}
 			// Skip free gateway
-			elseif ( MS_Model_Gateway::GATEWAY_FREE === $gateway->id ) {
+			elseif ( MS_Gateway_Free::ID === $gateway->id ) {
 				continue;
 			}
 
 			switch ( $gateway->id ) {
-				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
-					$view = MS_Factory::create( 'MS_View_Gateway_Authorize_Button' );
+				case MS_Gateway_Authorize::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Button' );
 					/**
 					 *  set additional step for authorize.net (gateway specific form)
 					 *  @todo change to use popup, instead of another step (like stripe)
@@ -319,34 +323,40 @@ class MS_Controller_Gateway extends MS_Controller {
 					$data['step'] = 'gateway_form';
 					break;
 
-				case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
-					$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Single_Button' );
+				case MS_Gateway_Paypalsingle::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Paypalsingle_View_Button' );
 					break;
 
-				case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
-					$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Standard_Button' );
+				case MS_Gateway_Paypalstandard::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Paypalstandard_View_Button' );
 					break;
 
-				case MS_Model_Gateway::GATEWAY_STRIPE:
-					$view = MS_Factory::create( 'MS_View_Gateway_Stripe_Button' );
+				case MS_Gateway_Stripe::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Stripe_View_Button' );
 					break;
 
-				case MS_Model_Gateway::GATEWAY_FREE:
-				case MS_Model_Gateway::GATEWAY_MANUAL:
+				case MS_Gateway_Free::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Free_View_Button' );
+					break;
+
+				case MS_Gateway_Manual::ID:
+					$view = MS_Factory::create( 'MS_Gateway_Manual_View_Button' );
+					break;
+
 				default:
-					$view = MS_Factory::create( 'MS_View_Gateway_Button' );
+					$view = false;
 					break;
 			}
 
 			if ( ! empty( $view ) ) {
 				$view = apply_filters(
-					'ms_view_gateway_button',
+					'ms_gateway_view_button',
 					$view,
 					$gateway->id
 				);
 
 				$view->data = apply_filters(
-					'ms_view_gateway_button_data',
+					'ms_gateway_view_button_data',
 					$data,
 					$gateway->id
 				);
@@ -379,24 +389,24 @@ class MS_Controller_Gateway extends MS_Controller {
 		$new_button = null;
 
 		switch ( $ms_relationship->gateway_id ) {
-			case MS_Model_Gateway::GATEWAY_PAYPAL_STANDARD:
-				$view = MS_Factory::create( 'MS_View_Gateway_Paypal_Standard_Cancel' );
+			case MS_Gateway_Paypalstandard::ID:
+				$view = MS_Factory::create( 'MS_Gateway_Paypalstandard_View_Cancel' );
 				$data['gateway'] = $ms_relationship->get_gateway();
 				break;
 
-			case MS_Model_Gateway::GATEWAY_AUTHORIZE:
-			case MS_Model_Gateway::GATEWAY_PAYPAL_SINGLE:
-			case MS_Model_Gateway::GATEWAY_STRIPE:
-			case MS_Model_Gateway::GATEWAY_FREE:
-			case MS_Model_Gateway::GATEWAY_MANUAL:
+			case MS_Gateway_Authorize::ID:
+			case MS_Gateway_Paypalsingle::ID:
+			case MS_Gateway_Stripe::ID:
+			case MS_Gateway_Free::ID:
+			case MS_Gateway_Manual::ID:
 			default:
 				break;
 		}
-		$view = apply_filters( 'ms_view_gateway_cancel_button', $view );
+		$view = apply_filters( 'ms_gateway_view_cancel_button', $view );
 
 		if ( ! empty( $view ) ) {
 			$view->data = apply_filters(
-				'ms_view_gateway_cancel_button_data',
+				'ms_gateway_view_cancel_button_data',
 				$data
 			);
 			$new_button = $view->get_button();
@@ -457,10 +467,10 @@ class MS_Controller_Gateway extends MS_Controller {
 			);
 
 			switch ( $_POST['gateway'] ) {
-				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+				case MS_Gateway_Authorize::ID:
 					$member = $ms_relationship->get_member();
-					$view = MS_Factory::create( 'MS_View_Gateway_Authorize_Form' );
-					$gateway = MS_Model_Gateway::factory( MS_Model_Gateway::GATEWAY_AUTHORIZE );
+					$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Form' );
+					$gateway = MS_Model_Gateway::factory( MS_Gateway_Authorize::ID );
 					$data['countries'] = $gateway->get_country_codes();
 
 					$data['action'] = $this->get_action();
@@ -481,8 +491,8 @@ class MS_Controller_Gateway extends MS_Controller {
 					break;
 			}
 
-			$view = apply_filters( 'ms_view_gateway_form', $view );
-			$view->data = apply_filters( 'ms_view_gateway_form_data', $data );
+			$view = apply_filters( 'ms_gateway_view_form', $view );
+			$view->data = apply_filters( 'ms_gateway_view_form_data', $data );
 
 			return apply_filters(
 				'ms_controller_gateway_form',
@@ -556,13 +566,13 @@ class MS_Controller_Gateway extends MS_Controller {
 				MS_Helper_Debug::log( $e->getMessage() );
 
 				switch ( $gateway_id ) {
-					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+					case MS_Gateway_Authorize::ID:
 						$_POST['auth_error'] = $e->getMessage();
 						// call action to step back
 						do_action( 'ms_controller_frontend_signup_gateway_form' );
 						break;
 
-					case MS_Model_Gateway::GATEWAY_STRIPE:
+					case MS_Gateway_Stripe::ID:
 						$_POST['error'] = sprintf(
 							__( 'Error: %s', MS_TEXT_DOMAIN ),
 							$e->getMessage()
@@ -685,7 +695,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		if ( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			$gateway = $wp_query->query_vars['paymentgateway'];
 			do_action(
-				'ms_model_gateway_handle_payment_return_' . $gateway
+				'ms_gateway_handle_payment_return_' . $gateway
 			);
 		}
 	}
@@ -716,7 +726,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				$view = null;
 
 				switch ( $gateway->id ) {
-					case MS_Model_Gateway::GATEWAY_STRIPE:
+					case MS_Gateway_Stripe::ID:
 						$member = MS_Model_Member::get_current_member();
 						$data['stripe'] = $member->get_gateway_profile(
 							$gateway->id
@@ -726,14 +736,14 @@ class MS_Controller_Gateway extends MS_Controller {
 							continue 2;
 						}
 
-						$view = MS_Factory::create( 'MS_View_Gateway_Stripe_Card' );
+						$view = MS_Factory::create( 'MS_Gateway_Stripe_View_Card' );
 						$data['member'] = $member;
 						$data['publishable_key'] = $gateway->get_publishable_key();
 						$data['ms_relationship_id'] = $ms_relationship_id;
 						$data['gateway'] = $gateway;
 						break;
 
-					case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+					case MS_Gateway_Authorize::ID:
 						$member = MS_Model_Member::get_current_member();
 						$data['authorize'] = $member->get_gateway_profile(
 							$gateway->id
@@ -743,7 +753,7 @@ class MS_Controller_Gateway extends MS_Controller {
 							continue 2;
 						}
 
-						$view = MS_Factory::create( 'MS_View_Gateway_Authorize_Card' );
+						$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Card' );
 						$data['member'] = $member;
 						$data['ms_relationship_id'] = $ms_relationship_id;
 						$data['gateway'] = $gateway;
@@ -755,12 +765,12 @@ class MS_Controller_Gateway extends MS_Controller {
 
 				if ( ! empty( $view ) ) {
 					$view = apply_filters(
-						'ms_view_gateway_change_card',
+						'ms_gateway_view_change_card',
 						$view,
 						$gateway->id
 					);
 					$view->data = apply_filters(
-						'ms_view_gateway_change_card_data',
+						'ms_gateway_view_change_card_data',
 						$data,
 						$gateway->id
 					);
@@ -788,7 +798,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$member = MS_Model_Member::get_current_member();
 
 			switch ( $gateway->id ) {
-				case MS_Model_Gateway::GATEWAY_STRIPE:
+				case MS_Gateway_Stripe::ID:
 					if ( ! empty( $_POST['stripeToken'] ) && $this->verify_nonce() ) {
 						$gateway->add_card( $member, $_POST['stripeToken'] );
 						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
@@ -809,7 +819,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					}
 					break;
 
-				case MS_Model_Gateway::GATEWAY_AUTHORIZE:
+				case MS_Gateway_Authorize::ID:
 					if ( $this->verify_nonce() ) {
 						do_action(
 							'ms_controller_frontend_signup_gateway_form',
@@ -863,7 +873,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		switch ( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:
-				if ( MS_Model_Gateway::GATEWAY_AUTHORIZE == $gateway_id ) {
+				if ( MS_Gateway_Authorize::ID == $gateway_id ) {
 					wp_enqueue_script( 'jquery-validate' );
 					wp_enqueue_script( 'ms-view-gateway-authorize' );
 				}

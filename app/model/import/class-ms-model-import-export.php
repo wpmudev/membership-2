@@ -92,7 +92,7 @@ Import Data Structure
         - id              <int>  Export ID
         - membership      <int>  Membership Export ID
         - status          [pending|active|trial|trial_expired|expired|deactivated|canceled]
-        - gateway         [admin|free|manual|paypal_single|paypal_standard|authorize|stripe]
+        - gateway         [admin|free|manual|paypalsingle|paypalstandard|authorize|stripe]
         - start           <yyyy-mm-dd>
         - expire          <yyyy-mm-dd>
         - trial_finished  <bool>
@@ -104,7 +104,7 @@ Import Data Structure
 			- id                  <int>  Export ID
 			- invoice_number      <string>  The invoice number
 			- external_id         <string>  Gateway-specific invoice reference
-			- gateway             [paypal_single|paypal_standard|authorize|stripe]
+			- gateway             [paypalsingle|paypalstandard|authorize|stripe]
 			- status              [billed|paid|failed|pending|denied]
 			- coupon              <string>  Coupon code, if applicable
 			- currency            <string>  Currency of invoice
@@ -279,8 +279,8 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->email = $src->email;
 		$obj->username = $src->username;
 
-		$gw_stripe = MS_Model_Gateway::GATEWAY_STRIPE;
-		$gw_auth = MS_Model_Gateway::GATEWAY_AUTHORIZE;
+		$gw_stripe = MS_Gateway_Stripe::ID;
+		$gw_auth = MS_Gateway_Authorize::ID;
 		$obj->payment = array(
 			// Stripe.
 			'stripe_card_exp' => $src->get_gateway_profile( $gw_stripe, 'card_exp' ),

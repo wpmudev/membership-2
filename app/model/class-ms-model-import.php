@@ -355,13 +355,13 @@ class MS_Model_Import extends MS_Model {
 		$pay = $obj->payment;
 
 		// Stripe.
-		$gw_stripe = MS_Model_Gateway::GATEWAY_STRIPE;
+		$gw_stripe = MS_Gateway_Stripe::ID;
 		$member->set_gateway_profile( $gw_stripe, 'card_exp', $pay->stripe_card_exp );
 		$member->set_gateway_profile( $gw_stripe, 'card_num', $pay->stripe_card_num );
 		$member->set_gateway_profile( $gw_stripe, 'customer_id', $pay->stripe_customer );
 
 		// Authorize.
-		$gw_auth = MS_Model_Gateway::GATEWAY_AUTHORIZE;
+		$gw_auth = MS_Gateway_Authorize::ID;
 		$member->set_gateway_profile( $gw_auth, 'card_exp', $pay->authorize_card_exp );
 		$member->set_gateway_profile( $gw_auth, 'card_num', $pay->authorize_card_num );
 		$member->set_gateway_profile( $gw_auth, 'cim_profile_id', $pay->authorize_cim_profile );

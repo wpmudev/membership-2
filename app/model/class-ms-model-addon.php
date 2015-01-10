@@ -448,7 +448,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @since  1.1.0
 	 * @return array List of Add-ons
 	 */
-	public function get_legacy_list() {
+	static private function get_legacy_list() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		$options_text = sprintf(
