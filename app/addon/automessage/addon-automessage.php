@@ -31,31 +31,39 @@ class MS_Addon_Automessage extends MS_Addon {
 	const ID = 'addon_automessage';
 
 	/**
-	 * Registers the Add-On
-	 *
-	 * @since  1.1.0
-	 * @param  array $list The Add-Ons list.
-	 * @return array The updated Add-Ons list.
-	 */
-	public function register( $addons ) {
-		/*
-		// Don't register: Not completed yet...
-
-		$addons[ self::ID ] = (object) array(
-			'name' => __( 'Automessage', MS_TEXT_DOMAIN ),
-			'description' => __( 'Automessage integration.', MS_TEXT_DOMAIN ),
-		);
-		*/
-		return $addons;
-	}
-
-	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
 	 */
 	public function init() {
 		$this->add_filter( 'automessage_custom_user_hooks', 'automessage_custom_user_hooks' );
+	}
+
+	/**
+	 * Activates the Add-on logic, only executed when add-on is active.
+	 *
+	 * @since  1.1.0
+	 */
+	public function activate() {
+	}
+
+	/**
+	 * Registers the Add-On
+	 *
+	 * @since  1.1.0
+	 * @param  array $list The Add-Ons list.
+	 * @return array The updated Add-Ons list.
+	 */
+	public function register( $list ) {
+		/*
+		// Don't register: Not completed yet...
+
+		$list[ self::ID ] = (object) array(
+			'name' => __( 'Automessage', MS_TEXT_DOMAIN ),
+			'description' => __( 'Automessage integration.', MS_TEXT_DOMAIN ),
+		);
+		*/
+		return $list;
 	}
 
 	/**

@@ -42,22 +42,6 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	static protected $mailchimp_api = '';
 
 	/**
-	 * Registers the Add-On
-	 *
-	 * @since  1.1.0
-	 * @param  array $list The Add-Ons list.
-	 * @return array The updated Add-Ons list.
-	 */
-	public function register( $addons ) {
-		$addons[ self::ID ] = (object) array(
-			'name' => __( 'MailChimp Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Enable MailChimp integration.', MS_TEXT_DOMAIN ),
-		);
-
-		return $addons;
-	}
-
-	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
@@ -107,6 +91,22 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			'update_info',
 			10, 2
 		);
+	}
+
+	/**
+	 * Registers the Add-On
+	 *
+	 * @since  1.1.0
+	 * @param  array $list The Add-Ons list.
+	 * @return array The updated Add-Ons list.
+	 */
+	public function register( $list ) {
+		$list[ self::ID ] = (object) array(
+			'name' => __( 'MailChimp Integration', MS_TEXT_DOMAIN ),
+			'description' => __( 'Enable MailChimp integration.', MS_TEXT_DOMAIN ),
+		);
+
+		return $list;
 	}
 
 	/**
@@ -286,7 +286,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			if ( empty( $mailchimp_sync->api ) ) {
 
 				$options = apply_filters(
-					'ms_integration_mailchimp_load_mailchimp_api_options',
+					'ms_addon_mailchimp_load_mailchimp_api_options',
 					array(
 						'timeout' => false,
 						'ssl_verifypeer' => false,
@@ -385,7 +385,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	public static function subscribe_user( $member, $list_id ) {
 		if ( is_email( $member->email ) && self::get_api_status() ) {
 			$auto_opt_in = self::$settings->get_custom_setting( 'mailchimp', 'auto_opt_in' );
-			$update = apply_filters( 'ms_integration_mailchimp_subscribe_user_update', true, $member, $list_id );
+			$update = apply_filters( 'ms_addon_mailchimp_subscribe_user_update', true, $member, $list_id );
 
 			$merge_vars = array();
 			if ( ! empty( $member->first_name ) ) {
@@ -402,7 +402,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			}
 
 			$merge_vars = apply_filters(
-				'ms_integration_mailchimp_subscribe_user_merge_vars',
+				'ms_addon_mailchimp_subscribe_user_merge_vars',
 				$merge_vars,
 				$member,
 				$list_id

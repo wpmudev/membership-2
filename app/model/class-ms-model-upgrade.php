@@ -242,11 +242,11 @@ class MS_Model_Upgrade extends MS_Model {
 		 */
 		$ms_posttypes = array(
 			MS_Model_Communication::$POST_TYPE,
-			MS_Model_Coupon::$POST_TYPE,
 			MS_Model_Event::$POST_TYPE,
 			MS_Model_Invoice::$POST_TYPE,
 			MS_Model_Membership::$POST_TYPE,
 			MS_Model_Membership_Relationship::$POST_TYPE,
+			MS_Addon_Coupon_Model::$POST_TYPE,
 		);
 
 		foreach ( $ms_posttypes as $type ) {

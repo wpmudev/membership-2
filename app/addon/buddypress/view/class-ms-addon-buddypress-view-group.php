@@ -10,7 +10,7 @@ class MS_Addon_Buddypress_View_Group extends MS_View {
 			MS_Addon_BuddyPress::RULE_ID_GROUP
 		);
 
-		$list_table = new MS_Helper_List_Table_Rule_Buddypress_Blog( $rule );
+		$list_table = new MS_Addon_Buddypress_Helper_Listtable_Blog( $rule );
 		$list_table->prepare_items();
 
 		ob_start();

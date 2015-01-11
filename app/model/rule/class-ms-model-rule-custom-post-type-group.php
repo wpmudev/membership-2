@@ -273,7 +273,6 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			MS_Model_Membership::$POST_TYPE,
 			MS_Model_Invoice::$POST_TYPE,
 			MS_Model_Communication::$POST_TYPE,
-			MS_Model_Coupon::$POST_TYPE,
 			MS_Model_Membership_Relationship::$POST_TYPE,
 			MS_Model_Event::$POST_TYPE,
 		);

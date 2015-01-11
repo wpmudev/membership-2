@@ -508,8 +508,8 @@ class MS_Controller_Frontend extends MS_Controller {
 		$member = MS_Model_Member::get_current_member();
 		$membership_id = 0;
 
-		// First time loading
 		if ( ! empty( $_REQUEST['membership_id'] ) ) {
+			// First time loading
 			$membership_id = $_REQUEST['membership_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 			$move_from_id = absint( @$_REQUEST['move_from_id'] );
@@ -519,9 +519,8 @@ class MS_Controller_Frontend extends MS_Controller {
 				'',
 				$move_from_id
 			);
-		}
-		// Error path, showing payment table again with error msg
-		elseif ( ! empty( $_POST['ms_relationship_id'] ) ) {
+		} elseif ( ! empty( $_POST['ms_relationship_id'] ) ) {
+			// Error path, showing payment table again with error msg
 			$ms_relationship = MS_Factory::load(
 				'MS_Model_Membership_Relationship',
 				absint( $_POST['ms_relationship_id'] )
@@ -538,28 +537,6 @@ class MS_Controller_Frontend extends MS_Controller {
 			return $content;
 		}
 
-		if ( ! empty( $_POST['coupon_code'] ) ) {
-			$coupon = apply_filters(
-				'ms_model_coupon',
-				MS_Model_Coupon::load_by_coupon_code( $_POST['coupon_code'] )
-			);
-
-			if ( ! empty( $_POST['remove_coupon_code'] ) ) {
-				$coupon->remove_coupon_application( $member->id, $membership_id );
-				$coupon = MS_Factory::load( 'MS_Model_Coupon' );
-			} elseif ( isset( $_POST['apply_coupon_code'] ) ) {
-				if ( $coupon->is_valid_coupon( $membership_id ) ) {
-					$coupon->save_coupon_application( $ms_relationship );
-					$data['coupon_valid'] = true;
-				} else {
-					$data['coupon_valid'] = false;
-				}
-			}
-		} else {
-			$coupon = MS_Factory::load( 'MS_Model_Coupon' );
-		}
-
-		$data['coupon'] = $coupon;
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$data['invoice'] = $invoice;
 
@@ -576,6 +553,9 @@ class MS_Controller_Frontend extends MS_Controller {
 		$view->data = apply_filters(
 			'ms_view_frontend_payment_data',
 			$data,
+			$membership_id,
+			$ms_relationship,
+			$member,
 			$this
 		);
 

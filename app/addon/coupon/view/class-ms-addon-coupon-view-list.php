@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage View
  */
-class MS_View_Coupon_List extends MS_View {
+class MS_Addon_Coupon_View_List extends MS_View {
 
 	/**
 	 * Create view output.
@@ -40,7 +40,7 @@ class MS_View_Coupon_List extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$coupon_list = new MS_Helper_List_Table_Coupon();
+		$coupon_list = new MS_Addon_Coupon_Helper_Listtable();
 		$coupon_list->prepare_items();
 
 		$title = __( 'Coupons', MS_TEXT_DOMAIN );
@@ -78,6 +78,6 @@ class MS_View_Coupon_List extends MS_View {
 		<?php
 		$html = ob_get_clean();
 
-		return apply_filters( 'ms_view_coupon_list_to_html', $html, $this );
+		return apply_filters( 'ms_addon_coupon_view_list_to_html', $html, $this );
 	}
 }

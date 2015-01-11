@@ -10,7 +10,7 @@ class MS_Addon_Buddypress_View_General extends MS_View {
 		$membership = $this->data['membership'];
 
 		$rule = $membership->get_rule( MS_Addon_BuddyPress::RULE_ID );
-		$rule_list_table = new MS_Helper_List_Table_Rule_Buddypress( $rule, $membership );
+		$rule_list_table = new MS_Addon_Buddypress_Helper_Listtable( $rule, $membership );
 		$rule_list_table->prepare_items();
 
 		$edit_link = array(

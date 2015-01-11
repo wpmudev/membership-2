@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
+class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_List_Table {
 
 	protected $id = 'coupon';
 
@@ -43,7 +43,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 
 	public function get_columns() {
 		return apply_filters(
-			'membership_helper_list_table_coupon_columns',
+			'ms_addon_coupon_helper_listtyble_columns',
 			array(
 				'cb' => '<input type="checkbox" />',
 				'ccode' => __( 'Coupon Code', MS_TEXT_DOMAIN ),
@@ -59,14 +59,14 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			'membership_helper_list_table_membership_hidden_columns',
+			'ms_addon_coupon_helper_listtable_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			'membership_helper_list_table_membership_sortable_columns',
+			'ms_addon_coupon_helper_listtable_sortable_columns',
 			array()
 		);
 	}
@@ -78,7 +78,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 			$this->get_sortable_columns(),
 		);
 
-		$total_items = MS_Model_Coupon::get_coupon_count();
+		$total_items = MS_Addon_Coupon_Model::get_coupon_count();
 		$per_page = $this->get_items_per_page( 'coupon_per_page', 10 );
 		$current_page = $this->get_pagenum();
 
@@ -88,8 +88,8 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 		);
 
 		$this->items = apply_filters(
-			'membership_helper_list_table_coupon_items',
-			MS_Model_Coupon::get_coupons( $args )
+			'ms_addon_coupon_helper_listtyble_items',
+			MS_Addon_Coupon_Model::get_coupons( $args )
 		);
 
 		$this->set_pagination_args(
@@ -131,7 +131,11 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 			__( 'Delete', MS_TEXT_DOMAIN )
 		);
 
-		printf( '<code>%1$s</code> %2$s', $item->name, $this->row_actions( $actions ) );
+		return sprintf(
+			'<code>%1$s</code> %2$s',
+			$item->name,
+			$this->row_actions( $actions )
+		);
 	}
 
 	public function column_membership( $item ) {
@@ -156,16 +160,16 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 	public function column_discount( $item ) {
 		$html = '';
 
-		if ( MS_Model_Coupon::TYPE_VALUE == $item->discount_type ) {
+		if ( MS_Addon_Coupon_Model::TYPE_VALUE == $item->discount_type ) {
 			$html = sprintf(
 				'%s %s',
 				MS_Plugin::instance()->settings->currency,
 				number_format( $item->discount, 2 )
 			);
-		} elseif ( MS_Model_Coupon::TYPE_PERCENT == $item->discount_type ) {
+		} elseif ( MS_Addon_Coupon_Model::TYPE_PERCENT == $item->discount_type ) {
 			$html = $item->discount . ' %';
 		} else {
-			$html = apply_filters( 'ms_helper_list_table_column_discount', $item->discount );
+			$html = apply_filters( 'ms_addon_coupon_helper_listtable_column_discount', $item->discount );
 		}
 
 		return $html;
@@ -203,7 +207,7 @@ class MS_Helper_List_Table_Coupon extends MS_Helper_List_Table {
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			'membership_helper_list_table_membership_bulk_actions',
+			'ms_addon_coupon_helper_listtable_bulk_actions',
 			array(
 				'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 			)

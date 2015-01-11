@@ -89,7 +89,7 @@ class MS_View_Frontend_Payment extends MS_View {
 						<td class="ms-title-column">
 							<?php _e( 'Description', MS_TEXT_DOMAIN ); ?>
 						</td>
-						<td class="ms-desc-column" colspan="2">
+						<td class="ms-desc-column">
 							<span class="ms-membership-description"><?php
 								echo '' . $membership->description;
 							?></span>
@@ -98,6 +98,7 @@ class MS_View_Frontend_Payment extends MS_View {
 				<?php endif; ?>
 
 				<?php if ( $membership->has_payment() ) : ?>
+					<?php if ( $invoice->discount || $invoice->pro_rate ) : ?>
 					<tr>
 						<td class="ms-title-column">
 							<?php _e( 'Price', MS_TEXT_DOMAIN ); ?>
@@ -116,6 +117,7 @@ class MS_View_Frontend_Payment extends MS_View {
 							?>
 						</td>
 					</tr>
+					<?php endif; ?>
 
 					<?php if ( $invoice->discount ) : ?>
 						<tr>
@@ -144,11 +146,17 @@ class MS_View_Frontend_Payment extends MS_View {
 							<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
 						</td>
 						<td class="ms-price-column ms-total">
-							<?php printf(
-								'%s %s',
-								$invoice->currency,
-								number_format( $invoice->total, 2 )
-							); ?>
+							<?php
+							if ( $invoice->total > 0 ) {
+								printf(
+									'%s %s',
+									$invoice->currency,
+									number_format( $invoice->total, 2 )
+								);
+							} else {
+								_e( 'Free', MS_TEXT_DOMAIN );
+							}
+							?>
 						</td>
 					</tr>
 
@@ -205,106 +213,13 @@ class MS_View_Frontend_Payment extends MS_View {
 				?>
 			</table>
 		</div>
-		<?php $this->coupon_html(); ?>
+		<?php
+		do_action( 'ms_view_frontend_payment_after', $this->data, $this );
+		?>
 		<div style="clear:both;"></div>
 		<?php
 
 		return ob_get_clean();
-	}
-
-	/**
-	 * Returns a form where the member can enter a coupon code
-	 *
-	 * @since  1.0.0
-	 * @return string HTML code
-	 */
-	private function coupon_html() {
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
-			return;
-		}
-
-		$coupon = $this->data['coupon'];
-		$coupon_message = '';
-		$fields = array();
-
-		if ( ! empty ( $this->data['coupon_valid'] ) ) {
-			$fields = array(
-				'coupon_code' => array(
-					'id' => 'coupon_code',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $coupon->code,
-				),
-				'remove_coupon_code' => array(
-					'id' => 'remove_coupon_code',
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Remove Coupon', MS_TEXT_DOMAIN ),
-				),
-			);
-		}
-		else {
-			$fields = array(
-				'coupon_code' => array(
-					'id' => 'coupon_code',
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'value' => $coupon->code,
-				),
-				'apply_coupon_code' => array(
-					'id' => 'apply_coupon_code',
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Apply Coupon', MS_TEXT_DOMAIN ),
-				),
-			);
-		}
-
-		$coupon_message = $coupon->coupon_message;
-
-		$fields['membership_id'] = array(
-			'id' => 'membership_id',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->data['membership']->id,
-		);
-		$fields['move_from_id'] = array(
-			'id' => 'move_from_id',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->data['ms_relationship']->move_from_id,
-		);
-		$fields['step'] = array(
-			'id' => 'step',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => MS_Controller_Frontend::STEP_PAYMENT_TABLE,
-		);
-
-		if ( ! empty ( $this->data['coupon_valid'] ) ) {
-			$class = 'ms-alert-success';
-		} else {
-			$class = 'ms-alert-error';
-		}
-
-		?>
-		<div class="membership-coupon">
-			<div class="membership_coupon_form couponbar">
-				<form method="post">
-					<?php if ( $coupon_message ) : ?>
-						<p class="ms-alert-box <?php echo esc_attr( $class ); ?>"><?php
-							echo '' . $coupon_message;
-						?></p>
-					<?php endif; ?>
-					<div class="coupon-entry">
-						<?php if ( ! isset( $this->data['coupon_valid'] ) ) : ?>
-							<div class="coupon-question"><?php
-							_e( 'Have a coupon code?', MS_TEXT_DOMAIN );
-							?></div>
-						<?php endif;
-
-						foreach ( $fields as $field ){
-							MS_Helper_Html::html_element( $field );
-						}
-						?>
-					</div>
-				</form>
-			</div>
-		</div>
-	<?php
 	}
 
 }

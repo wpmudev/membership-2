@@ -390,11 +390,6 @@ class MS_Plugin {
 		// Grab instance of self.
 		self::$instance = $this;
 
-		/*
-		 * Load membership integrations.
-		 */
-		MS_Integration::load_integrations();
-
 		/**
 		 * Actions to execute when the Plugin object has successfully constructed.
 		 *
@@ -440,7 +435,6 @@ class MS_Plugin {
 				MS_Model_Membership_Relationship::$POST_TYPE => MS_Model_Membership_Relationship::get_register_post_type_args(),
 				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
-				MS_Model_Coupon::$POST_TYPE => MS_Model_Coupon::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
 			)
 		);
@@ -614,10 +608,12 @@ class MS_Plugin {
 		else if ( substr( $class, 0, 3 ) == 'MS_' ) {
 			$path_array = explode( '_', $class );
 			array_shift( $path_array );
-			array_pop( $path_array );
+			$alt_dir = array_pop( $path_array );
 			$sub_path = implode( '/', $path_array );
+
 			$filename = str_replace( '_', '-', 'class-' . $class . '.php' );
 			$file_path = $basedir . '/app/' . strtolower( $sub_path . '/' . $filename );
+			$file_path_alt = $basedir . '/app/' . strtolower( $sub_path . '/' . $alt_dir . '/' . $filename );
 
 			/**
 			 * Overrides the filename and path.
@@ -626,8 +622,14 @@ class MS_Plugin {
 			 * @param object $this The MS_Plugin object.
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
+			$file_path_alt = apply_filters( 'ms_class_file_override', $file_path_alt, $this );
 
-			include_once $file_path;
+			if ( is_file( $file_path ) ) {
+				include_once $file_path;
+			} else {
+				include_once $file_path_alt;
+			}
+
 			return true;
 		}
 

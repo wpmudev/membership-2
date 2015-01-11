@@ -59,7 +59,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_POST_BY_POST = 'post_by_post';
 	const ADDON_URL_GROUPS = 'url_groups';
 	const ADDON_CPT_POST_BY_POST = 'cpt_post_by_post';
-	const ADDON_COUPON = 'coupon';
 	const ADDON_TRIAL = 'trial';
 	const ADDON_MEDIA = 'media';
 	const ADDON_PRO_RATE = 'pro_rate';
@@ -67,7 +66,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	const ADDON_SPECIAL_PAGES = 'special_pages';
 	const ADDON_ADV_MENUS = 'adv_menus';
-	// New since 1.1
 	const ADDON_ADMINSIDE = 'adminside';
 	const ADDON_MEMBERCAPS = 'membercaps';
 	const ADDON_MEMBERCAPS_ADV = 'membercaps_advanced';
@@ -96,6 +94,15 @@ class MS_Model_Addon extends MS_Model_Option {
 	static private $_registered = array();
 
 	/**
+	 * Used by function `flush_list`
+	 *
+	 * @since  1.1.0
+	 *
+	 * @var bool
+	 */
+	static private $_reload_files = false;
+
+	/**
 	 * List of add-on files to load when plugin is initialized.
 	 *
 	 * @since 1.1.0
@@ -117,6 +124,17 @@ class MS_Model_Addon extends MS_Model_Option {
 	protected $active = array();
 
 	/**
+	 * Initalize Object Hooks
+	 *
+	 * @since 1.1.0
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		$this->add_action( 'ms_model_addon_flush', 'flush_list' );
+	}
+
+	/**
 	 * Returns a list of all registered Add-Ons
 	 *
 	 * @since  1.1.0
@@ -127,14 +145,14 @@ class MS_Model_Addon extends MS_Model_Option {
 		static $Done = false;
 		$res = null;
 
-		if ( ! $Done ) {
+		if ( ! $Done || self::$_reload_files ) {
 			self::$_registered = array();
 			$addons = array();
 			$Done = true;
 			self::load_core_addons();
 
-			// Legacy registration - don't add new addons here
-			$addons = self::get_legacy_list();
+			// Register core add-ons
+			$addons = self::get_core_list();
 
 			/**
 			 * Register new addons.
@@ -186,7 +204,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				);
 			}
 
-			asort( self::$_registered );
+			natcasesort( self::$_registered );
 			foreach ( self::$_registered as $key => $dummy ) {
 				self::$_registered[$key] = $addons[$key];
 			}
@@ -213,6 +231,19 @@ class MS_Model_Addon extends MS_Model_Option {
 	}
 
 	/**
+	 * Force to reload the add-on list
+	 *
+	 * Related action hooks:
+	 * - ms_model_addon_flush
+	 *
+	 * @since  1.1.0
+	 */
+	public function flush_list() {
+		self::$_reload_files = true;
+		self::get_addons();
+	}
+
+	/**
 	 * Checks the /app/addon directory for a list of all addons and loads these
 	 * files.
 	 *
@@ -224,8 +255,9 @@ class MS_Model_Addon extends MS_Model_Option {
 		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $root_path ) );
 		$addon_dir = $plugin_dir . 'app/addon/';
 
-		if ( empty( $model->addon_files ) || is_admin() ) {
+		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...
+			self::$_reload_files = false;
 
 			$mask = $root_path . $addon_dir . '*/addon-*.php';
 			$addons = glob( $mask );
@@ -445,10 +477,13 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * New Add-ons are stored in the /app/addon folder and use the
 	 * ms_model_addon_register hook to provide these informations.
 	 *
+	 *    **       This function should not be extended       **
+	 *    **  Create new Add-ons in the app/addon/ directory  **
+	 *
 	 * @since  1.1.0
 	 * @return array List of Add-ons
 	 */
-	static private function get_legacy_list() {
+	static private function get_core_list() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		$options_text = sprintf(
@@ -464,12 +499,6 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_TRIAL] = (object) array(
 			'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
 			'description' => __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership level.', MS_TEXT_DOMAIN ),
-		);
-
-		$list[self::ADDON_COUPON] = (object) array(
-			'name' => __( 'Coupon', MS_TEXT_DOMAIN ),
-			'description' => __( 'Enable discount coupons.', MS_TEXT_DOMAIN ),
-			'icon' => 'wpmui-fa wpmui-fa-ticket',
 		);
 
 		$list[self::ADDON_POST_BY_POST] = (object) array(

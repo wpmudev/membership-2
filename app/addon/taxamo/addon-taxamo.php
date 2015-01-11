@@ -40,23 +40,6 @@ class MS_Addon_Taxamo extends MS_Addon {
 	const ID = 'addon_taxamo';
 
 	/**
-	 * Registers the Add-On
-	 *
-	 * @since  1.1.0
-	 * @param  array $list The Add-Ons list.
-	 * @return array The updated Add-Ons list.
-	 */
-	public function register( $addons ) {
-		$addons[ self::ID ] = (object) array(
-			'name' => __( 'Taxamo', MS_TEXT_DOMAIN ),
-			'description' => __( 'Addresses EU VAT regulations.', MS_TEXT_DOMAIN ),
-			'icon' => 'wpmui-fa wpmui-fa-euro',
-		);
-
-		return $addons;
-	}
-
-	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
@@ -81,6 +64,23 @@ class MS_Addon_Taxamo extends MS_Addon {
 			'manage_render_callback',
 			10, 3
 		);
+	}
+
+	/**
+	 * Registers the Add-On
+	 *
+	 * @since  1.1.0
+	 * @param  array $list The Add-Ons list.
+	 * @return array The updated Add-Ons list.
+	 */
+	public function register( $list ) {
+		$list[ self::ID ] = (object) array(
+			'name' => __( 'Taxamo', MS_TEXT_DOMAIN ),
+			'description' => __( 'Addresses EU VAT regulations.', MS_TEXT_DOMAIN ),
+			'icon' => 'wpmui-fa wpmui-fa-euro',
+		);
+
+		return $list;
 	}
 
 	/**

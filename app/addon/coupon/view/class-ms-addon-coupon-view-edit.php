@@ -10,7 +10,7 @@
  * @package Membership
  * @subpackage View
  */
-class MS_View_Coupon_Edit extends MS_View {
+class MS_Addon_Coupon_View_Edit extends MS_View {
 
 	/**
 	 * Create view output.
@@ -49,7 +49,7 @@ class MS_View_Coupon_Edit extends MS_View {
 		<?php
 		$html = ob_get_clean();
 
-		return apply_filters( 'ms_view_coupon_edit_to_html', $html, $this );
+		return apply_filters( 'ms_addon_coupon_view_edit_to_html', $html, $this );
 	}
 
 	/**
@@ -142,7 +142,7 @@ class MS_View_Coupon_Edit extends MS_View {
 		);
 
 		return apply_filters(
-			'ms_view_coupon_edit_prepare_fields',
+			'ms_addon_coupon_view_edit_prepare_fields',
 			$fields,
 			$this
 		);

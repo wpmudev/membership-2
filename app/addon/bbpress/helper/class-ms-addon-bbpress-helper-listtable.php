@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Bbpress extends MS_Helper_List_Table_Rule {
+class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_buddypress';
 

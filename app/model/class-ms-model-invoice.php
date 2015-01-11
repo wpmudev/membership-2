@@ -719,21 +719,6 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 			}
 		}
 
-		// Apply coupon discount.
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON )
-			&& $coupon = MS_Model_Coupon::get_coupon_application( $member->id, $membership->id )
-		) {
-			$invoice->coupon_id = $coupon->id;
-			$discount = $coupon->get_discount_value( $ms_relationship );
-			$invoice->discount = $discount;
-
-			$notes[] = sprintf(
-				__( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ),
-				$coupon->code,
-				$invoice->currency,
-				$discount
-			);
-		}
 		$invoice->notes = $notes;
 
 		// Due date calculation.
@@ -756,14 +741,19 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		}
 		$invoice->due_date = $due_date;
 
+		$invoice = apply_filters(
+			'ms_model_invoice_create_before_save',
+			$invoice,
+			$ms_relationship
+		);
+
 		// Check for trial period in the first period.
 		if ( $ms_relationship->is_trial_eligible()
 			&& $invoice_number === $ms_relationship->current_invoice_number
 		) {
 			$invoice->amount = $membership->trial_price;
 			$invoice->trial_period = true;
-		}
-		else {
+		} else {
 			$invoice->amount = $membership->price;
 			$invoice->trial_period = false;
 		}

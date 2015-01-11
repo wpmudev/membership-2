@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
+class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 
 	/**
 	 * Model custom post type.
@@ -180,7 +180,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			);
 		}
 
-		return apply_filters( 'ms_model_coupon_get_discount_types', $types );
+		return apply_filters( 'ms_addon_coupon_model_get_discount_types', $types );
 	}
 
 	/**
@@ -199,7 +199,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			$valid = true;
 		}
 
-		return apply_filters( 'ms_model_coupon_is_valid_discount_type', $valid, $type );
+		return apply_filters( 'ms_addon_coupon_model_is_valid_discount_type', $valid, $type );
 	}
 
 	/**
@@ -217,7 +217,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 			$desc = $types[ $type ];
 		}
 
-		return apply_filters( 'ms_model_coupon_get_discount_type', $desc, $type );
+		return apply_filters( 'ms_addon_coupon_model_get_discount_type', $desc, $type );
 	}
 
 	/**
@@ -241,7 +241,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$args = wp_parse_args( $args, $defaults );
 		$query = new WP_Query( $args );
 
-		return apply_filters( 'ms_model_coupon_get_coupon_count', $query->found_posts, $args );
+		return apply_filters( 'ms_addon_coupon_model_get_coupon_count', $query->found_posts, $args );
 	}
 
 	/**
@@ -251,7 +251,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 *
 	 * @param $args The query post args
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
-	 * @return MS_Model_Coupon[] The found coupon objects.
+	 * @return MS_Addon_Coupon_Model[] The found coupon objects.
 	 */
 	public static function get_coupons( $args = null ) {
 		$defaults = array(
@@ -268,10 +268,10 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$coupons = array();
 
 		foreach ( $items as $item ) {
-			$coupons[] = MS_Factory::load( 'MS_Model_Coupon', $item->ID );
+			$coupons[] = MS_Factory::load( 'MS_Addon_Coupon_Model', $item->ID );
 		}
 
-		return apply_filters( 'ms_model_coupon_get_coupons', $coupons, $args );
+		return apply_filters( 'ms_addon_coupon_model_get_coupons', $coupons, $args );
 	}
 
 	/**
@@ -280,7 +280,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param string $code The coupon code used to load model
-	 * @return MS_Model_Coupon The coupon model, or null if not found.
+	 * @return MS_Addon_Coupon_Model The coupon model, or null if not found.
 	 */
 	public static function load_by_coupon_code( $code ) {
 		$code = sanitize_text_field( $code );
@@ -307,8 +307,8 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 
 		return apply_filters(
-			'ms_model_coupon_load_by_coupon_code',
-			MS_Factory::load( 'MS_Model_Coupon', $coupon_id ),
+			'ms_addon_coupon_model_load_by_coupon_code',
+			MS_Factory::load( 'MS_Addon_Coupon_Model', $coupon_id ),
 			$code
 		);
 	}
@@ -392,7 +392,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 
 		return apply_filters(
-			'ms_model_coupon_apply_discount',
+			'ms_addon_coupon_model_apply_discount',
 			$discount,
 			$membership,
 			$this
@@ -420,7 +420,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$global = false;
 
 		$time = apply_filters(
-			'ms_model_coupon_save_coupon_application_redemption_time',
+			'ms_addon_coupon_model_save_coupon_application_redemption_time',
 			self::COUPON_REDEMPTION_TIME
 		);
 
@@ -428,12 +428,12 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$user = MS_Model_Member::get_current_member();
 
 		$transient_name = apply_filters(
-			'ms_model_coupon_transient_name',
+			'ms_addon_coupon_model_transient_name',
 			"ms_coupon_{$blog_id}_{$user->id}_{$membership->id}"
 		);
 
 		$transient_value = apply_filters(
-			'ms_model_coupon_transient_value',
+			'ms_addon_coupon_model_transient_value',
 			array(
 				'coupon_id' => $this->id,
 				'user_id' => $user->id,
@@ -451,7 +451,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$this->save();
 
 		do_action(
-			'ms_model_coupon_save_coupon_application',
+			'ms_addon_coupon_model_save_coupon_application',
 			$ms_relationship,
 			$this
 		);
@@ -464,7 +464,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 	 *
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
-	 * @return MS_Model_Coupon The coupon model object.
+	 * @return MS_Addon_Coupon_Model The coupon model object.
 	 */
 	public static function get_coupon_application( $user_id, $membership_id ) {
 		global $blog_id;
@@ -473,7 +473,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$global = false;
 
 		$transient_name = apply_filters(
-			'ms_model_coupon_transient_name',
+			'ms_addon_coupon_model_transient_name',
 			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
 		);
 
@@ -485,12 +485,12 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 
 		$coupon = null;
 		if ( ! empty ( $transient_value ) ) {
-			$coupon = MS_Factory::load( 'MS_Model_Coupon', $transient_value['coupon_id'] );
+			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $transient_value['coupon_id'] );
 			$coupon->coupon_message = $transient_value['coupon_message'];
 		}
 
 		return apply_filters(
-			'ms_model_coupon_get_coupon_application',
+			'ms_addon_coupon_model_get_coupon_application',
 			$coupon,
 			$user_id,
 			$membership_id
@@ -512,7 +512,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		$global = false;
 
 		$transient_name = apply_filters(
-			'ms_model_coupon_transient_name',
+			'ms_addon_coupon_model_transient_name',
 			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
 		);
 
@@ -523,7 +523,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 
 		do_action(
-			'ms_model_coupon_remove_coupon_application',
+			'ms_addon_coupon_model_remove_coupon_application',
 			$user_id,
 			$membership_id
 		);
@@ -571,7 +571,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 
 		return apply_filters(
-			'ms_model_coupon__get',
+			'ms_addon_coupon_model__get',
 			$value,
 			$property,
 			$this
@@ -638,7 +638,7 @@ class MS_Model_Coupon extends MS_Model_Custom_Post_Type {
 		}
 
 		do_action(
-			'ms_model_coupon__set_after',
+			'ms_addon_coupon_model__set_after',
 			$property,
 			$value,
 			$this

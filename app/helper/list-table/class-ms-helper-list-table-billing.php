@@ -52,20 +52,19 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 				'user' => __( 'User', MS_TEXT_DOMAIN ),
 				'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
 				'status' => __( 'Status', MS_TEXT_DOMAIN ),
-				'amount' => sprintf( '%1$s (%2$s)', __( 'Amount', MS_TEXT_DOMAIN ), $currency ),
-				'discount' => sprintf( '%1$s (%2$s)', __( 'Discount', MS_TEXT_DOMAIN ), $currency ),
 				'total' => sprintf( '%1$s (%2$s)', __( 'Total', MS_TEXT_DOMAIN ), $currency ),
 				'due_date' => __( 'Due date', MS_TEXT_DOMAIN ),
 				'gateway_id' => __( 'Gateway', MS_TEXT_DOMAIN ),
 			)
 		);
 
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
-			unset( $columns['discount'] );
-			unset( $columns['amount'] );
-		}
+		$columns = apply_filters(
+			'ms_helper_list_table_billing_get_columns',
+			$columns,
+			$currency
+		);
 
-		return apply_filters( 'ms_helper_list_table_billing_get_columns', $columns );
+		return $columns;
 	}
 
 	public function column_cb( $item ) {
@@ -114,7 +113,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			MS_Model_Invoice::get_invoices( $args )
 		);
 
-		$per_page = $this->get_items_per_page( 'invoice_per_page', 10 );
+		$per_page = $this->get_items_per_page( 'invoice_per_page', self::DEFAULT_PAGE_SIZE );
 		$this->set_pagination_args(
 			array(
 				'total_items' => $total_items,
@@ -126,7 +125,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 	private function get_query_args() {
 		$defaults = MS_Model_Invoice::get_query_args();
 
-		$per_page = $this->get_items_per_page( 'invoice_per_page', 10 );
+		$per_page = $this->get_items_per_page( 'invoice_per_page', self::DEFAULT_PAGE_SIZE );
 		$current_page = $this->get_pagenum();
 
 		$args = array(
@@ -159,6 +158,12 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			$item->id,
 			$this->row_actions( $actions )
 		);
+	}
+
+	public function column_total( $item, $column_name ) {
+		$html = number_format( $item->total, 2 );
+
+		return $html;
 	}
 
 	public function column_default( $item, $column_name ) {

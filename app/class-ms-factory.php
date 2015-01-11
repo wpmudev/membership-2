@@ -53,7 +53,6 @@ class MS_Factory {
 			'MS_Model_Pages',
 			'MS_Model_Settings',
 			'MS_Model_Addon',
-			'MS_Model_Coupon',
 			'MS_Model_Simulate',
 		);
 

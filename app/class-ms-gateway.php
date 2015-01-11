@@ -310,12 +310,11 @@ class MS_Gateway extends MS_Model_Option {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $ms_relationship );
 					}
 
-					if ( $invoice->coupon_id ) {
-						$coupon = MS_Factory::load( 'MS_Model_Coupon', $invoice->coupon_id );
-						$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
-						$coupon->used++;
-						$coupon->save();
-					}
+					do_action(
+						'ms_gateway_process_transaction-paid',
+						$invoice,
+						$member
+					);
 
 					// Check for moving memberships
 					if ( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status

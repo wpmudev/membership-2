@@ -153,6 +153,9 @@ class MS_Controller_Addon extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_addon() {
+		// Reload the add-on list.
+		do_action( 'ms_model_addon_flush' );
+
 		/**
 		 * Create / Filter the Addon admin view.
 		 *

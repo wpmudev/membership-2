@@ -7,7 +7,7 @@ class MS_Addon_Buddypress_View_Blog extends MS_View {
 	public function render_rule_tab() {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Addon_BuddyPress::RULE_ID_BLOG );
-		$list_table = new MS_Helper_List_Table_Rule_Buddypress_Blog( $rule );
+		$list_table = new MS_Addon_Buddypress_Helper_Listtable_Blog( $rule );
 		$list_table->prepare_items();
 
 		ob_start();

@@ -38,21 +38,11 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	const RULE_ID_PRIVATE_MSG = 'buddypress_private_msg';
 
 	/**
-	 * Registers the Add-On
+	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
-	 * @param  array $list The Add-Ons list.
-	 * @return array The updated Add-Ons list.
 	 */
-	public function register( $list ) {
-		$list[ self::ID ] = (object) array(
-			'id' => self::ID,
-			'name' => __( 'BuddyPress Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Enable BuddyPress rules integration.', MS_TEXT_DOMAIN ),
-			'active' => MS_Model_Addon::is_enabled( self::ID ),
-		);
-
-		return $list;
+	public function init() {
 	}
 
 	/**
@@ -67,6 +57,22 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		$this->add_filter( 'ms_controller_membership_tabs', 'buddypress_rule_tabs' );
 		$this->add_filter( 'ms_view_membership_protected_content_render_tab_callback', 'buddypress_manage_render_callback', 10, 3 );
 		$this->add_filter( 'ms_view_membership_accessible_content_render_tab_callback', 'buddypress_manage_render_callback', 10, 3 );
+	}
+
+	/**
+	 * Registers the Add-On
+	 *
+	 * @since  1.1.0
+	 * @param  array $list The Add-Ons list.
+	 * @return array The updated Add-Ons list.
+	 */
+	public function register( $list ) {
+		$list[ self::ID ] = (object) array(
+			'name' => __( 'BuddyPress Integration', MS_TEXT_DOMAIN ),
+			'description' => __( 'Enable BuddyPress rules integration.', MS_TEXT_DOMAIN ),
+		);
+
+		return $list;
 	}
 
 	/**
@@ -101,7 +107,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @return array The filtered rule classes.
 	 */
 	public function buddypress_rule_type_classes( $rules ) {
-		$rules[ self::RULE_ID  ] = 'MS_Model_Rule_Buddypress';
+		$rules[ self::RULE_ID  ] = 'MS_Addon_Buddypress_Model_Rule';
 
 		/** @todo integrate it better in 4.1
 		$rules[ self::RULE_ID_BLOG  ] = 'MS_Model_Rule_Buddypress_Blog';

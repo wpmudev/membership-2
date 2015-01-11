@@ -37,25 +37,6 @@ class MS_Addon_Wpbe extends MS_Addon {
 	protected $text_message = '';
 
 	/**
-	 * Registers the Add-On
-	 *
-	 * @since  1.1.0
-	 * @param  array $list The Add-Ons list.
-	 * @return array The updated Add-Ons list.
-	 */
-	public function register( $addons ) {
-		/*
-		// Don't register: Not completed yet...
-
-		$addons[ self::ID ] = (object) array(
-			'name' => __( 'WP Better Emails', MS_TEXT_DOMAIN ),
-			'description' => __( 'WP Better Emails integration.', MS_TEXT_DOMAIN ),
-		);
-		*/
-		return $addons;
-	}
-
-	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
@@ -66,6 +47,33 @@ class MS_Addon_Wpbe extends MS_Addon {
 		if ( $wp_better_emails ) {
 			$this->add_filter( 'ms_model_communication_send_message_html_message', 'html_message' );
 		}
+	}
+
+	/**
+	 * Activates the Add-on logic, only executed when add-on is active.
+	 *
+	 * @since  1.1.0
+	 */
+	public function activate() {
+	}
+
+	/**
+	 * Registers the Add-On
+	 *
+	 * @since  1.1.0
+	 * @param  array $list The Add-Ons list.
+	 * @return array The updated Add-Ons list.
+	 */
+	public function register( $list ) {
+		/*
+		// Don't register: Not completed yet...
+
+		$list[ self::ID ] = (object) array(
+			'name' => __( 'WP Better Emails', MS_TEXT_DOMAIN ),
+			'description' => __( 'WP Better Emails integration.', MS_TEXT_DOMAIN ),
+		);
+		*/
+		return $list;
 	}
 
 	/**

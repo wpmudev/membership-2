@@ -1286,6 +1286,13 @@ class MS_Helper_List_Table {
 					);
 				}
 
+				$code = apply_filters(
+					'ms_helper_list_table_' . $this->id . '-column_' . $column_name,
+					$code,
+					$item,
+					$column_name
+				);
+
 				printf(
 					'<td class="%1$s" style="%3$s">%2$s</td>',
 					esc_attr( $class ),

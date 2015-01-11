@@ -189,7 +189,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$data->settings = $this->export_settings();
 
 		// Export Coupons.
-		$coupons = MS_Model_Coupon::get_coupons( array( 'nopaging' => true ) );
+		$coupons = MS_Addon_Coupon_Model::get_coupons( array( 'nopaging' => true ) );
 		$data->coupons = array();
 		foreach ( $coupons as $coupon ) {
 			if ( intval( $coupon->max_uses ) <= intval( $coupon->used ) ) { continue; }
@@ -375,7 +375,7 @@ class MS_Model_Import_Export extends MS_Model {
 	 * @return object Export data
 	 */
 	protected function export_coupon( $coupon_id ) {
-		$src = MS_Factory::load( 'MS_Model_Coupon', $coupon_id );
+		$src = MS_Factory::load( 'MS_Addon_Coupon_Model', $coupon_id );
 
 		$obj = (object) array();
 		$obj->id = $this->exp_id( 'coupon', $src->code );

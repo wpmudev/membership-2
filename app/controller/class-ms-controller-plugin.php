@@ -93,7 +93,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['rule'] = MS_Factory::create( 'MS_Controller_Rule' );
 		$this->controllers['member'] = MS_Factory::create( 'MS_Controller_Member' );
 		$this->controllers['billing'] = MS_Factory::create( 'MS_Controller_Billing' );
-		$this->controllers['coupon'] = MS_Factory::create( 'MS_Controller_Coupon' );
 		$this->controllers['addon'] = MS_Factory::create( 'MS_Controller_Addon' );
 		$this->controllers['pages'] = MS_Factory::create( 'MS_Controller_Pages' );
 		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
@@ -220,13 +219,6 @@ class MS_Controller_Plugin extends MS_Controller {
 					'menu_slug' => self::MENU_SLUG . '-billing',
 					'function' => array( $this->controllers['billing'], 'admin_billing' ),
 				),
-				'coupons' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-coupons',
-					'function' => array( $this->controllers['coupon'], 'admin_coupon' ),
-				),
 				'addon' => array(
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
@@ -250,15 +242,17 @@ class MS_Controller_Plugin extends MS_Controller {
 				),
 			);
 
-			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_COUPON ) ) {
-				unset( $pages['coupons'] );
-			}
 			if ( ! MS_Model_Membership::have_paid_membership() ) {
 				unset( $pages['billing'] );
 			}
 		}
 
-		$pages = apply_filters( 'ms_plugin_menu_pages', $pages );
+		$pages = apply_filters(
+			'ms_plugin_menu_pages',
+			$pages,
+			MS_Plugin::is_wizard(),
+			$this
+		);
 
 		// Create submenus
 		foreach ( $pages as $page ) {

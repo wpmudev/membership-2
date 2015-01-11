@@ -7,7 +7,7 @@ class MS_Addon_Bbpress_View_General extends MS_View {
 
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Addon_Bbpress::RULE_ID );
-		$rule_list_table = new MS_Helper_List_Table_Rule_Bbpress( $rule, $membership );
+		$rule_list_table = new MS_Addon_Bbpress_Helper_Listtable( $rule, $membership );
 		$rule_list_table->prepare_items();
 
 		$edit_link = array(
@@ -56,7 +56,7 @@ class MS_Addon_Bbpress_View_General extends MS_View {
 		);
 
 		$html = ob_get_clean();
-		echo apply_filters( 'ms_view_bbpress_general_render_tab_shortcode', $html );
+		echo '' . apply_filters( 'ms_view_bbpress_general_render_tab_shortcode', $html );
 	}
 
 	public function get_control_fields() {
