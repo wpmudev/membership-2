@@ -107,7 +107,7 @@ class MS_View_Frontend_Payment extends MS_View {
 							<?php
 							if ( $membership->price > 0 ) {
 								printf(
-									'%s %s',
+									'<span class="price">%s %s</span>',
 									$invoice->currency,
 									number_format( $membership->price, 2 )
 								);
@@ -149,7 +149,7 @@ class MS_View_Frontend_Payment extends MS_View {
 							<?php
 							if ( $invoice->total > 0 ) {
 								printf(
-									'%s %s',
+									'<span class="price">%s %s</span>',
 									$invoice->currency,
 									number_format( $invoice->total, 2 )
 								);
@@ -215,6 +215,7 @@ class MS_View_Frontend_Payment extends MS_View {
 		</div>
 		<?php
 		do_action( 'ms_view_frontend_payment_after', $this->data, $this );
+		do_action( 'ms_show_prices' );
 		?>
 		<div style="clear:both;"></div>
 		<?php

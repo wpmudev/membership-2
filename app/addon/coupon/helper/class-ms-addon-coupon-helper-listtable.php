@@ -140,14 +140,21 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_List_Table {
 
 	public function column_membership( $item ) {
 		$html = '';
+		$is_any = true;
 
-		if ( MS_Model_Membership::is_valid_membership( $item->membership_id ) ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_id );
-			$html = sprintf(
-				'<span class="ms-bold">%s</span>',
-				$membership->name
-			);
-		} else {
+		foreach ( $item->membership_id as $id ) {
+			if ( MS_Model_Membership::is_valid_membership( $id ) ) {
+				$is_any = false;
+
+				$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+				$html .= sprintf(
+					'<span class="ms-bold">%s</span><br />',
+					$membership->name
+				);
+			}
+		}
+
+		if ( $is_any ) {
 			$html = sprintf(
 				'<span class="ms-low">%s</span>',
 				__( 'Any', MS_TEXT_DOMAIN )

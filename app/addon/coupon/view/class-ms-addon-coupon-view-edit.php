@@ -32,6 +32,9 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 		ob_start();
 		// Render tabbed interface.
 		?>
+		<style>
+		.ms-coupon-form { max-width: 640px; margin: 0 auto; }
+		</style>
 		<div class="ms-wrap">
 			<?php
 			MS_Helper_Html::settings_header(
@@ -42,7 +45,7 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			);
 			?>
 			<form action="<?php echo esc_url( $form_url ); ?>" method="post" class="ms-form">
-				<?php MS_Helper_Html::settings_box( $fields ); ?>
+				<?php MS_Helper_Html::settings_box( $fields, '', '', 'static', 'ms-coupon-form' ); ?>
 			</form>
 			<div class="clear"></div>
 		</div>
@@ -97,8 +100,8 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			),
 			'membership_id' => array(
 				'id' => 'membership_id',
-				'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' => __( 'Coupon can be applied to these Memberships', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'field_options' => $this->data['memberships'],
 				'value' => $coupon->membership_id,
 			),

@@ -115,7 +115,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		if ( empty( $model->gateway_files ) || is_admin() ) {
 			// In Admin dashboard we always refresh the gateway-list...
 
-			$mask = $root_path . $gateway_dir . '*/gateway-*.php';
+			$mask = $root_path . $gateway_dir . '*/class-ms-gateway-*.php';
 			$gateways = glob( $mask );
 
 			$model->gateway_files = array();
@@ -146,7 +146,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$class = basename( $file );
 			$class = str_replace( '.php', '', $class );
 			$class = implode( '_', array_map( 'ucfirst', explode( '-', $class ) ) );
-			$class = 'MS_' . $class;
+			$class = substr( $class, 6 ); // remove 'Class_' prefix
 
 			if ( file_exists( $gateway_file ) ) {
 				include_once $gateway_file;

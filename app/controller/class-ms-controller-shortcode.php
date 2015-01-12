@@ -411,11 +411,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 
 		$code = sprintf(
-			'<span class="ms-membership-price ms-membership-%1$s">%2$s</span>',
+			'<span class="ms-membership-price ms-membership-%1$s price">%2$s</span>',
 			esc_attr( $id ),
 			$code
 		);
 
+		do_action( 'ms_show_prices' );
 		return apply_filters(
 			'ms_controller_shortcode_membership_price',
 			$code,

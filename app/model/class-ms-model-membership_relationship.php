@@ -1115,7 +1115,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					$desc = __( 'You will pay nothing for permanent access.', MS_TEXT_DOMAIN );
 				} else {
 					$desc = sprintf(
-						__( 'You will pay %1$s %2$s for permanent access.', MS_TEXT_DOMAIN ),
+						__( 'You will pay <span class="price">%1$s %2$s</span>, for permanent access.', MS_TEXT_DOMAIN ),
 						$currency,
 						$total_price
 					);
@@ -1130,7 +1130,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					);
 				} else {
 					$desc .= sprintf(
-						__( 'You will pay %1$s %2$s for access until %3$s.', MS_TEXT_DOMAIN ),
+						__( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', MS_TEXT_DOMAIN ),
 						$currency,
 						$total_price,
 						$this->calc_expire_date( $this->expire_date )
@@ -1147,7 +1147,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 					);
 				} else {
 					$desc .= sprintf(
-						__( 'You will pay %1$s %2$s to access from %3$s to %4$s.', MS_TEXT_DOMAIN ),
+						__( 'You will pay <span class="price">%1$s %2$s</span> to access from %3$s to %4$s.', MS_TEXT_DOMAIN ),
 						$currency,
 						$total_price,
 						$membership->period_date_start,
@@ -1167,7 +1167,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 				);
 
 				$desc .= sprintf(
-					__( 'You will pay %1$s %2$s each %3$s %4$s.', MS_TEXT_DOMAIN ),
+					__( 'You will pay <span class="price">%1$s %2$s</span> each %3$s %4$s.', MS_TEXT_DOMAIN ),
 					$currency,
 					$total_price,
 					$period_unit,
@@ -1187,7 +1187,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 			);
 
 			$desc .= sprintf(
-				__( ' <br />In the trial period of %1$s %2$s, you will pay %3$s %4$s.', MS_TEXT_DOMAIN ),
+				__( ' <br />In the trial period of %1$s %2$s, you will pay <span class="price">%3$s %4$s</span>.', MS_TEXT_DOMAIN ),
 				$period_unit,
 				$period_type,
 				$currency,

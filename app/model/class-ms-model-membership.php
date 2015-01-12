@@ -142,7 +142,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var bool $private
 	 */
-	protected $private = true;
+	protected $private = false;
 
 	/**
 	 * Marks a Protected Content special membership.
@@ -1043,6 +1043,11 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				'value'   => 'protected_content',
 				'compare' => '!=',
 			);
+			$args['meta_query']['role'] = array(
+				'key'     => 'special',
+				'value'   => 'role',
+				'compare' => '!=',
+			);
 		}
 
 		return apply_filters(
@@ -1113,8 +1118,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *		@type string $name The membership name;
 	 * }
 	 */
-	public static function get_membership_names( $args = null, $exclude_visitor_membership = false ) {
+	public static function get_membership_names( $args = null, $exclude_special_memberships = false ) {
+		if ( ! is_array( $args ) ) { $args = array(); }
 		$args['order'] = 'ASC';
+		$args['include_special'] = ! $exclude_special_memberships;
 		$args = self::get_query_args( $args );
 
 		$query = new WP_Query( $args );
@@ -1124,15 +1131,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		foreach ( $items as $item ) {
 			$memberships[ $item->ID ] = $item->name;
 		}
-		if ( $exclude_visitor_membership ) {
-			unset( $memberships[ self::get_visitor_membership()->id ] );
-		}
 
 		return apply_filters(
 			'ms_model_membership_get_membership_names',
 			$memberships,
 			$args,
-			$exclude_visitor_membership
+			$exclude_special_memberships
 		);
 	}
 

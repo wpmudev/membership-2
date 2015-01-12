@@ -1,6 +1,6 @@
 <?php
 
-class MS_Gateway_View_Free_Button extends MS_View {
+class MS_Gateway_Free_View_Button extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();

@@ -245,7 +245,7 @@ class MS_Helper_Html extends MS_Helper {
 	 * @param  string $description Description to display
 	 * @param  string $state Toggle-state of the box: static/open/closed
 	 */
-	public static function settings_box( $fields_in, $title = '', $description = '', $state = 'static' ) {
+	public static function settings_box( $fields_in, $title = '', $description = '', $state = 'static', $class = '' ) {
 		// If its a fields array, great, if not, make a fields array.
 		$fields = $fields_in;
 		if ( ! is_array( $fields_in ) ) {
@@ -253,7 +253,7 @@ class MS_Helper_Html extends MS_Helper {
 			$fields[] = $fields_in;
 		}
 
-		self::settings_box_header( $title, $description, $state );
+		self::settings_box_header( $title, $description, $state, $class );
 		foreach ( $fields as $field ) {
 			MS_Helper_Html::html_element( $field );
 		}
@@ -271,7 +271,7 @@ class MS_Helper_Html extends MS_Helper {
 	 * @param  string $description Description to display
 	 * @param  string $state Toggle-state of the box: static/open/closed
 	 */
-	public static function settings_box_header( $title = '', $description = '', $state = 'static' ) {
+	public static function settings_box_header( $title = '', $description = '', $state = 'static', $class = '' ) {
 		do_action( 'ms_helper_settings_box_header_init', $title, $description, $state );
 
 		$handle = '';
@@ -288,7 +288,7 @@ class MS_Helper_Html extends MS_Helper {
 		}
 
 		?>
-		<div class="ms-settings-box-wrapper">
+		<div class="ms-settings-box-wrapper <?php echo esc_attr( $class ); ?>">
 			<div class="ms-settings-box <?php echo esc_attr( $box_class ); ?>">
 				<div class="ms-header">
 					<?php printf( $handle ); ?>

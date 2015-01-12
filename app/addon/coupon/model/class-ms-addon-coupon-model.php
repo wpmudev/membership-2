@@ -116,9 +116,9 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @var int
+	 * @var array
 	 */
-	protected $membership_id = 0;
+	protected $membership_id;
 
 	/**
 	 * Maximun times this coupon could be used.
@@ -146,6 +146,15 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 	 * @var string
 	 */
 	protected $coupon_message;
+
+	/**
+	 * Stores the flag of the is_valid_coupon() test
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var   bool
+	 */
+	protected $_valid = false;
 
 	/**
 	 * Not persisted fields.
@@ -345,12 +354,36 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 			$this->coupon_message = __( 'This Coupon has expired.', MS_TEXT_DOMAIN );
 			$valid = false;
 		}
-		if ( ! empty( $this->membership_id ) && $membership_id != $this->membership_id ) {
+
+		foreach ( $this->membership_id as $valid_id ) {
+			if ( $valid_id == 0 || $valid_id == $membership_id ) {
+				$membership_allowed = true;
+				break;
+			}
+		}
+		if ( ! $membership_allowed ) {
 			$this->coupon_message = __( 'This Coupon is not valid for this membership.', MS_TEXT_DOMAIN );
 			$valid = false;
 		}
 
-		return apply_filters( 'ms_coupon_model_is_valid_coupon', $valid, $membership_id, $this );
+		$this->_valid = $valid;
+
+		return apply_filters(
+			'ms_coupon_model_is_valid_coupon',
+			$valid,
+			$membership_id,
+			$this
+		);
+	}
+
+	/**
+	 * Returns the result of the last is_valid_coupon() function call
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	public function was_valid() {
+		return $this->_valid;
 	}
 
 	/**
@@ -484,9 +517,11 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 		}
 
 		$coupon = null;
-		if ( ! empty ( $transient_value ) ) {
+		if ( ! empty( $transient_value ) ) {
 			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $transient_value['coupon_id'] );
 			$coupon->coupon_message = $transient_value['coupon_message'];
+		} else {
+			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model' );
 		}
 
 		return apply_filters(
@@ -539,6 +574,13 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 	 */
 	public function __get( $property ) {
 		switch ( $property ) {
+			case 'membership_id':
+				if ( ! is_array( $this->membership_id ) ) {
+					$this->membership_id = array( $this->membership_id );
+				}
+				$value = $this->membership_id;
+				break;
+
 			case 'remaining_uses':
 				if ( $this->max_uses > 0 ) {
 					$value = $this->max_uses - $this->used;
@@ -619,10 +661,16 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 					break;
 
 				case 'membership_id':
-					if ( 0 === $value
-						|| MS_Model_Membership::is_valid_membership( $value )
-					) {
-						$this->$property = $value;
+					$value = WDev()->get_array( $value );
+					foreach ( $value as $ind => $id ) {
+						if ( ! MS_Model_Membership::is_valid_membership( $id ) ) {
+							unset( $value[ $ind ] );
+						}
+					}
+					if ( empty( $value ) ) {
+						$this->$property = array( 0 );
+					} else {
+						$this->$property = array_values( $value );
 					}
 					break;
 

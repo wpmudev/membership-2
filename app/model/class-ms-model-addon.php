@@ -259,7 +259,7 @@ class MS_Model_Addon extends MS_Model_Option {
 			// In Admin dashboard we always refresh the addon-list...
 			self::$_reload_files = false;
 
-			$mask = $root_path . $addon_dir . '*/addon-*.php';
+			$mask = $root_path . $addon_dir . '*/class-ms-addon-*.php';
 			$addons = glob( $mask );
 
 			$model->addon_files = array();
@@ -290,7 +290,7 @@ class MS_Model_Addon extends MS_Model_Option {
 			$class = basename( $file );
 			$class = str_replace( '.php', '', $class );
 			$class = implode( '_', array_map( 'ucfirst', explode( '-', $class ) ) );
-			$class = 'MS_' . $class;
+			$class = substr( $class, 6 ); // remove 'Class_' prefix
 
 			if ( file_exists( $addon ) ) {
 				include_once $addon;

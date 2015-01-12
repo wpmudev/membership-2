@@ -40,6 +40,16 @@ class MS_Addon_Coupon extends MS_Addon {
 	const ID = 'coupon';
 
 	/**
+	 * Saves a reference to the currently processed coupon in the registration
+	 * form.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var MS_Addon_Coupon_Model
+	 */
+	private static $the_coupon = null;
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
@@ -123,6 +133,26 @@ class MS_Addon_Coupon extends MS_Addon {
 			'process_payment_table',
 			10, 4
 		);
+	}
+
+	/**
+	 * Sets or gets the coupon model that is processed in the current
+	 * registration form.
+	 *
+	 * @since  1.1.0
+	 * @param  MS_Addon_Coupon_Model $new_value
+	 * @return MS_Addon_Coupon_Model
+	 */
+	static private function the_coupon( $new_value = null ) {
+		if ( $new_value !== null ) {
+			self::$the_coupon = $new_value;
+		} else {
+			if ( null === self::$the_coupon ) {
+				self::$the_coupon = MS_Factory::load( 'MS_Addon_Coupon_Model' );
+			}
+		}
+
+		return self::$the_coupon;
 	}
 
 	/**
@@ -280,8 +310,8 @@ class MS_Addon_Coupon extends MS_Addon {
 			// Edit action view page request
 			$coupon_id = ! empty( $_GET['coupon_id'] ) ? $_GET['coupon_id'] : 0;
 			$data['coupon'] = MS_Factory::load( 'MS_Addon_Coupon_Model', $coupon_id );
-			$data['memberships'] = MS_Model_Membership::get_membership_names();
-			$data['memberships'][0] = __( 'Any', MS_TEXT_DOMAIN );
+			$data['memberships'] = array( __( 'Any', MS_TEXT_DOMAIN ) );
+			$data['memberships'] += MS_Model_Membership::get_membership_hierarchy();
 			$data['action'] = $_GET['action'];
 
 			$view = MS_Factory::create( 'MS_Addon_Coupon_View_Edit' );
@@ -528,13 +558,17 @@ class MS_Addon_Coupon extends MS_Addon {
 				$coupon->save_coupon_application( $ms_relationship );
 			}
 		} else {
-			$coupon = MS_Addon_Coupon_Model::get_coupon_application( $member->id, $membership->id );
+			$coupon = MS_Addon_Coupon_Model::get_coupon_application(
+				$member->id,
+				$membership->id
+			);
 
 			if ( ! empty( $_POST['remove_coupon_code'] ) ) {
 				$coupon->remove_coupon_application( $member->id, $membership->id );
 				$coupon = false;
 			}
 		}
+		self::the_coupon( $coupon );
 
 		if ( $coupon ) {
 			$invoice->coupon_id = $coupon->id;
@@ -564,7 +598,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @param  MS_Model_Member $member
 	 */
 	public function process_payment_table( $data, $membership_id, $ms_relationship, $member ) {
-		$data['coupon'] = MS_Factory::load( 'MS_Addon_Coupon_Model' );
+		$data['coupon'] = self::the_coupon();
 		$data['coupon_valid'] = false;
 
 		if ( ! empty( $_POST['coupon_code'] ) ) {
@@ -572,9 +606,10 @@ class MS_Addon_Coupon extends MS_Addon {
 				$member->id,
 				$membership_id
 			);
+			self::the_coupon( $coupon );
 
 			if ( $coupon ) {
-				$data['coupon_valid'] = true;
+				$data['coupon_valid'] = $coupon->was_valid();
 				$data['coupon'] = $coupon;
 			}
 		}

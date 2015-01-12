@@ -101,6 +101,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				}
 
 				do_action( 'ms_view_shortcode_membership_signup_form_after_memberships' );
+				do_action( 'ms_show_prices' );
 				?>
 			</div>
 		</div>
@@ -241,7 +242,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 				</div>
 				<div class="ms-price-details">
 					<div class="ms-description"><?php echo '' . $membership->description; ?></div>
-					<div class="ms-price"><?php echo esc_html( $price ); ?></div>
+					<div class="ms-price price"><?php echo esc_html( $price ); ?></div>
 
 					<?php if ( $msg ) : ?>
 						<div class="ms-bottom-msg"><?php echo '' . $msg; ?></div>
@@ -298,6 +299,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 			</div>
 		</form>
 		<?php
+		do_action( 'ms_show_prices' );
 	}
 
 	/**
