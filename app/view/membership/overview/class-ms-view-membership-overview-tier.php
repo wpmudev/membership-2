@@ -6,14 +6,7 @@ class MS_View_Membership_Overview_Tier extends MS_View_Membership_Overview {
 
 	public function available_content_panel_data() {
 		if ( $this->data['child_membership']->is_valid() ) : ?>
-			<div class="ms-wrap wrap">
-				<div class="ms-tabs-titlerow">
-					<span class="ms-tabs"><?php _e( 'Tier Level:', MS_TEXT_DOMAIN );?></span>
-					<span><?php _e( 'Accessible Content:', MS_TEXT_DOMAIN );?></span>
-				</div>
-				<?php MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'] ); ?>
-			</div>
-			<div class="ms-settings">
+			<div class="ms-settings ms-group">
 				<?php
 					$membership = $this->data['child_membership'];
 					$protected_content = MS_Model_Membership::get_protected_content();
@@ -44,8 +37,6 @@ class MS_View_Membership_Overview_Tier extends MS_View_Membership_Overview {
 				?>
 			</div>
 		<?php endif;
-
-		echo '<div class="clear"></div>';
 
 		MS_Helper_Html::html_element(
 			array(

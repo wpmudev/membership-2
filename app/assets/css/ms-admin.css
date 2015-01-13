@@ -346,14 +346,6 @@
   margin: 20px 20px 0 0;
 }
 
-/* Settings overview with lighter background */
-.ms-wrap .ms-wrap-top {
-  margin: -15px -15px 0 -20px;
-  padding: 15px 15px 15px 20px;
-  background-color: #FAFAFA;
-  border-bottom: 1px solid #E5E5E5;
-}
-
 /* Accordeon box */
 .ms-wrap .ms-settings-box-wrapper {
   background: #FBFBFB;
@@ -1587,13 +1579,22 @@
 }
 
 /* Membership Details ("Overview" page) */
+.ms-wrap.ms-membership-overview {
+  margin: 0 0 0 -20px;
+}
+.ms-wrap.ms-membership-overview .ms-wrap-top {
+  padding: 15px 15px 15px 265px;
+  background-color: #FAFAFA;
+}
+.ms-wrap.ms-membership-overview.no-tabs .ms-wrap-top {
+  padding-left: 20px;
+}
 .ms-wrap .ms-membership-status-wrapper {
   position: absolute;
   padding: 10px;
-  left: 0;
+  left: 10px;
   top: 10px;
-  background-color: #FFF;
-  min-width: 180px;
+  min-width: 245px;
   text-align: center;
 }
 .ms-wrap .ms-membership-status-wrapper .wpmui-radio-slider {
@@ -1613,6 +1614,40 @@
 }
 .ms-wrap .ms-membership-status-wrapper .ms-membership-status.ms-active .ms-active {
   display: block;
+}
+.ms-wrap .ms-overview-container {
+  position: relative;
+}
+.ms-wrap .ms-overview-container > .ms-tab-container {
+  padding-left: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e5e5;
+  width: 245px;
+}
+.ms-wrap .ms-overview-container > .ms-tab-container .ms-tab.active {
+  background: #FAFAFA;
+}
+.ms-wrap .ms-overview-container > .ms-tab-container .ms-tab.active:after {
+  background: #FAFAFA;
+}
+.ms-wrap .ms-overview-container > .ms-settings {
+  background: transparent;
+  border: 0;
+  box-shadow: 0 0 0 transparent;
+  padding: 0;
+}
+.ms-wrap .ms-overview-container .ms-overview-top {
+  background-color: #FAFAFA;
+  padding: 10px 20px 20px;
+  border: 1px solid #E5E5E5;
+  border-top: 0;
+}
+.ms-wrap .ms-overview-container .ms-overview-bottom {
+  padding-top: 20px;
+  padding-right: 20px;
+}
+.ms-wrap .ms-overview-container.no-tabs .ms-overview-bottom {
+  margin-left: 20px;
 }
 
 /* Protected Content page */

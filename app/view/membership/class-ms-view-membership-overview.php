@@ -6,8 +6,10 @@ class MS_View_Membership_Overview extends MS_View {
 		$membership = $this->data['membership'];
 		if ( empty( $this->data['child_membership'] ) ) {
 			$child_membership = $membership;
+			$container_class = 'no-tabs';
 		} else {
 			$child_membership = $this->data['child_membership'];
+			$container_class = '';
 		}
 
 		$toggle = array(
@@ -33,9 +35,6 @@ class MS_View_Membership_Overview extends MS_View {
 			),
 		);
 
-		$desc = $child_membership->description;
-		$desc_empty_class = (empty( $desc ) ? '' : 'hidden');
-
 		$status_class = '';
 		if ( $membership->active ) {
 			$status_class = 'ms-active';
@@ -43,7 +42,7 @@ class MS_View_Membership_Overview extends MS_View {
 		ob_start();
 		?>
 
-		<div class="wrap ms-wrap">
+		<div class="wrap ms-wrap ms-membership-overview <?php echo esc_attr( $container_class ); ?>">
 			<div class="ms-wrap-top ms-group">
 				<div class="ms-membership-status-wrapper">
 					<?php MS_Helper_Html::html_element( $toggle ); ?>
@@ -68,42 +67,14 @@ class MS_View_Membership_Overview extends MS_View {
 				MS_Helper_Html::settings_header(
 					array(
 						'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
-						'desc' => __( 'Here you can view a quick summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Here you find a summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
 						'title_icon_class' => 'wpmui-fa wpmui-fa-dashboard',
 						'bread_crumbs' => $this->data['bread_crumbs'],
 					)
 				);
 				?>
 				<div class="clear"></div>
-				<?php
-				MS_Helper_Html::html_separator();
-				if ( $child_membership->id != $membership->id ) : ?>
-					<div class="ms-subtitle">
-						<?php echo $child_membership->name; ?>
-					</div>
-				<?php endif; ?>
-
-				<div class="ms-settings-desc ms-description membership-description">
-					<span class="readonly show-editor">
-						<span class="empty <?php echo esc_attr( $desc_empty_class ); ?>">
-							<?php _e( '(Description)', MS_TEXT_DOMAIN ); ?>
-						</span>
-						<span class="value"><?php echo $child_membership->description; ?></span>
-						<i class="wpmui-fa wpmui-fa-pencil handlediv"></i>
-					</span>
-					<div class="hidden editor">
-						<?php MS_Helper_Html::html_element( $field_desc ); ?>
-						<?php MS_Helper_Html::save_text(); ?>
-					</div>
-				</div>
-				<div class="clear"></div>
-
-				<?php
-				$this->news_panel();
-				$this->members_panel();
-				?>
 			</div>
-			<div class="clear"></div>
 			<?php $this->available_content_panel(); ?>
 			<div class="clear"></div>
 		</div>
@@ -220,36 +191,71 @@ class MS_View_Membership_Overview extends MS_View {
 	}
 
 	public function available_content_panel() {
+		$child_membership = $this->data['child_membership'];
+
+		$desc = $child_membership->description;
+		$desc_empty_class = (empty( $desc ) ? '' : 'hidden');
+		$container_class = (empty( $child_membership ) ? 'no-tabs' : '');
+		$child_name = '';
+		$child_desc = '';
+
 		?>
-		<div class="ms-overview-available-content-wrapper">
-			<h3><i class="ms-img-unlock"></i> <?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></h3>
-			<div class="ms-description ms-indented-description">
-			<?php printf(
-				__( 'This is Protected Content which <span class="ms-bold">%s</span> members has access to.', MS_TEXT_DOMAIN ),
-				esc_html( $this->data['membership']->name )
-			); ?>
-			</div>
-			<div class="inside">
-				<?php $this->available_content_panel_data(); ?>
+		<div class="ms-overview-container <?php echo esc_attr( $container_class ); ?>">
+			<?php
+			if ( ! empty( $child_membership ) ) {
+				$child_name = $child_membership->name;
+				$child_desc = $child_membership->description;
+
+				MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'] );
+			}
+			?>
+			<div class="ms-settings">
+				<div class="ms-overview-top">
+					<?php
+					if ( ! empty( $child_membership ) ) : ?>
+						<div class="ms-subtitle">
+							<?php echo esc_html( $child_name ); ?>
+						</div>
+					<?php endif; ?>
+
+					<div class="ms-settings-desc ms-description membership-description">
+						<span class="readonly show-editor">
+							<span class="empty <?php echo esc_attr( $desc_empty_class ); ?>">
+								<?php _e( '(Description)', MS_TEXT_DOMAIN ); ?>
+							</span>
+							<span class="value"><?php echo $child_description; ?></span>
+							<i class="wpmui-fa wpmui-fa-pencil handlediv"></i>
+						</span>
+						<div class="hidden editor">
+							<?php
+							MS_Helper_Html::html_element( $field_desc );
+							MS_Helper_Html::save_text();
+							?>
+						</div>
+					</div>
+					<?php
+
+					MS_Helper_Html::html_separator();
+					$this->news_panel();
+					$this->members_panel();
+					?>
+				<div class="clear"></div>
+				</div>
+				<div class="ms-overview-available-content-wrapper ms-overview-bottom">
+					<h3><i class="ms-img-unlock"></i> <?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></h3>
+					<div class="ms-description ms-indented-description">
+					<?php printf(
+						__( 'This is Protected Content which <span class="ms-bold">%s</span> members has access to.', MS_TEXT_DOMAIN ),
+						esc_html( $this->data['membership']->name )
+					); ?>
+					</div>
+					<div class="inside">
+						<?php $this->available_content_panel_data(); ?>
+					</div>
+				</div>
 			</div>
 		</div>
 		<?php
-
-		MS_Helper_Html::html_element(
-			array(
-				'id' => 'setup_payment',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
-				'url' => add_query_arg(
-					array(
-						'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
-						'membership_id' => $this->data['membership']->id,
-						'edit' => 1,
-					)
-				),
-				'class' => 'wpmui-field-button button',
-			)
-		);
 	}
 
 	protected function available_content_panel_data() {
@@ -258,13 +264,7 @@ class MS_View_Membership_Overview extends MS_View {
 		$rule_types = MS_Model_Rule::get_rule_types();
 
 		?>
-		<div class="ms-wrap wrap">
-			<div class="ms-tabs-titlerow">
-				<span><?php _e( 'Accessible Content:', MS_TEXT_DOMAIN );?></span>
-			</div>
-		</div>
-		<div class="ms-settings">
-			<div class="ms-group">
+		<div class="ms-settings ms-group">
 			<?php
 			foreach ( $rule_types as $rule_type ) {
 				$has_rules = false;
@@ -287,9 +287,24 @@ class MS_View_Membership_Overview extends MS_View {
 				}
 			}
 			?>
-			</div>
 		</div>
 		<?php
+
+		MS_Helper_Html::html_element(
+			array(
+				'id' => 'setup_payment',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+				'url' => add_query_arg(
+					array(
+						'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
+						'membership_id' => $this->data['membership']->id,
+						'edit' => 1,
+					)
+				),
+				'class' => 'wpmui-field-button button',
+			)
+		);
 	}
 
 	/**
