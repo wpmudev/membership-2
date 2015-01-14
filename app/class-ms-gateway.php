@@ -488,8 +488,16 @@ class MS_Gateway extends MS_Model_Option {
 					$this->$property = trim( sanitize_text_field( $value ) );
 					break;
 
+				case 'active':
+				case 'manual_payment':
+				case 'pro_rate':
+					$this->$property = ( ! empty( $value ) ? true : false );
+					break;
+
 				default:
-					$this->$property = trim( $value );
+					if ( is_string( $value ) ) {
+						$this->$property = trim( $value );
+					}
 					break;
 			}
 		}
@@ -515,7 +523,27 @@ class MS_Gateway extends MS_Model_Option {
 		$value = null;
 
 		if ( property_exists( $this, $property ) ) {
-			$value = trim( $this->$property );
+			switch ( $property ) {
+				case 'active':
+				case 'manual_payment':
+				case 'pro_rate':
+					return ( ! empty( $this->$property ) ? true : false );
+					break;
+
+				case 'id':
+				case 'name':
+				case 'description':
+				case 'pay_button_url':
+				case 'upgrade_button_url':
+				case 'cancel_button_url':
+				case 'mode':
+					$value = trim( $this->$property );
+					break;
+
+				default:
+					$value = $this->$property;
+					break;
+			}
 		}
 
 		return apply_filters(

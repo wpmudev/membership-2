@@ -699,6 +699,46 @@ jQuery(function init_tooltip () {
 /*global ms_data:false */
 /*global ms_functions:false */
 
+window.ms_init.controller_adminbar = function init () {
+
+	function change_membership( ev ) {
+		// Get selected Membership ID
+		var membership_id = ev.currentTarget.value;
+		// Get selected Membership nonce
+		var nonce = jQuery( '#wpadminbar #view-as-selector' )
+			.find( 'option[value="' + membership_id + '"]' )
+			.attr( 'nonce' );
+
+		// Update hidden fields
+		jQuery( '#wpadminbar #ab-membership-id' ).val( membership_id );
+		jQuery( '#wpadminbar #view-site-as #_wpnonce' ).val( nonce );
+
+		// Submit form
+		jQuery( '#wpadminbar #view-site-as' ).submit();
+	}
+
+	jQuery('#wp-admin-bar-membership-simulate').find('a').click(function(e){
+		jQuery('#wp-admin-bar-membership-simulate')
+			.removeClass('hover')
+			.find('> div')
+			.filter(':first-child')
+			.html( ms_data.switching_text );
+	});
+
+	jQuery( '.ms-date' ).ms_datepicker();
+
+	jQuery( '#wpadminbar #view-site-as' )
+		.parents( '#wpadminbar' )
+		.addClass('simulation-mode');
+
+	jQuery( '#wpadminbar #view-as-selector' ).change( change_membership );
+
+};
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
 window.ms_init.view_help = function init () {
 	function toggle_section() {
 		var me = jQuery( this ),
@@ -709,6 +749,39 @@ window.ms_init.view_help = function init () {
 	}
 
 	jQuery( '.ms-help-toggle' ).click( toggle_section );
+};
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_billing_edit = function init () {
+	var args = {
+		onkeyup: false,
+		errorClass: 'ms-validation-error',
+		rules: {
+			'name': 'required',
+			'user_id': {
+				'required': true,
+				'min': 1,
+			},
+			'membership_id': {
+				'required': true,
+				'min': 1,
+			},
+			'amount': {
+				'required': true,
+				'min': 0,
+			},
+			'due_date': {
+				'required': true,
+				'dateISO': true,
+			},
+		}
+	};
+
+	jQuery('.ms-form').validate(args);
 };
 
 /*global window:false */
@@ -866,6 +939,25 @@ window.ms_init.view_membership_choose_type = function init () {
 /*global document:false */
 /*global ms_data:false */
 /*global ms_functions:false */
+
+window.ms_init.view_membership_create_child = function init () {
+	var args = {
+		onkeyup: false,
+		errorClass: 'ms-validation-error',
+		rules: {
+			'name': {
+				'required': true,
+			}
+		}
+	};
+
+	jQuery( '#ms-create-child-form' ).validate(args);
+};
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
 /*global wpmUi:false */
 
 window.ms_init.view_membership_list = function init () {
@@ -944,6 +1036,37 @@ window.ms_init.view_membership_list = function init () {
 /*global ms_data:false */
 /*global ms_functions:false */
 
+window.ms_init.metabox = function init() {
+	if ( jQuery( '.ms-protect-content' ).hasClass( 'on' ) ) {
+		jQuery( '#ms-metabox-access-wrapper' ).show();
+	} else {
+		jQuery( '#ms-metabox-access-wrapper' ).hide();
+	}
+
+	jQuery( '.dripped' ).click( function() {
+		var tooltip = jQuery( this ).children( '.tooltip' );
+		tooltip.toggle(300);
+	} );
+
+	window.ms_init.ms_metabox_event = function( event, data ) {
+		jQuery( '#ms-metabox-wrapper' ).replaceWith( data.response );
+		window.ms_init.ms_metabox();
+		jQuery( '.wpmui-radio-slider' ).click( function() { window.ms_functions.radio_slider_ajax_update( this ); } );
+		jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) { window.ms_init.ms_metabox_event( event, data ); } );
+	};
+
+	window.ms_init.ms_metabox();
+
+	jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
+		window.ms_init.ms_metabox_event( event, data );
+	});
+};
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
 window.ms_init.view_membership_overview = function init () {
 	var ms_desc = jQuery( '.membership-description' ),
 		ms_show_editor = ms_desc.find( '.show-editor' ),
@@ -1002,6 +1125,140 @@ window.ms_init.view_membership_overview = function init () {
 				}
 			}
 		);
+};
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_membership_urlgroup = function init () {
+	var timeout = false;
+
+	//global functions defined in ms-functions.js
+	ms_functions.test_url = function() {
+		if ( timeout ) {
+			window.clearTimeout( timeout );
+		}
+
+		timeout = window.setTimeout(function() {
+			var container = jQuery( '#url-test-results-wrapper' ),
+				url = jQuery.trim(jQuery( '#url_test' ).val() ),
+				rules = jQuery( '#rule_value' ).val().split( "\n" ),
+				is_regex = jQuery( '#is_regex' ).val();
+
+			if ( is_regex === 'true' || is_regex === '1' ) {
+				is_regex = true;
+			} else {
+				is_regex = false;
+			}
+
+			container.empty().hide();
+
+			if ( url === '' ) {
+				return;
+			}
+
+			jQuery.each( rules, function( i, rule ) {
+				var line, result, ruleurl, reg, match;
+
+				rule = jQuery.trim(rule);
+				if ( rule === '' ) {
+					return;
+				}
+
+				line = jQuery( '<div />' ).addClass( 'ms-rule-test' );
+				ruleurl = jQuery( '<span />' ).appendTo( line ).text( rule ).addClass( 'ms-test-url' );
+				result = jQuery( '<span />' ).appendTo( line ).addClass( 'ms-test-result' );
+
+				match = false;
+				if ( is_regex ) {
+					reg = new RegExp( rule, 'i' );
+					match = reg.test( url );
+				} else {
+					match = url.indexOf( rule ) >= 0;
+				}
+
+				if ( match ) {
+					line.addClass( 'ms-rule-valid' );
+					result.text( ms_data.valid_rule_msg );
+				} else {
+					line.addClass( 'ms-rule-invalid' );
+					result.text( ms_data.invalid_rule_msg );
+				}
+
+				container.append( line );
+			});
+
+			if ( ! container.find( '> div' ).length ) {
+				container.html( '<div><i>' + ms_data.empty_msg + '</i></div>' );
+			}
+
+			container.show();
+		}, 500);
+	};
+
+	jQuery( '#url_test, #rule_value' ).keyup( ms_functions.test_url );
+};
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_membership_dripped = function init () {
+
+	//global functions defined in ms-functions.js
+	ms_functions.change_dripped_type = function( obj ) {
+		var type = jQuery( obj ).val();
+
+		jQuery( '.ms-dripped-edit-wrapper' ).hide();
+		jQuery( '.ms-dripped-type-' + type ).show();
+	};
+
+	ms_functions.change_access = function( access, slider ) {
+		var type = jQuery( 'input[name="dripped_type"]:checked').val();
+
+		if ( access ) {
+			jQuery( slider ).parent().parent().find( '.dripped.column-dripped' ).css( 'visibility', 'visible' );
+		} else {
+			jQuery( slider ).parent().parent().find( '.dripped.column-dripped' ).css( 'visibility', 'hidden' );
+		}
+	};
+
+	jQuery( 'input[name="dripped_type"]').change( function() { ms_functions.change_dripped_type( this ); } );
+
+	jQuery( '.ms-dripped-spec-date' ).ms_datepicker();
+
+	ms_functions.change_dripped_type( jQuery( 'input[name="dripped_type"]:checked') );
+
+	jQuery( '.ms-dripped-calendar' ).click( function() {
+		jQuery( this ).parent().find( '.ms-dripped-spec-date.wpmui-ajax-update' ).datepicker( 'show' );
+	});
+
+	jQuery( '.ms-period-desc-wrapper' ).click( function() {
+		jQuery( this ).parent().addClass( 'ms-dripped-edit' );
+	});
+
+	jQuery( 'input.ms-dripped-edit-ok' ).click( function() {
+		var period_unit, period_type;
+
+		jQuery( this ).parent().parent().removeClass( 'ms-dripped-edit' );
+		period_unit = jQuery( this ).parent().find( 'input' );
+		period_type = jQuery( this ).parent().find( 'select' );
+		period_unit.change();
+		period_type.change();
+		jQuery( this ).parent().parent().find( '.ms-period-unit' ).text( period_unit.val() );
+		jQuery( this ).parent().parent().find( '.ms-period-type' ).text( period_type.val() );
+	});
+
+	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
+		ms_functions.change_access( data.value, event.target );
+	});
+
+	jQuery( '.wpmui-radio-slider' ).each( function() {
+		var value = ( jQuery( this ).children( 'input' ).val() ) ? 1 : 0;
+		ms_functions.change_access( value, this );
+	});
 };
 /*global window:false */
 /*global document:false */
@@ -1067,6 +1324,20 @@ window.ms_init.view_membership_setup_payment = function init () {
 	jQuery( '#currency' ).change( show_currency );
 
 };
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_membership_setup = function init () {
+	//global functions defined in ms-functions.js
+	jQuery( '#comment' ).change( function() { ms_functions.ajax_update( this ); } );
+
+	jQuery( '#menu_id' ).change( function() {
+		jQuery( '#ms-menu-form' ).submit();
+	});
+};
+
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */

@@ -210,10 +210,16 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		if ( 'edit' == @$_GET['action'] ) {
+		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_script( 'jquery-validate' );
-			wp_enqueue_script( 'ms-view-billing-edit' );
+
+			$data = array(
+				'ms_init' => array( 'view_billing_edit' ),
+			);
+
+			wp_localize_script( 'ms-admin', 'ms_data', $data );
+			wp_enqueue_script( 'ms-admin' );
 		}
 	}
 

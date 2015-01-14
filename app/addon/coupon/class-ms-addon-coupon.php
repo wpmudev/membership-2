@@ -379,9 +379,16 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function enqueue_scripts() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
+			$plugin_url = MS_Plugin::instance()->url;
+
 			wp_enqueue_script( 'jquery-validate' );
-			wp_enqueue_script( 'ms-view-coupon-edit' );
 			WDev()->add_ui( 'jquery-ui' );
+
+			wp_enqueue_script(
+				'ms-view-coupon-edit',
+				$plugin_url . '/app/addon/coupon/assets/js/edit.js',
+				array( 'jquery' ), $version
+			);
 		}
 
 		do_action( 'ms_addon_coupon_enqueue_scripts', $this );
@@ -508,7 +515,7 @@ class MS_Addon_Coupon extends MS_Addon {
 							?></div>
 						<?php endif;
 
-						foreach ( $fields as $field ){
+						foreach ( $fields as $field ) {
 							MS_Helper_Html::html_element( $field );
 						}
 						?>

@@ -618,17 +618,16 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		wp_localize_script(
-			'ms-controller-admin-bar',
-			'ms',
-			array(
-				'switching_text' => __( 'Switching...', MS_TEXT_DOMAIN ),
-			)
-		);
-
 		WDev()->add_ui( 'select' );
 
-		wp_enqueue_script( 'ms-controller-admin-bar' );
+		$data = array(
+			'ms_init' => array( 'controller_adminbar' ),
+			'switching_text' => __( 'Switching...', MS_TEXT_DOMAIN ),
+		);
+
+		wp_localize_script( 'ms-admin', 'ms_data', $data );
+
+		wp_enqueue_script( 'ms-admin' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
 		wp_enqueue_style( 'ms-public' );

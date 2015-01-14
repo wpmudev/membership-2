@@ -44,36 +44,39 @@ class MS_View_Billing_List extends MS_View {
 		$billing_list->prepare_items();
 
 		$title = __( 'Billing', MS_TEXT_DOMAIN );
-		if( ! empty( $_GET['gateway_id'] ) ) {
+		if ( ! empty( $_GET['gateway_id'] ) ) {
 			$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
-			if( $gateway->name ) {
+			if ( $gateway->name ) {
 				$title .= ' - '. $gateway->name;
 			}
 		}
+
 		$add_new_button = array(
-				'id' => 'add_new',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'url' => sprintf( 'admin.php?page=%s&action=edit&invoice_id=0', MS_Controller_Plugin::MENU_SLUG . '-billing' ),
-				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
-				'class' => 'button',
+			'id' => 'add_new',
+			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'url' => sprintf( 'admin.php?page=%s&action=edit&invoice_id=0', MS_Controller_Plugin::MENU_SLUG . '-billing' ),
+			'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+			'class' => 'button',
 		);
 
 		ob_start();
 		?>
 
-		<div class="wrap ms-wrap">
+		<div class="wrap ms-wrap ms-billing">
 			<?php
-				MS_Helper_Html::settings_header( array(
-					'title' => $title,
-					'title_icon_class' => 'wpmui-fa wpmui-fa-credit-card',
-				) );
+				MS_Helper_Html::settings_header(
+					array(
+						'title' => $title,
+						'title_icon_class' => 'wpmui-fa wpmui-fa-credit-card',
+					)
+				);
 			?>
 			<div >
 				<?php MS_Helper_Html::html_element( $add_new_button );?>
 			</div>
 			<?php $billing_list->views(); ?>
 			<form action="" method="post">
-				<?php $billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search'); ?>
+				<?php $billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search' ); ?>
 				<?php $billing_list->display(); ?>
 			</form>
 		</div>

@@ -212,7 +212,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				$error = 'Response Error: Unexpected transaction response';
 				MS_Helper_Debug::log( $error );
 				MS_Helper_Debug::log( $response );
-				exit( $error );
+				wp_die( $error );
 			}
 
 			if ( empty( $_POST['custom'] ) ) {

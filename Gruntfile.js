@@ -3,16 +3,23 @@ module.exports = function( grunt ) {
 	var paths = {
 		js_files_concat: {
 			'app/assets/js/ms-admin.js': [
-				'app/assets/js/src/ms-admin.js',
+				'app/assets/js/src/ms-loader.js',
 				'app/assets/js/src/ms-functions.js',
 				'app/assets/js/src/ms-tooltip.js',
+				'app/assets/js/src/ms-controller-adminbar.js',
 				'app/assets/js/src/ms-view-help.js',
+				'app/assets/js/src/ms-view-billing-edit.js',
 				'app/assets/js/src/ms-view-member-date.js',
 				'app/assets/js/src/ms-view-member-list.js',
 				'app/assets/js/src/ms-view-membership-choose-type.js',
+				'app/assets/js/src/ms-view-membership-create-child.js',
 				'app/assets/js/src/ms-view-membership-list.js',
+				'app/assets/js/src/ms-view-membership-metabox.js',
 				'app/assets/js/src/ms-view-membership-overview.js',
+				'app/assets/js/src/ms-view-membership-render-url-group.js',
+				'app/assets/js/src/ms-view-membership-setup-dripped.js',
 				'app/assets/js/src/ms-view-membership-setup-payment.js',
+				'app/assets/js/src/ms-view-membership-setup-protected-content.js',
 				'app/assets/js/src/ms-view-settings.js',
 				'app/assets/js/src/ms-view-addons.js',
 				'app/assets/js/src/ms-view-settings-automated-msg.js',
@@ -20,7 +27,14 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-settings-payment.js',
 				'app/assets/js/src/ms-view-settings-protection.js'
 			],
+			'app/assets/js/ms-public.js': [
+				'app/assets/js/src/ms-loader.js',
+				'app/assets/js/src/ms-shortcode.js',
+				'app/assets/js/src/ms-view-frontend-profile.js',
+				'app/assets/js/src/ms-view-gateway-authorize.js'
+			],
 			'app/assets/js/jquery.plugins.js': [ 'app/assets/js/vendor/jquery.nearest.js' ],
+			'app/assets/js/jquery.validate.js': [ 'app/assets/js/vendor/jquery.validate.js' ],
 			'app/assets/js/ms-public-ajax.js': ['app/assets/js/src/ms-public-ajax.js']
 		},
 

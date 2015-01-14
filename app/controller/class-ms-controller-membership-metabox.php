@@ -152,7 +152,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 				//membership metabox html returned via ajax response
 				$this->membership_metabox( $post );
 			} else {
-				echo true;
+				echo 'true';
 			}
 		}
 
@@ -254,7 +254,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 
 			default:
 				if ( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
-					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST) ) {
+					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
 					} else {
 						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
@@ -390,7 +390,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		if ( in_array( $post_type, $this->post_types )
 			&& ! $this->is_read_only( $post_type )
 		) {
-			wp_enqueue_script( 'membership-metabox' );
+			WDev()->add_data( 'ms_data', array( 'ms_init' => array( 'metabox' ) ) );
 			wp_enqueue_script( 'ms-admin' );
 		}
 	}

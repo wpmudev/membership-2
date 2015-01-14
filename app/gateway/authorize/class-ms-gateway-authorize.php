@@ -175,9 +175,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		if ( empty( $cim_profile_id ) ) {
 			$this->create_cim_profile( $member );
-		}
-		// Fetch for user selected cim profile
-		elseif ( $cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) ) ) {
+		} elseif ( $cim_payment_profile_id = trim( filter_input( INPUT_POST, 'profile' ) ) ) {
+			// Fetch for user selected cim profile
 			$response = $this->get_cim()->getCustomerPaymentProfile( $cim_profile_id, $cim_payment_profile_id );
 
 			if ( $response->isError() ) {
@@ -185,15 +184,13 @@ class MS_Gateway_Authorize extends MS_Gateway {
 					__( 'The selected payment profile is invalid, enter a new credit card', MS_TEXT_DOMAIN )
 				);
 			}
-		}
-		else {
+		} else {
 			$this->update_cim_profile( $member );
 		}
 
 		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
 			$this->online_purchase( $invoice, $member );
-		}
-		elseif ( 0 == $invoice->total ) {
+		} elseif ( 0 == $invoice->total ) {
 			$this->process_transaction( $invoice );
 		}
 
@@ -289,8 +286,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				$invoice->save();
 
 				$this->process_transaction( $invoice );
-			}
-			else {
+			} else {
 				throw new Exception(
 					sprintf(
 						__( 'Payment Failed: code %s, subcode %s, reason code %, reason %s', MS_TEXT_DOMAIN ),
@@ -301,8 +297,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 					)
 				);
 			}
-		}
-		else {
+		} else {
 			throw new Exception(
 				__( 'Payment Failed: ', MS_TEXT_DOMAIN ) . $response->getMessageText()
 			);
@@ -339,6 +334,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				'card_exp',
 				gmdate( 'Y-m-t', strtotime( "{$exp_year}-{$exp_month}-01" ) )
 			);
+
 			$member->set_gateway_profile(
 				$this->id,
 				'card_num',
@@ -346,7 +342,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			);
 		}
 
-		do_action( 'ms_gateway_authorize_save_card_info_after', $member, $this );
+		do_action(
+			'ms_gateway_authorize_save_card_info_after',
+			$member,
+			$this
+		);
 	}
 
 	/**
@@ -372,8 +372,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		if ( ! empty( self::$cim ) ) {
 			$cim = self::$cim;
-		}
-		else {
+		} else {
 			$this->load_authorize_lib();
 
 			$cim = new AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
@@ -385,7 +384,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			self::$cim = $cim;
 		}
 
-		return apply_filters( 'ms_gateway_authorize_get_cim', $cim, $this );
+		return apply_filters(
+			'ms_gateway_authorize_get_cim',
+			$cim,
+			$this
+		);
 	}
 
 	/**
@@ -396,7 +399,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @return string The CIM profile Id.
 	 */
 	public function get_cim_profile_id( $member ) {
-		$cim_profile_id = $member->get_gateway_profile( $this->id, 'cim_profile_id' );
+		$cim_profile_id = $member->get_gateway_profile(
+			$this->id,
+			'cim_profile_id'
+		);
 
 		return apply_filters(
 			'ms_gateway_authorize_get_cim_profile_id',
@@ -414,7 +420,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @return string The CIM payment profile Id.
 	 */
 	public function get_cim_payment_profile_id( $member ) {
-		$cim_payment_profile_id = $member->get_gateway_profile( $this->id, 'cim_payment_profile_id' );
+		$cim_payment_profile_id = $member->get_gateway_profile(
+			$this->id,
+			'cim_payment_profile_id'
+		);
 
 		return apply_filters(
 			'ms_gateway_authorize_get_cim_payment_profile_id',
@@ -433,8 +442,17 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @param string $cim_payment_profile_id The CIM payment profile ID to save.
 	 */
 	protected function save_cim_profile( $member, $cim_profile_id, $cim_payment_profile_id ) {
-		$member->set_gateway_profile( $this->id, 'cim_profile_id', $cim_profile_id );
-		$member->set_gateway_profile( $this->id, 'cim_payment_profile_id', $cim_payment_profile_id );
+		$member->set_gateway_profile(
+			$this->id,
+			'cim_profile_id',
+			$cim_profile_id
+		);
+		$member->set_gateway_profile(
+			$this->id,
+			'cim_payment_profile_id',
+			$cim_payment_profile_id
+		);
+
 		$this->save_card_info( $member );
 		$member->save();
 
@@ -461,8 +479,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		if ( $cim_profile_id ) {
 			$response = $this->get_cim()->getCustomerProfile( $cim_profile_id );
+
 			if ( $response->isOk() ) {
 				$cim_profiles = json_decode( json_encode( $response->xml->profile ), true );
+
 				if ( is_array( $cim_profiles )
 					&& ! empty( $cim_profiles['paymentProfiles'] )
 					&& is_array( $cim_profiles['paymentProfiles'] )
@@ -513,8 +533,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				// Try again
 				$this->create_cim_profile( $member );
 				return;
-			}
-			else {
+			} else {
 				throw new Exception(
 					__( 'Payment failed due to CIM profile not created: ', MS_TEXT_DOMAIN ) . $response->getMessageText()
 				);
@@ -548,8 +567,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				$this->create_cim_payment_profile()
 			);
 			$cim_payment_profile_id = $response->getCustomerPaymentProfileIds();
-		}
-		else {
+		} else {
 			$response = $this->get_cim()->updateCustomerPaymentProfile(
 				$cim_profile_id,
 				$cim_payment_profile_id,

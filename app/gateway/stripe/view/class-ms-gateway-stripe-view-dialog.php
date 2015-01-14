@@ -51,6 +51,7 @@ class MS_Gateway_Stripe_View_Dialog extends MS_Dialog {
 
 		unset( $data['action'] );
 		unset( $data['dialog'] );
+		unset( $data['gateway_id'] );
 
 		$cont = MS_Plugin::instance()->controller->controllers['gateway'];
 		$res = $cont->gateway_list_do_action( 'edit', array( $this->gateway_id ), $data );

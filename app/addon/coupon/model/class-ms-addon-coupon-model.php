@@ -65,6 +65,15 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 	const COUPON_REDEMPTION_TIME = 3600;
 
 	/**
+	 * Is set to true once the coupon is loaded from DB
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var string
+	 */
+	protected $_empty = true;
+
+	/**
 	 * Coupon code text.
 	 *
 	 * @since 1.0.0
@@ -315,9 +324,12 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 			$coupon_id = $item[0];
 		}
 
+		$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $coupon_id );
+		$coupon->_empty = false;
+
 		return apply_filters(
 			'ms_addon_coupon_model_load_by_coupon_code',
-			MS_Factory::load( 'MS_Addon_Coupon_Model', $coupon_id ),
+			$coupon,
 			$code
 		);
 	}
@@ -336,34 +348,36 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 		$valid = true;
 		$this->coupon_message = null;
 
-		if ( empty( $this->code ) ) {
-			$this->coupon_message = __( 'Coupon code not found.', MS_TEXT_DOMAIN );
-			$valid = false;
-		}
-		if ( $this->max_uses && $this->used > $this->max_uses ) {
-			$this->coupon_message = __( 'No Coupons remaining for this code.', MS_TEXT_DOMAIN );
-			$valid = false;
+		if ( $this->_empty ) {
+			// No coupon-code entered, so don't do anything
+			return;
 		}
 
 		$timestamp = MS_Helper_Period::current_time( 'timestamp' );
-		if ( ! empty( $this->start_date ) && strtotime( $this->start_date ) > $timestamp ) {
+
+		if ( empty( $this->code ) ) {
+			$this->coupon_message = __( 'Coupon code not found.', MS_TEXT_DOMAIN );
+			$valid = false;
+		} elseif ( $this->max_uses && $this->used > $this->max_uses ) {
+			$this->coupon_message = __( 'No Coupons remaining for this code.', MS_TEXT_DOMAIN );
+			$valid = false;
+		} elseif ( ! empty( $this->start_date ) && strtotime( $this->start_date ) > $timestamp ) {
 			$this->coupon_message = __( 'This Coupon is not valid yet.', MS_TEXT_DOMAIN );
 			$valid = false;
-		}
-		if ( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) < $timestamp ) {
+		} elseif ( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) < $timestamp ) {
 			$this->coupon_message = __( 'This Coupon has expired.', MS_TEXT_DOMAIN );
 			$valid = false;
-		}
-
-		foreach ( $this->membership_id as $valid_id ) {
-			if ( $valid_id == 0 || $valid_id == $membership_id ) {
-				$membership_allowed = true;
-				break;
+		} else {
+			foreach ( $this->membership_id as $valid_id ) {
+				if ( $valid_id == 0 || $valid_id == $membership_id ) {
+					$membership_allowed = true;
+					break;
+				}
 			}
-		}
-		if ( ! $membership_allowed ) {
-			$this->coupon_message = __( 'This Coupon is not valid for this membership.', MS_TEXT_DOMAIN );
-			$valid = false;
+			if ( ! $membership_allowed ) {
+				$this->coupon_message = __( 'This Coupon is not valid for this membership.', MS_TEXT_DOMAIN );
+				$valid = false;
+			}
 		}
 
 		$this->_valid = $valid;

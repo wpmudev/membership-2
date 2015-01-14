@@ -182,7 +182,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**

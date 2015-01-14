@@ -110,40 +110,7 @@ class MS_Helper_Debug extends MS_Helper {
 		}
 	}
 
-	public static function process_error_backtrace( $errno, $errstr, $errfile, $errline, $errcontext ) {
-		if ( ! ( error_reporting() & $errno ) ) {
-			return;
-		}
-
-		switch ( $errno ) {
-			case E_WARNING      :
-			case E_USER_WARNING :
-			case E_STRICT       :
-			case E_NOTICE       :
-			case E_USER_NOTICE  :
-				$type = 'warning';
-				$fatal = false;
-				break;
-
-			default             :
-				$type = 'fatal error';
-				$fatal = true;
-				break;
-		}
-
-		$message = "[$type]: '$errstr' file: $errfile, line: $errline";
-		error_log( $message );
-		self::debug_trace();
-
-		if ( $fatal ) {
-			exit( 1 );
-		}
-	}
-
 }
 
-set_error_handler(
-	array( 'MS_Helper_Debug', 'process_error_backtrace')
-);
 MS_Helper_Debug::log( '**************************** REQUEST START ****************************' );
 MS_Helper_Debug::log( '***** URL: ' . WDev()->current_url() );

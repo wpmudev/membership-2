@@ -85,7 +85,7 @@ class MS_Controller_Member extends MS_Controller {
 			);
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**

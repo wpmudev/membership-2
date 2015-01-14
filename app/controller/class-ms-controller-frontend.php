@@ -869,7 +869,14 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 
 		if ( $is_profile ) {
-			wp_enqueue_script( 'ms-view-frontend-profile' );
+			$data = array(
+				'ms_init' => array( 'frontend_profile' ),
+			);
+
+			wp_localize_script( 'ms-public', 'ms_data', $data );
+
+			wp_enqueue_script( 'jquery-validate' );
+			wp_enqueue_script( 'ms-public' );
 		}
 	}
 }

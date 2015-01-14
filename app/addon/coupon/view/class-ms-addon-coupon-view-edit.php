@@ -32,9 +32,6 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 		ob_start();
 		// Render tabbed interface.
 		?>
-		<style>
-		.ms-coupon-form { max-width: 640px; margin: 0 auto; }
-		</style>
 		<div class="ms-wrap">
 			<?php
 			MS_Helper_Html::settings_header(
@@ -45,7 +42,7 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			);
 			?>
 			<form action="<?php echo esc_url( $form_url ); ?>" method="post" class="ms-form">
-				<?php MS_Helper_Html::settings_box( $fields, '', '', 'static', 'ms-coupon-form' ); ?>
+				<?php MS_Helper_Html::settings_box( $fields, '', '', 'static', 'ms-small-form' ); ?>
 			</form>
 			<div class="clear"></div>
 		</div>

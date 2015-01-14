@@ -108,7 +108,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**
@@ -133,7 +133,7 @@ class MS_Controller_Settings extends MS_Controller {
 			);
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**
@@ -158,7 +158,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**
@@ -189,7 +189,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**

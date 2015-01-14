@@ -190,7 +190,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 		return sprintf(
 			'<span class="the-name">%1$s</span> %2$s',
-			$name,
+			esc_html( $name ),
 			$this->row_actions( $actions )
 		);
 	}

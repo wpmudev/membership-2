@@ -498,6 +498,12 @@
   color: #FFF;
 }
 
+/* smaller forms */
+.ms-wrap .ms-small-form {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
 /**
  * Navigational elements.
  */
@@ -1654,6 +1660,48 @@
 .ms-wrap .ms-more-tag {
   display: inline-block;
   margin: 0 20px 0 0;
+}
+
+/**
+ * Special styles used on "Billing" page
+ */
+#wpwrap .ms-wrap.ms-billing .wpmui-label-txt_membership,
+.ms-wrap.ms-billing .wpmui-label-txt_membership {
+  margin-top: 10px;
+}
+#wpwrap .ms-wrap.ms-billing .wpmui-label-txt_user,
+#wpwrap .ms-wrap.ms-billing .wpmui-label-txt_membership,
+.ms-wrap.ms-billing .wpmui-label-txt_user,
+.ms-wrap.ms-billing .wpmui-label-txt_membership {
+  font-weight: 600;
+}
+
+/**
+ * Special styles used on "Protected Content" and "Accessible Content" pages
+ */
+#url-test-results-wrapper {
+  margin: 10px 0 0;
+  border: 1px solid #e5e5e5;
+  background: #FAFAFA;
+}
+#url-test-results-wrapper:empty {
+  display: none;
+}
+#url-test-results-wrapper div {
+  padding: 10px;
+}
+#url-test-results-wrapper .ms-test-result {
+  float: right;
+}
+#url-test-results-wrapper .ms-rule-valid {
+  color: #080;
+  background-color: rgba(0, 128, 0, 0.03);
+}
+#url-test-results-wrapper .ms-rule-valid .ms-test-result {
+  font-weight: bold;
+}
+#url-test-results-wrapper .ms-rule-invalid {
+  color: #C31;
 }
 
 /**

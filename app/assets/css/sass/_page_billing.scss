@@ -1,0 +1,17 @@
+/**
+ * Special styles used on "Billing" page
+ */
+
+#wpwrap .ms-wrap,
+.ms-wrap {
+	&.ms-billing {
+		.wpmui-label-txt_membership {
+			margin-top: 10px;
+		}
+
+		.wpmui-label-txt_user,
+		.wpmui-label-txt_membership {
+			font-weight: 600;
+		}
+	}
+}

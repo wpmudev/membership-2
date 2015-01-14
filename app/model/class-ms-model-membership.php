@@ -1183,17 +1183,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		// Retrieve memberships user is not part of, using selected args
 		$memberships = self::get_grouped_memberships( $args );
 
-		$parent_ids = array();
+		$disabled_parents = array();
 		foreach ( $memberships as $key => $membership ) {
 			if ( $membership->can_have_children() ) {
-				if ( ! $membership->active ) {
-					$parent_ids[] = $membership->id;
+				if ( ! $membership->active || $membership->private ) {
+					$disabled_parents[] = $membership->id;
 				}
 				// Remove parent memberships
 				unset( $memberships[ $key ] );
 			}
-			// Remove all children if parent is disabled
-			if ( in_array( $membership->parent_id, $parent_ids ) ) {
+			// Remove all children if parent is disabled or private
+			if ( in_array( $membership->parent_id, $disabled_parents ) ) {
 				unset( $memberships[ $key ] );
 			}
 			// Remove if not active.
@@ -2040,6 +2040,14 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 			case 'trial_period_type':
 				$value = MS_Helper_Period::get_period_value( $this->trial_period, 'period_type' );
+				break;
+
+			case 'price':
+				if ( $this->is_free() ) {
+					$value = 0;
+				} else {
+					$value = $this->price;
+				}
 				break;
 
 			default:

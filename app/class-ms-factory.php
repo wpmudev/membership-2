@@ -252,6 +252,8 @@ class MS_Factory {
 					$model->id = $post->ID;
 					$model->description = $post->post_content;
 					$model->user_id = $post->post_author;
+				} else {
+					$model->id = 0;
 				}
 
 				if ( is_array( $model->_subobjects ) ) {

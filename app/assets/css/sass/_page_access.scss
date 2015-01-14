@@ -1,0 +1,34 @@
+/**
+ * Special styles used on "Protected Content" and "Accessible Content" pages
+ */
+
+#url-test-results-wrapper {
+	margin: 10px 0 0;
+	border: 1px solid #e5e5e5;
+	background: #FAFAFA;
+
+	&:empty {
+		display: none;
+	}
+
+	div {
+		padding: 10px;
+	}
+
+	.ms-test-result {
+		float: right;
+	}
+
+	.ms-rule-valid {
+		color: #080;
+		background-color: rgba(0,128,0,0.03);
+
+		.ms-test-result {
+			font-weight: bold;
+		}
+	}
+
+	.ms-rule-invalid {
+		color: #C31;
+	}
+}

@@ -377,48 +377,6 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/js/jquery.validate.js',
 			array( 'jquery' ), $version
 		);
-		wp_register_script(
-			'ms-controller-admin-bar',
-			$plugin_url . 'app/assets/js/ms-controller-admin-bar.js',
-			array( 'jquery', 'ms-admin' ), $version
-		);
-
-		// View specific
-		wp_register_script(
-			'ms-view-membership-setup-protected-content',
-			$plugin_url . 'app/assets/js/ms-view-membership-setup-protected-content.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-view-membership-render-url-group',
-			$plugin_url . 'app/assets/js/ms-view-membership-render-url-group.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-view-membership-create-child',
-			$plugin_url . 'app/assets/js/ms-view-membership-create-child.js',
-			array( 'jquery', 'jquery-validate' ), $version
-		);
-		wp_register_script(
-			'ms-view-membership-setup-dripped',
-			$plugin_url. 'app/assets/js/ms-view-membership-setup-dripped.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'membership-metabox',
-			$plugin_url. 'app/assets/js/ms-view-membership-metabox.js',
-			array( 'jquery', 'ms-admin' ), $version
-		);
-		wp_register_script(
-			'ms-view-coupon-edit',
-			$plugin_url . 'app/assets/js/ms-view-coupon-edit.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-view-billing-edit',
-			$plugin_url . 'app/assets/js/ms-view-billing-edit.js',
-			array( 'jquery', 'ms-admin' ), $version
-		);
 	}
 
 	/**
@@ -436,17 +394,6 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/css/ms-admin.css',
 			null, $version
 		);
-
-		wp_register_style(
-			'ms_view_membership',
-			$plugin_url . 'app/assets/css/ms-view-membership.css',
-			null, $version
-		);
-		wp_register_style(
-			'ms-admin-bar',
-			$plugin_url . 'app/assets/css/ms-admin-bar.css',
-			null, $version
-		);
 	}
 
 	/**
@@ -458,8 +405,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 
-
-		// @todo REVIEW this block start
 		// The main plugin script.
 		wp_register_script(
 			'ms-admin',
@@ -471,6 +416,11 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/js/ms-public-ajax.js',
 			array( 'jquery' ), $version, true // last param forces script to load in footer
 		);
+		wp_register_script(
+			'ms-public',
+			$plugin_url . 'app/assets/js/ms-public.js',
+			array( 'jquery' ), $version
+		);
 
 		wp_register_script(
 			'jquery-plugins',
@@ -480,38 +430,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		wp_register_script(
 			'jquery-validate',
 			$plugin_url . 'app/assets/js/jquery.validate.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-controller-admin-bar',
-			$plugin_url . 'app/assets/js/ms-controller-admin-bar.js',
-			array( 'jquery', 'ms-admin' ), $version
-		);
-		// @todo REVIEW this block end
-
-		wp_register_script(
-			'jquery-validate',
-			$plugin_url . 'app/assets/js/jquery.validate.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-shortcode',
-			$plugin_url . 'app/assets/js/ms-shortcode.js',
-			array( 'jquery-validate' ), $version
-		);
-		wp_register_script(
-			'ms-view-frontend-profile',
-			$plugin_url . 'app/assets/js/ms-view-frontend-profile.js',
-			array( 'jquery-validate' ), $version
-		);
-		wp_register_script(
-			'ms-view-gateway-authorize',
-			$plugin_url . 'app/assets/js/ms-view-gateway-authorize.js',
-			array( 'jquery' ), $version
-		);
-		wp_register_script(
-			'ms-view-gateway-stripe',
-			$plugin_url . 'app/assets/js/ms-view-gateway-stripe.js',
 			array( 'jquery' ), $version
 		);
 	}
@@ -579,15 +497,13 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_scripts() {
-		wp_localize_script(
-			'ms-shortcode',
-			'ms_shortcode',
-			array(
-				'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
-			)
+		$data = array(
+			'ms_init' => array( 'shortcode' ),
+			'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
 		);
 
+		wp_localize_script( 'ms-public', 'ms_data', $data );
+		wp_enqueue_script( 'ms-public' );
 		wp_enqueue_script( 'jquery-validate' );
-		wp_enqueue_script( 'ms-shortcode' );
 	}
 }

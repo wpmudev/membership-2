@@ -65,6 +65,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button', 10, 2 );
 		$this->add_action( 'ms_view_frontend_payment_purchase_button', 'purchase_button', 10, 2 );
+
 		$this->add_action( 'ms_controller_frontend_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_frontend_signup_process_purchase', 'process_purchase', 1 );
 		$this->add_filter( 'ms_view_shortcode_membership_signup_cancel_button', 'cancel_button', 10, 2 );
@@ -130,7 +131,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			);
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**
@@ -157,7 +158,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			);
 		}
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**
@@ -869,18 +870,21 @@ class MS_Controller_Gateway extends MS_Controller {
 			$step = $_POST['step'];
 		}
 
-		$gateway_id = @$_POST['gateway'];
+		WDev()->load_post_fields( 'gateway' );
+		$gateway_id = $_POST['gateway'];
 
 		switch ( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:
 				if ( MS_Gateway_Authorize::ID == $gateway_id ) {
 					wp_enqueue_script( 'jquery-validate' );
-					wp_enqueue_script( 'ms-view-gateway-authorize' );
-				}
-				break;
 
-			case MS_Controller_Frontend::STEP_PAYMENT_TABLE:
-				wp_enqueue_script( 'ms-view-gateway-stripe' );
+					$data = array(
+						'ms_init' => array( 'gateway_authorize' ),
+					);
+
+					wp_localize_script( 'ms-public', 'ms_data', $data );
+					wp_enqueue_script( 'ms-public' );
+				}
 				break;
 		}
 	}

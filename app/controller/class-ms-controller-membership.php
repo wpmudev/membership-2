@@ -137,7 +137,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$this
 		);
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**
@@ -168,7 +168,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$this
 		);
 
-		exit( $msg );
+		wp_die( $msg );
 	}
 
 	/**
@@ -1660,14 +1660,11 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-
 		switch ( $this->get_active_tab() ) {
 			default:
 				WDev()->add_ui( 'jquery-ui' );
 				break;
 		}
-
-		wp_enqueue_style( 'ms_view_membership' );
 
 		do_action( 'ms_controller_membership_enqueue_styles', $this );
 	}
@@ -1710,21 +1707,14 @@ class MS_Controller_Membership extends MS_Controller {
 				switch ( $this->get_active_tab() ) {
 					case 'category':
 					case 'comment':
-						wp_enqueue_script( 'ms-view-membership-setup-protected-content' );
+						$data['ms_init'][] = 'view_membership_setup';
 						break;
 
 					case 'url_group':
-						wp_localize_script(
-							'ms-view-membership-render-url-group',
-							'ms',
-							array(
-								'valid_rule_msg' => __( 'Valid', MS_TEXT_DOMAIN ),
-								'invalid_rule_msg' => __( 'Invalid', MS_TEXT_DOMAIN ),
-								'empty_msg'	=> __( 'Add Page URLs to the group in case you want to test it against', MS_TEXT_DOMAIN ), //wording confusing
-								'nothing_msg' => __( 'Enter an URL above to test against rules in the group', MS_TEXT_DOMAIN ),
-							)
-						);
-						wp_enqueue_script( 'ms-view-membership-render-url-group' );
+						$data['valid_rule_msg'] = __( 'Valid', MS_TEXT_DOMAIN );
+						$data['invalid_rule_msg'] = __( 'Invalid', MS_TEXT_DOMAIN );
+						$data['empty_msg'] = __( 'Before testing you have to first enter one or more Page URLs above.', MS_TEXT_DOMAIN );
+						$data['ms_init'][] = 'view_membership_urlgroup';
 						break;
 
 					default:
@@ -1737,7 +1727,7 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_SETUP_CONTENT_TYPES:
 			case self::STEP_SETUP_MS_TIERS:
 				wp_enqueue_script( 'jquery-validate' );
-				wp_enqueue_script( 'ms-view-membership-create-child' );
+				$data['ms_init'][] = 'view_membership_create_child';
 				break;
 
 			case self::STEP_SETUP_PAYMENT:
@@ -1747,7 +1737,7 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 
 			case self::STEP_SETUP_DRIPPED:
-				wp_enqueue_script( 'ms-view-membership-setup-dripped' );
+				$data['ms_init'][] = 'view_membership_dripped';
 				break;
 
 			case self::STEP_MS_LIST:

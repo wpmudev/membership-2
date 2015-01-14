@@ -1,6 +1,3 @@
-/*! Protected Content - v1.1.0
- * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2015; * Licensed GPLv2+ */
 /*!
  * jQuery Validation Plugin v1.13.0
  *
