@@ -218,7 +218,7 @@ class MS_Controller_Billing extends MS_Controller {
 				'ms_init' => array( 'view_billing_edit' ),
 			);
 
-			wp_localize_script( 'ms-admin', 'ms_data', $data );
+			WDev()->add_data( 'ms_data', $data );
 			wp_enqueue_script( 'ms-admin' );
 		}
 	}

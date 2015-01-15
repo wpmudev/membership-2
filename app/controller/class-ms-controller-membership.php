@@ -1700,6 +1700,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_OVERVIEW:
 				$data['ms_init'][] = 'view_membership_overview';
+				WDev()->add_ui( 'vnav' );
 				break;
 
 			case self::STEP_SETUP_PROTECTED_CONTENT:
@@ -1757,7 +1758,7 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 		}
 
-		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		WDev()->add_data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 
 		do_action( 'ms_controller_membership_enqueue_scripts', $this );

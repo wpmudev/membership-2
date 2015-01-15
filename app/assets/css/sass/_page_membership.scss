@@ -146,21 +146,11 @@
 		.wpmui-radio-caption {
 			opacity: 0.45;
 			cursor: not-allowed;
-
-			filter: blur(2px);
-			-moz-filter: blur(2px);
-			-webkit-filter: blur(2px);
 		}
 
 		.wpmui-input-description {
 			color: #CCC !important;
 			cursor: not-allowed;
-		}
-
-		.locked-blur {
-			filter: blur(2px);
-			-moz-filter: blur(2px);
-			-webkit-filter: blur(2px);
 		}
 
 		.locked-info {
@@ -290,6 +280,19 @@
 		}
 	}
 
+	.ms-membership-edit-wrapper {
+		position: absolute;
+		left: 10px;
+		top: 90px;
+		min-width: 245px;
+		text-align: center;
+
+		a {
+			padding: 5px 20px;
+			height: auto;
+		}
+	}
+
 	.ms-overview-container {
 		position: relative;
 
@@ -340,5 +343,62 @@
 	.ms-more-tag {
 		display: inline-block;
 		margin: 0 20px 0 0;
+	}
+}
+
+/* Membership editor popup */
+.vnav-editor {
+	.lst-vnav {
+		position: absolute;
+		top: -1px;
+		bottom: 50px;
+		left: 0;
+		right: 0;
+		margin: 0;
+	}
+
+	.lst-vnav-item {
+		.data {
+			border-bottom: 0;
+			border-right: 0;
+			top: 0;
+			bottom: 0;
+			overflow: auto;
+			padding: 0;
+
+			.ms-form {
+				padding: 10px 20px;
+
+				.wpmui-text,
+				.wpmui-textarea {
+					width: 100%;
+				}
+
+				.wpmui-textarea {
+					height: 140px;
+				}
+
+				.wpmui-radio-slider-wrapper label {
+					margin-top: 10px;
+				}
+			}
+		}
+
+		h3 {
+			font-size: 12px;
+			margin-left: 5px;
+			width: 176px;
+			border-radius: 4px 0 0 4px;
+		}
+
+		&:first-child {
+			h3 {
+				margin-top: 6px;
+			}
+		}
+
+		&.active {
+			box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.04);
+		}
 	}
 }

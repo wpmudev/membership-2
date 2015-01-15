@@ -82,8 +82,7 @@ class MS_View_Shortcode_Membership_Login extends MS_View {
 			// Load the ajax script that handles the Ajax login functions.
 			wp_enqueue_script( 'ms-ajax-login' );
 
-			wp_localize_script(
-				'ms-ajax-login',
+			WDev()->add_data(
 				'ms_ajax_login',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),

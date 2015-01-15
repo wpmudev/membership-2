@@ -972,17 +972,17 @@
 #wpwrap .ms-edit-access .wpmui-radio-slider .after,
 #wpwrap .ms-edit-protection .wpmui-radio-slider .after {
   left: 44px;
-  opacity: 0.25;
-  filter: blur(1px);
-  -webkit-filter: blur(1px);
+  opacity: 0.2;
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
 }
 .wpmui-wnd .ms-edit-access .wpmui-radio-slider.on .before,
 .wpmui-wnd .ms-edit-protection .wpmui-radio-slider.on .before,
 #wpwrap .ms-edit-access .wpmui-radio-slider.on .before,
 #wpwrap .ms-edit-protection .wpmui-radio-slider.on .before {
-  opacity: 0.25;
-  filter: blur(1px);
-  -webkit-filter: blur(1px);
+  opacity: 0.2;
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
 }
 .wpmui-wnd .ms-edit-access .wpmui-radio-slider.on .after,
 .wpmui-wnd .ms-edit-protection .wpmui-radio-slider.on .after,
@@ -1513,18 +1513,10 @@
 .ms-wrap .ms-locked .wpmui-radio-caption {
   opacity: 0.45;
   cursor: not-allowed;
-  filter: blur(2px);
-  -moz-filter: blur(2px);
-  -webkit-filter: blur(2px);
 }
 .ms-wrap .ms-locked .wpmui-input-description {
   color: #CCC !important;
   cursor: not-allowed;
-}
-.ms-wrap .ms-locked .locked-blur {
-  filter: blur(2px);
-  -moz-filter: blur(2px);
-  -webkit-filter: blur(2px);
 }
 .ms-wrap .ms-locked .locked-info {
   position: absolute;
@@ -1621,6 +1613,17 @@
 .ms-wrap .ms-membership-status-wrapper .ms-membership-status.ms-active .ms-active {
   display: block;
 }
+.ms-wrap .ms-membership-edit-wrapper {
+  position: absolute;
+  left: 10px;
+  top: 90px;
+  min-width: 245px;
+  text-align: center;
+}
+.ms-wrap .ms-membership-edit-wrapper a {
+  padding: 5px 20px;
+  height: auto;
+}
 .ms-wrap .ms-overview-container {
   position: relative;
 }
@@ -1660,6 +1663,49 @@
 .ms-wrap .ms-more-tag {
   display: inline-block;
   margin: 0 20px 0 0;
+}
+
+/* Membership editor popup */
+.vnav-editor .lst-vnav {
+  position: absolute;
+  top: -1px;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  margin: 0;
+}
+.vnav-editor .lst-vnav-item .data {
+  border-bottom: 0;
+  border-right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: auto;
+  padding: 0;
+}
+.vnav-editor .lst-vnav-item .data .ms-form {
+  padding: 10px 20px;
+}
+.vnav-editor .lst-vnav-item .data .ms-form .wpmui-text,
+.vnav-editor .lst-vnav-item .data .ms-form .wpmui-textarea {
+  width: 100%;
+}
+.vnav-editor .lst-vnav-item .data .ms-form .wpmui-textarea {
+  height: 140px;
+}
+.vnav-editor .lst-vnav-item .data .ms-form .wpmui-radio-slider-wrapper label {
+  margin-top: 10px;
+}
+.vnav-editor .lst-vnav-item h3 {
+  font-size: 12px;
+  margin-left: 5px;
+  width: 176px;
+  border-radius: 4px 0 0 4px;
+}
+.vnav-editor .lst-vnav-item:first-child h3 {
+  margin-top: 6px;
+}
+.vnav-editor .lst-vnav-item.active {
+  box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.04);
 }
 
 /**

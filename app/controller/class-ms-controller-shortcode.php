@@ -890,10 +890,17 @@ class MS_Controller_Shortcode extends MS_Controller {
 				break;
 		}
 
+		/**
+		 * The $content of the notice is translated!
+		 * This gives translators the option to translate even custom messages
+		 * that are entered into the shortcode!
+		 *
+		 * @since 1.1.0
+		 */
 		$content = sprintf(
 			'<p class="ms-alert-box %1$s">%2$s</p> ',
 			$class,
-			$content
+			__( $content, MS_TEXT_DOMAIN )
 		);
 
 		$content = do_shortcode( $content );

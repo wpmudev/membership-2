@@ -882,7 +882,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						'ms_init' => array( 'gateway_authorize' ),
 					);
 
-					wp_localize_script( 'ms-public', 'ms_data', $data );
+					WDev()->add_data( 'ms_data', $data );
 					wp_enqueue_script( 'ms-public' );
 				}
 				break;

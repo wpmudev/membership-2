@@ -24,18 +24,19 @@ jQuery(function() {
 	}
 
 	if ( undefined === window.ms_data ) { return; }
-	if ( undefined === ms_data.ms_init ) { return; }
 
-	if ( ms_data.ms_init instanceof Array ) {
-		for ( i = 0; i < ms_data.ms_init.length; i += 1 ) {
-			initialize( ms_data.ms_init[i] );
+	if ( undefined !== ms_data.ms_init ) {
+		if ( ms_data.ms_init instanceof Array ) {
+			for ( i = 0; i < ms_data.ms_init.length; i += 1 ) {
+				initialize( ms_data.ms_init[i] );
+			}
+		} else {
+			initialize( ms_data.ms_init );
 		}
-	} else {
-		initialize( ms_data.ms_init );
-	}
 
-	// Prevent multiple calls to init functions...
-	ms_data.ms_init = [];
+		// Prevent multiple calls to init functions...
+		ms_data.ms_init = [];
+	}
 });
 
 /*global window:false */
@@ -132,9 +133,6 @@ window.ms_functions = {
 			fn = window.ms_functions;
 
 		if ( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
-			info_field = fn.ajax_show_indicator( slider );
-
-			slider.addClass( 'ms-processing wpmui-loading' );
 			slider.toggleClass( 'on' );
 			slider.parent().toggleClass( 'on' );
 			slider.trigger( 'change' );
@@ -143,8 +141,11 @@ window.ms_functions = {
 			data = toggle.data( 'ajax' );
 			states = toggle.data( 'states' );
 
-			if ( null != data ) {
+			if ( null !== data && undefined !== data ) {
+				info_field = fn.ajax_show_indicator( slider );
+				slider.addClass( 'ms-processing wpmui-loading' );
 				state = slider.hasClass( 'on' );
+
 				if ( undefined !== states.active && state ) {
 					data.value = states.active;
 				} else if ( undefined !== states.inactive && ! state ) {
@@ -175,6 +176,8 @@ window.ms_functions = {
 						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
 					}
 				);
+			} else {
+				slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 			}
 		}
 	},
@@ -419,13 +422,21 @@ window.ms_functions = {
 	show_dialog: function( ev ) {
 		var me = jQuery( this ),
 			fn = window.ms_functions,
-			data = { };
+			data = { },
+			manual_data;
 
 		ev.preventDefault();
+
+		manual_data = me.attr( 'data-ms-data' );
+		if ( undefined !== manual_data ) {
+			try { data = jQuery.parseJSON( manual_data ); }
+			catch( err ) { data = {}; }
+		}
 
 		data['action'] = 'ms_dialog';
 		data['dialog'] = me.attr( 'data-ms-dialog' );
 		jQuery( document ).trigger( 'ms-load-dialog', [data] );
+		me.addClass( 'wpmui-loading' );
 
 		jQuery.post(
 			window.ajaxurl,
@@ -433,15 +444,18 @@ window.ms_functions = {
 			function( response ) {
 				var dlg, resp = false;
 
+				me.removeClass( 'wpmui-loading' );
+
 				try { resp = jQuery.parseJSON( response ); }
 				catch( err ) { resp = false; }
 
 				resp.title = resp.title || 'Dialog';
 				resp.height = resp.height || 100;
 				resp.content = resp.content || '';
+				resp.modal = resp.modal || true;
 
 				dlg = wpmUi.popup()
-					.modal( true )
+					.modal( true, ! resp.modal )
 					.title( resp.title )
 					.size( undefined, resp.height )
 					.content( resp.content )
@@ -501,6 +515,18 @@ window.ms_functions = {
 			el_locked.text( '' );
 		} else {
 			el_locked.text( '(' + num_locked + ')' );
+		}
+	},
+
+	// Submit a form from outside the form tag:
+	// <span class="ms-submit-form" data-form="class-of-the-form">Submit</span>
+	submit_form: function() {
+		var me = jQuery( this ),
+			selector = me.data( 'form' ),
+			form = jQuery( 'form.' + selector );
+
+		if ( form.length ) {
+			form.submit();
 		}
 	}
 };
@@ -599,6 +625,11 @@ jQuery( document ).ready( function() {
 		'wpmui-radio-slider-updated',
 		'.wp-list-table.rules .wpmui-radio-slider',
 		fn.update_view_count
+	)
+	.on(
+		'click',
+		'.ms-submit-form',
+		fn.submit_form
 	)
 	;
 
@@ -1055,8 +1086,6 @@ window.ms_init.metabox = function init() {
 		jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) { window.ms_init.ms_metabox_event( event, data ); } );
 	};
 
-	window.ms_init.ms_metabox();
-
 	jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
 		window.ms_init.ms_metabox_event( event, data );
 	});
@@ -1068,63 +1097,23 @@ window.ms_init.metabox = function init() {
 /*global ms_functions:false */
 
 window.ms_init.view_membership_overview = function init () {
-	var ms_desc = jQuery( '.membership-description' ),
-		ms_show_editor = ms_desc.find( '.show-editor' ),
-		ms_readonly = ms_desc.find( '.readonly' ),
-		ms_editor = ms_desc.find( '.editor' ),
-		txt_editor = ms_editor.find( 'textarea' );
-
 	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function() {
 		var object = this,
 			obj = jQuery( '#ms-membership-status' );
 
 		if( jQuery( object ).hasClass( 'on' ) ) {
 			obj.addClass( 'ms-active' );
-		}
-		else {
+		} else {
 			obj.removeClass( 'ms-active' );
 		}
 	});
 
-	// Click on Read-Only description: Show the input field.
-	ms_show_editor.click( function() {
-		ms_readonly.addClass( 'hidden' );
-		ms_editor.removeClass( 'hidden' );
-		txt_editor.focus().data( 'dirty', false );
+	jQuery( document ).on( 'ms-ajax-form-done', function( ev, form, response, is_err, data ) {
+		if ( ! is_err ) {
+			// reload the page to reflect the update
+			window.location.reload();
+		}
 	});
-
-	// When the editor loses focus: Hide the input field again.
-	txt_editor
-		.change(function(){
-			txt_editor.data( 'dirty', true );
-		})
-		.blur(function() {
-			if ( txt_editor.data( 'dirty' ) === true ) {
-				return false;
-			} else {
-				ms_readonly.removeClass( 'hidden' );
-				ms_editor.addClass( 'hidden' );
-			}
-		})
-		.on(
-			'ms-ajax-updated',
-			function( ev, data, response, is_err ) {
-				var desc = txt_editor.val();
-
-				if ( is_err ) { return false; }
-
-				ms_readonly.find( '.value' ).html( desc );
-				ms_readonly.removeClass( 'hidden' );
-				ms_editor.addClass( 'hidden' );
-				ms_editor.find( '.okay, .error' ).removeClass( 'okay error' );
-
-				if ( desc.length ) {
-					ms_readonly.find( '.empty' ).addClass( 'hidden' );
-				} else {
-					ms_readonly.find( '.empty' ).removeClass( 'hidden' );
-				}
-			}
-		);
 };
 /*global window:false */
 /*global document:false */

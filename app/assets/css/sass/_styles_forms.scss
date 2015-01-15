@@ -473,17 +473,17 @@
 			.after {
 				left: 44px;
 
-				opacity: 0.25;
-				filter: blur( 1px );
-				-webkit-filter: blur( 1px );
+				opacity: 0.2;
+				filter: grayscale(1);
+				-webkit-filter: grayscale(1);
 			}
 		}
 
 		.wpmui-radio-slider.on {
 			.before {
-				opacity: 0.25;
-				filter: blur( 1px );
-				-webkit-filter: blur( 1px );
+				opacity: 0.2;
+				filter: grayscale(1);
+				-webkit-filter: grayscale(1);
 			}
 
 			.after {

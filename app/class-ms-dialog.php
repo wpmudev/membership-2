@@ -36,7 +36,7 @@
  * @package Membership
  * @subpackage View
  */
-class MS_Dialog extends MS_Hooker {
+class MS_Dialog extends MS_Controller {
 
 	/**
 	 * The Dialog title
@@ -61,6 +61,14 @@ class MS_Dialog extends MS_Hooker {
 	 * @type string
 	 */
 	public $content = '';
+
+	/**
+	 * If the dialog is modal
+	 *
+	 * @since 1.1.0
+	 * @type bool
+	 */
+	public $modal = true;
 
 	/**
 	 * Constructor.

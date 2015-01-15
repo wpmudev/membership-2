@@ -583,7 +583,7 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 		}
 
-		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		WDev()->add_data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

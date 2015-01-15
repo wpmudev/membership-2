@@ -223,10 +223,10 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public function enqueue_scripts() {
 		$data = array(
-			'ms_init' => 'view_settings_mailchimp',
+			'ms_init' => array( 'view_settings_mailchimp' ),
 		);
 
-		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		WDev()->add_data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

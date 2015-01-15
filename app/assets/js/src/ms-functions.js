@@ -93,9 +93,6 @@ window.ms_functions = {
 			fn = window.ms_functions;
 
 		if ( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
-			info_field = fn.ajax_show_indicator( slider );
-
-			slider.addClass( 'ms-processing wpmui-loading' );
 			slider.toggleClass( 'on' );
 			slider.parent().toggleClass( 'on' );
 			slider.trigger( 'change' );
@@ -104,8 +101,11 @@ window.ms_functions = {
 			data = toggle.data( 'ajax' );
 			states = toggle.data( 'states' );
 
-			if ( null != data ) {
+			if ( null !== data && undefined !== data ) {
+				info_field = fn.ajax_show_indicator( slider );
+				slider.addClass( 'ms-processing wpmui-loading' );
 				state = slider.hasClass( 'on' );
+
 				if ( undefined !== states.active && state ) {
 					data.value = states.active;
 				} else if ( undefined !== states.inactive && ! state ) {
@@ -136,6 +136,8 @@ window.ms_functions = {
 						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
 					}
 				);
+			} else {
+				slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 			}
 		}
 	},
@@ -380,13 +382,21 @@ window.ms_functions = {
 	show_dialog: function( ev ) {
 		var me = jQuery( this ),
 			fn = window.ms_functions,
-			data = { };
+			data = { },
+			manual_data;
 
 		ev.preventDefault();
+
+		manual_data = me.attr( 'data-ms-data' );
+		if ( undefined !== manual_data ) {
+			try { data = jQuery.parseJSON( manual_data ); }
+			catch( err ) { data = {}; }
+		}
 
 		data['action'] = 'ms_dialog';
 		data['dialog'] = me.attr( 'data-ms-dialog' );
 		jQuery( document ).trigger( 'ms-load-dialog', [data] );
+		me.addClass( 'wpmui-loading' );
 
 		jQuery.post(
 			window.ajaxurl,
@@ -394,15 +404,18 @@ window.ms_functions = {
 			function( response ) {
 				var dlg, resp = false;
 
+				me.removeClass( 'wpmui-loading' );
+
 				try { resp = jQuery.parseJSON( response ); }
 				catch( err ) { resp = false; }
 
 				resp.title = resp.title || 'Dialog';
 				resp.height = resp.height || 100;
 				resp.content = resp.content || '';
+				resp.modal = resp.modal || true;
 
 				dlg = wpmUi.popup()
-					.modal( true )
+					.modal( true, ! resp.modal )
 					.title( resp.title )
 					.size( undefined, resp.height )
 					.content( resp.content )
@@ -462,6 +475,18 @@ window.ms_functions = {
 			el_locked.text( '' );
 		} else {
 			el_locked.text( '(' + num_locked + ')' );
+		}
+	},
+
+	// Submit a form from outside the form tag:
+	// <span class="ms-submit-form" data-form="class-of-the-form">Submit</span>
+	submit_form: function() {
+		var me = jQuery( this ),
+			selector = me.data( 'form' ),
+			form = jQuery( 'form.' + selector );
+
+		if ( form.length ) {
+			form.submit();
 		}
 	}
 };
@@ -560,6 +585,11 @@ jQuery( document ).ready( function() {
 		'wpmui-radio-slider-updated',
 		'.wp-list-table.rules .wpmui-radio-slider',
 		fn.update_view_count
+	)
+	.on(
+		'click',
+		'.ms-submit-form',
+		fn.submit_form
 	)
 	;
 

@@ -215,12 +215,10 @@ class MS_Controller_Addon extends MS_Controller {
 	 */
 	public function enqueue_scripts() {
 		$data = array(
-			'ms_init' => array(),
+			'ms_init' => array( 'view_addons' ),
 		);
 
-		$data['ms_init'][] = 'view_addons';
-
-		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		WDev()->add_data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

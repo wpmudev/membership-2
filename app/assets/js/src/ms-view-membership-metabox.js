@@ -23,8 +23,6 @@ window.ms_init.metabox = function init() {
 		jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) { window.ms_init.ms_metabox_event( event, data ); } );
 	};
 
-	window.ms_init.ms_metabox();
-
 	jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
 		window.ms_init.ms_metabox_event( event, data );
 	});

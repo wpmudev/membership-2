@@ -24,29 +24,29 @@ class MS_View_Membership_Overview extends MS_View {
 			),
 		);
 
-		$field_desc = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-			'value' => $child_membership->description,
-			'class' => 'ms-center',
-			'data_ms' => array(
-				'action' => MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP,
-				'field' => 'description',
-				'membership_id' => $child_membership->id,
-			),
-		);
-
 		$status_class = '';
 		if ( $membership->active ) {
 			$status_class = 'ms-active';
 		}
+
+		$edit_args = array(
+			'membership_id' => $membership->id,
+		);
+
 		ob_start();
+		// We just want to make sure that the JS files for the editor are loaded
+		// so we can use the wp_editor() in the edit popup later
+		wp_editor( '', 'not-used' );
+
+		// Discard the editor - at this point the JS files are enqueued already!
+		ob_clean();
 		?>
 
 		<div class="wrap ms-wrap ms-membership-overview <?php echo esc_attr( $container_class ); ?>">
 			<div class="ms-wrap-top ms-group">
 				<div class="ms-membership-status-wrapper">
 					<?php MS_Helper_Html::html_element( $toggle ); ?>
-					<div id='ms-membership-status' class="ms-membership-status <?php echo esc_attr( $status_class ); ?>">
+					<div id="ms-membership-status" class="ms-membership-status <?php echo esc_attr( $status_class ); ?>">
 						<?php
 							printf(
 								'<div class="ms-active"><span>%s </span><span id="ms-membership-status-text" class="ms-ok">%s</span></div>',
@@ -62,6 +62,12 @@ class MS_View_Membership_Overview extends MS_View {
 							);
 						?>
 					</div>
+				</div>
+				<div class="ms-membership-edit-wrapper">
+					<a href="#" class="button" data-ms-dialog="View_Membership_Edit_Dialog" data-ms-data=<?php echo json_encode( $edit_args )?>>
+						<i class="wpmui-fa wpmui-fa-pencil handlediv"></i>
+						<?php _e( 'Edit', MS_TEXT_DOMAIN ); ?>
+					</a>
 				</div>
 				<?php
 				MS_Helper_Html::settings_header(
@@ -81,7 +87,8 @@ class MS_View_Membership_Overview extends MS_View {
 
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+
+		return $html;
 	}
 
 	public function news_panel() {
@@ -192,6 +199,7 @@ class MS_View_Membership_Overview extends MS_View {
 
 	public function available_content_panel() {
 		$child_membership = $this->data['child_membership'];
+		$membership = $this->data['membership'];
 
 		$desc = $child_membership->description;
 		$desc_empty_class = (empty( $desc ) ? '' : 'hidden');
@@ -207,6 +215,8 @@ class MS_View_Membership_Overview extends MS_View {
 				$child_desc = $child_membership->description;
 
 				MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'] );
+			} else {
+				$child_desc = $membership->description;
 			}
 			?>
 			<div class="ms-settings">
@@ -219,19 +229,7 @@ class MS_View_Membership_Overview extends MS_View {
 					<?php endif; ?>
 
 					<div class="ms-settings-desc ms-description membership-description">
-						<span class="readonly show-editor">
-							<span class="empty <?php echo esc_attr( $desc_empty_class ); ?>">
-								<?php _e( '(Description)', MS_TEXT_DOMAIN ); ?>
-							</span>
-							<span class="value"><?php echo $child_description; ?></span>
-							<i class="wpmui-fa wpmui-fa-pencil handlediv"></i>
-						</span>
-						<div class="hidden editor">
-							<?php
-							MS_Helper_Html::html_element( $field_desc );
-							MS_Helper_Html::save_text();
-							?>
-						</div>
+						<?php echo $child_desc; ?>
 					</div>
 					<?php
 

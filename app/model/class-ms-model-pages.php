@@ -744,9 +744,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				break;
 
 			case self::MS_PAGE_PROTECTED_CONTENT:
-				// The text in Settings > "Protection Messages" is added in
-				// front end controller. This page has no default content.
-				$lines = array();
+				$lines[] = '[' . MS_Helper_Shortcode::SCODE_PROTECTED . ']';
 				break;
 
 			case self::MS_PAGE_ACCOUNT:

@@ -501,9 +501,43 @@ class MS_Controller_Plugin extends MS_Controller {
 			'ms_init' => array( 'shortcode' ),
 			'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
 		);
+		WDev()->add_data( 'ms_data', $data );
 
-		wp_localize_script( 'ms-public', 'ms_data', $data );
 		wp_enqueue_script( 'ms-public' );
 		wp_enqueue_script( 'jquery-validate' );
+
+		$this->translate_jquery_validator();
+	}
+
+	/**
+	 * Adds a javascript to the page that will translate the jQuery validator
+	 * messages.
+	 *
+	 * @since  1.1.0
+	 */
+	public function translate_jquery_validator() {
+		ob_start();
+		?>
+		jQuery.extend( jQuery.validator.messages, {
+			required: "<?php _e( 'This field is required.', MS_TEXT_DOMAIN ); ?>",
+			remote: "<?php _e( 'Please fix this field.', MS_TEXT_DOMAIN ); ?>",
+			email: "<?php _e( 'Please enter a valid email address.', MS_TEXT_DOMAIN ); ?>",
+			url: "<?php _e( 'Please enter a valid URL.', MS_TEXT_DOMAIN ); ?>",
+			date: "<?php _e( 'Please enter a valid date.', MS_TEXT_DOMAIN ); ?>",
+			dateISO: "<?php _e( 'Please enter a valid date ( ISO ).', MS_TEXT_DOMAIN ); ?>",
+			number: "<?php _e( 'Please enter a valid number.', MS_TEXT_DOMAIN ); ?>",
+			digits: "<?php _e( 'Please enter only digits.', MS_TEXT_DOMAIN ); ?>",
+			creditcard: "<?php _e( 'Please enter a valid credit card number.', MS_TEXT_DOMAIN ); ?>",
+			equalTo: "<?php _e( 'Please enter the same value again.', MS_TEXT_DOMAIN ); ?>",
+			maxlength: $.validator.format( "<?php _e( 'Please enter no more than {0} characters.', MS_TEXT_DOMAIN ); ?> )",
+			minlength: $.validator.format( "<?php _e( 'Please enter at least {0} characters.', MS_TEXT_DOMAIN ); ?> )",
+			rangelength: $.validator.format( "<?php _e( 'Please enter a value between {0} and {1} characters long.', MS_TEXT_DOMAIN ); ?>" ),
+			range: $.validator.format( "<?php _e( 'Please enter a value between {0} and {1}.', MS_TEXT_DOMAIN ); ?> )",
+			max: $.validator.format( "<?php _e( 'Please enter a value less than or equal to {0}.', MS_TEXT_DOMAIN ); ?> )",
+			min: $.validator.format( "<?php _e( 'Please enter a value greater than or equal to {0}.', MS_TEXT_DOMAIN ); ?> )"
+		});
+		<?php
+		$script = ob_get_clean();
+		WDev()->add_script( $script );
 	}
 }

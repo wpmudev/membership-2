@@ -504,12 +504,15 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		$data = array();
+		$data = array(
+			'ms_init' => array(),
+		);
+		WDev()->load_get_fields( 'action' );
 
-		if ( 'edit_date' == @$_GET['action'] ) {
+		if ( 'edit_date' == $_GET['action'] ) {
 			// Start and expire date edit
 			wp_enqueue_script( 'jquery-ui-datepicker' );
-			$data['ms_init'] = 'view_member_date';
+			$data['ms_init'][] = 'view_member_date';
 		} else {
 			// Members list
 			$data['ms_init'][] = 'view_member_list';
@@ -518,7 +521,7 @@ class MS_Controller_Member extends MS_Controller {
 			);
 		}
 
-		wp_localize_script( 'ms-admin', 'ms_data', $data );
+		WDev()->add_data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 
