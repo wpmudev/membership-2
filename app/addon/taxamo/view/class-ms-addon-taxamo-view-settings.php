@@ -45,6 +45,17 @@ class MS_Addon_Taxamo_View_Settings extends MS_View {
 				'label_class' => 'no-click',
 			),
 
+			'gateway_setup' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'Getting paid', MS_TEXT_DOMAIN ),
+				'desc' => sprintf(
+					__( 'Taxamo supports the gateways PayPal and Stripe - you can simply activate the gateway in your Taxamo dashboard:<br /><a href="%1$s">Setup PayPal</a><br /><a href="%2$s">Setup Stripe</a>', MS_TEXT_DOMAIN ),
+					'https://dashboard.taxamo.com/merchant/app.html#/account/payment-gateways/paypal" target="_blank',
+					'https://dashboard.taxamo.com/merchant/app.html#/account/payment-gateways/stripe" target="_blank'
+				),
+				'label_class' => 'no-click',
+			),
+
 			'sep0' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			),

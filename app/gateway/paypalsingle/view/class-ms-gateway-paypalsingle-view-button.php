@@ -4,36 +4,75 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();
+		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
+		$membership = $this->data['membership'];
+		$gateway = $this->data['gateway'];
 
 		$action_url = apply_filters(
 			'ms_gateway_paypalsingle_view_button_form_action_url',
 			$this->data['action_url']
 		);
 
-		$row_class = 'gateway_' . $this->data['gateway']->id;
-		if ( ! $this->data['gateway']->is_live_mode() ) {
+		$row_class = 'gateway_' . $gateway->id;
+		if ( ! $gateway->is_live_mode() ) {
 			$row_class .= ' sandbox-mode';
 		}
 
 		ob_start();
 		?>
+		<form action="<?php echo esc_url( $action_url ); ?>" method="post">
+			<?php
+			foreach ( $fields as $field ) {
+				MS_Helper_Html::html_element( $field );
+			}
+			?>
+			<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >
+		</form>
+		<?php
+		$payment_form = apply_filters(
+			'ms_gateway_form',
+			ob_get_clean(),
+			$gateway,
+			$invoice,
+			$membership,
+			$this
+		);
+
+		ob_start();
+		?>
 		<tr class="<?php echo esc_attr( $row_class ); ?>">
-			<td class="ms-buy-now-column" colspan="2" >
-				<form action="<?php echo esc_url( $action_url ); ?>" method="post">
-					<?php
-					foreach ( $fields as $field ) {
-						MS_Helper_Html::html_element( $field );
-					}
-					?>
-					<img alt="" border="0" width="1" height="1" src="https://www.paypal.com/en_US/i/scr/pixel.gif" >
-				</form>
+			<td class="ms-buy-now-column" colspan="2">
+				<?php echo $payment_form; ?>
 			</td>
 		</tr>
 		<?php
 		$html = ob_get_clean();
+
+		$html = apply_filters(
+			'ms_gateway_button-' . $gateway->id,
+			$html,
+			$this
+		);
+
+		$html = apply_filters(
+			'ms_gateway_button',
+			$html,
+			$gateway->id,
+			$this
+		);
+
 		return $html;
 	}
 
+	/**
+	 * Prepare the PayPal IPN fields
+	 *
+	 * Details here:
+	 * https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
+	 *
+	 * @since  1.0.0
+	 * @return array
+	 */
 	private function prepare_fields() {
 		$ms_relationship = $this->data['ms_relationship'];
 		$membership = $ms_relationship->get_membership();
@@ -70,7 +109,7 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 			'item_name' => array(
 				'id' => 'item_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $invoice->name,
+				'value' => $membership->name,
 			),
 			'amount' => array(
 				'id' => 'amount',
@@ -105,8 +144,8 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $gateway->paypal_site,
 			),
-			'custom' => array(
-				'id' => 'custom',
+			'invoice' => array(
+				'id' => 'invoice',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $invoice->id,
 			),

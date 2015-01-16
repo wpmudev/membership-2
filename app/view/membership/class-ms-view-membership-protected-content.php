@@ -29,8 +29,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 		$tabs = $this->data['tabs'];
 
 		$desc = array(
-			__( 'In order to set-up Memberships you need to first decidewhat content you want to protect.', MS_TEXT_DOMAIN ),
-			__( 'This is the content that will not be accessible to Guests / Logged out users.', MS_TEXT_DOMAIN ),
+			__( 'Choose Pages, Categories etc. that you want to make <strong>unavailable</strong> to visitors, and non-members.', MS_TEXT_DOMAIN ),
 		);
 
 		ob_start();
@@ -40,7 +39,7 @@ class MS_View_Membership_Protected_Content extends MS_View {
 			<?php
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
+					'title' => __( 'Set-up Global Protected Content', MS_TEXT_DOMAIN ),
 					'desc' => $desc,
 				)
 			);

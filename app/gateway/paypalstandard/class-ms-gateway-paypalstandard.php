@@ -21,7 +21,10 @@
 */
 
 /**
- * Paypal Standard Gateway.
+ * Gateway: Paypal Standard
+ *
+ * Officially: PayPal Payments Standard
+ * https://developer.paypal.com/docs/classic/paypal-payments-standard/gs_PayPalPaymentsStandard/
  *
  * Process single and recurring paypal purchases/payments.
  *
@@ -181,7 +184,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	 */
 	public function handle_return() {
 		if ( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) )
-			&& ! empty( $_POST['custom'] )
+			&& ! empty( $_POST['invoice'] )
 		) {
 			if ( $this->is_live_mode() ) {
 				$domain = 'https://www.paypal.com';
@@ -215,14 +218,14 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				wp_die( $error );
 			}
 
-			if ( empty( $_POST['custom'] ) ) {
+			if ( empty( $_POST['invoice'] ) ) {
 				$error = 'Response Error: No relationship identification found.';
 				MS_Helper_Debug::log( $error );
 				MS_Helper_Debug::log( $response );
 				exit;
 			}
 
-			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['custom'] );
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['invoice'] );
 			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
 			$membership = $ms_relationship->get_membership();
 			$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );

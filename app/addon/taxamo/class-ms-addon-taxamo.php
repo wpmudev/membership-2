@@ -61,6 +61,15 @@ class MS_Addon_Taxamo extends MS_Addon {
 	static protected $model = null;
 
 	/**
+	 * The Taxamo REST API object
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var Taxamo
+	 */
+	static protected $api = null;
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
@@ -99,6 +108,23 @@ class MS_Addon_Taxamo extends MS_Addon {
 			'ms_show_prices',
 			'add_taxamo_js'
 		);
+
+		// Replace default payment buttons with Taxamo compatible buttons
+		$this->add_filter(
+			'ms_gateway_form',
+			'payment_form',
+			10, 4
+		);
+
+		// Confirm payments with Taxamo
+		$this->add_action(
+			'ms_gateway_paypalsingle_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
+			'confirm_payment'
+		);
+		$this->add_action(
+			'ms_gateway_paypalstandard_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
+			'confirm_payment'
+		);
 	}
 
 	/**
@@ -118,12 +144,44 @@ class MS_Addon_Taxamo extends MS_Addon {
 		return $list;
 	}
 
+	/**
+	 * Returns the Taxamo-Settings model
+	 *
+	 * @since  1.0.0
+	 * @return MS_Addon_Taxamo_Model
+	 */
 	static public function get_model() {
 		if ( null === self::$model ) {
 			self::$model = MS_Factory::load( 'MS_Addon_Taxamo_Model' );
 		}
 
 		return self::$model;
+	}
+
+	/**
+	 * Returns the Taxamo REST API object.
+	 *
+	 * @since  1.1.0
+	 * @return Taxamo
+	 */
+	static public function get_api() {
+		if ( null === self::$api ) {
+			if ( ! class_exists( 'Taxamo' ) ) {
+				require_once MS_Plugin::instance()->dir . '/lib/taxamo/Taxamo.php';
+			}
+			$model = self::get_model();
+
+			// Initialize the Taxamo API connection
+			$connection = new APIClient(
+				$model->private_key,
+				'https://api.taxamo.com'
+			);
+
+			// Initialize the Taxamo REST API wrapper.
+			self::$api = new Taxamo( $connection );
+		}
+
+		return self::$api;
 	}
 
 	/**
@@ -188,6 +246,16 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Adds the taxamo.js integration to the current page.
 	 *
+	 * We let taxamo do the heavy lifting:
+	 *  -The javascript searches the page for all elements that match '.price'
+	 *   (e.g. <span class="price">12.00 USD</span>) and update the value with
+	 *   the users country-price, including local VAT.
+	 *   Taxamo assumes that the original price does NOT include VAT yet.
+	 *  -Also it will detect the users country and allow the user to change it.
+	 *  -The Javascript also updates payment buttons to PayPal and Stripe.
+	 *
+	 * Call this function on any page that contains prices or a payment button.
+	 *
 	 * @since 1.1.0
 	 */
 	public function add_taxamo_js() {
@@ -211,9 +279,69 @@ class MS_Addon_Taxamo extends MS_Addon {
 			}
 		);
 		Taxamo.detectButtons();
+		Taxamo.enhancePayPalForms();
 		Taxamo.detectCountry();
 		</script>
 		<?php
+	}
+
+	/**
+	 * Returns HTML code for a Payment button that is compatible with Taxamo.
+	 *
+	 * Currently Taxamo offers a special payment integration for:
+	 * - Stripe
+	 * - Braintree
+	 *
+	 * @since  1.1.0
+	 * @param  string $html HTML code for the payment button.
+	 * @param  MS_Model_Gateway $gateway Payment gateway.
+	 * @param  MS_Model_Invoice $invoice The invoice which will be paid.
+	 * @param  MS_Model_Membership $membership The membership refered to on the invoice.
+	 * @return string New HTML code for the payment button.
+	 */
+	public function payment_form( $html, $gateway, $invoice, $membership ) {
+		// custom pay button label defined in gateway settings
+		$button_label = $gateway->pay_button_url;
+
+		if ( strpos( $button_label, '://' ) !== false ) {
+			$button_label = sprintf(
+				'<img src="%1$s" />',
+				$button_label
+			);
+		}
+
+		switch ( $gateway->id ) {
+			case MS_Gateway_Stripe::ID:
+				$html = sprintf(
+					'<button taxamo-button taxamo-provider="stripe" taxamo-price="%1$s" taxamo-item-description="%2$s" taxamo-product-type="%3$s" taxamo-currency="%4$s">%5$s</button>',
+					esc_attr( $invoice->total ),
+					esc_attr( $membership->name ),
+					'default',
+					esc_attr( $invoice->currency ),
+					$button_label
+				);
+				break;
+
+			// Braintree Button could be added here, when we add the gateway...
+		}
+
+		return $html;
+	}
+
+	/**
+	 * A payment is confirmed by PayPal: Notify Taxamo that we're good!
+	 *
+	 * @since  1.1.0
+	 * @param  MS_Model_Invoice $invoice
+	 */
+	public function confirm_payment_paypal( $invoice ) {
+		$api = self::get_api();
+
+		// Taxamo sets the "custom" PayPal field to the transaction-key
+		if ( isset( $_POST['custom'] ) ) {
+			$transaction_key = $_POST['custom'];
+			$api->confirmTransaction( $transaction_key, null );
+		}
 	}
 
 }

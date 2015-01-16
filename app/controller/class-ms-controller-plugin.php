@@ -193,19 +193,19 @@ class MS_Controller_Plugin extends MS_Controller {
 					'menu_slug' => self::MENU_SLUG,
 					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
 				),
-				'members' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Members', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Members', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-members',
-					'function' => array( $this->controllers['member'], 'admin_member_list' ),
-				),
 				'protected-content' => array(
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
 					'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
 					'menu_slug' => self::MENU_SLUG . '-setup',
 					'function' => array( $this->controllers['membership'], 'page_protected_content' ),
+				),
+				'members' => array(
+					'parent_slug' => self::MENU_SLUG,
+					'page_title' => __( 'Members', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Members', MS_TEXT_DOMAIN ),
+					'menu_slug' => self::MENU_SLUG . '-members',
+					'function' => array( $this->controllers['member'], 'admin_member_list' ),
 				),
 				'billing' => array(
 					'parent_slug' => self::MENU_SLUG,
@@ -529,12 +529,12 @@ class MS_Controller_Plugin extends MS_Controller {
 			digits: "<?php _e( 'Please enter only digits.', MS_TEXT_DOMAIN ); ?>",
 			creditcard: "<?php _e( 'Please enter a valid credit card number.', MS_TEXT_DOMAIN ); ?>",
 			equalTo: "<?php _e( 'Please enter the same value again.', MS_TEXT_DOMAIN ); ?>",
-			maxlength: $.validator.format( "<?php _e( 'Please enter no more than {0} characters.', MS_TEXT_DOMAIN ); ?> )",
-			minlength: $.validator.format( "<?php _e( 'Please enter at least {0} characters.', MS_TEXT_DOMAIN ); ?> )",
-			rangelength: $.validator.format( "<?php _e( 'Please enter a value between {0} and {1} characters long.', MS_TEXT_DOMAIN ); ?>" ),
-			range: $.validator.format( "<?php _e( 'Please enter a value between {0} and {1}.', MS_TEXT_DOMAIN ); ?> )",
-			max: $.validator.format( "<?php _e( 'Please enter a value less than or equal to {0}.', MS_TEXT_DOMAIN ); ?> )",
-			min: $.validator.format( "<?php _e( 'Please enter a value greater than or equal to {0}.', MS_TEXT_DOMAIN ); ?> )"
+			maxlength: jQuery.validator.format( "<?php _e( 'Please enter no more than {0} characters.', MS_TEXT_DOMAIN ); ?>" ),
+			minlength: jQuery.validator.format( "<?php _e( 'Please enter at least {0} characters.', MS_TEXT_DOMAIN ); ?>" ),
+			rangelength: jQuery.validator.format( "<?php _e( 'Please enter a value between {0} and {1} characters long.', MS_TEXT_DOMAIN ); ?>" ),
+			range: jQuery.validator.format( "<?php _e( 'Please enter a value between {0} and {1}.', MS_TEXT_DOMAIN ); ?>" ),
+			max: jQuery.validator.format( "<?php _e( 'Please enter a value less than or equal to {0}.', MS_TEXT_DOMAIN ); ?>" ),
+			min: jQuery.validator.format( "<?php _e( 'Please enter a value greater than or equal to {0}.', MS_TEXT_DOMAIN ); ?>" )
 		});
 		<?php
 		$script = ob_get_clean();

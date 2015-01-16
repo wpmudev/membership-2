@@ -21,7 +21,10 @@
 */
 
 /**
- * Paypal Single Gateway.
+ * Gateway: Paypal Single
+ *
+ * Officially: PayPal Payments Standard
+ * https://developer.paypal.com/docs/classic/paypal-payments-standard/gs_PayPalPaymentsStandard/
  *
  * Process single paypal purchases/payments.
  *
@@ -184,7 +187,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 		);
 
 		if ( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) )
-			&& ! empty( $_POST['custom'] )
+			&& ! empty( $_POST['invoice'] )
 		) {
 			if ( $this->is_live_mode() ) {
 				$domain = 'https://www.paypal.com';
@@ -219,7 +222,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			}
 
 			$new_status = false;
-			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['custom'] );
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['invoice'] );
 			$ms_relationship = MS_Factory::load(
 				'MS_Model_Membership_Relationship',
 				$invoice->ms_relationship_id
