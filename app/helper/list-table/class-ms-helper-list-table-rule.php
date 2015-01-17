@@ -59,18 +59,35 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	 */
 	protected $prepared_args = array();
 
+	/**
+	 * A list of all active memberships
+	 *
+	 * @var array
+	 * @since 1.1.0
+	 */
+	static protected $memberships = array();
+
 
 	public function __construct( $model, $membership = null ) {
 		parent::__construct(
 			array(
 				'singular'  => 'rule_' . $this->id,
-				'plural'    => 'rules',
+				'plural'    => 'rules_' . $this->id,
 				'ajax'      => false,
 			)
 		);
 
 		$this->model = $model;
 		$this->membership = $membership;
+
+		self::$memberships = MS_Model_Membership::get_membership_names();
+		foreach ( self::$memberships as $id => $name ) {
+			$color = MS_Helper_Utility::color_index( $name );
+			self::$memberships[$id] = (object) array(
+				'label' => $name,
+				'attr' => sprintf( 'data-color="%1$s"', $color ),
+			);
+		}
 	}
 
 	public function get_columns() {
@@ -145,11 +162,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		}
 
 		if ( isset( $this->_column_headers[0]['access'] ) ) {
-			if ( $this->membership->is_special( 'base' ) ) {
-				$this->_column_headers[0]['access'] = __( 'Content Protection', MS_TEXT_DOMAIN );
-			} else {
-				$this->_column_headers[0]['access'] = __( 'Members Access', MS_TEXT_DOMAIN );
-			}
+			$this->_column_headers[0]['access'] = __( 'Who Has Access', MS_TEXT_DOMAIN );
 		}
 
 		// Initialize current pagination Page
@@ -226,38 +239,54 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		return $defaults;
 	}
 
-	public function column_default( $item, $column_name ) {
-		$html = print_r( $item, true );
-
-		return $html;
-	}
-
-	public function column_cb( $item ) {
+	public function column_cb( $item, $column_name ) {
 		return sprintf(
 			'<input type="checkbox" name="item[]" value="%1$s" />',
 			$item->id
 		);
 	}
 
-	public function column_access( $item ) {
-		$toggle = array(
-			'id' => 'ms-toggle-' . $item->id,
-			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'value' => $item->access,
-			'class' => '',
-			'data_ms' => array(
-				'action' => MS_Controller_Rule::AJAX_ACTION_TOGGLE_RULE,
+	public function column_access( $item, $column_name ) {
+		$rule = $this->model;
+		$memberships = $rule->assigned_memberships( $item->id );
+
+		$class = empty( $memberships ) ? 'ms-public' : 'ms-protected';
+
+		$public = array(
+			'id' => 'ms-public-' . $item->id,
+			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+			'value' => 'Everyone',
+			'after' => 'Modify Access',
+			'class' => 'ms-public-note',
+		);
+
+		$list = array(
+			'id' => 'ms-memberships-' . $item->id,
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => array_keys( $memberships ),
+			'field_options' => self::$memberships,
+			'multiple' => true,
+			'after' => __( 'OK', MS_TEXT_DOMAIN ),
+			'class' => 'ms-memberships',
+			'ajax_data' => array(
+				'action' => MS_Controller_Rule::AJAX_ACTION_CHANGE_MEMBERSHIPS,
 				'membership_id' => $this->get_membership_id(),
 				'rule' => $item->type,
 				'item' => $item->id,
 			),
 		);
-		$html = MS_Helper_Html::html_element( $toggle, true );
+
+		$html = sprintf(
+			'<div class="%1$s no-auto-init">%2$s%3$s</div>',
+			esc_attr( $class ),
+			MS_Helper_Html::html_element( $public, true ),
+			MS_Helper_Html::html_element( $list, true )
+		);
 
 		return $html;
 	}
 
-	public function column_dripped( $item ) {
+	public function column_dripped( $item, $column_name ) {
 		$action = MS_Controller_Rule::AJAX_ACTION_UPDATE_DRIPPED;
 		$nonce = wp_create_nonce( $action );
 		$rule = $this->model;
@@ -299,7 +328,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 					'spec_date'
 				),
 				'class' => 'ms-dripped-value ms-dripped-spec-date',
-				'data_ms' => array(
+				'ajax_data' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE,
@@ -315,7 +344,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $period_from_reg['period_unit'],
 				'class' => 'ms-dripped-value ms-dripped-from-registration',
-				'data_ms' => array(
+				'ajax_data' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
@@ -331,7 +360,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $period_from_reg['period_type'],
 				'field_options' => MS_Helper_Period::get_periods(),
-				'data_ms' => array(
+				'ajax_data' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
@@ -347,7 +376,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $period_from_today['period_unit'],
 				'class' => 'ms-dripped-value ms-dripped-from-registration',
-				'data_ms' => array(
+				'ajax_data' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
@@ -363,7 +392,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $period_from_today['period_type'],
 				'field_options' => MS_Helper_Period::get_periods(),
-				'data_ms' => array(
+				'ajax_data' => array(
 					'membership_id' => $membership->id,
 					'rule_type' => $rule->rule_type,
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
@@ -432,6 +461,16 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			'ms_helper_list_table_rule_column_dripped',
 			$html
 		);
+	}
+
+	public function column_default( $item, $column_name ) {
+		if ( property_exists( $item, $column_name ) ) {
+			$html = $item->$column_name;
+		} else {
+			$html = '';
+		}
+
+		return $html;
 	}
 
 	public function display() {

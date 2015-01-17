@@ -1263,7 +1263,7 @@ class MS_Helper_List_Table {
 			if ( 'cb' == $column_name ) {
 				printf(
 					'<th scope="row" class="check-column">%1$s</th>',
-					$this->column_cb( $item )
+					$this->column_cb( $item, $column_name )
 				);
 			} else {
 				$class = "$column_name column-$column_name";

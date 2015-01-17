@@ -40,6 +40,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @var string
 	 */
 	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
+	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'change_memberships';
 	const AJAX_ACTION_TOGGLE_RULE_DEFAULT = 'toggle_rule_default';
 	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
 	const AJAX_ACTION_UPDATE_MATCHING = 'update_matching';

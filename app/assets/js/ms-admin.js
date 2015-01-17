@@ -65,8 +65,13 @@ window.ms_functions = {
 		var fn = window.ms_functions;
 
 		// Initialize all select boxes.
-		jQuery( '.ms-wrap select:not(.manual-init), .ms-wrap .chosen-select', scope )
-			.select2( fn.chosen_options );
+		jQuery( '.ms-wrap select, .ms-wrap .chosen-select', scope ).each(function() {
+			var el = jQuery( this );
+			if ( el.closest( '.no-auto-init' ).length ) { return; }
+			if ( el.closest( '.manual-init' ).length ) { return; }
+
+			el.select2( fn.chosen_options );
+		});
 
 		// Initialize the datepickers.
 		jQuery( '.wpmui-datepicker', scope ).ms_datepicker();
@@ -966,25 +971,6 @@ window.ms_init.view_membership_choose_type = function init () {
 /*global document:false */
 /*global ms_data:false */
 /*global ms_functions:false */
-
-window.ms_init.view_membership_create_child = function init () {
-	var args = {
-		onkeyup: false,
-		errorClass: 'ms-validation-error',
-		rules: {
-			'name': {
-				'required': true,
-			}
-		}
-	};
-
-	jQuery( '#ms-create-child-form' ).validate(args);
-};
-
-/*global window:false */
-/*global document:false */
-/*global ms_data:false */
-/*global ms_functions:false */
 /*global wpmUi:false */
 
 window.ms_init.view_membership_list = function init () {
@@ -1274,12 +1260,20 @@ window.ms_init.view_membership_setup_payment = function init () {
 /*global ms_data:false */
 /*global ms_functions:false */
 
-window.ms_init.view_membership_setup = function init () {
-	//global functions defined in ms-functions.js
-	jQuery( '#comment' ).change( function() { ms_functions.ajax_update( this ); } );
+window.ms_init.view_protected_content = function init () {
+	function format( state ) {
+		var attr,
+			original_option = state.element;
 
-	jQuery( '#menu_id' ).change( function() {
-		jQuery( '#ms-menu-form' ).submit();
+		attr = 'class="val" style="background: ' + jQuery( original_option ).data( 'color' ) + '"';
+		return '<span ' + attr + '>' + state.text + '</span>';
+	}
+
+	jQuery( 'select.ms-memberships' ).select2({
+		//formatResult: format,
+		formatSelection: format,
+		escapeMarkup: function( m ) { return m; },
+		dropdownCssClass: 'ms-memberships'
 	});
 };
 

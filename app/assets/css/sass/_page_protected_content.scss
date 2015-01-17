@@ -1,0 +1,172 @@
+/**
+ * Special styles used on "Protected Content" page
+ */
+
+#wpwrap .ms-wrap {
+	tr {
+		.ms-public {
+			position: relative;
+
+			.wpmui-select-wrapper {
+				display: none;
+			}
+
+			.ms-public-note-wrapper {
+				line-height: 20px;
+				font-weight: bold;
+				color: #B0B0B0;
+
+				.wpmui-label-after {
+					display: none;
+					line-height: inherit;
+					cursor: pointer;
+					margin: 0 0 0 15px;
+					font-weight: normal;
+					color: #333;
+					text-decoration: underline;
+
+					&:hover {
+						color: #00CE8D;
+					}
+
+					&:before {
+						content: "\f160";
+						color: #899;
+						text-decoration: none !important;
+
+						/* Copy-paste from dashicons style */
+						display: inline-block;
+						width: 20px;
+						height: 20px;
+						font-size: 20px;
+						line-height: 1;
+						font-family: dashicons;
+						text-decoration: inherit;
+						font-weight: 400;
+						font-style: normal;
+						vertical-align: top;
+						text-align: center;
+						-webkit-transition: color .1s ease-in 0;
+						transition: color .1s ease-in 0;
+						-webkit-font-smoothing: antialiased;
+						-moz-osx-font-smoothing: grayscale;
+					}
+				}
+
+			}
+		}
+
+		.ms-protected {
+			position: relative;
+			padding-right: 45px;
+
+			.ms-public-note-wrapper {
+				display: none;
+			}
+
+			.wpmui-select-wrapper {
+				.wpmui-field-select {
+					margin: 0;
+
+					.select2-choices {
+						border: 0;
+						background: transparent;
+					}
+
+					&.select2-container-active {
+						.select2-choices {
+							border: 1px solid #5897fb;
+						}
+					}
+				}
+
+				.wpmui-label-after {
+					display: none;
+					cursor: pointer;
+					margin: 0 0 0 15px;
+					font-weight: normal;
+					color: #333;
+					text-decoration: underline;
+					position: absolute;
+					right: 10px;
+					top: 10px;
+					line-height: 16px;
+
+					&:hover {
+						color: #00CE8D;
+					}
+				}
+
+				.select2-search-choice {
+					padding: 0;
+					overflow: hidden;
+					color: #FFF;
+					border: 0;
+					background: transparent;
+					opacity: 0.8;
+
+					&.select2-search-choice-focus {
+						opacity: 1;
+						box-shadow: 0 0 2px #5897fb;
+					}
+
+					.val {
+						padding-right: 20px;
+						padding: 0 25px 0 5px;
+						display: block;
+						height: 20px;
+						line-height: 20px;
+					}
+
+					.select2-search-choice-close {
+						position: absolute;
+						right: 0;
+						top: 0;
+						left: auto;
+						width: auto;
+						height: auto;
+						background: transparent;
+
+						&:before {
+							content: "\f335";
+							color: #DDD;
+
+							text-decoration: none !important;
+							display: inline-block;
+							width: 20px;
+							height: 20px;
+							font-size: 16px;
+							line-height: 20px;
+							font-family: dashicons;
+							text-decoration: inherit;
+							font-weight: 400;
+							font-style: normal;
+							vertical-align: top;
+							text-align: center;
+							transition: color .1s ease-in 0;
+							-webkit-font-smoothing: antialiased;
+							-moz-osx-font-smoothing: grayscale;
+						}
+
+						&:hover:before {
+							color: #FFF;
+							background: rgba(255,255,255,0.1);
+						}
+					}
+				}
+			}
+		}
+
+		&:hover {
+			.ms-public-note-wrapper .wpmui-label-after,
+			.wpmui-select-wrapper .wpmui-label-after {
+				display: inline-block;
+			}
+		}
+	}
+
+	.ms-more-tag {
+		display: inline-block;
+		margin: 0 20px 0 0;
+	}
+}

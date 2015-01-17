@@ -1365,12 +1365,9 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_SETUP_PROTECTED_CONTENT:
 			case self::STEP_ACCESSIBLE_CONTENT:
-				switch ( $this->get_active_tab() ) {
-					case 'category':
-					case 'comment':
-						$data['ms_init'][] = 'view_membership_setup';
-						break;
+				$data['ms_init'][] = 'view_protected_content';
 
+				switch ( $this->get_active_tab() ) {
 					case 'url_group':
 						$data['valid_rule_msg'] = __( 'Valid', MS_TEXT_DOMAIN );
 						$data['invalid_rule_msg'] = __( 'Invalid', MS_TEXT_DOMAIN );

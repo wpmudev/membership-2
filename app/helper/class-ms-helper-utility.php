@@ -190,12 +190,50 @@ class MS_Helper_Utility extends MS_Helper {
 			'publicly_queryable' => false,
 			'supports' => false,
 			'hierarchical' => false,
-//			'capability_type' => apply_filters( $post_type, '_capability', 'page' ),
 		);
 
 		$args = wp_parse_args( $args, $defaults );
 
 		register_post_type( $post_type, $args );
+	}
+
+	/**
+	 * Transforms the $key value into a color index. The same key will always
+	 * return the same color
+	 *
+	 * @since  1.1.0
+	 * @param  string $key Some name/ID value
+	 * @return string HTML color code (#123456)
+	 */
+	public static function color_index( $key ) {
+		static $Colors = array();
+		$key = strtolower( $key );
+
+		if ( ! isset( $Colors[$key] ) ) {
+			$col_min_avg = 64;
+			$col_max_avg = 192;
+			$col_step = 16;
+
+			// (192 - 64) / 16 = 8
+			// 8 ^ 3 = 512 colors
+
+			$range = $col_max_avg - $col_min_avg;
+			$factor = $range / 256;
+			$offset = $col_min_avg;
+
+			$base_hash = md5( $key );
+			$b_R = hexdec( substr( $base_hash, 0, 2 ) );
+			$b_G = hexdec( substr( $base_hash, 2, 2 ) );
+			$b_B = hexdec( substr( $base_hash, 4, 2 ) );
+
+			$f_R = floor( ( floor( $b_R * $factor ) + $offset ) / $col_step ) * $col_step;
+			$f_G = floor( ( floor( $b_G * $factor ) + $offset ) / $col_step ) * $col_step;
+			$f_B = floor( ( floor( $b_B * $factor ) + $offset ) / $col_step ) * $col_step;
+
+			$Colors[$key] = sprintf( '#%02x%02x%02x', $f_R, $f_G, $f_B );
+		}
+
+		return $Colors[$key];
 	}
 
 }

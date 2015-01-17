@@ -519,8 +519,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * When no $args are specified then all memberships except the base
 	 * membership will be returned.
+	 *
 	 * To include the base membership use:
-	 * $args = array( 'include_special' => 1 )
+	 * $args = array( 'include_base' => 1 )
+	 *
+	 * To exclude the guest membership use:
+	 * $args = array( 'include_guest' => 0 )
 	 *
 	 * @since 1.0.0
 	 *
@@ -615,22 +619,25 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				'post_status' => 'any',
 				'post_per_page' => -1,
 				'nopaging' => true,
+				'include_base' => false,
+				'include_guest' => true,
 			)
 		);
 
 		$args = wp_parse_args( $args, $defaults );
 
-		WDev()->load_fields( $args, 'include_special' );
-
-		if ( ! WDev()->is_true( $args['include_special'] ) ) {
+		if ( ! WDev()->is_true( $args['include_base'] ) ) {
 			$args['meta_query']['visitor'] = array(
 				'key'     => 'special',
 				'value'   => 'protected_content',
 				'compare' => '!=',
 			);
-			$args['meta_query']['role'] = array(
+		}
+
+		if ( ! WDev()->is_true( $args['include_guest'] ) ) {
+			$args['meta_query']['guest'] = array(
 				'key'     => 'special',
-				'value'   => 'role',
+				'value'   => 'guest',
 				'compare' => '!=',
 			);
 		}
@@ -672,17 +679,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
-	 * @param bool $exclude_visitor_membership Exclude visitor membership from the list.
+	 * @param bool $include_base_membership Include base membership from the list.
 	 * @return array {
 	 *		Returns array of $membership_id => $name
 	 *		@type int $membership_id The membership Id.
 	 *		@type string $name The membership name;
 	 * }
 	 */
-	public static function get_membership_names( $args = null, $exclude_special_memberships = false ) {
+	public static function get_membership_names( $args = null, $include_base_memberships = true ) {
 		if ( ! is_array( $args ) ) { $args = array(); }
 		$args['order'] = 'ASC';
-		$args['include_special'] = ! $exclude_special_memberships;
+		$args['include_base'] = $include_base_memberships;
 		$args = self::get_query_args( $args );
 
 		$query = new WP_Query( $args );
@@ -697,7 +704,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			'ms_model_membership_get_membership_names',
 			$memberships,
 			$args,
-			$exclude_special_memberships
+			$include_base_memberships
 		);
 	}
 

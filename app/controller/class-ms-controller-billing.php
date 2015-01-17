@@ -67,23 +67,30 @@ class MS_Controller_Billing extends MS_Controller {
 	public function admin_billing_manager() {
 		$this->print_admin_message();
 		$msg = 0;
+		$redirect = false;
 
-		/**
-		 * Save billing add/edit
-		 */
-		$fields = array( 'user_id', 'membership_id' );
-		if ( self::validate_required( $fields ) && $this->verify_nonce() && $this->is_admin_user() ) {
-			$msg = $this->save_invoice( $_POST );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ), remove_query_arg( array( 'invoice_id') ) ) ) ;
-			exit;
+		if ( ! $this->is_admin_user() ) {
+			return;
 		}
-		/**
-		 * Execute bulk actions.
-		 */
-		elseif( self::validate_required( array( 'invoice_id' ) ) && $this->verify_nonce( 'bulk-billings' ) && $this->is_admin_user() ) {
+
+		$fields = array( 'user_id', 'membership_id' );
+		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
+			// Save billing add/edit
+			$msg = $this->save_invoice( $_POST );
+
+			$redirect = remove_query_arg( array( 'invoice_id') );
+			$redirect = add_query_arg( array( 'msg' => $msg ), $redirect );
+		} elseif ( self::validate_required( array( 'invoice_id' ) )
+			&& $this->verify_nonce( 'bulk-billings' )
+		) {
+			// Execute bulk actions.
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+			$redirect = add_query_arg( array( 'msg' => $msg ) );
+		}
+
+		if ( $redirect ) {
+			wp_safe_redirect( $redirect );
 			exit;
 		}
 	}
@@ -95,21 +102,19 @@ class MS_Controller_Billing extends MS_Controller {
 	 */
 	public function admin_billing() {
 		$this->print_admin_message();
-		/**
-		 * Action view page request
-		 */
+
+		// Action view page request
 		$isset = array( 'action', 'invoice_id' );
-		if( self::validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
+		if ( self::validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
 			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
-			$data['invoice'] =  MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
+			$data['invoice'] = MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
 			$data['action'] = $_GET['action'];
 			$data['users'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
-			$data['memberships'] = MS_Model_Membership::get_membership_names( null, true );
+			$data['memberships'] = MS_Model_Membership::get_membership_names( null, false );
 			$view = MS_Factory::create( 'MS_View_Billing_Edit' );
 			$view->data = apply_filters( 'ms_view_billing_edit_data',  $data );
 			$view->render();
-		}
-		else {
+		} else {
 			$view = MS_Factory::create( 'MS_View_Billing_List' );
 			$view->render();
 		}
@@ -125,14 +130,15 @@ class MS_Controller_Billing extends MS_Controller {
 	public function billing_do_action( $action, $invoice_ids ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 
-		if( $this->is_admin_user() && is_array( $invoice_ids ) ) {
-			foreach( $invoice_ids as $invoice_id ) {
-				switch( $action ) {
+		if ( $this->is_admin_user() && is_array( $invoice_ids ) ) {
+			foreach ( $invoice_ids as $invoice_id ) {
+				switch ( $action ) {
 					case 'delete':
 						$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 						$invoice->delete();
 						$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
 						break;
+
 					default:
 						do_action( 'ms_controller_billing_do_action_' . $action, $invoice_ids );
 						break;
@@ -140,7 +146,13 @@ class MS_Controller_Billing extends MS_Controller {
 			}
 		}
 
-		return apply_filters( 'ms_controller_billing_billing_do_action', $msg, $action, $invoice_ids, $this );
+		return apply_filters(
+			'ms_controller_billing_billing_do_action',
+			$msg,
+			$action,
+			$invoice_ids,
+			$this
+		);
 	}
 
 	/**
@@ -154,14 +166,14 @@ class MS_Controller_Billing extends MS_Controller {
 
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 
-		if( $this->is_admin_user() && is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) ) {
+		if ( $this->is_admin_user() && is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) ) {
 
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
 
 			$ms_relationship = MS_Model_Membership_Relationship::get_membership_relationship( $member->id, $membership_id );
-			if( empty( $ms_relationship ) ){
+			if ( empty( $ms_relationship ) ){
 				$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway_id );
 			}
 			else {
@@ -170,7 +182,7 @@ class MS_Controller_Billing extends MS_Controller {
 			}
 
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] );
-			if( ! $invoice->is_valid() ) {
+			if ( ! $invoice->is_valid() ) {
 				$invoice = MS_Model_Invoice::create_invoice( $ms_relationship, false, false );
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 			}
@@ -178,13 +190,13 @@ class MS_Controller_Billing extends MS_Controller {
 				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
 			}
 
-			foreach( $fields as $field => $value ) {
+			foreach ( $fields as $field => $value ) {
 				$invoice->$field = $value;
 			}
 
 			$invoice->save();
 
-			if( ! empty( $fields['execute'] ) ) {
+			if ( ! empty( $fields['execute'] ) ) {
 				$gateway = $ms_relationship->get_gateway();
 				$gateway->process_transaction( $invoice );
 			}

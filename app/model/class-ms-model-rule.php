@@ -573,7 +573,32 @@ class MS_Model_Rule extends MS_Model {
 			$id,
 			$this
 		);
+	}
 
+	/**
+	 * Returns an array of membership that protect the specified rule item.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param string $id The content id to check.
+	 * @return array List of memberships (ID => name)
+	 */
+	public function assigned_memberships( $id ) {
+		static $All_Memberships = null;
+		$res = array();
+
+		if ( null === $All_Memberships ) {
+			$All_Memberships = MS_Model_Membership::get_memberships();
+		}
+
+		foreach ( $All_Memberships as $membership ) {
+			$rule = $membership->get_rule( $this->rule_type );
+			if ( isset( $rule->rule_value[ $id ] ) && $rule->rule_value[ $id ] ) {
+				$res[$membership->id] = $membership->name;
+			}
+		}
+
+		return $res;
 	}
 
 	/**

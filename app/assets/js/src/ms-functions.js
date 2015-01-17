@@ -25,8 +25,13 @@ window.ms_functions = {
 		var fn = window.ms_functions;
 
 		// Initialize all select boxes.
-		jQuery( '.ms-wrap select:not(.manual-init), .ms-wrap .chosen-select', scope )
-			.select2( fn.chosen_options );
+		jQuery( '.ms-wrap select, .ms-wrap .chosen-select', scope ).each(function() {
+			var el = jQuery( this );
+			if ( el.closest( '.no-auto-init' ).length ) { return; }
+			if ( el.closest( '.manual-init' ).length ) { return; }
+
+			el.select2( fn.chosen_options );
+		});
 
 		// Initialize the datepickers.
 		jQuery( '.wpmui-datepicker', scope ).ms_datepicker();
