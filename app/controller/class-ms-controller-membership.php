@@ -183,7 +183,7 @@ class MS_Controller_Membership extends MS_Controller {
 			if ( ! empty( $_REQUEST['membership_id'] ) ) {
 				$membership_id = absint( $_REQUEST['membership_id'] );
 			} elseif ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] === 'protected-content-setup' ) {
-				$membership_id = MS_Model_Membership::get_visitor_membership()->id;
+				$membership_id = MS_Model_Membership::get_base_membership()->id;
 			}
 
 			$this->model = MS_Factory::load(
@@ -455,7 +455,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['show_next_button'] = MS_Plugin::is_wizard();
 		$data['settings'] = MS_Plugin::instance()->settings;
 
-		$data['membership'] = MS_Model_Membership::get_protected_content();
+		$data['membership'] = MS_Model_Membership::get_base_membership();
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
@@ -979,7 +979,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function get_accessible_content_tabs() {
 		$membership_id = $this->load_membership()->id;
 		$tabs = $this->get_protection_tabs();
-		$protected_content = MS_Model_Membership::get_protected_content();
+		$protected_content = MS_Model_Membership::get_base_membership();
 
 		$step = $this->get_step();
 		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );

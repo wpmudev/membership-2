@@ -55,7 +55,6 @@ class MS_Model_Rule extends MS_Model {
 	const RULE_TYPE_ADMINSIDE = 'adminside';
 	const RULE_TYPE_MEMBERCAPS = 'membercaps';
 	const RULE_TYPE_MEMBERROLES = 'memberroles';
-	const RULE_TYPE_ROLEMEMBERS = 'rolemembers';
 
 	/**
 	 * Rule value constants.
@@ -87,16 +86,6 @@ class MS_Model_Rule extends MS_Model {
 	const DRIPPED_TYPE_SPEC_DATE = 'specific_date';
 	const DRIPPED_TYPE_FROM_TODAY = 'from_today';
 	const DRIPPED_TYPE_FROM_REGISTRATION = 'from_registration';
-
-	/**
-	 * ID of the model object.
-	 *
-	 * Saved as WP post ID.
-	 *
-	 * @since 1.0.0
-	 * @var int $id
-	 */
-	protected $id;
 
 	/**
 	 * Membership ID.
@@ -234,7 +223,6 @@ class MS_Model_Rule extends MS_Model {
 				-10 => self::RULE_TYPE_URL_GROUP,
 				-9 => self::RULE_TYPE_MEMBERCAPS,
 				-8 => self::RULE_TYPE_MEMBERROLES,
-				-7 => self::RULE_TYPE_ROLEMEMBERS,
 				-1 => self::RULE_TYPE_ADMINSIDE,
 				0 => self::RULE_TYPE_SPECIAL,
 				1 => self::RULE_TYPE_POST,
@@ -332,7 +320,6 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_ADMINSIDE => 'MS_Model_Rule_Adminside',
 			self::RULE_TYPE_MEMBERCAPS => 'MS_Model_Rule_Membercaps',
 			self::RULE_TYPE_MEMBERROLES => 'MS_Model_Rule_Memberroles',
-			self::RULE_TYPE_ROLEMEMBERS => 'MS_Model_Rule_Rolemembers',
 		);
 
 		return apply_filters( 'ms_model_rule_get_rule_type_classes', $classes );
@@ -366,7 +353,6 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_ADMINSIDE => __( 'Admin Side', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEMBERCAPS => __( 'Capabilities', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEMBERROLES => __( 'User Role', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_ROLEMEMBERS => __( 'Role Memberships', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters( 'ms_model_rule_get_rule_type_titles', $titles );

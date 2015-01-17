@@ -455,7 +455,7 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 
 			case 'messages-protection':
-				$data['membership'] = MS_Model_Membership::get_protected_content();
+				$data['membership'] = MS_Model_Membership::get_base_membership();
 				break;
 		}
 

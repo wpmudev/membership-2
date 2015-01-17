@@ -407,7 +407,7 @@ class MS_View_Membership_Accessible_Content extends MS_View_Membership_Protected
 		$nonce = wp_create_nonce( $action );
 
 		$menu_protection = $this->data['settings']->menu_protection;
-		$protected_content = MS_Model_Membership::get_protected_content();
+		$protected_content = MS_Model_Membership::get_base_membership();
 
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );

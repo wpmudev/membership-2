@@ -221,7 +221,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 	protected function available_content_panel_data() {
 		$membership = $this->data['membership'];
-		$protected_content = MS_Model_Membership::get_protected_content();
+		$protected_content = MS_Model_Membership::get_base_membership();
 		$rule_types = MS_Model_Rule::get_rule_types();
 
 		?>

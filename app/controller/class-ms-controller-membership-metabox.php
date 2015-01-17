@@ -147,7 +147,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$fields = array( 'membership_id', 'rule_type', 'post_id' );
 		if ( $this->verify_nonce() && self::validate_required( $fields ) && $this->is_admin_user() ) {
 			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
-			if ( $_POST['membership_id'] == MS_Model_Membership::get_protected_content()->id ) {
+			if ( $_POST['membership_id'] == MS_Model_Membership::get_base_membership()->id ) {
 				$post = get_post( $_POST['post_id'] );
 				//membership metabox html returned via ajax response
 				$this->membership_metabox( $post );
@@ -203,7 +203,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 			$data['special_page'] = true;
 		} else {
 			$memberships = MS_Model_Membership::get_memberships();
-			$protected_content = MS_Model_Membership::get_protected_content();
+			$protected_content = MS_Model_Membership::get_base_membership();
 			$data['protected_content'] = $protected_content;
 			$data['protected_content_enabled'] = ! $protected_content->has_access_to_post( $post->ID );
 

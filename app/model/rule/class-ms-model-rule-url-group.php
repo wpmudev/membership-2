@@ -315,7 +315,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		static $Urls = null;
 
 		if ( null === $Urls ) {
-			$base_rules = MS_Model_Membership::get_protected_content()->rules;
+			$base_rules = MS_Model_Membership::get_base_membership()->rules;
 			if ( isset( $base_rules[ MS_Model_Rule::RULE_TYPE_URL_GROUP ] ) ) {
 				$Urls = $base_rules[ MS_Model_Rule::RULE_TYPE_URL_GROUP ]->rule_value;
 			}

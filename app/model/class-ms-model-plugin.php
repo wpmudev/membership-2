@@ -142,28 +142,8 @@ class MS_Model_Plugin extends MS_Model {
 		// Visitor: assign a Visitor Membership = Protected Content
 		if ( ! $this->member->has_membership() ) {
 			$this->member->add_membership(
-				MS_Model_Membership::get_visitor_membership()->id
+				MS_Model_Membership::get_base_membership()->id
 			);
-		}
-
-		// Add the relevant role-specific membership to the user membership list
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES ) ) {
-			if ( is_user_logged_in() ) {
-				$role_membership = MS_Model_Membership::get_role_membership( '(Logged in)' );
-				if ( $role_membership->active ) {
-					$this->member->add_membership( $role_membership->id );
-				}
-
-				$the_roles = WDev()->get_array( $this->member->get_user()->roles );
-				$the_role = array_shift( $the_roles );
-			} else {
-				$the_role = '(Guest)';
-			}
-
-			$role_membership = MS_Model_Membership::get_role_membership( $the_role );
-			if ( $role_membership->active ) {
-				$this->member->add_membership( $role_membership->id );
-			}
 		}
 
 		do_action( 'ms_model_plugin_init_member_after', $this );
@@ -194,7 +174,7 @@ class MS_Model_Plugin extends MS_Model {
 			);
 
 			// The ID of the main protected-content.
-			$base_id = MS_Model_Membership::get_protected_content()->id;
+			$base_id = MS_Model_Membership::get_base_membership()->id;
 
 			$simulation = $this->member->is_simulated_user() || isset( $_GET['why-not'] );
 			if ( $simulation ) { $Info['reason'] = array(); }

@@ -656,7 +656,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_after_ms_ends_options() {
 		$options = array(
-			self::get_protected_content()->id => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
+			self::get_base_membership()->id => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(
@@ -732,7 +732,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		if ( is_array( $exclude_ids ) ) {
 			$not_in = $exclude_ids;
 		}
-		$not_in[] = MS_Model_Membership::get_visitor_membership()->id;
+		$not_in[] = MS_Model_Membership::get_base_membership()->id;
 		$args['post__not_in'] = array_unique( $not_in );
 
 		if ( ! is_admin() ) {
@@ -823,46 +823,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
-	 * Returns true if the membership is a core-membership.
-	 *
-	 * @since  1.1.0
-	 * @return bool
-	 */
-	protected function is_role_membership() {
-		$res = false;
-
-		if ( $this->special == 'role' ) {
-			$roles = $this->get_role_names();
-			$key = strtolower( $this->name );
-			$res = in_array( $key, $roles );
-		}
-
-		return $res;
-	}
-
-	/**
-	 * Returns a list with all valid role-membership names.
-	 *
-	 * @since  1.1.0
-	 * @return array List of valid role-names
-	 */
-	protected function get_role_names() {
-		static $Roles = null;
-
-		if ( null === $Roles ) {
-			$role_rule = $this->get_rule( MS_Model_Rule::RULE_TYPE_ROLEMEMBERS );
-			$Roles = $role_rule->get_roles();
-			$Roles[] = '(Guest)';
-			$Roles[] = '(Logged in)';
-			$Roles[] = 'WordPress Roles';
-
-			$Roles = array_map( 'strtolower', $Roles );
-		}
-
-		return $Roles;
-	}
-
-	/**
 	 * Returns true if the membership a core membership or visitor membership.
 	 *
 	 * @since  1.1.0
@@ -875,18 +835,18 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if ( empty( $type ) ) {
 			if ( $this->is_special( 'base' ) ) { $res = true; }
-			elseif ( $this->is_special( 'role' ) ) { $res = true; }
+			elseif ( $this->is_special( 'guest' ) ) { $res = true; }
 		} else {
 			switch ( $type ) {
-				case 'role':
-					$res = $this->is_role_membership();
+				case 'guest':
+					$res = ( $this->special == $type );
 					break;
 
 				case 'base':
 				case 'protected_content':
 				default:
 					$type = 'protected_content';
-					$res = $this->special == $type;
+					$res = ( $this->special == $type );
 					break;
 			}
 		}
@@ -1005,17 +965,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$membership->title = 'Protected Content ' . ucwords( $key );
 				$membership->description = $description;
 				$membership->special = $type;
-
-				switch ( $type ) {
-					case 'protected_content':
-						$membership->type = self::TYPE_SIMPLE;
-						break;
-
-					case 'role':
-						$membership->type = self::TYPE_SIMPLE;
-						break;
-				}
-
+				$membership->type = self::TYPE_SIMPLE;
 				$membership->save();
 
 				$membership = MS_Factory::load(
@@ -1047,7 +997,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @return MS_Model_Membership The protected content.
 	 */
-	public static function get_protected_content() {
+	public static function get_base_membership() {
 		static $Protected_content = null;
 
 		if ( null === $Protected_content ) {
@@ -1056,23 +1006,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			);
 
 			$Protected_content = apply_filters(
-				'ms_model_membership_get_protected_content',
+				'ms_model_membership_get_base_membership',
 				$Protected_content
 			);
 		}
 
 		return $Protected_content;
-	}
-
-	/**
-	 * Alias for get_protected_content()
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return MS_Model_Membership The visitor membership.
-	 */
-	public static function get_visitor_membership() {
-		return self::get_protected_content();
 	}
 
 	/**
@@ -1085,25 +1024,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @param  string $role A WordPress user-role.
 	 * @return MS_Model_Membership The core membership.
 	 */
-	public static function get_role_membership( $role = null ) {
-		static $Role_Membership = array();
+	public static function get_guest_membership() {
+		static $Guest_Membership = null;
 
-		if ( empty( $role ) ) {
-			$role = 'WordPress Roles';
-		}
-
-		if ( ! isset( $Role_Membership[$role] ) ) {
-			$create_missing = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES );
-
-			$Role_Membership[$role] = self::get_special_membership(
-				'role',
-				$role,
-				$create_missing
+		if ( null === $Guest_Membership ) {
+			$Guest_Membership = self::get_special_membership(
+				'guest'
 			);
 
-			$Role_Membership[$role] = apply_filters(
-				'ms_model_membership_get_role_membership',
-				$Role_Membership[$role]
+			$Guest_Membership = apply_filters(
+				'ms_model_membership_get_guest_content',
+				$Guest_Membership
 			);
 		}
 
@@ -1124,7 +1055,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			return;
 		}
 
-		$protected_content_rules = self::get_protected_content()->rules;
+		$protected_content_rules = self::get_base_membership()->rules;
 
 		foreach ( $protected_content_rules as $rule_type => $protect_rule ) {
 			try {
@@ -1672,13 +1603,8 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 				case 'special':
 					switch ( $value ) {
-						case 'role':
-							$key = strtolower( $this->name );
-							$roles = $this->get_role_names();
-
-							if ( ! in_array( $key, $roles ) ) {
-								$value = '';
-							}
+						case 'guest':
+							$value = 'guest';
 							break;
 
 						case 'base':

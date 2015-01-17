@@ -156,7 +156,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
 				$this->_has_rule = false;
 			} else {
-				$base = $this->get_membership()->get_protected_content();
+				$base = $this->get_membership()->get_base_membership();
 				$base_rule = $base->get_rule( $this->rule_type );
 				$this->_has_rule = $this->check_current_page( $base_rule->rule_value );
 			}
@@ -300,7 +300,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			);
 
 			if ( ! $show_all ) {
-				$base = MS_Model_Membership::get_protected_content();
+				$base = MS_Model_Membership::get_base_membership();
 				$base_rule = $base->get_rule( $this->rule_type );
 				$base_values = $base_rule->rule_value;
 

@@ -166,7 +166,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$data->memberships = array();
 
 		// Export the base membership (i.e. the Protected Content settings)
-		$membership = MS_Model_Membership::get_protected_content();
+		$membership = MS_Model_Membership::get_base_membership();
 		$data->memberships[] = $this->export_membership( $membership->id );
 
 		// Export all memberships.
