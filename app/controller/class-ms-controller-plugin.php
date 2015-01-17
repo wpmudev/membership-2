@@ -356,7 +356,6 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function register_admin_scripts() {
-
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 

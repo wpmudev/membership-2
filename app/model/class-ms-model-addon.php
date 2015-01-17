@@ -451,9 +451,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 */
 	public function auto_config( $membership ) {
-		if ( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
-			$this->enable( self::ADDON_MULTI_MEMBERSHIPS );
-		}
 		if ( $membership->trial_period_enabled ) {
 			$this->enable( self::ADDON_TRIAL );
 		}

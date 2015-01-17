@@ -262,16 +262,6 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 
 				foreach ( $ids as $id ) {
 					$membership = MS_Factory::load( 'MS_Model_Membership', $id );
-
-					if ( $membership->type === MS_Model_Membership::TYPE_TIER
-						|| $membership->type === MS_Model_Membership::TYPE_CONTENT_TYPE
-					) {
-						// Check if the current membership is a child of the specified membership.
-						if ( $cur_membership->parent_id === $id ) {
-							$result = true;
-							break;
-						}
-					}
 				}
 			}
 		}

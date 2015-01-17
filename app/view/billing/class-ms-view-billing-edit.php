@@ -13,15 +13,6 @@
 class MS_View_Billing_Edit extends MS_View {
 
 	/**
-	 * Data set by controller.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var mixed $data
-	 */
-	protected $data;
-
-	/**
 	 * Create view output.
 	 *
 	 * @since 1.0.0
@@ -43,12 +34,12 @@ class MS_View_Billing_Edit extends MS_View {
 		?>
 			<div class="ms-wrap ms-billing">
 				<?php
-					MS_Helper_Html::settings_header(
-						array(
-						'title' => $title,
-						'title_icon_class' => 'wpmui-fa wpmui-fa-pencil-square',
-						)
-					);
+				MS_Helper_Html::settings_header(
+					array(
+					'title' => $title,
+					'title_icon_class' => 'wpmui-fa wpmui-fa-pencil-square',
+					)
+				);
 				?>
 				<form action="<?php echo $form_url; ?>" method="post" class="ms-form">
 					<?php MS_Helper_Html::settings_box( $fields, '', '', 'static', 'ms-small-form' ); ?>

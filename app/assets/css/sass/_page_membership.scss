@@ -110,14 +110,6 @@
 			background-position: 0 -30px;
 		}
 
-		&.wpmui-content_type label:before {
-			background-position: -100px -20px;
-		}
-
-		&.wpmui-tier label:before {
-			background-position: -200px -18px;
-		}
-
 		&.wpmui-dripped label:before {
 			background-position: -300px -20px;
 		}
@@ -175,16 +167,6 @@
 		&:hover .locked-info {
 			display: inline-block !important;
 		}
-	}
-
-	.column-collapse {
-		width: 20px;
-		padding-left: 5px;
-		padding-right: 5px;
-	}
-
-	.ms-pointer {
-		cursor: pointer;
 	}
 }
 

@@ -4,8 +4,6 @@
 
 .ms-wrap {
 	.ms-img-type-simple,
-	.ms-img-type-content_type,
-	.ms-img-type-tier,
 	.ms-img-type-dripped,
 	.ms-img-unlock,
 	.ms-img-lock,
@@ -24,8 +22,6 @@
 
 	/* 100 x 80 */
 	.ms-img-type-simple,
-	.ms-img-type-content_type,
-	.ms-img-type-tier,
 	.ms-img-type-dripped {
 		width: 100px;
 		height: 80px;
@@ -35,14 +31,6 @@
 		background-position: 0 -20px;
 	}
 
-	.ms-img-type-content_type {
-		background-position: -100px -10px;
-	}
-
-	.ms-img-type-tier {
-		background-position: -200px -8px;
-	}
-
 	.ms-img-type-dripped {
 		background-position: -300px -10px;
 	}
@@ -50,8 +38,6 @@
 	/* 40 x 32 */
 	.small {
 		&.ms-img-type-simple,
-		&.ms-img-type-content_type,
-		&.ms-img-type-tier,
 		&.ms-img-type-dripped {
 			width: 40px;
 			height: 33px;
@@ -59,14 +45,6 @@
 
 		&.ms-img-type-simple {
 			background-position: -430px -33px;
-		}
-
-		&.ms-img-type-content_type {
-			background-position: -530px -33px;
-		}
-
-		&.ms-img-type-tier {
-			background-position: -613px -33px; /* or -649px */
 		}
 
 		&.ms-img-type-dripped {
@@ -78,8 +56,6 @@
 	.widefat {
 		.small {
 			&.ms-img-type-simple,
-			&.ms-img-type-content_type,
-			&.ms-img-type-tier,
 			&.ms-img-type-dripped {
 				vertical-align: middle;
 				margin-top: -5px;

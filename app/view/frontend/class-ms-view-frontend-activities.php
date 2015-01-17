@@ -2,10 +2,6 @@
 
 class MS_View_Frontend_Activities extends MS_View {
 
-	protected $data;
-
-	protected $fields;
-
 	public function to_html() {
 		ob_start();
 		?>
@@ -30,13 +26,13 @@ class MS_View_Frontend_Activities extends MS_View {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<?php else : ?>
-				<?php
-					$redirect = add_query_arg( array() );
-					$title = __( 'Your account', MS_TEXT_DOMAIN );
-					echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
-				?>
-			<?php endif; ?>
+			<?php
+			else :
+				$redirect = add_query_arg( array() );
+				$title = __( 'Your account', MS_TEXT_DOMAIN );
+				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
+			endif;
+			?>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -44,18 +40,18 @@ class MS_View_Frontend_Activities extends MS_View {
 	}
 
 	private function login_html() {
-	?>
+		?>
 		<div class="ms-membership-form-wrapper">
 			<legend><?php _e( 'Your Account', MS_TEXT_DOMAIN ) ?></legend>
 			<div class="ms-alert-box ms-alert-error">
 				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
 			</div>
 			<?php
-				$redirect = add_query_arg( array() );
-				echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
+			$redirect = add_query_arg( array() );
+			echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
 			?>
 		</div>
-	<?php
+		<?php
 	}
 
 }

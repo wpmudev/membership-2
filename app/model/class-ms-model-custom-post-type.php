@@ -98,17 +98,6 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	protected $user_id;
 
 	/**
-	 * The parent ID of this model.
-	 *
-	 * Saved in $post->post_parent
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var int
-	 */
-	protected $parent_id;
-
-	/**
 	 * The last modified date.
 	 *
 	 * Saved in $post->post_modified
@@ -161,7 +150,6 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 			'post_status' => 'private',
 			'post_title' => sanitize_title( ! empty( $this->title ) ? $this->title : $this->name ),
 			'post_type' => $this->post_type,
-			'post_parent' => $this->parent_id,
 			'post_modified' => $this->post_modified,
 		);
 

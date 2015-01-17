@@ -620,13 +620,11 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 		// Count memberships that are displayed.
 		$count = 0;
 		foreach ( $memberships as $id => $membership ) {
-			if ( $membership->can_have_children() ) { continue; }
 			$count += 1;
 		}
 
 		if ( 5 >= $count ) {
 			foreach ( $memberships as $id => $membership ) {
-				if ( $membership->can_have_children() ) { continue; }
 				$status_url = admin_url(
 					sprintf(
 						'admin.php?page=%s&search_options=membership&membership=%s&s=%s',
@@ -645,34 +643,25 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$grouped = array(
 				0 => __( '(Select a membership)', MS_TEXT_DOMAIN ),
 			);
-			$grouped += MS_Model_Membership::get_membership_hierarchy();
+			$grouped += MS_Model_Membership::get_membership_names();
 
 			foreach ( $grouped as $id => $item ) {
 				if ( empty( $id ) ) { continue; }
 
-				if ( is_array( $item ) ) {
-					foreach ( $item as $child_id => $child ) {
-						$ms = MS_Factory::load( 'MS_Model_Membership', $child_id );
-						$count = $ms->get_members_count();
-						if ( $count ) {
-							$grouped[$id][$child_id] .= '  (' . $count . ')';
-						}
-					}
-				} else {
-					$ms = MS_Factory::load( 'MS_Model_Membership', $id );
-					$count = $ms->get_members_count();
-					if ( $count ) {
-						$grouped[$id] .= '  (' . $count . ')';
-					}
+				$ms = MS_Factory::load( 'MS_Model_Membership', $id );
+				$count = $ms->get_members_count();
+				if ( $count ) {
+					$grouped[$id] .= '  (' . $count . ')';
 				}
 			}
 
 			$url = admin_url(
 				sprintf(
-					'admin.php?page=%s&search_options=membership&membership=',
+					'admin.php?page=%1$s&search_options=membership&membership=',
 					MS_Controller_Plugin::MENU_SLUG . '-members'
 				)
 			);
+
 			$value = 0;
 			if ( isset( $_GET['membership'] ) ) {
 				$value = $_GET['membership'];

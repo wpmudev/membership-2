@@ -1265,8 +1265,6 @@
   /* 16 x 16 */
 }
 .ms-wrap .ms-img-type-simple,
-.ms-wrap .ms-img-type-content_type,
-.ms-wrap .ms-img-type-tier,
 .ms-wrap .ms-img-type-dripped,
 .ms-wrap .ms-img-unlock,
 .ms-wrap .ms-img-lock,
@@ -1282,8 +1280,6 @@
   background: transparent url(../images/membership_sprite.svg) no-repeat;
 }
 .ms-wrap .ms-img-type-simple,
-.ms-wrap .ms-img-type-content_type,
-.ms-wrap .ms-img-type-tier,
 .ms-wrap .ms-img-type-dripped {
   width: 100px;
   height: 80px;
@@ -1291,36 +1287,21 @@
 .ms-wrap .ms-img-type-simple {
   background-position: 0 -20px;
 }
-.ms-wrap .ms-img-type-content_type {
-  background-position: -100px -10px;
-}
-.ms-wrap .ms-img-type-tier {
-  background-position: -200px -8px;
-}
 .ms-wrap .ms-img-type-dripped {
   background-position: -300px -10px;
 }
-.ms-wrap .small.ms-img-type-simple, .ms-wrap .small.ms-img-type-content_type, .ms-wrap .small.ms-img-type-tier, .ms-wrap .small.ms-img-type-dripped {
+.ms-wrap .small.ms-img-type-simple, .ms-wrap .small.ms-img-type-dripped {
   width: 40px;
   height: 33px;
 }
 .ms-wrap .small.ms-img-type-simple {
   background-position: -430px -33px;
 }
-.ms-wrap .small.ms-img-type-content_type {
-  background-position: -530px -33px;
-}
-.ms-wrap .small.ms-img-type-tier {
-  background-position: -613px -33px;
-  /* or -649px */
-}
 .ms-wrap .small.ms-img-type-dripped {
   background-position: -729px -33px;
 }
-.ms-wrap .wp-list-table .small.ms-img-type-simple, .ms-wrap .wp-list-table .small.ms-img-type-content_type, .ms-wrap .wp-list-table .small.ms-img-type-tier, .ms-wrap .wp-list-table .small.ms-img-type-dripped,
+.ms-wrap .wp-list-table .small.ms-img-type-simple, .ms-wrap .wp-list-table .small.ms-img-type-dripped,
 .ms-wrap .widefat .small.ms-img-type-simple,
-.ms-wrap .widefat .small.ms-img-type-content_type,
-.ms-wrap .widefat .small.ms-img-type-tier,
 .ms-wrap .widefat .small.ms-img-type-dripped {
   vertical-align: middle;
   margin-top: -5px;
@@ -1486,12 +1467,6 @@
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-simple label:before {
   background-position: 0 -30px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-content_type label:before {
-  background-position: -100px -20px;
-}
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-tier label:before {
-  background-position: -200px -18px;
-}
 .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-dripped label:before {
   background-position: -300px -20px;
 }
@@ -1539,14 +1514,6 @@
 }
 .ms-wrap .ms-locked:hover .locked-info {
   display: inline-block !important;
-}
-.ms-wrap .column-collapse {
-  width: 20px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-.ms-wrap .ms-pointer {
-  cursor: pointer;
 }
 
 /* Page: Payment options */

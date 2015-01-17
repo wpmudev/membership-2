@@ -22,20 +22,16 @@ window.ms_init.view_membership_choose_type = function init () {
 			cur_type = types.filter( ':checked' ).val();
 
 		if ( is_private ) {
-			if ( 'simple' !== cur_type && 'content_type' !== cur_type ) {
+			if ( 'simple' !== cur_type ) {
 				types.filter( '[value="simple"]' )
 				.prop( 'checked', true )
 				.trigger( 'click' );
 			}
 
-			types.filter( '[value="tier"]' ).prop( 'disabled', true );
 			types.filter( '[value="dripped"]' ).prop( 'disabled', true );
-			jQuery( '.wpmui-tier' ).addClass( 'ms-locked' );
 			jQuery( '.wpmui-dripped' ).addClass( 'ms-locked' );
 		} else {
-			types.filter( '[value="tier"]' ).prop( 'disabled', false );
 			types.filter( '[value="dripped"]' ).prop( 'disabled', false );
-			jQuery( '.wpmui-tier' ).removeClass( 'ms-locked' );
 			jQuery( '.wpmui-dripped' ).removeClass( 'ms-locked' );
 		}
 	});

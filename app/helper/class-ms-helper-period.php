@@ -28,18 +28,19 @@
  */
 class MS_Helper_Period extends MS_Helper {
 
+	/**
+	 * Period types
+	 */
 	const PERIOD_TYPE_DAYS = 'days';
-
 	const PERIOD_TYPE_WEEKS = 'weeks';
-
 	const PERIOD_TYPE_MONTHS = 'months';
-
 	const PERIOD_TYPE_YEARS = 'years';
 
+	/**
+	 * Date formats
+	 */
 	const PERIOD_FORMAT = 'Y-m-d';
-
 	const DATE_TIME_FORMAT = 'Y-m-d H:i';
-
 	const DATE_FORMAT_SHORT = 'y-m-d';
 
 	/**

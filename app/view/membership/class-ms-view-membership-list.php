@@ -3,7 +3,6 @@
 class MS_View_Membership_List extends MS_View {
 
 	public function to_html() {
-
 		$membership = $this->data['membership'];
 		$admin_message = MS_Helper_Membership::get_admin_message( array( $membership->name ), $membership );
 		$title = MS_Helper_Membership::get_admin_title();

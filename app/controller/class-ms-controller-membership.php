@@ -57,8 +57,6 @@ class MS_Controller_Membership extends MS_Controller {
 	const STEP_CHOOSE_MS_TYPE = 'choose_ms_type';
 	const STEP_ACCESSIBLE_CONTENT = 'accessible_content';
 	const STEP_SETUP_PAYMENT = 'payment';
-	const STEP_SETUP_CONTENT_TYPES = 'content_types';
-	const STEP_SETUP_MS_TIERS = 'ms_tiers';
 	const STEP_SETUP_DRIPPED = 'dripped';
 
 	// Internal step
@@ -304,40 +302,6 @@ class MS_Controller_Membership extends MS_Controller {
 					$completed = true;
 					break;
 
-				case self::STEP_SETUP_CONTENT_TYPES:
-					// Create a Content-Type child
-
-					if ( self::validate_required( array( 'name' ) )
-						&& 'create_content_type' == $_POST['action']
-					) {
-						$child = $this->create_child_membership(  $_POST['name'] );
-						$membership_id = $child->id;
-						$next_step = self::STEP_ACCESSIBLE_CONTENT;
-					} else {
-						if ( $membership->private ) {
-							$next_step = self::STEP_MS_LIST;
-							$msg = $this->mark_setup_completed();
-							$completed = true;
-						} else {
-							$next_step = self::STEP_SETUP_PAYMENT;
-						}
-					}
-					break;
-
-				case self::STEP_SETUP_MS_TIERS:
-					// Create a Tier child
-
-					if ( self::validate_required( array( 'name' ) )
-						&& 'create_tier' == $_POST['action']
-					) {
-						$child = $this->create_child_membership(  $_POST['name'] );
-						$membership_id = $child->id;
-						$next_step = self::STEP_ACCESSIBLE_CONTENT;
-					} else {
-						$next_step = self::STEP_SETUP_PAYMENT;
-					}
-					break;
-
 				case self::STEP_SETUP_DRIPPED:
 					$next_step = self::STEP_SETUP_PAYMENT;
 					break;
@@ -350,14 +314,6 @@ class MS_Controller_Membership extends MS_Controller {
 			switch ( $next_step ) {
 				case self::STEP_CHOOSE_ACCESSIBLE_CONTENT:
 					switch ( $membership->type ) {
-						case MS_Model_Membership::TYPE_CONTENT_TYPE:
-							$next_step = self::STEP_SETUP_CONTENT_TYPES;
-							break;
-
-						case MS_Model_Membership::TYPE_TIER:
-							$next_step = self::STEP_SETUP_MS_TIERS;
-							break;
-
 						case MS_Model_Membership::TYPE_DRIPPED:
 							$next_step = self::STEP_SETUP_DRIPPED;
 							break;
@@ -370,20 +326,6 @@ class MS_Controller_Membership extends MS_Controller {
 
 				case self::STEP_DID_ACCESSIBLE_CONTENT:
 					switch ( $membership->type ) {
-						case MS_Model_Membership::TYPE_CONTENT_TYPE:
-							$next_step = self::STEP_SETUP_CONTENT_TYPES;
-							if ( $membership->parent_id ) {
-								$membership_id = $membership->parent_id;
-							}
-							break;
-
-						case MS_Model_Membership::TYPE_TIER:
-							$next_step = self::STEP_SETUP_MS_TIERS;
-							if ( $membership->parent_id ) {
-								$membership_id = $membership->parent_id;
-							}
-							break;
-
 						case MS_Model_Membership::TYPE_SIMPLE:
 							if ( $membership->private ) {
 								$next_step = self::STEP_MS_LIST;
@@ -431,45 +373,7 @@ class MS_Controller_Membership extends MS_Controller {
 				exit;
 			}
 		} else {
-			// No action request found. Validate direct access.
-
-			switch ( $step ) {
-				case self::STEP_OVERVIEW:
-					// Child overview page is shown in parent's overview, redirect.
-
-					if ( $membership->has_parent() && empty( $_GET['tab'] ) ) {
-						$new_url = add_query_arg(
-							array(
-								'membership_id' => $membership->parent_id,
-								'tab' => $membership->id,
-							)
-						);
-						wp_safe_redirect( $new_url );
-						exit;
-					}
-					break;
-
-				case self::STEP_ACCESSIBLE_CONTENT:
-					// Parent membership can not edit rules.
-
-					if ( $membership->can_have_children() ) {
-						$args = array();
-						$child = $membership->get_last_descendant();
-
-						if ( $child->id != $membership->id ) {
-							$args['membership_id'] = $child->id;
-						} else {
-							if ( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
-								$args['step'] = self::STEP_SETUP_CONTENT_TYPES;
-							} elseif ( MS_Model_Membership::TYPE_TIER == $membership->type ) {
-								$args['step'] = self::STEP_SETUP_MS_TIERS;
-							}
-						}
-						wp_safe_redirect( add_query_arg( $args ) );
-						exit;
-					}
-					break;
-			}
+			// No action request found.
 		}
 
 	}
@@ -640,7 +544,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = 'save_payment_settings';
 		$data['membership'] = $membership;
-		$data['children'] = $membership->get_children();
 		$data['is_global_payments_set'] = MS_Plugin::instance()->settings->is_global_payments_set;
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 
@@ -688,39 +591,9 @@ class MS_Controller_Membership extends MS_Controller {
 				$view = MS_Factory::create( 'MS_View_Membership_Overview_Dripped' );
 				break;
 
-			case MS_Model_Membership::TYPE_TIER:
-				$view = MS_Factory::create( 'MS_View_Membership_Overview_Tier' );
-				$data['tabs'] = $this->get_children_tabs( $membership );
-				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
-				$data['child_membership'] = $child;
-				$membership_id = $child->id;
-				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
-					array( 'membership_id' => $membership_id )
-				);
-
-				foreach ( $ms_relationships as $ms_relationship ) {
-					$data['members'][] = $ms_relationship->get_member();
-				}
-				break;
-
-			case MS_Model_Membership::TYPE_CONTENT_TYPE:
-				$view = MS_Factory::create( 'MS_View_Membership_Overview_Content_Type' );
-				$data['tabs'] = $this->get_children_tabs( $membership );
-				$child = MS_Factory::load( 'MS_Model_Membership', $this->get_active_tab() );
-				$data['child_membership'] = $child;
-				$membership_id = $child->id;
-				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
-					array( 'membership_id' => $membership_id )
-				);
-
-				foreach ( $ms_relationships as $ms_relationship ) {
-					$data['members'][] = $ms_relationship->get_member();
-				}
-				break;
-
 			default:
 			case MS_Model_Membership::TYPE_SIMPLE:
-				$view = MS_Factory::create( 'MS_View_Membership_Overview' );
+				$view = MS_Factory::create( 'MS_View_Membership_Overview_Simple' );
 				break;
 		}
 
@@ -776,46 +649,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
-	 * Display Setup Content Types page.
-	 *
-	 * @since 1.0.0
-	 */
-	public function page_content_types() {
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = 'create_content_type';
-		$data['membership'] = $this->load_membership();
-		$data['initial_setup'] = MS_Plugin::is_wizard();
-		$data['bread_crumbs'] = $this->get_bread_crumbs();
-
-		$data['show_next_button'] = ! isset( $_GET['edit'] );
-
-		$view = MS_Factory::create( 'MS_View_Membership_Content_Type' );
-		$view->data = apply_filters( 'ms_view_membership_content_types_data', $data, $this );
-		$view->render();
-	}
-
-	/**
-	 * Display Setup Membership Tiers page.
-	 *
-	 * @since 1.0.0
-	 */
-	public function page_ms_tiers() {
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = 'create_tier';
-		$data['membership'] = $this->load_membership();
-		$data['initial_setup'] = MS_Plugin::is_wizard();
-		$data['bread_crumbs'] = $this->get_bread_crumbs();
-
-		$data['show_next_button'] = ! isset( $_GET['edit'] );
-
-		$view = MS_Factory::create( 'MS_View_Membership_Tier' );
-		$view->data = apply_filters( 'ms_view_membership_tier_data', $data, $this );
-		$view->render();
-	}
-
-	/**
 	 * Display Setup Dripped Content page.
 	 *
 	 * @since 1.0.0
@@ -852,8 +685,6 @@ class MS_Controller_Membership extends MS_Controller {
 				self::STEP_NEWS,
 				self::STEP_SETUP_PROTECTED_CONTENT,
 				self::STEP_CHOOSE_MS_TYPE,
-				self::STEP_SETUP_CONTENT_TYPES,
-				self::STEP_SETUP_MS_TIERS,
 				self::STEP_SETUP_DRIPPED,
 				self::STEP_ACCESSIBLE_CONTENT,
 				self::STEP_SETUP_PAYMENT,
@@ -938,13 +769,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$the_page = sanitize_html_class( @$_GET['page'] );
 		if ( MS_Controller_Plugin::MENU_SLUG . '-setup' === $the_page ) {
 			$step = self::STEP_SETUP_PROTECTED_CONTENT;
-		}
-
-		// If trying to setup children of not supported type, or already is a child (grand child not allowed)
-		if ( in_array( $step, array( self::STEP_SETUP_CONTENT_TYPES, self::STEP_SETUP_MS_TIERS ) )
-			&& ! $membership->can_have_children()
-		) {
-			$step = self::STEP_OVERVIEW;
 		}
 
 		// Accessible content page is not available to dripped type
@@ -1261,29 +1085,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
-	 * Get available tabs for Tiers/Content-type parent memberships.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array The tabs configuration.
-	 */
-	public function get_children_tabs() {
-
-		$tabs = array();
-
-		$membership = $this->load_membership();
-		$children = $membership->get_children();
-		foreach ( $children as $child ) {
-			$tabs[ $child->id ] = array(
-				'title' => $child->name,
-				'url' => add_query_arg( array( 'tab' => $child->id ) ),
-			);
-		}
-
-		return apply_filters( 'ms_controller_membership_get_children_tabs', $tabs, $this );
-	}
-
-	/**
 	 * Get the current membership page's active tab.
 	 *
 	 * @since 1.0.0
@@ -1291,7 +1092,6 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return string The active tab.
 	 */
 	public function get_active_tab() {
-
 		$step = $this->get_step();
 		$tabs = array();
 
@@ -1304,9 +1104,7 @@ class MS_Controller_Membership extends MS_Controller {
 		elseif ( self::STEP_SETUP_DRIPPED == $step ) {
 			$tabs = $this->get_setup_dripped_tabs();
 		}
-		elseif ( self::STEP_OVERVIEW == $step ) {
-			$tabs = $this->get_children_tabs();
-		}
+
 		reset( $tabs );
 		$first_key = key( $tabs );
 
@@ -1417,71 +1215,6 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 
 			case self::STEP_ACCESSIBLE_CONTENT:
-				if ( $parent = $membership->get_parent() ) {
-					$bread_crumbs['prev'] = array(
-						'title' => $parent->name,
-						'url' => admin_url(
-							sprintf(
-								'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_OVERVIEW,
-								$parent->id
-							)
-						),
-					);
-					if ( MS_Model_Membership::TYPE_TIER == $parent->type ) {
-						$bread_crumbs['prev1'] = array(
-							'title' => __( 'Tier Levels', MS_TEXT_DOMAIN ),
-							'url' => admin_url(
-								sprintf(
-									'admin.php?page=%s&step=%s&membership_id=%s',
-									MS_Controller_Plugin::MENU_SLUG,
-									self::STEP_SETUP_MS_TIERS,
-									$parent->id
-								)
-							),
-						);
-					}
-					elseif ( MS_Model_Membership::TYPE_CONTENT_TYPE == $parent->type ) {
-						$bread_crumbs['prev1'] = array(
-							'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
-							'url' => admin_url(
-								sprintf(
-									'admin.php?page=%s&step=%s&membership_id=%s',
-									MS_Controller_Plugin::MENU_SLUG,
-									self::STEP_SETUP_CONTENT_TYPES,
-									$parent->id
-								)
-							),
-						);
-					}
-					$bread_crumbs['current'] = array(
-						'title' => sprintf(
-							__( '%s Accessible Content', MS_TEXT_DOMAIN ),
-							$membership->name
-						),
-					);
-				}
-				else {
-					$bread_crumbs['prev'] = array(
-						'title' => $membership->name,
-						'url' => admin_url(
-							sprintf(
-								'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_OVERVIEW,
-								$membership->id
-							)
-						),
-					);
-					$bread_crumbs['current'] = array(
-						'title' => __( 'Accessible Content', MS_TEXT_DOMAIN ),
-					);
-
-				}
-				break;
-
-			case self::STEP_SETUP_CONTENT_TYPES:
 				$bread_crumbs['prev'] = array(
 					'title' => $membership->name,
 					'url' => admin_url(
@@ -1494,32 +1227,7 @@ class MS_Controller_Membership extends MS_Controller {
 					),
 				);
 				$bread_crumbs['current'] = array(
-					'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
-				);
-				if ( ! $membership->private ) {
-					$bread_crumbs['next'] = array(
-						'title' => __( 'Payment', MS_TEXT_DOMAIN ),
-					);
-				}
-				break;
-
-			case self::STEP_SETUP_MS_TIERS:
-				$bread_crumbs['prev'] = array(
-					'title' => $membership->name,
-					'url' => admin_url(
-						sprintf(
-							'admin.php?page=%s&step=%s&membership_id=%s',
-							MS_Controller_Plugin::MENU_SLUG,
-							self::STEP_OVERVIEW,
-							$membership->id
-						)
-					),
-				);
-				$bread_crumbs['current'] = array(
-					'title' => __( 'Membership Tiers', MS_TEXT_DOMAIN ),
-				);
-				$bread_crumbs['next'] = array(
-					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+					'title' => __( 'Accessible Content', MS_TEXT_DOMAIN ),
 				);
 				break;
 
@@ -1555,32 +1263,6 @@ class MS_Controller_Membership extends MS_Controller {
 						)
 					),
 				);
-				if ( MS_Model_Membership::TYPE_TIER == $membership->type ) {
-					$bread_crumbs['prev1'] = array(
-						'title' => __( 'Tier Levels', MS_TEXT_DOMAIN ),
-						'url' => admin_url(
-							sprintf(
-								'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_SETUP_MS_TIERS,
-								$membership->id
-							)
-						),
-					);
-				}
-				elseif ( MS_Model_Membership::TYPE_CONTENT_TYPE == $membership->type ) {
-					$bread_crumbs['prev1'] = array(
-						'title' => __( 'Content Types', MS_TEXT_DOMAIN ),
-						'url' => admin_url(
-							sprintf(
-								'admin.php?page=%s&step=%s&membership_id=%s',
-								MS_Controller_Plugin::MENU_SLUG,
-								self::STEP_SETUP_CONTENT_TYPES,
-								$membership->id
-							)
-						),
-					);
-				}
 				$bread_crumbs['current'] = array(
 					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 				);
@@ -1596,7 +1278,11 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		}
 
-		return apply_filters( 'ms_controller_membership_get_bread_crumbs', $bread_crumbs, $this );
+		return apply_filters(
+			'ms_controller_membership_get_bread_crumbs',
+			$bread_crumbs,
+			$this
+		);
 	}
 
 	/**
@@ -1633,28 +1319,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
-	 * Create child membership.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $name The membership name.
-	 * @return MS_Model_Membership The child membership or null.
-	 */
-	private function create_child_membership( $name ) {
-
-		$membership = null;
-
-		if ( $this->is_admin_user() ) {
-			$parent = $this->load_membership();
-			if ( $parent->is_valid() && $parent->can_have_children() ) {
-				$membership = $parent->create_child( $name );
-			}
-		}
-
-		return apply_filters( 'ms_controller_membership_create_child_membership', $membership, $this );
-	}
-
-	/**
 	 * Load Membership manager specific styles.
 	 *
 	 * @since 1.0.0
@@ -1685,22 +1349,18 @@ class MS_Controller_Membership extends MS_Controller {
 		);
 
 		$step = $this->get_step();
-		$show_pointer = true;
 
 		switch ( $step ) {
 			case self::STEP_WELCOME_SCREEN:
-				$show_pointer = false;
 				break;
 
 			case self::STEP_CHOOSE_MS_TYPE:
-				$show_pointer = false;
 				$data['ms_init'][] = 'view_membership_choose_type';
 				$data['initial_url'] = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG );
 				break;
 
 			case self::STEP_OVERVIEW:
 				$data['ms_init'][] = 'view_membership_overview';
-				WDev()->add_ui( 'vnav' );
 				break;
 
 			case self::STEP_SETUP_PROTECTED_CONTENT:
@@ -1725,12 +1385,6 @@ class MS_Controller_Membership extends MS_Controller {
 				}
 				break;
 
-			case self::STEP_SETUP_CONTENT_TYPES:
-			case self::STEP_SETUP_MS_TIERS:
-				wp_enqueue_script( 'jquery-validate' );
-				$data['ms_init'][] = 'view_membership_create_child';
-				break;
-
 			case self::STEP_SETUP_PAYMENT:
 				$data['ms_init'][] = 'view_membership_setup_payment';
 				$data['ms_init'][] = 'view_settings_payment';
@@ -1744,18 +1398,6 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_MS_LIST:
 				$data['ms_init'][] = 'view_membership_list';
 				break;
-		}
-
-		if ( $show_pointer ) {
-			WDev()->pointer(
-				array(
-					'id' => 'hide_wizard_pointer',
-					'target' => 'a[href="admin.php?page=protected-content-setup"]',
-					'body' => __( 'You can add / remove and modify your Protected Content at anytime here', MS_TEXT_DOMAIN ),
-					'modal' => true,
-					'blur' => true,
-				)
-			);
 		}
 
 		WDev()->add_data( 'ms_data', $data );

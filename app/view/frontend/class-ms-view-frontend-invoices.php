@@ -2,10 +2,6 @@
 
 class MS_View_Frontend_Invoices extends MS_View {
 
-	protected $data;
-
-	protected $fields;
-
 	public function to_html() {
 		ob_start();
 		?>
@@ -29,7 +25,7 @@ class MS_View_Frontend_Invoices extends MS_View {
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $this->data['invoices'] as $invoice ): ?>
+					<?php foreach ( $this->data['invoices'] as $invoice ) : ?>
 						<tr>
 							<td><?php printf( '<a href="%s">%s</a>', get_permalink(  $invoice->id ),  $invoice->id ); ?></td>
 							<td><?php echo $invoice->status; ?></td>
@@ -42,30 +38,31 @@ class MS_View_Frontend_Invoices extends MS_View {
 				</table>
 			<?php else : ?>
 				<?php
-					$redirect = add_query_arg( array() );
-					$title = __( 'Your account', MS_TEXT_DOMAIN );
-					echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
+				$redirect = add_query_arg( array() );
+				$title = __( 'Your account', MS_TEXT_DOMAIN );
+				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
 				?>
 			<?php endif; ?>
 		</div>
 		<?php
 		$html = ob_get_clean();
+
 		return $html;
 	}
 
 	private function login_html() {
-	?>
+		?>
 		<div class="ms-membership-form-wrapper">
 			<legend><?php _e( 'Your Account', MS_TEXT_DOMAIN ) ?></legend>
 			<div class="ms-alert-box ms-alert-error">
 				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
 			</div>
 			<?php
-				$redirect = add_query_arg( array() );
-				echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
+			$redirect = add_query_arg( array() );
+			echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
 			?>
 		</div>
-	<?php
+		<?php
 	}
 
 }

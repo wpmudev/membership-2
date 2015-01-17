@@ -44,14 +44,13 @@ Import Data Structure
     - id                 <int>  Export-ID
     - name               <string>  Membership name (see notes for `special`)
     - description        <string>  Membership description
-    - type               [simple|content_type|tier|dripped]
+    - type               [simple|dripped]
     - active             <bool>
     - private            <bool>
     - free               <bool>
     - dripped            [empty|specific_date|from_registration]
     - special            [empty|base|role]
                          For "role": `name` must match a WordPress user-role or "(Guest)/(Logged in)"
-    - children           <array of memberships>  Only 1 Level of children allowed
 
     If `free` is false:
     - price              <float>
@@ -206,7 +205,7 @@ class MS_Model_Import_Export extends MS_Model {
 	 * @param  int $membership_id
 	 * @return object Export data
 	 */
-	protected function export_membership( $membership_id, $has_children = true ) {
+	protected function export_membership( $membership_id ) {
 		$src = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 
 		$obj = (object) array();
@@ -246,18 +245,6 @@ class MS_Model_Import_Export extends MS_Model {
 				$obj->trial_price = $src->trial_price;
 				$obj->trial_period_unit = $src->trial_period['period_unit'];
 				$obj->trial_period_type = $src->trial_period['period_type'];
-			}
-		}
-
-		if ( $has_children ) {
-			$children = MS_Model_Membership::get_memberships( array( 'post_parent' => $membership_id ) );
-			if ( count( $children ) ) {
-				$obj->children = array();
-				foreach ( $children as $child ) {
-					$obj->children[] = $this->export_membership( $child->id, false );
-				}
-			} else {
-				$obj->children = false;
 			}
 		}
 

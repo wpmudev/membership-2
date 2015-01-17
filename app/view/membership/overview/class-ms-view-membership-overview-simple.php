@@ -1,16 +1,9 @@
 <?php
 
-class MS_View_Membership_Overview extends MS_View {
+class MS_View_Membership_Overview_Simple extends MS_View {
 
 	public function to_html() {
 		$membership = $this->data['membership'];
-		if ( empty( $this->data['child_membership'] ) ) {
-			$child_membership = $membership;
-			$container_class = 'no-tabs';
-		} else {
-			$child_membership = $this->data['child_membership'];
-			$container_class = '';
-		}
 
 		$toggle = array(
 			'id' => 'ms-toggle-' . $membership->id,
@@ -34,32 +27,23 @@ class MS_View_Membership_Overview extends MS_View {
 		);
 
 		ob_start();
-		// We just want to make sure that the JS files for the editor are loaded
-		// so we can use the wp_editor() in the edit popup later
-		wp_editor( '', 'not-used' );
-
-		// Discard the editor - at this point the JS files are enqueued already!
-		ob_clean();
 		?>
-
-		<div class="wrap ms-wrap ms-membership-overview <?php echo esc_attr( $container_class ); ?>">
+		<div class="wrap ms-wrap ms-membership-overview">
 			<div class="ms-wrap-top ms-group">
 				<div class="ms-membership-status-wrapper">
 					<?php MS_Helper_Html::html_element( $toggle ); ?>
 					<div id="ms-membership-status" class="ms-membership-status <?php echo esc_attr( $status_class ); ?>">
 						<?php
-							printf(
-								'<div class="ms-active"><span>%s </span><span id="ms-membership-status-text" class="ms-ok">%s</span></div>',
-								__( 'Membership is', MS_TEXT_DOMAIN ),
-								__( 'Active', MS_TEXT_DOMAIN )
-							);
-						?>
-						<?php
-							printf(
-								'<div><span>%s </span><span id="ms-membership-status-text" class="ms-nok">%s</span></div>',
-								__( 'Membership is', MS_TEXT_DOMAIN ),
-								__( 'Disabled', MS_TEXT_DOMAIN )
-							);
+						printf(
+							'<div class="ms-active"><span>%s </span><span id="ms-membership-status-text" class="ms-ok">%s</span></div>',
+							__( 'Membership is', MS_TEXT_DOMAIN ),
+							__( 'Active', MS_TEXT_DOMAIN )
+						);
+						printf(
+							'<div><span>%s </span><span id="ms-membership-status-text" class="ms-nok">%s</span></div>',
+							__( 'Membership is', MS_TEXT_DOMAIN ),
+							__( 'Disabled', MS_TEXT_DOMAIN )
+						);
 						?>
 					</div>
 				</div>
@@ -178,7 +162,7 @@ class MS_View_Membership_Overview extends MS_View {
 
 	/**
 	 * Echo a member-list. This function can be overwritten by other views
-	 * to customize the list (display tier-level or join-date, etc.)
+	 * to customize the list.
 	 *
 	 * @since  1.0.0
 	 *
@@ -198,38 +182,17 @@ class MS_View_Membership_Overview extends MS_View {
 	}
 
 	public function available_content_panel() {
-		$child_membership = $this->data['child_membership'];
 		$membership = $this->data['membership'];
 
-		$desc = $child_membership->description;
+		$desc = $membership->description;
 		$desc_empty_class = (empty( $desc ) ? '' : 'hidden');
-		$container_class = (empty( $child_membership ) ? 'no-tabs' : '');
-		$child_name = '';
-		$child_desc = '';
 
 		?>
-		<div class="ms-overview-container <?php echo esc_attr( $container_class ); ?>">
-			<?php
-			if ( ! empty( $child_membership ) ) {
-				$child_name = $child_membership->name;
-				$child_desc = $child_membership->description;
-
-				MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'] );
-			} else {
-				$child_desc = $membership->description;
-			}
-			?>
+		<div class="ms-overview-container">
 			<div class="ms-settings">
 				<div class="ms-overview-top">
-					<?php
-					if ( ! empty( $child_membership ) ) : ?>
-						<div class="ms-subtitle">
-							<?php echo esc_html( $child_name ); ?>
-						</div>
-					<?php endif; ?>
-
 					<div class="ms-settings-desc ms-description membership-description">
-						<?php echo $child_desc; ?>
+						<?php echo $desc; ?>
 					</div>
 					<?php
 
@@ -281,7 +244,7 @@ class MS_View_Membership_Overview extends MS_View {
 				}
 
 				if ( $has_rules ) {
-					$this->content_box_tags( $membership->get_rule( $rule_type ), 4 );
+					$this->content_box( $membership->get_rule( $rule_type ), 4 );
 				}
 			}
 			?>
@@ -307,13 +270,12 @@ class MS_View_Membership_Overview extends MS_View {
 
 	/**
 	 * Echo a content list as tag-list.
-	 * Used by Simple/Content-Type/Tier views.
 	 *
 	 * @since  1.0.0
 	 *
 	 * @param  array $contents List of content items to display.
 	 */
-	protected function content_box_tags( $rule, $items_per_row = 3 ) {
+	protected function content_box( $rule, $items_per_row = 3 ) {
 		static $row_items = 0;
 
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
@@ -321,10 +283,6 @@ class MS_View_Membership_Overview extends MS_View {
 		$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
 
 		$membership_id = $this->data['membership']->id;
-
-		if ( ! empty( $this->data['child_membership'] ) && $this->data['child_membership']->is_valid() ) {
-			$membership_id = $this->data['child_membership']->id;
-		}
 
 		$row_items += 1;
 		$new_row = ($row_items % $items_per_row === 0);
@@ -378,37 +336,5 @@ class MS_View_Membership_Overview extends MS_View {
 		if ( $new_row ) {
 			echo '</div><div class="ms-group">';
 		}
-	}
-
-	/**
-	 * Echo a content list as 2-column table that show Content-Title and the
-	 * Available date.
-	 * Used by Dripped-Content view.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  array $contents List of content items to display.
-	 */
-	protected function content_box_date( $contents ) {
-		?>
-		<table class="ms-list-table limit-width ms-list-date">
-			<thead>
-				<tr>
-					<th class="col-text"><?php _e( 'Post / Page Title', MS_TEXT_DOMAIN ); ?></th>
-					<th class="col-date"><?php _e( 'Content Available', MS_TEXT_DOMAIN ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php foreach ( $contents as $id => $content ) : ?>
-				<tr>
-					<td class="col-text"><?php MS_Helper_Html::content_tag( $content, 'span' ); ?></td>
-					<td class="col-date"><?php echo esc_html(
-						date_i18n( get_option( 'date_format' ), strtotime( $content->avail_date ) )
-					); ?></td>
-				</tr>
-			<?php endforeach;?>
-			</tbody>
-		</table>
-		<?php
 	}
 }

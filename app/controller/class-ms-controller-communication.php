@@ -119,7 +119,7 @@ class MS_Controller_Communication extends MS_Controller {
 		$comms = MS_Model_Communication::load_communications( true );
 
 		// Private memberships don't have communications enabled
-		if ( ! $membership->is_private() ) {
+		if ( ! $membership->is_private ) {
 			foreach ( $comms as $comm ) {
 				$comm->enabled = true;
 				$comm->save();

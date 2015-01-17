@@ -28,14 +28,7 @@ class MS_View_Membership_Payment extends MS_View {
 				<div id="ms-payment-settings-wrapper">
 					<?php
 					$this->global_payment_settings();
-
-					if ( $this->data['membership']->can_have_children() ) {
-						foreach ( $this->data['children'] as $child ) {
-							$this->specific_payment_settings( $child );
-						}
-					} else {
-						$this->specific_payment_settings( $this->data['membership'] );
-					}
+					$this->specific_payment_settings( $this->data['membership'] );
 					?>
 				</div>
 				<br class="clear" />
@@ -129,17 +122,12 @@ class MS_View_Membership_Payment extends MS_View {
 
 	/**
 	 * Render the payment box for a single Membership subscription.
-	 * For Simple/Dripped there will be one Payment box.
-	 * For Content-Based/Tiered there will be one box per content/tier.
 	 *
 	 * @since  1.0.0
 	 *
 	 * @param  MS_Model_Membership $membership The membership/subscription
 	 */
 	public function specific_payment_settings( MS_Model_Membership $membership ) {
-		// If multiple boxes are displayed only the first is expanded.
-		static $First = true;
-
 		$title = sprintf(
 			__( '%s specific payment settings:', MS_TEXT_DOMAIN ),
 			'<span class="ms-item-name">' . $membership->name . '</span>'
@@ -151,27 +139,33 @@ class MS_View_Membership_Payment extends MS_View {
 
 		$fields = $this->get_specific_payment_fields( $membership );
 		$type_class = $this->data['is_global_payments_set'] ? '' : 'ms-half right';
-		$state = ($First ? 'open' : 'closed');
-
 		?>
 		<div class="ms-specific-payment-wrapper <?php echo esc_attr( $type_class ); ?>">
-			<?php MS_Helper_Html::settings_box_header( $title, $desc, $state ); ?>
+			<?php MS_Helper_Html::settings_box_header( $title, $desc, 'open' ); ?>
 			<div class="ms-payment-structure-wrapper">
-				<?php MS_Helper_Html::html_element( $fields['price'] ); ?>
-				<?php MS_Helper_Html::html_element( $fields['payment_type'] ); ?>
+				<?php
+				MS_Helper_Html::html_element( $fields['price'] );
+				MS_Helper_Html::html_element( $fields['payment_type'] );
+				?>
 			</div>
 			<div class="ms-payment-types-wrapper">
 				<div class="ms-payment-type-wrapper ms-payment-type-finite ms-period-wrapper">
-					<?php MS_Helper_Html::html_element( $fields['period_unit'] );?>
-					<?php MS_Helper_Html::html_element( $fields['period_type'] );?>
+					<?php
+					MS_Helper_Html::html_element( $fields['period_unit'] );
+					MS_Helper_Html::html_element( $fields['period_type'] );
+					?>
 				</div>
 				<div class="ms-payment-type-wrapper ms-payment-type-recurring ms-period-wrapper">
-					<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_unit'] );?>
-					<?php MS_Helper_Html::html_element( $fields['pay_cycle_period_type'] );?>
+					<?php
+					MS_Helper_Html::html_element( $fields['pay_cycle_period_unit'] );
+					MS_Helper_Html::html_element( $fields['pay_cycle_period_type'] );
+					?>
 				</div>
 				<div class="ms-payment-type-wrapper ms-payment-type-date-range">
-					<?php MS_Helper_Html::html_element( $fields['period_date_start'] );?>
-					<?php MS_Helper_Html::html_element( $fields['period_date_end'] );?>
+					<?php
+					MS_Helper_Html::html_element( $fields['period_date_start'] );
+					MS_Helper_Html::html_element( $fields['period_date_end'] );
+					?>
 				</div>
 			</div>
 			<div class="ms-after-end-wrapper">
@@ -182,9 +176,11 @@ class MS_View_Membership_Payment extends MS_View {
 					<div class="wpmui-input-label"><?php _e( 'Membership Trial:', MS_TEXT_DOMAIN ); ?></div>
 					<div id="ms-trial-period-wrapper">
 						<div class="ms-period-wrapper">
-							<?php MS_Helper_Html::html_element( $fields['trial_period_enabled'] );?>
-							<?php MS_Helper_Html::html_element( $fields['trial_period_unit'] );?>
-							<?php MS_Helper_Html::html_element( $fields['trial_period_type'] );?>
+							<?php
+							MS_Helper_Html::html_element( $fields['trial_period_enabled'] );
+							MS_Helper_Html::html_element( $fields['trial_period_unit'] );
+							MS_Helper_Html::html_element( $fields['trial_period_type'] );
+							?>
 						</div>
 					</div>
 				</div>
@@ -195,7 +191,6 @@ class MS_View_Membership_Payment extends MS_View {
 			?>
 		</div>
 		<?php
-		$First = false;
 	}
 
 	/**

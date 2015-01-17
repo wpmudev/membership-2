@@ -219,22 +219,21 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-
 		$this->comm_vars = array(
-				self::COMM_VAR_MS_NAME => __( 'Membership name', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_MS_INVOICE => __( 'Invoice details', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Account page url', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_MS_REMAINING_DAYS => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Membership remaining trial days', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_MS_EXPIRY_DATE => __( 'Membership expiration date', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_USER_DISPLAY_NAME => __( 'User display name', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_USER_FIRST_NAME => __( 'User first name', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_USER_LAST_NAME => __( 'User last name', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_USERNAME => __( 'Username', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_BLOG_NAME => __( 'Blog/site name', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_BLOG_URL => __( 'Blog/site url', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_NET_NAME => __( 'Network name', MS_TEXT_DOMAIN ),
-				self::COMM_VAR_NET_URL => __( 'Network url', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_NAME => __( 'Membership name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_INVOICE => __( 'Invoice details', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Account page url', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Membership remaining trial days', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Membership expiration date', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User display name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_FIRST_NAME => __( 'User first name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_LAST_NAME => __( 'User last name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USERNAME => __( 'Username', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_BLOG_NAME => __( 'Blog/site name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_BLOG_URL => __( 'Blog/site url', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_NET_NAME => __( 'Network name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_NET_URL => __( 'Network url', MS_TEXT_DOMAIN ),
 		);
 	}
 
@@ -246,7 +245,6 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	public function before_save() {
 		parent::before_save();
 		$this->description = $this->message;
-
 	}
 
 	/**
@@ -295,8 +293,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					self::COMM_TYPE_BEFORE_PAYMENT_DUE,
 					self::COMM_TYPE_AFTER_PAYMENT_DUE,
 				);
-			}
-			else {
+			} else {
 				$types = array(
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_INVOICE,

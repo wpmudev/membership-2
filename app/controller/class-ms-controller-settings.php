@@ -105,7 +105,10 @@ class MS_Controller_Settings extends MS_Controller {
 			&& self::validate_required( $fields )
 			&& $this->is_admin_user()
 		) {
-			$msg = $this->save_general( $_POST['action'], array( $_POST['setting'] => 1 ) );
+			$msg = $this->save_general(
+				$_POST['action'],
+				array( $_POST['setting'] => 1 )
+			);
 		}
 
 		wp_die( $msg );
@@ -153,7 +156,11 @@ class MS_Controller_Settings extends MS_Controller {
 			&& $this->is_admin_user()
 		) {
 			$settings = $this->get_model();
-			$settings->set_custom_setting( $_POST['group'], $_POST['field'], $_POST['value'] );
+			$settings->set_custom_setting(
+				$_POST['group'],
+				$_POST['field'],
+				$_POST['value']
+			);
 			$settings->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
@@ -559,7 +566,10 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
-		$initial_url = add_query_arg( array( 'page' => MS_Controller_Plugin::MENU_SLUG ), admin_url( 'admin.php' ) );
+		$initial_url = add_query_arg(
+			array( 'page' => MS_Controller_Plugin::MENU_SLUG ),
+			admin_url( 'admin.php' )
+		);
 
 		$data = array(
 			'ms_init' => array(),

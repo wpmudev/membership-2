@@ -210,16 +210,6 @@ class MS_Model_Import extends MS_Model {
 		$membership->save();
 
 		$this->import_obj( 'membership', $obj->id, $membership );
-
-		if ( ! empty( $obj->children ) ) {
-			foreach ( $obj->children as $child_obj ) {
-				$child = $membership->create_child( 'import_item' );
-				$this->populate_membership( $child, $child_obj );
-				$child->save();
-
-				$this->import_obj( 'membership', $child_obj->id, $child );
-			}
-		}
 	}
 
 	/**

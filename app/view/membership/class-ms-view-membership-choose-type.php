@@ -58,21 +58,6 @@ class MS_View_Membership_Choose_Type extends MS_View {
 						'text' => __( 'I simply want to protect some of my content.', MS_TEXT_DOMAIN ),
 						'desc' => __( 'This is the most basic membership that creates a single membership level. Members will have access to all protected content.<br /><br /><em>eg. Visitors don\'t see protected content, members access all protected content.</em>', MS_TEXT_DOMAIN ),
 					),
-					MS_Model_Membership::TYPE_CONTENT_TYPE => array(
-						'text' => __( 'I want to have different content available to different members.', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This option is for when you have different types of content that you want to make available to different type of members.<br /><br /><em>eg. Music members get access to Guitar Courses, Cooking members get access to Recipes.</em>', MS_TEXT_DOMAIN ),
-					),
-					MS_Model_Membership::TYPE_TIER => array(
-						'text' => __( 'I want to set up a Tier Level-based membership.', MS_TEXT_DOMAIN ),
-						'desc' => sprintf(
-							'<span class="locked-blur">%1$s</span>',
-							__( 'This options allows you to set up different tier level membership.<br /><br /><em>eg. Silver &rarr; Gold &rarr; Platinum. The higher the level, the more content members will have access to.</em>', MS_TEXT_DOMAIN )
-						)
-						. sprintf(
-							'<span class="locked-info" style="display:none">%1$s</span>',
-							__( 'This Membership Type is only available to Public Memberships', MS_TEXT_DOMAIN )
-						),
-					),
 					MS_Model_Membership::TYPE_DRIPPED => array(
 						'text' => __( 'I want to set up a Dripped Content membership.', MS_TEXT_DOMAIN ),
 						'desc' => sprintf(

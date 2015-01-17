@@ -273,31 +273,14 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
 
-		$select_groups = array();
-		$parents = array();
 		$current = null;
-
-		$parents[0] = false;
 
 		// The ID of the main protected-content.
 		$base_id = MS_Model_Membership::get_protected_content()->id;
 
 		foreach ( $this->memberships as $membership ) {
-			$item_parent = $membership->get_parent();
-
-			if ( $item_parent && ! isset( $parents[ $item_parent->id ] ) ) {
-				$parents[ $item_parent->id ] = $item_parent;
-			}
-
 			// Create nonce fields
 			$nonce = wp_create_nonce( 'ms_simulate-' . $membership->id );
-
-			// Create options for <select>
-			if ( empty( $select_groups[ $membership->parent_id ] )
-				|| ! is_array( $select_groups[ $membership->parent_id ] )
-			) {
-				$select_groups[ $membership->parent_id ] = array();
-			}
 
 			if ( $base_id == $membership->id ) {
 				$label = __( 'No membership / Visitor', MS_TEXT_DOMAIN );
@@ -308,7 +291,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				}
 			}
 
-			$select_groups[ $membership->parent_id ][ $membership->id ] = array(
+			$items[ $membership->id ] = array(
 				'id' => $membership->id,
 				'selected' => ( $this->simulate->membership_id == $membership->id ),
 				'nonce' => $nonce,
@@ -318,11 +301,6 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			if ( $this->simulate->membership_id == $membership->id ) {
 				$current = $membership;
 			}
-		}
-
-		// Remove parents from the available members-list.
-		foreach ( $parents as $parent_id => $data ) {
-			unset( $select_groups[0][ $parent_id ] );
 		}
 
 		$action_field = array(
@@ -342,31 +320,21 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 			'value'  => '',
 			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
+		sort( $items );
 
 		ob_start();
 		?>
 		<form id="view-site-as" method="GET">
 			<select id="view-as-selector" class="wpmui-field-input wpmui-field-select ab-select" name="view-as-selector">
-			<?php foreach ( $parents as $parent_id => $parent ) {
-				if ( $parent_id ) {
-					printf(
-						'<optgroup label="%1$s">',
-						esc_attr( $parents[ $parent_id ]->name )
-					);
-				}
-
-				$group = $select_groups[$parent_id];
-				sort( $group );
-				foreach ( $group as $option ) {
-					printf(
-						'<option value="%1$s" nonce="%2$s" %3$s>%4$s</option>',
-						esc_attr( $option['id'] ),
-						esc_attr( $option['nonce'] ),
-						selected( $option['selected'], true, false ),
-						esc_html( $option['label'] )
-					);
-				}
-			} ?>
+			<?php foreach ( $items as $option ) {
+				printf(
+					'<option value="%1$s" nonce="%2$s" %3$s>%4$s</option>',
+					esc_attr( $option['id'] ),
+					esc_attr( $option['nonce'] ),
+					selected( $option['selected'], true, false ),
+					esc_html( $option['label'] )
+				);
+			}?>
 			</select>
 			<?php
 			MS_Helper_Html::html_element( $action_field );
@@ -375,17 +343,10 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 
 			// Display information on the currently selected membership.
 			if ( $current ) {
-				if ( $current->parent_id ) {
-					$group = $parents[ $current->parent_id ]->name;
-					$desc = $parents[ $current->parent_id ]->get_type_description();
-				} else {
-					$group = '';
-					$desc = $current->get_type_description();
-				}
+				$desc = $current->get_type_description();
 				printf(
-					'<span class="ms-simulate-info">%1$s <small>%2$s</small></span>',
-					esc_html( $desc ),
-					esc_html( $group )
+					'<span class="ms-simulate-info">%1$s</span>',
+					esc_html( $desc )
 				);
 			}
 			?>

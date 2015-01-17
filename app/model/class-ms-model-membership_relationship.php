@@ -58,38 +58,12 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	const STATUS_CANCELED = 'canceled';
 
 	/**
-	 * ID of the model object.
-	 *
-	 * Saved as WP post ID.
-	 *
-	 * @since 1.0.0
-	 * @var int $id
-	 */
-	protected $id;
-
-	/**
-	 * Membership Relationship name.
-	 *
-	 * @since 1.0.0
-	 * @var string $name
-	 */
-	protected $name;
-
-	/**
 	 * The Membership ID.
 	 *
 	 * @since 1.0.0
 	 * @var string $membership_id
 	 */
 	protected $membership_id;
-
-	/**
-	 * The Membership ID.
-	 *
-	 * @since 1.0.0
-	 * @var string $membership_id
-	 */
-	protected $user_id;
 
 	/**
 	 * The Gateway ID.

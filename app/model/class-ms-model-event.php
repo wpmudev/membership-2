@@ -89,15 +89,6 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	const TYPE_PAYMENT_AFTER_DUE = 'payment_after_made';
 
 	/**
-	 * Event's user ID.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var int
-	 */
-	protected $user_id;
-
-	/**
 	 * Event's membership ID.
 	 *
 	 * @since 1.0.0
@@ -114,15 +105,6 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 	 * @var int
 	 */
 	protected $ms_relationship_id;
-
-	/**
-	 * Event description.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
-	 */
-	protected $description;
 
 	/**
 	 * Event topic.

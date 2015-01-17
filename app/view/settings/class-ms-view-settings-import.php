@@ -106,7 +106,6 @@ class MS_View_Settings_Import extends MS_View {
 				__( 'Membership name', MS_TEXT_DOMAIN ),
 				__( 'Membership Type', MS_TEXT_DOMAIN ),
 				__( 'Description', MS_TEXT_DOMAIN ),
-				__( 'Sub-Memberships', MS_TEXT_DOMAIN ),
 			),
 		);
 
@@ -120,14 +119,12 @@ class MS_View_Settings_Import extends MS_View {
 					'<em>' . __( '(Special Membership)', MS_TEXT_DOMAIN ) . '</em>',
 					'-',
 					$item->description,
-					is_array( $item->children ) ? count( $item->children ) : '',
 				);
 			} else {
 				$memberships[] = array(
 					$item->name,
 					$ms_types[$item->type],
 					$item->description,
-					is_array( $item->children ) ? count( $item->children ) : '',
 				);
 			}
 		}

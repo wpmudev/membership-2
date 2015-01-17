@@ -47,8 +47,7 @@ class MS_View_Admin_Bar extends MS_View {
 			<?php
 			if ( MS_Model_Simulate::TYPE_DATE == $this->data['simulate_type'] ) {
 				MS_Helper_Html::html_element( $fields['simulate_date'] );
-			}
-			elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->data['simulate_type'] ) {
+			} elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->data['simulate_type'] ) {
 				MS_Helper_Html::html_element( $fields['period_unit'] );
 				MS_Helper_Html::html_element( $fields['period_type'] );
 			}

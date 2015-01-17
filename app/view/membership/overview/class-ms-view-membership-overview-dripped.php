@@ -1,11 +1,11 @@
 <?php
 
-class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
+class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Simple {
 
 	protected $data;
 
 	public function available_content_panel_data() {
-		$available = array();
+		$available = array();_
 		$soon = array();
 		$membership = $this->data['membership'];
 		$protected_content = MS_Model_Membership::get_protected_content();
@@ -34,7 +34,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 					<?php _e( 'Soon to be available content:', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<div class="inside">
-					<?php $this->content_box_date( $soon ); ?>
+					<?php $this->content_box( $soon ); ?>
 
 					<div class="ms-protection-edit-wrapper">
 						<?php
@@ -78,11 +78,43 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview {
 					<?php _e( 'Already available content:', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<div class="inside">
-					<?php $this->content_box_date( $available ); ?>
+					<?php $this->content_box( $available ); ?>
 				</div>
 			</div>
 		</div>
 
+		<?php
+	}
+
+	/**
+	 * Echo a content list as 2-column table that show Content-Title and the
+	 * Available date.
+	 * Used by Dripped-Content view.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  array $contents List of content items to display.
+	 */
+	protected function content_box( $contents ) {
+		?>
+		<table class="ms-list-table limit-width ms-list-date">
+			<thead>
+				<tr>
+					<th class="col-text"><?php _e( 'Post / Page Title', MS_TEXT_DOMAIN ); ?></th>
+					<th class="col-date"><?php _e( 'Content Available', MS_TEXT_DOMAIN ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ( $contents as $id => $content ) : ?>
+				<tr>
+					<td class="col-text"><?php MS_Helper_Html::content_tag( $content, 'span' ); ?></td>
+					<td class="col-date"><?php echo esc_html(
+						date_i18n( get_option( 'date_format' ), strtotime( $content->avail_date ) )
+					); ?></td>
+				</tr>
+			<?php endforeach;?>
+			</tbody>
+		</table>
 		<?php
 	}
 }
