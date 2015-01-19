@@ -96,6 +96,16 @@ class MS_Model_Rule extends MS_Model {
 	protected $membership_id = 0;
 
 	/**
+	 * Does this rule belong to the base membership?
+	 * If yes, then we need to invert all access: "has access" in base rule
+	 * means that the item is protected.
+	 *
+	 * @since 1.1.0
+	 * @var bool
+	 */
+	protected $is_base_rule = false;
+
+	/**
 	 * Rule type.
 	 *
 	 * @since 1.0.0
@@ -135,23 +145,6 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	protected $dripped = array();
 
-	/**
-	 * Default rule value if no rules are set.
-	 *
-	 * @since 1.0.0
-	 * @var int $rule_value_default The default value. Default 1 (has access).
-	 */
-	protected $rule_value_default = 1;
-
-	/**
-	 * Rule value invert.
-	 *
-	 * Invert the access rules. Eg. if has access => no access.
-	 *
-	 * @since 1.0.0
-	 * @var bool $rule_value_invert True if the rule values are inverted.
-	 */
-	protected $rule_value_invert = false;
 
 	/**
 	 * Class constructor.
@@ -167,6 +160,9 @@ class MS_Model_Rule extends MS_Model {
 			$membership_id,
 			$this
 		);
+
+		$membership = MS_Factory::load( 'MS_Model_membership', $membership_id );
+		$this->is_base_rule = $membership->is_special( 'base' );
 
 		$this->initialize();
 	}
@@ -428,14 +424,8 @@ class MS_Model_Rule extends MS_Model {
 		if ( self::is_valid_rule_type( $rule_type ) ) {
 			$rule_types = self::get_rule_type_classes();
 			$class = $rule_types[ $rule_type ];
-			$rule = new $class( $membership_id );
 
-			/**
-			 * Option to initialize objects.
-			 *
-			 * @since  1.1
-			 */
-			$rule->prepare_obj();
+			$rule = MS_Factory::load( $class, $membership_id, $rule_type );
 
 			return apply_filters(
 				'ms_model_rule_rule_factory',
@@ -564,7 +554,8 @@ class MS_Model_Rule extends MS_Model {
 		if ( isset( $this->rule_value[ $id ] ) ) {
 			$value = $this->rule_value[ $id ];
 		} else {
-			$value = $this->rule_value_default;
+			// If no rule is defined for the item then assume "Has Access"
+			$value = self::RULE_VALUE_HAS_ACCESS;
 		}
 
 		return apply_filters(
@@ -576,6 +567,42 @@ class MS_Model_Rule extends MS_Model {
 	}
 
 	/**
+	 * Serializes this rule in a single array.
+	 * We don't use the PHP `serialize()` function to serialize the whole object
+	 * because a lot of unrequired and duplicate data will be serialized
+	 *
+	 * Can be overwritten by child classes to implement a distinct
+	 * serialization logic.
+	 *
+	 * @since  1.1.0
+	 * @return array The serialized values of the Rule.
+	 */
+	public function serialize() {
+		$access = array();
+		foreach ( $this->rule_value as $id => $state ) {
+			if ( $state ) { $access[] = $id; }
+		}
+
+		return $access;
+	}
+	/**
+	 * Populates the rule_value array with the specified value list.
+	 * This function is used when de-serializing a membership to re-create the
+	 * rules associated with the membership.
+	 *
+	 * Can be overwritten by child classes to implement a distinct
+	 * deserialization logic.
+	 *
+	 * @since  1.1.0
+	 * @param  array $values A list of allowed IDs.
+	 */
+	public function populate( $values ) {
+		foreach ( $values as $id ) {
+			$this->give_access( $id );
+		}
+	}
+
+	/**
 	 * Returns an array of membership that protect the specified rule item.
 	 *
 	 * @since  1.1.0
@@ -583,7 +610,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @param string $id The content id to check.
 	 * @return array List of memberships (ID => name)
 	 */
-	public function assigned_memberships( $id ) {
+	public function get_memberships( $id ) {
 		static $All_Memberships = null;
 		$res = array();
 
@@ -602,6 +629,41 @@ class MS_Model_Rule extends MS_Model {
 	}
 
 	/**
+	 * Defines, which memberships protect the specified rule item.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param string $id The content id to check.
+	 * @return array List of memberships (ID => name)
+	 */
+	public function set_memberships( $id, $memberships ) {
+		static $All_Memberships = null;
+
+		if ( null === $All_Memberships ) {
+			$All_Memberships = MS_Model_Membership::get_memberships();
+		}
+
+		$base = MS_Model_Membership::get_base_membership();
+		if ( empty( $memberships ) ) {
+			$base->get_rule( $this->rule_type )->remove_access( $id );
+		} else {
+			$base->get_rule( $this->rule_type )->give_access( $id );
+		}
+		$base->save();
+
+		foreach ( $All_Memberships as $membership ) {
+			$rule = $membership->get_rule( $this->rule_type );
+			if ( in_array( $membership->id, $memberships ) ) {
+				$rule->give_access( $id );
+			} else {
+				$rule->remove_access( $id );
+			}
+			$membership->set_rule( $this->rule_type, $rule );
+			$membership->save();
+		}
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * @since 1.0.0
@@ -616,7 +678,7 @@ class MS_Model_Rule extends MS_Model {
 			$has_access = $this->get_rule_value( $id );
 		}
 
-		if ( $this->rule_value_invert ) {
+		if ( $this->is_base_rule ) {
 			$has_access = ! $has_access;
 		}
 
@@ -856,7 +918,7 @@ class MS_Model_Rule extends MS_Model {
 	 * }
 	 */
 	public function count_item_access( $args = null ) {
-		if ( $this->rule_value_invert ) {
+		if ( $this->is_base_rule ) {
 			$args['default'] = 1;
 		}
 
@@ -879,10 +941,10 @@ class MS_Model_Rule extends MS_Model {
 			}
 		}
 
-		if ( $this->rule_value_default ) {
-			$count_accessible = $total - $count_restricted;
-		} else {
+		if ( $this->is_base_rule ) {
 			$count_restricted = $total - $count_accessible;
+		} else {
+			$count_accessible = $total - $count_restricted;
 		}
 
 		$count = array(
@@ -958,24 +1020,20 @@ class MS_Model_Rule extends MS_Model {
 	* @since 1.0.0
 	* @param MS_Model_Rule $src_rule The source rule model to merge rules to.
 	*/
-	public function merge_rule_values( $src_rule ) {
-		if ( $src_rule->rule_type == $this->rule_type ) {
-			$rule_value = $this->rule_value;
-			if ( ! is_array( $this->rule_value ) ) {
-				$rule_value = array();
-			}
+	public function merge_rule_values( $src_rule, $src_is_base ) {
+		if ( $src_rule->rule_type != $this->rule_type ) { return; }
 
-			$src_rule_value = $src_rule->rule_value;
-			if ( ! is_array( $src_rule->rule_value ) ) {
-				$src_rule_value = array();
-			}
+		$rule_value = $this->rule_value;
+		if ( ! is_array( $this->rule_value ) ) {
+			$rule_value = array();
+		}
 
-			foreach ( $src_rule_value as $id => $value ) {
-				if ( ! $value ) {
-					unset( $src_rule_value[ $id ] );
-				}
-			}
+		$src_rule_value = $src_rule->rule_value;
+		if ( ! is_array( $src_rule_value ) ) {
+			$src_rule_value = array();
+		}
 
+		if ( $src_is_base ) {
 			/*
 			 * Intersect to preserve only protected rules overrides;
 			 * Merge preserving keys;
@@ -984,8 +1042,18 @@ class MS_Model_Rule extends MS_Model {
 				$rule_value,
 				$src_rule_value
 			);
+		} else {
+			/*
+			 * Add the rule values to the current rule-set;
+			 */
+			foreach ( $src_rule_value as $id => $access ) {
+				if ( ! $access ) {
+					unset( $src_rule_value[ $id ] );
+				}
+			}
 			$this->rule_value += $src_rule_value;
 		}
+
 
 		do_action( 'ms_model_rule_merge_rule_values', $src_rule, $this );
 	}
@@ -1006,12 +1074,10 @@ class MS_Model_Rule extends MS_Model {
 			}
 		}
 
-		$this->rule_value[ $id ] = $access;
-
-		if ( $this->rule_value_invert
-			&& $access == self::RULE_VALUE_NO_ACCESS
-		) {
+		if ( $access == self::RULE_VALUE_NO_ACCESS ) {
 			unset( $this->rule_value[ $id ] );
+		} else {
+			$this->rule_value[ $id ] = $access;
 		}
 
 		do_action( 'ms_model_rule_set_access', $id, $access, $this );
@@ -1076,7 +1142,7 @@ class MS_Model_Rule extends MS_Model {
 		$args = wp_parse_args( $args, $defaults );
 
 		// If not visitor membership, just show protected content.
-		if ( ! $this->rule_value_invert ) {
+		if ( ! $this->is_base_rule ) {
 			$args['post__in'] = array_keys( $this->rule_value );
 		}
 

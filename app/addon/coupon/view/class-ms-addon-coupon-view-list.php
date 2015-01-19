@@ -40,7 +40,7 @@ class MS_Addon_Coupon_View_List extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$coupon_list = new MS_Addon_Coupon_Helper_Listtable();
+		$coupon_list = MS_Factory::load( 'MS_Addon_Coupon_Helper_Listtable' );
 		$coupon_list->prepare_items();
 
 		$title = __( 'Coupons', MS_TEXT_DOMAIN );

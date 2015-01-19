@@ -187,15 +187,15 @@ class MS_Addon_BuddyPress extends MS_Addon {
 			switch ( $tab ) {
 				default:
 				case self::RULE_ID_BLOG:
-					$view = new MS_Addon_Buddypress_View_Blog();
+					$view = MS_Factory::load( 'MS_Addon_Buddypress_View_Blog' );
 					break;
 
 				case self::RULE_ID_GROUP:
-					$view = new MS_Addon_Buddypress_View_Group();
+					$view = MS_Factory::load( 'MS_Addon_Buddypress_View_Group' );
 					break;
 
 				case self::RULE_ID:
-					$view = new MS_Addon_Buddypress_View_General();
+					$view = MS_Factory::load( 'MS_Addon_Buddypress_View_General' );
 					break;
 			}
 

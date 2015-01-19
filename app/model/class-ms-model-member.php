@@ -221,7 +221,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @var string[] The fields to ignore when persisting.
 	 */
-	public $ignore_fields = array(
+	static public $ignore_fields = array(
 		'ms_relationships',
 		'id',
 		'name',

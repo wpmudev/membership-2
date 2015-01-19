@@ -39,9 +39,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_TOGGLE_RULE = 'toggle_rule';
 	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'change_memberships';
-	const AJAX_ACTION_TOGGLE_RULE_DEFAULT = 'toggle_rule_default';
 	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
 	const AJAX_ACTION_UPDATE_MATCHING = 'update_matching';
 	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
@@ -55,71 +53,43 @@ class MS_Controller_Rule extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE, 'ajax_action_toggle_rule' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_RULE_DEFAULT, 'ajax_action_toggle_rule_default' );
-
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MATCHING, 'ajax_action_update_matching' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_FIELD, 'ajax_action_update_field' );
-
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
 
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT, 'edit_rule_manager' );
 	}
 
 	/**
-	 * Handle Ajax toggle action.
+	 * Handle Ajax change-memberships action.
 	 *
 	 * Related Action Hooks:
-	 * - wp_ajax_toggle_rule
+	 * - wp_ajax_change_memberships
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0
 	 */
-	public function ajax_action_toggle_rule() {
+	public function ajax_action_change_memberships() {
 		$msg = 0;
 		$this->_resp_reset();
 
-		$required = array( 'membership_id', 'rule', 'item' );
-		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'toggle-rule-01' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'toggle-rule-02' ); }
-		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'toggle-rule-03' ); }
+		$required = array( 'rule', 'item' );
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'permission denied' ); }
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'toggle-rule: nonce' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'toggle-rule: required' ); }
 
 		if ( $this->_resp_ok() ) {
-			$msg = $this->rule_list_do_action(
-				'toggle_access',
+			$values = array();
+			if ( isset( $_POST['values'] ) && is_array( $_POST['values'] ) ) {
+				$values = $_POST['values'];
+			}
+
+			$msg = $this->assign_memberships(
 				$_POST['rule'],
-				array( $_POST['item'] )
-			);
-		}
-		$msg .= $this->_resp_code();
-
-		echo $msg;
-		exit;
-	}
-
-	/**
-	 * Handle Ajax toggle action.
-	 *
-	 * Related Action Hooks:
-	 * - wp_ajax_toggle_rule_default
-	 *
-	 * @since 1.0.0
-	 */
-	public function ajax_action_toggle_rule_default() {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		$this->_resp_reset();
-
-		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'toggle-rule-default-01' ); }
-		if ( $this->_resp_ok() && empty( $_POST['membership_id'] ) ) { $this->_resp_err( 'toggle-rule-default-02' ); }
-		if ( $this->_resp_ok() && empty( $_POST['rule'] ) ) { $this->_resp_err( 'toggle-rule-default-03' ); }
-
-		if ( $this->_resp_ok() ) {
-			$this->active_tab = $_POST['rule'];
-			$msg = $this->rule_list_do_action(
-				self::AJAX_ACTION_TOGGLE_RULE_DEFAULT,
-				$_POST['rule'],
-				array( $_POST['rule'] )
+				$_POST['item'],
+				$values
 			);
 		}
 		$msg .= $this->_resp_code();
@@ -351,7 +321,6 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function edit_rule_manager( $rule_type ) {
-
 		if ( isset( $_POST['rule'] ) ) {
 			$rule_type = $_POST['rule'];
 		}
@@ -417,14 +386,6 @@ class MS_Controller_Rule extends MS_Controller {
 					case 'no_access':
 						$rule->remove_access( $item );
 						break;
-
-					case 'toggle_access':
-						$rule->toggle_access( $item );
-						break;
-
-					case self::AJAX_ACTION_TOGGLE_RULE_DEFAULT:
-						$rule->rule_value_default = ! $rule->rule_value_default;
-						break;
 				}
 			}
 			$membership->set_rule( $rule_type, $rule );
@@ -440,6 +401,42 @@ class MS_Controller_Rule extends MS_Controller {
 			$items,
 			$this
 		);
+	}
+
+	/**
+	 * Assigns (or removes) memberships from a rule-item.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param  string $rule_type [description]
+	 * @param  string $item [description]
+	 * @param  array $memberships Memberships that will be assigned to the
+	 *                rule-item. Memberships that are not mentioned are removed.
+	 * @return string [description]
+	 */
+	private function assign_memberships( $rule_type, $item, $memberships ) {
+		$base = MS_Model_Membership::get_base_membership();
+		$rule = $base->get_rule( $rule_type );
+
+		$memberships = apply_filters(
+			'ms_controller_rule_assign_memberships',
+			$memberships,
+			$rule,
+			$item,
+			$this
+		);
+
+		$rule->set_memberships( $item, $memberships );
+
+		do_action(
+			'ms_controller_rule_assign_memberships_done',
+			$rule,
+			$item,
+			$memberships,
+			$this
+		);
+
+		return MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 	}
 
 	/**

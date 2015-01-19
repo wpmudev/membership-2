@@ -115,7 +115,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 *
 	 * @var string[]
 	 */
-	public $ignore_fields = array( 'post_type' );
+	static public $ignore_fields = array( 'post_type' );
 
 	/**
 	 * Sub-objects that need to be reset when de-serializing the object
@@ -162,23 +162,23 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 
 		// save attributes in postmeta table
 		$post_meta = get_post_meta( $this->id );
+		$data = MS_Factory::serialize_model( $this );
 
-		$fields = get_object_vars( $this );
-		foreach ( $fields as $field => $val ) {
-			if ( in_array( $field, $this->ignore_fields ) ) {
-				continue;
+		foreach ( $data as $field => $val ) {
+			if ( ! isset( $post_meta[ $field ] ) ) {
+				$post_meta[ $field ] = null;
 			}
-			if ( isset( $this->$field )
-				&& ( ! isset( $post_meta[ $field ][0] )
-					|| $post_meta[ $field ][0] != $this->$field
-				)
-			) {
-				update_post_meta( $this->id, $field, $this->$field );
+
+			if ( $val != $post_meta[ $field ] ) {
+				update_post_meta( $this->id, $field, $val );
 			}
 		}
 
-		wp_cache_set( $this->id, $this, $class );
+		// We also remove any metadata of our custom post type that is not
+		// contained in the serialized data collection.
+		$this->clean_metadata( $this->id, array_keys( $data ) );
 
+		wp_cache_set( $this->id, $this, $class );
 		$this->after_save();
 	}
 
@@ -199,6 +199,36 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 
 		do_action( 'ms_model_custom_post_type_delete_after', $this, $res );
 		return $res;
+	}
+
+	/**
+	 * Removes all meta fields, except the ones that are specified in the
+	 * second parameter.
+	 *
+	 * @since  1.1.0
+	 * @param  int $post_id Post-ID
+	 * @param  array $data_to_keep List of meta-fields to keep (field-names)
+	 */
+	public function clean_metadata( $post_id, $data_to_keep ) {
+		global $wpdb;
+
+		$sql = "SELECT meta_key FROM {$wpdb->postmeta} WHERE post_id = %s;";
+		$sql = $wpdb->prepare( $sql, $post_id );
+		$all_fields = $wpdb->get_col( $sql );
+
+		$remove = array_diff( $all_fields, $data_to_keep );
+
+		$remove = apply_filters(
+			'ms_model_clean_metadata',
+			$remove,
+			$all_fields,
+			$post_id,
+			$data_to_keep
+		);
+
+		foreach ( $remove as $key ) {
+			delete_post_meta( $post_id, $key );
+		}
 	}
 
 	/**

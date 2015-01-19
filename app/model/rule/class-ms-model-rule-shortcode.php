@@ -325,7 +325,7 @@ class MS_Model_Rule_Shortcode extends MS_Model_Rule {
 		}
 
 		// If not visitor membership, just show protected content
-		if ( ! $this->rule_value_invert ) {
+		if ( ! $this->is_base_rule ) {
 			$contents = array_intersect_key( $contents, $this->rule_value );
 		}
 

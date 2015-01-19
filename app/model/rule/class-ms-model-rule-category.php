@@ -301,7 +301,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 
 			default:
 				// If not visitor membership, just show protected content
-				if ( ! $this->rule_value_invert ) {
+				if ( ! $this->is_base_rule ) {
 					$include = array_keys( $this->rule_value );
 				}
 				break;

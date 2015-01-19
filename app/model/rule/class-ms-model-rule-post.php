@@ -213,7 +213,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 			if ( isset( $this->rule_value[ $id ] ) ) {
 				$value = $this->rule_value[ $id ];
 			} else {
-				$value = $this->rule_value_default;
+				$value = self::RULE_VALUE_HAS_ACCESS;
 			}
 		} else {
 			$membership = $this->get_membership();
@@ -438,7 +438,7 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 		);
 
 		// If not visitor membership, just show protected content
-		if ( ! $this->rule_value_invert ) {
+		if ( ! $this->is_base_rule ) {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 				if ( ! empty( $this->rule_value ) ) {
 					$args['post__in'] = array_keys( $this->rule_value );
@@ -446,17 +446,15 @@ class MS_Model_Rule_Post extends MS_Model_Rule {
 				else {
 					$args['post__in'] = array( 0 );
 				}
-			}
-			// Category rules
-			else {
+			} else {
+				// Category rules
 				$membership = $this->get_membership();
 				$rule_category = $membership->get_rule( self::RULE_TYPE_CATEGORY );
 
 				if ( ! empty( $rule_category->rule_value ) ) {
 					$args['category__in'] = array_keys( $rule_category->rule_value );
 					$args['tax_query'] = array( 'relation' => 'OR' );
-				}
-				else {
+				} else {
 					$args['post__in'] = array( 0 );
 				}
 			}

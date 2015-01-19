@@ -253,7 +253,6 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 
 		if ( isset( $args['s'] ) ) {
 			$matches = get_posts( $args );
-			WDev()->debug( $matches );
 		}
 		$pages = get_pages( $args );
 
@@ -318,7 +317,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 
 			default:
 				// If not visitor membership, just show protected content
-				if ( ! $this->rule_value_invert ) {
+				if ( ! $this->is_base_rule ) {
 					$args['include'] = array_keys( $this->rule_value );
 				}
 				break;

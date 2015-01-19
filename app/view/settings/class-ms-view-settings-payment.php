@@ -45,7 +45,7 @@ class MS_View_Settings_Payment extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$gateway_list = new MS_Helper_List_Table_Gateway();
+		$gateway_list = MS_Factory::load( 'MS_Helper_List_Table_Gateway' );
 		$gateway_list->prepare_items();
 		$fields = $this->get_global_payment_fields();
 

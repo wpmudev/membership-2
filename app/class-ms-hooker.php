@@ -39,6 +39,14 @@
 class MS_Hooker {
 
 	/**
+	 * A unique object ID which is only used for debugging and tracing data.
+	 *
+	 * @since 1.1.0
+	 * @var null
+	 */
+	protected $_factory_id = null;
+
+	/**
 	 * Flag if object was initialized already via prepare_obj().
 	 *
 	 * @since 1.1.0

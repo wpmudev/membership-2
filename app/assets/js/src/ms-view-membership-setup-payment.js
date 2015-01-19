@@ -24,17 +24,6 @@ window.ms_init.view_membership_setup_payment = function init () {
 		}
 	}
 
-	function is_free() {
-		var pay_type = jQuery( '.ms-payments-choice' ).hasClass( 'on' ),
-			pay_settings = jQuery( '#ms-payment-settings-wrapper' );
-
-		if ( pay_type ) {
-			pay_settings.show();
-		} else {
-			pay_settings.hide();
-		}
-	}
-
 	function show_currency() {
 		var currency = jQuery( this ).val(),
 			items = jQuery( '.ms-payment-structure-wrapper' );
@@ -50,16 +39,20 @@ window.ms_init.view_membership_setup_payment = function init () {
 		items.find( '.wpmui-field-description' ).html( currency );
 	}
 
+	function toggle_trial( ev, data, is_err ) {
+		if ( data.value ) {
+			jQuery( '.ms-trial-period-details' ).show();
+		} else {
+			jQuery( '.ms-trial-period-details' ).hide();
+		}
+	}
 
 	// Show the correct payment options
-	jQuery( '.ms-payment-type' ).change( payment_type );
-	jQuery( '.ms-payment-type' ).each( payment_type );
-
-	// Change the "Free/Paid" flag
-	jQuery( '.ms-payments-choice' ).change( is_free );
-	is_free();
+	jQuery( '#payment_type' ).change( payment_type );
+	jQuery( '#payment_type' ).each( payment_type );
 
 	// Update currency symbols in payment descriptions.
 	jQuery( '#currency' ).change( show_currency );
 
+	jQuery( '.wpmui-slider-trial_period_enabled' ).on( 'wpmui-radio-slider-updated', toggle_trial );
 };

@@ -72,6 +72,15 @@ class MS_Factory {
 			throw new Exception( 'Class ' . $class . ' does not exist.' );
 		}
 
+		/*
+		 * Assign a new unique-ID to the object right after loading it.
+		 *
+		 * Purpose:
+		 * This helps us to spot duplicates of the same object.
+		 * We can also identify objects that were not created by MS_Factory.
+		 */
+		$obj->_factory_id = uniqid( 'object-' );
+
 		/**
 		 * Option to initialize objects.
 		 *
@@ -94,11 +103,15 @@ class MS_Factory {
 	 * @param int $model_id Retrieve model object using ID.
 	 * @return object The retrieved model.
 	 */
-	public static function load( $class, $model_id = 0 ) {
+	public static function load( $class, $model_id = 0, $context = null ) {
 		$model = null;
 		$class = trim( $class );
 		$model_id = absint( $model_id );
-		$key = $class . '-' . $model_id;
+
+		$key = strtolower( $class . '-' . $model_id );
+		if ( null !== $context ) {
+			$key .= '-' . $context;
+		}
 
 		if ( class_exists( $class ) && ! isset( self::$singleton[$key] ) ) {
 			/*
@@ -112,7 +125,7 @@ class MS_Factory {
 			 * exist or contain very lightweight code, never attach any
 			 * filters/hooks, etc. as the object can be dumped a few lines later.
 			 */
-			$model = new $class();
+			$model = new $class( $model_id );
 			$model->before_load();
 
 			if ( $model instanceof MS_Model_Option ) {
@@ -120,25 +133,21 @@ class MS_Factory {
 			} elseif ( $model instanceof MS_Model_Custom_Post_Type ) {
 				$model = self::load_from_wp_custom_post_type( $model, $model_id );
 			} elseif ( $model instanceof MS_Model_Member ) {
-				$args = func_get_args();
-
-				$name = null;
-				if ( ! empty( $args[2] ) ) {
-					$name = $args[2];
-				}
-				$model = self::load_from_wp_user( $model, $model_id, $name );
+				$model = self::load_from_wp_user( $model, $model_id );
 			} elseif ( $model instanceof MS_Model_Transient ) {
 				$model = self::load_from_wp_transient( $model, $model_id );
 			}
 
-			$model->after_load();
-
-			/**
-			 * New option to initialize objects as early as possible
+			/*
+			 * Assign a new unique-ID to the object right after loading it.
 			 *
-			 * @since  1.1
+			 * Purpose:
+			 * This helps us to spot duplicates of the same object.
+			 * We can also identify objects that were not created by MS_Factory.
 			 */
-			$model->prepare_obj();
+			$model->_factory_id = uniqid( $key . '-' );
+
+			$model->after_load();
 
 			// Store the new object
 			self::$singleton[$key] = apply_filters(
@@ -146,6 +155,13 @@ class MS_Factory {
 				$model,
 				$model_id
 			);
+
+			/**
+			 * New option to initialize objects as early as possible
+			 *
+			 * @since  1.1
+			 */
+			self::$singleton[$key]->prepare_obj( $key );
 		}
 
 		if ( ! isset( self::$singleton[$key] ) ) {
@@ -185,7 +201,6 @@ class MS_Factory {
 			$settings = get_option( $class );
 			self::populate_model( $model, $settings );
 		}
-
 
 		return apply_filters(
 			'ms_factory_load_from_wp_option',
@@ -338,7 +353,7 @@ class MS_Factory {
 	static public function populate_model( &$model, $settings, $postmeta = false ) {
 		$fields = $model->get_object_vars();
 
-		$ignore = $model->ignore_fields;
+		$ignore = $model::$ignore_fields;
 		$ignore[] = 'instance'; // Don't deserialize the double-serialized model!
 		$ignore[] = 'actions';
 		$ignore[] = 'filters';
@@ -381,15 +396,28 @@ class MS_Factory {
 	 */
 	static public function serialize_model( &$model ) {
 		$data = array();
-		$fields = $model->get_object_vars();
+		$ignore = array();
 
-		$ignore = $model->ignore_fields;
-		$ignore[] = 'instance'; // Don't double-serialize the model!
-		$ignore[] = 'actions';
-		$ignore[] = 'filters';
-		$ignore[] = 'ignore_fields';
+		if ( is_object( $model ) ) {
+			if ( method_exists( $model, '__sleep' ) ) {
+				$fields = array_flip( $model->__sleep() );
+			} else {
+				$fields = $model->get_object_vars();
+			}
 
-		foreach ( $fields as $field => $val ) {
+			if ( isset( $model::$ignore_fields ) && is_array( $model::$ignore_fields ) ) {
+				$ignore = $model::$ignore_fields;
+				$ignore[] = 'instance'; // Don't double-serialize the model!
+				$ignore[] = 'actions';
+				$ignore[] = 'filters';
+				$ignore[] = 'ignore_fields';
+			}
+		} else {
+			// Value does not need to be serialized.
+			return $model;
+		}
+
+		foreach ( $fields as $field => $dummy ) {
 			if ( $field[0] === '_' || in_array( $field, $ignore ) ) {
 				continue;
 			}
@@ -397,6 +425,7 @@ class MS_Factory {
 			$data[ $field ] = $model->$field;
 		}
 
+		ksort( $data );
 		return $data;
 	}
 }

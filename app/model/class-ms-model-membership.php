@@ -232,6 +232,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	protected $rules = array();
 
 	/**
+	 * Only used for serialization of the membership.
+	 * @see __sleep()
+	 *
+	 * @since 1.1.0
+	 * @var array
+	 */
+	protected $rule_values = array();
+
+	/**
 	 * Used in simulation mode explaining why a page is allowed or denied.
 	 *
 	 * @since 1.0.1
@@ -240,12 +249,51 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	public $_access_reason = array();
 
 	/**
-	 * Sub-objects that need to be reset when de-serializing the object
+	 * Returns a list of variables that should be included in serialization,
+	 * i.e. these values are the only ones that are stored in DB
 	 *
-	 * @since 1.1.0
-	 * @var array
+	 * @since  1.1.0
+	 * @return array
 	 */
-	public $_subobjects = array( 'rules' );
+	public function __sleep() {
+		// Rule values are pre-processd before saving...
+		$rules = array();
+		foreach ( $this->rules as $key => $rule ) {
+			$rule = $this->get_rule( $key );
+			$rules[$key] = $rule->serialize();
+
+			if ( empty( $rules[$key] ) ) {
+				unset( $rules[$key] );
+			}
+		}
+
+		$this->rule_values = $rules;
+
+		return array(
+			'id',
+			'name',
+			'title',
+			'description',
+			'rule_values',
+			'type',
+			'payment_type',
+			'active',
+			'private',
+			'special',
+			'is_free',
+			'price',
+			'period',
+			'pay_cycle_period',
+			'period_date_start',
+			'period_date_end',
+			'trial_period_enabled',
+			'trial_price',
+			'trial_period',
+			'dripped_type',
+			'on_end_membership_id',
+			'is_setup_completed',
+		);
+	}
 
 	/**
 	 * Set rules membership_id before saving.
@@ -267,8 +315,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 */
-	public function after_load() {
-		parent::after_load();
+	public function prepare_obj() {
+		parent::prepare_obj();
+
+		foreach ( $this->rule_values as $key => $values ) {
+			if ( empty( $values ) ) { continue; }
+			$rule = $this->get_rule( $key );
+			$rule->populate( $values );
+		}
+		$this->rule_values = array();
 
 		// validate rules using protected content rules
 		if ( ! $this->is_special( 'base' ) && $this->is_valid() ) {
@@ -438,39 +493,27 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return MS_Model_Rule The requested rule model.
 	 */
 	public function get_rule( $rule_type ) {
-		$rule = null;
-
 		if ( 'attachment' === $rule_type ) {
 			$rule_type = MS_Model_Rule::RULE_TYPE_MEDIA;
 		}
 
-		if ( isset( $this->rules[ $rule_type ] ) ) {
-			// Rule was already initialized. Use this
-			$rule = $this->rules[ $rule_type ];
-		} else {
+		if ( ! isset( $this->rules[ $rule_type ] ) ) {
 			// Create a new rule model object.
 			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
+
+			$rule->prepare_obj();
+
+			$rule = apply_filters(
+				'ms_model_membership_get_rule',
+				$rule,
+				$rule_type,
+				$this
+			);
+
 			$this->rules[ $rule_type ] = $rule;
 		}
 
-		if ( $this->is_special( 'base' ) ) {
-			// This is the base membership "Protected Content".
-			$rule->rule_value_invert = true;
-			$rule->rule_value_default = false;
-		} else {
-			// This is a normal membership created by the Admin.
-			$rule->rule_value_invert = false;
-			$rule->rule_value_default = true;
-		}
-
-		$rule->prepare_obj();
-
-		return apply_filters(
-			'ms_model_membership_get_rule',
-			$rule,
-			$rule_type,
-			$this
-		);
+		return $this->rules[ $rule_type ];
 	}
 
 	/**
@@ -1012,6 +1055,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				'protected_content'
 			);
 
+			foreach ( $Protected_content->rules as $rule_type => $rule ) {
+				$Protected_content->rules[$rule_type]->is_base_rule = true;
+			}
+
 			$Protected_content = apply_filters(
 				'ms_model_membership_get_base_membership',
 				$Protected_content
@@ -1062,28 +1109,22 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			return;
 		}
 
-		$protected_content_rules = self::get_base_membership()->rules;
+		$base_rules = self::get_base_membership()->rules;
 
-		foreach ( $protected_content_rules as $rule_type => $protect_rule ) {
+		foreach ( $base_rules as $rule_type => $denied_items ) {
 			try {
 				if ( MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
 
 					if ( ! empty( $this->rules[ $rule_type ] ) ) {
 						// The membership has granted access to some rule items.
 						$rule = $this->get_rule( $rule_type );
-						$rule->merge_rule_values( $protect_rule );
+						$rule->merge_rule_values( $denied_items, true );
 					} else {
 						// This membership does not change the default protection.
-						$rule = clone $protect_rule;
-						$rule->rule_value_invert = false;
+						$rule = $this->get_rule( $rule_type );
 
-						$init_rule_value = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
-						if ( self::TYPE_SIMPLE == $this->type ) {
-							$init_rule_value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
-						}
-
-						foreach ( $rule->rule_value as $id => $val ) {
-							$rule->set_access( $id, $init_rule_value );
+						foreach ( $denied_items->rule_value as $id => $val ) {
+							$rule->set_access( $id, MS_Model_Rule::RULE_VALUE_NO_ACCESS );
 						}
 					}
 					$this->set_rule( $rule_type, $rule );

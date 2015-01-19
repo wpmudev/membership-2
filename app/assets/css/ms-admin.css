@@ -1674,6 +1674,9 @@
 /**
  * Special styles used on "Protected Content" page
  */
+#wpwrap .ms-wrap tr .column-access {
+  width: 70%;
+}
 #wpwrap .ms-wrap tr .ms-public {
   position: relative;
 }
@@ -1719,20 +1722,29 @@
 }
 #wpwrap .ms-wrap tr .ms-protected {
   position: relative;
-  padding-right: 45px;
 }
 #wpwrap .ms-wrap tr .ms-protected .ms-public-note-wrapper {
   display: none;
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .wpmui-field-select {
   margin: 0;
+  width: 100%;
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .wpmui-field-select .select2-choices {
-  border: 0;
+  border-color: transparent;
   background: transparent;
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .wpmui-field-select.select2-container-active .select2-choices {
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: 0 0 transparent;
+  -webkit-box-shadow: 0 0 transparent;
+}
+#wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .wpmui-field-select.select2-dropdown-open .select2-choices {
+  background: #FFF;
   border: 1px solid #5897fb;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .wpmui-label-after {
   display: none;
@@ -1755,11 +1767,26 @@
   color: #FFF;
   border: 0;
   background: transparent;
-  opacity: 0.8;
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice.select2-search-choice-focus {
-  opacity: 1;
-  box-shadow: 0 0 2px #5897fb;
+  color: #000;
+}
+#wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice.select2-search-choice-focus .val:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #fff;
+  opacity: .75;
+  box-shadow: 0 0 0 1px #000 inset;
+}
+#wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice.select2-search-choice-focus .select2-search-choice-close:before {
+  color: #555;
+}
+#wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice.select2-search-choice-focus .select2-search-choice-close:hover:before {
+  color: #000;
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice .val {
   padding-right: 20px;
@@ -1767,6 +1794,11 @@
   display: block;
   height: 20px;
   line-height: 20px;
+  font-size: 12px;
+}
+#wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice .txt {
+  position: relative;
+  z-index: 1;
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice .select2-search-choice-close {
   position: absolute;
@@ -1792,13 +1824,19 @@
   font-style: normal;
   vertical-align: top;
   text-align: center;
-  transition: color .1s ease-in 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 #wpwrap .ms-wrap tr .ms-protected .wpmui-select-wrapper .select2-search-choice .select2-search-choice-close:hover:before {
   color: #FFF;
   background: rgba(255, 255, 255, 0.1);
+}
+#wpwrap .ms-wrap tr .ms-focused .wpmui-select-wrapper .wpmui-field-select .select2-choices,
+#wpwrap .ms-wrap tr .ms-focused .wpmui-select-wrapper .wpmui-field-select.select2-container-active .select2-choices {
+  background: #FFF;
+  border: 1px solid #5897fb;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 #wpwrap .ms-wrap tr:hover .ms-public-note-wrapper .wpmui-label-after,
 #wpwrap .ms-wrap tr:hover .wpmui-select-wrapper .wpmui-label-after {
@@ -1807,6 +1845,13 @@
 #wpwrap .ms-wrap .ms-more-tag {
   display: inline-block;
   margin: 0 20px 0 0;
+}
+
+.select2-drop.ms-memberships .select2-result .val {
+  width: 18px;
+  float: left;
+  margin-right: 5px;
+  border-radius: 4px;
 }
 
 /**

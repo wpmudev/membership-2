@@ -235,7 +235,7 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 		}
 
 		// If not visitor membership, just show protected content
-		if ( ! $this->rule_value_invert ) {
+		if ( ! $this->is_base_rule ) {
 			$contents = array_intersect_key( $contents, $this->rule_value );
 		}
 
@@ -310,7 +310,7 @@ class MS_Model_Rule_Adminside extends MS_Model_Rule {
 		}
 
 		// If not visitor membership, just show protected content
-		if ( ! $this->rule_value_invert ) {
+		if ( ! $this->is_base_rule ) {
 			$keys = $this->rule_value;
 			if ( isset( $args['rule_status'] ) ) {
 				switch ( $args['rule_status'] ) {

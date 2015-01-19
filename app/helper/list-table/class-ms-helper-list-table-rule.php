@@ -248,7 +248,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 	public function column_access( $item, $column_name ) {
 		$rule = $this->model;
-		$memberships = $rule->assigned_memberships( $item->id );
+		$memberships = $rule->get_memberships( $item->id );
 
 		$class = empty( $memberships ) ? 'ms-public' : 'ms-protected';
 
@@ -266,11 +266,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			'value' => array_keys( $memberships ),
 			'field_options' => self::$memberships,
 			'multiple' => true,
-			'after' => __( 'OK', MS_TEXT_DOMAIN ),
 			'class' => 'ms-memberships',
 			'ajax_data' => array(
 				'action' => MS_Controller_Rule::AJAX_ACTION_CHANGE_MEMBERSHIPS,
-				'membership_id' => $this->get_membership_id(),
 				'rule' => $item->type,
 				'item' => $item->id,
 			),

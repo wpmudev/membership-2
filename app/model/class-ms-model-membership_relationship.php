@@ -147,7 +147,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 * @var string[] The fields to ignore when persisting.
 	 */
-	public $ignore_fields = array(
+	static public $ignore_fields = array(
 		'membership',
 		'post_type',
 	);

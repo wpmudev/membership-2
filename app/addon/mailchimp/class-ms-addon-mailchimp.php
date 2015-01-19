@@ -244,7 +244,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public function manage_render_callback( $callback, $tab, $data ) {
 		if ( self::ID == $tab ) {
-			$view = new MS_Addon_Mailchimp_View_Settings();
+			$view = MS_Factory::load( 'MS_Addon_Mailchimp_View_Settings' );
 			$view->data = $data;
 			$callback = array( $view, 'render_tab' );
 		}

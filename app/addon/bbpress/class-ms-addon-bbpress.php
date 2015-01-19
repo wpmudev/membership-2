@@ -157,7 +157,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 */
 	public function bbpress_manage_render_callback( $callback, $tab, $obj ) {
 		if ( self::RULE_ID == $tab ) {
-			$view = new MS_Addon_Bbpress_View_General();
+			$view = MS_Factory::load( 'MS_Addon_Bbpress_View_General' );
 
 			$data = $obj->data;
 			$view->data = apply_filters(

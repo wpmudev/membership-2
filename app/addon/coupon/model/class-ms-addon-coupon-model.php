@@ -172,7 +172,7 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 	 *
 	 * @var string[]
 	 */
-	public $ignore_fields = array(
+	static public $ignore_fields = array(
 		'coupon_message',
 		'post_type',
 	);

@@ -29,7 +29,7 @@ class MS_View_Member_List extends MS_View {
 		// Search for orphaned relationships and delete them.
 		MS_Model_Member::clean_db();
 
-		$member_list = new MS_Helper_List_Table_Member();
+		$member_list = MS_Factory::load( 'MS_Helper_List_Table_Member' );
 		$member_list->prepare_items();
 
 		ob_start();

@@ -106,7 +106,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 			if ( isset( $this->rule_value[ $id ] ) ) {
 				$value = $this->rule_value[ $id ];
 			} else {
-				$value = $this->rule_value_default;
+				$value = self::RULE_VALUE_HAS_ACCESS;
 			}
 		} else {
 			$membership = $this->get_membership();

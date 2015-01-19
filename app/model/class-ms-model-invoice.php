@@ -663,7 +663,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 
 		// No existing invoice, create a new one.
 		if ( empty( $invoice ) ) {
-			$invoice = new MS_Model_Invoice();
+			$invoice = MS_Factory::load( 'MS_Model_Invoice' );
 			$invoice = apply_filters( 'ms_model_invoice', $invoice );
 		}
 		$tax = MS_Plugin::instance()->settings->tax;
