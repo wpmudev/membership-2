@@ -135,8 +135,7 @@ class MS_View_Settings_Setup extends MS_View {
 
 		return apply_filters(
 			'ms_view_settings_setup_to_html',
-			$html,
-			$data
+			$html
 		);
 	}
 
