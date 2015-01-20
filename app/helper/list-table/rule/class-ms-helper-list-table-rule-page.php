@@ -31,6 +31,12 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_page';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Page', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Pages', MS_TEXT_DOMAIN );
+	}
+
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,

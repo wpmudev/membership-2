@@ -3,6 +3,15 @@
  */
 
 #wpwrap .ms-wrap {
+
+	h3.ms-list-title {
+		color: #4F7984;
+
+		b {
+			color: #000;
+		}
+	}
+
 	tr {
 		.column-access {
 			width: 70%;

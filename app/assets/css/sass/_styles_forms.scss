@@ -434,169 +434,6 @@
 	}
 }
 
-/* Special radio-slider layouts */
-.wpmui-wnd,
-#wpwrap {
-	.ms-edit-access,
-	.ms-edit-protection {
-		.wpmui-radio-slider-wrapper {
-			padding: 0 20px;
-			display: block;
-
-			.wpmui-field-label {
-				margin-left: -20px;
-				margin-right: -20px;
-			}
-		}
-
-		.wpmui-radio-slider {
-			.before,
-			.after {
-				content: '';
-				position: absolute;
-				top: 1px;
-				width: 16px;
-				height: 16px;
-
-				background: transparent url(../images/membership_sprite.png) no-repeat;
-				background: transparent url(../images/membership_sprite.svg) no-repeat;
-			}
-
-			.before {
-				left: -20px;
-
-				opacity: 1;
-				filter: none;
-				-webkit-filter: none;
-			}
-
-			.after {
-				left: 44px;
-
-				opacity: 0.2;
-				filter: grayscale(1);
-				-webkit-filter: grayscale(1);
-			}
-		}
-
-		.wpmui-radio-slider.on {
-			.before {
-				opacity: 0.2;
-				filter: grayscale(1);
-				-webkit-filter: grayscale(1);
-			}
-
-			.after {
-				opacity: 1;
-				filter: none;
-				-webkit-filter: none;
-			}
-		}
-	}
-
-
-	/* PROTECTION radio-sliders */
-	.ms-edit-protection {
-		.wpmui-radio-slider {
-			.before {
-				background-position: -42px -243px; /* grey unlock */
-			}
-
-			.after {
-				background-position: -142px -243px; /* grey lock */
-			}
-		}
-
-		.wpmui-radio-slider.on {
-			background-color: #D0021B;
-
-			.after {
-				background-position: -142px -143px; /* lock red */
-			}
-		}
-	}
-
-	/* ACCESS radio-sliders */
-	.ms-edit-access {
-		.wpmui-radio-slider {
-			.before {
-				background-position: -142px -243px; /* grey lock */
-			}
-
-			.after {
-				background-position: -42px -143px; /* unlock green */
-			}
-		}
-	}
-}
-
-/***
- * TAG SELECT *
- ***/
-
-.wpmui-wnd,
-.ms-wrap {
-	.wpmui-tag-selector-wrapper {
-		.wpmui-tag-data {
-			display: block;
-
-			.select2-choices {
-				background: transparent;
-				border: 0;
-
-				.select2-search-choice-close {
-					left: 0;
-					top: 3px;
-					width: 16px;
-					height: 16px;
-
-					background: transparent url(../images/membership_sprite.svg) no-repeat;
-					background-position: -242px -143px;
-					opacity: 0.6;
-
-					&:hover {
-						opacity: 1;
-						background-position: -42px -143px;
-					}
-				}
-			}
-
-			.select2-search-choice {
-				float: none;
-				display: block;
-				margin-left: 0;
-				margin-right: 3px;
-				line-height: 22px;
-				padding-top: 0;
-				padding-bottom: 0;
-
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				border: 1px solid transparent;
-				box-shadow: 0 0 0 transparent;
-				background: transparent;
-
-				&.select2-search-choice-focus {
-					background: #f8f8f8;
-					border-color: #e5e5e5;
-				}
-			}
-
-			.select2-search-field {
-				display: none;
-			}
-		}
-	}
-
-	.wpmui-tag-label {
-		margin: 10px 0 5px;
-
-		.ms-img {
-			float: left;
-		}
-	}
-}
 
 /***
  * BUTTONS *
@@ -614,6 +451,7 @@
 		}
 	}
 }
+
 
 /***
  * WP EDITOR *
@@ -633,6 +471,7 @@
 		padding-top: 20px;
 	}
 }
+
 
 /***
  * POPUP *

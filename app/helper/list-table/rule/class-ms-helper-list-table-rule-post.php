@@ -31,6 +31,12 @@ class MS_Helper_List_Table_Rule_Post extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_post';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Post', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Posts', MS_TEXT_DOMAIN );
+	}
+
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,

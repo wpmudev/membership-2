@@ -7,7 +7,7 @@ class MS_View_Membership_List extends MS_View {
 		$admin_message = MS_Helper_Membership::get_admin_message( array( $membership->name ), $membership );
 		$title = MS_Helper_Membership::get_admin_title();
 
-		$membership_list = MS_Factory::load( 'MS_Helper_List_Table_Membership' );
+		$membership_list = MS_Factory::create( 'MS_Helper_List_Table_Membership' );
 		$membership_list->prepare_items();
 
 		$create_new_button = array(
@@ -32,9 +32,11 @@ class MS_View_Membership_List extends MS_View {
 			?>
 			<form action="" method="post">
 				<div class="ms-list-table-wrapper">
-					<?php MS_Helper_Html::html_element( $create_new_button );?>
-					<?php $membership_list->display(); ?>
-					<?php MS_Helper_Html::html_element( $create_new_button );?>
+					<?php
+					MS_Helper_Html::html_element( $create_new_button );
+					$membership_list->display();
+					MS_Helper_Html::html_element( $create_new_button );
+					?>
 				</div>
 			</form>
 		</div>

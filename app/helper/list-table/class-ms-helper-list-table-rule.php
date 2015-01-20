@@ -37,6 +37,17 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	protected $id = 'rule';
 
 	/**
+	 * Holds the human readable name of the rule tyle
+	 *
+	 * @since 1.1.0
+	 * @var array
+	 */
+	protected $name = array(
+		'singular' => 'Item',
+		'plural' => 'Items',
+	);
+
+	/**
 	 * The rule model
 	 *
 	 * @var   MS_Model_Rule
@@ -76,6 +87,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				'ajax'      => false,
 			)
 		);
+
+		$this->name['singular'] = __( 'Item', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Items', MS_TEXT_DOMAIN );
 
 		$this->model = $model;
 		$this->membership = $membership;
@@ -497,46 +511,120 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		);
 	}
 
+	/**
+	 * Displayed above the views.
+	 *
+	 * In the rule list-tables the list-head is used to display a filter for
+	 * membership-ID. Combined with the views (below) users can filter all rules
+	 * by membership + protection status independantly
+	 *
+	 * @since  1.1.0
+	 */
+	public function list_head() {
+		$url = remove_query_arg( 'membership_id' );
+		$links = array();
+		$memberships = MS_Model_Membership::get_membership_names();
+		$type_name = $this->name['plural'];
+
+		/*
+		 * We don't build the title dynamically to make sure translations are
+		 * possible and meaningful in the context.
+		 *
+		 * E.g. "Showing All Pages" in german would typically translate as
+		 * "All pages are shown"; also "All" has several translations, depending
+		 * on context.
+		 */
+		if ( empty( $_GET['membership_id'] ) ) {
+			if ( empty( $_GET['status'] ) ) {
+				$title = __( 'Showing <b>All</b> %1$s', MS_TEXT_DOMAIN );
+			} elseif ( MS_Model_Rule::FILTER_NOT_PROTECTED == $_GET['status'] ) {
+				$title = __( 'Showing All <b>Protected</b> %1$s', MS_TEXT_DOMAIN );
+			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
+				$title = __( 'Showing All <b>Unprotected</b> %1$s', MS_TEXT_DOMAIN );
+			}
+		} else {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $_GET['membership_id'] );
+
+			if ( empty( $_GET['status'] ) ) {
+				$title = __( 'Showing <b>All</b> %1$s of %2$s', MS_TEXT_DOMAIN );
+			} elseif ( MS_Model_Rule::FILTER_NOT_PROTECTED == $_GET['status'] ) {
+				$title = __( 'Showing All <b>Protected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
+			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
+				$title = __( 'Showing All <b>Unprotected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
+			}
+		}
+		$title = sprintf(
+			$title,
+			'<b>' . esc_html( $type_name ) . '</b>',
+			'<b>' . esc_html( $membership->name ) . '</b>'
+		);
+
+		$links['_title'] = array(
+			'label' => __( 'Membership:', MS_TEXT_DOMAIN ),
+		);
+
+		$links['all'] = array(
+			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'url' => $url,
+		);
+
+		foreach ( $memberships as $id => $name ) {
+			if ( empty( $name ) ) {
+				$name = __( '(No Name)', MS_TEXT_DOMAIN );
+			}
+
+			$links['ms-' . $id] = array(
+				'label' => esc_html( $name ),
+				'url' => add_query_arg( array( 'membership_id' => $id ), $url ),
+			);
+		}
+
+		printf( '<h3 class="ms-list-title">%1$s</h3>', $title );
+		echo '<div class="ms-header-filter cf"><ul class="subsubsub">';
+		$this->display_filter_links( $links );
+		echo '</ul></div>';
+	}
+
+	/**
+	 * Returns an array that defines possible views.
+	 *
+	 * In the rule list-tables the views are used to filter by protection status
+	 * and not by membership-ID or other factors.
+	 *
+	 * @since  1.0.0
+	 * @return array
+	 */
 	public function get_views() {
 		$count_args = $this->prepared_args;
 		unset( $count_args['rule_status'] );
 		$count = $this->model->count_item_access( $count_args );
-
-		$has_access_desc = __( 'Has Access', MS_TEXT_DOMAIN );
-		$no_access_desc = __( 'Access Restricted', MS_TEXT_DOMAIN );
-		$has_access_status = MS_Model_Rule::FILTER_HAS_ACCESS;
-		$no_access_status = MS_Model_Rule::FILTER_NO_ACCESS;
-
-		if ( $this->membership->is_special( 'base' ) ) {
-			$has_access_desc = __( 'Protected content', MS_TEXT_DOMAIN );
-			$no_access_desc = __( 'Not protected', MS_TEXT_DOMAIN );
-			$has_access_status = MS_Model_Rule::FILTER_PROTECTED;
-			$no_access_status = MS_Model_Rule::FILTER_NOT_PROTECTED;
-		}
 
 		$url = apply_filters(
 			"ms_helper_list_table_{$this->id}_url",
 			remove_query_arg( array( 'status', 'paged' ) )
 		);
 
-		$views = array(
-			'all' => array(
-				'url' => $url,
-				'label' => __( 'All', MS_TEXT_DOMAIN ),
-				'count' => $count['total'],
-			),
+		$views = array();
+		$views['_title'] = array(
+			'label' => __( 'Status:', MS_TEXT_DOMAIN ),
+		);
 
-			'has_access' => array(
-				'url' => add_query_arg( array( 'status' => $has_access_status ), $url ),
-				'label' => $has_access_desc,
-				'count' => $count['accessible'],
-			),
+		$views['all'] = array(
+			'url' => $url,
+			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'count' => $count['total'],
+		);
 
-			'no_access' => array(
-				'url' => add_query_arg( array( 'status' => $no_access_status ), $url ),
-				'label' => $no_access_desc,
-				'count' => $count['restricted'],
-			),
+		$views['public'] = array(
+			'url' => add_query_arg( array( 'status' => MS_Model_Rule::FILTER_NOT_PROTECTED ), $url ),
+			'label' => __( 'Unprotected', MS_TEXT_DOMAIN ),
+			'count' => $count['restricted'],
+		);
+
+		$views['protected'] = array(
+			'url' => add_query_arg( array( 'status' => MS_Model_Rule::FILTER_PROTECTED ), $url ),
+			'label' => __( 'Protected', MS_TEXT_DOMAIN ),
+			'count' => $count['accessible'],
 		);
 
 		return apply_filters(

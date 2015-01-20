@@ -4,6 +4,18 @@
 
 .wpmui-wnd,
 #wpwrap .ms-wrap {
+	.ms-settings-wrapper {
+		position: relative;
+
+		&.ms-edit-protection {
+			.search-box {
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+		}
+	}
+
 	.ms-settings-wrapper .plugin_enabled-wrapper,
 	.ms-settings-wrapper .hide_admin_bar-wrapper,
 	.ms-setup-form .ms-pages-group {

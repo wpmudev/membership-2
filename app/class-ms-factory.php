@@ -86,7 +86,9 @@ class MS_Factory {
 		 *
 		 * @since  1.1
 		 */
-		$obj->prepare_obj();
+		if ( method_exists( $obj, 'prepare_obj' ) ) {
+			$obj->prepare_obj();
+		}
 
 		return apply_filters(
 			'ms_factory_create_'. $class,

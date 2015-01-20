@@ -31,6 +31,12 @@ class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_media';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Media Item', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Media Items', MS_TEXT_DOMAIN );
+	}
+
 	public function get_columns() {
 		return apply_filters(
 			"membership_helper_list_table_{$this->id}_columns",

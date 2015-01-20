@@ -41,6 +41,8 @@ class MS_Helper_List_Table_Rule_Replace_Menu extends MS_Helper_List_Table_Matchi
 	 */
 	public function __construct( $model, $membership ) {
 		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Menu', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Menus', MS_TEXT_DOMAIN );
 	}
 
 	/**

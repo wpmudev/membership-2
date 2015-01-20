@@ -36,6 +36,8 @@ class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
 	public function __construct( $model, $membership, $menu_id ) {
 		parent::__construct( $model, $membership );
 		$this->menu_id = $menu_id;
+		$this->name['singular'] = __( 'Menu Item', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Menu Items', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {

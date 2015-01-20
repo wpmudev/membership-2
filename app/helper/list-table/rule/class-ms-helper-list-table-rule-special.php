@@ -31,6 +31,12 @@ class MS_Helper_List_Table_Rule_Special extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_special';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Special Page', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Special Pages', MS_TEXT_DOMAIN );
+	}
+
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,

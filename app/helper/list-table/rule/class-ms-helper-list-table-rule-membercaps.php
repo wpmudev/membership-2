@@ -31,6 +31,17 @@ class MS_Helper_List_Table_Rule_Membercaps extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_membercaps';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+			$this->name['singular'] = __( 'Capability', MS_TEXT_DOMAIN );
+			$this->name['plural'] = __( 'Capabilities', MS_TEXT_DOMAIN );
+		} else {
+			$this->name['singular'] = __( 'Role', MS_TEXT_DOMAIN );
+			$this->name['plural'] = __( 'Roles', MS_TEXT_DOMAIN );
+		}
+	}
+
 	public function get_columns() {
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
 			$name_label = __( 'Capability', MS_TEXT_DOMAIN );

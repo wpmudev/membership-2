@@ -41,6 +41,8 @@ class MS_Helper_List_Table_Rule_Replace_Menulocation extends MS_Helper_List_Tabl
 	 */
 	public function __construct( $model, $membership ) {
 		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Menu Location', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Menu Locations', MS_TEXT_DOMAIN );
 	}
 
 	/**

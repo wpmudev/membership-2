@@ -31,6 +31,12 @@ class MS_Helper_List_Table_Rule_Url_Group extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_url_group';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'URL', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'URLs', MS_TEXT_DOMAIN );
+	}
+
 	public function get_columns() {
 		return apply_filters(
 			'membership_helper_list_table_' . $this->id . '_columns',

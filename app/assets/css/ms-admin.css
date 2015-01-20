@@ -167,7 +167,7 @@
   cursor: default;
 }
 .ms-wrap .subsubsub .group-label {
-  padding: 0 4px 0 8px;
+  padding: 0 .2em;
   color: #999;
 }
 .ms-wrap .subsubsub a {
@@ -924,167 +924,6 @@
   transition: opacity .2s;
 }
 
-/* Special radio-slider layouts */
-.wpmui-wnd,
-#wpwrap {
-  /* PROTECTION radio-sliders */
-  /* ACCESS radio-sliders */
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider-wrapper,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider-wrapper,
-#wpwrap .ms-edit-access .wpmui-radio-slider-wrapper,
-#wpwrap .ms-edit-protection .wpmui-radio-slider-wrapper {
-  padding: 0 20px;
-  display: block;
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider-wrapper .wpmui-field-label,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider-wrapper .wpmui-field-label,
-#wpwrap .ms-edit-access .wpmui-radio-slider-wrapper .wpmui-field-label,
-#wpwrap .ms-edit-protection .wpmui-radio-slider-wrapper .wpmui-field-label {
-  margin-left: -20px;
-  margin-right: -20px;
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider .before,
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider .after,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider .before,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider .after,
-#wpwrap .ms-edit-access .wpmui-radio-slider .before,
-#wpwrap .ms-edit-access .wpmui-radio-slider .after,
-#wpwrap .ms-edit-protection .wpmui-radio-slider .before,
-#wpwrap .ms-edit-protection .wpmui-radio-slider .after {
-  content: '';
-  position: absolute;
-  top: 1px;
-  width: 16px;
-  height: 16px;
-  background: transparent url(../images/membership_sprite.png) no-repeat;
-  background: transparent url(../images/membership_sprite.svg) no-repeat;
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider .before,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider .before,
-#wpwrap .ms-edit-access .wpmui-radio-slider .before,
-#wpwrap .ms-edit-protection .wpmui-radio-slider .before {
-  left: -20px;
-  opacity: 1;
-  filter: none;
-  -webkit-filter: none;
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider .after,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider .after,
-#wpwrap .ms-edit-access .wpmui-radio-slider .after,
-#wpwrap .ms-edit-protection .wpmui-radio-slider .after {
-  left: 44px;
-  opacity: 0.2;
-  filter: grayscale(1);
-  -webkit-filter: grayscale(1);
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider.on .before,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider.on .before,
-#wpwrap .ms-edit-access .wpmui-radio-slider.on .before,
-#wpwrap .ms-edit-protection .wpmui-radio-slider.on .before {
-  opacity: 0.2;
-  filter: grayscale(1);
-  -webkit-filter: grayscale(1);
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider.on .after,
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider.on .after,
-#wpwrap .ms-edit-access .wpmui-radio-slider.on .after,
-#wpwrap .ms-edit-protection .wpmui-radio-slider.on .after {
-  opacity: 1;
-  filter: none;
-  -webkit-filter: none;
-}
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider .before,
-#wpwrap .ms-edit-protection .wpmui-radio-slider .before {
-  background-position: -42px -243px;
-  /* grey unlock */
-}
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider .after,
-#wpwrap .ms-edit-protection .wpmui-radio-slider .after {
-  background-position: -142px -243px;
-  /* grey lock */
-}
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider.on,
-#wpwrap .ms-edit-protection .wpmui-radio-slider.on {
-  background-color: #D0021B;
-}
-.wpmui-wnd .ms-edit-protection .wpmui-radio-slider.on .after,
-#wpwrap .ms-edit-protection .wpmui-radio-slider.on .after {
-  background-position: -142px -143px;
-  /* lock red */
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider .before,
-#wpwrap .ms-edit-access .wpmui-radio-slider .before {
-  background-position: -142px -243px;
-  /* grey lock */
-}
-.wpmui-wnd .ms-edit-access .wpmui-radio-slider .after,
-#wpwrap .ms-edit-access .wpmui-radio-slider .after {
-  background-position: -42px -143px;
-  /* unlock green */
-}
-
-/***
- * TAG SELECT *
- ***/
-.wpmui-wnd .wpmui-tag-selector-wrapper .wpmui-tag-data,
-.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data {
-  display: block;
-}
-.wpmui-wnd .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices,
-.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices {
-  background: transparent;
-  border: 0;
-}
-.wpmui-wnd .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices .select2-search-choice-close,
-.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices .select2-search-choice-close {
-  left: 0;
-  top: 3px;
-  width: 16px;
-  height: 16px;
-  background: transparent url(../images/membership_sprite.svg) no-repeat;
-  background-position: -242px -143px;
-  opacity: 0.6;
-}
-.wpmui-wnd .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices .select2-search-choice-close:hover,
-.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-choices .select2-search-choice-close:hover {
-  opacity: 1;
-  background-position: -42px -143px;
-}
-.wpmui-wnd .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-choice,
-.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-choice {
-  float: none;
-  display: block;
-  margin-left: 0;
-  margin-right: 3px;
-  line-height: 22px;
-  padding-top: 0;
-  padding-bottom: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  border: 1px solid transparent;
-  box-shadow: 0 0 0 transparent;
-  background: transparent;
-}
-.wpmui-wnd .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-choice.select2-search-choice-focus,
-.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-choice.select2-search-choice-focus {
-  background: #f8f8f8;
-  border-color: #e5e5e5;
-}
-.wpmui-wnd .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-field,
-.ms-wrap .wpmui-tag-selector-wrapper .wpmui-tag-data .select2-search-field {
-  display: none;
-}
-.wpmui-wnd .wpmui-tag-label,
-.ms-wrap .wpmui-tag-label {
-  margin: 10px 0 5px;
-}
-.wpmui-wnd .wpmui-tag-label .ms-img,
-.ms-wrap .wpmui-tag-label .ms-img {
-  float: left;
-}
-
 /***
  * BUTTONS *
  ***/
@@ -1674,6 +1513,12 @@
 /**
  * Special styles used on "Protected Content" page
  */
+#wpwrap .ms-wrap h3.ms-list-title {
+  color: #4F7984;
+}
+#wpwrap .ms-wrap h3.ms-list-title b {
+  color: #000;
+}
 #wpwrap .ms-wrap tr .column-access {
   width: 70%;
 }
@@ -1912,6 +1757,16 @@
   /* SETTINGS GATEWAY */
   /* MEMBERS LIST */
   /* MEDIA /DOWNLOADS TAB */
+}
+.wpmui-wnd .ms-settings-wrapper,
+#wpwrap .ms-wrap .ms-settings-wrapper {
+  position: relative;
+}
+.wpmui-wnd .ms-settings-wrapper.ms-edit-protection .search-box,
+#wpwrap .ms-wrap .ms-settings-wrapper.ms-edit-protection .search-box {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .wpmui-wnd .ms-settings-wrapper .plugin_enabled-wrapper,
 .wpmui-wnd .ms-settings-wrapper .hide_admin_bar-wrapper,

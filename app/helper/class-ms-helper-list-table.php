@@ -332,13 +332,24 @@ class MS_Helper_List_Table {
 	}
 
 	/**
+	 * Displays text or additional filters above the list-table
+	 *
+	 * @since  1.1.0
+	 */
+	protected function list_head() {
+		// Child classes can overwrite this to output a description or filters...
+	}
+
+	/**
 	 * Display the list of views available on this table.
 	 *
 	 * @since 1.0.0
 	 * @access public
 	 */
 	public function views() {
-		if ( ! $this->is_search() && ! $this->has_items() && ! $this->is_view() ) {
+		$this->list_head();
+
+		if ( ! $this->has_items() && ! $this->is_search() && ! $this->is_view() ) {
 			return '';
 		}
 
@@ -360,12 +371,32 @@ class MS_Helper_List_Table {
 			return;
 		}
 
-		end( $views );
-		$last_class = key( $views );
-		reset( $views );
-
 		echo '<ul class="subsubsub">';
-		foreach ( $views as $class => $data ) {
+		$this->display_filter_links( $views );
+		echo '</ul>';
+	}
+
+	/**
+	 * Outputs a list of filter-links. This is used to display the views above
+	 * the list but can also be used in other parts of the table.
+	 *
+	 * @since  1.1.0
+	 * @param  array $links {
+	 *     The list of links to display
+	 *
+	 *     string <array-key> .. Class of the link.
+	 *     string $label .. Link title
+	 *     string $url .. Link URL
+	 *     int    $count .. Optional.
+	 *     bool   $separator .. Optional. If false then no ' | ' will be added.
+	 *
+	 */
+	protected function display_filter_links( array $links ) {
+		end( $links );
+		$last_class = key( $links );
+		reset( $links );
+
+		foreach ( $links as $class => $data ) {
 			WDev()->load_fields( $data, 'label', 'url' );
 
 			$sep = '|';
@@ -397,7 +428,6 @@ class MS_Helper_List_Table {
 				);
 			}
 		}
-		echo '</ul>';
 	}
 
 	/**

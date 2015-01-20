@@ -31,6 +31,12 @@ class MS_Helper_List_Table_Rule_Adminside extends MS_Helper_List_Table_Rule {
 
 	protected $id = 'rule_adminside';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Admin Page', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Admin Pages', MS_TEXT_DOMAIN );
+	}
+
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,

@@ -31,6 +31,12 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Ru
 
 	protected $id = 'cpt';
 
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Custom Post', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Custom Posts', MS_TEXT_DOMAIN );
+	}
+
 	public function get_columns() {
 		return apply_filters(
 			"membership_helper_list_table_{$this->id}_columns",

@@ -352,6 +352,16 @@ input[type="image"] {
   /* MEMBERS LIST */
   /* MEDIA /DOWNLOADS TAB */
 }
+.wpmui-wnd .ms-settings-wrapper,
+#wpwrap .ms-wrap .ms-settings-wrapper {
+  position: relative;
+}
+.wpmui-wnd .ms-settings-wrapper.ms-edit-protection .search-box,
+#wpwrap .ms-wrap .ms-settings-wrapper.ms-edit-protection .search-box {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 .wpmui-wnd .ms-settings-wrapper .plugin_enabled-wrapper,
 .wpmui-wnd .ms-settings-wrapper .hide_admin_bar-wrapper,
 .wpmui-wnd .ms-setup-form .ms-pages-group,
