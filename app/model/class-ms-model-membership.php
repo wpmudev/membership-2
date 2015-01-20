@@ -1149,7 +1149,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return int The members count.
 	 */
 	public function get_members_count() {
-		$count = MS_Model_Membership_Relationship::get_membership_relationship_count(
+		$count = MS_Model_Relationship::get_membership_relationship_count(
 			array( 'membership_id' => $this->id )
 		);
 
@@ -1164,33 +1164,26 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  $force To force delete memberships with members.
 	 * @return bool
 	 */
-	public function delete( $force = false ) {
+	public function delete() {
 		do_action( 'ms_model_membership_before_delete', $this );
 		$res = false;
 
-		if ( $this->is_special() ) {
+		if ( $this->is_special( 'base' ) ) {
 			throw new Exception(
-				'Can not delete a system membership.'
+				'Can not delete the system membership.'
 			);
 		}
 
 		if ( ! empty( $this->id ) ) {
 			if ( $this->get_members_count() > 0 ) {
-				if ( $force ) {
-					$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
-						array( 'membership_id' => $this->id )
-					);
+				$ms_relationships = MS_Model_Relationship::get_membership_relationships(
+					array( 'membership_id' => $this->id )
+				);
 
-					foreach ( $ms_relationships as $ms_relationship ) {
-						$ms_relationship->delete();
-					}
-				} else {
-					throw new Exception(
-						'Can not delete membership with existing members.'
-					);
+				foreach ( $ms_relationships as $ms_relationship ) {
+					$ms_relationship->delete();
 				}
 			}
 
@@ -1289,7 +1282,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 * @param int $post_id
 	 * @return bool|null True if has access to current page. Default is false.
 	 *     Null means: Rule not relevant for current page.
@@ -1426,7 +1419,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Hide restricted content for this membership.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 */
 	public function protect_content( $ms_relationship ) {
 		do_action(
@@ -1455,7 +1448,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * Hide restricted content for this membership.
 	 *
 	 * @since 1.1
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 */
 	public function protect_admin_content( $ms_relationship ) {
 		do_action(
@@ -1496,7 +1489,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		if ( empty( $this->payment_type ) ) { return true; }
 
 		// Allow if no members signed up yet.
-		$members = MS_Model_Membership_Relationship::get_membership_relationship_count(
+		$members = MS_Model_Relationship::get_membership_relationship_count(
 			array( 'membership_id' => $this->id )
 		);
 		if ( empty( $members ) ) { return true; }

@@ -53,15 +53,10 @@ class MS_Controller_Membership extends MS_Controller {
 	const STEP_OVERVIEW = 'ms_overview';
 	const STEP_NEWS = 'ms_news';
 	const STEP_WELCOME_SCREEN = 'welcome';
-	const STEP_SETUP_PROTECTED_CONTENT = 'protected_content';
-	const STEP_CHOOSE_MS_TYPE = 'choose_ms_type';
-	const STEP_ACCESSIBLE_CONTENT = 'accessible_content';
-	const STEP_SETUP_PAYMENT = 'payment';
-	const STEP_SETUP_DRIPPED = 'dripped';
-
-	// Internal step
-	const STEP_CHOOSE_ACCESSIBLE_CONTENT = '_choose_accessible_content';
-	const STEP_DID_ACCESSIBLE_CONTENT = '_did_accessible_content';
+	const STEP_PROTECTED_CONTENT = 'protected_content';
+	const STEP_ADD_NEW = 'add';
+	const STEP_PAYMENT = 'payment';
+	const STEP_DRIPPED = 'dripped';
 
 	// Actions
 	const ACTION_SAVE = 'save_membership';
@@ -268,80 +263,25 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 					break;
 
-				case self::STEP_CHOOSE_MS_TYPE:
+				case self::STEP_ADD_NEW:
 					// Create Membership: Select the Membership-Type
+					if ( $paid == true ) { // TODO!!
+						$next_step = self::STEP_PAYMENT;
+					} else {
+						$next_step = self::STEP_MS_LIST;
+					}
 
 					if ( $is_wizard ) {
-						$next_step = self::STEP_SETUP_PROTECTED_CONTENT;
 						$this->wizard_tracker( $next_step );
-					} else {
-						$next_step = self::STEP_CHOOSE_ACCESSIBLE_CONTENT;
 					}
 					break;
 
-				case self::STEP_SETUP_PROTECTED_CONTENT:
-					// Setup Wizard: Select protected Content
-					// (This step is only displayed during the Setup-Wizard)
-
-					$this->wizard_tracker( $step, true );
-
-					$next_step = self::STEP_CHOOSE_ACCESSIBLE_CONTENT;
-					break;
-
-				case self::STEP_ACCESSIBLE_CONTENT:
-					// Choose accessible Content
-
-					$next_step = self::STEP_DID_ACCESSIBLE_CONTENT;
-					break;
-
-				case self::STEP_SETUP_PAYMENT:
+				case self::STEP_PAYMENT:
 					// Setup payment options
 
 					$next_step = self::STEP_MS_LIST;
 					$msg = $this->mark_setup_completed();
 					$completed = true;
-					break;
-
-				case self::STEP_SETUP_DRIPPED:
-					$next_step = self::STEP_SETUP_PAYMENT;
-					break;
-
-				default:
-					break;
-			}
-
-			// Redirect to correct Accessible-Content page.
-			switch ( $next_step ) {
-				case self::STEP_CHOOSE_ACCESSIBLE_CONTENT:
-					switch ( $membership->type ) {
-						case MS_Model_Membership::TYPE_DRIPPED:
-							$next_step = self::STEP_SETUP_DRIPPED;
-							break;
-
-						default:
-							$next_step = self::STEP_ACCESSIBLE_CONTENT;
-							break;
-					}
-					break;
-
-				case self::STEP_DID_ACCESSIBLE_CONTENT:
-					switch ( $membership->type ) {
-						case MS_Model_Membership::TYPE_SIMPLE:
-							if ( $membership->private ) {
-								$next_step = self::STEP_MS_LIST;
-								$msg = $this->mark_setup_completed();
-								$completed = true;
-							} else {
-								$next_step = self::STEP_SETUP_PAYMENT;
-							}
-							break;
-
-						default:
-							$next_step = self::STEP_MS_LIST;
-							$msg = $this->mark_setup_completed();
-							$completed = true;
-							break;
-					}
 					break;
 			}
 
@@ -472,40 +412,14 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function page_choose_ms_type() {
+	public function page_add() {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = self::ACTION_SAVE;
 		$data['membership'] = $this->load_membership();
 
-		$view = MS_Factory::create( 'MS_View_Membership_Choose_Type' );
-		$view->data = apply_filters( 'ms_view_membership_choose_type_data', $data, $this );
-		$view->render();
-	}
-
-	/**
-	 * Display Accessible Content page.
-	 *
-	 * @since 1.0.0
-	 */
-	public function page_accessible_content() {
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
-		$data['bread_crumbs'] = $this->get_bread_crumbs();
-		$data['tabs'] = $this->get_accessible_content_tabs();
-		$data['active_tab'] = $this->get_active_tab();
-		$data['membership'] = $this->load_membership();
-		$data['settings'] = MS_Plugin::instance()->settings;
-		$data['show_next_button'] = ! isset( $_GET['edit'] );
-
-		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
-		$first_value = array_keys( $data['menus'] );
-		$first_value = reset( $first_value );
-		$data['menu_id'] = self::get_request_field( 'menu_id', $first_value, 'REQUEST' );
-
-		$view = MS_Factory::create( 'MS_View_Membership_Accessible_Content' );
-		$view->data = apply_filters( 'ms_view_membership_setup_accessible_content_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Membership_Add' );
+		$view->data = apply_filters( 'ms_view_membership_add_data', $data, $this );
 		$view->render();
 	}
 
@@ -523,7 +437,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $membership;
 		$data['create_new_url'] = add_query_arg(
-			array( 'step' => self::STEP_CHOOSE_MS_TYPE ),
+			array( 'step' => self::STEP_ADD_NEW ),
 			MS_Controller_Plugin::get_admin_url()
 		);
 
@@ -578,7 +492,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 
 		$data['members'] = array();
-		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+		$ms_relationships = MS_Model_Relationship::get_membership_relationships(
 			array( 'membership_id' => $membership->id )
 		);
 
@@ -683,11 +597,9 @@ class MS_Controller_Membership extends MS_Controller {
 				self::STEP_MS_LIST,
 				self::STEP_OVERVIEW,
 				self::STEP_NEWS,
-				self::STEP_SETUP_PROTECTED_CONTENT,
-				self::STEP_CHOOSE_MS_TYPE,
-				self::STEP_SETUP_DRIPPED,
-				self::STEP_ACCESSIBLE_CONTENT,
-				self::STEP_SETUP_PAYMENT,
+				self::STEP_PROTECTED_CONTENT,
+				self::STEP_ADD_NEW,
+				self::STEP_PAYMENT,
 			);
 
 			if ( MS_Plugin::is_wizard() ) {
@@ -751,8 +663,8 @@ class MS_Controller_Membership extends MS_Controller {
 				'ms_controller_membership_wizard_steps',
 				array(
 					self::STEP_WELCOME_SCREEN,
-					self::STEP_CHOOSE_MS_TYPE,
-					self::STEP_SETUP_PROTECTED_CONTENT,
+					self::STEP_ADD_NEW,
+					self::STEP_PROTECTED_CONTENT,
 				)
 			);
 
@@ -768,18 +680,11 @@ class MS_Controller_Membership extends MS_Controller {
 		// Hack to use same page in two different menus
 		$the_page = sanitize_html_class( @$_GET['page'] );
 		if ( MS_Controller_Plugin::MENU_SLUG . '-setup' === $the_page ) {
-			$step = self::STEP_SETUP_PROTECTED_CONTENT;
-		}
-
-		// Accessible content page is not available to dripped type
-		if ( self::STEP_ACCESSIBLE_CONTENT === $step
-			&& MS_Model_Membership::TYPE_DRIPPED === $membership->type
-		) {
-			$step = self::STEP_SETUP_DRIPPED;
+			$step = self::STEP_PROTECTED_CONTENT;
 		}
 
 		// Can't modify membership type
-		if ( self::STEP_CHOOSE_MS_TYPE == $step && $membership->is_valid() ) {
+		if ( self::STEP_ADD_NEW == $step && $membership->is_valid() ) {
 			$step = self::STEP_OVERVIEW;
 		}
 
@@ -1095,13 +1000,10 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 		$tabs = array();
 
-		if ( self::STEP_SETUP_PROTECTED_CONTENT == $step ) {
+		if ( self::STEP_PROTECTED_CONTENT == $step ) {
 			$tabs = $this->get_protected_content_tabs();
 		}
-		elseif ( self::STEP_ACCESSIBLE_CONTENT == $step ) {
-			$tabs = $this->get_accessible_content_tabs();
-		}
-		elseif ( self::STEP_SETUP_DRIPPED == $step ) {
+		elseif ( self::STEP_DRIPPED == $step ) {
 			$tabs = $this->get_setup_dripped_tabs();
 		}
 
@@ -1214,24 +1116,7 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 				break;
 
-			case self::STEP_ACCESSIBLE_CONTENT:
-				$bread_crumbs['prev'] = array(
-					'title' => $membership->name,
-					'url' => admin_url(
-						sprintf(
-							'admin.php?page=%s&step=%s&membership_id=%s',
-							MS_Controller_Plugin::MENU_SLUG,
-							self::STEP_OVERVIEW,
-							$membership->id
-						)
-					),
-				);
-				$bread_crumbs['current'] = array(
-					'title' => __( 'Accessible Content', MS_TEXT_DOMAIN ),
-				);
-				break;
-
-			case self::STEP_SETUP_DRIPPED:
+			case self::STEP_DRIPPED:
 				$bread_crumbs['prev'] = array(
 					'title' => $membership->name,
 					'url' => admin_url(
@@ -1251,7 +1136,7 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 				break;
 
-			case self::STEP_SETUP_PAYMENT:
+			case self::STEP_PAYMENT:
 				$bread_crumbs['prev'] = array(
 					'title' => $membership->name,
 					'url' => admin_url(
@@ -1354,8 +1239,8 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_WELCOME_SCREEN:
 				break;
 
-			case self::STEP_CHOOSE_MS_TYPE:
-				$data['ms_init'][] = 'view_membership_choose_type';
+			case self::STEP_ADD_NEW:
+				$data['ms_init'][] = 'view_membership_add';
 				$data['initial_url'] = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG );
 				break;
 
@@ -1363,8 +1248,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$data['ms_init'][] = 'view_membership_overview';
 				break;
 
-			case self::STEP_SETUP_PROTECTED_CONTENT:
-			case self::STEP_ACCESSIBLE_CONTENT:
+			case self::STEP_PROTECTED_CONTENT:
 				$data['ms_init'][] = 'view_protected_content';
 
 				switch ( $this->get_active_tab() ) {
@@ -1382,13 +1266,13 @@ class MS_Controller_Membership extends MS_Controller {
 				}
 				break;
 
-			case self::STEP_SETUP_PAYMENT:
-				$data['ms_init'][] = 'view_membership_setup_payment';
+			case self::STEP_PAYMENT:
+				$data['ms_init'][] = 'view_membership_payment';
 				$data['ms_init'][] = 'view_settings_payment';
 				wp_enqueue_script( 'jquery-validate' );
 				break;
 
-			case self::STEP_SETUP_DRIPPED:
+			case self::STEP_DRIPPED:
 				$data['ms_init'][] = 'view_membership_dripped';
 				break;
 

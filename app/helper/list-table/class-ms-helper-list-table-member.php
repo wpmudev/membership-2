@@ -199,7 +199,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 				if ( ! empty( $status ) ) {
 					$filter['status'] = $status;
 				}
-				$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships(
+				$ms_relationships = MS_Model_Relationship::get_membership_relationships(
 					$filter
 				);
 
@@ -311,7 +311,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			$html = array();
 
 			if ( ! empty( $_REQUEST['status'] ) ) {
-				$memberships = MS_Model_Membership_Relationship::get_membership_relationships(
+				$memberships = MS_Model_Relationship::get_membership_relationships(
 					array(
 						'user_id' => $member->id,
 						'status' => $_REQUEST['status'],
@@ -589,7 +589,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			sprintf(
 				'admin.php?page=%s&search_options=membership&status=%s&s=%s',
 				MS_Controller_Plugin::MENU_SLUG . '-members',
-				MS_Model_Membership_Relationship::STATUS_PENDING,
+				MS_Model_Relationship::STATUS_PENDING,
 				esc_attr( __( 'Pending', MS_TEXT_DOMAIN ) )
 			)
 		);
@@ -598,7 +598,7 @@ class MS_Helper_List_Table_Member extends MS_Helper_List_Table {
 			'membership',
 			'',
 			'',
-			MS_Model_Membership_Relationship::STATUS_PENDING
+			MS_Model_Relationship::STATUS_PENDING
 		);
 		$count = MS_Model_Member::get_members_count( $args );
 

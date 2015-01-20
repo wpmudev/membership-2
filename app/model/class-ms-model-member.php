@@ -85,7 +85,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @var array {
 	 *     @type int $membership_id The membership ID.
-	 *     @type MS_Model_Membership_Relationship The membership relationship model object.
+	 *     @type MS_Model_Relationship The membership relationship model object.
 	 * }
 	 */
 	protected $ms_relationships = array();
@@ -660,7 +660,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			if ( ! array_key_exists( $membership_id,  $this->ms_relationships ) ) {
-				$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship(
+				$ms_relationship = MS_Model_Relationship::create_ms_relationship(
 					$membership_id,
 					$this->id,
 					$gateway_id,
@@ -671,7 +671,7 @@ class MS_Model_Member extends MS_Model {
 					MS_Model_Invoice::get_current_invoice( $ms_relationship );
 				}
 
-				if ( MS_Model_Membership_Relationship::STATUS_PENDING !== $ms_relationship->status ) {
+				if ( MS_Model_Relationship::STATUS_PENDING !== $ms_relationship->status ) {
 					$this->ms_relationships[ $membership_id ] = $ms_relationship;
 				}
 			} else {
@@ -738,7 +738,7 @@ class MS_Model_Member extends MS_Model {
 		} else {
 			// The membership might be on status "PENDING" which is not included
 			// in $this->ms_relationships.
-			$relationship = MS_Model_Membership_Relationship::get_membership_relationship(
+			$relationship = MS_Model_Relationship::get_membership_relationship(
 				$this->id,
 				$membership_id
 			);
@@ -766,7 +766,7 @@ class MS_Model_Member extends MS_Model {
 	public function move_membership( $move_from_id, $move_to_id ) {
 		if ( array_key_exists( $move_from_id,  $this->ms_relationships ) ) {
 			$move_from = $this->ms_relationships[ $move_from_id ];
-			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship(
+			$ms_relationship = MS_Model_Relationship::create_ms_relationship(
 				$move_to_id,
 				$this->id,
 				$move_from->gateway_id,
@@ -802,9 +802,9 @@ class MS_Model_Member extends MS_Model {
 		$allowed_status = apply_filters(
 			'membership_model_member_allowed_status',
 			array(
-				MS_Model_Membership_Relationship::STATUS_ACTIVE,
-				MS_Model_Membership_Relationship::STATUS_TRIAL,
-				MS_Model_Membership_Relationship::STATUS_CANCELED,
+				MS_Model_Relationship::STATUS_ACTIVE,
+				MS_Model_Relationship::STATUS_TRIAL,
+				MS_Model_Relationship::STATUS_CANCELED,
 			)
 		);
 
@@ -1179,13 +1179,13 @@ class MS_Model_Member extends MS_Model {
 
 		$sql = $wpdb->prepare(
 			$sql,
-			MS_Model_Membership_Relationship::$POST_TYPE
+			MS_Model_Relationship::$POST_TYPE
 		);
 
 		// Delete these Relationships!
 		$items = $wpdb->get_results( $sql );
 		foreach ( $items as $item ) {
-			$junk = MS_Factory::load( 'MS_Model_Membership_Relationship', $item->ID );
+			$junk = MS_Factory::load( 'MS_Model_Relationship', $item->ID );
 			$junk->delete();
 		}
 	}

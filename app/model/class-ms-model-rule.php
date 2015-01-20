@@ -459,7 +459,7 @@ class MS_Model_Rule extends MS_Model {
 	 * To be overridden by children classes.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship The membership relationship to protect content from.
+	 * @param MS_Model_Relationship The membership relationship to protect content from.
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		do_action(
@@ -475,7 +475,7 @@ class MS_Model_Rule extends MS_Model {
 	 * To be overridden by children classes.
 	 *
 	 * @since 1.1
-	 * @param MS_Model_Membership_Relationship The membership relationship to protect content from.
+	 * @param MS_Model_Relationship The membership relationship to protect content from.
 	 */
 	public function protect_admin_content( $ms_relationship = false ) {
 		do_action(

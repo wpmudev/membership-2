@@ -480,7 +480,7 @@ class MS_Model_Event extends MS_Model_Custom_Post_Type {
 							$member->name,
 							$type
 						);
-					} elseif ( $data instanceof MS_Model_Membership_Relationship ) {
+					} elseif ( $data instanceof MS_Model_Relationship ) {
 						$ms_relationship = $data;
 						$membership = $ms_relationship->get_membership();
 						$member = MS_Factory::load(

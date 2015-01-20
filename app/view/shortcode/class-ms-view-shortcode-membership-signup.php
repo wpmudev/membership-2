@@ -19,7 +19,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 					);
 
 					switch ( $ms_relationship->status ) {
-						case MS_Model_Membership_Relationship::STATUS_CANCELED:
+						case MS_Model_Relationship::STATUS_CANCELED:
 							$this->membership_box_html(
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW,
@@ -28,7 +28,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 							);
 							break;
 
-						case MS_Model_Membership_Relationship::STATUS_EXPIRED:
+						case MS_Model_Relationship::STATUS_EXPIRED:
 							$this->membership_box_html(
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW,
@@ -37,8 +37,8 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 							);
 							break;
 
-						case MS_Model_Membership_Relationship::STATUS_TRIAL:
-						case MS_Model_Membership_Relationship::STATUS_ACTIVE:
+						case MS_Model_Relationship::STATUS_TRIAL:
+						case MS_Model_Relationship::STATUS_ACTIVE:
 							$this->membership_box_html(
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL,
@@ -47,7 +47,7 @@ class MS_View_Shortcode_Membership_Signup extends MS_View {
 							);
 							break;
 
-						case MS_Model_Membership_Relationship::STATUS_PENDING:
+						case MS_Model_Relationship::STATUS_PENDING:
 							if ( $membership->is_free() ) {
 								$this->data['memberships'][] = $membership;
 							} else {

@@ -139,7 +139,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 */
 	public function add_simulation_membership( $ms_relationships ) {
 		if ( ! isset( $ms_relationships[ $this->membership_id ] ) ) {
-			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship(
+			$ms_relationship = MS_Model_Relationship::create_ms_relationship(
 				$this->membership_id
 			);
 			$ms_relationships[ $this->membership_id ] = $ms_relationship;

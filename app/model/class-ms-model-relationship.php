@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
+class MS_Model_Relationship extends MS_Model_Custom_Post_Type {
 
 	/**
 	 * Model custom post type.
@@ -186,7 +186,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 * Set initial status.
 	 *
 	 * @since 1.0.0
-	 * @return MS_Model_Membership_Relationship The created relationship.
+	 * @return MS_Model_Relationship The created relationship.
 	 */
 	public static function create_ms_relationship(
 		$membership_id = 0,
@@ -234,7 +234,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @return MS_Model_Membership_Relationship The created relationship.
+	 * @return MS_Model_Relationship The created relationship.
 	 */
 	private static function _create_ms_relationship( $membership_id, $user_id, $gateway_id, $move_from_id ) {
 		// Try to reuse existing db record to keep history.
@@ -242,7 +242,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 		// Not found, create a new one.
 		if ( empty( $ms_relationship ) ) {
-			$ms_relationship = MS_Factory::create( 'MS_Model_Membership_Relationship' );
+			$ms_relationship = MS_Factory::create( 'MS_Model_Relationship' );
 			$ms_relationship->membership_id = $membership_id;
 			$ms_relationship->user_id = $user_id;
 			$ms_relationship->status = self::STATUS_PENDING;
@@ -410,7 +410,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 	 *
 	 * @param $args The query post args
 	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
-	 * @return MS_Model_Membership_Relationship[] The array of membership relationships.
+	 * @return MS_Model_Relationship[] The array of membership relationships.
 	 */
 	public static function get_membership_relationships( $args = null ) {
 		$args = self::get_query_args( $args );
@@ -422,7 +422,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		if ( ! empty( $posts ) ) {
 			foreach ( $posts as $post_id ) {
 				$ms_relationship = MS_Factory::load(
-					'MS_Model_Membership_Relationship',
+					'MS_Model_Relationship',
 					$post_id
 				);
 
@@ -492,7 +492,7 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 
 		if ( ! empty( $post[0] ) ) {
 			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+				'MS_Model_Relationship',
 				$post[0]
 			);
 		}
@@ -597,8 +597,8 @@ class MS_Model_Membership_Relationship extends MS_Model_Custom_Post_Type {
 		$trial_eligible_status = apply_filters(
 			'ms_model_membership_relationship_trial_eligible_status',
 			array(
-				MS_Model_Membership_Relationship::STATUS_PENDING,
-				MS_Model_Membership_Relationship::STATUS_DEACTIVATED,
+				MS_Model_Relationship::STATUS_PENDING,
+				MS_Model_Relationship::STATUS_DEACTIVATED,
 			)
 		);
 

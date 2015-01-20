@@ -30,9 +30,9 @@ class MS_View_Frontend_Payment extends MS_View {
 		) {
 			// Member can only sign up to one membership.
 			$valid_status = array(
-				MS_Model_Membership_Relationship::STATUS_TRIAL,
-				MS_Model_Membership_Relationship::STATUS_ACTIVE,
-				MS_Model_Membership_Relationship::STATUS_PENDING,
+				MS_Model_Relationship::STATUS_TRIAL,
+				MS_Model_Relationship::STATUS_ACTIVE,
+				MS_Model_Relationship::STATUS_PENDING,
 			);
 
 			foreach ( $this->data['member']->ms_relationships as $tmp_relationship ) {

@@ -73,7 +73,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 *
 	 * @since 1.1
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
@@ -87,7 +87,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 	 *
 	 * @since 1.1
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
 	public function protect_admin_content( $ms_relationship = false ) {
 		parent::protect_admin_content( $ms_relationship );

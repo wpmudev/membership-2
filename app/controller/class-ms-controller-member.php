@@ -385,7 +385,7 @@ class MS_Controller_Member extends MS_Controller {
 				case 'edit_date':
 					$view = MS_Factory::create( 'MS_View_Member_Date' );
 					$data['member_id'] = $member_id;
-					$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships(
+					$data['ms_relationships'] = MS_Model_Relationship::get_membership_relationships(
 						array( 'user_id' => $member->id )
 					);
 					break;

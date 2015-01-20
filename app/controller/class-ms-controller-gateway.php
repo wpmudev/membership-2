@@ -463,7 +463,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$data['ms_relationship_id'] = $_POST['ms_relationship_id'];
 
 			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+				'MS_Model_Relationship',
 				$_POST['ms_relationship_id']
 			);
 
@@ -532,7 +532,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		if ( $valid ) {
 			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+				'MS_Model_Relationship',
 				$_REQUEST['ms_relationship_id']
 			);
 
@@ -616,7 +616,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @since  1.0.4
 	 *
-	 * @param  MS_Model_Membership_Relationship $new_relationship
+	 * @param  MS_Model_Relationship $new_relationship
 	 */
 	protected function validate_membership_states( $new_relationship ) {
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
@@ -625,9 +625,9 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 
 		$cancel_these = array(
-			MS_Model_Membership_Relationship::STATUS_TRIAL,
-			MS_Model_Membership_Relationship::STATUS_ACTIVE,
-			MS_Model_Membership_Relationship::STATUS_PENDING,
+			MS_Model_Relationship::STATUS_TRIAL,
+			MS_Model_Relationship::STATUS_ACTIVE,
+			MS_Model_Relationship::STATUS_PENDING,
 		);
 
 		$member = $new_relationship->get_member();
@@ -804,7 +804,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						$gateway->add_card( $member, $_POST['stripeToken'] );
 						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
 							$ms_relationship = MS_Factory::load(
-								'MS_Model_Membership_Relationship',
+								'MS_Model_Relationship',
 								$_POST['ms_relationship_id']
 							);
 							MS_Model_Event::save_event(
@@ -833,7 +833,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						$gateway->save_card_info( $member );
 						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
 							$ms_relationship = MS_Factory::load(
-								'MS_Model_Membership_Relationship',
+								'MS_Model_Relationship',
 								$_POST['ms_relationship_id']
 							);
 							MS_Model_Event::save_event(

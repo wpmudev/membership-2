@@ -540,7 +540,7 @@ class MS_Model_Plugin extends MS_Model {
 			'ms_model_plugin_check_membership_status_get_membership_relationship_args',
 			array( 'status' => 'valid' )
 		);
-		$ms_relationships = MS_Model_Membership_Relationship::get_membership_relationships( $args );
+		$ms_relationships = MS_Model_Relationship::get_membership_relationships( $args );
 
 		foreach ( $ms_relationships as $ms_relationship ) {
 			$ms_relationship->check_membership_status();

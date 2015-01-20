@@ -513,7 +513,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$membership_id = $_REQUEST['membership_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 			$move_from_id = absint( @$_REQUEST['move_from_id'] );
-			$ms_relationship = MS_Model_Membership_Relationship::create_ms_relationship(
+			$ms_relationship = MS_Model_Relationship::create_ms_relationship(
 				$membership_id,
 				$member->id,
 				'',
@@ -522,7 +522,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		} elseif ( ! empty( $_POST['ms_relationship_id'] ) ) {
 			// Error path, showing payment table again with error msg
 			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+				'MS_Model_Relationship',
 				absint( $_POST['ms_relationship_id'] )
 			);
 			$membership = $ms_relationship->get_membership();

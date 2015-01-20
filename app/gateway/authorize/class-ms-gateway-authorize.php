@@ -154,7 +154,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * Processes purchase action.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
 	 */
 	public function process_purchase( $ms_relationship ) {
 		do_action(
@@ -205,7 +205,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * Request automatic payment to the gateway.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
 	 */
 	public function request_payment( $ms_relationship ) {
 		do_action(

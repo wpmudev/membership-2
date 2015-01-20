@@ -245,7 +245,7 @@ class MS_Model_Upgrade extends MS_Model {
 			MS_Model_Event::$POST_TYPE,
 			MS_Model_Invoice::$POST_TYPE,
 			MS_Model_Membership::$POST_TYPE,
-			MS_Model_Membership_Relationship::$POST_TYPE,
+			MS_Model_Relationship::$POST_TYPE,
 			MS_Addon_Coupon_Model::$POST_TYPE,
 		);
 

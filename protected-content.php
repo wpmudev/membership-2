@@ -98,9 +98,6 @@ function ms_class_path_overrides( $overrides ) {
 	// CONTROLLERS
 	$controllers_base = 'app/controller/';
 	$controllers = array(
-		'MS_Controller_Admin_Bar' => 'class-ms-controller-admin-bar.php',
-		'MS_Controller_Membership_Content_Type' => 'membership/class-ms-controller-membership-content-type.php',
-		'MS_Controller_Membership_Metabox' => 'class-ms-controller-membership-metabox.php',
 	);
 
 	// HELPERS
@@ -132,21 +129,14 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Model_Rule_Url_Group' => 'rule/class-ms-model-rule-url-group.php',
 		'MS_Model_Rule_Replace_Menu' => 'rule/class-ms-model-rule-replace-menu.php',
 		'MS_Model_Rule_Replace_Menulocation' => 'rule/class-ms-model-rule-replace-menulocation.php',
-		'MS_Model_Membership_Relationship' => 'class-ms-model-membership_relationship.php',
 	);
 
 	// VIEWS
 	$views_base = 'app/view/';
 	$views = array(
-		'MS_View_Admin_Bar' => 'class-ms-view-admin-bar.php',
-		'MS_View_Membership_Accessible_Content' => 'membership/class-ms-view-membership-accessible-content.php',
-		'MS_View_Membership_Choose_Type' => 'membership/class-ms-view-membership-choose-type.php',
-		'MS_View_Membership_Overview_Content_Type' => 'membership/overview/class-ms-view-membership-overview-content-type.php',
-		'MS_View_Membership_Content_Type' => 'membership/class-ms-view-membership-content-type.php',
 		'MS_View_Membership_Dripped' => 'membership/class-ms-view-membership-dripped.php',
 		'MS_View_Membership_Payment' => 'membership/class-ms-view-membership-payment.php',
 		'MS_View_Membership_Protected_Content' => 'membership/class-ms-view-membership-protected-content.php',
-		'MS_View_Membership_Tier' => 'membership/class-ms-view-membership-tier.php',
 		'MS_View_Shortcode_Membership_Signup' => 'shortcode/class-ms-view-shortcode-membership-signup.php',
 		'MS_View_Shortcode_Membership_Login' => 'shortcode/class-ms-view-shortcode-membership-login.php',
 		'MS_View_Shortcode_Membership_Register_User' => 'shortcode/class-ms-view-shortcode-membership-register-user.php',
@@ -432,7 +422,7 @@ class MS_Plugin {
 			'ms_plugin_register_custom_post_types',
 			array(
 				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
-				MS_Model_Membership_Relationship::$POST_TYPE => MS_Model_Membership_Relationship::get_register_post_type_args(),
+				MS_Model_Relationship::$POST_TYPE => MS_Model_Relationship::get_register_post_type_args(),
 				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
 				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),

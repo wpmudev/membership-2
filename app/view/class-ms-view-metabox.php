@@ -6,7 +6,7 @@
  * @package Membership
  * @subpackage View
  */
-class MS_View_Membership_Metabox extends MS_View {
+class MS_View_Metabox extends MS_View {
 
 	/**
 	 * Create view output.
@@ -33,7 +33,7 @@ class MS_View_Membership_Metabox extends MS_View {
 					'class' => 'ms-protect-content',
 					'read_only' => ! empty( $this->data['read_only'] ),
 					'data_ms' => array(
-						'action' => MS_Controller_Membership_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
+						'action' => MS_Controller_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
 						'post_id' => $this->data['post_id'],
 						'rule_type' => $this->data['rule_type'],
 						'membership_id' => $membership_id,
@@ -68,7 +68,7 @@ class MS_View_Membership_Metabox extends MS_View {
 											'class' => '',
 											'read_only' => ! empty( $this->data['read_only'] ),
 											'data_ms' => array(
-												'action' => MS_Controller_Membership_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
+												'action' => MS_Controller_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
 												'post_id' => $this->data['post_id'],
 												'rule_type' => $this->data['rule_type'],
 												'membership_id' => $membership_id,

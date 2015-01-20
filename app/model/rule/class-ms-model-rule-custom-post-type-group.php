@@ -46,7 +46,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. Not used.
+	 * @param MS_Model_Relationship $ms_relationship Optional. Not used.
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
@@ -281,7 +281,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 			MS_Model_Membership::$POST_TYPE,
 			MS_Model_Invoice::$POST_TYPE,
 			MS_Model_Communication::$POST_TYPE,
-			MS_Model_Membership_Relationship::$POST_TYPE,
+			MS_Model_Relationship::$POST_TYPE,
 			MS_Model_Event::$POST_TYPE,
 		);
 

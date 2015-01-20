@@ -224,7 +224,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			$new_status = false;
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['invoice'] );
 			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+				'MS_Model_Relationship',
 				$invoice->ms_relationship_id
 			);
 			$membership = $ms_relationship->get_membership();
@@ -373,7 +373,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 		);
 
 		$ms_relationship = MS_Factory::load(
-			'MS_Model_Membership_Relationship',
+			'MS_Model_Relationship',
 			$invoice->ms_relationship_id
 		);
 		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );

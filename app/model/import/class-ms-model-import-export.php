@@ -293,7 +293,7 @@ class MS_Model_Import_Export extends MS_Model {
 	 * Export specific data.
 	 *
 	 * @since  1.1.0
-	 * @param  MS_Model_Membership_Relationship $src
+	 * @param  MS_Model_Relationship $src
 	 * @return object Export data
 	 */
 	protected function export_relationship( $src ) {

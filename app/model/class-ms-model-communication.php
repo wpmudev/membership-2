@@ -598,7 +598,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 					break;
 				}
 
-				$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $ms_relationship_id );
+				$ms_relationship = MS_Factory::load( 'MS_Model_Relationship', $ms_relationship_id );
 				if ( $this->send_message( $ms_relationship ) ) {
 					$this->remove_from_queue( $ms_relationship_id );
 				}
@@ -632,7 +632,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 *
 	 * @param MS_Model_Event $event The event object.
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to send message to.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship to send message to.
 	 */
 	public function enqueue_messages( $event, $ms_relationship ) {
 		do_action( 'ms_model_communication_enqueue_messages_before', $this );
@@ -728,7 +728,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to send message to.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship to send message to.
 	 * @return bool True if successfully sent email.
 	 */
 	public function send_message( $ms_relationship ) {
@@ -869,7 +869,7 @@ class MS_Model_Communication extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to send message to.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship to send message to.
 	 * @param WP_User $wp_user The wordpress user object to get info from.
 	 * @return array {
 	 *     Returns array of ( $var_name => $var_replace ).

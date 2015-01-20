@@ -409,7 +409,7 @@ class MS_Addon_Coupon_Model extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship to apply coupon.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship to apply coupon.
 	 * @return float The discount value.
 	 */
 	public function get_discount_value( $ms_relationship ) {

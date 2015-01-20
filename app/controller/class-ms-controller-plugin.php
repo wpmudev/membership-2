@@ -98,8 +98,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
 		$this->controllers['communication'] = MS_Factory::create( 'MS_Controller_Communication' );
 		$this->controllers['gateway'] = MS_Factory::create( 'MS_Controller_Gateway' );
-		$this->controllers['admin_bar'] = MS_Factory::create( 'MS_Controller_Admin_Bar' );
-		$this->controllers['membership_metabox'] = MS_Factory::create( 'MS_Controller_Membership_Metabox' );
+		$this->controllers['admin_bar'] = MS_Factory::create( 'MS_Controller_Adminbar' );
+		$this->controllers['membership_metabox'] = MS_Factory::create( 'MS_Controller_Metabox' );
 		$this->controllers['membership_shortcode'] = MS_Factory::create( 'MS_Controller_Shortcode' );
 		$this->controllers['frontend'] = MS_Factory::create( 'MS_Controller_Frontend' );
 		$this->controllers['help'] = MS_Factory::create( 'MS_Controller_Help' );

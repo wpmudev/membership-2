@@ -45,7 +45,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 								'value' => __( 'Edit Dripped Content', MS_TEXT_DOMAIN ),
 								'url' => add_query_arg(
 									array(
-										'step' => MS_Controller_Membership::STEP_SETUP_DRIPPED,
+										'step' => MS_Controller_Membership::STEP_DRIPPED,
 										'edit' => 1,
 									)
 								),
@@ -60,7 +60,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 								'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
 								'url' => add_query_arg(
 									array(
-										'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
+										'step' => MS_Controller_Membership::STEP_PAYMENT,
 										'edit' => 1,
 									)
 								),

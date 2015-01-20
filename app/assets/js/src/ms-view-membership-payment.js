@@ -4,7 +4,7 @@
 /*global ms_data:false */
 /*global ms_functions:false */
 
-window.ms_init.view_membership_setup_payment = function init () {
+window.ms_init.view_membership_payment = function init () {
 
 	function payment_type() {
 		var me = jQuery( this ),

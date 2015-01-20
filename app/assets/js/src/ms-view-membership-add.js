@@ -4,7 +4,7 @@
 /*global ms_data:false */
 /*global ms_functions:false */
 
-window.ms_init.view_membership_choose_type = function init () {
+window.ms_init.view_membership_add = function init () {
 	jQuery( '#ms-choose-type-form' ).validate({
 		onkeyup: false,
 		errorClass: 'ms-validation-error',

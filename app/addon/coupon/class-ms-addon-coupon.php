@@ -548,7 +548,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 *
 	 * @since  1.1.0
 	 * @param  MS_Model_Invoice $invoice
-	 * @param  MS_Model_Membership_Relationship $ms_relationship
+	 * @param  MS_Model_Relationship $ms_relationship
 	 * @return MS_Model_Invoice
 	 */
 	public function apply_discount( $invoice, $ms_relationship ) {
@@ -601,7 +601,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @since  1.1.0
 	 * @param  array $data
 	 * @param  int $membership_id
-	 * @param  MS_Model_Membership_Relationship $ms_relationship
+	 * @param  MS_Model_Relationship $ms_relationship
 	 * @param  MS_Model_Member $member
 	 */
 	public function process_payment_table( $data, $membership_id, $ms_relationship, $member ) {

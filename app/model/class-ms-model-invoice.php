@@ -540,7 +540,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 * @param boolean $update_existing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
 	 * @param string $status Optional. The invoice status to find.
 	 * @return MS_Model_Invoice
@@ -573,7 +573,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 * @param boolean $update_existing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
 	 * @return MS_Model_Invoice
 	 */
@@ -607,7 +607,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 * @param string $status The invoice status to find. Optional
 	 * @return MS_Model_Invoice
 	 */
@@ -633,7 +633,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership to create invoice for.
+	 * @param MS_Model_Relationship $ms_relationship The membership to create invoice for.
 	 * @param int $invoice_number Optional. The invoice number.
 	 * @param boolean $update_existing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
 	 *
@@ -697,7 +697,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE )
 			&& $ms_relationship->move_from_id
 		) {
-			$move_from = MS_Model_Membership_Relationship::get_membership_relationship(
+			$move_from = MS_Model_Relationship::get_membership_relationship(
 				$ms_relationship->user_id,
 				$ms_relationship->move_from_id
 			);
@@ -724,18 +724,18 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 		// Due date calculation.
 		switch ( $ms_relationship->status ) {
 			default:
-			case MS_Model_Membership_Relationship::STATUS_PENDING:
-			case MS_Model_Membership_Relationship::STATUS_EXPIRED:
-			case MS_Model_Membership_Relationship::STATUS_DEACTIVATED:
+			case MS_Model_Relationship::STATUS_PENDING:
+			case MS_Model_Relationship::STATUS_EXPIRED:
+			case MS_Model_Relationship::STATUS_DEACTIVATED:
 				$due_date = MS_Helper_Period::current_date();
 				break;
 
-			case MS_Model_Membership_Relationship::STATUS_TRIAL:
+			case MS_Model_Relationship::STATUS_TRIAL:
 				$due_date = $ms_relationship->trial_expire_date;
 				break;
 
-			case MS_Model_Membership_Relationship::STATUS_ACTIVE:
-			case MS_Model_Membership_Relationship::STATUS_CANCELED:
+			case MS_Model_Relationship::STATUS_ACTIVE:
+			case MS_Model_Relationship::STATUS_CANCELED:
 				$due_date = $ms_relationship->expire_date;
 				break;
 		}
@@ -795,7 +795,7 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 
 			if ( ! empty( $invoice ) && self::STATUS_PAID === $invoice->status ) {
 				switch ( $ms_relationship->get_status() ) {
-					case MS_Model_Membership_Relationship::STATUS_TRIAL:
+					case MS_Model_Relationship::STATUS_TRIAL:
 						if ( $invoice->trial_period ) {
 							$remaining_days = $ms_relationship->get_remaining_trial_period();
 							$total_days = MS_Helper_Period::subtract_dates(
@@ -807,8 +807,8 @@ class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
 						}
 						break;
 
-					case MS_Model_Membership_Relationship::STATUS_ACTIVE:
-					case MS_Model_Membership_Relationship::STATUS_CANCELED:
+					case MS_Model_Relationship::STATUS_ACTIVE:
+					case MS_Model_Relationship::STATUS_CANCELED:
 						if ( ! $invoice->trial_period ) {
 							$remaining_days = $ms_relationship->get_remaining_period();
 							$total_days = MS_Helper_Period::subtract_dates(

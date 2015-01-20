@@ -33,7 +33,7 @@
  * @package Membership
  * @subpackage Controller
  */
-class MS_Controller_Admin_Bar extends MS_Controller {
+class MS_Controller_Adminbar extends MS_Controller {
 
 	/**
 	 * Details on current simulation mode
@@ -233,7 +233,7 @@ class MS_Controller_Admin_Bar extends MS_Controller {
 				$title = __( 'View in: ', MS_TEXT_DOMAIN );
 			}
 
-			$view = MS_Factory::create( 'MS_View_Admin_Bar' );
+			$view = MS_Factory::create( 'MS_View_Adminbar' );
 			$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
 			$html = $view->to_html();
 		}

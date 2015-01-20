@@ -46,7 +46,7 @@ class MS_Model_Rule_Custom_Post_Type extends MS_Model_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Membership_Relationship $ms_relationship Optional. Not used.
+	 * @param MS_Model_Relationship $ms_relationship Optional. Not used.
 	 */
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );

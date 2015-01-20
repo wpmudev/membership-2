@@ -172,7 +172,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 
 		if ( ! empty( $_POST['ms_relationship_id'] ) ) {
 			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+				'MS_Model_Relationship',
 				$_POST['ms_relationship_id']
 			);
 			$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );

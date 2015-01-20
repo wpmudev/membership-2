@@ -27,7 +27,7 @@
  *
  * @since 1.0.0
  */
-class MS_View_Admin_Bar extends MS_View {
+class MS_View_Adminbar extends MS_View {
 
 	protected $data;
 

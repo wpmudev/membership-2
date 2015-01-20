@@ -258,7 +258,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
 				'url' => add_query_arg(
 					array(
-						'step' => MS_Controller_Membership::STEP_SETUP_PAYMENT,
+						'step' => MS_Controller_Membership::STEP_PAYMENT,
 						'membership_id' => $this->data['membership']->id,
 						'edit' => 1,
 					)
@@ -319,7 +319,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 								'value' => sprintf( __( 'Edit %s Access', MS_TEXT_DOMAIN ), $title ),
 								'url' => add_query_arg(
 									array(
-										'step' => MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT,
+										'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
 										'tab' => $rule->rule_type,
 										'membership_id' => $membership_id,
 										'edit' => 1,

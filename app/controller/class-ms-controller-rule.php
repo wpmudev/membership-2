@@ -59,8 +59,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_FIELD, 'ajax_action_update_field' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
 
-		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_SETUP_PROTECTED_CONTENT, 'edit_rule_manager' );
-		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_ACCESSIBLE_CONTENT, 'edit_rule_manager' );
+		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_PROTECTED_CONTENT, 'edit_rule_manager' );
 	}
 
 	/**

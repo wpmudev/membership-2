@@ -267,7 +267,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( $member->is_valid() ) {
 			// Get member's memberships, including pending relationships.
-			$data['ms_relationships'] = MS_Model_Membership_Relationship::get_membership_relationships(
+			$data['ms_relationships'] = MS_Model_Relationship::get_membership_relationships(
 				array(
 					'user_id' => $data['member']->id,
 					'status' => 'valid',
@@ -286,9 +286,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 			// Membership Relationship status which can move to another one
 			$valid_status = array(
-				MS_Model_Membership_Relationship::STATUS_TRIAL,
-				MS_Model_Membership_Relationship::STATUS_ACTIVE,
-				MS_Model_Membership_Relationship::STATUS_EXPIRED,
+				MS_Model_Relationship::STATUS_TRIAL,
+				MS_Model_Relationship::STATUS_ACTIVE,
+				MS_Model_Relationship::STATUS_EXPIRED,
 			);
 
 			foreach ( $data['member']->ms_relationships as $ms_relationship ) {
@@ -803,7 +803,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				}
 			}
 
-			$ms_relationship = MS_Factory::load( 'MS_Model_Membership_Relationship', $invoice->ms_relationship_id );
+			$ms_relationship = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
 
 			$data['invoice'] = $invoice;
 			$data['member'] = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );

@@ -139,7 +139,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			$actions['payment'] = sprintf(
 				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
 				esc_attr( $_REQUEST['page'] ),
-				MS_Controller_Membership::STEP_SETUP_PAYMENT,
+				MS_Controller_Membership::STEP_PAYMENT,
 				esc_attr( $item->id ),
 				__( 'Payment options', MS_TEXT_DOMAIN )
 			);

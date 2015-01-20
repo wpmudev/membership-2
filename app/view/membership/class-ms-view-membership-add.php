@@ -1,6 +1,6 @@
 <?php
 
-class MS_View_Membership_Choose_Type extends MS_View {
+class MS_View_Membership_Add extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();

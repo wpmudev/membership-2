@@ -188,7 +188,7 @@ class MS_Gateway extends MS_Model_Option {
 	 * This parent method only covers free purchases.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
 	 */
 	public function process_purchase( $ms_relationship ) {
 		do_action(
@@ -217,7 +217,7 @@ class MS_Gateway extends MS_Model_Option {
 	 * Overridden in child classes.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 */
 	public function cancel_membership( $ms_relationship ) {
 		do_action(
@@ -233,7 +233,7 @@ class MS_Gateway extends MS_Model_Option {
 	 * Overridden in child gateway classes.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 */
 	public function request_payment( $ms_relationship ) {
 		do_action(
@@ -251,7 +251,7 @@ class MS_Gateway extends MS_Model_Option {
 	 * @since 1.0.0
 	 *
 	 * @access protected
-	 * @param MS_Model_Membership_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 */
 	public function check_card_expiration( $ms_relationship ) {
 		do_action( 'ms_gateway_check_card_expiration_before', $this );
@@ -295,7 +295,7 @@ class MS_Gateway extends MS_Model_Option {
 			MS_Helper_Debug::log( 'Cannot process transaction: No relationship defined (inv #' . $invoice->id  .')' );
 		} else {
 			$ms_relationship = MS_Factory::load(
-				'MS_Model_Membership_Relationship',
+				'MS_Model_Relationship',
 				$invoice->ms_relationship_id
 			);
 			$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
@@ -317,11 +317,11 @@ class MS_Gateway extends MS_Model_Option {
 					);
 
 					// Check for moving memberships
-					if ( MS_Model_Membership_Relationship::STATUS_PENDING == $ms_relationship->status
+					if ( MS_Model_Relationship::STATUS_PENDING == $ms_relationship->status
 						&& $ms_relationship->move_from_id
 						&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
 					) {
-						$move_from = MS_Model_Membership_Relationship::get_membership_relationship(
+						$move_from = MS_Model_Relationship::get_membership_relationship(
 							$ms_relationship->user_id,
 							$ms_relationship->move_from_id
 						);
@@ -329,16 +329,16 @@ class MS_Gateway extends MS_Model_Option {
 						if ( $move_from->is_valid() ) {
 							if ( $this->pro_rate && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE ) ) {
 								// if allow pro rate, immediatly deactivate
-								$move_from->set_status( MS_Model_Membership_Relationship::STATUS_DEACTIVATED );
+								$move_from->set_status( MS_Model_Relationship::STATUS_DEACTIVATED );
 							} else {
 								// if not, cancel it, and allow using it until expires
-								$move_from->set_status( MS_Model_Membership_Relationship::STATUS_CANCELED );
+								$move_from->set_status( MS_Model_Relationship::STATUS_CANCELED );
 							}
 							$move_from->save();
 						}
 					}
 
-					// The trial period info gets updated after MS_Model_Membership_Relationship::config_period()
+					// The trial period info gets updated after MS_Model_Relationship::config_period()
 					$trial_period = $ms_relationship->is_trial_eligible();
 					$ms_relationship->current_invoice_number = max(
 						$ms_relationship->current_invoice_number,
@@ -347,7 +347,7 @@ class MS_Gateway extends MS_Model_Option {
 					$member->is_member = true;
 					$member->active = true;
 					$ms_relationship->config_period();
-					$ms_relationship->set_status( MS_Model_Membership_Relationship::STATUS_ACTIVE );
+					$ms_relationship->set_status( MS_Model_Relationship::STATUS_ACTIVE );
 
 					// Generate next invoice
 					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type

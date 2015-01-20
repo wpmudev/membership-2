@@ -1,6 +1,6 @@
 <?php
 /**
- * This file defines the MS_Controller_Membership_Metabox class.
+ * This file defines the MS_Controller_Metabox class.
  *
  * @copyright Incsub (http://incsub.com/)
  *
@@ -32,7 +32,7 @@
  * @package Membership
  * @subpackage Controller
  */
-class MS_Controller_Membership_Metabox extends MS_Controller {
+class MS_Controller_Metabox extends MS_Controller {
 
 	/**
 	 * AJAX action constants.
@@ -218,7 +218,7 @@ class MS_Controller_Membership_Metabox extends MS_Controller {
 		$data['post_id'] = $post->ID;
 		$data['read_only'] = $this->is_read_only( $post->post_type );
 
-		$view = MS_Factory::create( 'MS_View_Membership_Metabox' );
+		$view = MS_Factory::create( 'MS_View_Metabox' );
 		$view->data = apply_filters( 'ms_view_membership_metabox_data', $data, $this );
 		$view->render();
 	}
