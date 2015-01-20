@@ -74,6 +74,14 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 
 			if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
 				$post_type = $wp_query->queried_object->post_type;
+
+				if ( is_array( $post_type ) ) {
+					if ( isset( $post_type[0] ) ) {
+						$post_type = $post_type[0];
+					} else {
+						$post_type = '';
+					}
+				}
 			}
 
 			// Single pages are protected with function `has_access()` below.

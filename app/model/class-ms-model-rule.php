@@ -551,7 +551,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @return boolean The rule value for the requested content. Default $rule_value_default.
 	 */
 	public function get_rule_value( $id ) {
-		if ( isset( $this->rule_value[ $id ] ) ) {
+		if ( is_scalar( $id ) && isset( $this->rule_value[ $id ] ) ) {
 			$value = $this->rule_value[ $id ];
 		} else {
 			// If no rule is defined for the item then assume "Has Access"
