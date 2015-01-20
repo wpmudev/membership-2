@@ -122,7 +122,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function column_name( $item ) {
 		$actions = array();
-		$is_guest = $item->is_special( 'guest' );
+		$is_guest = $item->is_guest();
 
 		$name = $item->name;
 
@@ -175,7 +175,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	public function column_members( $item, $column_name ) {
 		$html = '';
 
-		if ( ! $item->is_special() ) {
+		if ( ! $item->is_system() ) {
 			$html = $item->get_members_count();
 		}
 
@@ -212,7 +212,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 	public function column_price( $item, $column_name ) {
 		$html = '';
 
-		if ( ! $item->is_special() ) {
+		if ( ! $item->is_system() ) {
 			if ( ! $item->is_free() ) {
 				$html = sprintf(
 					'<span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span> (<span class="ms-payment">%3$s</span>)',

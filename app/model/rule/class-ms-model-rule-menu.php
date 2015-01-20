@@ -234,7 +234,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		$is_base = $this->get_membership()->is_special( 'base' );
+		$is_base = $this->get_membership()->is_base();
 
 		if ( $is_base && ! isset( $args['menu_id'] ) ) {
 			$menus = $this->get_menu_array();

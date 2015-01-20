@@ -49,8 +49,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @see $type property.
 	 * @var string $type The membership type.
 	 */
-	const TYPE_SIMPLE = 'simple';
+	const TYPE_STANDARD = 'simple';
 	const TYPE_DRIPPED = 'dripped';
+	const TYPE_BASE = 'base'; // System membership, hidden, created automatically
+	const TYPE_GUEST = 'guest'; // Guest membership, only one membership possible
 
 	/**
 	 * Membership payment type constants.
@@ -65,20 +67,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	const PAYMENT_TYPE_RECURRING = 'recurring';
 
 	/**
-	 * Set to true when the installation contains at least one paid membership.
-	 *
-	 * @since 1.1.0
-	 * @var   bool
-	 */
-	static $_have_paid = null;
-
-	/**
 	 * Membership type.
 	 *
 	 * @since 1.0.0
 	 * @var string $type
 	 */
-	protected $type = self::TYPE_SIMPLE;
+	protected $type = self::TYPE_STANDARD;
 
 	/**
 	 * Membership payment type.
@@ -105,19 +99,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @var bool $private
 	 */
 	protected $private = false;
-
-	/**
-	 * Marks a Protected Content special membership.
-	 *
-	 * Special memberships cannot be created or deleted manually but are
-	 * maintained by the plugin. Such special memberships include:
-	 * - The base "Protected Content" membership
-	 * - WordPress User-Role memberships
-	 *
-	 * @since 1.1.0
-	 * @var string $special.
-	 */
-	protected $special = '';
 
 	/**
 	 * Membership free status.
@@ -279,7 +260,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			'payment_type',
 			'active',
 			'private',
-			'special',
 			'is_free',
 			'price',
 			'period',
@@ -326,7 +306,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$this->rule_values = array();
 
 		// validate rules using protected content rules
-		if ( ! $this->is_special( 'base' ) && $this->is_valid() ) {
+		if ( ! $this->is_base() && $this->is_valid() ) {
 			$this->merge_protected_content_rules();
 		}
 	}
@@ -342,10 +322,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *		@type string $title The membership type title
 	 * }
 	 */
-	public static function get_types() {
+	static public function get_types() {
 		$types = array(
-			self::TYPE_SIMPLE => __( 'Standard Membership', MS_TEXT_DOMAIN ),
+			self::TYPE_STANDARD => __( 'Standard Membership', MS_TEXT_DOMAIN ),
 			self::TYPE_DRIPPED => __( 'Dripped Content Membership', MS_TEXT_DOMAIN ),
+			self::TYPE_GUEST => __( 'Guest Membership', MS_TEXT_DOMAIN ),
+			self::TYPE_BASE => __( 'System Membership', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters( 'ms_model_membership_get_types', $types );
@@ -592,7 +574,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @return bool
 	 */
 	public static function have_paid_membership() {
-		if ( null === self::$_have_paid ) {
+		static $Have_Paid = null;
+
+		if ( null === $Have_Paid ) {
 			global $wpdb;
 			// Using a custom WPDB query because building the meta-query is more
 			// complex than really required here...
@@ -621,13 +605,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 			$res = $wpdb->get_var( $sql );
 
-			self::$_have_paid = apply_filters(
+			$Have_Paid = apply_filters(
 				'ms_model_membership_have_paid_membership',
 				intval( $res ) > 0
 			);
 		}
 
-		return self::$_have_paid;
+		return $Have_Paid;
 	}
 
 	/**
@@ -660,16 +644,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		if ( ! WDev()->is_true( $args['include_base'] ) ) {
 			$args['meta_query']['visitor'] = array(
-				'key'     => 'special',
-				'value'   => 'protected_content',
+				'key'     => 'type',
+				'value'   => self::TYPE_BASE,
 				'compare' => '!=',
 			);
 		}
 
 		if ( ! WDev()->is_true( $args['include_guest'] ) ) {
 			$args['meta_query']['guest'] = array(
-				'key'     => 'special',
-				'value'   => 'guest',
+				'key'     => 'type',
+				'value'   => self::TYPE_GUEST,
 				'compare' => '!=',
 			);
 		}
@@ -695,7 +679,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 */
 	public function get_after_ms_ends_options() {
 		$options = array(
-			self::get_base_membership()->id => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
+			self::get_base()->id => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(
@@ -771,7 +755,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		if ( is_array( $exclude_ids ) ) {
 			$not_in = $exclude_ids;
 		}
-		$not_in[] = MS_Model_Membership::get_base_membership()->id;
+		$not_in[] = MS_Model_Membership::get_base()->id;
 		$args['post__not_in'] = array_unique( $not_in );
 
 		if ( ! is_admin() ) {
@@ -845,57 +829,36 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
-	 * Returns true if the membership is the base-membership.
-	 *
-	 * @since  1.0.4.5
-	 * @deprecated since 1.1.0, replaced by is_special().
-	 * @return bool
-	 */
-	public function is_visitor_membership() {
-		_doing_it_wrong(
-			'is_visitor_membership',
-			'Deprecated. Use is_special("protected_content") instead',
-			'1.1.0'
-		);
-
-		return $this->is_special( 'protected_content' );
-	}
-
-	/**
-	 * Returns true if the membership a core membership or visitor membership.
+	 * Returns true if the membership the base membership.
 	 *
 	 * @since  1.1.0
 	 *
-	 * @param  string $type Optional. Check for a special membership type.
 	 * @return bool
 	 */
-	public function is_special( $type = null ) {
-		$res = false;
+	public function is_base() {
+		return $this->type == self::TYPE_BASE;
+	}
 
-		if ( empty( $type ) ) {
-			if ( $this->is_special( 'base' ) ) { $res = true; }
-			elseif ( $this->is_special( 'guest' ) ) { $res = true; }
-		} else {
-			switch ( $type ) {
-				case 'guest':
-					$res = ( $this->special == $type );
-					break;
+	/**
+	 * Returns true if the membership the guest membership.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return bool
+	 */
+	public function is_guest() {
+		return $this->type == self::TYPE_GUEST;
+	}
 
-				case 'base':
-				case 'protected_content':
-				default:
-					$type = 'protected_content';
-					$res = ( $this->special == $type );
-					break;
-			}
-		}
-
-		return apply_filters(
-			'ms_model_membership_is_special',
-			$res,
-			$type,
-			$this
-		);
+	/**
+	 * Returns true if the membership the base or guest membership.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return bool
+	 */
+	public function is_system() {
+		$res = $this->is_base() || $this->is_guest();
 	}
 
 	/**
@@ -906,14 +869,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.1.0
 	 *
 	 * @param  string $type The membership to load [protected_content|role]
-	 * @param  string $key Name of the special membership
 	 * @param  book $create_missing If set to false then missing special
 	 *           memberships are not created.
 	 * @return MS_Model_Membership The protected content.
 	 */
-	protected static function get_special_membership( $type, $key = '', $create_missing = true ) {
+	private static function _get_system_membership( $type, $create_missing = true ) {
 		static $Special_Membership = array();
-		$comp_key = $type . $key;
+		$comp_key = $type;
 		$membership = null;
 
 		if ( ! isset( $Special_Membership[$comp_key] ) ) {
@@ -940,23 +902,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			";
 			$values = array(
 				self::$POST_TYPE,
-				'special',
+				'type',
 				$type,
 			);
-
-			if ( ! empty( $key ) ) {
-				$sql .= "
-					AND EXISTS (
-						SELECT 1
-						FROM {$wpdb->postmeta} m_name
-						WHERE m_name.post_id = p.ID
-							AND m_name.meta_key = %s
-							AND m_name.meta_value = %s
-					)
-				";
-				$values[] = 'name';
-				$values[] = $key;
-			}
 
 			$sql = $wpdb->prepare( $sql, $values );
 			$item = $wpdb->get_results( $sql );
@@ -965,12 +913,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			if ( ! empty( $base ) ) {
 				$membership = MS_Factory::load( 'MS_Model_Membership', $base->ID );
 
+				// ---------- DB-correction part.
 				// If more than one base memberships were found we fix the issue here!
 				// This could happen in versions 1.0.0 - 1.0.4
 				if ( 'protected_content' == $type && count( $item ) ) {
 					// Change the excess base-memberships into normal memberships
 					foreach ( $item as $membership ) {
-						update_post_meta( $membership->ID, 'special', '' );
+						update_post_meta( $membership->ID, 'type', self::TYPE_STANDARD );
 						wp_update_post(
 							array(
 								'ID' => $membership->ID,
@@ -996,15 +945,16 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 						);
 					}
 				}
-				// End of DB-correction part.
+				// ---------- End of DB-correction part.
 			} else if ( $create_missing ) {
+				$names = self::get_types();
+
 				$description = __( 'Protected Content core membership', MS_TEXT_DOMAIN );
 				$membership = MS_Factory::create( 'MS_Model_Membership' );
-				$membership->name = $key;
-				$membership->title = 'Protected Content ' . ucwords( $key );
+				$membership->name = $names[$type];
+				$membership->title = $names[$type];
 				$membership->description = $description;
-				$membership->special = $type;
-				$membership->type = self::TYPE_SIMPLE;
+				$membership->type = $type;
 				$membership->save();
 
 				$membership = MS_Factory::load(
@@ -1018,7 +968,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 
 			$Special_Membership[$comp_key] = apply_filters(
-				'ms_model_membership_get_special_membership',
+				'ms_model_membership_get_system_membership',
 				$membership,
 				$type
 			);
@@ -1036,12 +986,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *
 	 * @return MS_Model_Membership The protected content.
 	 */
-	public static function get_base_membership() {
+	public static function get_base() {
 		static $Protected_content = null;
 
 		if ( null === $Protected_content ) {
-			$Protected_content = self::get_special_membership(
-				'protected_content'
+			$Protected_content = self::_get_system_membership(
+				self::TYPE_BASE
 			);
 
 			foreach ( $Protected_content->rules as $rule_type => $rule ) {
@@ -1049,7 +999,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 			}
 
 			$Protected_content = apply_filters(
-				'ms_model_membership_get_base_membership',
+				'ms_model_membership_get_base',
 				$Protected_content
 			);
 		}
@@ -1067,21 +1017,22 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @param  string $role A WordPress user-role.
 	 * @return MS_Model_Membership The core membership.
 	 */
-	public static function get_guest_membership() {
+	public static function get_guest() {
 		static $Guest_Membership = null;
 
 		if ( null === $Guest_Membership ) {
-			$Guest_Membership = self::get_special_membership(
-				'guest'
+			$Guest_Membership = self::_get_system_membership(
+				self::TYPE_GUEST,
+				false // Don't create this membership automatically
 			);
 
 			$Guest_Membership = apply_filters(
-				'ms_model_membership_get_guest_content',
+				'ms_model_membership_get_guest',
 				$Guest_Membership
 			);
 		}
 
-		return $Role_Membership[$role];
+		return $Guest_Membership;
 	}
 
 	/**
@@ -1093,12 +1044,12 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 * @since 1.0.0
 	 */
 	public function merge_protected_content_rules() {
-		if ( $this->is_special( 'base' ) ) {
+		if ( $this->is_base() ) {
 			// This is the visitor membership, no need to merge anything.
 			return;
 		}
 
-		$base_rules = self::get_base_membership()->rules;
+		$base_rules = self::get_base()->rules;
 
 		foreach ( $base_rules as $rule_type => $denied_items ) {
 			try {
@@ -1159,7 +1110,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		do_action( 'ms_model_membership_before_delete', $this );
 		$res = false;
 
-		if ( $this->is_special( 'base' ) ) {
+		if ( $this->is_base() ) {
 			throw new Exception(
 				'Can not delete the system membership.'
 			);
@@ -1500,9 +1451,17 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 		switch ( $property ) {
 			case 'type':
-				if ( $this->type !== self::TYPE_DRIPPED ) {
-					$this->type = self::TYPE_SIMPLE;
+				switch ( $this->type ) {
+					case self::TYPE_BASE:
+					case self::TYPE_GUEST:
+					case self::TYPE_DRIPPED:
+						break;
+
+					default:
+						$this->type = self::TYPE_STANDARD;
+						break;
 				}
+
 				$value = $this->type;
 				break;
 
@@ -1583,9 +1542,26 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					break;
 
 				case 'type':
-					if ( $value !== self::TYPE_DRIPPED ) {
-						$value = self::TYPE_SIMPLE;
+					switch ( $value ) {
+						case self::TYPE_BASE:
+						case self::TYPE_GUEST:
+							$this->active = true;
+							$this->private = true;
+							$this->is_free = true;
+							$this->price = 0;
+							$this->post_name = sanitize_html_class( $this->title );
+							$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
+							$this->post_author = get_current_user_id();
+							break;
+
+						case self::TYPE_DRIPPED:
+							break;
+
+						default:
+							$value = self::TYPE_STANDARD;
+							break;
 					}
+
 					$this->type = $value;
 					break;
 
@@ -1630,36 +1606,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					if ( 0 < MS_Factory::load( 'MS_Model_Membership', $value )->id ) {
 						$this->$property = $value;
 					}
-
-				case 'special':
-					switch ( $value ) {
-						case 'guest':
-							$value = 'guest';
-							break;
-
-						case 'base':
-						case 'protected_content':
-							$value = 'protected_content';
-							break;
-
-						default:
-							$value = '';
-							break;
-					}
-
-					if ( ! empty( $value ) ) {
-						$this->active = true;
-						$this->private = true;
-						$this->is_free = true;
-						$this->price = 0;
-						$this->type = self::TYPE_SIMPLE;
-						$this->post_name = sanitize_html_class( $this->title );
-						$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
-						$this->post_author = get_current_user_id();
-					}
-
-					$this->$property = $value;
-					break;
 
 				default:
 					$this->$property = $value;

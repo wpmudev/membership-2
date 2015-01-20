@@ -15,27 +15,6 @@ window.ms_init.view_membership_add = function init () {
 		}
 	});
 
-	jQuery( '#private' ).change( function() {
-		var me = jQuery( this ),
-			is_private = me.prop( 'checked' ),
-			types = jQuery( 'input[name="type"]' ),
-			cur_type = types.filter( ':checked' ).val();
-
-		if ( is_private ) {
-			if ( 'simple' !== cur_type ) {
-				types.filter( '[value="simple"]' )
-				.prop( 'checked', true )
-				.trigger( 'click' );
-			}
-
-			types.filter( '[value="dripped"]' ).prop( 'disabled', true );
-			jQuery( '.wpmui-dripped' ).addClass( 'ms-locked' );
-		} else {
-			types.filter( '[value="dripped"]' ).prop( 'disabled', false );
-			jQuery( '.wpmui-dripped' ).removeClass( 'ms-locked' );
-		}
-	});
-
 	jQuery( 'input[name="type"]' ).click(function() {
 		var types = jQuery( 'input[name="type"]' ),
 			cur_type = types.filter( ':checked' );

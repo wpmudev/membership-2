@@ -36,7 +36,7 @@ class MS_View_Frontend_Payment extends MS_View {
 			);
 
 			foreach ( $this->data['member']->ms_relationships as $tmp_relationship ) {
-				if ( $tmp_relationship->is_special() ) { continue; }
+				if ( $tmp_relationship->is_system() ) { continue; }
 				if ( in_array( $tmp_relationship->status, $valid_status ) ) {
 					$cancel_warning = true;
 					break;

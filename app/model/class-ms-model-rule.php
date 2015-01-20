@@ -162,7 +162,7 @@ class MS_Model_Rule extends MS_Model {
 		);
 
 		$membership = MS_Factory::load( 'MS_Model_membership', $membership_id );
-		$this->is_base_rule = $membership->is_special( 'base' );
+		$this->is_base_rule = $membership->is_base();
 
 		$this->initialize();
 	}
@@ -643,7 +643,7 @@ class MS_Model_Rule extends MS_Model {
 			$All_Memberships = MS_Model_Membership::get_memberships();
 		}
 
-		$base = MS_Model_Membership::get_base_membership();
+		$base = MS_Model_Membership::get_base();
 		if ( empty( $memberships ) ) {
 			$base->get_rule( $this->rule_type )->remove_access( $id );
 		} else {

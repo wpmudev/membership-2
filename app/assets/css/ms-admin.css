@@ -1219,38 +1219,27 @@
  * Special styles used on "Membership" pages
  */
 /* Page: Create new Membership */
-.ms-wrap .ms-type-wrapper {
+.ms-wrap .ms-membership-add .ms-type-wrapper {
   position: relative;
   margin-bottom: 20px;
 }
-.ms-wrap .ms-name-wrapper,
-.ms-wrap .ms-private-wrapper {
-  float: left;
-  width: 50%;
-  min-height: 7em;
-  max-width: 880px;
-}
-.ms-wrap .ms-name-wrapper.disabled *,
-.ms-wrap .ms-private-wrapper.disabled * {
+.ms-wrap .ms-membership-add.disabled * {
   color: #999;
   opacity: .7;
   cursor: default;
 }
-.ms-wrap .ms-control-fields-wrapper {
-  clear: both;
-}
-.ms-wrap .ms-settings-type {
+.ms-wrap .ms-membership-add .ms-settings-type {
   max-width: 1200px;
   margin: 1em auto 0;
 }
-.ms-wrap .ms-settings-type .wpmui-input-name {
+.ms-wrap .ms-membership-add .ms-settings-type .wpmui-input-name {
   font-size: 13px;
   padding: 5px 10px;
 }
-.ms-wrap .wrapper-type {
+.ms-wrap .ms-membership-add .wrapper-type {
   margin-left: 10px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper {
   position: relative;
   float: left;
   margin: 1em 0 0;
@@ -1261,7 +1250,7 @@
   background-color: transparent;
   outline: none;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper:before {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper:before {
   content: '';
   position: absolute;
   left: -10px;
@@ -1271,27 +1260,26 @@
   background: #fdfdfd;
   box-shadow: 0 0 0 1px #EEE;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper:hover:before {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper:hover:before {
   background: #fbfbfb;
   box-shadow: 0 0 0 1px #CCC;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.active:before, .ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.active:hover:before {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper.active:before, .ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper.active:hover:before {
   background: #f7fcfe;
   box-shadow: 0 0 0 2px #2ea2cc;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio {
   opacity: 0;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
   padding: 6px 0 !important;
   text-align: center;
-  border-bottom: 1px solid #EEE;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper label {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper label {
   padding-top: 80px;
   height: 300px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper label:before {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper label:before {
   display: inline-block;
   position: absolute;
   content: '';
@@ -1303,38 +1291,41 @@
   background: url(../images/membership_sprite.png);
   background: url(../images/membership_sprite.svg), none;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-simple label:before {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper.wpmui-simple label:before {
   background-position: 0 -30px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper.wpmui-dripped label:before {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper.wpmui-dripped label:before {
   background-position: -300px -20px;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper.wpmui-guest label:before {
+  background-position: -100px -20px;
+}
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper .wpmui-radio-caption {
   margin-bottom: 1em;
   font-weight: 600;
   color: #222;
 }
-.ms-wrap .ms-choose-type.wpmui-radio-input-wrapper .wpmui-input-description {
+.ms-wrap .ms-membership-add .ms-choose-type.wpmui-radio-input-wrapper .wpmui-input-description {
   color: #666;
   font-weight: 200;
 }
-.ms-wrap .ms-locked {
+.ms-wrap .ms-membership-add .ms-locked {
   position: relative;
   cursor: not-allowed;
 }
-.ms-wrap .ms-locked .wpmui-field-label {
+.ms-wrap .ms-membership-add .ms-locked .wpmui-field-label {
   cursor: not-allowed;
 }
-.ms-wrap .ms-locked .wpmui-field-label:before,
-.ms-wrap .ms-locked .wpmui-radio-caption {
+.ms-wrap .ms-membership-add .ms-locked .wpmui-field-label:before,
+.ms-wrap .ms-membership-add .ms-locked .wpmui-radio-caption {
   opacity: 0.45;
   cursor: not-allowed;
 }
-.ms-wrap .ms-locked .wpmui-input-description {
+.ms-wrap .ms-membership-add .ms-locked .wpmui-input-description {
   color: #CCC !important;
   cursor: not-allowed;
 }
-.ms-wrap .ms-locked .locked-info {
+.ms-wrap .ms-membership-add .ms-locked .locked-info {
   position: absolute;
   background: #333;
   color: #EEE;
@@ -1348,10 +1339,10 @@
   font-size: 12px;
   box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.35);
 }
-.ms-wrap .ms-locked.ms-choose-type.wpmui-radio-input-wrapper:before {
+.ms-wrap .ms-membership-add .ms-locked.ms-choose-type.wpmui-radio-input-wrapper:before {
   opacity: 0.35;
 }
-.ms-wrap .ms-locked:hover .locked-info {
+.ms-wrap .ms-membership-add .ms-locked:hover .locked-info {
   display: inline-block !important;
 }
 

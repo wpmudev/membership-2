@@ -175,7 +175,7 @@ class MS_Model_Import extends MS_Model {
 			// Delete all Memberships.
 			$memberships = MS_Model_Membership::get_memberships();
 			foreach ( $memberships as $membership ) {
-				if ( $membership->is_special() ) { continue; }
+				if ( $membership->is_base() ) { continue; }
 				$membership->delete( true );
 			}
 		}
@@ -244,7 +244,6 @@ class MS_Model_Import extends MS_Model {
 	protected function populate_membership( &$membership, $obj ) {
 		$membership->name = $obj->name;
 		$membership->description = $obj->description;
-		$membership->type = $obj->type;
 		$membership->active = (bool) $obj->active;
 		$membership->private = (bool) $obj->private;
 		$membership->is_free = (bool) $obj->free;
@@ -310,7 +309,7 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		// We set this last because it might change some other values as well...
-		$membership->special = $obj->special;
+		$membership->type = $obj->type;
 	}
 
 	/**
@@ -384,9 +383,9 @@ class MS_Model_Import extends MS_Model {
 			return;
 		}
 
-		if ( ! empty( $membership->special ) ) {
+		if ( $membership->is_base() ) {
 			$this->errors[] = sprintf(
-				__( 'Did not import the special membership %2$s for <strong>%1$s</strong>', MS_TEXT_DOMAIN ),
+				__( 'Did not import the base membership %2$s for <strong>%1$s</strong>', MS_TEXT_DOMAIN ),
 				esc_attr( $obj->username ),
 				esc_attr( $membership->name )
 			);

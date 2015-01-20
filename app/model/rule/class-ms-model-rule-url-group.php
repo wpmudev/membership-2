@@ -107,7 +107,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 
 				// Check for URL group.
 				if ( $this->check_url_expression_match( $url, $this->get_allowed_urls() ) ) {
-					if ( $this->get_membership()->is_special( 'base' ) ) {
+					if ( $this->get_membership()->is_base() ) {
 						// For guests all defined URL groups are denied.
 						$has_access = false;
 					} else {
@@ -315,7 +315,7 @@ class MS_Model_Rule_Url_Group extends MS_Model_Rule {
 		static $Urls = null;
 
 		if ( null === $Urls ) {
-			$base_rules = MS_Model_Membership::get_base_membership()->rules;
+			$base_rules = MS_Model_Membership::get_base()->rules;
 			if ( isset( $base_rules[ MS_Model_Rule::RULE_TYPE_URL_GROUP ] ) ) {
 				$Urls = $base_rules[ MS_Model_Rule::RULE_TYPE_URL_GROUP ]->rule_value;
 			}

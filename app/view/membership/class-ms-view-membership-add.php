@@ -5,41 +5,40 @@ class MS_View_Membership_Add extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		?>
-			<div class='ms-wrap'>
+			<div class="ms-wrap">
 				<?php
-					MS_Helper_Html::settings_header(
-						array(
-							'title' => __( 'Create your membership', MS_TEXT_DOMAIN ),
-							'desc' => __( 'First up choose a name and a type for your membership site.', MS_TEXT_DOMAIN ),
-						)
-					);
+				MS_Helper_Html::settings_header(
+					array(
+						'title' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
+						'desc' => __( 'First up, choose a name and a type for your membership site.', MS_TEXT_DOMAIN ),
+					)
+				);
 				?>
-				<form action="" method="post" id="ms-choose-type-form">
-					<div class="ms-settings ms-settings-type">
-						<div class="ms-group">
-							<div class="ms-name-wrapper">
-								<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
-							</div>
-							<div class="ms-private-wrapper">
-								<?php MS_Helper_Html::html_element( $fields['private'] ); ?>
-							</div>
-						</div>
-
-						<?php MS_Helper_Html::html_separator(); ?>
+				<div class="ms-settings ms-membership-add">
+					<form action="" method="post" id="ms-choose-type-form">
 						<div class="ms-type-wrapper">
 							<h3><?php _e( 'Choose a membership type:', MS_TEXT_DOMAIN ); ?></h3>
 							<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
 						</div>
-
-						<div class="ms-control-fields-wrapper">
+						<div class="ms-name-wrapper">
+							<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
+						</div>
+						<div class="ms-options-wrapper">
 							<?php
-								foreach ( $fields['control_fields'] as $field ) {
-									MS_Helper_Html::html_element( $field );
-								}
+							foreach ( $fields['config_fields'] as $field ) {
+								MS_Helper_Html::html_element( $field );
+							}
 							?>
 						</div>
-					</div>
-				</form>
+						<div class="ms-control-fields-wrapper">
+							<?php
+							foreach ( $fields['control_fields'] as $field ) {
+								MS_Helper_Html::html_element( $field );
+							}
+							?>
+						</div>
+					</form>
+				</div>
 			</div>
 		<?php
 	}
@@ -51,23 +50,20 @@ class MS_View_Membership_Add extends MS_View {
 			'type' => array(
 				'id' => 'type',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-				'value' => ( $membership->type ) ? $membership->type : MS_Model_Membership::TYPE_SIMPLE,
+				'value' => ( $membership->type ) ? $membership->type : MS_Model_Membership::TYPE_STANDARD,
 				'class' => 'ms-choose-type',
 				'field_options' => array(
-					MS_Model_Membership::TYPE_SIMPLE => array(
-						'text' => __( 'I simply want to protect some of my content.', MS_TEXT_DOMAIN ),
-						'desc' => __( 'This is the most basic membership that creates a single membership level. Members will have access to all protected content.<br /><br /><em>eg. Visitors don\'t see protected content, members access all protected content.</em>', MS_TEXT_DOMAIN ),
+					MS_Model_Membership::TYPE_STANDARD => array(
+						'text' => __( 'Standard Membership', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Make your content available to Members and hidden to Guests (logged-out users).', MS_TEXT_DOMAIN ),
 					),
 					MS_Model_Membership::TYPE_DRIPPED => array(
-						'text' => __( 'I want to set up a Dripped Content membership.', MS_TEXT_DOMAIN ),
-						'desc' => sprintf(
-							'<span class="locked-blur">%1$s</span>',
-							__( 'This option will allow you to set up a membership where content will be revelead to users over a period of time.<br /><br /><em>eg. A weekly training / excercize program.</em>', MS_TEXT_DOMAIN )
-						)
-						. sprintf(
-							'<span class="locked-info" style="display:none">%1$s</span>',
-							__( 'This Membership Type is only available to Public Memberships', MS_TEXT_DOMAIN )
-						),
+						'text' => __( 'Dripped Content Membership.', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Set-up membership content to be released / made available in intervals.', MS_TEXT_DOMAIN ),
+					),
+					MS_Model_Membership::TYPE_GUEST => array(
+						'text' => __( 'Guest Membership', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Make your content available only to Guests (logged-out users).', MS_TEXT_DOMAIN ),
 					),
 				),
 			),
@@ -82,21 +78,45 @@ class MS_View_Membership_Add extends MS_View {
 				'label_type' => 'h3',
 			),
 
-			'private' => array(
-				'id' => 'private',
-				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-				'title' => __( 'Make this membership private (No registration, no payment)', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Choosing this option assumes that you will manually set-up users who can access your content.<br />A registration page will not be created and there will be no payment options.', MS_TEXT_DOMAIN ),
-				'value' => $membership->private,
+			'config_fields' => array(
+				'public' => array(
+					'id' => 'public',
+					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+					'title' => __( 'Allow users to register for this membership.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', MS_TEXT_DOMAIN )
+						. sprintf(
+							'<span class="locked-info" style="display:none">%1$s</span>',
+							__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
+						),
+					'value' => ! $membership->private,
+				),
+				'public_flag' => array(
+					// See MS_Controller_Membership->membership_admin_page_process()
+					'id' => 'set_public_flag',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => 1,
+				),
+				'paid' => array(
+					'id' => 'paid',
+					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+					'title' => __( 'This is a paid membership.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Choose this if you want to receive payments from members via Payment Gateways.', MS_TEXT_DOMAIN )
+						. sprintf(
+							'<span class="locked-info" style="display:none">%1$s</span>',
+							__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
+						),
+					'value' => ! $membership->is_free(),
+				),
+				'paid_flag' => array(
+					// See MS_Controller_Membership->membership_admin_page_process()
+					'id' => 'set_paid_flag',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => 1,
+				),
 			),
 
 			'control_fields' => array(
-					'private_flag' => array(
-						// See MS_Controller_Membership->membership_admin_page_process()
-						'id' => 'set_private_flag',
-						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-						'value' => 1,
-					),
+
 					'membership_id' => array(
 						'id' => 'membership_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

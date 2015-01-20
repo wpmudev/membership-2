@@ -111,22 +111,14 @@ class MS_View_Settings_Import extends MS_View {
 
 		foreach ( $data->memberships as $item ) {
 			if ( ! isset( $ms_types[$item->type] ) ) {
-				$item->type = MS_Model_Membership::TYPE_SIMPLE;
+				$item->type = MS_Model_Membership::TYPE_STANDARD;
 			}
 
-			if ( ! empty( $item->special ) ) {
-				$memberships[] = array(
-					'<em>' . __( '(Special Membership)', MS_TEXT_DOMAIN ) . '</em>',
-					'-',
-					$item->description,
-				);
-			} else {
-				$memberships[] = array(
-					$item->name,
-					$ms_types[$item->type],
-					$item->description,
-				);
-			}
+			$memberships[] = array(
+				$item->name,
+				$ms_types[$item->type],
+				$item->description,
+			);
 		}
 
 		// Prepare the "Members" table

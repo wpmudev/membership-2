@@ -42,15 +42,13 @@ Import Data Structure
 
 - memberships     <array>
     - id                 <int>  Export-ID
-    - name               <string>  Membership name (see notes for `special`)
+    - name               <string>  Membership name
     - description        <string>  Membership description
-    - type               [simple|dripped]
+    - type               [simple|dripped|base|guest]
     - active             <bool>
     - private            <bool>
     - free               <bool>
     - dripped            [empty|specific_date|from_registration]
-    - special            [empty|base|role]
-                         For "role": `name` must match a WordPress user-role or "(Guest)/(Logged in)"
 
     If `free` is false:
     - price              <float>
@@ -166,7 +164,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$data->memberships = array();
 
 		// Export the base membership (i.e. the Protected Content settings)
-		$membership = MS_Model_Membership::get_base_membership();
+		$membership = MS_Model_Membership::get_base();
 		$data->memberships[] = $this->export_membership( $membership->id );
 
 		// Export all memberships.
@@ -217,7 +215,6 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->private = (bool) $src->private;
 		$obj->free = (bool) $src->is_free;
 		$obj->dripped = $src->dripped_type;
-		$obj->special = $src->special;
 
 		if ( ! $obj->free ) {
 			$obj->pay_type = $src->payment_type;

@@ -414,7 +414,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @return string [description]
 	 */
 	private function assign_memberships( $rule_type, $item, $memberships ) {
-		$base = MS_Model_Membership::get_base_membership();
+		$base = MS_Model_Membership::get_base();
 		$rule = $base->get_rule( $rule_type );
 
 		$memberships = apply_filters(

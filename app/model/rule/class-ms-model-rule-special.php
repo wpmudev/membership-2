@@ -128,7 +128,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$has_access = false;
 
 				if ( $this->check_current_page( $this->rule_value ) ) {
-					if ( ! $this->get_membership()->is_special( 'base' ) ) {
+					if ( ! $this->get_membership()->is_base() ) {
 						$has_access = true;
 					}
 				}
@@ -156,7 +156,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
 				$this->_has_rule = false;
 			} else {
-				$base = $this->get_membership()->get_base_membership();
+				$base = $this->get_membership()->get_base();
 				$base_rule = $base->get_rule( $this->rule_type );
 				$this->_has_rule = $this->check_current_page( $base_rule->rule_value );
 			}
@@ -235,7 +235,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 				$home_url = $front_url;
 			}
 
-			$show_all = $this->get_membership()->is_special( 'base' );
+			$show_all = $this->get_membership()->is_base();
 
 			$arch_year = get_year_link( '' );
 			$arch_month = get_month_link( '', '' );
@@ -300,7 +300,7 @@ class MS_Model_Rule_Special extends MS_Model_Rule {
 			);
 
 			if ( ! $show_all ) {
-				$base = MS_Model_Membership::get_base_membership();
+				$base = MS_Model_Membership::get_base();
 				$base_rule = $base->get_rule( $this->rule_type );
 				$base_values = $base_rule->rule_value;
 

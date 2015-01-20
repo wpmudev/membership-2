@@ -391,7 +391,7 @@ class MS_Model_Relationship extends MS_Model_Custom_Post_Type {
 			&& ! MS_Model_Member::is_admin_user( $this->user_id )
 		) {
 			$membership = $this->get_membership();
-			if ( ! $membership->is_special() ) {
+			if ( ! $membership->is_system() ) {
 				parent::save();
 			}
 		}
@@ -1022,22 +1022,21 @@ class MS_Model_Relationship extends MS_Model_Custom_Post_Type {
 	/**
 	 * Returns true if the related membership is the base-membership.
 	 *
-	 * @since  1.0.4.5
-	 * @deprecated since 1.1.0, replaced by is_special().
+	 * @since  1.1.0
 	 * @return bool
 	 */
-	public function is_visitor_membership() {
-		return $this->get_membership()->is_visitor_membership();
+	public function is_base() {
+		return $this->get_membership()->is_base();
 	}
 
 	/**
-	 * Returns true if the related membership is the base-membership.
+	 * Returns true if the related membership is the guest-membership.
 	 *
 	 * @since  1.1.0
 	 * @return bool
 	 */
-	public function is_special( $type = null ) {
-		return $this->get_membership()->is_special( $type );
+	public function is_guest() {
+		return $this->get_membership()->is_guest();
 	}
 
 	/**

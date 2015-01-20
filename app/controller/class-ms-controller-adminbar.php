@@ -276,7 +276,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		$current = null;
 
 		// The ID of the main protected-content.
-		$base_id = MS_Model_Membership::get_base_membership()->id;
+		$base_id = MS_Model_Membership::get_base()->id;
 
 		foreach ( $this->memberships as $membership ) {
 			// Create nonce fields

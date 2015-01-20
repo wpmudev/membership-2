@@ -217,7 +217,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 			$this->rule_value = WDev()->get_array( $rule_value );
 
 			// If not visitor membership, just show protected content
-			if ( ! $this->get_membership()->is_special( 'base' ) ) {
+			if ( ! $this->get_membership()->is_base() ) {
 				$this->_content_array = array_intersect_key(
 					$this->_content_array,
 					$this->rule_value
@@ -243,7 +243,7 @@ class MS_Model_Rule_Membercaps extends MS_Model_Rule {
 		}
 
 		// If not visitor membership, just show protected content
-		if ( ! $this->get_membership()->is_special( 'base' ) ) {
+		if ( ! $this->get_membership()->is_base() ) {
 			$keys = $this->rule_value;
 			if ( isset( $args['rule_status'] ) ) {
 				switch ( $args['rule_status'] ) {

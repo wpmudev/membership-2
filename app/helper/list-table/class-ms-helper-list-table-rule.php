@@ -140,7 +140,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			'no_access' => __( 'Remove access', MS_TEXT_DOMAIN ),
 		);
 
-		if ( $this->membership->is_special( 'base' ) ) {
+		if ( $this->membership->is_base() ) {
 			$bulk_actions = array(
 				'give_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
 				'no_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),

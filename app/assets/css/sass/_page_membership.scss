@@ -4,168 +4,163 @@
 
 /* Page: Create new Membership */
 .ms-wrap {
-	.ms-type-wrapper {
-		position: relative;
-		margin-bottom: 20px;
-	}
+	.ms-membership-add {
 
-	.ms-name-wrapper,
-	.ms-private-wrapper {
-		float: left;
-		width: 50%;
-		min-height: 7em;
-		max-width: 880px;
+		.ms-type-wrapper {
+			position: relative;
+			margin-bottom: 20px;
+		}
+
 
 		&.disabled * {
 			color: #999;
 			opacity: .7;
 			cursor: default;
 		}
-	}
 
-	.ms-control-fields-wrapper {
-		clear: both;
-	}
+		.ms-settings-type {
+			max-width: 1200px;
+			margin: 1em auto 0;
 
-	.ms-settings-type {
-		max-width: 1200px;
-		margin: 1em auto 0;
-
-		.wpmui-input-name {
-			font-size: 13px;
-			padding: 5px 10px;
-		}
-	}
-
-	.wrapper-type {
-		margin-left: 10px;
-	}
-
-	.ms-choose-type.wpmui-radio-input-wrapper {
-		position: relative;
-		float: left;
-
-		margin: 1em 0 0;
-		padding: 0 40px 0 0;
-		width: 25%;
-		min-width: 250px;
-		max-width: 440px;
-
-		background-color: transparent;
-		outline: none;
-
-		&:before {
-			content: '';
-			position: absolute;
-			left: -10px;
-			top: 0;
-			right: 30px;
-			bottom: 0;
-			background: #fdfdfd;
-			box-shadow: 0 0 0 1px #EEE;
-		}
-
-		&:hover:before {
-			background: #fbfbfb;
-			box-shadow: 0 0 0 1px #CCC;
-		}
-
-		&.active:before,
-		&.active:hover:before {
-			background: #f7fcfe;
-			box-shadow: 0 0 0 2px #2ea2cc;
-		}
-
-		.wpmui-radio {
-			opacity: 0;
-		}
-
-		.wpmui-radio-caption {
-			padding: 6px 0 !important;
-			text-align: center;
-			border-bottom: 1px solid #EEE;
-		}
-
-		label {
-			padding-top: 80px;
-			height: 300px;
-
-			&:before {
-				display: inline-block;
-				position: absolute;
-				content: '';
-
-				left: 50%;
-				top: 10px;
-				width: 100px;
-				height: 80px;
-				margin-left: -50px;
-
-				background: url(../images/membership_sprite.png);
-				background: url(../images/membership_sprite.svg), none;
+			.wpmui-input-name {
+				font-size: 13px;
+				padding: 5px 10px;
 			}
 		}
 
-		&.wpmui-simple label:before {
-			background-position: 0 -30px;
+		.wrapper-type {
+			margin-left: 10px;
 		}
 
-		&.wpmui-dripped label:before {
-			background-position: -300px -20px;
+		.ms-choose-type.wpmui-radio-input-wrapper {
+			position: relative;
+			float: left;
+
+			margin: 1em 0 0;
+			padding: 0 40px 0 0;
+			width: 25%;
+			min-width: 250px;
+			max-width: 440px;
+
+			background-color: transparent;
+			outline: none;
+
+			&:before {
+				content: '';
+				position: absolute;
+				left: -10px;
+				top: 0;
+				right: 30px;
+				bottom: 0;
+				background: #fdfdfd;
+				box-shadow: 0 0 0 1px #EEE;
+			}
+
+			&:hover:before {
+				background: #fbfbfb;
+				box-shadow: 0 0 0 1px #CCC;
+			}
+
+			&.active:before,
+			&.active:hover:before {
+				background: #f7fcfe;
+				box-shadow: 0 0 0 2px #2ea2cc;
+			}
+
+			.wpmui-radio {
+				opacity: 0;
+			}
+
+			.wpmui-radio-caption {
+				padding: 6px 0 !important;
+				text-align: center;
+			}
+
+			label {
+				padding-top: 80px;
+				height: 300px;
+
+				&:before {
+					display: inline-block;
+					position: absolute;
+					content: '';
+
+					left: 50%;
+					top: 10px;
+					width: 100px;
+					height: 80px;
+					margin-left: -50px;
+
+					background: url(../images/membership_sprite.png);
+					background: url(../images/membership_sprite.svg), none;
+				}
+			}
+
+			&.wpmui-simple label:before {
+				background-position: 0 -30px;
+			}
+
+			&.wpmui-dripped label:before {
+				background-position: -300px -20px;
+			}
+
+			&.wpmui-guest label:before {
+				background-position: -100px -20px;
+			}
+
+			.wpmui-radio-caption {
+				margin-bottom: 1em;
+				font-weight: 600;
+				color: #222;
+			}
+
+			.wpmui-input-description {
+				color: #666;
+				font-weight: 200;
+			}
 		}
 
-		.wpmui-radio-caption {
-			margin-bottom: 1em;
-			font-weight: 600;
-			color: #222;
-		}
-
-		.wpmui-input-description {
-			color: #666;
-			font-weight: 200;
-		}
-	}
-
-	.ms-locked {
-		position: relative;
-		cursor: not-allowed;
-
-		.wpmui-field-label {
+		.ms-locked {
+			position: relative;
 			cursor: not-allowed;
-		}
 
-		.wpmui-field-label:before,
-		.wpmui-radio-caption {
-			opacity: 0.45;
-			cursor: not-allowed;
-		}
+			.wpmui-field-label {
+				cursor: not-allowed;
+			}
 
-		.wpmui-input-description {
-			color: #CCC !important;
-			cursor: not-allowed;
-		}
+			.wpmui-field-label:before,
+			.wpmui-radio-caption {
+				opacity: 0.45;
+				cursor: not-allowed;
+			}
 
-		.locked-info {
-			position: absolute;
-			background: #333;
-			color: #EEE;
-			top: 20px;
-			left: 50%;
-			width: 200px;
-			margin-left: -100px;
-			text-align: center;
-			padding: 5px;
-			font-style: normal;
-			font-size: 12px;
-			box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.35);
-		}
+			.wpmui-input-description {
+				color: #CCC !important;
+				cursor: not-allowed;
+			}
 
-		&.ms-choose-type.wpmui-radio-input-wrapper:before {
-			opacity: 0.35;
-		}
+			.locked-info {
+				position: absolute;
+				background: #333;
+				color: #EEE;
+				top: 20px;
+				left: 50%;
+				width: 200px;
+				margin-left: -100px;
+				text-align: center;
+				padding: 5px;
+				font-style: normal;
+				font-size: 12px;
+				box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.35);
+			}
 
-		&:hover .locked-info {
-			display: inline-block !important;
+			&.ms-choose-type.wpmui-radio-input-wrapper:before {
+				opacity: 0.35;
+			}
+
+			&:hover .locked-info {
+				display: inline-block !important;
+			}
 		}
 	}
 }

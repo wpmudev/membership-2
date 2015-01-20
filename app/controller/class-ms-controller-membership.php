@@ -178,7 +178,7 @@ class MS_Controller_Membership extends MS_Controller {
 			if ( ! empty( $_REQUEST['membership_id'] ) ) {
 				$membership_id = absint( $_REQUEST['membership_id'] );
 			} elseif ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] === 'protected-content-setup' ) {
-				$membership_id = MS_Model_Membership::get_base_membership()->id;
+				$membership_id = MS_Model_Membership::get_base()->id;
 			}
 
 			$this->model = MS_Factory::load(
@@ -237,8 +237,12 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $save_data['action'] );
 
 				if ( isset( $_POST['set_private_flag'] ) ) {
-					WDev()->load_post_fields( 'private' );
-					$save_data['private'] = WDev()->is_true( $_POST['private'] );
+					WDev()->load_post_fields( 'public' );
+					$save_data['public'] = ! WDev()->is_true( $_POST['public'] );
+				}
+				if ( isset( $_POST['set_paid_flag'] ) ) {
+					WDev()->load_post_fields( 'paid' );
+					$save_data['is_free'] = ! WDev()->is_true( $_POST['paid'] );
 				}
 
 				$msg = $this->save_membership( $save_data );
@@ -395,7 +399,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['show_next_button'] = MS_Plugin::is_wizard();
 		$data['settings'] = MS_Plugin::instance()->settings;
 
-		$data['membership'] = MS_Model_Membership::get_base_membership();
+		$data['membership'] = MS_Model_Membership::get_base();
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
@@ -506,7 +510,7 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 
 			default:
-			case MS_Model_Membership::TYPE_SIMPLE:
+			case MS_Model_Membership::TYPE_STANDARD:
 				$view = MS_Factory::create( 'MS_View_Membership_Overview_Simple' );
 				break;
 		}
@@ -741,7 +745,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function get_protection_tabs() {
 		$membership = $this->load_membership();
 		$membership_id = $membership->id;
-		$is_base = $membership->is_special( 'base' );
+		$is_base = $membership->is_base();
 
 		// First create a list including all possible tabs.
 
@@ -884,7 +888,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function get_accessible_content_tabs() {
 		$membership_id = $this->load_membership()->id;
 		$tabs = $this->get_protection_tabs();
-		$protected_content = MS_Model_Membership::get_base_membership();
+		$protected_content = MS_Model_Membership::get_base();
 
 		$step = $this->get_step();
 		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );

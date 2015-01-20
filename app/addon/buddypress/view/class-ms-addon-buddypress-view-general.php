@@ -25,7 +25,7 @@ class MS_Addon_Buddypress_View_General extends MS_View {
 		);
 
 		$title = __( 'BuddyPress', MS_TEXT_DOMAIN );
-		if ( $membership->is_visitor_membership() ) {
+		if ( $membership->is_base() ) {
 			$desc = __( 'Protect the following BuddyPress content. ', MS_TEXT_DOMAIN );
 		} else {
 			$desc = sprintf(
@@ -45,7 +45,7 @@ class MS_Addon_Buddypress_View_General extends MS_View {
 			<form action="" method="post">
 				<?php $rule_list_table->display(); ?>
 			</form>
-			<?php if ( ! $membership->is_visitor_membership() ) : ?>
+			<?php if ( ! $membership->is_base() ) : ?>
 				<div class="ms-protection-edit-link">
 					<?php MS_Helper_Html::html_element( $edit_link ); ?>
 				</div>

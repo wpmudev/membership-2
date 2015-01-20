@@ -2,13 +2,11 @@
 
 class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Simple {
 
-	protected $data;
-
 	public function available_content_panel_data() {
-		$available = array();_
+		$available = array();
 		$soon = array();
 		$membership = $this->data['membership'];
-		$protected_content = MS_Model_Membership::get_base_membership();
+		$protected_content = MS_Model_Membership::get_base();
 		$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
 
 		foreach ( $rule_types as $rule_type ) {

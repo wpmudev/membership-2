@@ -168,7 +168,7 @@ class MS_Model_Rule_Custom_Post_Type_Group extends MS_Model_Rule {
 		$cpts = self::get_custom_post_types();
 		$contents = array();
 
-		$is_base = $this->get_membership()->is_special( 'base' );
+		$is_base = $this->get_membership()->is_base();
 
 		foreach ( $cpts as $key => $content ) {
 			if ( ! $is_base && ! $this->has_rule( $key ) ) {
