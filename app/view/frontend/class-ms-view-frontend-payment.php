@@ -97,7 +97,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					</tr>
 				<?php endif; ?>
 
-				<?php if ( $membership->has_payment() ) : ?>
+				<?php if ( ! $membership->is_free() ) : ?>
 					<?php if ( $invoice->discount || $invoice->pro_rate ) : ?>
 					<tr>
 						<td class="ms-title-column">

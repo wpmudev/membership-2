@@ -48,7 +48,6 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
 			'members' => __( 'Members', MS_TEXT_DOMAIN ),
 			'price' => __( 'Cost', MS_TEXT_DOMAIN ),
-			'payment_structure' => __( 'Payment Structure', MS_TEXT_DOMAIN ),
 			'shortcode' => __( 'Membership Shortcode', MS_TEXT_DOMAIN ),
 		);
 
@@ -210,35 +209,16 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		return $html;
 	}
 
-	public function column_payment_structure( $item, $column_name ) {
-		$html = '';
-
-		if ( ! $item->is_special() ) {
-			if ( $item->has_payment() ) {
-				$class = 'ms-bold';
-			} else {
-				$class = 'ms-low';
-			}
-
-			$html = sprintf(
-				'<span class="%1$s">%2$s</span>',
-				esc_attr( $class ),
-				$item->get_payment_type_desc()
-			);
-		}
-
-		return $html;
-	}
-
 	public function column_price( $item, $column_name ) {
 		$html = '';
 
 		if ( ! $item->is_special() ) {
 			if ( ! $item->is_free() ) {
 				$html = sprintf(
-					'<span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span>',
+					'<span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span> (<span class="ms-payment">%3$s</span>)',
 					MS_Plugin::instance()->settings->currency_symbol,
-					number_format_i18n( $item->price, 2 )
+					number_format_i18n( $item->price, 2 ),
+					$item->get_payment_type_desc()
 				);
 				$html = '<span class="ms-bold">' . $html . '</span>';
 			} else {

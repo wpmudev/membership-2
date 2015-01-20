@@ -474,17 +474,6 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	}
 
 	/**
-	 * Information if payment information are defined for this membership.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @return bool True if payment information are available.
-	 */
-	public function has_payment() {
-		return ! $this->is_free();
-	}
-
-	/**
 	 * Get protection Rule Model.
 	 *
 	 * @since 1.0.0
