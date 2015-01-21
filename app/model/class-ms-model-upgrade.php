@@ -66,6 +66,8 @@ class MS_Model_Upgrade extends MS_Model {
 		// Compare current src version to DB version
 		$version_changed = version_compare( $old_version, $new_version, '!=' );
 
+		self::maybe_reset();
+
 		if ( $force || $version_changed ) {
 			$Done = true;
 			$msg = array();
@@ -210,7 +212,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 */
-	private static function cleanup_db() {
+	static private function cleanup_db() {
 		global $wpdb;
 		$sql = array();
 
@@ -266,8 +268,88 @@ class MS_Model_Upgrade extends MS_Model {
 			$wpdb->query( $s );
 		}
 
-		// Clear all data from WP Object cache
+		// Clear all data from WP Object cache.
 		wp_cache_flush();
+
+		// Redirect to the main page.
+		wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
+		exit;
+	}
+
+	/**
+	 * Returns a secure token to trigger db-cleanup (wipe all settings!)
+	 *
+	 * - Only one token is valid at any given time.
+	 * - Each token has a timeout of max. 120 seconds.
+	 * - Each token can be used once only.
+	 *
+	 * @since  1.1.0
+	 * @return array Intended usage: add_query_param( $token, $url )
+	 */
+	static public function get_reset_token() {
+		if ( ! is_user_logged_in() ) { return array(); }
+		if ( ! is_admin() ) { return array(); }
+
+		$one_time_key = uniqid();
+		set_transient( 'ms_one_time_key-reset', $one_time_key, 120 );
+
+		// Token is valid for 86 seconds because of usage of date('B')
+		$plain = 'reset-' . date( 'B' ) . ':' . get_current_user_id() . '-' . $one_time_key;
+		$token = array( 'reset_token' => wp_create_nonce( $plain ) );
+		return $token;
+	}
+
+	/**
+	 * Verfies the reset token in the $_GET collection
+	 *
+	 * $_GET['reset_token'] must match the current reset_token
+	 * $_POST['confirm'] must have value 'reset'
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static private function verify_reset_token() {
+		if ( ! is_user_logged_in() ) { return false; }
+		if ( ! is_admin() ) { return false; }
+
+		if ( ! isset( $_GET['reset_token'] ) ) { return false; }
+		$get_token = $_GET['reset_token'];
+
+		if ( ! isset( $_POST['confirm'] ) ) { return false; }
+		if ( 'reset' != $_POST['confirm'] ) { return false; }
+
+		$one_time_key = get_transient( 'ms_one_time_key-reset' );
+		delete_transient( 'ms_one_time_key-reset' );
+		if ( empty( $one_time_key ) ) { return false; }
+
+		// We verify the current and the previous beat
+		$plain_token_1 = 'reset-' . date( 'B' ) . ':' . get_current_user_id() . '-' . $one_time_key;
+		$plain_token_2 = 'reset-' . ( date( 'B' ) - 1 ) . ':' . get_current_user_id() . '-' . $one_time_key;
+
+		if ( wp_verify_nonce( $get_token, $plain_token_1 ) ) { return true; }
+		if ( wp_verify_nonce( $get_token, $plain_token_2 ) ) { return true; }
+
+		return false;
+	}
+
+	/**
+	 * Checks if valid reset-instructions are present. If yes, then whipe the
+	 * plugin settings.
+	 *
+	 * @since  1.1.0
+	 */
+	static private function maybe_reset() {
+		static $Done = false;
+
+		if ( ! $Done ) {
+			$Done = true;
+			if ( self::verify_reset_token() ) {
+				self::cleanup_db();
+				WDev()->message( 'Your Protected Content data was reset!' );
+				wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
+				exit;
+			}
+		}
 	}
 
 };

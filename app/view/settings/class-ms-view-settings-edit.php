@@ -51,6 +51,33 @@ class MS_View_Settings_Edit extends MS_View {
 	public function to_html() {
 		// Setup navigation tabs.
 		$tabs = $this->data['tabs'];
+		$desc = array();
+
+		// A "Reset" button that can be added via URL param
+		// Intentionally not translated (purpose is dev/testing)
+		if ( isset( $_GET['reset'] ) ) {
+			$reset_url = admin_url( 'admin.php?page=protected-content-settings&reset=1' );
+			$reset_url = add_query_arg(
+				MS_Model_Upgrade::get_reset_token(),
+				$reset_url
+			);
+			$cancel_url = remove_query_arg( 'reset' );
+			$desc[] = sprintf(
+				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
+				'Careful: This will completely erase all your Protected Content settings and details!',
+				sprintf(
+					'<form method="POST" action="%s" style="padding:20px 0">' .
+					'<label style="line-height:28px">' .
+					'<input type="checkbox" name="confirm" value="reset" /> Yes, reset everything!' .
+					'</label><p>' .
+					'<button class="button-primary">Do it!</button> ' .
+					'<a href="%s" class="button">Cancel</a>' .
+					'</p></form>',
+					$reset_url,
+					$cancel_url
+				)
+			);
+		}
 
 		ob_start();
 		// Render tabbed interface.
@@ -61,6 +88,7 @@ class MS_View_Settings_Edit extends MS_View {
 				array(
 					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
 					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
+					'desc' => $desc,
 				)
 			);
 			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
