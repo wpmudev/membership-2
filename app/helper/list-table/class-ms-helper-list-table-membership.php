@@ -122,19 +122,17 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function column_name( $item ) {
 		$actions = array();
-		$is_guest = $item->is_guest();
+		$badge = '';
 
-		$name = $item->name;
+		$actions['overview'] = sprintf(
+			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s">%4$s</a>',
+			esc_attr( $_REQUEST['page'] ),
+			MS_Controller_Membership::STEP_OVERVIEW,
+			esc_attr( $item->id ),
+			__( 'Overview', MS_TEXT_DOMAIN )
+		);
 
-		if ( ! $is_guest ) {
-			$actions['overview'] = sprintf(
-				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s">%4$s</a>',
-				esc_attr( $_REQUEST['page'] ),
-				MS_Controller_Membership::STEP_OVERVIEW,
-				esc_attr( $item->id ),
-				__( 'Overview', MS_TEXT_DOMAIN )
-			);
-
+		if ( ! $item->is_free ) {
 			$actions['payment'] = sprintf(
 				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
 				esc_attr( $_REQUEST['page'] ),
@@ -142,7 +140,6 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 				esc_attr( $item->id ),
 				__( 'Payment options', MS_TEXT_DOMAIN )
 			);
-
 		}
 
 		$actions['delete'] = sprintf(
@@ -165,10 +162,18 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			$item
 		);
 
+		if ( $item->is_guest() ) {
+			$badge = sprintf(
+				'<span class="ms-guest-badge">%s</span>',
+				__( 'Guest', MS_TEXT_DOMAIN )
+			);
+		}
+
 		return sprintf(
-			'<span class="the-name">%1$s</span> %2$s',
-			esc_html( $name ),
-			$this->row_actions( $actions )
+			'<span class="the-name">%1$s</span> %3$s%2$s',
+			esc_html( $item->name ),
+			$this->row_actions( $actions ),
+			$badge
 		);
 	}
 
