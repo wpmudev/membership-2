@@ -94,7 +94,7 @@ class MS_View_Welcome extends MS_View {
 		$fields['step'] = array(
 			'id' => 'step',
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => MS_Controller_Membership::STEP_CHOOSE_MS_TYPE,
+			'value' => MS_Controller_Membership::STEP_ADD_NEW,
 		);
 
 		return $fields;

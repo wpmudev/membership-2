@@ -647,7 +647,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		$args = wp_parse_args( $args, $defaults );
 
 		if ( ! WDev()->is_true( $args['include_base'] ) ) {
-			$args['meta_query']['visitor'] = array(
+			$args['meta_query']['base'] = array(
 				'key'     => 'type',
 				'value'   => self::TYPE_BASE,
 				'compare' => '!=',
@@ -706,7 +706,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	 *		@type string $name The membership name;
 	 * }
 	 */
-	public static function get_membership_names( $args = null, $include_base_memberships = true ) {
+	public static function get_membership_names( $args = null, $include_base_memberships = false ) {
 		if ( ! is_array( $args ) ) { $args = array(); }
 		$args['order'] = 'ASC';
 		$args['include_base'] = $include_base_memberships;

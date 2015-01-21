@@ -1826,6 +1826,10 @@
   font-weight: bold;
   font-size: 15px;
 }
+.wpmui-wnd .ms-setup-form .wpmui-radio-slider-wrapper,
+#wpwrap .ms-wrap .ms-setup-form .wpmui-radio-slider-wrapper {
+  clear: none;
+}
 .wpmui-wnd .ms-setup-form .ms-icon,
 #wpwrap .ms-wrap .ms-setup-form .ms-icon {
   opacity: .35;
@@ -1840,21 +1844,13 @@
   color: #000;
   font-weight: bold;
 }
-.wpmui-wnd .ms-setup-form .nav_memberships-wrapper,
-.wpmui-wnd .ms-setup-form .nav_register-wrapper,
-.wpmui-wnd .ms-setup-form .nav_account-wrapper,
-#wpwrap .ms-wrap .ms-setup-form .nav_memberships-wrapper,
-#wpwrap .ms-wrap .ms-setup-form .nav_register-wrapper,
-#wpwrap .ms-wrap .ms-setup-form .nav_account-wrapper {
+.wpmui-wnd .ms-setup-form .ms-setup-nav .wpmui-radio-slider-wrapper,
+#wpwrap .ms-wrap .ms-setup-form .ms-setup-nav .wpmui-radio-slider-wrapper {
   display: inline-block;
   width: auto;
 }
-.wpmui-wnd .ms-setup-form .nav_memberships-wrapper .wpmui-field-label,
-.wpmui-wnd .ms-setup-form .nav_register-wrapper .wpmui-field-label,
-.wpmui-wnd .ms-setup-form .nav_account-wrapper .wpmui-field-label,
-#wpwrap .ms-wrap .ms-setup-form .nav_memberships-wrapper .wpmui-field-label,
-#wpwrap .ms-wrap .ms-setup-form .nav_register-wrapper .wpmui-field-label,
-#wpwrap .ms-wrap .ms-setup-form .nav_account-wrapper .wpmui-field-label {
+.wpmui-wnd .ms-setup-form .ms-setup-nav .wpmui-radio-slider-wrapper .wpmui-field-label,
+#wpwrap .ms-wrap .ms-setup-form .ms-setup-nav .wpmui-radio-slider-wrapper .wpmui-field-label {
   float: right;
   width: auto;
   margin-left: 5px;

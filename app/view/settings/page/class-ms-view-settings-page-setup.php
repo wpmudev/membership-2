@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_View_Settings_Setup extends MS_View {
+class MS_View_Settings_Page_Setup extends MS_View {
 
 	/**
 	 * Displays the settings form.
@@ -44,97 +44,101 @@ class MS_View_Settings_Setup extends MS_View {
 
 		?>
 		<div class="ms-setup-form">
-			<div class="ms-title">
-				<i class="ms-icon dashicons dashicons-menu"></i>
-				<?php _e( 'Please select pages you want to appear in your Navigation:', MS_TEXT_DOMAIN ); ?>
-			</div>
-			<div class="ms-description">
+			<div class="ms-setup-nav">
+				<div class="ms-title">
+					<i class="ms-icon dashicons dashicons-menu"></i>
+					<?php _e( 'Please select pages you want to appear in your Navigation:', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<div class="ms-description">
+					<?php
+					printf(
+						__( 'You can always change those later by going to %1$s in your admin sidebar.', MS_TEXT_DOMAIN ),
+						sprintf(
+							'<a href="%1$s" target="_blank">%2$s</a>',
+							admin_url( 'nav-menus.php' ),
+							__( 'Appearance' ) . ' &raquo; ' . __( 'Menus' )
+						)
+					);
+					?>
+				</div>
 				<?php
-				printf(
-					__( 'You can always change those later by going to %1$s in your admin sidebar.', MS_TEXT_DOMAIN ),
-					sprintf(
-						'<a href="%1$s" target="_blank">%2$s</a>',
-						admin_url( 'nav-menus.php' ),
-						__( 'Appearance' ) . ' &raquo; ' . __( 'Menus' )
-					)
-				);
+
+				foreach ( $fields['nav'] as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
+
 				?>
 			</div>
-			<?php
+			<div class="ms-setup-pages">
+				<div class="ms-title">
+					<i class="ms-icon dashicons dashicons-admin-page"></i>
+					<?php _e( 'Protected Content Site Pages', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<div class="ms-description">
+					<?php _e( 'Set Up Protected Content Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<?php
 
-			foreach ( $fields['nav'] as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
+				$page_types = array_keys( $fields['pages'] );
+				$page_types_menu = array(
+					'memberships',
+					'register',
+					'account',
+				);
+				$page_types_rest = array_diff( $page_types, $page_types_menu );
+				$groups = array(
+					'in-menu' => $page_types_menu,
+					'no-menu' => $page_types_rest,
+				);
 
-			?>
-			<div class="ms-title">
-				<i class="ms-icon dashicons dashicons-admin-page"></i>
-				<?php _e( 'Protected Content Site Pages', MS_TEXT_DOMAIN ); ?>
-			</div>
-			<div class="ms-description">
-				<?php _e( 'Set Up Protected Content Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
-			</div>
-			<?php
+				foreach ( $groups as $group_key => $group_items ) :
+					printf( '<div class="ms-pages-group %1$s">', esc_attr( $group_key ) );
 
-			$page_types = array_keys( $fields['pages'] );
-			$page_types_menu = array(
-				'memberships',
-				'register',
-				'account',
-			);
-			$page_types_rest = array_diff( $page_types, $page_types_menu );
-			$groups = array(
-				'in-menu' => $page_types_menu,
-				'no-menu' => $page_types_rest,
-			);
-
-			foreach ( $groups as $group_key => $group_items ) :
-				printf( '<div class="ms-pages-group %1$s">', esc_attr( $group_key ) );
-
-				foreach ( $group_items as $key ) :
-					$field = $fields['pages'][$key];
-					?>
-					<div class="ms-settings-page-wrapper">
-						<?php MS_Helper_Html::html_element( $field ); ?>
-						<div class="ms-action">
-							<?php
-							MS_Helper_Html::html_link(
-								array(
-									'id' => 'url_page_' . $field['value'],
-									'url' => '',
-									'value' => __( 'View Page', MS_TEXT_DOMAIN ),
-									'target' => '_blank',
-									'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
-								)
-							);
-							?>
-							<span> | </span>
-							<?php
-							MS_Helper_Html::html_link(
-								array(
-									'id' => 'edit_url_page_' . $field['value'],
-									'url' => '',
-									'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
-									'target' => '_blank',
-									'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
-								)
-							);
-							?>
+					foreach ( $group_items as $key ) :
+						$field = $fields['pages'][$key];
+						?>
+						<div class="ms-settings-page-wrapper">
+							<?php MS_Helper_Html::html_element( $field ); ?>
+							<div class="ms-action">
+								<?php
+								MS_Helper_Html::html_link(
+									array(
+										'id' => 'url_page_' . $field['value'],
+										'url' => '',
+										'value' => __( 'View Page', MS_TEXT_DOMAIN ),
+										'target' => '_blank',
+										'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
+									)
+								);
+								?>
+								<span> | </span>
+								<?php
+								MS_Helper_Html::html_link(
+									array(
+										'id' => 'edit_url_page_' . $field['value'],
+										'url' => '',
+										'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
+										'target' => '_blank',
+										'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
+									)
+								);
+								?>
+							</div>
 						</div>
-					</div>
-					<?php
-				endforeach;
+						<?php
+					endforeach;
 
-				echo '</div>';
-			endforeach;
-			?>
+					echo '</div>';
+				endforeach;
+				?>
+			</div>
 		</div>
 		<?php
 
 		$html = ob_get_clean();
 
 		return apply_filters(
-			'ms_view_settings_setup_to_html',
+			'ms_view_settings_page_setup_to_html',
 			$html
 		);
 	}

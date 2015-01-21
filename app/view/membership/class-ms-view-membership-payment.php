@@ -86,7 +86,7 @@ class MS_View_Membership_Payment extends MS_View {
 			return;
 		}
 
-		$view = MS_Factory::create( 'MS_View_Settings_Payment' );
+		$view = MS_Factory::create( 'MS_View_Settings_Page_Payment' );
 
 		echo '<div class="ms-half space">';
 		$view->render();

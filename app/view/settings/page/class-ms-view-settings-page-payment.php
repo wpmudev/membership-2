@@ -1,38 +1,6 @@
 <?php
-/**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
 
-/**
- * View that displays the payment gateways and offers configuration options.
- *
- * This view is used in "Settings > Payments" and also in "Membership > Payment"
- * when the user creates the first membership (i.e. the global payment options)
- *
- * @uses MS_Helper_Html Helper used to create various form elements.
- *
- * @since   1.0
- *
- * @return  object
- */
-class MS_View_Settings_Payment extends MS_View {
+class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 
 	/**
 	 * Overrides parent's to_html() method.
@@ -53,6 +21,7 @@ class MS_View_Settings_Payment extends MS_View {
 
 		ob_start();
 		?>
+		<div id="ms-payment-settings-wrapper">
 		<div class="ms-global-payment-wrapper">
 			<div class="ms-list-table-wrapper">
 				<?php
@@ -79,6 +48,7 @@ class MS_View_Settings_Payment extends MS_View {
 			</div>
 
 			<?php MS_Helper_Html::settings_footer( null, false ); ?>
+		</div>
 		</div>
 		<?php
 		$html = ob_get_clean();

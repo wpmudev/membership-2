@@ -155,7 +155,7 @@ class MS_Helper_Membership extends MS_Helper {
 				$settings->is_first_membership = false;
 				$settings->save();
 
-				$setup = MS_Factory::create( 'MS_View_Settings_Setup' );
+				$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
 				$popup['body'] = $setup->to_html();
 				$popup['height'] = 412;
 			}

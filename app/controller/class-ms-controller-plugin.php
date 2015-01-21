@@ -164,7 +164,8 @@ class MS_Controller_Plugin extends MS_Controller {
 					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
 				),
 			);
-			if ( MS_Controller_Membership::STEP_CHOOSE_MS_TYPE == MS_Plugin::instance()->settings->wizard_step ) {
+
+			if ( MS_Controller_Membership::STEP_ADD_NEW == MS_Plugin::instance()->settings->wizard_step ) {
 				$pages['protected-content'] = array(
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),

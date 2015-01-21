@@ -96,7 +96,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 		self::$memberships = MS_Model_Membership::get_membership_names();
 		foreach ( self::$memberships as $id => $name ) {
-			$color = MS_Helper_Utility::color_index( $name );
+			$color = MS_Helper_Utility::color_index( $id );
 			self::$memberships[$id] = (object) array(
 				'label' => $name,
 				'attr' => sprintf( 'data-color="%1$s"', $color ),

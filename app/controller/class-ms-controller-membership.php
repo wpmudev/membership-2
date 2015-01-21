@@ -282,7 +282,8 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 
 					if ( $is_wizard ) {
-						$this->wizard_tracker( $next_step );
+						// End the wizard!
+						$this->wizard_tracker( $next_step, true );
 					}
 					break;
 
@@ -674,7 +675,6 @@ class MS_Controller_Membership extends MS_Controller {
 				array(
 					self::STEP_WELCOME_SCREEN,
 					self::STEP_ADD_NEW,
-					self::STEP_PROTECTED_CONTENT,
 				)
 			);
 
