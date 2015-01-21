@@ -122,7 +122,6 @@ class MS_View_Membership_Add extends MS_View {
 			),
 
 			'control_fields' => array(
-
 					'membership_id' => array(
 						'id' => 'membership_id',
 						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,

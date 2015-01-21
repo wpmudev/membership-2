@@ -226,48 +226,48 @@
 			position: absolute;
 			bottom: -60px;
 		}
-
 	}
 }
 
 /* Page: Payment options */
-.ms-wrap {
-	.wrapper-is_free {
-		max-width: 400px;
-		display: block;
+#wpwrap .ms-wrap {
+	.ms-membership-payment {
+		margin: 0 auto;
+		max-width: 800px;
+		overflow: visible;
 
-		.ms-radio-input-wrapper {
-			width: 49.5%;
-			float: left;
+		&.wide {
+			max-width: 1200px;
 		}
 
-		label {
-			float: none;
-			display: inline-block;
-			width: auto;
+		.ms-settings-footer {
+			position: absolute;
+			bottom: -60px;
 		}
-	}
 
-	.widefat {
 		th.column-active,
 		td.column-active {
 			width: 135px;
 			text-align: center;
 		}
-	}
 
-	.ms-global-payment-wrapper {
-		.wpmui-field-input {
-			width: 100%;
+		.ms-global-payment-wrapper {
+			.wpmui-field-input {
+				width: 100%;
+			}
 		}
-	}
 
-	.ms-item-name {
-		color: #4F7984;
-	}
+		.ms-item-name {
+			color: #4F7984;
+		}
 
-	.ms-trial-wrapper {
-		margin-top: 15px;
+		.ms-trial-wrapper {
+			margin-top: 15px;
+		}
+
+		.ms-global-payment-wrapper .ms-header .wpmui-separator {
+			display: none;
+		}
 	}
 }
 

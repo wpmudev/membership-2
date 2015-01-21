@@ -20,15 +20,6 @@
 		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
 	}
 
-	.ms-wrapper-center {
-		max-width: 800px;
-		margin: 0 auto;
-
-		&.wide {
-			max-width: 1200px;
-		}
-	}
-
 	.ms-part-4, /* same as .ms-quarter */
 	.ms-part-3, /* same as .ms-third */
 	.ms-part-2, /* same as .ms-half */

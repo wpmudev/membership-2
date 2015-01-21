@@ -269,7 +269,10 @@ class MS_Controller_Membership extends MS_Controller {
 				case self::STEP_ADD_NEW:
 					// Create Membership: Select the Membership-Type
 
-					$paid = isset( $_POST['set_paid_flag'] ) && isset( $_POST['paid'] );
+					$paid = isset( $_POST['set_paid_flag'] )
+						&& isset( $_POST['paid'] )
+						&& WDev()->is_true( $_POST['paid'] );
+
 					if ( $paid ) {
 						$next_step = self::STEP_PAYMENT;
 					} else {
