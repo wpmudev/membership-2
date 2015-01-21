@@ -4,42 +4,48 @@ class MS_View_Membership_Add extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();
+		$cols = count( $fields['type']['field_options'] );
+
 		?>
-			<div class="ms-wrap">
-				<?php
-				MS_Helper_Html::settings_header(
-					array(
-						'title' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
-						'desc' => __( 'First up, choose a name and a type for your membership site.', MS_TEXT_DOMAIN ),
-					)
-				);
-				?>
-				<div class="ms-settings ms-membership-add">
-					<form action="" method="post" id="ms-choose-type-form">
-						<div class="ms-type-wrapper">
-							<h3><?php _e( 'Choose a membership type:', MS_TEXT_DOMAIN ); ?></h3>
-							<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
-						</div>
-						<div class="ms-name-wrapper">
-							<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
-						</div>
+		<div class="ms-wrap">
+			<?php
+			MS_Helper_Html::settings_header(
+				array(
+					'title' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
+					'desc' => __( 'First up, choose a name and a type for your membership site.', MS_TEXT_DOMAIN ),
+				)
+			);
+			?>
+			<div class="ms-settings ms-membership-add ms-cols-<?php echo esc_attr( $cols ); ?>">
+				<form action="" method="post" id="ms-choose-type-form">
+					<div class="ms-settings-row cf">
+						<h3><?php _e( 'Choose a membership type:', MS_TEXT_DOMAIN ); ?></h3>
+						<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
+					</div>
+					<div class="ms-settings-row cf">
+						<?php MS_Helper_Html::html_element( $fields['name'] ); ?>
+					</div>
+					<div class="ms-settings-row cf">
 						<div class="ms-options-wrapper">
 							<?php
 							foreach ( $fields['config_fields'] as $field ) {
+								echo '<span class="opt">';
 								MS_Helper_Html::html_element( $field );
+								echo '</span>';
 							}
 							?>
 						</div>
-						<div class="ms-control-fields-wrapper">
-							<?php
-							foreach ( $fields['control_fields'] as $field ) {
-								MS_Helper_Html::html_element( $field );
-							}
-							?>
-						</div>
-					</form>
-				</div>
+					</div>
+					<div class="ms-control-fields-wrapper">
+						<?php
+						foreach ( $fields['control_fields'] as $field ) {
+							MS_Helper_Html::html_element( $field );
+						}
+						?>
+					</div>
+				</form>
 			</div>
+		</div>
 		<?php
 	}
 
@@ -71,10 +77,10 @@ class MS_View_Membership_Add extends MS_View {
 			'name' => array(
 				'id' => 'name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Choose a name for your new membership:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Name Your Membership:', MS_TEXT_DOMAIN ),
 				'value' => $membership->name,
 				'class' => 'ms-text-large',
-				'placeholder' => __( 'Choose a good name that will identify this membership...', MS_TEXT_DOMAIN ),
+				'placeholder' => __( 'Choose a name that will identify this membership...', MS_TEXT_DOMAIN ),
 				'label_type' => 'h3',
 			),
 
@@ -83,11 +89,11 @@ class MS_View_Membership_Add extends MS_View {
 					'id' => 'public',
 					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 					'title' => __( 'Allow users to register for this membership.', MS_TEXT_DOMAIN ),
-					'desc' => __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', MS_TEXT_DOMAIN )
-						. sprintf(
-							'<span class="locked-info" style="display:none">%1$s</span>',
-							__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
-						),
+					'desc' => __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', MS_TEXT_DOMAIN ),
+					'after' => sprintf(
+						'<span class="locked-info">%1$s</span>',
+						__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
+					),
 					'value' => ! $membership->private,
 				),
 				'public_flag' => array(
@@ -100,11 +106,11 @@ class MS_View_Membership_Add extends MS_View {
 					'id' => 'paid',
 					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 					'title' => __( 'This is a paid membership.', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Choose this if you want to receive payments from members via Payment Gateways.', MS_TEXT_DOMAIN )
-						. sprintf(
-							'<span class="locked-info" style="display:none">%1$s</span>',
-							__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
-						),
+					'desc' => __( 'Choose this if you want to receive payments from members via Payment Gateways.', MS_TEXT_DOMAIN ),
+					'after' => sprintf(
+						'<span class="locked-info">%1$s</span>',
+						__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
+					),
 					'value' => ! $membership->is_free(),
 				),
 				'paid_flag' => array(
@@ -154,6 +160,11 @@ class MS_View_Membership_Add extends MS_View {
 					),
 			),
 		);
+
+		// Only one Guest Membership can be added
+		if ( MS_Model_Membership::get_guest() ) {
+			unset( $fields['type']['field_options'][MS_Model_Membership::TYPE_GUEST] );
+		}
 
 		// Wizard can only be cancelled when at least one membership exists in DB.
 		$count = MS_Model_Membership::get_membership_count();

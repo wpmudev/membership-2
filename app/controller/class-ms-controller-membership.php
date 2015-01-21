@@ -257,7 +257,6 @@ class MS_Controller_Membership extends MS_Controller {
 					// Display a list of all memberships
 
 					$fields = array( 'action', 'membership_id' );
-
 					if ( self::validate_required( $fields, 'GET' ) ) {
 						$msg = $this->membership_list_do_action(
 							$_GET['action'],
@@ -269,7 +268,9 @@ class MS_Controller_Membership extends MS_Controller {
 
 				case self::STEP_ADD_NEW:
 					// Create Membership: Select the Membership-Type
-					if ( $paid == true ) { // TODO!!
+
+					$paid = isset( $_POST['set_paid_flag'] ) && isset( $_POST['paid'] );
+					if ( $paid ) {
 						$next_step = self::STEP_PAYMENT;
 					} else {
 						$next_step = self::STEP_MS_LIST;

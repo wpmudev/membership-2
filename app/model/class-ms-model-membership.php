@@ -876,10 +876,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	private static function _get_system_membership( $type, $create_missing = true ) {
 		static $Special_Membership = array();
 		$comp_key = $type;
-		$membership = null;
+		$membership = false;
 
 		if ( ! isset( $Special_Membership[$comp_key] ) ) {
-			$membership = null;
+			$membership = false;
 			global $wpdb;
 
 			/*
@@ -1545,13 +1545,20 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 					switch ( $value ) {
 						case self::TYPE_BASE:
 						case self::TYPE_GUEST:
-							$this->active = true;
-							$this->private = true;
-							$this->is_free = true;
-							$this->price = 0;
-							$this->post_name = sanitize_html_class( $this->title );
-							$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
-							$this->post_author = get_current_user_id();
+							// Only one instance of these types can exist.
+							$existing = $this->_get_system_membership( $value, false );
+
+							if ( $existing ) {
+								$value = self::TYPE_STANDARD;
+							} else {
+								$this->active = true;
+								$this->private = true;
+								$this->is_free = true;
+								$this->price = 0;
+								$this->post_name = sanitize_html_class( $this->title );
+								$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
+								$this->post_author = get_current_user_id();
+							}
 							break;
 
 						case self::TYPE_DRIPPED:

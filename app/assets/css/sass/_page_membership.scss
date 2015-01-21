@@ -3,165 +3,230 @@
  */
 
 /* Page: Create new Membership */
-.ms-wrap {
+#wpwrap .ms-wrap {
 	.ms-membership-add {
+		margin: 0 auto;
+		overflow: visible;
 
-		.ms-type-wrapper {
+		.ms-settings-row {
 			position: relative;
-			margin-bottom: 20px;
+			margin: 20px 0;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
 		}
 
-
-		&.disabled * {
+		.disabled * {
 			color: #999;
 			opacity: .7;
 			cursor: default;
 		}
 
-		.ms-settings-type {
-			max-width: 1200px;
-			margin: 1em auto 0;
-
-			.wpmui-input-name {
-				font-size: 13px;
-				padding: 5px 10px;
-			}
+		.wpmui-input-name {
+			font-size: 13px;
+			padding: 5px 10px;
+			width: 100%;
 		}
 
-		.wrapper-type {
-			margin-left: 10px;
-		}
+		.ms-choose-type-wrapper {
+			width: 100%;
 
-		.ms-choose-type.wpmui-radio-input-wrapper {
-			position: relative;
-			float: left;
+			& > .ms-choose-type {
+				position: relative;
+				float: left;
+				margin: 1em 0 0;
+				padding: 0 5px;
 
-			margin: 1em 0 0;
-			padding: 0 40px 0 0;
-			width: 25%;
-			min-width: 250px;
-			max-width: 440px;
-
-			background-color: transparent;
-			outline: none;
-
-			&:before {
-				content: '';
-				position: absolute;
-				left: -10px;
-				top: 0;
-				right: 30px;
-				bottom: 0;
-				background: #fdfdfd;
-				box-shadow: 0 0 0 1px #EEE;
-			}
-
-			&:hover:before {
-				background: #fbfbfb;
-				box-shadow: 0 0 0 1px #CCC;
-			}
-
-			&.active:before,
-			&.active:hover:before {
-				background: #f7fcfe;
-				box-shadow: 0 0 0 2px #2ea2cc;
-			}
-
-			.wpmui-radio {
-				opacity: 0;
-			}
-
-			.wpmui-radio-caption {
-				padding: 6px 0 !important;
-				text-align: center;
-			}
-
-			label {
-				padding-top: 80px;
-				height: 300px;
+				background-color: transparent;
+				outline: none;
 
 				&:before {
-					display: inline-block;
-					position: absolute;
 					content: '';
+					position: absolute;
+					left: 5px;
+					top: 0;
+					right: 5px;
+					bottom: 0;
+					background: transparent;
+					box-shadow: 0 0 0 1px transparent;
+				}
 
-					left: 50%;
-					top: 10px;
-					width: 100px;
-					height: 80px;
-					margin-left: -50px;
+				&:hover:before {
+					background: #fbfbfb;
+					box-shadow: 0 0 0 1px #CCC;
+				}
 
-					background: url(../images/membership_sprite.png);
-					background: url(../images/membership_sprite.svg), none;
+				&.active:before,
+				&.active:hover:before {
+					background: #f7fcfe;
+					box-shadow: 0 0 0 2px #2ea2cc;
+				}
+
+				.wpmui-radio {
+					position: relative;
+					float: left;
+					margin: 12px 10px 0 35px;
+				}
+
+				.wpmui-radio-caption {
+					padding: 10px 0 6px;
+				}
+
+				label {
+					padding: 10px 15px;
+					margin: 0;
+					min-height: 122px;
+
+					&:before {
+						display: inline-block;
+						position: absolute;
+						content: '';
+
+						left: 15px;
+						top: 14px;
+						width: 80px;
+						height: 80px;
+
+						background: url(../images/membership_sprite.png);
+						background: url(../images/membership_sprite.svg), none;
+					}
+				}
+
+				&.wpmui-simple {
+					label:before {
+						background-position: -440px -35px;
+					}
+				}
+
+				&.wpmui-guest {
+					label:before {
+						background-position: -540px -35px;
+					}
+				}
+
+				&.wpmui-dripped {
+					.wpmui-radio {
+						margin-left: 50px;
+					}
+
+					label:before {
+						top: 10px;
+						background-position: -730px -33px;
+					}
+				}
+
+				.wpmui-radio-caption {
+					margin: 0;
+					font-weight: 600;
+					color: #222;
+					font-size: 14px;
+				}
+
+				.wpmui-input-description {
+					margin: 1em 0 0 0;
+					color: #666;
+					font-weight: 400;
+
+					p {
+						margin: 0;
+					}
 				}
 			}
+		}
 
-			&.wpmui-simple label:before {
-				background-position: 0 -30px;
-			}
+		&.ms-cols-2 {
+			max-width: 960px;
 
-			&.wpmui-dripped label:before {
-				background-position: -300px -20px;
-			}
-
-			&.wpmui-guest label:before {
-				background-position: -100px -20px;
-			}
-
-			.wpmui-radio-caption {
-				margin-bottom: 1em;
-				font-weight: 600;
-				color: #222;
-			}
-
-			.wpmui-input-description {
-				color: #666;
-				font-weight: 200;
+			.ms-choose-type-wrapper > .ms-choose-type {
+				width: 50%;
 			}
 		}
 
-		.ms-locked {
-			position: relative;
-			cursor: not-allowed;
+		&.ms-cols-3 {
+			max-width: 1200px;
 
-			.wpmui-field-label {
-				cursor: not-allowed;
+			.ms-choose-type-wrapper > .ms-choose-type {
+				width: 33.32%;
+			}
+		}
+
+		.ms-options-wrapper {
+			& .opt {
+				float: left;
+				width: 50%;
+				margin: 0;
+				clear: none;
+				position: relative;
 			}
 
-			.wpmui-field-label:before,
-			.wpmui-radio-caption {
-				opacity: 0.45;
-				cursor: not-allowed;
+			.wpmui-checkbox-caption {
+				font-size: 14px;
 			}
 
-			.wpmui-input-description {
-				color: #CCC !important;
-				cursor: not-allowed;
+			.wpmui-checkbox-caption,
+			.wpmui-field-description {
+				padding-right: 40px;
 			}
 
-			.locked-info {
+			.wpmui-label-after {
 				position: absolute;
-				background: #333;
-				color: #EEE;
-				top: 20px;
-				left: 50%;
-				width: 200px;
-				margin-left: -100px;
-				text-align: center;
-				padding: 5px;
-				font-style: normal;
-				font-size: 12px;
-				box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.35);
+				display: none;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				margin: 0;
 			}
 
-			&.ms-choose-type.wpmui-radio-input-wrapper:before {
-				opacity: 0.35;
-			}
+			.ms-locked {
+				position: relative;
+				cursor: not-allowed;
 
-			&:hover .locked-info {
-				display: inline-block !important;
+				* {
+					cursor: not-allowed;
+				}
+
+				.wpmui-checkbox-caption,
+				.wpmui-input-description {
+					opacity: 0.45;
+					cursor: not-allowed;
+				}
+
+				.wpmui-label-after {
+					.locked-info {
+						position: absolute;
+						background: #333;
+						color: #EEE;
+						top: 20px;
+						left: 50%;
+						width: 200px;
+						margin-left: -100px;
+						text-align: center;
+						padding: 5px;
+						font-style: normal;
+						font-size: 12px;
+						box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.35);
+					}
+				}
+
+				&:hover .wpmui-label-after {
+					display: block;
+					opacity: 1;
+
+					.locked-info {
+						opacity: 1;
+						display: inline-block !important;
+					}
+				}
 			}
 		}
+
+		.ms-control-fields-wrapper {
+			position: absolute;
+			bottom: -60px;
+		}
+
 	}
 }
 
