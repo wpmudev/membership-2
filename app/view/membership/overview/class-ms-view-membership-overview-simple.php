@@ -59,7 +59,6 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 						'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
 						'desc' => __( 'Here you find a summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
 						'title_icon_class' => 'wpmui-fa wpmui-fa-dashboard',
-						'bread_crumbs' => $this->data['bread_crumbs'],
 					)
 				);
 				?>
@@ -251,21 +250,22 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		</div>
 		<?php
 
-		MS_Helper_Html::html_element(
-			array(
-				'id' => 'setup_payment',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
-				'url' => add_query_arg(
-					array(
-						'step' => MS_Controller_Membership::STEP_PAYMENT,
-						'membership_id' => $this->data['membership']->id,
-						'edit' => 1,
-					)
-				),
-				'class' => 'wpmui-field-button button',
-			)
-		);
+		if ( ! $membership->is_free ) {
+			MS_Helper_Html::html_element(
+				array(
+					'id' => 'setup_payment',
+					'type' => MS_Helper_Html::TYPE_HTML_LINK,
+					'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+					'url' => add_query_arg(
+						array(
+							'step' => MS_Controller_Membership::STEP_PAYMENT,
+							'edit' => 1,
+						)
+					),
+					'class' => 'wpmui-field-button button',
+				)
+			);
+		}
 	}
 
 	/**

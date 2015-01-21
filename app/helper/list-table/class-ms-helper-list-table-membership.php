@@ -132,6 +132,17 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 			__( 'Overview', MS_TEXT_DOMAIN )
 		);
 
+		$edit_args = array(
+			'membership_id' => $item->id,
+		);
+
+		$actions['edit'] = sprintf(
+			'<span class="edit"><a href="#" data-ms-dialog="%s" data-ms-data="%s">%s</a></span>',
+			'View_Membership_Edit_Dialog',
+			esc_attr( json_encode( $edit_args ) ),
+			__( 'Edit', MS_TEXT_DOMAIN )
+		);
+
 		if ( ! $item->is_free ) {
 			$actions['payment'] = sprintf(
 				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',

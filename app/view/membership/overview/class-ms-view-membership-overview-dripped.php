@@ -51,20 +51,22 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 							)
 						);
 
-						MS_Helper_Html::html_element(
-							array(
-								'id' => 'setup_payment',
-								'type' => MS_Helper_Html::TYPE_HTML_LINK,
-								'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
-								'url' => add_query_arg(
-									array(
-										'step' => MS_Controller_Membership::STEP_PAYMENT,
-										'edit' => 1,
-									)
-								),
-								'class' => 'wpmui-field-button button',
-							)
-						);
+						if ( ! $membership->is_free ) {
+							MS_Helper_Html::html_element(
+								array(
+									'id' => 'setup_payment',
+									'type' => MS_Helper_Html::TYPE_HTML_LINK,
+									'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+									'url' => add_query_arg(
+										array(
+											'step' => MS_Controller_Membership::STEP_PAYMENT,
+											'edit' => 1,
+										)
+									),
+									'class' => 'wpmui-field-button button',
+								)
+							);
+						}
 						?>
 					</div>
 				</div>

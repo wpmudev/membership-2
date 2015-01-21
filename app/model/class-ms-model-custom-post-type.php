@@ -161,22 +161,16 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		}
 
 		// save attributes in postmeta table
-		$post_meta = get_post_meta( $this->id );
 		$data = MS_Factory::serialize_model( $this );
 
-		foreach ( $data as $field => $val ) {
-			if ( ! isset( $post_meta[ $field ] ) ) {
-				$post_meta[ $field ] = null;
-			}
-
-			if ( $val != $post_meta[ $field ] ) {
-				update_post_meta( $this->id, $field, $val );
-			}
-		}
-
-		// We also remove any metadata of our custom post type that is not
+		// We first remove any metadata of our custom post type that is not
 		// contained in the serialized data collection.
-		$this->clean_metadata( $this->id, array_keys( $data ) );
+		$this->clean_metadata( array_keys( $data ) );
+
+		// Then we update all meta fields that are inside the collection
+		foreach ( $data as $field => $val ) {
+			update_post_meta( $this->id, $field, $val );
+		}
 
 		wp_cache_set( $this->id, $this, $class );
 		$this->after_save();
@@ -206,14 +200,13 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 * second parameter.
 	 *
 	 * @since  1.1.0
-	 * @param  int $post_id Post-ID
 	 * @param  array $data_to_keep List of meta-fields to keep (field-names)
 	 */
-	public function clean_metadata( $post_id, $data_to_keep ) {
+	public function clean_metadata( $data_to_keep ) {
 		global $wpdb;
 
 		$sql = "SELECT meta_key FROM {$wpdb->postmeta} WHERE post_id = %s;";
-		$sql = $wpdb->prepare( $sql, $post_id );
+		$sql = $wpdb->prepare( $sql, $this->id );
 		$all_fields = $wpdb->get_col( $sql );
 
 		$remove = array_diff( $all_fields, $data_to_keep );
@@ -222,12 +215,12 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 			'ms_model_clean_metadata',
 			$remove,
 			$all_fields,
-			$post_id,
+			$this->id,
 			$data_to_keep
 		);
 
 		foreach ( $remove as $key ) {
-			delete_post_meta( $post_id, $key );
+			delete_post_meta( $this->id, $key );
 		}
 	}
 

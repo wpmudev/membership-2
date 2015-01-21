@@ -16,6 +16,7 @@ window.ms_init.view_membership_overview = function init () {
 		}
 	});
 
+	// Triggered after the Membership details were modified via the edit popup.
 	jQuery( document ).on( 'ms-ajax-form-done', function( ev, form, response, is_err, data ) {
 		if ( ! is_err ) {
 			// reload the page to reflect the update

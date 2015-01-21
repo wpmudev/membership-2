@@ -46,9 +46,9 @@ class MS_Helper_Membership extends MS_Helper {
 		$messages = apply_filters(
 			'ms_helper_membership_get_admin_messages',
 			array(
-				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up <span class="ms-high">%s</span>.', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up <b>%s</b>.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_UPDATED => __( 'Membership updated.', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_MSG_UPDATED => __( 'Membership <b>%s</b> updated.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_ACTIVATION_TOGGLED => __( 'Membership activation toggled.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_STATUS_TOGGLED => __( 'Membership status toggled.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_BULK_UPDATED => __( 'Memberships bulk updated.', MS_TEXT_DOMAIN ),
@@ -85,8 +85,8 @@ class MS_Helper_Membership extends MS_Helper {
 		$msg_id = self::get_msg_id();
 
 		if ( $msg = self::get_admin_messages( $msg_id ) ) {
-			if ( ! empty( $args ) && $count = substr_count( $msg, '%s' ) ) {
-				$msg = array( vsprintf( $msg, $args ) );
+			if ( ! empty( $args ) ) {
+				$msg = vsprintf( $msg, $args );
 			}
 
 			// When the first membership was created show a popup to the user
@@ -95,9 +95,6 @@ class MS_Helper_Membership extends MS_Helper {
 				&& self::MEMBERSHIP_MSG_ADDED == $msg_id
 				&& ! empty( $membership )
 			) {
-				if ( ! is_array( $msg ) ) {
-					$msg = array( $msg );
-				}
 				$url = MS_Controller_Plugin::get_admin_settings_url();
 
 				self::show_setup_note( $membership );
@@ -135,6 +132,22 @@ class MS_Helper_Membership extends MS_Helper {
 	public static function show_setup_note( $membership ) {
 		$count = MS_Model_Membership::get_membership_count();
 
+		$popup = array();
+
+		$popup['title'] = sprintf(
+			'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
+			__( 'Congratulations!', MS_TEXT_DOMAIN ),
+			sprintf(
+				__( 'You have successfully set up <b>%1$s</b>.', MS_TEXT_DOMAIN ),
+				$membership->name
+			)
+		);
+		$popup['modal'] = true;
+		$popup['close'] = false;
+		$popup['sticky'] = false;
+		$popup['class'] = 'ms-setup-done';
+		$popup['body'] = false;
+
 		if ( $count === 1 ) {
 			$settings = MS_Plugin::instance()->settings;
 
@@ -143,39 +156,33 @@ class MS_Helper_Membership extends MS_Helper {
 				$settings->save();
 
 				$setup = MS_Factory::create( 'MS_View_Settings_Setup' );
-
-				$popup = array();
-
-				$popup['title'] = sprintf(
-					'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
-					__( 'Congratulations!', MS_TEXT_DOMAIN ),
-					sprintf(
-						__( 'You have successfully set up <strong>%1$s</strong>.', MS_TEXT_DOMAIN ),
-						$membership->name
-					)
-				);
-				$popup['body'] = $setup->to_html() .
-					'<div class="buttons"><button class="button-primary close">' .
-					__( 'Save and Finish', MS_TEXT_DOMAIN ) .
-					'</button></div>';
-				$popup['modal'] = true;
-				$popup['close'] = false;
-				$popup['sticky'] = false;
-				$popup['class'] = 'ms-setup-done';
+				$popup['body'] = $setup->to_html();
 				$popup['height'] = 412;
-
-				WDev()->popup( $popup );
-			} else {
-				$popup = array();
-
-				$popup['title'] = 'not first';
-				$popup['body'] = 'this is not the first membership anymore...';
-				$popup['modal'] = true;
-				$popup['sticky'] = false;
-				$popup['class'] = 'ms-setup-done';
-
-				WDev()->popup( $popup );
 			}
 		}
+
+		if ( empty( $popup['body'] ) ) {
+			$popup['body'] = sprintf(
+				'<center>You can now go to %1$s to set up access levels for this Membership.</center>',
+				sprintf(
+					'<a href="%1$s">%2$s</a>',
+					'?page=protected-content-setup',
+					__( 'Protected Content', MS_TEXT_DOMAIN )
+				)
+			);
+			$popup['height'] = 200;
+		}
+
+		$popup['body'] .= sprintf(
+			'<div class="buttons">' .
+			'<a href="%s" class="button">%s</a> ' .
+			'<button type="button" class="button-primary close">%s</button>' .
+			'</div>',
+			'?page=protected-content-setup',
+			__( 'Set-up Access Levels', MS_TEXT_DOMAIN ),
+			__( 'Finish', MS_TEXT_DOMAIN )
+		);
+
+		WDev()->popup( $popup );
 	}
 }

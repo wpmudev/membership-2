@@ -197,6 +197,10 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Membership setup completed flag.
 	 *
+	 * We need this to determine if payment options of the membership are edited
+	 * the first time during the setup assistant, or later via the membership
+	 * list.
+	 *
 	 * @since 1.0.0
 	 * @var bool $is_setup_completed.
 	 */
@@ -1192,13 +1196,15 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 	/**
 	 * Mark membership setup as completed.
 	 *
-	 * Used for auto setup purposes.
+	 * Only purpose of this flag is to display the correct update message to the
+	 * user: If setup_completed() returns true, then "Membership added" is
+	 * displayed, otherwise "Membership updated"
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return bool $marked True in the first time setup is finished.
 	 */
-	public function mark_setup_completed() {
+	public function setup_completed() {
 		$marked = false;
 
 		if ( ! $this->is_setup_completed ) {
@@ -1207,7 +1213,7 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 		}
 
 		return apply_filters(
-			'ms_model_membership_mark_setup_completed',
+			'ms_model_membership_setup_completed',
 			$marked,
 			$this
 		);
@@ -1473,6 +1479,13 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 				$value = $this->$property;
 				break;
 
+			case 'trial_period_enabled':
+			case 'active':
+			case 'private':
+			case 'is_free':
+				$value = WDev()->is_true( $this->$property );
+				break;
+
 			case 'type_description':
 				$value = $this->get_type_description();
 				break;
@@ -1589,8 +1602,9 @@ class MS_Model_Membership extends MS_Model_Custom_Post_Type {
 
 				case 'trial_period_enabled':
 				case 'active':
-				case 'public':
-					$this->$property = $this->validate_bool( $value );
+				case 'private':
+				case 'is_free':
+					$this->$property = WDev()->is_true( $value );
 					break;
 
 				case 'price':

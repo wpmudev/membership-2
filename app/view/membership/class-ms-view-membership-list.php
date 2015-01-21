@@ -4,7 +4,10 @@ class MS_View_Membership_List extends MS_View {
 
 	public function to_html() {
 		$membership = $this->data['membership'];
-		$admin_message = MS_Helper_Membership::get_admin_message( array( $membership->name ), $membership );
+		$admin_message = MS_Helper_Membership::get_admin_message(
+			array( $membership->name ),
+			$membership
+		);
 		$title = MS_Helper_Membership::get_admin_title();
 
 		$membership_list = MS_Factory::create( 'MS_Helper_List_Table_Membership' );
@@ -26,7 +29,10 @@ class MS_View_Membership_List extends MS_View {
 			MS_Helper_Html::settings_header(
 				array(
 				'title' => $title,
-				'desc' => $admin_message,
+				'desc' => array(
+						__( 'Here you can view and edit all the Memberships you have created.', MS_TEXT_DOMAIN ),
+						$admin_message,
+					)
 				)
 			);
 			?>

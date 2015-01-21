@@ -1521,46 +1521,32 @@
 }
 
 /* Membership editor popup */
-.vnav-editor .lst-vnav {
+.ms-edit-membership {
   position: absolute;
-  top: -1px;
-  bottom: 50px;
   left: 0;
   right: 0;
-  margin: 0;
-}
-.vnav-editor .lst-vnav-item .data {
-  border-bottom: 0;
-  border-right: 0;
   top: 0;
   bottom: 0;
-  overflow: auto;
+  background: #FDFDFD;
+  padding: 20px;
+}
+.ms-edit-membership .wpmui-form {
   padding: 0;
 }
-.vnav-editor .lst-vnav-item .data .ms-form {
-  padding: 10px 20px;
+.ms-edit-membership .wpmui-label-description,
+.ms-edit-membership .ms-public-wrapper,
+.ms-edit-membership .ms-paid-wrapper {
+  margin-top: 25px;
 }
-.vnav-editor .lst-vnav-item .data .ms-form .wpmui-text,
-.vnav-editor .lst-vnav-item .data .ms-form .wpmui-textarea {
-  width: 100%;
+.ms-edit-membership .wpmui-textarea {
+  min-height: 140px;
 }
-.vnav-editor .lst-vnav-item .data .ms-form .wpmui-textarea {
-  height: 140px;
+.ms-edit-membership .wpmui-radio-slider-wrapper {
+  display: block;
 }
-.vnav-editor .lst-vnav-item .data .ms-form .wpmui-radio-slider-wrapper label {
-  margin-top: 10px;
-}
-.vnav-editor .lst-vnav-item h3 {
-  font-size: 12px;
-  margin-left: 5px;
-  width: 176px;
-  border-radius: 4px 0 0 4px;
-}
-.vnav-editor .lst-vnav-item:first-child h3 {
-  margin-top: 6px;
-}
-.vnav-editor .lst-vnav-item.active {
-  box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.04);
+.ms-edit-membership .wpmui-radio-slider-wrapper .wpmui-field-description {
+  margin: 0 0 10px 0;
+  line-height: 1.35em;
 }
 
 /**

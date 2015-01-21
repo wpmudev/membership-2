@@ -277,6 +277,8 @@ class MS_Controller_Membership extends MS_Controller {
 						$next_step = self::STEP_PAYMENT;
 					} else {
 						$next_step = self::STEP_MS_LIST;
+						$msg = $this->mark_setup_completed();
+						$completed = true;
 					}
 
 					if ( $is_wizard ) {
@@ -374,7 +376,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$msg = 0;
 		$membership = $this->load_membership();
 
-		if ( $membership->mark_setup_completed() ) {
+		if ( $membership->setup_completed() ) {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ADDED;
 			do_action(
 				'ms_controller_membership_setup_completed',

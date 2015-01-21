@@ -30,10 +30,17 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 		$data = apply_filters( 'ms_view_membership_edit_data', $data );
 
 		// Dialog Title
-		$this->title = __( 'Edit membership', MS_TEXT_DOMAIN );
+		$this->title = sprintf(
+			__( 'Edit %s', MS_TEXT_DOMAIN ),
+			esc_html( $membership->name )
+		);
 
 		// Dialog Size
-		$this->height = 500;
+		if ( $membership->is_guest() ) {
+			$this->height = 200;
+		} else {
+			$this->height = 390;
+		}
 
 		// Contents
 		$this->content = $this->get_contents( $data );
@@ -72,8 +79,11 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 			if ( isset( $_POST['ms_active'] ) ) {
 				$membership->active = WDev()->is_true( $_POST['ms_active'] );
 			}
-			if ( isset( $_POST['ms_private'] ) ) {
-				$membership->private = ! WDev()->is_true( $_POST['ms_private'] );
+			if ( isset( $_POST['ms_public'] ) ) {
+				$membership->private = ! WDev()->is_true( $_POST['ms_public'] );
+			}
+			if ( isset( $_POST['ms_paid'] ) ) {
+				$membership->is_free = ! WDev()->is_true( $_POST['ms_paid'] );
 			}
 
 			$membership->save();
@@ -97,28 +107,47 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 		$inp_name = array(
 			'name' => 'ms_name',
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Name', MS_TEXT_DOMAIN ),
-			'class' => 'col-7',
+			'title' => __( 'Name:', MS_TEXT_DOMAIN ),
+			'value' => $membership->name,
 		);
+
 		$inp_description = array(
 			'name' => 'ms_description',
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-			'title' => __( 'Description', MS_TEXT_DOMAIN ),
-			'class' => 'col-7',
+			'title' => __( 'Description:', MS_TEXT_DOMAIN ),
+			'id' => 'description',
+			'value' => $membership->description,
 		);
+
 		$inp_active = array(
 			'name' => 'ms_active',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 			'title' => __( 'This membership is active', MS_TEXT_DOMAIN ),
 			'before' => __( 'No', MS_TEXT_DOMAIN ),
 			'after' => __( 'Yes', MS_TEXT_DOMAIN ),
+			'class' => 'ms-active',
+			'value' => $membership->active,
 		);
-		$inp_private = array(
-			'name' => 'ms_private',
+
+		$inp_public = array(
+			'name' => 'ms_public',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'title' => __( 'Show this membership in the Membership list', MS_TEXT_DOMAIN ),
+			'title' => __( 'This membership is public', MS_TEXT_DOMAIN ),
+			'desc' => __( 'Users can see it listed on your site and can register for it', MS_TEXT_DOMAIN ),
 			'before' => __( 'No', MS_TEXT_DOMAIN ),
 			'after' => __( 'Yes', MS_TEXT_DOMAIN ),
+			'class' => 'ms-public',
+			'value' => ! $membership->private,
+		);
+
+		$inp_paid = array(
+			'name' => 'ms_paid',
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'title' => __( 'This is a paid membership', MS_TEXT_DOMAIN ),
+			'before' => __( 'No', MS_TEXT_DOMAIN ),
+			'after' => __( 'Yes', MS_TEXT_DOMAIN ),
+			'class' => 'ms-paid',
+			'value' => ! $membership->is_free,
 		);
 
 		$inp_dialog = array(
@@ -163,22 +192,25 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 		ob_start();
 		?>
 		<div>
-		<form class="ms-form wpmui-ajax-update ms-edit-membership" data-ajax="<?php echo esc_attr( 'save' ); ?>">
-				<?php
-				$inp_name['value'] = $membership->name;
-				$inp_description['value'] = $membership->description;
-				$inp_active['value'] = $membership->active;
-				$inp_private['value'] = ! $membership->private;
-
-				?>
-				<div class="ms-form">
-					<?php
-					MS_Helper_Html::html_element( $inp_name );
-					MS_Helper_Html::html_element( $inp_active );
-					MS_Helper_Html::html_element( $inp_private );
-					MS_Helper_Html::html_separator();
-					MS_Helper_Html::html_element( $inp_description );
-					?>
+			<form class="ms-form wpmui-ajax-update ms-edit-membership" data-ajax="<?php echo esc_attr( 'save' ); ?>">
+				<div class="ms-form wpmui-form wpmui-grid-8">
+					<div class="col-5">
+						<?php
+						MS_Helper_Html::html_element( $inp_name );
+						if ( ! $membership->is_guest() ) {
+							MS_Helper_Html::html_element( $inp_description );
+						}
+						?>
+					</div>
+					<div class="col-3">
+						<?php
+						MS_Helper_Html::html_element( $inp_active );
+						if ( ! $membership->is_guest() ) {
+							MS_Helper_Html::html_element( $inp_public );
+							MS_Helper_Html::html_element( $inp_paid );
+						}
+						?>
+					</div>
 				</div>
 				<?php
 				MS_Helper_Html::html_element( $inp_id );
@@ -186,9 +218,6 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 				MS_Helper_Html::html_element( $inp_nonce );
 				MS_Helper_Html::html_element( $inp_action );
 				?>
-				<script>
-				jQuery('.vnav-editor').wpmui_vnav();
-				</script>
 			</form>
 			<div class="buttons">
 				<?php

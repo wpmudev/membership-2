@@ -35,4 +35,11 @@ window.ms_init.view_membership_list = function init () {
 
 	table.on( 'click', '.delete a', confirm_delete );
 
+	// Triggered after any Membership details were modified via the edit popup.
+	jQuery( document ).on( 'ms-ajax-form-done', function( ev, form, response, is_err, data ) {
+		if ( ! is_err ) {
+			// reload the page to reflect the update
+			window.location.reload();
+		}
+	});
 };
