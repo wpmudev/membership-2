@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Special extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Special extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_special';
 
@@ -50,7 +50,7 @@ class MS_Helper_List_Table_Rule_Special extends MS_Helper_List_Table_Rule {
 		}
 
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_columns",
+			"ms_helper_ListTable_{$this->id}_columns",
 			$columns
 		);
 	}

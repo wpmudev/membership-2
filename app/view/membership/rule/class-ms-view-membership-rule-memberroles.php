@@ -1,22 +1,22 @@
 <?php
 
-class MS_View_Membership_Rule_Page extends MS_View_Membership_Protected_Content {
+class MS_View_Membership_Rule_MemberRoles extends MS_View_Membership_Protected_Content {
 
 	public function to_html() {
 		$fields = $this->get_control_fields();
-
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
-		$rule_ListTable = new MS_Helper_ListTable_Rule_Page( $rule, $membership );
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERROLES );
+
+		$rule_ListTable = new MS_Helper_ListTable_Rule_Membercaps( $rule, $membership );
 		$rule_ListTable->prepare_items();
+
+		$header_data['title'] = __( 'User Roles', MS_TEXT_DOMAIN );
+		$header_data['desc'] = __( 'Protected User Roles can be assigned to a Membership. When they are not used in a Membership then these settings here have no effect.', MS_TEXT_DOMAIN );
 
 		$header_data = apply_filters(
 			'ms_view_membership_protected_content_header',
-			array(
-				'title' => __( 'Apply protection to Pages and and grant access to members', MS_TEXT_DOMAIN ),
-				'desc' => __( 'All pages that do not have Content Protection applied are visible to Everyone', MS_TEXT_DOMAIN ),
-			),
-			MS_Model_Rule::RULE_TYPE_PAGE,
+			$header_data,
+			MS_Model_Rule::RULE_TYPE_MEMBERROLES,
 			array(
 				'membership' => $this->data['membership'],
 			),
@@ -30,7 +30,7 @@ class MS_View_Membership_Rule_Page extends MS_View_Membership_Protected_Content 
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_ListTable->views();
-			$rule_ListTable->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
+			$rule_ListTable->search_box( __( 'Capability', MS_TEXT_DOMAIN ) );
 			?>
 			<form action="" method="post">
 				<?php
@@ -38,7 +38,7 @@ class MS_View_Membership_Rule_Page extends MS_View_Membership_Protected_Content 
 
 				do_action(
 					'ms_view_membership_protected_content_footer',
-					MS_Model_Rule::RULE_TYPE_PAGE,
+					MS_Model_Rule::RULE_TYPE_MEMBERROLES,
 					$this
 				);
 				?>

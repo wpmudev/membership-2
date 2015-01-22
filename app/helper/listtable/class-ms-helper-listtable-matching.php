@@ -27,7 +27,7 @@
  * @since 1.0.4.2
  *
  */
-class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
+class MS_Helper_ListTable_Matching extends MS_Helper_ListTable {
 
 	/**
 	 * Model that contains the list items of the table.
@@ -83,7 +83,7 @@ class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
 	 */
 	public function get_columns() {
 		return apply_filters(
-			'ms_helper_list_table_' . $this->id . '_columns',
+			'ms_helper_ListTable_' . $this->id . '_columns',
 			array(
 				'item' => $this->get_column_label( 'item' ),
 				'match' => $this->get_column_label( 'match' ),
@@ -118,7 +118,7 @@ class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
 	 */
 	public function get_hidden_columns() {
 		return apply_filters(
-			'ms_helper_list_table_' . $this->id . '_hidden_columns',
+			'ms_helper_ListTable_' . $this->id . '_hidden_columns',
 			array()
 		);
 	}
@@ -131,7 +131,7 @@ class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
 	 */
 	public function get_sortable_columns() {
 		return apply_filters(
-			'ms_helper_list_table_' . $this->id . '_sortable_columns',
+			'ms_helper_ListTable_' . $this->id . '_sortable_columns',
 			array()
 		);
 	}
@@ -150,13 +150,13 @@ class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
 
 		// Load the item-list (the rows in the table).
 		$this->items = apply_filters(
-			'ms_helper_list_table_' . $this->id . '_items',
+			'ms_helper_ListTable_' . $this->id . '_items',
 			$this->model->get_contents( $args )
 		);
 
 		// Load the matching-list that is displayed for each item.
 		$this->matching_options = apply_filters(
-			'ms_helper_list_table_matching_' . $this->id . ' _matching',
+			'ms_helper_ListTable_matching_' . $this->id . ' _matching',
 			$this->model->get_matching_options( $args )
 		);
 
@@ -254,7 +254,7 @@ class MS_Helper_List_Table_Matching extends MS_Helper_List_Table {
 			}
 
 			$this->membership_id = apply_filters(
-				'ms_helper_list_table_rule_get_membership_id',
+				'ms_helper_ListTable_rule_get_membership_id',
 				$this->membership_id
 			);
 		}

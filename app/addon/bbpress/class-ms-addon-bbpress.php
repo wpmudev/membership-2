@@ -42,8 +42,8 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 * @since  1.1.0
 	 */
 	public function init() {
-		// Always remove bbpress from MS_Model_Rule_Custom_Post_Type_Group.
-		$this->add_filter( 'ms_model_rule_custom_post_type_group_get_excluded_content', 'exclude_bbpress_cpts' );
+		// Always remove bbpress from MS_Model_Rule_CptGroup.
+		$this->add_filter( 'MS_Model_Rule_CptGroup_get_excluded_content', 'exclude_bbpress_cpts' );
 	}
 
 	/**
@@ -171,11 +171,11 @@ class MS_Addon_Bbpress extends MS_Addon {
 	}
 
 	/**
-	 * Exclude BBPress custom post type from MS_Model_Rule_Custom_Post_Type_Group.
+	 * Exclude BBPress custom post type from MS_Model_Rule_CptGroup.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter ms_model_rule_custom_post_type_group_get_excluded_content
+	 * @filter MS_Model_Rule_CptGroup_get_excluded_content
 	 *
 	 * @param array $excluded The current excluded ctps.
 	 * @return array The filtered excluded ctps.

@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Media extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_media';
 
@@ -39,7 +39,7 @@ class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
 
 	public function get_columns() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_columns",
+			"membership_helper_ListTable_{$this->id}_columns",
 			array(
 				'cb' => true,
 				'icon' => '',
@@ -53,7 +53,7 @@ class MS_Helper_List_Table_Rule_Media extends MS_Helper_List_Table_Rule {
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_sortable_columns",
+			"membership_helper_ListTable_{$this->id}_sortable_columns",
 			array(
 				'filename' => 'filename',
 				'access' => 'access',

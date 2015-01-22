@@ -1,22 +1,25 @@
 <?php
 
-class MS_View_Membership_Rule_Page extends MS_View_Membership_Protected_Content {
+class MS_View_Membership_Rule_CptGroup extends MS_View_Membership_Protected_Content {
 
 	public function to_html() {
-		$fields = $this->get_control_fields();
-
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
-		$rule_ListTable = new MS_Helper_ListTable_Rule_Page( $rule, $membership );
+
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
+		$rule_ListTable = new MS_Helper_ListTable_Rule_CptGroup(
+			$rule,
+			$membership
+		);
 		$rule_ListTable->prepare_items();
+
+		$header_data = array();
+		$header_data['title'] = __( 'Choose which Custom Post Types you want to protect', MS_TEXT_DOMAIN );
+		$header_data['desc'] = '';
 
 		$header_data = apply_filters(
 			'ms_view_membership_protected_content_header',
-			array(
-				'title' => __( 'Apply protection to Pages and and grant access to members', MS_TEXT_DOMAIN ),
-				'desc' => __( 'All pages that do not have Content Protection applied are visible to Everyone', MS_TEXT_DOMAIN ),
-			),
-			MS_Model_Rule::RULE_TYPE_PAGE,
+			$header_data,
+			MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
 			array(
 				'membership' => $this->data['membership'],
 			),
@@ -25,12 +28,12 @@ class MS_View_Membership_Rule_Page extends MS_View_Membership_Protected_Content 
 
 		ob_start();
 		?>
-		<div class="ms-settings">
+		<div class="ms-settings ">
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_ListTable->views();
-			$rule_ListTable->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
+			$rule_ListTable->search_box( __( 'Post Types', MS_TEXT_DOMAIN ), 'search-cpt' );
 			?>
 			<form action="" method="post">
 				<?php
@@ -38,7 +41,7 @@ class MS_View_Membership_Rule_Page extends MS_View_Membership_Protected_Content 
 
 				do_action(
 					'ms_view_membership_protected_content_footer',
-					MS_Model_Rule::RULE_TYPE_PAGE,
+					MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
 					$this
 				);
 				?>
@@ -47,7 +50,7 @@ class MS_View_Membership_Rule_Page extends MS_View_Membership_Protected_Content 
 		<?php
 
 		MS_Helper_Html::settings_footer(
-			array( $fields['step'] ),
+			null,
 			$this->data['show_next_button']
 		);
 		return ob_get_clean();

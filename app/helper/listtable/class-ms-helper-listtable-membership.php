@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
+class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 	protected $id = 'membership';
 
@@ -52,21 +52,21 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		);
 
 		return apply_filters(
-			'membership_helper_list_table_membership_columns',
+			'membership_helper_ListTable_membership_columns',
 			$columns
 		);
 	}
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			'membership_helper_list_table_membership_hidden_columns',
+			'membership_helper_ListTable_membership_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			'membership_helper_list_table_membership_sortable_columns',
+			'membership_helper_ListTable_membership_sortable_columns',
 			array(
 				'name' => array( 'name', true ),
 				'type_description' => array( 'type', true ),
@@ -115,7 +115,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		}
 
 		$this->items = apply_filters(
-			'membership_helper_list_table_membership_items',
+			'membership_helper_ListTable_membership_items',
 			MS_Model_Membership::get_memberships( $args )
 		);
 	}
@@ -168,7 +168,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 		);
 
 		$actions = apply_filters(
-			'ms_helper_list_table_' . $this->id . '_column_name_actions',
+			'ms_helper_ListTable_' . $this->id . '_column_name_actions',
 			$actions,
 			$item
 		);
@@ -258,7 +258,7 @@ class MS_Helper_List_Table_Membership extends MS_Helper_List_Table {
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			'ms_helper_list_table_membership_bulk_actions',
+			'ms_helper_ListTable_membership_bulk_actions',
 			array()
 		);
 	}

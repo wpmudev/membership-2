@@ -56,7 +56,7 @@ class MS_Model_Rule_Menu extends MS_Model_Rule {
 	 * @since  1.1.0
 	 */
 	public function prepare_obj() {
-		$this->add_filter( 'ms_helper_list_table_rule_menu_url', 'view_url' );
+		$this->add_filter( 'ms_helper_ListTable_rule_menu_url', 'view_url' );
 	}
 
 	/**

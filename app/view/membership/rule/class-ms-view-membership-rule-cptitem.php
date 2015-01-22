@@ -1,14 +1,14 @@
 <?php
 
-class MS_View_Membership_Rule_Cpt extends MS_View_Membership_Protected_Content {
+class MS_View_Membership_Rule_CptItem extends MS_View_Membership_Protected_Content {
 
 	public function to_html() {
 		$fields = $this->get_control_fields();
 
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
-		$rule_list_table = new MS_Helper_List_Table_Rule_Custom_Post_Type( $rule, $membership );
-		$rule_list_table->prepare_items();
+		$rule_ListTable = new MS_Helper_ListTable_Rule_CptItem( $rule, $membership );
+		$rule_ListTable->prepare_items();
 
 		$header_data = apply_filters(
 			'ms_view_membership_protected_content_header',
@@ -29,12 +29,12 @@ class MS_View_Membership_Rule_Cpt extends MS_View_Membership_Protected_Content {
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
 
-			$rule_list_table->views();
-			$rule_list_table->search_box( __( 'Posts', MS_TEXT_DOMAIN ) );
+			$rule_ListTable->views();
+			$rule_ListTable->search_box( __( 'Posts', MS_TEXT_DOMAIN ) );
 			?>
 			<form action="" method="post">
 				<?php
-				$rule_list_table->display();
+				$rule_ListTable->display();
 
 				do_action(
 					'ms_view_membership_protected_content_footer',

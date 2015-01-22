@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Event extends MS_Helper_List_Table {
+class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 
 	protected $id = 'event';
 
@@ -50,21 +50,21 @@ class MS_Helper_List_Table_Event extends MS_Helper_List_Table {
 		);
 
 		return apply_filters(
-			'membership_helper_list_table_event_columns',
+			'membership_helper_ListTable_event_columns',
 			$columns
 		);
 	}
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			'membership_helper_list_table_event_hidden_columns',
+			'membership_helper_ListTable_event_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			'membership_helper_list_table_event_sortable_columns',
+			'membership_helper_ListTable_event_sortable_columns',
 			array(
 				'post_modified' => array( 'post_modified', false ),
 				'user_id' => array( 'user_id', false ),
@@ -99,7 +99,7 @@ class MS_Helper_List_Table_Event extends MS_Helper_List_Table {
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			'ms_helper_list_table_membership_bulk_actions',
+			'ms_helper_ListTable_membership_bulk_actions',
 			array()
 		);
 	}

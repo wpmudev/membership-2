@@ -445,7 +445,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = self::ACTION_SAVE;
-		$data['tabs'] = $this->get_accessible_content_tabs();
 		$data['membership'] = $membership;
 		$data['create_new_url'] = add_query_arg(
 			array( 'step' => self::STEP_ADD_NEW ),
@@ -760,13 +759,16 @@ class MS_Controller_Membership extends MS_Controller {
 				'title' => __( 'Pages', MS_TEXT_DOMAIN ),
 			),
 			'category' => array(
-				'title' => __( 'Categories, Custom Post Types', MS_TEXT_DOMAIN ),
+				'title' => __( 'Categories', MS_TEXT_DOMAIN ),
+			),
+			'cpt_item' => array(
+				'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
+			),
+			'cpt_group' => array(
+				'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
 			),
 			'post' => array(
 				'title' => __( 'Posts', MS_TEXT_DOMAIN ),
-			),
-			'cpt' => array(
-				'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
 			),
 			'comment' => array(
 				'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
@@ -786,62 +788,59 @@ class MS_Controller_Membership extends MS_Controller {
 				'title' => __( 'Admin Side', MS_TEXT_DOMAIN ),
 			),
 			'membercaps' => array(
+				'title' => __( 'Member Capabilities', MS_TEXT_DOMAIN ),
+			),
+			'memberroles' => array(
 				'title' => __( 'User Roles', MS_TEXT_DOMAIN ),
 			),
 		);
 
 		// Now remove items from the list that are not available.
 
-		$title = array();
-		// Enable / Disable post by post tab.
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+		// Either "Category" or "Posts"
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 			unset( $tabs['post'] );
-			$title['category'] = __( 'Categories', MS_TEXT_DOMAIN );
-		}
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			$title['cpt_group'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
-		}
-
-		$tabs['category']['title'] = implode( ', ', $title );
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) &&
-			MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST	) ) {
+		} else {
 			unset( $tabs['category'] );
 		}
 
-		// Add the special-pages protection.
+		// Either "CPT Group" or "CPT Posts"
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			unset( $tabs['cpt_group'] );
+		} else {
+			unset( $tabs['cpt_item'] );
+		}
+
+		// Maybe "Special Pages".
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
 			unset( $tabs['special'] );
 		}
 
-		// Enable / Disable custom post by post tab.
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			unset( $tabs['cpt'] );
-		}
-
-		// Disable urlgroup tab.
+		// Maybe "URLs"
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 			unset( $tabs['url_group'] );
 		}
 
-		// Disable shortcode tab.
+		// Maybe "Shortcodes"
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
 			unset( $tabs['shortcode'] );
 		}
 
+		// Maybe "Admin-Side"
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADMINSIDE ) ) {
 			unset( $tabs['adminside'] );
 		}
 
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
-			unset( $tabs['membercaps'] );
-		}
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$tabs['membercaps']['title'] = __( 'Member Capabilities', MS_TEXT_DOMAIN );
-		} else {
-			if ( $is_base ) {
+		// Maybe "Membercaps"
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+				unset( $tabs['memberroles'] );
+			} else {
 				unset( $tabs['membercaps'] );
 			}
+		} else {
+			unset( $tabs['memberroles'] );
+			unset( $tabs['membercaps'] );
 		}
 
 		WDev()->load_fields( $_GET, 'page' );
@@ -850,13 +849,22 @@ class MS_Controller_Membership extends MS_Controller {
 		$page = sanitize_html_class( $_GET['page'], 'protected-content-memberships' );
 
 		foreach ( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = admin_url(
+			$url = admin_url(
 				sprintf(
 					'admin.php?page=%s&tab=%s',
 					$page,
 					$tab
 				)
 			);
+
+			if ( ! empty( $_REQUEST['membership_id'] ) ) {
+				$url = add_query_arg(
+					array( 'membership_id' => $_REQUEST['membership_id'] ),
+					$url
+				);
+			}
+
+			$tabs[ $tab ]['url'] = $url;
 		}
 
 		return apply_filters(
@@ -880,84 +888,6 @@ class MS_Controller_Membership extends MS_Controller {
 		return apply_filters(
 			'ms_controller_membership_get_protected_content_tabs',
 			$tabs,
-			$this
-		);
-	}
-
-	/**
-	 * Get available tabs for Accessible Content page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array The tabs configuration.
-	 */
-	public function get_accessible_content_tabs() {
-		$membership_id = $this->load_membership()->id;
-		$tabs = $this->get_protection_tabs();
-		$protected_content = MS_Model_Membership::get_base();
-
-		$step = $this->get_step();
-		$page = sanitize_html_class( @$_GET['page'], 'protected-content-memberships' );
-
-		foreach ( $tabs as $tab => $info ) {
-			$rule = $protected_content->get_rule( $tab );
-
-			switch ( $tab ) {
-				case 'category':
-					$cnt_category = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CATEGORY )->count_rules();
-					$cnt_cpt = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP )->count_rules();
-
-					if ( ! $cnt_category && ! $cnt_cpt ) {
-						unset( $tabs[ $tab ] );
-					}
-					break;
-
-				case 'comment':
-					$cnt_comment = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT )->count_rules();
-					$cnt_more_tag = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG )->count_rules();
-					$cnt_menu = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->count_rules();
-
-					if ( ! $cnt_comment && ! $cnt_more_tag && ! $cnt_menu ) {
-						unset( $tabs[ $tab ] );
-					}
-					break;
-
-				case 'url_group':
-					$cnt_url_group = $protected_content->get_rule( MS_Model_Rule::RULE_TYPE_URL_GROUP )->count_rules();
-
-					if ( ! $cnt_url_group ) {
-						unset( $tabs[ $tab ] );
-					}
-					break;
-
-				case 'membercaps':
-					// Always display this tab when the Add-on is active
-					break;
-
-				default:
-					if ( ! $rule->count_rules() ) {
-						unset( $tabs[ $tab ] );
-					}
-					break;
-			}
-		}
-
-		foreach ( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = admin_url(
-				sprintf(
-					'admin.php?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s',
-					$page,
-					$step,
-					$tab,
-					$membership_id
-				)
-			);
-		}
-
-		return apply_filters(
-			'ms_controller_membership_get_tabs',
-			$tabs,
-			$membership_id,
 			$this
 		);
 	}

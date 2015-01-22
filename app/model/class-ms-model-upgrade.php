@@ -240,7 +240,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 		/**
 		 * Delete all plugin content.
-		 * Content is saved by classes that extend MS_Model_Custom_Post_Type
+		 * Content is saved by classes that extend MS_Model_CustomPostType
 		 */
 		$ms_posttypes = array(
 			MS_Model_Communication::$POST_TYPE,

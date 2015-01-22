@@ -102,7 +102,7 @@ class MS_Controller_Metabox extends MS_Controller {
 
 		$post_types = array_merge(
 			array( 'page', 'post', 'attachment' ),
-			MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types()
+			MS_Model_Rule_CptGroup::get_custom_post_types()
 		);
 
 		$this->post_types = apply_filters(
@@ -253,7 +253,7 @@ class MS_Controller_Metabox extends MS_Controller {
 				break;
 
 			default:
-				if ( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
+				if ( in_array( $post_type, MS_Model_Rule_CptGroup::get_custom_post_types() ) ) {
 					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
 					} else {
@@ -319,7 +319,7 @@ class MS_Controller_Metabox extends MS_Controller {
 			$read_only = true;
 		} elseif ( 'attachment' == $post_type ) {
 			$read_only = true;
-		} elseif ( in_array( $post_type, MS_Model_Rule_Custom_Post_Type_Group::get_custom_post_types() ) ) {
+		} elseif ( in_array( $post_type, MS_Model_Rule_CptGroup::get_custom_post_types() ) ) {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$read_only = false;
 			} else {

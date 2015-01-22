@@ -27,28 +27,41 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Post extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_page';
+	protected $id = 'rule_post';
 
 	public function __construct( $model, $membership = null ) {
 		parent::__construct( $model, $membership );
-		$this->name['singular'] = __( 'Page', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Pages', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Post', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Posts', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,
-			'name' => __( 'Page title', MS_TEXT_DOMAIN ),
+			'name' => __( 'Post title', MS_TEXT_DOMAIN ),
 			'access' => true,
-			'post_date' => __( 'Date', MS_TEXT_DOMAIN ),
+			'post_date' => __( 'Post date', MS_TEXT_DOMAIN ),
 			'dripped' => true,
 		);
 
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_columns",
+			"ms_helper_ListTable_{$this->id}_columns",
 			$columns
+		);
+	}
+
+	public function get_sortable_columns() {
+		return apply_filters(
+			"membership_helper_ListTable_{$this->id}_sortable_columns",
+			array(
+				'name' => array( 'name', false ),
+				'access' => array( 'access', false ),
+				'dripped' => array( 'dripped', false ),
+				'slug' => array( 'slug', false ),
+				'posts' => array( 'posts', false ),
+			)
 		);
 	}
 
@@ -65,9 +78,8 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 				__( 'View', MS_TEXT_DOMAIN )
 			),
 		);
-
 		$actions = apply_filters(
-			"ms_helper_list_table_{$this->id}_column_name_actions",
+			"membership_helper_ListTable_{$this->id}_column_name_actions",
 			$actions,
 			$item
 		);
@@ -80,7 +92,12 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 	}
 
 	public function column_post_date( $item, $column_name ) {
-		return $item->post_date;
+		$date = strtotime( $item->post_date );
+		return date_i18n( get_option( 'date_format' ), $date );
+	}
+
+	public function column_category( $item, $column_name ) {
+		return join( ', ', $item->categories );
 	}
 
 	/**
@@ -91,14 +108,14 @@ class MS_Helper_List_Table_Rule_Page extends MS_Helper_List_Table_Rule {
 	 */
 	public function extra_tablenav( $which, $echo = true ) {
 		if ( 'top' != $which ) {
-			return '';
+			return;
 		}
 
 		$filter_button = array(
 			'id' => 'filter_button',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			'value' => __( 'Filter', MS_TEXT_DOMAIN ),
-			'button_type' => 'button',
+			'class' => 'button',
 		);
 
 		if ( ! $echo ) { ob_start(); }

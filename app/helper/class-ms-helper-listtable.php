@@ -5,7 +5,7 @@
  * Modifications to use more than a list table within a page, avoiding element-id collisions.
  *
  * Copied from WordPress 3.8.3 as its recommendation
- * http://codex.wordpress.org/Class_Reference/WP_List_Table
+ * http://codex.wordpress.org/Class_Reference/WP_ListTable
  * This class's access is marked as private. That means it is not intended for use by plugin
  * and theme developers as it is subject to change without warning in any future WordPress release.
  * If you would still like to make use of the class, you should make a copy to use and distribute
@@ -14,7 +14,7 @@
  * @since 1.0.0
  *
  */
-class MS_Helper_List_Table {
+class MS_Helper_ListTable {
 
 	/**
 	 * The default number of items per list page.
@@ -31,7 +31,7 @@ class MS_Helper_List_Table {
 	 * @var array
 	 * @access protected
 	 */
-	protected $id = 'ms_list_table';
+	protected $id = 'ms_ListTable';
 
 	/**
 	 * The current list of items
@@ -140,19 +140,19 @@ class MS_Helper_List_Table {
 	 * @abstract
 	 */
 	public function ajax_user_can() {
-		die( 'function WP_List_Table::ajax_user_can() must be over-ridden in a sub-class.' );
+		die( 'function WP_ListTable::ajax_user_can() must be over-ridden in a sub-class.' );
 	}
 
 	/**
 	 * Prepares the list of items for displaying.
-	 * @uses WP_List_Table::set_pagination_args()
+	 * @uses WP_ListTable::set_pagination_args()
 	 *
 	 * @since 1.0.0
 	 * @access public
 	 * @abstract
 	 */
 	public function prepare_items() {
-		die( 'function WP_List_Table::prepare_items() must be over-ridden in a sub-class.' );
+		die( 'function WP_ListTable::prepare_items() must be over-ridden in a sub-class.' );
 	}
 
 	/**
@@ -928,7 +928,7 @@ class MS_Helper_List_Table {
 	 * @return array
 	 */
 	protected function get_columns() {
-		die( 'function WP_List_Table::get_columns() must be over-ridden in a sub-class.' );
+		die( 'function WP_ListTable::get_columns() must be over-ridden in a sub-class.' );
 	}
 
 	/**
@@ -1295,7 +1295,7 @@ class MS_Helper_List_Table {
 				}
 
 				$code = apply_filters(
-					'ms_helper_list_table_' . $this->id . '-column_' . $column_name,
+					'ms_helper_ListTable_' . $this->id . '-column_' . $column_name,
 					$code,
 					$item,
 					$column_name

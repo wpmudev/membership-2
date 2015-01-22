@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
+class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	protected $id = 'billing';
 
@@ -45,7 +45,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		$currency = MS_Plugin::instance()->settings->currency;
 
 		$columns = apply_filters(
-			'membership_helper_list_table_membership_columns',
+			'membership_helper_ListTable_membership_columns',
 			array(
 				'cb' => '<input type="checkbox" />',
 				'invoice' => __( 'Invoice #', MS_TEXT_DOMAIN ),
@@ -59,7 +59,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		);
 
 		$columns = apply_filters(
-			'ms_helper_list_table_billing_get_columns',
+			'ms_helper_ListTable_billing_get_columns',
 			$columns,
 			$currency
 		);
@@ -76,14 +76,14 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			'membership_helper_list_table_membership_hidden_columns',
+			'membership_helper_ListTable_membership_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			'membership_helper_list_table_membership_sortable_columns',
+			'membership_helper_ListTable_membership_sortable_columns',
 			array(
 				'invoice' => array( 'ID', false ),
 				'user' => array( 'author', false ),
@@ -109,7 +109,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 		$total_items = MS_Model_Invoice::get_invoice_count( $args );
 
 		$this->items = apply_filters(
-			'membership_helper_list_table_invoice_items',
+			'membership_helper_ListTable_invoice_items',
 			MS_Model_Invoice::get_invoices( $args )
 		);
 
@@ -190,7 +190,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			'membership_helper_list_table_invoice_bulk_actions',
+			'membership_helper_ListTable_invoice_bulk_actions',
 			array(
 				'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 			)
@@ -241,7 +241,7 @@ class MS_Helper_List_Table_Billing extends MS_Helper_List_Table {
 			);
 		}
 
-		return apply_filters( 'ms_helper_list_table_billing_views', $views );
+		return apply_filters( 'ms_helper_ListTable_billing_views', $views );
 	}
 
 }

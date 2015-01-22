@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_CptItem extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'cpt';
 
@@ -39,7 +39,7 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Ru
 
 	public function get_columns() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_columns",
+			"membership_helper_ListTable_{$this->id}_columns",
 			array(
 				'cb' => true,
 				'post_title' => __( 'Custom Post Title', MS_TEXT_DOMAIN ),
@@ -51,7 +51,7 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Ru
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_sortable_columns",
+			"membership_helper_ListTable_{$this->id}_sortable_columns",
 			array(
 				'post_title' => 'post_title',
 				'post_type' => 'post_type',
@@ -75,7 +75,7 @@ class MS_Helper_List_Table_Rule_Custom_Post_Type extends MS_Helper_List_Table_Ru
 		);
 
 		$actions = apply_filters(
-			"ms_helper_list_table_{$this->id}_column_name_actions",
+			"ms_helper_ListTable_{$this->id}_column_name_actions",
 			$actions,
 			$item
 		);

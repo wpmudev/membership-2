@@ -10,8 +10,8 @@ class MS_Addon_Buddypress_View_General extends MS_View {
 		$membership = $this->data['membership'];
 
 		$rule = $membership->get_rule( MS_Addon_BuddyPress::RULE_ID );
-		$rule_list_table = new MS_Addon_Buddypress_Helper_Listtable( $rule, $membership );
-		$rule_list_table->prepare_items();
+		$rule_ListTable = new MS_Addon_Buddypress_Helper_Listtable( $rule, $membership );
+		$rule_ListTable->prepare_items();
 
 		$edit_link = array(
 			'id' => 'buddypress_rule_edit',
@@ -40,10 +40,10 @@ class MS_Addon_Buddypress_View_General extends MS_View {
 			<?php
 			MS_Helper_Html::settings_tab_header( array( 'title' => $title, 'desc' => $desc ) );
 
-			$rule_list_table->views();
+			$rule_ListTable->views();
 			?>
 			<form action="" method="post">
-				<?php $rule_list_table->display(); ?>
+				<?php $rule_ListTable->display(); ?>
 			</form>
 			<?php if ( ! $membership->is_base() ) : ?>
 				<div class="ms-protection-edit-link">

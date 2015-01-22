@@ -27,13 +27,13 @@
  * @since 4.0.0
  *
  */
-class MS_Addon_Buddypress_Helper_Listtable_Group extends MS_Helper_List_Table_Rule {
+class MS_Addon_Buddypress_Helper_Listtable_Group extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_buddypress_group';
 
 	public function get_columns() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_columns",
+			"membership_helper_ListTable_{$this->id}_columns",
 			array(
 				'cb' => true,
 				'name' => __( 'BuddyPress Group', MS_TEXT_DOMAIN ),
@@ -44,7 +44,7 @@ class MS_Addon_Buddypress_Helper_Listtable_Group extends MS_Helper_List_Table_Ru
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_sortable_columns",
+			"membership_helper_ListTable_{$this->id}_sortable_columns",
 			array()
 		);
 	}
@@ -55,14 +55,14 @@ class MS_Addon_Buddypress_Helper_Listtable_Group extends MS_Helper_List_Table_Ru
 
 	public function get_views() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_views",
+			"membership_helper_ListTable_{$this->id}_views",
 			array()
 		);
 	}
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_bulk_actions",
+			"membership_helper_ListTable_{$this->id}_bulk_actions",
 			array()
 		);
 	}

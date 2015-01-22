@@ -24,45 +24,42 @@
  * Membership List Table
  *
  *
- * @since 1.1
+ * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Membercaps extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Category extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_membercaps';
+	protected $id = 'rule_category';
 
 	public function __construct( $model, $membership = null ) {
 		parent::__construct( $model, $membership );
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$this->name['singular'] = __( 'Capability', MS_TEXT_DOMAIN );
-			$this->name['plural'] = __( 'Capabilities', MS_TEXT_DOMAIN );
-		} else {
-			$this->name['singular'] = __( 'Role', MS_TEXT_DOMAIN );
-			$this->name['plural'] = __( 'Roles', MS_TEXT_DOMAIN );
-		}
+		$this->name['singular'] = __( 'Category', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Categories', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$name_label = __( 'Capability', MS_TEXT_DOMAIN );
-		} else {
-			$name_label = __( 'Role', MS_TEXT_DOMAIN );
-		}
-
-		$columns = array(
-			'cb' => true,
-			'name' => $name_label,
-			'access' => true,
-		);
-
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_columns",
-			$columns
+			"membership_helper_ListTable_{$this->id}_columns",
+			array(
+				'cb' => true,
+				'name' => __( 'Category name', MS_TEXT_DOMAIN ),
+				'access' => true,
+			)
 		);
 	}
 
-	public function column_name( $item ) {
-		return $item->post_title;
+	public function get_sortable_columns() {
+		return apply_filters(
+			"membership_helper_ListTable_{$this->id}_sortable_columns",
+			array(
+				'name' => 'name',
+				'access' => 'access',
+			)
+		);
+	}
+
+	public function column_name( $item, $column_name ) {
+		return $item->name;
 	}
 
 }

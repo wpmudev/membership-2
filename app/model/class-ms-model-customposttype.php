@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Custom_Post_Type extends MS_Model {
+class MS_Model_CustomPostType extends MS_Model {
 
 	/**
 	 * Model custom post type.
@@ -184,14 +184,14 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 * @return bool
 	 */
 	public function delete() {
-		do_action( 'ms_model_custom_post_type_delete_before', $this );
+		do_action( 'MS_Model_CustomPostType_delete_before', $this );
 		$res = false;
 
 		if ( ! empty( $this->id ) ) {
 			$res = ( false !== wp_delete_post( $this->id, true ) );
 		}
 
-		do_action( 'ms_model_custom_post_type_delete_after', $this, $res );
+		do_action( 'MS_Model_CustomPostType_delete_after', $this, $res );
 		return $res;
 	}
 
@@ -231,7 +231,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 	 */
 	public static function get_register_post_type_args() {
 		return apply_filters(
-			'ms_model_custom_post_type_register_post_type_args',
+			'MS_Model_CustomPostType_register_post_type_args',
 			array()
 		);
 	}
@@ -253,7 +253,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		) {
 			$time = $lock;
 			$time_window = apply_filters(
-				'ms_model_custom_post_type_check_object_lock_window',
+				'MS_Model_CustomPostType_check_object_lock_window',
 				150
 			);
 			if ( $time && $time > time() - $time_window ) {
@@ -262,7 +262,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		}
 
 		return apply_filters(
-			'ms_model_custom_post_type_check_object_lock',
+			'MS_Model_CustomPostType_check_object_lock',
 			$locked,
 			$this
 		);
@@ -282,14 +282,14 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 
 		if ( $this->is_valid() ) {
 			$lock = apply_filters(
-				'ms_model_custom_post_type_set_object_lock',
+				'MS_Model_CustomPostType_set_object_lock',
 				time()
 			);
 			update_post_meta( $this->id, '_ms_edit_lock', $lock );
 		}
 
 		return apply_filters(
-			'ms_model_custom_post_type_set_object_lock',
+			'MS_Model_CustomPostType_set_object_lock',
 			$lock,
 			$this
 		);
@@ -305,7 +305,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 			update_post_meta( $this->id, '_ms_edit_lock', '' );
 		}
 
-		do_action( 'ms_model_custom_post_type_delete_object_lock', $this );
+		do_action( 'MS_Model_CustomPostType_delete_object_lock', $this );
 	}
 
 	/**
@@ -323,7 +323,7 @@ class MS_Model_Custom_Post_Type extends MS_Model {
 		}
 
 		return apply_filters(
-			'ms_model_custom_post_type_is_valid',
+			'MS_Model_CustomPostType_is_valid',
 			$valid,
 			$this
 		);

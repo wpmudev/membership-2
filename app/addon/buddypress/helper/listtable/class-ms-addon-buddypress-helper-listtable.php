@@ -27,13 +27,13 @@
  * @since 4.0.0
  *
  */
-class MS_Addon_Buddypress_Helper_Listtable extends MS_Helper_List_Table_Rule {
+class MS_Addon_Buddypress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_buddypress';
 
 	public function get_columns() {
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_columns",
+			"ms_helper_ListTable_{$this->id}_columns",
 			array(
 				'cb' => true,
 				'name' => __( 'Type', MS_TEXT_DOMAIN ),
@@ -44,7 +44,7 @@ class MS_Addon_Buddypress_Helper_Listtable extends MS_Helper_List_Table_Rule {
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_sortable_columns",
+			"ms_helper_ListTable_{$this->id}_sortable_columns",
 			array()
 		);
 	}
@@ -61,7 +61,7 @@ class MS_Addon_Buddypress_Helper_Listtable extends MS_Helper_List_Table_Rule {
 
 	public function get_views() {
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_views",
+			"ms_helper_ListTable_{$this->id}_views",
 			array()
 		);
 	}

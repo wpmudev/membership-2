@@ -27,39 +27,40 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Custom_Post_Type_Group extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Replace_Menu extends MS_Helper_ListTable_Matching {
 
-	protected $id = 'cpt_group';
+	protected $id = MS_Model_Rule::RULE_TYPE_REPLACE_MENUS;
 
-	public function __construct( $model, $membership = null ) {
+	/**
+	 * Constructor.
+	 *
+	 * @since  1.0.4.2
+	 *
+	 * @param MS_Model $model Model for the list data.
+	 * @param MS_Model_Membership $membership The associated membership.
+	 */
+	public function __construct( $model, $membership ) {
 		parent::__construct( $model, $membership );
-		$this->name['singular'] = __( 'Custom Post Type', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Menu', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Menus', MS_TEXT_DOMAIN );
 	}
 
-	public function get_columns() {
-		return apply_filters(
-			"membership_helper_list_table_{$this->id}_columns",
-			array(
-				'cb' => true,
-				'name' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
-				'access' => true,
-			)
-		);
-	}
+	/**
+	 * Override the column captions.
+	 *
+	 * @since  1.0.4.2
+	 * @param  string $col
+	 * @return string
+	 */
+	protected function get_column_label( $col ) {
+		$label = '';
 
-	public function get_sortable_columns() {
-		return apply_filters(
-			"membership_helper_list_table_{$this->id}_sortable_columns",
-			array(
-				'name' => 'name',
-				'access' => 'access',
-			)
-		);
-	}
+		switch ( $col ) {
+			case 'item': $label = __( 'Menu', MS_TEXT_DOMAIN ); break;
+			case 'match': $label = __( 'Show this menu to members instead', MS_TEXT_DOMAIN ); break;
+		}
 
-	public function column_name( $item, $column_name ) {
-		return $item->name;
+		return $label;
 	}
 
 }

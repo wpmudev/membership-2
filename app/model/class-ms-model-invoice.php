@@ -23,14 +23,14 @@
 /**
  * Invoice model.
  *
- * Persisted by parent class MS_Model_Custom_Post_Type.
+ * Persisted by parent class MS_Model_CustomPostType.
  *
  * @since 1.0.0
  *
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Invoice extends MS_Model_Custom_Post_Type {
+class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 	/**
 	 * Model custom post type.

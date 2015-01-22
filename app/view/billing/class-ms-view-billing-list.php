@@ -40,7 +40,7 @@ class MS_View_Billing_List extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$billing_list = MS_Factory::load( 'MS_Helper_List_Table_Billing' );
+		$billing_list = MS_Factory::load( 'MS_Helper_ListTable_Billing' );
 		$billing_list->prepare_items();
 
 		$title = __( 'Billing', MS_TEXT_DOMAIN );

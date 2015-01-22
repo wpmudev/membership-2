@@ -24,33 +24,34 @@
  * Membership List Table
  *
  *
- * @since 4.0.0
+ * @since 1.1
  *
  */
-class MS_Helper_List_Table_Rule_Shortcode extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Adminside extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_shortcode';
+	protected $id = 'rule_adminside';
 
 	public function __construct( $model, $membership = null ) {
 		parent::__construct( $model, $membership );
-		$this->name['singular'] = __( 'Shortcode', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Shortcodes', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Admin Page', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Admin Pages', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
+		$columns = array(
+			'cb' => true,
+			'name' => __( 'Admin Side Page', MS_TEXT_DOMAIN ),
+			'access' => true,
+		);
+
 		return apply_filters(
-			"membership_helper_list_table_{$this->id}_columns",
-			array(
-				'cb' => true,
-				'name' => __( 'Shortcode', MS_TEXT_DOMAIN ),
-				'access' => true,
-			)
+			"ms_helper_ListTable_{$this->id}_columns",
+			$columns
 		);
 	}
 
 	public function column_name( $item ) {
-		$html = $item->name;
-		return $html;
+		return $item->post_title;
 	}
 
 }

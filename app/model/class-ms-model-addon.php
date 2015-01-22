@@ -69,7 +69,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_ADMINSIDE = 'adminside';
 	const ADDON_MEMBERCAPS = 'membercaps';
 	const ADDON_MEMBERCAPS_ADV = 'membercaps_advanced';
-	const ADDON_MEMBERCAPS_ROLES = 'membercaps_roles';
 
 	/**
 	 * List of all registered Add-ons
@@ -220,6 +219,10 @@ class MS_Model_Addon extends MS_Model_Option {
 		if ( empty( $id ) ) {
 			// No ID requested: Return whole list.
 			$res = self::$_registered;
+
+			foreach ( $res as $id => $item ) {
+				if ( empty( $item->name ) ) { unset( $res[$id] ); }
+			}
 		} elseif ( isset( self::$_registered[$id] ) ) {
 			// Valid ID requested: Return single item.
 			$res = self::$_registered[$id];
@@ -328,36 +331,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	}
 
 	/**
-	 * Get addon parents.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @param  string $addon The add-on to check
-	 * @return false|string The parent add-on of the specified add-on or false.
-	 */
-	public static function get_parent( $addon ) {
-		static $Parents;
-		$res = false;
-
-		if ( empty( $Parents ) ) {
-			$Parents = array(
-				self::ADDON_MEMBERCAPS_ADV => self::ADDON_MEMBERCAPS,
-			);
-
-			$Parents = apply_filters(
-				'ms_model_addon_get_parent_list',
-				$Parents
-			);
-		}
-
-		if ( isset( $Parents[$addon] ) ) {
-			$res = $Parents[$addon];
-		}
-
-		return $res;
-	}
-
-	/**
 	 * Checks, if the specified Add-on is a valid, registered Add-on
 	 *
 	 * @since  1.1.0
@@ -384,9 +357,10 @@ class MS_Model_Addon extends MS_Model_Option {
 		if ( self::is_registered( $addon ) ) {
 			$enabled = ! empty( $model->active[ $addon ] );
 
-			$parent = self::get_parent( $addon );
-			if ( $enabled && $parent ) {
-				$enabled = self::is_enabled( $parent );
+			if ( $enabled ) {
+				/**
+				 * self::ADDON_MEMBERCAPS_ADV => self::ADDON_MEMBERCAPS
+				 */
 			}
 		}
 
@@ -620,10 +594,8 @@ class MS_Model_Addon extends MS_Model_Option {
 			),
 		);
 
-		$list[self::ADDON_MEMBERCAPS_ROLES] = (object) array(
-			'name' => __( 'User-Role Memberships', MS_TEXT_DOMAIN ),
-			'description' => __( 'Protect content based on a users role / for guests.', MS_TEXT_DOMAIN ),
-			'icon' => 'dashicons dashicons-admin-users',
+		$list[self::ADDON_MEMBERCAPS_ADV] = (object) array(
+			'name' => __( 'DUMMY: Member Capabilities', MS_TEXT_DOMAIN ),
 		);
 
 		return $list;

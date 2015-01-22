@@ -27,7 +27,7 @@
  *
  * @return object
  */
-class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
+class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 	/**
 	 * The list table id.
 	 *
@@ -64,7 +64,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 */
 	protected function get_columns() {
 		return apply_filters(
-			'membership_helper_list_table_gateway_columns',
+			'membership_helper_ListTable_gateway_columns',
 			array(
 				'name' => __( 'Gateway Name', MS_TEXT_DOMAIN ),
 				'mode' => __( 'Status', MS_TEXT_DOMAIN ),
@@ -83,7 +83,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 * @return array
 	 */
 	protected function get_hidden_columns() {
-		return apply_filters( 'ms_helper_list_table_gateway_hidden_columns', array() );
+		return apply_filters( 'ms_helper_ListTable_gateway_hidden_columns', array() );
 	}
 
 	/**
@@ -101,14 +101,14 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 	 */
 	protected function get_sortable_columns() {
 		return apply_filters(
-			'ms_helper_list_table_gateway_sortable_columns',
+			'ms_helper_ListTable_gateway_sortable_columns',
 			array()
 		);
 	}
 
 	/**
 	 * Prepares the list of items for displaying.
-	 * @uses WP_List_Table::set_pagination_args()
+	 * @uses WP_ListTable::set_pagination_args()
 	 *
 	 * @since 1.0.0
 	 * @access public
@@ -121,7 +121,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 
 		$this->items = apply_filters(
-			'ms_helper_list_table_gateway_items',
+			'ms_helper_ListTable_gateway_items',
 			MS_Model_Gateway::get_gateways()
 		);
 
@@ -160,7 +160,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 
 		$actions = apply_filters(
-			'gateway_helper_list_table_' . $this->id . '_column_name_actions',
+			'gateway_helper_ListTable_' . $this->id . '_column_name_actions',
 			$actions,
 			$item
 		);
@@ -240,7 +240,7 @@ class MS_Helper_List_Table_Gateway extends MS_Helper_List_Table {
 		);
 		$html .= '</div></div>';
 
-		return apply_filters( 'ms_helper_list_table_gateway_column_active', $html );
+		return apply_filters( 'ms_helper_ListTable_gateway_column_active', $html );
 	}
 
 	/**

@@ -27,29 +27,39 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Url_Group extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_CptGroup extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_url_group';
+	protected $id = 'cpt_group';
 
 	public function __construct( $model, $membership = null ) {
 		parent::__construct( $model, $membership );
-		$this->name['singular'] = __( 'URL', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'URLs', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Custom Post Type', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
 		return apply_filters(
-			'membership_helper_list_table_' . $this->id . '_columns',
+			"membership_helper_ListTable_{$this->id}_columns",
 			array(
 				'cb' => true,
-				'url' => __( 'Page URL', MS_TEXT_DOMAIN ),
+				'name' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 				'access' => true,
 			)
 		);
 	}
 
-	public function column_url( $item ) {
-		return $item->url;
+	public function get_sortable_columns() {
+		return apply_filters(
+			"membership_helper_ListTable_{$this->id}_sortable_columns",
+			array(
+				'name' => 'name',
+				'access' => 'access',
+			)
+		);
+	}
+
+	public function column_name( $item, $column_name ) {
+		return $item->name;
 	}
 
 }

@@ -95,22 +95,6 @@ define( 'MS_PLUGIN_VERSION', '1.1.0.0' );
  * @return array(class=>path) Classes with new file paths.
  */
 function ms_class_path_overrides( $overrides ) {
-	// CONTROLLERS
-	$controllers_base = 'app/controller/';
-	$controllers = array(
-	);
-
-	// HELPERS
-	$helpers_base = 'app/helper/';
-	$helpers = array(
-		'MS_Helper_List_Table' => 'class-ms-helper-list-table.php',
-		'MS_Helper_List_Table_Membership_Group' => 'list-table/class-ms-helper-list-table-membership-group.php',
-		'MS_Helper_List_Table_Rule_Custom_Post_Type_Group' => 'list-table/rule/class-ms-helper-list-table-rule-custom-post-type-group.php',
-		'MS_Helper_List_Table_Rule_Url_Group' => 'list-table/rule/class-ms-helper-list-table-rule-url-group.php',
-		'MS_Helper_List_Table_Rule_Replace_Menu' => 'list-table/rule/class-ms-helper-list-table-rule-replace-menu.php',
-		'MS_Helper_List_Table_Rule_Replace_Menulocation' => 'list-table/rule/class-ms-helper-list-table-rule-replace-menulocation.php',
-	);
-
 	// MODELS
 	$models_base = 'app/model/';
 	$models = array(
@@ -123,9 +107,6 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Model_Communication_Failed_Payment' => 'communication/class-ms-model-communication-failed-payment.php',
 		'MS_Model_Communication_Info_Update' => 'communication/class-ms-model-communication-info-update.php',
 		'MS_Model_Communication_Registration_Free' => 'communication/class-ms-model-communication-registration-free.php',
-		'MS_Model_Custom_Post_Type' => 'class-ms-model-custom-post-type.php',
-		'MS_Model_Rule_Custom_Post_Type' => 'rule/class-ms-model-rule-custom-post-type.php',
-		'MS_Model_Rule_Custom_Post_Type_Group' => 'rule/class-ms-model-rule-custom-post-type-group.php',
 		'MS_Model_Rule_Url_Group' => 'rule/class-ms-model-rule-url-group.php',
 		'MS_Model_Rule_Replace_Menu' => 'rule/class-ms-model-rule-replace-menu.php',
 		'MS_Model_Rule_Replace_Menulocation' => 'rule/class-ms-model-rule-replace-menulocation.php',
@@ -134,39 +115,18 @@ function ms_class_path_overrides( $overrides ) {
 	// VIEWS
 	$views_base = 'app/view/';
 	$views = array(
-		'MS_View_Membership_Dripped' => 'membership/class-ms-view-membership-dripped.php',
-		'MS_View_Membership_Payment' => 'membership/class-ms-view-membership-payment.php',
 		'MS_View_Membership_Protected_Content' => 'membership/class-ms-view-membership-protected-content.php',
 		'MS_View_Shortcode_Membership_Signup' => 'shortcode/class-ms-view-shortcode-membership-signup.php',
 		'MS_View_Shortcode_Membership_Login' => 'shortcode/class-ms-view-shortcode-membership-login.php',
 		'MS_View_Shortcode_Membership_Register_User' => 'shortcode/class-ms-view-shortcode-membership-register-user.php',
 	);
 
-	foreach ( $controllers as $key => $path ) { $overrides[ $key ] = $controllers_base . $path; }
-	foreach ( $helpers as $key => $path ) { $overrides[ $key ] = $helpers_base . $path; }
 	foreach ( $models as $key => $path ) { $overrides[ $key ] = $models_base . $path; }
 	foreach ( $views as $key => $path ) { $overrides[ $key ] = $views_base . $path; }
 
 	return $overrides;
 }
 add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
-
-/**
- * Hooks 'ms_class_file_override'.
- *
- * Overrides file class paths.
- *
- * @since 1.0.0
- *
- * @param  array $overrides Array passed in by filter.
- * @return array(class=>path) Classes with new file paths.
- */
-function ms_class_file_override( $file ) {
-	// Override all list-table paths.
-	$file = str_replace( 'helper/list/table', 'helper/list-table', $file );
-	return $file;
-}
-add_filter( 'ms_class_file_override', 'ms_class_file_override' );
 
 /**
  * Primary Membership plugin class.

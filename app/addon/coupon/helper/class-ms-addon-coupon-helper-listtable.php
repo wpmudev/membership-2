@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_List_Table {
+class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 
 	protected $id = 'coupon';
 

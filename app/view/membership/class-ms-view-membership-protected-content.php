@@ -142,6 +142,38 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	}
 
 	/* ====================================================================== *
+	 *                               CUSTOM POST TYPE
+	 * ====================================================================== */
+
+	/**
+	 * Render CPT Post by Post tab.
+	 *
+	 * @since 1.1.0
+	 */
+	public function render_tab_cpt_item() {
+		$tab = MS_Factory::create( 'MS_View_Membership_Rule_CptItem' );
+		$tab->data = $this->data;
+
+		return $tab->to_html();
+	}
+
+	/* ====================================================================== *
+	 *                               CUSTOM POST TYPE
+	 * ====================================================================== */
+
+	/**
+	 * Render CPT Group tab.
+	 *
+	 * @since 1.1.0
+	 */
+	public function render_tab_cpt_group() {
+		$tab = MS_Factory::create( 'MS_View_Membership_Rule_CptGroup' );
+		$tab->data = $this->data;
+
+		return $tab->to_html();
+	}
+
+	/* ====================================================================== *
 	 *                               PAGE
 	 * ====================================================================== */
 
@@ -168,7 +200,18 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	 * ====================================================================== */
 
 	public function render_tab_membercaps() {
-		$view = MS_Factory::create( 'MS_View_Membership_Rule_Membercaps' );
+		$view = MS_Factory::create( 'MS_View_Membership_Rule_MemberCaps' );
+		$view->data = $this->data;
+
+		return $view->to_html();
+	}
+
+	/* ====================================================================== *
+	 *                               MEMBER ROLES
+	 * ====================================================================== */
+
+	public function render_tab_memberroles() {
+		$view = MS_Factory::create( 'MS_View_Membership_Rule_MemberRoles' );
 		$view->data = $this->data;
 
 		return $view->to_html();
@@ -191,17 +234,6 @@ class MS_View_Membership_Protected_Content extends MS_View {
 
 	public function render_tab_post() {
 		$view = MS_Factory::create( 'MS_View_Membership_Rule_Post' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               CUSTOM POST TYPE
-	 * ====================================================================== */
-
-	public function render_tab_cpt() {
-		$view = MS_Factory::create( 'MS_View_Membership_Rule_Cpt' );
 		$view->data = $this->data;
 
 		return $view->to_html();

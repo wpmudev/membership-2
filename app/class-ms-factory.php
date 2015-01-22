@@ -132,7 +132,7 @@ class MS_Factory {
 
 			if ( $model instanceof MS_Model_Option ) {
 				$model = self::load_from_wp_option( $model );
-			} elseif ( $model instanceof MS_Model_Custom_Post_Type ) {
+			} elseif ( $model instanceof MS_Model_CustomPostType ) {
 				$model = self::load_from_wp_custom_post_type( $model, $model_id );
 			} elseif ( $model instanceof MS_Model_Member ) {
 				$model = self::load_from_wp_user( $model, $model_id );
@@ -240,16 +240,16 @@ class MS_Factory {
 	}
 
 	/**
-	 * Load MS_Model_Custom_Post_Type Objects.
+	 * Load MS_Model_CustomPostType Objects.
 	 *
 	 * Load from post and postmeta.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Custom_Post_Type $model The empty model instance.
+	 * @param MS_Model_CustomPostType $model The empty model instance.
 	 * @param int $model_id The model id to retrieve.
 	 *
-	 * @return MS_Model_Custom_Post_Type The retrieved object.
+	 * @return MS_Model_CustomPostType The retrieved object.
 	 */
 	protected static function load_from_wp_custom_post_type( $model, $model_id = 0 ) {
 		$class = get_class( $model );

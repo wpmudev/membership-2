@@ -27,40 +27,30 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Replace_Menulocation extends MS_Helper_List_Table_Matching {
+class MS_Helper_ListTable_Rule_Shortcode extends MS_Helper_ListTable_Rule {
 
-	protected $id = MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS;
+	protected $id = 'rule_shortcode';
 
-	/**
-	 * Constructor.
-	 *
-	 * @since  1.0.4.2
-	 *
-	 * @param MS_Model $model Model for the list data.
-	 * @param MS_Model_Membership $membership The associated membership.
-	 */
-	public function __construct( $model, $membership ) {
+	public function __construct( $model, $membership = null ) {
 		parent::__construct( $model, $membership );
-		$this->name['singular'] = __( 'Menu Location', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Menu Locations', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Shortcode', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Shortcodes', MS_TEXT_DOMAIN );
 	}
 
-	/**
-	 * Override the column captions.
-	 *
-	 * @since  1.0.4.2
-	 * @param  string $col
-	 * @return string
-	 */
-	protected function get_column_label( $col ) {
-		$label = '';
+	public function get_columns() {
+		return apply_filters(
+			"membership_helper_ListTable_{$this->id}_columns",
+			array(
+				'cb' => true,
+				'name' => __( 'Shortcode', MS_TEXT_DOMAIN ),
+				'access' => true,
+			)
+		);
+	}
 
-		switch ( $col ) {
-			case 'item': $label = __( 'Menu Location', MS_TEXT_DOMAIN ); break;
-			case 'match': $label = __( 'Show this menu to members', MS_TEXT_DOMAIN ); break;
-		}
-
-		return $label;
+	public function column_name( $item ) {
+		$html = $item->name;
+		return $html;
 	}
 
 }

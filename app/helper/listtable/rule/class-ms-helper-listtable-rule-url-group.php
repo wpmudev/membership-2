@@ -27,46 +27,29 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Menu extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Url_Group extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_menu';
+	protected $id = 'rule_url_group';
 
-	protected $menu_id;
-
-	public function __construct( $model, $membership, $menu_id ) {
+	public function __construct( $model, $membership = null ) {
 		parent::__construct( $model, $membership );
-		$this->menu_id = $menu_id;
-		$this->name['singular'] = __( 'Menu Item', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Menu Items', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'URL', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'URLs', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
-		$menus = $this->model->get_menu_array();
 		return apply_filters(
-			'membership_helper_list_table_' . $this->id . '_columns',
+			'membership_helper_ListTable_' . $this->id . '_columns',
 			array(
 				'cb' => true,
-				'title' => __( 'Menu title', MS_TEXT_DOMAIN ),
+				'url' => __( 'Page URL', MS_TEXT_DOMAIN ),
 				'access' => true,
 			)
 		);
 	}
 
-	public function prepare_items_args( $defaults ) {
-		$args = apply_filters(
-			'ms_helper_list_table_rule_menu_prepare_items_args',
-			array( 'menu_id' => $this->menu_id )
-		);
-
-		return wp_parse_args( $args, $defaults );
-	}
-
-	public function column_title( $item, $column_name ) {
-		return $item->title;
-	}
-
-	protected function get_items_per_page() {
-		return 0;
+	public function column_url( $item ) {
+		return $item->url;
 	}
 
 }

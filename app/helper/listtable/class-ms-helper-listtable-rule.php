@@ -27,7 +27,7 @@
  * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
+class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 	/**
 	 * ID of the rule. This is overwritten by each rule!
@@ -106,7 +106,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 	public function get_columns() {
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_columns",
+			"ms_helper_ListTable_{$this->id}_columns",
 			array(
 				'cb' => '<input type="checkbox" />',
 				'content' => __( 'Content', MS_TEXT_DOMAIN ),
@@ -118,14 +118,14 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_hidden_columns",
+			"ms_helper_ListTable_{$this->id}_hidden_columns",
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_sortable_columns",
+			"ms_helper_ListTable_{$this->id}_sortable_columns",
 			array(
 				'content' => 'content',
 				'access' => 'access',
@@ -148,7 +148,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		}
 
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_bulk_actions",
+			"ms_helper_ListTable_{$this->id}_bulk_actions",
 			$bulk_actions
 		);
 	}
@@ -226,7 +226,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 
 		// List available items
 		$this->items = apply_filters(
-			"ms_helper_list_table_{$this->id}_items",
+			"ms_helper_ListTable_{$this->id}_items",
 			$this->model->get_contents( $args )
 		);
 
@@ -470,7 +470,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$html = ob_get_clean();
 
 		return apply_filters(
-			'ms_helper_list_table_rule_column_dripped',
+			'ms_helper_ListTable_rule_column_dripped',
 			$html
 		);
 	}
@@ -506,7 +506,7 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		}
 
 		return apply_filters(
-			'ms_helper_list_table_rule_get_membership_id',
+			'ms_helper_ListTable_rule_get_membership_id',
 			$membership_id
 		);
 	}
@@ -521,9 +521,6 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	 * @since  1.1.0
 	 */
 	public function list_head() {
-	#	$url = remove_query_arg( 'membership_id' );
-	#	$links = array();
-	#	$memberships = MS_Model_Membership::get_membership_names();
 		$type_name = $this->name['plural'];
 
 		/*
@@ -538,9 +535,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			if ( empty( $_GET['status'] ) ) {
 				$title = __( 'Showing <b>All</b> %1$s', MS_TEXT_DOMAIN );
 			} elseif ( MS_Model_Rule::FILTER_NOT_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All <b>Protected</b> %1$s', MS_TEXT_DOMAIN );
-			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
 				$title = __( 'Showing All <b>Unprotected</b> %1$s', MS_TEXT_DOMAIN );
+			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
+				$title = __( 'Showing All <b>Protected</b> %1$s', MS_TEXT_DOMAIN );
 			}
 		} else {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $_GET['membership_id'] );
@@ -548,9 +545,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			if ( empty( $_GET['status'] ) ) {
 				$title = __( 'Showing <b>All</b> %1$s of %2$s', MS_TEXT_DOMAIN );
 			} elseif ( MS_Model_Rule::FILTER_NOT_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All <b>Protected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
-			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
 				$title = __( 'Showing All <b>Unprotected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
+			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
+				$title = __( 'Showing All <b>Protected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
 			}
 		}
 
@@ -560,6 +557,13 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			'<b>' . esc_html( $membership->name ) . '</b>'
 		);
 
+		printf( '<h3 class="ms-list-title">%1$s</h3>', $title );
+
+	// Waiting for Feedback from Victor before removing this code.
+	#	$url = remove_query_arg( 'membership_id' );
+	#	$links = array();
+	#	$memberships = MS_Model_Membership::get_membership_names();
+	#
 	#	$links['_title'] = array(
 	#		'label' => __( 'Membership:', MS_TEXT_DOMAIN ),
 	#	);
@@ -580,7 +584,6 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	#		);
 	#	}
 	#
-		printf( '<h3 class="ms-list-title">%1$s</h3>', $title );
 	#	echo '<div class="ms-header-filter cf"><ul class="subsubsub">';
 	#	$this->display_filter_links( $links );
 	#	echo '</ul></div>';
@@ -598,10 +601,12 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	public function get_views() {
 		$count_args = $this->prepared_args;
 		unset( $count_args['rule_status'] );
-		$count = $this->model->count_item_access( $count_args );
+
+		// Count is not working, so we remove it for now
+		//$count = $this->model->count_item_access( $count_args );
 
 		$url = apply_filters(
-			"ms_helper_list_table_{$this->id}_url",
+			"ms_helper_ListTable_{$this->id}_url",
 			remove_query_arg( array( 'status', 'paged' ) )
 		);
 
@@ -610,23 +615,23 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		$views['all'] = array(
 			'url' => $url,
 			'label' => __( 'All', MS_TEXT_DOMAIN ),
-			'count' => $count['total'],
+			//'count' => $count['total'],
 		);
 
 		$views['public'] = array(
 			'url' => add_query_arg( array( 'status' => MS_Model_Rule::FILTER_NOT_PROTECTED ), $url ),
 			'label' => __( 'Unprotected', MS_TEXT_DOMAIN ),
-			'count' => $count['restricted'],
+			//'count' => $count['restricted'],
 		);
 
 		$views['protected'] = array(
 			'url' => add_query_arg( array( 'status' => MS_Model_Rule::FILTER_PROTECTED ), $url ),
 			'label' => __( 'Protected', MS_TEXT_DOMAIN ),
-			'count' => $count['accessible'],
+			//'count' => $count['accessible'],
 		);
 
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_views",
+			"ms_helper_ListTable_{$this->id}_views",
 			$views
 		);
 	}

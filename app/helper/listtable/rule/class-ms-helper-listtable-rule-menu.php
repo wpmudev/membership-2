@@ -24,34 +24,49 @@
  * Membership List Table
  *
  *
- * @since 1.1
+ * @since 4.0.0
  *
  */
-class MS_Helper_List_Table_Rule_Adminside extends MS_Helper_List_Table_Rule {
+class MS_Helper_ListTable_Rule_Menu extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_adminside';
+	protected $id = 'rule_menu';
 
-	public function __construct( $model, $membership = null ) {
+	protected $menu_id;
+
+	public function __construct( $model, $membership, $menu_id ) {
 		parent::__construct( $model, $membership );
-		$this->name['singular'] = __( 'Admin Page', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Admin Pages', MS_TEXT_DOMAIN );
+		$this->menu_id = $menu_id;
+		$this->name['singular'] = __( 'Menu Item', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Menu Items', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
-		$columns = array(
-			'cb' => true,
-			'name' => __( 'Admin Side Page', MS_TEXT_DOMAIN ),
-			'access' => true,
-		);
-
+		$menus = $this->model->get_menu_array();
 		return apply_filters(
-			"ms_helper_list_table_{$this->id}_columns",
-			$columns
+			'membership_helper_ListTable_' . $this->id . '_columns',
+			array(
+				'cb' => true,
+				'title' => __( 'Menu title', MS_TEXT_DOMAIN ),
+				'access' => true,
+			)
 		);
 	}
 
-	public function column_name( $item ) {
-		return $item->post_title;
+	public function prepare_items_args( $defaults ) {
+		$args = apply_filters(
+			'ms_helper_ListTable_rule_menu_prepare_items_args',
+			array( 'menu_id' => $this->menu_id )
+		);
+
+		return wp_parse_args( $args, $defaults );
+	}
+
+	public function column_title( $item, $column_name ) {
+		return $item->title;
+	}
+
+	protected function get_items_per_page() {
+		return 0;
 	}
 
 }

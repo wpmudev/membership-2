@@ -8,8 +8,8 @@ class MS_View_Membership_Rule_Adminside extends MS_View_Membership_Protected_Con
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_ADMINSIDE );
 
-		$rule_list_table = new MS_Helper_List_Table_Rule_Adminside( $rule, $membership );
-		$rule_list_table->prepare_items();
+		$rule_ListTable = new MS_Helper_ListTable_Rule_Adminside( $rule, $membership );
+		$rule_ListTable->prepare_items();
 
 		$header_data = apply_filters(
 			'ms_view_membership_protected_content_header',
@@ -30,12 +30,12 @@ class MS_View_Membership_Rule_Adminside extends MS_View_Membership_Protected_Con
 			<?php
 			MS_Helper_Html::settings_tab_header( $header_data );
 
-			$rule_list_table->views();
-			$rule_list_table->search_box();
+			$rule_ListTable->views();
+			$rule_ListTable->search_box();
 			?>
 			<form action="" method="post">
 				<?php
-				$rule_list_table->display();
+				$rule_ListTable->display();
 
 				do_action(
 					'ms_view_membership_protected_content_footer',

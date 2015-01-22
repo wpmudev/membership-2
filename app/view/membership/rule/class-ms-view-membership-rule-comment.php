@@ -59,7 +59,7 @@ class MS_View_Membership_Rule_Comment extends MS_View_Membership_Protected_Conte
 
 		if ( 'item' === $menu_protection ) {
 			$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MENU );
-			$rule_list_table = new MS_Helper_List_Table_Rule_Menu(
+			$rule_ListTable = new MS_Helper_ListTable_Rule_Menu(
 				$rule_menu,
 				$membership,
 				$this->data['menu_id']
@@ -87,7 +87,7 @@ class MS_View_Membership_Rule_Comment extends MS_View_Membership_Protected_Conte
 			$fields
 		);
 
-		$rule_list_table->prepare_items();
+		$rule_ListTable->prepare_items();
 
 		$header_data = apply_filters(
 			'ms_view_membership_protected_content_header',
@@ -158,8 +158,8 @@ class MS_View_Membership_Rule_Comment extends MS_View_Membership_Protected_Conte
 					<form id="ms-menu-form" method="post" action="<?php echo '' . $menu_url; ?>">
 						<?php
 						MS_Helper_Html::html_element( $fields['rule_menu'] );
-						$rule_list_table->views();
-						$rule_list_table->display();
+						$rule_ListTable->views();
+						$rule_ListTable->display();
 						?>
 					</form>
 					<?php

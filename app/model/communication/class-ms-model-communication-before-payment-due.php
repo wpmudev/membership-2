@@ -23,7 +23,7 @@
 /**
  * Communication model - before payment is due.
  *
- * Persisted by parent class MS_Model_Custom_Post_Type.
+ * Persisted by parent class MS_Model_CustomPostType.
  *
  * @since 1.0.0
  * @package Membership
