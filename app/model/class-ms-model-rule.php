@@ -554,8 +554,8 @@ class MS_Model_Rule extends MS_Model {
 		if ( is_scalar( $id ) && isset( $this->rule_value[ $id ] ) ) {
 			$value = $this->rule_value[ $id ];
 		} else {
-			// If no rule is defined for the item then assume "Has Access"
-			$value = self::RULE_VALUE_HAS_ACCESS;
+			// If no rule is defined for the item then assume "No Access".
+			$value = self::RULE_VALUE_NO_ACCESS;
 		}
 
 		return apply_filters(

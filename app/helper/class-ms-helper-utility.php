@@ -210,30 +210,80 @@ class MS_Helper_Utility extends MS_Helper {
 		$key = strtolower( $key );
 
 		if ( ! isset( $Colors[$key] ) ) {
-			$col_min_avg = 64;
-			$col_max_avg = 192;
-			$col_step = 16;
-
-			// (192 - 64) / 16 = 8
-			// 8 ^ 3 = 512 colors
-
-			$range = $col_max_avg - $col_min_avg;
-			$factor = $range / 256;
-			$offset = $col_min_avg;
-
 			$base_hash = md5( $key );
-			$b_R = hexdec( substr( $base_hash, 0, 2 ) );
-			$b_G = hexdec( substr( $base_hash, 2, 2 ) );
-			$b_B = hexdec( substr( $base_hash, 4, 2 ) );
 
-			$f_R = floor( ( floor( $b_R * $factor ) + $offset ) / $col_step ) * $col_step;
-			$f_G = floor( ( floor( $b_G * $factor ) + $offset ) / $col_step ) * $col_step;
-			$f_B = floor( ( floor( $b_B * $factor ) + $offset ) / $col_step ) * $col_step;
+			$h = hexdec( substr( $base_hash, 0, 2 ) ) +
+				hexdec( substr( $base_hash, 10, 2 ) ) +
+				hexdec( substr( $base_hash, 20, 2 ) );
 
-			$Colors[$key] = sprintf( '#%02x%02x%02x', $f_R, $f_G, $f_B );
+			$s = 35 + ( hexdec( substr( $base_hash, 1, 2 ) ) % 15 );
+
+			$l = 45 + ( hexdec( substr( $base_hash, 2, 2 ) ) % 15 );
+
+			$Colors[$key] = self::hsl2web( $h, $s / 100, $l / 100 );
 		}
 
 		return $Colors[$key];
+	}
+
+	/**
+	 * Takes Hue/Saturation/Lightness color definition and returns a hex color code
+	 *
+	 * @since  1.1.0
+	 * @param  float $h
+	 * @param  float $s
+	 * @param  float $l
+	 * @return string
+	 */
+	static public function hsl2web( $h, $s, $l ){
+		$r = 0; $g = 0; $b = 0;
+
+		$h %= 360;
+		$c = ( 1 - abs( 2 * $l - 1 ) ) * $s;
+		$x = $c * ( 1 - abs( fmod( ( $h / 60 ), 2 ) - 1 ) );
+		$m = $l - ( $c / 2 );
+
+		if ( $h < 60 ) {
+			$r = $c; $g = $x; $b = 0;
+		} else if ( $h < 120 ) {
+			$r = $x; $g = $c; $b = 0;
+		} else if ( $h < 180 ) {
+			$r = 0; $g = $c; $b = $x;
+		} else if ( $h < 240 ) {
+			$r = 0; $g = $x; $b = $c;
+		} else if ( $h < 300 ) {
+			$r = $x; $g = 0; $b = $c;
+		} else {
+			$r = $c; $g = 0; $b = $x;
+		}
+
+		$r = str_pad( dechex( ( $r + $m ) * 255 ), 2, '0', STR_PAD_LEFT );
+		$g = str_pad( dechex( ( $g + $m ) * 255 ), 2, '0', STR_PAD_LEFT );
+		$b = str_pad( dechex( ( $b + $m  ) * 255 ), 2, '0', STR_PAD_LEFT );
+
+		return '#' . $r . $g . $b;
+	}
+
+	/**
+	 * Determine if the user currently is on the specified URL
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param  string $url The URL to check
+	 * @return bool
+	 */
+	static public function is_current_url( $url ) {
+		static $Cur_url = null;
+
+		if ( null === $Cur_url ) {
+			$query_string = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
+			parse_str( $query_string, $Cur_url );
+		}
+
+		$query_string = parse_url( $url, PHP_URL_QUERY );
+		parse_str( $query_string, $params );
+
+		return ( $params == $Cur_url );
 	}
 
 }

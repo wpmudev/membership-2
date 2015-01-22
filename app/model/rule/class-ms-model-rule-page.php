@@ -298,27 +298,51 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			'post_type' => 'page',
 		);
 
+		$include = array();
+		$exclude = array();
+		$base_rule = $this;
+		$child_rule = $this;
+
+		if ( ! $this->is_base_rule ) {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+		}
+		if ( ! empty( $args['membership_id'] ) ) {
+			$child_rule = MS_Factory::load( 'MS_Model_Membership', $args['membership_id'] )->get_rule( $this->rule_type );
+		}
+
+		$base_items = array_keys( $base_rule->rule_value, true );
+		$child_items = array_keys( $child_rule->rule_value, true );
+
 		unset( $args['posts_per_page'] );
 		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
 
 		switch ( $status ) {
-			case MS_Model_Rule::FILTER_HAS_ACCESS;
 			case MS_Model_Rule::FILTER_PROTECTED;
-				$args['include'] = array_keys( $this->rule_value, true );
-				break;
-
-			case MS_Model_Rule::FILTER_NO_ACCESS;
-				$args['include'] = array_keys( $this->rule_value, false );
+				if ( ! empty( $args['membership_id'] ) ) {
+					$include = array_intersect( $child_items, $base_items );
+				} else {
+					$include = $child_items;
+				}
+				if ( empty( $include ) ) {
+					$include = array( 0 );
+				}
 				break;
 
 			case MS_Model_Rule::FILTER_NOT_PROTECTED;
-				$args['exclude'] = array_keys( $this->rule_value, true );
+				if ( ! empty( $args['membership_id'] ) ) {
+					$include = array_diff( $base_items, $child_items );
+				} else {
+					$exclude = $child_items;
+				}
+				if ( empty( $include ) && empty( $exclude ) ) {
+					$include = array( 0 );
+				}
 				break;
 
 			default:
-				// If not visitor membership, just show protected content
-				if ( ! $this->is_base_rule ) {
-					$args['include'] = array_keys( $this->rule_value );
+				// If not visitor membership, just show all protected content
+				if ( ! $child_rule->is_base_rule ) {
+					$include = $base_items;
 				}
 				break;
 		}
@@ -330,6 +354,12 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			 */
 			$args['hierarchical'] = false;
 			$args['child_of'] = false;
+		}
+
+		if ( ! empty( $include ) ) {
+			$args['include'] = $include;
+		} elseif ( ! empty( $exclude ) ) {
+			$args['exclude'] = $exclude;
 		}
 
 		$args = wp_parse_args( $args, $defaults );

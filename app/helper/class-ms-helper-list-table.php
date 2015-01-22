@@ -415,7 +415,7 @@ class MS_Helper_List_Table {
 					esc_html( $sep )
 				);
 			} else {
-				$is_current = $this->is_current_view( $data['url'] );
+				$is_current = MS_Helper_Utility::is_current_url( $data['url'] );
 
 				printf(
 					'<li class="%1$s"><a href="%2$s" class="%6$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',
@@ -428,28 +428,6 @@ class MS_Helper_List_Table {
 				);
 			}
 		}
-	}
-
-	/**
-	 * Determine if the user currently is on the specified URL
-	 *
-	 * @since  1.1.0
-	 * @access protected
-	 *
-	 * @return bool
-	 */
-	protected function is_current_view( $url ) {
-		static $Cur_url = null;
-
-		if ( null === $Cur_url ) {
-			$query_string = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
-			parse_str( $query_string, $Cur_url );
-		}
-
-		$query_string = parse_url( $url, PHP_URL_QUERY );
-		parse_str( $query_string, $params );
-
-		return ( $params == $Cur_url );
 	}
 
 	/**

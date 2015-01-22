@@ -1442,7 +1442,7 @@
   margin: 0 0 0 -20px;
 }
 .ms-wrap.ms-membership-overview .ms-wrap-top {
-  padding: 15px 15px 15px 265px;
+  padding: 15px 265px;
   background-color: #FAFAFA;
 }
 .ms-wrap.ms-membership-overview.no-tabs .ms-wrap-top {
@@ -1513,8 +1513,7 @@
   border-top: 0;
 }
 .ms-wrap .ms-overview-container .ms-overview-bottom {
-  padding-top: 20px;
-  padding-right: 20px;
+  padding: 20px;
 }
 .ms-wrap .ms-overview-container.no-tabs .ms-overview-bottom {
   margin-left: 20px;
@@ -1560,6 +1559,9 @@
 }
 #wpwrap .ms-wrap tr .column-access {
   width: 70%;
+}
+#wpwrap .ms-wrap tr .column-access select {
+  display: none;
 }
 #wpwrap .ms-wrap tr .ms-public {
   position: relative;

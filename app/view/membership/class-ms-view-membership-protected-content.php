@@ -36,6 +36,8 @@ class MS_View_Membership_Protected_Content extends MS_View {
 				)
 			);
 
+			$this->membership_filter();
+
 			$active_tab = $this->data['active_tab'];
 			MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
 
@@ -79,7 +81,49 @@ class MS_View_Membership_Protected_Content extends MS_View {
 	}
 
 
+	/**
+	 * Display a filter to select the current membership
+	 *
+	 * @since  1.1.0
+	 */
+	public function membership_filter() {
+		$memberships = MS_Model_Membership::get_membership_names();
+		$url = remove_query_arg( 'membership_id' );
+		$links = array();
 
+		$links['all'] = array(
+			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'url' => $url,
+		);
+
+		foreach ( $memberships as $id => $name ) {
+			if ( empty( $name ) ) {
+				$name = __( '(No Name)', MS_TEXT_DOMAIN );
+			}
+
+			$links['ms-' . $id] = array(
+				'label' => esc_html( $name ),
+				'url' => add_query_arg( array( 'membership_id' => $id ), $url ),
+			);
+		}
+
+		?>
+		<div class="wp-filter">
+			<ul class="filter-links">
+				<?php foreach ( $links as $key => $item ) :
+					$is_current = MS_Helper_Utility::is_current_url( $item['url'] );
+					$class = ( $is_current ? 'current' : '' );
+					?>
+					<li>
+						<a href="<?php echo esc_url( $item['url'] ); ?>" class="<?php echo esc_attr( $class ); ?>">
+							<?php echo esc_html( $item['label'] ); ?>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php
+	}
 
 	/* ====================================================================== *
 	 *                               CATEGORY

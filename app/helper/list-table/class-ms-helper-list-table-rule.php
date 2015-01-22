@@ -213,9 +213,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
 		}
 
-		// show all content instead of protected only for dripped
-		if ( MS_Model_Membership::TYPE_DRIPPED == $this->membership->type ) {
-			$args['show_all'] = 1;
+		// If a membership is filtered then only show protected items
+		if ( ! empty( $_REQUEST['membership_id'] ) ) {
+			$args['membership_id'] = $_REQUEST['membership_id'];
 		}
 
 		// Allow other helper list tables to customize the args array.
@@ -521,9 +521,9 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 	 * @since  1.1.0
 	 */
 	public function list_head() {
-		$url = remove_query_arg( 'membership_id' );
-		$links = array();
-		$memberships = MS_Model_Membership::get_membership_names();
+	#	$url = remove_query_arg( 'membership_id' );
+	#	$links = array();
+	#	$memberships = MS_Model_Membership::get_membership_names();
 		$type_name = $this->name['plural'];
 
 		/*
@@ -553,36 +553,37 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 				$title = __( 'Showing All <b>Unprotected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
 			}
 		}
+
 		$title = sprintf(
 			$title,
 			'<b>' . esc_html( $type_name ) . '</b>',
 			'<b>' . esc_html( $membership->name ) . '</b>'
 		);
 
-		$links['_title'] = array(
-			'label' => __( 'Membership:', MS_TEXT_DOMAIN ),
-		);
-
-		$links['all'] = array(
-			'label' => __( 'All', MS_TEXT_DOMAIN ),
-			'url' => $url,
-		);
-
-		foreach ( $memberships as $id => $name ) {
-			if ( empty( $name ) ) {
-				$name = __( '(No Name)', MS_TEXT_DOMAIN );
-			}
-
-			$links['ms-' . $id] = array(
-				'label' => esc_html( $name ),
-				'url' => add_query_arg( array( 'membership_id' => $id ), $url ),
-			);
-		}
-
+	#	$links['_title'] = array(
+	#		'label' => __( 'Membership:', MS_TEXT_DOMAIN ),
+	#	);
+	#
+	#	$links['all'] = array(
+	#		'label' => __( 'All', MS_TEXT_DOMAIN ),
+	#		'url' => $url,
+	#	);
+	#
+	#	foreach ( $memberships as $id => $name ) {
+	#		if ( empty( $name ) ) {
+	#			$name = __( '(No Name)', MS_TEXT_DOMAIN );
+	#		}
+	#
+	#		$links['ms-' . $id] = array(
+	#			'label' => esc_html( $name ),
+	#			'url' => add_query_arg( array( 'membership_id' => $id ), $url ),
+	#		);
+	#	}
+	#
 		printf( '<h3 class="ms-list-title">%1$s</h3>', $title );
-		echo '<div class="ms-header-filter cf"><ul class="subsubsub">';
-		$this->display_filter_links( $links );
-		echo '</ul></div>';
+	#	echo '<div class="ms-header-filter cf"><ul class="subsubsub">';
+	#	$this->display_filter_links( $links );
+	#	echo '</ul></div>';
 	}
 
 	/**
@@ -605,9 +606,6 @@ class MS_Helper_List_Table_Rule extends MS_Helper_List_Table {
 		);
 
 		$views = array();
-		$views['_title'] = array(
-			'label' => __( 'Status:', MS_TEXT_DOMAIN ),
-		);
 
 		$views['all'] = array(
 			'url' => $url,

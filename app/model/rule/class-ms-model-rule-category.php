@@ -285,14 +285,8 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 		$exclude = array();
 
 		switch ( $status ) {
-			case MS_Model_Rule::FILTER_HAS_ACCESS;
 			case MS_Model_Rule::FILTER_PROTECTED;
 				$include = array_keys( $this->rule_value, true );
-				$include = array_keys( $this->rule_value, true );
-				break;
-
-			case MS_Model_Rule::FILTER_NO_ACCESS;
-				$include = array_keys( $this->rule_value, false );
 				break;
 
 			case MS_Model_Rule::FILTER_NOT_PROTECTED;

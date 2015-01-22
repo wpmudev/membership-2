@@ -15,6 +15,10 @@
 	tr {
 		.column-access {
 			width: 70%;
+
+			select {
+				display: none;
+			}
 		}
 
 		.ms-public {

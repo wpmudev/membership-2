@@ -191,7 +191,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			<div class="ms-settings">
 				<div class="ms-overview-top">
 					<div class="ms-settings-desc ms-description membership-description">
-						<?php echo $desc; ?>
+						<?php echo '' . $desc; ?>
 					</div>
 					<?php
 
@@ -243,7 +243,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				}
 
 				if ( $has_rules ) {
-					$this->content_box( $membership->get_rule( $rule_type ), 4 );
+					$this->content_box( $membership->get_rule( $rule_type ) );
 				}
 			}
 			?>
@@ -251,17 +251,19 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		<?php
 
 		if ( ! $membership->is_free ) {
+			$payment_url = add_query_arg(
+				array(
+					'step' => MS_Controller_Membership::STEP_PAYMENT,
+					'edit' => 1,
+				)
+			);
+
 			MS_Helper_Html::html_element(
 				array(
 					'id' => 'setup_payment',
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,
 					'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
-					'url' => add_query_arg(
-						array(
-							'step' => MS_Controller_Membership::STEP_PAYMENT,
-							'edit' => 1,
-						)
-					),
+					'url' => $payment_url,
 					'class' => 'wpmui-field-button button',
 				)
 			);
@@ -275,24 +277,24 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 	 *
 	 * @param  array $contents List of content items to display.
 	 */
-	protected function content_box( $rule, $items_per_row = 3 ) {
+	protected function content_box( $rule ) {
 		static $row_items = 0;
 
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 		$title = $rule_titles[ $rule->rule_type ];
-		$contents = $rule->get_contents( array( 'protected_content' => 1 ) );
+		$contents = $rule->get_contents( null, true );
 
 		$membership_id = $this->data['membership']->id;
 
 		$row_items += 1;
-		$new_row = ($row_items % $items_per_row === 0);
-		$show_sep = (($row_items - 1) % $items_per_row === 0);
+		$new_row = ($row_items % 4 === 0);
+		$show_sep = (($row_items - 1) % 4 === 0);
 
 		if ( $show_sep && $row_items > 1 ) {
 			MS_Helper_Html::html_separator();
 		}
 		?>
-		<div class="ms-part-<?php echo esc_attr( $items_per_row ); ?> ms-min-height">
+		<div class="ms-part-4 ms-min-height">
 			<?php if ( ! $new_row ) { MS_Helper_Html::html_separator( 'vertical' ); } ?>
 			<div class="ms-bold">
 				<?php printf( '%s (%s):', $title, $rule->count_rules() ); ?>
@@ -311,23 +313,26 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				<div class="ms-protection-edit-wrapper">
 					<?php
-						MS_Helper_Html::html_element(
-							array(
-								'id' => 'edit_' . $rule->rule_type,
-								'type' => MS_Helper_Html::TYPE_HTML_LINK,
-								'title' => $title,
-								'value' => sprintf( __( 'Edit %s Access', MS_TEXT_DOMAIN ), $title ),
-								'url' => add_query_arg(
-									array(
-										'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-										'tab' => $rule->rule_type,
-										'membership_id' => $membership_id,
-										'edit' => 1,
-									)
-								),
-								'class' => 'wpmui-field-button button',
-							)
-						);
+					$edit_url = add_query_arg(
+						array(
+							'page' => 'protected-content-setup',
+							'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+							'tab' => $rule->rule_type,
+							'membership_id' => $membership_id,
+							'edit' => 1,
+						)
+					);
+
+					MS_Helper_Html::html_element(
+						array(
+							'id' => 'edit_' . $rule->rule_type,
+							'type' => MS_Helper_Html::TYPE_HTML_LINK,
+							'title' => $title,
+							'value' => sprintf( __( 'Edit %s Access', MS_TEXT_DOMAIN ), $title ),
+							'url' => $edit_url,
+							'class' => 'wpmui-field-button button',
+						)
+					);
 					?>
 				</div>
 			</div>
