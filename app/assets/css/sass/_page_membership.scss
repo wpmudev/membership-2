@@ -272,20 +272,19 @@
 }
 
 /* Membership Details ("Overview" page) */
-.ms-wrap {
-	&.ms-membership-overview {
-		margin: 0 0 0 -20px;
+.ms-wrap.ms-membership-overview {
+	margin: 0 0 0 -20px;
 
-		.ms-wrap-top {
-			padding: 15px 265px;
-			background-color: #FAFAFA;
-		}
+	.ms-wrap-top {
+		padding: 15px 265px;
+		background-color: #FAFAFA;
+	}
 
-		&.no-tabs {
-			.ms-wrap-top {
-				padding-left: 20px
-			}
-		}
+	.the-title {
+		border-radius: 6px;
+		color: #FFF;
+		background: #888888;
+		padding: 2px 10px;
 	}
 
 	.ms-membership-status-wrapper {
@@ -370,12 +369,6 @@
 		.ms-overview-bottom {
 			padding: 20px;
 		}
-
-		&.no-tabs {
-			.ms-overview-bottom {
-				margin-left: 20px;
-			}
-		}
 	}
 }
 
@@ -410,5 +403,15 @@
 			margin: 0 0 10px 0;
 			line-height: 1.35em;
 		}
+	}
+}
+
+/* The Memberships list */
+.ms-wrap .ms-membership-list {
+	.the-color {
+		width: 18px;
+		float: left;
+		margin-right: 5px;
+		border-radius: 4px;
 	}
 }

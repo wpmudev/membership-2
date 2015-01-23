@@ -181,10 +181,13 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		}
 
 		return sprintf(
-			'<span class="the-name">%1$s</span> %3$s%2$s',
+			'<span class="the-color" style="background-color:%4$s">&nbsp;</span> ' .
+			'<span class="the-name">%1$s</span> ' .
+			'%3$s%2$s',
 			esc_html( $item->name ),
 			$this->row_actions( $actions ),
-			$badge
+			$badge,
+			$item->get_color()
 		);
 	}
 

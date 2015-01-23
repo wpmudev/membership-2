@@ -492,6 +492,18 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns the unique HEX color for this membership.
+	 * The color is calculated from the membership-ID and therefore will never
+	 * change.
+	 *
+	 * @since  1.1.0
+	 * @return string Hex color, e.g. '#FFFFFF'
+	 */
+	public function get_color() {
+		return MS_Helper_Utility::color_index( $this->id );
+	}
+
+	/**
 	 * Set protection Rule Model.
 	 *
 	 * @since 1.0.0
@@ -528,44 +540,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_membership_get_membership_count',
 			$count,
-			$args
-		);
-	}
-
-	/**
-	 * Get Memberships models.
-	 *
-	 * When no $args are specified then all memberships except the base
-	 * membership will be returned.
-	 *
-	 * To include the base membership use:
-	 * $args = array( 'include_base' => 1 )
-	 *
-	 * To exclude the guest membership use:
-	 * $args = array( 'include_guest' => 0 )
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
-	 * @return MS_Model_Membership[] The selected memberships.
-	 */
-	public static function get_memberships( $args = null ) {
-		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
-		$items = $query->get_posts();
-
-		$memberships = array();
-		foreach ( $items as $item ) {
-			$memberships[] = MS_Factory::load(
-				'MS_Model_Membership',
-				$item->ID
-			);
-		}
-
-		return apply_filters(
-			'ms_model_membership_get_memberships',
-			$memberships,
 			$args
 		);
 	}
@@ -694,6 +668,45 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get Memberships models.
+	 *
+	 * When no $args are specified then all memberships except the base
+	 * membership will be returned.
+	 *
+	 * To include the base membership use:
+	 * $args = array( 'include_base' => 1 )
+	 *
+	 * To exclude the guest membership use:
+	 * $args = array( 'include_guest' => 0 )
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return MS_Model_Membership[] The selected memberships.
+	 */
+	static public function get_memberships( $args = null ) {
+		$args = self::get_query_args( $args );
+		$args['order'] = 'ASC';
+		$query = new WP_Query( $args );
+		$items = $query->get_posts();
+
+		$memberships = array();
+		foreach ( $items as $item ) {
+			$memberships[] = MS_Factory::load(
+				'MS_Model_Membership',
+				$item->ID
+			);
+		}
+
+		return apply_filters(
+			'ms_model_membership_get_memberships',
+			$memberships,
+			$args
+		);
+	}
+
+	/**
 	 * Get membership names.
 	 *
 	 * @since 1.0.0
@@ -706,18 +719,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *		@type string $name The membership name;
 	 * }
 	 */
-	public static function get_membership_names( $args = null, $include_base_memberships = false ) {
-		if ( ! is_array( $args ) ) { $args = array(); }
-		$args['order'] = 'ASC';
-		$args['include_base'] = $include_base_memberships;
-		$args = self::get_query_args( $args );
-
-		$query = new WP_Query( $args );
-		$items = $query->get_posts();
+	public static function get_membership_names( $args = null ) {
+		$items = self::get_memberships( $args );
 
 		$memberships = array();
 		foreach ( $items as $item ) {
-			$memberships[ $item->ID ] = $item->name;
+			$memberships[ $item->id ] = $item->name;
 		}
 
 		return apply_filters(

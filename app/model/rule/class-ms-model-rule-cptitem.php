@@ -199,13 +199,14 @@ class MS_Model_Rule_CptItem extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
+		unset( $args['posts_per_page'] );
 		$args = $this->get_query_args( $args );
-		$query = new WP_Query( $args );
-		$count = $query->found_posts;
+		$items = get_posts( $args );
+		$count = count( $items );
 
 		return apply_filters(
 			'ms_model_rule_custom_post_type_gget_content_count',
@@ -221,7 +222,7 @@ class MS_Model_Rule_CptItem extends MS_Model_Rule {
 	 * @since 1.0.0
 	 *
 	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
 	 * @return array The content.
 	 */
 	public function get_contents( $args = null ) {
@@ -232,16 +233,12 @@ class MS_Model_Rule_CptItem extends MS_Model_Rule {
 		}
 
 		$args = $this->get_query_args( $args );
-
 		$contents = get_posts( $args );
+
 		foreach ( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = $this->rule_type;
 			$content->access = $this->get_rule_value( $content->id  );
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
 		return apply_filters(
@@ -249,38 +246,6 @@ class MS_Model_Rule_CptItem extends MS_Model_Rule {
 			$contents,
 			$args,
 			$this
-		);
-	}
-
-	/**
-	 * Get WP_Query object arguments.
-	 *
-	 * Return default search arguments.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
-	 * @return array $args The parsed args.
-	 */
-	public function get_query_args( $args = null ) {
-		$cpts = MS_Model_Rule_CptGroup::get_custom_post_types();
-
-		$defaults = array(
-			'posts_per_page' => -1,
-			'offset'      => 0,
-			'orderby'     => 'post_date',
-			'order'       => 'DESC',
-			'post_type'   => $cpts,
-			'post_status' => 'any',
-		);
-
-		$args = wp_parse_args( $args, $defaults );
-		$args = parent::get_query_args( $args );
-
-		return apply_filters(
-			'ms_model_rule_cpt_get_query_args',
-			$args
 		);
 	}
 
@@ -312,5 +277,23 @@ class MS_Model_Rule_CptItem extends MS_Model_Rule {
 			$cont,
 			$this
 		);
+	}
+
+	/**
+	 * Get WP_Query object arguments.
+	 *
+	 * Return default search arguments.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
+	 * @return array $args The parsed args.
+	 */
+	public function get_query_args( $args = null ) {
+		$cpts = MS_Model_Rule_CptGroup::get_custom_post_types();
+		if ( ! isset( $args['post_type'] ) ) { $args['post_type'] = $cpts; }
+
+		return parent::get_query_args( $args, 'get_posts' );
 	}
 }

@@ -193,7 +193,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @return array The content.
 	 */
 	public function get_contents( $args = null ) {
-		$args = self::get_query_args( $args );
+		$args = $this->get_query_args( $args );
 
 		$categories = get_categories( $args );
 		$cont = array();
@@ -228,7 +228,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @return array of id => category name
 	 */
 	public function get_content_array( $args = null ) {
-		$args = self::get_query_args( $args );
+		$args = $this->get_query_args( $args );
 		$categories = get_categories( $args );
 		$cont = array();
 
@@ -251,9 +251,8 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = 0;
 		unset( $args['number'] );
-		$args = self::get_query_args( $args );
+		$args = $this->get_query_args( $args );
 		$categories = get_categories( $args );
 
 		$count = count( $categories );
@@ -274,59 +273,7 @@ class MS_Model_Rule_Category extends MS_Model_Rule {
 	 * @return array The parsed args.
 	 */
 	public function get_query_args( $args = null ) {
-		$defaults = array(
-			'number' => false,
-			'offset' => 0,
-			'get' => 'all', // interpreted by get_terms()
-		);
-
-		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
-		$include = array();
-		$exclude = array();
-
-		switch ( $status ) {
-			case MS_Model_Rule::FILTER_PROTECTED;
-				$include = array_keys( $this->rule_value, true );
-				break;
-
-			case MS_Model_Rule::FILTER_NOT_PROTECTED;
-				$exclude = array_keys( $this->rule_value, true );
-				break;
-
-			default:
-				// If not visitor membership, just show protected content
-				if ( ! $this->is_base_rule ) {
-					$include = array_keys( $this->rule_value );
-				}
-				break;
-		}
-
-		if ( isset( $args['s'] ) ) {
-			$args['search'] = $args['s'];
-		}
-
-		if ( ! empty( $args['number'] ) ) {
-			/*
-			 * 'hierarchical' and 'child_of' must be empty in order for
-			 * offset/number to work correctly.
-			 */
-			$args['hierarchical'] = false;
-			$args['child_of'] = false;
-		}
-
-		if ( ! empty( $include ) ) {
-			$args['include'] = $include;
-		} elseif ( ! empty( $exclude ) ) {
-			$args['exclude'] = $exclude;
-		}
-
-		$args = wp_parse_args( $args, $defaults );
-
-		return apply_filters(
-			'ms_model_rule_category_get_query_args',
-			$args,
-			$this
-		);
+		return parent::get_query_args( $args, 'get_categories' );
 	}
 
 }

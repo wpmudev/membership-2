@@ -35,14 +35,22 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 					<div id="ms-membership-status" class="ms-membership-status <?php echo esc_attr( $status_class ); ?>">
 						<?php
 						printf(
-							'<div class="ms-active"><span>%s </span><span id="ms-membership-status-text" class="ms-ok">%s</span></div>',
-							__( 'Membership is', MS_TEXT_DOMAIN ),
-							__( 'Active', MS_TEXT_DOMAIN )
+							'<div class="ms-active">%s</div>',
+							sprintf(
+								__( 'Membership is %s', MS_TEXT_DOMAIN ),
+								'<span id="ms-membership-status-text" class="ms-ok">' .
+								__( 'Active', MS_TEXT_DOMAIN ) .
+								'</span>'
+							)
 						);
 						printf(
-							'<div><span>%s </span><span id="ms-membership-status-text" class="ms-nok">%s</span></div>',
-							__( 'Membership is', MS_TEXT_DOMAIN ),
-							__( 'Disabled', MS_TEXT_DOMAIN )
+							'<div>%s</div>',
+							sprintf(
+								__( 'Membership is %s', MS_TEXT_DOMAIN ),
+								'<span id="ms-membership-status-text" class="ms-nok">' .
+								__( 'Disabled', MS_TEXT_DOMAIN ) .
+								'</span>'
+							)
 						);
 						?>
 					</div>
@@ -56,7 +64,14 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				<?php
 				MS_Helper_Html::settings_header(
 					array(
-						'title' => sprintf( __( '%s Overview', MS_TEXT_DOMAIN ), $membership->name ),
+						'title' => sprintf(
+							__( '%s Overview', MS_TEXT_DOMAIN ),
+							sprintf(
+								'<span class="the-title" style="background-color:%2$s">%1$s</span>',
+								esc_html( $membership->name ),
+								$membership->get_color()
+							)
+						),
 						'desc' => __( 'Here you find a summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
 						'title_icon_class' => 'wpmui-fa wpmui-fa-dashboard',
 					)

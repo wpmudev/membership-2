@@ -226,9 +226,8 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = 0;
 		unset( $args['number'] );
-		$args = self::get_query_args( $args );
+		$args = $this->get_query_args( $args );
 		$posts = get_pages( $args );
 
 		$count = count( $posts );
@@ -249,7 +248,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-		$args = self::get_query_args( $args );
+		$args = $this->get_query_args( $args );
 
 		if ( isset( $args['s'] ) ) {
 			$matches = get_posts( $args );
@@ -280,103 +279,11 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	}
 
 	/**
-	 * Get the default query args.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $args The query post args.
-	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
-	 * @return array The parsed args.
-	 */
-	public function get_query_args( $args = null ) {
-		$defaults = array(
-			'number' => false,
-			'offset' => 0,
-			'hierarchical' => 1,
-			'sort_column' => 'post_title',
-			'sort_order' => 'ASC',
-			'post_type' => 'page',
-		);
-
-		$include = array();
-		$exclude = array();
-		$base_rule = $this;
-		$child_rule = $this;
-
-		if ( ! $this->is_base_rule ) {
-			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
-		}
-		if ( ! empty( $args['membership_id'] ) ) {
-			$child_rule = MS_Factory::load( 'MS_Model_Membership', $args['membership_id'] )->get_rule( $this->rule_type );
-		}
-
-		$base_items = array_keys( $base_rule->rule_value, true );
-		$child_items = array_keys( $child_rule->rule_value, true );
-
-		unset( $args['posts_per_page'] );
-		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
-
-		switch ( $status ) {
-			case MS_Model_Rule::FILTER_PROTECTED;
-				if ( ! empty( $args['membership_id'] ) ) {
-					$include = array_intersect( $child_items, $base_items );
-				} else {
-					$include = $child_items;
-				}
-				if ( empty( $include ) ) {
-					$include = array( 0 );
-				}
-				break;
-
-			case MS_Model_Rule::FILTER_NOT_PROTECTED;
-				if ( ! empty( $args['membership_id'] ) ) {
-					$include = array_diff( $base_items, $child_items );
-				} else {
-					$exclude = $child_items;
-				}
-				if ( empty( $include ) && empty( $exclude ) ) {
-					$include = array( 0 );
-				}
-				break;
-
-			default:
-				// If not visitor membership, just show all protected content
-				if ( ! $child_rule->is_base_rule ) {
-					$include = $base_items;
-				}
-				break;
-		}
-
-		if ( ! empty( $args['number'] ) ) {
-			/*
-			 * 'hierarchical' and 'child_of' must be empty in order for
-			 * offset/number to work correctly.
-			 */
-			$args['hierarchical'] = false;
-			$args['child_of'] = false;
-		}
-
-		if ( ! empty( $include ) ) {
-			$args['include'] = $include;
-		} elseif ( ! empty( $exclude ) ) {
-			$args['exclude'] = $exclude;
-		}
-
-		$args = wp_parse_args( $args, $defaults );
-
-		return apply_filters(
-			'ms_model_rule_page_get_query_args',
-			$args,
-			$this
-		);
-	}
-
-	/**
 	 * Get page content array.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $array The query args. @see self::get_query_args()
+	 * @param array $array The query args. @see $this->get_query_args()
 	 * @return array {
 	 *     @type int $key The content ID.
 	 *     @type string $value The content title.
@@ -384,7 +291,7 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 	 */
 	public function get_content_array( $args = null ) {
 		$cont = array();
-		$args = self::get_query_args( $args );
+		$args = $this->get_query_args( $args );
 		$contents = get_pages( $args );
 		$pages = array();
 
@@ -408,6 +315,19 @@ class MS_Model_Rule_Page extends MS_Model_Rule {
 			$cont,
 			$this
 		);
+	}
+
+	/**
+	 * Get the default query args.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $args The query post args.
+	 *     @see @link http://codex.wordpress.org/Function_Reference/get_pages
+	 * @return array The parsed args.
+	 */
+	public function get_query_args( $args = null ) {
+		return parent::get_query_args( $args, 'get_pages' );
 	}
 
 }

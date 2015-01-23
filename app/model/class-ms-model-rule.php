@@ -1131,27 +1131,144 @@ class MS_Model_Rule extends MS_Model {
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array $args The parsed args.
 	 */
-	public function get_query_args( $args = null ) {
-		$defaults = array(
-			'posts_per_page' => -1,
-			'offset'      => 0,
-			'orderby'     => 'ID',
-			'order'       => 'DESC',
-			'post_status' => 'publish',
-		);
-		$args = wp_parse_args( $args, $defaults );
+	public function get_query_args( $args = null, $args_type = 'wp_query' ) {
+		$filter = $this->get_exclude_include( $args );
 
-		// If not visitor membership, just show protected content.
-		if ( ! $this->is_base_rule ) {
-			$args['post__in'] = array_keys( $this->rule_value );
+		/**
+		 * By default the $args collection is supposed to be passed to a
+		 * WP_Query constructor. However, we can also prepare the filter
+		 * arguments to be used for another type of query, like get_pages()
+		 */
+		$args_type = strtolower( $args_type );
+
+		switch ( $args_type ) {
+			case 'get_pages':
+				$defaults = array(
+					'number' => false,
+					'hierarchical' => 1,
+					'sort_column' => 'post_title',
+					'sort_order' => 'ASC',
+					'post_type' => 'page',
+				);
+				$args['exclude'] = $filter->exclude;
+				$args['include'] = $filter->include;
+				break;
+
+			case 'get_categories':
+				$defaults = array(
+					'get' => 'all', // interpreted by get_terms()
+				);
+
+				if ( isset( $args['s'] ) ) {
+					$args['search'] = $args['s'];
+				}
+
+				$args['exclude'] = $filter->exclude;
+				$args['include'] = $filter->include;
+				break;
+
+			case 'get_posts':
+			case 'wp_query':
+			default:
+				$defaults = array(
+					'posts_per_page' => -1,
+					'ignore_sticky_posts' => true,
+					'offset' => 0,
+					'orderby' => 'ID',
+					'order' => 'DESC',
+					'post_status' => 'publish',
+				);
+				$args['post__not_in'] = $filter->exclude;
+				$args['post__in'] = $filter->include;
+				break;
 		}
 
-		$args = $this->validate_query_args( $args );
+		$args = wp_parse_args( $args, $defaults );
+		$args = $this->validate_query_args( $args, $args_type );
 
 		return apply_filters(
 			'ms_model_rule_' . $this->id . '_get_query_args',
-			$args
+			$args,
+			$args_type,
+			$this
 		);
+	}
+
+	/**
+	 * Returns a list of post_ids to exclude or include to fullfil the specified
+	 * Membership/Status filter.
+	 *
+	 * @since  1.1.0
+	 * @param  array $args
+	 * @return array {
+	 *     List of post_ids to exclude or include
+	 *
+	 *     array $include
+	 *     array $exclude
+	 * }
+	 */
+	public function get_exclude_include( $args ) {
+		// Filter for Membership and Protection status via 'exclude'/'include'
+		$include = array();
+		$exclude = array();
+		$base_rule = $this;
+		$child_rule = $this;
+
+		if ( ! $this->is_base_rule ) {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+		}
+		if ( ! empty( $args['membership_id'] ) ) {
+			$child_rule = MS_Factory::load( 'MS_Model_Membership', $args['membership_id'] )->get_rule( $this->rule_type );
+		}
+
+		$base_items = array_keys( $base_rule->rule_value, true );
+		$child_items = array_keys( $child_rule->rule_value, true );
+
+		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
+
+		switch ( $status ) {
+			case MS_Model_Rule::FILTER_PROTECTED;
+				if ( ! empty( $args['membership_id'] ) ) {
+					$include = array_intersect( $child_items, $base_items );
+				} else {
+					$include = $child_items;
+				}
+				if ( empty( $include ) ) {
+					$include = array( 0 );
+				}
+				break;
+
+			case MS_Model_Rule::FILTER_NOT_PROTECTED;
+				if ( ! empty( $args['membership_id'] ) ) {
+					$include = array_diff( $base_items, $child_items );
+				} else {
+					$exclude = $child_items;
+				}
+				if ( empty( $include ) && empty( $exclude ) ) {
+					$include = array( 0 );
+				}
+				break;
+
+			default:
+				// If not visitor membership, just show all protected content
+				if ( ! $child_rule->is_base_rule ) {
+					$include = $base_items;
+				}
+				break;
+		}
+
+		$res = (object) array(
+			'include' => null,
+			'exclude' => null,
+		);
+
+		if ( ! empty( $include ) ) {
+			$res->include = $include;
+		} elseif ( ! empty( $exclude ) ) {
+			$res->exclude = $exclude;
+		}
+
+		return $res;
 	}
 
 	/**
@@ -1164,38 +1281,77 @@ class MS_Model_Rule extends MS_Model {
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return mixed $args The validated args.
 	 */
-	public function validate_query_args( $args ) {
-		// Cannot use post__in and post_not_in at the same time.
-		if ( ! empty( $args['post__in'] )
-			&& ! empty( $args['post__not_in'] )
-		) {
-			$include = $args['post__in'];
-			$exclude = $args['post__not_in'];
+	public function validate_query_args( $args, $args_type = 'wp_query' ) {
+		switch ( $args_type ) {
+			case 'get_pages':
+			case 'get_categories':
+				$arg_excl = 'exclude';
+				$arg_incl = 'include';
+				break;
+
+			case 'get_posts':
+			case 'wp_query':
+			default:
+				$arg_excl = 'post__not_in';
+				$arg_incl = 'post__in';
+				break;
+		}
+
+		// Remove undefined exclude/include arguments.
+		if ( isset( $args[$arg_incl] ) && null === $args[$arg_incl] ) {
+			unset( $args[$arg_incl] );
+		}
+		if ( isset( $args[$arg_excl] ) && null === $args[$arg_excl] ) {
+			unset( $args[$arg_excl] );
+		}
+
+		// Cannot use exclude and include at the same time.
+		if ( ! empty( $args[$arg_incl] ) && ! empty( $args[$arg_excl] ) ) {
+			$include = $args[$arg_incl];
+			$exclude = $args[$arg_excl];
 
 			foreach ( $exclude as $id ) {
 				$key = array_search( $id, $include );
 				unset( $include[ $key ] );
 			}
-			unset( $args['post__not_in'] );
+			unset( $args[$arg_excl] );
 		}
 
-		if ( ! empty( $args['show_all'] )
-			|| ! empty( $args['category__in'] )
-		) {
-			unset( $args['post__in'] );
-			unset( $args['post__not_in'] );
-			unset( $args['show_all'] );
+		if ( isset( $args[$arg_incl] ) && count( $args[$arg_incl] ) == 0 ) {
+			$args[$arg_incl] = array( -1 );
 		}
 
-		if ( isset( $args['post__in'] )
-			&& count( $args['post__in'] ) == 0
-		) {
-			$args['post__in'] = array( -1 );
+		switch ( $args_type ) {
+			case 'get_pages':
+			case 'get_categories':
+				if ( ! empty( $args['number'] ) ) {
+					/*
+					 * 'hierarchical' and 'child_of' must be empty in order for
+					 * offset/number to work correctly.
+					 */
+					$args['hierarchical'] = false;
+					$args['child_of'] = false;
+				}
+				break;
+
+			case 'wp_query':
+			case 'get_posts':
+			default:
+				if ( ! empty( $args['show_all'] )
+					|| ! empty( $args['category__in'] )
+				) {
+					unset( $args['post__in'] );
+					unset( $args['post__not_in'] );
+					unset( $args['show_all'] );
+				}
+				break;
 		}
 
 		return apply_filters(
 			'ms_model_rule_' . $this->id . '_validate_query_args',
-			$args
+			$args,
+			$args_type,
+			$this
 		);
 	}
 

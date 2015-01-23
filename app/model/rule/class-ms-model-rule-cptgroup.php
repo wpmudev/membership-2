@@ -49,9 +49,15 @@ class MS_Model_Rule_CptGroup extends MS_Model_Rule {
 	 * @param MS_Model_Relationship $ms_relationship Optional. Not used.
 	 */
 	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
-
-		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
+		/*
+		 * Only protect if cpt group.
+		 * Protect in list rather than on a single post.
+		 * Workaroudn to invalidate the query.
+		 */
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			parent::protect_content( $ms_relationship );
+			$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
+		}
 	}
 
 	/**
@@ -64,44 +70,37 @@ class MS_Model_Rule_CptGroup extends MS_Model_Rule {
 	public function protect_posts( $wp_query ) {
 		$apply = true;
 
-		/*
-		 * Only protect if cpt group.
-		 * Protect in list rather than on a single post.
-		 * Workaroudn to invalidate the query.
-		 */
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			$post_type = $wp_query->get( 'post_type' );
+		$post_type = $wp_query->get( 'post_type' );
 
-			if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
-				$post_type = $wp_query->queried_object->post_type;
+		if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
+			$post_type = $wp_query->queried_object->post_type;
 
-				if ( is_array( $post_type ) ) {
-					if ( isset( $post_type[0] ) ) {
-						$post_type = $post_type[0];
-					} else {
-						$post_type = '';
-					}
+			if ( is_array( $post_type ) ) {
+				if ( isset( $post_type[0] ) ) {
+					$post_type = $post_type[0];
+				} else {
+					$post_type = '';
 				}
 			}
+		}
 
-			// Single pages are protected with function `has_access()` below.
-			if ( $apply && $wp_query->is_singular ) { $apply = false; }
+		// Single pages are protected with function `has_access()` below.
+		if ( $apply && $wp_query->is_singular ) { $apply = false; }
 
-			// A pagename also indicates a single post...
-			if ( $apply && isset( $wp_query->query->pagename ) ) { $apply = false; }
+		// A pagename also indicates a single post...
+		if ( $apply && isset( $wp_query->query->pagename ) ) { $apply = false; }
 
-			// Do not protect anything if post-type is unknown
-			if ( $apply && empty( $post_type ) ) { $apply = false; }
+		// Do not protect anything if post-type is unknown
+		if ( $apply && empty( $post_type ) ) { $apply = false; }
 
-			// Do not protect special "Protected Content" or default WordPress content
-			if ( $apply && in_array( $post_type, self::get_excluded_content() ) ) { $apply = false; }
+		// Do not protect special "Protected Content" or default WordPress content
+		if ( $apply && in_array( $post_type, self::get_excluded_content() ) ) { $apply = false; }
 
-			// Do not protect if the post-type is published
-			if ( $apply && parent::has_access( $post_type ) ) { $apply = false; }
+		// Do not protect if the post-type is published
+		if ( $apply && parent::has_access( $post_type ) ) { $apply = false; }
 
-			if ( $apply )  {
-				$wp_query->query_vars['post__in'] = array( 0 => 0 );
-			}
+		if ( $apply )  {
+			$wp_query->query_vars['post__in'] = array( 0 => 0 );
 		}
 
 		do_action(
@@ -124,28 +123,30 @@ class MS_Model_Rule_CptGroup extends MS_Model_Rule {
 		$has_access = null;
 
 		// Only verify permission if NOT ruled by cpt post by post.
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			if ( ! empty( $post_id ) ) {
-				$post = get_post( $post_id );
-			} else {
-				$post = get_queried_object();
-			}
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			return $has_access;
+		}
 
-			$post_type = ! empty( $post->post_type ) ? $post->post_type : '';
-			if ( empty( $post_type ) && ! empty( $post->query_var ) ) {
-				$post_type = $post->query_var;
-			}
+		if ( ! empty( $post_id ) ) {
+			$post = get_post( $post_id );
+		} else {
+			$post = get_queried_object();
+		}
 
-			if ( in_array( $post_type, self::get_ms_post_types() ) ) {
-				// Always allow access to Protected Content pages.
-				$has_access = true;
-			} elseif ( in_array( $post_type, self::get_custom_post_types() ) ) {
-				// Custom post type
-				$has_access = parent::has_access( $post_type );
-			} else {
-				// WordPress core pages are ignored by this rule.
-				$has_access = null;
-			}
+		$post_type = ! empty( $post->post_type ) ? $post->post_type : '';
+		if ( empty( $post_type ) && ! empty( $post->query_var ) ) {
+			$post_type = $post->query_var;
+		}
+
+		if ( in_array( $post_type, self::get_ms_post_types() ) ) {
+			// Always allow access to Protected Content pages.
+			$has_access = true;
+		} elseif ( in_array( $post_type, self::get_custom_post_types() ) ) {
+			// Custom post type
+			$has_access = parent::has_access( $post_type );
+		} else {
+			// WordPress core pages are ignored by this rule.
+			$has_access = null;
 		}
 
 		return apply_filters(
@@ -168,23 +169,20 @@ class MS_Model_Rule_CptGroup extends MS_Model_Rule {
 		$cpts = self::get_custom_post_types();
 		$contents = array();
 
-		$is_base = $this->get_membership()->is_base();
+		$filter = $this->get_exclude_include( $args );
+		if ( is_array( $filter->include ) ) {
+			$cpts = array_intersect( $cpts, $filter->include );
+		} elseif ( is_array( $filter->exclude ) ) {
+			$cpts = array_diff( $cpts, $filter->exclude );
+		}
 
 		foreach ( $cpts as $key => $content ) {
-			if ( ! $is_base && ! $this->has_rule( $key ) ) {
-				continue;
-			}
-
 			$contents[ $key ] = new StdClass();
 			$contents[ $key ]->id = $key;
 			$contents[ $key ]->name = $content;
 			$contents[ $key ]->type = $this->rule_type;
 
 			$contents[ $key ]->access = $this->get_rule_value( $key );
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
 		return apply_filters(

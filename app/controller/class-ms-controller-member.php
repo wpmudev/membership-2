@@ -354,7 +354,7 @@ class MS_Controller_Member extends MS_Controller {
 					$args = array(
 						'post__in' => array_keys( $member->ms_relationships ),
 					);
-					$memberships = MS_Model_Membership::get_membership_names( $args, false );
+					$memberships = MS_Model_Membership::get_membership_names( $args );
 					$memberships = array_unshift_assoc(
 						$memberships,
 						0,
@@ -373,7 +373,7 @@ class MS_Controller_Member extends MS_Controller {
 						__( '- Select Membership to move from -', MS_TEXT_DOMAIN )
 					);
 
-					$memberships = MS_Model_Membership::get_membership_names( null, false );
+					$memberships = MS_Model_Membership::get_membership_names( null );
 					$memberships = array_diff_key( $memberships, $member->ms_relationships );
 					$memberships = array_unshift_assoc(
 						$memberships,

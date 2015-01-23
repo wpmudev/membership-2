@@ -857,9 +857,16 @@ class MS_Controller_Membership extends MS_Controller {
 				)
 			);
 
+			// Try to keep the selected Membership and Status filter.
 			if ( ! empty( $_REQUEST['membership_id'] ) ) {
 				$url = add_query_arg(
 					array( 'membership_id' => $_REQUEST['membership_id'] ),
+					$url
+				);
+			}
+			if ( ! empty( $_REQUEST['status'] ) ) {
+				$url = add_query_arg(
+					array( 'status' => $_REQUEST['status'] ),
 					$url
 				);
 			}

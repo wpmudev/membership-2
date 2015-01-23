@@ -94,12 +94,13 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$this->model = $model;
 		$this->membership = $membership;
 
-		self::$memberships = MS_Model_Membership::get_membership_names();
-		foreach ( self::$memberships as $id => $name ) {
-			$color = MS_Helper_Utility::color_index( $id );
-			self::$memberships[$id] = (object) array(
-				'label' => $name,
-				'attr' => sprintf( 'data-color="%1$s"', $color ),
+		$memberships = MS_Model_Membership::get_memberships();
+		self::$memberships = array();
+
+		foreach ( $memberships as $item ) {
+			self::$memberships[$item->id] = (object) array(
+				'label' => $item->name,
+				'attr' => sprintf( 'data-color="%1$s"', $item->get_color() ),
 			);
 		}
 	}

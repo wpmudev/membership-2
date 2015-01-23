@@ -1445,10 +1445,13 @@
   padding: 15px 265px;
   background-color: #FAFAFA;
 }
-.ms-wrap.ms-membership-overview.no-tabs .ms-wrap-top {
-  padding-left: 20px;
+.ms-wrap.ms-membership-overview .the-title {
+  border-radius: 6px;
+  color: #FFF;
+  background: #888888;
+  padding: 2px 10px;
 }
-.ms-wrap .ms-membership-status-wrapper {
+.ms-wrap.ms-membership-overview .ms-membership-status-wrapper {
   position: absolute;
   padding: 10px;
   left: 10px;
@@ -1456,67 +1459,64 @@
   min-width: 245px;
   text-align: center;
 }
-.ms-wrap .ms-membership-status-wrapper .wpmui-radio-slider {
+.ms-wrap.ms-membership-overview .ms-membership-status-wrapper .wpmui-radio-slider {
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 5px;
 }
-.ms-wrap .ms-membership-status-wrapper .ms-membership-status > div {
+.ms-wrap.ms-membership-overview .ms-membership-status-wrapper .ms-membership-status > div {
   display: block;
 }
-.ms-wrap .ms-membership-status-wrapper .ms-membership-status .ms-active {
+.ms-wrap.ms-membership-overview .ms-membership-status-wrapper .ms-membership-status .ms-active {
   display: none;
 }
-.ms-wrap .ms-membership-status-wrapper .ms-membership-status.ms-active > div {
+.ms-wrap.ms-membership-overview .ms-membership-status-wrapper .ms-membership-status.ms-active > div {
   display: none;
 }
-.ms-wrap .ms-membership-status-wrapper .ms-membership-status.ms-active .ms-active {
+.ms-wrap.ms-membership-overview .ms-membership-status-wrapper .ms-membership-status.ms-active .ms-active {
   display: block;
 }
-.ms-wrap .ms-membership-edit-wrapper {
+.ms-wrap.ms-membership-overview .ms-membership-edit-wrapper {
   position: absolute;
   left: 10px;
   top: 90px;
   min-width: 245px;
   text-align: center;
 }
-.ms-wrap .ms-membership-edit-wrapper a {
+.ms-wrap.ms-membership-overview .ms-membership-edit-wrapper a {
   padding: 5px 20px;
   height: auto;
 }
-.ms-wrap .ms-overview-container {
+.ms-wrap.ms-membership-overview .ms-overview-container {
   position: relative;
 }
-.ms-wrap .ms-overview-container > .ms-tab-container {
+.ms-wrap.ms-membership-overview .ms-overview-container > .ms-tab-container {
   padding-left: 20px;
   padding-top: 10px;
   border-top: 1px solid #e5e5e5;
   width: 245px;
 }
-.ms-wrap .ms-overview-container > .ms-tab-container .ms-tab.active {
+.ms-wrap.ms-membership-overview .ms-overview-container > .ms-tab-container .ms-tab.active {
   background: #FAFAFA;
 }
-.ms-wrap .ms-overview-container > .ms-tab-container .ms-tab.active:after {
+.ms-wrap.ms-membership-overview .ms-overview-container > .ms-tab-container .ms-tab.active:after {
   background: #FAFAFA;
 }
-.ms-wrap .ms-overview-container > .ms-settings {
+.ms-wrap.ms-membership-overview .ms-overview-container > .ms-settings {
   background: transparent;
   border: 0;
   box-shadow: 0 0 0 transparent;
   padding: 0;
 }
-.ms-wrap .ms-overview-container .ms-overview-top {
+.ms-wrap.ms-membership-overview .ms-overview-container .ms-overview-top {
   background-color: #FAFAFA;
   padding: 10px 20px 20px;
   border: 1px solid #E5E5E5;
   border-top: 0;
 }
-.ms-wrap .ms-overview-container .ms-overview-bottom {
+.ms-wrap.ms-membership-overview .ms-overview-container .ms-overview-bottom {
   padding: 20px;
-}
-.ms-wrap .ms-overview-container.no-tabs .ms-overview-bottom {
-  margin-left: 20px;
 }
 
 /* Membership editor popup */
@@ -1546,6 +1546,14 @@
 .ms-edit-membership .wpmui-radio-slider-wrapper .wpmui-field-description {
   margin: 0 0 10px 0;
   line-height: 1.35em;
+}
+
+/* The Memberships list */
+.ms-wrap .ms-membership-list .the-color {
+  width: 18px;
+  float: left;
+  margin-right: 5px;
+  border-radius: 4px;
 }
 
 /**
