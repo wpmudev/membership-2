@@ -772,10 +772,11 @@
 /***
  * SELECT2 *
  ***/
-.ms-select2.select2-container-multi .select2-choices .select2-search-field input {
-  padding-top: 0;
-  padding-bottom: 0;
+#wpwrap .select2-container-multi .select2-choices .select2-search-field input {
+  line-height: 1;
+  min-height: 0;
 }
+
 .ms-select2.select2-container {
   margin-right: .5em;
 }
@@ -1565,6 +1566,13 @@
 #wpwrap .ms-wrap h3.ms-list-title b {
   color: #000;
 }
+#wpwrap .ms-wrap .the-title {
+  border-radius: 4px;
+  color: #FFF;
+  background: #888888;
+  padding: 1px 6px;
+  font-size: 15px;
+}
 #wpwrap .ms-wrap tr .column-access {
   width: 70%;
 }
@@ -1735,6 +1743,10 @@
 #wpwrap .ms-wrap tr:hover .ms-public-note-wrapper .wpmui-label-after,
 #wpwrap .ms-wrap tr:hover .wpmui-select-wrapper .wpmui-label-after {
   display: inline-block;
+}
+#wpwrap .ms-wrap tr:hover .wpmui-select-wrapper .wpmui-field-select .select2-choices {
+  background: #fff;
+  border-color: #aaa;
 }
 #wpwrap .ms-wrap .ms-more-tag {
   display: inline-block;

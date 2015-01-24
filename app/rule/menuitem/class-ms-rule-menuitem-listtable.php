@@ -43,7 +43,7 @@ class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 	public function get_columns() {
 		$menus = $this->model->get_menu_array();
 		return apply_filters(
-			'membership_helper_ListTable_' . $this->id . '_columns',
+			'membership_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => true,
 				'title' => __( 'Menu title', MS_TEXT_DOMAIN ),

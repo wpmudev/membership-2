@@ -27,44 +27,44 @@
  * @since 4.0.0
  *
  */
-class MS_Addon_Buddypress_Helper_Listtable_Group extends MS_Helper_ListTable_Rule {
+class MS_Rule_Content_ListTable extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_buddypress_group';
+	protected $id = 'rule_content';
+
+	public function __construct( $model, $membership = null ) {
+		parent::__construct( $model, $membership );
+		$this->name['singular'] = __( 'Content Part', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Content Parts', MS_TEXT_DOMAIN );
+	}
 
 	public function get_columns() {
+		$columns = array(
+			'cb' => true,
+			'name' => __( 'Content Part', MS_TEXT_DOMAIN ),
+			'access' => true,
+		);
+
+		if ( MS_Model_Membership::TYPE_DRIPPED !== $this->membership->type ) {
+			unset( $columns['dripped'] );
+		}
+
 		return apply_filters(
-			"membership_helper_listtable_{$this->id}_columns",
-			array(
-				'cb' => true,
-				'name' => __( 'BuddyPress Group', MS_TEXT_DOMAIN ),
-				'access' => true,
-			)
+			"ms_helper_listtable_{$this->id}_columns",
+			$columns
 		);
 	}
 
-	public function get_sortable_columns() {
-		return apply_filters(
-			"membership_helper_listtable_{$this->id}_sortable_columns",
-			array()
-		);
-	}
-
-	public function column_name( $item, $column_name ) {
+	public function column_name( $item ) {
 		return $item->name;
 	}
 
+	/**
+	 * This rule has only one view.
+	 *
+	 * @since  1.1.0
+	 */
 	public function get_views() {
-		return apply_filters(
-			"membership_helper_listtable_{$this->id}_views",
-			array()
-		);
-	}
-
-	public function get_bulk_actions() {
-		return apply_filters(
-			"membership_helper_listtable_{$this->id}_bulk_actions",
-			array()
-		);
+		return array();
 	}
 
 }

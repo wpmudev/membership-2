@@ -39,7 +39,7 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function get_columns() {
 		return apply_filters(
-			"membership_helper_ListTable_{$this->id}_columns",
+			"membership_helper_listtable_{$this->id}_columns",
 			array(
 				'cb' => true,
 				'post_title' => __( 'Custom Post Title', MS_TEXT_DOMAIN ),
@@ -51,7 +51,7 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"membership_helper_ListTable_{$this->id}_sortable_columns",
+			"membership_helper_listtable_{$this->id}_sortable_columns",
 			array(
 				'post_title' => 'post_title',
 				'post_type' => 'post_type',
@@ -75,7 +75,7 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 		);
 
 		$actions = apply_filters(
-			"ms_helper_ListTable_{$this->id}_column_name_actions",
+			"ms_helper_listtable_{$this->id}_column_name_actions",
 			$actions,
 			$item
 		);

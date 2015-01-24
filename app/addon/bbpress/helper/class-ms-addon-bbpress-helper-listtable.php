@@ -33,7 +33,7 @@ class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 
 	public function get_columns() {
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_columns",
+			"ms_helper_listtable_{$this->id}_columns",
 			array(
 				'cb' => true,
 				'name' => __( 'Name', MS_TEXT_DOMAIN ),
@@ -44,7 +44,7 @@ class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_sortable_columns",
+			"ms_helper_listtable_{$this->id}_sortable_columns",
 			array()
 		);
 	}
@@ -64,7 +64,7 @@ class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 		);
 
 		$actions = apply_filters(
-			"membership_helper_ListTable_{$this->id}_column_name_actions",
+			"membership_helper_listtable_{$this->id}_column_name_actions",
 			$actions,
 			$item
 		);
@@ -78,7 +78,7 @@ class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 
 	public function get_views() {
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_views",
+			"ms_helper_listtable_{$this->id}_views",
 			array()
 		);
 	}

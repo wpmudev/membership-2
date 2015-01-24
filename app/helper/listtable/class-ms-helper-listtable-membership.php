@@ -52,21 +52,21 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		);
 
 		return apply_filters(
-			'membership_helper_ListTable_membership_columns',
+			'membership_helper_listtable_membership_columns',
 			$columns
 		);
 	}
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			'membership_helper_ListTable_membership_hidden_columns',
+			'membership_helper_listtable_membership_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			'membership_helper_ListTable_membership_sortable_columns',
+			'membership_helper_listtable_membership_sortable_columns',
 			array(
 				'name' => array( 'name', true ),
 				'type_description' => array( 'type', true ),
@@ -115,7 +115,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		}
 
 		$this->items = apply_filters(
-			'membership_helper_ListTable_membership_items',
+			'membership_helper_listtable_membership_items',
 			MS_Model_Membership::get_memberships( $args )
 		);
 	}

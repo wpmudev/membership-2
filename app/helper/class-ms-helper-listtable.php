@@ -31,7 +31,7 @@ class MS_Helper_ListTable {
 	 * @var array
 	 * @access protected
 	 */
-	protected $id = 'ms_ListTable';
+	protected $id = 'ms_listtable';
 
 	/**
 	 * The current list of items

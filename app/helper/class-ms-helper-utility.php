@@ -272,16 +272,18 @@ class MS_Helper_Utility extends MS_Helper {
 	 * @param  string $url The URL to check
 	 * @return bool
 	 */
-	static public function is_current_url( $url ) {
+	static public function is_current_url( $url, $ignore = array( 'paged' ) ) {
 		static $Cur_url = null;
 
 		if ( null === $Cur_url ) {
 			$query_string = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
 			parse_str( $query_string, $Cur_url );
 		}
+		foreach ( $ignore as $param ) { unset( $Cur_url[$param] ); }
 
 		$query_string = parse_url( $url, PHP_URL_QUERY );
 		parse_str( $query_string, $params );
+		foreach ( $ignore as $param ) { unset( $params[$param] ); }
 
 		return ( $params == $Cur_url );
 	}

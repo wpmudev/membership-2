@@ -45,7 +45,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		$currency = MS_Plugin::instance()->settings->currency;
 
 		$columns = apply_filters(
-			'membership_helper_ListTable_membership_columns',
+			'membership_helper_listtable_membership_columns',
 			array(
 				'cb' => '<input type="checkbox" />',
 				'invoice' => __( 'Invoice #', MS_TEXT_DOMAIN ),
@@ -76,14 +76,14 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			'membership_helper_ListTable_membership_hidden_columns',
+			'membership_helper_listtable_membership_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			'membership_helper_ListTable_membership_sortable_columns',
+			'membership_helper_listtable_membership_sortable_columns',
 			array(
 				'invoice' => array( 'ID', false ),
 				'user' => array( 'author', false ),
@@ -109,7 +109,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		$total_items = MS_Model_Invoice::get_invoice_count( $args );
 
 		$this->items = apply_filters(
-			'membership_helper_ListTable_invoice_items',
+			'membership_helper_listtable_invoice_items',
 			MS_Model_Invoice::get_invoices( $args )
 		);
 
@@ -190,7 +190,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			'membership_helper_ListTable_invoice_bulk_actions',
+			'membership_helper_listtable_invoice_bulk_actions',
 			array(
 				'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 			)

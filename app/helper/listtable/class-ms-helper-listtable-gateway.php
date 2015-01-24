@@ -64,7 +64,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 	 */
 	protected function get_columns() {
 		return apply_filters(
-			'membership_helper_ListTable_gateway_columns',
+			'membership_helper_listtable_gateway_columns',
 			array(
 				'name' => __( 'Gateway Name', MS_TEXT_DOMAIN ),
 				'mode' => __( 'Status', MS_TEXT_DOMAIN ),
@@ -160,7 +160,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 		);
 
 		$actions = apply_filters(
-			'gateway_helper_ListTable_' . $this->id . '_column_name_actions',
+			'gateway_helper_listtable_' . $this->id . '_column_name_actions',
 			$actions,
 			$item
 		);

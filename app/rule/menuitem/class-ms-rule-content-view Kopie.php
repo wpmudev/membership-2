@@ -1,6 +1,6 @@
 <?php
 
-class MS_Rule_Comment_View extends MS_View_Membership_ProtectedContent {
+class MS_Rule_Content_View extends MS_View_Membership_ProtectedContent {
 
 	public function to_html() {
 		$membership = $this->data['membership'];
@@ -9,11 +9,8 @@ class MS_Rule_Comment_View extends MS_View_Membership_ProtectedContent {
 
 		$menu_protection = $this->data['settings']->menu_protection;
 
-		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
 		$rule_comment = $membership->get_rule( MS_Model_Rule::RULE_TYPE_COMMENT );
-
 		$val_comment = $rule_comment->get_rule_value( MS_Rule_Comment_Model::CONTENT_ID );
-		$val_more_tag = absint( $rule_more_tag->get_rule_value( MS_Rule_More_Model::CONTENT_ID ) );
 
 		$fields = array(
 			'comment' => array(
@@ -28,23 +25,6 @@ class MS_Rule_Comment_View extends MS_View_Membership_ProtectedContent {
 					'membership_id' => $membership->id,
 					'rule_type' => MS_Model_Rule::RULE_TYPE_COMMENT,
 					'values' => MS_Rule_Comment_Model::CONTENT_ID,
-					'action' => $action,
-					'_wpnonce' => $nonce,
-				),
-			),
-
-			'more_tag' => array(
-				'id' => 'more_tag',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-				'title' => __( 'More Tag:', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Only Members can read full post (beyond the More Tag):', MS_TEXT_DOMAIN ),
-				'value' => $val_more_tag,
-				'field_options' => $rule_more_tag->get_options_array(),
-				'class' => 'ms-more-tag',
-				'data_ms' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => MS_Model_Rule::RULE_TYPE_MORE_TAG,
-					'values' => MS_Rule_More_Model::CONTENT_ID,
 					'action' => $action,
 					'_wpnonce' => $nonce,
 				),
@@ -92,8 +72,8 @@ class MS_Rule_Comment_View extends MS_View_Membership_ProtectedContent {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Comments, More Tag & Menus', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Protected Comments, More Tag & Menus are available for members only.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Comments, More Tag', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Decide how to protect Comments and More Tag contents.', MS_TEXT_DOMAIN ),
 			),
 			MS_Model_Rule::RULE_TYPE_COMMENT,
 			array(
@@ -110,37 +90,16 @@ class MS_Rule_Comment_View extends MS_View_Membership_ProtectedContent {
 			?>
 
 			<div class="ms-group">
-				<div class="ms-half">
-					<div class="inside">
-						<?php
-						MS_Helper_Html::html_element( $fields['comment'] );
-						MS_Helper_Html::save_text();
+					<?php
+					MS_Helper_Html::html_element( $fields['content'] );
+					MS_Helper_Html::save_text();
 
-						do_action(
-							'ms_view_membership_protectedcontent_footer',
-							MS_Model_Rule::RULE_TYPE_COMMENT,
-							$this
-						);
-
-						MS_Helper_Html::html_separator( 'vertical' );
-						?>
-					</div>
-				</div>
-
-				<div class="ms-half">
-					<div class="inside">
-						<?php
-						MS_Helper_Html::html_element( $fields['more_tag'] );
-						MS_Helper_Html::save_text();
-
-						do_action(
-							'ms_view_membership_protectedcontent_footer',
-							MS_Model_Rule::RULE_TYPE_MORE_TAG,
-							$this
-						);
-						?>
-					</div>
-				</div>
+					do_action(
+						'ms_view_membership_protectedcontent_footer',
+						MS_Model_Rule::RULE_TYPE_CONTENT,
+						$this
+					);
+					?>
 			</div>
 
 			<?php MS_Helper_Html::html_separator(); ?>

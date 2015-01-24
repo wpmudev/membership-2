@@ -185,7 +185,7 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 	 *      @type string $name The name.
 	 * }
 	 */
-	public function get_content_array( $args = null ) {
+	public function get_capabilities( $args = null ) {
 		if ( null === $this->_content_array ) {
 			$this->_content_array = array();
 			$member = MS_Model_Member::get_current_member();
@@ -242,23 +242,14 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 			}
 		}
 
-		// If not visitor membership, just show protected content
-		if ( ! $this->get_membership()->is_base() ) {
-			$keys = $this->rule_value;
-			if ( isset( $args['rule_status'] ) ) {
-				switch ( $args['rule_status'] ) {
-					case 'no_access': $keys = array_fill_keys( array_keys( $keys, false ), 0 ); break;
-					case 'has_access': $keys = array_fill_keys( array_keys( $keys, true ), 1 ); break;
-				}
-			}
-
-			$contents = array_intersect_key( $contents, $keys );
+		$filter = self::get_exclude_include( $args );
+		if ( is_array( $filter->include ) ) {
+			$contents = array_intersect( $contents, $filter->include );
+		} elseif ( is_array( $filter->exclude ) ) {
+			$contents = array_diff( $contents, $filter->exclude );
 		}
 
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
-		}
-
+		// Pagination
 		if ( ! empty( $args['posts_per_page'] ) ) {
 			$total = $args['posts_per_page'];
 			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
@@ -277,7 +268,7 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$contents = array();
-		$caps = $this->get_content_array( $args );
+		$caps = $this->get_capabilities( $args );
 
 		foreach ( $caps as $key => $item ) {
 			$content = (object) array();

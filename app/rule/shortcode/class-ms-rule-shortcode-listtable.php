@@ -39,7 +39,7 @@ class MS_Rule_Shortcode_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function get_columns() {
 		return apply_filters(
-			"membership_helper_ListTable_{$this->id}_columns",
+			'membership_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => true,
 				'name' => __( 'Shortcode', MS_TEXT_DOMAIN ),

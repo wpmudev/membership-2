@@ -250,36 +250,6 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Get cpt content array.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $array The query args. @see $this->get_query_args()
-	 * @return array {
-	 *     @type int $key The content ID.
-	 *     @type string $value The content title.
-	 * }
-	 */
-	public function get_content_array() {
-		$cont = array();
-		$contents = $this->get_contents();
-
-		foreach ( $contents as $content ) {
-			if ( ! is_array( $cont[ $content->post_type ] ) ) {
-				$cont[ $content->post_type ] = array();
-			}
-
-			$cont[ $content->post_type ][ $content->id ] = $content->post_title;
-		}
-
-		return apply_filters(
-			'ms_rule_cptgroup_model_get_content_array',
-			$cont,
-			$this
-		);
-	}
-
-	/**
 	 * Get WP_Query object arguments.
 	 *
 	 * Return default search arguments.

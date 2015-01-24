@@ -257,12 +257,6 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 
 			if ( in_array( $this->membership_id, $ids ) ) {
 				$result = true;
-			} else {
-				$cur_membership = $this->get_membership();
-
-				foreach ( $ids as $id ) {
-					$membership = MS_Factory::load( 'MS_Model_Membership', $id );
-				}
 			}
 		}
 
@@ -302,8 +296,8 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 		global $shortcode_tags;
 
 		$exclude = MS_Helper_Shortcode::get_membership_shortcodes();
-
 		$contents = array();
+
 		foreach ( $shortcode_tags as $key => $function ) {
 			if ( in_array( $key, $exclude ) ) {
 				continue;
@@ -316,21 +310,18 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 				}
 			}
 
-			$id = esc_html( trim( $key ) );
-			$contents[ $id ] = new StdClass();
-			$contents[ $id ]->id = $id;
-			$contents[ $id ]->name = "[$key]";
-			$contents[ $id ]->type = $this->rule_type;
-			$contents[ $id ]->access = $this->get_rule_value( $id );
+			$contents[ $key ] = new StdClass();
+			$contents[ $key ]->id = $key;
+			$contents[ $key ]->name = "[$key]";
+			$contents[ $key ]->type = $this->rule_type;
+			$contents[ $key ]->access = $this->get_rule_value( $key );
 		}
 
-		// If not visitor membership, just show protected content
-		if ( ! $this->is_base_rule ) {
-			$contents = array_intersect_key( $contents, $this->rule_value );
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
+		$filter = $this->get_exclude_include( $args );
+		if ( is_array( $filter->include ) ) {
+			$contents = array_intersect_key( $contents, array_flip( $filter->include ) );
+		} elseif ( is_array( $filter->exclude ) ) {
+			$contents = array_diff_key( $contents, array_flip( $filter->exclude ) );
 		}
 
 		if ( ! empty( $args['posts_per_page'] ) ) {
@@ -345,34 +336,4 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 		);
 	}
 
-	/**
-	 * Get shortcode content array.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $array The query args. @see self::get_query_args()
-	 * @return array {
-	 *     @type int $key The content ID.
-	 *     @type string $value The content title.
-	 * }
-	 */
-	public function get_content_array( $args = null ) {
-		static $Cont = null;
-
-		if ( null === $Cont ) {
-			$Cont = array();
-			$data = $this->get_contents();
-
-			foreach ( $data as $item ) {
-				$Cont[ $item->id ] = $item->name;
-			}
-			$Cont = apply_filters(
-				'ms_rule_shortcode_model_get_content_array',
-				$Cont,
-				$this
-			);
-		}
-
-		return $Cont;
-	}
 }

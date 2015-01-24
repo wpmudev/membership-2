@@ -47,20 +47,17 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 		);
 
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_columns",
+			'ms_helper_listtable_' . $this->id . '_columns',
 			$columns
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"membership_helper_ListTable_{$this->id}_sortable_columns",
+			'membership_helper_listtable_' . $this->id . '_sortable_columns',
 			array(
 				'name' => array( 'name', false ),
-				'access' => array( 'access', false ),
 				'dripped' => array( 'dripped', false ),
-				'slug' => array( 'slug', false ),
-				'posts' => array( 'posts', false ),
 			)
 		);
 	}
@@ -79,7 +76,7 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 			),
 		);
 		$actions = apply_filters(
-			"membership_helper_ListTable_{$this->id}_column_name_actions",
+			'membership_helper_listtable_' . $this->id . '_column_name_actions',
 			$actions,
 			$item
 		);
@@ -94,10 +91,6 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 	public function column_post_date( $item, $column_name ) {
 		$date = strtotime( $item->post_date );
 		return date_i18n( get_option( 'date_format' ), $date );
-	}
-
-	public function column_category( $item, $column_name ) {
-		return join( ', ', $item->categories );
 	}
 
 	/**

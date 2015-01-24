@@ -47,7 +47,7 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 		);
 
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_columns",
+			"ms_helper_listtable_{$this->id}_columns",
 			$columns
 		);
 	}
@@ -67,7 +67,7 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 		);
 
 		$actions = apply_filters(
-			"ms_helper_ListTable_{$this->id}_column_name_actions",
+			"ms_helper_listtable_{$this->id}_column_name_actions",
 			$actions,
 			$item
 		);

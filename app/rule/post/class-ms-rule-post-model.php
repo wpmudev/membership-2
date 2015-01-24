@@ -209,21 +209,10 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 	 * @return boolean The rule value for the requested content. Default $rule_value_default.
 	 */
 	public function get_rule_value( $id ) {
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			if ( isset( $this->rule_value[ $id ] ) ) {
-				$value = $this->rule_value[ $id ];
-			} else {
-				$value = self::RULE_VALUE_HAS_ACCESS;
-			}
+		if ( isset( $this->rule_value[ $id ] ) ) {
+			$value = $this->rule_value[ $id ];
 		} else {
-			$membership = $this->get_membership();
-			$rule_category = $membership->get_rule( self::RULE_TYPE_CATEGORY );
-
-			if ( isset( $this->rule_value[ $id ] ) ) {
-				$value = $this->rule_value[ $id ];
-			} else {
-				$value = $rule_category->has_access( $id );
-			}
+			$value = self::RULE_VALUE_HAS_ACCESS;
 		}
 
 		return apply_filters(
@@ -253,23 +242,10 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 
 		$post_type = get_post_type( $post_id );
 		if ( in_array( $post_type, array( 'post', '' ) ) ) {
-			$has_access = false;
-
-			/*
-			 * Only verify permission if ruled by post by post.
-			 * @todo verify addon handling
-			 */
+			// Only verify permission if ruled by post by post.
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 				$has_access = parent::has_access( $post_id );
 			}
-			else {
-				$has_access = $this->get_rule_value( $post_id );
-			}
-		}
-
-		// Feed page request
-		if ( ! empty( $wp_query->query_vars['feed'] ) ) {
-			$has_access = true;
 		}
 
 		return apply_filters(
@@ -325,20 +301,6 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Merge rule values.
-	 *
-	 * @since 1.0.0
-	 * @param MS_Model_Rule $src_rule The source rule model to merge rules to.
-	 */
-	public function merge_rule_values( $src_rule ) {
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			parent::merge_rule_values( $src_rule );
-		}
-
-		do_action( 'ms_rule_post_model_merge_rule_values', $src_rule, $this );
-	}
-
-	/**
 	 * Get the total content count.
 	 *
 	 * @since 1.0.0
@@ -348,7 +310,6 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = 0;
 		$args = self::get_query_args( $args );
 		$query = new WP_Query( $args );
 
@@ -379,23 +340,7 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 		foreach ( $posts as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Model_RULE::RULE_TYPE_POST;
-			$content->access = false;
 			$content->name = $content->post_name;
-
-			$content->categories = array();
-			$cats = array();
-			$categories = wp_get_post_categories( $content->id );
-			if ( ! empty( $categories ) ) {
-				foreach ( $categories as $cat_id ) {
-					$cat = get_category( $cat_id );
-					$cats[] = $cat->name;
-				}
-				$content->categories = $cats;
-			}
-			else {
-				$content->categories = array();
-			}
-
 			$content->access = $this->get_rule_value( $content->id );
 
 			$content->delayed_period = $this->has_dripped_rules( $content->id );
@@ -405,10 +350,6 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 			);
 
 			$contents[ $content->id ] = $content;
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
 		return apply_filters(
@@ -428,65 +369,7 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 	 * @return array The parsed args.
 	 */
 	public function get_query_args( $args = null ) {
-		$defaults = array(
-			'posts_per_page' => -1,
-			'offset'      => 0,
-			'orderby'     => 'post_date',
-			'order'       => 'DESC',
-			'post_type'   => 'post',
-			'post_status' => 'publish',
-		);
-
-		// If not visitor membership, just show protected content
-		if ( ! $this->is_base_rule ) {
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-				if ( ! empty( $this->rule_value ) ) {
-					$args['post__in'] = array_keys( $this->rule_value );
-				}
-				else {
-					$args['post__in'] = array( 0 );
-				}
-			} else {
-				// Category rules
-				$membership = $this->get_membership();
-				$rule_category = $membership->get_rule( self::RULE_TYPE_CATEGORY );
-
-				if ( ! empty( $rule_category->rule_value ) ) {
-					$args['category__in'] = array_keys( $rule_category->rule_value );
-					$args['tax_query'] = array( 'relation' => 'OR' );
-				} else {
-					$args['post__in'] = array( 0 );
-				}
-			}
-		}
-		$args = wp_parse_args( $args, $defaults );
-
-		return apply_filters( 'ms_rule_post_model_get_query_args', $args );
-	}
-
-	/**
-	 * Get post content array.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $array The query args. @see self::get_query_args()
-	 * @return array {
-	 *     @type int $key The content ID.
-	 *     @type string $value The content title.
-	 * }
-	 */
-	public function get_content_array() {
-		$cont = array();
-		$contents = $this->get_contents();
-		foreach ( $contents as $content ) {
-			$cont[ $content->id ] = $content->post_title;
-		}
-
-		return apply_filters(
-			'ms_rule_post_model_get_content_array',
-			$cont,
-			$this
-		);
+		return parent::prepare_query_args( $args, 'wp_query' );
 	}
 
 }

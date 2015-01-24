@@ -58,7 +58,7 @@ class MS_Rule_Adminside_Model extends MS_Model_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access() {
+	public function has_access( $id = null ) {
 		if ( is_admin() ) {
 			$allow = null;
 		} else {
@@ -195,58 +195,6 @@ class MS_Rule_Adminside_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Get a simple array of menu items (e.g. for display in select lists)
-	 *
-	 * @since 1.1
-	 *
-	 * @return array {
-	 *      @type string $menu_id The id.
-	 *      @type string $name The name.
-	 * }
-	 */
-	public function get_content_array() {
-		$contents = array();
-		$full_menu = MS_Plugin::instance()->controller->get_admin_menu();
-
-		$main = __( 'Main Menu', MS_TEXT_DOMAIN );
-		$contents[$main] = array();
-		foreach ( $full_menu['main'] as $pos => $item ) {
-			// Skip separators.
-			if ( empty( $item[0] ) ) { continue; }
-
-			// Don't show the Protected Content plugin menu.
-			if ( MS_Controller_Plugin::MENU_SLUG === $item[2] ) { continue; }
-
-			$parts = explode( '<', $item[0] );
-
-			$contents[$main][$item[2]] = trim( array_shift( $parts ) );
-		}
-
-		foreach ( $full_menu['sub'] as $url => $items ) {
-			if ( empty( $contents[$main][$url] ) ) { continue; }
-
-			$parent = $contents[$main][$url];
-			$contents[$parent] = array();
-
-			foreach ( $items as $pos => $item ) {
-				$parts = explode( '<', $item[0] );
-				$contents[$parent][$url . ':' . $item[2]] = $parent . ' &rarr; ' . trim( array_shift( $parts ) );
-			}
-		}
-
-		// If not visitor membership, just show protected content
-		if ( ! $this->is_base_rule ) {
-			$contents = array_intersect_key( $contents, $this->rule_value );
-		}
-
-		return apply_filters(
-			'ms_rule_adminside_model_get_content_array',
-			$contents,
-			$this
-		);
-	}
-
-	/**
 	 * Get content to protect. An array of objects is returned.
 	 *
 	 * @since 1.1
@@ -254,76 +202,71 @@ class MS_Rule_Adminside_Model extends MS_Model_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
+		static $Items = null;
 		$contents = array();
 		$full_menu = MS_Plugin::instance()->controller->get_admin_menu();
 
-		foreach ( $full_menu['main'] as $pos => $item ) {
-			// Skip separators
-			if ( empty( $item[0] ) ) { continue; }
-			$parts = explode( '<', $item[0] );
-			$parent_name = trim( array_shift( $parts ) );
-			$skip_parent = false;
+		if ( null === $Items ) {
+			$Items = array();
+			foreach ( $full_menu['main'] as $pos => $item ) {
+				// Skip separators
+				if ( empty( $item[0] ) ) { continue; }
+				$parts = explode( '<', $item[0] );
+				$parent_name = trim( array_shift( $parts ) );
+				$skip_parent = false;
 
-			// Search the submenu name...
-			if ( ! empty( $args['s'] ) ) {
-				if ( stripos( $parent_name, $args['s'] ) === false ) {
-					$skip_parent = true;
-				}
-			}
-
-			if ( ! $skip_parent ) {
-				$contents[$item[2]] = (object) array(
-					'name' => $parent_name,
-					'parent_id' => 0,
-				);
-			}
-
-			if ( isset( $full_menu['sub'][$item[2]] ) ) {
-				$children = $full_menu['sub'][$item[2]];
-
-				foreach ( $children as $pos => $child ) {
-					$parts = explode( '<', $child[0] );
-					$child_name = trim( array_shift( $parts ) );
-
-					// Search the submenu name...
-					if ( $skip_parent && ! empty( $args['s'] ) ) {
-						if ( stripos( $child_name, $args['s'] ) === false ) {
-							continue;
-						}
+				// Search the submenu name...
+				if ( ! empty( $args['s'] ) ) {
+					if ( stripos( $parent_name, $args['s'] ) === false ) {
+						$skip_parent = true;
 					}
+				}
 
-					$contents[$item[2] . ':' . $child[2]] = (object) array(
-						'name' => $parent_name . ' &rarr; ' . $child_name,
-						'parent_id' => $item[2],
+				if ( ! $skip_parent ) {
+					$Items[$item[2]] = (object) array(
+						'name' => $parent_name,
+						'parent_id' => 0,
 					);
+				}
+
+				if ( isset( $full_menu['sub'][$item[2]] ) ) {
+					$children = $full_menu['sub'][$item[2]];
+
+					foreach ( $children as $pos => $child ) {
+						$parts = explode( '<', $child[0] );
+						$child_name = trim( array_shift( $parts ) );
+
+						// Search the submenu name...
+						if ( $skip_parent && ! empty( $args['s'] ) ) {
+							if ( stripos( $child_name, $args['s'] ) === false ) {
+								continue;
+							}
+						}
+
+						$Items[$item[2] . ':' . $child[2]] = (object) array(
+							'name' => $parent_name . ' &rarr; ' . $child_name,
+							'parent_id' => $item[2],
+						);
+					}
 				}
 			}
 		}
 
-		foreach ( $contents as $key => $item ) {
+		$filter = self::get_exclude_include( $args );
+
+		foreach ( $Items as $key => $item ) {
+			if ( is_array( $filter->include ) ) {
+				if ( ! in_array( $key, $filter->include ) ) { continue; }
+			} elseif ( is_array( $filter->exclude ) ) {
+				if ( in_array( $key, $filter->exclude ) ) { continue; }
+			}
+
 			$contents[ $key ] = $item;
 			$contents[ $key ]->id = $key;
 			$contents[ $key ]->title = $contents[ $key ]->name;
 			$contents[ $key ]->post_title = $contents[ $key ]->name;
 			$contents[ $key ]->type = $this->rule_type;
 			$contents[ $key ]->access = $this->get_rule_value( $key );
-		}
-
-		// If not visitor membership, just show protected content
-		if ( ! $this->is_base_rule ) {
-			$keys = $this->rule_value;
-			if ( isset( $args['rule_status'] ) ) {
-				switch ( $args['rule_status'] ) {
-					case 'no_access': $keys = array_fill_keys( array_keys( $keys, false ), 0 ); break;
-					case 'has_access': $keys = array_fill_keys( array_keys( $keys, true ), 1 ); break;
-				}
-			}
-
-			$contents = array_intersect_key( $contents, $keys );
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
 		if ( ! empty( $args['posts_per_page'] ) ) {

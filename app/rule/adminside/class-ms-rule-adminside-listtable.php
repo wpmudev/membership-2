@@ -45,7 +45,7 @@ class MS_Rule_Adminside_ListTable extends MS_Helper_ListTable_Rule {
 		);
 
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_columns",
+			"ms_helper_listtable_{$this->id}_columns",
 			$columns
 		);
 	}

@@ -50,21 +50,21 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 		);
 
 		return apply_filters(
-			'membership_helper_ListTable_event_columns',
+			'membership_helper_listtable_event_columns',
 			$columns
 		);
 	}
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			'membership_helper_ListTable_event_hidden_columns',
+			'membership_helper_listtable_event_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			'membership_helper_ListTable_event_sortable_columns',
+			'membership_helper_listtable_event_sortable_columns',
 			array(
 				'post_modified' => array( 'post_modified', false ),
 				'user_id' => array( 'user_id', false ),

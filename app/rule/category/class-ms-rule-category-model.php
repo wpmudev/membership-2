@@ -216,30 +216,7 @@ class MS_Rule_Category_Model extends MS_Model_Rule {
 			$cont[ $key ] = $category;
 		}
 
-
 		return $cont;
-	}
-
-	/**
-	 * Get category content array.
-	 * Used to show content in html select.
-	 *
-	 * @since 1.0.0
-	 * @return array of id => category name
-	 */
-	public function get_content_array( $args = null ) {
-		$args = $this->get_query_args( $args );
-		$categories = get_categories( $args );
-		$cont = array();
-
-		foreach ( $categories as $key => $category ) {
-			$cont[ $category->term_id ] = $category->name;
-		}
-
-		return apply_filters(
-			'ms_rule_category_model_get_content_array',
-			$cont
-		);
 	}
 
 	/**

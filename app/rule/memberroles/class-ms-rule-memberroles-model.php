@@ -199,7 +199,7 @@ class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
 	 *      @type string $name The name.
 	 * }
 	 */
-	public function get_content_array() {
+	public function get_roles( $args = null ) {
 		global $wp_roles;
 
 		if ( null === $this->_content_array ) {
@@ -234,6 +234,29 @@ class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
 
 		$contents = $this->_content_array;
 
+		// Search the shortcode-tag...
+		if ( ! empty( $args['s'] ) ) {
+			foreach ( $contents as $key => $name ) {
+				if ( stripos( $name, $args['s'] ) === false ) {
+					unset( $contents[$key] );
+				}
+			}
+		}
+
+		$filter = self::get_exclude_include( $args );
+		if ( is_array( $filter->include ) ) {
+			$contents = array_intersect_key( $contents, array_flip( $filter->include ) );
+		} elseif ( is_array( $filter->exclude ) ) {
+			$contents = array_diff_key( $contents, array_flip( $filter->exclude ) );
+		}
+
+		// Pagination
+		if ( ! empty( $args['posts_per_page'] ) ) {
+			$total = $args['posts_per_page'];
+			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
+			$contents = array_slice( $contents, $offset, $total );
+		}
+
 		return $contents;
 	}
 
@@ -245,26 +268,16 @@ class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-		global $wp_roles;
-
 		$contents = array();
-		// User-Roles are only available in Accessible Content tab, so always display all roles.
+		$roles = $this->get_roles( $args );
 
-		$exclude = apply_filters(
-			'ms_rule_memberroles_model_exclude_roles',
-			array( 'administrator' )
-		);
-
-		$all_roles = $wp_roles->roles;
-
-		foreach ( $all_roles as $key => $role ) {
-			if ( in_array( $key, $exclude ) ) { continue; }
+		foreach ( $roles as $key => $rolename ) {
 			$content = (object) array();
 
 			$content->id = $key;
-			$content->title = $role['name'];
-			$content->name = $role['name'];
-			$content->post_title = $role['name'];
+			$content->title = $rolename;
+			$content->name = $rolename;
+			$content->post_title = $rolename;
 			$content->type = $this->rule_type;
 			$content->access = $this->get_rule_value( $key );
 

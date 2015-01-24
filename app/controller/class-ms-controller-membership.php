@@ -751,6 +751,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$membership = $this->load_membership();
 		$membership_id = $membership->id;
 		$is_base = $membership->is_base();
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		// First create a list including all possible tabs.
 
@@ -761,17 +762,26 @@ class MS_Controller_Membership extends MS_Controller {
 			'category' => array(
 				'title' => __( 'Categories', MS_TEXT_DOMAIN ),
 			),
+			'post' => array(
+				'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+			),
 			'cpt_item' => array(
 				'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
 			),
 			'cpt_group' => array(
 				'title' => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
 			),
-			'post' => array(
-				'title' => __( 'Posts', MS_TEXT_DOMAIN ),
+			'content' => array(
+				'title' => __( 'Comments & More Tag', MS_TEXT_DOMAIN ),
 			),
-			'comment' => array(
-				'title' => __( 'Comments, More Tag, Menus', MS_TEXT_DOMAIN ),
+			'menuitem' => array(
+				'title' => __( 'Menu Items', MS_TEXT_DOMAIN ),
+			),
+			'replacemenu' => array(
+				'title' => __( 'Menus', MS_TEXT_DOMAIN ),
+			),
+			'replacelocation' => array(
+				'title' => __( 'Menu Locations', MS_TEXT_DOMAIN ),
 			),
 			'shortcode' => array(
 				'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
@@ -799,9 +809,9 @@ class MS_Controller_Membership extends MS_Controller {
 
 		// Either "Category" or "Posts"
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			unset( $tabs['post'] );
-		} else {
 			unset( $tabs['category'] );
+		} else {
+			unset( $tabs['post'] );
 		}
 
 		// Either "CPT Group" or "CPT Posts"
@@ -809,6 +819,25 @@ class MS_Controller_Membership extends MS_Controller {
 			unset( $tabs['cpt_group'] );
 		} else {
 			unset( $tabs['cpt_item'] );
+		}
+
+		// Either "Menu Item" or "Menus" or "Menu Location"
+		switch ( $settings->menu_protection ) {
+			case 'menu':
+				unset( $tabs['menuitem'] );
+				unset( $tabs['replacelocation'] );
+				break;
+
+			case 'location':
+				unset( $tabs['menuitem'] );
+				unset( $tabs['replacemenu'] );
+				break;
+
+			case 'item':
+			default:
+				unset( $tabs['replacemenu'] );
+				unset( $tabs['replacelocation'] );
+				break;
 		}
 
 		// Maybe "Special Pages".
@@ -961,22 +990,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$active_tab = sanitize_html_class( @$_GET['tab'], $first_key );
 
 		if ( ! array_key_exists( $active_tab, $tabs ) ) {
-			switch ( $active_tab ) {
-				case 'cpt_group':
-					$active_tab = 'category';
-					break;
-
-				case 'menu':
-				case 'replace_menu':
-				case 'replace_menulocation':
-				case 'more_tag':
-					$active_tab = 'comment';
-					break;
-
-				default:
-					$active_tab = $first_key;
-					break;
-			}
+			$active_tab = $first_key;
 		}
 
 		return $this->active_tab = apply_filters( 'ms_controller_membership_get_active_tab', $active_tab );

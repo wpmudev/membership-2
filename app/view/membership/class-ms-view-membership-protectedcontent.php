@@ -82,7 +82,6 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 		);
 	}
 
-
 	/**
 	 * Display a filter to select the current membership
 	 *
@@ -90,7 +89,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	 */
 	public function membership_filter() {
 		$memberships = MS_Model_Membership::get_membership_names();
-		$url = remove_query_arg( 'membership_id' );
+		$url = remove_query_arg( array( 'membership_id', 'paged' ) );
 		$links = array();
 
 		$links['all'] = array(
@@ -242,17 +241,60 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	}
 
 	/* ====================================================================== *
-	 *                               COMMENT, MORE, MENU
+	 *                               COMMENT, MORE
 	 * ====================================================================== */
 
 	/**
 	 * Render tab content for:
-	 * Comments, More tag, Menus
+	 * Comments, More tag
 	 *
 	 * @since  1.0.0
 	 */
-	public function render_tab_comment() {
-		$view = MS_Factory::create( 'MS_Rule_Comment_View' );
+	public function render_tab_content() {
+		$view = MS_Factory::create( 'MS_Rule_Content_View' );
+		$view->data = $this->data;
+
+		return $view->to_html();
+	}
+
+	/* ====================================================================== *
+	 *                               MENU
+	 * ====================================================================== */
+
+	/**
+	 * Render tab content for:
+	 * Menus
+	 *
+	 * @since  1.1.0
+	 */
+	public function render_tab_menuitem() {
+		$view = MS_Factory::create( 'MS_Rule_Content_View' );
+		$view->data = $this->data;
+
+		return $view->to_html();
+	}
+
+	/**
+	 * Render tab content for:
+	 * Menus
+	 *
+	 * @since  1.1.0
+	 */
+	public function render_tab_replacemenu() {
+		$view = MS_Factory::create( 'MS_Rule_ReplaceMenu_View' );
+		$view->data = $this->data;
+
+		return $view->to_html();
+	}
+
+	/**
+	 * Render tab content for:
+	 * Menus
+	 *
+	 * @since  1.1.0
+	 */
+	public function render_tab_replacelocation() {
+		$view = MS_Factory::create( 'MS_Rule_ReplaceLocation_View' );
 		$view->data = $this->data;
 
 		return $view->to_html();

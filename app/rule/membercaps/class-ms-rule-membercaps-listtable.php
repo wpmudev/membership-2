@@ -33,21 +33,12 @@ class MS_Rule_MemberCaps_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model, $membership = null ) {
 		parent::__construct( $model, $membership );
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$this->name['singular'] = __( 'Capability', MS_TEXT_DOMAIN );
-			$this->name['plural'] = __( 'Capabilities', MS_TEXT_DOMAIN );
-		} else {
-			$this->name['singular'] = __( 'Role', MS_TEXT_DOMAIN );
-			$this->name['plural'] = __( 'Roles', MS_TEXT_DOMAIN );
-		}
+		$this->name['singular'] = __( 'Capability', MS_TEXT_DOMAIN );
+		$this->name['plural'] = __( 'Capabilities', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-			$name_label = __( 'Capability', MS_TEXT_DOMAIN );
-		} else {
-			$name_label = __( 'Role', MS_TEXT_DOMAIN );
-		}
+		$name_label = __( 'Capability', MS_TEXT_DOMAIN );
 
 		$columns = array(
 			'cb' => true,
@@ -56,7 +47,7 @@ class MS_Rule_MemberCaps_ListTable extends MS_Helper_ListTable_Rule {
 		);
 
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_columns",
+			'ms_helper_listtable_' . $this->id . '_columns',
 			$columns
 		);
 	}

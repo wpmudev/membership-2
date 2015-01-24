@@ -38,12 +38,11 @@ class MS_Model_Rule extends MS_Model {
 	 * @var string $rule_type The rule type.
 	 */
 	const RULE_TYPE_CATEGORY = 'category';
-	const RULE_TYPE_COMMENT = 'comment';
+	const RULE_TYPE_CONTENT = 'content';
 	const RULE_TYPE_MEDIA = 'media';
 	const RULE_TYPE_MENU = 'menu';
 	const RULE_TYPE_PAGE = 'page';
 	const RULE_TYPE_POST = 'post';
-	const RULE_TYPE_MORE_TAG = 'more_tag';
 	const RULE_TYPE_CUSTOM_POST_TYPE = 'cpt';
 	const RULE_TYPE_CUSTOM_POST_TYPE_GROUP = 'cpt_group';
 	const RULE_TYPE_SHORTCODE = 'shortcode';
@@ -226,11 +225,10 @@ class MS_Model_Rule extends MS_Model {
 				20 => self::RULE_TYPE_CUSTOM_POST_TYPE,
 				30 => self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP,
 				40 => self::RULE_TYPE_PAGE,
-				50 => self::RULE_TYPE_MORE_TAG,
-				60 => self::RULE_TYPE_MENU,
-				70 => self::RULE_TYPE_SHORTCODE,
-				80 => self::RULE_TYPE_COMMENT,
-				90 => self::RULE_TYPE_MEDIA,
+				50 => self::RULE_TYPE_MENU,
+				60 => self::RULE_TYPE_SHORTCODE,
+				70 => self::RULE_TYPE_CONTENT,
+				80 => self::RULE_TYPE_MEDIA,
 			);
 
 			// Then we remove/replace items that are not activated
@@ -304,12 +302,11 @@ class MS_Model_Rule extends MS_Model {
 			self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Rule_CptItem_Model',
 			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => 'MS_Rule_CptGroup_Model',
 			self::RULE_TYPE_PAGE => 'MS_Rule_Page_Model',
-			self::RULE_TYPE_MORE_TAG => 'MS_Rule_More_Model',
 			self::RULE_TYPE_MENU => 'MS_Rule_MenuItem_Model',
 			self::RULE_TYPE_REPLACE_MENUS => 'MS_Rule_ReplaceMenu_Model',
 			self::RULE_TYPE_REPLACE_MENULOCATIONS => 'MS_Rule_ReplaceLocation_Model',
 			self::RULE_TYPE_SHORTCODE => 'MS_Rule_Shortcode_Model',
-			self::RULE_TYPE_COMMENT => 'MS_Rule_Comment_Model',
+			self::RULE_TYPE_CONTENT => 'MS_Rule_Content_Model',
 			self::RULE_TYPE_MEDIA => 'MS_Rule_Media_Model',
 			self::RULE_TYPE_URL_GROUP => 'MS_Rule_Url_Model',
 			// New since 1.1
@@ -334,18 +331,17 @@ class MS_Model_Rule extends MS_Model {
 		$titles = array(
 			self::RULE_TYPE_CATEGORY => __( 'Category', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_SPECIAL => __( 'Special Pages', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_COMMENT => __( 'Comment', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_CONTENT => __( 'Comments & More Tag', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MENU => __( 'Menu', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_REPLACE_MENUS => __( 'Menu', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_REPLACE_MENULOCATIONS => __( 'Menu', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_PAGE => __( 'Page', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_MORE_TAG => __( 'More Tag', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_URL_GROUP => __( 'Url Group', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_URL_GROUP => __( 'URLs', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'CPT Group', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_ADMINSIDE => __( 'Admin Side', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEMBERCAPS => __( 'Capabilities', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEMBERROLES => __( 'User Role', MS_TEXT_DOMAIN ),
@@ -1054,7 +1050,6 @@ class MS_Model_Rule extends MS_Model {
 			$this->rule_value += $src_rule_value;
 		}
 
-
 		do_action( 'ms_model_rule_merge_rule_values', $src_rule, $this );
 	}
 
@@ -1234,18 +1229,21 @@ class MS_Model_Rule extends MS_Model {
 					$include = $child_items;
 				}
 				if ( empty( $include ) ) {
-					$include = array( 0 );
+					$include = array( -1 );
 				}
 				break;
 
 			case MS_Model_Rule::FILTER_NOT_PROTECTED;
 				if ( ! empty( $args['membership_id'] ) ) {
 					$include = array_diff( $base_items, $child_items );
+					if ( empty( $include ) && empty( $exclude ) ) {
+						$include = array( -1 );
+					}
 				} else {
 					$exclude = $child_items;
-				}
-				if ( empty( $include ) && empty( $exclude ) ) {
-					$include = array( 0 );
+					if ( empty( $include ) && empty( $exclude ) ) {
+						$exclude = array( -1 );
+					}
 				}
 				break;
 
@@ -1266,6 +1264,8 @@ class MS_Model_Rule extends MS_Model {
 			$res->include = $include;
 		} elseif ( ! empty( $exclude ) ) {
 			$res->exclude = $exclude;
+		} elseif ( ! empty( $args['membership_id'] ) ) {
+			$res->include = array( -1 );
 		}
 
 		return $res;

@@ -1,22 +1,23 @@
 <?php
 
-class MS_Rule_MemberRoles_View extends MS_View_Membership_ProtectedContent {
+class MS_Rule_Content_View extends MS_View_Membership_ProtectedContent {
 
 	public function to_html() {
 		$fields = $this->get_control_fields();
+
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEMBERROLES );
+		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CONTENT );
 
-		$rule_listtable = new MS_Rule_MemberRoles_ListTable( $rule, $membership );
+		$rule_listtable = new MS_Rule_Content_ListTable( $rule, $membership );
 		$rule_listtable->prepare_items();
-
-		$header_data['title'] = __( 'User Roles', MS_TEXT_DOMAIN );
-		$header_data['desc'] = __( 'Protected User Roles can be assigned to a Membership. When they are not used in a Membership then these settings here have no effect.', MS_TEXT_DOMAIN );
 
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
-			$header_data,
-			MS_Model_Rule::RULE_TYPE_MEMBERROLES,
+			array(
+				'title' => __( 'Comments & More Tag', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Decide how to protect Comments and More Tag contents.', MS_TEXT_DOMAIN ),
+			),
+			MS_Model_Rule::RULE_TYPE_CONTENT,
 			array(
 				'membership' => $this->data['membership'],
 			),
@@ -30,7 +31,7 @@ class MS_Rule_MemberRoles_View extends MS_View_Membership_ProtectedContent {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Capability', MS_TEXT_DOMAIN ) );
+			$rule_listtable->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
 			?>
 			<form action="" method="post">
 				<?php
@@ -38,7 +39,7 @@ class MS_Rule_MemberRoles_View extends MS_View_Membership_ProtectedContent {
 
 				do_action(
 					'ms_view_membership_protectedcontent_footer',
-					MS_Model_Rule::RULE_TYPE_MEMBERROLES,
+					MS_Model_Rule::RULE_TYPE_CONTENT,
 					$this
 				);
 				?>

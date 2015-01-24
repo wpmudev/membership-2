@@ -107,7 +107,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 	public function get_columns() {
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_columns",
+			"ms_helper_listtable_{$this->id}_columns",
 			array(
 				'cb' => '<input type="checkbox" />',
 				'content' => __( 'Content', MS_TEXT_DOMAIN ),
@@ -119,17 +119,16 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_hidden_columns",
+			"ms_helper_listtable_{$this->id}_hidden_columns",
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_sortable_columns",
+			"ms_helper_listtable_{$this->id}_sortable_columns",
 			array(
 				'content' => 'content',
-				'access' => 'access',
 				'dripped' => 'dripped',
 			)
 		);
@@ -149,7 +148,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		}
 
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_bulk_actions",
+			"ms_helper_listtable_{$this->id}_bulk_actions",
 			$bulk_actions
 		);
 	}
@@ -227,7 +226,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 		// List available items
 		$this->items = apply_filters(
-			"ms_helper_ListTable_{$this->id}_items",
+			"ms_helper_listtable_{$this->id}_items",
 			$this->model->get_contents( $args )
 		);
 
@@ -486,17 +485,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		return $html;
 	}
 
-	public function display() {
-		$membership_id = array(
-			'id' => 'membership_id',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->get_membership_id(),
-		);
-		MS_Helper_Html::html_element( $membership_id );
-
-		parent::display();
-	}
-
 	protected function get_membership_id() {
 		$membership_id = 0;
 
@@ -524,6 +512,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	public function list_head() {
 		$type_name = $this->name['plural'];
 		$membership_name = '';
+		$membership_color = '';
 
 		/*
 		 * We don't build the title dynamically to make sure translations are
@@ -545,20 +534,25 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $_GET['membership_id'] );
 
 			if ( empty( $_GET['status'] ) ) {
-				$title = __( 'Showing <b>All</b> %1$s of %2$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing <b>All</b> %1$s for %2$s', MS_TEXT_DOMAIN );
 			} elseif ( MS_Model_Rule::FILTER_NOT_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All <b>Unprotected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing All %1$s that are <b>not protected</b> by %2$s', MS_TEXT_DOMAIN );
 			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All <b>Protected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing All %1$s that are <b>protected</b> by %2$s', MS_TEXT_DOMAIN );
 			}
 
 			$membership_name = $membership->name;
+			$membership_color = $membership->get_color();
 		}
 
 		$title = sprintf(
 			$title,
 			'<b>' . esc_html( $type_name ) . '</b>',
-			'<b>' . esc_html( $membership_name ) . '</b>'
+			sprintf(
+				'<span class="the-title" style="background-color:%2$s">%1$s</span>',
+				esc_html( $membership_name ),
+				$membership_color
+			)
 		);
 
 		printf( '<h3 class="ms-list-title">%1$s</h3>', $title );
@@ -610,7 +604,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		//$count = $this->model->count_item_access( $count_args );
 
 		$url = apply_filters(
-			"ms_helper_ListTable_{$this->id}_url",
+			'ms_helper_listtable_' . $this->id . '_url',
 			remove_query_arg( array( 'status', 'paged' ) )
 		);
 
@@ -635,7 +629,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		);
 
 		return apply_filters(
-			"ms_helper_ListTable_{$this->id}_views",
+			"ms_helper_listtable_{$this->id}_views",
 			$views
 		);
 	}

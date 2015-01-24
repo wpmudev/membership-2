@@ -279,45 +279,6 @@ class MS_Rule_Page_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Get page content array.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $array The query args. @see $this->get_query_args()
-	 * @return array {
-	 *     @type int $key The content ID.
-	 *     @type string $value The content title.
-	 * }
-	 */
-	public function get_content_array( $args = null ) {
-		$cont = array();
-		$args = $this->get_query_args( $args );
-		$contents = get_pages( $args );
-		$pages = array();
-
-		foreach ( $contents as $content ) {
-			$pages[$content->ID] = $content;
-		}
-
-		foreach ( $contents as $page_id => $content ) {
-			$level = 0;
-			$parent = $content;
-			while ( $parent->post_parent ) {
-				$parent = $pages[$parent->post_parent];
-				$level += 1;
-			}
-
-			$cont[ $content->ID ] = str_repeat( '&nbsp;&mdash;&nbsp;', $level ) . $content->post_title;
-		}
-
-		return apply_filters(
-			'ms_rule_page_model_get_content_array',
-			$cont,
-			$this
-		);
-	}
-
-	/**
 	 * Get the default query args.
 	 *
 	 * @since 1.0.0

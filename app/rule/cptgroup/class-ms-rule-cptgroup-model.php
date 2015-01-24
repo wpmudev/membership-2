@@ -194,32 +194,6 @@ class MS_Rule_CptGroup_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Get content array.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param $args Optional. Not used.
-	 * @return array {
-	 *     @type string $rule_value The rule value.
-	 *     @type string $description The rule description.
-	 * }
-	 */
-	public function get_content_array( $args = null ) {
-		$cont = array();
-		$contents = $this->get_contents();
-
-		foreach ( $contents as $content ) {
-			$cont[ $content->id ] = $content->name;
-		}
-
-		return apply_filters(
-			'ms_rule_cptgroup_model_get_content_array',
-			$cont,
-			$this
-		);
-	}
-
-	/**
 	 * Get the total content count.
 	 *
 	 * @since 1.1.0

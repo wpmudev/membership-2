@@ -12,6 +12,14 @@
 		}
 	}
 
+	.the-title {
+		border-radius: 4px;
+		color: #FFF;
+		background: #888888;
+		padding: 1px 6px;
+		font-size: 15px;
+	}
+
 	tr {
 		.column-access {
 			width: 70%;
@@ -229,6 +237,15 @@
 			.ms-public-note-wrapper .wpmui-label-after,
 			.wpmui-select-wrapper .wpmui-label-after {
 				display: inline-block;
+			}
+
+			.wpmui-select-wrapper {
+				.wpmui-field-select {
+					.select2-choices {
+						background: #fff;
+						border-color: #aaa;
+					}
+				}
 			}
 		}
 	}
