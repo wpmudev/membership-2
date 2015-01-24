@@ -50,7 +50,7 @@ window.ms_init.view_membership_dripped = function init () {
 		jQuery( this ).parent().parent().find( '.ms-period-type' ).text( period_type.val() );
 	});
 
-	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
+	jQuery( '.wpmui-radio-slider' ).on( 'ms-radio-slider-updated', function( event, data ) {
 		ms_functions.change_access( data.value, event.target );
 	});
 

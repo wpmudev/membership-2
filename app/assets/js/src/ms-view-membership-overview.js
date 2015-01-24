@@ -5,7 +5,7 @@
 /*global ms_functions:false */
 
 window.ms_init.view_membership_overview = function init () {
-	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function() {
+	jQuery( '.wpmui-radio-slider' ).on( 'ms-radio-slider-updated', function() {
 		var object = this,
 			obj = jQuery( '#ms-membership-status' );
 

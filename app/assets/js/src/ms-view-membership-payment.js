@@ -54,5 +54,5 @@ window.ms_init.view_membership_payment = function init () {
 	// Update currency symbols in payment descriptions.
 	jQuery( '#currency' ).change( show_currency );
 
-	jQuery( '.wpmui-slider-trial_period_enabled' ).on( 'wpmui-radio-slider-updated', toggle_trial );
+	jQuery( '.wpmui-slider-trial_period_enabled' ).on( 'ms-radio-slider-updated', toggle_trial );
 };

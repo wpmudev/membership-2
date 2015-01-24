@@ -62,7 +62,7 @@ class MS_View_Addon extends MS_View {
 
 		ob_start();
 		?>
-		<div class="ms-wrap">
+		<div class="ms-wrap ms-addon-list">
 			<h2 class="ms-settings-title">
 				<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>
 				<?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ); ?>

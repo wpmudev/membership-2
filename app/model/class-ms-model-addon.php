@@ -137,10 +137,9 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * Returns a list of all registered Add-Ons
 	 *
 	 * @since  1.1.0
-	 * @param  string $id Optional. If specified then a single add-on is returned.
-	 * @return array Depending on $id: Add-on list / Single Add-on or null
+	 * @return array Add-on lisl
 	 */
-	static public function get_addons( $id = null ) {
+	static public function get_addons() {
 		static $Done = false;
 		$res = null;
 
@@ -216,21 +215,7 @@ class MS_Model_Addon extends MS_Model_Option {
 			do_action( 'ms_model_addon_initialize' );
 		}
 
-		if ( empty( $id ) ) {
-			// No ID requested: Return whole list.
-			$res = self::$_registered;
-
-			foreach ( $res as $id => $item ) {
-				if ( empty( $item->name ) ) { unset( $res[$id] ); }
-			}
-		} elseif ( isset( self::$_registered[$id] ) ) {
-			// Valid ID requested: Return single item.
-			$res = self::$_registered[$id];
-		} else {
-			// Invalid ID requested: Return null.
-		}
-
-		return $res;
+		return self::$_registered;
 	}
 
 	/**
@@ -313,36 +298,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	}
 
 	/**
-	 * Get addon types.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string[] The add-on types array.
-	 */
-	public static function get_addon_types() {
-		static $Types;
-
-		if ( empty( $Types ) ) {
-			$items = self::get_addons();
-			$Types = array_keys( $items );
-		}
-
-		return $Types;
-	}
-
-	/**
-	 * Checks, if the specified Add-on is a valid, registered Add-on
-	 *
-	 * @since  1.1.0
-	 * @param  string $addon The Add-on ID
-	 * @return bool True, if the Add-on is registered
-	 */
-	static public function is_registered( $addon ) {
-		$item = self::get_addons( $addon );
-		return ! empty ( $item );
-	}
-
-	/**
 	 * Verify if an add-on is enabled
 	 *
 	 * @since 1.0.0
@@ -352,15 +307,14 @@ class MS_Model_Addon extends MS_Model_Option {
 	 */
 	static public function is_enabled( $addon ) {
 		$model = MS_Factory::load( 'MS_Model_Addon' );
-		$enabled = false;
+		$enabled = ! empty( $model->active[ $addon ] );
 
-		if ( self::is_registered( $addon ) ) {
-			$enabled = ! empty( $model->active[ $addon ] );
-
-			if ( $enabled ) {
-				/**
-				 * self::ADDON_MEMBERCAPS_ADV => self::ADDON_MEMBERCAPS
-				 */
+		if ( $enabled ) {
+			// Sub-addons are considered enabled only when the parent add-on is enabled also.
+			switch ( $addon ) {
+				case self::ADDON_MEMBERCAPS_ADV:
+					$enabled = self::is_enabled( self::ADDON_MEMBERCAPS );
+					break;
 			}
 		}
 
@@ -378,9 +332,9 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 */
 	public function enable( $addon ) {
-		if ( self::is_registered( $addon ) ) {
-			$this->active[ $addon ] = true;
-		}
+		$this->refresh();
+		$this->active[ $addon ] = true;
+		$this->save();
 
 		do_action( 'ms_model_addon_enable', $addon, $this );
 	}
@@ -393,9 +347,9 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @var string $addon The add-on type.
 	 */
 	public function disable( $addon ) {
-		if ( self::is_registered( $addon ) ) {
-			unset( $this->active[ $addon ] );
-		}
+		$this->refresh();
+		unset( $this->active[ $addon ] );
+		$this->save();
 
 		do_action( 'ms_model_addon_disable', $addon, $this );
 	}
@@ -407,8 +361,12 @@ class MS_Model_Addon extends MS_Model_Option {
 	 *
 	 * @var string $addon The add-on type.
 	 */
-	public function toggle_activation( $addon ) {
-		if ( self::is_enabled( $addon ) ) {
+	public function toggle_activation( $addon, $value = null ) {
+		if ( null === $value ) {
+			$value = self::is_enabled( $addon );
+		}
+
+		if ( $value ) {
 			$this->disable( $addon );
 		} else {
 			$this->enable( $addon );
@@ -592,10 +550,6 @@ class MS_Model_Addon extends MS_Model_Option {
 					),
 				),
 			),
-		);
-
-		$list[self::ADDON_MEMBERCAPS_ADV] = (object) array(
-			'name' => __( 'DUMMY: Member Capabilities', MS_TEXT_DOMAIN ),
 		);
 
 		return $list;

@@ -1,0 +1,24 @@
+/**
+ * Special styles used on "Addons" page
+ */
+
+.ms-wrap.ms-addon-list {
+	.details {
+		.disabled {
+			opacity: .5;
+			position: relative;
+
+			&:before {
+				content: '';
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				z-index: 10;
+				cursor: not-allowed;
+				background: rgba(0,0,0,0.1);
+			}
+		}
+	}
+}

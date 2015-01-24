@@ -74,7 +74,7 @@ window.ms_init.view_settings = function init () {
 	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
 	// Hide/Show the "Test Membership" button in the toolbar.
-	jQuery( '.wpmui-slider-plugin_enabled').on( 'wpmui-radio-slider-updated', update_toolbar );
+	jQuery( '.wpmui-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
 
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );

@@ -75,6 +75,7 @@ window.ms_functions = {
 				data = field.data( 'before_ajax' )( data, field );
 			}
 
+			field.trigger( 'ms-ajax-start', [data, info_field, anim] );
 			jQuery.post(
 				window.ajaxurl,
 				data,
@@ -88,7 +89,9 @@ window.ms_functions = {
 					info_field.removeClass( 'ms-processing' );
 					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
-			);
+			).always(function() {
+				field.trigger( 'ms-ajax-done', [data, info_field, anim] );
+			});
 		}
 	},
 
@@ -124,6 +127,7 @@ window.ms_functions = {
 					data = slider.data( 'before_ajax' )( data, slider );
 				}
 
+				slider.trigger( 'ms-ajax-start', [data, info_field, slider] );
 				jQuery.post(
 					window.ajaxurl,
 					data,
@@ -138,9 +142,12 @@ window.ms_functions = {
 						slider.removeClass( 'ms-processing wpmui-loading' );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
-						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
+						slider.trigger( 'ms-ajax-updated', [data, response, is_err] );
+						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
 					}
-				);
+				).always(function() {
+					slider.trigger( 'ms-ajax-done', [data, info_field, slider] );
+				});
 			} else {
 				slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 			}
@@ -587,7 +594,7 @@ jQuery( document ).ready( function() {
 	)
 	// Update counter of the views in rule list-tables
 	.on(
-		'wpmui-radio-slider-updated',
+		'ms-radio-slider-updated',
 		'.wp-list-table.rules .wpmui-radio-slider',
 		fn.update_view_count
 	)

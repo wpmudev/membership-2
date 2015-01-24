@@ -115,6 +115,7 @@ window.ms_functions = {
 				data = field.data( 'before_ajax' )( data, field );
 			}
 
+			field.trigger( 'ms-ajax-start', [data, info_field, anim] );
 			jQuery.post(
 				window.ajaxurl,
 				data,
@@ -128,7 +129,9 @@ window.ms_functions = {
 					info_field.removeClass( 'ms-processing' );
 					field.trigger( 'ms-ajax-updated', [data, response, is_err] );
 				}
-			);
+			).always(function() {
+				field.trigger( 'ms-ajax-done', [data, info_field, anim] );
+			});
 		}
 	},
 
@@ -164,6 +167,7 @@ window.ms_functions = {
 					data = slider.data( 'before_ajax' )( data, slider );
 				}
 
+				slider.trigger( 'ms-ajax-start', [data, info_field, slider] );
 				jQuery.post(
 					window.ajaxurl,
 					data,
@@ -178,9 +182,12 @@ window.ms_functions = {
 						slider.removeClass( 'ms-processing wpmui-loading' );
 						slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 						data.response = response;
-						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
+						slider.trigger( 'ms-ajax-updated', [data, response, is_err] );
+						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
 					}
-				);
+				).always(function() {
+					slider.trigger( 'ms-ajax-done', [data, info_field, slider] );
+				});
 			} else {
 				slider.children( 'input' ).val( slider.hasClass( 'on' ) );
 			}
@@ -627,7 +634,7 @@ jQuery( document ).ready( function() {
 	)
 	// Update counter of the views in rule list-tables
 	.on(
-		'wpmui-radio-slider-updated',
+		'ms-radio-slider-updated',
 		'.wp-list-table.rules .wpmui-radio-slider',
 		fn.update_view_count
 	)
@@ -1029,10 +1036,10 @@ window.ms_init.metabox = function init() {
 		jQuery( '#ms-metabox-wrapper' ).replaceWith( data.response );
 		window.ms_init.ms_metabox();
 		jQuery( '.wpmui-radio-slider' ).click( function() { window.ms_functions.radio_slider_ajax_update( this ); } );
-		jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) { window.ms_init.ms_metabox_event( event, data ); } );
+		jQuery( '.ms-protect-content' ).on( 'ms-radio-slider-updated', function( event, data ) { window.ms_init.ms_metabox_event( event, data ); } );
 	};
 
-	jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
+	jQuery( '.ms-protect-content' ).on( 'ms-radio-slider-updated', function( event, data ) {
 		window.ms_init.ms_metabox_event( event, data );
 	});
 };
@@ -1043,7 +1050,7 @@ window.ms_init.metabox = function init() {
 /*global ms_functions:false */
 
 window.ms_init.view_membership_overview = function init () {
-	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function() {
+	jQuery( '.wpmui-radio-slider' ).on( 'ms-radio-slider-updated', function() {
 		var object = this,
 			obj = jQuery( '#ms-membership-status' );
 
@@ -1187,7 +1194,7 @@ window.ms_init.view_membership_dripped = function init () {
 		jQuery( this ).parent().parent().find( '.ms-period-type' ).text( period_type.val() );
 	});
 
-	jQuery( '.wpmui-radio-slider' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
+	jQuery( '.wpmui-radio-slider' ).on( 'ms-radio-slider-updated', function( event, data ) {
 		ms_functions.change_access( data.value, event.target );
 	});
 
@@ -1251,7 +1258,7 @@ window.ms_init.view_membership_payment = function init () {
 	// Update currency symbols in payment descriptions.
 	jQuery( '#currency' ).change( show_currency );
 
-	jQuery( '.wpmui-slider-trial_period_enabled' ).on( 'wpmui-radio-slider-updated', toggle_trial );
+	jQuery( '.wpmui-slider-trial_period_enabled' ).on( 'ms-radio-slider-updated', toggle_trial );
 };
 /*global window:false */
 /*global document:false */
@@ -1401,7 +1408,7 @@ window.ms_init.view_settings = function init () {
 	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
 	// Hide/Show the "Test Membership" button in the toolbar.
-	jQuery( '.wpmui-slider-plugin_enabled').on( 'wpmui-radio-slider-updated', update_toolbar );
+	jQuery( '.wpmui-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
 
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
@@ -1419,6 +1426,9 @@ window.ms_init.view_settings = function init () {
 
 window.ms_init.view_addons = function init () {
 
+	var list = jQuery( '.ms-addon-list' );
+
+	// Apply the custom list-filters
 	function filter_addons( event, filter, items ) {
 		switch ( filter ) {
 			case 'options':
@@ -1427,8 +1437,41 @@ window.ms_init.view_addons = function init () {
 		}
 	}
 
-	jQuery( document ).on( 'list-filter', filter_addons );
+	// Show an overlay when ajax update starts (prevent multiple ajax calls at once!)
+	function ajax_start( event, data, status, animation ) {
+		animation.removeClass( 'wpmui-loading' );
+		list.addClass( 'wpmui-loading' );
+	}
 
+	// Remove the overlay after ajax update is done
+	function ajax_done( event, data, status, animation ) {
+		list.removeClass( 'wpmui-loading' );
+	}
+
+	// After an add-on was activated or deactivated
+	function addon_toggle( event ) {
+		var el = jQuery( event.target ),
+			card = el.closest( '.list-card-top' ),
+			details = card.find( '.details' ),
+			fields = details.find( '.wpmui-ajax-update-wrapper' );
+
+		if ( el.closest( '.details' ).length ) { return; } // A detail setting was updated; add-on status was not changed...
+
+		if ( el.hasClass( 'on' ) ) {
+			fields.removeClass( 'disabled' );
+		} else {
+			fields.addClass( 'disabled' );
+		}
+	}
+
+	jQuery( document ).on( 'list-filter', filter_addons );
+	jQuery( document ).on( 'ms-ajax-start', ajax_start );
+	jQuery( document ).on( 'ms-ajax-updated', addon_toggle );
+	jQuery( document ).on( 'ms-ajax-done', ajax_done );
+
+	jQuery( '.list-card-top .wpmui-ajax-update-wrapper' ).each(function() {
+		jQuery( this ).trigger( 'ms-ajax-updated' );
+	});
 };
 
 /*global window:false */

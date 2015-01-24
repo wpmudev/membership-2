@@ -52,9 +52,10 @@ class MS_Model_Option extends MS_Model {
 		$this->before_save();
 
 		$class = get_class( $this );
-		$settings = MS_Factory::serialize_model( $this );
+		$option_key = strtolower( $class ); // Option key should be all lowercase
 
-		update_option( $class, $settings );
+		$settings = MS_Factory::serialize_model( $this );
+		update_option( $option_key, $settings );
 
 		$this->instance = $this;
 		$this->after_save();
@@ -69,8 +70,9 @@ class MS_Model_Option extends MS_Model {
 	 */
 	public function refresh() {
 		$class = get_class( $this );
+		$option_key = strtolower( $class ); // Option key should be all lowercase
 
-		$settings = get_option( $class );
+		$settings = get_option( $option_key );
 		MS_Factory::populate_model( $this, $settings );
 
 		wp_cache_set( $class, $this, 'MS_Model_Option' );
@@ -85,7 +87,10 @@ class MS_Model_Option extends MS_Model {
 		do_action( 'ms_model_option_delete_before', $this );
 
 		$class = get_class( $this );
-		delete_option( $class );
+		$option_key = strtolower( $class ); // Option key should be all lowercase
+		delete_option( $option_key );
+
+		wp_cache_delete( $class, 'MS_Model_Option' );
 
 		do_action( 'ms_model_option_delete_after', $this );
 	}

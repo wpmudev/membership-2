@@ -200,7 +200,8 @@ class MS_Factory {
 		if ( $cache ) {
 			$model = $cache;
 		} else {
-			$settings = get_option( $class );
+			$option_key = strtolower( $class ); // Option key should be lowercase.
+			$settings = get_option( $option_key );
 			self::populate_model( $model, $settings );
 		}
 

@@ -455,7 +455,6 @@ class MS_Model_Import extends MS_Model {
 						$model->disable( $addon );
 					}
 				}
-				$model->save();
 				break;
 		}
 	}

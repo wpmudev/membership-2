@@ -91,7 +91,17 @@ class MS_Controller_Addon extends MS_Controller {
 			&& ! empty( $_POST['addon'] )
 			&& $this->is_admin_user()
 		) {
-			$msg = $this->save_addon( 'toggle_activation', array( $_POST['addon'] ) );
+			$addon = array( $_POST['addon'] );
+
+			if ( isset( $_POST['value'] ) ) {
+				if ( WDev()->is_true( $_POST['value'] ) ) {
+					$msg = $this->save_addon( 'enable', $addon );
+				} else {
+					$msg = $this->save_addon( 'disable', $addon );
+				}
+			} else {
+				$msg = $this->save_addon( 'toggle_activation', $addon );
+			}
 		}
 
 		echo $msg;
@@ -108,9 +118,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 */
 	public function auto_setup_addons( $membership ) {
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
-
 		$addon->auto_config( $membership );
-		$addon->save();
 	}
 
 	/**
@@ -204,7 +212,6 @@ class MS_Controller_Addon extends MS_Controller {
 			}
 		}
 
-		$addon->save();
 		return true;
 	}
 

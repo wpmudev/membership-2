@@ -20,10 +20,10 @@ window.ms_init.metabox = function init() {
 		jQuery( '#ms-metabox-wrapper' ).replaceWith( data.response );
 		window.ms_init.ms_metabox();
 		jQuery( '.wpmui-radio-slider' ).click( function() { window.ms_functions.radio_slider_ajax_update( this ); } );
-		jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) { window.ms_init.ms_metabox_event( event, data ); } );
+		jQuery( '.ms-protect-content' ).on( 'ms-radio-slider-updated', function( event, data ) { window.ms_init.ms_metabox_event( event, data ); } );
 	};
 
-	jQuery( '.ms-protect-content' ).on( 'wpmui-radio-slider-updated', function( event, data ) {
+	jQuery( '.ms-protect-content' ).on( 'ms-radio-slider-updated', function( event, data ) {
 		window.ms_init.ms_metabox_event( event, data );
 	});
 };
