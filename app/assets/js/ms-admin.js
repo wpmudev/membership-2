@@ -184,6 +184,8 @@ window.ms_functions = {
 						data.response = response;
 						slider.trigger( 'ms-ajax-updated', [data, response, is_err] );
 						slider.trigger( 'ms-radio-slider-updated', [data, is_err] );
+						// Used for the add-on list (which is a WPMUI module)
+						slider.trigger( 'wpmui-radio-slider-updated', [data, is_err] );
 					}
 				).always(function() {
 					slider.trigger( 'ms-ajax-done', [data, info_field, slider] );
