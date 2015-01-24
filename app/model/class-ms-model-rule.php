@@ -298,24 +298,24 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function get_rule_type_classes() {
 		$classes = array(
-			self::RULE_TYPE_POST => 'MS_Model_Rule_Post',
-			self::RULE_TYPE_SPECIAL => 'MS_Model_Rule_Special',
-			self::RULE_TYPE_CATEGORY => 'MS_Model_Rule_Category',
-			self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Model_Rule_CptItem',
-			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => 'MS_Model_Rule_CptGroup',
-			self::RULE_TYPE_PAGE => 'MS_Model_Rule_Page',
-			self::RULE_TYPE_MORE_TAG => 'MS_Model_Rule_More',
-			self::RULE_TYPE_MENU => 'MS_Model_Rule_Menu',
-			self::RULE_TYPE_REPLACE_MENUS => 'MS_Model_Rule_Replace_Menu',
-			self::RULE_TYPE_REPLACE_MENULOCATIONS => 'MS_Model_Rule_Replace_Menulocation',
-			self::RULE_TYPE_SHORTCODE => 'MS_Model_Rule_Shortcode',
-			self::RULE_TYPE_COMMENT => 'MS_Model_Rule_Comment',
-			self::RULE_TYPE_MEDIA => 'MS_Model_Rule_Media',
-			self::RULE_TYPE_URL_GROUP => 'MS_Model_Rule_Url_Group',
+			self::RULE_TYPE_POST => 'MS_Rule_Post_Model',
+			self::RULE_TYPE_SPECIAL => 'MS_Rule_Special_Model',
+			self::RULE_TYPE_CATEGORY => 'MS_Rule_Category_Model',
+			self::RULE_TYPE_CUSTOM_POST_TYPE => 'MS_Rule_CptItem_Model',
+			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => 'MS_Rule_CptGroup_Model',
+			self::RULE_TYPE_PAGE => 'MS_Rule_Page_Model',
+			self::RULE_TYPE_MORE_TAG => 'MS_Rule_More_Model',
+			self::RULE_TYPE_MENU => 'MS_Rule_MenuItem_Model',
+			self::RULE_TYPE_REPLACE_MENUS => 'MS_Rule_ReplaceMenu_Model',
+			self::RULE_TYPE_REPLACE_MENULOCATIONS => 'MS_Rule_ReplaceLocation_Model',
+			self::RULE_TYPE_SHORTCODE => 'MS_Rule_Shortcode_Model',
+			self::RULE_TYPE_COMMENT => 'MS_Rule_Comment_Model',
+			self::RULE_TYPE_MEDIA => 'MS_Rule_Media_Model',
+			self::RULE_TYPE_URL_GROUP => 'MS_Rule_Url_Model',
 			// New since 1.1
-			self::RULE_TYPE_ADMINSIDE => 'MS_Model_Rule_Adminside',
-			self::RULE_TYPE_MEMBERCAPS => 'MS_Model_Rule_Membercaps',
-			self::RULE_TYPE_MEMBERROLES => 'MS_Model_Rule_Memberroles',
+			self::RULE_TYPE_ADMINSIDE => 'MS_Rule_Adminside_Model',
+			self::RULE_TYPE_MEMBERCAPS => 'MS_Rule_MemberCaps_Model',
+			self::RULE_TYPE_MEMBERROLES => 'MS_Rule_MemberRoles_Model',
 		);
 
 		return apply_filters( 'ms_model_rule_get_rule_type_classes', $classes );
@@ -1131,7 +1131,7 @@ class MS_Model_Rule extends MS_Model {
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array $args The parsed args.
 	 */
-	public function get_query_args( $args = null, $args_type = 'wp_query' ) {
+	public function prepare_query_args( $args = null, $args_type = 'wp_query' ) {
 		$filter = $this->get_exclude_include( $args );
 
 		/**

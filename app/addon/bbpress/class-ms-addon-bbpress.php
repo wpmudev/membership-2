@@ -42,8 +42,11 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 * @since  1.1.0
 	 */
 	public function init() {
-		// Always remove bbpress from MS_Model_Rule_CptGroup.
-		$this->add_filter( 'MS_Model_Rule_CptGroup_get_excluded_content', 'exclude_bbpress_cpts' );
+		// Always remove bbpress from MS_Rule_CptGroup_Model.
+		$this->add_filter(
+			'ms_rule_cptgroup_model_get_excluded_content',
+			'exclude_bbpress_cpts'
+		);
 	}
 
 	/**
@@ -56,8 +59,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 		$this->add_filter( 'ms_model_rule_get_rule_type_classes', 'bbpress_rule_type_classes' );
 		$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
 		$this->add_filter( 'ms_controller_membership_tabs', 'bbpress_rule_tabs' );
-		$this->add_filter( 'ms_view_membership_protected_content_render_tab_callback', 'bbpress_manage_render_callback', 10, 3 );
-		$this->add_filter( 'ms_view_membership_accessible_content_render_tab_callback', 'bbpress_manage_render_callback', 10, 3 );
+		$this->add_filter( 'ms_view_membership_protectedcontent_tab_callback', 'bbpress_manage_render_callback', 10, 4 );
 	}
 
 	/**
@@ -147,19 +149,17 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter ms_view_membership_protected_content_render_tab_callback
-	 * @filter ms_view_membership_accessible_content_render_tab_callback
+	 * @filter ms_view_membership_protectedcontent_tab_callback
 	 *
 	 * @param array $callback The current function callback.
 	 * @param string $tab The current membership rule tab.
-	 * @param MS_View_Membership_Protected_Content $obj The protected-content view object.
+	 * @param MS_View_Membership_ProtectedContent $obj The protected-content view object.
 	 * @return array The filtered callback.
 	 */
-	public function bbpress_manage_render_callback( $callback, $tab, $obj ) {
+	public function bbpress_manage_render_callback( $callback, $tab, $data, $obj ) {
 		if ( self::RULE_ID == $tab ) {
 			$view = MS_Factory::load( 'MS_Addon_Bbpress_View_General' );
 
-			$data = $obj->data;
 			$view->data = apply_filters(
 				'ms_addon_bbpress_view_general_edit_data',
 				$data
@@ -171,11 +171,11 @@ class MS_Addon_Bbpress extends MS_Addon {
 	}
 
 	/**
-	 * Exclude BBPress custom post type from MS_Model_Rule_CptGroup.
+	 * Exclude BBPress custom post type from MS_Rule_CptGroup_Model.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter MS_Model_Rule_CptGroup_get_excluded_content
+	 * @filter MS_Rule_CptGroup_Model_get_excluded_content
 	 *
 	 * @param array $excluded The current excluded ctps.
 	 * @return array The filtered excluded ctps.

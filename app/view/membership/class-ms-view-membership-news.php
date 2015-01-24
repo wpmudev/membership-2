@@ -10,7 +10,7 @@ class MS_View_Membership_News extends MS_View {
 	 * @return object
 	 */
 	public function to_html() {
-		$list_table = MS_Factory::create( 'MS_Helper_ListTable_Event' );
+		$list_table = MS_Factory::create( 'ms_helper_listtable_Event' );
 		$list_table->prepare_items();
 
 		ob_start();

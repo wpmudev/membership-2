@@ -151,7 +151,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			}
 
 			add_shortcode(
-				MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+				MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE,
 				array( $this, 'hide_shortcode')
 			);
 
@@ -231,8 +231,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['step'] = MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
 		$data['loginlink'] = WDev()->is_true( $data['loginlink'] );
 
-		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Register_User' );
-		$view->data = apply_filters( 'ms_view_shortcode_membership_register_user_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Shortcode_RegisterUser' );
+		$view->data = apply_filters( 'ms_view_shortcode_registeruser_data', $data, $this );
 
 		return $view->to_html();
 	}
@@ -304,9 +304,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 		$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
-		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Signup' );
+		$view = MS_Factory::create( 'MS_View_Shortcode_MembershipSignup' );
 		$view->data = apply_filters(
-			'ms_view_shortcode_membership_signup_data',
+			'ms_view_shortcode_membershipsignup_data',
 			$data,
 			$this
 		);
@@ -454,9 +454,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 			$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
-			$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Signup' );
+			$view = MS_Factory::create( 'MS_View_Shortcode_MembershipSignup' );
 			$view->data = apply_filters(
-				'ms_view_shortcode_membership_signup_data',
+				'ms_view_shortcode_membershipsignup_data',
 				$data,
 				$this
 			);
@@ -609,8 +609,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['show_note'] = WDev()->is_true( $data['show_note'] );
 		$data['show_labels'] = WDev()->is_true( $data['show_labels'] );
 
-		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
-		$view->data = apply_filters( 'ms_view_shortcode_membership_login_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
+		$view->data = apply_filters( 'ms_view_shortcode_login_data', $data, $this );
 
 		return $view->to_html();
 	}
@@ -640,8 +640,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		// The form attribute triggers the logout-link to be displayed.
 		$data['form'] = 'logout';
 
-		$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
-		$view->data = apply_filters( 'ms_view_shortcode_membership_logout_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
+		$view->data = apply_filters( 'ms_view_shortcode_logout_data', $data, $this );
 
 		return $view->to_html();
 	}

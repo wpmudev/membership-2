@@ -1295,7 +1295,7 @@ class MS_Helper_ListTable {
 				}
 
 				$code = apply_filters(
-					'ms_helper_ListTable_' . $this->id . '-column_' . $column_name,
+					'ms_helper_listtable_' . $this->id . '-column_' . $column_name,
 					$code,
 					$item,
 					$column_name

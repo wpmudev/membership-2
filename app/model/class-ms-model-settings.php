@@ -203,7 +203,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var array
 	 */
 	protected $downloads = array(
-		'protection_type' => MS_Model_Rule_Media::PROTECTION_TYPE_COMPLETE,
+		'protection_type' => MS_Rule_Media_Model::PROTECTION_TYPE_COMPLETE,
 		'masked_url' => 'downloads',
 	);
 
@@ -436,7 +436,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		} else {
 			switch ( $property ) {
 				case 'protection_type':
-					if ( MS_Model_Rule_Media::is_valid_protection_type( $value ) ) {
+					if ( MS_Rule_Media_Model::is_valid_protection_type( $value ) ) {
 						$this->downloads['protection_type'] = $value;
 					}
 					break;

@@ -168,7 +168,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		);
 
 		$actions = apply_filters(
-			'ms_helper_ListTable_' . $this->id . '_column_name_actions',
+			'ms_helper_listtable_' . $this->id . '_column_name_actions',
 			$actions,
 			$item
 		);
@@ -254,14 +254,14 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 	public function column_shortcode( $item, $column_name ) {
 		return sprintf(
 			'<code>[%1$s id="%2$s"]</code>',
-			MS_Model_Rule_Shortcode::PROTECT_CONTENT_SHORTCODE,
+			MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE,
 			esc_attr( $item->id )
 		);
 	}
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			'ms_helper_ListTable_membership_bulk_actions',
+			'ms_helper_listtable_membership_bulk_actions',
 			array()
 		);
 	}

@@ -471,7 +471,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$html = ob_get_clean();
 
 		return apply_filters(
-			'ms_helper_ListTable_rule_column_dripped',
+			'ms_helper_listtable_rule_column_dripped',
 			$html
 		);
 	}
@@ -507,7 +507,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		}
 
 		return apply_filters(
-			'ms_helper_ListTable_rule_get_membership_id',
+			'ms_helper_listtable_rule_get_membership_id',
 			$membership_id
 		);
 	}
@@ -523,6 +523,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	 */
 	public function list_head() {
 		$type_name = $this->name['plural'];
+		$membership_name = '';
 
 		/*
 		 * We don't build the title dynamically to make sure translations are
@@ -550,12 +551,14 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
 				$title = __( 'Showing All <b>Protected</b> %1$s of %2$s', MS_TEXT_DOMAIN );
 			}
+
+			$membership_name = $membership->name;
 		}
 
 		$title = sprintf(
 			$title,
 			'<b>' . esc_html( $type_name ) . '</b>',
-			'<b>' . esc_html( $membership->name ) . '</b>'
+			'<b>' . esc_html( $membership_name ) . '</b>'
 		);
 
 		printf( '<h3 class="ms-list-title">%1$s</h3>', $title );

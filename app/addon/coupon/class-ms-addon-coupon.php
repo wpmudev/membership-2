@@ -84,25 +84,25 @@ class MS_Addon_Coupon extends MS_Addon {
 		);
 
 		$this->add_filter(
-			'MS_Model_Rule_CptGroup_get_ms_post_types',
+			'ms_rule_cptgroup_model_get_ms_post_types',
 			'update_ms_posttypes'
 		);
 
 		// Show Coupon columns in the billing list (Admin)
 		$this->add_filter(
-			'ms_helper_ListTable_billing_get_columns',
+			'ms_helper_listtable_billing_get_columns',
 			'billing_columns',
 			10, 2
 		);
 
 		$this->add_filter(
-			'ms_helper_ListTable_billing-column_amount',
+			'ms_helper_listtable_billing-column_amount',
 			'billing_column_value',
 			10, 3
 		);
 
 		$this->add_filter(
-			'ms_helper_ListTable_billing-column_discount',
+			'ms_helper_listtable_billing-column_discount',
 			'billing_column_value',
 			10, 3
 		);

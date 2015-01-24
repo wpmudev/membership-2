@@ -83,8 +83,8 @@ class MS_View_Membership_Dripped extends MS_View {
 	public function render_tab_page() {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
-		$rule_ListTable = new MS_Helper_ListTable_Rule_Page( $rule, $membership );
-		$rule_ListTable->prepare_items();
+		$rule_listtable = new MS_Rule_Page_ListTable( $rule, $membership );
+		$rule_listtable->prepare_items();
 
 		ob_start();
 		?>
@@ -98,9 +98,9 @@ class MS_View_Membership_Dripped extends MS_View {
 			</div>
 			<?php MS_Helper_Html::html_separator(); ?>
 
-			<?php $rule_ListTable->views(); ?>
+			<?php $rule_listtable->views(); ?>
 			<form action="" method="post">
-				<?php $rule_ListTable->display(); ?>
+				<?php $rule_listtable->display(); ?>
 			</form>
 		</div>
 		<?php MS_Helper_Html::settings_footer(
@@ -113,8 +113,8 @@ class MS_View_Membership_Dripped extends MS_View {
 	public function render_tab_post() {
 		$membership = $this->data['membership'];
 		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
-		$rule_ListTable = new MS_Helper_ListTable_Rule_Post( $rule, $membership );
-		$rule_ListTable->prepare_items();
+		$rule_listtable = new MS_Rule_Post_ListTable( $rule, $membership );
+		$rule_listtable->prepare_items();
 
 		ob_start();
 		?>
@@ -128,9 +128,9 @@ class MS_View_Membership_Dripped extends MS_View {
 			</div>
 			<?php MS_Helper_Html::html_separator(); ?>
 
-			<?php $rule_ListTable->views(); ?>
+			<?php $rule_listtable->views(); ?>
 			<form action="" method="post">
-				<?php $rule_ListTable->display(); ?>
+				<?php $rule_listtable->display(); ?>
 			</form>
 		</div>
 		<?php MS_Helper_Html::settings_footer(

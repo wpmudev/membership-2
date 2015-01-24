@@ -464,7 +464,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 					'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
 					'value' => $settings->downloads['protection_type'],
-					'field_options' => MS_Model_Rule_Media::get_protection_types(),
+					'field_options' => MS_Rule_Media_Model::get_protection_types(),
 					'data_ms' => array(
 						'field' => 'protection_type',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,

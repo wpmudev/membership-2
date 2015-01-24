@@ -69,7 +69,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			unset( $columns['trial'] );
 		}
 
-		return apply_filters( 'ms_helper_ListTable_member_get_columns', $columns );
+		return apply_filters( 'ms_helper_listtable_member_get_columns', $columns );
 	}
 
 	/**
@@ -86,7 +86,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 */
 	public function get_hidden_columns() {
 		return apply_filters(
-			'ms_helper_ListTable_member_get_hidden_columns',
+			'ms_helper_listtable_member_get_hidden_columns',
 			array()
 		);
 	}
@@ -105,7 +105,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 */
 	public function get_sortable_columns() {
 		return apply_filters(
-			'ms_helper_ListTable_member_get_sortable_columns',
+			'ms_helper_listtable_member_get_sortable_columns',
 			array(
 				'username' => 'login',
 				'email' => 'email',
@@ -125,7 +125,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$this->get_sortable_columns(),
 		);
 
-		$per_page = apply_filters( 'ms_helper_ListTable_member_items_per_page', 10 );
+		$per_page = apply_filters( 'ms_helper_listtable_member_items_per_page', 10 );
 		$current_page = $this->get_pagenum();
 
 		$args = array(
@@ -169,7 +169,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			)
 		);
 
-		do_action( 'ms_helper_ListTable_member_prepare_items', $this );
+		do_action( 'ms_helper_listtable_member_prepare_items', $this );
 	}
 
 	/**
@@ -240,7 +240,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$html = $item->$column_name;
 
 		echo apply_filters(
-			'ms_helper_ListTable_member_column_default',
+			'ms_helper_listtable_member_column_default',
 			$html,
 			$item,
 			$column_name,
@@ -262,7 +262,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		);
 
 		echo apply_filters(
-			'ms_helper_ListTable_member_column_cb',
+			'ms_helper_listtable_member_column_cb',
 			$html,
 			$item,
 			$this
@@ -287,7 +287,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$html = sprintf( '%1$s %2$s', $item->username, $this->row_actions( $actions ) );
 
 		echo apply_filters(
-			'ms_helper_ListTable_member_column_username',
+			'ms_helper_listtable_member_column_username',
 			$html,
 			$item,
 			$this
@@ -371,7 +371,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		}
 
 		echo apply_filters(
-			'ms_helper_ListTable_member_column_membership',
+			'ms_helper_listtable_member_column_membership',
 			$html,
 			$member,
 			$this
@@ -399,7 +399,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			),
 		);
 
-		return apply_filters( 'ms_helper_ListTable_member_get_bulk_actions', $actions, $this );
+		return apply_filters( 'ms_helper_listtable_member_get_bulk_actions', $actions, $this );
 	}
 
 	/**
@@ -550,7 +550,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		<?php
 
 		do_action(
-			'ms_helper_ListTable_member_search_box',
+			'ms_helper_listtable_member_search_box',
 			$text,
 			$input_id,
 			$this
@@ -684,7 +684,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		}
 
 		return apply_filters(
-			'ms_helper_ListTable_member_views',
+			'ms_helper_listtable_member_views',
 			$list_views
 		);
 	}

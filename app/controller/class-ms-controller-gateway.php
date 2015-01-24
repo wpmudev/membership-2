@@ -68,7 +68,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$this->add_action( 'ms_controller_frontend_signup_gateway_form', 'gateway_form_mgr', 1 );
 		$this->add_action( 'ms_controller_frontend_signup_process_purchase', 'process_purchase', 1 );
-		$this->add_filter( 'ms_view_shortcode_membership_signup_cancel_button', 'cancel_button', 10, 2 );
+		$this->add_filter( 'ms_view_shortcode_membershipsignup_cancel_button', 'cancel_button', 10, 2 );
 
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 
@@ -379,7 +379,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Show gateway purchase button.
 	 *
 	 * Related action hooks:
-	 * - ms_view_shortcode_membership_signup_cancel_button
+	 * - ms_view_shortcode_membershipsignup_cancel_button
 	 *
 	 * @since 1.0.0
 	 */

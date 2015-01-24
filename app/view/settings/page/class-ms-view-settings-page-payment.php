@@ -13,7 +13,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 	 * @return string
 	 */
 	public function to_html() {
-		$gateway_list = MS_Factory::create( 'MS_Helper_ListTable_Gateway' );
+		$gateway_list = MS_Factory::create( 'ms_helper_listtable_Gateway' );
 		$gateway_list->prepare_items();
 		$fields = $this->get_global_payment_fields();
 

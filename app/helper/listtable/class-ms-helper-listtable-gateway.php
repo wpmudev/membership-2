@@ -83,7 +83,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 	 * @return array
 	 */
 	protected function get_hidden_columns() {
-		return apply_filters( 'ms_helper_ListTable_gateway_hidden_columns', array() );
+		return apply_filters( 'ms_helper_listtable_gateway_hidden_columns', array() );
 	}
 
 	/**
@@ -101,7 +101,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 	 */
 	protected function get_sortable_columns() {
 		return apply_filters(
-			'ms_helper_ListTable_gateway_sortable_columns',
+			'ms_helper_listtable_gateway_sortable_columns',
 			array()
 		);
 	}
@@ -121,7 +121,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 		);
 
 		$this->items = apply_filters(
-			'ms_helper_ListTable_gateway_items',
+			'ms_helper_listtable_gateway_items',
 			MS_Model_Gateway::get_gateways()
 		);
 
@@ -240,7 +240,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 		);
 		$html .= '</div></div>';
 
-		return apply_filters( 'ms_helper_ListTable_gateway_column_active', $html );
+		return apply_filters( 'ms_helper_listtable_gateway_column_active', $html );
 	}
 
 	/**

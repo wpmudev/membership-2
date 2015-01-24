@@ -673,7 +673,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				 * The action is targeted to the Account-page but actually calls
 				 * the Login-Shortcode.
 				 */
-				$view = MS_Factory::create( 'MS_View_Shortcode_Membership_Login' );
+				$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 				$view->data = array( 'action' => 'resetpass' );
 
 				$view->add_filter( 'the_content', 'to_html', 1 );

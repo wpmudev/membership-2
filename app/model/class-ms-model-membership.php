@@ -730,8 +730,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_membership_get_membership_names',
 			$memberships,
-			$args,
-			$include_base_memberships
+			$args
 		);
 	}
 

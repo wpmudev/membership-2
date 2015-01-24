@@ -59,7 +59,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		);
 
 		$columns = apply_filters(
-			'ms_helper_ListTable_billing_get_columns',
+			'ms_helper_listtable_billing_get_columns',
 			$columns,
 			$currency
 		);
@@ -241,7 +241,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			);
 		}
 
-		return apply_filters( 'ms_helper_ListTable_billing_views', $views );
+		return apply_filters( 'ms_helper_listtable_billing_views', $views );
 	}
 
 }

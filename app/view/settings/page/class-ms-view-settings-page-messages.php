@@ -76,7 +76,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 
 		$membership = $this->data['membership'];
 		$rule_more_tag = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MORE_TAG );
-		$has_more = $rule_more_tag->get_rule_value( MS_Model_Rule_More::CONTENT_ID );
+		$has_more = $rule_more_tag->get_rule_value( MS_Rule_More_Model::CONTENT_ID );
 
 		ob_start();
 

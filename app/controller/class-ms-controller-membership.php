@@ -413,8 +413,8 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['menu_id'] = self::get_request_field( 'menu_id', $first_value, 'REQUEST' );
 		$data['initial_setup'] = MS_Plugin::is_wizard();
 
-		$view = MS_Factory::create( 'MS_View_Membership_Protected_Content' );
-		$view->data = apply_filters( 'ms_view_membership_protected_content_data', $data, $this );
+		$view = MS_Factory::create( 'MS_View_Membership_ProtectedContent' );
+		$view->data = apply_filters( 'ms_view_membership_protectedcontent_data', $data, $this );
 		$view->render();
 	}
 

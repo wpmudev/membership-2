@@ -99,7 +99,7 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 
 	public function get_bulk_actions() {
 		return apply_filters(
-			'ms_helper_ListTable_membership_bulk_actions',
+			'ms_helper_listtable_membership_bulk_actions',
 			array()
 		);
 	}

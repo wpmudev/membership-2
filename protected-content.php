@@ -107,22 +107,9 @@ function ms_class_path_overrides( $overrides ) {
 		'MS_Model_Communication_Failed_Payment' => 'communication/class-ms-model-communication-failed-payment.php',
 		'MS_Model_Communication_Info_Update' => 'communication/class-ms-model-communication-info-update.php',
 		'MS_Model_Communication_Registration_Free' => 'communication/class-ms-model-communication-registration-free.php',
-		'MS_Model_Rule_Url_Group' => 'rule/class-ms-model-rule-url-group.php',
-		'MS_Model_Rule_Replace_Menu' => 'rule/class-ms-model-rule-replace-menu.php',
-		'MS_Model_Rule_Replace_Menulocation' => 'rule/class-ms-model-rule-replace-menulocation.php',
-	);
-
-	// VIEWS
-	$views_base = 'app/view/';
-	$views = array(
-		'MS_View_Membership_Protected_Content' => 'membership/class-ms-view-membership-protected-content.php',
-		'MS_View_Shortcode_Membership_Signup' => 'shortcode/class-ms-view-shortcode-membership-signup.php',
-		'MS_View_Shortcode_Membership_Login' => 'shortcode/class-ms-view-shortcode-membership-login.php',
-		'MS_View_Shortcode_Membership_Register_User' => 'shortcode/class-ms-view-shortcode-membership-register-user.php',
 	);
 
 	foreach ( $models as $key => $path ) { $overrides[ $key ] = $models_base . $path; }
-	foreach ( $views as $key => $path ) { $overrides[ $key ] = $views_base . $path; }
 
 	return $overrides;
 }
