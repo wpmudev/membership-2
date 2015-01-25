@@ -54,6 +54,16 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 	protected $replacements;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_ReplaceMenu_View' )->register();
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * This rule will return NULL (not relevant), because the menus are

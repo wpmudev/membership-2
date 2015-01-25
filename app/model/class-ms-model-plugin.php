@@ -65,7 +65,6 @@ class MS_Model_Plugin extends MS_Model {
 
 		$this->add_filter( 'cron_schedules', 'cron_time_period' );
 
-		$this->add_action( 'plugins_loaded', 'setup_rules', 2 );
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 		$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 
@@ -102,6 +101,8 @@ class MS_Model_Plugin extends MS_Model {
 			$this->setup_protection();
 			$this->setup_admin_protection();
 		}
+
+		$this->setup_rules();
 
 		/*
 		 * Create our own copy of the full admin menu to be used in the
@@ -365,11 +366,15 @@ class MS_Model_Plugin extends MS_Model {
 		do_action( 'ms_model_plugin_load_rules_before', $this );
 
 		$rule_types = MS_Model_Rule::get_rule_types();
+		$base = MS_Model_Membership::get_base();
+
+		foreach ( $rule_types as $rule_type ) {
+			$rule = $base->get_rule( $rule_type );
+		}
 
 		foreach ( $this->member->ms_relationships as $ms_relationship ) {
 			foreach ( $rule_types as $rule_type ) {
 				$rule = $ms_relationship->get_membership()->get_rule( $rule_type );
-				$rule->prepare_obj();
 			}
 		}
 

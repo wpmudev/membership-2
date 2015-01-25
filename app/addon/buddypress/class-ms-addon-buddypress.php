@@ -31,11 +31,6 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	const ID = 'buddypress';
 
 	const RULE_ID = 'buddypress';
-	const RULE_ID_BLOG = 'buddypress_blog';
-	const RULE_ID_FRIENDSHIP = 'buddypress_friendship';
-	const RULE_ID_GROUP = 'buddypress_group';
-	const RULE_ID_GROUP_CREATION = 'buddypress_group_creation';
-	const RULE_ID_PRIVATE_MSG = 'buddypress_private_msg';
 
 	/**
 	 * Initializes the Add-on. Always executed.
@@ -55,7 +50,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		$this->add_filter( 'ms_model_rule_get_rule_type_classes', 'buddypress_rule_type_classes' );
 		$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'buddypress_rule_type_titles' );
 		$this->add_filter( 'ms_controller_membership_tabs', 'buddypress_rule_tabs' );
-		$this->add_filter( 'ms_view_membership_protectedcontent_tab_callback', 'buddypress_manage_render_callback', 10, 4 );
+		$this->add_filter( 'ms_view_protectedcontent_define-' . self::RULE_ID, 'buddypress_manage_render_callback', 10, 3 );
 	}
 
 	/**
@@ -171,38 +166,21 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter ms_view_membership_protectedcontent_tab_callback
+	 * @filter ms_view_protectedcontent_define-buddypress
 	 *
 	 * @param array $callback The current function callback.
-	 * @param string $tab The current membership rule tab.
+	 * @param array $data The data collection.
 	 * @param MS_View_Membership_ProtectedContent $obj The protected-content view object.
 	 * @return array The filtered callback.
 	 */
-	public function buddypress_manage_render_callback( $callback, $tab, $data, $obj ) {
-		if ( in_array( $tab, $this->buddypress_rule_types( array() ) ) ) {
-			$view = null;
+	public function buddypress_manage_render_callback( $callback, $data, $obj ) {
+		$view = MS_Factory::load( 'MS_Addon_Buddypress_View_General' );
 
-			switch ( $tab ) {
-				default:
-				case self::RULE_ID_BLOG:
-					$view = MS_Factory::load( 'MS_Addon_Buddypress_View_Blog' );
-					break;
-
-				case self::RULE_ID_GROUP:
-					$view = MS_Factory::load( 'MS_Addon_Buddypress_View_Group' );
-					break;
-
-				case self::RULE_ID:
-					$view = MS_Factory::load( 'MS_Addon_Buddypress_View_General' );
-					break;
-			}
-
-			$view->data = apply_filters(
-				'ms_addon_buddypress_view_settings_edit_data',
-				$data
-			);
-			$callback = array( $view, 'render_rule_tab' );
-		}
+		$view->data = apply_filters(
+			'ms_addon_buddypress_view_settings_edit_data',
+			$data
+		);
+		$callback = array( $view, 'render_rule_tab' );
 
 		return $callback;
 	}

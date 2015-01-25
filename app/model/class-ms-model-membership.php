@@ -476,8 +476,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			// Create a new rule model object.
 			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
 
-			$rule->prepare_obj();
-
 			$rule = apply_filters(
 				'ms_model_membership_get_rule',
 				$rule,

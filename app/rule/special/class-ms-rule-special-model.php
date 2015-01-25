@@ -78,6 +78,16 @@ class MS_Rule_Special_Model extends MS_Model_Rule {
 	public $_has_rule = null;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_Special_View' )->register();
+	}
+
+	/**
 	 * Checks if the current page is a special page that can be handled by this
 	 * rule
 	 *

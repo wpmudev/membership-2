@@ -51,6 +51,16 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 	protected $rule_type = self::RULE_TYPE_MENU;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_MenuItem_View' )->register();
+	}
+
+	/**
 	 * Initialize the rule
 	 *
 	 * @since  1.1.0

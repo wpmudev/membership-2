@@ -81,14 +81,7 @@ class MS_Factory {
 		 */
 		$obj->_factory_id = uniqid( 'object-' );
 
-		/**
-		 * Option to initialize objects.
-		 *
-		 * @since  1.1
-		 */
-		if ( method_exists( $obj, 'prepare_obj' ) ) {
-			$obj->prepare_obj();
-		}
+		self::prepare_obj( $obj );
 
 		return apply_filters(
 			'ms_factory_create_'. $class,
@@ -158,12 +151,7 @@ class MS_Factory {
 				$model_id
 			);
 
-			/**
-			 * New option to initialize objects as early as possible
-			 *
-			 * @since  1.1
-			 */
-			self::$singleton[$key]->prepare_obj( $key );
+			self::prepare_obj( self::$singleton[$key] );
 		}
 
 		if ( ! isset( self::$singleton[$key] ) ) {
@@ -180,6 +168,52 @@ class MS_Factory {
 	 */
 	static public function clear() {
 		wp_cache_flush();
+	}
+
+	/**
+	 * Initialize the object after it was created or loaded.
+	 *
+	 * @since  1.1.0
+	 * @param  MS_Hook &$obj Any Protected Content object to initialize.
+	 */
+	static private function prepare_obj( &$obj ) {
+		static $Init_Obj = array();
+		static $Init_Class = array();
+
+		// Prepare each single object that was created.
+		if ( method_exists( $obj, 'prepare_obj' ) ) {
+			if ( ! isset( $Init_Obj[$obj->_factory_id] ) ) {
+				$Init_Obj[$obj->_factory_id] = true;
+				$obj->prepare_obj();
+
+				// Prepare all sub-objects.
+				if ( is_array( $obj->_subobjects ) ) {
+					foreach ( $obj->_subobjects as $itemname ) {
+						if ( property_exists( $obj, $itemname ) ) {
+							$itemlist = $obj->$itemname;
+							if ( is_array( $itemlist ) ) {
+								foreach ( $itemlist as $sub_obj ) {
+									self::prepare_obj( $sub_obj );
+								}
+							} elseif ( is_object( $itemlist ) ) {
+								self::prepare_obj( $itemlist );
+							}
+						}
+					}
+				}
+				// End of sub-object initialization.
+			}
+		}
+
+		// Prepare the first object of each class-type (i.e. "prepare-once").
+		if ( method_exists( $obj, 'prepare_class' ) ) {
+			$class = get_class( $obj );
+
+			if ( ! isset( $Init_Class[$class] ) ) {
+				$Init_Class[$class] = true;
+				$obj::prepare_class();
+			}
+		}
 	}
 
 	/**
@@ -272,18 +306,6 @@ class MS_Factory {
 					$model->user_id = $post->post_author;
 				} else {
 					$model->id = 0;
-				}
-
-				if ( is_array( $model->_subobjects ) ) {
-					foreach ( $model->_subobjects as $obj ) {
-						if ( property_exists( $model, $obj ) ) {
-							$items = $model->$obj;
-							foreach ( $items as $m_key => $m_obj ) {
-								$items[$m_key]->_prepared = false;
-							}
-							$model->$obj = $items;
-						}
-					}
 				}
 			}
 		}

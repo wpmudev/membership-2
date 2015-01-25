@@ -18,8 +18,6 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$tabs = $this->data['tabs'];
-
 		$desc = array(
 			__( 'Choose Pages, Categories etc. that you want to make <strong>unavailable</strong> to visitors, and non-members.', MS_TEXT_DOMAIN ),
 		);
@@ -36,24 +34,34 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 				)
 			);
 
+			// Display a filter to switch between individual memberships.
 			$this->membership_filter();
 
 			$active_tab = $this->data['active_tab'];
-			MS_Helper_Html::html_admin_vertical_tabs( $tabs, $active_tab );
+			MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'], $active_tab );
 
 			// Call the appropriate form to render.
 			$callback_name = 'render_tab_' . str_replace( '-', '_', $active_tab );
+			$render_callback = array( $this, $callback_name );
 			$render_callback = apply_filters(
-				'ms_view_membership_protectedcontent_tab_callback',
-				array( $this, $callback_name ),
-				$active_tab,
-				$this->data,
-				$this
+				'ms_view_protectedcontent_define-' . $active_tab,
+				$render_callback,
+				$this->data
 			);
 
-			$html = call_user_func( $render_callback );
+			if ( is_callable( $render_callback ) ) {
+				$html = call_user_func( $render_callback );
+			} else {
+				// This is to notify devs that a file/hook is missing or wrong.
+				$html = '<div class="ms-settings">' .
+					'<div class="error below-h2"><p>' .
+					'<em>No View defined by hook "ms_view_protectedcontent_define-' . $active_tab . '"</em>' .
+					'</p></div>' .
+					'</div>';
+			}
+
 			$html = apply_filters(
-				'ms_view_membership_protected_' . $callback_name,
+				'ms_view_membership_protected_' . $active_tab,
 				$html
 			);
 			echo '' . $html;
@@ -61,13 +69,13 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 		</div>
 		<?php
 
-		// Only in "Protected Content" - not in "Accessible Content"
+		// Used to go back to Overview from the Protected Content page
 		if ( isset( $_REQUEST['from'] ) ) {
 			$field = array(
 				'id'    => 'go_back',
 				'type'  => MS_Helper_Html::TYPE_HTML_LINK,
 				'value' => __( '&laquo; Back', MS_TEXT_DOMAIN ),
-				'url'   => base64_decode( $_REQUEST['from'] ),
+				'url'   => wp_kses( base64_decode( $_REQUEST['from'] ), array() ),
 				'class' => 'button',
 			);
 			MS_Helper_Html::html_element( $field );
@@ -124,225 +132,6 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 			</ul>
 		</div>
 		<?php
-	}
-
-	/* ====================================================================== *
-	 *                               CATEGORY
-	 * ====================================================================== */
-
-	/**
-	 * Render category tab.
-	 *
-	 * @since 1.0.0
-	 */
-	public function render_tab_category() {
-		$tab = MS_Factory::create( 'MS_Rule_Category_View' );
-		$tab->data = $this->data;
-
-		return $tab->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               CUSTOM POST TYPE
-	 * ====================================================================== */
-
-	/**
-	 * Render CPT Post by Post tab.
-	 *
-	 * @since 1.1.0
-	 */
-	public function render_tab_cpt_item() {
-		$tab = MS_Factory::create( 'MS_Rule_CptItem_View' );
-		$tab->data = $this->data;
-
-		return $tab->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               CUSTOM POST TYPE
-	 * ====================================================================== */
-
-	/**
-	 * Render CPT Group tab.
-	 *
-	 * @since 1.1.0
-	 */
-	public function render_tab_cpt_group() {
-		$tab = MS_Factory::create( 'MS_Rule_CptGroup_View' );
-		$tab->data = $this->data;
-
-		return $tab->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               PAGE
-	 * ====================================================================== */
-
-	public function render_tab_page() {
-		$tab = MS_Factory::create( 'MS_Rule_Page_View' );
-		$tab->data = $this->data;
-
-		return $tab->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               ADMIN SIDE
-	 * ====================================================================== */
-
-	public function render_tab_adminside() {
-		$view = MS_Factory::create( 'MS_Rule_Adminside_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               MEMBER CAPS
-	 * ====================================================================== */
-
-	public function render_tab_membercaps() {
-		$view = MS_Factory::create( 'MS_Rule_MemberCaps_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               MEMBER ROLES
-	 * ====================================================================== */
-
-	public function render_tab_memberroles() {
-		$view = MS_Factory::create( 'MS_Rule_MemberRoles_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               SPECIAL PAGES
-	 * ====================================================================== */
-
-	public function render_tab_special() {
-		$view = MS_Factory::create( 'MS_Rule_Special_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               POSTS
-	 * ====================================================================== */
-
-	public function render_tab_post() {
-		$view = MS_Factory::create( 'MS_Rule_Post_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               COMMENT, MORE
-	 * ====================================================================== */
-
-	/**
-	 * Render tab content for:
-	 * Comments, More tag
-	 *
-	 * @since  1.0.0
-	 */
-	public function render_tab_content() {
-		$view = MS_Factory::create( 'MS_Rule_Content_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               MENU
-	 * ====================================================================== */
-
-	/**
-	 * Render tab content for:
-	 * Menus
-	 *
-	 * @since  1.1.0
-	 */
-	public function render_tab_menuitem() {
-		$view = MS_Factory::create( 'MS_Rule_Content_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/**
-	 * Render tab content for:
-	 * Menus
-	 *
-	 * @since  1.1.0
-	 */
-	public function render_tab_replacemenu() {
-		$view = MS_Factory::create( 'MS_Rule_ReplaceMenu_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/**
-	 * Render tab content for:
-	 * Menus
-	 *
-	 * @since  1.1.0
-	 */
-	public function render_tab_replacelocation() {
-		$view = MS_Factory::create( 'MS_Rule_ReplaceLocation_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               SHORTCODE
-	 * ====================================================================== */
-
-	public function render_tab_shortcode() {
-		$view = MS_Factory::create( 'MS_Rule_Shortcode_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               URL GROUP
-	 * ====================================================================== */
-
-	public function render_tab_url_group() {
-		$view = MS_Factory::create( 'MS_Rule_Url_View' );
-		$view->data = $this->data;
-
-		return $view->to_html();
-	}
-
-	/* ====================================================================== *
-	 *                               SHARED
-	 * ====================================================================== */
-
-	public function get_control_fields() {
-		$membership = $this->data['membership'];
-		$action = $this->data['action'];
-		$nonce = wp_create_nonce( $action );
-
-		$fields = array(
-			'step' => array(
-				'id' => 'step',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['step'],
-			),
-		);
-
-		return apply_filters(
-			'ms_view_membership_protectedcontent_get_control_fields',
-			$fields
-		);
 	}
 
 }

@@ -51,6 +51,16 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 	const PROTECT_CONTENT_SHORTCODE = 'ms-protect-content';
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_Shortcode_View' )->register();
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * This rule will return NULL (not relevant), because shortcodes are

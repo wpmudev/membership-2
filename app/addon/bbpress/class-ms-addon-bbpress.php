@@ -59,7 +59,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 		$this->add_filter( 'ms_model_rule_get_rule_type_classes', 'bbpress_rule_type_classes' );
 		$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
 		$this->add_filter( 'ms_controller_membership_tabs', 'bbpress_rule_tabs' );
-		$this->add_filter( 'ms_view_membership_protectedcontent_tab_callback', 'bbpress_manage_render_callback', 10, 4 );
+		$this->add_filter( 'ms_view_protectedcontent_define-' . self::RULE_ID, 'bbpress_manage_render_callback', 10, 3 );
 	}
 
 	/**
@@ -149,23 +149,21 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter ms_view_membership_protectedcontent_tab_callback
+	 * @filter ms_view_protectedcontent_define-bbpress
 	 *
 	 * @param array $callback The current function callback.
-	 * @param string $tab The current membership rule tab.
+	 * @param array $data The data collection.
 	 * @param MS_View_Membership_ProtectedContent $obj The protected-content view object.
 	 * @return array The filtered callback.
 	 */
-	public function bbpress_manage_render_callback( $callback, $tab, $data, $obj ) {
-		if ( self::RULE_ID == $tab ) {
-			$view = MS_Factory::load( 'MS_Addon_Bbpress_View_General' );
+	public function bbpress_manage_render_callback( $callback, $data, $obj ) {
+		$view = MS_Factory::load( 'MS_Addon_Bbpress_View_General' );
 
-			$view->data = apply_filters(
-				'ms_addon_bbpress_view_general_edit_data',
-				$data
-			);
-			$callback = array( $view, 'render_rule_tab' );
-		}
+		$view->data = apply_filters(
+			'ms_addon_bbpress_view_general_edit_data',
+			$data
+		);
+		$callback = array( $view, 'render_rule_tab' );
 
 		return $callback;
 	}

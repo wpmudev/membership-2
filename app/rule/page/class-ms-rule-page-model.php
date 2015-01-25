@@ -51,6 +51,16 @@ class MS_Rule_Page_Model extends MS_Model_Rule {
 	protected $start_date;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_Page_View' )->register();
+	}
+
+	/**
 	 * Set initial protection (front-end only)
 	 *
 	 * @since 1.0.0

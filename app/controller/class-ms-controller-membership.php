@@ -401,17 +401,16 @@ class MS_Controller_Membership extends MS_Controller {
 		$data = array();
 		$data['tabs'] = $this->get_protected_content_tabs();
 		$data['active_tab'] = $this->get_active_tab();
-		$data['step'] = $this->get_step();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
-		$data['show_next_button'] = MS_Plugin::is_wizard();
 		$data['settings'] = MS_Plugin::instance()->settings;
-
 		$data['membership'] = MS_Model_Membership::get_base();
+
+		// Setup only for the Menu-Item rule.
 		$data['menus'] = $data['membership']->get_rule( MS_Model_Rule::RULE_TYPE_MENU )->get_menu_array();
 		$first_value = array_keys( $data['menus'] );
 		$first_value = reset( $first_value );
 		$data['menu_id'] = self::get_request_field( 'menu_id', $first_value, 'REQUEST' );
-		$data['initial_setup'] = MS_Plugin::is_wizard();
+		// End of Menu-Item setup.
 
 		$view = MS_Factory::create( 'MS_View_Membership_ProtectedContent' );
 		$view->data = apply_filters( 'ms_view_membership_protectedcontent_data', $data, $this );

@@ -1,6 +1,6 @@
 <?php
 
-class MS_Rule_Page_View extends MS_View {
+class MS_Rule_ReplaceMenu_View extends MS_View {
 
 	/**
 	 * Set up the view to display the tab contents when required
@@ -9,7 +9,7 @@ class MS_Rule_Page_View extends MS_View {
 	 */
 	public function register() {
 		$this->add_filter(
-			'ms_view_protectedcontent_define-page',
+			'ms_view_protectedcontent_define-replacemenu',
 			'handle_render_callback', 10, 2
 		);
 	}
@@ -32,17 +32,22 @@ class MS_Rule_Page_View extends MS_View {
 
 	public function to_html() {
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
-		$rule_listtable = new MS_Rule_Page_ListTable( $rule, $membership );
+
+		$rule_menu = $membership->get_rule( MS_Model_Rule::RULE_TYPE_REPLACE_MENUS );
+		$rule_listtable = new MS_Rule_ReplaceMenu_ListTable(
+			$rule_menu,
+			$membership
+		);
+
 		$rule_listtable->prepare_items();
 
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Apply protection to Pages and and grant access to members', MS_TEXT_DOMAIN ),
-				'desc' => __( 'All pages that do not have Content Protection applied are visible to Everyone', MS_TEXT_DOMAIN ),
+				'title' => __( 'Menus', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Replace or protect WordPress menus.', MS_TEXT_DOMAIN ),
 			),
-			MS_Model_Rule::RULE_TYPE_PAGE,
+			MS_Model_Rule::RULE_TYPE_REPLACE_MENUS,
 			array(
 				'membership' => $this->data['membership'],
 			),
@@ -56,7 +61,7 @@ class MS_Rule_Page_View extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
+			$rule_listtable->search_box();
 			?>
 			<form action="" method="post">
 				<?php
@@ -64,7 +69,7 @@ class MS_Rule_Page_View extends MS_View {
 
 				do_action(
 					'ms_view_membership_protectedcontent_footer',
-					MS_Model_Rule::RULE_TYPE_PAGE,
+					MS_Model_Rule::RULE_TYPE_REPLACE_MENUS,
 					$this
 				);
 				?>
@@ -73,6 +78,7 @@ class MS_Rule_Page_View extends MS_View {
 		<?php
 
 		MS_Helper_Html::settings_footer();
+
 		return ob_get_clean();
 	}
 

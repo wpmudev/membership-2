@@ -51,6 +51,16 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 	private $start_date;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_Post_View' )->register();
+	}
+
+	/**
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0

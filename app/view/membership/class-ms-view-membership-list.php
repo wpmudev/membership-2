@@ -10,7 +10,7 @@ class MS_View_Membership_List extends MS_View {
 		);
 		$title = MS_Helper_Membership::get_admin_title();
 
-		$membership_list = MS_Factory::create( 'ms_helper_listtable_Membership' );
+		$membership_list = MS_Factory::create( 'MS_Helper_ListTable_Membership' );
 		$membership_list->prepare_items();
 
 		$create_new_button = array(
@@ -49,6 +49,7 @@ class MS_View_Membership_List extends MS_View {
 
 		<?php
 		$html = ob_get_clean();
+
 		echo $html;
 	}
 

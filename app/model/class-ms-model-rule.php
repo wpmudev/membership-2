@@ -182,18 +182,6 @@ class MS_Model_Rule extends MS_Model {
 	}
 
 	/**
-	 * Option to initialize objects.
-	 *
-	 * @since  1.1
-	 */
-	public function prepare_obj() {
-		if ( $this->_prepared ) { return; }
-		$this->_prepared = true;
-
-		// Can be overwritten by child classes.
-	}
-
-	/**
 	 * Rule types.
 	 *
 	 * This array is ordered in the hierarchy way.
@@ -329,22 +317,22 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function get_rule_type_titles() {
 		$titles = array(
-			self::RULE_TYPE_CATEGORY => __( 'Category', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_CATEGORY => __( 'Categories', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_SPECIAL => __( 'Special Pages', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_CONTENT => __( 'Comments & More Tag', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEDIA => __( 'Media', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_MENU => __( 'Menu', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_REPLACE_MENUS => __( 'Menu', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_REPLACE_MENULOCATIONS => __( 'Menu', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_PAGE => __( 'Page', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_POST => __( 'Post', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_SHORTCODE => __( 'Shortcode', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_MENU => __( 'Menu Items', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_REPLACE_MENUS => __( 'Menus', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_REPLACE_MENULOCATIONS => __( 'Menu Locations', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_PAGE => __( 'Pages', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_POST => __( 'Posts', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_SHORTCODE => __( 'Shortcodes', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_URL_GROUP => __( 'URLs', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_CUSTOM_POST_TYPE => __( 'Custom Post Type Items', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP => __( 'Custom Post Types', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_ADMINSIDE => __( 'Admin Side', MS_TEXT_DOMAIN ),
 			self::RULE_TYPE_MEMBERCAPS => __( 'Capabilities', MS_TEXT_DOMAIN ),
-			self::RULE_TYPE_MEMBERROLES => __( 'User Role', MS_TEXT_DOMAIN ),
+			self::RULE_TYPE_MEMBERROLES => __( 'User Roles', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters( 'ms_model_rule_get_rule_type_titles', $titles );

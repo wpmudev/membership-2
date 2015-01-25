@@ -58,20 +58,28 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 	protected $_content_array = null;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_MemberCaps_View' )->register();
+	}
+
+	/**
 	 * Initializes the object as early as possible
 	 *
-	 * @since  1.1
+	 * @since 1.1.0
 	 */
 	public function prepare_obj() {
-		if ( $this->_prepared ) { return; }
-		$this->_prepared = true;
 		$this->_content_array = null;
 	}
 
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 *
 	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
@@ -85,7 +93,7 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 *
 	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */

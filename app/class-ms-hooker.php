@@ -47,14 +47,6 @@ class MS_Hooker {
 	protected $_factory_id = null;
 
 	/**
-	 * Flag if object was initialized already via prepare_obj().
-	 *
-	 * @since 1.1.0
-	 * @var bool $_prepared
-	 */
-	protected $_prepared = false;
-
-	/**
 	 * Internal list of messages which is passed between functions.
 	 * The message list is shared between all controller objects!
 	 *
@@ -68,7 +60,7 @@ class MS_Hooker {
 	/**
 	 * Called before loading the model.
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public function before_load() {
 		do_action( 'ms_hooker_before_load', $this );
@@ -77,7 +69,7 @@ class MS_Hooker {
 	/**
 	 * Load the model data.
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public function load( $model_id = false ) {
 		throw new Exception( 'Method to be implemented in child class' );
@@ -86,22 +78,28 @@ class MS_Hooker {
 	/**
 	 * Called after loading model data.
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public function after_load() {
 		do_action( 'ms_hooker_after_load', $this );
 	}
 
 	/**
-	 * Called after the object was either created or loaded.
+	 * Called my MS_Factory after an object was either created or loaded.
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public function prepare_obj() {
-		if ( $this->_prepared ) { return; }
-		$this->_prepared = true;
-
 		do_action( 'ms_hooker_prepare_obj', $this );
+	}
+
+	/**
+	 * Called by MS_Factory when the first object of the class is created/loaded
+	 *
+	 * @since 1.1.0
+	 */
+	static public function prepare_class() {
+		do_action( 'ms_hooker_prepare_class' );
 	}
 
 	/**

@@ -81,6 +81,15 @@ class MS_Rule_Content_Model extends MS_Model_Rule {
 	 */
 	protected static $comment_access = self::COMMENT_NO_ACCESS;
 
+	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_Content_View' )->register();
+	}
 
 	/**
 	 * Verify access to the current content.

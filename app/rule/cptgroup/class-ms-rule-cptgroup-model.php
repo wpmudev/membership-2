@@ -42,6 +42,16 @@ class MS_Rule_CptGroup_Model extends MS_Model_Rule {
 	protected $rule_type = self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// Register the tab-output handler for the admin side
+		MS_Factory::load( 'MS_Rule_CptGroup_View' )->register();
+	}
+
+	/**
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0

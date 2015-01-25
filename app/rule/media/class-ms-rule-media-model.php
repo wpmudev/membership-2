@@ -73,6 +73,15 @@ class MS_Rule_Media_Model extends MS_Model_Rule {
 	protected $ms_relationship;
 
 	/**
+	 * Set-up the Rule
+	 *
+	 * @since  1.1.0
+	 */
+	static public function prepare_class() {
+		// No setup required...
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * This rule will return NULL (not relevant), because the media-item is
