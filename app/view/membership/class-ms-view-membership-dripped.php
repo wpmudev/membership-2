@@ -82,7 +82,7 @@ class MS_View_Membership_Dripped extends MS_View {
 
 	public function render_tab_page() {
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_PAGE );
+		$rule = $membership->get_rule( MS_Rule_Page::RULE_ID );
 		$rule_listtable = new MS_Rule_Page_ListTable( $rule, $membership );
 		$rule_listtable->prepare_items();
 
@@ -112,7 +112,7 @@ class MS_View_Membership_Dripped extends MS_View {
 
 	public function render_tab_post() {
 		$membership = $this->data['membership'];
-		$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
+		$rule = $membership->get_rule( MS_Rule_Post::RULE_ID );
 		$rule_listtable = new MS_Rule_Post_ListTable( $rule, $membership );
 		$rule_listtable->prepare_items();
 

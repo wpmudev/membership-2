@@ -21,7 +21,7 @@
 */
 
 
-class MS_Addon_Buddypress_Model_Rulegroup extends MS_Model_Rule {
+class MS_Addon_Buddypress_Model_Rulegroup extends MS_Rule {
 
 	protected $rule_type = MS_Addon_Buddypress::RULE_ID_GROUP;
 
@@ -45,7 +45,7 @@ class MS_Addon_Buddypress_Model_Rulegroup extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_group_has_access',
+			'ms_rule_buddypress_group_has_access',
 			$has_access,
 			$group_id
 		);
@@ -82,7 +82,7 @@ class MS_Addon_Buddypress_Model_Rulegroup extends MS_Model_Rule {
 		sort( $groups['groups'] );
 
 		return apply_filters(
-			'ms_model_rule_buddypress_group_protect_groups',
+			'ms_rule_buddypress_group_protect_groups',
 			$groups
 		);
 	}
@@ -112,7 +112,7 @@ class MS_Addon_Buddypress_Model_Rulegroup extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_protect_activity',
+			'ms_rule_buddypress_blog_protect_activity',
 			$activities
 		);
 	}
@@ -148,7 +148,7 @@ class MS_Addon_Buddypress_Model_Rulegroup extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_get_content',
+			'ms_rule_buddypress_blog_get_content',
 			$contents
 		);
 	}

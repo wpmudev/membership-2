@@ -127,7 +127,7 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	public static function settings_footer( $fields = null, $submit_info = null ) {
 		// Default Submit-Button is "Next >>"
-		if ( null === $submit_info || true === $submit_info ) {
+		if ( true === $submit_info ) {
 			$submit_info = array(
 				'id' => 'next',
 				'value' => __( 'Next', MS_TEXT_DOMAIN ),
@@ -135,7 +135,7 @@ class MS_Helper_Html extends MS_Helper {
 			);
 		}
 
-		if ( null === $fields ) {
+		if ( empty( $fields ) ) {
 			$fields = array();
 		}
 

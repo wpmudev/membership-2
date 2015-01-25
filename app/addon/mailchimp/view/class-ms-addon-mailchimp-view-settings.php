@@ -17,7 +17,7 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 				<form action="" method="post">
 					<?php MS_Helper_Html::settings_box( $fields ); ?>
 				</form>
-				<?php MS_Helper_Html::settings_footer( null, false ); ?>
+				<?php MS_Helper_Html::settings_footer(); ?>
 			</div>
 		</div>
 		<?php

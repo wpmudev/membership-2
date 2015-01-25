@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Page_Model extends MS_Model_Rule {
+class MS_Rule_Page_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_Page_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_PAGE;
+	protected $rule_type = MS_Rule_Page::RULE_ID;
 
 	/**
 	 * Membership relationship start date.
@@ -49,16 +49,6 @@ class MS_Rule_Page_Model extends MS_Model_Rule {
 	 * @var string $start_date
 	 */
 	protected $start_date;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_Page_View' )->register();
-	}
 
 	/**
 	 * Set initial protection (front-end only)
@@ -267,7 +257,7 @@ class MS_Rule_Page_Model extends MS_Model_Rule {
 
 		foreach ( $pages as $content ) {
 			$content->id = $content->ID;
-			$content->type = MS_Model_RULE::RULE_TYPE_PAGE;
+			$content->type = MS_Rule_Page::RULE_ID;
 			$content->name = $content->post_name;
 
 			$content->access = $this->get_rule_value( $content->id );

@@ -76,7 +76,7 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 			),
 		);
 		$actions = apply_filters(
-			'membership_helper_listtable_' . $this->id . '_column_name_actions',
+			'ms_rule_' . $this->id . '_column_actions',
 			$actions,
 			$item
 		);

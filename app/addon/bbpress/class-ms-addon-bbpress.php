@@ -55,9 +55,9 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 * @since  1.1.0
 	 */
 	public function activate() {
-		$this->add_filter( 'ms_model_rule_get_rule_types', 'bbpress_rule_types' );
-		$this->add_filter( 'ms_model_rule_get_rule_type_classes', 'bbpress_rule_type_classes' );
-		$this->add_filter( 'ms_model_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
+		$this->add_filter( 'ms_rule_get_rule_types', 'bbpress_rule_types' );
+		$this->add_filter( 'ms_rule_get_rule_type_classes', 'bbpress_rule_type_classes' );
+		$this->add_filter( 'ms_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
 		$this->add_filter( 'ms_controller_membership_tabs', 'bbpress_rule_tabs' );
 		$this->add_filter( 'ms_view_protectedcontent_define-' . self::RULE_ID, 'bbpress_manage_render_callback', 10, 3 );
 	}
@@ -83,7 +83,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter ms_model_rule_get_rule_types
+	 * @filter ms_rule_get_rule_types
 	 *
 	 * @param array $rules The current rule types.
 	 * @return array The filtered rule types.
@@ -99,7 +99,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter ms_model_rule_get_rule_type_classes
+	 * @filter ms_rule_get_rule_type_classes
 	 *
 	 * @param array $rules The current rule classes.
 	 * @return array The filtered rule classes.
@@ -115,7 +115,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter ms_model_rule_get_rule_type_titles
+	 * @filter ms_rule_get_rule_type_titles
 	 *
 	 * @param array $rules The current rule type titles.
 	 * @return array The filtered rule type titles.

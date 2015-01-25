@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
+class MS_Rule_MemberCaps_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_MEMBERCAPS;
+	protected $rule_type = MS_Rule_MemberCaps::RULE_ID;
 
 	/**
 	 * List of capabilities that are effectively used for the current user
@@ -57,15 +57,6 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 	 */
 	protected $_content_array = null;
 
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_MemberCaps_View' )->register();
-	}
 
 	/**
 	 * Initializes the object as early as possible
@@ -285,7 +276,7 @@ class MS_Rule_MemberCaps_Model extends MS_Model_Rule {
 			$content->title = $item;
 			$content->name = $item;
 			$content->post_title = $item;
-			$content->type = $this->rule_type;
+			$content->type = MS_Rule_MemberCaps::RULE_ID;
 			$content->access = $this->get_rule_value( $key );
 
 			$contents[ $key ] = $content;

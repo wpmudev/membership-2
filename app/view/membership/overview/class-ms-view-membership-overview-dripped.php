@@ -7,7 +7,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 		$soon = array();
 		$membership = $this->data['membership'];
 		$protected_content = MS_Model_Membership::get_base();
-		$rule_types = array( MS_Model_Rule::RULE_TYPE_PAGE, MS_Model_Rule::RULE_TYPE_POST );
+		$rule_types = array( MS_Rule_Page::RULE_ID, MS_Rule_Post::RULE_ID );
 
 		foreach ( $rule_types as $rule_type ) {
 			$rule = $membership->get_rule( $rule_type );

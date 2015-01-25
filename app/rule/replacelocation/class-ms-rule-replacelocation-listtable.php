@@ -27,9 +27,9 @@
  * @since 4.0.0
  *
  */
-class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_Matching {
+class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching {
 
-	protected $id = MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS;
+	protected $id = MS_Rule_ReplaceLocation::RULE_ID;
 
 	/**
 	 * Constructor.

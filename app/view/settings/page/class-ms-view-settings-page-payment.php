@@ -47,7 +47,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 				<?php $gateway_list->display(); ?>
 			</div>
 
-			<?php MS_Helper_Html::settings_footer( null, false ); ?>
+			<?php MS_Helper_Html::settings_footer(); ?>
 		</div>
 		</div>
 		<?php

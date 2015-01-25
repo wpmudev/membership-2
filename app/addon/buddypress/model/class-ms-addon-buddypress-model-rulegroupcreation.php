@@ -21,7 +21,7 @@
 */
 
 
-class MS_Addon_Buddypress_Model_Rulegroupcreation extends MS_Model_Rule {
+class MS_Addon_Buddypress_Model_Rulegroupcreation extends MS_Rule {
 
 	protected $rule_type = MS_Addon_Buddypress::RULE_ID_GROUP_CREATION;
 

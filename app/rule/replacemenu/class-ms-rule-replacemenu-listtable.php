@@ -27,9 +27,9 @@
  * @since 4.0.0
  *
  */
-class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_Matching {
+class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 
-	protected $id = MS_Model_Rule::RULE_TYPE_REPLACE_MENUS;
+	protected $id = MS_Rule_ReplaceMenu::RULE_ID;
 
 	/**
 	 * Constructor.
@@ -43,6 +43,23 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_Matching {
 		parent::__construct( $model, $membership );
 		$this->name['singular'] = __( 'Menu', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Menus', MS_TEXT_DOMAIN );
+
+		add_filter(
+			'ms_helper_listtable_' . $this->id . '_columns',
+			array( $this, 'customize_columns' )
+		);
+
+		$this->editable = self::list_shows_base_items();
+	}
+
+	/**
+	 * Add the Access-column to the list table
+	 *
+	 * @since  1.1.0
+	 */
+	public function customize_columns( $columns ) {
+		$columns['access'] = true;
+		return $columns;
 	}
 
 	/**
@@ -57,7 +74,7 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_Matching {
 
 		switch ( $col ) {
 			case 'item': $label = __( 'Menu', MS_TEXT_DOMAIN ); break;
-			case 'match': $label = __( 'Show this menu to members instead', MS_TEXT_DOMAIN ); break;
+			case 'match': $label = __( 'Replace with this Menu', MS_TEXT_DOMAIN ); break;
 		}
 
 		return $label;

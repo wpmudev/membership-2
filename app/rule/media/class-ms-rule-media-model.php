@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Media_Model extends MS_Model_Rule {
+class MS_Rule_Media_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_Media_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_MEDIA;
+	protected $rule_type = MS_Rule_Media::RULE_ID;
 
 	/**
 	 * Media protection type constants.
@@ -72,14 +72,6 @@ class MS_Rule_Media_Model extends MS_Model_Rule {
 
 	protected $ms_relationship;
 
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// No setup required...
-	}
 
 	/**
 	 * Verify access to the current content.
@@ -95,7 +87,7 @@ class MS_Rule_Media_Model extends MS_Model_Rule {
 	 */
 	public function has_access( $id = null ) {
 		return apply_filters(
-			'ms_model_rule_custom_post_type_has_access',
+			'ms_rule_custom_post_type_has_access',
 			null,
 			$id,
 			$this
@@ -359,7 +351,7 @@ class MS_Rule_Media_Model extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_get_attachment_id',
+			'ms_rule_get_attachment_id',
 			$post_id,
 			$filename,
 			$this
@@ -483,7 +475,7 @@ class MS_Rule_Media_Model extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_restore_filename',
+			'ms_rule_restore_filename',
 			$img_filename,
 			$post_id,
 			$this
@@ -580,7 +572,7 @@ class MS_Rule_Media_Model extends MS_Model_Rule {
 
 		$this->output_file( $no_access_file );
 
-		do_action( 'ms_model_rule_show_no_access_image_after', $this );
+		do_action( 'ms_rule_show_no_access_image_after', $this );
 	}
 
 	/**

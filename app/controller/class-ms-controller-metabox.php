@@ -230,7 +230,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	 *
 	 * @param MS_Model_Membership The membership to get rule from.
 	 * @param object $post The current post object.
-	 * @return MS_Model_Rule The rule model.
+	 * @return MS_Rule The rule model.
 	 */
 	private function get_rule( $membership, $post ) {
 		$rule = null;
@@ -245,19 +245,19 @@ class MS_Controller_Metabox extends MS_Controller {
 
 		switch ( $post_type ) {
 			case 'post':
-				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_POST );
+				$rule = $membership->get_rule( MS_Rule_Post::RULE_ID );
 				break;
 
 			case 'attachment':
-				$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_MEDIA );
+				$rule = $membership->get_rule( MS_Rule_Media::RULE_ID );
 				break;
 
 			default:
 				if ( in_array( $post_type, MS_Rule_CptGroup_Model::get_custom_post_types() ) ) {
 					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE );
+						$rule = $membership->get_rule( MS_Rule_CptItem::RULE_ID );
 					} else {
-						$rule = $membership->get_rule( MS_Model_Rule::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
+						$rule = $membership->get_rule( MS_Rule_CptGroup::RULE_ID );
 					}
 				} else {
 					$rule = $membership->get_rule( $post_type );

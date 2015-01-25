@@ -21,7 +21,7 @@
 */
 
 
-class MS_Addon_Buddypress_Model_Ruleblog extends MS_Model_Rule {
+class MS_Addon_Buddypress_Model_Ruleblog extends MS_Rule {
 
 	protected $rule_type = MS_Addon_Buddypress::RULE_ID_BLOG;
 
@@ -44,7 +44,7 @@ class MS_Addon_Buddypress_Model_Ruleblog extends MS_Model_Rule {
 //		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_has_access',
+			'ms_rule_buddypress_blog_has_access',
 			$has_access,
 			$blog_id
 		);
@@ -85,7 +85,7 @@ class MS_Addon_Buddypress_Model_Ruleblog extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_protect_blogs',
+			'ms_rule_buddypress_blog_protect_blogs',
 			$blogs
 		);
 	}
@@ -113,7 +113,7 @@ class MS_Addon_Buddypress_Model_Ruleblog extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_protect_has_blogs',
+			'ms_rule_buddypress_blog_protect_has_blogs',
 			$has_blogs
 		);
 	}
@@ -141,7 +141,7 @@ class MS_Addon_Buddypress_Model_Ruleblog extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_protect_activity',
+			'ms_rule_buddypress_blog_protect_activity',
 			$activities
 		);
 	}
@@ -159,7 +159,7 @@ class MS_Addon_Buddypress_Model_Ruleblog extends MS_Model_Rule {
 	public function fix_blog_count( $count ) {
 		$count = count( $this->rule_value );
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_fix_blog_count',
+			'ms_rule_buddypress_blog_fix_blog_count',
 			$count
 		);
 	}
@@ -194,7 +194,7 @@ class MS_Addon_Buddypress_Model_Ruleblog extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_blog_get_content',
+			'ms_rule_buddypress_blog_get_content',
 			$contents
 		);
 	}

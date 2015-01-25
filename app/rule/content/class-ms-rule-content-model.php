@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Content_Model extends MS_Model_Rule {
+class MS_Rule_Content_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -38,7 +38,7 @@ class MS_Rule_Content_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_CONTENT;
+	protected $rule_type = MS_Rule_Content::RULE_ID;
 
 	/**
 	 * Available special pages
@@ -80,16 +80,6 @@ class MS_Rule_Content_Model extends MS_Model_Rule {
 	 * @var int
 	 */
 	protected static $comment_access = self::COMMENT_NO_ACCESS;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_Content_View' )->register();
-	}
 
 	/**
 	 * Verify access to the current content.
@@ -173,17 +163,17 @@ class MS_Rule_Content_Model extends MS_Model_Rule {
 		$Done = true;
 
 		switch ( self::$comment_access ) {
-			case self::RULE_VALUE_WRITE:
+			case self::COMMENT_WRITE:
 				// Don't change the inherent comment status.
 				break;
 
-			case self::RULE_VALUE_READ:
+			case self::COMMENT_READ:
 				$this->add_filter( 'comment_form_before', 'hide_form_start', 1 );
 				$this->add_filter( 'comment_form_after', 'hide_form_end', 99 );
 				add_filter( 'comment_reply_link', '__return_null', 99 );
 				break;
 
-			case self::RULE_VALUE_NO_ACCESS:
+			case self::COMMENT_NO_ACCESS:
 				add_filter( 'comments_open', '__return_false', 99 );
 				add_filter( 'get_comments_number', '__return_zero', 99 );
 				break;
@@ -356,7 +346,7 @@ class MS_Rule_Content_Model extends MS_Model_Rule {
 			}
 
 			$content->id = $key;
-			$content->type = MS_Model_RULE::RULE_TYPE_CONTENT;
+			$content->type = MS_Rule_Content::RULE_ID;
 			$content->name = $data->label;
 			$content->post_title = $data->label;
 

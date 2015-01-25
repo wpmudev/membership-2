@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
+class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_REPLACE_MENUS;
+	protected $rule_type = MS_Rule_ReplaceMenu::RULE_ID;
 
 	/**
 	 * An array of all available menu items.
@@ -52,16 +52,6 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 	 * @var array
 	 */
 	protected $replacements;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_ReplaceMenu_View' )->register();
-	}
 
 	/**
 	 * Verify access to the current content.
@@ -148,12 +138,8 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 	 *      @type string $name The menu name.
 	 * }
 	 */
-	public function get_contents_array() {
+	public function get_menus() {
 		if ( empty( $this->menus ) ) {
-			$this->menus = array(
-				__( 'No menus found.', MS_TEXT_DOMAIN ),
-			);
-
 			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
 
 			if ( ! empty( $navs ) ) {
@@ -165,10 +151,16 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 			}
 
 			$this->menus = apply_filters(
-				'ms_rule_replacemenu_model_get_contents_array',
+				'ms_rule_replacemenu_model_get_menus',
 				$this->menus,
 				$this
 			);
+
+			if ( empty( $this->menus ) ) {
+				$this->menus = array(
+					__( 'No menus found.', MS_TEXT_DOMAIN ),
+				);
+			}
 		}
 
 		return $this->menus;
@@ -184,7 +176,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		$menus = $this->get_contents_array();
+		$menus = $this->get_menus();
 
 		if ( is_array( $menus ) ) {
 			foreach ( $menus as $key => $name ) {
@@ -237,7 +229,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 	protected function get_replacements() {
 		if ( ! is_array( $this->replacements ) ) {
 			$this->replacements = array();
-			$menus = $this->get_contents_array();
+			$menus = $this->get_menus();
 
 			foreach ( $menus as $menu_id => $name ) {
 				$replacement = $this->get_rule_value( $menu_id );
@@ -263,7 +255,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 			0 => __( '( No replacement )', MS_TEXT_DOMAIN ),
 		);
 
-		$options += $this->get_contents_array();
+		$options += $this->get_menus();
 
 		return apply_filters(
 			'ms_rule_replacemenu_model_get_matching_options',
@@ -274,29 +266,59 @@ class MS_Rule_ReplaceMenu_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Get post content array.
+	 * Set access status to content.
 	 *
-	 * @since 1.0.4.2
-	 *
-	 * @param array $array The query args. @see self::get_query_args()
-	 * @return array {
-	 *     @type int $key The content ID.
-	 *     @type string $value The content title.
-	 * }
+	 * @since 1.1.0
+	 * @param string $id The content id to set access to.
+	 * @param int $access The access status to set.
 	 */
-	public function get_options_array( $args = array() ) {
-		$cont = array();
-		$contents = $this->get_contents( $args );
+	public function set_access( $id, $replace ) {
+		$delete = false;
 
-		foreach ( $contents as $content ) {
-			$cont[ $content->id ] = $content->name;
+		if ( ! $this->is_base_rule ) {
+			if ( MS_Model_Rule::RULE_VALUE_NO_ACCESS == $replace ) {
+				$delete = true;
+			} else {
+				$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+				$replace = $base_rule->get_rule_value( $id );
+			}
 		}
 
-		return apply_filters(
-			'ms_rule_replacemenu_model_get_content_array',
-			$cont,
-			$this
-		);
+		if ( $delete ) {
+			unset( $this->rule_value[ $id ] );
+		} else {
+			$this->rule_value[ $id ] = $replace;
+		}
+
+		do_action( 'ms_rule_replacemenu_set_access', $id, $replace, $this );
+	}
+
+	/**
+	 * Serializes this rule in a single array.
+	 * We don't use the PHP `serialize()` function to serialize the whole object
+	 * because a lot of unrequired and duplicate data will be serialized
+	 *
+	 * @since  1.1.0
+	 * @return array The serialized values of the Rule.
+	 */
+	public function serialize() {
+		$result = $this->rule_value;
+		return $result;
+	}
+
+	/**
+	 * Populates the rule_value array with the specified value list.
+	 * This function is used when de-serializing a membership to re-create the
+	 * rules associated with the membership.
+	 *
+	 * @since  1.1.0
+	 * @param  array $values A list of allowed IDs.
+	 */
+	public function populate( $values ) {
+		$this->rule_value = array();
+		foreach ( $values as $menu_id => $replacement ) {
+			$this->rule_value[$menu_id] = $replacement;
+		}
 	}
 
 }

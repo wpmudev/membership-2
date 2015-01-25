@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Special_Model extends MS_Model_Rule {
+class MS_Rule_Special_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_Special_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_SPECIAL;
+	protected $rule_type = MS_Rule_Special::RULE_ID;
 
 	/**
 	 * Available special pages
@@ -76,16 +76,6 @@ class MS_Rule_Special_Model extends MS_Model_Rule {
 	 * @var bool
 	 */
 	public $_has_rule = null;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_Special_View' )->register();
-	}
 
 	/**
 	 * Checks if the current page is a special page that can be handled by this
@@ -362,7 +352,7 @@ class MS_Rule_Special_Model extends MS_Model_Rule {
 			}
 
 			$content->id = $id;
-			$content->type = MS_Model_RULE::RULE_TYPE_SPECIAL;
+			$content->type = MS_Rule_Special::RULE_ID;
 			$content->name = $data->label;
 			$content->post_title = $data->label;
 			$content->url = $data->url;

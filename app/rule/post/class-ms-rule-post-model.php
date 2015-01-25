@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Post_Model extends MS_Model_Rule {
+class MS_Rule_Post_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_POST;
+	protected $rule_type = MS_Rule_Post::RULE_ID;
 
 	/**
 	 * Membership relationship start date.
@@ -49,16 +49,6 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 	 * @var string $start_date
 	 */
 	private $start_date;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_Post_View' )->register();
-	}
 
 	/**
 	 * Set initial protection.
@@ -222,7 +212,7 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 		if ( isset( $this->rule_value[ $id ] ) ) {
 			$value = $this->rule_value[ $id ];
 		} else {
-			$value = self::RULE_VALUE_HAS_ACCESS;
+			$value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
 		}
 
 		return apply_filters(
@@ -349,7 +339,7 @@ class MS_Rule_Post_Model extends MS_Model_Rule {
 		$contents = array();
 		foreach ( $posts as $content ) {
 			$content->id = $content->ID;
-			$content->type = MS_Model_RULE::RULE_TYPE_POST;
+			$content->type = MS_Rule_Post::RULE_ID;
 			$content->name = $content->post_name;
 			$content->access = $this->get_rule_value( $content->id );
 

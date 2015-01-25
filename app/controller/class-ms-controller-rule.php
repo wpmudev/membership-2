@@ -142,7 +142,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$this->_resp_reset();
 
-		$required = array( 'membership_id', 'rule_type' );
+		$required = array( 'rule_type' );
 		$isset = array( 'item', 'value' );
 
 		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-matching-01' ); }
@@ -189,7 +189,7 @@ class MS_Controller_Rule extends MS_Controller {
 			$rule = $membership->get_rule( $rule_type );
 
 			if ( $reset ) {
-				if ( MS_Model_Rule::RULE_TYPE_MENU === $rule->rule_type
+				if ( MS_Rule_MenuItem::RULE_ID === $rule->rule_type
 					&& ! empty( $_POST['menu_id'] )
 				) {
 					$rule->reset_menu_rule_values( $_POST['menu_id'] );
@@ -205,13 +205,19 @@ class MS_Controller_Rule extends MS_Controller {
 			foreach ( $rule_ids as $id ) {
 				if ( ! empty( $id ) ) {
 					if ( is_array( $rule_values ) ) {
-						$rule_value = $rule_values[ $id ];
+						if ( isset( $rule_values[ $id ] ) ) {
+							$rule_value = $rule_values[ $id ];
+						} else {
+							continue;
+						}
 					} else {
 						$rule_value = $rule_values;
 					}
+					echo "\n($id => $rule_value)<br/>\n";
 					$rule->set_access( $id, $rule_value );
 				}
 			}
+			var_dump( $rule );
 			$membership->set_rule( $rule_type, $rule );
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
@@ -370,7 +376,7 @@ class MS_Controller_Rule extends MS_Controller {
 		}
 
 		$membership = $this->get_membership();
-		if ( empty( $membership ) || ! MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
+		if ( empty( $membership ) ) {
 			return $msg;
 		}
 
@@ -458,7 +464,7 @@ class MS_Controller_Rule extends MS_Controller {
 		}
 
 		if ( is_array( $fields ) ) {
-			$rule_type = MS_Model_Rule::RULE_TYPE_URL_GROUP;
+			$rule_type = MS_Rule_Url::RULE_ID;
 			$rule = $membership->get_rule( $rule_type );
 
 			foreach ( $fields as $field => $value ) {
@@ -480,19 +486,19 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @return MS_Model_Membership or null if not found.
 	 */
 	private function get_membership() {
-
 		$membership_id = 0;
 
 		if ( ! empty( $_GET['membership_id'] ) ) {
 			$membership_id = $_GET['membership_id'];
-		}
-		elseif ( ! empty( $_POST['membership_id'] ) ) {
+		} elseif ( ! empty( $_POST['membership_id'] ) ) {
 			$membership_id = $_POST['membership_id'];
 		}
 
 		$membership = null;
 		if ( ! empty( $membership_id ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		} else {
+			$membership = MS_Model_Membership::get_base();
 		}
 
 		return apply_filters( 'ms_controller_rule_get_membership', $membership, $this );

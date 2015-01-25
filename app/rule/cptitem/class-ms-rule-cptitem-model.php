@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_CptItem_Model extends MS_Model_Rule {
+class MS_Rule_CptItem_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,17 +39,7 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_CUSTOM_POST_TYPE;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_CptItem_View' )->register();
-	}
+	protected $rule_type = MS_Rule_CptItem::RULE_ID;
 
 	/**
 	 * Set initial protection.
@@ -97,7 +87,7 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 		}
 
 		do_action(
-			'ms_model_rule_custom_post_type_protect_posts',
+			'ms_rule_custom_post_type_protect_posts',
 			$wp_query,
 			$this
 		);
@@ -116,11 +106,11 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 			if ( isset( $this->rule_value[ $id ] ) ) {
 				$value = $this->rule_value[ $id ];
 			} else {
-				$value = self::RULE_VALUE_HAS_ACCESS;
+				$value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
 			}
 		} else {
 			$membership = $this->get_membership();
-			$cpt_group = $membership->get_rule( self::RULE_TYPE_CUSTOM_POST_TYPE_GROUP );
+			$cpt_group = $membership->get_rule( MS_Rule_CptGroup::RULE_ID );
 
 			if ( isset( $this->rule_value[ $id ] ) ) {
 				$value = $this->rule_value[ $id ];
@@ -174,7 +164,7 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_custom_post_type_has_access',
+			'ms_rule_custom_post_type_has_access',
 			$has_access,
 			$post_id,
 			$this
@@ -197,7 +187,7 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_custom_post_type_get_current_post_id',
+			'ms_rule_custom_post_type_get_current_post_id',
 			$post_id,
 			$this
 		);
@@ -219,7 +209,7 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 		$count = count( $items );
 
 		return apply_filters(
-			'ms_model_rule_custom_post_type_gget_content_count',
+			'ms_rule_custom_post_type_gget_content_count',
 			$count,
 			$args,
 			$this
@@ -247,12 +237,12 @@ class MS_Rule_CptItem_Model extends MS_Model_Rule {
 
 		foreach ( $contents as $content ) {
 			$content->id = $content->ID;
-			$content->type = $this->rule_type;
+			$content->type = MS_RuleCptItem::RULE_ID;
 			$content->access = $this->get_rule_value( $content->id  );
 		}
 
 		return apply_filters(
-			'ms_model_rule_custom_post_type_get_contents',
+			'ms_rule_custom_post_type_get_contents',
 			$contents,
 			$args,
 			$this

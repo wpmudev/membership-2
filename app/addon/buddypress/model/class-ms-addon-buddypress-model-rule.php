@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
+class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -68,7 +68,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 						}
 						break;
 
-					// Don't modify, handled by MS_Model_Rule_Buddypress_Group
+					// Don't modify, handled by MS_Addon_Buddypress_Rule_Group
 					case 'groups':
 						break;
 
@@ -81,7 +81,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_has_access',
+			'ms_rule_buddypress_has_access',
 			$has_access,
 			$id,
 			$this
@@ -120,7 +120,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 		}
 
 		do_action(
-			'ms_model_rule_buddypress_protect_private_messaging',
+			'ms_rule_buddypress_protect_private_messaging',
 			$this
 		);
 	}
@@ -138,7 +138,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 	 */
 	public function hide_private_message_button( $button ) {
 		return apply_filters(
-			'ms_model_rule_buddypress_hide_private_message_button',
+			'ms_rule_buddypress_hide_private_message_button',
 			false,
 			$button,
 			$this
@@ -160,7 +160,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 		}
 
 		do_action(
-			'ms_model_rule_buddypress_protect_friendship_request',
+			'ms_rule_buddypress_protect_friendship_request',
 			$this
 		);
 	}
@@ -180,7 +180,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 		$this->add_filter( 'bp_get_button', 'prevent_button_rendering' );
 
 		return apply_filters(
-			'ms_model_rule_buddypress_hide_add_friend_button',
+			'ms_rule_buddypress_hide_add_friend_button',
 			$button,
 			$this
 		);
@@ -200,7 +200,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 		$this->remove_filter( 'bp_get_button', 'prevent_button_rendering' );
 
 		return apply_filters(
-			'ms_model_rule_buddypress_prevent_button_rendering',
+			'ms_rule_buddypress_prevent_button_rendering',
 			false,
 			$this
 		);
@@ -225,7 +225,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_protect_create_bp_group',
+			'ms_rule_buddypress_protect_create_bp_group',
 			$can_create,
 			$this
 		);
@@ -271,7 +271,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Model_Rule {
 		}
 
 		return apply_filters(
-			'ms_model_rule_buddypress_get_content',
+			'ms_rule_buddypress_get_content',
 			$contents,
 			$this
 		);

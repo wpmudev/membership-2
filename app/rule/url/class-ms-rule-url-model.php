@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Url_Model extends MS_Model_Rule {
+class MS_Rule_Url_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,25 +39,7 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_URL_GROUP;
-
-	/**
-	 * Strip query strings from url before testing.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var boolean $strip_query_string
-	 */
-	protected $strip_query_string;
-
-	/**
-	 * Is regular expression indicator.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var boolean $is_regex
-	 */
-	protected $is_regex = true;
+	protected $rule_type = MS_Rule_Url::RULE_ID;
 
 	/**
 	 * A list of all URLs that are allowed by the current membership.
@@ -67,16 +49,6 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 	 * @var array
 	 */
 	protected $_allowed_urls = null;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_Url_View' )->register();
-	}
 
 	/**
 	 * Verify access to the current content.
@@ -99,10 +71,6 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 				$url = MS_Helper_Utility::get_current_url();
 			}
 
-			if ( $this->strip_query_string ) {
-				$url = current( explode(  '?', $url ) );
-			}
-
 			$exclude = apply_filters(
 				'ms_rule_url_model_excluded_urls',
 				array()
@@ -116,7 +84,7 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 				$has_access = false;
 
 				// Check for URL group.
-				if ( $this->check_url_expression_match( $url, $this->get_allowed_urls() ) ) {
+				if ( $this->check_url_expression_match( $url, $this->rule_value ) ) {
 					if ( $this->get_membership()->is_base() ) {
 						// For guests all defined URL groups are denied.
 						$has_access = false;
@@ -147,11 +115,7 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 			$url = MS_Helper_Utility::get_current_url();
-			if ( $this->strip_query_string ) {
-				$url = current( explode(  '?', $url ) );
-			}
-
-			if ( $this->check_url_expression_match( $url, $this->get_urls() ) ) {
+			if ( $this->check_url_expression_match( $url, $this->get_protected_urls() ) ) {
 				$has_rules = true;
 			}
 		}
@@ -175,11 +139,7 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
 			$url = get_permalink( $post_id );
-			if ( $this->strip_query_string ) {
-				$url = current( explode(  '?', $url ) );
-			}
-
-			if ( $this->check_url_expression_match( $url, $this->get_urls() ) ) {
+			if ( $this->check_url_expression_match( $url, $this->get_protected_urls() ) ) {
 				$has_rules = true;
 			}
 		}
@@ -207,31 +167,14 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 			$check_list = array_map( 'strtolower', $check_list );
 			$check_list = array_map( 'trim', $check_list );
 
-			if ( $this->is_regex ) {
-				// Use regex to find match.
-				foreach ( $check_list as $check_url ) {
-					if ( mb_stripos( $check_url, '\/' ) !== false ) {
-						$match_string = regescape( $check_url );
-					} else {
-						$match_string = $check_url;
-					}
-					$match_string = "#{$match_string}#i";
+			// Straight match.
+			$check_list = array_merge(
+				$check_list,
+				array_map( 'untrailingslashit', $check_list )
+			);
 
-					if ( preg_match( $match_string, $url ) ) {
-						$match = true;
-						break;
-					}
-				}
-			} else {
-				// Straight match.
-				$check_list = array_merge(
-					$check_list,
-					array_map( 'untrailingslashit', $check_list )
-				);
-
-				if ( in_array( strtolower( $url ), $check_list ) ) {
-					$match = true;
-				}
+			if ( in_array( strtolower( $url ), $check_list ) ) {
+				$match = true;
 			}
 		}
 
@@ -272,7 +215,7 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = count( $this->get_urls() );
+		$count = count( $this->get_protected_urls() );
 
 		return apply_filters(
 			'ms_rule_url_model_get_content_count',
@@ -290,20 +233,20 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
+		$protected_urls = $this->get_protected_urls();
+		$membership_urls = $this->rule_value;
+
 		$contents = array();
-
-		$url_list = $this->get_urls();
-
-		foreach ( $this->rule_value as $id => $value ) {
-			if ( ! isset( $url_list[$id] ) ) {
+		foreach ( $membership_urls as $hash => $value ) {
+			if ( ! isset( $protected_urls[$hash] ) ) {
 				continue;
 			}
 
 			$content = new StdClass();
-			$content->id = $id;
-			$content->type = MS_Model_Rule::RULE_TYPE_URL_GROUP;
-			$content->name = $url_list[$id];
-			$content->url = $url_list[$id];
+			$content->id = $hash;
+			$content->type = MS_Rule_Url::RULE_ID;
+			$content->name = $protected_urls[$hash];
+			$content->url = $protected_urls[$hash];
 			$content->access = $this->get_rule_value( $content->id );
 			$contents[] = $content;
 		}
@@ -315,100 +258,129 @@ class MS_Rule_Url_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Returns a list of all protected URLs.
+	 * Set access status to content.
 	 *
-	 * @since  1.0.4.4
-	 *
-	 * @return array
+	 * @since 1.1.0
+	 * @param string $id The content id to set access to.
+	 * @param int $access The access status to set.
 	 */
-	public function get_urls() {
-		static $Urls = null;
-
-		if ( null === $Urls ) {
-			$base_rules = MS_Model_Membership::get_base()->rules;
-			if ( isset( $base_rules[ MS_Model_Rule::RULE_TYPE_URL_GROUP ] ) ) {
-				$Urls = $base_rules[ MS_Model_Rule::RULE_TYPE_URL_GROUP ]->rule_value;
-			}
-
-			$Urls = WDev()->get_array( $Urls );
-			$Urls = apply_filters(
-				'ms_rule_url_model_get_urls',
-				$Urls
-			);
+	public function set_access( $hash, $access ) {
+		if ( $this->is_base_rule ) {
+			// Base rule cannot modify URL access via this function!
+			return;
 		}
 
-		return $Urls;
+		if ( is_bool( $access ) ) {
+			if ( $access ) {
+				$access = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
+			} else {
+				$access = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
+			}
+		}
+
+		if ( $access == MS_Model_Rule::RULE_VALUE_NO_ACCESS ) {
+			$this->delete_url( $hash );
+		} else {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$url = $base_rule->get_url_from_hash( $hash );
+			$this->add_url( $url );
+		}
+
+		do_action( 'ms_rule_url_set_access', $hash, $access, $this );
 	}
 
 	/**
-	 * Generates a list of URLs that are allowed by the current membership.
-	 * This is always a sub-set of the get_urls() list.
+	 * Serializes this rule in a single array.
+	 * We don't use the PHP `serialize()` function to serialize the whole object
+	 * because a lot of unrequired and duplicate data will be serialized
 	 *
-	 * @since  1.0.4.4
-	 *
-	 * @return array
+	 * @since  1.1.0
+	 * @return array The serialized values of the Rule.
 	 */
-	public function get_allowed_urls() {
-		if ( null === $this->_allowed_urls ) {
-			$urls = $this->get_urls();
-			$this->_allowed_urls = array();
-
-			foreach ( $urls as $id => $url ) {
-				if ( $this->get_rule_value( $id ) ) {
-					$this->_allowed_urls[$id] = $url;
-				}
-			}
-
-			$this->_allowed_urls = apply_filters(
-				'ms_rule_url_model_get_allowed_urls',
-				$this->_allowed_urls
-			);
-		}
-
-		return $this->_allowed_urls;
+	public function serialize() {
+		$result = $this->rule_value;
+		return $result;
 	}
 
 	/**
-	 * Validate specific property before set.
+	 * Populates the rule_value array with the specified value list.
+	 * This function is used when de-serializing a membership to re-create the
+	 * rules associated with the membership.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $property The name of a property to associate.
-	 * @param mixed $value The value of a property.
+	 * @since  1.1.0
+	 * @param  array $values A list of allowed IDs.
 	 */
-	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			switch ( $property ) {
-				case 'rule_value':
-					if ( ! is_array( $value ) ) {
-						$items = explode( PHP_EOL, $value );
-						$value = array();
-						foreach ( $items as $line => $url ) {
-							$value['url' . $line] = $url;
-						}
-					}
+	public function populate( $values ) {
+		foreach ( $values as $hash => $url ) {
+			$this->add_url( $url );
+		}
+	}
 
-					$this->rule_value = array_filter(
-						array_map( 'trim', $value )
-					);
-					break;
+	/**
+	 * Adds a new URL to the rule
+	 *
+	 * @since 1.1.0
+	 * @param string $url
+	 */
+	public function add_url( $url ) {
+		$url = trim( $url );
 
-				case 'strip_query_string':
-				case 'is_regex':
-					$this->$property = $this->validate_bool( $value );
-					break;
+		// Index is a hash to prevent duplicate URLs in the list.
+		$hash = md5( $url );
+		$this->rule_value[ $hash ] = $url;
+	}
 
-				default:
-					parent::__set( $property, $value );
-					break;
-			}
+	/**
+	 * Removes an URL from the rule.
+	 *
+	 * An URL can be deleted either by specifying an Hash (prefered) or the
+	 * plain-text URL. If a Hash value is specified the URL is always ignored.
+	 *
+	 * @since 1.1.0
+	 * @param string $hash The URL-hash.
+	 * @param string $url Optional. The plain-text URL.
+	 */
+	public function delete_url( $hash, $url = null ) {
+		if ( ! empty( $hash ) ) {
+			unset( $this->rule_value[ $hash ] );
+		} elseif ( ! empty( $url ) ) {
+			$url = trim( $url );
+			$hash = md5( $url );
+			unset( $this->rule_value[ $hash ] );
+		}
+	}
+
+	/**
+	 * Returns the URL from a specific hash value.
+	 *
+	 * @since 1.1.0
+	 * @param string $hash The URL-hash.
+	 */
+	public function get_url_from_hash( $hash ) {
+		$url = '';
+
+		$urls = $this->get_protected_urls();
+		if ( isset( $urls[ $hash ] ) ) {
+			$url = $urls[ $hash ];
 		}
 
-		do_action(
-			'ms_rule_url_model__set_after',
-			$property,
-			$value,
-			$this
-		);
+		return $url;
+	}
+
+	/**
+	 * Returns a list with all protected URLs.
+	 *
+	 * @since 1.1.0
+	 * @param string $hash The URL-hash.
+	 */
+	public function get_protected_urls() {
+		static $Protected_Urls = null;
+
+		if ( null === $Protected_Urls ) {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$Protected_Urls = $base_rule->rule_value;
+		}
+
+		return $Protected_Urls;
 	}
 }

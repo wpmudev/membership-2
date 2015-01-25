@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
+class MS_Rule_MemberRoles_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_MEMBERROLES;
+	protected $rule_type = MS_Rule_MemberRoles::RULE_ID;
 
 	/**
 	 * List of capabilities that are effectively used for the current user
@@ -63,16 +63,6 @@ class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
 	 * @var array
 	 */
 	protected $_content_array = null;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_MemberRoles_View' )->register();
-	}
 
 	/**
 	 * Initializes the object as early as possible
@@ -286,7 +276,7 @@ class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
 			$content->title = $rolename;
 			$content->name = $rolename;
 			$content->post_title = $rolename;
-			$content->type = $this->rule_type;
+			$content->type = MS_Rule_MemberRoles::RULE_ID;
 			$content->access = $this->get_rule_value( $key );
 
 			$contents[ $key ] = $content;
@@ -316,7 +306,7 @@ class MS_Rule_MemberRoles_Model extends MS_Model_Rule {
 		$count = count( $this->get_contents( $args ) );
 
 		return apply_filters(
-			'ms_model_rule_memberroles_get_content_count',
+			'ms_rule_memberroles_get_content_count',
 			$count,
 			$args
 		);

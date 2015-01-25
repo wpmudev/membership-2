@@ -27,31 +27,43 @@
  * @since 1.0.4.2
  *
  */
-class MS_Helper_ListTable_Matching extends MS_Helper_ListTable {
+class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 
 	/**
 	 * Model that contains the list items of the table.
+	 *
 	 * @var MS_Model_Model
 	 */
 	protected $model;
 
 	/**
 	 * Associated membership model.
+	 *
 	 * @var MS_Model_Membership
 	 */
 	protected $membership;
 
 	/**
 	 * The current membership-ID
+	 *
 	 * @var int
 	 */
 	protected $membership_id = 0;
 
 	/**
 	 * List of matching options that are available for each list item.
+	 *
 	 * @var array
 	 */
 	protected $matching_options = array();
+
+	/**
+	 * True means that the matching can be changed.
+	 * False will display the matching details in read-only mode
+	 *
+	 * @var bool
+	 */
+	protected $editable = true;
 
 	/**
 	 * Constructor.
@@ -82,12 +94,14 @@ class MS_Helper_ListTable_Matching extends MS_Helper_ListTable {
 	 * @return array
 	 */
 	public function get_columns() {
+		$columns = array(
+			'item' => $this->get_column_label( 'item' ),
+			'match' => $this->get_column_label( 'match' ),
+		);
+
 		return apply_filters(
 			'ms_helper_listtable_' . $this->id . '_columns',
-			array(
-				'item' => $this->get_column_label( 'item' ),
-				'match' => $this->get_column_label( 'match' ),
-			)
+			$columns
 		);
 	}
 
@@ -142,44 +156,13 @@ class MS_Helper_ListTable_Matching extends MS_Helper_ListTable {
 	 * @since  1.0.4.2
 	 */
 	public function prepare_items() {
-		$args = null;
-
-		if ( ! empty( $_GET['status'] ) ) {
-			$args['rule_status'] = $_GET['status'];
-		}
-
-		// Load the item-list (the rows in the table).
-		$this->items = apply_filters(
-			'ms_helper_listtable_' . $this->id . '_items',
-			$this->model->get_contents( $args )
-		);
+		parent::prepare_items();
 
 		// Load the matching-list that is displayed for each item.
 		$this->matching_options = apply_filters(
 			'ms_helper_listtable_matching_' . $this->id . ' _matching',
 			$this->model->get_matching_options( $args )
 		);
-
-		// Define the columns of the table.
-		$this->_column_headers = array(
-			$this->get_columns(),
-			$this->get_hidden_columns(),
-			$this->get_sortable_columns(),
-		);
-	}
-
-	/**
-	 * Renders the contents of any undefined column.
-	 *
-	 * @since  1.0.4.2
-	 * @param  mixed $item
-	 * @param  string $column_name
-	 * @return string HTML code
-	 */
-	public function column_default( $item, $column_name ) {
-		$html = print_r( $item, true );
-
-		return $html;
 	}
 
 	/**
@@ -204,61 +187,28 @@ class MS_Helper_ListTable_Matching extends MS_Helper_ListTable {
 	 * @return string HTML code
 	 */
 	public function column_match( $item ) {
-		$list = array(
-			'id' => 'ms-list-' . $item->id,
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'value' => $item->value,
-			'field_options' => $this->matching_options,
-			'data_ms' => array(
-				'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_MATCHING,
-				'membership_id' => $this->get_membership_id(),
-				'rule_type' => $item->type,
-				'item' => $item->id,
-			),
-		);
-		$html = MS_Helper_Html::html_element( $list, true );
-		$html .= MS_Helper_Html::save_text( null, false, true );
+		if ( $this->editable ) {
+			$list = array(
+				'id' => 'ms-list-' . $item->id,
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' => $item->value,
+				'field_options' => $this->matching_options,
+				'ajax_data' => array(
+					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_MATCHING,
+					'rule_type' => $item->type,
+					'item' => $item->id,
+				),
+			);
+			$html = MS_Helper_Html::html_element( $list, true );
+		} else {
+			if ( isset( $this->matching_options[$item->value] ) ) {
+				$html = esc_html( $this->matching_options[$item->value] );
+			} else {
+				$html = '-';
+			}
+		}
 
 		return $html;
 	}
 
-	/**
-	 * Render the menu
-	 *
-	 * @since  1.0.4.2
-	 */
-	public function display() {
-		$membership_id = array(
-			'id' => 'membership_id',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->get_membership_id(),
-		);
-		MS_Helper_Html::html_element( $membership_id );
-
-		parent::display();
-	}
-
-	/**
-	 * Returns the membership-ID that is currently edited.
-	 *
-	 * @since  1.0.4.2
-	 * @return int
-	 */
-	protected function get_membership_id() {
-		if ( empty( $this->membership_id ) ) {
-			if ( ! empty( $this->membership ) && $this->membership->is_valid() ) {
-				$this->membership_id = $this->membership->id;
-			}
-			elseif ( ! empty( $_REQUEST['membership_id'] ) ) {
-				$this->membership_id = $_REQUEST['membership_id'];
-			}
-
-			$this->membership_id = apply_filters(
-				'ms_helper_listtable_rule_get_membership_id',
-				$this->membership_id
-			);
-		}
-
-		return $this->membership_id;
-	}
 }

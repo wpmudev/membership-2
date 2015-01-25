@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Addon_Bbpress_Model_Rule extends MS_Model_Rule {
+class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 
 	/**
 	 * Rule type.

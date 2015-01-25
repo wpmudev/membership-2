@@ -212,7 +212,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * These are protection rules for this membership only.
 	 *
 	 * @since 1.0.0
-	 * @var array MS_Model_Rule[].
+	 * @var array MS_Rule[].
 	 */
 	protected $rules = array();
 
@@ -464,17 +464,17 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string The rule model type @see MS_Model_Rule
-	 * @return MS_Model_Rule The requested rule model.
+	 * @param string The rule model type @see MS_Rule
+	 * @return MS_Rule The requested rule model.
 	 */
 	public function get_rule( $rule_type ) {
 		if ( 'attachment' === $rule_type ) {
-			$rule_type = MS_Model_Rule::RULE_TYPE_MEDIA;
+			$rule_type = MS_Rule_Media::RULE_ID;
 		}
 
 		if ( ! isset( $this->rules[ $rule_type ] ) ) {
 			// Create a new rule model object.
-			$rule = MS_Model_Rule::rule_factory( $rule_type, $this->id );
+			$rule = MS_Rule::rule_factory( $rule_type, $this->id );
 
 			$rule = apply_filters(
 				'ms_model_membership_get_rule',
@@ -506,18 +506,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string The rule model type @see MS_Model_Rule
-	 * @param MS_Model_Rule $rule The protection rule to set.
+	 * @param string The rule model type @see MS_Rule
+	 * @param MS_Rule $rule The protection rule to set.
 	 */
 	public function set_rule( $rule_type, $rule ) {
-		if ( MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
-			$this->rules[ $rule_type ] = apply_filters(
-				'ms_model_membership_set_rule',
-				$rule,
-				$rule_type,
-				$this
-			);
-		}
+		$this->rules[ $rule_type ] = apply_filters(
+			'ms_model_membership_set_rule',
+			$rule,
+			$rule_type,
+			$this
+		);
 	}
 
 	/**
@@ -1061,22 +1059,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		foreach ( $base_rules as $rule_type => $denied_items ) {
 			try {
-				if ( MS_Model_Rule::is_valid_rule_type( $rule_type ) ) {
+				if ( ! empty( $this->rules[ $rule_type ] ) ) {
+					// The membership has granted access to some rule items.
+					$rule = $this->get_rule( $rule_type );
+					$rule->merge_rule_values( $denied_items, true );
+				} else {
+					// This membership does not change the default protection.
+					$rule = $this->get_rule( $rule_type );
 
-					if ( ! empty( $this->rules[ $rule_type ] ) ) {
-						// The membership has granted access to some rule items.
-						$rule = $this->get_rule( $rule_type );
-						$rule->merge_rule_values( $denied_items, true );
-					} else {
-						// This membership does not change the default protection.
-						$rule = $this->get_rule( $rule_type );
-
-						foreach ( $denied_items->rule_value as $id => $val ) {
-							$rule->set_access( $id, MS_Model_Rule::RULE_VALUE_NO_ACCESS );
-						}
+					foreach ( $denied_items->rule_value as $id => $val ) {
+						$rule->set_access( $id, MS_Model_Rule::RULE_VALUE_NO_ACCESS );
 					}
-					$this->set_rule( $rule_type, $rule );
 				}
+				$this->set_rule( $rule_type, $rule );
 			}
 			catch( Exception $e ) {
 				MS_Helper_Debug::log( $e );
@@ -1183,7 +1178,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		if ( self::TYPE_DRIPPED == $this->type
 			&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST )
 		) {
-			$rule_types = array( 0 => MS_Model_Rule::RULE_TYPE_POST ) + $rule_types;
+			$rule_types = array( 0 => MS_Rule_Post::RULE_ID ) + $rule_types;
 		}
 
 		foreach ( $rule_types as $rule_type ) {
@@ -1264,13 +1259,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				);
 
 				// URL groups have final decission.
-				if ( MS_Model_Rule::RULE_TYPE_URL_GROUP === $rule->rule_type ) {
+				if ( MS_Rule_Url::RULE_ID === $rule->rule_type ) {
 					$has_access = $rule_access;
 					break;
 				}
 
 				// Special pages have final decission after URL groups.
-				if ( MS_Model_Rule::RULE_TYPE_SPECIAL === $rule->rule_type ) {
+				if ( MS_Rule_Special::RULE_ID === $rule->rule_type ) {
 					$has_access = $rule_access;
 					$this->_access_reason[] = $rule->matched_type;
 					break;
@@ -1342,7 +1337,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$rules = $this->get_rules_hierarchy();
 		foreach ( $rules as $rule ) {
 			// url groups have final decision
-			if ( MS_Model_Rule::RULE_TYPE_URL_GROUP == $rule->rule_type
+			if ( MS_Rule_Url::RULE_ID == $rule->rule_type
 				&& $rule->has_rule_for_post( $post_id )
 			) {
 				$has_access = $rule->has_access( $post_id );

@@ -245,8 +245,8 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				$has_rules = false;
 
 				switch ( $rule_type ) {
-					case MS_Model_Rule::RULE_TYPE_REPLACE_MENUS:
-					case MS_Model_Rule::RULE_TYPE_REPLACE_MENULOCATIONS:
+					case MS_Rule_ReplaceMenu::RULE_ID:
+					case MS_Rule_ReplaceLocation::RULE_ID:
 						$rule = $membership->get_rule( $rule_type );
 						$has_rules = true;
 						break;

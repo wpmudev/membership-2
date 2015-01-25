@@ -45,12 +45,13 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	protected $name = array(
 		'singular' => 'Item',
 		'plural' => 'Items',
+		'default_access' => 'Everyone',
 	);
 
 	/**
 	 * The rule model
 	 *
-	 * @var   MS_Model_Rule
+	 * @var MS_Rule
 	 */
 	protected $model;
 
@@ -90,6 +91,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 		$this->name['singular'] = __( 'Item', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Items', MS_TEXT_DOMAIN );
+		$this->name['default_access'] = __( 'Everyone', MS_TEXT_DOMAIN );
 
 		$this->model = $model;
 		$this->membership = $membership;
@@ -226,7 +228,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 		// List available items
 		$this->items = apply_filters(
-			"ms_helper_listtable_{$this->id}_items",
+			"ms_rule_{$this->id}_items",
 			$this->model->get_contents( $args )
 		);
 
@@ -240,6 +242,29 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 				'per_page' => $per_page,
 			)
 		);
+	}
+
+	/**
+	 * Returns true, if the list displays items of the base membership.
+	 * i.e. true means that the Membership filter is set to "All"
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	public function list_shows_base_items() {
+		static $Is_Base = null;
+
+		if ( null === $Is_Base ) {
+			// When no membership_id is specified the list will display base items.
+			$Is_Base = true;
+
+			if ( ! empty( $_REQUEST['membership_id'] ) ) {
+				$membership = MS_Factory::load( 'MS_Model_Membership', $_REQUEST['membership_id'] );
+				$Is_Base = $membership->is_base();
+			}
+		}
+
+		return $Is_Base;
 	}
 
 	/**
@@ -269,7 +294,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$public = array(
 			'id' => 'ms-public-' . $item->id,
 			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-			'value' => 'Everyone',
+			'value' => $this->name['default_access'],
 			'after' => 'Modify Access',
 			'class' => 'ms-public-note',
 		);

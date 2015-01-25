@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Adminside_Model extends MS_Model_Rule {
+class MS_Rule_Adminside_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_Adminside_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_ADMINSIDE;
+	protected $rule_type = MS_Rule_Adminside::RULE_ID;
 
 	/**
 	 * An array of all menu items that are not allowed for the current user.
@@ -49,16 +49,6 @@ class MS_Rule_Adminside_Model extends MS_Model_Rule {
 	 * @var array
 	 */
 	static protected $denied_items = null;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_Adminside_View' )->register();
-	}
 
 	/**
 	 * Verify access to the current content.
@@ -275,7 +265,7 @@ class MS_Rule_Adminside_Model extends MS_Model_Rule {
 			$contents[ $key ]->id = $key;
 			$contents[ $key ]->title = $contents[ $key ]->name;
 			$contents[ $key ]->post_title = $contents[ $key ]->name;
-			$contents[ $key ]->type = $this->rule_type;
+			$contents[ $key ]->type = MS_Rule_Adminside::RULE_ID;
 			$contents[ $key ]->access = $this->get_rule_value( $key );
 		}
 

@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_Shortcode_Model extends MS_Model_Rule {
+class MS_Rule_Shortcode_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,7 +39,7 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_SHORTCODE;
+	protected $rule_type = MS_Rule_Shortcode::RULE_ID;
 
 	/**
 	 * Protect content shortcode.
@@ -49,16 +49,6 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 	 * @var string
 	 */
 	const PROTECT_CONTENT_SHORTCODE = 'ms-protect-content';
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_Shortcode_View' )->register();
-	}
 
 	/**
 	 * Verify access to the current content.
@@ -323,7 +313,7 @@ class MS_Rule_Shortcode_Model extends MS_Model_Rule {
 			$contents[ $key ] = new StdClass();
 			$contents[ $key ]->id = $key;
 			$contents[ $key ]->name = "[$key]";
-			$contents[ $key ]->type = $this->rule_type;
+			$contents[ $key ]->type = MS_Rule_Shortcode::RULE_ID;
 			$contents[ $key ]->access = $this->get_rule_value( $key );
 		}
 

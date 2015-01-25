@@ -388,6 +388,7 @@ class MS_Helper_ListTable {
 	 *     string $label .. Link title
 	 *     string $url .. Link URL
 	 *     int    $count .. Optional.
+	 *     bool   $current .. Optional.
 	 *     bool   $separator .. Optional. If false then no ' | ' will be added.
 	 *
 	 */
@@ -415,7 +416,11 @@ class MS_Helper_ListTable {
 					esc_html( $sep )
 				);
 			} else {
-				$is_current = MS_Helper_Utility::is_current_url( $data['url'] );
+				if ( isset( $data['current'] ) ) {
+					$is_current = $data['current'];
+				} else {
+					$is_current = MS_Helper_Utility::is_current_url( $data['url'] );
+				}
 
 				printf(
 					'<li class="%1$s"><a href="%2$s" class="%6$s">%3$s <span class="count">%4$s</span></a> %5$s</li>',

@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_ReplaceLocation_Model extends MS_Model_Rule {
+class MS_Rule_ReplaceLocation_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -39,23 +39,13 @@ class MS_Rule_ReplaceLocation_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_REPLACE_MENULOCATIONS;
+	protected $rule_type = MS_Rule_ReplaceLocation::RULE_ID;
 
 	/**
 	 * An array of all available menu items.
 	 * @var array
 	 */
 	protected $menus = array();
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_ReplaceLocation_View' )->register();
-	}
 
 	/**
 	 * Verify access to the current content.
@@ -194,32 +184,6 @@ class MS_Rule_ReplaceLocation_Model extends MS_Model_Rule {
 			'ms_rule_replacelocation_model_get_matching_options',
 			$options,
 			$args,
-			$this
-		);
-	}
-
-	/**
-	 * Get post content array.
-	 *
-	 * @since 1.0.4.2
-	 *
-	 * @param array $array The query args. @see self::get_query_args()
-	 * @return array {
-	 *     @type int $key The content ID.
-	 *     @type string $value The content title.
-	 * }
-	 */
-	public function get_options_array( $args = array() ) {
-		$cont = array();
-		$contents = $this->get_contents( $args );
-
-		foreach ( $contents as $content ) {
-			$cont[ $content->id ] = $content->name;
-		}
-
-		return apply_filters(
-			'ms_rule_replacelocation_model_get_content_array',
-			$cont,
 			$this
 		);
 	}

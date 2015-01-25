@@ -30,7 +30,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Rule_MenuItem_Model extends MS_Model_Rule {
+class MS_Rule_MenuItem_Model extends MS_Rule {
 
 	/**
 	 * An array that holds all menu-IDs that are available for the current user.
@@ -48,17 +48,7 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = self::RULE_TYPE_MENU;
-
-	/**
-	 * Set-up the Rule
-	 *
-	 * @since  1.1.0
-	 */
-	static public function prepare_class() {
-		// Register the tab-output handler for the admin side
-		MS_Factory::load( 'MS_Rule_MenuItem_View' )->register();
-	}
+	protected $rule_type = MS_Rule_MenuItem::RULE_ID;
 
 	/**
 	 * Initialize the rule
@@ -187,7 +177,8 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Reset the rule value data.
+	 * Reset the rule value data. This does not remove all items but only the
+	 * items that belong to the specified menu.
 	 *
 	 * @since 1.0.0
 	 * @param $menu_id The menu_id to reset children menu item rules.
@@ -244,19 +235,7 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		$is_base = $this->get_membership()->is_base();
-
-		if ( $is_base && ! isset( $args['menu_id'] ) ) {
-			$menus = $this->get_menu_array();
-			foreach ( $menus as $menu_id => $menu ) {
-				// Recursive call.
-				$contents = array_merge(
-					$contents,
-					$this->get_contents( array( 'menu_id' => $menu_id ) )
-				);
-			}
-			return $contents;
-		} elseif ( ! empty( $args['menu_id'] ) ) {
+		if ( ! empty( $args['menu_id'] ) ) {
 			$menu_id = $args['menu_id'];
 			$items = wp_get_nav_menu_items( $menu_id );
 
@@ -268,51 +247,23 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 					$contents[ $item_id ]->title = esc_html( $item->title );
 					$contents[ $item_id ]->name = esc_html( $item->title );
 					$contents[ $item_id ]->parent_id = $menu_id;
-					$contents[ $item_id ]->type = $this->rule_type;
+					$contents[ $item_id ]->type = MS_Rule_MenuItem::RULE_ID;
 					$contents[ $item_id ]->access = $this->get_rule_value( $contents[ $item_id ]->id );
 				}
 			}
 		}
 
-		// If not visitor membership, just show protected content
-		if ( ! $this->is_base_rule ) {
-			$contents = array_intersect_key( $contents, $this->rule_value );
-		}
-
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
+		$filter = self::get_exclude_include( $args );
+		if ( is_array( $filter->include ) ) {
+			$contents = array_intersect_key( $contents, array_flip( $filter->include ) );
+		} elseif ( is_array( $filter->exclude ) ) {
+			$contents = array_diff_key( $contents, array_flip( $filter->exclude ) );
 		}
 
 		return apply_filters(
 			'ms_rule_menuitem_model_get_contents',
 			$contents,
 			$args,
-			$this
-		);
-	}
-
-	/**
-	 * Get post content array.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $array The query args. @see self::get_query_args()
-	 * @return array {
-	 *     @type int $key The content ID.
-	 *     @type string $value The content title.
-	 * }
-	 */
-	public function get_options_array( $args = array() ) {
-		$cont = array();
-		$contents = $this->get_contents( $args );
-
-		foreach ( $contents as $content ) {
-			$cont[ $content->id ] = $content->name;
-		}
-
-		return apply_filters(
-			'ms_rule_menuitem_model_get_content_array',
-			$cont,
 			$this
 		);
 	}
@@ -326,9 +277,7 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 	 * @return int The total content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = 0;
 		$items = $this->get_contents( $args );
-
 		$count = count( $items );
 
 		return apply_filters(
@@ -339,7 +288,7 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 	}
 
 	/**
-	 * Get menu array.
+	 * Get a list of all menus (only the menu details, without menu-items).
 	 *
 	 * @since 1.0.0
 	 *
@@ -349,26 +298,35 @@ class MS_Rule_MenuItem_Model extends MS_Model_Rule {
 	 * }
 	 */
 	public function get_menu_array() {
-		$contents = array( __( 'No menus found.', MS_TEXT_DOMAIN ) );
+		$contents = array();
 		$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
 
+		$count_args = array();
+		if ( ! empty( $_REQUEST['membership_id'] ) ) {
+			$count_args['membership_id'] = $_REQUEST['membership_id'];
+		}
+
 		if ( ! empty( $navs ) ) {
-			$contents = array();
 			foreach ( $navs as $nav ) {
-				$items = $this->get_contents( array( 'menu_id' => $nav->term_id, 'rule_status' => 'protected' ) );
-				$total = $this->get_content_count( array( 'menu_id' => $nav->term_id ) );
+				$count_args['menu_id'] = $nav->term_id;
+				$total = $this->get_content_count( $count_args );
 
-				$protected = count( $items );
-				$unprotected = max( 0, $total - $protected );
-
-				$title = sprintf(
-					'%1$s &nbsp; &nbsp; [%2$s | %3$s]',
-					esc_html( $nav->name ),
-					$protected,
-					$unprotected
+				$menu_url = add_query_arg(
+					array( 'menu_id' => $nav->term_id )
 				);
-				$contents[ $nav->term_id ] = $title;
+
+				$contents[ $nav->term_id ] = array(
+					'label' => $nav->name,
+					'url' => $menu_url,
+					'count' => $total,
+				);
 			}
+		}
+
+		if ( empty( $contents ) ) {
+			$contents[] = array(
+				'label' => __( '(No Menus Available)', MS_TEXT_DOMAIN )
+			);
 		}
 
 		return apply_filters(
