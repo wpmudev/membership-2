@@ -289,14 +289,14 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$rule = $this->model;
 		$memberships = $rule->get_memberships( $item->id );
 
-		$class = empty( $memberships ) ? 'ms-public' : 'ms-protected';
+		$class = empty( $memberships ) ? 'ms-empty' : 'ms-assigned';
 
 		$public = array(
-			'id' => 'ms-public-' . $item->id,
+			'id' => 'ms-empty-' . $item->id,
 			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			'value' => $this->name['default_access'],
 			'after' => 'Modify Access',
-			'class' => 'ms-public-note',
+			'class' => 'ms-empty-note',
 		);
 
 		$list = array(

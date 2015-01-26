@@ -306,6 +306,7 @@ class MS_Helper_ListTable {
 				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ) ?>">
 					<?php echo esc_html( $text ); ?>:
 				</label>
+				<?php do_action( 'ms_helper_listtable_searchbox_start', $this ); ?>
 				<input
 					type="search"
 					id="<?php echo esc_attr( $input_id ) ?>"
@@ -476,7 +477,7 @@ class MS_Helper_ListTable {
 			 * @param array $actions An array of the available bulk actions.
 			 */
 			$this->_actions = apply_filters( "bulk_actions-{$this->screen->id}", $this->_actions );
-			$this->_actions = array_intersect_assoc( $this->_actions, $no_new_actions );
+			$this->_actions = MS_Helper_Utility::array_intersect_assoc_deep( $this->_actions, $no_new_actions );
 			$two = '';
 		} else {
 			$two = '2';
@@ -492,14 +493,24 @@ class MS_Helper_ListTable {
 		printf( '<option value="-1" selected="selected">%s</option>', __( 'Bulk Actions' ) );
 
 		foreach ( $this->_actions as $name => $title ) {
-			$class = 'edit' == $name ? 'hide-if-no-js' : '';
+			if ( is_array( $title ) ) {
+				printf( '<optgroup label="%s">', esc_attr( $name ) );
 
-			printf(
-				'<option value="%s" class="%s">%s</option>',
-				esc_attr( $name ),
-				esc_attr( $class ),
-				esc_attr( $title )
-			);
+				foreach ( $title as $value => $label ){
+					printf(
+						'<option value="%s">%s</option>',
+						esc_attr( $value ),
+						esc_attr( $label )
+					);
+				}
+				echo '</optgroup>';
+			} else {
+				printf(
+					'<option value="%s">%s</option>',
+					esc_attr( $name ),
+					esc_attr( $title )
+				);
+			}
 		}
 
 		echo '</select>';

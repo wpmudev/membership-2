@@ -3,7 +3,6 @@
  */
 
 #wpwrap .ms-wrap {
-
 	h3.ms-list-title {
 		color: #4F7984;
 
@@ -20,23 +19,30 @@
 		font-size: 15px;
 	}
 
-	tr {
-		.column-access {
-			width: 70%;
+	.column-access {
+		width: 70%;
+	}
+}
 
-			select {
-				display: none;
-			}
+
+/**
+ * Special styles used on "Protected Content" and "Members" page
+ */
+#wpwrap .ms-wrap {
+	tr {
+		.column-access select,
+		.column-membership select {
+			display: none;
 		}
 
-		.ms-public {
+		.ms-empty {
 			position: relative;
 
 			.wpmui-select-wrapper {
 				display: none;
 			}
 
-			.ms-public-note-wrapper {
+			.ms-empty-note-wrapper {
 				line-height: 20px;
 				font-weight: bold;
 				color: #B0B0B0;
@@ -81,10 +87,10 @@
 			}
 		}
 
-		.ms-protected {
+		.ms-assigned {
 			position: relative;
 
-			.ms-public-note-wrapper {
+			.ms-empty-note-wrapper {
 				display: none;
 			}
 
@@ -234,7 +240,7 @@
 		}
 
 		&:hover {
-			.ms-public-note-wrapper .wpmui-label-after,
+			.ms-empty-note-wrapper .wpmui-label-after,
 			.wpmui-select-wrapper .wpmui-label-after {
 				display: inline-block;
 			}
@@ -248,11 +254,6 @@
 				}
 			}
 		}
-	}
-
-	.ms-more-tag {
-		display: inline-block;
-		margin: 0 20px 0 0;
 	}
 }
 

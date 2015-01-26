@@ -844,78 +844,7 @@ window.ms_init.view_member_date = function init () {
 /*global ms_functions:false */
 
 window.ms_init.view_member_list = function init () {
-	var s2_config = jQuery.extend( {}, window.ms_functions.chosen_options );
-
-	function change_search_options() {
-		if ( 'membership' === jQuery( '#search_options' ).val() ) {
-			jQuery( '#membership_filter' ).show();
-			jQuery( '#member-search' ).hide();
-		}
-		else {
-			jQuery( '#membership_filter' ).hide();
-			jQuery( '#member-search' ).show();
-		}
-	}
-
-	jQuery( '#search_options').change( change_search_options );
-	change_search_options();
-
-	// Initialize the User-List select field
-
-	function submit_add_form() {
-		var sel = jQuery( '#new_member' ).val();
-		if ( ! sel.length ) { return false; }
-
-		jQuery( '#form_add_member' ).submit();
-	}
-
-	function enable_add_button() {
-		var sel = jQuery( '#new_member' ).val();
-		if ( ! sel.length ) {
-			jQuery( '#add_member' ).addClass( 'disabled' );
-		} else {
-			jQuery( '#add_member' ).removeClass( 'disabled' );
-		}
-	}
-
-	s2_config.minimumResultsForSearch = 0;
-	s2_config.placeholder = window.ms_data.lang.select_user;
-	s2_config.allowClear = true;
-	s2_config.multiple = true;
-	s2_config.minimumInputLength = 1;
-	s2_config.closeOnSelect = false;
-	s2_config.ajax = {
-		url: window.ajaxurl,
-		dataType: 'jsonp',
-		cache: true,
-		quietMillis: 500,
-		data: function (term, page) {
-			return {
-				filter: term, // search term
-				action: 'get_users'
-			};
-		},
-		results: function (data, page) {
-			return {results: data};
-		}
-	};
-
-	jQuery( '#new_member' ).select2( s2_config ).change( enable_add_button );
-	jQuery( '#add_member' ).click( submit_add_form );
-	enable_add_button();
-
-	// Change the view (show members of different membership)
-	function change_view() {
-		var list = jQuery( '#view_membership' ),
-			new_id = parseInt( list.val() ),
-			data = list.data('ajax'),
-			url = data.url + new_id;
-
-		if ( new_id <= 0 ) { return; }
-		window.location = url;
-	}
-
-	jQuery('#view_membership').change( change_view );
+	window.ms_init.memberships_column( '.column-membership' );
 };
 
 /*global window:false */
@@ -1268,15 +1197,20 @@ window.ms_init.view_membership_payment = function init () {
 /*global ms_functions:false */
 
 window.ms_init.view_protected_content = function init () {
+	window.ms_init.memberships_column( '.column-access' );
+};
+
+// This is also used on the Members page
+window.ms_init.memberships_column = function init_column( column_class ) {
 	var table = jQuery( '.wp-list-table' );
 
 	// Change the table row to "protected"
 	function protect_item( ev ) {
-		var cell = jQuery( this ).closest( '.column-access' );
+		var cell = jQuery( this ).closest( column_class );
 
-		cell.find( '.ms-public' )
-			.removeClass( 'ms-public' )
-			.addClass( 'ms-protected ms-focused' )
+		cell.find( '.ms-empty' )
+			.removeClass( 'ms-empty' )
+			.addClass( 'ms-assigned ms-focused' )
 			.find( 'select.ms-memberships' )
 			.select2( 'focus' )
 			.select2( 'open' );
@@ -1284,15 +1218,14 @@ window.ms_init.view_protected_content = function init () {
 
 	// If the item is not protected by any membership it will chagne to public
 	function maybe_make_public( ev ) {
-		var cell = jQuery( this ).closest( '.column-access' ),
+		var cell = jQuery( this ).closest( column_class ),
 			list = cell.find( 'select.ms-memberships' ),
 			memberships = list.select2( 'val' );
 
 		cell.find( '.ms-focused' ).removeClass( 'ms-focused' );
 
 		if ( memberships && memberships.length ) { return; }
-		window.console.log ( 'MAKE ROW PUBLIC:', list, memberships );
-		cell.find( '.ms-protected' ).removeClass( 'ms-protected' ).addClass( 'ms-public' );
+		cell.find( '.ms-assigned' ).removeClass( 'ms-assigned' ).addClass( 'ms-empty' );
 	}
 
 	// Format the memberships in the dropdown list (= unselected items)
@@ -1315,7 +1248,7 @@ window.ms_init.view_protected_content = function init () {
 
 	// add hooks
 
-	table.on( 'click', '.ms-public-note-wrapper .wpmui-label-after', protect_item );
+	table.on( 'click', '.ms-empty-note-wrapper .wpmui-label-after', protect_item );
 
 	table.on( 'ms-ajax-updated', '.ms-memberships', maybe_make_public );
 	table.on( 'blur', '.ms-memberships', function( ev ) {

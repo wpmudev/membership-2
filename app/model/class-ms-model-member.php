@@ -215,27 +215,6 @@ class MS_Model_Member extends MS_Model {
 	protected $gateway_profiles;
 
 	/**
-	 * Don't persist this fields.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string[] The fields to ignore when persisting.
-	 */
-	static public $ignore_fields = array(
-		'ms_relationships',
-		'id',
-		'name',
-		'username',
-		'email',
-		'name',
-		'first_name',
-		'last_name',
-		'password',
-		'password2',
-		'wp_user',
-	);
-
-	/**
 	 * The associated WP_User object
 	 *
 	 * @since 1.1
@@ -243,6 +222,21 @@ class MS_Model_Member extends MS_Model {
 	 * @var WP_User
 	 */
 	protected $wp_user;
+
+	/**
+	 * Returns a list of variables that should be included in serialization,
+	 * i.e. these values are the only ones that are stored in DB
+	 *
+	 * @since  1.1.0
+	 * @return array
+	 */
+	public function __sleep() {
+		return array(
+			'is_member',
+			'active',
+			'gateway_profiles',
+		);
+	}
 
 	/**
 	 * Get current member.
@@ -268,25 +262,10 @@ class MS_Model_Member extends MS_Model {
 	 * @return MS_Model_Member The saved member object.
 	 */
 	public function save() {
+		$class = get_class( $this );
+
 		if ( empty( $this->id ) ) {
 			$this->create_new_user();
-		}
-
-		$user_details = get_user_meta( $this->id );
-		$fields = get_object_vars( $this );
-
-		foreach ( $fields as $field => $val ) {
-			if ( in_array( $field, $this->ignore_fields ) ) {
-				continue;
-			}
-
-			if ( isset( $this->$field )
-				&& ( ! isset( $user_details[ 'ms_' . $field ][0] )
-					|| $user_details[ 'ms_' . $field ][0] != $this->$field
-				)
-			) {
-				update_user_meta( $this->id, 'ms_' . $field, $this->$field );
-			}
 		}
 
 		if ( isset( $this->username ) ) {
@@ -306,9 +285,15 @@ class MS_Model_Member extends MS_Model {
 			wp_update_user( get_object_vars( $wp_user ) );
 		}
 
-		$class = get_class( $this );
-		wp_cache_set( $this->id, $this, $class );
+		// Serialize our plugin meta data
+		$data = MS_Factory::serialize_model( $this );
 
+		// Then update all meta fields that are inside the collection
+		foreach ( $data as $field => $val ) {
+			update_user_meta( $this->id, 'ms_' . $field, $val );
+		}
+
+		wp_cache_set( $this->id, $this, $class );
 		return apply_filters( 'ms_model_member_save', $this );
 	}
 
@@ -458,7 +443,7 @@ class MS_Model_Member extends MS_Model {
 	 * @return int The count.
 	 */
 	public static function get_members_count( $args = null ) {
-		$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
+		$args = self::get_query_args( $args, self::SEARCH_ALL_USERS );
 		$args['number'] = 0;
 		$args['count_total'] = true;
 		$wp_user_search = new WP_User_Query( $args );
@@ -479,12 +464,12 @@ class MS_Model_Member extends MS_Model {
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
 	 * @return array List of member IDs
 	 */
-	public static function get_member_ids( $args = null ) {
+	public static function get_member_ids( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
 		static $Members = array();
 		$key = json_encode( $args );
 
 		if ( ! isset( $Members[$key] ) ) {
-			$args = self::get_query_args( $args, self::SEARCH_ONLY_MEMBERS );
+			$args = self::get_query_args( $args, $search_option );
 			$wp_user_search = new WP_User_Query( $args );
 			$users = $wp_user_search->get_results();
 			$members = array();
@@ -512,9 +497,9 @@ class MS_Model_Member extends MS_Model {
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
 	 * @return MS_Model_Member[] The selected members.
 	 */
-	public static function get_members( $args = null ) {
+	public static function get_members( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
 		$members = array();
-		$ids = self::get_member_ids( $args );
+		$ids = self::get_member_ids( $args, $search_option );
 
 		foreach ( $ids as $user_id ) {
 			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
@@ -615,10 +600,12 @@ class MS_Model_Member extends MS_Model {
 
 				case self::SEARCH_NOT_MEMBERS:
 					/*
-					 * This does a recursive call with
-					 * $search_option = self::SEARCH_ONLY_MEMBERS
+					 * This does a recursive call to first get all member IDs
 					 */
-					$members = self::get_member_ids();
+					$members = self::get_member_ids(
+						null,
+						self::SEARCH_ONLY_MEMBERS
+					);
 
 					$args['exclude'] = $members;
 					break;
@@ -638,6 +625,22 @@ class MS_Model_Member extends MS_Model {
 			$args,
 			$defaults
 		);
+	}
+
+	/**
+	 * Returns a list of all memberships of the current user
+	 *
+	 * @since  1.1.0
+	 * @return array
+	 */
+	public function get_membership_ids() {
+		$result = array();
+
+		foreach ( $this->ms_relationships as $subscription ) {
+			$result[] = $subscription->membership_id;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -792,7 +795,8 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $membership_id Optional. The specific membership to verify. If empty, verify against all memberships.
+	 * @param int $membership_id Optional. The specific membership to verify.
+	 *                If empty, verify against all memberships.
 	 * @return bool True if has a valid membership.
 	 */
 	public function has_membership( $membership_id = 0 ) {
@@ -813,15 +817,18 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		if ( ! empty( $membership_id ) ) {
+			// Membership-ID specified: Check if user has this membership
 			if ( array_key_exists( $membership_id,  $this->ms_relationships )
 				&& in_array( $this->ms_relationships[ $membership_id ]->get_status(), $allowed_status )
 			) {
 				$has_membership = true;
 			}
 		} elseif ( ! empty ( $this->ms_relationships ) ) {
+			// No membership-ID: Check if user has *any* membership
 			foreach ( $this->ms_relationships as $membership_relationship ) {
 				if ( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
 					$has_membership = true;
+					break;
 				}
 			}
 		}

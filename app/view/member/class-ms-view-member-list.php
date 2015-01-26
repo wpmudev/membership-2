@@ -23,84 +23,85 @@
 
 class MS_View_Member_List extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
 		// Search for orphaned relationships and delete them.
 		MS_Model_Member::clean_db();
 
-		$member_list = MS_Factory::load( 'ms_helper_listtable_Member' );
-		$member_list->prepare_items();
+		$listview = MS_Factory::create( 'MS_Helper_ListTable_Member' );
+		$listview->prepare_items();
 
 		ob_start();
 		?>
 
-		<div class="wrap ms-wrap">
+		<div class="wrap ms-wrap ms-member-list">
 			<?php
 			MS_Helper_Html::settings_header(
 				array(
 					'title' => __( 'Members', MS_TEXT_DOMAIN ),
 					'title_icon_class' => 'wpmui-fa wpmui-fa-users',
-					'desc' => __( 'Here you can manage your Members and Add New Members from your Users list.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Here you can manage the Memberships of existing Users.', MS_TEXT_DOMAIN ),
 				)
 			);
-			MS_Helper_Html::html_separator();
-			?>
-			<div>
-				<?php $this->render_add_member_form(); ?>
-			</div>
-			<div class="clear"></div>
 
-			<?php $member_list->views(); ?>
+			// Display a filter to switch between individual memberships.
+			$this->membership_filter();
+
+			$listview->views();
+			$listview->search_box();
+			?>
 			<form method="post">
-				<?php $member_list->search_box( 'Search', 'search' ); ?>
-				<?php $member_list->display(); ?>
+				<?php $listview->display(); ?>
 			</form>
 		</div>
 
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+
+		return $html;
 	}
 
 	/**
-	 * Echo the form to add new members from the WordPress User-list.
+	 * Display a filter to select the current membership
 	 *
-	 * @since  1.0.0
+	 * @since  1.1.0
 	 */
-	protected function render_add_member_form() {
+	public function membership_filter() {
+		$memberships = MS_Model_Membership::get_membership_names();
+		$url = remove_query_arg( array( 'membership_id', 'paged' ) );
+		$links = array();
 
-		$action = $this->data['action'];
-
-		$fields = array(
-			'list' => array(
-				'id' => 'new_member',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Add from your Users list:', MS_TEXT_DOMAIN ),
-				'class' => 'manual-init ms-text-medium',
-			),
-			'add' => array(
-				'id' => 'add_member',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Add User to Members', MS_TEXT_DOMAIN ),
-			),
-			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $action,
-			),
-			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => wp_create_nonce( $action ),
-			),
+		$links['all'] = array(
+			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'url' => $url,
 		);
 
-		echo '<form action="" method="post" id="form_add_member">';
-		foreach ( $fields as $field ) {
-			MS_Helper_Html::html_element( $field );
+		foreach ( $memberships as $id => $name ) {
+			if ( empty( $name ) ) {
+				$name = __( '(No Name)', MS_TEXT_DOMAIN );
+			}
+
+			$links['ms-' . $id] = array(
+				'label' => esc_html( $name ),
+				'url' => add_query_arg( array( 'membership_id' => $id ), $url ),
+			);
 		}
-		echo '</form>';
+
+		?>
+		<div class="wp-filter">
+			<ul class="filter-links">
+				<?php foreach ( $links as $key => $item ) :
+					$is_current = MS_Helper_Utility::is_current_url( $item['url'] );
+					$class = ( $is_current ? 'current' : '' );
+					?>
+					<li>
+						<a href="<?php echo esc_url( $item['url'] ); ?>" class="<?php echo esc_attr( $class ); ?>">
+							<?php echo esc_html( $item['label'] ); ?>
+						</a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php
 	}
 
 }

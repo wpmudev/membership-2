@@ -41,8 +41,7 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_TOGGLE_MEMBER = 'toggle_member';
-	const AJAX_ACTION_GET_USERS = 'get_users';
+	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'member_subscriptions';
 
 	/**
 	 * Prepare the Member manager.
@@ -51,89 +50,14 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
-
 		$hook = 'protect-content_page_protected-content-members';
 
 		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
-
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBER, 'ajax_action_toggle_member' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_GET_USERS, 'ajax_action_get_users' );
-
 		$this->add_action( 'ms_controller_membership_setup_completed', 'add_current_user' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
-	}
-
-	/**
-	 * Handle Ajax toggle action.
-	 *
-	 * Related action hooks:
-	 * - wp_ajax_toggle_member
-	 *
-	 * @since 1.0.0
-	 */
-	public function ajax_action_toggle_member() {
-		$msg = 0;
-		if ( $this->verify_nonce()
-			&& ! empty( $_POST['member_id'] )
-			&& $this->is_admin_user()
-		) {
-			$msg = $this->member_list_do_action(
-				'toggle_activation',
-				array( $_POST['member_id'] )
-			);
-		}
-
-		wp_die( $msg );
-	}
-
-	/**
-	 * Handle Ajax request to list all non-member-users.
-	 *
-	 * Response is wrapped in a JSONP callback.
-	 * Data is an array of objects with properties 'id' and 'text'.
-	 *
-	 * @since  1.0.0
-	 */
-	public function ajax_action_get_users() {
-		WDev()->load_request_fields( 'callback', 'filter' );
-
-		$callback_name = sanitize_html_class( $_REQUEST['callback'] );
-		$filter = $_REQUEST['filter'];
-
-		$args = array(
-			'number' => false,
-			'orderby' => 'user_name',
-			'search' => '*' . $filter . '*',
-			'search_columns' => array( 'user_login' ),
-		);
-
-		$data = MS_Model_Member::get_usernames(
-			$args,
-			MS_Model_Member::SEARCH_NOT_MEMBERS,
-			false
-		);
-
-		printf(
-			'%s(%s)',
-			$callback_name,
-			json_encode( $data )
-		);
-		exit;
-	}
-
-	/**
-	 * Show admin notices.
-	 *
-	 * @since 1.0.0
-	 *
-	 */
-	public function print_admin_message() {
-		add_action(
-			'admin_notices',
-			array( 'MS_Helper_Member', 'print_admin_message' )
-		);
 	}
 
 	/**
@@ -165,8 +89,6 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function members_admin_page_process() {
-		$this->print_admin_message();
-
 		$msg = 0;
 		$redirect = false;
 
@@ -256,157 +178,93 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_member_list() {
-		// Action view edit page request
-		$fields = array( 'member_id', 'action' );
-		if ( self::validate_required( $fields, 'REQUEST' ) ) {
-			$this->prepare_action_view( $_REQUEST['action'], $_REQUEST['member_id'] );
-		} else {
-			$data = array();
-			$data['usernames'] = MS_Model_Member::get_usernames(
-				null,
-				MS_Model_Member::SEARCH_NOT_MEMBERS
-			);
-			$data['action'] = 'add_member';
+		$data = array();
 
-			$view = MS_Factory::create( 'MS_View_Member_List' );
-			$view->data = apply_filters( 'ms_view_member_list_data', $data );
-			$view->render();
-		}
+		$view = MS_Factory::create( 'MS_View_Member_List' );
+		$view->data = apply_filters( 'ms_view_member_list_data', $data );
+		$view->render();
 	}
 
 	/**
-	 * Prepare and show action view.
+	 * Handle Ajax change-memberships action.
 	 *
-	 * @since 1.0.0
+	 * Related Action Hooks:
+	 * - wp_ajax_change_memberships
 	 *
-	 * @param string $action The action to execute.
-	 * @param int $member_id User ID of the member.
+	 * @since 1.1.0
 	 */
-	public function prepare_action_view( $action, $member_id ) {
-		$view = null;
-		$data = array();
+	public function ajax_action_change_memberships() {
+		$msg = 0;
+		$this->_resp_reset();
 
-		// Bulk actions
-		if ( is_array( $member_id ) ) {
-			$memberships = MS_Model_Membership::get_membership_names();
-			$data['member_id'] = $member_id;
+		$required = array( 'member' );
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'permission denied' ); }
+		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'subscribe: nonce' ); }
+		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'subscribe: required' ); }
 
-			switch ( $action ) {
-				case 'add':
-					$memberships[0] = __( 'Select Membership to add', MS_TEXT_DOMAIN );
-					break;
-
-				case 'cancel':
-					$memberships[0] = __( 'Select Membership to cancel', MS_TEXT_DOMAIN );
-					break;
-
-				case 'drop':
-					$memberships[0] = __( 'Select Membership to drop', MS_TEXT_DOMAIN );
-					break;
-
-				case 'move':
-					$memberships_move = $memberships;
-					$memberships_move[0] = __( 'Select Membership to move from', MS_TEXT_DOMAIN );
-
-					$memberships = MS_Model_Membership::get_membership_names();
-					$memberships[0] = __( 'Select Membership to move to', MS_TEXT_DOMAIN );
-					break;
+		if ( $this->_resp_ok() ) {
+			$values = array();
+			if ( isset( $_POST['values'] ) && is_array( $_POST['values'] ) ) {
+				$values = $_POST['values'];
 			}
-		}
 
-		// Single action
-		else {
-			// Member Model
-			$member = apply_filters(
-				'membership_member_model',
-				MS_Factory::load( 'MS_Model_Member', $member_id )
+			$msg = $this->assign_memberships(
+				$_POST['member'],
+				$values
 			);
-			$data['member_id'] = array( $member_id );
-
-			switch ( $action ) {
-				case 'add':
-					$memberships = MS_Model_Membership::get_signup_membership_list(
-						null,
-						array_keys( $member->ms_relationships ),
-						true,
-						true
-					);
-					$memberships = array_unshift_assoc(
-						$memberships,
-						0,
-						__( '- Select Membership to add -', MS_TEXT_DOMAIN )
-					);
-					break;
-
-				case 'cancel':
-					$args = array(
-						'post__in' => array_keys( $member->ms_relationships ),
-					);
-					$memberships = MS_Model_Membership::get_membership_names( $args );
-					$memberships = array_unshift_assoc(
-						$memberships,
-						0,
-						__( '- Select Membership to cancel -', MS_TEXT_DOMAIN )
-					);
-					break;
-
-				case 'drop':
-					$args = array(
-						'post__in' => array_keys( $member->ms_relationships ),
-					);
-					$memberships = MS_Model_Membership::get_membership_names( $args );
-					$memberships = array_unshift_assoc(
-						$memberships,
-						0,
-						__( '- Select Membership to drop -', MS_TEXT_DOMAIN )
-					);
-					break;
-
-				case 'move':
-					$args = array(
-						'post__in' => array_keys( $member->ms_relationships ),
-					);
-					$memberships_move = MS_Model_Membership::get_membership_names( $args );
-					$memberships_move = array_unshift_assoc(
-						$memberships_move,
-						0,
-						__( '- Select Membership to move from -', MS_TEXT_DOMAIN )
-					);
-
-					$memberships = MS_Model_Membership::get_membership_names( null );
-					$memberships = array_diff_key( $memberships, $member->ms_relationships );
-					$memberships = array_unshift_assoc(
-						$memberships,
-						0,
-						__( '- Select Membership to move to -', MS_TEXT_DOMAIN )
-					);
-					break;
-
-				case 'edit_date':
-					$view = MS_Factory::create( 'MS_View_Member_Date' );
-					$data['member_id'] = $member_id;
-					$data['ms_relationships'] = MS_Model_Relationship::get_membership_relationships(
-						array( 'user_id' => $member->id )
-					);
-					break;
-			}
 		}
+		$msg .= $this->_resp_code();
 
-		if ( in_array( $action, array( 'add', 'move', 'drop', 'cancel' ) ) ) {
-			$view = MS_Factory::create( 'MS_View_Member_Membership' );
-			$data['memberships'] = $memberships;
-			if ( 'move' == $action ){
-				$data['memberships_move'] = $memberships_move;
-			}
-		}
+		echo '' . $msg;
+		exit;
+	}
 
-		$data['action'] = $action;
-		$view->data = apply_filters(
-			'ms_view_member_data',
-			$data,
+	/**
+	 * Assigns (or removes) memberships to a Member.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param  string $user_id
+	 * @param  array $memberships Memberships that will be assigned to the
+	 *                rule-item. Memberships that are not mentioned are removed.
+	 * @return string [description]
+	 */
+	private function assign_memberships( $user_id, $memberships ) {
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+
+		$memberships = apply_filters(
+			'ms_controller_member_assign_memberships',
+			$memberships,
+			$member,
 			$this
 		);
-		$view->render();
+
+		// Drop memberships that are not specified
+		foreach ( $member->get_membership_ids() as $old_id ) {
+			if ( in_array( $old_id, $memberships ) ) { continue; }
+			$member->add_membership( $old_id );
+		}
+
+		// Add new memberships
+		foreach ( $memberships as $membership_id ) {
+			$member->add_membership( $membership_id );
+		}
+
+		if ( $member->has_membership() ) {
+			$member->is_member = true;
+		} else {
+			$member->is_member = false;
+		}
+		$member->save();
+
+		do_action(
+			'ms_controller_member_assign_memberships_done',
+			$member,
+			$memberships,
+			$this
+		);
+
+		return MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 	}
 
 	/**

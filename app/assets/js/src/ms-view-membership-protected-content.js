@@ -5,15 +5,20 @@
 /*global ms_functions:false */
 
 window.ms_init.view_protected_content = function init () {
+	window.ms_init.memberships_column( '.column-access' );
+};
+
+// This is also used on the Members page
+window.ms_init.memberships_column = function init_column( column_class ) {
 	var table = jQuery( '.wp-list-table' );
 
 	// Change the table row to "protected"
 	function protect_item( ev ) {
-		var cell = jQuery( this ).closest( '.column-access' );
+		var cell = jQuery( this ).closest( column_class );
 
-		cell.find( '.ms-public' )
-			.removeClass( 'ms-public' )
-			.addClass( 'ms-protected ms-focused' )
+		cell.find( '.ms-empty' )
+			.removeClass( 'ms-empty' )
+			.addClass( 'ms-assigned ms-focused' )
 			.find( 'select.ms-memberships' )
 			.select2( 'focus' )
 			.select2( 'open' );
@@ -21,15 +26,14 @@ window.ms_init.view_protected_content = function init () {
 
 	// If the item is not protected by any membership it will chagne to public
 	function maybe_make_public( ev ) {
-		var cell = jQuery( this ).closest( '.column-access' ),
+		var cell = jQuery( this ).closest( column_class ),
 			list = cell.find( 'select.ms-memberships' ),
 			memberships = list.select2( 'val' );
 
 		cell.find( '.ms-focused' ).removeClass( 'ms-focused' );
 
 		if ( memberships && memberships.length ) { return; }
-		window.console.log ( 'MAKE ROW PUBLIC:', list, memberships );
-		cell.find( '.ms-protected' ).removeClass( 'ms-protected' ).addClass( 'ms-public' );
+		cell.find( '.ms-assigned' ).removeClass( 'ms-assigned' ).addClass( 'ms-empty' );
 	}
 
 	// Format the memberships in the dropdown list (= unselected items)
@@ -52,7 +56,7 @@ window.ms_init.view_protected_content = function init () {
 
 	// add hooks
 
-	table.on( 'click', '.ms-public-note-wrapper .wpmui-label-after', protect_item );
+	table.on( 'click', '.ms-empty-note-wrapper .wpmui-label-after', protect_item );
 
 	table.on( 'ms-ajax-updated', '.ms-memberships', maybe_make_public );
 	table.on( 'blur', '.ms-memberships', function( ev ) {

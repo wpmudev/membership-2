@@ -1,0 +1,27 @@
+/**
+ * Special styles used on "Member" page
+ */
+
+#wpwrap .ms-wrap.ms-member-list {
+	.column-infos {
+		width: 30px;
+
+		a {
+			display: block;
+		}
+	}
+
+	.column-membership {
+		width: 45%;
+	}
+}
+
+.ms-edit-member {
+	.the-membership {
+		display: inline-block;
+		padding: 2px 6px;
+		border-radius: 4px;
+		color: #FFF;
+		background: #888;
+	}
+}
