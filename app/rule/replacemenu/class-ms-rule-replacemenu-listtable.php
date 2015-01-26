@@ -80,4 +80,24 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 		return $label;
 	}
 
+	/**
+	 * No pagination for this rule
+	 *
+	 * @since  1.1.0
+	 * @return int
+	 */
+	protected function get_items_per_page() {
+		return 0;
+	}
+
+	/**
+	 * This rule has no views
+	 *
+	 * @since  1.1.0
+	 * @return array
+	 */
+	public function get_views() {
+		return array();
+	}
+
 }

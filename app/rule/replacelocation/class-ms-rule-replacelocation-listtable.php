@@ -43,6 +43,23 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 		parent::__construct( $model, $membership );
 		$this->name['singular'] = __( 'Menu Location', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Menu Locations', MS_TEXT_DOMAIN );
+
+		add_filter(
+			'ms_helper_listtable_' . $this->id . '_columns',
+			array( $this, 'customize_columns' )
+		);
+
+		$this->editable = self::list_shows_base_items();
+	}
+
+	/**
+	 * Add the Access-column to the list table
+	 *
+	 * @since  1.1.0
+	 */
+	public function customize_columns( $columns ) {
+		$columns['access'] = true;
+		return $columns;
 	}
 
 	/**
@@ -61,6 +78,26 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 		}
 
 		return $label;
+	}
+
+	/**
+	 * No pagination for this rule
+	 *
+	 * @since  1.1.0
+	 * @return int
+	 */
+	protected function get_items_per_page() {
+		return 0;
+	}
+
+	/**
+	 * This rule has no views
+	 *
+	 * @since  1.1.0
+	 * @return array
+	 */
+	public function get_views() {
+		return array();
 	}
 
 }

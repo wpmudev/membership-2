@@ -306,6 +306,26 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	}
 
 	/**
+	 * Give access to content.
+	 *
+	 * @since 1.1.0
+	 * @param string $id The content id to give access.
+	 */
+	public function give_access( $id ) {
+		if ( $this->is_base_rule ) {
+			// The base rule can only be updated via Ajax!
+			return;
+		} else {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$value = $base_rule->get_rule_value( $id );
+		}
+
+		$this->set_access( $id, $value );
+
+		do_action( 'ms_rule_replacemenu_give_access', $id, $this );
+	}
+
+	/**
 	 * Serializes this rule in a single array.
 	 * We don't use the PHP `serialize()` function to serialize the whole object
 	 * because a lot of unrequired and duplicate data will be serialized

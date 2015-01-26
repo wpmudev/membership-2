@@ -261,25 +261,6 @@ class MS_Rule extends MS_Model {
 	}
 
 	/**
-	 * Verify if this model has rule for a content.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $id The content id to verify rules for.
-	 * @return boolean True if it has rules, false otherwise.
-	 */
-	public function has_rule( $id ) {
-		$has_rule = isset( $this->rule_value[ $id ] ) ;
-
-		return apply_filters(
-			'ms_rule_has_rule',
-			$has_rule,
-			$id,
-			$this
-		);
-	}
-
-	/**
 	 * Get rule value for a specific content.
 	 *
 	 * @since 1.0.0
@@ -382,11 +363,17 @@ class MS_Rule extends MS_Model {
 		}
 
 		$base = MS_Model_Membership::get_base();
-		if ( empty( $memberships ) ) {
-			$base->get_rule( $this->rule_type )->remove_access( $id );
-		} else {
-			$base->get_rule( $this->rule_type )->give_access( $id );
+		$base_rule = $base->get_rule( $this->rule_type );
+		$has_protection = $base_rule->has_access( $id );
+		$should_protect = ! empty( $memberships );
+
+		if ( ! $should_protect ) {
+			$base_rule->remove_access( $id );
+		} elseif ( ! $has_protection ) {
+			// Only `give_access()` when the item is not protected yet.
+			$base_rule->give_access( $id );
 		}
+		$base->set_rule( $this->rule_type, $base_rule );
 		$base->save();
 
 		foreach ( $All_Memberships as $membership ) {

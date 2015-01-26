@@ -264,4 +264,80 @@ class MS_Rule_ReplaceLocation_Model extends MS_Rule {
 		);
 	}
 
+	/**
+	 * Set access status to content.
+	 *
+	 * @since 1.1.0
+	 * @param string $id The content id to set access to.
+	 * @param int $access The access status to set.
+	 */
+	public function set_access( $id, $replace ) {
+		$delete = false;
+
+		if ( ! $this->is_base_rule ) {
+			if ( MS_Model_Rule::RULE_VALUE_NO_ACCESS == $replace ) {
+				$delete = true;
+			} else {
+				$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+				$replace = $base_rule->get_rule_value( $id );
+			}
+		}
+
+		if ( $delete ) {
+			unset( $this->rule_value[ $id ] );
+		} else {
+			$this->rule_value[ $id ] = $replace;
+		}
+
+		do_action( 'ms_rule_replacemenu_set_access', $id, $replace, $this );
+	}
+
+	/**
+	 * Give access to content.
+	 *
+	 * @since 1.1.0
+	 * @param string $id The content id to give access.
+	 */
+	public function give_access( $id ) {
+		if ( $this->is_base_rule ) {
+			// The base rule can only be updated via Ajax!
+			return;
+		} else {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$value = $base_rule->get_rule_value( $id );
+		}
+
+		$this->set_access( $id, $value );
+
+		do_action( 'ms_rule_replacemenu_give_access', $id, $this );
+	}
+
+	/**
+	 * Serializes this rule in a single array.
+	 * We don't use the PHP `serialize()` function to serialize the whole object
+	 * because a lot of unrequired and duplicate data will be serialized
+	 *
+	 * @since  1.1.0
+	 * @return array The serialized values of the Rule.
+	 */
+	public function serialize() {
+		$result = $this->rule_value;
+		return $result;
+	}
+
+	/**
+	 * Populates the rule_value array with the specified value list.
+	 * This function is used when de-serializing a membership to re-create the
+	 * rules associated with the membership.
+	 *
+	 * @since  1.1.0
+	 * @param  array $values A list of allowed IDs.
+	 */
+	public function populate( $values ) {
+		$this->rule_value = array();
+		foreach ( $values as $menu_id => $replacement ) {
+			$this->rule_value[$menu_id] = $replacement;
+		}
+	}
+
 }

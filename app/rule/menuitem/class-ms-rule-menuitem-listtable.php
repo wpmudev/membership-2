@@ -84,6 +84,12 @@ class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 		return $item->type_label;
 	}
 
+	/**
+	 * No pagination for this rule
+	 *
+	 * @since  1.1.0
+	 * @return int
+	 */
 	protected function get_items_per_page() {
 		return 0;
 	}
