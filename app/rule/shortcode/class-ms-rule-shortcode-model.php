@@ -51,6 +51,17 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	const PROTECT_CONTENT_SHORTCODE = 'ms-protect-content';
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * State depends on Add-on
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE );
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * This rule will return NULL (not relevant), because shortcodes are

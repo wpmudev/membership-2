@@ -15,12 +15,14 @@ class MS_Rule_MenuItem extends MS_Controller {
 	 * @since  1.1.0
 	 */
 	public function prepare_obj() {
-		MS_Model_Rule::register_rule(
-			self::RULE_ID,
-			__CLASS__,
-			__( 'Menu Items', MS_TEXT_DOMAIN ),
-			60
-		);
+		if ( MS_Rule_MenuItem_Model::is_active() ) {
+			MS_Model_Rule::register_rule(
+				self::RULE_ID,
+				__CLASS__,
+				__( 'Menu Items', MS_TEXT_DOMAIN ),
+				60
+			);
+		}
 
 		$this->add_filter(
 			'ms_view_protectedcontent_define-' . self::RULE_ID,

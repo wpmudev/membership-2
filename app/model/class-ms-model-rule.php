@@ -102,6 +102,7 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	static private function prepare() {
 		if ( null === self::$rule_meta ) {
+			// This will call prepare_class() above.
 			MS_Factory::load( 'MS_Model_Rule' );
 		}
 	}
@@ -116,12 +117,15 @@ class MS_Model_Rule extends MS_Model {
 	 * @param  int $priority Loading-priority (0 - 999), lower is earlier.
 	 */
 	static public function register_rule( $id, $class, $title, $priority = 0, $dripped = false ) {
-		self::$rule_meta = WDev()->get_array( self::$rule_meta );
-		self::$rule_meta['title'] = WDev()->get_array( self::$rule_meta['title'] );
-		self::$rule_meta['class'] = WDev()->get_array( self::$rule_meta['class'] );
-		self::$rule_meta['model_class'] = WDev()->get_array( self::$rule_meta['model_class'] );
-		self::$rule_meta['order'] = WDev()->get_array( self::$rule_meta['order'] );
-		self::$rule_meta['dripped'] = WDev()->get_array( self::$rule_meta['dripped'] );
+		if ( ! is_array( self::$rule_meta ) ) {
+			self::$rule_meta = array(
+				'title' => array(),
+				'class' => array(),
+				'model_class' => array(),
+				'order' => array(),
+				'dripped' => array(),
+			);
+		}
 
 		self::$rule_meta['title'][ $id ] = $title;
 		self::$rule_meta['class'][ $id ] = $class;
@@ -162,51 +166,6 @@ class MS_Model_Rule extends MS_Model {
 
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
 			$rule_types = self::$rule_meta['order'];
-
-			// Remove/replace items that are not activated
-
-			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
-				unset( $rule_types[-9] );
-			}
-
-			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADMINSIDE ) ) {
-				unset( $rule_types[-1] );
-			}
-
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-				unset( $rule_types[10] );
-			} else {
-				unset( $rule_types[1] );
-			}
-
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-				unset( $rule_types[30] );
-			} else {
-				unset( $rule_types[20] );
-			}
-
-			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-				unset( $rule_types[90] );
-			}
-
-			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
-				unset( $rule_types[-10] );
-			}
-
-			switch ( $settings->menu_protection ) {
-				case 'item':
-					$rule_types[60] = MS_Rule_MenuItem::RULE_ID;
-					break;
-
-				case 'menu':
-					$rule_types[60] = MS_Rule_ReplaceMenu::RULE_ID;
-					break;
-
-				case 'location':
-					$rule_types[60] = MS_Rule_ReplaceLocation::RULE_ID;
-					break;
-
-			}
 
 			$rule_types = apply_filters( 'ms_rule_get_rule_types', $rule_types );
 			$rule_type = ksort( $rule_types );

@@ -51,6 +51,17 @@ class MS_Rule_Url_Model extends MS_Rule {
 	protected $_allowed_urls = null;
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * State depends on Add-on
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS );
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * @since 1.0.0

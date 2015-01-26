@@ -65,6 +65,19 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	protected $_content_array = null;
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * State depends on Add-on
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		$def = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS );
+		$adv = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV );
+		return $def && ! $adv;
+	}
+
+	/**
 	 * Initializes the object as early as possible
 	 *
 	 * @since  1.1.0

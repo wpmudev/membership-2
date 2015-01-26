@@ -15,12 +15,14 @@ class MS_Rule_Special extends MS_Controller {
 	 * @since  1.1.0
 	 */
 	public function prepare_obj() {
-		MS_Model_Rule::register_rule(
-			self::RULE_ID,
-			__CLASS__,
-			__( 'Special Pages', MS_TEXT_DOMAIN ),
-			10
-		);
+		if ( MS_Rule_Special_Model::is_active() ) {
+			MS_Model_Rule::register_rule(
+				self::RULE_ID,
+				__CLASS__,
+				__( 'Special Pages', MS_TEXT_DOMAIN ),
+				10
+			);
+		}
 
 		$this->add_filter(
 			'ms_view_protectedcontent_define-' . self::RULE_ID,

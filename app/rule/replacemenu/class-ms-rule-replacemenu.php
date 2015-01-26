@@ -15,12 +15,14 @@ class MS_Rule_ReplaceMenu extends MS_Controller {
 	 * @since  1.1.0
 	 */
 	public function prepare_obj() {
-		MS_Model_Rule::register_rule(
-			self::RULE_ID,
-			__CLASS__,
-			__( 'Replace Menus', MS_TEXT_DOMAIN ),
-			62
-		);
+		if ( MS_Rule_ReplaceMenu_Model::is_active() ) {
+			MS_Model_Rule::register_rule(
+				self::RULE_ID,
+				__CLASS__,
+				__( 'Replace Menus', MS_TEXT_DOMAIN ),
+				62
+			);
+		}
 
 		$this->add_filter(
 			'ms_view_protectedcontent_define-' . self::RULE_ID,

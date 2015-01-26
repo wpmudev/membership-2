@@ -78,6 +78,17 @@ class MS_Rule_Special_Model extends MS_Rule {
 	public $_has_rule = null;
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * State depends on Add-on
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES );
+	}
+
+	/**
 	 * Checks if the current page is a special page that can be handled by this
 	 * rule
 	 *

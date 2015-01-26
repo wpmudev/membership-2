@@ -62,17 +62,27 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 					</a>
 				</div>
 				<?php
+
+				$title = sprintf(
+					__( '%s Overview', MS_TEXT_DOMAIN ),
+					sprintf(
+						'<span class="the-title" style="background-color:%2$s">%1$s</span>',
+						esc_html( $membership->name ),
+						$membership->get_color()
+					)
+				);
+				$desc = array(
+					__( 'Here you find a summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
+					sprintf(
+						__( 'This is a %s', MS_TEXT_DOMAIN ),
+						$membership->get_type_description()
+					),
+				);
+
 				MS_Helper_Html::settings_header(
 					array(
-						'title' => sprintf(
-							__( '%s Overview', MS_TEXT_DOMAIN ),
-							sprintf(
-								'<span class="the-title" style="background-color:%2$s">%1$s</span>',
-								esc_html( $membership->name ),
-								$membership->get_color()
-							)
-						),
-						'desc' => __( 'Here you find a summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
+						'title' => $title,
+						'desc' => $desc,
 						'title_icon_class' => 'wpmui-fa wpmui-fa-dashboard',
 					)
 				);
@@ -235,33 +245,22 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 	protected function available_content_panel_data() {
 		$membership = $this->data['membership'];
-		$protected_content = MS_Model_Membership::get_base();
 		$rule_types = MS_Model_Rule::get_rule_types();
 
 		?>
 		<div class="ms-settings ms-group">
+			<div class="ms-group">
 			<?php
 			foreach ( $rule_types as $rule_type ) {
-				$has_rules = false;
+				$rule = $membership->get_rule( $rule_type );
+				if ( ! $rule->is_active() ) { continue; }
 
-				switch ( $rule_type ) {
-					case MS_Rule_ReplaceMenu::RULE_ID:
-					case MS_Rule_ReplaceLocation::RULE_ID:
-						$rule = $membership->get_rule( $rule_type );
-						$has_rules = true;
-						break;
-
-					default:
-						$rule = $protected_content->get_rule( $rule_type );
-						$has_rules = $rule->has_rules();
-						break;
-				}
-
-				if ( $has_rules ) {
-					$this->content_box( $membership->get_rule( $rule_type ) );
+				if ( $rule->has_rules() ) {
+					$this->content_box( $rule );
 				}
 			}
 			?>
+			</div>
 		</div>
 		<?php
 

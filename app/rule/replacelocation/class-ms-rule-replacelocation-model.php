@@ -48,6 +48,18 @@ class MS_Rule_ReplaceLocation_Model extends MS_Rule {
 	protected $menus = array();
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * State depends on Add-on
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		return 'location' == $settings->menu_protection;
+	}
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * This rule will return NULL (not relevant), because the menus are

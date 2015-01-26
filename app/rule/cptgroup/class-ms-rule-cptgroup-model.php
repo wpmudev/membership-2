@@ -42,6 +42,18 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 	protected $rule_type = MS_Rule_CptGroup::RULE_ID;
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * State depends on Add-on
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST );
+	}
+
+
+	/**
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0

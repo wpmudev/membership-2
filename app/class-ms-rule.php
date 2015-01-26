@@ -127,6 +127,20 @@ class MS_Rule extends MS_Model {
 	}
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * Default state is "active" (return value TRUE)
+	 *
+	 * Rules that need to be activated via an add-on should overwrite this
+	 * method to return the current rule-state
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return true;
+	}
+
+	/**
 	 * Validate dripped type.
 	 *
 	 * @since 1.0.0
@@ -154,18 +168,17 @@ class MS_Rule extends MS_Model {
 			$class = $rule_types[ $rule_type ];
 
 			$rule = MS_Factory::load( $class, $membership_id, $rule_type );
-
-			return apply_filters(
-				'ms_rule_rule_factory',
-				$rule,
-				$rule_type,
-				$membership_id
-			);
 		} else {
-			throw new Exception(
-				'Rule factory - rule type not found: ' . $rule_type
-			);
+			MS_Helper_Debug::log( 'Rule type not registered: ' . $rule_type );
+			$rule = MS_Factory::create( 'MS_Rule', $membership_id );
 		}
+
+		return apply_filters(
+			'ms_rule_rule_factory',
+			$rule,
+			$rule_type,
+			$membership_id
+		);
 	}
 
 	/**
@@ -207,9 +220,18 @@ class MS_Rule extends MS_Model {
 	 * @return boolean True if it has rules, false otherwise.
 	 */
 	public function has_rules() {
-		$has_rules = ! empty( $this->rule_value );
+		$has_rules = false;
+		foreach ( $this->rule_value as $val ) {
+			if ( $val ) {
+				$has_rules = true; break;
+			}
+		}
 
-		return apply_filters( 'ms_rule_has_rules', $has_rules, $this );
+		return apply_filters(
+			'ms_rule_has_rules',
+			$has_rules,
+			$this
+		);
 	}
 
    /**

@@ -51,6 +51,18 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	protected $rule_type = MS_Rule_MenuItem::RULE_ID;
 
 	/**
+	 * Returns the active flag for a specific rule.
+	 * State depends on Add-on
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		return 'item' == $settings->menu_protection;
+	}
+
+	/**
 	 * Initialize the rule
 	 *
 	 * @since  1.1.0

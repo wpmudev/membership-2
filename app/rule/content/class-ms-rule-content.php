@@ -15,12 +15,14 @@ class MS_Rule_Content extends MS_Controller {
 	 * @since  1.1.0
 	 */
 	public function prepare_obj() {
-		MS_Model_Rule::register_rule(
-			self::RULE_ID,
-			__CLASS__,
-			__( 'Comments & More Tag', MS_TEXT_DOMAIN ),
-			80
-		);
+		if ( MS_Rule_Content_Model::is_active() ) {
+			MS_Model_Rule::register_rule(
+				self::RULE_ID,
+				__CLASS__,
+				__( 'Comments & More Tag', MS_TEXT_DOMAIN ),
+				80
+			);
+		}
 
 		$this->add_filter(
 			'ms_view_protectedcontent_define-' . self::RULE_ID,

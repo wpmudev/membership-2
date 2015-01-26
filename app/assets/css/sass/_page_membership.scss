@@ -272,7 +272,7 @@
 }
 
 /* Membership Details ("Overview" page) */
-.ms-wrap.ms-membership-overview {
+#wpwrap .ms-wrap.ms-membership-overview {
 	margin: 0 0 0 -20px;
 
 	.ms-wrap-top {
@@ -285,6 +285,7 @@
 		color: #FFF;
 		background: #888888;
 		padding: 2px 10px;
+		font-size: inherit;
 	}
 
 	.ms-membership-status-wrapper {

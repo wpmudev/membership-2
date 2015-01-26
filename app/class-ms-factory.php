@@ -48,7 +48,7 @@ class MS_Factory {
 	 * @param string $class The class to create object from.
 	 * @return object The created object.
 	 */
-	public static function create( $class ) {
+	public static function create( $class, $init_arg = null ) {
 		$singletons = array(
 			'MS_Model_Pages',
 			'MS_Model_Settings',
@@ -68,7 +68,11 @@ class MS_Factory {
 		}
 
 		if ( class_exists( $class ) ) {
-			$obj = new $class();
+			if ( null === $init_arg ) {
+				$obj = new $class();
+			} else {
+				$obj = new $class( $init_arg );
+			}
 		} else {
 			throw new Exception( 'Class ' . $class . ' does not exist.' );
 		}
