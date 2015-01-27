@@ -214,6 +214,7 @@ class MS_Model_Upgrade extends MS_Model {
 	static private function cleanup_db() {
 		global $wpdb;
 		$sql = array();
+		$trash_ids = array();
 
 		// Delete membership meta-data from users.
 		$users = MS_Model_Member::get_members( );
@@ -222,11 +223,11 @@ class MS_Model_Upgrade extends MS_Model {
 			$user->save();
 		}
 
-		// Move the Membership pages to trash.
+		// Determine IDs of Membership Pages.
 		$page_types = MS_Model_Pages::get_page_types();
-		foreach ( $page_types as $type ) {
+		foreach ( $page_types as $type => $name ) {
 			$page_id = MS_Model_Pages::get_setting( $type );
-			wp_trash_post( $page_id );
+			$trash_ids[] = $page_id;
 		}
 
 		/**
@@ -272,6 +273,11 @@ class MS_Model_Upgrade extends MS_Model {
 
 		foreach ( $sql as $s ) {
 			$wpdb->query( $s );
+		}
+
+		// Move Membership pages to trash.
+		foreach ( $trash_ids as $id ) {
+			wp_trash_post( $id );
 		}
 
 		// Clear all data from WP Object cache.
