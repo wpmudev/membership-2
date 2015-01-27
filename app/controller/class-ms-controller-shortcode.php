@@ -291,11 +291,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Model_Relationship::STATUS_EXPIRED,
 			);
 
-			foreach ( $data['member']->subscriptions as $ms_relationship ) {
-				if ( $ms_relationship->is_system() ) { continue; }
+			foreach ( $data['member']->subscriptions as $subscription ) {
+				if ( $subscription->is_system() ) { continue; }
 
-				if ( in_array( $ms_relationship->status, $valid_status ) ) {
-					$data['move_from_id'] = $ms_relationship->membership_id;
+				if ( in_array( $subscription->status, $valid_status ) ) {
+					$data['move_from_id'] = $subscription->membership_id;
 					break;
 				}
 			}
@@ -668,10 +668,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$data['member'] = MS_Model_Member::get_current_member();
 		if ( is_array( $data['member']->subscriptions ) ) {
-			foreach ( $data['member']->subscriptions as $ms_relationship ) {
-				$data['membership'][] = $ms_relationship->get_membership();
-				$gateway = $ms_relationship->get_gateway();
-				$data['gateway'][ $ms_relationship->id ] = $gateway;
+			foreach ( $data['member']->subscriptions as $subscription ) {
+				$data['membership'][] = $subscription->get_membership();
+				$gateway = $subscription->get_gateway();
+				$data['gateway'][ $subscription->id ] = $gateway;
 			}
 		}
 		$data['invoices'] = MS_Model_Invoice::get_invoices(
@@ -803,12 +803,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 				}
 			}
 
-			$ms_relationship = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
+			$subscription = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
 
 			$data['invoice'] = $invoice;
 			$data['member'] = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
-			$data['ms_relationship'] = $ms_relationship;
-			$data['membership'] = $ms_relationship->get_membership();
+			$data['ms_relationship'] = $subscription;
+			$data['membership'] = $subscription->get_membership();
 			$data['gateway'] = MS_Model_Gateway::factory( $invoice->gateway_id );
 
 			// Try to find a related trial-period invoice.
