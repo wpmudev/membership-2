@@ -510,7 +510,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'title' => __( 'Choose how you want to protect your WordPress menus.', MS_TEXT_DOMAIN ),
 					'value' => $settings->menu_protection,
 					'field_options' => array(
-						'item' => __( 'Protect single Menu Items', MS_TEXT_DOMAIN ),
+						'item' => __( 'Protect single Menu Items (Default)', MS_TEXT_DOMAIN ),
 						'menu' => __( 'Replace individual Menus', MS_TEXT_DOMAIN ),
 						'location' => __( 'Overwrite contents of Menu Locations', MS_TEXT_DOMAIN ),
 					),
