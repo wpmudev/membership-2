@@ -762,6 +762,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$not_in = $exclude_ids;
 		}
 		$not_in[] = MS_Model_Membership::get_base()->id;
+		$not_in[] = MS_Model_Membership::get_guest()->id;
 		$args['post__not_in'] = array_unique( $not_in );
 
 		if ( ! is_admin() ) {
@@ -842,7 +843,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return bool
 	 */
 	public function is_base() {
-		return $this->type == self::TYPE_BASE;
+		$res = $this->type == self::TYPE_BASE;
+
+		return apply_filters(
+			'ms_model_membership_is_base',
+			$res,
+			$this
+		);
 	}
 
 	/**
@@ -853,7 +860,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return bool
 	 */
 	public function is_guest() {
-		return $this->type == self::TYPE_GUEST;
+		$res = $this->type == self::TYPE_GUEST;
+
+		return apply_filters(
+			'ms_model_membership_is_guest',
+			$res,
+			$this
+		);
 	}
 
 	/**
@@ -865,6 +878,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function is_system() {
 		$res = $this->is_base() || $this->is_guest();
+
+		return apply_filters(
+			'ms_model_membership_is_system',
+			$res,
+			$this
+		);
 	}
 
 	/**
@@ -1122,7 +1141,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		if ( ! empty( $this->id ) ) {
 			if ( $this->get_members_count() > 0 ) {
 				$ms_relationships = MS_Model_Relationship::get_subscriptions(
-					array( 'membership_id' => $this->id )
+					array( 'membership_id' => $this->id ),
+					true
 				);
 
 				foreach ( $ms_relationships as $ms_relationship ) {

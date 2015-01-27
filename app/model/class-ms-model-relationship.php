@@ -408,11 +408,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param $args The query post args
+	 * @param array $args The query post args
 	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @param bool $include_system Whether to include the base/guest memberships.
 	 * @return MS_Model_Relationship[] The array of membership relationships.
 	 */
-	public static function get_subscriptions( $args = null ) {
+	public static function get_subscriptions( $args = null, $include_system = false ) {
 		$args = self::get_query_args( $args );
 
 		$query = new WP_Query( $args );
@@ -425,6 +426,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					'MS_Model_Relationship',
 					$post_id
 				);
+
+				// Remove System-Memberships
+				if ( $ms_relationship->is_system() && ! $include_system ) {
+					continue;
+				}
 
 				if ( ! empty( $args['author'] ) ) {
 					$subscriptions[ $ms_relationship->membership_id ] = $ms_relationship;
@@ -1037,6 +1043,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public function is_guest() {
 		return $this->get_membership()->is_guest();
+	}
+
+	/**
+	 * Returns true if the related membership is a system membership.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	public function is_system() {
+		return $this->get_membership()->is_system();
 	}
 
 	/**

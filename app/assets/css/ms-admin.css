@@ -181,7 +181,6 @@
   padding: 0 3px;
   line-height: 15px;
   font-weight: 100;
-  margin-left: 10px;
 }
 
 /* Simple List Tables */
@@ -1556,6 +1555,19 @@
   float: left;
   margin-right: 5px;
   border-radius: 4px;
+}
+.ms-wrap .ms-membership-list .the-name {
+  margin-right: 10px;
+}
+.ms-wrap .ms-membership-list td {
+  overflow: visible;
+}
+.ms-wrap .ms-membership-list .wpmui-tip {
+  text-align: center;
+}
+.ms-wrap .ms-membership-list .ms-guest-badge {
+  display: inline-block;
+  cursor: help;
 }
 
 /**

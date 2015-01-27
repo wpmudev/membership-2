@@ -175,8 +175,9 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 		if ( $item->is_guest() ) {
 			$badge = sprintf(
-				'<span class="ms-guest-badge">%s</span>',
-				__( 'Guest', MS_TEXT_DOMAIN )
+				'<span class="ms-guest-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
+				__( 'Guest', MS_TEXT_DOMAIN ),
+				__( 'All Logged-Out users are considered guests', MS_TEXT_DOMAIN )
 			);
 		}
 

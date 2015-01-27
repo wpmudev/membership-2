@@ -140,11 +140,17 @@ class MS_Model_Plugin extends MS_Model {
 			$this->member->subscriptions = array();
 		}
 
-		// Visitor: assign a Visitor Membership = Protected Content
+		// Non-Member: Assign the base membership, which only denies access.
 		if ( ! $this->member->has_membership() ) {
 			$this->member->add_membership(
 				MS_Model_Membership::get_base()->id
 			);
+
+			// If a Guest-Membership exists we also assign it to the user.
+			$guest = MS_Model_Membership::get_guest();
+			if ( $guest->is_valid() ) {
+				$this->member->add_membership( $guest->id );
+			}
 		}
 
 		do_action( 'ms_model_plugin_init_member_after', $this );
