@@ -512,7 +512,6 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function process_purchase() {
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
 		WDev()->load_request_fields( 'gateway', 'ms_relationship_id' );
@@ -548,8 +547,8 @@ class MS_Controller_Gateway extends MS_Controller {
 					$this->validate_membership_states( $ms_relationship );
 
 					// Redirect user to the Payment-Completed page.
-					$ms_pages->create_missing_pages();
-					$url = $ms_pages->get_page_url(
+					MS_Model_Pages::create_missing_pages();
+					$url = MS_Model_Pages::get_page_url(
 						MS_Model_Pages::MS_PAGE_REG_COMPLETE
 					);
 					$url = add_query_arg(
@@ -600,7 +599,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		// Hack to show signup page in case of errors
 		global $wp_query;
-		$ms_page = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REGISTER );
+		$ms_page = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REGISTER );
 		$wp_query->query_vars['page_id'] = $ms_page->ID;
 		$wp_query->query_vars['post_type'] = 'page';
 

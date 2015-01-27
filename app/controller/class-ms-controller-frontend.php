@@ -167,8 +167,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$the_page = $ms_pages->current_page();
+		$the_page = MS_Model_Pages::current_page();
 
 		if ( $the_page ) {
 			// Fix the main query flags for best theme support:
@@ -181,7 +180,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$wp_query->is_frontpage = false;
 			$wp_query->tax_query = null;
 
-			$the_type = $ms_pages->get_page_type( $the_page );
+			$the_type = MS_Model_Pages::get_page_type( $the_page );
 			switch ( $the_type ) {
 				case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
 					if ( ! MS_Model_Member::is_logged_user() ) {
@@ -578,8 +577,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$member->cancel_membership( $membership_id );
 			$member->save();
 
-			$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-			$url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+			$url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 			wp_safe_redirect( $url );
 			exit;
 		}
@@ -774,8 +772,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return The new signup url.
 	 */
 	public function signup_location( $url ) {
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+		$url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 
 		return apply_filters(
 			'ms_controller_frontend_signup_location',
@@ -829,8 +826,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			&& ! MS_Model_Member::is_admin_user( $user->ID )
 			&& ( empty( $redirect_to ) || admin_url() == $redirect_to )
 		) {
-			$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-			$redirect_to = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+			$redirect_to = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		}
 
 		return apply_filters(
@@ -857,10 +853,9 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this
 		);
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$is_ms_page = $ms_pages->is_membership_page();
+		$is_ms_page = MS_Model_Pages::is_membership_page();
 		$is_profile = self::ACTION_EDIT_PROFILE == $this->get_action()
-			&& $ms_pages->is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
+			&& MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		if ( $is_ms_page ) {
 			WDev()->add_ui( 'select' );

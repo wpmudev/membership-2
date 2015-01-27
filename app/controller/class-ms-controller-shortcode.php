@@ -727,11 +727,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 			)
 		);
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-
 		$html = sprintf(
 			'<a href="%1$s">%2$s</a>',
-			$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
+			MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
 			$data['label']
 		);
 

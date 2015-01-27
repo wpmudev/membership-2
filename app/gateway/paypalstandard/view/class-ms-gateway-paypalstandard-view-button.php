@@ -86,15 +86,14 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 		$regular_invoice = null;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
 		$nonce = wp_create_nonce(
 			$gateway->id. '_' . $this->data['ms_relationship']->id
 		);
-		$cancel_url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+		$cancel_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 		$return_url = add_query_arg(
 			array( 'ms_relationship_id' => $ms_relationship->id ),
-			$ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
+			MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
 		);
 
 		$fields = array(

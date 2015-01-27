@@ -157,8 +157,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 			$has_access = parent::has_access( $page_id );
 
 			// Membership special pages has access
-			$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-			if ( $ms_pages->is_membership_page( $page_id ) ) {
+			if ( MS_Model_Pages::is_membership_page( $page_id ) ) {
 				$has_access = true;
 			}
 		}

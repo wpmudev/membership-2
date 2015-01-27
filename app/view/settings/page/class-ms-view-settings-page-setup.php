@@ -39,9 +39,9 @@ class MS_View_Settings_Page_Setup extends MS_View {
 	 */
 	public function to_html() {
 		$fields = $this->prepare_fields();
+		$can_create_nav = MS_Model_Pages::can_edit_menus();
 
 		ob_start();
-
 		?>
 		<div class="ms-setup-form">
 			<div class="ms-setup-nav">
@@ -63,8 +63,15 @@ class MS_View_Settings_Page_Setup extends MS_View {
 				</div>
 				<?php
 
-				foreach ( $fields['nav'] as $field ) {
-					MS_Helper_Html::html_element( $field );
+				if ( $can_create_nav ) {
+					foreach ( $fields['nav'] as $field ) {
+						MS_Helper_Html::html_element( $field );
+					}
+				} else {
+					printf(
+						'<div><p><em>%s</em></p></div>',
+						__( '(Not available: There is no Menu to update)', MS_TEXT_DOMAIN )
+					);
 				}
 
 				?>
@@ -154,10 +161,9 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		// Prepare the return value.
 		$nav = array();
 		$pages = array();
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
-		$ms_pages->create_missing_pages();
-		$page_types = $ms_pages->get_page_types();
+		MS_Model_Pages::create_missing_pages();
+		$page_types = MS_Model_Pages::get_page_types();
 		$page_types_menu = array(
 			'memberships',
 			'register',
@@ -169,7 +175,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		$menu_action = MS_Controller_Pages::AJAX_ACTION_TOGGLE_MENU;
 		$menu_nonce = wp_create_nonce( $menu_action );
 		foreach ( $page_types_menu as $type ) {
-			$nav_exists = $ms_pages->has_menu( $type );
+			$nav_exists = MS_Model_Pages::has_menu( $type );
 			$nav[$type] = array(
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'id' => 'nav_' . $type,
@@ -192,11 +198,11 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		$pages_nonce = wp_create_nonce( $pages_action );
 
 		foreach ( $page_types as $type => $label ) {
-			$page_id = $ms_pages->get_setting( $type );
+			$page_id = MS_Model_Pages::get_setting( $type );
 			$title = sprintf(
 				'<strong>%1$s</strong><span class="lbl-details">: %2$s</span>',
 				$label,
-				$ms_pages->get_description( $type )
+				MS_Model_Pages::get_description( $type )
 			);
 
 			$pages[ $type ] = array(

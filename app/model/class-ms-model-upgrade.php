@@ -101,8 +101,7 @@ class MS_Model_Upgrade extends MS_Model {
 			MS_Factory::clear();
 
 			// Create missing Membership pages.
-			$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-			$new_pages = $ms_pages->create_missing_pages();
+			$new_pages = MS_Model_Pages::create_missing_pages();
 
 			if ( ! empty( $new_pages ) ) {
 				$msg[] = sprintf(
@@ -221,6 +220,13 @@ class MS_Model_Upgrade extends MS_Model {
 		foreach ( $users as $user ) {
 			$user->delete_all_membership_usermeta();
 			$user->save();
+		}
+
+		// Move the Membership pages to trash.
+		$page_types = MS_Model_Pages::get_page_types();
+		foreach ( $page_types as $type ) {
+			$page_id = MS_Model_Pages::get_setting( $type );
+			wp_trash_post( $page_id );
 		}
 
 		/**

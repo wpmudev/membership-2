@@ -6,8 +6,7 @@ class MS_View_Shortcode_Account extends MS_View {
 		global $post;
 
 		$fields = $this->prepare_fields();
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$signup_url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+		$signup_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 
 		ob_start();
 		?>

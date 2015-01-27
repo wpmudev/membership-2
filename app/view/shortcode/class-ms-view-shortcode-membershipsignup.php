@@ -151,7 +151,6 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 * @return string The URL.
 	 */
 	public function get_action_url( $membership_id, $action, $step ) {
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$fields = $this->prepare_fields(
 			$membership_id,
 			$action,
@@ -164,7 +163,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			$current = MS_Model_Pages::MS_PAGE_REGISTER;
 		}
 
-		$url = $ms_pages->get_page_url( $current );
+		$url = MS_Model_Pages::get_page_url( $current );
 
 		if ( $action === MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP ) {
 			$url = add_query_arg(
@@ -233,8 +232,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			$current = MS_Model_Pages::MS_PAGE_REGISTER;
 		}
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$url = $ms_pages->get_page_url( $current );
+		$url = MS_Model_Pages::get_page_url( $current );
 
 		?>
 		<form action="<?php echo esc_url( $url ); ?>" class="ms-membership-form" method="post">

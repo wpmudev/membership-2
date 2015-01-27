@@ -233,9 +233,8 @@ class MS_Controller_Dialog extends MS_Controller {
 		$hashed = $wp_hasher->HashPassword( $key );
 		$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user_login ) );
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$ms_pages->create_missing_pages();
-		$reset_url = $ms_pages->get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		MS_Model_Pages::create_missing_pages();
+		$reset_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		$reset_url = add_query_arg(
 			array(
 				'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,

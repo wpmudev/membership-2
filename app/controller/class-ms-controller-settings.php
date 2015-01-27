@@ -214,16 +214,15 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function auto_setup_settings( $membership ) {
 		$settings = $this->get_model();
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
 		// Create special pages.
-		$ms_pages->create_missing_pages();
+		MS_Model_Pages::create_missing_pages();
 
-		$pg_prot_cont = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
-		$pg_acco = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
-		$pg_regi = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REGISTER );
-		$pg_regi_comp = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE );
-		$pg_memb = $ms_pages->get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+		$pg_prot_cont = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
+		$pg_acco = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		$pg_regi = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REGISTER );
+		$pg_regi_comp = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE );
+		$pg_memb = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 
 		// Publish special pages.
 		// Tipp: Only pages must be published that are added to the menu.
@@ -234,10 +233,10 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 
 		// Create new WordPress menu-items.
-		$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		MS_Model_Pages::create_menu( MS_Model_Pages::MS_PAGE_ACCOUNT );
 		if ( ! $membership->private ) {
-			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
-			$ms_pages->create_menu( MS_Model_Pages::MS_PAGE_REGISTER );
+			MS_Model_Pages::create_menu( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+			MS_Model_Pages::create_menu( MS_Model_Pages::MS_PAGE_REGISTER );
 		}
 
 		// Enable Protected Content.

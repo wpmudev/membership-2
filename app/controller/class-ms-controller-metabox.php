@@ -197,9 +197,8 @@ class MS_Controller_Metabox extends MS_Controller {
 	 */
 	public function membership_metabox( $post ) {
 		$data = array();
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 
-		if ( $ms_pages->is_membership_page() ) {
+		if ( MS_Model_Pages::is_membership_page() ) {
 			$data['special_page'] = true;
 		} else {
 			$memberships = MS_Model_Membership::get_memberships();
@@ -357,12 +356,11 @@ class MS_Controller_Metabox extends MS_Controller {
 		if ( '1' != $_GET['ms-default'] ) { return $content; }
 		if ( 'page' != $post_type ) { return $content; }
 
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-		$ms_page = $ms_pages->get_page_by( 'id', $post->ID );
+		$ms_page = MS_Model_Pages::get_page_by( 'id', $post->ID );
 
 		if ( empty( $ms_page ) ) { return $content; }
 
-		$type = $ms_pages->get_page_type( $ms_page );
+		$type = MS_Model_Pages::get_page_type( $ms_page );
 
 		if ( ! $Message ) {
 			$Message = true;
@@ -376,7 +374,7 @@ class MS_Controller_Metabox extends MS_Controller {
 			);
 		}
 
-		return $ms_pages->get_default_content( $type );
+		return MS_Model_Pages::get_default_content( $type );
 	}
 
 	/**

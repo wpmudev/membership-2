@@ -218,8 +218,7 @@ class MS_Model_Plugin extends MS_Model {
 						$Info['reason'][] = __( 'Allow: Special page is always available', MS_TEXT_DOMAIN );
 					}
 				} else {
-					$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
-					$ms_page = $ms_pages->current_page();
+					$ms_page = MS_Model_Pages::current_page();
 					if ( $ms_page ) {
 						$Info['has_access'] = true;
 
@@ -328,20 +327,18 @@ class MS_Model_Plugin extends MS_Model {
 			return;
 		}
 
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$ms_pages = MS_Factory::load( 'MS_Model_Pages' );
 		$access = $this->get_access_info();
 
 		if ( ! $access['has_access'] ) {
-			$ms_pages->create_missing_pages();
-			$no_access_page_url = $ms_pages->get_page_url(
+			MS_Model_Pages::create_missing_pages();
+			$no_access_page_url = MS_Model_Pages::get_page_url(
 				MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT,
 				false
 			);
 			$current_page_url = MS_Helper_Utility::get_current_url();
 
 			// Don't (re-)redirect the protection page.
-			if ( ! $ms_pages->is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
+			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
 				$no_access_page_url = add_query_arg(
 					array( 'redirect_to' => $current_page_url ),
 					$no_access_page_url

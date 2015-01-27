@@ -106,14 +106,13 @@ class MS_Controller_Pages extends MS_Controller {
 			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			$ms_pages = $this->get_model();
 			$item = $_POST['item'];
 			$res = false;
 
 			if ( WDev()->is_true( $_POST['value'] ) ) {
-				$res = $ms_pages->create_menu( $item );
+				$res = MS_Model_Pages::create_menu( $item );
 			} else {
-				$res = $ms_pages->drop_menu( $item );
+				$res = MS_Model_Pages::drop_menu( $item );
 			}
 
 			if ( $res ) {
