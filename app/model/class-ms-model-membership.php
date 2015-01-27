@@ -1092,7 +1092,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return int The members count.
 	 */
 	public function get_members_count() {
-		$count = MS_Model_Relationship::get_membership_relationship_count(
+		$count = MS_Model_Relationship::get_subscription_count(
 			array( 'membership_id' => $this->id )
 		);
 
@@ -1121,7 +1121,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		if ( ! empty( $this->id ) ) {
 			if ( $this->get_members_count() > 0 ) {
-				$ms_relationships = MS_Model_Relationship::get_membership_relationships(
+				$ms_relationships = MS_Model_Relationship::get_subscriptions(
 					array( 'membership_id' => $this->id )
 				);
 
@@ -1434,7 +1434,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		if ( empty( $this->payment_type ) ) { return true; }
 
 		// Allow if no members signed up yet.
-		$members = MS_Model_Relationship::get_membership_relationship_count(
+		$members = MS_Model_Relationship::get_subscription_count(
 			array( 'membership_id' => $this->id )
 		);
 		if ( empty( $members ) ) { return true; }

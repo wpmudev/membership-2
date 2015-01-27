@@ -321,7 +321,7 @@ class MS_Gateway extends MS_Model_Option {
 						&& $ms_relationship->move_from_id
 						&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
 					) {
-						$move_from = MS_Model_Relationship::get_membership_relationship(
+						$move_from = MS_Model_Relationship::get_subscription(
 							$ms_relationship->user_id,
 							$ms_relationship->move_from_id
 						);

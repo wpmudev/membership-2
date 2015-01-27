@@ -279,7 +279,7 @@ class MS_Model_Import_Export extends MS_Model {
 		);
 
 		$obj->subscriptions = array();
-		foreach ( $src->ms_relationships as $membership_id => $registration ) {
+		foreach ( $src->subscriptions as $membership_id => $registration ) {
 			$obj->subscriptions[] = $this->export_relationship( $registration );
 		}
 

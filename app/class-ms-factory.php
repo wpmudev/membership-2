@@ -357,7 +357,7 @@ class MS_Factory {
 				self::populate_model( $model, $member_details, 'ms_' );
 
 				// Load membership_relationships
-				$model->ms_relationships = MS_Model_Relationship::get_membership_relationships(
+				$model->subscriptions = MS_Model_Relationship::get_subscriptions(
 					array( 'user_id' => $model->id )
 				);
 			}

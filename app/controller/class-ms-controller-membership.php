@@ -494,7 +494,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 
 		$data['members'] = array();
-		$ms_relationships = MS_Model_Relationship::get_membership_relationships(
+		$ms_relationships = MS_Model_Relationship::get_subscriptions(
 			array( 'membership_id' => $membership->id )
 		);
 

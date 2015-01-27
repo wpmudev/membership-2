@@ -631,7 +631,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		);
 
 		$member = $new_relationship->get_member();
-		foreach ( $member->ms_relationships as $ms_relationship ) {
+		foreach ( $member->subscriptions as $ms_relationship ) {
 			if ( $ms_relationship->id === $new_relationship->id ) { continue; }
 			if ( in_array( $ms_relationship->status, $cancel_these ) ) {
 				$ms_relationship->cancel_membership();

@@ -238,7 +238,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	private static function _create_ms_relationship( $membership_id, $user_id, $gateway_id, $move_from_id ) {
 		// Try to reuse existing db record to keep history.
-		$ms_relationship = self::get_membership_relationship( $user_id, $membership_id );
+		$ms_relationship = self::get_subscription( $user_id, $membership_id );
 
 		// Not found, create a new one.
 		if ( empty( $ms_relationship ) ) {
@@ -412,12 +412,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Model_Relationship[] The array of membership relationships.
 	 */
-	public static function get_membership_relationships( $args = null ) {
+	public static function get_subscriptions( $args = null ) {
 		$args = self::get_query_args( $args );
 
 		$query = new WP_Query( $args );
 		$posts = $query->get_posts();
-		$ms_relationships = array();
+		$subscriptions = array();
 
 		if ( ! empty( $posts ) ) {
 			foreach ( $posts as $post_id ) {
@@ -427,16 +427,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				);
 
 				if ( ! empty( $args['author'] ) ) {
-					$ms_relationships[ $ms_relationship->membership_id ] = $ms_relationship;
+					$subscriptions[ $ms_relationship->membership_id ] = $ms_relationship;
 				} else {
-					$ms_relationships[ $post_id ] = $ms_relationship;
+					$subscriptions[ $post_id ] = $ms_relationship;
 				}
 			}
 		}
 
 		return apply_filters(
-			'ms_model_membership_relationship_get_membership_relationships',
-			$ms_relationships,
+			'ms_model_membership_relationship_get_subscriptions',
+			$subscriptions,
 			$args
 		);
 	}
@@ -450,16 +450,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return int The membership relationship count.
 	 */
-	public static function get_membership_relationship_count( $args = null ) {
+	public static function get_subscription_count( $args = null ) {
 		$args = apply_filters(
-			'ms_model_membership_relationship_get_membership_relationship_count_args',
+			'ms_model_membership_relationship_get_subscription_count_args',
 			self::get_query_args( $args )
 		);
 		$query = new WP_Query( $args );
 		$count = $query->found_posts;
 
 		return apply_filters(
-			'ms_model_membership_relationship_get_membership_relationship_count',
+			'ms_model_membership_relationship_get_subscription_count',
 			$count,
 			$args
 		);
@@ -473,9 +473,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @param int $user_id The user id
 	 * @return int $membership_id The membership id.
 	 */
-	public static function get_membership_relationship( $user_id, $membership_id ) {
+	public static function get_subscription( $user_id, $membership_id ) {
 		$args = apply_filters(
-			'ms_model_membership_relationship_get_membership_relationship_args',
+			'ms_model_membership_relationship_get_subscription_args',
 			self::get_query_args(
 				array(
 					'user_id' => $user_id,
@@ -498,7 +498,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		return apply_filters(
-			'ms_model_membership_relationship_get_membership_relationship',
+			'ms_model_membership_relationship_get_subscription',
 			$ms_relationship,
 			$args
 		);
@@ -1643,7 +1643,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$member->add_membership( $membership->on_end_membership_id );
 						MS_Model_Event::save_event(
 							MS_Model_Event::TYPE_MS_MOVED,
-							$member->ms_relationships[ $membership->on_end_membership_id ]
+							$member->subscriptions[ $membership->on_end_membership_id ]
 						);
 					}
 				}

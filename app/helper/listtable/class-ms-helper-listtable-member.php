@@ -221,11 +221,11 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		}
 
 		if ( ! empty( $filter ) ) {
-			$ms_relationships = MS_Model_Relationship::get_membership_relationships(
+			$subscriptions = MS_Model_Relationship::get_subscriptions(
 				$filter
 			);
 
-			foreach ( $ms_relationships as $ms_relationship ) {
+			foreach ( $subscriptions as $ms_relationship ) {
 				$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
 			}
 
@@ -353,68 +353,6 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 				MS_Helper_Html::html_element( $visitor, true ),
 				MS_Helper_Html::html_element( $list, true )
 			);
-
-			/*
-			$html = array();
-
-			if ( ! empty( $_REQUEST['status'] ) ) {
-				$memberships = MS_Model_Relationship::get_membership_relationships(
-					array(
-						'user_id' => $member->id,
-						'status' => $_REQUEST['status'],
-					)
-				);
-			} else {
-				$memberships = $member->ms_relationships;
-			}
-
-			foreach ( $memberships as $id => $membership_relationship ) {
-				$membership = $membership_relationship->get_membership();
-				$html[] = sprintf(
-					'%s (%s)',
-					esc_html( $membership->name ),
-					esc_html( $membership_relationship->status )
-				);
-			}
-			$html = join( '<br /> ', $html );
-
-			$actions = array();
-			$actions['add'] = sprintf(
-				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-				esc_attr( $_REQUEST['page'] ),
-				'add',
-				esc_attr( $member->id ),
-				__( 'Add', MS_TEXT_DOMAIN )
-			);
-			$actions['drop'] = sprintf(
-				'<a href="?page=%s&action=%s&member_id=%s">%s</a>',
-				esc_attr( $_REQUEST['page'] ),
-				'drop',
-				esc_attr( $member->id ),
-				__( 'Drop', MS_TEXT_DOMAIN )
-			);
-
-			$multiple_membership = apply_filters(
-				'membership_addon_multiple_membership',
-				MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
-			);
-
-			if ( count( $member->ms_relationships ) > 0 ) {
-				if ( ! $multiple_membership ) {
-					unset( $actions['add'] );
-				}
-			} else {
-				unset( $actions['move'] );
-				unset( $actions['cancel'] );
-				unset( $actions['drop'] );
-			}
-
-			$html = sprintf(
-				'%1$s %2$s',
-				$html,
-				$this->row_actions( $actions )
-			);
-			*/
 		}
 
 		return apply_filters(

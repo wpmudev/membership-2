@@ -165,7 +165,7 @@ class MS_Model_Import extends MS_Model {
 		// Clear current data, if the user wants it.
 		if ( $args['clear_all'] ) {
 			// Delete all Relationships.
-			$relationships = MS_Model_Relationship::get_membership_relationships(
+			$relationships = MS_Model_Relationship::get_subscriptions(
 				array( 'status' => 'all' )
 			);
 			foreach ( $relationships as $relatioship ) {

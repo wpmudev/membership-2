@@ -697,7 +697,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE )
 			&& $ms_relationship->move_from_id
 		) {
-			$move_from = MS_Model_Relationship::get_membership_relationship(
+			$move_from = MS_Model_Relationship::get_subscription(
 				$ms_relationship->user_id,
 				$ms_relationship->move_from_id
 			);

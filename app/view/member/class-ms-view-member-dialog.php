@@ -147,7 +147,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 					</thead>
 					<tbody>
 					<?php
-					foreach ( $member->ms_relationships as $subscription ) :
+					foreach ( $member->subscriptions as $subscription ) :
 						$membership = $subscription->get_membership();
 						?>
 						<tr>

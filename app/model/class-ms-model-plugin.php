@@ -137,7 +137,7 @@ class MS_Model_Plugin extends MS_Model {
 
 		// Deactivated status invalidates all memberships
 		if ( ! $this->member->is_member || ! $this->member->active ) {
-			$this->member->ms_relationships = array();
+			$this->member->subscriptions = array();
 		}
 
 		// Visitor: assign a Visitor Membership = Protected Content
@@ -224,7 +224,7 @@ class MS_Model_Plugin extends MS_Model {
 				}
 
 				// Build a list of memberships the user belongs to and check permission.
-				foreach ( $this->member->ms_relationships as $ms_relationship ) {
+				foreach ( $this->member->subscriptions as $ms_relationship ) {
 					// Verify status of the membership.
 					// Only active, trial or canceled (until it expires) status memberships.
 					if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
@@ -372,7 +372,7 @@ class MS_Model_Plugin extends MS_Model {
 			$rule = $base->get_rule( $rule_type );
 		}
 
-		foreach ( $this->member->ms_relationships as $ms_relationship ) {
+		foreach ( $this->member->subscriptions as $ms_relationship ) {
 			foreach ( $rule_types as $rule_type ) {
 				$rule = $ms_relationship->get_membership()->get_rule( $rule_type );
 			}
@@ -403,7 +403,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		// Search permissions through all memberships joined.
-		foreach ( $this->member->ms_relationships as $ms_relationship ) {
+		foreach ( $this->member->subscriptions as $ms_relationship ) {
 			// Verify status of the membership.
 			// Only active, trial or canceled (until it expires) status memberships.
 			if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
@@ -436,7 +436,7 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		// Search permissions through all memberships joined.
-		foreach ( $this->member->ms_relationships as $ms_relationship ) {
+		foreach ( $this->member->subscriptions as $ms_relationship ) {
 			// Verify status of the membership.
 			// Only active, trial or canceled (until it expires) status memberships.
 			if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
@@ -542,12 +542,12 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		$args = apply_filters(
-			'ms_model_plugin_check_membership_status_get_membership_relationship_args',
+			'ms_model_plugin_check_membership_status_get_subscription_args',
 			array( 'status' => 'valid' )
 		);
-		$ms_relationships = MS_Model_Relationship::get_membership_relationships( $args );
+		$subscriptions = MS_Model_Relationship::get_subscriptions( $args );
 
-		foreach ( $ms_relationships as $ms_relationship ) {
+		foreach ( $subscriptions as $ms_relationship ) {
 			$ms_relationship->check_membership_status();
 		}
 

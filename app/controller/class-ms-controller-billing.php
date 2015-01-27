@@ -172,7 +172,7 @@ class MS_Controller_Billing extends MS_Controller {
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
 
-			$ms_relationship = MS_Model_Relationship::get_membership_relationship( $member->id, $membership_id );
+			$ms_relationship = MS_Model_Relationship::get_subscription( $member->id, $membership_id );
 			if ( empty( $ms_relationship ) ){
 				$ms_relationship = MS_Model_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway_id );
 			}

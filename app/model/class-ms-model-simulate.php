@@ -114,7 +114,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 			);
 
 			add_filter(
-				'ms_model_membership_relationship_get_membership_relationships',
+				'ms_model_membership_relationship_get_subscriptions',
 				array( $this, 'add_simulation_membership' ),
 				10, 2
 			);

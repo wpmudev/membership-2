@@ -267,7 +267,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( $member->is_valid() ) {
 			// Get member's memberships, including pending relationships.
-			$data['ms_relationships'] = MS_Model_Relationship::get_membership_relationships(
+			$data['ms_relationships'] = MS_Model_Relationship::get_subscriptions(
 				array(
 					'user_id' => $data['member']->id,
 					'status' => 'valid',
@@ -291,7 +291,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Model_Relationship::STATUS_EXPIRED,
 			);
 
-			foreach ( $data['member']->ms_relationships as $ms_relationship ) {
+			foreach ( $data['member']->subscriptions as $ms_relationship ) {
 				if ( $ms_relationship->is_system() ) { continue; }
 
 				if ( in_array( $ms_relationship->status, $valid_status ) ) {
@@ -667,8 +667,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		$data['member'] = MS_Model_Member::get_current_member();
-		if ( is_array( $data['member']->ms_relationships ) ) {
-			foreach ( $data['member']->ms_relationships as $ms_relationship ) {
+		if ( is_array( $data['member']->subscriptions ) ) {
+			foreach ( $data['member']->subscriptions as $ms_relationship ) {
 				$data['membership'][] = $ms_relationship->get_membership();
 				$gateway = $ms_relationship->get_gateway();
 				$data['gateway'][ $ms_relationship->id ] = $gateway;
