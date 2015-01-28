@@ -70,11 +70,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id = null ) {
-		if ( is_admin() ) {
-			$allow = null;
-		} else {
-			$allow = false;
-		}
+		$allow = null;
 
 		return apply_filters(
 			'ms_rule_adminside_model_has_access',
