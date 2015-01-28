@@ -35,6 +35,15 @@ class MS_Addon_Bbpress extends MS_Addon {
 	const CPT_BB_FORUM = 'forum';
 	const CPT_BB_TOPIC = 'topic';
 	const CPT_BB_REPLY = 'reply';
+	/**
+	 * Checks if the current Add-on is enabled
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( self::ID );
+	}
 
 	/**
 	 * Initializes the Add-on. Always executed.
@@ -60,6 +69,8 @@ class MS_Addon_Bbpress extends MS_Addon {
 		$this->add_filter( 'ms_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
 		$this->add_filter( 'ms_controller_membership_tabs', 'bbpress_rule_tabs' );
 		$this->add_filter( 'ms_view_protectedcontent_define-' . self::RULE_ID, 'bbpress_manage_render_callback', 10, 3 );
+		if ( self::is_active() ) {
+		}
 	}
 
 	/**

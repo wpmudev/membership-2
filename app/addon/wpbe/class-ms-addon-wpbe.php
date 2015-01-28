@@ -37,24 +37,31 @@ class MS_Addon_Wpbe extends MS_Addon {
 	protected $text_message = '';
 
 	/**
+	 * Checks if the current Add-on is enabled
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( self::ID );
+	}
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
 	 */
 	public function init() {
-		global $wp_better_emails;
+		if ( self::is_active() ) {
+			global $wp_better_emails;
 
-		if ( $wp_better_emails ) {
-			$this->add_filter( 'ms_model_communication_send_message_html_message', 'html_message' );
+			if ( $wp_better_emails ) {
+				$this->add_filter(
+					'ms_model_communication_send_message_html_message',
+					'html_message'
+				);
+			}
 		}
-	}
-
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	public function activate() {
 	}
 
 	/**

@@ -67,14 +67,7 @@ abstract class MS_Addon extends MS_Controller {
 	 * @since  1.1.0
 	 */
 	public function init_addon() {
-		$class = get_class( $this );
-		$id = constant( $class . '::ID' );
-
 		$this->init();
-
-		if ( MS_Model_Addon::is_enabled( $id ) ) {
-			$this->activate();
-		}
 	}
 
 	/**
@@ -83,13 +76,6 @@ abstract class MS_Addon extends MS_Controller {
 	 * @since  1.1.0
 	 */
 	abstract public function init();
-
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	abstract public function activate();
 
 	/**
 	 * Registers the Add-On

@@ -31,21 +31,25 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	const ID = 'buddypress';
 
 	/**
+	 * Checks if the current Add-on is enabled
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( self::ID );
+	}
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
 	 */
 	public function init() {
-	}
-
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	public function activate() {
-		$this->add_filter( 'ms_controller_membership_tabs', 'rule_tabs' );
-		MS_Factory::load( 'MS_Addon_BuddyPress_Rule' );
+		if ( self::is_active() ) {
+			$this->add_filter( 'ms_controller_membership_tabs', 'rule_tabs' );
+			MS_Factory::load( 'MS_Addon_BuddyPress_Rule' );
+		}
 	}
 
 	/**

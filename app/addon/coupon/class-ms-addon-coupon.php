@@ -40,6 +40,16 @@ class MS_Addon_Coupon extends MS_Addon {
 	const ID = 'coupon';
 
 	/**
+	 * Checks if the current Add-on is enabled
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( self::ID );
+	}
+
+	/**
 	 * Saves a reference to the currently processed coupon in the registration
 	 * form.
 	 *
@@ -55,84 +65,77 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @since  1.1.0
 	 */
 	public function init() {
+		if ( self::is_active() ) {
+			$hook = 'protect-content_page_protected-content-coupons';
+			$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
 
-	}
+			$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+			$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	public function activate() {
-		$hook = 'protect-content_page_protected-content-coupons';
-		$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
+			// Add Coupon menu item to Protected Content menu (Admin)
+			$this->add_filter(
+				'ms_plugin_menu_pages',
+				'menu_item',
+				10, 3
+			);
 
-		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+			// Tell Protected Content about the Coupon Post Type
+			$this->add_filter(
+				'ms_plugin_register_custom_post_types',
+				'register_ms_posttypes'
+			);
 
-		// Add Coupon menu item to Protected Content menu (Admin)
-		$this->add_filter(
-			'ms_plugin_menu_pages',
-			'menu_item',
-			10, 3
-		);
+			$this->add_filter(
+				'ms_rule_cptgroup_model_get_ms_post_types',
+				'update_ms_posttypes'
+			);
 
-		// Tell Protected Content about the Coupon Post Type
-		$this->add_filter(
-			'ms_plugin_register_custom_post_types',
-			'register_ms_posttypes'
-		);
+			// Show Coupon columns in the billing list (Admin)
+			$this->add_filter(
+				'ms_helper_listtable_billing_get_columns',
+				'billing_columns',
+				10, 2
+			);
 
-		$this->add_filter(
-			'ms_rule_cptgroup_model_get_ms_post_types',
-			'update_ms_posttypes'
-		);
+			$this->add_filter(
+				'ms_helper_listtable_billing-column_amount',
+				'billing_column_value',
+				10, 3
+			);
 
-		// Show Coupon columns in the billing list (Admin)
-		$this->add_filter(
-			'ms_helper_listtable_billing_get_columns',
-			'billing_columns',
-			10, 2
-		);
+			$this->add_filter(
+				'ms_helper_listtable_billing-column_discount',
+				'billing_column_value',
+				10, 3
+			);
 
-		$this->add_filter(
-			'ms_helper_listtable_billing-column_amount',
-			'billing_column_value',
-			10, 3
-		);
+			// Show Coupon form in the payment-form (Frontend)
+			$this->add_action(
+				'ms_view_frontend_payment_after',
+				'payment_coupon_form'
+			);
 
-		$this->add_filter(
-			'ms_helper_listtable_billing-column_discount',
-			'billing_column_value',
-			10, 3
-		);
+			// Update Coupon-Counter when invoice is paid
+			$this->add_action(
+				'ms_gateway_process_transaction-paid',
+				'invoice_paid',
+				10, 2
+			);
 
-		// Show Coupon form in the payment-form (Frontend)
-		$this->add_action(
-			'ms_view_frontend_payment_after',
-			'payment_coupon_form'
-		);
+			// Apply Coupon-Discount to invoice
+			$this->add_filter(
+				'ms_model_invoice_create_before_save',
+				'apply_discount',
+				10, 2
+			);
 
-		// Update Coupon-Counter when invoice is paid
-		$this->add_action(
-			'ms_gateway_process_transaction-paid',
-			'invoice_paid',
-			10, 2
-		);
-
-		// Apply Coupon-Discount to invoice
-		$this->add_filter(
-			'ms_model_invoice_create_before_save',
-			'apply_discount',
-			10, 2
-		);
-
-		// Add/Remove coupon discount in the payment table frontend.
-		$this->add_filter(
-			'ms_view_frontend_payment_data',
-			'process_payment_table',
-			10, 4
-		);
+			// Add/Remove coupon discount in the payment table frontend.
+			$this->add_filter(
+				'ms_view_frontend_payment_data',
+				'process_payment_table',
+				10, 4
+			);
+		}
 	}
 
 	/**

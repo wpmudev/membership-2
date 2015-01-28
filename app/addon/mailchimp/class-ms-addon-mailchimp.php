@@ -39,7 +39,22 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	const ID = 'mailchimp';
 
-	static protected $mailchimp_api = '';
+	/**
+	 * Mailchimp API object
+	 *
+	 * @var Mailchimp
+	 */
+	static protected $mailchimp_api = null;
+
+	/**
+	 * Checks if the current Add-on is enabled
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( self::ID );
+	}
 
 	/**
 	 * Initializes the Add-on. Always executed.
@@ -47,50 +62,43 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @since  1.1.0
 	 */
 	public function init() {
+		if ( self::is_active() ) {
+			$this->add_filter(
+				'ms_controller_settings_get_tabs',
+				'settings_tabs',
+				10, 2
+			);
+			$this->add_action(
+				'ms_controller_settings_enqueue_scripts_' . self::ID,
+				'enqueue_scripts'
+			);
+			$this->add_filter(
+				'ms_view_settings_edit_render_callback',
+				'manage_render_callback',
+				10, 3
+			);
 
-	}
-
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	public function activate() {
-		$this->add_filter(
-			'ms_controller_settings_get_tabs',
-			'settings_tabs',
-			10, 2
-		);
-		$this->add_action(
-			'ms_controller_settings_enqueue_scripts_' . self::ID,
-			'enqueue_scripts'
-		);
-		$this->add_filter(
-			'ms_view_settings_edit_render_callback',
-			'manage_render_callback',
-			10, 3
-		);
-
-		$this->add_action(
-			'ms_model_event_'. MS_Model_Event::TYPE_MS_REGISTERED,
-			'subscribe_registered',
-			10, 2
-		);
-		$this->add_action(
-			'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP,
-			'subscribe_members',
-			10, 2
-		);
-		$this->add_action(
-			'ms_model_event_'. MS_Model_Event::TYPE_MS_DEACTIVATED,
-			'subscribe_deactivated',
-			10, 2
-		);
-		$this->add_action(
-			'ms_model_event_'. MS_Model_Event::TYPE_UPDATED_INFO,
-			'update_info',
-			10, 2
-		);
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_REGISTERED,
+				'subscribe_registered',
+				10, 2
+			);
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP,
+				'subscribe_members',
+				10, 2
+			);
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_DEACTIVATED,
+				'subscribe_deactivated',
+				10, 2
+			);
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_UPDATED_INFO,
+				'update_info',
+				10, 2
+			);
+		}
 	}
 
 	/**
@@ -279,43 +287,37 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @since 1.0.0
 	 *
 	 * @return Mailchimp Object
-	 */
+	 Mailchimp
 	public static function load_mailchimp_api() {
 		if ( empty( self::$mailchimp_api ) ) {
+			$options = apply_filters(
+				'ms_addon_mailchimp_load_mailchimp_api_options',
+				array(
+					'timeout' => false,
+					'ssl_verifypeer' => false,
+					'ssl_verifyhost' => false,
+					'ssl_cainfo' => false,
+					'debug' => false,
+				)
+			);
 
-			if ( empty( $mailchimp_sync->api ) ) {
-
-				$options = apply_filters(
-					'ms_addon_mailchimp_load_mailchimp_api_options',
-					array(
-						'timeout' => false,
-						'ssl_verifypeer' => false,
-						'ssl_verifyhost' => false,
-						'ssl_cainfo' => false,
-						'debug' => false,
-					)
-				);
-
-				if ( ! class_exists( 'Mailchimp' ) ) {
-					require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
-				}
-
-				$api = new Mailchimp(
-					self::$settings->get_custom_setting( 'mailchimp', 'api_key' ),
-					$options
-				);
-
-				// Pinging the server
-				$ping = $api->helper->ping();
-
-				if ( is_wp_error( $ping ) ) {
-					throw new Exception( $ping );
-				}
-
-				self::$mailchimp_api = $api;
-			} else {
-				self::$mailchimp_api = $mailchimp_sync->api;
+			if ( ! class_exists( 'Mailchimp' ) ) {
+				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
+
+			$api = new Mailchimp(
+				self::$settings->get_custom_setting( 'mailchimp', 'api_key' ),
+				$options
+			);
+
+			// Pinging the server
+			$ping = $api->helper->ping();
+
+			if ( is_wp_error( $ping ) ) {
+				throw new Exception( $ping );
+			}
+
+			self::$mailchimp_api = $api;
 		}
 
 		return self::$mailchimp_api;

@@ -31,20 +31,22 @@ class MS_Addon_Automessage extends MS_Addon {
 	const ID = 'addon_automessage';
 
 	/**
+	 * Checks if the current Add-on is enabled
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( self::ID );
+	}
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
 	 */
 	public function init() {
 		$this->add_filter( 'automessage_custom_user_hooks', 'automessage_custom_user_hooks' );
-	}
-
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	public function activate() {
 	}
 
 	/**

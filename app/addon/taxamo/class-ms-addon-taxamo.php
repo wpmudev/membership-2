@@ -70,61 +70,64 @@ class MS_Addon_Taxamo extends MS_Addon {
 	static protected $api = null;
 
 	/**
+	 * Checks if the current Add-on is enabled
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function is_active() {
+		return MS_Model_Addon::is_enabled( self::ID );
+	}
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.1.0
 	 */
 	public function init() {
+		if ( self::is_active() ) {
+			// Add new settings tab
+			$this->add_filter(
+				'ms_controller_settings_get_tabs',
+				'settings_tabs',
+				10, 2
+			);
 
-	}
+			$this->add_filter(
+				'ms_view_settings_edit_render_callback',
+				'manage_render_callback',
+				10, 3
+			);
 
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	public function activate() {
-		// Add new settings tab
-		$this->add_filter(
-			'ms_controller_settings_get_tabs',
-			'settings_tabs',
-			10, 2
-		);
+			// Save settings via ajax
+			$this->add_action(
+				'wp_ajax_' . self::AJAX_SAVE_SETTING,
+				'ajax_save_setting'
+			);
 
-		$this->add_filter(
-			'ms_view_settings_edit_render_callback',
-			'manage_render_callback',
-			10, 3
-		);
+			// Add the taxamo.js integration on the payment pages
+			$this->add_action(
+				'ms_show_prices',
+				'add_taxamo_js'
+			);
 
-		// Save settings via ajax
-		$this->add_action(
-			'wp_ajax_' . self::AJAX_SAVE_SETTING,
-			'ajax_save_setting'
-		);
+			// Replace default payment buttons with Taxamo compatible buttons
+			$this->add_filter(
+				'ms_gateway_form',
+				'payment_form',
+				10, 4
+			);
 
-		// Add the taxamo.js integration on the payment pages
-		$this->add_action(
-			'ms_show_prices',
-			'add_taxamo_js'
-		);
-
-		// Replace default payment buttons with Taxamo compatible buttons
-		$this->add_filter(
-			'ms_gateway_form',
-			'payment_form',
-			10, 4
-		);
-
-		// Confirm payments with Taxamo
-		$this->add_action(
-			'ms_gateway_paypalsingle_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
-			'confirm_payment'
-		);
-		$this->add_action(
-			'ms_gateway_paypalstandard_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
-			'confirm_payment'
-		);
+			// Confirm payments with Taxamo
+			$this->add_action(
+				'ms_gateway_paypalsingle_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
+				'confirm_payment'
+			);
+			$this->add_action(
+				'ms_gateway_paypalstandard_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
+				'confirm_payment'
+			);
+		}
 	}
 
 	/**

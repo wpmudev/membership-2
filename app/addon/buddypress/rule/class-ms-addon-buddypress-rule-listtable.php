@@ -23,7 +23,7 @@
 /**
  * Membership List Table
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
 class MS_Addon_BuddyPress_Rule_ListTable extends MS_Helper_ListTable_Rule {
