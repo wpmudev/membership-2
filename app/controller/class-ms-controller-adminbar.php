@@ -75,7 +75,9 @@ class MS_Controller_Adminbar extends MS_Controller {
 	 */
 	public function init_adminbar() {
 		$this->simulate = MS_Factory::load( 'MS_Model_Simulate' );
-		$this->memberships = MS_Model_Membership::get_memberships();
+		$this->memberships = MS_Model_Membership::get_memberships(
+			array( 'include_base' => 1 )
+		);
 
 		// Hide WP toolbar in front end to not admin users
 		if ( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
@@ -277,13 +279,15 @@ class MS_Controller_Adminbar extends MS_Controller {
 
 		// The ID of the main protected-content.
 		$base_id = MS_Model_Membership::get_base()->id;
+		$items = array();
+		$item_order = array();
 
 		foreach ( $this->memberships as $membership ) {
 			// Create nonce fields
 			$nonce = wp_create_nonce( 'ms_simulate-' . $membership->id );
 
 			if ( $base_id == $membership->id ) {
-				$label = __( 'No membership / Visitor', MS_TEXT_DOMAIN );
+				$label = __( '- No membership / Visitor -', MS_TEXT_DOMAIN );
 			} else {
 				$label = $membership->name;
 				if ( ! $membership->active ) {
@@ -297,6 +301,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 				'nonce' => $nonce,
 				'label' => $label,
 			);
+			$item_order[ $membership->id ] = $label;
 
 			if ( $this->simulate->membership_id == $membership->id ) {
 				$current = $membership;
@@ -320,13 +325,16 @@ class MS_Controller_Adminbar extends MS_Controller {
 			'value'  => '',
 			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
-		sort( $items );
+
+		asort( $item_order );
 
 		ob_start();
 		?>
 		<form id="view-site-as" method="GET">
 			<select id="view-as-selector" class="wpmui-field-input wpmui-field-select ab-select" name="view-as-selector">
-			<?php foreach ( $items as $option ) {
+			<?php
+			foreach ( $item_order as $id => $label ) {
+				$option = $items[ $id ];
 				printf(
 					'<option value="%1$s" nonce="%2$s" %3$s>%4$s</option>',
 					esc_attr( $option['id'] ),
@@ -334,7 +342,8 @@ class MS_Controller_Adminbar extends MS_Controller {
 					selected( $option['selected'], true, false ),
 					esc_html( $option['label'] )
 				);
-			}?>
+			}
+			?>
 			</select>
 			<?php
 			MS_Helper_Html::html_element( $action_field );
