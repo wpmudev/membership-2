@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
+class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 
 	/**
 	 * Rule type.
@@ -38,7 +38,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = MS_Addon_BuddyPress::RULE_ID;
+	protected $rule_type = MS_Addon_BuddyPress_Rule::RULE_ID;
 
 	/**
 	 * Verify access to the current content.
@@ -60,11 +60,10 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
 				switch ( $component ) {
 					// Private messaging direct access.
 					case 'messages':
-						$has_access = false;
-						if ( 'compose' === $bp->current_action
-							&& parent::has_access( MS_Addon_BuddyPress::RULE_ID_PRIVATE_MSG )
-						) {
-							$has_access = true;
+						if ( 'compose' == $bp->current_action ) {
+							$has_access = parent::has_access(
+								MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG
+							);
 						}
 						break;
 
@@ -112,7 +111,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
 	 * @since 1.0.0
 	 */
 	protected function protect_private_messaging() {
-		if ( parent::has_access( MS_Addon_BuddyPress::RULE_ID_PRIVATE_MSG ) ) {
+		if ( parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ) ) {
 			$this->add_filter(
 				'bp_get_send_message_button',
 				'hide_private_message_button'
@@ -152,7 +151,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
 	 *
 	 */
 	protected function protect_friendship_request() {
-		if ( parent::has_access( MS_Addon_BuddyPress::RULE_ID_FRIENDSHIP ) ) {
+		if ( parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ) ) {
 			$this->add_filter(
 				'bp_get_add_friend_button',
 				'hide_add_friend_button'
@@ -220,7 +219,7 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
 	public function protect_create_bp_group( $can_create ) {
 		$can_create = false;
 
-		if ( parent::has_access( MS_Addon_BuddyPress::RULE_ID_GROUP_CREATION ) ) {
+		if ( parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION ) ) {
 			$can_create = true;
 		}
 
@@ -241,34 +240,30 @@ class MS_Addon_Buddypress_Model_Rule extends MS_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$contents = array();
-		$contents[MS_Addon_BuddyPress::RULE_ID_FRIENDSHIP] = (object) array(
-			'id' => MS_Addon_BuddyPress::RULE_ID_FRIENDSHIP,
+
+		$contents[MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP] = (object) array(
+			'id' => MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP,
 			'name' => __( 'Friendship request', MS_TEXT_DOMAIN ),
 			'type' => $this->rule_type,
 			'description' => __( 'Allows the sending of friendship requests to be limited to members.', MS_TEXT_DOMAIN ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress::RULE_ID_FRIENDSHIP ),
+			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ),
 		);
 
-		$contents[MS_Addon_BuddyPress::RULE_ID_GROUP_CREATION] = (object) array(
-			'id' => MS_Addon_BuddyPress::RULE_ID_GROUP_CREATION,
+		$contents[MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION] = (object) array(
+			'id' => MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION,
 			'name' => __( 'Group creation', MS_TEXT_DOMAIN ),
 			'type' => $this->rule_type,
 			'description' => __( 'Allows group creation to be limited to members.', MS_TEXT_DOMAIN ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress::RULE_ID_GROUP_CREATION ),
+			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION ),
 		);
 
-		$contents[MS_Addon_BuddyPress::RULE_ID_PRIVATE_MSG] = (object) array(
-			'id' => MS_Addon_BuddyPress::RULE_ID_PRIVATE_MSG,
+		$contents[MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG] = (object) array(
+			'id' => MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG,
 			'name' => __( 'Private messaging', MS_TEXT_DOMAIN ),
 			'type' => $this->rule_type,
 			'description' => __( 'Allows the sending of private messages to be limited to members.', MS_TEXT_DOMAIN ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress::RULE_ID_PRIVATE_MSG ),
+			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ),
 		);
-
-		// If not visitor membership, just show protected content
-		if ( ! $this->is_base_rule ) {
-			$contents = array_intersect_key( $contents,  $this->rule_value );
-		}
 
 		return apply_filters(
 			'ms_rule_buddypress_get_content',
