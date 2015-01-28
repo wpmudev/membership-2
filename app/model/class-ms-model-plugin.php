@@ -145,7 +145,9 @@ class MS_Model_Plugin extends MS_Model {
 			$this->member->add_membership(
 				MS_Model_Membership::get_base()->id
 			);
+		}
 
+		if ( ! is_user_logged_in() ) {
 			// If a Guest-Membership exists we also assign it to the user.
 			$guest = MS_Model_Membership::get_guest();
 			if ( $guest->is_valid() ) {
