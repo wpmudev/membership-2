@@ -740,141 +740,154 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return array The tabs configuration.
 	 */
 	public function get_protected_content_tabs() {
-		$membership = $this->load_membership();
-		$membership_id = $membership->id;
-		$is_base = $membership->is_base();
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		static $Tabs = null;
 
-		// First create a list including all possible tabs.
-		$tabs = array(
-			MS_Rule_Page::RULE_ID => true,
-			MS_Rule_Category::RULE_ID => true,
-			MS_Rule_Post::RULE_ID => true,
-			MS_Rule_CptItem::RULE_ID => true,
-			MS_Rule_CptGroup::RULE_ID => true,
-			MS_Rule_Content::RULE_ID => true,
-			MS_Rule_MenuItem::RULE_ID => true,
-			MS_Rule_ReplaceMenu::RULE_ID => true,
-			MS_Rule_ReplaceLocation::RULE_ID => true,
-			MS_Rule_Shortcode::RULE_ID => true,
-			MS_Rule_Url::RULE_ID => true,
-			MS_Rule_Special::RULE_ID => true,
-			MS_Rule_Adminside::RULE_ID => true,
-			MS_Rule_MemberCaps::RULE_ID => true,
-			MS_Rule_MemberRoles::RULE_ID => true,
-		);
+		if ( null === $Tabs ) {
+			$membership = $this->load_membership();
+			$membership_id = $membership->id;
+			$is_base = $membership->is_base();
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
 
-		// Now remove items from the list that are not available.
+			// First create a list including all possible tabs.
+			$tabs = array(
+				MS_Rule_Page::RULE_ID => true,
+				MS_Rule_Category::RULE_ID => true,
+				MS_Rule_Post::RULE_ID => true,
+				MS_Rule_CptItem::RULE_ID => true,
+				MS_Rule_CptGroup::RULE_ID => true,
+				MS_Rule_Content::RULE_ID => true,
+				MS_Rule_MenuItem::RULE_ID => true,
+				MS_Rule_ReplaceMenu::RULE_ID => true,
+				MS_Rule_ReplaceLocation::RULE_ID => true,
+				MS_Rule_Shortcode::RULE_ID => true,
+				MS_Rule_Url::RULE_ID => true,
+				MS_Rule_Special::RULE_ID => true,
+				MS_Rule_Adminside::RULE_ID => true,
+				MS_Rule_MemberCaps::RULE_ID => true,
+				MS_Rule_MemberRoles::RULE_ID => true,
+			);
 
-		// Either "Category" or "Posts"
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$tabs[MS_Rule_Category::RULE_ID] = false;
-		} else {
-			$tabs[MS_Rule_Post::RULE_ID] = false;
-		}
+			// Now remove items from the list that are not available.
 
-		// Either "CPT Group" or "CPT Posts"
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			$tabs[MS_Rule_CptGroup::RULE_ID] = false;
-		} else {
-			$tabs[MS_Rule_CptItem::RULE_ID] = false;
-		}
-
-		// Either "Menu Item" or "Menus" or "Menu Location"
-		switch ( $settings->menu_protection ) {
-			case 'menu':
-				$tabs[MS_Rule_MenuItem::RULE_ID] = false;
-				$tabs[MS_Rule_ReplaceLocation::RULE_ID] = false;
-				break;
-
-			case 'location':
-				$tabs[MS_Rule_MenuItem::RULE_ID] = false;
-				$tabs[MS_Rule_ReplaceMenu::RULE_ID] = false;
-				break;
-
-			case 'item':
-			default:
-				$tabs[MS_Rule_ReplaceMenu::RULE_ID] = false;
-				$tabs[MS_Rule_ReplaceLocation::RULE_ID] = false;
-				break;
-		}
-
-		// Maybe "Special Pages".
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
-			$tabs[MS_Rule_Special::RULE_ID] = false;
-		}
-
-		// Maybe "URLs"
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
-			$tabs[MS_Rule_Url::RULE_ID] = false;
-		}
-
-		// Maybe "Shortcodes"
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
-			$tabs[MS_Rule_Shortcode::RULE_ID] = false;
-		}
-
-		// Maybe "Admin-Side"
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADMINSIDE ) ) {
-			$tabs[MS_Rule_Adminside::RULE_ID] = false;
-		}
-
-		// Maybe "Membercaps"
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
-				$tabs[MS_Rule_MemberRoles::RULE_ID] = false;
+			// Either "Category" or "Posts"
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+				$tabs[MS_Rule_Category::RULE_ID] = false;
 			} else {
+				$tabs[MS_Rule_Post::RULE_ID] = false;
+			}
+
+			// Either "CPT Group" or "CPT Posts"
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+				$tabs[MS_Rule_CptGroup::RULE_ID] = false;
+			} else {
+				$tabs[MS_Rule_CptItem::RULE_ID] = false;
+			}
+
+			// Either "Menu Item" or "Menus" or "Menu Location"
+			switch ( $settings->menu_protection ) {
+				case 'menu':
+					$tabs[MS_Rule_MenuItem::RULE_ID] = false;
+					$tabs[MS_Rule_ReplaceLocation::RULE_ID] = false;
+					break;
+
+				case 'location':
+					$tabs[MS_Rule_MenuItem::RULE_ID] = false;
+					$tabs[MS_Rule_ReplaceMenu::RULE_ID] = false;
+					break;
+
+				case 'item':
+				default:
+					$tabs[MS_Rule_ReplaceMenu::RULE_ID] = false;
+					$tabs[MS_Rule_ReplaceLocation::RULE_ID] = false;
+					break;
+			}
+
+			// Maybe "Special Pages".
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
+				$tabs[MS_Rule_Special::RULE_ID] = false;
+			}
+
+			// Maybe "URLs"
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_URL_GROUPS ) ) {
+				$tabs[MS_Rule_Url::RULE_ID] = false;
+			}
+
+			// Maybe "Shortcodes"
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
+				$tabs[MS_Rule_Shortcode::RULE_ID] = false;
+			}
+
+			// Maybe "Admin-Side"
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADMINSIDE ) ) {
+				$tabs[MS_Rule_Adminside::RULE_ID] = false;
+			}
+
+			// Maybe "Membercaps"
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS ) ) {
+				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEMBERCAPS_ADV ) ) {
+					$tabs[MS_Rule_MemberRoles::RULE_ID] = false;
+				} else {
+					$tabs[MS_Rule_MemberCaps::RULE_ID] = false;
+				}
+			} else {
+				$tabs[MS_Rule_MemberRoles::RULE_ID] = false;
 				$tabs[MS_Rule_MemberCaps::RULE_ID] = false;
 			}
-		} else {
-			$tabs[MS_Rule_MemberRoles::RULE_ID] = false;
-			$tabs[MS_Rule_MemberCaps::RULE_ID] = false;
-		}
 
-		WDev()->load_fields( $_GET, 'page' );
-		$tabs = apply_filters( 'ms_controller_membership_tabs', $tabs, $membership_id );
-		$url = admin_url( 'admin.php' );
-		$page = sanitize_html_class( $_GET['page'], 'protected-content-memberships' );
-		$rule_titles = MS_Model_Rule::get_rule_type_titles();
+			WDev()->load_fields( $_GET, 'page' );
 
-		$result = array();
-		foreach ( $tabs as $rule_type => $state ) {
-			if ( ! $state ) { continue; }
-
-			$url = admin_url(
-				sprintf(
-					'admin.php?page=%s&tab=%s',
-					$page,
-					$rule_type
-				)
+			// Allow Add-ons to add or remove rule tabs
+			$tabs = apply_filters(
+				'ms_controller_membership_tabs',
+				$tabs,
+				$membership_id
 			);
 
-			// Try to keep the selected Membership and Status filter.
-			if ( ! empty( $_REQUEST['membership_id'] ) ) {
-				$url = add_query_arg(
-					array( 'membership_id' => $_REQUEST['membership_id'] ),
-					$url
+			$url = admin_url( 'admin.php' );
+			$page = sanitize_html_class( $_GET['page'], 'protected-content-memberships' );
+			$rule_titles = MS_Model_Rule::get_rule_type_titles();
+
+			$result = array();
+			foreach ( $tabs as $rule_type => $state ) {
+				if ( ! $state ) { continue; }
+
+				$url = admin_url(
+					sprintf(
+						'admin.php?page=%s&tab=%s',
+						$page,
+						$rule_type
+					)
 				);
-			}
-			if ( ! empty( $_REQUEST['status'] ) ) {
-				$url = add_query_arg(
-					array( 'status' => $_REQUEST['status'] ),
-					$url
+
+				// Try to keep the selected Membership and Status filter.
+				if ( ! empty( $_REQUEST['membership_id'] ) ) {
+					$url = add_query_arg(
+						array( 'membership_id' => $_REQUEST['membership_id'] ),
+						$url
+					);
+				}
+				if ( ! empty( $_REQUEST['status'] ) ) {
+					$url = add_query_arg(
+						array( 'status' => $_REQUEST['status'] ),
+						$url
+					);
+				}
+
+				$result[ $rule_type ] = array(
+					'title' => $rule_titles[ $rule_type ],
+					'url' => $url,
 				);
 			}
 
-			$result[ $rule_type ] = array(
-				'title' => $rule_titles[ $rule_type ],
-				'url' => $url,
+			$Tabs = apply_filters(
+				'ms_controller_membership_get_protection_tabs',
+				$result,
+				$membership_id,
+				$this
 			);
 		}
 
-		return apply_filters(
-			'ms_controller_membership_get_protection_tabs',
-			$result,
-			$membership_id,
-			$this
-		);
+		return $Tabs;
 	}
 
 	/**

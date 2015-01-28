@@ -102,6 +102,7 @@ class MS_Model_Plugin extends MS_Model {
 			$this->setup_admin_protection();
 		}
 
+		$this->load_addons();
 		$this->setup_rules();
 
 		/*
@@ -357,6 +358,23 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		do_action( 'ms_model_plugin_protect_current_page_after', $this );
+	}
+
+	/**
+	 * Load all the Add-ons.
+	 *
+	 * Related Action Hooks:
+	 * - plugins_loaded
+	 *
+	 * @since 1.1
+	 */
+	public function load_addons() {
+		do_action( 'ms_model_plugin_load_addons_before', $this );
+
+		// Initialize all Add-ons
+		MS_Model_Addon::get_addons();
+
+		do_action( 'ms_model_plugin_load_addons_after', $this );
 	}
 
 	/**

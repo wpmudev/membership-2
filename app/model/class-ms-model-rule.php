@@ -66,6 +66,14 @@ class MS_Model_Rule extends MS_Model {
 	static protected $rule_meta = null;
 
 	/**
+	 * Remember if we already called 'prepare_class'
+	 *
+	 * @since 1.1.0
+	 * @var bool
+	 */
+	static protected $prepared = false;
+
+	/**
 	 * Initializes the rules.
 	 * By creating the rule-object here we make sure that the rule is
 	 * initialized correctly.
@@ -93,6 +101,8 @@ class MS_Model_Rule extends MS_Model {
 		MS_Factory::load( 'MS_Rule_Shortcode' );
 		MS_Factory::load( 'MS_Rule_Special' );
 		MS_Factory::load( 'MS_Rule_Url' );
+
+		self::$prepared = true;
 	}
 
 	/**
@@ -101,7 +111,7 @@ class MS_Model_Rule extends MS_Model {
 	 * @since  1.1.0
 	 */
 	static private function prepare() {
-		if ( null === self::$rule_meta ) {
+		if ( ! self::$prepared ) {
 			// This will call prepare_class() above.
 			MS_Factory::load( 'MS_Model_Rule' );
 		}
@@ -186,12 +196,20 @@ class MS_Model_Rule extends MS_Model {
 	 * }
 	 */
 	public static function get_rule_type_classes() {
-		self::prepare();
+		static $Rule_Classes = null;
 
-		return apply_filters(
-			'ms_rule_get_rule_type_classes',
-			self::$rule_meta['model_class']
-		);
+		if ( null === $Rule_Classes ) {
+			self::prepare();
+
+			$Rule_Classes = self::$rule_meta['model_class'];
+
+			$Rule_Classes = apply_filters(
+				'ms_rule_get_rule_type_classes',
+				$Rule_Classes
+			);
+		}
+
+		return $Rule_Classes;
 	}
 
 	/**
@@ -204,12 +222,20 @@ class MS_Model_Rule extends MS_Model {
 	 * }
 	 */
 	public static function get_rule_type_titles() {
-		self::prepare();
+		static $Rule_Titles = null;
 
-		return apply_filters(
-			'ms_rule_get_rule_type_titles',
-			self::$rule_meta['title']
-		);
+		if ( null === $Rule_Titles ) {
+			self::prepare();
+
+			$Rule_Titles = self::$rule_meta['title'];
+
+			$Rule_Titles = apply_filters(
+				'ms_rule_get_rule_type_titles',
+				$Rule_Titles
+			);
+		}
+
+		return $Rule_Titles;
 	}
 
 	/**
@@ -221,12 +247,20 @@ class MS_Model_Rule extends MS_Model {
 	 * @return string[] $rule_type The rule type constant.
 	 */
 	public static function get_dripped_rule_types() {
-		self::prepare();
+		static $Dripped_Rules = null;
 
-		return apply_filters(
-			'ms_rule_get_dripped_rule_types',
-			self::$rule_meta['dripped']
-		);
+		if ( null === $Dripped_Rules ) {
+			self::prepare();
+
+			$Dripped_Rules = self::$rule_meta['dripped'];
+
+			$Dripped_Rules = apply_filters(
+				'ms_rule_get_dripped_rule_types',
+				$Dripped_Rules
+			);
+		}
+
+		return $Dripped_Rules;
 	}
 
 	/**
@@ -251,35 +285,6 @@ class MS_Model_Rule extends MS_Model {
 			'ms_rule_get_dripped_types',
 			$dripped_types
 		);
-	}
-
-	/**
-	 * Create a rule model.
-	 *
-	 * @since 1.0.0
-	 * @param string $rule_type The rule type to create.
-	 * @param int $membership_id The Membership model this rule belongs to.
-	 * @return MS_Rule The rule model.
-	 * @throws Exception when rule type is not valid.
-	 */
-	public static function rule_factory( $rule_type, $membership_id ) {
-		$rule_types = self::get_rule_type_classes();
-		if ( isset( $rule_types[ $rule_type ] ) ) {
-			$class = $rule_types[ $rule_type ];
-
-			$rule = MS_Factory::load( $class, $membership_id, $rule_type );
-
-			return apply_filters(
-				'ms_rule_rule_factory',
-				$rule,
-				$rule_type,
-				$membership_id
-			);
-		} else {
-			throw new Exception(
-				'Rule factory - rule type not found: ' . $rule_type
-			);
-		}
 	}
 
 }

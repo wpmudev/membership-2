@@ -107,8 +107,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_template' );
 
-		// TODO: Review these hooks; possibly we can enqueue stuff in more specific files
-
 		// Register admin styles (CSS)
 		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
 
@@ -120,8 +118,6 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// Register scripts used in the front end (JS)
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts' );
-
-		// TODO END ------------------------------------------------------------
 	}
 
 	/**
