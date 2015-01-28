@@ -277,7 +277,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 		// Move Membership pages to trash.
 		foreach ( $trash_ids as $id ) {
-			wp_trash_post( $id );
+			wp_delete_post( $id, true );
 		}
 
 		// Clear all data from WP Object cache.
