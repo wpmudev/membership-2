@@ -431,13 +431,13 @@ class MS_Model_Addon extends MS_Model_Option {
 		);
 
 		$list[self::ADDON_POST_BY_POST] = (object) array(
-			'name' => __( 'Post by Post Protection', MS_TEXT_DOMAIN ),
-			'description' => __( 'Protect content post by post instead of post categories.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Individual Posts', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect individual Posts instead of Categories.', MS_TEXT_DOMAIN ),
 		);
 
 		$list[self::ADDON_CPT_POST_BY_POST] = (object) array(
-			'name' => __( 'Custom Post Type Protection - Post by Post ', MS_TEXT_DOMAIN ),
-			'description' => __( 'Protect custom post type post by post instead of post type groups.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Individual Custom Posts', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect individual Posts of a Custom Post Type.', MS_TEXT_DOMAIN ),
 		);
 
 		$list[self::ADDON_MEDIA] = (object) array(
