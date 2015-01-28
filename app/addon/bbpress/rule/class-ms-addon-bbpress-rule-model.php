@@ -29,7 +29,16 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
+class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
+
+	/**
+	 * Custom Post Type names that are used by bbPress
+	 *
+	 * @since 1.0.0
+	 */
+	const CPT_BB_FORUM = 'forum';
+	const CPT_BB_TOPIC = 'topic';
+	const CPT_BB_REPLY = 'reply';
 
 	/**
 	 * Rule type.
@@ -38,7 +47,7 @@ class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 	 *
 	 * @var string $rule_type
 	 */
-	protected $rule_type = MS_Addon_BbPress::RULE_ID;
+	protected $rule_type = MS_Addon_BbPress_Rule::RULE_ID;
 
 	/**
 	 * Verify access to the current content.
@@ -60,24 +69,24 @@ class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 		if ( ! empty( $post_id ) ) {
 			$post_type = get_post_type( $post_id );
 
-			if ( in_array( $post_type, MS_Addon_Bbpress::get_bb_custom_post_types() ) ) {
+			if ( in_array( $post_type, self::get_bb_cpt() ) ) {
 				$has_access = false;
 
 				// Only verify permission if addon is enabled.
-				if ( MS_Model_Addon::is_enabled( MS_Addon_Bbpress::ID ) ) {
+				if ( MS_Addon_Bbpress::is_active() ) {
 					switch ( $post_type ) {
-						case MS_Addon_Bbpress::CPT_BB_FORUM:
+						case self::CPT_BB_FORUM:
 							$has_access = parent::has_access( $post_id );
 							break;
 
-						case MS_Addon_Bbpress::CPT_BB_TOPIC:
+						case self::CPT_BB_TOPIC:
 							if ( function_exists( 'bbp_get_topic_forum_id' ) ) {
 								$forum_id = bbp_get_topic_forum_id( $post_id );
 								$has_access = parent::has_access( $forum_id );
 							}
 							break;
 
-						case MS_Addon_Bbpress::CPT_BB_REPLY:
+						case self::CPT_BB_REPLY:
 							if ( function_exists( 'bbp_get_reply_forum_id' ) ) {
 								$forum_id = bbp_get_reply_forum_id( $post_id );
 								$has_access = parent::has_access( $forum_id );
@@ -93,7 +102,7 @@ class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 			 * If post type is forum and no post_id, it is the forum list page, give access.
 			 * @todo Find another way to verify if the current page is the forum list page.
 			 */
-			if ( MS_Addon_Bbpress::CPT_BB_FORUM === $wp_query->get( 'post_type' ) ) {
+			if ( self::CPT_BB_FORUM === $wp_query->get( 'post_type' ) ) {
 				$has_access = true;
 			}
 		}
@@ -142,11 +151,11 @@ class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 		 * Only protect if add-on is enabled.
 		 * Restrict query to show only has_access cpt posts.
 		 */
-		if ( MS_Model_Addon::is_enabled( MS_Addon_Bbpress::ID ) ) {
+		if ( MS_Addon_Bbpress::is_active() ) {
 			if ( ! $wp_query->is_singular
 				&& empty( $wp_query->query_vars['pagename'] )
 				&& ! empty( $post_type )
-				&& MS_Addon_Bbpress::CPT_BB_FORUM == $post_type
+				&& self::CPT_BB_FORUM == $post_type
 			) {
 				foreach ( $this->rule_value as $id => $value ) {
 					if ( ! $this->has_access( $id ) ) {
@@ -197,7 +206,7 @@ class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 	public function get_content_count( $args = null ) {
 		$defaults = array(
 			'posts_per_page' => -1,
-			'post_type'   => MS_Addon_Bbpress::CPT_BB_FORUM,
+			'post_type' => self::CPT_BB_FORUM,
 			'post_status' => 'publish',
 		);
 		$args = wp_parse_args( $args, $defaults );
@@ -239,7 +248,10 @@ class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 			$contents = $this->filter_content( $args['rule_status'], $contents );
 		}
 
-		return apply_filters( 'ms_addon_bbpress_model_rule_get_contents', $contents );
+		return apply_filters(
+			'ms_addon_bbpress_model_rule_get_contents',
+			$contents
+		);
 	}
 
 	/**
@@ -256,16 +268,37 @@ class MS_Addon_Bbpress_Model_Rule extends MS_Rule {
 	public function get_query_args( $args = null ) {
 		$defaults = array(
 			'posts_per_page' => -1,
-			'offset'      => 0,
-			'orderby'     => 'ID',
-			'order'       => 'DESC',
-			'post_type'   => MS_Addon_Bbpress::CPT_BB_FORUM,
+			'offset' => 0,
+			'orderby' => 'ID',
+			'order' => 'DESC',
+			'post_type' => self::CPT_BB_FORUM,
 			'post_status' => 'publish',
 		);
 
 		$args = wp_parse_args( $args, $defaults );
-		$args = parent::get_query_args( $args );
+		$args = parent::prepare_query_args( $args );
 
-		return apply_filters( 'ms_addon_bbpress_model_rule_get_query_args', $args );
+		return apply_filters(
+			'ms_addon_bbpress_model_rule_get_query_args',
+			$args
+		);
+	}
+
+	/**
+	 * Get BBPress custom post types.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array The bbpress custom post types.
+	 */
+	public static function get_bb_cpt() {
+		return apply_filters(
+			'ms_addon_bbpress_rule_model_get_bb_cpt',
+			array(
+				self::CPT_BB_FORUM,
+				self::CPT_BB_TOPIC,
+				self::CPT_BB_REPLY,
+			)
+		);
 	}
 }

@@ -30,11 +30,6 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 */
 	const ID = 'bbpress';
 
-	const RULE_ID = 'bbpress';
-
-	const CPT_BB_FORUM = 'forum';
-	const CPT_BB_TOPIC = 'topic';
-	const CPT_BB_REPLY = 'reply';
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
@@ -56,20 +51,10 @@ class MS_Addon_Bbpress extends MS_Addon {
 			'ms_rule_cptgroup_model_get_excluded_content',
 			'exclude_bbpress_cpts'
 		);
-	}
 
-	/**
-	 * Activates the Add-on logic, only executed when add-on is active.
-	 *
-	 * @since  1.1.0
-	 */
-	public function activate() {
-		$this->add_filter( 'ms_rule_get_rule_types', 'bbpress_rule_types' );
-		$this->add_filter( 'ms_rule_get_rule_type_classes', 'bbpress_rule_type_classes' );
-		$this->add_filter( 'ms_rule_get_rule_type_titles', 'bbpress_rule_type_titles' );
-		$this->add_filter( 'ms_controller_membership_tabs', 'bbpress_rule_tabs' );
-		$this->add_filter( 'ms_view_protectedcontent_define-' . self::RULE_ID, 'bbpress_manage_render_callback', 10, 3 );
 		if ( self::is_active() ) {
+			$this->add_filter( 'ms_controller_membership_tabs', 'rule_tabs' );
+			MS_Factory::load( 'MS_Addon_Bbpress_Rule' );
 		}
 	}
 
@@ -90,54 +75,6 @@ class MS_Addon_Bbpress extends MS_Addon {
 	}
 
 	/**
-	 * Add bbpress rule types.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @filter ms_rule_get_rule_types
-	 *
-	 * @param array $rules The current rule types.
-	 * @return array The filtered rule types.
-	 */
-	public function bbpress_rule_types( $rules ) {
-		$rules[] = self::RULE_ID;
-
-		return $rules;
-	}
-
-	/**
-	 * Add bbpress rule classes.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @filter ms_rule_get_rule_type_classes
-	 *
-	 * @param array $rules The current rule classes.
-	 * @return array The filtered rule classes.
-	 */
-	public function bbpress_rule_type_classes( $rules ) {
-		$rules[ self::RULE_ID  ] = 'MS_Addon_Bbpress_Model_Rule';
-
-		return $rules;
-	}
-
-	/**
-	 * Add bbpress rule type titles.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @filter ms_rule_get_rule_type_titles
-	 *
-	 * @param array $rules The current rule type titles.
-	 * @return array The filtered rule type titles.
-	 */
-	public function bbpress_rule_type_titles( $rules ) {
-		$rules[ self::RULE_ID  ] = __( 'bbPress' , MS_TEXT_DOMAIN );
-
-		return $rules;
-	}
-
-	/**
 	 * Add bbpress rule tabs in membership level edit.
 	 *
 	 * @since 1.0.0
@@ -148,35 +85,11 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 * @param int $membership_id The membership id to edit
 	 * @return array The filtered tabs.
 	 */
-	public function bbpress_rule_tabs( $tabs ) {
-		$rule = self::RULE_ID;
-		$tabs[ $rule  ]['title'] = __( 'bbPress', MS_TEXT_DOMAIN );
+	public function rule_tabs( $tabs ) {
+		$rule = MS_Addon_Bbpress_Rule::RULE_ID;
+		$tabs[ $rule  ] = true;
 
 		return $tabs;
-	}
-
-	/**
-	 * Add bbpress views callback.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @filter ms_view_protectedcontent_define-bbpress
-	 *
-	 * @param array $callback The current function callback.
-	 * @param array $data The data collection.
-	 * @param MS_View_Membership_ProtectedContent $obj The protected-content view object.
-	 * @return array The filtered callback.
-	 */
-	public function bbpress_manage_render_callback( $callback, $data, $obj ) {
-		$view = MS_Factory::load( 'MS_Addon_Bbpress_View_General' );
-
-		$view->data = apply_filters(
-			'ms_addon_bbpress_view_general_edit_data',
-			$data
-		);
-		$callback = array( $view, 'render_rule_tab' );
-
-		return $callback;
 	}
 
 	/**
@@ -184,36 +97,18 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @filter MS_Rule_CptGroup_Model_get_excluded_content
+	 * @filter ms_rule_cptgroup_model_get_excluded_content
 	 *
 	 * @param array $excluded The current excluded ctps.
 	 * @return array The filtered excluded ctps.
 	 */
 	public function exclude_bbpress_cpts( $excluded ) {
-		$excluded = array_merge( $excluded, self::get_bb_custom_post_types() );
-
-		return apply_filters(
-			'ms_addon_bbpress_exclude_bbpress_cpts',
-			$excluded
+		$excluded = array_merge(
+			$excluded,
+			MS_Addon_Bbpress_Rule_Model::get_bb_cpt()
 		);
-	}
 
-	/**
-	 * Get BBPress custom post types.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array The bbpress custom post types.
-	 */
-	public static function get_bb_custom_post_types() {
-		return apply_filters(
-			'ms_addon_bbpress_get_bb_custom_post_types',
-			array(
-				MS_Addon_Bbpress::CPT_BB_FORUM,
-				MS_Addon_Bbpress::CPT_BB_TOPIC,
-				MS_Addon_Bbpress::CPT_BB_REPLY,
-			)
-		);
+		return $excluded;
 	}
 
 }

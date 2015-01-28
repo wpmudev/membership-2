@@ -24,16 +24,27 @@
  * Membership List Table
  *
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
-class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
+class MS_Addon_Bbpress_Rule_Listtable extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_buddypress';
+	/**
+	 * List-ID is only used to generate the list HTML code.
+	 *
+	 * @var string
+	 */
+	protected $id = 'rule_bbpress';
 
+	/**
+	 * Define available columns
+	 *
+	 * @since  1.1.0
+	 * @return array
+	 */
 	public function get_columns() {
 		return apply_filters(
-			"ms_helper_listtable_{$this->id}_columns",
+			'ms_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => true,
 				'name' => __( 'Name', MS_TEXT_DOMAIN ),
@@ -42,13 +53,23 @@ class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 		);
 	}
 
+	/**
+	 * Return list of sortable columns.
+	 *
+	 * @since  1.1.0
+	 * @return array
+	 */
 	public function get_sortable_columns() {
-		return apply_filters(
-			"ms_helper_listtable_{$this->id}_sortable_columns",
-			array()
-		);
+		return array();
 	}
 
+	/**
+	 * Render the contents of the "name" column.
+	 *
+	 * @since  1.1.0
+	 * @param  object $item Item that is displayed, provided by the model.
+	 * @return string The HTML code.
+	 */
 	public function column_name( $item ) {
 		$actions = array(
 			sprintf(
@@ -64,7 +85,7 @@ class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 		);
 
 		$actions = apply_filters(
-			"membership_helper_listtable_{$this->id}_column_name_actions",
+			'membership_helper_listtable_' . $this->id . '_column_name_actions',
 			$actions,
 			$item
 		);
@@ -76,11 +97,22 @@ class MS_Addon_Bbpress_Helper_Listtable extends MS_Helper_ListTable_Rule {
 		);
 	}
 
+	/**
+	 * Do not display a Title above the list.
+	 *
+	 * @since  1.1.0
+	 */
+	public function list_head() {
+	}
+
+	/**
+	 * Do not display a status-filter for this rule.
+	 *
+	 * @since  1.1.0
+	 * @return array
+	 */
 	public function get_views() {
-		return apply_filters(
-			"ms_helper_listtable_{$this->id}_views",
-			array()
-		);
+		return array();
 	}
 
 }
