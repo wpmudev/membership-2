@@ -141,19 +141,19 @@ class MS_Model_Plugin extends MS_Model {
 			$this->member->subscriptions = array();
 		}
 
-		// Non-Member: Assign the base membership, which only denies access.
-		if ( ! $this->member->has_membership() ) {
-			$this->member->add_membership(
-				MS_Model_Membership::get_base()->id
-			);
-		}
-
 		if ( ! is_user_logged_in() ) {
 			// If a Guest-Membership exists we also assign it to the user.
 			$guest = MS_Model_Membership::get_guest();
 			if ( $guest->is_valid() ) {
 				$this->member->add_membership( $guest->id );
 			}
+		}
+
+		// Non-Member: Assign the base membership, which only denies access.
+		if ( ! $this->member->has_membership() ) {
+			$this->member->add_membership(
+				MS_Model_Membership::get_base()->id
+			);
 		}
 
 		do_action( 'ms_model_plugin_init_member_after', $this );

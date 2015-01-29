@@ -1078,18 +1078,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		foreach ( $base_rules as $rule_type => $denied_items ) {
 			try {
-				if ( ! empty( $this->rules[ $rule_type ] ) ) {
-					// The membership has granted access to some rule items.
-					$rule = $this->get_rule( $rule_type );
-					$rule->merge_rule_values( $denied_items, true );
-				} else {
-					// This membership does not change the default protection.
-					$rule = $this->get_rule( $rule_type );
-
-					foreach ( $denied_items->rule_value as $id => $val ) {
-						$rule->set_access( $id, MS_Model_Rule::RULE_VALUE_NO_ACCESS );
-					}
-				}
+				// The membership has granted access to some rule items.
+				$rule = $this->get_rule( $rule_type );
+				$rule->merge_rule_values( $denied_items, true );
 				$this->set_rule( $rule_type, $rule );
 			}
 			catch( Exception $e ) {

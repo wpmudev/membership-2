@@ -269,11 +269,10 @@ class MS_Rule extends MS_Model {
 	 * @return boolean The rule value for the requested content. Default $rule_value_default.
 	 */
 	public function get_rule_value( $id ) {
+		$value = null;
+
 		if ( is_scalar( $id ) && isset( $this->rule_value[ $id ] ) ) {
 			$value = $this->rule_value[ $id ];
-		} else {
-			// If no rule is defined for the item then assume "No Access".
-			$value = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
 		}
 
 		return apply_filters(
@@ -403,7 +402,11 @@ class MS_Rule extends MS_Model {
 			$has_access = $this->get_rule_value( $id );
 		}
 
-		if ( $this->is_base_rule ) {
+		if ( null === $has_access ) {
+			// If no rule is defined for the item then assume "Deny Access".
+			$has_access = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
+		} elseif ( $this->is_base_rule ) {
+			// The access-meaning of the base rule is inverted...
 			$has_access = ! $has_access;
 		}
 
@@ -756,22 +759,20 @@ class MS_Rule extends MS_Model {
 
 		if ( $src_is_base ) {
 			/*
-			 * Intersect to preserve only protected rules overrides;
-			 * Merge preserving keys;
+			 * Get the items that are protected by base but not allowed by
+			 * the membership. Deny access to these items.
 			 */
-			$this->rule_value = array_intersect_key(
-				$rule_value,
-				$src_rule_value
+			$src_rule_value = array_diff_key(
+				$src_rule_value,
+				$rule_value
 			);
-		} else {
-			/*
-			 * Add the rule values to the current rule-set;
-			 */
+
 			foreach ( $src_rule_value as $id => $access ) {
-				if ( ! $access ) {
-					unset( $src_rule_value[ $id ] );
+				if ( $access ) {
+					$this->rule_value[ $id ] = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
 				}
 			}
+		} else {
 			$this->rule_value += $src_rule_value;
 		}
 
