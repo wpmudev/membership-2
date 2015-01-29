@@ -6,24 +6,50 @@ class MS_Gateway_Manual_View_Settings extends MS_View {
 		$fields = $this->prepare_fields();
 		$gateway = $this->data['model'];
 
-		$msg = __( 'Please instruct how to proceed with manual payments, informing bank account number and email to send payment confirmation.', MS_TEXT_DOMAIN ) .
-			'<br /><em>' .
-			__( 'When using this payment method then the user will only see the payment instructions but the membership will not be activated for the user. You have to manually check if the payment was made and set the members bill to "paid" to complete the payment.', MS_TEXT_DOMAIN ) .
+		$msg = __(
+				'Instruct your users how to proceed with manual payments. This might include things like your bank account number and an email address where the payment confirmation should be sent.',
+				MS_TEXT_DOMAIN
+			) . '<br />&nbsp;<br /><em>' . __(
+				'When using this payment method the user will see the following payment instructions. Since the payment cannot be confirmed automatically his membership will <b>not</b> be activated instantly! You have to manually check if the payment was made and set the members bill to "paid" to complete the payment.',
+				MS_TEXT_DOMAIN
+			) .
 			'</em>';
 
 		ob_start();
 		// Render tabbed interface.
 		?>
 		<div class="ms-wrap">
-			<form class="ms-gateway-setings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
+			<form class="ms-gateway-settings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
 				<?php
 				MS_Helper_Html::settings_box_header( '', $msg );
-
 				foreach ( $fields as $field ) {
 					MS_Helper_Html::html_element( $field );
 				}
+				MS_Helper_Html::settings_box_footer();
 				?>
 			</form>
+			<div class="buttons">
+				<?php
+				MS_Helper_Html::html_element(
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'value' => __( 'Close', MS_TEXT_DOMAIN ),
+						'class' => 'close',
+					)
+				);
+
+				MS_Helper_Html::html_element(
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+						'class' => 'ms-submit-form',
+						'data' => array(
+							'form' => 'ms-gateway-settings-form',
+						)
+					)
+				);
+				?>
+			</div>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -42,7 +68,7 @@ class MS_Gateway_Manual_View_Settings extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 				'value' => $gateway->payment_info,
 				'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
-				'class' => 'required',
+				'class' => 'ms-text-large',
 			),
 
 			'pay_button_url' => array(
@@ -50,35 +76,19 @@ class MS_Gateway_Manual_View_Settings extends MS_View {
 				'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->pay_button_url,
+				'class' => 'ms-text-large',
 			),
 
 			'dialog' => array(
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'name' => 'dialog',
-				'value' => 'Gateway_' . $gateway->id . '_Dialog',
+				'value' => 'Gateway_' . ucfirst( $gateway->id ) . '_View_Dialog',
 			),
 
 			'gateway_id' => array(
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'name' => 'gateway_id',
 				'value' => $gateway->id,
-			),
-
-			'separator' => array(
-				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-			),
-
-			'close' => array(
-				'id' => 'close',
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Close', MS_TEXT_DOMAIN ),
-				'class' => 'close',
-			),
-
-			'save' => array(
-				'id' => 'save',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
 

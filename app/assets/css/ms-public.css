@@ -743,3 +743,17 @@ input[type="image"] {
 .wpmui-wnd.ms-setup-done .ms-setup-form .ms-settings-page-wrapper .lbl-details {
   display: none;
 }
+
+/***
+ * PAYMENT SETTINGS FORM *
+ ***/
+.ms-gateway-settings-form .inside .wpmui-field-label {
+  width: 240px;
+  float: left;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.ms-gateway-settings-form .inside #payment_info {
+  min-width: 0;
+  height: 100px;
+}

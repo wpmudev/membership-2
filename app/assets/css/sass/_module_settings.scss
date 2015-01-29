@@ -428,3 +428,23 @@
 		}
 	}
 }
+
+/***
+ * PAYMENT SETTINGS FORM *
+ ***/
+
+.ms-gateway-settings-form {
+	.inside {
+		.wpmui-field-label {
+			width: 240px;
+			float: left;
+			margin-top: 6px;
+			margin-bottom: 6px;
+		}
+
+		#payment_info {
+			min-width: 0;
+			height: 100px;
+		}
+	}
+}

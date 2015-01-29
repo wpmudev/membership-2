@@ -34,7 +34,7 @@ class MS_Gateway_Manual_View_Dialog extends MS_Dialog {
 		$this->title = sprintf( __( '%s settings', MS_TEXT_DOMAIN ), $gateway->name );
 
 		// Dialog Size
-		$this->height = 380;
+		$this->height = 420;
 
 		// Contents
 		$this->content = $view->to_html();

@@ -10,7 +10,7 @@ class MS_Gateway_Paypalsingle_View_Settings extends MS_View {
 		/** Render tabbed interface. */
 		?>
 		<div class="ms-wrap">
-			<form class="ms-gateway-setings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
+			<form class="ms-gateway-settings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
 				<?php
 				$description = '';
 
@@ -18,8 +18,31 @@ class MS_Gateway_Paypalsingle_View_Settings extends MS_View {
 				foreach ( $fields as $field ) {
 					MS_Helper_Html::html_element( $field );
 				}
+				MS_Helper_Html::settings_box_footer();
 				?>
 			</form>
+			<div class="buttons">
+				<?php
+				MS_Helper_Html::html_element(
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'value' => __( 'Close', MS_TEXT_DOMAIN ),
+						'class' => 'close',
+					)
+				);
+
+				MS_Helper_Html::html_element(
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+						'class' => 'ms-submit-form',
+						'data' => array(
+							'form' => 'ms-gateway-settings-form',
+						)
+					)
+				);
+				?>
+			</div>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -31,78 +54,52 @@ class MS_Gateway_Paypalsingle_View_Settings extends MS_View {
 		$action = MS_Controller_Gateway::AJAX_ACTION_UPDATE_GATEWAY;
 		$nonce = wp_create_nonce( $action );
 
-		if ( $gateway->id == MS_Gateway_Paypalsingle::ID ) {
-			$merchant_id_field = array(
-				'id' => 'paypal_email',
-				'title' => __( 'PayPal Email', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $gateway->paypal_email,
-				'class' => 'required',
-			);
-		} else {
-			$merchant_id_field = array(
-				'id' => 'merchant_id',
-				'title' => __( 'PayPal Merchant Account ID', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $gateway->merchant_id,
-				'class' => 'required',
-			);
-		}
 
 		$fields = array(
-			'merchant_id' => $merchant_id_field,
+			'merchant_id' => array(
+				'id' => 'paypal_email',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'PayPal Email', MS_TEXT_DOMAIN ),
+				'value' => $gateway->paypal_email,
+				'class' => 'ms-text-large',
+			),
+
 			'paypal_site' => array(
 				'id' => 'paypal_site',
-				'title' => __( 'PayPal Site', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' => __( 'PayPal Site', MS_TEXT_DOMAIN ),
 				'field_options' => $gateway->get_paypal_sites(),
 				'value' => $gateway->paypal_site,
-				'class' => 'required',
+				'class' => 'ms-text-large',
 			),
 
 			'mode' => array(
 				'id' => 'mode',
-				'title' => __( 'PayPal Mode', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' => __( 'PayPal Mode', MS_TEXT_DOMAIN ),
 				'value' => $gateway->mode,
 				'field_options' => $gateway->get_mode_types(),
-				'class' => 'required',
+				'class' => 'ms-text-large',
 			),
 
 			'pay_button_url' => array(
 				'id' => 'pay_button_url',
-				'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
 				'value' => $gateway->pay_button_url,
+				'class' => 'ms-text-large',
 			),
 
 			'dialog' => array(
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'name' => 'dialog',
-				'value' => 'Gateway_' . $gateway->id . '_View_Dialog',
+				'value' => 'Gateway_' . ucfirst( $gateway->id ) . '_View_Dialog',
 			),
 
 			'gateway_id' => array(
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'name' => 'gateway_id',
 				'value' => $gateway->id,
-			),
-
-			'separator' => array(
-				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-			),
-
-			'close' => array(
-				'id' => 'close',
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Close', MS_TEXT_DOMAIN ),
-				'class' => 'close',
-			),
-
-			'save' => array(
-				'id' => 'save',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
 

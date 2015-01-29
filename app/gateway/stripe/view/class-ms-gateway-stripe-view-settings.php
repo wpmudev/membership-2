@@ -10,13 +10,42 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 		/** Render tabbed interface. */
 		?>
 		<div class="ms-wrap">
-			<form class="ms-gateway-setings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
+			<form class="ms-gateway-settings-form ms-form wpmui-ajax-update" data-ajax="<?php echo esc_attr( $gateway->id ); ?>">
 				<?php
+				$description = sprintf(
+					__( 'You can find your Stripe API Keys in your <a href="%1$s">Account Settings</a>.', MS_TEXT_DOMAIN ),
+					'https://dashboard.stripe.com/account/apikeys" target="_blank'
+				);
+
+				MS_Helper_Html::settings_box_header( '', $description );
 				foreach ( $fields as $field ) {
 					MS_Helper_Html::html_element( $field );
 				}
+				MS_Helper_Html::settings_box_footer();
 				?>
 			</form>
+			<div class="buttons">
+				<?php
+				MS_Helper_Html::html_element(
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'value' => __( 'Close', MS_TEXT_DOMAIN ),
+						'class' => 'close',
+					)
+				);
+
+				MS_Helper_Html::html_element(
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+						'class' => 'ms-submit-form',
+						'data' => array(
+							'form' => 'ms-gateway-settings-form',
+						)
+					)
+				);
+				?>
+			</div>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -35,6 +64,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $gateway->mode,
 				'field_options' => $gateway->get_mode_types(),
+				'class' => 'ms-text-large',
 			),
 
 			'test_secret_key' => array(
@@ -42,7 +72,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 				'title' => __( 'API Test Secret Key', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->test_secret_key,
-				'class' => 'required',
+				'class' => 'ms-text-large',
 			),
 
 			'test_publishable_key' => array(
@@ -50,7 +80,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 				'title' => __( 'API Test Publishable Key', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->test_publishable_key,
-				'class' => 'required',
+				'class' => 'ms-text-large',
 			),
 
 			'secret_key' => array(
@@ -58,7 +88,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 				'title' => __( 'API Live Secret Key', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->secret_key,
-				'class' => 'required',
+				'class' => 'ms-text-large',
 			),
 
 			'publishable_key' => array(
@@ -66,7 +96,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 				'title' => __( 'API Live Publishable Key', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->publishable_key,
-				'class' => 'required',
+				'class' => 'ms-text-large',
 			),
 
 			'pay_button_url' => array(
@@ -74,35 +104,19 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 				'title' => __( 'Payment button label or url', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->pay_button_url,
+				'class' => 'ms-text-large',
 			),
 
 			'dialog' => array(
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'name' => 'dialog',
-				'value' => 'Gateway_' . $gateway->id . '_View_Dialog',
+				'value' => 'Gateway_' . ucfirst( $gateway->id ) . '_View_Dialog',
 			),
 
 			'gateway_id' => array(
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'name' => 'gateway_id',
 				'value' => $gateway->id,
-			),
-
-			'separator' => array(
-				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-			),
-
-			'close' => array(
-				'id' => 'close',
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Close', MS_TEXT_DOMAIN ),
-				'class' => 'close',
-			),
-
-			'save' => array(
-				'id' => 'save',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
 			),
 		);
 

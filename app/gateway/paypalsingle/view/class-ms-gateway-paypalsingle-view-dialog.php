@@ -34,7 +34,7 @@ class MS_Gateway_Paypalsingle_View_Dialog extends MS_Dialog {
 		$this->title = sprintf( __( '%s settings', MS_TEXT_DOMAIN ), $gateway->name );
 
 		// Dialog Size
-		$this->height = 400;
+		$this->height = 310;
 
 		// Contents
 		$this->content = $view->to_html();
