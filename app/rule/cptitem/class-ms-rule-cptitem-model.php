@@ -61,9 +61,14 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 	 * @param MS_Model_Relationship $ms_relationship Optional. Not used.
 	 */
 	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
-
-		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
+		/**
+		 * Only protect if not cpt group.
+		 * Restrict query to show only has_access cpt posts.
+		 */
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
+			parent::protect_content( $ms_relationship );
+			$this->add_action( 'parse_query', 'protect_posts', 98 );
+		}
 	}
 
 	/**
@@ -73,28 +78,50 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 	 *
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
+	public function protect_posts( &$wp_query ) {
+		$post_types = $wp_query->get( 'post_type' );
 
-	public function protect_posts( $wp_query ) {
-		$post_type = $wp_query->get( 'post_type' );
-		$apply = true;
+		// There was one case where this was needed...
+		if ( empty( $post_types ) && isset( $wp_query->queried_object->post_type ) ) {
+			$post_types = $wp_query->queried_object->post_type;
+		}
 
-		/**
-		 * Only protect if not cpt group.
-		 * Restrict query to show only has_access cpt posts.
-		 */
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			$protected_list = MS_Rule_CptGroup_Model::get_excluded_content();
+		if ( ! empty( $post_types ) // Only protect anything if post-type is known
+			&& ! $wp_query->is_singular  // Single pages are protected by `has_access()`
+		) {
+			$excluded = MS_Rule_CptGroup_Model::get_excluded_content();
 
-			if ( $apply && $wp_query->is_singular ) { $apply = false; }
-			if ( $apply && empty( $wp_query->query_vars['pagename'] ) ) { $apply = false; }
-			if ( $apply && ! in_array( @$post_type, $protected_list ) ) { $apply = false; }
+			/*
+			 * We need an array. WordPress will give us an array, when the
+			 * WP_Query did query for multiple post-types at once.
+			 * We check each post-type individually!
+			 */
+			if ( ! is_array( $post_types ) ) {
+				$post_types = array( $post_types );
+			}
 
-			if ( $apply ) {
-				foreach ( $this->rule_value as $id => $value ) {
-					if ( ! $this->has_access( $id ) ) {
-						$wp_query->query_vars['post__not_in'][] = $id;
+			$denied_posts = $wp_query->query_vars['post__not_in'];
+			if ( ! is_array( $denied_posts ) ) {
+				$denied_posts = array();
+			}
+
+			foreach ( $post_types as $post_type ) {
+				/*
+				 * If the current post type is protected then set the query-arg
+				 * post__not_in to a list of all protected items.
+				 */
+				if ( ! in_array( $post_type, $excluded ) ) {
+					foreach ( $this->rule_value as $id => $value ) {
+						if ( ! parent::has_access( $id ) ) {
+							$denied_posts[] = $id;
+						}
 					}
 				}
+			}
+
+			if ( ! empty( $denied_posts ) ) {
+				$denied_posts = array_unique( $denied_posts );
+				$wp_query->set( 'post__not_in', $denied_posts );
 			}
 		}
 

@@ -64,11 +64,10 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 		/*
 		 * Only protect if cpt group.
 		 * Protect in list rather than on a single post.
-		 * Workaroudn to invalidate the query.
 		 */
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			parent::protect_content( $ms_relationship );
-			$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
+			$this->add_action( 'parse_query', 'protect_posts', 98 );
 		}
 	}
 
@@ -79,40 +78,50 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 	 *
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
-	public function protect_posts( $wp_query ) {
-		$apply = true;
+	public function protect_posts( &$wp_query ) {
+		$post_types = $wp_query->get( 'post_type' );
 
-		$post_type = $wp_query->get( 'post_type' );
-
-		if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
-			$post_type = $wp_query->queried_object->post_type;
-
-			if ( is_array( $post_type ) ) {
-				if ( isset( $post_type[0] ) ) {
-					$post_type = $post_type[0];
-				} else {
-					$post_type = '';
-				}
-			}
+		// There was one case where this was needed...
+		if ( empty( $post_types ) && isset( $wp_query->queried_object->post_type ) ) {
+			$post_types = $wp_query->queried_object->post_type;
 		}
 
-		// Single pages are protected with function `has_access()` below.
-		if ( $apply && $wp_query->is_singular ) { $apply = false; }
+		if ( ! empty( $post_types ) // Only protect anything if post-type is known
+			&& ! $wp_query->is_singular  // Single pages are protected by `has_access()`
+		) {
+			$excluded = self::get_excluded_content();
+			$final_post_types = array();
 
-		// A pagename also indicates a single post...
-		if ( $apply && isset( $wp_query->query->pagename ) ) { $apply = false; }
+			/*
+			 * We need an array. WordPress will give us an array, when the
+			 * WP_Query did query for multiple post-types at once.
+			 * We check each post-type individually!
+			 */
+			if ( ! is_array( $post_types ) ) {
+				$post_types = array( $post_types );
+			}
 
-		// Do not protect anything if post-type is unknown
-		if ( $apply && empty( $post_type ) ) { $apply = false; }
+			foreach ( $post_types as $post_type ) {
+				$allow = false;
 
-		// Do not protect special "Protected Content" or default WordPress content
-		if ( $apply && in_array( $post_type, self::get_excluded_content() ) ) { $apply = false; }
+				// Do not protect special "Protected Content" or default WordPress content
+				if ( in_array( $post_type, $excluded ) ) { $allow = true; }
 
-		// Do not protect if the post-type is published
-		if ( $apply && parent::has_access( $post_type ) ) { $apply = false; }
+				// Do not protect if the post-type is published
+				elseif ( parent::has_access( $post_type ) ) { $allow = true; }
 
-		if ( $apply )  {
-			$wp_query->query_vars['post__in'] = array( 0 => 0 );
+				if ( $allow )  {
+					$final_post_types[] = $post_type;
+				}
+			}
+
+			if ( empty( $final_post_types ) ) {
+				// None of the queried Post Types is allowed.
+				$wp_query->query_vars['post__in'] = array( 0 => 0 );
+			} else {
+				// One or more Post Types can be viewed.
+				$wp_query->set( 'post_type', $final_post_types );
+			}
 		}
 
 		do_action(
