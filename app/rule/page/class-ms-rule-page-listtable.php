@@ -74,7 +74,7 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 
 		return sprintf(
 			'%1$s %2$s',
-			$item->post_title,
+			$item->name,
 			$this->row_actions( $actions )
 		);
 	}

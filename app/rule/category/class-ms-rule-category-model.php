@@ -153,11 +153,11 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $post_id Optional. The current post_id.
+	 * @param int $id The current post_id.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $post_id = null ) {
+	public function has_access( $id ) {
 		$has_access = null;
 
 		// Only verify permissions if ruled by categories.
@@ -165,14 +165,14 @@ class MS_Rule_Category_Model extends MS_Rule {
 			$taxonomies = get_object_taxonomies( get_post_type() );
 
 			// Verify post access accordingly to category rules.
-			if ( ! empty( $post_id )
+			if ( ! empty( $id )
 				|| ( is_single() && in_array( 'category', $taxonomies ) )
 			) {
-				if ( empty( $post_id ) ) {
-					$post_id = get_the_ID();
+				if ( empty( $id ) ) {
+					$id = get_the_ID();
 				}
 
-				$categories = wp_get_post_categories( $post_id );
+				$categories = wp_get_post_categories( $id );
 				foreach ( $categories as $category_id ) {
 					$has_access = parent::has_access( $category_id );
 
@@ -190,7 +190,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 		return apply_filters(
 			'ms_rule_category_model_has_access',
 			$has_access,
-			$post_id,
+			$id,
 			$this
 		);
 	}

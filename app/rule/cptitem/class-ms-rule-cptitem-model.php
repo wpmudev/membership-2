@@ -171,21 +171,21 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $post_id The content id to verify access.
+	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $post_id = null ) {
+	public function has_access( $id ) {
 		$has_access = null;
 
 		// Only verify permission if ruled by cpt post by post.
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			if ( empty( $post_id ) ) {
-				$post_id = $this->get_current_post_id();
+			if ( empty( $id ) ) {
+				$id = $this->get_current_post_id();
 			}
 
-			if ( ! empty( $post_id ) ) {
-				$post_type = get_post_type( $post_id );
+			if ( ! empty( $id ) ) {
+				$post_type = get_post_type( $id );
 				$mspt = MS_Rule_CptGroup_Model::get_ms_post_types();
 				$cpt = MS_Rule_CptGroup_Model::get_custom_post_types();
 
@@ -194,7 +194,7 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 					$has_access = true;
 				} elseif ( in_array( $post_type, $cpt ) ) {
 					// Custom post type
-					$has_access = parent::has_access( $post_id  );
+					$has_access = parent::has_access( $id );
 				} else {
 					// WordPress core pages are ignored by this rule.
 					$has_access = null;
@@ -205,7 +205,7 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 		return apply_filters(
 			'ms_rule_custom_post_type_has_access',
 			$has_access,
-			$post_id,
+			$id,
 			$this
 		);
 	}

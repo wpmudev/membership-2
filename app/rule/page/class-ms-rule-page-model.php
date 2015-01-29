@@ -135,37 +135,37 @@ class MS_Rule_Page_Model extends MS_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $page_id Optional. The page_id to verify access.
+	 * @param int $id The page_id to verify access.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $page_id = null ) {
+	public function has_access( $id ) {
 		$has_access = null;
 
-		if ( empty( $page_id ) ) {
-			$page_id = $this->get_current_page_id();
-		}
-		else {
-			$post = get_post( $page_id );
+		if ( empty( $id ) ) {
+			$id = $this->get_current_page_id();
+		} else {
+			$post = get_post( $id );
 			if ( ! is_a( $post, 'WP_Post' ) || $post->post_type != 'page' )  {
-				$page_id = 0;
+				$id = 0;
 			}
 		}
 
-		if ( ! empty( $page_id ) ) {
+		if ( ! empty( $id ) ) {
 			$has_access = false;
-			$has_access = parent::has_access( $page_id );
 
 			// Membership special pages has access
-			if ( MS_Model_Pages::is_membership_page( $page_id ) ) {
+			if ( MS_Model_Pages::is_membership_page( $id ) ) {
 				$has_access = true;
+			} else {
+				$has_access = parent::has_access( $id );
 			}
 		}
 
 		return apply_filters(
 			'ms_rule_page_model_has_access',
 			$has_access,
-			$page_id,
+			$id,
 			$this
 		);
 	}
@@ -255,9 +255,17 @@ class MS_Rule_Page_Model extends MS_Rule {
 		$pages = get_pages( $args );
 
 		foreach ( $pages as $content ) {
+			$name = $content->post_title;
+
+			$parent = get_post( $content->post_parent );
+			while ( ! empty( $parent ) ) {
+				$name = '&mdash; ' . $name;
+				$parent = get_post( $parent->post_parent );
+			}
+
 			$content->id = $content->ID;
 			$content->type = MS_Rule_Page::RULE_ID;
-			$content->name = $content->post_name;
+			$content->name = $name;
 
 			$content->access = $this->get_rule_value( $content->id );
 

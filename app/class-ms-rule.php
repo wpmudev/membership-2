@@ -269,16 +269,19 @@ class MS_Rule extends MS_Model {
 	 * @return boolean The rule value for the requested content. Default $rule_value_default.
 	 */
 	public function get_rule_value( $id ) {
-		$value = null;
-
 		if ( is_scalar( $id ) && isset( $this->rule_value[ $id ] ) ) {
-			$value = $this->rule_value[ $id ];
+			// A rule is defined. It is either TRUE or FALSE
+			$value = (bool) $this->rule_value[ $id ];
+		} else {
+			// Default response is NULL: "Not-Denied"
+			$value = MS_Model_Rule::RULE_VALUE_UNDEFINED;
 		}
 
 		return apply_filters(
-			'ms_rule_get_rule_value',
+			'ms_get_rule_value',
 			$value,
 			$id,
+			$rule_type,
 			$this
 		);
 	}
@@ -349,6 +352,8 @@ class MS_Rule extends MS_Model {
 	/**
 	 * Defines, which memberships protect the specified rule item.
 	 *
+	 * Note: This method should only be called for the BASE membership!
+	 *
 	 * @since  1.1.0
 	 *
 	 * @param string $id The content id to check.
@@ -357,18 +362,23 @@ class MS_Rule extends MS_Model {
 	public function set_memberships( $id, $memberships ) {
 		static $All_Memberships = null;
 
+		if ( ! $this->is_base_rule ) {
+			throw new Exception( 'set_memberships() must be called on the base-rule!', 1 );
+			return;
+		}
+
 		if ( null === $All_Memberships ) {
 			$All_Memberships = MS_Model_Membership::get_memberships();
 		}
 
 		$base = MS_Model_Membership::get_base();
 		$base_rule = $base->get_rule( $this->rule_type );
-		$has_protection = $base_rule->has_access( $id );
+		$current_protection = $base_rule->get_rule_value( $id );
 		$should_protect = ! empty( $memberships );
 
 		if ( ! $should_protect ) {
 			$base_rule->remove_access( $id );
-		} elseif ( ! $has_protection ) {
+		} elseif ( ! $current_protection ) {
 			// Only `give_access()` when the item is not protected yet.
 			$base_rule->give_access( $id );
 		}
@@ -393,27 +403,37 @@ class MS_Rule extends MS_Model {
 	 * @since 1.0.0
 	 *
 	 * @param string $id The content id to verify access.
-	 * @return boolean True if has access, false otherwise.
+	 * @return boolean TRUE if has access, FALSE otherwise.
 	 */
-	public function has_access( $id = null ) {
-		$has_access = false;
+	public function has_access( $id ) {
+		/*
+		 * $access will be one of these:
+		 *   - TRUE .. Access explicitly granted
+		 *   - FALSE .. Access explicitly denied
+		 *   - NULL .. Access implicitly allowed (i.e. "not-denied")
+		 */
+		$access = $this->get_rule_value( $id );
 
-		if ( ! empty( $id ) ) {
-			$has_access = $this->get_rule_value( $id );
-		}
-
-		if ( null === $has_access ) {
-			// If no rule is defined for the item then assume "Deny Access".
-			$has_access = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
+		if ( MS_Model_Rule::RULE_VALUE_UNDEFINED === $access ) {
+			// NULL .. "not-denied" is translated to "allowed"
+			$access = true;
 		} elseif ( $this->is_base_rule ) {
-			// The access-meaning of the base rule is inverted...
-			$has_access = ! $has_access;
+			/*
+			 * Base rule ..
+			 *   - The meaning of TRUE/FALSE is inverted
+			 *   - NULL is always "allowed"
+			 */
+			$access = ! $access;
 		}
+
+		// At this point $access can either be TRUE or FALSE, not NULL!
+		$access = (bool) $access;
 
 		return apply_filters(
 			'ms_rule_has_access',
-			$has_access,
+			$access,
 			$id,
+			$this->ruly_type,
 			$this
 		);
 	}
@@ -691,14 +711,7 @@ class MS_Rule extends MS_Model {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-		$contents = array();
-
-		return apply_filters(
-			'ms_rule_get_contents',
-			$contents,
-			$args,
-			$this
-		);
+		return array();
 	}
 
 	/**
@@ -712,14 +725,7 @@ class MS_Rule extends MS_Model {
 	 * @return int The content count.
 	 */
 	public function get_content_count( $args = null ) {
-		$count = 0;
-
-		return apply_filters(
-			'ms_rule_get_contents',
-			$count,
-			$args,
-			$this
-		);
+		return 0;
 	}
 
    /**
@@ -732,51 +738,58 @@ class MS_Rule extends MS_Model {
 	*/
 	public function reset_rule_values() {
 		$this->rule_value = apply_filters(
-			'ms_rule_reset_rule_values',
+			'ms_rule_reset_values',
 			array(),
 			$this
 		);
 	}
 
    /**
-	* Merge rule values.
+	* Denies access to all items that are defined in the base-rule but
+	* not in the current rule.
 	*
 	* @since 1.0.0
-	* @param MS_Rule $src_rule The source rule model to merge rules to.
+	* @param MS_Rule $base_rule The source rule model to merge rules to.
 	*/
-	public function merge_rule_values( $src_rule, $src_is_base ) {
-		if ( $src_rule->rule_type != $this->rule_type ) { return; }
+	public function protect_undefined_items( $base_rule ) {
+		if ( $base_rule->rule_type != $this->rule_type ) { return; }
 
-		$rule_value = $this->rule_value;
 		if ( ! is_array( $this->rule_value ) ) {
-			$rule_value = array();
+			$this->rule_value = array();
+		}
+		if ( ! is_array( $base_rule->rule_value ) ) {
+			$base_rule->rule_value = array();
 		}
 
-		$src_rule_value = $src_rule->rule_value;
-		if ( ! is_array( $src_rule_value ) ) {
-			$src_rule_value = array();
-		}
+		$base_rule_value = $base_rule->rule_value;
 
-		if ( $src_is_base ) {
-			/*
-			 * Get the items that are protected by base but not allowed by
-			 * the membership. Deny access to these items.
-			 */
-			$src_rule_value = array_diff_key(
-				$src_rule_value,
-				$rule_value
-			);
-
-			foreach ( $src_rule_value as $id => $access ) {
-				if ( $access ) {
-					$this->rule_value[ $id ] = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
-				}
+		/*
+		 * Remove protection of items that are protected by the current rule
+		 * but NOT protected by the base-rule.
+		 * I.e. remove invalid protection information.
+		 */
+		foreach ( $this->rule_value as $id => $access ) {
+			if ( ! isset( $base_rule->rule_value[$id] ) ) {
+				unset( $this->rule_value[ $id ] );
 			}
-		} else {
-			$this->rule_value += $src_rule_value;
 		}
 
-		do_action( 'ms_rule_merge_rule_values', $src_rule, $this );
+		/*
+		 * Get the items that are protected by base but not allowed by
+		 * the membership. Deny access to these items.
+		 */
+		$base_rule_value = array_diff_key(
+			$base_rule_value,
+			$this->rule_value
+		);
+
+		foreach ( $base_rule_value as $id => $access ) {
+			if ( $access ) {
+				$this->rule_value[ $id ] = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
+			}
+		}
+
+		do_action( 'ms_merge_rule_values', $this, $base_rule );
 	}
 
 	/**
@@ -784,21 +797,13 @@ class MS_Rule extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 * @param string $id The content id to set access to.
-	 * @param int $access The access status to set.
+	 * @param bool $access The access status to set.
 	 */
 	public function set_access( $id, $access ) {
-		if ( is_bool( $access ) ) {
-			if ( $access ) {
-				$access = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
-			} else {
-				$access = MS_Model_Rule::RULE_VALUE_NO_ACCESS;
-			}
-		}
-
-		if ( $access == MS_Model_Rule::RULE_VALUE_NO_ACCESS ) {
-			unset( $this->rule_value[ $id ] );
+		if ( $access ) {
+			$this->rule_value[ $id ] = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
 		} else {
-			$this->rule_value[ $id ] = $access;
+			unset( $this->rule_value[ $id ] );
 		}
 
 		do_action( 'ms_rule_set_access', $id, $access, $this );
@@ -811,7 +816,10 @@ class MS_Rule extends MS_Model {
 	 * @param string $id The content id to give access.
 	 */
 	public function give_access( $id ) {
-		$this->set_access( $id, MS_Model_Rule::RULE_VALUE_HAS_ACCESS );
+		$this->set_access(
+			$id,
+			MS_Model_Rule::RULE_VALUE_HAS_ACCESS
+		);
 
 		do_action( 'ms_rule_give_access', $id, $this );
 	}
@@ -823,7 +831,10 @@ class MS_Rule extends MS_Model {
 	 * @param string $id The content id to remove access.
 	 */
 	public function remove_access( $id ) {
-		$this->set_access( $id, MS_Model_Rule::RULE_VALUE_NO_ACCESS );
+		$this->set_access(
+			$id,
+			MS_Model_Rule::RULE_VALUE_NO_ACCESS
+		);
 
 		do_action( 'ms_rule_remove_access', $id, $this );
 	}
@@ -835,8 +846,13 @@ class MS_Rule extends MS_Model {
 	 * @param string $id The content id to toggle access.
 	 */
 	public function toggle_access( $id ) {
-		$has_access = ! $this->get_rule_value( $id );
-		$this->set_access( $id, $has_access );
+		$current_value = $this->get_rule_value( $id );
+		$has_access = MS_Model_Rule::RULE_VALUE_HAS_ACCESS !== $current_value;
+
+		$this->set_access(
+			$id,
+			$has_access
+		);
 
 		do_action( 'ms_rule_toggle_access', $id, $this );
 	}
@@ -1049,6 +1065,9 @@ class MS_Rule extends MS_Model {
 
 		switch ( $args_type ) {
 			case 'get_pages':
+				// No validation required.
+				break;
+
 			case 'get_categories':
 				if ( ! empty( $args['number'] ) ) {
 					/*
@@ -1200,6 +1219,11 @@ class MS_Rule extends MS_Model {
 			}
 		}
 
-		do_action( 'ms_rule__set_after', $property, $value, $this );
+		do_action(
+			'ms_rule__set_after',
+			$property,
+			$value,
+			$this
+		);
 	}
 }

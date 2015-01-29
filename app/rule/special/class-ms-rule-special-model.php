@@ -127,11 +127,11 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 *
 	 * @since 1.0.4
 	 *
-	 * @param int $page_id Optional. The page_id to verify access.
+	 * @param int $id The page_id to verify access.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $page_id = null ) {
+	public function has_access( $id ) {
 		$has_access = null;
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
@@ -149,7 +149,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 		return apply_filters(
 			'ms_rule_special_model_has_access',
 			$has_access,
-			$page_id,
+			$id,
 			$this
 		);
 	}

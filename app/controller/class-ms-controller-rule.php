@@ -39,11 +39,10 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'change_memberships';
+	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'rule_change_memberships';
 	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
 	const AJAX_ACTION_UPDATE_MATCHING = 'update_matching';
 	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
-	const AJAX_ACTION_UPDATE_FIELD = 'update_update_field';
 
 	/**
 	 * Prepare the Rule manager.
@@ -56,7 +55,6 @@ class MS_Controller_Rule extends MS_Controller {
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MATCHING, 'ajax_action_update_matching' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_FIELD, 'ajax_action_update_field' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
 
 		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_PROTECTED_CONTENT, 'edit_rule_manager' );
@@ -213,7 +211,6 @@ class MS_Controller_Rule extends MS_Controller {
 					} else {
 						$rule_value = $rule_values;
 					}
-					echo "\n($id => $rule_value)<br/>\n";
 					$rule->set_access( $id, $rule_value );
 				}
 			}
@@ -274,49 +271,6 @@ class MS_Controller_Rule extends MS_Controller {
 		exit;
 	}
 
-	/**
-	 * Handle Ajax to update rule model field.
-	 *
-	 * Related Action Hooks:
-	 * - wp_ajax_update_field
-	 *
-	 * @since 1.0.0
-	 */
-	public function ajax_action_update_field() {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		$this->_resp_reset();
-
-		$required = array( 'membership_id', 'rule_type', 'field' );
-		$isset = array( 'value' );
-
-		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-field-01' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'update-field-02' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-field-03' ); }
-		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-field-04' ); }
-
-		if ( $this->_resp_ok() ) {
-			$membership = $this->get_membership();
-			if ( ! $membership->is_valid() ) { $this->_resp_err( 'update-field-05' ); }
-		}
-
-		if ( $this->_resp_ok() ) {
-			$rule_type = $_POST['rule_type'];
-			$value = $_POST['value'];
-			$field = $_POST['field'];
-
-			$rule = $membership->get_rule( $rule_type );
-			$rule->$field = $value;
-			$membership->set_rule( $rule_type, $rule );
-
-			$membership->save();
-			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
-		}
-		$msg .= $this->_resp_code();
-
-		echo $msg;
-		exit;
-
-	}
 	/**
 	 * Handles Membership Rule form submissions.
 	 *

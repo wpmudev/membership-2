@@ -28,14 +28,15 @@
 class MS_Model_Rule extends MS_Model {
 
 	/**
-	 * Rule value constants.
+	 * Access status constants.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @var int
+	 * @var bool
 	 */
-	const RULE_VALUE_NO_ACCESS = 0;
-	const RULE_VALUE_HAS_ACCESS = 1;
+	const RULE_VALUE_NO_ACCESS = FALSE;
+	const RULE_VALUE_HAS_ACCESS = TRUE;
+	const RULE_VALUE_UNDEFINED = NULL;
 
 	/**
 	 * Filter type constants.

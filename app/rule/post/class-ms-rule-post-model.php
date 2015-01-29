@@ -239,30 +239,30 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $post_id Optional. The page_id to verify access.
+	 * @param int $id The page_id to verify access.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $post_id = null ) {
+	public function has_access( $id ) {
 		global $wp_query;
 		$has_access = null;
 
-		if ( empty( $post_id ) ) {
-			$post_id = $this->get_current_post_id();
+		if ( empty( $id ) ) {
+			$id = $this->get_current_post_id();
 		}
 
-		$post_type = get_post_type( $post_id );
+		$post_type = get_post_type( $id );
 		if ( in_array( $post_type, array( 'post', '' ) ) ) {
 			// Only verify permission if ruled by post by post.
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-				$has_access = parent::has_access( $post_id );
+				$has_access = parent::has_access( $id );
 			}
 		}
 
 		return apply_filters(
 			'ms_rule_post_model_has_access',
 			$has_access,
-			$post_id,
+			$id,
 			$this
 		);
 	}

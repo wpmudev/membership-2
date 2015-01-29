@@ -136,11 +136,11 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $post_id The content id to verify access.
+	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $post_id = null ) {
+	public function has_access( $id ) {
 		$has_access = null;
 
 		// Only verify permission if NOT ruled by cpt post by post.
@@ -148,8 +148,8 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 			return $has_access;
 		}
 
-		if ( ! empty( $post_id ) ) {
-			$post = get_post( $post_id );
+		if ( ! empty( $id ) ) {
+			$post = get_post( $id );
 		} else {
 			$post = get_queried_object();
 		}
@@ -173,7 +173,7 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 		return apply_filters(
 			'ms_rule_cptgroup_model_has_access',
 			$has_access,
-			$post_id,
+			$id,
 			$this
 		);
 	}

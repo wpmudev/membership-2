@@ -49,32 +49,43 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id = null ) {
+	public function has_access( $id ) {
 		global $bp;
 		$has_access = null;
 
-		if ( function_exists( 'bp_current_component' ) ) {
+		if ( ! function_exists( 'bp_current_component' ) ) {
+			return null;
+		}
+
+		if ( is_buddypress() ) {
+			// Check if access to *all* BuddyPress pages is restricted
+			$has_access = parent::has_access(
+				MS_Addon_BuddyPress_Rule::PROTECT_ALL
+			);
+		}
+
+		if ( $has_access ) {
+			// General BuddyPress access is either *allowed* or *not denied*
 			$component = bp_current_component();
 
 			if ( ! empty( $component ) ) {
-				switch ( $component ) {
+				if ( bp_is_user() || $component == 'members' ) {
+					// Member listing or member profile access.
+					$has_access = parent::has_access(
+						MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS
+					);
+				} elseif ( $component == 'messages' ) {
 					// Private messaging direct access.
-					case 'messages':
-						if ( 'compose' == $bp->current_action ) {
-							$has_access = parent::has_access(
-								MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG
-							);
-						}
-						break;
-
+					if ( 'compose' == $bp->current_action ) {
+						$has_access = parent::has_access(
+							MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG
+						);
+					}
+				} elseif ( $component == 'messages' ) {
 					// Don't modify, handled by MS_Addon_Buddypress_Rule_Group
-					case 'groups':
-						break;
-
+				}  else {
 					// Other BP pages can be handled by other rules.
-					default:
-						$has_access = null;
-						break;
+					$has_access = null;
 				}
 			}
 		}
@@ -241,28 +252,44 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	public function get_contents( $args = null ) {
 		$contents = array();
 
-		$contents[MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP] = (object) array(
-			'id' => MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP,
-			'name' => __( 'Friendship request', MS_TEXT_DOMAIN ),
+		$contents[MS_Addon_BuddyPress_Rule::PROTECT_ALL] = (object) array(
+			'id' => MS_Addon_BuddyPress_Rule::PROTECT_ALL,
+			'name' => __( 'All BuddyPress Pages', MS_TEXT_DOMAIN ),
 			'type' => $this->rule_type,
-			'description' => __( 'Allows the sending of friendship requests to be limited to members.', MS_TEXT_DOMAIN ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ),
+			'description' => __( 'Protect all BuddyPress pages. This rule can be combined with any of the other rules.', MS_TEXT_DOMAIN ),
+			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_ALL ),
 		);
 
 		$contents[MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION] = (object) array(
 			'id' => MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION,
 			'name' => __( 'Group creation', MS_TEXT_DOMAIN ),
 			'type' => $this->rule_type,
-			'description' => __( 'Allows group creation to be limited to members.', MS_TEXT_DOMAIN ),
+			'description' => __( 'Only members can create new groups.', MS_TEXT_DOMAIN ),
 			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION ),
+		);
+
+		$contents[MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP] = (object) array(
+			'id' => MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP,
+			'name' => __( 'Friendship request', MS_TEXT_DOMAIN ),
+			'type' => $this->rule_type,
+			'description' => __( 'Only allow members to send friendship requests.', MS_TEXT_DOMAIN ),
+			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ),
 		);
 
 		$contents[MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG] = (object) array(
 			'id' => MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG,
 			'name' => __( 'Private messaging', MS_TEXT_DOMAIN ),
 			'type' => $this->rule_type,
-			'description' => __( 'Allows the sending of private messages to be limited to members.', MS_TEXT_DOMAIN ),
+			'description' => __( 'Only allow members to send private messages.', MS_TEXT_DOMAIN ),
 			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ),
+		);
+
+		$contents[MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS] = (object) array(
+			'id' => MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS,
+			'name' => __( 'Member listing', MS_TEXT_DOMAIN ),
+			'type' => $this->rule_type,
+			'description' => __( 'Only members can see the BuddyPress Member Directory and Member Profiles.', MS_TEXT_DOMAIN ),
+			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS ),
 		);
 
 		return apply_filters(

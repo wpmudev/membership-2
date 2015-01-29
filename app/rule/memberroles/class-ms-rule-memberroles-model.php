@@ -125,13 +125,8 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id = null ) {
-		return apply_filters(
-			'ms_rule_memberroles_model_has_access',
-			null,
-			null,
-			$this
-		);
+	public function has_access( $id ) {
+		return null;
 	}
 
 	/**

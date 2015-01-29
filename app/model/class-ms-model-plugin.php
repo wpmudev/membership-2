@@ -44,7 +44,7 @@ class MS_Model_Plugin extends MS_Model {
 	 * rule is loaded long after the menu is rendered and therefore does not
 	 * have access to the full list of menu items.
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 *
 	 * @var array
 	 */
@@ -69,6 +69,29 @@ class MS_Model_Plugin extends MS_Model {
 		$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
 
 		/*
+		 * Create our own copy of the full admin menu to be used in the
+		 * Protected Content settings.
+		 *
+		 * These hooks are only executed in the admin side.
+		 */
+		$this->add_action( '_network_admin_menu', 'store_admin_menu', 1 );
+		$this->add_action( '_user_admin_menu', 'store_admin_menu', 1 );
+		$this->add_action( '_admin_menu', 'store_admin_menu', 1 );
+
+		$this->add_action( 'network_admin_menu', 'store_admin_menu', 99999 );
+		$this->add_action( 'user_admin_menu', 'store_admin_menu', 99999 );
+		$this->add_action( 'admin_menu', 'store_admin_menu', 99999 );
+
+		// Register all Add-ons and load rules BEFORE the user is initialized.
+		$this->add_action( 'ms_load_member', 'load_addons' );
+		$this->add_action( 'ms_load_member', 'load_rules' );
+
+		// Setup the page protection AFTER the user was initialized.
+		$this->add_action( 'ms_init_done', 'setup_rules', 1 );
+		$this->add_action( 'ms_init_done', 'setup_protection', 2 );
+		$this->add_action( 'ms_init_done', 'setup_admin_protection', 3 );
+
+		/*
 		 * Some plugins (such as MarketPress) can trigger the set_current_user
 		 * action hook before this object is initialized.
 		 *
@@ -84,40 +107,15 @@ class MS_Model_Plugin extends MS_Model {
 			// Init gateways and communications to register actions/filters
 			$this->add_action( 'set_current_user', array( 'MS_Model_Gateway', 'get_gateways' ), 2 );
 			$this->add_action( 'set_current_user', array( 'MS_Model_Communication', 'load_communications' ), 2 );
-
-			// Setup the page protection
-			$this->add_action( 'set_current_user', 'setup_protection', 3 );
-			$this->add_action( 'set_current_user', 'setup_admin_protection', 3 );
 		} else {
-			// Initialize the current member
-			$this->init_member();
-			$this->setup_cron_services();
-
 			// Init gateways and communications to register actions/filters
 			MS_Model_Gateway::get_gateways();
 			MS_Model_Communication::load_communications();
 
-			// Setup the page protection
-			$this->setup_protection();
-			$this->setup_admin_protection();
+			// Initialize the current member
+			$this->init_member();
+			$this->setup_cron_services();
 		}
-
-		$this->load_addons();
-		$this->setup_rules();
-
-		/*
-		 * Create our own copy of the full admin menu to be used in the
-		 * Protected Content settings.
-		 *
-		 * These hooks are only executed in the admin side.
-		 */
-		$this->add_action( '_network_admin_menu', 'store_admin_menu', 1 );
-		$this->add_action( '_user_admin_menu', 'store_admin_menu', 1 );
-		$this->add_action( '_admin_menu', 'store_admin_menu', 1 );
-
-		$this->add_action( 'network_admin_menu', 'store_admin_menu', 99999 );
-		$this->add_action( 'user_admin_menu', 'store_admin_menu', 99999 );
-		$this->add_action( 'admin_menu', 'store_admin_menu', 99999 );
 	}
 
 	/**
@@ -131,7 +129,7 @@ class MS_Model_Plugin extends MS_Model {
 	 * @since 1.0.0
 	 */
 	public function init_member() {
-		do_action( 'ms_model_plugin_init_member_before', $this );
+		do_action( 'ms_load_member', $this );
 
 		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->member = MS_Model_Member::get_current_member();
@@ -156,7 +154,25 @@ class MS_Model_Plugin extends MS_Model {
 			);
 		}
 
-		do_action( 'ms_model_plugin_init_member_after', $this );
+		/**
+		 * At this point the plugin is initialized and we are here:
+		 *   - All Add-Ons are registered
+		 *   - All Rules are registered
+		 *   - Know the current User
+		 *     - All Subscriptions/Memberships of the user are loaded
+		 *     - System memberships are already assigned (guest/base)
+		 *   - Payment gateways are registered
+		 *   - Communication settings are loaded
+		 *
+		 * Next we tell everybody that we are ready to get serious!
+		 *
+		 * What happens next:
+		 *   1. All Membership-Rules are initialized/merged
+		 *   2. Front-End Protection is applied
+		 *   3. Admin-Side Protection is applied
+		 */
+
+		do_action( 'ms_init_done', $this );
 	}
 
 	/**
@@ -203,31 +219,17 @@ class MS_Model_Plugin extends MS_Model {
 					$Info['memberships'][] = $membership->id;
 				}
 			} else {
-				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
-					$special_page = false;
-				} else {
-					$special_page = is_home()
-						|| is_front_page()
-						|| is_404()
-						|| is_search()
-						|| is_archive();
-				}
-
-				// Front page, etc. are public by default.
-				if ( $special_page ) {
+				/*
+				 * A non-admin visitor is only guaranteed access to special
+				 * Protected Content pages:
+				 * Registration, Login, etc.
+				 */
+				$ms_page = MS_Model_Pages::current_page();
+				if ( $ms_page ) {
 					$Info['has_access'] = true;
 
 					if ( $simulation ) {
-						$Info['reason'][] = __( 'Allow: Special page is always available', MS_TEXT_DOMAIN );
-					}
-				} else {
-					$ms_page = MS_Model_Pages::current_page();
-					if ( $ms_page ) {
-						$Info['has_access'] = true;
-
-						if ( $simulation ) {
-							$Info['reason'][] = __( 'Allow: This is a Membership Page', MS_TEXT_DOMAIN );
-						}
+						$Info['reason'][] = __( 'Allow: This is a Membership Page', MS_TEXT_DOMAIN );
 					}
 				}
 
@@ -364,29 +366,27 @@ class MS_Model_Plugin extends MS_Model {
 	 * Load all the Add-ons.
 	 *
 	 * Related Action Hooks:
-	 * - plugins_loaded
+	 * - ms_load_member
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public function load_addons() {
-		do_action( 'ms_model_plugin_load_addons_before', $this );
+		do_action( 'ms_load_addons', $this );
 
 		// Initialize all Add-ons
 		MS_Model_Addon::get_addons();
-
-		do_action( 'ms_model_plugin_load_addons_after', $this );
 	}
 
 	/**
 	 * Load all the rules that are used by the plugin.
 	 *
 	 * Related Action Hooks:
-	 * - plugins_loaded
+	 * - ms_load_member
 	 *
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
-	public function setup_rules() {
-		do_action( 'ms_model_plugin_load_rules_before', $this );
+	public function load_rules() {
+		do_action( 'ms_load_rules', $this );
 
 		$rule_types = MS_Model_Rule::get_rule_types();
 		$base = MS_Model_Membership::get_base();
@@ -394,14 +394,32 @@ class MS_Model_Plugin extends MS_Model {
 		foreach ( $rule_types as $rule_type ) {
 			$rule = $base->get_rule( $rule_type );
 		}
+	}
+
+	/**
+	 * Load all the rules that are used by the plugin.
+	 *
+	 * Related Action Hooks:
+	 * - ms_init_done
+	 *
+	 * @since 1.1.0
+	 */
+	public function setup_rules() {
+		// Make sure we stick to the correct workflow.
+		if ( ! did_action( 'ms_init_done' ) ) {
+			throw new Exception( 'setup_rules() is called too early.', 1 );
+			return;
+		}
+
+		do_action( 'ms_initialize_rules', $this );
+
+		$rule_types = MS_Model_Rule::get_rule_types();
 
 		foreach ( $this->member->subscriptions as $ms_relationship ) {
 			foreach ( $rule_types as $rule_type ) {
 				$rule = $ms_relationship->get_membership()->get_rule( $rule_type );
 			}
 		}
-
-		do_action( 'ms_model_plugin_load_rules_after', $this );
 	}
 
 	/**
@@ -411,14 +429,20 @@ class MS_Model_Plugin extends MS_Model {
 	 * Protect feeds.
 	 *
 	 * Related Action Hooks:
-	 * - set_current_user
+	 * - ms_init_done
 	 *
 	 * @since 1.0.0
 	 */
 	public function setup_protection() {
 		if ( is_admin() ) { return; }
 
-		do_action( 'ms_model_plugin_setup_protection_before', $this );
+		// Make sure we stick to the correct workflow.
+		if ( ! did_action( 'ms_init_done' ) ) {
+			throw new Exception( 'setup_protection() is called too early.', 1 );
+			return;
+		}
+
+		do_action( 'ms_setup_protection', $this );
 
 		// Admin user has access to everything
 		if ( $this->member->is_normal_admin() ) {
@@ -426,32 +450,38 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		// Search permissions through all memberships joined.
-		foreach ( $this->member->subscriptions as $ms_relationship ) {
+		foreach ( $this->member->subscriptions as $subscription ) {
 			// Verify status of the membership.
 			// Only active, trial or canceled (until it expires) status memberships.
-			if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+			if ( ! $this->member->has_membership( $subscription->membership_id ) ) {
 				continue;
 			}
 
-			$membership = $ms_relationship->get_membership();
-			$membership->protect_content( $ms_relationship );
+			$membership = $subscription->get_membership();
+			$membership->protect_content( $subscription );
 		}
 
-		do_action( 'ms_model_plugin_setup_protection_after', $this );
+		do_action( 'ms_setup_protection_done', $this );
 	}
 
 	/**
 	 * Setup initial protection for the admin-side.
 	 *
 	 * Related Action Hooks:
-	 * - set_current_user
+	 * - ms_init_done
 	 *
 	 * @since 1.1.0
 	 */
 	public function setup_admin_protection() {
 		if ( ! is_admin() ) { return; }
 
-		do_action( 'ms_model_plugin_setup_admin_protection_before', $this );
+		// Make sure we stick to the correct workflow.
+		if ( ! did_action( 'ms_init_done' ) ) {
+			throw new Exception( 'setup_admin_protection() is called too early.', 1 );
+			return;
+		}
+
+		do_action( 'ms_setup_admin_protection', $this );
 
 		// Admin user has access to everything
 		if ( $this->member->is_normal_admin() ) {
@@ -459,18 +489,18 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		// Search permissions through all memberships joined.
-		foreach ( $this->member->subscriptions as $ms_relationship ) {
+		foreach ( $this->member->subscriptions as $subscription ) {
 			// Verify status of the membership.
 			// Only active, trial or canceled (until it expires) status memberships.
-			if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+			if ( ! $this->member->has_membership( $subscription->membership_id ) ) {
 				continue;
 			}
 
-			$membership = $ms_relationship->get_membership();
-			$membership->protect_admin_content( $ms_relationship );
+			$membership = $subscription->get_membership();
+			$membership->protect_admin_content( $subscription );
 		}
 
-		do_action( 'ms_model_plugin_setup_admin_protection_after', $this );
+		do_action( 'ms_setup_admin_protection_done', $this );
 	}
 
 	/**

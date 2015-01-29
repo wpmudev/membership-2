@@ -1076,11 +1076,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		$base_rules = self::get_base()->rules;
 
-		foreach ( $base_rules as $rule_type => $denied_items ) {
+		foreach ( $base_rules as $rule_type => $base_rule ) {
 			try {
-				// The membership has granted access to some rule items.
 				$rule = $this->get_rule( $rule_type );
-				$rule->merge_rule_values( $denied_items, true );
+				$rule->protect_undefined_items( $base_rule, true );
 				$this->set_rule( $rule_type, $rule );
 			}
 			catch( Exception $e ) {

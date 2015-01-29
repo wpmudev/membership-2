@@ -54,20 +54,20 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $post_id The content post ID to verify access.
+	 * @param int $id The content post ID to verify access.
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $post_id = null ) {
+	public function has_access( $id ) {
 		global $wp_query;
 		$has_access = null;
 
-		if ( empty( $post_id ) ) {
-			$post_id  = $this->get_current_post_id();
+		if ( empty( $id ) ) {
+			$id  = $this->get_current_post_id();
 		}
 
-		if ( ! empty( $post_id ) ) {
-			$post_type = get_post_type( $post_id );
+		if ( ! empty( $id ) ) {
+			$post_type = get_post_type( $id );
 
 			if ( in_array( $post_type, self::get_bb_cpt() ) ) {
 				$has_access = false;
@@ -76,19 +76,19 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 				if ( MS_Addon_Bbpress::is_active() ) {
 					switch ( $post_type ) {
 						case self::CPT_BB_FORUM:
-							$has_access = parent::has_access( $post_id );
+							$has_access = parent::has_access( $id );
 							break;
 
 						case self::CPT_BB_TOPIC:
 							if ( function_exists( 'bbp_get_topic_forum_id' ) ) {
-								$forum_id = bbp_get_topic_forum_id( $post_id );
+								$forum_id = bbp_get_topic_forum_id( $id );
 								$has_access = parent::has_access( $forum_id );
 							}
 							break;
 
 						case self::CPT_BB_REPLY:
 							if ( function_exists( 'bbp_get_reply_forum_id' ) ) {
-								$forum_id = bbp_get_reply_forum_id( $post_id );
+								$forum_id = bbp_get_reply_forum_id( $id );
 								$has_access = parent::has_access( $forum_id );
 							}
 							break;
@@ -110,7 +110,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 		return apply_filters(
 			'ms_addon_bbpress_model_rule_has_access',
 			$has_access,
-			$post_id,
+			$id,
 			$this
 		);
 	}
