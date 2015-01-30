@@ -701,6 +701,9 @@ class MS_Controller_Gateway extends MS_Controller {
 				if ( 'paypalexpress' == $gateway ) { $gateway = 'paypalstandard'; }
 			}
 
+			MS_Helper_Debug::log( 'Incoming Payment Notification for "' . $gateway . '"' );
+			MS_Helper_Debug::log( $_POST );
+
 			do_action(
 				'ms_gateway_handle_payment_return_' . $gateway
 			);
