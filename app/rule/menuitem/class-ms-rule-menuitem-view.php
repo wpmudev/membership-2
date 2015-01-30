@@ -3,9 +3,9 @@
 class MS_Rule_MenuItem_View extends MS_View {
 
 	public function to_html() {
-		$membership = $this->data['membership'];
-
+		$membership = MS_Model_Membership::get_base();
 		$menus = $membership->get_rule( MS_Rule_MenuItem::RULE_ID )->get_menu_array();
+
 		$menu_id = reset( array_keys( $menus ) );
 		if ( isset( $_REQUEST['menu_id'] ) ) {
 			$menu_id = $_REQUEST['menu_id'];
@@ -17,7 +17,6 @@ class MS_Rule_MenuItem_View extends MS_View {
 		$rule_menu = $membership->get_rule( MS_Rule_MenuItem::RULE_ID );
 		$rule_listtable = new MS_Rule_MenuItem_ListTable(
 			$rule_menu,
-			$membership,
 			$menus,
 			$menu_id
 		);
@@ -39,9 +38,6 @@ class MS_Rule_MenuItem_View extends MS_View {
 				'desc' => __( 'Protect individual menu items.', MS_TEXT_DOMAIN ),
 			),
 			MS_Rule_MenuItem::RULE_ID,
-			array(
-				'membership' => $this->data['membership'],
-			),
 			$this
 		);
 

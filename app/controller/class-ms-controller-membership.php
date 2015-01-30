@@ -403,7 +403,6 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['active_tab'] = $this->get_active_tab();
 		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
 		$data['settings'] = MS_Plugin::instance()->settings;
-		$data['membership'] = MS_Model_Membership::get_base();
 
 		$view = MS_Factory::create( 'MS_View_Membership_ProtectedContent' );
 		$view->data = apply_filters( 'ms_view_membership_protectedcontent_data', $data, $this );
@@ -1147,13 +1146,29 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
+		/*
+		 * Get a list of the dripped memberships:
+		 * We need this info in the javascript
+		 */
+		$dripped_args = array(
+			'meta_query' => array(
+				array(
+					'key' => 'type',
+					'value' => MS_Model_Membership::TYPE_DRIPPED,
+				),
+			),
+		);
+		$dripped = MS_Model_Membership::get_membership_names( $dripped_args );
+
 		$data = array(
 			'ms_init' => array(),
 			'lang' => array(
 				'msg_delete' => __( 'Do you want to completely delete the membership <strong>%s</strong> including all subscriptions?', MS_TEXT_DOMAIN ),
 				'btn_delete' => __( 'Delete', MS_TEXT_DOMAIN ),
 				'btn_cancel' => __( 'Cancel', MS_TEXT_DOMAIN ),
+				'quickedit_error' => __( 'Error while saving changes.', MS_TEXT_DOMAIN ),
 			),
+			'dripped' => $dripped,
 		);
 
 		$step = $this->get_step();

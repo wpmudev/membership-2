@@ -5,6 +5,7 @@ module.exports = function( grunt ) {
 			'app/assets/js/ms-admin.js': [
 				'app/assets/js/src/ms-loader.js',
 				'app/assets/js/src/ms-functions.js',
+				'app/assets/js/src/ms-inline-editor.js',
 				'app/assets/js/src/ms-tooltip.js',
 				'app/assets/js/src/ms-controller-adminbar.js',
 				'app/assets/js/src/ms-view-help.js',

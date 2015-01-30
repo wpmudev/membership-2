@@ -30,27 +30,6 @@
 class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 
 	/**
-	 * Model that contains the list items of the table.
-	 *
-	 * @var MS_Model_Model
-	 */
-	protected $model;
-
-	/**
-	 * Associated membership model.
-	 *
-	 * @var MS_Model_Membership
-	 */
-	protected $membership;
-
-	/**
-	 * The current membership-ID
-	 *
-	 * @var int
-	 */
-	protected $membership_id = 0;
-
-	/**
 	 * List of matching options that are available for each list item.
 	 *
 	 * @var array
@@ -73,17 +52,8 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	 * @param MS_Model $model Model for the list data.
 	 * @param MS_Model_Membership $membership The associated membership.
 	 */
-	public function __construct( $model, $membership = null ) {
-		parent::__construct(
-			array(
-				'singular'  => 'rule_' . $this->id,
-				'plural'    => 'rules',
-				'ajax'      => false,
-			)
-		);
-
-		$this->model = $model;
-		$this->membership = $membership;
+	public function __construct( $model ) {
+		parent::__construct( $model );
 	}
 
 	/**

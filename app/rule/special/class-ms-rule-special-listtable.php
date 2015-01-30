@@ -31,8 +31,8 @@ class MS_Rule_Special_ListTable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_special';
 
-	public function __construct( $model, $membership = null ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Special Page', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Special Pages', MS_TEXT_DOMAIN );
 	}

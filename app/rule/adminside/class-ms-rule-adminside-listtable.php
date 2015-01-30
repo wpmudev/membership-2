@@ -31,8 +31,8 @@ class MS_Rule_Adminside_ListTable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_adminside';
 
-	public function __construct( $model, $membership = null ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Admin Page', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Admin Pages', MS_TEXT_DOMAIN );
 	}

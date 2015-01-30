@@ -31,8 +31,8 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_post';
 
-	public function __construct( $model, $membership = null ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Post', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Posts', MS_TEXT_DOMAIN );
 	}

@@ -281,7 +281,7 @@ class MS_Rule extends MS_Model {
 			'ms_get_rule_value',
 			$value,
 			$id,
-			$rule_type,
+			$this->rule_type,
 			$this
 		);
 	}

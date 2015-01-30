@@ -1221,6 +1221,21 @@ class MS_Helper_ListTable {
 	protected function display_rows_or_placeholder() {
 		if ( $this->has_items() ) {
 			$this->display_rows();
+
+			// Add an inline edit form.
+			$inline_nonce = wp_create_nonce( 'inline' );
+			?>
+			<tr id="inline-edit" style="display:none"><td>
+			<?php $this->inline_edit(); ?>
+			<p class="submit inline-edit-save">
+				<a accesskey="c" href="#inline-edit" class="button-secondary cancel alignleft"><?php _e( 'Cancel', MS_TEXT_DOMAIN ); ?></a>
+				<input type="hidden" id="_inline_edit" name="_inline_edit" value="<?php echo esc_attr( $inline_nonce ); ?>">
+				<a accesskey="s" href="#inline-edit" class="button-primary save alignright"><?php _e( 'Update', MS_TEXT_DOMAIN ); ?></a>
+				<span class="error" style="display:none"></span>
+				<br class="clear">
+			</p>
+			</td></tr>
+			<?php
 		} else {
 			list( $columns, $hidden ) = $this->get_column_info();
 			echo '<tr class="no-items"><td class="colspanchange" colspan="' . $this->get_column_count() . '">';
@@ -1251,9 +1266,11 @@ class MS_Helper_ListTable {
 	 */
 	protected function single_row( $item ) {
 		static $row_class = '';
-		$row_class = ( $row_class === '' ? 'alternate ' : '' );
+		$row_class = ( $row_class === '' ? ' alternate' : '' );
+		$row_id = 'item-' . $item->id;
+		$class_list = trim( $row_id . $row_class . ' item ' . $this->single_row_class( $item ) );
 
-		echo '<tr class="' . esc_attr( $row_class . ' ' . $this->single_row_class( $item ) ) . '">';
+		echo '<tr id="' . esc_attr( $row_id ) . '" class="' . esc_attr( $class_list ) . '">';
 		$this->single_row_columns( $item );
 		echo '</tr>';
 	}
@@ -1268,8 +1285,7 @@ class MS_Helper_ListTable {
 	 * @return string Class to be added to the table row.
 	 */
 	protected function single_row_class( $item ) {
-		$class = '';
-		return $class; // Can be overridden by child classes.
+		return ''; // Can be overridden by child classes.
 	}
 
 	/**
@@ -1342,8 +1358,7 @@ class MS_Helper_ListTable {
 		ob_start();
 		if ( ! empty( $_REQUEST['no_placeholder'] ) ) {
 			$this->display_rows();
-		}
-		else {
+		} else {
 			$this->display_rows_or_placeholder();
 		}
 
@@ -1361,6 +1376,20 @@ class MS_Helper_ListTable {
 		}
 
 		die( json_encode( $response ) );
+	}
+
+	/**
+	 * Adds a hidden row that contains an inline editor.
+	 *
+	 * To customize the inline form overwrite this function in a child class.
+	 *
+	 * @since 1.1.0
+	 * @access protected
+	 */
+	protected function inline_edit() {
+		?>
+		Inline edit form
+		<?php
 	}
 
 	/**

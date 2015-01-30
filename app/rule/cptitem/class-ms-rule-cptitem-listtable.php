@@ -31,8 +31,8 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'cpt';
 
-	public function __construct( $model, $membership = null ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Custom Post', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Custom Posts', MS_TEXT_DOMAIN );
 	}

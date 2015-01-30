@@ -5,7 +5,39 @@
 /*global ms_functions:false */
 
 window.ms_init.view_protected_content = function init () {
+	var table = jQuery( '.wp-list-table' );
+
 	window.ms_init.memberships_column( '.column-access' );
+
+	function check_if_dripped( ev ) {
+		var ind, membership_id,
+			cell = jQuery( this ).closest( '.column-access' ),
+			row = cell.closest( 'tr.item' ),
+			list = cell.find( 'select.ms-memberships' ),
+			memberships = list.select2( 'val' ),
+			is_dripped = false;
+
+		if ( memberships && memberships.length ) {
+			for ( ind in memberships ) {
+				membership_id = memberships[ind];
+				if ( undefined !== ms_data.dripped[membership_id] ) {
+					is_dripped = true;
+					break;
+				}
+			}
+		}
+
+		if ( is_dripped ) {
+			row.addClass( 'ms-dripped' );
+		} else {
+			row.removeClass( 'ms-dripped' );
+		}
+	}
+
+	table.on( 'ms-ajax-updated', '.ms-memberships', check_if_dripped );
+	table.find( '.ms-memberships' ).each(function() {
+		check_if_dripped.apply( this );
+	});
 };
 
 // This is also used on the Members page
@@ -14,11 +46,13 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 
 	// Change the table row to "protected"
 	function protect_item( ev ) {
-		var cell = jQuery( this ).closest( column_class );
+		var cell = jQuery( this ).closest( column_class ),
+			row = cell.closest( 'tr.item' );
 
-		cell.find( '.ms-empty' )
-			.removeClass( 'ms-empty' )
-			.addClass( 'ms-assigned ms-focused' )
+		row.removeClass( 'ms-empty' )
+			.addClass( 'ms-assigned' );
+
+		cell.addClass( 'ms-focused' )
 			.find( 'select.ms-memberships' )
 			.select2( 'focus' )
 			.select2( 'open' );
@@ -27,13 +61,14 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 	// If the item is not protected by any membership it will chagne to public
 	function maybe_make_public( ev ) {
 		var cell = jQuery( this ).closest( column_class ),
+			row = cell.closest( 'tr.item' ),
 			list = cell.find( 'select.ms-memberships' ),
 			memberships = list.select2( 'val' );
 
-		cell.find( '.ms-focused' ).removeClass( 'ms-focused' );
+		cell.removeClass( 'ms-focused' );
 
 		if ( memberships && memberships.length ) { return; }
-		cell.find( '.ms-assigned' ).removeClass( 'ms-assigned' ).addClass( 'ms-empty' );
+		row.removeClass( 'ms-assigned' ).addClass( 'ms-empty' );
 	}
 
 	// Format the memberships in the dropdown list (= unselected items)

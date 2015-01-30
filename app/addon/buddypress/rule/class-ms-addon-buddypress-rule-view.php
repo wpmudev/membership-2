@@ -3,10 +3,10 @@
 class MS_Addon_BuddyPress_Rule_View extends MS_View {
 
 	public function to_html() {
-		$membership = $this->data['membership'];
+		$membership = MS_Model_Membership::get_base();
 		$rule = $membership->get_rule( MS_Addon_BuddyPress_Rule::RULE_ID );
 
-		$listtable = new MS_Addon_BuddyPress_Rule_ListTable( $rule, $membership );
+		$listtable = new MS_Addon_BuddyPress_Rule_ListTable( $rule );
 		$listtable->prepare_items();
 
 		$header_data = apply_filters(
@@ -16,9 +16,6 @@ class MS_Addon_BuddyPress_Rule_View extends MS_View {
 				'desc' => __( 'Protect the following BuddyPress content.', MS_TEXT_DOMAIN ),
 			),
 			MS_Addon_BuddyPress_Rule::RULE_ID,
-			array(
-				'membership' => $this->data['membership'],
-			),
 			$this
 		);
 

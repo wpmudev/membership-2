@@ -4,13 +4,9 @@ class MS_Rule_Url_View extends MS_View {
 
 	public function to_html() {
 		$membership = $this->data['membership'];
-
 		$rule = $membership->get_rule( MS_Rule_Url::RULE_ID );
-		$listtable = new MS_Rule_Url_ListTable(
-			$rule,
-			$membership
-		);
 
+		$listtable = new MS_Rule_Url_ListTable( $rule );
 		$listtable->prepare_items();
 
 		if ( $listtable->list_shows_base_items() ) {
@@ -51,9 +47,6 @@ class MS_Rule_Url_View extends MS_View {
 				'class' => '',
 			),
 			MS_Rule_Url::RULE_ID,
-			array(
-				'membership' => $this->data['membership'],
-			),
 			$this
 		);
 

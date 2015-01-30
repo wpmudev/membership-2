@@ -45,8 +45,8 @@ class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 	 */
 	protected $menu_id;
 
-	public function __construct( $model, $membership, $all_menus, $menu_id ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model, $all_menus, $menu_id ) {
+		parent::__construct( $model );
 		$this->menus = $all_menus;
 		$this->menu_id = $menu_id;
 		$this->name['singular'] = __( 'Menu Item', MS_TEXT_DOMAIN );

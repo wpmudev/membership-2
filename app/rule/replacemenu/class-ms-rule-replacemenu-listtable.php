@@ -39,8 +39,8 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 	 * @param MS_Model $model Model for the list data.
 	 * @param MS_Model_Membership $membership The associated membership.
 	 */
-	public function __construct( $model, $membership ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Menu', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Menus', MS_TEXT_DOMAIN );
 

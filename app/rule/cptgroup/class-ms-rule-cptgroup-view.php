@@ -3,13 +3,10 @@
 class MS_Rule_CptGroup_View extends MS_View {
 
 	public function to_html() {
-		$membership = $this->data['membership'];
+		$membership = MS_Model_Membership::get_base();
 
 		$rule = $membership->get_rule( MS_Rule_CptGroup::RULE_ID );
-		$rule_listtable = new MS_Rule_CptGroup_ListTable(
-			$rule,
-			$membership
-		);
+		$rule_listtable = new MS_Rule_CptGroup_ListTable( $rule );
 		$rule_listtable->prepare_items();
 
 		$header_data = array();
@@ -20,9 +17,6 @@ class MS_Rule_CptGroup_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			$header_data,
 			MS_Rule_CptGroup::RULE_ID,
-			array(
-				'membership' => $this->data['membership'],
-			),
 			$this
 		);
 

@@ -2,7 +2,7 @@
  * Special styles used on "Protected Content" page
  */
 
-#wpwrap .ms-wrap {
+#wpwrap .ms-wrap.ms-wrap-protected-content {
 	h3.ms-list-title {
 		color: #4F7984;
 
@@ -22,6 +22,17 @@
 	.column-access {
 		width: 70%;
 	}
+
+	.editinline {
+		display: none;
+	}
+
+	tr.ms-dripped {
+		.editinline {
+			display: block;
+		}
+	}
+
 }
 
 
@@ -35,7 +46,7 @@
 			display: none;
 		}
 
-		.ms-empty {
+		&.ms-empty {
 			position: relative;
 
 			.wpmui-select-wrapper {
@@ -87,7 +98,7 @@
 			}
 		}
 
-		.ms-assigned {
+		&.ms-assigned {
 			position: relative;
 
 			.ms-empty-note-wrapper {

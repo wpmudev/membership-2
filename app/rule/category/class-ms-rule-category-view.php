@@ -3,13 +3,10 @@
 class MS_Rule_Category_View extends MS_View {
 
 	public function to_html() {
-		$membership = $this->data['membership'];
+		$membership = MS_Model_Membership::get_base();
 
 		$rule = $membership->get_rule( MS_Rule_Category::RULE_ID );
-		$rule_listtable = new MS_Rule_Category_ListTable(
-			$rule,
-			$membership
-		);
+		$rule_listtable = new MS_Rule_Category_ListTable( $rule );
 		$rule_listtable->prepare_items();
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
@@ -24,9 +21,6 @@ class MS_Rule_Category_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			$header_data,
 			MS_Rule_Category::RULE_ID,
-			array(
-				'membership' => $this->data['membership'],
-			),
 			$this
 		);
 

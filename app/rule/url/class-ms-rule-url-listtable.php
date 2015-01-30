@@ -31,8 +31,8 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_url_group';
 
-	public function __construct( $model, $membership = null ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'URL', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'URLs', MS_TEXT_DOMAIN );
 		$this->name['default_access'] = __( 'Nobody', MS_TEXT_DOMAIN );

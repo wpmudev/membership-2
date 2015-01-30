@@ -79,8 +79,13 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	 */
 	static protected $memberships = array();
 
-
-	public function __construct( $model, $membership = null ) {
+	/**
+	 * Initialize the list table
+	 *
+	 * @since 1.0.0
+	 * @param MS_Rule $model Rule-Model
+	 */
+	public function __construct( $model ) {
 		parent::__construct(
 			array(
 				'singular'  => 'rule_' . $this->id,
@@ -94,7 +99,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$this->name['default_access'] = __( 'Everyone', MS_TEXT_DOMAIN );
 
 		$this->model = $model;
-		$this->membership = $membership;
+		$this->membership = MS_Model_Membership::get_base();
 
 		$memberships = MS_Model_Membership::get_memberships();
 		self::$memberships = array();
@@ -109,7 +114,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 	public function get_columns() {
 		return apply_filters(
-			"ms_helper_listtable_{$this->id}_columns",
+			'ms_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => '<input type="checkbox" />',
 				'content' => __( 'Content', MS_TEXT_DOMAIN ),
@@ -138,16 +143,9 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 	public function get_bulk_actions() {
 		$bulk_actions = array(
-			'give_access' => __( 'Give access', MS_TEXT_DOMAIN ),
-			'no_access' => __( 'Remove access', MS_TEXT_DOMAIN ),
+			'give_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
+			'no_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
 		);
-
-		if ( $this->membership->is_base() ) {
-			$bulk_actions = array(
-				'give_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
-				'no_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
-			);
-		}
 
 		return apply_filters(
 			"ms_helper_listtable_{$this->id}_bulk_actions",
@@ -163,10 +161,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			$this->get_hidden_columns(),
 			$this->get_sortable_columns(),
 		);
-
-		if ( MS_Model_Membership::TYPE_DRIPPED != $this->membership->type ) {
-			unset( $this->_column_headers[0]['dripped'] );
-		}
 
 		// Some columns have a pre-defined title that cannot be changed.
 		if ( isset( $this->_column_headers[0]['cb'] ) ) {
@@ -289,8 +283,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$rule = $this->model;
 		$memberships = $rule->get_memberships( $item->id );
 
-		$class = empty( $memberships ) ? 'ms-empty' : 'ms-assigned';
-
 		$public = array(
 			'id' => 'ms-empty-' . $item->id,
 			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
@@ -314,8 +306,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		);
 
 		$html = sprintf(
-			'<div class="%1$s no-auto-init">%2$s%3$s</div>',
-			esc_attr( $class ),
+			'<div class="no-auto-init">%1$s%2$s</div>',
 			MS_Helper_Html::html_element( $public, true ),
 			MS_Helper_Html::html_element( $list, true )
 		);
@@ -324,8 +315,48 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	}
 
 	public function column_dripped( $item, $column_name ) {
-		$action = MS_Controller_Rule::AJAX_ACTION_UPDATE_DRIPPED;
-		$nonce = wp_create_nonce( $action );
+		ob_start();
+		?>
+		<a href="#" class="editinline"><?php _e( 'Set date...', MS_TEXT_DOMAIN ); ?></a>
+		<div class="inline_data hidden">
+			<span class="name"><?php echo esc_html( $item->name ); ?></span>
+			<span class="dripped">...</span>
+		</div>
+		<?php
+		$html = ob_get_clean();
+
+		return apply_filters(
+			'ms_helper_listtable_rule_column_dripped',
+			$html
+		);
+	}
+
+	public function column_content( $item, $column_name ) {
+		$html = $item->content;
+
+		return $html;
+	}
+
+	/**
+	 * Adds a class to the <tr> element
+	 *
+	 * @since  1.1.0
+	 * @param  object $item
+	 */
+	protected function single_row_class( $item ) {
+		$rule = $this->model;
+		$memberships = $rule->get_memberships( $item->id );
+
+		$class = empty( $memberships ) ? 'ms-empty' : 'ms-assigned';
+		return $class;
+	}
+
+	/**
+	 * Displays the inline-edit form used to edit the dripped content details.
+	 *
+	 * @since 1.1.0
+	 */
+	protected function inline_edit() {
 		$rule = $this->model;
 		$membership = $this->membership;
 
@@ -371,8 +402,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE,
 					'id' => $item->id,
 					'field' => 'spec_date',
-					'action' => $action,
-					'_wpnonce' => $nonce,
 				),
 			),
 
@@ -387,8 +416,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
 					'field' => 'period_unit',
 					'id' => $item->id,
-					'action' => $action,
-					'_wpnonce' => $nonce,
 				),
 			),
 
@@ -403,8 +430,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
 					'field' => 'period_type',
 					'id' => $item->id,
-					'action' => $action,
-					'_wpnonce' => $nonce,
 				),
 			),
 
@@ -419,8 +444,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
 					'field' => 'period_unit',
 					'id' => $item->id,
-					'action' => $action,
-					'_wpnonce' => $nonce,
 				),
 			),
 
@@ -435,21 +458,14 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
 					'field' => 'period_type',
 					'id' => $item->id,
-					'action' => $action,
-					'_wpnonce' => $nonce,
 				),
-			),
-
-			'ok' => array(
-				'id' => 'ok_' . $membership->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Ok', MS_TEXT_DOMAIN ),
-				'class' => 'ms-dripped-edit-ok',
 			),
 		);
 
-		ob_start();
 		?>
+		<div>
+			<strong class="lbl-name"></strong>
+		</div>
 		<div class="ms-dripped-edit-wrapper <?php echo 'ms-dripped-type-' . MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE; ?>">
 			<?php _e( 'on', MS_TEXT_DOMAIN ); ?><span class="ms-dripped-desc"></span>
 			<?php MS_Helper_Html::html_element( $fields['spec_date'] ); ?>
@@ -469,7 +485,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 				<?php
 				MS_Helper_Html::html_element( $fields['period_unit_from_reg'] );
 				MS_Helper_Html::html_element( $fields['period_type_from_reg'] );
-				MS_Helper_Html::html_element( $fields['ok'] );
 				?>
 			</div>
 		</div>
@@ -487,42 +502,10 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 				<?php
 				MS_Helper_Html::html_element( $fields['period_unit_from_today'] );
 				MS_Helper_Html::html_element( $fields['period_type_from_today'] );
-				MS_Helper_Html::html_element( $fields['ok'] );
 				?>
 			</div>
 		</div>
 		<?php
-		$html = ob_get_clean();
-
-		return apply_filters(
-			'ms_helper_listtable_rule_column_dripped',
-			$html
-		);
-	}
-
-	public function column_default( $item, $column_name ) {
-		if ( property_exists( $item, $column_name ) ) {
-			$html = $item->$column_name;
-		} else {
-			$html = '';
-		}
-
-		return $html;
-	}
-
-	protected function get_membership_id() {
-		$membership_id = 0;
-
-		if ( ! empty( $this->membership ) && $this->membership->is_valid() ) {
-			$membership_id = $this->membership->id;
-		} elseif ( ! empty( $_REQUEST['membership_id'] ) ) {
-			$membership_id = $_REQUEST['membership_id'];
-		}
-
-		return apply_filters(
-			'ms_helper_listtable_rule_get_membership_id',
-			$membership_id
-		);
 	}
 
 	/**
@@ -581,35 +564,6 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		);
 
 		printf( '<h3 class="ms-list-title">%1$s</h3>', $title );
-
-	// Waiting for Feedback from Victor before removing this code.
-	#	$url = remove_query_arg( 'membership_id' );
-	#	$links = array();
-	#	$memberships = MS_Model_Membership::get_membership_names();
-	#
-	#	$links['_title'] = array(
-	#		'label' => __( 'Membership:', MS_TEXT_DOMAIN ),
-	#	);
-	#
-	#	$links['all'] = array(
-	#		'label' => __( 'All', MS_TEXT_DOMAIN ),
-	#		'url' => $url,
-	#	);
-	#
-	#	foreach ( $memberships as $id => $name ) {
-	#		if ( empty( $name ) ) {
-	#			$name = __( '(No Name)', MS_TEXT_DOMAIN );
-	#		}
-	#
-	#		$links['ms-' . $id] = array(
-	#			'label' => esc_html( $name ),
-	#			'url' => add_query_arg( array( 'membership_id' => $id ), $url ),
-	#		);
-	#	}
-	#
-	#	echo '<div class="ms-header-filter cf"><ul class="subsubsub">';
-	#	$this->display_filter_links( $links );
-	#	echo '</ul></div>';
 	}
 
 	/**

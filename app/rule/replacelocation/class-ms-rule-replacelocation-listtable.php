@@ -39,8 +39,8 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 	 * @param MS_Model $model Model for the list data.
 	 * @param MS_Model_Membership $membership The associated membership.
 	 */
-	public function __construct( $model, $membership ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Menu Location', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Menu Locations', MS_TEXT_DOMAIN );
 

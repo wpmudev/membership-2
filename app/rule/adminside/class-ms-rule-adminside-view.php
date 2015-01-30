@@ -3,10 +3,10 @@
 class MS_Rule_Adminside_View extends MS_View {
 
 	public function to_html() {
-		$membership = $this->data['membership'];
+		$membership = MS_Model_Membership::get_base();
 		$rule = $membership->get_rule( MS_Rule_Adminside::RULE_ID );
 
-		$rule_listtable = new MS_Rule_Adminside_ListTable( $rule, $membership );
+		$rule_listtable = new MS_Rule_Adminside_ListTable( $rule );
 		$rule_listtable->prepare_items();
 
 		$header_data = apply_filters(
@@ -16,9 +16,6 @@ class MS_Rule_Adminside_View extends MS_View {
 				'desc' => __( 'Protected Admin Side pages are only available for members. The below list contains all possible menu items that WordPress knows about - some of these items might not be available on your installation.', MS_TEXT_DOMAIN ),
 			),
 			MS_Rule_Adminside::RULE_ID,
-			array(
-				'membership' => $this->data['membership'],
-			),
 			$this
 		);
 

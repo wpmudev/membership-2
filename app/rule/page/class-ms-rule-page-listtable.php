@@ -31,8 +31,8 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_page';
 
-	public function __construct( $model, $membership = null ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Page', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Pages', MS_TEXT_DOMAIN );
 	}
@@ -42,7 +42,6 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 			'cb' => true,
 			'name' => __( 'Page title', MS_TEXT_DOMAIN ),
 			'access' => true,
-			'post_date' => __( 'Date', MS_TEXT_DOMAIN ),
 			'dripped' => true,
 		);
 

@@ -31,8 +31,8 @@ class MS_Rule_Category_ListTable extends MS_Helper_ListTable_Rule {
 
 	protected $id = 'rule_category';
 
-	public function __construct( $model, $membership = null ) {
-		parent::__construct( $model, $membership );
+	public function __construct( $model ) {
+		parent::__construct( $model );
 		$this->name['singular'] = __( 'Category', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Categories', MS_TEXT_DOMAIN );
 	}

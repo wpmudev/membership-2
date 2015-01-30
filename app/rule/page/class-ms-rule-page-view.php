@@ -3,9 +3,9 @@
 class MS_Rule_Page_View extends MS_View {
 
 	public function to_html() {
-		$membership = $this->data['membership'];
+		$membership = MS_Model_Membership::get_base();
 		$rule = $membership->get_rule( MS_Rule_Page::RULE_ID );
-		$rule_listtable = new MS_Rule_Page_ListTable( $rule, $membership );
+		$rule_listtable = new MS_Rule_Page_ListTable( $rule );
 		$rule_listtable->prepare_items();
 
 		$header_data = apply_filters(
@@ -15,9 +15,6 @@ class MS_Rule_Page_View extends MS_View {
 				'desc' => __( 'All pages that do not have Content Protection applied are visible to Everyone', MS_TEXT_DOMAIN ),
 			),
 			MS_Rule_Page::RULE_ID,
-			array(
-				'membership' => $this->data['membership'],
-			),
 			$this
 		);
 
