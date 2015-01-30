@@ -694,6 +694,13 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function handle_payment_return( $wp_query ) {
 		if ( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			$gateway = $wp_query->query_vars['paymentgateway'];
+
+			// Handle payment-responses from imported membership subscriptions.
+			if ( MS_Model_Import_Membership::did_import() ) {
+				if ( 'paypalsolo' == $gateway ) { $gateway = 'paypalsingle'; }
+				if ( 'paypalexpress' == $gateway ) { $gateway = 'paypalstandard'; }
+			}
+
 			do_action(
 				'ms_gateway_handle_payment_return_' . $gateway
 			);

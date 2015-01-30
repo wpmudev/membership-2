@@ -208,6 +208,18 @@ class MS_Model_Settings extends MS_Model_Option {
 	);
 
 	/**
+	 * Import flags
+	 *
+	 * When data was imported a flag can be set here to remember that some
+	 * members come from there.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var array
+	 */
+	protected $import = array();
+
+	/**
 	 * Get setting.
 	 *
 	 * @since 1.0.0

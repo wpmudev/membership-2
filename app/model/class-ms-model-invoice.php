@@ -248,6 +248,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $tax_name;
 
 	/**
+	 * Where the data came from. Can only be changed by data import tool
+	 *
+	 * @since 1.1.0
+	 * @var string
+	 */
+	protected $source = '';
+
+	/**
 	 * Get invoice status types.
 	 *
 	 * @since 1.0.0

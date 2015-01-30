@@ -207,6 +207,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $is_setup_completed = false;
 
 	/**
+	 * Where the data came from. Can only be changed by data import tool
+	 *
+	 * @since 1.1.0
+	 * @var string
+	 */
+	protected $source = '';
+
+	/**
 	 * Membership composite Rules.
 	 *
 	 * These are protection rules for this membership only.

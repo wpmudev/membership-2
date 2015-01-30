@@ -134,6 +134,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	protected $move_from_id;
 
 	/**
+	 * Where the data came from. Can only be changed by data import tool
+	 *
+	 * @since 1.1.0
+	 * @var string
+	 */
+	protected $source = '';
+
+	/**
 	 * The related membership model object.
 	 *
 	 * @since 1.0.0

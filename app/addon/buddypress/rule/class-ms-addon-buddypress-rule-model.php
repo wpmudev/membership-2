@@ -43,6 +43,10 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	/**
 	 * Verify access to the current content.
 	 *
+	 * Related:
+	 * A reference of available BuddyPress template tags
+	 * https://codex.buddypress.org/developer/template-tag-reference/
+	 *
 	 * @since 1.0.0
 	 *
 	 * @param int $id The content post ID to verify access.

@@ -24,7 +24,11 @@
 ********************************************************************************
 Import Data Structure
 
-- source          <string>  Name of the source plugin
+- source_key      <string>  Internal name of the data source
+
+********************************************************************************
+
+- source          <string>  Name and version of the source plugin
 
 ********************************************************************************
 
@@ -141,6 +145,27 @@ Import Data Structure
 class MS_Model_Import_Export extends MS_Model {
 
 	/**
+	 * Identifier for this Import source
+	 *
+	 * @since 1.1.0
+	 */
+	const KEY = 'protected_content';
+
+	/**
+	 * Checks if the user did import data from this source before.
+	 *
+	 * This information is not entirely reliable, since data could have been
+	 * deleted again after import.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function did_import() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		return ! empty( $settings->import[ self::KEY ] );
+	}
+
+	/**
 	 * Main entry point: Handles the export action.
 	 *
 	 * This task will exit the current request as the result will be a download
@@ -150,6 +175,7 @@ class MS_Model_Import_Export extends MS_Model {
 	 */
 	public function process() {
 		$data = (object) array();
+		$data->source_key = 'protected_content';
 		$data->source = 'Protected Content';
 		$data->plugin_version = MS_PLUGIN_VERSION;
 		$data->export_time = date( 'Y-m-d H:i' );

@@ -30,6 +30,13 @@
 class MS_Model_Import_Membership extends MS_Model_Import {
 
 	/**
+	 * Identifier for this Import source
+	 *
+	 * @since 1.1.0
+	 */
+	const KEY = 'membership';
+
+	/**
 	 * Stores the result of present() call
 	 *
 	 * @since  1.1.0
@@ -55,6 +62,20 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 * @var array
 	 */
 	protected $data = array();
+
+	/**
+	 * Checks if the user did import data from this source before.
+	 *
+	 * This information is not entirely reliable, since data could have been
+	 * deleted again after import.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function did_import() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		return ! empty( $settings->import[ self::KEY ] );
+	}
 
 	/**
 	 * This function parses the Import source (i.e. an file-upload) and returns
@@ -143,6 +164,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 		$plugin = self::plugin_data();
 		$this->data = (object) array();
 
+		$this->data->source_key = self::KEY;
 		$this->data->source = sprintf(
 			'%s (%s)',
 			$plugin['Name'],
@@ -158,6 +180,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			__( '- Transactions', MS_TEXT_DOMAIN ),
 			__( 'Each Subscription-Level is imported as a individual Membership.', MS_TEXT_DOMAIN ),
 			__( 'Transactions are converted to invoices. Data like tax-rate or applied coupons are not available.', MS_TEXT_DOMAIN ),
+			__( 'Please note that we cannot import recurring 2Checkout subscriptions to Protected Content!', MS_TEXT_DOMAIN ),
 		);
 
 		$this->data->memberships = array();
@@ -265,7 +288,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			CASE member.usinggateway
 				WHEN 'paypalsolo' THEN 'paypalsingle'
 				WHEN 'paypalexpress' THEN 'paypalstandard'
-				WHEN 'twocheckout' THEN '2checkout'
+				WHEN 'twocheckout' THEN 'manual'
 				WHEN 'freesubscriptions' THEN 'free'
 				WHEN 'authorizenetarb' THEN 'authorize'
 				WHEN 'authorizenetaim' THEN 'authorize'
@@ -307,7 +330,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			CASE inv.transaction_gateway
 				WHEN 'paypalsolo' THEN 'paypalsingle'
 				WHEN 'paypalexpress' THEN 'paypalstandard'
-				WHEN 'twocheckout' THEN '2checkout'
+				WHEN 'twocheckout' THEN 'manual'
 				WHEN 'freesubscriptions' THEN 'free'
 				WHEN 'authorizenetarb' THEN 'authorize'
 				WHEN 'authorizenetaim' THEN 'authorize'

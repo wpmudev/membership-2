@@ -387,6 +387,8 @@ class MS_Plugin {
 	 * @since 1.0.0
 	 */
 	public function add_rewrite_rules() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
 		// Gateway return - IPN.
 		add_rewrite_rule(
 			'^ms-payment-return/(.+)/?$',
@@ -394,8 +396,16 @@ class MS_Plugin {
 			'top'
 		);
 
+		// Alternative payment return URL: Membership
+		if ( MS_Model_Import_Membership::did_import() ) {
+			add_rewrite_rule(
+				'paymentreturn/(.+)/?',
+				'index.php?paymentgateway=$matches[1]',
+				'top'
+			);
+		}
+
 		// Media / download
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		if ( ! empty( $settings->downloads['protection_enabled'] )
 			&& ! empty( $settings->downloads['masked_url'] )
 		) {
