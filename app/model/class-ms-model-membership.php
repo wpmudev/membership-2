@@ -1017,7 +1017,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return MS_Model_Membership The protected content.
+	 * @return MS_Model_Membership The base membership.
 	 */
 	public static function get_base() {
 		static $Protected_content = null;
@@ -1048,7 +1048,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @since 1.1.0
 	 *
 	 * @param  string $role A WordPress user-role.
-	 * @return MS_Model_Membership The core membership.
+	 * @return MS_Model_Membership The guest membership.
 	 */
 	public static function get_guest() {
 		static $Guest_Membership = null;
@@ -1063,6 +1063,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				'ms_model_membership_get_guest',
 				$Guest_Membership
 			);
+		}
+
+		if ( ! $Guest_Membership ) {
+			$Guest_Membership = MS_Factory::create( 'MS_Model_Membership' );
 		}
 
 		return $Guest_Membership;
