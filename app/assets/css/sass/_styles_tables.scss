@@ -130,3 +130,63 @@
 		}
 	}
 }
+
+/* Inline Editor in form */
+
+#wpwrap .ms-wrap {
+	tr.inline-edit-row {
+		td {
+			padding: 0 0.5em;
+		}
+
+		.button-primary {
+			min-width: 0;
+		}
+
+		.the-name {
+			padding-right: 20px;
+			border-radius: 3px;
+			padding: 0 5px;
+			display: inline-block;
+			height: 28px;
+			line-height: 28px;
+			font-size: 12px;
+			color: #FFF;
+
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+			max-width: 100%;
+		}
+
+		.dripped-form {
+			padding: 0 0 5px 0;
+			margin: 0 0 5px 0;
+			border-bottom: 1px solid #DDD;
+
+			.drip-col {
+				float: left;
+				padding: 0 10px 0 0;
+
+				.wpmui-field-input {
+					margin-top: 0;
+					margin-bottom: 0;
+				}
+			}
+
+			.col-1 {
+				width: 140px;
+			}
+
+			.drip-option {
+				height: 28px;
+				line-height: 28px;
+				display: none;
+			}
+
+			.drip-option.active {
+				display: block;
+			}
+		}
+	}
+}

@@ -53,8 +53,8 @@ class MS_Model_Rule extends MS_Model {
 	 * @since 1.0.0
 	 * @var string $dripped['dripped_type'] The dripped type.
 	 */
+	const DRIPPED_TYPE_INSTANTLY = 'instantly';
 	const DRIPPED_TYPE_SPEC_DATE = 'specific_date';
-	const DRIPPED_TYPE_FROM_TODAY = 'from_today';
 	const DRIPPED_TYPE_FROM_REGISTRATION = 'from_registration';
 
 	/**
@@ -267,8 +267,6 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Get dripped types.
 	 *
-	 * @todo Remove or develop DRIPPED_TYPE_FROM_TODAY
-	 *
 	 * @since 1.0.0
 	 * @return array {
 	 *     @type string $dripped_type The dripped type constant.
@@ -277,9 +275,9 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function get_dripped_types() {
 		$dripped_types = array(
-			self::DRIPPED_TYPE_SPEC_DATE => __( 'Reveal Dripped Content on specific dates', MS_TEXT_DOMAIN ),
-//			self::DRIPPED_TYPE_FROM_TODAY => __( "Reveal Dripped Content 'X' days from today", MS_TEXT_DOMAIN ),
-			self::DRIPPED_TYPE_FROM_REGISTRATION => __( "Reveal Dripped Content 'X' days from user registration", MS_TEXT_DOMAIN ),
+			self::DRIPPED_TYPE_INSTANTLY => __( 'Instantly', MS_TEXT_DOMAIN ),
+			self::DRIPPED_TYPE_SPEC_DATE => __( 'On specific Date', MS_TEXT_DOMAIN ),
+			self::DRIPPED_TYPE_FROM_REGISTRATION => __( 'Relative to Subscription', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(

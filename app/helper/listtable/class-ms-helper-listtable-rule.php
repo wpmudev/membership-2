@@ -360,149 +360,66 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$rule = $this->model;
 		$membership = $this->membership;
 
-		$period_from_reg = array(
-			'period_unit' => $rule->get_dripped_value(
-				MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
-				$item->id,
-				'period_unit'
-			),
-			'period_type' => $rule->get_dripped_value(
-				MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
-				$item->id,
-				'period_type'
-			),
+		$field_id = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' => 'membership_id',
 		);
 
-		$period_from_today = array(
-			'period_unit' => $rule->get_dripped_value(
-				MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
-				$item->id,
-				'period_unit'
-			),
-			'period_type' => $rule->get_dripped_value(
-				MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
-				$item->id,
-				'period_type'
-			),
+		$field_type = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'name' => 'dripped_type',
+			'class' => 'dripped_type',
+			'field_options' => MS_Model_Rule::get_dripped_types(),
 		);
 
-		$fields = array(
-			'spec_date' => array(
-				'id' => 'spec_date_' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $rule->get_dripped_value(
-					MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE,
-					$item->id,
-					'spec_date'
-				),
-				'class' => 'ms-dripped-value ms-dripped-spec-date',
-				'ajax_data' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE,
-					'id' => $item->id,
-					'field' => 'spec_date',
-				),
-			),
+		$field_date = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+			'name' => 'date',
+		);
 
-			'period_unit_from_reg' => array(
-				'id' => 'period_unit_' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $period_from_reg['period_unit'],
-				'class' => 'ms-dripped-value ms-dripped-from-registration',
-				'ajax_data' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
-					'field' => 'period_unit',
-					'id' => $item->id,
-				),
-			),
+		$field_delay_unit = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+			'name' => 'delay_unit',
+			'class' => 'ms-text-small',
+		);
 
-			'period_type_from_reg' => array(
-				'id' => 'period_type_' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $period_from_reg['period_type'],
-				'field_options' => MS_Helper_Period::get_periods(),
-				'ajax_data' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION,
-					'field' => 'period_type',
-					'id' => $item->id,
-				),
-			),
-
-			'period_unit_from_today' => array(
-				'id' => 'period_unit_' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $period_from_today['period_unit'],
-				'class' => 'ms-dripped-value ms-dripped-from-registration',
-				'ajax_data' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
-					'field' => 'period_unit',
-					'id' => $item->id,
-				),
-			),
-
-			'period_type_from_today' => array(
-				'id' => 'period_type_' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $period_from_today['period_type'],
-				'field_options' => MS_Helper_Period::get_periods(),
-				'ajax_data' => array(
-					'membership_id' => $membership->id,
-					'rule_type' => $rule->rule_type,
-					'dripped_type' => MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY,
-					'field' => 'period_type',
-					'id' => $item->id,
-				),
-			),
+		$field_delay_type = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'name' => 'delay_type',
+			'field_options' => MS_Helper_Period::get_periods(),
 		);
 
 		?>
 		<div>
-			<strong class="lbl-name"></strong>
+			<h4 class="lbl-name"></h4>
 		</div>
-		<div class="ms-dripped-edit-wrapper <?php echo 'ms-dripped-type-' . MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE; ?>">
-			<?php _e( 'on', MS_TEXT_DOMAIN ); ?><span class="ms-dripped-desc"></span>
-			<?php MS_Helper_Html::html_element( $fields['spec_date'] ); ?>
-			<span class="ms-dripped-calendar"></span>
-		</div>
-		<div class="ms-dripped-edit-wrapper ms-period-edit-wrapper ms-period-wrapper <?php echo 'ms-dripped-type-' . MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION; ?>">
-			<div class="ms-period-desc-wrapper">
-				<?php
-				printf(
-					__( '%1$s after registration', MS_TEXT_DOMAIN ),
-					MS_Helper_Html::period_desc( $period_from_reg, 'ms-dripped-period' )
-				);
-				?>
-				<span class="ms-dripped-pen"></span>
+		<fieldset>
+			<div class="inline-edit-col">
+				<div class="dynamic-form"></div>
 			</div>
-			<div class="ms-period-editor-wrapper">
-				<?php
-				MS_Helper_Html::html_element( $fields['period_unit_from_reg'] );
-				MS_Helper_Html::html_element( $fields['period_type_from_reg'] );
-				?>
+		</fieldset>
+		<div class="dripped-form cf no-auto-init hidden">
+			<div class="drip-col col-1">
+				<span class="the-name"></span>
+				<?php MS_Helper_Html::html_element( $field_id ); ?>
 			</div>
-		</div>
-		<div class="ms-dripped-edit-wrapper ms-period-edit-wrapper ms-period-wrapper <?php echo 'ms-dripped-type-' . MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY; ?>">
-			<div class="ms-period-desc-wrapper">
-				<?php
-				printf(
-					__( 'in %1$s', MS_TEXT_DOMAIN ),
-					MS_Helper_Html::period_desc( $period_from_today, 'ms-dripped-period' )
-				);
-				?>
-				<span class="ms-dripped-pen"></span>
+			<div class="drip-col col-2">
+				<?php MS_Helper_Html::html_element( $field_type ); ?>
 			</div>
-			<div class="ms-period-editor-wrapper">
-				<?php
-				MS_Helper_Html::html_element( $fields['period_unit_from_today'] );
-				MS_Helper_Html::html_element( $fields['period_type_from_today'] );
-				?>
+			<div class="drip-col col-3">
+				<div class="drip-option <?php echo esc_attr( MS_Model_Rule::DRIPPED_TYPE_INSTANTLY ); ?>">
+					<?php _e( 'Instantly', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<div class="drip-option <?php echo esc_attr( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE ); ?>">
+					<?php MS_Helper_Html::html_element( $field_date ); ?>
+				</div>
+				<div class="drip-option <?php echo esc_attr( MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION ); ?>">
+					<?php
+					MS_Helper_Html::html_element( $field_delay_unit );
+					MS_Helper_Html::html_element( $field_delay_type );
+					?>
+				</div>
+			</div>
 			</div>
 		</div>
 		<?php

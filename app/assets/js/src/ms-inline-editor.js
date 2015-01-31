@@ -73,7 +73,6 @@
 					input = quickedit.find( ':input[name="' + inp_name + '"]' ),
 					label = quickedit.find( '.lbl-' + inp_name );
 
-window.console.log ( inp_name, field, input, label );
 				if ( input.length ) {
 					input.val( field.text() );
 				}
@@ -81,6 +80,7 @@ window.console.log ( inp_name, field, input, label );
 					label.text( field.text() );
 				}
 			});
+			jQuery( document ).trigger( 'ms-inline-editor', [quickedit, the_item] );
 
 			quickedit.attr( 'id', 'edit-' + id ).addClass( 'inline-editor' ).show();
 			quickedit.find( 'input:visible' ).first().focus();

@@ -1225,7 +1225,7 @@ class MS_Helper_ListTable {
 			// Add an inline edit form.
 			$inline_nonce = wp_create_nonce( 'inline' );
 			?>
-			<tr id="inline-edit" style="display:none"><td>
+			<tr id="inline-edit" style="display:none" class="inline-edit-row"><td>
 			<?php $this->inline_edit(); ?>
 			<p class="submit inline-edit-save">
 				<a accesskey="c" href="#inline-edit" class="button-secondary cancel alignleft"><?php _e( 'Cancel', MS_TEXT_DOMAIN ); ?></a>

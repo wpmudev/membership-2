@@ -34,7 +34,12 @@ window.ms_functions = {
 		});
 
 		// Initialize the datepickers.
-		jQuery( '.wpmui-datepicker', scope ).ms_datepicker();
+		jQuery( '.wpmui-datepicker', scope ).each(function() {
+			var sel = jQuery( this );
+
+			if ( sel.closest( '.no-auto-init' ).length ) { return; }
+			sel.ms_datepicker();
+		});
 	},
 
 	ajax_update: function( obj ) {

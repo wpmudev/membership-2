@@ -9,35 +9,94 @@ window.ms_init.view_protected_content = function init () {
 
 	window.ms_init.memberships_column( '.column-access' );
 
+	// After a membership was added or removed. Check if there are dripped memberships.
 	function check_if_dripped( ev ) {
 		var ind, membership_id,
 			cell = jQuery( this ).closest( '.column-access' ),
 			row = cell.closest( 'tr.item' ),
 			list = cell.find( 'select.ms-memberships' ),
 			memberships = list.select2( 'val' ),
-			is_dripped = false;
+			num_dripped = 0;
 
 		if ( memberships && memberships.length ) {
 			for ( ind in memberships ) {
 				membership_id = memberships[ind];
 				if ( undefined !== ms_data.dripped[membership_id] ) {
-					is_dripped = true;
-					break;
+					num_dripped += 1;
 				}
 			}
 		}
 
-		if ( is_dripped ) {
+		if ( num_dripped > 1 ) {
+			// Multiple dripped memberships. Inline editor required.
+			row.addClass( 'ms-dripped' );
+		} else if ( num_dripped === 1 ) {
+			// Single dripped membership. No inline editor required.
 			row.addClass( 'ms-dripped' );
 		} else {
 			row.removeClass( 'ms-dripped' );
 		}
 	}
 
+	// Right before the inline editor is displayed. We can prepare the form.
+	function populate_inline_editor( ev, editor, row ) {
+		var ind, len,
+			items = row.find( 'select.ms-memberships option:selected' ),
+			form = editor.find( '.dripped-form' ),
+			target = editor.find( '.dynamic-form' );
+
+		for ( ind = 0, len = items.length; ind < len; ind++ ) {
+			var item = jQuery( items[ind] ),
+				item_id = item.val(),
+				color = item.data( 'color' ),
+				form_row = form.clone( false ),
+				key = '[' + item_id + ']';
+
+			if ( undefined !== ms_data.dripped[item_id] ) {
+				// Create input fields for the dripped membership
+				form_row.find( '.the-name' )
+					.text( ms_data.dripped[item_id] )
+					.css( {'background': color} );
+
+				form_row.find( '[data-name=membership_id]' )
+					.attr( 'name', 'membership_id' + key )
+					.val( item_id );
+
+				// Add the membership form to the inline editor
+				form_row.appendTo( target ).removeClass( 'hidden' );
+
+				setup_editor( form_row );
+			}
+		}
+	}
+
+	// Set up the event-handlers of the inline editor.
+	function setup_editor( form ) {
+		var sel_type = form.find( 'select.dripped_type' ),
+			inp_date = form.find( '.wpmui-datepicker' );
+
+		// Type-selection
+		sel_type.change(function() {
+			var me = jQuery( this ),
+				val = me.val(),
+				types = me.closest( '.dripped-form' ).find( '.drip-option' );
+
+			types.removeClass( 'active' );
+			types.filter( '.' + val ).addClass( 'active' );
+		}).trigger( 'change' );
+
+		// Datepicker
+		inp_date.ms_datepicker();
+	}
+
+	// Add event hooks.
+
 	table.on( 'ms-ajax-updated', '.ms-memberships', check_if_dripped );
 	table.find( '.ms-memberships' ).each(function() {
 		check_if_dripped.apply( this );
 	});
+
+	jQuery( document ).on( 'ms-inline-editor', populate_inline_editor );
 };
 
 // This is also used on the Members page
