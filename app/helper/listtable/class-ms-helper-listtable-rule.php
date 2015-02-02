@@ -370,7 +370,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 		ob_start();
 		?>
-		<a href="#" class="editinline"><?php echo esc_html( $label ); ?></a>
+		<a href="#" class="editinline"><?php echo '' . $label; ?></a>
 		<div class="inline_data hidden">
 			<span class="name"><?php echo esc_html( $item->name ); ?></span>
 			<?php

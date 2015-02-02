@@ -641,7 +641,7 @@ class MS_Rule extends MS_Model {
 			switch ( $drip_data['type'] ) {
 				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
 					$desc = sprintf(
-						__( 'On %1$s', MS_TEXT_DOMAIN ),
+						__( 'On <b>%1$s</b>', MS_TEXT_DOMAIN ),
 						$drip_data['date']
 					);
 					break;
@@ -651,16 +651,16 @@ class MS_Rule extends MS_Model {
 					$period_key = $drip_data['delay_type'];
 
 					if ( 0 == $drip_data['delay_unit'] ) {
-						$desc = __( 'Instantly', MS_TEXT_DOMAIN );
+						$desc = __( '<b>Instantly</b>', MS_TEXT_DOMAIN );
 					} elseif ( 1 == $drip_data['delay_unit'] ) {
 						$desc = sprintf(
-							__( 'After %1$s %2$s', MS_TEXT_DOMAIN ),
+							__( 'After <b>%1$s %2$s</b>', MS_TEXT_DOMAIN ),
 							$periods['1' . $period_key],
 							''
 						);
 					} else {
 						$desc = sprintf(
-							__( 'After %1$s %2$s', MS_TEXT_DOMAIN ),
+							__( 'After <b>%1$s %2$s</b>', MS_TEXT_DOMAIN ),
 							$drip_data['delay_unit'],
 							$periods[$period_key]
 						);
@@ -669,7 +669,7 @@ class MS_Rule extends MS_Model {
 
 				case MS_Model_Rule::DRIPPED_TYPE_INSTANTLY:
 				default:
-					$desc = __( 'Instantly', MS_TEXT_DOMAIN );
+					$desc = __( '<b>Instantly</b>', MS_TEXT_DOMAIN );
 					break;
 			}
 		}
