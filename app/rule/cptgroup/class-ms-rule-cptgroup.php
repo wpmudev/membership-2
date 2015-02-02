@@ -20,7 +20,8 @@ class MS_Rule_CptGroup extends MS_Controller {
 				self::RULE_ID,
 				__CLASS__,
 				__( 'Custom Post Types', MS_TEXT_DOMAIN ),
-				30
+				30,
+				true
 			);
 		}
 

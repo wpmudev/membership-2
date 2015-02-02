@@ -1523,7 +1523,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					// Send trial end communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
 					if ( $comm->enabled ) {
-						$days = MS_Helper_Period::get_period_in_days( $comm->period );
+						$days = MS_Helper_Period::get_period_in_days(
+							$comm->period['period_unit'],
+							$comm->period['period_type']
+						);
 						if ( $days == $remaining_trial_days ) {
 							$comm->add_to_queue( $this->id );
 							MS_Model_Event::save_event(
@@ -1591,7 +1594,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// Before finishes communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
-					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					$days = MS_Helper_Period::get_period_in_days(
+						$comm->period['period_unit'],
+						$comm->period['period_type']
+					);
 					if ( $days == $remaining_days ) {
 						$comm->add_to_queue( $this->id );
 						MS_Model_Event::save_event(
@@ -1602,7 +1608,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// After finishes communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ];
-					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					$days = MS_Helper_Period::get_period_in_days(
+						$comm->period['period_unit'],
+						$comm->period['period_type']
+					);
 
 					if ( $remaining_days < 0 && $days == abs( $remaining_days ) ) {
 						$comm->add_to_queue( $this->id );
@@ -1614,7 +1623,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// Before payment due.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_PAYMENT_DUE ];
-					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					$days = MS_Helper_Period::get_period_in_days(
+						$comm->period['period_unit'],
+						$comm->period['period_type']
+					);
 					$invoice_days = MS_Helper_Period::subtract_dates(
 						$invoice->due_date,
 						MS_Helper_Period::current_date()
@@ -1629,7 +1641,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// After payment due event
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_DUE ];
-					$days = MS_Helper_Period::get_period_in_days( $comm->period );
+					$days = MS_Helper_Period::get_period_in_days(
+						$comm->period['period_unit'],
+						$comm->period['period_type']
+					);
 					$invoice_days = MS_Helper_Period::subtract_dates(
 						$invoice->due_date,
 						MS_Helper_Period::current_date()

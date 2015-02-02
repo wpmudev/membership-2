@@ -73,7 +73,6 @@ class MS_Rule_Post_Model extends MS_Rule {
 
 		$this->start_date = $ms_relationship->start_date;
 		$this->add_action( 'pre_get_posts', 'protect_posts', 99 );
-		$this->add_filter( 'posts_where', 'include_dripped', 10, 2 );
 	}
 
 	/**
@@ -102,92 +101,9 @@ class MS_Rule_Post_Model extends MS_Rule {
 					}
 				}
 			}
-
-			$membership = $this->get_membership();
-			if ( MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
-				$dripped_type = '!logic-changed!';
-
-				// ### !!! TODO !!! ### FIX THIS
-
-				/**
-				 * Exclude dripped content.
-				 * Can't include posts, just exclude because of category clause conflict to post_in.
-				 * Using filter 'posts_where' to include dripped content.
-				 * * @todo handle default rule value.
-				 */
-				if ( ! empty( $this->dripped[ $dripped_type ] )
-					&& is_array( $this->dripped[ $dripped_type ] )
-				) {
-					foreach ( $this->dripped[ $dripped_type ] as $post_id => $period ) {
-						if ( ! $this->has_dripped_access( $this->start_date, $post_id ) ) {
-							$wp_query->query_vars['post__not_in'][] = $post_id;
-							if ( $key = array_search( $post_id, $wp_query->query_vars['post__in'] ) ) {
-								unset( $wp_query->query_vars['post__in'][ $key ] );
-							}
-						}
-					}
-				}
-			}
 		}
 
 		do_action( 'ms_rule_post_model_protect_posts', $wp_query, $this );
-	}
-
-	/**
-	 * Include dripped content.
-	 *
-	 * Workaround to include dripped posts that not belongs to a accessible category.
-	 *
-	 * Related Actions Hooks:
-	 * - posts_where
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $where The where clause before filter.
-	 * @param WP_Query $wp_query The wp_query object.
-	 * @return string The modified where clause.
-	 */
-	public function include_dripped( $where, $wp_query ) {
-		do_action(
-			'ms_rule_post_model_include_dripped_before',
-			$where,
-			$wp_query,
-			$this
-		);
-
-		global $wpdb;
-
-		if ( ! $wp_query->is_singular
-			&& empty( $wp_query->query_vars['pagename'] )
-			&& ( ! isset( $wp_query->query_vars['post_type'] )
-				|| in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) )
-			)
-		) {
-			$membership = $this->get_membership();
-			if ( MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
-				$posts = array();
-				if ( ! empty( $this->rule_value )
-					&& is_array( $this->rule_value )
-				) {
-					foreach ( $this->rule_value as $post_id => $value ) {
-						if ( $this->has_dripped_access( $this->start_date, $post_id ) ) {
-							$posts[] = $post_id;
-						}
-					}
-				}
-				if ( ! empty( $posts ) ) {
-					$post__in = join( ',', $posts );
-					$where .= " OR {$wpdb->posts}.ID IN ($post__in)";
-				}
-			}
-		}
-
-		return apply_filters(
-			'ms_rule_post_model_include_dripped',
-			$where,
-			$wp_query,
-			$this
-		);
 	}
 
 	/**
@@ -281,35 +197,7 @@ class MS_Rule_Post_Model extends MS_Rule {
 			$post_id  = $this->get_current_post_id();
 		}
 
-		return apply_filters(
-			'ms_rule_post_model_has_dripped_rules',
-			parent::has_dripped_rules( $post_id )
-		);
-	}
-
-	/**
-	 * Verify access to dripped content.
-	 *
-	 * The MS_Helper_Period::current_date may be simulating a date.
-	 *
-	 * @since 1.0.0
-	 * @param string $start_date The start date of the member membership.
-	 * @param string $id The content id to verify dripped acccess.
-	 */
-	public function has_dripped_access( $start_date, $post_id = null ) {
-		$has_access = false;
-
-		if ( empty( $post_id ) ) {
-			$post_id  = $this->get_current_post_id();
-		}
-
-		$has_access = parent::has_dripped_access( $start_date, $post_id );
-
-		return apply_filters(
-			'ms_rule_post_model_has_dripped_access',
-			$has_access,
-			$this
-		);
+		return parent::has_dripped_rules( $post_id );
 	}
 
 	/**
@@ -354,12 +242,6 @@ class MS_Rule_Post_Model extends MS_Rule {
 			$content->type = MS_Rule_Post::RULE_ID;
 			$content->name = $content->post_name;
 			$content->access = $this->get_rule_value( $content->id );
-
-			$content->delayed_period = $this->has_dripped_rules( $content->id );
-			$content->avail_date = $this->get_dripped_avail_date(
-				$content->id,
-				MS_Helper_Period::current_date( null, true )
-			);
 
 			$contents[ $content->id ] = $content;
 		}

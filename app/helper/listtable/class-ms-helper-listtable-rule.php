@@ -136,18 +136,15 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 	public function get_hidden_columns() {
 		return apply_filters(
-			"ms_helper_listtable_{$this->id}_hidden_columns",
+			'ms_helper_listtable_' . $this->id . '_hidden_columns',
 			array()
 		);
 	}
 
 	public function get_sortable_columns() {
 		return apply_filters(
-			"ms_helper_listtable_{$this->id}_sortable_columns",
-			array(
-				'content' => 'content',
-				'dripped' => 'dripped',
-			)
+			'ms_helper_listtable_' . $this->id . '_sortable_columns',
+			array()
 		);
 	}
 
@@ -177,8 +174,11 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			$this->_column_headers[0]['cb'] = '<input type="checkbox" />';
 		}
 
-		if ( isset( $this->_column_headers[0]['dripped'] ) ) {
-			$this->_column_headers[0]['dripped'] = __( 'When to Reveal Content', MS_TEXT_DOMAIN );
+		$is_dripped = in_array( $this->model->rule_type, MS_Model_Rule::get_dripped_rule_types() );
+		if ( $is_dripped ) {
+			$this->_column_headers[0]['dripped'] = __( 'Reveal Content', MS_TEXT_DOMAIN );
+		} else {
+			unset( $this->_column_headers[0]['dripped'] );
 		}
 
 		if ( isset( $this->_column_headers[0]['access'] ) ) {

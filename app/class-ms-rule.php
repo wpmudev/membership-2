@@ -449,16 +449,26 @@ class MS_Rule extends MS_Model {
 		 */
 		$access = $this->get_rule_value( $id );
 
-		if ( MS_Model_Rule::RULE_VALUE_UNDEFINED === $access ) {
-			// NULL .. "not-denied" is translated to "allowed"
-			$access = true;
-		} elseif ( $this->is_base_rule ) {
+		if ( $this->is_base_rule ) {
 			/*
 			 * Base rule ..
 			 *   - The meaning of TRUE/FALSE is inverted
 			 *   - NULL is always "allowed"
 			 */
 			$access = ! $access;
+		} else {
+			// Apply dripped-content rules if neccessary.
+			if ( $access && $this->has_dripped_rules( $id ) ) {
+				$avail_date = $this->get_dripped_avail_date( $id );
+				$now = MS_Helper_Period::current_date();
+
+				$access = strtotime( $now ) >= strtotime( $avail_date );
+			}
+
+			if ( MS_Model_Rule::RULE_VALUE_UNDEFINED === $access ) {
+				// NULL .. "not-denied" is translated to "allowed"
+				$access = true;
+			}
 		}
 
 		// At this point $access can either be TRUE or FALSE, not NULL!
@@ -494,37 +504,6 @@ class MS_Rule extends MS_Model {
 			'ms_rule_has_dripped_rules',
 			$has_dripped,
 			$id,
-			$this
-		);
-	}
-
-	/**
-	 * Verify access to dripped content.
-	 *
-	 * The MS_Helper_Period::current_date may be simulating a date.
-	 *
-	 * @since 1.0.0
-	 * @param string $start_date The start date of the member membership.
-	 * @param string $id The content id to verify dripped acccess.
-	 *
-	 * @return bool $has_dripped_access
-	 */
-	public function has_dripped_access( $start_date, $id ) {
-		$has_dripped_access = false;
-
-		$avail_date = $this->get_dripped_avail_date( $id, $start_date );
-		$now = MS_Helper_Period::current_date();
-		if ( strtotime( $now ) >= strtotime( $avail_date ) ) {
-			$has_dripped_access = true;
-		}
-
-		$has_access = $this->has_access( $id );
-		// Result is a logic AND between dripped and has access.
-		$has_dripped_access = $has_dripped_access && $has_access;
-
-		return apply_filters(
-			'ms_rule_has_dripped_access',
-			$has_dripped_access,
 			$this
 		);
 	}
@@ -627,9 +606,12 @@ class MS_Rule extends MS_Model {
 	 * @return string Text like "Instantly" or "After 7 days"
 	 */
 	public function get_dripped_description( $item_id ) {
+		static $Format = null;
+
 		$desc = '';
 		$drip_data = false;
 
+		if ( null === $Format ) { $Format = get_option( 'date_format' ); }
 		if ( ! is_array( $this->dripped ) ) { $this->dripped = array(); }
 		if ( isset( $this->dripped[ $item_id ] ) ) {
 			$drip_data = $this->dripped[ $item_id ];
@@ -642,7 +624,7 @@ class MS_Rule extends MS_Model {
 				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
 					$desc = sprintf(
 						__( 'On <b>%1$s</b>', MS_TEXT_DOMAIN ),
-						$drip_data['date']
+						date_i18n( $Format, strtotime( $drip_data['date'] ) )
 					);
 					break;
 

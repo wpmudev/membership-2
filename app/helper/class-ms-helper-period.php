@@ -216,24 +216,24 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * @return int The calculated days.
 	 */
-	public static function get_period_in_days( $period ) {
+	public static function get_period_in_days( $unit, $type ) {
 		$days = 0;
 
-		switch ( $period['period_type'] ) {
+		switch ( $type ) {
 			case self::PERIOD_TYPE_DAYS:
-				$days = $period['period_unit'];
+				$days = intval( $unit );
 				break;
 
 			case self::PERIOD_TYPE_WEEKS:
-				$days = $period['period_unit'] * 7;
+				$days = intval( $unit ) * 7;
 				break;
 
 			case self::PERIOD_TYPE_MONTHS:
-				$days = $period['period_unit'] * 30;
+				$days = intval( $unit ) * 30;
 				break;
 
 			case self::PERIOD_TYPE_YEARS:
-				$days = $period['period_unit'] * 365;
+				$days = intval( $unit ) * 365;
 				break;
 		}
 

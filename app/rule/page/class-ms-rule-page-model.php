@@ -90,15 +90,6 @@ class MS_Rule_Page_Model extends MS_Rule {
 			if ( ! self::has_access( $page->ID ) ) {
 				unset( $pages[ $key ] );
 			}
-
-			// Dripped content.
-			if ( MS_Model_Membership::TYPE_DRIPPED === $membership->type ) {
-				if ( $this->has_dripped_rules( $page->ID )
-					&& ! $this->has_dripped_access( $this->start_date, $page->ID )
-				) {
-					unset( $pages[ $key ] );
-				}
-			}
 		}
 
 		return apply_filters(
@@ -153,7 +144,6 @@ class MS_Rule_Page_Model extends MS_Rule {
 
 		if ( ! empty( $id ) ) {
 			$has_access = false;
-
 			// Membership special pages has access
 			if ( MS_Model_Pages::is_membership_page( $id ) ) {
 				$has_access = true;
@@ -183,36 +173,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 			$page_id = $this->get_current_page_id();
 		}
 
-		return apply_filters(
-			'ms_rule_page_model_has_dripped_rules',
-			parent::has_dripped_rules( $page_id ),
-			$this
-		);
-	}
-
-	/**
-	 * Verify access to dripped content.
-	 *
-	 * The MS_Helper_Period::current_date may be simulating a date.
-	 *
-	 * @since 1.0.0
-	 * @param string $start_date The start date of the member membership.
-	 * @param string $id The content id to verify dripped access.
-	 */
-	public function has_dripped_access( $start_date, $page_id = null ) {
-		$has_access = false;
-
-		if ( empty( $page_id ) ) {
-			$page_id = $this->get_current_page_id();
-		}
-
-		$has_access = parent::has_dripped_access( $start_date, $page_id );
-
-		return apply_filters(
-			'ms_rule_page_model_has_dripped_access',
-			$has_access,
-			$this
-		);
+		return parent::has_dripped_rules( $page_id );
 	}
 
 	/**
@@ -266,14 +227,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 			$content->id = $content->ID;
 			$content->type = MS_Rule_Page::RULE_ID;
 			$content->name = $name;
-
 			$content->access = $this->get_rule_value( $content->id );
-
-			$content->delayed_period = $this->has_dripped_rules( $content->id );
-			$content->avail_date = $this->get_dripped_avail_date(
-				$content->id,
-				MS_Helper_Period::current_date( null, true )
-			);
 
 			$contents[ $content->id ] = $content;
 		}

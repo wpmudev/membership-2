@@ -333,7 +333,6 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 							'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
 							'tab' => $rule->rule_type,
 							'membership_id' => $membership_id,
-							'edit' => 1,
 						)
 					);
 

@@ -343,13 +343,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 			$content->type = MS_Rule_Content::RULE_ID;
 			$content->name = $data->label;
 			$content->post_title = $data->label;
-
 			$content->access = $this->get_rule_value( $content->id );
-
-			$content->delayed_period = $this->has_dripped_rules( $content->id );
-			$content->avail_date = $this->get_dripped_avail_date(
-				$content->id, MS_Helper_Period::current_date( null, true )
-			);
 
 			$contents[ $content->id ] = $content;
 		}

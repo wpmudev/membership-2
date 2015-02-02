@@ -1345,31 +1345,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					break;
 				}
 			}
-
-			// Search for dripped rules.
-			$dripped = MS_Model_Rule::get_dripped_rule_types();
-
-			/*
-			 * Verify membership dripped rules hierarchy.
-			 * Dripped has the final decision.
-			 */
-			foreach ( $dripped as $rule_type ) {
-				$rule = $this->get_rule( $rule_type );
-
-				if ( $rule->has_dripped_rules( $post_id ) ) {
-					$dripped_access = $rule->has_dripped_access(
-						$ms_relationship->start_date,
-						$post_id,
-						$this->dripped_type
-					);
-					$has_access = $dripped_access;
-
-					$this->_access_reason[] = sprintf(
-						__( '%s: Dripped Content', MS_TEXT_DOMAIN ),
-						$dripped_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN )
-					);
-				}
-			}
 		}
 
 		return apply_filters(

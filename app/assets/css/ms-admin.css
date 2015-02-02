@@ -189,15 +189,31 @@
   margin: 10px 0;
   font-size: 13px;
 }
+.ms-wrap .ms-list-table td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.ms-wrap .ms-list-table .col-icon {
+  width: 20px;
+  text-align: center;
+}
+.ms-wrap .ms-list-table .col-type {
+  width: 10%;
+  white-space: nowrap;
+}
 .ms-wrap .ms-list-table .col-text {
   text-align: left;
 }
 .ms-wrap .ms-list-table .col-date {
-  text-align: center;
-  max-width: 100px;
+  text-align: left;
+  width: 160px;
 }
 .ms-wrap .ms-list-table.limit-width {
   max-width: 600px;
+}
+.ms-wrap .ms-list-table tr.lock td {
+  color: #B00;
+  opacity: .5;
 }
 
 /* Inline Editor in form */

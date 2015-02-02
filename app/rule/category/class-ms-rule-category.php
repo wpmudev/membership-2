@@ -20,7 +20,8 @@ class MS_Rule_Category extends MS_Controller {
 				self::RULE_ID,
 				__CLASS__,
 				__( 'Categories', MS_TEXT_DOMAIN ),
-				20
+				20,
+				true
 			);
 		}
 

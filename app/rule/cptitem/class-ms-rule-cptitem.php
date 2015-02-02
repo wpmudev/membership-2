@@ -20,7 +20,8 @@ class MS_Rule_CptItem extends MS_Controller {
 				self::RULE_ID,
 				__CLASS__,
 				__( 'Custom Post Type Items', MS_TEXT_DOMAIN ),
-				31
+				31,
+				true
 			);
 		}
 

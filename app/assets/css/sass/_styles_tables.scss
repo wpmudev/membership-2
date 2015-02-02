@@ -116,17 +116,37 @@
 		margin: 10px 0;
 		font-size: 13px;
 
+		td {
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+
+		.col-icon {
+			width: 20px;
+			text-align: center;
+		}
+
+		.col-type {
+			width: 10%;
+			white-space: nowrap;
+		}
+
 		.col-text {
 			text-align: left;
 		}
 
 		.col-date {
-			text-align: center;
-			max-width: 100px;
+			text-align: left;
+			width: 160px;
 		}
 
 		&.limit-width {
 			max-width: 600px;
+		}
+
+		tr.lock td {
+			color: #B00;
+			opacity: .5;
 		}
 	}
 }

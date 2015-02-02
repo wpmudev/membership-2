@@ -262,7 +262,7 @@ class MS_Gateway extends MS_Model_Option {
 		if ( ! empty( $card_exp ) ) {
 			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
 
-			$days = MS_Helper_Period::get_period_in_days( $comm->period );
+			$days = MS_Helper_Period::get_period_in_days( $comm->period['period_unit'], $comm->period['period_type'] );
 			$card_expire_days = MS_Helper_Period::subtract_dates( $card_exp, MS_Helper_Period::current_date() );
 			if ( $card_expire_days < 0 || ( $days == $card_expire_days ) ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
