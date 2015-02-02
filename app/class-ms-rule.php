@@ -65,7 +65,7 @@ class MS_Rule extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 * @var array $rule_value {
-	 *     @type int $item_id The protecting item ID.
+	 *     @type int $item_id The protected item ID.
 	 *     @type int $value The rule value. 0: no access; 1: has access.
 	 * }
 	 */
@@ -79,10 +79,14 @@ class MS_Rule extends MS_Model {
 	 *
 	 * @since 1.0.0
 	 * @var array {
-	 *     @type string $dripped_type The selected dripped type.
-	 *     @type array $rule_value {
-	 *         @type int $item_id The protecting item ID.
-	 *         @type int $dripped_data The dripped data like period or release date.
+	 *     A hash that defines the drip options of each protected item.
+	 *
+	 *     @type int The protected item ID.
+	 *     @type array {
+	 *         @type string $type Type of dripped protection
+	 *         @type string $date Only used for type 'specific_date'
+	 *         @type string $delay_unit Only used for type 'from_registration'
+	 *         @type string $delay_type Only used for type 'from_registration'
 	 *     }
 	 * }
 	 *
@@ -300,7 +304,21 @@ class MS_Rule extends MS_Model {
 	public function serialize() {
 		$access = array();
 		foreach ( $this->rule_value as $id => $state ) {
-			if ( $state ) { $access[] = $id; }
+			if ( $state ) {
+				if ( isset( $this->dripped[$id] ) ) {
+					$access[] = array(
+						'id' => $id,
+						'dripped' => array(
+							$this->dripped[$id]['type'],
+							$this->dripped[$id]['date'],
+							$this->dripped[$id]['delay_unit'],
+							$this->dripped[$id]['delay_type'],
+						),
+					);
+				} else {
+					$access[] = $id;
+				}
+			}
 		}
 
 		return $access;
@@ -318,8 +336,25 @@ class MS_Rule extends MS_Model {
 	 * @param  array $values A list of allowed IDs.
 	 */
 	public function populate( $values ) {
-		foreach ( $values as $id ) {
-			$this->give_access( $id );
+		foreach ( $values as $data ) {
+			if ( is_scalar( $data ) ) {
+				$this->give_access( $data );
+			} else {
+
+				if ( isset( $data['id'] )
+					&& ! empty( $data['dripped'] )
+					&& is_array( $data['dripped'] )
+					&& count( $data['dripped'] ) > 3
+				) {
+					$this->give_access( $data['id'] );
+					$this->dripped[ $data['id'] ] = array(
+						'type' => $data['dripped'][0],
+						'date' => $data['dripped'][1],
+						'delay_unit' => $data['dripped'][2],
+						'delay_type' => $data['dripped'][3],
+					);
+				}
+			}
 		}
 	}
 
@@ -439,27 +474,6 @@ class MS_Rule extends MS_Model {
 	}
 
 	/**
-	 * Get current dripped type.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string The dripped type.
-	 */
-	public function get_dripped_type() {
-		$dripped_type = MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE;
-
-		if ( ! empty( $this->dripped['dripped_type'] ) ) {
-			$dripped_type = $this->dripped['dripped_type'];
-		}
-
-		return apply_filters(
-			'ms_rule_get_dripped_type',
-			$dripped_type,
-			$this
-		);
-	}
-
-	/**
 	 * Verify if has dripped rules.
 	 *
 	 * @since 1.0.0
@@ -468,18 +482,18 @@ class MS_Rule extends MS_Model {
 	 * @return boolean True if has dripped rules.
 	 */
 	public function has_dripped_rules( $id = null ) {
-		$has_dripped = false;
-		$dripped_type = $this->get_dripped_type();
+		if ( ! is_array( $this->dripped ) ) { $this->dripped = array(); }
 
-		if ( ! empty( $id )
-			&& ! empty( $this->dripped[ $dripped_type ][ $id ] )
-		) {
-			$has_dripped = true;
+		if ( empty( $id ) ) {
+			$has_dripped = ! empty( $this->dripped );
+		} else {
+			$has_dripped = ! empty( $this->dripped[$id] );
 		}
 
 		return apply_filters(
 			'ms_rule_has_dripped_rules',
 			$has_dripped,
+			$id,
 			$this
 		);
 	}
@@ -516,135 +530,154 @@ class MS_Rule extends MS_Model {
 	}
 
 	/**
-	 * Get dripped value.
-	 *
-	 * Handler for dripped data content.
-	 * Set default values if not present.
-	 *
-	 * @since 1.0.0
-	 * @param string $dripped_type The dripped type.
-	 * @param $id The content id to verify dripped access.
-	 * @param $field The field to get from dripped type data.
-	 *
-	 * @return bool $value
-	 */
-	public function get_dripped_value( $dripped_type, $id, $field ) {
-		$value = null;
-
-		if ( isset( $this->dripped[ $dripped_type ][ $id ][ $field ] ) ) {
-			$value = $this->dripped[ $dripped_type ][ $id ][ $field ];
-		} else {
-			switch ( $field ) {
-				case 'period_unit':
-					$value = $this->validate_period_unit( $value, 0 );
-					break;
-
-				case 'period_type':
-					$value = $this->validate_period_type( $value );
-					break;
-
-				case 'spec_date':
-					$value = MS_Helper_Period::current_date();
-					break;
-			}
-		}
-
-		return apply_filters(
-			'ms_rule_get_dripped_value',
-			$value,
-			$this
-		);
-	}
-
-	/**
 	 * Set dripped value.
 	 *
 	 * Handler for setting dripped data content.
 	 *
 	 * @since 1.0.0
-	 * @param string $dripped_type The dripped type.
-	 * @param $id The content id to set dripped access.
-	 * @param $field The field to set in dripped type data.
-	 * @param $value The value to set for $field.
+	 * @param int $item_id Drip-Settings of this item are changed.
+	 * @param string $drip_type Any of MS_Model_Rule::DRIPPED_TYPE_* values.
+	 * @param string $date Only used for type 'specific_date'
+	 * @param string $delay_unit Only used for type 'from_registration'
+	 * @param string $delay_type Only used for type 'from_registration'
 	 */
-	public function set_dripped_value( $dripped_type, $id, $field = 'spec_date', $value ) {
-		$this->dripped[ $dripped_type ][ $id ][ $field ] = apply_filters(
+	public function set_dripped_value( $item_id, $drip_type, $date = '', $delay_unit = '', $delay_type = '' ) {
+		$this->give_access( $item_id );
+		$this->dripped[ $item_id ] = apply_filters(
 			'ms_rule_set_dripped_value',
-			$value,
-			$dripped_type,
-			$id,
-			$field
+			array(
+				'type' => $drip_type,
+				'date' => $date,
+				'delay_unit' => $delay_unit,
+				'delay_type' => $delay_type,
+			),
+			$this
 		);
-
-		$this->dripped['dripped_type'] = $dripped_type;
-		$this->dripped['modified'] = MS_Helper_Period::current_date( null, false );
-
-		if ( MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY == $dripped_type ) {
-			$this->dripped[ $dripped_type ][ $id ]['avail_date'] = $this->get_dripped_avail_date( $id );
-		}
 
 		do_action(
 			'ms_rule_set_dripped_value_after',
-			$dripped_type,
-			$id,
-			$field,
-			$value,
+			$drip_type,
+			$item_id,
 			$this
 		);
 	}
 
 	/**
-	 * Get dripped content available date.
+	 * Returns the effective date on which the specified item becomes available.
 	 *
 	 * @since 1.0.0
-	 * @param string $id The content id to verify dripped access.
+	 *
+	 * @param string $item_id The content id to verify dripped access.
 	 * @param string $start_date The start date of the member membership.
+	 * @return string Date on which the item is revealed (e.g. '2015-02-16')
 	 */
-	public function get_dripped_avail_date( $id, $start_date = null ) {
+	public function get_dripped_avail_date( $item_id, $start_date = null ) {
 		$avail_date = MS_Helper_Period::current_date();
+		$drip_data = false;
 
-		$dripped_type = $this->get_dripped_type();
+		if ( ! is_array( $this->dripped ) ) { $this->dripped = array(); }
+		if ( isset( $this->dripped[ $item_id ] ) ) {
+			$drip_data = $this->dripped[ $item_id ];
+		}
 
-		switch ( $dripped_type ) {
-			case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
-				$avail_date = $this->get_dripped_value(
-					$dripped_type,
-					$id,
-					'spec_date'
-				);
-				break;
+		if ( is_array( $drip_data ) ) {
+			WDev()->load_fields( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
 
-			case MS_Model_Rule::DRIPPED_TYPE_FROM_TODAY:
-				if ( ! empty( $this->dripped['modified'] ) ) {
-					$modified = $this->dripped['modified'];
-				} else {
-					$modified = MS_Helper_Period::current_date( null, false );
-				}
+			switch ( $drip_data['type'] ) {
+				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
+					$avail_date = $drip_data['date'];
+					break;
 
-				$period_unit = $this->get_dripped_value( $dripped_type, $id, 'period_unit' );
-				$period_type = $this->get_dripped_value( $dripped_type, $id, 'period_type' );
-				$avail_date = MS_Helper_Period::add_interval(
-					$period_unit,
-					$period_type,
-					$modified
-				);
-				break;
+				case MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION:
+					if ( empty( $start_date ) ) {
+						$start_date = MS_Helper_Period::current_date( null, false );
+					}
 
-			case MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION:
-				if ( empty( $start_date ) ) {
-					$start_date = MS_Helper_Period::current_date( null, false );
-				}
+					$period_unit = $drip_data['delay_unit'];
+					$period_type = $drip_data['delay_type'];
+					$avail_date = MS_Helper_Period::add_interval(
+						$period_unit,
+						$period_type,
+						$start_date
+					);
+					break;
 
-				$period_unit = $this->get_dripped_value( $dripped_type, $id, 'period_unit' );
-				$period_type = $this->get_dripped_value( $dripped_type, $id, 'period_type' );
-				$avail_date = MS_Helper_Period::add_interval( $period_unit, $period_type, $start_date );
-				break;
-
+				case MS_Model_Rule::DRIPPED_TYPE_INSTANTLY:
+				default:
+					$avail_date = MS_Helper_Period::current_date();
+					break;
+			}
 		}
 
 		return apply_filters(
 			'ms_rule_get_dripped_avail_date',
 			$avail_date,
+			$item_id,
+			$start_date,
+			$this
+		);
+	}
+
+	/**
+	 * Returns a string that describes the dripped rule.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param string $item_id The content id to verify dripped access.
+	 * @return string Text like "Instantly" or "After 7 days"
+	 */
+	public function get_dripped_description( $item_id ) {
+		$desc = '';
+		$drip_data = false;
+
+		if ( ! is_array( $this->dripped ) ) { $this->dripped = array(); }
+		if ( isset( $this->dripped[ $item_id ] ) ) {
+			$drip_data = $this->dripped[ $item_id ];
+		}
+
+		if ( is_array( $drip_data ) ) {
+			WDev()->load_fields( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
+
+			switch ( $drip_data['type'] ) {
+				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
+					$desc = sprintf(
+						__( 'On %1$s', MS_TEXT_DOMAIN ),
+						$drip_data['date']
+					);
+					break;
+
+				case MS_Model_Rule::DRIPPED_TYPE_FROM_REGISTRATION:
+					$periods = MS_Helper_Period::get_period_types();
+					$period_key = $drip_data['delay_type'];
+
+					if ( 0 == $drip_data['delay_unit'] ) {
+						$desc = __( 'Instantly', MS_TEXT_DOMAIN );
+					} elseif ( 1 == $drip_data['delay_unit'] ) {
+						$desc = sprintf(
+							__( 'After %1$s %2$s', MS_TEXT_DOMAIN ),
+							$periods['1' . $period_key],
+							''
+						);
+					} else {
+						$desc = sprintf(
+							__( 'After %1$s %2$s', MS_TEXT_DOMAIN ),
+							$drip_data['delay_unit'],
+							$periods[$period_key]
+						);
+					}
+					break;
+
+				case MS_Model_Rule::DRIPPED_TYPE_INSTANTLY:
+				default:
+					$desc = __( 'Instantly', MS_TEXT_DOMAIN );
+					break;
+			}
+		}
+
+		return apply_filters(
+			'ms_rule_get_dripped_description',
+			$desc,
+			$item_id,
 			$this
 		);
 	}
@@ -804,6 +837,7 @@ class MS_Rule extends MS_Model {
 			$this->rule_value[ $id ] = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
 		} else {
 			unset( $this->rule_value[ $id ] );
+			unset( $this->dripped[ $id ] );
 		}
 
 		do_action( 'ms_rule_set_access', $id, $access, $this );
@@ -1169,8 +1203,9 @@ class MS_Rule extends MS_Model {
 		$value = null;
 		switch ( $property ) {
 			case 'rule_value':
-				$this->rule_value = WDev()->get_array( $this->rule_value );
-				$value = $this->rule_value;
+			case 'dripped':
+				$this->$property = WDev()->get_array( $this->$property );
+				$value = $this->$property;
 				break;
 
 			default:
@@ -1206,9 +1241,6 @@ class MS_Rule extends MS_Model {
 
 				case 'dripped':
 					if ( is_array( $value ) ) {
-						foreach ( $value as $key => $period ) {
-							$value[ $key ] = $this->validate_period( $period );
-						}
 						$this->$property = $value;
 					}
 					break;

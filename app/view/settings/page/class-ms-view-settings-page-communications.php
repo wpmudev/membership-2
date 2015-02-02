@@ -52,7 +52,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'id' => 'period_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => @$comm->period['period_type'],
-				'field_options' => MS_Helper_Period::get_periods(),
+				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
 			),
 
 			'subject' => array(

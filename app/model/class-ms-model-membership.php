@@ -710,6 +710,35 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		);
 	}
 
+	/*
+	 * Returns a list of the dripped memberships.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return MS_Model_Membership[] The selected memberships.
+	 */
+	static public function get_dripped_memberships( $args = null ) {
+		$drip_args = array(
+			'meta_query' => array(
+				array(
+					'key' => 'type',
+					'value' => self::TYPE_DRIPPED,
+				),
+			),
+		);
+
+		$drip_args = wp_parse_args( $drip_args, $args );
+		$memberships = self::get_memberships( $drip_args );
+
+		return apply_filters(
+			'ms_model_membership_get_dripped_memberships',
+			$memberships,
+			$args
+		);
+	}
+
 	/**
 	 * Get membership names.
 	 *
@@ -872,6 +901,23 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		return apply_filters(
 			'ms_model_membership_is_guest',
+			$res,
+			$this
+		);
+	}
+
+	/**
+	 * Returns true if the membership a dripped membership.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return bool
+	 */
+	public function is_dripped() {
+		$res = $this->type == self::TYPE_DRIPPED;
+
+		return apply_filters(
+			'ms_model_membership_is_dripped',
 			$res,
 			$this
 		);

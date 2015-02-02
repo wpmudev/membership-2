@@ -399,10 +399,8 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function page_protected_content() {
 		$data = array();
-		$data['tabs'] = $this->get_protected_content_tabs();
+		$data['tabs'] = $this->get_available_tabs();
 		$data['active_tab'] = $this->get_active_tab();
-		$data['action'] = MS_Controller_Rule::AJAX_ACTION_UPDATE_RULE;
-		$data['settings'] = MS_Plugin::instance()->settings;
 
 		$view = MS_Factory::create( 'MS_View_Membership_ProtectedContent' );
 		$view->data = apply_filters( 'ms_view_membership_protectedcontent_data', $data, $this );
@@ -573,7 +571,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = self::ACTION_SAVE;
 		$data['membership'] = $this->load_membership();
-		$data['tabs'] = $this->get_setup_dripped_tabs();
+		$data['tabs'] = $this->get_available_tabs();
 		$data['bread_crumbs'] = $this->get_bread_crumbs();
 
 		$data['show_next_button'] = ! isset( $_GET['edit'] );
@@ -738,7 +736,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @return array The tabs configuration.
 	 */
-	public function get_protected_content_tabs() {
+	public function get_available_tabs() {
 		static $Tabs = null;
 
 		if ( null === $Tabs ) {
@@ -890,43 +888,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
-	 * Get available tabs for Setup Dripped Content page.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array The tabs configuration.
-	 */
-	public function get_setup_dripped_tabs() {
-		$membership_id = $this->load_membership()->id;
-
-		$tabs = array(
-			'post' => array(
-				'title' => __( 'Posts', MS_TEXT_DOMAIN ),
-			),
-			'page' => array(
-				'title' => __( 'Pages', MS_TEXT_DOMAIN ),
-			),
-		);
-
-		$step = $this->get_step();
-		$page = sanitize_html_class( @$_GET['page'], 'protected-content' );
-
-		foreach ( $tabs as $tab => $info ) {
-			$tabs[ $tab ]['url'] = admin_url(
-				sprintf(
-					'admin.php?page=%s&step=%s&tab=%s&membership_id=%s',
-					$page,
-					$step,
-					$tab,
-					$membership_id
-				)
-			);
-		}
-
-		return apply_filters( 'ms_controller_membership_get_tabs', $tabs, $membership_id );
-	}
-
-	/**
 	 * Get the current membership page's active tab.
 	 *
 	 * @since 1.0.0
@@ -937,24 +898,25 @@ class MS_Controller_Membership extends MS_Controller {
 		$step = $this->get_step();
 		$tabs = array();
 
-		if ( self::STEP_PROTECTED_CONTENT == $step ) {
-			$tabs = $this->get_protected_content_tabs();
-		}
-		elseif ( self::STEP_DRIPPED == $step ) {
-			$tabs = $this->get_setup_dripped_tabs();
-		}
+		$tabs = $this->get_available_tabs();
 
 		reset( $tabs );
 		$first_key = key( $tabs );
 
 		// Setup navigation tabs.
-		$active_tab = sanitize_html_class( @$_GET['tab'], $first_key );
+		$active_tab = isset( $_REQUEST['tab'] ) ? $_REQUEST['tab'] : '';
+		$active_tab = sanitize_html_class( $active_tab, $first_key );
 
 		if ( ! array_key_exists( $active_tab, $tabs ) ) {
 			$active_tab = $first_key;
 		}
 
-		return $this->active_tab = apply_filters( 'ms_controller_membership_get_active_tab', $active_tab );
+		$this->active_tab = apply_filters(
+			'ms_controller_membership_get_active_tab',
+			$active_tab
+		);
+
+		return $this->active_tab;
 	}
 
 	/**
@@ -1150,15 +1112,10 @@ class MS_Controller_Membership extends MS_Controller {
 		 * Get a list of the dripped memberships:
 		 * We need this info in the javascript
 		 */
-		$dripped_args = array(
-			'meta_query' => array(
-				array(
-					'key' => 'type',
-					'value' => MS_Model_Membership::TYPE_DRIPPED,
-				),
-			),
-		);
-		$dripped = MS_Model_Membership::get_membership_names( $dripped_args );
+		$dripped = array();
+		foreach ( MS_Model_Membership::get_dripped_memberships() as $item ) {
+			$dripped[ $item->id ] = $item->name;
+		}
 
 		$data = array(
 			'ms_init' => array(),

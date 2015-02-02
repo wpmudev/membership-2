@@ -261,7 +261,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 				$this->membership_id
 			);
 
-			if ( in_array( $this->period['period_type'], MS_Helper_Period::get_periods() ) ) {
+			if ( in_array( $this->period['period_type'], MS_Helper_Period::get_period_types() ) ) {
 				$current_date = MS_Helper_Period::add_interval(
 					$this->period['period_unit'],
 					$this->period['period_type']

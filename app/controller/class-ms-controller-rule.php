@@ -39,10 +39,9 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'rule_change_memberships';
-	const AJAX_ACTION_UPDATE_RULE = 'update_rule';
-	const AJAX_ACTION_UPDATE_MATCHING = 'update_matching';
-	const AJAX_ACTION_UPDATE_DRIPPED = 'update_dripped';
+	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'ms_rule_change_memberships';
+	const AJAX_ACTION_UPDATE_MATCHING = 'ms_rule_update_matching';
+	const AJAX_ACTION_UPDATE_DRIPPED = 'ms_rule_update_dripped';
 
 	/**
 	 * Prepare the Rule manager.
@@ -52,12 +51,14 @@ class MS_Controller_Rule extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_RULE, 'ajax_action_update_rule' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MATCHING, 'ajax_action_update_matching' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
 
-		$this->add_action( 'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_PROTECTED_CONTENT, 'edit_rule_manager' );
+		$this->add_action(
+			'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+			'edit_rule_manager'
+		);
 	}
 
 	/**
@@ -87,39 +88,6 @@ class MS_Controller_Rule extends MS_Controller {
 				$_POST['rule'],
 				$_POST['item'],
 				$values
-			);
-		}
-		$msg .= $this->_resp_code();
-
-		echo $msg;
-		exit;
-	}
-
-	/**
-	 * Handle Ajax update rule action.
-	 *
-	 * Related Action Hooks:
-	 * - wp_ajax_update_rule
-	 *
-	 * @since 1.0.0
-	 */
-	public function ajax_action_update_rule() {
-		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
-		$this->_resp_reset();
-
-		$required = array( 'membership_id', 'rule_type' );
-		$isset = array( 'values', 'value' );
-
-		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-rule-01' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'update-rule-02' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-rule-03' ); }
-
-		if ( $this->_resp_ok() ) {
-			$rule_type = $_POST['rule_type'];
-			$msg = $this->save_rule_values(
-				$rule_type,
-				$_POST['values'],
-				$_POST['value']
 			);
 		}
 		$msg .= $this->_resp_code();
@@ -242,32 +210,67 @@ class MS_Controller_Rule extends MS_Controller {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
 		$this->_resp_reset();
 
-		$fields = array( 'membership_id', 'rule_type', 'dripped_type', 'id', 'field' );
-		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'update-dripped-01' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $fields ) ) { $this->_resp_err( 'update-dripped-02' ); }
-		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'update-dripped-03' ); }
+		$fields = array(
+			'membership_ids',
+			'rule_type',
+			'item_id',
+		);
 
-		if ( $this->_resp_ok() ) {
-			$membership = $this->get_membership();
-			if ( ! $membership->is_valid() ) { $this->_resp_err( 'update-dripped-04' ); }
+		if ( ! $this->verify_nonce( 'inline' ) ) {
+			$this->_resp_err( 'Invalid Nonce' );
+		} elseif ( ! $this->is_admin_user() ) {
+			$this->_resp_err( 'Access Denied' );
+		} elseif ( ! self::validate_required( $fields, 'POST', false ) ) {
+			$this->_resp_err( 'Missing Data' );
 		}
 
 		if ( $this->_resp_ok() ) {
+			$ids = $_POST['membership_ids'];
 			$rule_type = $_POST['rule_type'];
-			$dripped_type = $_POST['dripped_type'];
-			$id = $_POST['id'];
-			$field = $_POST['field'];
-			$value = isset( $_POST['value'] ) ? $_POST['value'] : 0;
-			$rule = $membership->get_rule( $rule_type );
+			$item_id = $_POST['item_id'];
 
-			$rule->set_dripped_value( $dripped_type, $id, $field, $value );
-			$membership->set_rule( $rule_type, $rule );
-			$membership->save();
+			if ( ! is_array( $ids ) ) {
+				$ids = explode( ',', $ids );
+			}
+
+			// Loop all specified memberships and set the rule values.
+			foreach ( $ids as $id ) {
+				if ( empty( $_POST['ms_' . $id] ) ) { continue; }
+				$data = WDev()->get_array( $_POST['ms_' . $id] );
+				WDev()->load_fields( $data, 'dripped_type', 'date', 'delay_unit', 'delay_type' );
+
+				$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+				$rule = $membership->get_rule( $rule_type );
+
+				$rule->set_dripped_value(
+					$item_id,
+					$data['dripped_type'],
+					$data['date'],
+					$data['delay_unit'],
+					$data['delay_type']
+				);
+
+				$membership->set_rule( $rule_type, $rule );
+				$membership->save();
+			}
+
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
-		$msg .= $this->_resp_code();
 
-		echo $msg;
+		if ( MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED == $msg ) {
+			// If everything went well then get a refershed version of the list-table.
+			$GLOBALS['hook_suffix'] = 'protect-content_page_protected-content-setup';
+			$table = apply_filters( 'ms_rule_listtable-' . $rule_type, null );
+
+			if ( $table ) {
+				$items = $table->get_model()->get_contents();
+				echo '' . $table->display_rows( array( $items[ $item_id ] ) );
+			}
+		} else {
+			$msg .= $this->_resp_code();
+			echo '' . $msg;
+		}
+
 		exit;
 	}
 

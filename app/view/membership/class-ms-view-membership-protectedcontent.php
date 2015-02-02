@@ -69,18 +69,6 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 		</div>
 		<?php
 
-		// Used to go back to Overview from the Protected Content page
-		if ( isset( $_REQUEST['from'] ) ) {
-			$field = array(
-				'id'    => 'go_back',
-				'type'  => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( '&laquo; Back', MS_TEXT_DOMAIN ),
-				'url'   => wp_kses( base64_decode( $_REQUEST['from'] ), array() ),
-				'class' => 'button',
-			);
-			MS_Helper_Html::html_element( $field );
-		}
-
 		$html = ob_get_clean();
 
 		return apply_filters(

@@ -230,7 +230,9 @@
   float: left;
   padding: 0 10px 0 0;
 }
-#wpwrap .ms-wrap tr.inline-edit-row .dripped-form .drip-col .wpmui-field-input {
+#wpwrap .ms-wrap tr.inline-edit-row .dripped-form .drip-col .wpmui-field-input,
+#wpwrap .ms-wrap tr.inline-edit-row .dripped-form .drip-col .wpmui-label-before,
+#wpwrap .ms-wrap tr.inline-edit-row .dripped-form .drip-col .wpmui-label-after {
   margin-top: 0;
   margin-bottom: 0;
 }

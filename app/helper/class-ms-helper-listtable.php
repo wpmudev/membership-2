@@ -1229,7 +1229,7 @@ class MS_Helper_ListTable {
 			<?php $this->inline_edit(); ?>
 			<p class="submit inline-edit-save">
 				<a accesskey="c" href="#inline-edit" class="button-secondary cancel alignleft"><?php _e( 'Cancel', MS_TEXT_DOMAIN ); ?></a>
-				<input type="hidden" id="_inline_edit" name="_inline_edit" value="<?php echo esc_attr( $inline_nonce ); ?>">
+				<input type="hidden" id="_wpnonce" name="_wpnonce" value="<?php echo esc_attr( $inline_nonce ); ?>">
 				<a accesskey="s" href="#inline-edit" class="button-primary save alignright"><?php _e( 'Update', MS_TEXT_DOMAIN ); ?></a>
 				<span class="error" style="display:none"></span>
 				<br class="clear">
@@ -1248,10 +1248,14 @@ class MS_Helper_ListTable {
 	 * Generate the table rows
 	 *
 	 * @since 1.0.0
-	 * @access protected
+	 *
+	 * @param array $items Optional. An array of items to display. This is used
+	 *           to generate HTML code of a single row only -> in Ajax response.
 	 */
-	protected function display_rows() {
-		foreach ( $this->items as $item ) {
+	public function display_rows( $items = null ) {
+		if ( empty( $items ) ) { $items = $this->items; }
+
+		foreach ( $items as $item ) {
 			$this->single_row( $item );
 		}
 	}

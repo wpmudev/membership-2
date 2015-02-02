@@ -39,28 +39,47 @@ window.ms_init.view_protected_content = function init () {
 	}
 
 	// Right before the inline editor is displayed. We can prepare the form.
-	function populate_inline_editor( ev, editor, row ) {
+	function populate_inline_editor( ev, editor, row, item_data ) {
 		var ind, len,
-			items = row.find( 'select.ms-memberships option:selected' ),
+			memberships = row.find( 'select.ms-memberships option:selected' ),
 			form = editor.find( '.dripped-form' ),
 			target = editor.find( '.dynamic-form' );
 
-		for ( ind = 0, len = items.length; ind < len; ind++ ) {
-			var item = jQuery( items[ind] ),
-				item_id = item.val(),
+		for ( ind = 0, len = memberships.length; ind < len; ind++ ) {
+			var item = jQuery( memberships[ind] ),
+				membership_id = item.val(),
 				color = item.data( 'color' ),
 				form_row = form.clone( false ),
-				key = '[' + item_id + ']';
+				base = 'ms_' + membership_id;
 
-			if ( undefined !== ms_data.dripped[item_id] ) {
+			if ( undefined !== ms_data.dripped[membership_id] ) {
 				// Create input fields for the dripped membership
 				form_row.find( '.the-name' )
-					.text( ms_data.dripped[item_id] )
+					.text( ms_data.dripped[membership_id] )
 					.css( {'background': color} );
 
-				form_row.find( '[data-name=membership_id]' )
-					.attr( 'name', 'membership_id' + key )
-					.val( item_id );
+				form_row.find( '[name=membership_ids]' )
+					.attr( 'name', 'membership_ids[]' )
+					.val( membership_id );
+
+				form_row.find( '[name=item_id]' )
+					.val( item_data.item_id );
+
+				form_row.find( '[name=dripped_type]' )
+					.attr( 'name', base + '[dripped_type]' )
+					.val( item_data[ base + '[dripped_type]' ] );
+
+				form_row.find( '[name=date]' )
+					.attr( 'name', base + '[date]' )
+					.val( item_data[ base + '[date]' ] );
+
+				form_row.find( '[name=delay_unit]' )
+					.attr( 'name', base + '[delay_unit]' )
+					.val( item_data[ base + '[delay_unit]' ] );
+
+				form_row.find( '[name=delay_type]' )
+					.attr( 'name', base + '[delay_type]' )
+					.val( item_data[ base + '[delay_type]' ] );
 
 				// Add the membership form to the inline editor
 				form_row.appendTo( target ).removeClass( 'hidden' );
@@ -68,6 +87,9 @@ window.ms_init.view_protected_content = function init () {
 				setup_editor( form_row );
 			}
 		}
+
+		// Remove the form-template from the inline editor.
+		form.remove();
 	}
 
 	// Set up the event-handlers of the inline editor.
@@ -89,6 +111,15 @@ window.ms_init.view_protected_content = function init () {
 		inp_date.ms_datepicker();
 	}
 
+	// The table was updated, at least one row needs to be re-initalized.
+	function update_table( ev, row ) {
+		window.ms_init.memberships_column( '.column-access' );
+
+		row.find( '.ms-memberships' ).each(function() {
+			check_if_dripped.apply( this );
+		});
+	}
+
 	// Add event hooks.
 
 	table.on( 'ms-ajax-updated', '.ms-memberships', check_if_dripped );
@@ -97,6 +128,7 @@ window.ms_init.view_protected_content = function init () {
 	});
 
 	jQuery( document ).on( 'ms-inline-editor', populate_inline_editor );
+	jQuery( document ).on( 'ms-inline-editor-updated', update_table );
 };
 
 // This is also used on the Members page

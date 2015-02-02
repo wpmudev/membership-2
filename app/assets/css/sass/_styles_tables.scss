@@ -168,7 +168,9 @@
 				float: left;
 				padding: 0 10px 0 0;
 
-				.wpmui-field-input {
+				.wpmui-field-input,
+				.wpmui-label-before,
+				.wpmui-label-after {
 					margin-top: 0;
 					margin-bottom: 0;
 				}

@@ -166,7 +166,7 @@ class MS_Controller extends MS_Hooker {
 	 *
 	 * @param string[] $fields The array of fields to validate.
 	 * @param string $request_method POST or GET
-	 * @param bool $not_empty if true use empty method, else use isset method.
+	 * @param bool $not_empty If true use empty method, else use isset method.
 	 * @return bool True all fields are validated
 	 */
 	static public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {

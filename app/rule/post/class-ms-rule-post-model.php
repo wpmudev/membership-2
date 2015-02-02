@@ -105,7 +105,10 @@ class MS_Rule_Post_Model extends MS_Rule {
 
 			$membership = $this->get_membership();
 			if ( MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
-				$dripped_type = $this->get_dripped_type();
+				$dripped_type = '!logic-changed!';
+
+				// ### !!! TODO !!! ### FIX THIS
+
 				/**
 				 * Exclude dripped content.
 				 * Can't include posts, just exclude because of category clause conflict to post_in.
@@ -162,8 +165,6 @@ class MS_Rule_Post_Model extends MS_Rule {
 		) {
 			$membership = $this->get_membership();
 			if ( MS_Model_Membership::TYPE_DRIPPED == $membership->type ) {
-				$dripped_type = $this->get_dripped_type();
-
 				$posts = array();
 				if ( ! empty( $this->rule_value )
 					&& is_array( $this->rule_value )

@@ -28,6 +28,11 @@ class MS_Rule_MemberCaps extends MS_Controller {
 			'ms_view_protectedcontent_define-' . self::RULE_ID,
 			'handle_render_callback', 10, 2
 		);
+
+		$this->add_filter(
+			'ms_rule_listtable-' . self::RULE_ID,
+			'return_listtable'
+		);
 	}
 
 	/**
@@ -46,6 +51,19 @@ class MS_Rule_MemberCaps extends MS_Controller {
 		$callback = array( $view, 'to_html' );
 
 		return $callback;
+	}
+
+	/**
+	 * Returns the ListTable object for this rule.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return MS_Helper_ListTable
+	 */
+	public function return_listtable( $empty ) {
+		$base = MS_Model_Membership::get_base();
+		$rule = $base->get_rule( self::RULE_ID );
+		return new MS_Rule_MemberCaps_ListTable( $rule );
 	}
 
 }

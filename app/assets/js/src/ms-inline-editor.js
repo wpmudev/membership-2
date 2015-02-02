@@ -14,7 +14,7 @@
 	window.ms_inline_editor = {
 
 		init: function() {
-			template = jQuery( '#inline-edit' );
+			template = jQuery( '.ms-wrap #inline-edit' );
 
 			// prepare the edit rows
 			template.keyup(function(e){
@@ -36,14 +36,14 @@
 			});
 
 			// add events
-			jQuery( '.wp-list-table' ).on('click', 'a.editinline', function() {
+			jQuery( '.ms-wrap .wp-list-table' ).on('click', 'a.editinline', function() {
 				ms_inline_editor.edit( this );
 				return false;
 			});
 		},
 
 		edit: function( id ) {
-			var item_data, ind, field_input, field_value;
+			var item_data, ind, field_input, field_value, row_data;
 
 			ms_inline_editor.revert();
 
@@ -66,6 +66,7 @@
 			the_item.hide().after( quickedit );
 
 			// populate the data
+			row_data = {};
 			item_data = the_item.find( '.inline_data' );
 			item_data.children().each(function() {
 				var field = jQuery( this ),
@@ -73,17 +74,18 @@
 					input = quickedit.find( ':input[name="' + inp_name + '"]' ),
 					label = quickedit.find( '.lbl-' + inp_name );
 
+				row_data[inp_name] = field.text();
 				if ( input.length ) {
-					input.val( field.text() );
+					input.val( row_data[inp_name] );
 				}
 				if ( label.length ) {
-					label.text( field.text() );
+					label.text( row_data[inp_name] );
 				}
 			});
-			jQuery( document ).trigger( 'ms-inline-editor', [quickedit, the_item] );
+			jQuery( document ).trigger( 'ms-inline-editor', [quickedit, the_item, row_data] );
 
 			quickedit.attr( 'id', 'edit-' + id ).addClass( 'inline-editor' ).show();
-			quickedit.find( 'input:visible' ).first().focus();
+			quickedit.find( ':input:visible' ).first().focus();
 
 			return false;
 		},
@@ -95,28 +97,27 @@
 				id = ms_inline_editor.get_id( id );
 			}
 
-			quickedit.addClass( 'wpmui-loading' );
-
-			params = {
-				action: 'ms_inline_edit',
-				membership_id: id,
-			};
-
-			fields = quickedit.find( ':input' ).serialize();
-			params = fields + '&' + jQuery.param( params );
+			quickedit.find('td').addClass( 'wpmui-loading' );
+			params = quickedit.find( ':input' ).serialize();
 
 			// make ajax request
 			jQuery.post(
 				window.ajaxurl,
 				params,
 				function( response ) {
-					quickedit.removeClass( 'wpmui-loading' );
+					quickedit.find('td').removeClass( 'wpmui-loading' );
 
 					if ( response ) {
 						if ( -1 !== response.indexOf( '<tr' ) ) {
-							jQuery( '#item-' + id ).remove();
-							jQuery( '#edit-' + id ).before( response ).remove();
-							jQuery( '#item-' + id ).hide().fadeIn();
+							the_item.remove();
+							the_item = jQuery( response );
+							quickedit.before( the_item ).remove();
+							the_item.hide().fadeIn();
+
+							// Update the "alternate" class
+							ms_inline_editor.update_alternate( the_item );
+
+							jQuery( document ).trigger( 'ms-inline-editor-updated', [the_item] );
 						} else {
 							response = response.replace( /<.[^<>]*?>/g, '' );
 							quickedit.find( '.error' ).html( response ).show();
@@ -145,6 +146,21 @@
 			}
 
 			return false;
+		},
+
+		update_alternate: function( element ) {
+			var ind, len, row,
+				tbody = jQuery( element ).closest( 'tbody' ),
+				rows = tbody.find( 'tr:visible' );
+
+			for ( ind = 0, len = rows.length; ind < len; ind++ ) {
+				row = jQuery( rows[ind] );
+				if ( ind % 2 === 0 ) {
+					row.addClass( 'alternate' );
+				} else {
+					row.removeClass( 'alternate' );
+				}
+			}
 		},
 
 		get_id: function( obj ) {

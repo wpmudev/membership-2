@@ -123,7 +123,7 @@ class MS_Helper_Period extends MS_Helper {
 		);
 
 		return apply_filters(
-			'ms_helper_period_get_periods',
+			'ms_helper_period_subtract_dates',
 			$days
 		);
 	}
@@ -174,21 +174,34 @@ class MS_Helper_Period extends MS_Helper {
 	/**
 	 * Return the existing period types.
 	 *
-	 * @todo change method name to get_period_types
-	 *
 	 * @since 1.0.0
 	 *
+	 * @param string $type [all|singular|plural]
 	 * @return array The period types and descriptions.
 	 */
-	public static function get_periods() {
+	public static function get_period_types( $type = 'all' ) {
+		$singular = array(
+			'1' . self::PERIOD_TYPE_DAYS => __( 'one day', MS_TEXT_DOMAIN ),
+			'1' . self::PERIOD_TYPE_WEEKS => __( 'one week', MS_TEXT_DOMAIN ),
+			'1' . self::PERIOD_TYPE_MONTHS => __( 'one month', MS_TEXT_DOMAIN ),
+			'1' . self::PERIOD_TYPE_YEARS => __( 'one year', MS_TEXT_DOMAIN ),
+		);
+		$plural = array(
+			self::PERIOD_TYPE_DAYS => __( 'days', MS_TEXT_DOMAIN ),
+			self::PERIOD_TYPE_WEEKS => __( 'weeks', MS_TEXT_DOMAIN ),
+			self::PERIOD_TYPE_MONTHS => __( 'months', MS_TEXT_DOMAIN ),
+			self::PERIOD_TYPE_YEARS => __( 'years', MS_TEXT_DOMAIN ),
+		);
+
+		switch ( $type ) {
+			case 'singular': $res = $singular; break;
+			case 'plural':   $res = $plural; break;
+			default:         $res = $singular + $plural; break;
+		}
+
 		return apply_filters(
 			'ms_helper_period_get_periods',
-			array(
-				self::PERIOD_TYPE_DAYS => __( self::PERIOD_TYPE_DAYS, MS_TEXT_DOMAIN ),
-				self::PERIOD_TYPE_WEEKS => __( self::PERIOD_TYPE_WEEKS, MS_TEXT_DOMAIN ),
-				self::PERIOD_TYPE_MONTHS => __( self::PERIOD_TYPE_MONTHS, MS_TEXT_DOMAIN ),
-				self::PERIOD_TYPE_YEARS => __( self::PERIOD_TYPE_YEARS, MS_TEXT_DOMAIN ),
-			)
+			$res
 		);
 	}
 

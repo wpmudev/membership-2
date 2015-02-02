@@ -51,7 +51,7 @@ class MS_Model_Rule extends MS_Model {
 	 * Dripped type constants.
 	 *
 	 * @since 1.0.0
-	 * @var string $dripped['dripped_type'] The dripped type.
+	 * @var string Available Drip-Types.
 	 */
 	const DRIPPED_TYPE_INSTANTLY = 'instantly';
 	const DRIPPED_TYPE_SPEC_DATE = 'specific_date';

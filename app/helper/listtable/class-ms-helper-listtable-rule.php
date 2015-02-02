@@ -112,6 +112,16 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		}
 	}
 
+	/**
+	 * Returns the rule model.
+	 *
+	 * @since  1.1.0
+	 * @return MS_Rule
+	 */
+	public function get_model() {
+		return $this->model;
+	}
+
 	public function get_columns() {
 		return apply_filters(
 			'ms_helper_listtable_' . $this->id . '_columns',
@@ -249,16 +259,32 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		static $Is_Base = null;
 
 		if ( null === $Is_Base ) {
-			// When no membership_id is specified the list will display base items.
-			$Is_Base = true;
-
-			if ( ! empty( $_REQUEST['membership_id'] ) ) {
-				$membership = MS_Factory::load( 'MS_Model_Membership', $_REQUEST['membership_id'] );
-				$Is_Base = $membership->is_base();
-			}
+			$Is_Base = $this->get_membership()->is_base();
 		}
 
 		return $Is_Base;
+	}
+
+	/**
+	 * Returnst the membership of the current view.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	public function get_membership() {
+		static $Membership = null;
+
+		if ( null === $Membership ) {
+			if ( ! empty( $_REQUEST['membership_id'] ) ) {
+				$Membership = MS_Factory::load( 'MS_Model_Membership', $_REQUEST['membership_id'] );
+			}
+
+			if ( empty( $Membership ) || ! $Membership->is_valid() ) {
+				$Membership = MS_Model_Membership::get_base();
+			}
+		}
+
+		return $Membership;
 	}
 
 	/**
@@ -272,9 +298,17 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		return $defaults;
 	}
 
+	/**
+	 * Return content of Checkbox column.
+	 * This column also contains the inline-editor-data for `item_id` - this
+	 * value can be overwritten in any of the other columns.
+	 *
+	 * @since  1.0.0
+	 */
 	public function column_cb( $item, $column_name ) {
 		return sprintf(
-			'<input type="checkbox" name="item[]" value="%1$s" />',
+			'<input type="checkbox" name="item[]" value="%1$s" />' .
+			'<div class="inline_data hidden"><span class="item_id">%1$s</span></div>',
 			$item->id
 		);
 	}
@@ -315,12 +349,49 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	}
 
 	public function column_dripped( $item, $column_name ) {
+		static $Dripped_memberships = null;
+		$membership = $this->get_membership();
+		$label = '';
+
+		if ( null === $Dripped_memberships ) {
+			$Dripped_memberships = MS_Model_membership::get_dripped_memberships();
+		}
+
+		if ( $membership->is_dripped() ) {
+			$rule = $membership->get_rule( $this->model->rule_type );
+			if ( ! empty( $rule->dripped[$item->id] ) ) {
+				$label = $rule->get_dripped_description( $item->id );
+			}
+		}
+
+		if ( empty( $label ) ) {
+			$label = __( 'Set date...', MS_TEXT_DOMAIN );
+		}
+
 		ob_start();
 		?>
-		<a href="#" class="editinline"><?php _e( 'Set date...', MS_TEXT_DOMAIN ); ?></a>
+		<a href="#" class="editinline"><?php echo esc_html( $label ); ?></a>
 		<div class="inline_data hidden">
 			<span class="name"><?php echo esc_html( $item->name ); ?></span>
-			<span class="dripped">...</span>
+			<?php
+			foreach ( $Dripped_memberships as $membership ) {
+				$rule = $membership->get_rule( $this->model->rule_type );
+				if ( ! empty( $rule->dripped[$item->id] ) ) {
+					$data = $rule->dripped[$item->id];
+					printf(
+						'<span class="ms_%1$s[dripped_type]">%2$s</span>' .
+						'<span class="ms_%1$s[date]">%3$s</span>' .
+						'<span class="ms_%1$s[delay_unit]">%4$s</span>' .
+						'<span class="ms_%1$s[delay_type]">%5$s</span>',
+						$membership->id,
+						$data['type'],
+						$data['date'],
+						$data['delay_unit'],
+						$data['delay_type']
+					);
+				}
+			}
+			?>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -360,9 +431,32 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$rule = $this->model;
 		$membership = $this->membership;
 
-		$field_id = array(
+		$field_action = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' => 'action',
+			'value' => MS_Controller_Rule::AJAX_ACTION_UPDATE_DRIPPED,
+		);
+
+		$field_rule = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' => 'rule_type',
+			'value' => $this->model->rule_type,
+		);
+
+		$field_item = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' => 'item_id',
+		);
+
+		$field_filter = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'name' => 'membership_id',
+			'value' => isset( $_REQUEST['membership_id'] ) ? $_REQUEST['membership_id'] : '',
+		);
+
+		$field_id = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' => 'membership_ids',
 		);
 
 		$field_type = array(
@@ -375,26 +469,38 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$field_date = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 			'name' => 'date',
+			'placeholder' => __( 'Date...', MS_TEXT_DOMAIN ),
 		);
 
 		$field_delay_unit = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'name' => 'delay_unit',
 			'class' => 'ms-text-small',
+			'placeholder' => '1',
 		);
 
 		$field_delay_type = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'name' => 'delay_type',
-			'field_options' => MS_Helper_Period::get_periods(),
+			'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
+			'after' => __( 'after subscription', MS_TEXT_DOMAIN ),
 		);
 
 		?>
 		<div>
-			<h4 class="lbl-name"></h4>
+			<h4>
+				<span class="lbl-name"></span> -
+				<?php _e( 'Dripped Content Settings', MS_TEXT_DOMAIN ); ?>
+			</h4>
 		</div>
 		<fieldset>
 			<div class="inline-edit-col">
+				<?php
+				MS_Helper_Html::html_element( $field_action );
+				MS_Helper_Html::html_element( $field_rule );
+				MS_Helper_Html::html_element( $field_item );
+				MS_Helper_Html::html_element( $field_filter );
+				?>
 				<div class="dynamic-form"></div>
 			</div>
 		</fieldset>

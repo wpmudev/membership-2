@@ -677,7 +677,7 @@ jQuery( document ).ready( function() {
 	window.ms_inline_editor = {
 
 		init: function() {
-			template = jQuery( '#inline-edit' );
+			template = jQuery( '.ms-wrap #inline-edit' );
 
 			// prepare the edit rows
 			template.keyup(function(e){
@@ -699,14 +699,14 @@ jQuery( document ).ready( function() {
 			});
 
 			// add events
-			jQuery( '.wp-list-table' ).on('click', 'a.editinline', function() {
+			jQuery( '.ms-wrap .wp-list-table' ).on('click', 'a.editinline', function() {
 				ms_inline_editor.edit( this );
 				return false;
 			});
 		},
 
 		edit: function( id ) {
-			var item_data, ind, field_input, field_value;
+			var item_data, ind, field_input, field_value, row_data;
 
 			ms_inline_editor.revert();
 
@@ -729,6 +729,7 @@ jQuery( document ).ready( function() {
 			the_item.hide().after( quickedit );
 
 			// populate the data
+			row_data = {};
 			item_data = the_item.find( '.inline_data' );
 			item_data.children().each(function() {
 				var field = jQuery( this ),
@@ -736,17 +737,18 @@ jQuery( document ).ready( function() {
 					input = quickedit.find( ':input[name="' + inp_name + '"]' ),
 					label = quickedit.find( '.lbl-' + inp_name );
 
+				row_data[inp_name] = field.text();
 				if ( input.length ) {
-					input.val( field.text() );
+					input.val( row_data[inp_name] );
 				}
 				if ( label.length ) {
-					label.text( field.text() );
+					label.text( row_data[inp_name] );
 				}
 			});
-			jQuery( document ).trigger( 'ms-inline-editor', [quickedit, the_item] );
+			jQuery( document ).trigger( 'ms-inline-editor', [quickedit, the_item, row_data] );
 
 			quickedit.attr( 'id', 'edit-' + id ).addClass( 'inline-editor' ).show();
-			quickedit.find( 'input:visible' ).first().focus();
+			quickedit.find( ':input:visible' ).first().focus();
 
 			return false;
 		},
@@ -758,28 +760,27 @@ jQuery( document ).ready( function() {
 				id = ms_inline_editor.get_id( id );
 			}
 
-			quickedit.addClass( 'wpmui-loading' );
-
-			params = {
-				action: 'ms_inline_edit',
-				membership_id: id,
-			};
-
-			fields = quickedit.find( ':input' ).serialize();
-			params = fields + '&' + jQuery.param( params );
+			quickedit.find('td').addClass( 'wpmui-loading' );
+			params = quickedit.find( ':input' ).serialize();
 
 			// make ajax request
 			jQuery.post(
 				window.ajaxurl,
 				params,
 				function( response ) {
-					quickedit.removeClass( 'wpmui-loading' );
+					quickedit.find('td').removeClass( 'wpmui-loading' );
 
 					if ( response ) {
 						if ( -1 !== response.indexOf( '<tr' ) ) {
-							jQuery( '#item-' + id ).remove();
-							jQuery( '#edit-' + id ).before( response ).remove();
-							jQuery( '#item-' + id ).hide().fadeIn();
+							the_item.remove();
+							the_item = jQuery( response );
+							quickedit.before( the_item ).remove();
+							the_item.hide().fadeIn();
+
+							// Update the "alternate" class
+							ms_inline_editor.update_alternate( the_item );
+
+							jQuery( document ).trigger( 'ms-inline-editor-updated', [the_item] );
 						} else {
 							response = response.replace( /<.[^<>]*?>/g, '' );
 							quickedit.find( '.error' ).html( response ).show();
@@ -808,6 +809,21 @@ jQuery( document ).ready( function() {
 			}
 
 			return false;
+		},
+
+		update_alternate: function( element ) {
+			var ind, len, row,
+				tbody = jQuery( element ).closest( 'tbody' ),
+				rows = tbody.find( 'tr:visible' );
+
+			for ( ind = 0, len = rows.length; ind < len; ind++ ) {
+				row = jQuery( rows[ind] );
+				if ( ind % 2 === 0 ) {
+					row.addClass( 'alternate' );
+				} else {
+					row.removeClass( 'alternate' );
+				}
+			}
 		},
 
 		get_id: function( obj ) {
@@ -1399,28 +1415,47 @@ window.ms_init.view_protected_content = function init () {
 	}
 
 	// Right before the inline editor is displayed. We can prepare the form.
-	function populate_inline_editor( ev, editor, row ) {
+	function populate_inline_editor( ev, editor, row, item_data ) {
 		var ind, len,
-			items = row.find( 'select.ms-memberships option:selected' ),
+			memberships = row.find( 'select.ms-memberships option:selected' ),
 			form = editor.find( '.dripped-form' ),
 			target = editor.find( '.dynamic-form' );
 
-		for ( ind = 0, len = items.length; ind < len; ind++ ) {
-			var item = jQuery( items[ind] ),
-				item_id = item.val(),
+		for ( ind = 0, len = memberships.length; ind < len; ind++ ) {
+			var item = jQuery( memberships[ind] ),
+				membership_id = item.val(),
 				color = item.data( 'color' ),
 				form_row = form.clone( false ),
-				key = '[' + item_id + ']';
+				base = 'ms_' + membership_id;
 
-			if ( undefined !== ms_data.dripped[item_id] ) {
+			if ( undefined !== ms_data.dripped[membership_id] ) {
 				// Create input fields for the dripped membership
 				form_row.find( '.the-name' )
-					.text( ms_data.dripped[item_id] )
+					.text( ms_data.dripped[membership_id] )
 					.css( {'background': color} );
 
-				form_row.find( '[data-name=membership_id]' )
-					.attr( 'name', 'membership_id' + key )
-					.val( item_id );
+				form_row.find( '[name=membership_ids]' )
+					.attr( 'name', 'membership_ids[]' )
+					.val( membership_id );
+
+				form_row.find( '[name=item_id]' )
+					.val( item_data.item_id );
+
+				form_row.find( '[name=dripped_type]' )
+					.attr( 'name', base + '[dripped_type]' )
+					.val( item_data[ base + '[dripped_type]' ] );
+
+				form_row.find( '[name=date]' )
+					.attr( 'name', base + '[date]' )
+					.val( item_data[ base + '[date]' ] );
+
+				form_row.find( '[name=delay_unit]' )
+					.attr( 'name', base + '[delay_unit]' )
+					.val( item_data[ base + '[delay_unit]' ] );
+
+				form_row.find( '[name=delay_type]' )
+					.attr( 'name', base + '[delay_type]' )
+					.val( item_data[ base + '[delay_type]' ] );
 
 				// Add the membership form to the inline editor
 				form_row.appendTo( target ).removeClass( 'hidden' );
@@ -1428,6 +1463,9 @@ window.ms_init.view_protected_content = function init () {
 				setup_editor( form_row );
 			}
 		}
+
+		// Remove the form-template from the inline editor.
+		form.remove();
 	}
 
 	// Set up the event-handlers of the inline editor.
@@ -1449,6 +1487,15 @@ window.ms_init.view_protected_content = function init () {
 		inp_date.ms_datepicker();
 	}
 
+	// The table was updated, at least one row needs to be re-initalized.
+	function update_table( ev, row ) {
+		window.ms_init.memberships_column( '.column-access' );
+
+		row.find( '.ms-memberships' ).each(function() {
+			check_if_dripped.apply( this );
+		});
+	}
+
 	// Add event hooks.
 
 	table.on( 'ms-ajax-updated', '.ms-memberships', check_if_dripped );
@@ -1457,6 +1504,7 @@ window.ms_init.view_protected_content = function init () {
 	});
 
 	jQuery( document ).on( 'ms-inline-editor', populate_inline_editor );
+	jQuery( document ).on( 'ms-inline-editor-updated', update_table );
 };
 
 // This is also used on the Members page

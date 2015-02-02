@@ -217,7 +217,7 @@ class MS_View_Membership_Payment extends MS_View {
 				'name' => '[period][period_type]',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->period_type,
-				'field_options' => MS_Helper_Period::get_periods(),
+				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
 				'ajax_data' => array( 'field' => 'period_type' ),
 			),
 			'pay_cycle_period_unit' => array(
@@ -235,7 +235,7 @@ class MS_View_Membership_Payment extends MS_View {
 				'name' => '[pay_cycle_period][period_type]',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->pay_cycle_period_type,
-				'field_options' => MS_Helper_Period::get_periods(),
+				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
 				'ajax_data' => array( 'field' => 'pay_cycle_period_type' ),
 			),
 			'period_date_start' => array(
@@ -286,7 +286,7 @@ class MS_View_Membership_Payment extends MS_View {
 				'name' => '[trial_period][period_type]',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->trial_period_type,
-				'field_options' => MS_Helper_Period::get_periods(),
+				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
 				'ajax_data' => array( 'field' => 'trial_period_type' ),
 			),
 
