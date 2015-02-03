@@ -239,7 +239,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		} else {
 			$membership_price = $regular_invoice->total;
 		}
-		$membership_price = number_format( $membership_price, 2 );
+		$membership_price = MS_Helper_Billing::format_price( $membership_price );
 
 		$fields['a3'] = array(
 			'id' => 'a3',

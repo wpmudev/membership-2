@@ -161,7 +161,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 	}
 
 	public function column_total( $item, $column_name ) {
-		$html = number_format( $item->total, 2 );
+		$html = MS_Helper_Billing::format_price( $item->total );
 
 		return $html;
 	}

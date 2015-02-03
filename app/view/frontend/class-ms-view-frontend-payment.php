@@ -109,7 +109,7 @@ class MS_View_Frontend_Payment extends MS_View {
 								printf(
 									'<span class="price">%s %s</span>',
 									$invoice->currency,
-									number_format( $membership->price, 2 )
+									MS_Helper_Billing::format_price( $membership->price )
 								);
 							} else {
 								_e( 'Free', MS_TEXT_DOMAIN );
@@ -125,7 +125,7 @@ class MS_View_Frontend_Payment extends MS_View {
 								<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class="ms-price-column">
-								<?php printf( '%s -%s', $invoice->currency, number_format( $invoice->discount, 2 ) ); ?>
+								<?php printf( '%s -%s', $invoice->currency, MS_Helper_Billing::format_price( $invoice->discount ) ); ?>
 							</td>
 						</tr>
 					<?php endif; ?>
@@ -136,7 +136,7 @@ class MS_View_Frontend_Payment extends MS_View {
 								<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class="ms-price-column">
-								<?php printf( '%s -%s', $invoice->currency, number_format( $invoice->pro_rate, 2 ) ); ?>
+								<?php printf( '%s -%s', $invoice->currency, MS_Helper_Billing::format_price( $invoice->pro_rate ) ); ?>
 							</td>
 						</tr>
 					<?php endif; ?>
@@ -151,7 +151,7 @@ class MS_View_Frontend_Payment extends MS_View {
 								printf(
 									'<span class="price">%s %s</span>',
 									$invoice->currency,
-									number_format( $invoice->total, 2 )
+									MS_Helper_Billing::format_price( $invoice->total )
 								);
 							} else {
 								_e( 'Free', MS_TEXT_DOMAIN );

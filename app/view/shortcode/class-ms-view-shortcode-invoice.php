@@ -22,7 +22,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			$inv_amount = sprintf(
 				'%1$s %2$s',
 				$invoice->currency,
-				number_format( $invoice->amount, 2 )
+				MS_Helper_Billing::format_price( $invoice->amount )
 			);
 		} else {
 			$inv_amount = __( 'Free', MS_TEXT_DOMAIN );
@@ -32,7 +32,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			$inv_discount = sprintf(
 				'%s -%s',
 				$invoice->currency,
-				number_format( $invoice->discount, 2 )
+				MS_Helper_Billing::format_price( $invoice->discount )
 			);
 		} else {
 			$inv_discount = '';
@@ -42,7 +42,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			$inv_pro_rate = sprintf(
 				'%s -%s',
 				$invoice->currency,
-				number_format( $invoice->pro_rate, 2 )
+				MS_Helper_Billing::format_price( $invoice->pro_rate )
 			);
 		} else {
 			$inv_pro_rate = '';
@@ -51,7 +51,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_total = sprintf(
 			'%s %s',
 			$invoice->currency,
-			number_format( $invoice->total, 2 )
+			MS_Helper_Billing::format_price( $invoice->total )
 		);
 
 		$inv_title = apply_filters( 'ms_invoice_title', $inv_title, $invoice );

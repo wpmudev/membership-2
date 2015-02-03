@@ -237,7 +237,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 				$html = sprintf(
 					'<span class="ms-currency">%1$s</span> <span class="ms-price">%2$s</span> (<span class="ms-payment">%3$s</span>)',
 					MS_Plugin::instance()->settings->currency_symbol,
-					number_format_i18n( $item->price, 2 ),
+					MS_Helper_Billing::format_price( $item->price ),
 					$item->get_payment_type_desc()
 				);
 				$html = '<span class="ms-bold">' . $html . '</span>';

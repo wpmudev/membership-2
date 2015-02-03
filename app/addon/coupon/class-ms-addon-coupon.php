@@ -432,7 +432,7 @@ class MS_Addon_Coupon extends MS_Addon {
 				$html = '-';
 			}
 		} else {
-			$html = number_format( $value, 2 );
+			$html = MS_Helper_Billing::format_price( $value );
 		}
 
 		return $html;

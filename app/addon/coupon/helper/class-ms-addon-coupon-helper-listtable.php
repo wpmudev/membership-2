@@ -171,7 +171,7 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 			$html = sprintf(
 				'%s %s',
 				MS_Plugin::instance()->settings->currency,
-				number_format( $item->discount, 2 )
+				MS_Helper_Billing::format_price( $item->discount )
 			);
 		} elseif ( MS_Addon_Coupon_Model::TYPE_PERCENT == $item->discount_type ) {
 			$html = $item->discount . ' %';

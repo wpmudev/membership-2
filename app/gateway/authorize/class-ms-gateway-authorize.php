@@ -259,7 +259,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this->process_transaction( $invoice );
 			return $invoice;
 		}
-		$amount = number_format( $invoice->total, 2, '.', '' );
+		$amount = MS_Helper_Billing::format_price( $invoice->total );
 
 		if ( $this->mode == self::MODE_SANDBOX ) {
 			$invoice->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );

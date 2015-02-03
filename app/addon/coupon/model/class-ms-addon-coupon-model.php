@@ -434,7 +434,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 				__( 'Using Coupon code: %1$s. Discount applied: %2$s %3$s', MS_TEXT_DOMAIN ),
 				$this->code,
 				MS_Plugin::instance()->settings->currency,
-				number_format( $discount, 2 )
+				MS_Helper_Billing::format_price( $discount )
 			);
 		}
 

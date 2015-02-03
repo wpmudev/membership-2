@@ -127,6 +127,12 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'ms_gateway_paypalstandard_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
 				'confirm_payment'
 			);
+
+			// Format prices to be compatible with Taxamo
+			$this->add_filter(
+				'ms_format_price',
+				'format_price'
+			);
 		}
 	}
 
@@ -345,6 +351,24 @@ class MS_Addon_Taxamo extends MS_Addon {
 			$transaction_key = $_POST['custom'];
 			$api->confirmTransaction( $transaction_key, null );
 		}
+	}
+
+	/**
+	 * Formats the price value, without any HTML markup.
+	 *
+	 * @since  1.1.0
+	 * @param  numeric $price Numeric value, e.g. 10.45 or '1300'
+	 * @return numeric Numeric value
+	 */
+	public function format_price( $price ) {
+		if ( is_numeric( $price ) ) {
+			if ( abs( $price - round( $price ) ) < 0.001 ) {
+				// Taxamo only supports decimal digits if they are not '.00'
+				return intval( $price );
+			}
+		}
+
+		return $price;
 	}
 
 }

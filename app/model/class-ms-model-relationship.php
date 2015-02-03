@@ -1103,8 +1103,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} else {
 			$trial_price = $membership->trial_price;
 		}
-		$total_price = number_format( $total_price, 2 );
-		$trial_price = number_format( $trial_price, 2 );
+		$total_price = MS_Helper_Billing::format_price( $total_price );
+		$trial_price = MS_Helper_Billing::format_price( $trial_price );
 
 		switch ( $membership->payment_type ){
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
