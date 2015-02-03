@@ -28,6 +28,16 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			$inv_amount = __( 'Free', MS_TEXT_DOMAIN );
 		}
 
+		if ( $invoice->tax ) {
+			$inv_taxes = sprintf(
+				'%s %s',
+				$invoice->currency,
+				MS_Helper_Billing::format_price( $invoice->tax )
+			);
+		} else {
+			$inv_taxes = '';
+		}
+
 		if ( $invoice->discount ) {
 			$inv_discount = sprintf(
 				'%s -%s',
@@ -60,6 +70,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_status = apply_filters( 'ms_invoice_status', $invoice->status, $invoice );
 		$inv_item_name = apply_filters( 'ms_invoice_item_name', $membership->name, $invoice, $membership );
 		$inv_amount = apply_filters( 'ms_invoice_amount', $inv_amount, $invoice );
+		$inv_taxes = apply_filters( 'ms_invoice_taxes', $inv_taxes, $invoice );
 		$inv_discount = apply_filters( 'ms_invoice_discount', $inv_discount, $invoice );
 		$inv_pro_rate = apply_filters( 'ms_invoice_pro_rate', $inv_pro_rate, $invoice );
 		$inv_total = apply_filters( 'ms_invoice_total', $inv_total, $invoice );
@@ -145,6 +156,16 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					</tr>
 
 					<?php $sep = 'sep'; ?>
+
+					<?php if ( ! empty( $inv_taxes ) ) : ?>
+						<tr class="ms-inv-tax <?php echo esc_attr( $sep ); $sep = ''; ?>">
+							<th><?php printf(
+									__( 'Taxes %s', MS_TEXT_DOMAIN ),
+									'<small>(' . $invoice->tax_name . ')</small>'
+								); ?></th>
+							<td class="ms-inv-price"><?php echo $inv_taxes; ?></td>
+						</tr>
+					<?php endif; ?>
 
 					<?php if ( ! empty( $inv_discount ) ) : ?>
 						<tr class="ms-inv-discount <?php echo esc_attr( $sep ); $sep = ''; ?>">

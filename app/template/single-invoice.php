@@ -6,11 +6,11 @@ get_header(); ?>
 		<div id="content" class="site-content" role="main">
 			<article>
 				<?php
-					global $post;
+				global $post;
 
-					$attr = array( 'post_id' => $post->ID );
-					$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];
-					echo $scode->membership_invoice( $attr );
+				$attr = array( 'post_id' => $post->ID );
+				$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];
+				echo $scode->membership_invoice( $attr );
 				?>
 			</article>
 		</div><!-- #content -->
