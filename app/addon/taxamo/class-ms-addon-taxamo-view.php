@@ -1,6 +1,9 @@
 <?php
 
-class MS_Addon_Taxamo_View_Settings extends MS_View {
+/**
+ * The Settings-Form
+ */
+class MS_Addon_Taxamo_View extends MS_View {
 
 	public function render_tab() {
 		$fields = $this->prepare_fields();
@@ -26,7 +29,7 @@ class MS_Addon_Taxamo_View_Settings extends MS_View {
 	}
 
 	public function prepare_fields() {
-		$model = MS_Addon_Taxamo::get_model();
+		$model = MS_Addon_Taxamo::model();
 
 		$action = MS_Addon_Taxamo::AJAX_SAVE_SETTING;
 		$domain_name = $_SERVER['SERVER_NAME'];

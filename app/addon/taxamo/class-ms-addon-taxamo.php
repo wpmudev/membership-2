@@ -43,33 +43,6 @@ class MS_Addon_Taxamo extends MS_Addon {
 	const AJAX_SAVE_SETTING = 'taxamo_save';
 
 	/**
-	 * Status of the Taxamo.js integration
-	 *
-	 * @since 1.1.0
-	 *
-	 * @var bool
-	 */
-	static protected $has_js = false;
-
-	/**
-	 * Holds a reference to the Taxamo settings-model
-	 *
-	 * @since 1.1.0
-	 *
-	 * @var MS_Addon_Taxamo_Model
-	 */
-	static protected $model = null;
-
-	/**
-	 * The Taxamo REST API object
-	 *
-	 * @since 1.1.0
-	 *
-	 * @var Taxamo
-	 */
-	static protected $api = null;
-
-	/**
 	 * Checks if the current Add-on is enabled
 	 *
 	 * @since  1.1.0
@@ -105,19 +78,6 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'ajax_save_setting'
 			);
 
-			// Add the taxamo.js integration on the payment pages
-			$this->add_action(
-				'ms_show_prices',
-				'add_taxamo_js'
-			);
-
-			// Replace default payment buttons with Taxamo compatible buttons
-			$this->add_filter(
-				'ms_gateway_form',
-				'payment_form',
-				10, 4
-			);
-
 			// Confirm payments with Taxamo
 			$this->add_action(
 				'ms_gateway_paypalsingle_payment_processed_' . MS_Model_Invoice::STATUS_PAID,
@@ -128,10 +88,20 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'confirm_payment'
 			);
 
-			// Format prices to be compatible with Taxamo
+			// Add taxes to the price, based on users country.
 			$this->add_filter(
-				'ms_format_price',
-				'format_price'
+				'ms_apply_taxes',
+				'apply_taxes'
+			);
+
+			$this->add_filter(
+				'ms_invoice_tax_rate',
+				'invoice_tax_rate'
+			);
+
+			$this->add_filter(
+				'ms_invoice_tax_name',
+				'invoice_tax_name'
 			);
 		}
 	}
@@ -154,17 +124,19 @@ class MS_Addon_Taxamo extends MS_Addon {
 	}
 
 	/**
-	 * Returns the Taxamo-Settings model
+	 * Returns the Taxamo-Settings model.
 	 *
 	 * @since  1.0.0
 	 * @return MS_Addon_Taxamo_Model
 	 */
-	static public function get_model() {
-		if ( null === self::$model ) {
-			self::$model = MS_Factory::load( 'MS_Addon_Taxamo_Model' );
+	static public function model() {
+		static $Model = null;
+
+		if ( null === $Model ) {
+			$Model = MS_Factory::load( 'MS_Addon_Taxamo_Model' );
 		}
 
-		return self::$model;
+		return $Model;
 	}
 
 	/**
@@ -173,24 +145,14 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @since  1.1.0
 	 * @return Taxamo
 	 */
-	static public function get_api() {
-		if ( null === self::$api ) {
-			if ( ! class_exists( 'Taxamo' ) ) {
-				require_once MS_Plugin::instance()->dir . '/lib/taxamo/Taxamo.php';
-			}
-			$model = self::get_model();
+	static public function api() {
+		static $Api = null;
 
-			// Initialize the Taxamo API connection
-			$connection = new APIClient(
-				$model->private_key,
-				'https://api.taxamo.com'
-			);
-
-			// Initialize the Taxamo REST API wrapper.
-			self::$api = new Taxamo( $connection );
+		if ( null === $Api ) {
+			$Api = MS_Factory::load( 'MS_Addon_Taxamo_Api' );
 		}
 
-		return self::$api;
+		return $Api;
 	}
 
 	/**
@@ -203,7 +165,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @return array The filtered tabs.
 	 */
 	public function settings_tabs( $tabs ) {
-		$tabs[ self::ID  ] = array(
+		$tabs[ self::ID ] = array(
 			'title' => __( 'Taxamo', MS_TEXT_DOMAIN ),
 			'url' => 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&tab=' . self::ID,
 		);
@@ -223,7 +185,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 */
 	public function manage_render_callback( $callback, $tab, $data ) {
 		if ( self::ID == $tab ) {
-			$view = MS_Factory::load( 'MS_Addon_Taxamo_View_Settings' );
+			$view = MS_Factory::load( 'MS_Addon_Taxamo_View' );
 			$callback = array( $view, 'render_tab' );
 		}
 
@@ -243,7 +205,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			$model = self::get_model();
+			$model = self::model();
 			$model->set( $_POST['field'], $_POST['value'] );
 			$model->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
@@ -253,122 +215,66 @@ class MS_Addon_Taxamo extends MS_Addon {
 	}
 
 	/**
-	 * Adds the taxamo.js integration to the current page.
-	 *
-	 * We let taxamo do the heavy lifting:
-	 *  -The javascript searches the page for all elements that match '.price'
-	 *   (e.g. <span class="price">12.00 USD</span>) and update the value with
-	 *   the users country-price, including local VAT.
-	 *   Taxamo assumes that the original price does NOT include VAT yet.
-	 *  -Also it will detect the users country and allow the user to change it.
-	 *  -The Javascript also updates payment buttons to PayPal and Stripe.
-	 *
-	 * Call this function on any page that contains prices or a payment button.
-	 *
-	 * @since 1.1.0
-	 */
-	public function add_taxamo_js() {
-		// Only add the script once.
-		if ( self::$has_js ) { return; }
-
-		$model = self::get_model();
-		self::$has_js = true;
-
-		?>
-		<script type="text/javascript" src="https://api.taxamo.com/js/v1/taxamo.all.js"></script>
-		<script type="text/javascript">
-		Taxamo.initialize(<?php echo json_encode( $model->get( 'public_key' ) ); ?>);
-		Taxamo.setCurrencyCode(<?php echo json_encode( $model->currency ); ?>);
-		Taxamo.scanPrices(
-			'.price',
-			{
-				"priceTemplate": '${totalAmount} <small class="ms-vat-info"><?php _e( 'VAT', MS_TEXT_DOMAIN ); ?>: ${taxAmount} (${taxRate}%)</small>',
-				"noTaxTitle": '<small class="ms-vat-info">(<?php _e( 'No tax', MS_TEXT_DOMAIN ); ?>)</small>',
-				"taxTitle": false
-			}
-		);
-		Taxamo.detectButtons();
-		Taxamo.enhancePayPalForms();
-		Taxamo.detectCountry();
-		</script>
-		<?php
-	}
-
-	/**
-	 * Returns HTML code for a Payment button that is compatible with Taxamo.
-	 *
-	 * Currently Taxamo offers a special payment integration for:
-	 * - Stripe
-	 * - Braintree
-	 *
-	 * @since  1.1.0
-	 * @param  string $html HTML code for the payment button.
-	 * @param  MS_Model_Gateway $gateway Payment gateway.
-	 * @param  MS_Model_Invoice $invoice The invoice which will be paid.
-	 * @param  MS_Model_Membership $membership The membership refered to on the invoice.
-	 * @return string New HTML code for the payment button.
-	 */
-	public function payment_form( $html, $gateway, $invoice, $membership ) {
-		// custom pay button label defined in gateway settings
-		$button_label = $gateway->pay_button_url;
-
-		if ( strpos( $button_label, '://' ) !== false ) {
-			$button_label = sprintf(
-				'<img src="%1$s" />',
-				$button_label
-			);
-		}
-
-		switch ( $gateway->id ) {
-			case MS_Gateway_Stripe::ID:
-				$html = sprintf(
-					'<button taxamo-button taxamo-provider="stripe" taxamo-price="%1$s" taxamo-item-description="%2$s" taxamo-product-type="%3$s" taxamo-currency="%4$s">%5$s</button>',
-					esc_attr( $invoice->total ),
-					esc_attr( $membership->name ),
-					'default',
-					esc_attr( $invoice->currency ),
-					$button_label
-				);
-				break;
-
-			// Braintree Button could be added here, when we add the gateway...
-		}
-
-		return $html;
-	}
-
-	/**
 	 * A payment is confirmed by PayPal: Notify Taxamo that we're good!
 	 *
 	 * @since  1.1.0
 	 * @param  MS_Model_Invoice $invoice
 	 */
 	public function confirm_payment_paypal( $invoice ) {
-		$api = self::get_api();
+		$api = self::api();
 
 		// Taxamo sets the "custom" PayPal field to the transaction-key
 		if ( isset( $_POST['custom'] ) ) {
 			$transaction_key = $_POST['custom'];
-			$api->confirmTransaction( $transaction_key, null );
+			$api::confirm( $transaction_key );
 		}
 	}
 
 	/**
-	 * Formats the price value, without any HTML markup.
+	 * Adds taxes to the net-amount.
 	 *
 	 * @since  1.1.0
-	 * @param  numeric $price Numeric value, e.g. 10.45 or '1300'
-	 * @return numeric Numeric value
+	 * @param  numeric $net_value Net value
+	 * @return numeric Gross value
 	 */
-	public function format_price( $price ) {
-		if ( is_numeric( $price ) ) {
-			if ( abs( $price - round( $price ) ) < 0.001 ) {
-				// Taxamo only supports decimal digits if they are not '.00'
-				return intval( $price );
-			}
+	public function apply_taxes( $net_value ) {
+		$gross_value = 0;
+
+		if ( is_numeric( $net_value ) ) {
+			$api = self::api();
+			$tax = $api::tax_info( $net_value );
+			$gross_value = $net_value + $tax->amount;
 		}
 
-		return $price;
+		return $gross_value;
+	}
+
+	/**
+	 * Return the tax-rate for the users country.
+	 *
+	 * @since  1.1.0
+	 * @param  numeric $rate Default rate (0)
+	 * @return numeric Tax rate to apply (e.g. 20 for 20%)
+	 */
+	public function invoice_tax_rate( $rate ) {
+		$api = self::api();
+		$tax = $api::tax_info();
+
+		return $tax->rate;
+	}
+
+	/**
+	 * Return the tax-name for the users country.
+	 *
+	 * @since  1.1.0
+	 * @param  string $name Default name (empty string)
+	 * @return string Tax display-name (e.g. 'EU Standard Tax (20 %)')
+	 */
+	public function invoice_tax_name( $rate ) {
+		$api = self::api();
+		$tax = $api::tax_info();
+
+		return $tax->rate . '% ' . $tax->name;
 	}
 
 }

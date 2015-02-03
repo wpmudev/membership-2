@@ -98,7 +98,7 @@ class MS_View_Frontend_Payment extends MS_View {
 				<?php endif; ?>
 
 				<?php if ( ! $membership->is_free() ) : ?>
-					<?php if ( $invoice->discount || $invoice->pro_rate ) : ?>
+					<?php if ( $invoice->discount || $invoice->pro_rate || $invoice->tax_rate ) : ?>
 					<tr>
 						<td class="ms-title-column">
 							<?php _e( 'Price', MS_TEXT_DOMAIN ); ?>
@@ -117,6 +117,24 @@ class MS_View_Frontend_Payment extends MS_View {
 							?>
 						</td>
 					</tr>
+					<?php endif; ?>
+
+					<?php if ( $invoice->tax_rate ) : ?>
+						<tr>
+							<td class="ms-title-column">
+								<?php printf(
+									__( 'Taxes %s', MS_TEXT_DOMAIN ),
+									'<small>(' . $invoice->tax_name . ')</small>'
+								); ?>
+							</td>
+							<td class="ms-price-column">
+								<?php printf(
+									'%s %s',
+									$invoice->currency,
+									MS_Helper_Billing::format_price( $invoice->tax )
+								); ?>
+							</td>
+						</tr>
 					<?php endif; ?>
 
 					<?php if ( $invoice->discount ) : ?>

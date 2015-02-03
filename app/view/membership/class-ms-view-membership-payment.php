@@ -189,7 +189,7 @@ class MS_View_Membership_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Payment Structure:', MS_TEXT_DOMAIN ),
 				'before' => MS_Plugin::instance()->settings->currency_symbol,
-				'value' => $membership->price,
+				'value' => $membership->price, // Without taxes
 				'class' => 'ms-text-small',
 				'placeholder' => '0' . $wp_locale->number_format['decimal_point'] . '00',
 				'ajax_data' => array( 'field' => 'price' ),

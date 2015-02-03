@@ -156,7 +156,8 @@ class MS_Controller_Frontend extends MS_Controller {
 		// For invoice page purchase process
 		$fields = array( 'gateway', 'ms_relationship_id', 'step' );
 
-		if ( ! empty( $post ) && isset( $post->post_type )
+		if ( ! empty( $post )
+			&& isset( $post->post_type )
 			&& $post->post_type == MS_Model_Invoice::$POST_TYPE
 			&& self::validate_required( $fields )
 			&& self::STEP_PROCESS_PURCHASE == $_POST['step']

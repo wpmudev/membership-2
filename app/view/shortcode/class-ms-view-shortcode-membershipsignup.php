@@ -221,7 +221,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			$price = sprintf(
 				'%s %s',
 				$settings->currency,
-				MS_Helper_Billing::format_price( $membership->price )
+				MS_Helper_Billing::format_price( $membership->total_price ) // Includes Tax
 			);
 		}
 		$price = apply_filters( 'ms_membership_price', $price, $membership );

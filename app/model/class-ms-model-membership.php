@@ -1564,6 +1564,20 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				}
 				break;
 
+			case 'total_price':
+				if ( $this->is_free() ) {
+					$value = 0;
+				} else {
+					$value = $this->price;
+				}
+
+				$value = apply_filters(
+					'ms_apply_taxes',
+					$value,
+					$this
+				);
+				break;
+
 			default:
 				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;

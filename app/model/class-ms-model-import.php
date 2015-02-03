@@ -461,17 +461,9 @@ class MS_Model_Import extends MS_Model {
 		$ms_invoice->trial_period = $obj->for_trial;
 		$ms_invoice->due_date = $obj->due;
 		$ms_invoice->notes = $obj->notes;
-		$ms_invoice->taxable = $obj->taxable;
 
 		// Remember where this invoice comes from.
 		$ms_invoice->source = $this->source_key;
-
-		if ( isset( $obj->tax_rate ) ) {
-			$ms_invoice->tax_rate = $obj->tax_rate;
-		}
-		if ( isset( $obj->tax_name ) ) {
-			$ms_invoice->tax_name = $obj->tax_name;
-		}
 
 		$this->import_obj( 'invoice', $obj->id, $ms_invoice );
 

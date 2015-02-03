@@ -404,7 +404,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'%1$s %2$s %3$s',
 				$label,
 				$currency,
-				$membership->price
+				$membership->total_price
 			);
 
 			$code = trim( $code );

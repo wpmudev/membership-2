@@ -177,18 +177,16 @@ class MS_Gateway_Stripe extends MS_Gateway {
 					)
 				);
 				$this->save_customer_id( $member, $customer->id );
-			}
-			else {
+			} else {
 				$this->add_card( $member, $token );
 				$customer->save();
 			}
 
-			// Free, just process.
 			if ( 0 == $invoice->total ) {
+				// Free, just process.
 				$this->process_transaction( $invoice );
-			}
-			// Send request to gateway.
-			else {
+			} else {
+				// Send request to gateway.
 				$charge = Stripe_Charge::create(
 					array(
 						'amount' => (int) $invoice->total * 100, // Amount in cents!
@@ -205,8 +203,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 					$this->process_transaction( $invoice );
 				}
 			}
-		}
-		else {
+		} else {
 			throw new Exception( __( 'Stripe gateway token not found.', MS_TEXT_DOMAIN ) );
 		}
 
@@ -261,7 +258,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 				} else {
 					MS_Helper_Debug::log( "Stripe customer is empty for user $member->username" );
 				}
-			} catch( Exception $e ) {
+			} catch ( Exception $e ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
 				MS_Helper_Debug::log( $e->getMessage() );
 			}

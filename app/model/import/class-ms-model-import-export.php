@@ -116,11 +116,6 @@ Import Data Structure
 			- for_trial           <bool> True means this invoice is for a trial period
 			- due                 <yyyy-mm-dd>
 			- notes               <string>
-			- taxable             <bool>
-
-			If `taxable` is true:
-			- tax_rate            <float>  Tax percentage
-			- tax_name            <string>  Display name
 
 ********************************************************************************
 
@@ -367,12 +362,6 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->for_trial = (bool) $src->trial_period;
 		$obj->due = $src->due_date;
 		$obj->notes = $src->notes;
-
-		$obj->taxable = (bool) $src->taxable;
-		if ( $obj->taxable ) {
-			$obj->tax_rate = $src->tax_rate;
-			$obj->tax_name = $src->tax_name;
-		}
 
 		return $obj;
 	}

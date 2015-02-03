@@ -161,7 +161,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	/**
 	 * Total value.
 	 *
-	 * Includes discount, pro-rating, tax.
+	 * Includes discount, pro-rating.
 	 *
 	 * @since 1.0.0
 	 *
@@ -215,20 +215,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $invoice_number;
 
 	/**
-	 * Is taxable invoice.
-	 *
-	 * @todo For further versions.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var boolean
-	 */
-	protected $taxable;
-
-	/**
 	 * Tax rate value.
-	 *
-	 * @todo For further versions.
 	 *
 	 * @since 1.0.0
 	 *
@@ -239,13 +226,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	/**
 	 * Tax name.
 	 *
-	 * @todo For further versions.
-	 *
 	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
 	protected $tax_name;
+
 
 	/**
 	 * Where the data came from. Can only be changed by data import tool
@@ -297,7 +283,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			&& property_exists( 'MS_Model_Invoice', $orderby )
 		) {
 			$args['meta_key'] = $orderby;
-			if ( in_array( $orderby, array( 'amount', 'total', 'tax_rate' ) ) ) {
+			if ( in_array( $orderby, array( 'amount', 'total' ) ) ) {
 				$args['orderby'] = 'meta_value_num';
 			} else {
 				$args['orderby'] = 'meta_value';
@@ -674,7 +660,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice' );
 			$invoice = apply_filters( 'ms_model_invoice', $invoice );
 		}
-		$tax = MS_Plugin::instance()->settings->tax;
 
 		// Update invoice info.
 		$invoice->ms_relationship_id = $ms_relationship->id;
@@ -695,11 +680,21 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_invoice_description',
 			$ms_relationship->get_payment_description( $invoice )
 		);
-		$invoice->tax_name = $tax['tax_name'];
-		$invoice->tax_rate = $tax['tax_rate'];
 
 		$invoice->invoice_number = $invoice_number;
 		$invoice->discount = 0;
+
+		// Allow add-ons or other plugins to set the tax infos for this invoice.
+		$invoice->tax_rate = apply_filters(
+			'ms_invoice_tax_rate',
+			0,
+			$this
+		);
+		$invoice->tax_name = apply_filters(
+			'ms_invoice_tax_name',
+			'',
+			$this
+		);
 
 		// Calc pro rate discount if moving from another membership.
 		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE )
@@ -759,10 +754,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if ( $ms_relationship->is_trial_eligible()
 			&& $invoice_number === $ms_relationship->current_invoice_number
 		) {
-			$invoice->amount = $membership->trial_price;
+			$invoice->amount = $membership->trial_price; // Without taxes!
 			$invoice->trial_period = true;
 		} else {
-			$invoice->amount = $membership->price;
+			$invoice->amount = $membership->price; // Without taxes!
 			$invoice->trial_period = false;
 		}
 
@@ -852,7 +847,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public function get_total() {
 		$this->total = $this->amount; // Net amount
-		$this->total += $this->amount * $this->tax_rate / 100; // Add taxes
+		$this->total += $this->tax; // Tax-Rate was defined in `create_invoice()`
 		$this->total -= $this->discount; // Remove discount
 		$this->totyl -= $this->pro_rate; // Remove Pro-Rate
 
@@ -892,8 +887,17 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					$value = $this->id;
 					break;
 
+
 				default:
 					$value = $this->$property;
+					break;
+			}
+		} else {
+			switch ( $property ) {
+				case 'tax':
+					$tax_rate = $this->tax_rate;
+					if ( ! is_numeric( $tax_rate ) ) { $tax_rate = 0; }
+					$value = $this->amount * ( $tax_rate / 100 );
 					break;
 			}
 		}
@@ -920,7 +924,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			switch ( $property ) {
 				case 'name':
 				case 'currency':
-				case 'tax_name':
 					$this->$property = sanitize_text_field( $value );
 					break;
 
@@ -942,12 +945,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					$this->$property = $this->validate_date( $value );
 					break;
 
-				case 'taxable':
-					$this->$property = $this->validate_bool( $value );
-					break;
-
 				case 'amount':
-				case 'tax_rate':
 				case 'discount':
 				case 'pro_rate':
 					$this->$property = floatval( $value );

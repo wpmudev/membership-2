@@ -1093,9 +1093,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$desc = '';
 
 		if ( null !== $invoice ) {
-			$total_price = $invoice->total;
+			$total_price = $invoice->total; // Includes Tax
 		} else {
-			$total_price = $membership->price;
+			$total_price = $membership->total_price; // Includes Tax
 		}
 
 		if ( null !== $trial_invoice ) {
