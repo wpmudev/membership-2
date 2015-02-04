@@ -205,7 +205,8 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @since 1.1.0
 	 */
 	static private function determine_country() {
-		$country = (object)(array) self::taxamo()->locateMyIP();
+		$ip_info = WDev()->current_ip();
+		$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
 		WDev()->store_add( 'ms_ta_country', $country );
 	}
 
