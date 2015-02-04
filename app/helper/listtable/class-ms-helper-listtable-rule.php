@@ -24,7 +24,7 @@
  * Membership List Table
  *
  *
- * @since 4.0.0
+ * @since 1.0.0
  *
  */
 class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
@@ -148,11 +148,26 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		);
 	}
 
+	/**
+	 * Defines bulk-actions that are available for this list.
+	 *
+	 * @since  1.0.0
+	 * @return array
+	 */
 	public function get_bulk_actions() {
+		$protect_key = __( 'Add Membership', MS_TEXT_DOMAIN );
+		$unprotect_key = __( 'Drop Membership', MS_TEXT_DOMAIN );
 		$bulk_actions = array(
-			'give_access' => __( 'Protect content', MS_TEXT_DOMAIN ),
-			'no_access' => __( 'Remove protection', MS_TEXT_DOMAIN ),
+			'rem-all' => __( 'Drop all Memberships', MS_TEXT_DOMAIN ),
+			$protect_key => array(),
+			$unprotect_key => array(),
 		);
+
+		$memberships = MS_Model_Membership::get_membership_names();
+		foreach ( $memberships as $id => $name ) {
+			$bulk_actions[$protect_key]['add-' . $id] = $name;
+			$bulk_actions[$unprotect_key]['rem-' . $id] = $name;
+		}
 
 		return apply_filters(
 			"ms_helper_listtable_{$this->id}_bulk_actions",

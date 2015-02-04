@@ -226,6 +226,7 @@ class MS_Controller_Membership extends MS_Controller {
 			&& ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) )
 		) {
 			// Take next actions based in current step.
+			WDev()->debug( 'Process ') ;
 
 			// Check if we are editing a membership.
 			$save_membership = $this->verify_nonce( self::ACTION_SAVE );

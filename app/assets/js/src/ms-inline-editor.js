@@ -16,6 +16,12 @@
 		init: function() {
 			template = jQuery( '.ms-wrap #inline-edit' );
 
+			/*
+			 * Remove the form-template from the DOM so it does not mess with
+			 * the containing form...
+			 */
+			template.detach();
+
 			// prepare the edit rows
 			template.keyup(function(e){
 				if ( e.which === 27 ) {
