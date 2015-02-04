@@ -232,7 +232,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	protected $tax_name;
 
-
 	/**
 	 * Where the data came from. Can only be changed by data import tool
 	 *
@@ -240,6 +239,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @var string
 	 */
 	protected $source = '';
+
+	//
+	//
+	//
+	// -------------------------------------------------------------- COLLECTION
 
 	/**
 	 * Get invoice status types.
@@ -442,87 +446,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$ms_relationship_id,
 			$invoice_number,
 			$status
-		);
-	}
-
-	/**
-	 * Load invoice using external ID.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $external_id
-	 * @param string $gateway_id
-	 * @return MS_Model_Invoice, null if not found.
-	 */
-	public static function load_by_external_id( $external_id, $gateway_id ) {
-		$args = array(
-			'post_type' => self::$POST_TYPE,
-			'posts_per_page' => 1,
-			'meta_query' => array(
-				array(
-					'key'     => 'external_id',
-					'value'   => $external_id,
-				),
-				array(
-					'key'     => 'gateway_id',
-					'value'   => $gateway_id,
-				),
-			),
-		);
-
-		$args = apply_filters(
-			'ms_model_invoice_load_by_external_id_args',
-			$args
-		);
-		$query = new WP_Query( $args );
-
-		$item = $query->get_posts();
-		$invoice = null;
-
-		if ( ! empty( $item[0] ) ) {
-			$invoice = MS_Factory::load( 'MS_Model_Invoice', $item[0]->ID );
-		}
-
-		return apply_filters(
-			'ms_model_invoice_load_by_external_id',
-			$invoice,
-			$external_id,
-			$gateway_id
-		);
-	}
-
-	/**
-	 * Add invoice notes.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $notes
-	 */
-	public function add_notes( $notes ) {
-		$this->notes[] = apply_filters(
-			'ms_model_invoice_add_notes',
-			$notes,
-			$this
-		);
-	}
-
-	/**
-	 * Get notes array as string.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string The notes as text description.
-	 */
-	public function get_notes_desc() {
-		$desc = $this->notes;
-		if ( is_array( $desc ) ) {
-			$desc = implode( "\n", $desc );
-		}
-
-		return apply_filters(
-			'ms_model_invoice_get_notes_desc',
-			$desc,
-			$this
 		);
 	}
 
@@ -837,6 +760,46 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		);
 	}
 
+	//
+	//
+	//
+	// ------------------------------------------------------------- SINGLE ITEM
+
+	/**
+	 * Add invoice notes.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $notes
+	 */
+	public function add_notes( $notes ) {
+		$this->notes[] = apply_filters(
+			'ms_model_invoice_add_notes',
+			$notes,
+			$this
+		);
+	}
+
+	/**
+	 * Get notes array as string.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The notes as text description.
+	 */
+	public function get_notes_desc() {
+		$desc = $this->notes;
+		if ( is_array( $desc ) ) {
+			$desc = implode( "\n", $desc );
+		}
+
+		return apply_filters(
+			'ms_model_invoice_get_notes_desc',
+			$desc,
+			$this
+		);
+	}
+
 	/**
 	 * Get invoice total.
 	 *
@@ -863,6 +826,26 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$this->total,
 			$this
 		);
+	}
+
+	/**
+	 * Returns the membership model that is linked to this invoice.
+	 *
+	 * @since  1.1.0
+	 * @return MS_Model_Membership
+	 */
+	public function get_membership() {
+		return MS_Factory::load( 'MS_Model_Membership', $this->membership_id );
+	}
+
+	/**
+	 * Returns the membership model that is linked to this invoice.
+	 *
+	 * @since  1.1.0
+	 * @return MS_Model_Membership
+	 */
+	public function get_member() {
+		return MS_Factory::load( 'MS_Model_Member', $this->user_id );
 	}
 
 	/**

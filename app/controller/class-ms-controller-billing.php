@@ -198,11 +198,16 @@ class MS_Controller_Billing extends MS_Controller {
 
 			if ( ! empty( $fields['execute'] ) ) {
 				$gateway = $ms_relationship->get_gateway();
-				$gateway->process_transaction( $invoice );
+				$gateway->invoice_changed( $invoice );
 			}
 		}
 
-		return apply_filters( 'ms_controller_billing_save_invoice', $msg, $fields, $this );
+		return apply_filters(
+			'ms_controller_billing_save_invoice',
+			$msg,
+			$fields,
+			$this
+		);
 	}
 
 	/**

@@ -117,7 +117,7 @@ class MS_Addon_Coupon extends MS_Addon {
 
 			// Update Coupon-Counter when invoice is paid
 			$this->add_action(
-				'ms_gateway_process_transaction-paid',
+				'ms_gateway_invoice_changed-paid',
 				'invoice_paid',
 				10, 2
 			);

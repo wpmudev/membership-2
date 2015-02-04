@@ -309,7 +309,17 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			if ( ! empty( $status ) ) {
 				$invoice->status = $status;
 				$invoice->save();
-				$this->process_transaction( $invoice );
+
+				$invoice = $this->invoice_changed( $invoice );
+
+				if ( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
+					/**
+					 * Notify Add-ons that an invoice was paid.
+					 *
+					 * @since 1.1.0
+					 */
+					do_action( 'ms_invoice_paid', $invoice );
+				}
 			}
 
 			do_action(
@@ -356,7 +366,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	}
 
 	/**
-	 * Process transaction.
+	 * Update the subscription after the invoice has changed.
 	 *
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
@@ -366,9 +376,9 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	 * @param MS_Model_Invoice $invoice The Transaction.
 	 * @return MS_Model_Invoice The processed invoice.
 	 */
-	public function process_transaction( $invoice ) {
+	public function invoice_changed( $invoice ) {
 		do_action(
-			'ms_gateway_paypalsingle_process_transaction_before',
+			'ms_gateway_paypalsingle_invoice_changed_before',
 			$this
 		);
 
@@ -387,12 +397,10 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 					MS_Model_Event::TYPE_PAYMENT_DENIED,
 					$ms_relationship
 				);
-				//Disable user @todo
-//				$member->active = false;
 				break;
 
 			default:
-				$ms_relationship = parent::process_transaction( $invoice );
+				$ms_relationship = parent::invoice_changed( $invoice );
 				break;
 		}
 

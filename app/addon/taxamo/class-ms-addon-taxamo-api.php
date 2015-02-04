@@ -31,19 +31,6 @@
 class MS_Addon_Taxamo_Api extends MS_Controller {
 
 	/**
-	 * Confirms a single transaction.
-	 *
-	 * This is done once we get the payment confirmation from the payment
-	 * provider.
-	 *
-	 * @since  1.1.0
-	 * @param  string $transaction Taxamo Transaction code
-	 */
-	static public function confirm( $transaction ) {
-		self::taxamo()->confirmTransaction( $transaction_key, null );
-	}
-
-	/**
 	 * Returns tax information that must be applied to the specified amount.
 	 *
 	 * The country for the tax calculation is automatically determined by Taxamo.
@@ -103,6 +90,36 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	}
 
 	/**
+	 * Creates a confirmed transaction in Taxamo.
+	 *
+	 * @since  1.1.0
+	 * @param  numeric $amount Transaction amount
+	 */
+	static public function register_payment( $amount, $label, $tax_rate, $invoice_id, $name, $email, $gateway ) {
+		// Register the transaction with Taxamo.
+		$transaction = self::prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email );
+		$resp = self::taxamo()->createTransaction( array( 'transaction' => $transaction ) );
+
+		if ( ! empty( $resp->transaction->key ) ) {
+			$tr_key = $resp->transaction->key;
+			// Confirm the Transaction.
+			$resp = self::taxamo()->confirmTransaction( $tr_key, null );
+
+			// Register the payment.
+			$information = sprintf(
+				__( 'Invoice %1$s paid via %2$s.', MS_TEXT_DOMAIN ),
+				$invoice_id,
+				$gateway
+			);
+			$payment = array(
+				'amount' => $amount,
+				'payment_information' => $information,
+			);
+			$resp = self::taxamo()->createPayment( $tr_key, $payment );
+		}
+	}
+
+	/**
 	 * Returns the country-code of the current user.
 	 *
 	 * @since  1.1.0
@@ -136,20 +153,26 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 	// ------------------------------------------------------- PRIVATE FUNCTIONS
 
-	static private function get_transaction( $amount, $ms_id = 0, $label = '' ) {
-		$transaction_line = array(
-			'amount' => $amount,
-			'line_price' => $amount,
+	static private function prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email ) {
+		self::taxamo();
+
+		$tr_line = array(
+			'product_type' => 'e-service',
+			'total_amount' => floatval( $amount ),
+			'tax_rate' => floatval( $tax_rate ),
 			'quantity' => 1,
-			'custom_id' => $ms_id,
-			'description' => $label,
+			'custom_id' => (string) $invoice_id,
+			'description' => (string) $label,
 		);
 
 		$transaction = array(
 			'currency_code' => MS_Addon_Taxamo::model()->currency,
-			'buyer_ip' => self::buyer_ip(),
 			'billing_country_code' => self::country_code(),
-			'transaction_lines' => array( $transaction_line ),
+			'buyer_ip' => self::buyer_ip(),
+			'custom_id' => (string) $invoice_id,
+			'buyer_name' => $name,
+			'buyer_email' => $email,
+			'transaction_lines' => array( $tr_line ),
 		);
 
 		return $transaction;
@@ -212,7 +235,6 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			// Initialize the API object.
 			self::init();
 		}
-
 
 		return $Taxamo;
 	}

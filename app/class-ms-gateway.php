@@ -135,6 +135,8 @@ class MS_Gateway extends MS_Model_Option {
 	/**
 	 * Hook to process gateway returns (IPN).
 	 *
+	 * @see MS_Controller_Gateway: handle_payment_return()
+	 *
 	 * @since 1.0.0
 	 */
 	public function after_load() {
@@ -184,6 +186,10 @@ class MS_Gateway extends MS_Model_Option {
 	/**
 	 * Processes purchase action.
 	 *
+	 * This function is called when a payment was made: We check if the
+	 * transaction was successful. If it was we call `invoice_changed` which
+	 * will update the membership status accordingly.
+	 *
 	 * Overridden in child classes.
 	 * This parent method only covers free purchases.
 	 *
@@ -201,8 +207,9 @@ class MS_Gateway extends MS_Model_Option {
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
 
+		// The default handler only processes free subscriptions.
 		if ( 0 == $invoice->total ) {
-			$this->process_transaction( $invoice );
+			$this->invoice_changed( $invoice );
 		}
 
 		return apply_filters(
@@ -276,7 +283,7 @@ class MS_Gateway extends MS_Model_Option {
 	}
 
 	/**
-	 * Process transaction.
+	 * Update the subscription after the invoice has changed.
 	 *
 	 * Process transaction status change related to this membership relationship.
 	 * Change status accordinly to transaction status.
@@ -285,9 +292,9 @@ class MS_Gateway extends MS_Model_Option {
 	 * @param MS_Model_Invoice $invoice The invoice to process.
 	 * @return MS_Model_Invoice The processed invoice.
 	 */
-	public function process_transaction( $invoice ) {
+	public function invoice_changed( $invoice ) {
 		do_action(
-			'ms_gateway_process_transaction_before',
+			'ms_gateway_invoice_changed_before',
 			$this
 		);
 
@@ -311,7 +318,7 @@ class MS_Gateway extends MS_Model_Option {
 					}
 
 					do_action(
-						'ms_gateway_process_transaction-paid',
+						'ms_gateway_invoice_changed-paid',
 						$invoice,
 						$member
 					);
@@ -372,7 +379,7 @@ class MS_Gateway extends MS_Model_Option {
 					break;
 
 				default:
-					do_action( 'ms_gateway_process_transaction', $invoice );
+					do_action( 'ms_gateway_invoice_changed-unknown', $invoice );
 					break;
 			}
 
@@ -384,7 +391,7 @@ class MS_Gateway extends MS_Model_Option {
 		}
 
 		return apply_filters(
-			'ms_gateway_processed_transaction',
+			'ms_gateway_invoice_changed',
 			$invoice,
 			$this
 		);
@@ -397,7 +404,6 @@ class MS_Gateway extends MS_Model_Option {
 	 * @return string The return url.
 	 */
 	public function get_return_url() {
-		// TODO: Add Membership Return URL for imported items !!!!!!!
 		$return_url = site_url( '/ms-payment-return/' . $this->id );
 
 		return apply_filters(

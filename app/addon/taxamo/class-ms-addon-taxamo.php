@@ -94,6 +94,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'apply_taxes'
 			);
 
+			// Set tax-details on a new invoice.
 			$this->add_filter(
 				'ms_invoice_tax_rate',
 				'invoice_tax_rate'
@@ -102,6 +103,12 @@ class MS_Addon_Taxamo extends MS_Addon {
 			$this->add_filter(
 				'ms_invoice_tax_name',
 				'invoice_tax_name'
+			);
+
+			// Track the transaction in taxamo
+			$this->add_filter(
+				'ms_invoice_paid',
+				'invoice_paid'
 			);
 		}
 	}
@@ -215,22 +222,6 @@ class MS_Addon_Taxamo extends MS_Addon {
 	}
 
 	/**
-	 * A payment is confirmed by PayPal: Notify Taxamo that we're good!
-	 *
-	 * @since  1.1.0
-	 * @param  MS_Model_Invoice $invoice
-	 */
-	public function confirm_payment_paypal( $invoice ) {
-		$api = self::api();
-
-		// Taxamo sets the "custom" PayPal field to the transaction-key
-		if ( isset( $_POST['custom'] ) ) {
-			$transaction_key = $_POST['custom'];
-			$api::confirm( $transaction_key );
-		}
-	}
-
-	/**
 	 * Adds taxes to the net-amount.
 	 *
 	 * @since  1.1.0
@@ -275,6 +266,31 @@ class MS_Addon_Taxamo extends MS_Addon {
 		$tax = $api::tax_info();
 
 		return $tax->rate . '% ' . $tax->name;
+	}
+
+	/**
+	 * When an invoice was paid we need to notify taxamo of the transaction.
+	 *
+	 * @since  1.1.0
+	 * @param  MS_Model_Invoice $invoice The processed invoice.
+	 */
+	public function invoice_paid( $invoice ) {
+		if ( $invoice->status != MS_Model_Invoice::STATUS_PAID ) { return; }
+		if ( $invoice->total == 0 ) { return; }
+
+		$membership = $invoice->get_membership();
+		$member = $invoice->get_member();
+
+		$api = self::api();
+		$api::register_payment(
+			$invoice->total,   // Transaction amount
+			$membership->name, // Transaction title
+			$invoice->tax_rate, // Tax-rate
+			$invoice->invoice_number, // Internal Transaction ID = Invoice Number
+			$member->full_name,  // Buyer name
+			$member->email,  // Buyer email
+			$invoice->gateway_id // Payment gateway
+		);
 	}
 
 }

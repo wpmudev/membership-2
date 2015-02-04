@@ -519,14 +519,15 @@ class MS_Controller_Gateway extends MS_Controller {
 		$valid = true;
 		$nonce_name = $_REQUEST['gateway'] . '_' . $_REQUEST['ms_relationship_id'];
 
-		if ( $valid && ! self::validate_required( $fields, 'any' ) ) {
-			$valid = false; $err = 'GAT-01 (invalid fields)';
-		}
-		if ( $valid && ! MS_Model_Gateway::is_valid_gateway( $_REQUEST['gateway'] ) ) {
-			$valid = false; $err = 'GAT-02 (invalid gateway)';
-		}
-		if ( $valid && ! $this->verify_nonce( $nonce_name, 'any' ) ) {
-			$valid = false; $err = 'GAT-03 (invalid nonce)';
+		if ( ! self::validate_required( $fields, 'any' ) ) {
+			$valid = false;
+			$err = 'GAT-01 (invalid fields)';
+		} elseif ( ! MS_Model_Gateway::is_valid_gateway( $_REQUEST['gateway'] ) ) {
+			$valid = false;
+			$err = 'GAT-02 (invalid gateway)';
+		} elseif ( ! $this->verify_nonce( $nonce_name, 'any' ) ) {
+			$valid = false;
+			$err = 'GAT-03 (invalid nonce)';
 		}
 
 		if ( $valid ) {

@@ -153,6 +153,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Processes purchase action.
 	 *
+	 * This function is called when a payment was made: We check if the
+	 * transaction was successful. If it was we call `invoice_changed` which
+	 * will update the membership status accordingly.
+	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
 	 */
@@ -191,7 +195,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
 			$this->online_purchase( $invoice, $member );
 		} elseif ( 0 == $invoice->total ) {
-			$this->process_transaction( $invoice );
+			$this->invoice_changed( $invoice );
 		}
 
 		return apply_filters(
@@ -256,7 +260,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$invoice->status = MS_Model_Invoice::STATUS_PAID;
 			$invoice->add_notes( __( 'Total is zero. Payment approved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
 			$invoice->save();
-			$this->process_transaction( $invoice );
+			$this->invoice_changed( $invoice );
 			return $invoice;
 		}
 		$amount = MS_Helper_Billing::format_price( $invoice->total );
@@ -285,7 +289,14 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				$invoice->status = MS_Model_Invoice::STATUS_PAID;
 				$invoice->save();
 
-				$this->process_transaction( $invoice );
+				$invoice = $this->invoice_changed( $invoice );
+
+				/**
+				 * Notify Add-ons that an invoice was paid.
+				 *
+				 * @since 1.1.0
+				 */
+				do_action( 'ms_invoice_paid', $invoice );
 			} else {
 				throw new Exception(
 					sprintf(

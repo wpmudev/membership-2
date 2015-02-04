@@ -1198,6 +1198,37 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Get specific property.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @access public
+	 * @param string $name The name of a property to associate.
+	 * @return mixed The value of a property.
+	 */
+	public function __get( $property ) {
+		$value = null;
+
+		if ( property_exists( $this, $property ) ) {
+			$value = $this->$property;
+		} else {
+			switch ( $property ) {
+				case 'full_name':
+					if ( ! empty( $this->first_name ) || ! empty( $this->last_name ) ) {
+						$value = trim( $this->first_name . ' ' . $this->last_name );
+					} elseif ( ! empty( $this->name ) ) {
+						$value = trim( $this->name );
+					} else {
+						$value = trim( $this->username );
+					}
+					break;
+			}
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Set specific property.
 	 *
 	 * @since 1.0.0
@@ -1230,7 +1261,5 @@ class MS_Model_Member extends MS_Model {
 					break;
 			}
 		}
-
-		do_action( 'ms_model_member__set_after', $property, $value, $this );
 	}
 }
