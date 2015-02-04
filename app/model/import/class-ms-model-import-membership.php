@@ -190,8 +190,6 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 		$this->add_memberships();
 		$this->add_members();
 
-		$this->activate_addon( MS_Model_Addon::ADDON_MEMBERCAPS_ROLES );
-
 		return $this->data;
 	}
 
