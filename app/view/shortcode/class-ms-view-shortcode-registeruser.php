@@ -10,7 +10,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		$url_data['do-login'] = '1';
 		$login_url = add_query_arg( $url_data );
 
-		if ( '1' == @$_REQUEST['do-login'] ) {
+		if ( ! empty( $_REQUEST['do-login'] ) ) {
 			$register_url = remove_query_arg( 'do-login' );
 
 			$back_link = array(
@@ -66,7 +66,13 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			?>
 		</div>
 		<?php
-		return ob_get_clean();
+		$html = ob_get_clean();
+
+		return apply_filters(
+			'ms_shortcode_register',
+			$html,
+			$this->data
+		);
 	}
 
 	public function prepare_fields() {

@@ -110,7 +110,11 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		<?php
 		$html = ob_get_clean();
 
-		return $html;
+		return apply_filters(
+			'ms_shortcode_signup',
+			$html,
+			$this->data
+		);
 	}
 
 	/**

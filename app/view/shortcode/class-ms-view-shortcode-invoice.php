@@ -2,9 +2,24 @@
 
 class MS_View_Shortcode_Invoice extends MS_View {
 
-	protected $data;
-
 	public function to_html() {
+		/**
+		 * Provide a customized invoice.
+		 *
+		 * @since 1.1.0
+		 */
+		$html = apply_filter(
+			'ms_shortcode_custom_invoice',
+			'',
+			$this->data
+		);
+
+		if ( ! empty( $html ) ) {
+			return $html;
+		} else {
+			$html = '';
+		}
+
 		$invoice = $this->data['invoice'];
 		$trial_invoice = $this->data['trial_invoice'];
 		$member = $this->data['member'];
@@ -217,6 +232,11 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		</div>
 		<?php
 		$html = ob_get_clean();
-		return $html;
+
+		return apply_filters(
+			'ms_shortcode_invoice',
+			$html,
+			$this->data
+		);
 	}
 }

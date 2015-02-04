@@ -28,6 +28,29 @@ class MS_View_Shortcode_Login extends MS_View {
 			$this->data['form'] = $form;
 		}
 
+		/**
+		 * Provide a customized login form.
+		 *
+		 * Possible filters to provide a customized login form:
+		 * - 'ms_shortcode_custom_form-login'
+		 * - 'ms_shortcode_custom_form-logout'
+		 * - 'ms_shortcode_custom_form-reset'
+		 * - 'ms_shortcode_custom_form-lost'
+		 *
+		 * @since 1.1.0
+		 */
+		$html = apply_filter(
+			'ms_shortcode_custom_form-' . $form,
+			'',
+			$this->data
+		);
+
+		if ( ! empty( $html ) ) {
+			return $html;
+		} else {
+			$html = '';
+		}
+
 		if ( 'logout' === $form ) {
 			return $this->logout_form();
 		} elseif ( 'reset' === $form ) {
@@ -94,7 +117,18 @@ class MS_View_Shortcode_Login extends MS_View {
 		// Remove linebreaks to bypass the "wpautop" filter.
 		$html = str_replace( array( "\r\n", "\r", "\n" ), '', $html );
 
-		return $html;
+		/*
+		 * Possible filters to provide a customized login form:
+		 * - 'ms_shortcode_form-login'
+		 * - 'ms_shortcode_form-logout'
+		 * - 'ms_shortcode_form-reset'
+		 * - 'ms_shortcode_form-lost'
+		 */
+		return apply_filter(
+			'ms_shortcode_form-' . $form,
+			$html,
+			$this->data
+		);
 	}
 
 	/**

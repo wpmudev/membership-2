@@ -5,6 +5,23 @@ class MS_View_Shortcode_Account extends MS_View {
 	public function to_html() {
 		global $post;
 
+		/**
+		 * Provide a customized account page.
+		 *
+		 * @since 1.1.0
+		 */
+		$html = apply_filter(
+			'ms_shortcode_custom_account',
+			'',
+			$this->data
+		);
+
+		if ( ! empty( $html ) ) {
+			return $html;
+		} else {
+			$html = '';
+		}
+
 		$fields = $this->prepare_fields();
 		$signup_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 
@@ -183,7 +200,12 @@ class MS_View_Shortcode_Account extends MS_View {
 		</div>
 		<?php
 		$html = ob_get_clean();
-		return $html;
+
+		return apply_filters(
+			'ms_shortcode_account',
+			$html,
+			$this->data
+		);
 	}
 
 	public function prepare_fields() {
