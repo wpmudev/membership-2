@@ -176,15 +176,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $trial_period = array( 'period_unit' => 1, 'period_type' => 'days' );
 
 	/**
-	 * Membership dripped type.
-	 *
-	 * @since 1.0.0
-	 * @var string $dripped_type The dripped type used in this membership.
-	 *     @see MS_Model_Rule::get_dripped_rule_types()
-	 */
-	protected $dripped_type = MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE;
-
-	/**
 	 * Move to Membership when the current one expires.
 	 *
 	 * After current membership expire move to the indicated membership_id.
@@ -281,7 +272,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'trial_period_enabled',
 			'trial_price',
 			'trial_period',
-			'dripped_type',
 			'on_end_membership_id',
 			'is_setup_completed',
 		);

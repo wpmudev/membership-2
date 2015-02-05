@@ -266,7 +266,6 @@ class MS_Model_Import extends MS_Model {
 		$membership->active = (bool) $obj->active;
 		$membership->private = (bool) $obj->private;
 		$membership->is_free = (bool) $obj->free;
-		$membership->dripped_type = $obj->dripped;
 		$membership->is_setup_complete = true;
 
 		if ( isset( $obj->period_type ) ) {

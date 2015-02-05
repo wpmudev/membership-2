@@ -56,7 +56,6 @@ class MS_Controller_Membership extends MS_Controller {
 	const STEP_PROTECTED_CONTENT = 'protected_content';
 	const STEP_ADD_NEW = 'add';
 	const STEP_PAYMENT = 'payment';
-	const STEP_DRIPPED = 'dripped';
 
 	// Actions
 	const ACTION_SAVE = 'save_membership';
@@ -621,26 +620,6 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
-	 * Display Setup Dripped Content page.
-	 *
-	 * @since 1.0.0
-	 */
-	public function page_dripped() {
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = self::ACTION_SAVE;
-		$data['membership'] = $this->load_membership();
-		$data['tabs'] = $this->get_available_tabs();
-		$data['bread_crumbs'] = $this->get_bread_crumbs();
-
-		$data['show_next_button'] = ! isset( $_GET['edit'] );
-
-		$view = MS_Factory::create( 'MS_View_Membership_Dripped' );
-		$view->data = apply_filters( 'ms_view_membership_dripped_data', $data, $this );
-		$view->render();
-	}
-
-	/**
 	 * Get Membership setup steps.
 	 *
 	 * @since 1.0.0
@@ -1059,26 +1038,6 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 				break;
 
-			case self::STEP_DRIPPED:
-				$bread_crumbs['prev'] = array(
-					'title' => $membership->name,
-					'url' => admin_url(
-						sprintf(
-							'admin.php?page=%s&step=%s&membership_id=%s',
-							MS_Controller_Plugin::MENU_SLUG,
-							self::STEP_OVERVIEW,
-							$membership->id
-						)
-					),
-				);
-				$bread_crumbs['current'] = array(
-					'title' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
-				);
-				$bread_crumbs['next'] = array(
-					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
-				);
-				break;
-
 			case self::STEP_PAYMENT:
 				$bread_crumbs['prev'] = array(
 					'title' => $membership->name,
@@ -1224,10 +1183,6 @@ class MS_Controller_Membership extends MS_Controller {
 				$data['ms_init'][] = 'view_membership_payment';
 				$data['ms_init'][] = 'view_settings_payment';
 				wp_enqueue_script( 'jquery-validate' );
-				break;
-
-			case self::STEP_DRIPPED:
-				$data['ms_init'][] = 'view_membership_dripped';
 				break;
 
 			case self::STEP_MS_LIST:

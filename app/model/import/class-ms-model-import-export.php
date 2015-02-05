@@ -52,7 +52,6 @@ Import Data Structure
     - active             <bool>
     - private            <bool>
     - free               <bool>
-    - dripped            [empty|specific_date|from_registration]
 
     If `free` is false:
     - price              <float>
@@ -235,7 +234,6 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->active = (bool) $src->active;
 		$obj->private = (bool) $src->private;
 		$obj->free = (bool) $src->is_free;
-		$obj->dripped = $src->dripped_type;
 
 		if ( ! $obj->free ) {
 			$obj->pay_type = $src->payment_type;

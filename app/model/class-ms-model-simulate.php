@@ -41,7 +41,6 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @var string
 	 */
 	const TYPE_DATE = 'type_date';
-	const TYPE_PERIOD = 'type_period';
 
 	/**
 	 * Singleton instance.
@@ -161,7 +160,6 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		if ( empty( $types ) ) {
 			$types = array(
 				self::TYPE_DATE,
-				self::TYPE_PERIOD,
 			);
 		}
 
@@ -229,13 +227,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	public function start_simulation() {
 		$this->check_permissions();
 
-		if ( self::TYPE_PERIOD == $this->type ) {
-			$this->add_filter(
-				'ms_helper_period_current_date',
-				'simulate_period_filter'
-			);
-		}
-		elseif ( self::TYPE_DATE == $this->type ) {
+		if ( self::TYPE_DATE == $this->type ) {
 			$this->add_filter(
 				'ms_helper_period_current_date',
 				'simulate_date_filter'
@@ -330,14 +322,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		if ( $membership->is_valid()
 			&& MS_Model_Membership::TYPE_DRIPPED === $membership->type
 		) {
-			if ( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE === $membership->dripped_type ) {
-				$this->type = MS_Model_Simulate::TYPE_DATE;
-			}
-			else {
-				$this->type = MS_Model_Simulate::TYPE_PERIOD;
-			}
-		}
-		else {
+			$this->type = MS_Model_Simulate::TYPE_DATE;
+		} else {
 			$this->type = null;
 		}
 
