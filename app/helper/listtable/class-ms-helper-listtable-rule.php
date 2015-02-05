@@ -110,6 +110,12 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 				'attr' => sprintf( 'data-color="%1$s"', $item->get_color() ),
 			);
 		}
+
+		// Add code right before the bulk actions are displayed.
+		add_action(
+			'ms_listtable_before_bulk_actions',
+			array( $this, 'add_rule_type' )
+		);
 	}
 
 	/**
@@ -164,17 +170,42 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		);
 
 		$memberships = MS_Model_Membership::get_membership_names();
+		$txt_add = __( 'Add: %s', MS_TEXT_DOMAIN );
+		$txt_rem = __( 'Drop: %s', MS_TEXT_DOMAIN );
 		foreach ( $memberships as $id => $name ) {
-			$bulk_actions[$protect_key]['add-' . $id] = $name;
-			$bulk_actions[$unprotect_key]['rem-' . $id] = $name;
+			$bulk_actions[$protect_key]['add-' . $id] = sprintf( $txt_add, $name );
+			$bulk_actions[$unprotect_key]['rem-' . $id] = sprintf( $txt_rem, $name );
 		}
 
 		return apply_filters(
-			"ms_helper_listtable_{$this->id}_bulk_actions",
+			'ms_helper_listtable_' . $this->id . '_bulk_actions',
 			$bulk_actions
 		);
 	}
 
+	/**
+	 * Adds a hidden field to the form that passes the current rule_type to the
+	 * bulk-edit action handler.
+	 *
+	 * @since 1.0.0
+	 */
+	public function add_rule_type() {
+		MS_Helper_Html::html_element(
+			array(
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'name' => 'rule_type',
+				'value' => $this->id, // $this->id is always identical to RULE_ID
+			)
+		);
+	}
+
+	/**
+	 * Prepare the list and choose which items to display.
+	 *
+	 * This is the core logic of the listtable parent class!
+	 *
+	 * @since  1.0.0
+	 */
 	public function prepare_items() {
 		$args = null;
 

@@ -221,12 +221,11 @@ class MS_Controller_Membership extends MS_Controller {
 			$this->get_active_tab()
 		);
 
-		// Verify intent in request, only accessible to admin users
-		if ( $this->is_admin_user()
-			&& ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) )
-		) {
+		// Only accessible to admin users
+		if ( ! $this->is_admin_user() ) { return false; }
+
+		if ( $this->verify_nonce( null, 'any' ) ) {
 			// Take next actions based in current step.
-			WDev()->debug( 'Process ') ;
 
 			// Check if we are editing a membership.
 			$save_membership = $this->verify_nonce( self::ACTION_SAVE );
@@ -324,10 +323,69 @@ class MS_Controller_Membership extends MS_Controller {
 				}
 				exit;
 			}
+		} elseif ( $this->verify_nonce( 'bulk' ) ) {
+			// Bulk-edit
+
+			WDev()->load_post_fields( 'action', 'action2', 'item', 'rule_type' );
+			$action = $_POST['action'];
+			if ( empty( $action ) || $action == '-1' ) {
+				$action = $_POST['action2'];
+			}
+			$items = $_POST['item'];
+			$rule_type = $_POST['rule_type'];
+
+			/*
+			 * The Bulk-Edit action is built like 'cmd-id'
+			 * e.g. 'add-123' will add membership 123 to the selected items.
+			 */
+			if ( empty( $action ) ) {
+				$cmd = array();
+			} elseif ( empty( $items ) ) {
+				$cmd = array();
+			} elseif ( empty( $rule_type ) ) {
+				$cmd = array();
+			} elseif ( $action == '-1' ) {
+				$cmd = array();
+			} else {
+				$cmd = explode( '-', $action );
+			}
+
+			if ( count( $cmd ) == 2 ){
+				$action = $cmd[0];
+				$action_id = $cmd[1];
+
+				// Get a list of specified memberships...
+				if ( is_numeric( $action_id ) ) {
+					// ... either a single membership.
+					$memberships = array(
+						MS_Factory::load( 'MS_Model_Membership', $action_id ),
+					);
+				} elseif ( 'all' == $action_id ) {
+					// ... or all memberships.
+					$memberships = MS_Model_Membership::get_memberships();
+				}
+
+				// Loop specified memberships and add the selected items.
+				foreach ( $memberships as $membership ) {
+					$rule = $membership->get_rule( $rule_type );
+					foreach ( $items as $item ) {
+						switch ( $action ) {
+							case 'add':
+								$rule->give_access( $item );
+								break;
+
+							case 'rem':
+								$rule->remove_access( $item );
+								break;
+						}
+					}
+					$membership->set_rule( $rule_type, $rule );
+					$membership->save();
+				}
+			}
 		} else {
 			// No action request found.
 		}
-
 	}
 
 	/**

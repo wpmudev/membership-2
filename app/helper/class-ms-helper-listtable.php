@@ -489,6 +489,16 @@ class MS_Helper_ListTable {
 
 		if ( ! $echo ) { ob_start(); }
 
+		/**
+		 * Allow other files to add additional code before the bulk actions.
+		 *
+		 * Note that this action is only triggered when bulk actions are
+		 * actually displayed.
+		 *
+		 * @since 1.1.0
+		 */
+		do_action( 'ms_listtable_before_bulk_actions', $this );
+
 		printf( '<select name="action%s">', esc_attr( $two ) );
 		printf( '<option value="-1" selected="selected">%s</option>', __( 'Bulk Actions' ) );
 
