@@ -182,7 +182,6 @@ class MS_Controller_Rule extends MS_Controller {
 					$rule->set_access( $id, $rule_value );
 				}
 			}
-			var_dump( $rule );
 			$membership->set_rule( $rule_type, $rule );
 			$membership->save();
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
@@ -283,6 +282,8 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function edit_rule_manager( $rule_type ) {
+		$redirect = false;
+
 		if ( isset( $_POST['rule'] ) ) {
 			$rule_type = $_POST['rule'];
 		}
@@ -293,28 +294,21 @@ class MS_Controller_Rule extends MS_Controller {
 		 * Rule single action
 		 */
 		if ( $this->verify_nonce( null, 'GET' ) ) {
-			$msg = $this->rule_list_do_action( $_GET['action'], $rule_type, array( $_GET['item'] ) );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg), remove_query_arg( array( 'action', 'item', '_wpnonce' ) ) ) );
-			exit;
-		}
-		/**
-		 * Rule bulk actions
-		 */
-		elseif ( $this->verify_nonce( 'bulk-rules', 'POST' ) && ! empty( $_POST['action'] ) ) {
-			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-			$msg = $this->rule_list_do_action( $action, $rule_type, $_POST['item'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-			exit;
-		}
-		/**
-		 * Save url group add/edit
-		 */
-		elseif ( ! empty( $_POST['url_group_submit'] ) && $this->verify_nonce() ) {
-			$msg = $this->save_url_group( $_POST );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
-			exit;
+			$msg = $this->rule_list_do_action(
+				$_GET['action'],
+				$rule_type,
+				array( $_GET['item'] )
+			);
+			$redirect = add_query_arg(
+				array( 'msg' => $msg),
+				remove_query_arg( array( 'action', 'item', '_wpnonce' ) )
+			);
 		}
 
+		if ( $redirect ) {
+			wp_safe_redirect( $redirect );
+			exit;
+		}
 	}
 
 	/**
