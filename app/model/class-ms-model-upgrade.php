@@ -156,18 +156,18 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade from any 0.x version to a higher version.
 	 */
 	static private function _upgrade_0_x() {
-				$args = array();
-				$args['post_parent__not_in'] = array( 0 );
-				$memberships = MS_Model_Membership::get_memberships( $args );
+		$args = array();
+		$args['post_parent__not_in'] = array( 0 );
+		$memberships = MS_Model_Membership::get_memberships( $args );
 
 		// Delete orphans (junk-data introduced by early bug)
-				foreach ( $memberships as $membership ) {
-					$parent = MS_Factory::load( 'MS_Model_Membership', $membership->parent_id );
-					if ( ! $parent->is_valid() ) {
-						$membership->delete();
-					}
-				}
+		foreach ( $memberships as $membership ) {
+			$parent = MS_Factory::load( 'MS_Model_Membership', $membership->parent_id );
+			if ( ! $parent->is_valid() ) {
+				$membership->delete();
 			}
+		}
+	}
 
 	/**
 	 * Upgrade from any 1.0.x version to a higher version.
@@ -175,21 +175,146 @@ class MS_Model_Upgrade extends MS_Model {
 	static private function _upgrade_1_0_x() {
 		global $wpdb;
 
-				$data = get_option( 'MS_Model_Addon' );
-				if ( ! isset( $data['active'] ) && isset( $data['addons'] ) ) {
-					$data['active'] = $data['addons'];
-					unset( $data['addons'] );
+		/*
+		 * Add-ons
+		 *
+		 * 1. The key-name 'addon' changed to 'active'
+		 */
+		{
+			$data = get_option( 'MS_Model_Addon' );
+			// 1.
+			if ( ! isset( $data['active'] ) && isset( $data['addons'] ) ) {
+				$data['active'] = $data['addons'];
+				unset( $data['addons'] );
+			}
+###	##	#	update_option( 'MS_Model_Addon', $data );
+		}
+
+		/*
+		 * Settings
+		 *
+		 * 1. The key 'is_first_membership' was introduced
+		 * 1. The key 'import' was introduced
+		 */
+		{
+			$data = get_option( 'MS_Model_Settings' );
+			// 1.
+			if ( ! isset( $data['is_first_membership'] ) ) {
+				$data['is_first_membership'] = false;
+			}
+			// 2.
+			if ( ! isset( $data['import'] ) ) {
+				$data['import'] = array();
+			}
+###	##	#	update_option( 'MS_Model_Settings', $data );
+		}
+
+		/*
+		 * Memberships
+		 *
+		 * 1. The key 'parent_id' was dropped
+		 * 2. The key 'protected_content' was dropped
+		 * 3. Types 'content_type' and 'tier' were replaced by 'simple'
+		 * 4. Key 'rules' was migrated to 'rule_values'
+		 */
+		$args = array(
+			'post_type' => 'ms_membership',
+			'post_status' => 'any',
+			'nopaging' => true,
+		);
+		$query = new WP_Query( $args );
+		$items = $query->get_posts();
+		foreach ( $items as $item ) {
+			// 1.
+###	##	#	delete_post_meta( $item->ID, 'parent_id' );
+			$item->post_parent = 0;
+			// 2.
+			$is_base = get_post_meta( $item->ID, 'protected_content', true );
+###	##	#	delete_post_meta( $item->ID, 'protected_content' );
+			if ( ! empty( $is_base ) ) {
+###	##	#		update_post_meta( $item->ID, 'type', 'base' );
+			}
+			// 3.
+			$type = get_post_meta( $item->ID, 'type', true );
+			if ( $type != 'dripped' ) {
+###	##	#		update_post_meta( $item->ID, 'type', 'simple' );
+			}
+			// 4.
+			$rules = get_post_meta( $item->ID, 'rules', true );
+			$serialized = array();
+			foreach ( $rules as $key => $data ) {
+				$data = self::fix_object( $data );
+				$data->rule_value = WDev()->get_array( $data->rule_value );
+				$data->dripped = WDev()->get_array( $data->dripped );
+				$access = array();
+
+				foreach ( $data->rule_value as $id => $state ) {
+					if ( $state ) {
+						if ( isset( $data->dripped[$id] )
+							&& is_array( $data->dripped[$id] )
+						) {
+							// TODO: The dripped-content keys have different names in 1.0.x!!!
+							$access[] = array(
+								'id' => $id,
+								'dripped' => array(
+									$data->dripped[$id]['type'],
+									$data->dripped[$id]['date'],
+									$data->dripped[$id]['delay_unit'],
+									$data->dripped[$id]['delay_type'],
+								),
+							);
+						} else {
+							// TODO: Handle special rules - URL, Comment, Read-More!!!
+							$access[] = $id;
+						}
+					}
+				}
+
+				if ( ! empty( $access ) ) {
+					$serialized[$key] = $access;
 				}
 			}
+###	##	#	set_post_meta( $item->ID, 'rules', $serialized );
 
-			/*
-			 */
-
-
-			}
-
-
+###	##	#	wp_update_post( $item );
 		}
+		// Cleanup
+		foreach ( $items as $item ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $item->ID );
+			// This will remove all deprecated properties from DB.
+###	##	#	$membership->save();
+		}
+
+
+		die();
+	}
+
+	/**
+	 * Takes an __PHP_Incomplete_Class and casts it to a stdClass object.
+	 * All properties will be made public in this step.
+	 *
+	 * @since  1.1.0
+	 * @param  object $object __PHP_Incomplete_Class
+	 * @return object
+	 */
+	static public function fix_object( $object ) {
+		// preg_replace_callback handler. Needed to calculate new key-length.
+		$fix_key = create_function(
+			'$matches',
+			'return ":" . strlen( $matches[1] ) . ":\"" . $matches[1] . "\"";'
+		);
+
+		// Serialize the object to a string.
+		$dump = serialize( $object );
+
+		// Change class-type to 'stdClass'.
+		$dump = preg_replace( '/^O:\d+:"[^"]++"/', 'O:8:"stdClass"', $dump );
+
+		// Strip "private" and "protected" prefixes.
+		$dump = preg_replace_callback( '/:\d+:"\0.*?\0([^"]+)"/', $fix_key, $dump );
+
+		// Unserialize the modified object again.
+		return unserialize( $dump );
 	}
 
 	/**
