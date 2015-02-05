@@ -74,7 +74,10 @@ class MS_Controller_Billing extends MS_Controller {
 		}
 
 		$fields = array( 'user_id', 'membership_id' );
-		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
+
+		if ( self::validate_required( $fields )
+			&& $this->verify_nonce()
+		) {
 			// Save billing add/edit
 			$msg = $this->save_invoice( $_POST );
 
@@ -124,7 +127,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 * Perform actions for each invoice.
 	 *
 	 * @since 1.0.0
-	 * @param string $action The action to perform on selected invoices
+	 * @param string $action The action to perform on selected invoices.
 	 * @param int[] $invoice_ids The list of invoices ids to process.
 	 */
 	public function billing_do_action( $action, $invoice_ids ) {

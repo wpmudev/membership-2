@@ -44,6 +44,7 @@ class MS_View_Billing_List extends MS_View {
 		$billing_list->prepare_items();
 
 		$title = __( 'Billing', MS_TEXT_DOMAIN );
+
 		if ( ! empty( $_GET['gateway_id'] ) ) {
 			$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
 			if ( $gateway->name ) {
@@ -64,14 +65,14 @@ class MS_View_Billing_List extends MS_View {
 
 		<div class="wrap ms-wrap ms-billing">
 			<?php
-				MS_Helper_Html::settings_header(
-					array(
-						'title' => $title,
-						'title_icon_class' => 'wpmui-fa wpmui-fa-credit-card',
-					)
-				);
+			MS_Helper_Html::settings_header(
+				array(
+					'title' => $title,
+					'title_icon_class' => 'wpmui-fa wpmui-fa-credit-card',
+				)
+			);
 			?>
-			<div >
+			<div>
 				<?php MS_Helper_Html::html_element( $add_new_button );?>
 			</div>
 			<?php $billing_list->views(); ?>
@@ -84,6 +85,10 @@ class MS_View_Billing_List extends MS_View {
 		<?php
 		$html = ob_get_clean();
 
-		return apply_filters( 'ms_view_billing_list', $html, $this );
+		return apply_filters(
+			'ms_view_billing_list',
+			$html,
+			$this
+		);
 	}
 }
