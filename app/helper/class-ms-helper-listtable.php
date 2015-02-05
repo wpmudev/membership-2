@@ -1174,7 +1174,7 @@ class MS_Helper_ListTable {
 	 */
 	protected function display_tablenav( $which ) {
 		if ( 'top' == $which ) {
-			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
+			wp_nonce_field( 'bulk' );
 		}
 
 		$bulk_actions = $this->bulk_actions( false );

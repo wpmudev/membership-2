@@ -131,7 +131,7 @@ class MS_Controller_Member extends MS_Controller {
 			}
 
 			// Execute list table bulk actions.
-			elseif ( $this->verify_nonce( 'bulk-members' )
+			elseif ( $this->verify_nonce( 'bulk' )
 				&& self::validate_required( $fields_edit, 'POST' )
 			) {
 				$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];

@@ -81,7 +81,7 @@ class MS_Controller_Billing extends MS_Controller {
 			$redirect = remove_query_arg( array( 'invoice_id') );
 			$redirect = add_query_arg( array( 'msg' => $msg ), $redirect );
 		} elseif ( self::validate_required( array( 'invoice_id' ) )
-			&& $this->verify_nonce( 'bulk-billings' )
+			&& $this->verify_nonce( 'bulk' )
 		) {
 			// Execute bulk actions.
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];

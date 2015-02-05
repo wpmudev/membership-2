@@ -259,7 +259,7 @@ class MS_Addon_Coupon extends MS_Addon {
 				remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) )
 			);
 		} elseif ( self::validate_required( array( 'coupon_id' ) )
-			&& $this->verify_nonce( 'bulk-coupons' )
+			&& $this->verify_nonce( 'bulk' )
 			&& $this->is_admin_user()
 		) {
 			// Execute bulk actions.
