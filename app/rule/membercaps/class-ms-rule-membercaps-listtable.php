@@ -29,7 +29,7 @@
  */
 class MS_Rule_MemberCaps_ListTable extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_membercaps';
+	protected $id = MS_Rule_MemberCaps::RULE_ID;
 
 	public function __construct( $model ) {
 		parent::__construct( $model );

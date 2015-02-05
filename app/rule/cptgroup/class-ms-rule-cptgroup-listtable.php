@@ -29,7 +29,7 @@
  */
 class MS_Rule_CptGroup_ListTable extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'cpt_group';
+	protected $id = MS_Rule_CptGroup::RULE_ID;
 
 	public function __construct( $model ) {
 		parent::__construct( $model );

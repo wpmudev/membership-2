@@ -29,7 +29,7 @@
  */
 class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_menu';
+	protected $id = MS_Rule_MenuItem::RULE_ID;
 
 	/**
 	 * A list of all available menus.

@@ -29,7 +29,7 @@
  */
 class MS_Rule_Adminside_ListTable extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_adminside';
+	protected $id = MS_Rule_Adminside::RULE_ID;
 
 	public function __construct( $model ) {
 		parent::__construct( $model );

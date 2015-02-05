@@ -29,7 +29,7 @@
  */
 class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 
-	protected $id = 'rule_post';
+	protected $id = MS_Rule_Post::RULE_ID;
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
