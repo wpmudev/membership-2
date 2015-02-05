@@ -53,7 +53,6 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	public static function update( $force = false ) {
 		static $Done = false;
-		global $wpdb;
 
 		if ( $Done ) { return; }
 
@@ -63,8 +62,9 @@ class MS_Model_Upgrade extends MS_Model {
 
 		$is_new_setup = empty( $old_version );
 
-		// Compare current src version to DB version
-		$version_changed = version_compare( $old_version, $new_version, '!=' );
+		// Compare current src version to DB version:
+		// We only do UP-grades but no DOWN-grades!
+		$version_changed = version_compare( $old_version, $new_version, 'lt' );
 
 		self::maybe_reset();
 
@@ -117,66 +117,14 @@ class MS_Model_Upgrade extends MS_Model {
 			 * ----- Version-Specific update logic -----------------------------
 			 */
 
-			// Upgrade logic from 1.0.0.0
-			if ( version_compare( '1.0.0.0', $new_version, '=' ) ) {
-				$args = array();
-				$args['post_parent__not_in'] = array( 0 );
-				$memberships = MS_Model_Membership::get_memberships( $args );
-
-				foreach ( $memberships as $membership ) {
-					$parent = MS_Factory::load( 'MS_Model_Membership', $membership->parent_id );
-					if ( ! $parent->is_valid() ) {
-						$membership->delete();
-					}
-				}
+			// Upgrade from a 0.x version to 1.0.x or higher
+			if ( version_compare( $old_version, '1.0.0.0', 'lt' ) ) {
+				self::_upgrade_0_x();
 			}
 
-			// Upgrade logic to 1.1.0.0
-			if ( version_compare( '1.1.0.0', $new_version, '=' ) ) {
-				// Add the 'special' meta key to all memberships
-				$query = new WP_Query(
-					array(
-						'post_type' => MS_Model_Membership::$POST_TYPE,
-						'post_status' => 'any',
-						'nopaging' => true,
-						'meta_query' => array(
-							array(
-								'key' => 'special',
-								'compare' => 'NOT EXISTS',
-								'value' => '',
-							),
-						),
-					)
-				);
-				foreach ( $query->get_posts() as $post ) {
-					update_post_meta( $post->ID, 'special', '' );
-				}
-
-				// Change the flag of the base membership
-				$sql = "
-					SELECT ID
-					FROM {$wpdb->posts} p
-					INNER JOIN {$wpdb->postmeta} m_type ON m_type.post_id = p.ID
-					WHERE
-						p.post_type = %s
-						AND m_type.meta_key = 'protected_content'
-						AND m_type.meta_value = '1'
-				";
-				$sql = $wpdb->prepare( $sql, MS_Model_Membership::$POST_TYPE );
-				$item = $wpdb->get_results( $sql );
-				$base = array_shift( $item );
-
-				if ( ! empty( $base ) ) {
-					update_post_meta( $base->ID, 'special', 'protected_content' );
-				}
-
-				// Rename the Add-On variable
-				$data = get_option( 'MS_Model_Addon' );
-				if ( ! isset( $data['active'] ) && isset( $data['addons'] ) ) {
-					$data['active'] = $data['addons'];
-					unset( $data['addons'] );
-					update_option( 'MS_Model_Addon', $data );
-				}
+			// Upgrade from any 1.0.x version to 1.1.x or higher
+			if ( version_compare( $old_version, '1.1.0.0', 'lt' ) ) {
+				self::_upgrade_1_0_x();
 			}
 
 			/*
@@ -201,6 +149,46 @@ class MS_Model_Upgrade extends MS_Model {
 
 			// This will reload the current page.
 			MS_Plugin::flush_rewrite_rules();
+		}
+	}
+
+	/**
+	 * Upgrade from any 0.x version to a higher version.
+	 */
+	static private function _upgrade_0_x() {
+				$args = array();
+				$args['post_parent__not_in'] = array( 0 );
+				$memberships = MS_Model_Membership::get_memberships( $args );
+
+		// Delete orphans (junk-data introduced by early bug)
+				foreach ( $memberships as $membership ) {
+					$parent = MS_Factory::load( 'MS_Model_Membership', $membership->parent_id );
+					if ( ! $parent->is_valid() ) {
+						$membership->delete();
+					}
+				}
+			}
+
+	/**
+	 * Upgrade from any 1.0.x version to a higher version.
+	 */
+	static private function _upgrade_1_0_x() {
+		global $wpdb;
+
+				$data = get_option( 'MS_Model_Addon' );
+				if ( ! isset( $data['active'] ) && isset( $data['addons'] ) ) {
+					$data['active'] = $data['addons'];
+					unset( $data['addons'] );
+				}
+			}
+
+			/*
+			 */
+
+
+			}
+
+
 		}
 	}
 
