@@ -277,7 +277,13 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 */
 	public function set_access( $hash, $access ) {
 		if ( $this->is_base_rule ) {
-			// Base rule cannot modify URL access via this function!
+			/*
+			 * Base rule cannot modify URL access via this function!
+			 * Values of the base-rule are modified via a special Ajax handler
+			 * that directly calls `add_url()`
+			 *
+			 * @see MS_Rule_Url::process_form()
+			 */
 			return;
 		}
 

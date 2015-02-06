@@ -545,7 +545,9 @@ class MS_Plugin {
 			 */
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
+			if ( is_file( $file_path ) ) {
 			include_once $file_path;
+			}
 			return true;
 		}
 		/**
@@ -573,7 +575,7 @@ class MS_Plugin {
 
 			if ( is_file( $file_path ) ) {
 				include_once $file_path;
-			} else {
+			} elseif ( is_file( $file_path_alt ) ) {
 				include_once $file_path_alt;
 			}
 

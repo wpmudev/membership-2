@@ -64,7 +64,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 		// Compare current src version to DB version:
 		// We only do UP-grades but no DOWN-grades!
-		$version_changed = version_compare( $old_version, $new_version, 'lt' );
+		$version_changed = $old_version && version_compare( $old_version, $new_version, 'lt' );
 
 		self::maybe_reset();
 
@@ -173,7 +173,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade from any 1.0.x version to a higher version.
 	 */
 	static private function _upgrade_1_0_x() {
-		global $wpdb;
+		WDev()->updates->clear();
 
 		/*
 		 * Add-ons
@@ -187,7 +187,7 @@ class MS_Model_Upgrade extends MS_Model {
 				$data['active'] = $data['addons'];
 				unset( $data['addons'] );
 			}
-###	##	#	update_option( 'MS_Model_Addon', $data );
+			WDev()->updates->add( 'update_option', 'MS_Model_Addon', $data );
 		}
 
 		/*
@@ -206,7 +206,7 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( ! isset( $data['import'] ) ) {
 				$data['import'] = array();
 			}
-###	##	#	update_option( 'MS_Model_Settings', $data );
+			WDev()->updates->add( 'update_option', 'MS_Model_Settings', $data );
 		}
 
 		/*
@@ -216,6 +216,9 @@ class MS_Model_Upgrade extends MS_Model {
 		 * 2. The key 'protected_content' was dropped
 		 * 3. Types 'content_type' and 'tier' were replaced by 'simple'
 		 * 4. Key 'rules' was migrated to 'rule_values'
+		 *    4.1 Rule 'url_group' was renamed to 'url'
+		 *    4.2 Rule 'more_tag' was renamed to 'content'
+		 *    4.3 Rule 'comment' was merged with 'content'
 		 */
 		$args = array(
 			'post_type' => 'ms_membership',
@@ -223,70 +226,158 @@ class MS_Model_Upgrade extends MS_Model {
 			'nopaging' => true,
 		);
 		$query = new WP_Query( $args );
-		$items = $query->get_posts();
-		foreach ( $items as $item ) {
-			// 1.
-###	##	#	delete_post_meta( $item->ID, 'parent_id' );
-			$item->post_parent = 0;
-			// 2.
-			$is_base = get_post_meta( $item->ID, 'protected_content', true );
-###	##	#	delete_post_meta( $item->ID, 'protected_content' );
+		$memberships = $query->get_posts();
+		// Find the base rules.
+		$base = false;
+		foreach ( $memberships as $membership ) {
+			$is_base = get_post_meta( $membership->ID, 'protected_content', true );
 			if ( ! empty( $is_base ) ) {
-###	##	#		update_post_meta( $item->ID, 'type', 'base' );
+				$base = $membership;
+				$base_rules = get_post_meta( $base->ID, 'rules', true );
+				foreach ( $base_rules as $key => $data ) {
+					if ( 'url_group' === $key ) { $key = 'url'; }
+					$base_rules[$key] = self::fix_object( $data );
+				}
+				break;
 			}
-			// 3.
-			$type = get_post_meta( $item->ID, 'type', true );
-			if ( $type != 'dripped' ) {
-###	##	#		update_post_meta( $item->ID, 'type', 'simple' );
+		}
+		// Migrate data.
+		foreach ( $memberships as $membership ) {
+			// 1.
+			WDev()->updates->add( 'delete_post_meta', $membership->ID, 'parent_id' );
+			$membership->post_parent = 0;
+			// 2.
+			$is_base = get_post_meta( $membership->ID, 'protected_content', true );
+			$is_base = ! empty( $is_base );
+			if ( $is_base ) {
+				WDev()->updates->add( 'delete_post_meta', $membership->ID, 'protected_content' );
+				WDev()->updates->add( 'update_post_meta', $membership->ID, 'type', 'base' );
+			} else {
+				// 3.
+				$type = get_post_meta( $membership->ID, 'type', true );
+				if ( $type != 'dripped' ) {
+					WDev()->updates->add( 'update_post_meta', $membership->ID, 'type', 'simple' );
+				}
 			}
 			// 4.
-			$rules = get_post_meta( $item->ID, 'rules', true );
+			$rules = get_post_meta( $membership->ID, 'rules', true );
+			if ( is_array( $rules ) ) { $rules = (object) $rules; }
+			if ( ! is_object( $rules ) ) { $rules = new stdClass(); }
 			$serialized = array();
 			foreach ( $rules as $key => $data ) {
+				// 4.1
+				if ( 'url_group' === $key ) { $key = 'url'; }
+
 				$data = self::fix_object( $data );
 				$data->rule_value = WDev()->get_array( $data->rule_value );
 				$data->dripped = WDev()->get_array( $data->dripped );
 				$access = array();
 
+				if ( ! empty( $data->dripped )
+					&& ! empty( $data->dripped['dripped_type'] )
+				) {
+					$is_dripped = true;
+					$drip_type = $data->dripped['dripped_type'];
+					$drip_data = $data->dripped[ $drip_type ];
+				} else {
+					$is_dripped = false;
+				}
+
 				foreach ( $data->rule_value as $id => $state ) {
 					if ( $state ) {
-						if ( isset( $data->dripped[$id] )
-							&& is_array( $data->dripped[$id] )
-						) {
-							// TODO: The dripped-content keys have different names in 1.0.x!!!
+						if ( $is_dripped ) {
+							// ----- Dripped access
+							if ( ! isset( $drip_data[$id] ) ) {
+								// No drip-details set, but access granted: Reveal instantly.
+								$item_drip = array( 'instantly', '', '', '' );
+							} else {
+								$item_drip = array( $drip_type, '', '', '' );
+
+								if ( 'specific_date' == $drip_type ) {
+									if ( isset( $drip_data[$id]['spec_date'] ) ) {
+										$item_drip[1] = $drip_data[$id]['spec_date'];
+									}
+								} else {
+									if ( ! isset( $drip_data[$id]['period_type'] ) ) {
+										$drip_data[$id]['period_type'] = 'days';
+									}
+									if ( isset( $drip_data[$id]['period_unit'] ) ) {
+										$item_drip[2] = $drip_data[$id]['period_unit'];
+										$item_drip[3] = $drip_data[$id]['period_type'];
+									}
+								}
+							}
 							$access[] = array(
 								'id' => $id,
-								'dripped' => array(
-									$data->dripped[$id]['type'],
-									$data->dripped[$id]['date'],
-									$data->dripped[$id]['delay_unit'],
-									$data->dripped[$id]['delay_type'],
-								),
+								'dripped' => $item_drip,
 							);
 						} else {
-							// TODO: Handle special rules - URL, Comment, Read-More!!!
-							$access[] = $id;
+							// ----- Standard access
+							if ( 'url' === $key ) {
+								if ( ! $is_base ) {
+									// First get the URL from base rule
+									$base_url = $base_rules['url']->rule_value;
+									if ( isset( $base_url[$id] ) ) {
+										$url = $base_url[$id];
+									} else {
+										continue;
+									}
+								} else {
+									$url = $state;
+								}
+								$hash = md5( $url );
+								$access[$hash] = $url;
+							} elseif ( 'more_tag' == $key ) {
+								// 4.2
+								if ( 'more_tag' == $id ) {
+									if ( ! isset( $serialized['content'] ) ) {
+										$serialized['content'] = array();
+									}
+
+									$serialized['content']['no_more'] = 1;
+								}
+							} elseif ( 'comment' == $key ) {
+								// 4.3
+								if ( ! isset( $serialized['content'] ) ) {
+									$serialized['content'] = array();
+								}
+
+								if ( '2' == $state ) {
+									$serialized['content']['cmt_none'] = 1;
+								} elseif ( '1' == $state ) {
+									$serialized['content']['cmt_read'] = 1;
+								} elseif ( '0' == $state ) {
+									$serialized['content']['cmt_full'] = 1;
+								};
+							} else {
+								$access[] = $id;
+							}
 						}
 					}
 				}
-
 				if ( ! empty( $access ) ) {
 					$serialized[$key] = $access;
 				}
 			}
-###	##	#	set_post_meta( $item->ID, 'rules', $serialized );
-
-###	##	#	wp_update_post( $item );
+			WDev()->updates->add( 'update_post_meta', $membership->ID, 'rule_values', $serialized );
+			WDev()->updates->add( 'wp_update_post', $membership );
 		}
+
+		// Execute all queued actions!
+		WDev()->updates->execute();
+
 		// Cleanup
-		foreach ( $items as $item ) {
-			$membership = MS_Factory::load( 'MS_Model_Membership', $item->ID );
-			// This will remove all deprecated properties from DB.
-###	##	#	$membership->save();
+		if ( $base && isset( $base->ID ) ) {
+			$base_membership = MS_Factory::load( 'MS_Model_Membership', $base->ID );
+			$base_membership->type = 'base';
+			$base_membership->save();
 		}
 
-
-		die();
+		foreach ( $memberships as $membership ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership->ID );
+			// This will remove all deprecated properties from DB.
+			$membership->save();
+		}
 	}
 
 	/**

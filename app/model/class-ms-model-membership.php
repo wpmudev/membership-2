@@ -244,6 +244,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$rules = array();
 		foreach ( $this->rules as $key => $rule ) {
 			$rule = $this->get_rule( $key );
+
 			$rules[$key] = $rule->serialize();
 
 			if ( empty( $rules[$key] ) ) {
@@ -470,7 +471,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$rule_type = MS_Rule_Media::RULE_ID;
 		}
 
-		if ( ! isset( $this->rules[ $rule_type ] ) ) {
+		if ( ! isset( $this->rules[ $rule_type ] )
+			|| ! is_object( $this->rules[ $rule_type ] ) // During plugin update.
+		) {
 			// Create a new rule model object.
 			$rule = MS_Rule::rule_factory( $rule_type, $this->id );
 
@@ -1015,6 +1018,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					}
 				}
 				// ---------- End of DB-correction part.
+
 			} else if ( $create_missing ) {
 				$names = self::get_types();
 
@@ -1607,7 +1611,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 							// Only one instance of these types can exist.
 							$existing = $this->_get_system_membership( $value, false );
 
-							if ( $existing ) {
+							if ( $existing && $existing->id != $this->id ) {
 								$value = self::TYPE_STANDARD;
 							} else {
 								$this->active = true;

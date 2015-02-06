@@ -185,6 +185,11 @@ class MS_Factory {
 		static $Init_Obj = array();
 		static $Init_Class = array();
 
+		// This case only happens during plugin-updates but needs to be handled.
+		if ( is_a( $obj, '__PHP_Incomplete_Class' ) ) {
+			return false;
+		}
+
 		// Prepare each single object that was created.
 		if ( method_exists( $obj, 'prepare_obj' ) ) {
 			if ( ! isset( $Init_Obj[$obj->_factory_id] ) ) {
