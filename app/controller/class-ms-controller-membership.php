@@ -236,11 +236,11 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $save_data['action'] );
 
 				if ( isset( $_POST['set_private_flag'] ) ) {
-					WDev()->load_post_fields( 'public' );
+					WDev()->array->equip_post( 'public' );
 					$save_data['public'] = ! WDev()->is_true( $_POST['public'] );
 				}
 				if ( isset( $_POST['set_paid_flag'] ) ) {
-					WDev()->load_post_fields( 'paid' );
+					WDev()->array->equip_post( 'paid' );
 					$save_data['is_free'] = ! WDev()->is_true( $_POST['paid'] );
 				}
 
@@ -325,7 +325,7 @@ class MS_Controller_Membership extends MS_Controller {
 		} elseif ( $this->verify_nonce( 'bulk' ) ) {
 			// Bulk-edit
 
-			WDev()->load_post_fields( 'action', 'action2', 'item', 'rule_type' );
+			WDev()->array->equip_post( 'action', 'action2', 'item', 'rule_type' );
 			$action = $_POST['action'];
 			if ( empty( $action ) || $action == '-1' ) {
 				$action = $_POST['action2'];
@@ -869,7 +869,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$tabs[MS_Rule_MemberCaps::RULE_ID] = false;
 			}
 
-			WDev()->load_fields( $_GET, 'page' );
+			WDev()->array->equip( $_GET, 'page' );
 
 			// Allow Add-ons to add or remove rule tabs
 			$tabs = apply_filters(

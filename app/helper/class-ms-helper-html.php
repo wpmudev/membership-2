@@ -407,7 +407,8 @@ class MS_Helper_Html extends MS_Helper {
 					$url = $tab['url'];
 
 					foreach ( $persistent as $param ) {
-						$value = @$_REQUEST[ $param ];
+						WDev()->array->equip_request( $param );
+						$value = $_REQUEST[ $param ];
 						$url = add_query_arg( $param, $value, $url );
 					}
 					?>

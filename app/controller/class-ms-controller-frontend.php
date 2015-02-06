@@ -339,7 +339,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
-		WDev()->load_request_fields( 'step', 'membership_id' );
+		WDev()->array->equip_request( 'step', 'membership_id' );
 
 		if ( in_array( $_REQUEST['step'], $steps ) ) {
 			$step = $_REQUEST['step'];

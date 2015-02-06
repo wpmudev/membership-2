@@ -444,7 +444,7 @@ class MS_Plugin {
 	 */
 	public function plugin_activation() {
 		// Prevent recursion during plugin activation.
-		$refresh = WDev()->store_get( 'refresh_url_rules' );
+		$refresh = WDev()->session->get( 'refresh_url_rules' );
 		if ( $refresh ) { return; }
 
 		// Update the Protected Content database entries after activation.
@@ -461,10 +461,10 @@ class MS_Plugin {
 	 * @param string $url The URL to load after flushing the rewrite rules.
 	 */
 	static public function flush_rewrite_rules( $url = false ) {
-		$refresh = WDev()->store_get( 'refresh_url_rules' );
+		$refresh = WDev()->session->get( 'refresh_url_rules' );
 		if ( $refresh ) { return; }
 
-		WDev()->store_add( 'refresh_url_rules', true );
+		WDev()->session->add( 'refresh_url_rules', true );
 		$url = add_query_arg( 'ms_ts', time(), $url );
 		wp_safe_redirect( $url );
 		exit;
@@ -476,7 +476,7 @@ class MS_Plugin {
 	 * @since  1.0.4.4
 	 */
 	public function maybe_flush_rewrite_rules() {
-		$refresh = WDev()->store_get_clear( 'refresh_url_rules' );
+		$refresh = WDev()->session->get_clear( 'refresh_url_rules' );
 		if ( ! $refresh ) { return; }
 
 		// Flush WP rewrite rules.
@@ -546,7 +546,7 @@ class MS_Plugin {
 			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
 
 			if ( is_file( $file_path ) ) {
-			include_once $file_path;
+				include_once $file_path;
 			}
 			return true;
 		}

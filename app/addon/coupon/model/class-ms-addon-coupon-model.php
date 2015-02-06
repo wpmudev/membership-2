@@ -675,7 +675,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 					break;
 
 				case 'membership_id':
-					$value = WDev()->get_array( $value );
+					$value = WDev()->array->get( $value );
 					foreach ( $value as $ind => $id ) {
 						if ( ! MS_Model_Membership::is_valid_membership( $id ) ) {
 							unset( $value[ $ind ] );

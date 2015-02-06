@@ -582,11 +582,11 @@ class MS_Model_Member extends MS_Model {
 			)
 		);
 
-		$args = WDev()->get_array( $args );
-		WDev()->load_fields( $args, 'meta_query' );
+		$args = WDev()->array->get( $args );
+		WDev()->array->equip( $args, 'meta_query' );
 
 		if ( 'none' !== $args['meta_query'] ) {
-			$args['meta_query'] = WDev()->get_array( $args['meta_query'] );
+			$args['meta_query'] = WDev()->array->get( $args['meta_query'] );
 
 			switch ( $search_option ) {
 				case self::SEARCH_ONLY_MEMBERS:

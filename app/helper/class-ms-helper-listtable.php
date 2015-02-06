@@ -399,7 +399,7 @@ class MS_Helper_ListTable {
 		reset( $links );
 
 		foreach ( $links as $class => $data ) {
-			WDev()->load_fields( $data, 'label', 'url' );
+			WDev()->array->equip( $data, 'label', 'url' );
 
 			$sep = '|';
 			if ( $last_class === $class ) { $sep = ''; }
@@ -710,7 +710,7 @@ class MS_Helper_ListTable {
 	 * @return int
 	 */
 	protected function get_pagenum() {
-		WDev()->load_request_fields( 'paged' );
+		WDev()->array->equip_request( 'paged' );
 		$pagenum = absint( $_REQUEST['paged'] );
 
 		if ( isset( $this->_pagination_args['total_pages'] )

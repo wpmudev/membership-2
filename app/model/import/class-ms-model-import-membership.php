@@ -373,7 +373,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 * @param  string $name The add-on name
 	 */
 	protected function activate_addon( $name ) {
-		$this->data->settings['addons'] = WDev()->get_array( $this->data->settings['addons'] );
+		$this->data->settings['addons'] = WDev()->array->get( $this->data->settings['addons'] );
 		$this->data->settings['addons'][$name] = true;
 	}
 

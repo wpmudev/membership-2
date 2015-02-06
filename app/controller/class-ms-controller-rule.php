@@ -235,8 +235,8 @@ class MS_Controller_Rule extends MS_Controller {
 			// Loop all specified memberships and set the rule values.
 			foreach ( $ids as $id ) {
 				if ( empty( $_POST['ms_' . $id] ) ) { continue; }
-				$data = WDev()->get_array( $_POST['ms_' . $id] );
-				WDev()->load_fields( $data, 'dripped_type', 'date', 'delay_unit', 'delay_type' );
+				$data = WDev()->array->get( $_POST['ms_' . $id] );
+				WDev()->array->equip( $data, 'dripped_type', 'date', 'delay_unit', 'delay_type' );
 
 				$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 				$rule = $membership->get_rule( $rule_type );

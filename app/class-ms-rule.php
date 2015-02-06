@@ -560,7 +560,7 @@ class MS_Rule extends MS_Model {
 		}
 
 		if ( is_array( $drip_data ) ) {
-			WDev()->load_fields( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
+			WDev()->array->equip( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
 
 			switch ( $drip_data['type'] ) {
 				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
@@ -618,7 +618,7 @@ class MS_Rule extends MS_Model {
 		}
 
 		if ( is_array( $drip_data ) ) {
-			WDev()->load_fields( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
+			WDev()->array->equip( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
 
 			switch ( $drip_data['type'] ) {
 				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
@@ -1186,7 +1186,7 @@ class MS_Rule extends MS_Model {
 		switch ( $property ) {
 			case 'rule_value':
 			case 'dripped':
-				$this->$property = WDev()->get_array( $this->$property );
+				$this->$property = WDev()->array->get( $this->$property );
 				$value = $this->$property;
 				break;
 

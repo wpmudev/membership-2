@@ -132,7 +132,8 @@ class MS_Controller_Adminbar extends MS_Controller {
 	 */
 	public function admin_bar_manager() {
 		// Check for memberhship id simulation GET request
-		if ( $this->verify_nonce( 'ms_simulate-' . @$_GET['membership_id'], 'GET' ) ) {
+		WDev()->array->equip_get( 'membership_id' );
+		if ( $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
 			$this->simulate->membership_id = absint( $_GET['membership_id'] );
 			$this->simulate->save();
 			wp_safe_redirect( wp_get_referer() );
@@ -516,7 +517,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 			)
 		);
 
-		$details = WDev()->store_get( 'ms-access' );
+		$details = WDev()->session->get( 'ms-access' );
 		$parent1 = '';
 		$parent2 = '';
 

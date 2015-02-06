@@ -172,7 +172,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * @return array Query args
 	 */
 	protected function prepare_query_args( $args ) {
-		WDev()->load_request_fields(
+		WDev()->array->equip_request(
 			's',
 			'membership_id',
 			'search_options',
@@ -324,7 +324,6 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$html = '<b>' . __( 'Admin User', MS_TEXT_DOMAIN ) . '</b>';
 		} else {
 			$subscriptions = $member->get_membership_ids();
-			$class = empty( $subscriptions ) ? 'ms-empty' : 'ms-assigned';
 
 			$visitor = array(
 				'id' => 'ms-empty-' . $member->id,
@@ -348,8 +347,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			);
 
 			$html = sprintf(
-				'<div class="%1$s no-auto-init">%2$s%3$s</div>',
-				esc_attr( $class ),
+				'<div class="no-auto-init">%1$s%2$s</div>',
 				MS_Helper_Html::html_element( $visitor, true ),
 				MS_Helper_Html::html_element( $list, true )
 			);
@@ -361,6 +359,19 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$member,
 			$this
 		);
+	}
+
+	/**
+	 * Adds a class to the <tr> element
+	 *
+	 * @since  1.1.0
+	 * @param  object $item
+	 */
+	protected function single_row_class( $member ) {
+		$subscriptions = $member->get_membership_ids();
+		$class = empty( $subscriptions ) ? 'ms-empty' : 'ms-assigned';
+
+		return $class;
 	}
 
 	/**
@@ -397,7 +408,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * @since 1.1.0
 	 */
 	public function searchbox_filters() {
-		WDev()->load_request_fields( 'search_options' );
+		WDev()->array->equip_request( 'search_options' );
 
 		$search_options = array(
 			'id' => 'search_options',

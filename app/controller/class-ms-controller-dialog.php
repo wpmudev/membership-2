@@ -119,7 +119,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		 * - password or pwd
 		 * - remember or rememberme
 		 */
-		WDev()->load_post_fields(
+		WDev()->array->equip_post(
 			'username',
 			'password',
 			'remember',

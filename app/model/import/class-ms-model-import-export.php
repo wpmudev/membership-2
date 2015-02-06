@@ -425,7 +425,7 @@ class MS_Model_Import_Export extends MS_Model {
 		static $Counter = 10000;
 		static $Ids = array();
 
-		$Ids[$type] = WDev()->get_array( $Ids[$type] );
+		$Ids[$type] = WDev()->array->get( $Ids[$type] );
 		if ( ! isset( $Ids[$type][$internal_id] ) ) {
 			$Ids[$type][$internal_id] = $Counter;
 			$Counter += 1;

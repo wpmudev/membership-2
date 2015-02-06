@@ -514,7 +514,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function process_purchase() {
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
-		WDev()->load_request_fields( 'gateway', 'ms_relationship_id' );
+		WDev()->array->equip_request( 'gateway', 'ms_relationship_id' );
 
 		$valid = true;
 		$nonce_name = $_REQUEST['gateway'] . '_' . $_REQUEST['ms_relationship_id'];
@@ -880,7 +880,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$step = $_POST['step'];
 		}
 
-		WDev()->load_post_fields( 'gateway' );
+		WDev()->array->equip_post( 'gateway' );
 		$gateway_id = $_POST['gateway'];
 
 		switch ( $step ) {

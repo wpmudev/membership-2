@@ -269,8 +269,8 @@ class MS_Model_Upgrade extends MS_Model {
 				if ( 'url_group' === $key ) { $key = 'url'; }
 
 				$data = self::fix_object( $data );
-				$data->rule_value = WDev()->get_array( $data->rule_value );
-				$data->dripped = WDev()->get_array( $data->dripped );
+				$data->rule_value = WDev()->array->get( $data->rule_value );
+				$data->dripped = WDev()->array->get( $data->dripped );
 				$access = array();
 
 				if ( ! empty( $data->dripped )

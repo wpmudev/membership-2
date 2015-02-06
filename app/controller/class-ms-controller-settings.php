@@ -310,7 +310,8 @@ class MS_Controller_Settings extends MS_Controller {
 			$first_key = key( $tabs );
 
 			// Setup navigation tabs.
-			$active_tab = sanitize_html_class( @$_GET['tab'], $first_key );
+			WDev()->array->equip_get( 'tab' );
+			$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
 			if ( ! array_key_exists( $active_tab, $tabs ) ) {
 				$new_url = add_query_arg( array( 'tab' => $first_key ) );
 				wp_safe_redirect( $new_url );
@@ -418,7 +419,8 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_settings() {
-		$action = @$_GET['action'];
+		WDev()->array->equip_get( 'action' );
+		$action = $_GET['action'];
 		$hook = 'ms_controller_settings_' . $this->active_tab . '_' . $action;
 
 		do_action( $hook );

@@ -195,7 +195,7 @@ class MS_Addon_Coupon extends MS_Addon {
 					'function' => array( $this, 'admin_coupon' ),
 				)
 			);
-			WDev()->array_insert( $items, 'before', 'addon', $menu_item );
+			WDev()->array->insert( $items, 'before', 'addon', $menu_item );
 		}
 
 		return $items;
@@ -411,7 +411,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			'discount' => sprintf( '%1$s (%2$s)', __( 'Discount', MS_TEXT_DOMAIN ), $currency ),
 		);
 
-		WDev()->array_insert( $columns, 'after', 'status', $new_columns );
+		WDev()->array->insert( $columns, 'after', 'status', $new_columns );
 
 		return $columns;
 	}

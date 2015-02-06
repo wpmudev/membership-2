@@ -187,11 +187,11 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	static private function location_infos() {
 		self::taxamo();
 
-		$location = WDev()->store_get( 'ms_ta_country' );
+		$location = WDev()->session->get( 'ms_ta_country' );
 
 		if ( ! count( $location ) ) {
 			self::determine_country();
-			$location = WDev()->store_get( 'ms_ta_country' );
+			$location = WDev()->session->get( 'ms_ta_country' );
 		}
 
 		return $location[0];
@@ -207,7 +207,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	static private function determine_country() {
 		$ip_info = WDev()->current_ip();
 		$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
-		WDev()->store_add( 'ms_ta_country', $country );
+		WDev()->session->add( 'ms_ta_country', $country );
 	}
 
 	/**

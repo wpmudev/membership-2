@@ -298,11 +298,11 @@ class MS_Model_Plugin extends MS_Model {
 			$Info = apply_filters( 'ms_model_plugin_get_access_info', $Info );
 
 			if ( $simulation ) {
-				$access = WDev()->store_get_clear( 'ms-access' );
-				WDev()->store_add( 'ms-access', $Info );
+				$access = WDev()->session->get_clear( 'ms-access' );
+				WDev()->session->add( 'ms-access', $Info );
 				for ( $i = 0; $i < 9; $i += 1 ) {
 					if ( isset( $access[$i] ) ) {
-						WDev()->store_add( 'ms-access', $access[$i] );
+						WDev()->session->add( 'ms-access', $access[$i] );
 					}
 				}
 

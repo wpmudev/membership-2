@@ -203,7 +203,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function membership_register_user( $atts ) {
 		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER );
 
-		WDev()->load_request_fields(
+		WDev()->array->equip_request(
 			'first_name',
 			'last_name',
 			'username',

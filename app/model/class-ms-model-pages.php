@@ -159,7 +159,7 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @param  string $type The page-type
 	 * @return string The full description
 	 */
-	public function get_description( $type ) {
+	static public function get_description( $type ) {
 		static $Description = null;
 
 		if ( null === $Description ) {

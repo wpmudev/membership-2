@@ -365,7 +365,7 @@ class MS_Controller_Member extends MS_Controller {
 		$data = array(
 			'ms_init' => array(),
 		);
-		WDev()->load_get_fields( 'action' );
+		WDev()->array->equip_get( 'action' );
 
 		if ( 'edit_date' == $_GET['action'] ) {
 			// Start and expire date edit
