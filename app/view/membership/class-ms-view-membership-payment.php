@@ -152,6 +152,7 @@ class MS_View_Membership_Payment extends MS_View {
 						<?php
 						MS_Helper_Html::html_element( $fields['pay_cycle_period_unit'] );
 						MS_Helper_Html::html_element( $fields['pay_cycle_period_type'] );
+						MS_Helper_Html::html_element( $fields['pay_cycle_repetitions'] );
 						?>
 					</div>
 					<div class="ms-payment-type-wrapper ms-payment-type-date-range">
@@ -254,6 +255,17 @@ class MS_View_Membership_Payment extends MS_View {
 				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
 				'ajax_data' => array( 'field' => 'pay_cycle_period_type' ),
 			),
+			'pay_cycle_repetitions' => array(
+				'id' => 'pay_cycle_repetitions',
+				'name' => '[pay_cycle_repetitions]',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'Total Payments', MS_TEXT_DOMAIN ),
+				'after' => __( 'payments (0 = unlimited)', MS_TEXT_DOMAIN ),
+				'value' => $membership->pay_cycle_repetitions,
+				'class' => 'ms-text-small',
+				'placeholder' => '0',
+				'ajax_data' => array( 'field' => 'pay_cycle_repetitions' ),
+			),
 			'period_date_start' => array(
 				'id' => 'period_date_start',
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
@@ -273,7 +285,7 @@ class MS_View_Membership_Payment extends MS_View {
 			'on_end_membership_id' => array(
 				'id' => 'on_end_membership_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'After this membership ends:', MS_TEXT_DOMAIN ),
+				'title' => __( 'After this membership ends', MS_TEXT_DOMAIN ),
 				'value' => $membership->on_end_membership_id,
 				'field_options' => $membership->get_after_ms_ends_options(),
 				'ajax_data' => array( 'field' => 'on_end_membership_id' ),

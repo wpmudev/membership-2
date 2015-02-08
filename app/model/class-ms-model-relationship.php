@@ -1559,6 +1559,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 						// Move membership to configured membership.
 						$membership = $this->get_membership();
+
 						if ( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
 							$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 							$member->add_membership( $membership->on_end_membership_id );
@@ -1680,9 +1681,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					if ( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
 						$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 						$member->add_membership( $membership->on_end_membership_id );
+
 						MS_Model_Event::save_event(
 							MS_Model_Event::TYPE_MS_MOVED,
-							$member->subscriptions[ $membership->on_end_membership_id ]
+							$member->subscriptions[$membership->on_end_membership_id]
 						);
 					}
 				}

@@ -136,6 +136,15 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $pay_cycle_period = array( 'period_unit' => 1, 'period_type' => 'days' );
 
 	/**
+	 * Only applies to a recurring payment. Defines how many payments are made
+	 * before the membership ends.
+	 *
+	 * @since 1.1.0
+	 * @var int
+	 */
+	protected $pay_cycle_repetitions = 0;
+
+	/**
 	 * Membership start date for date range payment type.
 	 *
 	 * @since 1.0.0
@@ -268,6 +277,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'price',
 			'period',
 			'pay_cycle_period',
+			'pay_cycle_repetitions',
 			'period_date_start',
 			'period_date_end',
 			'trial_period_enabled',
@@ -654,8 +664,18 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function get_after_ms_ends_options() {
 		$options = array(
-			self::get_base()->id => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
+			0 => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
 		);
+
+		$options += $this->get_membership_names();
+		unset( $options[$this->id] );
+
+		$label = __( 'Change to: %s', MS_TEXT_DOMAIN );
+		foreach ( $options as $id => $option ) {
+			if ( $id > 0 ) {
+				$options[$id] = sprintf( $label, $option );
+			}
+		}
 
 		return apply_filters(
 			'ms_model_membership_get_membership_names',
@@ -1572,6 +1592,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				);
 				break;
 
+			case 'pay_cycle_repetitions':
+				$value = absint( $this->pay_cycle_repetitions );
+				break;
+
 			default:
 				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;
@@ -1662,6 +1686,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					$this->$property = floatval( $value );
 					break;
 
+				case 'pay_cycle_repetitions':
+					$this->$property = absint( $value );
+					break;
+
 				case 'period':
 				case 'pay_cycle_period':
 				case 'trial_period':
@@ -1674,9 +1702,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					break;
 
 				case 'on_end_membership_id':
-					if ( 0 < MS_Factory::load( 'MS_Model_Membership', $value )->id ) {
+					if ( $value == 0 ) {
+						$this->$property = 0;
+					} else if ( 0 < MS_Factory::load( 'MS_Model_Membership', $value )->id ) {
 						$this->$property = $value;
 					}
+					break;
 
 				default:
 					$this->$property = $value;
