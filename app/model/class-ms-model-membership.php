@@ -1641,7 +1641,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 						if ( $this->can_change_payment() ) {
 							$this->payment_type = $value;
 						} elseif ( $this->payment_type != $value ) {
-							$error = 'Membership type cannot be changed after members have signed up.';
+							$error = 'Payment type cannot be changed after members have signed up.';
 							MS_Helper_Debug::log( $error );
 							throw new Exception( $error );
 						}

@@ -22,7 +22,7 @@ class MS_View_Membership_Payment extends MS_View {
 			<div class="ms-settings ms-wrapper-center ms-membership-payment cf <?php echo esc_attr( $wrapper_class ); ?>">
 				<?php
 				$this->global_payment_settings();
-				$this->specific_payment_settings( $this->data['membership'] );
+				$this->specific_payment_settings();
 
 				MS_Helper_Html::settings_footer(
 					$this->fields['control_fields'],
@@ -34,7 +34,8 @@ class MS_View_Membership_Payment extends MS_View {
 
 		<?php
 		$html = ob_get_clean();
-		echo $html;
+
+		echo '' . $html;
 	}
 
 	private function get_fields() {
@@ -98,10 +99,10 @@ class MS_View_Membership_Payment extends MS_View {
 	 * Render the payment box for a single Membership subscription.
 	 *
 	 * @since  1.0.0
-	 *
-	 * @param  MS_Model_Membership $membership The membership/subscription
 	 */
-	public function specific_payment_settings( MS_Model_Membership $membership ) {
+	public function specific_payment_settings() {
+		$membership = $this->data['membership'];
+
 		$title = sprintf(
 			__( '%s specific payment settings:', MS_TEXT_DOMAIN ),
 			'<span class="ms-item-name">' . $membership->name . '</span>'
@@ -111,7 +112,7 @@ class MS_View_Membership_Payment extends MS_View {
 			'<span class="ms-bold">' . $membership->name . '</span>'
 		);
 
-		$fields = $this->get_specific_payment_fields( $membership );
+		$fields = $this->get_specific_payment_fields();
 		$type_class = $this->data['is_global_payments_set'] ? '' : 'ms-half right';
 		?>
 		<div class="ms-specific-payment-wrapper <?php echo esc_attr( $type_class ); ?>">
@@ -119,10 +120,25 @@ class MS_View_Membership_Payment extends MS_View {
 			<span class="ms-settings-description ms-description"><?php echo '' . $desc; ?></span>
 
 			<div class="inside">
+				<?php if ( ! $membership->can_change_payment() ) : ?>
+					<div class="error below-h2">
+						<p>
+							<?php _e( 'This membership already has some paying members.', MS_TEXT_DOMAIN ); ?>
+						</p>
+						<p>
+							<?php _e( 'Following limitations apply:', MS_TEXT_DOMAIN ); ?><br />
+							- <?php _e( 'Any changes will only affect new members.', MS_TEXT_DOMAIN ); ?><br />
+							- <?php _e( 'The payment-type cannot be changed anymore.', MS_TEXT_DOMAIN ); ?>
+						</p>
+					</div>
+				<?php endif; ?>
 				<div class="ms-payment-structure-wrapper">
 					<?php
 					MS_Helper_Html::html_element( $fields['price'] );
 					MS_Helper_Html::html_element( $fields['payment_type'] );
+					if ( isset( $fields['payment_type_val' ] ) ) {
+						MS_Helper_Html::html_element( $fields['payment_type_val'] );
+					}
 					?>
 				</div>
 				<div class="ms-payment-types-wrapper">
@@ -174,11 +190,12 @@ class MS_View_Membership_Payment extends MS_View {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param  MS_Model_Membership $membership
 	 * @return array An array containing all field definitions.
 	 */
-	private function get_specific_payment_fields( MS_Model_Membership $membership ) {
+	private function get_specific_payment_fields() {
 		global $wp_locale;
+
+		$membership = $this->data['membership'];
 
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
@@ -199,7 +216,6 @@ class MS_View_Membership_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->payment_type,
 				'field_options' => MS_Model_Membership::get_payment_types(),
-				'read_only' => ( $membership->get_members_count() > 0 ),
 				'ajax_data' => array( 'field' => 'payment_type' ),
 			),
 			'period_unit' => array(
@@ -302,6 +318,19 @@ class MS_View_Membership_Payment extends MS_View {
 				'value' => $this->data['action'],
 			),
 		);
+
+		if ( ! $membership->can_change_payment() ) {
+			$payment_types = MS_Model_Membership::get_payment_types();
+			$fields['payment_type'] = array(
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'before' => $payment_types[ $membership->payment_type ],
+			);
+			$fields['payment_type_val'] = array(
+				'id' => 'payment_type',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $membership->payment_type,
+			);
+		}
 
 		foreach ( $fields as $key => $field ) {
 			if ( ! empty( $field['ajax_data'] ) ) {

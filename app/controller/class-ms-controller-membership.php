@@ -1086,23 +1086,35 @@ class MS_Controller_Membership extends MS_Controller {
 			$membership = $this->load_membership();
 
 			if ( is_array( $fields ) ) {
-				$msg = 0;
+				$updated = 0;
+				$failed = 0;
 				foreach ( $fields as $field => $value ) {
 					try {
 						$membership->$field = $value;
+						$updated += 1;
 					}
 					catch ( Exception $e ) {
-						$msg = MS_Helper_Membership::MEMBERSHIP_MSG_PARTIALLY_UPDATED;
+						$failed += 1;
 					}
 				}
 				$membership->save();
-				if ( empty( $msg ) ) {
-					$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+
+				if ( $updated > 0 ) {
+					if ( ! $failed ) {
+						$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
+					} else {
+						$msg = MS_Helper_Membership::MEMBERSHIP_MSG_PARTIALLY_UPDATED;
+					}
 				}
 			}
 		}
 
-		return apply_filters( 'ms_controller_membership_save_membership_msg', $msg, $fields, $this );
+		return apply_filters(
+			'ms_controller_membership_save_membership_msg',
+			$msg,
+			$fields,
+			$this
+		);
 	}
 
 	/**
