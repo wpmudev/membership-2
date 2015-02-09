@@ -1078,20 +1078,15 @@ class MS_View_Help extends MS_View {
 		<div class="ms-help-box">
 			<h3><code>[ms-membership-account]</code></h3>
 
-			<?php _ex( 'Displays the user account page of a specific user', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php _ex( 'Displays the "My Account" page of the currently logged in user', 'help', MS_TEXT_DOMAIN ); ?>
 			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
-					<li>
-						<code>user_d</code>
-						<?php _ex( '(Single ID)', 'help', MS_TEXT_DOMAIN ); ?>
-						<strong><?php _ex( 'Required', 'help', MS_TEXT_DOMAIN ); ?></strong>.
-						<?php _ex( 'The User ID', 'help', MS_TEXT_DOMAIN ); ?>
-					</li>
+					<li><em><?php _ex( 'no arguments', 'help', MS_TEXT_DOMAIN ); ?></em></li>
 				</ul>
 
 				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
-				<p><code>[ms-membership-account user_id="123"]</code></p>
+				<p><code>[ms-membership-account]</code></p>
 			</div>
 		</div>
 

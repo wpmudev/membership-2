@@ -541,8 +541,11 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function run_cron_services( $hook ) {
 		wp_clear_scheduled_hook( $hook );
-		do_action( $hook );
 		$this->setup_cron_services( $hook );
+
+		// Note that we only remove the cron job and add it again.
+		// As a result the job is re-scheduled with current timestamp and
+		// therefore it will be executed instantly.
 	}
 
 	/**

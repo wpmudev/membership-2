@@ -692,7 +692,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->save();
 
 		return apply_filters(
-			'ms_model_membership_relationship_create_invoice',
+			'ms_model_relationship_create_invoice',
 			$invoice,
 			$ms_relationship,
 			$invoice_number,

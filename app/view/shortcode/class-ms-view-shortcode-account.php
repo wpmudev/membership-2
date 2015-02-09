@@ -57,7 +57,6 @@ class MS_View_Shortcode_Account extends MS_View {
 							$empty = true;
 
 							foreach ( $this->data['membership'] as $membership ) :
-								if ( $membership->is_system() ) { continue; }
 								$empty = false;
 								$ms_relationship = $this->data['member']->subscriptions[ $membership->id ];
 								?>

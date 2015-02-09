@@ -64,7 +64,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	const PAYMENT_TYPE_PERMANENT = 'permanent';
 	const PAYMENT_TYPE_FINITE = 'finite';
 	const PAYMENT_TYPE_DATE_RANGE = 'date-range';
-	const PAYMENT_TYPE_RECURRING = 'recurring';
+	const PAYMENT_TYPE_RECURRING = 'recurring'; // The only type that auto-renews without asking the user!
 
 	/**
 	 * Membership type.

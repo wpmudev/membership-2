@@ -658,22 +658,26 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_account_atts',
-			shortcode_atts(
-				array(
-					'user_id' => 0,
-				),
-				$atts
-			)
+			$atts
 		);
 
 		$data['member'] = MS_Model_Member::get_current_member();
+		$data['membership'] = array();
+
 		if ( is_array( $data['member']->subscriptions ) ) {
 			foreach ( $data['member']->subscriptions as $subscription ) {
-				$data['membership'][] = $subscription->get_membership();
-				$gateway = $subscription->get_gateway();
-				$data['gateway'][ $subscription->id ] = $gateway;
+				$membership = $subscription->get_membership();
+
+				// Do not display system-memberships in Account
+				if ( $membership->is_system() ) { continue; }
+
+				// Do not display deactivated memberships in Account
+				if ( $subscription->get_status() == MS_Model_Relationship::STATUS_DEACTIVATED ) { continue; }
+
+				$data['membership'][] = $membership;
 			}
 		}
+
 		$data['invoices'] = MS_Model_Invoice::get_invoices(
 			array(
 				'author' => $data['member']->id,

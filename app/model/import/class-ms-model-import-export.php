@@ -65,7 +65,7 @@ Import Data Structure
     If `payment_type` is 'recurring':
     - period_unit        <int>  Number of days/weeks/months
     - period_type        [d|w|m|y]
-    - period_repetition  <int>  Number of payments before membership ends
+    - period_repetitions <int>  Number of payments before membership ends
 
     If `payment_type` is 'date-range':
     - period_start       <yyyy-mm-dd>
