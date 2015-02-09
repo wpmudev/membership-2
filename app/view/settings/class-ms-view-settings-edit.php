@@ -112,7 +112,63 @@ class MS_View_Settings_Edit extends MS_View {
 			</div>
 		</div>
 		<?php
-		return ob_get_clean();
+		$this->render_settings_footer( $tab_name );
+
+		$html = ob_get_clean();
+
+		return $html;
+	}
+
+	/* ====================================================================== *
+	 *                               SETTINGS-FOOTER
+	 * ====================================================================== */
+
+	/**
+	 * Display a footer below the Settings box.
+	 * The footer will show information on the next scheduled cron jobs and also
+	 * allow the user to run these jobs instantly.
+	 *
+	 * @since  1.1.0
+	 * @param  string $tab_name Name of the currently open settings-tab.
+	 */
+	public function render_settings_footer( $tab_name ) {
+		if ( $tab_name != 'general' ) { return; }
+
+		$status_stamp = wp_next_scheduled( 'ms_cron_check_membership_status' ) - time();
+		$email_stamp = wp_next_scheduled( 'ms_cron_process_communications' ) - time();
+
+		if ( $status_stamp > 0 ) {
+			$status_delay = sprintf(
+				__( 'in %s hrs %s min', MS_TEXT_DOMAIN ),
+				floor( ($status_stamp - 1) / 3600 ),
+				date( 'i', $status_stamp )
+			);
+		} else {
+			$status_delay = __( '(now...)', MS_TEXT_DOMAIN );
+		}
+
+		if ( $email_stamp > 0 ) {
+			$email_delay = sprintf(
+				__( 'in %s hrs %s min', MS_TEXT_DOMAIN ),
+				floor( ($email_stamp - 1) / 3600 ),
+				date( 'i', $email_stamp )
+			);
+		} else {
+			$email_delay = __( '(now...)', MS_TEXT_DOMAIN );
+		}
+
+		$status_url = add_query_arg( array( 'run_cron' => 'ms_cron_check_membership_status' ) );
+		$email_url = add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) );
+		$lbl_run = __( 'Run now!', MS_TEXT_DOMAIN );
+
+		echo '<div class="cf ms-settings-footer"><div class="ms-tab-container">&nbsp;</div>';
+		echo '<div>';
+		printf(
+			__( 'Check Membership Status changes %s. Send pending Email Responses %s.' ),
+			'<a href="' . $status_url . '" title="' . $lbl_run . '">' . $status_delay . '</a>',
+			'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>'
+		);
+		echo '</div></div>';
 	}
 
 	/* ====================================================================== *

@@ -757,3 +757,15 @@ input[type="image"] {
   min-width: 0;
   height: 100px;
 }
+
+/***
+ * SETTINGS FOOTER CONTENT *
+ ***/
+.ms-wrap .ms-settings-footer {
+  margin-top: 1.5em;
+  color: #999;
+  font-size: 12px;
+}
+.ms-wrap .ms-settings-footer a {
+  color: #666;
+}

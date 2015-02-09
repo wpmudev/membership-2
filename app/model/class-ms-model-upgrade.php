@@ -363,6 +363,20 @@ class MS_Model_Upgrade extends MS_Model {
 			WDev()->updates->add( 'wp_update_post', $membership );
 		}
 
+		/*
+		 * Remove old cron hooks
+		 *
+		 * Names did change:
+		 * ms_model_plugin_check_membership_status -> ms_cron_check_membership_status
+		 * ms_model_plugin_process_communications  -> ms_cron_process_communications
+		 *
+		 * Only remove old hooks here: New hooks are added by MS_Model_Plugin.
+		 */
+		{
+			WDev()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_check_membership_status' );
+			WDev()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_process_communications' );
+		}
+
 		// Execute all queued actions!
 		WDev()->updates->execute();
 

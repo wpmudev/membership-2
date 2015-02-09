@@ -188,6 +188,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Move to Membership when the current one expires.
 	 *
 	 * After current membership expire move to the indicated membership_id.
+	 * This membership is assigned when the current membership expires.
+	 *
+	 * @see MS_Model_Relationship::check_membership_status()
 	 *
 	 * @since 1.0.0
 	 * @var int $on_end_membership_id.

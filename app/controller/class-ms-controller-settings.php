@@ -63,6 +63,20 @@ class MS_Controller_Settings extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		/*
+		 * Check if the user wants to manually run the Cron services.
+		 * This block calls the action 'ms_run_cron_services' which is defined
+		 * in MS_Model_Plugin. It will run all cron jobs and re-schedule them.
+		 *
+		 * @since 1.1.0
+		 */
+		if ( isset( $_REQUEST['run_cron'] ) ) {
+			$url = remove_query_arg( 'run_cron' );
+			do_action( 'ms_run_cron_services', $_REQUEST['run_cron'] );
+			wp_safe_redirect( $url );
+			exit();
+		}
+
 		$hook = 'protect-content_page_protected-content-settings';
 		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_settings' );

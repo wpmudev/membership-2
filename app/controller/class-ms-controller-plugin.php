@@ -72,10 +72,10 @@ class MS_Controller_Plugin extends MS_Controller {
 		parent::__construct();
 
 		// Instantiate Plugin model - protection implementation.
-		$this->model = MS_Factory::create( 'MS_Model_Plugin' );
+		$this->model = MS_Factory::load( 'MS_Model_Plugin' );
 
 		// Instantiate dialog controller for ajax dialogs.
-		$this->dialogs = MS_Factory::create( 'MS_Controller_Dialog' );
+		$this->dialogs = MS_Factory::load( 'MS_Controller_Dialog' );
 
 		// Register all available styles and scripts. Nothing is enqueued.
 		$this->add_action( 'wp_loaded', 'wp_loaded' );
@@ -89,20 +89,20 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'ms_register_public_scripts', 'register_public_styles' );
 
 		// Initialize core controllers that are available on every page.
-		$this->controllers['membership'] = MS_Factory::create( 'MS_Controller_Membership' );
-		$this->controllers['rule'] = MS_Factory::create( 'MS_Controller_Rule' );
-		$this->controllers['member'] = MS_Factory::create( 'MS_Controller_Member' );
-		$this->controllers['billing'] = MS_Factory::create( 'MS_Controller_Billing' );
-		$this->controllers['addon'] = MS_Factory::create( 'MS_Controller_Addon' );
-		$this->controllers['pages'] = MS_Factory::create( 'MS_Controller_Pages' );
-		$this->controllers['settings'] = MS_Factory::create( 'MS_Controller_Settings' );
-		$this->controllers['communication'] = MS_Factory::create( 'MS_Controller_Communication' );
-		$this->controllers['gateway'] = MS_Factory::create( 'MS_Controller_Gateway' );
-		$this->controllers['admin_bar'] = MS_Factory::create( 'MS_Controller_Adminbar' );
-		$this->controllers['membership_metabox'] = MS_Factory::create( 'MS_Controller_Metabox' );
-		$this->controllers['membership_shortcode'] = MS_Factory::create( 'MS_Controller_Shortcode' );
-		$this->controllers['frontend'] = MS_Factory::create( 'MS_Controller_Frontend' );
-		$this->controllers['help'] = MS_Factory::create( 'MS_Controller_Help' );
+		$this->controllers['membership'] = MS_Factory::load( 'MS_Controller_Membership' );
+		$this->controllers['rule'] = MS_Factory::load( 'MS_Controller_Rule' );
+		$this->controllers['member'] = MS_Factory::load( 'MS_Controller_Member' );
+		$this->controllers['billing'] = MS_Factory::load( 'MS_Controller_Billing' );
+		$this->controllers['addon'] = MS_Factory::load( 'MS_Controller_Addon' );
+		$this->controllers['pages'] = MS_Factory::load( 'MS_Controller_Pages' );
+		$this->controllers['settings'] = MS_Factory::load( 'MS_Controller_Settings' );
+		$this->controllers['communication'] = MS_Factory::load( 'MS_Controller_Communication' );
+		$this->controllers['gateway'] = MS_Factory::load( 'MS_Controller_Gateway' );
+		$this->controllers['admin_bar'] = MS_Factory::load( 'MS_Controller_Adminbar' );
+		$this->controllers['membership_metabox'] = MS_Factory::load( 'MS_Controller_Metabox' );
+		$this->controllers['membership_shortcode'] = MS_Factory::load( 'MS_Controller_Shortcode' );
+		$this->controllers['frontend'] = MS_Factory::load( 'MS_Controller_Frontend' );
+		$this->controllers['help'] = MS_Factory::load( 'MS_Controller_Help' );
 
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_template' );

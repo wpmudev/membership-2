@@ -1555,7 +1555,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$remaining_trial_days = $this->get_remaining_trial_period();
 
 		do_action(
-			'ms_model_plugin_check_membership_status_' . $this->status,
+			'ms_check_membership_status-' . $this->status,
 			$this,
 			$remaining_days,
 			$remaining_trial_days
@@ -1625,21 +1625,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				 */
 
 				do_action(
-					'ms_model_plugin_check_membership_status_' . $this->status,
+					'ms_check_membership_status-' . $this->status,
 					$this
 				);
 
 				// Create next invoice before expire date.
 				if ( $remaining_days < $invoice_before_days ) {
 					$invoice = MS_Model_Invoice::get_next_invoice( $this );
-				}
-				else {
+				} else {
 					$invoice = MS_Model_Invoice::get_current_invoice( $this );
 				}
 
 				// Configure communication messages.
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
-
 					// Before finishes communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
 					$days = MS_Helper_Period::get_period_in_days(

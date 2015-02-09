@@ -39,7 +39,7 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 		MS_Helper_Html::settings_tab_header();
 		?>
 
-		<form action="" method="post">
+		<form action="" method="post" class="cf">
 			<div class="cf">
 				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['plugin_enabled'] ); ?>

@@ -260,7 +260,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		$this->message = $this->description;
 		if ( $this->enabled ) {
 			$this->add_action(
-				'ms_model_plugin_process_communications',
+				'ms_cron_process_communications',
 				'process_communication'
 			);
 		}

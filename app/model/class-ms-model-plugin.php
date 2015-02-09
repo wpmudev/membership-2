@@ -64,9 +64,10 @@ class MS_Model_Plugin extends MS_Model {
 		if ( ! MS_Plugin::is_enabled() ) { return; }
 
 		$this->add_filter( 'cron_schedules', 'cron_time_period' );
+		$this->add_filter( 'ms_run_cron_services', 'run_cron_services' );
 
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
-		$this->add_action( 'ms_model_plugin_check_membership_status', 'check_membership_status' );
+		$this->add_action( 'ms_cron_check_membership_status', 'check_membership_status' );
 
 		/*
 		 * Create our own copy of the full admin menu to be used in the
@@ -504,7 +505,8 @@ class MS_Model_Plugin extends MS_Model {
 	}
 
 	/**
-	 * Config cron time period.
+	 * Config cron time period. This is actually not displayed anywhere but
+	 * used only in function setup_cron_services()
 	 *
 	 * Related Action Hooks:
 	 * - cron_schedules
@@ -520,59 +522,52 @@ class MS_Model_Plugin extends MS_Model {
 			'interval' => 6 * HOUR_IN_SECONDS,
 			'display' => __( 'Every 6 Hours', MS_TEXT_DOMAIN )
 		);
-		$periods['60mins'] = array(
-			'interval' => 60 * MINUTE_IN_SECONDS,
-			'display' => __( 'Every 60 Mins', MS_TEXT_DOMAIN )
-		);
 		$periods['30mins'] = array(
 			'interval' => 30 * MINUTE_IN_SECONDS,
 			'display' => __( 'Every 30 Mins', MS_TEXT_DOMAIN )
 		);
-		$periods['15mins'] = array(
-			'interval' => 15 * MINUTE_IN_SECONDS,
-			'display' => __( 'Every 15 Mins', MS_TEXT_DOMAIN )
-		);
-		$periods['10mins'] = array(
-			'interval' => 10 * MINUTE_IN_SECONDS,
-			'display' => __( 'Every 10 Mins', MS_TEXT_DOMAIN )
-		);
-		$periods['5mins'] = array(
-			'interval' => 5 * MINUTE_IN_SECONDS,
-			'display' => __( 'Every 5 Mins', MS_TEXT_DOMAIN )
-		);
-		$periods['1min'] = array(
-			'interval' => MINUTE_IN_SECONDS,
-			'display' => __( 'Every Minute', MS_TEXT_DOMAIN )
-		);
 
-		return apply_filters( 'ms_model_plugin_cron_time_period', $periods );
+		return apply_filters(
+			'ms_model_plugin_cron_time_period',
+			$periods
+		);
+	}
+
+	/**
+	 * Runs a single Protected Content cron service and then re-schedules it.
+	 * This function is used to manually trigger the cron services.
+	 *
+	 * @since  1.1.0
+	 */
+	public function run_cron_services( $hook ) {
+		wp_clear_scheduled_hook( $hook );
+		do_action( $hook );
+		$this->setup_cron_services( $hook );
 	}
 
 	/**
 	 * Setup cron plugin services.
 	 *
 	 * Setup cron to call actions.
+	 * The action-hook is called via the WordPress Cron implementation on a
+	 * regular basis - this hooks are set up only once.
 	 *
-	 * @todo checkperiod review.
+	 * The Cron jobs can be manually executed by opening the admin page
+	 * "Protected Content > Settings" and adding URL param "&run_cron=1"
 	 *
 	 * @since 1.0.0
 	 */
-	public function setup_cron_services() {
+	public function setup_cron_services( $reschedule = null ) {
 		do_action( 'ms_model_plugin_setup_cron_services_before', $this );
 
-		if ( $this->member->is_normal_user() ) {
-			// Check for membership status.
-			$checkperiod = '6hours';
-			if ( ! wp_next_scheduled( 'ms_model_plugin_check_membership_status' ) ) {
-				// Action to be called by the cron job
-				wp_schedule_event( time(), $checkperiod, 'ms_model_plugin_check_membership_status' );
-			}
+		$jobs = array(
+			'ms_cron_check_membership_status' => '6hours',
+			'ms_cron_process_communications' => 'hourly',
+		);
 
-			// Setup automatic communications.
-			$checkperiod = '60mins';
-			if ( ! wp_next_scheduled( 'ms_model_plugin_process_communications' ) ) {
-				// Action to be called by the cron job
-				wp_schedule_event( time(), $checkperiod, 'ms_model_plugin_process_communications' );
+		foreach ( $jobs as $hook => $interval ) {
+			if ( ! wp_next_scheduled( $hook ) || $hook == $reschedule ) {
+				wp_schedule_event( time(), $interval, $hook );
 			}
 		}
 
