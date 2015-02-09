@@ -331,6 +331,18 @@ class MS_View_Membership_Payment extends MS_View {
 			),
 		);
 
+		if ( $membership->is_free ) {
+			$fields['price'] = '';
+			$fields['payment_type'] = array(
+				'id' => 'payment_type',
+				'title' => __( 'Access Structure:', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' => $membership->payment_type,
+				'field_options' => MS_Model_Membership::get_payment_types( 'free' ),
+				'ajax_data' => array( 'field' => 'payment_type' ),
+			);
+		}
+
 		if ( ! $membership->can_change_payment() ) {
 			$payment_types = MS_Model_Membership::get_payment_types();
 			$fields['payment_type'] = array(

@@ -42,7 +42,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				if ( MS_Model_Member::is_admin_user() ) {
 					_e( 'You are an admin user and have access to all memberships', MS_TEXT_DOMAIN );
 				} else {
-					if ( ! empty( $this->data['membership'] ) ) {
+					if ( ! empty( $this->data['subscription'] ) ) {
 						?>
 						<table>
 							<tr>
@@ -56,23 +56,38 @@ class MS_View_Shortcode_Account extends MS_View {
 							<?php
 							$empty = true;
 
-							foreach ( $this->data['membership'] as $membership ) :
+							foreach ( $this->data['subscription'] as $subscription ) :
 								$empty = false;
-								$ms_relationship = $this->data['member']->subscriptions[ $membership->id ];
+								$membership = $subscription->get_membership();
 								?>
 								<tr>
 									<td><?php echo esc_html( $membership->name ); ?></td>
-									<td><?php echo esc_html( $ms_relationship->status ); ?></td>
+									<td>
+									<?php
+									if ( MS_Model_Relationship::STATUS_PENDING == $subscription->status ) {
+										// Display a "Purchase" link when status is Pending
+										$code = sprintf(
+											'[%s id="%s" label="%s"]',
+											MS_Helper_Shortcode::SCODE_MS_BUY,
+											$membership->id,
+											__( 'Pending', MS_TEXT_DOMAIN )
+										);
+										echo '' . do_shortcode( $code );
+									} else {
+										echo esc_html( $subscription->status );
+									}
+									?>
+									</td>
 									<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
 										<td><?php
-										if ( $ms_relationship->trial_expire_date ) {
-											echo esc_html( $ms_relationship->trial_expire_date );
+										if ( $subscription->trial_expire_date ) {
+											echo esc_html( $subscription->trial_expire_date );
 										} else {
 											_e( 'No trial', MS_TEXT_DOMAIN );
 										}
 										?></td>
 									<?php endif; ?>
-									<td><?php echo esc_html( $ms_relationship->expire_date ); ?></td>
+									<td><?php echo esc_html( $subscription->expire_date ); ?></td>
 								</tr>
 							<?php
 							endforeach;

@@ -47,7 +47,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
 			'members' => __( 'Members', MS_TEXT_DOMAIN ),
-			'price' => __( 'Cost', MS_TEXT_DOMAIN ),
+			'price' => __( 'Payment', MS_TEXT_DOMAIN ),
 			'shortcode' => __( 'Membership Shortcode', MS_TEXT_DOMAIN ),
 		);
 
@@ -143,15 +143,13 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			__( 'Edit', MS_TEXT_DOMAIN )
 		);
 
-		if ( ! $item->is_free ) {
-			$actions['payment'] = sprintf(
-				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
-				esc_attr( $_REQUEST['page'] ),
-				MS_Controller_Membership::STEP_PAYMENT,
-				esc_attr( $item->id ),
-				__( 'Payment options', MS_TEXT_DOMAIN )
-			);
-		}
+		$actions['payment'] = sprintf(
+			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
+			esc_attr( $_REQUEST['page'] ),
+			MS_Controller_Membership::STEP_PAYMENT,
+			esc_attr( $item->id ),
+			$item->is_free ? __( 'Access options', MS_TEXT_DOMAIN ) : __( 'Payment options', MS_TEXT_DOMAIN )
+		);
 
 		$actions['delete'] = sprintf(
 			'<span class="delete"><a href="%s">%s</a></span>',
@@ -243,9 +241,22 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 				$html = '<span class="ms-bold">' . $html . '</span>';
 			} else {
 				$html = sprintf(
-					'<span class="ms-low">%1$s</span>',
-					__( 'Free', MS_TEXT_DOMAIN )
+					'<span class="ms-bold">%1$s</span> (<span class="ms-payment">%2$s</span>)',
+					__( 'Free', MS_TEXT_DOMAIN ),
+					$item->get_payment_type_desc()
 				);
+			}
+
+			$followup = MS_Factory::load(
+				'MS_Model_Membership',
+				$item->on_end_membership_id
+			);
+
+			if ( $followup->is_valid() ) {
+				$html .= '<div class="ms-followup">' . sprintf(
+					__( 'Follow with: %1$s', MS_TEXT_DOMAIN ),
+					'<span class="the-color" style="background:' . $followup->get_color() . '">&nbsp;</span>' . $followup->name
+				) . '</div>';
 			}
 		}
 

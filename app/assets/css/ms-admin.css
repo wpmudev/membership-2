@@ -1620,6 +1620,23 @@
   margin-right: 5px;
   border-radius: 4px;
 }
+.ms-wrap .ms-membership-list .ms-followup {
+  line-height: 14px;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: .8;
+  margin-top: 3px;
+  cursor: default;
+}
+.ms-wrap .ms-membership-list .ms-followup .the-color {
+  float: none;
+  margin: 1px 5px;
+  display: inline-block;
+  line-height: 12px;
+  width: 12px;
+}
 .ms-wrap .ms-membership-list .the-name {
   margin-right: 10px;
 }

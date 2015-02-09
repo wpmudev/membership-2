@@ -83,6 +83,16 @@ class MS_View_Member_Dialog extends MS_Dialog {
 		$currency = MS_Plugin::instance()->settings->currency;
 		$show_trial = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL );
 
+		$all_subscriptions = MS_Model_Relationship::get_subscriptions(
+			array(
+				'user_id' => $member->id,
+				'status' => 'all',
+				'meta_key' => 'expire_date',
+				'orderby' => 'meta_value',
+				'order' => 'DESC',
+			)
+		);
+
 		// Prepare the form fields.
 		$inp_dialog = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -155,7 +165,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 					</thead>
 					<tbody>
 					<?php
-					foreach ( $member->subscriptions as $subscription ) :
+					foreach ( $all_subscriptions as $subscription ) :
 						$membership = $subscription->get_membership();
 						$payments = $subscription->payments;
 

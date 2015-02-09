@@ -377,17 +377,26 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *		@type string $title The membership payment type title
 	 * }
 	 */
-	public static function get_payment_types() {
-		$payment_types = array(
-			self::PAYMENT_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
-			self::PAYMENT_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
-			self::PAYMENT_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
-			self::PAYMENT_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
-		);
+	public static function get_payment_types( $type = 'paid' ) {
+		if ( 'free' == $type ) {
+			$payment_types = array(
+				self::PAYMENT_TYPE_PERMANENT => __( 'Permanent access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_FINITE => __( 'Finite access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_DATE_RANGE => __( 'Date range access', MS_TEXT_DOMAIN ),
+			);
+		} else {
+			$payment_types = array(
+				self::PAYMENT_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
+			);
+		}
 
 		return apply_filters(
 			'ms_model_membership_get_payment_types',
-			$payment_types
+			$payment_types,
+			$type
 		);
 	}
 
@@ -403,35 +412,48 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$desc = __( 'N/A', MS_TEXT_DOMAIN );
 		$has_payment = ! $this->is_free();
 
-		if ( $has_payment ) {
-			switch ( $this->payment_type ) {
-				case self::PAYMENT_TYPE_FINITE:
-					$desc = sprintf(
-						__( 'For %s', MS_TEXT_DOMAIN ),
-						MS_Helper_Period::get_period_desc( $this->period )
-					);
-					break;
+		switch ( $this->payment_type ) {
+			case self::PAYMENT_TYPE_FINITE:
+				$desc = sprintf(
+					__( 'For %1$s', MS_TEXT_DOMAIN ),
+					MS_Helper_Period::get_period_desc( $this->period )
+				);
+				break;
 
-				case self::PAYMENT_TYPE_DATE_RANGE:
-					$desc = sprintf(
-						__( 'From %s to %s', MS_TEXT_DOMAIN ),
-						$this->period_date_start,
-						$this->period_date_end
-					);
-					break;
+			case self::PAYMENT_TYPE_DATE_RANGE:
+				$desc = sprintf(
+					__( 'From %1$s to %2$s', MS_TEXT_DOMAIN ),
+					$this->period_date_start,
+					$this->period_date_end
+				);
+				break;
 
-				case self::PAYMENT_TYPE_RECURRING:
-					$desc = sprintf(
-						__( 'Each %s', MS_TEXT_DOMAIN ),
-						MS_Helper_Period::get_period_desc( $this->pay_cycle_period )
-					);
-					break;
+			case self::PAYMENT_TYPE_RECURRING:
+				$desc = __( 'Each %1$s', MS_TEXT_DOMAIN );
 
-				case self::PAYMENT_TYPE_PERMANENT:
-				default:
+				if ( $has_payment ) {
+					if ( $this->pay_cycle_repetitions == 1 ) {
+						$desc = __( 'Single payment', MS_TEXT_DOMAIN );
+					} elseif ( $this->pay_cycle_repetitions > 1 ) {
+						$desc .= ', ' . __( '%2$s payments', MS_TEXT_DOMAIN );
+					}
+				}
+
+				$desc = sprintf(
+					$desc,
+					MS_Helper_Period::get_period_desc( $this->pay_cycle_period ),
+					$this->pay_cycle_repetitions
+				);
+				break;
+
+			case self::PAYMENT_TYPE_PERMANENT:
+			default:
+				if ( $has_payment ) {
 					$desc = __( 'Single payment', MS_TEXT_DOMAIN );
-					break;
-			}
+				} else {
+					$desc = __( 'Permanent access', MS_TEXT_DOMAIN );
+				}
+				break;
 		}
 
 		return apply_filters(
@@ -619,7 +641,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			array(
 				'post_type' => self::$POST_TYPE,
 				'order' => 'DESC',
-				'orderby' => 'ID',
+				'orderby' => 'name',
 				'post_status' => 'any',
 				'post_per_page' => -1,
 				'nopaging' => true,
@@ -951,6 +973,25 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		return apply_filters(
 			'ms_model_membership_is_system',
+			$res,
+			$this
+		);
+	}
+
+	/**
+	 * Can be used to validate if the current membership is actually loaded
+	 * from database. If this function returns false, then the specified
+	 * membership-ID does not exist in DB.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return bool
+	 */
+	public function is_valid() {
+		$res = ! empty( $this->id );
+
+		return apply_filters(
+			'ms_model_membership_is_valid',
 			$res,
 			$this
 		);
@@ -1532,10 +1573,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 			case 'payment_type':
 				$types = self::get_payment_types();
-				if ( ! array_key_exists( $this->$property, $types ) ) {
-					$this->$property = self::PAYMENT_TYPE_PERMANENT;
+				if ( ! array_key_exists( $this->payment_type, $types ) ) {
+					$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
 				}
-				$value = $this->$property;
+				$value = $this->payment_type;
 				break;
 
 			case 'trial_period_enabled':

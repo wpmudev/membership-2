@@ -234,7 +234,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 
 		if ( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-			$ms_relationship = self::_create_ms_relationship(
+			$subscription = self::_create_ms_relationship(
 				$membership_id,
 				$user_id,
 				$gateway_id,
@@ -242,7 +242,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			);
 		}
 		else {
-			$ms_relationship = null;
+			$subscription = null;
 			MS_Helper_Debug::log(
 				'Invalid membership_id: ' .
 				"$membership_id, ms_relationship not created for $user_id, $gateway_id, $move_from_id"
@@ -252,7 +252,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		return apply_filters(
 			'ms_model_relationship_create_ms_relationship',
-			$ms_relationship,
+			$subscription,
 			$membership_id,
 			$user_id,
 			$gateway_id,
@@ -269,24 +269,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	private static function _create_ms_relationship( $membership_id, $user_id, $gateway_id, $move_from_id ) {
 		// Try to reuse existing db record to keep history.
-		$ms_relationship = self::get_subscription( $user_id, $membership_id );
+		$subscription = self::get_subscription( $user_id, $membership_id );
 
 		// Not found, create a new one.
-		if ( empty( $ms_relationship ) ) {
-			$ms_relationship = MS_Factory::create( 'MS_Model_Relationship' );
-			$ms_relationship->membership_id = $membership_id;
-			$ms_relationship->user_id = $user_id;
-			$ms_relationship->status = self::STATUS_PENDING;
+		if ( empty( $subscription ) ) {
+			$subscription = MS_Factory::create( 'MS_Model_Relationship' );
+			$subscription->membership_id = $membership_id;
+			$subscription->user_id = $user_id;
+			$subscription->status = self::STATUS_PENDING;
 		}
 
 		// Always update these fields.
-		$ms_relationship->move_from_id = $move_from_id;
-		$ms_relationship->gateway_id = $gateway_id;
+		$subscription->move_from_id = $move_from_id;
+		$subscription->gateway_id = $gateway_id;
 
 		// Set initial state.
-		switch ( $ms_relationship->status ) {
+		switch ( $subscription->status ) {
 			case self::STATUS_DEACTIVATED:
-				$ms_relationship->status = self::STATUS_PENDING;
+				$subscription->status = self::STATUS_PENDING;
 				break;
 
 			case self::STATUS_TRIAL:
@@ -298,29 +298,30 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				 * eligible to another trial period, unless the relationship
 				 * is permanetly deleted.
 				 */
-				$ms_relationship->trial_period_completed = true;
+				$subscription->trial_period_completed = true;
 				break;
 
 			default:
 			case self::STATUS_PENDING:
 				// Initial status
-				$ms_relationship->name = "user_id: $user_id, membership_id: $membership_id";
-				$ms_relationship->description = $ms_relationship->name;
-				$ms_relationship->set_start_date();
-				$ms_relationship->trial_period_completed = false;
+				$subscription->name = "user_id: $user_id, membership_id: $membership_id";
+				$subscription->description = $subscription->name;
+				$subscription->set_start_date();
+				$subscription->trial_period_completed = false;
 				break;
 		}
 
-		if ( 'admin' == $gateway_id ) {
-			$ms_relationship->config_period();
-			$ms_relationship->status = self::STATUS_ACTIVE;
+		$membership = $subscription->get_membership();
+		if ( 'admin' == $gateway_id || $membership->is_free() ) {
+			$subscription->config_period();
+			$subscription->status = self::STATUS_ACTIVE;
 		} else {
 			// Force status calculation.
-			$ms_relationship->get_status();
+			$subscription->get_status();
 		}
-		$ms_relationship->save();
+		$subscription->save();
 
-		return $ms_relationship;
+		return $subscription;
 	}
 
 	/**
@@ -553,7 +554,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
 			}
 		}
-		catch (Exception $e) {
+		catch ( Exception $e ) {
 			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
 		}
 
@@ -1259,22 +1260,31 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public function set_status( $status ) {
 		// These status are not validated, and promptly assigned
-		$allowed_status = apply_filters(
-			'ms_model_relationship_set_status_allowed_status',
+		$ignored_status = apply_filters(
+			'ms_model_relationship_unvalidated_status',
 			array(
 				self::STATUS_DEACTIVATED,
-				self::STATUS_PENDING,
-				self::STATUS_CANCELED,
 				self::STATUS_TRIAL_EXPIRED,
-			)
+			),
+			'set'
 		);
 
-		// Validate status and handle status change
-		if ( ! in_array( $status, $allowed_status ) ) {
+		if ( self::STATUS_PENDING == $this->status ) {
+			// Skip "Pending" for free memberships.
+			$membership = $this->get_membership();
+			if ( $membership->is_free() ) {
+				$status = self::STATUS_ACTIVE;
+				$this->handle_status_change( $status );
+			} else {
+				$this->status = $status;
+			}
+		} elseif ( in_array( $status, $ignored_status ) ) {
+			// No validation for this status.
+			$this->status = $status;
+		} else {
+			// Check if this status is still valid.
 			$status = $this->calculate_status( $status );
 			$this->handle_status_change( $status );
-		} else {
-			$this->status = $status;
 		}
 
 		$this->status = apply_filters(
@@ -1297,16 +1307,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public function get_status() {
 		// No further validations for these status
 		$ignored_status = apply_filters(
-			'ms_model_relationship_get_status_ignored_status',
+			'ms_model_relationship_unvalidated_status',
 			array(
 				self::STATUS_DEACTIVATED,
-				self::STATUS_PENDING,
 				self::STATUS_TRIAL_EXPIRED,
-			)
+			),
+			'get'
 		);
 
-		// Validate current status and handle status change
-		if ( ! in_array( $this->status, $ignored_status ) ) {
+		if ( self::STATUS_PENDING == $this->status ) {
+			// Skip "Pending" for free memberships.
+			$membership = $this->get_membership();
+			if ( $membership->is_free() ) {
+				$status = self::STATUS_ACTIVE;
+				$this->handle_status_change( $status );
+			}
+		} elseif ( ! in_array( $this->status, $ignored_status ) ) {
+			// Check if this status is still valid.
 			$status = $this->calculate_status();
 			$this->handle_status_change( $status );
 		}
@@ -1394,6 +1411,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 		}
 
+		// Fallback to "Expired" status
+		if ( empty( $calc_status ) ) {
+			$calc_status = self::STATUS_EXPIRED;
+		}
+
 		return apply_filters(
 			'membership_model_relationship_calculate_status',
 			$calc_status,
@@ -1417,7 +1439,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this
 		);
 
-		if ( empty( $this->status ) ) { return false; }
+		if ( empty( $new_status ) ) { return false; }
 		if ( $new_status == $this->status ) { return false; }
 		if ( ! array_key_exists( $new_status, self::get_status_types() ) ) { return false; }
 
@@ -1622,14 +1644,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					// Deactivate expired memberships after a period of time.
 					if ( $deactivate_trial_expired_after_days < - $remaining_trial_days ) {
 						$this->deactivate_membership();
-
-						// Move membership to configured membership.
-						$membership = $this->get_membership();
-
-						if ( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
-							$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
-							$member->add_membership( $membership->on_end_membership_id );
-						}
 					}
 				}
 				break;
@@ -1656,6 +1670,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$auto_renew = $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING;
 				$deactivate = false;
 				$invoice = null;
+
+				if ( $auto_renew && $membership->pay_cycle_repetitions > 0 ) {
+					/*
+					 * The membership has a payment-repetition limit.
+					 * When this limit is reached then we do not auto-renew the
+					 * subscription but expire it.
+					 */
+					$payments = WDev()->array->get( $this->payments );
+					if ( count( $payments ) >= $membership->pay_cycle_repetitions ) {
+						$auto_renew = false;
+					}
+				}
 
 				if ( $auto_renew ) {
 					if ( $remaining_days < $invoice_before_days ) {
@@ -1770,14 +1796,31 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					// Move membership to configured membership.
 					$membership = $this->get_membership();
 
-					if ( MS_Model_Membership::is_valid_membership( $membership->on_end_membership_id ) ) {
+					$new_membership = MS_Factory::load(
+						'MS_Model_Membership',
+						$membership->on_end_membership_id
+					);
+
+					if ( $new_membership->is_valid() ) {
 						$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
-						$member->add_membership( $membership->on_end_membership_id );
+						$new_subscription = $member->add_membership(
+							$membership->on_end_membership_id,
+							$this->gateway_id
+						);
 
 						MS_Model_Event::save_event(
 							MS_Model_Event::TYPE_MS_MOVED,
-							$member->subscriptions[$membership->on_end_membership_id]
+							$new_subscription
 						);
+
+						/*
+						 * If the new membership is paid we want that the user
+						 * confirms the payment in his account. So we set it
+						 * to "Pending" first.
+						 */
+						if ( $new_membership->is_free() ) {
+							$new_subscription->status = self::STATUS_PENDING;
+						}
 					}
 				}
 				break;

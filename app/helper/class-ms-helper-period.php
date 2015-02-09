@@ -275,7 +275,12 @@ class MS_Helper_Period extends MS_Helper {
 			$period_type = preg_replace( '/s$/', '', $period_type );
 		}
 
-		$desc = sprintf( '%s %s', $period_unit, $period_type );
+		if ( $period_unit == 1 ) {
+			$desc = '%2$s';
+		} else {
+			$desc = '%1$s %2$s';
+		}
+		$desc = sprintf( $desc, $period_unit, $period_type );
 
 		return apply_filters(
 			'ms_helper_period_get_period_desc',
