@@ -10,7 +10,7 @@ class MS_View_Shortcode_Account extends MS_View {
 		 *
 		 * @since 1.1.0
 		 */
-		$html = apply_filter(
+		$html = apply_filters(
 			'ms_shortcode_custom_account',
 			'',
 			$this->data

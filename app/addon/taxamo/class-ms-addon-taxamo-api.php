@@ -50,37 +50,42 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		static $Info = null;
 
 		if ( null === $Info ) {
-			$resp = self::taxamo()->calculateSimpleTax(
-				null // buyer_credit_card_prefix
-				,null // buyer_tax_number
-				,null // product_type
-				,self::country_code() // force_country_code
-				,null // quantity
-				,null // unit_price
-				,null // total_amount
-				,null // tax_deducted
-				,100 // amount
-				,null // billing_country_code
-				,MS_Addon_Taxamo::model()->currency // currency_code
-				,null // order_date
-			);
+			try {
+				$resp = self::taxamo()->calculateSimpleTax(
+					null // buyer_credit_card_prefix
+					,null // buyer_tax_number
+					,null // product_type
+					,self::country_code() // force_country_code
+					,null // quantity
+					,null // unit_price
+					,null // total_amount
+					,null // tax_deducted
+					,100 // amount
+					,null // billing_country_code
+					,MS_Addon_Taxamo::model()->currency // currency_code
+					,null // order_date
+				);
 
-			// Prepare the result object.
-			if ( isset( $resp->transaction->transaction_lines[0] ) ) {
-				$transaction = $resp->transaction->transaction_lines[0];
-				$Info = (object) array(
-					'country' => $resp->transaction->tax_country_code,
-					'rate' => $transaction->tax_rate,
-					'name' => $transaction->tax_name,
-					'amount' => 0,
-				);
-			} else {
-				$Info = (object) array(
-					'country' => 'US',
-					'rate' => 0,
-					'name' => __( 'No Tax', MS_TEXT_DOMAIN ),
-					'amount' => 0,
-				);
+				// Prepare the result object.
+				if ( isset( $resp->transaction->transaction_lines[0] ) ) {
+					$transaction = $resp->transaction->transaction_lines[0];
+					$Info = (object) array(
+						'country' => $resp->transaction->tax_country_code,
+						'rate' => $transaction->tax_rate,
+						'name' => $transaction->tax_name,
+						'amount' => 0,
+					);
+				} else {
+					$Info = (object) array(
+						'country' => 'US',
+						'rate' => 0,
+						'name' => __( 'No Tax', MS_TEXT_DOMAIN ),
+						'amount' => 0,
+					);
+				}
+			}
+			catch ( Exception $ex ) {
+				MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
 			}
 		}
 
@@ -96,26 +101,31 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @param  numeric $amount Transaction amount
 	 */
 	static public function register_payment( $amount, $label, $tax_rate, $invoice_id, $name, $email, $gateway ) {
-		// Register the transaction with Taxamo.
-		$transaction = self::prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email );
-		$resp = self::taxamo()->createTransaction( array( 'transaction' => $transaction ) );
+		try {
+			// Register the transaction with Taxamo.
+			$transaction = self::prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email );
+			$resp = self::taxamo()->createTransaction( array( 'transaction' => $transaction ) );
 
-		if ( ! empty( $resp->transaction->key ) ) {
-			$tr_key = $resp->transaction->key;
-			// Confirm the Transaction.
-			$resp = self::taxamo()->confirmTransaction( $tr_key, null );
+			if ( ! empty( $resp->transaction->key ) ) {
+				$tr_key = $resp->transaction->key;
+				// Confirm the Transaction.
+				$resp = self::taxamo()->confirmTransaction( $tr_key, null );
 
-			// Register the payment.
-			$information = sprintf(
-				__( 'Invoice %1$s paid via %2$s.', MS_TEXT_DOMAIN ),
-				$invoice_id,
-				$gateway
-			);
-			$payment = array(
-				'amount' => $amount,
-				'payment_information' => $information,
-			);
-			$resp = self::taxamo()->createPayment( $tr_key, $payment );
+				// Register the payment.
+				$information = sprintf(
+					__( 'Invoice %1$s paid via %2$s.', MS_TEXT_DOMAIN ),
+					$invoice_id,
+					$gateway
+				);
+				$payment = array(
+					'amount' => $amount,
+					'payment_information' => $information,
+				);
+				$resp = self::taxamo()->createPayment( $tr_key, $payment );
+			}
+		}
+		catch ( Exception $ex ) {
+			MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
 		}
 	}
 
@@ -205,13 +215,21 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @since 1.1.0
 	 */
 	static private function determine_country() {
-		$ip_info = WDev()->current_ip();
-		$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
-		WDev()->session->add( 'ms_ta_country', $country );
+		try {
+			$ip_info = WDev()->current_ip();
+			$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
+			WDev()->session->add( 'ms_ta_country', $country );
+		}
+		catch ( Exception $ex ) {
+			MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
+		}
 	}
 
 	/**
 	 * Returns the Taxamo REST API object.
+	 *
+	 * Important: All calls to `taxamo()->` functions must be wrapped in
+	 * try..catch because an invalid API token will result in a fatal error.
 	 *
 	 * @since  1.1.0
 	 * @return Taxamo

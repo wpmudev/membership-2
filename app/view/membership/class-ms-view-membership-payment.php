@@ -127,7 +127,7 @@ class MS_View_Membership_Payment extends MS_View {
 						</p>
 						<p>
 							<?php _e( 'Following limitations apply:', MS_TEXT_DOMAIN ); ?><br />
-							- <?php _e( 'Any changes will only affect new members.', MS_TEXT_DOMAIN ); ?><br />
+							- <?php _e( 'Any changes will affect new invoices but not existing ones.', MS_TEXT_DOMAIN ); ?><br />
 							- <?php _e( 'The payment-type cannot be changed anymore.', MS_TEXT_DOMAIN ); ?>
 						</p>
 					</div>

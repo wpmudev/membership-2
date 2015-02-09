@@ -94,15 +94,6 @@ class MS_Gateway extends MS_Model_Option {
 	protected $manual_payment = true;
 
 	/**
-	 * Gateway allow Pro rating.
-	 *
-	 * @todo To be released in further versions.
-	 * @since 1.0.0
-	 * @var bool $pro_rate
-	 */
-	protected $pro_rate = false;
-
-	/**
 	 * Custom payment button text or url.
 	 *
 	 * Overrides default purchase button.
@@ -187,7 +178,7 @@ class MS_Gateway extends MS_Model_Option {
 	 * Processes purchase action.
 	 *
 	 * This function is called when a payment was made: We check if the
-	 * transaction was successful. If it was we call `invoice_changed` which
+	 * transaction was successful. If it was we call `$invoice->changed()` which
 	 * will update the membership status accordingly.
 	 *
 	 * Overridden in child classes.
@@ -209,7 +200,7 @@ class MS_Gateway extends MS_Model_Option {
 
 		// The default handler only processes free subscriptions.
 		if ( 0 == $invoice->total ) {
-			$this->invoice_changed( $invoice );
+			$invoice->changed();
 		}
 
 		return apply_filters(
@@ -278,121 +269,6 @@ class MS_Gateway extends MS_Model_Option {
 
 		do_action(
 			'ms_gateway_check_card_expiration_after',
-			$this
-		);
-	}
-
-	/**
-	 * Update the subscription after the invoice has changed.
-	 *
-	 * Process transaction status change related to this membership relationship.
-	 * Change status accordinly to transaction status.
-	 *
-	 * @since 1.0.0
-	 * @param MS_Model_Invoice $invoice The invoice to process.
-	 * @return MS_Model_Invoice The processed invoice.
-	 */
-	public function invoice_changed( $invoice ) {
-		do_action(
-			'ms_gateway_invoice_changed_before',
-			$this
-		);
-
-		if ( ! $invoice->ms_relationship_id ) {
-			MS_Helper_Debug::log( 'Cannot process transaction: No relationship defined (inv #' . $invoice->id  .')' );
-		} else {
-			$ms_relationship = MS_Factory::load(
-				'MS_Model_Relationship',
-				$invoice->ms_relationship_id
-			);
-			$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
-			$membership = $ms_relationship->get_membership();
-
-			switch ( $invoice->status ) {
-				case MS_Model_Invoice::STATUS_BILLED:
-					break;
-
-				case MS_Model_Invoice::STATUS_PAID:
-					if ( $invoice->total > 0 ) {
-						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $ms_relationship );
-					}
-
-					do_action(
-						'ms_gateway_invoice_changed-paid',
-						$invoice,
-						$member
-					);
-
-					// Check for moving memberships
-					if ( MS_Model_Relationship::STATUS_PENDING == $ms_relationship->status
-						&& $ms_relationship->move_from_id
-						&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
-					) {
-						$move_from = MS_Model_Relationship::get_subscription(
-							$ms_relationship->user_id,
-							$ms_relationship->move_from_id
-						);
-
-						if ( $move_from->is_valid() ) {
-							if ( $this->pro_rate && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE ) ) {
-								// if allow pro rate, immediatly deactivate
-								$move_from->set_status( MS_Model_Relationship::STATUS_DEACTIVATED );
-							} else {
-								// if not, cancel it, and allow using it until expires
-								$move_from->set_status( MS_Model_Relationship::STATUS_CANCELED );
-							}
-							$move_from->save();
-						}
-					}
-
-					// The trial period info gets updated after MS_Model_Relationship::config_period()
-					$trial_period = $ms_relationship->is_trial_eligible();
-					$ms_relationship->current_invoice_number = max(
-						$ms_relationship->current_invoice_number,
-						$invoice->invoice_number + 1
-					);
-					$member->is_member = true;
-					$member->active = true;
-					$ms_relationship->config_period();
-					$ms_relationship->set_status( MS_Model_Relationship::STATUS_ACTIVE );
-
-					// Generate next invoice
-					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
-						|| $trial_period
-					) {
-						$next_invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-						$next_invoice->gateway_id = $this->id;
-						$next_invoice->save();
-					}
-					break;
-
-				case MS_Model_Invoice::STATUS_FAILED:
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
-					break;
-
-				case MS_Model_Invoice::STATUS_DENIED:
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $ms_relationship );
-					break;
-
-				case MS_Model_Invoice::STATUS_PENDING:
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $ms_relationship );
-					break;
-
-				default:
-					do_action( 'ms_gateway_invoice_changed-unknown', $invoice );
-					break;
-			}
-
-			$member->save();
-			$ms_relationship->gateway_id = $this->id;
-			$ms_relationship->save();
-			$invoice->gateway_id = $this->id;
-			$invoice->save();
-		}
-
-		return apply_filters(
-			'ms_gateway_invoice_changed',
-			$invoice,
 			$this
 		);
 	}
@@ -496,7 +372,6 @@ class MS_Gateway extends MS_Model_Option {
 
 				case 'active':
 				case 'manual_payment':
-				case 'pro_rate':
 					$this->$property = ( ! empty( $value ) ? true : false );
 					break;
 
@@ -532,7 +407,6 @@ class MS_Gateway extends MS_Model_Option {
 			switch ( $property ) {
 				case 'active':
 				case 'manual_payment':
-				case 'pro_rate':
 					return ( ! empty( $this->$property ) ? true : false );
 					break;
 

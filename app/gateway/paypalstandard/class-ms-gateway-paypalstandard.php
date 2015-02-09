@@ -39,19 +39,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	const ID = 'paypalstandard';
 
 	/**
-	 * Gateway transaction status constants.
-	 *
-	 * @since 1.0.0
-	 * @var string $status
-	 */
-	const STATUS_FAILED = 'failed';
-	const STATUS_REVERSED = 'reversed';
-	const STATUS_REFUNDED = 'refunded';
-	const STATUS_PENDING = 'pending';
-	const STATUS_DISPUTE = 'dispute';
-	const STATUS_DENIED = 'denied';
-
-	/**
 	 * Gateway singleton instance.
 	 *
 	 * @since 1.0.0
@@ -138,43 +125,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		parent::after_load();
 
 		$this->name = __( 'PayPal Standard Gateway', MS_TEXT_DOMAIN );
-
-		if ( $this->active ) {
-			$this->add_filter(
-				'ms_model_invoice_get_status',
-				'gateway_custom_status'
-			);
-		}
-	}
-
-	/**
-	 * Add Gateway custom status.
-	 *
-	 * * Hooks Actions: *
-	 * * ms_model_invoice_get_status
-	 *
-	 * @since 1.0.0
-	 * @return array {
-	 *     Array of ( $status_id => $status_name ).
-	 *
-	 *     @type string $status_id The status id.
-	 *     @type string $status_name The status name.
-	 * }
-	 */
-	public function gateway_custom_status( $status ) {
-		$paypal_status = array(
-			self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
-			self::STATUS_REVERSED => __( 'Reversed', MS_TEXT_DOMAIN ),
-			self::STATUS_REFUNDED => __( 'Refunded', MS_TEXT_DOMAIN ),
-			self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
-			self::STATUS_DISPUTE => __( 'Dispute', MS_TEXT_DOMAIN ),
-			self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
-		);
-
-		return apply_filters(
-			'ms_gateway_paypalstandard_gateway_custom_status',
-			array_merge( $status, $paypal_status )
-		);
 	}
 
 	/**
@@ -237,6 +187,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			$external_id = null;
 			$amount = 0;
 
+			if ( empty( $invoice ) ) {
+				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+			}
+
 			// Process PayPal payment status
 			if ( ! empty( $_POST['payment_status'] ) ) {
 				$amount = (float) $_POST['mc_gross'];
@@ -250,23 +204,23 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$status = MS_Model_Invoice::STATUS_PAID;
 						} else {
 							$notes_pay = __( 'Payment amount differs from invoice total.', MS_TEXT_DOMAIN );
-							$status = self::STATUS_DENIED;
+							$status = MS_Model_Invoice::STATUS_DENIED;
 						}
 						break;
 
 					case 'Reversed':
 						$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back).', MS_TEXT_DOMAIN );
-						$status = self::STATUS_REVERSED;
+						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Refunded':
 						$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been refunded.', MS_TEXT_DOMAIN );
-						$status = self::STATUS_REFUNDED;
+						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Denied':
 						$notes_pay = __( 'Last transaction has been reversed. Reason: Payment Denied.', MS_TEXT_DOMAIN );
-						$status = self::STATUS_DENIED;
+						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Pending':
@@ -285,7 +239,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						$reason = $_POST['pending_reason'];
 						$notes_pay = __( 'Last transaction is pending. Reason: ', MS_TEXT_DOMAIN ) .
 							( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
-						$status = self::STATUS_PENDING;
+						$status = MS_Model_Invoice::STATUS_PENDING;
 						break;
 
 					default:
@@ -339,7 +293,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 					case 'new_case':
 						// New Dispute was filed for a payment.
-						$status = self::STATUS_DISPUTE;
+						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'subscr_eot':
@@ -369,37 +323,17 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				}
 			}
 
-			if ( empty( $invoice ) ) {
-				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-			}
+			if ( ! empty( $notes_pay ) ) { $invoice->add_notes( $notes_pay ); }
+			if ( ! empty( $notes_txn ) ) { $invoice->add_notes( $notes_txn ); }
 
-			$invoice->external_id = $external_id;
-
-			if ( ! empty( $notes_pay ) ) {
-				$invoice->add_notes( $notes_pay );
-			}
-
-			if ( ! empty( $notes_txn ) ) {
-				$invoice->add_notes( $notes_txn );
-			}
-
-			$invoice->gateway_id = $this->id;
 			$invoice->save();
 
-			if ( ! empty( $status ) ) {
+			if ( MS_Model_Invoice::STATUS_PAID == $status ) {
+				$invoice->pay_it( $this->id, $external_id );
+			} elseif ( ! empty( $status ) ) {
 				$invoice->status = $status;
 				$invoice->save();
-
-				$invoice = $this->invoice_changed( $invoice );
-
-				if ( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
-					/**
-					 * Notify Add-ons that an invoice was paid.
-					 *
-					 * @since 1.1.0
-					 */
-					do_action( 'ms_invoice_paid', $invoice );
-				}
+				$invoice->changed();
 			}
 
 			do_action(
@@ -443,48 +377,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		return apply_filters(
 			'ms_gateway_paylpaystandard_get_paypal_sites',
 			self::get_country_codes()
-		);
-	}
-
-	/**
-	 * Update the subscription after the invoice has changed.
-	 *
-	 * Process transaction status change related to this membership relationship.
-	 * Change status accordinly to transaction status.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Invoice $invoice The Transaction.
-	 * @return MS_Model_Invoice The processed invoice.
-	 */
-	public function invoice_changed( $invoice ) {
-		$ms_relationship = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
-		$member = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
-
-		switch ( $invoice->status ) {
-			case self::STATUS_REVERSED:
-			case self::STATUS_REFUNDED:
-			case self::STATUS_DENIED:
-			case self::STATUS_DISPUTE:
-				MS_Model_Event::save_event(
-					MS_Model_Event::TYPE_PAYMENT_DENIED,
-					$ms_relationship
-				);
-				break;
-
-			default:
-				$ms_relationship = parent::invoice_changed( $invoice );
-				break;
-		}
-
-		$member->save();
-		$ms_relationship->gateway_id = $this->gateway_id;
-		$ms_relationship->save();
-
-		return apply_filters(
-			'ms_gateway_paypalstandard_processed_transaction',
-			$invoice,
-			$this
 		);
 	}
 

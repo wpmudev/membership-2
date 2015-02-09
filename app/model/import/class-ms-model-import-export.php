@@ -58,9 +58,14 @@ Import Data Structure
     - trial              <bool>
     - payment_type       [permanent|finite|date-range|recurring]
 
-    If `payment_type` is 'finite' and 'recurring':
+    If `payment_type` is 'finite':
     - period_unit        <int>  Number of days/weeks/months
     - period_type        [d|w|m|y]
+
+    If `payment_type` is 'recurring':
+    - period_unit        <int>  Number of days/weeks/months
+    - period_type        [d|w|m|y]
+    - period_repetition  <int>  Number of payments before membership ends
 
     If `payment_type` is 'date-range':
     - period_start       <yyyy-mm-dd>
@@ -254,6 +259,7 @@ class MS_Model_Import_Export extends MS_Model {
 				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
 					$obj->period_unit = $src->pay_cycle_period['period_unit'];
 					$obj->period_type = $src->pay_cycle_period['period_type'];
+					$obj->period_repetition = $src->pay_cycle_repetition;
 					break;
 			}
 

@@ -149,6 +149,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	private $membership;
 
+	//
+	//
+	//
+	// -------------------------------------------------------------- COLLECTION
+
 	/**
 	 * Don't persist this fields.
 	 *
@@ -298,113 +303,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$ms_relationship->save();
 
 		return $ms_relationship;
-	}
-
-	/**
-	 * Cancel membership.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param bool $generate_event Optional. Defines if cancel events are generated.
-	 */
-	public function cancel_membership( $generate_event = true ) {
-		do_action(
-			'ms_model_membership_relationship_cancel_membership_before',
-			$this,
-			$generate_event
-		);
-
-		try {
-			// Canceling in trial period -> change the expired date.
-			if ( self::STATUS_TRIAL == $this->status ) {
-				$this->expire_date = $this->trial_expire_date;
-			}
-
-			$this->status = self::STATUS_CANCELED;
-			$this->status = $this->calculate_status();
-			$this->save();
-
-			// Cancel subscription in the gateway.
-			if ( $gateway = $this->get_gateway() ) {
-				$gateway->cancel_membership( $this );
-			}
-
-			if ( $generate_event ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
-			}
-		}
-		catch (Exception $e) {
-			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
-		}
-
-		do_action(
-			'ms_model_membership_relationship_cancel_membership_after',
-			$this,
-			$generate_event
-		);
-	}
-
-	/**
-	 * Deactivate membership.
-	 *
-	 * Cancel membership and move to deactivated state.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param bool $generate_event Optional. Defines if cancel events are generated.
-	 */
-	public function deactivate_membership( $generate_event = true ) {
-		do_action(
-			'ms_model_membership_relationship_deactivate_membership_before',
-			$this,
-			$generate_event
-		);
-
-		try {
-			$this->cancel_membership( false );
-			$this->status = self::STATUS_DEACTIVATED;
-			$this->save();
-			if ( $generate_event ) {
-				MS_Model_Event::save_event(
-					MS_Model_Event::TYPE_MS_DEACTIVATED,
-					$this
-				);
-			}
-		}
-		catch( Exception $e ) {
-			MS_Helper_Debug::log(
-				'[Error deactivating membership]: '. $e->getMessage()
-			);
-		}
-
-		do_action(
-			'ms_model_membership_relationship_deactivate_membership_after',
-			$this,
-			$generate_event
-		);
-	}
-
-	/**
-	 * Save model.
-	 *
-	 * Only saves if is not admin user and not a visitor.
-	 * Don't save visitor memberships/protected content (auto assigned).
-	 *
-	 * @since 1.0.0
-	 */
-	public function save() {
-		do_action( 'ms_model_membership_relationship_save_before', $this );
-
-		if ( ! empty( $this->user_id )
-			&& ! MS_Model_Member::is_admin_user( $this->user_id )
-		) {
-			$membership = $this->get_membership();
-			if ( ! $membership->is_system() ) {
-				parent::save();
-			}
-		}
-
-		do_action( 'ms_model_membership_relationship_after', $this );
 	}
 
 	/**
@@ -597,6 +495,119 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$args,
 			$defaults
 		);
+	}
+
+
+	//
+	//
+	//
+	// ------------------------------------------------------------- SINGLE ITEM
+
+	/**
+	 * Cancel membership.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $generate_event Optional. Defines if cancel events are generated.
+	 */
+	public function cancel_membership( $generate_event = true ) {
+		do_action(
+			'ms_model_membership_relationship_cancel_membership_before',
+			$this,
+			$generate_event
+		);
+
+		try {
+			// Canceling in trial period -> change the expired date.
+			if ( self::STATUS_TRIAL == $this->status ) {
+				$this->expire_date = $this->trial_expire_date;
+			}
+
+			$this->status = self::STATUS_CANCELED;
+			$this->status = $this->calculate_status();
+			$this->save();
+
+			// Cancel subscription in the gateway.
+			if ( $gateway = $this->get_gateway() ) {
+				$gateway->cancel_membership( $this );
+			}
+
+			if ( $generate_event ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
+			}
+		}
+		catch (Exception $e) {
+			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
+		}
+
+		do_action(
+			'ms_model_membership_relationship_cancel_membership_after',
+			$this,
+			$generate_event
+		);
+	}
+
+	/**
+	 * Deactivate membership.
+	 *
+	 * Cancel membership and move to deactivated state.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $generate_event Optional. Defines if cancel events are generated.
+	 */
+	public function deactivate_membership( $generate_event = true ) {
+		do_action(
+			'ms_model_membership_relationship_deactivate_membership_before',
+			$this,
+			$generate_event
+		);
+
+		try {
+			$this->cancel_membership( false );
+			$this->status = self::STATUS_DEACTIVATED;
+			$this->save();
+			if ( $generate_event ) {
+				MS_Model_Event::save_event(
+					MS_Model_Event::TYPE_MS_DEACTIVATED,
+					$this
+				);
+			}
+		}
+		catch( Exception $e ) {
+			MS_Helper_Debug::log(
+				'[Error deactivating membership]: '. $e->getMessage()
+			);
+		}
+
+		do_action(
+			'ms_model_membership_relationship_deactivate_membership_after',
+			$this,
+			$generate_event
+		);
+	}
+
+	/**
+	 * Save model.
+	 *
+	 * Only saves if is not admin user and not a visitor.
+	 * Don't save visitor memberships/protected content (auto assigned).
+	 *
+	 * @since 1.0.0
+	 */
+	public function save() {
+		do_action( 'ms_model_membership_relationship_save_before', $this );
+
+		if ( ! empty( $this->user_id )
+			&& ! MS_Model_Member::is_admin_user( $this->user_id )
+		) {
+			$membership = $this->get_membership();
+			if ( ! $membership->is_system() ) {
+				parent::save();
+			}
+		}
+
+		do_action( 'ms_model_membership_relationship_after', $this );
 	}
 
 	/**
@@ -1230,8 +1241,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			else {
 				$this->handle_status_change( $status );
 			}
-		}
-		else {
+		} else {
 			$this->status = $status;
 		}
 
@@ -1753,22 +1763,31 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				case 'start_date':
 					$this->set_start_date( $value );
 					break;
+
 				case 'trial_expire_date':
 					$this->set_trial_expire_date( $value );
 					break;
+
 				case 'expire_date':
 					$this->set_expire_date( $value );
 					break;
+
 				case 'status':
 					$this->set_status( $value );
 					break;
+
 				default:
 					$this->$property = $value;
 					break;
 			}
 		}
 
-		do_action( 'ms_model_membership_relationship__set_after', $property, $value, $this );
+		do_action(
+			'ms_model_membership_relationship__set_after',
+			$property,
+			$value,
+			$this
+		);
 	}
 
 }

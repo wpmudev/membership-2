@@ -39,7 +39,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		 *
 		 * @since 1.1.0
 		 */
-		$html = apply_filter(
+		$html = apply_filters(
 			'ms_shortcode_custom_form-' . $form,
 			'',
 			$this->data
@@ -124,7 +124,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		 * - 'ms_shortcode_form-reset'
 		 * - 'ms_shortcode_form-lost'
 		 */
-		return apply_filter(
+		return apply_filters(
 			'ms_shortcode_form-' . $form,
 			$html,
 			$this->data

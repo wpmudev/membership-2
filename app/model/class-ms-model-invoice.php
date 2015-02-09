@@ -766,6 +766,137 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	// ------------------------------------------------------------- SINGLE ITEM
 
 	/**
+	 * Registers the payment and marks the invoice as paid.
+	 *
+	 * @since  1.1.0
+	 * @param  string $gateway_id The payment gateway.
+	 * @param  string $external_id Payment-ID provided by the gateway
+	 */
+	public function pay_it( $gateway_id, $external_id ) {
+		$this->gateway_id = $gateway_id;
+		$this->external_id = $external_id;
+		$this->status = MS_Model_Invoice::STATUS_PAID;
+		$this->save();
+
+
+		// Process the
+		$this->changed();
+
+		/**
+		 * Notify Add-ons that an invoice was paid.
+		 *
+		 * @since 1.1.0
+		 */
+		do_action( 'ms_invoice_paid', $this );
+	}
+
+	/**
+	 * Update the subscription details after the invoice has changed.
+	 *
+	 * Process transaction status change related to this membership relationship.
+	 * Change status accordinly to transaction status.
+	 *
+	 * @since 1.0.0
+	 * @param MS_Model_Invoice $invoice The invoice to process.
+	 * @return MS_Model_Invoice The processed invoice.
+	 */
+	public function changed() {
+		do_action(
+			'ms_model_invoice_changed_before',
+			$this
+		);
+
+		if ( ! $this->ms_relationship_id ) {
+			MS_Helper_Debug::log( 'Cannot process transaction: No relationship defined (inv #' . $this->id  .')' );
+		} else {
+			$subscription = $this->get_subscription();
+			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
+			$membership = $subscription->get_membership();
+
+			switch ( $this->status ) {
+				case MS_Model_Invoice::STATUS_BILLED:
+					break;
+
+				case MS_Model_Invoice::STATUS_PAID:
+					if ( $this->total > 0 ) {
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $subscription );
+					}
+
+					do_action(
+						'ms_model_invoice_changed-paid',
+						$this,
+						$member
+					);
+
+					// Check for moving memberships
+					if ( MS_Model_Relationship::STATUS_PENDING == $subscription->status
+						&& $subscription->move_from_id
+						&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+					) {
+						$move_from = MS_Model_Relationship::get_subscription(
+							$subscription->user_id,
+							$subscription->move_from_id
+						);
+
+						if ( $move_from->is_valid() ) {
+							$move_from->set_status( MS_Model_Relationship::STATUS_CANCELED );
+							$move_from->save();
+						}
+					}
+
+					// The trial period info gets updated after MS_Model_Relationship::config_period()
+					$trial_period = $subscription->is_trial_eligible();
+					$subscription->current_invoice_number = max(
+						$subscription->current_invoice_number,
+						$this->invoice_number + 1
+					);
+					$member->is_member = true;
+					$member->active = true;
+					$subscription->config_period();
+					$subscription->set_status( MS_Model_Relationship::STATUS_ACTIVE );
+
+					// Generate next invoice
+					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
+						|| $trial_period
+					) {
+						$next_invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+						$next_invoice->gateway_id = $this->gateway_id;
+						$next_invoice->save();
+					}
+					break;
+
+				case MS_Model_Invoice::STATUS_FAILED:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
+					break;
+
+				case MS_Model_Invoice::STATUS_DENIED:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $subscription );
+					break;
+
+				case MS_Model_Invoice::STATUS_PENDING:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $subscription );
+					break;
+
+				default:
+					do_action( 'ms_model_invoice_changed-unknown', $this );
+					break;
+			}
+
+			$member->save();
+			$subscription->gateway_id = $this->gateway_id;
+			$subscription->save();
+			$this->gateway_id = $this->gateway_id;
+			$this->save();
+		}
+
+		return apply_filters(
+			'ms_model_invoice_changed',
+			$this,
+			$this
+		);
+	}
+
+	/**
 	 * Add invoice notes.
 	 *
 	 * @since 1.0.0
@@ -846,6 +977,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public function get_member() {
 		return MS_Factory::load( 'MS_Model_Member', $this->user_id );
+	}
+
+	/**
+	 * Returns the subscription model that is linked to this invoice.
+	 *
+	 * @since  1.1.0
+	 * @return MS_Model_Relationship
+	 */
+	public function get_subscription() {
+		return MS_Factory::load( 'MS_Model_Relationship', $this->ms_relationship_id );
 	}
 
 	/**

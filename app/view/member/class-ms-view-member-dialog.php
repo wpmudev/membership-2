@@ -63,7 +63,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 			&& $this->verify_nonce( $_POST['dialog_action'] )
 			&& isset( $_POST['member_id'] )
 		) {
-			// ...
+			// No input fields, so we cannot save anything...
 			$res = MS_Helper_Member::MEMBER_MSG_UPDATED;
 		}
 
@@ -79,6 +79,9 @@ class MS_View_Member_Dialog extends MS_Dialog {
 	 */
 	public function get_contents( $data ) {
 		$member = $data['model'];
+
+		$currency = MS_Plugin::instance()->settings->currency;
+		$show_trial = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL );
 
 		// Prepare the form fields.
 		$inp_dialog = array(
@@ -140,9 +143,11 @@ class MS_View_Member_Dialog extends MS_Dialog {
 							<th class="column-expire">
 								<?php _e( 'Expires on', MS_TEXT_DOMAIN ); ?>
 							</th>
+							<?php if ( $show_trial ) : ?>
 							<th class="column-trialexpire">
 								<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
 							</th>
+							<?php endif; ?>
 						</tr>
 					</thead>
 					<tbody>
@@ -169,8 +174,16 @@ class MS_View_Member_Dialog extends MS_Dialog {
 							<td class="column-expire">
 								<?php echo '' . $subscription->expire_date; ?>
 							</td>
+							<?php if ( $show_trial ) : ?>
 							<td class="column-trialexpire">
-								<?php echo '' . $subscription->trial_expire_date; ?>
+								<?php
+								if ( $subscription->start_date == $subscription->trial_expire_date ) {
+									echo '-';
+								} else {
+									echo '' . $subscription->trial_expire_date;
+								}
+								?>
+							<?php endif; ?>
 							</td>
 						</tr>
 					<?php endforeach; ?>

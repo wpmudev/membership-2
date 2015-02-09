@@ -293,6 +293,9 @@ class MS_Model_Import extends MS_Model {
 				if ( isset( $obj->period_type ) ) {
 					$membership->pay_cycle_period['period_type'] = $obj->period_type;
 				}
+				if ( isset( $obj->period_repetition ) ) {
+					$membership->pay_cycle_repetitions = $obj->period_repetition;
+				}
 			} elseif ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE ) {
 				if ( isset( $obj->period_start ) ) {
 					$membership->period_date_start = $obj->period_start;

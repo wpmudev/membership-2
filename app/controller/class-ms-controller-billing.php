@@ -166,20 +166,25 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @param mixed $fields Transaction fields
 	 */
 	private function save_invoice( $fields ) {
-
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 
-		if ( $this->is_admin_user() && is_array( $fields ) && ! empty( $fields['user_id'] ) && ! empty( $fields['membership_id'] ) ) {
-
+		if ( $this->is_admin_user()
+			&& is_array( $fields )
+			&& ! empty( $fields['user_id'] )
+			&& ! empty( $fields['membership_id'] )
+		) {
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
 
 			$ms_relationship = MS_Model_Relationship::get_subscription( $member->id, $membership_id );
-			if ( empty( $ms_relationship ) ){
-				$ms_relationship = MS_Model_Relationship::create_ms_relationship( $membership_id, $member->id, $gateway_id );
-			}
-			else {
+			if ( empty( $ms_relationship ) ) {
+				$ms_relationship = MS_Model_Relationship::create_ms_relationship(
+					$membership_id,
+					$member->id,
+					$gateway_id
+				);
+			} else {
 				$ms_relationship->gateway_id = $gateway_id;
 				$ms_relationship->save();
 			}
@@ -188,8 +193,7 @@ class MS_Controller_Billing extends MS_Controller {
 			if ( ! $invoice->is_valid() ) {
 				$invoice = MS_Model_Invoice::create_invoice( $ms_relationship, false, false );
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
-			}
-			else {
+			} else {
 				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
 			}
 
@@ -200,8 +204,7 @@ class MS_Controller_Billing extends MS_Controller {
 			$invoice->save();
 
 			if ( ! empty( $fields['execute'] ) ) {
-				$gateway = $ms_relationship->get_gateway();
-				$gateway->invoice_changed( $invoice );
+				$invoice->changed();
 			}
 		}
 

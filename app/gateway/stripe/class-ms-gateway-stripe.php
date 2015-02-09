@@ -184,7 +184,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 			if ( 0 == $invoice->total ) {
 				// Free, just process.
-				$this->invoice_changed( $invoice );
+				$invoice->changed();
 			} else {
 				// Send request to gateway.
 				$charge = Stripe_Charge::create(
@@ -197,18 +197,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 				);
 
 				if ( true == $charge->paid ) {
-					$invoice->external_id = $charge->id;
-					$invoice->status = MS_Model_Invoice::STATUS_PAID;
-					$invoice->save();
-
-					$invoice = $this->invoice_changed( $invoice );
-
-					/**
-					 * Notify Add-ons that an invoice was paid.
-					 *
-					 * @since 1.1.0
-					 */
-					do_action( 'ms_invoice_paid', $invoice );
+					$invoice->pay_it( $this->id, $charge->id );
 				}
 			}
 		} else {
@@ -245,7 +234,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 				if ( ! empty( $customer ) ) {
 					if ( 0 == $invoice->total ) {
-						$this->invoice_changed( $invoice );
+						$invoice->changed();
 					} else {
 						$charge = Stripe_Charge::create(
 							array(
@@ -257,18 +246,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 						);
 
 						if ( true == $charge->paid ) {
-							$invoice->external_id = $charge->id;
-							$invoice->status = MS_Model_Invoice::STATUS_PAID;
-							$invoice->save();
-
-							$invoice = $this->invoice_changed( $invoice );
-
-							/**
-							 * Notify Add-ons that an invoice was paid.
-							 *
-							 * @since 1.1.0
-							 */
-							do_action( 'ms_invoice_paid', $invoice );
+							$invoice->pay_it( $this->id, $charge->id );
 						}
 					}
 				} else {
