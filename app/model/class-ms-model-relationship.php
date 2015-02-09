@@ -142,6 +142,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	protected $source = '';
 
 	/**
+	 * The number of successful payments that were made for this subscription.
+	 *
+	 * We use this value to determine the end of a recurring payment plan.
+	 * Also this information is displayed in the member-info popup (only for
+	 * admins; see MS_View_Member_Dialog)
+	 *
+	 * @since 1.1.0
+	 * @var array {
+	 *      A list of all payments that were made [since 1.1.0]
+	 *
+	 *      string $date    Payment date/time.
+	 *      number $amount  Payment-Amount.
+	 *      string $gateway Gateway that confirmed payment.
+	 * }
+	 */
+	protected $payments = array();
+
+	/**
 	 * The related membership model object.
 	 *
 	 * @since 1.0.0
@@ -1208,6 +1226,25 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$desc,
 			$membership
 		);
+	}
+
+	/**
+	 * Saves information on a payment that was made.
+	 *
+	 * @since 1.1.0
+	 */
+	public function add_payment( $amount, $gateway ) {
+		if ( ! is_array( $this->payments ) ) {
+			$this->payments = array();
+		}
+
+		$this->payments[] = array(
+			'date' => MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT ),
+			'amount' => $amount,
+			'gateway' => $gateway,
+		);
+
+		$this->save();
 	}
 
 	/**

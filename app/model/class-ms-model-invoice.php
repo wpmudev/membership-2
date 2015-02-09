@@ -778,6 +778,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$this->status = MS_Model_Invoice::STATUS_PAID;
 		$this->save();
 
+		if ( $this->total > 0 ) {
+			// Save details on the payment.
+			$subscription = $this->get_subscription();
+			$subscription->add_payment( $this->total, $gateway_id );
+		}
 
 		// Process the
 		$this->changed();

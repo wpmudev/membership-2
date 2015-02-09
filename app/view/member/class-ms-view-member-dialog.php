@@ -148,12 +148,24 @@ class MS_View_Member_Dialog extends MS_Dialog {
 								<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
 							</th>
 							<?php endif; ?>
+							<th class="column-payments">
+								<?php _e( 'Payments', MS_TEXT_DOMAIN ); ?>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
 					<?php
 					foreach ( $member->subscriptions as $subscription ) :
 						$membership = $subscription->get_membership();
+						$payments = $subscription->payments;
+
+						$num_payments = count( $payments );
+						$amount_payments = 0;
+						foreach ( $payments as $payment ) {
+							if ( ! empty( $payment['amount'] ) ) {
+								$amount_payments += floatval( $payment['amount'] );
+							}
+						}
 						?>
 						<tr>
 							<td class="column-membership">
@@ -183,7 +195,17 @@ class MS_View_Member_Dialog extends MS_Dialog {
 									echo '' . $subscription->trial_expire_date;
 								}
 								?>
+							</td>
 							<?php endif; ?>
+							<td class="column-payments">
+								<?php
+								printf(
+									'<b>%1$s</b> (%3$s %2$s)',
+									$num_payments,
+									MS_Helper_Billing::format_price( $amount_payments ),
+									$currency
+								);
+								?>
 							</td>
 						</tr>
 					<?php endforeach; ?>
