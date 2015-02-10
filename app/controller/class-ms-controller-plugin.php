@@ -71,6 +71,25 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		/*
+		 * Remove the "&msg" attribute from the URL if it was already present in
+		 * the previous request.
+		 */
+		if ( empty( $_POST ) ) {
+			/*
+			 * No form was submitted:
+			 * It's save to redirect the request without losing form-data.
+			 */
+			if ( isset( $_GET['msg'] )
+				&& MS_Helper_Utility::is_current_url( $_SERVER['HTTP_REFERER'] )
+			) {
+				// A msg is set AND the referer URL has the same msg flag!
+				$url = remove_query_arg( array( 'msg' ) );
+				wp_safe_redirect( $url );
+				exit;
+			}
+		}
+
 		// Instantiate Plugin model - protection implementation.
 		$this->model = MS_Factory::load( 'MS_Model_Plugin' );
 
