@@ -243,6 +243,7 @@
 		.ms-settings-footer {
 			position: absolute;
 			bottom: -60px;
+			z-index: 10;
 		}
 
 		th.column-active,

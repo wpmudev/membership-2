@@ -609,6 +609,7 @@
 .ms-wrap .ms-settings-footer {
   position: relative;
   margin: 10px 0;
+  z-index: 10;
 }
 
 /**
@@ -1482,6 +1483,7 @@
 #wpwrap .ms-wrap .ms-membership-payment .ms-settings-footer {
   position: absolute;
   bottom: -60px;
+  z-index: 10;
 }
 #wpwrap .ms-wrap .ms-membership-payment th.column-active,
 #wpwrap .ms-wrap .ms-membership-payment td.column-active {
