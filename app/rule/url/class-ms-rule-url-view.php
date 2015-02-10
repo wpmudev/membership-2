@@ -3,7 +3,7 @@
 class MS_Rule_Url_View extends MS_View {
 
 	public function to_html() {
-		$membership = $this->data['membership'];
+		$membership = MS_Model_Membership::get_base();
 		$rule = $membership->get_rule( MS_Rule_Url::RULE_ID );
 
 		$listtable = new MS_Rule_Url_ListTable( $rule );
