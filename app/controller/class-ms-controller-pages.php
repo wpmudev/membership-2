@@ -52,6 +52,9 @@ class MS_Controller_Pages extends MS_Controller {
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PAGES, 'ajax_action_update_pages' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MENU, 'ajax_action_toggle_menu' );
+
+		// Add a special "state" to membership pages in the WP Page-list
+		$this->add_filter( 'display_post_states', 'post_states', 10, 2 );
 	}
 
 	/**
@@ -122,6 +125,30 @@ class MS_Controller_Pages extends MS_Controller {
 
 		echo '' . $msg;
 		exit;
+	}
+
+	/**
+	 * This filter is called by WordPress when the page-listtable is created to
+	 * display all available Posts/Pages. We use this filter to add a note
+	 * to all pages that are special membership pages.
+	 *
+	 * @since  1.1.0
+	 * @param  array $states
+	 * @param  WP_Post $post
+	 * @return array
+	 */
+	public function post_states( $states, $post ) {
+		if ( $post->post_type == 'page' ) {
+			if ( MS_Model_Pages::is_membership_page( $post->ID ) ) {
+				$states['protected_content'] = sprintf(
+					'<small style="%2$s">%1$s</small>',
+					__( 'Protected Content Page', MS_TEXT_DOMAIN ),
+					'background:#aaa;color:#fff;padding:1px 4px;border-radius:4px;'
+				);
+			}
+		}
+
+		return $states;
 	}
 
 }
