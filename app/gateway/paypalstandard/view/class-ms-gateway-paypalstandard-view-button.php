@@ -361,6 +361,22 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 				break;
 		}
 
+		if ( 1 == $recurring ) {
+			if ( $membership->pay_cycle_repetitions == 1 ) {
+				$recurring = 0;
+			} elseif ( $membership->pay_cycle_repetitions > 1 ) {
+				/**
+				 * Recurring times.
+				 * The number of times that a recurring payment is made.
+				 */
+				$fields['srt'] = array(
+					'id' => 'srt',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $membership->pay_cycle_repetitions,
+				);
+			}
+		}
+
 		/**
 		 * Recurring field.
 		 * 0 - one time payment
