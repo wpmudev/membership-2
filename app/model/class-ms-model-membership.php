@@ -1668,8 +1668,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			switch ( $property ) {
 				case 'name':
 				case 'title':
-				case 'description':
 					$this->$property = sanitize_text_field( $value );
+					break;
+
+				case 'description':
+					$this->$property = wp_kses( $value, 'post' );
 					break;
 
 				case 'type':
