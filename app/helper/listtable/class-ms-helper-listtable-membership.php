@@ -143,13 +143,15 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			__( 'Edit', MS_TEXT_DOMAIN )
 		);
 
-		$actions['payment'] = sprintf(
-			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
-			esc_attr( $_REQUEST['page'] ),
-			MS_Controller_Membership::STEP_PAYMENT,
-			esc_attr( $item->id ),
-			$item->is_free ? __( 'Access options', MS_TEXT_DOMAIN ) : __( 'Payment options', MS_TEXT_DOMAIN )
-		);
+		if ( ! $item->is_system() ) {
+			$actions['payment'] = sprintf(
+				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
+				esc_attr( $_REQUEST['page'] ),
+				MS_Controller_Membership::STEP_PAYMENT,
+				esc_attr( $item->id ),
+				$item->is_free ? __( 'Access options', MS_TEXT_DOMAIN ) : __( 'Payment options', MS_TEXT_DOMAIN )
+			);
+		}
 
 		$actions['delete'] = sprintf(
 			'<span class="delete"><a href="%s">%s</a></span>',
