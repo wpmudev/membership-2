@@ -161,7 +161,7 @@ class MS_View_Membership_Add extends MS_View {
 		);
 
 		// Only one Guest Membership can be added
-		if ( MS_Model_Membership::get_guest() ) {
+		if ( MS_Model_Membership::get_guest()->is_valid() ) {
 			unset( $fields['type']['field_options'][MS_Model_Membership::TYPE_GUEST] );
 		}
 
