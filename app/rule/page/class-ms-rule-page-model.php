@@ -51,6 +51,22 @@ class MS_Rule_Page_Model extends MS_Rule {
 	protected $start_date;
 
 	/**
+	 * Initialize the rule.
+	 *
+	 * @since 1.1.0
+	 * @param int $membership_id
+	 */
+	public function __construct( $membership_id ) {
+		parent::__construct( $membership_id );
+
+		$this->add_filter(
+			'ms_rule_exclude_items-' . $this->rule_type,
+			'exclude_items',
+			10, 2
+		);
+	}
+
+	/**
 	 * Set initial protection (front-end only)
 	 *
 	 * @since 1.0.0
@@ -250,6 +266,29 @@ class MS_Rule_Page_Model extends MS_Rule {
 	 */
 	public function get_query_args( $args = null ) {
 		return parent::prepare_query_args( $args, 'get_pages' );
+	}
+
+	/**
+	 * Exclude the special Protected-Content pages from the results as they
+	 * cannot be protected.
+	 *
+	 * @since  1.1.0
+	 * @param  array $excluded
+	 * @param  array $args
+	 * @return array
+	 */
+	public function exclude_items( $excluded, $args ) {
+		static $Page_Ids = null;
+
+		if ( null === $Page_Ids ) {
+			$Page_Ids = array();
+			$types = MS_Model_Pages::get_page_types();
+			foreach ( $types as $type => $title ) {
+				$Page_Ids[] = MS_Model_Pages::get_setting( $type );
+			}
+		}
+
+		return array_merge( $excluded, $Page_Ids );
 	}
 
 }

@@ -971,7 +971,11 @@ class MS_Rule extends MS_Model {
 			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
 		}
 		if ( ! empty( $args['membership_id'] ) ) {
-			$child_rule = MS_Factory::load( 'MS_Model_Membership', $args['membership_id'] )->get_rule( $this->rule_type );
+			$child_membership = MS_Factory::load(
+				'MS_Model_Membership',
+				$args['membership_id']
+			);
+			$child_rule = $child_membership->get_rule( $this->rule_type );
 		}
 
 		$base_items = array_keys( $base_rule->rule_value, true );
@@ -1012,6 +1016,22 @@ class MS_Rule extends MS_Model {
 				}
 				break;
 		}
+
+		/**
+		 * Allow rules/Add-ons to modify the exclude/include list.
+		 *
+		 * @since 1.1.0
+		 */
+		$exclude = apply_filters(
+			'ms_rule_exclude_items-' . $this->rule_type,
+			$exclude,
+			$args
+		);
+		$include = apply_filters(
+			'ms_rule_include_items-' . $this->rule_type,
+			$include,
+			$args
+		);
 
 		$res = (object) array(
 			'include' => null,
