@@ -12,8 +12,11 @@ class MS_Rule_Adminside_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Admin Side Protection', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Protected Admin Side pages are only available for members. The below list contains all possible menu items that WordPress knows about - some of these items might not be available on your installation.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protect Admin Side pages', MS_TEXT_DOMAIN ),
+				'desc' => array(
+					__( 'Note that WordPress also restricts access to pages before Content Protection is applied.', MS_TEXT_DOMAIN ),
+					__( 'Tipp: Combine with the <b>User Role</b> rules to grant your members additional permission if required!', MS_TEXT_DOMAIN ),
+				),
 			),
 			MS_Rule_Adminside::RULE_ID,
 			$this

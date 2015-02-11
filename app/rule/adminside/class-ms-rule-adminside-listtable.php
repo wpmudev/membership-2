@@ -54,4 +54,9 @@ class MS_Rule_Adminside_ListTable extends MS_Helper_ListTable_Rule {
 		return $item->post_title;
 	}
 
+	public function column_access( $item, $column_name ) {
+		$this->name['default_access'] = __( 'Handled by WordPress', MS_TEXT_DOMAIN );
+		return parent::column_access( $item, $column_name );
+	}
+
 }

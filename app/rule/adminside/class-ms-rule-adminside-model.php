@@ -206,6 +206,16 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 		$contents = array();
 		$full_menu = MS_Plugin::instance()->controller->get_admin_menu();
 
+		// Admin-Pages in this list cannot be protected.
+		$blacklist = array(
+			'index.php',
+			'edit-tags.php?taxonomy=link_category',
+		);
+		$blacklist = apply_filters(
+			'ms_rule_adminside_blacklist',
+			$blacklist
+		);
+
 		if ( null === $Items ) {
 			$Items = array();
 			foreach ( $full_menu['main'] as $pos => $item ) {
@@ -215,8 +225,10 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 				$parent_name = trim( array_shift( $parts ) );
 				$skip_parent = false;
 
-				// Search the submenu name...
-				if ( ! empty( $args['s'] ) ) {
+				if ( in_array( $item[2], $blacklist ) ) {
+					$skip_parent = true;
+				} elseif ( ! empty( $args['s'] ) ) {
+					// Search the submenu name...
 					if ( stripos( $parent_name, $args['s'] ) === false ) {
 						$skip_parent = true;
 					}
@@ -242,6 +254,8 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 								continue;
 							}
 						}
+
+						if ( in_array( $child[2], $blacklist ) ) { continue; }
 
 						$Items[$item[2] . ':' . $child[2]] = (object) array(
 							'name' => $parent_name . ' &rarr; ' . $child_name,
