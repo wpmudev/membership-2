@@ -235,27 +235,27 @@ class MS_Model_Plugin extends MS_Model {
 				}
 
 				// Build a list of memberships the user belongs to and check permission.
-				foreach ( $this->member->subscriptions as $ms_relationship ) {
+				foreach ( $this->member->subscriptions as $subscription ) {
 					// Verify status of the membership.
 					// Only active, trial or canceled (until it expires) status memberships.
-					if ( ! $this->member->has_membership( $ms_relationship->membership_id ) ) {
+					if ( ! $this->member->has_membership( $subscription->membership_id ) ) {
 						if ( $simulation ) {
 							$Info['reason'][] = sprintf(
 								__( 'Skipped: Not a member of "%s"', MS_TEXT_DOMAIN ),
-								$ms_relationship->get_membership()->name
+								$subscription->get_membership()->name
 							);
 						}
 
 						continue;
 					}
 
-					if ( $base_id !== $ms_relationship->membership_id ) {
-						$Info['memberships'][] = $ms_relationship->membership_id;
+					if ( $base_id !== $subscription->membership_id ) {
+						$Info['memberships'][] = $subscription->membership_id;
 					}
 
 					// If permission is not clear yet then check current membership...
 					if ( $Info['has_access'] !== true ) {
-						$membership = $ms_relationship->get_membership();
+						$membership = $subscription->get_membership();
 						$access = $membership->has_access_to_current_page();
 
 						if ( null === $access ) {
@@ -416,9 +416,9 @@ class MS_Model_Plugin extends MS_Model {
 
 		$rule_types = MS_Model_Rule::get_rule_types();
 
-		foreach ( $this->member->subscriptions as $ms_relationship ) {
+		foreach ( $this->member->subscriptions as $subscription ) {
 			foreach ( $rule_types as $rule_type ) {
-				$rule = $ms_relationship->get_membership()->get_rule( $rule_type );
+				$rule = $subscription->get_membership()->get_rule( $rule_type );
 			}
 		}
 	}
@@ -598,8 +598,8 @@ class MS_Model_Plugin extends MS_Model {
 		);
 		$subscriptions = MS_Model_Relationship::get_subscriptions( $args );
 
-		foreach ( $subscriptions as $ms_relationship ) {
-			$ms_relationship->check_membership_status();
+		foreach ( $subscriptions as $subscription ) {
+			$subscription->check_membership_status();
 		}
 
 		do_action( 'ms_model_plugin_check_membership_status_after', $this );

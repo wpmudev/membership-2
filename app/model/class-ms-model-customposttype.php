@@ -118,14 +118,6 @@ class MS_Model_CustomPostType extends MS_Model {
 	static public $ignore_fields = array( 'post_type' );
 
 	/**
-	 * Sub-objects that need to be reset when de-serializing the object
-	 *
-	 * @since 1.1.0
-	 * @var array
-	 */
-	public $_subobjects = array( 'rules' );
-
-	/**
 	 * Save content in wp tables (wp_post and wp_postmeta).
 	 *
 	 * Update WP cache.

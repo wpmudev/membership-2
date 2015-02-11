@@ -195,23 +195,6 @@ class MS_Factory {
 			if ( ! isset( $Init_Obj[$obj->_factory_id] ) ) {
 				$Init_Obj[$obj->_factory_id] = true;
 				$obj->prepare_obj();
-
-				// Prepare all sub-objects.
-				if ( is_array( $obj->_subobjects ) ) {
-					foreach ( $obj->_subobjects as $itemname ) {
-						if ( property_exists( $obj, $itemname ) ) {
-							$itemlist = $obj->$itemname;
-							if ( is_array( $itemlist ) ) {
-								foreach ( $itemlist as $sub_obj ) {
-									self::prepare_obj( $sub_obj );
-								}
-							} elseif ( is_object( $itemlist ) ) {
-								self::prepare_obj( $itemlist );
-							}
-						}
-					}
-				}
-				// End of sub-object initialization.
 			}
 		}
 

@@ -457,31 +457,28 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
-	 * @param boolean $update_existing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
-	 * @param string $status Optional. The invoice status to find.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
+	 * @param boolean $create_missing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
 	 * @return MS_Model_Invoice
 	 */
-	public static function get_current_invoice( $ms_relationship, $update_existing = true, $status = null ) {
+	public static function get_current_invoice( $subscription, $create_missing = true ) {
 		$invoice = self::get_invoice(
-			$ms_relationship->id,
-			$ms_relationship->current_invoice_number,
-			$status
+			$subscription->id,
+			$subscription->current_invoice_number
 		);
 
-		if ( empty( $invoice ) || $update_existing ) {
+		if ( empty( $invoice ) && $create_missing ) {
 			$invoice = self::create_invoice(
-				$ms_relationship,
-				$ms_relationship->current_invoice_number
+				$subscription,
+				$subscription->current_invoice_number
 			);
 		}
 
 		return apply_filters(
 			'ms_model_invoice_get_current_invoice',
 			$invoice,
-			$ms_relationship,
-			$update_existing,
-			$status
+			$subscription,
+			$create_missing
 		);
 	}
 
@@ -490,20 +487,20 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
-	 * @param boolean $update_existing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
+	 * @param boolean $create_missing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
 	 * @return MS_Model_Invoice
 	 */
-	public static function get_next_invoice( $ms_relationship, $update_existing = true ) {
+	public static function get_next_invoice( $subscription, $create_missing = true ) {
 		$invoice = self::get_invoice(
-			$ms_relationship->id,
-			$ms_relationship->current_invoice_number + 1
+			$subscription->id,
+			$subscription->current_invoice_number + 1
 		);
 
-		if ( empty( $invoice ) || $update_existing ) {
+		if ( empty( $invoice ) && $create_missing ) {
 			$invoice = self::create_invoice(
-				$ms_relationship,
-				$ms_relationship->current_invoice_number + 1
+				$subscription,
+				$subscription->current_invoice_number + 1
 			);
 		}
 
@@ -514,8 +511,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_invoice_get_next_invoice',
 			$invoice,
-			$ms_relationship,
-			$update_existing
+			$subscription,
+			$create_missing
 		);
 	}
 
@@ -552,11 +549,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @param MS_Model_Relationship $ms_relationship The membership to create invoice for.
 	 * @param int $invoice_number Optional. The invoice number.
-	 * @param boolean $update_existing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
 	 *
 	 * @return object $invoice
 	 */
-	public static function create_invoice( $ms_relationship, $invoice_number = false, $update_existing = true ) {
+	public static function create_invoice( $ms_relationship, $invoice_number = false ) {
 		$membership = $ms_relationship->get_membership();
 
 		if ( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
@@ -571,11 +567,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		if ( empty( $invoice_number ) ) {
 			$invoice_number = $ms_relationship->current_invoice_number;
-		}
-
-		/* Search for existing invoice */
-		if ( $update_existing ) {
-			$invoice = self::get_invoice( $ms_relationship->id, $invoice_number );
 		}
 
 		// No existing invoice, create a new one.
@@ -695,8 +686,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_relationship_create_invoice',
 			$invoice,
 			$ms_relationship,
-			$invoice_number,
-			$update_existing
+			$invoice_number
 		);
 	}
 
@@ -859,15 +849,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					$member->active = true;
 					$subscription->config_period();
 					$subscription->set_status( MS_Model_Relationship::STATUS_ACTIVE );
-
-					// Generate next invoice
-					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
-						|| $trial_period
-					) {
-						$next_invoice = MS_Model_Invoice::get_current_invoice( $subscription );
-						$next_invoice->gateway_id = $this->gateway_id;
-						$next_invoice->save();
-					}
 					break;
 
 				case MS_Model_Invoice::STATUS_FAILED:
