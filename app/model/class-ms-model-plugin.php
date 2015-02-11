@@ -256,7 +256,7 @@ class MS_Model_Plugin extends MS_Model {
 					// If permission is not clear yet then check current membership...
 					if ( $Info['has_access'] !== true ) {
 						$membership = $ms_relationship->get_membership();
-						$access = $membership->has_access_to_current_page( $ms_relationship );
+						$access = $membership->has_access_to_current_page();
 
 						if ( null === $access ) {
 							if ( $simulation ) {

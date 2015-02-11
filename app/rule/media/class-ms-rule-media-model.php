@@ -430,7 +430,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 				// check for access configuration
 				$membership = $this->ms_relationship->get_membership();
-				if ( $membership->has_access_to_current_page( $this->ms_relationship, $post_id ) ) {
+				if ( $membership->has_access_to_current_page( $post_id ) ) {
 					$upload_dir = wp_upload_dir();
 					$file = trailingslashit( $upload_dir['basedir'] ) . $image;
 					$this->output_file( $file );

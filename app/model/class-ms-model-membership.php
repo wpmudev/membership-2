@@ -1308,7 +1308,17 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 
 		foreach ( $rule_types as $rule_type ) {
-			$rules[ $rule_type ] = $this->get_rule( $rule_type );
+			$rule = $this->get_rule( $rule_type );
+
+			if ( $rule->rule_type != $rule_type ) {
+				// This means that the $rule_type was not found...
+				continue;
+			} elseif ( ! $rule->has_rules() ) {
+				// The rule does not protect anything...
+				continue;
+			}
+
+			$rules[ $rule_type ] = $rule;
 		}
 
 		return apply_filters(
@@ -1353,12 +1363,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 * @param int $post_id
 	 * @return bool|null True if has access to current page. Default is false.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access_to_current_page( $ms_relationship, $post_id = null ) {
+	public function has_access_to_current_page( $post_id = null ) {
 		$has_access = null;
 		$this->_access_reason = array();
 
@@ -1408,7 +1417,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_membership_has_access_to_current_page',
 			$has_access,
-			$ms_relationship,
 			$post_id,
 			$this
 		);
