@@ -10,8 +10,11 @@ class MS_Rule_MemberCaps_View extends MS_View {
 		$rule_listtable->prepare_items();
 
 		$header_data = array();
-		$header_data['title'] = __( 'Member Capabilities', MS_TEXT_DOMAIN );
-		$header_data['desc'] = __( 'Protected Capabilities will be removed from all users. Use individual Memberships to grant Capabilities again for Members only.', MS_TEXT_DOMAIN );
+		$header_data['title'] = __( 'Assign WordPress Capabilities to your Members', MS_TEXT_DOMAIN );
+		$header_data['desc'] = array(
+			__( 'Fine-tune member permissions by assigning certain Capabilities to each Membership. All Members of that Membership are granted the specified Capabilities.', MS_TEXT_DOMAIN ),
+			__( 'Important: All users that are not inside these Memberships will be striped of any Protected Capability!', MS_TEXT_DOMAIN ),
+		);
 
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',

@@ -9,8 +9,11 @@ class MS_Rule_MemberRoles_View extends MS_View {
 		$rule_listtable = new MS_Rule_MemberRoles_ListTable( $rule );
 		$rule_listtable->prepare_items();
 
-		$header_data['title'] = __( 'User Roles', MS_TEXT_DOMAIN );
-		$header_data['desc'] = __( 'Protected User Roles can be assigned to a Membership. When they are not used in a Membership then these settings here have no effect.', MS_TEXT_DOMAIN );
+		$header_data['title'] = __( 'Assign WordPress User Roles to your Members', MS_TEXT_DOMAIN );
+		$header_data['desc'] = array(
+			__( 'When assigning a Membership to any role, then this role will be added to all members of that Membership. You can even assign multiple roles to a single Membership.', MS_TEXT_DOMAIN ),
+			__( 'For security reasons the Administrator role cannot be assigned to a Membership.', MS_TEXT_DOMAIN ),
+		);
 
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',

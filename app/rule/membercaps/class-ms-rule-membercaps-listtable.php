@@ -35,6 +35,7 @@ class MS_Rule_MemberCaps_ListTable extends MS_Helper_ListTable_Rule {
 		parent::__construct( $model );
 		$this->name['singular'] = __( 'Capability', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Capabilities', MS_TEXT_DOMAIN );
+		$this->name['default_access'] = __( 'Default WordPress Logic', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {

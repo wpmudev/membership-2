@@ -35,6 +35,7 @@ class MS_Rule_Adminside_ListTable extends MS_Helper_ListTable_Rule {
 		parent::__construct( $model );
 		$this->name['singular'] = __( 'Admin Page', MS_TEXT_DOMAIN );
 		$this->name['plural'] = __( 'Admin Pages', MS_TEXT_DOMAIN );
+		$this->name['default_access'] = __( 'Handled by WordPress', MS_TEXT_DOMAIN );
 	}
 
 	public function get_columns() {
@@ -52,11 +53,6 @@ class MS_Rule_Adminside_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function column_name( $item ) {
 		return $item->post_title;
-	}
-
-	public function column_access( $item, $column_name ) {
-		$this->name['default_access'] = __( 'Handled by WordPress', MS_TEXT_DOMAIN );
-		return parent::column_access( $item, $column_name );
 	}
 
 }
