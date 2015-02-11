@@ -24,6 +24,8 @@
 class MS_View_Member_List extends MS_View {
 
 	public function to_html() {
+		$this->check_simulation();
+
 		// Search for orphaned relationships and delete them.
 		MS_Model_Member::clean_db();
 

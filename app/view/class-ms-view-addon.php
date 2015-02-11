@@ -47,6 +47,8 @@ class MS_View_Addon extends MS_View {
 	 * @return object
 	 */
 	public function to_html() {
+		$this->check_simulation();
+
 		$items = $this->data['addon']->get_addon_list();
 		$lang = (object) array(
 			'active_badge' => __( 'ACTIVE', MS_TEXT_DOMAIN ),

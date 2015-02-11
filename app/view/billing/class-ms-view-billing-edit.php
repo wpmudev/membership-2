@@ -20,6 +20,8 @@ class MS_View_Billing_Edit extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
+		$this->check_simulation();
+
 		$fields = $this->prepare_fields();
 		$form_url = remove_query_arg( array( 'action', 'invoice_id' ) );
 

@@ -18,6 +18,8 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
+		$this->check_simulation();
+
 		$desc = array(
 			__( 'Choose Pages, Categories etc. that you want to make <strong>unavailable</strong> to visitors, and non-members.', MS_TEXT_DOMAIN ),
 		);

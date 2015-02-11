@@ -3,6 +3,8 @@
 class MS_View_Membership_Overview_Simple extends MS_View {
 
 	public function to_html() {
+		$this->check_simulation();
+
 		$membership = $this->data['membership'];
 
 		$toggle = array(

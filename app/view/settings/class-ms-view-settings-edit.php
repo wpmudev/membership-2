@@ -49,6 +49,8 @@ class MS_View_Settings_Edit extends MS_View {
 	 * @return object
 	 */
 	public function to_html() {
+		$this->check_simulation();
+
 		// Setup navigation tabs.
 		$tabs = $this->data['tabs'];
 		$desc = array();

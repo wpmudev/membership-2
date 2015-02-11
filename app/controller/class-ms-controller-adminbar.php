@@ -1,6 +1,6 @@
 <?php
 /**
- * This file defines the MS_Controller_Admin_Bar class.
+ * This file defines the MS_Controller_Adminbar class.
  *
  * @copyright Incsub (http://incsub.com/)
  *
@@ -69,6 +69,36 @@ class MS_Controller_Adminbar extends MS_Controller {
 	}
 
 	/**
+	 * Returns the URL to start/switch simulation of a specific membership.
+	 *
+	 * @since  1.1.0
+	 * @param  int $id Membership-ID
+	 * @return string URL
+	 */
+	static public function get_simulation_url( $id ) {
+		$link_url = admin_url(
+			'?action=ms_simulate&membership_id=' . $id,
+			is_ssl() ? 'https' : 'http'
+		);
+		$link_url = wp_nonce_url(
+			$link_url,
+			'ms_simulate-' . $id
+		);
+
+		return $link_url;
+	}
+
+	/**
+	 * Returns the URL to end simulation.
+	 *
+	 * @since  1.1.0
+	 * @return string URL
+	 */
+	static public function get_simulation_exit_url() {
+		return self::get_simulation_url( 0 );
+	}
+
+	/**
 	 * Initialize the Admin-Bar after we have determined the current user.
 	 *
 	 * @since  1.1.0
@@ -131,18 +161,27 @@ class MS_Controller_Adminbar extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_bar_manager() {
-		// Check for memberhship id simulation GET request
+		$redirect = false;
+
+		$isset = array( 'simulate_submit', 'simulate_type' );
 		WDev()->array->equip_get( 'membership_id' );
+
 		if ( $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
+			/*
+			 * Check for memberhship id simulation GET request.
+			 * - Any valid Membership_id will simulate that membership.
+			 * - An ID of "0" will exit simulation mode.
+			 */
 			$this->simulate->membership_id = absint( $_GET['membership_id'] );
 			$this->simulate->save();
-			wp_safe_redirect( wp_get_referer() );
-			exit;
-		}
 
-		// Check for simulation periods/dates in POST request
-		$isset = array( 'simulate_submit', 'simulate_type' );
-		if ( self::validate_required( $isset, 'POST', false ) ) {
+			if ( is_admin() && $this->simulate->is_simulating() ) {
+				$redirect = admin_url();
+			} else {
+				$redirect = wp_get_referer();
+			}
+		} elseif ( self::validate_required( $isset, 'POST', false ) ) {
+			// Change the simulation date.
 			$this->simulate->type = $_POST['simulate_type'];
 
 			if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
@@ -150,9 +189,13 @@ class MS_Controller_Adminbar extends MS_Controller {
 					$this->simulate->date = $_POST['simulate_date'];
 				}
 			}
-
 			$this->simulate->save();
-			wp_safe_redirect( wp_get_referer() );
+
+			$redirect = wp_get_referer();
+		}
+
+		if ( $redirect ) {
+			wp_safe_redirect( $redirect );
 			exit;
 		}
 	}
@@ -172,7 +215,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		$nodes = $wp_admin_bar->get_nodes();
 
 		$exclude = apply_filters(
-			'ms_controller_admin_bar_remove_admin_bar_nodes_exclude',
+			'ms_controller_adminbar_remove_admin_bar_nodes_exclude',
 			$exclude,
 			$nodes
 		);
@@ -186,7 +229,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		}
 
 		do_action(
-			'ms_controller_admin_bar_remove_admin_bar_nodes',
+			'ms_controller_adminbar_remove_admin_bar_nodes',
 			$nodes,
 			$exclude
 		);
@@ -229,7 +272,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 
 		$wp_admin_bar->add_menu(
 			apply_filters(
-				'ms_controller_admin_bar_simulate_node',
+				'ms_controller_adminbar_simulate_node',
 				array(
 					'id'     => 'membership-simulate-period',
 					'title'  => $title,
@@ -237,7 +280,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 					'meta'   => array(
 						'html'  => $html,
 						'class' => apply_filters(
-							'ms_controller_admin_bar_simulate_period_class',
+							'ms_controller_adminbar_simulate_period_class',
 							'membership-simulate-period'
 						),
 						'title' => __( 'Simulate period', MS_TEXT_DOMAIN ),
@@ -353,13 +396,13 @@ class MS_Controller_Adminbar extends MS_Controller {
 
 		$wp_admin_bar->add_node(
 			apply_filters(
-				'ms_controller_admin_bar_add_view_site_as_node',
+				'ms_controller_adminbar_add_view_site_as_node',
 				array(
 					'id'     => 'membership-simulate',
 					'title'  => $title,
 					'meta'   => array(
 						'html'  => $html,
-						'class' => apply_filters( 'ms_controller_admin_bar_view_site_as_class', 'membership-view-site-as' ),
+						'class' => apply_filters( 'ms_controller_adminbar_view_site_as_class', 'membership-view-site-as' ),
 						'title' => __( 'Select a membership to view your site as', MS_TEXT_DOMAIN ),
 					),
 				)
@@ -381,14 +424,11 @@ class MS_Controller_Adminbar extends MS_Controller {
 		$id = ! empty( $this->memberships ) ? $this->memberships[0]->id : false;
 
 		if ( $id ) {
-			$link_url = wp_nonce_url(
-				admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
-				"ms_simulate-{$id}"
-			);
+			$link_url = self::get_simulation_url( $id );
 
 			$wp_admin_bar->add_node(
 				apply_filters(
-					'ms_controller_admin_bar_add_test_membership_node',
+					'ms_controller_adminbar_add_test_membership_node',
 					array(
 						'id'     => 'ms-test-memberships',
 						'title'  => __( 'Test Memberships', MS_TEXT_DOMAIN ),
@@ -422,7 +462,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 
 		$wp_admin_bar->add_node(
 			apply_filters(
-				'ms_controller_admin_bar_add_unprotected_node',
+				'ms_controller_adminbar_add_unprotected_node',
 				array(
 					'id'     => 'ms-unprotected',
 					'title'  => __( 'Content Protection is disabled', MS_TEXT_DOMAIN ),
@@ -449,15 +489,11 @@ class MS_Controller_Adminbar extends MS_Controller {
 		if ( ! $this->simulate->is_simulating() ) { return; }
 
 		// reset simulation.
-		$id = 0;
-		$link_url = wp_nonce_url(
-			admin_url( "?action=ms_simulate&membership_id={$id}", ( is_ssl() ? 'https' : 'http' ) ),
-			"ms_simulate-{$id}"
-		);
+		$link_url = self::get_simulation_exit_url();
 
 		$wp_admin_bar->add_node(
 			apply_filters(
-				'ms_controller_admin_bar_add_exit_test_node',
+				'ms_controller_adminbar_add_exit_test_node',
 				array(
 					'id'     => 'ms-exit-memberships',
 					'title'  => __( 'Exit Test Mode', MS_TEXT_DOMAIN ),

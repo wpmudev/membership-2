@@ -44,6 +44,15 @@ class MS_View extends MS_Hooker {
 	protected $data;
 
 	/**
+	 * Flag is set to true while in Simulation mode.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var bool
+	 */
+	static protected $is_simulating = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.0.0
@@ -51,6 +60,8 @@ class MS_View extends MS_Hooker {
 	 * @param array $data The data what has to be associated with this render.
 	 */
 	public function __construct( $data = array() ) {
+		static $Simulate = null;
+
 		$this->data = $data;
 
 		/**
@@ -60,6 +71,36 @@ class MS_View extends MS_Hooker {
 		 * @param object $this The MS_View object.
 		 */
 		do_action( 'ms_view_construct', $this );
+
+		if ( null === $Simulate ) {
+			$Simulate = MS_Factory::load( 'MS_Model_Simulate' );
+			self::$is_simulating = $Simulate->is_simulating();
+		}
+	}
+
+	/**
+	 * Displays a note while simulation mode is enabled.
+	 *
+	 * @since  1.1.0
+	 */
+	protected function check_simulation() {
+		if ( self::$is_simulating ) :
+		?>
+		<div class="error below-h2">
+			<p>
+				<strong><?php _e( 'You are in Simulation mode.', MS_TEXT_DOMAIN ); ?></strong>
+			</p>
+			<p>
+				<?php _e( 'Content displayed here might be altered because of simulated restrictions.', MS_TEXT_DOMAIN ); ?><br />
+				<?php printf(
+					__( 'We recommend to %sExit Simulation%s before making any changes!', MS_TEXT_DOMAIN ),
+					'<a href="' . MS_Controller_Adminbar::get_simulation_exit_url() . '">',
+					'</a>'
+				); ?>
+			</p>
+		</div>
+		<?php
+		endif;
 	}
 
 	/**
