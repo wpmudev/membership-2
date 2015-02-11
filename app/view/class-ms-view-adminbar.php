@@ -47,9 +47,6 @@ class MS_View_Adminbar extends MS_View {
 			<?php
 			if ( MS_Model_Simulate::TYPE_DATE == $this->data['simulate_type'] ) {
 				MS_Helper_Html::html_element( $fields['simulate_date'] );
-			} elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->data['simulate_type'] ) {
-				MS_Helper_Html::html_element( $fields['period_unit'] );
-				MS_Helper_Html::html_element( $fields['period_type'] );
 			}
 			MS_Helper_Html::html_element( $fields['simulate_type'] );
 			MS_Helper_Html::html_element( $fields['simulate_submit'] );
@@ -75,21 +72,6 @@ class MS_View_Adminbar extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['simulate_type'],
 				'class' => 'ms-admin-bar-date ms-date',
-			),
-
-			'period_unit' => array(
-				'id' => 'period_unit',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $this->data['period_unit'],
-				'class' => 'ms-admin-bar-period-unit ms-small',
-			),
-
-			'period_type' => array(
-				'id' => 'period_type',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $this->data['period_type'],
-				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
-				'class' => 'ms-admin-bar-period-type',
 			),
 
 			'simulate_date' => array(

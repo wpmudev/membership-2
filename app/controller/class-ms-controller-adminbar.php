@@ -145,16 +145,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		if ( self::validate_required( $isset, 'POST', false ) ) {
 			$this->simulate->type = $_POST['simulate_type'];
 
-			if ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
-				$isset = array( 'period_unit', 'period_type' );
-				if ( self::validate_required( $isset, 'POST', false ) ) {
-					$this->simulate->period = array(
-						'period_unit' => absint( $_POST['period_unit'] ),
-						'period_type' => $_POST['period_type'],
-					);
-				}
-			}
-			elseif ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
+			if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
 				if ( ! empty( $_POST['simulate_date'] ) ) {
 					$this->simulate->date = $_POST['simulate_date'];
 				}
@@ -229,11 +220,6 @@ class MS_Controller_Adminbar extends MS_Controller {
 			if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
 				$data['simulate_date'] = $this->simulate->date;
 				$title = __( 'View on: ', MS_TEXT_DOMAIN );
-			}
-			elseif ( MS_Model_Simulate::TYPE_PERIOD == $this->simulate->type ) {
-				$data['period_unit'] = absint( $this->simulate->period['period_unit'] );
-				$data['period_type'] = $this->simulate->period['period_type'];
-				$title = __( 'View in: ', MS_TEXT_DOMAIN );
 			}
 
 			$view = MS_Factory::create( 'MS_View_Adminbar' );
