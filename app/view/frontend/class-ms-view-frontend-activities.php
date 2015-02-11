@@ -6,7 +6,7 @@ class MS_View_Frontend_Activities extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-account-wrapper">
-			<?php if ( MS_Model_Member::is_logged_user() ) : ?>
+			<?php if ( MS_Model_Member::is_logged_in() ) : ?>
 				<h2>
 					<?php _e( 'Activity', MS_TEXT_DOMAIN ); ?>
 				</h2>

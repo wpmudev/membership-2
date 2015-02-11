@@ -238,6 +238,11 @@ class MS_Model_Member extends MS_Model {
 		);
 	}
 
+	//
+	//
+	//
+	// -------------------------------------------------------------- COLLECTION
+
 	/**
 	 * Get current member.
 	 *
@@ -245,192 +250,38 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @return MS_Model_Member The current member.
 	 */
-	public static function get_current_member() {
+	static public function get_current_member() {
 		return MS_Factory::load( 'MS_Model_Member', get_current_user_id() );
 	}
 
 	/**
-	 * Save member.
+	 * Checks if user-signup is enabled for this site or not.
 	 *
-	 * Create a new user is id is empty.
-	 * Save member fields to wp_user and wp_usermeta tables.
-	 * Set cache for further use in MS_Factory::load.
-	 * The usermeta are prefixed with 'ms_'.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return MS_Model_Member The saved member object.
+	 * @since  1.1.0
+	 * @return bool
 	 */
-	public function save() {
-		$class = get_class( $this );
+	static public function can_register() {
+		static $Signup_Allowed = null;
 
-		if ( empty( $this->id ) ) {
-			$this->create_new_user();
-		}
+		if ( null === $Signup_Allowed ) {
+			$Signup_Allowed = false;
 
-		if ( isset( $this->username ) ) {
-			$wp_user = new stdClass();
-			$wp_user->ID = $this->id;
-			$wp_user->nickname = $this->username;
-			$wp_user->user_nicename = $this->username;
-			$wp_user->first_name = $this->first_name;
-			$wp_user->last_name = $this->last_name;
-			$wp_user->display_name = $this->username;
-
-			if ( ! empty( $this->password )
-				&& $this->password == $this->password2
-			) {
-				$wp_user->user_pass = $this->password;
+			if ( is_multisite() ) {
+				$reg_option = get_site_option( 'registration', 'none' );
+				if ( in_array( $reg_option, array( 'all', 'user' ) ) ) {
+					$Signup_Allowed = true;
+				}
+			} else {
+				if ( get_option( 'users_can_register' ) ) {
+					$Signup_Allowed = true;
+				}
 			}
-			wp_update_user( get_object_vars( $wp_user ) );
 		}
 
-		// Serialize our plugin meta data
-		$data = MS_Factory::serialize_model( $this );
-
-		// Then update all meta fields that are inside the collection
-		foreach ( $data as $field => $val ) {
-			update_user_meta( $this->id, 'ms_' . $field, $val );
-		}
-
-		wp_cache_set( $this->id, $this, $class );
-		return apply_filters( 'ms_model_member_save', $this );
-	}
-
-	/**
-	 * Create new WP user.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @throws Exception
-	 */
-	private function create_new_user() {
-		$validation_errors = new WP_Error();
-
-		$required = array(
-			'username' => __( 'Username', MS_TEXT_DOMAIN ),
-			'email' => __( 'Email address', MS_TEXT_DOMAIN ),
-			'password'   => __( 'Password', MS_TEXT_DOMAIN ),
-			'password2'  => __( 'Password confirmation', MS_TEXT_DOMAIN ),
+		return apply_filters(
+			'ms_member_can_register',
+			$Signup_Allowed
 		);
-
-		foreach ( $required as $field => $message ) {
-			if ( empty( $this->$field ) ) {
-				$validation_errors->add(
-					$field,
-					sprintf(
-						__( 'Please ensure that the <span class="ms-bold">%s</span> information is completed.', MS_TEXT_DOMAIN ),
-						$message
-					)
-				);
-			}
-		}
-
-		if ( $this->password != $this->password2 ) {
-			$validation_errors->add(
-				'passmatch',
-				__( 'Please ensure the passwords match.', MS_TEXT_DOMAIN )
-			);
-		}
-
-		if ( ! validate_username( $this->username ) ) {
-			$validation_errors->add(
-				'usernamenotvalid',
-				__( 'The username is not valid, sorry.', MS_TEXT_DOMAIN )
-			);
-		}
-
-		if ( username_exists( $this->username ) ) {
-			$validation_errors->add(
-				'usernameexists',
-				__( 'That username is already taken, sorry.', MS_TEXT_DOMAIN )
-			);
-		}
-
-		if ( ! is_email( $this->email ) ) {
-			$validation_errors->add(
-				'emailnotvalid',
-				__( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN )
-			);
-		}
-
-		if ( email_exists( $this->email ) ) {
-			$validation_errors->add(
-				'emailexists',
-				__( 'That email address is already taken, sorry.', MS_TEXT_DOMAIN )
-			);
-		}
-
-		$validation_errors = apply_filters(
-			'ms_model_membership_create_new_user_validation_errors',
-			$validation_errors
-		);
-
-		$result = apply_filters(
-			'wpmu_validate_user_signup',
-			array(
-				'user_name' => $this->username,
-				'orig_username' => $this->username,
-				'user_email' => $this->email,
-				'errors' => $validation_errors,
-			)
-		);
-
-		$validation_errors = $result['errors'];
-		$errors = $validation_errors->get_error_messages();
-
-		if ( ! empty( $errors ) ) {
-			throw new Exception( implode( '<br/>', $errors ) );
-		} else {
-			$user_id = wp_create_user( $this->username, $this->password, $this->email );
-
-			if ( is_wp_error( $user_id ) ) {
-				$validation_errors->add(
-					'userid',
-					$user_id->get_error_message()
-				);
-
-				throw new Exception(
-					implode(
-						'<br/>',
-						$validation_errors->get_error_messages()
-					)
-				);
-			}
-			$this->id = $user_id;
-		}
-
-		do_action( 'ms_model_member_create_new_user', $this );
-	}
-
-	/**
-	 * Sign on user.
-	 *
-	 * @since 1.0.0
-	 */
-	public function signon_user() {
-		$user = new WP_User( $this->id );
-
-		if ( ! headers_sent() ) {
-			$user = @wp_signon(
-				array(
-					'user_login'    => $this->username,
-					'user_password' => $this->password,
-					'remember'      => true,
-				)
-			);
-
-			// Stop here in case the login failed.
-			if ( is_wp_error( $user ) ) {
-				return $user;
-			}
-		}
-
-		// Also used in class-ms-controller-dialog.php (Ajax login)
-		wp_set_current_user( $this->id );
-		wp_set_auth_cookie( $this->id );
-		do_action( 'wp_login', $this->username, $user );
-		do_action( 'ms_model_member_signon_user', $user, $this );
 	}
 
 	/**
@@ -625,6 +476,431 @@ class MS_Model_Member extends MS_Model {
 			$args,
 			$defaults
 		);
+	}
+
+	/**
+	 * Verify is user is logged in.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return boolean True if user is logged in.
+	 */
+	public static function is_logged_in() {
+		$logged = is_user_logged_in();
+
+		return apply_filters( 'ms_member_is_logged_in', $logged );
+	}
+
+	/**
+	 * Verify is user is Admin user.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @todo modify this when implementing network/multisites handling.
+	 *
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
+	 * @param string $capability The capability to check for admin users.
+	 * @return boolean True if user is admin.
+	 */
+	static public function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
+		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
+			$is_admin = false;
+
+			if ( is_super_admin( $user_id ) ) {
+				$is_admin = true;
+			}
+
+			$capability = apply_filters(
+				'ms_model_member_is_admin_user_capability',
+				$capability
+			);
+
+			if ( ! empty( $capability ) ) {
+				if ( empty( $user_id ) ) {
+					$is_admin = current_user_can( $capability );
+				} else {
+					$is_admin = user_can( $user_id, $capability );
+				}
+			}
+
+			$res = apply_filters(
+				'ms_model_member_is_admin_user',
+				$is_admin,
+				$user_id
+			);
+			self::$_is_admin_user[ $user_id ] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_admin_user[ get_current_user_id() ] = $res;
+			}
+		}
+
+		return self::$_is_admin_user[ $user_id ];
+	}
+
+	/**
+	 * Verify is user is Admin user and simulation mode is deactivated.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
+	 * @return boolean
+	 */
+	static public function is_normal_admin( $user_id = false ) {
+		if ( ! isset( self::$_is_normal_admin[$user_id] ) ) {
+			$res = self::is_admin_user( $user_id )
+				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
+			self::$_is_normal_admin[$user_id] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_normal_admin[ get_current_user_id() ] = $res;
+			}
+		}
+
+		return self::$_is_normal_admin[$user_id];
+	}
+
+	/**
+	 * Verify is user is Admin user and simulation mode is active.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
+	 * @return boolean
+	 */
+	static public function is_simulated_user( $user_id = false ) {
+		if ( ! isset( self::$_is_simulated_user[$user_id] ) ) {
+			$res = self::is_admin_user( $user_id )
+				&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
+			self::$_is_simulated_user[$user_id] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_simulated_user[ get_current_user_id() ] = $res;
+			}
+		}
+
+		return self::$_is_simulated_user[$user_id];
+	}
+
+	/**
+	 * Verify is user is not Admin user and simulation mode is deactivated.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int|false $user_id Optional. The user ID. Default to current user.
+	 * @return boolean
+	 */
+	static public function is_normal_user( $user_id = false ) {
+		if ( ! isset( self::$_is_normal_user[$user_id] ) ) {
+			// Simlation is only activated when the current user is an Admin.
+			$res = ! self::is_admin_user( $user_id );
+			self::$_is_normal_user[$user_id] = $res;
+
+			if ( empty( $user_id ) ) {
+				self::$_is_normal_user[ get_current_user_id() ] = $res;
+			}
+		}
+
+		return self::$_is_normal_user[$user_id];
+	}
+
+	/**
+	 * Get Admin users emails.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string[] The admin emails.
+	 */
+	public static function get_admin_user_emails() {
+		$admins = array();
+
+		$args = array(
+			'role' => 'administrator',
+			'fields' => array( 'ID', 'user_email' ),
+		);
+
+		$wp_user_search = new WP_User_Query( $args );
+		$users = $wp_user_search->get_results();
+
+		if ( ! empty ($users ) ) {
+			foreach ( $users as $user ) {
+				$admins[ $user->user_email ] = $user->user_email;
+			}
+		}
+		return apply_filters(
+			'ms_model_member_get_admin_user_emails',
+			$admins
+		);
+	}
+
+	/**
+	 * Get user's username.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $user_id The user ID to get username.
+	 * @return string The username.
+	 */
+	public static function get_username( $user_id ) {
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+
+		return apply_filters(
+			'ms_model_member_get_username',
+			$member->username,
+			$user_id
+		);
+	}
+
+	/**
+	 * Search for orphaned relationships and remove them.
+	 *
+	 * We write a custom SQL query for this, as solving it with a meta-query
+	 * structure is very performance intense and requires at least two queries
+	 * and a loop...
+	 *
+	 * For additional performance we will only do this check once every hour.
+	 *
+	 * Note: We cannot use the hook 'delete_user' to do this, because in
+	 * Multisite users are deleted via the Main network admin; however, there
+	 * we do not have access to the site data; especially if Plugin is not
+	 * network enabled...
+	 *
+	 * @todo Change this to use WP-Cron instead of own implementation...
+	 *
+	 * @since  1.0.4.4
+	 */
+	static public function clean_db() {
+		$timestamp = absint( get_transient( 'ms_member_clean_db' ) );
+		$elapsed = time() - $timestamp;
+
+		if ( $elapsed > 3600 ) {
+			// Last check is longer than 1 hour ago. Check again.
+			set_transient( 'ms_member_clean_db', time(), 3600 );
+		} else {
+			// Last check was within past hour. Do nothing yet...
+			return;
+		}
+
+		global $wpdb;
+
+		// Find all Relationships that have no post-author.
+		$sql = "
+		SELECT p.ID
+		FROM {$wpdb->posts} p
+		WHERE p.post_type=%s
+		AND NOT EXISTS (
+			SELECT 1
+			FROM {$wpdb->users} u
+			WHERE u.ID = p.post_author
+		);
+		";
+
+		$sql = $wpdb->prepare(
+			$sql,
+			MS_Model_Relationship::$POST_TYPE
+		);
+
+		// Delete these Relationships!
+		$items = $wpdb->get_results( $sql );
+		foreach ( $items as $item ) {
+			$junk = MS_Factory::load( 'MS_Model_Relationship', $item->ID );
+			$junk->delete();
+		}
+	}
+
+	//
+	//
+	//
+	// ------------------------------------------------------------- SINGLE ITEM
+
+	/**
+	 * Save member.
+	 *
+	 * Create a new user is id is empty.
+	 * Save member fields to wp_user and wp_usermeta tables.
+	 * Set cache for further use in MS_Factory::load.
+	 * The usermeta are prefixed with 'ms_'.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return MS_Model_Member The saved member object.
+	 */
+	public function save() {
+		$class = get_class( $this );
+
+		if ( empty( $this->id ) ) {
+			$this->create_new_user();
+		}
+
+		if ( isset( $this->username ) ) {
+			$wp_user = new stdClass();
+			$wp_user->ID = $this->id;
+			$wp_user->nickname = $this->username;
+			$wp_user->user_nicename = $this->username;
+			$wp_user->first_name = $this->first_name;
+			$wp_user->last_name = $this->last_name;
+			$wp_user->display_name = $this->username;
+
+			if ( ! empty( $this->password )
+				&& $this->password == $this->password2
+			) {
+				$wp_user->user_pass = $this->password;
+			}
+			wp_update_user( get_object_vars( $wp_user ) );
+		}
+
+		// Serialize our plugin meta data
+		$data = MS_Factory::serialize_model( $this );
+
+		// Then update all meta fields that are inside the collection
+		foreach ( $data as $field => $val ) {
+			update_user_meta( $this->id, 'ms_' . $field, $val );
+		}
+
+		wp_cache_set( $this->id, $this, $class );
+		return apply_filters( 'ms_model_member_save', $this );
+	}
+
+	/**
+	 * Create new WP user.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @throws Exception
+	 */
+	private function create_new_user() {
+		// Check if the WordPress settings allow user registration.
+		if ( ! MS_Model_Member::can_register() ) {
+			throw new Exception( __( 'Registration is currently not allowed.', MS_TEXT_DOMAIN ), 1 );
+			return;
+		}
+
+		$validation_errors = new WP_Error();
+
+		$required = array(
+			'username' => __( 'Username', MS_TEXT_DOMAIN ),
+			'email' => __( 'Email address', MS_TEXT_DOMAIN ),
+			'password'   => __( 'Password', MS_TEXT_DOMAIN ),
+			'password2'  => __( 'Password confirmation', MS_TEXT_DOMAIN ),
+		);
+
+		foreach ( $required as $field => $message ) {
+			if ( empty( $this->$field ) ) {
+				$validation_errors->add(
+					$field,
+					sprintf(
+						__( 'Please ensure that the <span class="ms-bold">%s</span> information is completed.', MS_TEXT_DOMAIN ),
+						$message
+					)
+				);
+			}
+		}
+
+		if ( $this->password != $this->password2 ) {
+			$validation_errors->add(
+				'passmatch',
+				__( 'Please ensure the passwords match.', MS_TEXT_DOMAIN )
+			);
+		}
+
+		if ( ! validate_username( $this->username ) ) {
+			$validation_errors->add(
+				'usernamenotvalid',
+				__( 'The username is not valid, sorry.', MS_TEXT_DOMAIN )
+			);
+		}
+
+		if ( username_exists( $this->username ) ) {
+			$validation_errors->add(
+				'usernameexists',
+				__( 'That username is already taken, sorry.', MS_TEXT_DOMAIN )
+			);
+		}
+
+		if ( ! is_email( $this->email ) ) {
+			$validation_errors->add(
+				'emailnotvalid',
+				__( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN )
+			);
+		}
+
+		if ( email_exists( $this->email ) ) {
+			$validation_errors->add(
+				'emailexists',
+				__( 'That email address is already taken, sorry.', MS_TEXT_DOMAIN )
+			);
+		}
+
+		$validation_errors = apply_filters(
+			'ms_model_membership_create_new_user_validation_errors',
+			$validation_errors
+		);
+
+		$result = apply_filters(
+			'wpmu_validate_user_signup',
+			array(
+				'user_name' => $this->username,
+				'orig_username' => $this->username,
+				'user_email' => $this->email,
+				'errors' => $validation_errors,
+			)
+		);
+
+		$validation_errors = $result['errors'];
+		$errors = $validation_errors->get_error_messages();
+
+		if ( ! empty( $errors ) ) {
+			throw new Exception( implode( '<br/>', $errors ) );
+		} else {
+			$user_id = wp_create_user( $this->username, $this->password, $this->email );
+
+			if ( is_wp_error( $user_id ) ) {
+				$validation_errors->add(
+					'userid',
+					$user_id->get_error_message()
+				);
+
+				throw new Exception(
+					implode(
+						'<br/>',
+						$validation_errors->get_error_messages()
+					)
+				);
+			}
+			$this->id = $user_id;
+		}
+
+		do_action( 'ms_model_member_create_new_user', $this );
+	}
+
+	/**
+	 * Sign on user.
+	 *
+	 * @since 1.0.0
+	 */
+	public function signon_user() {
+		$user = new WP_User( $this->id );
+
+		if ( ! headers_sent() ) {
+			$user = @wp_signon(
+				array(
+					'user_login'    => $this->username,
+					'user_password' => $this->password,
+					'remember'      => true,
+				)
+			);
+
+			// Stop here in case the login failed.
+			if ( is_wp_error( $user ) ) {
+				return $user;
+			}
+		}
+
+		// Also used in class-ms-controller-dialog.php (Ajax login)
+		wp_set_current_user( $this->id );
+		wp_set_auth_cookie( $this->id );
+		do_action( 'wp_login', $this->username, $user );
+		do_action( 'ms_model_member_signon_user', $user, $this );
 	}
 
 	/**
@@ -860,179 +1136,6 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
-	 * Verify is user is logged in.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return boolean True if user is logged in.
-	 */
-	public static function is_logged_user() {
-		$logged = is_user_logged_in();
-
-		return apply_filters( 'ms_model_member_is_logged_user', $logged );
-	}
-
-	/**
-	 * Verify is user is Admin user.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @todo modify this when implementing network/multisites handling.
-	 *
-	 * @param int|false $user_id Optional. The user ID. Default to current user.
-	 * @param string $capability The capability to check for admin users.
-	 * @return boolean True if user is admin.
-	 */
-	static public function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
-		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
-			$is_admin = false;
-
-			if ( is_super_admin( $user_id ) ) {
-				$is_admin = true;
-			}
-
-			$capability = apply_filters(
-				'ms_model_member_is_admin_user_capability',
-				$capability
-			);
-
-			if ( ! empty( $capability ) ) {
-				if ( empty( $user_id ) ) {
-					$is_admin = current_user_can( $capability );
-				} else {
-					$is_admin = user_can( $user_id, $capability );
-				}
-			}
-
-			$res = apply_filters(
-				'ms_model_member_is_admin_user',
-				$is_admin,
-				$user_id
-			);
-			self::$_is_admin_user[ $user_id ] = $res;
-
-			if ( empty( $user_id ) ) {
-				self::$_is_admin_user[ get_current_user_id() ] = $res;
-			}
-		}
-
-		return self::$_is_admin_user[ $user_id ];
-	}
-
-	/**
-	 * Verify is user is Admin user and simulation mode is deactivated.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @param int|false $user_id Optional. The user ID. Default to current user.
-	 * @return boolean
-	 */
-	static public function is_normal_admin( $user_id = false ) {
-		if ( ! isset( self::$_is_normal_admin[$user_id] ) ) {
-			$res = self::is_admin_user( $user_id )
-				&& ! MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
-			self::$_is_normal_admin[$user_id] = $res;
-
-			if ( empty( $user_id ) ) {
-				self::$_is_normal_admin[ get_current_user_id() ] = $res;
-			}
-		}
-
-		return self::$_is_normal_admin[$user_id];
-	}
-
-	/**
-	 * Verify is user is Admin user and simulation mode is active.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @param int|false $user_id Optional. The user ID. Default to current user.
-	 * @return boolean
-	 */
-	static public function is_simulated_user( $user_id = false ) {
-		if ( ! isset( self::$_is_simulated_user[$user_id] ) ) {
-			$res = self::is_admin_user( $user_id )
-				&& MS_Factory::load( 'MS_Model_Simulate' )->is_simulating();
-			self::$_is_simulated_user[$user_id] = $res;
-
-			if ( empty( $user_id ) ) {
-				self::$_is_simulated_user[ get_current_user_id() ] = $res;
-			}
-		}
-
-		return self::$_is_simulated_user[$user_id];
-	}
-
-	/**
-	 * Verify is user is not Admin user and simulation mode is deactivated.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @param int|false $user_id Optional. The user ID. Default to current user.
-	 * @return boolean
-	 */
-	static public function is_normal_user( $user_id = false ) {
-		if ( ! isset( self::$_is_normal_user[$user_id] ) ) {
-			// Simlation is only activated when the current user is an Admin.
-			$res = ! self::is_admin_user( $user_id );
-			self::$_is_normal_user[$user_id] = $res;
-
-			if ( empty( $user_id ) ) {
-				self::$_is_normal_user[ get_current_user_id() ] = $res;
-			}
-		}
-
-		return self::$_is_normal_user[$user_id];
-	}
-
-	/**
-	 * Get Admin users emails.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string[] The admin emails.
-	 */
-	public static function get_admin_user_emails() {
-		$admins = array();
-
-		$args = array(
-			'role' => 'administrator',
-			'fields' => array( 'ID', 'user_email' ),
-		);
-
-		$wp_user_search = new WP_User_Query( $args );
-		$users = $wp_user_search->get_results();
-
-		if ( ! empty ($users ) ) {
-			foreach ( $users as $user ) {
-				$admins[ $user->user_email ] = $user->user_email;
-			}
-		}
-		return apply_filters(
-			'ms_model_member_get_admin_user_emails',
-			$admins
-		);
-	}
-
-	/**
-	 * Get user's username.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $user_id The user ID to get username.
-	 * @return string The username.
-	 */
-	public static function get_username( $user_id ) {
-		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
-
-		return apply_filters(
-			'ms_model_member_get_username',
-			$member->username,
-			$user_id
-		);
-	}
-
-	/**
 	 * Returns the WP_User object that is linked to the current member
 	 *
 	 * @since  1.1.0
@@ -1139,61 +1242,6 @@ class MS_Model_Member extends MS_Model {
 			throw new Exception( implode( '<br/>', $errors ) );
 		} else {
 			return true;
-		}
-	}
-
-	/**
-	 * Search for orphaned relationships and remove them.
-	 *
-	 * We write a custom SQL query for this, as solving it with a meta-query
-	 * structure is very performance intense and requires at least two queries
-	 * and a loop...
-	 *
-	 * For additional performance we will only do this check once every hour.
-	 *
-	 * Note: We cannot use the hook 'delete_user' to do this, because in
-	 * Multisite users are deleted via the Main network admin; however, there
-	 * we do not have access to the site data; especially if Plugin is not
-	 * network enabled...
-	 *
-	 * @since  1.0.4.4
-	 */
-	static public function clean_db() {
-		$timestamp = absint( get_transient( 'ms_member_clean_db' ) );
-		$elapsed = time() - $timestamp;
-
-		if ( $elapsed > 3600 ) {
-			// Last check is longer than 1 hour ago. Check again.
-			set_transient( 'ms_member_clean_db', time(), 3600 );
-		} else {
-			// Last check was within past hour. Do nothing yet...
-			return;
-		}
-
-		global $wpdb;
-
-		// Find all Relationships that have no post-author.
-		$sql = "
-		SELECT p.ID
-		FROM {$wpdb->posts} p
-		WHERE p.post_type=%s
-		AND NOT EXISTS (
-			SELECT 1
-			FROM {$wpdb->users} u
-			WHERE u.ID = p.post_author
-		);
-		";
-
-		$sql = $wpdb->prepare(
-			$sql,
-			MS_Model_Relationship::$POST_TYPE
-		);
-
-		// Delete these Relationships!
-		$items = $wpdb->get_results( $sql );
-		foreach ( $items as $item ) {
-			$junk = MS_Factory::load( 'MS_Model_Relationship', $item->ID );
-			$junk->delete();
 		}
 	}
 

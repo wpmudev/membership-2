@@ -549,7 +549,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$html .= $protection_msg;
 		}
 
-		if ( ! MS_Model_Member::is_logged_user() ) {
+		if ( ! MS_Model_Member::is_logged_in() ) {
 			$has_login_form = MS_Helper_Shortcode::has_shortcode(
 				MS_Helper_Shortcode::SCODE_LOGIN,
 				$post->post_content

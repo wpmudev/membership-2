@@ -184,7 +184,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$the_type = MS_Model_Pages::get_page_type( $the_page );
 			switch ( $the_type ) {
 				case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
-					if ( ! MS_Model_Member::is_logged_user() ) {
+					if ( ! MS_Model_Member::is_logged_in() ) {
 						$this->add_filter( 'the_content', 'display_login_form' );
 						break;
 					}
@@ -257,6 +257,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function signup_process() {
 		$step = $this->get_signup_step();
+
+		do_action( 'ms_frontend_register-' . $step );
 
 		switch ( $step ) {
 			/**
@@ -349,7 +351,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 
 		if ( self::STEP_PAYMENT_TABLE == $step ) {
-			if ( ! MS_Model_Member::is_logged_user() ) {
+			if ( ! MS_Model_Member::is_logged_in() ) {
 				$step = self::STEP_REGISTER_FORM;
 			}
 			if ( ! MS_Model_Membership::is_valid_membership( $_REQUEST['membership_id'] ) ) {
@@ -409,6 +411,28 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The filtered content.
 	 */
 	public function register_form( $content ) {
+		// Check if the WordPress settings allow user registration.
+		if ( ! MS_Model_Member::can_register() ) {
+			return __( 'Registration is currently not allowed.', MS_TEXT_DOMAIN );
+		}
+
+		/**
+		 * Add-ons or other plugins can use this filter to define a completely
+		 * different registration form. If this filter returns any content, then
+		 * the default form will not be generated
+		 *
+		 * @since 1.1.0
+		 * @var string
+		 */
+		$custom_code = apply_filters(
+			'ms_frontend_custom_registration_form',
+			''
+		);
+
+		if ( ! empty( $custom_code ) ) {
+			return $custom_code;
+		}
+
 		remove_filter( 'the_content', 'wpautop' );
 
 		$did_form = MS_Helper_Shortcode::has_shortcode(
@@ -424,7 +448,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 			$reg_form = do_shortcode( $scode );
 
-			if ( ! MS_Model_Member::is_logged_user() ) {
+			if ( ! MS_Model_Member::is_logged_in() ) {
 				$content = $reg_form;
 			} else {
 				$content .= $reg_form;
@@ -451,6 +475,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( ! $this->verify_nonce() ) {
 			return;
 		}
+
 		try {
 			$user = MS_Factory::create( 'MS_Model_Member' );
 
@@ -476,7 +501,6 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 			wp_safe_redirect( $redirect );
 			exit;
-
 		}
 		catch( Exception $e ) {
 			$this->register_errors = $e->getMessage();

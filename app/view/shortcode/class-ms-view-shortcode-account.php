@@ -28,7 +28,7 @@ class MS_View_Shortcode_Account extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-account-wrapper">
-			<?php if ( MS_Model_Member::is_logged_user() ) : ?>
+			<?php if ( MS_Model_Member::is_logged_in() ) : ?>
 				<h2>
 					<?php printf(
 						'%s <a href="%s" class="ms-edit-profile">%s</a>',

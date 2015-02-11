@@ -17,7 +17,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		extract( $this->data );
 
 		if ( ! isset( $form ) || ! in_array( $form, $valid_forms ) ) {
-			if ( MS_Model_Member::is_logged_user() ) {
+			if ( MS_Model_Member::is_logged_in() ) {
 				$form = 'logout';
 			} elseif ( isset( $action ) && 'resetpass' === $action ) {
 				$form = 'reset';
@@ -98,7 +98,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			}
 			$html .= $res_form;
 
-			if ( $register && ! MS_Model_Member::is_logged_user() ) {
+			if ( $register && ! MS_Model_Member::is_logged_in() ) {
 				$html .= wp_register( '', '', false );
 			}
 
@@ -403,7 +403,7 @@ class MS_View_Shortcode_Login extends MS_View {
 	 * @return string
 	 */
 	private function logout_form() {
-		if ( ! MS_Model_Member::is_logged_user() ) { return ''; }
+		if ( ! MS_Model_Member::is_logged_in() ) { return ''; }
 		$member = MS_Model_Member::get_current_member();
 
 		extract( $this->data );
