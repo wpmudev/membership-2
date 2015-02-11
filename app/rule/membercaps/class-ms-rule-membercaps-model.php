@@ -212,8 +212,32 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 				'level_0' => 1,
 				'administrator' => 1,
 			);
+
 			$capslist = array_diff_assoc( $capslist, $ignored_caps );
 			$capslist = array_keys( $capslist );
+
+			/**
+			 * Exclude certain capabilities for security reasons.
+			 *
+			 * @since 1.1.0
+			 * @var array
+			 */
+			$exclude = apply_filters(
+				'ms_rule_membercaps_model_exclude',
+				array(
+					MS_Plugin::instance()->controller->capability,
+					'edit_plugins',
+					'delete_plugins',
+					'edit_files',
+					'edit_users',
+					'delete_users',
+					'remove_users',
+					'promote_users',
+					'list_users',
+				)
+			);
+
+			$capslist = array_diff( $capslist, $exclude );
 			$this->_content_array = array_combine( $capslist, $capslist );
 
 			// Make sure the rule_value only contains valid items.

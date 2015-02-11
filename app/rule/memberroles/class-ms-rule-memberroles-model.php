@@ -213,7 +213,7 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 			$this->_content_array = array();
 
 			$exclude = apply_filters(
-				'ms_rule_memberroles_model_exclude_roles',
+				'ms_rule_memberroles_model_exclude',
 				array( 'administrator' )
 			);
 

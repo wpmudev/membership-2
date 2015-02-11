@@ -15,8 +15,6 @@ class MS_View_Metabox extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$this->check_simulation();
-
 		ob_start();
 		?>
 		<div id="ms-metabox-wrapper" class="ms_metabox ms-wrap">

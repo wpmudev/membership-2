@@ -88,7 +88,7 @@ class MS_View extends MS_Hooker {
 		?>
 		<div class="error below-h2">
 			<p>
-				<strong><?php _e( 'You are in Simulation mode.', MS_TEXT_DOMAIN ); ?></strong>
+				<strong><?php _e( 'You are in Simulation mode!', MS_TEXT_DOMAIN ); ?></strong>
 			</p>
 			<p>
 				<?php _e( 'Content displayed here might be altered because of simulated restrictions.', MS_TEXT_DOMAIN ); ?><br />
@@ -97,6 +97,9 @@ class MS_View extends MS_Hooker {
 					'<a href="' . MS_Controller_Adminbar::get_simulation_exit_url() . '">',
 					'</a>'
 				); ?>
+			</p>
+			<p>
+				<em><?php _e( 'This page is only available to Administrators - you can always see it, even during Simulation.', MS_TEXT_DOMAIN ); ?></em>
 			</p>
 		</div>
 		<?php

@@ -208,8 +208,17 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 
 		// Admin-Pages in this list cannot be protected.
 		$blacklist = array(
-			'index.php',
-			'edit-tags.php?taxonomy=link_category',
+			'index.php',  // Dashboard
+			'edit-tags.php?taxonomy=link_category', // Links (deprecated)
+			'protected-content', // Protected Content
+			// Protected Content
+			'protected-content-members',
+			'protected-content-billing',
+			'protected-content-setup',
+			'protected-content-coupons',
+			'protected-content-addon',
+			'protected-content-settings',
+			'protected-content-help',
 		);
 		$blacklist = apply_filters(
 			'ms_rule_adminside_blacklist',
