@@ -136,7 +136,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 
 		$per_page = apply_filters(
 			'ms_helper_listtable_member_items_per_page',
-			10 //self::DEFAULT_PAGE_SIZE
+			self::DEFAULT_PAGE_SIZE
 		);
 		$current_page = $this->get_pagenum();
 

@@ -23,9 +23,7 @@
 /**
  * Membership List Table
  *
- *
- * @since 4.0.0
- *
+ * @since 1.0.0
  */
 class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 
@@ -44,21 +42,18 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 	public function get_columns() {
 		$columns = array(
 			'post_modified' => __( 'Date', MS_TEXT_DOMAIN ),
-			'user_id' => __( 'User', MS_TEXT_DOMAIN ),
+			'user_id' => __( 'Member', MS_TEXT_DOMAIN ),
 			'membership_id' => __( 'Membership', MS_TEXT_DOMAIN ),
 			'description' => __( 'Event', MS_TEXT_DOMAIN ),
 		);
 
+		if ( isset( $_REQUEST['membership_id'] ) ) {
+			unset( $columns['membership_id'] );
+		}
+
 		return apply_filters(
 			'membership_helper_listtable_event_columns',
 			$columns
-		);
-	}
-
-	public function get_hidden_columns() {
-		return apply_filters(
-			'membership_helper_listtable_event_hidden_columns',
-			array()
 		);
 	}
 
@@ -70,6 +65,50 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 				'user_id' => array( 'user_id', false ),
 				'membership_id' => array( 'membership_id', false ),
 			)
+		);
+	}
+
+	/**
+	 * Prepare list items.
+	 *
+	 * @since 1.1.0
+	 */
+	public function prepare_items() {
+		$this->_column_headers = array(
+			$this->get_columns(),
+			array(),
+			$this->get_sortable_columns(),
+		);
+
+		$per_page = apply_filters(
+			'ms_helper_listtable_member_items_per_page',
+			self::DEFAULT_PAGE_SIZE
+		);
+		$current_page = $this->get_pagenum();
+
+		$args = array(
+			'number' => $per_page,
+			'offset' => ( $current_page - 1 ) * $per_page,
+		);
+
+		if ( isset( $_REQUEST['membership_id'] ) ) {
+			$args['membership_id'] = $_REQUEST['membership_id'];
+		}
+
+		$total_items = MS_Model_Event::get_event_count( $args );
+		$this->items = MS_Model_Event::get_events( $args );
+
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page' => $per_page,
+			)
+		);
+
+		do_action(
+			'ms_helper_listtable_event_prepare_items',
+			$args,
+			$this
 		);
 	}
 
@@ -93,14 +132,19 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 		return $html;
 	}
 
-	public function column_default( $item, $column_name ) {
-		return $item->$column_name;
+	public function column_post_modified( $item, $column_name ) {
+		$html = date_i18n(
+			get_option( 'date_format' ),
+			strtotime( $item->post_modified )
+		);
+
+		return $html;
 	}
 
-	public function get_bulk_actions() {
-		return apply_filters(
-			'ms_helper_listtable_membership_bulk_actions',
-			array()
-		);
+	public function column_description( $item, $column_name ) {
+		$html = $item->description;
+
+		return $html;
 	}
+
 }

@@ -406,6 +406,14 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			unset( $args['topic'] );
 		}
 
+		if ( ! empty( $args['membership_id'] ) ) {
+			$args['meta_query']['membership_id'] = array(
+				'key' => 'membership_id',
+				'value' => $args['membership_id'],
+			);
+			unset( $args['membership_id'] );
+		}
+
 		$args = wp_parse_args( $args, $defaults );
 
 		return apply_filters( 'ms_model_event_get_query_args', $args );
@@ -434,16 +442,16 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 				case self::TOPIC_PAYMENT:
 				case self::TOPIC_WARNING:
 				case self::TOPIC_MEMBERSHIP:
-					$ms_relationship = $data;
-					if ( $ms_relationship->id > 0 ) {
-						$membership = $ms_relationship->get_membership();
+					$subscription = $data;
+					if ( $subscription->id > 0 ) {
+						$membership = $subscription->get_membership();
 						$member = MS_Factory::load(
 							'MS_Model_Member',
-							$ms_relationship->user_id
+							$subscription->user_id
 						);
-						$event->user_id = $ms_relationship->user_id;
-						$event->membership_id = $ms_relationship->membership_id;
-						$event->ms_relationship_id = $ms_relationship->id;
+						$event->user_id = $subscription->user_id;
+						$event->membership_id = $subscription->membership_id;
+						$event->ms_relationship_id = $subscription->id;
 						$event->name = sprintf(
 							'user: %s, membership: %s, type: %s',
 							$member->name,
@@ -452,7 +460,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 						);
 
 						if ( self::TOPIC_PAYMENT == $event->topic ) {
-							$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship, false );
+							$invoice = MS_Model_Invoice::get_current_invoice( $subscription, false );
 							$description = sprintf(
 								self::get_description( $type ),
 								$membership->name,
@@ -481,15 +489,15 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 							$type
 						);
 					} elseif ( $data instanceof MS_Model_Relationship ) {
-						$ms_relationship = $data;
-						$membership = $ms_relationship->get_membership();
+						$subscription = $data;
+						$membership = $subscription->get_membership();
 						$member = MS_Factory::load(
 							'MS_Model_Member',
-							$ms_relationship->user_id
+							$subscription->user_id
 						);
-						$event->user_id = $ms_relationship->user_id;
-						$event->membership_id = $ms_relationship->membership_id;
-						$event->ms_relationship_id = $ms_relationship->id;
+						$event->user_id = $subscription->user_id;
+						$event->membership_id = $subscription->membership_id;
+						$event->ms_relationship_id = $subscription->id;
 						$event->name = sprintf(
 							'user: %s, membership: %s, type: %s',
 							$member->name,

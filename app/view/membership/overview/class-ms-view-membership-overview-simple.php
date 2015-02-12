@@ -103,86 +103,129 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 	public function news_panel() {
 		?>
-		<div class="ms-half ms-settings-box ms-fixed-height">
-			<?php MS_Helper_Html::html_separator( 'vertical' ); ?>
-			<h3><i class="ms-low wpmui-fa wpmui-fa-globe"></i> <?php _e( 'News', MS_TEXT_DOMAIN ); ?></h3>
+		<div class="ms-half ms-settings-box">
+			<h3>
+				<i class="ms-low wpmui-fa wpmui-fa-globe"></i>
+				<?php _e( 'Recent News', MS_TEXT_DOMAIN ); ?>
+			</h3>
 
-			<div class="inside group">
-				<?php if ( ! empty( $this->data['events'] ) ) : ?>
-					<table class="ms-list-table limit-width">
-						<thead>
-							<tr>
-								<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-								<th><?php _e( 'User', MS_TEXT_DOMAIN ); ?></th>
-								<th><?php _e( 'Event', MS_TEXT_DOMAIN ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-						<?php foreach ( $this->data['events'] as $event ) : ?>
-							<tr>
-								<td><?php echo esc_html(
-									date_i18n( get_option( 'date_format' ), strtotime( $event->post_modified ) )
-								); ?></td>
-								<td><?php echo esc_html( MS_Model_Member::get_username( $event->user_id ) ); ?></td>
-								<td><?php echo esc_html( $event->description ); ?></td>
-							</tr>
-						<?php endforeach;?>
-						</tbody>
-					</table>
+			<?php if ( ! empty( $this->data['events'] ) ) : ?>
+				<div class="inside group">
+					<?php $this->news_panel_data( $this->data['events'] ); ?>
+				</div>
 
-					<div class="ms-news-view-wrapper">
-						<?php
-						MS_Helper_Html::html_element(
-							array(
-								'id' => 'view_news',
-								'type' => MS_Helper_Html::TYPE_HTML_LINK,
-								'value' => __( 'View More News', MS_TEXT_DOMAIN ),
-								'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) ),
-								'class' => 'wpmui-field-button button',
-							)
-						);
-						?>
-					</div>
-				<?php else : ?>
-					<p class="ms-italic">
-					<?php _e( 'There will be some interesting news here when your site gets going.', MS_TEXT_DOMAIN ); ?>
-					</p>
-				<?php endif; ?>
-			</div>
-		</div>
-		<?php
-	}
-
-	public function members_panel() {
-		$count = count( $this->data['members'] );
-		?>
-		<div class="ms-half ms-settings-box ms-fixed-height">
-			<h3><i class="ms-low wpmui-fa wpmui-fa-user"></i> <?php printf( __( 'Members (%s)', MS_TEXT_DOMAIN ), $count ); ?></h3>
-
-			<div class="inside group">
-			<?php if ( $count > 0 ) : ?>
-				<?php $this->members_panel_data( $this->data['members'] ); ?>
-
-				<div class="ms-member-edit-wrapper">
+				<div class="ms-news-view-wrapper">
 					<?php
 					MS_Helper_Html::html_element(
 						array(
-							'id' => 'edit_members',
+							'id' => 'view_news',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
-							'value' => __( 'Edit Members', MS_TEXT_DOMAIN ),
-							'url' => admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-members' ),
+							'value' => __( 'View More News', MS_TEXT_DOMAIN ),
+							'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) ),
 							'class' => 'wpmui-field-button button',
 						)
 					);
 					?>
 				</div>
 			<?php else : ?>
-				<p class="ms-italic">
-				<?php _e( 'No members yet.', MS_TEXT_DOMAIN ); ?>
-				</p>
+				<div class="inside group">
+					<p class="ms-italic">
+					<?php _e( 'There will be some interesting news here when your site gets going.', MS_TEXT_DOMAIN ); ?>
+					</p>
+				</div>
 			<?php endif; ?>
-			</div>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Renders the Members panel
+	 *
+	 * @since  1.0.0
+	 */
+	public function members_panel() {
+		$count = count( $this->data['members'] );
+		?>
+		<div class="ms-half ms-settings-box">
+			<h3>
+				<i class="ms-low wpmui-fa wpmui-fa-user"></i>
+				<?php printf( __( 'New Members (%s)', MS_TEXT_DOMAIN ), $count ); ?>
+			</h3>
+
+			<?php if ( $count > 0 ) : ?>
+				<div class="inside group">
+					<?php $this->members_panel_data(
+						$this->data['members'],
+						$this->data['membership']->id
+					); ?>
+				</div>
+
+				<div class="ms-member-edit-wrapper">
+					<?php
+					$url = sprintf(
+						admin_url( 'admin.php?page=%1$s&membership_id=%2$s' ),
+						MS_Controller_Plugin::MENU_SLUG . '-members',
+						$this->data['membership']->id
+					);
+					MS_Helper_Html::html_element(
+						array(
+							'id' => 'edit_members',
+							'type' => MS_Helper_Html::TYPE_HTML_LINK,
+							'value' => __( 'All Members', MS_TEXT_DOMAIN ),
+							'url' => $url,
+							'class' => 'wpmui-field-button button',
+						)
+					);
+					?>
+				</div>
+			<?php else : ?>
+				<div class="inside group">
+					<p class="ms-italic">
+					<?php _e( 'No members yet.', MS_TEXT_DOMAIN ); ?>
+					</p>
+				</div>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Echo the news-contents. This function can be overwritten by other views
+	 * to customize the list.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param array $items List of news to display.
+	 */
+	protected function news_panel_data( $items ) {
+		$item = 0;
+		$max_items = 10;
+		$class = '';
+		?>
+		<table class="ms-list-table widefat">
+			<thead>
+				<tr>
+					<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
+					<th><?php _e( 'Member', MS_TEXT_DOMAIN ); ?></th>
+					<th><?php _e( 'Event', MS_TEXT_DOMAIN ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ( $this->data['events'] as $event ) :
+				$item += 1;
+				if ( $item > $max_items ) { break; }
+				$class = ($class == 'alternate' ? '' : 'alternate' );
+				?>
+				<tr class="<?php echo esc_attr( $class ); ?>">
+					<td><?php echo esc_html(
+						date_i18n( get_option( 'date_format' ), strtotime( $event->post_modified ) )
+					); ?></td>
+					<td><?php echo esc_html( MS_Model_Member::get_username( $event->user_id ) ); ?></td>
+					<td><?php echo esc_html( $event->description ); ?></td>
+				</tr>
+			<?php endforeach;?>
+			</tbody>
+		</table>
 		<?php
 	}
 
@@ -194,16 +237,35 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 	 *
 	 * @param array $members List of members to display.
 	 */
-	protected function members_panel_data( $members ) {
+	protected function members_panel_data( $members, $membership_id ) {
+		$item = 0;
+		$max_items = 10;
+		$class = '';
+		$status_types = MS_Model_Relationship::get_status_types();
 		?>
-		<div><?php _e( 'Active Members' ); ?></div>
-		<ul>
-		<?php foreach ( $this->data['members'] as $member ) : ?>
-			<li class="ms-overview-member-name">
-				<?php echo esc_html( $member->username ); ?>
-			</li>
-		<?php endforeach; ?>
-		</ul>
+		<table class="ms-list-table widefat">
+			<thead>
+				<th><?php _e( 'Member', MS_TEXT_DOMAIN ); ?></th>
+				<th><?php _e( 'Since', MS_TEXT_DOMAIN ); ?></th>
+				<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
+			</thead>
+			<tbody>
+			<?php foreach ( $this->data['members'] as $member ) :
+				$item += 1;
+				if ( $item > $max_items ) { break; }
+				$class = ($class == 'alternate' ? '' : 'alternate' );
+				$subscription = $member->get_subscription( $membership_id );
+				?>
+				<tr class="<?php echo esc_attr( $class ); ?>">
+					<td><?php echo esc_html( $member->username ); ?></td>
+					<td><?php echo esc_html(
+						date_i18n( get_option( 'date_format' ), strtotime( $subscription->start_date ) )
+					); ?></td>
+					<td><?php echo esc_html( $status_types[ $subscription->status ] ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
 		<?php
 	}
 
@@ -221,7 +283,6 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 						<?php echo '' . $desc; ?>
 					</div>
 					<?php
-
 					MS_Helper_Html::html_separator();
 					$this->news_panel();
 					$this->members_panel();

@@ -51,7 +51,7 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 				),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'api_key' ),
 				'class' => 'ms-text-medium',
-				'data_ms' => array(
+				'ajax_data' => array(
 					'group' => 'mailchimp',
 					'field' => 'api_key',
 					'action' => $action,
@@ -65,11 +65,12 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 			'auto_opt_in' => array(
 				'id' => 'auto_opt_in',
 				'name' => 'custom[mailchimp][auto_opt_in]',
-				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title' => __( 'Automatically opt-in new users to the mailing list.', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Users will not receive an email confirmation. Use at your own risk.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Users will not receive an email confirmation. You are responsible to inform your users.', MS_TEXT_DOMAIN ),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'auto_opt_in' ),
-				'data_ms' => array(
+				'class' => 'inp-before',
+				'ajax_data' => array(
 					'group' => 'mailchimp',
 					'field' => 'auto_opt_in',
 					'action' => $action,
@@ -87,7 +88,7 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 				'title' => __( 'Registered users mailing list (not members)', MS_TEXT_DOMAIN ),
 				'field_options' => MS_Addon_Mailchimp::get_mail_lists(),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ),
-				'data_ms' => array(
+				'ajax_data' => array(
 					'group' => 'mailchimp',
 					'field' => 'mail_list_registered',
 					'action' => $action,
@@ -101,7 +102,7 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 				'title' => __( 'Members mailing list', MS_TEXT_DOMAIN ),
 				'field_options' => MS_Addon_Mailchimp::get_mail_lists(),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_members' ),
-				'data_ms' => array(
+				'ajax_data' => array(
 					'group' => 'mailchimp',
 					'field' => 'mail_list_members',
 					'action' => $action,
@@ -115,7 +116,7 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 				'title' => __( 'Deactivated memberships mailing list', MS_TEXT_DOMAIN ),
 				'field_options' => MS_Addon_Mailchimp::get_mail_lists(),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ),
-				'data_ms' => array(
+				'ajax_data' => array(
 					'group' => 'mailchimp',
 					'field' => 'mail_list_deactivated',
 					'action' => $action,

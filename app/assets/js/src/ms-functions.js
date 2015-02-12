@@ -525,6 +525,10 @@ jQuery.fn.ms_datepicker = function( args ) {
 			jQuery( inst.dpDiv ).addClass( config.custom_class );
 		}
 
+		window.setTimeout(function() {
+			jQuery( inst.dpDiv ).css( {'z-index': '10'} );
+		}, 20);
+
 		if ( null !== bs_callback ) {
 			bs_callback( input, inst );
 		}

@@ -932,35 +932,35 @@ class MS_Model_Member extends MS_Model {
 	 * @param string $gateway_id Optional. The gateway used to add the membership.
 	 * @param int $move_from_id Optional. The membership id to move from if any.
 	 *
-	 * @return object|null $ms_relationship
+	 * @return object|null $subscription
 	 */
 	public function add_membership( $membership_id, $gateway_id = 'admin', $move_from_id = 0 ) {
-		$ms_relationship = null;
+		$subscription = null;
 
 		if ( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
 			if ( ! array_key_exists( $membership_id, $this->subscriptions ) ) {
-				$ms_relationship = MS_Model_Relationship::create_ms_relationship(
+				$subscription = MS_Model_Relationship::create_ms_relationship(
 					$membership_id,
 					$this->id,
 					$gateway_id,
 					$move_from_id
 				);
 
-				if ( 'admin' !== $gateway_id ) {
-					MS_Model_Invoice::get_current_invoice( $ms_relationship );
+				if ( 'admin' != $gateway_id ) {
+					MS_Model_Invoice::get_current_invoice( $subscription );
 				}
 
-				if ( MS_Model_Relationship::STATUS_PENDING !== $ms_relationship->status ) {
-					$this->subscriptions[ $membership_id ] = $ms_relationship;
+				if ( MS_Model_Relationship::STATUS_PENDING !== $subscription->status ) {
+					$this->subscriptions[ $membership_id ] = $subscription;
 				}
 			} else {
-				$ms_relationship = $this->subscriptions[ $membership_id ];
+				$subscription = $this->subscriptions[ $membership_id ];
 			}
 		}
 
 		return apply_filters(
 			'ms_model_member_add_membership',
-			$ms_relationship,
+			$subscription,
 			$membership_id,
 			$gateway_id,
 			$move_from_id,
@@ -985,7 +985,7 @@ class MS_Model_Member extends MS_Model {
 				$this
 			);
 
-			$this->subscriptions[ $membership_id ]->deactivate_membership( false );
+			$this->subscriptions[ $membership_id ]->deactivate_membership();
 			unset( $this->subscriptions[ $membership_id ] );
 		}
 
@@ -1013,7 +1013,7 @@ class MS_Model_Member extends MS_Model {
 				$this
 			);
 
-			$this->subscriptions[ $membership_id ]->cancel_membership( false );
+			$this->subscriptions[ $membership_id ]->cancel_membership();
 		} else {
 			// The membership might be on status "PENDING" which is not included
 			// in $this->subscriptions.
@@ -1080,7 +1080,7 @@ class MS_Model_Member extends MS_Model {
 
 		// Allowed membership status to have access
 		$allowed_status = apply_filters(
-			'membership_model_member_allowed_status',
+			'ms_model_member_allowed_status',
 			array(
 				MS_Model_Relationship::STATUS_ACTIVE,
 				MS_Model_Relationship::STATUS_TRIAL,
@@ -1110,8 +1110,34 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		return apply_filters(
-			'membership_model_member_has_membership',
+			'ms_model_member_has_membership',
 			$has_membership,
+			$membership_id,
+			$this
+		);
+	}
+
+	/**
+	 * Return the subscription object for the specified membership.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param int $membership_id The specific membership to return.
+	 * @return MS_Model_Relationship The subscription object.
+	 */
+	public function get_subscription( $membership_id ) {
+		$subscription = null;
+
+		if ( ! empty( $membership_id ) ) {
+			// Membership-ID specified: Check if user has this membership
+			if ( array_key_exists( $membership_id,  $this->subscriptions ) ) {
+				$subscription = $this->subscriptions[$membership_id];
+			}
+		}
+
+		return apply_filters(
+			'ms_model_member_get_subscription',
+			$subscription,
 			$membership_id,
 			$this
 		);

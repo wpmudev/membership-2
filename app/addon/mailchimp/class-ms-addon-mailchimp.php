@@ -78,24 +78,24 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				10, 3
 			);
 
+			// Watch for REGISTER event: Subscribe user to list.
 			$this->add_action(
 				'ms_model_event_'. MS_Model_Event::TYPE_MS_REGISTERED,
 				'subscribe_registered',
 				10, 2
 			);
+
+			// Watch for SIGN UP event: Subscribe user to list.
 			$this->add_action(
 				'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP,
 				'subscribe_members',
 				10, 2
 			);
+
+			// Watch for DEACTIVATE event: Subscribe user to list.
 			$this->add_action(
 				'ms_model_event_'. MS_Model_Event::TYPE_MS_DEACTIVATED,
 				'subscribe_deactivated',
-				10, 2
-			);
-			$this->add_action(
-				'ms_model_event_'. MS_Model_Event::TYPE_UPDATED_INFO,
-				'update_info',
 				10, 2
 			);
 		}
@@ -137,11 +137,19 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @param mixed $event
 	 * @param mixed $member
 	 */
-	public function subscribe_members( $event, $ms_relationship ) {
-		$member = $ms_relationship->get_member();
+	public function subscribe_members( $event, $subscription ) {
+		$member = $subscription->get_member();
+		WDev()->debug->dump( 'Subscription', $subscription, $member );
 
 		/** Verify if is subscribed to registered mail list and remove it. */
 		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
+			if ( self::is_user_subscribed( $member->email, $list_id ) ) {
+				self::unsubscribe_user( $member->email, $list_id );
+			}
+		}
+
+		/** Verify if is subscribed to deactivated mail list and remove it. */
+		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
 			if ( self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::unsubscribe_user( $member->email, $list_id );
 			}
@@ -153,14 +161,6 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				self::subscribe_user( $member, $list_id );
 			}
 		}
-
-		/** Verify if is subscribed to deactivated mail list and remove it. */
-		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
-			if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-				self::unsubscribe_user( $member->email, $list_id );
-			}
-		}
-
 	}
 
 	/**
@@ -169,8 +169,8 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @param mixed $event
 	 * @param mixed $member
 	 */
-	public function subscribe_deactivated( $event, $ms_relationship ) {
-		$member = $ms_relationship->get_member();
+	public function subscribe_deactivated( $event, $subscription ) {
+		$member = $subscription->get_member();
 
 		// Verify if is subscribed to registered mail list and remove it.
 		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
@@ -192,16 +192,6 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				self::subscribe_user( $member, $list_id );
 			}
 		}
-	}
-
-	/**
-	 * A membership was updated
-	 *
-	 * @param mixed $event
-	 * @param mixed $member
-	 */
-	public function update_info( $event, $data ) {
-
 	}
 
 	/**
@@ -287,7 +277,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @since 1.0.0
 	 *
 	 * @return Mailchimp Object
-	 Mailchimp
+	 */
 	public static function load_mailchimp_api() {
 		if ( empty( self::$mailchimp_api ) ) {
 			$options = apply_filters(

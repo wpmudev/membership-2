@@ -96,26 +96,8 @@ class MS_Controller_Member extends MS_Controller {
 			$fields_new = array( 'new_member', 'action' );
 			$fields_edit = array( 'member_id', 'action' );
 
-			if ( $this->verify_nonce( 'add_member' )
-				&& self::validate_required( $fields_new )
-			) {
-				$ids = explode( ',', $_POST['new_member'] );
-				foreach ( $ids as $id ) {
-					$member = MS_Factory::load(
-						'MS_Model_Member',
-						$id
-					);
-
-					$member->is_member = true;
-					$member->save();
-				}
-				$msg = MS_Helper_Member::MSG_MEMBER_USER_ADDED;
-
-				$redirect = add_query_arg( array( 'msg' => $msg ) );
-			}
-
 			// Execute list table single action.
-			else if ( $this->verify_nonce( null, 'GET' )
+			if ( $this->verify_nonce( null, 'GET' )
 				&& self::validate_required( $fields_edit, 'GET' )
 			) {
 				$msg = $this->member_list_do_action(
@@ -167,7 +149,6 @@ class MS_Controller_Member extends MS_Controller {
 			wp_safe_redirect( $redirect );
 			exit;
 		}
-
 	}
 
 	/**
@@ -242,12 +223,13 @@ class MS_Controller_Member extends MS_Controller {
 		// Drop memberships that are not specified
 		foreach ( $member->get_membership_ids() as $old_id ) {
 			if ( in_array( $old_id, $memberships ) ) { continue; }
-			$member->add_membership( $old_id );
+			$member->drop_membership( $old_id );
 		}
 
 		// Add new memberships
 		foreach ( $memberships as $membership_id ) {
-			$member->add_membership( $membership_id );
+			$subscription = $member->add_membership( $membership_id );
+
 		}
 
 		if ( $member->has_membership() ) {

@@ -453,3 +453,14 @@
 		cursor: help;
 	}
 }
+
+/* Membership News ("Overview" page) */
+#wpwrap .ms-wrap.ms-membership-news {
+	.the-title {
+		border-radius: 6px;
+		color: #FFF;
+		background: #888888;
+		padding: 2px 10px;
+		font-size: inherit;
+	}
+}

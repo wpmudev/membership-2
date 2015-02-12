@@ -315,11 +315,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( 'admin' == $gateway_id || $membership->is_free() ) {
 			$subscription->config_period();
 			$subscription->status = self::STATUS_ACTIVE;
+
+			if ( ! $subscription->is_system() ) {
+				$subscription->save();
+
+				// Create event.
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $subscription );
+			}
 		} else {
 			// Force status calculation.
 			$subscription->get_status();
+			$subscription->save();
 		}
-		$subscription->save();
 
 		return $subscription;
 	}
@@ -620,8 +627,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( ! empty( $this->user_id )
 			&& ! MS_Model_Member::is_admin_user( $this->user_id )
 		) {
-			$membership = $this->get_membership();
-			if ( ! $membership->is_system() ) {
+			if ( ! $this->is_system() ) {
 				parent::save();
 			}
 		}
@@ -1457,9 +1463,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			switch ( $this->status ) {
 				case self::STATUS_PENDING:
 					// signup
-					if ( 'admin' != $this->gateway_id
-						&& in_array( $new_status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) )
-					) {
+					if ( in_array( $new_status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $this );
 					}
 					break;
