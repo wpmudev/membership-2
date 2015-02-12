@@ -185,6 +185,10 @@ class MS_Helper_Period extends MS_Helper {
 			'1' . self::PERIOD_TYPE_WEEKS => __( 'one week', MS_TEXT_DOMAIN ),
 			'1' . self::PERIOD_TYPE_MONTHS => __( 'one month', MS_TEXT_DOMAIN ),
 			'1' . self::PERIOD_TYPE_YEARS => __( 'one year', MS_TEXT_DOMAIN ),
+			'1-' . self::PERIOD_TYPE_DAYS => __( 'day', MS_TEXT_DOMAIN ),
+			'1-' . self::PERIOD_TYPE_WEEKS => __( 'week', MS_TEXT_DOMAIN ),
+			'1-' . self::PERIOD_TYPE_MONTHS => __( 'month', MS_TEXT_DOMAIN ),
+			'1-' . self::PERIOD_TYPE_YEARS => __( 'year', MS_TEXT_DOMAIN ),
 		);
 		$plural = array(
 			self::PERIOD_TYPE_DAYS => __( 'days', MS_TEXT_DOMAIN ),
@@ -261,7 +265,7 @@ class MS_Helper_Period extends MS_Helper {
 		);
 	}
 
-	public static function get_period_desc( $period ) {
+	public static function get_period_desc( $period, $include_quanity_one = false ) {
 		$period_unit = MS_Helper_Period::get_period_value(
 			$period,
 			'period_unit'
@@ -271,12 +275,16 @@ class MS_Helper_Period extends MS_Helper {
 			'period_type'
 		);
 
-		if ( abs( $period_unit < 2 ) ) {
-			$period_type = preg_replace( '/s$/', '', $period_type );
-		}
+		$types = self::get_period_types();
 
 		if ( $period_unit == 1 ) {
 			$desc = '%2$s';
+
+			if ( $include_quanity_one ) {
+				$period_type = $types['1' . $period_type];
+			} else {
+				$period_type = $types['1-' . $period_type];
+			}
 		} else {
 			$desc = '%1$s %2$s';
 		}
@@ -320,5 +328,26 @@ class MS_Helper_Period extends MS_Helper {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Returns a formated date string
+	 *
+	 * @param  string $date The date value.
+	 * @param  string $format Optional the format to apply.
+	 */
+	public static function format_date( $date, $format = null ) {
+		if ( empty( $format ) ) {
+			$format = get_option( 'date_format' );
+		}
+
+		$result = date_i18n( $format, strtotime( $date ) );
+
+		return apply_filters(
+			'ms_format_date',
+			$result,
+			$date,
+			$format
+		);
 	}
 }

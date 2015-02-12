@@ -233,6 +233,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $tax_name;
 
 	/**
+	 * Short, compact version of the payment description
+	 *
+	 * @since 1.1.0
+	 * @var string
+	 */
+	protected $short_description = '';
+
+	/**
 	 * Where the data came from. Can only be changed by data import tool
 	 *
 	 * @since 1.1.0
@@ -590,11 +598,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				$member->username
 			)
 		);
-		$invoice->description = apply_filters(
-			'ms_model_invoice_description',
-			$ms_relationship->get_payment_description( $invoice )
-		);
-
 		$invoice->invoice_number = $invoice_number;
 		$invoice->discount = 0;
 
@@ -679,6 +682,17 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if ( 0 == $invoice->get_total() ) {
 			$invoice->status = self::STATUS_PAID;
 		}
+
+		$invoice->save();
+
+		$invoice->description = apply_filters(
+			'ms_model_invoice_description',
+			$ms_relationship->get_payment_description( $invoice )
+		);
+		$invoice->short_description = apply_filters(
+			'ms_model_invoice_short_description',
+			$ms_relationship->get_payment_description( $invoice, true )
+		);
 
 		$invoice->save();
 
@@ -997,6 +1011,13 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					$value = $this->id;
 					break;
 
+				case 'short_description':
+					if ( empty( $this->short_description ) ) {
+						$value = $this->description;
+					} else {
+						$value = $this->short_description;
+					}
+					break;
 
 				default:
 					$value = $this->$property;

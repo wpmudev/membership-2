@@ -34,7 +34,7 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 				data-key="<?php echo esc_attr( $gateway->get_publishable_key() ); ?>"
 				data-amount="<?php echo esc_attr( absint( $invoice->total * 100 ) ); //amount in cents ?>"
 				data-name="<?php echo esc_attr( bloginfo( 'name' ) ); ?>"
-				data-description="<?php echo esc_attr( strip_tags( $invoice->description ) ); ?>"
+				data-description="<?php echo esc_attr( strip_tags( $invoice->short_description ) ); ?>"
 				data-currency="<?php echo esc_attr( $invoice->currency ); ?>"
 				data-panel-label="<?php echo esc_attr( $gateway->pay_button_url ); ?>"
 				data-label="<?php echo esc_attr( $gateway->pay_button_url ); ?>"

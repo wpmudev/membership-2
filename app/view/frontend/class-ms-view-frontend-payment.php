@@ -204,8 +204,7 @@ class MS_View_Frontend_Payment extends MS_View {
 						<td class="ms-desc-warning" colspan="2">
 							<span class="ms-cancel-other-memberships"><?php
 								_e(
-									'Note that your other Memberships will be ' .
-									'cancelled when you complete this payment.',
+									'Your other Memberships will be cancelled when you complete this payment.',
 									MS_TEXT_DOMAIN
 								);
 							?></span>

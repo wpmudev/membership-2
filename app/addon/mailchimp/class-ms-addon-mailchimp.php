@@ -139,7 +139,6 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public function subscribe_members( $event, $subscription ) {
 		$member = $subscription->get_member();
-		WDev()->debug->dump( 'Subscription', $subscription, $member );
 
 		/** Verify if is subscribed to registered mail list and remove it. */
 		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {

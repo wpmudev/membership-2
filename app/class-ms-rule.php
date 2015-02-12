@@ -606,12 +606,10 @@ class MS_Rule extends MS_Model {
 	 * @return string Text like "Instantly" or "After 7 days"
 	 */
 	public function get_dripped_description( $item_id ) {
-		static $Format = null;
 
 		$desc = '';
 		$drip_data = false;
 
-		if ( null === $Format ) { $Format = get_option( 'date_format' ); }
 		if ( ! is_array( $this->dripped ) ) { $this->dripped = array(); }
 		if ( isset( $this->dripped[ $item_id ] ) ) {
 			$drip_data = $this->dripped[ $item_id ];
@@ -624,7 +622,7 @@ class MS_Rule extends MS_Model {
 				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
 					$desc = sprintf(
 						__( 'On <b>%1$s</b>', MS_TEXT_DOMAIN ),
-						date_i18n( $Format, strtotime( $drip_data['date'] ) )
+						MS_Helper_Period::format_date( $drip_data['date'] )
 					);
 					break;
 

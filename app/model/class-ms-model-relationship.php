@@ -744,8 +744,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			)
 		) {
 			$this->expire_date = $expire_date;
-		}
-		else {
+		} else {
 			$this->expire_date = $this->calc_expire_date( $this->start_date );
 		}
 
@@ -1120,10 +1119,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 * @param  MS_Model_Invoice $invoice Optional. Specific invoice that defines the price.
-	 * @param  MS_Model_Invoice $trial_invoice Optional. Invoice for the trial price.
 	 * @return string The description.
 	 */
-	public function get_payment_description( $invoice = null, $trial_invoice = null ) {
+	public function get_payment_description( $invoice = null, $short = false ) {
 		$currency = MS_Plugin::instance()->settings->currency;
 		$membership = $this->get_membership();
 		$desc = '';
@@ -1134,95 +1132,131 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$total_price = $membership->total_price; // Includes Tax
 		}
 
-		if ( null !== $trial_invoice ) {
-			$trial_price = $trial_invoice->total;
-		} else {
-			$trial_price = $membership->trial_price;
-		}
+		$trial_price = $membership->trial_price;
 		$total_price = MS_Helper_Billing::format_price( $total_price );
 		$trial_price = MS_Helper_Billing::format_price( $trial_price );
 
 		switch ( $membership->payment_type ){
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 				if ( 0 == $total_price ) {
-					$desc = __( 'You will pay nothing for permanent access.', MS_TEXT_DOMAIN );
+					if ( $short ) {
+						$lbl = __( 'Pay nothing (for ever)', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'You will pay nothing for permanent access.', MS_TEXT_DOMAIN );
+					}
 				} else {
-					$desc = sprintf(
-						__( 'You will pay <span class="price">%1$s %2$s</span>, for permanent access.', MS_TEXT_DOMAIN ),
-						$currency,
-						$total_price
-					);
+					if ( $short ) {
+						$lbl  = __( 'Pay <span class="price">%1$s %2$s</span> (for ever)', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span>, for permanent access.', MS_TEXT_DOMAIN );
+					}
 				}
+
+				$desc = sprintf(
+					$lbl,
+					$currency,
+					$total_price
+				);
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				if ( 0 == $total_price ) {
-					$desc = sprintf(
-						__( 'You will pay nothing for access until %1$s.', MS_TEXT_DOMAIN ),
-						$this->calc_expire_date( $this->expire_date )
-					);
+					if ( $short ) {
+						$lbl = __( 'Pay nothing (until %4$s)', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'You will pay nothing for access until %3$s.', MS_TEXT_DOMAIN );
+					}
 				} else {
-					$desc .= sprintf(
-						__( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', MS_TEXT_DOMAIN ),
-						$currency,
-						$total_price,
-						$this->calc_expire_date( $this->expire_date )
-					);
+					if ( $short ) {
+						$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (until %4$s)', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', MS_TEXT_DOMAIN );
+					}
 				}
+
+				$desc .= sprintf(
+					$lbl,
+					$currency,
+					$total_price,
+					MS_Helper_Period::format_date( $this->calc_expire_date( $this->expire_date ) ),
+					$this->calc_expire_date( $this->expire_date )
+				);
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				if ( 0 == $total_price ) {
-					$desc = sprintf(
-						__( 'You will pay nothing for access from %1$s until %2$s.', MS_TEXT_DOMAIN ),
-						$membership->period_date_start,
-						$membership->period_date_end
-					);
+					if ( $short ) {
+						$lbl = __( 'Pay nothing (%5$s - %6$s)', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'You will pay nothing for access from %3$s until %4$s.', MS_TEXT_DOMAIN );
+					}
 				} else {
-					$desc .= sprintf(
-						__( 'You will pay <span class="price">%1$s %2$s</span> to access from %3$s to %4$s.', MS_TEXT_DOMAIN ),
-						$currency,
-						$total_price,
-						$membership->period_date_start,
-						$membership->period_date_end
-					);
+					if ( $short ) {
+						$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (%5$s - %6$s)', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> to access from %3$s until %4$s.', MS_TEXT_DOMAIN );
+					}
 				}
+
+				$desc .= sprintf(
+					$lbl,
+					$currency,
+					$total_price,
+					MS_Helper_Period::format_date( $membership->period_date_start ),
+					MS_Helper_Period::format_date( $membership->period_date_end ),
+					$membership->period_date_start,
+					$membership->period_date_end
+				);
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-				$period_unit = MS_Helper_Period::get_period_value(
-					$membership->pay_cycle_period,
-					'period_unit'
-				);
-				$period_type = MS_Helper_Period::get_period_value(
-					$membership->pay_cycle_period,
-					'period_type'
-				);
+				if ( $membership->pay_cycle_repetitions == 1 ) {
+					// Exactly 1 payment. Actually same as the "finite" type.
+					if ( $short ) {
+						$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (once)', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> once.', MS_TEXT_DOMAIN );
+					}
+				} else {
+					if ( $membership->pay_cycle_repetitions > 1 ) {
+						// Fixed number of payments (more than 1)
+						if ( $short ) {
+							$lbl = __( '%4$s times <span class="price">%1$s %2$s</span> (each %3$s)', MS_TEXT_DOMAIN );
+						} else {
+							$lbl = __( 'You will make %4$s payments of <span class="price">%1$s %2$s</span>, one each %3$s.', MS_TEXT_DOMAIN );
+						}
+					} else {
+						// Indefinite number of payments
+						if ( $short ) {
+							$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (each %3$s)', MS_TEXT_DOMAIN );
+						} else {
+							$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> each %3$s.', MS_TEXT_DOMAIN );
+						}
+					}
+				}
 
 				$desc .= sprintf(
-					__( 'You will pay <span class="price">%1$s %2$s</span> each %3$s %4$s.', MS_TEXT_DOMAIN ),
+					$lbl,
 					$currency,
 					$total_price,
-					$period_unit,
-					$period_type
+					MS_Helper_Period::get_period_desc( $membership->pay_cycle_period ),
+					$membership->pay_cycle_repetitions
 				);
 				break;
 		}
 
 		if ( $this->is_trial_eligible() ) {
-			$period_unit = MS_Helper_Period::get_period_value(
-				$membership->trial_period,
-				'period_unit'
-			);
-			$period_type = MS_Helper_Period::get_period_value(
-				$membership->trial_period,
-				'period_type'
-			);
+			if ( 0 == absint( $trial_price ) ) {
+				$trial_price = __( 'nothing', MS_TEXT_DOMAIN );
+				$lbl = __( 'The trial period of %1$s is for free.', MS_TEXT_DOMAIN );
+			} else {
+				$trial_price = MS_Helper_Billing::format_price( $trial_price );
+				$lbl = __( 'For the trial period of %1$s you only pay <span class="price">%2$s %3$s</span>.', MS_TEXT_DOMAIN );
+			}
 
 			$desc .= sprintf(
-				__( ' <br />In the trial period of %1$s %2$s, you will pay <span class="price">%3$s %4$s</span>.', MS_TEXT_DOMAIN ),
-				$period_unit,
-				$period_type,
+				'<br />' . $lbl,
+				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$currency,
 				$trial_price
 			);

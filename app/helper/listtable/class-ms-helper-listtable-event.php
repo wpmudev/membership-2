@@ -133,10 +133,7 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 	}
 
 	public function column_post_modified( $item, $column_name ) {
-		$html = date_i18n(
-			get_option( 'date_format' ),
-			strtotime( $item->post_modified )
-		);
+		$html = MS_Helper_Period::format_date( $item->post_modified );
 
 		return $html;
 	}

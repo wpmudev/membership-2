@@ -218,7 +218,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				?>
 				<tr class="<?php echo esc_attr( $class ); ?>">
 					<td><?php echo esc_html(
-						date_i18n( get_option( 'date_format' ), strtotime( $event->post_modified ) )
+						MS_Helper_Period::format_date( $event->post_modified )
 					); ?></td>
 					<td><?php echo esc_html( MS_Model_Member::get_username( $event->user_id ) ); ?></td>
 					<td><?php echo esc_html( $event->description ); ?></td>
@@ -259,7 +259,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				<tr class="<?php echo esc_attr( $class ); ?>">
 					<td><?php echo esc_html( $member->username ); ?></td>
 					<td><?php echo esc_html(
-						date_i18n( get_option( 'date_format' ), strtotime( $subscription->start_date ) )
+						MS_Helper_Period::format_date( $subscription->start_date )
 					); ?></td>
 					<td><?php echo esc_html( $status_types[ $subscription->status ] ); ?></td>
 				</tr>
