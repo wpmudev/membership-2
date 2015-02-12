@@ -213,6 +213,8 @@ class MS_Addon_Taxamo extends MS_Addon {
 			&& $this->is_admin_user()
 		) {
 			$model = self::model();
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$model->set( $_POST['field'], $_POST['value'] );
 			$model->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;

@@ -144,6 +144,8 @@ class MS_Controller_Settings extends MS_Controller {
 			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$msg = $this->save_general(
 				$_POST['action'],
 				array( $_POST['field'] => $_POST['value'] )
@@ -170,6 +172,8 @@ class MS_Controller_Settings extends MS_Controller {
 			&& $this->is_admin_user()
 		) {
 			$settings = $this->get_model();
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$settings->set_custom_setting(
 				$_POST['group'],
 				$_POST['field'],
@@ -205,6 +209,8 @@ class MS_Controller_Settings extends MS_Controller {
 			&& MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] )
 		) {
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$settings->set_protection_message( $_POST['type'], $_POST['value'] );
 			$settings->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;

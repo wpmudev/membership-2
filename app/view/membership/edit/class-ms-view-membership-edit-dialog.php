@@ -70,6 +70,8 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 			$id = $_POST['ms_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 
+			WDev()->array->strip_slashes( $_POST, 'ms_name', 'ms_description' );
+
 			if ( isset( $_POST['ms_name'] ) ) {
 				$membership->name = $_POST['ms_name'];
 			}

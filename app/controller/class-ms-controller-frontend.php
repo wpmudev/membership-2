@@ -553,6 +553,8 @@ class MS_Controller_Frontend extends MS_Controller {
 			$membership_id = $membership->id;
 
 			if ( ! empty( $_POST['error'] ) ) {
+				WDev()->array->strip_slashes( $_POST, 'error' );
+
 				$data['error'] = $_POST['error'];
 			}
 		} else {

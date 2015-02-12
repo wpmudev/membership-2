@@ -268,6 +268,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return MS_Model_Relationship The created relationship.
 	 */
 	private static function _create_ms_relationship( $membership_id, $user_id, $gateway_id, $move_from_id ) {
+		$is_simulated = false;
+
 		// Try to reuse existing db record to keep history.
 		$subscription = self::get_subscription( $user_id, $membership_id );
 
@@ -277,6 +279,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$subscription->membership_id = $membership_id;
 			$subscription->user_id = $user_id;
 			$subscription->status = self::STATUS_PENDING;
+		}
+
+		if ( 'simulation' == $gateway_id ) {
+			$is_simulated = true;
+			$gateway_id = 'admin';
 		}
 
 		// Always update these fields.
@@ -316,7 +323,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$subscription->config_period();
 			$subscription->status = self::STATUS_ACTIVE;
 
-			if ( ! $subscription->is_system() ) {
+			if ( ! $subscription->is_system() && ! $is_simulated ) {
 				$subscription->save();
 
 				// Create event.

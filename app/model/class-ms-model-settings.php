@@ -306,8 +306,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		if ( self::is_valid_protection_msg_type( $type ) ) {
 			if ( isset( $this->protection_messages[ $type ] ) ) {
 				$msg = $this->protection_messages[ $type ];
-			}
-			else {
+			} else {
 				$msg = __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN );
 			}
 		}

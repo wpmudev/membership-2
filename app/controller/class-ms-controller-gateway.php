@@ -145,12 +145,13 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function ajax_action_update_gateway() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 
-		$fields = array( 'action', 'gateway_id', 'field' );
+		$fields = array( 'action', 'gateway_id', 'field', 'value' );
 		if ( $this->verify_nonce()
 			&& self::validate_required( $fields )
-			&& isset( $_POST['value'] )
 			&& $this->is_admin_user()
 		) {
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$msg = $this->gateway_list_do_action(
 				$_POST['action'],
 				array( $_POST['gateway_id'] ),
@@ -484,6 +485,8 @@ class MS_Controller_Gateway extends MS_Controller {
 						$data['cim_profiles'] = $gateway->get_cim_profile( $member );
 					}
 
+					WDev()->array->strip_slashes( $_POST, 'auth_error' );
+
 					$data['cim_payment_profile_id'] = $gateway->get_cim_payment_profile_id( $member );
 					$data['auth_error'] = ! empty( $_POST['auth_error'] ) ? $_POST['auth_error'] : '';
 					break;
@@ -811,6 +814,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			switch ( $gateway->id ) {
 				case MS_Gateway_Stripe::ID:
 					if ( ! empty( $_POST['stripeToken'] ) && $this->verify_nonce() ) {
+						WDev()->array->strip_slashes( $_POST, 'stripeToken' );
+
 						$gateway->add_card( $member, $_POST['stripeToken'] );
 						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
 							$ms_relationship = MS_Factory::load(

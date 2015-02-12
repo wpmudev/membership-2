@@ -458,6 +458,8 @@ class MS_View_Shortcode_Login extends MS_View {
 			$user = false;
 		}
 
+		WDev()->array->strip_slashes( $_POST, 'pass1', 'pass2' );
+
 		// If the user was not found then redirect to an error page.
 		if ( ! $user || is_wp_error( $user ) ) {
 			if ( $user && $user->get_error_code() === 'expired_key' ) {

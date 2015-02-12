@@ -83,6 +83,8 @@ class MS_Controller_Communication extends MS_Controller {
 			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$comm = MS_Model_Communication::get_communication( $_POST['type'] );
 			$field = $_POST['field'];
 			$value = $_POST['value'];

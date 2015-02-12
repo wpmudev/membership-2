@@ -165,6 +165,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 
 		if ( ! empty( $_POST['stripeToken'] ) ) {
+			WDev()->array->strip_slashes( $_POST, 'stripeToken' );
+
 			$token = $_POST['stripeToken'];
 			$this->load_stripe_lib();
 			$customer = $this->get_stripe_customer( $member );

@@ -149,6 +149,8 @@ class MS_Controller_Membership extends MS_Controller {
 			&& self::validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$msg = $this->save_membership(
 				array( $_POST['field'] => $_POST['value'] )
 			);

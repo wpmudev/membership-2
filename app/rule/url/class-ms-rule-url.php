@@ -99,6 +99,8 @@ class MS_Rule_Url extends MS_Controller {
 
 		switch ( $action ) {
 			case self::ACTION_ADD:
+				WDev()->array->strip_slashes( $_POST, 'url_value' );
+
 				$url = $_POST['url_value'];
 				$base = MS_Model_Membership::get_base();
 				$rule = $base->get_rule( self::RULE_ID );

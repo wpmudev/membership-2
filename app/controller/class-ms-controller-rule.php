@@ -116,6 +116,8 @@ class MS_Controller_Rule extends MS_Controller {
 		if ( $this->_resp_ok() && ! self::validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-matching-03' ); }
 
 		if ( $this->_resp_ok() ) {
+			WDev()->array->strip_slashes( $_POST, 'value' );
+
 			$rule_type = $_POST['rule_type'];
 			$msg = $this->save_rule_values(
 				$rule_type,
