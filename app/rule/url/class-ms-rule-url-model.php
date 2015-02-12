@@ -95,7 +95,8 @@ class MS_Rule_Url_Model extends MS_Rule {
 				$has_access = false;
 
 				// Check for URL group.
-				if ( $this->check_url_expression_match( $url, $this->rule_value ) ) {
+				$accessible = $this->get_accessible_urls();
+				if ( $this->check_url_expression_match( $url, $accessible ) ) {
 					if ( $this->get_membership()->is_base() ) {
 						// For guests all defined URL groups are denied.
 						$has_access = false;
@@ -184,8 +185,12 @@ class MS_Rule_Url_Model extends MS_Rule {
 				array_map( 'untrailingslashit', $check_list )
 			);
 
-			if ( in_array( strtolower( $url ), $check_list ) ) {
-				$match = true;
+			$url = strtolower( $url );
+			foreach ( $check_list as $check ) {
+				if ( false !== strpos( $url, $check ) ) {
+					$match = true;
+					break;
+				}
 			}
 		}
 
@@ -391,5 +396,26 @@ class MS_Rule_Url_Model extends MS_Rule {
 		}
 
 		return $Protected_Urls;
+	}
+
+	/**
+	 * Returns a list with all accessible URLs.
+	 *
+	 * @since 1.1.0
+	 * @param string $hash The URL-hash.
+	 */
+	public function get_accessible_urls() {
+		static $Accessible_Urls = null;
+
+		if ( null === $Accessible_Urls ) {
+			$Accessible_Urls = $this->get_protected_urls();
+			foreach ( $Accessible_Urls as $key => $access ) {
+				if ( empty( $this->rule_value[$key] ) ) {
+					unset( $Accessible_Urls[$key] );
+				}
+			}
+		}
+
+		return $Accessible_Urls;
 	}
 }

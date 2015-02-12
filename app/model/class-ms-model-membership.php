@@ -520,6 +520,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			);
 
 			$this->rules[ $rule_type ] = $rule;
+			if ( ! is_array( $rule->rule_value ) ) {
+				$rule->rule_value = array();
+			}
 		}
 
 		return $this->rules[ $rule_type ];
@@ -1313,7 +1316,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			if ( $rule->rule_type != $rule_type ) {
 				// This means that the $rule_type was not found...
 				continue;
-			} elseif ( ! $rule->has_rules() ) {
+			} elseif ( ! count( $rule->rule_value ) ) {
 				// The rule does not protect anything...
 				continue;
 			}
