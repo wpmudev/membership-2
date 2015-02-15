@@ -51,10 +51,6 @@ window.ms_init.view_settings = function init () {
 		}
 	}
 
-	function submit_comm_change() {
-		jQuery( '#ms-comm-type-form' ).submit();
-	}
-
 	function reload_window() {
 		window.location = ms_data.initial_url;
 	}
@@ -80,7 +76,4 @@ window.ms_init.view_settings = function init () {
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
 	jQuery( '.ms-action a' ).on( 'click', ignore_disabled );
 	jQuery(function() { page_changed(); });
-
-	// Select new Communication type
-	jQuery( '#comm_type' ).change( submit_comm_change );
 };

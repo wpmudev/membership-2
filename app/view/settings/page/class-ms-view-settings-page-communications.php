@@ -5,6 +5,19 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 	public function to_html() {
 		$comm = $this->data['comm'];
 
+		$this->add_action( 'admin_footer', 'wp_footer' );
+
+		WDev()->array->equip(
+			$comm,
+			'type',
+			'enabled',
+			'period',
+			'subject',
+			'description',
+			'cc_enabled',
+			'cc_email'
+		);
+
 		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
 		$nonce = wp_create_nonce( $action );
 		$comm_titles = MS_Model_Communication::get_communication_type_titles();
@@ -13,7 +26,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'comm_type' => array(
 				'id' => 'comm_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => @$comm->type,
+				'value' => $comm->type,
 				'field_options' => $comm_titles,
 			),
 
@@ -26,15 +39,15 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'type' => array(
 				'id' => 'type',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => @$comm->type,
+				'value' => $comm->type,
 			),
 
 			'enabled' => array(
 				'id' => 'enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => @$comm->enabled,
+				'value' => $comm->enabled,
 				'data_ms' => array(
-					'type' => @$comm->type,
+					'type' => $comm->type,
 					'field' => 'enabled',
 					'action' => $action,
 					'_wpnonce' => $nonce,
@@ -45,13 +58,13 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'id' => 'period_unit',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
-				'value' => @$comm->period['period_unit'],
+				'value' => $comm->period['period_unit'],
 			),
 
 			'period_type' => array(
 				'id' => 'period_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => @$comm->period['period_type'],
+				'value' => $comm->period['period_type'],
 				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
 			),
 
@@ -59,14 +72,14 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'id' => 'subject',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
-				'value' => @$comm->subject,
+				'value' => $comm->subject,
 				'class' => 'ms-comm-subject widefat',
 			),
 
 			'email_body' => array(
 				'id' => 'email_body',
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-				'value' => @$comm->description,
+				'value' => $comm->description,
 				'field_options' => array(
 					'media_buttons' => false,
 					'editor_class' => 'wpmui-ajax-update',
@@ -77,13 +90,13 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'id' => 'cc_enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
-				'value' => @$comm->cc_enabled,
+				'value' => $comm->cc_enabled,
 			),
 
 			'cc_email' => array(
 				'id' => 'cc_email',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => @$comm->cc_email,
+				'value' => $comm->cc_email,
 				'field_options' => MS_Model_Member::get_admin_user_emails(),
 			),
 
@@ -172,6 +185,22 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			?>
 		</form>
 		<?php
+
+		return ob_get_clean();
+	}
+
+	/**
+	 * Add short JS values in page footer.
+	 *
+	 * @since  1.1.0
+	 */
+	public function wp_footer() {
+		$comm = $this->data['comm'];
+
+		if ( ! isset( $comm->comm_vars ) ) {
+			$comm->comm_vars = array();
+		}
+
 		/**
 		 * Print JS details for the custom TinyMCE "Insert Variable" button
 		 *
@@ -180,8 +209,9 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 		 */
 		$var_button = array(
 			'title' => __( 'Insert Membership Variables', MS_TEXT_DOMAIN ),
-			'items' => @$comm->comm_vars,
+			'items' => $comm->comm_vars,
 		);
+
 		printf(
 			'<script>window.ms_data.var_button = %1$s;window.ms_data.lang_confirm = %2$s</script>',
 			json_encode( $var_button ),
@@ -189,8 +219,6 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				__( 'You have made changes that are not saved yet. Do you want to discard those changes?', MS_TEXT_DOMAIN )
 			)
 		);
-
-		return ob_get_clean();
 	}
 
 }
