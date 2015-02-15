@@ -403,7 +403,21 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			$Dripped_memberships = MS_Model_membership::get_dripped_memberships();
 		}
 
-		if ( $membership->is_dripped() ) {
+		if ( $membership->is_base() ) {
+			// Base: If only one dripped membership then show the date.
+			foreach ( $Dripped_memberships as $membership ) {
+				$rule = $membership->get_rule( $this->model->rule_type );
+				if ( ! empty( $rule->dripped[$item->id] ) ) {
+					if ( empty( $label ) ) {
+						$label = $rule->get_dripped_description( $item->id );
+					} else {
+						// Multiple dripped memberships. Display placeholer text.
+						$label = '';
+						break;
+					}
+				}
+			}
+		} elseif ( $membership->is_dripped() ) {
 			$rule = $membership->get_rule( $this->model->rule_type );
 			if ( ! empty( $rule->dripped[$item->id] ) ) {
 				$label = $rule->get_dripped_description( $item->id );
