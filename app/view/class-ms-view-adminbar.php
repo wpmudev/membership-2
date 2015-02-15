@@ -48,6 +48,20 @@ class MS_View_Adminbar extends MS_View {
 			$toggle_state = '';
 		}
 
+		$details = WDev()->session->get( 'ms-access' );
+		$denied_url = false;
+		$deciding_membership = false;
+		$deciding_rule = false;
+
+		if ( isset( $details[1] ) && ! $details[1]['has_access'] ) {
+			$denied_url = $details[1]['url'];
+			$deciding_membership = $details[1]['deciding_membership'];
+			$deciding_rule = $details[1]['deciding_rule'];
+		} elseif ( isset( $details[0] ) && $details[0]['has_access'] ) {
+			$deciding_membership = $details[0]['deciding_membership'];
+			$deciding_rule = $details[0]['deciding_rule'];
+		}
+
 		ob_start();
 		$this->output_scripts();
 		?>
@@ -80,7 +94,7 @@ class MS_View_Adminbar extends MS_View {
 				?>
 				</form>
 
-				<h4 class="toggle-wrap inside">
+				<h4 class="inside">
 					<?php _e( 'Simulated Membership', MS_TEXT_DOMAIN ); ?>
 				</h4>
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="inside">
@@ -115,7 +129,12 @@ class MS_View_Adminbar extends MS_View {
 						<td><?php echo esc_html( strip_tags( $sim->get_payment_description( null, true ) ) ); ?></td>
 					</tr>
 				</table>
-				<?php MS_Helper_Html::html_element( $fields['exit_button'] ); ?>
+				<div class="inside">
+				<?php $this->output_deciding_info( $denied_url, $deciding_membership, $deciding_rule ); ?>
+				</div>
+				<div class="ms-sim-footer">
+					<?php MS_Helper_Html::html_element( $fields['exit_button'] ); ?>
+				</div>
 			</div>
 		</div>
 		<?php
@@ -209,6 +228,82 @@ class MS_View_Adminbar extends MS_View {
 	}
 
 	/**
+	 * Output details on which membership denied or allowed access to the
+	 * current page
+	 *
+	 * @since  1.1.0
+	 * @param  string $denied_url URL of the denied page (empty if not denied)
+	 * @param  int $membership_id Membership_id
+	 * @param  array $rules List of Rule_types
+	 */
+	protected function output_deciding_info( $denied_url, $membership_id, $rules ) {
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$rule_title = MS_Model_Rule::get_rule_type_titles();
+
+		if ( ! empty( $denied_url ) ) { ?>
+			<div class="ms-sim-denied">
+			<?php
+			printf(
+				__( 'Access denied by %s', MS_TEXT_DOMAIN ),
+				'<b>' . esc_html( $membership->name ) . '</b>'
+			);
+			?>
+			</div>
+			<ul class="ms-sim-rules">
+			<?php
+			printf(
+				'<li><a href="%1$s">%1$s</a></li>',
+				$denied_url
+			);
+			foreach ( $rules as $rule_type ) {
+				printf(
+					'<li><a href="%1$s" target="_blank">%3$s %2$s</a></li>',
+					sprintf(
+						admin_url( 'admin.php?page=%1$s&tab=%2$s&membership_id=%3$s' ),
+						MS_Controller_Plugin::MENU_SLUG . '-setup',
+						$rule_type,
+						$membership->id
+					),
+					$rule_title[$rule_type],
+					__( 'Denied by Rule:', MS_TEXT_DOMAIN )
+				);
+			}
+			?>
+		<?php } elseif ( $membership->is_valid() ) { ?>
+			<div class="ms-sim-allowed">
+			<?php
+			printf(
+				__( 'Access granted by %s', MS_TEXT_DOMAIN ),
+				'<b>' . esc_html( $membership->name ) . '</b>'
+			);
+			?>
+			</div>
+			<ul class="ms-sim-rules">
+			<?php
+			foreach ( $rules as $rule_type ) {
+				printf(
+					'<li><a href="%1$s" target="_blank">%3$s %2$s</a></li>',
+					sprintf(
+						admin_url( 'admin.php?page=%1$s&tab=%2$s&membership_id=%3$s' ),
+						MS_Controller_Plugin::MENU_SLUG . '-setup',
+						$rule_type,
+						$membership->id
+					),
+					$rule_title[$rule_type],
+					__( 'Allowed by Rule:', MS_TEXT_DOMAIN )
+				);
+			}
+			?>
+			</ul>
+		<?php } else { ?>
+			<div class="ms-sim-public">
+			<?php _e( 'Unprotected', MS_TEXT_DOMAIN ); ?>
+			</div>
+		<?php
+		}
+	}
+
+	/**
 	 * Output the JS and CSS needed for simulation infos
 	 *
 	 * @since  1.1.0
@@ -234,18 +329,21 @@ class MS_View_Adminbar extends MS_View {
 		.ms-sim-info input {
 			font-size: 13px;
 			margin: 0;
-			line-height: 1em;
-			padding: 0;
-			height: auto;
+			line-height: 20px;
+			padding: 2px 10px;
+			height: 26px;
 			border: 1px solid #CCC;
 			background: #FFF;
+			color: #444;
 			border-radius: 0;
 			font-family: sans-serif;
+			box-sizing: border-box;
+			vertical-align: middle;
 		}
 		.ms-sim-info h4 {
 			padding: 0;
 			margin: -10px -10px 10px -10px;
-			border-bottom: 1px solid #E5E5E5;
+			border-bottom: 1px solid rgba(0,0,0,0.2);
 			background: #FFF;
 			color: #C00;
 			text-align: center;
@@ -253,6 +351,8 @@ class MS_View_Adminbar extends MS_View {
 			height: 34px;
 			line-height: 34px;
 			position: relative;
+		}
+		.ms-sim-info h4.toggle-wrap {
 			cursor: pointer;
 		}
 		.ms-sim-info h4 .toggle {
@@ -267,8 +367,9 @@ class MS_View_Adminbar extends MS_View {
 			margin: 7px;
 		}
 		.ms-sim-info h4.inside {
-			border-top: 1px solid #E5E5E5;
+			border-top: 1px solid #E06666;
 			margin-top: 0;
+			background: rgba(255,255,255,0.75);
 		}
 		.ms-sim-info .collapsed .inside {
 			display: none;
@@ -318,6 +419,28 @@ class MS_View_Adminbar extends MS_View {
 			background: #fafafa;
 			border-color: #999;
 			color: #222;
+		}
+		.ms-sim-info .ms-sim-public,
+		.ms-sim-info .ms-sim-denied,
+		.ms-sim-info .ms-sim-allowed {
+			padding: 5px;
+			color: #FFF;
+			text-align: center;
+			background: rgba(0,128,0,0.4);
+			margin-bottom: 5px;
+		}
+		.ms-sim-info .ms-sim-denied {
+			background: #C33;
+		}
+		.ms-sim-info .ms-sim-rules {
+			margin: 0 0 20px 0;
+			padding: 0;
+			list-style: none;
+		}
+		.ms-sim-info .ms-sim-rules li {
+			padding: 3px 10px;
+			margin: 0;
+			display: block;
 		}
 		</style>
 		<script>

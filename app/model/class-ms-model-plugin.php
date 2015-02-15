@@ -275,6 +275,13 @@ class MS_Model_Plugin extends MS_Model {
 								$access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
 								$membership->name
 							);
+
+							$Info['deciding_membership'] = $membership->id;
+							if ( $access ) {
+								$Info['deciding_rule'] = $membership->_allow_rule;
+							} else {
+								$Info['deciding_rule'] = $membership->_deny_rule;
+							}
 							$Info['reason'][] = $membership->_access_reason;
 						}
 

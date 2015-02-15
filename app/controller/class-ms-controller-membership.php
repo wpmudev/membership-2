@@ -178,6 +178,12 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( empty( $this->model ) ) {
 			if ( ! empty( $_REQUEST['membership_id'] ) ) {
 				$membership_id = absint( $_REQUEST['membership_id'] );
+
+				if ( $membership_id == MS_Model_Membership::get_base()->id ) {
+					wp_safe_redirect(
+						remove_query_arg( array( 'membership_id' ) )
+					);
+				}
 			} elseif ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] === 'protected-content-setup' ) {
 				$membership_id = MS_Model_Membership::get_base()->id;
 			}

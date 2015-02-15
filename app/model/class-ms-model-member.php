@@ -1094,7 +1094,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( ! empty( $membership_id ) ) {
 			// Membership-ID specified: Check if user has this membership
-			if ( array_key_exists( $membership_id,  $this->subscriptions )
+			if ( array_key_exists( $membership_id, $this->subscriptions )
 				&& in_array( $this->subscriptions[ $membership_id ]->get_status(), $allowed_status )
 			) {
 				$has_membership = true;

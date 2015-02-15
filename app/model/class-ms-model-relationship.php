@@ -53,7 +53,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	const STATUS_ACTIVE = 'active';
 	const STATUS_TRIAL = 'trial';
 	const STATUS_TRIAL_EXPIRED = 'trial_expired';
-	const STATUS_EXPIRED = 'expired';
+	const STATUS_WAITING = 'waiting'; // Start-Date not reached yet
+	const STATUS_EXPIRED = 'expired'; // End-Date reached
 	const STATUS_DEACTIVATED = 'deactivated';
 	const STATUS_CANCELED = 'canceled';
 
@@ -1416,7 +1417,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			&& ! empty( $this->start_date )
 			&& strtotime( $this->start_date ) >= strtotime( MS_Helper_Period::current_date() )
 		) {
-			$calc_status = self::STATUS_PENDING;
+			$calc_status = self::STATUS_WAITING;
 		}
 
 		if ( $check_trial ) {
@@ -1566,6 +1567,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					break;
 
 				case self::STATUS_DEACTIVATED:
+					break;
+
+				case self::STATUS_WAITING:
 					break;
 			}
 		}

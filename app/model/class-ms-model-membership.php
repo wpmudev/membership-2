@@ -245,6 +245,24 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public $_access_reason = array();
 
 	/**
+	 * Similar to $_access_reason, but only contains the rules that denied page
+	 * access.
+	 *
+	 * @since 1.1.0
+	 * @var array
+	 */
+	public $_deny_rule = array();
+
+	/**
+	 * Similar to $_access_reason, but only contains the rules that allowed page
+	 * access.
+	 *
+	 * @since 1.1.0
+	 * @var array
+	 */
+	public $_allow_rule = array();
+
+	/**
 	 * Returns a list of variables that should be included in serialization,
 	 * i.e. these values are the only ones that are stored in DB
 	 *
@@ -1373,6 +1391,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function has_access_to_current_page( $post_id = null ) {
 		$has_access = null;
 		$this->_access_reason = array();
+		$this->_deny_rule = array();
+		$this->_allow_rule = array();
 
 		// Only verify access if membership is Active.
 		if ( $this->active ) {
@@ -1395,6 +1415,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					$rule_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
 					$rule->rule_type
 				);
+
+				if ( ! $rule_access ) {
+					$this->_deny_rule[] = $rule->rule_type;
+				} else {
+					$this->_allow_rule[] = $rule->rule_type;
+				}
 
 				// URL groups have final decission.
 				if ( MS_Rule_Url::RULE_ID === $rule->rule_type ) {

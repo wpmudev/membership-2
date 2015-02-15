@@ -48,7 +48,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @var int
 	 */
-	protected $membership_id;
+	protected $membership_id = null;
 
 	/**
 	 * Flag, if the simulation should display a datepicker or not.
@@ -84,13 +84,16 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	protected $subscription = null;
 
 	/**
-	 * Initialization that runs as soon as this file is loaded by WordPress.
-	 * This is used to initialize the class (not an object!) as early as possible.
+	 * Called after loading model data.
 	 *
-	 * @since  1.1
+	 * @since  1.1.0
 	 */
 	public function after_load() {
 		if ( $this->is_simulating() ) {
+			if ( empty( $this->date ) ) {
+				$this->date = MS_Helper_Period::current_date();
+			}
+
 			add_filter(
 				'pre_site_option_site_admins',
 				array( self, 'admin_filter' )
@@ -158,12 +161,12 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return int The simulating membership_id
+	 * @return bool True if currently simulating a membership.
 	 */
 	public function is_simulating() {
 		$this->check_permissions();
 
-		return $this->membership_id;
+		return ! empty( $this->membership_id );
 	}
 
 	/**
@@ -213,7 +216,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since 1.0.0
 	 */
 	public function reset_simulation() {
-		$this->membership_id = 0;
+		$this->membership_id = null;
 		$this->date = null;
 
 		$this->remove_filter(
@@ -321,11 +324,11 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		if ( property_exists( $this, $property ) ) {
 			switch ( $property ) {
 				case 'membership_id':
-					$this->$property = 0;
+					$this->membership_id = null;
 					$id = absint( $value );
-					if ( 0 < $id ) {
+					if ( ! empty( $id ) ) {
 						if ( MS_Model_Membership::is_valid_membership( $id ) ) {
-							$this->$property = $id;
+							$this->membership_id = $id;
 							$this->needs_datepicker();
 						}
 					}
