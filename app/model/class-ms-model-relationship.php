@@ -160,6 +160,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	protected $payments = array();
 
 	/**
+	 * Flag that keeps track, if this subscription is a simulated or a real one.
+	 *
+	 * @since 1.1.0
+	 * @var bool
+	 */
+	protected $is_simulated = false;
+
+	/**
 	 * The related membership model object.
 	 *
 	 * @since 1.0.0
@@ -240,8 +248,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$gateway_id,
 				$move_from_id
 			);
-		}
-		else {
+		} else {
 			$subscription = null;
 			MS_Helper_Debug::log(
 				'Invalid membership_id: ' .
@@ -273,17 +280,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Try to reuse existing db record to keep history.
 		$subscription = self::get_subscription( $user_id, $membership_id );
 
+		if ( 'simulation' == $gateway_id ) {
+			$is_simulated = true;
+			$gateway_id = 'admin';
+			$subscription = false;
+		}
+
 		// Not found, create a new one.
 		if ( empty( $subscription ) ) {
 			$subscription = MS_Factory::create( 'MS_Model_Relationship' );
 			$subscription->membership_id = $membership_id;
 			$subscription->user_id = $user_id;
 			$subscription->status = self::STATUS_PENDING;
-		}
-
-		if ( 'simulation' == $gateway_id ) {
-			$is_simulated = true;
-			$gateway_id = 'admin';
+			$subscription->is_simulated = $is_simulated;
 		}
 
 		// Always update these fields.
@@ -308,8 +317,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$subscription->trial_period_completed = true;
 				break;
 
-			default:
 			case self::STATUS_PENDING:
+			default:
 				// Initial status
 				$subscription->name = "user_id: $user_id, membership_id: $membership_id";
 				$subscription->description = $subscription->name;
@@ -660,13 +669,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 
 		$eligible = false;
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
-			&& in_array( $this->status, $trial_eligible_status )
-			&& ! $this->trial_period_completed
-			&& $membership->trial_period_enabled
-		) {
-
-			$eligible = true;
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+			if ( in_array( $this->status, $trial_eligible_status )
+				&& ! $this->trial_period_completed
+				&& $membership->trial_period_enabled
+			) {
+				$eligible = true;
+			}
 		}
 
 		return apply_filters(
@@ -691,12 +700,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( ! empty( $start_date ) ) {
 			$this->start_date = $start_date;
-		}
-		elseif ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
+		} elseif ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
 			$this->start_date = $membership->period_date_start;
-		}
-		else {
-			$this->start_date = MS_Helper_Period::current_date();
+		} else {
+			/*
+			 * Note that we pass TRUE as second param to current_date
+			 * This is needed so that we 100% use the current date, which
+			 * is required to successfully do simulation.
+			 */
+			$this->start_date = MS_Helper_Period::current_date( null, true );
 		}
 
 		$this->start_date = apply_filters(
@@ -721,8 +733,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			&& strtotime( $trial_expire_date ) >= strtotime( $this->start_date )
 		) {
 			$this->trial_expire_date = $trial_expire_date;
-		}
-		else {
+		} else {
 			$this->trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
 		}
 
@@ -1400,6 +1411,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			&& ! empty( $this->trial_expire_date )
 			&& $this->trial_expire_date > $this->start_date;
 
+		// If the start-date is not reached yet, then set membership to Pending.
+		if ( empty( $calc_status )
+			&& ! empty( $this->start_date )
+			&& strtotime( $this->start_date ) >= strtotime( MS_Helper_Period::current_date() )
+		) {
+			$calc_status = self::STATUS_PENDING;
+		}
+
 		if ( $check_trial ) {
 			if ( empty( $calc_status )
 				&& strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() )
@@ -1414,12 +1433,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 		}
 
+		// Permanent memberships grant instant access, no matter what.
 		if ( empty( $calc_status )
 			&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
 		) {
 			$calc_status = self::STATUS_ACTIVE;
 		}
 
+		// If expire date is not reached then membership obviously is active.
 		if ( empty( $calc_status )
 			&& ! empty( $this->expire_date )
 			&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
@@ -1427,6 +1448,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$calc_status = self::STATUS_ACTIVE;
 		}
 
+		// If no other condition was true then the expire date was reached.
 		if ( empty( $calc_status ) ) {
 			$calc_status = self::STATUS_EXPIRED;
 		}
@@ -1490,7 +1512,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( $new_status == $this->status ) { return false; }
 		if ( ! array_key_exists( $new_status, self::get_status_types() ) ) { return false; }
 
-		if ( self::STATUS_DEACTIVATED == $new_status ) {
+		if ( $this->is_simulated ) {
+			// Do not trigger any events for simulated relationships.
+		} elseif ( self::STATUS_DEACTIVATED == $new_status ) {
 			/*
 			 * Deactivated manually or automatically after a limited
 			 * expiration-period or trial period ended.

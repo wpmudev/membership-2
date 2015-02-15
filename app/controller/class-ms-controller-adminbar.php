@@ -45,15 +45,6 @@ class MS_Controller_Adminbar extends MS_Controller {
 	protected $simulate = null;
 
 	/**
-	 * List of all available memberships
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var MS_Model_Membership[]
-	 */
-	protected $memberships = null;
-
-	/**
 	 * Prepare the Admin Bar simulator.
 	 *
 	 * @since 1.0.0
@@ -82,7 +73,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		);
 		$link_url = wp_nonce_url(
 			$link_url,
-			'ms_simulate-' . $id
+			'ms_simulate'
 		);
 
 		return $link_url;
@@ -105,9 +96,6 @@ class MS_Controller_Adminbar extends MS_Controller {
 	 */
 	public function init_adminbar() {
 		$this->simulate = MS_Factory::load( 'MS_Model_Simulate' );
-		$this->memberships = MS_Model_Membership::get_memberships(
-			array( 'include_base' => 1 )
-		);
 
 		// Hide WP toolbar in front end to not admin users
 		if ( ! $this->is_admin_user() && MS_Plugin::instance()->settings->hide_admin_bar ) {
@@ -138,13 +126,8 @@ class MS_Controller_Adminbar extends MS_Controller {
 			&& ! is_network_admin()
 		) {
 			if ( $this->simulate->is_simulating() ) {
-				$this->remove_admin_bar_nodes();
-				$this->add_view_site_as_node();
-				$this->add_simulator_nodes();
 				$this->add_detail_nodes();
-				$this->add_exit_test_node();
-			}
-			else {
+			} else {
 				$this->add_test_membership_node();
 			}
 		} else if ( ! MS_Plugin::is_enabled() ) {
@@ -163,36 +146,40 @@ class MS_Controller_Adminbar extends MS_Controller {
 	public function admin_bar_manager() {
 		$redirect = false;
 
-		$isset = array( 'simulate_submit', 'simulate_type' );
 		WDev()->array->equip_get( 'membership_id' );
 
-		if ( $this->verify_nonce( 'ms_simulate-' . $_GET['membership_id'], 'GET' ) ) {
+		if ( $this->verify_nonce( 'ms_simulate', 'any' ) ) {
 			/*
 			 * Check for memberhship id simulation GET request.
 			 * - Any valid Membership_id will simulate that membership.
 			 * - An ID of "0" will exit simulation mode.
 			 */
-			$this->simulate->membership_id = absint( $_GET['membership_id'] );
-			$this->simulate->save();
+			$new_id = absint( $_REQUEST['membership_id'] );
 
-			$target = wp_get_referer();
-			if ( $this->simulate->is_simulating() && false !== strpos( $target, 'wp-admin' ) ) {
-				$redirect = admin_url();
-			} else {
-				$redirect = wp_get_referer();
-			}
-		} elseif ( self::validate_required( $isset, 'POST', false ) ) {
-			// Change the simulation date.
-			$this->simulate->type = $_POST['simulate_type'];
+			if ( $new_id != $this->simulate->membership_id ) {
+				// Change the simulated membership.
+				$this->simulate->membership_id = $new_id;
 
-			if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
-				if ( ! empty( $_POST['simulate_date'] ) ) {
-					$this->simulate->date = $_POST['simulate_date'];
+				$target = wp_get_referer();
+				if ( $this->simulate->is_simulating() && false !== strpos( $target, 'wp-admin' ) ) {
+					$redirect = admin_url();
 				}
 			}
+
+			if ( ! empty( $_POST['simulate_date'] ) ) {
+				// Change the simulation date.
+				$this->simulate->date = $_POST['simulate_date'];
+			}
+
 			$this->simulate->save();
 
-			$redirect = wp_get_referer();
+			if ( ! $redirect ) {
+				if ( ! empty( $_GET['redirect_to'] ) ) {
+					$redirect = $_GET['redirect_to'];
+				} else {
+					$redirect = wp_get_referer();
+				}
+			}
 		}
 
 		if ( $redirect ) {
@@ -210,8 +197,6 @@ class MS_Controller_Adminbar extends MS_Controller {
 	 */
 	private function remove_admin_bar_nodes( $exclude = array() ) {
 		global $wp_admin_bar;
-
-		if ( ! $this->simulate->is_simulating() ) { return; }
 
 		$nodes = $wp_admin_bar->get_nodes();
 
@@ -237,181 +222,6 @@ class MS_Controller_Adminbar extends MS_Controller {
 	}
 
 	/**
-	 * Add simulation nodes.
-	 *
-	 * @since 1.0.0
-	 */
-	private function add_simulator_nodes() {
-		global $wp_admin_bar;
-
-		if ( ! $this->simulate->is_simulating() ) { return; }
-
-		$membership = MS_Factory::load(
-			'MS_Model_Membership',
-			$this->simulate->membership_id
-		);
-
-		$title = null;
-		$html = null;
-
-		$data = array();
-		$data['simulate_type'] = $this->simulate->type;
-		$data['period_unit'] = null;
-		$data['period_type'] = null;
-		$data['simulate_date'] = null;
-
-		if ( $this->simulate->type ) {
-			if ( MS_Model_Simulate::TYPE_DATE == $this->simulate->type ) {
-				$data['simulate_date'] = $this->simulate->date;
-				$title = __( 'View on: ', MS_TEXT_DOMAIN );
-			}
-
-			$view = MS_Factory::create( 'MS_View_Adminbar' );
-			$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
-			$html = $view->to_html();
-		}
-
-		$wp_admin_bar->add_menu(
-			apply_filters(
-				'ms_controller_adminbar_simulate_node',
-				array(
-					'id'     => 'membership-simulate-period',
-					'title'  => $title,
-					'href'   => '',
-					'meta'   => array(
-						'html'  => $html,
-						'class' => apply_filters(
-							'ms_controller_adminbar_simulate_period_class',
-							'membership-simulate-period'
-						),
-						'title' => __( 'Simulate period', MS_TEXT_DOMAIN ),
-					),
-				)
-			)
-		);
-	}
-
-	/**
-	 * Add 'View site as' node.
-	 *
-	 * Switches simulation views.
-	 *
-	 * @since 1.0.0
-	 *
-	 */
-	private function add_view_site_as_node() {
-		global $wp_admin_bar;
-
-		if ( ! $this->simulate->is_simulating() ) { return; }
-
-		$title = __( 'View site as: ', MS_TEXT_DOMAIN );
-
-		$current = null;
-
-		// The ID of the main protected-content.
-		$base_id = MS_Model_Membership::get_base()->id;
-		$items = array();
-		$item_order = array();
-
-		foreach ( $this->memberships as $membership ) {
-			// Create nonce fields
-			$nonce = wp_create_nonce( 'ms_simulate-' . $membership->id );
-
-			if ( $base_id == $membership->id ) {
-				$label = __( '- No membership / Visitor -', MS_TEXT_DOMAIN );
-			} else {
-				$label = $membership->name;
-				if ( ! $membership->active ) {
-					$label .= ' ' . __( '(Inactive)', MS_TEXT_DOMAIN );
-				}
-			}
-
-			$items[ $membership->id ] = array(
-				'id' => $membership->id,
-				'selected' => ( $this->simulate->membership_id == $membership->id ),
-				'nonce' => $nonce,
-				'label' => $label,
-			);
-			$item_order[ $membership->id ] = $label;
-
-			if ( $this->simulate->membership_id == $membership->id ) {
-				$current = $membership;
-			}
-		}
-
-		$action_field = array(
-			'name'   => 'action',
-			'value'  => 'ms_simulate',
-			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-		);
-		$membership_field = array(
-			'id'     => 'ab-membership-id',
-			'name'   => 'membership_id',
-			'value'  => $this->simulate->membership_id,
-			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-		);
-		$nonce_field = array(
-			'id'     => '_wpnonce',
-			'name'   => '_wpnonce',
-			'value'  => '',
-			'type'   => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-		);
-
-		asort( $item_order );
-
-		ob_start();
-		?>
-		<form id="view-site-as" method="GET">
-			<select id="view-as-selector" class="wpmui-field-input wpmui-field-select ab-select" name="view-as-selector">
-			<?php
-			foreach ( $item_order as $id => $label ) {
-				$option = $items[ $id ];
-				printf(
-					'<option value="%1$s" nonce="%2$s" %3$s>%4$s</option>',
-					esc_attr( $option['id'] ),
-					esc_attr( $option['nonce'] ),
-					selected( $option['selected'], true, false ),
-					esc_html( $option['label'] )
-				);
-			}
-			?>
-			</select>
-			<?php
-			MS_Helper_Html::html_element( $action_field );
-			MS_Helper_Html::html_element( $membership_field );
-			MS_Helper_Html::html_element( $nonce_field );
-
-			// Display information on the currently selected membership.
-			if ( $current ) {
-				$desc = $current->get_type_description();
-				printf(
-					'<span class="ms-simulate-info">%1$s</span>',
-					esc_html( $desc )
-				);
-			}
-			?>
-		</form>
-		<?php
-
-		$html = ob_get_clean();
-
-		$wp_admin_bar->add_node(
-			apply_filters(
-				'ms_controller_adminbar_add_view_site_as_node',
-				array(
-					'id'     => 'membership-simulate',
-					'title'  => $title,
-					'meta'   => array(
-						'html'  => $html,
-						'class' => apply_filters( 'ms_controller_adminbar_view_site_as_class', 'membership-view-site-as' ),
-						'title' => __( 'Select a membership to view your site as', MS_TEXT_DOMAIN ),
-					),
-				)
-			)
-		);
-	}
-
-	/**
 	 * Add 'Test Memberships' node.
 	 *
 	 * @since 1.0.0
@@ -420,12 +230,10 @@ class MS_Controller_Adminbar extends MS_Controller {
 	private function add_test_membership_node() {
 		global $wp_admin_bar;
 
-		if ( $this->simulate->is_simulating() ) { return; }
+		$base_id = MS_Model_Membership::get_base()->id;
 
-		$id = ! empty( $this->memberships ) ? $this->memberships[0]->id : false;
-
-		if ( $id ) {
-			$link_url = self::get_simulation_url( $id );
+		if ( $base_id ) {
+			$link_url = self::get_simulation_url( $base_id );
 
 			$wp_admin_bar->add_node(
 				apply_filters(
@@ -479,37 +287,6 @@ class MS_Controller_Adminbar extends MS_Controller {
 	}
 
 	/**
-	 * Add 'Test Memberships' node.
-	 *
-	 * @since 1.0.0
-	 *
-	 */
-	private function add_exit_test_node() {
-		global $wp_admin_bar;
-
-		if ( ! $this->simulate->is_simulating() ) { return; }
-
-		// reset simulation.
-		$link_url = self::get_simulation_exit_url();
-
-		$wp_admin_bar->add_node(
-			apply_filters(
-				'ms_controller_adminbar_add_exit_test_node',
-				array(
-					'id'     => 'ms-exit-memberships',
-					'title'  => __( 'Exit Test Mode', MS_TEXT_DOMAIN ),
-					'href'   => $link_url,
-					'meta'   => array(
-						'class'    => 'ms-exit-memberships',
-						'title'    => __( 'Membership Simulation Menu', MS_TEXT_DOMAIN ),
-						'tabindex' => '1',
-					),
-				)
-			)
-		);
-	}
-
-	/**
 	 * Add membership description nodes.
 	 *
 	 * @since 1.0.1
@@ -534,9 +311,9 @@ class MS_Controller_Adminbar extends MS_Controller {
 
 		$wp_admin_bar->add_menu(
 			array(
-				'id'     => 'membership-details',
-				'title'  => __( 'Infos', MS_TEXT_DOMAIN ),
-				'href'   => '#',
+				'id'    => 'membership-details',
+				'title' => __( 'Protection Details', MS_TEXT_DOMAIN ),
+				'href'  => '#',
 			)
 		);
 
