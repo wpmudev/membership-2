@@ -1760,6 +1760,9 @@ window.ms_init.view_settings_payment = function init() {
 			} else {
 				row.removeClass( 'is-sandbox' ).addClass( 'is-live' );
 			}
+		} else {
+			row.removeClass( 'is-configured is-live is-sandbox' )
+				.addClass( 'not-configured' );
 		}
 	}
 

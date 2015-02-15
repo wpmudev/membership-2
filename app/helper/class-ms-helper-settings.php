@@ -37,6 +37,7 @@ class MS_Helper_Settings extends MS_Helper {
 	const SETTINGS_MSG_ACTIVATION_NOT_TOGGLED = -4;
 	const SETTINGS_MSG_STATUS_NOT_TOGGLED = -5;
 	const SETTINGS_MSG_BULK_NOT_UPDATED = -6;
+	const SETTINGS_MSG_UNCONFIGURED = -7;
 
 	/**
 	 * Returns the status messages for a given status code

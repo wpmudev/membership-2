@@ -449,6 +449,20 @@
 	}
 }
 
+.ms-settings-payment {
+	.ms-global-payment-wrapper {
+		.wpmui-field-input {
+			width: 100%;
+		}
+
+		th.column-active,
+		td.column-active {
+			width: 135px;
+			text-align: center;
+		}
+	}
+}
+
 /***
  * SETTINGS FOOTER CONTENT *
  ***/

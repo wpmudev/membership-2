@@ -758,6 +758,15 @@ input[type="image"] {
   height: 100px;
 }
 
+.ms-settings-payment .ms-global-payment-wrapper .wpmui-field-input {
+  width: 100%;
+}
+.ms-settings-payment .ms-global-payment-wrapper th.column-active,
+.ms-settings-payment .ms-global-payment-wrapper td.column-active {
+  width: 135px;
+  text-align: center;
+}
+
 /***
  * SETTINGS FOOTER CONTENT *
  ***/

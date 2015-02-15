@@ -399,8 +399,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 		if ( self::MODE_LIVE == $this->mode ) {
 			$publishable_key = $this->publishable_key;
-		}
-		else {
+		} else {
 			$publishable_key = $this->test_publishable_key;
 		}
 
@@ -421,8 +420,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 		if ( self::MODE_LIVE == $this->mode ) {
 			$secret_key = $this->secret_key;
-		}
-		else {
+		} else {
 			$secret_key = $this->test_secret_key;
 		}
 
@@ -440,7 +438,12 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 */
 	public function is_configured() {
 		$is_configured = true;
-		$required = array( 'secret_key', 'test_secret_key', 'publishable_key', 'test_publishable_key' );
+
+		if ( $this->is_live_mode() ) {
+			$required = array( 'secret_key', 'publishable_key' );
+		} else {
+			$required = array( 'test_secret_key', 'test_publishable_key' );
+		}
 
 		foreach ( $required as $field ) {
 			if ( empty( $this->$field ) ) {

@@ -149,7 +149,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 			sprintf(
 				'<a href="#" data-ms-dialog="Gateway_%s_View_Dialog">%s</a>',
 				ucwords( esc_attr( $item->id ) ),
-				__( 'Configure', MS_TEXT_DOMAIN )
+				$item->is_configured() ? __( 'Edit', MS_TEXT_DOMAIN ) : __( 'Configure', MS_TEXT_DOMAIN )
 			),
 			sprintf(
 				'<a href="?page=%s&gateway_id=%s">%s</a>',
