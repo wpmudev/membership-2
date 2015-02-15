@@ -185,8 +185,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			switch ( $the_type ) {
 				case MS_Model_Pages::MS_PAGE_MEMBERSHIPS:
 					if ( ! MS_Model_Member::is_logged_in() ) {
-						$this->add_filter( 'the_content', 'display_login_form' );
-						break;
+						wp_safe_redirect(
+							MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
+						);
+						exit;
 					}
 					// no break;
 
