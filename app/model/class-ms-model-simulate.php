@@ -96,7 +96,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 
 			add_filter(
 				'pre_site_option_site_admins',
-				array( self, 'admin_filter' )
+				array( $this, 'admin_filter' )
 			);
 
 			add_filter(

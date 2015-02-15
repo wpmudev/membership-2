@@ -75,19 +75,18 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 						'name' => $transaction->tax_name,
 						'amount' => 0,
 					);
-				} else {
-					$Info = (object) array(
-						'country' => 'US',
-						'rate' => 0,
-						'name' => __( 'No Tax', MS_TEXT_DOMAIN ),
-						'amount' => 0,
-					);
 				}
 			}
 			catch ( Exception $ex ) {
 				MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
 			}
 		}
+
+		if ( ! is_object( $Info ) ) { $Info = (object) array(); }
+		if ( ! isset( $Info->name ) ) { $Info->name = __( 'No Tax', MS_TEXT_DOMAIN ); }
+		if ( ! isset( $Info->rate ) ) { $Info->rate = 0; }
+		if ( ! isset( $Info->amount ) ) { $Info->amount = 0; }
+		if ( ! isset( $Info->country ) ) { $Info->country = 'US'; }
 
 		$Info->amount = $amount / 100 * $Info->rate;
 
@@ -201,6 +200,20 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 		if ( ! count( $location ) ) {
 			self::determine_country();
+			$location = WDev()->session->get( 'ms_ta_country' );
+		}
+
+		if ( ! count( $location ) ) {
+			$dummy_location = array(
+				'remote_addr' => WDev()->current_ip(),
+				'country_code' => 'US',
+				'country' => array(
+					'tax_supported' => false,
+					'code' => 'US',
+				),
+			);
+
+			WDev()->session->add( 'ms_ta_country', $dummy_location );
 			$location = WDev()->session->get( 'ms_ta_country' );
 		}
 
