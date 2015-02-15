@@ -124,7 +124,7 @@ class MS_Addon_Coupon extends MS_Addon {
 
 			// Apply Coupon-Discount to invoice
 			$this->add_filter(
-				'ms_model_invoice_create_before_save',
+				'ms_signup_payment_details',
 				'apply_discount',
 				10, 2
 			);

@@ -530,16 +530,18 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function payment_table( $content ) {
 		$data = array();
-		$ms_relationship = null;
+		$subscription = null;
 		$member = MS_Model_Member::get_current_member();
 		$membership_id = 0;
+
+		WDev()->array->equip_request( 'membership_id', 'move_from_id', 'ms_relationship_id' );
 
 		if ( ! empty( $_REQUEST['membership_id'] ) ) {
 			// First time loading
 			$membership_id = $_REQUEST['membership_id'];
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			$move_from_id = absint( @$_REQUEST['move_from_id'] );
-			$ms_relationship = MS_Model_Relationship::create_ms_relationship(
+			$move_from_id = absint( $_REQUEST['move_from_id'] );
+			$subscription = MS_Model_Relationship::create_ms_relationship(
 				$membership_id,
 				$member->id,
 				'',
@@ -547,11 +549,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		} elseif ( ! empty( $_POST['ms_relationship_id'] ) ) {
 			// Error path, showing payment table again with error msg
-			$ms_relationship = MS_Factory::load(
+			$subscription = MS_Factory::load(
 				'MS_Model_Relationship',
 				absint( $_POST['ms_relationship_id'] )
 			);
-			$membership = $ms_relationship->get_membership();
+			$membership = $subscription->get_membership();
 			$membership_id = $membership->id;
 
 			if ( ! empty( $_POST['error'] ) ) {
@@ -565,24 +567,40 @@ class MS_Controller_Frontend extends MS_Controller {
 			return $content;
 		}
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+
+		/**
+		 * Notify Add-ons that we are preparing payment details for a membership
+		 * subscription.
+		 *
+		 * E.g. Coupon discount is applied by this hook.
+		 *
+		 * @since 1.1.0
+		 */
+		do_action(
+			'ms_signup_payment_details',
+			$invoice,
+			$subscription,
+			$membership
+		);
+
 		$data['invoice'] = $invoice;
 
 		if ( $invoice->trial_period ) {
-			$next_invoice = MS_Model_Invoice::get_next_invoice( $ms_relationship );
+			$next_invoice = MS_Model_Invoice::get_next_invoice( $subscription );
 			$data['next_invoice'] = $next_invoice;
 		}
 
 		$data['membership'] = $membership;
 		$data['member'] = $member;
-		$data['ms_relationship'] = $ms_relationship;
+		$data['ms_relationship'] = $subscription;
 
 		$view = MS_Factory::load( 'MS_View_Frontend_Payment' );
 		$view->data = apply_filters(
 			'ms_view_frontend_payment_data',
 			$data,
 			$membership_id,
-			$ms_relationship,
+			$subscription,
 			$member,
 			$this
 		);

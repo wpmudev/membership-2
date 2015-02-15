@@ -192,13 +192,18 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		static $types;
 
 		if ( empty( $types ) ) {
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+
 			$types = array(
-				self::TYPE_VALUE => __( '$', MS_TEXT_DOMAIN ),
-				self::TYPE_PERCENT => __( '%', MS_TEXT_DOMAIN ),
+				self::TYPE_VALUE => $settings->currency,
+				self::TYPE_PERCENT => '%',
 			);
 		}
 
-		return apply_filters( 'ms_addon_coupon_model_get_discount_types', $types );
+		return apply_filters(
+			'ms_addon_coupon_model_get_discount_types',
+			$types
+		);
 	}
 
 	/**
