@@ -41,6 +41,7 @@ class MS_Controller_Pages extends MS_Controller {
 	 */
 	const AJAX_ACTION_UPDATE_PAGES = 'pages_update';
 	const AJAX_ACTION_TOGGLE_MENU = 'pages_toggle_menu';
+	const AJAX_ACTION_CREATE_MENU = 'pages_create_menu';
 
 	/**
 	 * Construct Settings manager.
@@ -52,6 +53,7 @@ class MS_Controller_Pages extends MS_Controller {
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PAGES, 'ajax_action_update_pages' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MENU, 'ajax_action_toggle_menu' );
+		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CREATE_MENU, 'ajax_action_create_menu' );
 
 		// Add a special "state" to membership pages in the WP Page-list
 		$this->add_filter( 'display_post_states', 'post_states', 10, 2 );
@@ -124,6 +126,32 @@ class MS_Controller_Pages extends MS_Controller {
 		}
 
 		echo '' . $msg;
+		exit;
+	}
+
+	/**
+	 * Creates a new menu (not menu-item but whole menu).
+	 * All top-level pages are added automatically to this new menu.
+	 *
+	 * Related action hooks:
+	 * - wp_ajax_create_menu
+	 *
+	 * @since 1.1.0
+	 */
+	public function ajax_action_create_menu() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		$content = '';
+
+		if ( $this->verify_nonce() && $this->is_admin_user() ) {
+			MS_Model_Pages::create_default_menu();
+
+			$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
+			$content = $setup->show_menu_controls();
+
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+		}
+
+		echo '' . $msg . ':' . $content;
 		exit;
 	}
 

@@ -32,14 +32,65 @@
 class MS_View_Settings_Page_Setup extends MS_View {
 
 	/**
+	 * Type of form displayed. Used to determine height of the popup.
+	 *
+	 * @var string
+	 */
+	protected $form_type = 'full';
+
+	/**
 	 * Displays the settings form.
 	 *
 	 * @since  1.1.0
 	 * @return string
 	 */
 	public function to_html() {
+		if ( ! empty( $_REQUEST['full_popup'] ) ) {
+			$show_wizard_done = true;
+		} else {
+			$show_wizard_done = ($count === 1
+				&& MS_Plugin::instance()->settings->is_first_membership);
+		}
+
+		if ( $show_wizard_done ) {
+			$this->form_type = 'full';
+			$code = $this->html_full_form();
+		} else {
+			$this->form_type = 'short';
+			$code = $this->html_short_form();
+		}
+
+		return $code;
+	}
+
+	/**
+	 * Display the small "completed" form
+	 *
+	 * @since  1.0.0
+	 * @return string HTML Code
+	 */
+	public function html_short_form() {
+		$code = sprintf(
+			'<center>%1$s</center>',
+			sprintf(
+				__( 'You can now go to %sProtected Content%s to set up access levels for this Membership.', MS_TEXT_DOMAIN ),
+				sprintf( '<a href="%1$s">', '?page=protected-content-setup' ),
+				'</a>'
+			)
+		);
+
+		return $code;
+	}
+
+	/**
+	 * Display the full settings form, used either by first membership
+	 * "completed" popup and also by the general settings tab.
+	 *
+	 * @since  1.1.0
+	 * @return string HTML code
+	 */
+	public function html_full_form() {
 		$fields = $this->prepare_fields();
-		$can_create_nav = MS_Model_Pages::can_edit_menus();
 
 		ob_start();
 		?>
@@ -61,20 +112,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					);
 					?>
 				</div>
-				<?php
-
-				if ( $can_create_nav ) {
-					foreach ( $fields['nav'] as $field ) {
-						MS_Helper_Html::html_element( $field );
-					}
-				} else {
-					printf(
-						'<div><p><em>%s</em></p></div>',
-						__( '(Not available: There is no Menu to update)', MS_TEXT_DOMAIN )
-					);
-				}
-
-				?>
+				<?php echo '' . $this->show_menu_controls(); ?>
 			</div>
 			<div class="ms-setup-pages">
 				<div class="ms-title">
@@ -227,6 +265,67 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		);
 
 		return $fields;
+	}
+
+	/**
+	 * Outputs the HTML code to toggle Protected Content menu items.
+	 *
+	 * @since  1.1.0
+	 * @return string
+	 */
+	public function show_menu_controls() {
+		$code = '';
+		$can_create_nav = MS_Model_Pages::can_edit_menus();
+
+		if ( $can_create_nav ) {
+			$fields = $this->prepare_fields();
+			foreach ( $fields['nav'] as $field ) {
+				$code .= MS_Helper_Html::html_element( $field, true );
+			}
+		} else {
+			$button = array(
+				'id' => 'create_menu',
+				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'value' => __( 'Okay, create the menu', MS_TEXT_DOMAIN ),
+				'ajax_data' => array(
+					'action' => MS_Controller_Pages::AJAX_ACTION_CREATE_MENU,
+					'_wpnonce' => wp_create_nonce( MS_Controller_Pages::AJAX_ACTION_CREATE_MENU ),
+				)
+			);
+			$code = sprintf(
+				'<div style="padding-left:10px"><p><em>%s</em></p><p>%s</p></div>',
+				__( 'Wait! You did not create a menu yet...<br>Let us create it now, so you can choose which pages to display to your visitors!', MS_TEXT_DOMAIN ),
+				MS_Helper_Html::html_element( $button, true )
+			);
+		}
+
+		return '<div class="ms-nav-controls">' . $code . '</div>';
+	}
+
+	/**
+	 * Returns the height needed to display this dialog inside a popup without
+	 * adding scrollbars
+	 *
+	 * @since  1.1.0
+	 * @return int Popup height
+	 */
+	public function dialog_height() {
+		switch ( $this->form_type ) {
+			case 'short':
+				$height = 200;
+				break;
+
+			case 'full':
+			default:
+				if ( MS_Model_Pages::can_edit_menus() ) {
+					$height = 412;
+				} else {
+					$height = 460;
+				}
+				break;
+		}
+
+		return $height;
 	}
 
 }

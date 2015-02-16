@@ -122,15 +122,6 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 	public function column_name( $item ) {
 		$actions = array();
-		$badge = '';
-
-		$actions['overview'] = sprintf(
-			'<a href="?page=%1$s&step=%2$s&membership_id=%3$s">%4$s</a>',
-			esc_attr( $_REQUEST['page'] ),
-			MS_Controller_Membership::STEP_OVERVIEW,
-			esc_attr( $item->id ),
-			__( 'Overview', MS_TEXT_DOMAIN )
-		);
 
 		$edit_args = array(
 			'membership_id' => $item->id,
@@ -185,16 +176,21 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 				__( 'Default', MS_TEXT_DOMAIN ),
 				__( 'All logged-in users that have not signed up for any membership', MS_TEXT_DOMAIN )
 			);
+		} else {
+			$badge = '';
 		}
 
 		return sprintf(
 			'<span class="the-color" style="background-color:%4$s">&nbsp;</span> ' .
-			'<span class="the-name">%1$s</span> ' .
+			'<a href="?page=%5$s&step=%6$s&membership_id=%7$s" class="the-name">%1$s</a> ' .
 			'%3$s%2$s',
 			esc_html( $item->name ),
 			$this->row_actions( $actions ),
 			$badge,
-			$item->get_color()
+			$item->get_color(),
+			esc_attr( $_REQUEST['page'] ),
+			MS_Controller_Membership::STEP_OVERVIEW,
+			esc_attr( $item->id )
 		);
 	}
 

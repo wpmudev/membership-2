@@ -826,4 +826,65 @@ class MS_Model_Pages extends MS_Model_Option {
 		);
 	}
 
+	/**
+	 * Creates a new WordPress menu and adds all top level pages to this menu.
+	 *
+	 * @since  1.1.0
+	 */
+	static public function create_default_menu() {
+		$menu_id = wp_create_nav_menu( __( 'Default Menu', MS_TEXT_DOMAIN ) );
+
+		if ( ! is_numeric( $menu_id ) || $menu_id <= 0 ) {
+			return;
+		}
+
+		// Use the new menu in the menu-location of the theme.
+		$locations = get_theme_mod( 'nav_menu_locations' );
+		if ( is_array( $locations ) && count( $locations ) > 0 ) {
+			reset( $locations );
+			$first = key( $locations );
+			$locations[$first] = $menu_id;
+			set_theme_mod( 'nav_menu_locations', $locations );
+		}
+
+		// Enable the Auto-Add-New-Pages option.
+		// Code snippet from wp-admin/includes/nav-menu.php
+		$nav_menu_option = (array) get_option( 'nav_menu_options' );
+		if ( ! isset( $nav_menu_option['auto_add'] ) ) {
+			$nav_menu_option['auto_add'] = array();
+		}
+		if ( ! in_array( $menu_id, $nav_menu_option['auto_add'] ) ) {
+			$nav_menu_option['auto_add'][] = $menu_id;
+		}
+		update_option( 'nav_menu_options', $nav_menu_option );
+
+		// Get a list of all published top-level pages.
+		$top_pages = get_pages(
+			array( 'parent' => 0 )
+		);
+
+		// List of pages that should not be displayed in the menu.
+		$skip_pages = array(
+			self::MS_PAGE_PROTECTED_CONTENT,
+			self::MS_PAGE_REG_COMPLETE,
+		);
+
+		foreach ( $top_pages as $page ) {
+			// Skip pages that should not appear in menu.
+			$ms_type = self::is_membership_page( $page->ID );
+			if ( in_array( $ms_type, $skip_pages ) ) {
+				continue;
+			}
+
+			// Add the page to our new menu!
+			$item = array(
+				'menu-item-object-id' => $page->ID,
+				'menu-item-object' => $page->post_type,
+				'menu-item-type' => 'post_type',
+				'menu-item-status' => $page->post_status,
+			);
+			wp_update_nav_menu_item( $menu_id, 0, $item );
+		}
+	}
+
 }

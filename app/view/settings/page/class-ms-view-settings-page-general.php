@@ -50,7 +50,7 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 			</div>
 			<?php
 			MS_Helper_Html::html_separator();
-			MS_Helper_Html::html_element( $setup->to_html() );
+			MS_Helper_Html::html_element( $setup->html_full_form() );
 			?>
 		</form>
 		<?php

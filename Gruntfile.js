@@ -19,12 +19,13 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-membership-render-url-group.js',
 				'app/assets/js/src/ms-view-membership-payment.js',
 				'app/assets/js/src/ms-view-membership-protected-content.js',
-				'app/assets/js/src/ms-view-settings.js',
 				'app/assets/js/src/ms-view-addons.js',
+				'app/assets/js/src/ms-view-settings.js',
 				'app/assets/js/src/ms-view-settings-automated-msg.js',
 				'app/assets/js/src/ms-view-settings-mailchimp.js',
 				'app/assets/js/src/ms-view-settings-payment.js',
-				'app/assets/js/src/ms-view-settings-protection.js'
+				'app/assets/js/src/ms-view-settings-protection.js',
+				'app/assets/js/src/ms-view-settings-setup.js'
 			],
 			'app/assets/js/ms-public.js': [
 				'app/assets/js/src/ms-loader.js',

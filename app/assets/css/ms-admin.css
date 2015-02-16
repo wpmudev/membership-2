@@ -1674,6 +1674,10 @@
 }
 .ms-wrap .ms-membership-list .the-name {
   margin-right: 10px;
+  font-weight: bold;
+}
+.ms-wrap .ms-membership-list .row-actions {
+  margin-left: 23px;
 }
 .ms-wrap .ms-membership-list td {
   overflow: visible;

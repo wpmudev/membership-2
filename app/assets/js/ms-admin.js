@@ -1533,6 +1533,61 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 /*global ms_data:false */
 /*global ms_functions:false */
 
+window.ms_init.view_addons = function init () {
+
+	var list = jQuery( '.ms-addon-list' );
+
+	// Apply the custom list-filters
+	function filter_addons( event, filter, items ) {
+		switch ( filter ) {
+			case 'options':
+				items.hide().filter( '.ms-options' ).show();
+				break;
+		}
+	}
+
+	// Show an overlay when ajax update starts (prevent multiple ajax calls at once!)
+	function ajax_start( event, data, status, animation ) {
+		animation.removeClass( 'wpmui-loading' );
+		list.addClass( 'wpmui-loading' );
+	}
+
+	// Remove the overlay after ajax update is done
+	function ajax_done( event, data, status, animation ) {
+		list.removeClass( 'wpmui-loading' );
+	}
+
+	// After an add-on was activated or deactivated
+	function addon_toggle( event ) {
+		var el = jQuery( event.target ),
+			card = el.closest( '.list-card-top' ),
+			details = card.find( '.details' ),
+			fields = details.find( '.wpmui-ajax-update-wrapper' );
+
+		if ( el.closest( '.details' ).length ) { return; } // A detail setting was updated; add-on status was not changed...
+
+		if ( el.hasClass( 'on' ) ) {
+			fields.removeClass( 'disabled' );
+		} else {
+			fields.addClass( 'disabled' );
+		}
+	}
+
+	jQuery( document ).on( 'list-filter', filter_addons );
+	jQuery( document ).on( 'ms-ajax-start', ajax_start );
+	jQuery( document ).on( 'ms-ajax-updated', addon_toggle );
+	jQuery( document ).on( 'ms-ajax-done', ajax_done );
+
+	jQuery( '.list-card-top .wpmui-ajax-update-wrapper' ).each(function() {
+		jQuery( this ).trigger( 'ms-ajax-updated' );
+	});
+};
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
 window.ms_init.view_settings = function init () {
 	function page_changed( event, data, response, is_err ) {
 		var lists = jQuery( 'select.wpmui-wp-pages' ),
@@ -1605,61 +1660,6 @@ window.ms_init.view_settings = function init () {
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
 	jQuery( '.ms-action a' ).on( 'click', ignore_disabled );
 	jQuery(function() { page_changed(); });
-};
-
-/*global window:false */
-/*global document:false */
-/*global ms_data:false */
-/*global ms_functions:false */
-
-window.ms_init.view_addons = function init () {
-
-	var list = jQuery( '.ms-addon-list' );
-
-	// Apply the custom list-filters
-	function filter_addons( event, filter, items ) {
-		switch ( filter ) {
-			case 'options':
-				items.hide().filter( '.ms-options' ).show();
-				break;
-		}
-	}
-
-	// Show an overlay when ajax update starts (prevent multiple ajax calls at once!)
-	function ajax_start( event, data, status, animation ) {
-		animation.removeClass( 'wpmui-loading' );
-		list.addClass( 'wpmui-loading' );
-	}
-
-	// Remove the overlay after ajax update is done
-	function ajax_done( event, data, status, animation ) {
-		list.removeClass( 'wpmui-loading' );
-	}
-
-	// After an add-on was activated or deactivated
-	function addon_toggle( event ) {
-		var el = jQuery( event.target ),
-			card = el.closest( '.list-card-top' ),
-			details = card.find( '.details' ),
-			fields = details.find( '.wpmui-ajax-update-wrapper' );
-
-		if ( el.closest( '.details' ).length ) { return; } // A detail setting was updated; add-on status was not changed...
-
-		if ( el.hasClass( 'on' ) ) {
-			fields.removeClass( 'disabled' );
-		} else {
-			fields.addClass( 'disabled' );
-		}
-	}
-
-	jQuery( document ).on( 'list-filter', filter_addons );
-	jQuery( document ).on( 'ms-ajax-start', ajax_start );
-	jQuery( document ).on( 'ms-ajax-updated', addon_toggle );
-	jQuery( document ).on( 'ms-ajax-done', ajax_done );
-
-	jQuery( '.list-card-top .wpmui-ajax-update-wrapper' ).each(function() {
-		jQuery( this ).trigger( 'ms-ajax-updated' );
-	});
 };
 
 /*global window:false */
@@ -1790,4 +1790,26 @@ window.ms_init.view_settings_protection = function init () {
 	}
 
 	jQuery( '.button-primary.wpmui-ajax-update' ).data( 'before_ajax', before_ajax );
+};
+
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_settings_setup = function init () {
+	function menu_created( event, data, response, is_err ) {
+		var parts;
+
+		if ( ! is_err ) {
+			parts = response.split( ':' );
+			if ( undefined !== parts[1] ) {
+				parts.shift();
+				jQuery( '.ms-nav-controls' ).replaceWith( parts.join( ':' ) );
+			}
+		}
+	}
+
+	// Reload the page when Wizard mode is activated.
+	jQuery(document).on( 'ms-ajax-updated', '#create_menu', menu_created );
 };

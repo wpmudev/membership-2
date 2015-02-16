@@ -612,6 +612,10 @@ class MS_Controller_Settings extends MS_Controller {
 			case 'messages-automated':
 				$data['ms_init'][] = 'view_settings_automated_msg';
 				break;
+
+			case 'general':
+				$data['ms_init'][] = 'view_settings_setup';
+				break;
 		}
 
 		WDev()->add_data( 'ms_data', $data );

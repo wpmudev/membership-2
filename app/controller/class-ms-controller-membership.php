@@ -1207,6 +1207,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_MS_LIST:
 				$data['ms_init'][] = 'view_membership_list';
+				$data['ms_init'][] = 'view_settings_setup';
 				break;
 		}
 

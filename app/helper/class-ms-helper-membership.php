@@ -142,36 +142,18 @@ class MS_Helper_Membership extends MS_Helper {
 				$membership->name
 			)
 		);
+
+		$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
+		$settings = MS_Plugin::instance()->settings;
+		$settings->is_first_membership = false;
+		$settings->save();
+
 		$popup['modal'] = true;
 		$popup['close'] = false;
 		$popup['sticky'] = false;
 		$popup['class'] = 'ms-setup-done';
-		$popup['body'] = false;
-
-		if ( $count === 1 ) {
-			$settings = MS_Plugin::instance()->settings;
-
-			if ( $settings->is_first_membership ) {
-				$settings->is_first_membership = false;
-				$settings->save();
-
-				$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
-				$popup['body'] = $setup->to_html();
-				$popup['height'] = 412;
-			}
-		}
-
-		if ( empty( $popup['body'] ) ) {
-			$popup['body'] = sprintf(
-				'<center>You can now go to %1$s to set up access levels for this Membership.</center>',
-				sprintf(
-					'<a href="%1$s">%2$s</a>',
-					'?page=protected-content-setup',
-					__( 'Protected Content', MS_TEXT_DOMAIN )
-				)
-			);
-			$popup['height'] = 200;
-		}
+		$popup['body'] = $setup->to_html();
+		$popup['height'] = $setup->dialog_height();
 
 		$popup['body'] .= sprintf(
 			'<div class="buttons">' .
