@@ -214,7 +214,27 @@ class MS_Model_Import extends MS_Model {
 		$settings->import[ $this->source_key ] = date( 'Y-m-d H:i' );
 		$settings->save();
 
-		WDev()->message( __( 'Data imported!', MS_TEXT_DOMAIN ) );
+		$popup = array();
+		$popup['title'] = __( 'Import Tool', MS_TEXT_DOMAIN );
+		$popup['body'] = '<center>' .
+			'<p>' . __( 'Your data was successfully imported!', MS_TEXT_DOMAIN ) . '</p>' .
+			'<p>' . __( 'Remember to configure your Access Levels now.', MS_TEXT_DOMAIN ) . '</p>' .
+			'</center>';
+		$popup['modal'] = true;
+		$popup['class'] = 'ms-setup-done';
+		$popup['height'] = 220;
+
+		$popup['body'] .= sprintf(
+			'<div class="buttons">' .
+			'<a href="%s" class="button">%s</a> ' .
+			'<button type="button" class="button-primary close">%s</button>' .
+			'</div>',
+			'?page=protected-content-setup',
+			__( 'Set-up Access Levels', MS_TEXT_DOMAIN ),
+			__( 'Finish', MS_TEXT_DOMAIN )
+		);
+
+		WDev()->html->popup( $popup );
 	}
 
 	/**

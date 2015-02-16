@@ -48,7 +48,7 @@ Import Data Structure
     - id                 <int>  Export-ID
     - name               <string>  Membership name
     - description        <string>  Membership description
-    - type               [simple|dripped|base|guest]
+    - type               [simple|dripped|base|guest|user]
     - active             <bool>
     - private            <bool>
     - free               <bool>
