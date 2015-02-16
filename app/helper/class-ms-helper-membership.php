@@ -142,14 +142,6 @@ class MS_Helper_Membership extends MS_Helper {
 		);
 
 		$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
-		$settings = MS_Plugin::instance()->settings;
-		$settings->is_first_membership = false;
-
-		if ( ! $membership->is_free ) {
-			$settings->is_first_paid_membership = false;
-		}
-
-		$settings->save();
 
 		$popup['modal'] = true;
 		$popup['close'] = false;
@@ -169,5 +161,12 @@ class MS_Helper_Membership extends MS_Helper {
 		);
 
 		WDev()->popup( $popup );
+
+		$settings = MS_Plugin::instance()->settings;
+		$settings->is_first_membership = false;
+		if ( ! $membership->is_free ) {
+			$settings->is_first_paid_membership = false;
+		}
+		$settings->save();
 	}
 }

@@ -262,6 +262,9 @@ class MS_Controller_Settings extends MS_Controller {
 		// Enable Protected Content.
 		$settings->plugin_enabled = true;
 		$settings->save();
+
+		// Enable the "Allow user registration" setting of WordPress
+		MS_Model_Member::allow_registration();
 	}
 
 	/**

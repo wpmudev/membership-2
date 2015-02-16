@@ -285,6 +285,30 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Allows users to register for this site.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function allow_registration() {
+		if ( self::can_register() ) { return; }
+
+		if ( is_multisite() ) {
+			$reg_option = get_site_option( 'registration', 'none' );
+			if ( $reg_option == 'blog' ) {
+				// Creation of new blogs is allowd. Add User-Registration.
+				update_site_option( 'registration', 'all' );
+			} else {
+				// Only enable user registration and keep blogs disabled.
+				update_site_option( 'registration', 'user' );
+			}
+		} else {
+			// Simply enable registration on single sites.
+			update_option( 'users_can_register', true );
+		}
+	}
+
+	/**
 	 * Get members total count.
 	 *
 	 * @since 1.0.0

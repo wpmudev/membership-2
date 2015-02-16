@@ -557,7 +557,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return string Hex color, e.g. '#FFFFFF'
 	 */
 	public function get_color() {
-		return MS_Helper_Utility::color_index( $this->id );
+		return MS_Helper_Utility::color_index( $this->type . $this->id );
 	}
 
 	/**
@@ -720,7 +720,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			0 => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
 		);
 
-		$options += $this->get_membership_names();
+		$args = array(
+			'include_guest' => false,
+		);
+		$options += $this->get_membership_names( $args );
 		unset( $options[$this->id] );
 
 		$label = __( 'Change to: %s', MS_TEXT_DOMAIN );

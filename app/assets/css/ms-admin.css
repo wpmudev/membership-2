@@ -34,16 +34,10 @@
   margin: 1em 0;
   padding: 0.5em 0;
 }
-.ms-wrap p,
-.ms-wrap .clear {
-  display: block;
-}
-.ms-wrap p:first-child,
 .ms-wrap .clear:first-child {
   margin-top: 0;
   padding-top: 0;
 }
-.ms-wrap p:last-child,
 .ms-wrap .clear:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
@@ -1935,8 +1929,9 @@
 .select2-drop.ms-memberships .select2-result .val {
   width: 18px;
   float: left;
-  margin-right: 5px;
+  margin-right: 10px;
   border-radius: 4px;
+  box-shadow: 0 0 0px 1px #FFF;
 }
 
 /**
