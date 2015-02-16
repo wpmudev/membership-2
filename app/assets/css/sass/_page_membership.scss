@@ -463,3 +463,19 @@
 		font-size: inherit;
 	}
 }
+
+.the-ms-name {
+	border-radius: 3px;
+	padding: 5px;
+	display: inline-block;
+	color: #FFF;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 100%;
+	position: relative;
+	top: 4px;
+	margin-top: -4px;
+	font-size: .9em;
+	vertical-align: bottom;
+}

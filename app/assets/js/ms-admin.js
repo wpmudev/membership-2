@@ -1281,15 +1281,15 @@ window.ms_init.view_membership_payment = function init () {
 			pay_type = me.val(),
 			all_settings = block.find( '.ms-payment-type-wrapper' ),
 			active_settings = block.find( '.ms-payment-type-' + pay_type ),
-			after_end = block.find( '.ms-after-end-wrapper' );
+			pay_types_block = block.find( '.ms-payment-types-wrapper' );
 
 		all_settings.hide();
 		active_settings.show();
 
 		if ( 'permanent' === pay_type ) {
-			after_end.hide();
+			pay_types_block.hide();
 		} else {
-			after_end.show();
+			pay_types_block.show();
 		}
 	}
 
@@ -1316,6 +1316,13 @@ window.ms_init.view_membership_payment = function init () {
 		}
 	}
 
+	function reload_page( ev, data, response, is_err ) {
+		if ( ! is_err ) {
+			jQuery( '.ms-specific-payment-wrapper' ).addClass( 'wpmui-loading' );
+			window.location.reload();
+		}
+	}
+
 	// Show the correct payment options
 	jQuery( '#payment_type' ).change( payment_type );
 	jQuery( '#payment_type' ).each( payment_type );
@@ -1324,6 +1331,7 @@ window.ms_init.view_membership_payment = function init () {
 	jQuery( '#currency' ).change( show_currency );
 
 	jQuery( '.wpmui-slider-trial_period_enabled' ).on( 'ms-radio-slider-updated', toggle_trial );
+	jQuery(document).on( 'ms-ajax-updated', '#enable_trial', reload_page );
 };
 /*global window:false */
 /*global document:false */

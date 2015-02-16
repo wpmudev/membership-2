@@ -30,6 +30,21 @@
 		padding: 0.5em 0;
 	}
 
+	p,
+	.clear {
+		display: block;
+
+		&:first-child {
+			margin-top: 0;
+			padding-top: 0;
+		}
+
+		&:last-child {
+			margin-bottom: 0;
+			padding-bottom: 0;
+		}
+	}
+
 	.ms-group {
 		clear: both;
 

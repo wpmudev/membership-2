@@ -109,6 +109,15 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $is_first_membership = true;
 
 	/**
+	 * Is set to false when the first paid membership was created.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var boolean
+	 */
+	protected $is_first_paid_membership = true;
+
+	/**
 	 * Wizard step tracker.
 	 *
 	 * Indicate which step of the wizard.

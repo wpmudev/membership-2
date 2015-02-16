@@ -130,8 +130,6 @@ class MS_Helper_Membership extends MS_Helper {
 	 * @param  MS_Model_Membership $membership The membership that was created.
 	 */
 	public static function show_setup_note( $membership ) {
-		$count = MS_Model_Membership::get_membership_count();
-
 		$popup = array();
 
 		$popup['title'] = sprintf(
@@ -146,6 +144,11 @@ class MS_Helper_Membership extends MS_Helper {
 		$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
 		$settings = MS_Plugin::instance()->settings;
 		$settings->is_first_membership = false;
+
+		if ( ! $membership->is_free ) {
+			$settings->is_first_paid_membership = false;
+		}
+
 		$settings->save();
 
 		$popup['modal'] = true;

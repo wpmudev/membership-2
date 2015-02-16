@@ -48,8 +48,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		if ( ! empty( $_REQUEST['full_popup'] ) ) {
 			$show_wizard_done = true;
 		} else {
-			$show_wizard_done = ($count === 1
-				&& MS_Plugin::instance()->settings->is_first_membership);
+			$show_wizard_done = MS_Plugin::instance()->settings->is_first_membership;
 		}
 
 		if ( $show_wizard_done ) {

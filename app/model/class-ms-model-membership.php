@@ -406,10 +406,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			);
 		} else {
 			$payment_types = array(
-				self::PAYMENT_TYPE_PERMANENT => __( 'Single payment for permanent access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_FINITE => __( 'Single payment for finite access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_DATE_RANGE => __( 'Single payment for date range access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_RECURRING => __( 'Recurring payment', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_PERMANENT => __( 'One payment for permanent access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_FINITE => __( 'One payment for finite access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_DATE_RANGE => __( 'One payment for date range access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_RECURRING => __( 'Recurring payments', MS_TEXT_DOMAIN ),
 			);
 		}
 
