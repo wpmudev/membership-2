@@ -167,7 +167,7 @@ class MS_Model_Import extends MS_Model {
 		// Make sure the Import object can be parsed.
 		$data = $this->validate_object( $data );
 		if ( empty( $data ) ) {
-			WDev()->message(
+			WDev()->ui->admin_message(
 				__( 'Import-data could not be parsed. Please try again.', MS_TEXT_DOMAIN ),
 				'err'
 			);

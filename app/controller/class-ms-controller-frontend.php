@@ -905,8 +905,8 @@ class MS_Controller_Frontend extends MS_Controller {
 			&& MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		if ( $is_ms_page ) {
-			WDev()->add_ui( 'select' );
-			WDev()->add_ui( 'jquery-ui' );
+			WDev()->ui->add( 'select' );
+			WDev()->ui->add( 'jquery-ui' );
 			wp_enqueue_style( 'ms-styles' );
 		}
 
@@ -915,7 +915,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				'ms_init' => array( 'frontend_profile' ),
 			);
 
-			WDev()->add_data( 'ms_data', $data );
+			WDev()->ui->data( 'ms_data', $data );
 
 			wp_enqueue_script( 'jquery-validate' );
 			wp_enqueue_script( 'ms-public' );

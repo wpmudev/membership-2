@@ -335,7 +335,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-		WDev()->add_ui( 'jquery-ui' );
+		WDev()->ui->add( 'jquery-ui' );
 	}
 
 	/**
@@ -361,7 +361,7 @@ class MS_Controller_Member extends MS_Controller {
 			);
 		}
 
-		WDev()->add_data( 'ms_data', $data );
+		WDev()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

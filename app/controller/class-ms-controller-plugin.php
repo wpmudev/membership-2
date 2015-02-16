@@ -473,11 +473,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_plugin_admin_styles() {
-		wp_enqueue_style( 'ms-admin-styles' );
-
-		WDev()->add_ui();
-		WDev()->add_ui( 'select' );
-		WDev()->add_ui( 'fontawesome' );
+		WDev()->ui->css( 'ms-admin-styles' );
+		WDev()->ui->add( 'core' );
+		WDev()->ui->add( 'select' );
+		WDev()->ui->add( 'fontawesome' );
 	}
 
 	/**
@@ -488,9 +487,9 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_styles() {
-		WDev()->add_ui( 'select' );
-		WDev()->add_ui( 'jquery-ui' );
-		wp_enqueue_style( 'ms-styles' );
+		WDev()->ui->add( 'select' );
+		WDev()->ui->add( 'jquery-ui' );
+		WDev()->ui->css( 'ms-styles' );
 	}
 
 	/**
@@ -501,7 +500,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_admin_scripts() {
-		WDev()->add_ui( 'select' );
+		WDev()->ui->add( 'select' );
 	}
 
 	/**
@@ -516,10 +515,10 @@ class MS_Controller_Plugin extends MS_Controller {
 			'ms_init' => array( 'shortcode' ),
 			'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
 		);
-		WDev()->add_data( 'ms_data', $data );
+		WDev()->ui->data( 'ms_data', $data );
 
-		wp_enqueue_script( 'ms-public' );
-		wp_enqueue_script( 'jquery-validate' );
+		WDev()->ui->js( 'ms-public' );
+		WDev()->ui->js( 'jquery-validate' );
 
 		$this->translate_jquery_validator();
 	}
@@ -553,6 +552,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		});
 		<?php
 		$script = ob_get_clean();
-		WDev()->add_script( $script );
+		WDev()->ui->script( $script );
 	}
 }

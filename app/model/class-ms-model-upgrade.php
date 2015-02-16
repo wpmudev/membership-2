@@ -136,7 +136,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 			// Display a message after the page is reloaded.
 			if ( ! $is_new_setup ) {
-				WDev()->message( implode( '<br>', $msg ), '', '', 'ms-update' );
+				WDev()->ui->admin_message( implode( '<br>', $msg ), '', '', 'ms-update' );
 			}
 
 			do_action(
@@ -575,7 +575,7 @@ class MS_Model_Upgrade extends MS_Model {
 			$Done = true;
 			if ( self::verify_reset_token() ) {
 				self::cleanup_db();
-				WDev()->message( 'Your Protected Content data was reset!' );
+				WDev()->ui->admin_message( 'Your Protected Content data was reset!' );
 				wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
 				exit;
 			}

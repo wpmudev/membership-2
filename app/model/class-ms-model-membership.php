@@ -1115,7 +1115,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 					if ( MS_Model_Member::is_admin_user() ) {
 						// Display a notification about the DB changes to Admin users only.
-						WDev()->message(
+						WDev()->ui->admin_message(
 							sprintf(
 								__(
 								'<b>Please check your Protected Content settings</b><br />' .

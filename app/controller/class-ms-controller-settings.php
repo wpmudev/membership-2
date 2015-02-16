@@ -458,7 +458,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$data['message'] = self::_message();
 
 		if ( isset( $data['message']['error'] ) ) {
-			WDev()->message( $data['message']['error'], 'err' );
+			WDev()->ui->admin_message( $data['message']['error'], 'err' );
 		}
 
 		switch ( $this->get_active_tab() ) {
@@ -621,7 +621,7 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 		}
 
-		WDev()->add_data( 'ms_data', $data );
+		WDev()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

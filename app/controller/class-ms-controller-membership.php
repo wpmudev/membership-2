@@ -1133,7 +1133,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function enqueue_styles() {
 		switch ( $this->get_active_tab() ) {
 			default:
-				WDev()->add_ui( 'jquery-ui' );
+				WDev()->ui->add( 'jquery-ui' );
 				break;
 		}
 
@@ -1211,7 +1211,7 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 		}
 
-		WDev()->add_data( 'ms_data', $data );
+		WDev()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 
 		do_action( 'ms_controller_membership_enqueue_scripts', $this );

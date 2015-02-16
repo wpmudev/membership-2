@@ -369,7 +369,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function enqueue_styles() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
-			WDev()->add_ui( 'jquery-ui' );
+			WDev()->ui->add( 'jquery-ui' );
 		}
 
 		do_action( 'ms_addon_coupon_enqueue_styles', $this );
@@ -385,7 +385,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			$plugin_url = MS_Plugin::instance()->url;
 
 			wp_enqueue_script( 'jquery-validate' );
-			WDev()->add_ui( 'jquery-ui' );
+			WDev()->ui->add( 'jquery-ui' );
 
 			wp_enqueue_script(
 				'ms-view-coupon-edit',

@@ -223,7 +223,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 */
 	public function enqueue_styles() {
 		if ( 'edit' == @$_GET['action'] ) {
-			WDev()->add_ui( 'jquery-ui' );
+			WDev()->ui->add( 'jquery-ui' );
 		}
 	}
 
@@ -241,7 +241,7 @@ class MS_Controller_Billing extends MS_Controller {
 				'ms_init' => array( 'view_billing_edit' ),
 			);
 
-			WDev()->add_data( 'ms_data', $data );
+			WDev()->ui->data( 'ms_data', $data );
 			wp_enqueue_script( 'ms-admin' );
 		}
 	}

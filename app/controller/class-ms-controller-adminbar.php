@@ -394,8 +394,8 @@ class MS_Controller_Adminbar extends MS_Controller {
 			'switching_text' => __( 'Switching...', MS_TEXT_DOMAIN ),
 		);
 
-		WDev()->add_ui( 'select' );
-		WDev()->add_data( 'ms_data', $data );
+		WDev()->ui->add( 'select' );
+		WDev()->ui->data( 'ms_data', $data );
 
 		wp_enqueue_script( 'ms-admin' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
