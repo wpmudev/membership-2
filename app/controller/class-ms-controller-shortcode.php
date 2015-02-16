@@ -203,7 +203,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function membership_register_user( $atts ) {
 		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_REGISTER_USER );
 
-		WDev()->array->equip_request(
+		lib2()->array->equip_request(
 			'first_name',
 			'last_name',
 			'username',
@@ -229,7 +229,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 		$data['action'] = 'register_user';
 		$data['step'] = MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
-		$data['loginlink'] = WDev()->is_true( $data['loginlink'] );
+		$data['loginlink'] = lib2()->is_true( $data['loginlink'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_RegisterUser' );
 		$view->data = apply_filters( 'ms_view_shortcode_registeruser_data', $data, $this );
@@ -392,7 +392,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		extract( $data );
 
 		if ( ! empty( $id ) ) {
-			if ( WDev()->is_true( $currency ) ) {
+			if ( lib2()->is_true( $currency ) ) {
 				$settings = MS_Factory::load( 'MS_Model_Settings' );
 				$currency = $settings->currency;
 			} else {
@@ -604,10 +604,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 			)
 		);
 
-		$data['header'] = WDev()->is_true( $data['header'] );
-		$data['register'] = WDev()->is_true( $data['register'] );
-		$data['show_note'] = WDev()->is_true( $data['show_note'] );
-		$data['show_labels'] = WDev()->is_true( $data['show_labels'] );
+		$data['header'] = lib2()->is_true( $data['header'] );
+		$data['register'] = lib2()->is_true( $data['register'] );
+		$data['show_note'] = lib2()->is_true( $data['show_note'] );
+		$data['show_labels'] = lib2()->is_true( $data['show_labels'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_login_data', $data, $this );

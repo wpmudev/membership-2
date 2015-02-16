@@ -146,7 +146,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 	public function admin_bar_manager() {
 		$redirect = false;
 
-		WDev()->array->equip_get( 'membership_id' );
+		lib2()->array->equip_get( 'membership_id' );
 
 		if ( $this->verify_nonce( 'ms_simulate', 'any' ) ) {
 			/*
@@ -317,7 +317,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 			)
 		);
 
-		$details = WDev()->session->get( 'ms-access' );
+		$details = lib2()->session->get( 'ms-access' );
 		$parent1 = '';
 		$parent2 = '';
 
@@ -394,8 +394,8 @@ class MS_Controller_Adminbar extends MS_Controller {
 			'switching_text' => __( 'Switching...', MS_TEXT_DOMAIN ),
 		);
 
-		WDev()->ui->add( 'select' );
-		WDev()->ui->data( 'ms_data', $data );
+		lib2()->ui->add( 'select' );
+		lib2()->ui->data( 'ms_data', $data );
 
 		wp_enqueue_script( 'ms-admin' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );

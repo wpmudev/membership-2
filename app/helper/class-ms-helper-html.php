@@ -72,7 +72,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *           otherwise returned as string
 	 */
 	public static function html_element( $field_args, $return = false ) {
-		return WDev()->html->element( $field_args, $return );
+		return lib2()->html->element( $field_args, $return );
 	}
 
 
@@ -407,7 +407,7 @@ class MS_Helper_Html extends MS_Helper {
 					$url = $tab['url'];
 
 					foreach ( $persistent as $param ) {
-						WDev()->array->equip_request( $param );
+						lib2()->array->equip_request( $param );
 						$value = $_REQUEST[ $param ];
 						$url = add_query_arg( $param, $value, $url );
 					}
@@ -462,7 +462,7 @@ class MS_Helper_Html extends MS_Helper {
 	 * @param  string $type Either 'horizontal' or 'vertical'
 	 */
 	public static function html_separator( $type = 'horizontal' ) {
-		WDev()->html->element(
+		lib2()->html->element(
 			array(
 				'type' => self::TYPE_HTML_SEPARATOR,
 				'value' => $type,

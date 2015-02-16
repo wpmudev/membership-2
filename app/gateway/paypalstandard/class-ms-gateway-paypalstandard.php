@@ -133,7 +133,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	 * @since 1.0.0
 	 */
 	public function handle_return() {
-		WDev()->array->strip_slashes( $_POST, 'pending_reason' );
+		lib2()->array->strip_slashes( $_POST, 'pending_reason' );
 
 		if ( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) )
 			&& ! empty( $_POST['invoice'] )

@@ -384,7 +384,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				if ( empty( $page_id ) ) { $page_id = get_the_ID(); }
 				if ( empty( $page_id ) ) { $page_id = get_queried_object_id(); }
 				if ( empty( $page_id ) && did_action( 'setup_theme' ) ) {
-					$url = WDev()->current_url();
+					$url = lib2()->current_url();
 					$page_id = url_to_postid( $url );
 				}
 
@@ -764,7 +764,7 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( self::is_valid_type( $page_type ) ) {
 			$state = self::get_setting( 'has_nav_' . $page_type );
-			$state = WDev()->is_true( $state );
+			$state = lib2()->is_true( $state );
 		}
 
 		return $state;

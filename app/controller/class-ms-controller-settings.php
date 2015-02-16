@@ -144,7 +144,7 @@ class MS_Controller_Settings extends MS_Controller {
 			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			WDev()->array->strip_slashes( $_POST, 'value' );
+			lib2()->array->strip_slashes( $_POST, 'value' );
 
 			$msg = $this->save_general(
 				$_POST['action'],
@@ -172,7 +172,7 @@ class MS_Controller_Settings extends MS_Controller {
 			&& $this->is_admin_user()
 		) {
 			$settings = $this->get_model();
-			WDev()->array->strip_slashes( $_POST, 'value' );
+			lib2()->array->strip_slashes( $_POST, 'value' );
 
 			$settings->set_custom_setting(
 				$_POST['group'],
@@ -209,7 +209,7 @@ class MS_Controller_Settings extends MS_Controller {
 			&& MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] )
 		) {
 			$settings = MS_Factory::load( 'MS_Model_Settings' );
-			WDev()->array->strip_slashes( $_POST, 'value' );
+			lib2()->array->strip_slashes( $_POST, 'value' );
 
 			$settings->set_protection_message( $_POST['type'], $_POST['value'] );
 			$settings->save();
@@ -333,7 +333,7 @@ class MS_Controller_Settings extends MS_Controller {
 			$first_key = key( $tabs );
 
 			// Setup navigation tabs.
-			WDev()->array->equip_get( 'tab' );
+			lib2()->array->equip_get( 'tab' );
 			$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
 			if ( ! array_key_exists( $active_tab, $tabs ) ) {
 				$new_url = add_query_arg( array( 'tab' => $first_key ) );
@@ -442,7 +442,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_settings() {
-		WDev()->array->equip_get( 'action' );
+		lib2()->array->equip_get( 'action' );
 		$action = $_GET['action'];
 		$hook = 'ms_controller_settings_' . $this->active_tab . '_' . $action;
 
@@ -458,7 +458,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$data['message'] = self::_message();
 
 		if ( isset( $data['message']['error'] ) ) {
-			WDev()->ui->admin_message( $data['message']['error'], 'err' );
+			lib2()->ui->admin_message( $data['message']['error'], 'err' );
 		}
 
 		switch ( $this->get_active_tab() ) {
@@ -621,7 +621,7 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 		}
 
-		WDev()->ui->data( 'ms_data', $data );
+		lib2()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

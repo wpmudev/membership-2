@@ -675,7 +675,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		if ( ! WDev()->is_true( $args['include_base'] ) ) {
+		if ( ! lib2()->is_true( $args['include_base'] ) ) {
 			$args['meta_query']['base'] = array(
 				'key'     => 'type',
 				'value'   => self::TYPE_BASE,
@@ -683,7 +683,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			);
 		}
 
-		if ( ! WDev()->is_true( $args['include_guest'] ) ) {
+		if ( ! lib2()->is_true( $args['include_guest'] ) ) {
 			$args['meta_query']['guest'] = array(
 				'key'     => 'type',
 				'value'   => self::TYPE_GUEST,
@@ -1115,7 +1115,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 					if ( MS_Model_Member::is_admin_user() ) {
 						// Display a notification about the DB changes to Admin users only.
-						WDev()->ui->admin_message(
+						lib2()->ui->admin_message(
 							sprintf(
 								__(
 								'<b>Please check your Protected Content settings</b><br />' .
@@ -1682,7 +1682,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			case 'active':
 			case 'private':
 			case 'is_free':
-				$value = WDev()->is_true( $this->$property );
+				$value = lib2()->is_true( $this->$property );
 				break;
 
 			case 'type_description':
@@ -1825,7 +1825,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'active':
 				case 'private':
 				case 'is_free':
-					$this->$property = WDev()->is_true( $value );
+					$this->$property = lib2()->is_true( $value );
 					break;
 
 				case 'price':

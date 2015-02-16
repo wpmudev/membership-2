@@ -72,7 +72,7 @@ class MS_Addon_Taxamo_Model extends MS_Model_Settings {
 		switch ( $key ) {
 			case 'is_live':
 				// This is a boolean value, not a string.
-				$value = WDev()->is_true( $value );
+				$value = lib2()->is_true( $value );
 				break;
 		}
 

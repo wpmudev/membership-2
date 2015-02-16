@@ -245,7 +245,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 				$this->rule_value,
 				$this->_content_array
 			);
-			$this->rule_value = WDev()->array->get( $rule_value );
+			$this->rule_value = lib2()->array->get( $rule_value );
 
 			// If not visitor membership, just show protected content
 			if ( ! $this->get_membership()->is_base() ) {

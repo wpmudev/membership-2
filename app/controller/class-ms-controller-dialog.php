@@ -119,7 +119,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		 * - password or pwd
 		 * - remember or rememberme
 		 */
-		WDev()->array->equip_post(
+		lib2()->array->equip_post(
 			'username',
 			'password',
 			'remember',
@@ -138,8 +138,8 @@ class MS_Controller_Dialog extends MS_Controller {
 			$_POST['remember'] = $_POST['rememberme'];
 		}
 
-		WDev()->array->equip_post( 'username', 'password', 'remember' );
-		WDev()->array->strip_slashes( $_POST, 'password' );
+		lib2()->array->equip_post( 'username', 'password', 'remember' );
+		lib2()->array->strip_slashes( $_POST, 'password' );
 
 		// Nonce is checked, get the POST data and sign user on
 		$info = array(

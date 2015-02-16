@@ -7,7 +7,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 
 		$this->add_action( 'admin_footer', 'wp_footer' );
 
-		WDev()->array->equip(
+		lib2()->array->equip(
 			$comm,
 			'type',
 			'enabled',

@@ -154,7 +154,7 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 		) {
 			$caps = $all_roles[ $this->user_role ]['capabilities'];
 		}
-		$caps = WDev()->array->get( $caps );
+		$caps = lib2()->array->get( $caps );
 
 		if ( null === self::$real_caps ) {
 			// First get a list of the users default capabilities.
@@ -224,7 +224,7 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 				$this->rule_value,
 				$all_roles
 			);
-			$this->rule_value = WDev()->array->get( $rule_value );
+			$this->rule_value = lib2()->array->get( $rule_value );
 
 			foreach ( $all_roles as $key => $role ) {
 				if ( in_array( $key, $exclude ) ) { continue; }

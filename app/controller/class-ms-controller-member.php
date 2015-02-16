@@ -335,7 +335,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-		WDev()->ui->add( 'jquery-ui' );
+		lib2()->ui->add( 'jquery-ui' );
 	}
 
 	/**
@@ -347,7 +347,7 @@ class MS_Controller_Member extends MS_Controller {
 		$data = array(
 			'ms_init' => array(),
 		);
-		WDev()->array->equip_get( 'action' );
+		lib2()->array->equip_get( 'action' );
 
 		if ( 'edit_date' == $_GET['action'] ) {
 			// Start and expire date edit
@@ -361,7 +361,7 @@ class MS_Controller_Member extends MS_Controller {
 			);
 		}
 
-		WDev()->ui->data( 'ms_data', $data );
+		lib2()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

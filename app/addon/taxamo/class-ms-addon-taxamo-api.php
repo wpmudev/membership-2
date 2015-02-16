@@ -196,16 +196,16 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	static private function location_infos() {
 		self::taxamo();
 
-		$location = WDev()->session->get( 'ms_ta_country' );
+		$location = lib2()->session->get( 'ms_ta_country' );
 
 		if ( ! count( $location ) ) {
 			self::determine_country();
-			$location = WDev()->session->get( 'ms_ta_country' );
+			$location = lib2()->session->get( 'ms_ta_country' );
 		}
 
 		if ( ! count( $location ) ) {
 			$dummy_location = array(
-				'remote_addr' => WDev()->current_ip(),
+				'remote_addr' => lib2()->current_ip(),
 				'country_code' => 'US',
 				'country' => array(
 					'tax_supported' => false,
@@ -213,8 +213,8 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 				),
 			);
 
-			WDev()->session->add( 'ms_ta_country', $dummy_location );
-			$location = WDev()->session->get( 'ms_ta_country' );
+			lib2()->session->add( 'ms_ta_country', $dummy_location );
+			$location = lib2()->session->get( 'ms_ta_country' );
 		}
 
 		return $location[0];
@@ -229,9 +229,9 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 */
 	static private function determine_country() {
 		try {
-			$ip_info = WDev()->current_ip();
+			$ip_info = lib2()->current_ip();
 			$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
-			WDev()->session->add( 'ms_ta_country', $country );
+			lib2()->session->add( 'ms_ta_country', $country );
 		}
 		catch ( Exception $ex ) {
 			MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );

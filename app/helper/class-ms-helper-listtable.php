@@ -277,7 +277,7 @@ class MS_Helper_ListTable {
 					);
 					printf(
 						' <a href="%1$s" title="%3$s" class="ms-clear-search">%2$s</a>',
-						WDev()->current_url(),
+						lib2()->current_url(),
 						'<span class="dashicons dashicons-dismiss"></span>',
 						__( 'Clear search results', MS_TEXT_DOMAIN )
 					);
@@ -399,7 +399,7 @@ class MS_Helper_ListTable {
 		reset( $links );
 
 		foreach ( $links as $class => $data ) {
-			WDev()->array->equip( $data, 'label', 'url' );
+			lib2()->array->equip( $data, 'label', 'url' );
 
 			$sep = '|';
 			if ( $last_class === $class ) { $sep = ''; }
@@ -710,7 +710,7 @@ class MS_Helper_ListTable {
 	 * @return int
 	 */
 	protected function get_pagenum() {
-		WDev()->array->equip_request( 'paged' );
+		lib2()->array->equip_request( 'paged' );
 		$pagenum = absint( $_REQUEST['paged'] );
 
 		if ( isset( $this->_pagination_args['total_pages'] )

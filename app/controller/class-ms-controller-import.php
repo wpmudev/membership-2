@@ -45,7 +45,7 @@ class MS_Controller_Import extends MS_Controller {
 	 * @since  1.1.0
 	 */
 	public function process() {
-		WDev()->array->equip_post( 'action', 'import_source' );
+		lib2()->array->equip_post( 'action', 'import_source' );
 		$action = $_POST['action'];
 
 		if ( isset( $_POST['submit'] ) ) {
@@ -95,7 +95,7 @@ class MS_Controller_Import extends MS_Controller {
 				break;
 
 			case self::ACTION_IMPORT:
-				WDev()->array->equip_post( 'object', 'clear_all' );
+				lib2()->array->equip_post( 'object', 'clear_all' );
 				$data = json_decode( stripslashes( $_POST['object'] ) );
 				$args = array(
 					'clear_all' => (bool) $_POST['clear_all'],
@@ -106,7 +106,7 @@ class MS_Controller_Import extends MS_Controller {
 				break;
 
 			case self::ACTION_DOWNLOAD:
-				WDev()->array->equip_post( 'object' );
+				lib2()->array->equip_post( 'object' );
 				$data = json_decode( stripslashes( $_POST['object'] ) );
 
 				$name = 'export';
@@ -116,7 +116,7 @@ class MS_Controller_Import extends MS_Controller {
 					$name = sanitize_html_class( $name, 'export' );
 				}
 
-				WDev()->file_download( json_encode( $data ), $name . '.json' );
+				lib2()->file_download( json_encode( $data ), $name . '.json' );
 				break;
 		}
 	}

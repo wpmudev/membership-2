@@ -149,7 +149,7 @@ class MS_Controller_Membership extends MS_Controller {
 			&& self::validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			WDev()->array->strip_slashes( $_POST, 'value' );
+			lib2()->array->strip_slashes( $_POST, 'value' );
 
 			$msg = $this->save_membership(
 				array( $_POST['field'] => $_POST['value'] )
@@ -244,12 +244,12 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $save_data['action'] );
 
 				if ( isset( $_POST['set_private_flag'] ) ) {
-					WDev()->array->equip_post( 'public' );
-					$save_data['public'] = ! WDev()->is_true( $_POST['public'] );
+					lib2()->array->equip_post( 'public' );
+					$save_data['public'] = ! lib2()->is_true( $_POST['public'] );
 				}
 				if ( isset( $_POST['set_paid_flag'] ) ) {
-					WDev()->array->equip_post( 'paid' );
-					$save_data['is_free'] = ! WDev()->is_true( $_POST['paid'] );
+					lib2()->array->equip_post( 'paid' );
+					$save_data['is_free'] = ! lib2()->is_true( $_POST['paid'] );
 				}
 
 				$msg = $this->save_membership( $save_data );
@@ -278,7 +278,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 					$paid = isset( $_POST['set_paid_flag'] )
 						&& isset( $_POST['paid'] )
-						&& WDev()->is_true( $_POST['paid'] );
+						&& lib2()->is_true( $_POST['paid'] );
 
 					if ( $paid ) {
 						$next_step = self::STEP_PAYMENT;
@@ -333,7 +333,7 @@ class MS_Controller_Membership extends MS_Controller {
 		} elseif ( $this->verify_nonce( 'bulk' ) ) {
 			// Bulk-edit
 
-			WDev()->array->equip_post( 'action', 'action2', 'item', 'rule_type' );
+			lib2()->array->equip_post( 'action', 'action2', 'item', 'rule_type' );
 			$action = $_POST['action'];
 			if ( empty( $action ) || $action == '-1' ) {
 				$action = $_POST['action2'];
@@ -877,7 +877,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$tabs[MS_Rule_MemberCaps::RULE_ID] = false;
 			}
 
-			WDev()->array->equip( $_GET, 'page' );
+			lib2()->array->equip( $_GET, 'page' );
 
 			// Allow Add-ons to add or remove rule tabs
 			$tabs = apply_filters(
@@ -1133,7 +1133,7 @@ class MS_Controller_Membership extends MS_Controller {
 	public function enqueue_styles() {
 		switch ( $this->get_active_tab() ) {
 			default:
-				WDev()->ui->add( 'jquery-ui' );
+				lib2()->ui->add( 'jquery-ui' );
 				break;
 		}
 
@@ -1211,7 +1211,7 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 		}
 
-		WDev()->ui->data( 'ms_data', $data );
+		lib2()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 
 		do_action( 'ms_controller_membership_enqueue_scripts', $this );

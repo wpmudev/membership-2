@@ -312,16 +312,16 @@ class MS_Model_Plugin extends MS_Model {
 			$Info = apply_filters( 'ms_model_plugin_get_access_info', $Info );
 
 			if ( $simulation ) {
-				$access = WDev()->session->get_clear( 'ms-access' );
-				WDev()->session->add( 'ms-access', $Info );
+				$access = lib2()->session->get_clear( 'ms-access' );
+				lib2()->session->add( 'ms-access', $Info );
 				for ( $i = 0; $i < 9; $i += 1 ) {
 					if ( isset( $access[$i] ) ) {
-						WDev()->session->add( 'ms-access', $access[$i] );
+						lib2()->session->add( 'ms-access', $access[$i] );
 					}
 				}
 
 				if ( ! $Info['has_access'] && isset( $_GET['why-not'] ) ) {
-					WDev()->debug( $access );
+					lib2()->debug( $access );
 					die();
 				}
 			}

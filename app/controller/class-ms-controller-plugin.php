@@ -473,10 +473,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_plugin_admin_styles() {
-		WDev()->ui->css( 'ms-admin-styles' );
-		WDev()->ui->add( 'core' );
-		WDev()->ui->add( 'select' );
-		WDev()->ui->add( 'fontawesome' );
+		lib2()->ui->css( 'ms-admin-styles' );
+		lib2()->ui->add( 'core' );
+		lib2()->ui->add( 'select' );
+		lib2()->ui->add( 'fontawesome' );
 	}
 
 	/**
@@ -487,9 +487,9 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_styles() {
-		WDev()->ui->add( 'select' );
-		WDev()->ui->add( 'jquery-ui' );
-		WDev()->ui->css( 'ms-styles' );
+		lib2()->ui->add( 'select' );
+		lib2()->ui->add( 'jquery-ui' );
+		lib2()->ui->css( 'ms-styles' );
 	}
 
 	/**
@@ -500,7 +500,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_admin_scripts() {
-		WDev()->ui->add( 'select' );
+		lib2()->ui->add( 'select' );
 	}
 
 	/**
@@ -515,10 +515,10 @@ class MS_Controller_Plugin extends MS_Controller {
 			'ms_init' => array( 'shortcode' ),
 			'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
 		);
-		WDev()->ui->data( 'ms_data', $data );
+		lib2()->ui->data( 'ms_data', $data );
 
-		WDev()->ui->js( 'ms-public' );
-		WDev()->ui->js( 'jquery-validate' );
+		lib2()->ui->js( 'ms-public' );
+		lib2()->ui->js( 'jquery-validate' );
 
 		$this->translate_jquery_validator();
 	}
@@ -552,6 +552,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		});
 		<?php
 		$script = ob_get_clean();
-		WDev()->ui->script( $script );
+		lib2()->ui->script( $script );
 	}
 }

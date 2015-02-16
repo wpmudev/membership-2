@@ -343,7 +343,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
-		WDev()->array->equip_request( 'step', 'membership_id' );
+		lib2()->array->equip_request( 'step', 'membership_id' );
 
 		if ( in_array( $_REQUEST['step'], $steps ) ) {
 			$step = $_REQUEST['step'];
@@ -534,7 +534,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$member = MS_Model_Member::get_current_member();
 		$membership_id = 0;
 
-		WDev()->array->equip_request( 'membership_id', 'move_from_id', 'ms_relationship_id' );
+		lib2()->array->equip_request( 'membership_id', 'move_from_id', 'ms_relationship_id' );
 
 		if ( ! empty( $_REQUEST['membership_id'] ) ) {
 			// First time loading
@@ -557,7 +557,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$membership_id = $membership->id;
 
 			if ( ! empty( $_POST['error'] ) ) {
-				WDev()->array->strip_slashes( $_POST, 'error' );
+				lib2()->array->strip_slashes( $_POST, 'error' );
 
 				$data['error'] = $_POST['error'];
 			}
@@ -905,8 +905,8 @@ class MS_Controller_Frontend extends MS_Controller {
 			&& MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		if ( $is_ms_page ) {
-			WDev()->ui->add( 'select' );
-			WDev()->ui->add( 'jquery-ui' );
+			lib2()->ui->add( 'select' );
+			lib2()->ui->add( 'jquery-ui' );
 			wp_enqueue_style( 'ms-styles' );
 		}
 
@@ -915,7 +915,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				'ms_init' => array( 'frontend_profile' ),
 			);
 
-			WDev()->ui->data( 'ms_data', $data );
+			lib2()->ui->data( 'ms_data', $data );
 
 			wp_enqueue_script( 'jquery-validate' );
 			wp_enqueue_script( 'ms-public' );

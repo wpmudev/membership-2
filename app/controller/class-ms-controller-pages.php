@@ -114,7 +114,7 @@ class MS_Controller_Pages extends MS_Controller {
 			$item = $_POST['item'];
 			$res = false;
 
-			if ( WDev()->is_true( $_POST['value'] ) ) {
+			if ( lib2()->is_true( $_POST['value'] ) ) {
 				$res = MS_Model_Pages::create_menu( $item );
 			} else {
 				$res = MS_Model_Pages::drop_menu( $item );

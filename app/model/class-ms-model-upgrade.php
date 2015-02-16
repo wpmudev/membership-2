@@ -136,7 +136,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 			// Display a message after the page is reloaded.
 			if ( ! $is_new_setup ) {
-				WDev()->ui->admin_message( implode( '<br>', $msg ), '', '', 'ms-update' );
+				lib2()->ui->admin_message( implode( '<br>', $msg ), '', '', 'ms-update' );
 			}
 
 			do_action(
@@ -173,7 +173,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade from any 1.0.x version to a higher version.
 	 */
 	static private function _upgrade_1_0_x() {
-		WDev()->updates->clear();
+		lib2()->updates->clear();
 
 		/*
 		 * Add-ons
@@ -187,7 +187,7 @@ class MS_Model_Upgrade extends MS_Model {
 				$data['active'] = $data['addons'];
 				unset( $data['addons'] );
 			}
-			WDev()->updates->add( 'update_option', 'MS_Model_Addon', $data );
+			lib2()->updates->add( 'update_option', 'MS_Model_Addon', $data );
 		}
 
 		/*
@@ -206,7 +206,7 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( ! isset( $data['import'] ) ) {
 				$data['import'] = array();
 			}
-			WDev()->updates->add( 'update_option', 'MS_Model_Settings', $data );
+			lib2()->updates->add( 'update_option', 'MS_Model_Settings', $data );
 		}
 
 		/*
@@ -244,19 +244,19 @@ class MS_Model_Upgrade extends MS_Model {
 		// Migrate data.
 		foreach ( $memberships as $membership ) {
 			// 1.
-			WDev()->updates->add( 'delete_post_meta', $membership->ID, 'parent_id' );
+			lib2()->updates->add( 'delete_post_meta', $membership->ID, 'parent_id' );
 			$membership->post_parent = 0;
 			// 2.
 			$is_base = get_post_meta( $membership->ID, 'protected_content', true );
 			$is_base = ! empty( $is_base );
 			if ( $is_base ) {
-				WDev()->updates->add( 'delete_post_meta', $membership->ID, 'protected_content' );
-				WDev()->updates->add( 'update_post_meta', $membership->ID, 'type', 'base' );
+				lib2()->updates->add( 'delete_post_meta', $membership->ID, 'protected_content' );
+				lib2()->updates->add( 'update_post_meta', $membership->ID, 'type', 'base' );
 			} else {
 				// 3.
 				$type = get_post_meta( $membership->ID, 'type', true );
 				if ( $type != 'dripped' ) {
-					WDev()->updates->add( 'update_post_meta', $membership->ID, 'type', 'simple' );
+					lib2()->updates->add( 'update_post_meta', $membership->ID, 'type', 'simple' );
 				}
 			}
 			// 4.
@@ -269,8 +269,8 @@ class MS_Model_Upgrade extends MS_Model {
 				if ( 'url_group' === $key ) { $key = 'url'; }
 
 				$data = self::fix_object( $data );
-				$data->rule_value = WDev()->array->get( $data->rule_value );
-				$data->dripped = WDev()->array->get( $data->dripped );
+				$data->rule_value = lib2()->array->get( $data->rule_value );
+				$data->dripped = lib2()->array->get( $data->dripped );
 				$access = array();
 
 				if ( ! empty( $data->dripped )
@@ -359,8 +359,8 @@ class MS_Model_Upgrade extends MS_Model {
 					$serialized[$key] = $access;
 				}
 			}
-			WDev()->updates->add( 'update_post_meta', $membership->ID, 'rule_values', $serialized );
-			WDev()->updates->add( 'wp_update_post', $membership );
+			lib2()->updates->add( 'update_post_meta', $membership->ID, 'rule_values', $serialized );
+			lib2()->updates->add( 'wp_update_post', $membership );
 		}
 
 		/*
@@ -373,12 +373,12 @@ class MS_Model_Upgrade extends MS_Model {
 		 * Only remove old hooks here: New hooks are added by MS_Model_Plugin.
 		 */
 		{
-			WDev()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_check_membership_status' );
-			WDev()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_process_communications' );
+			lib2()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_check_membership_status' );
+			lib2()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_process_communications' );
 		}
 
 		// Execute all queued actions!
-		WDev()->updates->execute();
+		lib2()->updates->execute();
 
 		// Cleanup
 		if ( $base && isset( $base->ID ) ) {
@@ -575,7 +575,7 @@ class MS_Model_Upgrade extends MS_Model {
 			$Done = true;
 			if ( self::verify_reset_token() ) {
 				self::cleanup_db();
-				WDev()->ui->admin_message( 'Your Protected Content data was reset!' );
+				lib2()->ui->admin_message( 'Your Protected Content data was reset!' );
 				wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
 				exit;
 			}

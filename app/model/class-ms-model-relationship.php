@@ -1760,7 +1760,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					 * When this limit is reached then we do not auto-renew the
 					 * subscription but expire it.
 					 */
-					$payments = WDev()->array->get( $this->payments );
+					$payments = lib2()->array->get( $this->payments );
 					if ( count( $payments ) >= $membership->pay_cycle_repetitions ) {
 						$auto_renew = false;
 					}

@@ -116,7 +116,7 @@ class MS_Controller_Rule extends MS_Controller {
 		if ( $this->_resp_ok() && ! self::validate_required( $isset, 'POST', false ) ) { $this->_resp_err( 'update-matching-03' ); }
 
 		if ( $this->_resp_ok() ) {
-			WDev()->array->strip_slashes( $_POST, 'value' );
+			lib2()->array->strip_slashes( $_POST, 'value' );
 
 			$rule_type = $_POST['rule_type'];
 			$msg = $this->save_rule_values(
@@ -237,8 +237,8 @@ class MS_Controller_Rule extends MS_Controller {
 			// Loop all specified memberships and set the rule values.
 			foreach ( $ids as $id ) {
 				if ( empty( $_POST['ms_' . $id] ) ) { continue; }
-				$data = WDev()->array->get( $_POST['ms_' . $id] );
-				WDev()->array->equip( $data, 'dripped_type', 'date', 'delay_unit', 'delay_type' );
+				$data = lib2()->array->get( $_POST['ms_' . $id] );
+				lib2()->array->equip( $data, 'dripped_type', 'date', 'delay_unit', 'delay_type' );
 
 				$membership = MS_Factory::load( 'MS_Model_Membership', $id );
 				$rule = $membership->get_rule( $rule_type );

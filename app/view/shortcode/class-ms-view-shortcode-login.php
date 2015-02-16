@@ -105,7 +105,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			// Load the ajax script that handles the Ajax login functions.
 			wp_enqueue_script( 'ms-ajax-login' );
 
-			WDev()->ui->data(
+			lib2()->ui->data(
 				'ms_ajax_login',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -458,7 +458,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			$user = false;
 		}
 
-		WDev()->array->strip_slashes( $_POST, 'pass1', 'pass2' );
+		lib2()->array->strip_slashes( $_POST, 'pass1', 'pass2' );
 
 		// If the user was not found then redirect to an error page.
 		if ( ! $user || is_wp_error( $user ) ) {

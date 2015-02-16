@@ -150,7 +150,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			&& self::validate_required( $fields )
 			&& $this->is_admin_user()
 		) {
-			WDev()->array->strip_slashes( $_POST, 'value' );
+			lib2()->array->strip_slashes( $_POST, 'value' );
 
 			$msg = $this->gateway_list_do_action(
 				$_POST['action'],
@@ -487,7 +487,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						$data['cim_profiles'] = $gateway->get_cim_profile( $member );
 					}
 
-					WDev()->array->strip_slashes( $_POST, 'auth_error' );
+					lib2()->array->strip_slashes( $_POST, 'auth_error' );
 
 					$data['cim_payment_profile_id'] = $gateway->get_cim_payment_profile_id( $member );
 					$data['auth_error'] = ! empty( $_POST['auth_error'] ) ? $_POST['auth_error'] : '';
@@ -519,7 +519,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function process_purchase() {
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
-		WDev()->array->equip_request( 'gateway', 'ms_relationship_id' );
+		lib2()->array->equip_request( 'gateway', 'ms_relationship_id' );
 
 		$valid = true;
 		$nonce_name = $_REQUEST['gateway'] . '_' . $_REQUEST['ms_relationship_id'];
@@ -816,7 +816,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			switch ( $gateway->id ) {
 				case MS_Gateway_Stripe::ID:
 					if ( ! empty( $_POST['stripeToken'] ) && $this->verify_nonce() ) {
-						WDev()->array->strip_slashes( $_POST, 'stripeToken' );
+						lib2()->array->strip_slashes( $_POST, 'stripeToken' );
 
 						$gateway->add_card( $member, $_POST['stripeToken'] );
 						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
@@ -887,7 +887,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$step = $_POST['step'];
 		}
 
-		WDev()->array->equip_post( 'gateway' );
+		lib2()->array->equip_post( 'gateway' );
 		$gateway_id = $_POST['gateway'];
 
 		switch ( $step ) {
@@ -899,7 +899,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						'ms_init' => array( 'gateway_authorize' ),
 					);
 
-					WDev()->ui->data( 'ms_data', $data );
+					lib2()->ui->data( 'ms_data', $data );
 					wp_enqueue_script( 'ms-public' );
 				}
 				break;

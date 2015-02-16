@@ -181,7 +181,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 			}
 		}
 
-		$access = WDev()->is_true( $access );
+		$access = lib2()->is_true( $access );
 
 		if ( ! $access ) {
 			// No access to member of membership_ids
