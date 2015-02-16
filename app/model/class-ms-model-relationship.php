@@ -1108,6 +1108,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns true if the related membership is the user-membership.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	public function is_user() {
+		return $this->get_membership()->is_user();
+	}
+
+	/**
 	 * Returns true if the related membership is a system membership.
 	 *
 	 * @since  1.1.0

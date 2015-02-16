@@ -105,6 +105,12 @@
 					}
 				}
 
+				&.wpmui-user {
+					label:before {
+						background-position: -640px -35px;
+					}
+				}
+
 				&.wpmui-dripped {
 					.wpmui-radio {
 						margin-left: 50px;
@@ -436,7 +442,7 @@
 		text-align: center;
 	}
 
-	.ms-guest-badge {
+	.ms-badge {
 		display: inline-block;
 		cursor: help;
 	}

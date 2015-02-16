@@ -36,7 +36,7 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 		);
 
 		// Dialog Size
-		if ( $membership->is_guest() ) {
+		if ( $membership->is_system() ) {
 			$this->height = 200;
 		} else {
 			$this->height = 390;
@@ -199,7 +199,7 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 					<div class="col-5">
 						<?php
 						MS_Helper_Html::html_element( $inp_name );
-						if ( ! $membership->is_guest() ) {
+						if ( ! $membership->is_system() ) {
 							MS_Helper_Html::html_element( $inp_description );
 						}
 						?>
@@ -207,7 +207,7 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 					<div class="col-3">
 						<?php
 						MS_Helper_Html::html_element( $inp_active );
-						if ( ! $membership->is_guest() ) {
+						if ( ! $membership->is_system() ) {
 							MS_Helper_Html::html_element( $inp_public );
 							MS_Helper_Html::html_element( $inp_paid );
 						}

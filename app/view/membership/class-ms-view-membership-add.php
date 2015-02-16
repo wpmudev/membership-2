@@ -5,6 +5,8 @@ class MS_View_Membership_Add extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$cols = count( $fields['type']['field_options'] );
+		if ( $cols < 2 ) { $cols = 2; }
+		if ( $cols > 3 ) { $cols = 2; }
 
 		?>
 		<div class="ms-wrap">
@@ -70,6 +72,10 @@ class MS_View_Membership_Add extends MS_View {
 					MS_Model_Membership::TYPE_GUEST => array(
 						'text' => __( 'Guest Membership', MS_TEXT_DOMAIN ),
 						'desc' => __( 'Make your content available only to Guests (logged-out users).', MS_TEXT_DOMAIN ),
+					),
+					MS_Model_Membership::TYPE_USER => array(
+						'text' => __( 'Default Membership', MS_TEXT_DOMAIN ),
+						'desc' => __( 'Content is available to all logged-in users that did not join any other Membership yet.', MS_TEXT_DOMAIN ),
 					),
 				),
 			),
@@ -163,6 +169,11 @@ class MS_View_Membership_Add extends MS_View {
 		// Only one Guest Membership can be added
 		if ( MS_Model_Membership::get_guest()->is_valid() ) {
 			unset( $fields['type']['field_options'][MS_Model_Membership::TYPE_GUEST] );
+		}
+
+		// Only one User Membership can be added
+		if ( MS_Model_Membership::get_user()->is_valid() ) {
+			unset( $fields['type']['field_options'][MS_Model_Membership::TYPE_USER] );
 		}
 
 		// Wizard can only be cancelled when at least one membership exists in DB.

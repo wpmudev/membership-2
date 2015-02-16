@@ -142,13 +142,19 @@ class MS_Model_Plugin extends MS_Model {
 
 		if ( ! is_user_logged_in() ) {
 			// If a Guest-Membership exists we also assign it to the user.
-			$guest = MS_Model_Membership::get_guest();
-			if ( $guest->is_valid() ) {
-				$this->member->add_membership( $guest->id );
+			$ms_guest = MS_Model_Membership::get_guest();
+			if ( $ms_guest->is_valid() && $ms_guest->active ) {
+				$this->member->add_membership( $ms_guest->id );
+			}
+		} elseif ( ! $this->member->has_membership() ) {
+			// Apply User-Membership to logged-in users without subscriptions.
+			$ms_user = MS_Model_Membership::get_user();
+			if ( $ms_user->is_valid() && $ms_user->active ) {
+				$this->member->add_membership( $ms_user->id );
 			}
 		}
 
-		// Non-Member: Assign the base membership, which only denies access.
+		// No subscription: Assign the base membership, which only denies access.
 		if ( ! $this->member->has_membership() ) {
 			$this->member->add_membership(
 				MS_Model_Membership::get_base()->id

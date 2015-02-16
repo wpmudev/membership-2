@@ -175,9 +175,15 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 		if ( $item->is_guest() ) {
 			$badge = sprintf(
-				'<span class="ms-guest-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
+				'<span class="ms-badge ms-guest-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
 				__( 'Guest', MS_TEXT_DOMAIN ),
 				__( 'All Logged-Out users are considered guests', MS_TEXT_DOMAIN )
+			);
+		} elseif ( $item->is_user() ) {
+			$badge = sprintf(
+				'<span class="ms-badge ms-user-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
+				__( 'Default', MS_TEXT_DOMAIN ),
+				__( 'All logged-in users that have not signed up for any membership', MS_TEXT_DOMAIN )
 			);
 		}
 
@@ -219,7 +225,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			);
 		}
 
-		if ( $item->private ) {
+		if ( ! $item->is_system() && $item->private ) {
 			$html .= sprintf(
 				'<span class="ms-is-private">, <span>%1$s</span></span>',
 				__( 'Private', MS_TEXT_DOMAIN )

@@ -1071,7 +1071,7 @@ window.ms_init.view_membership_add = function init () {
 		types.closest( '.wpmui-radio-input-wrapper' ).removeClass( 'active' );
 		current.closest( '.wpmui-radio-input-wrapper' ).addClass( 'active' );
 
-		if ( 'guest' === cur_type ) {
+		if ( 'guest' === cur_type || 'user' === cur_type ) {
 			chk_public.prop( 'disabled', true );
 			chk_paid.prop( 'disabled', true );
 			el_public.addClass( 'disabled ms-locked' );

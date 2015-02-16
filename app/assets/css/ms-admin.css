@@ -173,14 +173,20 @@
 .ms-wrap .subsubsub a {
   cursor: pointer;
 }
-.ms-wrap .ms-guest-badge {
-  background: #FF5722;
+.ms-wrap .ms-badge {
+  background: #AAA;
   color: #FFF;
   border-radius: 3px;
   font-size: 10px;
   padding: 0 3px;
   line-height: 15px;
   font-weight: 100;
+}
+.ms-wrap .ms-guest-badge {
+  background: #E08B00;
+}
+.ms-wrap .ms-user-badge {
+  background: #417505;
 }
 
 /* Simple List Tables */
@@ -1196,6 +1202,7 @@
 }
 .ms-wrap .ms-img-type-simple,
 .ms-wrap .ms-img-type-guest,
+.ms-wrap .ms-img-type-user,
 .ms-wrap .ms-img-type-dripped,
 .ms-wrap .ms-img-unlock,
 .ms-wrap .ms-img-lock,
@@ -1212,6 +1219,7 @@
 }
 .ms-wrap .ms-img-type-simple,
 .ms-wrap .ms-img-type-guest,
+.ms-wrap .ms-img-type-user,
 .ms-wrap .ms-img-type-dripped {
   width: 100px;
   height: 80px;
@@ -1222,10 +1230,13 @@
 .ms-wrap .ms-img-type-guest {
   background-position: -100px -10px;
 }
+.ms-wrap .ms-img-type-user {
+  background-position: -200px -10px;
+}
 .ms-wrap .ms-img-type-dripped {
   background-position: -300px -10px;
 }
-.ms-wrap .small.ms-img-type-simple, .ms-wrap .small.ms-img-type-guest, .ms-wrap .small.ms-img-type-dripped {
+.ms-wrap .small.ms-img-type-simple, .ms-wrap .small.ms-img-type-guest, .ms-wrap .small.ms-img-type-user, .ms-wrap .small.ms-img-type-dripped {
   width: 40px;
   height: 33px;
 }
@@ -1235,12 +1246,16 @@
 .ms-wrap .small.ms-img-type-guest {
   background-position: -530px -33px;
 }
+.ms-wrap .small.ms-img-type-user {
+  background-position: -630px -33px;
+}
 .ms-wrap .small.ms-img-type-dripped {
   background-position: -729px -33px;
 }
-.ms-wrap .wp-list-table .small.ms-img-type-simple, .ms-wrap .wp-list-table .small.ms-img-type-guest, .ms-wrap .wp-list-table .small.ms-img-type-dripped,
+.ms-wrap .wp-list-table .small.ms-img-type-simple, .ms-wrap .wp-list-table .small.ms-img-type-guest, .ms-wrap .wp-list-table .small.ms-img-type-user, .ms-wrap .wp-list-table .small.ms-img-type-dripped,
 .ms-wrap .widefat .small.ms-img-type-simple,
 .ms-wrap .widefat .small.ms-img-type-guest,
+.ms-wrap .widefat .small.ms-img-type-user,
 .ms-wrap .widefat .small.ms-img-type-dripped {
   vertical-align: middle;
   margin-top: -5px;
@@ -1398,6 +1413,9 @@
 }
 #wpwrap .ms-wrap .ms-membership-add .ms-choose-type-wrapper > .ms-choose-type.wpmui-guest label:before {
   background-position: -540px -35px;
+}
+#wpwrap .ms-wrap .ms-membership-add .ms-choose-type-wrapper > .ms-choose-type.wpmui-user label:before {
+  background-position: -640px -35px;
 }
 #wpwrap .ms-wrap .ms-membership-add .ms-choose-type-wrapper > .ms-choose-type.wpmui-dripped .wpmui-radio {
   margin-left: 50px;
@@ -1663,7 +1681,7 @@
 .ms-wrap .ms-membership-list .wpmui-tip {
   text-align: center;
 }
-.ms-wrap .ms-membership-list .ms-guest-badge {
+.ms-wrap .ms-membership-list .ms-badge {
   display: inline-block;
   cursor: help;
 }

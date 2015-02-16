@@ -53,6 +53,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	const TYPE_DRIPPED = 'dripped';
 	const TYPE_BASE = 'base'; // System membership, hidden, created automatically
 	const TYPE_GUEST = 'guest'; // Guest membership, only one membership possible
+	const TYPE_USER = 'user'; // User membership, only one membership possible
 
 	/**
 	 * Membership payment type constants.
@@ -361,6 +362,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			self::TYPE_STANDARD => __( 'Standard Membership', MS_TEXT_DOMAIN ),
 			self::TYPE_DRIPPED => __( 'Dripped Content Membership', MS_TEXT_DOMAIN ),
 			self::TYPE_GUEST => __( 'Guest Membership', MS_TEXT_DOMAIN ),
+			self::TYPE_USER => __( 'Default Membership', MS_TEXT_DOMAIN ),
 			self::TYPE_BASE => __( 'System Membership', MS_TEXT_DOMAIN ),
 		);
 
@@ -687,6 +689,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				'value'   => self::TYPE_GUEST,
 				'compare' => '!=',
 			);
+			$args['meta_query']['user'] = array(
+				'key'     => 'type',
+				'value'   => self::TYPE_USER,
+				'compare' => '!=',
+			);
 		}
 
 		return apply_filters(
@@ -859,6 +866,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 		$not_in[] = MS_Model_Membership::get_base()->id;
 		$not_in[] = MS_Model_Membership::get_guest()->id;
+		$not_in[] = MS_Model_Membership::get_user()->id;
 		$args['post__not_in'] = array_unique( $not_in );
 
 		if ( ! is_admin() ) {
@@ -966,6 +974,23 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns true if the membership the user membership.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @return bool
+	 */
+	public function is_user() {
+		$res = $this->type == self::TYPE_USER;
+
+		return apply_filters(
+			'ms_model_membership_is_user',
+			$res,
+			$this
+		);
+	}
+
+	/**
 	 * Returns true if the membership a dripped membership.
 	 *
 	 * @since  1.1.0
@@ -990,7 +1015,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return bool
 	 */
 	public function is_system() {
-		$res = $this->is_base() || $this->is_guest();
+		$res = $this->is_base() || $this->is_guest() || $this->is_user();
 
 		return apply_filters(
 			'ms_model_membership_is_system',
@@ -1195,6 +1220,38 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 
 		return $Guest_Membership;
+	}
+
+	/**
+	 * Get special role membership for a certain user role.
+	 *
+	 * Create a new membership if membership does not exist.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  string $role A WordPress user-role.
+	 * @return MS_Model_Membership The guest membership.
+	 */
+	public static function get_user() {
+		static $User_Membership = null;
+
+		if ( null === $User_Membership ) {
+			$User_Membership = self::_get_system_membership(
+				self::TYPE_USER,
+				false // Don't create this membership automatically
+			);
+
+			$User_Membership = apply_filters(
+				'ms_model_membership_get_user',
+				$User_Membership
+			);
+		}
+
+		if ( ! $User_Membership ) {
+			$User_Membership = MS_Factory::create( 'MS_Model_Membership' );
+		}
+
+		return $User_Membership;
 	}
 
 	/**
@@ -1598,6 +1655,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				switch ( $this->type ) {
 					case self::TYPE_BASE:
 					case self::TYPE_GUEST:
+					case self::TYPE_USER:
 					case self::TYPE_DRIPPED:
 						break;
 
@@ -1717,6 +1775,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					switch ( $value ) {
 						case self::TYPE_BASE:
 						case self::TYPE_GUEST:
+						case self::TYPE_USER:
 							// Only one instance of these types can exist.
 							$existing = $this->_get_system_membership( $value, false );
 
