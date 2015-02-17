@@ -42,6 +42,8 @@ class MS_Model_Upgrade extends MS_Model {
 
 		MS_Factory::load( 'MS_Model_Upgrade' );
 
+		add_action( 'init', array( __CLASS__, 'maybe_reset' ) );
+
 		do_action( 'ms_model_upgrade_init' );
 	}
 
@@ -65,8 +67,6 @@ class MS_Model_Upgrade extends MS_Model {
 		// Compare current src version to DB version:
 		// We only do UP-grades but no DOWN-grades!
 		$version_changed = $old_version && version_compare( $old_version, $new_version, 'lt' );
-
-		self::maybe_reset();
 
 		if ( $force || $version_changed ) {
 			$Done = true;
@@ -568,7 +568,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 *
 	 * @since  1.1.0
 	 */
-	static private function maybe_reset() {
+	static public function maybe_reset() {
 		static $Done = false;
 
 		if ( ! $Done ) {
