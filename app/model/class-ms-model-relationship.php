@@ -1177,7 +1177,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					if ( $short ) {
 						$lbl  = __( 'Pay <span class="price">%1$s %2$s</span> (for ever)', MS_TEXT_DOMAIN );
 					} else {
-						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span>, for permanent access.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for permanent access.', MS_TEXT_DOMAIN );
 					}
 				}
 
