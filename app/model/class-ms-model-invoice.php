@@ -685,15 +685,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		$invoice->save();
 
-		$invoice->description = apply_filters(
-			'ms_model_invoice_description',
-			$ms_relationship->get_payment_description( $invoice )
-		);
-		$invoice->short_description = apply_filters(
-			'ms_model_invoice_short_description',
-			$ms_relationship->get_payment_description( $invoice, true )
-		);
-
+		$invoice->update_descriptions();
 		$invoice->save();
 
 		return apply_filters(
@@ -932,6 +924,25 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Updates the Invoice description. This is called always when the invoice
+	 * amount is changed.
+	 *
+	 * @since  1.1.0
+	 */
+	public function update_descriptions() {
+		$subscription = $this->get_subscription();
+
+		$this->description = apply_filters(
+			'ms_model_invoice_description',
+			$subscription->get_payment_description( $this )
+		);
+		$this->short_description = apply_filters(
+			'ms_model_invoice_short_description',
+			$subscription->get_payment_description( $this, true )
+		);
+	}
+
+	/**
 	 * Get invoice total.
 	 *
 	 * Discounting coupon and pro-rating.
@@ -939,7 +950,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 */
-	public function get_total() {
+	private function get_total() {
 		$this->total = $this->amount; // Net amount
 		$this->total += $this->tax; // Tax-Rate was defined in `create_invoice()`
 		$this->total -= $this->discount; // Remove discount
@@ -1081,6 +1092,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				case 'pro_rate':
 					$this->$property = floatval( $value );
 					$this->get_total();
+					$this->update_descriptions();
 					break;
 
 				default:
