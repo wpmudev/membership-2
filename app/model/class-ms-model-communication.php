@@ -601,8 +601,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$ms_relationship = MS_Factory::load( 'MS_Model_Relationship', $ms_relationship_id );
 				if ( $this->send_message( $ms_relationship ) ) {
 					$this->remove_from_queue( $ms_relationship_id );
-				}
-				else {
+				} else {
 					MS_Helper_Debug::log(
 						sprintf(
 							__( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
