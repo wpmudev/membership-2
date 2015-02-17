@@ -1518,6 +1518,7 @@
 #wpwrap .ms-wrap .ms-membership-add .ms-control-fields-wrapper {
   position: absolute;
   bottom: -60px;
+  z-index: 10;
 }
 
 /* Page: Payment options */
