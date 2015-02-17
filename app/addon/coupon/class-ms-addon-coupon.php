@@ -426,6 +426,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function billing_column_value( $default, $item, $column_name ) {
 		$value = $item->$column_name;
+		$html = '';
 
 		if ( empty( $value ) ) {
 			if ( $column_name == 'discount' && empty( $value ) ) {
@@ -574,6 +575,12 @@ class MS_Addon_Coupon extends MS_Addon {
 			);
 
 			if ( ! empty( $_POST['remove_coupon_code'] ) ) {
+				$note = sprintf(
+					__( 'Remove Coupon "%s"', MS_TEXT_DOMAIN ),
+					$coupon->code
+				);
+				$invoice->add_notes( $note );
+
 				$coupon->remove_coupon_application( $member->id, $membership->id );
 				$coupon = false;
 			}
@@ -581,18 +588,21 @@ class MS_Addon_Coupon extends MS_Addon {
 		self::the_coupon( $coupon );
 
 		if ( $coupon ) {
-			$invoice->coupon_id = $coupon->id;
 			$discount = $coupon->get_discount_value( $ms_relationship );
+			$invoice->coupon_id = $coupon->id;
 			$invoice->discount = $discount;
 
 			$note = sprintf(
-				__( 'Coupon %s, discount: %s %s. ', MS_TEXT_DOMAIN ),
+				__( 'Apply Coupon "%s": Discount %s %s!', MS_TEXT_DOMAIN ),
 				$coupon->code,
 				$invoice->currency,
 				$discount
 			);
 
 			$invoice->add_notes( $note );
+		} else {
+			$invoice->coupon_id = '';
+			$invoice->discount = 0;
 		}
 
 		return $invoice;

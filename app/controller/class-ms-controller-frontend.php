@@ -577,12 +577,13 @@ class MS_Controller_Frontend extends MS_Controller {
 		 *
 		 * @since 1.1.0
 		 */
-		do_action(
+		$invoice = apply_filters(
 			'ms_signup_payment_details',
 			$invoice,
 			$subscription,
 			$membership
 		);
+		$invoice->save();
 
 		$data['invoice'] = $invoice;
 

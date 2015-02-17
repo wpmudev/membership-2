@@ -222,7 +222,13 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-		if ( 'edit' == @$_GET['action'] ) {
+		if ( empty( $_GET['action'] ) ) {
+			$action = '';
+		} else {
+			$action = $_GET['action'];
+		}
+
+		if ( 'edit' == $action ) {
 			lib2()->ui->add( 'jquery-ui' );
 		}
 	}
