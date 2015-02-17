@@ -102,7 +102,9 @@ class MS_Helper_Utility extends MS_Helper {
 		if ( null === $Url ) {
 			$Url = 'http://';
 
-			if ( $force_ssl || 'on' == @$_SERVER['HTTPS'] ) {
+			if ( $force_ssl ) {
+				$Url = 'https://';
+			} elseif ( isset( $_SERVER['HTTPS'] ) && 'on' == $_SERVER['HTTPS'] ) {
 				$Url = 'https://';
 			}
 

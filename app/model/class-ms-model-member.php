@@ -898,6 +898,19 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Marks the current user as "confirmed"
+	 *
+	 * @since  1.1.0
+	 */
+	public function confirm() {
+		global $wpdb;
+
+		$sql = "UPDATE $wpdb->users SET user_status = 0 WHERE ID = %d";
+		$sql = $wpdb->prepare( $sql, $this->id );
+		$wpdb->query( $sql );
+	}
+
+	/**
 	 * Sign on user.
 	 *
 	 * @since 1.0.0

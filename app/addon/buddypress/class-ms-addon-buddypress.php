@@ -64,6 +64,22 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				'ms_controller_frontend_register_user_complete',
 				'save_custom_fields'
 			);
+
+			// Disable BuddyPress Email activation.
+			$this->add_filter(
+				'bp_core_signup_send_activation_key',
+				'__return_false'
+			);
+
+			add_filter(
+				'bp_registration_needs_activation',
+				'__return_false'
+			);
+
+			add_action(
+				'bp_core_signup_user',
+				'disable_validation'
+			);
 		}
 	}
 
@@ -266,10 +282,21 @@ class MS_Addon_BuddyPress extends MS_Addon {
 					$visibility = $_POST['field_' . $field_id . '_visibility'];
 				}
 
-				xprofile_set_field_visibility_level( $field_id, $user->id, $visibility_level );
+				xprofile_set_field_visibility_level( $field_id, $user->id, $visibility );
 				xprofile_set_field_data( $field_id, $user->id, $value, false );
 			}
 		}
+	}
+
+	/**
+	 * Automatically confirms new registrations.
+	 *
+	 * @since  1.1.0
+	 * @param  int $user_id The new User-ID
+	 */
+	public function disable_validation( $user_id ) {
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		$member->confirm();
 	}
 
 }

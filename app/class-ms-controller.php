@@ -91,7 +91,11 @@ class MS_Controller extends MS_Hooker {
 	 * @return string
 	 */
 	public function get_action() {
-		$action = @$_REQUEST['action'];
+		if ( empty( $_REQUEST['action'] ) ) {
+			$action = '';
+		} else {
+			$action = $_REQUEST['action'];
+		}
 
 		return apply_filters( 'ms_controller_get_action', $action, $this );
 	}
