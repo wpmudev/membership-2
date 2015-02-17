@@ -103,7 +103,10 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 					'title' => __( 'Registration page', MS_TEXT_DOMAIN ),
-					'desc' => __( 'The BuddyPress registration page will be used instead of the default Protected Content registration page.', MS_TEXT_DOMAIN ),
+					'desc' =>
+						__( 'The BuddyPress registration page will be used instead of the default Protected Content registration page.', MS_TEXT_DOMAIN ) .
+						'<br />' .
+						__( 'New users are automatically activated by Protected Content and no confirmation email is sent to the user!', MS_TEXT_DOMAIN ),
 				),
 			),
 		);
