@@ -37,6 +37,12 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			'value' => __( 'Already have a user account?', MS_TEXT_DOMAIN ),
 		);
 
+		$register_button = array(
+			'id' => 'register',
+			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' => __( 'Register My Account', MS_TEXT_DOMAIN ),
+		);
+
 		$title = $this->data['title'];
 		ob_start();
 		?>
@@ -55,8 +61,24 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 					</div>
 				<?php }
 
-				do_action( 'ms_view_shortcode_registeruser_after_fields' );
-				do_action( 'ms_view_shortcode_registeruser_extra_fields', $this->error );
+				/**
+				 * Trigger default WordPress action to allow other plugins
+				 * to add custom fields to the registration form.
+				 *
+				 * @since 1.1.0
+				 */
+				do_action( 'register_form' );
+
+				MS_Helper_Html::html_element( $register_button );
+
+				if ( is_wp_error( $this->error ) ) {
+					/**
+					 * Display registration errors.
+					 *
+					 * @since 1.1.0
+					 */
+					do_action( 'registration_errors', $this->error );
+				}
 				?>
 			</form>
 			<?php
@@ -125,12 +147,6 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 				'title' => __( 'Confirm Password', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
 				'value' => '',
-			),
-
-			'register' => array(
-				'id' => 'register',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Register My Account', MS_TEXT_DOMAIN ),
 			),
 
 			'action' => array(
