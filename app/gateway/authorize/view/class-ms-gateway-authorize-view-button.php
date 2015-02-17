@@ -5,7 +5,6 @@ class MS_Gateway_Authorize_View_Button extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
-		$membership = $this->data['membership'];
 		$gateway = $this->data['gateway'];
 
 		// Force ssl url
@@ -35,7 +34,6 @@ class MS_Gateway_Authorize_View_Button extends MS_View {
 			ob_get_clean(),
 			$gateway,
 			$invoice,
-			$membership,
 			$this
 		);
 

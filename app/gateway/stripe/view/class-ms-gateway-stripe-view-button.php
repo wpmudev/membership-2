@@ -6,7 +6,6 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 		$fields = $this->prepare_fields();
 
 		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
-		$membership = $this->data['membership'];
 		$member = MS_Model_Member::get_current_member();
 		$gateway = $this->data['gateway'];
 
@@ -48,7 +47,6 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 			ob_get_clean(),
 			$gateway,
 			$invoice,
-			$membership,
 			$this
 		);
 

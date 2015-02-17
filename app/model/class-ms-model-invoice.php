@@ -605,12 +605,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->tax_rate = apply_filters(
 			'ms_invoice_tax_rate',
 			0,
-			$this
+			$invoice
 		);
 		$invoice->tax_name = apply_filters(
 			'ms_invoice_tax_name',
 			'',
-			$this
+			$invoice
 		);
 
 		// Calc pro rate discount if moving from another membership.
@@ -706,7 +706,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @return float The pro rate value.
 	 */
 	public static function calculate_pro_rate( $ms_relationship ) {
-
 		$value = 0;
 		$membership = $ms_relationship->get_membership();
 

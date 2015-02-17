@@ -250,7 +250,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 	 * @param  MS_Gateway $item
 	 * @return string
 	 */
-	public function single_row_class( MS_Gateway $item ) {
+	public function single_row_class( $item ) {
 		$class = 'gateway-' . $item->id;
 		$is_online = lib2()->is_online( home_url() );
 
