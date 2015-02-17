@@ -176,19 +176,22 @@ class MS_Model_Addon extends MS_Model_Option {
 					$addons[$key]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
 				}
 
-				$addons[$key]->action = array();
-				$addons[$key]->action[] = array(
-					'id' => 'ms-toggle-' . $key,
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'value' => self::is_enabled( $key ),
-					'class' => 'toggle-plugin',
-					'ajax_data' => array(
-						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-						'field' => 'active',
-						'addon' => $key,
-					),
-				);
-				$addons[$key]->action[] = MS_Helper_Html::save_text( null, false, true );
+
+				if ( empty( $addons[$key]->action ) ) {
+					$addons[$key]->action = array();
+					$addons[$key]->action[] = array(
+						'id' => 'ms-toggle-' . $key,
+						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' => self::is_enabled( $key ),
+						'class' => 'toggle-plugin',
+						'ajax_data' => array(
+							'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+							'field' => 'active',
+							'addon' => $key,
+						),
+					);
+					$addons[$key]->action[] = MS_Helper_Html::save_text( null, false, true );
+				}
 
 				/**
 				 * Add custom Actions or remove default actions
