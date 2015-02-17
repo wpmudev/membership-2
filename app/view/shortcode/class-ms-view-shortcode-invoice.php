@@ -172,19 +172,9 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 					<?php $sep = 'sep'; ?>
 
-					<?php if ( ! empty( $inv_taxes ) ) : ?>
-						<tr class="ms-inv-tax <?php echo esc_attr( $sep ); $sep = ''; ?>">
-							<th><?php printf(
-									__( 'Taxes %s', MS_TEXT_DOMAIN ),
-									'<small>(' . $invoice->tax_name . ')</small>'
-								); ?></th>
-							<td class="ms-inv-price"><?php echo $inv_taxes; ?></td>
-						</tr>
-					<?php endif; ?>
-
 					<?php if ( ! empty( $inv_discount ) ) : ?>
 						<tr class="ms-inv-discount <?php echo esc_attr( $sep ); $sep = ''; ?>">
-							<th><?php _e( 'Discount', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?></th>
 							<td class="ms-inv-price"><?php echo $inv_discount; ?></td>
 						</tr>
 					<?php endif; ?>
@@ -193,6 +183,16 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<tr class="ms-inv-pro-rate <?php echo esc_attr( $sep ); $sep = ''; ?>">
 							<th><?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?></th>
 							<td class="ms-inv-price"><?php echo $inv_pro_rate; ?></td>
+						</tr>
+					<?php endif; ?>
+
+					<?php if ( ! empty( $inv_taxes ) ) : ?>
+						<tr class="ms-inv-tax <?php echo esc_attr( $sep ); $sep = ''; ?>">
+							<th><?php printf(
+									__( 'Taxes %s', MS_TEXT_DOMAIN ),
+									'<small>(' . $invoice->tax_name . ')</small>'
+								); ?></th>
+							<td class="ms-inv-price"><?php echo $inv_taxes; ?></td>
 						</tr>
 					<?php endif; ?>
 

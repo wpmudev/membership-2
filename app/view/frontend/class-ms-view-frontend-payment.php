@@ -119,24 +119,6 @@ class MS_View_Frontend_Payment extends MS_View {
 					</tr>
 					<?php endif; ?>
 
-					<?php if ( $invoice->tax_rate ) : ?>
-						<tr>
-							<td class="ms-title-column">
-								<?php printf(
-									__( 'Taxes %s', MS_TEXT_DOMAIN ),
-									'<small>(' . $invoice->tax_name . ')</small>'
-								); ?>
-							</td>
-							<td class="ms-price-column">
-								<?php printf(
-									'%s %s',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $invoice->tax )
-								); ?>
-							</td>
-						</tr>
-					<?php endif; ?>
-
 					<?php if ( $invoice->discount ) : ?>
 						<tr>
 							<td class="ms-title-column">
@@ -155,6 +137,24 @@ class MS_View_Frontend_Payment extends MS_View {
 							</td>
 							<td class="ms-price-column">
 								<?php printf( '%s -%s', $invoice->currency, MS_Helper_Billing::format_price( $invoice->pro_rate ) ); ?>
+							</td>
+						</tr>
+					<?php endif; ?>
+
+					<?php if ( $invoice->tax_rate ) : ?>
+						<tr>
+							<td class="ms-title-column">
+								<?php printf(
+									__( 'Taxes %s', MS_TEXT_DOMAIN ),
+									'<small>(' . $invoice->tax_name . ')</small>'
+								); ?>
+							</td>
+							<td class="ms-price-column">
+								<?php printf(
+									'%s %s',
+									$invoice->currency,
+									MS_Helper_Billing::format_price( $invoice->tax )
+								); ?>
 							</td>
 						</tr>
 					<?php endif; ?>
