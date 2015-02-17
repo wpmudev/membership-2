@@ -419,7 +419,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public function get_discount_value( $ms_relationship ) {
 		$membership = $ms_relationship->get_membership();
-		$price = $membership->total_price; // Includes Tax
+		$price = $membership->price; // Excluding Tax
 		$original_price = $price;
 		$discount = 0;
 
