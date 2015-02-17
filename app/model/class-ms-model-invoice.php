@@ -601,18 +601,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->invoice_number = $invoice_number;
 		$invoice->discount = 0;
 
-		// Allow add-ons or other plugins to set the tax infos for this invoice.
-		$invoice->tax_rate = apply_filters(
-			'ms_invoice_tax_rate',
-			0,
-			$invoice
-		);
-		$invoice->tax_name = apply_filters(
-			'ms_invoice_tax_name',
-			'',
-			$invoice
-		);
-
 		// Calc pro rate discount if moving from another membership.
 		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE )
 			&& $ms_relationship->move_from_id
@@ -685,7 +673,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		$invoice->save();
 
-		$invoice->update_descriptions();
+		$invoice->total_amount_changed();
 		$invoice->save();
 
 		return apply_filters(
@@ -923,14 +911,26 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Updates the Invoice description. This is called always when the invoice
-	 * amount is changed.
+	 * Updates various fields that display/depend on the invoice total amount.
 	 *
 	 * @since  1.1.0
 	 */
-	public function update_descriptions() {
+	public function total_amount_changed() {
 		$subscription = $this->get_subscription();
 
+		// Allow add-ons or other plugins to set the tax infos for this invoice.
+		$this->tax_rate = apply_filters(
+			'ms_invoice_tax_rate',
+			0,
+			$this
+		);
+		$this->tax_name = apply_filters(
+			'ms_invoice_tax_name',
+			'',
+			$this
+		);
+
+		// Update the invoice descriptions that are displayed to the user.
 		$this->description = apply_filters(
 			'ms_model_invoice_description',
 			$subscription->get_payment_description( $this )
@@ -938,6 +938,33 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$this->short_description = apply_filters(
 			'ms_model_invoice_short_description',
 			$subscription->get_payment_description( $this, true )
+		);
+	}
+
+	/**
+	 * Get invoice net amount: Amount excluding taxes.
+	 *
+	 * Discounting coupon and pro-rating.
+	 * Add taxes.
+	 *
+	 * @since 1.0.0
+	 */
+	private function get_net_amount() {
+		$net_amount = $this->amount; // Net amount
+		$net_amount -= $this->discount; // Remove discount
+		$net_amount -= $this->pro_rate; // Remove Pro-Rate
+
+		if ( $net_amount < 0 ) {
+			$net_amount = 0;
+		}
+
+		// Set precission to 2 decimal points.
+		$net_amount = round( $net_amount, 2 );
+
+		return apply_filters(
+			'ms_model_invoice_get_net_amount',
+			$net_amount,
+			$this
 		);
 	}
 
@@ -950,10 +977,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 */
 	private function get_total() {
-		$this->total = $this->amount; // Net amount
+		$this->total = $this->get_net_amount(); // Net amount
 		$this->total += $this->tax; // Tax-Rate was defined in `create_invoice()`
-		$this->total -= $this->discount; // Remove discount
-		$this->totyl -= $this->pro_rate; // Remove Pro-Rate
 
 		if ( $this->total < 0 ) {
 			$this->total = 0;
@@ -1038,7 +1063,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				case 'tax':
 					$tax_rate = $this->tax_rate;
 					if ( ! is_numeric( $tax_rate ) ) { $tax_rate = 0; }
-					$value = $this->amount * ( $tax_rate / 100 );
+					$value = $this->get_net_amount() * ( $tax_rate / 100 );
 					break;
 			}
 		}
@@ -1091,7 +1116,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				case 'pro_rate':
 					$this->$property = floatval( $value );
 					$this->get_total();
-					$this->update_descriptions();
+					$this->total_amount_changed();
 					break;
 
 				default:
