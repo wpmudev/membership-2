@@ -442,6 +442,204 @@ class MS_View_Adminbar extends MS_View {
 			margin: 0;
 			display: block;
 		}
+
+		.ui-datepicker {
+			width: 17em;
+			padding: .2em .2em 0;
+			display: none;
+		}
+		.ui-datepicker .ui-datepicker-header {
+			position: relative;
+			padding: .2em 0;
+		}
+		.ui-datepicker .ui-datepicker-prev,
+		.ui-datepicker .ui-datepicker-next {
+			position: absolute;
+			top: 2px;
+			width: 1.8em;
+			height: 1.8em;
+		}
+		.ui-datepicker .ui-datepicker-prev-hover,
+		.ui-datepicker .ui-datepicker-next-hover {
+			top: 1px;
+		}
+		.ui-datepicker .ui-datepicker-prev {
+			left: 2px;
+		}
+		.ui-datepicker .ui-datepicker-next {
+			right: 2px;
+		}
+		.ui-datepicker .ui-datepicker-prev-hover {
+			left: 1px;
+		}
+		.ui-datepicker .ui-datepicker-next-hover {
+			right: 1px;
+		}
+		.ui-datepicker .ui-datepicker-title {
+			margin: 0 2.3em;
+			line-height: 1.8em;
+			text-align: center;
+		}
+		.ui-datepicker .ui-datepicker-title select {
+			font-size: 1em;
+			margin: 1px 0;
+		}
+		.ui-datepicker select.ui-datepicker-month,
+		.ui-datepicker select.ui-datepicker-year {
+			width: 49%;
+		}
+		.ui-datepicker table {
+			width: 100%;
+			font-size: .9em;
+			border-collapse: collapse;
+			margin: 0 0 .4em;
+		}
+		.ui-datepicker th {
+			padding: .7em .3em;
+			text-align: center;
+			font-weight: bold;
+			border: 0;
+		}
+		.ui-datepicker td {
+			border: 0;
+			padding: 1px;
+		}
+		.ui-datepicker td span,
+		.ui-datepicker td a {
+			display: block;
+			padding: .2em;
+			text-align: right;
+			text-decoration: none;
+		}
+		.ui-datepicker .ui-datepicker-buttonpane {
+			background-image: none;
+			margin: .7em 0 0 0;
+			padding: 0 .2em;
+			border-left: 0;
+			border-right: 0;
+			border-bottom: 0;
+		}
+		.ui-datepicker .ui-datepicker-buttonpane button {
+			float: right;
+			margin: .5em .2em .4em;
+			cursor: pointer;
+			padding: .2em .6em .3em .6em;
+			width: auto;
+			overflow: visible;
+		}
+		.ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current {
+			float: left;
+		}
+		.wpmui-datepicker-wrapper {
+			display: inline-block;
+			position: relative;
+		}
+		.wpmui-datepicker-wrapper .wpmui-icon {
+			position: absolute;
+			right: 0;
+			top: 0;
+			height: 28px;
+			width: 21px;
+			line-height: 28px;
+			text-align: left;
+			opacity: .5;
+			cursor: pointer;
+			color: #444;
+		}
+		.ui-datepicker.wpmui-datepicker {
+			padding: 0;
+			border: none;
+			background: transparent;
+			z-index: 20;
+			width: 250px;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-header,
+		.ui-datepicker.wpmui-datepicker.ui-corner-all {
+			border-radius: 0;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-prev,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-prev.ui-state-hover,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-next,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-next.ui-state-hover,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-title {
+			line-height: 2.5em;
+			height: 2.5em;
+			padding: 0;
+			border: 0;
+			background: transparent;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-prev.ui-datepicker-prev-hover {
+			top: 2px;
+			left: 2px;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-next.ui-datepicker-next-hover {
+			top: 2px;
+			right: 2px;
+		}
+		.ui-datepicker .ui-datepicker-prev span,
+		.ui-datepicker .ui-datepicker-next span {
+			display: block;
+			position: absolute;
+			left: 50%;
+			margin-left: -8px;
+			top: 50%;
+			margin-top: -8px;
+		}
+		.ui-icon-circle-triangle-e {
+			background-position: -48px -192px;
+		}
+		.ui-icon-circle-triangle-w {
+			background-position: -80px -192px;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-icon {
+			width: 16px;
+			height: 16px;
+			text-indent: -99999px;
+			overflow: hidden;
+			background-repeat: no-repeat;
+			background-image: url(<?php echo MS_Plugin::instance()->url; ?>/app/assets/images/ui-icons-white.png);
+			cursor: pointer;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-header {
+			border: none;
+			background: #4F83AA;
+			color: #FFFFFF;
+			font-size: 0.9em;
+			font-weight: normal;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody td a,
+		.ui-datepicker.wpmui-datepicker td span,
+		.ui-datepicker.wpmui-datepicker td a {
+			padding: 8px;
+			text-align: center;
+			text-decoration: none;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar {
+			padding: 0;
+			background: #375D7A;
+			width: 250px;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar thead th {
+			padding: 3px 5px;
+			font-size: 0.75em;
+			font-weight: normal;
+			color: #FFFFFF;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-default,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-default,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-default {
+			border: 0;
+			background: #223D52;
+			color: #FFFFFF;
+		}
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-active,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-active,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-active,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-state-hover,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover,
+		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
+			background: #4F83AA;
+		}
 		</style>
 		<script>
 		jQuery(function(){
