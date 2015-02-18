@@ -218,7 +218,7 @@ class MS_Model_Import_Export extends MS_Model {
 			$data->coupons[] = $this->export_coupon( $coupon->id );
 		}
 
-		lib2()->file_download( json_encode( $data ), 'protected-content-export.json' );
+		lib2()->net->file_download( json_encode( $data ), 'protected-content-export.json' );
 	}
 
 	/**

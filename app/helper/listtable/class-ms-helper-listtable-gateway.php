@@ -252,7 +252,7 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 	 */
 	public function single_row_class( $item ) {
 		$class = 'gateway-' . $item->id;
-		$is_online = lib2()->is_online( home_url() );
+		$is_online = lib2()->net->is_online( home_url() );
 
 		if ( $item->is_configured() ) {
 			$class .= ' is-configured';

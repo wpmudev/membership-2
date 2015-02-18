@@ -116,7 +116,7 @@ class MS_Controller_Import extends MS_Controller {
 					$name = sanitize_html_class( $name, 'export' );
 				}
 
-				lib2()->file_download( json_encode( $data ), $name . '.json' );
+				lib2()->net->file_download( json_encode( $data ), $name . '.json' );
 				break;
 		}
 	}

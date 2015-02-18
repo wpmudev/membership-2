@@ -384,7 +384,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				if ( empty( $page_id ) ) { $page_id = get_the_ID(); }
 				if ( empty( $page_id ) ) { $page_id = get_queried_object_id(); }
 				if ( empty( $page_id ) && did_action( 'setup_theme' ) ) {
-					$url = lib2()->current_url();
+					$url = lib2()->net->current_url();
 					$page_id = url_to_postid( $url );
 				}
 

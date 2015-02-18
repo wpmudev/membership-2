@@ -205,7 +205,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 		if ( ! count( $location ) ) {
 			$dummy_location = array(
-				'remote_addr' => lib2()->current_ip(),
+				'remote_addr' => lib2()->net->current_ip(),
 				'country_code' => 'US',
 				'country' => array(
 					'tax_supported' => false,
@@ -229,7 +229,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 */
 	static private function determine_country() {
 		try {
-			$ip_info = lib2()->current_ip();
+			$ip_info = lib2()->net->current_ip();
 			$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
 			lib2()->session->add( 'ms_ta_country', $country );
 		}

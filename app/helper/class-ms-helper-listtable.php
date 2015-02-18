@@ -277,7 +277,7 @@ class MS_Helper_ListTable {
 					);
 					printf(
 						' <a href="%1$s" title="%3$s" class="ms-clear-search">%2$s</a>',
-						lib2()->current_url(),
+						lib2()->net->current_url(),
 						'<span class="dashicons dashicons-dismiss"></span>',
 						__( 'Clear search results', MS_TEXT_DOMAIN )
 					);
