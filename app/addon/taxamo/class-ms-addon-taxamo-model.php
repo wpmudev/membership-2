@@ -23,12 +23,20 @@
 /**
  * Taxamo settings model.
  *
- * @since 1.0.0
+ * @since 1.1.0
  *
  * @package Membership
  * @subpackage Model
  */
 class MS_Addon_Taxamo_Model extends MS_Model_Settings {
+
+	/**
+	 * Group name of the custom settings
+	 *
+	 * @since 1.1.0
+	 * @type  string
+	 */
+	const GROUP = 'taxamo';
 
 	/**
 	 * Return current value of an addon setting
@@ -57,7 +65,7 @@ class MS_Addon_Taxamo_Model extends MS_Model_Settings {
 				break;
 		}
 
-		return $this->get_custom_setting( 'taxamo', $key );
+		return $this->get_custom_setting( self::GROUP, $key );
 	}
 
 	/**
@@ -76,7 +84,7 @@ class MS_Addon_Taxamo_Model extends MS_Model_Settings {
 				break;
 		}
 
-		return $this->set_custom_setting( 'taxamo', $key, $value );
+		return $this->set_custom_setting( self::GROUP, $key, $value );
 	}
 
 }

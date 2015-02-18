@@ -40,7 +40,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	const ID = 'addon_taxamo';
 
 	// Ajax Actions
-	const AJAX_SAVE_SETTING = 'taxamo_save';
+	const AJAX_SAVE_SETTING = 'addon_taxamo_save';
 
 	/**
 	 * Checks if the current Add-on is enabled
@@ -125,6 +125,13 @@ class MS_Addon_Taxamo extends MS_Addon {
 			'name' => __( 'Taxamo', MS_TEXT_DOMAIN ),
 			'description' => __( 'Addresses EU VAT regulations.', MS_TEXT_DOMAIN ),
 			'icon' => 'wpmui-fa wpmui-fa-euro',
+			'details' => array(
+				array(
+					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+					'title' => __( 'Settings', MS_TEXT_DOMAIN ),
+					'desc' => __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', MS_TEXT_DOMAIN ),
+				),
+			),
 		);
 
 		return $list;
@@ -133,7 +140,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Returns the Taxamo-Settings model.
 	 *
-	 * @since  1.0.0
+	 * @since  1.1.0
 	 * @return MS_Addon_Taxamo_Model
 	 */
 	static public function model() {
@@ -165,10 +172,9 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Add taxamo settings tab in settings page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.1.0
 	 *
 	 * @param array $tabs The current tabs.
-	 * @param int $membership_id The membership id to edit
 	 * @return array The filtered tabs.
 	 */
 	public function settings_tabs( $tabs ) {
@@ -183,11 +189,11 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Add taxamo settings-view callback.
 	 *
-	 * @since 1.0.0
+	 * @since  1.1.0
 	 *
-	 * @param array $callback The current function callback.
-	 * @param string $tab The current membership rule tab.
-	 * @param array $data The data shared to the view.
+	 * @param  array $callback The current function callback.
+	 * @param  string $tab The current membership rule tab.
+	 * @param  array $data The data shared to the view.
 	 * @return array The filtered callback.
 	 */
 	public function manage_render_callback( $callback, $tab, $data ) {
