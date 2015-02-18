@@ -632,7 +632,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				array(
 					'holder'        => 'div',
 					'holderclass'   => 'ms-logout-form',
-					'redirect'      => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
+					'redirect'      => MS_Model_Pages::get_url_after_logout(),
 				),
 				$atts
 			)
@@ -640,6 +640,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		// The form attribute triggers the logout-link to be displayed.
 		$data['form'] = 'logout';
+		$data['redirect_logout'] = $data['redirect'];
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_logout_data', $data, $this );

@@ -479,38 +479,58 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * Returns the URL to display after successful login.
 	 *
 	 * @since  1.1.0
+	 *
+	 * @param  bool $filter Optional. If set to false then the URL is not
+	 *                      filtered and the default value is returned.
 	 * @return string URL of the page to display after login.
 	 */
-	static public function get_url_after_login() {
+	static public function get_url_after_login( $filter = true ) {
 		if ( isset( $_REQUEST['redirect_to'] ) ) {
 			$url = $_REQUEST['redirect_to'];
+			$enforce = true; // This redirection was enforced via REUQEST param.
 		} else {
 			$url = self::get_page_url( self::MS_PAGE_ACCOUNT );
+			$enforce = false; // This is the default redirection.
 		}
 
-		return apply_filters(
-			'ms_url_after_login',
-			$url
-		);
+		if ( $filter ) {
+			$url = apply_filters(
+				'ms_url_after_login',
+				$url,
+				$enforce
+			);
+		}
+
+		return $url;
 	}
 
 	/**
 	 * Returns the URL to display after successful logout.
 	 *
 	 * @since  1.1.0
+	 *
+	 * @param  bool $filter Optional. If set to false then the URL is not
+	 *                      filtered and the default value is returned.
 	 * @return string URL of the page to display after logout.
 	 */
-	static public function get_url_after_logout() {
+	static public function get_url_after_logout( $filter = true ) {
 		if ( isset( $_REQUEST['redirect_to'] ) ) {
 			$url = $_REQUEST['redirect_to'];
+			$enforce = true; // This redirection was enforced via REUQEST param.
 		} else {
 			$url = home_url( '/' );
+			$enforce = false; // This is the default redirection.
 		}
 
-		return apply_filters(
-			'ms_url_after_logout',
-			$url
-		);
+		if ( $filter ) {
+			$url = apply_filters(
+				'ms_url_after_logout',
+				$url,
+				$enforce
+			);
+		}
+
+		return $url;
 	}
 
 	/**
