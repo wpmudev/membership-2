@@ -583,22 +583,23 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_login_atts',
 			shortcode_atts(
 				array(
-					'holder'        => 'div',
-					'holderclass'   => 'ms-login-form',
-					'item'          => '',
-					'itemclass'     => '',
-					'postfix'       => '',
-					'prefix'        => '',
-					'wrapwith'      => '',
-					'wrapwithclass' => '',
-					'redirect'      => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
-					'header'		=> true,
-					'register'		=> true,
-					'title'			=> '',
-					'show_note'		=> true,   // Show the "you are not logged in" note?
-					'form'			=> '',  // [login|lost|reset|logout]
-					'show_labels'	=> false,
-					'nav_pos'		=> 'top', // [top|bottom]
+					'holder'          => 'div',
+					'holderclass'     => 'ms-login-form',
+					'item'            => '',
+					'itemclass'       => '',
+					'postfix'         => '',
+					'prefix'          => '',
+					'wrapwith'        => '',
+					'wrapwithclass'   => '',
+					'redirect_login'  => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
+					'redirect_logout' => filter_input( INPUT_GET, 'redirect_to', FILTER_VALIDATE_URL ),
+					'header'          => true,
+					'register'        => true,
+					'title'           => '',
+					'show_note'       => true,   // Show the "you are not logged in" note?
+					'form'            => '',  // [login|lost|reset|logout]
+					'show_labels'     => false,
+					'nav_pos'         => 'top', // [top|bottom]
 				),
 				$atts
 			)

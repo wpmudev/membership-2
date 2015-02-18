@@ -108,6 +108,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'ms_register_public_scripts', 'register_public_styles' );
 
 		// Initialize core controllers that are available on every page.
+		$this->controllers['widget'] = MS_Factory::load( 'MS_Controller_Widget' );
 		$this->controllers['membership'] = MS_Factory::load( 'MS_Controller_Membership' );
 		$this->controllers['rule'] = MS_Factory::load( 'MS_Controller_Rule' );
 		$this->controllers['member'] = MS_Factory::load( 'MS_Controller_Member' );

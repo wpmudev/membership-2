@@ -56,13 +56,13 @@ class MS_View_Shortcode_Login extends MS_View {
 		} elseif ( 'reset' === $form ) {
 			return $this->reset_form();
 		} else {
-			if ( empty( $redirect ) ) {
-				$redirect = MS_Helper_Utility::get_current_url();
+			if ( empty( $redirect_login ) ) {
+				$redirect_login = MS_Helper_Utility::get_current_url();
 			}
 
 			// Build the Login Form.
 			$res_form .= $prefix;
-			$res_form .= $this->login_form( $redirect );
+			$res_form .= $this->login_form( $redirect_login );
 			$res_form .= $this->lostpass_form();
 
 			// Wrap form in optional wrappers.
@@ -99,7 +99,20 @@ class MS_View_Shortcode_Login extends MS_View {
 			$html .= $res_form;
 
 			if ( $register && ! MS_Model_Member::is_logged_in() ) {
-				$html .= wp_register( '', '', false );
+				if ( MS_Model_Member::can_register() ) {
+					$link = sprintf(
+						'<a href="%1$s?step=register">%2$s</a>',
+						MS_Model_Pages::get_page_url(
+							MS_Model_Pages::MS_PAGE_REGISTER
+						),
+						__( 'Register', MS_TEXT_DOMAIN )
+					);
+
+					/**
+					 * Filter documented in wp-includes/general-template.php
+					 */
+					$html .= apply_filters( 'register', $link );
+				}
 			}
 
 			// Load the ajax script that handles the Ajax login functions.
@@ -170,7 +183,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		}
 
 		$defaults = array(
-			'redirect' => $redirect_to,
+			'redirect_login' => $redirect_to,
 			'label_username' => __( 'Username' ),
 			'label_password' => __( 'Password' ),
 			'label_remember' => __( 'Remember Me' ),
@@ -277,7 +290,7 @@ class MS_View_Shortcode_Login extends MS_View {
 						id="<?php echo esc_attr( $id_login ); ?>"
 						class="button-primary"
 						value="<?php echo esc_attr( $label_log_in ); ?>" />
-					<input type="hidden" name="redirect_to" value="<?php echo esc_url( $redirect ); ?>" />
+					<input type="hidden" name="redirect_to" value="<?php echo esc_url( $redirect_login ); ?>" />
 				</p>
 				<?php echo apply_filters( 'login_form_bottom', '', $args ); ?>
 			<?php if ( 'bottom' === $nav_pos ) : ?>
@@ -301,8 +314,8 @@ class MS_View_Shortcode_Login extends MS_View {
 	 */
 	private function lostpass_form() {
 		$defaults = array(
-			'label_lost_username' => __( 'Username or E-mail' ),
-			'label_lostpass' => __( 'Get New Password' ),
+			'label_lost_username' => __( 'Username or E-mail', MS_TEXT_DOMAIN ),
+			'label_lostpass' => __( 'Reset Password', MS_TEXT_DOMAIN ),
 			'id_lost_form' => 'lostpasswordform',
 			'id_lost_username' => 'user_login',
 			'id_lostpass' => 'wp-submit',
@@ -408,8 +421,8 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		extract( $this->data );
 
-		if ( empty( $redirect ) ) {
-			$redirect = home_url();
+		if ( empty( $redirect_logout ) ) {
+			$redirect_logout = home_url();
 		}
 
 		$yourname = sprintf(
@@ -420,7 +433,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		$html = sprintf(
 			'%1$s <a class="login_button" href="%2$s">%3$s</a>',
 			$yourname,
-			wp_logout_url( $redirect ),
+			wp_logout_url( $redirect_logout ),
 			__( 'Logout' )
 		);
 

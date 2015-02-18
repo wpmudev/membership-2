@@ -456,9 +456,18 @@ class MS_View_Help extends MS_View {
 						</span>
 					</li>
 					<li>
-						<code>redirect</code>
+						<code>redirect_login</code>
 						<?php _ex( '(URL)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'The page to display after the user was logged in or logged out', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The page to display after the user was logged in', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							Home URL
+						</span>
+					</li>
+					<li>
+						<code>redirect_logout</code>
+						<?php _ex( '(URL)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'The page to display after the user was logged out', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							Home URL
@@ -694,7 +703,7 @@ class MS_View_Help extends MS_View {
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							"<?php _e( 'Username or E-mail' ); ?>"
+							"<?php _e( 'Username or E-mail', MS_TEXT_DOMAIN ); ?>"
 						</span>
 					</li>
 					<li>
@@ -702,7 +711,7 @@ class MS_View_Help extends MS_View {
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							"<?php _e( 'Get New Password' ); ?>"
+							"<?php _e( 'Reset Password', MS_TEXT_DOMAIN ); ?>"
 						</span>
 					</li>
 					<li>

@@ -40,7 +40,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @var string
 	 */
 	const STEP_CHOOSE_MEMBERSHIP = 'choose_membership';
-	const STEP_REGISTER_FORM = 'register_form';
+	const STEP_REGISTER_FORM = 'register';
+	const STEP_REGISTER_FORM_ALT = 'register_form';
 	const STEP_REGISTER_SUBMIT = 'register_submit';
 	const STEP_PAYMENT_TABLE = 'payment_table';
 	const STEP_GATEWAY_FORM = 'gateway_form';
@@ -274,6 +275,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * If not registered.
 			 */
 			case self::STEP_REGISTER_FORM:
+			case self::STEP_REGISTER_FORM_ALT:
 				$this->add_filter( 'the_content', 'register_form', 1 );
 				break;
 
@@ -335,6 +337,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				array(
 					self::STEP_CHOOSE_MEMBERSHIP,
 					self::STEP_REGISTER_FORM,
+					self::STEP_REGISTER_FORM_ALT,
 					self::STEP_REGISTER_SUBMIT,
 					self::STEP_PAYMENT_TABLE,
 					self::STEP_GATEWAY_FORM,
