@@ -76,19 +76,19 @@ class MS_Widget_Login extends WP_Widget {
 		$redirect_logout = '';
 		$shortcode_args = '';
 
-		if ( ! empty( $instance['title'] ) ) {
+		if ( isset( $instance['title'] ) ) {
 			$title = $instance['title'];
 		}
 
-		if ( ! empty( $instance['redirect_login'] ) ) {
+		if ( isset( $instance['redirect_login'] ) ) {
 			$redirect_login = $instance['redirect_login'];
 		}
 
-		if ( ! empty( $instance['redirect_logout'] ) ) {
+		if ( isset( $instance['redirect_logout'] ) ) {
 			$redirect_logout = $instance['redirect_logout'];
 		}
 
-		if ( ! empty( $instance['shortcode_args'] ) ) {
+		if ( isset( $instance['shortcode_args'] ) ) {
 			$shortcode_args = $instance['shortcode_args'];
 		}
 
@@ -173,19 +173,19 @@ class MS_Widget_Login extends WP_Widget {
 		$instance['redirect_logout'] = '';
 		$instance['shortcode_args'] = '';
 
-		if ( ! empty( $new_instance['title'] ) ) {
+		if ( isset( $new_instance['title'] ) ) {
 			$instance['title'] = strip_tags( $new_instance['title'] );
 		}
 
-		if ( ! empty( $new_instance['redirect_login'] ) ) {
+		if ( isset( $new_instance['redirect_login'] ) ) {
 			$instance['redirect_login'] = strip_tags( $new_instance['redirect_login'] );
 		}
 
-		if ( ! empty( $new_instance['redirect_logout'] ) ) {
+		if ( isset( $new_instance['redirect_logout'] ) ) {
 			$instance['redirect_logout'] = strip_tags( $new_instance['redirect_logout'] );
 		}
 
-		if ( ! empty( $new_instance['shortcode_args'] ) ) {
+		if ( isset( $new_instance['shortcode_args'] ) ) {
 			$instance['shortcode_args'] = strip_tags( $new_instance['shortcode_args'] );
 		}
 
