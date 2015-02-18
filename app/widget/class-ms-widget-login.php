@@ -29,6 +29,7 @@ class MS_Widget_Login extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$redirect_login = false;
 		$redirect_logout = false;
+		$shortcode_args = '';
 
 		if ( ! empty( $instance['redirect_login'] ) ) {
 			$redirect_login = lib2()->net->expand_url( $instance['redirect_login'] );
@@ -36,6 +37,10 @@ class MS_Widget_Login extends WP_Widget {
 
 		if ( ! empty( $instance['redirect_logout'] ) ) {
 			$redirect_logout = lib2()->net->expand_url( $instance['redirect_logout'] );
+		}
+
+		if ( ! empty( $instance['shortcode_args'] ) ) {
+			$shortcode_args = $instance['shortcode_args'];
 		}
 
 		echo $args['before_widget'];
@@ -47,10 +52,11 @@ class MS_Widget_Login extends WP_Widget {
 		}
 
 		$scode = sprintf(
-			'[%1$s header="no" %2$s %3$s]',
+			'[%1$s header="no" %2$s %3$s %4$s]',
 			MS_Helper_Shortcode::SCODE_LOGIN,
 			$redirect_login ? 'redirect_login="' . $redirect_login . '"' : '',
-			$redirect_logout ? 'redirect_logout="' . $redirect_logout . '"' : ''
+			$redirect_logout ? 'redirect_logout="' . $redirect_logout . '"' : '',
+			$shortcode_args
 		);
 		echo do_shortcode( $scode );
 
@@ -68,6 +74,7 @@ class MS_Widget_Login extends WP_Widget {
 		$title = __( 'Login', MS_TEXT_DOMAIN );
 		$redirect_login = '';
 		$redirect_logout = '';
+		$shortcode_args = '';
 
 		if ( ! empty( $instance['title'] ) ) {
 			$title = $instance['title'];
@@ -79,6 +86,21 @@ class MS_Widget_Login extends WP_Widget {
 
 		if ( ! empty( $instance['redirect_logout'] ) ) {
 			$redirect_logout = $instance['redirect_logout'];
+		}
+
+		if ( ! empty( $instance['shortcode_args'] ) ) {
+			$shortcode_args = $instance['shortcode_args'];
+		}
+
+		$placeholder_login = MS_Model_Pages::get_url_after_login();
+		if ( strlen( $placeholder_login ) > 55 ) {
+			$parts = explode( '://', $placeholder_login );
+			$placeholder_login = $parts[0] . '://' . substr( $parts[1], 0, 5 ) . '&hellip;' . substr( $parts[1], -38 );
+		}
+		$placeholder_logout = MS_Model_Pages::get_url_after_logout();
+		if ( strlen( $placeholder_logout ) > 55 ) {
+			$parts = explode( '://', $placeholder_logout );
+			$placeholder_logout = $parts[0] . '://' . substr( $parts[1], 0, 5 ) . '&hellip;' . substr( $parts[1], -38 );
 		}
 
 		$field_title = array(
@@ -96,7 +118,7 @@ class MS_Widget_Login extends WP_Widget {
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'title' => __( 'Show this page after login', MS_TEXT_DOMAIN ),
 			'value' => $redirect_login,
-			'placeholder' => MS_Model_Pages::get_url_after_login(),
+			'placeholder' => $placeholder_login,
 			'class' => 'widefat',
 		);
 
@@ -106,13 +128,33 @@ class MS_Widget_Login extends WP_Widget {
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'title' => __( 'Show this page after logout', MS_TEXT_DOMAIN ),
 			'value' => $redirect_logout,
-			'placeholder' => MS_Model_Pages::get_url_after_logout(),
+			'placeholder' => $placeholder_logout,
+			'class' => 'widefat',
+		);
+
+		$field_shortcode_args = array(
+			'id' => $this->get_field_id( 'shortcode_args' ),
+			'name' => $this->get_field_name( 'shortcode_args' ),
+			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+			'title' => __( 'Shortcode Arguments', MS_TEXT_DOMAIN ),
+			'desc' => sprintf(
+				__( 'Other arguments to pass to the %slogin shortcode%s', MS_TEXT_DOMAIN ),
+				sprintf(
+					'<a href="%s?page=%s&tab=shortcodes#ms-membership-login" target="_blank">',
+					admin_url( 'admin.php' ),
+					MS_Controller_Plugin::MENU_SLUG . '-help'
+				),
+				'</a>'
+			),
+			'value' => $shortcode_args,
+			'placeholder' => 'header="no"',
 			'class' => 'widefat',
 		);
 
 		MS_Helper_Html::html_element( $field_title );
 		MS_Helper_Html::html_element( $field_redirect_login );
 		MS_Helper_Html::html_element( $field_redirect_logout );
+		MS_Helper_Html::html_element( $field_shortcode_args );
 	}
 
 	/**
@@ -129,6 +171,7 @@ class MS_Widget_Login extends WP_Widget {
 		$instance['title'] = '';
 		$instance['redirect_login'] = '';
 		$instance['redirect_logout'] = '';
+		$instance['shortcode_args'] = '';
 
 		if ( ! empty( $new_instance['title'] ) ) {
 			$instance['title'] = strip_tags( $new_instance['title'] );
@@ -140,6 +183,10 @@ class MS_Widget_Login extends WP_Widget {
 
 		if ( ! empty( $new_instance['redirect_logout'] ) ) {
 			$instance['redirect_logout'] = strip_tags( $new_instance['redirect_logout'] );
+		}
+
+		if ( ! empty( $new_instance['shortcode_args'] ) ) {
+			$instance['shortcode_args'] = strip_tags( $new_instance['shortcode_args'] );
 		}
 
 		return $instance;
