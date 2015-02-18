@@ -476,6 +476,44 @@ class MS_Model_Pages extends MS_Model_Option {
 	}
 
 	/**
+	 * Returns the URL to display after successful login.
+	 *
+	 * @since  1.1.0
+	 * @return string URL of the page to display after login.
+	 */
+	static public function get_url_after_login() {
+		if ( isset( $_REQUEST['redirect_to'] ) ) {
+			$url = $_REQUEST['redirect_to'];
+		} else {
+			$url = self::get_page_url( self::MS_PAGE_ACCOUNT );
+		}
+
+		return apply_filters(
+			'ms_url_after_login',
+			$url
+		);
+	}
+
+	/**
+	 * Returns the URL to display after successful logout.
+	 *
+	 * @since  1.1.0
+	 * @return string URL of the page to display after logout.
+	 */
+	static public function get_url_after_logout() {
+		if ( isset( $_REQUEST['redirect_to'] ) ) {
+			$url = $_REQUEST['redirect_to'];
+		} else {
+			$url = home_url( '/' );
+		}
+
+		return apply_filters(
+			'ms_url_after_logout',
+			$url
+		);
+	}
+
+	/**
 	 * Get MS Page type by ID.
 	 *
 	 * @since 1.1.0

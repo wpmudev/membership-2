@@ -27,6 +27,17 @@ class MS_Widget_Login extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		$redirect_login = false;
+		$redirect_logout = false;
+
+		if ( ! empty( $instance['redirect_login'] ) ) {
+			$redirect_login = lib2()->net->expand_url( $instance['redirect_login'] );
+		}
+
+		if ( ! empty( $instance['redirect_logout'] ) ) {
+			$redirect_logout = lib2()->net->expand_url( $instance['redirect_logout'] );
+		}
+
 		echo $args['before_widget'];
 
 		if ( ! empty( $instance['title'] ) ) {
@@ -36,10 +47,10 @@ class MS_Widget_Login extends WP_Widget {
 		}
 
 		$scode = sprintf(
-			'[%1$s header="no" redirect_login="%2$s" redirect_logout="%3$s"]',
+			'[%1$s header="no" %2$s %3$s]',
 			MS_Helper_Shortcode::SCODE_LOGIN,
-			$instance['redirect_login'],
-			$instance['redirect_logout']
+			$redirect_login ? 'redirect_login="' . $redirect_login . '"' : '',
+			$redirect_logout ? 'redirect_logout="' . $redirect_logout . '"' : ''
 		);
 		echo do_shortcode( $scode );
 
@@ -54,13 +65,20 @@ class MS_Widget_Login extends WP_Widget {
 	 * @param array $instance The widget options
 	 */
 	public function form( $instance ) {
+		$title = __( 'Login', MS_TEXT_DOMAIN );
 		$redirect_login = '';
 		$redirect_logout = '';
 
-		if ( empty( $instance['title'] ) ) {
-			$title = __( 'Login', MS_TEXT_DOMAIN );
-		} else {
+		if ( ! empty( $instance['title'] ) ) {
 			$title = $instance['title'];
+		}
+
+		if ( ! empty( $instance['redirect_login'] ) ) {
+			$redirect_login = $instance['redirect_login'];
+		}
+
+		if ( ! empty( $instance['redirect_logout'] ) ) {
+			$redirect_logout = $instance['redirect_logout'];
 		}
 
 		$field_title = array(
@@ -78,7 +96,7 @@ class MS_Widget_Login extends WP_Widget {
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'title' => __( 'Show this page after login', MS_TEXT_DOMAIN ),
 			'value' => $redirect_login,
-			'placeholder' => MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
+			'placeholder' => MS_Model_Pages::get_url_after_login(),
 			'class' => 'widefat',
 		);
 
@@ -88,7 +106,7 @@ class MS_Widget_Login extends WP_Widget {
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'title' => __( 'Show this page after logout', MS_TEXT_DOMAIN ),
 			'value' => $redirect_logout,
-			'placeholder' => '',
+			'placeholder' => MS_Model_Pages::get_url_after_logout(),
 			'class' => 'widefat',
 		);
 
@@ -109,9 +127,19 @@ class MS_Widget_Login extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
 		$instance['title'] = '';
+		$instance['redirect_login'] = '';
+		$instance['redirect_logout'] = '';
 
 		if ( ! empty( $new_instance['title'] ) ) {
 			$instance['title'] = strip_tags( $new_instance['title'] );
+		}
+
+		if ( ! empty( $new_instance['redirect_login'] ) ) {
+			$instance['redirect_login'] = strip_tags( $new_instance['redirect_login'] );
+		}
+
+		if ( ! empty( $new_instance['redirect_logout'] ) ) {
+			$instance['redirect_logout'] = strip_tags( $new_instance['redirect_logout'] );
 		}
 
 		return $instance;

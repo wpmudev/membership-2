@@ -461,7 +461,7 @@ class MS_View_Help extends MS_View {
 						<?php _ex( 'The page to display after the user was logged in', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							Home URL
+							"<?php echo MS_Model_Pages::get_url_after_login(); ?>"
 						</span>
 					</li>
 					<li>
@@ -470,7 +470,7 @@ class MS_View_Help extends MS_View {
 						<?php _ex( 'The page to display after the user was logged out', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							Home URL
+							"<?php echo MS_Model_Pages::get_url_after_logout(); ?>"
 						</span>
 					</li>
 					<li>

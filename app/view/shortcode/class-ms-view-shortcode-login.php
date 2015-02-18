@@ -179,7 +179,7 @@ class MS_View_Shortcode_Login extends MS_View {
 	private function login_form( $redirect_to = null ) {
 		if ( empty( $redirect_to ) ) {
 			// Default redirect is back to the current page
-			$redirect_to = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$redirect_to = lib2()->net->current_url();
 		}
 
 		$defaults = array(
@@ -207,7 +207,10 @@ class MS_View_Shortcode_Login extends MS_View {
 		 *
 		 * @param array $defaults An array of default login form arguments.
 		 */
-		$args = wp_parse_args( $this->data, apply_filters( 'login_form_defaults', $defaults ) );
+		$args = wp_parse_args(
+			$this->data,
+			apply_filters( 'login_form_defaults', $defaults )
+		);
 
 		extract( $args );
 
