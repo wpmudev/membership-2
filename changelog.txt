@@ -6,6 +6,9 @@ Change Log:
 
 1.1
 ----------------------------------------------------------------------
+- Improved and much simpler UI!
+- Better and shorter Setup wizard!
+- Membership types dropped: Tiered, Content-Type (converted to Standard)
 - New Import Tool to create export files and import data
 - New Import-From-Memberships interface
 - New Add-on: Admin Side Protection
@@ -13,7 +16,7 @@ Change Log:
 - New Add-on: User-Role Memberships
 - New Add-on: Taxamo (addresses EU VAT regulations)
 - New layout of the Add-on page
-- Many small bugfixes and layout improvements
+- Many small bugfixes, layout improvements and much more...
 
 1.0.4.9
 ----------------------------------------------------------------------
