@@ -565,9 +565,7 @@ class MS_Addon_Coupon extends MS_Addon {
 				MS_Addon_Coupon_Model::load_by_coupon_code( $_POST['coupon_code'] )
 			);
 
-			if ( $coupon->is_valid_coupon( $membership->id ) ) {
-				$coupon->save_coupon_application( $ms_relationship );
-			}
+			$coupon->save_coupon_application( $ms_relationship );
 		} else {
 			$coupon = MS_Addon_Coupon_Model::get_coupon_application(
 				$member->id,
