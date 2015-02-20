@@ -37,6 +37,13 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @return bool
 	 */
 	static public function is_active() {
+		if ( ! self::buddypress_active()
+			&& MS_Model_Addon::is_enabled( self::ID )
+		) {
+			$model = MS_Factory::load( 'MS_Model_Addon' );
+			$model->disable( self::ID );
+		}
+
 		return MS_Model_Addon::is_enabled( self::ID );
 	}
 
@@ -111,7 +118,25 @@ class MS_Addon_BuddyPress extends MS_Addon {
 			),
 		);
 
+		if ( ! self::buddypress_active() ) {
+			$list[ self::ID ]->description .= sprintf(
+				'<br /><b>%s</b>',
+				__( 'Activate BuddyPress to use this Add-on', MS_TEXT_DOMAIN )
+			);
+			$list[ self::ID ]->action = '-';
+		}
+
 		return $list;
+	}
+
+	/**
+	 * Returns true, when the BuddyPress plugin is activated.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function buddypress_active() {
+		return ( ! empty( $bp ) && function_exists( 'bp_buffer_template_part' ) );
 	}
 
 	/**
@@ -143,7 +168,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	public function registration_form( $code ) {
 		global $bp;
 
-		if ( ! empty( $bp ) && function_exists( 'bp_buffer_template_part' ) ) {
+		if ( self::buddypress_active() ) {
 			// Add Protected Content fields to the form so we know what comes next.
 			$this->add_action( 'bp_custom_signup_steps', 'membership_fields' );
 

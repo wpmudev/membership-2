@@ -37,6 +37,13 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 * @return bool
 	 */
 	static public function is_active() {
+		if ( ! self::bbpress_active()
+			&& MS_Model_Addon::is_enabled( self::ID )
+		) {
+			$model = MS_Factory::load( 'MS_Model_Addon' );
+			$model->disable( self::ID );
+		}
+
 		return MS_Model_Addon::is_enabled( self::ID );
 	}
 
@@ -71,7 +78,25 @@ class MS_Addon_Bbpress extends MS_Addon {
 			'description' => __( 'Enable bbPress rules integration.', MS_TEXT_DOMAIN ),
 		);
 
+		if ( ! self::bbpress_active() ) {
+			$list[ self::ID ]->description .= sprintf(
+				'<br /><b>%s</b>',
+				__( 'Activate bbPress to use this Add-on', MS_TEXT_DOMAIN )
+			);
+			$list[ self::ID ]->action = '-';
+		}
+
 		return $list;
+	}
+
+	/**
+	 * Returns true, when the BuddyPress plugin is activated.
+	 *
+	 * @since  1.1.0
+	 * @return bool
+	 */
+	static public function bbpress_active() {
+		return class_exists( 'bbPress' );
 	}
 
 	/**
