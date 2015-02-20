@@ -498,12 +498,21 @@ class MS_Controller_Frontend extends MS_Controller {
 			do_action( 'ms_controller_frontend_register_user_complete', $user );
 
 			// Go to membership signup payment form.
-			$redirect = add_query_arg(
-				array(
-					'step' => self::STEP_PAYMENT_TABLE,
-					'membership_id' => absint( @$_REQUEST['membership_id'] ),
-				)
-			);
+			if ( empty( $_REQUEST['membership_id'] ) ) {
+				$redirect = add_query_arg(
+					array(
+						'step' => self::STEP_CHOOSE_MEMBERSHIP,
+					)
+				);
+			} else {
+				$redirect = add_query_arg(
+					array(
+						'step' => self::STEP_PAYMENT_TABLE,
+						'membership_id' => absint( $_REQUEST['membership_id'] ),
+					)
+				);
+			}
+
 			wp_safe_redirect( $redirect );
 			exit;
 		}
