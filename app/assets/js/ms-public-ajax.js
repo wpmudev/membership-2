@@ -68,11 +68,12 @@ jQuery( function() {
 	// Login Handler
 	frm_login.on( 'submit', function( ev ){
 		var key, data = {},
-			fields = frm_login.serializeArray(),
-			redirect = frm_login.find( 'input[name="redirect_to"]' );
+			frm_current = jQuery( this ),
+			fields = frm_current.serializeArray(),
+			redirect = frm_current.find( 'input[name="redirect_to"]' );
 
 		sts_login.removeClass( 'error' ).show().text( ms_ajax.loadingmessage );
-		disable_form( frm_login );
+		disable_form( frm_current );
 
 		// Very simple serialization. Since the form is simple it will work...
 		for ( key in fields ) {
@@ -88,7 +89,7 @@ jQuery( function() {
 			url: ms_ajax.ajaxurl,
 			data: data,
 			success: function( data ) {
-				enable_form( frm_login );
+				enable_form( frm_current );
 				show_message( sts_login, data );
 
 				if ( data.loggedin ) {
@@ -97,7 +98,7 @@ jQuery( function() {
 			},
 			error: function() {
 				var data = { error: ms_ajax.errormessage };
-				enable_form( frm_login );
+				enable_form( frm_current );
 				show_message( sts_login, data );
 			}
 		});

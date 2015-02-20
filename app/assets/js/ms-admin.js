@@ -80,6 +80,10 @@ window.ms_functions = {
 			if ( sel.closest( '.no-auto-init' ).length ) { return; }
 			sel.ms_datepicker();
 		});
+
+		window.setTimeout(function(){
+			jQuery('body').trigger( 'resize' );
+		}, 50 );
 	},
 
 	ajax_update: function( obj ) {

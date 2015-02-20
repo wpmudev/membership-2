@@ -637,6 +637,7 @@
 .ms-wrap .button,
 .ms-wrap .button-primary {
   margin-right: 6px;
+  white-space: nowrap;
 }
 .wpmui-wnd .ms-field-container,
 .ms-wrap .ms-field-container {
