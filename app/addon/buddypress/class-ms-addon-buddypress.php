@@ -66,7 +66,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 			);
 
 			// Disable BuddyPress Email activation.
-			$this->add_filter(
+			add_filter(
 				'bp_core_signup_send_activation_key',
 				'__return_false'
 			);
@@ -76,7 +76,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				'__return_false'
 			);
 
-			add_action(
+			$this->add_action(
 				'bp_core_signup_user',
 				'disable_validation'
 			);
