@@ -357,7 +357,7 @@ class MS_Controller_Frontend extends MS_Controller {
 
 		if ( self::STEP_PAYMENT_TABLE == $step ) {
 			if ( ! MS_Model_Member::is_logged_in() ) {
-				$step = self::STEP_REGISTER_FORM;
+				$step = self::STEP_REGISTER_FORM_ALT;
 			}
 			if ( ! MS_Model_Membership::is_valid_membership( $_REQUEST['membership_id'] ) ) {
 				$step = self::STEP_CHOOSE_MEMBERSHIP;
@@ -521,7 +521,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			MS_Helper_Debug::log( $this->register_errors );
 
 			// step back
-			$this->add_action( 'the_content', self::STEP_REGISTER_FORM, 1 );
+			$this->add_action( 'the_content', 'register_form', 1 );
 			do_action(
 				'ms_controller_frontend_register_user_error',
 				$this->register_errors
