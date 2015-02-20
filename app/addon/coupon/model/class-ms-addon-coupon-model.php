@@ -363,7 +363,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		if ( empty( $this->code ) ) {
 			$this->coupon_message = __( 'Coupon code not found.', MS_TEXT_DOMAIN );
 			$valid = false;
-		} elseif ( $this->max_uses && $this->used > $this->max_uses ) {
+		} elseif ( $this->max_uses && 0 >= ( $this->used - $this->max_uses ) ) {
 			$this->coupon_message = __( 'No Coupons remaining for this code.', MS_TEXT_DOMAIN );
 			$valid = false;
 		} elseif ( ! empty( $this->start_date ) && strtotime( $this->start_date ) > $timestamp ) {
