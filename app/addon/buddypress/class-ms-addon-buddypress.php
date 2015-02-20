@@ -136,6 +136,8 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @return bool
 	 */
 	static public function buddypress_active() {
+		global $bp;
+
 		return ( ! empty( $bp ) && function_exists( 'bp_buffer_template_part' ) );
 	}
 
