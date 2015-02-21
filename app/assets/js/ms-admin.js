@@ -1576,6 +1576,10 @@ window.ms_init.view_addons = function init () {
 			details = card.find( '.details' ),
 			fields = details.find( '.wpmui-ajax-update-wrapper' );
 
+		if ( ! el.hasClass( 'wpmui-ajax-update' ) ) {
+			el = el.find( '.wpmui-ajax-update' );
+		}
+
 		if ( el.closest( '.details' ).length ) { return; } // A detail setting was updated; add-on status was not changed...
 
 		if ( el.hasClass( 'on' ) ) {
