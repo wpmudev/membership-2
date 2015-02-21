@@ -48,7 +48,7 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 *
 	 * @var string $start_date
 	 */
-	private $start_date;
+	protected $start_date;
 
 	/**
 	 * Returns the active flag for a specific rule.
@@ -129,29 +129,6 @@ class MS_Rule_Post_Model extends MS_Rule {
 	}
 
 	/**
-	 * Get rule value for a specific content.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $id The content id to get rule value for.
-	 * @return boolean The rule value for the requested content. Default $rule_value_default.
-	 */
-	public function get_rule_value( $id ) {
-		if ( isset( $this->rule_value[ $id ] ) ) {
-			$value = $this->rule_value[ $id ];
-		} else {
-			$value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
-		}
-
-		return apply_filters(
-			'ms_rule_post_model_get_rule_value',
-			$value,
-			$id,
-			$this
-		);
-	}
-
-	/**
 	 * Verify access to the current page.
 	 *
 	 * @since 1.0.0
@@ -161,19 +138,25 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id ) {
-		global $wp_query;
 		$has_access = null;
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
+			return $has_access;
+		}
 
 		if ( empty( $id ) ) {
 			$id = $this->get_current_post_id();
+		} else {
+			$post = get_post( $id );
+			if ( ! is_a( $post, 'WP_Post' )
+				|| ( $post->post_type != 'post' && $post->post_type != '' )
+			)  {
+				$id = 0;
+			}
 		}
 
-		$post_type = get_post_type( $id );
-		if ( in_array( $post_type, array( 'post', '' ) ) ) {
-			// Only verify permission if ruled by post by post.
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-				$has_access = parent::has_access( $id );
-			}
+		if ( ! empty( $id ) ) {
+			$has_access = parent::has_access( $id );
 		}
 
 		return apply_filters(
