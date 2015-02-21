@@ -7,6 +7,8 @@ Change Log:
 1.1.0.1
 ----------------------------------------------------------------------
 - Fix problem where Protection-Shortcode was not working in 1.1
+- Fix a PHP warning that happened during upgrade to 1.1
+- Fix glitch in Add-ons page where some settings were disabled
 
 1.1
 ----------------------------------------------------------------------
