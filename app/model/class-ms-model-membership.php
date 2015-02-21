@@ -1395,9 +1395,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			if ( $rule->rule_type != $rule_type ) {
 				// This means that the $rule_type was not found...
 				continue;
-			} elseif ( ! count( $rule->rule_value ) ) {
-				// The rule does not protect anything...
-				continue;
 			}
 
 			$rules[ $rule_type ] = $rule;
