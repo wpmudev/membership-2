@@ -133,40 +133,6 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 	}
 
 	/**
-	 * Get rule value for a specific content.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $id The content id to get rule value for.
-	 * @return boolean The rule value for the requested content. Default $rule_value_default.
-	 */
-	public function get_rule_value( $id ) {
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			if ( isset( $this->rule_value[ $id ] ) ) {
-				$value = $this->rule_value[ $id ];
-			} else {
-				$value = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
-			}
-		} else {
-			$membership = $this->get_membership();
-			$cpt_group = $membership->get_rule( MS_Rule_CptGroup::RULE_ID );
-
-			if ( isset( $this->rule_value[ $id ] ) ) {
-				$value = $this->rule_value[ $id ];
-			} else {
-				$value = $cpt_group->has_access( $id );
-			}
-		}
-
-		return apply_filters(
-			'ms_rule_cptgroup_model_get_rule_value',
-			$value,
-			$id,
-			$this
-		);
-	}
-
-	/**
 	 * Verify access to the current content.
 	 *
 	 * @since 1.0.0
