@@ -25,6 +25,9 @@
  *
  * Manages DB upgrading.
  *
+ * IMPORTANT: Make sure that the snapshot_data() function is up-to-date!
+ * Things that are missed during back-up might be lost forever...
+ *
  * @since 1.0.0
  *
  * @package Membership
@@ -127,6 +130,11 @@ class MS_Model_Upgrade extends MS_Model {
 				self::_upgrade_1_0_x();
 			}
 
+			// Upgrade from any 1.1.x version to 1.1.0.2 or higher
+			if ( version_compare( $old_version, '1.1.0.2', 'lt' ) ) {
+				self::_upgrade_1_1_0_2();
+			}
+
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
@@ -173,6 +181,13 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade from any 1.0.x version to a higher version.
 	 */
 	static private function _upgrade_1_0_x() {
+		// Create a snapshot of the 1.0.x data that can be restored.
+		lib2()->updates->snapshot(
+			'protected-content',
+			'upgrade_1_0_x',
+			self::snapshot_data()
+		);
+
 		lib2()->updates->clear();
 
 		/*
@@ -395,6 +410,18 @@ class MS_Model_Upgrade extends MS_Model {
 	}
 
 	/**
+	 * Upgrade from any 1.1.x version to 1.1.0.2 or higher
+	 */
+	static private function _upgrade_1_1_0_2() {
+		// Simply create a snapshot that we can restore later.
+		lib2()->updates->snapshot(
+			'protected-content',
+			'upgrade_1_1_0_2',
+			self::snapshot_data()
+		);
+	}
+
+	/**
 	 * Takes an __PHP_Incomplete_Class and casts it to a stdClass object.
 	 * All properties will be made public in this step.
 	 *
@@ -420,6 +447,47 @@ class MS_Model_Upgrade extends MS_Model {
 
 		// Unserialize the modified object again.
 		return unserialize( $dump );
+	}
+
+	/**
+	 * Returns the option-keys and post-IDs that should be backed-up.
+	 *
+	 * @since  1.1.0.2
+	 * @internal
+	 *
+	 * @return object Snapshot data-definition.
+	 */
+	static private function snapshot_data() {
+		global $wpdb;
+		$data = (object) array();
+
+		// Options.
+		$sql = "
+			SELECT option_name
+			FROM {$wpdb->options}
+			WHERE
+				option_name LIKE 'ms_addon_%'
+				OR option_name LIKE 'ms_model_%'
+				OR option_name LIKE 'ms_gateway_%'
+		";
+		$data->options = $wpdb->get_col( $sql );
+
+		// Posts and Post-Meta
+		$sql = "
+			SELECT ID
+			FROM {$wpdb->posts}
+			WHERE
+				post_type IN (
+					'ms_membership',
+					'ms_relationship',
+					'ms_event',
+					'ms_invoice',
+					'ms_communication'
+				)
+		";
+		$data->posts = $wpdb->get_col( $sql );
+
+		return $data;
 	}
 
 	/**
