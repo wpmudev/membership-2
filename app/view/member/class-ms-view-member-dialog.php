@@ -176,6 +176,10 @@ class MS_View_Member_Dialog extends MS_Dialog {
 								$amount_payments += floatval( $payment['amount'] );
 							}
 						}
+
+						$subscription_info = array(
+							'subscription_id' => $subscription->id,
+						);
 						?>
 						<tr>
 							<td class="column-membership">
@@ -188,7 +192,13 @@ class MS_View_Member_Dialog extends MS_Dialog {
 								?>
 							</td>
 							<td class="column-status">
-								<?php echo '' . $subscription->status; ?>
+								<?php
+								printf(
+									'<a href="#" data-ms-dialog="View_Member_Subscription" data-ms-data="%1$s">%2$s</a>',
+									esc_attr( json_encode( $subscription_info ) ),
+									$subscription->status
+								);
+								?>
 							</td>
 							<td class="column-start">
 								<?php echo '' . $subscription->start_date; ?>
@@ -209,11 +219,17 @@ class MS_View_Member_Dialog extends MS_Dialog {
 							<?php endif; ?>
 							<td class="column-payments">
 								<?php
-								printf(
+								$total = sprintf(
 									'<b>%1$s</b> (%3$s %2$s)',
 									$num_payments,
 									MS_Helper_Billing::format_price( $amount_payments ),
 									$currency
+								);
+
+								printf(
+									'<a href="#" data-ms-dialog="View_Member_Payment" data-ms-data="%1$s">%2$s</a>',
+									esc_attr( json_encode( $subscription_info ) ),
+									$total
 								);
 								?>
 							</td>

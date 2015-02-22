@@ -414,6 +414,14 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			unset( $args['membership_id'] );
 		}
 
+		if ( ! empty( $args['relationship_id'] ) ) {
+			$args['meta_query']['relationship_id'] = array(
+				'key' => 'ms_relationship_id',
+				'value' => $args['relationship_id'],
+			);
+			unset( $args['membership_id'] );
+		}
+
 		$args = wp_parse_args( $args, $defaults );
 
 		return apply_filters( 'ms_model_event_get_query_args', $args );
