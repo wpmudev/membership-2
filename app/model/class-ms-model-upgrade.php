@@ -135,6 +135,11 @@ class MS_Model_Upgrade extends MS_Model {
 				self::_upgrade_1_1_0_2();
 			}
 
+			// Upgrade from any 1.1.x version to 1.1.0.3 or higher
+			if ( version_compare( $old_version, '1.1.0.3', 'lt' ) ) {
+				self::_upgrade_1_1_0_3();
+			}
+
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
@@ -182,8 +187,8 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	static private function _upgrade_1_0_x() {
 		// Create a snapshot of the 1.0.x data that can be restored.
+		lib2()->updates->plugin( 'protected-content' );
 		lib2()->updates->snapshot(
-			'protected-content',
 			'upgrade_1_0_x',
 			self::snapshot_data()
 		);
@@ -393,6 +398,7 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 
 		// Execute all queued actions!
+		lib2()->updates->plugin( 'protected-content' );
 		lib2()->updates->execute();
 
 		// Cleanup
@@ -414,11 +420,58 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	static private function _upgrade_1_1_0_2() {
 		// Simply create a snapshot that we can restore later.
+		lib2()->updates->plugin( 'protected-content' );
 		lib2()->updates->snapshot(
-			'protected-content',
 			'upgrade_1_1_0_2',
 			self::snapshot_data()
 		);
+	}
+
+	/**
+	 * Upgrade from any 1.1.x version to 1.1.0.3 or higher
+	 */
+	static private function _upgrade_1_1_0_3() {
+		global $wpdb;
+
+		// Simply create a snapshot that we can restore later.
+		lib2()->updates->plugin( 'protected-content' );
+		lib2()->updates->snapshot(
+			'upgrade_1_1_0_3',
+			self::snapshot_data()
+		);
+
+		lib2()->updates->clear();
+
+		/*
+		 * Rename payment gateway IDs
+		 *
+		 * 1. The gateway 'paypal_single' was renamed to 'paypalsingle'
+		 * 1. The gateway 'paypal_standard' was renamed to 'paypalstandard'
+		 */
+		{
+			$sql = "
+				SELECT ID
+				FROM {$wpdb->posts}
+				WHERE post_type IN ( 'ms_relationship', 'ms_invoice' )
+			";
+			$posts = $wpdb->get_col( $sql );
+
+			foreach ( $posts as $post_id ) {
+				$gateway = get_post_meta( $post_id, 'gateway_id', true );
+				// 1.
+				if ( $gateway == 'paypal_single' ) {
+					lib2()->updates->add( 'update_post_meta', $post_id, 'gateway_id', 'paypalsingle' );
+				}
+				// 2.
+				if ( $gateway == 'paypal_standard' ) {
+					lib2()->updates->add( 'update_post_meta', $post_id, 'gateway_id', 'paypalstandard' );
+				}
+			}
+		}
+
+		// Execute all queued actions!
+		lib2()->updates->plugin( 'protected-content' );
+		lib2()->updates->execute();
 	}
 
 	/**
