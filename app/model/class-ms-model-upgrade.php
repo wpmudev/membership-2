@@ -536,6 +536,7 @@ class MS_Model_Upgrade extends MS_Model {
 					'ms_event',
 					'ms_invoice',
 					'ms_communication'
+					'ms_coupon'
 				)
 		";
 		$data->posts = $wpdb->get_col( $sql );
