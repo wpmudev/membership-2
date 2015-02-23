@@ -560,6 +560,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$generate_event
 		);
 
+		if ( self::STATUS_CANCELED == $this->status ) { return; }
+		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
+
 		try {
 			// Canceling in trial period -> change the expired date.
 			if ( self::STATUS_TRIAL == $this->status ) {
@@ -595,27 +598,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Cancel membership and move to deactivated state.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param bool $generate_event Optional. Defines if cancel events are generated.
 	 */
-	public function deactivate_membership( $generate_event = true ) {
+	public function deactivate_membership() {
 		do_action(
 			'ms_model_relationship_deactivate_membership_before',
-			$this,
-			$generate_event
+			$this
 		);
+
+		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
 
 		try {
 			$this->cancel_membership( false );
 			$this->status = self::STATUS_DEACTIVATED;
 			$this->save();
 
-			if ( $generate_event ) {
-				MS_Model_Event::save_event(
-					MS_Model_Event::TYPE_MS_DEACTIVATED,
-					$this
-				);
-			}
+			MS_Model_Event::save_event(
+				MS_Model_Event::TYPE_MS_DEACTIVATED,
+				$this
+			);
 		}
 		catch( Exception $e ) {
 			MS_Helper_Debug::log(
@@ -625,8 +625,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		do_action(
 			'ms_model_relationship_deactivate_membership_after',
-			$this,
-			$generate_event
+			$this
 		);
 	}
 
