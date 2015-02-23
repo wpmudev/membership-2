@@ -4,6 +4,11 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.0.3
+----------------------------------------------------------------------
+- Write an update log that logs any changes made to the DB
+- Improve the Member-Details popup with infos on subscription/payments
+
 1.1.0.2
 ----------------------------------------------------------------------
 - Fix Add-ons "Individual Custom Posts" and "Individual Posts"
