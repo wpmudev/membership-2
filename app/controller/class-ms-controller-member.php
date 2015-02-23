@@ -264,18 +264,13 @@ class MS_Controller_Member extends MS_Controller {
 			return $msg;
 		}
 
-		foreach ( $members as $member_id ){
+		foreach ( $members as $member_id ) {
 			// Member Model
 			$member = MS_Factory::load( 'MS_Model_Member', $member_id );
 			switch ( $action ) {
 				case 'add':
 					$member->add_membership( $membership_id );
 					$msg = MS_Helper_Member::MSG_MEMBER_ADDED;
-					break;
-
-				case 'cancel':
-					$member->cancel_membership( $membership_id );
-					$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
 					break;
 
 				case 'drop':

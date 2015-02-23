@@ -1060,7 +1060,7 @@ class MS_Model_Member extends MS_Model {
 			);
 
 			if ( $relationship->user_id == $this->id ) {
-				$relationship->cancel_membership( false );
+				$relationship->cancel_membership();
 			}
 		}
 

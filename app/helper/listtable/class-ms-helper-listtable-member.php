@@ -386,13 +386,8 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'toggle_activation' => __( 'Toggle Activation', MS_TEXT_DOMAIN ),
-			'Memberships' => array(
-				'add'     => __( 'Add membership', MS_TEXT_DOMAIN ),
-				'cancel'  => __( 'Cancel membership', MS_TEXT_DOMAIN ),
-				'move'    => __( 'Move membership', MS_TEXT_DOMAIN ),
-				'drop'    => __( 'Drop membership', MS_TEXT_DOMAIN ),
-			),
+			// Removed in 1.1.0.3 - these actions were not supported anymore.
+			// TODO: Add correct Bulk actions, like in memberships-list.
 		);
 
 		return apply_filters(
