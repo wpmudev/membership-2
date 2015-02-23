@@ -608,6 +608,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
 
 		try {
+			// Write information on the deactivated membership to the log file.
+			do_action(
+				'lib2_debug_log',
+				'Deactivate subscription: ' . $this->id . ' / ' . $this->user_id . ' / ' . $this->membership_id
+			);
+
 			$this->cancel_membership( false );
 			$this->status = self::STATUS_DEACTIVATED;
 			$this->save();
