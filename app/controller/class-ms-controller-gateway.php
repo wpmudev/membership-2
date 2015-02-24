@@ -707,8 +707,18 @@ class MS_Controller_Gateway extends MS_Controller {
 				if ( 'paypalexpress' == $gateway ) { $gateway = 'paypalstandard'; }
 			}
 
-			MS_Helper_Debug::log( 'Incoming Payment Notification for "' . $gateway . '"' );
-			MS_Helper_Debug::log( $_POST );
+			/**
+			 * In 1.1.0 the underscore in payment gateway names was removed.
+			 * To compensate for this we need to continue listen to these old
+			 * gateway-names.
+			 */
+			switch ( $gateway ) {
+				case 'paypal_single': $gateway = 'paypalsingle'; break;
+				case 'paypal_standard': $gateway = 'paypalstandard'; break;
+			}
+
+			do_action( 'lib2_debug_log', 'Incoming Payment Notification for "' . $gateway . '"' );
+			do_action( 'lib2_debug_log', $_POST );
 
 			do_action(
 				'ms_gateway_handle_payment_return_' . $gateway
