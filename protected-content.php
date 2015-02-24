@@ -36,6 +36,27 @@ Text Domain: protected-content
 */
 
 /**
+ * Plugin version
+ *
+ * @since 1.0.0
+ */
+define( 'MS_PLUGIN_VERSION', '1.1.0.3' );
+
+/**
+ * Plugin text domain.
+ *
+ * @since 1.0.0
+ */
+define( 'MS_TEXT_DOMAIN', 'protected-content' );
+
+/**
+ * Plugin name dir constant.
+ *
+ * @since 1.0.0
+ */
+define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
+
+/**
  * Include WPMUDev Dashboard
  */
 global $wpmudev_notices;
@@ -61,27 +82,6 @@ $externals = array(
 foreach ( $externals as $path ) {
 	require_once $path;
 }
-
-/**
- * Plugin text domain.
- *
- * @since 1.0.0
- */
-define( 'MS_TEXT_DOMAIN', 'protected-content' );
-
-/**
- * Plugin name dir constant.
- *
- * @since 1.0.0
- */
-define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
-
-/**
- * Plugin version
- *
- * @since 1.0.0
- */
-define( 'MS_PLUGIN_VERSION', '1.1.0.0' );
 
 /**
  * Hooks 'ms_class_path_overrides'.
