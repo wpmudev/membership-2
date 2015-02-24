@@ -794,8 +794,8 @@ class MS_Controller_Membership extends MS_Controller {
 			// First create a list including all possible tabs.
 			$tabs = array(
 				MS_Rule_Page::RULE_ID => true,
-				MS_Rule_Category::RULE_ID => true,
 				MS_Rule_Post::RULE_ID => true,
+				MS_Rule_Category::RULE_ID => true,
 				MS_Rule_CptItem::RULE_ID => true,
 				MS_Rule_CptGroup::RULE_ID => true,
 				MS_Rule_Content::RULE_ID => true,
@@ -812,10 +812,8 @@ class MS_Controller_Membership extends MS_Controller {
 
 			// Now remove items from the list that are not available.
 
-			// Either "Category" or "Posts"
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-				$tabs[MS_Rule_Category::RULE_ID] = false;
-			} else {
+			// Optionally show "Posts"
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
 				$tabs[MS_Rule_Post::RULE_ID] = false;
 			}
 

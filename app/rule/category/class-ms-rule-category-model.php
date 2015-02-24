@@ -48,7 +48,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @return bool
 	 */
 	static public function is_active() {
-		return ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST );
+		return true;
 	}
 
 	/**
@@ -77,30 +77,27 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
-		// Only verify permission if ruled by categories.
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$post_type = $wp_query->get( 'post_type' );
+		$post_type = $wp_query->get( 'post_type' );
 
-			if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
-				$post_type = $wp_query->queried_object->post_type;
+		if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
+			$post_type = $wp_query->queried_object->post_type;
+		}
+
+		/*
+		 * '' .. when post type is unknown assume 'post'
+		 * 'post' .. obviously protect certain posts
+		 * 'page' .. when front page is set to static page
+		 */
+		if ( in_array( $post_type, array( 'post', 'page', '' ) ) ) {
+			// This list is already filtered (see the get_terms filter!)
+			$contents = get_categories( 'get=all' );
+			$categories = array();
+
+			foreach ( $contents as $content ) {
+				$categories[] = absint( $content->term_id );
 			}
 
-			/*
-			 * '' .. when post type is unknown assume 'post'
-			 * 'post' .. obviously protect certain posts
-			 * 'page' .. when front page is set to static page
-			 */
-			if ( in_array( $post_type, array( 'post', 'page', '' ) ) ) {
-				// This list is already filtered (see the get_terms filter!)
-				$contents = get_categories( 'get=all' );
-				$categories = array();
-
-				foreach ( $contents as $content ) {
-					$categories[] = absint( $content->term_id );
-				}
-
-				$wp_query->query_vars['category__in'] = $categories;
-			}
+			$wp_query->query_vars['category__in'] = $categories;
 		}
 
 		do_action(
@@ -160,31 +157,27 @@ class MS_Rule_Category_Model extends MS_Rule {
 	public function has_access( $id ) {
 		$has_access = null;
 
-		// Only verify permissions if ruled by categories.
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$taxonomies = get_object_taxonomies( get_post_type() );
+		$taxonomies = get_object_taxonomies( get_post_type() );
 
-			// Verify post access accordingly to category rules.
-			if ( ! empty( $id )
-				|| ( is_single() && in_array( 'category', $taxonomies ) )
-			) {
-				if ( empty( $id ) ) {
-					$id = get_the_ID();
-				}
+		// Verify post access accordingly to category rules.
+		if ( ! empty( $id )
+			|| ( is_single() && in_array( 'category', $taxonomies ) )
+		) {
+			if ( empty( $id ) ) {
+				$id = get_the_ID();
+			}
 
-				$categories = wp_get_post_categories( $id );
-				foreach ( $categories as $category_id ) {
-					$has_access = parent::has_access( $category_id );
+			$categories = wp_get_post_categories( $id );
+			foreach ( $categories as $category_id ) {
+				$has_access = parent::has_access( $category_id );
 
-					if ( $has_access ) {
-						break;
-					}
+				if ( $has_access ) {
+					break;
 				}
 			}
+		} elseif ( is_category() ) {
 			// Category page.
-			elseif ( is_category() ) {
-				$has_access = parent::has_access( get_queried_object_id() );
-			}
+			$has_access = parent::has_access( get_queried_object_id() );
 		}
 
 		return apply_filters(

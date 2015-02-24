@@ -1383,9 +1383,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$rule_types = MS_Model_Rule::get_rule_types();
 		$rules = array();
 
-		if ( self::TYPE_DRIPPED == $this->type
-			&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST )
-		) {
+		if ( self::TYPE_DRIPPED == $this->type ) {
 			$rule_types = array( 0 => MS_Rule_Post::RULE_ID ) + $rule_types;
 		}
 

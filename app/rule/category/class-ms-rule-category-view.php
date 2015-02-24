@@ -9,10 +9,6 @@ class MS_Rule_Category_View extends MS_View {
 		$rule_listtable = new MS_Rule_Category_ListTable( $rule );
 		$rule_listtable->prepare_items();
 
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			$parts['category'] = __( 'Categories', MS_TEXT_DOMAIN );
-		}
-
 		$header_data = array();
 		$header_data['title'] = __( 'Choose which Categories you want to protect', MS_TEXT_DOMAIN );
 		$header_data['desc'] = '';

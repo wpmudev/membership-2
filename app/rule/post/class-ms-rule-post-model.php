@@ -93,12 +93,9 @@ class MS_Rule_Post_Model extends MS_Rule {
 				|| in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) )
 			)
 		) {
-			// Only verify permission if ruled by post by post.
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-				foreach ( $this->rule_value as $id => $value ) {
-					if ( ! $this->has_access( $id ) ) {
-						$wp_query->query_vars['post__not_in'][] = $id;
-					}
+			foreach ( $this->rule_value as $id => $value ) {
+				if ( ! $this->has_access( $id ) ) {
+					$wp_query->query_vars['post__not_in'][] = $id;
 				}
 			}
 		}
@@ -139,10 +136,6 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 */
 	public function has_access( $id ) {
 		$has_access = null;
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_POST_BY_POST ) ) {
-			return $has_access;
-		}
 
 		if ( empty( $id ) ) {
 			$id = $this->get_current_post_id();
