@@ -266,6 +266,8 @@ class MS_Model_Upgrade extends MS_Model {
 			}
 		}
 		// Migrate data.
+		$base_values = array();
+		$has_dripped_posts = false;
 		foreach ( $memberships as $membership ) {
 			// 1.
 			lib2()->updates->add( 'delete_post_meta', $membership->ID, 'parent_id' );
@@ -288,7 +290,6 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( is_array( $rules ) ) { $rules = (object) $rules; }
 			if ( ! is_object( $rules ) ) { $rules = new stdClass(); }
 			$serialized = array();
-			$base_values = array();
 			foreach ( $rules as $key => $data ) {
 				// 4.1
 				if ( 'url_group' === $key ) { $key = 'url'; }
@@ -332,6 +333,9 @@ class MS_Model_Upgrade extends MS_Model {
 										$item_drip[3] = $drip_data[$id]['period_type'];
 									}
 								}
+							}
+							if ( 'post' == $key ) {
+								$has_dripped_posts = true;
 							}
 							$access[] = array(
 								'id' => $id,
@@ -419,6 +423,11 @@ class MS_Model_Upgrade extends MS_Model {
 		// Set the base rules after all memberships were parsed.
 		if ( $base && isset( $base->ID ) ) {
 			lib2()->updates->add( 'update_post_meta', $base->ID, 'rule_values', $base_rules );
+		}
+		// When dripped rules publish posts then the "Individual Posts" Addon is needed.
+		if ( $has_dripped_posts ) {
+			$addons = MS_Factory::load( 'MS_Model_Addon' );
+			lib2()->updates->add( array( $addons, 'enable' ), MS_Model_Addon::ADDON_POST_BY_POST );
 		}
 
 		/*
