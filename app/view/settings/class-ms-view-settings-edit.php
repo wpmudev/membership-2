@@ -55,12 +55,15 @@ class MS_View_Settings_Edit extends MS_View {
 		$tabs = $this->data['tabs'];
 		$desc = array();
 
+		// ---------------------------------------------------------------------
+		// --------------------------------------------- START: ADVANCED OPTIONS
+
 		// A "Reset" button that can be added via URL param
 		// Intentionally not translated (purpose is dev/testing)
-		if ( isset( $_GET['reset'] ) ) {
+		if ( ! empty( $_GET['reset'] ) ) {
 			$reset_url = admin_url( 'admin.php?page=protected-content-settings&reset=1' );
 			$reset_url = add_query_arg(
-				MS_Model_Upgrade::get_reset_token(),
+				MS_Model_Upgrade::get_token( 'reset' ),
 				$reset_url
 			);
 			$cancel_url = remove_query_arg( 'reset' );
@@ -70,7 +73,7 @@ class MS_View_Settings_Edit extends MS_View {
 				sprintf(
 					'<form method="POST" action="%s" style="padding:20px 0">' .
 					'<label style="line-height:28px">' .
-					'<input type="checkbox" name="confirm" value="reset" /> Yes, reset everything!' .
+					'<input type="checkbox" name="confirm" value="yes" /> Yes, reset everything!' .
 					'</label><p>' .
 					'<button class="button-primary">Do it!</button> ' .
 					'<a href="%s" class="button">Cancel</a>' .
@@ -80,6 +83,62 @@ class MS_View_Settings_Edit extends MS_View {
 				)
 			);
 		}
+
+		// A "Resore" button that can be added via URL param
+		// Intentionally not translated (purpose is dev/testing)
+		if ( ! empty( $_GET['restore'] ) ) {
+			$restore_url = admin_url( 'admin.php?page=protected-content-settings&restore=1' );
+			$restore_url = add_query_arg(
+				MS_Model_Upgrade::get_token( 'restore' ),
+				$restore_url
+			);
+			$cancel_url = remove_query_arg( 'restore' );
+			$options = array();
+			$files = lib2()->updates->plugin( MS_TEXT_DOMAIN );
+			$files = lib2()->updates->list_files( 'json' );
+			foreach ( $files as $file ) {
+				$parts = explode( '-', $file );
+				if ( count( $parts ) == 3 ) {
+					$version = str_replace( 'upgrade_', '', $parts[0] );
+					$version = str_replace( '_', '.', $version );
+					$date = substr( $parts[1], 0, 4 ) . '-' . substr( $parts[1], 4, 2 ) . '-' . substr( $parts[1], 6, 2 );
+					$time = substr( $parts[2], 0, 2 ) . ':' . substr( $parts[2], 2, 2 ) . ':' . substr( $parts[2], 4, 2 );
+					$label = sprintf(
+						'%2$s (%3$s) - Upgrade to %1$s',
+						$version,
+						$date,
+						$time
+					);
+				} else {
+					$label = $file;
+				}
+				$options[$label] = sprintf(
+					'<option value="%1$s">%2$s</option>',
+					$file,
+					$label
+				);
+			}
+			krsort( $options );
+			$desc[] = sprintf(
+				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
+				'Careful: This will overwrite and replace existing data with old data from the Snapshot!',
+				sprintf(
+					'<form method="POST" action="%s" style="padding:20px 0">' .
+					'<label style="line-height:28px">Snapshot:</label><p>' .
+					'<select name="restore_snapshot">' . implode( '', $options ) . '</select>' .
+					'</p><label style="line-height:28px">' .
+					'<input type="checkbox" name="confirm" value="yes" /> Yes, overwrite data!' .
+					'</label><p>' .
+					'<button class="button-primary">Do it!</button> ' .
+					'<a href="%s" class="button">Cancel</a>' .
+					'</p></form>',
+					$restore_url,
+					$cancel_url
+				)
+			);
+		}
+		// ----------------------------------------------- END: ADVANCED OPTIONS
+		// ---------------------------------------------------------------------
 
 		ob_start();
 		// Render tabbed interface.

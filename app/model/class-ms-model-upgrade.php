@@ -191,9 +191,9 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	static private function _upgrade_1_0_x() {
 		// Create a snapshot of the 1.0.x data that can be restored.
-		lib2()->updates->plugin( 'protected-content' );
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->snapshot(
-			'upgrade_1_0_x',
+			'upgrade_1_1_0_0',
 			self::snapshot_data()
 		);
 
@@ -403,7 +403,7 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 
 		// Execute all queued actions!
-		lib2()->updates->plugin( 'protected-content' );
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->execute();
 
 		// Cleanup
@@ -425,7 +425,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	static private function _upgrade_1_1_0_2() {
 		// Simply create a snapshot that we can restore later.
-		lib2()->updates->plugin( 'protected-content' );
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->snapshot(
 			'upgrade_1_1_0_2',
 			self::snapshot_data()
@@ -439,7 +439,7 @@ class MS_Model_Upgrade extends MS_Model {
 		global $wpdb;
 
 		// Simply create a snapshot that we can restore later.
-		lib2()->updates->plugin( 'protected-content' );
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->snapshot(
 			'upgrade_1_1_0_3',
 			self::snapshot_data()
@@ -475,7 +475,7 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 
 		// Execute all queued actions!
-		lib2()->updates->plugin( 'protected-content' );
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->execute();
 	}
 
@@ -634,53 +634,60 @@ class MS_Model_Upgrade extends MS_Model {
 	}
 
 	/**
-	 * Returns a secure token to trigger db-cleanup (wipe all settings!)
+	 * Returns a secure token to trigger advanced admin actions like db-reset
+	 * or restoring a snapshot.
 	 *
 	 * - Only one token is valid at any given time.
 	 * - Each token has a timeout of max. 120 seconds.
 	 * - Each token can be used once only.
 	 *
 	 * @since  1.1.0
+	 * @internal
+	 *
+	 * @param  string $action Like a nonce, this is the action to execute.
 	 * @return array Intended usage: add_query_param( $token, $url )
 	 */
-	static public function get_reset_token() {
+	static public function get_token( $action ) {
 		if ( ! is_user_logged_in() ) { return array(); }
 		if ( ! is_admin() ) { return array(); }
 
 		$one_time_key = uniqid();
-		set_transient( 'ms_one_time_key-reset', $one_time_key, 120 );
+		set_transient( 'ms_one_time_key-' . $action, $one_time_key, 120 );
 
 		// Token is valid for 86 seconds because of usage of date('B')
-		$plain = 'reset-' . date( 'B' ) . ':' . get_current_user_id() . '-' . $one_time_key;
-		$token = array( 'reset_token' => wp_create_nonce( $plain ) );
+		$plain = $action . '-' . date( 'B' ) . ':' . get_current_user_id() . '-' . $one_time_key;
+		$token = array( 'ms_token' => wp_create_nonce( $plain ) );
 		return $token;
 	}
 
 	/**
-	 * Verfies the reset token in the $_GET collection
+	 * Verfies the admin token in the $_GET collection
 	 *
-	 * $_GET['reset_token'] must match the current reset_token
-	 * $_POST['confirm'] must have value 'reset'
+	 * $_GET['ms_token'] must match the current ms_token
+	 * $_POST['confirm'] must have value 'yes'
 	 *
 	 * @since  1.1.0
+	 * @internal
+	 *
+	 * @param  string $action Like a nonce, this is the action to execute.
 	 * @return bool
 	 */
-	static private function verify_reset_token() {
+	static private function verify_token( $action ) {
 		if ( ! self::valid_user() ) { return false; }
 
-		if ( empty( $_GET['reset_token'] ) ) { return false; }
-		$get_token = $_GET['reset_token'];
+		if ( empty( $_GET['ms_token'] ) ) { return false; }
+		$get_token = $_GET['ms_token'];
 
 		if ( empty( $_POST['confirm'] ) ) { return false; }
-		if ( 'reset' != $_POST['confirm'] ) { return false; }
+		if ( 'yes' != $_POST['confirm'] ) { return false; }
 
-		$one_time_key = get_transient( 'ms_one_time_key-reset' );
-		delete_transient( 'ms_one_time_key-reset' );
+		$one_time_key = get_transient( 'ms_one_time_key-' . $action );
+		delete_transient( 'ms_one_time_key-' . $action );
 		if ( empty( $one_time_key ) ) { return false; }
 
 		// We verify the current and the previous beat
-		$plain_token_1 = 'reset-' . date( 'B' ) . ':' . get_current_user_id() . '-' . $one_time_key;
-		$plain_token_2 = 'reset-' . ( date( 'B' ) - 1 ) . ':' . get_current_user_id() . '-' . $one_time_key;
+		$plain_token_1 = $action . '-' . date( 'B' ) . ':' . get_current_user_id() . '-' . $one_time_key;
+		$plain_token_2 = $action . '-' . ( date( 'B' ) - 1 ) . ':' . get_current_user_id() . '-' . $one_time_key;
 
 		if ( wp_verify_nonce( $get_token, $plain_token_1 ) ) { return true; }
 		if ( wp_verify_nonce( $get_token, $plain_token_2 ) ) { return true; }
@@ -717,13 +724,13 @@ class MS_Model_Upgrade extends MS_Model {
 
 		if ( ! $Reset_Done ) {
 			$Reset_Done = true;
-			if ( self::verify_reset_token() ) {
-				self::cleanup_db();
-				$msg = __( 'Your Protected Content data was reset!', MS_TEXT_DOMAIN );
-				lib2()->ui->admin_message( $msg );
-				wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
-				exit;
-			}
+			if ( ! self::verify_token( 'reset' ) ) { return false; }
+
+			self::cleanup_db();
+			$msg = __( 'Your Protected Content data was reset!', MS_TEXT_DOMAIN );
+			lib2()->ui->admin_message( $msg );
+			wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
+			exit;
 		}
 	}
 
@@ -738,14 +745,12 @@ class MS_Model_Upgrade extends MS_Model {
 
 		if ( ! $Restore_Done ) {
 			$Restore_Done = true;
+			if ( empty( $_POST['restore_snapshot'] ) ) { return false; }
+			$snapshot = $_POST['restore_snapshot'];
 
-			// Can only be triggered from Admin-Side by an Admin user.
-			if ( ! self::valid_user() ) { return false; }
+			if ( ! self::verify_token( 'restore' ) ) { return false; }
 
-			if ( empty( $_GET['restore_snapshot'] ) ) { return false; }
-
-			$snapshot = $_GET['restore_snapshot'];
-			lib2()->updates->plugin( 'protected-content' );
+			lib2()->updates->plugin( MS_TEXT_DOMAIN );
 			if ( lib2()->updates->restore( $snapshot ) ) {
 				printf(
 					'<p>' .
@@ -755,11 +760,20 @@ class MS_Model_Upgrade extends MS_Model {
 				);
 
 				printf(
-					__( 'To prevent auto-updating the DB again we stop here. You now have the option to downgrade the plugin to an earlier version via FTP or to %sre-run the upgrade process%s.', MS_TEXT_DOMAIN ),
+					'<p><b>' .
+					__( 'To prevent auto-updating the DB again we stop here!', MS_TEXT_DOMAIN ) .
+					'</b></p>'
+				);
+
+				printf(
+					'<p>' .
+					__( 'You now have the option to <br />(A) downgrade the plugin to an earlier version via FTP or <br />(B) to %sre-run the upgrade process%s.', MS_TEXT_DOMAIN ) .
+					'</p>',
 					'<a href="' . admin_url( 'admin.php?page=protected-content' ) . '">',
 					'</a>'
 				);
-				wp_die();
+
+				wp_die( '', 'Snapshot Restored' );
 			}
 		}
 	}
