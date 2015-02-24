@@ -389,8 +389,8 @@ class MS_Model_Upgrade extends MS_Model {
 					$serialized[$key] = $access;
 
 					// Make sure the protected item is listed in the base rule.
-					if ( ! isset( $base_rules[$key] ) ) {
-						$base_rules[$key] = array();
+					if ( ! isset( $base_values[$key] ) ) {
+						$base_values[$key] = array();
 					}
 					foreach ( $access as $ind => $state ) {
 						if ( is_numeric( $ind ) ) {
@@ -404,12 +404,12 @@ class MS_Model_Upgrade extends MS_Model {
 								// Normal rule.
 								$id = $state;
 							}
-							if ( $id && ! in_array( $id, $base_rules[$key] ) ) {
-								$base_rules[$key][] = $id;
+							if ( $id && ! in_array( $id, $base_values[$key] ) ) {
+								$base_values[$key][] = $id;
 							}
 						} elseif ( is_string( $ind ) ) {
 							// URL groups.
-							$base_rules[$key][$ind] = $state;
+							$base_values[$key][$ind] = $state;
 						}
 					}
 				}
@@ -422,7 +422,7 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 		// Set the base rules after all memberships were parsed.
 		if ( $base && isset( $base->ID ) ) {
-			lib2()->updates->add( 'update_post_meta', $base->ID, 'rule_values', $base_rules );
+			lib2()->updates->add( 'update_post_meta', $base->ID, 'rule_values', $base_values );
 		}
 		// When dripped rules publish posts then the "Individual Posts" Addon is needed.
 		if ( $has_dripped_posts ) {
