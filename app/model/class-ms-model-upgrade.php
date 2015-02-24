@@ -45,6 +45,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 		MS_Factory::load( 'MS_Model_Upgrade' );
 
+		self::maybe_restore();
 		add_action( 'init', array( __CLASS__, 'maybe_reset' ) );
 
 		do_action( 'ms_model_upgrade_init' );
@@ -59,7 +60,10 @@ class MS_Model_Upgrade extends MS_Model {
 	public static function update( $force = false ) {
 		static $Done = false;
 
-		if ( $Done ) { return; }
+		if ( $Done && ! $force ) { return; }
+
+		// Can only be triggered from Admin-Side by an Admin user.
+		if ( ! self::valid_user() ) { return; }
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$old_version = $settings->version; // Old: The version in DB.
@@ -138,6 +142,11 @@ class MS_Model_Upgrade extends MS_Model {
 			// Upgrade from any 1.1.x version to 1.1.0.3 or higher
 			if ( version_compare( $old_version, '1.1.0.3', 'lt' ) ) {
 				self::_upgrade_1_1_0_3();
+			}
+
+			// Upgrade from any 1.1.x version to 1.1.0.4 or higher
+			if ( version_compare( $old_version, '1.1.0.4', 'lt' ) ) {
+				self::_upgrade_1_1_0_4();
 			}
 
 			/*
@@ -299,6 +308,7 @@ class MS_Model_Upgrade extends MS_Model {
 					$is_dripped = true;
 					$drip_type = $data->dripped['dripped_type'];
 					$drip_data = $data->dripped[ $drip_type ];
+					$data->rule_value = array_fill_keys( array_keys( $drip_data ), 1 );
 				} else {
 					$is_dripped = false;
 				}
@@ -661,13 +671,12 @@ class MS_Model_Upgrade extends MS_Model {
 	 * @return bool
 	 */
 	static private function verify_reset_token() {
-		if ( ! is_user_logged_in() ) { return false; }
-		if ( ! is_admin() ) { return false; }
+		if ( ! self::valid_user() ) { return false; }
 
-		if ( ! isset( $_GET['reset_token'] ) ) { return false; }
+		if ( empty( $_GET['reset_token'] ) ) { return false; }
 		$get_token = $_GET['reset_token'];
 
-		if ( ! isset( $_POST['confirm'] ) ) { return false; }
+		if ( empty( $_POST['confirm'] ) ) { return false; }
 		if ( 'reset' != $_POST['confirm'] ) { return false; }
 
 		$one_time_key = get_transient( 'ms_one_time_key-reset' );
@@ -685,21 +694,77 @@ class MS_Model_Upgrade extends MS_Model {
 	}
 
 	/**
+	 * Verifies the following conditions:
+	 * - Current user is logged in and has admin permissions
+	 * - The request is an wp-admin request
+	 * - The request is not an Ajax call
+	 *
+	 * @since  1.1.0.4
+	 * @return bool True if all conditions are true
+	 */
+	static private function valid_user() {
+		if ( ! is_user_logged_in() ) { return false; }
+		if ( ! is_admin() ) { return false; }
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
+		if ( ! MS_Model_Member::is_admin_user() ) { return false; }
+
+		return true;
+	}
+
+	/**
 	 * Checks if valid reset-instructions are present. If yes, then whipe the
 	 * plugin settings.
 	 *
 	 * @since  1.1.0
 	 */
 	static public function maybe_reset() {
-		static $Done = false;
+		static $Reset_Done = false;
 
-		if ( ! $Done ) {
-			$Done = true;
+		if ( ! $Reset_Done ) {
+			$Reset_Done = true;
 			if ( self::verify_reset_token() ) {
 				self::cleanup_db();
-				lib2()->ui->admin_message( 'Your Protected Content data was reset!' );
+				$msg = __( 'Your Protected Content data was reset!', MS_TEXT_DOMAIN );
+				lib2()->ui->admin_message( $msg );
 				wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
 				exit;
+			}
+		}
+	}
+
+	/**
+	 * Checks if valid restore-options are specified. If they are, the snapshot
+	 * will be restored.
+	 *
+	 * @since  1.1.0.4
+	 */
+	static private function maybe_restore() {
+		static $Restore_Done = false;
+
+		if ( ! $Restore_Done ) {
+			$Restore_Done = true;
+
+			// Can only be triggered from Admin-Side by an Admin user.
+			if ( ! self::valid_user() ) { return false; }
+
+			if ( empty( $_GET['restore_snapshot'] ) ) { return false; }
+
+			$snapshot = $_GET['restore_snapshot'];
+			lib2()->updates->plugin( 'protected-content' );
+			if ( lib2()->updates->restore( $snapshot ) ) {
+				printf(
+					'<p>' .
+					__( 'The Protected Content Snapshot "%s" was restored!', MS_TEXT_DOMAIN ) .
+					'</p>',
+					$snapshot
+				);
+
+				printf(
+					__( 'To prevent auto-updating the DB again we stop here. You now have the option to downgrade the plugin to an earlier version via FTP or to %sre-run the upgrade process%s.', MS_TEXT_DOMAIN ),
+					'<a href="' . admin_url( 'admin.php?page=protected-content' ) . '">',
+					'</a>'
+				);
+				wp_die();
 			}
 		}
 	}
