@@ -98,11 +98,11 @@ class MS_View_Help extends MS_View {
 		<p>
 			<?php _ex( 'Thank you for using Protected Content!', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
-		<hr />
+		<?php MS_Helper_Html::html_separator(); ?>
 		<h2>
 			<?php _ex( 'Plugin menu', 'help', MS_TEXT_DOMAIN ); ?>
 		</h2>
-		<table cellspacing="0" cellpadding="0">
+		<table cellspacing="0" cellpadding="4" border="0" width="100%">
 			<tr>
 				<td>
 					<span class="top-menu">
@@ -112,39 +112,43 @@ class MS_View_Help extends MS_View {
 				</td>
 				<td></td>
 			</tr>
-			<tr>
-				<td><span class="menu-item"><?php _e( 'Memberships', MS_TEXT_DOMAIN ); ?></span></td>
+			<tr class="alternate">
+				<td><span><?php _e( 'Memberships', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for. Here you can grant access to previously protected content (<em>see "Protected Content" below</em>)', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
-				<td><span class="menu-item"><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><span><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Lists all your WordPress users and allows you to manage their Memberships', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
-			<tr>
-				<td><span class="menu-item"><?php _e( 'Protected Content', MS_TEXT_DOMAIN ); ?></span></td>
+			<tr class="alternate">
+				<td><span><?php _e( 'Protected Content', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Set the global protection options, i.e. which pages are protected', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
-				<td><span class="menu-item"><?php _e( 'Billing', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><span><?php _e( 'Billing', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Manage sent invoices, including details such as the payment status. <em>Only visible when you have at least one paid membership</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
-			<tr>
-				<td><span class="menu-item"><?php _e( 'Coupons', MS_TEXT_DOMAIN ); ?></span></td>
+			<tr class="alternate">
+				<td><span><?php _e( 'Coupons', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Manage your discount coupons. <em>Requires Add-on "Coupons"</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
-				<td><span class="menu-item"><?php _e( 'Add-ons', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><span><?php _e( 'Add-ons', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Activate Add-ons', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
-			<tr>
-				<td><span class="menu-item"><?php _e( 'Settings', MS_TEXT_DOMAIN ); ?></span></td>
+			<tr class="alternate">
+				<td><span><?php _e( 'Settings', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Global plugin options, such as Membership pages, payment options and email templates', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
-			<tr>
-				<td><span class="menu-item"><strong><?php _e( 'Help', MS_TEXT_DOMAIN ); ?></strong></span></td>
-				<td><?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?></td>
-			</tr>
 		</table>
+		<?php MS_Helper_Html::html_separator(); ?>
+		<h2><?php _ex( 'Advanced features', 'help', MS_TEXT_DOMAIN ); ?></h2>
+		<p>
+			<?php _ex( 'Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is displayed that can be used to reset all Protected Content settings. Use this to clean all traces after testing the plugin.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<?php _ex( 'Open the Settings page and add <code>&restore=1</code> to the URL. In the prompt that is displayed you can select an existing DB Snapshot that can be restored. Use this if something goes wrong after an update. A new snapshot is generated <em>before</em> the plugin is updating the Database to a new version.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
 		<?php
 		return ob_get_clean();
 	}
