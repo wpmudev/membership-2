@@ -288,6 +288,7 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( is_array( $rules ) ) { $rules = (object) $rules; }
 			if ( ! is_object( $rules ) ) { $rules = new stdClass(); }
 			$serialized = array();
+			$base_values = array();
 			foreach ( $rules as $key => $data ) {
 				// 4.1
 				if ( 'url_group' === $key ) { $key = 'url'; }
@@ -382,10 +383,42 @@ class MS_Model_Upgrade extends MS_Model {
 				}
 				if ( ! empty( $access ) ) {
 					$serialized[$key] = $access;
+
+					// Make sure the protected item is listed in the base rule.
+					if ( ! isset( $base_rules[$key] ) ) {
+						$base_rules[$key] = array();
+					}
+					foreach ( $access as $ind => $state ) {
+						if ( is_numeric( $ind ) ) {
+							$id = 0;
+							if ( is_array( $state ) ) {
+								// Dripped rule.
+								if ( isset( $state['id'] ) ) {
+									$id = $state['id'];
+								}
+							} else {
+								// Normal rule.
+								$id = $state;
+							}
+							if ( $id && ! in_array( $id, $base_rules[$key] ) ) {
+								$base_rules[$key][] = $id;
+							}
+						} elseif ( is_string( $ind ) ) {
+							// URL groups.
+							$base_rules[$key][$ind] = $state;
+						}
+					}
 				}
 			}
-			lib2()->updates->add( 'update_post_meta', $membership->ID, 'rule_values', $serialized );
 			lib2()->updates->add( 'wp_update_post', $membership );
+			// We set the base rules a bit later.
+			if ( $base && isset( $base->ID ) && $membership->ID != $base->ID ) {
+				lib2()->updates->add( 'update_post_meta', $membership->ID, 'rule_values', $serialized );
+			}
+		}
+		// Set the base rules after all memberships were parsed.
+		if ( $base && isset( $base->ID ) ) {
+			lib2()->updates->add( 'update_post_meta', $base->ID, 'rule_values', $base_rules );
 		}
 
 		/*
