@@ -144,11 +144,6 @@ class MS_Model_Upgrade extends MS_Model {
 				self::_upgrade_1_1_0_3();
 			}
 
-			// Upgrade from any 1.1.x version to 1.1.0.4 or higher
-			if ( version_compare( $old_version, '1.1.0.4', 'lt' ) ) {
-				self::_upgrade_1_1_0_4();
-			}
-
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
