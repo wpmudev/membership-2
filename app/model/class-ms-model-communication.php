@@ -574,6 +574,17 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$this
 		);
 
+		/**
+		 * Use `define( 'MS_STOP_EMAILS', true );` in wp-config.php to prevent
+		 * Protected Content from sending *any* emails to users.
+		 * Also any currently enqueued message is removed from the queue
+		 *
+		 * @since 1.1.0.5
+		 */
+		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
+			$this->queue = array();
+		}
+
 		if ( $this->enabled && ! $this->check_object_lock() ) {
 			$this->set_object_lock();
 
@@ -649,13 +660,32 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $ms_relationship_id The membership relationship ID to add to queue.
+	 * @param int $subscription_id The membership relationship ID to add to queue.
 	 */
-	public function add_to_queue( $ms_relationship_id ) {
+	public function add_to_queue( $subscription_id ) {
 		do_action( 'ms_model_communication_add_to_queue_before', $this );
 
+		/**
+		 * Documented in process_communication()
+		 *
+		 * @since 1.1.0.5
+		 */
+		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
+			$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
+			do_action(
+				'lib2_debug_log',
+				sprintf(
+					'Following Email was not sent: "%s" to user "%s".',
+					$this->type,
+					$subscription->user_id
+				)
+			);
+
+			return false;
+		}
+
 		if ( $this->enabled
-			&& ! array_key_exists( $ms_relationship_id, $this->queue )
+			&& ! array_key_exists( $subscription_id, $this->queue )
 		) {
 			$can_add = true;
 
@@ -664,9 +694,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			 * Uncomment this if needing less emails.
 			 */
 			/*
-			if ( array_key_exists( $ms_relationship_id, $this->sent_queue ) ) {
+			if ( array_key_exists( $subscription_id, $this->sent_queue ) ) {
 				$min_days_before_resend = apply_filters( 'ms_model_communication_add_to_queue_min_days_before_resend', 1 );
-				$sent_date = $this->sent_queue[ $ms_relationship_id ];
+				$sent_date = $this->sent_queue[ $subscription_id ];
 				$now = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
 
 				if ( MS_Helper_Period::subtract_dates( $now, $sent_date ) < $min_days_before_resend ) {
@@ -676,7 +706,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			*/
 
 			if ( $can_add ) {
-				$this->queue[ $ms_relationship_id ] = MS_Helper_Period::current_date(
+				$this->queue[ $subscription_id ] = MS_Helper_Period::current_date(
 					MS_Helper_Period::DATE_FORMAT_SHORT
 				);
 			}

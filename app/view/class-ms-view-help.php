@@ -141,14 +141,6 @@ class MS_View_Help extends MS_View {
 				<td><?php _ex( 'Global plugin options, such as Membership pages, payment options and email templates', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 		</table>
-		<?php MS_Helper_Html::html_separator(); ?>
-		<h2><?php _ex( 'Advanced features', 'help', MS_TEXT_DOMAIN ); ?></h2>
-		<p>
-			<?php _ex( 'Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is displayed that can be used to reset all Protected Content settings. Use this to clean all traces after testing the plugin.', 'help', MS_TEXT_DOMAIN ); ?>
-		</p>
-		<p>
-			<?php _ex( 'Open the Settings page and add <code>&restore=1</code> to the URL. In the prompt that is displayed you can select an existing DB Snapshot that can be restored. Use this if something goes wrong after an update. A new snapshot is generated <em>before</em> the plugin is updating the Database to a new version.', 'help', MS_TEXT_DOMAIN ); ?>
-		</p>
 		<?php
 		return ob_get_clean();
 	}
@@ -1141,6 +1133,33 @@ class MS_View_Help extends MS_View {
 			</div>
 		</div>
 
+		<hr />
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Renders the Advanced settings help contents
+	 *
+	 * @since  1.1.0.5
+	 * @return string
+	 */
+	public function render_tab_advanced() {
+		ob_start();
+		?>
+		<h2><?php _ex( 'Advanced Settings', 'help', MS_TEXT_DOMAIN ); ?></h2>
+		<p>
+			<strong><?php _ex( 'Reset', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is displayed that can be used to reset all Protected Content settings. Use this to clean all traces after testing the plugin.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Restore', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'Open the Settings page and add <code>&restore=1</code> to the URL. In the prompt that is displayed you can select an existing DB Snapshot that can be restored. Use this if something goes wrong after an update. A new snapshot is generated <em>before</em> the plugin is updating the Database to a new version.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Stop Emails', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'In wp-config.php add the line <code>define( "MS_STOP_EMAILS", true );</code> to force Procted Content to <em>not</em> send any emails to Members. This can be used when testing to prevent your users from getting email notifications.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
 		<hr />
 		<?php
 		return ob_get_clean();

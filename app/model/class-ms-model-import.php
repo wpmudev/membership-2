@@ -176,6 +176,9 @@ class MS_Model_Import extends MS_Model {
 			return false;
 		}
 
+		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
+		MS_Plugin::set_modifier( 'MS_STOP_EMAILS', true );
+
 		$this->source_key = $data->source;
 
 		// Clear current data, if the user wants it.
@@ -235,6 +238,9 @@ class MS_Model_Import extends MS_Model {
 			__( 'Set-up Access Levels', MS_TEXT_DOMAIN ),
 			__( 'Finish', MS_TEXT_DOMAIN )
 		);
+
+		// Restore default Email-behavior.
+		MS_Plugin::set_modifier( 'MS_STOP_EMAILS' );
 
 		lib2()->html->popup( $popup );
 	}

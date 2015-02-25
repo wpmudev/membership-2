@@ -55,9 +55,61 @@ class MS_View_Settings_Edit extends MS_View {
 		$tabs = $this->data['tabs'];
 		$desc = array();
 
-		// ---------------------------------------------------------------------
-		// --------------------------------------------- START: ADVANCED OPTIONS
+		ob_start();
+		// Render tabbed interface.
+		?>
+		<div class="ms-wrap wrap">
+			<?php
+			$desc = $this->advanced_forms( $desc );
 
+			MS_Helper_Html::settings_header(
+				array(
+					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
+					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
+					'desc' => $desc,
+				)
+			);
+			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
+
+			// Call the appropriate form to render.
+			$tab_name = str_replace( '-', '_', $active_tab );
+			$callback_name = 'render_tab_' . $tab_name;
+			$render_callback = apply_filters(
+				'ms_view_settings_edit_render_callback',
+				array( $this, $callback_name ),
+				$active_tab,
+				$this->data
+			);
+			?>
+			<div class="ms-settings ms-settings-<?php echo esc_attr( $tab_name ); ?>">
+				<?php
+				$html = call_user_func( $render_callback );
+				$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
+				echo '' . $html;
+				?>
+			</div>
+		</div>
+		<?php
+		$this->render_settings_footer( $tab_name );
+
+		$html = ob_get_clean();
+
+		return $html;
+	}
+
+	/* ====================================================================== *
+	 *                               ADVANCED-FORMS
+	 * ====================================================================== */
+
+	/**
+	 * Display advanced setting forms that can be triggered via an URL param.
+	 *
+	 * @since  1.1.0.5
+	 *
+	 * @param  array $desc Array of items to display in the settings header.
+	 * @return array New Array of items to display. Might include a HTML form.
+	 */
+	protected function advanced_forms( $desc ) {
 		// A "Reset" button that can be added via URL param
 		// Intentionally not translated (purpose is dev/testing)
 		if ( ! empty( $_GET['reset'] ) ) {
@@ -139,47 +191,8 @@ class MS_View_Settings_Edit extends MS_View {
 				)
 			);
 		}
-		// ----------------------------------------------- END: ADVANCED OPTIONS
-		// ---------------------------------------------------------------------
 
-		ob_start();
-		// Render tabbed interface.
-		?>
-		<div class="ms-wrap wrap">
-			<?php
-			MS_Helper_Html::settings_header(
-				array(
-					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
-					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
-					'desc' => $desc,
-				)
-			);
-			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );
-
-			// Call the appropriate form to render.
-			$tab_name = str_replace( '-', '_', $active_tab );
-			$callback_name = 'render_tab_' . $tab_name;
-			$render_callback = apply_filters(
-				'ms_view_settings_edit_render_callback',
-				array( $this, $callback_name ),
-				$active_tab,
-				$this->data
-			);
-			?>
-			<div class="ms-settings ms-settings-<?php echo esc_attr( $tab_name ); ?>">
-				<?php
-				$html = call_user_func( $render_callback );
-				$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
-				echo '' . $html;
-				?>
-			</div>
-		</div>
-		<?php
-		$this->render_settings_footer( $tab_name );
-
-		$html = ob_get_clean();
-
-		return $html;
+		return $desc;
 	}
 
 
@@ -228,10 +241,18 @@ class MS_View_Settings_Edit extends MS_View {
 		echo '<div class="cf ms-settings-footer"><div class="ms-tab-container">&nbsp;</div>';
 		echo '<div>';
 		printf(
-			__( 'Check Membership Status changes %s. Send pending Email Responses %s.' ),
-			'<a href="' . $status_url . '" title="' . $lbl_run . '">' . $status_delay . '</a>',
+				__( 'Check Membership Status changes %s.' ) . ' ',
+				'<a href="' . $status_url . '" title="' . $lbl_run . '">' . $status_delay . '</a>'
+			);
+		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
+			_e( 'Sending Email Responses is disabled.', MS_TEXT_DOMAIN );
+		} else {
+			printf(
+				__( 'Send pending Email Responses %s.' ),
 			'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>'
 		);
+		}
+
 		echo '</div></div>';
 	}
 
