@@ -1244,7 +1244,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-				if ( $membership->pay_cycle_repetitions == 1 ) {
+				if ( 1 == $membership->pay_cycle_repetitions ) {
 					// Exactly 1 payment. Actually same as the "finite" type.
 					if ( $short ) {
 						$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (once)', MS_TEXT_DOMAIN );
@@ -1398,7 +1398,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 		} elseif ( ! in_array( $this->status, $ignored_status ) ) {
 			// Check if this status is still valid.
-			$status = $this->calculate_status();
+			$status = $this->calculate_status( $this->status );
 			$this->handle_status_change( $status );
 		}
 
@@ -1849,7 +1849,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
 					}
 				} // -- End of advanced communications Add-on
-
 
 				// Subscription ended. See if we can renew it.
 				if ( $remaining_days <= 0 ) {

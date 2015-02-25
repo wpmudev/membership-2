@@ -84,10 +84,14 @@ class MS_Controller_Help extends MS_Controller {
 			'shortcodes' => array(
 				'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
 			),
+			'advanced' => array(
+				'title' => __( 'Advanced Settings', MS_TEXT_DOMAIN ),
+			),
 		);
 
+		lib2()->array->equip_get( 'page' );
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-help';
-		$page = sanitize_html_class( @$_GET['page'], $def_key );
+		$page = sanitize_html_class( $_GET['page'], $def_key );
 
 		foreach ( $tabs as $key => $tab ) {
 			$tabs[ $key ]['url'] = sprintf(

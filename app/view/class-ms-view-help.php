@@ -89,7 +89,7 @@ class MS_View_Help extends MS_View {
 	 * @since  1.1.0
 	 * @return string
 	 */
-	function render_tab_general() {
+	public function render_tab_general() {
 		ob_start();
 		?>
 		<h2>
@@ -159,7 +159,7 @@ class MS_View_Help extends MS_View {
 	 * @since  1.1.0
 	 * @return string
 	 */
-	function render_tab_shortcodes() {
+	public function render_tab_shortcodes() {
 		ob_start();
 		?>
 

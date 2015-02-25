@@ -623,7 +623,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Enqueue a message in the "send queue".
 	 *
-	 * Base for child classes.
+	 * Action handler hooked up in child classes.
 	 *
 	 * Related Action Hooks:
 	 * - ms_model_event_{$comm_type}

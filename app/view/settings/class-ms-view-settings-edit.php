@@ -67,6 +67,7 @@ class MS_View_Settings_Edit extends MS_View {
 				$reset_url
 			);
 			$cancel_url = remove_query_arg( 'reset' );
+
 			$desc[] = sprintf(
 				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
 				'Careful: This will completely erase all your Protected Content settings and details!',
@@ -98,7 +99,7 @@ class MS_View_Settings_Edit extends MS_View {
 			$files = lib2()->updates->list_files( 'json' );
 			foreach ( $files as $file ) {
 				$parts = explode( '-', $file );
-				if ( count( $parts ) == 3 ) {
+				if ( 3 == count( $parts ) ) {
 					$version = str_replace( 'upgrade_', '', $parts[0] );
 					$version = str_replace( '_', '.', $version );
 					$date = substr( $parts[1], 0, 4 ) . '-' . substr( $parts[1], 4, 2 ) . '-' . substr( $parts[1], 6, 2 );
@@ -119,6 +120,7 @@ class MS_View_Settings_Edit extends MS_View {
 				);
 			}
 			krsort( $options );
+
 			$desc[] = sprintf(
 				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
 				'Careful: This will overwrite and replace existing data with old data from the Snapshot!',
@@ -180,6 +182,7 @@ class MS_View_Settings_Edit extends MS_View {
 		return $html;
 	}
 
+
 	/* ====================================================================== *
 	 *                               SETTINGS-FOOTER
 	 * ====================================================================== */
@@ -192,8 +195,8 @@ class MS_View_Settings_Edit extends MS_View {
 	 * @since  1.1.0
 	 * @param  string $tab_name Name of the currently open settings-tab.
 	 */
-	public function render_settings_footer( $tab_name ) {
-		if ( $tab_name != 'general' ) { return; }
+	protected function render_settings_footer( $tab_name ) {
+		if ( 'general' != $tab_name ) { return; }
 
 		$status_stamp = wp_next_scheduled( 'ms_cron_check_membership_status' ) - time();
 		$email_stamp = wp_next_scheduled( 'ms_cron_process_communications' ) - time();

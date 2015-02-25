@@ -142,6 +142,16 @@ class MS_Plugin {
 	private static $instance = null;
 
 	/**
+	 * Modifier values.
+	 *
+	 * @since 1.1.0.5
+	 *
+	 * @access private
+	 * @var array
+	 */
+	private static $modifiers = array();
+
+	/**
 	 * The plugin name.
 	 *
 	 * @since 1.0.0
@@ -530,11 +540,11 @@ class MS_Plugin {
 			$Path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
 		}
 
-		/**
-		 * Case 1: The class-path is explicitly defined in $Path_overrides.
-		 * Simply use the defined path to load the class.
-		 */
 		if ( array_key_exists( $class, $Path_overrides ) ) {
+			/**
+			 * Case 1: The class-path is explicitly defined in $Path_overrides.
+			 * Simply use the defined path to load the class.
+			 */
 			$file_path = $basedir . '/' . $Path_overrides[ $class ];
 
 			/**
@@ -548,13 +558,14 @@ class MS_Plugin {
 			if ( is_file( $file_path ) ) {
 				include_once $file_path;
 			}
+
 			return true;
-		}
-		/**
-		 * Case 2: The class-path is not explicitely defined in $Path_overrides.
-		 * Use /app/ path and class-name to build the file-name.
-		 */
-		else if ( substr( $class, 0, 3 ) == 'MS_' ) {
+		} elseif ( 'MS_' == substr( $class, 0, 3 ) ) {
+			/**
+			 * Case 2: The class-path is not explicitely defined in $Path_overrides.
+			 * Use /app/ path and class-name to build the file-name.
+			 */
+
 			$path_array = explode( '_', $class );
 			array_shift( $path_array );
 			$alt_dir = array_pop( $path_array );
@@ -668,6 +679,53 @@ class MS_Plugin {
 	 */
 	public static function is_wizard() {
 		return ! ! self::instance()->settings->initial_setup;
+	}
+
+	/**
+	 * Returns a modifier option.
+	 * This is similar to a setting but more "advanced" in a way that there is
+	 * no UI for it. A modifier can be set by the plugin (e.g. during Import
+	 * the "no_messages" modifier is enabled) or via a const in wp-config.php
+	 *
+	 * A modifier is never saved in the database.
+	 * It can be defined ONLY via MS_Plugin::set_modifier() or via wp-config.php
+	 * The set_modifier() value will always take precedence over wp-config.php
+	 * definitions.
+	 *
+	 * @since  1.1.0.5
+	 * @api
+	 *
+	 * @param  string $key Name of the modifier.
+	 * @return mixed The modifier value or null.
+	 */
+	public static function get_modifier( $key ) {
+		$res = null;
+
+		if ( isset( self::$modifiers[$key] ) ) {
+			$res = self::$modifiers[$key];
+		} elseif ( defined( $key ) ) {
+			$res = constant( $key );
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Changes a modifier option.
+	 * @see get_modifier() for more details.
+	 *
+	 * @since  1.1.0.5
+	 * @api
+	 *
+	 * @param  string $key Name of the modifier.
+	 * @param  mixed $value Value of the modifier. `null` unsets the modifier.
+	 */
+	public static function set_modifier( $key, $value = null ) {
+		if ( null === $value ) {
+			unset( self::$modifiers[$key] );
+		} else {
+			self::$modifiers[$key];
+		}
 	}
 
 	/**
