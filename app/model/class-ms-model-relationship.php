@@ -605,6 +605,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this
 		);
 
+		/**
+		 * Documented in check_membership_status()
+		 *
+		 * @since 1.1.0.5
+		 */
+		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
+			return false;
+		}
+
 		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
 
 		try {
@@ -1421,6 +1430,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return string The calculated status.
 	 */
 	protected function calculate_status( $set_status = null ) {
+		/**
+		 * Documented in check_membership_status()
+		 *
+		 * @since 1.1.0.5
+		 */
+		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
+			return $set_status;
+		}
+
 		$membership = $this->get_membership();
 		$calc_status = null;
 		$check_trial = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
@@ -1670,6 +1688,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			'ms_model_relationship_check_membership_status_before',
 			$this
 		);
+
+		/**
+		 * Use `define( 'MS_LOCK_SUBSCRIPTIONS', true );` in wp-config.php to prevent
+		 * Protected Content from sending *any* emails to users.
+		 * Also any currently enqueued message is removed from the queue
+		 *
+		 * @since 1.1.0.5
+		 */
+		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
+			return false;
+		}
 
 		$comms = MS_Model_Communication::load_communications();
 		$invoice_before_days = 5;//@todo create a setting to configure this period.

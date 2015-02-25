@@ -240,17 +240,24 @@ class MS_View_Settings_Edit extends MS_View {
 
 		echo '<div class="cf ms-settings-footer"><div class="ms-tab-container">&nbsp;</div>';
 		echo '<div>';
-		printf(
+
+		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
+			_e( 'Membership Status Checks are disabled.', MS_TEXT_DOMAIN );
+			echo ' ';
+		} else {
+			printf(
 				__( 'Check Membership Status changes %s.' ) . ' ',
 				'<a href="' . $status_url . '" title="' . $lbl_run . '">' . $status_delay . '</a>'
 			);
+		}
+
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			_e( 'Sending Email Responses is disabled.', MS_TEXT_DOMAIN );
 		} else {
 			printf(
 				__( 'Send pending Email Responses %s.' ),
-			'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>'
-		);
+				'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>'
+			);
 		}
 
 		echo '</div></div>';

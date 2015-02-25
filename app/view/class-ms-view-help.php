@@ -393,7 +393,7 @@ class MS_View_Help extends MS_View {
 						</span>
 					</li>
 					<li>
-						<code><?php echo esc_html( MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW  ); ?>_text</code>
+						<code><?php echo esc_html( MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW ); ?>_text</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Button label', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
@@ -1159,6 +1159,10 @@ class MS_View_Help extends MS_View {
 		<p>
 			<strong><?php _ex( 'Stop Emails', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_STOP_EMAILS", true );</code> to force Procted Content to <em>not</em> send any emails to Members. This can be used when testing to prevent your users from getting email notifications.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Lock Subscription Status', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'In wp-config.php add the line <code>define( "MS_LOCK_SUBSCRIPTIONS", true );</code> to disable automatic status-checks of subscriptions. Registration is still possible, but after this the Subscription status will not change anymore. Effectively Subscriptions will not expire anymore.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
 		<hr />
 		<?php
