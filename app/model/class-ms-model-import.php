@@ -451,10 +451,10 @@ class MS_Model_Import extends MS_Model {
 		$subscription->expire_date = $obj->expire;
 
 		if ( isset( $obj->trial_finished ) ) {
-			$ms_invoice->trial_period_completed = $obj->trial_finished;
+			$subscription->trial_period_completed = $obj->trial_finished;
 		}
 		if ( isset( $obj->trial_end ) ) {
-			$ms_invoice->trial_expire_date = $obj->trial_end;
+			$subscription->trial_expire_date = $obj->trial_end;
 		}
 
 		// Remember where this subscription comes from.
