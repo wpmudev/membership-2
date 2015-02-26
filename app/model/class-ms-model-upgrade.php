@@ -126,22 +126,22 @@ class MS_Model_Upgrade extends MS_Model {
 
 			// Upgrade from a 0.x version to 1.0.x or higher
 			if ( version_compare( $old_version, '1.0.0.0', 'lt' ) ) {
-				self::_upgrade_0_x();
+				self::_upgrade_1_0_0_0();
 			}
 
 			// Upgrade from any 1.0.x version to 1.1.x or higher
 			if ( version_compare( $old_version, '1.1.0.0', 'lt' ) ) {
-				self::_upgrade_1_0_x();
-			}
-
-			// Upgrade from any 1.1.x version to 1.1.0.2 or higher
-			if ( version_compare( $old_version, '1.1.0.2', 'lt' ) ) {
-				self::_upgrade_1_1_0_2();
+				self::_upgrade_1_1_0_0();
 			}
 
 			// Upgrade from any 1.1.x version to 1.1.0.3 or higher
 			if ( version_compare( $old_version, '1.1.0.3', 'lt' ) ) {
 				self::_upgrade_1_1_0_3();
+			}
+
+			// Upgrade from any 1.1.x version to 1.1.0.5 or higher
+			if ( version_compare( $old_version, '1.1.0.5', 'lt' ) ) {
+				self::_upgrade_1_1_0_5();
 			}
 
 			/*
@@ -169,10 +169,19 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 	}
 
+
+	#
+	#
+	# ##########################################################################
+	# ##########################################################################
+	#
+	#
+
+
 	/**
 	 * Upgrade from any 0.x version to a higher version.
 	 */
-	static private function _upgrade_0_x() {
+	static private function _upgrade_1_0_0_0() {
 		$args = array();
 		$args['post_parent__not_in'] = array( 0 );
 		$memberships = MS_Model_Membership::get_memberships( $args );
@@ -186,18 +195,15 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 	}
 
+	#
+	# ##########################################################################
+	#
+
 	/**
 	 * Upgrade from any 1.0.x version to a higher version.
 	 */
-	static private function _upgrade_1_0_x() {
-		// Create a snapshot of the 1.0.x data that can be restored.
-		lib2()->updates->plugin( MS_TEXT_DOMAIN );
-		lib2()->updates->snapshot(
-			'upgrade_1_1_0_0',
-			self::snapshot_data()
-		);
-
-		lib2()->updates->clear();
+	static private function _upgrade_1_1_0_0() {
+		self::snapshot( '1.1.0.0' );
 
 		/*
 		 * Add-ons
@@ -281,7 +287,7 @@ class MS_Model_Upgrade extends MS_Model {
 			} else {
 				// 3.
 				$type = get_post_meta( $membership->ID, 'type', true );
-				if ( $type != 'dripped' ) {
+				if ( 'dripped' != $type ) {
 					lib2()->updates->add( 'update_post_meta', $membership->ID, 'type', 'simple' );
 				}
 			}
@@ -462,17 +468,9 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 	}
 
-	/**
-	 * Upgrade from any 1.1.x version to 1.1.0.2 or higher
-	 */
-	static private function _upgrade_1_1_0_2() {
-		// Simply create a snapshot that we can restore later.
-		lib2()->updates->plugin( MS_TEXT_DOMAIN );
-		lib2()->updates->snapshot(
-			'upgrade_1_1_0_2',
-			self::snapshot_data()
-		);
-	}
+	#
+	# ##########################################################################
+	#
 
 	/**
 	 * Upgrade from any 1.1.x version to 1.1.0.3 or higher
@@ -480,14 +478,7 @@ class MS_Model_Upgrade extends MS_Model {
 	static private function _upgrade_1_1_0_3() {
 		global $wpdb;
 
-		// Simply create a snapshot that we can restore later.
-		lib2()->updates->plugin( MS_TEXT_DOMAIN );
-		lib2()->updates->snapshot(
-			'upgrade_1_1_0_3',
-			self::snapshot_data()
-		);
-
-		lib2()->updates->clear();
+		self::snapshot( '1.1.0.3' );
 
 		/*
 		 * Rename payment gateway IDs
@@ -506,11 +497,11 @@ class MS_Model_Upgrade extends MS_Model {
 			foreach ( $posts as $post_id ) {
 				$gateway = get_post_meta( $post_id, 'gateway_id', true );
 				// 1.
-				if ( $gateway == 'paypal_single' ) {
+				if ( 'paypal_single' == $gateway ) {
 					lib2()->updates->add( 'update_post_meta', $post_id, 'gateway_id', 'paypalsingle' );
 				}
 				// 2.
-				if ( $gateway == 'paypal_standard' ) {
+				if ( 'paypal_standard' == $gateway ) {
 					lib2()->updates->add( 'update_post_meta', $post_id, 'gateway_id', 'paypalstandard' );
 				}
 			}
@@ -519,6 +510,80 @@ class MS_Model_Upgrade extends MS_Model {
 		// Execute all queued actions!
 		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->execute();
+	}
+
+	#
+	# ##########################################################################
+	#
+
+	/**
+	 * Upgrade from any 1.1.x version to 1.1.0.5 or higher
+	 */
+	static private function _upgrade_1_1_0_5() {
+		self::snapshot( '1.1.0.5' );
+
+		/*
+		 * When upgrading from 1.0 to 1.1 the payment gateway details were lost
+		 * due to a new name of the option-keys.
+		 *
+		 * We try to restore the lost settings now.
+		 * 1. option_name 'MS_Model_Gateway_Authorize' -> 'ms_gateway_authorize'
+		 * 2. option_name 'MS_Model_Gateway_Manual' -> 'ms_gateway_manual'
+		 * 3. option_name 'MS_Model_Gateway_Paypal_Single' -> 'ms_gateway_paypalsingle'
+		 * 4. option_name 'MS_Model_Gateway_Paypal_Standard' -> 'ms_gateway_paypalstandard'
+		 * 5. option_name 'MS_Model_Gateway_Stripe' -> 'ms_gateway_stripe'
+		 */
+		{
+			$matching = array(
+				'ms_gateway_authorize' => 'MS_Model_Gateway_Authorize',
+				'ms_gateway_manual' => 'MS_Model_Gateway_Manual',
+				'ms_gateway_paypalsingle' => 'MS_Model_Gateway_Paypal_Single',
+				'ms_gateway_paypalstandard' => 'MS_Model_Gateway_Paypal_Standard',
+				'ms_gateway_stripe' => 'MS_Model_Gateway_Stripe',
+			);
+
+			foreach ( $matching as $new_key => $old_key ) {
+				$old_val = get_option( $old_key );
+				if ( ! get_option( $new_key ) && is_array( $old_val ) ) {
+					switch ( $old_val['id'] ) {
+						case 'paypal_single': $old_val['id'] = 'paypalsingle'; break;
+						case 'paypal_standard': $old_val['id'] = 'paypalstandard'; break;
+					}
+
+					lib2()->updates->add( 'update_option', $new_key, $old_val );
+				}
+			}
+		}
+
+		// Execute all queued actions!
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
+		lib2()->updates->execute();
+	}
+
+
+	#
+	#
+	# ##########################################################################
+	# ##########################################################################
+	#
+	#
+
+
+	/**
+	 * Creates a current DB Snapshot and clears all items from the update queue.
+	 *
+	 * @since  1.1.0.5
+	 * @param  string $next_version Used for snapshot file name.
+	 */
+	static private function snapshot( $next_version ) {
+		// Simply create a snapshot that we can restore later.
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
+		lib2()->updates->snapshot(
+			'upgrade_' . str_replace( '.', '_', $next_version ),
+			self::snapshot_data()
+		);
+
+		lib2()->updates->clear();
 	}
 
 	/**
