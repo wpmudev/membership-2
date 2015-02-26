@@ -280,7 +280,7 @@ class MS_Gateway extends MS_Model_Option {
 	 * @return string The return url.
 	 */
 	public function get_return_url() {
-		$return_url = site_url( '/ms-payment-return/' . $this->id );
+		$return_url = home_url( '/ms-payment-return/' . $this->id );
 
 		return apply_filters(
 			'ms_gateway_get_return_url',
