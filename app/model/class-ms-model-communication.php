@@ -758,33 +758,34 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship to send message to.
+	 * @param MS_Model_Relationship $subscription The membership relationship to send message to.
 	 * @return bool True if successfully sent email.
 	 */
-	public function send_message( $ms_relationship ) {
+	public function send_message( $subscription ) {
 		do_action(
 			'ms_model_communication_send_message_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
 		$sent = false;
 
 		if ( $this->enabled ) {
-			$wp_user = new WP_User( $ms_relationship->user_id );
+			$wp_user = new WP_User( $subscription->user_id );
 
 			if ( ! is_email( $wp_user->user_email ) ) {
-				MS_Helper_Debug::log(
+				do_action(
+					'lib2_debug_log',
 					sprintf(
 						'Invalid user email. User_id: %1$s, email: %2$s',
-						$ms_relationship->user_id,
+						$subscription->user_id,
 						$wp_user->user_email
 					)
 				);
 				return false;
 			}
 
-			$comm_vars = $this->get_comm_vars( $ms_relationship, $wp_user );
+			$comm_vars = $this->get_comm_vars( $subscription, $wp_user );
 
 			// Replace the email variables.
 			$message = str_replace(
@@ -828,47 +829,53 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				'ms_model_communication_send_message_html_message',
 				$recipients,
 				$this,
-				$ms_relationship
+				$subscription
 			);
 			$html_message = apply_filters(
 				'ms_model_communication_send_message_html_message',
 				$html_message,
 				$this,
-				$ms_relationship
+				$subscription
 			);
 			$text_message = apply_filters(
 				'ms_model_communication_send_message_text_message',
 				$text_message,
 				$this,
-				$ms_relationship
+				$subscription
 			);
 			$subject = apply_filters(
 				'ms_model_communication_send_message_subject',
 				$subject,
 				$this,
-				$ms_relationship
+				$subscription
 			);
 			$headers = apply_filters(
 				'ms_model_communication_send_message_headers',
 				$headers,
 				$this,
-				$ms_relationship
+				$subscription
 			);
 
-			$sent = @wp_mail( $recipients, $subject, $message, $headers );
+			/*
+			 * Send the mail.
+			 * wp_mail will not throw an error, so no error-suppression/handling
+			 * is required here. On error the function response is FALSE.
+			 */
+			$sent = wp_mail( $recipients, $subject, $message, $headers );
+
+			// Log the outgoing email.
+			do_action(
+				'lib2_debug_log',
+				sprintf(
+					'Sent email [%s] to <%s>: %s',
+					$this->type,
+					implode( '>, <', $recipients ),
+					$sent ? 'OK' : 'ERR'
+				)
+			);
 
 			/*
 			// -- Debugging code --
-
-			MS_Helper_Debug::log(
-				sprintf(
-					"Sent email [%s] to <%s>: %s\n%s",
-					$this->type,
-					implode( ', ', $recipients ),
-					(int) $sent,
-					$message
-				)
-			);
 			MS_Helper_Debug::log(
 				sprintf(
 					"Variables:\n%s",
@@ -887,7 +894,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		do_action(
 			'ms_model_communication_send_message_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
