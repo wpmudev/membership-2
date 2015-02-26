@@ -602,23 +602,24 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			);
 			$start_time = time();
 
-			foreach ( $this->queue as $ms_relationship_id => $date ) {
+			foreach ( $this->queue as $subscription_id => $date ) {
 				if ( time() > $start_time + $time_limit
 					|| ++$count > $max_emails_qty
 				) {
 					break;
 				}
 
-				$ms_relationship = MS_Factory::load( 'MS_Model_Relationship', $ms_relationship_id );
-				if ( $this->send_message( $ms_relationship ) ) {
-					$this->remove_from_queue( $ms_relationship_id );
+				$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
+				if ( $this->send_message( $subscription ) ) {
+					$this->remove_from_queue( $subscription_id );
 				} else {
-					MS_Helper_Debug::log(
+					do_action(
+						'lib2_debug_log',
 						sprintf(
-							__( '[error: Communication email failed] comm_type=%s, ms_relationship_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
+							__( '[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
 							$this->type,
-							$ms_relationship->id,
-							$ms_relationship->user_id
+							$subscription->id,
+							$subscription->user_id
 						)
 					);
 				}
