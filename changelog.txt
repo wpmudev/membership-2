@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - Fix import process to not send out emails
 - Add plugin modifiers (details in Protected Content > Help > Advanced)
+- Restore Payment Gateway settings if lost during 1.0 to 1.1 update
 
 1.1.0.4
 ----------------------------------------------------------------------
