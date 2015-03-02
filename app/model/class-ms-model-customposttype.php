@@ -223,7 +223,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 */
 	public static function get_register_post_type_args() {
 		return apply_filters(
-			'MS_Model_CustomPostType_register_post_type_args',
+			'ms_customposttype_register_args',
 			array()
 		);
 	}

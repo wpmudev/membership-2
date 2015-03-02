@@ -254,6 +254,31 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	// -------------------------------------------------------------- COLLECTION
 
 	/**
+	 * Get custom register post type args for this model.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function get_register_post_type_args() {
+		$args = array(
+			'label' => __( 'Protected Content Invoices', MS_TEXT_DOMAIN ),
+			'description' => __( 'Member Invoices', MS_TEXT_DOMAIN ),
+			'public' => true,
+			'show_ui' => false,
+			'show_in_menu' => false,
+			'has_archive' => false,
+			'publicly_queryable' => true,
+			'supports' => false,
+			'hierarchical' => false,
+		);
+
+		return apply_filters(
+			'ms_customposttype_register_args',
+			$args,
+			self::$POST_TYPE
+		);
+	}
+
+	/**
 	 * Get invoice status types.
 	 *
 	 * @since 1.0.0
@@ -1133,24 +1158,4 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		);
 	}
 
-	/**
-	 * Returns register custom post type args.
-	 *
-	 * @since 1.0.0
-	 */
-	public static function get_register_post_type_args() {
-		return apply_filters(
-			'ms_register_post_type_' . self::$POST_TYPE,
-			array(
-				'description' => __( 'user invoices', MS_TEXT_DOMAIN ),
-				'public' => true,
-				'show_ui' => false,
-				'show_in_menu' => false,
-				'has_archive' => false,
-				'publicly_queryable' => true,
-				'supports' => false,
-				'hierarchical' => false,
-			)
-		);
-	}
 }

@@ -347,6 +347,33 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get custom register post type args for this model.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function get_register_post_type_args() {
+		$args = array(
+			'label' => __( 'Protected Content Memberships', MS_TEXT_DOMAIN ),
+			'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
+			'show_ui' => false,
+			'show_in_menu' => false,
+			'menu_position' => 70, // below Users
+			'menu_icon' => 'dashicons-lock',
+			'public' => true,
+			'has_archive' => false,
+			'publicly_queryable' => false,
+			'supports' => false,
+			'hierarchical' => false,
+		);
+
+		return apply_filters(
+			'ms_customposttype_register_args',
+			$args,
+			self::$POST_TYPE
+		);
+	}
+
+	/**
 	 * Get membership types.
 	 *
 	 * @since 1.0.0
@@ -1891,28 +1918,4 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		);
 	}
 
-	/**
-	 * Get custom register post type args for this model.
-	 *
-	 * @since 1.0.0
-	 */
-	public static function get_register_post_type_args() {
-		$args = array(
-			'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
-			'show_ui' => false,
-			'show_in_menu' => false,
-			'menu_position' => 70, // below Users
-			'menu_icon' => 'dashicons-lock',
-			'public' => true,
-			'has_archive' => false,
-			'publicly_queryable' => false,
-			'supports' => false,
-			'hierarchical' => false,
-		);
-
-		return apply_filters(
-			'ms_model_membership_get_register_post_type_args',
-			$args
-		);
-	}
 }

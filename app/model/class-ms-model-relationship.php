@@ -182,6 +182,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	// -------------------------------------------------------------- COLLECTION
 
 	/**
+	 * Get custom register post type args for this model.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function get_register_post_type_args() {
+		$args = array(
+			'label' => __( 'Protected Content Subscriptions', MS_TEXT_DOMAIN ),
+		);
+
+		return apply_filters(
+			'ms_customposttype_register_args',
+			$args,
+			self::$POST_TYPE
+		);
+	}
+
+	/**
 	 * Don't persist this fields.
 	 *
 	 * @since 1.0.0
