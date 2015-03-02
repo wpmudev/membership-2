@@ -159,10 +159,16 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function add_menu_pages() {
-		// Create primary menu item: Membership.
+		/*
+		 * Create primary menu item: Membership.
+		 *
+		 * The menu title is not translatable because of a bug in WordPress core
+		 * https://core.trac.wordpress.org/ticket/18857
+		 * Until this bug is closed the title (2nd argument) can't be translated
+		 */
 		add_menu_page(
 			__( 'Protect Content', MS_TEXT_DOMAIN ),
-			__( 'Protect Content', MS_TEXT_DOMAIN ),
+			'Protect Content', // no i18n!
 			$this->capability,
 			self::MENU_SLUG,
 			null,
