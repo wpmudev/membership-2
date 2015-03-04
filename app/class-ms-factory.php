@@ -204,7 +204,7 @@ class MS_Factory {
 
 			if ( ! isset( $Init_Class[$class] ) ) {
 				$Init_Class[$class] = true;
-				$obj::prepare_class();
+				$obj->prepare_class();
 			}
 		}
 	}
@@ -370,8 +370,9 @@ class MS_Factory {
 	 */
 	static public function populate_model( &$model, $settings, $postmeta = false ) {
 		$fields = $model->get_object_vars();
+		$vars = get_class_vars( get_class( $model ) );
 
-		$ignore = $model::$ignore_fields;
+		$ignore = isset( $vars['ignore_fields'] ) ? $vars['ignore_fields'] : array();
 		$ignore[] = 'instance'; // Don't deserialize the double-serialized model!
 		$ignore[] = 'actions';
 		$ignore[] = 'filters';
@@ -423,13 +424,13 @@ class MS_Factory {
 				$fields = $model->get_object_vars();
 			}
 
-			if ( isset( $model::$ignore_fields ) && is_array( $model::$ignore_fields ) ) {
-				$ignore = $model::$ignore_fields;
-				$ignore[] = 'instance'; // Don't double-serialize the model!
-				$ignore[] = 'actions';
-				$ignore[] = 'filters';
-				$ignore[] = 'ignore_fields';
-			}
+			$vars = get_class_vars( get_class( $model ) );
+
+			$ignore = isset( $vars['ignore_fields'] ) ? $vars['ignore_fields'] : array();
+			$ignore[] = 'instance'; // Don't double-serialize the model!
+			$ignore[] = 'actions';
+			$ignore[] = 'filters';
+			$ignore[] = 'ignore_fields';
 		} else {
 			// Value does not need to be serialized.
 			return $model;

@@ -54,16 +54,6 @@ class MS_Model extends MS_Hooker {
 	protected $name;
 
 	/**
-	 * Non persisting fields.
-	 * This is a static variable, since static values are not stored in DB
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string[]
-	 */
-	static public $ignore_fields = array();
-
-	/**
 	 * MS_Model Contstuctor
 	 *
 	 * @since 1.0.0

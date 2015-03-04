@@ -188,10 +188,10 @@ class MS_Addon_Coupon extends MS_Addon {
 		if ( ! $is_wizard ) {
 			$menu_item = array(
 				'coupons' => array(
-					'parent_slug' => $controller::MENU_SLUG,
+					'parent_slug' => MS_Controller_Plugin::MENU_SLUG,
 					'page_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
 					'menu_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-					'menu_slug' => $controller::MENU_SLUG . '-coupons',
+					'menu_slug' => MS_Controller_Plugin::MENU_SLUG . '-coupons',
 					'function' => array( $this, 'admin_coupon' ),
 				)
 			);

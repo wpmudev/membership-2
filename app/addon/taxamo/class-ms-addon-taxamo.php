@@ -154,22 +154,6 @@ class MS_Addon_Taxamo extends MS_Addon {
 	}
 
 	/**
-	 * Returns the Taxamo REST API object.
-	 *
-	 * @since  1.1.0
-	 * @return Taxamo
-	 */
-	static public function api() {
-		static $Api = null;
-
-		if ( null === $Api ) {
-			$Api = MS_Factory::load( 'MS_Addon_Taxamo_Api' );
-		}
-
-		return $Api;
-	}
-
-	/**
 	 * Add taxamo settings tab in settings page.
 	 *
 	 * @since  1.1.0
@@ -240,8 +224,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 		$gross_value = 0;
 
 		if ( is_numeric( $net_value ) ) {
-			$api = self::api();
-			$tax = $api::tax_info( $net_value );
+			$tax = MS_Addon_Taxamo_Api::tax_info( $net_value );
 			$gross_value = $net_value + $tax->amount;
 		}
 
@@ -256,8 +239,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @return numeric Tax rate to apply (e.g. 20 for 20%)
 	 */
 	public function invoice_tax_rate( $rate ) {
-		$api = self::api();
-		$tax = $api::tax_info();
+		$tax = MS_Addon_Taxamo_Api::tax_info();
 
 		return $tax->rate;
 	}
@@ -270,8 +252,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @return string Tax display-name (e.g. 'EU Standard Tax (20 %)')
 	 */
 	public function invoice_tax_name( $rate ) {
-		$api = self::api();
-		$tax = $api::tax_info();
+		$tax = MS_Addon_Taxamo_Api::tax_info();
 
 		return $tax->rate . '% ' . $tax->name;
 	}
@@ -289,8 +270,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 		$membership = $invoice->get_membership();
 		$member = $invoice->get_member();
 
-		$api = self::api();
-		$api::register_payment(
+		MS_Addon_Taxamo_Api::register_payment(
 			$invoice->total,   // Transaction amount
 			$membership->name, // Transaction title
 			$invoice->tax_rate, // Tax-rate

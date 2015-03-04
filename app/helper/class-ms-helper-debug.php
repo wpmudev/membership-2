@@ -22,10 +22,6 @@
  *
  */
 
-if ( ! defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
-	define( 'DEBUG_BACKTRACE_IGNORE_ARGS', 2 );
-}
-
 if ( ! defined( 'WP_DEBUG' ) ) {
 	define( 'WP_DEBUG', false );
 }
@@ -59,7 +55,12 @@ class MS_Helper_Debug extends MS_Helper {
 	 * @param  mixed $message Array, object or text to output to log.
 	 */
 	public static function log( $message, $echo_file = false ) {
-		$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+		if ( defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
+			$trace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+		} else {
+			$trace = debug_backtrace();
+		}
+
 		$exception = new Exception();
 		$debug = array_shift( $trace );
 		$caller = array_shift( $trace );
