@@ -2,7 +2,7 @@
 /**
 Plugin Name: Protected Content
 Plugin URI:  https://premium.wpmudev.org/project/protected-content/
-Version:     1.1.0.5
+Version:     1.1.0.6
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author:      WPMU DEV
 Author URI:  http://premium.wpmudev.org/
@@ -40,7 +40,7 @@ Text Domain: protected-content
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_VERSION', '1.1.0.5' );
+define( 'MS_PLUGIN_VERSION', '1.1.0.6' );
 
 /**
  * Plugin text domain.
