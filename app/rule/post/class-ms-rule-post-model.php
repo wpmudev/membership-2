@@ -33,6 +33,24 @@
 class MS_Rule_Post_Model extends MS_Rule {
 
 	/**
+	 * A list of all posts that are allowed by any MS_Rule_Post.
+	 * (this logic is needed to merge rules if multiple memberships is enabled)
+	 *
+	 * @since 1.1.0.7
+	 * @var   array
+	 */
+	static protected $allowed_ids = array();
+
+	/**
+	 * A list of all posts that are not available by any MS_Rule_Post.
+	 * (this logic is needed to merge rules if multiple memberships is enabled)
+	 *
+	 * @since 1.1.0.7
+	 * @var   array
+	 */
+	static protected $denied_ids = array();
+
+	/**
 	 * Rule type.
 	 *
 	 * @since 1.0.0
@@ -62,7 +80,8 @@ class MS_Rule_Post_Model extends MS_Rule {
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
 
-		$this->add_action( 'pre_get_posts', 'protect_posts', 99 );
+		$this->add_action( 'pre_get_posts', 'find_protected_posts', 99 );
+		$this->add_action( 'pre_get_posts', 'protect_posts', 100 );
 	}
 
 	/**
@@ -71,11 +90,11 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 * Related Action Hooks:
 	 * - pre_get_posts
 	 *
-	 * @since 1.0.0
+	 * @since 1.1.0.7
 	 *
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
-	public function protect_posts( $wp_query ) {
+	public function find_protected_posts( $wp_query ) {
 		// List rather than on a single post
 		if ( ! $wp_query->is_singular
 			&& empty( $wp_query->query_vars['pagename'] )
@@ -84,13 +103,54 @@ class MS_Rule_Post_Model extends MS_Rule {
 			)
 		) {
 			foreach ( $this->rule_value as $id => $value ) {
-				if ( ! $this->has_access( $id ) ) {
-					$wp_query->query_vars['post__not_in'][] = $id;
+				if ( $this->has_access( $id ) ) {
+					self::$allowed_ids[] = $id;
+				} else {
+					self::$denied_ids[] = $id;
 				}
 			}
 		}
+	}
 
-		do_action( 'ms_rule_post_model_protect_posts', $wp_query, $this );
+	/**
+	 * Protect post from showing.
+	 *
+	 * Related Action Hooks:
+	 * - pre_get_posts
+	 *
+	 * @since 1.1.0.7
+	 *
+	 * @param WP_Query $query The WP_Query object to filter.
+	 */
+	public function protect_posts( $wp_query ) {
+		static $Did_Pre_Get_Posts = false;
+
+		if ( $Did_Pre_Get_Posts ) { return $wp_query; }
+		$Did_Pre_Get_Posts = true;
+
+		if ( ! empty( self::$denied_ids ) ) {
+			// Remove duplicate entries from the ID arrays.
+			self::$denied_ids = array_unique( self::$denied_ids, SORT_NUMERIC );
+			self::$allowed_ids = array_unique( self::$allowed_ids, SORT_NUMERIC );
+
+			// Remove any post that is allowed from the denied_ids list.
+			self::$denied_ids = array_diff(
+				self::$denied_ids,
+				self::$allowed_ids
+			);
+
+			// Tell the WP query which posts are actually off limit for the user.
+			$wp_query->query_vars['post__not_in'] = array_merge(
+				$wp_query->query_vars['post__not_in'],
+				self::$denied_ids
+			);
+		}
+
+		do_action(
+			'ms_rule_post_model_protect_posts',
+			$wp_query,
+			$this
+		);
 	}
 
 	/**
@@ -104,7 +164,7 @@ class MS_Rule_Post_Model extends MS_Rule {
 		$post_id = null;
 		$post = get_queried_object();
 
-		if ( is_a( $post, 'WP_Post' ) && $post->post_type == 'post' )  {
+		if ( is_a( $post, 'WP_Post' ) && 'post' == $post->post_type )  {
 			$post_id = $post->ID;
 		}
 
@@ -132,7 +192,7 @@ class MS_Rule_Post_Model extends MS_Rule {
 		} else {
 			$post = get_post( $id );
 			if ( ! is_a( $post, 'WP_Post' )
-				|| ( $post->post_type != 'post' && $post->post_type != '' )
+				|| ( ! empty( $post->post_type ) && 'post' != $post->post_type )
 			)  {
 				$id = 0;
 			}
