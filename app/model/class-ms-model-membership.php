@@ -264,6 +264,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public $_allow_rule = array();
 
 	/**
+	 * Stores the subscription-ID of the parent object.
+	 * This value will only have a value when the Membership is loaded within
+	 * the context of a subscription.
+	 *
+	 * @since 1.1.0.7
+	 * @var   int
+	 */
+	protected $subscription_id = 0;
+
+	/**
 	 * Returns a list of variables that should be included in serialization,
 	 * i.e. these values are the only ones that are stored in DB
 	 *
@@ -479,7 +489,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$desc = __( 'Each %1$s', MS_TEXT_DOMAIN );
 
 				if ( $has_payment ) {
-					if ( $this->pay_cycle_repetitions == 1 ) {
+					if ( 1 == $this->pay_cycle_repetitions ) {
 						$desc = __( 'Single payment', MS_TEXT_DOMAIN );
 					} elseif ( $this->pay_cycle_repetitions > 1 ) {
 						$desc .= ', ' . __( '%2$s payments', MS_TEXT_DOMAIN );
@@ -557,7 +567,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			|| ! is_object( $this->rules[ $rule_type ] ) // During plugin update.
 		) {
 			// Create a new rule model object.
-			$rule = MS_Rule::rule_factory( $rule_type, $this->id );
+			$rule = MS_Rule::rule_factory(
+				$rule_type,
+				$this->id,
+				$this->subscription_id
+			);
 
 			$rule = apply_filters(
 				'ms_model_membership_get_rule',
@@ -1145,12 +1159,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 						lib2()->ui->admin_message(
 							sprintf(
 								__(
-								'<b>Please check your Protected Content settings</b><br />' .
-								'We found and fixed invalid content in your Database. ' .
-								'However, plugin settings might have changed due to this change.<br />' .
-								'You can review and delete the invalid content in the ' .
-								'<a href="admin.php?page=%s">Memberships section</a>.',
-								MS_TEXT_DOMAIN
+									'<b>Please check your Protected Content settings</b><br />' .
+									'We found and fixed invalid content in your Database. ' .
+									'However, plugin settings might have changed due to this change.<br />' .
+									'You can review and delete the invalid content in the ' .
+									'<a href="admin.php?page=%s">Memberships section</a>.',
+									MS_TEXT_DOMAIN
 								),
 								MS_Controller_Plugin::MENU_SLUG
 							)
@@ -1410,10 +1424,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$rule_types = MS_Model_Rule::get_rule_types();
 		$rules = array();
 
-		if ( self::TYPE_DRIPPED == $this->type ) {
-			$rule_types = array( 0 => MS_Rule_Post::RULE_ID ) + $rule_types;
-		}
-
 		foreach ( $rule_types as $rule_type ) {
 			$rule = $this->get_rule( $rule_type );
 
@@ -1422,6 +1432,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				continue;
 			}
 
+			$rule->_subscription_id = $this->subscription_id;
 			$rules[ $rule_type ] = $rule;
 		}
 
@@ -1520,7 +1531,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 				$has_access = ( $has_access || $rule_access );
 
-				if ( $has_access === true ) {
+				if ( true === $has_access ) {
 					break;
 				}
 			}
@@ -1871,7 +1882,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					break;
 
 				case 'on_end_membership_id':
-					if ( $value == 0 ) {
+					if ( 0 == $value ) {
 						$this->$property = 0;
 					} else if ( 0 < MS_Factory::load( 'MS_Model_Membership', $value )->id ) {
 						$this->$property = $value;

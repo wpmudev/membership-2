@@ -42,15 +42,6 @@ class MS_Rule_Post_Model extends MS_Rule {
 	protected $rule_type = MS_Rule_Post::RULE_ID;
 
 	/**
-	 * Membership relationship start date.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string $start_date
-	 */
-	protected $start_date;
-
-	/**
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
@@ -71,7 +62,6 @@ class MS_Rule_Post_Model extends MS_Rule {
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
 
-		$this->start_date = $ms_relationship->start_date;
 		$this->add_action( 'pre_get_posts', 'protect_posts', 99 );
 	}
 

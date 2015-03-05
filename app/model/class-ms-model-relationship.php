@@ -1108,8 +1108,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( empty( $this->membership->id ) ) {
 			$this->membership = MS_Factory::load(
 				'MS_Model_Membership',
-				$this->membership_id
+				$this->membership_id,
+				$this->id
 			);
+
+			// Set the context of the membership to current subscription.
+			$this->membership->subscription_id = $this->id;
 		}
 
 		return apply_filters(

@@ -42,15 +42,6 @@ class MS_Rule_Page_Model extends MS_Rule {
 	protected $rule_type = MS_Rule_Page::RULE_ID;
 
 	/**
-	 * Membership relationship start date.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string $start_date
-	 */
-	protected $start_date;
-
-	/**
 	 * Initialize the rule.
 	 *
 	 * @since 1.1.0
@@ -76,7 +67,6 @@ class MS_Rule_Page_Model extends MS_Rule {
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
 
-		$this->start_date = $ms_relationship->start_date;
 		$this->add_filter( 'get_pages', 'protect_pages', 99 );
 	}
 

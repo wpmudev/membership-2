@@ -93,12 +93,23 @@ class MS_Rule extends MS_Model {
 	 */
 	protected $dripped = array();
 
+	/**
+	 * The subscription-id which this rule belongs to.
+	 *
+	 * Object hierarchy is:
+	 * Subscription -> Membership -> Rule
+	 * When we know the Subscription-ID we also know the Membership-ID
+	 *
+	 * @since 1.1.0.7
+	 * @var   int
+	 */
+	protected $_subscription_id = 0;
 
 	/**
 	 * Class constructor.
 	 *
 	 * @since 1.0.0
-	 * @var int $membership_id The membership that owns this rule object.
+	 * @param int $membership_id The membership that owns this rule object.
 	 */
 	public function __construct( $membership_id ) {
 		parent::__construct();
@@ -163,15 +174,18 @@ class MS_Rule extends MS_Model {
 	 * @since 1.0.0
 	 * @param string $rule_type The rule type to create.
 	 * @param int $membership_id The Membership model this rule belongs to.
+	 * @param int $subscription_id The Subscription ID
+	 *
 	 * @return MS_Rule The rule model.
 	 * @throws Exception when rule type is not valid.
 	 */
-	public static function rule_factory( $rule_type, $membership_id ) {
+	public static function rule_factory( $rule_type, $membership_id, $subscription_id ) {
 		$rule_types = MS_Model_Rule::get_rule_type_classes();
 		if ( isset( $rule_types[ $rule_type ] ) ) {
 			$class = $rule_types[ $rule_type ];
 
 			$rule = MS_Factory::load( $class, $membership_id, $rule_type );
+			$rule->_subscription_id = $subscription_id;
 		} else {
 			MS_Helper_Debug::log( 'Rule type not registered: ' . $rule_type );
 			$rule = MS_Factory::create( 'MS_Rule', $membership_id );
@@ -193,10 +207,14 @@ class MS_Rule extends MS_Model {
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship The membership relationship to protect content from.
 	 */
-	public function protect_content( $ms_relationship = false ) {
+	public function protect_content( $subscription = false ) {
+		if ( $subscription ) {
+			$this->_subscription_id = $subscription->id;
+		}
+
 		do_action(
 			'ms_rule_protect_content',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 	}
@@ -209,10 +227,14 @@ class MS_Rule extends MS_Model {
 	 * @since 1.1
 	 * @param MS_Model_Relationship The membership relationship to protect content from.
 	 */
-	public function protect_admin_content( $ms_relationship = false ) {
+	public function protect_admin_content( $subscription = false ) {
+		if ( $subscription ) {
+			$this->_subscription_id = $subscription->id;
+		}
+
 		do_action(
 			'ms_rule_protect_admin_content',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 	}
@@ -238,13 +260,13 @@ class MS_Rule extends MS_Model {
 		);
 	}
 
-   /**
-	* Count protection rules quantity.
-	*
-	* @since 1.0.0
-	* @param bool $has_access_only Optional. Count rules for has_access status only.
-	* @return int $count The rule count result.
-	*/
+	/**
+	 * Count protection rules quantity.
+	 *
+	 * @since 1.0.0
+	 * @param bool $has_access_only Optional. Count rules for has_access status only.
+	 * @return int $count The rule count result.
+	 */
 	public function count_rules( $has_access_only = true ) {
 		$count = 0;
 
@@ -459,7 +481,18 @@ class MS_Rule extends MS_Model {
 		} else {
 			// Apply dripped-content rules if neccessary.
 			if ( $access && $this->has_dripped_rules( $id ) ) {
-				$avail_date = $this->get_dripped_avail_date( $id );
+				if ( ! empty( $this->_subscription_id ) ) {
+					$subscription = MS_Factory::load(
+						'MS_Model_Relationship',
+						$this->_subscription_id
+					);
+					$start_date = $subscription->start_date;
+				} else {
+					$start_date = null;
+					do_action( 'lib2_debug_dump', 'No subscription...', $this );
+				}
+
+				$avail_date = $this->get_dripped_avail_date( $id, $start_date );
 				$now = MS_Helper_Period::current_date();
 
 				$access = strtotime( $now ) >= strtotime( $avail_date );
@@ -741,14 +774,14 @@ class MS_Rule extends MS_Model {
 		return 0;
 	}
 
-   /**
-	* Reset the rule value data.
-	*
-	* @since 1.0.0
-	* @param $args The query post args
-	*     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
-	* @return int The content count.
-	*/
+	/**
+	 * Reset the rule value data.
+	 *
+	 * @since 1.0.0
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The content count.
+	 */
 	public function reset_rule_values() {
 		$this->rule_value = apply_filters(
 			'ms_rule_reset_values',
@@ -757,13 +790,13 @@ class MS_Rule extends MS_Model {
 		);
 	}
 
-   /**
-	* Denies access to all items that are defined in the base-rule but
-	* not in the current rule.
-	*
-	* @since 1.0.0
-	* @param MS_Rule $base_rule The source rule model to merge rules to.
-	*/
+	/**
+	 * Denies access to all items that are defined in the base-rule but
+	 * not in the current rule.
+	 *
+	 * @since 1.0.0
+	 * @param MS_Rule $base_rule The source rule model to merge rules to.
+	 */
 	public function protect_undefined_items( $base_rule ) {
 		if ( $base_rule->rule_type != $this->rule_type ) { return; }
 
@@ -1093,7 +1126,7 @@ class MS_Rule extends MS_Model {
 			unset( $args[$arg_excl] );
 		}
 
-		if ( isset( $args[$arg_incl] ) && count( $args[$arg_incl] ) == 0 ) {
+		if ( isset( $args[$arg_incl] ) && 0 == count( $args[$arg_incl] ) ) {
 			$args[$arg_incl] = array( -1 );
 		}
 
