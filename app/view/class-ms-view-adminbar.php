@@ -176,7 +176,6 @@ class MS_View_Adminbar extends MS_View {
 		}
 		asort( $sorted_memberships );
 
-
 		$fields = array(
 			'exit_button' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -321,6 +320,11 @@ class MS_View_Adminbar extends MS_View {
 			padding: 0;
 			font: 13px sans-serif;
 			width: 360px;
+			z-index: 999;
+			opacity: 0.5;
+		}
+		.ms-sim-info:hover {
+			opacity: 1;
 		}
 		.ms-sim-info .ms-sim-block {
 			padding: 10px;
