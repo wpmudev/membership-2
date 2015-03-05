@@ -79,7 +79,10 @@ class MS_Rule_Category_Model extends MS_Rule {
 	public function protect_posts( $wp_query ) {
 		$post_type = $wp_query->get( 'post_type' );
 
-		if ( empty( $post_type ) && isset( $wp_query->queried_object->post_type ) ) {
+		if ( empty( $post_type )
+			&& isset( $wp_query->queried_object )
+			&& isset( $wp_query->queried_object->post_type )
+		) {
 			$post_type = $wp_query->queried_object->post_type;
 		}
 

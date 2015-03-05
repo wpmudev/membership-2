@@ -82,7 +82,10 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 		$post_types = $wp_query->get( 'post_type' );
 
 		// There was one case where this was needed...
-		if ( empty( $post_types ) && isset( $wp_query->queried_object->post_type ) ) {
+		if ( empty( $post_types )
+			&& isset( $wp_query->queried_object )
+			&& isset( $wp_query->queried_object->post_type )
+		) {
 			$post_types = $wp_query->queried_object->post_type;
 		}
 
