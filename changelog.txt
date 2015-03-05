@@ -7,7 +7,7 @@ Change Log:
 1.1.0.7
 ----------------------------------------------------------------------
 - Fix bug in dripped memberships that prevented content-revealing
-- FIx bug where multiple memberships would protect each others posts
+- Fix bug where multiple memberships would protect each others posts
 
 1.1.0.6
 ----------------------------------------------------------------------
