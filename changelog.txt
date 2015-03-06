@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.0.8
+----------------------------------------------------------------------
+- Fix the Member Capabilities rules
+
 1.1.0.7
 ----------------------------------------------------------------------
 - Fix bug in dripped memberships that prevented content-revealing

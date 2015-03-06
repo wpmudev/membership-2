@@ -51,13 +51,6 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	static protected $real_caps = null;
 
 	/**
-	 * The assigned user role
-	 *
-	 * @var string
-	 */
-	protected $user_role = null;
-
-	/**
 	 * Caches the get_content_array output
 	 *
 	 * @var array
@@ -149,25 +142,29 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 
 		$all_roles = $wp_roles->roles;
 
-		if ( isset( $all_roles[ $this->user_role ] )
-			&& is_array( $all_roles[ $this->user_role ]['capabilities'] )
-		) {
-			$caps = $all_roles[ $this->user_role ]['capabilities'];
-		}
-		$caps = lib2()->array->get( $caps );
+		foreach ( $this->rule_value as $role => $state ) {
+			if ( ! $state ) { continue; }
 
-		if ( null === self::$real_caps ) {
-			// First get a list of the users default capabilities.
-			self::$real_caps = $allcaps;
-
-			// Use the permissions of the first rule without checking.
-			foreach ( $caps as $key => $value ) {
-				self::$real_caps[$key] = $value;
+			if ( isset( $all_roles[ $role ] )
+				&& is_array( $all_roles[ $role ]['capabilities'] )
+			) {
+				$caps = $all_roles[ $role ]['capabilities'];
 			}
-		} else {
-			// Only add additional capabilities from now on...
-			foreach ( $caps as $key => $value ) {
-				if ( $value ) { self::$real_caps[$key] = 1; }
+			$caps = lib2()->array->get( $caps );
+
+			if ( null === self::$real_caps ) {
+				// First get a list of the users default capabilities.
+				self::$real_caps = $allcaps;
+
+				// Use the permissions of the first rule without checking.
+				foreach ( $caps as $key => $value ) {
+					self::$real_caps[$key] = $value;
+				}
+			} else {
+				// Only add additional capabilities from now on...
+				foreach ( $caps as $key => $value ) {
+					if ( $value ) { self::$real_caps[$key] = 1; }
+				}
 			}
 		}
 	}
@@ -243,7 +240,7 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 		// Search the shortcode-tag...
 		if ( ! empty( $args['s'] ) ) {
 			foreach ( $contents as $key => $name ) {
-				if ( stripos( $name, $args['s'] ) === false ) {
+				if ( false === stripos( $name, $args['s'] ) ) {
 					unset( $contents[$key] );
 				}
 			}
