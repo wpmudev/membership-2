@@ -320,7 +320,7 @@ class MS_View_Adminbar extends MS_View {
 			padding: 0;
 			font: 13px sans-serif;
 			width: 360px;
-			z-index: 999;
+			z-index: 999999;
 			opacity: 0.5;
 		}
 		.ms-sim-info:hover {
