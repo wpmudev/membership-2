@@ -48,7 +48,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @return bool
 	 */
 	static public function is_active() {
-		return true;
+		return MS_Model_Addon::is_enabled( MS_Addon_Category::ID );
 	}
 
 	/**

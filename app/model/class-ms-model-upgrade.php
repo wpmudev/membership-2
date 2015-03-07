@@ -144,6 +144,11 @@ class MS_Model_Upgrade extends MS_Model {
 				self::_upgrade_1_1_0_5();
 			}
 
+			// Upgrade from any 1.1.x version to 1.1.0.8 or higher
+			if ( version_compare( $old_version, '1.1.0.8', 'lt' ) ) {
+				self::_upgrade_1_1_0_8();
+			}
+
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
@@ -553,6 +558,31 @@ class MS_Model_Upgrade extends MS_Model {
 					lib2()->updates->add( 'update_option', $new_key, $old_val );
 				}
 			}
+		}
+
+		// Execute all queued actions!
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
+		lib2()->updates->execute();
+	}
+
+	#
+	# ##########################################################################
+	#
+
+	/**
+	 * Upgrade from any 1.1.x version to 1.1.0.8 or higher
+	 */
+	static private function _upgrade_1_1_0_8() {
+		self::snapshot( '1.1.0.8' );
+
+		/*
+		 * We introduce the new Add-on "Category Protection" which was a core
+		 * rule until now, which means it was always active. So activate it
+		 * when upgrading to the new version!
+		 */
+		{
+			$addons = MS_Factory::load( 'MS_Model_Addon' );
+			lib2()->updates->add( array( $addons, 'enable' ), MS_Addon_Category::ID );
 		}
 
 		// Execute all queued actions!
