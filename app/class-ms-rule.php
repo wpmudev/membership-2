@@ -489,7 +489,6 @@ class MS_Rule extends MS_Model {
 					$start_date = $subscription->start_date;
 				} else {
 					$start_date = null;
-					do_action( 'lib2_debug_dump', 'No subscription...', $this );
 				}
 
 				$avail_date = $this->get_dripped_avail_date( $id, $start_date );
