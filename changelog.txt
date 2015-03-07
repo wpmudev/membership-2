@@ -6,7 +6,9 @@ Change Log:
 
 1.1.0.8
 ----------------------------------------------------------------------
+- Fix critical bug that deactivated all subscriptions for some sites
 - Fix the Member Capabilities rules
+- New Add-on "Category Protection" allows disabling the Category rules
 
 1.1.0.7
 ----------------------------------------------------------------------
