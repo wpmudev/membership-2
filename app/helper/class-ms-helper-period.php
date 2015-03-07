@@ -65,7 +65,7 @@ class MS_Helper_Period extends MS_Helper {
 		}
 
 		$end_dt = strtotime( '+' . $period_unit . $period_type , strtotime( $start_date ) );
-		if ( $end_dt === false ) {
+		if ( false === $end_dt ) {
 			throw new Exception( 'error add_interval' );
 		}
 
@@ -92,7 +92,7 @@ class MS_Helper_Period extends MS_Helper {
 		}
 
 		$end_dt = strtotime( '-' . $period_unit . $period_type , strtotime( $start_date ) );
-		if ( $end_dt === false ) {
+		if ( false === $end_dt ) {
 			throw new Exception( 'error subtract_interval' );
 		}
 
@@ -114,6 +114,11 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The resulting of the date subtraction.
 	 */
 	public static function subtract_dates( $end_date, $start_date ) {
+		if ( empty( $end_date ) ) {
+			// Empty end date is assumed to mean "never"
+			$end_date = '2999-12-31';
+		}
+
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
 
@@ -277,7 +282,7 @@ class MS_Helper_Period extends MS_Helper {
 
 		$types = self::get_period_types();
 
-		if ( $period_unit == 1 ) {
+		if ( 1 == $period_unit ) {
 			$desc = '%2$s';
 
 			if ( $include_quanity_one ) {
