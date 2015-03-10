@@ -180,6 +180,10 @@ class MS_Controller_Adminbar extends MS_Controller {
 					$redirect = wp_get_referer();
 				}
 			}
+
+			if ( ! $redirect ) {
+				$redirect = lib2()->net->current_url();
+			}
 		}
 
 		if ( $redirect ) {

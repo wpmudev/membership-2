@@ -39,6 +39,8 @@ class MS_View_Adminbar extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$sim = $this->data['subscription'];
+		$mem = $sim->get_membership();
+		$pay_types = $mem->get_payment_types();
 
 		if ( is_admin() ) {
 			$toggle_icon = 'dashicons-arrow-down';
@@ -100,11 +102,11 @@ class MS_View_Adminbar extends MS_View {
 				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="inside">
 					<tr>
 						<th><?php _e( 'Membership', MS_TEXT_DOMAIN ); ?></th>
-						<td style="white-space: nowrap"><?php echo esc_html( $sim->get_membership()->name ); ?></td>
+						<td style="white-space: nowrap"><?php echo esc_html( $mem->name ); ?></td>
 					</tr>
 					<tr>
 						<th><?php _e( 'Type', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( $sim->get_membership()->get_type_description() ); ?></td>
+						<td><?php echo esc_html( $mem->get_type_description() ); ?></td>
 					</tr>
 					<tr>
 						<th><?php _e( 'Start Date', MS_TEXT_DOMAIN ); ?></th>
@@ -122,7 +124,22 @@ class MS_View_Adminbar extends MS_View {
 					<?php endif; ?>
 					<tr>
 						<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( $sim->status ); ?></td>
+						<td><?php
+						if ( MS_Model_Relationship::STATUS_ACTIVE == $sim->status ) {
+							$status_class = 'ms-sim-active';
+						} else {
+							$status_class = 'ms-sim-inactive';
+						}
+						printf(
+							'<span class="%1$s">%2$s</span>',
+							$status_class,
+							$sim->status
+						);
+						?></td>
+					</tr>
+					<tr>
+						<th><?php _e( 'Payment model', MS_TEXT_DOMAIN ); ?></th>
+						<td><?php echo esc_html( $pay_types[ $mem->payment_type ] ); ?></td>
 					</tr>
 					<tr>
 						<th><?php _e( 'Payment details', MS_TEXT_DOMAIN ); ?></th>
@@ -436,6 +453,13 @@ class MS_View_Adminbar extends MS_View {
 		.ms-sim-info .ms-sim-denied {
 			background: #C33;
 		}
+		.ms-sim-info .ms-sim-active {
+			color: #060;
+		}
+		.ms-sim-info .ms-sim-inactive {
+			color: #F00;
+			font-weight: bold;
+		}
 		.ms-sim-info .ms-sim-rules {
 			margin: 0 0 20px 0;
 			padding: 0;
@@ -643,6 +667,9 @@ class MS_View_Adminbar extends MS_View {
 		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-content .ui-state-hover,
 		.ui-datepicker.wpmui-datepicker .ui-datepicker-calendar tbody .ui-widget-header .ui-state-hover {
 			background: #4F83AA;
+		}
+		.wpmui-datepicker {
+			z-index: 1000000 !important;
 		}
 		</style>
 		<script>
