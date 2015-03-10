@@ -77,9 +77,19 @@ class MS_Rule_Content_Model extends MS_Rule {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @var int
+	 * @var string
 	 */
 	protected static $comment_access = self::COMMENT_NO_ACCESS;
+
+	/**
+	 * Set to true, if the user did not specify any comment protection.
+	 * This means that the default logic should be used...
+	 *
+	 * @since  1.1.0.9
+	 *
+	 * @var bool
+	 */
+	protected static $comment_undefined = null;
 
 	/**
 	 * Verify access to the current content.
@@ -112,22 +122,36 @@ class MS_Rule_Content_Model extends MS_Rule {
 		// No comments on special pages (signup, account, ...)
 		$this->add_filter( 'the_content', 'check_special_page' );
 
-		$rule_value = $this->get_rule_value( self::CONTENT_ID );
-
 		/*
 		 * This is a static variable so it can collect the most generous
 		 * permission of any rule that is applied for the current user.
 		 */
-		if ( self::COMMENT_NO_ACCESS == self::$comment_access ) {
-			self::$comment_access = $rule_value;
-		} elseif ( self::COMMENT_READ == self::$comment_access ) {
-			if ( $rule_value = self::COMMENT_WRITE ) {
-				self::$comment_access = $rule_value;
+		if ( null === self::$comment_undefined ) {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$undef_full = ( null === $base_rule->get_rule_value( self::COMMENT_WRITE ) );
+			$undef_read = ( null === $base_rule->get_rule_value( self::COMMENT_READ ) );
+			$undef_none = ( null === $base_rule->get_rule_value( self::COMMENT_NO_ACCESS ) );
+
+			self::$comment_undefined = ( $undef_full && $undef_read && $undef_none );
+		}
+
+		if ( ! self::$comment_undefined ) {
+			// For comments: A undefined protection setting means "no access"
+			$has_full = $this->get_rule_value( self::COMMENT_WRITE );
+			$has_read = $this->get_rule_value( self::COMMENT_READ );
+			$has_none = $this->get_rule_value( self::COMMENT_NO_ACCESS );
+
+			if ( true === $has_full ) {
+				self::$comment_access = self::COMMENT_WRITE;
+			} elseif ( true === $has_read ) {
+				if ( self::$comment_access == self::COMMENT_NO_ACCESS ) {
+					self::$comment_access = self::COMMENT_READ;
+				}
 			}
 		}
 
 		$this->add_action(
-			'ms_model_plugin_setup_protection_after',
+			'ms_setup_protection_done',
 			'protect_comments'
 		);
 
@@ -137,7 +161,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 			MS_Model_Settings::PROTECTION_MSG_MORE_TAG
 		);
 
-		if ( ! parent::has_access( self::CONTENT_ID ) ) {
+		if ( ! parent::has_access( self::MORE_LIMIT ) ) {
 			$this->add_filter( 'the_content_more_link', 'show_moretag_protection', 99, 2 );
 			$this->add_filter( 'the_content', 'replace_more_tag_content', 1 );
 			$this->add_filter( 'the_content_feed', 'replace_more_tag_content', 1 );
@@ -334,7 +358,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 
 			// Search the special page name...
 			if ( ! empty( $args['s'] ) ) {
-				if ( stripos( $data->label, $args['s'] ) === false ) {
+				if ( false === stripos( $data->label, $args['s'] ) ) {
 					continue;
 				}
 			}
