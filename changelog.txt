@@ -4,9 +4,13 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.0
+----------------------------------------------------------------------
+- Fix simulation of dripped content
+
 1.1.0.9
 ----------------------------------------------------------------------
-- Fix bug that did  not allow users to enter a limited Coupon code
+- Fix bug that did not allow users to enter a limited Coupon code
 - Fix simulation mode for memberships with recurring payments
 - Fix small glitch in the Admin UI when Category Add-on is disabled
 - Fix the "Insert Variables" dropdown in Automated Email Settings
