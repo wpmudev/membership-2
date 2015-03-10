@@ -171,7 +171,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string The communication vars.
 	 */
-	protected $comm_vars;
+	protected $comm_vars = array();
 
 	/**
 	 * Communication queue of emails to send.
@@ -576,6 +576,21 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			'ms_model_communication_get_description',
 			$description
 		);
+	}
+
+	/**
+	 * Populates the field title/description of the Period before/after field
+	 * in the admin settings.
+	 *
+	 * Override this in child classes to customize the label.
+	 *
+	 * @since 1.1.0.9
+	 * @param array $field A HTML definition, passed to lib2()->html->element()
+	 */
+	public function set_period_name( $field ) {
+		$field['title'] = __( 'Period before/after', MS_TEXT_DOMAIN );
+
+		return $field;
 	}
 
 	/**

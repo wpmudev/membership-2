@@ -57,6 +57,20 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	}
 
 	/**
+	 * Populates the field title/description of the Period before/after field
+	 * in the admin settings.
+	 *
+	 * @since 1.1.0.9
+	 * @param array $field A HTML definition, passed to lib2()->html->element()
+	 */
+	public function set_period_name( $field ) {
+		$field['title'] = __( 'Message Delay', MS_TEXT_DOMAIN );
+		$field['desc'] = __( 'Use "0" to send instantly, or another value to delay the message.', MS_TEXT_DOMAIN );
+
+		return $field;
+	}
+
+	/**
 	 * Get communication description.
 	 *
 	 * @since 1.0.0

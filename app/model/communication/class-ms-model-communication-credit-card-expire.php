@@ -57,6 +57,20 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	}
 
 	/**
+	 * Populates the field title/description of the Period before/after field
+	 * in the admin settings.
+	 *
+	 * @since 1.1.0.9
+	 * @param array $field A HTML definition, passed to lib2()->html->element()
+	 */
+	public function set_period_name( $field ) {
+		$field['title'] = __( 'Notify Period', MS_TEXT_DOMAIN );
+		$field['desc'] = __( 'We want to notify the user some days in advance, so there is time to react.<br>Enter here, how many days in advance this message should be sent.', MS_TEXT_DOMAIN );
+
+		return $field;
+	}
+
+	/**
 	 * Get communication description.
 	 *
 	 * @since 1.0.0

@@ -54,6 +54,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				),
 			),
 
+			// Note: title/desc is overwritten by MS_Model_Communication (below)
 			'period_unit' => array(
 				'id' => 'period_unit',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -167,7 +168,8 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				);
 
 				if ( $comm->period_enabled ) {
-					echo '<div class="ms-period-wrapper">';
+					echo '<div class="ms-period-wrapper clear">';
+					$fields['period_unit'] = $comm->set_period_name( $fields['period_unit'] );
 					MS_Helper_Html::html_element( $fields['period_unit'] );
 					MS_Helper_Html::html_element( $fields['period_type'] );
 					echo '</div>';
