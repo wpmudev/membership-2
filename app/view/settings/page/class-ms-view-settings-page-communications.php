@@ -198,10 +198,8 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 	 */
 	public function wp_footer() {
 		$comm = $this->data['comm'];
-
-		if ( ! isset( $comm->comm_vars ) ) {
-			$comm->comm_vars = array();
-		}
+		$vars = $comm->comm_vars;
+		$vars = lib2()->array->get( $vars );
 
 		/**
 		 * Print JS details for the custom TinyMCE "Insert Variable" button
@@ -211,7 +209,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 		 */
 		$var_button = array(
 			'title' => __( 'Insert Membership Variables', MS_TEXT_DOMAIN ),
-			'items' => $comm->comm_vars,
+			'items' => $vars,
 		);
 
 		printf(
