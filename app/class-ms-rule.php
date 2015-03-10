@@ -184,7 +184,7 @@ class MS_Rule extends MS_Model {
 		if ( isset( $rule_types[ $rule_type ] ) ) {
 			$class = $rule_types[ $rule_type ];
 
-			$rule = MS_Factory::load( $class, $membership_id, $rule_type );
+			$rule = MS_Factory::load( $class, $membership_id, $subscription_id );
 			$rule->_subscription_id = $subscription_id;
 		} else {
 			MS_Helper_Debug::log( 'Rule type not registered: ' . $rule_type );

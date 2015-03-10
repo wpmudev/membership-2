@@ -119,7 +119,7 @@ class MS_View_Adminbar extends MS_View {
 					<?php if ( $this->data['datepicker'] ) : ?>
 					<tr>
 						<th><?php _e( 'Simulated Date', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( $this->data['simulate_date'] ); ?></td>
+						<td><?php echo esc_html( MS_Helper_Period::current_date() ); ?></td>
 					</tr>
 					<?php endif; ?>
 					<tr>

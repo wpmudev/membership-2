@@ -106,7 +106,7 @@ class MS_Factory {
 	public static function load( $class, $model_id = 0, $context = null ) {
 		$model = null;
 		$class = trim( $class );
-		$model_id = absint( $model_id );
+		$model_id = intval( $model_id );
 
 		$key = strtolower( $class . '-' . $model_id );
 		if ( null !== $context ) {
@@ -164,6 +164,19 @@ class MS_Factory {
 		}
 
 		return self::$singleton[$key];
+	}
+
+	/**
+	 * Allows us to manually set/replace a cached singleton object.
+	 * This function was introduced to store the simulation subscription as
+	 * a singleton with subscription ID -1
+	 *
+	 * @since 1.1.0.9
+	 * @param string $key
+	 * @param any $obj
+	 */
+	static public function set_singleton( $key, $obj ) {
+		self::$singleton[$key] = $obj;
 	}
 
 	/**

@@ -139,6 +139,9 @@ class MS_Model_Simulate extends MS_Model_Transient {
 				$subscription->expire_date = '2999-12-31';
 			}
 
+			$key = 'ms_model_relationship--1';
+			MS_Factory::set_singleton( $key, $subscription );
+
 			$this->subscription = $subscription;
 			$ms_relationships[ $this->membership_id ] = $subscription;
 		}

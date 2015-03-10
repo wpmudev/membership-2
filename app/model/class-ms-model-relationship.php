@@ -311,6 +311,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$subscription->user_id = $user_id;
 			$subscription->status = self::STATUS_PENDING;
 			$subscription->is_simulated = $is_simulated;
+
+			if ( $is_simulated ) {
+				$subscription->id = -1;
+			}
 		}
 
 		// Always update these fields.

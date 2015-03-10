@@ -343,6 +343,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function prepare_obj() {
 		parent::prepare_obj();
 
+		if ( false !== strpos( $this->_factory_id, '_is_valid_' ) ) {
+			// This object only checks if the item ID is valid.
+			// No need to load any rules yet...
+			return;
+		}
+
 		foreach ( $this->rule_values as $key => $values ) {
 			if ( empty( $values ) ) { continue; }
 			$rule = $this->get_rule( $key );
@@ -973,7 +979,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return bool True if is valid.
 	 */
 	public static function is_valid_membership( $membership_id ) {
-		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id, '_is_valid_' );
 		$valid = ( $membership->id > 0 );
 
 		return apply_filters(
