@@ -121,8 +121,11 @@
 .wpmui-wnd,
 .ms-wrap {
 	.wpmui-datepicker-wrapper {
-		display: inline-block;
-		position: relative;
+		/* only the wpmui-field-input needs to be inline-block/relative */
+		.wpmui-field-input {
+			display: inline-block;
+			position: relative;
+		}
 
 		.wpmui-icon {
 			position: absolute;

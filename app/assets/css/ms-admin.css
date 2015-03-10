@@ -744,6 +744,11 @@
 #wpadminbar .wpmui-datepicker-wrapper,
 .wpmui-wnd .wpmui-datepicker-wrapper,
 .ms-wrap .wpmui-datepicker-wrapper {
+  /* only the wpmui-field-input needs to be inline-block/relative */
+}
+#wpadminbar .wpmui-datepicker-wrapper .wpmui-field-input,
+.wpmui-wnd .wpmui-datepicker-wrapper .wpmui-field-input,
+.ms-wrap .wpmui-datepicker-wrapper .wpmui-field-input {
   display: inline-block;
   position: relative;
 }
