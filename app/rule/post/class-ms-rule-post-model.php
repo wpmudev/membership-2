@@ -123,10 +123,9 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
-		static $Did_Pre_Get_Posts = false;
-
-		if ( $Did_Pre_Get_Posts ) { return $wp_query; }
-		$Did_Pre_Get_Posts = true;
+		if ( empty( self::$denied_ids ) && empty( self::$allowed_ids ) ) {
+			return $wp_query;
+		}
 
 		if ( ! empty( self::$denied_ids ) ) {
 			// Remove duplicate entries from the ID arrays.
@@ -145,6 +144,9 @@ class MS_Rule_Post_Model extends MS_Rule {
 				self::$denied_ids
 			);
 		}
+
+		self::$denied_ids = array();
+		self::$allowed_ids = array();
 
 		do_action(
 			'ms_rule_post_model_protect_posts',
