@@ -858,7 +858,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			}
 
 			$recipients = apply_filters(
-				'ms_model_communication_send_message_html_message',
+				'ms_model_communication_send_message_recipients',
 				$recipients,
 				$this,
 				$subscription
