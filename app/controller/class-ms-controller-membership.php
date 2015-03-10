@@ -817,6 +817,11 @@ class MS_Controller_Membership extends MS_Controller {
 				$tabs[MS_Rule_Post::RULE_ID] = false;
 			}
 
+			// Optionally show "Category"
+			if ( ! MS_Model_Addon::is_enabled( MS_Addon_Category::ID ) ) {
+				$tabs[MS_Rule_Category::RULE_ID] = false;
+			}
+
 			// Either "CPT Group" or "CPT Posts"
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$tabs[MS_Rule_CptGroup::RULE_ID] = false;
