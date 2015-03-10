@@ -191,7 +191,7 @@ class MS_Controller_Billing extends MS_Controller {
 
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] );
 			if ( ! $invoice->is_valid() ) {
-				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship, false );
+				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship, true );
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 			} else {
 				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
