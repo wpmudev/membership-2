@@ -488,10 +488,6 @@ class MS_Model_Settings extends MS_Model_Option {
 				}
 				break;
 
-			case 'protection_enabled':
-				$value = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA );
-				break;
-
 			default:
 				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;

@@ -416,11 +416,11 @@ class MS_Plugin {
 		}
 
 		// Media / download
-		if ( ! empty( $settings->downloads['protection_enabled'] )
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA )
 			&& ! empty( $settings->downloads['masked_url'] )
 		) {
 			add_rewrite_rule(
-				sprintf( '^%1$s(.*)/?$', $settings->downloads['masked_url'] ),
+				sprintf( '^%1$s/(.+)/?$', $settings->downloads['masked_url'] ),
 				'index.php?protectedfile=$matches[1]',
 				'top'
 			);
