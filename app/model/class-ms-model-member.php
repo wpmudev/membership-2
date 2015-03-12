@@ -409,6 +409,7 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		$args['fields'] = array( 'ID', 'user_login' );
+		$args['number'] = 0;
 		$args = self::get_query_args( $args, $search_option );
 		$wp_user_search = new WP_User_Query( $args );
 		$users = $wp_user_search->get_results();
