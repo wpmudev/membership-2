@@ -273,6 +273,37 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	}
 
 	/**
+	 * Get rule value for a specific content.
+	 *
+	 * @since 1.1.1.0
+	 *
+	 * @param string $id The content id to get rule value for.
+	 * @return boolean The rule value for the requested content. Default $rule_value_default.
+	 */
+	public function get_rule_value( $id ) {
+		if ( is_scalar( $id ) && isset( $this->rule_value[ $id ] ) ) {
+			if ( $this->is_base_rule ) {
+				// The base-rule actually saves a menu_id as rule value.
+				$value = intval( $this->rule_value[ $id ] );
+			} else {
+				// Non-Base rules only save a boolean flag
+				$value = (bool) $this->rule_value[ $id ];
+			}
+		} else {
+			// Default response is NULL: "Not-Denied"
+			$value = MS_Model_Rule::RULE_VALUE_UNDEFINED;
+		}
+
+		return apply_filters(
+			'ms_get_rule_value',
+			$value,
+			$id,
+			$this->rule_type,
+			$this
+		);
+	}
+
+	/**
 	 * Set access status to content.
 	 *
 	 * @since 1.1.0
@@ -287,7 +318,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 				$delete = true;
 			} else {
 				$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
-				$replace = $base_rule->get_rule_value( $id );
+				$replace = true;
 			}
 		}
 
@@ -309,6 +340,10 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	public function give_access( $id ) {
 		if ( $this->is_base_rule ) {
 			// The base rule can only be updated via Ajax!
+			$cur_val = $this->get_rule_value( $id );
+			if ( empty( $cur_val ) ) {
+				$this->set_access( $id, true );
+			}
 			return;
 		} else {
 			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
