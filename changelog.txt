@@ -7,6 +7,9 @@ Change Log:
 1.1.1.0
 ----------------------------------------------------------------------
 - Fix simulation of dripped content
+- Fix Protected Content section for Advanced Menu Protection rules
+- Fix the User selection when manually creating a new invoice
+- Fix More Tag protection to correctly display the protection message
 
 1.1.0.9
 ----------------------------------------------------------------------
