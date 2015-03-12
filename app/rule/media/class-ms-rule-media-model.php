@@ -112,10 +112,19 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * }
 	 */
 	public static function get_protection_types() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$mask = $settings->downloads['masked_url'];
+		$example1 = home_url( $mask . date( '/Y/m/' ) . 'my-image.jpg' );
+		$example2 = home_url( $mask . '/ms_12345.jpg' );
+		$example3 = home_url( $mask . '/?ms_file=ms_12345.png' );
+		$example1 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example1 . '</small>';
+		$example2 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example2 . '</small>';
+		$example3 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example3 . '</small>';
+
 		$protection_types = array(
-			self::PROTECTION_TYPE_BASIC => __( 'Basic protection (default)', MS_TEXT_DOMAIN ),
-			self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', MS_TEXT_DOMAIN ),
-			self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ),
+			self::PROTECTION_TYPE_BASIC => __( 'Basic protection (default)', MS_TEXT_DOMAIN ) . $example1,
+			self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', MS_TEXT_DOMAIN ) . $example2,
+			self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ) . $example3,
 		);
 
 		return apply_filters(
@@ -200,7 +209,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 		 * Find all the urls in the post and then we'll check if they are protected
 		 * Regular expression from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without-the
 		 */
-		$url_exp =	'/((([A-Za-z]{3,9}:(?:\/\/)?)' .
+		$url_exp = '/((([A-Za-z]{3,9}:(?:\/\/)?)' .
 					'(?:[-;:&=\+\$,\w]+@)?'.
 					'[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?' .
 					'\??(?:[-\+=&;%@.\w_]*)#?(?:[.\!\/\\w]*))?)/';
@@ -211,7 +220,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 			if ( ! empty( $matches ) && ! empty( $matches[2] ) ) {
 				foreach ( (array) $matches[0] as $key => $domain ) {
-					if ( strpos( $domain, untrailingslashit( $home ) ) === 0 ) {
+					if ( 0 === strpos( $domain, untrailingslashit( $home ) ) ) {
 						$found_local = $key;
 						$file = basename( $matches[4][ $found_local ] );
 
