@@ -92,6 +92,15 @@ class MS_Rule_Content_Model extends MS_Rule {
 	protected static $comment_undefined = null;
 
 	/**
+	 * The message displayed below the "read more" mark.
+	 *
+	 * @since 1.1.1.0
+	 *
+	 * @var string
+	 */
+	protected $protection_message = '';
+
+	/**
 	 * Verify access to the current content.
 	 *
 	 * This rule will return NULL (not relevant), because the comments are
