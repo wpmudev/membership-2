@@ -295,7 +295,7 @@ class MS_Model_Member extends MS_Model {
 
 		if ( is_multisite() ) {
 			$reg_option = get_site_option( 'registration', 'none' );
-			if ( $reg_option == 'blog' ) {
+			if ( 'blog' == $reg_option ) {
 				// Creation of new blogs is allowd. Add User-Registration.
 				update_site_option( 'registration', 'all' );
 			} else {
@@ -860,6 +860,9 @@ class MS_Model_Member extends MS_Model {
 			'ms_model_membership_create_new_user_validation_errors',
 			$validation_errors
 		);
+
+		// Compatibility with WangGuard
+		$_POST['user_email'] = $this->email;
 
 		$result = apply_filters(
 			'wpmu_validate_user_signup',
