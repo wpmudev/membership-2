@@ -67,7 +67,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent when a member completes the signup for a membership.', MS_TEXT_DOMAIN
+			'Sent when a member completes the signup for a paid membership.', MS_TEXT_DOMAIN
 		);
 	}
 
