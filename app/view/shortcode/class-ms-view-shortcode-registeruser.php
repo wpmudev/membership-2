@@ -45,6 +45,9 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 
 		$title = $this->data['title'];
 		ob_start();
+
+		// Default WP action hook
+		do_action( 'before_signup_form' );
 		?>
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors(); ?>
@@ -68,6 +71,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 				 * @since 1.1.0
 				 */
 				do_action( 'register_form' );
+				do_action( 'signup_extra_fields', array() );
 
 				MS_Helper_Html::html_element( $register_button );
 
@@ -88,6 +92,10 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			?>
 		</div>
 		<?php
+		// Default WP action hook.
+		do_action( 'signup_blogform', array() );
+		do_action( 'after_signup_form' );
+
 		$html = ob_get_clean();
 
 		return apply_filters(

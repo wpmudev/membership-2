@@ -290,7 +290,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Show payment table.
 			 */
 			case self::STEP_PAYMENT_TABLE:
-				$this->add_filter(  'the_content', 'payment_table', 1 );
+				$this->add_filter( 'the_content', 'payment_table', 1 );
 				break;
 
 			/**
@@ -484,11 +484,17 @@ class MS_Controller_Frontend extends MS_Controller {
 		try {
 			$user = MS_Factory::create( 'MS_Model_Member' );
 
-			foreach ( $_REQUEST as $field => $value ) {
+			// Default WP registration filter
+			$fields = apply_filters( 'signup_user_init', $_REQUEST );
+			foreach ( $fields as $field => $value ) {
 				$user->$field = $value;
 			}
 
 			$user->save();
+
+			// Default WP action hook
+			do_action( 'signup_finished' );
+
 			$user->signon_user();
 
 			if ( ! MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
