@@ -4,6 +4,11 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.1
+----------------------------------------------------------------------
+- Make Protected Content compatible with WangGuard plugin
+- Add some registration hooks for compatiblity with WordPress code
+
 1.1.1.0
 ----------------------------------------------------------------------
 - Fix simulation of dripped content
