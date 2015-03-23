@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.2
+----------------------------------------------------------------------
+- Make Stripe Gateway compatible with Stripe-API changes 2015-02-18
+
 1.1.1.1
 ----------------------------------------------------------------------
 - Make Protected Content compatible with WangGuard plugin
