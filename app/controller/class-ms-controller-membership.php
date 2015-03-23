@@ -184,7 +184,7 @@ class MS_Controller_Membership extends MS_Controller {
 						remove_query_arg( array( 'membership_id' ) )
 					);
 				}
-			} elseif ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] === 'protected-content-setup' ) {
+			} elseif ( isset( $_REQUEST['page'] ) && 'protected-content-setup' == $_REQUEST['page'] ) {
 				$membership_id = MS_Model_Membership::get_base()->id;
 			}
 
@@ -221,6 +221,22 @@ class MS_Controller_Membership extends MS_Controller {
 		$completed = false;
 		$is_wizard = MS_Plugin::is_wizard();
 		$save_data = array();
+
+		// Check if user came from WPMU Dashboard plugin
+		if ( ! MS_Plugin::is_wizard() ) {
+			$referer = $_SERVER['HTTP_REFERER'];
+			$params = parse_url( $referer, PHP_URL_QUERY );
+			$fields = array();
+			parse_str( $params, $fields );
+			if ( 'wpmudev-plugins' == $fields['page'] ) {
+				$url = admin_url(
+					'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings'
+				);
+
+				wp_safe_redirect( $url );
+				exit;
+			}
+		}
 
 		// MS_Controller_Rule is executed using this action.
 		do_action(
@@ -351,13 +367,13 @@ class MS_Controller_Membership extends MS_Controller {
 				$cmd = array();
 			} elseif ( empty( $rule_type ) ) {
 				$cmd = array();
-			} elseif ( $action == '-1' ) {
+			} elseif ( '-1' == $action ) {
 				$cmd = array();
 			} else {
 				$cmd = explode( '-', $action );
 			}
 
-			if ( count( $cmd ) == 2 ){
+			if ( 2 == count( $cmd ) ) {
 				$action = $cmd[0];
 				$action_id = $cmd[1];
 
