@@ -336,12 +336,21 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 */
 	protected function save_card_info( $member ) {
 		$customer = $this->get_stripe_customer( $member );
-		$card = $customer->cards->retrieve( $customer->default_card );
+
+		// Stripe API until version 2015-02-16
+		if ( ! empty( $customer->cards ) ) {
+			$card = $customer->cards->retrieve( $customer->default_card );
+		}
+
+		// Stripe API since 2015-02-18
+		if ( ! empty( $customer->sources ) ) {
+			$card = $customer->sources->retrieve( $customer->default_source );
+		}
 
 		$member->set_gateway_profile(
 			$this->id,
 			'card_exp',
-			gmdate( 'Y-m-t', strtotime( "{$card->exp_year}-{$card->exp_month}-01" ) )
+			gmdate( 'Y-m-d', strtotime( "{$card->exp_year}-{$card->exp_month}-01" ) )
 		);
 		$member->set_gateway_profile( $this->id, 'card_num', $card->last4 );
 		$member->save();
@@ -360,8 +369,20 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$this->load_stripe_lib();
 
 		$customer = $this->get_stripe_customer( $member );
-		$card = $customer->cards->create( array( 'card' => $token ) );
-		$customer->default_card = $card->id;
+
+		$card = false;
+		// Stripe API until version 2015-02-16
+		if ( ! empty( $customer->cards ) ) {
+			$card = $customer->cards->create( array( 'card' => $token ) );
+			$customer->default_card = $card->id;
+		}
+
+		// Stripe API since 2015-02-18
+		if ( ! empty( $customer->sources ) ) {
+			$card = $customer->sources->create( array( 'card' => $token ) );
+			$customer->default_source = $card->id;
+		}
+
 		$customer->save();
 		$this->save_card_info( $member );
 
