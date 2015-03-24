@@ -176,7 +176,6 @@ class MS_Model_Addon extends MS_Model_Option {
 					$addons[$key]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
 				}
 
-
 				if ( empty( $addons[$key]->action ) ) {
 					$addons[$key]->action = array();
 					$addons[$key]->action[] = array(
@@ -466,11 +465,25 @@ class MS_Model_Addon extends MS_Model_Option {
 					'id' => 'protection_type',
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 					'title' => __( 'Protection method', MS_TEXT_DOMAIN ),
+					'desc' => __( 'You can change the way that Protected Content changes the default URL to your WordPress media library files.<br>This is done for increased protection by hiding the real filename and path.', MS_TEXT_DOMAIN ),
 					'value' => $settings->downloads['protection_type'],
 					'field_options' => MS_Rule_Media_Model::get_protection_types(),
 					'data_ms' => array(
 						'field' => 'protection_type',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' => true, // Nonce will be generated from 'action'
+					),
+				),
+				array(
+					'id' => 'advanced',
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'title' => __( 'Protect Individual Media files', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Enable this to display a new tab in "Protected Content" where you can manually modify access to each media library item.<br>Default: When this option is disabled then the parent-post controls the access to the media file.', MS_TEXT_DOMAIN ),
+					'value' => self::is_enabled( MS_Addon_Mediafiles::ID ),
+					'data_ms' => array(
+						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' => 'active',
+						'addon' => MS_Addon_Mediafiles::ID,
 						'_wpnonce' => true, // Nonce will be generated from 'action'
 					),
 				),

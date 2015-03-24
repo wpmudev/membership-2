@@ -815,6 +815,7 @@ class MS_Controller_Membership extends MS_Controller {
 				MS_Rule_CptItem::RULE_ID => true,
 				MS_Rule_CptGroup::RULE_ID => true,
 				MS_Rule_Content::RULE_ID => true,
+				MS_Rule_Media::RULE_ID => true,
 				MS_Rule_MenuItem::RULE_ID => true,
 				MS_Rule_ReplaceMenu::RULE_ID => true,
 				MS_Rule_ReplaceLocation::RULE_ID => true,
@@ -836,6 +837,11 @@ class MS_Controller_Membership extends MS_Controller {
 			// Optionally show "Category"
 			if ( ! MS_Model_Addon::is_enabled( MS_Addon_Category::ID ) ) {
 				$tabs[MS_Rule_Category::RULE_ID] = false;
+			}
+
+			// Optionally show "Media"
+			if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) ) {
+				$tabs[MS_Rule_Media::RULE_ID] = false;
 			}
 
 			// Either "CPT Group" or "CPT Posts"
