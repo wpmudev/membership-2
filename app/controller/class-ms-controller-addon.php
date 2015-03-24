@@ -102,6 +102,9 @@ class MS_Controller_Addon extends MS_Controller {
 			} else {
 				$msg = $this->save_addon( 'toggle_activation', $addon );
 			}
+
+			// Some Add-ons require to flush WP rewrite rules.
+			flush_rewrite_rules();
 		}
 
 		echo $msg;

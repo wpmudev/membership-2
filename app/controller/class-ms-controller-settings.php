@@ -150,6 +150,9 @@ class MS_Controller_Settings extends MS_Controller {
 				$_POST['action'],
 				array( $_POST['field'] => $_POST['value'] )
 			);
+
+			// Some settings require to flush WP rewrite rules.
+			flush_rewrite_rules();
 		}
 
 		wp_die( $msg );

@@ -416,15 +416,25 @@ class MS_Plugin {
 		}
 
 		// Media / download
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA )
-			&& ! empty( $settings->downloads['masked_url'] )
-		) {
-			add_rewrite_rule(
-				sprintf( '^%1$s/(.+)/?$', $settings->downloads['masked_url'] ),
-				'index.php?protectedfile=$matches[1]',
-				'top'
-			);
+		$mmask = $settings->downloads['masked_url'];
+		$mtype = $settings->downloads['protection_type'];
+
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) && $mmask ) {
+			if ( MS_Rule_Media_Model::PROTECTION_TYPE_HYBRID == $mtype ) {
+				add_rewrite_rule(
+					sprintf( '^%1$s/?$', $mmask ),
+					'index.php?protectedfile=0',
+					'top'
+				);
+			} else {
+				add_rewrite_rule(
+					sprintf( '^%1$s/([^/]+)', $mmask ),
+					'index.php?protectedfile=$matches[1]',
+					'top'
+				);
+			}
 		}
+		// End: Media / download
 
 		do_action( 'ms_plugin_add_rewrite_rules', $this );
 	}
