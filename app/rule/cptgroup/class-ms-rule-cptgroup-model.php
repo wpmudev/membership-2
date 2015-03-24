@@ -83,6 +83,7 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 
 		// There was one case where this was needed...
 		if ( empty( $post_types )
+			&& ! $wp_query->is_posts_page
 			&& isset( $wp_query->queried_object )
 			&& isset( $wp_query->queried_object->post_type )
 		) {

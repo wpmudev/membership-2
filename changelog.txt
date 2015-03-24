@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - Add compatiblity for new  Stripe Gateway API (update from 2015-02-18)
 - Fix error when paying with the Authorize.net payment gateway
+- Fix an issue where a static blog-page would not display any posts
 
 1.1.1.1
 ----------------------------------------------------------------------
