@@ -289,7 +289,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 			if ( $transaction_response->approved ) {
 				$external_id = $response->getTransactionResponse()->transaction_id;
-				$invoice->pay_id( $this->id, $external_id );
+				$invoice->pay_it( $this->id, $external_id );
 			} else {
 				throw new Exception(
 					sprintf(
