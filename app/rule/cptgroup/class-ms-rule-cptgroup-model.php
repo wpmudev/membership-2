@@ -57,16 +57,14 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. Not used.
 	 */
-	public function protect_content( $ms_relationship = false ) {
+	public function protect_content() {
 		/*
 		 * Only protect if cpt group.
 		 * Protect in list rather than on a single post.
 		 */
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			parent::protect_content( $ms_relationship );
+			parent::protect_content();
 			$this->add_action( 'parse_query', 'protect_posts', 98 );
 		}
 	}

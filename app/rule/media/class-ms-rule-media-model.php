@@ -159,13 +159,12 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function initialize() {
+		parent::protect_content();
 
-		$this->ms_relationship = $ms_relationship;
+// Add Filter: get_attachment_link
+
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			$this->add_filter( 'the_content', 'protect_download_content' );
 			$this->add_action( 'pre_get_posts', 'handle_download_protection', 3 );

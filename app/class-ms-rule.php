@@ -200,24 +200,41 @@ class MS_Rule extends MS_Model {
 	}
 
 	/**
-	 * Set initial protection for front-end.
+	 * Set up the rule.
+	 * This is called right before either the protect_content() or
+	 * protect_admin_content() function is called.
 	 *
 	 * To be overridden by children classes.
 	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship The membership relationship to protect content from.
 	 */
-	public function protect_content( $subscription = false ) {
+	public function prepare_rule( $subscription = false ) {
 		if ( $subscription ) {
 			$this->_subscription_id = $subscription->id;
+			$this->membership_id = $subscription->membership_id;
 		}
 
 		do_action(
-			'ms_rule_protect_content',
+			'ms_rule_initialize',
 			$subscription,
 			$this
 		);
 	}
+
+	/**
+	 * Set initial protection for front-end.
+	 *
+	 * To be overridden by children classes.
+	 *
+	 * @since 1.0.0
+	 */
+	public function protect_content() {
+		do_action(
+			'ms_rule_protect_content',
+			$this
+		);
+		}
 
 	/**
 	 * Set initial protection for admin side.
@@ -225,16 +242,10 @@ class MS_Rule extends MS_Model {
 	 * To be overridden by children classes.
 	 *
 	 * @since 1.1
-	 * @param MS_Model_Relationship The membership relationship to protect content from.
 	 */
-	public function protect_admin_content( $subscription = false ) {
-		if ( $subscription ) {
-			$this->_subscription_id = $subscription->id;
-		}
-
+	public function protect_admin_content() {
 		do_action(
 			'ms_rule_protect_admin_content',
-			$subscription,
 			$this
 		);
 	}

@@ -91,11 +91,9 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function protect_content() {
+		parent::protect_content();
 
 		$this->add_filter( 'wp_setup_nav_menu_item', 'prepare_menuitem', 10, 3 );
 		$this->add_filter( 'wp_get_nav_menu_items', 'protect_menuitems', 10, 3 );

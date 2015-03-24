@@ -112,17 +112,6 @@ class MS_Rule_Special_Model extends MS_Rule {
 	}
 
 	/**
-	 * Set initial protection.
-	 *
-	 * @since 1.0.4
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
-	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
-	}
-
-	/**
 	 * Verify access to the current page.
 	 *
 	 * @since 1.0.4

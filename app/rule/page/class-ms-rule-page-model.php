@@ -61,11 +61,9 @@ class MS_Rule_Page_Model extends MS_Rule {
 	 * Set initial protection (front-end only)
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function protect_content() {
+		parent::protect_content();
 
 		$this->add_filter( 'get_pages', 'protect_pages', 99 );
 	}
@@ -116,7 +114,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 		$page_id = null;
 		$post = get_queried_object();
 
-		if ( is_a( $post, 'WP_Post' ) && $post->post_type === 'page' )  {
+		if ( is_a( $post, 'WP_Post' ) && 'page' == $post->post_type )  {
 			$page_id = $post->ID;
 		}
 
@@ -143,7 +141,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 			$id = $this->get_current_page_id();
 		} else {
 			$post = get_post( $id );
-			if ( ! is_a( $post, 'WP_Post' ) || $post->post_type != 'page' )  {
+			if ( ! is_a( $post, 'WP_Post' ) || 'page' != $post->post_type )  {
 				$id = 0;
 			}
 		}

@@ -77,11 +77,9 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.1
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_admin_content( $ms_relationship = false ) {
-		parent::protect_admin_content( $ms_relationship );
+	public function protect_admin_content() {
+		parent::protect_admin_content();
 
 		/*
 		 * Find out which menu items are allowed.
@@ -238,7 +236,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 					$skip_parent = true;
 				} elseif ( ! empty( $args['s'] ) ) {
 					// Search the submenu name...
-					if ( stripos( $parent_name, $args['s'] ) === false ) {
+					if ( false === stripos( $parent_name, $args['s'] ) ) {
 						$skip_parent = true;
 					}
 				}
@@ -259,7 +257,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 
 						// Search the submenu name...
 						if ( $skip_parent && ! empty( $args['s'] ) ) {
-							if ( stripos( $child_name, $args['s'] ) === false ) {
+							if ( false === stripos( $child_name, $args['s'] ) ) {
 								continue;
 							}
 						}

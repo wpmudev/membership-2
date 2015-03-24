@@ -260,7 +260,7 @@ class MS_Model_Plugin extends MS_Model {
 					}
 
 					// If permission is not clear yet then check current membership...
-					if ( $Info['has_access'] !== true ) {
+					if ( true !== $Info['has_access'] ) {
 						$membership = $subscription->get_membership();
 						$access = $membership->has_access_to_current_page();
 
@@ -458,11 +458,6 @@ class MS_Model_Plugin extends MS_Model {
 
 		do_action( 'ms_setup_protection', $this );
 
-		// Admin user has access to everything
-		if ( $this->member->is_normal_admin() ) {
-			return true;
-		}
-
 		// Search permissions through all memberships joined.
 		foreach ( $this->member->subscriptions as $subscription ) {
 			// Verify status of the membership.
@@ -472,7 +467,12 @@ class MS_Model_Plugin extends MS_Model {
 			}
 
 			$membership = $subscription->get_membership();
-			$membership->protect_content( $subscription );
+			$membership->initialize( $subscription );
+
+			// Protection is not applied for Admin users
+			if ( ! $this->member->is_normal_admin() ) {
+				$membership->protect_content();
+			}
 		}
 
 		do_action( 'ms_setup_protection_done', $this );
@@ -497,11 +497,6 @@ class MS_Model_Plugin extends MS_Model {
 
 		do_action( 'ms_setup_admin_protection', $this );
 
-		// Admin user has access to everything
-		if ( $this->member->is_normal_admin() ) {
-			return true;
-		}
-
 		// Search permissions through all memberships joined.
 		foreach ( $this->member->subscriptions as $subscription ) {
 			// Verify status of the membership.
@@ -511,7 +506,12 @@ class MS_Model_Plugin extends MS_Model {
 			}
 
 			$membership = $subscription->get_membership();
-			$membership->protect_admin_content( $subscription );
+			$membership->initialize( $subscription );
+
+			// Protection is not applied for Admin users
+			if ( ! $this->member->is_normal_admin() ) {
+				$membership->protect_admin_content();
+			}
 		}
 
 		do_action( 'ms_setup_admin_protection_done', $this );

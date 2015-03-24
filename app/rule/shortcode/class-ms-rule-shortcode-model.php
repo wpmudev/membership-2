@@ -92,17 +92,15 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 * Add [ms-protect-content] shortcode to protect membership content inside post.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship The user membership details.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function protect_content() {
+		parent::protect_content();
 
-		self::$membership_ids[] = $ms_relationship->membership_id;
+		self::$membership_ids[] = $this->membership_id;
 
 		add_shortcode(
 			self::PROTECT_CONTENT_SHORTCODE,
-			array( $this, 'protect_content_shortcode')
+			array( 'MS_Rule_Shortcode_Model', 'protect_content_shortcode' )
 		);
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
@@ -162,7 +160,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 * @param string $code The shortcode code.
 	 * @return string The shortcode output
 	 */
-	public function protect_content_shortcode( $atts, $content = null, $code = '' ) {
+	static public function protect_content_shortcode( $atts, $content = null, $code = '' ) {
 		$atts = apply_filters(
 			'ms_model_shortcode_protect_content_shortcode_atts',
 			shortcode_atts(
@@ -195,7 +193,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		if ( ! $access ) {
 			// No access to member of membership_ids
 
-			if ( $this->is_member_of( $membership_ids ) ) {
+			if ( self::is_member_of( $membership_ids ) ) {
 				// User belongs to these memberships and therefore cannot see
 				// this content...
 
@@ -219,7 +217,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		} else {
 			// Give access to member of membership_ids
 
-			if ( ! $this->is_member_of( $membership_ids ) ) {
+			if ( ! self::is_member_of( $membership_ids ) ) {
 				// User does not belong to these memberships and therefore
 				// cannot see this content...
 
@@ -247,8 +245,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 			do_shortcode( $content ),
 			$atts,
 			$content,
-			$code,
-			$this
+			$code
 		);
 	}
 
@@ -260,7 +257,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 *
 	 * @return bool
 	 */
-	protected function is_member_of( $ids ) {
+	static protected function is_member_of( $ids ) {
 		$result = false;
 
 		if ( empty( $ids ) ) {

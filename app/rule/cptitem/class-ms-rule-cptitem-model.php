@@ -57,16 +57,14 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. Not used.
 	 */
-	public function protect_content( $ms_relationship = false ) {
+	public function protect_content() {
 		/**
 		 * Only protect if not cpt group.
 		 * Restrict query to show only has_access cpt posts.
 		 */
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
-			parent::protect_content( $ms_relationship );
+			parent::protect_content();
 			$this->add_action( 'parse_query', 'protect_posts', 98 );
 		}
 	}
@@ -246,7 +244,7 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 		foreach ( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Rule_CptItem::RULE_ID;
-			$content->access = $this->get_rule_value( $content->id  );
+			$content->access = $this->get_rule_value( $content->id );
 		}
 
 		return apply_filters(

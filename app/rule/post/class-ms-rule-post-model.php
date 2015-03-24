@@ -74,11 +74,9 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function protect_content() {
+		parent::protect_content();
 
 		$this->add_action( 'pre_get_posts', 'find_protected_posts', 99 );
 		$this->add_action( 'pre_get_posts', 'protect_posts', 100 );

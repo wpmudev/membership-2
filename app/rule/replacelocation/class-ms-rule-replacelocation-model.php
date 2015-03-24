@@ -79,11 +79,9 @@ class MS_Rule_ReplaceLocation_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.0.4.2
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function protect_content() {
+		parent::protect_content();
 
 		/*
 		 * This filter is called by get_theme_mod() in wp-includes/theme.php

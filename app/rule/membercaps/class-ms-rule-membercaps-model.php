@@ -84,11 +84,9 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.1.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_content( $ms_relationship = false ) {
-		parent::protect_content( $ms_relationship );
+	public function protect_content() {
+		parent::protect_content();
 
 		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
 		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
@@ -98,11 +96,9 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * Set initial protection.
 	 *
 	 * @since 1.1.0
-	 *
-	 * @param MS_Model_Relationship $ms_relationship Optional. The membership relationship.
 	 */
-	public function protect_admin_content( $ms_relationship = false ) {
-		parent::protect_admin_content( $ms_relationship );
+	public function protect_admin_content() {
+		parent::protect_admin_content();
 
 		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
 		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
@@ -267,7 +263,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 		// Search the shortcode-tag...
 		if ( ! empty( $args['s'] ) ) {
 			foreach ( $contents as $key => $name ) {
-				if ( stripos( $name, $args['s'] ) === false ) {
+				if ( false === stripos( $name, $args['s'] ) ) {
 					unset( $contents[$key] );
 				}
 			}

@@ -1597,17 +1597,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Set initial protection for front-end.
-	 *
-	 * Hide restricted content for this membership.
+	 * Set up the membership. This is always done, regardless if the user is
+	 * a normal user or an Admin user.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
 	 */
-	public function protect_content( $ms_relationship ) {
+	public function initialize( $subscription ) {
 		do_action(
-			'ms_model_membership_protect_content_before',
-			$ms_relationship,
+			'ms_model_membership_initialize_before',
+			$subscription,
 			$this
 		);
 
@@ -1615,12 +1614,39 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		// Apply protection settings of all rules (replace/hide contents, ...)
 		foreach ( $rules as $rule ) {
-			$rule->protect_content( $ms_relationship );
+			$rule->prepare_rule( $subscription );
+		}
+
+		do_action(
+			'ms_model_membership_initialize_after',
+			$subscription,
+			$this
+		);
+	}
+
+	/**
+	 * Set initial protection for front-end.
+	 * This function is only executed when the current user is no Admin user.
+	 *
+	 * Hide restricted content for this membership.
+	 *
+	 * @since 1.0.0
+	 */
+	public function protect_content() {
+		do_action(
+			'ms_model_membership_protect_content_before',
+			$this
+		);
+
+		$rules = $this->get_rules_hierarchy();
+
+		// Apply protection settings of all rules (replace/hide contents, ...)
+		foreach ( $rules as $rule ) {
+			$rule->protect_content();
 		}
 
 		do_action(
 			'ms_model_membership_protect_content_after',
-			$ms_relationship,
 			$this
 		);
 	}
@@ -1631,24 +1657,21 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Hide restricted content for this membership.
 	 *
 	 * @since 1.1
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
 	 */
-	public function protect_admin_content( $ms_relationship ) {
+	public function protect_admin_content() {
 		do_action(
 			'ms_model_membership_protect_content_before',
-			$ms_relationship,
 			$this
 		);
 
 		$rules = $this->get_rules_hierarchy();
 
 		foreach ( $rules as $rule ) {
-			$rule->protect_admin_content( $ms_relationship );
+			$rule->protect_admin_content();
 		}
 
 		do_action(
 			'ms_model_membership_protect_content_after',
-			$ms_relationship,
 			$this
 		);
 	}
