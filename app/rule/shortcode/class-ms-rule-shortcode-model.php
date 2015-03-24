@@ -42,6 +42,15 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	protected $rule_type = MS_Rule_Shortcode::RULE_ID;
 
 	/**
+	 * Holds the membership-IDs of all memberships of the user.
+	 *
+	 * @since  1.1.1.2
+	 *
+	 * @var array
+	 */
+	static protected $membership_ids = array();
+
+	/**
 	 * Protect content shortcode.
 	 *
 	 * @since 1.0.0
@@ -89,7 +98,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	public function protect_content( $ms_relationship = false ) {
 		parent::protect_content( $ms_relationship );
 
-		$this->membership_id = $ms_relationship->membership_id;
+		self::$membership_ids[] = $ms_relationship->membership_id;
 
 		add_shortcode(
 			self::PROTECT_CONTENT_SHORTCODE,
@@ -119,7 +128,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 *
 	 * This shortcode is executed to replace a protected shortcode.
 	 *
-	 *  @since 1.0.0
+	 * @since 1.0.0
 	 */
 	public function do_protected_shortcode() {
 		$content = null;
@@ -144,7 +153,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 *
 	 * self::PROTECT_CONTENT_SHORTCODE
 	 *
-	 * Verify if content is protected comparing to membership_id.
+	 * Verify if content is protected comparing to self::$membership_ids.
 	 *
 	 * @since 1.0.0
 	 *
@@ -261,8 +270,11 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 				$ids = array( $ids );
 			}
 
-			if ( in_array( $this->membership_id, $ids ) ) {
-				$result = true;
+			foreach ( self::$membership_ids as $the_id ) {
+				if ( in_array( $the_id, $ids ) ) {
+					$result = true;
+					break;
+				}
 			}
 		}
 
@@ -311,7 +323,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 
 			// Search the shortcode-tag...
 			if ( ! empty( $args['s'] ) ) {
-				if ( stripos( $key, $args['s'] ) === false ) {
+				if ( false === stripos( $key, $args['s'] ) ) {
 					continue;
 				}
 			}
