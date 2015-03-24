@@ -234,7 +234,7 @@ class MS_Rule extends MS_Model {
 			'ms_rule_protect_content',
 			$this
 		);
-		}
+	}
 
 	/**
 	 * Set initial protection for admin side.
@@ -474,6 +474,10 @@ class MS_Rule extends MS_Model {
 	 * @return boolean TRUE if has access, FALSE otherwise.
 	 */
 	public function has_access( $id ) {
+		if ( MS_Model_Member::is_normal_admin() ) {
+			return true;
+		}
+
 		/*
 		 * $access will be one of these:
 		 *   - TRUE .. Access explicitly granted

@@ -70,8 +70,6 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 */
 	const FILE_PROTECTION_INCREMENT = 2771;
 
-	protected $ms_relationship;
-
 	/**
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
@@ -97,7 +95,13 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id ) {
-		return null;
+		if ( MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID )
+			&& 'attachment' == get_post_type( $id )
+		) {
+			return parent::has_access( $id );
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -116,7 +120,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 		$mask = $settings->downloads['masked_url'];
 		$example1 = home_url( $mask . date( '/Y/m/' ) . 'my-image.jpg' );
 		$example2 = home_url( $mask . '/ms_12345.jpg' );
-		$example3 = home_url( $mask . '/?ms_file=ms_12345.png' );
+		$example3 = home_url( $mask . '/?ms_file=ms_12345.jpg' );
 		$example1 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example1 . '</small>';
 		$example2 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example2 . '</small>';
 		$example3 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example3 . '</small>';
@@ -167,7 +171,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			$this->add_filter( 'the_content', 'protect_download_content' );
-			$this->add_action( 'pre_get_posts', 'handle_download_protection', 3 );
+			$this->add_action( 'parse_request', 'handle_download_protection', 3 );
 		}
 	}
 
@@ -206,7 +210,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 		/*
 		 * Find all the urls in the post and then we'll check if they are protected
-		 * Regular expression from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without-the
+		 * Regex from http://blog.mattheworiordan.com/post/13174566389/url-regular-expression-for-links-with-or-without-the
 		 */
 		$url_exp = '/((([A-Za-z]{3,9}:(?:\/\/)?)' .
 					'(?:[-;:&=\+\$,\w]+@)?'.
@@ -264,7 +268,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 										str_replace(
 											$original_url,
 											$new_path,
-											$matches[0][ $found_local ]
+											$matches[0][$found_local]
 										),
 										$the_content
 									);
@@ -303,8 +307,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 			// Image with an image size attached
 			$filename = $filematch[1] . '.' . $filematch[3];
 			$size_extension = '-' . $filematch[2];
-		}
-		else {
+		} else {
 			$filename = $file;
 			$size_extension = '';
 		}
@@ -384,32 +387,37 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 *
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
-	public function handle_download_protection( $wp_query ) {
+	public function handle_download_protection( $query ) {
 		do_action(
 			'ms_rule_media_model_handle_download_protection_before',
-			$wp_query,
+			$query,
 			$this
 		);
 
+		$the_file = false;
+		$requested_item = false;
 		$download_settings = MS_Plugin::instance()->settings->downloads;
+		$protection_type = $download_settings['protection_type'];
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			return;
 		}
 
-		if ( ! empty( $wp_query->query_vars['protectedfile'] ) ) {
-			$protected = explode( '/', $wp_query->query_vars['protectedfile'] );
-			$protected = array_pop( $protected );
+		if ( ! empty( $query->query_vars['protectedfile'] ) ) {
+			$requested_item = explode( '/', $query->query_vars['protectedfile'] );
+			$requested_item = array_pop( $requested_item );
 		} elseif ( ! empty( $_GET['ms_file'] )
-			&& self::PROTECTION_TYPE_HYBRID === $download_settings['protection_type']
+			&& self::PROTECTION_TYPE_HYBRID == $protection_type
 		) {
-			$protected = $_GET['ms_file'];
+			$requested_item = $_GET['ms_file'];
 		}
 
-		if ( ! empty( $protected ) ) {
-			extract( $this->extract_file_info( $protected ) );
+		if ( ! empty( $requested_item ) ) {
+			// At this point we know that the requested post is an attachment.
 
-			switch ( $download_settings['protection_type'] ) {
+			extract( $this->extract_file_info( $requested_item ) );
+
+			switch ( $protection_type ) {
 				case self::PROTECTION_TYPE_COMPLETE:
 				case self::PROTECTION_TYPE_HYBRID:
 					// Work out the post_id again
@@ -420,27 +428,23 @@ class MS_Rule_Media_Model extends MS_Rule {
 					);
 					$attachment_id -= (int) self::FILE_PROTECTION_INCREMENT;
 
-					$image = $this->restore_filename( $attachment_id, $size_extension );
+					$the_file = $this->restore_filename( $attachment_id, $size_extension );
 					break;
 
 				default:
 				case self::PROTECTION_TYPE_BASIC:
 					$attachment_id = $this->get_attachment_id( $filename );
-					$image = $this->restore_filename( $attachment_id, $size_extension );
+					$the_file = $this->restore_filename( $attachment_id, $size_extension );
 					break;
 			}
 
-			if ( ! empty( $image )
+			if ( ! empty( $the_file )
 				&& ! empty( $attachment_id )
 				&& is_numeric( $attachment_id )
 			) {
-				$post_id = get_post_field( 'post_parent', $attachment_id );
-
-				// check for access configuration
-				$membership = $this->ms_relationship->get_membership();
-				if ( $membership->has_access_to_current_page( $post_id ) ) {
+				if ( $this->can_access_file( $attachment_id ) ) {
 					$upload_dir = wp_upload_dir();
-					$file = trailingslashit( $upload_dir['basedir'] ) . $image;
+					$file = trailingslashit( $upload_dir['basedir'] ) . $the_file;
 					$this->output_file( $file );
 				} else {
 					$this->show_no_access_image();
@@ -450,8 +454,59 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 		do_action(
 			'ms_rule_media_model_handle_download_protection_after',
-			$wp_query,
+			$query,
 			$this
+		);
+	}
+
+	/**
+	 * Checks if the current user can access the specified attachment.
+	 *
+	 * @since  1.1.1.2
+	 * @param  int $attachment_id
+	 * @return bool
+	 */
+	public function can_access_file( $attachment_id ) {
+		$access = false;
+
+		if ( MS_Model_Member::is_normal_admin() ) {
+			return true;
+		}
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) ) {
+			/*
+			 * Default protection mode:
+			 * Protect Attachments based on the parent post.
+			 */
+			$parent_id = get_post_field( 'post_parent', $attachment_id );
+
+			if ( ! $parent_id ) {
+				$access = true;
+			} else {
+				$member = MS_Model_Member::get_current_member();
+				foreach ( $member->subscriptions as $subscription ) {
+					$membership = $subscription->get_membership();
+					$access = $membership->has_access_to_post( $parent_id );
+					if ( $access ) { break; }
+				}
+			}
+		} else {
+			/*
+			 * Advanced protection mode (via Add-on):
+			 * Each Attachment can be protected individually.
+			 */
+			$member = MS_Model_Member::get_current_member();
+			foreach ( $member->subscriptions as $subscription ) {
+				$rule = $subscription->get_membership()->get_rule( MS_Rule_Media::RULE_ID );
+				$access = $rule->has_access( $attachment_id );
+				if ( $access ) { break; }
+			}
+		}
+
+		return apply_filters(
+			'ms_rule_media_can_access_file',
+			$access,
+			$attachment_id
 		);
 	}
 
@@ -512,15 +567,14 @@ class MS_Rule_Media_Model extends MS_Rule {
 		}
 
 		$mime = wp_check_filetype( $file );
-		if ( false === $mime[ 'type' ] && function_exists( 'mime_content_type' ) ) {
-			$mime[ 'type' ] = mime_content_type( $file );
+		if ( empty( $mime['type'] ) && function_exists( 'mime_content_type' ) ) {
+			$mime['type'] = mime_content_type( $file );
 		}
 
-		if ( $mime[ 'type' ] ) {
-			$mimetype = $mime[ 'type' ];
-		}
-		else {
-			$mimetype = 'image/' . substr( $trueurl, strrpos( $file, '.' ) + 1 );
+		if ( $mime['type'] ) {
+			$mimetype = $mime['type'];
+		} else {
+			$mimetype = 'image/' . substr( $file, strrpos( $file, '.' ) + 1 );
 		}
 
 		header( 'Content-type: ' . $mimetype );
@@ -598,28 +652,17 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-		$defaults = array(
-			'posts_per_page' => -1,
-			'offset'      => 0,
-			'orderby'     => 'post_date',
-			'order'       => 'DESC',
-			'post_type'   => 'attachment',
-		);
-		$args = wp_parse_args( $args, $defaults );
+		$args = self::get_query_args( $args );
+		$posts = get_posts( $args );
 
-		$contents = get_posts( $args );
-
-		foreach ( $contents as $content ) {
+		$contents = array();
+		foreach ( $posts as $content ) {
 			$content->id = $content->ID;
-			if ( in_array( $content->id, $this->rule_value ) ) {
-				$content->access = true;
-			} else {
-				$content->access = false;
-			}
-		}
+			$content->type = MS_Rule_Media::RULE_ID;
+			$content->name = $content->post_name;
+			$content->access = $this->can_access_file( $content->id );
 
-		if ( ! empty( $args['rule_status'] ) ) {
-			$contents = $this->filter_content( $args['rule_status'], $contents );
+			$contents[ $content->id ] = $content;
 		}
 
 		return apply_filters(
@@ -628,5 +671,26 @@ class MS_Rule_Media_Model extends MS_Rule {
 			$args,
 			$this
 		);
+	}
+
+	/**
+	 * Get the default query args.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $args The query post args.
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array The parsed args.
+	 */
+	public function get_query_args( $args = null ) {
+		$defaults = array(
+			'orderby' => 'post_date',
+			'order' => 'DESC',
+			'post_type' => 'attachment',
+			'post_status' => 'any',
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		return parent::prepare_query_args( $args, 'get_posts' );
 	}
 }

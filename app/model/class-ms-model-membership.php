@@ -1438,7 +1438,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				continue;
 			}
 
-			$rule->_subscription_id = $this->subscription_id;
+			$subscription = MS_Factory::load( 'MS_Model_Relationship', $this->subscription_id );
+			$rule->_subscription_id = $subscription->id;
+			$rule->membership_id = $subscription->membership_id;
 			$rules[ $rule_type ] = $rule;
 		}
 
@@ -1562,7 +1564,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return boolean True if has access to current page. Default is false.
 	 */
 	public function has_access_to_post( $post_id ) {
-		$has_access = false;
+		$has_access = null;
+
+		if ( MS_Model_Member::is_normal_admin() ) {
+			return true;
+		}
 
 		if ( ! empty( $post_id ) ) {
 			$post = get_post( $post_id );
@@ -1574,6 +1580,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		// If 'has access' is found in the hierarchy, it does have access.
 		$rules = $this->get_rules_hierarchy();
 		foreach ( $rules as $rule ) {
+			$rule->prepare_rule( $subscription );
+
 			// url groups have final decision
 			if ( MS_Rule_Url::RULE_ID == $rule->rule_type
 				&& $rule->has_rule_for_post( $post_id )
@@ -1581,12 +1589,20 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$has_access = $rule->has_access( $post_id );
 				break;
 			} else {
-				$has_access = ( $has_access || $rule->has_access( $post_id ) );
+				$rule_access = $rule->has_access( $post_id );
+				if ( null !== $rule_access ) {
+					$has_access = $rule_access;
+				}
 			}
 
 			if ( $has_access ) {
 				break;
 			}
+		}
+
+		if ( null === $has_access ) {
+			// The post is not denied by any rule, so allow access.
+			$has_access = true;
 		}
 
 		return apply_filters(
