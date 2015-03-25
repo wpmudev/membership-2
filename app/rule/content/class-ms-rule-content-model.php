@@ -89,7 +89,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	 *
 	 * @var bool
 	 */
-	protected static $comment_undefined = null;
+	protected static $comment_public = null;
 
 	/**
 	 * The message displayed below the "read more" mark.
@@ -130,31 +130,40 @@ class MS_Rule_Content_Model extends MS_Rule {
 		$this->add_filter( 'the_content', 'check_special_page' );
 
 		/*
-		 * This is a static variable so it can collect the most generous
-		 * permission of any rule that is applied for the current user.
+		 * We find the public comment access once.
+		 * This is the access ganted to guests or memberships that do not define
+		 * an explicit comment access rule.
 		 */
-		if ( null === self::$comment_undefined ) {
+		if ( null === self::$comment_public ) {
 			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
-			$undef_full = ( null === $base_rule->get_rule_value( self::COMMENT_WRITE ) );
-			$undef_read = ( null === $base_rule->get_rule_value( self::COMMENT_READ ) );
-			$undef_none = ( null === $base_rule->get_rule_value( self::COMMENT_NO_ACCESS ) );
-
-			self::$comment_undefined = ( $undef_full && $undef_read && $undef_none );
+			if ( null === $base_rule->get_rule_value( self::COMMENT_WRITE ) ) {
+				self::$comment_public = self::COMMENT_WRITE;
+			} elseif ( null === $base_rule->get_rule_value( self::COMMENT_READ ) ) {
+				self::$comment_public = self::COMMENT_READ;
+			} else {
+				self::$comment_public = self::COMMENT_NO_ACCESS;
+			}
 		}
 
-		if ( ! self::$comment_undefined ) {
-			// For comments: A undefined protection setting means "no access"
-			$has_full = $this->get_rule_value( self::COMMENT_WRITE );
-			$has_read = $this->get_rule_value( self::COMMENT_READ );
-			$has_none = $this->get_rule_value( self::COMMENT_NO_ACCESS );
+		// Find the most generous comment access rule.
+		$has_full = $this->get_rule_value( self::COMMENT_WRITE );
+		$has_read = $this->get_rule_value( self::COMMENT_READ );
+		$has_none = $this->get_rule_value( self::COMMENT_NO_ACCESS );
 
-			if ( true === $has_full ) {
-				self::$comment_access = self::COMMENT_WRITE;
-			} elseif ( true === $has_read ) {
-				if ( self::$comment_access == self::COMMENT_NO_ACCESS ) {
-					self::$comment_access = self::COMMENT_READ;
-				}
+		if ( true === $has_full ) {
+			// Membership allows full comment access.
+			self::$comment_access = self::COMMENT_WRITE;
+		} elseif ( true === $has_read ) {
+			// Membership allows read-only access.
+			if ( self::$comment_access == self::COMMENT_NO_ACCESS ) {
+				self::$comment_access = self::COMMENT_READ;
 			}
+		} elseif ( true === $has_none ) {
+			// Membership does not allow any comment access.
+			// (no change, this is the default access level)
+		} else {
+			// This membership does not define a comment access: Use public access!
+			self::$comment_access = self::$comment_public;
 		}
 
 		$this->add_action(

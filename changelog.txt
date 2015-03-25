@@ -10,6 +10,9 @@ Change Log:
 - Fix error when paying with the Authorize.net payment gateway
 - Fix an issue where a static blog-page would not display any posts
 - Fix an issue with the protection shortcode so it works for users with multiple memberships
+- Fix comment protection rules
+- Improve layout of the Registration form and validation notes
+- Add a filter to customize redirection after login: apply_filter('ms-ajax-login-redirect')
 
 1.1.1.1
 ----------------------------------------------------------------------
