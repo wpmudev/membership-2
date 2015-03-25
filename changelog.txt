@@ -7,6 +7,8 @@ Change Log:
 1.1.1.2
 ----------------------------------------------------------------------
 - Add compatiblity for new  Stripe Gateway API (update from 2015-02-18)
+- Add new Media Protection option to manually protect files in the Protected Content page
+- Fix the Media Protection rule, some configurations did protect too many files
 - Fix error when paying with the Authorize.net payment gateway
 - Fix an issue where a static blog-page would not display any posts
 - Fix an issue with the protection shortcode so it works for users with multiple memberships
