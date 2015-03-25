@@ -2030,7 +2030,7 @@
 #wpwrap .ms-wrap {
   /** Settings Box **/
   /** Member search */
-  /** jquery validation */
+  /** jquery validation - on admin side */
   /** radio slider */
   /* Dripped icon indicator */
   /* Settings Page Settings */
@@ -2192,19 +2192,16 @@
   border: 1px solid #ffd2d2;
   color: #666;
   font-size: 0.9em;
-  margin: 5px;
+  margin: 10px 0 5px 0;
   padding: 2px;
-  position: absolute;
-  width: auto;
-  border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
+  display: block;
+  clear: both;
 }
 .wpmui-wnd label.ms-validation-error:before,
 #wpwrap .ms-wrap label.ms-validation-error:before {
   content: '';
-  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
-  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
+  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px;
+  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px;
   background-position: -640px -138px;
   display: inline-block;
   height: 20px;

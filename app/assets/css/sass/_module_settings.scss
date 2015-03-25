@@ -122,7 +122,6 @@
 		margin-top: 15px;
 	}
 
-
 	/** Member search */
 
 	#member-search-options {
@@ -154,7 +153,7 @@
 		}
 	}
 
-	/** jquery validation */
+	/** jquery validation - on admin side */
 	.ms-validation-error {
 		color: #e46c6e !important;
 	}
@@ -164,25 +163,22 @@
 		border: 1px solid #ffd2d2;
 		color: #666;
 		font-size: 0.9em;
-		margin: 5px;
+		margin: 10px 0 5px 0;
 		padding: 2px;
-		position: absolute;
-		width: auto;
-		border-radius: 3px;
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-	}
+		display: block;
+		clear: both;
 
-	label.ms-validation-error:before {
-		content:'';
-		background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
-		background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
-		background-position: -640px -138px;
-		display: inline-block;
-		height: 20px;
-		position: relative;
-		top: 1px;
-		width: 20px;
+		&:before {
+			content: '';
+			background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px;
+			background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px;
+			background-position: -640px -138px;
+			display: inline-block;
+			height: 20px;
+			position: relative;
+			top: 1px;
+			width: 20px;
+		}
 	}
 
 	/** radio slider */

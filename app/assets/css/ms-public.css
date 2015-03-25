@@ -247,6 +247,18 @@
 .ms-form-element {
   margin: 1em;
 }
+.ms-form-element:after {
+  content: '';
+  clear: both;
+  display: table;
+}
+.ms-form-element .wpmui-field-label {
+  display: inline-block;
+}
+.ms-form-element .wpmui-field-input {
+  margin-top: 0;
+  margin-bottom: 0;
+}
 
 .ms-form-element label {
   display: inline;
@@ -261,7 +273,7 @@
   float: right;
 }
 
-/* jQuery validation */
+/* jQuery validation - on front end */
 .ms-validation-error {
   color: #e46c6e !important;
 }
@@ -270,23 +282,32 @@ label.ms-validation-error {
   background: #ffefef;
   border: 1px solid #ffd2d2;
   color: #666;
-  font-size: 0.8em;
-  margin: 5px;
+  font-size: 0.9em;
+  margin: 10px 0 5px 0;
   padding: 2px;
-  position: absolute;
-  width: auto;
-  border-radius: 3px;
+  display: block;
+  clear: both;
 }
 label.ms-validation-error:before {
   content: '';
-  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
-  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
+  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px;
+  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px;
   background-position: -640px -138px;
   display: inline-block;
   height: 20px;
   position: relative;
   top: 1px;
   width: 20px;
+}
+
+.cf:before,
+.cf:after {
+  content: '';
+  display: table;
+}
+
+.cf:after {
+  clear: both;
 }
 
 /* Login Form */
@@ -342,7 +363,7 @@ input[type="image"] {
 #wpwrap .ms-wrap {
   /** Settings Box **/
   /** Member search */
-  /** jquery validation */
+  /** jquery validation - on admin side */
   /** radio slider */
   /* Dripped icon indicator */
   /* Settings Page Settings */
@@ -504,19 +525,16 @@ input[type="image"] {
   border: 1px solid #ffd2d2;
   color: #666;
   font-size: 0.9em;
-  margin: 5px;
+  margin: 10px 0 5px 0;
   padding: 2px;
-  position: absolute;
-  width: auto;
-  border-radius: 3px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
+  display: block;
+  clear: both;
 }
 .wpmui-wnd label.ms-validation-error:before,
 #wpwrap .ms-wrap label.ms-validation-error:before {
   content: '';
-  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
-  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
+  background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px;
+  background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px;
   background-position: -640px -138px;
   display: inline-block;
   height: 20px;

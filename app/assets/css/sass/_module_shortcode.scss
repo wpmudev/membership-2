@@ -112,6 +112,21 @@
 
 .ms-form-element {
 	margin: 1em;
+
+	&:after {
+		content:'';
+		clear: both;
+		display: table;
+	}
+
+	.wpmui-field-label {
+		display: inline-block;
+	}
+
+	.wpmui-field-input {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
 }
 
 .ms-form-element label {
@@ -127,7 +142,7 @@
 	float: right;
 }
 
-/* jQuery validation */
+/* jQuery validation - on front end */
 
 .ms-validation-error {
 	color: #e46c6e !important;
@@ -137,17 +152,16 @@ label.ms-validation-error {
 	background: #ffefef;
 	border: 1px solid #ffd2d2;
 	color: #666;
-	font-size: 0.8em;
-	margin: 5px;
+	font-size: 0.9em;
+	margin: 10px 0 5px 0;
 	padding: 2px;
-	position: absolute;
-	width: auto;
-	border-radius: 3px;
+	display: block;
+	clear: both;
 
 	&:before {
 		content: '';
-		background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px #ffefef;
-		background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px #ffefef;
+		background: url(../images/membership_sprite.png) no-repeat scroll 5px 5px;
+		background: url(../images/membership_sprite.svg), no-repeat scroll 5px 5px;
 		background-position: -640px -138px;
 		display: inline-block;
 		height: 20px;
@@ -157,6 +171,15 @@ label.ms-validation-error {
 	}
 }
 
+.cf:before,
+.cf:after {
+	content: '';
+	display: table;
+}
+
+.cf:after {
+	clear: both;
+}
 
 /* Login Form */
 
