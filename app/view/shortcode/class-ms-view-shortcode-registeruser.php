@@ -46,12 +46,15 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		$title = $this->data['title'];
 		ob_start();
 
+		$reg_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+		$reg_url = add_query_arg( 'action', 'register_user', $reg_url );
+
 		// Default WP action hook
 		do_action( 'before_signup_form' );
 		?>
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors(); ?>
-			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo esc_url( add_query_arg( 'action', 'register_user' ) ); ?>" method="post">
+			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo esc_url( $reg_url ); ?>" method="post">
 				<?php wp_nonce_field( $this->data['action'] ); ?>
 				<?php if ( ! empty( $title ) ) : ?>
 					<legend>
