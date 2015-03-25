@@ -162,6 +162,14 @@ class MS_Controller_Dialog extends MS_Controller {
 
 			$resp['loggedin'] = true;
 			$resp['success'] = __( 'Logging in...', MS_TEXT_DOMAIN );
+
+			/**
+			 * Allows a custom redirection after login.
+			 * Empty value will use the default redirect option of the login form.
+			 *
+			 * @since 1.1.1.2
+			 */
+			$resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', '', $member );
 		}
 
 		$this->respond( $resp );

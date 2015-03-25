@@ -1,4 +1,4 @@
-/*! Protected Content - v1.1.11
+/*! Protected Content - v1.1.12
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2015; * Licensed GPLv2+ */
 /*global window:false */
@@ -93,7 +93,11 @@ jQuery( function() {
 				show_message( sts_login, data );
 
 				if ( data.loggedin ) {
-					document.location.href = redirect.val();
+					if ( undefined !== data.redirect && data.redirect.length > 5 ) {
+						document.location.href = data.redirect;
+					} else {
+						document.location.href = redirect.val();
+					}
 				}
 			},
 			error: function() {
