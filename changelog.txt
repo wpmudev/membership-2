@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.3
+----------------------------------------------------------------------
+- Fix wrong redirection in the [ms-register-user] shortcode
+
 1.1.1.2
 ----------------------------------------------------------------------
 - Add compatiblity for new  Stripe Gateway API (update from 2015-02-18)
