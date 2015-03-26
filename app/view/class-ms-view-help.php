@@ -1088,12 +1088,187 @@ class MS_View_Help extends MS_View {
 			<?php _ex( 'Displays the "My Account" page of the currently logged in user', 'help', MS_TEXT_DOMAIN ); ?>
 			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
+				<h4><?php _e( 'Membership section', MS_TEXT_DOMAIN ); ?></h4>
 				<ul>
-					<li><em><?php _ex( 'no arguments', 'help', MS_TEXT_DOMAIN ); ?></em></li>
+					<li>
+						<code>show_membership</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Whether to display the users current memberships', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>membership_title</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the current memberships section', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Your Membership', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>show_membership_change</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display the link to subscribe to other memberships', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>membership_change_label</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the link', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Change', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+				</ul>
+
+				<h4><?php _e( 'Profile section', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>show_profile</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Whether to display the users profile details', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>profile_title</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the user profile section', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Personal details', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>show_profile_change</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display the link to edit the users profile', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>profile_change_label</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the link', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Edit', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+				</ul>
+
+				<h4><?php _e( 'Invoices section', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>show_invoices</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Whether to display the section listing recent invoices', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>invoices_title</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the invoices section', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Invoices', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>limit_invoices</code>
+						<?php _ex( '(Number)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Number of invoices to display in the recent invoices list', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							10
+						</span>
+					</li>
+					<li>
+						<code>show_all_invoices</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display the link to the complete list of users invoices', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>invoices_details_label</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the link', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'View all', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+				</ul>
+
+				<h4><?php _e( 'Activities section', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>show_activity</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Whether to display the section containing the users recent activities', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>activity_title</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the invoices section', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'Activities', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>limit_activities</code>
+						<?php _ex( '(Number)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Number of items to display in the recent activities list', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							10
+						</span>
+					</li>
+					<li>
+						<code>show_all_activities</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display the link to the complete list of users invoices', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>activity_details_label</code>
+						<?php _ex( '(text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Title of the link', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"<?php _e( 'View all', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
 				</ul>
 
 				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
 				<p><code>[ms-membership-account]</code></p>
+				<p><code>[ms-membership-account show_profile_change="no" show_activity="no" limit_invoices="3" invoices_title="Last 3 invoices"]</code></p>
 			</div>
 		</div>
 

@@ -660,8 +660,42 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$data = apply_filters(
 			'ms_controller_shortcode_membership_account_atts',
-			$atts
+			shortcode_atts(
+				array(
+					'show_membership' => true,
+					'show_membership_change' => true,
+					'membership_title' => __( 'Your Membership', MS_TEXT_DOMAIN ),
+					'membership_change_label' => __( 'Change', MS_TEXT_DOMAIN ),
+					'show_profile' => true,
+					'show_profile_change' => true,
+					'profile_title' => __( 'Personal details', MS_TEXT_DOMAIN ),
+					'profile_change_label' => __( 'Edit', MS_TEXT_DOMAIN ),
+					'show_invoices' => true,
+					'limit_invoices' => 10,
+					'show_all_invoices' => true,
+					'invoices_title' => __( 'Invoices', MS_TEXT_DOMAIN ),
+					'invoices_details_label' => __( 'View all', MS_TEXT_DOMAIN ),
+					'show_activity' => true,
+					'limit_activities' => 10,
+					'show_all_activities' => true,
+					'activity_title' => __( 'Activities', MS_TEXT_DOMAIN ),
+					'activity_details_label' => __( 'View all', MS_TEXT_DOMAIN ),
+				),
+				$atts
+			)
 		);
+
+		$data['show_membership'] = lib2()->is_true( $data['show_membership'] );
+		$data['show_membership_change'] = lib2()->is_true( $data['show_membership_change'] );
+		$data['show_profile'] = lib2()->is_true( $data['show_profile'] );
+		$data['show_profile_change'] = lib2()->is_true( $data['show_profile_change'] );
+		$data['show_invoices'] = lib2()->is_true( $data['show_invoices'] );
+		$data['show_all_invoices'] = lib2()->is_true( $data['show_all_invoices'] );
+		$data['show_activity'] = lib2()->is_true( $data['show_activity'] );
+		$data['show_all_activities'] = lib2()->is_true( $data['show_all_activities'] );
+
+		$data['limit_invoices'] = absint( $data['limit_invoices'] );
+		$data['limit_activities'] = absint( $data['limit_activities'] );
 
 		$data['member'] = MS_Model_Member::get_current_member();
 		$data['membership'] = array();
@@ -687,7 +721,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['invoices'] = MS_Model_Invoice::get_invoices(
 			array(
 				'author' => $data['member']->id,
-				'posts_per_page' => 12,
+				'posts_per_page' => $data['limit_invoices'],
 				'meta_query' => array(
 					array(
 						'key' => 'amount',
@@ -701,7 +735,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['events'] = MS_Model_Event::get_events(
 			array(
 				'author' => $data['member']->id,
-				'posts_per_page' => 10,
+				'posts_per_page' => $data['limit_activities'],
 			)
 		);
 

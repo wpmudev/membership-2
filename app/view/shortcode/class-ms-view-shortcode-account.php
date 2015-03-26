@@ -22,23 +22,44 @@ class MS_View_Shortcode_Account extends MS_View {
 			$html = '';
 		}
 
+		$member = MS_Model_Member::get_current_member();
 		$fields = $this->prepare_fields();
-		$signup_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+
+		// Extract shortcode options.
+		extract( $this->data );
 
 		ob_start();
 		?>
 		<div class="ms-account-wrapper">
 			<?php if ( MS_Model_Member::is_logged_in() ) : ?>
-				<h2>
-					<?php printf(
-						'%s <a href="%s" class="ms-edit-profile">%s</a>',
-						__( 'Your Membership', MS_TEXT_DOMAIN ),
-						$signup_url,
-						__( 'Change', MS_TEXT_DOMAIN )
-					); ?>
-				</h2>
 
 				<?php
+				// ================================================= MEMBERSHIPS
+				if ( $show_membership ) : ?>
+				<div id="account-membership">
+				<h2>
+					<?php
+					echo $membership_title;
+
+					if ( $show_membership_change ) {
+						$signup_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+
+						printf(
+							'<a href="%s" class="ms-edit-profile">%s</a>',
+							$signup_url,
+							$membership_change_label
+						);
+					}
+					?>
+				</h2>
+				<?php
+				/**
+				 * Add custom content right before the memberships list.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_memberships_top', $member, $this );
+
 				if ( MS_Model_Member::is_admin_user() ) {
 					_e( 'You are an admin user and have access to all memberships', MS_TEXT_DOMAIN );
 				} else {
@@ -111,16 +132,49 @@ class MS_View_Shortcode_Account extends MS_View {
 						_e( 'No memberships', MS_TEXT_DOMAIN );
 					}
 				}
+				/**
+				 * Add custom content right after the memberships list.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_memberships_bottom', $member, $this );
+				?>
+				</div>
+				<?php
+				endif;
+				// END: if ( $show_membership )
+				// =============================================================
 				?>
 
+				<?php
+				// ===================================================== PROFILE
+				if ( $show_profile ) : ?>
+				<div id="account-profile">
 				<h2>
-					<?php printf(
-						'%s <a href="%s" class="ms-edit-profile">%s</a>',
-						__( 'Personal details', MS_TEXT_DOMAIN ),
-						add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE ) ),
-						__( 'Edit', MS_TEXT_DOMAIN )
-					); ?>
+					<?php
+					echo $profile_title;
+
+					if ( $show_profile_change ) {
+						$edit_url = add_query_arg(
+							array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE )
+						);
+
+						printf(
+							'<a href="%s" class="ms-edit-profile">%s</a>',
+							$edit_url,
+							$profile_change_label
+						);
+					}
+					?>
 				</h2>
+				<?php
+				/**
+				 * Add custom content right before the profile overview.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_profile_top', $member, $this );
+				?>
 				<table>
 					<?php foreach ( $fields['personal_info'] as $field => $title ) : ?>
 						<tr>
@@ -129,70 +183,198 @@ class MS_View_Shortcode_Account extends MS_View {
 						</tr>
 					<?php endforeach; ?>
 				</table>
-				<?php do_action( 'ms_view_shortcode_account_card_info', $this->data ); ?>
+				<?php
+				do_action( 'ms_view_shortcode_account_card_info', $this->data );
+
+				/**
+				 * Add custom content right after the profile overview.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_profile_bottom', $member, $this );
+				?>
+				</div>
+				<?php
+				endif;
+				// END: if ( $show_profile )
+				// =============================================================
+				?>
+
+				<?php
+				// ==================================================== INVOICES
+				if ( $show_invoices ) : ?>
+				<div id="account-invoices">
 				<h2>
-					<?php printf(
-						'%s <a href="%s" class="ms-edit-profile">%s</a>',
-						__( 'Invoices', MS_TEXT_DOMAIN ),
-						add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES ) ),
-						__( 'View all', MS_TEXT_DOMAIN )
-					); ?>
+					<?php
+					echo $invoices_title;
+
+					if ( $show_all_invoices ) {
+						$detail_url = add_query_arg(
+							array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES )
+						);
+
+						printf(
+							'<a href="%s" class="ms-all-invoices">%s</a>',
+							$detail_url,
+							$invoices_details_label
+						);
+					}
+					?>
 				</h2>
+				<?php
+				/**
+				 * Add custom content right before the invoice overview list.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_invoices_top', $member, $this );
+				?>
 				<table>
 					<thead>
 						<tr>
-							<th><?php _e( 'Invoice #', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php printf(
+							<th class="ms-col-invoice-no"><?php
+								_e( 'Invoice #', MS_TEXT_DOMAIN );
+							?></th>
+							<th class="ms-col-invoice-status"><?php
+								_e( 'Status', MS_TEXT_DOMAIN );
+							?></th>
+							<th class="ms-col-invoice-total"><?php
+							printf(
 								'%s (%s)',
 								__( 'Total', MS_TEXT_DOMAIN ),
 								MS_Plugin::instance()->settings->currency
-							); ?></th>
-							<th><?php _e( 'Membership', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Due date', MS_TEXT_DOMAIN ); ?></th>
+							);
+							?></th>
+							<th class="ms-col-invoice-title"><?php
+								_e( 'Membership', MS_TEXT_DOMAIN );
+							?></th>
+							<th class="ms-col-invoice-due"><?php
+								_e( 'Due date', MS_TEXT_DOMAIN );
+							?></th>
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $this->data['invoices'] as $invoice ) : ?>
-						<?php $inv_membership = MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id ); ?>
-						<tr>
-							<td><?php printf(
+					<?php foreach ( $this->data['invoices'] as $invoice ) :
+						$inv_membership = MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id );
+						$inv_classes = array(
+							'ms-invoice-' . $invoice->id,
+							'ms-invoice-gateway-' . $invoice->gateway_id,
+							'ms-invoice-membership-' . $invoice->membership_id,
+						);
+						?>
+						<tr class="<?php echo esc_attr( implode( ' ', $inv_classes ) ); ?>">
+							<td class="ms-col-invoice-no"><?php
+							printf(
 								'<a href="%s">%s</a>',
-								get_permalink(  $invoice->id ),
+								get_permalink( $invoice->id ),
 								$invoice->id
-							); ?></td>
-							<td><?php echo esc_html( $invoice->status ); ?></td>
-							<td><?php echo esc_html( MS_Helper_Billing::format_price( $invoice->total ) ); ?></td>
-							<td><?php echo esc_html( $inv_membership->name ); ?></td>
-							<td><?php echo esc_html( $invoice->due_date ); ?></td>
+							);
+							?></td>
+							<td class="ms-col-invoice-status"><?php
+								echo esc_html( $invoice->status );
+							?></td>
+							<td class="ms-col-invoice-total"><?php
+								echo esc_html( MS_Helper_Billing::format_price( $invoice->total ) );
+							?></td>
+							<td class="ms-col-invoice-title"><?php
+								echo esc_html( $inv_membership->name );
+							?></td>
+							<td class="ms-col-invoice-due"><?php
+								echo esc_html( $invoice->due_date );
+							?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
 				</table>
+				<?php
+				/**
+				 * Add custom content right after the invoices overview list.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_invoices_bottom', $member, $this );
+				?>
+				</div>
+				<?php
+				endif;
+				// END: if ( $show_invoices )
+				// =============================================================
+				?>
+
+				<?php
+				// ==================================================== ACTIVITY
+				if ( $show_activity ) : ?>
+				<div id="account-activity">
 				<h2>
-					<?php printf(
-						'%s <a href="%s" class="ms-edit-profile">%s</a>',
-						__( 'Activities', MS_TEXT_DOMAIN ),
-						add_query_arg( array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES ) ),
-						__( 'View all', MS_TEXT_DOMAIN )
-					); ?>
+					<?php
+					echo $activity_title;
+
+					if ( $show_all_activities ) {
+						$detail_url = add_query_arg(
+							array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES )
+						);
+
+						printf(
+							'<a href="%s" class="ms-all-activities">%s</a>',
+							$detail_url,
+							$activity_details_label
+						);
+					}
+					?>
 				</h2>
+				<?php
+				/**
+				 * Add custom content right before the activities overview list.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_activity_top', $member, $this );
+				?>
 				<table>
 					<thead>
 						<tr>
-							<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Activity', MS_TEXT_DOMAIN ); ?></th>
+							<th class="ms-col-activity-date"><?php
+								_e( 'Date', MS_TEXT_DOMAIN );
+							?></th>
+							<th class="ms-col-activity-title"><?php
+								_e( 'Activity', MS_TEXT_DOMAIN );
+							?></th>
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $this->data['events'] as $event ) : ?>
-						<tr>
-							<td><?php echo esc_html( $event->post_modified ); ?></td>
-							<td><?php echo esc_html( $event->description ); ?></td>
+					<?php foreach ( $this->data['events'] as $event ) :
+						$ev_classes = array(
+							'ms-activity-topic-' . $event->topic,
+							'ms-activity-type-' . $event->type,
+							'ms-activity-membership-' . $event->membership_id,
+						);
+						?>
+						<tr class="<?php echo esc_attr( implode( ' ', $ev_classes ) ); ?>">
+							<td class="ms-col-activity-date"><?php
+								echo esc_html( $event->post_modified );
+							?></td>
+							<td class="ms-col-activity-title"><?php
+								echo esc_html( $event->description );
+							?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
 				</table>
+				<?php
+				/**
+				 * Add custom content right after the activities overview list.
+				 *
+				 * @since  1.1.1.3
+				 */
+				do_action( 'ms_view_account_activity_bottom', $member, $this );
+				?>
+				</div>
+				<?php
+				endif;
+				// END: if ( $show_activity )
+				// =============================================================
+				?>
+
 			<?php else :
 				$has_login_form = MS_Helper_Shortcode::has_shortcode(
 					MS_Helper_Shortcode::SCODE_LOGIN,
