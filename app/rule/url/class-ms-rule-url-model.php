@@ -203,14 +203,14 @@ class MS_Rule_Url_Model extends MS_Rule {
 		);
 	}
 
-   /**
-	* Count protection rules quantity.
-	*
-	* @since 1.0.0
-	*
-	* @param bool $has_access_only Optional. Count rules for has_access status only.
-	* @return int $count The rule count result.
-	*/
+	/**
+	 * Count protection rules quantity.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $has_access_only Optional. Count rules for has_access status only.
+	 * @return int $count The rule count result.
+	 */
 	public function count_rules( $has_access_only = true ) {
 		$count = count( $this->rule_value );
 
@@ -405,17 +405,13 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * @param string $hash The URL-hash.
 	 */
 	public function get_accessible_urls() {
-		static $Accessible_Urls = null;
-
-		if ( null === $Accessible_Urls ) {
-			$Accessible_Urls = $this->get_protected_urls();
-			foreach ( $Accessible_Urls as $key => $access ) {
-				if ( empty( $this->rule_value[$key] ) ) {
-					unset( $Accessible_Urls[$key] );
-				}
+		$accessible_Urls = $this->get_protected_urls();
+		foreach ( $accessible_Urls as $key => $access ) {
+			if ( empty( $this->rule_value[$key] ) ) {
+				unset( $accessible_Urls[$key] );
 			}
 		}
 
-		return $Accessible_Urls;
+		return $accessible_Urls;
 	}
 }
