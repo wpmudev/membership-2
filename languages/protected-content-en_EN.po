@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Protected Content\n"
 "Report-Msgid-Bugs-To: http://premium.wpmudev.org/\n"
-"POT-Creation-Date: 2015-03-02 20:12+0100\n"
-"PO-Revision-Date: 2015-03-02 20:15+0100\n"
+"POT-Creation-Date: 2015-03-26 19:38+0100\n"
+"PO-Revision-Date: 2015-03-26 19:39+0100\n"
 "Last-Translator: Philipp Stracker <philipp@stracker.net>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.7.4\n"
+"X-Generator: Poedit 1.7.5\n"
 "X-Poedit-KeywordsList: __;_e;_x;_ex\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -42,21 +42,24 @@ msgstr "Name"
 
 #: app/addon/bbpress/rule/class-ms-addon-bbpress-rule-listtable.php:78
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:118
+#: app/controller/class-ms-controller-shortcode.php:672
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:148
 #: app/helper/listtable/class-ms-helper-listtable-gateway.php:152
 #: app/helper/listtable/class-ms-helper-listtable-member.php:291
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:134
 #: app/rule/cptitem/class-ms-rule-cptitem-listtable.php:68
+#: app/rule/media/class-ms-rule-media-listtable.php:71
 #: app/rule/page/class-ms-rule-page-listtable.php:59
 #: app/rule/post/class-ms-rule-post-listtable.php:70
+#: app/view/class-ms-view-help.php:1166
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:63
-#: app/view/shortcode/class-ms-view-shortcode-account.php:121
 msgid "Edit"
 msgstr "Edit"
 
 #: app/addon/bbpress/rule/class-ms-addon-bbpress-rule-listtable.php:83
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:153
 #: app/rule/cptitem/class-ms-rule-cptitem-listtable.php:73
+#: app/rule/media/class-ms-rule-media-listtable.php:76
 #: app/rule/page/class-ms-rule-page-listtable.php:64
 #: app/rule/post/class-ms-rule-post-listtable.php:75
 msgid "View"
@@ -112,7 +115,8 @@ msgid "Activate BuddyPress to use this Add-on"
 msgstr "Activate BuddyPress to use this Add-on"
 
 #: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-listtable.php:49
-#: app/view/class-ms-view-adminbar.php:106
+#: app/rule/media/class-ms-rule-media-listtable.php:45
+#: app/view/class-ms-view-adminbar.php:108
 msgid "Type"
 msgstr "Type"
 
@@ -170,6 +174,14 @@ msgstr "BuddyPress"
 #: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-view.php:16
 msgid "Protect the following BuddyPress content."
 msgstr "Protect the following BuddyPress content."
+
+#: app/addon/category/class-ms-addon-category.php:62
+msgid "Category Protection"
+msgstr "Category Protection"
+
+#: app/addon/category/class-ms-addon-category.php:63
+msgid "Protect your posts by category."
+msgstr "Protect your posts by category."
 
 #: app/addon/coupon/class-ms-addon-coupon.php:170
 msgid "Coupon"
@@ -235,7 +247,7 @@ msgstr "Start date"
 
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:52
 #: app/addon/coupon/view/class-ms-addon-coupon-view-edit.php:93
-#: app/view/shortcode/class-ms-view-shortcode-account.php:54
+#: app/view/shortcode/class-ms-view-shortcode-account.php:75
 msgid "Expire date"
 msgstr "Expire date"
 
@@ -245,11 +257,11 @@ msgstr "Expire date"
 #: app/helper/listtable/class-ms-helper-listtable-member.php:89
 #: app/view/billing/class-ms-view-billing-edit.php:76
 #: app/view/billing/class-ms-view-billing-edit.php:99
-#: app/view/class-ms-view-adminbar.php:102
+#: app/view/class-ms-view-adminbar.php:104
 #: app/view/class-ms-view-metabox.php:50
 #: app/view/frontend/class-ms-view-frontend-invoices.php:23
 #: app/view/member/class-ms-view-member-dialog.php:145
-#: app/view/shortcode/class-ms-view-shortcode-account.php:151
+#: app/view/shortcode/class-ms-view-shortcode-account.php:249
 msgid "Membership"
 msgstr "Membership"
 
@@ -263,7 +275,7 @@ msgstr "Remaining uses"
 
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:131
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:219
-#: app/controller/class-ms-controller-membership.php:1160
+#: app/controller/class-ms-controller-membership.php:1187
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:195
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:158
 #: app/rule/url/class-ms-rule-url-listtable.php:67
@@ -333,7 +345,7 @@ msgstr "Max uses"
 
 #: app/addon/coupon/view/class-ms-addon-coupon-view-edit.php:132
 #: app/addon/coupon/view/class-ms-addon-coupon-view-edit.php:133
-#: app/controller/class-ms-controller-membership.php:1161
+#: app/controller/class-ms-controller-membership.php:1188
 #: app/controller/class-ms-controller-shortcode.php:256
 #: app/helper/class-ms-helper-listtable.php:1241
 #: app/view/billing/class-ms-view-billing-edit.php:161
@@ -357,7 +369,7 @@ msgstr "Cancel"
 #: app/helper/class-ms-helper-html.php:334
 #: app/view/billing/class-ms-view-billing-edit.php:169
 #: app/view/frontend/class-ms-view-frontend-profile.php:78
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:105
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:106
 msgid "Save Changes"
 msgstr "Save Changes"
 
@@ -395,7 +407,7 @@ msgid "Verified"
 msgstr "Verified"
 
 #: app/addon/mailchimp/view/class-ms-addon-mailchimp-view-settings.php:39
-#: app/model/class-ms-model-invoice.php:293
+#: app/model/class-ms-model-invoice.php:302
 msgid "Failed"
 msgstr "Failed"
 
@@ -487,7 +499,7 @@ msgstr ""
 #: app/addon/taxamo/class-ms-addon-taxamo.php:131
 #: app/controller/class-ms-controller-plugin.php:254
 #: app/controller/class-ms-controller-plugin.php:255
-#: app/view/class-ms-view-help.php:140 protected-content.php:609
+#: app/view/class-ms-view-help.php:140 protected-content.php:619
 msgid "Settings"
 msgstr "Settings"
 
@@ -576,7 +588,7 @@ msgid "priv_..."
 msgstr "priv_..."
 
 #: app/addon/taxamo/class-ms-addon-taxamo.php:125
-#: app/addon/taxamo/class-ms-addon-taxamo.php:182
+#: app/addon/taxamo/class-ms-addon-taxamo.php:166
 msgid "Taxamo"
 msgstr "Taxamo"
 
@@ -1405,16 +1417,16 @@ msgstr "WESTERN SAHARA"
 msgid "ZAMBIA"
 msgstr "ZAMBIA"
 
-#: app/class-ms-rule.php:624
+#: app/class-ms-rule.php:671
 #, php-format
 msgid "On <b>%1$s</b>"
 msgstr "On <b>%1$s</b>"
 
-#: app/class-ms-rule.php:634 app/class-ms-rule.php:652
+#: app/class-ms-rule.php:681 app/class-ms-rule.php:699
 msgid "<b>Instantly</b>"
 msgstr "<b>Instantly</b>"
 
-#: app/class-ms-rule.php:637 app/class-ms-rule.php:643
+#: app/class-ms-rule.php:684 app/class-ms-rule.php:690
 #, php-format
 msgid "After <b>%1$s %2$s</b>"
 msgstr "After <b>%1$s %2$s</b>"
@@ -1442,27 +1454,27 @@ msgstr ""
 "This page is only available to Administrators - you can always see it, even "
 "during Simulation."
 
-#: app/controller/class-ms-controller-adminbar.php:243
+#: app/controller/class-ms-controller-adminbar.php:247
 msgid "Test Memberships"
 msgstr "Test Memberships"
 
-#: app/controller/class-ms-controller-adminbar.php:247
+#: app/controller/class-ms-controller-adminbar.php:251
 msgid "Membership Simulation Menu"
 msgstr "Membership Simulation Menu"
 
-#: app/controller/class-ms-controller-adminbar.php:277
+#: app/controller/class-ms-controller-adminbar.php:281
 msgid "Content Protection is disabled"
 msgstr "Content Protection is disabled"
 
-#: app/controller/class-ms-controller-adminbar.php:281
+#: app/controller/class-ms-controller-adminbar.php:285
 msgid "Content of this site is unprotected"
 msgstr "Content of this site is unprotected"
 
-#: app/controller/class-ms-controller-adminbar.php:315
+#: app/controller/class-ms-controller-adminbar.php:319
 msgid "Protection Details"
 msgstr "Protection Details"
 
-#: app/controller/class-ms-controller-adminbar.php:394
+#: app/controller/class-ms-controller-adminbar.php:398
 msgid "Switching..."
 msgstr "Switching..."
 
@@ -1474,61 +1486,65 @@ msgstr "Wrong username or password"
 msgid "Logging in..."
 msgstr "Logging in..."
 
-#: app/controller/class-ms-controller-dialog.php:187
+#: app/controller/class-ms-controller-dialog.php:195
 msgid "Enter a username or e-mail address."
 msgstr "Enter a username or e-mail address."
 
-#: app/controller/class-ms-controller-dialog.php:191
+#: app/controller/class-ms-controller-dialog.php:199
 msgid "There is no user registered with that email address."
 msgstr "There is no user registered with that email address."
 
-#: app/controller/class-ms-controller-dialog.php:205
+#: app/controller/class-ms-controller-dialog.php:213
 msgid "Invalid username or e-mail."
 msgstr "Invalid username or e-mail."
 
-#: app/controller/class-ms-controller-dialog.php:219
+#: app/controller/class-ms-controller-dialog.php:227
 msgid "Password reset is not allowed for this user"
 msgstr "Password reset is not allowed for this user"
 
-#: app/controller/class-ms-controller-dialog.php:250
+#: app/controller/class-ms-controller-dialog.php:258
 msgid "Someone requested that the password be reset for the following account:"
 msgstr ""
 "Someone requested that the password be reset for the following account:"
 
-#: app/controller/class-ms-controller-dialog.php:252
+#: app/controller/class-ms-controller-dialog.php:260
 #, php-format
 msgid "Username: %s"
 msgstr "Username: %s"
 
-#: app/controller/class-ms-controller-dialog.php:253
+#: app/controller/class-ms-controller-dialog.php:261
 msgid "If this was a mistake, just ignore this email and nothing will happen."
 msgstr "If this was a mistake, just ignore this email and nothing will happen."
 
-#: app/controller/class-ms-controller-dialog.php:254
+#: app/controller/class-ms-controller-dialog.php:262
 msgid "To reset your password, visit the following address:"
 msgstr "To reset your password, visit the following address:"
 
-#: app/controller/class-ms-controller-dialog.php:263
+#: app/controller/class-ms-controller-dialog.php:271
 #, php-format
 msgid "[%s] Password Reset"
 msgstr "[%s] Password Reset"
 
-#: app/controller/class-ms-controller-dialog.php:269
+#: app/controller/class-ms-controller-dialog.php:277
 msgid "The e-mail could not be sent."
 msgstr "The e-mail could not be sent."
 
-#: app/controller/class-ms-controller-dialog.php:270
+#: app/controller/class-ms-controller-dialog.php:278
 msgid "Possible reason: your host may have disabled the mail() function."
 msgstr "Possible reason: your host may have disabled the mail() function."
 
-#: app/controller/class-ms-controller-dialog.php:272
+#: app/controller/class-ms-controller-dialog.php:280
 msgid "Check your e-mail for the confirmation link."
 msgstr "Check your e-mail for the confirmation link."
 
-#: app/controller/class-ms-controller-frontend.php:421
-#: app/model/class-ms-model-member.php:798
+#: app/controller/class-ms-controller-frontend.php:468
+#: app/model/class-ms-model-member.php:799
 msgid "Registration is currently not allowed."
 msgstr "Registration is currently not allowed."
+
+#: app/controller/class-ms-controller-frontend.php:976
+msgid "Are you sure you want to cancel?"
+msgstr "Are you sure you want to cancel?"
 
 #: app/controller/class-ms-controller-gateway.php:583
 #, php-format
@@ -1540,7 +1556,7 @@ msgid "Sorry, your signup request has failed. Try again."
 msgstr "Sorry, your signup request has failed. Try again."
 
 #: app/controller/class-ms-controller-help.php:82
-#: app/controller/class-ms-controller-settings.php:293
+#: app/controller/class-ms-controller-settings.php:296
 msgid "General"
 msgstr "General"
 
@@ -1552,7 +1568,7 @@ msgid "Shortcodes"
 msgstr "Shortcodes"
 
 #: app/controller/class-ms-controller-help.php:88
-#: app/view/class-ms-view-help.php:1150
+#: app/view/class-ms-view-help.php:1325
 msgid "Advanced Settings"
 msgstr "Advanced Settings"
 
@@ -1564,13 +1580,13 @@ msgstr "Coming soon: This import source is not supported yet..."
 msgid "Select an User"
 msgstr "Select an User"
 
-#: app/controller/class-ms-controller-membership.php:534
+#: app/controller/class-ms-controller-membership.php:550
 #: app/helper/class-ms-helper-membership.php:160
 #: app/model/class-ms-model-import.php:239
 msgid "Finish"
 msgstr "Finish"
 
-#: app/controller/class-ms-controller-membership.php:1033
+#: app/controller/class-ms-controller-membership.php:1060
 #: app/controller/class-ms-controller-plugin.php:214
 #: app/controller/class-ms-controller-plugin.php:215
 #: app/helper/class-ms-helper-membership.php:111
@@ -1578,14 +1594,14 @@ msgstr "Finish"
 msgid "Memberships"
 msgstr "Memberships"
 
-#: app/controller/class-ms-controller-membership.php:1060
-#: app/controller/class-ms-controller-settings.php:296
+#: app/controller/class-ms-controller-membership.php:1087
+#: app/controller/class-ms-controller-settings.php:299
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:50
 #: app/view/membership/class-ms-view-membership-payment.php:16
 msgid "Payment"
 msgstr "Payment"
 
-#: app/controller/class-ms-controller-membership.php:1159
+#: app/controller/class-ms-controller-membership.php:1186
 #, php-format
 msgid ""
 "Do you want to completely delete the membership <strong>%s</strong> "
@@ -1594,19 +1610,19 @@ msgstr ""
 "Do you want to completely delete the membership <strong>%s</strong> "
 "including all subscriptions?"
 
-#: app/controller/class-ms-controller-membership.php:1162
+#: app/controller/class-ms-controller-membership.php:1189
 msgid "Error while saving changes."
 msgstr "Error while saving changes."
 
-#: app/controller/class-ms-controller-membership.php:1187
+#: app/controller/class-ms-controller-membership.php:1214
 msgid "Valid"
 msgstr "Valid"
 
-#: app/controller/class-ms-controller-membership.php:1188
+#: app/controller/class-ms-controller-membership.php:1215
 msgid "Invalid"
 msgstr "Invalid"
 
-#: app/controller/class-ms-controller-membership.php:1189
+#: app/controller/class-ms-controller-membership.php:1216
 msgid "Before testing you have to first enter one or more Page URLs above."
 msgstr "Before testing you have to first enter one or more Page URLs above."
 
@@ -1675,84 +1691,80 @@ msgstr "Add-ons"
 msgid "Help"
 msgstr "Help"
 
-#: app/controller/class-ms-controller-plugin.php:523
-msgid "Are you sure you want to cancel?"
-msgstr "Are you sure you want to cancel?"
-
-#: app/controller/class-ms-controller-plugin.php:543
+#: app/controller/class-ms-controller-plugin.php:532
 msgid "This field is required."
 msgstr "This field is required."
 
-#: app/controller/class-ms-controller-plugin.php:544
+#: app/controller/class-ms-controller-plugin.php:533
 msgid "Please fix this field."
 msgstr "Please fix this field."
 
-#: app/controller/class-ms-controller-plugin.php:545
+#: app/controller/class-ms-controller-plugin.php:534
 msgid "Please enter a valid email address."
 msgstr "Please enter a valid email address."
 
-#: app/controller/class-ms-controller-plugin.php:546
+#: app/controller/class-ms-controller-plugin.php:535
 msgid "Please enter a valid URL."
 msgstr "Please enter a valid URL."
 
-#: app/controller/class-ms-controller-plugin.php:547
+#: app/controller/class-ms-controller-plugin.php:536
 msgid "Please enter a valid date."
 msgstr "Please enter a valid date."
 
-#: app/controller/class-ms-controller-plugin.php:548
+#: app/controller/class-ms-controller-plugin.php:537
 msgid "Please enter a valid date ( ISO )."
 msgstr "Please enter a valid date ( ISO )."
 
-#: app/controller/class-ms-controller-plugin.php:549
+#: app/controller/class-ms-controller-plugin.php:538
 msgid "Please enter a valid number."
 msgstr "Please enter a valid number."
 
-#: app/controller/class-ms-controller-plugin.php:550
+#: app/controller/class-ms-controller-plugin.php:539
 msgid "Please enter only digits."
 msgstr "Please enter only digits."
 
-#: app/controller/class-ms-controller-plugin.php:551
+#: app/controller/class-ms-controller-plugin.php:540
 msgid "Please enter a valid credit card number."
 msgstr "Please enter a valid credit card number."
 
-#: app/controller/class-ms-controller-plugin.php:552
+#: app/controller/class-ms-controller-plugin.php:541
 msgid "Please enter the same value again."
 msgstr "Please enter the same value again."
 
-#: app/controller/class-ms-controller-plugin.php:553
+#: app/controller/class-ms-controller-plugin.php:542
 msgid "Please enter no more than {0} characters."
 msgstr "Please enter no more than {0} characters."
 
-#: app/controller/class-ms-controller-plugin.php:554
+#: app/controller/class-ms-controller-plugin.php:543
 msgid "Please enter at least {0} characters."
 msgstr "Please enter at least {0} characters."
 
-#: app/controller/class-ms-controller-plugin.php:555
+#: app/controller/class-ms-controller-plugin.php:544
 msgid "Please enter a value between {0} and {1} characters long."
 msgstr "Please enter a value between {0} and {1} characters long."
 
-#: app/controller/class-ms-controller-plugin.php:556
+#: app/controller/class-ms-controller-plugin.php:545
 msgid "Please enter a value between {0} and {1}."
 msgstr "Please enter a value between {0} and {1}."
 
-#: app/controller/class-ms-controller-plugin.php:557
+#: app/controller/class-ms-controller-plugin.php:546
 msgid "Please enter a value less than or equal to {0}."
 msgstr "Please enter a value less than or equal to {0}."
 
-#: app/controller/class-ms-controller-plugin.php:558
+#: app/controller/class-ms-controller-plugin.php:547
 msgid "Please enter a value greater than or equal to {0}."
 msgstr "Please enter a value greater than or equal to {0}."
 
-#: app/controller/class-ms-controller-settings.php:299
+#: app/controller/class-ms-controller-settings.php:302
 #: app/view/settings/page/class-ms-view-settings-page-messages.php:83
 msgid "Protection Messages"
 msgstr "Protection Messages"
 
-#: app/controller/class-ms-controller-settings.php:302
+#: app/controller/class-ms-controller-settings.php:305
 msgid "Automated Email Responses"
 msgstr "Automated Email Responses"
 
-#: app/controller/class-ms-controller-settings.php:305
+#: app/controller/class-ms-controller-settings.php:308
 #: app/model/class-ms-model-import.php:223
 #: app/view/settings/page/class-ms-view-settings-page-import.php:93
 msgid "Import Tool"
@@ -1773,8 +1785,8 @@ msgid "Signup"
 msgstr "Signup"
 
 #: app/controller/class-ms-controller-shortcode.php:255
-#: app/view/class-ms-view-help.php:383
-#: app/view/shortcode/class-ms-view-shortcode-account.php:37
+#: app/controller/class-ms-controller-shortcode.php:668
+#: app/view/class-ms-view-help.php:383 app/view/class-ms-view-help.php:1126
 msgid "Change"
 msgstr "Change"
 
@@ -1803,11 +1815,38 @@ msgstr "Membership price:"
 msgid "Membership details:"
 msgstr "Membership details:"
 
-#: app/controller/class-ms-controller-shortcode.php:734
+#: app/controller/class-ms-controller-shortcode.php:667
+#: app/view/class-ms-view-help.php:1108
+msgid "Your Membership"
+msgstr "Your Membership"
+
+#: app/controller/class-ms-controller-shortcode.php:671
+#: app/view/class-ms-view-help.php:1148
+msgid "Personal details"
+msgstr "Personal details"
+
+#: app/controller/class-ms-controller-shortcode.php:676
+#: app/view/class-ms-view-help.php:1188
+#: app/view/settings/class-ms-view-settings-import.php:130
+msgid "Invoices"
+msgstr "Invoices"
+
+#: app/controller/class-ms-controller-shortcode.php:677
+#: app/controller/class-ms-controller-shortcode.php:682
+#: app/view/class-ms-view-help.php:1215 app/view/class-ms-view-help.php:1264
+msgid "View all"
+msgstr "View all"
+
+#: app/controller/class-ms-controller-shortcode.php:681
+#: app/view/class-ms-view-help.php:1237
+msgid "Activities"
+msgstr "Activities"
+
+#: app/controller/class-ms-controller-shortcode.php:768
 msgid "Visit your account page for more information."
 msgstr "Visit your account page for more information."
 
-#: app/controller/class-ms-controller-shortcode.php:1057
+#: app/controller/class-ms-controller-shortcode.php:1091
 msgid ""
 "Content Protection is disabled. Please enable the protection to see this "
 "shortcode."
@@ -1815,7 +1854,7 @@ msgstr ""
 "Content Protection is disabled. Please enable the protection to see this "
 "shortcode."
 
-#: app/controller/class-ms-controller-shortcode.php:1061
+#: app/controller/class-ms-controller-shortcode.php:1095
 msgid "This message is only displayed to Site Administrators"
 msgstr "This message is only displayed to Site Administrators"
 
@@ -1924,14 +1963,14 @@ msgstr "Expiration Date"
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:144
 #: app/helper/listtable/class-ms-helper-listtable-member.php:415
 #: app/view/frontend/class-ms-view-frontend-profile.php:47
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:112
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:123
 msgid "First Name"
 msgstr "First Name"
 
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:149
 #: app/helper/listtable/class-ms-helper-listtable-member.php:416
 #: app/view/frontend/class-ms-view-frontend-profile.php:53
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:119
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:130
 msgid "Last Name"
 msgstr "Last Name"
 
@@ -2370,7 +2409,7 @@ msgid "Select All"
 msgstr "Select All"
 
 #: app/helper/class-ms-helper-listtable.php:1243
-#: app/view/class-ms-view-adminbar.php:88
+#: app/view/class-ms-view-adminbar.php:90
 msgid "Update"
 msgstr "Update"
 
@@ -2482,51 +2521,51 @@ msgstr "You have successfully set up <b>%1$s</b>."
 msgid "Set-up Access Levels"
 msgstr "Set-up Access Levels"
 
-#: app/helper/class-ms-helper-period.php:184
+#: app/helper/class-ms-helper-period.php:189
 msgid "one day"
 msgstr "one day"
 
-#: app/helper/class-ms-helper-period.php:185
+#: app/helper/class-ms-helper-period.php:190
 msgid "one week"
 msgstr "one week"
 
-#: app/helper/class-ms-helper-period.php:186
+#: app/helper/class-ms-helper-period.php:191
 msgid "one month"
 msgstr "one month"
 
-#: app/helper/class-ms-helper-period.php:187
+#: app/helper/class-ms-helper-period.php:192
 msgid "one year"
 msgstr "one year"
 
-#: app/helper/class-ms-helper-period.php:188
+#: app/helper/class-ms-helper-period.php:193
 msgid "day"
 msgstr "day"
 
-#: app/helper/class-ms-helper-period.php:189
+#: app/helper/class-ms-helper-period.php:194
 msgid "week"
 msgstr "week"
 
-#: app/helper/class-ms-helper-period.php:190
+#: app/helper/class-ms-helper-period.php:195
 msgid "month"
 msgstr "month"
 
-#: app/helper/class-ms-helper-period.php:191
+#: app/helper/class-ms-helper-period.php:196
 msgid "year"
 msgstr "year"
 
-#: app/helper/class-ms-helper-period.php:194
+#: app/helper/class-ms-helper-period.php:199
 msgid "days"
 msgstr "days"
 
-#: app/helper/class-ms-helper-period.php:195
+#: app/helper/class-ms-helper-period.php:200
 msgid "weeks"
 msgstr "weeks"
 
-#: app/helper/class-ms-helper-period.php:196
+#: app/helper/class-ms-helper-period.php:201
 msgid "months"
 msgstr "months"
 
-#: app/helper/class-ms-helper-period.php:197
+#: app/helper/class-ms-helper-period.php:202
 msgid "years"
 msgstr "years"
 
@@ -2580,7 +2619,7 @@ msgstr "Bulk settings not updated."
 
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:51
 #: app/view/frontend/class-ms-view-frontend-invoices.php:16
-#: app/view/shortcode/class-ms-view-shortcode-account.php:144
+#: app/view/shortcode/class-ms-view-shortcode-account.php:236
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:33
 msgid "Invoice #"
 msgstr "Invoice #"
@@ -2592,12 +2631,12 @@ msgstr "User"
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:54
 #: app/helper/listtable/class-ms-helper-listtable-gateway.php:70
 #: app/view/billing/class-ms-view-billing-edit.php:85
-#: app/view/class-ms-view-adminbar.php:124
+#: app/view/class-ms-view-adminbar.php:126
 #: app/view/frontend/class-ms-view-frontend-invoices.php:17
 #: app/view/member/class-ms-view-member-dialog.php:148
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:250
-#: app/view/shortcode/class-ms-view-shortcode-account.php:50
-#: app/view/shortcode/class-ms-view-shortcode-account.php:145
+#: app/view/shortcode/class-ms-view-shortcode-account.php:71
+#: app/view/shortcode/class-ms-view-shortcode-account.php:239
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:153
 msgid "Status"
 msgstr "Status"
@@ -2605,7 +2644,7 @@ msgstr "Status"
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:55
 #: app/view/frontend/class-ms-view-frontend-invoices.php:20
 #: app/view/frontend/class-ms-view-frontend-payment.php:164
-#: app/view/shortcode/class-ms-view-shortcode-account.php:148
+#: app/view/shortcode/class-ms-view-shortcode-account.php:244
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:207
 msgid "Total"
 msgstr "Total"
@@ -2613,7 +2652,7 @@ msgstr "Total"
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:56
 #: app/view/billing/class-ms-view-billing-edit.php:124
 #: app/view/frontend/class-ms-view-frontend-invoices.php:24
-#: app/view/shortcode/class-ms-view-shortcode-account.php:152
+#: app/view/shortcode/class-ms-view-shortcode-account.php:252
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:149
 msgid "Due date"
 msgstr "Due date"
@@ -2637,7 +2676,7 @@ msgstr "Billed or Pending"
 #: app/helper/listtable/class-ms-helper-listtable-event.php:44
 #: app/view/frontend/class-ms-view-frontend-activities.php:16
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:208
-#: app/view/shortcode/class-ms-view-shortcode-account.php:183
+#: app/view/shortcode/class-ms-view-shortcode-account.php:337
 msgid "Date"
 msgstr "Date"
 
@@ -2691,13 +2730,13 @@ msgstr "Live"
 
 #: app/helper/listtable/class-ms-helper-listtable-member.php:87
 #: app/model/class-ms-model-communication.php:249
-#: app/model/class-ms-model-member.php:805
+#: app/model/class-ms-model-member.php:806
 #: app/view/billing/class-ms-view-billing-edit.php:70
 #: app/view/billing/class-ms-view-billing-edit.php:92
 #: app/view/class-ms-view-help.php:596
 #: app/view/settings/class-ms-view-settings-import.php:127
-#: app/view/shortcode/class-ms-view-shortcode-account.php:230
-#: app/view/shortcode/class-ms-view-shortcode-login.php:187
+#: app/view/shortcode/class-ms-view-shortcode-account.php:412
+#: app/view/shortcode/class-ms-view-shortcode-login.php:185
 msgid "Username"
 msgstr "Username"
 
@@ -2882,7 +2921,7 @@ msgid "Showing All %1$s that are <b>protected</b> by %2$s"
 msgstr "Showing All %1$s that are <b>protected</b> by %2$s"
 
 #: app/helper/listtable/class-ms-helper-listtable-rule.php:683
-#: app/view/class-ms-view-adminbar.php:300
+#: app/view/class-ms-view-adminbar.php:316
 msgid "Unprotected"
 msgstr "Unprotected"
 
@@ -2894,24 +2933,24 @@ msgstr "Protected"
 msgid "Matching"
 msgstr "Matching"
 
-#: app/model/class-ms-model-addon.php:423
+#: app/model/class-ms-model-addon.php:422
 msgid "Options available"
 msgstr "Options available"
 
-#: app/model/class-ms-model-addon.php:427
+#: app/model/class-ms-model-addon.php:426
 msgid "Multiple Memberships"
 msgstr "Multiple Memberships"
 
-#: app/model/class-ms-model-addon.php:428
+#: app/model/class-ms-model-addon.php:427
 msgid "Your members can join more than one membership level at the same time."
 msgstr "Your members can join more than one membership level at the same time."
 
-#: app/model/class-ms-model-addon.php:432
+#: app/model/class-ms-model-addon.php:431
 #: app/view/membership/class-ms-view-membership-payment.php:339
 msgid "Trial Period"
 msgstr "Trial Period"
 
-#: app/model/class-ms-model-addon.php:433
+#: app/model/class-ms-model-addon.php:432
 msgid ""
 "Allow your members to sign up for a free membership trial. Trial details can "
 "be configured separately for each membership level."
@@ -2919,51 +2958,77 @@ msgstr ""
 "Allow your members to sign up for a free membership trial. Trial details can "
 "be configured separately for each membership level."
 
-#: app/model/class-ms-model-addon.php:437
+#: app/model/class-ms-model-addon.php:436
 msgid "Individual Posts"
 msgstr "Individual Posts"
 
-#: app/model/class-ms-model-addon.php:438
+#: app/model/class-ms-model-addon.php:437
 msgid "Protect individual Posts instead of Categories."
 msgstr "Protect individual Posts instead of Categories."
 
-#: app/model/class-ms-model-addon.php:442
+#: app/model/class-ms-model-addon.php:441
 msgid "Individual Custom Posts"
 msgstr "Individual Custom Posts"
 
-#: app/model/class-ms-model-addon.php:443
+#: app/model/class-ms-model-addon.php:442
 msgid "Protect individual Posts of a Custom Post Type."
 msgstr "Protect individual Posts of a Custom Post Type."
 
-#: app/model/class-ms-model-addon.php:447
+#: app/model/class-ms-model-addon.php:446
 msgid "Media Protection"
 msgstr "Media Protection"
 
-#: app/model/class-ms-model-addon.php:448
+#: app/model/class-ms-model-addon.php:447
 msgid "Protect Images and other Media-Library content."
 msgstr "Protect Images and other Media-Library content."
 
-#: app/model/class-ms-model-addon.php:457
+#: app/model/class-ms-model-addon.php:456
 msgid "Mask download URL:"
 msgstr "Mask download URL:"
 
-#: app/model/class-ms-model-addon.php:468
+#: app/model/class-ms-model-addon.php:467
 msgid "Protection method"
 msgstr "Protection method"
 
+#: app/model/class-ms-model-addon.php:468
+msgid ""
+"You can change the way that Protected Content changes the default URL to "
+"your WordPress media library files.<br>This is done for increased protection "
+"by hiding the real filename and path."
+msgstr ""
+"You can change the way that Protected Content changes the default URL to "
+"your WordPress media library files.<br>This is done for increased protection "
+"by hiding the real filename and path."
+
+#: app/model/class-ms-model-addon.php:480
+msgid "Protect Individual Media files"
+msgstr "Protect Individual Media files"
+
 #: app/model/class-ms-model-addon.php:481
+msgid ""
+"Enable this to display a new tab in \"Protected Content\" where you can "
+"manually modify access to each media library item.<br>Default: When this "
+"option is disabled then the parent-post controls the access to the media "
+"file."
+msgstr ""
+"Enable this to display a new tab in \"Protected Content\" where you can "
+"manually modify access to each media library item.<br>Default: When this "
+"option is disabled then the parent-post controls the access to the media "
+"file."
+
+#: app/model/class-ms-model-addon.php:494
 msgid "Shortcode Protection"
 msgstr "Shortcode Protection"
 
-#: app/model/class-ms-model-addon.php:482
+#: app/model/class-ms-model-addon.php:495
 msgid "Protect shortcodes-output via membership levels."
 msgstr "Protect shortcodes-output via membership levels."
 
-#: app/model/class-ms-model-addon.php:487
+#: app/model/class-ms-model-addon.php:500
 msgid "URL Protection"
 msgstr "URL Protection"
 
-#: app/model/class-ms-model-addon.php:488
+#: app/model/class-ms-model-addon.php:501
 msgid ""
 "URL Protection will protect pages by the URL. This rule overrides all other "
 "rules, so use it carefully."
@@ -2971,29 +3036,29 @@ msgstr ""
 "URL Protection will protect pages by the URL. This rule overrides all other "
 "rules, so use it carefully."
 
-#: app/model/class-ms-model-addon.php:493
+#: app/model/class-ms-model-addon.php:506
 msgid "Additional Automated Messages"
 msgstr "Additional Automated Messages"
 
-#: app/model/class-ms-model-addon.php:494
+#: app/model/class-ms-model-addon.php:507
 msgid ""
 "Send your members automated Email responses for various additional events."
 msgstr ""
 "Send your members automated Email responses for various additional events."
 
-#: app/model/class-ms-model-addon.php:499
+#: app/model/class-ms-model-addon.php:512
 msgid "Protect Special Pages"
 msgstr "Protect Special Pages"
 
-#: app/model/class-ms-model-addon.php:500
+#: app/model/class-ms-model-addon.php:513
 msgid "Change protection of special pages such as the search results."
 msgstr "Change protection of special pages such as the search results."
 
-#: app/model/class-ms-model-addon.php:505
+#: app/model/class-ms-model-addon.php:518
 msgid "Advanced menu protection"
 msgstr "Advanced menu protection"
 
-#: app/model/class-ms-model-addon.php:506
+#: app/model/class-ms-model-addon.php:519
 msgid ""
 "Adds a new option to the General Settings that controls how WordPress menus "
 "are protected.<br />Protect individual Menu-Items, replace the contents of "
@@ -3003,27 +3068,27 @@ msgstr ""
 "are protected.<br />Protect individual Menu-Items, replace the contents of "
 "WordPress Menu-Locations or replace each Menu individually."
 
-#: app/model/class-ms-model-addon.php:513
+#: app/model/class-ms-model-addon.php:526
 msgid "Choose how you want to protect your WordPress menus."
 msgstr "Choose how you want to protect your WordPress menus."
 
-#: app/model/class-ms-model-addon.php:516
+#: app/model/class-ms-model-addon.php:529
 msgid "Protect single Menu Items (Default)"
 msgstr "Protect single Menu Items (Default)"
 
-#: app/model/class-ms-model-addon.php:517
+#: app/model/class-ms-model-addon.php:530
 msgid "Replace individual Menus"
 msgstr "Replace individual Menus"
 
-#: app/model/class-ms-model-addon.php:518
+#: app/model/class-ms-model-addon.php:531
 msgid "Overwrite contents of Menu Locations"
 msgstr "Overwrite contents of Menu Locations"
 
-#: app/model/class-ms-model-addon.php:530
+#: app/model/class-ms-model-addon.php:543
 msgid "Admin Side Protection"
 msgstr "Admin Side Protection"
 
-#: app/model/class-ms-model-addon.php:531
+#: app/model/class-ms-model-addon.php:544
 msgid ""
 "Control the pages and even Meta boxes that members can access on the admin "
 "side."
@@ -3031,19 +3096,19 @@ msgstr ""
 "Control the pages and even Meta boxes that members can access on the admin "
 "side."
 
-#: app/model/class-ms-model-addon.php:536
+#: app/model/class-ms-model-addon.php:549
 msgid "Member Capabilities"
 msgstr "Member Capabilities"
 
-#: app/model/class-ms-model-addon.php:537
+#: app/model/class-ms-model-addon.php:550
 msgid "Manage user-capabilities on membership level."
 msgstr "Manage user-capabilities on membership level."
 
-#: app/model/class-ms-model-addon.php:544
+#: app/model/class-ms-model-addon.php:557
 msgid "Advanced Capability protection"
 msgstr "Advanced Capability protection"
 
-#: app/model/class-ms-model-addon.php:545
+#: app/model/class-ms-model-addon.php:558
 msgid ""
 "Allows you to protect individual WordPress Capabilities. When activated then "
 "the \"User Roles\" tab is replaced by a \"Member Capabilities\" tab where "
@@ -3061,7 +3126,7 @@ msgstr "Protected Content Email Templates"
 
 #: app/model/class-ms-model-communication.php:240
 #: app/view/settings/class-ms-view-settings-import.php:106
-#: app/view/shortcode/class-ms-view-shortcode-account.php:49
+#: app/view/shortcode/class-ms-view-shortcode-account.php:70
 msgid "Membership name"
 msgstr "Membership name"
 
@@ -3169,7 +3234,11 @@ msgstr "After payment due"
 msgid "Override this description in child class"
 msgstr "Override this description in child class"
 
-#: app/model/class-ms-model-communication.php:636
+#: app/model/class-ms-model-communication.php:591
+msgid "Period before/after"
+msgstr "Period before/after"
+
+#: app/model/class-ms-model-communication.php:651
 #, php-format
 msgid ""
 "[error: Communication email failed] comm_type=%s, subscription_id=%s, "
@@ -3178,12 +3247,12 @@ msgstr ""
 "[error: Communication email failed] comm_type=%s, subscription_id=%s, "
 "user_id=%s"
 
-#: app/model/class-ms-model-communication.php:1019
+#: app/model/class-ms-model-communication.php:1034
 msgid "account page"
 msgstr "account page"
 
-#: app/model/class-ms-model-communication.php:1026
-#: app/model/class-ms-model-communication.php:1035
+#: app/model/class-ms-model-communication.php:1041
+#: app/model/class-ms-model-communication.php:1050
 #, php-format
 msgid "%s day%s"
 msgstr "%s day%s"
@@ -3315,38 +3384,38 @@ msgstr "Could not import a Membership for User <strong>%1$s</strong> (%2$s)"
 msgid "Did not import the base membership %2$s for <strong>%1$s</strong>"
 msgstr "Did not import the base membership %2$s for <strong>%1$s</strong>"
 
-#: app/model/class-ms-model-invoice.php:263
+#: app/model/class-ms-model-invoice.php:272
 msgid "Protected Content Invoices"
 msgstr "Protected Content Invoices"
 
-#: app/model/class-ms-model-invoice.php:264
+#: app/model/class-ms-model-invoice.php:273
 msgid "Member Invoices"
 msgstr "Member Invoices"
 
-#: app/model/class-ms-model-invoice.php:290
+#: app/model/class-ms-model-invoice.php:299
 msgid "Paid"
 msgstr "Paid"
 
-#: app/model/class-ms-model-invoice.php:291
+#: app/model/class-ms-model-invoice.php:300
 msgid "Billed"
 msgstr "Billed"
 
-#: app/model/class-ms-model-invoice.php:292
+#: app/model/class-ms-model-invoice.php:301
 #: app/model/class-ms-model-relationship.php:224
-#: app/view/shortcode/class-ms-view-shortcode-account.php:73
+#: app/view/shortcode/class-ms-view-shortcode-account.php:94
 msgid "Pending"
 msgstr "Pending"
 
-#: app/model/class-ms-model-invoice.php:294
+#: app/model/class-ms-model-invoice.php:303
 msgid "Denied"
 msgstr "Denied"
 
-#: app/model/class-ms-model-invoice.php:621
+#: app/model/class-ms-model-invoice.php:630
 #, php-format
 msgid "Invoice for %s - %s"
 msgstr "Invoice for %s - %s"
 
-#: app/model/class-ms-model-invoice.php:647
+#: app/model/class-ms-model-invoice.php:656
 #, php-format
 msgid "Pro rate discount: %s %s. "
 msgstr "Pro rate discount: %s %s. "
@@ -3355,22 +3424,22 @@ msgstr "Pro rate discount: %s %s. "
 msgid "Select a user"
 msgstr "Select a user"
 
-#: app/model/class-ms-model-member.php:806
+#: app/model/class-ms-model-member.php:807
 msgid "Email address"
 msgstr "Email address"
 
-#: app/model/class-ms-model-member.php:807 app/view/class-ms-view-help.php:604
+#: app/model/class-ms-model-member.php:808 app/view/class-ms-view-help.php:604
 #: app/view/frontend/class-ms-view-frontend-profile.php:65
-#: app/view/shortcode/class-ms-view-shortcode-login.php:188
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:140
+#: app/view/shortcode/class-ms-view-shortcode-login.php:186
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:151
 msgid "Password"
 msgstr "Password"
 
-#: app/model/class-ms-model-member.php:808
+#: app/model/class-ms-model-member.php:809
 msgid "Password confirmation"
 msgstr "Password confirmation"
 
-#: app/model/class-ms-model-member.php:816
+#: app/model/class-ms-model-member.php:817
 #, php-format
 msgid ""
 "Please ensure that the <span class=\"ms-bold\">%s</span> information is "
@@ -3379,135 +3448,135 @@ msgstr ""
 "Please ensure that the <span class=\"ms-bold\">%s</span> information is "
 "completed."
 
-#: app/model/class-ms-model-member.php:826
-#: app/model/class-ms-model-member.php:1295
+#: app/model/class-ms-model-member.php:827
+#: app/model/class-ms-model-member.php:1299
 msgid "Please ensure the passwords match."
 msgstr "Please ensure the passwords match."
 
-#: app/model/class-ms-model-member.php:833
+#: app/model/class-ms-model-member.php:834
 msgid "The username is not valid, sorry."
 msgstr "The username is not valid, sorry."
 
-#: app/model/class-ms-model-member.php:840
+#: app/model/class-ms-model-member.php:841
 msgid "That username is already taken, sorry."
 msgstr "That username is already taken, sorry."
 
-#: app/model/class-ms-model-member.php:847
-#: app/model/class-ms-model-member.php:1288
+#: app/model/class-ms-model-member.php:848
+#: app/model/class-ms-model-member.php:1292
 msgid "The email address is not valid, sorry."
 msgstr "The email address is not valid, sorry."
 
-#: app/model/class-ms-model-member.php:854
+#: app/model/class-ms-model-member.php:855
 msgid "That email address is already taken, sorry."
 msgstr "That email address is already taken, sorry."
 
-#: app/model/class-ms-model-membership.php:356
+#: app/model/class-ms-model-membership.php:372
 msgid "Protected Content Memberships"
 msgstr "Protected Content Memberships"
 
-#: app/model/class-ms-model-membership.php:357
+#: app/model/class-ms-model-membership.php:373
 msgid "Memberships user can join to."
 msgstr "Memberships user can join to."
 
-#: app/model/class-ms-model-membership.php:389
+#: app/model/class-ms-model-membership.php:405
 #: app/view/membership/class-ms-view-membership-add.php:65
 msgid "Standard Membership"
 msgstr "Standard Membership"
 
-#: app/model/class-ms-model-membership.php:390
+#: app/model/class-ms-model-membership.php:406
 msgid "Dripped Content Membership"
 msgstr "Dripped Content Membership"
 
-#: app/model/class-ms-model-membership.php:391
+#: app/model/class-ms-model-membership.php:407
 #: app/view/membership/class-ms-view-membership-add.php:73
 msgid "Guest Membership"
 msgstr "Guest Membership"
 
-#: app/model/class-ms-model-membership.php:392
+#: app/model/class-ms-model-membership.php:408
 #: app/view/membership/class-ms-view-membership-add.php:77
 msgid "Default Membership"
 msgstr "Default Membership"
 
-#: app/model/class-ms-model-membership.php:393
+#: app/model/class-ms-model-membership.php:409
 msgid "System Membership"
 msgstr "System Membership"
 
-#: app/model/class-ms-model-membership.php:430
-#: app/model/class-ms-model-membership.php:501
+#: app/model/class-ms-model-membership.php:446
+#: app/model/class-ms-model-membership.php:517
 msgid "Permanent access"
 msgstr "Permanent access"
 
-#: app/model/class-ms-model-membership.php:431
+#: app/model/class-ms-model-membership.php:447
 msgid "Finite access"
 msgstr "Finite access"
 
-#: app/model/class-ms-model-membership.php:432
+#: app/model/class-ms-model-membership.php:448
 msgid "Date range access"
 msgstr "Date range access"
 
-#: app/model/class-ms-model-membership.php:436
+#: app/model/class-ms-model-membership.php:452
 msgid "One payment for permanent access"
 msgstr "One payment for permanent access"
 
-#: app/model/class-ms-model-membership.php:437
+#: app/model/class-ms-model-membership.php:453
 msgid "One payment for finite access"
 msgstr "One payment for finite access"
 
-#: app/model/class-ms-model-membership.php:438
+#: app/model/class-ms-model-membership.php:454
 msgid "One payment for date range access"
 msgstr "One payment for date range access"
 
-#: app/model/class-ms-model-membership.php:439
+#: app/model/class-ms-model-membership.php:455
 msgid "Recurring payments"
 msgstr "Recurring payments"
 
-#: app/model/class-ms-model-membership.php:459
+#: app/model/class-ms-model-membership.php:475
 msgid "N/A"
 msgstr "N/A"
 
-#: app/model/class-ms-model-membership.php:465
+#: app/model/class-ms-model-membership.php:481
 #, php-format
 msgid "For %1$s"
 msgstr "For %1$s"
 
-#: app/model/class-ms-model-membership.php:472
+#: app/model/class-ms-model-membership.php:488
 #, php-format
 msgid "From %1$s to %2$s"
 msgstr "From %1$s to %2$s"
 
-#: app/model/class-ms-model-membership.php:479
+#: app/model/class-ms-model-membership.php:495
 #, php-format
 msgid "Each %1$s"
 msgstr "Each %1$s"
 
-#: app/model/class-ms-model-membership.php:483
 #: app/model/class-ms-model-membership.php:499
+#: app/model/class-ms-model-membership.php:515
 msgid "Single payment"
 msgstr "Single payment"
 
-#: app/model/class-ms-model-membership.php:485
+#: app/model/class-ms-model-membership.php:501
 #, php-format
 msgid "%2$s payments"
 msgstr "%2$s payments"
 
-#: app/model/class-ms-model-membership.php:747
+#: app/model/class-ms-model-membership.php:767
 msgid "Restrict access to Visitor-Level"
 msgstr "Restrict access to Visitor-Level"
 
-#: app/model/class-ms-model-membership.php:756
+#: app/model/class-ms-model-membership.php:776
 #, php-format
 msgid "Change to: %s"
 msgstr "Change to: %s"
 
-#: app/model/class-ms-model-membership.php:932
+#: app/model/class-ms-model-membership.php:952
 msgid "Private Memberships"
 msgstr "Private Memberships"
 
-#: app/model/class-ms-model-membership.php:1138
+#: app/model/class-ms-model-membership.php:1158
 msgid "(Invalid membership found)"
 msgstr "(Invalid membership found)"
 
-#: app/model/class-ms-model-membership.php:1148
+#: app/model/class-ms-model-membership.php:1168
 #, php-format
 msgid ""
 "<b>Please check your Protected Content settings</b><br />We found and fixed "
@@ -3520,32 +3589,34 @@ msgstr ""
 "changed due to this change.<br />You can review and delete the invalid "
 "content in the <a href=\"admin.php?page=%s\">Memberships section</a>."
 
-#: app/model/class-ms-model-membership.php:1165
+#: app/model/class-ms-model-membership.php:1185
 msgid "Protected Content core membership"
 msgstr "Protected Content core membership"
 
-#: app/model/class-ms-model-membership.php:1490
+#: app/model/class-ms-model-membership.php:1509
 #, php-format
 msgid "Ignored: Rule \"%s\""
 msgstr "Ignored: Rule \"%s\""
 
-#: app/model/class-ms-model-membership.php:1497
+#: app/model/class-ms-model-membership.php:1516
 #, php-format
 msgid "%s: Rule \"%s\""
 msgstr "%s: Rule \"%s\""
 
-#: app/model/class-ms-model-membership.php:1498
+#: app/model/class-ms-model-membership.php:1517
 #: app/model/class-ms-model-plugin.php:281
+#: app/model/class-ms-model-plugin.php:334
 msgid "Allow"
 msgstr "Allow"
 
-#: app/model/class-ms-model-membership.php:1498
+#: app/model/class-ms-model-membership.php:1517
 #: app/model/class-ms-model-plugin.php:281
+#: app/model/class-ms-model-plugin.php:334
 msgid "Deny"
 msgstr "Deny"
 
 #: app/model/class-ms-model-pages.php:141
-#: app/view/shortcode/class-ms-view-shortcode-login.php:108
+#: app/view/shortcode/class-ms-view-shortcode-login.php:106
 msgid "Register"
 msgstr "Register"
 
@@ -3636,11 +3707,11 @@ msgstr "%s: Membership \"%s\""
 msgid "Allow: Page is not protected"
 msgstr "Allow: Page is not protected"
 
-#: app/model/class-ms-model-plugin.php:536
+#: app/model/class-ms-model-plugin.php:549
 msgid "Every 6 Hours"
 msgstr "Every 6 Hours"
 
-#: app/model/class-ms-model-plugin.php:540
+#: app/model/class-ms-model-plugin.php:553
 msgid "Every 30 Mins"
 msgstr "Every 30 Mins"
 
@@ -3668,64 +3739,64 @@ msgstr "Deactivated"
 msgid "Canceled"
 msgstr "Canceled"
 
-#: app/model/class-ms-model-relationship.php:1203
+#: app/model/class-ms-model-relationship.php:1229
 msgid "Pay nothing (for ever)"
 msgstr "Pay nothing (for ever)"
 
-#: app/model/class-ms-model-relationship.php:1205
+#: app/model/class-ms-model-relationship.php:1231
 msgid "You will pay nothing for permanent access."
 msgstr "You will pay nothing for permanent access."
 
-#: app/model/class-ms-model-relationship.php:1209
+#: app/model/class-ms-model-relationship.php:1235
 #, php-format
 msgid "Pay <span class=\"price\">%1$s %2$s</span> (for ever)"
 msgstr "Pay <span class=\"price\">%1$s %2$s</span> (for ever)"
 
-#: app/model/class-ms-model-relationship.php:1211
+#: app/model/class-ms-model-relationship.php:1237
 #, php-format
 msgid ""
 "You will pay <span class=\"price\">%1$s %2$s</span> for permanent access."
 msgstr ""
 "You will pay <span class=\"price\">%1$s %2$s</span> for permanent access."
 
-#: app/model/class-ms-model-relationship.php:1225
+#: app/model/class-ms-model-relationship.php:1251
 #, php-format
 msgid "Pay nothing (until %4$s)"
 msgstr "Pay nothing (until %4$s)"
 
-#: app/model/class-ms-model-relationship.php:1227
+#: app/model/class-ms-model-relationship.php:1253
 #, php-format
 msgid "You will pay nothing for access until %3$s."
 msgstr "You will pay nothing for access until %3$s."
 
-#: app/model/class-ms-model-relationship.php:1231
+#: app/model/class-ms-model-relationship.php:1257
 #, php-format
 msgid "Pay <span class=\"price\">%1$s %2$s</span> (until %4$s)"
 msgstr "Pay <span class=\"price\">%1$s %2$s</span> (until %4$s)"
 
-#: app/model/class-ms-model-relationship.php:1233
+#: app/model/class-ms-model-relationship.php:1259
 #, php-format
 msgid ""
 "You will pay <span class=\"price\">%1$s %2$s</span> for access until %3$s."
 msgstr ""
 "You will pay <span class=\"price\">%1$s %2$s</span> for access until %3$s."
 
-#: app/model/class-ms-model-relationship.php:1249
+#: app/model/class-ms-model-relationship.php:1275
 #, php-format
 msgid "Pay nothing (%5$s - %6$s)"
 msgstr "Pay nothing (%5$s - %6$s)"
 
-#: app/model/class-ms-model-relationship.php:1251
+#: app/model/class-ms-model-relationship.php:1277
 #, php-format
 msgid "You will pay nothing for access from %3$s until %4$s."
 msgstr "You will pay nothing for access from %3$s until %4$s."
 
-#: app/model/class-ms-model-relationship.php:1255
+#: app/model/class-ms-model-relationship.php:1281
 #, php-format
 msgid "Pay <span class=\"price\">%1$s %2$s</span> (%5$s - %6$s)"
 msgstr "Pay <span class=\"price\">%1$s %2$s</span> (%5$s - %6$s)"
 
-#: app/model/class-ms-model-relationship.php:1257
+#: app/model/class-ms-model-relationship.php:1283
 #, php-format
 msgid ""
 "You will pay <span class=\"price\">%1$s %2$s</span> to access from %3$s "
@@ -3734,22 +3805,22 @@ msgstr ""
 "You will pay <span class=\"price\">%1$s %2$s</span> to access from %3$s "
 "until %4$s."
 
-#: app/model/class-ms-model-relationship.php:1276
+#: app/model/class-ms-model-relationship.php:1302
 #, php-format
 msgid "Pay <span class=\"price\">%1$s %2$s</span> (once)"
 msgstr "Pay <span class=\"price\">%1$s %2$s</span> (once)"
 
-#: app/model/class-ms-model-relationship.php:1278
+#: app/model/class-ms-model-relationship.php:1304
 #, php-format
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> once."
 msgstr "You will pay <span class=\"price\">%1$s %2$s</span> once."
 
-#: app/model/class-ms-model-relationship.php:1284
+#: app/model/class-ms-model-relationship.php:1310
 #, php-format
 msgid "%4$s times <span class=\"price\">%1$s %2$s</span> (each %3$s)"
 msgstr "%4$s times <span class=\"price\">%1$s %2$s</span> (each %3$s)"
 
-#: app/model/class-ms-model-relationship.php:1286
+#: app/model/class-ms-model-relationship.php:1312
 #, php-format
 msgid ""
 "You will make %4$s payments of <span class=\"price\">%1$s %2$s</span>, one "
@@ -3758,26 +3829,26 @@ msgstr ""
 "You will make %4$s payments of <span class=\"price\">%1$s %2$s</span>, one "
 "each %3$s."
 
-#: app/model/class-ms-model-relationship.php:1291
+#: app/model/class-ms-model-relationship.php:1317
 #, php-format
 msgid "Pay <span class=\"price\">%1$s %2$s</span> (each %3$s)"
 msgstr "Pay <span class=\"price\">%1$s %2$s</span> (each %3$s)"
 
-#: app/model/class-ms-model-relationship.php:1293
+#: app/model/class-ms-model-relationship.php:1319
 #, php-format
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> each %3$s."
 msgstr "You will pay <span class=\"price\">%1$s %2$s</span> each %3$s."
 
-#: app/model/class-ms-model-relationship.php:1310
+#: app/model/class-ms-model-relationship.php:1336
 msgid "nothing"
 msgstr "nothing"
 
-#: app/model/class-ms-model-relationship.php:1311
+#: app/model/class-ms-model-relationship.php:1337
 #, php-format
 msgid "The trial period of %1$s is for free."
 msgstr "The trial period of %1$s is for free."
 
-#: app/model/class-ms-model-relationship.php:1314
+#: app/model/class-ms-model-relationship.php:1340
 #, php-format
 msgid ""
 "For the trial period of %1$s you only pay <span class=\"price\">%2$s %3$s</"
@@ -3786,31 +3857,31 @@ msgstr ""
 "For the trial period of %1$s you only pay <span class=\"price\">%2$s %3$s</"
 "span>."
 
-#: app/model/class-ms-model-relationship.php:1652
+#: app/model/class-ms-model-relationship.php:1678
 msgid "Pending payment."
 msgstr "Pending payment."
 
-#: app/model/class-ms-model-relationship.php:1656
+#: app/model/class-ms-model-relationship.php:1682
 msgid "Membership level trial expires on: "
 msgstr "Membership level trial expires on: "
 
-#: app/model/class-ms-model-relationship.php:1662
+#: app/model/class-ms-model-relationship.php:1688
 msgid "Membership level expires on: "
 msgstr "Membership level expires on: "
 
-#: app/model/class-ms-model-relationship.php:1666
+#: app/model/class-ms-model-relationship.php:1692
 msgid "Permanent access."
 msgstr "Permanent access."
 
-#: app/model/class-ms-model-relationship.php:1672
+#: app/model/class-ms-model-relationship.php:1698
 msgid "Membership expired on: "
 msgstr "Membership expired on: "
 
-#: app/model/class-ms-model-relationship.php:1677
+#: app/model/class-ms-model-relationship.php:1703
 msgid "Membership canceled, valid until it expires on: "
 msgstr "Membership canceled, valid until it expires on: "
 
-#: app/model/class-ms-model-relationship.php:1682
+#: app/model/class-ms-model-relationship.php:1708
 msgid "Membership deactivated."
 msgstr "Membership deactivated."
 
@@ -3943,20 +4014,20 @@ msgstr "<strong>Protected Content</strong> was updated to version %1$s!"
 msgid "New Membership pages created: \"%1$s\"."
 msgstr "New Membership pages created: \"%1$s\"."
 
-#: app/model/class-ms-model-upgrade.php:837
+#: app/model/class-ms-model-upgrade.php:867
 msgid "Your Protected Content data was reset!"
 msgstr "Your Protected Content data was reset!"
 
-#: app/model/class-ms-model-upgrade.php:864
+#: app/model/class-ms-model-upgrade.php:894
 #, php-format
 msgid "The Protected Content Snapshot \"%s\" was restored!"
 msgstr "The Protected Content Snapshot \"%s\" was restored!"
 
-#: app/model/class-ms-model-upgrade.php:871
+#: app/model/class-ms-model-upgrade.php:901
 msgid "To prevent auto-updating the DB again we stop here!"
 msgstr "To prevent auto-updating the DB again we stop here!"
 
-#: app/model/class-ms-model-upgrade.php:877
+#: app/model/class-ms-model-upgrade.php:907
 #, php-format
 msgid ""
 "You now have the option to <br />(A) downgrade the plugin to an earlier "
@@ -3966,6 +4037,18 @@ msgstr ""
 "version via FTP or <br />(B) to %sre-run the upgrade process%s."
 
 #: app/model/communication/class-ms-model-communication-after-finishes.php:50
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:50
+#: app/model/communication/class-ms-model-communication-cancelled.php:67
+msgid "Message Delay"
+msgstr "Message Delay"
+
+#: app/model/communication/class-ms-model-communication-after-finishes.php:51
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:51
+#: app/model/communication/class-ms-model-communication-cancelled.php:68
+msgid "Use \"0\" to send instantly, or another value to delay the message."
+msgstr "Use \"0\" to send instantly, or another value to delay the message."
+
+#: app/model/communication/class-ms-model-communication-after-finishes.php:64
 msgid ""
 "Sent a predefined number of days after the membership finishes. You must "
 "decide how many days after a message is to be sent."
@@ -3973,18 +4056,18 @@ msgstr ""
 "Sent a predefined number of days after the membership finishes. You must "
 "decide how many days after a message is to be sent."
 
-#: app/model/communication/class-ms-model-communication-after-finishes.php:63
+#: app/model/communication/class-ms-model-communication-after-finishes.php:77
 #, php-format
 msgid "Reminder: your %s membership has ended"
 msgstr "Reminder: your %s membership has ended"
 
-#: app/model/communication/class-ms-model-communication-after-finishes.php:86
-#: app/model/communication/class-ms-model-communication-after-payment-due.php:79
-#: app/model/communication/class-ms-model-communication-before-finishes.php:86
-#: app/model/communication/class-ms-model-communication-before-payment-due.php:83
-#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:86
-#: app/model/communication/class-ms-model-communication-cancelled.php:101
-#: app/model/communication/class-ms-model-communication-credit-card-expire.php:94
+#: app/model/communication/class-ms-model-communication-after-finishes.php:100
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:93
+#: app/model/communication/class-ms-model-communication-before-finishes.php:100
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:97
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:100
+#: app/model/communication/class-ms-model-communication-cancelled.php:115
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:108
 #: app/model/communication/class-ms-model-communication-failed-payment.php:99
 #: app/model/communication/class-ms-model-communication-finished.php:102
 #: app/model/communication/class-ms-model-communication-info-update.php:99
@@ -3995,19 +4078,19 @@ msgstr "Reminder: your %s membership has ended"
 msgid "Hi %1$s,"
 msgstr "Hi %1$s,"
 
-#: app/model/communication/class-ms-model-communication-after-finishes.php:90
+#: app/model/communication/class-ms-model-communication-after-finishes.php:104
 #, php-format
 msgid "This is a reminder that your %1$s membership at %2$s has ended on %3$s."
 msgstr ""
 "This is a reminder that your %1$s membership at %2$s has ended on %3$s."
 
-#: app/model/communication/class-ms-model-communication-after-finishes.php:96
+#: app/model/communication/class-ms-model-communication-after-finishes.php:110
 #: app/model/communication/class-ms-model-communication-finished.php:112
 #, php-format
 msgid "You can renew your membership here: %1$s"
 msgstr "You can renew your membership here: %1$s"
 
-#: app/model/communication/class-ms-model-communication-after-payment-due.php:50
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:64
 msgid ""
 "Sent a predefined number of days after the payment is due. You must decide "
 "how many days after a message is to be sent."
@@ -4015,11 +4098,11 @@ msgstr ""
 "Sent a predefined number of days after the payment is due. You must decide "
 "how many days after a message is to be sent."
 
-#: app/model/communication/class-ms-model-communication-after-payment-due.php:62
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:76
 msgid "Membership payment due"
 msgstr "Membership payment due"
 
-#: app/model/communication/class-ms-model-communication-after-payment-due.php:83
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:97
 #, php-format
 msgid ""
 "This is a reminder that the payment for your %1$s membership at %2$s is now "
@@ -4028,12 +4111,24 @@ msgstr ""
 "This is a reminder that the payment for your %1$s membership at %2$s is now "
 "due (%3$s)."
 
-#: app/model/communication/class-ms-model-communication-after-payment-due.php:88
-#: app/model/communication/class-ms-model-communication-before-payment-due.php:92
+#: app/model/communication/class-ms-model-communication-after-payment-due.php:102
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:106
 msgid "Here are your latest invoice details:"
 msgstr "Here are your latest invoice details:"
 
 #: app/model/communication/class-ms-model-communication-before-finishes.php:50
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:50
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:50
+msgid "Notice Period"
+msgstr "Notice Period"
+
+#: app/model/communication/class-ms-model-communication-before-finishes.php:51
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:51
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:51
+msgid "Define, how many days in advance the user should be notified."
+msgstr "Define, how many days in advance the user should be notified."
+
+#: app/model/communication/class-ms-model-communication-before-finishes.php:64
 msgid ""
 "Sent a predefined number of days before the membership finishes. You must "
 "decide how many days beforehand a message is to be sent."
@@ -4041,19 +4136,19 @@ msgstr ""
 "Sent a predefined number of days before the membership finishes. You must "
 "decide how many days beforehand a message is to be sent."
 
-#: app/model/communication/class-ms-model-communication-before-finishes.php:63
+#: app/model/communication/class-ms-model-communication-before-finishes.php:77
 #, php-format
 msgid "Your %s membership will end soon"
 msgstr "Your %s membership will end soon"
 
-#: app/model/communication/class-ms-model-communication-before-finishes.php:90
+#: app/model/communication/class-ms-model-communication-before-finishes.php:104
 #, php-format
 msgid ""
 "This is just a reminder that your %1$s membership at %2$s will end in %3$s."
 msgstr ""
 "This is just a reminder that your %1$s membership at %2$s will end in %3$s."
 
-#: app/model/communication/class-ms-model-communication-before-payment-due.php:50
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:64
 msgid ""
 "Sent a predefined number of days before the payment is due. You must decide "
 "how many days beforehand a message is to be sent."
@@ -4061,11 +4156,11 @@ msgstr ""
 "Sent a predefined number of days before the payment is due. You must decide "
 "how many days beforehand a message is to be sent."
 
-#: app/model/communication/class-ms-model-communication-before-payment-due.php:62
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:76
 msgid "Membership payment due soon"
 msgstr "Membership payment due soon"
 
-#: app/model/communication/class-ms-model-communication-before-payment-due.php:87
+#: app/model/communication/class-ms-model-communication-before-payment-due.php:101
 #, php-format
 msgid ""
 "This is a reminder that the next payment for your %1$s membership at %2$s "
@@ -4074,7 +4169,7 @@ msgstr ""
 "This is a reminder that the next payment for your %1$s membership at %2$s "
 "will be due on (%3$s)."
 
-#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:50
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:64
 msgid ""
 "Sent a predefined number of days before the trial period finishes. You must "
 "decide how many days beforehand a message is to be sent."
@@ -4082,56 +4177,68 @@ msgstr ""
 "Sent a predefined number of days before the trial period finishes. You must "
 "decide how many days beforehand a message is to be sent."
 
-#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:63
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:77
 #, php-format
 msgid "Your %s membership trial will end soon"
 msgstr "Your %s membership trial will end soon"
 
-#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:90
+#: app/model/communication/class-ms-model-communication-before-trial-finishes.php:104
 #, php-format
 msgid ""
 "This is a reminder that your %1$s trial membership at %2$s wil end in %3$s."
 msgstr ""
 "This is a reminder that your %1$s trial membership at %2$s wil end in %3$s."
 
-#: app/model/communication/class-ms-model-communication-cancelled.php:66
+#: app/model/communication/class-ms-model-communication-cancelled.php:80
 msgid "Sent when membership is cancelled."
 msgstr "Sent when membership is cancelled."
 
-#: app/model/communication/class-ms-model-communication-cancelled.php:78
+#: app/model/communication/class-ms-model-communication-cancelled.php:92
 #, php-format
 msgid "Your %s membership was canceled"
 msgstr "Your %s membership was canceled"
 
-#: app/model/communication/class-ms-model-communication-cancelled.php:105
+#: app/model/communication/class-ms-model-communication-cancelled.php:119
 #, php-format
 msgid "Your %1$s membership at %2$s was successfully cancelled."
 msgstr "Your %1$s membership at %2$s was successfully cancelled."
 
-#: app/model/communication/class-ms-model-communication-cancelled.php:110
+#: app/model/communication/class-ms-model-communication-cancelled.php:124
 #, php-format
 msgid "Should you change your mind, you can renew your membership here: %1$s"
 msgstr "Should you change your mind, you can renew your membership here: %1$s"
 
-#: app/model/communication/class-ms-model-communication-cancelled.php:113
+#: app/model/communication/class-ms-model-communication-cancelled.php:127
 #: app/model/communication/class-ms-model-communication-invoice.php:108
 #: app/model/communication/class-ms-model-communication-registration.php:117
 msgid "Here are your latest payment details:"
 msgstr "Here are your latest payment details:"
 
-#: app/model/communication/class-ms-model-communication-credit-card-expire.php:66
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:67
+msgid "Notify Period"
+msgstr "Notify Period"
+
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:68
+msgid ""
+"We want to notify the user some days in advance, so there is time to react."
+"<br>Enter here, how many days in advance this message should be sent."
+msgstr ""
+"We want to notify the user some days in advance, so there is time to react."
+"<br>Enter here, how many days in advance this message should be sent."
+
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:80
 msgid "A notice to indicate that the member's credit card is about to expire."
 msgstr "A notice to indicate that the member's credit card is about to expire."
 
-#: app/model/communication/class-ms-model-communication-credit-card-expire.php:77
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:91
 msgid "Your credit card is about to expire"
 msgstr "Your credit card is about to expire"
 
-#: app/model/communication/class-ms-model-communication-credit-card-expire.php:97
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:111
 msgid "This is a reminder that your credit card is about to expire."
 msgstr "This is a reminder that your credit card is about to expire."
 
-#: app/model/communication/class-ms-model-communication-credit-card-expire.php:99
+#: app/model/communication/class-ms-model-communication-credit-card-expire.php:113
 #, php-format
 msgid ""
 "To continue your %1$s membership at %2$s, please update your card details "
@@ -4243,8 +4350,8 @@ msgid "You can review and edit your membership details here: %1$s"
 msgstr "You can review and edit your membership details here: %1$s"
 
 #: app/model/communication/class-ms-model-communication-registration.php:70
-msgid "Sent when a member completes the signup for a membership."
-msgstr "Sent when a member completes the signup for a membership."
+msgid "Sent when a member completes the signup for a paid membership."
+msgstr "Sent when a member completes the signup for a paid membership."
 
 #: app/model/communication/class-ms-model-communication-registration.php:109
 #, php-format
@@ -4395,19 +4502,19 @@ msgstr "Content Part"
 msgid "Content Parts"
 msgstr "Content Parts"
 
-#: app/rule/content/class-ms-rule-content-model.php:287
+#: app/rule/content/class-ms-rule-content-model.php:327
 msgid "Comments: No Access"
 msgstr "Comments: No Access"
 
-#: app/rule/content/class-ms-rule-content-model.php:290
+#: app/rule/content/class-ms-rule-content-model.php:330
 msgid "Comments: Read Only Access"
 msgstr "Comments: Read Only Access"
 
-#: app/rule/content/class-ms-rule-content-model.php:293
+#: app/rule/content/class-ms-rule-content-model.php:333
 msgid "Comments: Read and Write Access"
 msgstr "Comments: Read and Write Access"
 
-#: app/rule/content/class-ms-rule-content-model.php:296
+#: app/rule/content/class-ms-rule-content-model.php:336
 msgid "Hide \"read more\" content"
 msgstr "Hide \"read more\" content"
 
@@ -4477,21 +4584,63 @@ msgstr "Posts"
 msgid "Custom Post Type Items"
 msgstr "Custom Post Type Items"
 
-#: app/rule/media/class-ms-rule-media-model.php:116
+#: app/rule/media/class-ms-rule-media-listtable.php:36
+msgid "Media File"
+msgstr "Media File"
+
+#: app/rule/media/class-ms-rule-media-listtable.php:37
+msgid "Media Files"
+msgstr "Media Files"
+
+#: app/rule/media/class-ms-rule-media-listtable.php:43
+msgid "Title"
+msgstr "Title"
+
+#: app/rule/media/class-ms-rule-media-listtable.php:46
+msgid "Added"
+msgstr "Added"
+
+#: app/rule/media/class-ms-rule-media-listtable.php:95
+msgid "Y/m/d"
+msgstr "Y/m/d"
+
+#: app/rule/media/class-ms-rule-media-model.php:124
+#: app/rule/media/class-ms-rule-media-model.php:125
+#: app/rule/media/class-ms-rule-media-model.php:126
+#: app/view/class-ms-view-help.php:207 app/view/class-ms-view-help.php:255
+#: app/view/class-ms-view-help.php:348 app/view/class-ms-view-help.php:415
+#: app/view/class-ms-view-help.php:747 app/view/class-ms-view-help.php:791
+#: app/view/class-ms-view-help.php:842 app/view/class-ms-view-help.php:886
+#: app/view/class-ms-view-help.php:922 app/view/class-ms-view-help.php:958
+#: app/view/class-ms-view-help.php:1015 app/view/class-ms-view-help.php:1045
+#: app/view/class-ms-view-help.php:1074 app/view/class-ms-view-help.php:1269
+#: app/view/class-ms-view-help.php:1306
+msgid "Example:"
+msgstr "Example:"
+
+#: app/rule/media/class-ms-rule-media-model.php:129
 msgid "Basic protection (default)"
 msgstr "Basic protection (default)"
 
-#: app/rule/media/class-ms-rule-media-model.php:117
+#: app/rule/media/class-ms-rule-media-model.php:130
 msgid "Complete protection"
 msgstr "Complete protection"
 
-#: app/rule/media/class-ms-rule-media-model.php:118
+#: app/rule/media/class-ms-rule-media-model.php:131
 msgid "Hybrid protection"
 msgstr "Hybrid protection"
 
+#: app/rule/media/class-ms-rule-media-view.php:14
+msgid "Choose Files from your Media Library that you want to protect"
+msgstr "Choose Files from your Media Library that you want to protect"
+
+#: app/rule/media/class-ms-rule-media-view.php:28
+msgid "Files"
+msgstr "Files"
+
 #: app/rule/media/class-ms-rule-media.php:22
-msgid "Media"
-msgstr "Media"
+msgid "Media Library Items"
+msgstr "Media Library Items"
 
 #: app/rule/membercaps/class-ms-rule-membercaps-listtable.php:36
 #: app/rule/membercaps/class-ms-rule-membercaps-listtable.php:42
@@ -4595,7 +4744,7 @@ msgstr "Menu Title"
 msgid "Menu Type"
 msgstr "Menu Type"
 
-#: app/rule/menuitem/class-ms-rule-menuitem-model.php:335
+#: app/rule/menuitem/class-ms-rule-menuitem-model.php:333
 msgid "(No Menus Available)"
 msgstr "(No Menus Available)"
 
@@ -4658,13 +4807,13 @@ msgstr "Menu Locations"
 msgid "Show this menu to members"
 msgstr "Show this menu to members"
 
-#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:185
+#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:183
 msgid "( Default Menu )"
 msgstr "( Default Menu )"
 
-#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:211
-#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:246
-#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:168
+#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:209
+#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:244
+#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:166
 msgid "No menus found."
 msgstr "No menus found."
 
@@ -4686,7 +4835,7 @@ msgstr "Menus"
 msgid "Replace with this Menu"
 msgstr "Replace with this Menu"
 
-#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:262
+#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:260
 msgid "( No replacement )"
 msgstr "( No replacement )"
 
@@ -4704,15 +4853,15 @@ msgstr "Replace or protect WordPress menus."
 msgid "Shortcode"
 msgstr "Shortcode"
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:132
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:139
 msgid "Shortcode content protected."
 msgstr "Shortcode content protected."
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:204
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:211
 msgid "No access to members of: "
 msgstr "No access to members of: "
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:228
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:235
 msgid "Content protected to members of: "
 msgstr "Content protected to members of: "
 
@@ -4733,55 +4882,55 @@ msgstr "Special Pages"
 msgid "Example"
 msgstr "Example"
 
-#: app/rule/special/class-ms-rule-special-model.php:254
+#: app/rule/special/class-ms-rule-special-model.php:243
 msgid "Any Archive page"
 msgstr "Any Archive page"
 
-#: app/rule/special/class-ms-rule-special-model.php:258
+#: app/rule/special/class-ms-rule-special-model.php:247
 msgid "Author Archives"
 msgstr "Author Archives"
 
-#: app/rule/special/class-ms-rule-special-model.php:262
+#: app/rule/special/class-ms-rule-special-model.php:251
 msgid "Any Date or Time Archive"
 msgstr "Any Date or Time Archive"
 
-#: app/rule/special/class-ms-rule-special-model.php:266
+#: app/rule/special/class-ms-rule-special-model.php:255
 msgid "Archive: Year"
 msgstr "Archive: Year"
 
-#: app/rule/special/class-ms-rule-special-model.php:270
+#: app/rule/special/class-ms-rule-special-model.php:259
 msgid "Archive: Month"
 msgstr "Archive: Month"
 
-#: app/rule/special/class-ms-rule-special-model.php:274
+#: app/rule/special/class-ms-rule-special-model.php:263
 msgid "Archive: Day"
 msgstr "Archive: Day"
 
-#: app/rule/special/class-ms-rule-special-model.php:278
+#: app/rule/special/class-ms-rule-special-model.php:267
 msgid "Archive: Time"
 msgstr "Archive: Time"
 
-#: app/rule/special/class-ms-rule-special-model.php:284
+#: app/rule/special/class-ms-rule-special-model.php:273
 msgid "Front Page"
 msgstr "Front Page"
 
-#: app/rule/special/class-ms-rule-special-model.php:288
+#: app/rule/special/class-ms-rule-special-model.php:277
 msgid "Blog Index"
 msgstr "Blog Index"
 
-#: app/rule/special/class-ms-rule-special-model.php:292
+#: app/rule/special/class-ms-rule-special-model.php:281
 msgid "404 Not Found"
 msgstr "404 Not Found"
 
-#: app/rule/special/class-ms-rule-special-model.php:296
+#: app/rule/special/class-ms-rule-special-model.php:285
 msgid "Search Results"
 msgstr "Search Results"
 
-#: app/rule/special/class-ms-rule-special-model.php:300
+#: app/rule/special/class-ms-rule-special-model.php:289
 msgid "Any single page or post"
 msgstr "Any single page or post"
 
-#: app/rule/special/class-ms-rule-special-model.php:304
+#: app/rule/special/class-ms-rule-special-model.php:293
 msgid "Any attachment page"
 msgstr "Any attachment page"
 
@@ -4890,69 +5039,73 @@ msgstr "With options"
 msgid "Membership Add-ons"
 msgstr "Membership Add-ons"
 
-#: app/view/class-ms-view-adminbar.php:71
+#: app/view/class-ms-view-adminbar.php:73
 msgid "Simulation Overview"
 msgstr "Simulation Overview"
 
-#: app/view/class-ms-view-adminbar.php:77
+#: app/view/class-ms-view-adminbar.php:79
 msgid "View as"
 msgstr "View as"
 
-#: app/view/class-ms-view-adminbar.php:82
+#: app/view/class-ms-view-adminbar.php:84
 msgid "View on"
 msgstr "View on"
 
-#: app/view/class-ms-view-adminbar.php:98
+#: app/view/class-ms-view-adminbar.php:100
 msgid "Simulated Membership"
 msgstr "Simulated Membership"
 
-#: app/view/class-ms-view-adminbar.php:110
+#: app/view/class-ms-view-adminbar.php:112
 msgid "Start Date"
 msgstr "Start Date"
 
-#: app/view/class-ms-view-adminbar.php:114
+#: app/view/class-ms-view-adminbar.php:116
 msgid "Expire Date"
 msgstr "Expire Date"
 
-#: app/view/class-ms-view-adminbar.php:119
+#: app/view/class-ms-view-adminbar.php:121
 msgid "Simulated Date"
 msgstr "Simulated Date"
 
-#: app/view/class-ms-view-adminbar.php:128
+#: app/view/class-ms-view-adminbar.php:141
+msgid "Payment model"
+msgstr "Payment model"
+
+#: app/view/class-ms-view-adminbar.php:145
 msgid "Payment details"
 msgstr "Payment details"
 
-#: app/view/class-ms-view-adminbar.php:167
+#: app/view/class-ms-view-adminbar.php:184
 msgid "- No membership / Visitor -"
 msgstr "- No membership / Visitor -"
 
-#: app/view/class-ms-view-adminbar.php:171
+#: app/view/class-ms-view-adminbar.php:188
 msgid "(Inactive)"
 msgstr "(Inactive)"
 
-#: app/view/class-ms-view-adminbar.php:183
+#: app/view/class-ms-view-adminbar.php:199
 msgid "Exit Test Mode"
 msgstr "Exit Test Mode"
 
-#: app/view/class-ms-view-adminbar.php:218
+#: app/view/class-ms-view-adminbar.php:234
 msgid "Go"
 msgstr "Go"
 
-#: app/view/class-ms-view-adminbar.php:247
+#: app/view/class-ms-view-adminbar.php:263
 #, php-format
 msgid "Access denied by %s"
 msgstr "Access denied by %s"
 
-#: app/view/class-ms-view-adminbar.php:268
+#: app/view/class-ms-view-adminbar.php:284
 msgid "Denied by Rule:"
 msgstr "Denied by Rule:"
 
-#: app/view/class-ms-view-adminbar.php:276
+#: app/view/class-ms-view-adminbar.php:292
 #, php-format
 msgid "Access granted by %s"
 msgstr "Access granted by %s"
 
-#: app/view/class-ms-view-adminbar.php:293
+#: app/view/class-ms-view-adminbar.php:309
 msgid "Allowed by Rule:"
 msgstr "Allowed by Rule:"
 
@@ -5035,7 +5188,7 @@ msgstr ""
 #: app/view/class-ms-view-help.php:902 app/view/class-ms-view-help.php:938
 #: app/view/class-ms-view-help.php:980 app/view/class-ms-view-help.php:1031
 #: app/view/class-ms-view-help.php:1064 app/view/class-ms-view-help.php:1089
-#: app/view/class-ms-view-help.php:1111
+#: app/view/class-ms-view-help.php:1286
 msgid "Expand"
 msgstr "Expand"
 
@@ -5045,7 +5198,7 @@ msgstr "(ID list)"
 
 #: app/view/class-ms-view-help.php:175 app/view/class-ms-view-help.php:828
 #: app/view/class-ms-view-help.php:864 app/view/class-ms-view-help.php:908
-#: app/view/class-ms-view-help.php:944 app/view/class-ms-view-help.php:1117
+#: app/view/class-ms-view-help.php:944 app/view/class-ms-view-help.php:1292
 msgid "Required"
 msgstr "Required"
 
@@ -5062,7 +5215,11 @@ msgstr ""
 #: app/view/class-ms-view-help.php:474 app/view/class-ms-view-help.php:482
 #: app/view/class-ms-view-help.php:584 app/view/class-ms-view-help.php:665
 #: app/view/class-ms-view-help.php:681 app/view/class-ms-view-help.php:869
-#: app/view/class-ms-view-help.php:1122
+#: app/view/class-ms-view-help.php:1095 app/view/class-ms-view-help.php:1113
+#: app/view/class-ms-view-help.php:1135 app/view/class-ms-view-help.php:1153
+#: app/view/class-ms-view-help.php:1175 app/view/class-ms-view-help.php:1202
+#: app/view/class-ms-view-help.php:1224 app/view/class-ms-view-help.php:1251
+#: app/view/class-ms-view-help.php:1297
 msgid "(yes|no)"
 msgstr "(yes|no)"
 
@@ -5101,7 +5258,16 @@ msgstr "Defines if members of the memberships can see or not see the content"
 #: app/view/class-ms-view-help.php:880 app/view/class-ms-view-help.php:916
 #: app/view/class-ms-view-help.php:952 app/view/class-ms-view-help.php:989
 #: app/view/class-ms-view-help.php:1001 app/view/class-ms-view-help.php:1009
-#: app/view/class-ms-view-help.php:1039 app/view/class-ms-view-help.php:1125
+#: app/view/class-ms-view-help.php:1039 app/view/class-ms-view-help.php:1098
+#: app/view/class-ms-view-help.php:1107 app/view/class-ms-view-help.php:1116
+#: app/view/class-ms-view-help.php:1125 app/view/class-ms-view-help.php:1138
+#: app/view/class-ms-view-help.php:1147 app/view/class-ms-view-help.php:1156
+#: app/view/class-ms-view-help.php:1165 app/view/class-ms-view-help.php:1178
+#: app/view/class-ms-view-help.php:1187 app/view/class-ms-view-help.php:1196
+#: app/view/class-ms-view-help.php:1205 app/view/class-ms-view-help.php:1214
+#: app/view/class-ms-view-help.php:1227 app/view/class-ms-view-help.php:1236
+#: app/view/class-ms-view-help.php:1245 app/view/class-ms-view-help.php:1254
+#: app/view/class-ms-view-help.php:1263 app/view/class-ms-view-help.php:1300
 msgid "Default:"
 msgstr "Default:"
 
@@ -5143,17 +5309,6 @@ msgid ""
 msgstr ""
 "Provide a custom protection message. <em>This will only be displayed when "
 "silent is not true</em>"
-
-#: app/view/class-ms-view-help.php:207 app/view/class-ms-view-help.php:255
-#: app/view/class-ms-view-help.php:348 app/view/class-ms-view-help.php:415
-#: app/view/class-ms-view-help.php:747 app/view/class-ms-view-help.php:791
-#: app/view/class-ms-view-help.php:842 app/view/class-ms-view-help.php:886
-#: app/view/class-ms-view-help.php:922 app/view/class-ms-view-help.php:958
-#: app/view/class-ms-view-help.php:1015 app/view/class-ms-view-help.php:1045
-#: app/view/class-ms-view-help.php:1074 app/view/class-ms-view-help.php:1095
-#: app/view/class-ms-view-help.php:1131
-msgid "Example:"
-msgstr "Example:"
 
 #: app/view/class-ms-view-help.php:210
 msgid "Only members of membership-1 can see this!"
@@ -5311,12 +5466,12 @@ msgid "Show a \"You are not logged in\" note above the login form"
 msgstr "Show a \"You are not logged in\" note above the login form"
 
 #: app/view/class-ms-view-help.php:612
-#: app/view/shortcode/class-ms-view-shortcode-login.php:189
+#: app/view/shortcode/class-ms-view-shortcode-login.php:187
 msgid "Remember Me"
 msgstr "Remember Me"
 
 #: app/view/class-ms-view-help.php:620
-#: app/view/shortcode/class-ms-view-shortcode-login.php:190
+#: app/view/shortcode/class-ms-view-shortcode-login.php:188
 msgid "Log In"
 msgstr "Log In"
 
@@ -5325,12 +5480,12 @@ msgid "Set this to \"yes\" to default the \"Remember me\" checkbox to checked"
 msgstr "Set this to \"yes\" to default the \"Remember me\" checkbox to checked"
 
 #: app/view/class-ms-view-help.php:702
-#: app/view/shortcode/class-ms-view-shortcode-login.php:320
+#: app/view/shortcode/class-ms-view-shortcode-login.php:318
 msgid "Username or E-mail"
 msgstr "Username or E-mail"
 
 #: app/view/class-ms-view-help.php:710
-#: app/view/shortcode/class-ms-view-shortcode-login.php:321
+#: app/view/shortcode/class-ms-view-shortcode-login.php:319
 msgid "Reset Password"
 msgstr "Reset Password"
 
@@ -5372,7 +5527,7 @@ msgstr "Displays the name of a specific membership"
 
 #: app/view/class-ms-view-help.php:827 app/view/class-ms-view-help.php:863
 #: app/view/class-ms-view-help.php:907 app/view/class-ms-view-help.php:943
-#: app/view/class-ms-view-help.php:1116
+#: app/view/class-ms-view-help.php:1291
 msgid "(Single ID)"
 msgstr "(Single ID)"
 
@@ -5457,7 +5612,7 @@ msgstr ""
 "Displays the protection message on pages that the user cannot access. This "
 "shortcode should only be used on the Membership Page \"Protected Content\""
 
-#: app/view/class-ms-view-help.php:1067 app/view/class-ms-view-help.php:1092
+#: app/view/class-ms-view-help.php:1067
 msgid "no arguments"
 msgstr "no arguments"
 
@@ -5477,7 +5632,87 @@ msgstr ""
 msgid "Displays the \"My Account\" page of the currently logged in user"
 msgstr "Displays the \"My Account\" page of the currently logged in user"
 
-#: app/view/class-ms-view-help.php:1110
+#: app/view/class-ms-view-help.php:1091
+msgid "Membership section"
+msgstr "Membership section"
+
+#: app/view/class-ms-view-help.php:1096
+msgid "Whether to display the users current memberships"
+msgstr "Whether to display the users current memberships"
+
+#: app/view/class-ms-view-help.php:1104 app/view/class-ms-view-help.php:1122
+#: app/view/class-ms-view-help.php:1144 app/view/class-ms-view-help.php:1162
+#: app/view/class-ms-view-help.php:1184 app/view/class-ms-view-help.php:1211
+#: app/view/class-ms-view-help.php:1233 app/view/class-ms-view-help.php:1260
+msgid "(text)"
+msgstr "(text)"
+
+#: app/view/class-ms-view-help.php:1105
+msgid "Title of the current memberships section"
+msgstr "Title of the current memberships section"
+
+#: app/view/class-ms-view-help.php:1114
+msgid "Display the link to subscribe to other memberships"
+msgstr "Display the link to subscribe to other memberships"
+
+#: app/view/class-ms-view-help.php:1123 app/view/class-ms-view-help.php:1163
+#: app/view/class-ms-view-help.php:1212 app/view/class-ms-view-help.php:1261
+msgid "Title of the link"
+msgstr "Title of the link"
+
+#: app/view/class-ms-view-help.php:1131
+msgid "Profile section"
+msgstr "Profile section"
+
+#: app/view/class-ms-view-help.php:1136
+msgid "Whether to display the users profile details"
+msgstr "Whether to display the users profile details"
+
+#: app/view/class-ms-view-help.php:1145
+msgid "Title of the user profile section"
+msgstr "Title of the user profile section"
+
+#: app/view/class-ms-view-help.php:1154
+msgid "Display the link to edit the users profile"
+msgstr "Display the link to edit the users profile"
+
+#: app/view/class-ms-view-help.php:1171
+msgid "Invoices section"
+msgstr "Invoices section"
+
+#: app/view/class-ms-view-help.php:1176
+msgid "Whether to display the section listing recent invoices"
+msgstr "Whether to display the section listing recent invoices"
+
+#: app/view/class-ms-view-help.php:1185 app/view/class-ms-view-help.php:1234
+msgid "Title of the invoices section"
+msgstr "Title of the invoices section"
+
+#: app/view/class-ms-view-help.php:1193 app/view/class-ms-view-help.php:1242
+msgid "(Number)"
+msgstr "(Number)"
+
+#: app/view/class-ms-view-help.php:1194
+msgid "Number of invoices to display in the recent invoices list"
+msgstr "Number of invoices to display in the recent invoices list"
+
+#: app/view/class-ms-view-help.php:1203 app/view/class-ms-view-help.php:1252
+msgid "Display the link to the complete list of users invoices"
+msgstr "Display the link to the complete list of users invoices"
+
+#: app/view/class-ms-view-help.php:1220
+msgid "Activities section"
+msgstr "Activities section"
+
+#: app/view/class-ms-view-help.php:1225
+msgid "Whether to display the section containing the users recent activities"
+msgstr "Whether to display the section containing the users recent activities"
+
+#: app/view/class-ms-view-help.php:1243
+msgid "Number of items to display in the recent activities list"
+msgstr "Number of items to display in the recent activities list"
+
+#: app/view/class-ms-view-help.php:1285
 msgid ""
 "Display an invoice to the user. Not very useful in most cases, as the "
 "invoice can only be viewed by the invoice recipient"
@@ -5485,19 +5720,19 @@ msgstr ""
 "Display an invoice to the user. Not very useful in most cases, as the "
 "invoice can only be viewed by the invoice recipient"
 
-#: app/view/class-ms-view-help.php:1118
+#: app/view/class-ms-view-help.php:1293
 msgid "The Invoice ID"
 msgstr "The Invoice ID"
 
-#: app/view/class-ms-view-help.php:1123
+#: app/view/class-ms-view-help.php:1298
 msgid "If the invoice should contain a \"Pay\" button"
 msgstr "If the invoice should contain a \"Pay\" button"
 
-#: app/view/class-ms-view-help.php:1152
+#: app/view/class-ms-view-help.php:1327
 msgid "Reset"
 msgstr "Reset"
 
-#: app/view/class-ms-view-help.php:1153
+#: app/view/class-ms-view-help.php:1328
 msgid ""
 "Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is "
 "displayed that can be used to reset all Protected Content settings. Use this "
@@ -5507,11 +5742,11 @@ msgstr ""
 "displayed that can be used to reset all Protected Content settings. Use this "
 "to clean all traces after testing the plugin."
 
-#: app/view/class-ms-view-help.php:1156
+#: app/view/class-ms-view-help.php:1331
 msgid "Restore"
 msgstr "Restore"
 
-#: app/view/class-ms-view-help.php:1157
+#: app/view/class-ms-view-help.php:1332
 msgid ""
 "Open the Settings page and add <code>&restore=1</code> to the URL. In the "
 "prompt that is displayed you can select an existing DB Snapshot that can be "
@@ -5525,11 +5760,11 @@ msgstr ""
 "is generated <em>before</em> the plugin is updating the Database to a new "
 "version."
 
-#: app/view/class-ms-view-help.php:1160
+#: app/view/class-ms-view-help.php:1335
 msgid "Stop Emails"
 msgstr "Stop Emails"
 
-#: app/view/class-ms-view-help.php:1161
+#: app/view/class-ms-view-help.php:1336
 msgid ""
 "In wp-config.php add the line <code>define( \"MS_STOP_EMAILS\", true );</"
 "code> to force Procted Content to <em>not</em> send any emails to Members. "
@@ -5541,11 +5776,11 @@ msgstr ""
 "This can be used when testing to prevent your users from getting email "
 "notifications."
 
-#: app/view/class-ms-view-help.php:1164
+#: app/view/class-ms-view-help.php:1339
 msgid "Lock Subscription Status"
 msgstr "Lock Subscription Status"
 
-#: app/view/class-ms-view-help.php:1165
+#: app/view/class-ms-view-help.php:1340
 msgid ""
 "In wp-config.php add the line <code>define( \"MS_LOCK_SUBSCRIPTIONS\", "
 "true );</code> to disable automatic status-checks of subscriptions. "
@@ -5592,13 +5827,13 @@ msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-activities.php:11
 #: app/view/frontend/class-ms-view-frontend-activities.php:17
-#: app/view/shortcode/class-ms-view-shortcode-account.php:184
+#: app/view/shortcode/class-ms-view-shortcode-account.php:340
 msgid "Activity"
 msgstr "Activity"
 
 #: app/view/frontend/class-ms-view-frontend-activities.php:32
 #: app/view/frontend/class-ms-view-frontend-invoices.php:42
-#: app/view/shortcode/class-ms-view-shortcode-account.php:204
+#: app/view/shortcode/class-ms-view-shortcode-account.php:386
 msgid "Your account"
 msgstr "Your account"
 
@@ -5672,12 +5907,12 @@ msgid "Edit profile"
 msgstr "Edit profile"
 
 #: app/view/frontend/class-ms-view-frontend-profile.php:59
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:133
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:144
 msgid "Email Address"
 msgstr "Email Address"
 
 #: app/view/frontend/class-ms-view-frontend-profile.php:71
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:147
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:158
 msgid "Confirm Password"
 msgstr "Confirm Password"
 
@@ -6158,18 +6393,13 @@ msgid "Membership Type"
 msgstr "Membership Type"
 
 #: app/view/settings/class-ms-view-settings-import.php:128
-#: app/view/shortcode/class-ms-view-shortcode-account.php:231
+#: app/view/shortcode/class-ms-view-shortcode-account.php:413
 msgid "Email"
 msgstr "Email"
 
 #: app/view/settings/class-ms-view-settings-import.php:129
 msgid "Subscriptions"
 msgstr "Subscriptions"
-
-#: app/view/settings/class-ms-view-settings-import.php:130
-#: app/view/shortcode/class-ms-view-shortcode-account.php:136
-msgid "Invoices"
-msgstr "Invoices"
 
 #: app/view/settings/class-ms-view-settings-import.php:161
 msgid "Activate: "
@@ -6216,23 +6446,23 @@ msgstr "Download as Export File"
 msgid "Load Email"
 msgstr "Load Email"
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:60
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:61
 msgid "Period after/before"
 msgstr "Period after/before"
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:74
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:75
 msgid "Message Subject"
 msgstr "Message Subject"
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:92
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:93
 msgid "Send copy to Administrator"
 msgstr "Send copy to Administrator"
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:141
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:142
 msgid "Automated Messages"
 msgstr "Automated Messages"
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:164
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:165
 msgid "Message"
 msgstr "Message"
 
@@ -6418,48 +6648,31 @@ msgstr ""
 "Wait! You did not create a menu yet...<br>Let us create it now, so you can "
 "choose which pages to display to your visitors!"
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:35
-msgid "Your Membership"
-msgstr "Your Membership"
-
-#: app/view/shortcode/class-ms-view-shortcode-account.php:43
+#: app/view/shortcode/class-ms-view-shortcode-account.php:64
 msgid "You are an admin user and have access to all memberships"
 msgstr "You are an admin user and have access to all memberships"
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:52
+#: app/view/shortcode/class-ms-view-shortcode-account.php:73
 msgid "Trial expire date"
 msgstr "Trial expire date"
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:86
+#: app/view/shortcode/class-ms-view-shortcode-account.php:107
 msgid "No trial"
 msgstr "No trial"
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:104
+#: app/view/shortcode/class-ms-view-shortcode-account.php:125
 msgid "(No Membership)"
 msgstr "(No Membership)"
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:111
+#: app/view/shortcode/class-ms-view-shortcode-account.php:132
 msgid "No memberships"
 msgstr "No memberships"
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:119
-msgid "Personal details"
-msgstr "Personal details"
-
-#: app/view/shortcode/class-ms-view-shortcode-account.php:138
-#: app/view/shortcode/class-ms-view-shortcode-account.php:177
-msgid "View all"
-msgstr "View all"
-
-#: app/view/shortcode/class-ms-view-shortcode-account.php:175
-msgid "Activities"
-msgstr "Activities"
-
-#: app/view/shortcode/class-ms-view-shortcode-account.php:228
+#: app/view/shortcode/class-ms-view-shortcode-account.php:410
 msgid "First name"
 msgstr "First name"
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:229
+#: app/view/shortcode/class-ms-view-shortcode-account.php:411
 msgid "Last name"
 msgstr "Last name"
 
@@ -6475,70 +6688,70 @@ msgstr "Invoice to"
 msgid "Payment on"
 msgstr "Payment on"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:125
+#: app/view/shortcode/class-ms-view-shortcode-login.php:123
 msgid "Please wait..."
 msgstr "Please wait..."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:126
+#: app/view/shortcode/class-ms-view-shortcode-login.php:124
 msgid "Request failed, please try again."
 msgstr "Request failed, please try again."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:163
+#: app/view/shortcode/class-ms-view-shortcode-login.php:161
 msgid "Please log in to access this page."
 msgstr "Please log in to access this page."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:273
-#: app/view/shortcode/class-ms-view-shortcode-login.php:303
+#: app/view/shortcode/class-ms-view-shortcode-login.php:271
+#: app/view/shortcode/class-ms-view-shortcode-login.php:301
 msgid "Lost your password?"
 msgstr "Lost your password?"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:383
-#: app/view/shortcode/class-ms-view-shortcode-login.php:406
+#: app/view/shortcode/class-ms-view-shortcode-login.php:381
+#: app/view/shortcode/class-ms-view-shortcode-login.php:404
 msgid "Log in"
 msgstr "Log in"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:432
+#: app/view/shortcode/class-ms-view-shortcode-login.php:430
 #, php-format
 msgid "You are logged in as %s."
 msgstr "You are logged in as %s."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:440
+#: app/view/shortcode/class-ms-view-shortcode-login.php:438
 msgid "Logout"
 msgstr "Logout"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:482
+#: app/view/shortcode/class-ms-view-shortcode-login.php:480
 msgid "The password-reset key is already expired."
 msgstr "The password-reset key is already expired."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:485
+#: app/view/shortcode/class-ms-view-shortcode-login.php:483
 msgid "The password-reset key is invalid or missing."
 msgstr "The password-reset key is invalid or missing."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:491
+#: app/view/shortcode/class-ms-view-shortcode-login.php:489
 msgid "Request a new password-reset key"
 msgstr "Request a new password-reset key"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:496
+#: app/view/shortcode/class-ms-view-shortcode-login.php:494
 msgid "The passwords do not match."
 msgstr "The passwords do not match."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:509
+#: app/view/shortcode/class-ms-view-shortcode-login.php:507
 msgid "Your Password has been reset."
 msgstr "Your Password has been reset."
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:523
+#: app/view/shortcode/class-ms-view-shortcode-login.php:521
 msgid "New password"
 msgstr "New password"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:527
+#: app/view/shortcode/class-ms-view-shortcode-login.php:525
 msgid "Confirm new password"
 msgstr "Confirm new password"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:531
+#: app/view/shortcode/class-ms-view-shortcode-login.php:529
 msgid "Strength indicator"
 msgstr "Strength indicator"
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:532
+#: app/view/shortcode/class-ms-view-shortcode-login.php:530
 msgid ""
 "Hint: The password should be at least seven characters long. To make it "
 "stronger, use upper and lower case letters, numbers, and symbols like ! \" ? "
@@ -6570,7 +6783,7 @@ msgstr "Already have a user account?"
 msgid "Register My Account"
 msgstr "Register My Account"
 
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:126
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:137
 msgid "Choose a Username"
 msgstr "Choose a Username"
 
@@ -6604,6 +6817,12 @@ msgstr "Shortcode Options:"
 #, php-format
 msgid "Arguments to pass to the %slogin shortcode%s"
 msgstr "Arguments to pass to the %slogin shortcode%s"
+
+#~ msgid "Sent when a member completes the signup for a membership."
+#~ msgstr "Sent when a member completes the signup for a membership."
+
+#~ msgid "Media"
+#~ msgstr "Media"
 
 #~ msgid "Toggle Activation"
 #~ msgstr "Toggle Activation"
