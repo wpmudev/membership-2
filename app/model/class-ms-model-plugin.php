@@ -209,7 +209,7 @@ class MS_Model_Plugin extends MS_Model {
 			// The ID of the main protected-content.
 			$base_id = MS_Model_Membership::get_base()->id;
 
-			$simulation = $this->member->is_simulated_user() || isset( $_GET['why-not'] );
+			$simulation = $this->member->is_simulated_user() || isset( $_GET['explain'] ) && 'access' == $_GET['explain'];
 			if ( $simulation ) { $Info['reason'] = array(); }
 
 			if ( $this->member->is_normal_admin() ) {
@@ -320,9 +320,22 @@ class MS_Model_Plugin extends MS_Model {
 					}
 				}
 
-				if ( ! $Info['has_access'] && isset( $_GET['why-not'] ) ) {
-					lib2()->debug( $access );
-					die();
+				if ( WP_DEBUG && isset( $_GET['explain'] ) && 'access' == $_GET['explain'] ) {
+					echo '<style>code{background:#EEE;background:rgba(0,0,0,0.1);padding:1px 4px;}</style>';
+					echo '<h3>Note</h3>';
+					echo '<p>To disable the URL param <code>?explain=access</code> you have to set <code>WP_DEBUG</code> to false.</p>';
+					echo '<hr><h3>Recent Access checks</h3>';
+
+					lib2()->debug->stacktrace_off();
+					foreach ( $access as $item ) {
+						printf(
+							'<a href="%1$s">%1$s</a>: <strong>%2$s</strong>',
+							$item['url'],
+							$item['has_access'] ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN )
+						);
+						lib2()->debug->dump( $item );
+					}
+					wp_die( '' );
 				}
 			}
 		}
