@@ -9,6 +9,7 @@ Change Log:
 - Fix wrong redirection in the [ms-register-user] shortcode
 - Fix error that preveted 100% discounted invoices from being marked as paid
 - Add a lot of options to the [ms-membership-account] shortcode (details in "Help > Shortcodes")
+- Add a timeout to refresh the price of unpaid invoices after 7 days
 
 1.1.1.2
 ----------------------------------------------------------------------
