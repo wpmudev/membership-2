@@ -109,4 +109,36 @@ class MS_Gateway_Free extends MS_Gateway {
 		return true;
 	}
 
+	/**
+	 * Processes purchase action.
+	 * This can happen when a 100% coupon is applied and an otherwise paid
+	 * membership becomes a free membership during checkout.
+	 *
+	 * We need to confirm that it's actually free and mark it paid.
+	 *
+	 * @since 1.1.1.3
+	 * @param MS_Model_Relationship $subscription The related membership relationship.
+	 */
+	public function process_purchase( $subscription ) {
+		do_action(
+			'ms_gateway_free_process_purchase_before',
+			$subscription,
+			$this
+		);
+
+		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+
+		if ( 0 == $invoice->total ) {
+			// Free, just process.
+			lib2()->debug->dump( 'Process free embership', $invoice );
+			$invoice->changed();
+		}
+
+		return apply_filters(
+			'ms_gateway_free_process_purchase',
+			$invoice,
+			$this
+		);
+	}
+
 }

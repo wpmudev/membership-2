@@ -826,6 +826,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 			$membership = $subscription->get_membership();
 
+			// Free invoices skip the BILLED/PENDING status
+			if ( 0 == $this->total ) {
+				switch ( $this->status ) {
+					case MS_Model_Invoice::STATUS_BILLED:
+					case MS_Model_Invoice::STATUS_PENDING:
+						$this->status = MS_Model_Invoice::STATUS_PAID;
+						break;
+				}
+			}
+
 			switch ( $this->status ) {
 				case MS_Model_Invoice::STATUS_BILLED:
 					break;
