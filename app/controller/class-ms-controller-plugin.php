@@ -494,9 +494,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_styles() {
-		lib2()->ui->add( 'select' );
-		lib2()->ui->add( 'jquery-ui' );
-		lib2()->ui->css( 'ms-styles' );
+		// Front-End styles are enqueued by MS_Controller_Frontend.
 	}
 
 	/**
@@ -518,16 +516,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_scripts() {
-		$data = array(
-			'ms_init' => array( 'shortcode' ),
-			'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
-		);
-		lib2()->ui->data( 'ms_data', $data );
-
-		lib2()->ui->js( 'ms-public' );
-		lib2()->ui->js( 'jquery-validate' );
-
-		$this->translate_jquery_validator();
+		// Front-End scripts are enqueued by MS_Controller_Frontend.
 	}
 
 	/**
@@ -536,7 +525,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since  1.1.0
 	 */
-	public function translate_jquery_validator() {
+	static public function translate_jquery_validator() {
 		ob_start();
 		?>
 		jQuery.extend( jQuery.validator.messages, {

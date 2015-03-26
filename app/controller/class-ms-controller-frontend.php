@@ -924,20 +924,21 @@ class MS_Controller_Frontend extends MS_Controller {
 			&& MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
 
 		if ( $is_ms_page ) {
-			lib2()->ui->add( 'select' );
-			lib2()->ui->add( 'jquery-ui' );
-			wp_enqueue_style( 'ms-styles' );
-		}
-
-		if ( $is_profile ) {
 			$data = array(
-				'ms_init' => array( 'frontend_profile' ),
+				'ms_init' => array( 'shortcode' ),
+				'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
 			);
 
-			lib2()->ui->data( 'ms_data', $data );
+			lib2()->ui->css( 'ms-styles' );
+			lib2()->ui->js( 'jquery-validate' );
+			lib2()->ui->js( 'ms-public' );
+			MS_Controller_Plugin::translate_jquery_validator();
 
-			wp_enqueue_script( 'jquery-validate' );
-			wp_enqueue_script( 'ms-public' );
+			if ( $is_profile ) {
+				$data['ms_init'][] = 'frontend_profile';
+			}
+
+			lib2()->ui->data( 'ms_data', $data );
 		}
 	}
 }
