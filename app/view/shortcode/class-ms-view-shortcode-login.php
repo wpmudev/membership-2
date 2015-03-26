@@ -101,10 +101,8 @@ class MS_View_Shortcode_Login extends MS_View {
 			if ( $register && ! MS_Model_Member::is_logged_in() ) {
 				if ( MS_Model_Member::can_register() ) {
 					$link = sprintf(
-						'<a href="%1$s?step=register">%2$s</a>',
-						MS_Model_Pages::get_page_url(
-							MS_Model_Pages::MS_PAGE_REGISTER
-						),
+						'<a href="%1$s">%2$s</a>',
+						MS_Controller_Frontend::get_registration_url( 'register' ),
 						__( 'Register', MS_TEXT_DOMAIN )
 					);
 
@@ -478,7 +476,7 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		// If the user was not found then redirect to an error page.
 		if ( ! $user || is_wp_error( $user ) ) {
-			if ( $user && $user->get_error_code() === 'expired_key' ) {
+			if ( $user && 'expired_key' == $user->get_error_code() ) {
 				$err_msg = __( 'The password-reset key is already expired.', MS_TEXT_DOMAIN );
 			}
 			else {

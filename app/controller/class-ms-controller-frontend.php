@@ -60,6 +60,16 @@ class MS_Controller_Frontend extends MS_Controller {
 	const ACTION_VIEW_RESETPASS = 'rp';
 
 	/**
+	 * Whether Protected Content will handle the registration process or not.
+	 * This should not be changed directly but via filter ms_frontend_handle_registration
+	 *
+	 * @since 1.1.1.3
+	 *
+	 * @var bool
+	 */
+	static public $handle_registration = true;
+
+	/**
 	 * User registration errors.
 	 *
 	 * @since 1.0.0
@@ -106,9 +116,25 @@ class MS_Controller_Frontend extends MS_Controller {
 			// Clears the shortcode memory at the beginning of the_content
 			$this->add_filter( 'the_content', 'clear_content_memory', 1 );
 
-			// Set the registration URL to the 'Register' Membership Page.
-			$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
-			$this->add_filter( 'register_url', 'signup_location', 999 );
+			/**
+			 * This allows WordPress to provide the default register form.
+			 *
+			 * Set the filter response to FALSE to stop Protected Content from
+			 * handling the registration process. WordPress or other plugins can
+			 * register users in that case.
+			 *
+			 * @since 1.1.1.3
+			 */
+			self::$handle_registration = apply_filters(
+				'ms_frontend_handle_registration',
+				true
+			);
+
+			if ( self::$handle_registration ) {
+				// Set the registration URL to the 'Register' Membership Page.
+				$this->add_filter( 'wp_signup_location', 'signup_location', 999 );
+				$this->add_filter( 'register_url', 'signup_location', 999 );
+			}
 
 			// Redirect users to their Account page after login.
 			$this->add_filter( 'login_redirect', 'login_redirect', 10, 3 );
@@ -400,6 +426,27 @@ class MS_Controller_Frontend extends MS_Controller {
 			$content,
 			$this
 		);
+	}
+
+	/**
+	 * Returns the URL to user registration page.
+	 * If Protected Content handles registration we can provide the registration
+	 * step via function param $step.
+	 *
+	 * @since  1.1.1.3
+	 * @param  string $step Empty uses default step (choose_membership).
+	 *                      'choose_membership' show list of memberships.
+	 *                      'register' shows the registration form.
+	 * @return string URL to the registration page.
+	 */
+	static public function get_registration_url( $step = null ) {
+		$url = wp_registration_url();
+
+		if ( self::$handle_registration && ! empty( $step ) ) {
+			$url = add_query_arg( 'step', $step, $url );
+		}
+
+		return $url;
 	}
 
 	/**
