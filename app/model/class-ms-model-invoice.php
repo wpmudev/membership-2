@@ -248,6 +248,15 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	protected $source = '';
 
+	/**
+	 * Timestamp of price calculation.
+	 * This information is used when price-options of the memberhsip is changed.
+	 *
+	 * @since 1.1.1.3
+	 * @var int
+	 */
+	protected $price_date = 0;
+
 	//
 	//
 	//
@@ -977,6 +986,54 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Sets the invoice amount to the price defined by the membership settings.
+	 *
+	 * Provides the filter `ms_model_invoice_price_timeout` which can be used to
+	 * define the price-timeout value. The price will not be updated before the
+	 * timeout is reached.
+	 *
+	 * Only unpaid invoices are updated!
+	 *
+	 * @since  1.1.1.3
+	 */
+	private function refresh_amount() {
+		// Never change the amount of paid invoices.
+		if ( 'paid' == $this->status ) { return; }
+
+		/**
+		 * Define a timeout for the price in unpaid invoices.
+		 * The price will not change before the timeout expires, after this
+		 * it is updated again based on the current membership settings.
+		 *
+		 * @var int
+		 */
+		$timeout = apply_filters(
+			'ms_model_invoice_price_timeout',
+			604800, // 604800 = 7 days
+			$this
+		);
+
+		$expire_timestamp = absint( $this->price_date ) + absint( $timeout );
+
+		// Do not change price before timeout is reached.
+		if ( $expire_timestamp > time() ) { return; }
+
+		// Store the current timestamp, so we don't refresh the price until
+		// the timeout expires again.
+		$this->price_date = time();
+		$membership = $this->get_membership();
+
+		// Check for trial period in the normal price.
+		if ( $this->trial_period ) {
+			$this->amount = $membership->trial_price; // Without taxes!
+		} else {
+			$this->amount = $membership->price; // Without taxes!
+		}
+
+		$this->save();
+	}
+
+	/**
 	 * Get invoice net amount: Amount excluding taxes.
 	 *
 	 * Discounting coupon and pro-rating.
@@ -985,6 +1042,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 */
 	private function get_net_amount() {
+		if ( 'paid' != $this->status ) {
+			$this->refresh_amount();
+		}
+
 		$net_amount = $this->amount; // Net amount
 		$net_amount -= $this->discount; // Remove discount
 		$net_amount -= $this->pro_rate; // Remove Pro-Rate

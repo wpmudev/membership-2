@@ -598,6 +598,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$gateway->cancel_membership( $this );
 			}
 
+			// Remove any unpaid invoices.
+			$this->remove_unpaid_invoices();
+
 			if ( $generate_event ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
 			}
@@ -685,6 +688,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		do_action( 'ms_model_relationship_after', $this );
+	}
+
+	/**
+	 * Removes any unpaid invoice that belongs to this subscription.
+	 *
+	 * @since  1.1.1.3
+	 */
+	public function remove_unpaid_invoices() {
+		$invoices = $this->get_invoices();
+
+		foreach ( $invoices as $invoice ) {
+			if ( 'paid' != $invoice->status ) {
+				$invoice->delete();
+			}
+		}
 	}
 
 	/**
