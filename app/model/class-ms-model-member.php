@@ -1129,7 +1129,7 @@ class MS_Model_Member extends MS_Model {
 			)
 		);
 
-		if ( $this->is_normal_admin() ) {
+		if ( self::is_normal_admin( $this->id ) ) {
 			$has_membership = true;
 		}
 
@@ -1143,6 +1143,7 @@ class MS_Model_Member extends MS_Model {
 		} elseif ( ! empty ( $this->subscriptions ) ) {
 			// No membership-ID: Check if user has *any* membership
 			foreach ( $this->subscriptions as $membership_relationship ) {
+				if ( $membership_relationship->is_system() ) { continue; }
 				if ( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
 					$has_membership = true;
 					break;
