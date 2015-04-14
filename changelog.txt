@@ -6,8 +6,15 @@ Change Log:
 
 1.1.1.4
 ----------------------------------------------------------------------
+- Added new automatic email notification: Subscription Renewed
+- Improve descriptions of automatic email notification settings
+- Improve media protection to protect whole HTML output instead of post-content only
 - Fixed the Protection meta-box in post and page editor
 - Fixed the protection shortcode for Guest/Default memberships
+- Fixed bug that created duplicate invoices when processing automatic email notifications
+- Fixed bug that prevented sending of Signup Email notification
+- Fixed issues with assigning correct subscription status right after first signup
+- Fixed missing pagination in Media Protection list
 
 1.1.1.3
 ----------------------------------------------------------------------
