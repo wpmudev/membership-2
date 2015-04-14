@@ -392,7 +392,7 @@ class MS_Factory {
 		$ignore[] = 'ignore_fields';
 
 		foreach ( $fields as $field => $val ) {
-			if ( $field[0] === '_' || in_array( $field, $ignore ) ) {
+			if ( '_' === $field[0] || in_array( $field, $ignore ) ) {
 				continue;
 			}
 
@@ -450,7 +450,7 @@ class MS_Factory {
 		}
 
 		foreach ( $fields as $field => $dummy ) {
-			if ( $field[0] === '_' || in_array( $field, $ignore ) ) {
+			if ( '_' === $field[0] || in_array( $field, $ignore ) ) {
 				continue;
 			}
 

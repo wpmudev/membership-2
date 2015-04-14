@@ -1429,6 +1429,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	private function get_rules_hierarchy() {
 		$rule_types = MS_Model_Rule::get_rule_types();
 		$rules = array();
+		$subscription = MS_Factory::load( 'MS_Model_Relationship', $this->subscription_id );
 
 		foreach ( $rule_types as $rule_type ) {
 			$rule = $this->get_rule( $rule_type );
@@ -1438,9 +1439,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				continue;
 			}
 
-			$subscription = MS_Factory::load( 'MS_Model_Relationship', $this->subscription_id );
+			// Sometimes the $subscription->id can be 0, which is intentional:
+			// This is the case when the membership was auto-assigned to guest
+			// or default membership.
 			$rule->_subscription_id = $subscription->id;
-			$rule->membership_id = $subscription->membership_id;
+
+			$rule->membership_id = $this->id;
 			$rules[ $rule_type ] = $rule;
 		}
 
@@ -1626,6 +1630,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$this
 		);
 
+		$this->subscription_id = $subscription->id;
 		$rules = $this->get_rules_hierarchy();
 
 		// Apply protection settings of all rules (replace/hide contents, ...)
