@@ -130,7 +130,6 @@ class MS_Gateway_Free extends MS_Gateway {
 
 		if ( 0 == $invoice->total ) {
 			// Free, just process.
-			lib2()->debug->dump( 'Process free embership', $invoice );
 			$invoice->changed();
 		}
 
