@@ -21,7 +21,7 @@
 */
 
 /**
- * Communication model - registration for free membership.
+ * Communication model - subscription was renewed.
  *
  * Persisted by parent class MS_Model_CustomPostType.
  *
@@ -29,7 +29,7 @@
  * @package Membership
  * @subpackage Model
  */
-class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Registration {
+class MS_Model_Communication_Renewed extends MS_Model_Communication {
 
 	/**
 	 * Add action to credit card expire event.
@@ -40,10 +40,10 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 	 * @since 1.0.0
 	 * @var string The communication type.
 	 */
-	protected $type = self::COMM_TYPE_REGISTRATION_FREE;
+	protected $type = self::COMM_TYPE_RENEWED;
 
 	/**
-	 * Add action to signup event.
+	 * Add action to renewal event.
 	 *
 	 * @since 1.0.0
 	 * @var string The communication type.
@@ -53,8 +53,8 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 
 		if ( $this->enabled ) {
 			$this->add_action(
-				'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP,
-				'process_communication_registration', 10, 2
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_RENEWED,
+				'process_communication_renewed', 10, 2
 			);
 		}
 	}
@@ -67,7 +67,7 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 	 */
 	public function get_description() {
 		return __(
-			'Sent when a member completes the signup for a free membership.', MS_TEXT_DOMAIN
+			'Sent to the member when a previously expired or cancelled membership is renewed - triggered for both free and paid memberships.', MS_TEXT_DOMAIN
 		);
 	}
 
@@ -80,7 +80,7 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Confirmation of your membership at %s', MS_TEXT_DOMAIN ),
+			__( 'Subscription renewed for %s', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_BLOG_NAME
 		);
 		$this->message = self::get_default_message();
@@ -106,7 +106,7 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Thanks for subscribing to our free <strong>%1$s</strong> membership at %2$s!', MS_TEXT_DOMAIN ),
+			__( 'Thanks for renewing your <strong>%1$s</strong> subscription over at %2$s!', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
@@ -116,14 +116,14 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 		);
 
 		$html = sprintf(
-			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s',
+			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s<br />',
 			$subject,
 			$body_notice,
 			$body_account
 		);
 
 		return apply_filters(
-			'ms_model_communication_registration_get_default_message',
+			'ms_model_communication_renewed_get_default_message',
 			$html
 		);
 	}
@@ -132,31 +132,24 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 	 * Process communication registration.
 	 *
 	 * Related Action Hooks:
-	 * - ms_model_event_signed_up
+	 * - ms_model_event_renewed
 	 *
 	 * @since 1.0.0
 	 * @var string The communication type.
 	 */
-	public function process_communication_registration( $event, $ms_relationship ) {
-		$membership = $ms_relationship->get_membership();
-		$is_free = $membership->is_free || (int) $membership->price * 100 == 0;
-
-		// Only process Free memberships here!
-		// Email for paid memberships is in MS_Model_Communiction_Registration
-		if ( ! $is_free ) { return; }
-
+	public function process_communication_renewed( $event, $subscription ) {
 		do_action(
-			'ms_model_communication_registration_process_before',
-			$ms_relationship,
+			'ms_model_communication_renewed_process_before',
+			$subscription,
 			$event,
 			$this
 		);
 
-		$this->send_message( $ms_relationship );
+		$this->send_message( $subscription );
 
 		do_action(
-			'ms_model_communication_registration_process_after',
-			$ms_relationship,
+			'ms_model_communication_renewed_process_after',
+			$subscription,
 			$event,
 			$this
 		);

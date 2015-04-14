@@ -228,6 +228,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			self::STATUS_EXPIRED => __( 'Expired', MS_TEXT_DOMAIN ),
 			self::STATUS_DEACTIVATED => __( 'Deactivated', MS_TEXT_DOMAIN ),
 			self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
+			self::STATUS_WAITING => __( 'Not yet active', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(
@@ -1390,23 +1391,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			),
 			'set'
 		);
+		$membership = $this->get_membership();
 
-		if ( self::STATUS_PENDING == $this->status ) {
+		if ( self::STATUS_PENDING == $this->status && $membership->is_free() ) {
 			// Skip "Pending" for free memberships.
-			$membership = $this->get_membership();
-			if ( $membership->is_free() ) {
-				$status = self::STATUS_ACTIVE;
-				$this->handle_status_change( $status );
-			} else {
-				$this->status = $status;
-			}
+			$status = self::STATUS_ACTIVE;
+			$this->handle_status_change( $status );
 		} elseif ( in_array( $status, $ignored_status ) ) {
 			// No validation for this status.
 			$this->status = $status;
 		} else {
 			// Check if this status is still valid.
-			$status = $this->calculate_status( $status );
-			$this->handle_status_change( $status );
+			$calc_status = $this->calculate_status( $status );
+			$this->handle_status_change( $calc_status );
 		}
 
 		$this->status = apply_filters(
@@ -1427,29 +1424,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return string The current status.
 	 */
 	public function get_status() {
-		// No further validations for these status
-		$ignored_status = apply_filters(
-			'ms_model_relationship_unvalidated_status',
-			array(
-				self::STATUS_DEACTIVATED,
-				self::STATUS_TRIAL_EXPIRED,
-			),
-			'get'
-		);
-
-		if ( self::STATUS_PENDING == $this->status ) {
-			// Skip "Pending" for free memberships.
-			$membership = $this->get_membership();
-			if ( $membership->is_free() ) {
-				$status = self::STATUS_ACTIVE;
-				$this->handle_status_change( $status );
-			}
-		} elseif ( ! in_array( $this->status, $ignored_status ) ) {
-			// Check if this status is still valid.
-			$status = $this->calculate_status( $this->status );
-			$this->handle_status_change( $status );
-		}
-
 		return apply_filters(
 			'membership_model_relationship_get_status',
 			$this->status,
@@ -1487,7 +1461,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// If the start-date is not reached yet, then set membership to Pending.
 		if ( empty( $calc_status )
 			&& ! empty( $this->start_date )
-			&& strtotime( $this->start_date ) >= strtotime( MS_Helper_Period::current_date() )
+			&& strtotime( $this->start_date ) > strtotime( MS_Helper_Period::current_date() )
 		) {
 			$calc_status = self::STATUS_WAITING;
 		}
@@ -1642,6 +1616,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					break;
 
 				case self::STATUS_WAITING:
+					// Start date is not reached yet, so don't do anything.
 					break;
 			}
 		}
@@ -2014,9 +1989,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			default:
 				if ( ! property_exists( $this, $property ) ) {
-					MS_Helper_Debug::log( 'Property doesnot exist: ' . $property );
+					MS_Helper_Debug::log( 'Property does not exist: ' . $property );
+				} else {
+					$value = $this->$property;
 				}
-				$value = $this->$property;
 				break;
 		}
 
@@ -2038,28 +2014,28 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			switch ( $property ) {
-				case 'start_date':
-					$this->set_start_date( $value );
-					break;
+		switch ( $property ) {
+			case 'start_date':
+				$this->set_start_date( $value );
+				break;
 
-				case 'trial_expire_date':
-					$this->set_trial_expire_date( $value );
-					break;
+			case 'trial_expire_date':
+				$this->set_trial_expire_date( $value );
+				break;
 
-				case 'expire_date':
-					$this->set_expire_date( $value );
-					break;
+			case 'expire_date':
+				$this->set_expire_date( $value );
+				break;
 
-				case 'status':
-					$this->set_status( $value );
-					break;
+			case 'status':
+				$this->set_status( $value );
+				break;
 
-				default:
+			default:
+				if ( property_exists( $this, $property ) ) {
 					$this->$property = $value;
-					break;
-			}
+				}
+				break;
 		}
 
 		do_action(

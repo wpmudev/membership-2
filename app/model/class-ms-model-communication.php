@@ -60,6 +60,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	const COMM_TYPE_REGISTRATION = 'type_registration';
 	const COMM_TYPE_REGISTRATION_FREE = 'type_registration_free';
+	const COMM_TYPE_RENEWED = 'renewed';
 	const COMM_TYPE_INVOICE = 'type_invoice';
 	const COMM_TYPE_BEFORE_FINISHES = 'type_before_finishes';
 	const COMM_TYPE_FINISHED = 'type_finished';
@@ -237,21 +238,24 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public function __construct() {
 		$this->comm_vars = array(
-			self::COMM_VAR_MS_NAME => __( 'Membership name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_INVOICE => __( 'Invoice details', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Account page url', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Membership remaining days', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Membership remaining trial days', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Membership expiration date', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User display name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_FIRST_NAME => __( 'User first name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_LAST_NAME => __( 'User last name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USERNAME => __( 'Username', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_BLOG_NAME => __( 'Blog/site name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_BLOG_URL => __( 'Blog/site url', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_NET_NAME => __( 'Network name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_NET_URL => __( 'Network url', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_NAME => __( 'Subscription: Membership Name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Subscription: Remaining days', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Subscription: Remaining trial days', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Subscription: Expiration date', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_INVOICE => __( 'Subscription: Current Invoice', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User: Display name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_FIRST_NAME => __( 'User: First name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USERNAME => __( 'User: Login name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_BLOG_URL => __( 'Site: URL', MS_TEXT_DOMAIN ),
 		);
+
+		if ( is_multisite() ) {
+			$this->comm_vars[self::COMM_VAR_NET_NAME] = __( 'Network: Name', MS_TEXT_DOMAIN );
+			$this->comm_vars[self::COMM_VAR_NET_URL] = __( 'Network: URL', MS_TEXT_DOMAIN );
+		}
 	}
 
 	/**
@@ -298,6 +302,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$types = array(
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_REGISTRATION_FREE,
+					self::COMM_TYPE_RENEWED,
 					self::COMM_TYPE_INVOICE,
 					self::COMM_TYPE_BEFORE_FINISHES,
 					self::COMM_TYPE_FINISHED,
@@ -348,6 +353,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$type_classes = array(
 				self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
 				self::COMM_TYPE_REGISTRATION_FREE => 'MS_Model_Communication_Registration_Free',
+				self::COMM_TYPE_RENEWED => 'MS_Model_Communication_Renewed',
 				self::COMM_TYPE_INVOICE => 'MS_Model_Communication_Invoice',
 				self::COMM_TYPE_BEFORE_FINISHES => 'MS_Model_Communication_Before_Finishes',
 				self::COMM_TYPE_FINISHED => 'MS_Model_Communication_Finished',
@@ -385,19 +391,20 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		if ( empty( $type_titles ) ) {
 			$type_titles = array(
-				self::COMM_TYPE_REGISTRATION => __( 'Signup completed', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup completed for a free membership', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_INVOICE => __( 'Invoice/Receipt', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_BEFORE_FINISHES => __( 'Before Membership finishes', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_FINISHED => __( 'Membership finished', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_AFTER_FINISHES => __( 'After Membership finishes', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_CANCELLED => __( 'Membership cancelled', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Before Trial finishes', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_INFO_UPDATE => __( 'Billing details updated', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Credit card is about to expire', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_FAILED_PAYMENT => __( 'Failed payment', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Before payment due', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'After payment due', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_AFTER_FINISHES => __( 'Subscription - After expired', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_CANCELLED => __( 'Subscription - Cancelled', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Subscription - Trial finished', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_INFO_UPDATE => __( 'Payment - Profile updated', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Payment - Credit Card expires', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_INVOICE => __( 'Payment - Receipt/Invoice', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_FAILED_PAYMENT => __( 'Payment - Failed', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Payment - Before due', MS_TEXT_DOMAIN ),
+				self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'Payment - After due', MS_TEXT_DOMAIN ),
 			);
 
 			foreach ( $type_titles as $type => $title ) {
