@@ -443,12 +443,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $ms_relationship_id The membership relationship id.
+	 * @param int $subscription_id The membership relationship id.
 	 * @param int $invoice_number Optional. The invoice number. Get the current number if null.
 	 * @param string $status Optional. The invoice status.
 	 * @return MS_Model_Invoice The found invoice or null if not found.
 	 */
-	public static function get_invoice( $ms_relationship_id, $invoice_number = null, $status = null ) {
+	public static function get_invoice( $subscription_id, $invoice_number = null, $status = null ) {
 		$args = array(
 			'post_type' => self::$POST_TYPE,
 			'post_status' => 'any',
@@ -458,7 +458,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		$args['meta_query']['ms_relationship_id'] = array(
 			'key'     => 'ms_relationship_id',
-			'value'   => $ms_relationship_id,
+			'value'   => $subscription_id,
 		);
 		if ( ! empty( $status ) ) {
 			$args['meta_query']['status'] = array(
@@ -485,7 +485,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_invoice_get_invoice',
 			$invoice,
-			$ms_relationship_id,
+			$subscription_id,
 			$invoice_number,
 			$status
 		);

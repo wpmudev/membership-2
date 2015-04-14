@@ -149,14 +149,15 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		);
 		$actions['view'] = sprintf(
 			'<a href="%s">%s</a>',
-			get_permalink(  $item->id ),
+			get_permalink( $item->id ),
 			__( 'View', MS_TEXT_DOMAIN )
 		);
 
 		return sprintf(
-			'%1$s %2$s',
+			'%1$s (#%3$s) %2$s',
 			$item->id,
-			$this->row_actions( $actions )
+			$this->row_actions( $actions ),
+			$item->invoice_number
 		);
 	}
 

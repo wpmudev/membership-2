@@ -945,7 +945,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship to send message to.
+	 * @param MS_Model_Relationship $subscription The membership relationship to send message to.
 	 * @param WP_User $wp_user The wordpress user object to get info from.
 	 * @return array {
 	 *     Returns array of ( $var_name => $var_replace ).
@@ -954,25 +954,19 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *     @type string $var_replace The variable corresponding replace string.
 	 * }
 	 */
-	public function get_comm_vars( $ms_relationship, $wp_user ) {
+	public function get_comm_vars( $subscription, $wp_user ) {
 		$currency = MS_Plugin::instance()->settings->currency . ' ';
-		$membership = $ms_relationship->get_membership();
-
-		$class = get_class( $this );
-		$previous_invoice = array(
-			'MS_Model_Communication_Registration',
-			'MS_Model_Communication_Invoice',
-			'MS_Model_Communication_After_Payment_Made',
-		);
+		$membership = $subscription->get_membership();
 
 		$invoice = null;
 
-		if ( in_array( $class, $previous_invoice ) ) {
-			if ( ! $invoice = MS_Model_Invoice::get_previous_invoice( $ms_relationship ) ) {
-				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-			}
-		} else {
-			$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		// First try to fetch the current invoice.
+		$invoice = MS_Model_Invoice::get_current_invoice( $subscription, false );
+		$prev_invoice = MS_Model_Invoice::get_previous_invoice( $subscription );
+
+		// If no current invoice exists then fetch the previous invoice.
+		if ( empty( $invoice ) ) {
+			$invoice = $prev_invoice;
 		}
 
 		$comm_vars = apply_filters(
@@ -1043,7 +1037,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					break;
 
 				case self::COMM_VAR_MS_REMAINING_DAYS:
-					$days = $ms_relationship->get_remaining_period();
+					$days = $subscription->get_remaining_period();
 					$comm_vars[ $key ] = sprintf(
 						__( '%s day%s', MS_TEXT_DOMAIN ),
 						$days,
@@ -1052,7 +1046,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					break;
 
 				case self::COMM_VAR_MS_REMAINING_TRIAL_DAYS:
-					$days = $ms_relationship->get_remaining_trial_period();
+					$days = $subscription->get_remaining_trial_period();
 					$comm_vars[ $key ] = sprintf(
 						__( '%s day%s', MS_TEXT_DOMAIN ),
 						$days,
@@ -1061,14 +1055,14 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					break;
 
 				case self::COMM_VAR_MS_EXPIRY_DATE:
-					$comm_vars[ $key ] = $ms_relationship->expire_date;
+					$comm_vars[ $key ] = $subscription->expire_date;
 					break;
 			}
 
 			$comm_vars[ $key ] = apply_filters(
 				'ms_model_communication_send_message_comm_var_' . $key,
 				$comm_vars[ $key ],
-				$ms_relationship
+				$subscription
 			);
 		}
 
