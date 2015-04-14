@@ -674,6 +674,28 @@ class MS_Rule_Media_Model extends MS_Rule {
 	}
 
 	/**
+	 * Get the total content count.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int The total content count.
+	 */
+	public function get_content_count( $args = null ) {
+		$args = self::get_query_args( $args );
+		$query = new WP_Query( $args );
+
+		$count = $query->found_posts;
+
+		return apply_filters(
+			'ms_rule_media_model_get_content_count',
+			$count,
+			$args
+		);
+	}
+
+	/**
 	 * Get the default query args.
 	 *
 	 * @since 1.0.0
