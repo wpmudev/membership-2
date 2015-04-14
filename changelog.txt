@@ -4,6 +4,11 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.4
+----------------------------------------------------------------------
+- Fixed the Protection meta-box in post and page editor
+- Fixed the protection shortcode for Guest/Default memberships
+
 1.1.1.3
 ----------------------------------------------------------------------
 - Fix wrong redirection in the [ms-register-user] shortcode
