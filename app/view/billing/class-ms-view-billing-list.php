@@ -77,9 +77,11 @@ class MS_View_Billing_List extends MS_View {
 			<div>
 				<?php MS_Helper_Html::html_element( $add_new_button );?>
 			</div>
-			<?php $billing_list->views(); ?>
+			<?php
+			$billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search' );
+			$billing_list->views();
+			?>
 			<form action="" method="post">
-				<?php $billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search' ); ?>
 				<?php $billing_list->display(); ?>
 			</form>
 		</div>
