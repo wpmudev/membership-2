@@ -53,7 +53,7 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id ) {
+	public function has_access( $id, $admin_has_access = true ) {
 		global $bp;
 		$has_access = null;
 
@@ -64,7 +64,8 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 		if ( is_buddypress() ) {
 			// Check if access to *all* BuddyPress pages is restricted
 			$has_access = parent::has_access(
-				MS_Addon_BuddyPress_Rule::PROTECT_ALL
+				MS_Addon_BuddyPress_Rule::PROTECT_ALL,
+				$admin_has_access
 			);
 		}
 
@@ -73,19 +74,21 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 			$component = bp_current_component();
 
 			if ( ! empty( $component ) ) {
-				if ( bp_is_user() || $component == 'members' ) {
+				if ( 'members' == $component || bp_is_user() ) {
 					// Member listing or member profile access.
 					$has_access = parent::has_access(
-						MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS
+						MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS,
+						$admin_has_access
 					);
-				} elseif ( $component == 'messages' ) {
+				} elseif ( 'messages' == $component ) {
 					// Private messaging direct access.
 					if ( 'compose' == $bp->current_action ) {
 						$has_access = parent::has_access(
-							MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG
+							MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG,
+							$admin_has_access
 						);
 					}
-				} elseif ( $component == 'messages' ) {
+				} elseif ( 'messages' == $component ) {
 					// Don't modify, handled by MS_Addon_Buddypress_Rule_Group
 				}  else {
 					// Other BP pages can be handled by other rules.

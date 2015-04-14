@@ -58,7 +58,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id ) {
+	public function has_access( $id, $admin_has_access = true ) {
 		global $wp_query;
 		$has_access = null;
 
@@ -76,20 +76,20 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 				if ( MS_Addon_Bbpress::is_active() ) {
 					switch ( $post_type ) {
 						case self::CPT_BB_FORUM:
-							$has_access = parent::has_access( $id );
+							$has_access = parent::has_access( $id, $admin_has_access );
 							break;
 
 						case self::CPT_BB_TOPIC:
 							if ( function_exists( 'bbp_get_topic_forum_id' ) ) {
 								$forum_id = bbp_get_topic_forum_id( $id );
-								$has_access = parent::has_access( $forum_id );
+								$has_access = parent::has_access( $forum_id, $admin_has_access );
 							}
 							break;
 
 						case self::CPT_BB_REPLY:
 							if ( function_exists( 'bbp_get_reply_forum_id' ) ) {
 								$forum_id = bbp_get_reply_forum_id( $id );
-								$has_access = parent::has_access( $forum_id );
+								$has_access = parent::has_access( $forum_id, $admin_has_access );
 							}
 							break;
 					}
@@ -239,7 +239,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 			$content->id = $content->ID;
 			$content->name = $content->post_title;
 			$content->type = $this->rule_type;
-			$content->access = $this->get_rule_value( $content->id  );
+			$content->access = $this->get_rule_value( $content->id );
 
 			$contents[ $content->id ] = $content;
 		}

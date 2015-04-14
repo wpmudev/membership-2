@@ -134,7 +134,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id ) {
+	public function has_access( $id, $admin_has_access = true ) {
 		$has_access = null;
 
 		if ( empty( $id ) ) {
@@ -152,7 +152,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 			if ( MS_Model_Pages::is_membership_page( $id ) ) {
 				$has_access = true;
 			} else {
-				$has_access = parent::has_access( $id );
+				$has_access = parent::has_access( $id, $admin_has_access );
 			}
 		}
 

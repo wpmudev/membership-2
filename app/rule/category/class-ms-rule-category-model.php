@@ -155,7 +155,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id ) {
+	public function has_access( $id, $admin_has_access = true ) {
 		$has_access = null;
 
 		$taxonomies = get_object_taxonomies( get_post_type() );
@@ -170,7 +170,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 
 			$categories = wp_get_post_categories( $id );
 			foreach ( $categories as $category_id ) {
-				$has_access = parent::has_access( $category_id );
+				$has_access = parent::has_access( $category_id, $admin_has_access );
 
 				if ( $has_access ) {
 					break;
@@ -178,7 +178,8 @@ class MS_Rule_Category_Model extends MS_Rule {
 			}
 		} elseif ( is_category() ) {
 			// Category page.
-			$has_access = parent::has_access( get_queried_object_id() );
+			$category = get_queried_object_id();
+			$has_access = parent::has_access( $category, $admin_has_access );
 		}
 
 		return apply_filters(

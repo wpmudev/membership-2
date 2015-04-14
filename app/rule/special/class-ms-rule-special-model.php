@@ -120,7 +120,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id ) {
+	public function has_access( $id, $admin_has_access = true ) {
 		$has_access = null;
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
@@ -346,7 +346,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 
 			// Search the special page name...
 			if ( ! empty( $args['s'] ) ) {
-				if ( stripos( $data->label, $args['s'] ) === false ) {
+				if ( false === stripos( $data->label, $args['s'] ) ) {
 					continue;
 				}
 			}

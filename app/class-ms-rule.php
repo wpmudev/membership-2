@@ -471,10 +471,14 @@ class MS_Rule extends MS_Model {
 	 * @since 1.0.0
 	 *
 	 * @param string $id The content id to verify access.
+	 * @param bool $admin_has_access Default true: Admin will always have access,
+	 *             no matter how protection is set up. False will ignore the
+	 *             admin status and check protection rules normaly.
+	 *
 	 * @return boolean TRUE if has access, FALSE otherwise.
 	 */
-	public function has_access( $id ) {
-		if ( MS_Model_Member::is_normal_admin() ) {
+	public function has_access( $id, $admin_has_access = true ) {
+		if ( $admin_has_access && MS_Model_Member::is_normal_admin() ) {
 			return true;
 		}
 

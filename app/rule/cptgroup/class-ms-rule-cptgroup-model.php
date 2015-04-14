@@ -142,7 +142,7 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id ) {
+	public function has_access( $id, $admin_has_access = true ) {
 		$has_access = null;
 
 		// Only verify permission if NOT ruled by cpt post by post.
@@ -166,7 +166,7 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 			$has_access = true;
 		} elseif ( in_array( $post_type, self::get_custom_post_types() ) ) {
 			// Custom post type
-			$has_access = parent::has_access( $post_type );
+			$has_access = parent::has_access( $post_type, $admin_has_access );
 		} else {
 			// WordPress core pages are ignored by this rule.
 			$has_access = null;

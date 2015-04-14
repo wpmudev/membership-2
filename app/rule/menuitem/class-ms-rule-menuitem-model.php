@@ -83,7 +83,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
 	 */
-	public function has_access( $id ) {
+	public function has_access( $id, $admin_has_access = true ) {
 		return null;
 	}
 
@@ -107,10 +107,10 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * @param  object $item The menu item object.
 	 * @return bool
 	 */
-	protected function can_access_menu( $item ) {
+	protected function can_access_menu( $item, $admin_has_access = true ) {
 		$result = false;
 
-		if ( parent::has_access( $item->ID ) ) {
+		if ( parent::has_access( $item->ID, $admin_has_access ) ) {
 			$result = true;
 		}
 
