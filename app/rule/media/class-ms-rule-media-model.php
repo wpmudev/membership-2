@@ -160,6 +160,31 @@ class MS_Rule_Media_Model extends MS_Rule {
 	}
 
 	/**
+	 * Starts the output buffering to replace all links in the final HTML
+	 * document.
+	 *
+	 * Related filter:
+	 * - wp
+	 *
+	 * @since  1.1.1.4
+	 */
+	public function buffer_start() {
+		ob_start( array( $this, 'protect_download_content' ) );
+	}
+
+	/**
+	 * Ends the output buffering and calls the output_callback function.
+	 *
+	 * Related filter:
+	 * - shutdown
+	 *
+	 * @since  1.1.1.4
+	 */
+	public function buffer_end() {
+		ob_end_flush();
+	}
+
+	/**
 	 * Set initial protection.
 	 *
 	 * @since 1.0.0
@@ -167,10 +192,11 @@ class MS_Rule_Media_Model extends MS_Rule {
 	public function initialize() {
 		parent::protect_content();
 
-// Add Filter: get_attachment_link
-
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			$this->add_filter( 'the_content', 'protect_download_content' );
+			$this->add_action( 'wp', 'buffer_start' );
+			$this->add_action( 'shutdown', 'buffer_end' );
+
+			#$this->add_filter( 'the_content', 'protect_download_content' );
 			$this->add_action( 'parse_request', 'handle_download_protection', 3 );
 		}
 	}
@@ -180,8 +206,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 *
 	 * Search content and mask media filename and path.
 	 *
-	 * Related Action Hooks:
-	 * - the_content
+	 * This function is called as output_callback for ob_start() - as a result
+	 * we cannot echo/output anything in this function! The return value of the
+	 * function will be displayed to the user.
 	 *
 	 * @since 1.0.0
 	 *
@@ -219,62 +246,71 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 		$matches = array();
 		if ( preg_match_all( $url_exp, $the_content, $matches ) ) {
-			$home = get_option( 'home' );
+			$home = untrailingslashit( get_option( 'home' ) );
 
+			/*
+			 * $matches[0] .. Full link    'http://example.com/blog/img.png?ver=1'
+			 * $matches[1] .. Full link    'http://example.com/blog/img.png?ver=1'
+			 * $matches[2] .. Domain only  'http://example.com'
+			 * $matches[3] .. Protocol     'http://'
+			 * $matches[4] .. File path    '/blog/img.png?ver=1'
+			 */
 			if ( ! empty( $matches ) && ! empty( $matches[2] ) ) {
-				foreach ( (array) $matches[0] as $key => $domain ) {
-					if ( 0 === strpos( $domain, untrailingslashit( $home ) ) ) {
-						$found_local = $key;
-						$file = basename( $matches[4][ $found_local ] );
+				$links = (array) $matches[0];
+				$paths = (array) $matches[4];
 
-						extract( $this->extract_file_info( $file ) );
+				foreach ( $links as $key => $link ) {
+					// Ignore all external links
+					if ( 0 !== strpos( $link, $home ) ) { continue; }
 
-						$post_id = $this->get_attachment_id( $filename );
+					// The file is on local site - is it a valid attachment?
+					$file = basename( $paths[ $key ] );
+					$post_id = $this->get_attachment_id( $link );
 
-						if ( ! empty( $post_id ) ) {
+					// Ignore links that have no relevant wp_posts entry.
+					if ( empty( $post_id ) ) { continue; }
+					$f_info = $this->extract_file_info( $file );
 
-							// We have a protected file - so we'll mask it
-							switch ( $download_settings['protection_type'] ) {
-								case self::PROTECTION_TYPE_COMPLETE:
-									$protected_filename = self::FILE_PROTECTION_PREFIX .
-										( $post_id + (int) self::FILE_PROTECTION_INCREMENT ) .
-										$size_extension .
-										'.' . pathinfo( $filename, PATHINFO_EXTENSION );
+					// We have a protected file - so we'll mask it!
+					switch ( $download_settings['protection_type'] ) {
+						case self::PROTECTION_TYPE_COMPLETE:
+							$protected_filename = self::FILE_PROTECTION_PREFIX .
+								( $post_id + (int) self::FILE_PROTECTION_INCREMENT ) .
+								$f_info->size_extension .
+								'.' . pathinfo( $f_info->filename, PATHINFO_EXTENSION );
 
-									$the_content = str_replace(
-										$matches[0][$found_local],
-										$new_path . $protected_filename,
-										$the_content
-									);
-									break;
+							$the_content = str_replace(
+								$link,
+								$new_path . $protected_filename,
+								$the_content
+							);
+							break;
 
-								case self::PROTECTION_TYPE_HYBRID:
-									$protected_filename = self::FILE_PROTECTION_PREFIX .
-										($post_id + (int) self::FILE_PROTECTION_INCREMENT ) .
-										$size_extension .
-										'.' . pathinfo( $filename, PATHINFO_EXTENSION );
+						case self::PROTECTION_TYPE_HYBRID:
+							$protected_filename = self::FILE_PROTECTION_PREFIX .
+								($post_id + (int) self::FILE_PROTECTION_INCREMENT ) .
+								$f_info->size_extension .
+								'.' . pathinfo( $f_info->filename, PATHINFO_EXTENSION );
 
-									$the_content = str_replace(
-										$matches[0][ $found_local ],
-										$new_path . '?ms_file=' . $protected_filename,
-										$the_content
-									);
-									break;
+							$the_content = str_replace(
+								$link,
+								$new_path . '?ms_file=' . $protected_filename,
+								$the_content
+							);
+							break;
 
-								case self::PROTECTION_TYPE_BASIC:
-								default:
-									$the_content = str_replace(
-										$matches[0][ $found_local ],
-										str_replace(
-											$original_url,
-											$new_path,
-											$matches[0][$found_local]
-										),
-										$the_content
-									);
-								break;
-							}
-						}
+						case self::PROTECTION_TYPE_BASIC:
+						default:
+							$the_content = str_replace(
+								$link,
+								str_replace(
+									$original_url,
+									$new_path,
+									$link
+								),
+								$the_content
+							);
+						break;
 					}
 				}
 			}
@@ -300,21 +336,31 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 */
 	public function extract_file_info( $file ) {
 		// See if the filename has a size extension and if so, strip it out
-		$filename_exp = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
+		$filename_exp_full = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
+		$filename_exp_min = '/(.+)\.(.+)$/';
 		$filematch = array();
 
-		if ( preg_match( $filename_exp, $file, $filematch ) ) {
+		if ( preg_match( $filename_exp_full, $file, $filematch ) ) {
 			// Image with an image size attached
-			$filename = $filematch[1] . '.' . $filematch[3];
+			$type = strtolower( $filematch[3] );
+			$filename = $filematch[1] . '.' . $type;
 			$size_extension = '-' . $filematch[2];
+		} elseif ( preg_match( $filename_exp_min, $file, $filematch ) ) {
+			// Image without an image size definition
+			$type = strtolower( $filematch[2] );
+			$filename = $filematch[1] . '.' . $type;
+			$size_extension = '';
 		} else {
+			// Image without an extension.
+			$type = '';
 			$filename = $file;
 			$size_extension = '';
 		}
 
-		$info = array(
+		$info = (object) array(
 			'filename' => $filename,
 			'size_extension' => $size_extension,
+			'type' => $type,
 		);
 
 		return apply_filters(
@@ -333,43 +379,55 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * @param string $filename The filename to obtain the post_id.
 	 * @return int The post ID or 0 if not found.
 	 */
-	public function get_attachment_id( $filename ) {
-		$post_id = 0;
+	public function get_attachment_id( $url ) {
+		static $Uploads_Url = null;
+		static $Uploads_Url_Len = 0;
+		global $wpdb;
 
-		$args = array(
-			'posts_per_page' => 1,
-			'post_type'      => 'attachment',
-			'post_status'    => 'any',
-			'fields'         => 'ids',
-			'meta_query' => array(
-				'relation' => 'OR',
-				array(
-					'key' => '_wp_attached_file',
-					'value' => $filename,
-					'compare' => 'LIKE',
-				),
-				array(
-					'key' => '_wp_attachment_metadata',
-					'value' => $filename,
-					'compare' => 'LIKE',
-				)
-			)
-		);
+		// First let WordPress try to find the Attachment ID.
+		$id = url_to_postid( $url );
 
-		$args = apply_filters(
-			'ms_rule_media_model_get_attachment_id_args',
-			$args
-		);
-		$query = new WP_Query( $args );
-		$post = $query->get_posts();
+		if ( $id ) {
+			// Make sure the result ID is a valid attachment ID.
+			if ( 'attachment' != get_post_type( $id ) ) {
+				$id = 0;
+			}
+		} else {
+			// Manual attempt: Get the filename from the URL and use a custom query.
 
-		if ( ! empty( $post[0] ) ) {
-			$post_id = $post[0];
+			if ( null === $Uploads_Url ) {
+				$uploads = wp_upload_dir();
+				$Uploads_Url = trailingslashit( $uploads['baseurl'] );
+				$Uploads_Url_Len = strlen( $Uploads_Url );
+			}
+
+			if ( false !== strpos( $url, $Uploads_Url ) ) {
+				$url = substr( $url, $Uploads_Url_Len );
+			}
+
+			// See if we cached that URL already.
+			$id = wp_cache_get( $url, 'ms_attachment_id' );
+
+			if ( empty( $id ) ) {
+				$sql = "
+				SELECT wposts.ID
+				FROM $wpdb->posts wposts
+					INNER JOIN $wpdb->postmeta wpostmeta ON wposts.ID = wpostmeta.post_id
+				WHERE
+					wposts.post_type = 'attachment'
+					AND wpostmeta.meta_key = '_wp_attached_file'
+					AND wpostmeta.meta_value = %s
+				";
+				$sql = $wpdb->prepare( $sql, $url );
+				$id = $wpdb->get_var( $sql );
+
+				wp_cache_set( $url, $id, 'ms_attachment_id' );
+			}
 		}
 
 		return apply_filters(
 			'ms_rule_get_attachment_id',
-			$post_id,
+			absint( $id ),
 			$filename,
 			$this
 		);
@@ -414,8 +472,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 		if ( ! empty( $requested_item ) ) {
 			// At this point we know that the requested post is an attachment.
-
-			extract( $this->extract_file_info( $requested_item ) );
+			$f_info = $this->extract_file_info( $requested_item );
 
 			switch ( $protection_type ) {
 				case self::PROTECTION_TYPE_COMPLETE:
@@ -424,17 +481,18 @@ class MS_Rule_Media_Model extends MS_Rule {
 					$attachment_id = preg_replace(
 						'/^' . self::FILE_PROTECTION_PREFIX . '/',
 						'',
-						$filename
+						$f_info->filename
 					);
 					$attachment_id -= (int) self::FILE_PROTECTION_INCREMENT;
 
-					$the_file = $this->restore_filename( $attachment_id, $size_extension );
+					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
 					break;
 
 				default:
 				case self::PROTECTION_TYPE_BASIC:
-					$attachment_id = $this->get_attachment_id( $filename );
-					$the_file = $this->restore_filename( $attachment_id, $size_extension );
+					$home = untrailingslashit( get_option( 'home' ) );
+					$attachment_id = $this->get_attachment_id( $home . $f_info->filename );
+					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
 					break;
 			}
 
