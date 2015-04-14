@@ -145,8 +145,18 @@ class MS_Controller_Metabox extends MS_Controller {
 	 */
 	public function ajax_action_toggle_metabox_access() {
 		$fields = array( 'membership_id', 'rule_type', 'post_id' );
-		if ( $this->verify_nonce() && self::validate_required( $fields ) && $this->is_admin_user() ) {
-			$this->toggle_membership_access( $_POST['post_id'], $_POST['rule_type'], $_POST['membership_id'] );
+
+		if (
+			$this->verify_nonce()
+			&& self::validate_required( $fields )
+			&& $this->is_admin_user()
+		) {
+			$this->toggle_membership_access(
+				$_POST['post_id'],
+				$_POST['rule_type'],
+				$_POST['membership_id']
+			);
+
 			if ( $_POST['membership_id'] == MS_Model_Membership::get_base()->id ) {
 				$post = get_post( $_POST['post_id'] );
 				//membership metabox html returned via ajax response
@@ -202,15 +212,26 @@ class MS_Controller_Metabox extends MS_Controller {
 			$data['special_page'] = true;
 		} else {
 			$memberships = MS_Model_Membership::get_memberships();
-			$protected_content = MS_Model_Membership::get_base();
-			$data['protected_content'] = $protected_content;
-			$data['protected_content_enabled'] = ! $protected_content->has_access_to_post( $post->ID );
+			$base = MS_Model_Membership::get_base();
+			$data['base_id'] = $base->id;
 
-			$rule = $this->get_rule( $protected_content, $post );
+			// Find the post-type of the current post.
+			if ( 'attachment' == $post->post_type ) {
+				$parent_id = $post->post_parent;
+				$post_type = get_post_type( $parent_id );
+			} else {
+				$post_type = $post->post_type;
+			}
+
+			// Get the base protection rule and check if post is protected.
+			$rule = $this->get_rule( $base, $post_type );
+			$data['is_protected'] = ! $rule->has_access( $post->ID, false );
 			$data['rule_type'] = $rule->rule_type;
 
+			// Check each membership to see if the post is protected.
 			foreach ( $memberships as $membership ) {
-				$data['access'][ $membership->id ]['has_access'] = $membership->has_access_to_post( $post->ID );
+				$rule = $this->get_rule( $membership, $post_type );
+				$data['access'][ $membership->id ]['has_access'] = $rule->has_access( $post->ID, false );
 				$data['access'][ $membership->id ]['name'] = $membership->name;
 			}
 		}
@@ -218,7 +239,11 @@ class MS_Controller_Metabox extends MS_Controller {
 		$data['read_only'] = $this->is_read_only( $post->post_type );
 
 		$view = MS_Factory::create( 'MS_View_Metabox' );
-		$view->data = apply_filters( 'ms_view_membership_metabox_data', $data, $this );
+		$view->data = apply_filters(
+			'ms_view_membership_metabox_data',
+			$data,
+			$this
+		);
 		$view->render();
 	}
 
@@ -228,23 +253,19 @@ class MS_Controller_Metabox extends MS_Controller {
 	 * @since 1.0.0
 	 *
 	 * @param MS_Model_Membership The membership to get rule from.
-	 * @param object $post The current post object.
+	 * @param string $post_type The post_type name of the queried post object.
 	 * @return MS_Rule The rule model.
 	 */
-	private function get_rule( $membership, $post ) {
+	private function get_rule( $membership, $post_type ) {
 		$rule = null;
-		$post_type = null;
-
-		if ( 'attachment' == $post->post_type ) {
-			$parent_id = $post->post_parent;
-			$post_type = get_post_type( $parent_id );
-		} else {
-			$post_type = $post->post_type;
-		}
 
 		switch ( $post_type ) {
 			case 'post':
 				$rule = $membership->get_rule( MS_Rule_Post::RULE_ID );
+				break;
+
+			case 'page':
+				$rule = $membership->get_rule( MS_Rule_Page::RULE_ID );
 				break;
 
 			case 'attachment':
@@ -268,7 +289,7 @@ class MS_Controller_Metabox extends MS_Controller {
 			'ms_controller_metabox_get_rule',
 			$rule,
 			$membership,
-			$post,
+			$post_type,
 			$this
 		);
 	}
@@ -285,13 +306,30 @@ class MS_Controller_Metabox extends MS_Controller {
 	public function toggle_membership_access( $post_id, $rule_type, $membership_id ) {
 		if ( $this->is_admin_user() ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-
 			$rule = $membership->get_rule( $rule_type );
 
 			if ( $rule ) {
 				$rule->toggle_access( $post_id );
 				$membership->set_rule( $rule_type, $rule );
 				$membership->save();
+			}
+
+			// If we just enabled protection for the post then set all
+			// memberships to 'allow'.
+			if ( $membership->is_base() ) {
+				$protected = ! $rule->has_access( $post_id, false );
+				$all_memberships = MS_Model_Membership::get_memberships();
+
+				foreach ( $all_memberships as $the_membership ) {
+					$the_rule = $the_membership->get_rule( $rule_type );
+					if ( $protected ) {
+						$the_rule->give_access( $post_id );
+					} else {
+						$the_rule->remove_access( $post_id );
+					}
+					$the_membership->set_rule( $rule_type, $the_rule );
+					$the_membership->save();
+				}
 			}
 		}
 

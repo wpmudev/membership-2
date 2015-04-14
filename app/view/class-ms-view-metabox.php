@@ -22,14 +22,13 @@ class MS_View_Metabox extends MS_View {
 				<div>
 					<?php _e( 'Membership Special Page', MS_TEXT_DOMAIN ); ?>
 				</div>
-			<?php else : ?>
-				<?php
-				$membership_id = $this->data['protected_content']->id;
+			<?php else :
+				$membership_id = $this->data['base_id'];
 				$toggle = array(
 					'id' => sprintf( 'access_%s', $membership_id ),
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 					'title' => __( 'Enable Protection', MS_TEXT_DOMAIN ),
-					'value' => $this->data['protected_content_enabled'],
+					'value' => $this->data['is_protected'],
 					'class' => 'ms-protect-content',
 					'read_only' => ! empty( $this->data['read_only'] ),
 					'data_ms' => array(
