@@ -164,7 +164,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * document.
 	 *
 	 * Related filter:
-	 * - wp
+	 * - init
 	 *
 	 * @since  1.1.1.4
 	 */
@@ -193,10 +193,13 @@ class MS_Rule_Media_Model extends MS_Rule {
 		parent::protect_content();
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			$this->add_action( 'wp', 'buffer_start' );
+			// Start buffering during init action, though output should only
+			// happen a lot later... This way we're save.
+			$this->add_action( 'init', 'buffer_start' );
+
+			// Process the buffer right in the end.
 			$this->add_action( 'shutdown', 'buffer_end' );
 
-			#$this->add_filter( 'the_content', 'protect_download_content' );
 			$this->add_action( 'parse_request', 'handle_download_protection', 3 );
 		}
 	}
@@ -439,7 +442,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * Search for masked file and show the proper content, or no access image if don't have access.
 	 *
 	 * Realted Action Hooks:
-	 * - pre_get_posts
+	 * - parse_request
 	 *
 	 * @since 1.0.0
 	 *

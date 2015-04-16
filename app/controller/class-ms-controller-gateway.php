@@ -698,6 +698,9 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @param WP_Query $wp_query The WordPress query object
 	 */
 	public function handle_payment_return( $wp_query ) {
+		// Do not check custom loops.
+		if ( ! $wp_query->is_main_query() ) { return; }
+
 		if ( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			$gateway = $wp_query->query_vars['paymentgateway'];
 
