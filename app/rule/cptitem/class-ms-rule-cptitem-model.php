@@ -240,16 +240,19 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 
 		$args = $this->get_query_args( $args );
 		$contents = get_posts( $args );
+		$result = array();
 
 		foreach ( $contents as $content ) {
 			$content->id = $content->ID;
 			$content->type = MS_Rule_CptItem::RULE_ID;
 			$content->access = $this->get_rule_value( $content->id );
+
+			$result[ $content->id ] = $content;
 		}
 
 		return apply_filters(
 			'ms_rule_custom_post_type_get_contents',
-			$contents,
+			$result,
 			$args,
 			$this
 		);

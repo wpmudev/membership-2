@@ -44,6 +44,7 @@ class MS_Rule_CptGroup_ListTable extends MS_Helper_ListTable_Rule {
 				'cb' => true,
 				'name' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
 				'access' => true,
+				'dripped' => true,
 			)
 		);
 	}

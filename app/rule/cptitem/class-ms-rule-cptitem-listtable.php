@@ -45,6 +45,7 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 				'post_title' => __( 'Custom Post Title', MS_TEXT_DOMAIN ),
 				'post_type' => __( 'Post Type', MS_TEXT_DOMAIN ),
 				'access' => true,
+				'dripped' => true,
 			)
 		);
 	}

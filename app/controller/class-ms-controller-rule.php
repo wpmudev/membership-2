@@ -265,7 +265,10 @@ class MS_Controller_Rule extends MS_Controller {
 
 			if ( $table ) {
 				$items = $table->get_model()->get_contents();
-				echo '' . $table->display_rows( array( $items[ $item_id ] ) );
+
+				if ( isset( $items[ $item_id ] ) ) {
+					echo '' . $table->display_rows( array( $items[ $item_id ] ) );
+				}
 			}
 		} else {
 			$msg .= $this->_resp_code();

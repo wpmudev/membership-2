@@ -181,7 +181,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * @since  1.1.1.4
 	 */
 	public function buffer_end() {
-		ob_end_flush();
+		if ( ob_get_level() ) {
+			ob_end_flush();
+		}
 	}
 
 	/**
