@@ -182,10 +182,10 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		$defaults = array(
 			'redirect_login' => $redirect_to,
-			'label_username' => __( 'Username' ),
-			'label_password' => __( 'Password' ),
-			'label_remember' => __( 'Remember Me' ),
-			'label_log_in' => __( 'Log In' ),
+			'label_username' => __( 'Username', MS_TEXT_DOMAIN ),
+			'label_password' => __( 'Password', MS_TEXT_DOMAIN ),
+			'label_remember' => __( 'Remember Me', MS_TEXT_DOMAIN ),
+			'label_log_in' => __( 'Log In', MS_TEXT_DOMAIN ),
 			'id_login_form' => 'loginform',
 			'id_username' => 'user_login',
 			'id_password' => 'user_pass',
@@ -268,7 +268,9 @@ class MS_View_Shortcode_Login extends MS_View {
 				<?php echo apply_filters( 'login_form_middle', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="nav">
-						<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?' ); ?></a></p>
+						<p><a class="lost" href="#lostpassword">
+							<?php _e( 'Lost your password?', MS_TEXT_DOMAIN ); ?>
+						</a></p>
 					</div>
 				<?php endif; ?>
 				<?php if ( $show_remember ) : ?>
@@ -298,7 +300,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				<div class="status" style="display:none"></div>
 			</div>
 			<div class="nav">
-				<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?' ); ?></a></p>
+				<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?', MS_TEXT_DOMAIN ); ?></a></p>
 			<?php endif; ?>
 			</div>
 		</form>
@@ -378,7 +380,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				<?php echo apply_filters( 'lostpass_form_middle', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="nav">
-						<p><a class="login" href="#login"><?php _e( 'Log in' ); ?></a></p>
+						<p><a class="login" href="#login"><?php _e( 'Log in', MS_TEXT_DOMAIN ); ?></a></p>
 					</div>
 				<?php endif; ?>
 				<?php
@@ -401,7 +403,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				<div class="status" style="display:none"></div>
 			</div>
 			<div class="nav">
-				<p><a class="login" href="#login"><?php _e( 'Log in' ); ?></a></p>
+				<p><a class="login" href="#login"><?php _e( 'Log in', MS_TEXT_DOMAIN ); ?></a></p>
 			<?php endif; ?>
 			</div>
 		</form>
@@ -435,7 +437,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			'%1$s <a class="login_button" href="%2$s">%3$s</a>',
 			$yourname,
 			wp_logout_url( $redirect_logout ),
-			__( 'Logout' )
+			__( 'Logout', MS_TEXT_DOMAIN )
 		);
 
 		if ( ! empty( $holder ) ) {
@@ -461,8 +463,9 @@ class MS_View_Shortcode_Login extends MS_View {
 	private function reset_form() {
 		ob_start();
 
-		$rp_login = wp_unslash( @$_GET['login'] );
-		$rp_key = wp_unslash( @$_GET['key'] );
+		lib2()->array->equip_get( 'login', 'key' );
+		$rp_login = wp_unslash( $_GET['login'] );
+		$rp_key = wp_unslash( $_GET['key'] );
 		$err_msg = false;
 
 		// Get the user object and validate the key.
@@ -504,7 +507,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			reset_password( $user, $_POST['pass1'] );
 
 			// All done!
-			return __( 'Your Password has been reset.' );
+			return __( 'Your Password has been reset.', MS_TEXT_DOMAIN );
 		}
 
 		wp_enqueue_script( 'utils' );
@@ -518,16 +521,16 @@ class MS_View_Shortcode_Login extends MS_View {
 			<input type="hidden" id="user_login" value="<?php echo esc_attr( $rp_login ); ?>" autocomplete="off" />
 
 			<p>
-				<label for="pass1"><?php _e( 'New password' ) ?><br />
+				<label for="pass1"><?php _e( 'New password', MS_TEXT_DOMAIN ) ?><br />
 				<input type="password" name="pass1" id="pass1" class="input" size="20" value="" autocomplete="off" /></label>
 			</p>
 			<p>
-				<label for="pass2"><?php _e( 'Confirm new password' ) ?><br />
+				<label for="pass2"><?php _e( 'Confirm new password', MS_TEXT_DOMAIN ) ?><br />
 				<input type="password" name="pass2" id="pass2" class="input" size="20" value="" autocomplete="off" /></label>
 			</p>
 
-			<div id="pass-strength-result" class="hide-if-no-js"><?php _e( 'Strength indicator' ); ?></div>
-			<p class="description indicator-hint"><?php _e( 'Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! " ? $ % ^ &amp; ).' ); ?></p>
+			<div id="pass-strength-result" class="hide-if-no-js"><?php _e( 'Strength indicator', MS_TEXT_DOMAIN ); ?></div>
+			<p class="description indicator-hint"><?php _e( 'Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! " ? $ % ^ &amp; ).', MS_TEXT_DOMAIN ); ?></p>
 
 			<br class="clear" />
 
