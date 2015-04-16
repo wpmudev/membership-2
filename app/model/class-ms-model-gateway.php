@@ -190,6 +190,23 @@ class MS_Model_Gateway extends MS_Model_Option {
 	}
 
 	/**
+	 * Returns the gateway name for the specified gateway ID
+	 *
+	 * @since  1.1.1.4
+	 * @param  string $gateway_id The gateway ID
+	 * @return string The gateway Name
+	 */
+	public static function get_name( $gateway_id ) {
+		$known_names = self::get_gateway_names();
+
+		if ( isset( $known_names[$gateway_id] ) ) {
+			return $known_names[$gateway_id];
+		} else {
+			return '-';
+		}
+	}
+
+	/**
 	 * Validate gateway.
 	 *
 	 * @since 1.0.0
