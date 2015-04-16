@@ -66,6 +66,8 @@
  */
 .ms-wrap {
   /*font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+  /* The color marker (without memberhship name) */
+  /* The colord membership name */
 }
 .ms-wrap h3 {
   margin: 0 0 4px 0;
@@ -107,6 +109,29 @@
   text-align: center;
   margin: 0 0 5px 0;
   font-size: 17px;
+}
+.ms-wrap .ms-color {
+  width: 18px;
+  float: left;
+  margin-right: 5px;
+  border-radius: 4px;
+}
+.ms-wrap .ms-membership {
+  display: inline-block;
+  border-radius: 3px;
+  color: #FFF;
+  background: #888888;
+  padding: 1px 5px;
+  font-size: 12px;
+  height: 20px;
+  line-height: 20px;
+}
+.ms-wrap h3 .ms-membership {
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 15px;
+  height: 22px;
+  line-height: 22px;
 }
 
 /**
@@ -237,7 +262,7 @@
 #wpwrap .ms-wrap tr.inline-edit-row .button-primary {
   min-width: 0;
 }
-#wpwrap .ms-wrap tr.inline-edit-row .the-name {
+#wpwrap .ms-wrap tr.inline-edit-row .ms-membership {
   padding-right: 20px;
   border-radius: 3px;
   padding: 0 5px;
@@ -1664,12 +1689,6 @@
 }
 
 /* The Memberships list */
-.ms-wrap .ms-membership-list .the-color {
-  width: 18px;
-  float: left;
-  margin-right: 5px;
-  border-radius: 4px;
-}
 .ms-wrap .ms-membership-list .ms-followup {
   line-height: 14px;
   font-size: 11px;
@@ -1687,7 +1706,7 @@
   line-height: 12px;
   width: 12px;
 }
-.ms-wrap .ms-membership-list .the-name {
+.ms-wrap .ms-membership-list .ms-membership {
   margin-right: 10px;
   font-weight: bold;
 }
@@ -1738,13 +1757,6 @@
 }
 #wpwrap .ms-wrap.ms-wrap-protected-content h3.ms-list-title b {
   color: #000;
-}
-#wpwrap .ms-wrap.ms-wrap-protected-content .the-title {
-  border-radius: 4px;
-  color: #FFF;
-  background: #888888;
-  padding: 1px 6px;
-  font-size: 15px;
 }
 #wpwrap .ms-wrap.ms-wrap-protected-content .column-access {
   width: 70%;

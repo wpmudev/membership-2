@@ -56,4 +56,34 @@
 		margin: 0 0 5px 0;
 		font-size: 17px;
 	}
+
+	/* The color marker (without memberhship name) */
+	.ms-color {
+		width: 18px;
+		float: left;
+		margin-right: 5px;
+		border-radius: 4px;
+	}
+
+	/* The colord membership name */
+	.ms-membership {
+		display: inline-block;
+		border-radius: 3px;
+		color: #FFF;
+		background: #888888;
+		padding: 1px 5px;
+		font-size: 12px;
+		height: 20px;
+		line-height: 20px;
+	}
+
+	h3 {
+		.ms-membership {
+			border-radius: 4px;
+			padding: 1px 6px;
+			font-size: 15px;
+			height: 22px;
+			line-height: 22px;
+		}
+	}
 }

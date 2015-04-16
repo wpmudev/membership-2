@@ -181,7 +181,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		}
 
 		return sprintf(
-			'<span class="the-color" style="background-color:%4$s">&nbsp;</span> ' .
+			'<span class="ms-color" style="background-color:%4$s">&nbsp;</span> ' .
 			'<a href="?page=%5$s&step=%6$s&membership_id=%7$s" class="the-name">%1$s</a> ' .
 			'%3$s%2$s',
 			esc_html( $item->name ),
@@ -259,7 +259,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			if ( $followup->is_valid() ) {
 				$html .= '<div class="ms-followup">' . sprintf(
 					__( 'Follow with: %1$s', MS_TEXT_DOMAIN ),
-					'<span class="the-color" style="background:' . $followup->get_color() . '">&nbsp;</span>' . $followup->name
+					'<span class="ms-color" style="background:' . $followup->get_color() . '">&nbsp;</span>' . $followup->name
 				) . '</div>';
 			}
 		}

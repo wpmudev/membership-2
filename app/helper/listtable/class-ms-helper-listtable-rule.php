@@ -566,7 +566,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		</fieldset>
 		<div class="dripped-form cf no-auto-init hidden">
 			<div class="drip-col col-1">
-				<span class="the-name"></span>
+				<span class="the-name ms-membership"></span>
 				<?php MS_Helper_Html::html_element( $field_id ); ?>
 			</div>
 			<div class="drip-col col-2">
@@ -640,7 +640,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			$title,
 			'<b>' . esc_html( $type_name ) . '</b>',
 			sprintf(
-				'<span class="the-title" style="background-color:%2$s">%1$s</span>',
+				'<span class="ms-membership" style="background-color:%2$s">%1$s</span>',
 				esc_html( $membership_name ),
 				$membership_color
 			)

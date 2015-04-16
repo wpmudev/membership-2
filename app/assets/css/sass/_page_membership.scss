@@ -405,13 +405,6 @@
 
 /* The Memberships list */
 .ms-wrap .ms-membership-list {
-	.the-color {
-		width: 18px;
-		float: left;
-		margin-right: 5px;
-		border-radius: 4px;
-	}
-
 	.ms-followup {
 		line-height: 14px;
 		font-size: 11px;
@@ -431,7 +424,7 @@
 		}
 	}
 
-	.the-name {
+	.ms-membership {
 		margin-right: 10px;
 		font-weight: bold;
 	}
