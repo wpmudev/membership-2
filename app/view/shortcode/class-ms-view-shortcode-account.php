@@ -95,20 +95,30 @@ class MS_View_Shortcode_Account extends MS_View {
 										);
 										echo '' . do_shortcode( $code );
 									} else {
-										echo esc_html( $subscription->status );
+										echo esc_html( $subscription->status_text() );
 									}
 									?>
 									</td>
 									<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
 										<td><?php
 										if ( $subscription->trial_expire_date ) {
-											echo esc_html( $subscription->trial_expire_date );
+											echo esc_html(
+												MS_Helper_Period::format_date( $subscription->trial_expire_date )
+											);
 										} else {
 											_e( 'No trial', MS_TEXT_DOMAIN );
 										}
 										?></td>
 									<?php endif; ?>
-									<td><?php echo esc_html( $subscription->expire_date ); ?></td>
+									<td><?php
+									if ( $subscription->expire_date ) {
+										echo esc_html(
+											MS_Helper_Period::format_date( $subscription->expire_date )
+										);
+									} else {
+										_e( 'Never', MS_TEXT_DOMAIN );
+									}
+									?></td>
 								</tr>
 							<?php
 							endforeach;
@@ -258,6 +268,7 @@ class MS_View_Shortcode_Account extends MS_View {
 						$inv_membership = MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id );
 						$inv_classes = array(
 							'ms-invoice-' . $invoice->id,
+							'ms-invoice-' . $invoice->status,
 							'ms-invoice-gateway-' . $invoice->gateway_id,
 							'ms-invoice-membership-' . $invoice->membership_id,
 						);
@@ -271,7 +282,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							);
 							?></td>
 							<td class="ms-col-invoice-status"><?php
-								echo esc_html( $invoice->status );
+								echo esc_html( $invoice->status_text() );
 							?></td>
 							<td class="ms-col-invoice-total"><?php
 								echo esc_html( MS_Helper_Billing::format_price( $invoice->total ) );
@@ -280,7 +291,12 @@ class MS_View_Shortcode_Account extends MS_View {
 								echo esc_html( $inv_membership->name );
 							?></td>
 							<td class="ms-col-invoice-due"><?php
-								echo esc_html( $invoice->due_date );
+								echo esc_html(
+									MS_Helper_Period::format_date(
+										$invoice->due_date,
+										__( 'F j', MS_TEXT_DOMAIN )
+									)
+								);
 							?></td>
 						</tr>
 					<?php endforeach; ?>
@@ -351,7 +367,12 @@ class MS_View_Shortcode_Account extends MS_View {
 						?>
 						<tr class="<?php echo esc_attr( implode( ' ', $ev_classes ) ); ?>">
 							<td class="ms-col-activity-date"><?php
-								echo esc_html( $event->post_modified );
+								echo esc_html(
+									MS_Helper_Period::format_date(
+										$event->post_modified,
+										__( 'F j (H:i)', MS_TEXT_DOMAIN )
+									)
+								);
 							?></td>
 							<td class="ms-col-activity-title"><?php
 								echo esc_html( $event->description );

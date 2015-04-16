@@ -955,6 +955,32 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns a translated version of the invoice status
+	 *
+	 * @since  1.1.1.4
+	 * @return string
+	 */
+	public function status_text() {
+		static $Status = null;
+
+		if ( null === $Status ) {
+			$Status = self::get_status_types();
+		}
+
+		$result = $this->status;
+
+		if ( isset( $Status[$this->status] ) ) {
+			$result = $Status[$this->status];
+		}
+
+		return apply_filters(
+			'ms_invoice_status_text',
+			$result,
+			$this->status
+		);
+	}
+
+	/**
 	 * Updates various fields that display/depend on the invoice total amount.
 	 *
 	 * @since  1.1.0

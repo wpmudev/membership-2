@@ -189,35 +189,9 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 	}
 
 	public function column_status( $item, $column_name ) {
-		switch ( $item->status ) {
-			case MS_Model_Invoice::STATUS_BILLED:
-				$html = __( 'Billed', MS_TEXT_DOMAIN );
-				break;
-
-			case MS_Model_Invoice::STATUS_PAID:
-				$html = __( 'Paid', MS_TEXT_DOMAIN );
-				break;
-
-			case MS_Model_Invoice::STATUS_FAILED:
-				$html = __( 'Payment Failed', MS_TEXT_DOMAIN );
-				break;
-
-			case MS_Model_Invoice::STATUS_PENDING:
-				$html = __( 'Payment Pending', MS_TEXT_DOMAIN );
-				break;
-
-			case MS_Model_Invoice::STATUS_DENIED:
-				$html = __( 'Payment Denied', MS_TEXT_DOMAIN );
-				break;
-
-			default:
-				$html = $item->status;
-				break;
-		}
-
 		return sprintf(
 			'<span class="payment-status-%1$s">%2$s</span>',
-			$item->status,
+			$item->status_text(),
 			$html
 		);
 	}

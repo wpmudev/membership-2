@@ -82,7 +82,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_title = apply_filters( 'ms_invoice_title', $inv_title, $invoice );
 		$inv_from = apply_filters( 'ms_invoice_sender', MS_Plugin::instance()->settings->invoice_sender_name, $invoice );
 		$inv_to = apply_filters( 'ms_invoice_recipient', $member->username, $invoice, $member );
-		$inv_status = apply_filters( 'ms_invoice_status', $invoice->status, $invoice );
+		$inv_status = apply_filters( 'ms_invoice_status', $invoice->status_text(), $invoice );
 		$inv_item_name = apply_filters( 'ms_invoice_item_name', $membership->name, $invoice, $membership );
 		$inv_amount = apply_filters( 'ms_invoice_amount', $inv_amount, $invoice );
 		$inv_taxes = apply_filters( 'ms_invoice_taxes', $inv_taxes, $invoice );
@@ -92,11 +92,26 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 		if ( ! empty( $trial_invoice ) ) {
 			$inv_details = apply_filters( 'ms_invoice_description', $trial_invoice->description, $trial_invoice, $invoice );
-			$inv_due_date = apply_filters( 'ms_invoice_due_date', $trial_invoice->due_date, $trial_invoice, $invoice );
-			$trial_date = apply_filters( 'ms_invoice_trial_date', $invoice->due_date, $trial_invoice, $invoice );
+			$inv_due_date = apply_filters(
+				'ms_invoice_due_date',
+				MS_Helper_Period::format_date( $trial_invoice->due_date ),
+				$trial_invoice,
+				$invoice
+			);
+			$trial_date = apply_filters(
+				'ms_invoice_trial_date',
+				MS_Helper_Period::format_date( $invoice->due_date ),
+				$trial_invoice,
+				$invoice
+			);
 		} else {
 			$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
-			$inv_due_date = apply_filters( 'ms_invoice_due_date', $invoice->due_date, $invoice, null );
+			$inv_due_date = apply_filters(
+				'ms_invoice_due_date',
+				MS_Helper_Period::format_date( $invoice->due_date ),
+				$invoice,
+				null
+			);
 			$trial_date = '';
 		}
 
@@ -188,10 +203,12 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 					<?php if ( ! empty( $inv_taxes ) ) : ?>
 						<tr class="ms-inv-tax <?php echo esc_attr( $sep ); $sep = ''; ?>">
-							<th><?php printf(
-									__( 'Taxes %s', MS_TEXT_DOMAIN ),
-									'<small>(' . $invoice->tax_name . ')</small>'
-								); ?></th>
+							<th><?php
+							printf(
+								__( 'Taxes %s', MS_TEXT_DOMAIN ),
+								'<small>(' . $invoice->tax_name . ')</small>'
+							);
+							?></th>
 							<td class="ms-inv-price"><?php echo $inv_taxes; ?></td>
 						</tr>
 					<?php endif; ?>

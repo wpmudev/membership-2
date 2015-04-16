@@ -1432,6 +1432,32 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns a translated version of the invoice status
+	 *
+	 * @since  1.1.1.4
+	 * @return string
+	 */
+	public function status_text() {
+		static $Status = null;
+
+		if ( null === $Status ) {
+			$Status = self::get_status_types();
+		}
+
+		$result = $this->status;
+
+		if ( isset( $Status[$this->status] ) ) {
+			$result = $Status[$this->status];
+		}
+
+		return apply_filters(
+			'ms_subscription_status_text',
+			$result,
+			$this->status
+		);
+	}
+
+	/**
 	 * Calculate the membership status.
 	 *
 	 * Calculate status for the membership verifying the start date,
