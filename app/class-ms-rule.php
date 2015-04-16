@@ -1071,15 +1071,19 @@ class MS_Rule extends MS_Model {
 		 *
 		 * @since 1.1.0
 		 */
-		$exclude = apply_filters(
-			'ms_rule_exclude_items-' . $this->rule_type,
-			$exclude,
-			$args
+		$exclude = array_unique(
+			apply_filters(
+				'ms_rule_exclude_items-' . $this->rule_type,
+				$exclude,
+				$args
+			)
 		);
-		$include = apply_filters(
-			'ms_rule_include_items-' . $this->rule_type,
-			$include,
-			$args
+		$include = array_unique(
+			apply_filters(
+				'ms_rule_include_items-' . $this->rule_type,
+				$include,
+				$args
+			)
 		);
 
 		$res = (object) array(

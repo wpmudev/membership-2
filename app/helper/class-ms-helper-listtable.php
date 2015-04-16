@@ -1279,10 +1279,20 @@ class MS_Helper_ListTable {
 	 * @param object $item The current item.
 	 */
 	protected function single_row( $item ) {
-		static $row_class = '';
-		$row_class = ( $row_class === '' ? ' alternate' : '' );
+		static $Row_Class = '';
+		static $Row_Num = 0;
+
+		$Row_Class = ( $Row_Class === '' ? ' alternate' : '' );
+		$Row_Num += 1;
 		$row_id = 'item-' . $item->id;
-		$class_list = trim( $row_id . $row_class . ' item ' . $this->single_row_class( $item ) );
+
+		$class_list = trim(
+			'row-' . $Row_Num . ' ' .
+			$row_id .
+			$Row_Class .
+			' item ' .
+			$this->single_row_class( $item )
+		);
 
 		echo '<tr id="' . esc_attr( $row_id ) . '" class="' . esc_attr( $class_list ) . '">';
 		$this->single_row_columns( $item );

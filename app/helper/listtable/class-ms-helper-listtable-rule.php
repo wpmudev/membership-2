@@ -260,7 +260,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		}
 
 		// Month filter.
-		if ( ! empty( $_REQUEST['m'] ) && strlen( $_REQUEST['m'] ) == 6 ) {
+		if ( ! empty( $_REQUEST['m'] ) && 6 == strlen( $_REQUEST['m'] ) ) {
 			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
 			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
 		}
