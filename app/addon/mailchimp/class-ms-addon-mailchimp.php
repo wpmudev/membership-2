@@ -389,17 +389,19 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			);
 
 			$merge_vars = array();
-			if ( ! empty( $member->first_name ) ) {
-				$merge_vars['FNAME'] = $member->first_name;
-			}
-
-			if ( ! empty( $member->last_name ) ) {
-				$merge_vars['LNAME'] = $member->last_name;
-			}
+			$merge_vars['FNAME'] = $member->first_name;
+			$merge_vars['LNAME'] = $member->last_name;
 
 			if ( $auto_opt_in ) {
 				$merge_vars['optin_ip'] = $_SERVER['REMOTE_ADDR'];
 				$merge_vars['optin_time'] = MS_Helper_Period::current_time();
+			}
+
+			if ( empty( $merge_vars['FNAME'] ) ) {
+				unset( $merge_vars['FNAME'] );
+			}
+			if ( empty( $merge_vars['LNAME'] ) ) {
+				unset( $merge_vars['LNAME'] );
 			}
 
 			$merge_vars = apply_filters(
@@ -409,9 +411,11 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				$list_id
 			);
 
-			self::$mailchimp_api->lists->subscribe(
+			$email_field = array( 'email' => $member->email );
+
+			$res = self::$mailchimp_api->lists->subscribe(
 				$list_id,
-				array( 'email' => $member->email ),
+				$email_field,
 				$merge_vars,
 				'html',
 				( ! $auto_opt_in ),
