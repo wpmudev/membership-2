@@ -433,7 +433,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 		return apply_filters(
 			'ms_rule_get_attachment_id',
 			absint( $id ),
-			$filename,
+			$url,
 			$this
 		);
 	}
