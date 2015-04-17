@@ -8,13 +8,21 @@ Change Log:
 ----------------------------------------------------------------------
 - Added new automatic email notification: Subscription Renewed
 - Improve descriptions of automatic email notification settings
+- Improve i18n integration in the Billings module, Invoice display and in the Account page
 - Improve media protection to protect whole HTML output instead of post-content only
+- Improve Mailchimp integration: Firstname/Lastname are now also transfered to Mailchimp
 - Fixed the Protection meta-box in post and page editor
 - Fixed the protection shortcode for Guest/Default memberships
 - Fixed bug that created duplicate invoices when processing automatic email notifications
-- Fixed bug that prevented sending of Signup Email notification
+- Fixed bug that prevented the Signup Email notification from being sent to members
 - Fixed issues with assigning correct subscription status right after first signup
 - Fixed missing pagination in Media Protection list
+- Fixed the Auto-Opt-In option in Mailchimp integration
+- Fixed conflict with WooCommerce where category list did not show any products
+- Fixed bug in Registration workflow that allowed guests to subscribe to memberships
+- Fixed some attributes in the [ms-membership-login] shortcode, e.g. "label_" values
+- Fixed some issues in the Custom Post Type protection pages
+- Fixed bug in the Page protection page that did not display all pages in some cases
 
 1.1.1.3
 ----------------------------------------------------------------------
