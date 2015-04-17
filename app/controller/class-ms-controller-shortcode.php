@@ -600,6 +600,28 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'form'            => '',  // [login|lost|reset|logout]
 					'show_labels'     => false,
 					'nav_pos'         => 'top', // [top|bottom]
+
+					// form="login"
+					'show_remember'   => true,
+					'label_username'  => __( 'Username', MS_TEXT_DOMAIN ),
+					'label_password'  => __( 'Password', MS_TEXT_DOMAIN ),
+					'label_remember'  => __( 'Remember Me', MS_TEXT_DOMAIN ),
+					'label_log_in'    => __( 'Log In', MS_TEXT_DOMAIN ),
+					'id_login_form'   => 'loginform',
+					'id_username'     => 'user_login',
+					'id_password'     => 'user_pass',
+					'id_remember'     => 'rememberme',
+					'id_login'        => 'wp-submit',
+					'value_username'  => '',
+					'value_remember'  => false,
+
+					// form="lost"
+					'label_lost_username' => __( 'Username or E-mail', MS_TEXT_DOMAIN ),
+					'label_lostpass'      => __( 'Reset Password', MS_TEXT_DOMAIN ),
+					'id_lost_form'        => 'lostpasswordform',
+					'id_lost_username'    => 'user_login',
+					'id_lostpass'         => 'wp-submit',
+					'value_username'      => '',
 				),
 				$atts
 			)
@@ -609,6 +631,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['register'] = lib2()->is_true( $data['register'] );
 		$data['show_note'] = lib2()->is_true( $data['show_note'] );
 		$data['show_labels'] = lib2()->is_true( $data['show_labels'] );
+		$data['show_remember'] = lib2()->is_true( $data['show_remember'] );
+		$data['value_remember'] = lib2()->is_true( $data['value_remember'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_login_data', $data, $this );
