@@ -375,8 +375,18 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public static function subscribe_user( $member, $list_id ) {
 		if ( is_email( $member->email ) && self::get_api_status() ) {
-			$auto_opt_in = self::$settings->get_custom_setting( 'mailchimp', 'auto_opt_in' );
-			$update = apply_filters( 'ms_addon_mailchimp_subscribe_user_update', true, $member, $list_id );
+			$auto_opt_in = self::$settings->get_custom_setting(
+				'mailchimp',
+				'auto_opt_in'
+			);
+			$auto_opt_in = lib2()->is_true( $auto_opt_in );
+
+			$update = apply_filters(
+				'ms_addon_mailchimp_subscribe_user_update',
+				true,
+				$member,
+				$list_id
+			);
 
 			$merge_vars = array();
 			if ( ! empty( $member->first_name ) ) {

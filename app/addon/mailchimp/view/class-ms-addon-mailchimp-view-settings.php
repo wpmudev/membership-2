@@ -30,6 +30,8 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 		$settings = $this->data['settings'];
 
 		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
+		$auto_opt_in = $settings->get_custom_setting( 'mailchimp', 'auto_opt_in' );
+		$auto_opt_in = lib2()->is_true( $auto_opt_in );
 
 		$fields = array(
 			'mailchimp_api_test' => array(
@@ -68,7 +70,7 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title' => __( 'Automatically opt-in new users to the mailing list.', MS_TEXT_DOMAIN ),
 				'desc' => __( 'Users will not receive an email confirmation. You are responsible to inform your users.', MS_TEXT_DOMAIN ),
-				'value' => $settings->get_custom_setting( 'mailchimp', 'auto_opt_in' ),
+				'value' => $auto_opt_in,
 				'class' => 'inp-before',
 				'ajax_data' => array(
 					'group' => 'mailchimp',
