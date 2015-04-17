@@ -355,10 +355,11 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The current signup step after validation.
 	 */
 	private function get_signup_step() {
-		static $steps;
+		static $Valid_Steps = null;
+		static $Login_Steps = null;
 
-		if ( empty( $steps ) ) {
-			$steps = apply_filters(
+		if ( empty( $Valid_Steps ) ) {
+			$Valid_Steps = apply_filters(
 				'ms_controller_frontend_signup_steps',
 				array(
 					self::STEP_CHOOSE_MEMBERSHIP,
@@ -370,11 +371,21 @@ class MS_Controller_Frontend extends MS_Controller {
 					self::STEP_PROCESS_PURCHASE,
 				)
 			);
+
+			// These steps are only available to logged-in users.
+			$Login_Steps = apply_filters(
+				'ms_controller_frontend_signup_steps_private',
+				array(
+					self::STEP_PAYMENT_TABLE,
+					self::STEP_GATEWAY_FORM,
+					self::STEP_PROCESS_PURCHASE,
+				)
+			);
 		}
 
 		lib2()->array->equip_request( 'step', 'membership_id' );
 
-		if ( in_array( $_REQUEST['step'], $steps ) ) {
+		if ( in_array( $_REQUEST['step'], $Valid_Steps ) ) {
 			$step = $_REQUEST['step'];
 		} else {
 			// Initial step
@@ -382,9 +393,6 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 
 		if ( self::STEP_PAYMENT_TABLE == $step ) {
-			if ( ! MS_Model_Member::is_logged_in() ) {
-				$step = self::STEP_REGISTER_FORM_ALT;
-			}
 			if ( ! MS_Model_Membership::is_valid_membership( $_REQUEST['membership_id'] ) ) {
 				$step = self::STEP_CHOOSE_MEMBERSHIP;
 			}
@@ -392,6 +400,10 @@ class MS_Controller_Frontend extends MS_Controller {
 
 		if ( self::STEP_CHOOSE_MEMBERSHIP == $step && ! empty( $_GET['membership_id'] ) ) {
 			$step = self::STEP_PAYMENT_TABLE;
+		}
+
+		if ( ! MS_Model_Member::is_logged_in() && in_array( $step, $Login_Steps ) ) {
+			$step = self::STEP_REGISTER_FORM_ALT;
 		}
 
 		return apply_filters(
