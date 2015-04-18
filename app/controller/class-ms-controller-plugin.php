@@ -123,6 +123,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['membership_shortcode'] = MS_Factory::load( 'MS_Controller_Shortcode' );
 		$this->controllers['frontend'] = MS_Factory::load( 'MS_Controller_Frontend' );
 		$this->controllers['help'] = MS_Factory::load( 'MS_Controller_Help' );
+		$this->controllers['api'] = MS_Factory::load( 'MS_Controller_Api' );
 
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_template' );
