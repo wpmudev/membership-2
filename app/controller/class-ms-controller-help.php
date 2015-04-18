@@ -40,7 +40,7 @@ class MS_Controller_Help extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$menu_hook = 'protect-content_page_protected-content-help';
+		$menu_hook = MS_Controller_Plugin::admin_page_hook( 'help' );
 
 		// Enqueue scripts and styles.
 		$this->add_action(

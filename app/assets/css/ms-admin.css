@@ -1750,26 +1750,26 @@
 }
 
 /**
- * Special styles used on "Protected Content" page
+ * Special styles used on "Membership2" page
  */
-#wpwrap .ms-wrap.ms-wrap-protected-content h3.ms-list-title {
+#wpwrap .ms-wrap.ms-wrap-membership2 h3.ms-list-title {
   color: #4F7984;
 }
-#wpwrap .ms-wrap.ms-wrap-protected-content h3.ms-list-title b {
+#wpwrap .ms-wrap.ms-wrap-membership2 h3.ms-list-title b {
   color: #000;
 }
-#wpwrap .ms-wrap.ms-wrap-protected-content .column-access {
+#wpwrap .ms-wrap.ms-wrap-membership2 .column-access {
   width: 70%;
 }
-#wpwrap .ms-wrap.ms-wrap-protected-content .editinline {
+#wpwrap .ms-wrap.ms-wrap-membership2 .editinline {
   display: none;
 }
-#wpwrap .ms-wrap.ms-wrap-protected-content tr.ms-dripped .editinline {
+#wpwrap .ms-wrap.ms-wrap-membership2 tr.ms-dripped .editinline {
   display: block;
 }
 
 /**
- * Special styles used on "Protected Content" and "Members" page
+ * Special styles used on "Membership2" and "Members" page
  */
 #wpwrap .ms-wrap tr .column-access select,
 #wpwrap .ms-wrap tr .column-membership select {
@@ -1968,7 +1968,7 @@
 }
 
 /**
- * Special styles used on "Protected Content" and "Accessible Content" pages
+ * Special styles used on "Membership2" and "Accessible Content" pages
  */
 #url-test-results-wrapper {
   margin: 10px 0 0;

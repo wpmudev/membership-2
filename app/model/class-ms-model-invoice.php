@@ -269,7 +269,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Protected Content Invoices', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Invoices', MS_TEXT_DOMAIN ),
 			'description' => __( 'Member Invoices', MS_TEXT_DOMAIN ),
 			'public' => true,
 			'show_ui' => false,

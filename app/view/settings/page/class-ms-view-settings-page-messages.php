@@ -12,7 +12,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 				'editor' => array(
 					'id' => 'content',
 					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'title' => __( 'Message displayed when not having access to a protected content.', MS_TEXT_DOMAIN ),
+					'title' => __( 'Message displayed when not having access to a Membership2.', MS_TEXT_DOMAIN ),
 					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_CONTENT ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 				),
@@ -54,7 +54,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 				'editor' => array(
 					'id' => 'more_tag',
 					'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
-					'title' => __( 'Message displayed when not having access to a protected content under more tag.', MS_TEXT_DOMAIN ),
+					'title' => __( 'Message displayed when not having access to a Membership2 under more tag.', MS_TEXT_DOMAIN ),
 					'value' => $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_MORE_TAG ),
 					'field_options' => array( 'editor_class' => 'ms-field-wp-editor' ),
 				),

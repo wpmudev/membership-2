@@ -66,7 +66,7 @@ class MS_Helper_Shortcode extends MS_Helper {
 	const SCODE_RED_NOTE = 'ms-red-note';
 
 	/**
-	 * Holds an array of all replaced Protected Content shortcodes.
+	 * Holds an array of all replaced Membership2 shortcodes.
 	 *
 	 * @since  1.0.4.5
 	 *
@@ -115,7 +115,7 @@ class MS_Helper_Shortcode extends MS_Helper {
 	 * Remembers that a shortcode was inserted already.
 	 *
 	 * @since  1.0.4.5
-	 * @param  string $shortcode The Protected Content shortcode.
+	 * @param  string $shortcode The Membership2 shortcode.
 	 */
 	public static function did_shortcode( $shortcode ) {
 		self::$did_shortcodes[$shortcode] = true;

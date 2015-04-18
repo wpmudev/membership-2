@@ -36,7 +36,7 @@ class MS_Rule_ReplaceLocation extends MS_Controller {
 	}
 
 	/**
-	 * Tells Protected Content Admin to display this form to manage this rule.
+	 * Tells Membership2 Admin to display this form to manage this rule.
 	 *
 	 * @since 1.1.0
 	 *

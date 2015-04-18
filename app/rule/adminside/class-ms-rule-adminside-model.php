@@ -208,15 +208,15 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 		$blacklist = array(
 			'index.php',  // Dashboard
 			'edit-tags.php?taxonomy=link_category', // Links (deprecated)
-			'protected-content', // Protected Content
-			// Protected Content
-			'protected-content-members',
-			'protected-content-billing',
-			'protected-content-setup',
-			'protected-content-coupons',
-			'protected-content-addon',
-			'protected-content-settings',
-			'protected-content-help',
+			MS_Controller_Plugin::MENU_SLUG, // Main Membership2 menu item.
+			// Membership2 sub-menu items
+			MS_Controller_Plugin::MENU_SLUG . '-members',
+			MS_Controller_Plugin::MENU_SLUG . '-billing',
+			MS_Controller_Plugin::MENU_SLUG . '-setup',
+			MS_Controller_Plugin::MENU_SLUG . '-coupons',
+			MS_Controller_Plugin::MENU_SLUG . '-addon',
+			MS_Controller_Plugin::MENU_SLUG . '-settings',
+			MS_Controller_Plugin::MENU_SLUG . '-help',
 		);
 		$blacklist = apply_filters(
 			'ms_rule_adminside_blacklist',

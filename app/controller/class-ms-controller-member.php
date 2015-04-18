@@ -50,7 +50,7 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$hook = 'protect-content_page_protected-content-members';
+		$hook = MS_Controller_Plugin::admin_page_hook( 'members' );
 
 		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
 		$this->add_action( 'ms_controller_membership_setup_completed', 'add_current_user' );

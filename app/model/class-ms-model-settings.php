@@ -129,7 +129,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $wizard_step;
 
 	/**
-	 * Hide Protected Content Menu pointer indicator.
+	 * Hide Membership2 Menu pointer indicator.
 	 *
 	 * Wizard mode.
 	 *

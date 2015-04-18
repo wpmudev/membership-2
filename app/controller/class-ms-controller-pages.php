@@ -166,12 +166,12 @@ class MS_Controller_Pages extends MS_Controller {
 	 * @return array
 	 */
 	public function post_states( $states, $post ) {
-		if ( $post->post_type == 'page' ) {
+		if ( 'page' == $post->post_type ) {
 			if ( MS_Model_Pages::is_membership_page( $post->ID ) ) {
 				$url = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings' );
-				$states['protected_content'] = sprintf(
+				$states['membership2'] = sprintf(
 					'<a style="%2$s" href="%3$s">%1$s</a>',
-					__( 'Protected Content Page', MS_TEXT_DOMAIN ),
+					__( 'Membership2 Page', MS_TEXT_DOMAIN ),
 					'background:#aaa;color:#fff;padding:1px 4px;border-radius:4px;font-size:0.8em',
 					$url
 				);

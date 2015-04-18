@@ -166,7 +166,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * Set up the protected-content shortcode to display the protection message.
 	 *
 	 * This function is only called from the Frontend-Controller when the
-	 * Membership Page "protected content" is displayed.
+	 * Membership Page "Membership2" is displayed.
 	 *
 	 * @since  1.1.0
 	 */
@@ -528,7 +528,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	}
 
 	/**
-	 * Display the "protected content" message.
+	 * Display the "Membership2" message.
 	 *
 	 * @since 1.1.0
 	 *

@@ -148,7 +148,7 @@ class MS_Model_Import_Export extends MS_Model {
 	 *
 	 * @since 1.1.0
 	 */
-	const KEY = 'protected_content';
+	const KEY = 'membership2';
 
 	/**
 	 * Checks if the user did import data from this source before.
@@ -174,8 +174,8 @@ class MS_Model_Import_Export extends MS_Model {
 	 */
 	public function process() {
 		$data = (object) array();
-		$data->source_key = 'protected_content';
-		$data->source = 'Protected Content';
+		$data->source_key = self::KEY;
+		$data->source = 'Membership2';
 		$data->plugin_version = MS_PLUGIN_VERSION;
 		$data->export_time = date( 'Y-m-d H:i' );
 		$data->notes = array(
@@ -188,7 +188,7 @@ class MS_Model_Import_Export extends MS_Model {
 
 		$data->memberships = array();
 
-		// Export the base membership (i.e. the Protected Content settings)
+		// Export the base membership (i.e. the Membership2 settings)
 		$membership = MS_Model_Membership::get_base();
 		$data->memberships[] = $this->export_membership( $membership->id );
 
@@ -218,7 +218,7 @@ class MS_Model_Import_Export extends MS_Model {
 			$data->coupons[] = $this->export_coupon( $coupon->id );
 		}
 
-		lib2()->net->file_download( json_encode( $data ), 'protected-content-export.json' );
+		lib2()->net->file_download( json_encode( $data ), 'membership2-export.json' );
 	}
 
 	/**

@@ -41,7 +41,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const MENU_SLUG = 'protected-content';
+	const MENU_SLUG = 'membership2';
 
 	/**
 	 * Instance of MS_Model_Plugin.
@@ -141,6 +141,23 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	/**
+	 * Returns the WordPress hook that identifies a Membership2 admin page.
+	 *
+	 * @since  2.0.0
+	 * @param  string $subpage
+	 * @return string The internal hook name
+	 */
+	public static function admin_page_hook( $subpage = '' ) {
+		if ( empty( $subpage ) ) {
+			$hook = 'toplevel_page_' . self::MENU_SLUG;
+		} else {
+			$hook = self::MENU_SLUG . '_page_' . self::MENU_SLUG . '-' . $subpage;
+		}
+
+		return $hook;
+	}
+
+	/**
 	 * Register scripts and styles
 	 *
 	 * @since  1.0.0
@@ -167,8 +184,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		 * Until this bug is closed the title (2nd argument) can't be translated
 		 */
 		add_menu_page(
-			__( 'Protect Content', MS_TEXT_DOMAIN ),
-			'Protect Content', // no i18n!
+			__( 'Membership2', MS_TEXT_DOMAIN ),
+			'Membership2', // no i18n!
 			$this->capability,
 			self::MENU_SLUG,
 			null,
@@ -188,10 +205,10 @@ class MS_Controller_Plugin extends MS_Controller {
 			);
 
 			if ( MS_Controller_Membership::STEP_ADD_NEW == MS_Plugin::instance()->settings->wizard_step ) {
-				$pages['protected-content'] = array(
+				$pages[self::MENU_SLUG] = array(
 					'parent_slug' => self::MENU_SLUG,
 					'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+					'menu_title' => __( 'Membership2', MS_TEXT_DOMAIN ),
 					'menu_slug' => self::MENU_SLUG . '-setup',
 					'function' => array( $this->controllers['membership'], 'page_protected_content' ),
 				);

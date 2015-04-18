@@ -94,12 +94,12 @@ class MS_Model_Upgrade extends MS_Model {
 			// Prepare the Update message.
 			if ( ! $version_changed ) {
 				$msg[] = sprintf(
-					__( '<strong>Protected Content</strong> is set up for version %1$s!' , MS_TEXT_DOMAIN ),
+					__( '<strong>Membership2</strong> is set up for version %1$s!' , MS_TEXT_DOMAIN ),
 					$new_version
 				);
 			} else {
 				$msg[] = sprintf(
-					__( '<strong>Protected Content</strong> was updated to version %1$s!' , MS_TEXT_DOMAIN ),
+					__( '<strong>Membership2</strong> was updated to version %1$s!' , MS_TEXT_DOMAIN ),
 					$new_version
 				);
 			}
@@ -766,7 +766,7 @@ class MS_Model_Upgrade extends MS_Model {
 		wp_cache_flush();
 
 		// Redirect to the main page.
-		wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
 		exit;
 	}
 
@@ -864,9 +864,9 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( ! self::verify_token( 'reset' ) ) { return false; }
 
 			self::cleanup_db();
-			$msg = __( 'Your Protected Content data was reset!', MS_TEXT_DOMAIN );
+			$msg = __( 'Your Membership2 data was reset!', MS_TEXT_DOMAIN );
 			lib2()->ui->admin_message( $msg );
-			wp_safe_redirect( admin_url( 'admin.php?page=protected-content' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
 			exit;
 		}
 	}
@@ -891,7 +891,7 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( lib2()->updates->restore( $snapshot ) ) {
 				printf(
 					'<p>' .
-					__( 'The Protected Content Snapshot "%s" was restored!', MS_TEXT_DOMAIN ) .
+					__( 'The Membership2 Snapshot "%s" was restored!', MS_TEXT_DOMAIN ) .
 					'</p>',
 					$snapshot
 				);
@@ -906,7 +906,7 @@ class MS_Model_Upgrade extends MS_Model {
 					'<p>' .
 					__( 'You now have the option to <br />(A) downgrade the plugin to an earlier version via FTP or <br />(B) to %sre-run the upgrade process%s.', MS_TEXT_DOMAIN ) .
 					'</p>',
-					'<a href="' . admin_url( 'admin.php?page=protected-content' ) . '">',
+					'<a href="' . admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) . '">',
 					'</a>'
 				);
 

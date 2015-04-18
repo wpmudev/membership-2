@@ -11,7 +11,7 @@ class MS_Widget_Login extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'ms_widget_login',
-			__( '[Protected Content] Login', MS_TEXT_DOMAIN ),
+			__( '[Membership2] Login', MS_TEXT_DOMAIN ),
 			array(
 				'description' => __( 'Display a Login Form to all guests. Logged-in users will see a Logout link.', MS_TEXT_DOMAIN ),
 			)

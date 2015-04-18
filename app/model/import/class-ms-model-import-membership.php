@@ -180,7 +180,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			__( '- Transactions', MS_TEXT_DOMAIN ),
 			__( 'Each Subscription-Level is imported as a individual Membership.', MS_TEXT_DOMAIN ),
 			__( 'Transactions are converted to invoices. Data like tax-rate or applied coupons are not available.', MS_TEXT_DOMAIN ),
-			__( 'Please note that we cannot import recurring 2Checkout subscriptions to Protected Content!', MS_TEXT_DOMAIN ),
+			__( 'Please note that we cannot import recurring 2Checkout subscriptions to Membership2!', MS_TEXT_DOMAIN ),
 		);
 
 		$this->data->memberships = array();
@@ -195,7 +195,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 
 	/**
 	 * Generates a list of all default membership objects that can be imported.
-	 * The Protected Content base membership is not included!
+	 * The Membership2 base membership is not included!
 	 *
 	 * @since 1.1.0
 	 */

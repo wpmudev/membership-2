@@ -271,7 +271,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 	}
 
 	/**
-	 * Exclude the special Protected-Content pages from the results as they
+	 * Exclude the special Membership2 pages from the results as they
 	 * cannot be protected.
 	 *
 	 * @since  1.1.0

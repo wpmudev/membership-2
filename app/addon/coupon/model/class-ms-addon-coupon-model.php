@@ -184,7 +184,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Protected Content Coupons', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Coupons', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(

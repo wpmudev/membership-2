@@ -84,20 +84,20 @@ class MS_Controller_Membership extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$protected_content_menu_hook = 'toplevel_page_protected-content';
-		$protected_content_setup_hook = 'protect-content_page_protected-content-setup';
+		$hook_top = MS_Controller_Plugin::admin_page_hook();
+		$hook_setup = MS_Controller_Plugin::admin_page_hook( 'setup' );
 
-		$this->add_action( 'load-' . $protected_content_menu_hook, 'membership_admin_page_process' );
-		$this->add_action( 'load-' . $protected_content_setup_hook, 'membership_admin_page_process' );
+		$this->add_action( 'load-' . $hook_top, 'membership_admin_page_process' );
+		$this->add_action( 'load-' . $hook_setup, 'membership_admin_page_process' );
 
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
 		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MEMBERSHIP, 'ajax_action_update_membership' );
 
-		$this->add_action( 'admin_print_scripts-' . $protected_content_setup_hook, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $protected_content_setup_hook, 'enqueue_styles' );
+		$this->add_action( 'admin_print_scripts-' . $hook_setup, 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-' . $hook_setup, 'enqueue_styles' );
 
-		$this->add_action( 'admin_print_scripts-' . $protected_content_menu_hook, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $protected_content_menu_hook, 'enqueue_styles' );
+		$this->add_action( 'admin_print_scripts-' . $hook_top, 'enqueue_scripts' );
+		$this->add_action( 'admin_print_styles-' . $hook_top, 'enqueue_styles' );
 	}
 
 	/**
@@ -184,7 +184,7 @@ class MS_Controller_Membership extends MS_Controller {
 						remove_query_arg( array( 'membership_id' ) )
 					);
 				}
-			} elseif ( isset( $_REQUEST['page'] ) && 'protected-content-setup' == $_REQUEST['page'] ) {
+			} elseif ( isset( $_REQUEST['page'] ) && MS_Controller_Plugin::MENU_SLUG . '-setup' == $_REQUEST['page'] ) {
 				$membership_id = MS_Model_Membership::get_base()->id;
 			}
 
@@ -475,7 +475,7 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
-	 * Display Setup Protected Content page.
+	 * Display Setup Membership2 page.
 	 *
 	 * @since 1.0.0
 	 */
@@ -792,7 +792,7 @@ class MS_Controller_Membership extends MS_Controller {
 	}
 
 	/**
-	 * Get available tabs for Protected Content page.
+	 * Get available tabs for Membership2 page.
 	 *
 	 * @since 1.0.0
 	 *
@@ -912,7 +912,7 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 
 			$url = admin_url( 'admin.php' );
-			$page = sanitize_html_class( $_GET['page'], 'protected-content-memberships' );
+			$page = sanitize_html_class( $_GET['page'], MS_Controller_Plugin::MENU_SLUG . '-memberships' );
 			$rule_titles = MS_Model_Rule::get_rule_type_titles();
 
 			$result = array();

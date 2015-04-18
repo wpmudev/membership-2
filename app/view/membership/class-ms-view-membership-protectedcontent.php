@@ -27,7 +27,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 		ob_start();
 		// Render tabbed interface.
 		?>
-		<div class="ms-wrap wrap ms-wrap-protected-content">
+		<div class="ms-wrap wrap ms-wrap-membership2">
 			<?php
 			MS_Helper_Html::settings_header(
 				array(

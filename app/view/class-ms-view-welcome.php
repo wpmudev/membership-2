@@ -68,7 +68,7 @@ class MS_View_Welcome extends MS_View {
 				</h2>
 
 				<div class="ms-welcome-text">
-					<?php _e( 'Hello and welcome to <strong>Protected Content</strong> by WPMU DEV. Please follow this simple set-up<br />wizard to help us determine the settings that are most relevant to your needs. Don\'t worry, you<br />can always change these settings in the future.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Hello and welcome to <strong>Membership2</strong> by WPMU DEV. Please follow this simple set-up<br />wizard to help us determine the settings that are most relevant to your needs. Don\'t worry, you<br />can always change these settings in the future.', MS_TEXT_DOMAIN ); ?>
 				</div>
 
 				<div class="ms-welcome-image-box">

@@ -5,7 +5,7 @@
 /*global ms_inline_editor:false */
 
 
-/* Protected Content Inline Editor */
+/* Membership2 Inline Editor */
 (function() {
 	var quickedit = null,
 		the_item = null,

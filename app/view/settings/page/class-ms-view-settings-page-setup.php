@@ -73,7 +73,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			'<center>%1$s</center>',
 			sprintf(
 				__( 'You can now go to %sProtected Content%s to set up access levels for this Membership.', MS_TEXT_DOMAIN ),
-				sprintf( '<a href="%1$s">', '?page=protected-content-setup' ),
+				sprintf( '<a href="%1$s">', '?page=' . MS_Controller_Plugin::MENU_SLUG . '-setup' ),
 				'</a>'
 			)
 		);
@@ -116,10 +116,10 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			<div class="ms-setup-pages">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-admin-page"></i>
-					<?php _e( 'Protected Content Site Pages', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Membership2 Site Pages', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<div class="ms-description">
-					<?php _e( 'Set Up Protected Content Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Set Up Membership2 Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<?php
 
@@ -267,7 +267,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 	}
 
 	/**
-	 * Outputs the HTML code to toggle Protected Content menu items.
+	 * Outputs the HTML code to toggle Membership2 menu items.
 	 *
 	 * @since  1.1.0
 	 * @return string

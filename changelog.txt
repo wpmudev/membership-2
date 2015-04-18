@@ -1,4 +1,4 @@
-Plugin Name: Protected Content
+Plugin Name: Membership2
 Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 
 Change Log:
@@ -23,6 +23,7 @@ Change Log:
 - Fixed some attributes in the [ms-membership-login] shortcode, e.g. "label_" values
 - Fixed some issues in the Custom Post Type protection pages
 - Fixed bug in the Page protection page that did not display all pages in some cases
+- Fix bulk actions in the Billings module
 
 1.1.1.3
 ----------------------------------------------------------------------
@@ -45,7 +46,7 @@ Change Log:
 
 1.1.1.1
 ----------------------------------------------------------------------
-- Make Protected Content compatible with WangGuard plugin
+- Make Membership2 compatible with WangGuard plugin
 - Add some registration hooks for compatiblity with WordPress code
 
 1.1.1.0
@@ -85,7 +86,7 @@ Change Log:
 
 1.1.0.5
 ----------------------------------------------------------------------
-- Add plugin modifiers (details in Protected Content > Help > Advanced)
+- Add plugin modifiers (details in Membership2 > Help > Advanced)
 - Fix import process to not send out emails
 - Fix the IPN URL displayed in the PayPal-Standard settings
 - Restore Payment Gateway settings if lost during 1.0 to 1.1 update

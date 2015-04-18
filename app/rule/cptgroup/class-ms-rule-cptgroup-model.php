@@ -106,7 +106,7 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 			foreach ( $post_types as $post_type ) {
 				$allow = false;
 
-				// Do not protect special "Protected Content" or default WordPress content
+				// Do not protect special "Membership2" or default WordPress content
 				if ( in_array( $post_type, $excluded ) ) { $allow = true; }
 
 				// Do not protect if the post-type is published
@@ -162,7 +162,7 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 		}
 
 		if ( in_array( $post_type, self::get_ms_post_types() ) ) {
-			// Always allow access to Protected Content pages.
+			// Always allow access to Membership2 pages.
 			$has_access = true;
 		} elseif ( in_array( $post_type, self::get_custom_post_types() ) ) {
 			// Custom post type

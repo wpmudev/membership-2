@@ -243,7 +243,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 			);
 			$this->rule_value = lib2()->array->get( $rule_value );
 
-			// If not visitor membership, just show protected content
+			// If not visitor membership, just show Membership2
 			if ( ! $this->get_membership()->is_base() ) {
 				$this->_content_array = array_intersect_key(
 					$this->_content_array,

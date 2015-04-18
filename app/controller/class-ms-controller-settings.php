@@ -77,7 +77,7 @@ class MS_Controller_Settings extends MS_Controller {
 			exit();
 		}
 
-		$hook = 'protect-content_page_protected-content-settings';
+		$hook = MS_Controller_Plugin::admin_page_hook( 'settings' );
 		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_settings' );
 
@@ -262,7 +262,7 @@ class MS_Controller_Settings extends MS_Controller {
 			MS_Model_Pages::create_menu( MS_Model_Pages::MS_PAGE_REGISTER );
 		}
 
-		// Enable Protected Content.
+		// Enable Membership2.
 		$settings->plugin_enabled = true;
 		$settings->save();
 

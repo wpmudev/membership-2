@@ -56,7 +56,7 @@ window.ms_init.view_settings = function init () {
 	}
 
 	function update_toolbar( ev, data ) {
-		// Show/Hide the Toolbar menu for protected content.
+		// Show/Hide the Toolbar menu for Membership2.
 		if ( data.value ) {
 			jQuery( '#wp-admin-bar-ms-unprotected' ).hide();
 			jQuery( '#wp-admin-bar-ms-test-memberships' ).show();

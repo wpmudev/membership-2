@@ -685,7 +685,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * Used by Paypal gateways.
 	 * A redirection rule is set up in the main MS_Plugin object
-	 * (protected-content.php):
+	 * (protected_content.php):
 	 * /ms-payment-return/XYZ becomes index.php?paymentgateway=XYZ
 	 *
 	 * Related action hooks:

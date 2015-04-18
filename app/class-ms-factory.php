@@ -192,7 +192,7 @@ class MS_Factory {
 	 * Initialize the object after it was created or loaded.
 	 *
 	 * @since  1.1.0
-	 * @param  MS_Hook &$obj Any Protected Content object to initialize.
+	 * @param  MS_Hook &$obj Any Membership2 object to initialize.
 	 */
 	static private function prepare_obj( &$obj ) {
 		static $Init_Obj = array();

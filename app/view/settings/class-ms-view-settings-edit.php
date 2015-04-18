@@ -113,7 +113,7 @@ class MS_View_Settings_Edit extends MS_View {
 		// A "Reset" button that can be added via URL param
 		// Intentionally not translated (purpose is dev/testing)
 		if ( ! empty( $_GET['reset'] ) ) {
-			$reset_url = admin_url( 'admin.php?page=protected-content-settings&reset=1' );
+			$reset_url = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&reset=1' );
 			$reset_url = add_query_arg(
 				MS_Model_Upgrade::get_token( 'reset' ),
 				$reset_url
@@ -122,7 +122,7 @@ class MS_View_Settings_Edit extends MS_View {
 
 			$desc[] = sprintf(
 				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
-				'Careful: This will completely erase all your Protected Content settings and details!',
+				'Careful: This will completely erase all your Membership2 settings and details!',
 				sprintf(
 					'<form method="POST" action="%s" style="padding:20px 0">' .
 					'<label style="line-height:28px">' .
@@ -140,7 +140,7 @@ class MS_View_Settings_Edit extends MS_View {
 		// A "Resore" button that can be added via URL param
 		// Intentionally not translated (purpose is dev/testing)
 		if ( ! empty( $_GET['restore'] ) ) {
-			$restore_url = admin_url( 'admin.php?page=protected-content-settings&restore=1' );
+			$restore_url = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&restore=1' );
 			$restore_url = add_query_arg(
 				MS_Model_Upgrade::get_token( 'restore' ),
 				$restore_url

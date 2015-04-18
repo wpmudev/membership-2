@@ -71,7 +71,7 @@ class MS_Model_Plugin extends MS_Model {
 
 		/*
 		 * Create our own copy of the full admin menu to be used in the
-		 * Protected Content settings.
+		 * Membership2 settings.
 		 *
 		 * These hooks are only executed in the admin side.
 		 */
@@ -206,7 +206,7 @@ class MS_Model_Plugin extends MS_Model {
 				'url' => MS_Helper_Utility::get_current_url(),
 			);
 
-			// The ID of the main protected-content.
+			// The ID of the main system membership.
 			$base_id = MS_Model_Membership::get_base()->id;
 
 			$simulation = $this->member->is_simulated_user() || isset( $_GET['explain'] ) && 'access' == $_GET['explain'];
@@ -228,7 +228,7 @@ class MS_Model_Plugin extends MS_Model {
 			} else {
 				/*
 				 * A non-admin visitor is only guaranteed access to special
-				 * Protected Content pages:
+				 * Membership2 pages:
 				 * Registration, Login, etc.
 				 */
 				$ms_page = MS_Model_Pages::current_page();
@@ -333,6 +333,7 @@ class MS_Model_Plugin extends MS_Model {
 							$item['url'],
 							$item['has_access'] ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN )
 						);
+						// Intended debug output, leave it here.
 						lib2()->debug->dump( $item );
 					}
 					wp_die( '' );
@@ -560,7 +561,7 @@ class MS_Model_Plugin extends MS_Model {
 	}
 
 	/**
-	 * Runs a single Protected Content cron service and then re-schedules it.
+	 * Runs a single Membership2 cron service and then re-schedules it.
 	 * This function is used to manually trigger the cron services.
 	 *
 	 * @since  1.1.0
@@ -582,7 +583,7 @@ class MS_Model_Plugin extends MS_Model {
 	 * regular basis - this hooks are set up only once.
 	 *
 	 * The Cron jobs can be manually executed by opening the admin page
-	 * "Protected Content > Settings" and adding URL param "&run_cron=1"
+	 * "Membership2 > Settings" and adding URL param "&run_cron=1"
 	 *
 	 * @since 1.0.0
 	 */
@@ -634,7 +635,7 @@ class MS_Model_Plugin extends MS_Model {
 	/**
 	 * Copies the full WordPress Admin menu before any restriction is applied
 	 * by WordPress or an Plugin. This menu-information is used on the
-	 * Protected Content/Accessible Content settings pages
+	 * Membership2/Accessible Content settings pages
 	 *
 	 * @since  1.1
 	 * @global array $menu

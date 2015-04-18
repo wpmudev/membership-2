@@ -66,20 +66,20 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
-			$hook = 'protect-content_page_protected-content-coupons';
+			$hook = 'protect-content_page_' . MS_Controller_Plugin::MENU_SLUG . '-coupons';
 			$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
 
 			$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 			$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 
-			// Add Coupon menu item to Protected Content menu (Admin)
+			// Add Coupon menu item to Membership2 menu (Admin)
 			$this->add_filter(
 				'ms_plugin_menu_pages',
 				'menu_item',
 				10, 3
 			);
 
-			// Tell Protected Content about the Coupon Post Type
+			// Tell Membership2 about the Coupon Post Type
 			$this->add_filter(
 				'ms_plugin_register_custom_post_types',
 				'register_ms_posttypes'
@@ -176,7 +176,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	}
 
 	/**
-	 * Add the Coupons menu item to the protected-content menu.
+	 * Add the Coupons menu item to the Membership2 menu.
 	 *
 	 * @since 1.1.0
 	 *
@@ -429,7 +429,7 @@ class MS_Addon_Coupon extends MS_Addon {
 		$html = '';
 
 		if ( empty( $value ) ) {
-			if ( $column_name == 'discount' && empty( $value ) ) {
+			if ( 'discount' == $column_name && empty( $value ) ) {
 				$html = '-';
 			}
 		} else {

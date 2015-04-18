@@ -157,7 +157,7 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 				$cpt = MS_Rule_CptGroup_Model::get_custom_post_types();
 
 				if ( in_array( $post_type, $mspt ) ) {
-					// Always allow access to Protected Content pages.
+					// Always allow access to Membership2 pages.
 					$has_access = true;
 				} elseif ( in_array( $post_type, $cpt ) ) {
 					// Custom post type

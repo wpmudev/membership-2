@@ -161,7 +161,7 @@ class MS_Model_Rule extends MS_Model {
 	 *
 	 * This array is ordered in the hierarchy way.
 	 * First one has more priority than the last one.
-	 * This hierarchy is used to determine access to protected content.
+	 * This hierarchy is used to determine access to Membership2.
 	 *
 	 * @since 1.0.0
 	 * @return array $rule_types {

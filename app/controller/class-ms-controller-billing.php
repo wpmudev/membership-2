@@ -40,7 +40,7 @@ class MS_Controller_Billing extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$hook = 'protect-content_page_protected-content-billing';
+		$hook = MS_Controller_Plugin::admin_page_hook( 'billing' );
 		$this->add_action( 'load-' . $hook, 'admin_billing_manager' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );

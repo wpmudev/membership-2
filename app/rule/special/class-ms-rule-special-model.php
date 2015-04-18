@@ -361,7 +361,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 			$contents[ $content->id ] = $content;
 		}
 
-		// If not visitor membership, just show protected content
+		// If not visitor membership, just show Membership2
 		if ( ! $this->is_base_rule ) {
 			$contents = array_intersect_key( $contents, $this->rule_value );
 		}

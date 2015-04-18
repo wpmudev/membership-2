@@ -100,20 +100,20 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
 			'name' => __( 'BuddyPress Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Integrate BuddyPress with Protected Content.', MS_TEXT_DOMAIN ),
+			'description' => __( 'Integrate BuddyPress with Membership2.', MS_TEXT_DOMAIN ),
 			'details' => array(
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 					'title' => __( 'Protection Rules', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Adds BuddyPress rules in the "Protected Content" page.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Adds BuddyPress rules in the "Membership2" page.', MS_TEXT_DOMAIN ),
 				),
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 					'title' => __( 'Registration page', MS_TEXT_DOMAIN ),
 					'desc' =>
-						__( 'The BuddyPress registration page will be used instead of the default Protected Content registration page.', MS_TEXT_DOMAIN ) .
+						__( 'The BuddyPress registration page will be used instead of the default Membership2 registration page.', MS_TEXT_DOMAIN ) .
 						'<br />' .
-						__( 'New users are automatically activated by Protected Content and no confirmation email is sent to the user!', MS_TEXT_DOMAIN ),
+						__( 'New users are automatically activated by Membership2 and no confirmation email is sent to the user!', MS_TEXT_DOMAIN ),
 				),
 			),
 		);
@@ -161,7 +161,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 
 	/**
 	 * Display the BuddyPress registration form instead of the default
-	 * Protected Content registration form.
+	 * Membership2 registration form.
 	 *
 	 * @since  1.1.0
 	 * @return string HTML code of the registration form or empty string to use
@@ -171,7 +171,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		global $bp;
 
 		if ( self::buddypress_active() ) {
-			// Add Protected Content fields to the form so we know what comes next.
+			// Add Membership2 fields to the form so we know what comes next.
 			$this->add_action( 'bp_custom_signup_steps', 'membership_fields' );
 
 			// Redirect everything after the submit button to output buffer...
@@ -204,13 +204,13 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	}
 
 	/**
-	 * Output hidden form fields that are parsed by Protected Content when the
+	 * Output hidden form fields that are parsed by Membership2 when the
 	 * registration was completed.
 	 *
 	 * This is used to recognize that the registration should be handled by
-	 * Protected Content and which screen to display next.
+	 * Membership2 and which screen to display next.
 	 *
-	 * Note that the form is submitted to PROTECTED CONTENT, so we need to
+	 * Note that the form is submitted to Membership2, so we need to
 	 * handle the background stuff. BuddyPress will not do it for us...
 	 *
 	 * @since  1.1.0
@@ -247,7 +247,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * The Registration form was submitted and the nonce-check verified.
 	 * We have to match the BuddyPress field-names with the
-	 * Protected Content names.
+	 * Membership2 names.
 	 *
 	 * This preparation only ensures that the user can be created.
 	 * XProfile fields are not handled here...

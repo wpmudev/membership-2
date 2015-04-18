@@ -334,9 +334,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Merge current rules to protected content.
+	 * Merge current rules to Membership2.
 	 *
-	 * Assure the membership rules get updated whenever protected content is changed.
+	 * Assure the membership rules get updated whenever Membership2 is changed.
 	 *
 	 * @since 1.0.0
 	 */
@@ -356,9 +356,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 		$this->rule_values = array();
 
-		// validate rules using protected content rules
+		// validate rules using Membership2 rules
 		if ( ! $this->is_base() && $this->is_valid() ) {
-			$this->merge_protected_content_rules();
+			$this->merge_protection_rules();
 		}
 	}
 
@@ -369,7 +369,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Protected Content Memberships', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Memberships', MS_TEXT_DOMAIN ),
 			'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
 			'show_ui' => false,
 			'show_in_menu' => false,
@@ -1094,7 +1094,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Get protected content membership.
+	 * Get Membership2 membership.
 	 *
 	 * Create a new membership if membership does not exist.
 	 *
@@ -1103,7 +1103,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @param  string $type The membership to load [protected_content|role]
 	 * @param  book $create_missing If set to false then missing special
 	 *           memberships are not created.
-	 * @return MS_Model_Membership The protected content.
+	 * @return MS_Model_Membership The Membership2.
 	 */
 	private static function _get_system_membership( $type, $create_missing = true ) {
 		static $Special_Membership = array();
@@ -1117,7 +1117,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			/*
 			 * We are using a normal SQL query instead of using the WP_Query object
 			 * here, because the WP_Query object does some strange things sometimes:
-			 * In some cases new Protected Content memberships were created when a
+			 * In some cases new Membership2 memberships were created when a
 			 * guest accessed the page.
 			 *
 			 * By using a manual query we are very certain that only one
@@ -1144,45 +1144,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 			if ( ! empty( $base ) ) {
 				$membership = MS_Factory::load( 'MS_Model_Membership', $base->ID );
-
-				// ---------- DB-correction part.
-				// If more than one base memberships were found we fix the issue here!
-				// This could happen in versions 1.0.0 - 1.0.4
-				if ( 'protected_content' == $type && count( $item ) ) {
-					// Change the excess base-memberships into normal memberships
-					foreach ( $item as $membership ) {
-						update_post_meta( $membership->ID, 'type', self::TYPE_STANDARD );
-						wp_update_post(
-							array(
-								'ID' => $membership->ID,
-								'post_title' => __( '(Invalid membership found)', MS_TEXT_DOMAIN ),
-							)
-						);
-					}
-
-					if ( MS_Model_Member::is_admin_user() ) {
-						// Display a notification about the DB changes to Admin users only.
-						lib2()->ui->admin_message(
-							sprintf(
-								__(
-									'<b>Please check your Protected Content settings</b><br />' .
-									'We found and fixed invalid content in your Database. ' .
-									'However, plugin settings might have changed due to this change.<br />' .
-									'You can review and delete the invalid content in the ' .
-									'<a href="admin.php?page=%s">Memberships section</a>.',
-									MS_TEXT_DOMAIN
-								),
-								MS_Controller_Plugin::MENU_SLUG
-							)
-						);
-					}
-				}
-				// ---------- End of DB-correction part.
-
 			} else if ( $create_missing ) {
 				$names = self::get_types();
 
-				$description = __( 'Protected Content core membership', MS_TEXT_DOMAIN );
+				$description = __( 'Membership2 Core Membership', MS_TEXT_DOMAIN );
 				$membership = MS_Factory::create( 'MS_Model_Membership' );
 				$membership->name = $names[$type];
 				$membership->title = $names[$type];
@@ -1195,7 +1160,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					$membership->id
 				);
 
-				// It is important! The Protected Content membership must be public
+				// It is important! The Membership2 membership must be public
 				// so that the membership options are available for guest users.
 				wp_publish_post( $membership->id );
 			}
@@ -1211,7 +1176,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Get protected content membership.
+	 * Get Membership2 membership.
 	 *
 	 * Create a new membership if membership does not exist.
 	 *
@@ -1220,24 +1185,24 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return MS_Model_Membership The base membership.
 	 */
 	public static function get_base() {
-		static $Protected_content = null;
+		static $Base_Membership = null;
 
-		if ( null === $Protected_content ) {
-			$Protected_content = self::_get_system_membership(
+		if ( null === $Base_Membership ) {
+			$Base_Membership = self::_get_system_membership(
 				self::TYPE_BASE
 			);
 
-			foreach ( $Protected_content->rules as $rule_type => $rule ) {
-				$Protected_content->rules[$rule_type]->is_base_rule = true;
+			foreach ( $Base_Membership->rules as $rule_type => $rule ) {
+				$Base_Membership->rules[$rule_type]->is_base_rule = true;
 			}
 
-			$Protected_content = apply_filters(
+			$Base_Membership = apply_filters(
 				'ms_model_membership_get_base',
-				$Protected_content
+				$Base_Membership
 			);
 		}
 
-		return $Protected_content;
+		return $Base_Membership;
 	}
 
 	/**
@@ -1305,14 +1270,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Merge protected content rules.
+	 * Merge Membership2 rules.
 	 *
-	 * Merge every rule model with protected content/visitor membership rules.
-	 * This ensure rules are consistent with protected content rules.
+	 * Merge every rule model with Membership2/visitor membership rules.
+	 * This ensure rules are consistent with Membership2 rules.
 	 *
 	 * @since 1.0.0
 	 */
-	public function merge_protected_content_rules() {
+	public function merge_protection_rules() {
 		if ( $this->is_base() ) {
 			// This is the visitor membership, no need to merge anything.
 			return;
@@ -1332,7 +1297,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 
 		$this->rules = apply_filters(
-			'ms_model_membership_merge_protected_content_rules',
+			'ms_model_membership_merge_protection_rules',
 			$this->rules,
 			$this
 		);

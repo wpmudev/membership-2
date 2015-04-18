@@ -1,4 +1,4 @@
-/*! Protected Content - v1.1.14
+/*! Membership2 - v2.0.0
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2015; * Licensed GPLv2+ */
 /*global window:false */
@@ -676,7 +676,7 @@ jQuery( document ).ready( function() {
 /*global ms_inline_editor:false */
 
 
-/* Protected Content Inline Editor */
+/* Membership2 Inline Editor */
 (function() {
 	var quickedit = null,
 		the_item = null,
@@ -1662,7 +1662,7 @@ window.ms_init.view_settings = function init () {
 	}
 
 	function update_toolbar( ev, data ) {
-		// Show/Hide the Toolbar menu for protected content.
+		// Show/Hide the Toolbar menu for Membership2.
 		if ( data.value ) {
 			jQuery( '#wp-admin-bar-ms-unprotected' ).hide();
 			jQuery( '#wp-admin-bar-ms-test-memberships' ).show();

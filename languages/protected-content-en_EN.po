@@ -1,8 +1,8 @@
-# Copyright (C) 2014 
+# Copyright (C) 2014
 # This file is distributed under the same license as the  package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Protected Content\n"
+"Project-Id-Version: Membership2\n"
 "Report-Msgid-Bugs-To: http://premium.wpmudev.org/\n"
 "POT-Creation-Date: 2015-03-26 19:38+0100\n"
 "PO-Revision-Date: 2015-03-26 19:39+0100\n"
@@ -79,16 +79,16 @@ msgid "BuddyPress Integration"
 msgstr "BuddyPress Integration"
 
 #: app/addon/buddypress/class-ms-addon-buddypress.php:103
-msgid "Integrate BuddyPress with Protected Content."
-msgstr "Integrate BuddyPress with Protected Content."
+msgid "Integrate BuddyPress with Membership2."
+msgstr "Integrate BuddyPress with Membership2."
 
 #: app/addon/buddypress/class-ms-addon-buddypress.php:107
 msgid "Protection Rules"
 msgstr "Protection Rules"
 
 #: app/addon/buddypress/class-ms-addon-buddypress.php:108
-msgid "Adds BuddyPress rules in the \"Protected Content\" page."
-msgstr "Adds BuddyPress rules in the \"Protected Content\" page."
+msgid "Adds BuddyPress rules in the \"Membership2\" page."
+msgstr "Adds BuddyPress rules in the \"Membership2\" page."
 
 #: app/addon/buddypress/class-ms-addon-buddypress.php:112
 msgid "Registration page"
@@ -97,17 +97,17 @@ msgstr "Registration page"
 #: app/addon/buddypress/class-ms-addon-buddypress.php:114
 msgid ""
 "The BuddyPress registration page will be used instead of the default "
-"Protected Content registration page."
+"Membership2 registration page."
 msgstr ""
 "The BuddyPress registration page will be used instead of the default "
-"Protected Content registration page."
+"Membership2 registration page."
 
 #: app/addon/buddypress/class-ms-addon-buddypress.php:116
 msgid ""
-"New users are automatically activated by Protected Content and no "
+"New users are automatically activated by Membership2 and no "
 "confirmation email is sent to the user!"
 msgstr ""
-"New users are automatically activated by Protected Content and no "
+"New users are automatically activated by Membership2 and no "
 "confirmation email is sent to the user!"
 
 #: app/addon/buddypress/class-ms-addon-buddypress.php:124
@@ -287,8 +287,8 @@ msgid "No expire"
 msgstr "No expire"
 
 #: app/addon/coupon/model/class-ms-addon-coupon-model.php:187
-msgid "Protected Content Coupons"
-msgstr "Protected Content Coupons"
+msgid "Membership2 Coupons"
+msgstr "Membership2 Coupons"
 
 #: app/addon/coupon/model/class-ms-addon-coupon-model.php:381
 msgid "Coupon code not found."
@@ -1641,8 +1641,8 @@ msgstr ""
 "your current page contents."
 
 #: app/controller/class-ms-controller-pages.php:174
-msgid "Protected Content Page"
-msgstr "Protected Content Page"
+msgid "Membership2 Page"
+msgstr "Membership2 Page"
 
 #: app/controller/class-ms-controller-plugin.php:170
 #: app/view/class-ms-view-help.php:110
@@ -1662,8 +1662,8 @@ msgstr "Select Content to Protect"
 #: app/controller/class-ms-controller-plugin.php:194
 #: app/controller/class-ms-controller-plugin.php:222
 #: app/model/class-ms-model-pages.php:140 app/view/class-ms-view-help.php:124
-msgid "Protected Content"
-msgstr "Protected Content"
+msgid "Membership2"
+msgstr "Membership2"
 
 #: app/controller/class-ms-controller-plugin.php:228
 #: app/controller/class-ms-controller-plugin.php:229
@@ -2435,8 +2435,8 @@ msgid "Members bulk updated."
 msgstr "Members bulk updated."
 
 #: app/helper/class-ms-helper-member.php:46
-msgid "Users added to Protected Content member list."
-msgstr "Users added to Protected Content member list."
+msgid "Users added to Membership2 member list."
+msgstr "Users added to Membership2 member list."
 
 #: app/helper/class-ms-helper-member.php:47
 #: app/helper/class-ms-helper-membership.php:55
@@ -2992,11 +2992,11 @@ msgstr "Protection method"
 
 #: app/model/class-ms-model-addon.php:468
 msgid ""
-"You can change the way that Protected Content changes the default URL to "
+"You can change the way that Membership2 changes the default URL to "
 "your WordPress media library files.<br>This is done for increased protection "
 "by hiding the real filename and path."
 msgstr ""
-"You can change the way that Protected Content changes the default URL to "
+"You can change the way that Membership2 changes the default URL to "
 "your WordPress media library files.<br>This is done for increased protection "
 "by hiding the real filename and path."
 
@@ -3006,12 +3006,12 @@ msgstr "Protect Individual Media files"
 
 #: app/model/class-ms-model-addon.php:481
 msgid ""
-"Enable this to display a new tab in \"Protected Content\" where you can "
+"Enable this to display a new tab in \"Membership2\" where you can "
 "manually modify access to each media library item.<br>Default: When this "
 "option is disabled then the parent-post controls the access to the media "
 "file."
 msgstr ""
-"Enable this to display a new tab in \"Protected Content\" where you can "
+"Enable this to display a new tab in \"Membership2\" where you can "
 "manually modify access to each media library item.<br>Default: When this "
 "option is disabled then the parent-post controls the access to the media "
 "file."
@@ -3121,8 +3121,8 @@ msgstr ""
 "roles."
 
 #: app/model/class-ms-model-communication.php:223
-msgid "Protected Content Email Templates"
-msgstr "Protected Content Email Templates"
+msgid "Membership2 Email Templates"
+msgstr "Membership2 Email Templates"
 
 #: app/model/class-ms-model-communication.php:240
 #: app/view/settings/class-ms-view-settings-import.php:106
@@ -3258,8 +3258,8 @@ msgid "%s day%s"
 msgstr "%s day%s"
 
 #: app/model/class-ms-model-event.php:145
-msgid "Protected Content Events"
-msgstr "Protected Content Events"
+msgid "Membership2 Events"
+msgstr "Membership2 Events"
 
 #: app/model/class-ms-model-event.php:174
 msgid "Has registered."
@@ -3385,8 +3385,8 @@ msgid "Did not import the base membership %2$s for <strong>%1$s</strong>"
 msgstr "Did not import the base membership %2$s for <strong>%1$s</strong>"
 
 #: app/model/class-ms-model-invoice.php:272
-msgid "Protected Content Invoices"
-msgstr "Protected Content Invoices"
+msgid "Membership2 Invoices"
+msgstr "Membership2 Invoices"
 
 #: app/model/class-ms-model-invoice.php:273
 msgid "Member Invoices"
@@ -3471,8 +3471,8 @@ msgid "That email address is already taken, sorry."
 msgstr "That email address is already taken, sorry."
 
 #: app/model/class-ms-model-membership.php:372
-msgid "Protected Content Memberships"
-msgstr "Protected Content Memberships"
+msgid "Membership2 Memberships"
+msgstr "Membership2 Memberships"
 
 #: app/model/class-ms-model-membership.php:373
 msgid "Memberships user can join to."
@@ -3579,19 +3579,19 @@ msgstr "(Invalid membership found)"
 #: app/model/class-ms-model-membership.php:1168
 #, php-format
 msgid ""
-"<b>Please check your Protected Content settings</b><br />We found and fixed "
+"<b>Please check your Membership2 settings</b><br />We found and fixed "
 "invalid content in your Database. However, plugin settings might have "
 "changed due to this change.<br />You can review and delete the invalid "
 "content in the <a href=\"admin.php?page=%s\">Memberships section</a>."
 msgstr ""
-"<b>Please check your Protected Content settings</b><br />We found and fixed "
+"<b>Please check your Membership2 settings</b><br />We found and fixed "
 "invalid content in your Database. However, plugin settings might have "
 "changed due to this change.<br />You can review and delete the invalid "
 "content in the <a href=\"admin.php?page=%s\">Memberships section</a>."
 
 #: app/model/class-ms-model-membership.php:1185
-msgid "Protected Content core membership"
-msgstr "Protected Content core membership"
+msgid "Membership2 core membership"
+msgstr "Membership2 core membership"
 
 #: app/model/class-ms-model-membership.php:1509
 #, php-format
@@ -3716,8 +3716,8 @@ msgid "Every 30 Mins"
 msgstr "Every 30 Mins"
 
 #: app/model/class-ms-model-relationship.php:191
-msgid "Protected Content Subscriptions"
-msgstr "Protected Content Subscriptions"
+msgid "Membership2 Subscriptions"
+msgstr "Membership2 Subscriptions"
 
 #: app/model/class-ms-model-relationship.php:226
 msgid "Trial"
@@ -4001,13 +4001,13 @@ msgstr "ZAR - South African Rand"
 
 #: app/model/class-ms-model-upgrade.php:97
 #, php-format
-msgid "<strong>Protected Content</strong> is set up for version %1$s!"
-msgstr "<strong>Protected Content</strong> is set up for version %1$s!"
+msgid "<strong>Membership2</strong> is set up for version %1$s!"
+msgstr "<strong>Membership2</strong> is set up for version %1$s!"
 
 #: app/model/class-ms-model-upgrade.php:102
 #, php-format
-msgid "<strong>Protected Content</strong> was updated to version %1$s!"
-msgstr "<strong>Protected Content</strong> was updated to version %1$s!"
+msgid "<strong>Membership2</strong> was updated to version %1$s!"
+msgstr "<strong>Membership2</strong> was updated to version %1$s!"
 
 #: app/model/class-ms-model-upgrade.php:115
 #, php-format
@@ -4015,13 +4015,13 @@ msgid "New Membership pages created: \"%1$s\"."
 msgstr "New Membership pages created: \"%1$s\"."
 
 #: app/model/class-ms-model-upgrade.php:867
-msgid "Your Protected Content data was reset!"
-msgstr "Your Protected Content data was reset!"
+msgid "Your Membership2 data was reset!"
+msgstr "Your Membership2 data was reset!"
 
 #: app/model/class-ms-model-upgrade.php:894
 #, php-format
-msgid "The Protected Content Snapshot \"%s\" was restored!"
-msgstr "The Protected Content Snapshot \"%s\" was restored!"
+msgid "The Membership2 Snapshot \"%s\" was restored!"
+msgstr "The Membership2 Snapshot \"%s\" was restored!"
 
 #: app/model/class-ms-model-upgrade.php:901
 msgid "To prevent auto-updating the DB again we stop here!"
@@ -4430,10 +4430,10 @@ msgstr ""
 #: app/model/import/class-ms-model-import-membership.php:183
 msgid ""
 "Please note that we cannot import recurring 2Checkout subscriptions to "
-"Protected Content!"
+"Membership2!"
 msgstr ""
 "Please note that we cannot import recurring 2Checkout subscriptions to "
-"Protected Content!"
+"Membership2!"
 
 #: app/rule/adminside/class-ms-rule-adminside-listtable.php:36
 msgid "Admin Page"
@@ -5118,8 +5118,8 @@ msgid "Overview"
 msgstr "Overview"
 
 #: app/view/class-ms-view-help.php:99
-msgid "Thank you for using Protected Content!"
-msgstr "Thank you for using Protected Content!"
+msgid "Thank you for using Membership2!"
+msgstr "Thank you for using Membership2!"
 
 #: app/view/class-ms-view-help.php:103
 msgid "Plugin menu"
@@ -5128,11 +5128,11 @@ msgstr "Plugin menu"
 #: app/view/class-ms-view-help.php:117
 msgid ""
 "Create and manage Membership-Plans that users can sign up for. Here you can "
-"grant access to previously protected content (<em>see \"Protected Content\" "
+"grant access to previously Membership2 (<em>see \"Membership2\" "
 "below</em>)"
 msgstr ""
 "Create and manage Membership-Plans that users can sign up for. Here you can "
-"grant access to previously protected content (<em>see \"Protected Content\" "
+"grant access to previously Membership2 (<em>see \"Membership2\" "
 "below</em>)"
 
 #: app/view/class-ms-view-help.php:121
@@ -5607,10 +5607,10 @@ msgstr "your Account"
 #: app/view/class-ms-view-help.php:1063
 msgid ""
 "Displays the protection message on pages that the user cannot access. This "
-"shortcode should only be used on the Membership Page \"Protected Content\""
+"shortcode should only be used on the Membership Page \"Membership2\""
 msgstr ""
 "Displays the protection message on pages that the user cannot access. This "
-"shortcode should only be used on the Membership Page \"Protected Content\""
+"shortcode should only be used on the Membership Page \"Membership2\""
 
 #: app/view/class-ms-view-help.php:1067
 msgid "no arguments"
@@ -5735,11 +5735,11 @@ msgstr "Reset"
 #: app/view/class-ms-view-help.php:1328
 msgid ""
 "Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is "
-"displayed that can be used to reset all Protected Content settings. Use this "
+"displayed that can be used to reset all Membership2 settings. Use this "
 "to clean all traces after testing the plugin."
 msgstr ""
 "Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is "
-"displayed that can be used to reset all Protected Content settings. Use this "
+"displayed that can be used to reset all Membership2 settings. Use this "
 "to clean all traces after testing the plugin."
 
 #: app/view/class-ms-view-help.php:1331
@@ -5815,12 +5815,12 @@ msgstr "Welcome!"
 
 #: app/view/class-ms-view-welcome.php:71
 msgid ""
-"Hello and welcome to <strong>Protected Content</strong> by WPMU DEV. Please "
+"Hello and welcome to <strong>Membership2</strong> by WPMU DEV. Please "
 "follow this simple set-up<br />wizard to help us determine the settings that "
 "are most relevant to your needs. Don't worry, you<br />can always change "
 "these settings in the future."
 msgstr ""
-"Hello and welcome to <strong>Protected Content</strong> by WPMU DEV. Please "
+"Hello and welcome to <strong>Membership2</strong> by WPMU DEV. Please "
 "follow this simple set-up<br />wizard to help us determine the settings that "
 "are most relevant to your needs. Don't worry, you<br />can always change "
 "these settings in the future."
@@ -6193,8 +6193,8 @@ msgstr ""
 "strong> to visitors, and non-members."
 
 #: app/view/membership/class-ms-view-membership-protectedcontent.php:34
-msgid "Set-up Protected Content"
-msgstr "Set-up Protected Content"
+msgid "Set-up Membership2"
+msgstr "Set-up Membership2"
 
 #: app/view/membership/edit/class-ms-view-membership-edit-dialog.php:34
 #, php-format
@@ -6324,10 +6324,10 @@ msgstr "Available Content"
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:296
 #, php-format
 msgid ""
-"This is Protected Content which <span class=\"ms-bold\">%s</span> members "
+"This is Membership2 which <span class=\"ms-bold\">%s</span> members "
 "has access to."
 msgstr ""
-"This is Protected Content which <span class=\"ms-bold\">%s</span> members "
+"This is Membership2 which <span class=\"ms-bold\">%s</span> members "
 "has access to."
 
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:407
@@ -6535,8 +6535,8 @@ msgid "Export data"
 msgstr "Export data"
 
 #: app/view/settings/page/class-ms-view-settings-page-messages.php:15
-msgid "Message displayed when not having access to a protected content."
-msgstr "Message displayed when not having access to a protected content."
+msgid "Message displayed when not having access to a Membership2."
+msgstr "Message displayed when not having access to a Membership2."
 
 #: app/view/settings/page/class-ms-view-settings-page-messages.php:36
 msgid ""
@@ -6546,10 +6546,10 @@ msgstr ""
 
 #: app/view/settings/page/class-ms-view-settings-page-messages.php:57
 msgid ""
-"Message displayed when not having access to a protected content under more "
+"Message displayed when not having access to a Membership2 under more "
 "tag."
 msgstr ""
-"Message displayed when not having access to a protected content under more "
+"Message displayed when not having access to a Membership2 under more "
 "tag."
 
 #: app/view/settings/page/class-ms-view-settings-page-messages.php:91
@@ -6595,10 +6595,10 @@ msgstr "Invoice sender name"
 #: app/view/settings/page/class-ms-view-settings-page-setup.php:75
 #, php-format
 msgid ""
-"You can now go to %sProtected Content%s to set up access levels for this "
+"You can now go to %Membership2%s to set up access levels for this "
 "Membership."
 msgstr ""
-"You can now go to %sProtected Content%s to set up access levels for this "
+"You can now go to %Membership2%s to set up access levels for this "
 "Membership."
 
 #: app/view/settings/page/class-ms-view-settings-page-setup.php:100
@@ -6617,12 +6617,12 @@ msgid "Appearance"
 msgstr "Appearance"
 
 #: app/view/settings/page/class-ms-view-settings-page-setup.php:119
-msgid "Protected Content Site Pages"
-msgstr "Protected Content Site Pages"
+msgid "Membership2 Site Pages"
+msgstr "Membership2 Site Pages"
 
 #: app/view/settings/page/class-ms-view-settings-page-setup.php:122
-msgid "Set Up Protected Content Pages that will be displayed on your website."
-msgstr "Set Up Protected Content Pages that will be displayed on your website."
+msgid "Set Up Membership2 Pages that will be displayed on your website."
+msgstr "Set Up Membership2 Pages that will be displayed on your website."
 
 #: app/view/settings/page/class-ms-view-settings-page-setup.php:152
 msgid "View Page"
@@ -6925,9 +6925,9 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgstr "Membership Tiers"
 
 #~ msgid ""
-#~ "You can add / remove and modify your Protected Content at anytime here"
+#~ "You can add / remove and modify your Membership2 at anytime here"
 #~ msgstr ""
-#~ "You can add / remove and modify your Protected Content at anytime here"
+#~ "You can add / remove and modify your Membership2 at anytime here"
 
 #~ msgid "Add Page URLs to the group in case you want to test it against"
 #~ msgstr "Add Page URLs to the group in case you want to test it against"
@@ -7023,8 +7023,8 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgid "Access Restricted"
 #~ msgstr "Access Restricted"
 
-#~ msgid "Protected content"
-#~ msgstr "Protected content"
+#~ msgid "Membership2"
+#~ msgstr "Membership2"
 
 #~ msgid "Not protected"
 #~ msgstr "Not protected"
@@ -7127,14 +7127,14 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgid "Each %s"
 #~ msgstr "Each %s"
 
-#~ msgid "Restrict access to Protected Content"
-#~ msgstr "Restrict access to Protected Content"
+#~ msgid "Restrict access to Membership2"
+#~ msgstr "Restrict access to Membership2"
 
 #~ msgid "Downgrade to %s"
 #~ msgstr "Downgrade to %s"
 
-#~ msgid "Protected content, and also a default membership for visitors"
-#~ msgstr "Protected content, and also a default membership for visitors"
+#~ msgid "Membership2, and also a default membership for visitors"
+#~ msgstr "Membership2, and also a default membership for visitors"
 
 #~ msgid "%s: Dripped Content"
 #~ msgstr "%s: Dripped Content"
@@ -7332,10 +7332,10 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgstr "Accessible content"
 
 #~ msgid ""
-#~ "Setup which Protected Content is available to <span class=\"ms-bold\">%s</"
+#~ "Setup which Membership2 is available to <span class=\"ms-bold\">%s</"
 #~ "span> members."
 #~ msgstr ""
-#~ "Setup which Protected Content is available to <span class=\"ms-bold\">%s</"
+#~ "Setup which Membership2 is available to <span class=\"ms-bold\">%s</"
 #~ "span> members."
 
 #~ msgid "You do not have any protection rules set."
@@ -7455,8 +7455,8 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgid "Edit URL Group Restrictions"
 #~ msgstr "Edit URL Group Restrictions"
 
-#~ msgid "Manage Protected Content"
-#~ msgstr "Manage Protected Content"
+#~ msgid "Manage Membership2"
+#~ msgstr "Manage Membership2"
 
 #~ msgid "Choose a membership type suitable to your project"
 #~ msgstr "Choose a membership type suitable to your project"
@@ -7469,13 +7469,13 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 
 #~ msgid ""
 #~ "This is the most basic membership that creates a single membership level. "
-#~ "Members will have access to all protected content.<p class=\"ms-italic"
-#~ "\">eg. Visitors don't see protected content, members access all protected "
+#~ "Members will have access to all Membership2.<p class=\"ms-italic"
+#~ "\">eg. Visitors don't see Membership2, members access all protected "
 #~ "content."
 #~ msgstr ""
 #~ "This is the most basic membership that creates a single membership level. "
-#~ "Members will have access to all protected content.<p class=\"ms-italic"
-#~ "\">eg. Visitors don't see protected content, members access all protected "
+#~ "Members will have access to all Membership2.<p class=\"ms-italic"
+#~ "\">eg. Visitors don't see Membership2, members access all protected "
 #~ "content."
 
 #~ msgid "I want to have different content available to different members."
@@ -7594,8 +7594,8 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgid "Add Content Type"
 #~ msgstr "Add Content Type"
 
-#~ msgid "Setup which Protected Content will become available to %s members."
-#~ msgstr "Setup which Protected Content will become available to %s members."
+#~ msgid "Setup which Membership2 will become available to %s members."
+#~ msgstr "Setup which Membership2 will become available to %s members."
 
 #~ msgid "Give access to protected Pages to %s members. "
 #~ msgstr "Give access to protected Pages to %s members. "
@@ -7633,8 +7633,8 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgid "Offer Free Trial lasting"
 #~ msgstr "Offer Free Trial lasting"
 
-#~ msgid "Hello and welcome to Protected Content by WPMU DEV."
-#~ msgstr "Hello and welcome to Protected Content by WPMU DEV."
+#~ msgid "Hello and welcome to Membership2 by WPMU DEV."
+#~ msgstr "Hello and welcome to Membership2 by WPMU DEV."
 
 #~ msgid ""
 #~ "Let's begin by setting up the content you want to protect. Please select "
@@ -7647,10 +7647,10 @@ msgstr "Arguments to pass to the %slogin shortcode%s"
 #~ msgstr "Choose what content of your site is protected."
 
 #~ msgid ""
-#~ "Unprotected Content is available for everyone while Protected Content can "
+#~ "Unprotected Content is available for everyone while Membership2 can "
 #~ "be assigned to a Membership."
 #~ msgstr ""
-#~ "Unprotected Content is available for everyone while Protected Content can "
+#~ "Unprotected Content is available for everyone while Membership2 can "
 #~ "be assigned to a Membership."
 
 #~ msgid "&laquo; Back"

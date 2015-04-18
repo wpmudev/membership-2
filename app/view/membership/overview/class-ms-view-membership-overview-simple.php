@@ -293,7 +293,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 					<h3><i class="ms-img-unlock"></i> <?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></h3>
 					<div class="ms-description ms-indented-description">
 					<?php printf(
-						__( 'This is Protected Content which <span class="ms-bold">%s</span> members has access to.', MS_TEXT_DOMAIN ),
+						__( 'This is Membership2 which <span class="ms-bold">%s</span> members has access to.', MS_TEXT_DOMAIN ),
 						esc_html( $this->data['membership']->name )
 					); ?>
 					</div>
@@ -392,7 +392,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 					<?php
 					$edit_url = add_query_arg(
 						array(
-							'page' => 'protected-content-setup',
+							'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
 							'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
 							'tab' => $rule->rule_type,
 							'membership_id' => $membership_id,

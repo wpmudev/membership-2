@@ -188,7 +188,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Protected Content Subscriptions', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Subscriptions', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(
@@ -669,7 +669,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Save model.
 	 *
 	 * Only saves if is not admin user and not a visitor.
-	 * Don't save visitor memberships/protected content (auto assigned).
+	 * Don't save automatically assigned visitor/system memberships.
 	 *
 	 * @since 1.0.0
 	 */
@@ -1731,7 +1731,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		/**
 		 * Use `define( 'MS_LOCK_SUBSCRIPTIONS', true );` in wp-config.php to prevent
-		 * Protected Content from sending *any* emails to users.
+		 * Membership2 from sending *any* emails to users.
 		 * Also any currently enqueued message is removed from the queue
 		 *
 		 * @since 1.1.0.5

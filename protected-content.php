@@ -1,14 +1,14 @@
 <?php
 /**
-Plugin Name: Protected Content
-Plugin URI:  https://premium.wpmudev.org/project/protected-content/
-Version:     1.1.1.4
+Plugin Name: Membership2
+Plugin URI:  https://premium.wpmudev.org/project/membership/
+Version:     2.0.0.0
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author:      WPMU DEV
 Author URI:  http://premium.wpmudev.org/
 WDP ID:      928907
 License:     GNU General Public License (Version 2 - GPLv2)
-Text Domain: protected-content
+Text Domain: membership2
 */
 
 /**
@@ -40,14 +40,14 @@ Text Domain: protected-content
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_VERSION', '1.1.1.4' );
+define( 'MS_PLUGIN_VERSION', '2.0.0.0' );
 
 /**
  * Plugin text domain.
  *
  * @since 1.0.0
  */
-define( 'MS_TEXT_DOMAIN', 'protected-content' );
+define( 'MS_TEXT_DOMAIN', 'membership2' );
 
 /**
  * Plugin name dir constant.
@@ -62,15 +62,15 @@ define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
 global $wpmudev_notices;
 $wpmudev_notices[] = array(
 	'id' => 928907,
-	'name' => 'Protected Content',
+	'name' => 'Membership2',
 	'screens' => array(
-		'toplevel_page_protected-content',
-		'protect-content_page_protected-content-members',
-		'protect-content_page_protected-content-setup',
-		'protect-content_page_protected-content-billing',
-		'protect-content_page_protected-content-coupons',
-		'protect-content_page_protected-content-addon',
-		'protect-content_page_protected-content-settings',
+		'toplevel_page_membership2',
+		'membership2_page_membership2-members',
+		'membership2_page_membership2-setup',
+		'membership2_page_membership2-billing',
+		'membership2_page_membership2-coupons',
+		'membership2_page_membership2-addon',
+		'membership2_page_membership2-settings',
 	)
 );
 
@@ -467,7 +467,7 @@ class MS_Plugin {
 		$refresh = lib2()->session->get( 'refresh_url_rules' );
 		if ( $refresh ) { return; }
 
-		// Update the Protected Content database entries after activation.
+		// Update the Membership2 database entries after activation.
 		MS_Model_Upgrade::update( true );
 
 		do_action( 'ms_plugin_activation ', $this );

@@ -96,7 +96,7 @@ class MS_View_Help extends MS_View {
 			<?php _ex( 'Overview', 'help', MS_TEXT_DOMAIN ); ?>
 		</h2>
 		<p>
-			<?php _ex( 'Thank you for using Protected Content!', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php _ex( 'Thank you for using Membership2!', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
 		<?php MS_Helper_Html::html_separator(); ?>
 		<h2>
@@ -114,14 +114,14 @@ class MS_View_Help extends MS_View {
 			</tr>
 			<tr class="alternate">
 				<td><span><?php _e( 'Memberships', MS_TEXT_DOMAIN ); ?></span></td>
-				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for. Here you can grant access to previously protected content (<em>see "Protected Content" below</em>)', 'help', MS_TEXT_DOMAIN ); ?></td>
+				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for. Here you can grant access to previously Membership2 (<em>see "Membership2" below</em>)', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
 				<td><span><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Lists all your WordPress users and allows you to manage their Memberships', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr class="alternate">
-				<td><span><?php _e( 'Protected Content', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><span><?php _e( 'Membership2', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Set the global protection options, i.e. which pages are protected', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
@@ -1060,7 +1060,7 @@ class MS_View_Help extends MS_View {
 		<div id="ms-protection-message" class="ms-help-box">
 			<h3><code>[ms-protection-message]</code></h3>
 
-			<?php _ex( 'Displays the protection message on pages that the user cannot access. This shortcode should only be used on the Membership Page "Protected Content"', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php _ex( 'Displays the protection message on pages that the user cannot access. This shortcode should only be used on the Membership Page "Membership2"', 'help', MS_TEXT_DOMAIN ); ?>
 			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
@@ -1325,7 +1325,7 @@ class MS_View_Help extends MS_View {
 		<h2><?php _ex( 'Advanced Settings', 'help', MS_TEXT_DOMAIN ); ?></h2>
 		<p>
 			<strong><?php _ex( 'Reset', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
-			<?php _ex( 'Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is displayed that can be used to reset all Protected Content settings. Use this to clean all traces after testing the plugin.', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php _ex( 'Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is displayed that can be used to reset all Membership2 settings. Use this to clean all traces after testing the plugin.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
 		<p>
 			<strong><?php _ex( 'Restore', 'help', MS_TEXT_DOMAIN ); ?></strong><br />

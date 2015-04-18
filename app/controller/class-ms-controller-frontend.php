@@ -60,7 +60,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	const ACTION_VIEW_RESETPASS = 'rp';
 
 	/**
-	 * Whether Protected Content will handle the registration process or not.
+	 * Whether Membership2 will handle the registration process or not.
 	 * This should not be changed directly but via filter ms_frontend_handle_registration
 	 *
 	 * @since 1.1.1.3
@@ -119,7 +119,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			/**
 			 * This allows WordPress to provide the default register form.
 			 *
-			 * Set the filter response to FALSE to stop Protected Content from
+			 * Set the filter response to FALSE to stop Membership2 from
 			 * handling the registration process. WordPress or other plugins can
 			 * register users in that case.
 			 *
@@ -442,7 +442,7 @@ class MS_Controller_Frontend extends MS_Controller {
 
 	/**
 	 * Returns the URL to user registration page.
-	 * If Protected Content handles registration we can provide the registration
+	 * If Membership2 handles registration we can provide the registration
 	 * step via function param $step.
 	 *
 	 * @since  1.1.1.3

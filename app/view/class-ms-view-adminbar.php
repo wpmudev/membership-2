@@ -172,7 +172,7 @@ class MS_View_Adminbar extends MS_View {
 	 * @return array
 	 */
 	public function prepare_fields() {
-		// The ID of the main protected-content.
+		// The ID of the main system membership.
 		$base_id = MS_Model_Membership::get_base()->id;
 		$sorted_memberships = array();
 		$memberships = MS_Model_Membership::get_memberships(

@@ -771,7 +771,7 @@ class MS_Rule extends MS_Model {
 	}
 
 	/**
-	 * Count item protected content summary.
+	 * Count item Membership2 summary.
 	 *
 	 * @since 1.0.0
 	 * @param $args The query post args
@@ -779,7 +779,7 @@ class MS_Rule extends MS_Model {
 	 * @return array {
 	 *     @type int $total The total content count.
 	 *     @type int $accessible The has access content count.
-	 *     @type int $restricted The protected content count.
+	 *     @type int $restricted The Membership2 count.
 	 * }
 	 */
 	public function count_item_access( $args = null ) {
@@ -1116,7 +1116,7 @@ class MS_Rule extends MS_Model {
 				break;
 
 			default:
-				// If not visitor membership, just show all protected content
+				// If not visitor membership, just show all Membership2
 				if ( ! $child_rule->is_base_rule ) {
 					$include = $base_items;
 				}
