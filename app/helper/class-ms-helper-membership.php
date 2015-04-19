@@ -136,7 +136,7 @@ class MS_Helper_Membership extends MS_Helper {
 			'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
 			__( 'Congratulations!', MS_TEXT_DOMAIN ),
 			sprintf(
-				__( 'You have successfully set up your <b>%1%s</b> Membership.', MS_TEXT_DOMAIN ),
+				__( 'You have successfully set up your <b>%1$s</b> Membership.', MS_TEXT_DOMAIN ),
 				$membership->name
 			)
 		);
