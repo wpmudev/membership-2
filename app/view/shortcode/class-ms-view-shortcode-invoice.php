@@ -21,7 +21,6 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		}
 
 		$invoice = $this->data['invoice'];
-		$trial_invoice = $this->data['trial_invoice'];
 		$member = $this->data['member'];
 		$ms_relationship = $this->data['ms_relationship'];
 		$membership = $this->data['membership'];
@@ -90,28 +89,22 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_pro_rate = apply_filters( 'ms_invoice_pro_rate', $inv_pro_rate, $invoice );
 		$inv_total = apply_filters( 'ms_invoice_total', $inv_total, $invoice );
 
-		if ( ! empty( $trial_invoice ) ) {
-			$inv_details = apply_filters( 'ms_invoice_description', $trial_invoice->description, $trial_invoice, $invoice );
-			$inv_due_date = apply_filters(
-				'ms_invoice_due_date',
-				MS_Helper_Period::format_date( $trial_invoice->due_date ),
-				$trial_invoice,
-				$invoice
-			);
+		$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
+		$inv_due_date = apply_filters(
+			'ms_invoice_due_date',
+			MS_Helper_Period::format_date( $invoice->due_date ),
+			$invoice,
+			null
+		);
+
+		if ( $invoice->uses_trial ) {
 			$trial_date = apply_filters(
 				'ms_invoice_trial_date',
-				MS_Helper_Period::format_date( $invoice->due_date ),
+				MS_Helper_Period::format_date( $invoice->trial_ends ),
 				$trial_invoice,
 				$invoice
 			);
 		} else {
-			$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
-			$inv_due_date = apply_filters(
-				'ms_invoice_due_date',
-				MS_Helper_Period::format_date( $invoice->due_date ),
-				$invoice,
-				null
-			);
 			$trial_date = '';
 		}
 
@@ -213,7 +206,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						</tr>
 					<?php endif; ?>
 
-					<?php if ( ! empty( $trial_invoice ) ) : ?>
+					<?php if ( $invoice->uses_trial ) : ?>
 					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
 						<th><?php _e( 'Payment on', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-date"><?php echo $trial_date; ?></td>

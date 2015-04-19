@@ -837,38 +837,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( ! empty( $data['post_id'] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $data['post_id'] );
-			$trial_invoice = null;
-
-			if ( $invoice->trial_period ) {
-				// This is the trial-period invoice. Use thethe first real invoice instead.
-				$paid_args = array(
-					'meta_query' => array(
-						'relation' => 'AND',
-						array(
-							'key' => 'ms_relationship_id',
-							'value' => $invoice->ms_relationship_id,
-							'compare' => '=',
-						),
-						array(
-							'key' => 'trial_period',
-							'value' => '',
-							'compare' => '=',
-						),
-						array(
-							'key' => 'invoice_number',
-							'value' => $invoice->invoice_number + 1,
-							'compare' => '=',
-						)
-					)
-				);
-				$paid_invoice = MS_Model_Invoice::get_invoices( $paid_args );
-
-				if ( ! empty( $paid_invoice ) ) {
-					$trial_invoice = $invoice;
-					$invoice = reset( $paid_invoice );
-				}
-			}
-
 			$subscription = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
 
 			$data['invoice'] = $invoice;
@@ -876,38 +844,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$data['ms_relationship'] = $subscription;
 			$data['membership'] = $subscription->get_membership();
 			$data['gateway'] = MS_Model_Gateway::factory( $invoice->gateway_id );
-
-			// Try to find a related trial-period invoice.
-			if ( null === $trial_invoice ) {
-				$trial_args = array(
-					'meta_query' => array(
-						'relation' => 'AND',
-						array(
-							'key' => 'ms_relationship_id',
-							'value' => $invoice->ms_relationship_id,
-							'compare' => '=',
-						),
-						array(
-							'key' => 'trial_period',
-							'value' => '',
-							'compare' => '!=',
-						),
-						array(
-							'key' => 'invoice_number',
-							'value' => $invoice->invoice_number,
-							'compare' => '<',
-							'type' => 'NUMERIC',
-						)
-					)
-				);
-				$trial_invoice = MS_Model_Invoice::get_invoices( $trial_args );
-
-				if ( ! empty( $trial_invoice ) ) {
-					$trial_invoice = reset( $trial_invoice );
-				}
-			}
-
-			$data['trial_invoice'] = $trial_invoice;
 
 			$view = MS_Factory::create( 'MS_View_Shortcode_Invoice' );
 			$view->data = apply_filters(

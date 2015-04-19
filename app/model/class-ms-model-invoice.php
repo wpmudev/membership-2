@@ -70,7 +70,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Used to link 3rd party transaction ID to $this->id
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var string
 	 */
 	protected $external_id;
@@ -81,7 +80,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Gateway used to pay this invoice.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var string
 	 */
 	protected $gateway_id;
@@ -92,7 +90,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Invoice for membership.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var int
 	 */
 	protected $membership_id;
@@ -103,7 +100,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Invoice for this user/member.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var int
 	 */
 	protected $user_id;
@@ -112,7 +108,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Membership Relationship ID.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var int
 	 */
 	protected $ms_relationship_id;
@@ -123,7 +118,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Used coupon ID.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var int
 	 */
 	protected $coupon_id;
@@ -132,7 +126,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Currency of this invoice.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var string
 	 */
 	protected $currency;
@@ -141,7 +134,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Amount value not including discounts.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var float
 	 */
 	protected $amount;
@@ -150,7 +142,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Discount value.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var float
 	 */
 	protected $discount;
@@ -159,7 +150,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Pro rate value.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var float
 	 */
 	protected $pro_rate;
@@ -170,7 +160,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Includes discount, pro-rating.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var float
 	 */
 	protected $total;
@@ -179,7 +168,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Inovoice status.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var string
 	 */
 	protected $status;
@@ -188,16 +176,31 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Invoice for trial period.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var boolean
 	 */
-	protected $trial_period;
+	protected $uses_trial;
+
+	/**
+	 * The trial period price.
+	 *
+	 * @since 1.1.1.4
+	 * @var numeric
+	 */
+	protected $trial_price;
+
+	/**
+	 * This is the last day of the trial period. The next day is paid.
+	 *
+	 * @since 1.1.1.4
+	 * @var date
+	 */
+	protected $trial_ends;
 
 	/**
 	 * Invoice due date.
+	 * When invoice uses_trial is true then this is the first day that is paid.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var string
 	 */
 	protected $due_date;
@@ -206,7 +209,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Invoice notes.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var string
 	 */
 	protected $notes;
@@ -215,7 +217,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Invoice number.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var int
 	 */
 	protected $invoice_number;
@@ -224,7 +225,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Tax rate value.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var float
 	 */
 	protected $tax_rate;
@@ -233,7 +233,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Tax name.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @var string
 	 */
 	protected $tax_name;
@@ -694,21 +693,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$ms_relationship
 		);
 
+		$invoice->amount = $membership->price; // Without taxes!
+
 		// Check for trial period in the first period.
 		if ( $ms_relationship->is_trial_eligible()
 			&& $invoice_number === $ms_relationship->current_invoice_number
 		) {
-			$invoice->amount = $membership->trial_price; // Without taxes!
-			$invoice->trial_period = true;
-		} else {
-			$invoice->amount = $membership->price; // Without taxes!
-			$invoice->trial_period = false;
+			$invoice->trial_price = $membership->trial_price; // Without taxes!
+			$invoice->uses_trial = true;
+			$invoice->trial_ends = $ms_relationship->trial_expire_date;
 		}
-
-		#// Total is calculated discounting coupon and pro-rating.
-		#if ( 0 == $invoice->get_total() ) {
-		#	$invoice->status = self::STATUS_PAID;
-		#}
 
 		$invoice->save();
 
@@ -1061,12 +1055,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$this->price_date = time();
 		$membership = $this->get_membership();
 
-		// Check for trial period in the normal price.
-		if ( $this->trial_period ) {
-			$this->amount = $membership->trial_price; // Without taxes!
-		} else {
-			$this->amount = $membership->price; // Without taxes!
-		}
+		// The invoice always has the real membership price as amount, never
+		// the trial amount.
+		$this->amount = $membership->price; // Without taxes!
 
 		$this->save();
 	}
