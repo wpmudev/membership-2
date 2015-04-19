@@ -52,10 +52,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @see $status property.
 	 * @var string
 	 */
+	// Invoice was created but user did not make any attempt to pay
 	const STATUS_BILLED = 'billed';
+
+	// User confirmed payment and it was successful
 	const STATUS_PAID = 'paid';
-	const STATUS_FAILED = 'failed';
+
+	// User confirmed payment but gateway returned a "pending" notification
 	const STATUS_PENDING = 'pending';
+
+	// User confirmed payment but gateway returned some error (dispute, wrong amount, etc.)
 	const STATUS_DENIED = 'denied';
 
 	/**
@@ -299,7 +305,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
-				self::STATUS_FAILED => __( 'Failed', MS_TEXT_DOMAIN ),
 				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
 			)
 		);
@@ -357,8 +362,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				$args['meta_query']['status'] = array(
 					'key' => 'status',
 					'value' => array(
-						MS_Model_Invoice::STATUS_BILLED,
-						MS_Model_Invoice::STATUS_PENDING,
+						self::STATUS_BILLED,
+						self::STATUS_PENDING,
 					),
 					'compare' => 'IN',
 				);
@@ -700,10 +705,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice->trial_period = false;
 		}
 
-		// Total is calculated discounting coupon and pro-rating.
-		if ( 0 == $invoice->get_total() ) {
-			$invoice->status = self::STATUS_PAID;
-		}
+		#// Total is calculated discounting coupon and pro-rating.
+		#if ( 0 == $invoice->get_total() ) {
+		#	$invoice->status = self::STATUS_PAID;
+		#}
 
 		$invoice->save();
 
@@ -785,6 +790,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	/**
 	 * Registers the payment and marks the invoice as paid.
 	 *
+	 * This should be the only place that sets an invoice status to PAID.
+	 *
 	 * @since  1.1.0
 	 * @param  string $gateway_id The payment gateway.
 	 * @param  string $external_id Payment-ID provided by the gateway
@@ -792,7 +799,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public function pay_it( $gateway_id, $external_id ) {
 		$this->gateway_id = $gateway_id;
 		$this->external_id = $external_id;
-		$this->status = MS_Model_Invoice::STATUS_PAID;
+		$this->status = self::STATUS_PAID;
 		$this->save();
 
 		if ( $this->total > 0 ) {
@@ -810,6 +817,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		 * @since 1.1.0
 		 */
 		do_action( 'ms_invoice_paid', $this );
+	}
+
+	/**
+	 * Returns true if the invoice was paid.
+	 *
+	 * @since  1.1.1.4
+	 * @return bool Payment status.
+	 */
+	public function is_paid() {
+		return $this->status == self::STATUS_PAID;
 	}
 
 	/**
@@ -838,18 +855,17 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			// Free invoices skip the BILLED/PENDING status
 			if ( 0 == $this->total ) {
 				switch ( $this->status ) {
-					case MS_Model_Invoice::STATUS_BILLED:
-					case MS_Model_Invoice::STATUS_PENDING:
-						$this->status = MS_Model_Invoice::STATUS_PAID;
+					case self::STATUS_PENDING:
+						$this->pay_it( MS_Gateway_Free::ID, '' );
 						break;
 				}
 			}
 
 			switch ( $this->status ) {
-				case MS_Model_Invoice::STATUS_BILLED:
+				case self::STATUS_BILLED:
 					break;
 
-				case MS_Model_Invoice::STATUS_PAID:
+				case self::STATUS_PAID:
 					if ( $this->total > 0 ) {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $subscription );
 					}
@@ -888,15 +904,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					$subscription->set_status( MS_Model_Relationship::STATUS_ACTIVE );
 					break;
 
-				case MS_Model_Invoice::STATUS_FAILED:
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-					break;
-
-				case MS_Model_Invoice::STATUS_DENIED:
+				case self::STATUS_DENIED:
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $subscription );
 					break;
 
-				case MS_Model_Invoice::STATUS_PENDING:
+				case self::STATUS_PENDING:
 					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $subscription );
 					break;
 

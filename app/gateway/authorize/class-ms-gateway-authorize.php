@@ -192,7 +192,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this->update_cim_profile( $member );
 		}
 
-		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
 			$this->online_purchase( $invoice, $member );
 		} elseif ( 0 == $invoice->total ) {
@@ -223,7 +223,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$member = $ms_relationship->get_member();
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 
-		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
 			try {
 				$this->online_purchase( $invoice, $member );
@@ -260,7 +260,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		if ( 0 == $invoice->total ) {
-			$invoice->status = MS_Model_Invoice::STATUS_PAID;
+			$invoice->pay_it( MS_Gateway_Free::ID, '' );
 			$invoice->add_notes( __( 'Total is zero. Payment approved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
 			$invoice->save();
 			$invoice->changed();

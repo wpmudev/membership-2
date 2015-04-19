@@ -548,7 +548,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				$invoice = $gateway->process_purchase( $ms_relationship );
 
 				// If invoice is successfully paid, redirect to welcome page.
-				if ( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
+				if ( $invoice->is_paid() ) {
 					// Make sure to respect the single-membership rule
 					$this->validate_membership_states( $ms_relationship );
 

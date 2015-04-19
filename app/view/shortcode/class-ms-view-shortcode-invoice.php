@@ -230,7 +230,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					<?php
 					$show_button = lib2()->is_true( $this->data['pay_button'] );
 
-					if ( $invoice->status == MS_Model_Invoice::STATUS_PAID ) {
+					if ( $invoice->is_paid() ) {
 						// Invoice is already paid. We don't need a payment
 						// button...
 						$show_button = false;

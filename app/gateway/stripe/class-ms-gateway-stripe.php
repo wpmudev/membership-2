@@ -229,7 +229,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$member = $ms_relationship->get_member();
 		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
 
-		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		if ( ! $invoice->is_paid() ) {
 			try {
 				$this->load_stripe_lib();
 				$customer = $this->get_stripe_customer( $member );

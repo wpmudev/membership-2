@@ -194,6 +194,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			$currency = $_POST['mc_currency'];
 			$status = null;
 			$notes = null;
+			$pay_it = false;
 
 			// Process PayPal response
 			switch ( $_POST['payment_status'] ) {
@@ -201,7 +202,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				case 'Completed':
 				case 'Processed':
 					if ( $amount == $invoice->total ) {
-						$status = MS_Model_Invoice::STATUS_PAID;
+						$pay_it = true;
 					} else {
 						$notes = __( 'Payment amount differs from invoice total.', MS_TEXT_DOMAIN );
 						$status = MS_Model_Invoice::STATUS_DENIED;
@@ -258,7 +259,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			if ( ! empty( $notes ) ) { $invoice->add_notes( $notes ); }
 			$invoice->save();
 
-			if ( MS_Model_Invoice::STATUS_PAID == $status ) {
+			if ( $pay_it ) {
 				$invoice->pay_it( $this->id, $external_id );
 			} elseif ( ! empty( $status ) ) {
 				$invoice->status = $status;

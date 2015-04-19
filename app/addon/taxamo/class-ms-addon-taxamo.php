@@ -264,8 +264,8 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @param  MS_Model_Invoice $invoice The processed invoice.
 	 */
 	public function invoice_paid( $invoice ) {
-		if ( $invoice->status != MS_Model_Invoice::STATUS_PAID ) { return; }
-		if ( $invoice->total == 0 ) { return; }
+		if ( ! $invoice->is_paid() ) { return; }
+		if ( 0 == $invoice->total ) { return; }
 
 		$membership = $invoice->get_membership();
 		$member = $invoice->get_member();
