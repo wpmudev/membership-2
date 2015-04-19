@@ -11,7 +11,7 @@ class MS_View_Frontend_Payment extends MS_View {
 	public function to_html() {
 		$membership = $this->data['membership'];
 		$invoice = $this->data['invoice'];
-		$ms_relationship = $this->data['ms_relationship'];
+		$subscription = $this->data['ms_relationship'];
 
 		$class = 'ms-alert-success';
 		$msg = __(
@@ -51,7 +51,7 @@ class MS_View_Frontend_Payment extends MS_View {
 			// No confirmation required. Simply register for this membership!
 
 			$args = array();
-			$args['ms_relationship_id'] = $ms_relationship->id;
+			$args['ms_relationship_id'] = $subscription->id;
 			$args['gateway'] = MS_Gateway_Free::ID;
 			$args['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
 			$args['_wpnonce'] = wp_create_nonce( $args['gateway'] . '_' . $args['ms_relationship_id'] );
@@ -144,17 +144,21 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php if ( $invoice->tax_rate ) : ?>
 						<tr>
 							<td class="ms-title-column">
-								<?php printf(
+								<?php
+								printf(
 									__( 'Taxes %s', MS_TEXT_DOMAIN ),
 									'<small>(' . $invoice->tax_name . ')</small>'
-								); ?>
+								);
+								?>
 							</td>
 							<td class="ms-price-column">
-								<?php printf(
+								<?php
+								printf(
 									'%s %s',
 									$invoice->currency,
 									MS_Helper_Billing::format_price( $invoice->tax )
-								); ?>
+								);
+								?>
 							</td>
 						</tr>
 					<?php endif; ?>
@@ -184,7 +188,7 @@ class MS_View_Frontend_Payment extends MS_View {
 								<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class="ms-desc-column"><?php
-								echo '' . $ms_relationship->calc_trial_expire_date(
+								echo '' . $subscription->calc_trial_expire_date(
 									MS_Helper_Period::current_date()
 								);
 							?></td>
@@ -193,7 +197,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<tr>
 						<td class="ms-desc-column" colspan="2">
 							<span class="ms-membership-description"><?php
-								echo '' . $ms_relationship->get_payment_description( $invoice );
+								echo '' . $subscription->get_payment_description( $invoice );
 							?></span>
 						</td>
 					</tr>
@@ -223,7 +227,7 @@ class MS_View_Frontend_Payment extends MS_View {
 				<?php else :
 					do_action(
 						'ms_view_frontend_payment_purchase_button',
-						$ms_relationship,
+						$subscription,
 						$invoice
 					);
 				endif;
