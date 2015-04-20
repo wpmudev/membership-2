@@ -1086,8 +1086,18 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Default due date is today.
 		if ( empty( $due_date ) ) {
+			if ( $subscription->is_trial_eligible() ) {
+				// This invoice includes a trial period. Due is after trial ends.
+				$due_date = MS_Helper_Period::add_interval(
+					1,
+					'days',
+					$subscription->trial_expire_date
+				);
+			} else {
+				// No trial period is used for this invoice. Due now.
 				$due_date = MS_Helper_Period::current_date();
 			}
+		}
 
 		// Update the trial expiration date.
 		$this->trial_ends = $subscription->trial_expire_date;

@@ -1335,6 +1335,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		if ( $this->is_trial_eligible() && 0 != $total_price ) {
+			$invoice = MS_Model_Invoice::get_current_invoice( $this, false );
+
 			if ( 0 == absint( $trial_price ) ) {
 				if ( $short ) {
 					$lbl = __( 'on %4$s', MS_TEXT_DOMAIN );
@@ -1352,7 +1354,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$currency,
 				$trial_price,
-				MS_Helper_Period::format_date( $this->trial_expire_date, __( 'F j', MS_TEXT_DOMAIN ) )
+				MS_Helper_Period::format_date( $invoice->due_date, __( 'F j', MS_TEXT_DOMAIN ) )
 			);
 		}
 
