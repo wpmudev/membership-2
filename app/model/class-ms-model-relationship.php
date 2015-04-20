@@ -352,8 +352,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$membership = $subscription->get_membership();
 		if ( 'admin' == $gateway_id || $membership->is_free() ) {
-			$subscription->config_period();
 			$subscription->status = self::STATUS_ACTIVE;
+			$subscription->config_period(); // Needed to initialize start/expire.
 
 			if ( ! $subscription->is_system() && ! $is_simulated ) {
 				$subscription->save();
@@ -1001,7 +1001,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 */
-	public function config_period() {
+	public function config_period() { // Needed because of status change.
 		do_action(
 			'ms_model_relationship_config_period_before',
 			$this
@@ -1022,7 +1022,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				// Should already be true, but better be save and set it again...
 				$this->trial_period_completed = true;
 
-				// Renew period.
+				/*
+				 * Renew period. Every time this function is called, the expire
+				 * date is extended for 1 period
+				 */
 				$this->expire_date = $this->calc_expire_date( $this->expire_date );
 				break;
 
@@ -1539,6 +1542,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
 			// Trial memberships globally disabled.
 			$check_trial = false;
+		} elseif ( ! $membership->trial_period_enabled ) {
+			// This membership does not use trial periods.
+			$check_trial = false;
 		} elseif ( empty( $this->trial_expire_date ) ) {
 			// No Trial date defined.
 			$check_trial = false;
@@ -1575,6 +1581,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Permanent memberships grant instant access, no matter what.
 		if ( empty( $calc_status )
 			&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
+		) {
+			$calc_status = self::STATUS_ACTIVE;
+		}
+
+		// If expire date is empty and Active-state is requests then use active.
+		if ( empty( $calc_status )
+			&& empty( $this->expire_date )
+			&& self::STATUS_ACTIVE == $set_status
 		) {
 			$calc_status = self::STATUS_ACTIVE;
 		}
@@ -1888,7 +1902,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					if ( $gateway->request_payment( $this ) ) {
 						$cur_status = self::STATUS_ACTIVE;
 						$this->status = $cur_status;
-						$this->config_period();
+						$this->config_period(); // Needed because of status change.
 					}
 
 					// Check for card expiration
