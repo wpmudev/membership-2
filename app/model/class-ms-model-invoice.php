@@ -593,26 +593,26 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership to create invoice for.
+	 * @param MS_Model_Relationship $subscription The membership to create invoice for.
 	 * @param int $invoice_number Optional. The invoice number.
 	 *
 	 * @return object $invoice
 	 */
-	public static function create_invoice( $ms_relationship, $invoice_number = false ) {
-		$membership = $ms_relationship->get_membership();
+	public static function create_invoice( $subscription, $invoice_number = false ) {
+		$membership = $subscription->get_membership();
 
 		if ( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
 			throw new Exception( 'Invalid Membership.' );
 		}
 
 		$invoice = null;
-		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
+		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
 		$invoice_status = self::STATUS_BILLED;
 		$notes = null;
 		$due_date = null;
 
 		if ( empty( $invoice_number ) ) {
-			$invoice_number = $ms_relationship->current_invoice_number;
+			$invoice_number = $subscription->current_invoice_number;
 		}
 
 		// No existing invoice, create a new one.
@@ -622,8 +622,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 
 		// Update invoice info.
-		$invoice->ms_relationship_id = $ms_relationship->id;
-		$invoice->gateway_id = $ms_relationship->gateway_id;
+		$invoice->ms_relationship_id = $subscription->id;
+		$invoice->gateway_id = $subscription->gateway_id;
 		$invoice->status = $invoice_status;
 		$invoice->membership_id = $membership->id;
 		$invoice->currency = MS_Plugin::instance()->settings->currency;
@@ -641,11 +641,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Calc pro rate discount if moving from another membership.
 		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE )
-			&& $ms_relationship->move_from_id
+			&& $subscription->move_from_id
 		) {
 			$move_from = MS_Model_Relationship::get_subscription(
-				$ms_relationship->user_id,
-				$ms_relationship->move_from_id
+				$subscription->user_id,
+				$subscription->move_from_id
 			);
 
 			if ( ! empty( $move_from->id )
@@ -671,18 +671,18 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice = apply_filters(
 			'ms_model_invoice_create_before_save',
 			$invoice,
-			$ms_relationship
+			$subscription
 		);
 
 		$invoice->amount = $membership->price; // Without taxes!
 
 		// Check for trial period in the first period.
-		if ( $ms_relationship->is_trial_eligible()
-			&& $invoice_number === $ms_relationship->current_invoice_number
+		if ( $subscription->is_trial_eligible()
+			&& $invoice_number === $subscription->current_invoice_number
 		) {
 			$invoice->trial_price = $membership->trial_price; // Without taxes!
 			$invoice->uses_trial = true;
-			$invoice->trial_ends = $ms_relationship->trial_expire_date;
+			$invoice->trial_ends = $subscription->trial_expire_date;
 		}
 
 		// Refresh the tax-rate and payment description.
@@ -693,7 +693,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_relationship_create_invoice',
 			$invoice,
-			$ms_relationship,
+			$subscription,
 			$invoice_number
 		);
 	}
