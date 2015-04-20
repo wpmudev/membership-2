@@ -108,9 +108,15 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		if ( $invoice->uses_trial ) {
 			$trial_date = apply_filters(
 				'ms_invoice_trial_date',
-				MS_Helper_Period::format_date( $invoice->trial_ends ),
+				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$trial_invoice,
 				$invoice
+			);
+			$trial_date .= sprintf(
+				' <small>(%s %s)</small>',
+				__( 'ends on', MS_TEXT_DOMAIN ),
+				MS_Helper_Period::format_date( $invoice->trial_ends )
+
 			);
 		} else {
 			$trial_date = '';
@@ -151,10 +157,10 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					</tr>
 
 					<?php if ( ! empty( $inv_from ) ) : ?>
-					<tr class="ms-inv-from">
-						<th><?php _e( 'Sender', MS_TEXT_DOMAIN ); ?></th>
-						<td class="ms-inv-text"><?php echo $inv_from; ?></td>
-					</tr>
+						<tr class="ms-inv-from">
+							<th><?php _e( 'Sender', MS_TEXT_DOMAIN ); ?></th>
+							<td class="ms-inv-text"><?php echo $inv_from; ?></td>
+						</tr>
 					<?php endif; ?>
 
 					<tr class="ms-inv-to">
@@ -165,11 +171,11 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<th><?php _e( 'Invoice date', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-date"><?php echo $inv_date; ?></td>
 					</tr>
-					<?php if ( ! $is_free ) : ?>
-					<tr class="ms-inv-due-date">
-						<th><?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?></th>
-						<td class="ms-inv-date"><?php echo $inv_due_date; ?></td>
-					</tr>
+					<?php if ( ! empty( $trial_date ) ) : ?>
+						<tr class="ms-inv-trial-end-date">
+							<th><?php _e( 'Trial period', MS_TEXT_DOMAIN ); ?></th>
+							<td class="ms-inv-date"><?php echo $trial_date; ?></td>
+						</tr>
 					<?php endif; ?>
 					<tr class="ms-inv-status space">
 						<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
@@ -220,6 +226,12 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						</tr>
 					<?php endif; ?>
 
+					<?php if ( ! $is_free ) : ?>
+						<tr class="ms-inv-due-date <?php echo esc_attr( $sep ); $sep = ''; ?>">
+							<th><?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?></th>
+							<td class="ms-inv-date"><?php echo $inv_due_date; ?></td>
+						</tr>
+					<?php endif; ?>
 					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
 						<th><?php _e( 'Total', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-price"><?php echo $inv_total; ?></td>
