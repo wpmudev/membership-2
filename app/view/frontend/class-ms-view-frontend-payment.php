@@ -191,6 +191,14 @@ class MS_View_Frontend_Payment extends MS_View {
 								echo MS_Helper_Period::format_date( $invoice->trial_ends );
 							?></td>
 						</tr>
+						<tr>
+							<td class="ms-title-column">
+								<?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?>
+							</td>
+							<td class="ms-desc-column"><?php
+								echo MS_Helper_Period::format_date( $invoice->due_date );
+							?></td>
+						</tr>
 					<?php endif; ?>
 					<tr>
 						<td class="ms-desc-column" colspan="2">

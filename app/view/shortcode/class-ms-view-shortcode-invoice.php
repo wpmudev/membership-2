@@ -22,9 +22,10 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 		$invoice = $this->data['invoice'];
 		$member = $this->data['member'];
-		$ms_relationship = $this->data['ms_relationship'];
+		$subscription = $this->data['ms_relationship'];
 		$membership = $this->data['membership'];
 		$gateway = $this->data['gateway'];
+		$is_free = false;
 
 		$inv_title = sprintf(
 			'<a href="%s">%s</a>',
@@ -40,6 +41,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			);
 		} else {
 			$inv_amount = __( 'Free', MS_TEXT_DOMAIN );
+			$is_free = true;
 		}
 
 		if ( $invoice->tax ) {
@@ -163,10 +165,12 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<th><?php _e( 'Invoice date', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-date"><?php echo $inv_date; ?></td>
 					</tr>
+					<?php if ( ! $is_free ) : ?>
 					<tr class="ms-inv-due-date">
-						<th><?php _e( 'Due date', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-date"><?php echo $inv_due_date; ?></td>
 					</tr>
+					<?php endif; ?>
 					<tr class="ms-inv-status space">
 						<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_status; ?></td>
@@ -235,7 +239,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					if ( $show_button ) {
 						do_action(
 							'ms_view_shortcode_invoice_purchase_button',
-							$ms_relationship,
+							$subscription,
 							$invoice
 						);
 					}
