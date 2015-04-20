@@ -1209,11 +1209,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( null !== $invoice ) {
 			$total_price = $invoice->total; // Includes Tax
+			$trial_price = $invoice->trial_price; // Includes Tax
 		} else {
-			$total_price = $membership->total_price; // Includes Tax
+			$total_price = $membership->total_price; // Excludes Tax
+			$trial_price = $membership->trial_price; // Excludes Tax
 		}
 
-		$trial_price = $membership->trial_price;
 		$total_price = MS_Helper_Billing::format_price( $total_price );
 		$trial_price = MS_Helper_Billing::format_price( $trial_price );
 
