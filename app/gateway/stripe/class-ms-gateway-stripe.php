@@ -218,8 +218,11 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @return bool True on success.
 	 */
 	public function request_payment( $ms_relationship ) {
+		$was_paid = false;
+
 		do_action(
 			'ms_gateway_stripe_request_payment_before',
 			$ms_relationship,
@@ -248,6 +251,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 						);
 
 						if ( true == $charge->paid ) {
+							$was_paid = true;
 							$invoice->pay_it( $this->id, $charge->id );
 						}
 					}
@@ -263,8 +267,11 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		do_action(
 			'ms_gateway_stripe_request_payment_after',
 			$ms_relationship,
+			$was_paid,
 			$this
 		);
+
+		return $was_paid;
 	}
 
 	/**

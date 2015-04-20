@@ -232,6 +232,7 @@ class MS_Gateway extends MS_Model_Option {
 	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @return bool True on success.
 	 */
 	public function request_payment( $ms_relationship ) {
 		do_action(
@@ -239,6 +240,9 @@ class MS_Gateway extends MS_Model_Option {
 			$ms_relationship,
 			$this
 		);
+
+		// Default to "Payment successful"
+		return true;
 	}
 
 	/**

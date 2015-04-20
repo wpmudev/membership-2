@@ -212,8 +212,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @return bool True on success.
 	 */
 	public function request_payment( $ms_relationship ) {
+		$was_paid = false;
+
 		do_action(
 			'ms_gateway_authorize_request_payment_before',
 			$ms_relationship,
@@ -226,7 +229,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
 			try {
-				$this->online_purchase( $invoice, $member );
+				$was_paid = $this->online_purchase( $invoice, $member );
 			}
 			catch( Exception $e ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
@@ -237,8 +240,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		do_action(
 			'ms_gateway_authorize_request_payment_after',
 			$ms_relationship,
+			$was_paid,
 			$this
 		);
+
+		return $was_paid;
 	}
 
 	/**
@@ -249,9 +255,9 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @since 1.0.0
 	 * @param MS_Model_Invoice $invoice The invoice to pay.
 	 * @param MS_Model_Member The member paying the invoice.
-	 * @return MS_Model_Invoice The transaction information on success, otherwise throws an exception.
+	 * @return bool True on success, otherwise throws an exception.
 	 */
-	protected function online_purchase( $invoice, $member ) {
+	protected function online_purchase( &$invoice, $member ) {
 		do_action(
 			'ms_gateway_authorize_online_purchase_before',
 			$invoice,
@@ -307,12 +313,14 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			);
 		}
 
-		return apply_filters(
+		$invoice = apply_filters(
 			'ms_gateway_authorize_online_purchase_invoice',
 			$invoice,
 			$member,
 			$this
 		);
+
+		return true;
 	}
 
 	/**
