@@ -211,20 +211,20 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * Request automatic payment to the gateway.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 * @return bool True on success.
 	 */
-	public function request_payment( $ms_relationship ) {
+	public function request_payment( $subscription ) {
 		$was_paid = false;
 
 		do_action(
 			'ms_gateway_authorize_request_payment_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
-		$member = $ms_relationship->get_member();
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$member = $subscription->get_member();
+		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
 
 		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
@@ -232,14 +232,17 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				$was_paid = $this->online_purchase( $invoice, $member );
 			}
 			catch( Exception $e ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
 				MS_Helper_Debug::log( $e->getMessage() );
 			}
+		} else {
+			// Invoice was already paid earlier.
+			$was_paid = true;
 		}
 
 		do_action(
 			'ms_gateway_authorize_request_payment_after',
-			$ms_relationship,
+			$subscription,
 			$was_paid,
 			$this
 		);
