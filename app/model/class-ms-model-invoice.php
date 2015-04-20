@@ -1078,6 +1078,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$due_date = MS_Helper_Period::current_date();
 		}
 
+		// Update the trial expiration date.
+		$this->trial_ends = $subscription->trial_expire_date;
+
 		$this->due_date = $due_date;
 	}
 

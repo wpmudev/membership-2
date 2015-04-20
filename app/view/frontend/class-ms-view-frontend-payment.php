@@ -182,15 +182,13 @@ class MS_View_Frontend_Payment extends MS_View {
 						</td>
 					</tr>
 
-					<?php if ( $membership->trial_period_enabled && $invoice->trial_period ) : ?>
+					<?php if ( $invoice->uses_trial && $invoice->trial_ends ) : ?>
 						<tr>
 							<td class="ms-title-column">
 								<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class="ms-desc-column"><?php
-								echo '' . $subscription->calc_trial_expire_date(
-									MS_Helper_Period::current_date()
-								);
+								echo MS_Helper_Period::format_date( $invoice->trial_ends );
 							?></td>
 						</tr>
 					<?php endif; ?>
