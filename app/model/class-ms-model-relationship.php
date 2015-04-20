@@ -1497,9 +1497,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$membership = $this->get_membership();
 		$calc_status = null;
-		$check_trial = MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
-			&& ! empty( $this->trial_expire_date )
-			&& $this->trial_expire_date > $this->start_date;
+		$check_trial = false;
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+			// Trial memberships globally disabled.
+			$check_trial = false;
+		} elseif ( empty( $this->trial_expire_date ) ) {
+			// No Trial date defined.
+			$check_trial = false;
+		} elseif ( $this->start_date > $this->trial_expire_date ) {
+			// Invalid trial date (i.e. trial from previous subscription)
+			$check_trial = false;
+		} else {
+			// Otherwise: Check the trial status!
+			$check_trial = true;
+		}
 
 		// If the start-date is not reached yet, then set membership to Pending.
 		if ( empty( $calc_status )
@@ -1517,7 +1529,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 
 			if ( empty( $calc_status )
-				&& strtotime( $this->trial_expire_date ) > strtotime( MS_Helper_Period::current_date() )
+				&& strtotime( $this->trial_expire_date ) < strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL_EXPIRED;
 			}
