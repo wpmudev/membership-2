@@ -536,7 +536,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 
 		if ( $valid ) {
-			$ms_relationship = MS_Factory::load(
+			$subscription = MS_Factory::load(
 				'MS_Model_Relationship',
 				$_REQUEST['ms_relationship_id']
 			);
@@ -545,12 +545,12 @@ class MS_Controller_Gateway extends MS_Controller {
 			$gateway = MS_Model_Gateway::factory( $gateway_id );
 
 			try {
-				$invoice = $gateway->process_purchase( $ms_relationship );
+				$invoice = $gateway->process_purchase( $subscription );
 
 				// If invoice is successfully paid, redirect to welcome page.
 				if ( $invoice->is_paid() ) {
 					// Make sure to respect the single-membership rule
-					$this->validate_membership_states( $ms_relationship );
+					$this->validate_membership_states( $subscription );
 
 					// Redirect user to the Payment-Completed page.
 					MS_Model_Pages::create_missing_pages();
@@ -558,7 +558,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						MS_Model_Pages::MS_PAGE_REG_COMPLETE
 					);
 					$url = add_query_arg(
-						array( 'ms_relationship_id' => $ms_relationship->id ),
+						array( 'ms_relationship_id' => $subscription->id ),
 						$url
 					);
 					wp_safe_redirect( $url );

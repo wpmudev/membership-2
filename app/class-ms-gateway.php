@@ -187,14 +187,14 @@ class MS_Gateway extends MS_Model_Option {
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
 	 */
-	public function process_purchase( $ms_relationship ) {
+	public function process_purchase( $subscription ) {
 		do_action(
 			'ms_gateway_process_purchase_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
 
@@ -215,12 +215,12 @@ class MS_Gateway extends MS_Model_Option {
 	 * Overridden in child classes.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
 	 */
-	public function cancel_membership( $ms_relationship ) {
+	public function cancel_membership( $subscription ) {
 		do_action(
 			'ms_gateway_cancel_membership',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 	}
