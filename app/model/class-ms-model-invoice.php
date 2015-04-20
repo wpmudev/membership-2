@@ -197,6 +197,17 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $trial_ends;
 
 	/**
+	 * Invoice date.
+	 *
+	 * This is the date when the invoice was created. It may be differe than the
+	 * due date if the subscription uses a trial period.
+	 *
+	 * @since 1.1.1.4
+	 * @var string
+	 */
+	protected $invoice_date;
+
+	/**
 	 * Invoice due date.
 	 * When invoice uses_trial is true then this is the first day that is paid.
 	 *
@@ -609,7 +620,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
 		$invoice_status = self::STATUS_BILLED;
 		$notes = null;
-		$due_date = null;
 
 		if ( empty( $invoice_number ) ) {
 			$invoice_number = $subscription->current_invoice_number;
@@ -625,6 +635,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->ms_relationship_id = $subscription->id;
 		$invoice->gateway_id = $subscription->gateway_id;
 		$invoice->status = $invoice_status;
+		$invoice->invoice_date = MS_Helper_Period::current_date();
 		$invoice->membership_id = $membership->id;
 		$invoice->currency = MS_Plugin::instance()->settings->currency;
 		$invoice->user_id = $member->id;
@@ -1075,8 +1086,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Default due date is today.
 		if ( empty( $due_date ) ) {
-			$due_date = MS_Helper_Period::current_date();
-		}
+				$due_date = MS_Helper_Period::current_date();
+			}
 
 		// Update the trial expiration date.
 		$this->trial_ends = $subscription->trial_expire_date;
@@ -1226,6 +1237,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 						$value = $this->description;
 					} else {
 						$value = $this->short_description;
+					}
+					break;
+
+				case 'invoice_date':
+					$value = $this->invoice_date;
+
+					if ( empty( $value ) ) {
+						$value = get_the_date( 'Y-m-d', $this->id );
 					}
 					break;
 

@@ -90,6 +90,12 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_total = apply_filters( 'ms_invoice_total', $inv_total, $invoice );
 
 		$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
+		$inv_date = apply_filters(
+			'ms_invoice_date',
+			MS_Helper_Period::format_date( $invoice->invoice_date ),
+			$invoice,
+			null
+		);
 		$inv_due_date = apply_filters(
 			'ms_invoice_due_date',
 			MS_Helper_Period::format_date( $invoice->due_date ),
@@ -153,6 +159,10 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<th><?php _e( 'Invoice to', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_to; ?></td>
 					</tr>
+					<tr class="ms-inv-invoice-date">
+						<th><?php _e( 'Invoice date', MS_TEXT_DOMAIN ); ?></th>
+						<td class="ms-inv-date"><?php echo $inv_date; ?></td>
+					</tr>
 					<tr class="ms-inv-due-date">
 						<th><?php _e( 'Due date', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-date"><?php echo $inv_due_date; ?></td>
@@ -204,13 +214,6 @@ class MS_View_Shortcode_Invoice extends MS_View {
 							?></th>
 							<td class="ms-inv-price"><?php echo $inv_taxes; ?></td>
 						</tr>
-					<?php endif; ?>
-
-					<?php if ( $invoice->uses_trial ) : ?>
-					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
-						<th><?php _e( 'Payment on', MS_TEXT_DOMAIN ); ?></th>
-						<td class="ms-inv-date"><?php echo $trial_date; ?></td>
-					</tr>
 					<?php endif; ?>
 
 					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
