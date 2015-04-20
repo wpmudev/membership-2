@@ -794,7 +794,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$subscription->add_payment( $this->total, $gateway_id );
 		}
 
-		// Process the
+		/*
+		 * Process the payment and update the subscription.
+		 * This function will call the config_period() function to calculate the
+		 * new expire date of the subscription.
+		 */
 		$this->changed();
 
 		/**

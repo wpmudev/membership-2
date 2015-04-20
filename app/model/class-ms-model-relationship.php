@@ -906,12 +906,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$trial_expire_date = $this->calc_trial_expire_date( $start_date );
 		$expire_date = null;
 
-		/* When in trial period and gateway does not send automatic recurring
-		 * payment, the expire date is equal to trial expire date.
+		/*
+		 * When in trial period and gateway does not send automatic recurring
+		 * payment notifications, the expire date is equal to trial expire date.
 		 */
 		if ( $this->is_trial_eligible() && ! empty( $gateway->manual_payment ) ) {
 			$expire_date = $trial_expire_date;
 		} else {
+			/*
+			 * The gatway calls the payment handler URL automatically:
+			 * This means that the user does not need to re-authorize each
+			 * payment.
+			 */
 			switch ( $membership->payment_type ) {
 				case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 					$expire_date = false;
@@ -987,15 +993,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
 			case self::STATUS_ACTIVE:
+				// Should already be true, but better be save and set it again...
 				$this->trial_period_completed = true;
 
-				// Renew period
+				// Renew period.
 				$this->expire_date = $this->calc_expire_date( $this->expire_date );
 				break;
 
 			case self::STATUS_TRIAL:
 			case self::STATUS_TRIAL_EXPIRED:
 				$this->trial_period_completed = true;
+
 				$this->set_trial_expire_date();
 
 				// Confirm expire date.
@@ -1779,6 +1787,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$remaining_days = $this->get_remaining_period();
 		$remaining_trial_days = $this->get_remaining_trial_period();
 
+		//@todo: Add a flag to subscriptions with sent communications. Then improve the conditions below to prevent multiple emails.
+
 		do_action(
 			'ms_check_membership_status-' . $this->status,
 			$this,
@@ -1786,7 +1796,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$remaining_trial_days
 		);
 
-		$cur_status = $this->get_status();
+		// Update the Subscription status.
+		$cur_status = $this->calculate_status();
 
 		switch ( $cur_status ) {
 			case self::STATUS_TRIAL:
@@ -1796,11 +1807,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// Send trial end communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
+
 					if ( $comm->enabled ) {
 						$days = MS_Helper_Period::get_period_in_days(
 							$comm->period['period_unit'],
 							$comm->period['period_type']
 						);
+						//@todo: This will send out the reminder multiple times on the reminder-day (4 times or more often)
 						if ( $days == $remaining_trial_days ) {
 							$comm->add_to_queue( $this->id );
 							MS_Model_Event::save_event(
@@ -1818,11 +1831,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			case self::STATUS_TRIAL_EXPIRED:
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-					$invoice = MS_Model_Invoice::get_current_invoice( $this );
+					// Mark the trial period as completed. $this->save() is below.
+					$this->trial_period_completed = true;
 
 					// Request payment to the gateway (for gateways that allows it).
 					$gateway = $this->get_gateway();
-					$gateway->request_payment( $this );
+
+					/*
+					 * The subscription will be either automatically activated
+					 * or set to pending.
+					 *
+					 * Important: Set trial_period_completed=true before calling
+					 * request_payment()!
+					 */
+					if ( $gateway->request_payment( $this ) ) {
+						$cur_status = self::STATUS_ACTIVE;
+						$this->status = $cur_status;
+						$this->config_period();
+					}
 
 					// Check for card expiration
 					$gateway->check_card_expiration( $this );
@@ -2016,6 +2042,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 		}
 
+		// Save the new status.
+		$this->status = $cur_status;
+		$this->save();
+
+		// Save the changed email queue.
 		foreach ( $comms as $comm ) {
 			$comm->save();
 		}
