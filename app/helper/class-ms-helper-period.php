@@ -109,9 +109,9 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Date $end_date The end date to subtract from in the format yyyy-mm-dd
-	 * @param Date $start_date The start date to subtraction the format yyyy-mm-dd
-	 * @return string The resulting of the date subtraction.
+	 * @param  Date $end_date The end date to subtract from in the format yyyy-mm-dd
+	 * @param  Date $start_date The start date to subtraction the format yyyy-mm-dd
+	 * @return int The resulting of the date subtraction.
 	 */
 	public static function subtract_dates( $end_date, $start_date ) {
 		if ( empty( $end_date ) ) {
@@ -122,10 +122,14 @@ class MS_Helper_Period extends MS_Helper {
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
 
-		$days = round(
+		$days = intval(
 			( $end_date->format( 'U' ) - $start_date->format( 'U' ) ) /
 			86400 // = 60 * 60 * 24
 		);
+
+		if ( $days < 0 ) {
+			$days = 0;
+		}
 
 		return apply_filters(
 			'ms_helper_period_subtract_dates',

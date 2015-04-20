@@ -1010,41 +1010,41 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Get how many days in this membership.
+	 * Returns the remaining subscription period of this membership in days.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string The period desc.
+	 * @return int Remaining days.
 	 */
 	public function get_current_period() {
-		$period_desc = MS_Helper_Period::subtract_dates(
+		$period_days = MS_Helper_Period::subtract_dates(
 			MS_Helper_Period::current_date(),
 			$this->start_date
 		);
 
 		return apply_filters(
 			'ms_model_relationship_get_current_period',
-			$period_desc,
+			$period_days,
 			$this
 		);
 	}
 
 	/**
-	 * Get how many days until this membership trial expires.
+	 * Returns the remaining trial period of this membership in days.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string The period desc.
+	 * @return int Remaining days.
 	 */
 	public function get_remaining_trial_period() {
-		$period_desc = MS_Helper_Period::subtract_dates(
+		$period_days = MS_Helper_Period::subtract_dates(
 			$this->trial_expire_date,
 			MS_Helper_Period::current_date()
 		);
 
 		return apply_filters(
 			'ms_model_relationship_get_remaining_trial_period',
-			$period_desc,
+			$period_days,
 			$this
 		);
 	}
@@ -1054,17 +1054,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string The period desc.
+	 * @return int Remaining days.
 	 */
 	public function get_remaining_period() {
-		$period_desc = MS_Helper_Period::subtract_dates(
+		$period_days = MS_Helper_Period::subtract_dates(
 			$this->expire_date,
 			MS_Helper_Period::current_date()
 		);
 
 		return apply_filters(
 			'ms_model_relationship_get_remaining_period',
-			$period_desc,
+			$period_days,
 			$this
 		);
 	}
