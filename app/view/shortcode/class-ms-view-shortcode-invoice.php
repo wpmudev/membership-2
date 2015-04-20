@@ -27,10 +27,12 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$gateway = $this->data['gateway'];
 		$is_free = false;
 
+		$invoice_number = $invoice->get_invoice_number();
+
 		$inv_title = sprintf(
 			'<a href="%s">%s</a>',
 			get_permalink( $invoice->id ),
-			__( 'Invoice #', MS_TEXT_DOMAIN ) . esc_html( $invoice->id )
+			esc_html( __( 'Invoice ', MS_TEXT_DOMAIN ) . $invoice_number )
 		);
 
 		if ( $invoice->amount > 0 ) {
@@ -116,7 +118,6 @@ class MS_View_Shortcode_Invoice extends MS_View {
 				' <small>(%s %s)</small>',
 				__( 'ends on', MS_TEXT_DOMAIN ),
 				MS_Helper_Period::format_date( $invoice->trial_ends )
-
 			);
 		} else {
 			$trial_date = '';

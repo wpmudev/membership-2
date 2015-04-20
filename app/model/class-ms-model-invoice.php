@@ -1191,6 +1191,24 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns the public invoice number for this invoice.
+	 * The public invoice number is the official identifier that is displayed
+	 * to the end user that refers to an invoice
+	 *
+	 * @since  1.1.1.4
+	 * @return string The public invoice number.
+	 */
+	public function get_invoice_number() {
+		$identifier = '#' . $this->id . '-' . $this->invoice_number;
+
+		return apply_filters(
+			'ms_model_invoice_the_number',
+			$identifier,
+			$this
+		);
+	}
+
+	/**
 	 * Returns the membership model that is linked to this invoice.
 	 *
 	 * @since  1.1.0
