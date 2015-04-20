@@ -747,6 +747,32 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Checks if the current subscription consumes a trial period.
+	 *
+	 * When the subscription either is currently in trial or was in trial before
+	 * then this function returns true.
+	 * If the subscription never was in trial status it returns false.
+	 *
+	 * @since  1.1.1.4
+	 * @return bool
+	 */
+	public function has_trial() {
+		$result = false;
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+			$result = false;
+		} elseif ( ! $this->trial_expire_date ) {
+			$result = false;
+		} elseif ( $this->trial_expire_date == $this->start_date ) {
+			$result = false;
+		} else {
+			$result = true;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Set Membership Relationship start date.
 	 *
 	 * @since 1.0.0
@@ -1392,6 +1418,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			'amount' => $amount,
 			'gateway' => $gateway,
 		);
+
+		// Update the payment-gateway.
+		$this->gateway_id = $gateway;
 
 		$this->save();
 	}

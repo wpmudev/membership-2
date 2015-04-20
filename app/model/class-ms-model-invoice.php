@@ -890,6 +890,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					);
 					$member->is_member = true;
 					$member->active = true;
+
+					// Updates the expire-date of the subscription.
 					$subscription->config_period();
 					$subscription->set_status( MS_Model_Relationship::STATUS_ACTIVE );
 					break;

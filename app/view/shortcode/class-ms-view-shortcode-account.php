@@ -67,12 +67,20 @@ class MS_View_Shortcode_Account extends MS_View {
 						?>
 						<table>
 							<tr>
-								<th><?php _e( 'Membership name', MS_TEXT_DOMAIN ); ?></th>
-								<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
+								<th class="ms-col-membership"><?php
+									_e( 'Membership name', MS_TEXT_DOMAIN );
+								?></th>
+								<th class="ms-col-status"><?php
+									_e( 'Status', MS_TEXT_DOMAIN );
+								?></th>
 								<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) :  ?>
-									<th><?php _e( 'Trial expire date', MS_TEXT_DOMAIN ); ?></th>
+									<th class="ms-col-trial-end"><?php
+										_e( 'Trial expire date', MS_TEXT_DOMAIN );
+									?></th>
 								<?php endif; ?>
-								<th><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></th>
+								<th class="ms-col-expire-date"><?php
+									_e( 'Expire date', MS_TEXT_DOMAIN );
+								?></th>
 							</tr>
 							<?php
 							$empty = true;
@@ -80,10 +88,18 @@ class MS_View_Shortcode_Account extends MS_View {
 							foreach ( $this->data['subscription'] as $subscription ) :
 								$empty = false;
 								$membership = $subscription->get_membership();
+								$subs_classes = array(
+									'ms-status-' . $subscription->status,
+									'ms-type-' . $membership->type,
+									'ms-payment-' . $membership->payment_type,
+									'ms-gateway-' . $subscription->gateway_id,
+									'ms-membership-' . $subscription->membership_id,
+									$subscription->has_trial() ? 'ms-with-trial' : 'ms-no-trial',
+								);
 								?>
-								<tr>
-									<td><?php echo esc_html( $membership->name ); ?></td>
-									<td>
+								<tr class="<?php echo esc_attr( implode( ' ', $subs_classes ) ); ?>">
+									<td class="ms-col-membership"><?php echo esc_html( $membership->name ); ?></td>
+									<td class="ms-col-status">
 									<?php
 									if ( MS_Model_Relationship::STATUS_PENDING == $subscription->status ) {
 										// Display a "Purchase" link when status is Pending
@@ -100,10 +116,8 @@ class MS_View_Shortcode_Account extends MS_View {
 									?>
 									</td>
 									<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
-										<td><?php
-										if ( $subscription->trial_expire_date
-											&& $subscription->trial_expire_date != $subscription->start_date
-										) {
+										<td class="ms-col-trial-end"><?php
+										if ( $subscription->has_trial() ) {
 											echo esc_html(
 												MS_Helper_Period::format_date( $subscription->trial_expire_date )
 											);
@@ -112,7 +126,7 @@ class MS_View_Shortcode_Account extends MS_View {
 										}
 										?></td>
 									<?php endif; ?>
-									<td><?php
+									<td class="ms-col-expire-date"><?php
 									if ( $subscription->expire_date ) {
 										echo esc_html(
 											MS_Helper_Period::format_date( $subscription->expire_date )
@@ -271,8 +285,8 @@ class MS_View_Shortcode_Account extends MS_View {
 						$inv_classes = array(
 							'ms-invoice-' . $invoice->id,
 							'ms-invoice-' . $invoice->status,
-							'ms-invoice-gateway-' . $invoice->gateway_id,
-							'ms-invoice-membership-' . $invoice->membership_id,
+							'ms-gateway-' . $invoice->gateway_id,
+							'ms-membership-' . $invoice->membership_id,
 						);
 						?>
 						<tr class="<?php echo esc_attr( implode( ' ', $inv_classes ) ); ?>">
@@ -364,7 +378,7 @@ class MS_View_Shortcode_Account extends MS_View {
 						$ev_classes = array(
 							'ms-activity-topic-' . $event->topic,
 							'ms-activity-type-' . $event->type,
-							'ms-activity-membership-' . $event->membership_id,
+							'ms-membership-' . $event->membership_id,
 						);
 						?>
 						<tr class="<?php echo esc_attr( implode( ' ', $ev_classes ) ); ?>">
