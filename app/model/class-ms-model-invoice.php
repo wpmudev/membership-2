@@ -666,26 +666,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 
 		$invoice->notes = $notes;
-
-		// Due date calculation.
-		switch ( $ms_relationship->status ) {
-			default:
-			case MS_Model_Relationship::STATUS_PENDING:
-			case MS_Model_Relationship::STATUS_EXPIRED:
-			case MS_Model_Relationship::STATUS_DEACTIVATED:
-				$due_date = MS_Helper_Period::current_date();
-				break;
-
-			case MS_Model_Relationship::STATUS_TRIAL:
-				$due_date = $ms_relationship->trial_expire_date;
-				break;
-
-			case MS_Model_Relationship::STATUS_ACTIVE:
-			case MS_Model_Relationship::STATUS_CANCELED:
-				$due_date = $ms_relationship->expire_date;
-				break;
-		}
-		$invoice->due_date = $due_date;
+		$invoice->set_due_date();
 
 		$invoice = apply_filters(
 			'ms_model_invoice_create_before_save',
@@ -704,9 +685,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice->trial_ends = $ms_relationship->trial_expire_date;
 		}
 
-		$invoice->save();
-
+		// Refresh the tax-rate and payment description.
 		$invoice->total_amount_changed();
+
 		$invoice->save();
 
 		return apply_filters(
@@ -1030,7 +1011,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	private function refresh_amount() {
 		// Never change the amount of paid invoices.
-		if ( 'paid' == $this->status ) { return; }
+		if ( $this->is_paid() ) { return; }
 
 		/**
 		 * Define a timeout for the price in unpaid invoices.
@@ -1059,7 +1040,45 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		// the trial amount.
 		$this->amount = $membership->price; // Without taxes!
 
+		// Re-Calculate the subscription dates
+		$this->set_due_date();
+
 		$this->save();
+	}
+
+	/**
+	 * Refreshes the due-date of the invoice.
+	 *
+	 * @since 1.1.1.4
+	 */
+	public function set_due_date() {
+		// Never change due-date of paid invoices.
+		if ( $this->is_paid() ) { return; }
+
+		$subscription = $this->get_subscription();
+		$subscription->config_period();
+		$subscription->save();
+
+		$due_date = false;
+
+		// Handle special cases in due date calculation.
+		switch ( $subscription->status ) {
+			case MS_Model_Relationship::STATUS_TRIAL:
+				$due_date = $subscription->trial_expire_date;
+				break;
+
+			case MS_Model_Relationship::STATUS_ACTIVE:
+			case MS_Model_Relationship::STATUS_CANCELED:
+				$due_date = $subscription->expire_date;
+				break;
+		}
+
+		// Default due date is today.
+		if ( empty( $due_date ) ) {
+			$due_date = MS_Helper_Period::current_date();
+		}
+
+		$this->due_date = $due_date;
 	}
 
 	/**
