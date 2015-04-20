@@ -89,6 +89,7 @@ class MS_View_Shortcode_Account extends MS_View {
 								$empty = false;
 								$membership = $subscription->get_membership();
 								$subs_classes = array(
+									'ms-subscription-' . $subscription->id,
 									'ms-status-' . $subscription->status,
 									'ms-type-' . $membership->type,
 									'ms-payment-' . $membership->payment_type,
@@ -284,9 +285,12 @@ class MS_View_Shortcode_Account extends MS_View {
 						$inv_membership = MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id );
 						$inv_classes = array(
 							'ms-invoice-' . $invoice->id,
+							'ms-subscription-' . $invoice->ms_relationship_id,
 							'ms-invoice-' . $invoice->status,
 							'ms-gateway-' . $invoice->gateway_id,
 							'ms-membership-' . $invoice->membership_id,
+							'ms-type-' . $inv_membership->type,
+							'ms-payment-' . $inv_membership->payment_type,
 						);
 						?>
 						<tr class="<?php echo esc_attr( implode( ' ', $inv_classes ) ); ?>">
@@ -294,7 +298,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							printf(
 								'<a href="%s">%s</a>',
 								get_permalink( $invoice->id ),
-								$invoice->id
+								$invoice->get_invoice_number()
 							);
 							?></td>
 							<td class="ms-col-invoice-status"><?php
