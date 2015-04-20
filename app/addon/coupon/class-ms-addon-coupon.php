@@ -585,7 +585,7 @@ class MS_Addon_Coupon extends MS_Addon {
 		}
 		self::the_coupon( $coupon );
 
-		if ( $coupon ) {
+		if ( $coupon && $coupon->is_valid_coupon() ) {
 			$discount = $coupon->get_discount_value( $ms_relationship );
 			$invoice->coupon_id = $coupon->id;
 			$invoice->discount = $discount;
