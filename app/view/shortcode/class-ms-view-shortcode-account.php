@@ -85,6 +85,13 @@ class MS_View_Shortcode_Account extends MS_View {
 							<?php
 							$empty = true;
 
+							// These subscriptions have no expire date
+							$no_expire_list = array(
+								MS_Model_Relationship::STATUS_PENDING,
+								MS_Model_Relationship::STATUS_WAITING,
+								MS_Model_Relationship::STATUS_DEACTIVATED,
+							);
+
 							foreach ( $this->data['subscription'] as $subscription ) :
 								$empty = false;
 								$membership = $subscription->get_membership();
@@ -128,7 +135,9 @@ class MS_View_Shortcode_Account extends MS_View {
 										?></td>
 									<?php endif; ?>
 									<td class="ms-col-expire-date"><?php
-									if ( $subscription->expire_date ) {
+									if ( in_array( $subscription->status, $no_expire_list ) ) {
+										echo '&nbsp;';
+									} elseif ( $subscription->expire_date ) {
 										echo esc_html(
 											MS_Helper_Period::format_date( $subscription->expire_date )
 										);
