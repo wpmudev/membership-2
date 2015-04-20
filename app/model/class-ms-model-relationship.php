@@ -1229,13 +1229,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 				if ( 0 == $total_price ) {
 					if ( $short ) {
-						$lbl = __( 'Pay nothing (for ever)', MS_TEXT_DOMAIN );
+						$lbl = __( 'Nothing (for ever)', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'You will pay nothing for permanent access.', MS_TEXT_DOMAIN );
 					}
 				} else {
 					if ( $short ) {
-						$lbl  = __( 'Pay <span class="price">%1$s %2$s</span> (for ever)', MS_TEXT_DOMAIN );
+						$lbl  = __( '<span class="price">%1$s %2$s</span> (for ever)', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for permanent access.', MS_TEXT_DOMAIN );
 					}
@@ -1251,13 +1251,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				if ( 0 == $total_price ) {
 					if ( $short ) {
-						$lbl = __( 'Pay nothing (until %4$s)', MS_TEXT_DOMAIN );
+						$lbl = __( 'Nothing (until %4$s)', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'You will pay nothing for access until %3$s.', MS_TEXT_DOMAIN );
 					}
 				} else {
 					if ( $short ) {
-						$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (until %4$s)', MS_TEXT_DOMAIN );
+						$lbl = __( '<span class="price">%1$s %2$s</span> (until %4$s)', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', MS_TEXT_DOMAIN );
 					}
@@ -1275,13 +1275,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				if ( 0 == $total_price ) {
 					if ( $short ) {
-						$lbl = __( 'Pay nothing (%5$s - %6$s)', MS_TEXT_DOMAIN );
+						$lbl = __( 'Nothing (%5$s - %6$s)', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'You will pay nothing for access from %3$s until %4$s.', MS_TEXT_DOMAIN );
 					}
 				} else {
 					if ( $short ) {
-						$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (%5$s - %6$s)', MS_TEXT_DOMAIN );
+						$lbl = __( '<span class="price">%1$s %2$s</span> (%5$s - %6$s)', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> to access from %3$s until %4$s.', MS_TEXT_DOMAIN );
 					}
@@ -1302,7 +1302,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				if ( 1 == $membership->pay_cycle_repetitions ) {
 					// Exactly 1 payment. Actually same as the "finite" type.
 					if ( $short ) {
-						$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (once)', MS_TEXT_DOMAIN );
+						$lbl = __( '<span class="price">%1$s %2$s</span> (once)', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> once.', MS_TEXT_DOMAIN );
 					}
@@ -1317,7 +1317,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					} else {
 						// Indefinite number of payments
 						if ( $short ) {
-							$lbl = __( 'Pay <span class="price">%1$s %2$s</span> (each %3$s)', MS_TEXT_DOMAIN );
+							$lbl = __( '<span class="price">%1$s %2$s</span> (each %3$s)', MS_TEXT_DOMAIN );
 						} else {
 							$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> each %3$s.', MS_TEXT_DOMAIN );
 						}
@@ -1339,7 +1339,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			if ( 0 == absint( $trial_price ) ) {
 				if ( $short ) {
-					$lbl = __( 'on %4$s', MS_TEXT_DOMAIN );
+					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type ) {
+						$lbl = __( 'after %4$s', MS_TEXT_DOMAIN );
+					} else {
+						$lbl = __( 'on %4$s', MS_TEXT_DOMAIN );
+					}
 				} else {
 					$trial_price = __( 'nothing', MS_TEXT_DOMAIN );
 					$lbl = __( 'The trial period of %1$s is for free.', MS_TEXT_DOMAIN );
@@ -1354,7 +1358,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$currency,
 				$trial_price,
-				MS_Helper_Period::format_date( $invoice->due_date, __( 'F j', MS_TEXT_DOMAIN ) )
+				MS_Helper_Period::format_date( $invoice->due_date, __( 'M j', MS_TEXT_DOMAIN ) )
 			);
 		}
 
