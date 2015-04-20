@@ -858,8 +858,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$period_type,
 					$membership->period_date_start
 				);
-			}
-			else {
+			} else {
 				$period_unit = MS_Helper_Period::get_period_value(
 					$membership->trial_period,
 					'period_unit'
@@ -874,8 +873,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$start_date
 				);
 			}
-		}
-		else {
+		} else {
 			$trial_expire_date = $start_date;
 		}
 
@@ -1328,20 +1326,25 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 		}
 
-		if ( $this->is_trial_eligible() ) {
+		if ( $this->is_trial_eligible() && 0 != $total_price ) {
 			if ( 0 == absint( $trial_price ) ) {
-				$trial_price = __( 'nothing', MS_TEXT_DOMAIN );
-				$lbl = __( 'The trial period of %1$s is for free.', MS_TEXT_DOMAIN );
+				if ( $short ) {
+					$lbl = __( 'on %4$s', MS_TEXT_DOMAIN );
+				} else {
+					$trial_price = __( 'nothing', MS_TEXT_DOMAIN );
+					$lbl = __( 'The trial period of %1$s is for free.', MS_TEXT_DOMAIN );
+				}
 			} else {
 				$trial_price = MS_Helper_Billing::format_price( $trial_price );
 				$lbl = __( 'For the trial period of %1$s you only pay <span class="price">%2$s %3$s</span>.', MS_TEXT_DOMAIN );
 			}
 
 			$desc .= sprintf(
-				'<br />' . $lbl,
+				' <br />' . $lbl,
 				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$currency,
-				$trial_price
+				$trial_price,
+				MS_Helper_Period::format_date( $this->trial_expire_date, __( 'F j', MS_TEXT_DOMAIN ) )
 			);
 		}
 
