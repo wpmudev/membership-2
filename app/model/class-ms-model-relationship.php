@@ -1742,14 +1742,20 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 
 			case self::STATUS_TRIAL:
-				$desc = __( 'Membership level trial expires on: ', MS_TEXT_DOMAIN ) .
-					$this->trial_expire_date;
+				$desc = sprintf(
+					'%s <span class="ms-date">%s</span>',
+					__( 'Membership Trial expires on ', MS_TEXT_DOMAIN ),
+					MS_Helper_Period::format_date( $this->trial_expire_date )
+				);
 				break;
 
 			case self::STATUS_ACTIVE:
 				if ( ! empty( $this->expire_date ) ) {
-					$desc = __( 'Membership level expires on: ', MS_TEXT_DOMAIN ) .
-						$this->expire_date;
+					$desc = sprintf(
+						'%s <span class="ms-date">%s</span>',
+						__( 'Membership expires on ', MS_TEXT_DOMAIN ),
+						MS_Helper_Period::format_date( $this->expire_date )
+					);
 				}
 				else {
 					$desc = __( 'Permanent access.', MS_TEXT_DOMAIN );
@@ -1758,13 +1764,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			case self::STATUS_TRIAL_EXPIRED:
 			case self::STATUS_EXPIRED:
-				$desc = __( 'Membership expired on: ', MS_TEXT_DOMAIN ) .
-					$this->expire_date;
+				$desc = sprintf(
+					'%s <span class="ms-date">%s</span>',
+					__( 'Membership expired since ', MS_TEXT_DOMAIN ),
+					MS_Helper_Period::format_date( $this->expire_date )
+				);
 				break;
 
 			case self::STATUS_CANCELED:
-				$desc = __( 'Membership canceled, valid until it expires on: ', MS_TEXT_DOMAIN ) .
-					$this->expire_date;
+				$desc = sprintf(
+					'%s <span class="ms-date">%s</span>',
+					__( 'Membership canceled, valid until it expires on ', MS_TEXT_DOMAIN ),
+					MS_Helper_Period::format_date( $this->expire_date )
+				);
 				break;
 
 			case self::STATUS_DEACTIVATED:
