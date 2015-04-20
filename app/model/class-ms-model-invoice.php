@@ -1120,6 +1120,30 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get invoice trial price.
+	 *
+	 * @since 1.1.1.4
+	 */
+	private function get_trial_price() {
+		$membership = $this->get_membership();
+		$this->trial_price = $membership->trial_price; // Net amount
+		$this->trial_price += $this->trial_tax; // Tax-Rate was defined in `create_invoice()`
+
+		if ( $this->trial_price < 0 ) {
+			$this->trial_price = 0;
+		}
+
+		// Set precission to 2 decimal points.
+		$this->trial_price = round( $this->trial_price, 2 );
+
+		return apply_filters(
+			'ms_model_invoice_get_trial_price',
+			$this->trial_price,
+			$this
+		);
+	}
+
+	/**
 	 * Returns the membership model that is linked to this invoice.
 	 *
 	 * @since  1.1.0
@@ -1167,6 +1191,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					$value = $this->get_total();
 					break;
 
+				case 'trial_price':
+					$value = $this->get_trial_price();
+					break;
+
 				case 'invoice':
 					$value = $this->id;
 					break;
@@ -1189,6 +1217,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					$tax_rate = $this->tax_rate;
 					if ( ! is_numeric( $tax_rate ) ) { $tax_rate = 0; }
 					$value = $this->get_net_amount() * ( $tax_rate / 100 );
+					break;
+
+				case 'trial_tax':
+					$tax_rate = $this->tax_rate;
+					if ( ! is_numeric( $tax_rate ) ) { $tax_rate = 0; }
+					$value = floatval( $this->trial_price ) * ( $tax_rate / 100 );
 					break;
 			}
 		}
@@ -1239,9 +1273,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				case 'amount':
 				case 'discount':
 				case 'pro_rate':
+				case 'trial_price':
 					$this->$property = floatval( $value );
-					$this->get_total();
 					$this->total_amount_changed();
+					$this->get_total();
+					$this->get_trial_price();
 					break;
 
 				default:
