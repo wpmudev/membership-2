@@ -138,6 +138,56 @@ class MS_Helper_Period extends MS_Helper {
 	}
 
 	/**
+	 * Checks two things: First if the_date is a valid date and second if
+	 * the_date occurs AFTER any other date in the arguments list.
+	 *
+	 * This function can be used to compare multiple dates, like
+	 * $valid = is_after( $today, $date1, $date2, $date3 );
+	 *
+	 * @since  1.1.1.4
+	 *
+	 * @param  string|Date $the_date Date value that is compared with other dates.
+	 * @param  string|Date $before_1 Comparison Date 1
+	 * @param  ...
+	 * @return bool True means that the_date is valid and after all other dates.
+	 */
+	public static function is_after( $the_date, $before_1 ) {
+		$result = true;
+
+		if ( ! is_numeric( $the_date ) ) {
+			$the_date = strtotime( $the_date );
+		}
+
+		if ( empty( $the_date ) ) {
+			// No valid date specified. Fail.
+			$result = false;
+		} else {
+			// Valid date specified, compare with other params.
+			$dates = func_get_args();
+
+			// Remove the_date from the param list
+			array_shift( $dates );
+
+			foreach ( $dates as $comp_date ) {
+				if ( ! is_numeric( $comp_date ) ) {
+					$comp_date = strtotime( $comp_date );
+				}
+
+				// The date param is invalid, skip comparison.
+				if ( empty( $comp_date ) ) { continue; }
+
+				if ( $comp_date > $the_date ) {
+					// Comparison date is bigger (=after) the_date. Fail.
+					$result = false;
+					break;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Return current date.
 	 *
 	 * @since 1.0.0

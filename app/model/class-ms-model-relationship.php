@@ -711,6 +711,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public function is_trial_eligible() {
 		$membership = $this->get_membership();
+
 		$trial_eligible_status = apply_filters(
 			'ms_model_relationship_trial_eligible_status',
 			array(
@@ -720,14 +721,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 
 		$eligible = false;
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-			if ( in_array( $this->status, $trial_eligible_status )
-				&& ! $this->trial_period_completed
-				&& $membership->trial_period_enabled
-			) {
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+			// Trial Membership is globally disabled.
+			$eligible = false;
+		} elseif ( ! in_array( $this->status, $trial_eligible_status ) ) {
+			// Current Subscription is not allowed for a trial membership anymore.
+			$eligible = false;
+		} elseif ( $this->trial_period_completed ) {
+			// Trial membership already consumed.
+			$eligible = false;
+		} elseif ( ! $membership->trial_period_enabled ) {
+			// Trial mode for this membership is disabled.
+			$eligible = false;
+		} else {
+			// All other cases: User can sign up for trial!
 				$eligible = true;
 			}
-		}
 
 		return apply_filters(
 			'ms_model_relationship_is_trial_eligible',
@@ -739,32 +749,29 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Set Membership Relationship start date.
 	 *
-	 * Also updates trial and expire date.
-	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $start_date Optional. The start date to set. Default will be calculated.
+	 * @param string $start_date Optional. The start date to set.
+	 *               Default will be calculated.
 	 */
 	public function set_start_date( $start_date = null ) {
 		$membership = $this->get_membership();
-		$this->trial_expire_date = null;
 
-		if ( ! empty( $start_date ) ) {
-			$this->start_date = $start_date;
-		} elseif ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
-			$this->start_date = $membership->period_date_start;
+		if ( empty( $start_date ) ) {
+			if ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
+				$start_date = $membership->period_date_start;
 		} else {
 			/*
 			 * Note that we pass TRUE as second param to current_date
 			 * This is needed so that we 100% use the current date, which
 			 * is required to successfully do simulation.
 			 */
-			$this->start_date = MS_Helper_Period::current_date( null, true );
+				$start_date = MS_Helper_Period::current_date( null, true );
+			}
 		}
 
 		$this->start_date = apply_filters(
 			'ms_model_relationship_set_start_date',
-			$this->start_date,
 			$start_date,
 			$this
 		);
@@ -777,20 +784,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $trial_expire_date Optional. The trial expire date to set. Default will be calculated.
+	 * @param string $trial_expire_date Optional. The trial expire date to set.
+	 *               Default will be calculated.
 	 */
 	public function set_trial_expire_date( $trial_expire_date = null ) {
-		if ( ! empty( $trial_expire_date )
-			&& strtotime( $trial_expire_date ) >= strtotime( $this->start_date )
-		) {
-			$this->trial_expire_date = $trial_expire_date;
-		} else {
-			$this->trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
+		$valid_date = MS_Helper_Period::is_after(
+			$trial_expire_date,
+			$this->start_date
+		);
+
+		if ( ! $valid_date ) {
+			$trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
 		}
 
 		$this->trial_expire_date = apply_filters(
 			'ms_model_relationship_set_trial_start_date',
-			$this->trial_expire_date,
 			$trial_expire_date,
 			$this
 		);
@@ -803,23 +811,22 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $expire_date Optional. The expire date to set. Default will be calculated.
+	 * @param string $expire_date Optional. The expire date to set.
+	 *               Default will be calculated.
 	 */
 	public function set_expire_date( $expire_date = null ) {
-		if ( ! empty( $expire_date )
-			&& strtotime( $expire_date ) >= strtotime( $this->start_date )
-			&& ( ! empty( $this->trial_expire_date)
-				&& strtotime( $expire_date ) >= strtotime( $this->trial_expire_date )
-			)
-		) {
-			$this->expire_date = $expire_date;
-		} else {
-			$this->expire_date = $this->calc_expire_date( $this->start_date );
+		$valid_date = MS_Helper_Period::is_after(
+			$expire_date,
+			$this->start_date,
+			$this->trial_expire_date
+		);
+
+		if ( ! $valid_date ) {
+			$expire_date = $this->calc_expire_date( $this->start_date );
 		}
 
 		$this->expire_date = apply_filters(
 			'ms_model_relationship_set_expire_date',
-			$this->expire_date,
 			$expire_date,
 			$this
 		);
@@ -991,8 +998,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_TRIAL:
 			case self::STATUS_TRIAL_EXPIRED:
 				$this->trial_period_completed = true;
+				$this->set_trial_expire_date();
 				// Confirm expire date.
-				$this->expire_date = $this->calc_expire_date( $this->start_date );
+				$this->expire_date = $this->trial_expire_date;
 				break;
 
 			default:
