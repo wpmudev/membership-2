@@ -101,7 +101,9 @@ class MS_View_Shortcode_Account extends MS_View {
 									</td>
 									<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
 										<td><?php
-										if ( $subscription->trial_expire_date ) {
+										if ( $subscription->trial_expire_date
+											&& $subscription->trial_expire_date != $subscription->start_date
+										) {
 											echo esc_html(
 												MS_Helper_Period::format_date( $subscription->trial_expire_date )
 											);
