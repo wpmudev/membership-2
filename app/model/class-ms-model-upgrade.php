@@ -604,7 +604,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	static private function _upgrade_1_1_1_4() {
 		self::snapshot( '1.1.1.4' );
-lib2()->debug->log( 'Update 1.1.1.4 ' );
+
 		/*
 		 * Invoice structure changes:
 		 * - Field 'trial_period' renamed to 'uses_trial'
