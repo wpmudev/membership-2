@@ -391,7 +391,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			$valid = false;
 		} else {
 			foreach ( $this->membership_id as $valid_id ) {
-				if ( $valid_id == 0 || $valid_id == $membership_id ) {
+				if ( 0 == $valid_id || $valid_id == $membership_id ) {
 					$membership_allowed = true;
 					break;
 				}
@@ -431,11 +431,11 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship to apply coupon.
+	 * @param MS_Model_Relationship $subscription The membership relationship to apply coupon.
 	 * @return float The discount value.
 	 */
-	public function get_discount_value( $ms_relationship ) {
-		$membership = $ms_relationship->get_membership();
+	public function get_discount_value( $subscription ) {
+		$membership = $subscription->get_membership();
 		$price = $membership->price; // Excluding Tax
 		$original_price = $price;
 		$discount = 0;
@@ -476,14 +476,13 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $membership_id The membership id to apply the coupon.
+	 * @param MS_Model_Relationship $subscription The subscription to apply the coupon.
 	 */
-	public function save_coupon_application( $ms_relationship ) {
+	public function save_coupon_application( $subscription ) {
 		global $blog_id;
 
-		$membership = $ms_relationship->get_membership();
-
-		$discount = $this->get_discount_value( $ms_relationship );
+		$membership = $subscription->get_membership();
+		$discount = $this->get_discount_value( $subscription );
 
 		/** @todo Handle for network/multsite mode.*/
 		$global = false;
@@ -493,15 +492,15 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			self::COUPON_REDEMPTION_TIME
 		);
 
-		/** Grab the user account as we should be logged in by now */
+		// Grab the user account as we should be logged in by now.
 		$user = MS_Model_Member::get_current_member();
 
-		$transient_name = apply_filters(
+		$key = apply_filters(
 			'ms_addon_coupon_model_transient_name',
 			"ms_coupon_{$blog_id}_{$user->id}_{$membership->id}"
 		);
 
-		$transient_value = apply_filters(
+		$transient = apply_filters(
 			'ms_addon_coupon_model_transient_value',
 			array(
 				'coupon_id' => $this->id,
@@ -513,15 +512,15 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		);
 
 		if ( $global && function_exists( 'get_site_transient' ) ) {
-			set_site_transient( $transient_name, $transient_value, $time );
+			set_site_transient( $key, $transient, $time );
 		}  else {
-			set_transient( $transient_name, $transient_value, $time );
+			set_transient( $key, $transient, $time );
 		}
 		$this->save();
 
 		do_action(
 			'ms_addon_coupon_model_save_coupon_application',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 	}
@@ -547,15 +546,16 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		);
 
 		if ( $global && function_exists( 'get_site_transient' ) ) {
-			$transient_value = get_site_transient( $transient_name );
+			$transient = get_site_transient( $transient_name );
 		} else {
-			$transient_value = get_transient( $transient_name );
+			$transient = get_transient( $transient_name );
 		}
 
 		$coupon = null;
-		if ( ! empty( $transient_value ) ) {
-			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $transient_value['coupon_id'] );
-			$coupon->coupon_message = $transient_value['coupon_message'];
+		if ( is_array( $transient ) && ! empty( $transient['coupon_id'] ) ) {
+			$the_id = intval( $transient['coupon_id'] );
+			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $the_id );
+			$coupon->coupon_message = $transient['coupon_message'];
 		} else {
 			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model' );
 		}

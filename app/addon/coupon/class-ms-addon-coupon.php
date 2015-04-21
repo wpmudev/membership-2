@@ -429,11 +429,15 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @return string HTML code to display in the cell.
 	 */
 	public function billing_column_value( $default, $item, $column_name ) {
-		$value = $item->$column_name;
+		if ( property_exists( $item, $column_name ) ) {
+			$value = $item->$column_name;
+		} else {
+			$value = '';
+		}
 		$html = '';
 
 		if ( empty( $value ) ) {
-			if ( $column_name == 'discount' && empty( $value ) ) {
+			if ( 'discount' == $column_name && empty( $value ) ) {
 				$html = '-';
 			}
 		} else {
@@ -556,12 +560,12 @@ class MS_Addon_Coupon extends MS_Addon {
 	 *
 	 * @since  1.1.0
 	 * @param  MS_Model_Invoice $invoice
-	 * @param  MS_Model_Relationship $ms_relationship
+	 * @param  MS_Model_Relationship $subscription
 	 * @return MS_Model_Invoice
 	 */
-	public function apply_discount( $invoice, $ms_relationship ) {
-		$membership = $ms_relationship->get_membership();
-		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
+	public function apply_discount( $invoice, $subscription ) {
+		$membership = $subscription->get_membership();
+		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
 
 		if ( isset( $_POST['apply_coupon_code'] ) ) {
 			$coupon = apply_filters(
@@ -569,7 +573,7 @@ class MS_Addon_Coupon extends MS_Addon {
 				MS_Addon_Coupon_Model::load_by_coupon_code( $_POST['coupon_code'] )
 			);
 
-			$coupon->save_coupon_application( $ms_relationship );
+			$coupon->save_coupon_application( $subscription );
 		} else {
 			$coupon = MS_Addon_Coupon_Model::get_coupon_application(
 				$member->id,
@@ -589,8 +593,8 @@ class MS_Addon_Coupon extends MS_Addon {
 		}
 		self::the_coupon( $coupon );
 
-		if ( $coupon && $coupon->is_valid_coupon() ) {
-			$discount = $coupon->get_discount_value( $ms_relationship );
+		if ( $coupon && $coupon->is_valid_coupon( $membership->id ) ) {
+			$discount = $coupon->get_discount_value( $subscription );
 			$invoice->coupon_id = $coupon->id;
 			$invoice->discount = $discount;
 
@@ -616,10 +620,10 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @since  1.1.0
 	 * @param  array $data
 	 * @param  int $membership_id
-	 * @param  MS_Model_Relationship $ms_relationship
+	 * @param  MS_Model_Relationship $subscription
 	 * @param  MS_Model_Member $member
 	 */
-	public function process_payment_table( $data, $membership_id, $ms_relationship, $member ) {
+	public function process_payment_table( $data, $membership_id, $subscription, $member ) {
 		$data['coupon'] = self::the_coupon();
 		$data['coupon_valid'] = false;
 
