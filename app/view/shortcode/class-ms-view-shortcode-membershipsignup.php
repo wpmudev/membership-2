@@ -62,7 +62,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 
 						default:
 							$this->membership_box_html(
-								$ms_relationship,
+								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL,
 								$msg,
 								$ms_relationship
