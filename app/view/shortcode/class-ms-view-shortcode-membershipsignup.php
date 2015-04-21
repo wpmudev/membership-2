@@ -10,21 +10,21 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<?php
 			if ( count( $this->data['ms_relationships'] ) > 0 ) {
-				foreach ( $this->data['ms_relationships'] as $membership_id => $ms_relationship ) {
-					$msg = $ms_relationship->get_status_description();
+				foreach ( $this->data['ms_relationships'] as $membership_id => $subscription ) {
+					$msg = $subscription->get_status_description();
 
 					$membership = MS_Factory::load(
 						'MS_Model_Membership',
-						$ms_relationship->membership_id
+						$subscription->membership_id
 					);
 
-					switch ( $ms_relationship->status ) {
+					switch ( $subscription->status ) {
 						case MS_Model_Relationship::STATUS_CANCELED:
 							$this->membership_box_html(
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW,
 								$msg,
-								$ms_relationship
+								$subscription
 							);
 							break;
 
@@ -33,17 +33,18 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW,
 								$msg,
-								$ms_relationship
+								$subscription
 							);
 							break;
 
 						case MS_Model_Relationship::STATUS_TRIAL:
 						case MS_Model_Relationship::STATUS_ACTIVE:
+						case MS_Model_Relationship::STATUS_WAITING:
 							$this->membership_box_html(
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL,
 								$msg,
-								$ms_relationship
+								$subscription
 							);
 							break;
 
@@ -55,7 +56,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 									$membership,
 									MS_Helper_Membership::MEMBERSHIP_ACTION_PAY,
 									$msg,
-									$ms_relationship
+									$subscription
 								);
 							}
 							break;
@@ -65,7 +66,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL,
 								$msg,
-								$ms_relationship
+								$subscription
 							);
 							break;
 					}
@@ -215,9 +216,9 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 * @param  MS_Model_Membership $membership
 	 * @param  string $action
 	 * @param  string $msg
-	 * @param  MS_Model_Relationship $ms_relationship
+	 * @param  MS_Model_Relationship $subscription
 	 */
-	private function membership_box_html( $membership, $action, $msg = null, $ms_relationship = null ) {
+	private function membership_box_html( $membership, $action, $msg = null, $subscription = null ) {
 		$fields = $this->prepare_fields(
 			$membership->id,
 			$action,
@@ -290,7 +291,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 						$button = apply_filters(
 							'ms_view_shortcode_membershipsignup_cancel_button',
 							$button,
-							$ms_relationship,
+							$subscription,
 							$this
 						);
 					} elseif ( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY === $action ) {
