@@ -169,7 +169,6 @@ class MS_Gateway extends MS_Model_Option {
 	public function handle_return() {
 		do_action(
 			'ms_gateway_handle_return',
-			$ms_relationship,
 			$this
 		);
 	}
