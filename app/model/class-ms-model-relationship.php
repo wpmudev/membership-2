@@ -865,7 +865,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $start_date Optional. The start date to calculate date from.
+	 * @param  string $start_date Optional. The start date to calculate date from.
 	 * @return string The calculated trial expire date.
 	 */
 	public function calc_trial_expire_date( $start_date = null ) {
@@ -883,7 +883,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			// Trial period was not consumed yet, calculate the expiration date.
 
 			if ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
-				$fom_date = $membership->period_date_start;
+				$from_date = $membership->period_date_start;
 			} else {
 				$from_date = $start_date;
 			}
@@ -923,13 +923,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 *
 	 * @param string $start_date Optional. The start date to calculate date from.
+	 * @param  bool $paid If the user made a payment to extend the expire date.
 	 * @return string The calculated expire date.
 	 */
-	public function calc_expire_date( $start_date = null ) {
+	public function calc_expire_date( $start_date = null, $paid = false ) {
 		$membership = $this->get_membership();
 		$gateway = $this->get_gateway();
 
-		$trial_expire_date = $this->calc_trial_expire_date( $start_date );
+		$start_date = $this->calc_trial_expire_date( $start_date );
 		$expire_date = null;
 
 		/*
@@ -937,8 +938,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 * payment notifications, the expire date is equal to trial expire date.
 		 */
 		if ( $this->is_trial_eligible() && ! empty( $gateway->manual_payment ) ) {
-			$expire_date = $trial_expire_date;
+			$expire_date = $start_date;
 		} else {
+			if ( $paid ) {
+				/*
+				 * Always extend the membership from current date or later, even if
+				 * the specified start-date is in the past.
+				 *
+				 * Example: User does not pay for 3 days (subscription set "pending")
+				 *          Then he pays: The 3 days without access are for free;
+				 *          his subscriptions is extended from current date!
+				 */
+				$today = MS_Helper_Period::current_date();
+				if ( MS_Helper_Period::is_after( $today, $start_date ) ) {
+					$start_date = $today;
+				}
+			}
+
 			/*
 			 * The gatway calls the payment handler URL automatically:
 			 * This means that the user does not need to re-authorize each
@@ -961,7 +977,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$expire_date = MS_Helper_Period::add_interval(
 						$period_unit,
 						$period_type,
-						$trial_expire_date
+						$start_date
 					);
 					break;
 
@@ -981,7 +997,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$expire_date = MS_Helper_Period::add_interval(
 						$period_unit,
 						$period_type,
-						$trial_expire_date
+						$start_date
 					);
 					break;
 			}
@@ -1019,24 +1035,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
 			case self::STATUS_ACTIVE:
-				// Should already be true, but better be save and set it again...
-				$this->trial_period_completed = true;
-
-				/*
-				 * Renew period. Every time this function is called, the expire
-				 * date is extended for 1 period
-				 */
-				$this->expire_date = $this->calc_expire_date( $this->expire_date );
+				// Nothing else done. Expire date is changed by add_payment.
 				break;
 
 			case self::STATUS_TRIAL:
 			case self::STATUS_TRIAL_EXPIRED:
-				$this->trial_period_completed = true;
-
 				$this->set_trial_expire_date();
-
-				// Confirm expire date.
-				$this->expire_date = $this->trial_expire_date;
+				$this->set_expire_date();
 				break;
 
 			default:
@@ -1425,6 +1430,20 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Update the payment-gateway.
 		$this->gateway_id = $gateway;
 
+		// Upon first payment set the start date to current date.
+		if ( 1 == count( $this->payments ) ) {
+			$this->set_start_date();
+		}
+
+		/*
+		 * Renew period. Every time this function is called, the expire
+		 * date is extended for 1 period
+		 */
+		$this->expire_date = $this->calc_expire_date(
+			$this->expire_date, // Extend past the current expire date.
+			true                // Grant the user a full payment interval.
+		);
+
 		$this->save();
 	}
 
@@ -1683,6 +1702,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					// signup
 					if ( in_array( $new_status, array( self::STATUS_TRIAL, self::STATUS_ACTIVE ) ) ) {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $this );
+
+						// When changing from Pending -> Trial set trial_period_completed to true.
+						$this->trial_period_completed = true;
 					}
 					break;
 
