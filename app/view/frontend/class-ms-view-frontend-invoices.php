@@ -15,11 +15,13 @@ class MS_View_Frontend_Invoices extends MS_View {
 						<tr>
 							<th><?php _e( 'Invoice #', MS_TEXT_DOMAIN ); ?></th>
 							<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php printf(
+							<th><?php
+							printf(
 								'%s (%s)',
 								__( 'Total', MS_TEXT_DOMAIN ),
 								MS_Plugin::instance()->settings->currency
-							); ?></th>
+							);
+							?></th>
 							<th><?php _e( 'Membership', MS_TEXT_DOMAIN ); ?></th>
 							<th><?php _e( 'Due date', MS_TEXT_DOMAIN ); ?></th>
 						</tr>
@@ -27,7 +29,13 @@ class MS_View_Frontend_Invoices extends MS_View {
 					<tbody>
 					<?php foreach ( $this->data['invoices'] as $invoice ) : ?>
 						<tr>
-							<td><?php printf( '<a href="%s">%s</a>', get_permalink(  $invoice->id ),  $invoice->id ); ?></td>
+							<td><?php
+							printf(
+								'<a href="%s">%s</a>',
+								get_permalink( $invoice->id ),
+								$invoice->id
+							);
+							?></td>
 							<td><?php echo $invoice->status; ?></td>
 							<td><?php echo $invoice->total; ?></td>
 							<td><?php echo MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id )->name; ?></td>
@@ -38,7 +46,7 @@ class MS_View_Frontend_Invoices extends MS_View {
 				</table>
 			<?php else : ?>
 				<?php
-				$redirect = add_query_arg( array() );
+				$redirect = esc_url_raw( add_query_arg( array() ) );
 				$title = __( 'Your account', MS_TEXT_DOMAIN );
 				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
 				?>
@@ -58,7 +66,7 @@ class MS_View_Frontend_Invoices extends MS_View {
 				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
 			</div>
 			<?php
-			$redirect = add_query_arg( array() );
+			$redirect = esc_url_raw( add_query_arg( array() ) );
 			echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
 			?>
 		</div>

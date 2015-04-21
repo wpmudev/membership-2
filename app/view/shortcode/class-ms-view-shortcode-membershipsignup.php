@@ -170,23 +170,29 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		$url = MS_Model_Pages::get_page_url( $current );
 
 		if ( $action === MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP ) {
-			$url = add_query_arg(
-				'membership_id',
-				$membership_id,
-				$url
+			$url = esc_url_raw(
+				add_query_arg(
+					'membership_id',
+					$membership_id,
+					$url
+				)
 			);
 		} else {
-			$url = add_query_arg(
-				'_wpnonce',
-				wp_create_nonce( $action ),
-				$url
+			$url = esc_url_raw(
+				add_query_arg(
+					'_wpnonce',
+					wp_create_nonce( $action ),
+					$url
+				)
 			);
 
 			foreach ( $fields as $field ) {
-				$url = add_query_arg(
-					$field['id'],
-					$field['value'],
-					$url
+				$url = esc_url_raw(
+					add_query_arg(
+						$field['id'],
+						$field['value'],
+						$url
+					)
 				);
 			}
 		}

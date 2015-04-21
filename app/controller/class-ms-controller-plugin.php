@@ -84,7 +84,7 @@ class MS_Controller_Plugin extends MS_Controller {
 				&& MS_Helper_Utility::is_current_url( $_SERVER['HTTP_REFERER'] )
 			) {
 				// A msg is set AND the referer URL has the same msg flag!
-				$url = remove_query_arg( array( 'msg' ) );
+				$url = esc_url_raw( remove_query_arg( array( 'msg' ) ) );
 				wp_safe_redirect( $url );
 				exit;
 			}

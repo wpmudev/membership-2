@@ -455,7 +455,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$url = wp_registration_url();
 
 		if ( self::$handle_registration && ! empty( $step ) ) {
-			$url = add_query_arg( 'step', $step, $url );
+			$url = esc_url_raw( add_query_arg( 'step', $step, $url ) );
 		}
 
 		return $url;
@@ -564,16 +564,20 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			// Go to membership signup payment form.
 			if ( empty( $_REQUEST['membership_id'] ) ) {
-				$redirect = add_query_arg(
-					array(
-						'step' => self::STEP_CHOOSE_MEMBERSHIP,
+				$redirect = esc_url_raw(
+					add_query_arg(
+						array(
+							'step' => self::STEP_CHOOSE_MEMBERSHIP,
+						)
 					)
 				);
 			} else {
-				$redirect = add_query_arg(
-					array(
-						'step' => self::STEP_PAYMENT_TABLE,
-						'membership_id' => absint( $_REQUEST['membership_id'] ),
+				$redirect = esc_url_raw(
+					add_query_arg(
+						array(
+							'step' => self::STEP_PAYMENT_TABLE,
+							'membership_id' => absint( $_REQUEST['membership_id'] ),
+						)
 					)
 				);
 			}
@@ -728,14 +732,17 @@ class MS_Controller_Frontend extends MS_Controller {
 							$member->$field = $value;
 						}
 					}
+
 					try {
 						$member->validate_member_info();
 						$member->save();
-						wp_safe_redirect( remove_query_arg( 'action' ) );
+						wp_safe_redirect(
+							esc_url_raw( remove_query_arg( 'action' ) )
+						);
 						exit;
 
 					}
-					catch (Exception $e) {
+					catch ( Exception $e ) {
 						$data['errors']  = $e->getMessage();
 					}
 				}

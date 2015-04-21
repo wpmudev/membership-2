@@ -236,7 +236,9 @@ class MS_Rule_Special_Model extends MS_Rule {
 			$arch_year = get_year_link( '' );
 			$arch_month = get_month_link( '', '' );
 			$arch_day = get_day_link( '', '', '' );
-			$arch_hour = add_query_arg( 'hour', '15', $arch_day );
+			$arch_hour = esc_url_raw(
+				add_query_arg( 'hour', '15', $arch_day )
+			);
 
 			// Archive pages
 			$this->_content['archive'] = (object) array(

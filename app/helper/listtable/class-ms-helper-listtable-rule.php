@@ -667,7 +667,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 		$url = apply_filters(
 			'ms_helper_listtable_' . $this->id . '_url',
-			remove_query_arg( array( 'status', 'paged' ) )
+			esc_url_raw( remove_query_arg( array( 'status', 'paged' ) ) )
 		);
 
 		$views = array();
@@ -678,14 +678,26 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			//'count' => $count['total'],
 		);
 
+		$public_url = esc_url_raw(
+			add_query_arg(
+				array( 'status' => MS_Model_Rule::FILTER_NOT_PROTECTED ),
+				$url
+			)
+		);
 		$views['public'] = array(
-			'url' => add_query_arg( array( 'status' => MS_Model_Rule::FILTER_NOT_PROTECTED ), $url ),
+			'url' => $public_url,
 			'label' => __( 'Unprotected', MS_TEXT_DOMAIN ),
 			//'count' => $count['restricted'],
 		);
 
+		$protected_url = esc_url_raw(
+			add_query_arg(
+				array( 'status' => MS_Model_Rule::FILTER_PROTECTED ),
+				$url
+			)
+		);
 		$views['protected'] = array(
-			'url' => add_query_arg( array( 'status' => MS_Model_Rule::FILTER_PROTECTED ), $url ),
+			'url' => $protected_url,
 			'label' => __( 'Protected', MS_TEXT_DOMAIN ),
 			//'count' => $count['accessible'],
 		);

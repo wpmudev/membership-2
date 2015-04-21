@@ -28,7 +28,7 @@ class MS_View_Frontend_Activities extends MS_View {
 			</table>
 			<?php
 			else :
-				$redirect = add_query_arg( array() );
+				$redirect = esc_url_raw( add_query_arg( array() ) );
 				$title = __( 'Your account', MS_TEXT_DOMAIN );
 				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
 			endif;
@@ -47,7 +47,7 @@ class MS_View_Frontend_Activities extends MS_View {
 				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
 			</div>
 			<?php
-			$redirect = add_query_arg( array() );
+			$redirect = esc_url_raw( add_query_arg( array() ) );
 			echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
 			?>
 		</div>

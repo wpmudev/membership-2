@@ -8,10 +8,10 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		// When redirecting to login form we want to keep the previously submitted form data.
 		$url_data = $_POST;
 		$url_data['do-login'] = '1';
-		$login_url = add_query_arg( $url_data );
+		$login_url = esc_url_raw( add_query_arg( $url_data ) );
 
 		if ( ! empty( $_REQUEST['do-login'] ) ) {
-			$register_url = remove_query_arg( 'do-login' );
+			$register_url = esc_url_raw( remove_query_arg( 'do-login' ) );
 
 			$back_link = array(
 				'url' => $register_url,
@@ -47,7 +47,9 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		ob_start();
 
 		$reg_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
-		$reg_url = add_query_arg( 'action', 'register_user', $reg_url );
+		$reg_url = esc_url_raw(
+			add_query_arg( 'action', 'register_user', $reg_url )
+		);
 
 		// Default WP action hook
 		do_action( 'before_signup_form' );

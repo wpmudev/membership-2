@@ -244,9 +244,11 @@ class MS_Addon_Coupon extends MS_Addon {
 		) {
 			// Save coupon add/edit
 			$msg = $this->save_coupon( $_POST );
-			$redirect =	add_query_arg(
-				array( 'msg' => $msg ),
-				remove_query_arg( array( 'coupon_id') )
+			$redirect =	esc_url_raw(
+				add_query_arg(
+					array( 'msg' => $msg ),
+					remove_query_arg( array( 'coupon_id') )
+				)
 			);
 		} elseif ( self::validate_required( array( 'coupon_id', 'action' ), 'GET' )
 			&& $this->verify_nonce( $_GET['action'], 'GET' )
@@ -254,9 +256,11 @@ class MS_Addon_Coupon extends MS_Addon {
 		) {
 			// Execute table single action.
 			$msg = $this->coupon_do_action( $_GET['action'], array( $_GET['coupon_id'] ) );
-			$redirect = add_query_arg(
-				array( 'msg' => $msg ),
-				remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) )
+			$redirect = esc_url_raw(
+				add_query_arg(
+					array( 'msg' => $msg ),
+					remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) )
+				)
 			);
 		} elseif ( self::validate_required( array( 'coupon_id' ) )
 			&& $this->verify_nonce( 'bulk' )
@@ -265,7 +269,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			// Execute bulk actions.
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->coupon_do_action( $action, $_POST['coupon_id'] );
-			$redirect = add_query_arg( array( 'msg' => $msg ) );
+			$redirect = esc_url_raw( add_query_arg( array( 'msg' => $msg ) ) );
 		}
 
 		if ( $redirect ) {

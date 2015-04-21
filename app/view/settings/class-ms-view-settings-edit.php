@@ -114,11 +114,13 @@ class MS_View_Settings_Edit extends MS_View {
 		// Intentionally not translated (purpose is dev/testing)
 		if ( ! empty( $_GET['reset'] ) ) {
 			$reset_url = admin_url( 'admin.php?page=protected-content-settings&reset=1' );
-			$reset_url = add_query_arg(
-				MS_Model_Upgrade::get_token( 'reset' ),
-				$reset_url
+			$reset_url = esc_url_raw(
+				add_query_arg(
+					MS_Model_Upgrade::get_token( 'reset' ),
+					$reset_url
+				)
 			);
-			$cancel_url = remove_query_arg( 'reset' );
+			$cancel_url = esc_url_raw( remove_query_arg( 'reset' ) );
 
 			$desc[] = sprintf(
 				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
@@ -141,11 +143,13 @@ class MS_View_Settings_Edit extends MS_View {
 		// Intentionally not translated (purpose is dev/testing)
 		if ( ! empty( $_GET['restore'] ) ) {
 			$restore_url = admin_url( 'admin.php?page=protected-content-settings&restore=1' );
-			$restore_url = add_query_arg(
-				MS_Model_Upgrade::get_token( 'restore' ),
-				$restore_url
+			$restore_url = esc_url_raw(
+				add_query_arg(
+					MS_Model_Upgrade::get_token( 'restore' ),
+					$restore_url
+				)
 			);
-			$cancel_url = remove_query_arg( 'restore' );
+			$cancel_url = esc_url_raw( remove_query_arg( 'restore' ) );
 			$options = array();
 			$files = lib2()->updates->plugin( MS_TEXT_DOMAIN );
 			$files = lib2()->updates->list_files( 'json' );
@@ -234,8 +238,12 @@ class MS_View_Settings_Edit extends MS_View {
 			$email_delay = __( '(now...)', MS_TEXT_DOMAIN );
 		}
 
-		$status_url = add_query_arg( array( 'run_cron' => 'ms_cron_check_membership_status' ) );
-		$email_url = add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) );
+		$status_url = esc_url_raw(
+			add_query_arg( array( 'run_cron' => 'ms_cron_check_membership_status' ) )
+		);
+		$email_url = esc_url_raw(
+			add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) )
+		);
 		$lbl_run = __( 'Run now!', MS_TEXT_DOMAIN );
 
 		echo '<div class="cf ms-settings-footer"><div class="ms-tab-container">&nbsp;</div>';

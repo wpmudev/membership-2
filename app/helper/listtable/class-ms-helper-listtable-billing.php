@@ -240,7 +240,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		$views = array();
 
 		$args = $this->get_query_args();
-		$url = remove_query_arg( array( 'status', 'msg' ) );
+		$url = esc_url_raw( remove_query_arg( array( 'status', 'msg' ) ) );
 		$count = MS_Model_Invoice::get_invoice_count( $args );
 		$views['all'] = array(
 			'url' => $url,
@@ -248,8 +248,13 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			'count' => $count,
 		);
 
-		$url = remove_query_arg( array( 'status', 'msg' ) );
-		$url = add_query_arg( 'status', 'open', $url );
+		$url = esc_url_raw(
+			add_query_arg(
+				'status',
+				'open',
+				remove_query_arg( array( 'status', 'msg' ) )
+			)
+		);
 		$args = $this->get_query_args();
 		$args['meta_query']['status']['value'] = array(
 			MS_Model_Invoice::STATUS_BILLED,
@@ -268,9 +273,11 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			$args['meta_query']['status']['value'] = $status;
 			$count = MS_Model_Invoice::get_invoice_count( $args );
 
-			$status_url = add_query_arg(
-				array( 'status' => $status ),
-				remove_query_arg( array( 'msg' ) )
+			$status_url = esc_url_raw(
+				add_query_arg(
+					array( 'status' => $status ),
+					remove_query_arg( array( 'msg' ) )
+				)
 			);
 
 			$views[ $status ] =	array(

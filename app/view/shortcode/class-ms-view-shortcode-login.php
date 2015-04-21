@@ -481,14 +481,16 @@ class MS_View_Shortcode_Login extends MS_View {
 		if ( ! $user || is_wp_error( $user ) ) {
 			if ( $user && 'expired_key' == $user->get_error_code() ) {
 				$err_msg = __( 'The password-reset key is already expired.', MS_TEXT_DOMAIN );
-			}
-			else {
+			} else {
 				$err_msg = __( 'The password-reset key is invalid or missing.', MS_TEXT_DOMAIN );
 			}
+			$url = esc_url_raw(
+				remove_query_arg( array( 'action', 'key', 'login' ) )
+			);
 			return sprintf(
 				'<p>%s</p><p><a href="%s">%s</a>',
 				$err_msg,
-				remove_query_arg( array( 'action', 'key', 'login' ) ),
+				$url,
 				__( 'Request a new password-reset key', MS_TEXT_DOMAIN )
 			);
 		} else {

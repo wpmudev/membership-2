@@ -55,7 +55,7 @@ class MS_View_Frontend_Payment extends MS_View {
 			$args['gateway'] = MS_Gateway_Free::ID;
 			$args['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
 			$args['_wpnonce'] = wp_create_nonce( $args['gateway'] . '_' . $args['ms_relationship_id'] );
-			$url = add_query_arg( $args );
+			$url = esc_url_raw( add_query_arg( $args ) );
 
 			/*
 			 * Very likely the html output has already began.

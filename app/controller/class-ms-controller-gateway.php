@@ -557,9 +557,11 @@ class MS_Controller_Gateway extends MS_Controller {
 					$url = MS_Model_Pages::get_page_url(
 						MS_Model_Pages::MS_PAGE_REG_COMPLETE
 					);
-					$url = add_query_arg(
-						array( 'ms_relationship_id' => $subscription->id ),
-						$url
+					$url = esc_url_raw(
+						add_query_arg(
+							array( 'ms_relationship_id' => $subscription->id ),
+							$url
+						)
 					);
 					wp_safe_redirect( $url );
 					exit;
@@ -844,7 +846,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						}
 
 						wp_safe_redirect(
-							add_query_arg( array( 'msg' => 1 ) )
+							esc_url_raw( add_query_arg( array( 'msg' => 1 ) ) )
 						);
 						exit;
 					}
@@ -873,7 +875,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						}
 
 						wp_safe_redirect(
-							add_query_arg( array( 'msg' => 1 ) )
+							esc_url_raw( add_query_arg( array( 'msg' => 1 ) ) )
 						);
 						exit;
 					}

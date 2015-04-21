@@ -178,8 +178,15 @@ class MS_Helper_ListTable {
 		}
 
 		// redirect if page number is invalid and headers are not already sent
-		if ( ! headers_sent() && ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) && $args['total_pages'] > 0 && $this->get_pagenum() > $args['total_pages'] ) {
-			wp_redirect( add_query_arg( 'paged', $args['total_pages'] ) );
+		if ( ! headers_sent()
+			&& ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
+			&& $args['total_pages'] > 0
+			&& $this->get_pagenum() > $args['total_pages']
+		) {
+			$redirect = esc_url_raw(
+				add_query_arg( 'paged', $args['total_pages'] )
+			);
+			wp_redirect( $redirect );
 			exit;
 		}
 
@@ -858,16 +865,19 @@ class MS_Helper_ListTable {
 		if ( $this->need_pagination() && ! $this->is_search() ) {
 			$current = $this->get_pagenum();
 
-			$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-
-			$current_url = remove_query_arg(
-				array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url
+			$current_url = set_url_scheme(
+				'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
+			);
+			$current_url = esc_url_raw(
+				remove_query_arg(
+					array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url
+				)
 			);
 
 			$page_links = array();
 
 			$disable_first = $disable_last = '';
-			if ( $current == 1 ) {
+			if ( 1 == $current ) {
 				$disable_first = ' disabled';
 			}
 			if ( $current == $total_pages ) {
@@ -932,7 +942,6 @@ class MS_Helper_ListTable {
 		} else {
 			$page_class = ' no-pages';
 		}
-
 
 		$this->_pagination = "<div class='tablenav-pages{$page_class}'>$output</div>";
 
@@ -1048,8 +1057,10 @@ class MS_Helper_ListTable {
 		static $cb_counter = 1;
 		list( $columns, $hidden, $sortable ) = $this->get_column_info();
 
-		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-		$current_url = remove_query_arg( 'paged', $current_url );
+		$current_url = set_url_scheme(
+			'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
+		);
+		$current_url = esc_url_raw( remove_query_arg( 'paged', $current_url ) );
 
 		if ( isset( $_GET['orderby'] ) ) {
 			$current_orderby = $_GET['orderby'];

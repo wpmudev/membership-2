@@ -181,7 +181,9 @@ class MS_Controller_Membership extends MS_Controller {
 
 				if ( $membership_id == MS_Model_Membership::get_base()->id ) {
 					wp_safe_redirect(
-						remove_query_arg( array( 'membership_id' ) )
+						esc_url_raw(
+							remove_query_arg( array( 'membership_id' ) )
+						)
 					);
 				}
 			} elseif ( isset( $_REQUEST['page'] ) && 'protected-content-setup' == $_REQUEST['page'] ) {
@@ -328,9 +330,11 @@ class MS_Controller_Membership extends MS_Controller {
 					$args['msg'] = $msg;
 				}
 
-				$goto_url = add_query_arg(
-					$args,
-					MS_Controller_Plugin::get_admin_url()
+				$goto_url = esc_url_raw(
+					add_query_arg(
+						$args,
+						MS_Controller_Plugin::get_admin_url()
+					)
 				);
 
 				$goto_url = apply_filters(
@@ -517,9 +521,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = self::ACTION_SAVE;
 		$data['membership'] = $membership;
-		$data['create_new_url'] = add_query_arg(
-			array( 'step' => self::STEP_ADD_NEW ),
-			MS_Controller_Plugin::get_admin_url()
+		$data['create_new_url'] = esc_url_raw(
+			add_query_arg(
+				array( 'step' => self::STEP_ADD_NEW ),
+				MS_Controller_Plugin::get_admin_url()
+			)
 		);
 
 		$view = MS_Factory::create( 'MS_View_Membership_List' );
@@ -929,15 +935,19 @@ class MS_Controller_Membership extends MS_Controller {
 
 				// Try to keep the selected Membership and Status filter.
 				if ( ! empty( $_REQUEST['membership_id'] ) ) {
-					$url = add_query_arg(
-						array( 'membership_id' => $_REQUEST['membership_id'] ),
-						$url
+					$url = esc_url_raw(
+						add_query_arg(
+							array( 'membership_id' => $_REQUEST['membership_id'] ),
+							$url
+						)
 					);
 				}
 				if ( ! empty( $_REQUEST['status'] ) ) {
-					$url = add_query_arg(
-						array( 'status' => $_REQUEST['status'] ),
-						$url
+					$url = esc_url_raw(
+						add_query_arg(
+							array( 'status' => $_REQUEST['status'] ),
+							$url
+						)
 					);
 				}
 

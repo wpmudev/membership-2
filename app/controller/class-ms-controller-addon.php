@@ -152,7 +152,9 @@ class MS_Controller_Addon extends MS_Controller {
 		) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->save_addon( $action, $_POST['addon'] );
-			wp_safe_redirect( add_query_arg( array( 'msg' => $msg ) ) );
+			wp_safe_redirect(
+				esc_url_raw( add_query_arg( array( 'msg' => $msg ) ) )
+			);
 			exit;
 		}
 	}

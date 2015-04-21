@@ -21,7 +21,9 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 	 */
 	public function to_html() {
 		$fields = $this->prepare_fields();
-		$form_url = remove_query_arg( array( 'action', 'coupon_id' ) );
+		$form_url = esc_url_raw(
+			remove_query_arg( array( 'action', 'coupon_id' ) )
+		);
 
 		if ( $this->data['coupon']->is_valid() ) {
 			$title = __( 'Edit Coupon', MS_TEXT_DOMAIN );
@@ -131,7 +133,7 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
 				'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
 				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
-				'url' => remove_query_arg( array( 'action', 'coupon_id' ) ),
+				'url' => esc_url_raw( remove_query_arg( array( 'action', 'coupon_id' ) ) ),
 				'class' => 'wpmui-field-button button',
 			),
 			'submit' => array(

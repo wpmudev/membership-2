@@ -121,9 +121,11 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 			'return' => array(
 				'id' => 'return',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => add_query_arg(
-					array( 'ms_relationship_id' => $ms_relationship->id ),
-					MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
+				'value' => esc_url_raw(
+					add_query_arg(
+						array( 'ms_relationship_id' => $ms_relationship->id ),
+						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
+					)
 				),
 			),
 			'cancel_return' => array(

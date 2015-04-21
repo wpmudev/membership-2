@@ -116,12 +116,15 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				<div class="ms-news-view-wrapper">
 					<?php
+					$url = esc_url_raw(
+						add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) )
+					);
 					MS_Helper_Html::html_element(
 						array(
 							'id' => 'view_news',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'value' => __( 'View More News', MS_TEXT_DOMAIN ),
-							'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) ),
+							'url' => $url,
 							'class' => 'wpmui-field-button button',
 						)
 					);
@@ -328,10 +331,12 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		<?php
 
 		if ( ! $membership->is_free ) {
-			$payment_url = add_query_arg(
-				array(
-					'step' => MS_Controller_Membership::STEP_PAYMENT,
-					'edit' => 1,
+			$payment_url = esc_url_raw(
+				add_query_arg(
+					array(
+						'step' => MS_Controller_Membership::STEP_PAYMENT,
+						'edit' => 1,
+					)
 				)
 			);
 
@@ -390,12 +395,14 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				<div class="ms-protection-edit-wrapper">
 					<?php
-					$edit_url = add_query_arg(
-						array(
-							'page' => 'protected-content-setup',
-							'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-							'tab' => $rule->rule_type,
-							'membership_id' => $membership_id,
+					$edit_url = esc_url_raw(
+						add_query_arg(
+							array(
+								'page' => 'protected-content-setup',
+								'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+								'tab' => $rule->rule_type,
+								'membership_id' => $membership_id,
+							)
 						)
 					);
 

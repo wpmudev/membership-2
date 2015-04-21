@@ -23,11 +23,14 @@ class MS_View_Membership_News extends MS_View {
 					$membership->get_color()
 				)
 			);
+			$url = esc_url_raw(
+				add_query_arg( array( 'step' => MS_Controller_Membership::STEP_OVERVIEW ) )
+			);
 			$back_link = array(
 				'id' => 'back',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
 				'value' => __( '&raquo; Back to Overview', MS_TEXT_DOMAIN ),
-				'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_OVERVIEW ) ),
+				'url' => $url,
 				'class' => 'wpmui-field-button button',
 			);
 		} else {

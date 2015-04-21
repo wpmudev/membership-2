@@ -191,8 +191,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					echo $profile_title;
 
 					if ( $show_profile_change ) {
-						$edit_url = add_query_arg(
-							array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE )
+						$edit_url = esc_url_raw(
+							add_query_arg(
+								array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE )
+							)
 						);
 
 						printf(
@@ -245,8 +247,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					echo $invoices_title;
 
 					if ( $show_all_invoices ) {
-						$detail_url = add_query_arg(
-							array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES )
+						$detail_url = esc_url_raw(
+							add_query_arg(
+								array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES )
+							)
 						);
 
 						printf(
@@ -355,8 +359,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					echo $activity_title;
 
 					if ( $show_all_activities ) {
-						$detail_url = add_query_arg(
-							array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES )
+						$detail_url = esc_url_raw(
+							add_query_arg(
+								array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES )
+							)
 						);
 
 						printf(
@@ -432,7 +438,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				);
 
 				if ( ! $has_login_form ) {
-					$redirect = add_query_arg( array() );
+					$redirect = esc_url_raw( add_query_arg( array() ) );
 					$title = __( 'Your account', MS_TEXT_DOMAIN );
 					$scode = sprintf(
 						'[%1$s redirect="%2$s" title="%3$s"]',

@@ -23,7 +23,9 @@ class MS_View_Billing_Edit extends MS_View {
 		$this->check_simulation();
 
 		$fields = $this->prepare_fields();
-		$form_url = remove_query_arg( array( 'action', 'invoice_id' ) );
+		$form_url = esc_url_raw(
+			remove_query_arg( array( 'action', 'invoice_id' ) )
+		);
 
 		if ( $this->data['invoice']->is_valid() ) {
 			$title = __( 'Edit Billing', MS_TEXT_DOMAIN );
@@ -160,7 +162,7 @@ class MS_View_Billing_Edit extends MS_View {
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
 				'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
 				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
-				'url' => remove_query_arg( array( 'action', 'invoice_id' ) ),
+				'url' => esc_url_raw( remove_query_arg( array( 'action', 'invoice_id' ) ) ),
 				'class' => 'wpmui-field-button button',
 			),
 			'submit' => array(

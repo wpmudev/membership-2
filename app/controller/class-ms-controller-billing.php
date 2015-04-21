@@ -81,15 +81,19 @@ class MS_Controller_Billing extends MS_Controller {
 			// Save billing add/edit
 			$msg = $this->save_invoice( $_POST );
 
-			$redirect = remove_query_arg( array( 'invoice_id') );
-			$redirect = add_query_arg( array( 'msg' => $msg ), $redirect );
+			$redirect = esc_url_raw(
+				add_query_arg(
+					array( 'msg' => $msg ),
+					remove_query_arg( array( 'invoice_id') )
+				)
+			);
 		} elseif ( self::validate_required( array( 'invoice_id' ) )
 			&& $this->verify_nonce( 'bulk' )
 		) {
 			// Execute bulk actions.
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
-			$redirect = add_query_arg( array( 'msg' => $msg ) );
+			$redirect = esc_url_raw( add_query_arg( array( 'msg' => $msg ) ) );
 		}
 
 		if ( $redirect ) {

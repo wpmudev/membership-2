@@ -246,13 +246,15 @@ class MS_Controller_Dialog extends MS_Controller {
 
 		MS_Model_Pages::create_missing_pages();
 		$reset_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
-		$reset_url = add_query_arg(
-			array(
-				'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,
-				'key' => $key,
-				'login' => rawurlencode( $user_login ),
-			),
-			$reset_url
+		$reset_url = esc_url_raw(
+			add_query_arg(
+				array(
+					'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,
+					'key' => $key,
+					'login' => rawurlencode( $user_login ),
+				),
+				$reset_url
+			)
 		);
 
 		$message = __( 'Someone requested that the password be reset for the following account:' ) . "\r\n\r\n";

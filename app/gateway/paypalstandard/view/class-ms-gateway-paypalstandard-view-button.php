@@ -89,9 +89,11 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 			$gateway->id. '_' . $this->data['ms_relationship']->id
 		);
 		$cancel_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
-		$return_url = add_query_arg(
-			array( 'ms_relationship_id' => $ms_relationship->id ),
-			MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
+		$return_url = esc_url_raw(
+			add_query_arg(
+				array( 'ms_relationship_id' => $ms_relationship->id ),
+				MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
+			)
 		);
 
 		$fields = array(
