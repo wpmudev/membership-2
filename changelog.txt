@@ -11,6 +11,8 @@ Change Log:
 - Improve i18n integration in the Billings module, Invoice display and in the Account page
 - Improve media protection to protect whole HTML output instead of post-content only
 - Improve Mailchimp integration: Firstname/Lastname are now also transfered to Mailchimp
+- Fixed many small issues with invoice creation for Trial memberships
+- Fixed XSS vulnerability (add_query_arg/remove_query_arg) 
 - Fixed the Protection meta-box in post and page editor
 - Fixed the protection shortcode for Guest/Default memberships
 - Fixed bug that created duplicate invoices when processing automatic email notifications
