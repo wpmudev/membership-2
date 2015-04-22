@@ -119,6 +119,24 @@ module.exports = function( grunt ) {
 		},
 
 
+		phpunit: {
+			classes: {
+				dir: ''
+			},
+			options: {
+				bin: 'phpunit',
+				bootstrap: 'tests/php/bootstrap.php',
+				testsuite: 'default',
+				configuration: 'tests/php/phpunit.xml',
+				colors: true,
+				tap: true,
+				//testdox: true,
+				staticBackup: false,
+				noGlobalsBackup: false
+			}
+		},
+
+
 		sass:   {
 			all: {
 				options: {
@@ -270,6 +288,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-phpunit');
 
 	grunt.registerTask( 'release_notes', 'Show release notes', function() {
 		grunt.log.subhead( 'Release notes' );
@@ -288,6 +307,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'release_notes'] );
 	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress', 'release_notes'] );
+	grunt.registerTask( 'test', ['phpunit', 'jshint', 'release_notes'] );
 
 	grunt.util.linefeed = '\n';
 };
