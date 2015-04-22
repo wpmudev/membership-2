@@ -568,7 +568,7 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean True if user is logged in.
 	 */
 	public static function is_logged_in() {
-		$logged = 0 != self::get_user_id();
+		$logged = is_user_logged_in();
 
 		return apply_filters( 'ms_member_is_logged_in', $logged );
 	}
