@@ -59,15 +59,6 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	protected $date;
 
 	/**
-	 * If current user is admin.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @var bool
-	 */
-	protected $_is_admin;
-
-	/**
 	 * Holds a reference to the simulated subscription.
 	 *
 	 * @var MS_Model_Relationship
@@ -75,11 +66,33 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	protected $_subscription = null;
 
 	/**
+	 * Determines if the current user is permitted to even think about using
+	 * simulation. If not allowed, then most of this class will not be used.
+	 *
+	 * @since  1.1.1.4
+	 * @return bool
+	 */
+	public static function can_simulate() {
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			// No simulation during cron jobs...
+			return false;
+		}
+
+		if ( MS_Model_Member::is_admin_user() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Called after loading model data.
 	 *
 	 * @since  1.1.0
 	 */
 	public function after_load() {
+		if ( ! $this->can_simulate() ) { return false; }
+
 		if ( $this->is_simulating() ) {
 			if ( empty( $this->date ) ) {
 				$this->date = MS_Helper_Period::current_date();
@@ -142,27 +155,6 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	}
 
 	/**
-	 * Checks if the current user is allowed to start simulation (only admin
-	 * users are allowed). Reset simulation in case the user is not allowed.
-	 *
-	 * @since  1.1.0
-	 */
-	protected function check_permissions() {
-		if ( null === $this->membership_id ) {
-			// No permission-check needed, we're not simulating anything.
-			return;
-		}
-
-		if ( null === $this->_is_admin ) {
-			$this->_is_admin = MS_Model_Member::is_admin_user();
-		}
-
-		if ( ! $this->_is_admin ) {
-			$this->reset_simulation();
-		}
-	}
-
-	/**
 	 * Check simulating status
 	 *
 	 * @since 1.0.0
@@ -170,18 +162,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @return bool True if currently simulating a membership.
 	 */
 	public function is_simulating() {
-		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
-			// No simulation during cron jobs...
+		if ( ! self::can_simulate() ) {
 			return false;
-		}
-
-		if ( did_action( 'init' ) ) {
-			/*
-			 * Only check user-permission if the init-hook was already called.
-			 * If we do this earlier it will not recognize logged-in users
-			 * correctly and reset simulation...
-			 */
-			$this->check_permissions();
 		}
 
 		return ! empty( $this->membership_id );
@@ -193,7 +175,9 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since 1.0.0
 	 */
 	private function start_simulation() {
-		$this->check_permissions();
+		if ( ! self::can_simulate() ) {
+			return false;
+		}
 
 		if ( $this->datepicker ) {
 			$this->add_filter(

@@ -124,6 +124,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		if ( MS_Model_Member::is_admin_user()
 			&& MS_Plugin::is_enabled()
 			&& ! is_network_admin()
+			&& MS_Model_Simulate::can_simulate()
 		) {
 			if ( $this->simulate->is_simulating() ) {
 				$this->add_detail_nodes();

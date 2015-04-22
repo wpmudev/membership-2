@@ -132,7 +132,6 @@ class MS_Model_Plugin extends MS_Model {
 	public function init_member() {
 		do_action( 'ms_load_member', $this );
 
-		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->member = MS_Model_Member::get_current_member();
 
 		// Deactivated status invalidates all memberships
