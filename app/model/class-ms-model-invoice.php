@@ -72,7 +72,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $external_id;
+	protected $external_id = '';
 
 	/**
 	 * Gateway ID.
@@ -82,7 +82,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $gateway_id;
+	protected $gateway_id = '';
 
 	/**
 	 * Membership ID.
@@ -92,7 +92,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var int
 	 */
-	protected $membership_id;
+	protected $membership_id = 0;
 
 	/**
 	 * User ID.
@@ -102,7 +102,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var int
 	 */
-	protected $user_id;
+	protected $user_id = 0;
 
 	/**
 	 * Membership Relationship ID.
@@ -110,7 +110,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var int
 	 */
-	protected $ms_relationship_id;
+	protected $ms_relationship_id = 0;
 
 	/**
 	 * Coupon ID.
@@ -120,7 +120,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var int
 	 */
-	protected $coupon_id;
+	protected $coupon_id = 0;
 
 	/**
 	 * Currency of this invoice.
@@ -128,7 +128,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $currency;
+	protected $currency = '';
 
 	/**
 	 * Amount value not including discounts.
@@ -136,7 +136,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var float
 	 */
-	protected $amount;
+	protected $amount = 0;
 
 	/**
 	 * Discount value.
@@ -144,7 +144,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var float
 	 */
-	protected $discount;
+	protected $discount = 0;
 
 	/**
 	 * Pro rate value.
@@ -152,7 +152,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var float
 	 */
-	protected $pro_rate;
+	protected $pro_rate = 0;
 
 	/**
 	 * Total value.
@@ -162,7 +162,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var float
 	 */
-	protected $total;
+	protected $total = 0;
 
 	/**
 	 * Inovoice status.
@@ -170,7 +170,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $status;
+	protected $status = '';
 
 	/**
 	 * Invoice for trial period.
@@ -178,7 +178,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var boolean
 	 */
-	protected $uses_trial;
+	protected $uses_trial = false;
 
 	/**
 	 * The trial period price.
@@ -186,7 +186,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.1.1.4
 	 * @var numeric
 	 */
-	protected $trial_price;
+	protected $trial_price = 0;
 
 	/**
 	 * This is the last day of the trial period. The next day is paid.
@@ -194,7 +194,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.1.1.4
 	 * @var date
 	 */
-	protected $trial_ends;
+	protected $trial_ends = '';
 
 	/**
 	 * Invoice date.
@@ -205,7 +205,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.1.1.4
 	 * @var string
 	 */
-	protected $invoice_date;
+	protected $invoice_date = '';
 
 	/**
 	 * Invoice due date.
@@ -214,7 +214,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $due_date;
+	protected $due_date = '';
 
 	/**
 	 * Invoice notes.
@@ -222,7 +222,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $notes;
+	protected $notes = '';
 
 	/**
 	 * Invoice number.
@@ -230,7 +230,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var int
 	 */
-	protected $invoice_number;
+	protected $invoice_number = 0;
 
 	/**
 	 * Tax rate value.
@@ -238,7 +238,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var float
 	 */
-	protected $tax_rate;
+	protected $tax_rate = 0;
 
 	/**
 	 * Tax name.
@@ -246,7 +246,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $tax_name;
+	protected $tax_name = '';
 
 	/**
 	 * Short, compact version of the payment description
@@ -1059,8 +1059,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Re-Calculate the subscription dates
 		$this->set_due_date();
-
-		$this->save();
 	}
 
 	/**
@@ -1118,7 +1116,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 */
 	private function get_net_amount() {
-		if ( 'paid' != $this->status ) {
+		if ( ! $this->is_paid() ) {
 			$this->refresh_amount();
 		}
 
@@ -1141,6 +1139,49 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns the tax-value in currency (opposed to the percentage value)
+	 *
+	 * @since  1.1.1.4
+	 * @return float Total tax amount
+	 */
+	private function get_tax() {
+		$tax_rate = $this->tax_rate;
+
+		if ( ! is_numeric( $tax_rate ) ) {
+			$tax_rate = 0;
+		}
+
+		$value = $this->get_net_amount() * ( $tax_rate / 100 );
+		if ( $value < 0 ) {
+			$value = 0;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Returns the tax-value in currency for the trial membership (opposed to
+	 * the percentage value)
+	 *
+	 * @since  1.1.1.4
+	 * @return float Total tax amount (trial membership)
+	 */
+	private function get_trial_tax() {
+		$tax_rate = $this->tax_rate;
+
+		if ( ! is_numeric( $tax_rate ) ) {
+			$tax_rate = 0;
+		}
+
+		$value = floatval( $this->trial_price ) * ( $tax_rate / 100 );
+		if ( $value < 0 ) {
+			$value = 0;
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Get invoice total.
 	 *
 	 * Discounting coupon and pro-rating.
@@ -1149,21 +1190,23 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 */
 	private function get_total() {
-		$this->total = $this->get_net_amount(); // Net amount
-		$this->total += $this->tax; // Tax-Rate was defined in `create_invoice()`
+		$total = $this->get_net_amount(); // Net amount
+		$total += $this->get_tax(); // Tax-Rate was defined in `create_invoice()`
 
-		if ( $this->total < 0 ) {
-			$this->total = 0;
+		if ( $total < 0 ) {
+			$total = 0;
 		}
 
 		// Set precission to 2 decimal points.
-		$this->total = round( $this->total, 2 );
+		$total = round( $total, 2 );
 
-		return apply_filters(
+		$this->total = apply_filters(
 			'ms_model_invoice_get_total',
-			$this->total,
+			$total,
 			$this
 		);
+
+		return $this->total;
 	}
 
 	/**
@@ -1173,21 +1216,23 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	private function get_trial_price() {
 		$membership = $this->get_membership();
-		$this->trial_price = $membership->trial_price; // Net amount
-		$this->trial_price += $this->trial_tax; // Tax-Rate was defined in `create_invoice()`
+		$trial_price = $membership->trial_price; // Net amount
+		$trial_price += $this->get_trial_tax(); // Tax-Rate was defined in `create_invoice()`
 
-		if ( $this->trial_price < 0 ) {
-			$this->trial_price = 0;
+		if ( $trial_price < 0 ) {
+			$trial_price = 0;
 		}
 
 		// Set precission to 2 decimal points.
-		$this->trial_price = round( $this->trial_price, 2 );
+		$trial_price = round( $trial_price, 2 );
 
-		return apply_filters(
+		$this->trial_price = apply_filters(
 			'ms_model_invoice_get_trial_price',
-			$this->trial_price,
+			$trial_price,
 			$this
 		);
+
+		return $this->trial_price;
 	}
 
 	/**
@@ -1287,15 +1332,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		} else {
 			switch ( $property ) {
 				case 'tax':
-					$tax_rate = $this->tax_rate;
-					if ( ! is_numeric( $tax_rate ) ) { $tax_rate = 0; }
-					$value = $this->get_net_amount() * ( $tax_rate / 100 );
+					$value = $this->get_tax();
 					break;
 
 				case 'trial_tax':
-					$tax_rate = $this->tax_rate;
-					if ( ! is_numeric( $tax_rate ) ) { $tax_rate = 0; }
-					$value = floatval( $this->trial_price ) * ( $tax_rate / 100 );
+					$value = $this->get_trial_tax();
 					break;
 			}
 		}
