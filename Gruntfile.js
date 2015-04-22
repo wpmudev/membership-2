@@ -129,7 +129,7 @@ module.exports = function( grunt ) {
 				testsuite: 'default',
 				configuration: 'tests/php/phpunit.xml',
 				colors: true,
-				tap: true,
+				//tap: true,
 				//testdox: true,
 				staticBackup: false,
 				noGlobalsBackup: false
