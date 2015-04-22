@@ -504,6 +504,63 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Returns the current user ID.
+	 * This function can be called before the init action hook.
+	 *
+	 * Much of this logic is taken from wp-includes/pluggable.php
+	 *
+	 * @since  1.1.1.4
+	 * @return int|false
+	 */
+	public static function get_user_id() {
+		static $User_id = false;
+
+		if ( $User_id ) {
+			// We already found the user-id, no need to do it again.
+			return $User_id;
+		}
+
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			// A cron request has no user credentials...
+			return 0;
+		}
+
+		$cookie = wp_parse_auth_cookie();
+
+		if ( ! $cookie ) {
+			// Missing, expired or corrupt cookie.
+			return 0;
+		}
+
+		$username = $cookie['username'];
+		$hmac = $cookie['hmac'];
+		$token = $cookie['token'];
+		$expiration = $cookie['expiration'];
+
+		$user = get_user_by( 'login', $username );
+
+		if ( ! $user ) {
+			// Invalid username.
+			return 0;
+		}
+
+		$pass_frag = substr( $user->user_pass, 8, 4 );
+		$key = wp_hash( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
+		$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
+		$hash = hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
+
+		if ( ! hash_equals( $hash, $hmac ) ) {
+			// Forged/expired cookie value.
+			return 0;
+		}
+
+		// Remember the user-ID so we don't have to validate everything again.
+		$User_id = $user->ID;
+
+		return $User_id;
+	}
+
+	/**
 	 * Verify is user is logged in.
 	 *
 	 * @since 1.0.0
@@ -511,7 +568,7 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean True if user is logged in.
 	 */
 	public static function is_logged_in() {
-		$logged = is_user_logged_in();
+		$logged = 0 != self::get_user_id();
 
 		return apply_filters( 'ms_member_is_logged_in', $logged );
 	}
@@ -530,6 +587,12 @@ class MS_Model_Member extends MS_Model {
 	static public function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
 		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
 			$is_admin = false;
+			$default_user_id = null;
+
+			if ( empty( $user_id ) ) {
+				$default_user_id = $user_id;
+				$user_id = self::get_user_id();
+			}
 
 			if ( is_super_admin( $user_id ) ) {
 				$is_admin = true;
@@ -555,8 +618,8 @@ class MS_Model_Member extends MS_Model {
 			);
 			self::$_is_admin_user[ $user_id ] = $res;
 
-			if ( empty( $user_id ) ) {
-				self::$_is_admin_user[ get_current_user_id() ] = $res;
+			if ( null !== $default_user_id ) {
+				self::$_is_admin_user[ $default_user_id ] = $res;
 			}
 		}
 

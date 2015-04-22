@@ -33,15 +33,6 @@
 class MS_Model_Transient extends MS_Model {
 
 	/**
-	 * Singleton instance.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @staticvar MS_Model_Option
-	 */
-	public static $instance;
-
-	/**
 	 * Save content in wp_option table.
 	 *
 	 * Update WP cache and instance singleton.
@@ -61,7 +52,6 @@ class MS_Model_Transient extends MS_Model {
 
 		set_transient( $class, $settings );
 
-		$this->instance = $this;
 		$this->after_save();
 
 		wp_cache_set( $class, $this, 'MS_Model_Transient' );

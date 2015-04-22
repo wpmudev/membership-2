@@ -33,15 +33,6 @@
 class MS_Model_Simulate extends MS_Model_Transient {
 
 	/**
-	 * Singleton instance.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @staticvar MS_Model_Settings
-	 */
-	public static $instance;
-
-	/**
 	 * The membership ID to simulate.
 	 *
 	 * @since 1.0.0
@@ -79,9 +70,9 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Holds a reference to the simulated subscription.
 	 *
-	 * @var MS_Model_Relationship.
+	 * @var MS_Model_Relationship
 	 */
-	protected $subscription = null;
+	protected $_subscription = null;
 
 	/**
 	 * Called after loading model data.
@@ -123,8 +114,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @since 1.1.0
 	 */
-	public function add_simulation_membership( $ms_relationships ) {
-		if ( ! isset( $ms_relationships[ $this->membership_id ] ) ) {
+	public function add_simulation_membership( $subscriptions ) {
+		if ( ! isset( $subscriptions[ $this->membership_id ] ) ) {
 			$this->start_simulation();
 
 			$subscription = MS_Model_Relationship::create_ms_relationship(
@@ -135,18 +126,19 @@ class MS_Model_Simulate extends MS_Model_Transient {
 
 			$membership = $subscription->get_membership();
 			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
-				|| MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
+				|| MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
+			) {
 				$subscription->expire_date = '2999-12-31';
 			}
 
 			$key = 'ms_model_relationship--1';
 			MS_Factory::set_singleton( $key, $subscription );
 
-			$this->subscription = $subscription;
-			$ms_relationships[ $this->membership_id ] = $subscription;
+			$this->_subscription = $subscription;
+			$subscriptions[ $this->membership_id ] = $subscription;
 		}
 
-		return $ms_relationships;
+		return $subscriptions;
 	}
 
 	/**
@@ -156,6 +148,11 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since  1.1.0
 	 */
 	protected function check_permissions() {
+		if ( null === $this->membership_id ) {
+			// No permission-check needed, we're not simulating anything.
+			return;
+		}
+
 		if ( null === $this->_is_admin ) {
 			$this->_is_admin = MS_Model_Member::is_admin_user();
 		}
@@ -173,7 +170,19 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @return bool True if currently simulating a membership.
 	 */
 	public function is_simulating() {
-		$this->check_permissions();
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			// No simulation during cron jobs...
+			return false;
+		}
+
+		if ( did_action( 'init' ) ) {
+			/*
+			 * Only check user-permission if the init-hook was already called.
+			 * If we do this earlier it will not recognize logged-in users
+			 * correctly and reset simulation...
+			 */
+			$this->check_permissions();
+		}
 
 		return ! empty( $this->membership_id );
 	}
@@ -183,7 +192,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @since 1.0.0
 	 */
-	public function start_simulation() {
+	private function start_simulation() {
 		$this->check_permissions();
 
 		if ( $this->datepicker ) {
@@ -225,8 +234,11 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since 1.0.0
 	 */
 	public function reset_simulation() {
+		if ( null === $this->membership_id ) { return; }
+
 		$this->membership_id = null;
 		$this->date = null;
+		$this->subscription = null;
 
 		$this->remove_filter(
 			'ms_helper_period_current_date',
@@ -276,7 +288,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	public function simulation_infos() {
 		$data = array();
 		$data['membership_id'] = $this->membership_id;
-		$data['subscription'] = $this->subscription;
+		$data['subscription'] = $this->_subscription;
 		$data['simulate_date'] = $this->date;
 		$data['datepicker'] = $this->datepicker;
 

@@ -161,7 +161,9 @@ class MS_Controller_Adminbar extends MS_Controller {
 				$this->simulate->membership_id = $new_id;
 
 				$target = wp_get_referer();
-				if ( $this->simulate->is_simulating() && false !== strpos( $target, 'wp-admin' ) ) {
+				if ( $this->simulate->is_simulating()
+					&& false !== strpos( $target, 'wp-admin' )
+				) {
 					$redirect = admin_url();
 				}
 			}
