@@ -245,17 +245,20 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 
 		$url = MS_Model_Pages::get_page_url( $current );
 
+		$classes = array(
+			'ms-membership-details-wrapper',
+			'ms-signup',
+			'ms-membership-' . $membership->id,
+			'ms-type-' . $membership->type,
+			'ms-payment-' . $membership->payment_type,
+			$membership->trial_period_enabled ? 'ms-with-trial' : 'ms-no-trial',
+			'ms-status-' . ( $subscription ? $subscription->status : 'none' ),
+			'ms-subscription-' . ($subscription ? $subscription->id : 'none' ),
+		);
 		?>
 		<form action="<?php echo esc_url( $url ); ?>" class="ms-membership-form" method="post">
-			<?php
-			wp_nonce_field( $fields['action']['value'] );
-
-			foreach ( $fields as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
-			?>
 			<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ); ?>"
-				class="ms-membership-details-wrapper ms-signup">
+				class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 				<div class="ms-top-bar">
 					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
 				</div>
@@ -310,6 +313,12 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 							'value' => esc_html( $this->data[ "{$cancel_action}_text" ] ),
 						);
 						MS_Helper_Html::html_link( $link );
+					}
+
+					wp_nonce_field( $fields['action']['value'] );
+
+					foreach ( $fields as $field ) {
+						MS_Helper_Html::html_element( $field );
 					}
 
 					MS_Helper_Html::html_element( $button );
