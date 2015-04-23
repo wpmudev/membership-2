@@ -18,6 +18,7 @@ class TData {
 		$wpdb->query( "TRUNCATE TABLE {$wpdb->posts};" );
 		$wpdb->query( "TRUNCATE TABLE {$wpdb->postmeta};" );
 		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '%transient_%';" );
+		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'MS_%';" );
 		self::$ids = array(
 			'user' => array(),
 			'post' => array(),
@@ -163,5 +164,27 @@ class TData {
 		);
 
 		return $subscription;
+	}
+
+	/**
+	 * Activates a specific Add-on
+	 *
+	 * @since  1.0.0
+	 * @param  string $key Addon-ID
+	 */
+	public static function enable_addon( $key ) {
+		$addons = MS_Factory::load( 'MS_Model_Addon' );
+		$addons->enable( $key );
+	}
+
+	/**
+	 * Deactivates a specific Add-on
+	 *
+	 * @since  1.0.0
+	 * @param  string $key Addon-ID
+	 */
+	public static function disable_addon( $key ) {
+		$addons = MS_Factory::load( 'MS_Model_Addon' );
+		$addons->disable( $key );
 	}
 };
