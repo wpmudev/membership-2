@@ -87,17 +87,28 @@ class TData {
 		$memberships = array(
 			'simple' => array(
 				'name' => 'Simple Membership',
-				'type' => 'simple',
-				'payment_type' => 'permanent',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_PERMANENT,
 				'price' => 29,
 				'rule_values' => array(),
 			),
 			'simple-trial' => array(
 				'name' => 'Simple Membership with Trial',
-				'type' => 'simple',
-				'payment_type' => 'permanent',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_PERMANENT,
 				'price' => 29,
 				'rule_values' => array(),
+				'trial_period_enabled' => true,
+				'trial_price' => 0, // Currently plugin only supports trial price = 0
+				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
+			),
+			'limited-trial' => array(
+				'name' => 'Limited Membership with Trial',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_FINITE,
+				'price' => 19,
+				'rule_values' => array(),
+				'period' => array( 'period_unit' => 28, 'period_type' => 'days' ),
 				'trial_period_enabled' => true,
 				'trial_price' => 0, // Currently plugin only supports trial price = 0
 				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
