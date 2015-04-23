@@ -40,7 +40,6 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		// Not paid yet, so it is pending
 		$this->assertEquals( MS_Helper_Period::current_date(), $subscription->start_date );
 		$this->assertEquals( '', $subscription->expire_date );
-		$this->assertEquals( '', $subscription->trial_expire_date );
 		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
 
 		$invoice = $subscription->get_current_invoice();
@@ -56,7 +55,6 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status, 'Active status' );
 		$this->assertEquals( MS_Helper_Period::current_date(), $subscription->start_date );
 		$this->assertEquals( '', $subscription->expire_date );
-		$this->assertEquals( '', $subscription->trial_expire_date );
 	}
 
 	/**
@@ -121,17 +119,13 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$membership_id = TData::id( 'membership', 'simple-trial' );
 		$subscription = TData::subscribe( $user_id, $membership_id );
 
-		$sub_id = $subscription->id;
-		$this->assertFalse( empty( $sub_id ) );
-		$this->assertEquals( $membership_id, $subscription->membership_id );
-		$this->assertEquals( $user_id, $subscription->user_id );
-
 		// Not paid yet, so it is pending
+
 		$trial_end = MS_Helper_Period::add_interval( 14, 'days' );
 		$start_date = MS_Helper_Period::current_date();
 		$this->assertEquals( $start_date, $subscription->start_date );
 		$this->assertEquals( '', $subscription->expire_date );
-		$this->assertEquals( '', $subscription->trial_expire_date );
+		$this->assertEquals( $trial_end, $subscription->trial_expire_date );
 		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
 
 		$invoice = $subscription->get_current_invoice();
@@ -143,6 +137,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( $subscription, $invoice_subscription );
 
 		// Paying a trial subscription with the FREE gateway will start the trial.
+
 		$invoice->pay_it( 'free', '' );
 		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status, 'Invoice status' );
 		$this->assertEquals( MS_Model_Relationship::STATUS_TRIAL, $subscription->status, 'Trial status' );
@@ -245,17 +240,12 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 	 * Check limited (finite) membership with trial period.
 	 * @test
 	 */
-	function limited_trial_subscription() {
+	function limited_trial_subscription_date_test() {
 		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
 
 		$user_id = TData::id( 'user', 'editor' );
 		$membership_id = TData::id( 'membership', 'limited-trial' );
 		$subscription = TData::subscribe( $user_id, $membership_id );
-
-		$sub_id = $subscription->id;
-		$this->assertFalse( empty( $sub_id ) );
-		$this->assertEquals( $membership_id, $subscription->membership_id );
-		$this->assertEquals( $user_id, $subscription->user_id );
 
 		// These are the expected start and expire dates.
 		$start_date = MS_Helper_Period::current_date();
@@ -267,7 +257,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 
 		$this->assertEquals( $start_date, $subscription->start_date );
 		$this->assertEquals( '', $subscription->expire_date );
-		$this->assertEquals( '', $subscription->trial_expire_date );
+		$this->assertEquals( $trial_end, $subscription->trial_expire_date );
 
 		// Activate trial status to see the changed dates
 
@@ -292,5 +282,44 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( $start_date, $subscription->start_date );
 		$this->assertEquals( $limit_end2, $subscription->expire_date );
 		$this->assertEquals( $trial_end, $subscription->trial_expire_date );
+	}
+
+	/**
+	 * Check limited (finite) membership without trial period.
+	 * @test
+	 */
+	function limited_subscription_date_test() {
+		TData::disable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'limited-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// These are the expected start and expire dates.
+		$start_date = MS_Helper_Period::current_date();
+		$limit_end1 = MS_Helper_Period::add_interval( 28, 'days', $start_date );
+		$limit_end2 = MS_Helper_Period::add_interval( 28, 'days', $limit_end1 );
+
+		// Pending subscription has only start date.
+
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( '', $subscription->expire_date );
+		$this->assertEquals( '', $subscription->trial_expire_date );
+
+		// Activate subscription and check the changed dates
+
+		$invoice = $subscription->get_current_invoice();
+		$invoice->pay_it( 'free', '' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( $limit_end1, $subscription->expire_date );
+		$this->assertEquals( '', $subscription->trial_expire_date );
+
+		// Check the dates after the SECOND payment
+
+		$invoice = $subscription->get_current_invoice();
+		$invoice->pay_it( 'stripe', 'external_100' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( $limit_end2, $subscription->expire_date );
+		$this->assertEquals( '', $subscription->trial_expire_date );
 	}
 }
