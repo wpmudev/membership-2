@@ -1423,8 +1423,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		if ( $this->is_trial_eligible() && 0 != $total_price ) {
-			$invoice = $this->get_current_invoice( false );
-
 			if ( 0 == absint( $trial_price ) ) {
 				if ( $short ) {
 					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type ) {
@@ -1486,10 +1484,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Updates the subscription status.
 		if ( MS_Gateway_Free::ID == $gateway && $this->is_trial_eligible() ) {
 			// Calculate the final trial expire date.
+
+			/*
+			 * Important:
+			 * FIRST set the TRIAL EXPIRE DATE, otherwise status is set to
+			 * active instead of trial!
+			 */
 			$this->set_trial_expire_date();
 
 			$this->set_status( MS_Model_Relationship::STATUS_TRIAL );
 		} else {
+			/*
+			 * Important:
+			 * FIRST set the SUBSCRIPTION STATUS, otherwise the expire date is
+			 * based on start_date instead of trial_expire_date!
+			 */
+			$this->set_status( MS_Model_Relationship::STATUS_ACTIVE );
+
 			/*
 			 * Renew period. Every time this function is called, the expire
 			 * date is extended for 1 period
@@ -1498,8 +1509,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$this->expire_date, // Extend past the current expire date.
 				true                // Grant the user a full payment interval.
 			);
-
-			$this->set_status( MS_Model_Relationship::STATUS_ACTIVE );
 		}
 
 		$this->save();
@@ -1615,6 +1624,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$membership = $this->get_membership();
 		$calc_status = null;
 		$check_trial = $this->is_trial_eligible();
+
+		if ( ! empty( $this->payments ) ) {
+			/*
+			 * The user already paid for this membership, so don't check for
+			 * trial status anymore
+			 */
+			$check_trial = false;
+		}
 
 		// If the start-date is not reached yet, then set membership to Pending.
 		if ( empty( $calc_status )

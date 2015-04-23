@@ -789,6 +789,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$this->external_id = $external_id;
 		$this->status = self::STATUS_PAID;
 		$this->save();
+
 		$subscription = $this->get_subscription();
 
 		// Save details on the payment.
