@@ -131,7 +131,7 @@ module.exports = function( grunt ) {
 				colors: true,
 				//tap: true,
 				//testdox: true,
-				stopOnError: true,
+				//stopOnError: true,
 				staticBackup: false,
 				noGlobalsBackup: false
 			}

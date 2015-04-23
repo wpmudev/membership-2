@@ -43,7 +43,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( '', $subscription->trial_expire_date );
 		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 		$this->assertEquals( MS_Model_Invoice::STATUS_BILLED, $invoice->status, 'Invoice status' );
 		$this->assertEquals( $invoice->ms_relationship_id, $subscription->id );
 
@@ -82,11 +82,11 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 
 		$membership1_id = TData::id( 'membership', 'simple' );
 		$subscription1 = TData::subscribe( $user_id, $membership1_id );
-		$invoice1 = MS_Model_Invoice::get_current_invoice( $subscription1 );
+		$invoice1 = $subscription1->get_current_invoice();
 
 		$membership2_id = TData::id( 'membership', 'simple-trial' );
 		$subscription2 = TData::subscribe( $user_id, $membership2_id );
-		$invoice2 = MS_Model_Invoice::get_current_invoice( $subscription2 );
+		$invoice2 = $subscription2->get_current_invoice();
 
 		// Each object has some unique fields, for this test we manipulate these
 		// data to see if all other properties are equal.
@@ -131,7 +131,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( '', $subscription->trial_expire_date );
 		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 		$this->assertEquals( MS_Model_Invoice::STATUS_BILLED, $invoice->status, 'Invoice status' );
 		$this->assertEquals( $invoice->ms_relationship_id, $subscription->id );
 		$this->assertTrue( $invoice->uses_trial );
@@ -144,7 +144,35 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status, 'Invoice status' );
 		$this->assertEquals( MS_Model_Relationship::STATUS_TRIAL, $subscription->status, 'Trial status' );
 		$this->assertEquals( $start_date, $subscription->start_date );
-		$this->assertEquals( '', $subscription->expire_date );
+		$this->assertEquals( $trial_end, $subscription->expire_date );
+		$this->assertEquals( $trial_end, $subscription->trial_expire_date );
+	}
+
+	/**
+	 * Make sure access is granted even after cancellation.
+	 * @test
+	 */
+	function simple_trial_cancellation_access() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+		$trial_end = MS_Helper_Period::add_interval( 14, 'days' );
+		$invoice = $subscription->get_current_invoice();
+		$invoice->pay_it( 'free', '' );
+
+		// Now our subscription is in active TRIAL status.
+
+		$this->assertEquals( MS_Model_Relationship::STATUS_TRIAL, $subscription->status, 'Trial status' );
+		$this->assertEquals( $trial_end, $subscription->expire_date );
+		$this->assertEquals( $trial_end, $subscription->trial_expire_date );
+
+		// Now cancel the subscription and check if status and expire date are correct.
+
+		$subscription->cancel_membership();
+		$this->assertEquals( MS_Model_Relationship::STATUS_CANCELED, $subscription->status, 'Cancel status' );
+		$this->assertEquals( $trial_end, $subscription->expire_date );
 		$this->assertEquals( $trial_end, $subscription->trial_expire_date );
 	}
 }
