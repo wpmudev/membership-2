@@ -36,15 +36,6 @@
 class MS_Model_Addon extends MS_Model_Option {
 
 	/**
-	 * Singleton instance.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @staticvar MS_Model_Settings
-	 */
-	public static $instance;
-
-	/**
 	 * Add-on name constants.
 	 *
 	 * @deprecated Since 1.1.0 the Add-On constants are deprecated.
