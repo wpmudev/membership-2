@@ -288,10 +288,16 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function purchase_button( $ms_relationship, $invoice ) {
+	public function purchase_button( $subscription, $invoice ) {
 		// Get only active gateways
 		$gateways = MS_Model_Gateway::get_gateways( true );
 		$data = array();
+
+		$membership = $subscription->get_membership();
+		$is_free = false;
+		if ( $membership->is_free() ) { $is_free = true; }
+		elseif ( 0 == $invoice->total ) { $is_free = true; }
+		elseif ( $invoice->uses_trial ) { $is_free = true; }
 
 		// show gateway purchase button for every active gateway
 		foreach ( $gateways as $gateway ) {
@@ -300,14 +306,12 @@ class MS_Controller_Gateway extends MS_Controller {
 			// Skip gateways that are not configured.
 			if ( ! $gateway->is_configured() ) { continue; }
 
-			$data['ms_relationship'] = $ms_relationship;
+			$data['ms_relationship'] = $subscription;
 			$data['gateway'] = $gateway;
 			$data['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
 
-			$membership = $ms_relationship->get_membership();
-
 			// Free membership, show only free gateway
-			if ( $membership->is_free() || 0 == $invoice->total ) {
+			if ( $is_free ) {
 				if ( MS_Gateway_Free::ID !== $gateway->id ) {
 					continue;
 				}
@@ -368,7 +372,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				$html = apply_filters(
 					'ms_controller_gateway_purchase_button_'. $gateway->id,
 					$view->to_html(),
-					$ms_relationship,
+					$subscription,
 					$this
 				);
 
