@@ -345,15 +345,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				// Initial status
 				$subscription->name = "user_id: $user_id, membership_id: $membership_id";
 				$subscription->description = $subscription->name;
-				$subscription->set_start_date();
 				$subscription->trial_period_completed = false;
 				break;
 		}
 
+		$subscription->config_period(); // Needed to initialize start/expire.
+
 		$membership = $subscription->get_membership();
 		if ( 'admin' == $gateway_id || $membership->is_free() ) {
 			$subscription->status = self::STATUS_ACTIVE;
-			$subscription->config_period(); // Needed to initialize start/expire.
 
 			if ( ! $subscription->is_system() && ! $is_simulated ) {
 				$subscription->save();
@@ -818,13 +818,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *               Default will be calculated.
 	 */
 	public function set_trial_expire_date( $trial_expire_date = null ) {
-		$valid_date = MS_Helper_Period::is_after(
-			$trial_expire_date,
-			$this->start_date
-		);
+		if ( $this->is_trial_eligible() ) {
+			$valid_date = MS_Helper_Period::is_after(
+				$trial_expire_date,
+				$this->start_date
+			);
 
-		if ( ! $valid_date ) {
-			$trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
+			if ( ! $valid_date ) {
+				$trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
+			}
+		} else {
+			// Do NOT set any trial-expire-date when trial period is not available!
+			$trial_expire_date = '';
 		}
 
 		$this->trial_expire_date = apply_filters(
@@ -858,14 +863,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *               Default will be calculated.
 	 */
 	public function set_expire_date( $expire_date = null ) {
-		$valid_date = MS_Helper_Period::is_after(
-			$expire_date,
-			$this->start_date,
-			$this->trial_expire_date
+		$no_expire_date = array(
+			self::STATUS_DEACTIVATED,
+			self::STATUS_PENDING,
 		);
 
-		if ( ! $valid_date ) {
-			$expire_date = $this->calc_expire_date( $this->start_date );
+		if ( ! in_array( $this->status, $no_expire_date ) ) {
+			$valid_date = MS_Helper_Period::is_after(
+				$expire_date,
+				$this->start_date,
+				$this->trial_expire_date
+			);
+
+			if ( ! $valid_date ) {
+				$expire_date = $this->calc_expire_date( $this->start_date );
+			}
+		} else {
+			// Do NOT set any expire-date when subscription is not active!
+			$expire_date = '';
 		}
 
 		$this->expire_date = apply_filters(
@@ -954,7 +969,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 * When in trial period and gateway does not send automatic recurring
 		 * payment notifications, the expire date is equal to trial expire date.
 		 */
-		if ( $this->is_trial_eligible() && ! empty( $gateway->manual_payment ) ) {
+		if ( $this->is_trial_eligible() ) {
 			$expire_date = $start_date;
 		} else {
 			if ( $paid ) {
