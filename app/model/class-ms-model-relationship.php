@@ -1140,6 +1140,36 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Convenience function to access current invoice for this subscription.
+	 *
+	 * @since  1.1.1.4
+	 * @return MS_Model_Invoice
+	 */
+	public function get_current_invoice( $create_missing = true ) {
+		return MS_Model_Invoice::get_current_invoice( $this, $create_missing );
+	}
+
+	/**
+	 * Convenience function to access next invoice for this subscription.
+	 *
+	 * @since  1.1.1.4
+	 * @return MS_Model_Invoice
+	 */
+	public function get_next_invoice( $create_missing = true ) {
+		return MS_Model_Invoice::get_next_invoice( $this, $create_missing );
+	}
+
+	/**
+	 * Convenience function to access previous invoice for this subscription.
+	 *
+	 * @since  1.1.1.4
+	 * @return MS_Model_Invoice
+	 */
+	public function get_previous_invoice( $status = null ) {
+		return MS_Model_Invoice::get_previous_invoice( $this, $status );
+	}
+
+	/**
 	 * Get a list of all invoices linked to this relationship
 	 *
 	 * @since  1.1.0
@@ -1378,7 +1408,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		if ( $this->is_trial_eligible() && 0 != $total_price ) {
-			$invoice = MS_Model_Invoice::get_current_invoice( $this, false );
+			$invoice = $this->get_current_invoice( false );
 
 			if ( 0 == absint( $trial_price ) ) {
 				if ( $short ) {
@@ -1972,12 +2002,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				if ( $auto_renew ) {
 					if ( $remaining_days < $invoice_before_days ) {
 						// Create a new invoice.
-						$invoice = MS_Model_Invoice::get_next_invoice( $this );
+						$invoice = $this->get_next_invoice();
 					} else {
-						$invoice = MS_Model_Invoice::get_current_invoice( $this );
+						$invoice = $this->get_current_invoice();
 					}
 				} else {
-					$invoice = MS_Model_Invoice::get_current_invoice( $this );
+					$invoice = $this->get_current_invoice();
 				}
 
 				// Advanced communications Add-on.
