@@ -44,6 +44,9 @@ class MS_View_Frontend_Payment extends MS_View {
 			}
 		}
 
+		// Check if the user goes through a trial period before first payment.
+		$is_trial = $invoice->uses_trial;
+
 		if ( ! MS_Model_Member::is_admin_user()
 			&& ! $cancel_warning
 			&& $membership->is_free()
@@ -182,21 +185,39 @@ class MS_View_Frontend_Payment extends MS_View {
 						</td>
 					</tr>
 
-					<?php if ( $invoice->uses_trial && $invoice->trial_ends ) : ?>
-						<tr>
-							<td class="ms-title-column">
-								<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
-							</td>
-							<td class="ms-desc-column"><?php
-								echo MS_Helper_Period::format_date( $invoice->trial_ends );
-							?></td>
-						</tr>
+					<?php if ( $is_trial ) : ?>
 						<tr>
 							<td class="ms-title-column">
 								<?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class="ms-desc-column"><?php
 								echo MS_Helper_Period::format_date( $invoice->due_date );
+							?></td>
+						</tr>
+						<tr>
+							<td class="ms-title-column">
+								<?php _e( 'Trial price', MS_TEXT_DOMAIN ); ?>
+							</td>
+							<td class="ms-desc-column">
+							<?php
+							if ( $invoice->trial_price > 0 ) {
+								printf(
+									'<span class="price">%s %s</span>',
+									$invoice->currency,
+									MS_Helper_Billing::format_price( $invoice->trial_price )
+								);
+							} else {
+								_e( 'Free', MS_TEXT_DOMAIN );
+							}
+							?>
+							</td>
+						</tr>
+						<tr>
+							<td class="ms-title-column">
+								<?php _e( 'End of trial period', MS_TEXT_DOMAIN ); ?>
+							</td>
+							<td class="ms-desc-column"><?php
+								echo MS_Helper_Period::format_date( $invoice->trial_ends );
 							?></td>
 						</tr>
 					<?php endif; ?>

@@ -73,11 +73,6 @@ class MS_View_Shortcode_Account extends MS_View {
 								<th class="ms-col-status"><?php
 									_e( 'Status', MS_TEXT_DOMAIN );
 								?></th>
-								<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) :  ?>
-									<th class="ms-col-trial-end"><?php
-										_e( 'Trial expire date', MS_TEXT_DOMAIN );
-									?></th>
-								<?php endif; ?>
 								<th class="ms-col-expire-date"><?php
 									_e( 'Expire date', MS_TEXT_DOMAIN );
 								?></th>
@@ -90,6 +85,12 @@ class MS_View_Shortcode_Account extends MS_View {
 								MS_Model_Relationship::STATUS_PENDING,
 								MS_Model_Relationship::STATUS_WAITING,
 								MS_Model_Relationship::STATUS_DEACTIVATED,
+							);
+
+							// These subscriptions display the trial-expire date
+							$trial_expire_list = array(
+								MS_Model_Relationship::STATUS_TRIAL,
+								MS_Model_Relationship::STATUS_TRIAL_EXPIRED,
 							);
 
 							foreach ( $this->data['subscription'] as $subscription ) :
@@ -123,20 +124,13 @@ class MS_View_Shortcode_Account extends MS_View {
 									}
 									?>
 									</td>
-									<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
-										<td class="ms-col-trial-end"><?php
-										if ( $subscription->has_trial() ) {
-											echo esc_html(
-												MS_Helper_Period::format_date( $subscription->trial_expire_date )
-											);
-										} else {
-											_e( 'No trial', MS_TEXT_DOMAIN );
-										}
-										?></td>
-									<?php endif; ?>
 									<td class="ms-col-expire-date"><?php
 									if ( in_array( $subscription->status, $no_expire_list ) ) {
 										echo '&nbsp;';
+									} elseif ( in_array( $subscription->status, $trial_expire_list ) ) {
+										echo esc_html(
+											MS_Helper_Period::format_date( $subscription->trial_expire_date )
+										);
 									} elseif ( $subscription->expire_date ) {
 										echo esc_html(
 											MS_Helper_Period::format_date( $subscription->expire_date )
