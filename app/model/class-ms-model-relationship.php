@@ -1422,28 +1422,40 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this->payments = array();
 		}
 
-		$this->payments[] = array(
-			'date' => MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT ),
-			'amount' => $amount,
-			'gateway' => $gateway,
-		);
-
 		// Update the payment-gateway.
 		$this->gateway_id = $gateway;
 
+		if ( $amount > 0 ) {
+			$this->payments[] = array(
+				'date' => MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT ),
+				'amount' => $amount,
+				'gateway' => $gateway,
+			);
+		}
+
 		// Upon first payment set the start date to current date.
-		if ( 1 == count( $this->payments ) ) {
+		if ( 1 == count( $this->payments ) && ! $this->trial_expire_date ) {
 			$this->set_start_date();
 		}
 
-		/*
-		 * Renew period. Every time this function is called, the expire
-		 * date is extended for 1 period
-		 */
-		$this->expire_date = $this->calc_expire_date(
-			$this->expire_date, // Extend past the current expire date.
-			true                // Grant the user a full payment interval.
-		);
+		// Updates the subscription status.
+		if ( MS_Gateway_Free::ID == $gateway && $this->is_trial_eligible() ) {
+			// Calculate the final trial expire date.
+			$this->set_trial_expire_date();
+
+			$this->set_status( MS_Model_Relationship::STATUS_TRIAL );
+		} else {
+			/*
+			 * Renew period. Every time this function is called, the expire
+			 * date is extended for 1 period
+			 */
+			$this->expire_date = $this->calc_expire_date(
+				$this->expire_date, // Extend past the current expire date.
+				true                // Grant the user a full payment interval.
+			);
+
+			$this->set_status( MS_Model_Relationship::STATUS_ACTIVE );
+		}
 
 		$this->save();
 	}
@@ -1480,6 +1492,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} else {
 			// Check if this status is still valid.
 			$calc_status = $this->calculate_status( $status );
+			error_log( 'Set Status ' . $status . ': ' . $calc_status );
 			$this->handle_status_change( $calc_status );
 		}
 
@@ -1557,24 +1570,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$membership = $this->get_membership();
 		$calc_status = null;
-		$check_trial = false;
-
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-			// Trial memberships globally disabled.
-			$check_trial = false;
-		} elseif ( ! $membership->trial_period_enabled ) {
-			// This membership does not use trial periods.
-			$check_trial = false;
-		} elseif ( empty( $this->trial_expire_date ) ) {
-			// No Trial date defined.
-			$check_trial = false;
-		} elseif ( $this->start_date > $this->trial_expire_date ) {
-			// Invalid trial date (i.e. trial from previous subscription)
-			$check_trial = false;
-		} else {
-			// Otherwise: Check the trial status!
-			$check_trial = true;
-		}
+		$check_trial = $this->is_trial_eligible();
 
 		// If the start-date is not reached yet, then set membership to Pending.
 		if ( empty( $calc_status )

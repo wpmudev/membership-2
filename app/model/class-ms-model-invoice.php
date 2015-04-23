@@ -696,6 +696,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice->trial_ends = $subscription->trial_expire_date;
 		}
 
+		$invoice->save();
+
 		// Refresh the tax-rate and payment description.
 		$invoice->total_amount_changed();
 
@@ -797,10 +799,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$this->external_id = $external_id;
 		$this->status = self::STATUS_PAID;
 		$this->save();
+		$subscription = $this->get_subscription();
 
-		if ( $this->total > 0 ) {
-			// Save details on the payment.
-			$subscription = $this->get_subscription();
+		// Save details on the payment.
+		if ( 0 == $this->total || MS_Gateway_Free::ID == $gateway_id ) {
+			$subscription->add_payment( 0, MS_Gateway_Free::ID );
+		} else {
 			$subscription->add_payment( $this->total, $gateway_id );
 		}
 
@@ -816,7 +820,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		 *
 		 * @since 1.1.0
 		 */
-		do_action( 'ms_invoice_paid', $this );
+		do_action( 'ms_invoice_paid', $this, $subscription );
 	}
 
 	/**
@@ -852,78 +856,65 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
 			$membership = $subscription->get_membership();
 
-			// List of status values that are considered "paid" for free memberships.
-			$skip_free = array(
-				self::STATUS_PENDING,
-			);
+			switch ( $this->status ) {
+				case self::STATUS_BILLED:
+					break;
 
-			if ( 0 == $this->total && in_array( $this->status, $skip_free ) ) {
-				$this->pay_it( MS_Gateway_Free::ID, '' );
-			} else {
-				switch ( $this->status ) {
-					case self::STATUS_BILLED:
-						break;
+				case self::STATUS_PAID:
+					if ( $this->total > 0 ) {
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $subscription );
+					}
 
-					case self::STATUS_PAID:
-						if ( $this->total > 0 ) {
-							MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $subscription );
-						}
+					do_action(
+						'ms_model_invoice_changed-paid',
+						$this,
+						$member
+					);
 
-						do_action(
-							'ms_model_invoice_changed-paid',
-							$this,
-							$member
+					// Check for moving memberships
+					if ( MS_Model_Relationship::STATUS_PENDING == $subscription->status
+						&& $subscription->move_from_id
+						&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+					) {
+						$move_from = MS_Model_Relationship::get_subscription(
+							$subscription->user_id,
+							$subscription->move_from_id
 						);
 
-						// Check for moving memberships
-						if ( MS_Model_Relationship::STATUS_PENDING == $subscription->status
-							&& $subscription->move_from_id
-							&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
-						) {
-							$move_from = MS_Model_Relationship::get_subscription(
-								$subscription->user_id,
-								$subscription->move_from_id
-							);
-
-							if ( $move_from->is_valid() ) {
-								$move_from->set_status( MS_Model_Relationship::STATUS_CANCELED );
-								$move_from->save();
-							}
+						if ( $move_from->is_valid() ) {
+							$move_from->set_status( MS_Model_Relationship::STATUS_CANCELED );
+							$move_from->save();
 						}
+					}
 
-						// The trial period info gets updated after MS_Model_Relationship::config_period()
-						$trial_period = $subscription->is_trial_eligible();
-						$subscription->current_invoice_number = max(
-							$subscription->current_invoice_number,
-							$this->invoice_number + 1
-						);
-						$member->is_member = true;
-						$member->active = true;
+					// The trial period info gets updated after MS_Model_Relationship::config_period()
+					$trial_period = $subscription->is_trial_eligible();
+					$subscription->current_invoice_number = max(
+						$subscription->current_invoice_number,
+						$this->invoice_number + 1
+					);
+					$member->is_member = true;
+					$member->active = true;
+					break;
 
-						// Updates the subscription status and expire-date.
-						$subscription->set_status( MS_Model_Relationship::STATUS_ACTIVE );
-						$subscription->config_period(); // Needed to extend expire date.
-						break;
+				case self::STATUS_DENIED:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $subscription );
+					break;
 
-					case self::STATUS_DENIED:
-						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_DENIED, $subscription );
-						break;
+				case self::STATUS_PENDING:
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $subscription );
+					break;
 
-					case self::STATUS_PENDING:
-						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_PENDING, $subscription );
-						break;
-
-					default:
-						do_action( 'ms_model_invoice_changed-unknown', $this );
-						break;
-				}
-
-				$member->save();
-				$subscription->gateway_id = $this->gateway_id;
-				$subscription->save();
-				$this->gateway_id = $this->gateway_id;
-				$this->save();
+				default:
+					do_action( 'ms_model_invoice_changed-unknown', $this );
+					break;
 			}
+
+			$member->save();
+			$subscription->gateway_id = $this->gateway_id;
+			$subscription->save();
+			$this->gateway_id = $this->gateway_id;
+			$this->save();
 		}
 
 		return apply_filters(
