@@ -149,12 +149,8 @@ class MS_Factory {
 
 			$model->after_load();
 
-			// Store the new object
-			self::$singleton[$key] = apply_filters(
-				'ms_factory_load_' . $class,
-				$model,
-				$model_id
-			);
+			// Store the new object in our singleton collection.
+			self::set_singleton( $model, $key, $model_id );
 
 			self::prepare_obj( self::$singleton[$key] );
 		}
@@ -175,8 +171,27 @@ class MS_Factory {
 	 * @param string $key
 	 * @param any $obj
 	 */
-	static public function set_singleton( $key, $obj ) {
-		self::$singleton[$key] = $obj;
+	static public function set_singleton( $obj, $key = null, $model_id = null ) {
+		$class = get_class( $obj );
+
+		if ( null === $model_id ) {
+			$model_id = intval( $obj->id );
+		}
+
+		if ( null === $key ) {
+			$key = strtolower( $class . '-' . $model_id );
+		}
+
+		// This flag is used by MS_Model::store_singleton()
+		if ( property_exists( $obj, '_is_singleton' ) ) {
+			$obj->_is_singleton = true;
+		}
+
+		self::$singleton[ $key ] = apply_filters(
+			'ms_factory_set_' . $class,
+			$obj,
+			$model_id
+		);
 	}
 
 	/**

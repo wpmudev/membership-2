@@ -627,7 +627,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// No existing invoice, create a new one.
 		if ( empty( $invoice ) ) {
-			$invoice = MS_Factory::load( 'MS_Model_Invoice' );
+			$invoice = MS_Factory::create( 'MS_Model_Invoice' );
 			$invoice = apply_filters( 'ms_model_invoice', $invoice );
 		}
 
@@ -772,6 +772,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	//
 	//
 	// ------------------------------------------------------------- SINGLE ITEM
+
+	/**
+	 * Save model.
+	 *
+	 * @since 1.0.0
+	 */
+	public function save() {
+		parent::save();
+		parent::store_singleton();
+	}
 
 	/**
 	 * Registers the payment and marks the invoice as paid.

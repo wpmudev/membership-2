@@ -145,7 +145,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 			}
 
 			$key = 'ms_model_relationship--1';
-			MS_Factory::set_singleton( $key, $subscription );
+			MS_Factory::set_singleton( $subscription, $key );
 
 			$this->_subscription = $subscription;
 			$subscriptions[ $this->membership_id ] = $subscription;

@@ -681,6 +681,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		) {
 			if ( ! $this->is_system() ) {
 				parent::save();
+				parent::store_singleton();
 			}
 		}
 
