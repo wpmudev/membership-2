@@ -126,7 +126,7 @@ class MS_Gateway_Free extends MS_Gateway {
 			$this
 		);
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 
 		if ( 0 == $invoice->total || $invoice->uses_trial ) {
 			// Free, just process.

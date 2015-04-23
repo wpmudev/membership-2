@@ -158,12 +158,12 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * will update the membership status accordingly.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
-	public function process_purchase( $ms_relationship ) {
+	public function process_purchase( $subscription ) {
 		do_action(
 			'ms_gateway_authorize_process_purchase_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
@@ -171,8 +171,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership' ) );
 		}
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
+		$invoice = $subscription->get_current_invoice();
+		$member = $subscription->get_member();
 
 		// manage authorize customer profile
 		$cim_profile_id = $this->get_cim_profile_id( $member );
@@ -224,7 +224,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		$member = $subscription->get_member();
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 
 		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.

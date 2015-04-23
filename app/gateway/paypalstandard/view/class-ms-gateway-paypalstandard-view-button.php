@@ -4,7 +4,8 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();
-		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
+		$subscription = $this->data['ms_relationship'];
+		$invoice = $subscription->get_current_invoice();
 		$gateway = $this->data['gateway'];
 
 		$action_url = apply_filters(
@@ -72,8 +73,8 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 	 * @return array
 	 */
 	private function prepare_fields() {
-		$ms_relationship = $this->data['ms_relationship'];
-		$membership = $ms_relationship->get_membership();
+		$subscription = $this->data['ms_relationship'];
+		$membership = $subscription->get_membership();
 
 		if ( 0 === $membership->price ) {
 			return;
@@ -81,17 +82,17 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 
 		$gateway = $this->data['gateway'];
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$invoice = $subscription->get_current_invoice();
 		$regular_invoice = null;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		$nonce = wp_create_nonce(
-			$gateway->id. '_' . $this->data['ms_relationship']->id
+			$gateway->id. '_' . $subscription->id
 		);
 		$cancel_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 		$return_url = esc_url_raw(
 			add_query_arg(
-				array( 'ms_relationship_id' => $ms_relationship->id ),
+				array( 'ms_relationship_id' => $subscription->id ),
 				MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
 			)
 		);
@@ -184,7 +185,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		// custom pay button defined in gateway settings
 		$custom_label = $gateway->pay_button_url;
 		if ( ! empty( $custom_label ) ) {
-			if ( strpos( $custom_label, '://' ) !== false ) {
+			if ( false !== strpos( $custom_label, '://' ) ) {
 				$fields['submit']['value'] = $custom_label;
 			} else {
 				$fields['submit'] = array(
@@ -196,13 +197,11 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		}
 
 		// Trial period
-		if ( $membership->trial_period_enabled && $invoice->trial_period ) {
-			$regular_invoice = MS_Model_Invoice::get_next_invoice( $ms_relationship );
-
+		if ( $subscriptions->is_trial_eligible() ) {
 			$fields['a1'] = array(
 				'id' => 'a1',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => ( $invoice->trial_period ) ? $invoice->total : $membership->trial_price,
+				'value' => $invoice->trial_price,
 			);
 
 			$trial_type = MS_Helper_Period::get_period_value(
@@ -225,7 +224,6 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 				'value' => $trial_value,
 			);
 
-
 			$fields['t1'] = array(
 				'id' => 't1',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -234,11 +232,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		}
 
 		// Membership price
-		if ( ! $invoice->trial_period ) {
-			$membership_price = $invoice->total;
-		} else {
-			$membership_price = $regular_invoice->total;
-		}
+		$membership_price = $invoice->total;
 		$membership_price = MS_Helper_Billing::format_price( $membership_price );
 
 		$fields['a3'] = array(
@@ -362,7 +356,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		}
 
 		if ( 1 == $recurring ) {
-			if ( $membership->pay_cycle_repetitions == 1 ) {
+			if ( 1 == $membership->pay_cycle_repetitions ) {
 				$recurring = 0;
 			} elseif ( $membership->pay_cycle_repetitions > 1 ) {
 				/**

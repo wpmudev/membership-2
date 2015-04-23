@@ -4,8 +4,8 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();
-
-		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
+		$subscription = $this->data['ms_relationship'];
+		$invoice = $subscription->get_current_invoice();
 		$member = MS_Model_Member::get_current_member();
 		$gateway = $this->data['gateway'];
 
@@ -70,23 +70,26 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 	}
 
 	private function prepare_fields() {
+		$gateway = $this->data['gateway'];
+		$subscription = $this->data['ms_relationship'];
+
 		$fields = array(
 			'_wpnonce' => array(
 				'id' => '_wpnonce',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => wp_create_nonce(
-					$this->data['gateway']->id . '_' . $this->data['ms_relationship']->id
+					$gateway->id . '_' . $subscription->id
 				),
 			),
 			'gateway' => array(
 				'id' => 'gateway',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['gateway']->id,
+				'value' => $gateway->id,
 			),
 			'ms_relationship_id' => array(
 				'id' => 'ms_relationship_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['ms_relationship']->id,
+				'value' => $subscription->id,
 			),
 			'step' => array(
 				'id' => 'step',

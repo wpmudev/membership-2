@@ -578,21 +578,21 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
 	 * @param string $status The invoice status to find. Optional
 	 * @return MS_Model_Invoice
 	 */
-	public static function get_previous_invoice( $ms_relationship, $status = null ) {
+	public static function get_previous_invoice( $subscription, $status = null ) {
 		$invoice = self::get_invoice(
-			$ms_relationship->id,
-			$ms_relationship->current_invoice_number - 1,
+			$subscription->id,
+			$subscription->current_invoice_number - 1,
 			$status
 		);
 
 		return apply_filters(
 			'ms_model_invoice_get_previous_invoice',
 			$invoice,
-			$ms_relationship,
+			$subscription,
 			$status
 		);
 	}
@@ -720,40 +720,30 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @return float The pro rate value.
 	 */
-	public static function calculate_pro_rate( $ms_relationship ) {
+	public static function calculate_pro_rate( $subscription ) {
 		$value = 0;
-		$membership = $ms_relationship->get_membership();
+		$membership = $subscription->get_membership();
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
 			&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT !== $membership->payment_type
 		) {
-			$invoice = self::get_previous_invoice( $ms_relationship );
+			$invoice = self::get_previous_invoice( $subscription );
 
 			if ( ! empty( $invoice ) && self::STATUS_PAID === $invoice->status ) {
-				switch ( $ms_relationship->get_status() ) {
+				switch ( $subscription->status ) {
 					case MS_Model_Relationship::STATUS_TRIAL:
-						if ( $invoice->trial_period ) {
-							$remaining_days = $ms_relationship->get_remaining_trial_period();
-							$total_days = MS_Helper_Period::subtract_dates(
-								$ms_relationship->trial_expire_date,
-								$ms_relationship->start_date
-							);
-							$value = $remaining_days / $total_days;
-							$value *= $invoice->total;
-						}
+						// No Pro-Rate given for trial memberships.
 						break;
 
 					case MS_Model_Relationship::STATUS_ACTIVE:
 					case MS_Model_Relationship::STATUS_CANCELED:
-						if ( ! $invoice->trial_period ) {
-							$remaining_days = $ms_relationship->get_remaining_period();
-							$total_days = MS_Helper_Period::subtract_dates(
-								$ms_relationship->expire_date,
-								$ms_relationship->start_date
-							);
-							$value = $remaining_days / $total_days;
-							$value *= $invoice->total;
-						}
+						$remaining_days = $subscription->get_remaining_period();
+						$total_days = MS_Helper_Period::subtract_dates(
+							$subscription->expire_date,
+							$subscription->start_date
+						);
+						$value = $remaining_days / $total_days;
+						$value *= $invoice->total;
 						break;
 
 					default:
@@ -766,7 +756,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_invoice_calculate_pro_rate_value',
 			$value,
-			$ms_relationship
+			$subscription
 		);
 	}
 

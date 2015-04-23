@@ -4,7 +4,8 @@ class MS_Gateway_Manual_View_Button extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();
-		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
+		$subscription = $this->data['ms_relationship'];
+		$invoice = $subscription->get_current_invoice();
 		$gateway = $this->data['gateway'];
 
 		$action_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
@@ -64,12 +65,13 @@ class MS_Gateway_Manual_View_Button extends MS_View {
 
 	private function prepare_fields() {
 		$gateway = $this->data['gateway'];
+		$subscription = $this->data['ms_relationship'];
 
 		$fields = array(
 			'_wpnonce' => array(
 				'id' => '_wpnonce',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => wp_create_nonce( "{$this->data['gateway']->id}_{$this->data['ms_relationship']->id}" ),
+				'value' => wp_create_nonce( "{$gateway->id}_{$subscription->id}" ),
 			),
 			'gateway' => array(
 				'id' => 'gateway',
@@ -79,7 +81,7 @@ class MS_Gateway_Manual_View_Button extends MS_View {
 			'ms_relationship_id' => array(
 				'id' => 'ms_relationship_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['ms_relationship']->id,
+				'value' => $subscription->id,
 			),
 			'step' => array(
 				'id' => 'step',
@@ -88,7 +90,7 @@ class MS_Gateway_Manual_View_Button extends MS_View {
 			),
 		);
 
-		if ( strpos( $gateway->pay_button_url, '://' ) !== false ) {
+		if ( false !== strpos( $gateway->pay_button_url, '://' ) ) {
 			$fields['submit'] = array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,

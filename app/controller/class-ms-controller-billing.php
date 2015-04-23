@@ -181,21 +181,21 @@ class MS_Controller_Billing extends MS_Controller {
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
 
-			$ms_relationship = MS_Model_Relationship::get_subscription( $member->id, $membership_id );
-			if ( empty( $ms_relationship ) ) {
-				$ms_relationship = MS_Model_Relationship::create_ms_relationship(
+			$subscription = MS_Model_Relationship::get_subscription( $member->id, $membership_id );
+			if ( empty( $subscription ) ) {
+				$subscription = MS_Model_Relationship::create_ms_relationship(
 					$membership_id,
 					$member->id,
 					$gateway_id
 				);
 			} else {
-				$ms_relationship->gateway_id = $gateway_id;
-				$ms_relationship->save();
+				$subscription->gateway_id = $gateway_id;
+				$subscription->save();
 			}
 
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] );
 			if ( ! $invoice->is_valid() ) {
-				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+				$invoice = $subscription->get_current_invoice();
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 			} else {
 				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;

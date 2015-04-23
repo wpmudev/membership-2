@@ -1051,7 +1051,7 @@ class MS_Model_Member extends MS_Model {
 				);
 
 				if ( 'admin' != $gateway_id ) {
-					MS_Model_Invoice::get_current_invoice( $subscription );
+					$subscription->get_current_invoice();
 				}
 
 				if ( MS_Model_Relationship::STATUS_PENDING !== $subscription->status ) {

@@ -161,8 +161,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$this
 		);
 
-		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$member = $subscription->get_member();
+		$invoice = $subscription->get_current_invoice();
 
 		if ( ! empty( $_POST['stripeToken'] ) ) {
 			lib2()->array->strip_slashes( $_POST, 'stripeToken' );
@@ -230,7 +230,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		);
 
 		$member = $subscription->get_member();
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 
 		if ( ! $invoice->is_paid() ) {
 			try {

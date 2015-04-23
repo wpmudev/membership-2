@@ -648,7 +648,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			return $content;
 		}
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 
 		/**
 		 * Notify Add-ons that we are preparing payment details for a membership
@@ -667,12 +667,6 @@ class MS_Controller_Frontend extends MS_Controller {
 		$invoice->save();
 
 		$data['invoice'] = $invoice;
-
-		if ( $invoice->trial_period ) {
-			$next_invoice = MS_Model_Invoice::get_next_invoice( $subscription );
-			$data['next_invoice'] = $next_invoice;
-		}
-
 		$data['membership'] = $membership;
 		$data['member'] = $member;
 		$data['ms_relationship'] = $subscription;

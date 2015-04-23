@@ -193,7 +193,7 @@ class MS_Gateway extends MS_Model_Option {
 			$this
 		);
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
 
