@@ -716,8 +716,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$trial_eligible_status = apply_filters(
 			'ms_model_relationship_trial_eligible_status',
 			array(
-				MS_Model_Relationship::STATUS_PENDING,
-				MS_Model_Relationship::STATUS_DEACTIVATED,
+				self::STATUS_PENDING,
+				self::STATUS_DEACTIVATED,
 			)
 		);
 
@@ -726,6 +726,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
 			// Trial Membership is globally disabled.
 			$eligible = false;
+		} elseif ( self::STATUS_TRIAL == $this->status ) {
+			// Subscription IS already in trial, so it's save to assume true.
+			$eligible = true;
 		} elseif ( ! in_array( $this->status, $trial_eligible_status ) ) {
 			// Current Subscription is not allowed for a trial membership anymore.
 			$eligible = false;
@@ -829,6 +832,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$trial_expire_date,
 			$this
 		);
+
+		// Subscriptions with this status have no valid expire-date.
+		$no_expire_date = array(
+			self::STATUS_DEACTIVATED,
+			self::STATUS_PENDING,
+			self::STATUS_TRIAL,
+			self::STATUS_TRIAL_EXPIRED,
+		);
+
+		if ( $this->trial_expire_date && in_array( $this->status, $no_expire_date ) ) {
+			// Set the expire date to trial-expire date
+			$this->expire_date = $this->trial_expire_date;
+		}
 	}
 
 	/**
@@ -1042,7 +1058,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_TRIAL:
 			case self::STATUS_TRIAL_EXPIRED:
 				$this->set_trial_expire_date();
-				$this->set_expire_date();
 				break;
 
 			default:
@@ -1656,8 +1671,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			|| (
 				self::STATUS_CANCELED == $this->status
 				&& self::STATUS_ACTIVE != $set_status
+				&& self::STATUS_TRIAL != $set_status
 			);
-
 		if ( $cancel_it ) {
 			/*
 			 * When a membership is cancelled then it will stay "Cancelled"
@@ -1669,6 +1684,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				// Membership has expired. Finally deactivate it!
 				// (possibly it was cancelled a few days earlier)
 				$calc_status = self::STATUS_DEACTIVATED;
+			} elseif ( self::STATUS_TRIAL_EXPIRED == $calc_status ) {
+				// Trial period has expired. Finally deactivate it!
+				$calc_status = self::STATUS_DEACTIVATED;
+			} elseif ( self::STATUS_TRIAL == $calc_status ) {
+				// User can keep access until trial period finishes...
+				$calc_status = self::STATUS_CANCELED;
 			} elseif ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
 				// This membership has no expiration-time. Deactivate it!
 				$calc_status = self::STATUS_DEACTIVATED;

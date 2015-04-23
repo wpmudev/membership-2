@@ -197,7 +197,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		}
 
 		// Trial period
-		if ( $subscriptions->is_trial_eligible() ) {
+		if ( $subscription->is_trial_eligible() ) {
 			$fields['a1'] = array(
 				'id' => 'a1',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
