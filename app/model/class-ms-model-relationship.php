@@ -1522,7 +1522,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} else {
 			// Check if this status is still valid.
 			$calc_status = $this->calculate_status( $status );
-			error_log( 'Set Status ' . $status . ': ' . $calc_status );
 			$this->handle_status_change( $calc_status );
 		}
 
