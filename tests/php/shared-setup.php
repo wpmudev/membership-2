@@ -116,11 +116,15 @@ class TData {
 	 */
 	public static function id( $type, $key ) {
 		if ( ! isset( self::$ids[ $type ] ) ) {
-			return 0;
+			$err = '[UNKNOWN TYPE] ' . $type;
+			error_log( $err );
+			throw new Exception( $err, 1 );
 		}
 
 		if ( ! isset( self::$ids[ $type ][ $key ] ) ) {
-			return 0;
+			$err = '[UNKNOWN ELEMENT] ' . $type . '.' . $key;
+			error_log( $err );
+			throw new Exception( $err, 1 );
 		}
 
 		return self::$ids[ $type ][ $key ];
