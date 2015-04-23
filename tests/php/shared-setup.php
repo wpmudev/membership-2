@@ -91,6 +91,16 @@ class TData {
 				'price' => 29,
 				'rule_values' => array(),
 			),
+			'simple-trial' => array(
+				'name' => 'Simple Membership with Trial',
+				'type' => 'simple',
+				'payment_type' => 'permanent',
+				'price' => 29,
+				'rule_values' => array(),
+				'trial_period_enabled' => true,
+				'trial_price' => 0, // Currently plugin only supports trial price = 0
+				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
+			),
 		);
 		foreach ( $memberships as $key => $data ) {
 			$item = new MS_Model_Membership();
