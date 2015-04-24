@@ -2,7 +2,10 @@
 
 // This file offers a convenient way to setup/reset test-data in the database.
 class TData {
+
 	protected static $ids = array();
+
+	const ONE_DAY = 86400; // One day has 86400 seconds
 
 	/**
 	 * Resets the database.
@@ -108,7 +111,6 @@ class TData {
 				'price' => 29,
 				'rule_values' => array(),
 				'trial_period_enabled' => true,
-				'trial_price' => 0, // Currently plugin only supports trial price = 0
 				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
 			),
 			'limited-trial' => array(
@@ -119,7 +121,18 @@ class TData {
 				'rule_values' => array(),
 				'period' => array( 'period_unit' => 28, 'period_type' => 'days' ),
 				'trial_period_enabled' => true,
-				'trial_price' => 0, // Currently plugin only supports trial price = 0
+				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
+			),
+			'daterange-trial' => array(
+				'name' => 'Date-Range Membership with Trial',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE,
+				'price' => 39,
+				'rule_values' => array(),
+				'period_date_start' => date( 'Y-m-d', time() + self::ONE_DAY ), // Starts tomorrow
+				'period_date_end' => date( 'Y-m-d', time() + 10 * self::ONE_DAY ) , // Ends in 10 days
+				'trial_period_enabled' => true,
+				// Note: Trial is longer than the access period:
 				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
 			),
 		);
@@ -134,6 +147,9 @@ class TData {
 
 			self::$ids['membership'][$key] = $id;
 		}
+
+		// Clear the plugin Factory-Cache
+		MS_Factory::_reset();
 	}
 
 	/**

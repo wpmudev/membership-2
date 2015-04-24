@@ -322,4 +322,105 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( $limit_end2, $subscription->expire_date );
 		$this->assertEquals( '', $subscription->trial_expire_date );
 	}
+
+	/**
+	 * Check the invoice trial flag.
+	 * @test
+	 */
+	function invoice_trial_flag() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Trial flag must be TRUE
+
+		$current_date = MS_Helper_Period::current_date();
+		$invoice = $subscription->get_current_invoice();
+		$this->assertTrue( $invoice->uses_trial );
+	}
+
+	/**
+	 * Check the invoice trial flag when the trial-addon is disabled.
+	 * @test
+	 */
+	function invoice_trial_flag_disabled() {
+		TData::disable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Trial flag must be FALSE
+
+		$current_date = MS_Helper_Period::current_date();
+		$invoice = $subscription->get_current_invoice();
+		$this->assertFalse( $invoice->uses_trial );
+	}
+
+	/**
+	 * Check the invoice due date.
+	 * @test
+	 */
+	function invoice_due_date_no_trial() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Instantly due
+
+		$current_date = MS_Helper_Period::current_date();
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( $current_date, $invoice->due_date );
+		$this->assertEquals( $current_date, $invoice->invoice_date );
+	}
+
+	/**
+	 * Check the invoice due date for a trial-membership.
+	 * @test
+	 */
+	function invoice_due_date_with_trial() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Due on last day of the trial
+
+		$current_date = MS_Helper_Period::current_date();
+		$payment_date = MS_Helper_Period::add_interval( 14, 'days' );
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( $payment_date, $invoice->due_date );
+		$this->assertEquals( $current_date, $invoice->invoice_date );
+	}
+
+	/**
+	 * Check the invoice due date for a trial-membership with type Date-Range.
+	 * @test
+	 */
+	function invoice_due_date_with_trial_daterange() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'daterange-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// This checks if the payment date is on THE LAST DAY OF THE DATE-RANGE,
+		// because the trial-period is overflowing the date-range and therefore
+		// must be shortened by some condition.
+		// Trial would last for 14-days, but payment date must be in 10-days!
+
+		$current_date = MS_Helper_Period::current_date();
+		$start_date = MS_Helper_Period::add_interval( 1, 'days' );
+		$payment_date = MS_Helper_Period::add_interval( 10, 'days' );
+
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( $payment_date, $invoice->due_date );
+		$this->assertEquals( $current_date, $invoice->invoice_date );
+	}
+
 }

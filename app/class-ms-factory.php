@@ -41,6 +41,17 @@ class MS_Factory {
 	static protected $singleton = array();
 
 	/**
+	 * This is only used for Unit-Testing to reset all cached singleton
+	 * instances before running a new test.
+	 *
+	 * @since  1.1.1.4
+	 */
+	static public function _reset() {
+		self::$singleton = array();
+		wp_cache_flush();
+	}
+
+	/**
 	 * Create an MS Object.
 	 *
 	 * @since 1.0.0
