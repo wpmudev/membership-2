@@ -65,7 +65,7 @@ class MS_View_Frontend_Payment extends MS_View {
 			 * So we redirect by using javascript.
 			 */
 			?>
-			<script>window.location.href = '<?php echo '' . $url; ?>';</script>
+			<script>window.location.href = '<?php echo $url; ?>';</script>
 			<?php
 			exit;
 		}

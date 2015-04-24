@@ -195,25 +195,31 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The current date.
 	 */
 	public static function current_date( $format = null, $ignore_filters = false ) {
-		if ( empty( $format ) ) {
-			$format = self::PERIOD_FORMAT;
-		}
+		static $Date = array();
+		$key = (string)$format . (int)$ignore_filters;
 
-		$format = apply_filters(
-			'ms_helper_period_current_date_format',
-			$format
-		);
+		if ( ! isset( $Date[$key] ) ) {
+			if ( empty( $format ) ) {
+				$format = self::PERIOD_FORMAT;
+			}
 
-		$date = gmdate( $format );
-
-		if ( ! $ignore_filters ) {
-			$date = apply_filters(
-				'ms_helper_period_current_date',
-				$date
+			$format = apply_filters(
+				'ms_helper_period_current_date_format',
+				$format
 			);
+
+			$date = gmdate( $format );
+
+			if ( ! $ignore_filters ) {
+				$date = apply_filters(
+					'ms_helper_period_current_date',
+					$date
+				);
+			}
+			$Date[$key] = $date;
 		}
 
-		return $date;
+		return $Date[$key];
 	}
 
 	/**
