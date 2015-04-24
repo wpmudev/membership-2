@@ -742,18 +742,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 			}
 		}
 
-		$data['invoices'] = MS_Model_Invoice::get_invoices(
-			array(
-				'author' => $data['member']->id,
-				'posts_per_page' => $data['limit_invoices'],
-				'meta_query' => array(
-					array(
-						'key' => 'amount',
-						'value' => '0',
-						'compare' => '!=',
-					),
-				)
-			)
+		$data['invoices'] = MS_Model_Invoice::get_public_invoices(
+			$data['member']->id,
+			$data['limit_invoices']
 		);
 
 		$data['events'] = MS_Model_Event::get_events(

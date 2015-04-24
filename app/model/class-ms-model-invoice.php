@@ -456,6 +456,43 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns all invoices of the specified user that are "public" for the
+	 * user. This means that some internal invoices will not be displayed:
+	 * - Invoices with 0.00 total amount are not displayed
+	 * - Invoices with status New are not displayed
+	 *
+	 * @since  1.1.1.4
+	 * @param  int $user_id
+	 * @param  int $limit
+	 * @return array List of MS_Model_Invoice objects.
+	 */
+	public static function get_public_invoices( $user_id, $limit = -1 ) {
+		$list = self::get_invoices(
+			array(
+				'author' => $user_id,
+				'posts_per_page' => $limit,
+				'meta_query' => array(
+					'relation' => 'AND',
+					// Do not display invoices for free memberships.
+					array(
+						'key' => 'amount',
+						'value' => '0',
+						'compare' => '!=',
+					),
+					// Do not display and Invoice with status "New".
+					array(
+						'key' => 'status',
+						'value' => MS_Model_Invoice::STATUS_NEW,
+						'compare' => '!=',
+					),
+				)
+			)
+		);
+
+		return $list;
+	}
+
+	/**
 	 * Get specific invoice.
 	 *
 	 * Get invoice of a user and membership.

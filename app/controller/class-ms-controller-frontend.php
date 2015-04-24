@@ -748,18 +748,8 @@ class MS_Controller_Frontend extends MS_Controller {
 				break;
 
 			case self::ACTION_VIEW_INVOICES:
-				$data['invoices'] = MS_Model_Invoice::get_invoices(
-					array(
-						'author' => $member->id,
-						'posts_per_page' => -1,
-						'meta_query' => array(
-							array(
-								'key' => 'amount',
-								'value' => '0',
-								'compare' => '!=',
-							),
-						)
-					)
+				$data['invoices'] = MS_Model_Invoice::get_public_invoices(
+					$member->id
 				);
 
 				$view = MS_Factory::create( 'MS_View_Frontend_Invoices' );
