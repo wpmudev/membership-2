@@ -39,6 +39,15 @@ class TData {
 				'user_login' => $login,
 				'user_pass' => $login . '-password',
 				'user_email' => $login . '@local.dev',
+				'role' => 'subscriber',
+				'user_nicename' => '',
+				'user_url' => '',
+				'display_name' => 'User ' . $login,
+				'nickname' => '',
+				'first_name' => '',
+				'last_name' => '',
+				'description' => '',
+				'user_registered' => '',
 			);
 			$data = shortcode_atts( $defaults, $data );
 
