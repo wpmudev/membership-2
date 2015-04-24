@@ -827,6 +827,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			if ( ! $valid_date ) {
 				$trial_expire_date = $this->calc_trial_expire_date( $this->start_date );
 			}
+
+			/*
+			 * When payment-type is DATE-RANGE make sure that the trial period
+			 * is not longer than the specified end-date
+			 */
+			$membership = $this->get_membership();
+			if ( MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE == $membership->payment_type ) {
+				if ( $membership->period_date_end < $trial_expire_date ) {
+					$trial_expire_date = $membership->period_date_end;
+				}
+			}
 		} else {
 			// Do NOT set any trial-expire-date when trial period is not available!
 			$trial_expire_date = '';

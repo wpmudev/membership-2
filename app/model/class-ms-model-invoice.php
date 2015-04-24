@@ -677,14 +677,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 
 		$invoice->notes = $notes;
-		$invoice->set_due_date();
-
-		$invoice = apply_filters(
-			'ms_model_invoice_create_before_save',
-			$invoice,
-			$subscription
-		);
-
 		$invoice->amount = $membership->price; // Without taxes!
 
 		// Check for trial period in the first period.
@@ -695,6 +687,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice->uses_trial = true;
 			$invoice->trial_ends = $subscription->trial_expire_date;
 		}
+
+		$invoice->set_due_date();
+
+		$invoice = apply_filters(
+			'ms_model_invoice_create_before_save',
+			$invoice,
+			$subscription
+		);
 
 		$invoice->save();
 
@@ -1081,12 +1081,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		// Default due date is today.
 		if ( empty( $due_date ) ) {
 			if ( $subscription->is_trial_eligible() ) {
-				// This invoice includes a trial period. Due is after trial ends.
-				$due_date = MS_Helper_Period::add_interval(
-					1,
-					'days',
-					$subscription->trial_expire_date
-				);
+				/*
+				 * This invoice includes a trial period.
+				 * Payment is due on last day of trial
+				 */
+				$due_date = $subscription->trial_expire_date;
 			} else {
 				// No trial period is used for this invoice. Due now.
 				$due_date = MS_Helper_Period::current_date();
