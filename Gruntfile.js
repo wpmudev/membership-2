@@ -307,8 +307,8 @@ module.exports = function( grunt ) {
 	// Default task.
 
 	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'] );
-	grunt.registerTask( 'build', ['default', 'phpunit', 'jshint', 'clean', 'copy', 'compress', 'release_notes'] );
-	grunt.registerTask( 'test', ['phpunit', 'jshint', 'release_notes'] );
+	grunt.registerTask( 'build', ['phpunit', 'default', 'clean', 'copy', 'compress', 'release_notes'] );
+	grunt.registerTask( 'test', ['phpunit', 'jshint'] );
 
 	grunt.util.linefeed = '\n';
 };
