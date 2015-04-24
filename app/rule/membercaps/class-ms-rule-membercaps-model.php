@@ -158,6 +158,8 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 				if ( $value ) { self::$real_caps[$key] = 1; }
 			}
 		}
+
+		return $allcaps;
 	}
 
 	/**

@@ -159,6 +159,8 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 				if ( $value ) { self::$real_caps[$user->ID][$key] = 1; }
 			}
 		}
+
+		return $allcaps;
 	}
 
 	/**
