@@ -212,14 +212,6 @@ class MS_View_Frontend_Payment extends MS_View {
 							?>
 							</td>
 						</tr>
-						<tr>
-							<td class="ms-title-column">
-								<?php _e( 'End of trial period', MS_TEXT_DOMAIN ); ?>
-							</td>
-							<td class="ms-desc-column"><?php
-								echo MS_Helper_Period::format_date( $invoice->trial_ends );
-							?></td>
-						</tr>
 					<?php endif; ?>
 					<tr>
 						<td class="ms-desc-column" colspan="2">
