@@ -43,7 +43,6 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
 
 		$invoice = $subscription->get_current_invoice();
-		$this->assertEquals( MS_Model_Invoice::STATUS_BILLED, $invoice->status, 'Invoice status' );
 		$this->assertEquals( $invoice->ms_relationship_id, $subscription->id );
 
 		$invoice_subscription = $invoice->get_subscription();
@@ -51,7 +50,6 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 
 		// Paying will change the status
 		$invoice->pay_it( 'admin', '' );
-		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status, 'Invoice status' );
 		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status, 'Active status' );
 		$this->assertEquals( MS_Helper_Period::current_date(), $subscription->start_date );
 		$this->assertEquals( '', $subscription->expire_date );
@@ -129,7 +127,6 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
 
 		$invoice = $subscription->get_current_invoice();
-		$this->assertEquals( MS_Model_Invoice::STATUS_BILLED, $invoice->status, 'Invoice status' );
 		$this->assertEquals( $invoice->ms_relationship_id, $subscription->id );
 		$this->assertTrue( $invoice->uses_trial );
 
@@ -139,7 +136,6 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		// Paying a trial subscription with the FREE gateway will start the trial.
 
 		$invoice->pay_it( 'free', '' );
-		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status, 'Invoice status' );
 		$this->assertEquals( MS_Model_Relationship::STATUS_TRIAL, $subscription->status, 'Trial status' );
 		$this->assertEquals( $start_date, $subscription->start_date );
 		$this->assertEquals( $trial_end, $subscription->expire_date );
@@ -190,20 +186,28 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 
 		$invoice1 = $subscription->get_current_invoice();
 		$this->assertEquals( 1, $invoice1->invoice_number );
+
+		// The trial invoice is not yet paid (free gateway sets it to billed)
+		// -> so the inovice counter must still be 1
 		$invoice1->pay_it( 'free', '' );
 		$this->assertEquals( 1, $invoice1->invoice_number );
-
-		// Right after payment the invoice number should be increased to 2.
-		$this->assertEquals( 2, $subscription->current_invoice_number );
+		$this->assertEquals( 1, $subscription->current_invoice_number );
 		$invoice2 = $subscription->get_current_invoice();
-		$this->assertNotEquals( $invoice1, $invoice2 );
-		$this->assertEquals( 2, $invoice2->invoice_number );
-		$invoice2->pay_it( 'stripe', 'external_123' );
+		$this->assertEquals( $invoice1, $invoice2 );
 
-		$this->assertEquals( 3, $subscription->current_invoice_number );
+		// After the next (real) payment the invoice counter will be increased.
+		$invoice2->pay_it( 'stripe', 'external_100' );
+		$this->assertEquals( 2, $subscription->current_invoice_number );
 		$invoice3 = $subscription->get_current_invoice();
 		$this->assertNotEquals( $invoice1, $invoice3 );
-		$this->assertEquals( 3, $invoice3->invoice_number );
+		$this->assertEquals( 2, $invoice3->invoice_number );
+
+		// After the next (real) payment the invoice counter will be increased.
+		$invoice3->pay_it( 'stripe', 'external_200' );
+		$this->assertEquals( 3, $subscription->current_invoice_number );
+		$invoice4 = $subscription->get_current_invoice();
+		$this->assertNotEquals( $invoice1, $invoice4 );
+		$this->assertEquals( 3, $invoice4->invoice_number );
 	}
 
 	/**
@@ -421,6 +425,99 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$invoice = $subscription->get_current_invoice();
 		$this->assertEquals( $payment_date, $invoice->due_date );
 		$this->assertEquals( $current_date, $invoice->invoice_date );
+	}
+
+	/**
+	 * Test the invoice status changes from new -> paid.
+	 * @test
+	 */
+	function invoice_status_paid() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Brand new invoice, must be NEW
+
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( MS_Model_Invoice::STATUS_NEW, $invoice->status );
+
+		// After payment it must be PAID
+
+		$invoice->pay_it( 'stripe', 'external_100' );
+		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status );
+	}
+
+	/**
+	 * Test the invoice status changes from new -> paid with only free payments.
+	 * @test
+	 */
+	function invoice_status_paid_for_free() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Brand new invoice, must be NEW
+
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( MS_Model_Invoice::STATUS_NEW, $invoice->status );
+
+		// Even after free payment it must be PAID
+
+		$invoice->pay_it( 'free', '' );
+		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status );
+	}
+
+	/**
+	 * Test the invoice status changes from new -> billed -> paid.
+	 * @test
+	 */
+	function invoice_status_billed_paid() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Brand new invoice, must be NEW
+
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( MS_Model_Invoice::STATUS_NEW, $invoice->status );
+
+		// After the free payment it must be BILLED
+
+		$invoice->pay_it( 'free', '' );
+		$this->assertEquals( MS_Model_Invoice::STATUS_BILLED, $invoice->status );
+
+		// After the real payment it must be PAID
+
+		$invoice->pay_it( 'stripe', 'external_100' );
+		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status );
+	}
+
+	/**
+	 * Test the invoice status changes from new -> billed -> paid with only free payments.
+	 * @test
+	 */
+	function invoice_status_trial_paid_directly() {
+		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
+
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple-trial' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Brand new invoice, must be NEW
+
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( MS_Model_Invoice::STATUS_NEW, $invoice->status );
+
+		// After the stripe payment it must be PAID instantly
+
+		$invoice->pay_it( 'stripe', 'external_123' );
+		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status );
 	}
 
 }
