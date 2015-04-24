@@ -476,6 +476,23 @@ class MS_Model_Pages extends MS_Model_Option {
 	}
 
 	/**
+	 * Redirect the user the specified membership page.
+	 *
+	 * @since  1.1.1.4
+	 * @param  string $page_type The page-type.
+	 * @param  array $args Optional. Additional URL parameters.
+	 */
+	static public function redirect_to( $page_type, $args = array() ) {
+		self::create_missing_pages();
+		$url = self::get_page_url( $page_type );
+
+		$url = esc_url_raw( add_query_arg( $args, $url ) );
+
+		wp_safe_redirect( $url );
+		exit;
+	}
+
+	/**
 	 * Returns the URL to display after successful login.
 	 *
 	 * @since  1.1.0

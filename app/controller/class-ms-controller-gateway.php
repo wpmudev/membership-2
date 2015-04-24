@@ -552,23 +552,19 @@ class MS_Controller_Gateway extends MS_Controller {
 				$invoice = $gateway->process_purchase( $subscription );
 
 				// If invoice is successfully paid, redirect to welcome page.
-				if ( $invoice->is_paid() ) {
+				if ( $invoice->is_paid()
+					|| ( $invoice->uses_trial
+						&& MS_Model_Invoice::STATUS_BILLED == $invoice->status
+					)
+				) {
 					// Make sure to respect the single-membership rule
 					$this->validate_membership_states( $subscription );
 
 					// Redirect user to the Payment-Completed page.
-					MS_Model_Pages::create_missing_pages();
-					$url = MS_Model_Pages::get_page_url(
-						MS_Model_Pages::MS_PAGE_REG_COMPLETE
+					MS_Model_Pages::redirect_to(
+						MS_Model_Pages::MS_PAGE_REG_COMPLETE,
+						array( 'ms_relationship_id' => $subscription->id )
 					);
-					$url = esc_url_raw(
-						add_query_arg(
-							array( 'ms_relationship_id' => $subscription->id ),
-							$url
-						)
-					);
-					wp_safe_redirect( $url );
-					exit;
 				} else {
 					// For manual gateway payments.
 					$this->add_action( 'the_content', 'purchase_info_content' );
