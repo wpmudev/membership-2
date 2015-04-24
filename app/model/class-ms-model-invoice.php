@@ -52,16 +52,19 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @see $status property.
 	 * @var string
 	 */
-	// Invoice was created but user did not make any attempt to pay
+	// Invoice was created but user did not yet confirm that he wants to sign up/pay.
+	const STATUS_NEW = 'new';
+
+	// Invoice was created but user did not make any attempt to pay.
 	const STATUS_BILLED = 'billed';
 
-	// User confirmed payment and it was successful
+	// User confirmed payment and it was successful.
 	const STATUS_PAID = 'paid';
 
-	// User confirmed payment but gateway returned a "pending" notification
+	// User confirmed payment but gateway returned a "pending" notification.
 	const STATUS_PENDING = 'pending';
 
-	// User confirmed payment but gateway returned some error (dispute, wrong amount, etc.)
+	// User confirmed payment but gateway returned some error (dispute, wrong amount, etc).
 	const STATUS_DENIED = 'denied';
 
 	/**
@@ -313,6 +316,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_invoice_get_status_types',
 			array(
 				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
+				self::STATUS_NEW => __( 'New', MS_TEXT_DOMAIN ),
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
 				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
@@ -618,7 +622,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		$invoice = null;
 		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
-		$invoice_status = self::STATUS_BILLED;
+		$invoice_status = self::STATUS_NEW;
 		$notes = null;
 
 		if ( empty( $invoice_number ) ) {
@@ -787,22 +791,29 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public function pay_it( $gateway_id, $external_id ) {
 		$this->gateway_id = $gateway_id;
 		$this->external_id = $external_id;
-		$this->status = self::STATUS_PAID;
-		$this->save();
+		$is_paid = false;
 
 		$subscription = $this->get_subscription();
 
 		// Save details on the payment.
 		if ( 0 == $this->total || MS_Gateway_Free::ID == $gateway_id ) {
-			$subscription->add_payment( 0, MS_Gateway_Free::ID );
+			$is_paid = $subscription->add_payment( 0, MS_Gateway_Free::ID );
 		} else {
-			$subscription->add_payment( $this->total, $gateway_id );
+			$is_paid = $subscription->add_payment( $this->total, $gateway_id );
+		}
+
+		if ( $is_paid ) {
+			$this->status = self::STATUS_PAID;
+		} else {
+			$this->status = self::STATUS_BILLED;
 		}
 
 		/*
 		 * Process the payment and update the subscription.
 		 * This function will call the config_period() function to calculate the
 		 * new expire date of the subscription.
+		 *
+		 * All changes above are also saved at the end of changed()
 		 */
 		$this->changed();
 
@@ -848,6 +859,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$membership = $subscription->get_membership();
 
 			switch ( $this->status ) {
+				case self::STATUS_NEW:
 				case self::STATUS_BILLED:
 					break;
 

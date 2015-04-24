@@ -1518,14 +1518,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			 */
 			$this->set_trial_expire_date();
 
-			$this->set_status( MS_Model_Relationship::STATUS_TRIAL );
+			$this->set_status( self::STATUS_TRIAL );
 		} else {
 			/*
 			 * Important:
 			 * FIRST set the SUBSCRIPTION STATUS, otherwise the expire date is
 			 * based on start_date instead of trial_expire_date!
 			 */
-			$this->set_status( MS_Model_Relationship::STATUS_ACTIVE );
+			$this->set_status( self::STATUS_ACTIVE );
 
 			/*
 			 * Renew period. Every time this function is called, the expire
@@ -1538,6 +1538,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		$this->save();
+
+		// Return true if the subscription is active.
+		$is_active = self::STATUS_ACTIVE == $this->status;
+		return $is_active;
 	}
 
 	/**
