@@ -48,7 +48,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 *
 	 * @var array
 	 */
-	static protected $real_caps = null;
+	static protected $real_caps = array();
 
 	/**
 	 * Caches the get_content_array output
@@ -88,8 +88,8 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	public function protect_content() {
 		parent::protect_content();
 
-		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
-		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
+		$this->add_filter( 'user_has_cap', 'prepare_caps', 1, 4 );
+		$this->add_filter( 'user_has_cap', 'modify_caps', 10, 4 );
 	}
 
 	/**
@@ -100,8 +100,8 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	public function protect_admin_content() {
 		parent::protect_admin_content();
 
-		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
-		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
+		$this->add_filter( 'user_has_cap', 'prepare_caps', 1, 4 );
+		$this->add_filter( 'user_has_cap', 'modify_caps', 10, 4 );
 	}
 
 	/**
@@ -131,11 +131,16 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * @param array   $caps    Actual capabilities for meta capability.
 	 * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
 	 */
-	public function prepare_caps( $allcaps, $caps, $args ) {
+	public function prepare_caps( $allcaps, $caps, $args, $user ) {
 		global $wp_roles;
 
-		// Only run this filter once!
-		$this->remove_filter( 'user_has_cap', 'prepare_caps', 1, 3 );
+		if ( isset( self::$real_caps[$user->ID] ) ) {
+			// Only run the init code once for each user-ID.
+			return $allcaps;
+		} else {
+			// First get a list of the users default capabilities.
+			self::$real_caps[$user->ID] = $allcaps;
+		}
 
 		$caps = $this->rule_value;
 
@@ -167,12 +172,17 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * @param array   $caps    Actual capabilities for meta capability.
 	 * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
 	 */
-	public function modify_caps( $allcaps, $caps, $args ) {
+	public function modify_caps( $allcaps, $caps, $args, $user ) {
+		if ( ! isset( self::$real_caps[$user->ID] ) ) {
+			self::$real_caps[$user->ID] = $allcaps;
+		}
+
 		return apply_filters(
 			'ms_rule_membercaps_model_modify_caps',
-			self::$real_caps,
+			self::$real_caps[$user->ID],
 			$caps,
 			$args,
+			$user,
 			$this
 		);
 	}
