@@ -345,8 +345,116 @@ class MS_View_Help extends MS_View {
 					</li>
 				</ul>
 
+				<h4><?php _e( 'Field labels', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>label_first_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'First Name', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_last_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Last Name', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_username</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Choose a Username', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_email</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Email Address', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_password</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Password', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_password2</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Confirm Password', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_register</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Register My Account', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>hint_first_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_last_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_username</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_email</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_password</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_password2</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+				</ul>
+
 				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
 				<p><code>[ms-membership-register-user]</code></p>
+				<p><code>[ms-membership-register-user title="" hint_email="john@email.com" label_password2="Repeat"]</code></p>
 			</div>
 		</div>
 
