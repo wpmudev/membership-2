@@ -480,6 +480,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			return __( 'Registration is currently not allowed.', MS_TEXT_DOMAIN );
 		}
 
+		// Do not parse the form when building the excerpt
+		global $wp_current_filter;
+		if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) { return ''; }
+
 		/**
 		 * Add-ons or other plugins can use this filter to define a completely
 		 * different registration form. If this filter returns any content, then
