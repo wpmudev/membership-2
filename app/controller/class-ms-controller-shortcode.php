@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -129,6 +129,13 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Helper_Shortcode::SCODE_USER,
 				array( $this, 'show_to_user' )
 			);
+
+			if ( MS_Model_Member::is_normal_admin() ) {
+				add_shortcode(
+					MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE,
+					array( 'MS_Rule_Shortcode_Model', 'debug_protect_content_shortcode')
+				);
+			}
 		} else {
 			$shortcodes = array(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
