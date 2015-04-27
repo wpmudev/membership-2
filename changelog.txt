@@ -4,6 +4,14 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.5
+----------------------------------------------------------------------
+- Add "autofocus" attribute to login shortcode
+- Add filter "ms_model_pages_redirect_to" to customize membership redirects
+- Add new attributes to the login shortcode to customize field labels and placeholders
+- Improve preview of the [ms-protected-content] shortcode for admins
+- Fix various small issues with the login shortcode HTML code
+
 1.1.1.4
 ----------------------------------------------------------------------
 - Added new automatic email notification: Subscription Renewed
