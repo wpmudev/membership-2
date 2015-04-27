@@ -488,6 +488,16 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		$url = esc_url_raw( add_query_arg( $args, $url ) );
 
+		/**
+		 * Opportunity for other plugins to redirect to a different page.
+		 */
+		$url = apply_filters(
+			'ms_model_pages_redirect_to',
+			$url,
+			$page_type,
+			$args
+		);
+
 		wp_safe_redirect( $url );
 		exit;
 	}

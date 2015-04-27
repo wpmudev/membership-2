@@ -128,6 +128,8 @@ class MS_View_Shortcode_Login extends MS_View {
 		// Remove linebreaks to bypass the "wpautop" filter.
 		$html = str_replace( array( "\r\n", "\r", "\n" ), '', $html );
 
+		$html = '<div class="ms-membership-form-wrapper">' . $html . '</div>';
+
 		/*
 		 * Possible filters to provide a customized login form:
 		 * - 'ms_shortcode_form-login'
@@ -154,15 +156,13 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		ob_start();
 		?>
-		<div class="ms-membership-form-wrapper">
-			<legend><?php echo esc_html( $title ); ?></legend>
-			<?php if ( $show_note ) : ?>
-			<div class="ms-alert-box ms-alert-error">
-				<?php _e( 'Please log in to access this page.', MS_TEXT_DOMAIN ); ?>
-			</div>
-			<?php endif; ?>
+		<legend><?php echo esc_html( $title ); ?></legend>
+		<?php if ( $show_note ) : ?>
+		<div class="ms-alert-box ms-alert-error">
+			<?php _e( 'Please log in to access this page.', MS_TEXT_DOMAIN ); ?>
 		</div>
-		<?php
+		<?php endif;
+
 		return ob_get_clean();
 	}
 
@@ -275,13 +275,13 @@ class MS_View_Shortcode_Login extends MS_View {
 				<?php endif; ?>
 				<?php if ( $show_remember ) : ?>
 				<p class="login-remember ms-field">
-					<label>
-						<input
-							name="rememberme"
-							type="checkbox"
-							id="<?php echo esc_attr( $id_remember ); ?>"
-							value="forever"
-							<?php checked( $value_remember ); ?> />
+					<input
+						name="rememberme"
+						type="checkbox"
+						id="<?php echo esc_attr( $id_remember ); ?>"
+						value="forever"
+						<?php checked( $value_remember ); ?> />
+					<label for="<?php echo esc_attr( $id_remember ); ?>">
 						<?php echo esc_html( $label_remember ); ?>
 					</label>
 				</p>

@@ -480,6 +480,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			return __( 'Registration is currently not allowed.', MS_TEXT_DOMAIN );
 		}
 
+		// Do not parse the form when building the excerpt
+		global $wp_current_filter;
+		if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) { return ''; }
+
 		/**
 		 * Add-ons or other plugins can use this filter to define a completely
 		 * different registration form. If this filter returns any content, then
@@ -490,7 +494,9 @@ class MS_Controller_Frontend extends MS_Controller {
 		 */
 		$custom_code = apply_filters(
 			'ms_frontend_custom_registration_form',
-			''
+			'',
+			$this->register_errors,
+			$this
 		);
 
 		if ( ! empty( $custom_code ) ) {
@@ -508,7 +514,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$scode = sprintf(
 				'[%s errors="%s"]',
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
-				esc_attr( $this->register_errors )
+				str_replace( '"', "'", $this->register_errors )
 			);
 			$reg_form = do_shortcode( $scode );
 
