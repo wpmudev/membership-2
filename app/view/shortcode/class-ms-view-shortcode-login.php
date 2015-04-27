@@ -219,6 +219,9 @@ class MS_View_Shortcode_Login extends MS_View {
 		} else {
 			$form_class .= ' ms-no-labels';
 		}
+		if ( $autofocus ) {
+			$form_class .= ' autofocus';
+		}
 
 		ob_start();
 		?>
@@ -245,7 +248,7 @@ class MS_View_Shortcode_Login extends MS_View {
 						type="text"
 						name="log"
 						id="<?php echo esc_attr( $id_username ); ?>"
-						class="input"
+						class="input focus"
 						value="<?php echo esc_attr( $value_username ); ?>"
 						size="20"
 						placeholder="<?php echo esc_html( $label_username ); ?>">
@@ -372,7 +375,7 @@ class MS_View_Shortcode_Login extends MS_View {
 						type="text"
 						name="user_login"
 						id="<?php echo esc_attr( $id_lost_username ); ?>"
-						class="input"
+						class="input focus"
 						value="<?php echo esc_attr( $value_username ); ?>"
 						size="20"
 						placeholder="<?php echo esc_html( $label_lost_username ); ?>" />

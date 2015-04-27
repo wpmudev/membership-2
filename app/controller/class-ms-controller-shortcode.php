@@ -619,6 +619,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'show_note'       => true,   // Show the "you are not logged in" note?
 					'form'            => '',  // [login|lost|reset|logout]
 					'show_labels'     => false,
+					'autofocus'       => true,
 					'nav_pos'         => 'top', // [top|bottom]
 
 					// form="login"
@@ -653,6 +654,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['show_labels'] = lib2()->is_true( $data['show_labels'] );
 		$data['show_remember'] = lib2()->is_true( $data['show_remember'] );
 		$data['value_remember'] = lib2()->is_true( $data['value_remember'] );
+		$data['autofocus'] = lib2()->is_true( $data['autofocus'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_login_data', $data, $this );
