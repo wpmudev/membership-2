@@ -3,6 +3,8 @@
 This plugin uses **[grunt](http://gruntjs.com/getting-started)** and is tested/developed in **[Vagrant](https://bitbucket.org/incsub/vvv-incsub)**.
 So when you join in it's good to use these also.
 
+Additional information on the plugin is documented in [the Wiki](https://bitbucket.org/incsub/protected-content/wiki/Home)
+
 ## Setup grunt first time ##
 
 Simply use a terminal and change to the plugins/protected-content directory.
