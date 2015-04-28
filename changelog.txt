@@ -11,6 +11,7 @@ Change Log:
 - Add new attributes to the login shortcode to customize field labels and placeholders
 - Improve preview of the [ms-protected-content] shortcode for admins
 - Fix various small issues with the login shortcode HTML code
+- Fix javascript collision with ACF Pro plugin
 
 1.1.1.4
 ----------------------------------------------------------------------
