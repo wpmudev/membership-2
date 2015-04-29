@@ -122,6 +122,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['membership_metabox'] = MS_Factory::load( 'MS_Controller_Metabox' );
 		$this->controllers['membership_shortcode'] = MS_Factory::load( 'MS_Controller_Shortcode' );
 		$this->controllers['frontend'] = MS_Factory::load( 'MS_Controller_Frontend' );
+		$this->controllers['import'] = MS_Factory::load( 'MS_Controller_Import' );
 		$this->controllers['help'] = MS_Factory::load( 'MS_Controller_Help' );
 
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.

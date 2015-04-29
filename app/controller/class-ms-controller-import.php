@@ -32,8 +32,123 @@ class MS_Controller_Import extends MS_Controller {
 	// Action definitions.
 	const ACTION_EXPORT = 'export';
 	const ACTION_PREVIEW = 'preview';
-	const ACTION_IMPORT = 'import';
-	const ACTION_DOWNLOAD = 'download';
+
+	// Ajax action constants
+	const AJAX_ACTION_IMPORT = 'ms_import';
+
+	/**
+	 * Prepare the Import manager.
+	 *
+	 * @since 1.0.0
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		$tab_key = 'import'; // should be unique plugin-wide value of `&tab=`.
+
+		$this->add_action(
+			'wp_ajax_' . self::AJAX_ACTION_IMPORT,
+			'ajax_action_import'
+		);
+
+		$this->add_action(
+			'ms_controller_settings_enqueue_scripts_' . $tab_key,
+			'enqueue_scripts'
+		);
+	}
+
+	/**
+	 * Handles an import batch that is sent via ajax.
+	 *
+	 * One batch includes multiple import commands that are to be processed in
+	 * the specified order.
+	 *
+	 * Expected output:
+	 *   OK:<number of successful commands>
+	 *   ERR
+	 *
+	 * @since  1.1.1.5
+	 */
+	public function ajax_action_import() {
+		$res = 'ERR';
+		$success = 0;
+
+		if ( ! isset( $_POST['items'] ) || ! isset( $_POST['source'] ) ) {
+			echo $res;
+			exit;
+		}
+
+		$batch = $_POST['items'];
+		$source = $_POST['source'];
+
+		$res = 'OK';
+		foreach ( $batch as $item ) {
+			if ( $this->process_item( $item, $source ) ) {
+				$success += 1;
+			}
+		}
+
+		echo $res . ':' . $success;
+		exit;
+	}
+
+	/**
+	 * Processes a single import command.
+	 *
+	 * @since  1.1.1.5
+	 * @param  array $item The import command.
+	 */
+	protected function process_item( $item, $source ) {
+		$res = false;
+
+		lib2()->array->equip( $item, 'task', 'data' );
+		$task = $item['task'];
+		$data = $item['data'];
+		$model = MS_Factory::create( 'MS_Model_Import' );
+		$model->source_key = $source;
+
+		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
+		MS_Plugin::set_modifier( 'MS_STOP_EMAILS', true );
+
+		// Possible tasks are defined in ms-view-settings-import.js
+		switch ( $task ) {
+			case 'start':
+				lib2()->array->equip( $item, 'clear' );
+				$clear = lib2()->is_true( $item['clear'] );
+				$model->start( $clear );
+				$res = true;
+				break;
+
+			case 'import-membership':
+				// Function expects an object, not an array!
+				$data = (object) $data;
+				$model->import_membership( $data );
+				$res = true;
+				break;
+
+			case 'import-member':
+				// Function expects an object, not an array!
+				$data = (object) $data;
+				$model->import_member( $data );
+				$res = true;
+				break;
+
+			case 'import-settings':
+				lib2()->array->equip( $item, 'setting', 'value' );
+				$setting = $item['setting'];
+				$value = $item['value'];
+				$model->import_setting( $setting, $value );
+				$res = true;
+				break;
+
+			case 'done':
+				$model->done();
+				$res = true;
+				break;
+		}
+
+		return $res;
+	}
 
 	/**
 	 * Main entry point: Processes the import/export action.
@@ -93,32 +208,31 @@ class MS_Controller_Import extends MS_Controller {
 					}
 				}
 				break;
-
-			case self::ACTION_IMPORT:
-				lib2()->array->equip_post( 'object', 'clear_all' );
-				$data = json_decode( stripslashes( $_POST['object'] ) );
-				$args = array(
-					'clear_all' => (bool) $_POST['clear_all'],
-				);
-
-				$model = MS_Factory::create( 'MS_Model_Import' );
-				$model->import_data( $data, $args );
-				break;
-
-			case self::ACTION_DOWNLOAD:
-				lib2()->array->equip_post( 'object' );
-				$data = json_decode( stripslashes( $_POST['object'] ) );
-
-				$name = 'export';
-				if ( isset( $data->source ) ) {
-					$name = strtolower( trim( $data->source ) );
-					$name = str_replace( ' ', '-', $name );
-					$name = sanitize_html_class( $name, 'export' );
-				}
-
-				lib2()->net->file_download( json_encode( $data ), $name . '.json' );
-				break;
 		}
+	}
+
+	/**
+	 * Enqueue admin scripts in the settings screen.
+	 *
+	 * @since  1.0.0
+	 */
+	public function enqueue_scripts() {
+		$data = array(
+			'ms_init' => array( 'view_settings_import' ),
+			'lang' => array(
+				'progress_title' => __( 'Importing data...', MS_TEXT_DOMAIN ),
+				'close_progress' => __( 'Okay', MS_TEXT_DOMAIN ),
+				'import_done' => __( 'All done!', MS_TEXT_DOMAIN ),
+				'task_start' => __( 'Preparing...', MS_TEXT_DOMAIN ),
+				'task_done' => __( 'Cleaning up...', MS_TEXT_DOMAIN ),
+				'task_import_member' => __( 'Importing Member', MS_TEXT_DOMAIN ),
+				'task_import_membership' => __( 'Importing Membership', MS_TEXT_DOMAIN ),
+				'task_import_settings' => __( 'Importing Settings', MS_TEXT_DOMAIN ),
+			),
+		);
+
+		lib2()->ui->data( 'ms_data', $data );
+		wp_enqueue_script( 'ms-admin' );
 	}
 
 }

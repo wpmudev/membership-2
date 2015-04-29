@@ -1906,6 +1906,7 @@
   width: auto;
   height: auto;
   background: transparent;
+  background-image: none !important;
 }
 #wpwrap .ms-wrap tr.ms-assigned .wpmui-select-wrapper .select2-search-choice .select2-search-choice-close:before {
   content: "\f335";
@@ -2322,6 +2323,25 @@
 .wpmui-wnd .ms-import-notes ul li,
 #wpwrap .ms-wrap .ms-import-notes ul li {
   margin-left: 20px;
+}
+.wpmui-wnd .sel-batchsize-wrapper,
+#wpwrap .ms-wrap .sel-batchsize-wrapper {
+  position: relative;
+  margin-left: 150px;
+  padding-top: 30px;
+  display: block;
+}
+.wpmui-wnd .sel-batchsize-wrapper .wpmui-field-label,
+#wpwrap .ms-wrap .sel-batchsize-wrapper .wpmui-field-label {
+  position: absolute;
+  left: -150px;
+  top: 0;
+}
+.wpmui-wnd .sel-batchsize-wrapper .wpmui-field-select,
+#wpwrap .ms-wrap .sel-batchsize-wrapper .wpmui-field-select {
+  position: absolute;
+  top: 0;
+  margin: 0;
 }
 .wpmui-wnd .gateways .is-configured .ms-gateway-setup-wrapper,
 .wpmui-wnd .gateways .not-configured .wpmui-radio-slider,

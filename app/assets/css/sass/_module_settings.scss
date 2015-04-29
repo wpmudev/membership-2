@@ -293,6 +293,25 @@
 		}
 	}
 
+	.sel-batchsize-wrapper {
+		position: relative;
+		margin-left: 150px;
+		padding-top: 30px;
+		display: block;
+
+		.wpmui-field-label {
+			position: absolute;
+			left: -150px;
+			top: 0;
+		}
+
+		.wpmui-field-select {
+			position: absolute;
+			top: 0;
+			margin: 0;
+		}
+	}
+
 	/* SETTINGS GATEWAY */
 	.gateways {
 		.is-configured .ms-gateway-setup-wrapper,
