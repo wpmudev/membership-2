@@ -191,8 +191,8 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 	public function column_status( $item, $column_name ) {
 		return sprintf(
 			'<span class="payment-status-%1$s">%2$s</span>',
-			$item->status_text(),
-			$html
+			$item->status,
+			$item->status_text()
 		);
 	}
 
