@@ -9,9 +9,11 @@ Change Log:
 - Add "autofocus" attribute to login shortcode
 - Add filter "ms_model_pages_redirect_to" to customize membership redirects
 - Add new attributes to the login shortcode to customize field labels and placeholders
+- Improve the Import Tool to handle large import files without throwing memory limit exceptions
 - Improve preview of the [ms-protected-content] shortcode for admins
 - Fix various small issues with the login shortcode HTML code
 - Fix javascript collision with ACF Pro plugin
+- Fix display of invoice status in the admin Billings section
 
 1.1.1.4
 ----------------------------------------------------------------------
