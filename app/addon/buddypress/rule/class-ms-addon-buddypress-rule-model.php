@@ -26,7 +26,7 @@
  * Persisted by Membership class.
  *
  * @since 1.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {

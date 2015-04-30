@@ -34,7 +34,7 @@
  * @uses MS_Model
  * @uses MS_View
  *
- * @package Membership
+ * @package Membership2
  */
 class MS_Controller extends MS_Hooker {
 

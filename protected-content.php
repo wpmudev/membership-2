@@ -136,7 +136,6 @@ class MS_Plugin {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @access private
 	 * @var MS_Plugin
 	 */
 	private static $instance = null;
@@ -146,7 +145,6 @@ class MS_Plugin {
 	 *
 	 * @since 1.1.0.5
 	 *
-	 * @access private
 	 * @var array
 	 */
 	private static $modifiers = array();
@@ -155,7 +153,6 @@ class MS_Plugin {
 	 * The plugin name.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var name
 	 */
 	private $name;
@@ -164,7 +161,6 @@ class MS_Plugin {
 	 * The plugin version.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var version
 	 */
 	private $version;
@@ -173,7 +169,6 @@ class MS_Plugin {
 	 * The plugin file.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var file
 	 */
 	private $file;
@@ -182,7 +177,6 @@ class MS_Plugin {
 	 * The plugin path.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var dir
 	 */
 	private $dir;
@@ -191,7 +185,6 @@ class MS_Plugin {
 	 * The plugin URL.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var url
 	 */
 	private $url;
@@ -200,7 +193,6 @@ class MS_Plugin {
 	 * The plugin settings.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var settings
 	 */
 	private $settings;
@@ -209,7 +201,6 @@ class MS_Plugin {
 	 * The plugin add-on settings.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var addon
 	 */
 	private $addon;
@@ -218,10 +209,17 @@ class MS_Plugin {
 	 * The main controller of the plugin.
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 * @var controller
 	 */
 	private $controller;
+
+	/**
+	 * The API controller (for convenience)
+	 *
+	 * @since  2.0.0
+	 * @var MS_Controller_Api
+	 */
+	public static $api = null;
 
 	/**
 	 * Plugin constructor.
@@ -523,7 +521,6 @@ class MS_Plugin {
 	 * **MS_** namespace ONLY will be based on folder structure in /app/
 	 *
 	 * @since 1.0.0
-	 * @access private
 	 *
 	 * @param  string $class Uses PHP autoloader function.
 	 * @return boolean
@@ -738,6 +735,18 @@ class MS_Plugin {
 		} else {
 			self::$modifiers[$key];
 		}
+	}
+
+	/**
+	 * This funciton initializes the api property for easy access to the plugin
+	 * API. This function is *only* called by MS_Controller_Api::__construct()!
+	 *
+	 * @since 2.0.0
+	 * @internal
+	 * @param MS_Controller_Api $controller The initialized API controller.
+	 */
+	public static function set_api( $controller ) {
+		self::$api = $controller;
 	}
 
 	/**

@@ -27,7 +27,7 @@
  *
  * @since 1.1.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Addon_Coupon extends MS_Addon {

@@ -138,7 +138,7 @@ Import Data Structure
  * Class that handles Export functions.
  *
  * @since 1.1.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Model_Import_Export extends MS_Model {

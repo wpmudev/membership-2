@@ -24,7 +24,7 @@
  * Class that handles Import/Export functions.
  *
  * @since 1.1.0
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Controller_Import extends MS_Controller {

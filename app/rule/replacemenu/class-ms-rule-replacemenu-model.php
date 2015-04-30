@@ -27,7 +27,7 @@
  *
  * @since 1.0.4.2
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Rule_ReplaceMenu_Model extends MS_Rule {

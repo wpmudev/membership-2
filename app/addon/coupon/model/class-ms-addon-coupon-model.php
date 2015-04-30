@@ -27,7 +27,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {

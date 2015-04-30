@@ -29,7 +29,7 @@
  * This object is reponsible to initialize the the gateway logic.
  *
  * @since 1.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Model_Gateway extends MS_Model_Option {

@@ -27,7 +27,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Controller_Membership extends MS_Controller {

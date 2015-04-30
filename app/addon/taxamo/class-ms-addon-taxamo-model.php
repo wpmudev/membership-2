@@ -25,7 +25,7 @@
  *
  * @since 1.1.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Addon_Taxamo_Model extends MS_Model_Settings {

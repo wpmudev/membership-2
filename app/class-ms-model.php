@@ -31,7 +31,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  */
 class MS_Model extends MS_Hooker {
 
@@ -62,7 +62,7 @@ class MS_Model extends MS_Hooker {
 	 *
 	 * @var bool
 	 */
-	public $_is_singleton = false;
+	public $_in_cache = false;
 
 	/**
 	 * MS_Model Contstuctor
@@ -125,7 +125,7 @@ class MS_Model extends MS_Hooker {
 	 * @since 1.1.1.4
 	 */
 	public function store_singleton() {
-		if ( $this->_is_singleton ) { return; }
+		if ( $this->_in_cache ) { return; }
 		MS_Factory::set_singleton( $this );
 	}
 

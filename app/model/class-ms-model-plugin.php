@@ -24,7 +24,7 @@
  * Main class for protection.
  *
  * @since 1.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Model_Plugin extends MS_Model {

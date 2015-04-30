@@ -34,7 +34,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  */
 class MS_Hooker {
 

@@ -29,7 +29,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Controller_Plugin extends MS_Controller {
@@ -124,6 +124,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['frontend'] = MS_Factory::load( 'MS_Controller_Frontend' );
 		$this->controllers['import'] = MS_Factory::load( 'MS_Controller_Import' );
 		$this->controllers['help'] = MS_Factory::load( 'MS_Controller_Help' );
+
+		// API should be the last Controller to create.
 		$this->controllers['api'] = MS_Factory::load( 'MS_Controller_Api' );
 
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.

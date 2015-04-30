@@ -27,7 +27,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage View
  */
 class MS_Addon_Coupon_View_List extends MS_View {

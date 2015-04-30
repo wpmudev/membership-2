@@ -24,7 +24,7 @@
  * Base class for all import handlers.
  *
  * @since 1.1.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Model_Import extends MS_Model {

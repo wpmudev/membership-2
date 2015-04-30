@@ -6,7 +6,7 @@
  * Extends MS_View for rendering methods and magic methods.
  *
  * @since 1.1.0
- * @package Membership
+ * @package Membership2
  * @subpackage View
  */
 class MS_View_Member_Payment extends MS_Dialog {

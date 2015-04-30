@@ -26,7 +26,7 @@
  * This Helper creates additional utility functions.
  *
  * @since 4.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage Helper
  */
 class MS_Helper_Utility extends MS_Helper {

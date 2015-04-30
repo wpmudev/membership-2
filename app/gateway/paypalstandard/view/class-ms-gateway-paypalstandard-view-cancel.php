@@ -5,7 +5,7 @@
  * Extends MS_View for rendering methods and magic methods.
  *
  * @since 1.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage View
  */
 class MS_Gateway_Paypalstandard_View_Cancel extends MS_View {

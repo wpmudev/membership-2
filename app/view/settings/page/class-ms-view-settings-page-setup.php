@@ -26,7 +26,7 @@
  * settings page.
  *
  * @since 1.1.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_View_Settings_Page_Setup extends MS_View {

@@ -24,7 +24,7 @@
  * Imports data from WPMU DEV Membership plugin.
  *
  * @since 1.1.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Model_Import_Membership extends MS_Model_Import {

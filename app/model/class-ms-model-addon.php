@@ -30,7 +30,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Model_Addon extends MS_Model_Option {

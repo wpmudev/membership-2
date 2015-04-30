@@ -30,7 +30,7 @@
  *
  * @since 1.1.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Controller_Widget extends MS_Controller {

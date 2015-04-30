@@ -3,7 +3,7 @@
  * Render Membership Metabox
  *
  * @since 1.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage View
  */
 class MS_View_Metabox extends MS_View {

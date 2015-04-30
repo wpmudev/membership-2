@@ -27,7 +27,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  */
 class MS_Factory {
 
@@ -194,8 +194,8 @@ class MS_Factory {
 		}
 
 		// This flag is used by MS_Model::store_singleton()
-		if ( property_exists( $obj, '_is_singleton' ) ) {
-			$obj->_is_singleton = true;
+		if ( property_exists( $obj, '_in_cache' ) ) {
+			$obj->_in_cache = true;
 		}
 
 		self::$singleton[ $key ] = apply_filters(

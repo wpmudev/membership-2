@@ -26,7 +26,7 @@
  * This Helper creates utility functions for working with shortcodes.
  *
  * @since 4.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Helper_Shortcode extends MS_Helper {

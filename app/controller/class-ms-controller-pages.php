@@ -27,7 +27,7 @@
  *
  * @since 1.0.4.5
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Controller_Pages extends MS_Controller {

@@ -25,7 +25,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Helper
  */
 class MS_Helper_ListTable_Member extends MS_Helper_ListTable {

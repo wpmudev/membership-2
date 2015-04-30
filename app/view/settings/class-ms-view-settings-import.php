@@ -24,7 +24,7 @@
  * Displays the Import preview.
  *
  * @since 1.1.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_View_Settings_Import extends MS_View {

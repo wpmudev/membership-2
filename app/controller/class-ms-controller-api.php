@@ -3,7 +3,9 @@
  * This file defines the MS_Controller_Api class.
  *
  * The API class exposes the official public API of the Membership2 plugin.
- *
+ */
+
+/*
  * @copyright Incsub (http://incsub.com/)
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
@@ -21,7 +23,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
  * MA 02110-1301 USA
- *
  */
 
 /**
@@ -29,7 +30,7 @@
  *
  * @since 2.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Controller_Api extends MS_Controller {

@@ -26,7 +26,7 @@
  * Persisted by parent class MS_Model_Option. Singleton.
  *
  * @since 1.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage Model
  */
 class MS_Gateway_Stripe extends MS_Gateway {

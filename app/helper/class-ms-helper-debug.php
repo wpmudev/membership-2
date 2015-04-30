@@ -34,7 +34,7 @@ if ( ! defined( 'WDEV_DEBUG' ) ) {
  * This Helper creates utility functions for debugging.
  *
  * @since 1.0.0
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 class MS_Helper_Debug extends MS_Helper {

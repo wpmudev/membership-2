@@ -184,13 +184,13 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			'<span class="ms-color" style="background-color:%4$s">&nbsp;</span> ' .
 			'<a href="?page=%5$s&step=%6$s&membership_id=%7$s" class="the-name">%1$s</a> ' .
 			'%3$s%2$s',
-			esc_html( $item->name ),
-			$this->row_actions( $actions ),
-			$badge,
-			$item->get_color(),
-			esc_attr( $_REQUEST['page'] ),
-			MS_Controller_Membership::STEP_OVERVIEW,
-			esc_attr( $item->id )
+			esc_html( $item->name ),                 // 1
+			$this->row_actions( $actions ),          // 2
+			$badge,                                  // 3
+			$item->get_color(),                      // 4
+			esc_attr( $_REQUEST['page'] ),           // 5
+			MS_Controller_Membership::STEP_OVERVIEW, // 6
+			esc_attr( $item->id )                    // 7
 		);
 	}
 

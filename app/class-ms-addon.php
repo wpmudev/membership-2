@@ -27,7 +27,7 @@
  *
  * @since 1.1.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage Controller
  */
 abstract class MS_Addon extends MS_Controller {

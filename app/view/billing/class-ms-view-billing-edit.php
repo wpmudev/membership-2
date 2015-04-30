@@ -7,7 +7,7 @@
  *
  * @since 1.0.0
  *
- * @package Membership
+ * @package Membership2
  * @subpackage View
  */
 class MS_View_Billing_Edit extends MS_View {
