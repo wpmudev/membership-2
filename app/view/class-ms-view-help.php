@@ -350,7 +350,6 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label_first_name</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							"<?php _e( 'First Name', MS_TEXT_DOMAIN ); ?>"
 						</span>
@@ -358,7 +357,6 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label_last_name</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							"<?php _e( 'Last Name', MS_TEXT_DOMAIN ); ?>"
 						</span>
@@ -366,7 +364,6 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label_username</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							"<?php _e( 'Choose a Username', MS_TEXT_DOMAIN ); ?>"
 						</span>
@@ -374,7 +371,6 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label_email</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							"<?php _e( 'Email Address', MS_TEXT_DOMAIN ); ?>"
 						</span>
@@ -382,7 +378,6 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label_password</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							"<?php _e( 'Password', MS_TEXT_DOMAIN ); ?>"
 						</span>
@@ -390,7 +385,6 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label_password2</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							"<?php _e( 'Confirm Password', MS_TEXT_DOMAIN ); ?>"
 						</span>
@@ -398,7 +392,6 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>label_register</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( '', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							"<?php _e( 'Register My Account', MS_TEXT_DOMAIN ); ?>"
 						</span>
