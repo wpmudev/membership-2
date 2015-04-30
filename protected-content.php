@@ -233,8 +233,14 @@ class MS_Plugin {
 		/**
 		 * Actions to execute before the plugin construction starts.
 		 *
-		 * @since 1.0.0
+		 * @since 2.0.0
 		 * @param object $this The MS_Plugin object.
+		 */
+		do_action( 'ms_plugin_init', $this );
+
+		/**
+		 * @since      1.0.0
+		 * @deprecated since 2.0.0
 		 */
 		do_action( 'ms_plugin_construct_start', $this );
 
@@ -356,11 +362,10 @@ class MS_Plugin {
 		/**
 		 * Creates and Filters the Plugin Controller.
 		 *
-		 * Main entry point controller for plugin.
+		 * ---> MAIN ENTRY POINT CONTROLLER FOR PLUGIN <---
 		 *
 		 * @uses  MS_Controller_Plugin
 		 * @since 1.0.0
-		 * @param object $this The MS_Plugin object.
 		 */
 		$this->controller = MS_Factory::create( 'MS_Controller_Plugin' );
 	}
@@ -688,6 +693,34 @@ class MS_Plugin {
 	 */
 	public static function is_wizard() {
 		return ! ! self::instance()->settings->initial_setup;
+	}
+
+	/**
+	 * Returns the network-wide protection status.
+	 *
+	 * This flag can be changed by setting the MS_PROTECT_NETWORK flag to true
+	 * in wp-config.php
+	 *
+	 * @since  2.0.0
+	 * @return bool False means that only the current site is protected.
+	 *         True means that memberships are shared among all network sites.
+	 */
+	public static function is_network_wide() {
+		static $Networkwide = null;
+
+		if ( null === $Networkwide ) {
+			if ( ! defined( 'MS_PROTECT_NETWORK' ) ) {
+				define( 'MS_PROTECT_NETWORK', false );
+			}
+
+			if ( MS_PROTECT_NETWORK && is_multisite() ) {
+				$Networkwide = true;
+			} else {
+				$Networkwide = false;
+			}
+		}
+
+		return $Networkwide;
 	}
 
 	/**
