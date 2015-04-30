@@ -288,10 +288,16 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public function purchase_button( $ms_relationship, $invoice ) {
+	public function purchase_button( $subscription, $invoice ) {
 		// Get only active gateways
 		$gateways = MS_Model_Gateway::get_gateways( true );
 		$data = array();
+
+		$membership = $subscription->get_membership();
+		$is_free = false;
+		if ( $membership->is_free() ) { $is_free = true; }
+		elseif ( 0 == $invoice->total ) { $is_free = true; }
+		elseif ( $invoice->uses_trial ) { $is_free = true; }
 
 		// show gateway purchase button for every active gateway
 		foreach ( $gateways as $gateway ) {
@@ -300,14 +306,12 @@ class MS_Controller_Gateway extends MS_Controller {
 			// Skip gateways that are not configured.
 			if ( ! $gateway->is_configured() ) { continue; }
 
-			$data['ms_relationship'] = $ms_relationship;
+			$data['ms_relationship'] = $subscription;
 			$data['gateway'] = $gateway;
 			$data['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
 
-			$membership = $ms_relationship->get_membership();
-
 			// Free membership, show only free gateway
-			if ( $membership->is_free() || 0 == $invoice->total ) {
+			if ( $is_free ) {
 				if ( MS_Gateway_Free::ID !== $gateway->id ) {
 					continue;
 				}
@@ -368,7 +372,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				$html = apply_filters(
 					'ms_controller_gateway_purchase_button_'. $gateway->id,
 					$view->to_html(),
-					$ms_relationship,
+					$subscription,
 					$this
 				);
 
@@ -536,7 +540,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 
 		if ( $valid ) {
-			$ms_relationship = MS_Factory::load(
+			$subscription = MS_Factory::load(
 				'MS_Model_Relationship',
 				$_REQUEST['ms_relationship_id']
 			);
@@ -545,24 +549,22 @@ class MS_Controller_Gateway extends MS_Controller {
 			$gateway = MS_Model_Gateway::factory( $gateway_id );
 
 			try {
-				$invoice = $gateway->process_purchase( $ms_relationship );
+				$invoice = $gateway->process_purchase( $subscription );
 
 				// If invoice is successfully paid, redirect to welcome page.
-				if ( MS_Model_Invoice::STATUS_PAID == $invoice->status ) {
+				if ( $invoice->is_paid()
+					|| ( $invoice->uses_trial
+						&& MS_Model_Invoice::STATUS_BILLED == $invoice->status
+					)
+				) {
 					// Make sure to respect the single-membership rule
-					$this->validate_membership_states( $ms_relationship );
+					$this->validate_membership_states( $subscription );
 
 					// Redirect user to the Payment-Completed page.
-					MS_Model_Pages::create_missing_pages();
-					$url = MS_Model_Pages::get_page_url(
-						MS_Model_Pages::MS_PAGE_REG_COMPLETE
+					MS_Model_Pages::redirect_to(
+						MS_Model_Pages::MS_PAGE_REG_COMPLETE,
+						array( 'ms_relationship_id' => $subscription->id )
 					);
-					$url = add_query_arg(
-						array( 'ms_relationship_id' => $ms_relationship->id ),
-						$url
-					);
-					wp_safe_redirect( $url );
-					exit;
 				} else {
 					// For manual gateway payments.
 					$this->add_action( 'the_content', 'purchase_info_content' );
@@ -844,7 +846,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						}
 
 						wp_safe_redirect(
-							add_query_arg( array( 'msg' => 1 ) )
+							esc_url_raw( add_query_arg( array( 'msg' => 1 ) ) )
 						);
 						exit;
 					}
@@ -873,7 +875,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						}
 
 						wp_safe_redirect(
-							add_query_arg( array( 'msg' => 1 ) )
+							esc_url_raw( add_query_arg( array( 'msg' => 1 ) ) )
 						);
 						exit;
 					}

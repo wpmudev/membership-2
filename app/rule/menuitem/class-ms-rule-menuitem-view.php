@@ -28,7 +28,9 @@ class MS_Rule_MenuItem_View extends MS_View {
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
 
-		$menu_url = add_query_arg( array( 'menu_id' => $menu_id ) );
+		$menu_url = esc_url_raw(
+			add_query_arg( array( 'menu_id' => $menu_id ) )
+		);
 		$rule_listtable->prepare_items();
 
 		$header_data = apply_filters(

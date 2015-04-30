@@ -21,16 +21,18 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		}
 
 		$invoice = $this->data['invoice'];
-		$trial_invoice = $this->data['trial_invoice'];
 		$member = $this->data['member'];
-		$ms_relationship = $this->data['ms_relationship'];
+		$subscription = $this->data['ms_relationship'];
 		$membership = $this->data['membership'];
 		$gateway = $this->data['gateway'];
+		$is_free = false;
+
+		$invoice_number = $invoice->get_invoice_number();
 
 		$inv_title = sprintf(
 			'<a href="%s">%s</a>',
 			get_permalink( $invoice->id ),
-			__( 'Invoice #', MS_TEXT_DOMAIN ) . esc_html( $invoice->id )
+			esc_html( __( 'Invoice ', MS_TEXT_DOMAIN ) . $invoice_number )
 		);
 
 		if ( $invoice->amount > 0 ) {
@@ -41,6 +43,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			);
 		} else {
 			$inv_amount = __( 'Free', MS_TEXT_DOMAIN );
+			$is_free = true;
 		}
 
 		if ( $invoice->tax ) {
@@ -90,28 +93,33 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_pro_rate = apply_filters( 'ms_invoice_pro_rate', $inv_pro_rate, $invoice );
 		$inv_total = apply_filters( 'ms_invoice_total', $inv_total, $invoice );
 
-		if ( ! empty( $trial_invoice ) ) {
-			$inv_details = apply_filters( 'ms_invoice_description', $trial_invoice->description, $trial_invoice, $invoice );
-			$inv_due_date = apply_filters(
-				'ms_invoice_due_date',
-				MS_Helper_Period::format_date( $trial_invoice->due_date ),
-				$trial_invoice,
-				$invoice
-			);
+		$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
+		$inv_date = apply_filters(
+			'ms_invoice_date',
+			MS_Helper_Period::format_date( $invoice->invoice_date ),
+			$invoice,
+			null
+		);
+		$inv_due_date = apply_filters(
+			'ms_invoice_due_date',
+			MS_Helper_Period::format_date( $invoice->due_date ),
+			$invoice,
+			null
+		);
+
+		if ( $invoice->uses_trial ) {
 			$trial_date = apply_filters(
 				'ms_invoice_trial_date',
-				MS_Helper_Period::format_date( $invoice->due_date ),
+				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$trial_invoice,
 				$invoice
 			);
-		} else {
-			$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
-			$inv_due_date = apply_filters(
-				'ms_invoice_due_date',
-				MS_Helper_Period::format_date( $invoice->due_date ),
-				$invoice,
-				null
+			$trial_date .= sprintf(
+				' <small>(%s %s)</small>',
+				__( 'ends on', MS_TEXT_DOMAIN ),
+				MS_Helper_Period::format_date( $invoice->trial_ends )
 			);
+		} else {
 			$trial_date = '';
 		}
 
@@ -150,20 +158,26 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					</tr>
 
 					<?php if ( ! empty( $inv_from ) ) : ?>
-					<tr class="ms-inv-from">
-						<th><?php _e( 'Sender', MS_TEXT_DOMAIN ); ?></th>
-						<td class="ms-inv-text"><?php echo $inv_from; ?></td>
-					</tr>
+						<tr class="ms-inv-from">
+							<th><?php _e( 'Sender', MS_TEXT_DOMAIN ); ?></th>
+							<td class="ms-inv-text"><?php echo $inv_from; ?></td>
+						</tr>
 					<?php endif; ?>
 
 					<tr class="ms-inv-to">
 						<th><?php _e( 'Invoice to', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_to; ?></td>
 					</tr>
-					<tr class="ms-inv-due-date">
-						<th><?php _e( 'Due date', MS_TEXT_DOMAIN ); ?></th>
-						<td class="ms-inv-date"><?php echo $inv_due_date; ?></td>
+					<tr class="ms-inv-invoice-date">
+						<th><?php _e( 'Invoice date', MS_TEXT_DOMAIN ); ?></th>
+						<td class="ms-inv-date"><?php echo $inv_date; ?></td>
 					</tr>
+					<?php if ( ! empty( $trial_date ) ) : ?>
+						<tr class="ms-inv-trial-end-date">
+							<th><?php _e( 'Trial period', MS_TEXT_DOMAIN ); ?></th>
+							<td class="ms-inv-date"><?php echo $trial_date; ?></td>
+						</tr>
+					<?php endif; ?>
 					<tr class="ms-inv-status space">
 						<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_status; ?></td>
@@ -213,13 +227,12 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						</tr>
 					<?php endif; ?>
 
-					<?php if ( ! empty( $trial_invoice ) ) : ?>
-					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
-						<th><?php _e( 'Payment on', MS_TEXT_DOMAIN ); ?></th>
-						<td class="ms-inv-date"><?php echo $trial_date; ?></td>
-					</tr>
+					<?php if ( ! $is_free ) : ?>
+						<tr class="ms-inv-due-date <?php echo esc_attr( $sep ); $sep = ''; ?>">
+							<th><?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?></th>
+							<td class="ms-inv-date"><?php echo $inv_due_date; ?></td>
+						</tr>
 					<?php endif; ?>
-
 					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
 						<th><?php _e( 'Total', MS_TEXT_DOMAIN ); ?></th>
 						<td class="ms-inv-price"><?php echo $inv_total; ?></td>
@@ -230,7 +243,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					<?php
 					$show_button = lib2()->is_true( $this->data['pay_button'] );
 
-					if ( $invoice->status == MS_Model_Invoice::STATUS_PAID ) {
+					if ( $invoice->is_paid() ) {
 						// Invoice is already paid. We don't need a payment
 						// button...
 						$show_button = false;
@@ -239,7 +252,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					if ( $show_button ) {
 						do_action(
 							'ms_view_shortcode_invoice_purchase_button',
-							$ms_relationship,
+							$subscription,
 							$invoice
 						);
 					}

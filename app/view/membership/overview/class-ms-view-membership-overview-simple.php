@@ -116,12 +116,15 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				<div class="ms-news-view-wrapper">
 					<?php
+					$url = esc_url_raw(
+						add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) )
+					);
 					MS_Helper_Html::html_element(
 						array(
 							'id' => 'view_news',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'value' => __( 'View More News', MS_TEXT_DOMAIN ),
-							'url' => add_query_arg( array( 'step' => MS_Controller_Membership::STEP_NEWS ) ),
+							'url' => $url,
 							'class' => 'wpmui-field-button button',
 						)
 					);
@@ -154,10 +157,12 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 			<?php if ( $count > 0 ) : ?>
 				<div class="inside group">
-					<?php $this->members_panel_data(
+					<?php
+					$this->members_panel_data(
 						$this->data['members'],
 						$this->data['membership']->id
-					); ?>
+					);
+					?>
 				</div>
 
 				<div class="ms-member-edit-wrapper">
@@ -217,9 +222,11 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				$class = ($class == 'alternate' ? '' : 'alternate' );
 				?>
 				<tr class="<?php echo esc_attr( $class ); ?>">
-					<td><?php echo esc_html(
+					<td><?php
+					echo esc_html(
 						MS_Helper_Period::format_date( $event->post_modified )
-					); ?></td>
+					);
+					?></td>
 					<td><?php echo esc_html( MS_Model_Member::get_username( $event->user_id ) ); ?></td>
 					<td><?php echo esc_html( $event->description ); ?></td>
 				</tr>
@@ -258,9 +265,11 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				?>
 				<tr class="<?php echo esc_attr( $class ); ?>">
 					<td><?php echo esc_html( $member->username ); ?></td>
-					<td><?php echo esc_html(
+					<td><?php
+					echo esc_html(
 						MS_Helper_Period::format_date( $subscription->start_date )
-					); ?></td>
+					);
+					?></td>
 					<td><?php echo esc_html( $status_types[ $subscription->status ] ); ?></td>
 				</tr>
 			<?php endforeach; ?>
@@ -292,10 +301,12 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				<div class="ms-overview-available-content-wrapper ms-overview-bottom">
 					<h3><i class="ms-img-unlock"></i> <?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></h3>
 					<div class="ms-description ms-indented-description">
-					<?php printf(
+					<?php
+					printf(
 						__( 'This is Membership2 which <span class="ms-bold">%s</span> members has access to.', MS_TEXT_DOMAIN ),
 						esc_html( $this->data['membership']->name )
-					); ?>
+					);
+					?>
 					</div>
 					<div class="inside">
 						<?php $this->available_content_panel_data(); ?>
@@ -328,10 +339,12 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		<?php
 
 		if ( ! $membership->is_free ) {
-			$payment_url = add_query_arg(
-				array(
-					'step' => MS_Controller_Membership::STEP_PAYMENT,
-					'edit' => 1,
+			$payment_url = esc_url_raw(
+				add_query_arg(
+					array(
+						'step' => MS_Controller_Membership::STEP_PAYMENT,
+						'edit' => 1,
+					)
 				)
 			);
 
@@ -390,12 +403,14 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				<div class="ms-protection-edit-wrapper">
 					<?php
-					$edit_url = add_query_arg(
-						array(
-							'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
-							'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-							'tab' => $rule->rule_type,
-							'membership_id' => $membership_id,
+					$edit_url = esc_url_raw(
+						add_query_arg(
+							array(
+								'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
+								'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+								'tab' => $rule->rule_type,
+								'membership_id' => $membership_id,
+							)
 						)
 					);
 

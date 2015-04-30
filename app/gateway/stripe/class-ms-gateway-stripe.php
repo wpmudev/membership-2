@@ -152,17 +152,17 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * Processes purchase action.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
-	public function process_purchase( $ms_relationship ) {
+	public function process_purchase( $subscription ) {
 		do_action(
 			'ms_gateway_stripe_process_purchase_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
-		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$member = $subscription->get_member();
+		$invoice = $subscription->get_current_invoice();
 
 		if ( ! empty( $_POST['stripeToken'] ) ) {
 			lib2()->array->strip_slashes( $_POST, 'stripeToken' );
@@ -191,7 +191,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 				// Send request to gateway.
 				$charge = Stripe_Charge::create(
 					array(
-						'amount' => (int) $invoice->total * 100, // Amount in cents!
+						'amount' => intval( $invoice->total * 100 ), // Amount in cents!
 						'currency' => strtolower( $invoice->currency ),
 						'customer' => $customer->id,
 						'description' => $invoice->name,
@@ -217,19 +217,22 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * Request automatic payment to the gateway.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $subscription The related membership relationship.
+	 * @return bool True on success.
 	 */
-	public function request_payment( $ms_relationship ) {
+	public function request_payment( $subscription ) {
+		$was_paid = false;
+
 		do_action(
 			'ms_gateway_stripe_request_payment_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
-		$member = $ms_relationship->get_member();
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$member = $subscription->get_member();
+		$invoice = $subscription->get_current_invoice();
 
-		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		if ( ! $invoice->is_paid() ) {
 			try {
 				$this->load_stripe_lib();
 				$customer = $this->get_stripe_customer( $member );
@@ -240,7 +243,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 					} else {
 						$charge = Stripe_Charge::create(
 							array(
-								'amount' => (int) $invoice->total * 100, // Amount in cents!
+								'amount' => intval( $invoice->total * 100 ), // Amount in cents!
 								'currency' => strtolower( $invoice->currency ),
 								'customer' => $customer->id,
 								'description' => $invoice->name,
@@ -248,6 +251,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 						);
 
 						if ( true == $charge->paid ) {
+							$was_paid = true;
 							$invoice->pay_it( $this->id, $charge->id );
 						}
 					}
@@ -255,16 +259,22 @@ class MS_Gateway_Stripe extends MS_Gateway {
 					MS_Helper_Debug::log( "Stripe customer is empty for user $member->username" );
 				}
 			} catch ( Exception $e ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
 				MS_Helper_Debug::log( $e->getMessage() );
 			}
+		} else {
+			// Invoice is already paid earlier.
+			$was_paid = true;
 		}
 
 		do_action(
 			'ms_gateway_stripe_request_payment_after',
-			$ms_relationship,
+			$subscription,
+			$was_paid,
 			$this
 		);
+
+		return $was_paid;
 	}
 
 	/**

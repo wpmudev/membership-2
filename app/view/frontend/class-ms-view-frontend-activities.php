@@ -13,22 +13,41 @@ class MS_View_Frontend_Activities extends MS_View {
 				<table>
 					<thead>
 						<tr>
-							<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Activity', MS_TEXT_DOMAIN ); ?></th>
+							<th class="ms-col-activity-date"><?php
+								_e( 'Date', MS_TEXT_DOMAIN );
+							?></th>
+							<th class="ms-col-activity-title"><?php
+								_e( 'Activity', MS_TEXT_DOMAIN );
+							?></th>
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $this->data['events'] as $event ) : ?>
-						<tr>
-							<td><?php echo $event->post_modified; ?></td>
-							<td><?php echo $event->description; ?></td>
+					<?php foreach ( $this->data['events'] as $event ) :
+						$ev_classes = array(
+							'ms-activity-topic-' . $event->topic,
+							'ms-activity-type-' . $event->type,
+							'ms-membership-' . $event->membership_id,
+						);
+						?>
+						<tr class="<?php echo esc_attr( implode( ' ', $ev_classes ) ); ?>">
+							<td class="ms-col-activity-date"><?php
+								echo esc_html(
+									MS_Helper_Period::format_date(
+										$event->post_modified,
+										__( 'F j (H:i)', MS_TEXT_DOMAIN )
+									)
+								);
+							?></td>
+							<td class="ms-col-activity-title"><?php
+								echo esc_html( $event->description );
+							?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
 			<?php
 			else :
-				$redirect = add_query_arg( array() );
+				$redirect = esc_url_raw( add_query_arg( array() ) );
 				$title = __( 'Your account', MS_TEXT_DOMAIN );
 				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
 			endif;
@@ -47,7 +66,7 @@ class MS_View_Frontend_Activities extends MS_View {
 				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
 			</div>
 			<?php
-			$redirect = add_query_arg( array() );
+			$redirect = esc_url_raw( add_query_arg( array() ) );
 			echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
 			?>
 		</div>

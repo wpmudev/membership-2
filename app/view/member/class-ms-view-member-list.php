@@ -69,7 +69,9 @@ class MS_View_Member_List extends MS_View {
 	 */
 	public function membership_filter() {
 		$memberships = MS_Model_Membership::get_membership_names();
-		$url = remove_query_arg( array( 'membership_id', 'paged' ) );
+		$url = esc_url_raw(
+			remove_query_arg( array( 'membership_id', 'paged' ) )
+		);
 		$links = array();
 
 		$links['all'] = array(
@@ -82,9 +84,12 @@ class MS_View_Member_List extends MS_View {
 				$name = __( '(No Name)', MS_TEXT_DOMAIN );
 			}
 
+			$filter_url = esc_url_raw(
+				add_query_arg( array( 'membership_id' => $id ), $url )
+			);
 			$links['ms-' . $id] = array(
 				'label' => esc_html( $name ),
-				'url' => add_query_arg( array( 'membership_id' => $id ), $url ),
+				'url' => $filter_url,
 			);
 		}
 

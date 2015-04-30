@@ -54,6 +54,17 @@ class MS_Model extends MS_Hooker {
 	protected $name;
 
 	/**
+	 * Stores the caching state of the object.
+	 * This value is ONLY modified by MS_Factory::set_singleton(), so if it is
+	 * true it means that this object can be accessed via MS_Factory::load()
+	 *
+	 * @since 1.1.1.4
+	 *
+	 * @var bool
+	 */
+	public $_is_singleton = false;
+
+	/**
 	 * MS_Model Contstuctor
 	 *
 	 * @since 1.0.0
@@ -81,7 +92,7 @@ class MS_Model extends MS_Hooker {
 	 */
 	public function set_field( $field, $value ) {
 		// Don't deserialize values of "private" fields.
-		if ( $field[0] === '_' ) {
+		if ( '_' === $field[0] ) {
 			return;
 		}
 
@@ -106,6 +117,16 @@ class MS_Model extends MS_Hooker {
 	 */
 	public function save() {
 		throw new Exception( 'Method to be implemented in child class' );
+	}
+
+	/**
+	 * Set the singleton instance if it is not yet defined.
+	 *
+	 * @since 1.1.1.4
+	 */
+	public function store_singleton() {
+		if ( $this->_is_singleton ) { return; }
+		MS_Factory::set_singleton( $this );
 	}
 
 	/**

@@ -109,9 +109,9 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Date $end_date The end date to subtract from in the format yyyy-mm-dd
-	 * @param Date $start_date The start date to subtraction the format yyyy-mm-dd
-	 * @return string The resulting of the date subtraction.
+	 * @param  Date $end_date The end date to subtract from in the format yyyy-mm-dd
+	 * @param  Date $start_date The start date to subtraction the format yyyy-mm-dd
+	 * @return int The resulting of the date subtraction.
 	 */
 	public static function subtract_dates( $end_date, $start_date ) {
 		if ( empty( $end_date ) ) {
@@ -122,15 +122,69 @@ class MS_Helper_Period extends MS_Helper {
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
 
-		$days = round(
+		$days = intval(
 			( $end_date->format( 'U' ) - $start_date->format( 'U' ) ) /
 			86400 // = 60 * 60 * 24
 		);
+
+		if ( $days < 0 ) {
+			$days = 0;
+		}
 
 		return apply_filters(
 			'ms_helper_period_subtract_dates',
 			$days
 		);
+	}
+
+	/**
+	 * Checks two things: First if the_date is a valid date and second if
+	 * the_date occurs AFTER any other date in the arguments list.
+	 *
+	 * This function can be used to compare multiple dates, like
+	 * $valid = is_after( $today, $date1, $date2, $date3 );
+	 *
+	 * @since  1.1.1.4
+	 *
+	 * @param  string|Date $the_date Date value that is compared with other dates.
+	 * @param  string|Date $before_1 Comparison Date 1
+	 * @param  ...
+	 * @return bool True means that the_date is valid and after all other dates.
+	 */
+	public static function is_after( $the_date, $before_1 ) {
+		$result = true;
+
+		if ( ! is_numeric( $the_date ) ) {
+			$the_date = strtotime( $the_date );
+		}
+
+		if ( empty( $the_date ) ) {
+			// No valid date specified. Fail.
+			$result = false;
+		} else {
+			// Valid date specified, compare with other params.
+			$dates = func_get_args();
+
+			// Remove the_date from the param list
+			array_shift( $dates );
+
+			foreach ( $dates as $comp_date ) {
+				if ( ! is_numeric( $comp_date ) ) {
+					$comp_date = strtotime( $comp_date );
+				}
+
+				// The date param is invalid, skip comparison.
+				if ( empty( $comp_date ) ) { continue; }
+
+				if ( $comp_date > $the_date ) {
+					// Comparison date is bigger (=after) the_date. Fail.
+					$result = false;
+					break;
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	/**
@@ -141,25 +195,31 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The current date.
 	 */
 	public static function current_date( $format = null, $ignore_filters = false ) {
-		if ( empty( $format ) ) {
-			$format = self::PERIOD_FORMAT;
-		}
+		static $Date = array();
+		$key = (string)$format . (int)$ignore_filters;
 
-		$format = apply_filters(
-			'ms_helper_period_current_date_format',
-			$format
-		);
+		if ( ! isset( $Date[$key] ) ) {
+			if ( empty( $format ) ) {
+				$format = self::PERIOD_FORMAT;
+			}
 
-		$date = gmdate( $format );
-
-		if ( ! $ignore_filters ) {
-			$date = apply_filters(
-				'ms_helper_period_current_date',
-				$date
+			$format = apply_filters(
+				'ms_helper_period_current_date_format',
+				$format
 			);
+
+			$date = gmdate( $format );
+
+			if ( ! $ignore_filters ) {
+				$date = apply_filters(
+					'ms_helper_period_current_date',
+					$date
+				);
+			}
+			$Date[$key] = $date;
 		}
 
-		return $date;
+		return $Date[$key];
 	}
 
 	/**

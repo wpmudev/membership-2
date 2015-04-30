@@ -14,10 +14,16 @@ jQuery( function() {
 
 	// Auto-Focus on the user-name field.
 	function set_focus() {
+		var form = false;
+
 		if ( frm_login.is( ':visible' ) ) {
-			frm_login.find( 'input[name="log"]' ).focus();
+			form = frm_login;
 		} else if ( frm_lost.is( ':visible' ) ) {
-			frm_lost.find( 'input[name="user_login"]' ).focus();
+			form = frm_lost;
+		}
+
+		if ( form ) {
+			form.find( 'input.focus' ).focus();
 		}
 	}
 
@@ -145,5 +151,7 @@ jQuery( function() {
 		return false;
 	});
 
-	set_focus();
+	if ( frm_login.hasClass( 'autofocus' ) ) {
+		set_focus();
+	}
 });

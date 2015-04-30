@@ -124,6 +124,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		if ( MS_Model_Member::is_admin_user()
 			&& MS_Plugin::is_enabled()
 			&& ! is_network_admin()
+			&& MS_Model_Simulate::can_simulate()
 		) {
 			if ( $this->simulate->is_simulating() ) {
 				$this->add_detail_nodes();
@@ -161,7 +162,9 @@ class MS_Controller_Adminbar extends MS_Controller {
 				$this->simulate->membership_id = $new_id;
 
 				$target = wp_get_referer();
-				if ( $this->simulate->is_simulating() && false !== strpos( $target, 'wp-admin' ) ) {
+				if ( $this->simulate->is_simulating()
+					&& false !== strpos( $target, 'wp-admin' )
+				) {
 					$redirect = admin_url();
 				}
 			}

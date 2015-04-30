@@ -71,7 +71,7 @@ class MS_Controller_Settings extends MS_Controller {
 		 * @since 1.1.0
 		 */
 		if ( isset( $_REQUEST['run_cron'] ) ) {
-			$url = remove_query_arg( 'run_cron' );
+			$url = esc_url_raw( remove_query_arg( 'run_cron' ) );
 			do_action( 'ms_run_cron_services', $_REQUEST['run_cron'] );
 			wp_safe_redirect( $url );
 			exit();
@@ -338,8 +338,11 @@ class MS_Controller_Settings extends MS_Controller {
 			// Setup navigation tabs.
 			lib2()->array->equip_get( 'tab' );
 			$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
+
 			if ( ! array_key_exists( $active_tab, $tabs ) ) {
-				$new_url = add_query_arg( array( 'tab' => $first_key ) );
+				$new_url = esc_url_raw(
+					add_query_arg( array( 'tab' => $first_key ) )
+				);
 				wp_safe_redirect( $new_url );
 				exit;
 			} else {
@@ -383,8 +386,13 @@ class MS_Controller_Settings extends MS_Controller {
 					if ( self::validate_required( $fields, 'GET' ) ) {
 						$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
 
-						$redirect = remove_query_arg( array( 'action', '_wpnonce', 'setting' ) );
-						$redirect = add_query_arg( 'msg', $msg, $redirect );
+						$redirect = esc_url_raw(
+							add_query_arg(
+								'msg',
+								$msg,
+								remove_query_arg( array( 'action', '_wpnonce', 'setting' ) )
+							)
+						);
 						break;
 					}
 					break;
@@ -401,8 +409,12 @@ class MS_Controller_Settings extends MS_Controller {
 					if ( self::validate_required( array( 'comm_type' ) )
 						&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
 					) {
-						$redirect = add_query_arg( 'comm_type', $_POST['comm_type'] );
-						$redirect = remove_query_arg( 'msg', $redirect );
+						$redirect = esc_url_raw(
+							remove_query_arg(
+								'msg',
+								add_query_arg( 'comm_type', $_POST['comm_type'] )
+							)
+						);
 						break;
 					}
 
@@ -411,8 +423,14 @@ class MS_Controller_Settings extends MS_Controller {
 						&& self::validate_required( $fields )
 					) {
 						$msg = $this->save_communication( $type, $_POST );
-						$redirect = add_query_arg( 'comm_type', $_POST['type'] );
-						$redirect = add_query_arg( 'msg', $msg, $redirect );
+						$redirect = esc_url_raw(
+							add_query_arg(
+								array(
+									'comm_type' => urlencode( $_POST['type'] ),
+									'msg' => $msg,
+								)
+							)
+						);
 						break;
 					}
 					break;
@@ -593,9 +611,11 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
-		$initial_url = add_query_arg(
-			array( 'page' => MS_Controller_Plugin::MENU_SLUG ),
-			admin_url( 'admin.php' )
+		$initial_url = esc_url_raw(
+			add_query_arg(
+				array( 'page' => MS_Controller_Plugin::MENU_SLUG ),
+				admin_url( 'admin.php' )
+			)
 		);
 
 		$data = array(

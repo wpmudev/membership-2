@@ -48,7 +48,7 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	 *
 	 * @var array
 	 */
-	static protected $real_caps = null;
+	static protected $real_caps = array();
 
 	/**
 	 * Caches the get_content_array output
@@ -56,6 +56,7 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	 * @var array
 	 */
 	protected $_content_array = null;
+
 
 	/**
 	 * Returns the active flag for a specific rule.
@@ -87,8 +88,8 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	public function protect_content() {
 		parent::protect_content();
 
-		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
-		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
+		$this->add_filter( 'user_has_cap', 'prepare_caps', 1, 4 );
+		$this->add_filter( 'user_has_cap', 'modify_caps', 10, 4 );
 	}
 
 	/**
@@ -99,8 +100,8 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	public function protect_admin_content() {
 		parent::protect_admin_content();
 
-		$this->add_action( 'user_has_cap', 'prepare_caps', 1, 3 );
-		$this->add_action( 'user_has_cap', 'modify_caps', 10, 3 );
+		$this->add_filter( 'user_has_cap', 'prepare_caps', 1, 4 );
+		$this->add_filter( 'user_has_cap', 'modify_caps', 10, 4 );
 	}
 
 	/**
@@ -130,11 +131,16 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	 * @param array   $caps    Actual capabilities for meta capability.
 	 * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
 	 */
-	public function prepare_caps( $allcaps, $caps, $args ) {
+	public function prepare_caps( $allcaps, $caps, $args, $user ) {
 		global $wp_roles;
 
-		// Only run this filter once!
-		$this->remove_filter( 'user_has_cap', 'prepare_caps', 1, 3 );
+		if ( isset( self::$real_caps[$user->ID] ) ) {
+			// Only run the init code once for each user-ID.
+			return $allcaps;
+		} else {
+			// First get a list of the users default capabilities.
+			self::$real_caps[$user->ID] = $allcaps;
+		}
 
 		$all_roles = $wp_roles->roles;
 
@@ -148,21 +154,13 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 			}
 			$caps = lib2()->array->get( $caps );
 
-			if ( null === self::$real_caps ) {
-				// First get a list of the users default capabilities.
-				self::$real_caps = $allcaps;
-
-				// Use the permissions of the first rule without checking.
-				foreach ( $caps as $key => $value ) {
-					self::$real_caps[$key] = $value;
-				}
-			} else {
-				// Only add additional capabilities from now on...
-				foreach ( $caps as $key => $value ) {
-					if ( $value ) { self::$real_caps[$key] = 1; }
-				}
+			// Only add additional capabilities from now on...
+			foreach ( $caps as $key => $value ) {
+				if ( $value ) { self::$real_caps[$user->ID][$key] = 1; }
 			}
 		}
+
+		return $allcaps;
 	}
 
 	/**
@@ -177,12 +175,17 @@ class MS_Rule_MemberRoles_Model extends MS_Rule {
 	 * @param array   $caps    Actual capabilities for meta capability.
 	 * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
 	 */
-	public function modify_caps( $allcaps, $caps, $args ) {
+	public function modify_caps( $allcaps, $caps, $args, $user ) {
+		if ( ! isset( self::$real_caps[$user->ID] ) ) {
+			self::$real_caps[$user->ID] = $allcaps;
+		}
+
 		return apply_filters(
 			'ms_rule_memberroles_model_modify_caps',
-			self::$real_caps,
+			self::$real_caps[$user->ID],
 			$caps,
 			$args,
+			$user,
 			$this
 		);
 	}

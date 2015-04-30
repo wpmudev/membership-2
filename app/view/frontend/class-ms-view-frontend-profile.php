@@ -5,12 +5,12 @@ class MS_View_Frontend_Profile extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$cancel = array(
-				'id' => 'cancel',
-				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'title' => __('Cancel', MS_TEXT_DOMAIN ),
-				'value' => __('Cancel', MS_TEXT_DOMAIN ),
-				'url' => remove_query_arg( array( 'action' ) ),
-				'class' => 'wpmui-field-button button',
+			'id' => 'cancel',
+			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
+			'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+			'url' => esc_url_raw( remove_query_arg( array( 'action' ) ) ),
+			'class' => 'wpmui-field-button button',
 		);
 		ob_start();
 		?>
@@ -18,7 +18,7 @@ class MS_View_Frontend_Profile extends MS_View {
 			<?php $this->render_errors() ?>
 			<form id="ms-view-frontend-profile-form" class="form-membership" action="" method="post">
 				<legend><?php _e( 'Edit profile', MS_TEXT_DOMAIN ); ?></legend>
-				<?php foreach( $fields as $field ) {
+				<?php foreach ( $fields as $field ) {
 					?>
 					<div class="ms-form-element">
 						<?php MS_Helper_Html::html_element( $field );?>

@@ -304,9 +304,11 @@ class MS_Controller_Rule extends MS_Controller {
 				$rule_type,
 				array( $_GET['item'] )
 			);
-			$redirect = add_query_arg(
-				array( 'msg' => $msg),
-				remove_query_arg( array( 'action', 'item', '_wpnonce' ) )
+			$redirect = esc_url_raw(
+				add_query_arg(
+					array( 'msg' => $msg),
+					remove_query_arg( array( 'action', 'item', '_wpnonce' ) )
+				)
 			);
 		}
 

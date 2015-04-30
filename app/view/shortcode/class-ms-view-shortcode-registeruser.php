@@ -8,10 +8,10 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		// When redirecting to login form we want to keep the previously submitted form data.
 		$url_data = $_POST;
 		$url_data['do-login'] = '1';
-		$login_url = add_query_arg( $url_data );
+		$login_url = esc_url_raw( add_query_arg( $url_data ) );
 
 		if ( ! empty( $_REQUEST['do-login'] ) ) {
-			$register_url = remove_query_arg( 'do-login' );
+			$register_url = esc_url_raw( remove_query_arg( 'do-login' ) );
 
 			$back_link = array(
 				'url' => $register_url,
@@ -40,14 +40,16 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		$register_button = array(
 			'id' => 'register',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Register My Account', MS_TEXT_DOMAIN ),
+			'value' => $this->data['label_register'],
 		);
 
 		$title = $this->data['title'];
 		ob_start();
 
 		$reg_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
-		$reg_url = add_query_arg( 'action', 'register_user', $reg_url );
+		$reg_url = esc_url_raw(
+			add_query_arg( 'action', 'register_user', $reg_url )
+		);
 
 		// Default WP action hook
 		do_action( 'before_signup_form' );
@@ -61,11 +63,18 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 						<?php echo '' . $title; ?>
 					</legend>
 				<?php endif; ?>
-				<?php foreach ( $fields as $field ) { ?>
-					<div class="ms-form-element">
-						<?php MS_Helper_Html::html_element( $field ); ?>
-					</div>
-				<?php }
+
+				<?php foreach ( $fields as $field ) {
+					if ( MS_Helper_Html::INPUT_TYPE_HIDDEN == $field['type'] ) {
+						MS_Helper_Html::html_element( $field );
+					} else {
+						?>
+						<div class="ms-form-element ms-form-element-<?php echo esc_attr( $field['id'] ); ?>">
+							<?php MS_Helper_Html::html_element( $field ); ?>
+						</div>
+						<?php
+					}
+				}
 
 				/**
 				 * Trigger default WordPress action to allow other plugins
@@ -120,42 +129,48 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 
 			'first_name' => array(
 				'id' => 'first_name',
-				'title' => __( 'First Name', MS_TEXT_DOMAIN ),
+				'title' => $data['label_first_name'],
+				'placeholder' => $data['hint_first_name'],
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $data['first_name'],
 			),
 
 			'last_name' => array(
 				'id' => 'last_name',
-				'title' => __( 'Last Name', MS_TEXT_DOMAIN ),
+				'title' => $data['label_last_name'],
+				'placeholder' => $data['hint_last_name'],
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $data['last_name'],
 			),
 
 			'username' => array(
 				'id' => 'username',
-				'title' => __( 'Choose a Username', MS_TEXT_DOMAIN ),
+				'title' => $data['label_username'],
+				'placeholder' => $data['hint_username'],
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $data['username'],
 			),
 
 			'email' => array(
 				'id' => 'email',
-				'title' => __( 'Email Address', MS_TEXT_DOMAIN ),
+				'title' => $data['label_email'],
+				'placeholder' => $data['hint_email'],
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $data['email'],
 			),
 
 			'password' => array(
 				'id' => 'password',
-				'title' => __( 'Password', MS_TEXT_DOMAIN ),
+				'title' => $data['label_password'],
+				'placeholder' => $data['hint_password'],
 				'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
 				'value' => '',
 			),
 
 			'password2' => array(
 				'id' => 'password2',
-				'title' => __( 'Confirm Password', MS_TEXT_DOMAIN ),
+				'title' => $data['label_password2'],
+				'placeholder' => $data['hint_password2'],
 				'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
 				'value' => '',
 			),

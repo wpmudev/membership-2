@@ -177,7 +177,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>access</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Defines if members of the memberships can see or not see the content', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -186,7 +186,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>silent</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Silent protection removes content without displaying any message to the user', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -195,7 +195,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>msg</code>
-						<?php _ex( '(Text)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Provide a custom protection message. <em>This will only be displayed when silent is not true</em>', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -243,7 +243,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>msg</code>
-						<?php _ex( '(Text)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Provide a custom protection message that is displayed to users that have no access to the content', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -345,8 +345,109 @@ class MS_View_Help extends MS_View {
 					</li>
 				</ul>
 
+				<h4><?php _e( 'Field labels', MS_TEXT_DOMAIN ); ?></h4>
+				<ul>
+					<li>
+						<code>label_first_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'First Name', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_last_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Last Name', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_username</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Choose a Username', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_email</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Email Address', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_password</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Password', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_password2</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Confirm Password', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>label_register</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							"<?php _e( 'Register My Account', MS_TEXT_DOMAIN ); ?>"
+						</span>
+					</li>
+					<li>
+						<code>hint_first_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_last_name</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_username</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_email</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_password</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+					</li>
+					<li>
+						<code>hint_password2</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Placeholder inside Field', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							""
+						</span>
+				</ul>
+
 				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
 				<p><code>[ms-membership-register-user]</code></p>
+				<p><code>[ms-membership-register-user title="" hint_email="john@email.com" label_password2="Repeat"]</code></p>
 			</div>
 		</div>
 
@@ -444,7 +545,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>show_labels</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Set to "yes" to display the labels for username and password in front of the input fields', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -471,7 +572,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>header</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							yes
@@ -479,7 +580,16 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>register</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							yes
+						</span>
+					</li>
+					<li>
+						<code>autofocus</code>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Focus the login-form on page load', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							yes
@@ -581,7 +691,7 @@ class MS_View_Help extends MS_View {
 				<ul>
 					<li>
 						<code>show_note</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Show a "You are not logged in" note above the login form', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -662,7 +772,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>show_remember</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							yes
@@ -678,7 +788,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>value_remember</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'Set this to "yes" to default the "Remember me" checkbox to checked', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -866,7 +976,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>currency</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							yes
@@ -1294,7 +1404,7 @@ class MS_View_Help extends MS_View {
 					</li>
 					<li>
 						<code>pay_button</code>
-						<?php _ex( '(yes|no)', 'shotcode help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
 						<?php _ex( 'If the invoice should contain a "Pay" button', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>

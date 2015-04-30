@@ -46,7 +46,7 @@ class MS_Helper_Membership extends MS_Helper {
 		$messages = apply_filters(
 			'ms_helper_membership_get_admin_messages',
 			array(
-				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up <b>%s</b>.', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up your <b>%s</b> Membership.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_UPDATED => __( 'Membership <b>%s</b> updated.', MS_TEXT_DOMAIN ),
 				self::MEMBERSHIP_MSG_ACTIVATION_TOGGLED => __( 'Membership activation toggled.', MS_TEXT_DOMAIN ),
@@ -136,7 +136,7 @@ class MS_Helper_Membership extends MS_Helper {
 			'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
 			__( 'Congratulations!', MS_TEXT_DOMAIN ),
 			sprintf(
-				__( 'You have successfully set up <b>%1$s</b>.', MS_TEXT_DOMAIN ),
+				__( 'You have successfully set up your <b>%1$s</b> Membership.', MS_TEXT_DOMAIN ),
 				$membership->name
 			)
 		);

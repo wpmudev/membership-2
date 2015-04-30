@@ -4,7 +4,8 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 
 	public function to_html() {
 		$fields = $this->prepare_fields();
-		$invoice = MS_Model_Invoice::get_current_invoice( $this->data['ms_relationship'] );
+		$subscription = $this->data['ms_relationship'];
+		$invoice = $subscription->get_current_invoice();
 		$gateway = $this->data['gateway'];
 
 		$action_url = apply_filters(
@@ -72,15 +73,15 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 	 * @return array
 	 */
 	private function prepare_fields() {
-		$ms_relationship = $this->data['ms_relationship'];
-		$membership = $ms_relationship->get_membership();
+		$subscription = $this->data['ms_relationship'];
+		$membership = $subscription->get_membership();
 
 		if ( 0 === $membership->price ) {
 			return;
 		}
 
 		$gateway = $this->data['gateway'];
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$invoice = $subscription->get_current_invoice();
 
 		$fields = array(
 			'business' => array(
@@ -101,7 +102,7 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 			'item_number' => array(
 				'id' => 'item_number',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $ms_relationship->membership_id,
+				'value' => $subscription->membership_id,
 			),
 			'item_name' => array(
 				'id' => 'item_name',
@@ -121,9 +122,11 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 			'return' => array(
 				'id' => 'return',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => add_query_arg(
-					array( 'ms_relationship_id' => $ms_relationship->id ),
-					MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
+				'value' => esc_url_raw(
+					add_query_arg(
+						array( 'ms_relationship_id' => $subscription->id ),
+						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE, false )
+					)
 				),
 			),
 			'cancel_return' => array(
@@ -159,7 +162,7 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 				'ms_relationship_id' => array(
 					'id' => 'ms_relationship_id',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-					'value' => $ms_relationship->id,
+					'value' => $subscription->id,
 				),
 				'step' => array(
 					'id' => 'step',
@@ -170,7 +173,7 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 					'id' => '_wpnonce',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => wp_create_nonce(
-						$this->data['gateway']->id . '_' .$this->data['ms_relationship']->id
+						$gateway->id . '_' .$subscription->id
 					),
 				),
 			);
@@ -193,7 +196,7 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 		// custom pay button defined in gateway settings
 		$custom_label = $gateway->pay_button_url;
 		if ( ! empty( $custom_label ) ) {
-			if ( strpos( $custom_label, '://' ) !== false ) {
+			if ( false !== strpos( $custom_label, '://' ) ) {
 				$fields['submit']['value'] = $custom_label;
 			} else {
 				$fields['submit'] = array(

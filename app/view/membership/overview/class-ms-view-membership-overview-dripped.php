@@ -80,12 +80,14 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 				<div class="inside">
 					<div class="ms-protection-edit-wrapper">
 						<?php
-						$edit_url = add_query_arg(
-							array(
-								'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
-								'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-								'tab' => $rule->rule_type,
-								'membership_id' => $membership->id,
+						$edit_url = esc_url_raw(
+							add_query_arg(
+								array(
+									'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
+									'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+									'tab' => $rule->rule_type,
+									'membership_id' => $membership->id,
+								)
 							)
 						);
 						MS_Helper_Html::html_element(
@@ -99,10 +101,12 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 						);
 
 						if ( ! $membership->is_free ) {
-							$payment_url = add_query_arg(
-								array(
-									'step' => MS_Controller_Membership::STEP_PAYMENT,
-									'edit' => 1,
+							$payment_url = esc_url_raw(
+								add_query_arg(
+									array(
+										'step' => MS_Controller_Membership::STEP_PAYMENT,
+										'edit' => 1,
+									)
 								)
 							);
 							MS_Helper_Html::html_element(
@@ -138,11 +142,13 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 		ksort( $contents );
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 
-		$edit_url = add_query_arg(
-			array(
-				'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
-				'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-				'tab' => $rule->rule_type,
+		$edit_url = esc_url_raw(
+			add_query_arg(
+				array(
+					'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
+					'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+					'tab' => $rule->rule_type,
+				)
 			)
 		);
 		$edit_link = array(
@@ -170,10 +176,12 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 					</td>
 					<td class="col-text col-type">
 						<?php
-						$edit_link['url'] = add_query_arg(
-							'tab',
-							$content->type,
-							$edit_url
+						$edit_link['url'] = esc_url_raw(
+							add_query_arg(
+								'tab',
+								$content->type,
+								$edit_url
+							)
 						);
 						$edit_link['value'] = $rule_titles[ $content->type ];
 						MS_Helper_Html::html_element( $edit_link );

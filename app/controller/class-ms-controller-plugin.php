@@ -84,7 +84,7 @@ class MS_Controller_Plugin extends MS_Controller {
 				&& MS_Helper_Utility::is_current_url( $_SERVER['HTTP_REFERER'] )
 			) {
 				// A msg is set AND the referer URL has the same msg flag!
-				$url = remove_query_arg( array( 'msg' ) );
+				$url = esc_url_raw( remove_query_arg( array( 'msg' ) ) );
 				wp_safe_redirect( $url );
 				exit;
 			}
@@ -122,6 +122,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['membership_metabox'] = MS_Factory::load( 'MS_Controller_Metabox' );
 		$this->controllers['membership_shortcode'] = MS_Factory::load( 'MS_Controller_Shortcode' );
 		$this->controllers['frontend'] = MS_Factory::load( 'MS_Controller_Frontend' );
+		$this->controllers['import'] = MS_Factory::load( 'MS_Controller_Import' );
 		$this->controllers['help'] = MS_Factory::load( 'MS_Controller_Help' );
 		$this->controllers['api'] = MS_Factory::load( 'MS_Controller_Api' );
 

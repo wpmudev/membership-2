@@ -72,7 +72,7 @@ class MS_View extends MS_Hooker {
 		 */
 		do_action( 'ms_view_construct', $this );
 
-		if ( null === $Simulate ) {
+		if ( null === $Simulate && MS_Model_Simulate::can_simulate() ) {
 			$Simulate = MS_Factory::load( 'MS_Model_Simulate' );
 			self::$is_simulating = $Simulate->is_simulating();
 		}

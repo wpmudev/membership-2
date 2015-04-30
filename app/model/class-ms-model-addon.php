@@ -36,15 +36,6 @@
 class MS_Model_Addon extends MS_Model_Option {
 
 	/**
-	 * Singleton instance.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @staticvar MS_Model_Settings
-	 */
-	public static $instance;
-
-	/**
 	 * Add-on name constants.
 	 *
 	 * @deprecated Since 1.1.0 the Add-On constants are deprecated.
@@ -424,12 +415,12 @@ class MS_Model_Addon extends MS_Model_Option {
 
 		$list[self::ADDON_MULTI_MEMBERSHIPS] = (object) array(
 			'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ),
-			'description' => __( 'Your members can join more than one membership level at the same time.', MS_TEXT_DOMAIN ),
+			'description' => __( 'Your members can join more than one membership at the same time.', MS_TEXT_DOMAIN ),
 		);
 
 		$list[self::ADDON_TRIAL] = (object) array(
 			'name' => __( 'Trial Period', MS_TEXT_DOMAIN ),
-			'description' => __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership level.', MS_TEXT_DOMAIN ),
+			'description' => __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership.', MS_TEXT_DOMAIN ),
 		);
 
 		$list[self::ADDON_POST_BY_POST] = (object) array(
@@ -492,7 +483,7 @@ class MS_Model_Addon extends MS_Model_Option {
 
 		$list[self::ADDON_SHORTCODE] = (object) array(
 			'name' => __( 'Shortcode Protection', MS_TEXT_DOMAIN ),
-			'description' => __( 'Protect shortcodes-output via membership levels.', MS_TEXT_DOMAIN ),
+			'description' => __( 'Protect Shortcode-Output via Memberships.', MS_TEXT_DOMAIN ),
 			'icon' => 'dashicons dashicons-editor-code',
 		);
 

@@ -485,7 +485,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 						);
 
 						if ( self::TOPIC_PAYMENT == $event->topic ) {
-							$invoice = MS_Model_Invoice::get_current_invoice( $subscription, false );
+							$invoice = $subscription->get_current_invoice( false );
 							$description = sprintf(
 								self::get_description( $type ),
 								$membership->name,

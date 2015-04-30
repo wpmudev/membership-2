@@ -409,7 +409,9 @@ class MS_Helper_Html extends MS_Helper {
 					foreach ( $persistent as $param ) {
 						lib2()->array->equip_request( $param );
 						$value = $_REQUEST[ $param ];
-						$url = add_query_arg( $param, $value, $url );
+						$url = esc_url_raw(
+							add_query_arg( $param, $value, $url )
+						);
 					}
 					?>
 					<li class="ms-tab <?php echo esc_attr( $tab_class ); ?> ">

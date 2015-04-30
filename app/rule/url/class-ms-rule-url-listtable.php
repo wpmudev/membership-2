@@ -50,20 +50,26 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 	}
 
 	public function column_url( $item ) {
-		$rule_url = add_query_arg( array( 'item' => $item->id ) );
+		$rule_url = esc_url_raw(
+			add_query_arg( array( 'item' => $item->id ) )
+		);
 
 		$actions = array();
 
 		if ( $this->list_shows_base_items() ) {
-			$actions['trash'] = sprintf(
-				'<a href="%s">%s</a>',
+			$trash_url = esc_url_raw(
 				add_query_arg(
 					array(
 						'rule_action' => MS_Rule_Url::ACTION_DELETE,
 						'_wpnonce' => wp_create_nonce( MS_Rule_Url::ACTION_DELETE ),
 					),
 					$rule_url
-				),
+				)
+			);
+
+			$actions['trash'] = sprintf(
+				'<a href="%s">%s</a>',
+				$trash_url,
 				__( 'Delete', MS_TEXT_DOMAIN )
 			);
 		}

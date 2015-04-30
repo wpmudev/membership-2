@@ -124,8 +124,10 @@ class MS_Rule_Url extends MS_Controller {
 		}
 
 		if ( $redirect ) {
-			$target = remove_query_arg(
-				array( '_wpnonce', 'item', 'rule_action' )
+			$target = esc_url_raw(
+				remove_query_arg(
+					array( '_wpnonce', 'item', 'rule_action' )
+				)
 			);
 			wp_safe_redirect( $target );
 			exit;

@@ -169,7 +169,6 @@ class MS_Gateway extends MS_Model_Option {
 	public function handle_return() {
 		do_action(
 			'ms_gateway_handle_return',
-			$ms_relationship,
 			$this
 		);
 	}
@@ -187,14 +186,14 @@ class MS_Gateway extends MS_Model_Option {
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
 	 */
-	public function process_purchase( $ms_relationship ) {
+	public function process_purchase( $subscription ) {
 		do_action(
 			'ms_gateway_process_purchase_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$invoice = $subscription->get_current_invoice();
 		$invoice->gateway_id = $this->id;
 		$invoice->save();
 
@@ -215,12 +214,12 @@ class MS_Gateway extends MS_Model_Option {
 	 * Overridden in child classes.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
 	 */
-	public function cancel_membership( $ms_relationship ) {
+	public function cancel_membership( $subscription ) {
 		do_action(
 			'ms_gateway_cancel_membership',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 	}
@@ -232,6 +231,7 @@ class MS_Gateway extends MS_Model_Option {
 	 *
 	 * @since 1.0.0
 	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @return bool True on success.
 	 */
 	public function request_payment( $ms_relationship ) {
 		do_action(
@@ -239,6 +239,9 @@ class MS_Gateway extends MS_Model_Option {
 			$ms_relationship,
 			$this
 		);
+
+		// Default to "Payment successful"
+		return true;
 	}
 
 	/**

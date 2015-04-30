@@ -12,7 +12,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -129,6 +129,13 @@ class MS_Controller_Shortcode extends MS_Controller {
 				MS_Helper_Shortcode::SCODE_USER,
 				array( $this, 'show_to_user' )
 			);
+
+			if ( MS_Model_Member::is_normal_admin() ) {
+				add_shortcode(
+					MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE,
+					array( 'MS_Rule_Shortcode_Model', 'debug_protect_content_shortcode')
+				);
+			}
 		} else {
 			$shortcodes = array(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
@@ -219,7 +226,20 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'last_name' => substr( trim( $_REQUEST['last_name'] ), 0, 50 ),
 					'username' => substr( trim( $_REQUEST['username'] ), 0, 50 ),
 					'email' => substr( trim( $_REQUEST['email'] ), 0, 50 ),
-					'membership_id' => $_REQUEST['membership_id'],
+					'membership_id' => trim( $_REQUEST['membership_id'] ),
+					'label_first_name' => __( 'First Name', MS_TEXT_DOMAIN ),
+					'label_last_name' => __( 'Last Name', MS_TEXT_DOMAIN ),
+					'label_username' => __( 'Choose a Username', MS_TEXT_DOMAIN ),
+					'label_email' => __( 'Email Address', MS_TEXT_DOMAIN ),
+					'label_password' => __( 'Password', MS_TEXT_DOMAIN ),
+					'label_password2' => __( 'Confirm Password', MS_TEXT_DOMAIN ),
+					'label_register' => __( 'Register My Account', MS_TEXT_DOMAIN ),
+					'hint_first_name' => '',
+					'hint_last_name' => '',
+					'hint_username' => '',
+					'hint_email' => '',
+					'hint_password' => '',
+					'hint_password2' => '',
 					'title' => __( 'Create an Account', MS_TEXT_DOMAIN ),
 					'loginlink' => true,
 					'errors' => '',
@@ -599,6 +619,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'show_note'       => true,   // Show the "you are not logged in" note?
 					'form'            => '',  // [login|lost|reset|logout]
 					'show_labels'     => false,
+					'autofocus'       => true,
 					'nav_pos'         => 'top', // [top|bottom]
 
 					// form="login"
@@ -633,6 +654,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$data['show_labels'] = lib2()->is_true( $data['show_labels'] );
 		$data['show_remember'] = lib2()->is_true( $data['show_remember'] );
 		$data['value_remember'] = lib2()->is_true( $data['value_remember'] );
+		$data['autofocus'] = lib2()->is_true( $data['autofocus'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_login_data', $data, $this );
@@ -742,18 +764,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 			}
 		}
 
-		$data['invoices'] = MS_Model_Invoice::get_invoices(
-			array(
-				'author' => $data['member']->id,
-				'posts_per_page' => $data['limit_invoices'],
-				'meta_query' => array(
-					array(
-						'key' => 'amount',
-						'value' => '0',
-						'compare' => '!=',
-					),
-				)
-			)
+		$data['invoices'] = MS_Model_Invoice::get_public_invoices(
+			$data['member']->id,
+			$data['limit_invoices']
 		);
 
 		$data['events'] = MS_Model_Event::get_events(
@@ -837,38 +850,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( ! empty( $data['post_id'] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $data['post_id'] );
-			$trial_invoice = null;
-
-			if ( $invoice->trial_period ) {
-				// This is the trial-period invoice. Use thethe first real invoice instead.
-				$paid_args = array(
-					'meta_query' => array(
-						'relation' => 'AND',
-						array(
-							'key' => 'ms_relationship_id',
-							'value' => $invoice->ms_relationship_id,
-							'compare' => '=',
-						),
-						array(
-							'key' => 'trial_period',
-							'value' => '',
-							'compare' => '=',
-						),
-						array(
-							'key' => 'invoice_number',
-							'value' => $invoice->invoice_number + 1,
-							'compare' => '=',
-						)
-					)
-				);
-				$paid_invoice = MS_Model_Invoice::get_invoices( $paid_args );
-
-				if ( ! empty( $paid_invoice ) ) {
-					$trial_invoice = $invoice;
-					$invoice = reset( $paid_invoice );
-				}
-			}
-
 			$subscription = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
 
 			$data['invoice'] = $invoice;
@@ -876,38 +857,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$data['ms_relationship'] = $subscription;
 			$data['membership'] = $subscription->get_membership();
 			$data['gateway'] = MS_Model_Gateway::factory( $invoice->gateway_id );
-
-			// Try to find a related trial-period invoice.
-			if ( null === $trial_invoice ) {
-				$trial_args = array(
-					'meta_query' => array(
-						'relation' => 'AND',
-						array(
-							'key' => 'ms_relationship_id',
-							'value' => $invoice->ms_relationship_id,
-							'compare' => '=',
-						),
-						array(
-							'key' => 'trial_period',
-							'value' => '',
-							'compare' => '!=',
-						),
-						array(
-							'key' => 'invoice_number',
-							'value' => $invoice->invoice_number,
-							'compare' => '<',
-							'type' => 'NUMERIC',
-						)
-					)
-				);
-				$trial_invoice = MS_Model_Invoice::get_invoices( $trial_args );
-
-				if ( ! empty( $trial_invoice ) ) {
-					$trial_invoice = reset( $trial_invoice );
-				}
-			}
-
-			$data['trial_invoice'] = $trial_invoice;
 
 			$view = MS_Factory::create( 'MS_View_Shortcode_Invoice' );
 			$view->data = apply_filters(

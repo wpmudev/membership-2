@@ -132,7 +132,6 @@ class MS_Model_Plugin extends MS_Model {
 	public function init_member() {
 		do_action( 'ms_load_member', $this );
 
-		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
 		$this->member = MS_Model_Member::get_current_member();
 
 		// Deactivated status invalidates all memberships
@@ -372,9 +371,11 @@ class MS_Model_Plugin extends MS_Model {
 
 			// Don't (re-)redirect the protection page.
 			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
-				$no_access_page_url = add_query_arg(
-					array( 'redirect_to' => $current_page_url ),
-					$no_access_page_url
+				$no_access_page_url = esc_url_raw(
+					add_query_arg(
+						array( 'redirect_to' => $current_page_url ),
+						$no_access_page_url
+					)
 				);
 
 				$no_access_page_url = apply_filters(

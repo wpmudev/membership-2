@@ -81,15 +81,19 @@ class MS_Controller_Billing extends MS_Controller {
 			// Save billing add/edit
 			$msg = $this->save_invoice( $_POST );
 
-			$redirect = remove_query_arg( array( 'invoice_id') );
-			$redirect = add_query_arg( array( 'msg' => $msg ), $redirect );
+			$redirect = esc_url_raw(
+				add_query_arg(
+					array( 'msg' => $msg ),
+					remove_query_arg( array( 'invoice_id') )
+				)
+			);
 		} elseif ( self::validate_required( array( 'invoice_id' ) )
 			&& $this->verify_nonce( 'bulk' )
 		) {
 			// Execute bulk actions.
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
-			$redirect = add_query_arg( array( 'msg' => $msg ) );
+			$redirect = esc_url_raw( add_query_arg( array( 'msg' => $msg ) ) );
 		}
 
 		if ( $redirect ) {
@@ -177,21 +181,21 @@ class MS_Controller_Billing extends MS_Controller {
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
 
-			$ms_relationship = MS_Model_Relationship::get_subscription( $member->id, $membership_id );
-			if ( empty( $ms_relationship ) ) {
-				$ms_relationship = MS_Model_Relationship::create_ms_relationship(
+			$subscription = MS_Model_Relationship::get_subscription( $member->id, $membership_id );
+			if ( empty( $subscription ) ) {
+				$subscription = MS_Model_Relationship::create_ms_relationship(
 					$membership_id,
 					$member->id,
 					$gateway_id
 				);
 			} else {
-				$ms_relationship->gateway_id = $gateway_id;
-				$ms_relationship->save();
+				$subscription->gateway_id = $gateway_id;
+				$subscription->save();
 			}
 
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] );
 			if ( ! $invoice->is_valid() ) {
-				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+				$invoice = $subscription->get_current_invoice();
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 			} else {
 				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;

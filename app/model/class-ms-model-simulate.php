@@ -33,15 +33,6 @@
 class MS_Model_Simulate extends MS_Model_Transient {
 
 	/**
-	 * Singleton instance.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @staticvar MS_Model_Settings
-	 */
-	public static $instance;
-
-	/**
 	 * The membership ID to simulate.
 	 *
 	 * @since 1.0.0
@@ -68,20 +59,31 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	protected $date;
 
 	/**
-	 * If current user is admin.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @var bool
-	 */
-	protected $_is_admin;
-
-	/**
 	 * Holds a reference to the simulated subscription.
 	 *
-	 * @var MS_Model_Relationship.
+	 * @var MS_Model_Relationship
 	 */
-	protected $subscription = null;
+	protected $_subscription = null;
+
+	/**
+	 * Determines if the current user is permitted to even think about using
+	 * simulation. If not allowed, then most of this class will not be used.
+	 *
+	 * @since  1.1.1.4
+	 * @return bool
+	 */
+	public static function can_simulate() {
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+			// No simulation during cron jobs...
+			return false;
+		}
+
+		if ( MS_Model_Member::is_admin_user() ) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Called after loading model data.
@@ -89,6 +91,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since  1.1.0
 	 */
 	public function after_load() {
+		if ( ! $this->can_simulate() ) { return false; }
+
 		if ( $this->is_simulating() ) {
 			if ( empty( $this->date ) ) {
 				$this->date = MS_Helper_Period::current_date();
@@ -123,8 +127,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @since 1.1.0
 	 */
-	public function add_simulation_membership( $ms_relationships ) {
-		if ( ! isset( $ms_relationships[ $this->membership_id ] ) ) {
+	public function add_simulation_membership( $subscriptions ) {
+		if ( ! isset( $subscriptions[ $this->membership_id ] ) ) {
 			$this->start_simulation();
 
 			$subscription = MS_Model_Relationship::create_ms_relationship(
@@ -135,34 +139,19 @@ class MS_Model_Simulate extends MS_Model_Transient {
 
 			$membership = $subscription->get_membership();
 			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
-				|| MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
+				|| MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
+			) {
 				$subscription->expire_date = '2999-12-31';
 			}
 
 			$key = 'ms_model_relationship--1';
-			MS_Factory::set_singleton( $key, $subscription );
+			MS_Factory::set_singleton( $subscription, $key );
 
-			$this->subscription = $subscription;
-			$ms_relationships[ $this->membership_id ] = $subscription;
+			$this->_subscription = $subscription;
+			$subscriptions[ $this->membership_id ] = $subscription;
 		}
 
-		return $ms_relationships;
-	}
-
-	/**
-	 * Checks if the current user is allowed to start simulation (only admin
-	 * users are allowed). Reset simulation in case the user is not allowed.
-	 *
-	 * @since  1.1.0
-	 */
-	protected function check_permissions() {
-		if ( null === $this->_is_admin ) {
-			$this->_is_admin = MS_Model_Member::is_admin_user();
-		}
-
-		if ( ! $this->_is_admin ) {
-			$this->reset_simulation();
-		}
+		return $subscriptions;
 	}
 
 	/**
@@ -173,7 +162,9 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @return bool True if currently simulating a membership.
 	 */
 	public function is_simulating() {
-		$this->check_permissions();
+		if ( ! self::can_simulate() ) {
+			return false;
+		}
 
 		return ! empty( $this->membership_id );
 	}
@@ -183,8 +174,10 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @since 1.0.0
 	 */
-	public function start_simulation() {
-		$this->check_permissions();
+	private function start_simulation() {
+		if ( ! self::can_simulate() ) {
+			return false;
+		}
 
 		if ( $this->datepicker ) {
 			$this->add_filter(
@@ -225,8 +218,11 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since 1.0.0
 	 */
 	public function reset_simulation() {
+		if ( null === $this->membership_id ) { return; }
+
 		$this->membership_id = null;
 		$this->date = null;
+		$this->subscription = null;
 
 		$this->remove_filter(
 			'ms_helper_period_current_date',
@@ -276,7 +272,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	public function simulation_infos() {
 		$data = array();
 		$data['membership_id'] = $this->membership_id;
-		$data['subscription'] = $this->subscription;
+		$data['subscription'] = $this->_subscription;
 		$data['simulate_date'] = $this->date;
 		$data['datepicker'] = $this->datepicker;
 

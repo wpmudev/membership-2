@@ -100,7 +100,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 
 		add_shortcode(
 			self::PROTECT_CONTENT_SHORTCODE,
-			array( 'MS_Rule_Shortcode_Model', 'protect_content_shortcode' )
+			array( __CLASS__, 'protect_content_shortcode' )
 		);
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SHORTCODE ) ) {
@@ -247,6 +247,118 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 			$content,
 			$code
 		);
+	}
+
+	/**
+	 * For Admin-Users only:
+	 * The [ms-protected-content] shortcode is replaced with some debug values
+	 * for better understanding of the page structure.
+	 *
+	 * @since  1.1.1.5
+	 * @param array $atts The shortcode attributes.
+	 * @param string $content The content inside the shortcode.
+	 * @return string The shortcode output
+	 */
+	public function debug_protect_content_shortcode( $atts, $content = '' ) {
+		/**
+		 * Use this filter to disable the protected-content debugging
+		 * information for admin users.
+		 * The content will always be displayed for admin users.
+		 */
+		$do_debug = apply_filters(
+			'ms_model_shortcode_debug_protected_content',
+			true
+		);
+
+		if ( ! $do_debug ) {
+			return $content;
+		}
+
+		$atts = apply_filters(
+			'ms_model_shortcode_protect_content_shortcode_atts',
+			shortcode_atts(
+				array(
+					'id' => '',
+					'access' => true,
+					'silent' => false,
+					'msg' => false,
+				),
+				$atts
+			)
+		);
+		extract( $atts );
+
+		if ( $access ) {
+			$msg_access = __( 'Visible for members of', MS_TEXT_DOMAIN );
+		} else {
+			$msg_access = __( 'Hidden from members of', MS_TEXT_DOMAIN );
+		}
+
+		if ( $msg ) {
+			$msg_alt = sprintf(
+				'%s: %s',
+				__( 'Other users will see', MS_TEXT_DOMAIN ),
+				$msg
+			);
+		} else {
+			$msg_alt = __( 'Other uses will see nothing', MS_TEXT_DOMAIN );
+		}
+
+		$membership_ids = explode( ',', $id );
+		$memberships = array();
+		foreach ( $membership_ids as $membership_id ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			$memberships[] = sprintf(
+				'<span class="ms-membership" style="background:%2$s">%1$s</span>',
+				$membership->name,
+				$membership->get_color()
+			);
+		}
+
+		$css = '<style>
+		.ms-membership {
+			display: inline-block;
+			border-radius: 3px;
+			color: #FFF;
+			background: #888888;
+			padding: 1px 5px;
+			font-size: 12px;
+			height: 20px;
+			line-height: 20px;
+		}
+		.ms-protected-info {
+			border: 1px solid rgba(0,0,0,0.07);
+		}
+		.ms-protected-info:hover {
+			border: 1px solid rgba(0,0,0,0.3);
+		}
+		.ms-protected-info .ms-details,
+		.ms-protected-info .ms-alternate-msg {
+			background: #EEE;
+			padding: 4px;
+			font-size: 12px;
+			color: #666;
+			opacity: 0.25;
+		}
+		.ms-protected-info:hover .ms-details,
+		.ms-protected-info:hover .ms-alternate-msg {
+			opacity: 1;
+		}
+		.ms-protected-info .ms-contents {
+			padding: 4px 8px;
+		}
+		</style>';
+
+		$code = sprintf(
+			'<div class="ms-protected-info" title="%5$s"><div class="ms-details">%3$s: %4$s</div><div class="ms-contents">%1$s</div><div class="ms-alternate-msg">%2$s</div></div>',
+			$content,
+			$msg_alt,
+			$msg_access,
+			implode( ' ', $memberships ),
+			__( 'This information is only displayed for admin users', MS_TEXT_DOMAIN )
+		);
+
+		return $css . $code;
 	}
 
 	/**

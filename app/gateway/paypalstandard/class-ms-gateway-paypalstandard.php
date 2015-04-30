@@ -178,9 +178,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			}
 
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $_POST['invoice'] );
-			$ms_relationship = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
-			$membership = $ms_relationship->get_membership();
-			$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
+			$subscription = $invoice->get_subscription();
+			$membership = $subscription->get_membership();
+			$member = $subscription->get_member();
 
 			$currency = $_POST['mc_currency'];
 			$status = null;
@@ -188,9 +188,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			$notes_txn = '';
 			$external_id = null;
 			$amount = 0;
+			$pay_it = false;
 
+			// @todo : Does this condition make sense? If $invoice would be
+			// empty then $subscription would also be invalid...
 			if ( empty( $invoice ) ) {
-				$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+				$invoice = $subscription->get_current_invoice();
 			}
 
 			// Process PayPal payment status
@@ -203,7 +206,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					case 'Completed':
 					case 'Processed':
 						if ( $amount == $invoice->total ) {
-							$status = MS_Model_Invoice::STATUS_PAID;
+							$pay_it = true;
 						} else {
 							$notes_pay = __( 'Payment amount differs from invoice total.', MS_TEXT_DOMAIN );
 							$status = MS_Model_Invoice::STATUS_DENIED;
@@ -262,7 +265,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						// Payment was received
 						$notes_txn = __( 'Paypal subscripton profile has been created.', MS_TEXT_DOMAIN );
 						if ( 0 == $invoice->total ) {
-							$status = MS_Model_Invoice::STATUS_PAID;
+							$pay_it = true;
 						}
 						break;
 
@@ -330,7 +333,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 			$invoice->save();
 
-			if ( MS_Model_Invoice::STATUS_PAID == $status ) {
+			if ( $pay_it ) {
 				$invoice->pay_it( $this->id, $external_id );
 			} elseif ( ! empty( $status ) ) {
 				$invoice->status = $status;
@@ -341,7 +344,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			do_action(
 				'ms_gateway_paypalstandard_payment_processed_' . $status,
 				$invoice,
-				$ms_relationship
+				$subscription
 			);
 		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.

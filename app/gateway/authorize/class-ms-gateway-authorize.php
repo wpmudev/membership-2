@@ -158,12 +158,12 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * will update the membership status accordingly.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
-	public function process_purchase( $ms_relationship ) {
+	public function process_purchase( $subscription ) {
 		do_action(
 			'ms_gateway_authorize_process_purchase_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
@@ -171,8 +171,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership' ) );
 		}
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
-		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
+		$invoice = $subscription->get_current_invoice();
+		$member = $subscription->get_member();
 
 		// manage authorize customer profile
 		$cim_profile_id = $this->get_cim_profile_id( $member );
@@ -192,7 +192,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this->update_cim_profile( $member );
 		}
 
-		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
 			$this->online_purchase( $invoice, $member );
 		} elseif ( 0 == $invoice->total ) {
@@ -211,34 +211,43 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * Request automatic payment to the gateway.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The related membership relationship.
+	 * @param MS_Model_Relationship $subscription The related membership relationship.
+	 * @return bool True on success.
 	 */
-	public function request_payment( $ms_relationship ) {
+	public function request_payment( $subscription ) {
+		$was_paid = false;
+
 		do_action(
 			'ms_gateway_authorize_request_payment_before',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 
-		$member = $ms_relationship->get_member();
-		$invoice = MS_Model_Invoice::get_current_invoice( $ms_relationship );
+		$member = $subscription->get_member();
+		$invoice = $subscription->get_current_invoice();
 
-		if ( MS_Model_Invoice::STATUS_PAID != $invoice->status ) {
+		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
 			try {
-				$this->online_purchase( $invoice, $member );
+				$was_paid = $this->online_purchase( $invoice, $member );
 			}
 			catch( Exception $e ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $ms_relationship );
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
 				MS_Helper_Debug::log( $e->getMessage() );
 			}
+		} else {
+			// Invoice was already paid earlier.
+			$was_paid = true;
 		}
 
 		do_action(
 			'ms_gateway_authorize_request_payment_after',
-			$ms_relationship,
+			$subscription,
+			$was_paid,
 			$this
 		);
+
+		return $was_paid;
 	}
 
 	/**
@@ -249,9 +258,9 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @since 1.0.0
 	 * @param MS_Model_Invoice $invoice The invoice to pay.
 	 * @param MS_Model_Member The member paying the invoice.
-	 * @return MS_Model_Invoice The transaction information on success, otherwise throws an exception.
+	 * @return bool True on success, otherwise throws an exception.
 	 */
-	protected function online_purchase( $invoice, $member ) {
+	protected function online_purchase( &$invoice, $member ) {
 		do_action(
 			'ms_gateway_authorize_online_purchase_before',
 			$invoice,
@@ -260,7 +269,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		if ( 0 == $invoice->total ) {
-			$invoice->status = MS_Model_Invoice::STATUS_PAID;
+			$invoice->pay_it( MS_Gateway_Free::ID, '' );
 			$invoice->add_notes( __( 'Total is zero. Payment approved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
 			$invoice->save();
 			$invoice->changed();
@@ -307,12 +316,14 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			);
 		}
 
-		return apply_filters(
+		$invoice = apply_filters(
 			'ms_gateway_authorize_online_purchase_invoice',
 			$invoice,
 			$member,
 			$this
 		);
+
+		return true;
 	}
 
 	/**

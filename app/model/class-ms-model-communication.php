@@ -961,8 +961,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		$invoice = null;
 
 		// First try to fetch the current invoice.
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription, false );
-		$prev_invoice = MS_Model_Invoice::get_previous_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice( false );
+		$prev_invoice = $subscription->get_previous_invoice();
 
 		// If no current invoice exists then fetch the previous invoice.
 		if ( empty( $invoice ) ) {
@@ -1018,7 +1018,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 				case self::COMM_VAR_MS_INVOICE:
 					if ( isset( $invoice )
-						&& ( $invoice->total > 0 || $invoice->trial_period )
+						&& ( $invoice->total > 0 || $invoice->uses_trial )
 					) {
 						$attr = array( 'post_id' => $invoice->id, 'pay_button' => 0 );
 						$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];

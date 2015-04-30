@@ -485,7 +485,9 @@ class MS_Plugin {
 		if ( $refresh ) { return; }
 
 		lib2()->session->add( 'refresh_url_rules', true );
-		$url = add_query_arg( 'ms_ts', time(), $url );
+		$url = esc_url_raw(
+			add_query_arg( 'ms_ts', time(), $url )
+		);
 		wp_safe_redirect( $url );
 		exit;
 	}
@@ -508,7 +510,7 @@ class MS_Plugin {
 
 		do_action( 'ms_plugin_flush_rewrite_rules', $this );
 
-		$url = remove_query_arg( 'ms_ts' );
+		$url = esc_url_raw( remove_query_arg( 'ms_ts' ) );
 		wp_safe_redirect( $url );
 		exit;
 	}

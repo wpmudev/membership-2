@@ -455,7 +455,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$url = wp_registration_url();
 
 		if ( self::$handle_registration && ! empty( $step ) ) {
-			$url = add_query_arg( 'step', $step, $url );
+			$url = esc_url_raw( add_query_arg( 'step', $step, $url ) );
 		}
 
 		return $url;
@@ -480,6 +480,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			return __( 'Registration is currently not allowed.', MS_TEXT_DOMAIN );
 		}
 
+		// Do not parse the form when building the excerpt
+		global $wp_current_filter;
+		if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) { return ''; }
+
 		/**
 		 * Add-ons or other plugins can use this filter to define a completely
 		 * different registration form. If this filter returns any content, then
@@ -490,7 +494,9 @@ class MS_Controller_Frontend extends MS_Controller {
 		 */
 		$custom_code = apply_filters(
 			'ms_frontend_custom_registration_form',
-			''
+			'',
+			$this->register_errors,
+			$this
 		);
 
 		if ( ! empty( $custom_code ) ) {
@@ -508,7 +514,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$scode = sprintf(
 				'[%s errors="%s"]',
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
-				esc_attr( $this->register_errors )
+				str_replace( '"', "'", $this->register_errors )
 			);
 			$reg_form = do_shortcode( $scode );
 
@@ -564,16 +570,20 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			// Go to membership signup payment form.
 			if ( empty( $_REQUEST['membership_id'] ) ) {
-				$redirect = add_query_arg(
-					array(
-						'step' => self::STEP_CHOOSE_MEMBERSHIP,
+				$redirect = esc_url_raw(
+					add_query_arg(
+						array(
+							'step' => self::STEP_CHOOSE_MEMBERSHIP,
+						)
 					)
 				);
 			} else {
-				$redirect = add_query_arg(
-					array(
-						'step' => self::STEP_PAYMENT_TABLE,
-						'membership_id' => absint( $_REQUEST['membership_id'] ),
+				$redirect = esc_url_raw(
+					add_query_arg(
+						array(
+							'step' => self::STEP_PAYMENT_TABLE,
+							'membership_id' => absint( $_REQUEST['membership_id'] ),
+						)
 					)
 				);
 			}
@@ -644,7 +654,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			return $content;
 		}
 
-		$invoice = MS_Model_Invoice::get_current_invoice( $subscription );
+		$invoice = $subscription->get_current_invoice();
 
 		/**
 		 * Notify Add-ons that we are preparing payment details for a membership
@@ -663,12 +673,6 @@ class MS_Controller_Frontend extends MS_Controller {
 		$invoice->save();
 
 		$data['invoice'] = $invoice;
-
-		if ( $invoice->trial_period ) {
-			$next_invoice = MS_Model_Invoice::get_next_invoice( $subscription );
-			$data['next_invoice'] = $next_invoice;
-		}
-
 		$data['membership'] = $membership;
 		$data['member'] = $member;
 		$data['ms_relationship'] = $subscription;
@@ -728,14 +732,17 @@ class MS_Controller_Frontend extends MS_Controller {
 							$member->$field = $value;
 						}
 					}
+
 					try {
 						$member->validate_member_info();
 						$member->save();
-						wp_safe_redirect( remove_query_arg( 'action' ) );
+						wp_safe_redirect(
+							esc_url_raw( remove_query_arg( 'action' ) )
+						);
 						exit;
 
 					}
-					catch (Exception $e) {
+					catch ( Exception $e ) {
 						$data['errors']  = $e->getMessage();
 					}
 				}
@@ -747,18 +754,8 @@ class MS_Controller_Frontend extends MS_Controller {
 				break;
 
 			case self::ACTION_VIEW_INVOICES:
-				$data['invoices'] = MS_Model_Invoice::get_invoices(
-					array(
-						'author' => $member->id,
-						'posts_per_page' => -1,
-						'meta_query' => array(
-							array(
-								'key' => 'amount',
-								'value' => '0',
-								'compare' => '!=',
-							),
-						)
-					)
+				$data['invoices'] = MS_Model_Invoice::get_public_invoices(
+					$member->id
 				);
 
 				$view = MS_Factory::create( 'MS_View_Frontend_Invoices' );

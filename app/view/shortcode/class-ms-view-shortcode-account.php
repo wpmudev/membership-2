@@ -67,23 +67,48 @@ class MS_View_Shortcode_Account extends MS_View {
 						?>
 						<table>
 							<tr>
-								<th><?php _e( 'Membership name', MS_TEXT_DOMAIN ); ?></th>
-								<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
-								<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) :  ?>
-									<th><?php _e( 'Trial expire date', MS_TEXT_DOMAIN ); ?></th>
-								<?php endif; ?>
-								<th><?php _e( 'Expire date', MS_TEXT_DOMAIN ); ?></th>
+								<th class="ms-col-membership"><?php
+									_e( 'Membership name', MS_TEXT_DOMAIN );
+								?></th>
+								<th class="ms-col-status"><?php
+									_e( 'Status', MS_TEXT_DOMAIN );
+								?></th>
+								<th class="ms-col-expire-date"><?php
+									_e( 'Expire date', MS_TEXT_DOMAIN );
+								?></th>
 							</tr>
 							<?php
 							$empty = true;
 
+							// These subscriptions have no expire date
+							$no_expire_list = array(
+								MS_Model_Relationship::STATUS_PENDING,
+								MS_Model_Relationship::STATUS_WAITING,
+								MS_Model_Relationship::STATUS_DEACTIVATED,
+							);
+
+							// These subscriptions display the trial-expire date
+							$trial_expire_list = array(
+								MS_Model_Relationship::STATUS_TRIAL,
+								MS_Model_Relationship::STATUS_TRIAL_EXPIRED,
+							);
+
 							foreach ( $this->data['subscription'] as $subscription ) :
 								$empty = false;
 								$membership = $subscription->get_membership();
+								$subs_classes = array(
+									'ms-subscription-' . $subscription->id,
+									'ms-status-' . $subscription->status,
+									'ms-type-' . $membership->type,
+									'ms-payment-' . $membership->payment_type,
+									'ms-gateway-' . $subscription->gateway_id,
+									'ms-membership-' . $subscription->membership_id,
+									$subscription->has_trial() ? 'ms-with-trial' : 'ms-no-trial',
+								);
 								?>
-								<tr>
-									<td><?php echo esc_html( $membership->name ); ?></td>
-									<td>
+								<tr class="<?php echo esc_attr( implode( ' ', $subs_classes ) ); ?>">
+									<td class="ms-col-membership"><?php echo esc_html( $membership->name ); ?></td>
+									<td class="ms-col-status">
 									<?php
 									if ( MS_Model_Relationship::STATUS_PENDING == $subscription->status ) {
 										// Display a "Purchase" link when status is Pending
@@ -99,19 +124,14 @@ class MS_View_Shortcode_Account extends MS_View {
 									}
 									?>
 									</td>
-									<?php if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) : ?>
-										<td><?php
-										if ( $subscription->trial_expire_date ) {
-											echo esc_html(
-												MS_Helper_Period::format_date( $subscription->trial_expire_date )
-											);
-										} else {
-											_e( 'No trial', MS_TEXT_DOMAIN );
-										}
-										?></td>
-									<?php endif; ?>
-									<td><?php
-									if ( $subscription->expire_date ) {
+									<td class="ms-col-expire-date"><?php
+									if ( in_array( $subscription->status, $no_expire_list ) ) {
+										echo '&nbsp;';
+									} elseif ( in_array( $subscription->status, $trial_expire_list ) ) {
+										echo esc_html(
+											MS_Helper_Period::format_date( $subscription->trial_expire_date )
+										);
+									} elseif ( $subscription->expire_date ) {
 										echo esc_html(
 											MS_Helper_Period::format_date( $subscription->expire_date )
 										);
@@ -165,8 +185,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					echo $profile_title;
 
 					if ( $show_profile_change ) {
-						$edit_url = add_query_arg(
-							array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE )
+						$edit_url = esc_url_raw(
+							add_query_arg(
+								array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE )
+							)
 						);
 
 						printf(
@@ -219,8 +241,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					echo $invoices_title;
 
 					if ( $show_all_invoices ) {
-						$detail_url = add_query_arg(
-							array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES )
+						$detail_url = esc_url_raw(
+							add_query_arg(
+								array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES )
+							)
 						);
 
 						printf(
@@ -268,9 +292,12 @@ class MS_View_Shortcode_Account extends MS_View {
 						$inv_membership = MS_Factory::load( 'MS_Model_Membership', $invoice->membership_id );
 						$inv_classes = array(
 							'ms-invoice-' . $invoice->id,
+							'ms-subscription-' . $invoice->ms_relationship_id,
 							'ms-invoice-' . $invoice->status,
-							'ms-invoice-gateway-' . $invoice->gateway_id,
-							'ms-invoice-membership-' . $invoice->membership_id,
+							'ms-gateway-' . $invoice->gateway_id,
+							'ms-membership-' . $invoice->membership_id,
+							'ms-type-' . $inv_membership->type,
+							'ms-payment-' . $inv_membership->payment_type,
 						);
 						?>
 						<tr class="<?php echo esc_attr( implode( ' ', $inv_classes ) ); ?>">
@@ -278,7 +305,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							printf(
 								'<a href="%s">%s</a>',
 								get_permalink( $invoice->id ),
-								$invoice->id
+								$invoice->get_invoice_number()
 							);
 							?></td>
 							<td class="ms-col-invoice-status"><?php
@@ -326,8 +353,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					echo $activity_title;
 
 					if ( $show_all_activities ) {
-						$detail_url = add_query_arg(
-							array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES )
+						$detail_url = esc_url_raw(
+							add_query_arg(
+								array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES )
+							)
 						);
 
 						printf(
@@ -362,7 +391,7 @@ class MS_View_Shortcode_Account extends MS_View {
 						$ev_classes = array(
 							'ms-activity-topic-' . $event->topic,
 							'ms-activity-type-' . $event->type,
-							'ms-activity-membership-' . $event->membership_id,
+							'ms-membership-' . $event->membership_id,
 						);
 						?>
 						<tr class="<?php echo esc_attr( implode( ' ', $ev_classes ) ); ?>">
@@ -403,7 +432,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				);
 
 				if ( ! $has_login_form ) {
-					$redirect = add_query_arg( array() );
+					$redirect = esc_url_raw( add_query_arg( array() ) );
 					$title = __( 'Your account', MS_TEXT_DOMAIN );
 					$scode = sprintf(
 						'[%1$s redirect="%2$s" title="%3$s"]',

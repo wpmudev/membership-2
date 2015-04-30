@@ -105,11 +105,14 @@ class MS_Controller_Member extends MS_Controller {
 					array( $_GET['member_id'] )
 				);
 
-				$redirect = remove_query_arg(
-					array( 'member_id', 'action', '_wpnonce' )
+				$redirect = esc_url_raw(
+					add_query_arg(
+						array( 'msg' => $msg ),
+						remove_query_arg(
+							array( 'member_id', 'action', '_wpnonce' )
+						)
+					)
 				);
-
-				$redirect = add_query_arg( array( 'msg' => $msg ), $redirect );
 			}
 
 			// Execute list table bulk actions.
@@ -117,10 +120,12 @@ class MS_Controller_Member extends MS_Controller {
 				&& self::validate_required( $fields_edit, 'POST' )
 			) {
 				$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-				if ( $action == 'toggle_activation' ) {
+				if ( 'toggle_activation' == $action ) {
 					$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
 
-					$redirect = add_query_arg( array( 'msg' => $msg ) );
+					$redirect = esc_url_raw(
+						add_query_arg( array( 'msg' => $msg ) )
+					);
 				}
 			}
 
@@ -141,7 +146,9 @@ class MS_Controller_Member extends MS_Controller {
 					$_POST['membership_id']
 				);
 
-				$redirect = add_query_arg( array( 'msg' => $msg ) );
+				$redirect = esc_url_raw(
+					add_query_arg( array( 'msg' => $msg ) )
+				);
 			}
 		}
 

@@ -4,13 +4,28 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.5
+----------------------------------------------------------------------
+- Add "autofocus" attribute to login shortcode
+- Add filter "ms_model_pages_redirect_to" to customize membership redirects
+- Add new attributes to the login shortcode to customize field labels and placeholders
+- Improve the Import Tool to handle large import files without throwing memory limit exceptions
+- Improve preview of the [ms-protected-content] shortcode for admins
+- Fix various small issues with the login shortcode HTML code
+- Fix javascript collision with ACF Pro plugin
+- Fix display of invoice status in the admin Billings section
+
 1.1.1.4
 ----------------------------------------------------------------------
 - Added new automatic email notification: Subscription Renewed
-- Improve descriptions of automatic email notification settings
-- Improve i18n integration in the Billings module, Invoice display and in the Account page
-- Improve media protection to protect whole HTML output instead of post-content only
-- Improve Mailchimp integration: Firstname/Lastname are now also transfered to Mailchimp
+- Improved descriptions of automatic email notification settings
+- Improved i18n integration in the Billings module, Invoice display and in the Account page
+- Improved the invoice and subscription workflow with Trial Memberships
+- Improved media protection to protect whole HTML output instead of post-content only
+- Improved Mailchimp integration: Firstname/Lastname are now also transfered to Mailchimp
+- Improved lots of front-end pages by adding new CSS classes that can be used to customize the layout
+- Fixed XSS vulnerability (add_query_arg/remove_query_arg)
+- Fixed bug with Stripe gateway that striped the cent amount from the charged amount
 - Fixed the Protection meta-box in post and page editor
 - Fixed the protection shortcode for Guest/Default memberships
 - Fixed bug that created duplicate invoices when processing automatic email notifications
@@ -23,7 +38,7 @@ Change Log:
 - Fixed some attributes in the [ms-membership-login] shortcode, e.g. "label_" values
 - Fixed some issues in the Custom Post Type protection pages
 - Fixed bug in the Page protection page that did not display all pages in some cases
-- Fix bulk actions in the Billings module
+- Fix some issues and plugin conflicts with the Member-Capability Add-on
 
 1.1.1.3
 ----------------------------------------------------------------------

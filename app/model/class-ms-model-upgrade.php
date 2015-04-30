@@ -149,6 +149,11 @@ class MS_Model_Upgrade extends MS_Model {
 				self::_upgrade_1_1_0_8();
 			}
 
+			// Upgrade from any 1.1.x version to 1.1.1.4 or higher
+			if ( version_compare( $old_version, '1.1.1.4', 'lt' ) ) {
+				self::_upgrade_1_1_1_4();
+			}
+
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
@@ -583,6 +588,99 @@ class MS_Model_Upgrade extends MS_Model {
 		{
 			$addons = MS_Factory::load( 'MS_Model_Addon' );
 			lib2()->updates->add( array( $addons, 'enable' ), MS_Addon_Category::ID );
+		}
+
+		// Execute all queued actions!
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
+		lib2()->updates->execute();
+	}
+
+	#
+	# ##########################################################################
+	#
+
+	/**
+	 * Upgrade from any 1.1.x version to 1.1.1.4 or higher
+	 */
+	static private function _upgrade_1_1_1_4() {
+		self::snapshot( '1.1.1.4' );
+
+		/*
+		 * Invoice structure changes:
+		 * - Field 'trial_period' renamed to 'uses_trial'
+		 * - New Field added 'trial_price'
+		 * - New Field added 'trial_ends'
+		 */
+		{
+			$args = array(
+				'post_status' => 'any',
+				'post_type' => MS_Model_Invoice::$POST_TYPE,
+				'posts_per_page' => 0,
+				'nopaging' => true,
+			);
+			// Get a list of all invoices.
+			$invoices = get_posts( $args );
+
+			$trial_match = array();
+			foreach ( $invoices as $post ) {
+				$is_trial = get_post_meta( $post->ID, 'trial_period', true );
+				$is_trial = lib2()->is_true( $is_trial );
+
+				if ( $is_trial ) {
+					$subscription_id = intval( get_post_meta( $post->ID, 'ms_relationship_id', true ) );
+					$invoice_number = intval( get_post_meta( $post->ID, 'invoice_number', true ) );
+
+					$paid_args = array(
+						'meta_query' => array(
+							'relation' => 'AND',
+							array(
+								'key' => 'ms_relationship_id',
+								'value' => $subscription_id,
+								'compare' => '=',
+							),
+							array(
+								'key' => 'trial_period',
+								'value' => '',
+								'compare' => '=',
+							),
+							array(
+								'key' => 'invoice_number',
+								'value' => $invoice_number + 1,
+								'compare' => '=',
+							)
+						)
+					);
+					$paid_invoice = MS_Model_Invoice::get_invoices( $paid_args );
+
+					if ( ! empty( $paid_invoice ) ) {
+						$trial_match[$post->ID] = reset( $paid_invoice );
+					}
+				} else {
+					// Normal invoice. Add new fields with default values.
+					lib2()->updates->add( 'update_post_meta', $post->ID, 'uses_trial', '' );
+					lib2()->updates->add( 'update_post_meta', $post->ID, 'trial_price', '0' );
+					lib2()->updates->add( 'update_post_meta', $post->ID, 'trial_ends', '' );
+				}
+			}
+
+			foreach ( $trial_match as $trial_id => $paid_invoice ) {
+				$trial_invoice = MS_Factory::load( 'MS_Model_Invoice', $trial_id );
+				$subscription = $trial_invoice->get_subscription();
+				$trial_ends = $subscription->trial_expire_date;
+
+				lib2()->updates->add( 'update_post_meta', $paid_invoice->id, 'uses_trial', '1' );
+				lib2()->updates->add( 'update_post_meta', $paid_invoice->id, 'trial_ends', $trial_ends );
+				lib2()->updates->add( 'wp_delete_post', $trial_id, true );
+
+				if ( $subscription->current_invoice_number == $trial_invoice->invoice_number ) {
+					lib2()->updates->add(
+						'update_post_meta',
+						$subscription->id,
+						'current_invoice_number',
+						$paid_invoice->invoice_number
+					);
+				}
+			}
 		}
 
 		// Execute all queued actions!

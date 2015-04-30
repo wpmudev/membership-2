@@ -22,6 +22,7 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-addons.js',
 				'app/assets/js/src/ms-view-settings.js',
 				'app/assets/js/src/ms-view-settings-automated-msg.js',
+				'app/assets/js/src/ms-view-settings-import.js',
 				'app/assets/js/src/ms-view-settings-mailchimp.js',
 				'app/assets/js/src/ms-view-settings-payment.js',
 				'app/assets/js/src/ms-view-settings-protection.js',
@@ -116,6 +117,25 @@ module.exports = function( grunt ) {
 
 		test:   {
 			files: ['app/assets/js/test/**/*.js']
+		},
+
+
+		phpunit: {
+			classes: {
+				dir: ''
+			},
+			options: {
+				bin: 'phpunit',
+				bootstrap: 'tests/php/bootstrap.php',
+				testsuite: 'default',
+				configuration: 'tests/php/phpunit.xml',
+				colors: true,
+				//tap: true,
+				//testdox: true,
+				//stopOnError: true,
+				staticBackup: false,
+				noGlobalsBackup: false
+			}
 		},
 
 
@@ -270,6 +290,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
+	grunt.loadNpmTasks('grunt-phpunit');
 
 	grunt.registerTask( 'release_notes', 'Show release notes', function() {
 		grunt.log.subhead( 'Release notes' );
@@ -286,8 +307,9 @@ module.exports = function( grunt ) {
 
 	// Default task.
 
-	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin', 'release_notes'] );
-	grunt.registerTask( 'build', ['default', 'clean', 'copy', 'compress', 'release_notes'] );
+	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'] );
+	grunt.registerTask( 'build', ['phpunit', 'default', 'clean', 'copy', 'compress', 'release_notes'] );
+	grunt.registerTask( 'test', ['phpunit', 'jshint'] );
 
 	grunt.util.linefeed = '\n';
 };

@@ -36,20 +36,28 @@ class MS_View_Settings_Import extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$fields = $this->prepare_fields();
+		$data = apply_filters(
+			'ms_import_preview_data_before',
+			$this->data['model']->source
+		);
+
+		// Converts object to array
+		$data->memberships = (array) $data->memberships;
+		$data->members = (array) $data->members;
+
+		$fields = $this->prepare_fields( $data );
 
 		ob_start();
 		MS_Helper_Html::settings_box(
 			array(
-				$fields['object'],
 				$fields['details'],
+				$fields['sep'],
+				$fields['batchsize'],
 				$fields['sep'],
 				$fields['clear_all'],
 				$fields['back'],
 				$fields['import'],
 				$fields['download'],
-				$fields['nonce'],
-				$fields['action'],
 			),
 			__( 'Import Overview', MS_TEXT_DOMAIN )
 		);
@@ -75,6 +83,8 @@ class MS_View_Settings_Import extends MS_View {
 			'open'
 		);
 
+		echo '<script>window._ms_import_obj = ' . json_encode( $data ) . '</script>';
+
 		$html = ob_get_clean();
 
 		return apply_filters(
@@ -91,12 +101,7 @@ class MS_View_Settings_Import extends MS_View {
 	 *
 	 * @return array
 	 */
-	protected function prepare_fields() {
-		$data = apply_filters(
-			'ms_import_preview_data_before',
-			$this->data['model']->source
-		);
-
+	protected function prepare_fields( $data ) {
 		// List of known Membership types; used to display the nice-name
 		$ms_types = MS_Model_Membership::get_types();
 
@@ -165,21 +170,21 @@ class MS_View_Settings_Import extends MS_View {
 						$code .= $list[$addon]->name . '<br/>';
 					}
 					$settings[] = array(
-						__( 'Add-Ons' ),
+						__( 'Add-Ons', MS_TEXT_DOMAIN ),
 						$code,
 					);
 					break;
 			}
 		}
+		if ( empty( $settings ) ) {
+			$settings[] = array(
+				'',
+				__( '(No settings are changed)', MS_TEXT_DOMAIN ),
+			);
+		}
 
 		// Prepare the return value.
 		$fields = array();
-
-		$fields['object'] = array(
-			'id' => 'object',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => json_encode( $data ),
-		);
 
 		// Export-Notes
 		$notes = '';
@@ -257,6 +262,22 @@ class MS_View_Settings_Import extends MS_View {
 			);
 		}
 
+		$batchsizes = array(
+			10 => __( 'Small (10 items)' ),
+			30 => __( 'Normal (30 items)' ),
+			100 => __( 'Big (100 items)' ),
+		);
+
+		$fields['batchsize'] = array(
+			'id' => 'batchsize',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'title' => __( 'Batch size for import', MS_TEXT_DOMAIN ),
+			'desc' => __( 'Big batches will be processed faster but may result in PHP Memory errors.', MS_TEXT_DOMAIN ),
+			'value' => 30,
+			'field_options' => $batchsizes,
+			'class' => 'sel-batchsize',
+		);
+
 		$fields['clear_all'] = array(
 			'id' => 'clear_all',
 			'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
@@ -308,30 +329,18 @@ class MS_View_Settings_Import extends MS_View {
 		);
 
 		$fields['import'] = array(
-			'name' => 'submit',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'id' => 'btn-import',
+			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 			'value' => __( 'Import', MS_TEXT_DOMAIN ),
-			'button_value' => MS_Controller_Import::ACTION_IMPORT,
+			'button_value' => MS_Controller_Import::AJAX_ACTION_IMPORT,
+			'button_type' => 'submit',
 		);
 
 		$fields['download'] = array(
-			'name' => 'submit',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'id' => 'btn-download',
+			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 			'value' => __( 'Download as Export File', MS_TEXT_DOMAIN ),
-			'button_value' => MS_Controller_Import::ACTION_DOWNLOAD,
 			'class' => 'button-link',
-		);
-
-		$fields['action'] = array(
-			'id' => 'action',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => MS_Controller_Import::ACTION_IMPORT,
-		);
-
-		$fields['nonce'] = array(
-			'id' => '_wpnonce',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => wp_create_nonce( MS_Controller_Import::ACTION_IMPORT ),
 		);
 
 		return $fields;
