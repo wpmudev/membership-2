@@ -362,4 +362,14 @@ class MS_Hooker {
 		}
 	}
 
+	/**
+	 * Debug function for developers.
+	 * This will dump the current object to the output stream.
+	 *
+	 * @since  2.0.0
+	 */
+	public function dump() {
+		lib2()->debug->enable();
+		lib2()->debug->dump( $this );
+	}
 }

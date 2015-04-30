@@ -608,6 +608,32 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns a HTML tag that shows the membership name with the internal
+	 * membership color.
+	 *
+	 * @since  2.0.0
+	 */
+	public function get_name_tag() {
+		$code = sprintf(
+			'<span class="ms-membership" style="background:%2$s">%1$s</span>',
+			esc_html( $this->name ),
+			$this->get_color()
+		);
+
+		return $code;
+	}
+
+	/**
+	 * Echo a HTML tag that shows the membership name with the internal
+	 * membership color.
+	 *
+	 * @since  2.0.0
+	 */
+	public function name_tag() {
+		echo $this->get_name_tag();
+	}
+
+	/**
 	 * Set protection Rule Model.
 	 *
 	 * @since 1.0.0
