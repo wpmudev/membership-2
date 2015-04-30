@@ -183,13 +183,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 						?>
 						<tr>
 							<td class="column-membership">
-								<?php
-								printf(
-									'<span class="the-membership" style="background-color:%2$s">%1$s</span>',
-									esc_html( $membership->name ),
-									$membership->get_color()
-								);
-								?>
+								<?php $membership->name_tag(); ?>
 							</td>
 							<td class="column-status">
 								<?php

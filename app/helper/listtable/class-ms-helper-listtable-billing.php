@@ -179,13 +179,8 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	public function column_membership( $item, $column_name ) {
 		$membership = MS_Factory::load( 'MS_Model_Membership', $item->membership_id );
-		$html = $membership->name;
 
-		return sprintf(
-			'<span class="ms-membership" style="background:%2$s">%1$s</span>',
-			$html,
-			$membership->get_color()
-		);
+		return $membership->get_name_tag();
 	}
 
 	public function column_status( $item, $column_name ) {

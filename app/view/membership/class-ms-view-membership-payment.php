@@ -105,7 +105,7 @@ class MS_View_Membership_Payment extends MS_View {
 
 		$title = sprintf(
 			__( 'Payment settings for %s', MS_TEXT_DOMAIN ),
-			'<span class="the-ms-name" style="background:' . $membership->get_color() . '">' . $membership->name . '</span>'
+			$membership->get_name_tag()
 		);
 
 		$fields = $this->get_specific_payment_fields();

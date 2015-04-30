@@ -308,11 +308,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		$memberships = array();
 		foreach ( $membership_ids as $membership_id ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			$memberships[] = sprintf(
-				'<span class="ms-membership" style="background:%2$s">%1$s</span>',
-				$membership->name,
-				$membership->get_color()
-			);
+			$memberships[] = $membership->get_name_tag();
 		}
 
 		$css = '<style>

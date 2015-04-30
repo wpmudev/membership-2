@@ -67,11 +67,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				$title = sprintf(
 					__( '%s Overview', MS_TEXT_DOMAIN ),
-					sprintf(
-						'<span class="ms-membership" style="background-color:%2$s">%1$s</span>',
-						esc_html( $membership->name ),
-						$membership->get_color()
-					)
+					$membership->get_name_tag()
 				);
 				$desc = array(
 					__( 'Here you find a summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
