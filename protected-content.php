@@ -50,11 +50,18 @@ define( 'MS_PLUGIN_VERSION', '2.0.0.0' );
 define( 'MS_TEXT_DOMAIN', 'membership2' );
 
 /**
+ * Plugin identifier constant.
+ *
+ * @since 2.0.0
+ */
+define( 'MS_PLUGIN', plugin_basename( __FILE__ ) );
+
+/**
  * Plugin name dir constant.
  *
  * @since 1.0.0
  */
-define( 'MS_PLUGIN_NAME', dirname( plugin_basename( __FILE__ ) ) );
+define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
 
 /**
  * Include WPMUDev Dashboard
@@ -150,10 +157,18 @@ class MS_Plugin {
 	private static $modifiers = array();
 
 	/**
+	 * The WordPress internal plugin identifier.
+	 *
+	 * @since 2.0.0
+	 * @var   string
+	 */
+	private $id;
+
+	/**
 	 * The plugin name.
 	 *
 	 * @since 1.0.0
-	 * @var name
+	 * @var   string
 	 */
 	private $name;
 
@@ -161,7 +176,7 @@ class MS_Plugin {
 	 * The plugin version.
 	 *
 	 * @since 1.0.0
-	 * @var version
+	 * @var   string
 	 */
 	private $version;
 
@@ -169,7 +184,7 @@ class MS_Plugin {
 	 * The plugin file.
 	 *
 	 * @since 1.0.0
-	 * @var file
+	 * @var   string
 	 */
 	private $file;
 
@@ -177,7 +192,7 @@ class MS_Plugin {
 	 * The plugin path.
 	 *
 	 * @since 1.0.0
-	 * @var dir
+	 * @var   string
 	 */
 	private $dir;
 
@@ -185,7 +200,7 @@ class MS_Plugin {
 	 * The plugin URL.
 	 *
 	 * @since 1.0.0
-	 * @var url
+	 * @var   string
 	 */
 	private $url;
 
@@ -193,7 +208,7 @@ class MS_Plugin {
 	 * The plugin settings.
 	 *
 	 * @since 1.0.0
-	 * @var settings
+	 * @var   MS_Model_Settings
 	 */
 	private $settings;
 
@@ -201,7 +216,7 @@ class MS_Plugin {
 	 * The plugin add-on settings.
 	 *
 	 * @since 1.0.0
-	 * @var addon
+	 * @var   MS_Model_Addon
 	 */
 	private $addon;
 
@@ -209,7 +224,7 @@ class MS_Plugin {
 	 * The main controller of the plugin.
 	 *
 	 * @since 1.0.0
-	 * @var controller
+	 * @var   MS_Controller_Plugin
 	 */
 	private $controller;
 
@@ -217,7 +232,7 @@ class MS_Plugin {
 	 * The API controller (for convenience)
 	 *
 	 * @since  2.0.0
-	 * @var MS_Controller_Api
+	 * @var    MS_Controller_Api
 	 */
 	public static $api = null;
 
@@ -245,6 +260,7 @@ class MS_Plugin {
 		do_action( 'ms_plugin_construct_start', $this );
 
 		/** Setup plugin properties */
+		$this->id = MS_PLUGIN;
 		$this->name = MS_PLUGIN_NAME;
 		$this->version = MS_PLUGIN_VERSION;
 		$this->file = __FILE__;
@@ -329,12 +345,12 @@ class MS_Plugin {
 		$this->addon = MS_Factory::load( 'MS_Model_Addon' );
 
 		add_filter(
-			'plugin_action_links_' . plugin_basename( __FILE__ ),
+			'plugin_action_links_' . MS_PLUGIN,
 			array( $this, 'plugin_settings_link' )
 		);
 
 		add_filter(
-			'network_admin_plugin_action_links_' . plugin_basename( __FILE__ ),
+			'network_admin_plugin_action_links_' . MS_PLUGIN,
 			array( $this, 'plugin_settings_link' )
 		);
 

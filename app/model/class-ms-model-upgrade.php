@@ -62,8 +62,11 @@ class MS_Model_Upgrade extends MS_Model {
 
 		if ( $Done && ! $force ) { return; }
 
-		// Can only be triggered from Admin-Side by an Admin user.
+		// Updates are only triggered from Admin-Side by an Admin user.
 		if ( ! self::valid_user() ) { return; }
+
+		// Check for correct network-wide protection setup.
+		self::check_network_setup();
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$old_version = $settings->version; // Old: The version in DB.
@@ -866,6 +869,37 @@ class MS_Model_Upgrade extends MS_Model {
 		// Redirect to the main page.
 		wp_safe_redirect( admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
 		exit;
+	}
+
+	/**
+	 * Makes sure that network-wide protection works by ensuring that the plugin
+	 * is also network-activated.
+	 *
+	 * @since  2.0.0
+	 */
+	static private function check_network_setup() {
+		static $Network_Checked = false;
+
+		if ( ! $Network_Checked ) {
+			$Network_Checked = true;
+
+			// This is only relevant for multisite installations.
+			if ( ! is_multisite() ) { return; }
+
+			if ( MS_Plugin::is_network_wide() ) {
+				// This function does not exist in network admin
+				if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+					require_once ABSPATH . '/wp-admin/includes/plugin.php';
+				}
+
+				if ( ! is_plugin_active_for_network( MS_PLUGIN ) ) {
+					activate_plugin( MS_PLUGIN, null, true );
+					lib2()->ui->admin_message(
+						__( 'Info: Membership2 is not activated network-wide', MS_TEXT_DOMAIN )
+					);
+				}
+			}
+		}
 	}
 
 	/**
