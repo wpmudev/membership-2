@@ -44,10 +44,19 @@ class MS_Controller_Plugin extends MS_Controller {
 	const MENU_SLUG = 'membership2';
 
 	/**
+	 * The slug of the top-level admin page
+	 *
+	 * @since  2.0.0
+	 *
+	 * @var string
+	 */
+	private static $base_slug = '';
+
+	/**
 	 * Instance of MS_Model_Plugin.
 	 *
 	 * @since 1.0.0
-	 * @access private
+	 *
 	 * @var $model
 	 */
 	private $model;
@@ -56,7 +65,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Pointer array for other controllers.
 	 *
 	 * @since 1.0.0
-	 * @access private
+	 *
 	 * @var $controllers
 	 */
 	protected $controllers = array();
@@ -101,6 +110,9 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// Setup plugin admin UI.
 		$this->add_action( 'admin_menu', 'add_menu_pages' );
+		if ( MS_Plugin::is_network_wide() ) {
+			$this->add_action( 'network_admin_menu', 'add_menu_pages' );
+		}
 
 		$this->add_action( 'ms_register_admin_scripts', 'register_admin_scripts' );
 		$this->add_action( 'ms_register_admin_scripts', 'register_admin_styles' );
@@ -180,6 +192,47 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function add_menu_pages() {
+		$limited_mode = false;
+
+		if ( MS_Plugin::is_wizard() ) {
+			// Submenus definition: Wizard mode
+			$pages = $this->get_setup_menu_pages();
+
+			$limited_mode = true;
+		} else {
+			// Submenus definition: Normal mode
+			$pages = $this->get_default_menu_pages();
+
+			if ( MS_Plugin::is_network_wide() && ! is_network_admin() ) {
+				$limited_mode = true;
+			}
+		}
+
+		/**
+		 * Allow Add-ons and other plugins to add menu pages.
+		 *
+		 * A menu item is defined by an array containing the following members:
+		 *   'title' => '...',
+		 *   'slug' => '...',
+		 *   'function' => callback
+		 *
+		 * @var array
+		 */
+		$pages = apply_filters(
+			'ms_plugin_menu_pages',
+			$pages,
+			$limited_mode,
+			$this
+		);
+
+		$page_keys = array_keys( $pages );
+		$slug = $pages[ $page_keys[0] ]['slug'];
+		if ( empty( $slug ) ) {
+			self::$base_slug = self::MENU_SLUG;
+		} else {
+			self::$base_slug = self::MENU_SLUG . '-' . $slug;
+		}
+
 		/*
 		 * Create primary menu item: Membership.
 		 *
@@ -188,129 +241,193 @@ class MS_Controller_Plugin extends MS_Controller {
 		 * Until this bug is closed the title (2nd argument) can't be translated
 		 */
 		add_menu_page(
-			__( 'Membership2', MS_TEXT_DOMAIN ),
+			'Membership2', // no i18n!
 			'Membership2', // no i18n!
 			$this->capability,
-			self::MENU_SLUG,
+			self::$base_slug,
 			null,
 			'dashicons-lock'
 		);
 
-		if ( MS_Plugin::is_wizard() ) {
-			// Submenus definition: Wizard mode
-			$pages = array(
-				'setup' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Set-up', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG,
-					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
-				),
-			);
-
-			if ( MS_Controller_Membership::STEP_ADD_NEW == MS_Plugin::instance()->settings->wizard_step ) {
-				$pages[self::MENU_SLUG] = array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Membership2', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-setup',
-					'function' => array( $this->controllers['membership'], 'page_protected_content' ),
-				);
-			}
-		} else {
-			$args = MS_Model_Invoice::get_query_args();
-			$args['meta_query']['status']['value'] = array(
-				MS_Model_Invoice::STATUS_BILLED,
-				MS_Model_Invoice::STATUS_PENDING,
-			);
-			$args['meta_query']['status']['compare'] = 'IN';
-			$bill_count = MS_Model_Invoice::get_invoice_count( $args );
-			if ( $bill_count > 99 ) { $bill_count = '99+'; }
-			elseif ( ! $bill_count ) { $bill_count = ''; }
-
-			// Submenus definition: Normal mode
-			$pages = array(
-				'memberships' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG,
-					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
-				),
-				'protected-content' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Select Content to Protect', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-setup',
-					'function' => array( $this->controllers['membership'], 'page_protected_content' ),
-				),
-				'members' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Members', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Members', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-members',
-					'function' => array( $this->controllers['member'], 'admin_member_list' ),
-				),
-				'billing' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Billing', MS_TEXT_DOMAIN ),
-					'menu_title' => sprintf(
-						'%1$s <span class="awaiting-mod count-%3$s"><span class="pending-count">%2$s</span></span>',
-						__( 'Billing', MS_TEXT_DOMAIN ),
-						$bill_count,
-						sanitize_html_class( $bill_count, '0' )
-					),
-					'menu_slug' => self::MENU_SLUG . '-billing',
-					'function' => array( $this->controllers['billing'], 'admin_billing' ),
-				),
-				'addon' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-addon',
-					'function' => array( $this->controllers['addon'], 'admin_addon' ),
-				),
-				'settings' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Settings', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Settings', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-settings',
-					'function' => array( $this->controllers['settings'], 'admin_settings' ),
-				),
-				'help' => array(
-					'parent_slug' => self::MENU_SLUG,
-					'page_title' => __( 'Help', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Help', MS_TEXT_DOMAIN ),
-					'menu_slug' => self::MENU_SLUG . '-help',
-					'function' => array( $this->controllers['help'], 'admin_help' ),
-				),
-			);
-
-			if ( ! MS_Model_Membership::have_paid_membership() ) {
-				unset( $pages['billing'] );
-			}
-		}
-
-		$pages = apply_filters(
-			'ms_plugin_menu_pages',
-			$pages,
-			MS_Plugin::is_wizard(),
-			$this
-		);
-
 		// Create submenus
 		foreach ( $pages as $page ) {
+			if ( ! is_array( $page ) ) { continue; }
+			$slug = self::MENU_SLUG;
+			if ( ! empty( $page['slug'] ) ) {
+				$slug .= '-' . $page['slug'];
+			}
+
 			add_submenu_page(
-				$page['parent_slug'],
-				$page['page_title'],
-				$page['menu_title'],
+				self::$base_slug,
+				strip_tags( $page['title'] ),
+				$page['title'],
 				$this->capability,
-				$page['menu_slug'],
+				$slug,
 				$page['function']
 			);
 		}
 
 		do_action( 'ms_controller_plugin_add_menu_pages', $this );
+	}
+
+	/**
+	 * Returns the admin menu items for setting up the plugin.
+	 * Helper function used by add_menu_pages
+	 *
+	 * @since  2.0.0
+	 * @return array
+	 */
+	private function get_setup_menu_pages() {
+		$pages = array(
+			'setup' => array(
+				'title' => __( 'Set-up', MS_TEXT_DOMAIN ),
+				'slug' => '',
+				'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
+			),
+		);
+
+		if ( MS_Controller_Membership::STEP_ADD_NEW == MS_Plugin::instance()->settings->wizard_step ) {
+			$pages['setup']['slug'] = 'setup';
+
+			$pages[self::MENU_SLUG] = array(
+				'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+				'slug' => '',
+				'function' => array( $this->controllers['membership'], 'page_protected_content' ),
+			);
+		}
+
+		return $pages;
+	}
+
+	/**
+	 * Returns the default admin menu items for Membership2.
+	 * Helper function used by add_menu_pages
+	 *
+	 * @since  2.0.0
+	 * @return array
+	 */
+	private function get_default_menu_pages() {
+		$show_billing = false;
+
+		if ( MS_Plugin::is_network_wide() ) {
+			// Network wide protection.
+
+			if ( is_network_admin() ) {
+				// Viewing the network admin.
+
+				$pages = array(
+					'memberships' => array(
+						'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
+						'slug' => '',
+						'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
+					),
+					'protected-content' => array(
+						'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+						'slug' => 'protection',
+						'function' => array( $this->controllers['membership'], 'page_protected_content' ),
+					),
+					'members' => array(
+						'title' => __( 'Members', MS_TEXT_DOMAIN ),
+						'slug' => 'members',
+						'function' => array( $this->controllers['member'], 'admin_member_list' ),
+					),
+					'billing' => false,
+					'addon' => array(
+						'title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+						'slug' => 'addon',
+						'function' => array( $this->controllers['addon'], 'admin_addon' ),
+					),
+					'settings' => array(
+						'title' => __( 'Settings', MS_TEXT_DOMAIN ),
+						'slug' => 'settings',
+						'function' => array( $this->controllers['settings'], 'admin_settings' ),
+					),
+					'help' => array(
+						'title' => __( 'Help', MS_TEXT_DOMAIN ),
+						'slug' => 'help',
+						'function' => array( $this->controllers['help'], 'admin_help' ),
+					),
+				);
+
+				$show_billing = MS_Model_Membership::have_paid_membership();
+			} else {
+				// Viewing a site admin
+
+				$pages = array(
+					'protected-content' => array(
+						'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+						'slug' => 'protection',
+						'function' => array( $this->controllers['membership'], 'page_protected_content' ),
+					),
+					'members' => array(
+						'title' => __( 'Members', MS_TEXT_DOMAIN ),
+						'slug' => 'members',
+						'function' => array( $this->controllers['member'], 'admin_member_list' ),
+					),
+					'billing' => false,
+					'help' => array(
+						'title' => __( 'Help', MS_TEXT_DOMAIN ),
+						'slug' => 'help',
+						'function' => array( $this->controllers['help'], 'admin_help' ),
+					),
+				);
+			}
+		} else {
+			// Only current site is protected. Full menu.
+
+			$pages = array(
+				'memberships' => array(
+					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
+					'slug' => '',
+					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
+				),
+				'protected-content' => array(
+					'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+					'slug' => 'protection',
+					'function' => array( $this->controllers['membership'], 'page_protected_content' ),
+				),
+				'members' => array(
+					'title' => __( 'Members', MS_TEXT_DOMAIN ),
+					'slug' => 'members',
+					'function' => array( $this->controllers['member'], 'admin_member_list' ),
+				),
+				'billing' => false,
+				'addon' => array(
+					'title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+					'slug' => 'addon',
+					'function' => array( $this->controllers['addon'], 'admin_addon' ),
+				),
+				'settings' => array(
+					'title' => __( 'Settings', MS_TEXT_DOMAIN ),
+					'slug' => 'settings',
+					'function' => array( $this->controllers['settings'], 'admin_settings' ),
+				),
+				'help' => array(
+					'title' => __( 'Help', MS_TEXT_DOMAIN ),
+					'slug' => 'help',
+					'function' => array( $this->controllers['help'], 'admin_help' ),
+				),
+			);
+
+			$show_billing = MS_Model_Membership::have_paid_membership();
+		}
+
+		if ( $show_billing ) {
+			$bill_count = MS_Model_Invoice::get_unpaid_invoice_count( null, true );
+
+			$pages['billing'] = array(
+				'title' => sprintf(
+					'%1$s <span class="awaiting-mod count-%3$s"><span class="pending-count"><i class="hidden">(</i>%2$s<i class="hidden">)</i></span></span>',
+					__( 'Billing', MS_TEXT_DOMAIN ),
+					$bill_count,
+					sanitize_html_class( $bill_count, '0' )
+				),
+				'slug' => 'billing',
+				'function' => array( $this->controllers['billing'], 'admin_billing' ),
+			);
+		}
+
+		return $pages;
 	}
 
 	/**
@@ -327,7 +444,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		}
 
 		if ( empty( $slug ) ) {
-			$slug = self::MENU_SLUG;
+			$slug = self::$base_slug;
 		} else {
 			$slug = self::MENU_SLUG . '-' . $slug;
 		}
@@ -338,14 +455,14 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Get admin url.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param  string $slug Optional. Slug of the admin page, if empty the link
 	 *         points to the main admin page.
 	 * @return string The full URL to the admin page.
 	 */
 	public static function get_admin_url( $slug = '', $args = null ) {
-		if ( $empty( $slug ) ) {
-			$slug = self::MENU_SLUG;
+		if ( empty( $slug ) ) {
+			$slug = self::$base_slug;
 		} else {
 			$slug = self::MENU_SLUG . '-' . $slug;
 		}

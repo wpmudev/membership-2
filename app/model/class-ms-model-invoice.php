@@ -393,11 +393,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Get transaction count.
+	 * Get the number of invoices.
 	 *
-	 * @since 1.0.0
-	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @since  1.0.0
+	 * @param  array $args The query post args
+	 *         @see http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return int
 	 */
 	public static function get_invoice_count( $args = null ) {
 		$defaults = array(
@@ -415,6 +416,50 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_invoice_get_invoice_count',
 			$query->found_posts,
 			$args
+		);
+	}
+
+	/**
+	 * Count the number of unpaid invoices. Unpaid is any invoice with status
+	 * BILLED or PENDING.
+	 *
+	 * @since  2.0.0
+	 * @param  array $args The query post args
+	 *         @see http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @param  bool $for_badge if true then return value is a string
+	 * @return int|string
+	 */
+	public static function get_unpaid_invoice_count( $args = null, $for_badge = false ) {
+		$defaults = self::get_query_args();
+
+		$args = apply_filters(
+			'ms_model_invoice_get_unpaid_invoice_count_args',
+			wp_parse_args( $args, $defaults )
+		);
+
+		$args['meta_query']['status']['value'] = array(
+			self::STATUS_BILLED,
+			self::STATUS_PENDING,
+		);
+		$args['meta_query']['status']['compare'] = 'IN';
+
+		$bill_count = self::get_invoice_count( $args );
+
+		$res = $bill_count;
+		if ( $for_badge ) {
+			if ( $bill_count > 99 ) {
+				$res = '99+';
+			} elseif ( $bill_count ) {
+				$res = '';
+			}
+		}
+
+		return apply_filters(
+			'ms_model_invoice_get_unpaid_invoice_count',
+			$res,
+			$bill_count,
+			$args,
+			$for_badge
 		);
 	}
 

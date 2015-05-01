@@ -519,11 +519,9 @@ class MS_Controller_Membership extends MS_Controller {
 		$data['step'] = $this->get_step();
 		$data['action'] = self::ACTION_SAVE;
 		$data['membership'] = $membership;
-		$data['create_new_url'] = esc_url_raw(
-			add_query_arg(
-				array( 'step' => self::STEP_ADD_NEW ),
-				MS_Controller_Plugin::get_admin_url()
-			)
+		$data['create_new_url'] = MS_Controller_Plugin::get_admin_url(
+			false,
+			array( 'step' => self::STEP_ADD_NEW )
 		);
 
 		$view = MS_Factory::create( 'MS_View_Membership_List' );
@@ -1066,7 +1064,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$bread_crumbs['prev'] = array(
 					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
 					'url' => MS_Controller_Plugin::get_admin_url(
-						'',
+						false,
 						array( 'step' => self::STEP_MS_LIST )
 					),
 				);
@@ -1079,7 +1077,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$bread_crumbs['prev'] = array(
 					'title' => $membership->name,
 					'url' => MS_Controller_Plugin::get_admin_url(
-						'',
+						false,
 						array(
 							'step' => self::STEP_OVERVIEW,
 							'membership_id' => $membership->id,

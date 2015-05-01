@@ -180,18 +180,18 @@ class MS_Addon_Coupon extends MS_Addon {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @param array $tabs The current tabs.
-	 * @param int $membership_id The membership id to edit
-	 * @return array The filtered tabs.
+	 * @param  array $items List of the current admin menu items.
+	 * @param  bool $limited_mode True means either First-Setup or site-admin
+	 *         in network wide protection.
+	 * @param  MS_Controller $controller
+	 * @return array The modified menu array.
 	 */
-	public function menu_item( $items, $is_wizard, $controller ) {
-		if ( ! $is_wizard ) {
+	public function menu_item( $items, $limited_mode, $controller ) {
+		if ( ! $limited_mode ) {
 			$menu_item = array(
 				'coupons' => array(
-					'parent_slug' => MS_Controller_Plugin::MENU_SLUG,
-					'page_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-					'menu_title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-					'menu_slug' => MS_Controller_Plugin::MENU_SLUG . '-coupons',
+					'title' => __( 'Coupons', MS_TEXT_DOMAIN ),
+					'slug' => 'coupons',
 					'function' => array( $this, 'admin_coupon' ),
 				)
 			);

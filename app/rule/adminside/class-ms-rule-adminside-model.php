@@ -210,6 +210,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 			'edit-tags.php?taxonomy=link_category', // Links (deprecated)
 			MS_Controller_Plugin::MENU_SLUG, // Main Membership2 menu item.
 			// Membership2 sub-menu items
+			MS_Controller_Plugin::MENU_SLUG . '-setup',
 			MS_Controller_Plugin::MENU_SLUG . '-members',
 			MS_Controller_Plugin::MENU_SLUG . '-billing',
 			MS_Controller_Plugin::MENU_SLUG . '-protection',
