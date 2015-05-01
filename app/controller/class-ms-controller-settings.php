@@ -310,7 +310,8 @@ class MS_Controller_Settings extends MS_Controller {
 		);
 
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-settings';
-		$page = sanitize_html_class( @$_GET['page'], $def_key );
+		lib2()->array->equip_get( 'page' );
+		$page = sanitize_html_class( $_GET['page'], $def_key );
 
 		foreach ( $tabs as $key => $tab ) {
 			$tabs[ $key ]['url'] = sprintf(
@@ -611,12 +612,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
-		$initial_url = esc_url_raw(
-			add_query_arg(
-				array( 'page' => MS_Controller_Plugin::MENU_SLUG ),
-				admin_url( 'admin.php' )
-			)
-		);
+		$initial_url = MS_Controller_Plugin::get_admin_url();
 
 		$data = array(
 			'ms_init' => array(),

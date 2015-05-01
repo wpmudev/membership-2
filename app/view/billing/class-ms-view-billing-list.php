@@ -57,7 +57,10 @@ class MS_View_Billing_List extends MS_View {
 		$add_new_button = array(
 			'id' => 'add_new',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'url' => sprintf( 'admin.php?page=%s&action=edit&invoice_id=0', MS_Controller_Plugin::MENU_SLUG . '-billing' ),
+			'url' => MS_Controller_Plugin::get_admin_url(
+				'billing',
+				array( 'action' => 'edit', 'invoice_id' => 0 )
+			),
 			'value' => __( 'Add New', MS_TEXT_DOMAIN ),
 			'class' => 'button',
 		);

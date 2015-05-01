@@ -274,11 +274,12 @@ class MS_View_Adminbar extends MS_View {
 			foreach ( $rules as $rule_type ) {
 				printf(
 					'<li><a href="%1$s" target="_blank">%3$s %2$s</a></li>',
-					sprintf(
-						admin_url( 'admin.php?page=%1$s&tab=%2$s&membership_id=%3$s' ),
-						MS_Controller_Plugin::MENU_SLUG . '-setup',
-						$rule_type,
-						$membership->id
+					MS_Controller_Plugin::get_admin_url(
+						'protection',
+						array(
+							'tab' => $rule_type,
+							'membership_id' => $membership->id,
+						)
 					),
 					$rule_title[$rule_type],
 					__( 'Denied by Rule:', MS_TEXT_DOMAIN )
@@ -299,11 +300,12 @@ class MS_View_Adminbar extends MS_View {
 			foreach ( $rules as $rule_type ) {
 				printf(
 					'<li><a href="%1$s" target="_blank">%3$s %2$s</a></li>',
-					sprintf(
-						admin_url( 'admin.php?page=%1$s&tab=%2$s&membership_id=%3$s' ),
-						MS_Controller_Plugin::MENU_SLUG . '-setup',
-						$rule_type,
-						$membership->id
+					MS_Controller_Plugin::get_admin_url(
+						'protection',
+						array(
+							'tab' => $rule_type,
+							'membership_id' => $membership->id,
+						)
 					),
 					$rule_title[$rule_type],
 					__( 'Allowed by Rule:', MS_TEXT_DOMAIN )

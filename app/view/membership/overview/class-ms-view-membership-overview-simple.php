@@ -144,6 +144,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 	 */
 	public function members_panel() {
 		$count = count( $this->data['members'] );
+		$membership_id = $this->data['membership']->id;
 		?>
 		<div class="ms-half ms-settings-box">
 			<h3>
@@ -156,17 +157,16 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 					<?php
 					$this->members_panel_data(
 						$this->data['members'],
-						$this->data['membership']->id
+						$membership_id
 					);
 					?>
 				</div>
 
 				<div class="ms-member-edit-wrapper">
 					<?php
-					$url = sprintf(
-						admin_url( 'admin.php?page=%1$s&membership_id=%2$s' ),
-						MS_Controller_Plugin::MENU_SLUG . '-members',
-						$this->data['membership']->id
+					$url = MS_Controller_Plugin::get_admin_url(
+						'members',
+						array( 'membership_id' => $membership_id )
 					);
 					MS_Helper_Html::html_element(
 						array(
@@ -399,14 +399,12 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				<div class="ms-protection-edit-wrapper">
 					<?php
-					$edit_url = esc_url_raw(
-						add_query_arg(
-							array(
-								'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
-								'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-								'tab' => $rule->rule_type,
-								'membership_id' => $membership_id,
-							)
+					$edit_url = MS_Controller_Plugin::get_admin_url(
+						'protection',
+						array(
+							'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+							'tab' => $rule->rule_type,
+							'membership_id' => $membership_id,
 						)
 					);
 

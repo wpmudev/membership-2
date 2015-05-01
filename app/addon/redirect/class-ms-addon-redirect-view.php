@@ -20,9 +20,11 @@ class MS_Addon_Redirect_View extends MS_View {
 							sprintf(
 								__( 'The URLs you specify here can always be overwritten in the %slogin shortcode%s using the redirect-attributes. Example: <code>[%s redirect_login="/welcome/" redirect_logout="/good-bye/"]</code>.', MS_TEXT_DOMAIN ),
 								sprintf(
-									'<a href="%s?page=%s&tab=shortcodes#ms-membership-login" target="_blank">',
-									admin_url( 'admin.php' ),
-									MS_Controller_Plugin::MENU_SLUG . '-help'
+									'<a href="%s#ms-membership-login" target="_blank">',
+									MS_Controller_Plugin::get_admin_url(
+										'help',
+										array( 'tab' => 'shortcodes')
+									)
 								),
 								'</a>',
 								MS_Helper_Shortcode::SCODE_LOGIN

@@ -867,7 +867,7 @@ class MS_Model_Upgrade extends MS_Model {
 		wp_cache_flush();
 
 		// Redirect to the main page.
-		wp_safe_redirect( admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
+		wp_safe_redirect( MS_Controller_Plugin::get_admin_url() );
 		exit;
 	}
 
@@ -998,7 +998,8 @@ class MS_Model_Upgrade extends MS_Model {
 			self::cleanup_db();
 			$msg = __( 'Your Membership2 data was reset!', MS_TEXT_DOMAIN );
 			lib2()->ui->admin_message( $msg );
-			wp_safe_redirect( admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) );
+
+			wp_safe_redirect( MS_Controller_Plugin::get_admin_url() );
 			exit;
 		}
 	}
@@ -1038,7 +1039,7 @@ class MS_Model_Upgrade extends MS_Model {
 					'<p>' .
 					__( 'You now have the option to <br />(A) downgrade the plugin to an earlier version via FTP or <br />(B) to %sre-run the upgrade process%s.', MS_TEXT_DOMAIN ) .
 					'</p>',
-					'<a href="' . admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG ) . '">',
+					'<a href="' . MS_Controller_Plugin::get_admin_url() . '">',
 					'</a>'
 				);
 

@@ -212,7 +212,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 			// Membership2 sub-menu items
 			MS_Controller_Plugin::MENU_SLUG . '-members',
 			MS_Controller_Plugin::MENU_SLUG . '-billing',
-			MS_Controller_Plugin::MENU_SLUG . '-setup',
+			MS_Controller_Plugin::MENU_SLUG . '-protection',
 			MS_Controller_Plugin::MENU_SLUG . '-coupons',
 			MS_Controller_Plugin::MENU_SLUG . '-addon',
 			MS_Controller_Plugin::MENU_SLUG . '-settings',

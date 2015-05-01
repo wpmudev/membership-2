@@ -80,14 +80,12 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 				<div class="inside">
 					<div class="ms-protection-edit-wrapper">
 						<?php
-						$edit_url = esc_url_raw(
-							add_query_arg(
-								array(
-									'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
-									'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-									'tab' => $rule->rule_type,
-									'membership_id' => $membership->id,
-								)
+						$edit_url = MS_Controller_Plugin::get_admin_url(
+							'protection',
+							array(
+								'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+								'tab' => $rule->rule_type,
+								'membership_id' => $membership->id,
 							)
 						);
 						MS_Helper_Html::html_element(
@@ -142,13 +140,11 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 		ksort( $contents );
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 
-		$edit_url = esc_url_raw(
-			add_query_arg(
-				array(
-					'page' => MS_Controller_Plugin::MENU_SLUG . '-setup',
-					'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
-					'tab' => $rule->rule_type,
-				)
+		$edit_url = MS_Controller_Plugin::get_admin_url(
+			'protection',
+			array(
+				'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+				'tab' => $rule->rule_type,
 			)
 		);
 		$edit_link = array(

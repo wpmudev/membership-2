@@ -637,10 +637,10 @@ class MS_Plugin {
 	public function plugin_settings_link( $links ) {
 		if ( ! is_network_admin() ) {
 			$text = __( 'Settings', MS_TEXT_DOMAIN );
-			$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG . '-settings' );
+			$url = MS_Controller_Plugin::get_admin_url( 'settings' );
 
 			if ( $this->settings->initial_setup ) {
-				$url = admin_url( 'admin.php?page='. MS_Controller_Plugin::MENU_SLUG );
+				$url = MS_Controller_Plugin::get_admin_url();
 			}
 
 			/**

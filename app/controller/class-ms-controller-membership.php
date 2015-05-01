@@ -186,7 +186,7 @@ class MS_Controller_Membership extends MS_Controller {
 						)
 					);
 				}
-			} elseif ( isset( $_REQUEST['page'] ) && MS_Controller_Plugin::MENU_SLUG . '-setup' == $_REQUEST['page'] ) {
+			} elseif ( MS_Controller_Plugin::is_page( 'protection' ) ) {
 				$membership_id = MS_Model_Membership::get_base()->id;
 			}
 
@@ -231,9 +231,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$fields = array();
 			parse_str( $params, $fields );
 			if ( 'wpmudev-plugins' == $fields['page'] ) {
-				$url = admin_url(
-					'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings'
-				);
+				$url = MS_Controller_Plugin::get_admin_url( 'settings' );
 
 				wp_safe_redirect( $url );
 				exit;
@@ -744,8 +742,7 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 
 		// Hack to use same page in two different menus
-		$the_page = sanitize_html_class( @$_GET['page'] );
-		if ( MS_Controller_Plugin::MENU_SLUG . '-setup' === $the_page ) {
+		if ( MS_Controller_Plugin::is_page( 'protection' ) ) {
 			$step = self::STEP_PROTECTED_CONTENT;
 		}
 
@@ -1068,12 +1065,9 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_OVERVIEW:
 				$bread_crumbs['prev'] = array(
 					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-					'url' => admin_url(
-						sprintf(
-							'admin.php?page=%s&step=%s',
-							MS_Controller_Plugin::MENU_SLUG,
-							self::STEP_MS_LIST
-						)
+					'url' => MS_Controller_Plugin::get_admin_url(
+						'',
+						array( 'step' => self::STEP_MS_LIST )
 					),
 				);
 				$bread_crumbs['current'] = array(
@@ -1084,12 +1078,11 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_PAYMENT:
 				$bread_crumbs['prev'] = array(
 					'title' => $membership->name,
-					'url' => admin_url(
-						sprintf(
-							'admin.php?page=%s&step=%s&membership_id=%s',
-							MS_Controller_Plugin::MENU_SLUG,
-							self::STEP_OVERVIEW,
-							$membership->id
+					'url' => MS_Controller_Plugin::get_admin_url(
+						'',
+						array(
+							'step' => self::STEP_OVERVIEW,
+							'membership_id' => $membership->id,
 						)
 					),
 				);
@@ -1209,7 +1202,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_ADD_NEW:
 				$data['ms_init'][] = 'view_membership_add';
-				$data['initial_url'] = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG );
+				$data['initial_url'] = MS_Controller_Plugin::get_admin_url();
 				break;
 
 			case self::STEP_OVERVIEW:

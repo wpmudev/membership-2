@@ -113,7 +113,10 @@ class MS_View_Settings_Edit extends MS_View {
 		// A "Reset" button that can be added via URL param
 		// Intentionally not translated (purpose is dev/testing)
 		if ( ! empty( $_GET['reset'] ) ) {
-			$reset_url = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&reset=1' );
+			$reset_url = MS_Controller_Plugin::get_admin_url(
+				'settings',
+				array( 'reset' => 1 )
+			);
 			$reset_url = esc_url_raw(
 				add_query_arg(
 					MS_Model_Upgrade::get_token( 'reset' ),
@@ -142,7 +145,10 @@ class MS_View_Settings_Edit extends MS_View {
 		// A "Resore" button that can be added via URL param
 		// Intentionally not translated (purpose is dev/testing)
 		if ( ! empty( $_GET['restore'] ) ) {
-			$restore_url = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&restore=1' );
+			$restore_url = MS_Controller_Plugin::get_admin_url(
+				'settings',
+				array( 'restore' => 1 )
+			);
 			$restore_url = esc_url_raw(
 				add_query_arg(
 					MS_Model_Upgrade::get_token( 'restore' ),

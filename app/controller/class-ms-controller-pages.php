@@ -168,7 +168,7 @@ class MS_Controller_Pages extends MS_Controller {
 	public function post_states( $states, $post ) {
 		if ( 'page' == $post->post_type ) {
 			if ( MS_Model_Pages::is_membership_page( $post->ID ) ) {
-				$url = admin_url( 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings' );
+				$url = MS_Controller_Plugin::get_admin_url( 'settings' );
 				$states['membership2'] = sprintf(
 					'<a style="%2$s" href="%3$s">%1$s</a>',
 					__( 'Membership2 Page', MS_TEXT_DOMAIN ),

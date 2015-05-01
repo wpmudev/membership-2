@@ -140,9 +140,11 @@ class MS_Widget_Login extends WP_Widget {
 			'desc' => sprintf(
 				__( 'Arguments to pass to the %slogin shortcode%s', MS_TEXT_DOMAIN ),
 				sprintf(
-					'<a href="%s?page=%s&tab=shortcodes#ms-membership-login" target="_blank">',
-					admin_url( 'admin.php' ),
-					MS_Controller_Plugin::MENU_SLUG . '-help'
+					'<a href="%s#ms-membership-login" target="_blank">',
+					MS_Controller_Plugin::get_admin_url(
+						'help',
+						array( 'tab' => 'shortcodes' )
+					)
 				),
 				'</a>'
 			),

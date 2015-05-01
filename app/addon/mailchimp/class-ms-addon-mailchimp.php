@@ -207,7 +207,10 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	public function settings_tabs( $tabs ) {
 		$tabs[ self::ID  ] = array(
 			'title' => __( 'MailChimp', MS_TEXT_DOMAIN ),
-			'url' => 'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings&tab=' . self::ID,
+			'url' => MS_Controller_Plugin::get_admin_url(
+				'settings',
+				array( 'tab' => self::ID )
+			),
 		);
 
 		return $tabs;

@@ -152,9 +152,11 @@ class MS_Helper_ListTable_Gateway extends MS_Helper_ListTable {
 				$item->is_configured() ? __( 'Edit', MS_TEXT_DOMAIN ) : __( 'Configure', MS_TEXT_DOMAIN )
 			),
 			sprintf(
-				'<a href="?page=%s&gateway_id=%s">%s</a>',
-				MS_Controller_Plugin::MENU_SLUG . '-billing',
-				$item->id,
+				'<a href="?%s">%s</a>',
+				MS_Controller_Plugin::get_admin_url(
+					'billing',
+					array( 'gateway_id' => $item->id )
+				),
 				__( 'View Transactions', MS_TEXT_DOMAIN )
 			),
 		);

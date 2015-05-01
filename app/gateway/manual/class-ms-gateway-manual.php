@@ -143,22 +143,19 @@ class MS_Gateway_Manual extends MS_Gateway {
 		);
 
 		if ( empty( $this->payment_info ) ) {
-			$link = admin_url(
-				sprintf(
-					'admin.php?page=%s&tab=payment',
-					MS_Controller_Plugin::MENU_SLUG . '-settings'
-				)
-			);
+			$link = MS_Controller_Plugin::get_admin_url( 'settings' );
 			ob_start();
 			?>
 				<?php _e( 'This is only an example of manual payment gateway instructions', MS_TEXT_DOMAIN ); ?>
 				<br />
-				<?php printf(
+				<?php
+				printf(
 					'%s <a href="%s">%s</a>',
 					__( 'Edit it', MS_TEXT_DOMAIN ),
 					$link,
 					__( 'here.', MS_TEXT_DOMAIN )
-				); ?>
+				);
+				?>
 				<br /><br />
 				<?php _e( 'Name: Example name.', MS_TEXT_DOMAIN ); ?>
 				<br />

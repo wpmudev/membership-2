@@ -155,7 +155,7 @@ class MS_Helper_Membership extends MS_Helper {
 			'<a href="%s" class="button">%s</a> ' .
 			'<button type="button" class="button-primary close">%s</button>' .
 			'</div>',
-			'?page=' . MS_Controller_Plugin::MENU_SLUG . '-setup',
+			MS_Controller_Plugin::get_admin_url( 'protection' ),
 			__( 'Set-up Access Levels', MS_TEXT_DOMAIN ),
 			__( 'Finish', MS_TEXT_DOMAIN )
 		);

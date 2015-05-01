@@ -260,7 +260,7 @@ class MS_Controller_Rule extends MS_Controller {
 
 		if ( MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED == $msg ) {
 			// If everything went well then get a refershed version of the list-table.
-			$GLOBALS['hook_suffix'] = 'protect-content_page_' . MS_Controller_Plugin::MENU_SLUG . '-setup';
+			$GLOBALS['hook_suffix'] = 'protect-content_page_' . MS_Controller_Plugin::MENU_SLUG . '-protection';
 			$table = apply_filters( 'ms_rule_listtable-' . $rule_type, null );
 
 			if ( $table ) {

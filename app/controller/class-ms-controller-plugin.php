@@ -314,15 +314,50 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	/**
+	 * Checks if the current user is on the specified Membership2 admin page.
+	 *
+	 * @since  2.0.0
+	 * @param  string $slug The membership2 slug (without the menu-slug prefix)
+	 * @return bool
+	 */
+	public static function is_page( $slug ) {
+		$curpage = false;
+		if ( isset( $_REQUEST['page'] ) ) {
+			$curpage = sanitize_html_class( $_REQUEST['page'] );
+		}
+
+		if ( empty( $slug ) ) {
+			$slug = self::MENU_SLUG;
+		} else {
+			$slug = self::MENU_SLUG . '-' . $slug;
+		}
+
+		return $curpage == $slug;
+	}
+
+	/**
 	 * Get admin url.
 	 *
 	 * @since 1.0.0
-	 *
+	 * @param  string $slug Optional. Slug of the admin page, if empty the link
+	 *         points to the main admin page.
+	 * @return string The full URL to the admin page.
 	 */
-	public static function get_admin_url() {
+	public static function get_admin_url( $slug = '', $args = null ) {
+		if ( $empty( $slug ) ) {
+			$slug = self::MENU_SLUG;
+		} else {
+			$slug = self::MENU_SLUG . '-' . $slug;
+		}
+		$url = admin_url( 'admin.php?page=' . $slug );
+
+		if ( $args ) {
+			$url = esc_url_raw( add_query_arg( $args, $url ) );
+		}
+
 		return apply_filters(
 			'ms_controller_plugin_get_admin_url',
-			admin_url( 'admin.php?page=' . self::MENU_SLUG )
+			$url
 		);
 	}
 

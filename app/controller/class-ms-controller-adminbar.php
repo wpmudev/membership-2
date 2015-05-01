@@ -272,9 +272,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		if ( MS_Plugin::is_enabled() ) { return; }
 		if ( MS_Plugin::is_wizard() ) { return; }
 
-		$link_url = admin_url(
-			'admin.php?page=' . MS_Controller_Plugin::MENU_SLUG . '-settings'
-		);
+		$link_url = MS_Controller_Plugin::get_admin_url( 'settings' );
 
 		$wp_admin_bar->add_node(
 			apply_filters(
