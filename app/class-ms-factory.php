@@ -34,11 +34,20 @@ class MS_Factory {
 	/**
 	 * Holds a list of all singleton objects
 	 *
-	 * @since  1.0.4.5
+	 * @since 1.0.4.5
 	 *
-	 * @var array
+	 * @var   array
 	 */
-	static protected $singleton = array();
+	static private $Singleton = array();
+
+	/**
+	 * Used to cache the original blog-ID when using network-wide protection
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var   int
+	 */
+	static private $Orig_Blog_Id = 0;
 
 	/**
 	 * This is only used for Unit-Testing to reset all cached singleton
@@ -47,7 +56,7 @@ class MS_Factory {
 	 * @since  1.1.1.4
 	 */
 	static public function _reset() {
-		self::$singleton = array();
+		self::$Singleton = array();
 		wp_cache_flush();
 	}
 
@@ -124,7 +133,7 @@ class MS_Factory {
 			$key .= '-' . $context;
 		}
 
-		if ( class_exists( $class ) && ! isset( self::$singleton[$key] ) ) {
+		if ( class_exists( $class ) && ! isset( self::$Singleton[$key] ) ) {
 			/*
 			 * We create a new object here so we can test via instanceof if
 			 * the object has a certain parent class.
@@ -163,14 +172,14 @@ class MS_Factory {
 			// Store the new object in our singleton collection.
 			self::set_singleton( $model, $key, $model_id );
 
-			self::prepare_obj( self::$singleton[$key] );
+			self::prepare_obj( self::$Singleton[$key] );
 		}
 
-		if ( ! isset( self::$singleton[$key] ) ) {
-			self::$singleton[$key] = null;
+		if ( ! isset( self::$Singleton[$key] ) ) {
+			self::$Singleton[$key] = null;
 		}
 
-		return self::$singleton[$key];
+		return self::$Singleton[$key];
 	}
 
 	/**
@@ -198,7 +207,7 @@ class MS_Factory {
 			$obj->_in_cache = true;
 		}
 
-		self::$singleton[ $key ] = apply_filters(
+		self::$Singleton[ $key ] = apply_filters(
 			'ms_factory_set_' . $class,
 			$obj,
 			$model_id
@@ -252,6 +261,8 @@ class MS_Factory {
 	 * Load MS_Model_Option object.
 	 *
 	 * MS_Model_Option objects are singletons.
+	 * To support network-wide protection we use our convenience function
+	 * self::get_option().
 	 *
 	 * @since 1.0.0
 	 *
@@ -267,7 +278,7 @@ class MS_Factory {
 			$model = $cache;
 		} else {
 			$option_key = strtolower( $class ); // Option key should be lowercase.
-			$settings = get_option( $option_key );
+			$settings = self::get_option( $option_key );
 			self::populate_model( $model, $settings );
 		}
 
@@ -282,6 +293,8 @@ class MS_Factory {
 	 * Load MS_Model_Transient object.
 	 *
 	 * MS_Transient objects are singletons.
+	 * To support network-wide protection we use our convenience function
+	 * self::get_transient().
 	 *
 	 * @since 1.0.0
 	 *
@@ -295,7 +308,7 @@ class MS_Factory {
 		if ( $cache ) {
 			$model = $cache;
 		} else {
-			$settings = get_transient( $class );
+			$settings = self::get_transient( $class );
 			self::populate_model( $model, $settings );
 		}
 
@@ -310,6 +323,7 @@ class MS_Factory {
 	 * Load MS_Model_CustomPostType Objects.
 	 *
 	 * Load from post and postmeta.
+	 * For network-wide protection we get the data from first blog
 	 *
 	 * @since 1.0.0
 	 *
@@ -327,6 +341,7 @@ class MS_Factory {
 			if ( $cache ) {
 				$model = $cache;
 			} else {
+				self::select_blog();
 				$post = get_post( $model_id );
 
 				if ( ! empty( $post ) && $model->post_type === $post->post_type ) {
@@ -339,6 +354,7 @@ class MS_Factory {
 				} else {
 					$model->id = 0;
 				}
+				self::revert_blog();
 			}
 		}
 
@@ -354,6 +370,7 @@ class MS_Factory {
 	 * Load MS_Model_Member Object.
 	 *
 	 * Load from user and user meta.
+	 * This data is always network-wide.
 	 *
 	 * @since 1.0.0
 	 *
@@ -397,6 +414,12 @@ class MS_Factory {
 			$user_id
 		);
 	}
+
+	//
+	// =========================================================================
+	//   Public helper functions
+	// =========================================================================
+	//
 
 	/**
 	 * Populate fields of the model
@@ -486,4 +509,141 @@ class MS_Factory {
 		ksort( $data );
 		return $data;
 	}
+
+	//
+	// =========================================================================
+	//   Wrappers and convenience functions
+	// =========================================================================
+	//
+
+	/**
+	 * Wrapper to get an option value (regards network-wide protection mode)
+	 *
+	 * @since  2.0.0
+	 * @param  string $key Option Key
+	 * @return mixed Option value
+	 */
+	static public function get_option( $key ) {
+		if ( MS_Plugin::is_network_wide() ) {
+			$settings = get_site_option( $key );
+		} else {
+			$settings = get_option( $key );
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Wrapper to delete an option value (regards network-wide protection mode)
+	 *
+	 * @since  2.0.0
+	 * @param  string $key Option Key
+	 */
+	static public function delete_option( $key ) {
+		if ( MS_Plugin::is_network_wide() ) {
+			delete_site_option( $key );
+		} else {
+			delete_option( $key );
+		}
+	}
+
+	/**
+	 * Wrapper to update an option value (regards network-wide protection mode)
+	 *
+	 * @since  2.0.0
+	 * @param  string $key Option Key
+	 * @param  mixed $value New option value
+	 */
+	static public function update_option( $key, $value ) {
+		if ( MS_Plugin::is_network_wide() ) {
+			update_site_option( $key, $value );
+		} else {
+			update_option( $key, $value );
+		}
+	}
+
+	/**
+	 * Wrapper to get an transient value (regards network-wide protection mode)
+	 *
+	 * @since  2.0.0
+	 * @param  string $key Transient Key
+	 * @return mixed Transient value
+	 */
+	static public function get_transient( $key ) {
+		if ( MS_Plugin::is_network_wide() ) {
+			$transient = get_site_transient( $key );
+		} else {
+			$transient = get_transient( $key );
+		}
+
+		return $transient;
+	}
+
+	/**
+	 * Wrapper to delete an transient value (regards network-wide protection mode)
+	 *
+	 * @since  2.0.0
+	 * @param  string $key Transient Key
+	 */
+	static public function delete_transient( $key ) {
+		if ( MS_Plugin::is_network_wide() ) {
+			delete_site_transient( $key );
+		} else {
+			delete_transient( $key );
+		}
+	}
+
+	/**
+	 * Wrapper to update an transient value (regards network-wide protection mode)
+	 *
+	 * @since  2.0.0
+	 * @param  string $key Transient Key
+	 * @param  mixed $value New transient value
+	 */
+	static public function set_transient( $key, $value, $expiration ) {
+		if ( MS_Plugin::is_network_wide() ) {
+			set_site_transient( $key, $value, $expiration );
+		} else {
+			set_transient( $key, $value, $expiration );
+		}
+	}
+
+	/**
+	 * When network wide protection is enabled this will temporarily switch
+	 * to the main blog to access or change data.
+	 *
+	 * Use revert_blog() when done!!
+	 * This function is a performance-wise much better alternative to the
+	 * built-in function switch_to_blog() because it does not run all the
+	 * initialization logic (update user-roles, etc) when switching a blog.
+	 *
+	 * @since  2.0.0
+	 */
+	static public function select_blog() {
+		global $wpdb;
+
+		if ( MS_Plugin::is_network_wide() && 0 === self::$Orig_Blog_Id ) {
+			self::$Orig_Blog_Id = $GLOBALS['blog_id'];
+			$GLOBALS['blog_id'] = BLOG_ID_CURRENT_SITE;
+			$wpdb->set_blog_id( $GLOBALS['blog_id'] );
+			$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
+		}
+	}
+
+	/**
+	 * Reverts back to the original blog during network wide protection.
+	 *
+	 * @since  2.0.0
+	 */
+	static public function revert_blog() {
+		global $wpdb;
+
+		if ( MS_Plugin::is_network_wide() && 0 !== self::$Orig_Blog_Id ) {
+			$GLOBALS['blog_id'] = self::$Orig_Blog_Id;
+			$wpdb->set_blog_id( $GLOBALS['blog_id'] );
+			$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
+			self::$Orig_Blog_Id = 0;
+		}
+	}
+
 }

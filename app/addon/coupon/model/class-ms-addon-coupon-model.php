@@ -511,11 +511,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			)
 		);
 
-		if ( $global && function_exists( 'get_site_transient' ) ) {
-			set_site_transient( $key, $transient, $time );
-		}  else {
-			set_transient( $key, $transient, $time );
-		}
+		MS_Factory::set_transient( $key, $transient, $time );
 		$this->save();
 
 		do_action(
@@ -537,19 +533,12 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	public static function get_coupon_application( $user_id, $membership_id ) {
 		global $blog_id;
 
-		/** @todo Handle for network/multsite mode.*/
-		$global = false;
-
 		$transient_name = apply_filters(
 			'ms_addon_coupon_model_transient_name',
 			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
 		);
 
-		if ( $global && function_exists( 'get_site_transient' ) ) {
-			$transient = get_site_transient( $transient_name );
-		} else {
-			$transient = get_transient( $transient_name );
-		}
+		$transient = MS_Factory::get_transient( $transient_name );
 
 		$coupon = null;
 		if ( is_array( $transient ) && ! empty( $transient['coupon_id'] ) ) {
@@ -579,19 +568,12 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	public static function remove_coupon_application( $user_id, $membership_id ) {
 		global $blog_id;
 
-		/** @todo Handle for network/multsite mode.*/
-		$global = false;
-
 		$transient_name = apply_filters(
 			'ms_addon_coupon_model_transient_name',
 			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
 		);
 
-		if ( $global && function_exists( 'delete_site_transient' ) ) {
-			delete_site_transient( $transient_name );
-		} else {
-			delete_transient( $transient_name );
-		}
+		MS_Factory::delete_transient( $transient_name );
 
 		do_action(
 			'ms_addon_coupon_model_remove_coupon_application',

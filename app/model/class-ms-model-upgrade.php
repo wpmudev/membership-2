@@ -921,7 +921,7 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( ! is_admin() ) { return array(); }
 
 		$one_time_key = uniqid();
-		set_transient( 'ms_one_time_key-' . $action, $one_time_key, 120 );
+		MS_Factory::set_transient( 'ms_one_time_key-' . $action, $one_time_key, 120 );
 
 		// Token is valid for 86 seconds because of usage of date('B')
 		$plain = $action . '-' . date( 'B' ) . ':' . get_current_user_id() . '-' . $one_time_key;
@@ -950,8 +950,8 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( empty( $_POST['confirm'] ) ) { return false; }
 		if ( 'yes' != $_POST['confirm'] ) { return false; }
 
-		$one_time_key = get_transient( 'ms_one_time_key-' . $action );
-		delete_transient( 'ms_one_time_key-' . $action );
+		$one_time_key = MS_Factory::get_transient( 'ms_one_time_key-' . $action );
+		MS_Factory::delete_transient( 'ms_one_time_key-' . $action );
 		if ( empty( $one_time_key ) ) { return false; }
 
 		// We verify the current and the previous beat

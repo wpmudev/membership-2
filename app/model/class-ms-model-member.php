@@ -758,12 +758,12 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.4.4
 	 */
 	static public function clean_db() {
-		$timestamp = absint( get_transient( 'ms_member_clean_db' ) );
+		$timestamp = absint( MS_Factory::get_transient( 'ms_member_clean_db' ) );
 		$elapsed = time() - $timestamp;
 
 		if ( $elapsed > 3600 ) {
 			// Last check is longer than 1 hour ago. Check again.
-			set_transient( 'ms_member_clean_db', time(), 3600 );
+			MS_Factory::set_transient( 'ms_member_clean_db', time(), 3600 );
 		} else {
 			// Last check was within past hour. Do nothing yet...
 			return;
