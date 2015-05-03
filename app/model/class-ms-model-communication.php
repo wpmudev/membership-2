@@ -477,8 +477,10 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					$args
 				);
 
+				MS_Factory::select_blog();
 				$query = new WP_Query( $args );
 				$item = $query->get_posts();
+				MS_Factory::revert_blog();
 
 				$comm_classes = self::get_communication_type_classes();
 

@@ -387,8 +387,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public static function get_subscriptions( $args = null, $include_system = false ) {
 		$args = self::get_query_args( $args );
 
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
 		$posts = $query->get_posts();
+		MS_Factory::revert_blog();
 		$subscriptions = array();
 
 		if ( ! empty( $posts ) ) {
@@ -434,8 +436,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			'ms_model_relationship_get_subscription_count_args',
 			self::get_query_args( $args )
 		);
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
 		$count = $query->found_posts;
+		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_relationship_get_subscription_count',
@@ -464,13 +468,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			)
 		);
 
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
 		$post = $query->get_posts();
+		MS_Factory::revert_blog();
 
-		$ms_relationship = null;
+		$subscription = null;
 
 		if ( ! empty( $post[0] ) ) {
-			$ms_relationship = MS_Factory::load(
+			$subscription = MS_Factory::load(
 				'MS_Model_Relationship',
 				$post[0]
 			);
@@ -478,7 +484,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		return apply_filters(
 			'ms_model_relationship_get_subscription',
-			$ms_relationship,
+			$subscription,
 			$args
 		);
 	}

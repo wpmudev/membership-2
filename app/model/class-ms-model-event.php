@@ -362,8 +362,10 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_event_count( $args = null ) {
+		MS_Factory::select_blog();
 		$args = self::get_query_args( $args );
 		$query = new WP_Query( $args );
+		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_event_get_event_count',
@@ -382,11 +384,12 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return MS_Model_Event[] The events found.
 	 */
 	public static function get_events( $args = null ) {
+		MS_Factory::select_blog();
 		$args = self::get_query_args( $args );
-
 		$query = new WP_Query( $args );
 		$items = $query->get_posts();
 		$events = array();
+		MS_Factory::revert_blog();
 
 		foreach ( $items as $item ) {
 			$events[] = MS_Factory::load( 'MS_Model_Event', $item );

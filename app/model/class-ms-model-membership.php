@@ -660,8 +660,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return int The membership count.
 	 */
 	public static function get_membership_count( $args = null ) {
+		MS_Factory::select_blog();
 		$args = self::get_query_args( $args );
 		$query = new WP_Query( $args );
+		MS_Factory::revert_blog();
 
 		$count = $query->found_posts;
 
@@ -834,8 +836,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	static public function get_memberships( $args = null ) {
 		$args = self::get_query_args( $args );
 		$args['order'] = 'ASC';
+
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
 		$items = $query->get_posts();
+		MS_Factory::revert_blog();
 
 		$memberships = array();
 		foreach ( $items as $item ) {

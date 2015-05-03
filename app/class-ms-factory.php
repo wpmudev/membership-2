@@ -50,6 +50,16 @@ class MS_Factory {
 	static private $Orig_Blog_Id = 0;
 
 	/**
+	 * Used for network-wide protection to track the switch-level of
+	 * select_blog() calls.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var   int
+	 */
+	static private $Switch_Blog_Level = 0;
+
+	/**
 	 * This is only used for Unit-Testing to reset all cached singleton
 	 * instances before running a new test.
 	 *
@@ -622,11 +632,16 @@ class MS_Factory {
 	static public function select_blog() {
 		global $wpdb;
 
-		if ( MS_Plugin::is_network_wide() && 0 === self::$Orig_Blog_Id ) {
-			self::$Orig_Blog_Id = $GLOBALS['blog_id'];
-			$GLOBALS['blog_id'] = BLOG_ID_CURRENT_SITE;
-			$wpdb->set_blog_id( $GLOBALS['blog_id'] );
-			$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
+		if ( MS_Plugin::is_network_wide() ) {
+			if ( 0 === self::$Switch_Blog_Level ) {
+				self::$Orig_Blog_Id = $GLOBALS['blog_id'];
+				$GLOBALS['blog_id'] = BLOG_ID_CURRENT_SITE;
+				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
+				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
+			}
+
+			// Increase the switch-level - so we can nest select_blog() calls.
+			self::$Switch_Blog_Level += 1;
 		}
 	}
 
@@ -638,11 +653,17 @@ class MS_Factory {
 	static public function revert_blog() {
 		global $wpdb;
 
-		if ( MS_Plugin::is_network_wide() && 0 !== self::$Orig_Blog_Id ) {
-			$GLOBALS['blog_id'] = self::$Orig_Blog_Id;
-			$wpdb->set_blog_id( $GLOBALS['blog_id'] );
-			$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
-			self::$Orig_Blog_Id = 0;
+		if ( MS_Plugin::is_network_wide() ) {
+			// Decrease the switch-level. Only switch back at level 0.
+			self::$Switch_Blog_Level -= 1;
+
+			if ( self::$Switch_Blog_Level < 1 ) {
+				$GLOBALS['blog_id'] = self::$Orig_Blog_Id;
+				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
+				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
+				self::$Orig_Blog_Id = 0;
+				self::$Switch_Blog_Level = 0;
+			}
 		}
 	}
 

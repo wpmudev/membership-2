@@ -278,10 +278,16 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			'post_status' => 'any',
 		);
 
+		MS_Factory::select_blog();
 		$args = wp_parse_args( $args, $defaults );
 		$query = new WP_Query( $args );
+		MS_Factory::revert_blog();
 
-		return apply_filters( 'ms_addon_coupon_model_get_coupon_count', $query->found_posts, $args );
+		return apply_filters(
+			'ms_addon_coupon_model_get_coupon_count',
+			$query->found_posts,
+			$args
+		);
 	}
 
 	/**
@@ -302,8 +308,10 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		);
 		$args = wp_parse_args( $args, $defaults );
 
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
 		$items = $query->get_posts();
+		MS_Factory::revert_blog();
 
 		$coupons = array();
 
@@ -311,7 +319,11 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			$coupons[] = MS_Factory::load( 'MS_Addon_Coupon_Model', $item->ID );
 		}
 
-		return apply_filters( 'ms_addon_coupon_model_get_coupons', $coupons, $args );
+		return apply_filters(
+			'ms_addon_coupon_model_get_coupons',
+			$coupons,
+			$args
+		);
 	}
 
 	/**
@@ -338,9 +350,11 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			)
 		);
 
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
 		$item = $query->get_posts();
 		$coupon_id = 0;
+		MS_Factory::revert_blog();
 
 		if ( ! empty( $item[0] ) ) {
 			$coupon_id = $item[0];

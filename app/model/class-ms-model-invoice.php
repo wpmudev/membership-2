@@ -410,7 +410,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			wp_parse_args( $args, $defaults )
 		);
 
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
+		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_invoice_get_invoice_count',
@@ -485,9 +487,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			wp_parse_args( $args, $defaults )
 		);
 
+		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
 		$items = $query->get_posts();
 		$invoices = array();
+		MS_Factory::revert_blog();
 
 		foreach ( $items as $item ) {
 			$invoices[] = MS_Factory::load( 'MS_Model_Invoice', $item );
@@ -574,9 +578,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			);
 		}
 
+		MS_Factory::select_blog();
 		$args = apply_filters( 'ms_model_invoice_get_invoice_args', $args );
 		$query = new WP_Query( $args );
 		$item = $query->get_posts();
+		MS_Factory::revert_blog();
 
 		$invoice = null;
 		if ( ! empty( $item[0] ) ) {

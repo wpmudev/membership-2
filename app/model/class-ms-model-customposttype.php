@@ -127,6 +127,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @var string[]
 	 */
 	public function save() {
+		MS_Factory::select_blog();
 		$this->before_save();
 
 		$this->post_modified = gmdate( 'Y-m-d H:i:s' );
@@ -166,6 +167,7 @@ class MS_Model_CustomPostType extends MS_Model {
 
 		wp_cache_set( $this->id, $this, $class );
 		$this->after_save();
+		MS_Factory::revert_blog();
 	}
 
 	/**
@@ -176,6 +178,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @return bool
 	 */
 	public function delete() {
+		MS_Factory::select_blog();
 		do_action( 'MS_Model_CustomPostType_delete_before', $this );
 		$res = false;
 
@@ -184,6 +187,7 @@ class MS_Model_CustomPostType extends MS_Model {
 		}
 
 		do_action( 'MS_Model_CustomPostType_delete_after', $this, $res );
+		MS_Factory::revert_blog();
 		return $res;
 	}
 
@@ -195,6 +199,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @param  array $data_to_keep List of meta-fields to keep (field-names)
 	 */
 	public function clean_metadata( $data_to_keep ) {
+		MS_Factory::select_blog();
 		global $wpdb;
 
 		$sql = "SELECT meta_key FROM {$wpdb->postmeta} WHERE post_id = %s;";
@@ -214,6 +219,7 @@ class MS_Model_CustomPostType extends MS_Model {
 		foreach ( $remove as $key ) {
 			delete_post_meta( $this->id, $key );
 		}
+		MS_Factory::revert_blog();
 	}
 
 	/**
@@ -238,6 +244,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @return boolean True if locked.
 	 */
 	public function check_object_lock() {
+		MS_Factory::select_blog();
 		$locked = false;
 
 		if ( $this->is_valid()
@@ -253,6 +260,7 @@ class MS_Model_CustomPostType extends MS_Model {
 			}
 		}
 
+		MS_Factory::revert_blog();
 		return apply_filters(
 			'MS_Model_CustomPostType_check_object_lock',
 			$locked,
@@ -270,6 +278,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @return bool|int
 	 */
 	public function set_object_lock() {
+		MS_Factory::select_blog();
 		$lock = false;
 
 		if ( $this->is_valid() ) {
@@ -280,6 +289,7 @@ class MS_Model_CustomPostType extends MS_Model {
 			update_post_meta( $this->id, '_ms_edit_lock', $lock );
 		}
 
+		MS_Factory::revert_blog();
 		return apply_filters(
 			'MS_Model_CustomPostType_set_object_lock',
 			$lock,
@@ -293,11 +303,13 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @since 1.0.0
 	 */
 	public function delete_object_lock() {
+		MS_Factory::select_blog();
 		if ( $this->is_valid() ) {
 			update_post_meta( $this->id, '_ms_edit_lock', '' );
 		}
 
 		do_action( 'MS_Model_CustomPostType_delete_object_lock', $this );
+		MS_Factory::revert_blog();
 	}
 
 	/**
