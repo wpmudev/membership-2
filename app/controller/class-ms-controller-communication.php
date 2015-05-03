@@ -49,8 +49,8 @@ class MS_Controller_Communication extends MS_Controller {
 
 		do_action( 'ms_controller_communication_before', $this );
 
-		$this->add_action(
-			'wp_ajax_' . self::AJAX_ACTION_UPDATE_COMM,
+		$this->add_ajax_action(
+			self::AJAX_ACTION_UPDATE_COMM,
 			'ajax_action_update_communication'
 		);
 

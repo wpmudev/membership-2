@@ -51,9 +51,9 @@ class MS_Controller_Rule extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MATCHING, 'ajax_action_update_matching' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
+		$this->add_ajax_action( self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
+		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_MATCHING, 'ajax_action_update_matching' );
+		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
 
 		$this->add_action(
 			'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_PROTECTED_CONTENT,

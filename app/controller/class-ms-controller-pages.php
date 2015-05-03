@@ -51,9 +51,9 @@ class MS_Controller_Pages extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_PAGES, 'ajax_action_update_pages' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MENU, 'ajax_action_toggle_menu' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CREATE_MENU, 'ajax_action_create_menu' );
+		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PAGES, 'ajax_action_update_pages' );
+		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_MENU, 'ajax_action_toggle_menu' );
+		$this->add_ajax_action( self::AJAX_ACTION_CREATE_MENU, 'ajax_action_create_menu' );
 
 		// Add a special "state" to membership pages in the WP Page-list
 		$this->add_filter( 'display_post_states', 'post_states', 10, 2 );

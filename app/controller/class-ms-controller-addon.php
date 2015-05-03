@@ -64,8 +64,8 @@ class MS_Controller_Addon extends MS_Controller {
 			'auto_setup_addons'
 		);
 
-		$this->add_action(
-			'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ADDON,
+		$this->add_ajax_action(
+			self::AJAX_ACTION_TOGGLE_ADDON,
 			'ajax_action_toggle_addon'
 		);
 

@@ -46,8 +46,8 @@ class MS_Controller_Import extends MS_Controller {
 
 		$tab_key = 'import'; // should be unique plugin-wide value of `&tab=`.
 
-		$this->add_action(
-			'wp_ajax_' . self::AJAX_ACTION_IMPORT,
+		$this->add_ajax_action(
+			self::AJAX_ACTION_IMPORT,
 			'ajax_action_import'
 		);
 

@@ -74,8 +74,8 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_GATEWAY, 'toggle_ajax_action' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_GATEWAY, 'ajax_action_update_gateway' );
+		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_GATEWAY, 'toggle_ajax_action' );
+		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_GATEWAY, 'ajax_action_update_gateway' );
 
 		$this->add_action( 'ms_controller_frontend_enqueue_scripts', 'enqueue_scripts' );
 

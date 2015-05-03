@@ -122,8 +122,8 @@ class MS_Controller_Metabox extends MS_Controller {
 				'admin_enqueue_scripts'
 			);
 
-			$this->add_action(
-				'wp_ajax_' . self::AJAX_ACTION_TOGGLE_ACCESS,
+			$this->add_ajax_action(
+				self::AJAX_ACTION_TOGGLE_ACCESS,
 				'ajax_action_toggle_metabox_access'
 			);
 

@@ -44,14 +44,14 @@ class MS_Controller_Dialog extends MS_Controller {
 		parent::__construct();
 
 		// Listen to Ajax requests that want to display a popup.
-		$this->add_action( 'wp_ajax_ms_dialog', 'ajax_dialog' );
+		$this->add_ajax_action( 'ms_dialog', 'ajax_dialog' );
 
 		// Listen to Ajax requests that submit form data.
-		$this->add_action( 'wp_ajax_ms_submit', 'ajax_submit' );
+		$this->add_ajax_action( 'ms_submit', 'ajax_submit' );
 
 		// Login.
-		$this->add_action( 'wp_ajax_nopriv_ms_login', 'ajax_login' );
-		$this->add_action( 'wp_ajax_nopriv_ms_lostpass', 'ajax_lostpass' );
+		$this->add_ajax_action( 'ms_login', 'ajax_login', false, true );
+		$this->add_ajax_action( 'ms_lostpass', 'ajax_lostpass', false, true );
 	}
 
 	/**

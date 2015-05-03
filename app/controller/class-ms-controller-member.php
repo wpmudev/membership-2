@@ -54,7 +54,7 @@ class MS_Controller_Member extends MS_Controller {
 
 		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
 		$this->add_action( 'ms_controller_membership_setup_completed', 'add_current_user' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
+		$this->add_ajax_action( self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );

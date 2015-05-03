@@ -90,14 +90,14 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_action( 'load-' . $hook_top, 'membership_admin_page_process' );
 		$this->add_action( 'load-' . $hook_setup, 'membership_admin_page_process' );
 
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
-		$this->add_action( 'wp_ajax_' . self::AJAX_ACTION_UPDATE_MEMBERSHIP, 'ajax_action_update_membership' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook_setup, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook_setup, 'enqueue_styles' );
 
 		$this->add_action( 'admin_print_scripts-' . $hook_top, 'enqueue_scripts' );
 		$this->add_action( 'admin_print_styles-' . $hook_top, 'enqueue_styles' );
+		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
+		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_MEMBERSHIP, 'ajax_action_update_membership' );
 	}
 
 	/**

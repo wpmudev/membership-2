@@ -73,8 +73,8 @@ class MS_Addon_Taxamo extends MS_Addon {
 			);
 
 			// Save settings via ajax
-			$this->add_action(
-				'wp_ajax_' . self::AJAX_SAVE_SETTING,
+			$this->add_ajax_action(
+				self::AJAX_SAVE_SETTING,
 				'ajax_save_setting'
 			);
 
