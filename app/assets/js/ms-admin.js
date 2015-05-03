@@ -1349,7 +1349,8 @@ window.ms_init.view_membership_payment = function init () {
 /*global ms_functions:false */
 
 window.ms_init.view_protected_content = function init () {
-	var table = jQuery( '.wp-list-table' );
+	var table = jQuery( '.wp-list-table' ),
+		sel_network_site = jQuery( '#select-site' );
 
 	window.ms_init.memberships_column( '.column-access' );
 
@@ -1464,6 +1465,14 @@ window.ms_init.view_protected_content = function init () {
 		});
 	}
 
+	// Network-wide protection
+	function refresh_site_data( ev ) {
+		var url = sel_network_site.val();
+
+		window.location.href = url;
+		sel_network_site.addClass( 'wpmui-loading' );
+	}
+
 	// Add event hooks.
 
 	table.on( 'ms-ajax-updated', '.ms-memberships', check_if_dripped );
@@ -1473,7 +1482,14 @@ window.ms_init.view_protected_content = function init () {
 
 	jQuery( document ).on( 'ms-inline-editor', populate_inline_editor );
 	jQuery( document ).on( 'ms-inline-editor-updated', update_table );
+
+	sel_network_site.on( 'change', refresh_site_data );
+	window.console.log( 'INIT PROTECTED CONTENT' , sel_network_site );
 };
+
+
+// -----------------------------------------------------------------------------
+
 
 // This is also used on the Members page
 window.ms_init.memberships_column = function init_column( column_class ) {

@@ -40,6 +40,9 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 			// Display a filter to switch between individual memberships.
 			$this->membership_filter();
 
+			// In network-wide protection mode allow user to select a site.
+			$this->site_filter();
+
 			$active_tab = $this->data['active_tab'];
 			MS_Helper_Html::html_admin_vertical_tabs( $this->data['tabs'], $active_tab );
 
@@ -82,11 +85,11 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	}
 
 	/**
-	 * Display a filter to select the current membership
+	 * Display a filter to select the current membership.
 	 *
 	 * @since  1.1.0
 	 */
-	public function membership_filter() {
+	protected function membership_filter() {
 		$memberships = MS_Model_Membership::get_membership_names();
 		$url = esc_url_raw(
 			remove_query_arg( array( 'membership_id', 'paged' ) )
@@ -125,6 +128,68 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 					</li>
 				<?php endforeach; ?>
 			</ul>
+		</div>
+		<?php
+	}
+
+	/**
+	 * When network-wide protection is enabled then allow the user to choose the
+	 * source-site of the content.
+	 *
+	 * Protection options can only be changed on a site-by-site base. So if the
+	 * user has 3 sites he can protect all pages on all sites but has to select
+	 * each site individually here.
+	 *
+	 * @since  2.0.0
+	 */
+	protected function site_filter() {
+		if ( ! MS_Plugin::is_network_wide() ) {
+			return false;
+		}
+
+		$args = array(
+			'limit' => 0,
+		);
+
+		$sites = wp_get_sites( $args );
+		$site_options = array();
+		$get_titles = count( $sites ) < 25;
+		$current_blog_id = MS_Controller_Membership::current_blog_id();
+
+		foreach ( $sites as $site_data ) {
+			$site_title = $site_data['path'];
+		#	if ( $get_titles ) {
+		#		switch_to_blog( $site_data['blog_id'] );
+		#		$site_title .= '  [' . get_bloginfo( 'name' ) . ']';
+		#		restore_current_blog();
+		#	}
+
+			$key = esc_url_raw(
+				add_query_arg( array( 'nw_site' => $site_data['blog_id'] ) )
+			);
+
+			if ( $current_blog_id == $site_data['blog_id'] ) {
+				$current_value = $key;
+			}
+
+			$site_options[ $key ] = $site_title;
+		}
+
+		$site_list = array(
+			'id' => 'select-site',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => $current_value,
+			'field_options' => $site_options,
+		);
+
+		?>
+		<div class="ms-tab-container">
+			<label class="ms-tab-link" for="select-site">
+			<?php _e( 'Select Site', MS_TEXT_DOMAIN ); ?>
+			</label>
+		</div>
+		<div>
+			<?php lib2()->html->element( $site_list ); ?>
 		</div>
 		<?php
 	}

@@ -191,8 +191,10 @@ class MS_Rule_Page_Model extends MS_Rule {
 	 */
 	public function get_content_count( $args = null ) {
 		unset( $args['number'] );
+		self::select_blog();
 		$args = $this->get_query_args( $args );
 		$posts = get_pages( $args );
+		self::revert_blog();
 
 		$count = count( $posts );
 
@@ -225,9 +227,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 
 		$args = $this->get_query_args( $args );
 
-		if ( isset( $args['s'] ) ) {
-			$matches = get_posts( $args );
-		}
+		self::select_blog();
 		$pages = get_pages( $args );
 
 		for ( $num = $offset; $num < $limit; $num += 1 ) {
@@ -249,6 +249,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 
 			$contents[ $content->id ] = $content;
 		}
+		self::revert_blog();
 
 		return apply_filters(
 			'ms_rule_page_model_get_contents',
