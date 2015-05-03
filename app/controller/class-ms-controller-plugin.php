@@ -461,12 +461,35 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return string The full URL to the admin page.
 	 */
 	public static function get_admin_url( $slug = '', $args = null ) {
+		$base_slug = self::$base_slug;
+
+		// These slugs are opened in network-admin for network-wide protection.
+		$global_slugs = array(
+			'memberships',
+			'addon',
+			'settings',
+		);
+
+		// Determine if the slug is opened in network-admin or site admin.
+		$network_slug = MS_Plugin::is_network_wide()
+			&& ( in_array( $slug, $global_slugs ) || is_network_admin() );
+
+		if ( $network_slug ) {
+			$base_slug = self::MENU_SLUG;
+			if ( 'memberships' === $slug ) { $slug = ''; }
+		}
+
 		if ( empty( $slug ) ) {
 			$slug = self::$base_slug;
 		} else {
 			$slug = self::MENU_SLUG . '-' . $slug;
 		}
-		$url = admin_url( 'admin.php?page=' . $slug );
+
+		if ( $network_slug ) {
+			$url = network_admin_url( 'admin.php?page=' . $slug );
+		} else {
+			$url = admin_url( 'admin.php?page=' . $slug );
+		}
 
 		if ( $args ) {
 			$url = esc_url_raw( add_query_arg( $args, $url ) );

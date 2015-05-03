@@ -52,11 +52,13 @@ class MS_View_Welcome extends MS_View {
 			'class' => 'ms-welcome-start',
 		);
 
+		$setup_url = MS_Controller_Plugin::get_admin_url( 'memberships' );
+
 		ob_start();
 		// Render tabbed interface.
 		?>
 		<div class="ms-wrap wrap">
-			<form class="ms-welcome-box" action="" method="POST">
+			<form class="ms-welcome-box" action="<?php echo esc_url( $setup_url ); ?>" method="POST">
 				<?php
 				foreach ( $hidden_fields as $field ) {
 					MS_Helper_Html::html_element( $field );
