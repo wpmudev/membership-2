@@ -92,16 +92,39 @@ class MS_View extends MS_Hooker {
 			</p>
 			<p>
 				<?php _e( 'Content displayed here might be altered because of simulated restrictions.', MS_TEXT_DOMAIN ); ?><br />
-				<?php printf(
+				<?php
+				printf(
 					__( 'We recommend to %sExit Simulation%s before making any changes!', MS_TEXT_DOMAIN ),
 					'<a href="' . MS_Controller_Adminbar::get_simulation_exit_url() . '">',
 					'</a>'
-				); ?>
+				);
+				?>
 			</p>
 			<p>
 				<em><?php _e( 'This page is only available to Administrators - you can always see it, even during Simulation.', MS_TEXT_DOMAIN ); ?></em>
 			</p>
 		</div>
+		<?php
+		endif;
+	}
+
+	/**
+	 * Displays a warning if network-wide protection is enabled for a large
+	 * network.
+	 *
+	 * @since  2.0.0
+	 */
+	protected function check_network() {
+		if ( MS_Plugin::is_network_wide() && wp_is_large_network() ) :
+		?>
+			<div class="error below-h2">
+			<p>
+				<strong><?php _e( 'Warning!', MS_TEXT_DOMAIN ); ?></strong>
+			</p>
+			<p>
+				<?php _e( 'This network has a large number of sites. Some features of network protection might be slow or unavailable.', MS_TEXT_DOMAIN ); ?>
+			</p>
+			</div>
 		<?php
 		endif;
 	}
