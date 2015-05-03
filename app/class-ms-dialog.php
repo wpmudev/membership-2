@@ -76,7 +76,6 @@ class MS_Dialog extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-
 		$this->title = '';
 		$this->height = 100;
 		$this->content = '';

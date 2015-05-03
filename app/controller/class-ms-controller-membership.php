@@ -84,20 +84,26 @@ class MS_Controller_Membership extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$hook_top = MS_Controller_Plugin::admin_page_hook();
-		$hook_setup = $hook_top . '-setup';
-
-		$this->add_action( 'load-' . $hook_top, 'membership_admin_page_process' );
-		$this->add_action( 'load-' . $hook_setup, 'membership_admin_page_process' );
-
-
-		$this->add_action( 'admin_print_scripts-' . $hook_setup, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $hook_setup, 'enqueue_styles' );
-
-		$this->add_action( 'admin_print_scripts-' . $hook_top, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $hook_top, 'enqueue_styles' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_MEMBERSHIP, 'ajax_action_update_membership' );
+	}
+
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
+		$hooks = array(
+			MS_Controller_Plugin::admin_page_hook(),
+			MS_Controller_Plugin::admin_page_hook( 'setup' ),
+		);
+
+		foreach ( $hooks as $hook ) {
+			$this->run_action( 'load-' . $hook, 'membership_admin_page_process' );
+			$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+			$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+		}
 	}
 
 	/**

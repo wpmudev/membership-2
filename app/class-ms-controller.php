@@ -76,17 +76,26 @@ class MS_Controller extends MS_Hooker {
 		/**
 		 * Actions to execute when constructing the parent controller.
 		 *
-		 * @since 4.0.0
+		 * @since 1.0.0
 		 * @param object $this The MS_Controller object.
 		 */
 		do_action( 'ms_controller_construct', $this );
+	}
 
+	/**
+	 * Does admin-side initialization. This function is called by the
+	 * MS_Controller_Plugin object and is only executed when is_admin() is true.
+	 *
+	 * @since  2.0.0
+	 */
+	public function admin_init() {
+		// Nothing by default. Can be overwritten by child classes.
 	}
 
 	/**
 	 * Get action from request.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string
 	 */
@@ -103,11 +112,11 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Verify nonce.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
-	 * @param string $action The action name to verify nonce.
-	 * @param string $request_method POST or GET
-	 * @param string $nonce_field The nonce field name
+	 * @param  string $action The action name to verify nonce.
+	 * @param  string $request_method POST or GET
+	 * @param  string $nonce_field The nonce field name
 	 * @return boolean True if verified, false otherwise.
 	 */
 	public function verify_nonce( $action = null, $request_method = 'POST', $nonce_field = '_wpnonce' ) {
@@ -132,7 +141,9 @@ class MS_Controller extends MS_Hooker {
 			$action = ! empty( $request_fields['action'] ) ? $request_fields['action'] : '';
 		}
 
-		if ( ! empty( $request_fields[ $nonce_field ] ) && wp_verify_nonce( $request_fields[ $nonce_field ], $action ) ) {
+		if ( ! empty( $request_fields[ $nonce_field ] )
+			&& wp_verify_nonce( $request_fields[ $nonce_field ], $action )
+		) {
 			$verified = true;
 		}
 
@@ -149,7 +160,7 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Verify if current user can perform management actions.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return boolean True if can, false otherwise.
 	 */
@@ -166,11 +177,11 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Verify required fields aren't empty.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
-	 * @param string[] $fields The array of fields to validate.
-	 * @param string $request_method POST or GET
-	 * @param bool $not_empty If true use empty method, else use isset method.
+	 * @param  string[] $fields The array of fields to validate.
+	 * @param  string $request_method POST or GET
+	 * @param  bool $not_empty If true use empty method, else use isset method.
 	 * @return bool True all fields are validated
 	 */
 	static public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {
@@ -218,11 +229,11 @@ class MS_Controller extends MS_Hooker {
 	/**
 	 * Get field from request parameters.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
-	 * @param string $id The field ID
-	 * @param mixed $default The default value of the field.
-	 * @param string $request_method POST or GET
+	 * @param  string $id The field ID
+	 * @param  mixed $default The default value of the field.
+	 * @param  string $request_method POST or GET
 	 * @return mixed The value of the request field.
 	 */
 	static public function get_request_field( $id, $default = '', $request_method = 'POST' ) {

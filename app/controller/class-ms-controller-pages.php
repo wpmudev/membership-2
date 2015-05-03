@@ -54,7 +54,14 @@ class MS_Controller_Pages extends MS_Controller {
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PAGES, 'ajax_action_update_pages' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_MENU, 'ajax_action_toggle_menu' );
 		$this->add_ajax_action( self::AJAX_ACTION_CREATE_MENU, 'ajax_action_create_menu' );
+	}
 
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
 		// Add a special "state" to membership pages in the WP Page-list
 		$this->add_filter( 'display_post_states', 'post_states', 10, 2 );
 	}
@@ -91,7 +98,7 @@ class MS_Controller_Pages extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		echo '' . $msg;
+		echo $msg;
 		exit;
 	}
 

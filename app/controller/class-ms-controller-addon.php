@@ -51,14 +51,6 @@ class MS_Controller_Addon extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$addon_menu_hook = MS_Controller_Plugin::admin_page_hook( 'addon' );
-
-		// Load the add-on manager model.
-		$this->add_action(
-			'load-' . $addon_menu_hook,
-			'admin_addon_process'
-		);
-
 		$this->add_action(
 			'ms_controller_membership_setup_completed',
 			'auto_setup_addons'
@@ -68,12 +60,18 @@ class MS_Controller_Addon extends MS_Controller {
 			self::AJAX_ACTION_TOGGLE_ADDON,
 			'ajax_action_toggle_addon'
 		);
+	}
 
-		// Enqueue scripts and styles.
-		$this->add_action(
-			'admin_print_scripts-' . $addon_menu_hook,
-			'enqueue_scripts'
-		);
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
+		$hook = MS_Controller_Plugin::admin_page_hook( 'addon' );
+
+		$this->run_action( 'load-' . $hook, 'admin_addon_process' );
+		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 	}
 
 	/**

@@ -39,14 +39,17 @@ class MS_Controller_Help extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
+	}
 
-		$menu_hook = MS_Controller_Plugin::admin_page_hook( 'help' );
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
+		$hook = MS_Controller_Plugin::admin_page_hook( 'help' );
 
-		// Enqueue scripts and styles.
-		$this->add_action(
-			'admin_print_scripts-' . $menu_hook,
-			'enqueue_scripts'
-		);
+		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 	}
 
 	/**

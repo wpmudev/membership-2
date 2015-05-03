@@ -43,17 +43,24 @@ class MS_Controller_Import extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
+	}
 
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
 		$tab_key = 'import'; // should be unique plugin-wide value of `&tab=`.
+
+		$this->run_action(
+			'ms_controller_settings_enqueue_scripts_' . $tab_key,
+			'enqueue_scripts'
+		);
 
 		$this->add_ajax_action(
 			self::AJAX_ACTION_IMPORT,
 			'ajax_action_import'
-		);
-
-		$this->add_action(
-			'ms_controller_settings_enqueue_scripts_' . $tab_key,
-			'enqueue_scripts'
 		);
 	}
 

@@ -39,12 +39,19 @@ class MS_Controller_Billing extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
+	}
 
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
 		$hook = MS_Controller_Plugin::admin_page_hook( 'billing' );
-		$this->add_action( 'load-' . $hook, 'admin_billing_manager' );
 
-		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+		$this->run_action( 'load-' . $hook, 'admin_billing_manager' );
+		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 
 	/**

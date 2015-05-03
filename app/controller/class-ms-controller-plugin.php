@@ -99,11 +99,28 @@ class MS_Controller_Plugin extends MS_Controller {
 			}
 		}
 
-		// Instantiate Plugin model - protection implementation.
-		$this->model = MS_Factory::load( 'MS_Model_Plugin' );
+		// Create core controllers that are available on every page.
+		$this->model                               = MS_Factory::load( 'MS_Model_Plugin' );
+		$this->dialogs                             = MS_Factory::load( 'MS_Controller_Dialog' );
+		$this->controllers['widget']               = MS_Factory::load( 'MS_Controller_Widget' );
+		$this->controllers['membership']           = MS_Factory::load( 'MS_Controller_Membership' );
+		$this->controllers['rule']                 = MS_Factory::load( 'MS_Controller_Rule' );
+		$this->controllers['member']               = MS_Factory::load( 'MS_Controller_Member' );
+		$this->controllers['billing']              = MS_Factory::load( 'MS_Controller_Billing' );
+		$this->controllers['addon']                = MS_Factory::load( 'MS_Controller_Addon' );
+		$this->controllers['pages']                = MS_Factory::load( 'MS_Controller_Pages' );
+		$this->controllers['settings']             = MS_Factory::load( 'MS_Controller_Settings' );
+		$this->controllers['communication']        = MS_Factory::load( 'MS_Controller_Communication' );
+		$this->controllers['gateway']              = MS_Factory::load( 'MS_Controller_Gateway' );
+		$this->controllers['admin_bar']            = MS_Factory::load( 'MS_Controller_Adminbar' );
+		$this->controllers['membership_metabox']   = MS_Factory::load( 'MS_Controller_Metabox' );
+		$this->controllers['membership_shortcode'] = MS_Factory::load( 'MS_Controller_Shortcode' );
+		$this->controllers['frontend']             = MS_Factory::load( 'MS_Controller_Frontend' );
+		$this->controllers['import']               = MS_Factory::load( 'MS_Controller_Import' );
+		$this->controllers['help']                 = MS_Factory::load( 'MS_Controller_Help' );
 
-		// Instantiate dialog controller for ajax dialogs.
-		$this->dialogs = MS_Factory::load( 'MS_Controller_Dialog' );
+		// API should be the last Controller to create.
+		$this->controllers['api']                  = MS_Factory::load( 'MS_Controller_Api' );
 
 		// Register all available styles and scripts. Nothing is enqueued.
 		$this->add_action( 'wp_loaded', 'wp_loaded' );
@@ -114,50 +131,46 @@ class MS_Controller_Plugin extends MS_Controller {
 			$this->add_action( 'network_admin_menu', 'add_menu_pages' );
 		}
 
-		$this->add_action( 'ms_register_admin_scripts', 'register_admin_scripts' );
-		$this->add_action( 'ms_register_admin_scripts', 'register_admin_styles' );
-		$this->add_action( 'ms_register_public_scripts', 'register_public_scripts' );
-		$this->add_action( 'ms_register_public_scripts', 'register_public_styles' );
-
-		// Initialize core controllers that are available on every page.
-		$this->controllers['widget'] = MS_Factory::load( 'MS_Controller_Widget' );
-		$this->controllers['membership'] = MS_Factory::load( 'MS_Controller_Membership' );
-		$this->controllers['rule'] = MS_Factory::load( 'MS_Controller_Rule' );
-		$this->controllers['member'] = MS_Factory::load( 'MS_Controller_Member' );
-		$this->controllers['billing'] = MS_Factory::load( 'MS_Controller_Billing' );
-		$this->controllers['addon'] = MS_Factory::load( 'MS_Controller_Addon' );
-		$this->controllers['pages'] = MS_Factory::load( 'MS_Controller_Pages' );
-		$this->controllers['settings'] = MS_Factory::load( 'MS_Controller_Settings' );
-		$this->controllers['communication'] = MS_Factory::load( 'MS_Controller_Communication' );
-		$this->controllers['gateway'] = MS_Factory::load( 'MS_Controller_Gateway' );
-		$this->controllers['admin_bar'] = MS_Factory::load( 'MS_Controller_Adminbar' );
-		$this->controllers['membership_metabox'] = MS_Factory::load( 'MS_Controller_Metabox' );
-		$this->controllers['membership_shortcode'] = MS_Factory::load( 'MS_Controller_Shortcode' );
-		$this->controllers['frontend'] = MS_Factory::load( 'MS_Controller_Frontend' );
-		$this->controllers['import'] = MS_Factory::load( 'MS_Controller_Import' );
-		$this->controllers['help'] = MS_Factory::load( 'MS_Controller_Help' );
-
-		// API should be the last Controller to create.
-		$this->controllers['api'] = MS_Factory::load( 'MS_Controller_Api' );
+		// This will do the ADMIN-SIDE initialization of the controllers
+		$this->add_action( 'ms_plugin_admin_setup', 'run_admin_init' );
 
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_template' );
 
-		// Register admin styles (CSS)
-		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
-
-		// Register styles used in the front end (CSS)
+		// Register styles and javascripts for use in front-end
+		$this->add_action( 'ms_register_public_scripts', 'register_public_scripts' );
+		$this->add_action( 'ms_register_public_scripts', 'register_public_styles' );
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
-
-		// Enqueue admin scripts (JS)
-		$this->add_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_scripts' );
-
-		// Register scripts used in the front end (JS)
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts' );
 	}
 
 	/**
+	 * Creates all the plugin controllers and initialize stuff.
+	 *
+	 * This is done after admin_menu (when in admin site) or
+	 * after setup_theme (on front-end)
+	 *
+	 * @since  2.0.0
+	 */
+	public function run_admin_init() {
+		if ( ! is_admin() && ! is_network_admin() ) { return; }
+
+		foreach ( $this->controllers as $obj ) {
+			$obj->admin_init();
+		}
+
+		// Register styles and javascripts for use in admin-side
+		$this->run_action( 'ms_register_admin_scripts', 'register_admin_scripts' );
+		$this->run_action( 'ms_register_admin_scripts', 'register_admin_styles' );
+		$this->run_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
+		$this->run_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_scripts' );
+	}
+
+	/**
 	 * Returns the WordPress hook that identifies a Membership2 admin page.
+	 *
+	 * Important: In order for this function to work as expected it needs to
+	 * be called *after* the admin-menu was registered!
 	 *
 	 * @since  2.0.0
 	 * @param  string $subpage
@@ -165,10 +178,13 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public static function admin_page_hook( $subpage = '' ) {
 		if ( empty( $subpage ) ) {
-			$hook = 'toplevel_page_' . self::MENU_SLUG;
+			$plugin_page = self::MENU_SLUG;
 		} else {
-			$hook = self::MENU_SLUG . '_page_' . self::MENU_SLUG . '-' . $subpage;
+			$plugin_page = self::MENU_SLUG . '-' . $subpage;
 		}
+
+		$the_parent = 'admin.php';
+		$hook = get_plugin_page_hookname( $plugin_page, $the_parent );
 
 		return $hook;
 	}
@@ -179,7 +195,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function wp_loaded() {
-		if ( is_admin() ) {
+		if ( is_admin() || is_network_admin() ) {
 			do_action( 'ms_register_admin_scripts' );
 		} else {
 			do_action( 'ms_register_public_scripts' );
@@ -268,6 +284,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		}
 
 		do_action( 'ms_controller_plugin_add_menu_pages', $this );
+
+		// Setup the rest of the plugin after the menu was registered.
+		do_action( 'ms_plugin_admin_setup' );
 	}
 
 	/**

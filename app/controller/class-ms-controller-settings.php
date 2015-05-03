@@ -74,11 +74,9 @@ class MS_Controller_Settings extends MS_Controller {
 			$url = esc_url_raw( remove_query_arg( 'run_cron' ) );
 			do_action( 'ms_run_cron_services', $_REQUEST['run_cron'] );
 			wp_safe_redirect( $url );
-			exit();
+			exit;
 		}
 
-		$hook = MS_Controller_Plugin::admin_page_hook( 'settings' );
-		$this->add_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_settings' );
 
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
@@ -86,10 +84,21 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 
-		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+	}
+
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
+		$hook = MS_Controller_Plugin::admin_page_hook( 'settings' );
+
+		$this->run_action( 'load-' . $hook, 'admin_settings_manager' );
+		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 
 		// Add custom buttons to the MCE editor (insert variable).
-		$this->add_action( 'admin_head-' . $hook, 'add_mce_buttons' );
+		$this->run_action( 'admin_head-' . $hook, 'add_mce_buttons' );
 	}
 
 	/**

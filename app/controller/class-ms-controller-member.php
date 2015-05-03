@@ -50,14 +50,29 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		$this->add_action(
+			'ms_controller_membership_setup_completed',
+			'add_current_user'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_CHANGE_MEMBERSHIPS,
+			'ajax_action_change_memberships'
+		);
+	}
+
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since 2.0.0
+	 */
+	public function admin_init() {
 		$hook = MS_Controller_Plugin::admin_page_hook( 'members' );
 
-		$this->add_action( 'load-' . $hook, 'members_admin_page_process' );
-		$this->add_action( 'ms_controller_membership_setup_completed', 'add_current_user' );
-		$this->add_ajax_action( self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
-
-		$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
-		$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+		$this->run_action( 'load-' . $hook, 'members_admin_page_process' );
+		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 
 	/**

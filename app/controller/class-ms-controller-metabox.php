@@ -110,29 +110,31 @@ class MS_Controller_Metabox extends MS_Controller {
 			$post_types
 		);
 
-		if ( MS_Plugin::is_enabled() ) {
-			$this->add_action(
-				'add_meta_boxes',
-				'add_meta_boxes',
-				10
-			);
-
-			$this->add_action(
-				'admin_enqueue_scripts',
-				'admin_enqueue_scripts'
-			);
-
-			$this->add_ajax_action(
-				self::AJAX_ACTION_TOGGLE_ACCESS,
-				'ajax_action_toggle_metabox_access'
-			);
-
-			// Populates the WP editor with default contents of a page
-			$this->add_action(
-				'the_editor_content',
-				'show_default_content'
-			);
+		if ( ! MS_Plugin::is_enabled() ) {
+			return $this;
 		}
+
+		$this->add_action(
+			'add_meta_boxes',
+			'add_meta_boxes',
+			10
+		);
+
+		$this->add_action(
+			'admin_enqueue_scripts',
+			'admin_enqueue_scripts'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_TOGGLE_ACCESS,
+			'ajax_action_toggle_metabox_access'
+		);
+
+		// Populates the WP editor with default contents of a page
+		$this->add_action(
+			'the_editor_content',
+			'show_default_content'
+		);
 	}
 
 	/**
