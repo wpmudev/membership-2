@@ -85,7 +85,7 @@ class MS_Controller_Membership extends MS_Controller {
 		parent::__construct();
 
 		$hook_top = MS_Controller_Plugin::admin_page_hook();
-		$hook_setup = MS_Controller_Plugin::admin_page_hook( 'setup' );
+		$hook_setup = $hook_top . '-setup';
 
 		$this->add_action( 'load-' . $hook_top, 'membership_admin_page_process' );
 		$this->add_action( 'load-' . $hook_setup, 'membership_admin_page_process' );
