@@ -269,12 +269,40 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Clears the shortcode memory at the beginning of each call to the_content.
 	 *
+	 * This is required when there are several parts of the page that are
+	 * rendered via the_content, e.g. a main content and a footer area (this
+	 * is a theme-specific scenario). Or if the page contains an excerpt and a
+	 * main content block, ...
+	 *
 	 * @since  1.0.4.6
 	 * @param  string $content The page content
 	 * @return string Value of $content (unmodified)
 	 */
 	public function clear_content_memory( $content ) {
-		MS_Helper_Shortcode::reset_shortcode_usage();
+		global $wp_current_filter;
+		$reset = false;
+
+		// Correctly handle nesting.
+		foreach ( $wp_current_filter as $filter ) {
+			if ( 'the_content' === $filter ) {
+				if ( $reset ) {
+					/*
+					 * the_content is called inside the_content.
+					 * Don't reset again!
+					 * This can happen for example: A shortcode parses the
+					 * return code via apply_filters( 'the_content' )
+					 */
+					$reset = false;
+					break;
+				} else {
+					$reset = true;
+				}
+			}
+		}
+
+		if ( $reset ) {
+			MS_Helper_Shortcode::reset_shortcode_usage();
+		}
 
 		return $content;
 	}
