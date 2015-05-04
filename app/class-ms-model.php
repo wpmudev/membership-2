@@ -175,43 +175,6 @@ class MS_Model extends MS_Hooker {
 	}
 
 	/**
-	 * Validate booleans.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param bool $value The value to validate.
-	 */
-	public function validate_bool( $value ) {
-		$value = filter_var( $value, FILTER_VALIDATE_BOOLEAN );
-
-		return apply_filters(
-			'ms_model_validate_bool',
-			$value,
-			$this
-		);
-	}
-
-	/**
-	 * Validate minimum values.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $value Value to validate
-	 * @param int $min Minimum value
-	 */
-	public function validate_min( $value, $min ) {
-		$valid = intval( ( $value > $min ) ? $value : $min );
-
-		return apply_filters(
-			'ms_model_validate_min',
-			$valid,
-			$value,
-			$min,
-			$this
-		);
-	}
-
-	/**
 	 * Validate time periods array structure.
 	 *
 	 * @since 1.0.0

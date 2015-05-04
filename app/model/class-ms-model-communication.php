@@ -1120,7 +1120,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 				case 'enabled':
 				case 'cc_enabled':
-					$this->$property = $this->validate_bool( $value );
+					$this->$property = lib2()->is_true( $value );
 					break;
 
 				case 'period':

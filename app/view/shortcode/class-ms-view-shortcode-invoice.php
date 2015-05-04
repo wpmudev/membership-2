@@ -238,8 +238,6 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<td class="ms-inv-price"><?php echo $inv_total; ?></td>
 					</tr>
 
-					<tr class="ms-inv-sep sep"><td colspan="2"></td></tr>
-
 					<?php
 					$show_button = lib2()->is_true( $this->data['pay_button'] );
 
@@ -250,6 +248,9 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					}
 
 					if ( $show_button ) {
+						?>
+						<tr class="ms-inv-sep sep"><td colspan="2"></td></tr>
+						<?php
 						do_action(
 							'ms_view_shortcode_invoice_purchase_button',
 							$subscription,
