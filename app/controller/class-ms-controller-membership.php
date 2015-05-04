@@ -927,12 +927,10 @@ class MS_Controller_Membership extends MS_Controller {
 			foreach ( $tabs as $rule_type => $state ) {
 				if ( ! $state ) { continue; }
 
-				$url = admin_url(
-					sprintf(
-						'admin.php?page=%s&tab=%s',
-						$page,
-						$rule_type
-					)
+				$url .= sprintf(
+					'?page=%s&tab=%s',
+					$page,
+					$rule_type
 				);
 
 				// Try to keep the selected Membership and Status filter.
@@ -1000,39 +998,6 @@ class MS_Controller_Membership extends MS_Controller {
 		);
 
 		return $this->active_tab;
-	}
-
-	/**
-	 * Admin-only function! This function returns the blog_id of the site that
-	 * is currently displayed in the Protected Content admin page.
-	 *
-	 * This is only relevant for network-wide protection.
-	 *
-	 * @since  2.0.0
-	 * @return int The blog_id
-	 */
-	public static function current_blog_id() {
-		static $Blog_Id = null;
-
-		if ( null === $Blog_id ) {
-			$Blog_Id = 0;
-
-			if ( MS_Plugin::is_network_wide() ) {
-				if ( isset( $_REQUEST['nw_site'] ) ) {
-					$Blog_Id = $_REQUEST['nw_site'];
-
-					// Make sure that blog_id is valid.
-					$infos = get_blog_details( $Blog_Id );
-					if ( ! $infos ) { $Blog_Id = 0; }
-				}
-
-				if ( ! $Blog_Id ) {
-					$Blog_Id = get_current_blog_id();
-				}
-			}
-		}
-
-		return $Blog_Id;
 	}
 
 	/**

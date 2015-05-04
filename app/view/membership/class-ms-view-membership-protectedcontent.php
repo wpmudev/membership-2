@@ -153,20 +153,12 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 
 		$sites = wp_get_sites( $args );
 		$site_options = array();
-		$get_titles = count( $sites ) < 25;
-		$current_blog_id = MS_Controller_Membership::current_blog_id();
+		$current_blog_id = get_current_blog_id();
+		$admin_script = 'admin.php?'. $_SERVER['QUERY_STRING'];
 
 		foreach ( $sites as $site_data ) {
 			$site_title = $site_data['path'];
-		#	if ( $get_titles ) {
-		#		switch_to_blog( $site_data['blog_id'] );
-		#		$site_title .= '  [' . get_bloginfo( 'name' ) . ']';
-		#		restore_current_blog();
-		#	}
-
-			$key = esc_url_raw(
-				add_query_arg( array( 'nw_site' => $site_data['blog_id'] ) )
-			);
+			$key = get_admin_url( $site_data['blog_id'], $admin_script );
 
 			if ( $current_blog_id == $site_data['blog_id'] ) {
 				$current_value = $key;

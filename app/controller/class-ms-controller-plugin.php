@@ -71,6 +71,17 @@ class MS_Controller_Plugin extends MS_Controller {
 	protected $controllers = array();
 
 	/**
+	 * Stores the callback handler for the submenu items.
+	 * It is set by self::route_submenu_request() and is used by
+	 * self::handle_submenu_request()
+	 *
+	 * @since  2.0.0
+	 *
+	 * @var array
+	 */
+	private $menu_handler = null;
+
+	/**
 	 * Constructs the primary Plugin controller.
 	 *
 	 * Created by the MS_Plugin object during the setup_theme action.
@@ -130,6 +141,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		if ( MS_Plugin::is_network_wide() ) {
 			$this->add_action( 'network_admin_menu', 'add_menu_pages' );
 		}
+
+		$this->add_action( 'admin_init', 'route_submenu_request' );
 
 		// This will do the ADMIN-SIDE initialization of the controllers
 		$this->add_action( 'ms_plugin_admin_setup', 'run_admin_init' );
@@ -208,6 +221,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function add_menu_pages() {
+		global $submenu;
 		$limited_mode = false;
 
 		if ( MS_Plugin::is_wizard() ) {
@@ -268,6 +282,13 @@ class MS_Controller_Plugin extends MS_Controller {
 		// Create submenus
 		foreach ( $pages as $page ) {
 			if ( ! is_array( $page ) ) { continue; }
+
+			if ( empty( $page['link'] ) ) {
+				$menu_link = false;
+			} else {
+				$menu_link = $page['link'];
+			}
+
 			$slug = self::MENU_SLUG;
 			if ( ! empty( $page['slug'] ) ) {
 				$slug .= '-' . $page['slug'];
@@ -279,8 +300,19 @@ class MS_Controller_Plugin extends MS_Controller {
 				$page['title'],
 				$this->capability,
 				$slug,
-				$page['function']
+				array( $this, 'handle_submenu_request' )
 			);
+
+			/*
+			 * WordPress does not support absolute URLs in the admin-menu.
+			 * So we have to manny modify the menu-link href value if our slug
+			 * is an absolute URL.
+			 */
+			if ( $menu_link ) {
+				$item = end( $submenu[self::$base_slug] );
+				$key = key( $submenu[self::$base_slug] );
+				$submenu[self::$base_slug][$key][2] = $menu_link;
+			}
 		}
 
 		do_action( 'ms_controller_plugin_add_menu_pages', $this );
@@ -301,7 +333,6 @@ class MS_Controller_Plugin extends MS_Controller {
 			'setup' => array(
 				'title' => __( 'Set-up', MS_TEXT_DOMAIN ),
 				'slug' => '',
-				'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
 			),
 		);
 
@@ -311,7 +342,6 @@ class MS_Controller_Plugin extends MS_Controller {
 			$pages[self::MENU_SLUG] = array(
 				'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
 				'slug' => '',
-				'function' => array( $this->controllers['membership'], 'page_protected_content' ),
 			);
 		}
 
@@ -328,108 +358,35 @@ class MS_Controller_Plugin extends MS_Controller {
 	private function get_default_menu_pages() {
 		$show_billing = false;
 
-		if ( MS_Plugin::is_network_wide() ) {
-			// Network wide protection.
+		$pages = array(
+			'memberships' => array(
+				'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
+				'slug' => '',
+			),
+			'protected-content' => array(
+				'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+				'slug' => 'protection',
+			),
+			'members' => array(
+				'title' => __( 'Members', MS_TEXT_DOMAIN ),
+				'slug' => 'members',
+			),
+			'billing' => false,
+			'addon' => array(
+				'title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+				'slug' => 'addon',
+			),
+			'settings' => array(
+				'title' => __( 'Settings', MS_TEXT_DOMAIN ),
+				'slug' => 'settings',
+			),
+			'help' => array(
+				'title' => __( 'Help', MS_TEXT_DOMAIN ),
+				'slug' => 'help',
+			),
+		);
 
-			if ( is_network_admin() ) {
-				// Viewing the network admin.
-
-				$pages = array(
-					'memberships' => array(
-						'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-						'slug' => '',
-						'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
-					),
-					'protected-content' => array(
-						'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
-						'slug' => 'protection',
-						'function' => array( $this->controllers['membership'], 'page_protected_content' ),
-					),
-					'members' => array(
-						'title' => __( 'Members', MS_TEXT_DOMAIN ),
-						'slug' => 'members',
-						'function' => array( $this->controllers['member'], 'admin_member_list' ),
-					),
-					'billing' => false,
-					'addon' => array(
-						'title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
-						'slug' => 'addon',
-						'function' => array( $this->controllers['addon'], 'admin_addon' ),
-					),
-					'settings' => array(
-						'title' => __( 'Settings', MS_TEXT_DOMAIN ),
-						'slug' => 'settings',
-						'function' => array( $this->controllers['settings'], 'admin_settings' ),
-					),
-					'help' => array(
-						'title' => __( 'Help', MS_TEXT_DOMAIN ),
-						'slug' => 'help',
-						'function' => array( $this->controllers['help'], 'admin_help' ),
-					),
-				);
-
-				$show_billing = MS_Model_Membership::have_paid_membership();
-			} else {
-				// Viewing a site admin
-
-				$pages = array(
-					'protected-content' => array(
-						'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
-						'slug' => 'protection',
-						'function' => array( $this->controllers['membership'], 'page_protected_content' ),
-					),
-					'members' => array(
-						'title' => __( 'Members', MS_TEXT_DOMAIN ),
-						'slug' => 'members',
-						'function' => array( $this->controllers['member'], 'admin_member_list' ),
-					),
-					'billing' => false,
-					'help' => array(
-						'title' => __( 'Help', MS_TEXT_DOMAIN ),
-						'slug' => 'help',
-						'function' => array( $this->controllers['help'], 'admin_help' ),
-					),
-				);
-			}
-		} else {
-			// Only current site is protected. Full menu.
-
-			$pages = array(
-				'memberships' => array(
-					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
-					'slug' => '',
-					'function' => array( $this->controllers['membership'], 'membership_admin_page_router' ),
-				),
-				'protected-content' => array(
-					'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
-					'slug' => 'protection',
-					'function' => array( $this->controllers['membership'], 'page_protected_content' ),
-				),
-				'members' => array(
-					'title' => __( 'Members', MS_TEXT_DOMAIN ),
-					'slug' => 'members',
-					'function' => array( $this->controllers['member'], 'admin_member_list' ),
-				),
-				'billing' => false,
-				'addon' => array(
-					'title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
-					'slug' => 'addon',
-					'function' => array( $this->controllers['addon'], 'admin_addon' ),
-				),
-				'settings' => array(
-					'title' => __( 'Settings', MS_TEXT_DOMAIN ),
-					'slug' => 'settings',
-					'function' => array( $this->controllers['settings'], 'admin_settings' ),
-				),
-				'help' => array(
-					'title' => __( 'Help', MS_TEXT_DOMAIN ),
-					'slug' => 'help',
-					'function' => array( $this->controllers['help'], 'admin_help' ),
-				),
-			);
-
-			$show_billing = MS_Model_Membership::have_paid_membership();
-		}
+		$show_billing = MS_Model_Membership::have_paid_membership();
 
 		if ( $show_billing ) {
 			$bill_count = MS_Model_Invoice::get_unpaid_invoice_count( null, true );
@@ -442,11 +399,144 @@ class MS_Controller_Plugin extends MS_Controller {
 					sanitize_html_class( $bill_count, '0' )
 				),
 				'slug' => 'billing',
-				'function' => array( $this->controllers['billing'], 'admin_billing' ),
 			);
 		}
 
 		return $pages;
+	}
+
+	/**
+	 * Handles all menu-items and calls the correct callback function.
+	 *
+	 * We introduce this routing function to monitor all menu-item calls so we
+	 * can make sure that network-wide protection loads the correct blog or
+	 * admin-area before displaing the page.
+	 *
+	 * This function will only handle submenu items of the Membership2 menu!
+	 *
+	 * @since  2.0.0
+	 */
+	public function route_submenu_request() {
+		global $submenu;
+		$handler = null;
+		$handle_it = false;
+
+		if ( ! isset( $_GET['page'] ) ) { return; }
+		foreach ( $submenu[self::$base_slug] as $item ) {
+			if ( $_GET['page'] === $item[2] ) { $handle_it = true; break; }
+		}
+		if ( ! $handle_it ) { return; }
+
+		if ( MS_Plugin::is_wizard() ) {
+			$step_add = MS_Controller_Membership::STEP_ADD_NEW == MS_Plugin::instance()->settings->wizard_step;
+
+			if ( ! $step_add || self::is_page( 'setup' ) ) {
+				$handler = array(
+					'any',
+					array( $this->controllers['membership'], 'membership_admin_page_router' ),
+				);
+			} else {
+				$handler = array(
+					'site',
+					array( $this->controllers['membership'], 'page_protected_content' ),
+				);
+			}
+		} else  {
+			if ( self::is_page( '' ) ) {
+				$handler = array(
+					'network',
+					array( $this->controllers['membership'], 'membership_admin_page_router' ),
+				);
+			} elseif ( self::is_page( 'protection' ) ) {
+				$handler = array(
+					'site',
+					array( $this->controllers['membership'], 'page_protected_content' ),
+				);
+			} elseif ( self::is_page( 'members' ) ) {
+				$handler = array(
+					'network',
+					array( $this->controllers['member'], 'admin_member_list' ),
+				);
+			} elseif ( self::is_page( 'addon' ) ) {
+				$handler = array(
+					'network',
+					array( $this->controllers['addon'], 'admin_addon' ),
+				);
+			} elseif ( self::is_page( 'settings' ) ) {
+				$handler = array(
+					'network',
+					array( $this->controllers['settings'], 'admin_settings' ),
+				);
+			} elseif ( self::is_page( 'help' ) ) {
+				$handler = array(
+					'any',
+					array( $this->controllers['help'], 'admin_help' ),
+				);
+			} elseif ( self::is_page( 'billing' ) ) {
+				$handler = array(
+					'network',
+					array( $this->controllers['billing'], 'admin_billing' ),
+				);
+			}
+		}
+
+		/**
+		 * Filter that allows Add-ons to add their own sub-menu handlers.
+		 *
+		 * @since  2.0.0
+		 */
+		$handler = apply_filters(
+			'ms_route_submenu_request',
+			$handler,
+			$this
+		);
+
+		// Provide a fallback handler in case we could not identify the handler.
+		if ( ! $handler ) {
+			$handler = array(
+				'network',
+				array( $this->controllers['membership'], 'membership_admin_page_router' ),
+			);
+		}
+
+		// Handle the target attribute specified in $handler[0]
+		if ( MS_Plugin::is_network_wide() && 'any' != $handler[0] ) {
+			$redirect = false;
+			$admin_script = 'admin.php?' . $_SERVER['QUERY_STRING'];
+
+			if ( 'network' == $handler[0] && ! is_network_admin() ) {
+				$redirect = network_admin_url( $admin_script );
+			} elseif ( 'site' == $handler[0] && is_network_admin() ) {
+				$redirect = admin_url( $admin_script );
+			}
+
+			if ( $redirect ) {
+				if ( headers_sent() ) {
+					echo '<script>location.href=' . json_encode( $redirect ) . ';</script>';
+				} else {
+					wp_safe_redirect( $redirect );
+				}
+
+				exit;
+			}
+		}
+
+		$this->menu_handler = $handler;
+	}
+
+	/**
+	 * Simply calls the menu-handler callback function.
+	 *
+	 * This function was determined by the previous call to
+	 * self::route_submenu_request() during the admin_init hook.
+	 *
+	 * @since  2.0.0
+	 */
+	public function handle_submenu_request() {
+		if ( ! empty( $this->menu_handler ) ) {
+			// This function will actually render the requested page!
+			call_user_func( $this->menu_handler[1] );
+		}
 	}
 
 	/**

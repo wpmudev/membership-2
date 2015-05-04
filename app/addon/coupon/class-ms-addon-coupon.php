@@ -79,6 +79,12 @@ class MS_Addon_Coupon extends MS_Addon {
 				10, 3
 			);
 
+			// Handle the submenu item - display the add-on page.
+			$this->add_filter(
+				'ms_route_submenu_request',
+				'route_submenu_request'
+			);
+
 			// Tell Membership2 about the Coupon Post Type
 			$this->add_filter(
 				'ms_plugin_register_custom_post_types',
@@ -192,13 +198,38 @@ class MS_Addon_Coupon extends MS_Addon {
 				'coupons' => array(
 					'title' => __( 'Coupons', MS_TEXT_DOMAIN ),
 					'slug' => 'coupons',
-					'function' => array( $this, 'admin_coupon' ),
 				)
 			);
 			lib2()->array->insert( $items, 'before', 'addon', $menu_item );
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Handles all sub-menu clicks. We check if the menu item of our add-on was
+	 * clicked and if it was we display the correct page.
+	 *
+	 * The $handler value is ONLY changed when the current menu is displayed.
+	 * If another menu item was clicked then don't do anythign here!
+	 *
+	 * @since  2.0.0
+	 * @param  array $handler {
+	 *         Menu-item handling information.
+	 *
+	 *         0 .. any|network|site  The admin-area that can handle our menu item.
+	 *         1 .. callable          A callback to handle the menu item.
+	 * @return array Menu-item handling information.
+	 */
+	public function route_submenu_request( $handler ) {
+		if ( MS_Controller_Plugin::is_page( 'coupons' ) ) {
+			$handler = array(
+				'network',
+				array( $this, 'admin_coupon' ),
+			);
+		}
+
+		return $handler;
 	}
 
 	/**
