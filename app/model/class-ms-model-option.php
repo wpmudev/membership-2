@@ -51,8 +51,7 @@ class MS_Model_Option extends MS_Model {
 	public function save() {
 		$this->before_save();
 
-		$class = get_class( $this );
-		$option_key = strtolower( $class ); // Option key should be all lowercase
+		$option_key = $this->option_key();
 
 		$settings = MS_Factory::serialize_model( $this );
 		MS_Factory::update_option( $option_key, $settings );
@@ -60,7 +59,7 @@ class MS_Model_Option extends MS_Model {
 		$this->instance = $this;
 		$this->after_save();
 
-		wp_cache_set( $class, $this, 'MS_Model_Option' );
+		wp_cache_set( $option_key, $this, 'MS_Model_Option' );
 	}
 
 	/**
@@ -69,13 +68,12 @@ class MS_Model_Option extends MS_Model {
 	 * @since 1.0.4.5
 	 */
 	public function refresh() {
-		$class = get_class( $this );
-		$option_key = strtolower( $class ); // Option key should be all lowercase
+		$option_key = $this->option_key();
 
 		$settings = MS_Factory::get_option( $option_key );
 		MS_Factory::populate_model( $this, $settings );
 
-		wp_cache_set( $class, $this, 'MS_Model_Option' );
+		wp_cache_set( $option_key, $this, 'MS_Model_Option' );
 	}
 
 	/**
@@ -86,12 +84,30 @@ class MS_Model_Option extends MS_Model {
 	public function delete() {
 		do_action( 'ms_model_option_delete_before', $this );
 
-		$class = get_class( $this );
-		$option_key = strtolower( $class ); // Option key should be all lowercase
+		$option_key = $this->option_key();
 
 		MS_Factory::delete_option( $option_key );
-		wp_cache_delete( $class, 'MS_Model_Option' );
+		wp_cache_delete( $option_key, 'MS_Model_Option' );
 
 		do_action( 'ms_model_option_delete_after', $this );
+	}
+
+	/**
+	 * validates and prepares the option key before it is used to read/write
+	 * a value in the database.
+	 *
+	 * @since  2.0.0
+	 * @return string
+	 */
+	public function option_key() {
+		// Option key should be all lowercase.
+		$key = strtolower( get_class( $this ) );
+
+		// Network-wide mode uses different options then single-site mode.
+		if ( MS_Plugin::is_network_wide() ) {
+			$key .= '-network';
+		}
+
+		return $key;
 	}
 }

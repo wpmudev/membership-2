@@ -40,8 +40,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string $POST_TYPE
 	 */
-	public static $POST_TYPE = 'ms_coupon';
-	public $post_type = 'ms_coupon';
+	protected static $POST_TYPE = 'ms_coupon';
 
 	/**
 	 * Coupon type constants.
@@ -174,8 +173,17 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	static public $ignore_fields = array(
 		'coupon_message',
-		'post_type',
 	);
+
+	/**
+	 * Returns the post-type of the current object.
+	 *
+	 * @since  2.0.0
+	 * @return string The post-type name.
+	 */
+	public static function get_post_type() {
+		return parent::_post_type( __CLASS__ );
+	}
 
 	/**
 	 * Get custom register post type args for this model.
@@ -190,7 +198,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_customposttype_register_args',
 			$args,
-			self::$POST_TYPE
+			self::get_post_type()
 		);
 	}
 
@@ -274,7 +282,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_coupon_count( $args = null ) {
 		$defaults = array(
-			'post_type' => self::$POST_TYPE,
+			'post_type' => self::get_post_type(),
 			'post_status' => 'any',
 		);
 
@@ -301,7 +309,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_coupons( $args = null ) {
 		$defaults = array(
-			'post_type' => self::$POST_TYPE,
+			'post_type' => self::get_post_type(),
 			'posts_per_page' => 10,
 			'post_status' => 'any',
 			'order' => 'DESC',
@@ -338,7 +346,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		$code = sanitize_text_field( $code );
 
 		$args = array(
-			'post_type' => self::$POST_TYPE,
+			'post_type' => self::get_post_type(),
 			'posts_per_page' => 1,
 			'post_status' => 'any',
 			'fields' => 'ids',

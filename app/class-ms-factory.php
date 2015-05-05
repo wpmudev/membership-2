@@ -282,12 +282,12 @@ class MS_Factory {
 	protected static function load_from_wp_option( $model ) {
 		$class = get_class( $model );
 
-		$cache = wp_cache_get( $class, 'MS_Model_Option' );
+		$option_key = $model->option_key();
+		$cache = wp_cache_get( $option_key, 'MS_Model_Option' );
 
 		if ( $cache ) {
 			$model = $cache;
 		} else {
-			$option_key = strtolower( $class ); // Option key should be lowercase.
 			$settings = self::get_option( $option_key );
 			self::populate_model( $model, $settings );
 		}
@@ -354,7 +354,7 @@ class MS_Factory {
 				self::select_blog();
 				$post = get_post( $model_id );
 
-				if ( ! empty( $post ) && $model->post_type === $post->post_type ) {
+				if ( ! empty( $post ) && $model->get_post_type() === $post->post_type ) {
 					$post_meta = get_post_meta( $model_id );
 					self::populate_model( $model, $post_meta, true );
 

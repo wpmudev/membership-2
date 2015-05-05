@@ -39,8 +39,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string $POST_TYPE
 	 */
-	public static $POST_TYPE = 'ms_membership';
-	public $post_type = 'ms_membership';
+	protected static $POST_TYPE = 'ms_membership';
 
 	/**
 	 * Membership type constants.
@@ -226,7 +225,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var array MS_Rule[].
 	 */
-	protected $rules = array();
+	protected $_rules = array();
 
 	/**
 	 * Only used for serialization of the membership.
@@ -283,14 +282,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function __sleep() {
 		// Rule values are pre-processd before saving...
 		$rules = array();
-		foreach ( $this->rules as $key => $rule ) {
-			$rule = $this->get_rule( $key );
+		foreach ( $this->_rules as $rule_type => $rule ) {
+			#$rule = $this->get_rule( $key );
 
-			$rules[$key] = $rule->serialize();
-
-			if ( empty( $rules[$key] ) ) {
-				unset( $rules[$key] );
-			}
+			$rules[$rule_type] = $rule->serialize();
+			if ( empty( $rules[$rule_type] ) ) { unset( $rules[$rule_type] ); }
 		}
 
 		$this->rule_values = $rules;
@@ -328,7 +324,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function before_save() {
 		parent::before_save();
 
-		foreach ( $this->rules as $rule ) {
+		foreach ( $this->_rules as $rule ) {
 			$rule->membership_id = $this->id;
 		}
 	}
@@ -363,6 +359,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns the post-type of the current object.
+	 *
+	 * @since  2.0.0
+	 * @return string The post-type name.
+	 */
+	public static function get_post_type() {
+		return parent::_post_type( __CLASS__ );
+	}
+
+	/**
 	 * Get custom register post type args for this model.
 	 *
 	 * @since 1.0.0
@@ -385,7 +391,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_customposttype_register_args',
 			$args,
-			self::$POST_TYPE
+			self::get_post_type()
 		);
 	}
 
@@ -569,8 +575,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$rule_type = MS_Rule_Media::RULE_ID;
 		}
 
-		if ( ! isset( $this->rules[ $rule_type ] )
-			|| ! is_object( $this->rules[ $rule_type ] ) // During plugin update.
+		if ( ! isset( $this->_rules[ $rule_type ] )
+			|| ! is_object( $this->_rules[ $rule_type ] ) // During plugin update.
 		) {
 			// Create a new rule model object.
 			$rule = MS_Rule::rule_factory(
@@ -586,13 +592,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$this
 			);
 
-			$this->rules[ $rule_type ] = $rule;
+			$this->_rules[ $rule_type ] = $rule;
 			if ( ! is_array( $rule->rule_value ) ) {
 				$rule->rule_value = array();
 			}
 		}
 
-		return $this->rules[ $rule_type ];
+		return $this->_rules[ $rule_type ];
 	}
 
 	/**
@@ -642,7 +648,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @param MS_Rule $rule The protection rule to set.
 	 */
 	public function set_rule( $rule_type, $rule ) {
-		$this->rules[ $rule_type ] = apply_filters(
+		$this->_rules[ $rule_type ] = apply_filters(
 			'ms_model_membership_set_rule',
 			$rule,
 			$rule_type,
@@ -708,7 +714,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				'private',       // INNER JOIN
 				'is_free',       // INNER JOIN
 				'price',         // INNER JOIN
-				self::$POST_TYPE // WHERE condition
+				self::get_post_type() // WHERE condition
 			);
 
 			$res = $wpdb->get_var( $sql );
@@ -737,7 +743,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$defaults = apply_filters(
 			'ms_model_membership_get_query_args_defaults',
 			array(
-				'post_type' => self::$POST_TYPE,
+				'post_type' => self::get_post_type(),
 				'order' => 'DESC',
 				'orderby' => 'name',
 				'post_status' => 'any',
@@ -1164,7 +1170,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					AND m_type.meta_value = %s
 			";
 			$values = array(
-				self::$POST_TYPE,
+				self::get_post_type(),
 				'type',
 				$type,
 			);
@@ -1223,8 +1229,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				self::TYPE_BASE
 			);
 
-			foreach ( $Base_Membership->rules as $rule_type => $rule ) {
-				$Base_Membership->rules[$rule_type]->is_base_rule = true;
+			foreach ( $Base_Membership->_rules as $rule_type => $rule ) {
+				$Base_Membership->_rules[$rule_type]->is_base_rule = true;
 			}
 
 			$Base_Membership = apply_filters(
@@ -1314,7 +1320,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			return;
 		}
 
-		$base_rules = self::get_base()->rules;
+		$base_rules = self::get_base()->_rules;
 
 		foreach ( $base_rules as $rule_type => $base_rule ) {
 			try {
@@ -1327,9 +1333,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			}
 		}
 
-		$this->rules = apply_filters(
+		$this->_rules = apply_filters(
 			'ms_model_membership_merge_protection_rules',
-			$this->rules,
+			$this->_rules,
 			$this
 		);
 	}

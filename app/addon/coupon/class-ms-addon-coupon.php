@@ -240,7 +240,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @return array
 	 */
 	public function register_ms_posttypes( $cpts ) {
-		$cpts[MS_Addon_Coupon_Model::$POST_TYPE] = MS_Addon_Coupon_Model::get_register_post_type_args();
+		$cpts[MS_Addon_Coupon_Model::get_post_type()] = MS_Addon_Coupon_Model::get_register_post_type_args();
 
 		return $cpts;
 	}
@@ -253,7 +253,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @return array
 	 */
 	public function update_ms_posttypes( $cpts ) {
-		$cpts[] = MS_Addon_Coupon_Model::$POST_TYPE;
+		$cpts[] = MS_Addon_Coupon_Model::get_post_type();
 
 		return $cpts;
 	}

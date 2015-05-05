@@ -41,8 +41,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * @var string
 	 */
-	public static $POST_TYPE = 'ms_event';
-	public $post_type = 'ms_event';
+	protected static $POST_TYPE = 'ms_event';
 
 
 	/**
@@ -136,6 +135,16 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	protected $date;
 
 	/**
+	 * Returns the post-type of the current object.
+	 *
+	 * @since  2.0.0
+	 * @return string The post-type name.
+	 */
+	public static function get_post_type() {
+		return parent::_post_type( __CLASS__ );
+	}
+
+	/**
 	 * Get custom register post type args for this model.
 	 *
 	 * @since 1.0.0
@@ -148,7 +157,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_customposttype_register_args',
 			$args,
-			self::$POST_TYPE
+			self::get_post_type()
 		);
 	}
 
@@ -411,7 +420,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 */
 	public static function get_query_args( $args ) {
 		$defaults = array(
-			'post_type' => self::$POST_TYPE,
+			'post_type' => self::get_post_type(),
 			'posts_per_page' => 10,
 			'fields' => 'ids',
 			'post_status' => 'any',

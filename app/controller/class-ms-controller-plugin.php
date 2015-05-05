@@ -640,7 +640,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		global $post;
 
 		// Checks for invoice single template.
-		if ( $post->post_type == MS_Model_Invoice::$POST_TYPE ) {
+		if ( $post->post_type == MS_Model_Invoice::get_post_type() ) {
 			$invoice_template = apply_filters(
 				'ms_controller_plugin_invoice_template',
 				MS_Plugin::instance()->dir . 'app/template/single-invoice.php'

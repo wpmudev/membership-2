@@ -397,11 +397,11 @@ class MS_Plugin {
 		$cpts = apply_filters(
 			'ms_plugin_register_custom_post_types',
 			array(
-				MS_Model_Membership::$POST_TYPE => MS_Model_Membership::get_register_post_type_args(),
-				MS_Model_Relationship::$POST_TYPE => MS_Model_Relationship::get_register_post_type_args(),
-				MS_Model_Invoice::$POST_TYPE => MS_Model_Invoice::get_register_post_type_args(),
-				MS_Model_Communication::$POST_TYPE => MS_Model_Communication::get_register_post_type_args(),
-				MS_Model_Event::$POST_TYPE => MS_Model_Event::get_register_post_type_args(),
+				MS_Model_Membership::get_post_type() => MS_Model_Membership::get_register_post_type_args(),
+				MS_Model_Relationship::get_post_type() => MS_Model_Relationship::get_register_post_type_args(),
+				MS_Model_Invoice::get_post_type() => MS_Model_Invoice::get_register_post_type_args(),
+				MS_Model_Communication::get_post_type() => MS_Model_Communication::get_register_post_type_args(),
+				MS_Model_Event::get_post_type() => MS_Model_Event::get_register_post_type_args(),
 			)
 		);
 

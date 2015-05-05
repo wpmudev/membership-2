@@ -41,8 +41,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $POST_TYPE;
-	public $post_type;
+	protected static $POST_TYPE;
 
 	/**
 	 * ID of the model object.
@@ -115,7 +114,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 *
 	 * @var string[]
 	 */
-	static public $ignore_fields = array( 'post_type' );
+	static public $ignore_fields = array();
 
 	/**
 	 * Save content in wp tables (wp_post and wp_postmeta).
@@ -142,7 +141,7 @@ class MS_Model_CustomPostType extends MS_Model {
 			'post_name' => sanitize_text_field( $this->name ),
 			'post_status' => 'private',
 			'post_title' => sanitize_title( ! empty( $this->title ) ? $this->title : $this->name ),
-			'post_type' => $this->post_type,
+			'post_type' => $this->get_post_type(),
 			'post_modified' => $this->post_modified,
 		);
 
@@ -198,8 +197,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @since  1.1.0
 	 * @param  array $data_to_keep List of meta-fields to keep (field-names)
 	 */
-	public function clean_metadata( $data_to_keep ) {
-		MS_Factory::select_blog();
+	private function clean_metadata( $data_to_keep ) {
 		global $wpdb;
 
 		$sql = "SELECT meta_key FROM {$wpdb->postmeta} WHERE post_id = %s;";
@@ -219,7 +217,6 @@ class MS_Model_CustomPostType extends MS_Model {
 		foreach ( $remove as $key ) {
 			delete_post_meta( $this->id, $key );
 		}
-		MS_Factory::revert_blog();
 	}
 
 	/**
@@ -331,5 +328,25 @@ class MS_Model_CustomPostType extends MS_Model {
 			$valid,
 			$this
 		);
+	}
+
+	/**
+	 * Returns the post-type of the current object.
+	 *
+	 * @since  2.0.0
+	 * @return string The post-type name.
+	 */
+	protected static function _post_type( $class ) {
+		// Post-type is always lower case.
+		$posttype = strtolower( $class::$POST_TYPE );
+		$posttype = substr( $posttype, 0, 20 );
+
+		// Network-wide mode uses different post-types then single-site mode.
+		if ( MS_Plugin::is_network_wide() ) {
+			$posttype = substr( $posttype, 0, 18 );
+			$posttype .= '-n';
+		}
+
+		return $posttype;
 	}
 }

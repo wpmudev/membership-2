@@ -532,6 +532,7 @@ class MS_Model_Member extends MS_Model {
 			return 0;
 		}
 
+		$scheme = $cookie['scheme'];
 		$username = $cookie['username'];
 		$hmac = $cookie['hmac'];
 		$token = $cookie['token'];
@@ -785,7 +786,7 @@ class MS_Model_Member extends MS_Model {
 
 		$sql = $wpdb->prepare(
 			$sql,
-			MS_Model_Relationship::$POST_TYPE
+			MS_Model_Relationship::get_post_type()
 		);
 
 		// Delete these Relationships!

@@ -39,8 +39,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since 1.0.0
 	 * @var string $POST_TYPE
 	 */
-	public static $POST_TYPE = 'ms_relationship';
-	public $post_type = 'ms_relationship';
+	protected static $POST_TYPE = 'ms_relationship';
 
 	/**
 	 * Membership Relationship Status constants.
@@ -182,6 +181,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	// -------------------------------------------------------------- COLLECTION
 
 	/**
+	 * Returns the post-type of the current object.
+	 *
+	 * @since  2.0.0
+	 * @return string The post-type name.
+	 */
+	public static function get_post_type() {
+		return parent::_post_type( __CLASS__ );
+	}
+
+	/**
 	 * Get custom register post type args for this model.
 	 *
 	 * @since 1.0.0
@@ -194,7 +203,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_customposttype_register_args',
 			$args,
-			self::$POST_TYPE
+			self::get_post_type()
 		);
 	}
 
@@ -504,7 +513,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$defaults = apply_filters(
 			'ms_model_relationship_get_query_args_defaults',
 			array(
-				'post_type' => self::$POST_TYPE,
+				'post_type' => self::get_post_type(),
 				'post_status' => 'any',
 				'fields' => 'ids',
 				'nopaging' => true,

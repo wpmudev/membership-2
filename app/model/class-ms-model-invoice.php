@@ -41,8 +41,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @var string
 	 */
-	public static $POST_TYPE = 'ms_invoice';
-	public $post_type = 'ms_invoice';
+	protected static $POST_TYPE = 'ms_invoice';
 
 	/**
 	 * Invoice status constants.
@@ -282,6 +281,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	// -------------------------------------------------------------- COLLECTION
 
 	/**
+	 * Returns the post-type of the current object.
+	 *
+	 * @since  2.0.0
+	 * @return string The post-type name.
+	 */
+	public static function get_post_type() {
+		return parent::_post_type( __CLASS__ );
+	}
+
+	/**
 	 * Get custom register post type args for this model.
 	 *
 	 * @since 1.0.0
@@ -302,7 +311,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_customposttype_register_args',
 			$args,
-			self::$POST_TYPE
+			self::get_post_type()
 		);
 	}
 
@@ -402,7 +411,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_invoice_count( $args = null ) {
 		$defaults = array(
-			'post_type' => self::$POST_TYPE,
+			'post_type' => self::get_post_type(),
 			'post_status' => 'any',
 		);
 		$args = apply_filters(
@@ -475,7 +484,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_invoices( $args = null ) {
 		$defaults = array(
-			'post_type' => self::$POST_TYPE,
+			'post_type' => self::get_post_type(),
 			'posts_per_page' => 10,
 			'post_status' => 'any',
 			'fields' => 'ids',
@@ -555,7 +564,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_invoice( $subscription_id, $invoice_number = null, $status = null ) {
 		$args = array(
-			'post_type' => self::$POST_TYPE,
+			'post_type' => self::get_post_type(),
 			'post_status' => 'any',
 			'fields' => 'ids',
 			'order' => 'DESC',

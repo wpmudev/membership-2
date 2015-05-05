@@ -617,7 +617,7 @@ class MS_Model_Upgrade extends MS_Model {
 		{
 			$args = array(
 				'post_status' => 'any',
-				'post_type' => MS_Model_Invoice::$POST_TYPE,
+				'post_type' => MS_Model_Invoice::get_post_type(),
 				'posts_per_page' => 0,
 				'nopaging' => true,
 			);
@@ -833,12 +833,12 @@ class MS_Model_Upgrade extends MS_Model {
 		 * Content is saved by classes that extend MS_Model_CustomPostType
 		 */
 		$ms_posttypes = array(
-			MS_Model_Communication::$POST_TYPE,
-			MS_Model_Event::$POST_TYPE,
-			MS_Model_Invoice::$POST_TYPE,
-			MS_Model_Membership::$POST_TYPE,
-			MS_Model_Relationship::$POST_TYPE,
-			MS_Addon_Coupon_Model::$POST_TYPE,
+			MS_Model_Communication::get_post_type(),
+			MS_Model_Event::get_post_type(),
+			MS_Model_Invoice::get_post_type(),
+			MS_Model_Membership::get_post_type(),
+			MS_Model_Relationship::get_post_type(),
+			MS_Addon_Coupon_Model::get_post_type(),
 		);
 
 		foreach ( $ms_posttypes as $type ) {
