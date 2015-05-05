@@ -779,7 +779,7 @@ class MS_Plugin {
 	 * @param  mixed $value Value of the modifier. `null` unsets the modifier.
 	 */
 	public static function set_modifier( $key, $value = null ) {
-		if ( null === $value ) {
+		if ( null === $value && isset( self::$modifiers[$key] ) ) {
 			unset( self::$modifiers[$key] );
 		} else {
 			self::$modifiers[$key];

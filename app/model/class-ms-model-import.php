@@ -378,6 +378,7 @@ class MS_Model_Import extends MS_Model {
 	 */
 	public function import_member( $obj ) {
 		$wpuser = get_user_by( 'email', $obj->email );
+		lib2()->array->equip( $obj, 'username', 'email', 'payment', 'subscriptions' );
 
 		if ( $wpuser ) {
 			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
@@ -391,7 +392,9 @@ class MS_Model_Import extends MS_Model {
 					esc_attr( $obj->username ),
 					esc_attr( $obj->email )
 				);
-				continue;
+
+				// We could not find/create the user, so don't import this item.
+				return;
 			}
 		}
 
@@ -400,6 +403,19 @@ class MS_Model_Import extends MS_Model {
 		$member->active = true;
 
 		$pay = $obj->payment;
+		if ( is_array( $pay ) ) { $pay = (object) $pay; }
+		elseif ( ! is_object( $pay ) ) { $pay = (object) array(); }
+
+		lib2()->array->equip(
+			$obj,
+			'stripe_card_exp',
+			'stripe_card_num',
+			'stripe_customer',
+			'authorize_card_exp',
+			'authorize_card_num',
+			'authorize_cim_profile',
+			'authorize_cim_payment_profile'
+		);
 
 		// Stripe.
 		$gw_stripe = MS_Gateway_Stripe::ID;
