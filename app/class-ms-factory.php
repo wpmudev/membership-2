@@ -45,19 +45,9 @@ class MS_Factory {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @var   int
+	 * @var   int[]
 	 */
-	static private $Orig_Blog_Id = 0;
-
-	/**
-	 * Used for network-wide protection to track the switch-level of
-	 * select_blog() calls.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @var   int
-	 */
-	static private $Switch_Blog_Level = 0;
+	static private $Prev_Blog_Id = array();
 
 	/**
 	 * This is only used for Unit-Testing to reset all cached singleton
@@ -629,19 +619,20 @@ class MS_Factory {
 	 *
 	 * @since  2.0.0
 	 */
-	static public function select_blog() {
+	static public function select_blog( $site_id = null ) {
 		global $wpdb;
 
 		if ( MS_Plugin::is_network_wide() ) {
-			if ( 0 === self::$Switch_Blog_Level ) {
-				self::$Orig_Blog_Id = $GLOBALS['blog_id'];
-				$GLOBALS['blog_id'] = BLOG_ID_CURRENT_SITE;
+			if ( null === $site_id ) {
+				$site_id = BLOG_ID_CURRENT_SITE;
+			}
+			self::$Prev_Blog_Id[] = $GLOBALS['blog_id'];
+
+			if ( $GLOBALS['blog_id'] != $site_id ) {
+				$GLOBALS['blog_id'] = $site_id;
 				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
 				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
 			}
-
-			// Increase the switch-level - so we can nest select_blog() calls.
-			self::$Switch_Blog_Level += 1;
 		}
 	}
 
@@ -654,15 +645,12 @@ class MS_Factory {
 		global $wpdb;
 
 		if ( MS_Plugin::is_network_wide() ) {
-			// Decrease the switch-level. Only switch back at level 0.
-			self::$Switch_Blog_Level -= 1;
+			$site_id = array_pop( self::$Prev_Blog_Id );
 
-			if ( self::$Switch_Blog_Level < 1 ) {
-				$GLOBALS['blog_id'] = self::$Orig_Blog_Id;
+			if ( $site_id != $GLOBALS['blog_id'] ) {
+				$GLOBALS['blog_id'] = $site_id;
 				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
 				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
-				self::$Orig_Blog_Id = 0;
-				self::$Switch_Blog_Level = 0;
 			}
 		}
 	}
@@ -678,8 +666,8 @@ class MS_Factory {
 	static public function current_blog_id() {
 		$blog_id = get_current_blog_id();
 
-		if ( self::$Switch_Blog_Level && self::$Orig_Blog_Id ) {
-			$blog_id = self::$Orig_Blog_Id;
+		if ( count( self::$Prev_Blog_Id ) > 0 ) {
+			$blog_id = self::$Prev_Blog_Id[0];
 		}
 
 		return $blog_id;

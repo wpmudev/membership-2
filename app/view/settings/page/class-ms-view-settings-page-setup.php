@@ -94,10 +94,11 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-setup-form">
+			<?php if ( ! MS_Plugin::is_network_wide() ) : ?>
 			<div class="ms-setup-nav">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-menu"></i>
-					<?php _e( 'Please select pages you want to appear in your Navigation:', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Please select pages you want to appear in your Navigation', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<div class="ms-description">
 					<?php
@@ -113,10 +114,71 @@ class MS_View_Settings_Page_Setup extends MS_View {
 				</div>
 				<?php echo '' . $this->show_menu_controls(); ?>
 			</div>
+			<?php else : ?>
+			<div class="ms-setup-site">
+				<div class="ms-title">
+					<i class="ms-icon dashicons dashicons-admin-network"></i>
+					<?php _e( 'Select the Site that hosts Membership2 Pages', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<div class="ms-description">
+					<?php _e( 'When you change the site new Membership2 Pages are created on the selected site. You can customize or replace these pages at any time.', MS_TEXT_DOMAIN ); ?>
+				</div>
+				<?php
+				$site_options = MS_Helper_Settings::get_blogs();
+				$site_fields = array(
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+						'id' => 'network_site',
+						'title' => __( 'Select the site that hosts the Membership2 Pages', MS_TEXT_DOMAIN ),
+						'value' => MS_Model_Pages::get_site_info( 'id' ),
+						'field_options' => $site_options,
+						'class' => 'ms-site-options',
+					),
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'name' => 'action',
+						'value' => 'network_site',
+					),
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'name' => '_wpnonce',
+						'value' => wp_create_nonce( 'network_site' ),
+					),
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+						'value' => __( 'Save', MS_TEXT_DOMAIN ),
+					),
+					array(
+						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'class' => 'ms-setup-pages-cancel',
+						'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+					),
+				);
+				?>
+				<div class="ms-setup-pages-site">
+					<div class="ms-setup-pages-site-info"><?php
+					printf(
+						__( 'Membership pages are located on site %s', MS_TEXT_DOMAIN ),
+						'<strong>' . MS_Model_Pages::get_site_info( 'title' ) . '</strong>'
+					);
+					?>
+					<a href="#change-site" class="ms-setup-pages-change-site"><?php
+					_e( 'Change site...', MS_TEXT_DOMAIN );
+					?></a></div>
+					<div class="ms-setup-pages-site-form cf" style="display:none;">
+						<?php
+						foreach ( $site_fields as $field ) {
+							MS_Helper_Html::html_element( $field );
+						}
+						?>
+					</div>
+				</div>
+			</div>
+			<?php endif; ?>
 			<div class="ms-setup-pages">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-admin-page"></i>
-					<?php _e( 'Membership2 Site Pages', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Membership2 Pages', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<div class="ms-description">
 					<?php _e( 'Set Up Membership2 Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
@@ -134,6 +196,9 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					'in-menu' => $page_types_menu,
 					'no-menu' => $page_types_rest,
 				);
+
+				$pages_site_id = MS_Model_Pages::get_site_info( 'id' );
+				MS_Factory::select_blog( $pages_site_id );
 
 				foreach ( $groups as $group_key => $group_items ) :
 					printf( '<div class="ms-pages-group %1$s">', esc_attr( $group_key ) );
@@ -174,6 +239,8 @@ class MS_View_Settings_Page_Setup extends MS_View {
 
 					echo '</div>';
 				endforeach;
+
+				MS_Factory::revert_blog();
 				?>
 			</div>
 		</div>

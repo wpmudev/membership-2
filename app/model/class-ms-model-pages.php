@@ -222,6 +222,9 @@ class MS_Model_Pages extends MS_Model_Option {
 			$Pages = array();
 			$page_types = MS_Model_Pages::get_page_types();
 
+			$site_id = self::get_setting( 'site_id' );
+			MS_Factory::select_blog( $site_id );
+
 			foreach ( $page_types as $page_type => $title ) {
 				$page_id = self::get_setting( $page_type );
 				if ( empty( $page_id ) ) { continue; }
@@ -236,6 +239,8 @@ class MS_Model_Pages extends MS_Model_Option {
 					$page_id
 				);
 			}
+
+			MS_Factory::revert_blog();
 
 			$Pages = apply_filters(
 				'ms_model_pages_get_pages',
@@ -352,6 +357,49 @@ class MS_Model_Pages extends MS_Model_Option {
 	}
 
 	/**
+	 * Returns details about the site that contains the Membership2 pages on
+	 * a network-wide protected network.
+	 *
+	 * It will always return current-site data if protection is site-wide.
+	 *
+	 * Possible keys:
+	 *   - all keys available in get_bloginfo()
+	 *
+	 * @since  2.0.0
+	 * @param  string $key The detail to return. See info for possible values.
+	 * @return string The requested detail about the site.
+	 */
+	static public function get_site_info( $key ) {
+		static $Site_Info = null;
+
+		// On first call get the site-ID and general site-details.
+		if ( null === $Site_Info ) {
+			$Site_Info = array();
+
+			if ( MS_Plugin::is_network_wide() ) {
+				$site_id = self::get_setting( 'site_id' );
+				if ( ! $site_id ) {
+					$site_id = BLOG_ID_CURRENT_SITE;
+					self::set_setting( 'site_id', $site_id );
+				}
+			} else {
+				$site_id = get_current_blog_id();
+			}
+
+			$Site_Info['id'] = $site_id;
+		}
+
+		// If a blog-specific setting was requested we lazy-load it now.
+		if ( ! isset( $Site_Info[$key] ) ) {
+			switch_to_blog( $Site_Info['id'] );
+			$Site_Info[$key] = get_bloginfo( $key );
+			restore_current_blog();
+		}
+
+		return $Site_Info[$key];
+	}
+
+	/**
 	 * Checks if the current URL is a MS Page.
 	 * If yes, then some basic information on this page are returned.
 	 *
@@ -365,34 +413,37 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( ! isset( $Res[$key] ) ) {
 			$this_page = null;
+			$site_id = MS_Model_Pages::get_site_info( 'id' );
 
-			if ( ! empty( $page_type ) ) {
-				/*
-				 * We have a page_type:
-				 * Get infos of that page!
-				 */
-				$expected_page = self::get_page( $page_type );
+			if ( $site_id == get_current_blog_id() ) {
+				if ( ! empty( $page_type ) ) {
+					/*
+					 * We have a page_type:
+					 * Get infos of that page!
+					 */
+					$expected_page = self::get_page( $page_type );
 
-				if ( $page_id == $expected_page->ID ) {
-					$this_page = $expected_page;
-				}
-			} else {
-				/*
-				 * We don't have the page_type:
-				 * Use current page_id or the specified page_id/slug!
-				 */
-				if ( empty( $page_id ) ) { $page_id = get_the_ID(); }
-				if ( empty( $page_id ) ) { $page_id = get_queried_object_id(); }
-				if ( empty( $page_id ) && did_action( 'setup_theme' ) ) {
-					$url = lib2()->net->current_url();
-					$page_id = url_to_postid( $url );
-				}
+					if ( $page_id == $expected_page->ID ) {
+						$this_page = $expected_page;
+					}
+				} else {
+					/*
+					 * We don't have the page_type:
+					 * Use current page_id or the specified page_id/slug!
+					 */
+					if ( empty( $page_id ) ) { $page_id = get_the_ID(); }
+					if ( empty( $page_id ) ) { $page_id = get_queried_object_id(); }
+					if ( empty( $page_id ) && did_action( 'setup_theme' ) ) {
+						$url = lib2()->net->current_url();
+						$page_id = url_to_postid( $url );
+					}
 
-				if ( ! empty( $page_id ) ) {
-					if ( is_numeric( $page_id ) ) {
-						$this_page = self::get_page_by( 'id', $page_id );
-					} else {
-						$this_page = self::get_page_by( 'slug', $page_id );
+					if ( ! empty( $page_id ) ) {
+						if ( is_numeric( $page_id ) ) {
+							$this_page = self::get_page_by( 'id', $page_id );
+						} else {
+							$this_page = self::get_page_by( 'slug', $page_id );
+						}
 					}
 				}
 			}
@@ -420,19 +471,23 @@ class MS_Model_Pages extends MS_Model_Option {
 		$ms_page_type = false;
 		$page = self::current_page( $page_id );
 
-		if ( empty( $page_type ) ) {
-			if ( $page ) {
-				$ms_page_type = self::get_page_type( $page->ID );
-			}
-		} else {
-			if ( empty( $page_id ) && is_page() ) {
-				$page_id = get_the_ID();
-			}
+		$site_id = MS_Model_Pages::get_site_info( 'id' );
 
-			if ( ! empty( $page_id ) ) {
-				$ms_page = self::get_page( $page_type );
-				if ( $page_id == $ms_page->id ) {
-					$ms_page_type = $page_type;
+		if ( $site_id == get_current_blog_id() ) {
+			if ( empty( $page_type ) ) {
+				if ( $page ) {
+					$ms_page_type = self::get_page_type( $page->ID );
+				}
+			} else {
+				if ( empty( $page_id ) && is_page() ) {
+					$page_id = get_the_ID();
+				}
+
+				if ( ! empty( $page_id ) ) {
+					$ms_page = self::get_page( $page_type );
+					if ( $page_id == $ms_page->id ) {
+						$ms_page_type = $page_type;
+					}
 				}
 			}
 		}
@@ -455,6 +510,9 @@ class MS_Model_Pages extends MS_Model_Option {
 	static public function get_page_url( $page_type, $ssl = null ) {
 		static $Urls = array();
 
+		$site_id = MS_Model_Pages::get_site_info( 'id' );
+		MS_Factory::select_blog( $site_id );
+
 		$page_id = self::get_page_id( $page_type );
 
 		if ( ! isset( $Urls[$page_id] ) ) {
@@ -471,6 +529,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				$page_id
 			);
 		}
+		MS_Factory::revert_blog();
 
 		return $Urls[$page_id];
 	}
@@ -612,6 +671,10 @@ class MS_Model_Pages extends MS_Model_Option {
 		$types = MS_Model_Pages::get_page_types();
 
 		$res = array();
+
+		$site_id = self::get_setting( 'site_id' );
+		MS_Factory::select_blog( $site_id );
+
 		foreach ( $types as $type => $title ) {
 			$page_id = self::get_setting( $type );
 			$status = get_post_status( $page_id );
@@ -664,6 +727,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				}
 			}
 		}
+		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_pages_create_missing_page',
@@ -686,10 +750,13 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( null === $Can_Edit_Menus ) {
 			$Can_Edit_Menus = false;
-			$menus = wp_get_nav_menus();
 
-			if ( MS_Model_Member::is_admin_user() && ! empty( $menus ) ) {
-				$Can_Edit_Menus = true;
+			if ( ! MS_Plugin::is_network_wide() ) {
+				$menus = wp_get_nav_menus();
+
+				if ( MS_Model_Member::is_admin_user() && ! empty( $menus ) ) {
+					$Can_Edit_Menus = true;
+				}
 			}
 
 			$Can_Edit_Menus = apply_filters(
@@ -713,6 +780,10 @@ class MS_Model_Pages extends MS_Model_Option {
 	 */
 	static public function create_menu( $page_type, $update_only = null, $update_type = null ) {
 		$res = false;
+
+		if ( MS_Plugin::is_network_wide() ) {
+			return $res;
+		}
 
 		if ( self::is_valid_type( $page_type ) ) {
 			if ( $update_only && empty( $update_type ) ) {
@@ -789,6 +860,10 @@ class MS_Model_Pages extends MS_Model_Option {
 	static public function drop_menu( $page_type ) {
 		$res = false;
 
+		if ( MS_Plugin::is_network_wide() ) {
+			return $res;
+		}
+
 		if ( self::is_valid_type( $page_type ) ) {
 			$ms_page = self::get_page( $page_type, true );
 			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
@@ -847,9 +922,11 @@ class MS_Model_Pages extends MS_Model_Option {
 	static public function has_menu( $page_type ) {
 		$state = false;
 
-		if ( self::is_valid_type( $page_type ) ) {
-			$state = self::get_setting( 'has_nav_' . $page_type );
-			$state = lib2()->is_true( $state );
+		if ( ! MS_Plugin::is_network_wide() ) {
+			if ( self::is_valid_type( $page_type ) ) {
+				$state = self::get_setting( 'has_nav_' . $page_type );
+				$state = lib2()->is_true( $state );
+			}
 		}
 
 		return $state;
@@ -917,6 +994,10 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @since  1.1.0
 	 */
 	static public function create_default_menu() {
+		if ( MS_Plugin::is_network_wide() ) {
+			return;
+		}
+
 		$menu_id = wp_create_nav_menu( __( 'Default Menu', MS_TEXT_DOMAIN ) );
 
 		if ( ! is_numeric( $menu_id ) || $menu_id <= 0 ) {

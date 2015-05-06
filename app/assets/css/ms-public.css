@@ -550,6 +550,36 @@ input[type="image"] {
 #wpwrap .ms-wrap div.dripped .tooltip {
   display: none;
 }
+.wpmui-wnd .ms-setup-pages-site,
+#wpwrap .ms-wrap .ms-setup-pages-site {
+  margin: 1em 0;
+  padding: 0 10px;
+}
+.wpmui-wnd .ms-setup-pages-site .ms-setup-pages-site-form,
+#wpwrap .ms-wrap .ms-setup-pages-site .ms-setup-pages-site-form {
+  margin: 1em 0;
+}
+.wpmui-wnd .ms-setup-pages-site .ms-setup-pages-site-form button,
+#wpwrap .ms-wrap .ms-setup-pages-site .ms-setup-pages-site-form button {
+  float: right;
+}
+.wpmui-wnd .ms-setup-pages-site .ms-site-options-wrapper label,
+#wpwrap .ms-wrap .ms-setup-pages-site .ms-site-options-wrapper label {
+  display: inline-block;
+  width: auto;
+  line-height: 28px;
+  margin-right: 20px;
+}
+.wpmui-wnd .ms-setup-pages-site .ms-site-options-wrapper:after,
+#wpwrap .ms-wrap .ms-setup-pages-site .ms-site-options-wrapper:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+.wpmui-wnd .ms-setup-pages-site .ms-site-options,
+#wpwrap .ms-wrap .ms-setup-pages-site .ms-site-options {
+  margin: 2px 0;
+}
 .wpmui-wnd .ms-settings-page-wrapper,
 #wpwrap .ms-wrap .ms-settings-page-wrapper {
   padding: 5px 10px;

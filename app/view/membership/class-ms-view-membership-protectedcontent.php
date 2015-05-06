@@ -147,24 +147,19 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 			return false;
 		}
 
-		$args = array(
-			'limit' => 0,
-		);
-
-		$sites = wp_get_sites( $args );
+		$sites = MS_Helper_Settings::get_blogs();
 		$site_options = array();
 		$current_blog_id = MS_Factory::current_blog_id();
 		$admin_script = 'admin.php?'. $_SERVER['QUERY_STRING'];
 
-		foreach ( $sites as $site_data ) {
-			$site_title = $site_data['path'];
-			$key = get_admin_url( $site_data['blog_id'], $admin_script );
+		foreach ( $sites as $blog_id => $title ) {
+			$key = get_admin_url( $blog_id, $admin_script );
 
-			if ( $current_blog_id == $site_data['blog_id'] ) {
+			if ( $current_blog_id == $blog_id ) {
 				$current_value = $key;
 			}
 
-			$site_options[ $key ] = $site_title;
+			$site_options[ $key ] = $title;
 		}
 
 		$site_list = array(

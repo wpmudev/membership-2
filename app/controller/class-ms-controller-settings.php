@@ -280,19 +280,6 @@ class MS_Controller_Settings extends MS_Controller {
 	}
 
 	/**
-	 * Show admin notices.
-	 *
-	 * @since 1.0.0
-	 *
-	 */
-	public function print_admin_message() {
-		add_action(
-			'admin_notices',
-			array( 'MS_Helper_Settings', 'print_admin_message' )
-		);
-	}
-
-	/**
 	 * Get available tabs for editing the membership.
 	 *
 	 * @since 1.0.0
@@ -378,11 +365,11 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since 1.0.0
 	 */
 	public function admin_settings_manager() {
-		$this->print_admin_message();
+		MS_Helper_Settings::print_admin_message();
 		$this->get_active_tab();
-
 		$msg = 0;
 		$redirect = false;
+
 		do_action( 'ms_controller_settings_admin_settings_manager_' . $this->active_tab );
 
 		if ( $this->is_admin_user()
@@ -390,20 +377,27 @@ class MS_Controller_Settings extends MS_Controller {
 		) {
 			switch ( $this->active_tab ) {
 				case 'general':
-					// Admin bar enable request.
-					$fields = array( 'action', 'setting' );
+					lib2()->array->equip_request( 'action', 'network_site' );
+					$action = $_REQUEST['action'];
 
-					if ( self::validate_required( $fields, 'GET' ) ) {
-						$msg = $this->save_general( $_GET['action'], array( $_GET['setting'] => 1 ) );
+					$redirect = esc_url_raw(
+						remove_query_arg( array( 'msg' => $msg ) )
+					);
 
-						$redirect = esc_url_raw(
-							add_query_arg(
-								'msg',
-								$msg,
-								remove_query_arg( array( 'action', '_wpnonce', 'setting' ) )
-							)
-						);
-						break;
+					// See if we change settings for the network-wide mode.
+					if ( MS_Plugin::is_network_wide() ) {
+						$new_site_id = intval( $_REQUEST['network_site'] );
+
+						if ( 'network_site' == $action && ! empty( $new_site_id ) ) {
+							$old_site_id = MS_Model_Pages::get_setting( 'site_id' );
+							if ( $old_site_id != $new_site_id ) {
+								MS_Model_Pages::set_setting( 'site_id', $new_site_id );
+								$msg = MS_Helper_Settings::SETTINGS_MSG_SITE_UPDATED;
+								$redirect = esc_url_raw(
+									add_query_arg( array( 'msg' => $msg ) )
+								);
+							}
+						}
 					}
 					break;
 
@@ -454,6 +448,8 @@ class MS_Controller_Settings extends MS_Controller {
 
 				case 'payment':
 				case 'messages-protection':
+					break;
+
 				default:
 					break;
 			}

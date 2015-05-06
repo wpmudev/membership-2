@@ -33,13 +33,14 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
 		$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
+		$action_url = esc_url_raw( remove_query_arg( array( 'msg' ) ) );
 
 		ob_start();
 
 		MS_Helper_Html::settings_tab_header();
 		?>
 
-		<form action="" method="post" class="cf">
+		<form action="<?php echo esc_url( $action_url ); ?>" method="post" class="cf">
 			<div class="cf">
 				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['plugin_enabled'] ); ?>

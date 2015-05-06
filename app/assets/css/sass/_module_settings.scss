@@ -193,6 +193,38 @@
 	}
 
 	/* Settings Page Settings */
+	.ms-setup-pages-site {
+		margin: 1em 0;
+		padding: 0 10px;
+
+		.ms-setup-pages-site-form {
+			margin: 1em 0;
+
+			button {
+				float: right;
+			}
+		}
+
+		.ms-site-options-wrapper {
+			label {
+				display: inline-block;
+				width: auto;
+				line-height: 28px;
+				margin-right: 20px;
+			}
+
+			&:after {
+				content: '';
+				display: table;
+				clear: both;
+			}
+		}
+
+		.ms-site-options {
+			margin: 2px 0;
+		}
+	}
+
 	.ms-settings-page-wrapper {
 		padding: 5px 10px;
 
