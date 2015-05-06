@@ -270,6 +270,10 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * @since  1.1.0
 	 */
 	public function simulation_infos() {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) { return false; }
+		if ( ! did_action( 'wp_print_footer_scripts' ) ) { return false; }
+
 		$data = array();
 		$data['membership_id'] = $this->membership_id;
 		$data['subscription'] = $this->_subscription;
