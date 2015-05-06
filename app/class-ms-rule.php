@@ -181,6 +181,7 @@ class MS_Rule extends MS_Model {
 	 */
 	public static function rule_factory( $rule_type, $membership_id, $subscription_id ) {
 		$rule_types = MS_Model_Rule::get_rule_type_classes();
+
 		if ( isset( $rule_types[ $rule_type ] ) ) {
 			$class = $rule_types[ $rule_type ];
 
@@ -197,6 +198,74 @@ class MS_Rule extends MS_Model {
 			$rule_type,
 			$membership_id
 		);
+	}
+
+	/**
+	 * Determines the rule-type from the specified rule-key.
+	 *
+	 * Rule key:
+	 * - For site-wide protection $rule_type is same as the $key.
+	 * - For network-wide protection the $key has format "blog_id:rule_rype".
+	 *
+	 * @since  2.0.0
+	 * @param  string $key The rule-key which may or may not include a site_id.
+	 * @return string The rule_type value extracted from the rule-key.
+	 */
+	public static function rule_type( $key ) {
+		$type = strtolower( $key );
+
+		if ( MS_Plugin::is_network_wide() ) {
+			$parts = explode( ':', $key );
+			if ( 2 == count( $parts ) ) {
+				list( $site_id, $type ) = $parts;
+			}
+		}
+
+		return $type;
+	}
+
+	/**
+	 * Builds the rule-key based on the provided rule_type. This function uses
+	 * the current blog_id to build the rule-key for network-wide mode.
+	 *
+	 * @since  2.0.0
+	 * @param  string $rule_type
+	 * @return string The rule-key (includes the site_id in network-wide mode).
+	 */
+	public static function rule_key( $rule_type ) {
+		$key = $rule_type;
+
+		if ( MS_Plugin::is_network_wide() ) {
+			$key = MS_Factory::current_blog_id() . ':' . $rule_type;
+		}
+
+		return $key;
+	}
+
+	/**
+	 * Checks if the specified rule-key defines a rule that is relevant for the
+	 * current site in the network.
+	 *
+	 * If network-wide protection is disabled this function always returns true.
+	 *
+	 * @since  2.0.0
+	 * @param  string $key
+	 * @return bool
+	 */
+	public static function is_current_site( $key ) {
+		$res = true;
+		$site_id = 0;
+
+		if ( MS_Plugin::is_network_wide() ) {
+			$parts = explode( ':', $key );
+			if ( 2 == count( $parts ) ) {
+				list( $site_id, $type ) = $parts;
+				$site_id = intval( $site_id );
+			}
+			$res = (MS_Factory::current_blog_id() == $site_id );
+		}
+
+		return $res;
 	}
 
 	/**

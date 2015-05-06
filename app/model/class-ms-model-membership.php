@@ -222,6 +222,15 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * These are protection rules for this membership only.
 	 *
+	 * Network-wide mode: The rules stored in here are the rules that apply
+	 * to the currently selected site in the network!
+	 *
+	 * Example:
+	 *   When the network has 10 sites then $rule_values will have 10 "page" rules
+	 *   which are stored as "1:page", "2:page", ...
+	 *   However, the $_rules property will only have ONE "page" rule, and that's
+	 *   the one for the currently visible site!
+	 *
 	 * @since 1.0.0
 	 * @var array MS_Rule[].
 	 */
@@ -280,16 +289,22 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return array
 	 */
 	public function __sleep() {
-		// Rule values are pre-processd before saving...
-		$rules = array();
+		/*
+		 * Rule values are pre-processd before saving...
+		 * Note: $this->_rules only contains rules for the *current* site, so
+		 * all rules that are serialized here get the current-site prefix.
+		 * Rules for the other sites are already in the $this->rule_values
+		 * array and were not de-serialized on page load.
+		 */
+		$this->rule_values = lib2()->array->get( $this->rule_values );
 		foreach ( $this->_rules as $rule_type => $rule ) {
-			#$rule = $this->get_rule( $key );
+			$key = MS_Rule::rule_key( $rule_type );
 
-			$rules[$rule_type] = $rule->serialize();
-			if ( empty( $rules[$rule_type] ) ) { unset( $rules[$rule_type] ); }
+			$this->rule_values[$key] = $rule->serialize();
+			if ( empty( $this->rule_values[$key] ) ) {
+				unset( $this->rule_values[$key] );
+			}
 		}
-
-		$this->rule_values = $rules;
 
 		return array(
 			'id',
@@ -330,6 +345,30 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Save model and move the object to the singleton cache if required.
+	 *
+	 * @since 2.0.0
+	 */
+	public function save() {
+		parent::save();
+		parent::store_singleton();
+	}
+
+	/**
+	 * After the membership was saved to DB we make sure that it is published.
+	 *
+	 * Network-wide mode: We are still in the switched blog (main site) so
+	 * there is no need to call MS_Factory::select_blog() in this function.
+	 *
+	 * @since  2.0.0
+	 */
+	public function after_save() {
+		// It is important! The Membership2 membership must be public
+		// so that the membership options are available for guest users.
+		wp_publish_post( $this->id );
+	}
+
+	/**
 	 * Merge current rules to Membership2.
 	 *
 	 * Assure the membership rules get updated whenever Membership2 is changed.
@@ -346,11 +385,21 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 
 		foreach ( $this->rule_values as $key => $values ) {
+			// Skip rules without any values.
 			if ( empty( $values ) ) { continue; }
-			$rule = $this->get_rule( $key );
+
+			// Network-wide: Only instanciate rules for the *current* site!
+			if ( ! MS_Rule::is_current_site( $key ) ) { continue; }
+
+			// Key could be "type" of "site:type" format.
+			$rule_type = MS_Rule::rule_type( $key );
+
+			// At this point we have an empty rule-instance
+			$rule = $this->get_rule( $rule_type );
+
+			// Now we populate that rule-instance with site-specific settings.
 			$rule->populate( $values );
 		}
-		$this->rule_values = array();
 
 		// validate rules using Membership2 rules
 		if ( ! $this->is_base() && $this->is_valid() ) {
@@ -565,9 +614,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get protection Rule Model.
 	 *
+	 * Note for network-wide mode:
+	 * In DB the rules for each site are stored in different objects.
+	 * When loading a membership we will always load 1 instance of each
+	 * rule_type, and this is the instance that belongs to the current site!
+	 * Instances for other sites are not accessible.
+	 * -> This is why we do not use/need a site_id or similar in this function.
+	 *
 	 * @since 1.0.0
 	 *
-	 * @param string The rule model type @see MS_Rule
+	 * @param string $rule_type The rule model type @see MS_Rule
 	 * @return MS_Rule The requested rule model.
 	 */
 	public function get_rule( $rule_type ) {
@@ -599,6 +655,30 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 
 		return $this->_rules[ $rule_type ];
+	}
+
+	/**
+	 * Set protection Rule Model.
+	 *
+	 * Note for network-wide mode:
+	 * In DB the rules for each site are stored in different objects.
+	 * When loading a membership we will always load 1 instance of each
+	 * rule_type, and this is the instance that belongs to the current site!
+	 * Instances for other sites are not accessible.
+	 * -> This is why we do not use/need a site_id or similar in this function.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string The rule model type @see MS_Rule
+	 * @param MS_Rule $rule The protection rule to set.
+	 */
+	public function set_rule( $rule_type, $rule ) {
+		$this->_rules[ $rule_type ] = apply_filters(
+			'ms_model_membership_set_rule',
+			$rule,
+			$rule_type,
+			$this
+		);
 	}
 
 	/**
@@ -637,23 +717,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function name_tag() {
 		echo $this->get_name_tag();
-	}
-
-	/**
-	 * Set protection Rule Model.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string The rule model type @see MS_Rule
-	 * @param MS_Rule $rule The protection rule to set.
-	 */
-	public function set_rule( $rule_type, $rule ) {
-		$this->_rules[ $rule_type ] = apply_filters(
-			'ms_model_membership_set_rule',
-			$rule,
-			$rule_type,
-			$this
-		);
 	}
 
 	/**
@@ -1151,6 +1214,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$membership = false;
 			global $wpdb;
 
+			MS_Factory::select_blog();
 			/*
 			 * We are using a normal SQL query instead of using the WP_Query object
 			 * here, because the WP_Query object does some strange things sometimes:
@@ -1178,6 +1242,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$sql = $wpdb->prepare( $sql, $values );
 			$item = $wpdb->get_results( $sql );
 			$base = array_shift( $item ); // Remove the base membership from the results
+			MS_Factory::revert_blog();
 
 			if ( ! empty( $base ) ) {
 				$membership = MS_Factory::load( 'MS_Model_Membership', $base->ID );
@@ -1191,15 +1256,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$membership->description = $description;
 				$membership->type = $type;
 				$membership->save();
-
-				$membership = MS_Factory::load(
-					'MS_Model_Membership',
-					$membership->id
-				);
-
-				// It is important! The Membership2 membership must be public
-				// so that the membership options are available for guest users.
-				wp_publish_post( $membership->id );
 			}
 
 			$Special_Membership[$comp_key] = apply_filters(
@@ -1229,8 +1285,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				self::TYPE_BASE
 			);
 
-			foreach ( $Base_Membership->_rules as $rule_type => $rule ) {
-				$Base_Membership->_rules[$rule_type]->is_base_rule = true;
+			foreach ( $Base_Membership->_rules as $key => $rule ) {
+				$Base_Membership->_rules[$key]->is_base_rule = true;
 			}
 
 			$Base_Membership = apply_filters(
@@ -1322,8 +1378,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		$base_rules = self::get_base()->_rules;
 
-		foreach ( $base_rules as $rule_type => $base_rule ) {
+		foreach ( $base_rules as $key => $base_rule ) {
 			try {
+				// Key could be "type" of "site:type" format.
+				$rule_type = MS_Rule::rule_type( $key );
+
 				$rule = $this->get_rule( $rule_type );
 				$rule->protect_undefined_items( $base_rule, true );
 				$this->set_rule( $rule_type, $rule );
@@ -1406,9 +1465,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$has_dripped = false;
 		$dripped = array( 'post', 'page' );
 
-		foreach ( $dripped as $type ) {
+		foreach ( $dripped as $rule_type ) {
 			// using count() as !empty() never returned true
-			if ( 0 < count( $this->get_rule( $type )->dripped ) ) {
+			if ( 0 < count( $this->get_rule( $rule_type )->dripped ) ) {
 				$has_dripped = true;
 			}
 		}

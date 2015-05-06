@@ -667,4 +667,22 @@ class MS_Factory {
 		}
 	}
 
+	/**
+	 * Returns the blog-id that was loaded by the user. This will return the
+	 * original blog-id, even when switched to a different blog by calling
+	 * self::select_blog()
+	 *
+	 * @since  2.0.0
+	 * @return int The requested blog-ID.
+	 */
+	static public function current_blog_id() {
+		$blog_id = get_current_blog_id();
+
+		if ( self::$Switch_Blog_Level && self::$Orig_Blog_Id ) {
+			$blog_id = self::$Orig_Blog_Id;
+		}
+
+		return $blog_id;
+	}
+
 }

@@ -153,7 +153,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 
 		$sites = wp_get_sites( $args );
 		$site_options = array();
-		$current_blog_id = get_current_blog_id();
+		$current_blog_id = MS_Factory::current_blog_id();
 		$admin_script = 'admin.php?'. $_SERVER['QUERY_STRING'];
 
 		foreach ( $sites as $site_data ) {
