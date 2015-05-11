@@ -97,6 +97,16 @@ class MS_View_Help extends MS_View {
 		</h2>
 		<p>
 			<?php _ex( 'Thank you for using Membership2!', 'help', MS_TEXT_DOMAIN ); ?>
+			<br />
+			<?php
+			if ( is_multisite() ) {
+				if ( MS_Plugin::is_network_wide() ) {
+					_ex( 'Your Protection mode is <strong>network-wide</strong>', 'help', MS_TEXT_DOMAIN );
+				} else {
+					_ex( 'Your Protection mode is <strong>site-wide</strong>', 'help', MS_TEXT_DOMAIN );
+				}
+			}
+			?>
 		</p>
 		<?php MS_Helper_Html::html_separator(); ?>
 		<h2>
@@ -114,15 +124,15 @@ class MS_View_Help extends MS_View {
 			</tr>
 			<tr class="alternate">
 				<td><span><?php _e( 'Memberships', MS_TEXT_DOMAIN ); ?></span></td>
-				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for. Here you can grant access to previously Membership2 (<em>see "Membership2" below</em>)', 'help', MS_TEXT_DOMAIN ); ?></td>
+				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
-				<td><span><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
-				<td><?php _ex( 'Lists all your WordPress users and allows you to manage their Memberships', 'help', MS_TEXT_DOMAIN ); ?></td>
+				<td><span><?php _e( 'Protected Content', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Set the protection options, i.e. which pages are protected by which membership', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr class="alternate">
-				<td><span><?php _e( 'Membership2', MS_TEXT_DOMAIN ); ?></span></td>
-				<td><?php _ex( 'Set the global protection options, i.e. which pages are protected', 'help', MS_TEXT_DOMAIN ); ?></td>
+				<td><span><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Lists all your WordPress users and allows you to manage their Memberships', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
 				<td><span><?php _e( 'Billing', MS_TEXT_DOMAIN ); ?></span></td>
