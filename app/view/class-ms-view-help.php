@@ -1483,6 +1483,17 @@ class MS_View_Help extends MS_View {
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_LOCK_SUBSCRIPTIONS", true );</code> to disable automatic status-checks of subscriptions. Registration is still possible, but after this the Subscription status will not change anymore. Effectively Subscriptions will not expire anymore.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
 		<hr />
+		<p>
+			<strong><?php _ex( 'Developer Docs', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php
+			printf(
+				__( 'Membership2 comes with an easy to use API module that makes it simple to integrate it in other plugins. %sAPI documentation%s', 'help', MS_TEXT_DOMAIN ),
+				'<a href="' . MS_Plugin::instance()->url . 'docs/classes/MS_Controller_Api.html" target="_blank">',
+				'</a>'
+			);
+			?>
+		</p>
+		<hr />
 		<?php
 		return ob_get_clean();
 	}
