@@ -273,6 +273,12 @@ module.exports = function( grunt ) {
 				src: [ '**/*' ],
 				dest: paths.plugin_dir
 			}
+		},
+
+		exec: {
+			phpdoc: {
+				command: 'phpdoc -f ./app/controller/class-ms-controller-api.php -t ./docs --template="clean,checkstyle"'
+			}
 		}
 
 	} );
@@ -282,15 +288,14 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
-
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-autoprefixer');
-
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-phpunit');
+	grunt.loadNpmTasks('grunt-exec');
 
 	grunt.registerTask( 'release_notes', 'Show release notes', function() {
 		grunt.log.subhead( 'Release notes' );
@@ -310,6 +315,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'] );
 	grunt.registerTask( 'build', ['phpunit', 'default', 'clean', 'copy', 'compress', 'release_notes'] );
 	grunt.registerTask( 'test', ['phpunit', 'jshint'] );
+	grunt.registerTask( 'docs', ['exec:phpdoc'] );
 
 	grunt.util.linefeed = '\n';
 };

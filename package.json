@@ -43,7 +43,8 @@
     "grunt-contrib-sass": "~0.4.0",
     "grunt-phpunit": "~0.3.5",
     "grunt-contrib-compass": "~0.6.0",
-    "grunt-autoprefixer": "~0.7.2"
+    "grunt-autoprefixer": "~0.7.2",
+    "grunt-exec": "~0.4.6"
   },
   "keywords": []
 }
