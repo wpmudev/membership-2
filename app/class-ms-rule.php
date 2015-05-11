@@ -236,7 +236,14 @@ class MS_Rule extends MS_Model {
 		$key = $rule_type;
 
 		if ( MS_Plugin::is_network_wide() ) {
-			$key = MS_Factory::current_blog_id() . ':' . $rule_type;
+			$network_global_rules = array(
+				MS_Rule_Url::RULE_ID,
+			);
+
+			// Some rules are network-global and get no site_id prefix.
+			if ( ! in_array( $rule_type, $network_global_rules ) ) {
+				$key = MS_Factory::current_blog_id() . ':' . $rule_type;
+			}
 		}
 
 		return $key;
@@ -258,11 +265,13 @@ class MS_Rule extends MS_Model {
 
 		if ( MS_Plugin::is_network_wide() ) {
 			$parts = explode( ':', $key );
+
+			// Some rules have no site_id prefix (like URL rules)
 			if ( 2 == count( $parts ) ) {
 				list( $site_id, $type ) = $parts;
 				$site_id = intval( $site_id );
+				$res = (MS_Factory::current_blog_id() == $site_id );
 			}
-			$res = (MS_Factory::current_blog_id() == $site_id );
 		}
 
 		return $res;
