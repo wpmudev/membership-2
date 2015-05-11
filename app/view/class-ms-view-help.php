@@ -1424,6 +1424,29 @@ class MS_View_Help extends MS_View {
 	}
 
 	/**
+	 * Renders the Network-Wide Protection help contents
+	 *
+	 * @since  2.0.0
+	 * @return string
+	 */
+	public function render_tab_network() {
+		ob_start();
+		?>
+		<h2><?php _ex( 'Network-Wide Protection', 'help', MS_TEXT_DOMAIN ); ?></h2>
+		<p>
+			<strong><?php _ex( 'Enable Network-Wide mode', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'In wp-config.php add the line <code>define( "MS_PROTECT_NETWORK", true );</code> to enable network wide protection. Important: Settings for Network-Wide mode are stored differently than normal (site-wide) settings. After switching to network wide mode the first time you have to set up the plugin again.<br />Note: The plugin will automatically enable itself network wide, you only need to add the option above.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Disable Network-Wide mode', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'Simply remove the line <code>define( "MS_PROTECT_NETWORK", true );</code> from wp-config.php to switch back to site-wide protection. All your previous Memberships will still be there (if you created site-wide memberships before enabling network-wide mode)<br />Note: After this change the plugin will still be enabled network wide, you have to go to Network Admin > Plugins and disable it if you only want to protect certain sites in your network.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<hr />
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
 	 * Renders the Advanced settings help contents
 	 *
 	 * @since  1.1.0.5

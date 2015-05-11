@@ -87,10 +87,17 @@ class MS_Controller_Help extends MS_Controller {
 			'shortcodes' => array(
 				'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
 			),
+			'network' => array(
+				'title' => __( 'Network-Wide Protection', MS_TEXT_DOMAIN ),
+			),
 			'advanced' => array(
 				'title' => __( 'Advanced Settings', MS_TEXT_DOMAIN ),
 			),
 		);
+
+		if ( ! is_multisite() ) {
+			unset( $tabs['network'] );
+		}
 
 		lib2()->array->equip_get( 'page' );
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-help';
