@@ -28,6 +28,26 @@
 /**
  * Exposes the public API.
  *
+ * This class adds the WordPress filter `ms_active` to check if the plugin is
+ * enabled and loaded. As long as this filter returns `false` the API cannot
+ * be used:
+ *
+ *     // Check if the API object is available.
+ *     if ( apply_filters( 'ms_active' ) ) { ... }
+ *
+ * To access the API object use the property `MS_Plugin::$api`.
+ * Note: Before `ms_active` is called `MS_Plugin::$api` will return false.
+ *
+ *     // Same as above.
+ *     if ( MS_Plugin::$api ) { ... }
+ *
+ * You can also use the WordPress action `ms_init` to run some code as soon as
+ * the API becomes available:
+ *
+ *     // Run some code as early as possible.
+ *     add_action( 'ms_init', 'my_api_hook' );
+ *     function my_api_hook( $api ) { ... }
+ *
  * @since 2.0.0
  *
  * @package Membership2
@@ -38,7 +58,7 @@ class MS_Controller_Api extends MS_Controller {
 	/**
 	 * Construct Settings manager.
 	 *
-	 * @since 1.0.4.5
+	 * @since 2.0.0
 	 * @internal
 	 */
 	public function __construct() {
@@ -47,7 +67,6 @@ class MS_Controller_Api extends MS_Controller {
 		/**
 		 * Simple check to allow other plugins to quickly find out if
 		 * Membership2 is loaded and the API was initialized.
-		 *
 		 *
 		 * Example:
 		 *   if ( apply_filters( 'ms_active' ) ) { ... }
@@ -68,11 +87,11 @@ class MS_Controller_Api extends MS_Controller {
 	/**
 	 * Returns either the current member or the member with the specified id.
 	 *
-	 * If the specified user does not exist then false is returned
+	 * If the specified user does not exist then false is returned.
 	 *
-	 * Useful functions of the Member object:
-	 * $member->has_membership( $membership_id )
-	 * $member->get_subscription( $membership_id )
+	 *     // Useful functions of the Member object:
+	 *     $member->has_membership( $membership_id )
+	 *     $member->get_subscription( $membership_id )
 	 *
 	 * @since  2.0.0
 	 * @api
@@ -94,20 +113,13 @@ class MS_Controller_Api extends MS_Controller {
 	/**
 	 * Returns the Member object of the current user.
 	 *
-	 * If the current user is not logged in or if not a member then false is
-	 * returned.
-	 *
 	 * @since  2.0.0
 	 * @api
 	 *
-	 * @return MS_Model_Member|false The Member model.
+	 * @return MS_Model_Member The Member model.
 	 */
-	public function current_member() {
+	public function get_current_member() {
 		$member = MS_Model_Member::get_current_member();
-
-		if ( ! $member->is_valid() ) {
-			$member = false;
-		}
 
 		return $member;
 	}
@@ -127,8 +139,10 @@ class MS_Controller_Api extends MS_Controller {
 	}
 
 	/**
-	 * Returns a single subscription object of the specified user. If the user
-	 * did not subscribe to the given membership then false is returned.
+	 * Returns a single subscription object of the specified user.
+	 *
+	 * If the user did not subscribe to the given membership then false is
+	 * returned.
 	 *
 	 * @since  2.0.0
 	 * @api
@@ -150,20 +164,30 @@ class MS_Controller_Api extends MS_Controller {
 
 	/**
 	 * Returns a list of all available Memberships.
-	 * Note that special/internal Memberships such as the Guest-Membership
-	 * are not included in the list.
 	 *
 	 * @since  2.0.0
 	 * @api
 	 *
+	 * @param  bool $list_all If set to true then also private and internal
+	 *         Memberships (e.g. Guest Membership) are included.
+	 *         Default is false which returns only memberships that a guest user
+	 *         can subscribe to.
 	 * @return MS_Model_Membership[] List of all available Memberships.
 	 */
-	public function list_memberships() {
+	public function list_memberships( $list_all = false ) {
 		$args = array(
 			'include_base' => false,
-			'include_guest' => false,
+			'include_guest' => true,
 		);
 		$list = MS_Model_Membership::get_memberships( $args );
+
+		if ( ! $list_all ) {
+			foreach ( $list as $key => $item ) {
+				if ( ! $item->active ) { unset( $list[$key] ); }
+				elseif ( $item->private ) { unset( $list[$key] ); }
+			}
+		}
+
 		return $list;
 	}
 
@@ -175,9 +199,9 @@ class MS_Controller_Api extends MS_Controller {
 	 * Also note that all membership objects come with the built-in debug
 	 * function `$obj->dump()` to quickly analyze the object.
 	 *
-	 * For example try this:
-	 *   $user = MS_Plugin::$api->get_member();
-	 *   $user->dump();
+	 *     // Example of $obj->dump() usage
+	 *     $user = MS_Plugin::$api->current_member();
+	 *     $user->dump();
 	 *
 	 * @since  2.0.0
 	 * @api
