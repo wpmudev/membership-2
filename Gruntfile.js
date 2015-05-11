@@ -277,7 +277,7 @@ module.exports = function( grunt ) {
 
 		exec: {
 			phpdoc: {
-				command: 'phpdoc -f ./app/controller/class-ms-controller-api.php -t ./docs --template="clean,checkstyle"'
+				command: 'phpdoc -f ./app/controller/class-ms-controller-api.php -t ./docs'
 			}
 		}
 
