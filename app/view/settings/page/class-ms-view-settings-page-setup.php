@@ -216,7 +216,11 @@ class MS_View_Settings_Page_Setup extends MS_View {
 										'url' => '',
 										'value' => __( 'View Page', MS_TEXT_DOMAIN ),
 										'target' => '_blank',
-										'data_ms' => array( 'base' => home_url( 'index.php?page_id=' ) ),
+										'data_ms' => array(
+											'base' => get_home_url(
+												$pages_site_id, 'index.php?page_id='
+											)
+										),
 									)
 								);
 								?>
@@ -228,7 +232,11 @@ class MS_View_Settings_Page_Setup extends MS_View {
 										'url' => '',
 										'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
 										'target' => '_blank',
-										'data_ms' => array( 'base' => admin_url( 'post.php?action=edit&post=' ) ),
+										'data_ms' => array(
+											'base' => get_admin_url(
+												$pages_site_id, 'post.php?action=edit&post='
+											)
+										),
 									)
 								);
 								?>

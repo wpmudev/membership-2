@@ -197,7 +197,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		static $Res = array();
 
 		if ( ! isset( $Res[$type] ) ) {
-			$Res[$type] = array_key_exists( $type, MS_Model_Pages::get_page_types() );
+			$Res[$type] = array_key_exists( $type, self::get_page_types() );
 
 			$Res[$type] = apply_filters(
 				'ms_model_pages_is_valid_type',
@@ -220,7 +220,7 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( null === $Pages ) {
 			$Pages = array();
-			$page_types = MS_Model_Pages::get_page_types();
+			$page_types = self::get_page_types();
 
 			$site_id = self::get_setting( 'site_id' );
 			MS_Factory::select_blog( $site_id );
@@ -413,7 +413,7 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( ! isset( $Res[$key] ) ) {
 			$this_page = null;
-			$site_id = MS_Model_Pages::get_site_info( 'id' );
+			$site_id = self::get_site_info( 'id' );
 
 			if ( $site_id == get_current_blog_id() ) {
 				if ( ! empty( $page_type ) ) {
@@ -471,7 +471,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		$ms_page_type = false;
 		$page = self::current_page( $page_id );
 
-		$site_id = MS_Model_Pages::get_site_info( 'id' );
+		$site_id = self::get_site_info( 'id' );
 
 		if ( $site_id == get_current_blog_id() ) {
 			if ( empty( $page_type ) ) {
@@ -510,15 +510,13 @@ class MS_Model_Pages extends MS_Model_Option {
 	static public function get_page_url( $page_type, $ssl = null ) {
 		static $Urls = array();
 
-		$site_id = MS_Model_Pages::get_site_info( 'id' );
-		MS_Factory::select_blog( $site_id );
-
+		$site_id = self::get_site_info( 'id' );
 		$page_id = self::get_page_id( $page_type );
 
 		if ( ! isset( $Urls[$page_id] ) ) {
-			$url = get_permalink( $page_id );
-			if ( null === $ssl ) { $ssl = is_ssl(); }
+			$url = get_blog_permalink( $site_id, $page_id );
 
+			if ( null === $ssl ) { $ssl = is_ssl(); }
 			if ( $ssl ) {
 				$url = MS_Helper_Utility::get_ssl_url( $url );
 			}
@@ -529,7 +527,6 @@ class MS_Model_Pages extends MS_Model_Option {
 				$page_id
 			);
 		}
-		MS_Factory::revert_blog();
 
 		return $Urls[$page_id];
 	}
@@ -668,7 +665,7 @@ class MS_Model_Pages extends MS_Model_Option {
 		$user_id = get_current_user_id();
 		if ( empty( $user_id ) ) { return $res; }
 
-		$types = MS_Model_Pages::get_page_types();
+		$types = self::get_page_types();
 
 		$res = array();
 
