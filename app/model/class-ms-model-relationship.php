@@ -1746,11 +1746,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 		}
 
-		// Fallback to "Expired" status
-		if ( empty( $calc_status ) ) {
-			$calc_status = self::STATUS_EXPIRED;
-		}
-
 		return apply_filters(
 			'membership_model_relationship_calculate_status',
 			$calc_status,
