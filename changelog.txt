@@ -4,6 +4,12 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.6
+----------------------------------------------------------------------
+- Improve shortcode logic to not show duplicate login forms in rare, theme-specific cases
+- Fix a rare error 'float expected but string found' in billings module
+- Fix minor issue with wrong filter parameter 
+
 1.1.1.5
 ----------------------------------------------------------------------
 - Add "autofocus" attribute to login shortcode
