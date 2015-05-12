@@ -6,6 +6,7 @@ Change Log:
 
 1.1.1.6
 ----------------------------------------------------------------------
+- Add wp-config option MS_NO_SHORTCODE_PREVIEW (details on the Help > Advanced Settings page)
 - Improve shortcode logic to not show duplicate login forms in rare, theme-specific cases
 - Fix bug that caused missing expiration date for admin-assigned memberships
 - Fix a rare error 'float expected but string found' in billings module
