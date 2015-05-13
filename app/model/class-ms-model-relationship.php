@@ -321,6 +321,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Always update these fields.
 		$subscription->move_from_id = $move_from_id;
 		$subscription->gateway_id = $gateway_id;
+		$subscription->expire_date = '';
 
 		// Set initial state.
 		switch ( $subscription->status ) {
@@ -349,23 +350,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 		}
 
-		$subscription->config_period(); // Needed to initialize start/expire.
-
+		// Set the start/expire dates. Do this *after* the set_status() call!
+		$subscription->config_period();
 		$membership = $subscription->get_membership();
+
 		if ( 'admin' == $gateway_id || $membership->is_free() ) {
+			$subscription->trial_period_completed = true;
 			$subscription->status = self::STATUS_ACTIVE;
 
-			if ( ! $subscription->is_system() && ! $is_simulated ) {
-				$subscription->save();
+			// Set the start/expire dates. Do this *after* the set_status() call!
+			$subscription->config_period();
 
+			if ( ! $subscription->is_system() && ! $is_simulated ) {
 				// Create event.
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $subscription );
 			}
-		} else {
-			// Force status calculation.
-			$subscription->get_status();
-			$subscription->save();
 		}
+
+		$subscription->save();
 
 		return $subscription;
 	}
@@ -1078,7 +1080,20 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
 			case self::STATUS_ACTIVE:
-				// Nothing else done. Expire date is changed by add_payment.
+				/*
+				 * If no expire date is set yet then add it now.
+				 * This case happens when the subscription was added via the
+				 * Members admin page (by an admin and not by the member)
+				 *
+				 * Usually nothing is done here as the expire date is only
+				 * changed by add_payment().
+				 */
+				if ( empty( $this->expire_date ) ) {
+					$membership = $this->get_membership();
+					if ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT != $membership->payment_type ) {
+						$this->set_expire_date();
+					}
+				}
 				break;
 
 			case self::STATUS_TRIAL:
@@ -1744,11 +1759,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				// Wait until the expiration date is reached...
 				$calc_status = self::STATUS_CANCELED;
 			}
-		}
-
-		// Fallback to "Expired" status
-		if ( empty( $calc_status ) ) {
-			$calc_status = self::STATUS_EXPIRED;
 		}
 
 		return apply_filters(

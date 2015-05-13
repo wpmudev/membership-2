@@ -113,6 +113,14 @@ class TData {
 				'trial_period_enabled' => true,
 				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
 			),
+			'limited' => array(
+				'name' => 'Limited Membership',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_FINITE,
+				'price' => 19,
+				'rule_values' => array(),
+				'period' => array( 'period_unit' => 28, 'period_type' => 'days' ),
+			),
 			'limited-trial' => array(
 				'name' => 'Limited Membership with Trial',
 				'type' => MS_Model_Membership::TYPE_STANDARD,
@@ -134,6 +142,15 @@ class TData {
 				'trial_period_enabled' => true,
 				// Note: Trial is longer than the access period:
 				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
+			),
+			'free-limited' => array(
+				'name' => 'Free Limited Membership',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_FINITE,
+				'is_free' => true,
+				'price' => 0,
+				'rule_values' => array(),
+				'period' => array( 'period_unit' => 28, 'period_type' => 'days' ),
 			),
 		);
 		foreach ( $memberships as $key => $data ) {
@@ -184,7 +201,7 @@ class TData {
 	 * @since  1.0.0
 	 * @return MS_Model_Relationship
 	 */
-	public static function subscribe( $user_key, $membership_key ) {
+	public static function subscribe( $user_key, $membership_key, $gateway_id = '' ) {
 		if ( ! is_numeric( $user_key ) ) {
 			$user_key = self::id( 'user', $user_key );
 		}
@@ -195,7 +212,7 @@ class TData {
 		$subscription = MS_Model_Relationship::create_ms_relationship(
 			$membership_key,
 			$user_key,
-			'',
+			$gateway_id,
 			0
 		);
 

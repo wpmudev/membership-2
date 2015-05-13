@@ -72,7 +72,7 @@ class MS_Helper_Billing extends MS_Helper {
 	 * @return numeric
 	 */
 	static public function format_price( $price ) {
-		$formatted = number_format( $price, 2, '.', '' );
+		$formatted = number_format( (float) $price, 2, '.', '' );
 
 		return apply_filters(
 			'ms_format_price',
