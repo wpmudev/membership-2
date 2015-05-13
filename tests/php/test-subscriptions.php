@@ -520,4 +520,44 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status );
 	}
 
+	/**
+	 * Test activation of admin-assigned memberships.
+	 * @test
+	 */
+	function admin_subscriptions() {
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'limited' );
+		$subscription = TData::subscribe( $user_id, $membership_id, 'admin' );
+
+		// Because the 'admin' gateway was used to create the subscription we
+		// should have an active subscription with correct expire data already.
+
+		$start_date = MS_Helper_Period::current_date();
+		$limit_end = MS_Helper_Period::add_interval( 28, 'days', $start_date );
+
+		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status, 'Active status' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( $limit_end, $subscription->expire_date );
+	}
+
+	/**
+	 * Test activation of free memberships.
+	 * @test
+	 */
+	function free_subscriptions() {
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'free-limited' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Because the membership is free we should have an active subscription
+		// with correct expire data already.
+
+		$start_date = MS_Helper_Period::current_date();
+		$limit_end = MS_Helper_Period::add_interval( 28, 'days', $start_date );
+
+		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status, 'Active status' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( $limit_end, $subscription->expire_date );
+	}
+
 }

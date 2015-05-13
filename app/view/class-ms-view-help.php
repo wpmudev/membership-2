@@ -1482,6 +1482,10 @@ class MS_View_Help extends MS_View {
 			<strong><?php _ex( 'Lock Subscription Status', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_LOCK_SUBSCRIPTIONS", true );</code> to disable automatic status-checks of subscriptions. Registration is still possible, but after this the Subscription status will not change anymore. Effectively Subscriptions will not expire anymore.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
+		<p>
+			<strong><?php _ex( 'No Admin Shortcode Preview', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'By default the user will see additional information on the page when using the shortcode <code>[ms-protect-content]</code>. To disable this additional output add the line <code>define( "MS_NO_SHORTCODE_PREVIEW", true );</code> in wp-config.php.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
 		<hr />
 		<p>
 			<strong><?php _ex( 'Developer Docs', 'help', MS_TEXT_DOMAIN ); ?></strong><br />

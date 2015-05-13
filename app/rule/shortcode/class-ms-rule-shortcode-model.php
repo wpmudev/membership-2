@@ -260,6 +260,16 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 * @return string The shortcode output
 	 */
 	public function debug_protect_content_shortcode( $atts, $content = '' ) {
+		$do_debug = true;
+
+		/**
+		 * This wp-config setting defines the default state of the shortcode
+		 * debugging flag.
+		 */
+		if ( defined( 'MS_NO_SHORTCODE_PREVIEW' ) && MS_NO_SHORTCODE_PREVIEW ) {
+			$do_debug = false;
+		}
+
 		/**
 		 * Use this filter to disable the protected-content debugging
 		 * information for admin users.
@@ -267,7 +277,9 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		 */
 		$do_debug = apply_filters(
 			'ms_model_shortcode_debug_protected_content',
-			true
+			$do_debug,
+			$atts,
+			$content
 		);
 
 		if ( ! $do_debug ) {

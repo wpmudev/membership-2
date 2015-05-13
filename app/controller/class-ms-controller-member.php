@@ -191,6 +191,9 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Handle Ajax change-memberships action.
 	 *
+	 * This action handler is only called by admin users via the Members admin
+	 * page, so all memberships added here have gateway_id 'admin'.
+	 *
 	 * Related Action Hooks:
 	 * - wp_ajax_change_memberships
 	 *
@@ -251,7 +254,6 @@ class MS_Controller_Member extends MS_Controller {
 		// Add new memberships
 		foreach ( $memberships as $membership_id ) {
 			$subscription = $member->add_membership( $membership_id );
-
 		}
 
 		if ( $member->has_membership() ) {

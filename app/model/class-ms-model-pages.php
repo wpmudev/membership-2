@@ -524,7 +524,8 @@ class MS_Model_Pages extends MS_Model_Option {
 			$Urls[$page_id] = apply_filters(
 				'ms_model_pages_get_ms_page_url',
 				$url,
-				$page_id
+				$page_type,
+				$ssl
 			);
 		}
 
