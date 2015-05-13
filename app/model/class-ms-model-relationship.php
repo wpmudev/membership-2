@@ -350,23 +350,22 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 		}
 
+		// Set the start/expire dates. Do this *after* the set_status() call!
+		$subscription->config_period();
 		$membership = $subscription->get_membership();
+
 		if ( 'admin' == $gateway_id || $membership->is_free() ) {
-			$subscription->set_status( self::STATUS_ACTIVE );
+			$subscription->trial_period_completed = true;
+			$subscription->status = self::STATUS_ACTIVE;
+
+			// Set the start/expire dates. Do this *after* the set_status() call!
+			$subscription->config_period();
 
 			if ( ! $subscription->is_system() && ! $is_simulated ) {
-				$subscription->save();
-
 				// Create event.
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $subscription );
 			}
 		}
-
-		// Force status calculation.
-		$subscription->set_status( $subscription->status );
-
-		// Set the start/expire dates. Do this *after* the set_status() call!
-		$subscription->config_period();
 
 		$subscription->save();
 
