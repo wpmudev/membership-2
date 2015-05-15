@@ -106,12 +106,12 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">0</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">10</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="../reports/markers.html">
-                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
                                 </a>
                             </li>
                             <li>
@@ -136,15 +136,18 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-208463918"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-316250070"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-208463918" class="accordion-body collapse in">
+            <div id="namespace-316250070" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
                     <ul>
                                                                                                     <li class="class"><a href="../classes/MS_Controller_Api.html">MS_Controller_Api</a></li>
+                                                    <li class="class"><a href="../classes/MS_Model_Member.html">MS_Model_Member</a></li>
+                                                    <li class="class"><a href="../classes/MS_Model_Membership.html">MS_Model_Membership</a></li>
+                                                    <li class="class"><a href="../classes/MS_Model_Relationship.html">MS_Model_Relationship</a></li>
                                             </ul>
                 </div>
             </div>
@@ -164,20 +167,52 @@
 
                     <h1><small>\</small>MS_Controller_Api</h1>
                     <p><em>Exposes the public API.</em></p>
-                    <p>This class adds the WordPress filter <code>ms_active</code> to check if the plugin is
+                    <p>The simplest way to use the API is via an WordPress action <code>ms_init</code> that
+runs some code as soon as the API becomes available:</p>
+<pre><code>// Run some code as early as possible.
+add_action( 'ms_init', 'my_api_hook' );
+function my_api_hook( $api ) {
+    $memberships = $api-&gt;list_memberships();
+}</code></pre>
+<p><strong>Recommended implementation structure</strong></p>
+<pre><code>class My_Membership2_Implementation {
+    protected $api = null;
+
+    // Function is always executed. Will create 1 Implementation object.
+    static public function setup() {
+        static $Inst = null;
+        if ( null === $Inst ) {
+            $Inst = new My_Membership2_Implementation();
+        }
+    }
+
+    // Function set up the api hook.
+    private function __construct() {
+        add_action( 'ms_init', array( $this, 'init' ) );
+    }
+
+    // Function is only run when Membership2 is present + active.
+    public function init( $api ) {
+        $this-&gt;api = $api;
+        // The main init code should come here now!
+    }
+
+    // Add other event handlers and helper functions.
+    // You can use $this-&gt;api in other functions to access the API object.
+}
+My_Membership2_Implementation::setup();</code></pre>
+<hr />
+<p>We also add the WordPress filter <code>ms_active</code> to check if the plugin is
 enabled and loaded. As long as this filter returns <code>false</code> the API cannot
 be used:</p>
 <pre><code>// Check if the API object is available.
 if ( apply_filters( 'ms_active' ) ) { ... }</code></pre>
-<p>To access the API object use the property <code>MS_Plugin::$api</code>.
-Note: Before <code>ms_active</code> is called <code>MS_Plugin::$api</code> will return false.</p>
+<p>To directly access the API object use the property <code>MS_Plugin::$api</code>.
+Note: Before <code>ms_active</code> is called <code>MS_Plugin::$api</code> will return false.
+This should only be used in rare cases when you know that the API is
+available; it's better to use the action <code>ms_init</code> for API access.</p>
 <pre><code>// Same as above.
 if ( MS_Plugin::$api ) { ... }</code></pre>
-<p>You can also use the WordPress action <code>ms_init</code> to run some code as soon as
-the API becomes available:</p>
-<pre><code>// Run some code as early as possible.
-add_action( 'ms_init', 'my_api_hook' );
-function my_api_hook( $api ) { ... }</code></pre>
                     
                                         
                     <section id="summary">
@@ -238,7 +273,7 @@ function my_api_hook( $api ) { ... }</code></pre>
                     
                     <dl>
                         <dt>File</dt>
-                            <dd><a href="../files/class-ms-controller-api.html"><div class="path-wrapper">class-ms-controller-api.php</div></a></dd>
+                            <dd><a href="../files/controller.class-ms-controller-api.html"><div class="path-wrapper">controller/class-ms-controller-api.php</div></a></dd>
                                                 <dt>Package</dt>
                             <dd><div class="namespace-wrapper">Membership2\Controller</div></dd>
                                                 <dt>Class hierarchy</dt>
@@ -299,7 +334,7 @@ $member-&gt;get_subscription( $membership_id )</code></pre>
                 
                 
                                     <h4>Returns</h4>
-                    \MS_Model_Member|false
+                    <a href="../classes/MS_Model_Member.html">\MS_Model_Member</a>|false
                                             &mdash; <p>The Member model.</p>
                                     				
                             </article>
@@ -343,7 +378,7 @@ $member-&gt;get_subscription( $membership_id )</code></pre>
                 
                 
                                     <h4>Returns</h4>
-                    \MS_Model_Member
+                    <a href="../classes/MS_Model_Member.html">\MS_Model_Member</a>
                                             &mdash; <p>The Member model.</p>
                                     				
                             </article>
@@ -382,7 +417,15 @@ $member-&gt;get_subscription( $membership_id )</code></pre>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">get_membership(integer  <span class="argument">$membership_id</span>) : \MS_Model_Membership</pre>
                 <p><em>Returns a single membership object.</em></p>
-                
+                <p>Other plugins can store and accuess custom settings for each membership:</p>
+<pre><code>// Create a custom value in the membership
+$membership-&gt;set_custom_data( 'the_key', 'the_value' );
+$membership-&gt;save(); // Custom data is now saved to database.
+
+// Access and delete the custom value
+$value = $membership-&gt;get_custom_data( 'the_key' );
+$membership-&gt;delete_custom_data( 'the_key' );
+$membership-&gt;save(); // Custom data is now deleted from database.</code></pre>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -395,7 +438,7 @@ $member-&gt;get_subscription( $membership_id )</code></pre>
                 
                 
                                     <h4>Returns</h4>
-                    \MS_Model_Membership
+                    <a href="../classes/MS_Model_Membership.html">\MS_Model_Membership</a>
                                             &mdash; <p>The membership object.</p>
                                     				
                             </article>
@@ -436,6 +479,8 @@ $member-&gt;get_subscription( $membership_id )</code></pre>
                 <p><em>Returns a single subscription object of the specified user.</em></p>
                 <p>If the user did not subscribe to the given membership then false is
 returned.</p>
+<p>Each subscription also offers custom data fields
+(see the details in get_membership() for details)</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -453,7 +498,7 @@ returned.</p>
                 
                 
                                     <h4>Returns</h4>
-                    \MS_Model_Relationship|false
+                    <a href="../classes/MS_Model_Relationship.html">\MS_Model_Relationship</a>|false
                                             &mdash; <p>The subscription object.</p>
                                     				
                             </article>
@@ -508,7 +553,7 @@ can subscribe to.</p></td>
                 
                 
                                     <h4>Returns</h4>
-                    array&lt;mixed,\MS_Model_Membership&gt;
+                    array&lt;mixed,<a href="../classes/MS_Model_Membership.html">\MS_Model_Membership</a>&gt;
                                             &mdash; <p>List of all available Memberships.</p>
                                     				
                             </article>
@@ -603,7 +648,7 @@ $user-&gt;dump();</code></pre>
             <h3 id="source-view-label">class-ms-controller-api.php</h3>
         </div>
         <div class="modal-body">
-            <pre data-src="../files/class-ms-controller-api.php.txt" class="language-php line-numbers"></pre>
+            <pre data-src="../files/controller/class-ms-controller-api.php.txt" class="language-php line-numbers"></pre>
         </div>
     </div>
 
@@ -643,7 +688,7 @@ $user-&gt;dump();</code></pre>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on May 11th, 2015 at 17:54.
+                    on May 15th, 2015 at 16:49.
                 </section>
             </section>
         </section>

@@ -1,52 +1,61 @@
 <?php
 /**
- * This file defines the MS_Controller_Api class.
- *
- * The API class exposes the official public API of the Membership2 plugin.
- */
-
-/*
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- */
-
-/**
  * Exposes the public API.
  *
- * This class adds the WordPress filter `ms_active` to check if the plugin is
+ * The recommended way to use the API is via an WordPress action `ms_init` to
+ * run some code as soon as the API becomes available:
+ *
+ *     // Run some code as early as possible.
+ *     add_action( 'ms_init', 'my_api_hook' );
+ *     function my_api_hook( $api ) {
+ *         $memberships = $api->list_memberships();
+ *     }
+ *
+ * Recommended implementation structure:
+ *
+ *     class My_Membership2_Implementation {
+ *         protected $api = null;
+ *
+ *         // Function is always executed. Will create 1 Implementation object.
+ *         static public function setup() {
+ *             static $Inst = null;
+ *             if ( null === $Inst ) {
+ *                 $Inst = new My_Membership2_Implementation();
+ *             }
+ *         }
+ *
+ *         // Function set up the api hook.
+ *         private function __construct() {
+ *             add_action( 'ms_init', array( $this, 'init' ) );
+ *         }
+ *
+ *         // Function is only run when Membership2 is present + active.
+ *         public function init( $api ) {
+ *             $this->api = $api;
+ *             // The main init code should come here now!
+ *         }
+ *
+ *         // Add other event handlers and helper functions.
+ *         // You can use $this->api in other functions to access the API object.
+ *     }
+ *     My_Membership2_Implementation::setup();
+ *
+ * ----------------
+ *
+ * We also add the WordPress filter `ms_active` to check if the plugin is
  * enabled and loaded. As long as this filter returns `false` the API cannot
  * be used:
  *
  *     // Check if the API object is available.
  *     if ( apply_filters( 'ms_active' ) ) { ... }
  *
- * To access the API object use the property `MS_Plugin::$api`.
+ * To directly access the API object use the property `MS_Plugin::$api`.
  * Note: Before `ms_active` is called `MS_Plugin::$api` will return false.
+ * This should only be used in rare cases when you know that the API is
+ * available; it's better to use the action `ms_init` for API access.
  *
  *     // Same as above.
  *     if ( MS_Plugin::$api ) { ... }
- *
- * You can also use the WordPress action `ms_init` to run some code as soon as
- * the API becomes available:
- *
- *     // Run some code as early as possible.
- *     add_action( 'ms_init', 'my_api_hook' );
- *     function my_api_hook( $api ) { ... }
  *
  * @since 2.0.0
  *
@@ -127,6 +136,17 @@ class MS_Controller_Api extends MS_Controller {
 	/**
 	 * Returns a single membership object.
 	 *
+	 * Other plugins can store and accuess custom settings for each membership:
+	 *
+	 *     // Create a custom value in the membership
+	 *     $membership->set_custom_data( 'the_key', 'the_value' );
+	 *     $membership->save(); // Custom data is now saved to database.
+	 *
+	 *     // Access and delete the custom value
+	 *     $value = $membership->get_custom_data( 'the_key' );
+	 *     $membership->delete_custom_data( 'the_key' );
+	 *     $membership->save(); // Custom data is now deleted from database.
+	 *
 	 * @since  2.0.0
 	 * @api
 	 *
@@ -143,6 +163,9 @@ class MS_Controller_Api extends MS_Controller {
 	 *
 	 * If the user did not subscribe to the given membership then false is
 	 * returned.
+	 *
+	 * Each subscription also offers custom data fields
+	 * (see the details in get_membership() for details)
 	 *
 	 * @since  2.0.0
 	 * @api

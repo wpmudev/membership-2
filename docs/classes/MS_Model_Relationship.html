@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">10</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1046815862"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-1046815862" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/MS_Controller_Api.html">MS_Controller_Api</a></li>
+                                                    <li class="class"><a href="../classes/MS_Model_Member.html">MS_Model_Member</a></li>
+                                                    <li class="class"><a href="../classes/MS_Model_Membership.html">MS_Model_Membership</a></li>
+                                                    <li class="class"><a href="../classes/MS_Model_Relationship.html">MS_Model_Relationship</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/default.html">\</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\</small>MS_Model_Relationship</h1>
+                    <p><em>Subscription model (former &quot;Membership Relationship&quot;).</em></p>
+                    <p>The Subscription defines which user has access to which membership and for
+how long. Do not confuse this with an invoice - a single subscription can
+have multiple invoices!</p>
+<p>Note that all properties are declared protected but they can be access
+directly (e.g. <code>$membership-&gt;type</code> to get the type value).
+There are magic methods <strong>get() and </strong>set() that do some validation before
+accessing the properties.</p>
+                    
+                                        
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_post_type" class="">get_post_type()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_cancel_membership" class="">cancel_membership()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_deactivate_membership" class="">deactivate_membership()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_save" class="">save()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_is_trial_eligible" class="">is_trial_eligible()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_has_trial" class="">has_trial()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_set_start_date" class="">set_start_date()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_set_trial_expire_date" class="">set_trial_expire_date()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_set_expire_date" class="">set_expire_date()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_current_period" class="">get_current_period()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_remaining_trial_period" class="">get_remaining_trial_period()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_remaining_period" class="">get_remaining_period()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_member" class="">get_member()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_current_invoice" class="">get_current_invoice()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_next_invoice" class="">get_next_invoice()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_previous_invoice" class="">get_previous_invoice()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_invoices" class="">get_invoices()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_membership" class="">get_membership()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_is_base" class="">is_base()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_is_guest" class="">is_guest()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_is_user" class="">is_user()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_is_system" class="">is_system()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_gateway" class="">get_gateway()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_set_custom_data" class="">set_custom_data()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_delete_custom_data" class="">delete_custom_data()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_custom_data" class="">get_custom_data()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_payment_description" class="">get_payment_description()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_add_payment" class="">add_payment()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_status_text" class="">status_text()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_get_status_description" class="">get_status_description()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No public properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_PENDING" class="">STATUS_PENDING</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_ACTIVE" class="">STATUS_ACTIVE</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_TRIAL" class="">STATUS_TRIAL</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_TRIAL_EXPIRED" class="">STATUS_TRIAL_EXPIRED</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_WAITING" class="">STATUS_WAITING</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_EXPIRED" class="">STATUS_EXPIRED</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_DEACTIVATED" class="">STATUS_DEACTIVATED</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#constant_STATUS_CANCELED" class="">STATUS_CANCELED</a><br />
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_membership_id" class="">$membership_id</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_gateway_id" class="">$gateway_id</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_start_date" class="">$start_date</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_expire_date" class="">$expire_date</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_trial_expire_date" class="">$trial_expire_date</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_trial_period_completed" class="">$trial_period_completed</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_status" class="">$status</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_current_invoice_number" class="">$current_invoice_number</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_payments" class="">$payments</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <em>No private methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_membership" class="">$membership</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/model.class-ms-model-relationship.html"><div class="path-wrapper">model/class-ms-model-relationship.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">Membership2\Model</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                                                                                                                                                
+                                        <div class="namespace-wrapper">\MS_Model_CustomPostType</div>
+                                                                                                    <div class="namespace-wrapper">\MS_Model_Relationship</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                since
+                            </th>
+                            <td>
+                                                                    
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
+            </div>
+
+                                    <a id="constants" name="constants"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Constants</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_PENDING" name="constant_STATUS_PENDING" class="anchor"></a>
+            <article id="constant_STATUS_PENDING" class="constant">
+                <h3 class="">STATUS_PENDING</h3>
+                <pre class="signature">STATUS_PENDING</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_ACTIVE" name="constant_STATUS_ACTIVE" class="anchor"></a>
+            <article id="constant_STATUS_ACTIVE" class="constant">
+                <h3 class="">STATUS_ACTIVE</h3>
+                <pre class="signature">STATUS_ACTIVE</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_TRIAL" name="constant_STATUS_TRIAL" class="anchor"></a>
+            <article id="constant_STATUS_TRIAL" class="constant">
+                <h3 class="">STATUS_TRIAL</h3>
+                <pre class="signature">STATUS_TRIAL</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_TRIAL_EXPIRED" name="constant_STATUS_TRIAL_EXPIRED" class="anchor"></a>
+            <article id="constant_STATUS_TRIAL_EXPIRED" class="constant">
+                <h3 class="">STATUS_TRIAL_EXPIRED</h3>
+                <pre class="signature">STATUS_TRIAL_EXPIRED</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_WAITING" name="constant_STATUS_WAITING" class="anchor"></a>
+            <article id="constant_STATUS_WAITING" class="constant">
+                <h3 class="">STATUS_WAITING</h3>
+                <pre class="signature">STATUS_WAITING</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                <p>Start-Date not reached yet.</p>
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_EXPIRED" name="constant_STATUS_EXPIRED" class="anchor"></a>
+            <article id="constant_STATUS_EXPIRED" class="constant">
+                <h3 class="">STATUS_EXPIRED</h3>
+                <pre class="signature">STATUS_EXPIRED</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                <p>End-Date reached.</p>
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_DEACTIVATED" name="constant_STATUS_DEACTIVATED" class="anchor"></a>
+            <article id="constant_STATUS_DEACTIVATED" class="constant">
+                <h3 class="">STATUS_DEACTIVATED</h3>
+                <pre class="signature">STATUS_DEACTIVATED</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_STATUS_CANCELED" name="constant_STATUS_CANCELED" class="anchor"></a>
+            <article id="constant_STATUS_CANCELED" class="constant">
+                <h3 class="">STATUS_CANCELED</h3>
+                <pre class="signature">STATUS_CANCELED</pre>
+                <p><em>Membership Relationship Status constants.</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                                            <dt>See also</dt>
+                                                                <dd><a href="../classes/MS_Model_Relationship.html#property_status"><span class="namespace-wrapper">$status property.</span></a></dd>
+                                                                </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_membership_id" name="property_membership_id" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$membership_id</h3>
+                <pre class="signature">$membership_id : string</pre>
+                <p><em>The Membership ID.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_gateway_id" name="property_gateway_id" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$gateway_id</h3>
+                <pre class="signature">$gateway_id : string</pre>
+                <p><em>The Payment Gateway ID.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_start_date" name="property_start_date" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$start_date</h3>
+                <pre class="signature">$start_date : string</pre>
+                <p><em>The start date of the membership relationship.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_expire_date" name="property_expire_date" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$expire_date</h3>
+                <pre class="signature">$expire_date : string</pre>
+                <p><em>The expire date of the membership relationship.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_trial_expire_date" name="property_trial_expire_date" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$trial_expire_date</h3>
+                <pre class="signature">$trial_expire_date : string</pre>
+                <p><em>The trial expire date of the membership relationship.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_trial_period_completed" name="property_trial_period_completed" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$trial_period_completed</h3>
+                <pre class="signature">$trial_period_completed : string</pre>
+                <p><em>Trial period completed flag.</em></p>
+                <p>Indicates if already used a trial period and can't have another trial period.</p>
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_status" name="property_status" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$status</h3>
+                <pre class="signature">$status : string</pre>
+                <p><em>The status of the membership relationship.</em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_current_invoice_number" name="property_current_invoice_number" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$current_invoice_number</h3>
+                <pre class="signature">$current_invoice_number : </pre>
+                <p><em>Current invoice count.</em></p>
+                <p>This is NOT the public invoice-number but an counter to determine how
+many invoices were generated for this subscription already.</p>
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_payments" name="property_payments" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$payments</h3>
+                <pre class="signature">$payments : array</pre>
+                <p><em>The number of successful payments that were made for this subscription.</em></p>
+                <p>We use this value to determine the end of a recurring payment plan.
+Also this information is displayed in the member-info popup (only for
+admins; see MS_View_Member_Dialog)</p>
+
+                                <h4>Type</h4>
+                array
+                &mdash; {
+     A list of all payments that were made [since 1.1.0]
+
+     string $date    Payment date/time.
+     number $amount  Payment-Amount.
+     string $gateway Gateway that confirmed payment.
+}                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_membership" name="property_membership" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$membership</h3>
+                <pre class="signature">$membership : \MS_Model_Membership</pre>
+                <p><em>The related membership model object.</em></p>
+                
+
+                                <h4>Type</h4>
+                <a href="../classes/MS_Model_Membership.html">\MS_Model_Membership</a>
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_post_type" name="method_get_post_type" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_post_type()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_post_type() : string</pre>
+                <p><em>Returns the post-type of the current object.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>The post-type name.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_cancel_membership" name="method_cancel_membership" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">cancel_membership()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">cancel_membership(boolean  <span class="argument">$generate_event = true</span>) </pre>
+                <p><em>Cancel membership.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$generate_event </td>
+                                <td><p>Optional. Defines if cancel events are generated.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_deactivate_membership" name="method_deactivate_membership" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">deactivate_membership()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">deactivate_membership() </pre>
+                <p><em>Deactivate membership.</em></p>
+                <p>Cancel membership and move to deactivated state.</p>
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_save" name="method_save" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">save()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">save() </pre>
+                <p><em>Save model.</em></p>
+                <p>Only saves if is not admin user and not a visitor.
+Don't save automatically assigned visitor/system memberships.</p>
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_is_trial_eligible" name="method_is_trial_eligible" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">is_trial_eligible()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">is_trial_eligible() : boolean</pre>
+                <p><em>Verify if the member can use the trial period.</em></p>
+                <p>It returns FALSE if
+.. Trial Add-on is disabled
+.. The membership does not allow a trial period
+.. The current user already consumed trial period or is in trial period</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                            &mdash; <p>True if trial eligible.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_has_trial" name="method_has_trial" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">has_trial()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">has_trial() : boolean</pre>
+                <p><em>Checks if the current subscription consumes a trial period.</em></p>
+                <p>When the subscription either is currently in trial or was in trial before
+then this function returns true.
+If the subscription never was in trial status it returns false.</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.1.4                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_set_start_date" name="method_set_start_date" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">set_start_date()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">set_start_date(string  <span class="argument">$start_date = null</span>) </pre>
+                <p><em>Set Membership Relationship start date.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$start_date </td>
+                                <td><p>Optional. The start date to set.
+Default will be calculated/current date.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_set_trial_expire_date" name="method_set_trial_expire_date" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">set_trial_expire_date()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">set_trial_expire_date(string  <span class="argument">$trial_expire_date = null</span>) </pre>
+                <p><em>Set trial expire date.</em></p>
+                <p>Validate to a date greater than start date.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$trial_expire_date </td>
+                                <td><p>Optional. The trial expire date to set.
+Default will be calculated based on start_date.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_set_expire_date" name="method_set_expire_date" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">set_expire_date()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">set_expire_date(string  <span class="argument">$expire_date = null</span>) </pre>
+                <p><em>Set trial expire date.</em></p>
+                <p>Validate to a date greater than start date and trial expire date.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$expire_date </td>
+                                <td><p>Optional. The expire date to set.
+Default will be calculated based on start_date.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_current_period" name="method_get_current_period" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_current_period()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_current_period() : integer</pre>
+                <p><em>Returns the number of days since the subscription started.</em></p>
+                <p>Example: If the start_date is 14 days ago it will return the value 14.</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                            &mdash; <p>Remaining days.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_remaining_trial_period" name="method_get_remaining_trial_period" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_remaining_trial_period()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_remaining_trial_period() : integer</pre>
+                <p><em>Returns the number of days until trial period ends.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                            &mdash; <p>Remaining days.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_remaining_period" name="method_get_remaining_period" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_remaining_period()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_remaining_period() : integer</pre>
+                <p><em>Get number of days until this membership expires.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                            &mdash; <p>Remaining days.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_member" name="method_get_member" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_member()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_member() : \MS_Model_Member</pre>
+                <p><em>Get Member model of the subscription owner.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/MS_Model_Member.html">\MS_Model_Member</a>
+                                            &mdash; <p>The member object.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_current_invoice" name="method_get_current_invoice" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_current_invoice()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_current_invoice(  <span class="argument">$create_missing = true</span>) : \MS_Model_Invoice</pre>
+                <p><em>Convenience function to access current invoice for this subscription.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$create_missing </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    \MS_Model_Invoice
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.1.4                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_next_invoice" name="method_get_next_invoice" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_next_invoice()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_next_invoice(  <span class="argument">$create_missing = true</span>) : \MS_Model_Invoice</pre>
+                <p><em>Convenience function to access next invoice for this subscription.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$create_missing </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    \MS_Model_Invoice
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.1.4                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_previous_invoice" name="method_get_previous_invoice" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_previous_invoice()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_previous_invoice(  <span class="argument">$status = null</span>) : \MS_Model_Invoice</pre>
+                <p><em>Convenience function to access previous invoice for this subscription.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$status </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    \MS_Model_Invoice
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.1.4                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_invoices" name="method_get_invoices" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_invoices()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_invoices() : array&lt;mixed,\MS_Model_Invoice&gt;</pre>
+                <p><em>Get a list of all invoices linked to this relationship</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    array&lt;mixed,\MS_Model_Invoice&gt;
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_membership" name="method_get_membership" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_membership()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_membership() : \MS_Model_Membership</pre>
+                <p><em>Get related Membership model.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/MS_Model_Membership.html">\MS_Model_Membership</a>
+                                            &mdash; <p>The membership model.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_is_base" name="method_is_base" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">is_base()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">is_base() : boolean</pre>
+                <p><em>Returns true if the related membership is the base-membership.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_is_guest" name="method_is_guest" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">is_guest()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">is_guest() : boolean</pre>
+                <p><em>Returns true if the related membership is the guest-membership.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_is_user" name="method_is_user" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">is_user()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">is_user() : boolean</pre>
+                <p><em>Returns true if the related membership is the user-membership.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_is_system" name="method_is_system" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">is_system()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">is_system() : boolean</pre>
+                <p><em>Returns true if the related membership is a system membership.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_gateway" name="method_get_gateway" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_gateway()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_gateway() : \MS_Model_Gateway</pre>
+                <p><em>Get related gateway model.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    \MS_Model_Gateway
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_set_custom_data" name="method_set_custom_data" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">set_custom_data()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">set_custom_data(string  <span class="argument">$key</span>, mixed  <span class="argument">$value</span>) </pre>
+                <p><em>Either creates or updates the value of a custom data field.</em></p>
+                <p>Note: Remember to prefix the $key with a unique string to prevent
+conflicts with other plugins that also use this function.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key </td>
+                                <td><p>The field-key.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>mixed</td>
+                                <td>$value </td>
+                                <td><p>The new value to assign to the field.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_delete_custom_data" name="method_delete_custom_data" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">delete_custom_data()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">delete_custom_data(string  <span class="argument">$key</span>) </pre>
+                <p><em>Removes a custom data field from this object.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key </td>
+                                <td><p>The field-key.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_custom_data" name="method_get_custom_data" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_custom_data()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_custom_data(string  <span class="argument">$key</span>) : mixed</pre>
+                <p><em>Returns the value of a custom data field.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key </td>
+                                <td><p>The field-key.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>The value that was previously assigned to the custom field
+or false if no value was set for the field.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_payment_description" name="method_get_payment_description" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_payment_description()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_payment_description(\MS_Model_Invoice  <span class="argument">$invoice = null</span>, boolean  <span class="argument">$short = false</span>) : string</pre>
+                <p><em>Get textual payment information description.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>\MS_Model_Invoice</td>
+                                <td>$invoice </td>
+                                <td><p>Optional. Specific invoice that defines
+the price. Default is the price defined in the membership.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$short </td>
+                                <td><p>Optional. Default is false. If set to true then a
+hort sumary is returned</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>The description.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_add_payment" name="method_add_payment" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">add_payment()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">add_payment(float  <span class="argument">$amount</span>, string  <span class="argument">$gateway</span>) : boolean</pre>
+                <p><em>Saves information on a payment that was made.</em></p>
+                <p>This function also extends the expire_date for one period if the
+membership payment-type is recurring or limited</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>float</td>
+                                <td>$amount </td>
+                                <td><p>The payment amount. Set to 0 for free subscriptions.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$gateway </td>
+                                <td><p>The payment gateway-ID.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                            &mdash; <p>True if the subscription has ACTIVE status after payment.
+If the amount was 0 and membership uses a trial period the status
+could also be TRIAL, in which case the returnv alue is false.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_status_text" name="method_status_text" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">status_text()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">status_text() : string</pre>
+                <p><em>Returns an i18n translated version of the subscription status.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.1.1.4                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_status_description" name="method_get_status_description" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_status_description()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_status_description() : string</pre>
+                <p><em>Get a detailled status description.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                            &mdash; <p>The status description.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">class-ms-model-relationship.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/model/class-ms-model-relationship.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on May 15th, 2015 at 16:49.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

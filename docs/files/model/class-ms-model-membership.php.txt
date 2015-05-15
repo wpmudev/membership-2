@@ -2226,3 +2226,4 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 }
+
