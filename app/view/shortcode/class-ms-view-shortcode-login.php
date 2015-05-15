@@ -469,7 +469,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		lib2()->array->equip_get( 'login', 'key' );
 		$rp_login = wp_unslash( $_GET['login'] );
 		$rp_key = wp_unslash( $_GET['key'] );
-		$err_msg = false;
+		$err_msg = new WP_Error();
 
 		// Get the user object and validate the key.
 		if ( $rp_login && $rp_key ) {
@@ -483,13 +483,14 @@ class MS_View_Shortcode_Login extends MS_View {
 		// If the user was not found then redirect to an error page.
 		if ( ! $user || is_wp_error( $user ) ) {
 			if ( $user && 'expired_key' == $user->get_error_code() ) {
-				$err_msg = __( 'The password-reset key is already expired.', MS_TEXT_DOMAIN );
+				$err_msg->add( 'password_expired_key', __( 'The password-reset key is already expired.', MS_TEXT_DOMAIN ) );
 			} else {
-				$err_msg = __( 'The password-reset key is invalid or missing.', MS_TEXT_DOMAIN );
+				$err_msg->add( 'password_invalid_key', __( 'The password-reset key is invalid or missing.', MS_TEXT_DOMAIN ) );
 			}
 			$url = esc_url_raw(
 				remove_query_arg( array( 'action', 'key', 'login' ) )
 			);
+
 			return sprintf(
 				'<p>%s</p><p><a href="%s">%s</a>',
 				$err_msg,
@@ -499,14 +500,14 @@ class MS_View_Shortcode_Login extends MS_View {
 		} else {
 			// If the user provided a new password, then check it now.
 			if ( isset( $_POST['pass1'] ) && $_POST['pass1'] != $_POST['pass2'] ) {
-				$err_msg = __( 'The passwords do not match.', MS_TEXT_DOMAIN );
+				$err_msg->add( 'password_reset_mismatch', __( 'The passwords do not match.', MS_TEXT_DOMAIN ) );
 			}
 		}
 
 		// This action is documented in wp-login.php
 		do_action( 'validate_password_reset', $err_msg, $user );
 
-		if ( ! $err_msg
+		if ( ! count( $err_msg->errors )
 			&& isset( $_POST['pass1'] ) && ! empty( $_POST['pass1'] )
 		) {
 			reset_password( $user, $_POST['pass1'] );
@@ -518,32 +519,36 @@ class MS_View_Shortcode_Login extends MS_View {
 		wp_enqueue_script( 'utils' );
 		wp_enqueue_script( 'user-profile' );
 
-		if ( $err_msg ) {
-			echo '<p class="error">' . $err_msg . '</p>';
+		if ( count( $err_msg->errors ) ) {
+			echo '<p class="error">' . implode( '<br/>', $err_msg->get_error_messages() ) . '</p>';
 		}
 		?>
 		<form name="resetpassform" id="resetpassform" action="" method="post" autocomplete="off">
-			<input type="hidden" id="user_login" value="<?php echo esc_attr( $rp_login ); ?>" autocomplete="off" />
+			<input type="hidden" id="user_login" value="<?php echo esc_attr( $rp_login ); ?>" autocomplete="off"/>
 
 			<p>
-				<label for="pass1"><?php _e( 'New password', MS_TEXT_DOMAIN ) ?><br />
-				<input type="password" name="pass1" id="pass1" class="input" size="20" value="" autocomplete="off" /></label>
-			</p>
-			<p>
-				<label for="pass2"><?php _e( 'Confirm new password', MS_TEXT_DOMAIN ) ?><br />
-				<input type="password" name="pass2" id="pass2" class="input" size="20" value="" autocomplete="off" /></label>
+				<label for="pass1"><?php _e( 'New password', MS_TEXT_DOMAIN ) ?><br/>
+					<input type="password" name="pass1" id="pass1" class="input" size="20" value="" autocomplete="off"/></label>
 			</p>
 
-			<div id="pass-strength-result" class="hide-if-no-js"><?php _e( 'Strength indicator', MS_TEXT_DOMAIN ); ?></div>
+			<p>
+				<label for="pass2"><?php _e( 'Confirm new password', MS_TEXT_DOMAIN ) ?><br/>
+					<input type="password" name="pass2" id="pass2" class="input" size="20" value="" autocomplete="off"/></label>
+			</p>
+
+			<div id="pass-strength-result"
+				class="hide-if-no-js"><?php _e( 'Strength indicator', MS_TEXT_DOMAIN ); ?></div>
 			<p class="description indicator-hint"><?php _e( 'Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers, and symbols like ! " ? $ % ^ &amp; ).', MS_TEXT_DOMAIN ); ?></p>
 
-			<br class="clear" />
+			<br class="clear"/>
 
 			<?php
 			// This action is documented in wp-login.php
 			do_action( 'resetpass_form', $user );
 			?>
-			<p class="submit"><input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="<?php esc_attr_e( 'Reset Password' ); ?>" /></p>
+			<p class="submit"><input type="submit" name="wp-submit" id="wp-submit"
+				class="button button-primary button-large"
+				value="<?php esc_attr_e( 'Reset Password' ); ?>"/></p>
 		</form>
 		<?php
 		return ob_get_clean();
