@@ -36,8 +36,6 @@ class MS_Helper_Html extends MS_Helper {
 
 	/* Constants for default HTML input elements. */
 	const INPUT_TYPE_HIDDEN = 'hidden';
-	const INPUT_TYPE_TEXT = 'text';
-	const INPUT_TYPE_PASSWORD = 'password';
 	const INPUT_TYPE_TEXT_AREA = 'textarea';
 	const INPUT_TYPE_SELECT = 'select';
 	const INPUT_TYPE_RADIO = 'radio';
@@ -45,6 +43,14 @@ class MS_Helper_Html extends MS_Helper {
 	const INPUT_TYPE_BUTTON = 'button';
 	const INPUT_TYPE_CHECKBOX = 'checkbox';
 	const INPUT_TYPE_IMAGE = 'image';
+	// Different input types
+	const INPUT_TYPE_TEXT = 'text';
+	const INPUT_TYPE_PASSWORD = 'password';
+	const INPUT_TYPE_NUMBER = 'number';
+	const INPUT_TYPE_EMAIL = 'email';
+	const INPUT_TYPE_URL = 'url';
+	const INPUT_TYPE_TIME = 'time';
+	const INPUT_TYPE_SEARCH = 'search';
 	const INPUT_TYPE_FILE = 'file';
 
 	/* Constants for advanced HTML input elements. */
