@@ -65,6 +65,15 @@
 class MS_Controller_Api extends MS_Controller {
 
 	/**
+	 * A reference to the Membership2 settings object.
+	 *
+	 * @since  1.0.0
+	 * @api
+	 * @var MS_Model_Settings
+	 */
+	public $settings = null;
+
+	/**
 	 * Construct Settings manager.
 	 *
 	 * @since 2.0.0
@@ -72,6 +81,8 @@ class MS_Controller_Api extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		$this->settings = MS_Plugin::instance()->settings;
 
 		/**
 		 * Simple check to allow other plugins to quickly find out if
