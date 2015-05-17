@@ -61,6 +61,15 @@
   cursor: not-allowed;
 }
 
+/*
+ * The default WordPress admin-footer sometimes gets in the way on the
+ * Membership2 setting screens.
+ */
+.wp-admin.toplevel_page_membership2 #wpfooter {
+  z-index: -1;
+  position: fixed;
+}
+
 /**
  * Typographic styles
  */
@@ -681,6 +690,10 @@
 .ms-wrap .ms-text-small {
   width: 4em;
 }
+.wpmui-wnd .ms-text-smallish,
+.ms-wrap .ms-text-smallish {
+  width: 6em;
+}
 .wpmui-wnd .ms-text-medium,
 .ms-wrap .ms-text-medium {
   width: 300px;
@@ -694,7 +707,21 @@
   height: 10em;
 }
 .wpmui-wnd input[type="text"],
-.ms-wrap input[type="text"] {
+.wpmui-wnd input[type="file"],
+.wpmui-wnd input[type="password"],
+.wpmui-wnd input[type="time"],
+.wpmui-wnd input[type="search"],
+.wpmui-wnd input[type="number"],
+.wpmui-wnd input[type="url"],
+.wpmui-wnd input[type="email"],
+.ms-wrap input[type="text"],
+.ms-wrap input[type="file"],
+.ms-wrap input[type="password"],
+.ms-wrap input[type="time"],
+.ms-wrap input[type="search"],
+.ms-wrap input[type="number"],
+.ms-wrap input[type="url"],
+.ms-wrap input[type="email"] {
   min-height: 28px;
   line-height: 26px;
   padding-top: 0;

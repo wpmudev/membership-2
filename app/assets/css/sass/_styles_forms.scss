@@ -32,6 +32,10 @@
 		width: 4em;
 	}
 
+	.ms-text-smallish {
+		width: 6em;
+	}
+
 	.ms-text-medium {
 		width: 300px;
 	}
@@ -44,7 +48,14 @@
 		height: 10em;
 	}
 
-	input[type="text"] {
+	input[type="text"],
+	input[type="file"],
+	input[type="password"],
+	input[type="time"],
+	input[type="search"],
+	input[type="number"],
+	input[type="url"],
+	input[type="email"] {
 		min-height: 28px;
 		line-height: 26px;
 		padding-top: 0;

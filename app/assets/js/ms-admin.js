@@ -118,6 +118,9 @@ window.ms_functions = {
 					data.value = val;
 				}
 			}
+			if ( undefined === data.field ) {
+				data.field = field.attr( 'name' );
+			}
 
 			// Allow fields to pre-process the data before sending it.
 			if ( 'function' === typeof field.data( 'before_ajax' ) ) {
@@ -628,8 +631,29 @@ jQuery( document ).ready( function() {
 	// Ajax-Submit data when ms-ajax-update fields are changed.
 	.on(
 		'change',
-		'input.wpmui-ajax-update, select.wpmui-ajax-update, textarea.wpmui-ajax-update',
+		'input.wpmui-ajax-update:not([type=number]), select.wpmui-ajax-update, textarea.wpmui-ajax-update',
 		function( ev ) { fn.ajax_update( this ); }
+	)
+	.on(
+		'blur',
+		'input.wpmui-ajax-update[type="number"]',
+		function( ev ) {
+			var el = jQuery( this );
+			if ( el.val() !== el.data( 'val' ) ) {
+				el.data( 'val', el.val() );
+				fn.ajax_update( this );
+			}
+		}
+	)
+	.on(
+		'focus',
+		'input.wpmui-ajax-update[type="number"]',
+		function( ev ) {
+			var el = jQuery( this );
+			if ( undefined === el.data( 'val' ) ) {
+				el.data( 'val', el.val() );
+			}
+		}
 	)
 	.on(
 		'click',
