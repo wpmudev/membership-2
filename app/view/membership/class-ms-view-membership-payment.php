@@ -168,6 +168,8 @@ class MS_View_Membership_Payment extends MS_View {
 					</div>
 				</div>
 
+				<?php /* Only show the trial option for PAID memberships */ ?>
+				<?php if ( ! $membership->is_free ) : ?>
 				<div class="cf">
 					<?php
 					$show_trial_note = MS_Plugin::instance()->settings->is_first_paid_membership;
@@ -208,6 +210,21 @@ class MS_View_Membership_Payment extends MS_View {
 					endif; endif;
 					?>
 				</div>
+				<?php endif; ?>
+
+				<?php
+				/**
+				 * This action allows other add-ons or plugins to display custom
+				 * options in the payment dialog.
+				 *
+				 * @since  2.0.0
+				 */
+				do_action(
+					'ms_view_membership_payment_form',
+					$this,
+					$membership
+				);
+				?>
 			</div>
 			<?php MS_Helper_Html::save_text(); ?>
 		</div>
@@ -234,10 +251,14 @@ class MS_View_Membership_Payment extends MS_View {
 			'price' => array(
 				'id' => 'price',
 				'title' => __( 'Payment Amount', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'before' => MS_Plugin::instance()->settings->currency_symbol,
 				'value' => $membership->price, // Without taxes
-				'class' => 'ms-text-small',
+				'class' => 'ms-text-smallish',
+				'config' => array(
+					'step' => 'any',
+					'min' => 0,
+				),
 				'placeholder' => '0' . $wp_locale->number_format['decimal_point'] . '00',
 				'ajax_data' => array( 'field' => 'price' ),
 			),
@@ -253,10 +274,14 @@ class MS_View_Membership_Payment extends MS_View {
 				'id' => 'period_unit',
 				'title' => __( 'Grant access for', MS_TEXT_DOMAIN ),
 				'name' => '[period][period_unit]',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $membership->period_unit,
 				'class' => 'ms-text-small',
-				'placeholder' => '0',
+				'config' => array(
+					'step' => 1,
+					'min' => 1,
+				),
+				'placeholder' => '1',
 				'ajax_data' => array( 'field' => 'period_unit' ),
 			),
 			'period_type' => array(
@@ -271,10 +296,14 @@ class MS_View_Membership_Payment extends MS_View {
 				'id' => 'pay_cycle_period_unit',
 				'title' => __( 'Payment Frequency', MS_TEXT_DOMAIN ),
 				'name' => '[pay_cycle_period][period_unit]',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $membership->pay_cycle_period_unit,
 				'class' => 'ms-text-small',
-				'placeholder' => '0',
+				'config' => array(
+					'step' => 1,
+					'min' => 1,
+				),
+				'placeholder' => '1',
 				'ajax_data' => array( 'field' => 'pay_cycle_period_unit' ),
 			),
 			'pay_cycle_period_type' => array(
@@ -289,10 +318,14 @@ class MS_View_Membership_Payment extends MS_View {
 				'id' => 'pay_cycle_repetitions',
 				'title' => __( 'Total Payments', MS_TEXT_DOMAIN ),
 				'name' => '[pay_cycle_repetitions]',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'after' => __( 'payments (0 = unlimited)', MS_TEXT_DOMAIN ),
 				'value' => $membership->pay_cycle_repetitions,
 				'class' => 'ms-text-small',
+				'config' => array(
+					'step' => '1',
+					'min' => 0,
+				),
 				'placeholder' => '0',
 				'ajax_data' => array( 'field' => 'pay_cycle_repetitions' ),
 			),
@@ -345,10 +378,14 @@ class MS_View_Membership_Payment extends MS_View {
 				'id' => 'trial_period_unit',
 				'name' => '[trial_period][period_unit]',
 				'before' => __( 'The Trial is free and lasts for', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $membership->trial_period_unit,
 				'class' => 'ms-text-small',
-				'placeholder' => '0',
+				'config' => array(
+					'step' => 1,
+					'min' => 1,
+				),
+				'placeholder' => '1',
 				'ajax_data' => array( 'field' => 'trial_period_unit' ),
 			),
 			'trial_period_type' => array(
