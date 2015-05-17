@@ -157,9 +157,21 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $pro_rate = 0;
 
 	/**
-	 * Total value.
+	 * READ-ONLY. Invoice amount including all discounts but no taxes.
 	 *
-	 * Includes discount, pro-rating.
+	 * To modify this value change any of these properties:
+	 * amount, discount, pro_rate
+	 *
+	 * @since 1.0.0
+	 * @var float
+	 */
+	protected $subtotal = 0;
+
+	/**
+	 * READ-ONLY. Total value (= subtotal + taxes).
+	 *
+	 * To modify this value change any of these properties:
+	 * amount, discount, pro_rate, tax_rate
 	 *
 	 * @since 1.0.0
 	 * @var float
@@ -1395,50 +1407,52 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public function __get( $property ) {
 		$value = null;
 
-		if ( property_exists( $this, $property ) ) {
-			switch ( $property ) {
-				case 'total':
-					$value = $this->get_total();
-					break;
+		switch ( $property ) {
+			case 'total':
+				$value = $this->get_total();
+				break;
 
-				case 'trial_price':
-					$value = $this->get_trial_price();
-					break;
+			case 'trial_price':
+				$value = $this->get_trial_price();
+				break;
 
-				case 'invoice':
-					$value = $this->id;
-					break;
+			case 'invoice':
+				$value = $this->id;
+				break;
 
-				case 'short_description':
-					if ( empty( $this->short_description ) ) {
-						$value = $this->description;
-					} else {
-						$value = $this->short_description;
-					}
-					break;
+			case 'short_description':
+				if ( empty( $this->short_description ) ) {
+					$value = $this->description;
+				} else {
+					$value = $this->short_description;
+				}
+				break;
 
-				case 'invoice_date':
-					$value = $this->invoice_date;
+			case 'invoice_date':
+				$value = $this->invoice_date;
 
-					if ( empty( $value ) ) {
-						$value = get_the_date( 'Y-m-d', $this->id );
-					}
-					break;
+				if ( empty( $value ) ) {
+					$value = get_the_date( 'Y-m-d', $this->id );
+				}
+				break;
 
-				default:
+			case 'tax':
+				$value = $this->get_tax();
+				break;
+
+			case 'trial_tax':
+				$value = $this->get_trial_tax();
+				break;
+
+			case 'subtotal':
+				$value = $this->get_net_amount();
+				break;
+
+			default:
+				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;
-					break;
-			}
-		} else {
-			switch ( $property ) {
-				case 'tax':
-					$value = $this->get_tax();
-					break;
-
-				case 'trial_tax':
-					$value = $this->get_trial_tax();
-					break;
-			}
+				}
+				break;
 		}
 
 		return apply_filters(
@@ -1459,45 +1473,45 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			switch ( $property ) {
-				case 'name':
-				case 'currency':
-					$this->$property = sanitize_text_field( $value );
-					break;
+		switch ( $property ) {
+			case 'name':
+			case 'currency':
+				$this->$property = sanitize_text_field( $value );
+				break;
 
-				case 'notes':
-					if ( is_array( $value ) ) {
-						$this->notes = array_map( 'sanitize_text_field', $value );
-					} else {
-						$this->notes = array( sanitize_text_field( $value ) );
-					}
-					break;
+			case 'notes':
+				if ( is_array( $value ) ) {
+					$this->notes = array_map( 'sanitize_text_field', $value );
+				} else {
+					$this->notes = array( sanitize_text_field( $value ) );
+				}
+				break;
 
-				case 'status':
-					if ( array_key_exists( $value, self::get_status_types() ) ) {
-						$this->$property = $value;
-					}
-					break;
-
-				case 'due_date':
-					$this->$property = $this->validate_date( $value );
-					break;
-
-				case 'amount':
-				case 'discount':
-				case 'pro_rate':
-				case 'trial_price':
-					$this->$property = floatval( $value );
-					$this->total_amount_changed();
-					$this->get_total();
-					$this->get_trial_price();
-					break;
-
-				default:
+			case 'status':
+				if ( array_key_exists( $value, self::get_status_types() ) ) {
 					$this->$property = $value;
-					break;
-			}
+				}
+				break;
+
+			case 'due_date':
+				$this->$property = $this->validate_date( $value );
+				break;
+
+			case 'amount':
+			case 'discount':
+			case 'pro_rate':
+			case 'trial_price':
+				$this->$property = floatval( $value );
+				$this->total_amount_changed();
+				$this->get_total();
+				$this->get_trial_price();
+				break;
+
+			default:
+				if ( property_exists( $this, $property ) ) {
+					$this->$property = $value;
+				}
+				break;
 		}
 
 		do_action(
