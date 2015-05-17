@@ -1021,6 +1021,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'trial_period',
 			'on_end_membership_id',
 			'is_setup_completed',
+			'custom_data',
 		);
 	}
 
