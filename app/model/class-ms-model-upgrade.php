@@ -120,6 +120,11 @@ class MS_Model_Upgrade extends MS_Model {
 				);
 			}
 
+			// Remove an old version of Protected Content
+			if ( $version_changed ) {
+				self::remove_old_copy();
+			}
+
 			// Note: We do not create menu items on upgrade! Users might have
 			// intentionally removed the items from the menu...
 
@@ -691,6 +696,54 @@ class MS_Model_Upgrade extends MS_Model {
 		lib2()->updates->execute();
 	}
 
+	#
+	# ##########################################################################
+	#
+
+	/**
+	 * Used when upgrading from Membership to M2. If both Membership and
+	 * Protected Content are installed when upgrading then the old
+	 * "protected-content" folder may survive the upgrade and needs to be
+	 * manually removed.
+	 *
+	 * @since  2.0.0
+	 */
+	static private function remove_old_copy() {
+		$new_dir = WP_PLUGIN_DIR . '/membership';
+		$old_dir = WP_PLUGIN_DIR . '/protected-content';
+		$old_plugin = 'protected-content/protected-content.php';
+		$new_plugin = plugin_basename( MS_Plugin::instance()->file );
+
+		if ( false === strpos( MS_Plugin::instance()->dir, $new_dir ) ) {
+			// Cancel: This plugin is not the official plugin (maybe a backup or beta version)
+			return;
+		}
+
+		if ( is_dir( $old_dir ) && is_file( $old_dir . '/protected-content.php' ) ) {
+			// Looks like the old version of this plugin is still installed. Remove it.
+			array_map( 'unlink', glob( "$old_dir/*.*" ) );
+			rmdir( $old_dir );
+		}
+
+		// Also check if the old plugin was active on the site.
+		if ( is_multisite() ) {
+			$plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
+			foreach ( $plugins as $key => $the_path ) {
+				if ( $old_plugin == $the_path ) {
+					$plugins[$key] = $new_plugin;
+				}
+			}
+			update_site_option( 'active_sitewide_plugins', $plugins );
+		}
+
+		$active_plugins = (array) get_option( 'active_plugins', array() );
+		foreach ( $plugins as $key => $the_path ) {
+			if ( $old_plugin == $the_path ) {
+				$plugins[$key] = $new_plugin;
+			}
+		}
+		update_option( 'active_plugins', $plugins );
+	}
 
 	#
 	#
