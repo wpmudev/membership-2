@@ -711,25 +711,30 @@ class MS_Model_Upgrade extends MS_Model {
 	static private function remove_old_copy() {
 		$new_dir = WP_PLUGIN_DIR . '/membership';
 		$old_dir = WP_PLUGIN_DIR . '/protected-content';
-		$old_plugin = 'protected-content/protected-content.php';
+		$old_plugins = array(
+			'protected-content/protected-content.php',
+			'membership/membershippremium.php',
+		);
 		$new_plugin = plugin_basename( MS_Plugin::instance()->file );
 
+		// Make sure that the current plugin is the official M2 one.
 		if ( false === strpos( MS_Plugin::instance()->dir, $new_dir ) ) {
 			// Cancel: This plugin is not the official plugin (maybe a backup or beta version)
 			return;
 		}
 
+		// 1. See if there is a old copy of the plugin directory. Delete it.
 		if ( is_dir( $old_dir ) && is_file( $old_dir . '/protected-content.php' ) ) {
 			// Looks like the old version of this plugin is still installed. Remove it.
 			array_map( 'unlink', glob( "$old_dir/*.*" ) );
 			rmdir( $old_dir );
 		}
 
-		// Also check if the old plugin was active on the site.
+		// 2. See if WordPress uses an old plugin in the DB. Update it.
 		if ( is_multisite() ) {
 			$plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
 			foreach ( $plugins as $key => $the_path ) {
-				if ( $old_plugin == $the_path ) {
+				if ( in_array( $the_path, $old_plugins ) ) {
 					$plugins[$key] = $new_plugin;
 				}
 			}
@@ -738,7 +743,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 		$active_plugins = (array) get_option( 'active_plugins', array() );
 		foreach ( $plugins as $key => $the_path ) {
-			if ( $old_plugin == $the_path ) {
+			if ( in_array( $the_path, $old_plugins ) ) {
 				$plugins[$key] = $new_plugin;
 			}
 		}
