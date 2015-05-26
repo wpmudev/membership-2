@@ -82,8 +82,8 @@ $wpmudev_notices[] = array(
 );
 
 $externals = array(
-	dirname( __FILE__ ) . '/extra/wpmudev-dashboard/wpmudev-dash-notification.php',
-	dirname( __FILE__ ) . '/extra/wpmu-lib/core.php',
+	dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php',
+	dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
 );
 
 foreach ( $externals as $path ) {
