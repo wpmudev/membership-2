@@ -158,6 +158,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $price = 0;
 
 	/**
+	 * A list of disabled gateways.
+	 *
+	 * @since  2.0.0
+	 * @var array $disabled_gateways.
+	 */
+	protected $disabled_gateways = array();
+
+	/**
 	 * Membership period for finite access.
 	 * Used for payment_type PAYMENT_TYPE_FINITE.
 	 *
@@ -1010,6 +1018,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'active',
 			'private',
 			'is_free',
+			'disabled_gateways',
 			'price',
 			'period',
 			'pay_cycle_period',
@@ -1235,6 +1244,32 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$this->is_free = $result;
 		}
 
+		return $result;
+	}
+
+	/**
+	 * Checks if a specific payment gateway is allowed for the current
+	 * membership.
+	 *
+	 * @since  2.0.0
+	 * @param  string $gateway_id The payment gateway ID.
+	 * @return bool
+	 */
+	public function can_use_gateway( $gateway_id ) {
+		$result = true;
+
+		$this->disabled_gateways = lib2()->array->get( $this->disabled_gateways );
+		if ( isset( $this->disabled_gateways[$gateway_id] ) ) {
+			$state = $this->disabled_gateways[$gateway_id];
+			$result = ! lib2()->is_true( $state );
+		}
+
+		$result = apply_filters(
+			'ms_model_membership_can_use_gateway',
+			$result,
+			$gateway_id,
+			$this
+		);
 		return $result;
 	}
 
@@ -2066,6 +2101,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 			case 'pay_cycle_repetitions':
 				$value = absint( $this->pay_cycle_repetitions );
+				break;
+
+			case 'disabled_gateways':
+				$value = lib2()->array->get( $this->disabled_gateways );
 				break;
 
 			default:

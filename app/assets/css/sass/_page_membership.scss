@@ -264,6 +264,25 @@
 		.ms-global-payment-wrapper .ms-header .wpmui-separator {
 			display: none;
 		}
+
+		.ms-payment-gateways {
+			.disabled-wrapper {
+				.wpmui-field-label {
+					color: #AAA;
+				}
+			}
+
+			.wpmui-wrapper:after {
+				clear: both;
+				display: block;
+				content: '';
+			}
+
+			.wpmui-field-label {
+				float: left;
+				width: 200px;
+			}
+		}
 	}
 }
 

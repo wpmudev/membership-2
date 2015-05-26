@@ -210,6 +210,13 @@ class MS_View_Membership_Payment extends MS_View {
 					endif; endif;
 					?>
 				</div>
+				<div class="cf ms-payment-gateways">
+					<?php MS_Helper_Html::html_separator(); ?>
+					<p><strong><?php _e( 'Allowed payment gateways', MS_TEXT_DOMAIN ); ?></strong></p>
+					<?php foreach ( $fields['gateways'] as $field ) {
+						MS_Helper_Html::html_element( $field );
+					} ?>
+				</div>
 				<?php endif; ?>
 
 				<?php
@@ -243,173 +250,208 @@ class MS_View_Membership_Payment extends MS_View {
 		global $wp_locale;
 
 		$membership = $this->data['membership'];
-
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
 
-		$fields = array(
-			'price' => array(
-				'id' => 'price',
-				'title' => __( 'Payment Amount', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
-				'before' => MS_Plugin::instance()->settings->currency_symbol,
-				'value' => $membership->price, // Without taxes
-				'class' => 'ms-text-smallish',
-				'config' => array(
-					'step' => 'any',
-					'min' => 0,
-				),
-				'placeholder' => '0' . $wp_locale->number_format['decimal_point'] . '00',
-				'ajax_data' => array( 'field' => 'price' ),
+		$fields = array();
+		$fields['price'] = array(
+			'id' => 'price',
+			'title' => __( 'Payment Amount', MS_TEXT_DOMAIN ),
+			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
+			'before' => MS_Plugin::instance()->settings->currency_symbol,
+			'value' => $membership->price, // Without taxes
+			'class' => 'ms-text-smallish',
+			'config' => array(
+				'step' => 'any',
+				'min' => 0,
 			),
-			'payment_type' => array(
-				'id' => 'payment_type',
-				'title' => __( 'This Membership requires', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $membership->payment_type,
-				'field_options' => MS_Model_Membership::get_payment_types(),
-				'ajax_data' => array( 'field' => 'payment_type' ),
-			),
-			'period_unit' => array(
-				'id' => 'period_unit',
-				'title' => __( 'Grant access for', MS_TEXT_DOMAIN ),
-				'name' => '[period][period_unit]',
-				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
-				'value' => $membership->period_unit,
-				'class' => 'ms-text-small',
-				'config' => array(
-					'step' => 1,
-					'min' => 1,
-				),
-				'placeholder' => '1',
-				'ajax_data' => array( 'field' => 'period_unit' ),
-			),
-			'period_type' => array(
-				'id' => 'period_type',
-				'name' => '[period][period_type]',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $membership->period_type,
-				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
-				'ajax_data' => array( 'field' => 'period_type' ),
-			),
-			'pay_cycle_period_unit' => array(
-				'id' => 'pay_cycle_period_unit',
-				'title' => __( 'Payment Frequency', MS_TEXT_DOMAIN ),
-				'name' => '[pay_cycle_period][period_unit]',
-				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
-				'value' => $membership->pay_cycle_period_unit,
-				'class' => 'ms-text-small',
-				'config' => array(
-					'step' => 1,
-					'min' => 1,
-				),
-				'placeholder' => '1',
-				'ajax_data' => array( 'field' => 'pay_cycle_period_unit' ),
-			),
-			'pay_cycle_period_type' => array(
-				'id' => 'pay_cycle_period_type',
-				'name' => '[pay_cycle_period][period_type]',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $membership->pay_cycle_period_type,
-				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
-				'ajax_data' => array( 'field' => 'pay_cycle_period_type' ),
-			),
-			'pay_cycle_repetitions' => array(
-				'id' => 'pay_cycle_repetitions',
-				'title' => __( 'Total Payments', MS_TEXT_DOMAIN ),
-				'name' => '[pay_cycle_repetitions]',
-				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
-				'after' => __( 'payments (0 = unlimited)', MS_TEXT_DOMAIN ),
-				'value' => $membership->pay_cycle_repetitions,
-				'class' => 'ms-text-small',
-				'config' => array(
-					'step' => '1',
-					'min' => 0,
-				),
-				'placeholder' => '0',
-				'ajax_data' => array( 'field' => 'pay_cycle_repetitions' ),
-			),
-			'period_date_start' => array(
-				'id' => 'period_date_start',
-				'title' => __( 'Grant access from', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
-				'value' => $membership->period_date_start,
-				'placeholder' => __( 'Start Date...', MS_TEXT_DOMAIN ),
-				'ajax_data' => array( 'field' => 'period_date_start' ),
-			),
-			'period_date_end' => array(
-				'id' => 'period_date_end',
-				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
-				'value' => $membership->period_date_end,
-				'before' => _x( 'to', 'date range', MS_TEXT_DOMAIN ),
-				'placeholder' => __( 'End Date...', MS_TEXT_DOMAIN ),
-				'ajax_data' => array( 'field' => 'period_date_end' ),
-			),
-			'on_end_membership_id' => array(
-				'id' => 'on_end_membership_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'After this membership ends', MS_TEXT_DOMAIN ),
-				'value' => $membership->on_end_membership_id,
-				'field_options' => $membership->get_after_ms_ends_options(),
-				'ajax_data' => array( 'field' => 'on_end_membership_id' ),
-			),
+			'placeholder' => '0' . $wp_locale->number_format['decimal_point'] . '00',
+			'ajax_data' => array( 1 ),
+		);
 
-			'enable_trial_addon' => array(
-				'id' => 'enable_trial',
-				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Yes, enable Trial Memberships!', MS_TEXT_DOMAIN ),
-				'button_value' => 1,
-				'ajax_data' => array(
-					'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-					'_wpnonce' => wp_create_nonce( MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON ),
-					'field' => 'active',
-					'addon' => MS_Model_Addon::ADDON_TRIAL,
-				),
-			),
-			'trial_period_enabled' => array(
-				'id' => 'trial_period_enabled',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Trial Period', MS_TEXT_DOMAIN ),
-				'after' => __( 'Offer Free Trial', MS_TEXT_DOMAIN ),
-				'value' => $membership->trial_period_enabled,
-				'ajax_data' => array( 'field' => 'trial_period_enabled' ),
-			),
-			'trial_period_unit' => array(
-				'id' => 'trial_period_unit',
-				'name' => '[trial_period][period_unit]',
-				'before' => __( 'The Trial is free and lasts for', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
-				'value' => $membership->trial_period_unit,
-				'class' => 'ms-text-small',
-				'config' => array(
-					'step' => 1,
-					'min' => 1,
-				),
-				'placeholder' => '1',
-				'ajax_data' => array( 'field' => 'trial_period_unit' ),
-			),
-			'trial_period_type' => array(
-				'id' => 'trial_period_type',
-				'name' => '[trial_period][period_type]',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $membership->trial_period_type,
-				'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
-				'ajax_data' => array( 'field' => 'trial_period_type' ),
-			),
+		$fields['payment_type'] = array(
+			'id' => 'payment_type',
+			'title' => __( 'This Membership requires', MS_TEXT_DOMAIN ),
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => $membership->payment_type,
+			'field_options' => MS_Model_Membership::get_payment_types(),
+			'ajax_data' => array( 1 ),
+		);
 
-			'membership_id' => array(
-				'id' => 'membership_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $membership->id,
+		$fields['period_unit'] = array(
+			'id' => 'period_unit',
+			'title' => __( 'Grant access for', MS_TEXT_DOMAIN ),
+			'name' => '[period][period_unit]',
+			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
+			'value' => $membership->period_unit,
+			'class' => 'ms-text-small',
+			'config' => array(
+				'step' => 1,
+				'min' => 1,
 			),
+			'placeholder' => '1',
+			'ajax_data' => array( 1 ),
+		);
 
-			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['action'],
+		$fields['period_type'] = array(
+			'id' => 'period_type',
+			'name' => '[period][period_type]',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => $membership->period_type,
+			'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['pay_cycle_period_unit'] = array(
+			'id' => 'pay_cycle_period_unit',
+			'title' => __( 'Payment Frequency', MS_TEXT_DOMAIN ),
+			'name' => '[pay_cycle_period][period_unit]',
+			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
+			'value' => $membership->pay_cycle_period_unit,
+			'class' => 'ms-text-small',
+			'config' => array(
+				'step' => 1,
+				'min' => 1,
+			),
+			'placeholder' => '1',
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['pay_cycle_period_type'] = array(
+			'id' => 'pay_cycle_period_type',
+			'name' => '[pay_cycle_period][period_type]',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => $membership->pay_cycle_period_type,
+			'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['pay_cycle_repetitions'] = array(
+			'id' => 'pay_cycle_repetitions',
+			'title' => __( 'Total Payments', MS_TEXT_DOMAIN ),
+			'name' => '[pay_cycle_repetitions]',
+			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
+			'after' => __( 'payments (0 = unlimited)', MS_TEXT_DOMAIN ),
+			'value' => $membership->pay_cycle_repetitions,
+			'class' => 'ms-text-small',
+			'config' => array(
+				'step' => '1',
+				'min' => 0,
+			),
+			'placeholder' => '0',
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['period_date_start'] = array(
+			'id' => 'period_date_start',
+			'title' => __( 'Grant access from', MS_TEXT_DOMAIN ),
+			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+			'value' => $membership->period_date_start,
+			'placeholder' => __( 'Start Date...', MS_TEXT_DOMAIN ),
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['period_date_end'] = array(
+			'id' => 'period_date_end',
+			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+			'value' => $membership->period_date_end,
+			'before' => _x( 'to', 'date range', MS_TEXT_DOMAIN ),
+			'placeholder' => __( 'End Date...', MS_TEXT_DOMAIN ),
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['on_end_membership_id'] = array(
+			'id' => 'on_end_membership_id',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'title' => __( 'After this membership ends', MS_TEXT_DOMAIN ),
+			'value' => $membership->on_end_membership_id,
+			'field_options' => $membership->get_after_ms_ends_options(),
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['enable_trial_addon'] = array(
+			'id' => 'enable_trial_addon',
+			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+			'value' => __( 'Yes, enable Trial Memberships!', MS_TEXT_DOMAIN ),
+			'button_value' => 1,
+			'ajax_data' => array(
+				'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+				'_wpnonce' => wp_create_nonce( MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON ),
+				'addon' => MS_Model_Addon::ADDON_TRIAL,
+				'field' => 'active',
 			),
 		);
 
+		$fields['trial_period_enabled'] = array(
+			'id' => 'trial_period_enabled',
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'title' => '<strong>' . __( 'Trial Period', MS_TEXT_DOMAIN ) . '</strong>',
+			'after' => __( 'Offer Free Trial', MS_TEXT_DOMAIN ),
+			'value' => $membership->trial_period_enabled,
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['trial_period_unit'] = array(
+			'id' => 'trial_period_unit',
+			'name' => '[trial_period][period_unit]',
+			'before' => __( 'The Trial is free and lasts for', MS_TEXT_DOMAIN ),
+			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
+			'value' => $membership->trial_period_unit,
+			'class' => 'ms-text-small',
+			'config' => array(
+				'step' => 1,
+				'min' => 1,
+			),
+			'placeholder' => '1',
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['trial_period_type'] = array(
+			'id' => 'trial_period_type',
+			'name' => '[trial_period][period_type]',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' => $membership->trial_period_type,
+			'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
+			'ajax_data' => array( 1 ),
+		);
+
+		$fields['membership_id'] = array(
+			'id' => 'membership_id',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $membership->id,
+		);
+
+		$fields['action'] = array(
+			'id' => 'action',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $this->data['action'],
+		);
+
+		// Get a list of all payment gateways.
+		$gateways = MS_Model_Gateway::get_gateways();
+		$fields['gateways'] = array();
+		foreach ( $gateways as $gateway ) {
+			if ( 'free' == $gateway->id ) { continue; }
+			if ( ! $gateway->active ) { continue; }
+
+			$fields['gateways'][$gateway->id] = array(
+				'id' => 'disabled-gateway-' . $gateway->id,
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => $gateway->name,
+				'before' => __( 'Available', MS_TEXT_DOMAIN ),
+				'after' => __( 'Not available', MS_TEXT_DOMAIN ),
+				'value' => ! $membership->can_use_gateway( $gateway->id ),
+				'class' => 'reverse',
+				'ajax_data' => array(
+					'field' => 'disabled_gateways[' . $gateway->id . ']',
+					'_wpnonce' => $nonce,
+					'action' => $action,
+					'membership_id' => $membership->id,
+				),
+			);
+		}
+
+		// Modify some fields for free memberships.
 		if ( $membership->is_free ) {
 			$fields['price'] = '';
 			$fields['payment_type'] = array(
@@ -418,10 +460,11 @@ class MS_View_Membership_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->payment_type,
 				'field_options' => MS_Model_Membership::get_payment_types( 'free' ),
-				'ajax_data' => array( 'field' => 'payment_type' ),
+				'ajax_data' => array( 1 ),
 			);
 		}
 
+		// Modify some fields if payment method cannot be changed anymore.
 		if ( ! $membership->can_change_payment() ) {
 			$payment_types = MS_Model_Membership::get_payment_types();
 			$fields['payment_type'] = array(
@@ -435,12 +478,16 @@ class MS_View_Membership_Payment extends MS_View {
 			);
 		}
 
+		// Process the fields and add missing default attributes.
 		foreach ( $fields as $key => $field ) {
 			if ( ! empty( $field['ajax_data'] ) ) {
 				if ( ! empty( $field['ajax_data']['action'] ) ) {
 					continue;
 				}
 
+				if ( ! isset( $fields[ $key ]['ajax_data']['field'] ) ) {
+					$fields[ $key ]['ajax_data']['field'] = $fields[ $key ]['id'];
+				}
 				$fields[ $key ]['ajax_data']['_wpnonce'] = $nonce;
 				$fields[ $key ]['ajax_data']['action'] = $action;
 				$fields[ $key ]['ajax_data']['membership_id'] = $membership->id;

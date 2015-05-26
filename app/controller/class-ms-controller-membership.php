@@ -1128,8 +1128,24 @@ class MS_Controller_Membership extends MS_Controller {
 				$updated = 0;
 				$failed = 0;
 				foreach ( $fields as $field => $value ) {
+					$key = false;
+
+					// Very basic support for array updates.
+					// We only support updating arrays when one key is
+					if ( strpos( $field, '[' ) ) {
+						$field = str_replace( ']', '', $field );
+						list( $field, $key ) = explode( '[', $field, 2 );
+					}
+
 					try {
-						$membership->$field = $value;
+						$the_value = $membership->$field;
+						if ( $key ) {
+							$the_value[$key] = $value;
+						} else {
+							$the_value = $value;
+						}
+						$membership->$field = $the_value;
+
 						$updated += 1;
 					}
 					catch ( Exception $e ) {

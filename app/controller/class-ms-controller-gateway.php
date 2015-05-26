@@ -304,6 +304,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 			// Skip gateways that are not configured.
 			if ( ! $gateway->is_configured() ) { continue; }
+			if ( ! $membership->can_use_gateway( $gateway->id ) ) { continue; }
 
 			$data['ms_relationship'] = $subscription;
 			$data['gateway'] = $gateway;

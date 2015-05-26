@@ -1017,58 +1017,6 @@
 /***
  * RADIO SLIDER *
  ***/
-.wpmui-wnd .wpmui-radio-slider-wrapper,
-.ms-wrap .wpmui-radio-slider-wrapper {
-  clear: both;
-}
-.wpmui-wnd .wpmui-radio-slider:focus,
-.ms-wrap .wpmui-radio-slider:focus {
-  background: none;
-  outline: none;
-}
-.wpmui-wnd .wpmui-radio-slider,
-.ms-wrap .wpmui-radio-slider {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 18px;
-  margin: 3px 0;
-  border-radius: 10px;
-  background: #b0b0b0;
-  opacity: .8;
-  overflow: visible;
-}
-.wpmui-wnd .wpmui-radio-slider:hover,
-.ms-wrap .wpmui-radio-slider:hover {
-  cursor: pointer;
-  opacity: 1;
-}
-.wpmui-wnd .wpmui-radio-slider .wpmui-toggle,
-.ms-wrap .wpmui-radio-slider .wpmui-toggle {
-  position: absolute;
-  display: inline-block;
-  left: 0;
-  width: 12px;
-  height: 12px;
-  margin: 3px;
-  background: #F4F4F4;
-  border-radius: 50%;
-  transition: all .2s ease-in-out;
-}
-.wpmui-wnd .wpmui-radio-slider .wpmui-toggle:hover,
-.ms-wrap .wpmui-radio-slider .wpmui-toggle:hover {
-  -webkit-transform: scale(1.1);
-  -ms-transform: scale(1.1);
-  transform: scale(1.1);
-}
-.wpmui-wnd .wpmui-radio-slider.on .wpmui-toggle,
-.ms-wrap .wpmui-radio-slider.on .wpmui-toggle {
-  left: 21px;
-}
-.wpmui-wnd .wpmui-radio-slider.on,
-.ms-wrap .wpmui-radio-slider.on {
-  background: #6bbb1a;
-}
 .wpmui-wnd .wpmui-radio-slider.ms-processing,
 .ms-wrap .wpmui-radio-slider.ms-processing {
   cursor: wait;
@@ -1079,12 +1027,6 @@
   position: relative;
   top: 8px;
   margin: -8px 0 0 40px;
-}
-.wpmui-wnd .wpmui-radio-slider .before,
-.wpmui-wnd .wpmui-radio-slider .after,
-.ms-wrap .wpmui-radio-slider .before,
-.ms-wrap .wpmui-radio-slider .after {
-  transition: opacity .2s;
 }
 
 /***
@@ -1601,6 +1543,18 @@
 }
 #wpwrap .ms-wrap .ms-membership-payment .ms-global-payment-wrapper .ms-header .wpmui-separator {
   display: none;
+}
+#wpwrap .ms-wrap .ms-membership-payment .ms-payment-gateways .disabled-wrapper .wpmui-field-label {
+  color: #AAA;
+}
+#wpwrap .ms-wrap .ms-membership-payment .ms-payment-gateways .wpmui-wrapper:after {
+  clear: both;
+  display: block;
+  content: '';
+}
+#wpwrap .ms-wrap .ms-membership-payment .ms-payment-gateways .wpmui-field-label {
+  float: left;
+  width: 200px;
 }
 
 /* Membership Details ("Overview" page) */
