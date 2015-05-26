@@ -1,6 +1,6 @@
-[submodule "extra/wpmudev-dashboard"]
-	path = extra/wpmudev-dashboard
+[submodule "lib/wpmudev-dashboard"]
+	path = lib/wpmudev-dashboard
 	url = git@bitbucket.org:incsub/wpmudev-dashboard-notification.git
-[submodule "extra/wpmu-lib"]
-	path = extra/wpmu-lib
+[submodule "lib/wpmu-lib"]
+	path = lib/wpmu-lib
 	url = git@bitbucket.org:incsub/wpmu-lib.git
