@@ -14,7 +14,7 @@ Text Domain: membership2
 /**
  * @copyright Incsub (http://incsub.com/)
  *
- * Authors: Fabio Jun Onishi, Philipp Stracker, Victor Ivanov, Jack Kitterhing, Rheinard Korf
+ * Authors: Philipp Stracker, Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf
  * Contributors: Joji Mori, Patrick Cohen
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)

@@ -44,7 +44,7 @@ module.exports = function( grunt ) {
 			'app/assets/css/ms-public.css':         'app/assets/css/sass/ms-public.scss'
 		},
 
-		plugin_dir: 'protected-content/'
+		plugin_dir: 'membership/'
 	};
 
 	// Project configuration

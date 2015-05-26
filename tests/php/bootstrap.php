@@ -14,7 +14,7 @@ define( 'WP_TESTS_DIR', '/srv/www/wordpress-develop/trunk/tests/phpunit/' );
 /**
  * The path to the main file of the plugin to test.
  */
-define( 'TEST_PLUGIN_FILE', 'protected-content.php' );
+define( 'TEST_PLUGIN_FILE', 'membership2.php' );
 
 /**
  * The WordPress tests functions.
