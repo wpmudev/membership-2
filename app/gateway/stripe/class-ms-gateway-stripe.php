@@ -75,6 +75,13 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 */
 	protected $publishable_key;
 
+	/**
+	 * Instance of the shared stripe API integration
+	 *
+	 * @since 2.0.0
+	 * @var MS_Gateway_Stripe_Api $api
+	 */
+	protected $_api = null;
 
 	/**
 	 * Initialize the object.
@@ -84,6 +91,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 */
 	public function after_load() {
 		parent::after_load();
+		$this->_api = MS_Factory::load( 'MS_Gateway_Stripe_Api' );
 
 		$this->id = self::ID;
 		$this->name = __( 'Stripe Single Gateway', MS_TEXT_DOMAIN );
@@ -114,34 +122,18 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			lib2()->array->strip_slashes( $_POST, 'stripeToken' );
 
 			$token = $_POST['stripeToken'];
-			$this->load_stripe_lib();
-			$customer = $this->get_stripe_customer( $member );
-
-			if ( empty( $customer ) ) {
-				$customer = Stripe_Customer::create(
-					array(
-						'card' => $token,
-						'email' => $member->email,
-					)
-				);
-				$this->save_customer_id( $member, $customer->id );
-			} else {
-				$this->add_card( $member, $token );
-				$customer->save();
-			}
+			$customer = $this->_api->get_stripe_customer( $member, $token );
 
 			if ( 0 == $invoice->total ) {
 				// Free, just process.
 				$invoice->changed();
 			} else {
 				// Send request to gateway.
-				$charge = Stripe_Charge::create(
-					array(
-						'amount' => intval( $invoice->total * 100 ), // Amount in cents!
-						'currency' => strtolower( $invoice->currency ),
-						'customer' => $customer->id,
-						'description' => $invoice->name,
-					)
+				$charge = $this->_api->charge(
+					$customer,
+					$invoice->total,
+					$invoice->currency,
+					$invoice->name
 				);
 
 				if ( true == $charge->paid ) {
@@ -182,20 +174,17 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 		if ( ! $invoice->is_paid() ) {
 			try {
-				$this->load_stripe_lib();
-				$customer = $this->get_stripe_customer( $member );
+				$customer = $this->_api->find_customer( $member );
 
 				if ( ! empty( $customer ) ) {
 					if ( 0 == $invoice->total ) {
 						$invoice->changed();
 					} else {
-						$charge = Stripe_Charge::create(
-							array(
-								'amount' => intval( $invoice->total * 100 ), // Amount in cents!
-								'currency' => strtolower( $invoice->currency ),
-								'customer' => $customer->id,
-								'description' => $invoice->name,
-							)
+						$charge = $this->_api->charge(
+							$customer,
+							$invoice->total,
+							$invoice->currency,
+							$invoice->name
 						);
 
 						if ( true == $charge->paid ) {
@@ -211,7 +200,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 				MS_Helper_Debug::log( $e->getMessage() );
 			}
 		} else {
-			// Invoice is already paid earlier.
+			// Invoice was already paid earlier.
 			$was_paid = true;
 		}
 
@@ -226,154 +215,6 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	}
 
 	/**
-	 * Get Member's Stripe Customer Object.
-	 *
-	 * @since 1.0.0
-	 * @internal
-	 *
-	 * @param MS_Model_Member $member The member.
-	 */
-	public function get_stripe_customer( $member ) {
-		$customer_id = $this->get_customer_id( $member );
-		$customer = null;
-
-		if ( ! empty( $customer_id ) ) {
-			$customer = Stripe_Customer::retrieve( $customer_id );
-		}
-
-		return apply_filters(
-			'ms_gateway_stripe_get_stripe_customer',
-			$customer,
-			$member,
-			$this
-		);
-	}
-
-	/**
-	 * Get Member's Stripe customer_id.
-	 *
-	 * @since 1.0.0
-	 * @internal
-	 *
-	 * @param MS_Model_Member $member The member.
-	 */
-	public function get_customer_id( $member ) {
-		$customer_id = $member->get_gateway_profile( $this->id, 'customer_id' );
-
-		return apply_filters(
-			'ms_gateway_stripe_get_customer_id',
-			$customer_id,
-			$member,
-			$this
-		);
-	}
-
-	/**
-	 * Save Stripe customer id.
-	 *
-	 * @since 1.0.0
-	 * @internal
-	 *
-	 * @param MS_Model_Member $member The member.
-	 * @param int $customer_id The stripe customer id to save.
-	 */
-	public function save_customer_id( $member, $customer_id ) {
-		$member->set_gateway_profile( $this->id, 'customer_id', $customer_id );
-		$member->save();
-
-		do_action(
-			'ms_gateway_stripe_save_customer_id_after',
-			$member,
-			$this
-		);
-	}
-
-	/**
-	 * Save card info to user meta.
-	 *
-	 * @since 1.0.0
-	 * @internal
-	 *
-	 * @param MS_Model_Member $member The member.
-	 */
-	public function save_card_info( $member ) {
-		$customer = $this->get_stripe_customer( $member );
-
-		// Stripe API until version 2015-02-16
-		if ( ! empty( $customer->cards ) ) {
-			$card = $customer->cards->retrieve( $customer->default_card );
-		}
-
-		// Stripe API since 2015-02-18
-		if ( ! empty( $customer->sources ) ) {
-			$card = $customer->sources->retrieve( $customer->default_source );
-		}
-
-		$member->set_gateway_profile(
-			$this->id,
-			'card_exp',
-			gmdate( 'Y-m-d', strtotime( "{$card->exp_year}-{$card->exp_month}-01" ) )
-		);
-		$member->set_gateway_profile( $this->id, 'card_num', $card->last4 );
-		$member->save();
-
-		do_action( 'ms_gateway_stripe_save_card_info_after', $member, $this );
-	}
-
-	/**
-	 * Add card info to strip customer profile.
-	 *
-	 * @since 1.0.0
-	 * @api
-	 *
-	 * @param MS_Model_Member $member The member.
-	 * @param string $token The stripe card token generated by the gateway.
-	 */
-	public function add_card( $member, $token ) {
-		$this->load_stripe_lib();
-
-		$customer = $this->get_stripe_customer( $member );
-
-		$card = false;
-		// Stripe API until version 2015-02-16
-		if ( ! empty( $customer->cards ) ) {
-			$card = $customer->cards->create( array( 'card' => $token ) );
-			$customer->default_card = $card->id;
-		}
-
-		// Stripe API since 2015-02-18
-		if ( ! empty( $customer->sources ) ) {
-			$card = $customer->sources->create( array( 'card' => $token ) );
-			$customer->default_source = $card->id;
-		}
-
-		$customer->save();
-		$this->save_card_info( $member );
-
-		do_action(
-			'ms_gateway_stripe_add_card_info_after',
-			$member,
-			$token,
-			$this
-		);
-	}
-
-	/**
-	 * Load Stripe lib.
-	 *
-	 * @since 1.0.0
-	 * @internal
-	 */
-	public function load_stripe_lib(){
-		require_once MS_Plugin::instance()->dir . '/lib/stripe-php/lib/Stripe.php';
-
-		$secret_key = $this->get_secret_key();
-		Stripe::setApiKey( $secret_key );
-
-		do_action( 'ms_gateway_stripe_load_stripe_lib_after', $this );
-	}
-
-	/**
 	 * Get Stripe publishable key.
 	 *
 	 * @since 1.0.0
@@ -382,18 +223,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @return string The Stripe API publishable key.
 	 */
 	public function get_publishable_key() {
-		$publishable_key = null;
-
-		if ( self::MODE_LIVE == $this->mode ) {
-			$publishable_key = $this->publishable_key;
-		} else {
-			$publishable_key = $this->test_publishable_key;
-		}
-
-		return apply_filters(
-			'ms_gateway_stripe_get_publishable_key',
-			$publishable_key
-		);
+		return $this->_api->get_publishable_key( $this->mode );
 	}
 
 	/**
@@ -405,18 +235,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @return string The Stripe API secret key.
 	 */
 	public function get_secret_key() {
-		$secret_key = null;
-
-		if ( self::MODE_LIVE == $this->mode ) {
-			$secret_key = $this->secret_key;
-		} else {
-			$secret_key = $this->test_secret_key;
-		}
-
-		return apply_filters(
-			'ms_gateway_stripe_get_secret_key',
-			$secret_key
-		);
+		return $this->_api->get_secret_key( $this->mode );
 	}
 
 	/**
