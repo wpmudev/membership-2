@@ -321,39 +321,15 @@ class MS_Controller_Gateway extends MS_Controller {
 				continue;
 			}
 
-			switch ( $gateway->id ) {
-				case MS_Gateway_Authorize::ID:
-					$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Button' );
-					/**
-					 *  set additional step for authorize.net (gateway specific form)
-					 *  @todo change to use popup, instead of another step (like stripe)
-					 */
-					$data['step'] = 'gateway_form';
-					break;
+			$view_class = get_class( $gateway ) . '_View_Button';
+			$view = MS_Factory::create( $view_class );
 
-				case MS_Gateway_Paypalsingle::ID:
-					$view = MS_Factory::create( 'MS_Gateway_Paypalsingle_View_Button' );
-					break;
-
-				case MS_Gateway_Paypalstandard::ID:
-					$view = MS_Factory::create( 'MS_Gateway_Paypalstandard_View_Button' );
-					break;
-
-				case MS_Gateway_Stripe::ID:
-					$view = MS_Factory::create( 'MS_Gateway_Stripe_View_Button' );
-					break;
-
-				case MS_Gateway_Free::ID:
-					$view = MS_Factory::create( 'MS_Gateway_Free_View_Button' );
-					break;
-
-				case MS_Gateway_Manual::ID:
-					$view = MS_Factory::create( 'MS_Gateway_Manual_View_Button' );
-					break;
-
-				default:
-					$view = false;
-					break;
+			if ( MS_Gateway_Authorize::ID == $gateway->id ) {
+				/**
+				 *  set additional step for authorize.net (gateway specific form)
+				 *  @todo change to use popup, instead of another step (like stripe)
+				 */
+				$data['step'] = 'gateway_form';
 			}
 
 			if ( ! empty( $view ) ) {
