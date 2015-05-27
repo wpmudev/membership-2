@@ -195,6 +195,17 @@ class MS_Model_CustomPostType extends MS_Model {
 		wp_cache_set( $this->id, $this, $class );
 		$this->after_save();
 		MS_Factory::revert_blog();
+
+		global $wp_current_filter;
+		if ( ! in_array( 'ms_saved_' . $class, $wp_current_filter ) ) {
+			/**
+			 * Action triggered after a custom post type model was saved to
+			 * database.
+			 *
+			 * @since 2.0.0
+			 */
+			do_action( 'ms_saved_' . $class, $this );
+		}
 	}
 
 	/**

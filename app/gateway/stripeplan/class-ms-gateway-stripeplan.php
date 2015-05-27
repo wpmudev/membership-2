@@ -69,25 +69,123 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE,
 		);
 
+		$this->add_action( 'ms_saved_MS_Model_Membership', 'update_plans' );
+		$this->add_action( 'ms_gateway_toggle_stripeplan', 'update_plans' );
 	}
 
 	/**
+	 * Creates or updates the payment plan specified by the function parameter.
 	 *
-	 * @since 2.0.0
+	 * @since  2.0.0
+	 * @param  array $plan_data The plan-object containing all details for Stripe.
 	 */
+	protected function create_or_update_plan( $plan_data ) {
+		$this->stripe->load_stripe_lib();
 
+		$plan_id = $plan_data['id'];
+		$all_plans = MS_Factory::get_transient( 'ms_stripeplan_plans' );
+		$all_plans = lib2()->array->get( $all_plans );
 
-	 */
+		if ( ! isset( $all_plans[$plan_id] ) ) {
+			try {
+				$plan = Stripe_Plan::retrieve( $plan_id );
+			} catch( Exception $e ) {
+				// If the plan does not exist then stripe will throw an Exception.
+				$plan = false;
+			}
+			$all_plans[$plan_id] = $plan;
+		} else {
+			$plan = $all_plans[$plan_id];
+		}
+
+		/*
+		 * Stripe can only update the plan-name, so we have to delete and
+		 * recreate the plan manually.
+		 */
+		if ( $plan ) {
+			$plan->delete();
+			$all_plans[$plan_id] = false;
+		}
+
+		if ( $plan_data['amount'] > 0 ) {
+			$plan = Stripe_Plan::create( $plan_data );
+			$all_plans[$plan_id] = $plan;
+		}
+
+		lib2()->debug->dump( $all_plans );
+		MS_Factory::set_transient( 'ms_stripeplan_plans', $all_plans, HOUR_IN_SECONDS );
+	}
 
 	/**
+	 * Checks all Memberships and creates/updates the payment plan on stripe if
+	 * the membership changed since the plan was last changed.
 	 *
+	 * This function is called when the gateway is activated and after a
+	 * membership was saved to database.
 	 *
-	 * @since 2.0.0
+	 * @since  2.0.0
 	 */
+	public function update_plans() {
+		if ( ! $this->active ) { return false; }
 
+		// Get a list of all Memberships.
+		$memberships = MS_Model_Membership::get_memberships();
+		$settings = MS_Plugin::instance()->settings;
 
+		foreach ( $memberships as $membership ) {
+			$plan_data = array(
+				'id' => 'ms-' . $membership->id,
+				'amount' => 0,
+			);
 
+			if ( ! $membership->is_free()
+				&& $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING
+			) {
+				// Prepare the plan-data for Stripe.
+				$trial_days = null;
+				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
+					&& $membership->trial_period_enabled
+				) {
+					$trial_days = MS_Helper_Period::get_period_in_days(
+						$membership->trial_period_unit,
+						$membership->trial_period_type
+					);
+				}
 
+				$interval = 'day';
+				$max_count = 365;
+				switch ( $membership->pay_cycle_period_type ) {
+					case MS_Helper_Period::PERIOD_TYPE_WEEKS:
+						$interval = 'week';
+						$max_count = 52;
+						break;
+
+					case MS_Helper_Period::PERIOD_TYPE_MONTHS:
+						$interval = 'month';
+						$max_count = 12;
+						break;
+
+					case MS_Helper_Period::PERIOD_TYPE_YEARS:
+						$interval = 'year';
+						$max_count = 1;
+						break;
+				}
+
+				$interval_count = min(
+					$max_count,
+					$membership->pay_cycle_period_unit
+				);
+
+				$plan_data['amount'] = absint( $membership->price * 100 );
+				$plan_data['currency'] = $settings->currency;
+				$plan_data['name'] = $membership->name;
+				$plan_data['interval'] = $interval;
+				$plan_data['interval_count'] = $interval_count;
+				$plan_data['trial_period_days'] = $trial_days;
+			}
+
+			$this->create_or_update_plan( $plan_data );
+		}
 	}
 
 	/**

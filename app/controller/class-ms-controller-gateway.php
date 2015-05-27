@@ -243,6 +243,13 @@ class MS_Controller_Gateway extends MS_Controller {
 					$gateway->active = ! $gateway->active;
 					$gateway->save();
 					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+
+					/**
+					 * Hook called after a gateway-status was toggled.
+					 *
+					 * @since 2.0.0
+					 */
+					do_action( 'ms_gateway_toggle_' . $gateway_id, $gateway );
 					break;
 
 				case 'edit':
@@ -264,6 +271,13 @@ class MS_Controller_Gateway extends MS_Controller {
 					} else {
 						$msg = MS_Helper_Settings::SETTINGS_MSG_UNCONFIGURED;
 					}
+
+					/**
+					 * Hook called after a gateway-settings were modified.
+					 *
+					 * @since 2.0.0
+					 */
+					do_action( 'ms_gateway_changed_' . $gateway_id, $gateway );
 					break;
 			}
 		}
