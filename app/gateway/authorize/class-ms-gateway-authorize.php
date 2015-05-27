@@ -45,6 +45,14 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	public static $instance;
 
 	/**
+	 * Gateway group
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	protected $group = 'Authorize.net';
+
+	/**
 	 * Authorize.net's Customer Information Manager wrapper.
 	 *
 	 * @since 1.0.0

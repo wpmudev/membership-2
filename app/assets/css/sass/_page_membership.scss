@@ -280,7 +280,13 @@
 
 			.wpmui-field-label {
 				float: left;
-				width: 200px;
+				min-width: 200px;
+				width: 40%;
+				margin-right: 20px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				text-align: right;
 			}
 		}
 	}

@@ -47,6 +47,14 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	public static $instance;
 
 	/**
+	 * Gateway group
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	protected $group = 'PayPal';
+
+	/**
 	 * Gateway ID.
 	 *
 	 * @since 1.0.0

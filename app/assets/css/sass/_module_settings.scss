@@ -346,6 +346,131 @@
 
 	/* SETTINGS GATEWAY */
 	.gateways {
+		margin-top: 20px;
+
+		.ms-gateway-group {
+			padding: 5px 15px;
+			border: 1px solid #E5E5E5;
+			border-bottom: 0;
+
+			&:last-child {
+				border-bottom: 1px solid #E5E5E5;
+			}
+
+			h4 {
+				margin: -5px -15px 10px;
+				padding: 5px;
+				border-bottom: 1px solid #E5E5E5;
+				background-color: #F5F5F5;
+			}
+		}
+
+		.ms-gateway-item {
+			position: relative;
+			min-height: 48px;
+			border-bottom: 1px solid #E5E5E5;
+			margin-bottom: 10px;
+
+			&:hover {
+				.row-actions {
+					visibility: visible;
+				}
+			}
+
+			&:last-child {
+				margin-bottom: 0;
+				border-bottom: 0;
+			}
+
+			.row-status-close {
+				display: inline-block;
+				width: 8px;
+			}
+			.row-status-open {
+				display: none;
+				width: 8px;
+			}
+
+			&.open {
+				.row-status-close {
+					display: none;
+				}
+				.row-status-open {
+					display: inline-block;
+				}
+				.row-actions {
+					visibility: visible;
+				}
+			}
+		}
+
+		.ms-gateway-settings {
+			position: relative;
+			display: none;
+
+			.ms-settings-box-wrapper {
+				background: transparent;
+				border: 0;
+				box-shadow: none;
+				padding-left: 20px;
+
+				.ms-settings-box {
+					padding-bottom: 0;
+				}
+
+				.ms-header {
+					background: transparent;
+					border: 0;
+					padding-bottom: 0;
+				}
+			}
+
+			.ms-settings-box .inside {
+				padding-left: 220px;
+				position: relative;
+
+				.wpmui-wrapper {
+					position: relative;
+					display: block;
+				}
+
+				.wpmui-field-label {
+					position: absolute;
+					width: 200px;
+					left: -220px;
+					margin: 0;
+					top: 10px;
+				}
+			}
+		}
+
+		.show-settings {
+			display: none;
+		}
+
+		.show-settings:checked + .ms-gateway-settings {
+			display: block;
+		}
+
+		.gateway-toggle {
+			display: inline-block;
+			width: auto;
+		}
+
+		.gateway-name {
+			font-weight: bold;
+			color: #0073AA;
+			vertical-align: top;
+
+			&:hover {
+				color: #00A0D2;
+			}
+		}
+
+		.gateway-description {
+			color: #888;
+		}
+
 		.is-configured .ms-gateway-setup-wrapper,
 		.not-configured .wpmui-radio-slider {
 			display: none;
@@ -355,13 +480,27 @@
 			display: block;
 		}
 
-		.mode-unknown,
+		.mode {
+			display: inline-block;
+			padding: 0;
+			padding-left: 10px;
+		}
+
+		.ms-gateway-status {
+			position: absolute;
+			top: 0;
+			right: 0;
+
+			.button {
+				margin: 0;
+			}
+		}
+
 		.mode-sandbox,
 		.mode-live {
 			display: none;
 		}
 
-		.not-configured .mode-unknown,
 		.is-configured.is-sandbox .mode-sandbox,
 		.is-configured.is-live .mode-live {
 			display: block;

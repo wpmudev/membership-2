@@ -51,6 +51,17 @@ class MS_Gateway extends MS_Model_Option {
 	public static $instance;
 
 	/**
+	 * Gateway group.
+	 *
+	 * This is a label that is used to group settings together on the Payment
+	 * Settings page.
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	protected $group = '';
+
+	/**
 	 * Gateway ID.
 	 *
 	 * @since 1.0.0

@@ -44,6 +44,15 @@ class MS_Gateway_Free extends MS_Gateway {
 	public static $instance;
 
 	/**
+	 * Gateway group.
+	 * Free gateway has no group (it has no settings).
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	protected $group = '';
+
+	/**
 	 * Gateway ID.
 	 *
 	 * @since 1.0.0

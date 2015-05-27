@@ -1554,7 +1554,13 @@
 }
 #wpwrap .ms-wrap .ms-membership-payment .ms-payment-gateways .wpmui-field-label {
   float: left;
-  width: 200px;
+  min-width: 200px;
+  width: 40%;
+  margin-right: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
 }
 
 /* Membership Details ("Overview" page) */
@@ -2354,6 +2360,132 @@
   top: 0;
   margin: 0;
 }
+.wpmui-wnd .gateways,
+#wpwrap .ms-wrap .gateways {
+  margin-top: 20px;
+}
+.wpmui-wnd .gateways .ms-gateway-group,
+#wpwrap .ms-wrap .gateways .ms-gateway-group {
+  padding: 5px 15px;
+  border: 1px solid #E5E5E5;
+  border-bottom: 0;
+}
+.wpmui-wnd .gateways .ms-gateway-group:last-child,
+#wpwrap .ms-wrap .gateways .ms-gateway-group:last-child {
+  border-bottom: 1px solid #E5E5E5;
+}
+.wpmui-wnd .gateways .ms-gateway-group h4,
+#wpwrap .ms-wrap .gateways .ms-gateway-group h4 {
+  margin: -5px -15px 10px;
+  padding: 5px;
+  border-bottom: 1px solid #E5E5E5;
+  background-color: #F5F5F5;
+}
+.wpmui-wnd .gateways .ms-gateway-item,
+#wpwrap .ms-wrap .gateways .ms-gateway-item {
+  position: relative;
+  min-height: 48px;
+  border-bottom: 1px solid #E5E5E5;
+  margin-bottom: 10px;
+}
+.wpmui-wnd .gateways .ms-gateway-item:hover .row-actions,
+#wpwrap .ms-wrap .gateways .ms-gateway-item:hover .row-actions {
+  visibility: visible;
+}
+.wpmui-wnd .gateways .ms-gateway-item:last-child,
+#wpwrap .ms-wrap .gateways .ms-gateway-item:last-child {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+.wpmui-wnd .gateways .ms-gateway-item .row-status-close,
+#wpwrap .ms-wrap .gateways .ms-gateway-item .row-status-close {
+  display: inline-block;
+  width: 8px;
+}
+.wpmui-wnd .gateways .ms-gateway-item .row-status-open,
+#wpwrap .ms-wrap .gateways .ms-gateway-item .row-status-open {
+  display: none;
+  width: 8px;
+}
+.wpmui-wnd .gateways .ms-gateway-item.open .row-status-close,
+#wpwrap .ms-wrap .gateways .ms-gateway-item.open .row-status-close {
+  display: none;
+}
+.wpmui-wnd .gateways .ms-gateway-item.open .row-status-open,
+#wpwrap .ms-wrap .gateways .ms-gateway-item.open .row-status-open {
+  display: inline-block;
+}
+.wpmui-wnd .gateways .ms-gateway-item.open .row-actions,
+#wpwrap .ms-wrap .gateways .ms-gateway-item.open .row-actions {
+  visibility: visible;
+}
+.wpmui-wnd .gateways .ms-gateway-settings,
+#wpwrap .ms-wrap .gateways .ms-gateway-settings {
+  position: relative;
+  display: none;
+}
+.wpmui-wnd .gateways .ms-gateway-settings .ms-settings-box-wrapper,
+#wpwrap .ms-wrap .gateways .ms-gateway-settings .ms-settings-box-wrapper {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding-left: 20px;
+}
+.wpmui-wnd .gateways .ms-gateway-settings .ms-settings-box-wrapper .ms-settings-box,
+#wpwrap .ms-wrap .gateways .ms-gateway-settings .ms-settings-box-wrapper .ms-settings-box {
+  padding-bottom: 0;
+}
+.wpmui-wnd .gateways .ms-gateway-settings .ms-settings-box-wrapper .ms-header,
+#wpwrap .ms-wrap .gateways .ms-gateway-settings .ms-settings-box-wrapper .ms-header {
+  background: transparent;
+  border: 0;
+  padding-bottom: 0;
+}
+.wpmui-wnd .gateways .ms-gateway-settings .ms-settings-box .inside,
+#wpwrap .ms-wrap .gateways .ms-gateway-settings .ms-settings-box .inside {
+  padding-left: 220px;
+  position: relative;
+}
+.wpmui-wnd .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-wrapper,
+#wpwrap .ms-wrap .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-wrapper {
+  position: relative;
+  display: block;
+}
+.wpmui-wnd .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-label,
+#wpwrap .ms-wrap .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-label {
+  position: absolute;
+  width: 200px;
+  left: -220px;
+  margin: 0;
+  top: 10px;
+}
+.wpmui-wnd .gateways .show-settings,
+#wpwrap .ms-wrap .gateways .show-settings {
+  display: none;
+}
+.wpmui-wnd .gateways .show-settings:checked + .ms-gateway-settings,
+#wpwrap .ms-wrap .gateways .show-settings:checked + .ms-gateway-settings {
+  display: block;
+}
+.wpmui-wnd .gateways .gateway-toggle,
+#wpwrap .ms-wrap .gateways .gateway-toggle {
+  display: inline-block;
+  width: auto;
+}
+.wpmui-wnd .gateways .gateway-name,
+#wpwrap .ms-wrap .gateways .gateway-name {
+  font-weight: bold;
+  color: #0073AA;
+  vertical-align: top;
+}
+.wpmui-wnd .gateways .gateway-name:hover,
+#wpwrap .ms-wrap .gateways .gateway-name:hover {
+  color: #00A0D2;
+}
+.wpmui-wnd .gateways .gateway-description,
+#wpwrap .ms-wrap .gateways .gateway-description {
+  color: #888;
+}
 .wpmui-wnd .gateways .is-configured .ms-gateway-setup-wrapper,
 .wpmui-wnd .gateways .not-configured .wpmui-radio-slider,
 #wpwrap .ms-wrap .gateways .is-configured .ms-gateway-setup-wrapper,
@@ -2364,18 +2496,30 @@
 #wpwrap .ms-wrap .gateways .not-configured .ms-gateway-setup-wrapper {
   display: block;
 }
-.wpmui-wnd .gateways .mode-unknown,
+.wpmui-wnd .gateways .mode,
+#wpwrap .ms-wrap .gateways .mode {
+  display: inline-block;
+  padding: 0;
+  padding-left: 10px;
+}
+.wpmui-wnd .gateways .ms-gateway-status,
+#wpwrap .ms-wrap .gateways .ms-gateway-status {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.wpmui-wnd .gateways .ms-gateway-status .button,
+#wpwrap .ms-wrap .gateways .ms-gateway-status .button {
+  margin: 0;
+}
 .wpmui-wnd .gateways .mode-sandbox,
 .wpmui-wnd .gateways .mode-live,
-#wpwrap .ms-wrap .gateways .mode-unknown,
 #wpwrap .ms-wrap .gateways .mode-sandbox,
 #wpwrap .ms-wrap .gateways .mode-live {
   display: none;
 }
-.wpmui-wnd .gateways .not-configured .mode-unknown,
 .wpmui-wnd .gateways .is-configured.is-sandbox .mode-sandbox,
 .wpmui-wnd .gateways .is-configured.is-live .mode-live,
-#wpwrap .ms-wrap .gateways .not-configured .mode-unknown,
 #wpwrap .ms-wrap .gateways .is-configured.is-sandbox .mode-sandbox,
 #wpwrap .ms-wrap .gateways .is-configured.is-live .mode-live {
   display: block;

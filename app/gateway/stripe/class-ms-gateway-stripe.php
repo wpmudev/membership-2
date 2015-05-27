@@ -42,6 +42,14 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	public static $instance;
 
 	/**
+	 * Gateway group
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	protected $group = 'Stripe';
+
+	/**
 	 * Gateway ID.
 	 *
 	 * @since 1.0.0

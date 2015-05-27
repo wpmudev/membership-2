@@ -44,6 +44,14 @@ class MS_Gateway_Manual extends MS_Gateway {
 	public static $instance;
 
 	/**
+	 * Gateway group
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	protected $group = 'Manual';
+
+	/**
 	 * Gateway ID.
 	 *
 	 * @since 1.0.0
