@@ -105,6 +105,26 @@ class MS_Gateway extends MS_Model_Option {
 	protected $manual_payment = true;
 
 	/**
+	 * List of payment_type IDs that are not supported by this gateway.
+	 *
+	 * @since 2.0.0
+	 * @var array $unsupported_payment_types
+	 */
+	protected $unsupported_payment_types = array();
+
+	/**
+	 * Gateway allows Pro rating.
+	 *
+	 * Pro rating means that a user will get a discount for a new subscription
+	 * when he upgrades from another subscription that is not fully consumed
+	 * yet.
+	 *
+	 * @since 1.0.0
+	 * @var bool
+	 */
+	protected $pro_rate = false;
+
+	/**
 	 * Custom payment button text or url.
 	 *
 	 * Overrides default purchase button.
@@ -168,6 +188,45 @@ class MS_Gateway extends MS_Model_Option {
 		$list[$id] = $class;
 
 		return $list;
+	}
+
+	/**
+	 * Checks if the specified payment type is supported by the current gateway.
+	 *
+	 * @since  2.0.0
+	 * @param  string|MS_Model_Membership $payment_type Either a payment type
+	 *         identifier or a membership model object.
+	 * @return bool
+	 */
+	public function payment_type_supported( $payment_type ) {
+		if ( is_object( $payment_type ) ) {
+			$payment_type = $payment_type->payment_type;
+		}
+
+		$types = $this->supported_payment_types();
+		$result = isset( $types[$payment_type] );
+
+		return $result;
+	}
+
+	/**
+	 * Returns a list of supported payment types.
+	 *
+	 * @since  2.0.0
+	 * @return array Payment types, index is the type-key / value the label.
+	 */
+	public function supported_payment_types() {
+		static $Payment_Types = array();
+
+		if ( ! isset( $Payment_Types[$this->id] ) ) {
+			$Payment_Types[$this->id] = MS_Model_Membership::get_payment_types();
+
+			foreach ( $this->unsupported_payment_types as $remove ) {
+				unset( $Payment_Types[$this->id][$remove] );
+			}
+		}
+
+		return $Payment_Types[$this->id];
 	}
 
 	/**

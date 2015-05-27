@@ -44,65 +44,6 @@ class MS_Gateway_Manual extends MS_Gateway {
 	public static $instance;
 
 	/**
-	 * Gateway group
-	 *
-	 * @since 2.0.0
-	 * @var string
-	 */
-	protected $group = 'Manual';
-
-	/**
-	 * Gateway ID.
-	 *
-	 * @since 1.0.0
-	 * @var int $id
-	 */
-	protected $id = self::ID;
-
-	/**
-	 * Gateway name.
-	 *
-	 * @since 1.0.0
-	 * @var string $name
-	 */
-	protected $name = '';
-
-	/**
-	 * Gateway description.
-	 *
-	 * @since 1.0.0
-	 * @var string $description
-	 */
-	protected $description = '';
-
-	/**
-	 * Gateway active status.
-	 *
-	 * @since 1.0.0
-	 * @var string $active
-	 */
-	protected $active = false;
-
-	/**
-	 * Gateway allow Pro rating.
-	 *
-	 * @todo To be released in further versions.
-	 * @since 1.0.0
-	 * @var bool $pro_rate
-	 */
-	protected $pro_rate = true;
-
-	/**
-	 * Manual payment indicator.
-	 *
-	 * If the gateway does not allow automatic reccuring billing.
-	 *
-	 * @since 1.0.0
-	 * @var bool $manual_payment
-	 */
-	protected $manual_payment = true;
-
-	/**
 	 * Payment information for customer.
 	 *
 	 * The payment procedures like bank account, agency, etc.
@@ -122,8 +63,12 @@ class MS_Gateway_Manual extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
-		$this->name = __( 'Manual Gateway', MS_TEXT_DOMAIN );
+		$this->id = self::ID;
+		$this->name = __( 'Manual Payment Gateway', MS_TEXT_DOMAIN );
 		$this->description = __( '(Bank orders, cash, etc)', MS_TEXT_DOMAIN );
+		$this->group = __( 'Manual Payment', MS_TEXT_DOMAIN );
+		$this->manual_payment = true;
+		$this->pro_rate = true;
 
 		if ( $this->active ) {
 			$this->add_action(

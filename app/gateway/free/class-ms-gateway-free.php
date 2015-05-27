@@ -44,58 +44,6 @@ class MS_Gateway_Free extends MS_Gateway {
 	public static $instance;
 
 	/**
-	 * Gateway group.
-	 * Free gateway has no group (it has no settings).
-	 *
-	 * @since 2.0.0
-	 * @var string
-	 */
-	protected $group = '';
-
-	/**
-	 * Gateway ID.
-	 *
-	 * @since 1.0.0
-	 * @var int $id
-	 */
-	protected $id = self::ID;
-
-	/**
-	 * Gateway name.
-	 *
-	 * @since 1.0.0
-	 * @var string $name
-	 */
-	protected $name = '';
-
-	/**
-	 * Gateway description.
-	 *
-	 * @since 1.0.0
-	 * @var string $description
-	 */
-	protected $description = '';
-
-	/**
-	 * Gateway active status.
-	 *
-	 * @since 1.0.0
-	 * @var string $active
-	 */
-	protected $active = true;
-
-	/**
-	 * Manual payment indicator.
-	 *
-	 * If the gateway does not allow automatic reccuring billing.
-	 *
-	 * @since 1.0.0
-	 * @var bool $manual_payment
-	 */
-	protected $manual_payment = true;
-
-
-	/**
 	 * Hook to show payment info.
 	 * This is called by the MS_Factory
 	 *
@@ -104,7 +52,11 @@ class MS_Gateway_Free extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
+		$this->id = self::ID;
 		$this->name = __( 'Free Gateway', MS_TEXT_DOMAIN );
+		$this->group = '';
+		$this->active = true;
+		$this->manual_payment = true;
 	}
 
 	/**

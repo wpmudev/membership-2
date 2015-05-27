@@ -45,81 +45,12 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	public static $instance;
 
 	/**
-	 * Gateway group
-	 *
-	 * @since 2.0.0
-	 * @var string
-	 */
-	protected $group = 'Authorize.net';
-
-	/**
 	 * Authorize.net's Customer Information Manager wrapper.
 	 *
 	 * @since 1.0.0
 	 * @var string $cim
 	 */
 	protected static $cim;
-
-	/**
-	 * Gateway ID.
-	 *
-	 * @since 1.0.0
-	 * @var int $id
-	 */
-	protected $id = self::ID;
-
-	/**
-	 * Gateway name.
-	 *
-	 * @since 1.0.0
-	 * @var string $name
-	 */
-	protected $name = '';
-
-	/**
-	 * Gateway description.
-	 *
-	 * @since 1.0.0
-	 * @var string $description
-	 */
-	protected $description = '';
-
-	/**
-	 * Gateway active status.
-	 *
-	 * @since 1.0.0
-	 * @var string $active
-	 */
-	protected $active = false;
-
-	/**
-	 * Manual payment indicator.
-	 *
-	 * If the gateway does not allow automatic reccuring billing.
-	 *
-	 * @since 1.0.0
-	 * @var bool $manual_payment
-	 */
-	protected $manual_payment = false;
-
-	/**
-	 * Gateway allow Pro rating.
-	 *
-	 * @todo To be released in further versions.
-	 * @since 1.0.0
-	 * @var bool $pro_rate
-	 */
-	protected $pro_rate = true;
-
-	/**
-	 * Gateway operation mode.
-	 *
-	 * Live or sandbox (test) mode.
-	 *
-	 * @since 1.0.0
-	 * @var string $mode
-	 */
-	protected $mode;
 
 	/**
 	 * Authorize.net API login IP.
@@ -155,7 +86,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
+		$this->id = self::ID;
 		$this->name = __( 'Authorize.net Gateway', MS_TEXT_DOMAIN );
+		$this->group = 'Authorize.net';
+		$this->manual_payment = false;
+		$this->pro_rate = true;
 	}
 
 	/**

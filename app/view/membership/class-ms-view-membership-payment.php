@@ -434,6 +434,9 @@ class MS_View_Membership_Payment extends MS_View {
 			if ( 'free' == $gateway->id ) { continue; }
 			if ( ! $gateway->active ) { continue; }
 
+			$payment_types = $gateway->supported_payment_types();
+			$wrapper_class = 'ms-payment-type-' . implode( ' ms-payment-type-', array_keys( $payment_types ) );
+
 			$fields['gateways'][$gateway->id] = array(
 				'id' => 'disabled-gateway-' . $gateway->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
@@ -442,6 +445,7 @@ class MS_View_Membership_Payment extends MS_View {
 				'after' => __( 'Not available', MS_TEXT_DOMAIN ),
 				'value' => ! $membership->can_use_gateway( $gateway->id ),
 				'class' => 'reverse',
+				'wrapper_class' => 'ms-payment-type-wrapper ' . $wrapper_class,
 				'ajax_data' => array(
 					'field' => 'disabled_gateways[' . $gateway->id . ']',
 					'_wpnonce' => $nonce,

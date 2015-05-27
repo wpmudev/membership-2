@@ -42,75 +42,6 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	public static $instance;
 
 	/**
-	 * Gateway group
-	 *
-	 * @since 2.0.0
-	 * @var string
-	 */
-	protected $group = 'Stripe';
-
-	/**
-	 * Gateway ID.
-	 *
-	 * @since 1.0.0
-	 * @var int $id
-	 */
-	protected $id = self::ID;
-
-	/**
-	 * Gateway name.
-	 *
-	 * @since 1.0.0
-	 * @var string $name
-	 */
-	protected $name = '';
-
-	/**
-	 * Gateway description.
-	 *
-	 * @since 1.0.0
-	 * @var string $description
-	 */
-	protected $description = '';
-
-	/**
-	 * Gateway active status.
-	 *
-	 * @since 1.0.0
-	 * @var string $active
-	 */
-	protected $active = false;
-
-	/**
-	 * Manual payment indicator.
-	 *
-	 * If the gateway does not allow automatic reccuring billing.
-	 *
-	 * @since 1.0.0
-	 * @var bool $manual_payment
-	 */
-	protected $manual_payment = false;
-
-	/**
-	 * Gateway allow Pro rating.
-	 *
-	 * @todo To be released in further versions.
-	 * @since 1.0.0
-	 * @var bool $pro_rate
-	 */
-	protected $pro_rate = true;
-
-	/**
-	 * Gateway operation mode.
-	 *
-	 * Live or sandbox (test) mode.
-	 *
-	 * @since 1.0.0
-	 * @var string $mode
-	 */
-	protected $mode;
-
-	/**
 	 * Stripe test secret key (sandbox).
 	 *
 	 * @see https://support.stripe.com/questions/where-do-i-find-my-api-keys
@@ -154,7 +85,11 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
+		$this->id = self::ID;
 		$this->name = __( 'Stripe Single Gateway', MS_TEXT_DOMAIN );
+		$this->group = 'Stripe';
+		$this->manual_payment = false;
+		$this->pro_rate = true;
 	}
 
 	/**

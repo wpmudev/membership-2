@@ -1264,6 +1264,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$result = ! lib2()->is_true( $state );
 		}
 
+		if ( $result ) {
+			$gateway = MS_Model_Gateway::factory( $gateway_id );
+			$result = $gateway->payment_type_supported( $this );
+		}
+
 		$result = apply_filters(
 			'ms_model_membership_can_use_gateway',
 			$result,

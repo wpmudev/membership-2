@@ -42,82 +42,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	public static $instance;
 
 	/**
-	 * Gateway group
-	 *
-	 * @since 2.0.0
-	 * @var string
-	 */
-	protected $group = 'Stripe';
-
-	/**
-	 * Gateway ID.
-	 *
-	 * @since 2.0.0
-	 * @var int $id
-	 */
-	protected $id = self::ID;
-
-	/**
-	 * Gateway name.
-	 *
-	 * @since 2.0.0
-	 * @var string $name
-	 */
-	protected $name = '';
-
-	/**
-	 * Gateway description.
-	 *
-	 * @since 2.0.0
-	 * @var string $description
-	 */
-	protected $description = '';
-
-	/**
-	 * Gateway active status.
-	 *
-	 * @since 2.0.0
-	 * @var string $active
-	 */
-	protected $active = false;
-
-	/**
-	 * Manual payment indicator.
-	 *
-	 * If the gateway does not allow automatic reccuring billing.
-	 *
-	 * @since 2.0.0
-	 * @var bool $manual_payment
-	 */
-	protected $manual_payment = false;
-
-	/**
-	 * Gateway allow Pro rating.
-	 *
-	 * @todo To be released in further versions.
-	 * @since 2.0.0
-	 * @var bool $pro_rate
-	 */
-	protected $pro_rate = true;
-
-	/**
-	 * Gateway operation mode.
-	 *
-	 * Live or sandbox (test) mode.
-	 *
-	 * @since 2.0.0
-	 * @var string $mode
-	 */
-	protected $mode;
-
-	/**
 	 * Reference to the default Stripe gateway (we reuse existing functions here)
 	 *
 	 * @since 2.0.0
 	 * @var MS_Gateway_Stripe $stripe
 	 */
 	protected $stripe;
-
 
 	/**
 	 * Initialize the object.
@@ -128,7 +58,36 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		parent::after_load();
 		$this->stripe = MS_Factory::load( 'MS_Gateway_Stripe' );
 
+		$this->id = self::ID;
 		$this->name = __( 'Stripe Subscriptions Gateway', MS_TEXT_DOMAIN );
+		$this->group = 'Stripe';
+		$this->manual_payment = false;
+		$this->pro_rate = true;
+		$this->unsupported_payment_types = array(
+			MS_Model_Membership::PAYMENT_TYPE_PERMANENT,
+			MS_Model_Membership::PAYMENT_TYPE_FINITE,
+			MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE,
+		);
+
+	}
+
+	/**
+	 *
+	 * @since 2.0.0
+	 */
+
+
+	 */
+
+	/**
+	 *
+	 *
+	 * @since 2.0.0
+	 */
+
+
+
+
 	}
 
 	/**
@@ -163,16 +122,6 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 */
 	public function add_card( $member, $token ) {
 		return $this->stripe->add_card( $member, $token );
-	}
-
-	/**
-	 * Load Stripe lib.
-	 *
-	 * @since 1.0.0
-	 * @internal
-	 */
-	protected function load_stripe_lib() {
-		return $this->stripe->load_stripe_lib();
 	}
 
 	/**
