@@ -10,7 +10,7 @@ class MS_Gateway_Manual_View_Button extends MS_View {
 
 		$action_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
 		$action_url = apply_filters(
-			'ms_gateway_view_button_form_action_url',
+			'ms_gateway_manual_view_button_form_action_url',
 			$action_url
 		);
 

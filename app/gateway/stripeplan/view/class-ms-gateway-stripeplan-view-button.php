@@ -11,7 +11,7 @@ class MS_Gateway_Stripeplan_View_Button extends MS_View {
 
 		// Stripe is using Ajax, so the URL is empty.
 		$action_url = apply_filters(
-			'ms_gateway_view_button_form_action_url',
+			'ms_gateway_stripeplan_view_button_form_action_url',
 			''
 		);
 
