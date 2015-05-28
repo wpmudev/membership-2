@@ -56,11 +56,11 @@ class MS_Helper_Billing extends MS_Helper {
 
 	public static function print_admin_message() {
 		$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
-
 		$class = ( $msg > 0 ) ? 'updated' : 'error';
+		$contents = self::get_admin_message( $msg );
 
-		if ( $msg = MS_Helper_Billing::get_admin_message( $msg ) ) {
-			echo "<div id='message' class='$class'><p>$msg</p></div>";
+		if ( $contents ) {
+			lib2()->ui->admin_message( $contents, $class );
 		}
 	}
 

@@ -67,7 +67,6 @@ class MS_Helper_Member extends MS_Helper {
 		if ( $msg = self::get_admin_message( $msg ) ) {
 			lib2()->ui->admin_message( $msg, $class );
 		}
-
 	}
 
 }

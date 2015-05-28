@@ -77,7 +77,6 @@ class MS_Helper_Membership extends MS_Helper {
 		if ( $msg = self::get_admin_messages( $msg ) ) {
 			lib2()->ui->admin_message( $msg, $class );
 		}
-
 	}
 
 	public static function get_admin_message( $args = null, $membership = null ) {
