@@ -336,7 +336,8 @@ class MS_Controller_Plugin extends MS_Controller {
 			),
 		);
 
-		if ( MS_Controller_Membership::STEP_ADD_NEW == MS_Plugin::instance()->settings->wizard_step ) {
+		$step = $this->controllers['membership']->get_step();
+		if ( MS_Controller_Membership::STEP_ADD_NEW == $step ) {
 			$pages['setup']['slug'] = 'setup';
 
 			$pages[self::MENU_SLUG] = array(
@@ -592,7 +593,9 @@ class MS_Controller_Plugin extends MS_Controller {
 			if ( 'memberships' === $slug ) { $slug = ''; }
 		}
 
-		if ( empty( $slug ) ) {
+		if ( 'MENU_SLUG' == $slug ) {
+			$slug = self::MENU_SLUG;
+		} elseif ( empty( $slug ) ) {
 			$slug = self::$base_slug;
 		} else {
 			$slug = self::MENU_SLUG . '-' . $slug;

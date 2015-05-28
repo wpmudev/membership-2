@@ -19,7 +19,7 @@ class MS_View_Membership_Add extends MS_View {
 			);
 			?>
 			<div class="ms-settings ms-membership-add ms-cols-<?php echo esc_attr( $cols ); ?>">
-				<form action="" method="post" id="ms-choose-type-form">
+				<form method="post" id="ms-choose-type-form">
 					<div class="ms-settings-row cf">
 						<h3><?php _e( 'Choose a membership type:', MS_TEXT_DOMAIN ); ?></h3>
 						<?php MS_Helper_Html::html_element( $fields['type'] ); ?>

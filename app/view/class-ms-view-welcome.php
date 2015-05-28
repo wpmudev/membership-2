@@ -44,27 +44,14 @@ class MS_View_Welcome extends MS_View {
 	 * @return object
 	 */
 	public function to_html() {
-		$hidden_fields = $this->prepare_fields();
-
-		$button = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Let\'s get started &raquo;', MS_TEXT_DOMAIN ),
-			'class' => 'ms-welcome-start',
-		);
-
-		$setup_url = MS_Controller_Plugin::get_admin_url( 'memberships' );
+		$form_fields = $this->prepare_fields();
+		$setup_url = MS_Controller_Plugin::get_admin_url( 'setup' );
 
 		ob_start();
 		// Render tabbed interface.
 		?>
 		<div class="ms-wrap wrap">
 			<form class="ms-welcome-box" action="<?php echo esc_url( $setup_url ); ?>" method="POST">
-				<?php
-				foreach ( $hidden_fields as $field ) {
-					MS_Helper_Html::html_element( $field );
-				}
-				?>
-
 				<h2 class="ms-welcome-title">
 					<?php _e( 'Welcome!', MS_TEXT_DOMAIN ); ?>
 				</h2>
@@ -77,7 +64,11 @@ class MS_View_Welcome extends MS_View {
 					<img src="<?php echo esc_attr( MS_Plugin::instance()->url ); ?>app/assets/images/welcome.png" class="ms-welcome-image" />
 				</div>
 
-				<?php MS_Helper_Html::html_element( $button ); ?>
+				<?php
+				foreach ( $form_fields as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
+				?>
 			</form>
 		</div>
 		<?php
@@ -93,10 +84,18 @@ class MS_View_Welcome extends MS_View {
 	protected function prepare_fields() {
 		$fields = array();
 
+		$action = MS_Controller_Membership::STEP_ADD_NEW;
+		$nonce = wp_create_nonce( $action );
+
 		$fields['step'] = array(
 			'id' => 'step',
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => MS_Controller_Membership::STEP_ADD_NEW,
+		);
+		$fields['button'] = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' => __( 'Let\'s get started', MS_TEXT_DOMAIN ) . ' &raquo;',
+			'class' => 'ms-welcome-start',
 		);
 
 		return $fields;
