@@ -514,7 +514,11 @@ class MS_Model_Pages extends MS_Model_Option {
 		$page_id = self::get_page_id( $page_type );
 
 		if ( ! isset( $Urls[$page_id] ) ) {
-			$url = get_blog_permalink( $site_id, $page_id );
+			if ( is_multisite() ) {
+				$url = get_blog_permalink( $site_id, $page_id );
+			} else {
+				$url = get_permalink( $page_id );
+			}
 
 			if ( null === $ssl ) { $ssl = is_ssl(); }
 			if ( $ssl ) {
