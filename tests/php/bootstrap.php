@@ -16,6 +16,8 @@ define( 'WP_TESTS_DIR', '/srv/www/wordpress-develop/trunk/tests/phpunit/' );
  */
 define( 'TEST_PLUGIN_FILE', 'membership2.php' );
 
+define( 'IS_UNIT_TEST', true );
+
 /**
  * The WordPress tests functions.
  *

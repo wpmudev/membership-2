@@ -52,6 +52,47 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 	 * @test
 	 */
 	function stripeplan_subscription() {
+		$gateway = MS_Model_Gateway::factory( MS_Gateway_Stripeplan::ID );
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'recurring' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+		$controller = MS_Factory::load( 'MS_Controller_Gateway' );
+		$gateway->update_stripe_data();
+
+		$data = array(
+			'card' => array(
+				'number' => '4242424242424242',
+				'exp_month' => 12,
+				'exp_year' => date( 'Y' ) + 1,
+				'cvc' => '314',
+			),
+		);
+		$res = Stripe_Token::create( $data );
+		$token = $res->id;
+
+		$form_data = array(
+			'_wpnonce' => wp_create_nonce( $gateway->id . '_' . $subscription->id ),
+			'gateway' => $gateway->id,
+			'ms_relationship_id' => $subscription->id,
+			'step' => 'process_purchase',
+			'stripeToken' => $token,
+			'stripeTokenType' => 'card',
+			'stripeEmail' => 'editor@local.dev',
+		);
+		$_POST = $form_data;
+		$_REQUEST = $_POST;
+
+		// Right now the subscription must have status PENDING
+		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status );
+
+		/*
+		 * This function processes the purchase and will set the subscription
+		 * to active.
+		 */
+		$controller->process_purchase();
+
+		// Check the subscription status.
+		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status );
 	}
 
 }

@@ -551,10 +551,12 @@ class MS_Controller_Gateway extends MS_Controller {
 					$this->validate_membership_states( $subscription );
 
 					// Redirect user to the Payment-Completed page.
-					MS_Model_Pages::redirect_to(
-						MS_Model_Pages::MS_PAGE_REG_COMPLETE,
-						array( 'ms_relationship_id' => $subscription->id )
-					);
+					if ( ! defined( 'IS_UNIT_TEST' ) ) {
+						MS_Model_Pages::redirect_to(
+							MS_Model_Pages::MS_PAGE_REG_COMPLETE,
+							array( 'ms_relationship_id' => $subscription->id )
+						);
+					}
 				} else {
 					// For manual gateway payments.
 					$this->add_action( 'the_content', 'purchase_info_content' );
@@ -596,10 +598,14 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 
 		// Hack to show signup page in case of errors
-		global $wp_query;
 		$ms_page = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REGISTER );
-		$wp_query->query_vars['page_id'] = $ms_page->ID;
-		$wp_query->query_vars['post_type'] = 'page';
+
+		if ( $ms_page ) {
+			// During unit-testing the $ms_page object might be empty.
+			global $wp_query;
+			$wp_query->query_vars['page_id'] = $ms_page->ID;
+			$wp_query->query_vars['post_type'] = 'page';
+		}
 
 		do_action(
 			'ms_controller_gateway_process_purchase_after',

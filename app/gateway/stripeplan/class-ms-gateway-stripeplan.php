@@ -180,7 +180,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				);
 
 				if ( 'active' == $subscription->status ) {
-					$invoice->pay_it( $this->id, $charge->id );
+					$invoice->pay_it( $this->id, $subscription->id );
 				}
 			}
 		} else {
