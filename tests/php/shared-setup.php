@@ -152,6 +152,15 @@ class TData {
 				'rule_values' => array(),
 				'period' => array( 'period_unit' => 28, 'period_type' => 'days' ),
 			),
+			'recurring' => array(
+				'name' => 'Unit-Test Recurring',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_RECURRING,
+				'is_free' => false,
+				'price' => 4,
+				'rule_values' => array(),
+				'pay_cycle_period' => array( 'period_unit' => 7, 'period_type' => 'days' ),
+			),
 		);
 		foreach ( $memberships as $key => $data ) {
 			$item = new MS_Model_Membership();
@@ -164,6 +173,19 @@ class TData {
 
 			self::$ids['membership'][$key] = $id;
 		}
+
+		// Prepare Payment Gateways.
+		$gateway = MS_Model_Gateway::factory( MS_Gateway_Stripe::ID );
+		$gateway->mode = MS_Gateway::MODE_SANDBOX;
+		$gateway->active = true;
+		$gateway->test_secret_key = 'sk_test_MSKvYHhIm3kKNr4tshnZHIEk';
+		$gateway->test_publishable_key = 'pk_test_h8fk0CAW287ToA3o6aeehThB';
+		$gateway->save();
+
+		$gateway = MS_Model_Gateway::factory( MS_Gateway_Stripeplan::ID );
+		$gateway->active = true;
+		$gateway->mode = MS_Gateway::MODE_SANDBOX;
+		$gateway->save();
 
 		// Clear the plugin Factory-Cache
 		MS_Factory::_reset();
