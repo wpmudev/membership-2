@@ -363,7 +363,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	public function get_publishable_key( $mode ) {
 		$publishable_key = null;
 
-		if ( MS_Gateway::MODE_LIVE == mode ) {
+		if ( MS_Gateway::MODE_LIVE == $mode ) {
 			$publishable_key = $this->publishable_key;
 		} else {
 			$publishable_key = $this->test_publishable_key;

@@ -347,7 +347,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$required = array( 'merchant_id', 'paypal_site' );
 
 		foreach ( $required as $field ) {
-			if ( empty( $this->$field ) ) {
+			$value = $this->$field;
+			if ( empty( $value ) ) {
 				$is_configured = false;
 				break;
 			}

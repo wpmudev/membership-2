@@ -490,6 +490,7 @@
 			position: absolute;
 			top: 0;
 			right: 0;
+			z-index: 2;
 
 			.button {
 				margin: 0;
@@ -524,6 +525,28 @@
 					content: '\f071';
 					margin-left: 6px;
 					color: #B30;
+				}
+			}
+		}
+	}
+
+	.ms-global-payment-wrapper .gateways {
+		.ms-gateway-item .row-actions {
+			display: none;
+		}
+
+		.ms-gateway-settings {
+			.ms-settings-box .inside {
+				padding-left: 0;
+
+				.wpmui-field-label {
+					position: static;
+					width: auto;
+					display: block;
+				}
+
+				.wpmui-field-input {
+					width: 100%;
 				}
 			}
 		}

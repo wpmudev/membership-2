@@ -257,4 +257,19 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$is_configured
 		);
 	}
+
+	public function __set( $key, $value ) {
+		switch ( $key ) {
+			case 'test_secret_key':
+			case 'test_publishable_key':
+			case 'secret_key':
+			case 'publishable_key':
+				$this->_api->$key = $value;
+				break;
+		}
+
+		if ( property_exists( $this, $key ) ) {
+			$this->$key = $value;
+		}
+	}
 }

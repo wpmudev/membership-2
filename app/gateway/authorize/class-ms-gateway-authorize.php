@@ -621,7 +621,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$required = array( 'api_login_id', 'api_transaction_key' );
 
 		foreach ( $required as $field ) {
-			if ( empty( $this->$field ) ) {
+			$value = $this->$field;
+			if ( empty( $value ) ) {
 				$is_configured = false;
 				break;
 			}

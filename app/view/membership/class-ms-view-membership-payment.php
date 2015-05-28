@@ -210,6 +210,8 @@ class MS_View_Membership_Payment extends MS_View {
 					endif; endif;
 					?>
 				</div>
+
+				<?php if ( $this->data['is_global_payments_set'] && count( $fields['gateways'] ) ) : ?>
 				<div class="cf ms-payment-gateways">
 					<?php MS_Helper_Html::html_separator(); ?>
 					<p><strong><?php _e( 'Allowed payment gateways', MS_TEXT_DOMAIN ); ?></strong></p>
@@ -217,6 +219,8 @@ class MS_View_Membership_Payment extends MS_View {
 						MS_Helper_Html::html_element( $field );
 					} ?>
 				</div>
+				<?php endif; ?>
+
 				<?php endif; ?>
 
 				<?php

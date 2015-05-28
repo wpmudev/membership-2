@@ -124,6 +124,7 @@
   float: left;
   margin-right: 5px;
   border-radius: 4px;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
 }
 .ms-wrap .ms-membership {
   display: inline-block;
@@ -134,6 +135,7 @@
   font-size: 12px;
   height: 20px;
   line-height: 20px;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
 }
 .ms-wrap h3 .ms-membership {
   border-radius: 4px;
@@ -280,6 +282,7 @@
   line-height: 28px;
   font-size: 12px;
   color: #FFF;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -964,6 +967,7 @@
 .ms-select2.select2-container-active .select2-choice,
 .ms-select2.select2-container-active .select2-choices {
   border-color: #5897fb;
+  box-shadow: none;
 }
 .ms-select2 .select2-search {
   margin-bottom: 4px;
@@ -2507,6 +2511,7 @@
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 2;
 }
 .wpmui-wnd .gateways .ms-gateway-status .button,
 #wpwrap .ms-wrap .gateways .ms-gateway-status .button {
@@ -2547,6 +2552,24 @@
   content: '\f071';
   margin-left: 6px;
   color: #B30;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions {
+  display: none;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside {
+  padding-left: 0;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-label,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-label {
+  position: static;
+  width: auto;
+  display: block;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-input,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-input {
+  width: 100%;
 }
 .wpmui-wnd #search_options,
 #wpwrap .ms-wrap #search_options {

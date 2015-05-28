@@ -840,6 +840,7 @@ input[type="image"] {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 2;
 }
 .wpmui-wnd .gateways .ms-gateway-status .button,
 #wpwrap .ms-wrap .gateways .ms-gateway-status .button {
@@ -880,6 +881,24 @@ input[type="image"] {
   content: '\f071';
   margin-left: 6px;
   color: #B30;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions {
+  display: none;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside {
+  padding-left: 0;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-label,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-label {
+  position: static;
+  width: auto;
+  display: block;
+}
+.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-input,
+#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside .wpmui-field-input {
+  width: 100%;
 }
 .wpmui-wnd #search_options,
 #wpwrap .ms-wrap #search_options {
