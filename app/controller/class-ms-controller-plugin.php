@@ -425,7 +425,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		if ( ! isset( $_GET['page'] ) ) { return; }
 		if ( $_GET['page'] === self::$base_slug ) {
 			$handle_it = true;
-		} else {
+		} elseif ( isset( $submenu[self::$base_slug] ) ) {
 			foreach ( $submenu[self::$base_slug] as $item ) {
 				if ( $_GET['page'] === $item[2] ) { $handle_it = true; break; }
 			}
