@@ -114,6 +114,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$subscription,
 			$this
 		);
+		$this->_api->mode = $this->mode;
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
@@ -168,6 +169,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$subscription,
 			$this
 		);
+		$this->_api->mode = $this->mode;
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
@@ -223,7 +225,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @return string The Stripe API publishable key.
 	 */
 	public function get_publishable_key() {
-		return $this->_api->get_publishable_key( $this->mode );
+		$this->_api->mode = $this->mode;
+		return $this->_api->get_publishable_key();
 	}
 
 	/**
@@ -234,8 +237,9 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 *
 	 * @return string The Stripe API secret key.
 	 */
-	public function get_secret_key() {
-		return $this->_api->get_secret_key( $this->mode );
+	protected function get_secret_key() {
+		$this->_api->mode = $this->mode;
+		return $this->_api->get_secret_key();
 	}
 
 	/**
@@ -258,6 +262,15 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		);
 	}
 
+	/**
+	 * Auto-update some fields of the _api instance if required.
+	 *
+	 * @since 2.0.0
+	 * @internal
+	 *
+	 * @param string $key Field name.
+	 * @param mixed $value Field value.
+	 */
 	public function __set( $key, $value ) {
 		switch ( $key ) {
 			case 'test_secret_key':

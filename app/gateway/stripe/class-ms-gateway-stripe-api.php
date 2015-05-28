@@ -77,22 +77,26 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	protected $publishable_key;
 
 	/**
+	 * Determines whether the API should use test or live keys to contact Stripe.
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	public $mode = '';
+
+	/**
 	 * Load Stripe lib.
 	 *
 	 * @since 1.0.0
 	 * @internal
 	 */
 	public function load_stripe_lib() {
-		static $Lib_Loaded = false;
+		require_once MS_Plugin::instance()->dir . '/lib/stripe-php/lib/Stripe.php';
 
-		if ( ! $Lib_Loaded ) {
-			require_once MS_Plugin::instance()->dir . '/lib/stripe-php/lib/Stripe.php';
+		$secret_key = $this->get_secret_key();
+		Stripe::setApiKey( $secret_key );
 
-			$secret_key = $this->get_secret_key();
-			Stripe::setApiKey( $secret_key );
-
-			do_action( 'ms_gateway_stripe_load_stripe_lib_after', $this );
-		}
+		do_action( 'ms_gateway_stripe_load_stripe_lib_after', $this );
 	}
 
 	/**
@@ -360,10 +364,10 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 *
 	 * @return string The Stripe API publishable key.
 	 */
-	public function get_publishable_key( $mode ) {
+	public function get_publishable_key() {
 		$publishable_key = null;
 
-		if ( MS_Gateway::MODE_LIVE == $mode ) {
+		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
 			$publishable_key = $this->publishable_key;
 		} else {
 			$publishable_key = $this->test_publishable_key;
@@ -383,10 +387,10 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 *
 	 * @return string The Stripe API secret key.
 	 */
-	public function get_secret_key( $mode ) {
+	public function get_secret_key() {
 		$secret_key = null;
 
-		if ( MS_Gateway::MODE_LIVE == $mode ) {
+		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
 			$secret_key = $this->secret_key;
 		} else {
 			$secret_key = $this->test_secret_key;
