@@ -160,6 +160,7 @@ class TData {
 				'price' => 4,
 				'rule_values' => array(),
 				'pay_cycle_period' => array( 'period_unit' => 7, 'period_type' => 'days' ),
+				'pay_cycle_repetitions' => 2,
 			),
 		);
 		foreach ( $memberships as $key => $data ) {

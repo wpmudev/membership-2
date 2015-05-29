@@ -42,7 +42,6 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 		$this->assertEquals( MS_Gateway::MODE_SANDBOX, $gateway2->mode );
 		$this->assertTrue( $gateway2->active );
 		$this->assertTrue( $gateway2->is_configured() );
-		$gateway2->update_stripe_data();
 
 		$this->assertTrue( class_exists( 'Stripe' ) );
 	}
@@ -93,6 +92,41 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 
 		// Check the subscription status.
 		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status );
+		$this->assertEquals( 1, count( $subscription->payments ) );
+
+		// Modify the expiration date to trigger another payment.
+		$today = date( 'Y-m-d' );
+		$subscription->expire_date = $today;
+		$this->assertEquals( $today, $subscription->expire_date );
+		$this->assertEquals( 0, $subscription->get_remaining_period() );
+
+		// Trigger next payment and validate it.
+		$subscription->check_membership_status();
+		$this->assertEquals( 2, count( $subscription->payments ) );
+
+		// Modify the expiration date to trigger another payment.
+		$subscription->expire_date = $today;
+		$this->assertEquals( $today, $subscription->expire_date );
+		$this->assertEquals( 0, $subscription->get_remaining_period() );
+
+		// Trigger next payment and validate it.
+		// THIS TIME NO PAYMENT SHOULD BE MADE because paycycle_repetitions = 2!
+		$subscription->check_membership_status();
+		$this->assertEquals( 2, count( $subscription->payments ) );
+
+		// Also the subscription should be cancelled at stripe now.
+		$customer_id = $subscription->get_member()->get_gateway_profile(
+			MS_Gateway_Stripe_Api::ID,
+			'customer_id'
+		);
+		$customer = Stripe_Customer::retrieve( $customer_id );
+		$stripe_sub_id = $subscription->get_previous_invoice()->external_id;
+		$stripe_sub = $customer->subscriptions->retrieve( $stripe_sub_id );
+		$this->assertEquals( 'active', $stripe_sub->status );
+		$this->assertTrue( $stripe_sub->cancel_at_period_end );
+
+		// Clean up.
+		$customer->delete();
 	}
 
 }
