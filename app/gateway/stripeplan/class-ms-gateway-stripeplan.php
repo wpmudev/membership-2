@@ -174,13 +174,15 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$invoice->changed();
 			} else {
 				// Get or create the subscription.
-				$subscription = $this->_api->subscribe(
+				$stripe_sub = $this->_api->subscribe(
 					$customer,
 					$invoice->get_membership()
 				);
 
-				if ( 'active' == $subscription->status ) {
-					$invoice->pay_it( $this->id, $subscription->id );
+				if ( 'active' == $stripe_sub->status ) {
+					$invoice->pay_it( $this->id, $stripe_sub->id );
+
+					$this->cancel_if_done( $subscription, $stripe_sub );
 				}
 			}
 		} else {
@@ -223,14 +225,16 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						$invoice->changed();
 					} else {
 						// Get or create the subscription.
-						$subscription = Stripe_Charge::subscribe(
+						$stripe_sub = $this->_api->subscribe(
 							$customer,
 							$invoice->get_membership()
 						);
 
-						if ( 'active' == $subscription->status ) {
+						if ( 'active' == $stripe_sub->status ) {
 							$was_paid = true;
-							$invoice->pay_it( $this->id, $charge->id );
+							$invoice->pay_it( $this->id, $stripe_sub->id );
+
+							$this->cancel_if_done( $subscription, $stripe_sub );
 						}
 					}
 				} else {
@@ -253,6 +257,33 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		);
 
 		return $was_paid;
+	}
+
+	/**
+	 * Checks if a subscription has reached the maximum paycycle repetitions.
+	 * If the last paycycle was paid then the subscription is cancelled.
+	 *
+	 * @since  2.0.0
+	 * @internal Called by process_purchase() and request_payment()
+	 *
+	 * @param  MS_Model_Relationship $subscription
+	 * @param  Stripe_Subscription $stripe_sub
+	 */
+	protected function cancel_if_done( $subscription, $stripe_sub ) {
+		$membership = $subscription->get_membership();
+
+		if ( $membership->pay_cycle_repetitions < 1 ) {
+			return;
+		}
+
+		$payments = $subscription->payments;
+		if ( count( $payments ) < $membership->pay_cycle_repetitions ) {
+			return;
+		}
+
+		$stripe_sub->cancel(
+			array( 'at_period_end' => true )
+		);
 	}
 
 	/**

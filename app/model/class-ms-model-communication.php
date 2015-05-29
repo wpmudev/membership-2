@@ -46,9 +46,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * Communication types, static reference to loaded child objects.
 	 *
 	 * @since 1.0.0
-	 * @var string $communications
+	 * @var array $communications
 	 */
-	protected static $communications;
+	protected static $communications = array();
 
 	/**
 	 * Communication type constants.
@@ -303,11 +303,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return array The communication types.
 	 */
 	public static function get_communication_types() {
-		static $types;
+		static $Types = null;
 
-		if ( empty( $types ) ) {
+		if ( null === $Types ) {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
-				$types = array(
+				$Types = array(
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_REGISTRATION_FREE,
 					self::COMM_TYPE_RENEWED,
@@ -324,7 +324,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					self::COMM_TYPE_AFTER_PAYMENT_DUE,
 				);
 			} else {
-				$types = array(
+				$Types = array(
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_INVOICE,
 					self::COMM_TYPE_FINISHED,
@@ -338,7 +338,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		return apply_filters(
 			'ms_model_communication_get_communication_types',
-			$types
+			$Types
 		);
 	}
 
