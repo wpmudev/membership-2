@@ -70,6 +70,8 @@ class MS_View_Frontend_Payment extends MS_View {
 			exit;
 		}
 
+		$show_tax = MS_Model_Addon::is_enabled( MS_Addon_Taxamo::ID );
+
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
@@ -144,13 +146,13 @@ class MS_View_Frontend_Payment extends MS_View {
 						</tr>
 					<?php endif; ?>
 
-					<?php if ( $invoice->tax_rate ) : ?>
+					<?php if ( $show_tax ) : ?>
 						<tr>
 							<td class="ms-title-column">
 								<?php
 								printf(
 									__( 'Taxes %s', MS_TEXT_DOMAIN ),
-									'<small>(' . $invoice->tax_name . ')</small>'
+									'<a href="#" class="ms-tax-editor"><small>(' . $invoice->tax_name . ')</small></a>'
 								);
 								?>
 							</td>
@@ -256,6 +258,10 @@ class MS_View_Frontend_Payment extends MS_View {
 		<?php
 		do_action( 'ms_view_frontend_payment_after', $this->data, $this );
 		do_action( 'ms_show_prices' );
+
+		if ( $show_tax ) {
+			do_action( 'ms_tax_editor' );
+		}
 		?>
 		<div style="clear:both;"></div>
 		<?php

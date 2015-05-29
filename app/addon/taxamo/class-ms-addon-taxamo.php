@@ -25,6 +25,23 @@
 /**
  * Add-On controller for: Taxamo
  *
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ * How it works:
+ *
+ * Tax details are stored in the user-metadata.
+ * When the user metadata don't contain tax details then Taxamo API is used to
+ * get the defaults for the country detected by IP address.
+ *
+ * If this details are not correct then the user can modify the tax details
+ * stored in user-metadata via his profile and on the checkout page by providing
+ * two matching proofs such as VAT Number, Credit Card Number, etc.
+ *
+ * Though tax details are stored in user-metadata each invoice includes basic
+ * details (tax-rate and tax-name) since an invoice cannot be modified once it
+ * was paid. Changes in the user-meta will affect all invoices that are
+ * generated in the future.
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ *
  * @since 1.1.0
  *
  * @package Membership2
@@ -59,6 +76,11 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
+			$this->add_action(
+				'ms_tax_editor',
+				'tax_editor'
+			);
+
 			// Add new settings tab
 			$this->add_filter(
 				'ms_controller_settings_get_tabs',
@@ -282,6 +304,46 @@ class MS_Addon_Taxamo extends MS_Addon {
 			$member->email,  // Buyer email
 			$invoice->gateway_id // Payment gateway
 		);
+	}
+
+	/**
+	 * Load taxamo scripts.
+	 *
+	 * @since 2.0.0
+	 */
+	public function tax_editor() {
+		$this->add_action(
+			'wp_footer',
+			'userprofile_form'
+		);
+
+		$plugin_url = MS_Plugin::instance()->url;
+
+		wp_enqueue_style(
+			'ms-addon-taxamo',
+			$plugin_url . '/app/addon/taxamo/assets/css/taxamo.css'
+		);
+
+		wp_enqueue_script(
+			'ms-addon-taxamo',
+			$plugin_url . '/app/addon/taxamo/assets/js/taxamo.js',
+			array( 'jquery' )
+		);
+
+		do_action( 'ms_addon_taxamo_enqueue_scripts', $this );
+	}
+
+	/**
+	 * Adds the HTML code for the user profile popup to the page.
+	 * The form is displayed via javascript.
+	 *
+	 * @since  2.0.0
+	 */
+	public function userprofile_form() {
+		$view = MS_Factory::load( 'MS_Addon_Taxamo_Userprofile' );
+		$html = $view->to_html();
+
+		echo '<div id="ms-taxamo-wrapper">' . $html . '</div>';
 	}
 
 }

@@ -33,9 +33,16 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Returns tax information that must be applied to the specified amount.
 	 *
-	 * The country for the tax calculation is automatically determined by Taxamo.
+	 * This function first checks the user-metadata for logged-in users and
+	 * takes the details that are stored in the user metadata table.
+	 *
+	 * If the user is not logged in or no metadata are found then the Taxamo API
+	 * is queried to get the default tax details for the country that
+	 * Taxamo automatically detects.
 	 *
 	 * @since  1.1.0
+	 * @api
+	 *
 	 * @param  numeric $amount The amount without taxes.
 	 * @return object {
 	 *         Tax information
@@ -135,7 +142,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @return string 2-Digit country code, e.g. 'IE' for Ireland
 	 */
 	static public function country_code() {
-		$data = self::location_infos();
+		$data = self::determine_country();
 
 		if ( isset( $data->country_code ) ) {
 			return $data->country_code;
@@ -151,7 +158,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @return string IP Address
 	 */
 	static public function buyer_ip() {
-		$data = self::location_infos();
+		$data = self::determine_country();
 
 		if ( isset( $data->remote_addr ) ) {
 			return $data->remote_addr;
@@ -162,7 +169,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 	// ------------------------------------------------------- PRIVATE FUNCTIONS
 
-	static private function prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email ) {
+	static protected function prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email ) {
 		self::taxamo();
 
 		$tr_line = array(
@@ -188,23 +195,44 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	}
 
 	/**
-	 * Returns the location details of the current user.
+	 * Determines the users country based on his IP address.
 	 *
-	 * @since  1.1.0
-	 * @return object
+	 * Should be called only by `country_code()`
+	 *
+	 * @since 1.1.0
 	 */
-	static private function location_infos() {
-		self::taxamo();
+	static protected function determine_country() {
+		$member = MS_Model_Member::get_current_member();
+		$country = false;
+		$store_it = false;
 
-		$location = lib2()->session->get( 'ms_ta_country' );
-
-		if ( ! count( $location ) ) {
-			self::determine_country();
-			$location = lib2()->session->get( 'ms_ta_country' );
+		// Try to get the stored country from user-meta or session (for guest)
+		if ( $member->is_valid() ) {
+			$country = $member->get_custom_data( 'tax_country' );
+		} else {
+			$country = lib2()->session->get( 'ms_tax_country' );
+			if ( is_array( $country ) && count( $country ) ) {
+				$country = $country[0];
+			}
 		}
 
-		if ( ! count( $location ) ) {
-			$dummy_location = array(
+		// If no country is stored use the API to determine it.
+		if ( ! $country ) {
+			self::taxamo();
+
+			try {
+				$ip_info = lib2()->net->current_ip();
+				$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
+				$store_it = true;
+			}
+			catch ( Exception $ex ) {
+				MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
+			}
+		}
+
+		// API did not return a valid resonse, use a dummy value.
+		if ( ! $country ) {
+			$country = array(
 				'remote_addr' => lib2()->net->current_ip(),
 				'country_code' => 'US',
 				'country' => array(
@@ -213,29 +241,20 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 				),
 			);
 
-			lib2()->session->add( 'ms_ta_country', $dummy_location );
-			$location = lib2()->session->get( 'ms_ta_country' );
+			$store_it = true;
 		}
 
-		return $location[0];
-	}
+		// Store result in user-deta or session.
+		if ( $store_it ) {
+			if ( $member->is_valid() ) {
+				$member->set_custom_data( 'tax_country', $country );
+				$member->save();
+			} else {
+				lib2()->session->add( 'ms_tax_country', $country );
+			}
+		}
 
-	/**
-	 * Determines the users country based on his IP address.
-	 *
-	 * Should be called only by `country_code()`
-	 *
-	 * @since 1.1.0
-	 */
-	static private function determine_country() {
-		try {
-			$ip_info = lib2()->net->current_ip();
-			$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
-			lib2()->session->add( 'ms_ta_country', $country );
-		}
-		catch ( Exception $ex ) {
-			MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
-		}
+		return $country;
 	}
 
 	/**
@@ -247,7 +266,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @since  1.1.0
 	 * @return Taxamo
 	 */
-	static private function taxamo() {
+	static protected function taxamo() {
 		static $Taxamo = null;
 
 		if ( null === $Taxamo ) {
@@ -276,7 +295,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 *
 	 * @since  1.1.0
 	 */
-	static private function init() {
+	static protected function init() {
 		self::taxamo();
 		self::country_code();
 	}

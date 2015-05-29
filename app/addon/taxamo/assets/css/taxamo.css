@@ -1,0 +1,197 @@
+/**
+ * CSS used by the Taxamo addon (Front-end)
+ */
+
+#ms-taxamo-wrapper {
+	display: none;
+	position: absolute;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #000;
+	z-index: 30000000;
+	background-color: rgba(0, 0, 0, 0.678);
+	background: -webkit-radial-gradient(50% 50%, ellipse closest-corner, rgba(0, 0, 0, 0.55) 1%, rgba(0, 0, 0, 0.9) 100%);
+	background: radial-gradient(50% 50%, ellipse closest-corner, rgba(0,0,0,0.55) 1%, rgba(0,0,0,0.9) 100%);
+	filter: alpha(opacity = 90);
+	background: -moz-radial-gradient(50% 50%, ellipse closest-corner, rgba(0,0,0,0.55) 1%, rgba(0,0,0,0.9) 100%);
+	background: -ms-radial-gradient(50% 50%, ellipse closest-corner, rgba(0,0,0,0.55) 1%, rgba(0,0,0,0.9) 100%);
+
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+	line-height: 1.428571429;
+	color: #333;
+	overflow: auto;
+}
+
+#ms-taxamo-wrapper * {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+#ms-taxamo-wrapper .ms-wrap {
+	position: absolute;
+	background-color: #f8f8f8;
+	width: 500px;
+	height: 400px;
+	top: 50%;
+	left: 50%;
+	margin-top: -200px;
+	margin-left: -250px;
+	-webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+	border-radius: 6px;
+	outline: 0;
+	min-height: 300px;
+	min-width: 200px;
+	margin-bottom: 10px;
+}
+
+#ms-taxamo-wrapper .modal-header {
+	min-height: 16.428571429px;
+	padding: 15px;
+	border-bottom: 1px solid #E5E5E5;
+}
+
+#ms-taxamo-wrapper .modal-title {
+	margin: 0;
+	line-height: 1.428571429;
+	font-size: 18px;
+}
+
+#ms-taxamo-wrapper .modal-header .close {
+	z-index: 1111;
+	position: absolute;
+	top: 18px;
+	right: 20px;
+	padding: 0;
+	cursor: pointer;
+	background: rgba(0, 0, 0, 0);
+	border: 0;
+	-webkit-appearance: none;
+	font-size: 21px;
+	font-weight: bold;
+	line-height: 1;
+	color: #000;
+	text-shadow: 0 1px 0 #FFF;
+	opacity: .2;
+}
+
+#ms-taxamo-wrapper .modal-footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 35px;
+	padding: 19px 20px 20px;
+	text-align: right;
+	border-top: 1px solid #E5E5E5;
+}
+
+#ms-taxamo-wrapper .modal-header .close:focus,
+#ms-taxamo-wrapper .modal-header .close:hover {
+	opacity: 0.5;
+}
+
+#ms-taxamo-wrapper .btn {
+	display: inline-block;
+	padding: 6px 12px;
+	margin-bottom: 0;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 21px;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	cursor: pointer;
+	border: 1px solid rgba(0, 0, 0, 0);
+	border-radius: 4px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	color: #333;
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15),0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15),0 1px 1px rgba(0, 0, 0, 0.075);
+	text-shadow: 0 1px 0 #FFF;
+	background-color: #FFF;
+	background-image: -webkit-gradient(linear,left 0,left 100%,from(#FFF),to(#E6E6E6));
+	background-image: -webkit-linear-gradient(top,#fff,0%,#e6e6e6,100%);
+	background-image: -moz-linear-gradient(top,#fff 0,#e6e6e6 100%);
+	background-image: linear-gradient(to bottom,#FFF 0,#E6E6E6 100%);
+	background-repeat: repeat-x;
+	border-color: #CCC;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#ffe6e6e6',GradientType=0);
+	text-transform: none;
+}
+
+#ms-taxamo-wrapper .btn:hover,
+#ms-taxamo-wrapper .btn:focus,
+#ms-taxamo-wrapper .btn:active {
+	color: #333;
+	background-color: #EBEBEB;
+	border-color: #ADADAD;
+}
+
+#ms-taxamo-wrapper .btn+.btn {
+	margin-bottom: 0;
+	margin-left: 5px;
+}
+
+#ms-taxamo-wrapper .btn-primary {
+	color: #FFF;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+	background-image: -webkit-gradient(linear,left 0,left 100%,from(#428BCA),to(#3071A9));
+	background-image: -webkit-linear-gradient(top,#428bca,0%,#3071a9,100%);
+	background-image: -moz-linear-gradient(top,#428bca 0,#3071a9 100%);
+	background-image: linear-gradient(to bottom,#428BCA 0,#3071A9 100%);
+	background-repeat: repeat-x;
+	border-color: #2D6CA2;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff428bca',endColorstr='#ff3071a9',GradientType=0);
+}
+
+#ms-taxamo-wrapper .btn-primary:hover,
+#ms-taxamo-wrapper .btn-primary:focus,
+#ms-taxamo-wrapper .btn-primary:active {
+	color: #FFF;
+	background-color: #3276B1;
+	border-color: #285E8E;
+}
+
+#ms-taxamo-wrapper .modal-body {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin-bottom: 74px;
+	margin-top: 56px;
+	padding: 20px;
+	overflow: auto;
+	background-color: #fff;
+	font-size: 14px;
+	color: #333;
+	line-height: 1.428571429;
+}
+
+@media only all and (max-width: 520px) {
+	#ms-taxamo-wrapper .ms-wrap {
+		left: 10px;
+		right: 10px;
+		width: auto;
+		margin-left: 0;
+	}
+}
+
+@media only all and (max-height: 420px) {
+	#ms-taxamo-wrapper .ms-wrap {
+		top: 10px;
+		bottom: 10px;
+		height: auto;
+		margin-top: 0;
+	}
+}
