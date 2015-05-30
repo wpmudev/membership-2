@@ -260,7 +260,7 @@ class MS_View_Frontend_Payment extends MS_View {
 		do_action( 'ms_show_prices' );
 
 		if ( $show_tax ) {
-			do_action( 'ms_tax_editor' );
+			do_action( 'ms_tax_editor', $invoice );
 		}
 		?>
 		<div style="clear:both;"></div>

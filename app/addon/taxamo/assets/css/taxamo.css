@@ -51,9 +51,11 @@
 }
 
 #ms-taxamo-wrapper .modal-header {
-	min-height: 16.428571429px;
+	height: 25px;
 	padding: 15px;
 	border-bottom: 1px solid #E5E5E5;
+	position: relative;
+	z-index: 2;
 }
 
 #ms-taxamo-wrapper .modal-title {
@@ -89,6 +91,7 @@
 	padding: 19px 20px 20px;
 	text-align: right;
 	border-top: 1px solid #E5E5E5;
+	z-index: 2;
 }
 
 #ms-taxamo-wrapper .modal-header .close:focus,
@@ -132,9 +135,16 @@
 #ms-taxamo-wrapper .btn:hover,
 #ms-taxamo-wrapper .btn:focus,
 #ms-taxamo-wrapper .btn:active {
-	color: #333;
-	background-color: #EBEBEB;
 	border-color: #ADADAD;
+}
+
+#ms-taxamo-wrapper .btn[disabled],
+#ms-taxamo-wrapper .btn.disabled {
+	opacity: 0.5;
+	cursor: default;
+	box-shadow: none;
+	text-shadow: none;
+	border-color: #CCC;
 }
 
 #ms-taxamo-wrapper .btn+.btn {
@@ -145,6 +155,7 @@
 #ms-taxamo-wrapper .btn-primary {
 	color: #FFF;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+	background-color: #3276B1;
 	background-image: -webkit-gradient(linear,left 0,left 100%,from(#428BCA),to(#3071A9));
 	background-image: -webkit-linear-gradient(top,#428bca,0%,#3071a9,100%);
 	background-image: -moz-linear-gradient(top,#428bca 0,#3071a9 100%);
@@ -157,9 +168,12 @@
 #ms-taxamo-wrapper .btn-primary:hover,
 #ms-taxamo-wrapper .btn-primary:focus,
 #ms-taxamo-wrapper .btn-primary:active {
-	color: #FFF;
-	background-color: #3276B1;
-	border-color: #285E8E;
+	border-color: #036;
+}
+
+#ms-taxamo-wrapper .btn-primary[disabled],
+#ms-taxamo-wrapper .btn-primary.disabled {
+	border-color: #2D6CA2;
 }
 
 #ms-taxamo-wrapper .modal-body {
@@ -169,13 +183,128 @@
 	right: 0;
 	bottom: 0;
 	margin-bottom: 74px;
-	margin-top: 56px;
-	padding: 20px;
+	margin-top: 55px;
+	padding: 0;
 	overflow: auto;
 	background-color: #fff;
 	font-size: 14px;
 	color: #333;
 	line-height: 1.428571429;
+	z-index: 1;
+}
+
+#ms-taxamo-wrapper .loading-message {
+	position: absolute;
+	left: 0;
+	right: 0;
+	text-align: center;
+	top: 45%;
+	font-size: 20px;
+	text-shadow: 0 1px 0px #fff;
+	display: none;
+}
+
+#ms-taxamo-wrapper .is-loading .modal-body {
+	-webkit-filter: blur(1px);
+}
+
+#ms-taxamo-wrapper .is-loading .loading-message {
+	display: block;
+}
+
+#ms-taxamo-wrapper .is-loading .modal-body:before {
+	content: '';
+	display: block;
+	position: absolute;
+	left: 1px;
+	top: 0;
+	right: 1px;
+	bottom: 1px;
+	background-color: #FCFCFC;
+	z-index: 100;
+	opacity: 0.8;
+}
+
+#ms-taxamo-wrapper .wpmui-wrapper,
+#ms-taxamo-wrapper .wpmui-checkbox-wrapper {
+	display: block;
+	clear: both;
+	margin: 0;
+	padding: 8px 16px 8px;
+	border-top: 1px solid #E5E5E5;
+}
+
+#ms-taxamo-wrapper .wpmui-field-description {
+	padding: 0 0 5px;
+	line-height: 1.3;
+}
+
+#ms-taxamo-wrapper .wpmui-label-after {
+	padding: 5px 0 0;
+	line-height: 1.3;
+}
+
+#ms-taxamo-wrapper .input,
+#ms-taxamo-wrapper input,
+#ms-taxamo-wrapper textarea,
+#ms-taxamo-wrapper select {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.428571429;
+	color: #555;
+	vertical-align: middle;
+	background-color: #FFF;
+	border: 1px solid #CCC;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+#ms-taxamo-wrapper .input:focus,
+#ms-taxamo-wrapper input:focus,
+#ms-taxamo-wrapper textarea:focus,
+#ms-taxamo-wrapper select:focus {
+	border-color: #66AFE9;
+	outline: 0;
+	color: #000;
+}
+
+#ms-taxamo-wrapper .wpmui-field-checkbox {
+	display: inline-block;
+	width: auto;
+	height: auto;
+	margin: 16px 0 0 18px;
+}
+
+#ms-taxamo-wrapper .wpmui-checkbox-caption {
+	padding-left: 20px;
+	font-weight: normal;
+}
+
+#ms-taxamo-wrapper .vat_number_field {
+	display: block;
+}
+
+#ms-taxamo-wrapper .ms-no-manual .is-manual {
+	display: none;
+}
+
+#ms-taxamo-wrapper .manual-country {
+	display: none;
+}
+
+#ms-taxamo-wrapper .ms-tax-manual .manual-country {
+	display: block;
+}
+
+#ms-taxamo-wrapper .ms-no-tax .vat_number_field,
+#ms-taxamo-wrapper .ms-tax-manual .vat_number_field {
+	display: none;
 }
 
 @media only all and (max-width: 520px) {

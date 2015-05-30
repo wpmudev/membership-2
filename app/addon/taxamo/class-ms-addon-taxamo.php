@@ -58,6 +58,16 @@ class MS_Addon_Taxamo extends MS_Addon {
 
 	// Ajax Actions
 	const AJAX_SAVE_SETTING = 'addon_taxamo_save';
+	const AJAX_SAVE_USERPROFILE = 'addon_taxamo_profile';
+
+	/**
+	 * HTML code that is output in the page footer when tax-editor dialog is
+	 * available.
+	 *
+	 * @since 2.0.0
+	 * @var string
+	 */
+	static protected $footer_html = '';
 
 	/**
 	 * Checks if the current Add-on is enabled
@@ -98,6 +108,13 @@ class MS_Addon_Taxamo extends MS_Addon {
 			$this->add_ajax_action(
 				self::AJAX_SAVE_SETTING,
 				'ajax_save_setting'
+			);
+
+			// Save settings via ajax
+			$this->add_ajax_action(
+				self::AJAX_SAVE_USERPROFILE,
+				'ajax_save_userprofile',
+				true, true
 			);
 
 			// Confirm payments with Taxamo
@@ -310,11 +327,18 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * Load taxamo scripts.
 	 *
 	 * @since 2.0.0
+	 * @param  MS_Model_Invoice $invoice Optional. The invoice to edit.
 	 */
-	public function tax_editor() {
+	public function tax_editor( $invoice ) {
+		static $Done = false;
+
+		// Only one tax-editor is possible per page.
+		if ( $Done ) { return; }
+		$Done = true;
+
 		$this->add_action(
 			'wp_footer',
-			'userprofile_form'
+			'tax_editor_footer'
 		);
 
 		$plugin_url = MS_Plugin::instance()->url;
@@ -330,20 +354,102 @@ class MS_Addon_Taxamo extends MS_Addon {
 			array( 'jquery' )
 		);
 
+		$view = MS_Factory::load( 'MS_Addon_Taxamo_Userprofile' );
+		$view->data = apply_filters(
+			'ms_addon_taxamo_editor_data',
+			array( 'invoice' => $invoice ),
+			$this
+		);
+		self::$footer_html .= '<div id="ms-taxamo-wrapper">' . $view->to_html() . '</div>';
+
 		do_action( 'ms_addon_taxamo_enqueue_scripts', $this );
 	}
 
 	/**
-	 * Adds the HTML code for the user profile popup to the page.
-	 * The form is displayed via javascript.
+	 * Outputs tax-editor code in the page footer.
 	 *
-	 * @since  2.0.0
+	 * @since  12.0.0
 	 */
-	public function userprofile_form() {
-		$view = MS_Factory::load( 'MS_Addon_Taxamo_Userprofile' );
-		$html = $view->to_html();
+	public function tax_editor_footer() {
+		echo self::$footer_html;
+		?>
+		<script>
+		window.ms_taxamo = {
+			"ajax_url" : "<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>"
+		};
+		</script>
+		<?php
+	}
 
-		echo '<div id="ms-taxamo-wrapper">' . $html . '</div>';
+	/**
+	 * Handle Ajax action to update a user tax-profile field.
+	 *
+	 * @since 2.0.0
+	 */
+	public function ajax_save_userprofile() {
+		$response = '';
+
+		$isset = array(
+			'vat_number',
+			'declare_manually',
+			'billing_country',
+			'invoice_id',
+		);
+
+		if ( $this->verify_nonce()
+			&& self::validate_required( $isset, 'POST', false )
+		) {
+			$invoice_id = intval( $_POST['invoice_id'] );
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+			$data = $_POST;
+			unset( $data['invoice_id'] );
+			unset( $data['action'] );
+			unset( $data['_wpnonce'] );
+
+			$data['billing_country'] = (object) array(
+				'ip' => '',
+				'code' => $data['billing_country'],
+				'tax_supported' => ('XX' != $data['billing_country']),
+			);
+
+			if ( lib2()->is_true( $data['declare_manually'] ) ) {
+				$data['vat_number'] = '';
+				$data['use_billing'] = true;
+			} else {
+				$data['billing_country']->code = '';
+				$data['billing_country']->tax_supported = false;
+				$data['use_billing'] = false;
+			}
+			unset( $data['declare_manually'] );
+
+			foreach ( $data as $field => $value ) {
+				$value = apply_filters(
+					'ms_addon_taxamo_userprofile_value',
+					$value,
+					$field,
+					$invoice_id,
+					$this
+				);
+
+				MS_Addon_Taxamo_Api::set_user_profile( $field, $value );
+			}
+
+			// User profile updated. Now update the tax-rate in the invoice.
+			if ( $invoice->is_valid() ) {
+				$invoice->total_amount_changed();
+				$invoice->save();
+			}
+
+			$view = MS_Factory::load( 'MS_Addon_Taxamo_Userprofile' );
+			$view->data = apply_filters(
+				'ms_addon_taxamo_editor_data',
+				array( 'invoice' => $invoice ),
+				$this
+			);
+			$response = trim( $view->to_html() );
+		}
+
+		wp_die( $response );
 	}
 
 }

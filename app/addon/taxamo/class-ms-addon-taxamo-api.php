@@ -30,6 +30,10 @@
  */
 class MS_Addon_Taxamo_Api extends MS_Controller {
 
+	static protected $Countries = null;
+	static protected $Countries_Prefix = null;
+	static protected $Countries_Vat = null;
+
 	/**
 	 * Returns tax information that must be applied to the specified amount.
 	 *
@@ -58,11 +62,12 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 		if ( null === $Info ) {
 			try {
+				$country = self::get_tax_country();
 				$resp = self::taxamo()->calculateSimpleTax(
 					null // buyer_credit_card_prefix
 					,null // buyer_tax_number
 					,null // product_type
-					,self::country_code() // force_country_code
+					,$country->code // force_country_code
 					,null // quantity
 					,null // unit_price
 					,null // total_amount
@@ -136,19 +141,131 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	}
 
 	/**
-	 * Returns the country-code of the current user.
+	 * Returns the country-code of the that is used for tax calculation.
 	 *
-	 * @since  1.1.0
-	 * @return string 2-Digit country code, e.g. 'IE' for Ireland
+	 * @since  2.0.0
+	 * @api
+	 *
+	 * @return object {
+	 *         Country information.
+	 *
+	 *         $ip
+	 *         $code
+	 *         $name
+	 *         $tax_supported
+	 * }
 	 */
-	static public function country_code() {
-		$data = self::determine_country();
+	static public function get_tax_country() {
+		$profile = self::get_user_profile();
 
-		if ( isset( $data->country_code ) ) {
-			return $data->country_code;
+		if ( $profile->vat_number && $profile->vat_valid ) {
+			$tax_country = $profile->vat_country;
+		} elseif ( $profile->use_billing && $profile->billing_country->code ) {
+			$tax_country = $profile->billing_country;
 		} else {
-			return 'US';
+			$tax_country = $profile->detected_country;
 		}
+
+		return $tax_country;
+	}
+
+	/**
+	 * Returns an object containing all tax-related user profile details.
+	 *
+	 * @since  2.0.0
+	 * @return object {
+	 *         Local Taxamo user profile settings
+	 *
+	 *         $detected_country {@see get_tax_country()}
+	 *         $billing_country {@see get_tax_country()}
+	 *         $vat_number
+	 * }
+	 */
+	static public function get_user_profile() {
+		static $Profile = null;
+
+		if ( null === $Profile ) {
+			$member = MS_Model_Member::get_current_member();
+
+			$Profile = (object) array();
+			$Profile->detected_country = self::fetch_country( 'auto' );
+			$Profile->billing_country = self::fetch_country( 'billing' );
+			$Profile->vat_country = self::fetch_country( 'vat' );
+
+			$Profile->vat_number = self::get_user_profile_value( $member, 'tax_vat_number' );
+			$Profile->vat_avlid = self::get_user_profile_value( $member, 'tax_vat_valid' );
+
+			$Profile = apply_filters(
+				'ms_addon_taxamo_get_user_profile',
+				$Profile,
+				$this
+			);
+		}
+
+		return $Profile;
+	}
+
+	/**
+	 * Saves a single field to the user tax profile.
+	 *
+	 * All fields that are included in the get_user_profile() response are
+	 * valid field names. Exception: 'detected_country' cannot be changed.
+	 *
+	 * @since 2.0.0
+	 * @api
+	 *
+	 * @param string $field The field key.
+	 * @param mixed $value The new value.
+	 * @return bool True on success.
+	 */
+	static public function set_user_profile( $field, $value ) {
+		$member = MS_Model_Member::get_current_member();
+
+		$valid_keys = array(
+			'use_billing',
+			'billing_country',
+			'vat_number',
+		);
+
+		$valid_keys = apply_filters(
+			'ms_addon_taxamo_set_user_profile_valid_keys',
+			$valid_keys,
+			$this
+		);
+
+		if ( ! in_array( $field, $valid_keys ) ) {
+			return false;
+		}
+
+		// Special case: When VAT Number is changed also refresh VAT country.
+		if ( 'vat_number' == $field ) {
+			$valid_code = MS_Addon_Taxamo_Api::country_from_vat( $value );
+
+			if ( $valid_code ) {
+				$vat_country = (object) array(
+					'ip' => '',
+					'code' => $valid_code,
+					'tax_supported' => true,
+				);
+				self::set_user_profile_value( $member, 'tax_vat_valid', true );
+			} else {
+				$vat_country = (object) array(
+					'ip' => '',
+					'code' => '',
+					'tax_supported' => false,
+				);
+				self::set_user_profile_value( $member, 'tax_vat_valid', false );
+			}
+
+			self::set_user_profile_value( $member, 'tax_vat_country', $vat_country );
+		}
+
+		$key = 'tax_' . $field;
+		if ( self::set_user_profile_value( $member, $key, $value ) ) {
+			$member->save();
+		}
+
+		return true;
 	}
 
 	/**
@@ -158,17 +275,98 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @return string IP Address
 	 */
 	static public function buyer_ip() {
-		$data = self::determine_country();
+		$data = self::get_detected_country();
+		return $data->remote_addr;
+	}
 
-		if ( isset( $data->remote_addr ) ) {
-			return $data->remote_addr;
-		} else {
-			return '127.0.0.1';
+	/**
+	 * Validates the given VAT number and returns the country code if the number
+	 * is valid. Otherwise an empty string is returned.
+	 *
+	 * @since  2.0.0
+	 * @param  string $vat_number The VAT number to validate.
+	 * @return string Country code.
+	 */
+	static public function country_from_vat( $vat_number ) {
+		if ( strlen( $vat_number ) < 5 ) { return ''; }
+
+		$prefix = substr( $vat_number, 0, 2 );
+		$codes = self::get_country_codes( 'vat' );
+		if ( ! isset( $codes[$prefix] ) ) { return ''; }
+
+		$country_code = $codes[$prefix];
+		$resp = self::taxamo()->validateTaxNumber( null, $vat_number );
+
+		$result = $resp->billing_country_code;
+		return $result;
+	}
+
+	/**
+	 * Returns a list of all taxamo relevant EU countries.
+	 *
+	 * @since  2.0.0
+	 * @api
+	 *
+	 * @param  string $type [prefix|name|vat]
+	 *         name ..   code => "name"
+	 *         prefix .. code => "prefix - name"
+	 *         vat ..    vat-prefix => code
+	 * @return array
+	 */
+	static public function get_country_codes( $type = 'prefix' ) {
+		if ( null === self::$Countries ) {
+			$country_names = MS_Gateway::get_country_codes(); // Country names in current language.
+
+			$list = get_site_transient( 'ms_taxamo_countries' );
+			$list = false;
+			if ( ! $list || ! is_array( $list ) ) {
+				$resp = self::taxamo()->getCountriesDict( 'true' );
+				$list = array();
+				foreach ( $resp->dictionary as $item ) {
+					$list[$item->code] = array(
+						'name' => $item->name,
+						'vat' => $item->tax_number_country_code,
+					);
+				}
+				set_site_transient( 'ms_taxamo_countries', $list, WEEK_IN_SECONDS );
+			}
+
+			self::$Countries = array();
+			self::$Countries_Prefix = array();
+			self::$Countries_Vat = array();
+			foreach ( $list as $code => $item ) {
+				if ( isset( $country_names[$code] ) ) {
+					$item['name'] = $country_names[$code];
+				}
+
+				self::$Countries[$code] = $item['name'];
+				self::$Countries_Prefix[$code] = $code . ' - ' . $item['name'];
+				self::$Countries_Vat[$item['vat']] = $code;
+			}
+			self::$Countries['XX'] = '- ' . __( 'Outside the EU', MS_TEXT_DOMAIN ) . ' -';
+			self::$Countries_Prefix['XX'] = '- ' . __( 'Outside the EU', MS_TEXT_DOMAIN ) . ' -';
+		}
+
+		switch ( $type ) {
+			case 'prefix':
+				return self::$Countries_Prefix;
+
+			case 'vat':
+				return self::$Countries_Vat;
+
+			case 'name':
+			default:
+				return self::$Countries;
 		}
 	}
 
 	// ------------------------------------------------------- PRIVATE FUNCTIONS
 
+	/**
+	 * Prepares a transaction object before it is sent to taxamo.
+	 *
+	 * @since  1.0.0
+	 */
 	static protected function prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email ) {
 		self::taxamo();
 
@@ -181,14 +379,16 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			'description' => (string) $label,
 		);
 
+		$country = self::get_tax_country();
 		$transaction = array(
 			'currency_code' => MS_Addon_Taxamo::model()->currency,
-			'billing_country_code' => self::country_code(),
+			'billing_country_code' => $country->code,
 			'buyer_ip' => self::buyer_ip(),
 			'custom_id' => (string) $invoice_id,
 			'buyer_name' => $name,
 			'buyer_email' => $email,
 			'transaction_lines' => array( $tr_line ),
+			'evidence' => array(),
 		);
 
 		return $transaction;
@@ -197,24 +397,24 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Determines the users country based on his IP address.
 	 *
-	 * Should be called only by `country_code()`
-	 *
 	 * @since 1.1.0
+	 * @internal
+	 *
+	 * @param string $mode [billing|auto] Either the country from user settings
+	 *        or the auto-detected country.
 	 */
-	static protected function determine_country() {
+	static protected function fetch_country( $mode = 'billing' ) {
 		$member = MS_Model_Member::get_current_member();
 		$country = false;
 		$store_it = false;
 
+		$non_auto_countries = array( 'billing', 'vat' );
+		if ( ! in_array( $mode, $non_auto_countries ) ) { $mode = 'auto'; }
+		if ( 'auto' == $mode ) { $member = null; }
+		$profile_key = 'tax_' . $mode . '_country';
+
 		// Try to get the stored country from user-meta or session (for guest)
-		if ( $member->is_valid() ) {
-			$country = $member->get_custom_data( 'tax_country' );
-		} else {
-			$country = lib2()->session->get( 'ms_tax_country' );
-			if ( is_array( $country ) && count( $country ) ) {
-				$country = $country[0];
-			}
-		}
+		$country = self::get_user_profile_value( $member, $profile_key );
 
 		// If no country is stored use the API to determine it.
 		if ( ! $country ) {
@@ -222,7 +422,12 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 			try {
 				$ip_info = lib2()->net->current_ip();
-				$country = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
+				$data = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
+				$country = (object) array(
+					'ip' => $data->remote_addr,
+					'code' => $data->country_code,
+					'tax_supported' => $data->country->tax_supported,
+				);
 				$store_it = true;
 			}
 			catch ( Exception $ex ) {
@@ -233,28 +438,79 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		// API did not return a valid resonse, use a dummy value.
 		if ( ! $country ) {
 			$country = array(
-				'remote_addr' => lib2()->net->current_ip(),
-				'country_code' => 'US',
-				'country' => array(
-					'tax_supported' => false,
-					'code' => 'US',
-				),
+				'ip' => lib2()->net->current_ip(),
+				'code' => 'US',
+				'tax_supported' => false,
 			);
 
 			$store_it = true;
 		}
 
 		// Store result in user-deta or session.
-		if ( $store_it ) {
-			if ( $member->is_valid() ) {
-				$member->set_custom_data( 'tax_country', $country );
-				$member->save();
-			} else {
-				lib2()->session->add( 'ms_tax_country', $country );
-			}
+		if ( $store_it && self::set_user_profile_value( $member, $key, $country ) ) {
+			$member->save();
+		}
+
+		$country_names = self::get_country_codes( 'name' );
+
+		if ( $country->code && isset( $country_names[ $country->code ] ) ) {
+			$country->name = $country_names[ $country->code ];
+		} else {
+			$country->code = 'XX';
+			$country->name = $country_names['XX'];
 		}
 
 		return $country;
+	}
+
+	/**
+	 * Internal helper function that returns a user profile value either from
+	 * DB or from the session (depending if the user is logged in or not).
+	 *
+	 * @since 2.0.0
+	 * @internal
+	 *
+	 * @param  MS_Model_Member $member
+	 * @param  string $key The field key.
+	 * @return mixed The field value.
+	 */
+	static protected function get_user_profile_value( $member, $key, $value ) {
+		if ( is_object( $member ) && $member->is_valid() ) {
+			$result = $member->get_custom_data( $key, $value );
+		} else {
+			$result = lib2()->session->get( 'ms_' . $key, $value );
+			if ( is_array( $result ) && count( $result ) ) {
+				$result = $result[0];
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Internal helper function that saves a user profile value either to DB or
+	 * to the session (depending if the user is logged in or not).
+	 *
+	 * @since 2.0.0
+	 * @internal
+	 *
+	 * @param  MS_Model_Member $member
+	 * @param  string $key The field key.
+	 * @param  mixed $value The value to save
+	 * @return bool True means that the value was set in $member, otherwise it
+	 *         was set in the session.
+	 */
+	static protected function set_user_profile_value( $member, $key, $value ) {
+		if ( is_object( $member ) && $member->is_valid() ) {
+			$member->set_custom_data( $key, $value );
+			$need_save = true;
+		} else {
+			lib2()->session->get_clear( 'ms_' . $key );
+			lib2()->session->add( 'ms_' . $key, $value );
+			$need_save = false;
+		}
+
+		return $need_save;
 	}
 
 	/**
@@ -297,7 +553,6 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 */
 	static protected function init() {
 		self::taxamo();
-		self::country_code();
+		self::fetch_country( 'auto' );
 	}
-
 }
