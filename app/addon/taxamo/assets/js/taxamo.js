@@ -3,21 +3,28 @@
  * This adds functions to allow users to change the tax-country and vat number.
  */
 jQuery(function() {
+	var need_refresh = false;
+
 	window.ms_taxamo = window.ms_taxamo || {};
 	window.ms_taxamo.init = init;
 	init();
 
 	function init () {
-		var profile_wrapper = jQuery( '#ms-taxamo-wrapper' ),
+		var
+			body = jQuery( 'body' ),
+			profile_wrapper = jQuery( '#ms-taxamo-wrapper' ),
 			profile_form = jQuery( '.ms-wrap', profile_wrapper ),
-			chk_manual = jQuery( '#declare_manually', profile_form ),
+			opt_choice = jQuery( 'input.country_choice', profile_form ),
 			sel_billing_country = jQuery( '#billing_country', profile_form ),
 			inp_detected_country = jQuery( '#detected_country', profile_form ),
 			vat_number_field = jQuery( '.vat_number_field', profile_form ),
 			inp_vat_number = jQuery( '#vat_number', profile_form ),
 			btn_save = jQuery( '.save', profile_form ),
 			btn_close = jQuery( '.close', profile_form ),
-			fields = jQuery( ':input', profile_form );
+			fields = jQuery( ':input', profile_form )
+			body_messages = jQuery( '.body-messages', profile_wrapper );
+
+		body_messages.detach();
 
 		function show_edit_form( ev ) {
 			profile_wrapper.show();
@@ -26,17 +33,20 @@ jQuery(function() {
 
 		function close_edit_form( ev ) {
 			profile_wrapper.hide();
+
+			if ( need_refresh ) {
+				body.addClass( 'ms-tax-is-loading' );
+				body_messages.appendTo( body );
+				window.location.reload();
+			}
 			return false;
 		}
 
-		function set_manual_state( ev ) {
-			if ( chk_manual.prop( 'checked' ) ) {
-				profile_form.addClass( 'ms-tax-manual' );
-			} else {
-				profile_form.removeClass( 'ms-tax-manual' );
-				sel_billing_country.val( inp_detected_country.val() );
-			}
-			set_billing_country( ev );
+		function set_country_choice( ev ) {
+			var choice = opt_choice.filter( ':checked' ).val();
+
+			profile_form.removeClass( 'ms-tax-declared ms-tax-vat ms-tax-auto' );
+			profile_form.addClass( 'ms-tax-' + choice );
 		}
 
 		function set_billing_country( ev ) {
@@ -59,6 +69,7 @@ jQuery(function() {
 
 			profile_form.remove();
 			new_form.appendTo( profile_wrapper );
+			need_refresh = true;
 			init();
 		}
 
@@ -75,8 +86,13 @@ jQuery(function() {
 					key = field.attr( 'name' );
 
 				if ( ! key ) { continue; }
+				if ( undefined === data[key] ) { data[key] = ''; }
 				if ( field.is( ':checkbox' ) ) {
 					data[key] = field.prop( 'checked' );
+				} else if ( field.is( ':radio' ) ) {
+					if ( field.is( ':checked' ) ) {
+						data[key] = field.val();
+					}
 				} else {
 					data[key] = field.val();
 				}
@@ -95,8 +111,8 @@ jQuery(function() {
 		profile_wrapper.click( close_edit_form );
 		btn_close.click( close_edit_form );
 
-		// Toggle the visual "Declare manual" state.
-		chk_manual.click( set_manual_state );
+		// Toggle the visible tax country options.
+		opt_choice.click( set_country_choice );
 		sel_billing_country.change( set_billing_country );
 
 		// Update the settings data via Ajax.

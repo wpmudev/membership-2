@@ -390,10 +390,9 @@ class MS_Addon_Taxamo extends MS_Addon {
 		$response = '';
 
 		$isset = array(
+			'country_choice',
+			'declared_country',
 			'vat_number',
-			'declare_manually',
-			'billing_country',
-			'invoice_id',
 		);
 
 		if ( $this->verify_nonce()
@@ -406,21 +405,11 @@ class MS_Addon_Taxamo extends MS_Addon {
 			unset( $data['action'] );
 			unset( $data['_wpnonce'] );
 
-			$data['billing_country'] = (object) array(
+			$data['declared_country'] = (object) array(
 				'ip' => '',
-				'code' => $data['billing_country'],
-				'tax_supported' => ('XX' != $data['billing_country']),
+				'code' => $data['declared_country'],
+				'tax_supported' => ('XX' != $data['declared_country']),
 			);
-
-			if ( lib2()->is_true( $data['declare_manually'] ) ) {
-				$data['vat_number'] = '';
-				$data['use_billing'] = true;
-			} else {
-				$data['billing_country']->code = '';
-				$data['billing_country']->tax_supported = false;
-				$data['use_billing'] = false;
-			}
-			unset( $data['declare_manually'] );
 
 			foreach ( $data as $field => $value ) {
 				$value = apply_filters(
@@ -436,6 +425,8 @@ class MS_Addon_Taxamo extends MS_Addon {
 
 			// User profile updated. Now update the tax-rate in the invoice.
 			if ( $invoice->is_valid() ) {
+				$profile = MS_Addon_Taxamo_Api::get_user_profile();
+				$invoice->set_custom_data( 'tax_profile', $profile );
 				$invoice->total_amount_changed();
 				$invoice->save();
 			}

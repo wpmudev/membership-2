@@ -62,18 +62,22 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 		if ( null === $Info ) {
 			try {
-				$country = self::get_tax_country();
+				$profile = self::get_user_profile();
+				$tax_number = null;
+				if ( $profile->use_vat_number ) {
+					$tax_number = $profile->vat_number;
+				}
 				$resp = self::taxamo()->calculateSimpleTax(
 					null // buyer_credit_card_prefix
-					,null // buyer_tax_number
+					,$tax_number // buyer_tax_number
 					,null // product_type
-					,$country->code // force_country_code
+					,$profile->tax_country->code // force_country_code
 					,null // quantity
 					,null // unit_price
 					,null // total_amount
 					,null // tax_deducted
 					,100 // amount
-					,null // billing_country_code
+					,$profile->tax_country->code // billing_country_code
 					,MS_Addon_Taxamo::model()->currency // currency_code
 					,null // order_date
 				);
@@ -141,44 +145,22 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	}
 
 	/**
-	 * Returns the country-code of the that is used for tax calculation.
+	 * Returns an object containing all tax-related user profile details.
 	 *
 	 * @since  2.0.0
 	 * @api
 	 *
 	 * @return object {
-	 *         Country information.
-	 *
-	 *         $ip
-	 *         $code
-	 *         $name
-	 *         $tax_supported
-	 * }
-	 */
-	static public function get_tax_country() {
-		$profile = self::get_user_profile();
-
-		if ( $profile->vat_number && $profile->vat_valid ) {
-			$tax_country = $profile->vat_country;
-		} elseif ( $profile->use_billing && $profile->billing_country->code ) {
-			$tax_country = $profile->billing_country;
-		} else {
-			$tax_country = $profile->detected_country;
-		}
-
-		return $tax_country;
-	}
-
-	/**
-	 * Returns an object containing all tax-related user profile details.
-	 *
-	 * @since  2.0.0
-	 * @return object {
 	 *         Local Taxamo user profile settings
 	 *
-	 *         $detected_country {@see get_tax_country()}
-	 *         $billing_country {@see get_tax_country()}
-	 *         $vat_number
+	 *         $tax_country      {@see fetch_country()}
+	 *         $detected_country {@see fetch_country()}
+	 *         $declared_country {@see fetch_country()}
+	 *         $vat_country      {@see fetch_country()}
+	 *         $country_choice   string [auto|declared|vat]
+	 *         $vat_number       string
+	 *         $vat_valid        bool
+	 *         $use_vat_number   bool
 	 * }
 	 */
 	static public function get_user_profile() {
@@ -189,11 +171,35 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 			$Profile = (object) array();
 			$Profile->detected_country = self::fetch_country( 'auto' );
-			$Profile->billing_country = self::fetch_country( 'billing' );
+			$Profile->declared_country = self::fetch_country( 'declared' );
 			$Profile->vat_country = self::fetch_country( 'vat' );
+			$Profile->country_choice = self::get_user_profile_value( $member, 'tax_country_choice' );
+
+			$valid_choices = array( 'auto', 'vat', 'declared' );
+			if ( ! in_array( $Profile->country_choice, $valid_choices ) ) {
+				$Profile->country_choice = 'auto';
+			}
 
 			$Profile->vat_number = self::get_user_profile_value( $member, 'tax_vat_number' );
-			$Profile->vat_avlid = self::get_user_profile_value( $member, 'tax_vat_valid' );
+			$Profile->vat_valid = self::get_user_profile_value( $member, 'tax_vat_valid' );
+			$Profile->use_vat_number = 'vat' == $Profile->country_choice && $Profile->vat_valid;
+
+			// Decide which country to use for tax calculation. Default is auto-detected.
+			$Profile->tax_country = $Profile->detected_country;
+
+			switch ( $Profile->country_choice ) {
+				case 'declared':
+					$Profile->tax_country = $Profile->declared_country;
+					break;
+
+				case 'vat':
+					if ( $Profile->vat_valid ) {
+						$Profile->tax_country = $Profile->vat_country;
+					} else {
+						$Profile->tax_country = $Profile->detected_country;
+					}
+					break;
+			}
 
 			$Profile = apply_filters(
 				'ms_addon_taxamo_get_user_profile',
@@ -222,8 +228,8 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		$member = MS_Model_Member::get_current_member();
 
 		$valid_keys = array(
-			'use_billing',
-			'billing_country',
+			'country_choice',
+			'declared_country',
 			'vat_number',
 		);
 
@@ -240,6 +246,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		// Special case: When VAT Number is changed also refresh VAT country.
 		if ( 'vat_number' == $field ) {
 			$valid_code = MS_Addon_Taxamo_Api::country_from_vat( $value );
+			$value = str_replace( ' ', '', $value );
 
 			if ( $valid_code ) {
 				$vat_country = (object) array(
@@ -369,6 +376,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 */
 	static protected function prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email ) {
 		self::taxamo();
+		$profile = self::get_user_profile();
 
 		$tr_line = array(
 			'product_type' => 'e-service',
@@ -379,10 +387,9 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			'description' => (string) $label,
 		);
 
-		$country = self::get_tax_country();
 		$transaction = array(
 			'currency_code' => MS_Addon_Taxamo::model()->currency,
-			'billing_country_code' => $country->code,
+			'billing_country_code' => $profile->tax_country->code,
 			'buyer_ip' => self::buyer_ip(),
 			'custom_id' => (string) $invoice_id,
 			'buyer_name' => $name,
@@ -400,15 +407,15 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @since 1.1.0
 	 * @internal
 	 *
-	 * @param string $mode [billing|auto] Either the country from user settings
-	 *        or the auto-detected country.
+	 * @param string $mode [declared|vat|auto] Either the country from user
+	 *        settings or the auto-detected country.
 	 */
-	static protected function fetch_country( $mode = 'billing' ) {
+	static protected function fetch_country( $mode = 'declared' ) {
 		$member = MS_Model_Member::get_current_member();
 		$country = false;
 		$store_it = false;
 
-		$non_auto_countries = array( 'billing', 'vat' );
+		$non_auto_countries = array( 'declared', 'vat' );
 		if ( ! in_array( $mode, $non_auto_countries ) ) { $mode = 'auto'; }
 		if ( 'auto' == $mode ) { $member = null; }
 		$profile_key = 'tax_' . $mode . '_country';

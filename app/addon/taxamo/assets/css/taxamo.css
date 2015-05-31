@@ -36,10 +36,10 @@
 	position: absolute;
 	background-color: #f8f8f8;
 	width: 500px;
-	height: 400px;
+	height: 450px;
 	top: 50%;
 	left: 50%;
-	margin-top: -200px;
+	margin-top: -225px;
 	margin-left: -250px;
 	-webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -193,7 +193,8 @@
 	z-index: 1;
 }
 
-#ms-taxamo-wrapper .loading-message {
+#ms-taxamo-wrapper .loading-message,
+.ms-tax-loading-message {
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -202,17 +203,20 @@
 	font-size: 20px;
 	text-shadow: 0 1px 0px #fff;
 	display: none;
+	z-index: 1001;
 }
 
 #ms-taxamo-wrapper .is-loading .modal-body {
 	-webkit-filter: blur(1px);
 }
 
-#ms-taxamo-wrapper .is-loading .loading-message {
+#ms-taxamo-wrapper .is-loading .loading-message,
+body.ms-tax-is-loading .ms-tax-loading-message {
 	display: block;
 }
 
-#ms-taxamo-wrapper .is-loading .modal-body:before {
+#ms-taxamo-wrapper .is-loading .modal-body:before,
+body.ms-tax-is-loading .ms-tax-loading-overlay {
 	content: '';
 	display: block;
 	position: absolute;
@@ -221,8 +225,13 @@
 	right: 1px;
 	bottom: 1px;
 	background-color: #FCFCFC;
-	z-index: 100;
+	z-index: 1000;
 	opacity: 0.8;
+}
+
+.ms-tax-loading-message,
+body.ms-tax-is-loading .ms-tax-loading-overlay {
+	position: fixed;
 }
 
 #ms-taxamo-wrapper .wpmui-wrapper,
@@ -274,6 +283,13 @@
 	color: #000;
 }
 
+#ms-taxamo-wrapper .wpmui-radio {
+	display: inline-block;
+	float: left;
+	width: auto;
+	height: auto;
+	margin: 3px 4px 0 0;
+}
 #ms-taxamo-wrapper .wpmui-field-checkbox {
 	display: inline-block;
 	width: auto;
@@ -286,26 +302,37 @@
 	font-weight: normal;
 }
 
-#ms-taxamo-wrapper .vat_number_field {
+#ms-taxamo-wrapper .effective_tax_country {
+	background-color: #9DE;
+	color: #fff;
+	text-align: center;
+	text-shadow: 0 1px 0 #CEF;
+}
+
+/*
+-----------------------
+ Country Choice Styles
+-----------------------
+*/
+
+#ms-taxamo-wrapper .vat_number_field,
+#ms-taxamo-wrapper .manual_country_field {
+	display: none;
+}
+
+#ms-taxamo-wrapper .ms-tax-vat .vat_number_field {
 	display: block;
 }
 
-#ms-taxamo-wrapper .ms-no-manual .is-manual {
-	display: none;
-}
-
-#ms-taxamo-wrapper .manual-country {
-	display: none;
-}
-
-#ms-taxamo-wrapper .ms-tax-manual .manual-country {
+#ms-taxamo-wrapper .ms-tax-declared .manual_country_field {
 	display: block;
 }
 
-#ms-taxamo-wrapper .ms-no-tax .vat_number_field,
-#ms-taxamo-wrapper .ms-tax-manual .vat_number_field {
-	display: none;
-}
+/*
+-------------------
+ Responsive styles
+-------------------
+*/
 
 @media only all and (max-width: 520px) {
 	#ms-taxamo-wrapper .ms-wrap {
@@ -316,7 +343,7 @@
 	}
 }
 
-@media only all and (max-height: 420px) {
+@media only all and (max-height: 470px) {
 	#ms-taxamo-wrapper .ms-wrap {
 		top: 10px;
 		bottom: 10px;

@@ -9,11 +9,7 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 		$fields = $this->prepare_fields();
 
 		$classes = array();
-		if ( $fields['vat_number']['valid_country'] ) {
-			$classes[] = 'ms-no-manual';
-		} elseif ( $fields['declare_manually']['value'] ) {
-			$classes[] = 'ms-tax-manual';
-		}
+		$classes[] = 'ms-tax-' . $fields['country_choice']['value'];
 
 		ob_start();
 		?>
@@ -39,6 +35,10 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 				<?php _e( 'Saving data, please wait...', MS_TEXT_DOMAIN ); ?>
 			</div>
 		</div>
+		<div class="body-messages">
+			<div class="ms-tax-loading-overlay"></div>
+			<div class="ms-tax-loading-message"><?php _e( 'Refreshing page, please wait...', MS_TEXT_DOMAIN ); ?></div>
+		</div>
 		<?php
 		$html = ob_get_clean();
 
@@ -59,22 +59,41 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 
 		$profile = MS_Addon_Taxamo_Api::get_user_profile();
 		$countries = MS_Addon_Taxamo_Api::get_country_codes();
-		$use_manually = false;
 		$action = MS_Addon_Taxamo::AJAX_SAVE_USERPROFILE;
 		$nonce = wp_create_nonce( $action );
 
-		if ( $profile->billing_country->code ) {
-			$use_manually = $profile->billing_country->code != $profile->detected_country->code;
-		}
+		$country_options = array(
+			'auto' => sprintf(
+				__( 'The detected country %s is correct.', MS_TEXT_DOMAIN ),
+				'<strong>' . $profile->detected_country->name . '</strong>'
+			),
+			'vat' => __( 'I have an EU VAT number and want to use it for tax declaration.', MS_TEXT_DOMAIN ),
+			'declared' => __( 'Manually declare my country of residence.', MS_TEXT_DOMAIN ),
+		);
 
 		$vat_details = '';
-		if ( $profile->vat_country->tax_supported ) {
+		if ( ! empty( $profile->vat_number ) && $profile->vat_valid ) {
 			$vat_details = sprintf(
-				__( 'Taxes are calculated for %s. Remove your VAT Number to manually declare your country of residence', MS_TEXT_DOMAIN ),
+				__( 'This is a valid VAT number of %s. By using this you are are now exempt of VAT.', MS_TEXT_DOMAIN ),
 				'<strong>' . $profile->vat_country->name . '</strong>'
 			);
+		} else {
+			$vat_details = __( 'VAT Number is invalid.', MS_TEXT_DOMAIN );
+		}
+		if ( $profile->use_vat_number ) {
+			$tax_message = __( 'Valid EU VAT Number provided: You are exempt of VAT', MS_TEXT_DOMAIN );
+		} else {
+			$tax_message = __( 'The country used for tax calculation is %s', MS_TEXT_DOMAIN );
 		}
 
+		$fields['tax_country_label'] = array(
+			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+			'title' => sprintf(
+				$tax_message,
+				'<strong>' . $profile->tax_country->name . '</strong>'
+			),
+			'wrapper_class' => 'effective_tax_country',
+		);
 		$fields['detected_country_label'] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			'title' => sprintf(
@@ -87,24 +106,26 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 			'id' => 'detected_country',
 			'value' => $profile->detected_country->code,
 		);
-		$fields['declare_manually'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-			'id' => 'declare_manually',
-			'title' => __( 'I want to manually declare my country of residence', MS_TEXT_DOMAIN ),
-			'value' => $use_manually,
+		$fields['country_choice'] = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+			'id' => 'country_choice',
+			'class' => 'country_choice',
+			'value' => $profile->country_choice,
+			'field_options' => $country_options,
 		);
-		$fields['billing_country_code'] = array(
+		$fields['declared_country_code'] = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'id' => 'billing_country',
+			'id' => 'declared_country',
 			'title' => __( 'My country of residence', MS_TEXT_DOMAIN ),
-			'value' => $profile->billing_country->code,
+			'desc' => __( 'I confirm that I am established, have my permanent address, or usually reside in the following country', MS_TEXT_DOMAIN ),
+			'value' => $profile->declared_country->code,
 			'field_options' => $countries,
-			'wrapper_class' => 'is-manual manual-country',
+			'wrapper_class' => 'manual_country_field',
 		);
 		$fields['vat_number'] = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'id' => 'vat_number',
-			'title' => __( 'VAT Number', MS_TEXT_DOMAIN ),
+			'title' => __( 'EU VAT Number', MS_TEXT_DOMAIN ),
 			'desc' => __( 'Fill this field if you are representing EU VAT payer', MS_TEXT_DOMAIN ),
 			'wrapper_class' => 'vat_number_field',
 			'value' => $profile->vat_number,
