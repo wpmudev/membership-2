@@ -127,6 +127,12 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'confirm_payment'
 			);
 
+			// Track the transaction in taxamo
+			$this->add_action(
+				'ms_invoice_paid',
+				'invoice_paid'
+			);
+
 			// Add taxes to the price, based on users country.
 			$this->add_filter(
 				'ms_apply_taxes',
@@ -149,10 +155,9 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'invoice_tax_profile'
 			);
 
-			// Track the transaction in taxamo
 			$this->add_filter(
-				'ms_invoice_paid',
-				'invoice_paid'
+				'ms_gateway_stripe_credit_card_saved',
+				'stripe_card_profile'
 			);
 		}
 	}
@@ -312,9 +317,27 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @return MS_Model_Invoice
 	 */
 	public function invoice_tax_profile( $invoice ) {
-		$invoice->set_custom_data( 'tax_profile', MS_Addon_Taxamo_Api::get_user_profile() );
+		$invoice->set_custom_data( 'tax_profile', MS_Addon_Taxamo_Api::get_tax_profile() );
 
 		return $invoice;
+	}
+
+	/**
+	 * When a payment was made via stripe we can use the card details as an
+	 * evidence for the tax-country.
+	 *
+	 * @since  2.0.0
+	 * @param  Stripe_Card $card The card details.
+	 */
+	public function stripe_card_profile( $card ) {
+		$card_info = $card->brand . ' Last4: ' . $card->last4 . ' (Stripe ID ' . $card->id . ')';
+
+		$card_country = (object) array(
+			'code' => $card->country,
+		);
+
+		MS_Addon_Taxamo_Api::set_tax_profile( 'card_info', $card_info );
+		MS_Addon_Taxamo_Api::set_tax_profile( 'card_country', $card_country );
 	}
 
 	/**
@@ -424,9 +447,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 			unset( $data['_wpnonce'] );
 
 			$data['declared_country'] = (object) array(
-				'ip' => '',
 				'code' => $data['declared_country'],
-				'tax_supported' => ('XX' != $data['declared_country']),
 			);
 
 			foreach ( $data as $field => $value ) {
@@ -438,12 +459,12 @@ class MS_Addon_Taxamo extends MS_Addon {
 					$this
 				);
 
-				MS_Addon_Taxamo_Api::set_user_profile( $field, $value );
+				MS_Addon_Taxamo_Api::set_tax_profile( $field, $value );
 			}
 
 			// User profile updated. Now update the tax-rate in the invoice.
 			if ( $invoice->is_valid() ) {
-				$profile = MS_Addon_Taxamo_Api::get_user_profile();
+				$profile = MS_Addon_Taxamo_Api::get_tax_profile();
 				$invoice->set_custom_data( 'tax_profile', $profile );
 				$invoice->total_amount_changed();
 				$invoice->save();

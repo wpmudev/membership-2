@@ -142,6 +142,16 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$plan_data['trial_period_days'] = $trial_days;
 			}
 
+			// Check if the plan needs to be updated.
+			$serialized_data = json_encode( $plan_data );
+			$temp_key = 'ms-stripe-plan-' . $plan_data['id'];
+			$temp_data = MS_Factory::get_transient( $temp_key );
+			if ( $temp_data == $serialized_data ) {
+				continue;
+			} else {
+				MS_Factory::set_transient( $temp_key, $serialized_data, HOUR_IN_SECONDS );
+			}
+
 			$this->_api->create_or_update_plan( $plan_data );
 		}
 	}

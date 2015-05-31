@@ -57,7 +57,7 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 			$invoice_id = $invoice->id;
 		}
 
-		$profile = MS_Addon_Taxamo_Api::get_user_profile();
+		$profile = MS_Addon_Taxamo_Api::get_tax_profile();
 		$countries = MS_Addon_Taxamo_Api::get_country_codes();
 		$action = MS_Addon_Taxamo::AJAX_SAVE_USERPROFILE;
 		$nonce = wp_create_nonce( $action );

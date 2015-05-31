@@ -62,7 +62,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 		if ( null === $Info ) {
 			try {
-				$profile = self::get_user_profile();
+				$profile = self::get_tax_profile();
 				$tax_number = null;
 				if ( $profile->use_vat_number ) {
 					$tax_number = $profile->vat_number;
@@ -117,9 +117,12 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 */
 	static public function register_payment( $amount, $label, $tax_rate, $invoice_id, $name, $email, $gateway ) {
 		try {
+			$profile = self::get_tax_profile();
+
 			// Register the transaction with Taxamo.
 			$transaction = self::prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email );
-			$resp = self::taxamo()->createTransaction( array( 'transaction' => $transaction ) );
+			$payload = array( 'transaction' => $transaction );
+			$resp = self::taxamo()->createTransaction( $payload );
 
 			if ( ! empty( $resp->transaction->key ) ) {
 				$tr_key = $resp->transaction->key;
@@ -163,25 +166,28 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 *         $use_vat_number   bool
 	 * }
 	 */
-	static public function get_user_profile() {
+	static public function get_tax_profile() {
 		static $Profile = null;
 
 		if ( null === $Profile ) {
 			$member = MS_Model_Member::get_current_member();
 
 			$Profile = (object) array();
+			$Profile->detected_ip = lib2()->net->current_ip()->ip;
 			$Profile->detected_country = self::fetch_country( 'auto' );
 			$Profile->declared_country = self::fetch_country( 'declared' );
 			$Profile->vat_country = self::fetch_country( 'vat' );
-			$Profile->country_choice = self::get_user_profile_value( $member, 'tax_country_choice' );
+			$Profile->card_country = self::fetch_country( 'card' );
+			$Profile->country_choice = self::get_tax_profile_value( $member, 'tax_country_choice' );
 
 			$valid_choices = array( 'auto', 'vat', 'declared' );
 			if ( ! in_array( $Profile->country_choice, $valid_choices ) ) {
 				$Profile->country_choice = 'auto';
 			}
 
-			$Profile->vat_number = self::get_user_profile_value( $member, 'tax_vat_number' );
-			$Profile->vat_valid = self::get_user_profile_value( $member, 'tax_vat_valid' );
+			$Profile->card_info = self::get_tax_profile_value( $member, 'tax_card_info' );
+			$Profile->vat_number = self::get_tax_profile_value( $member, 'tax_vat_number' );
+			$Profile->vat_valid = self::get_tax_profile_value( $member, 'tax_vat_valid' );
 			$Profile->use_vat_number = 'vat' == $Profile->country_choice && $Profile->vat_valid;
 
 			// Decide which country to use for tax calculation. Default is auto-detected.
@@ -202,7 +208,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			}
 
 			$Profile = apply_filters(
-				'ms_addon_taxamo_get_user_profile',
+				'ms_addon_taxamo_get_tax_profile',
 				$Profile,
 				$this
 			);
@@ -214,7 +220,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Saves a single field to the user tax profile.
 	 *
-	 * All fields that are included in the get_user_profile() response are
+	 * All fields that are included in the get_tax_profile() response are
 	 * valid field names. Exception: 'detected_country' cannot be changed.
 	 *
 	 * @since 2.0.0
@@ -224,17 +230,19 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @param mixed $value The new value.
 	 * @return bool True on success.
 	 */
-	static public function set_user_profile( $field, $value ) {
+	static public function set_tax_profile( $field, $value ) {
 		$member = MS_Model_Member::get_current_member();
 
 		$valid_keys = array(
 			'country_choice',
 			'declared_country',
+			'card_country',
+			'card_info',
 			'vat_number',
 		);
 
 		$valid_keys = apply_filters(
-			'ms_addon_taxamo_set_user_profile_valid_keys',
+			'ms_addon_taxamo_set_tax_profile_valid_keys',
 			$valid_keys,
 			$this
 		);
@@ -250,40 +258,25 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 			if ( $valid_code ) {
 				$vat_country = (object) array(
-					'ip' => '',
 					'code' => $valid_code,
-					'tax_supported' => true,
 				);
-				self::set_user_profile_value( $member, 'tax_vat_valid', true );
+				self::set_tax_profile_value( $member, 'tax_vat_valid', true );
 			} else {
 				$vat_country = (object) array(
-					'ip' => '',
 					'code' => '',
-					'tax_supported' => false,
 				);
-				self::set_user_profile_value( $member, 'tax_vat_valid', false );
+				self::set_tax_profile_value( $member, 'tax_vat_valid', false );
 			}
 
-			self::set_user_profile_value( $member, 'tax_vat_country', $vat_country );
+			self::set_tax_profile_value( $member, 'tax_vat_country', $vat_country );
 		}
 
 		$key = 'tax_' . $field;
-		if ( self::set_user_profile_value( $member, $key, $value ) ) {
+		if ( self::set_tax_profile_value( $member, $key, $value ) ) {
 			$member->save();
 		}
 
 		return true;
-	}
-
-	/**
-	 * Returns the IP address of the user.
-	 *
-	 * @since  1.1.0
-	 * @return string IP Address
-	 */
-	static public function buyer_ip() {
-		$data = self::fetch_country( 'auto' );
-		return $data->remote_addr;
 	}
 
 	/**
@@ -376,26 +369,93 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 */
 	static protected function prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email ) {
 		self::taxamo();
-		$profile = self::get_user_profile();
+		$profile = self::get_tax_profile();
+
+		$amount = max( 0, floatval( $amount ) );
+		$tax_rate = max( 0, floatval( $tax_rate ) );
+
+		$tax_number = null;
+		$amount_key = 'total_amount';
+		if ( $profile->use_vat_number ) {
+			$tax_number = $profile->vat_number;
+			$tax_rate = 0;
+		}
+		if ( ! $tax_rate ) {
+			$amount_key = 'amount';
+		}
 
 		$tr_line = array(
 			'product_type' => 'e-service',
-			'total_amount' => floatval( $amount ),
-			'tax_rate' => floatval( $tax_rate ),
+			$amount_key => $amount,
+			'tax_rate' => $tax_rate,
 			'quantity' => 1,
 			'custom_id' => (string) $invoice_id,
 			'description' => (string) $label,
 		);
 
+		// Assemble the available evidence.
+		$tr_evidence = array(
+			'by_ip' => array(
+				'resolved_country_code' => $profile->detected_country->code,
+				'evidence_value' => $profile->detected_ip,
+			),
+		);
+
+		if ( 'XX' != $profile->declared_country->code ) {
+			$tr_evidence['self_declaration'] = array(
+				'resolved_country_code' => $profile->declared_country->code,
+				'evidence_value' => 'Self declared country',
+			);
+		}
+
+		if ( $profile->use_vat_number ) {
+			$tr_evidence['by_tax_number'] = array(
+				'resolved_country_code' => $profile->vat_country->code,
+				'evidence_value' => $profile->vat_number,
+			);
+		}
+
+		$used_code = $profile->tax_country->code;
+		switch ( $profile->country_choice ) {
+			case 'declared':
+				$tr_evidence['forced'] = array(
+					'resolved_country_code' => $used_code,
+					'evidence_value' => 'Self declared country',
+				);
+				break;
+
+			case 'vat':
+			case 'auto':
+			default:
+				$tr_evidence['by_billing'] = array(
+					'resolved_country_code' => $used_code,
+					'evidence_value' => $profile->tax_country->code,
+				);
+				break;
+		}
+
+		foreach ( $tr_evidence as $key => $item ) {
+			$tr_evidence[$key]['used'] = ($used_code == $item['resolved_country_code']);
+		}
+
+		$force_country = null;
+		if ( 'declared' == $profile->country_choice ) {
+			$force_country = $profile->tax_country->code;
+		}
+
 		$transaction = array(
 			'currency_code' => MS_Addon_Taxamo::model()->currency,
 			'billing_country_code' => $profile->tax_country->code,
-			'buyer_ip' => self::buyer_ip(),
+			'tax_country_code' => $profile->tax_country->code,
+			'force_country_code' => $profile->tax_country->code,
+			'buyer_ip' => lib2()->net->current_ip()->ip,
 			'custom_id' => (string) $invoice_id,
 			'buyer_name' => $name,
 			'buyer_email' => $email,
+			'buyer_tax_number' => $tax_number,
+			'tax_deducted' => $profile->use_vat_number,
 			'transaction_lines' => array( $tr_line ),
-			'evidence' => array(),
+			'evidence' => $tr_evidence,
 		);
 
 		return $transaction;
@@ -407,7 +467,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @since 1.1.0
 	 * @internal
 	 *
-	 * @param string $mode [declared|vat|auto] Either the country from user
+	 * @param string $mode [declared|vat|card|auto] Either the country from user
 	 *        settings or the auto-detected country.
 	 */
 	static protected function fetch_country( $mode = 'declared' ) {
@@ -415,46 +475,42 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		$country = false;
 		$store_it = false;
 
-		$non_auto_countries = array( 'declared', 'vat' );
+		$non_auto_countries = array( 'declared', 'vat', 'card' );
 		if ( ! in_array( $mode, $non_auto_countries ) ) { $mode = 'auto'; }
-		if ( 'auto' == $mode ) { $member = null; }
+
+		$auto_detect = ('auto' == $mode);
 		$profile_key = 'tax_' . $mode . '_country';
 
-		// Try to get the stored country from user-meta or session (for guest)
-		$country = self::get_user_profile_value( $member, $profile_key );
-
 		// If no country is stored use the API to determine it.
-		if ( ! $country ) {
-			self::taxamo();
-
+		if ( $auto_detect ) {
 			try {
 				$ip_info = lib2()->net->current_ip();
 				$data = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
 				$country = (object) array(
-					'ip' => $data->remote_addr,
 					'code' => $data->country_code,
-					'tax_supported' => $data->country->tax_supported,
 				);
+
+				// Store result in Session, not in DB.
 				$store_it = true;
+				$member = null;
 			}
 			catch ( Exception $ex ) {
 				MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
 			}
+		} else {
+			// Try to get the stored country from user-meta or session (for guest)
+			$country = self::get_tax_profile_value( $member, $profile_key );
 		}
 
 		// API did not return a valid resonse, use a dummy value.
 		if ( ! $country ) {
-			$country = array(
-				'ip' => lib2()->net->current_ip(),
-				'code' => 'US',
-				'tax_supported' => false,
+			$country = (object) array(
+				'code' => '',
 			);
-
-			$store_it = true;
 		}
 
 		// Store result in user-deta or session.
-		if ( $store_it && self::set_user_profile_value( $member, $key, $country ) ) {
+		if ( $store_it && self::set_tax_profile_value( $member, $key, $country ) ) {
 			$member->save();
 		}
 
@@ -463,7 +519,6 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		if ( $country->code && isset( $country_names[ $country->code ] ) ) {
 			$country->name = $country_names[ $country->code ];
 		} else {
-			$country->code = 'XX';
 			$country->name = $country_names['XX'];
 		}
 
@@ -481,11 +536,11 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @param  string $key The field key.
 	 * @return mixed The field value.
 	 */
-	static protected function get_user_profile_value( $member, $key, $value ) {
+	static protected function get_tax_profile_value( $member, $key ) {
 		if ( is_object( $member ) && $member->is_valid() ) {
-			$result = $member->get_custom_data( $key, $value );
+			$result = $member->get_custom_data( $key );
 		} else {
-			$result = lib2()->session->get( 'ms_' . $key, $value );
+			$result = lib2()->session->get( 'ms_' . $key );
 			if ( is_array( $result ) && count( $result ) ) {
 				$result = $result[0];
 			}
@@ -507,7 +562,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @return bool True means that the value was set in $member, otherwise it
 	 *         was set in the session.
 	 */
-	static protected function set_user_profile_value( $member, $key, $value ) {
+	static protected function set_tax_profile_value( $member, $key, $value ) {
 		if ( is_object( $member ) && $member->is_valid() ) {
 			$member->set_custom_data( $key, $value );
 			$need_save = true;

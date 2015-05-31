@@ -198,6 +198,14 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 			$customer->save();
 		}
 
+		/**
+		 * This action is used by the Taxamo Add-on to check additional country
+		 * evidence (CC country).
+		 *
+		 * @since 2.0.0
+		 */
+		do_action( 'ms_gateway_stripe_credit_card_saved', $card, $member, $this );
+
 		// 2. Save card to WordPress user meta.
 
 		if ( $card ) {
