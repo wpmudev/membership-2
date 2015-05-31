@@ -150,6 +150,12 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 
 		if ( ! empty( $customer_id ) ) {
 			$customer = Stripe_Customer::retrieve( $customer_id );
+
+			// Seems like the customer was manually deleted on Stripe website.
+			if ( isset( $customer->deleted ) && $customer->deleted ) {
+				$customer = null;
+				$member->set_gateway_profile( self::ID, 'customer_id', '' );
+			}
 		}
 
 		return apply_filters(
@@ -256,21 +262,31 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 * @internal
 	 *
 	 * @param  Stripe_Customer $customer Stripe customer to charge.
-	 * @param  MS_Model_Membership $membership This defines the payment plan.
+	 * @param  MS_Model_Invoice $invoice The relevant invoice.
 	 * @return Stripe_Subscription The resulting charge object.
 	 */
-	public function subscribe( $customer, $membership ) {
+	public function subscribe( $customer, $invoice ) {
 		$this->load_stripe_lib();
 
-		$plan_id = 'ms-' . $membership->id;
+		$membership = $invoice->get_membership();
+		$plan_id = 'ms-plan-' . $membership->id;
 
 		/*
 		 * Check all subscriptions of the customer and find the subscription
 		 * for the specified membership.
 		 */
 		$last_checked = false;
-		$has_more = true;
+		$has_more = false;
 		$subscription = false;
+		$tax_percent = null;
+		$coupon_code = null;
+
+		if ( is_numeric( $invoice->tax_rate ) && $invoice->tax_rate > 0 ) {
+			$tax_percent = floatval( $invoice->tax_rate );
+		}
+		if ( $invoice->coupon_id ) {
+			$coupon_code = 'ms-coupon-' . $invoice->coupon_id;
+		}
 
 		do {
 			$args = array();
@@ -294,13 +310,12 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		 * If no active subscription was found for the membership create it.
 		 */
 		if ( ! $subscription ) {
-			$subscription = $customer->subscriptions->create(
-				array(
-					'plan' => $plan_id,
-					'tax_percent' => null, // TODO
-					'coupon' => null, // TODO
-				)
+			$args = array(
+				'plan' => $plan_id,
+				'tax_percent' => $tax_percent,
+				'coupon' => $coupon_code,
 			);
+			$subscription = $customer->subscriptions->create( $args );
 		}
 
 		return apply_filters(

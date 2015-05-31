@@ -282,7 +282,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @return string IP Address
 	 */
 	static public function buyer_ip() {
-		$data = self::get_detected_country();
+		$data = self::fetch_country( 'auto' );
 		return $data->remote_addr;
 	}
 

@@ -144,6 +144,11 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'invoice_tax_name'
 			);
 
+			$this->add_filter(
+				'ms_model_invoice_create_before_save',
+				'invoice_tax_profile'
+			);
+
 			// Track the transaction in taxamo
 			$this->add_filter(
 				'ms_invoice_paid',
@@ -297,6 +302,19 @@ class MS_Addon_Taxamo extends MS_Addon {
 		$tax = MS_Addon_Taxamo_Api::tax_info();
 
 		return $tax->rate . '% ' . $tax->name;
+	}
+
+	/**
+	 * Saves tax-profile to the invoice.
+	 *
+	 * @since  2.0.0
+	 * @param  MS_Model_Invoice $invoice The invoice object.
+	 * @return MS_Model_Invoice
+	 */
+	public function invoice_tax_profile( $invoice ) {
+		$invoice->set_custom_data( 'tax_profile', MS_Addon_Taxamo_Api::get_user_profile() );
+
+		return $invoice;
 	}
 
 	/**

@@ -92,7 +92,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 
 		foreach ( $memberships as $membership ) {
 			$plan_data = array(
-				'id' => 'ms-' . $membership->id,
+				'id' => 'ms-plan-' . $membership->id,
 				'amount' => 0,
 			);
 
@@ -176,7 +176,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				// Get or create the subscription.
 				$stripe_sub = $this->_api->subscribe(
 					$customer,
-					$invoice->get_membership()
+					$invoice
 				);
 
 				if ( 'active' == $stripe_sub->status ) {
@@ -227,7 +227,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						// Get or create the subscription.
 						$stripe_sub = $this->_api->subscribe(
 							$customer,
-							$invoice->get_membership()
+							$invoice
 						);
 
 						if ( 'active' == $stripe_sub->status ) {
