@@ -1,6 +1,6 @@
 <?php
 /**
-Plugin Name: Membership2
+Plugin Name: Membership2 Pro
 Plugin URI:  https://premium.wpmudev.org/project/membership/
 Version:     2.0.0.0
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
