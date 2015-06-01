@@ -6,7 +6,7 @@ Version:     2.0.0.0
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author:      WPMU DEV
 Author URI:  http://premium.wpmudev.org/
-WDP ID:      928907
+WDP ID:      1003656
 License:     GNU General Public License (Version 2 - GPLv2)
 Text Domain: membership2
 */
@@ -35,59 +35,72 @@ Text Domain: membership2
  *
 */
 
-/**
- * Plugin version
- *
- * @since 1.0.0
- */
-define( 'MS_PLUGIN_VERSION', '2.0.0.0' );
+function membership2_init_app() {
+	/**
+	 * Plugin version
+	 *
+	 * @since 1.0.0
+	 */
+	define( 'MS_PLUGIN_VERSION', '2.0.0.0' );
 
-/**
- * Plugin text domain.
- *
- * @since 1.0.0
- */
-define( 'MS_TEXT_DOMAIN', 'membership2' );
+	/**
+	 * Plugin text domain.
+	 *
+	 * @since 1.0.0
+	 */
+	define( 'MS_TEXT_DOMAIN', 'membership2' );
 
-/**
- * Plugin identifier constant.
- *
- * @since 2.0.0
- */
-define( 'MS_PLUGIN', plugin_basename( __FILE__ ) );
+	/**
+	 * Plugin identifier constant.
+	 *
+	 * @since 2.0.0
+	 */
+	define( 'MS_PLUGIN', plugin_basename( __FILE__ ) );
 
-/**
- * Plugin name dir constant.
- *
- * @since 1.0.0
- */
-define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
+	/**
+	 * Plugin name dir constant.
+	 *
+	 * @since 1.0.0
+	 */
+	define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
 
-/**
- * Include WPMUDev Dashboard
- */
-global $wpmudev_notices;
-$wpmudev_notices[] = array(
-	'id' => 928907,
-	'name' => 'Membership2',
-	'screens' => array(
-		'toplevel_page_membership2',
-		'membership2_page_membership2-members',
-		'membership2_page_membership2-setup',
-		'membership2_page_membership2-billing',
-		'membership2_page_membership2-coupons',
-		'membership2_page_membership2-addon',
-		'membership2_page_membership2-settings',
-	)
-);
+	/**
+	 * Include WPMUDev Dashboard
+	 */
+	global $wpmudev_notices;
+	$wpmudev_notices[] = array(
+		'id' => 1003656,
+		'name' => 'Membership2',
+		'screens' => array(
+			'toplevel_page_membership2',
+			'membership2_page_membership2-members',
+			'membership2_page_membership2-setup',
+			'membership2_page_membership2-billing',
+			'membership2_page_membership2-coupons',
+			'membership2_page_membership2-addon',
+			'membership2_page_membership2-settings',
+		)
+	);
 
-$externals = array(
-	dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php',
-	dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
-);
+	$externals = array(
+		dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php',
+		dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
+	);
 
-foreach ( $externals as $path ) {
-	require_once $path;
+	foreach ( $externals as $path ) {
+		require_once $path;
+	}
+
+	add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
+
+	/**
+	 * Create an instance of the plugin object.
+	 *
+	 * This is the primary entry point for the Membership plugin.
+	 *
+	 * @since 1.0.0
+	 */
+	MS_Plugin::instance();
 }
 
 /**
@@ -120,7 +133,6 @@ function ms_class_path_overrides( $overrides ) {
 
 	return $overrides;
 }
-add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
 
 /**
  * Primary Membership plugin class.
@@ -814,11 +826,4 @@ class MS_Plugin {
 	}
 }
 
-/**
- * Create an instance of the plugin object.
- *
- * This is the primary entry point for the Membership plugin.
- *
- * @since 1.0.0
- */
-MS_Plugin::instance();
+membership2_init_app();
