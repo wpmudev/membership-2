@@ -1,14 +1,14 @@
 <?php
 /**
-Plugin Name: Protected Content
-Plugin URI:  https://premium.wpmudev.org/project/protected-content/
-Version:     1.1.1.6
-Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
-Author:      WPMU DEV
-Author URI:  http://premium.wpmudev.org/
-WDP ID:      928907
-License:     GNU General Public License (Version 2 - GPLv2)
-Text Domain: protected-content
+* Plugin Name: Protected Content
+* Plugin URI:  https://premium.wpmudev.org/project/protected-content/
+* Version:     1.1.1.6
+* Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
+* Author:      WPMU DEV
+* Author URI:  http://premium.wpmudev.org/
+* WDP ID:      928907
+* License:     GNU General Public License (Version 2 - GPLv2)
+* Text Domain: protected-content
 */
 
 /**
@@ -78,6 +78,8 @@ $externals = array(
 	dirname( __FILE__ ) . '/extra/wpmudev-dashboard/wpmudev-dash-notification.php',
 	dirname( __FILE__ ) . '/extra/wpmu-lib/core.php',
 );
+
+require_once 'app/class-ms-m2-migration-handler.php';
 
 foreach ( $externals as $path ) {
 	require_once $path;
