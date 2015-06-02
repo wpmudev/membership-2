@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.1.7
+----------------------------------------------------------------------
+- Prepare plugin for Update to Membership2
+
 1.1.1.6
 ----------------------------------------------------------------------
 - Add wp-config option MS_NO_SHORTCODE_PREVIEW (details on the Help > Advanced Settings page)
