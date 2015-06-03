@@ -7,6 +7,7 @@
 window.ms_init.view_settings_payment = function init() {
 	function toggle_status( ev, data, response, is_err ) {
 		if ( undefined === data.gateway_id ) { return; }
+		if ( 'update_gateway' !== data.action ) { return; }
 
 		var row = jQuery( '.gateway-' + data.gateway_id );
 
