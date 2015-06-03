@@ -69,8 +69,52 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE,
 		);
 
-		$this->add_action( 'ms_saved_MS_Model_Membership', 'update_stripe_data' );
-		$this->add_action( 'ms_gateway_toggle_stripeplan', 'update_stripe_data' );
+		// Update all payment plans and coupons.
+		$this->add_action(
+			'ms_gateway_toggle_stripeplan',
+			'update_stripe_data'
+		);
+
+		// Update a single payment plan.
+		$this->add_action(
+			'ms_saved_MS_Model_Membership',
+			'update_stripe_data_membership'
+		);
+
+		// Update a single coupon.
+		$this->add_action(
+			'ms_saved_MS_Addon_Coupon_Model',
+			'update_stripe_data_coupon'
+		);
+	}
+
+	/**
+	 * Creates the external Stripe-ID of the specified item.
+	 *
+	 * This ID takes the current WordPress Site-URL into account to avoid
+	 * collissions when several Membership2 sites use the same stripe account.
+	 *
+	 * @since  2.0.0
+	 * @api
+	 *
+	 * @param  int $id The internal ID.
+	 * @param  string $type The item type, e.g. 'plan' or 'coupon'.
+	 * @return string The external Stripe-ID.
+	 */
+	static public function get_the_id( $id, $type = 'item' ) {
+		static $Base = null;
+		if ( null === $Base ) {
+			$Base = get_option( 'site_url' );
+		}
+
+		$hash = strtolower( md5( $Base . $type . $id ) );
+		$hash = lib2()->convert(
+			$hash,
+			'0123456789abcdef',
+			'0123456789ABCDEFGHIJKLMNOPQRSTUVXXYZabcdefghijklmnopqrstuvxxyz'
+		);
+		$result = 'ms-' . $type . '-' . $id . '-' . $hash;
+		return $result;
 	}
 
 	/**
@@ -86,73 +130,145 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		if ( ! $this->active ) { return false; }
 		$this->_api->mode = $this->mode;
 
-		// Get a list of all Memberships.
+		// 1. Update all playment plans.
 		$memberships = MS_Model_Membership::get_memberships();
-		$settings = MS_Plugin::instance()->settings;
-
 		foreach ( $memberships as $membership ) {
-			$plan_data = array(
-				'id' => 'ms-plan-' . $membership->id,
-				'amount' => 0,
+			$this->update_stripe_data_membership( $membership );
+		}
+
+		// 2. Update all coupons (if Add-on is enabled)
+		if ( MS_Addon_Coupon::is_active() ) {
+			$coupons = MS_Addon_Coupon_Model::get_coupons();
+			foreach ( $coupons as $coupon ) {
+				$this->update_stripe_data_coupon( $coupon );
+			}
+		}
+	}
+
+	/**
+	 * Creates or updates a single payment plan on Stripe.
+	 *
+	 * This function is called when the gateway is activated and after a
+	 * membership was saved to database.
+	 *
+	 * @since  2.0.0
+	 */
+	public function update_stripe_data_membership( $membership ) {
+		if ( ! $this->active ) { return false; }
+		$this->_api->mode = $this->mode;
+
+		$plan_data = array(
+			'id' => self::get_the_id( $membership->id, 'plan' ),
+			'amount' => 0,
+		);
+
+		if ( ! $membership->is_free()
+			&& $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING
+		) {
+			// Prepare the plan-data for Stripe.
+			$trial_days = null;
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
+				&& $membership->trial_period_enabled
+			) {
+				$trial_days = MS_Helper_Period::get_period_in_days(
+					$membership->trial_period_unit,
+					$membership->trial_period_type
+				);
+			}
+
+			$interval = 'day';
+			$max_count = 365;
+			switch ( $membership->pay_cycle_period_type ) {
+				case MS_Helper_Period::PERIOD_TYPE_WEEKS:
+					$interval = 'week';
+					$max_count = 52;
+					break;
+
+				case MS_Helper_Period::PERIOD_TYPE_MONTHS:
+					$interval = 'month';
+					$max_count = 12;
+					break;
+
+				case MS_Helper_Period::PERIOD_TYPE_YEARS:
+					$interval = 'year';
+					$max_count = 1;
+					break;
+			}
+
+			$interval_count = min(
+				$max_count,
+				$membership->pay_cycle_period_unit
 			);
 
-			if ( ! $membership->is_free()
-				&& $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING
-			) {
-				// Prepare the plan-data for Stripe.
-				$trial_days = null;
-				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
-					&& $membership->trial_period_enabled
-				) {
-					$trial_days = MS_Helper_Period::get_period_in_days(
-						$membership->trial_period_unit,
-						$membership->trial_period_type
-					);
-				}
-
-				$interval = 'day';
-				$max_count = 365;
-				switch ( $membership->pay_cycle_period_type ) {
-					case MS_Helper_Period::PERIOD_TYPE_WEEKS:
-						$interval = 'week';
-						$max_count = 52;
-						break;
-
-					case MS_Helper_Period::PERIOD_TYPE_MONTHS:
-						$interval = 'month';
-						$max_count = 12;
-						break;
-
-					case MS_Helper_Period::PERIOD_TYPE_YEARS:
-						$interval = 'year';
-						$max_count = 1;
-						break;
-				}
-
-				$interval_count = min(
-					$max_count,
-					$membership->pay_cycle_period_unit
-				);
-
-				$plan_data['amount'] = absint( $membership->price * 100 );
-				$plan_data['currency'] = $settings->currency;
-				$plan_data['name'] = $membership->name;
-				$plan_data['interval'] = $interval;
-				$plan_data['interval_count'] = $interval_count;
-				$plan_data['trial_period_days'] = $trial_days;
-			}
+			$settings = MS_Plugin::instance()->settings;
+			$plan_data['amount'] = absint( $membership->price * 100 );
+			$plan_data['currency'] = $settings->currency;
+			$plan_data['name'] = $membership->name;
+			$plan_data['interval'] = $interval;
+			$plan_data['interval_count'] = $interval_count;
+			$plan_data['trial_period_days'] = $trial_days;
 
 			// Check if the plan needs to be updated.
 			$serialized_data = json_encode( $plan_data );
-			$temp_key = 'ms-stripe-plan-' . $plan_data['id'];
+			$temp_key = substr( 'ms-stripe-' . $plan_data['id'], 0, 45 );
 			$temp_data = MS_Factory::get_transient( $temp_key );
-			if ( $temp_data == $serialized_data ) {
-				continue;
-			} else {
-				MS_Factory::set_transient( $temp_key, $serialized_data, HOUR_IN_SECONDS );
-			}
 
-			$this->_api->create_or_update_plan( $plan_data );
+			if ( $temp_data != $serialized_data ) {
+				MS_Factory::set_transient(
+					$temp_key,
+					$serialized_data,
+					HOUR_IN_SECONDS
+				);
+
+				$this->_api->create_or_update_plan( $plan_data );
+			}
+		}
+	}
+
+	/**
+	 * Creates or updates a single coupon on Stripe.
+	 *
+	 * This function is called when the gateway is activated and after a
+	 * coupon was saved to database.
+	 *
+	 * @since  2.0.0
+	 */
+	public function update_stripe_data_coupon( $coupon ) {
+		if ( ! $this->active ) { return false; }
+		$this->_api->mode = $this->mode;
+
+		$settings = MS_Plugin::instance()->settings;
+		$duration = 'once';
+		$percent_off = null;
+		$amount_off = null;
+
+		if ( MS_Addon_Coupon_Model::TYPE_VALUE == $coupon->discount_type ) {
+			$amount_off = absint( $coupon->discount * 100 );
+		} else {
+			$percent_off = $coupon->discount;
+		}
+
+		$coupon_data = array(
+			'id' => self::get_the_id( $coupon->id, 'coupon' ),
+			'duration' => $duration,
+			'amount_off' => $amount_off,
+			'percent_off' => $percent_off,
+			'currency' => $settings->currency,
+		);
+
+		// Check if the plan needs to be updated.
+		$serialized_data = json_encode( $coupon_data );
+		$temp_key = substr( 'ms-stripe-' . $coupon_data['id'], 0, 45 );
+		$temp_data = MS_Factory::get_transient( $temp_key );
+
+		if ( $temp_data != $serialized_data ) {
+			MS_Factory::set_transient(
+				$temp_key,
+				$serialized_data,
+				HOUR_IN_SECONDS
+			);
+
+			$this->_api->create_or_update_coupon( $coupon_data );
 		}
 	}
 
@@ -294,6 +410,34 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$stripe_sub->cancel(
 			array( 'at_period_end' => true )
 		);
+	}
+
+	/**
+	 * When a member cancels a subscription we need to notify Stripe to also
+	 * cancel the Stripe subscription.
+	 *
+	 * @since 2.0.0
+	 * @param MS_Model_Relationship $subscription The membership relationship.
+	 */
+	public function cancel_membership( $subscription ) {
+		parent::cancel_membership( $subscription );
+
+		$customer = $this->_api->find_customer( $subscription->get_member() );
+		$membership = $subscription->get_membership();
+		$stripe_sub = false;
+
+		if ( $customer ) {
+			$stripe_sub = $this->_api->get_subscription(
+				$customer,
+				$membership
+			);
+		}
+
+		if ( $stripe_sub ) {
+			$stripe_sub->cancel(
+				array( 'at_period_end' => true )
+			);
+		}
 	}
 
 	/**

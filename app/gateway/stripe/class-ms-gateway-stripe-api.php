@@ -264,20 +264,25 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	}
 
 	/**
-	 * Creates a subscription that starts immediately.
+	 * Fetches an existing subscription from Stripe and returns it.
+	 *
+	 * If the specified customer did not subscribe to the membership then
+	 * boolean FALSE will be returned.
 	 *
 	 * @since  2.0.0
 	 * @internal
 	 *
 	 * @param  Stripe_Customer $customer Stripe customer to charge.
-	 * @param  MS_Model_Invoice $invoice The relevant invoice.
-	 * @return Stripe_Subscription The resulting charge object.
+	 * @param  MS_Model_Membership $membership The membership.
+	 * @return Stripe_Subscription|false The resulting charge object.
 	 */
-	public function subscribe( $customer, $invoice ) {
+	public function get_subscription( $customer, $membership ) {
 		$this->load_stripe_lib();
 
-		$membership = $invoice->get_membership();
-		$plan_id = 'ms-plan-' . $membership->id;
+		$plan_id = MS_Gateway_Stripeplan::get_the_id(
+			$membership->id,
+			'plan'
+		);
 
 		/*
 		 * Check all subscriptions of the customer and find the subscription
@@ -286,15 +291,6 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$last_checked = false;
 		$has_more = false;
 		$subscription = false;
-		$tax_percent = null;
-		$coupon_code = null;
-
-		if ( is_numeric( $invoice->tax_rate ) && $invoice->tax_rate > 0 ) {
-			$tax_percent = floatval( $invoice->tax_rate );
-		}
-		if ( $invoice->coupon_id ) {
-			$coupon_code = 'ms-coupon-' . $invoice->coupon_id;
-		}
 
 		do {
 			$args = array();
@@ -314,14 +310,57 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 			}
 		} while ( $has_more );
 
+		return apply_filters(
+			'ms_gateway_stripe_get_subscription',
+			$subscription,
+			$customer,
+			$membership,
+			$this
+		);
+	}
+
+	/**
+	 * Creates a subscription that starts immediately.
+	 *
+	 * @since  2.0.0
+	 * @internal
+	 *
+	 * @param  Stripe_Customer $customer Stripe customer to charge.
+	 * @param  MS_Model_Invoice $invoice The relevant invoice.
+	 * @return Stripe_Subscription The resulting charge object.
+	 */
+	public function subscribe( $customer, $invoice ) {
+		$this->load_stripe_lib();
+
+		$membership = $invoice->get_membership();
+		$plan_id = MS_Gateway_Stripeplan::get_the_id(
+			$membership->id,
+			'plan'
+		);
+
+		$subscription = self::get_subscription( $customer, $membership );
+
 		/*
 		 * If no active subscription was found for the membership create it.
 		 */
 		if ( ! $subscription ) {
+			$tax_percent = null;
+			$coupon_id = null;
+
+			if ( is_numeric( $invoice->tax_rate ) && $invoice->tax_rate > 0 ) {
+				$tax_percent = floatval( $invoice->tax_rate );
+			}
+			if ( $invoice->coupon_id ) {
+				$coupon_id = MS_Gateway_Stripeplan::get_the_id(
+					$invoice->coupon_id,
+					'coupon'
+				);
+			}
+
 			$args = array(
 				'plan' => $plan_id,
 				'tax_percent' => $tax_percent,
-				'coupon' => $coupon_code,
+				'coupon' => $coupon_id,
 			);
 			$subscription = $customer->subscriptions->create( $args );
 		}
@@ -330,6 +369,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 			'ms_gateway_stripe_subscribe',
 			$subscription,
 			$customer,
+			$invoice,
 			$membership,
 			$this
 		);
@@ -346,37 +386,91 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	public function create_or_update_plan( $plan_data ) {
 		$this->load_stripe_lib();
 
-		$plan_id = $plan_data['id'];
-		$all_plans = MS_Factory::get_transient( 'ms_stripeplan_plans' );
-		$all_plans = lib2()->array->get( $all_plans );
+		$item_id = $plan_data['id'];
+		$all_items = MS_Factory::get_transient( 'ms_stripeplan_plans' );
+		$all_items = lib2()->array->get( $all_items );
 
-		if ( ! isset( $all_plans[$plan_id] ) ) {
+		if ( ! isset( $all_items[$item_id] )
+			|| ! is_a( $all_items[$item_id], 'Stripe_Plan' )
+		) {
 			try {
-				$plan = Stripe_Plan::retrieve( $plan_id );
+				$item = Stripe_Plan::retrieve( $item_id );
 			} catch( Exception $e ) {
 				// If the plan does not exist then stripe will throw an Exception.
-				$plan = false;
+				$item = false;
 			}
-			$all_plans[$plan_id] = $plan;
+			$all_items[$item_id] = $item;
 		} else {
-			$plan = $all_plans[$plan_id];
+			$item = $all_items[$item_id];
 		}
 
 		/*
 		 * Stripe can only update the plan-name, so we have to delete and
 		 * recreate the plan manually.
 		 */
-		if ( $plan ) {
-			$plan->delete();
-			$all_plans[$plan_id] = false;
+		if ( $item && is_a( $item, 'Stripe_Plan' ) ) {
+			$item->delete();
+			$all_items[$item_id] = false;
 		}
 
 		if ( $plan_data['amount'] > 0 ) {
-			$plan = Stripe_Plan::create( $plan_data );
-			$all_plans[$plan_id] = $plan;
+			$item = Stripe_Plan::create( $plan_data );
+			$all_items[$item_id] = $item;
 		}
 
-		MS_Factory::set_transient( 'ms_stripeplan_plans', $all_plans, HOUR_IN_SECONDS );
+		MS_Factory::set_transient(
+			'ms_stripeplan_plans',
+			$all_items,
+			HOUR_IN_SECONDS
+		);
+	}
+
+	/**
+	 * Creates or updates the coupon specified by the function parameter.
+	 *
+	 * @since 2.0.0
+	 * @internal
+	 *
+	 * @param array $coupon_data The object containing all details for Stripe.
+	 */
+	public function create_or_update_coupon( $coupon_data ) {
+		$this->load_stripe_lib();
+
+		$item_id = $coupon_data['id'];
+		$all_items = MS_Factory::get_transient( 'ms_stripeplan_plans' );
+		$all_items = lib2()->array->get( $all_items );
+
+		if ( ! isset( $all_items[$item_id] )
+			|| ! is_a( $all_items[$item_id], 'Stripe_Coupon' )
+		) {
+			try {
+				$item = Stripe_Coupon::retrieve( $item_id );
+			} catch( Exception $e ) {
+				// If the coupon does not exist then stripe will throw an Exception.
+				$item = false;
+			}
+			$all_items[$item_id] = $item;
+		} else {
+			$item = $all_items[$item_id];
+		}
+
+		/*
+		 * Stripe can only update the coupon-name, so we have to delete and
+		 * recreate the coupon manually.
+		 */
+		if ( $item && is_a( $item, 'Stripe_Coupon' ) ) {
+			$item->delete();
+			$all_items[$item_id] = false;
+		}
+
+		$item = Stripe_Coupon::create( $coupon_data );
+		$all_items[$item_id] = $item;
+
+		MS_Factory::set_transient(
+			'ms_stripeplan_coupons',
+			$all_items,
+			HOUR_IN_SECONDS
+		);
 	}
 
 	/**
