@@ -43,7 +43,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	protected static $POST_TYPE = 'ms_coupon';
 
 	/**
-	 * Coupon type constants.
+	 * Coupon type constant: Discount by a fixed amount from membership price.
 	 *
 	 * @since 1.0.0
 	 *
@@ -51,71 +51,122 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * @var string
 	 */
 	const TYPE_VALUE = 'value';
-	const TYPE_PERCENT = 'percent';
 
 	/**
-	 * Time in seconds to redeem the coupon after its been applied, before it goes back into the pool.
+	 * Coupon type constant: Discount a percentage of the membership price.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @see $discount_type
 	 * @var string
 	 */
+	const TYPE_PERCENT = 'percent';
+
+	/**
+	 * Coupon duration constant: Coupon is only applied to the first invoice.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @see $duration
+	 * @var string
+	 */
+	const DURATION_ONCE = 'once';
+
+	/**
+	 * Coupon duration constant: Coupon is only applied to all invoice.
+	 *
+	 * Note: NOT IMPLEMENTED YET
+	 *
+	 * @since 2.0.0
+	 *
+	 * @see $duration
+	 * @var string
+	 */
+	const DURATION_ALWAYS = 'always';
+
+	/**
+	 * Time in seconds to redeem the coupon after its been applied.
+	 * This prevents users from applying a coupon code and keeping the invoice
+	 * on "pending" status for too long.
+	 *
+	 * Default value 3600 means 1 hour (60 sec * 60 min)
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var int
+	 */
 	const COUPON_REDEMPTION_TIME = 3600;
 
 	/**
-	 * Is set to true once the coupon is loaded from DB
+	 * Is set to true once the coupon is loaded from DB.
 	 *
 	 * @since 1.1.0
+	 * @internal
 	 *
 	 * @var string
 	 */
 	protected $_empty = true;
 
 	/**
-	 * Coupon code text.
+	 * The code that the user can enter to apply the coupon to a payment.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
-	protected $code;
+	protected $code = '';
 
 	/**
-	 * Discount type.
+	 * Type of discount, either 'value' or 'percent'.
+	 *
+	 * Defines, how the $discount property is interpreted.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
-	protected $discount_type;
+	protected $discount_type = self::TYPE_VALUE;
 
 	/**
-	 * Discount value.
+	 * Discount value. Depending on the $discount_type property this is either
+	 * a static amount or a percentage.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @var string
+	 * @var number
 	 */
-	protected $discount;
+	protected $discount = 0.0;
 
 	/**
-	 * Coupon validation start date.
+	 * Duration is relevant for recurring payments. It defines if the coupon is
+	 * applied to one invoice or to all invoices.
 	 *
-	 * @since 1.0.0
+	 * Note: THIS IS NOT IMPLEMENTED YET. CURRENTLY ALL COUPONS ARE 'once'
+	 *
+	 * @since 2.0.0
 	 *
 	 * @var string
 	 */
-	protected $start_date;
+	protected $duration = self::DURATION_ONCE;
 
 	/**
-	 * Coupon validation expiry date.
+	 * Defines the earliest date when a coupon code can be used.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
-	protected $expire_date;
+	protected $start_date = '';
+
+	/**
+	 * Defines the last date when a coupon code can be used.
+	 * This is optional and can be left empty for no end date.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	protected $expire_date = '';
 
 	/**
 	 * Coupon only valid for this membership.
@@ -126,19 +177,31 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * @var array
 	 */
-	protected $membership_id;
+	protected $membership_id = array();
 
 	/**
 	 * Maximun times this coupon could be used.
+	 * Note that a "usage" is counted when a member pays for a discounted
+	 * invoice and NOT when he enters the coupon code. So there is a chance that
+	 * this limit is not always 100% accurate, example:
+	 *
+	 *   max_uses is 15. Now 15 users visit the payment page and enter the
+	 *   coupon. But before the last user pays the discounted invoice a 16th
+	 *   user enters the coupon code.
+	 *
+	 * So max_uses means: Lock the code once max_uses payments were made with
+	 * the coupon for new invoices.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @var int
 	 */
-	protected $max_uses;
+	protected $max_uses = 0;
 
 	/**
-	 * Number of times coupon was already used.
+	 * Number of times coupon was already used in a paid invoice.
+	 *
+	 * See notes of $max_uses for more details.
 	 *
 	 * @since 1.0.0
 	 *
@@ -149,14 +212,18 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Coupon applied/error message.
 	 *
+	 * This message is set by the Coupon model when the coupon is applied.
+	 * It can be a success or error message (e.g. coupon expired, etc.)
+	 *
 	 * @since 1.0.0
+	 * @internal
 	 *
 	 * @var string
 	 */
-	protected $coupon_message;
+	protected $coupon_message = '';
 
 	/**
-	 * Stores the flag of the is_valid_coupon() test
+	 * Stores the flag of the is_valid_coupon() test.
 	 *
 	 * @since 1.1.0
 	 *
@@ -175,6 +242,14 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		'coupon_message',
 	);
 
+
+	//
+	//
+	//
+	// -------------------------------------------------------------- COLLECTION
+
+
+	//
 	/**
 	 * Returns the post-type of the current object.
 	 *
@@ -299,12 +374,16 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Get Coupons
+	 * Get Coupons.
+	 *
+	 * By default all available Coupons are returned. The result can be filtered
+	 * via the $args parameter that takes any WP_Query options.
 	 *
 	 * @since 1.0.0
+	 * @api
 	 *
-	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @param  array $args The query post args
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Addon_Coupon_Model[] The found coupon objects.
 	 */
 	public static function get_coupons( $args = null ) {
@@ -377,6 +456,74 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			$code
 		);
 	}
+
+	/**
+	 * Get user's coupon application.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $user_id The user id.
+	 * @param int $membership_id The membership id.
+	 * @return MS_Addon_Coupon_Model The coupon model object.
+	 */
+	public static function get_coupon_application( $user_id, $membership_id ) {
+		global $blog_id;
+
+		$transient_name = apply_filters(
+			'ms_addon_coupon_model_transient_name',
+			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
+		);
+
+		$transient = MS_Factory::get_transient( $transient_name );
+
+		$coupon = null;
+		if ( is_array( $transient ) && ! empty( $transient['coupon_id'] ) ) {
+			$the_id = intval( $transient['coupon_id'] );
+			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $the_id );
+			$coupon->coupon_message = $transient['coupon_message'];
+		} else {
+			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model' );
+		}
+
+		return apply_filters(
+			'ms_addon_coupon_model_get_coupon_application',
+			$coupon,
+			$user_id,
+			$membership_id
+		);
+	}
+
+	/**
+	 * Remove user application for this coupon.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $user_id The user id.
+	 * @param int $membership_id The membership id.
+	 */
+	public static function remove_coupon_application( $user_id, $membership_id ) {
+		global $blog_id;
+
+		$transient_name = apply_filters(
+			'ms_addon_coupon_model_transient_name',
+			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
+		);
+
+		MS_Factory::delete_transient( $transient_name );
+
+		do_action(
+			'ms_addon_coupon_model_remove_coupon_application',
+			$user_id,
+			$membership_id
+		);
+	}
+
+
+	//
+	//
+	//
+	// ------------------------------------------------------------- SINGLE ITEM
+
 
 	/**
 	 * Verify if coupon is valid.
@@ -506,9 +653,6 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		$membership = $subscription->get_membership();
 		$discount = $this->get_discount_value( $subscription );
 
-		/** @todo Handle for network/multsite mode.*/
-		$global = false;
-
 		$time = apply_filters(
 			'ms_addon_coupon_model_save_coupon_application_redemption_time',
 			self::COUPON_REDEMPTION_TIME
@@ -540,67 +684,6 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			'ms_addon_coupon_model_save_coupon_application',
 			$subscription,
 			$this
-		);
-	}
-
-	/**
-	 * Get user's coupon application.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $user_id The user id.
-	 * @param int $membership_id The membership id.
-	 * @return MS_Addon_Coupon_Model The coupon model object.
-	 */
-	public static function get_coupon_application( $user_id, $membership_id ) {
-		global $blog_id;
-
-		$transient_name = apply_filters(
-			'ms_addon_coupon_model_transient_name',
-			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
-		);
-
-		$transient = MS_Factory::get_transient( $transient_name );
-
-		$coupon = null;
-		if ( is_array( $transient ) && ! empty( $transient['coupon_id'] ) ) {
-			$the_id = intval( $transient['coupon_id'] );
-			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $the_id );
-			$coupon->coupon_message = $transient['coupon_message'];
-		} else {
-			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model' );
-		}
-
-		return apply_filters(
-			'ms_addon_coupon_model_get_coupon_application',
-			$coupon,
-			$user_id,
-			$membership_id
-		);
-	}
-
-	/**
-	 * Remove user application for this coupon.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $user_id The user id.
-	 * @param int $membership_id The membership id.
-	 */
-	public static function remove_coupon_application( $user_id, $membership_id ) {
-		global $blog_id;
-
-		$transient_name = apply_filters(
-			'ms_addon_coupon_model_transient_name',
-			"ms_coupon_{$blog_id}_{$user_id}_{$membership_id}"
-		);
-
-		MS_Factory::delete_transient( $transient_name );
-
-		do_action(
-			'ms_addon_coupon_model_remove_coupon_application',
-			$user_id,
-			$membership_id
 		);
 	}
 
