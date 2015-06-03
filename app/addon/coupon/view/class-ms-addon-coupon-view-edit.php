@@ -73,8 +73,12 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			'discount' => array(
 				'id' => 'discount',
 				'title' => __( 'Discount', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $coupon->discount,
+				'config' => array(
+					'step' => 'any',
+					'min' => 0,
+				),
 			),
 			'discount_type' => array(
 				'id' => 'discount_type',
@@ -86,14 +90,14 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			'start_date' => array(
 				'id' => 'start_date',
 				'title' => __( 'Start date', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => ( $coupon->start_date ) ? $coupon->start_date : MS_Helper_Period::current_date(),
 				'class' => 'ms-date',
 			),
 			'expire_date' => array(
 				'id' => 'expire_date',
 				'title' => __( 'Expire date', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $coupon->expire_date,
 				'class' => 'ms-date',
 			),
@@ -107,8 +111,12 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			'max_uses' => array(
 				'id' => 'max_uses',
 				'title' => __( 'Max uses', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $coupon->max_uses,
+				'config' => array(
+					'step' => '1',
+					'min' => 0,
+				),
 			),
 			'coupon_id' => array(
 				'id' => 'coupon_id',
