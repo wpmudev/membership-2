@@ -4,14 +4,17 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
-2.0.0.0
+Membership2 1.0.0.0
 ----------------------------------------------------------------------
 - Plugin name changed from Protected Content to Membership2
 - New network-wide protection mode added (see Membership2 > Help page)
 - New official plugin API added (see Membership2 > Help page)
+- New Payment gateway added: Stripe Subscriptions
+- New option in Membership Payment settings to disable individual payment gateways.
 - Improved payment settings page to use number-input fields instead of text-fields
 - Fix issue where Simulation (Test) mode added HTML code to all Ajax responses
 - Fix blank screen after submitting the password reset form
+- Minor improvements all over the place
 
 1.1.1.6
 ----------------------------------------------------------------------
