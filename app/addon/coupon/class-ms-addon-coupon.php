@@ -66,9 +66,9 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
-			$hook = 'protect-content_page_' . MS_Controller_Plugin::MENU_SLUG . '-coupons';
-			$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
+			$hook = 'membership2_page_' . MS_Controller_Plugin::MENU_SLUG . '-coupons';
 
+			$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
 			$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 			$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 
