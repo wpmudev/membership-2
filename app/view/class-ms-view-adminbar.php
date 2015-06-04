@@ -67,89 +67,91 @@ class MS_View_Adminbar extends MS_View {
 		ob_start();
 		$this->output_scripts();
 		?>
-		<div class="ms-sim-info">
-			<div class="ms-sim-block <?php echo esc_attr( $toggle_state ); ?>">
+		<div class="ms-sim-info <?php echo esc_attr( $toggle_state ); ?>">
+			<div class="ms-sim-block">
 				<h4 class="toggle-wrap">
 					<?php _e( 'Simulation Overview', MS_TEXT_DOMAIN ); ?>
 					<span class="toggle"><i class="dashicons <?php echo esc_attr( $toggle_icon ); ?>"></i></span>
 				</h4>
-				<form id="view-site-as" method="POST" class="inside">
-				<table cellspacing="0" cellpadding="0" width="100%" border="0">
-					<tr>
-						<th><?php _e( 'View as', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php MS_Helper_Html::html_element( $fields['membership_id'] ) ?></td>
-					</tr>
-					<?php if ( $this->data['datepicker'] ) : ?>
-					<tr>
-						<th><?php _e( 'View on', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php MS_Helper_Html::html_element( $fields['simulate_date'] ) ?></td>
-					</tr>
-					<?php endif; ?>
-					<tr>
-						<th>&nbsp;</th>
-						<td><button class="button"><?php _e( 'Update', MS_TEXT_DOMAIN ); ?></button></td>
-					</tr>
-				</table>
-				<?php
-				MS_Helper_Html::html_element( $fields['action_field'] );
-				MS_Helper_Html::html_element( $fields['nonce_field'] );
-				?>
-				</form>
+				<div class="ms-sim-body">
+					<form id="view-site-as" method="POST" class="inside">
+					<table cellspacing="0" cellpadding="0" width="100%" border="0">
+						<tr>
+							<th><?php _e( 'View as', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php MS_Helper_Html::html_element( $fields['membership_id'] ) ?></td>
+						</tr>
+						<?php if ( $this->data['datepicker'] ) : ?>
+						<tr>
+							<th><?php _e( 'View on', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php MS_Helper_Html::html_element( $fields['simulate_date'] ) ?></td>
+						</tr>
+						<?php endif; ?>
+						<tr>
+							<th>&nbsp;</th>
+							<td><button class="button"><?php _e( 'Update', MS_TEXT_DOMAIN ); ?></button></td>
+						</tr>
+					</table>
+					<?php
+					MS_Helper_Html::html_element( $fields['action_field'] );
+					MS_Helper_Html::html_element( $fields['nonce_field'] );
+					?>
+					</form>
 
-				<h4 class="inside">
-					<?php _e( 'Simulated Membership', MS_TEXT_DOMAIN ); ?>
-				</h4>
-				<table cellspacing="0" cellpadding="0" width="100%" border="0" class="inside">
-					<tr>
-						<th><?php _e( 'Membership', MS_TEXT_DOMAIN ); ?></th>
-						<td style="white-space: nowrap"><?php echo esc_html( $mem->name ); ?></td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Type', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( $mem->get_type_description() ); ?></td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Start Date', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( $sim->start_date ); ?></td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Expire Date', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( $sim->expire_date ); ?></td>
-					</tr>
-					<?php if ( $this->data['datepicker'] ) : ?>
-					<tr>
-						<th><?php _e( 'Simulated Date', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( MS_Helper_Period::current_date() ); ?></td>
-					</tr>
-					<?php endif; ?>
-					<tr>
-						<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php
-						if ( MS_Model_Relationship::STATUS_ACTIVE == $sim->status ) {
-							$status_class = 'ms-sim-active';
-						} else {
-							$status_class = 'ms-sim-inactive';
-						}
-						printf(
-							'<span class="%1$s">%2$s</span>',
-							$status_class,
-							$sim->status
-						);
-						?></td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Payment model', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( $pay_types[ $mem->payment_type ] ); ?></td>
-					</tr>
-					<tr>
-						<th><?php _e( 'Payment details', MS_TEXT_DOMAIN ); ?></th>
-						<td><?php echo esc_html( strip_tags( $sim->get_payment_description( null, true ) ) ); ?></td>
-					</tr>
-				</table>
-				<div class="inside">
-				<?php $this->output_deciding_info( $denied_url, $deciding_membership, $deciding_rule ); ?>
+					<h4 class="inside">
+						<?php _e( 'Simulated Membership', MS_TEXT_DOMAIN ); ?>
+					</h4>
+					<table cellspacing="0" cellpadding="0" width="100%" border="0" class="inside">
+						<tr>
+							<th><?php _e( 'Membership', MS_TEXT_DOMAIN ); ?></th>
+							<td style="white-space: nowrap"><?php echo esc_html( $mem->name ); ?></td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Type', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php echo esc_html( $mem->get_type_description() ); ?></td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Start Date', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php echo esc_html( $sim->start_date ); ?></td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Expire Date', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php echo esc_html( $sim->expire_date ); ?></td>
+						</tr>
+						<?php if ( $this->data['datepicker'] ) : ?>
+						<tr>
+							<th><?php _e( 'Simulated Date', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php echo esc_html( MS_Helper_Period::current_date() ); ?></td>
+						</tr>
+						<?php endif; ?>
+						<tr>
+							<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php
+							if ( MS_Model_Relationship::STATUS_ACTIVE == $sim->status ) {
+								$status_class = 'ms-sim-active';
+							} else {
+								$status_class = 'ms-sim-inactive';
+							}
+							printf(
+								'<span class="%1$s">%2$s</span>',
+								$status_class,
+								$sim->status
+							);
+							?></td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Payment model', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php echo esc_html( $pay_types[ $mem->payment_type ] ); ?></td>
+						</tr>
+						<tr>
+							<th><?php _e( 'Payment details', MS_TEXT_DOMAIN ); ?></th>
+							<td><?php echo esc_html( strip_tags( $sim->get_payment_description( null, true ) ) ); ?></td>
+						</tr>
+					</table>
 				</div>
 				<div class="ms-sim-footer">
+					<div class="inside">
+					<?php $this->output_deciding_info( $denied_url, $deciding_membership, $deciding_rule ); ?>
+					</div>
 					<?php MS_Helper_Html::html_element( $fields['exit_button'] ); ?>
 				</div>
 			</div>
@@ -333,20 +335,30 @@ class MS_View_Adminbar extends MS_View {
 			position: fixed;
 			top: 40px;
 			right: 10px;
-			background: #FCE0E0;
-			border: 1px solid #E06666;
+			border: 1px solid rgba( 224, 102, 102, 0.5 );
 			box-shadow: 0 1px 2px rgba(128,0,0,0.15);
 			padding: 0;
 			font: 13px sans-serif;
 			width: 360px;
 			z-index: 999999;
-			opacity: 0.5;
+			overflow: auto;
+			bottom: 20px;
+			opacity: 0.8;
 		}
 		.ms-sim-info:hover {
+			border-color: #E06666;
 			opacity: 1;
 		}
+		.ms-sim-info:hover .ms-sim-block {
+			opacity: 1;
+			background: #FCE0E0;
+		}
 		.ms-sim-info .ms-sim-block {
-			padding: 10px;
+			background: #FFF;
+			opacity: 0.4;
+			min-height: 100%;
+			padding: 45px 10px 10px;
+			box-sizing: border-box;
 		}
 		.ms-sim-info select,
 		.ms-sim-info input {
@@ -377,6 +389,12 @@ class MS_View_Adminbar extends MS_View {
 		}
 		.ms-sim-info h4.toggle-wrap {
 			cursor: pointer;
+			position: fixed;
+			top: 40px;
+			right: 10px;
+			width: 360px;
+			margin: 0;
+			z-index: 10;
 		}
 		.ms-sim-info h4 .toggle {
 			position: absolute;
@@ -394,7 +412,10 @@ class MS_View_Adminbar extends MS_View {
 			margin-top: 0;
 			background: rgba(255,255,255,0.75);
 		}
-		.ms-sim-info .collapsed .inside {
+		.ms-sim-info.collapsed {
+			bottom: auto;
+		}
+		.ms-sim-info.collapsed .inside {
 			display: none;
 		}
 		.ms-sim-info table {
@@ -679,7 +700,7 @@ class MS_View_Adminbar extends MS_View {
 			jQuery( '.ms-sim-info .toggle-wrap' ).click(function() {
 				var el = jQuery( this );
 				el.find( '.dashicons' ).toggleClass( 'dashicons-arrow-up dashicons-arrow-down' );
-				el.closest( '.ms-sim-block' ).toggleClass( 'collapsed' );
+				el.closest( '.ms-sim-info' ).toggleClass( 'collapsed' );
 			});
 		});
 		</script>

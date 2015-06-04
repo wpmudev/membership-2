@@ -45,8 +45,8 @@ class MS_Model_Transient extends MS_Model {
 		$option_key = $this->option_key();
 		$settings = array();
 
-		$fields = get_object_vars( $this );
-		foreach ( $fields as $field => $val ) {
+		$data = MS_Factory::serialize_model( $this );
+		foreach ( $data as $field => $val ) {
 			$settings[ $field ] = $this->$field;
 		}
 
@@ -76,9 +76,11 @@ class MS_Model_Transient extends MS_Model {
 	 * Returns the option name of the current object.
 	 *
 	 * @since  2.0.0
+	 * @api Used by MS_Factory
+	 *
 	 * @return string The option key.
 	 */
-	protected function option_key() {
+	public function option_key() {
 		// Option key should be all lowercase.
 		$key = strtolower( get_class( $this ) );
 

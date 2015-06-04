@@ -302,20 +302,20 @@ class MS_Factory {
 	 * @return MS_Model_Transient The retrieved object.
 	 */
 	public static function load_from_wp_transient( $model ) {
-		$class = get_class( $model );
-		$cache = wp_cache_get( $class, 'MS_Model_Transient' );
+		$option_key = $model->option_key();
+		$cache = wp_cache_get( $option_key, 'MS_Model_Transient' );
 
 		if ( $cache ) {
 			$model = $cache;
 		} else {
-			$settings = self::get_transient( $class );
+			$settings = self::get_transient( $option_key );
 			self::populate_model( $model, $settings );
 		}
 
 		return apply_filters(
 			'ms_factory_load_from_wp_transient',
 			$model,
-			$class
+			$option_key
 		);
 	}
 

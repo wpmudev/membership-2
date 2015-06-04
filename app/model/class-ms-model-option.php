@@ -97,6 +97,8 @@ class MS_Model_Option extends MS_Model {
 	 * a value in the database.
 	 *
 	 * @since  2.0.0
+	 * @api Used by MS_Factory
+	 *
 	 * @return string
 	 */
 	public function option_key() {
