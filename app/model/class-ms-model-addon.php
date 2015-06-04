@@ -274,7 +274,9 @@ class MS_Model_Addon extends MS_Model_Option {
 			$class = substr( $class, 6 ); // remove 'Class_' prefix
 
 			if ( file_exists( $addon ) ) {
-				include_once $addon;
+				if ( ! class_exists( $class ) ) {
+					include_once $addon;
+				}
 
 				if ( class_exists( $class ) ) {
 					MS_Factory::load( $class );
