@@ -142,6 +142,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$this->add_action( 'network_admin_menu', 'add_menu_pages' );
 		}
 
+		// Select the right page to display.
 		$this->add_action( 'admin_init', 'route_submenu_request' );
 
 		// This will do the ADMIN-SIDE initialization of the controllers
@@ -168,6 +169,12 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function run_admin_init() {
 		if ( ! is_admin() && ! is_network_admin() ) { return; }
 
+		/*
+		 * This function is used to redirect the user to special kind of page
+		 * that is not available via the menu.
+		 */
+		$this->check_special_view();
+
 		foreach ( $this->controllers as $obj ) {
 			$obj->admin_init();
 		}
@@ -177,6 +184,51 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->run_action( 'ms_register_admin_scripts', 'register_admin_styles' );
 		$this->run_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_styles' );
 		$this->run_action( 'admin_enqueue_scripts', 'enqueue_plugin_admin_scripts' );
+	}
+
+	/**
+	 * If a special view is active then we ensure that it is displayed now.
+	 *
+	 * A special view is not accessible via the normal menu structure, like
+	 * a Migration assistant or an overview page after updating the plugin.
+	 *
+	 * Special views can be set/reset/checked via these functions:
+	 *   MS_Model_Settings::set_special_view( 'name' );
+	 *   MS_Model_Settings::get_special_view();
+	 *   MS_Model_Settings::reset_special_view();
+	 *
+	 * @since  1.0.0
+	 */
+	protected function check_special_view() {
+		$view_name = MS_Model_Settings::get_special_view();
+
+		if ( ! $view_name ) { return; }
+
+		$view = MS_Factory::load( $view_name );
+		$view->enqueue_scripts();
+
+		// Modify the main menu to handle our special_view for default item.
+		add_submenu_page(
+			self::$base_slug,
+			'Membership2',
+			'Membership2',
+			$this->capability,
+			self::$base_slug,
+			array( $this, 'handle_special_view' )
+		);
+	}
+
+	/**
+	 * Function is only called when a special view is defined. This function
+	 * will load that view and display it.
+	 *
+	 * @since  1.0.0
+	 */
+	public function handle_special_view() {
+		$view_name = MS_Model_Settings::get_special_view();
+		$view = MS_Factory::load( $view_name );
+
+		echo $view->to_html();
 	}
 
 	/**
@@ -224,7 +276,13 @@ class MS_Controller_Plugin extends MS_Controller {
 		global $submenu;
 		$limited_mode = false;
 
-		if ( MS_Plugin::is_wizard() ) {
+		$view = MS_Model_Settings::get_special_view();
+		if ( $view ) {
+			// A special view is displayed. Do not display other menu items.
+			$pages = array();
+
+			$limited_mode = true;
+		} elseif ( MS_Plugin::is_wizard() ) {
 			// Submenus definition: Wizard mode
 			$pages = $this->get_setup_menu_pages();
 

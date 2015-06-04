@@ -44,9 +44,12 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Protection Message Type constants.
 	 *
-	 * @since 1.0.0
+	 * User can set 3 different protection message defaults:
+	 * - Whole page is protected
+	 * - Shortcode content is protected
+	 * - Read-more content is protected
 	 *
-	 * @var string
+	 * @since 1.0.0
 	 */
 	const PROTECTION_MSG_CONTENT = 'content';
 	const PROTECTION_MSG_SHORTCODE = 'shortcode';
@@ -77,7 +80,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @var string
 	 */
-	protected $version;
+	protected $version = '';
 
 	/**
 	 * Plugin enabled status indicator.
@@ -126,7 +129,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @var boolean
 	 */
-	protected $wizard_step;
+	protected $wizard_step = '';
 
 	/**
 	 * Hide Membership2 Menu pointer indicator.
@@ -137,7 +140,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @var boolean
 	 */
-	protected $hide_wizard_pointer;
+	protected $hide_wizard_pointer = false;
 
 	/**
 	 * Hide Toolbar for non admin users indicator.
@@ -166,7 +169,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @var string
 	 */
-	protected $invoice_sender_name;
+	protected $invoice_sender_name = '';
 
 	/**
 	 * Global payments already set indicator.
@@ -184,7 +187,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @var array
 	 */
-	protected $custom;
+	protected $custom = array();
 
 	/**
 	 * Protection Messages.
@@ -229,23 +232,16 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $import = array();
 
 	/**
-	 * Get setting.
+	 * Special view.
+	 *
+	 * This defines a special view that is displayed when the plugin is loaded
+	 * instead of the default plugin page that would be displayed.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $field The setting to retrieve.
-	 * @return mixed The setting value.
+	 * @var string
 	 */
-	public static function get_setting( $field ) {
-		$value = null;
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-
-		if ( property_exists( $settings, $field ) ) {
-			$value = $settings->$field;
-		}
-
-		return apply_filters( 'ms_model_settings_get_setting', $value, $field );
-	}
+	protected $special_view = false;
 
 	/**
 	 * Get protection message types.
@@ -370,6 +366,45 @@ class MS_Model_Settings extends MS_Model_Option {
 			$field,
 			$this
 		);
+	}
+
+	/**
+	 * Activates a special view.
+	 * Next time the plugin is loaded this special view is displayed.
+	 *
+	 * This should be set in MS_Model_Upgrade (or earlier) to ensure the special
+	 * view is displayed on the current page request.
+	 *
+	 * @since  1.0.0
+	 * @param  string $name Name of the view to display.
+	 */
+	static public function set_special_view( $name ) {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$settings->special_view = $name;
+		$settings->save();
+	}
+
+	/**
+	 * Returns the currently set special view.
+	 *
+	 * @since  1.0.0
+	 * @return string Name of the view to display.
+	 */
+	static public function get_special_view() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$view = $settings->special_view;
+		return $view;
+	}
+
+	/**
+	 * Deactivates the special view.
+	 *
+	 * @since  1.0.0
+	 */
+	static public function reset_special_view() {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$settings->special_view = false;
+		$settings->save();
 	}
 
 	/**
