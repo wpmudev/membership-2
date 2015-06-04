@@ -108,6 +108,6 @@ class MS_Model_Option extends MS_Model {
 			$key .= '-network';
 		}
 
-		return $key;
+		return substr( $key, 0, 64 );
 	}
 }

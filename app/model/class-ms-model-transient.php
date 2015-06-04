@@ -42,7 +42,7 @@ class MS_Model_Transient extends MS_Model {
 	public function save() {
 		$this->before_save();
 
-		$class = get_class( $this );
+		$option_key = $this->option_key();
 		$settings = array();
 
 		$fields = get_object_vars( $this );
@@ -50,11 +50,11 @@ class MS_Model_Transient extends MS_Model {
 			$settings[ $field ] = $this->$field;
 		}
 
-		set_transient( $class, $settings );
+		MS_Factory::set_transient( $option_key, $settings );
 
 		$this->after_save();
 
-		wp_cache_set( $class, $this, 'MS_Model_Transient' );
+		wp_cache_set( $option_key, $this, 'MS_Model_Transient' );
 	}
 
 	/**
@@ -65,10 +65,29 @@ class MS_Model_Transient extends MS_Model {
 	public function delete() {
 		do_action( 'ms_model_transient_delete_before', $this );
 
-		$class = get_class( $this );
-		delete_transient( $class );
+		$option_key = $this->option_key();
+		MS_Factory::delete_transient( $option_key );
+		wp_cache_delete( $option_key, 'MS_Model_Transient' );
 
 		do_action( 'ms_model_transient_delete_after', $this );
+	}
+
+	/**
+	 * Returns the option name of the current object.
+	 *
+	 * @since  2.0.0
+	 * @return string The option key.
+	 */
+	protected function option_key() {
+		// Option key should be all lowercase.
+		$key = strtolower( get_class( $this ) );
+
+		// Network-wide mode uses different options then single-site mode.
+		if ( MS_Plugin::is_network_wide() ) {
+			$key .= '-network';
+		}
+
+		return substr( $key, 0, 45 );
 	}
 
 }
