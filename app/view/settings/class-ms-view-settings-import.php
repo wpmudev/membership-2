@@ -40,6 +40,7 @@ class MS_View_Settings_Import extends MS_View {
 			'ms_import_preview_data_before',
 			$this->data['model']->source
 		);
+		$compact = ! ! $this->data['compact'];
 
 		// Converts object to array
 		$data->memberships = (array) $data->memberships;
@@ -47,9 +48,16 @@ class MS_View_Settings_Import extends MS_View {
 
 		$fields = $this->prepare_fields( $data );
 
-		ob_start();
-		MS_Helper_Html::settings_box(
-			array(
+		if ( $compact ) {
+			$overview_box = array(
+				$fields['batchsize'],
+				$fields['sep'],
+				$fields['clear_all'],
+				$fields['skip'],
+				$fields['import'],
+			);
+		} else {
+			$overview_box = array(
 				$fields['details'],
 				$fields['sep'],
 				$fields['batchsize'],
@@ -58,30 +66,37 @@ class MS_View_Settings_Import extends MS_View {
 				$fields['back'],
 				$fields['import'],
 				$fields['download'],
-			),
+			);
+		}
+
+		ob_start();
+		MS_Helper_Html::settings_box(
+			$overview_box,
 			__( 'Import Overview', MS_TEXT_DOMAIN )
 		);
 
-		MS_Helper_Html::settings_box(
-			array( $fields['memberships'] ),
-			__( 'List of all Memberships', MS_TEXT_DOMAIN ),
-			'',
-			'open'
-		);
+		if ( ! $compact ) {
+			MS_Helper_Html::settings_box(
+				array( $fields['memberships'] ),
+				__( 'List of all Memberships', MS_TEXT_DOMAIN ),
+				'',
+				'open'
+			);
 
-		MS_Helper_Html::settings_box(
-			array( $fields['members'] ),
-			__( 'List of all Members', MS_TEXT_DOMAIN ),
-			'',
-			'open'
-		);
+			MS_Helper_Html::settings_box(
+				array( $fields['members'] ),
+				__( 'List of all Members', MS_TEXT_DOMAIN ),
+				'',
+				'open'
+			);
 
-		MS_Helper_Html::settings_box(
-			array( $fields['settings'] ),
-			__( 'Imported Settings', MS_TEXT_DOMAIN ),
-			'',
-			'open'
-		);
+			MS_Helper_Html::settings_box(
+				array( $fields['settings'] ),
+				__( 'Imported Settings', MS_TEXT_DOMAIN ),
+				'',
+				'open'
+			);
+		}
 
 		echo '<script>window._ms_import_obj = ' . json_encode( $data ) . '</script>';
 
@@ -326,6 +341,16 @@ class MS_View_Settings_Import extends MS_View {
 			'class' => 'wpmui-field-button button',
 			'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
 			'url' => $_SERVER['REQUEST_URI'],
+		);
+
+		$fields['skip'] = array(
+			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'class' => 'wpmui-field-button button',
+			'value' => __( 'Skip', MS_TEXT_DOMAIN ),
+			'url' => MS_Controller_Plugin::get_admin_url(
+				false,
+				array( 'skip_import' => 1 )
+			),
 		);
 
 		$fields['import'] = array(

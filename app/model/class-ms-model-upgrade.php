@@ -62,6 +62,9 @@ class MS_Model_Upgrade extends MS_Model {
 
 		if ( $Done && ! $force ) { return; }
 
+		// Migration handler has its own valid_user check.
+		self::check_migration_handler();
+
 		// Updates are only triggered from Admin-Side by an Admin user.
 		if ( ! self::valid_user() ) { return; }
 
@@ -961,6 +964,51 @@ class MS_Model_Upgrade extends MS_Model {
 	}
 
 	/**
+	 * This function checks if we arrive here after a migration, i.e. after the
+	 * user updated Membership Premium or Protected Content to M2
+	 *
+	 * @since  1.0.0
+	 */
+	static private function check_migration_handler() {
+		$migrate = '';
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		// Check Migration from old Membership plugin.
+		$option_m1 = '_wpmudev_update_to_m2';
+		$option_m1_free = '_wporg_update_to_m2';
+		$from_m1 = get_site_option( $option_m1 );
+		$from_m1_free = get_site_option( $option_m1_free );
+
+		if ( $from_m1 || $from_m1_free ) {
+			$migrate = 'm1';
+
+			delete_site_option( $option_m1 );
+			delete_site_option( $option_m1_free );
+			$settings->set_special_view( 'MS_View_MigrationM1' );
+		}
+
+		$view = $settings->get_special_view();
+
+		if ( $migrate || 'MS_View_MigrationM1' == $view ) {
+			if ( ! empty( $_REQUEST['skip_import'] ) ) {
+				$settings->reset_special_view();
+				wp_safe_redirect(
+					esc_url_raw( remove_query_arg( array( 'skip_import' ) ) )
+				);
+				exit;
+			} else {
+				$settings->set_special_view( 'MS_View_MigrationM1' );
+
+				// Complete the migration when the import is done.
+				add_action(
+					'ms_import_action_done',
+					array( 'MS_Model_Settings', 'reset_special_view' )
+				);
+			}
+		}
+	}
+
+	/**
 	 * Returns a secure token to trigger advanced admin actions like db-reset
 	 * or restoring a snapshot.
 	 *
@@ -1035,6 +1083,7 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( ! is_user_logged_in() ) { return false; }
 		if ( ! is_admin() ) { return false; }
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
+		if ( defined( 'DOING_CRON' ) && DOING_CRON ) { return false; }
 		if ( ! MS_Model_Member::is_admin_user() ) { return false; }
 
 		return true;

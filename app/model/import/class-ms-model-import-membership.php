@@ -141,7 +141,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			$plugin = false;
 
 			foreach ( $plugins as $file => $data ) {
-				if ( $data['Name'] == 'Membership Premium' ) {
+				if ( 'Membership Premium' == $data['Name'] ) {
 					$data['file'] = $file;
 					$plugin = $data;
 					break;

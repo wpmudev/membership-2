@@ -43,6 +43,11 @@ class MS_Controller_Import extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_IMPORT,
+			'ajax_action_import'
+		);
 	}
 
 	/**
@@ -56,11 +61,6 @@ class MS_Controller_Import extends MS_Controller {
 		$this->run_action(
 			'ms_controller_settings_enqueue_scripts_' . $tab_key,
 			'enqueue_scripts'
-		);
-
-		$this->add_ajax_action(
-			self::AJAX_ACTION_IMPORT,
-			'ajax_action_import'
 		);
 	}
 
@@ -153,6 +153,14 @@ class MS_Controller_Import extends MS_Controller {
 				$res = true;
 				break;
 		}
+
+		/**
+		 * After the import action was complated notify other objects and
+		 * add-ons.
+		 *
+		 * @since 1.0.0
+		 */
+		do_action( 'ms_import_action_' . $task, $item );
 
 		return $res;
 	}
