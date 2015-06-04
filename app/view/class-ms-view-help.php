@@ -890,7 +890,7 @@ class MS_View_Help extends MS_View {
 				<ul>
 					<li>
 						<code>type</code>
-						<?php _ex( '(info|warning)', 'help', MS_TEXT_DOMAIN ); ?>
+						(info|warning)
 						<?php _ex( 'The type of the notice. Info is green and warning red', 'help', MS_TEXT_DOMAIN ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
@@ -918,6 +918,112 @@ class MS_View_Help extends MS_View {
 					<code>[ms-note type="warning"]</code>
 					<?php _ex( 'Please log in to access this page!', 'help', MS_TEXT_DOMAIN ); ?>
 					<code>[/ms-note]</code>
+				</p>
+			</div>
+		</div>
+
+		<?php
+		/*********
+		**********   ms-member-info   ******************************************
+		*********/
+		?>
+
+		<div id="ms-member-info" class="ms-help-box">
+			<h3><code>[ms-member-info]</code></h3>
+
+			<?php _ex( 'Displays details about the current member, like the members first name or a list of memberships he subscribed to', 'help', MS_TEXT_DOMAIN ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-help-details" style="display:none">
+				<ul>
+					<li>
+						<code>value</code>
+						(email|firstname|lastname|fullname|memberships|custom)
+						<?php _ex( 'Defines which value to display.<br>A custom field can be set via the API (you find the API docs on the Advanced Settings tab)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"fullname"
+						</span>
+					</li>
+					<li>
+						<code>default</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Default value to display when the defined field is empty', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
+						</span>
+					</li>
+					<li>
+						<code>before</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display this text before the field value. Only used when the field is not empty', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"&lt;span&gt;"
+						</span>
+					</li>
+					<li>
+						<code>after</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Display this text after the field value. Only used when the field is not empty', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							"&lt;/span&gt;"
+						</span>
+					</li>
+					<li>
+						<code>custom_field</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Only relevant for the value <code>custom</code>. This is the name of the custom field to get', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
+						</span>
+					</li>
+					<li>
+						<code>list_separator</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Used when the field value is a list (i.e. Membership list or contents of a custom field)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							", "
+						</span>
+					</li>
+					<li>
+						<code>list_before</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Used when the field value is a list (i.e. Membership list or contents of a custom field)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
+						</span>
+					</li>
+					<li>
+						<code>list_after</code>
+						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Used when the field value is a list (i.e. Membership list or contents of a custom field)', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							""
+						</span>
+					</li>
+					<li>
+						<code>user</code>
+						<?php _ex( '(User-ID)', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Use this to display data of any user. If not specified then the current user is displayed', 'help', MS_TEXT_DOMAIN ); ?>
+						<span class="ms-help-default">
+							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							0
+						</span>
+					</li>
+				</ul>
+
+				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p>
+					<code>[ms-member-info value="fullname" default="(Guest)"]</code>
+				</p>
+				<p>
+					<code>[ms-member-info value="memberships" default="Sign up now!" list_separator=" | " before="Your Memberships: "]</code>
 				</p>
 			</div>
 		</div>

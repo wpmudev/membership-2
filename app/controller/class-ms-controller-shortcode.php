@@ -130,6 +130,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 				array( $this, 'show_to_user' )
 			);
 
+			add_shortcode(
+				MS_Helper_Shortcode::SCODE_MEMBER_INFO,
+				array( $this, 'ms_member_info' )
+			);
+
 			if ( MS_Model_Member::is_normal_admin() ) {
 				add_shortcode(
 					MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE,
@@ -1034,6 +1039,102 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		return apply_filters(
 			'ms_controller_shortcode_show_to_user',
+			$content,
+			$this
+		);
+	}
+
+	/**
+	 * Shortcode callback: Show member infos.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param mixed[] $atts Shortcode attributes.
+	 */
+	public function ms_member_info( $atts, $content = '' ) {
+		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_MEMBER_INFO );
+
+		$data = apply_filters(
+			'ms_controller_shortcode_member_info_atts',
+			shortcode_atts(
+				array(
+					'value' => 'fullname',
+					'before' => '<span>',
+					'after' => '</span>',
+					'default' => '',
+					'custom_field' => '',  // used for: custom
+					'list_before' => '', // used for: membership
+					'list_after' => '', // used for: membership
+					'list_separator' => ', ', // used for: membership
+					'user' => 0, // user-id; 0 = current user
+				),
+				$atts
+			)
+		);
+
+		$data['user'] = intval( $data['user'] );
+		if ( $data['user'] < 1 ) {
+			$data['user'] = get_current_user_id();
+		}
+		$member = MS_Factory::load( 'MS_Model_Member', $data['user'] );
+		$content = '';
+
+		switch ( $data['value'] ) {
+			case 'email':
+				$content = $member->email;
+				break;
+
+			case 'firstname':
+			case 'first name':
+				$content = $member->first_name;
+				break;
+
+			case 'lastname':
+			case 'last name':
+				$content = $member->last_name;
+				break;
+
+			case 'fullname':
+			case 'full name':
+				$content = $member->first_name . ' ' . $member->last_name;
+				break;
+
+			case 'memberships':
+			case 'membership':
+				$ids = $member->get_membership_ids();
+				$content = array();
+				foreach ( $ids as $id ) {
+					$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+					if ( $membership->is_system() ) { continue; }
+					$content[] = $membership->name;
+				}
+				break;
+
+			case 'custom':
+				$content = $member->get_custom_data( $data['custom_field'] );
+				break;
+		}
+
+		if ( is_array( $content ) ) {
+			$content =
+				$data['list_before'] .
+				implode( $data['list_separator'], $content ) .
+				$data['list_after'];
+		} else {
+			$content = (string) $content;
+		}
+
+		$content = trim( $content );
+		if ( $content ) {
+			$content = $data['before'] .
+				$content .
+				$data['after'];
+		} else {
+			$content = $data['default'];
+		}
+
+		return apply_filters(
+			'ms_controller_shortcode_member_info',
 			$content,
 			$this
 		);

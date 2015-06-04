@@ -59,6 +59,8 @@ class MS_Helper_Shortcode extends MS_Helper {
 
 	const SCODE_USER = 'ms-user';
 
+	const SCODE_MEMBER_INFO = 'ms-member-info';
+
 	// deprecated, replaced by SCODE_NOTE
 	const SCODE_GREEN_NOTE = 'ms-green-note';
 
