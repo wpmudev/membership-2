@@ -8,7 +8,7 @@
  *
  * Note that all properties are declared protected but they can be access
  * directly (e.g. `$membership->type` to get the type value).
- * There are magic methods __get() and __set() that do some validation before
+ * There are magic methods \_\_get() and \_\_set() that do some validation before
  * accessing the properties.
  *
  * @since 1.0.0

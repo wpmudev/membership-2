@@ -136,10 +136,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-449495299"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-410049819"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-449495299" class="accordion-body collapse in">
+            <div id="namespace-410049819" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -172,7 +172,7 @@ The Member object allows us to quickly check if the user did subscribe to a
 certain membership, and other useful stuff.</p>
 <p>Note that all properties are declared protected but they can be access
 directly (e.g. <code>$membership-&gt;type</code> to get the type value).
-There are magic methods <strong>get() and </strong>set() that do some validation before
+There are magic methods __get() and __set() that do some validation before
 accessing the properties.</p>
                     
                                         
@@ -198,8 +198,12 @@ accessing the properties.</p>
                                                                     <a href="../classes/MS_Model_Member.html#method_is_simulated_user" class="">is_simulated_user()</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#method_is_normal_user" class="">is_normal_user()</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#method_get_username" class="">get_username()</a><br />
+                                                                    <a href="../classes/MS_Model_Member.html#method_prepare_obj" class="">prepare_obj()</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#method_save" class="">save()</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#method_signon_user" class="">signon_user()</a><br />
+                                                                    <a href="../classes/MS_Model_Member.html#method_set_custom_data" class="">set_custom_data()</a><br />
+                                                                    <a href="../classes/MS_Model_Member.html#method_delete_custom_data" class="">delete_custom_data()</a><br />
+                                                                    <a href="../classes/MS_Model_Member.html#method_get_custom_data" class="">get_custom_data()</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#method_get_membership_ids" class="">get_membership_ids()</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#method_add_membership" class="">add_membership()</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#method_drop_membership" class="">drop_membership()</a><br />
@@ -233,6 +237,7 @@ accessing the properties.</p>
                                                                     <a href="../classes/MS_Model_Member.html#property_first_name" class="">$first_name</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#property_last_name" class="">$last_name</a><br />
                                                                     <a href="../classes/MS_Model_Member.html#property_gateway_profiles" class="">$gateway_profiles</a><br />
+                                                                    <a href="../classes/MS_Model_Member.html#property_custom_data" class="">$custom_data</a><br />
                                                             </section>
                             <section class="span4">
                                 <em>N/A</em>
@@ -577,6 +582,39 @@ For further use. (For temporary member blocking).</p>
     @type string $field The field to store.
     @type mixed $value The field value to store.
 }                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_custom_data" name="property_custom_data" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$custom_data</h3>
+                <pre class="signature">$custom_data : array</pre>
+                <p><em>Custom data can be used by other plugins via the set_custom_data() and
+get_custom_data() functions.</em></p>
+                <p>This can be used to store additional information on user-level, e.g.
+settings needed by some Add-ons or even by other plugins.</p>
+
+                                <h4>Type</h4>
+                array
+                                            </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -960,6 +998,39 @@ For further use. (For temporary member blocking).</p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
+            <a id="method_prepare_obj" name="method_prepare_obj" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">prepare_obj()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">prepare_obj() </pre>
+                <p><em>Validates the object right after it was loaded/initialized.</em></p>
+                <p>We ensure that the custom_data field is an array.</p>
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
             <a id="method_save" name="method_save" class="anchor"></a>
             <article class="method">
                 <h3 class="public ">save()</h3>
@@ -1032,6 +1103,163 @@ The usermeta are prefixed with 'ms</em>'.</p>
                         </th>
                         <td>
                                                             1.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_set_custom_data" name="method_set_custom_data" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">set_custom_data()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">set_custom_data(string  <span class="argument">$key</span>, mixed  <span class="argument">$value</span>) </pre>
+                <p><em>Either creates or updates the value of a custom data field.</em></p>
+                <p>Note: Remember to prefix the $key with a unique string to prevent
+conflicts with other plugins that also use this function.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key </td>
+                                <td><p>The field-key.</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>mixed</td>
+                                <td>$value </td>
+                                <td><p>The new value to assign to the field.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_delete_custom_data" name="method_delete_custom_data" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">delete_custom_data()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">delete_custom_data(string  <span class="argument">$key</span>) </pre>
+                <p><em>Removes a custom data field from this object.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key </td>
+                                <td><p>The field-key.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_get_custom_data" name="method_get_custom_data" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_custom_data()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_custom_data(string  <span class="argument">$key</span>) : mixed</pre>
+                <p><em>Returns the value of a custom data field.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$key </td>
+                                <td><p>The field-key.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>The value that was previously assigned to the custom field
+or false if no value was set for the field.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1662,7 +1890,7 @@ returning all profile info.</p></td>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on May 15th, 2015 at 16:49.
+                    on June 4th, 2015 at 16:24.
                 </section>
             </section>
         </section>

@@ -8,7 +8,7 @@
  *
  * Note that all properties are declared protected but they can be access
  * directly (e.g. `$membership->type` to get the type value).
- * There are magic methods __get() and __set() that do some validation before
+ * There are magic methods \_\_get() and \_\_set() that do some validation before
  * accessing the properties.
  *
  * @since 1.0.0
@@ -215,6 +215,20 @@ class MS_Model_Member extends MS_Model {
 	 * @var WP_User
 	 */
 	protected $wp_user;
+
+	/**
+	 * Custom data can be used by other plugins via the set_custom_data() and
+	 * get_custom_data() functions.
+	 *
+	 * This can be used to store additional information on user-level, e.g.
+	 * settings needed by some Add-ons or even by other plugins.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @var array
+	 */
+	protected $custom_data = array();
+
 
 	//
 	//
@@ -812,7 +826,23 @@ class MS_Model_Member extends MS_Model {
 			'is_member',
 			'active',
 			'gateway_profiles',
+			'custom_data',
 		);
+	}
+
+	/**
+	 * Validates the object right after it was loaded/initialized.
+	 *
+	 * We ensure that the custom_data field is an array.
+	 *
+	 * @since  2.0.0
+	 */
+	public function prepare_obj() {
+		parent::prepare_obj();
+
+		if ( ! is_array( $this->custom_data ) ) {
+			$this->custom_data = array();
+		}
 	}
 
 	/**
@@ -1022,6 +1052,52 @@ class MS_Model_Member extends MS_Model {
 		wp_set_auth_cookie( $this->id );
 		do_action( 'wp_login', $this->username, $user );
 		do_action( 'ms_model_member_signon_user', $user, $this );
+	}
+
+	/**
+	 * Either creates or updates the value of a custom data field.
+	 *
+	 * Note: Remember to prefix the $key with a unique string to prevent
+	 * conflicts with other plugins that also use this function.
+	 *
+	 * @since  2.0.0
+	 * @api
+	 *
+	 * @param  string $key The field-key.
+	 * @param  mixed $value The new value to assign to the field.
+	 */
+	public function set_custom_data( $key, $value ) {
+		$this->custom_data[ $key ] = $value;
+	}
+
+	/**
+	 * Removes a custom data field from this object.
+	 *
+	 * @since  2.0.0
+	 * @api
+	 *
+	 * @param  string $key The field-key.
+	 */
+	public function delete_custom_data( $key ) {
+		unset( $this->custom_data[ $key ] );
+	}
+
+	/**
+	 * Returns the value of a custom data field.
+	 *
+	 * @since  2.0.0
+	 * @api
+	 *
+	 * @param  string $key The field-key.
+	 * @return mixed The value that was previously assigned to the custom field
+	 *         or false if no value was set for the field.
+	 */
+	public function get_custom_data( $key ) {
+		$res = false;
+		if ( isset( $this->custom_data[ $key ] ) ) {
+			$res = $this->custom_data[ $key ];
+		}
+		return $res;
 	}
 
 	/**

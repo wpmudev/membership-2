@@ -136,10 +136,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-2089387155"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-97492854"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-2089387155" class="accordion-body collapse in">
+            <div id="namespace-97492854" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -171,7 +171,7 @@
 It is not related to a specific user!</p>
 <p>Note that all properties are declared protected but they can be access
 directly (e.g. <code>$membership-&gt;type</code> to get the type value).
-There are magic methods <strong>get() and </strong>set() that do some validation before
+There are magic methods __get() and __set() that do some validation before
 accessing the properties.</p>
                     
                                         
@@ -200,6 +200,7 @@ accessing the properties.</p>
                                                                     <a href="../classes/MS_Model_Membership.html#method_delete" class="">delete()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_payment_type_desc" class="">get_payment_type_desc()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_is_free" class="">is_free()</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#method_can_use_gateway" class="">can_use_gateway()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_rule" class="">get_rule()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_set_rule" class="">set_rule()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_color" class="">get_color()</a><br />
@@ -248,6 +249,7 @@ accessing the properties.</p>
                                                                     <a href="../classes/MS_Model_Membership.html#property_private" class="">$private</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_is_free" class="">$is_free</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_price" class="">$price</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#property_disabled_gateways" class="">$disabled_gateways</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_period" class="">$period</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_pay_cycle_period" class="">$pay_cycle_period</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_pay_cycle_repetitions" class="">$pay_cycle_repetitions</a><br />
@@ -765,6 +767,37 @@ Users can still stubscribe to the membership via the shortcode
 
                                 <h4>Type</h4>
                 float
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_disabled_gateways" name="property_disabled_gateways" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$disabled_gateways</h3>
+                <pre class="signature">$disabled_gateways : array</pre>
+                <p><em>A list of disabled gateways.</em></p>
+                
+
+                                <h4>Type</h4>
+                array
                                             </article>
         </div>
         <aside class="span4 detailsbar">
@@ -1518,6 +1551,50 @@ to any membership.</em></p>
                         </th>
                         <td>
                                                                                             
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_can_use_gateway" name="method_can_use_gateway" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">can_use_gateway()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">can_use_gateway(string  <span class="argument">$gateway_id</span>) : boolean</pre>
+                <p><em>Checks if a specific payment gateway is allowed for the current
+membership.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$gateway_id </td>
+                                <td><p>The payment gateway ID.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            2.0.0                                
                                                     </td>
                     </tr>
                             </table>
@@ -2553,7 +2630,7 @@ Null means: Rule not relevant for current page.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on May 15th, 2015 at 16:49.
+                    on June 4th, 2015 at 16:24.
                 </section>
             </section>
         </section>

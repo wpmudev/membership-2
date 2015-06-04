@@ -7,7 +7,7 @@
  *
  * Note that all properties are declared protected but they can be access
  * directly (e.g. `$membership->type` to get the type value).
- * There are magic methods __get() and __set() that do some validation before
+ * There are magic methods \_\_get() and \_\_set() that do some validation before
  * accessing the properties.
  *
  * @since 1.0.0
@@ -156,6 +156,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @var float $price.
 	 */
 	protected $price = 0;
+
+	/**
+	 * A list of disabled gateways.
+	 *
+	 * @since  2.0.0
+	 * @var array $disabled_gateways.
+	 */
+	protected $disabled_gateways = array();
 
 	/**
 	 * Membership period for finite access.
@@ -1010,6 +1018,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'active',
 			'private',
 			'is_free',
+			'disabled_gateways',
 			'price',
 			'period',
 			'pay_cycle_period',
@@ -1021,6 +1030,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'trial_period',
 			'on_end_membership_id',
 			'is_setup_completed',
+			'custom_data',
 		);
 	}
 
@@ -1234,6 +1244,37 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$this->is_free = $result;
 		}
 
+		return $result;
+	}
+
+	/**
+	 * Checks if a specific payment gateway is allowed for the current
+	 * membership.
+	 *
+	 * @since  2.0.0
+	 * @param  string $gateway_id The payment gateway ID.
+	 * @return bool
+	 */
+	public function can_use_gateway( $gateway_id ) {
+		$result = true;
+
+		$this->disabled_gateways = lib2()->array->get( $this->disabled_gateways );
+		if ( isset( $this->disabled_gateways[$gateway_id] ) ) {
+			$state = $this->disabled_gateways[$gateway_id];
+			$result = ! lib2()->is_true( $state );
+		}
+
+		if ( $result ) {
+			$gateway = MS_Model_Gateway::factory( $gateway_id );
+			$result = $gateway->payment_type_supported( $this );
+		}
+
+		$result = apply_filters(
+			'ms_model_membership_can_use_gateway',
+			$result,
+			$gateway_id,
+			$this
+		);
 		return $result;
 	}
 
@@ -2065,6 +2106,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 			case 'pay_cycle_repetitions':
 				$value = absint( $this->pay_cycle_repetitions );
+				break;
+
+			case 'disabled_gateways':
+				$value = lib2()->array->get( $this->disabled_gateways );
 				break;
 
 			default:
