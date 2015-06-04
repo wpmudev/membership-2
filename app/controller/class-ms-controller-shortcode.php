@@ -1116,10 +1116,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 
 		if ( is_array( $content ) ) {
-			$content =
-				$data['list_before'] .
-				implode( $data['list_separator'], $content ) .
-				$data['list_after'];
+			if ( $content ) {
+				$content =
+					$data['list_before'] .
+					implode( $data['list_separator'], $content ) .
+					$data['list_after'];
+			} else {
+				$content = '';
+			}
 		} else {
 			$content = (string) $content;
 		}
