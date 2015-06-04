@@ -94,29 +94,22 @@ class MS_Model_Plugin extends MS_Model {
 
 		/*
 		 * Some plugins (such as MarketPress) can trigger the set_current_user
-		 * action hook before this object is initialized.
+		 * action hook before this object is initialized. To ensure correct
+		 * loading order we use the `init` hook, which is called directly after
+		 * the correct set_current_user call.
 		 *
 		 * Most of the plugin logic requires the current user to be known,
 		 * that's why we do a explicit check here to make sure we have a valid
 		 * user.
 		 */
-		if ( ! did_action( 'set_current_user' ) ) {
-			// Initialize the current member
-			$this->add_action( 'set_current_user', 'init_member', 1 );
-			$this->add_action( 'set_current_user', 'setup_cron_services', 1 );
 
-			// Init gateways and communications to register actions/filters
-			$this->add_action( 'set_current_user', array( 'MS_Model_Gateway', 'get_gateways' ), 2 );
-			$this->add_action( 'set_current_user', array( 'MS_Model_Communication', 'load_communications' ), 2 );
-		} else {
-			// Init gateways and communications to register actions/filters
-			MS_Model_Gateway::get_gateways();
-			MS_Model_Communication::load_communications();
+		// Initialize the current member
+		$this->run_action( 'init', 'init_member', 1 );
+		$this->run_action( 'init', 'setup_cron_services', 1 );
 
-			// Initialize the current member
-			$this->init_member();
-			$this->setup_cron_services();
-		}
+		// Init gateways and communications to register actions/filters
+		$this->run_action( 'init', array( 'MS_Model_Gateway', 'get_gateways' ), 2 );
+		$this->run_action( 'init', array( 'MS_Model_Communication', 'load_communications' ), 2 );
 	}
 
 	/**

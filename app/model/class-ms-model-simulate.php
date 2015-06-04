@@ -123,11 +123,13 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	}
 
 	/**
-	 * Add the simulated relationship to the current users memberships
+	 * Add the simulated relationship to the current users memberships.
 	 *
 	 * @since 1.1.0
 	 */
 	public function add_simulation_membership( $subscriptions ) {
+		$subscription = false;
+
 		if ( ! isset( $subscriptions[ $this->membership_id ] ) ) {
 			$this->start_simulation();
 
@@ -136,10 +138,12 @@ class MS_Model_Simulate extends MS_Model_Transient {
 				0,
 				'simulation'
 			);
+		}
 
+		if ( is_a( $subscription, 'MS_Model_Relationship' ) ) {
 			$membership = $subscription->get_membership();
-			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
-				|| MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
+			if ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
+				|| MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
 			) {
 				$subscription->expire_date = '2999-12-31';
 			}
