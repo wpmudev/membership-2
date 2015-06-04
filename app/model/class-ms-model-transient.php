@@ -50,7 +50,7 @@ class MS_Model_Transient extends MS_Model {
 			$settings[ $field ] = $this->$field;
 		}
 
-		MS_Factory::set_transient( $option_key, $settings );
+		MS_Factory::set_transient( $option_key, $settings, DAY_IN_SECONDS );
 
 		$this->after_save();
 
