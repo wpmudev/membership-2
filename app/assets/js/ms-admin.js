@@ -1876,9 +1876,12 @@ window.ms_init.view_settings_import = function init() {
 	 */
 	function allow_hide_popup() {
 		var el = jQuery( '<div style="text-align:center"></div>' ),
-			btn = jQuery( '<button type="button" class="close"></button>' );
+			btn = jQuery( '<a href="#" class="close"></a>' );
 
 		btn.text( ms_data.lang.close_progress );
+		if ( ms_data.close_link ) {
+			btn.attr( 'href', ms_data.close_link );
+		}
 		btn.addClass( 'button-primary' );
 		btn.appendTo( el );
 
