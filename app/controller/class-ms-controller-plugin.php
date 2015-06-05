@@ -314,7 +314,10 @@ class MS_Controller_Plugin extends MS_Controller {
 		);
 
 		$page_keys = array_keys( $pages );
-		$slug = $pages[ $page_keys[0] ]['slug'];
+		$slug = '';
+		if ( isset( $page_keys[0] ) && $pages[ $page_keys[0] ] ) {
+			$slug = $pages[ $page_keys[0] ]['slug'];
+		}
 		if ( empty( $slug ) ) {
 			self::$base_slug = self::MENU_SLUG;
 		} else {

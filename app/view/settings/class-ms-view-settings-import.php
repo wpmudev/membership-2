@@ -41,6 +41,16 @@ class MS_View_Settings_Import extends MS_View {
 			$this->data['model']->source
 		);
 		$compact = ! ! $this->data['compact'];
+		if ( ! is_object( $data ) ) {
+			$data = (object) array(
+				'memberships' => array(),
+				'members' => array(),
+				'notes' => array(),
+				'settings' => array(),
+				'source' => '',
+				'export_time' => '',
+			);
+		}
 
 		// Converts object to array
 		$data->memberships = (array) $data->memberships;

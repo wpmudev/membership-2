@@ -237,7 +237,7 @@ class MS_Controller_Membership extends MS_Controller {
 			$params = parse_url( $referer, PHP_URL_QUERY );
 			$fields = array();
 			parse_str( $params, $fields );
-			if ( 'wpmudev-plugins' == $fields['page'] ) {
+			if ( isset( $fields['page'] ) && 'wpmudev-plugins' == $fields['page'] ) {
 				$url = MS_Controller_Plugin::get_admin_url( 'settings' );
 
 				wp_safe_redirect( $url );
