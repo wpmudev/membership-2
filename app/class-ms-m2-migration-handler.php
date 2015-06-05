@@ -29,14 +29,6 @@ class MS_M2_Migration_Handler {
 	const NEW_PLUGIN_ID = 1003656;
 
 	/**
-	 * User has to confirm update before updating the plugin to this name.
-	 * I.e. While the NEW plugin keeps its old name no confirmation is displayed
-	 * but once the new plugin contains this phrase in the project name the
-	 * migration process begins by displaying a confirmation message.
-	 */
-	const NEW_PLUGIN_NAME = 'Membership2';
-
-	/**
 	 * When the big update is ready a flag is stored in site-options table using
 	 * this option key.
 	 * After the update the new plugin should remove this site-option again.
@@ -51,7 +43,7 @@ class MS_M2_Migration_Handler {
 	/**
 	 * The old plugin-key (before the update)
 	 */
-	const OLD_PLUGIN = 'membership/membershippremium.php';
+	const OLD_PLUGIN = 'protected-content/protected-content.php';
 
 	/**
 	 * The new plugin-key (after the update)
@@ -69,9 +61,9 @@ class MS_M2_Migration_Handler {
 		add_filter( 'site_transient_wpmudev_local_projects', array( __CLASS__, 'modify_old_plugin' ) );
 
 		// Add the new plugin to the update list after user confirmed update.
-		add_filter( 'site_option_wdp_un_updates_data', array( __CLASS__, 'updates_data' ) );
 		add_filter( 'pre_set_site_transient_wpmudev_local_projects', array( __CLASS__, 'local_project_data' ) );
-		add_filter( 'upgrader_pre_install', array( __CLASS__, 'rename_plugin' ), 1, 2 );
+		add_filter( 'upgrader_pre_install', array( __CLASS__, 'prepare_update' ), 1, 2 );
+		add_filter( 'site_transient_update_plugins', array( __CLASS__, 'forge_update_data' ), 20 );
 
 		// Display a custom "Update available" message.
 		add_action( 'admin_head', array( __CLASS__, 'hook_confirm_message' ) );
@@ -105,12 +97,28 @@ class MS_M2_Migration_Handler {
 		}
 
 		$data = unserialize( $response['body'] );
+
 		if ( isset( $data['projects'] ) && isset( $data['projects'][self::NEW_PLUGIN_ID] ) ) {
 			// Analyze the plugin details sent from the update server
 			$plugin_info = $data['projects'][self::NEW_PLUGIN_ID];
 
 			if ( self::check_for_update( $plugin_info ) ) {
+				// Hide M2 from the update response until user confirmed the update.
 				unset( $data['projects'][self::NEW_PLUGIN_ID] );
+
+				// Hide the "Our latest plugin: Membership2" notice - we have our own!
+				if ( self::NEW_PLUGIN_ID == $data['latest_release'] ) {
+					$data['latest_release'] = 0;
+				}
+
+				// Remove M2 from the latest plugins list.
+				foreach ( $data['latest_plugins'] as $index => $id ) {
+					if ( self::NEW_PLUGIN_ID == $id ) {
+						unset( $data['latest_plugins'][$index] );
+						break;
+					}
+				}
+
 				$response['body'] = serialize( $data );
 			}
 		}
@@ -133,7 +141,7 @@ class MS_M2_Migration_Handler {
 		if ( $state->available && $state->confirmed ) {
 			$value[self::OLD_PLUGIN_ID] = array(
 				'type' => 'plugin',
-				'filename' => plugin_basename( MEMBERSHIP_BASEFILE ),
+				'filename' => plugin_basename( self::OLD_PLUGIN ),
 				'url' => 'https://premium.wpmudev.org/project/membership/',
 				'instructions_url' => 'https://premium.wpmudev.org/project/membership/#usage',
 				'support_url' => 'http://premium.wpmudev.org/forums/tags/membership-pro/',
@@ -152,6 +160,9 @@ class MS_M2_Migration_Handler {
 	/**
 	 * Modifies the version of the old (installed) plugin to enable us reverting
 	 * the plugin version to an earlier number.
+	 *
+	 * Filter: site_option_wdp_un_updates_data
+	 * Filter: site_transient_wpmudev_local_projects
 	 */
 	static public function modify_old_plugin( $value ) {
 		$state = self::get_state();
@@ -163,10 +174,22 @@ class MS_M2_Migration_Handler {
 			}
 
 			// wdp_un_updates_data
-			if ( is_array( $value ) && isset( $value['projects'] ) && isset( $value['projects'][self::OLD_PLUGIN_ID] ) ) {
-				$value['projects'][self::OLD_PLUGIN_ID]['version'] = 'Membership2'; // The NEW version number
-				$value['projects'][self::OLD_PLUGIN_ID]['name'] = 'Membership2';
-				$value['projects'][self::OLD_PLUGIN_ID]['thumbnail'] = 'https://premium.wpmudev.org/wp-content/uploads/2014/10/Product-Content-280x158.png';
+			if ( is_array( $value ) && isset( $value['projects'] ) ) {
+				$new_plugin = $state->info;
+				$new_plugin['name'] = 'Membership2';
+				$new_plugin['version'] = 'Membership2';
+				$new_plugin['short_description'] .= '<p><strong>' . __( 'Important: This update will replace the plugin "Membership Pro"!<br>Please backup your Database before installing the new version', 'membership' ) . '</strong></p>';
+				$new_plugin['thumbnail'] = 'https://premium.wpmudev.org/wp-content/uploads/2014/10/Product-Content-280x158.png';
+
+				if ( ! isset( $value['projects'][self::OLD_PLUGIN_ID] ) ) {
+					$value['projects'][self::OLD_PLUGIN_ID] = array();
+				}
+
+				$value['projects'][self::OLD_PLUGIN_ID] = array_merge(
+					$value['projects'][self::OLD_PLUGIN_ID],
+					$new_plugin
+				);
+
 			}
 		}
 
@@ -174,34 +197,27 @@ class MS_M2_Migration_Handler {
 	}
 
 	/**
-	 * After the user confirmed the update we add the new plugin version to the
-	 * Updates list so the update can be completed.
+	 * Modifies the WordPress update_plugins data structure after it was read
+	 * from the database.
 	 *
-	 * Filter: site_option_wdp_un_updates_data
+	 * Filter: site_transient_update_plugins
 	 *
-	 * @param  array $value Update information.
-	 * @return array Update information.
+	 * @param  array $value
+	 * @return array
 	 */
-	static public function updates_data( $value ) {
+	static public function forge_update_data( $value ) {
+		if ( ! is_object( $value ) ) { return $value; }
+		if ( ! is_array( $value->response ) ) { return $value; }
+
 		$state = self::get_state();
 
 		if ( $state->available && $state->confirmed ) {
-			// The update is available and user confirmed to upgrade.
-
-			if ( is_array( $value ) && isset( $value['projects'] ) ) {
-				$new_plugin = $state->info;
-
-				if ( ! isset( $value['projects'][self::NEW_PLUGIN_ID] ) ) {
-					$value['projects'][self::NEW_PLUGIN_ID] = array();
-				}
-
-				$value['projects'][self::NEW_PLUGIN_ID] = array_merge(
-					$value['projects'][self::NEW_PLUGIN_ID],
-					$new_plugin
-				);
+			if ( isset( $value->response[self::OLD_PLUGIN] ) ) {
+				$package = $value->response[self::OLD_PLUGIN]->package;
+				$package = add_query_arg( 'pid', self::NEW_PLUGIN_ID, $package );
+				$value->response[self::OLD_PLUGIN]->package = $package;
 			}
 		}
-
 		return $value;
 	}
 
@@ -222,8 +238,8 @@ class MS_M2_Migration_Handler {
 			// The update is available and user confirmed to upgrade.
 
 			if ( is_array( $value ) ) {
-				if ( isset( $value[self::NEW_PLUGIN_ID] ) ) {
-					$value[self::NEW_PLUGIN_ID]['version'] = '';
+				if ( isset( $value[self::OLD_PLUGIN_ID] ) ) {
+					$value[self::OLD_PLUGIN_ID]['version'] = '';
 				}
 			}
 		}
@@ -240,7 +256,7 @@ class MS_M2_Migration_Handler {
 	 * @param array          $plugin Plugin package arguments.
 	 * @return bool|WP_Error The passed in $return param or {@see WP_Error}.
 	 */
-	public function rename_plugin( $return, $plugin ) {
+	static public function prepare_update( $return, $plugin ) {
 		if ( is_wp_error( $return ) ) {
 			return $return;
 		}
@@ -253,6 +269,51 @@ class MS_M2_Migration_Handler {
 
 		return $return;
 	}
+
+	/**
+	 * This function checks the response from update server to determine if the
+	 * new plugin is available. When the new plugin is available we display a
+	 * message to the user to inform him of the manual update process.
+	 */
+	static protected function check_for_update( $plugin_info ) {
+		if ( self::NEW_PLUGIN_ID != $plugin_info['id'] ) {
+			return false;
+		}
+
+		// Update the update state to "available"
+		$state = self::get_state();
+		$state->available = true;
+		$state->info = $plugin_info;
+		update_site_option( self::TEMP_OPTION_KEY, $state );
+
+		return true;
+	}
+
+	/**
+	 * Returns the current update state.
+	 *
+	 * @return array Update-status information.
+	 */
+	static protected function get_state() {
+		$state = get_site_option( self::TEMP_OPTION_KEY );
+		$default_state = (object) array(
+			'available' => false,
+			'confirmed' => false,
+			'remind_time' => 0,
+			'info' => array(),
+		);
+
+		if ( ! is_object( $state ) ) {
+			$state = $default_state;
+			update_site_option( self::TEMP_OPTION_KEY, $state );
+		}
+
+		$state = (object) array_merge( (array) $default_state, (array) $state );
+
+		return $state;
+	}
+
+	// ----- UPDATE NOTICE HANDLER ---------------------------------------------
 
 	/**
 	 * Add the admin-notice callback. We do this in the admin_head hook because
@@ -311,52 +372,6 @@ class MS_M2_Migration_Handler {
 	}
 
 	/**
-	 * This function checks the response from update server to determine if the
-	 * new plugin is available. When the new plugin is available we display a
-	 * message to the user to inform him of the manual update process.
-	 */
-	static protected function check_for_update( $plugin_info ) {
-		$response = false;
-
-		if ( false !== strpos( $plugin_info['name'], self::NEW_PLUGIN_NAME ) ) {
-			// The big update is ready :)
-			$response = true;
-
-			// Update the update state to "available"
-			$state = self::get_state();
-			$state->available = true;
-			$state->info = $plugin_info;
-			update_site_option( self::TEMP_OPTION_KEY, $state );
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Returns the current update state.
-	 *
-	 * @return array Update-status information.
-	 */
-	static protected function get_state() {
-		$state = get_site_option( self::TEMP_OPTION_KEY );
-		$default_state = (object) array(
-			'available' => false,
-			'confirmed' => false,
-			'remind_time' => 0,
-			'info' => array(),
-		);
-
-		if ( ! is_object( $state ) ) {
-			$state = $default_state;
-			update_site_option( self::TEMP_OPTION_KEY, $state );
-		}
-
-		$state = (object) array_merge( (array) $default_state, (array) $state );
-
-		return $state;
-	}
-
-	/**
 	 * Displays a small Update notice on the WPMUDEV Dashboard page.
 	 */
 	static public function confirm_inline() {
@@ -374,7 +389,7 @@ class MS_M2_Migration_Handler {
 					<img src="https://premium.wpmudev.org/wp-content/uploads/2014/10/Product-Content-280x158.png" width="100" height="60" style="float:left; padding: 5px" />
 					<strong><a href="http://premium.wpmudev.org/project/membership" target="_blank">Membership2</a></strong>
 					<p>
-					<?php _e( 'We will rename this plugin during the next update.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Protected Content is renamed to Membership2 during the next update.', MS_TEXT_DOMAIN ); ?>
 					</p>
 				</td>
 				<td style="vertical-align:middle;text-align:right">
