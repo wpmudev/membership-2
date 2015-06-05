@@ -536,6 +536,7 @@ class MS_Model_Member extends MS_Model {
 		$hmac = $cookie['hmac'];
 		$token = $cookie['token'];
 		$expiration = $cookie['expiration'];
+		$scheme = $cookie['scheme'];
 
 		$user = get_user_by( 'login', $username );
 
