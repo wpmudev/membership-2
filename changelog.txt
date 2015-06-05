@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.0.1
+----------------------------------------------------------------------
+- Fix some PHP notices and warnings that did happen during first setup
+
 Membership2 1.0.0.0
 ----------------------------------------------------------------------
 - Plugin name changed from Protected Content to Membership2
