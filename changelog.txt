@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.0.2
+----------------------------------------------------------------------
+- Fix compatibility issues with PHP 5.2.4 - note that you still need PHP 5.3 to use the Stripe Gateways
+
 1.0.0.1
 ----------------------------------------------------------------------
 - Fix some PHP notices and warnings that did happen during first setup
