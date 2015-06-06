@@ -299,7 +299,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @return string The post-type name.
 	 */
 	public static function get_post_type() {
-		return parent::_post_type( __CLASS__ );
+		return parent::_post_type( self::$POST_TYPE );
 	}
 
 	/**
