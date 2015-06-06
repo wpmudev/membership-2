@@ -84,8 +84,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	 * @since 1.0.0
 	 */
 	public function handle_return() {
-		lib2()->array->strip_slashes( $_POST, 'pending_reason' );
-
 		if ( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) )
 			&& ! empty( $_POST['invoice'] )
 		) {
@@ -192,6 +190,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							'*' => '?',
 						);
 
+						lib2()->array->strip_slashes( $_POST, 'pending_reason' );
 						$reason = $_POST['pending_reason'];
 						$notes_pay = __( 'Last transaction is pending. Reason: ', MS_TEXT_DOMAIN ) .
 							( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
