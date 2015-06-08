@@ -46,15 +46,6 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	static protected $is_present = null;
 
 	/**
-	 * Stores the result of plugin_data() call
-	 *
-	 * @since  1.1.0
-	 *
-	 * @var array
-	 */
-	static protected $plugin_data = null;
-
-	/**
 	 * The import data object
 	 *
 	 * @since 1.1.0
@@ -112,46 +103,16 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 		if ( null === self::$is_present ) {
 			self::$is_present = false;
 
-			// Check if the plugin is installed.
-			$details = self::plugin_data();
+			// Check for one core table of the plugin.
+			global $wpdb;
+			$rule_table = $wpdb->prefix . 'm_membership_rules';
 
-			if ( $details ) {
-				// Check for one core table of the plugin.
-				global $wpdb;
-				$rule_table = $wpdb->prefix . 'm_membership_rules';
-
-				$sql = 'SHOW TABLES LIKE %s;';
-				$sql = $wpdb->prepare( $sql, $rule_table );
-				self::$is_present = $wpdb->get_var( $sql ) == $rule_table;
-			}
+			$sql = 'SHOW TABLES LIKE %s;';
+			$sql = $wpdb->prepare( $sql, $rule_table );
+			self::$is_present = $wpdb->get_var( $sql ) == $rule_table;
 		}
 
 		return self::$is_present;
-	}
-
-	/**
-	 * Returns details on the source-plugin for this import-source.
-	 *
-	 * @since  1.1.0
-	 * @return array|false Either plugin details (array) or false
-	 */
-	static public function plugin_data() {
-		if ( null === self::$plugin_data ) {
-			$plugins = get_plugins();
-			$plugin = false;
-
-			foreach ( $plugins as $file => $data ) {
-				if ( 'Membership Premium' == $data['Name'] ) {
-					$data['file'] = $file;
-					$plugin = $data;
-					break;
-				}
-			}
-
-			self::$plugin_data = $plugin;
-		}
-
-		return self::$plugin_data;
 	}
 
 	/**
@@ -161,16 +122,15 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 * @return object
 	 */
 	protected function prepare_import_struct() {
-		$plugin = self::plugin_data();
 		$this->data = (object) array();
 
 		$this->data->source_key = self::KEY;
 		$this->data->source = sprintf(
 			'%s (%s)',
-			$plugin['Name'],
-			$plugin['Author']
+			'Membership Premium',
+			'WPMUDEV'
 		);
-		$this->data->plugin_version = $plugin['Version'];
+		$this->data->plugin_version = '3.5.x';
 		$this->data->export_time = date( 'Y-m-d H:i' );
 		$this->data->notes = array(
 			__( 'Exported data:', MS_TEXT_DOMAIN ),

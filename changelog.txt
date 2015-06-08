@@ -7,6 +7,7 @@ Change Log:
 1.0.0.3
 ----------------------------------------------------------------------
 - Add better error handling to the upgrade routine
+- Fix a major bug in the automatic import wizard that prevented the plugin from importing old Membership data
 - Fix wrong redirect during setup wizard that ended in "Not allowed to view page" errors
 - Fix some typos in admin pages
 - Fix the protection rule for "Friendship Request" in the BuddyPress Add-on
