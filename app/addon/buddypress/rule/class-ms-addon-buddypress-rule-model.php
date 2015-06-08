@@ -169,7 +169,7 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	 *
 	 */
 	protected function protect_friendship_request() {
-		if ( parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ) ) {
+		if ( ! parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ) ) {
 			$this->add_filter(
 				'bp_get_add_friend_button',
 				'hide_add_friend_button'
