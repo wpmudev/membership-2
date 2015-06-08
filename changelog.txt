@@ -11,6 +11,7 @@ Change Log:
 - Fix wrong redirect during setup wizard that ended in "Not allowed to view page" errors
 - Fix some typos in admin pages
 - Fix the protection rule for "Friendship Request" in the BuddyPress Add-on
+- Fix a bug in the Coupons Add-on that discarded changes instead of saving them
 - Rename page "Protected Content" to "Protection Rules"
 
 1.0.0.2
