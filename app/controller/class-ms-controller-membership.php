@@ -331,7 +331,6 @@ class MS_Controller_Membership extends MS_Controller {
 					'step' => $next_step,
 					'membership_id' => $membership_id,
 				);
-				$slug = '';
 
 				if ( ! empty( $msg ) ) {
 					$args['msg'] = $msg;
@@ -341,11 +340,9 @@ class MS_Controller_Membership extends MS_Controller {
 				 * Param 'MENU_SLUG' forces the admin-URL to use the top-level
 				 * menu slug instead of the current base_slug.
 				 * During Setup-wizard the base_slug ends in '-setup', but when
-				 * we reach this point the wizard is completed
+				 * we reach this point the wizard is completed.
 				 */
-				if ( $completed ) {
-					$slug = 'MENU_SLUG';
-				}
+				$slug = 'MENU_SLUG';
 
 				$goto_url = esc_url_raw(
 					add_query_arg(

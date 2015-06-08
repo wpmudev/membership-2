@@ -662,6 +662,10 @@ class MS_Controller_Plugin extends MS_Controller {
 			$slug = self::MENU_SLUG . '-' . $slug;
 		}
 
+		if ( ! $slug ) {
+			$slug = self::MENU_SLUG;
+		}
+
 		if ( $network_slug ) {
 			$url = network_admin_url( 'admin.php?page=' . $slug );
 		} else {

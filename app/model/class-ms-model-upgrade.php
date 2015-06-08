@@ -1106,7 +1106,7 @@ class MS_Model_Upgrade extends MS_Model {
 			$msg = __( 'Your Membership2 data was reset!', MS_TEXT_DOMAIN );
 			lib2()->ui->admin_message( $msg );
 
-			wp_safe_redirect( MS_Controller_Plugin::get_admin_url() );
+			wp_safe_redirect( MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) );
 			exit;
 		}
 	}
@@ -1146,7 +1146,7 @@ class MS_Model_Upgrade extends MS_Model {
 					'<p>' .
 					__( 'You now have the option to <br />(A) downgrade the plugin to an earlier version via FTP or <br />(B) to %sre-run the upgrade process%s.', MS_TEXT_DOMAIN ) .
 					'</p>',
-					'<a href="' . MS_Controller_Plugin::get_admin_url() . '">',
+					'<a href="' . MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) . '">',
 					'</a>'
 				);
 
