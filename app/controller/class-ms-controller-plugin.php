@@ -210,8 +210,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		// Modify the main menu to handle our special_view for default item.
 		add_submenu_page(
 			self::$base_slug,
-			'Membership2',
-			'Membership2',
+			'Membership 2',
+			'Membership 2',
 			$this->capability,
 			self::$base_slug,
 			array( $this, 'handle_special_view' )

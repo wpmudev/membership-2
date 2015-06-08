@@ -1,8 +1,12 @@
-Plugin Name: Membership2
+Plugin Name: Membership 2
 Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 
 Change Log:
 ----------------------------------------------------------------------
+
+1.0.0.3
+----------------------------------------------------------------------
+- Fix some typos in admin pages
 
 1.0.0.2
 ----------------------------------------------------------------------

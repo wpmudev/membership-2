@@ -64,7 +64,7 @@ class MS_View_Settings_Edit extends MS_View {
 
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Protect Content Settings', MS_TEXT_DOMAIN ),
+					'title' => __( 'Membership 2 Settings', MS_TEXT_DOMAIN ),
 					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
 					'desc' => $desc,
 				)
