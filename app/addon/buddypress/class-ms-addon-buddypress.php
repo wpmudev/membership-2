@@ -100,20 +100,20 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
 			'name' => __( 'BuddyPress Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Integrate BuddyPress with Membership2.', MS_TEXT_DOMAIN ),
+			'description' => __( 'Integrate BuddyPress with Membership 2.', MS_TEXT_DOMAIN ),
 			'details' => array(
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 					'title' => __( 'Protection Rules', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Adds BuddyPress rules in the "Membership2" page.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Adds BuddyPress rules in the "Protection Rules" page.', MS_TEXT_DOMAIN ),
 				),
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 					'title' => __( 'Registration page', MS_TEXT_DOMAIN ),
 					'desc' =>
-						__( 'The BuddyPress registration page will be used instead of the default Membership2 registration page.', MS_TEXT_DOMAIN ) .
+						__( 'The BuddyPress registration page will be used instead of the default Membership 2 registration page.', MS_TEXT_DOMAIN ) .
 						'<br />' .
-						__( 'New users are automatically activated by Membership2 and no confirmation email is sent to the user!', MS_TEXT_DOMAIN ),
+						__( 'New users are automatically activated by Membership 2 and no confirmation email is sent to the user!', MS_TEXT_DOMAIN ),
 				),
 			),
 		);

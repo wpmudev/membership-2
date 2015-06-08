@@ -332,8 +332,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		 * Until this bug is closed the title (2nd argument) can't be translated
 		 */
 		add_menu_page(
-			'Membership2', // no i18n!
-			'Membership2', // no i18n!
+			'Membership 2', // no i18n!
+			'Membership 2', // no i18n!
 			$this->capability,
 			self::$base_slug,
 			null,
