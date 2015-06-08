@@ -69,6 +69,7 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 				'title' => __( 'Coupon code', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $coupon->code,
+				'class' => 'widefat',
 			),
 			'discount' => array(
 				'id' => 'discount',

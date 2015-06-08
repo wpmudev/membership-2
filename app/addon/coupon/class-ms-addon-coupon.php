@@ -40,6 +40,13 @@ class MS_Addon_Coupon extends MS_Addon {
 	const ID = 'coupon';
 
 	/**
+	 * The menu slug for the admin page to manage invitation codes.
+	 *
+	 * @since 1.0.0.3
+	 */
+	const SLUG = 'coupons';
+
+	/**
 	 * Checks if the current Add-on is enabled
 	 *
 	 * @since  1.1.0
@@ -66,9 +73,9 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
-			$hook = 'membership2_page_' . MS_Controller_Plugin::MENU_SLUG . '-coupons';
+			$hook = 'membership-2_page_' . MS_Controller_Plugin::MENU_SLUG . '-' . self::SLUG;
 
-			$this->add_action( 'load-' . $hook, 'admin_coupon_manager' );
+			$this->add_action( 'load-' . $hook, 'admin_manager' );
 			$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 			$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 
@@ -195,9 +202,9 @@ class MS_Addon_Coupon extends MS_Addon {
 	public function menu_item( $items, $limited_mode, $controller ) {
 		if ( ! $limited_mode ) {
 			$menu_item = array(
-				'coupons' => array(
+				self::ID => array(
 					'title' => __( 'Coupons', MS_TEXT_DOMAIN ),
-					'slug' => 'coupons',
+					'slug' => self::SLUG,
 				)
 			);
 			lib2()->array->insert( $items, 'before', 'addon', $menu_item );
@@ -222,7 +229,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @return array Menu-item handling information.
 	 */
 	public function route_submenu_request( $handler ) {
-		if ( MS_Controller_Plugin::is_page( 'coupons' ) ) {
+		if ( MS_Controller_Plugin::is_page( self::SLUG ) ) {
 			$handler = array(
 				'network',
 				array( $this, 'admin_coupon' ),
@@ -265,11 +272,14 @@ class MS_Addon_Coupon extends MS_Addon {
 	 *
 	 * @since 1.0.0
 	 */
-	public function admin_coupon_manager() {
-		$isset = array( 'submit', 'membership_id' );
+	public function admin_manager() {
+		$edit_fields = array( 'submit', 'action', 'coupon_id' );
+		$action_fields = array( 'action', 'coupon_id' );
+		$bulk_fields = array( 'coupon_id' );
 		$redirect = false;
 
-		if ( self::validate_required( $isset, 'POST', false )
+		if ( self::validate_required( $edit_fields, 'POST', false )
+			&& 'edit' == $_POST['action']
 			&& $this->verify_nonce()
 			&& $this->is_admin_user()
 		) {
@@ -281,7 +291,7 @@ class MS_Addon_Coupon extends MS_Addon {
 					remove_query_arg( array( 'coupon_id') )
 				)
 			);
-		} elseif ( self::validate_required( array( 'coupon_id', 'action' ), 'GET' )
+		} elseif ( self::validate_required( $action_fields, 'GET' )
 			&& $this->verify_nonce( $_GET['action'], 'GET' )
 			&& $this->is_admin_user()
 		) {
@@ -293,7 +303,7 @@ class MS_Addon_Coupon extends MS_Addon {
 					remove_query_arg( array( 'coupon_id', 'action', '_wpnonce' ) )
 				)
 			);
-		} elseif ( self::validate_required( array( 'coupon_id' ) )
+		} elseif ( self::validate_required( $bulk_fields )
 			&& $this->verify_nonce( 'bulk' )
 			&& $this->is_admin_user()
 		) {
