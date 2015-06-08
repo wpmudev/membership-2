@@ -117,7 +117,7 @@ class MS_View_Help extends MS_View {
 				<td>
 					<span class="top-menu">
 					<div class="menu-image dashicons dashicons-lock"></div>
-					<?php _e( 'Protect Content', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Membership 2', MS_TEXT_DOMAIN ); ?>
 					</span>
 				</td>
 				<td></td>
@@ -127,7 +127,7 @@ class MS_View_Help extends MS_View {
 				<td><?php _ex( 'Create and manage Membership-Plans that users can sign up for', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
-				<td><span><?php _e( 'Protected Content', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><span><?php _e( 'Protection Rules', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Set the protection options, i.e. which pages are protected by which membership', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr class="alternate">

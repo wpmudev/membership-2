@@ -402,7 +402,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$pages['setup']['slug'] = 'setup';
 
 			$pages[self::MENU_SLUG] = array(
-				'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protection Rules', MS_TEXT_DOMAIN ),
 				'slug' => '',
 			);
 		}
@@ -426,7 +426,7 @@ class MS_Controller_Plugin extends MS_Controller {
 				'slug' => '',
 			),
 			'protected-content' => array(
-				'title' => __( 'Protected Content', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protection Rules', MS_TEXT_DOMAIN ),
 				'slug' => 'protection',
 			),
 			'members' => array(

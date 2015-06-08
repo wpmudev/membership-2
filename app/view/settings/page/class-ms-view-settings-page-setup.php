@@ -72,8 +72,8 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		$code = sprintf(
 			'<center>%1$s</center>',
 			sprintf(
-				__( 'You can now go to %sProtected Content%s to set up access levels for this Membership.', MS_TEXT_DOMAIN ),
-				sprintf( '<a href="%1$s">', MS_Controller_Plugin::get_admin_url( 'protectin' ) ),
+				__( 'You can now go to page %sProtection Rules%s to set up access levels for this Membership.', MS_TEXT_DOMAIN ),
+				sprintf( '<a href="%1$s">', MS_Controller_Plugin::get_admin_url( 'protection' ) ),
 				'</a>'
 			)
 		);

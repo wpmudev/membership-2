@@ -32,7 +32,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 			<?php
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Set-up Protected Content', MS_TEXT_DOMAIN ),
+					'title' => __( 'Set-up Protection Rules', MS_TEXT_DOMAIN ),
 					'desc' => $desc,
 				)
 			);
