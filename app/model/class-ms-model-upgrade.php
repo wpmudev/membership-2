@@ -729,8 +729,13 @@ class MS_Model_Upgrade extends MS_Model {
 		// 1. See if there is a old copy of the plugin directory. Delete it.
 		if ( is_dir( $old_dir ) && is_file( $old_dir . '/protected-content.php' ) ) {
 			// Looks like the old version of this plugin is still installed. Remove it.
-			array_map( 'unlink', glob( "$old_dir/*.*" ) );
-			rmdir( $old_dir );
+			try {
+				unlink( $old_dir . '/protected-content.php' );
+				array_map( 'unlink', glob( "$old_dir/*.*" ) );
+				rmdir( $old_dir );
+			} catch( Exception $e ) {
+				// Something went wrong when removing the old plugin.
+			}
 		}
 
 		// 2. See if WordPress uses an old plugin in the DB. Update it.

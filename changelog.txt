@@ -6,6 +6,7 @@ Change Log:
 
 1.0.0.3
 ----------------------------------------------------------------------
+- Add better error handling to the upgrade routine
 - Fix wrong redirect during setup wizard that ended in "Not allowed to view page" errors
 - Fix some typos in admin pages
 
