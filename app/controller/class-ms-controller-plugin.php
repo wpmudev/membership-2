@@ -248,6 +248,10 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_page = self::MENU_SLUG . '-' . $subpage;
 		}
 
+		if ( ! function_exists( 'get_plugin_page_hookname' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
 		$the_parent = 'admin.php';
 		$hook = get_plugin_page_hookname( $plugin_page, $the_parent );
 
