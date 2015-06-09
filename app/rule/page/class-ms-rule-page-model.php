@@ -226,6 +226,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 		$args = $this->get_query_args( $args );
 
 		$pages = get_pages( $args );
+		$contents = array();
 
 		for ( $num = $offset; $num < $limit; $num += 1 ) {
 			if ( ! isset( $pages[$num] ) ) { continue; }

@@ -68,6 +68,7 @@
 .wp-admin.toplevel_page_membership2 #wpfooter {
   z-index: -1;
   position: fixed;
+  display: none;
 }
 
 /**
@@ -648,6 +649,14 @@
   font-size: 2.9em;
   line-height: 1.5;
   text-align: center;
+}
+.ms-wrap .ms-settings-title .ms-membership {
+  font-size: 24px;
+  line-height: 40px;
+  height: 40px;
+  border-radius: 6px;
+  display: inline-block;
+  vertical-align: middle;
 }
 .ms-wrap .ms-settings-desc {
   margin: 0 auto;

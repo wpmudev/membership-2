@@ -428,6 +428,19 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			$label = __( 'Set date...', MS_TEXT_DOMAIN );
 		}
 
+		$offset = 0;
+		$number = 20;
+		if ( isset( $this->prepared_args['offset'] ) ) {
+			$offset = $this->prepared_args['offset'];
+		} elseif ( isset( $_POST['offset'] ) ) {
+			$offset = $_POST['offset'];
+		}
+		if ( isset( $this->prepared_args['number'] ) ) {
+			$number = $this->prepared_args['number'];
+		} elseif ( isset( $_POST['number'] ) ) {
+			$number = $_POST['number'];
+		}
+
 		ob_start();
 		?>
 		<a href="#" class="editinline"><?php echo '' . $label; ?></a>
@@ -442,12 +455,16 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 						'<span class="ms_%1$s[dripped_type]">%2$s</span>' .
 						'<span class="ms_%1$s[date]">%3$s</span>' .
 						'<span class="ms_%1$s[delay_unit]">%4$s</span>' .
-						'<span class="ms_%1$s[delay_type]">%5$s</span>',
+						'<span class="ms_%1$s[delay_type]">%5$s</span>' .
+						'<span class="offset">%6$s</span>' .
+						'<span class="number">%7$s</span>',
 						$membership->id,
 						$data['type'],
 						$data['date'],
 						$data['delay_unit'],
-						$data['delay_type']
+						$data['delay_type'],
+						$offset,
+						$number
 					);
 				}
 			}
@@ -508,6 +525,16 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			'name' => 'item_id',
 		);
 
+		$field_offset = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' => 'offset',
+		);
+
+		$field_number = array(
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' => 'number',
+		);
+
 		$field_filter = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'name' => 'membership_id',
@@ -529,7 +556,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$field_date = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 			'name' => 'date',
-			'placeholder' => __( 'Date...', MS_TEXT_DOMAIN ),
+			'placeholder' => __( 'Date', MS_TEXT_DOMAIN ) . '...',
 		);
 
 		$field_delay_unit = array(
@@ -559,6 +586,8 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 				MS_Helper_Html::html_element( $field_action );
 				MS_Helper_Html::html_element( $field_rule );
 				MS_Helper_Html::html_element( $field_item );
+				MS_Helper_Html::html_element( $field_offset );
+				MS_Helper_Html::html_element( $field_number );
 				MS_Helper_Html::html_element( $field_filter );
 				?>
 				<div class="dynamic-form"></div>

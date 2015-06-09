@@ -66,6 +66,12 @@ window.ms_init.view_protected_content = function init () {
 				form_row.find( '[name=item_id]' )
 					.val( item_data.item_id );
 
+				form_row.find( '[name=offset]' )
+					.val( item_data.offset );
+
+				form_row.find( '[name=number]' )
+					.val( item_data.number );
+
 				form_row.find( '[name=dripped_type]' )
 					.attr( 'name', base + '[dripped_type]' )
 					.val( item_data[ base + '[dripped_type]' ] );
@@ -140,7 +146,6 @@ window.ms_init.view_protected_content = function init () {
 	jQuery( document ).on( 'ms-inline-editor-updated', update_table );
 
 	sel_network_site.on( 'change', refresh_site_data );
-	window.console.log( 'INIT PROTECTED CONTENT' , sel_network_site );
 };
 
 
