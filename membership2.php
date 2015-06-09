@@ -70,15 +70,15 @@ function membership2_init_app() {
 	global $wpmudev_notices;
 	$wpmudev_notices[] = array(
 		'id' => 1003656,
-		'name' => 'Membership2',
+		'name' => 'Membership 2 Pro',
 		'screens' => array(
-			'toplevel_page_membership2',
-			'membership2_page_membership2-members',
-			'membership2_page_membership2-setup',
-			'membership2_page_membership2-billing',
-			'membership2_page_membership2-coupons',
-			'membership2_page_membership2-addon',
-			'membership2_page_membership2-settings',
+			'toplevel_page_membership-2',
+			'membership-2_page_membership2-members',
+			'membership-2_page_membership2-setup',
+			'membership-2_page_membership2-billing',
+			'membership-2_page_membership2-coupons',
+			'membership-2_page_membership2-addon',
+			'membership-2_page_membership2-settings',
 		)
 	);
 
