@@ -11,6 +11,15 @@
 		font-size: 2.9em;
 		line-height: 1.5;
 		text-align: center;
+
+		.ms-membership {
+			font-size: 24px;
+			line-height: 40px;
+			height: 40px;
+			border-radius: 6px;
+			display: inline-block;
+			vertical-align: middle;
+		}
 	}
 
 	.ms-settings-desc {
