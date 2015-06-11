@@ -740,22 +740,22 @@ class MS_Model_Upgrade extends MS_Model {
 
 		// 2. See if WordPress uses an old plugin in the DB. Update it.
 		if ( is_multisite() ) {
-			$plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
-			foreach ( $plugins as $key => $the_path ) {
+			$global_plugins = (array) get_site_option( 'active_sitewide_plugins', array() );
+			foreach ( $global_plugins as $key => $the_path ) {
 				if ( in_array( $the_path, $old_plugins ) ) {
-					$plugins[$key] = $new_plugin;
+					$global_plugins[$key] = $new_plugin;
 				}
 			}
-			update_site_option( 'active_sitewide_plugins', $plugins );
+			update_site_option( 'active_sitewide_plugins', $global_plugins );
 		}
 
-		$active_plugins = (array) get_option( 'active_plugins', array() );
-		foreach ( $plugins as $key => $the_path ) {
+		$site_plugins = (array) get_option( 'active_plugins', array() );
+		foreach ( $site_plugins as $key => $the_path ) {
 			if ( in_array( $the_path, $old_plugins ) ) {
-				$plugins[$key] = $new_plugin;
+				$site_plugins[$key] = $new_plugin;
 			}
 		}
-		update_option( 'active_plugins', $plugins );
+		update_option( 'active_plugins', $site_plugins );
 	}
 
 	#
