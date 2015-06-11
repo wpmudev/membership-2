@@ -4,6 +4,12 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.0.4
+----------------------------------------------------------------------
+- Fix the import tool to import data from old Membership plugin correctly (recurring payments, subscription status and end date)
+- Fix the i18n support, the plugin is translated correctly again
+- Fix error message that was displayed when dates of dripped memberships were saved
+
 1.0.0.3
 ----------------------------------------------------------------------
 - Add better error handling to the upgrade routine
