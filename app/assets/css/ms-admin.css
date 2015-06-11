@@ -74,60 +74,75 @@
 /**
  * Typographic styles
  */
-.ms-wrap {
+.ms-wrap,
+.ms-form {
   /*font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
   /* The color marker (without memberhship name) */
   /* The colord membership name */
 }
-.ms-wrap h3 {
+.ms-wrap h3,
+.ms-form h3 {
   margin: 0 0 4px 0;
 }
-.ms-wrap .ms-important {
+.ms-wrap .ms-important,
+.ms-form .ms-important {
   font-weight: bold;
   color: #222;
   font-size: 1.1em;
 }
-.ms-wrap .ms-bold {
+.ms-wrap .ms-bold,
+.ms-form .ms-bold {
   font-weight: bold;
 }
-.ms-wrap .ms-italic {
+.ms-wrap .ms-italic,
+.ms-form .ms-italic {
   font-style: italic;
 }
-.ms-wrap .ms-low {
+.ms-wrap .ms-low,
+.ms-form .ms-low {
   opacity: 0.6;
 }
-.ms-wrap .ms-description {
+.ms-wrap .ms-description,
+.ms-form .ms-description {
   color: #888;
   font-size: 0.9em;
 }
-.ms-wrap .ms-description.ms-indented-description {
+.ms-wrap .ms-description.ms-indented-description,
+.ms-form .ms-description.ms-indented-description {
   padding-left: 20px;
 }
 .ms-wrap .ms-description .ms-bold,
-.ms-wrap .ms-description .ms-italic {
+.ms-wrap .ms-description .ms-italic,
+.ms-form .ms-description .ms-bold,
+.ms-form .ms-description .ms-italic {
   color: #4F616E;
 }
-.ms-wrap .ms-settings-description {
+.ms-wrap .ms-settings-description,
+.ms-form .ms-settings-description {
   margin-bottom: 15px;
   display: block;
 }
-.ms-wrap .ms-group-head {
+.ms-wrap .ms-group-head,
+.ms-form .ms-group-head {
   clear: both;
   padding-top: 15px;
 }
-.ms-wrap .ms-subtitle {
+.ms-wrap .ms-subtitle,
+.ms-form .ms-subtitle {
   text-align: center;
   margin: 0 0 5px 0;
   font-size: 17px;
 }
-.ms-wrap .ms-color {
+.ms-wrap .ms-color,
+.ms-form .ms-color {
   width: 18px;
   float: left;
   margin-right: 5px;
   border-radius: 4px;
   box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
 }
-.ms-wrap .ms-membership {
+.ms-wrap .ms-membership,
+.ms-form .ms-membership {
   display: inline-block;
   border-radius: 3px;
   color: #FFF;
@@ -138,7 +153,8 @@
   line-height: 20px;
   box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
 }
-.ms-wrap h3 .ms-membership {
+.ms-wrap h3 .ms-membership,
+.ms-form h3 .ms-membership {
   border-radius: 4px;
   padding: 1px 6px;
   font-size: 15px;
