@@ -309,35 +309,50 @@ class MS_Model_Import extends MS_Model {
 			$obj->trial_period_type = $this->valid_period( $obj->trial_period_type );
 		}
 
-		if ( isset( $obj->pay_type ) ) {
-			$membership->payment_type = $obj->pay_type;
-			if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
-				$membership->period = array();
+		if ( empty( $obj->pay_type ) ) {
+			$obj->pay_type = 'permanent';
+		}
+
+		$membership->period = array();
+		$membership->pay_cycle_period = array();
+
+		switch ( $obj->pay_type ) {
+			case 'finite':
+				$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_FINITE;
 				if ( isset( $obj->period_unit ) ) {
-					$membership->period['period_unit'] = $obj->period_unit;
+					$membership->period_unit = $obj->period_unit;
 				}
 				if ( isset( $obj->period_type ) ) {
-					$membership->period['period_type'] = $obj->period_type;
+					$membership->period_type = $obj->period_type;
 				}
-			} elseif ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING ) {
-				$membership->pay_cycle_period = array();
+				break;
+
+			case 'recurring':
+				$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;
 				if ( isset( $obj->period_unit ) ) {
-					$membership->pay_cycle_period['period_unit'] = $obj->period_unit;
+					$membership->pay_cycle_period_unit = $obj->period_unit;
 				}
 				if ( isset( $obj->period_type ) ) {
-					$membership->pay_cycle_period['period_type'] = $obj->period_type;
+					$membership->pay_cycle_period_type = $obj->period_type;
 				}
 				if ( isset( $obj->period_repetitions ) ) {
 					$membership->pay_cycle_repetitions = $obj->period_repetitions;
 				}
-			} elseif ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE ) {
+				break;
+
+			case 'date':
+				$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE;
 				if ( isset( $obj->period_start ) ) {
 					$membership->period_date_start = $obj->period_start;
 				}
 				if ( isset( $obj->period_end ) ) {
 					$membership->period_date_end = $obj->period_end;
 				}
-			}
+				break;
+
+			default:
+				$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_PERMANENT;
+				break;
 		}
 
 		if ( ! $membership->is_free ) {
@@ -470,7 +485,7 @@ class MS_Model_Import extends MS_Model {
 		$subscription->status = $obj->status;
 		$subscription->gateway_id = $obj->gateway;
 		$subscription->start_date = $obj->start;
-		$subscription->expire_date = $obj->expire;
+		$subscription->expire_date = $obj->end;
 
 		if ( isset( $obj->trial_finished ) ) {
 			$subscription->trial_period_completed = $obj->trial_finished;

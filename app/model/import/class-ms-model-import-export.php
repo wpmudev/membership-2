@@ -56,7 +56,7 @@ Import Data Structure
     If `free` is false:
     - price              <float>
     - trial              <bool>
-    - payment_type       [permanent|finite|date-range|recurring]
+    - payment_type       [permanent|finite|date|recurring]
 
     If `payment_type` is 'finite':
     - period_unit        <int>  Number of days/weeks/months
@@ -67,7 +67,7 @@ Import Data Structure
     - period_type        [d|w|m|y]
     - period_repetitions <int>  Number of payments before membership ends
 
-    If `payment_type` is 'date-range':
+    If `payment_type` is 'date':
     - period_start       <yyyy-mm-dd>
     - period_end         <yyyy-mm-dd>
 
@@ -241,25 +241,31 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->free = (bool) $src->is_free;
 
 		if ( ! $obj->free ) {
-			$obj->pay_type = $src->payment_type;
 			$obj->price = $src->price;
 			$obj->trial = (bool) $src->trial_period_enabled;
 
-			switch ( $obj->pay_type ) {
+			switch ( $src->pay_type ) {
 				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
+					$obj->pay_type = 'finite';
 					$obj->period_unit = $src->period['period_unit'];
 					$obj->period_type = $src->period['period_type'];
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
+					$obj->pay_type = 'date';
 					$obj->period_start = $src->period_date_start;
 					$obj->period_end = $src->period_date_end;
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
+					$obj->pay_type = 'recurring';
 					$obj->period_unit = $src->pay_cycle_period['period_unit'];
 					$obj->period_type = $src->pay_cycle_period['period_type'];
 					$obj->period_repetition = $src->pay_cycle_repetition;
+					break;
+
+				default:
+					$obj->pay_type = 'permanent';
 					break;
 			}
 
@@ -325,7 +331,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->status = $src->status;
 		$obj->gateway = $src->gateway_id;
 		$obj->start = $src->start_date;
-		$obj->expire = $src->expire_date;
+		$obj->end = $src->expire_date;
 
 		$obj->trial_finished = $src->trial_period_completed;
 		if ( ! $obj->trial_finished ) {

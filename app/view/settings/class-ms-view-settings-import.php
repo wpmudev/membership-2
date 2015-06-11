@@ -40,7 +40,7 @@ class MS_View_Settings_Import extends MS_View {
 			'ms_import_preview_data_before',
 			$this->data['model']->source
 		);
-		$compact = ! ! $this->data['compact'];
+		$compact = ! empty( $this->data['compact'] );
 		if ( ! is_object( $data ) ) {
 			$data = (object) array(
 				'memberships' => array(),
@@ -129,12 +129,14 @@ class MS_View_Settings_Import extends MS_View {
 	protected function prepare_fields( $data ) {
 		// List of known Membership types; used to display the nice-name
 		$ms_types = MS_Model_Membership::get_types();
+		$ms_paytypes = MS_Model_Membership::get_payment_types();
 
 		// Prepare the "Memberships" table
 		$memberships = array(
 			array(
 				__( 'Membership name', MS_TEXT_DOMAIN ),
 				__( 'Membership Type', MS_TEXT_DOMAIN ),
+				__( 'Payment Type', MS_TEXT_DOMAIN ),
 				__( 'Description', MS_TEXT_DOMAIN ),
 			),
 		);
@@ -144,9 +146,28 @@ class MS_View_Settings_Import extends MS_View {
 				$item->type = MS_Model_Membership::TYPE_STANDARD;
 			}
 
+			switch ( $item->pay_type ) {
+				case 'recurring':
+					$payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;
+					break;
+
+				case 'finite':
+					$payment_type = MS_Model_Membership::PAYMENT_TYPE_FINITE;
+					break;
+
+				case 'date':
+					$payment_type = MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE;
+					break;
+
+				default:
+					$payment_type = MS_Model_Membership::PAYMENT_TYPE_PERMANENT;
+					break;
+			}
+
 			$memberships[] = array(
 				$item->name,
 				$ms_types[$item->type],
+				$ms_paytypes[$payment_type],
 				$item->description,
 			);
 		}
@@ -317,7 +338,7 @@ class MS_View_Settings_Import extends MS_View {
 			'field_options' => array(
 				'head_col' => false,
 				'head_row' => true,
-				'col_class' => array( 'preview-name', 'preview-type', 'preview-desc', 'preview-count' ),
+				'col_class' => array( 'preview-name', 'preview-type', 'preview-pay-type', 'preview-desc' ),
 			)
 		);
 

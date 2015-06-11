@@ -184,9 +184,9 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			CASE suble.sub_type
 				WHEN 'indefinite' THEN 'permanent'
 				WHEN 'finite' THEN 'finite'
-				WHEN 'SERIAL' THEN 'recurring'
+				WHEN 'serial' THEN 'recurring'
 				ELSE 'permanent'
-			END AS `payment_type`,
+			END AS `pay_type`,
 			suble.level_period AS `period_unit`,
 			suble.level_period_unit AS `period_type`
 		FROM `{$wpdb->prefix}m_subscriptions` subsc
@@ -240,7 +240,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			member.level_id AS `level_id`,
 			member.sub_id * 1000 + member.level_id AS membership,
 			CASE
-				WHEN member.expirydate < CURRENT_DATE() THEN 'active'
+				WHEN member.expirydate >= CURRENT_DATE() THEN 'active'
 				ELSE 'expired'
 			END AS `status`,
 			CASE member.usinggateway
