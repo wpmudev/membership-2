@@ -1129,10 +1129,11 @@ class MS_Helper_ListTable {
 			}
 
 			printf(
-				'<th scope="col" id="%2$s" class="%3$s" $style>%1$s</th>',
+				'<th scope="col" id="%2$s" class="%3$s" %4$s>%1$s</th>',
 				$column_display_name,
 				esc_attr( $id ),
-				esc_attr( $class )
+				esc_attr( $class ),
+				$style
 			);
 		}
 	}
