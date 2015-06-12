@@ -98,7 +98,15 @@ class MS_Rule_Media_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function column_file_type( $item, $column_name ) {
 		$meta = wp_get_attachment_metadata( $item->id );
-		$type = wp_check_filetype( $meta['file'] );
+		if ( isset( $meta['file'] ) ) {
+			$type = wp_check_filetype( $meta['file'] );
+		} else {
+			$type = array(
+				'ext' => 'jpg',
+				'type' => 'image/jpeg',
+			);
+		}
+
 		return $type['ext'];
 	}
 
