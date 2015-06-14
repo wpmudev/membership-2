@@ -12,6 +12,7 @@ Change Log:
 - Fix compatibility issue with the wp-recaptcha plugin
 - Fix several php notices and warnings ("invalid argument", "undefined index", etc.)
 - Fix protection of the Private Message feature in the BuddyPress Add-on
+- Fix Mailchimp Add-on to fetch all lists from Mailchimp, not only 25
 - Add new hook to observe status change of subscriptions: "ms_subscription_status-<status>"
 
 1.0.0.4

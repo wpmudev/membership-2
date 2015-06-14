@@ -321,21 +321,44 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @return Array Lists info
 	 */
 	public static function get_mail_lists() {
-		$mail_lists = array( 0 => __( 'none', MS_TEXT_DOMAIN ) );
+		static $Mail_lists = null;
 
-		if ( self::get_api_status() ) {
-			$lists = self::$mailchimp_api->lists->getList();
+		if ( null === $Mail_lists ) {
+			$Mail_lists = array( 0 => __( 'none', MS_TEXT_DOMAIN ) );
+			if ( self::get_api_status() ) {
+				$start = 0;
+				$limit = 25;
+				$iterations = 0;
 
-			if ( is_wp_error( $lists ) ) {
-				MS_Helper_Debug::log( $lists );
-			} else {
-				foreach ( $lists['data'] as $list ) {
-					$mail_lists[ $list['id'] ] = $list['name'];
-				}
+				do {
+					$lists = self::$mailchimp_api->lists->getList(
+						array(),
+						$start,
+						$limit
+					);
+
+					$start += $limit;
+					$iterations += 1;
+
+					if ( is_wp_error( $lists ) ) {
+						$has_more = false;
+						MS_Helper_Debug::log( $lists );
+					} else {
+						$has_more = count( $lists['data'] ) >= $limit;
+						foreach ( $lists['data'] as $list ) {
+							$Mail_lists[ $list['id'] ] = $list['name'];
+						}
+					}
+
+					// Force to exit the loop after max. 100 API calls (2500 lists).
+					if ( $iterations > 100 ) {
+						$has_more = false;
+					}
+				} while ( $has_more );
 			}
 		}
 
-		return $mail_lists;
+		return $Mail_lists;
 	}
 
 	/**
