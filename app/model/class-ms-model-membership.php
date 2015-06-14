@@ -560,6 +560,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		$args = wp_parse_args( $args, $defaults );
 
+		if ( isset( $args['active'] ) ) {
+			$args['meta_query']['active'] = array(
+				'key'     => 'active',
+				'value'   => 1,
+			);
+
+			if ( lib2()->is_true( $args['active'] ) ) {
+				$args['meta_query']['active']['compare'] = '=';
+			} else {
+				$args['meta_query']['active']['compare'] = '!=';
+			}
+		}
+
 		if ( ! lib2()->is_true( $args['include_base'] ) ) {
 			$args['meta_query']['base'] = array(
 				'key'     => 'type',

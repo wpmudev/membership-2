@@ -90,7 +90,9 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	 * @since  1.1.0
 	 */
 	protected function membership_filter() {
-		$memberships = MS_Model_Membership::get_membership_names();
+		$memberships = MS_Model_Membership::get_membership_names(
+			array( 'active' => true )
+		);
 		$url = esc_url_raw(
 			remove_query_arg( array( 'membership_id', 'paged' ) )
 		);
