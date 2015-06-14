@@ -2196,13 +2196,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'payment_type':
 					$types = self::get_payment_types();
 					if ( array_key_exists( $value, $types ) ) {
-						if ( $this->can_change_payment() ) {
-							$this->payment_type = $value;
-						} elseif ( $this->payment_type != $value ) {
-							$error = 'Payment type cannot be changed after members have signed up.';
-							MS_Helper_Debug::log( $error );
-							throw new Exception( $error );
-						}
+						#if ( $this->can_change_payment() ) {
+						#	$this->payment_type = $value;
+						#} elseif ( $this->payment_type != $value ) {
+						#	$error = 'Payment type cannot be changed after members have signed up.';
+						#	MS_Helper_Debug::log( $error );
+						#	throw new Exception( $error );
+						#}
+						$this->payment_type = $value;
 					} else {
 						throw new Exception( 'Invalid membership type.' );
 					}

@@ -126,9 +126,7 @@ class MS_View_Membership_Payment extends MS_View {
 							<?php _e( 'This membership already has some paying members.', MS_TEXT_DOMAIN ); ?>
 						</p>
 						<p>
-							<?php _e( 'Following limitations apply:', MS_TEXT_DOMAIN ); ?><br />
-							- <?php _e( 'Any changes will affect new invoices but not existing ones.', MS_TEXT_DOMAIN ); ?><br />
-							- <?php _e( 'The payment-type cannot be changed anymore.', MS_TEXT_DOMAIN ); ?>
+							<?php _e( 'Any changes will affect new invoices but not existing ones.', MS_TEXT_DOMAIN ); ?>
 						</p>
 					</div>
 				<?php endif; ?>
@@ -473,7 +471,7 @@ class MS_View_Membership_Payment extends MS_View {
 		}
 
 		// Modify some fields if payment method cannot be changed anymore.
-		if ( ! $membership->can_change_payment() ) {
+		/*if ( ! $membership->can_change_payment() ) {
 			$payment_types = MS_Model_Membership::get_payment_types();
 			$fields['payment_type'] = array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
@@ -484,7 +482,7 @@ class MS_View_Membership_Payment extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $membership->payment_type,
 			);
-		}
+		}*/
 
 		// Process the fields and add missing default attributes.
 		foreach ( $fields as $key => $field ) {
