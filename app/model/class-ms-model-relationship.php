@@ -1770,6 +1770,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this->status,
 			$this
 		);
+
+		/**
+		 * Trigger an action to allow other plugins to oberse a change in an
+		 * subscription status.
+		 *
+		 * @since 1.0.0.5
+		 * @var MS_Model_Relationship The subscription model.
+		 * @var MS_Model_Member       The member who is affected.
+		 */
+		do_action(
+			'ms_subscription_status-' . $this->status,
+			$this,
+			$membership,
+			$this->get_member()
+		);
 	}
 
 	/**
