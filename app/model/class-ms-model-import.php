@@ -177,7 +177,7 @@ class MS_Model_Import extends MS_Model {
 	 * @since  1.1.1.5
 	 */
 	private function clear_import_obj_cache() {
-		delete_option( 'MS_Import_Obj_Cache', $cache );
+		delete_option( 'MS_Import_Obj_Cache' );
 	}
 
 	/**

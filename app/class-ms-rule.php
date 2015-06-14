@@ -318,7 +318,7 @@ class MS_Rule extends MS_Model {
 				$post_type = 'post';
 			}
 
-			if ( $qv['withcomments'] ) {
+			if ( ! empty( $qv['withcomments'] ) ) {
 				// Seems to be posts, since it has comments.
 				$post_type = 'post';
 			}
