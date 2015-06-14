@@ -4,6 +4,15 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.0.5
+----------------------------------------------------------------------
+- Add possibility to change payment options even when membership has active subscribers!
+- Add link to Members-List from the Membership list (click on the member-count value)
+- Hide inactive memberships in the Members and Protection Rules pages
+- Fix compatibility issue with the wp-recaptcha plugin
+- Fix several php notices and warnings ("invalid argument", "undefined index", etc.)
+- Add new hook to observe status change of subscriptions: "ms_subscription_status-<status>"
+
 1.0.0.4
 ----------------------------------------------------------------------
 - Fix the import tool to import data from old Membership plugin correctly (recurring payments, subscription status and end date)
