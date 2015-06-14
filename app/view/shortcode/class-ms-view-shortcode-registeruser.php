@@ -76,14 +76,21 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 					}
 				}
 
+				echo '<div class="ms-extra-fields">';
+
 				/**
 				 * Trigger default WordPress action to allow other plugins
 				 * to add custom fields to the registration form.
 				 *
 				 * @since 1.1.0
 				 */
-				do_action( 'register_form' );
-				do_action( 'signup_extra_fields', array() );
+				do_action( 'register_form' ); // Always on the register form.
+				if ( is_multisite() ) {
+					$empty_error = new WP_Error();
+					do_action( 'signup_extra_fields', $empty_error );
+				}
+
+				echo '</div>';
 
 				MS_Helper_Html::html_element( $register_button );
 
