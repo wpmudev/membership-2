@@ -129,7 +129,7 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	 * @since 1.0.0
 	 */
 	protected function protect_private_messaging() {
-		if ( parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ) ) {
+		if ( ! parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ) ) {
 			$this->add_filter(
 				'bp_get_send_message_button',
 				'hide_private_message_button'
