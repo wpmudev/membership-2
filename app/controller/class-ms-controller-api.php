@@ -47,7 +47,7 @@
  * be used:
  *
  *     // Check if the API object is available.
- *     if ( apply_filters( 'ms_active' ) ) { ... }
+ *     if ( apply_filters( 'ms_active', false ) ) { ... }
  *
  * To directly access the API object use the property `MS_Plugin::$api`.
  * Note: Before `ms_active` is called `MS_Plugin::$api` will return false.
@@ -89,7 +89,7 @@ class MS_Controller_Api extends MS_Controller {
 		 * Membership2 is loaded and the API was initialized.
 		 *
 		 * Example:
-		 *   if ( apply_filters( 'ms_active' ) ) { ... }
+		 *   if ( apply_filters( 'ms_active', false ) ) { ... }
 		 */
 		add_filter( 'ms_active', '__return_true' );
 
