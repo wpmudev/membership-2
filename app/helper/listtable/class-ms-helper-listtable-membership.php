@@ -198,7 +198,18 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		$html = '';
 
 		if ( ! $item->is_system() ) {
-			$html = $item->get_members_count();
+			$count = $item->get_members_count();
+
+			$url = MS_Controller_Plugin::get_admin_url(
+				'members',
+				array( 'membership_id' => $item->id )
+			);
+
+			$html = sprintf(
+				'<a href="%2$s">%1$s</a>',
+				intval( $count ),
+				$url
+			);
 		}
 
 		return $html;
