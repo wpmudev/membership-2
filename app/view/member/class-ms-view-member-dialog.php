@@ -180,6 +180,10 @@ class MS_View_Member_Dialog extends MS_Dialog {
 						$subscription_info = array(
 							'subscription_id' => $subscription->id,
 						);
+						$update_info = array(
+							'subscription_id' => $subscription->id,
+							'statuscheck' => 'yes',
+						);
 						?>
 						<tr>
 							<td class="column-membership">
@@ -188,9 +192,13 @@ class MS_View_Member_Dialog extends MS_Dialog {
 							<td class="column-status">
 								<?php
 								printf(
-									'<a href="#" data-ms-dialog="View_Member_Subscription" data-ms-data="%1$s">%2$s</a>',
+									'<a href="#" data-ms-dialog="View_Member_Subscription" data-ms-data="%2$s">%1$s</a>
+									<a href="#" data-ms-dialog="View_Member_Subscription" data-ms-data="%3$s" title="%5$s">%4$s</a>',
+									$subscription->status,
 									esc_attr( json_encode( $subscription_info ) ),
-									$subscription->status
+									esc_attr( json_encode( $update_info ) ),
+									'<i class="dashicons dashicons-update"></i>',
+									__( 'Check and update subscription status', MS_TEXT_DOMAIN )
 								);
 								?>
 							</td>

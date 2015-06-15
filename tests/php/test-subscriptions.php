@@ -560,4 +560,43 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( $limit_end, $subscription->expire_date );
 	}
 
+	/**
+	 * Test changing the membership payment plan from permanent to recurring.
+	 * @test
+	 */
+	function permanent_to_recurring() {
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'simple' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+		$invoice = $subscription->get_current_invoice();
+		$invoice->pay_it( 'stripe', 'external_123' );
+
+		// Now we have a user that is subscribed to a permanent membership.
+
+		$start_date = MS_Helper_Period::current_date();
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( '', $subscription->expire_date );
+
+		// This check should not modify the subscription.
+		$subscription->check_membership_status();
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( '', $subscription->expire_date );
+
+		// Now the user changes the membership to recurring.
+
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;
+		$membership->pay_cycle_period_unit = 7;
+		$membership->pay_cycle_period_type = 'days';
+		$membership->save();
+
+		// The membership status check is automaticaly done every six hours.
+		// It will update the subscription details to match the new payment type.
+		$subscription->check_membership_status();
+
+		// Confirm that the existing subscription has a correct expire date.
+		$expire_date = MS_Helper_Period::add_interval( 7, 'days', $start_date );
+		$this->assertEquals( $expire_date, $subscription->expire_date );
+	}
+
 }

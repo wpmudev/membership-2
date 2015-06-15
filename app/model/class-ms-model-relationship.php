@@ -206,6 +206,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	protected $is_simulated = false;
 
 	/**
+	 * The payment type that this subscription was created with.
+	 * Since the user can change the payment_type of the membership any time
+	 * we might end up with a subscription with an invalid expire date.
+	 *
+	 * This flag allows us to detect changes in the parent membership payment
+	 * options so we can update this membership accordingly.
+	 *
+	 * @since 1.0.0.6
+	 * @var string
+	 */
+	protected $payment_type = '';
+
+	/**
 	 * The related membership model object.
 	 *
 	 * @since 1.0.0
@@ -2250,11 +2263,43 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				);
 
 				/*
+				 * Make sure the expire date has a correct value, in case the user
+				 * changed the payment_type of the parent membership after this
+				 * subscription was created.
+				 */
+				if ( $this->payment_type != $membership->payment_type ) {
+					$this->payment_type = $membership->payment_type;
+
+					switch ( $this->payment_type ) {
+						case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
+							$this->expire_date = false;
+							break;
+
+						default:
+							// Either keep the current expire date (if valid) or
+							// calculate a new expire date, based on current date.
+							if ( ! $this->expire_date ) {
+								$this->expire_date = $this->calc_expire_date(
+									MS_Helper_Period::current_date()
+								);
+							}
+
+							break;
+					}
+
+					// Recalculate the days until the subscription expires.
+					$remaining_days = $this->get_remaining_period();
+
+					// Recalculate the new Subscription status.
+					$cur_status = $this->calculate_status();
+				}
+
+				/*
 				 * Only "Recurring" memberships will ever try to automatically
 				 * renew the subscription. All other types will expire when the
 				 * end date is reached.
 				 */
-				$auto_renew = $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING;
+				$auto_renew = ($membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING);
 				$deactivate = false;
 				$invoice = null;
 
