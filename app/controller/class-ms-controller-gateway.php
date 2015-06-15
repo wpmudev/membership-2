@@ -73,6 +73,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
+		$this->add_action( 'ms_gateway_transaction_log', 'log_transaction', 10, 7 );
 
 		$this->add_action( 'ms_controller_frontend_enqueue_scripts', 'enqueue_scripts' );
 
@@ -573,6 +574,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						break;
 
 					case MS_Gateway_Stripe::ID:
+					case MS_Gateway_Stripeplan::ID:
 						$_POST['error'] = sprintf(
 							__( 'Error: %s', MS_TEXT_DOMAIN ),
 							$e->getMessage()
@@ -886,6 +888,48 @@ class MS_Controller_Gateway extends MS_Controller {
 			'ms_controller_gateway_update_card',
 			$this
 		);
+	}
+
+	/**
+	 * Saves transaction details to the database. The transaction logs can later
+	 * be displayed in the Billings section.
+	 *
+	 * @since  1.0.0.6
+	 * @internal Action handler for 'ms_gateway_transaction_log'
+	 *
+	 *
+	 * @param string $gateway_id The gateway ID.
+	 * @param string $method FOllowing values:
+	 *        "handle": IPN response
+	 *        "process": Process order (i.e. user comes from Payment screen)
+	 *        "request": Automatically request recurring payment
+	 * @param bool $success True means that the transaction was paid/successful.
+	 * @param int $subscription_id
+	 * @param int $invoice_id
+	 * @param float $amount Payment amount.
+	 * @param string $notes Additional text to describe the transaction or error.
+	 */
+	public function log_transaction( $gateway_id, $method, $success, $subscription_id, $invoice_id, $amount, $notes ) {
+		$post = array(
+			'post_content' => $notes,
+			'post_title' => 'Transaction Log',
+			'post_status' => 'draft',
+			'post_author' => 0,
+			'post_type' => 'ms_transaction_log',
+			'ping_status' => 'closed',
+			'comment_status' => 'closed',
+		);
+
+		$id = wp_insert_post( $post );
+
+		if ( $id ) {
+			add_post_meta( $id, '_gateway_id', $gateway_id, true );
+			add_post_meta( $id, '_method', $method, true );
+			add_post_meta( $id, '_success', $success, true );
+			add_post_meta( $id, '_subscription_id', $subscription_id, true );
+			add_post_meta( $id, '_invoice_id', $invoice_id, true );
+			add_post_meta( $id, '_amount', $amount, true );
+		}
 	}
 
 	/**

@@ -279,6 +279,10 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
 	public function process_purchase( $subscription ) {
+		$success = false;
+		$note = '';
+		$error = false;
+
 		do_action(
 			'ms_gateway_stripeplan_process_purchase_before',
 			$subscription,
@@ -288,31 +292,62 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
+		$token = '-';
 
 		if ( ! empty( $_POST['stripeToken'] ) ) {
 			lib2()->array->strip_slashes( $_POST, 'stripeToken' );
 
 			$token = $_POST['stripeToken'];
-			$customer = $this->_api->get_stripe_customer( $member, $token );
+			try {
+				$customer = $this->_api->get_stripe_customer( $member, $token );
 
-			if ( 0 == $invoice->total ) {
-				// Free, just process.
-				$invoice->changed();
-			} else {
-				// Get or create the subscription.
-				$stripe_sub = $this->_api->subscribe(
-					$customer,
-					$invoice
-				);
+				if ( 0 == $invoice->total ) {
+					// Free, just process.
+					$invoice->changed();
+					$success = true;
+					$note = __( 'No payment for free membership', MS_TEXT_DOMAIN );
+				} else {
+					// Get or create the subscription.
+					$stripe_sub = $this->_api->subscribe(
+						$customer,
+						$invoice
+					);
 
-				if ( 'active' == $stripe_sub->status ) {
-					$invoice->pay_it( $this->id, $stripe_sub->id );
+					if ( 'active' == $stripe_sub->status ) {
+						$invoice->pay_it( $this->id, $stripe_sub->id );
+						$success = true;
+						$note = __( 'Payment successful', MS_TEXT_DOMAIN );
+						$note .= ' - Token: ' . $token;
 
-					$this->cancel_if_done( $subscription, $stripe_sub );
+						$this->cancel_if_done( $subscription, $stripe_sub );
+					} else {
+						$note = __( 'Stripe payment failed', MS_TEXT_DOMAIN );
+					}
 				}
+			} catch ( Exception $e ) {
+				$note = 'Stripe error: '. $e->getMessage();
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
+				MS_Helper_Debug::log( $note );
+				$error = $e;
 			}
 		} else {
-			throw new Exception( __( 'Stripe gateway token not found.', MS_TEXT_DOMAIN ) );
+			$note = 'Stripe gateway token not found.';
+			MS_Helper_Debug::log( $note );
+		}
+
+		do_action(
+			'ms_gateway_transaction_log',
+			self::ID, // gateway ID
+			'process', // request|process|handle
+			$success, // success flag
+			$subscription->id, // subscription ID
+			$invoice->id, // invoice ID
+			$invoice->total, // charged amount
+			$note // Descriptive text
+		);
+
+		if ( $error ) {
+			throw $e;
 		}
 
 		return apply_filters(
@@ -331,6 +366,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 */
 	public function request_payment( $subscription ) {
 		$was_paid = false;
+		$note = '';
 
 		do_action(
 			'ms_gateway_stripeplan_request_payment_before',
@@ -349,6 +385,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				if ( ! empty( $customer ) ) {
 					if ( 0 == $invoice->total ) {
 						$invoice->changed();
+						$success = true;
+						$note = __( 'No payment for free membership', MS_TEXT_DOMAIN );
 					} else {
 						// Get or create the subscription.
 						$stripe_sub = $this->_api->subscribe(
@@ -359,16 +397,20 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						if ( 'active' == $stripe_sub->status ) {
 							$was_paid = true;
 							$invoice->pay_it( $this->id, $stripe_sub->id );
+							$note = __( 'Payment successful', MS_TEXT_DOMAIN );
 
 							$this->cancel_if_done( $subscription, $stripe_sub );
+						} else {
+							$note = __( 'Stripe payment failed', MS_TEXT_DOMAIN );
 						}
 					}
 				} else {
 					MS_Helper_Debug::log( "Stripe customer is empty for user $member->username" );
 				}
 			} catch ( Exception $e ) {
+				$note = 'Stripe error: '. $e->getMessage();
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::log( $e->getMessage() );
+				MS_Helper_Debug::log( $note );
 			}
 		} else {
 			// Invoice was already paid earlier.
@@ -380,6 +422,17 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$subscription,
 			$was_paid,
 			$this
+		);
+
+		do_action(
+			'ms_gateway_transaction_log',
+			self::ID, // gateway ID
+			'request', // request|process|handle
+			$was_paid, // success flag
+			$subscription->id, // subscription ID
+			$invoice->id, // invoice ID
+			$invoice->total, // charged amount
+			$note // Descriptive text
 		);
 
 		return $was_paid;

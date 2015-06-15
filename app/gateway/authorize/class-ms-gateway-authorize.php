@@ -137,7 +137,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
-			$this->online_purchase( $invoice, $member );
+			$this->online_purchase( $invoice, $member, 'process' );
 		} elseif ( 0 == $invoice->total ) {
 			// Paid and free.
 			$invoice->changed();
@@ -171,13 +171,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
-			try {
-				$was_paid = $this->online_purchase( $invoice, $member );
-			}
-			catch( Exception $e ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::log( $e->getMessage() );
-			}
+			$was_paid = $this->online_purchase( $invoice, $member, 'request' );
 		} else {
 			// Invoice was already paid earlier.
 			$was_paid = true;
@@ -203,7 +197,12 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @param MS_Model_Member The member paying the invoice.
 	 * @return bool True on success, otherwise throws an exception.
 	 */
-	protected function online_purchase( &$invoice, $member ) {
+	protected function online_purchase( &$invoice, $member, $log_action ) {
+		$success = false;
+		$notes = '';
+		$amount = 0;
+		$subscription = $invoice->get_subscription();
+
 		do_action(
 			'ms_gateway_authorize_online_purchase_before',
 			$invoice,
@@ -212,61 +211,60 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		if ( 0 == $invoice->total ) {
+			$notes = __( 'Total is zero. Payment approved. Not sent to gateway.', MS_TEXT_DOMAIN );
 			$invoice->pay_it( MS_Gateway_Free::ID, '' );
-			$invoice->add_notes( __( 'Total is zero. Payment approved. Not sent to gateway.', MS_TEXT_DOMAIN ) );
+			$invoice->add_notes( $notes );
 			$invoice->save();
 			$invoice->changed();
-			return $invoice;
-		}
-		$amount = MS_Helper_Billing::format_price( $invoice->total );
+		} else {
+			$amount = MS_Helper_Billing::format_price( $invoice->total );
 
-		if ( $this->mode == self::MODE_SANDBOX ) {
-			$invoice->add_notes( __( 'Sandbox', MS_TEXT_DOMAIN ) );
-		}
+			$cim_transaction = $this->get_cim_transaction( $member );
+			$cim_transaction->amount = $amount;
+			$cim_transaction->order->invoiceNumber = $invoice->id;
 
-		$cim_transaction = $this->get_cim_transaction( $member );
-		$cim_transaction->amount = $amount;
-		$cim_transaction->order->invoiceNumber = $invoice->id;
+			$invoice->timestamp = time();
+			$invoice->save();
 
-		$invoice->timestamp = time();
-		$invoice->save();
+			$response = $this->get_cim()->createCustomerProfileTransaction(
+				'AuthCapture',
+				$cim_transaction
+			);
 
-		$response = $this->get_cim()->createCustomerProfileTransaction(
-			'AuthCapture',
-			$cim_transaction
-		);
+			if ( $response->isOk() ) {
+				$transaction_response = $response->getTransactionResponse();
 
-		if ( $response->isOk() ) {
-			$transaction_response = $response->getTransactionResponse();
-
-			if ( $transaction_response->approved ) {
-				$external_id = $response->getTransactionResponse()->transaction_id;
-				$invoice->pay_it( $this->id, $external_id );
-			} else {
-				throw new Exception(
-					sprintf(
+				if ( $transaction_response->approved ) {
+					$external_id = $response->getTransactionResponse()->transaction_id;
+					$invoice->pay_it( $this->id, $external_id );
+					$success = true;
+					$notes = __( 'Payment successful', MS_TEXT_DOMAIN );
+				} else {
+					$notes = sprintf(
 						__( 'Payment Failed: code %s, subcode %s, reason code %, reason %s', MS_TEXT_DOMAIN ),
 						$transaction_response->response_code,
 						$transaction_response->response_subcode,
 						$transaction_response->response_reason_code,
 						$transaction_response->response_reason
-					)
-				);
+					);
+				}
+			} else {
+				$notes = __( 'Payment Failed: ', MS_TEXT_DOMAIN ) . $response->getMessageText();
 			}
-		} else {
-			throw new Exception(
-				__( 'Payment Failed: ', MS_TEXT_DOMAIN ) . $response->getMessageText()
-			);
 		}
 
-		$invoice = apply_filters(
-			'ms_gateway_authorize_online_purchase_invoice',
-			$invoice,
-			$member,
-			$this
+		do_action(
+			'ms_gateway_transaction_log',
+			self::ID, // gateway ID
+			$log_action, // request|process|handle
+			$success, // success flag
+			$subscription->id, // subscription ID
+			$invoice->id, // invoice ID
+			$amount, // charged amount
+			$notes // Descriptive text
 		);
 
-		return true;
+		return $success;
 	}
 
 	/**
