@@ -432,7 +432,7 @@ class MS_Plugin {
 
 		// Gateway return - IPN.
 		add_rewrite_rule(
-			'^ms-payment-return/(.+)/?$',
+			'ms-payment-return/(.+)/?',
 			'index.php?paymentgateway=$matches[1]',
 			'top'
 		);

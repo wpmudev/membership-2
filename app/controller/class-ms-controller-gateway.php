@@ -1,28 +1,5 @@
 <?php
 /**
- * This file defines the MS_Controller_Gateway class.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
- */
-
-/**
  * Gateway controller.
  *
  * @since 1.0.0
@@ -704,12 +681,6 @@ class MS_Controller_Gateway extends MS_Controller {
 		if ( ! empty( $wp_query->query_vars['paymentgateway'] ) ) {
 			$gateway = $wp_query->query_vars['paymentgateway'];
 
-			// Handle payment-responses from imported membership subscriptions.
-			if ( MS_Model_Import_Membership::did_import() ) {
-				if ( 'paypalsolo' == $gateway ) { $gateway = 'paypalsingle'; }
-				if ( 'paypalexpress' == $gateway ) { $gateway = 'paypalstandard'; }
-			}
-
 			/**
 			 * In 1.1.0 the underscore in payment gateway names was removed.
 			 * To compensate for this we need to continue listen to these old
@@ -718,14 +689,15 @@ class MS_Controller_Gateway extends MS_Controller {
 			switch ( $gateway ) {
 				case 'paypal_single': $gateway = 'paypalsingle'; break;
 				case 'paypal_standard': $gateway = 'paypalstandard'; break;
+				case 'paypalsolo': $gateway = 'paypalsingle'; break; // M1
+				case 'paypalexpress': $gateway = 'paypalstandard'; break; //M1
 			}
 
 			do_action( 'lib2_debug_log', 'Incoming Payment Notification for "' . $gateway . '"' );
 			do_action( 'lib2_debug_log', $_POST );
 
-			do_action(
-				'ms_gateway_handle_payment_return_' . $gateway
-			);
+			$action = 'ms_gateway_handle_payment_return_' . $gateway;
+			do_action( $action );
 		}
 	}
 

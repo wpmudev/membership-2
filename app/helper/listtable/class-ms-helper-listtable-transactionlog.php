@@ -259,16 +259,20 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_invoice( $item, $column_name ) {
-		$invoice_url = MS_Controller_Plugin::get_admin_url(
-			'billing',
-			array( 'action' => 'edit', 'invoice_id' => $item->invoice_id )
-		);
+		if ( $item->invoice_id ) {
+			$invoice_url = MS_Controller_Plugin::get_admin_url(
+				'billing',
+				array( 'action' => 'edit', 'invoice_id' => $item->invoice_id )
+			);
 
-		$html = sprintf(
-			'<a href="%1$s">%2$s</a>',
-			$invoice_url,
-			$item->invoice_id
-		);
+			$html = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				$invoice_url,
+				$item->invoice_id
+			);
+		} else {
+			$html = '-';
+		}
 
 		return $html;
 	}
