@@ -326,25 +326,25 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		if ( null === $Mail_lists ) {
 			$Mail_lists = array( 0 => __( 'none', MS_TEXT_DOMAIN ) );
 			if ( self::get_api_status() ) {
-				$start = 0;
-				$limit = 25;
+				$page = 0;
+				$items_per_page = 25;
 				$iterations = 0;
 
 				do {
 					$lists = self::$mailchimp_api->lists->getList(
 						array(),
-						$start,
-						$limit
+						$page,
+						$items_per_page
 					);
 
-					$start += $limit;
+					$page += 1;
 					$iterations += 1;
 
 					if ( is_wp_error( $lists ) ) {
 						$has_more = false;
 						MS_Helper_Debug::log( $lists );
 					} else {
-						$has_more = count( $lists['data'] ) >= $limit;
+						$has_more = count( $lists['data'] ) >= $items_per_page;
 						foreach ( $lists['data'] as $list ) {
 							$Mail_lists[ $list['id'] ] = $list['name'];
 						}
