@@ -158,7 +158,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 
 		$actions = array(
 			sprintf(
-				'<a href="?%s">%s</a>',
+				'<a href="%1$s">%2$s</a>',
 				MS_Controller_Plugin::get_admin_url(
 					'billing',
 					array( 'gateway_id' => $gateway->id )

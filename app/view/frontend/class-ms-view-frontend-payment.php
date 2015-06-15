@@ -77,7 +77,7 @@ class MS_View_Frontend_Payment extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<legend><?php _e( 'Join Membership', MS_TEXT_DOMAIN ) ?></legend>
 			<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
-				<?php echo '' . $msg; ?>
+				<?php echo $msg; ?>
 			</p>
 			<table class="ms-purchase-table">
 				<tr>
