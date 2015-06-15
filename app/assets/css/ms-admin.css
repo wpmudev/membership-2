@@ -1983,6 +1983,72 @@
 .ms-wrap.ms-billing .wpmui-label-txt_membership {
   font-weight: 600;
 }
+#wpwrap .ms-wrap.ms-billing .transactions td,
+.ms-wrap.ms-billing .transactions td {
+  padding: 6px;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .log-status,
+.ms-wrap.ms-billing .transactions .log-status {
+  background-color: #CCC;
+  color: #FFF;
+  padding: 0;
+  border-radius: 10px;
+  line-height: 18px;
+  width: 18px;
+  text-align: center;
+  display: inline-block;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .column-id,
+.ms-wrap.ms-billing .transactions .column-id {
+  width: 80px;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .column-date,
+.ms-wrap.ms-billing .transactions .column-date {
+  width: 150px;
+  text-align: center;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .column-status,
+.ms-wrap.ms-billing .transactions .column-status {
+  width: 40px;
+  text-align: center;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .column-gateway,
+.ms-wrap.ms-billing .transactions .column-gateway {
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .column-amount,
+.ms-wrap.ms-billing .transactions .column-amount {
+  width: 80px;
+  text-align: right;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .column-invoice,
+.ms-wrap.ms-billing .transactions .column-invoice {
+  width: 80px;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .detail-block,
+.ms-wrap.ms-billing .transactions .detail-block {
+  min-width: 300px;
+}
+#wpwrap .ms-wrap.ms-billing .log-ok td,
+.ms-wrap.ms-billing .log-ok td {
+  background-color: rgba(100, 200, 255, 0.06);
+}
+#wpwrap .ms-wrap.ms-billing .log-ok .log-status,
+.ms-wrap.ms-billing .log-ok .log-status {
+  background-color: #068;
+}
+#wpwrap .ms-wrap.ms-billing .log-err td,
+.ms-wrap.ms-billing .log-err td {
+  background-color: rgba(255, 100, 100, 0.06);
+}
+#wpwrap .ms-wrap.ms-billing .log-err .log-status,
+.ms-wrap.ms-billing .log-err .log-status {
+  background-color: #800;
+}
 
 /**
  * Special styles used on "Membership2" and "Accessible Content" pages
@@ -2577,10 +2643,6 @@
   content: '\f071';
   margin-left: 6px;
   color: #B30;
-}
-.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions,
-#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions {
-  display: none;
 }
 .wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside,
 #wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside {

@@ -882,10 +882,6 @@ input[type="image"] {
   margin-left: 6px;
   color: #B30;
 }
-.wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions,
-#wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-item .row-actions {
-  display: none;
-}
 .wpmui-wnd .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside,
 #wpwrap .ms-wrap .ms-global-payment-wrapper .gateways .ms-gateway-settings .ms-settings-box .inside {
   padding-left: 0;

@@ -42,28 +42,55 @@ class MS_View_Billing_List extends MS_View {
 	public function to_html() {
 		$this->check_simulation();
 
-		$billing_list = MS_Factory::create( 'MS_Helper_ListTable_Billing' );
-		$billing_list->prepare_items();
+		$buttons = array();
 
-		$title = __( 'Billing', MS_TEXT_DOMAIN );
+		if ( 'logs' == $_GET['show'] ) {
+			$title = __( 'Transaction Logs', MS_TEXT_DOMAIN );
 
-		if ( ! empty( $_GET['gateway_id'] ) ) {
-			$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
-			if ( $gateway->name ) {
-				$title .= ' - '. $gateway->name;
+			$listview = MS_Factory::create( 'MS_Helper_ListTable_TransactionLog' );
+			$listview->prepare_items();
+
+			$buttons[] = array(
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'url' => MS_Controller_Plugin::get_admin_url(
+					'billing'
+				),
+				'value' => __( 'Show Invoices', MS_TEXT_DOMAIN ),
+				'class' => 'button',
+			);
+		} else {
+			$title = __( 'Billing', MS_TEXT_DOMAIN );
+
+			$listview = MS_Factory::create( 'MS_Helper_ListTable_Billing' );
+			$listview->prepare_items();
+
+			$buttons[] = array(
+				'id' => 'add_new',
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'url' => MS_Controller_Plugin::get_admin_url(
+					'billing',
+					array( 'action' => 'edit', 'invoice_id' => 0 )
+				),
+				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+				'class' => 'button',
+			);
+			$buttons[] = array(
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'url' => MS_Controller_Plugin::get_admin_url(
+					'billing',
+					array( 'show' => 'logs' )
+				),
+				'value' => __( 'Show Transaction Logs', MS_TEXT_DOMAIN ),
+				'class' => 'button',
+			);
+
+			if ( ! empty( $_GET['gateway_id'] ) ) {
+				$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
+				if ( $gateway->name ) {
+					$title .= ' - '. $gateway->name;
+				}
 			}
 		}
-
-		$add_new_button = array(
-			'id' => 'add_new',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'url' => MS_Controller_Plugin::get_admin_url(
-				'billing',
-				array( 'action' => 'edit', 'invoice_id' => 0 )
-			),
-			'value' => __( 'Add New', MS_TEXT_DOMAIN ),
-			'class' => 'button',
-		);
 
 		ob_start();
 		?>
@@ -78,14 +105,18 @@ class MS_View_Billing_List extends MS_View {
 			);
 			?>
 			<div>
-				<?php MS_Helper_Html::html_element( $add_new_button );?>
+				<?php
+				foreach ( $buttons as $button ) {
+					MS_Helper_Html::html_element( $button );
+				}
+				?>
 			</div>
 			<?php
-			$billing_list->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search' );
-			$billing_list->views();
+			$listview->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search' );
+			$listview->views();
 			?>
 			<form action="" method="post">
-				<?php $billing_list->display(); ?>
+				<?php $listview->display(); ?>
 			</form>
 		</div>
 

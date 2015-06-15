@@ -13,5 +13,71 @@
 		.wpmui-label-txt_membership {
 			font-weight: 600;
 		}
+
+		.transactions {
+			td {
+				padding: 6px;
+			}
+
+			.log-status {
+				background-color: #CCC;
+				color: #FFF;
+				padding: 0;
+				border-radius: 10px;
+				line-height: 18px;
+				width: 18px;
+				text-align: center;
+				display: inline-block;
+			}
+
+			.column-id {
+				width: 80px;
+			}
+			.column-date {
+				width: 150px;
+				text-align: center;
+			}
+			.column-status {
+				width: 40px;
+				text-align: center;
+			}
+			.column-gateway {
+				width: 150px;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-align: center;
+			}
+			.column-amount {
+				width: 80px;
+				text-align: right;
+			}
+			.column-invoice {
+				width: 80px;
+			}
+			.detail-block {
+				min-width: 300px;
+			}
+		}
+
+		.log-ok {
+			td {
+				background-color: rgba(100, 200, 255, 0.06);
+			}
+
+			.log-status {
+				background-color: #068;
+			}
+		}
+
+		.log-err {
+			td {
+				background-color: rgba(255, 100, 100, 0.06);
+			}
+
+			.log-status {
+				background-color: #800;
+			}
+		}
 	}
 }
