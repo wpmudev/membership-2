@@ -4,6 +4,12 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.0.6
+----------------------------------------------------------------------
+- Add logging for payment gateway transactions, can be viewed via "Billings > View Transaction logs"
+- Fix subscription details when changing the membership payment_type (within 6 hours after membership update)
+- Fix follow-up issue in recent Mailchimp bug fix
+
 1.0.0.5
 ----------------------------------------------------------------------
 - Add possibility to change payment options even when membership has active subscribers!
