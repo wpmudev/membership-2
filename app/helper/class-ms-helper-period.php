@@ -50,28 +50,30 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * @param int $period_unit The period unit to add.
 	 * @param string $period_type The period type to add.
-	 * @param string $start_date The start date to add to.
-	 * @throws Exception
+	 * @param string|int $start_date The start date to add to.
 	 * @return string The added date.
 	 */
 	public static function add_interval( $period_unit, $period_type, $start_date = null ) {
 		if ( empty ( $start_date ) ) {
-			$start_date = gmdate( self::PERIOD_FORMAT );
+			$start_date = self::current_date();
 		}
-
-		if ( self::PERIOD_TYPE_YEARS == $period_type ) {
-			$period_unit *= 365;
-			$period_type = self::PERIOD_TYPE_DAYS;
+		if ( ! is_numeric( $start_date ) ) {
+			$start_date = strtotime( $start_date );
 		}
+		$result = $start_date;
 
-		$end_dt = strtotime( '+' . $period_unit . $period_type , strtotime( $start_date ) );
-		if ( false === $end_dt ) {
-			throw new Exception( 'error add_interval' );
+		if ( is_numeric( $period_unit ) && $period_unit > 0 ) {
+			$days = self::get_period_in_days( $period_unit, $period_type );
+			$result = strtotime( '+' . $days . 'days', $start_date );
+
+			if ( false === $result ) {
+				$result = $start_date;
+			}
 		}
 
 		return apply_filters(
 			'ms_helper_period_add_interval',
-			gmdate( self::PERIOD_FORMAT, $end_dt )
+			gmdate( self::PERIOD_FORMAT, $result )
 		);
 	}
 
@@ -82,23 +84,30 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * @param int $period_unit The period unit to subtract.
 	 * @param string $period_type The period type to subtract.
-	 * @param string $start_date The start date to subtract to.
-	 * @throws Exception
+	 * @param string|int $start_date The start date to subtract to.
 	 * @return string The subtracted date.
 	 */
 	public static function subtract_interval( $period_unit, $period_type, $start_date = null ) {
 		if ( empty ( $start_date ) ) {
-			$start_date = gmdate( self::PERIOD_FORMAT );
+			$start_date = self::current_date();
 		}
+		if ( ! is_numeric( $start_date ) ) {
+			$start_date = strtotime( $start_date );
+		}
+		$result = $start_date;
 
-		$end_dt = strtotime( '-' . $period_unit . $period_type , strtotime( $start_date ) );
-		if ( false === $end_dt ) {
-			throw new Exception( 'error subtract_interval' );
+		if ( is_numeric( $period_unit ) && $period_unit > 0 ) {
+			$days = self::get_period_in_days( $period_unit, $period_type );
+			$result = strtotime( '-' . $days . 'days', $start_date );
+
+			if ( false === $result ) {
+				$result = $start_date;
+			}
 		}
 
 		return apply_filters(
 			'ms_helper_period_subtract_interval',
-			gmdate( self::PERIOD_FORMAT, $end_dt )
+			gmdate( self::PERIOD_FORMAT, $result )
 		);
 	}
 
