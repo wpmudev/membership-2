@@ -368,7 +368,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 		$title = $rule_titles[ $rule->rule_type ];
-		$contents = $rule->get_contents( null, true );
+		$contents = (array) $rule->get_contents( null, true );
 
 		$membership_id = $this->data['membership']->id;
 

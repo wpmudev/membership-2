@@ -10,7 +10,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 
 		foreach ( $rule_types as $rule_type ) {
 			$rule = $membership->get_rule( $rule_type );
-			$contents = $rule->get_contents();
+			$contents = (array) $rule->get_contents();
 
 			foreach ( $contents as $content ) {
 				if ( $rule->has_dripped_rules( $content->id ) ) {
