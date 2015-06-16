@@ -69,7 +69,7 @@ class MS_View_Member_List extends MS_View {
 	 */
 	public function membership_filter() {
 		$memberships = MS_Model_Membership::get_membership_names(
-			array( 'active' => true )
+			array( 'active' => true, 'include_guest' => false )
 		);
 		$url = esc_url_raw(
 			remove_query_arg( array( 'membership_id', 'paged' ) )
