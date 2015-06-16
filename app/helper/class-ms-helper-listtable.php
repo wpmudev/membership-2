@@ -269,6 +269,14 @@ class MS_Helper_ListTable {
 				'post_mime_type',
 				'detached',
 			);
+			$search_fields = array_merge(
+				array(
+					'action',
+					'search_options',
+					's',
+				),
+				$fields
+			);
 
 			if ( $this->is_search() ) {
 				?>
@@ -284,7 +292,9 @@ class MS_Helper_ListTable {
 					);
 					printf(
 						' <a href="%1$s" title="%3$s" class="ms-clear-search">%2$s</a>',
-						lib2()->net->current_url(),
+						esc_url_raw(
+							remove_query_arg( $search_fields )
+						),
 						'<span class="dashicons dashicons-dismiss"></span>',
 						__( 'Clear search results', MS_TEXT_DOMAIN )
 					);
@@ -293,8 +303,18 @@ class MS_Helper_ListTable {
 				<?php
 			}
 			?>
-			<form class="search-box" action="" method="post">
+			<form class="search-box" action="" method="get">
 				<?php
+				// Keep current URL params during the search
+				foreach ( $_GET as $name => $value ) {
+					if ( '' == $value ) { continue; }
+					printf(
+						'<input type="hidden" name="%1$s" value="%2$s">',
+						esc_attr( $name ),
+						esc_attr( $value )
+					);
+				}
+				// Add the search fields to the form.
 				foreach ( $fields as $field ) {
 					if ( ! empty( $_REQUEST[$field] ) ) {
 						$value = $_REQUEST[$field];
