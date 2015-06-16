@@ -192,17 +192,35 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * Returns the gateway name for the specified gateway ID
 	 *
 	 * @since  1.1.1.4
-	 * @param  string $gateway_id The gateway ID
-	 * @return string The gateway Name
+	 * @api
+	 *
+	 * @param  string $gateway_id The gateway ID.
+	 * @param  bool $get_short If set to true the word "Gateway" will be removed.
+	 * @return string The gateway Name.
 	 */
-	public static function get_name( $gateway_id ) {
+	public static function get_name( $gateway_id, $get_short = false ) {
+		static $Short_names = array();
 		$known_names = self::get_gateway_names();
+		$the_name = '-';
 
 		if ( isset( $known_names[$gateway_id] ) ) {
-			return $known_names[$gateway_id];
-		} else {
-			return '-';
+			$the_name = $known_names[$gateway_id];
 		}
+
+		if ( $get_short ) {
+			if ( ! isset( $Short_names[$gateway_id] ) ) {
+				$Short_names[$gateway_id] = trim(
+					str_replace(
+						__( 'Gateway', MS_TEXT_DOMAIN ),
+						'',
+						$the_name
+					)
+				);
+			}
+			$the_name = $Short_names[$gateway_id];
+		}
+
+		return $the_name;
 	}
 
 	/**

@@ -50,6 +50,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 				'id' => __( 'ID', MS_TEXT_DOMAIN ),
 				'date' => __( 'Time', MS_TEXT_DOMAIN ),
 				'status' => '',
+				'method' => '',
 				'gateway' => __( 'Gateway', MS_TEXT_DOMAIN ),
 				'amount' => __( 'Amount', MS_TEXT_DOMAIN ),
 				'invoice' => __( 'Invoice', MS_TEXT_DOMAIN ),
@@ -233,8 +234,42 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
+	public function column_method( $item, $column_name ) {
+		$html = '<span class="log-method" data-info="%2$s"><i class="wpmui-fa wpmui-%1$s"></i></span>';
+		$icon = '';
+		$info = __( 'Unknown method', MS_TEXT_DOMAIN );
+
+		switch ( $item->method ) {
+			case 'handle':
+				$icon = 'fa-cloud-download';
+				$info = __( 'Gateway called the IPN URL', MS_TEXT_DOMAIN );
+				break;
+
+			case 'request':
+				$icon = 'fa-refresh';
+				$info = __( 'Plugin requested a recuring payment', MS_TEXT_DOMAIN );
+				break;
+
+			case 'process':
+				$icon = 'fa-shopping-cart';
+				$info = __( 'User entered payment details', MS_TEXT_DOMAIN );
+				break;
+		}
+
+		$html = sprintf( $html, $icon, $info );
+
+		return $html;
+	}
+
+	/**
+	 * Output column content
+	 *
+	 * @since  1.0.0.6
+	 * @param  object $item The item that is displayed.
+	 * @return string The HTML code to output.
+	 */
 	public function column_gateway( $item, $column_name ) {
-		$html = $html = MS_Model_Gateway::get_name( $item->gateway_id );
+		$html = $html = MS_Model_Gateway::get_name( $item->gateway_id, true );
 		return $html;
 	}
 
