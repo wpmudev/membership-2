@@ -13,6 +13,7 @@ Change Log:
 - Fix rare error that happened when dripped content had no/invalid date settings
 - Fix Members/Billings list to keep search filter when changing the sort option
 - Fix Billings search logic to find all users that contain the search word (no exact username required anymore)
+- Fix PHP warnings caused by the Taxamo Add-on
 - Hide the Guest and Default memberships in the Members list, as they are useless there
 
 1.0.0.6

@@ -209,8 +209,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 			$Profile = apply_filters(
 				'ms_addon_taxamo_get_tax_profile',
-				$Profile,
-				$this
+				$Profile
 			);
 		}
 
@@ -479,7 +478,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		if ( ! in_array( $mode, $non_auto_countries ) ) { $mode = 'auto'; }
 
 		$auto_detect = ('auto' == $mode);
-		$profile_key = 'tax_' . $mode . '_country';
+		$key = 'tax_' . $mode . '_country';
 
 		// If no country is stored use the API to determine it.
 		if ( $auto_detect ) {
@@ -499,7 +498,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			}
 		} else {
 			// Try to get the stored country from user-meta or session (for guest)
-			$country = self::get_tax_profile_value( $member, $profile_key );
+			$country = self::get_tax_profile_value( $member, $key );
 		}
 
 		// API did not return a valid resonse, use a dummy value.

@@ -129,7 +129,7 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 			'desc' => __( 'Fill this field if you are representing EU VAT payer', MS_TEXT_DOMAIN ),
 			'wrapper_class' => 'vat_number_field',
 			'value' => $profile->vat_number,
-			'valid_country' => $profile->vat_country->tax_supported,
+			'valid_country' => $profile->vat_country->vat_valid,
 			'after' => $vat_details,
 		);
 		$fields['invoice_id'] = array(
