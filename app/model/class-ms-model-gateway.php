@@ -1,26 +1,5 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Register valid gateways.
  *
  * Gateways are stored in the directory /app/gateway/<gateway_name>/
@@ -97,6 +76,24 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$res,
 			$only_active
 		);
+	}
+
+	/**
+	 * Checks if the specified gateway is active.
+	 *
+	 * @since  1.0.0.7
+	 * @param  string $gateway_id The gateway ID.
+	 * @return bool True if the gateway is active.
+	 */
+	static public function is_active( $gateway_id ) {
+		$result = false;
+		$active_gateways = self::get_gateways( true );
+
+		if ( isset( $active_gateways[ $gateway_id ] ) ) {
+			$result = true;
+		}
+
+		return $result;
 	}
 
 	/**

@@ -689,6 +689,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			switch ( $gateway ) {
 				case 'paypal_single': $gateway = 'paypalsingle'; break;
 				case 'paypal_standard': $gateway = 'paypalstandard'; break;
+				case 'paypal-single': $gateway = 'paypalsingle'; break;
+				case 'paypal-standard': $gateway = 'paypalstandard'; break;
 				case 'paypalsolo': $gateway = 'paypalsingle'; break; // M1
 				case 'paypalexpress': $gateway = 'paypalstandard'; break; //M1
 			}
@@ -696,8 +698,31 @@ class MS_Controller_Gateway extends MS_Controller {
 			do_action( 'lib2_debug_log', 'Incoming Payment Notification for "' . $gateway . '"' );
 			do_action( 'lib2_debug_log', $_POST );
 
-			$action = 'ms_gateway_handle_payment_return_' . $gateway;
-			do_action( $action );
+			if ( MS_Model_Gateway::is_active( $gateway ) ) {
+				$action = 'ms_gateway_handle_payment_return_' . $gateway;
+				do_action( $action );
+			} else {
+				// Log the payment attempt when the gateway is not active.
+				if ( MS_Model_Gateway::is_valid_gateway( $gateway ) ) {
+					$note = __( 'Gateway is inactive', MS_TEXT_DOMAIN );
+				} else {
+					$note = sprintf(
+						__( 'Unknown Gateway: %s', MS_TEXT_DOMAIN ),
+						$gateway
+					);
+				}
+
+				do_action(
+					'ms_gateway_transaction_log',
+					$gateway, // gateway ID
+					'handle', // request|process|handle
+					false, // success flag
+					0, // subscription ID
+					0, // invoice ID
+					0, // charged amount
+					$note // Descriptive text
+				);
+			}
 		}
 	}
 
