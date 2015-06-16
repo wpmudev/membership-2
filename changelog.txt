@@ -4,10 +4,11 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
-1.0.0.6
+1.0.0.7
 ----------------------------------------------------------------------
 - Improve Transaction logs to also log inactice or invalid gateway calls
 - Fix issue that did not display any "Page" rules in the Membership Overview screen
+- Fix a critical bug that caused protection rules to be reset on plugin activation
 - Fix the bulk actions in the Protecion Rules page
 - Fix wrong WordPress action that was called in the user-registration form
 - Fix rare error that happened when dripped content had no/invalid date settings

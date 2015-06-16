@@ -866,7 +866,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 			if ( ! empty( $base ) ) {
 				$membership = MS_Factory::load( 'MS_Model_Membership', $base->ID );
-			} else if ( $create_missing ) {
+			} elseif ( $create_missing ) {
 				$names = self::get_types();
 
 				$description = __( 'Membership2 Core Membership', MS_TEXT_DOMAIN );
