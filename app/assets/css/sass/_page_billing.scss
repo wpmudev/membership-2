@@ -19,15 +19,38 @@
 				padding: 6px;
 			}
 
-			.log-status {
-				background-color: #CCC;
+			.log-status,
+			.log-method {
+				background-color: #888;
 				color: #FFF;
 				padding: 0;
 				border-radius: 10px;
 				line-height: 18px;
 				width: 18px;
+				font-size: 12px;
 				text-align: center;
 				display: inline-block;
+				position: relative;
+			}
+
+			.log-method:hover {
+				background-color: #333;
+				border-radius: 10px 0 0 10px;
+
+				&:after {
+					content: attr(data-info);
+					background: #333;
+					color: #FFF;
+					position: absolute;
+					left: 18px;
+					top: 0;
+					height: 18px;
+					line-height: 18px;
+					padding: 0 8px;
+					font-size: 11px;
+					border-radius: 0 10px 10px 0;
+					white-space: nowrap;
+				}
 			}
 
 			.column-id {
@@ -38,6 +61,10 @@
 				text-align: center;
 			}
 			.column-status {
+				width: 40px;
+				text-align: center;
+			}
+			.column-method {
 				width: 40px;
 				text-align: center;
 			}
@@ -54,6 +81,7 @@
 			}
 			.column-invoice {
 				width: 80px;
+				text-align: center;
 			}
 			.detail-block {
 				min-width: 300px;

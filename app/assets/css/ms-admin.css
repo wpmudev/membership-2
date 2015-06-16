@@ -1988,15 +1988,39 @@
   padding: 6px;
 }
 #wpwrap .ms-wrap.ms-billing .transactions .log-status,
-.ms-wrap.ms-billing .transactions .log-status {
-  background-color: #CCC;
+#wpwrap .ms-wrap.ms-billing .transactions .log-method,
+.ms-wrap.ms-billing .transactions .log-status,
+.ms-wrap.ms-billing .transactions .log-method {
+  background-color: #888;
   color: #FFF;
   padding: 0;
   border-radius: 10px;
   line-height: 18px;
   width: 18px;
+  font-size: 12px;
   text-align: center;
   display: inline-block;
+  position: relative;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .log-method:hover,
+.ms-wrap.ms-billing .transactions .log-method:hover {
+  background-color: #333;
+  border-radius: 10px 0 0 10px;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .log-method:hover:after,
+.ms-wrap.ms-billing .transactions .log-method:hover:after {
+  content: attr(data-info);
+  background: #333;
+  color: #FFF;
+  position: absolute;
+  left: 18px;
+  top: 0;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 8px;
+  font-size: 11px;
+  border-radius: 0 10px 10px 0;
+  white-space: nowrap;
 }
 #wpwrap .ms-wrap.ms-billing .transactions .column-id,
 .ms-wrap.ms-billing .transactions .column-id {
@@ -2009,6 +2033,11 @@
 }
 #wpwrap .ms-wrap.ms-billing .transactions .column-status,
 .ms-wrap.ms-billing .transactions .column-status {
+  width: 40px;
+  text-align: center;
+}
+#wpwrap .ms-wrap.ms-billing .transactions .column-method,
+.ms-wrap.ms-billing .transactions .column-method {
   width: 40px;
   text-align: center;
 }
@@ -2028,6 +2057,7 @@
 #wpwrap .ms-wrap.ms-billing .transactions .column-invoice,
 .ms-wrap.ms-billing .transactions .column-invoice {
   width: 80px;
+  text-align: center;
 }
 #wpwrap .ms-wrap.ms-billing .transactions .detail-block,
 .ms-wrap.ms-billing .transactions .detail-block {
