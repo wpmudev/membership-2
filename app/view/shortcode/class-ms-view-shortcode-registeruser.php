@@ -82,12 +82,19 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 				 * Trigger default WordPress action to allow other plugins
 				 * to add custom fields to the registration form.
 				 *
+				 * signup_extra_fields Defined in wp-signup.php which is used
+				 *              for Multisite signup process.
+				 *
+				 * register_form Defined in wp-login.php which is only used for
+				 *              Single site registration process.
+				 *
 				 * @since 1.1.0
 				 */
-				do_action( 'register_form' ); // Always on the register form.
 				if ( is_multisite() ) {
 					$empty_error = new WP_Error();
 					do_action( 'signup_extra_fields', $empty_error );
+				} else {
+					do_action( 'register_form' ); // Always on the register form.
 				}
 
 				echo '</div>';
