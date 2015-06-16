@@ -926,6 +926,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			add_post_meta( $id, '_subscription_id', $subscription_id, true );
 			add_post_meta( $id, '_invoice_id', $invoice_id, true );
 			add_post_meta( $id, '_amount', $amount, true );
+			add_post_meta( $id, '_url', lib2()->net->current_url(), true );
+			add_post_meta( $id, '_post', $_POST, true );
 		}
 	}
 
