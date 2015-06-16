@@ -120,7 +120,8 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 			'customer_id'
 		);
 		$customer = Stripe_Customer::retrieve( $customer_id );
-		$stripe_sub_id = $subscription->get_previous_invoice()->external_id;
+		$invoice = $subscription->get_previous_invoice();
+		$stripe_sub_id = $invoice->external_id;
 		$stripe_sub = $customer->subscriptions->retrieve( $stripe_sub_id );
 		$this->assertEquals( 'active', $stripe_sub->status );
 		$this->assertTrue( $stripe_sub->cancel_at_period_end );

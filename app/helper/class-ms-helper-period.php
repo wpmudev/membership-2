@@ -318,7 +318,7 @@ class MS_Helper_Period extends MS_Helper {
 		return apply_filters(
 			'ms_helper_period_get_period_in_days',
 			$days,
-			$period
+			$type
 		);
 	}
 
