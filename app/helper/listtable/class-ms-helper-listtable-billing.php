@@ -112,6 +112,12 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
+		// Filter by search-term
+		$search_filter = $_REQUEST['s'];
+		if ( ! empty( $search_filter ) ) {
+			$this->search_string = $search_filter;
+		}
+
 		$args = wp_parse_args( $args, $defaults );
 
 		return $args;

@@ -112,7 +112,10 @@ class MS_View_Billing_List extends MS_View {
 				?>
 			</div>
 			<?php
-			$listview->search_box( __( 'Search user', MS_TEXT_DOMAIN ), 'search' );
+			$listview->search_box(
+				__( 'User', MS_TEXT_DOMAIN ),
+				'search'
+			);
 			$listview->views();
 			?>
 			<form action="" method="post">

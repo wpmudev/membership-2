@@ -378,7 +378,15 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Search string.
 		if ( ! empty( $_REQUEST['s'] ) ) {
-			$args['author_name'] = $_REQUEST['s'];
+			$user_args = array(
+				'search' => '*' . $_REQUEST['s'] . '*',
+			);
+			$user_list = new WP_User_Query( $user_args );
+			$user_ids = array();
+			foreach ( $user_list->results as $user ) {
+				$user_ids[] = $user->ID;
+			}
+			$args['author__in'] = $user_ids;
 		}
 
 		$args['meta_query'] = array();
