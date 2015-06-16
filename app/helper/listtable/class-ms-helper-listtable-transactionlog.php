@@ -161,6 +161,16 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	}
 
 	/**
+	 * Displays a custom search box for this list.
+	 *
+	 * @since  1.0.0.7
+	 */
+	public function search_box() {
+		// Do not display anything.
+		// Transaction logs cannot be searched currently
+	}
+
+	/**
 	 * Defines predefines filters for this list table.
 	 *
 	 * @since  1.0.0.6
