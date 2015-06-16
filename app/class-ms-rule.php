@@ -573,20 +573,6 @@ class MS_Rule extends MS_Model {
 			$All_Memberships = MS_Model_Membership::get_memberships();
 		}
 
-		$base = MS_Model_Membership::get_base();
-		$base_rule = $base->get_rule( $this->rule_type );
-		$current_protection = $base_rule->get_rule_value( $id );
-		$should_protect = ! empty( $memberships );
-
-		if ( ! $should_protect ) {
-			$base_rule->remove_access( $id );
-		} elseif ( ! $current_protection ) {
-			// Only `give_access()` when the item is not protected yet.
-			$base_rule->give_access( $id );
-		}
-		$base->set_rule( $this->rule_type, $base_rule );
-		$base->save();
-
 		foreach ( $All_Memberships as $membership ) {
 			$rule = $membership->get_rule( $this->rule_type );
 			if ( in_array( $membership->id, $memberships ) ) {
@@ -1003,6 +989,22 @@ class MS_Rule extends MS_Model {
 		} else {
 			unset( $this->rule_value[ $id ] );
 			unset( $this->dripped[ $id ] );
+		}
+
+		// Update the base rule.
+
+		$base = MS_Model_Membership::get_base();
+		$base_rule = $base->get_rule( $this->rule_type );
+
+		if ( ! count( $this->rule_value ) ) {
+			$base_rule->remove_access( $id );
+			$base->set_rule( $this->rule_type, $base_rule );
+			$base->save();
+		} elseif ( ! $base_rule->get_rule_value( $id ) ) {
+			// Only `give_access()` when the item is not protected yet.
+			$base_rule->give_access( $id );
+			$base->set_rule( $this->rule_type, $base_rule );
+			$base->save();
 		}
 
 		do_action( 'ms_rule_set_access', $id, $access, $this );

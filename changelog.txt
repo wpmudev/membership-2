@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - Improve Transaction logs to also log inactice or invalid gateway calls
 - Fix issue that did not display any "Page" rules in the Membership Overview screen
+- Fix the bulk actions in the Protecion Rules page
 - Fix wrong WordPress action that was called in the user-registration form
 - Fix rare error that happened when dripped content had no/invalid date settings
 
