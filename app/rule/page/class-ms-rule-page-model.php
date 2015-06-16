@@ -227,6 +227,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 
 		$pages = get_pages( $args );
 		$contents = array();
+		if ( 0 == $limit ) { $limit = count( $pages ); }
 
 		for ( $num = $offset; $num < $limit; $num += 1 ) {
 			if ( ! isset( $pages[$num] ) ) { continue; }
