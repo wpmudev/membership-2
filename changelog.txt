@@ -11,6 +11,8 @@ Change Log:
 - Fix the bulk actions in the Protecion Rules page
 - Fix wrong WordPress action that was called in the user-registration form
 - Fix rare error that happened when dripped content had no/invalid date settings
+- Fix Members/Billings list to keep search filter when changing the sort option
+- Fix Billings search logic to find all users that contain the search word (no exact username required anymore)
 - Hide the Guest and Default memberships in the Members list, as they are useless there
 
 1.0.0.6
