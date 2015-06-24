@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.0.8
+----------------------------------------------------------------------
+- Fix a typo in the ms_rule_has_access filter
+
 1.0.0.7
 ----------------------------------------------------------------------
 - Improve Transaction logs to also log inactice or invalid gateway calls

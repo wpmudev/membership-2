@@ -649,7 +649,7 @@ class MS_Rule extends MS_Model {
 			'ms_rule_has_access',
 			$access,
 			$id,
-			$this->ruly_type,
+			$this->rule_type,
 			$this
 		);
 	}
