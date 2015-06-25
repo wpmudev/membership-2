@@ -133,7 +133,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				&& 200 == $response['response']['code']
 				&& ! empty( $response['body'] )
 				&& 'VERIFIED' == $response['body']
-				&& $invoice->id == $inovice_id
+				&& $invoice->id == $invoice_id
 			) {
 				$new_status = false;
 				$subscription = $invoice->get_subscription();

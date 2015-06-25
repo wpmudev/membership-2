@@ -188,7 +188,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$this->assertEquals( 1, $invoice1->invoice_number );
 
 		// The trial invoice is not yet paid (free gateway sets it to billed)
-		// -> so the inovice counter must still be 1
+		// -> so the invoice counter must still be 1
 		$invoice1->pay_it( 'free', '' );
 		$this->assertEquals( 1, $invoice1->invoice_number );
 		$this->assertEquals( 1, $subscription->current_invoice_number );
