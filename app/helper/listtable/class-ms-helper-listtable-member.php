@@ -198,8 +198,8 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 					break;
 
 				default:
-					$args['meta_query'][ $option ] = array(
-						'key' => $option,
+					$args['meta_query'][ $search_option ] = array(
+						'key' => $search_option,
 						'value' => $search_filter,
 						'compare' => 'LIKE',
 					);
