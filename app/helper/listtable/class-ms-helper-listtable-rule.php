@@ -233,7 +233,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		if ( ! empty( $_REQUEST['s'] ) ) {
 			$this->search_string = $_REQUEST['s'];
 			$args['s'] = $_REQUEST['s'];
-			$args['posts_per_page'] = false;
+			$args['posts_per_page'] = -1;
 			$args['number'] = false;
 			$args['offset'] = 0;
 		}
