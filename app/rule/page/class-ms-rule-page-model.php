@@ -236,7 +236,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 			$name = $content->post_title;
 
 			$parent = get_post( $content->post_parent );
-			while ( ! empty( $parent ) ) {
+			for ( $level = 0; $level < 5 && $parent; $level += 1 ) {
 				$name = '&mdash; ' . $name;
 				$parent = get_post( $parent->post_parent );
 			}
