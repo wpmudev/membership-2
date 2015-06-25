@@ -257,8 +257,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		);
 		?>
 		<form action="<?php echo esc_url( $url ); ?>" class="ms-membership-form" method="post">
-			<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ); ?>"
-				class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+			<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 				<div class="ms-top-bar">
 					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
 				</div>
