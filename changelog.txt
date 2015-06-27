@@ -6,7 +6,17 @@ Change Log:
 
 1.0.0.8
 ----------------------------------------------------------------------
+- Add new option to customize which users are considered Admin users (details in the Help > Advanced page)
+- Fix a typo in the PayPal Single gateway that caused M2 to ignore some payment information
+- Fix the search function on the Members page
+- Fix two possible infinite loops that resulted in timeouts or rule values not being saved
+- Fix wrong protection logic of the Admin Side Add-on
+- Fix wrong protection logic of the Advanced Menu Add-on
+- Fix small issue that did not correctly disable the Media Add-on
+- Fix a wrong parameters that limited search results of list tables to 5 items in some cases
+- Fix the description text of the ms-protected-content shortcode for admin users
 - Fix a typo in the ms_rule_has_access filter
+- Fix a possible/rare mis-configuration that could happen on single-site installations
 
 1.0.0.7
 ----------------------------------------------------------------------
