@@ -300,20 +300,20 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		);
 		extract( $atts );
 
-		if ( $access ) {
+		if ( lib2()->is_true( $access ) ) {
 			$msg_access = __( 'Visible for members of', MS_TEXT_DOMAIN );
+			$alt_msg1 = __( 'Other users will see', MS_TEXT_DOMAIN );
+			$alt_msg2 = __( 'Other uses will see nothing', MS_TEXT_DOMAIN );
 		} else {
 			$msg_access = __( 'Hidden from members of', MS_TEXT_DOMAIN );
+			$alt_msg1 = __( 'Those users will see', MS_TEXT_DOMAIN );
+			$alt_msg2 = __( 'Those uses will see nothing', MS_TEXT_DOMAIN );
 		}
 
 		if ( $msg ) {
-			$msg_alt = sprintf(
-				'%s: %s',
-				__( 'Other users will see', MS_TEXT_DOMAIN ),
-				$msg
-			);
+			$msg_alt = sprintf( '%s: %s', $alt_msg1, $msg );
 		} else {
-			$msg_alt = __( 'Other uses will see nothing', MS_TEXT_DOMAIN );
+			$msg_alt = $alt_msg2;
 		}
 
 		$membership_ids = explode( ',', $id );
