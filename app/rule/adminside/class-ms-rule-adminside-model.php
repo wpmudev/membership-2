@@ -48,7 +48,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	 *
 	 * @var array
 	 */
-	static protected $denied_items = null;
+	static protected $denied_items = array();
 
 	/**
 	 * Returns the active flag for a specific rule.
@@ -109,15 +109,16 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	 * @global array $menu
 	 */
 	public function prepare_protection( $ignore ) {
-		if ( null === self::$denied_items ) {
-			self::$denied_items = array_fill_keys( array_keys( $this->rule_value ), 0 );
-		}
-
-		foreach ( $this->rule_value as $url => $allowed ) {
-			if ( ! $allowed ) { continue; }
-			if ( ! isset( self::$denied_items[$url] ) ) { continue; }
-
-			unset( self::$denied_items[$url] );
+		foreach ( $this->rule_value as $url => $denied ) {
+			if ( $this->is_base_rule ) {
+				if ( ! isset( self::$denied_items[$url] ) ) {
+					// Base rule: Defines the denied items.
+					self::$denied_items[$url] = $denied;
+				}
+			} else {
+				// Normal membership: Defines the allowed items.
+				self::$denied_items[$url] = ! $denied;
+			}
 		}
 
 		return $ignore;
@@ -156,7 +157,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 		foreach ( $menu as $main_key => $main_item ) {
 			$main_url = $main_item[2];
 
-			if ( isset( $denied[ $main_url ] ) ) {
+			if ( isset( $denied[ $main_url ] ) && $denied[ $main_url ] ) {
 				// Remove protected items from the global array.
 				unset( $menu[ $main_key ] );
 				unset( $submenu[ $main_key ] );
@@ -169,7 +170,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 			// Protect sub menus.
 			foreach ( $submenu[$main_url] as $child_key => $child_item ) {
 				$child_url = $main_url . ':' . $child_item[2];
-				if ( isset( $denied[ $child_url ] ) ) {
+				if ( isset( $denied[ $child_url ] ) && $denied[ $child_url ] ) {
 					// Remove protected items from the global array.
 					unset( $submenu[$main_url][ $child_key ] );
 					$_wp_submenu_nopriv[$main_url][$child_item[2]] = true;
@@ -180,7 +181,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 		// Remove submenu items that have same URL as the top-menu item
 		foreach ( $submenu as $main_key => $children ) {
 			foreach ( $children as $child_key => $child_item ) {
-				if ( isset( $denied[ $child_item[2] ] ) ) {
+				if ( isset( $denied[ $child_item[2] ] ) && $denied[ $child_item[2] ] ) {
 					// Remove protected items from the global array.
 					unset( $submenu[ $main_key ][ $child_key ] );
 					$_wp_submenu_nopriv[ $main_key ][ $child_key ] = true;
