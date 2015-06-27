@@ -378,8 +378,12 @@ class MS_Model_Pages extends MS_Model_Option {
 
 			if ( MS_Plugin::is_network_wide() ) {
 				$site_id = self::get_setting( 'site_id' );
-				if ( ! $site_id ) {
-					$site_id = BLOG_ID_CURRENT_SITE;
+				if ( ! $site_id || ! is_numeric( $site_id ) ) {
+					if ( defined( 'BLOG_ID_CURRENT_SITE' ) ) {
+						$site_id = BLOG_ID_CURRENT_SITE;
+					} else {
+						$site_id = 1;
+					}
 					self::set_setting( 'site_id', $site_id );
 				}
 			} else {

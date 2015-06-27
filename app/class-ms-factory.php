@@ -624,7 +624,11 @@ class MS_Factory {
 
 		if ( MS_Plugin::is_network_wide() ) {
 			if ( null === $site_id ) {
-				$site_id = BLOG_ID_CURRENT_SITE;
+				if ( defined( 'BLOG_ID_CURRENT_SITE' ) ) {
+					$site_id = BLOG_ID_CURRENT_SITE;
+				} else {
+					$site_id = 1;
+				}
 			}
 			self::$Prev_Blog_Id[] = $GLOBALS['blog_id'];
 

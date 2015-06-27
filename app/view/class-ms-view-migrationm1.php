@@ -17,7 +17,7 @@ class MS_View_MigrationM1 extends MS_View {
 	public function to_html() {
 		$model = MS_Factory::create( 'MS_Model_Import_Membership' );
 
-		if ( MS_Plugin::is_network_wide() ) {
+		if ( MS_Plugin::is_network_wide() && defined( 'BLOG_ID_CURRENT_SITE' ) ) {
 			switch_to_blog( BLOG_ID_CURRENT_SITE );
 			$model->prepare();
 			restore_current_blog();
