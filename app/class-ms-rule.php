@@ -992,19 +992,20 @@ class MS_Rule extends MS_Model {
 		}
 
 		// Update the base rule.
+		if ( ! $this->is_base_rule ) {
+			$base = MS_Model_Membership::get_base();
+			$base_rule = $base->get_rule( $this->rule_type );
 
-		$base = MS_Model_Membership::get_base();
-		$base_rule = $base->get_rule( $this->rule_type );
-
-		if ( ! count( $this->rule_value ) ) {
-			$base_rule->remove_access( $id );
-			$base->set_rule( $this->rule_type, $base_rule );
-			$base->save();
-		} elseif ( ! $base_rule->get_rule_value( $id ) ) {
-			// Only `give_access()` when the item is not protected yet.
-			$base_rule->give_access( $id );
-			$base->set_rule( $this->rule_type, $base_rule );
-			$base->save();
+			if ( ! count( $this->rule_value ) ) {
+				$base_rule->remove_access( $id );
+				$base->set_rule( $this->rule_type, $base_rule );
+				$base->save();
+			} elseif ( ! $base_rule->get_rule_value( $id ) ) {
+				// Only `give_access()` when the item is not protected yet.
+				$base_rule->give_access( $id );
+				$base->set_rule( $this->rule_type, $base_rule );
+				$base->save();
+			}
 		}
 
 		do_action( 'ms_rule_set_access', $id, $access, $this );
