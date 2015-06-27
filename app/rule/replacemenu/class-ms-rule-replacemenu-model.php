@@ -1,29 +1,6 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Replace-Menu Rule class.
- *
- * Persisted by Membership class.
  *
  * @since 1.0.4.2
  *
@@ -107,6 +84,9 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 * @return mixed The updated attributes.
 	 */
 	public function replace_menus( $args ) {
+		// We ignore the base membership for this rule-type.
+		if ( $this->is_base_rule ) { return $args; }
+
 		$id = $args['menu'];
 
 		if ( ! is_numeric( $id ) ) {
@@ -233,11 +213,15 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 */
 	protected function get_replacements() {
 		if ( ! is_array( $this->replacements ) ) {
+			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
 			$this->replacements = array();
 			$menus = $this->get_menus();
 
 			foreach ( $menus as $menu_id => $name ) {
-				$replacement = $this->get_rule_value( $menu_id );
+				$replace = $this->get_rule_value( $menu_id );
+				if ( ! $replace ) { continue; }
+
+				$replacement = $base_rule->get_rule_value( $menu_id );
 
 				if ( is_numeric( $replacement ) && $replacement > 0 ) {
 					$this->replacements[ $menu_id ] = intval( $replacement );
