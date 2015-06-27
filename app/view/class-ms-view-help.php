@@ -1592,6 +1592,11 @@ class MS_View_Help extends MS_View {
 			<strong><?php _ex( 'No Admin Shortcode Preview', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
 			<?php _ex( 'By default the user will see additional information on the page when using the shortcode <code>[ms-protect-content]</code>. To disable this additional output add the line <code>define( "MS_NO_SHORTCODE_PREVIEW", true );</code> in wp-config.php.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
+		<p>
+			<strong><?php _ex( 'Define Membership 2 Admin users', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'By default all users with capability <code>manage_options</code> are considered Membership 2 admin users and have unlimited access to the whole site (including protected content). To change the required capability add the line <code>define( "MS_ADMIN_CAPABILITY", "manage_options" );</code> in wp-config.php. When you set the value to <code>false</code> then only the Superadmin has full access to the site.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+
 		<hr />
 		<p>
 			<strong><?php _ex( 'Developer Docs', 'help', MS_TEXT_DOMAIN ); ?></strong><br />

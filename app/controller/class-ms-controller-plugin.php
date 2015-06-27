@@ -53,6 +53,16 @@ class MS_Controller_Plugin extends MS_Controller {
 	private static $base_slug = '';
 
 	/**
+	 * Capability required to count as M2 'admin' user. Admin users have full
+	 * access to all M2 features.
+	 *
+	 * @since 1.0.8
+	 *
+	 * @var $capability
+	 */
+	protected $capability = 'manage_options';
+
+	/**
 	 * Instance of MS_Model_Plugin.
 	 *
 	 * @since 1.0.0
@@ -108,6 +118,23 @@ class MS_Controller_Plugin extends MS_Controller {
 				wp_safe_redirect( $url );
 				exit;
 			}
+		}
+
+		/**
+		 * We allow two ways to modify the default Admin-Capability setting:
+		 *
+		 * Either by defining the constant in wp-config or by using the filter.
+		 * The constant takes priority over the filter.
+		 *
+		 * @since  1.0.0.8
+		 */
+		if ( defined( 'MS_ADMIN_CAPABILITY' ) ) {
+			$this->capability = MS_ADMIN_CAPABILITY;
+		} else {
+			$this->capability = apply_filters(
+				'ms_admin_user_capability',
+				$this->capability
+			);
 		}
 
 		// Create core controllers that are available on every page.

@@ -584,11 +584,11 @@ class MS_Model_Member extends MS_Model {
 	 * @since 1.0.0
 	 * @api
 	 *
-	 * @param int|false $user_id Optional. The user ID. Default to current user.
-	 * @param string $capability The capability to check for admin users.
+	 * @param  int|false $user_id Optional. The user ID. Default to current user.
+	 * @param  bool $deprecated Do not use.
 	 * @return boolean True if user is admin.
 	 */
-	static public function is_admin_user( $user_id = false, $capability = 'manage_options' ) {
+	static public function is_admin_user( $user_id = false ) {
 		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
 			$is_admin = false;
 			$default_user_id = null;
@@ -599,31 +599,43 @@ class MS_Model_Member extends MS_Model {
 			}
 
 			if ( is_super_admin( $user_id ) ) {
+				// Superadmin always is considered admin user, no discussion...
 				$is_admin = true;
-			}
+			} else {
+				/**
+				 * Use the capability defined by the main plugin controller.
+				 *
+				 * This capability defines which user is considered admin user.
+				 * An Admin user has full permissions to edit M2 settings.
+				 *
+				 * To modify the capability:
+				 *   Use filter `ms_admin_user_capability`  or
+				 *   define( 'MS_ADMIN_CAPABILITY', '...' )
+				 *
+				 * @var string|bool A WordPress capability or boolean false.
+				 */
+				$capability = MS_Plugin::instance()->controller->capability;
 
-			$capability = apply_filters(
-				'ms_model_member_is_admin_user_capability',
-				$capability
-			);
-
-			if ( ! empty( $capability ) ) {
-				if ( empty( $user_id ) ) {
-					$is_admin = current_user_can( $capability );
-				} else {
-					$is_admin = user_can( $user_id, $capability );
+				if ( ! empty( $capability ) ) {
+					if ( empty( $user_id ) ) {
+						$is_admin = current_user_can( $capability );
+					} else {
+						$is_admin = user_can( $user_id, $capability );
+					}
 				}
+
+				$is_admin = apply_filters(
+					'ms_model_member_is_admin_user',
+					$is_admin,
+					$user_id,
+					$capability
+				);
 			}
 
-			$res = apply_filters(
-				'ms_model_member_is_admin_user',
-				$is_admin,
-				$user_id
-			);
-			self::$_is_admin_user[ $user_id ] = $res;
+			self::$_is_admin_user[ $user_id ] = $is_admin;
 
 			if ( null !== $default_user_id ) {
-				self::$_is_admin_user[ $default_user_id ] = $res;
+				self::$_is_admin_user[ $default_user_id ] = $is_admin;
 			}
 		}
 

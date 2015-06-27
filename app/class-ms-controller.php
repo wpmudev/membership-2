@@ -39,15 +39,6 @@
 class MS_Controller extends MS_Hooker {
 
 	/**
-	 * Capability required to use access metabox.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var $capability
-	 */
-	protected $capability = 'manage_options';
-
-	/**
 	 * Ajax response flag.
 	 *
 	 * @since 1.0.0
@@ -165,12 +156,11 @@ class MS_Controller extends MS_Hooker {
 	 * @return boolean True if can, false otherwise.
 	 */
 	public function is_admin_user() {
-		$is_admin_user = MS_Model_Member::is_admin_user( null, $this->capability );
+		$is_admin_user = MS_Model_Member::is_admin_user();
 
 		return apply_filters(
-			'ms_controller_current_user_can',
-			$is_admin_user,
-			$this->capability
+			'ms_controller_is_admin_user',
+			$is_admin_user
 		);
 	}
 
