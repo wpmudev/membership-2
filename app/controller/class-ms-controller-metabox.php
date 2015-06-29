@@ -159,19 +159,18 @@ class MS_Controller_Metabox extends MS_Controller {
 				$_POST['membership_id']
 			);
 
-			if ( $_POST['membership_id'] == MS_Model_Membership::get_base()->id ) {
-				$post = get_post( $_POST['post_id'] );
-				//membership metabox html returned via ajax response
-				$this->membership_metabox( $post );
-			} else {
-				echo 'true';
-			}
+			$post = get_post( $_POST['post_id'] );
+
+			// Return the updated Membership metabox html via ajax response.
+			$this->membership_metabox( $post );
+
+			do_action(
+				'ms_controller_membership_metabox_ajax_action_toggle_metabox_access',
+				$post,
+				$this
+			);
 		}
 
-		do_action(
-			'ms_controller_membership_metabox_ajax_action_toggle_metabox_access',
-			$this
-		);
 		exit;
 	}
 
@@ -213,7 +212,7 @@ class MS_Controller_Metabox extends MS_Controller {
 		if ( MS_Model_Pages::is_membership_page() ) {
 			$data['special_page'] = true;
 		} else {
-			$memberships = MS_Model_Membership::get_memberships();
+			$all_memberships = MS_Model_Membership::get_memberships();
 			$base = MS_Model_Membership::get_base();
 			$data['base_id'] = $base->id;
 
@@ -231,9 +230,11 @@ class MS_Controller_Metabox extends MS_Controller {
 			$data['rule_type'] = $rule->rule_type;
 
 			// Check each membership to see if the post is protected.
-			foreach ( $memberships as $membership ) {
+			foreach ( $all_memberships as $membership ) {
+				if ( $membership->is_base ) { continue; }
+
 				$rule = $this->get_rule( $membership, $post_type );
-				$data['access'][ $membership->id ]['has_access'] = $rule->has_access( $post->ID, false );
+				$data['access'][ $membership->id ]['has_access'] = $rule->get_rule_value( $post->ID );
 				$data['access'][ $membership->id ]['name'] = $membership->name;
 			}
 		}
@@ -309,29 +310,40 @@ class MS_Controller_Metabox extends MS_Controller {
 		if ( $this->is_admin_user() ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 			$rule = $membership->get_rule( $rule_type );
+			$protected = ! $rule->get_rule_value( $post_id );
 
-			if ( $rule ) {
-				$rule->toggle_access( $post_id );
-				$membership->set_rule( $rule_type, $rule );
-				$membership->save();
-			}
-
-			// If we just enabled protection for the post then set all
-			// memberships to 'allow'.
 			if ( $membership->is_base() ) {
-				$protected = ! $rule->has_access( $post_id, false );
+				/*
+				 * If we just modified the protection for the whole post then we
+				 * have to update every single membership with the new rule
+				 * value before changing the base rule itself.
+				 */
 				$all_memberships = MS_Model_Membership::get_memberships();
 
 				foreach ( $all_memberships as $the_membership ) {
+					if ( $the_membership->is_base ) { continue; }
+
 					$the_rule = $the_membership->get_rule( $rule_type );
 					if ( $protected ) {
 						$the_rule->give_access( $post_id );
 					} else {
 						$the_rule->remove_access( $post_id );
 					}
+
 					$the_membership->set_rule( $rule_type, $the_rule );
 					$the_membership->save();
 				}
+			}
+
+			if ( $rule ) {
+				if ( $protected ) {
+					$rule->give_access( $post_id );
+				} else {
+					$rule->remove_access( $post_id );
+				}
+
+				$membership->set_rule( $rule_type, $rule );
+				$membership->save();
 			}
 		}
 

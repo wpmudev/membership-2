@@ -31,7 +31,7 @@ class MS_View_Metabox extends MS_View {
 					'value' => $this->data['is_protected'],
 					'class' => 'ms-protect-content',
 					'read_only' => ! empty( $this->data['read_only'] ),
-					'data_ms' => array(
+					'ajax_data' => array(
 						'action' => MS_Controller_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
 						'post_id' => $this->data['post_id'],
 						'rule_type' => $this->data['rule_type'],
@@ -54,7 +54,7 @@ class MS_View_Metabox extends MS_View {
 							</tr>
 
 							<?php foreach ( $this->data['access'] as $membership_id => $data ) : ?>
-								<tr>
+								<tr class="ms-membership-<?php echo esc_attr( $membership_id ); ?>">
 									<td>
 										<?php echo esc_html( $data['name'] ); ?>
 									</td>
@@ -64,9 +64,9 @@ class MS_View_Metabox extends MS_View {
 											'id' => sprintf( 'access_%s', $membership_id ),
 											'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 											'value' => $data['has_access'],
-											'class' => '',
+											'class' => 'ms-protection-rule',
 											'read_only' => ! empty( $this->data['read_only'] ),
-											'data_ms' => array(
+											'ajax_data' => array(
 												'action' => MS_Controller_Metabox::AJAX_ACTION_TOGGLE_ACCESS,
 												'post_id' => $this->data['post_id'],
 												'rule_type' => $this->data['rule_type'],
