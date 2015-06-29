@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - Add new option to customize which users are considered Admin users (details in the Help > Advanced page)
 - Fix a typo in the PayPal Single gateway that caused M2 to ignore some payment information
+- Fix bugs that prevented removing protection from individual posts or pages
 - Fix the search function on the Members page
 - Fix two possible infinite loops that resulted in timeouts or rule values not being saved
 - Fix wrong protection logic of the Admin Side Add-on
