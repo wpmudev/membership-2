@@ -996,7 +996,17 @@ class MS_Rule extends MS_Model {
 			$base = MS_Model_Membership::get_base();
 			$base_rule = $base->get_rule( $this->rule_type );
 
-			if ( ! count( $this->rule_value ) ) {
+			$rule_usage = 0;
+			$all_memberships = MS_Model_Membership::get_memberships();
+			foreach ( $all_memberships as $membership ) {
+				if ( $membership->is_base ) { continue; }
+				$mem_rule = $membership->get_rule( $this->rule_type );
+				if ( ! $mem_rule->get_rule_value( $id ) ) { continue; }
+
+				$rule_usage += 1;
+			}
+
+			if ( ! $rule_usage ) {
 				$base_rule->remove_access( $id );
 				$base->set_rule( $this->rule_type, $base_rule );
 				$base->save();
