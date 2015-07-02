@@ -11,7 +11,11 @@ class MS_Gateway_Paypalsingle_View_Settings extends MS_View {
 		?>
 		<form class="ms-gateway-settings-form ms-form">
 			<?php
-			$description = '';
+			$description = sprintf(
+				'%s<br>%s',
+				__( 'This the a basic PayPal gateway that allows your members to easily make a single payment.', MS_TEXT_DOMAIN ),
+				__( 'If you use this gateway for recurring payments then your members have to confirm each recuring payment individually.', MS_TEXT_DOMAIN )
+			);
 
 			MS_Helper_Html::settings_box_header( '', $description );
 			foreach ( $fields as $field ) {

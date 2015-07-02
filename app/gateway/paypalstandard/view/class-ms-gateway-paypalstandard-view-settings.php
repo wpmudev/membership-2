@@ -12,8 +12,9 @@ class MS_Gateway_Paypalstandard_View_Settings extends MS_View {
 		<form class="ms-gateway-settings-form ms-form">
 			<?php
 			$description = sprintf(
-				'%s <br />%s <strong>%s</strong> <br /><a href="%s" target="_blank">%s</a>',
-				__( 'In order for Membership2 to function correctly you must setup an IPN listening URL with PayPal. Make sure to complete this step, otherwise we are not notified when a member cancels their subscription.', MS_TEXT_DOMAIN ),
+				'%s<br />&nbsp;<br />%s<br />&nbsp;<br />%s <strong>%s</strong><br /><a href="%s" target="_blank">%s</a>',
+				__( 'This advanced PayPal gateway will handle all payment types, including trial periods and recurring payments. However, it should not be used for permanent type meberships, as here it will display "pay again after 5 years" during checkout.', MS_TEXT_DOMAIN ),
+				__( 'In order for Membership 2 to function correctly you must setup an IPN listening URL with PayPal. Make sure to complete this step, otherwise we are not notified when a member cancels their subscription.', MS_TEXT_DOMAIN ),
 				__( 'Your IPN listening URL is:', MS_TEXT_DOMAIN ),
 				$this->data['model']->get_return_url(),
 				'https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNSetup/',
