@@ -503,9 +503,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			INNER JOIN {$wpdb->postmeta} priv ON priv.post_id = p.ID AND priv.meta_key = %s
 			INNER JOIN {$wpdb->postmeta} free ON free.post_id = p.ID AND free.meta_key = %s
 			INNER JOIN {$wpdb->postmeta} pric ON pric.post_id = p.ID AND pric.meta_key = %s
+			INNER JOIN {$wpdb->postmeta} acti ON acti.post_id = p.ID AND acti.meta_key = %s
 			WHERE
 				p.post_type = %s
 				AND priv.meta_value != '1'
+				AND acti.meta_value = '1'
 				AND NOT (
 					free.meta_value = '1'
 					OR pric.meta_value = '0'
@@ -517,6 +519,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				'private',       // INNER JOIN
 				'is_free',       // INNER JOIN
 				'price',         // INNER JOIN
+				'active',        // INNER JOIN
 				self::get_post_type() // WHERE condition
 			);
 

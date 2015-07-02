@@ -493,6 +493,29 @@ class MS_Controller_Plugin extends MS_Controller {
 				),
 				'slug' => 'billing',
 			);
+
+			/*
+			 * This condition checks if the site has configured some payment
+			 * gateways - if not then users cannot sign up for a membership.
+			 * Show a notice if no payment gateway is configured/activated.
+			 */
+			$gateways = MS_Model_Gateway::get_gateways( true );
+			$payment_possible = false;
+			foreach ( $gateways as $key => $gateway ) {
+				if ( 'free' == $key ) { continue; }
+				$payment_possible = true;
+				break;
+			}
+			if ( ! $payment_possible ) {
+				lib2()->ui->admin_message(
+					sprintf(
+						__( 'Oops, looks like you did not activate a payment gateway yet.<br />You need to set up and activate at least one gateway, otherwise your members cannot sign up to a paid membership.<br />%sFix this now &raquo;%s', MS_TEXT_DOMAIN ),
+						'<a href="' . self::get_admin_url( 'settings', array( 'tab' => 'payment' ) ) . '">',
+						'</a>'
+					),
+					'err'
+				);
+			}
 		}
 
 		return $pages;

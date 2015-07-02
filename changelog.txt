@@ -7,6 +7,7 @@ Change Log:
 1.0.1.0
 ----------------------------------------------------------------------
 - Add gateway: 2Checkout
+- Add an admin notice when no payment gateway is active but paid memberships exist
 - Improve payment logs to display additional information for errors
 - Fix possible memory issue that happened when updating the plugin
 
