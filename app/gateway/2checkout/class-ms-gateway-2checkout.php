@@ -44,7 +44,6 @@ class MS_Gateway_2checkout extends MS_Gateway {
 		$this->id = self::ID;
 		$this->name = __( '2Checkout', MS_TEXT_DOMAIN );
 		$this->group = __( '2Checkout', MS_TEXT_DOMAIN );
-		$this->active = true;
 		$this->manual_payment = true;
 	}
 
