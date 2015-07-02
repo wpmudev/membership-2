@@ -74,6 +74,15 @@ class MS_Controller_Api extends MS_Controller {
 	public $settings = null;
 
 	/**
+	 * Stores a list of custom payment gateways.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var array
+	 */
+	protected $gateways = array();
+
+	/**
 	 * Construct Settings manager.
 	 *
 	 * @since 2.0.0
@@ -223,6 +232,73 @@ class MS_Controller_Api extends MS_Controller {
 		}
 
 		return $list;
+	}
+
+	/**
+	 * Create your own payment gateway and hook it up with Memberhip 2 by using
+	 * this function!
+	 *
+	 * Creating your own payment gateway requires good php skills. To get you
+	 * started follow these steps:
+	 *
+	 * 1. Copy the folder "/app/gateway/manual" to the "wp-contents/plugins"
+	 *    folder, and name it "membership-mygateway"
+	 *
+	 * 2. Rename all files inside the "membership-mygateway" and replace the
+	 *    term "manual" with "mygateway"
+	 *
+	 * 3. Edit all files, rename the class names inside the files to
+	 *    "_Mygateway" (replacing "_Manual")
+	 *
+	 * 4. In class MS_Gateway_Mygateway make following changes:
+	 *   - Set the value of const ID to "mygateway"
+	 *
+	 *   - Change the assigned name in function "after_load"
+	 *
+	 *   - Add a plugin header to the file, e.g.
+	 *     /*
+	 *      * Plugin name: Membership 2 Mygateway
+	 *      * /
+	 *
+	 *   - Add the following line to the bottom of the file:
+	 *     add_action( 'ms_init', 'mygateway_register' );
+	 *     function mygateway_register( $api ) {
+	 *         $api->register_payment_gateway(
+	 *             MS_Gateway_Mygateway::ID,
+	 *             'MS_Gateway_Mygateway'
+	 *         )
+	 *     }
+	 *
+	 * Now you have created a new plugin that registers a custom payment gateway
+	 * for Membership 2! Implementing the payment logic is up to you - you can
+	 * get a lot of insight by reviewing the existing payment gateways.
+	 *
+	 * @since 1.0.1.0
+	 * @api
+	 *
+	 * @param string $id The ID of the new gateway.
+	 * @param string $class The Class-name of the new gateway.
+	 */
+	public function register_payment_gateway( $id, $class ) {
+		$this->gateways[$id] = $class;
+		$this->add_action( 'ms_model_gateway_register', '_register_gateways' );
+	}
+
+	/**
+	 * Internal filter callback function that registers custom payment gateways.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 *
+	 * @param  array $gateways List of payment gateways.
+	 * @return array New list of payment gateways.
+	 */
+	public function _register_gateways( $gateways ) {
+		foreach ( $this->gateways as $id => $class ) {
+			$gateways[$id] = $class;
+		}
+
+		return $gateways;
 	}
 
 	/**

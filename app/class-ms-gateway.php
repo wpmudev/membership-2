@@ -1,29 +1,29 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Gateway parent model.
  *
- * Persisted by parent class MS_Model_Option. Singleton.
+ * Every payment gateway extends from this class.
+ * A payment gateway can process payments using three possible functions:
+ *
+ * function handle_return()
+ *   This function is called by M2 when the IPN URL was called.
+ *   E.g. calling "/ms-payment-return/paypalstandard" will trigger the function
+ *   handle_return() for the PayPal Standard gateway.
+ *   Subscription data must be fetched from the $_POST data collection.
+ *
+ * function process_purchase( $subscription )
+ *   Called automatically by M2 when a new subscription was created, i.e.
+ *   handles the first payment of any subscription.
+ *   This function might create a new customer account/etc via the gateway API.
+ *
+ * function request_payment( $subscription )
+ *   Called automatically by M2 when a payment is due, i.e. when the second
+ *   payment of a recurring subscription is due.
+ *
+ *
+ * A single gateway should not implement all three payment methods! Either use
+ *   handle_return   - or -
+ *   process_purchase and request_payment
  *
  * @since 1.1.0
  * @package Membership2
@@ -300,13 +300,13 @@ class MS_Gateway extends MS_Model_Option {
 	 * Overridden in child gateway classes.
 	 *
 	 * @since 1.0.0
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
 	 * @return bool True on success.
 	 */
-	public function request_payment( $ms_relationship ) {
+	public function request_payment( $subscription ) {
 		do_action(
 			'ms_gateway_request_payment',
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 

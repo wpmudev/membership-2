@@ -36,6 +36,8 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		$this->add_action( 'init', 'setup_posttype' );
+
 		$this->add_action( 'template_redirect', 'process_actions', 1 );
 
 		$this->add_action( 'ms_controller_gateway_settings_render_view', 'gateway_settings_edit' );
@@ -884,6 +886,34 @@ class MS_Controller_Gateway extends MS_Controller {
 		do_action(
 			'ms_controller_gateway_update_card',
 			$this
+		);
+	}
+
+	/**
+	 * Register a custom post type that is used to log all gateway transactions.
+	 *
+	 * This is an internal post type that cannot be viewed/used by anyone.
+	 * The only way to access the data is the log-viewer in the Billings page.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function setup_posttype() {
+		$args = array(
+			'supports'            => array(),
+			'hierarchical'        => false,
+			'public'              => false,
+			'show_ui'             => false,
+			'show_in_menu'        => false,
+			'show_in_admin_bar'   => false,
+			'show_in_nav_menus'   => false,
+			'can_export'          => false,
+			'has_archive'         => false,
+			'exclude_from_search' => true,
+			'publicly_queryable'  => false,
+		);
+		register_post_type(
+			MS_Helper_ListTable_TransactionLog::POST_TYPE,
+			$args
 		);
 	}
 
