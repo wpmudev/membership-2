@@ -931,6 +931,8 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *        "process": Process order (i.e. user comes from Payment screen)
 	 *        "request": Automatically request recurring payment
 	 * @param bool $success True means that the transaction was paid/successful.
+	 *        False indicates an error.
+	 *        NULL indicates a message that was intentionally skipped.
 	 * @param int $subscription_id
 	 * @param int $invoice_id
 	 * @param float $amount Payment amount.
@@ -949,10 +951,18 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$id = wp_insert_post( $post );
 
+		if ( $success ) {
+			$state = 'ok';
+		} elseif ( null === $success ) {
+			$state = 'ignored';
+		} else {
+			$state = 'err';
+		}
+
 		if ( $id ) {
 			add_post_meta( $id, '_gateway_id', $gateway_id, true );
 			add_post_meta( $id, '_method', $method, true );
-			add_post_meta( $id, '_success', $success, true );
+			add_post_meta( $id, '_success', $state, true );
 			add_post_meta( $id, '_subscription_id', $subscription_id, true );
 			add_post_meta( $id, '_invoice_id', $invoice_id, true );
 			add_post_meta( $id, '_amount', $amount, true );

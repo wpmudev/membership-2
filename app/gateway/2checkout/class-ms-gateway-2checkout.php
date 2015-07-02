@@ -80,50 +80,75 @@ class MS_Gateway_2checkout extends MS_Gateway {
 				$member = $subscription->get_member();
 				$subscription_id = $subscription->id;
 				$external_id = $_POST['invoice_id'];
+				$amount = (float) $_POST['invoice_list_amount'];
 
 				switch ( $_POST['message_type'] ) {
 					case 'RECURRING_INSTALLMENT_SUCCESS':
-						$notice = 'Payment received';
-						$success = true;
+						$notes = 'Payment received';
+
+						// Not sure if the invoice was already paid via the
+						// INVOICE_STATUS_CHANGED message
+						if ( ! $invoice->is_paid() ) {
+							$success = true;
+						}
+						break;
+
+					case 'INVOICE_STATUS_CHANGED':
+						$notes = sprintf(
+							'Invoice was %s',
+							$_POST['invoice_status']
+						);
+
+						switch ( $_POST['invoice_status'] ) {
+							case 'deposited':
+								// Not sure if invoice was already paid via the
+								// RECURRING_INSTALLMENT_SUCCESS message.
+								if ( ! $invoice->is_paid() ) {
+									$success = true;
+								}
+								break;
+
+							case 'declied':
+								$status = MS_Model_Invoice::STATUS_DENIED;
+								break;
+						}
 						break;
 
 					case 'RECURRING_STOPPED':
-						$notice = 'Recurring payments stopped manually';
+						$notes = 'Recurring payments stopped manually';
 						$member->cancel_membership( $membership->id );
 						$member->save();
 						break;
 
-					case 'INVOICE_STATUS_CHANGED':
-						$notice = sprintf(
-							'Ignored: Invoice was %s',
-							$_POST['invoice_status']
-						);
-						break;
-
 					case 'FRAUD_STATUS_CHANGED':
-						$notice = 'Ignored: Users Fraud-status was checked';
+						$notes = 'Ignored: Users Fraud-status was checked';
+						$success = null;
 						break;
 
 					case 'ORDER_CREATED':
-						$notice = 'Ignored: 2Checkout created a new order';
+						$notes = 'Ignored: 2Checkout created a new order';
+						$success = null;
 						break;
 
 					case 'RECURRING_RESTARTED':
-						$notice = 'Ignored: Recurring payments started';
+						$notes = 'Ignored: Recurring payments started';
+						$success = null;
 						break;
 
 					case 'RECURRING_COMPLETE':
-						$notice = 'Ignored: Recurring complete';
+						$notes = 'Ignored: Recurring complete';
+						$success = null;
 						break;
 
 					case 'RECURRING_INSTALLMENT_FAILED':
-						$notice = 'Ignored: Recurring payment failed';
+						$notes = 'Ignored: Recurring payment failed';
+						$success = null;
 						$status = MS_Model_Invoice::STATUS_PENDING;
 						break;
 
 					default:
-						$notice = sprintf(
-							'Ignored: Unclear command "%s"',
+						$notes = sprintf(
+							'Warning: Unclear command "%s"',
 							$_POST['message_type']
 						);
 						break;

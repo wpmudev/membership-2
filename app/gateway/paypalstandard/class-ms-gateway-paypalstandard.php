@@ -171,6 +171,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$notes_pay = __( 'Not handling payment_status: ', MS_TEXT_DOMAIN ) .
 								$_POST['payment_status'];
 							MS_Helper_Debug::log( $notes_pay );
+							$success = null;
 							break;
 					}
 				}
@@ -184,12 +185,15 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$notes_txn = __( 'Paypal subscripton profile has been created.', MS_TEXT_DOMAIN );
 							if ( 0 == $invoice->total ) {
 								$success = true;
+							} else {
+								if ( ! $success ) { $success = null; }
 							}
 							break;
 
 						case 'subscr_modify':
 							// Payment profile was modified
 							$notes_txn = __( 'Paypal subscription profile has been modified.', MS_TEXT_DOMAIN );
+							if ( ! $success ) { $success = null; }
 							break;
 
 						case 'recurring_payment_profile_canceled':
@@ -236,12 +240,14 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							 *   3. subscr_eot (subscription ends)
 							 */
 							$notes_txn = __( 'No more payments will be made for this subscription.', MS_TEXT_DOMAIN );
+							if ( ! $success ) { $success = null; }
 							break;
 
 						default:
 							// Other event that we do not have a case for...
 							$notes_txn = __( 'Not handling txn_type: ', MS_TEXT_DOMAIN ) . $_POST['txn_type'];
 							MS_Helper_Debug::log( $notes_txn );
+							if ( ! $success ) { $success = null; }
 							break;
 					}
 				}

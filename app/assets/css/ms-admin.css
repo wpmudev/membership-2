@@ -2079,6 +2079,10 @@
 .ms-wrap.ms-billing .log-err .log-status {
   background-color: #800;
 }
+#wpwrap .ms-wrap.ms-billing .log-ignore .log-status,
+.ms-wrap.ms-billing .log-ignore .log-status {
+  background-color: #888;
+}
 #wpwrap .ms-wrap.ms-billing .column-note,
 .ms-wrap.ms-billing .column-note {
   position: relative;

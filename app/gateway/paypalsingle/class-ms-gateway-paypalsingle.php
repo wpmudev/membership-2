@@ -192,6 +192,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 					default:
 					case 'Partially-Refunded':
 					case 'In-Progress':
+						$success = null;
 						break;
 				}
 

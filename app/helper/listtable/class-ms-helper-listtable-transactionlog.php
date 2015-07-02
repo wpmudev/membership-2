@@ -228,11 +228,28 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_status( $item, $column_name ) {
-		if ( $item->success ) {
-			$html = '<span class="log-status"><i class="wpmui-fa wpmui-fa-check"></i></span>';
-		} else {
-			$html = '<span class="log-status"><i class="wpmui-fa wpmui-fa-warning"></i></span>';
+		switch ( $item->status ) {
+			case 'ok':
+				$icon = 'wpmui-fa-check';
+				$hint = __( 'Success', MS_TEXT_DOMAIN );
+				break;
+
+			case 'ignore':
+				$icon = 'wpmui-fa-times';
+				$hint = __( 'Intentionally ignored', MS_TEXT_DOMAIN );
+				break;
+
+			default:
+				$icon = 'wpmui-fa-warning';
+				$hint = __( 'Error', MS_TEXT_DOMAIN );
+				break;
 		}
+
+		$html = sprintf(
+			'<span class="log-status" title="%2$s"><i class="wpmui-fa %1$s"></i></span>',
+			$icon,
+			$hint
+		);
 
 		return $html;
 	}
@@ -402,8 +419,10 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 				'post_data' => get_post_meta( $post->ID, '_post', true ),
 			);
 
-			if ( $item->success ) {
+			if ( lib2()->is_true( $item->success ) || 'ok' == $item->success ) {
 				$item->status = 'ok';
+			} elseif ( 'ignored' == $item->success ) {
+				$item->status = 'ignore';
 			} else {
 				$item->status = 'err';
 			}
