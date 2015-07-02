@@ -268,9 +268,41 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				);
 
 			} else {
-				$notes = 'Response Error: Unexpected transaction response';
+				$reason = 'Unexpected transaction response';
+				switch ( true ) {
+					case is_wp_error( $response ):
+						$reason = 'Response is error';
+						break;
+
+					case 200 != $response['response']['code']:
+						$reason = 'Response code is ' . $response['response']['code'];
+						break;
+
+					case empty( $response['body'] ):
+						$reason = 'Response is empty';
+						break;
+
+					case 'VERIFIED' != $response['body']:
+						$reason = sprintf(
+							'Expected response "%s" but got "%s"',
+							'VERIFIED',
+							(string) $response['body']
+						);
+						break;
+
+					case $invoice->id != $invoice_id:
+						$reason = sprintf(
+							'Expected invoice_id "%s" but got "%s"',
+							$invoice->id,
+							$invoice_id
+						);
+						break;
+				}
+
+				$notes = 'Response Error: ' . $reason;
 				MS_Helper_Debug::log( $notes );
 				MS_Helper_Debug::log( $response );
+				MS_Helper_Debug::log( $_POST );
 				$exit = true;
 			}
 		} else {
