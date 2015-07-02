@@ -124,6 +124,7 @@ class MS_Model_Upgrade extends MS_Model {
 			}
 
 			// Remove an old version of Protected Content
+			// TODO: REMOVE THIS BLOCK/FUNCTION END OF 2015
 			if ( $version_changed ) {
 				self::remove_old_copy();
 			}
@@ -177,8 +178,6 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade from any 1.0.x version to a higher version.
 	 */
 	static private function _upgrade_1_0_0_0() {
-		self::snapshot( '1.0.0.0' );
-
 		/*
 		 * Demo update process
 		 */
@@ -260,93 +259,6 @@ class MS_Model_Upgrade extends MS_Model {
 	#
 	#
 
-
-	/**
-	 * Creates a current DB Snapshot and clears all items from the update queue.
-	 *
-	 * @since  1.1.0.5
-	 * @param  string $next_version Used for snapshot file name.
-	 */
-	static private function snapshot( $next_version ) {
-		// Simply create a snapshot that we can restore later.
-		lib2()->updates->plugin( MS_TEXT_DOMAIN );
-		lib2()->updates->snapshot(
-			'upgrade_' . str_replace( '.', '_', $next_version ),
-			self::snapshot_data()
-		);
-
-		lib2()->updates->clear();
-	}
-
-	/**
-	 * Takes an __PHP_Incomplete_Class and casts it to a stdClass object.
-	 * All properties will be made public in this step.
-	 *
-	 * @since  1.1.0
-	 * @param  object $object __PHP_Incomplete_Class
-	 * @return object
-	 */
-	static public function fix_object( $object ) {
-		// preg_replace_callback handler. Needed to calculate new key-length.
-		$fix_key = create_function(
-			'$matches',
-			'return ":" . strlen( $matches[1] ) . ":\"" . $matches[1] . "\"";'
-		);
-
-		// Serialize the object to a string.
-		$dump = serialize( $object );
-
-		// Change class-type to 'stdClass'.
-		$dump = preg_replace( '/^O:\d+:"[^"]++"/', 'O:8:"stdClass"', $dump );
-
-		// Strip "private" and "protected" prefixes.
-		$dump = preg_replace_callback( '/:\d+:"\0.*?\0([^"]+)"/', $fix_key, $dump );
-
-		// Unserialize the modified object again.
-		return unserialize( $dump );
-	}
-
-	/**
-	 * Returns the option-keys and post-IDs that should be backed-up.
-	 *
-	 * @since  1.1.0.2
-	 * @internal
-	 *
-	 * @return object Snapshot data-definition.
-	 */
-	static private function snapshot_data() {
-		global $wpdb;
-		$data = (object) array();
-
-		// Options.
-		$sql = "
-			SELECT option_name
-			FROM {$wpdb->options}
-			WHERE
-				option_name LIKE 'ms_addon_%'
-				OR option_name LIKE 'ms_model_%'
-				OR option_name LIKE 'ms_gateway_%'
-		";
-		$data->options = $wpdb->get_col( $sql );
-
-		// Posts and Post-Meta
-		$sql = "
-			SELECT ID
-			FROM {$wpdb->posts}
-			WHERE
-				post_type IN (
-					'ms_membership',
-					'ms_relationship',
-					'ms_event',
-					'ms_invoice',
-					'ms_communication'
-					'ms_coupon'
-				)
-		";
-		$data->posts = $wpdb->get_col( $sql );
-
-		return $data;
-	}
 
 	/**
 	 * Completely whipe all Membership data from Database.
