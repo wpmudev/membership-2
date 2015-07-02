@@ -165,6 +165,14 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 				),
 				__( 'View Transactions', MS_TEXT_DOMAIN )
 			),
+			sprintf(
+				'<a href="%1$s">%2$s</a>',
+				MS_Controller_Plugin::get_admin_url(
+					'billing',
+					array( 'show' => 'logs', 'gateway_id' => $gateway->id )
+				),
+				__( 'View Logs', MS_TEXT_DOMAIN )
+			),
 		);
 
 		$actions = apply_filters(

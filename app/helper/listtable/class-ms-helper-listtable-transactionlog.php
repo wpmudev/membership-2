@@ -119,7 +119,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		);
 
 		$args = $this->get_query_args();
-		$this->count_items();
+		$total_items = $this->count_items();
 
 		$this->items = apply_filters(
 			'ms_helper_listtable_transactionlog_items',
@@ -129,7 +129,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$this->set_pagination_args(
 			array(
 				'total_items' => $total_items,
-				'per_page' => $args['posts_per_page'],
+				'per_page' => 20,
 			)
 		);
 	}
@@ -330,9 +330,23 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_note( $item, $column_name ) {
+		if ( ! empty( $item->post_data ) ) {
+			$post_data = array( 'POST data:' );
+			foreach ( $item->post_data as $key => $value ) {
+				$post_data[] = "[$key] = \"$value\"";
+			}
+			$post_info = sprintf(
+				'<div class="more-details">%2$s<div class="post-data">%1$s</div></div>',
+				implode( '<br>', $post_data ),
+				'<i class="wpmui-fa wpmui-fa-info-circle"></i>'
+			);
+		} else {
+			$post_info = '';
+		}
+
 		$html = sprintf(
 			'<div class="detail-block">%1$s</div>',
-			$item->note
+			$post_info . $item->note
 		);
 
 		return $html;
@@ -365,6 +379,11 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 */
 	protected function get_items( $args ) {
 		$args['post_type'] = self::POST_TYPE;
+		if ( ! empty( $args['meta_query'] ) ) {
+			if ( is_array( $args['meta_query']['gateway_id'] ) ) {
+				$args['meta_query']['gateway_id']['key'] = '_gateway_id';
+			}
+		}
 
 		$query = new WP_Query( $args );
 		$item = array();
@@ -380,6 +399,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 				'subscription_id' => get_post_meta( $post->ID, '_subscription_id', true ),
 				'invoice_id' => get_post_meta( $post->ID, '_invoice_id', true ),
 				'amount' => get_post_meta( $post->ID, '_amount', true ),
+				'post_data' => get_post_meta( $post->ID, '_post', true ),
 			);
 
 			if ( $item->success ) {
