@@ -70,10 +70,13 @@ class MS_Addon_Invitation extends MS_Addon {
 				'update_ms_posttypes'
 			);
 
-			// Show Coupon form in the payment-form (Frontend)
-			$this->add_action(
-				'ms_view_frontend_payment_after',
-				'payment_form_fields'
+			// ---------- FRONTEND ----------
+
+			// Check if an invitation code was specified or not.
+			$this->add_filter(
+				'ms_view_frontend_payment_data',
+				'check_invitation_code',
+				10, 4
 			);
 		}
 	}
@@ -350,13 +353,168 @@ class MS_Addon_Invitation extends MS_Addon {
 	}
 
 	/**
-	 * Output a form where the member can enter a coupon code
+	 * Called right before the payment form on the front end is displayed.
+	 * We check if the user already specified an invitation code or not.
+	 *
+	 * If no code was specified then we remove all payment buttons and display
+	 * an input field for the invitation code instead.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $data
+	 * @param  int $membership_id
+	 * @param  MS_Model_Relationship $subscription
+	 * @param  MS_Model_Member $member
+	 */
+	public function check_invitation_code( $data, $membership_id, $subscription, $member ) {
+		if ( ! empty( $_POST['invitation_code'] ) ) {
+			$invitation = apply_filters(
+				'ms_addon_invitation_model',
+				MS_Addon_Invitation_Model::load_by_code( $_POST['invitation_code'] )
+			);
+
+			$invitation->save_application( $subscription );
+		} else {
+			$invitation = MS_Addon_Invitation_Model::get_application(
+				$member->id,
+				$membership_id
+			);
+		}
+
+		if ( $invitation && ! empty( $_POST['remove_invitation_code'] ) ) {
+			$invitation->remove_application( $member->id, $membership_id );
+			$invitation = false;
+		}
+
+		$data['invitation'] = $invitation;
+		if ( $invitation ) {
+			$data['invitation_valid'] = $invitation->is_valid( $membership_id );
+		} else {
+			$data['invitation_valid'] = false;
+		}
+
+		if ( ! $data['invitation_valid'] ) {
+			// User has no valid invitation yet, hide all payment buttons
+			remove_all_actions( 'ms_view_frontend_payment_purchase_button' );
+
+			// Also remove any other input fields from the payment form, like coupon.
+			remove_all_actions( 'ms_view_frontend_payment_after_total_row' );
+			remove_all_actions( 'ms_view_frontend_payment_after' );
+		}
+
+		// Show Coupon form in the payment-form.
+		$this->add_action(
+			'ms_view_frontend_payment_purchase_button',
+			'payment_form_fields',
+			5, 3
+		);
+
+		return $data;
+	}
+
+	/**
+	 * Output a form where the member can enter a invitation code
 	 *
 	 * @since  1.0.0
+	 * @param  MS_Model_Relationship $subscription
+	 * @param  MS_Model_Invoice $invoice
+	 * @param  MS_View $view The parent view that renders the payment form.
 	 * @return string HTML code
 	 */
-	public function payment_form_fields( $data ) {
-		echo 'Invitation';
+	public function payment_form_fields( $subscription, $invoice, $view ) {
+		$data = $view->data;
+		$invitation = $data['invitation'];
+		$fields = array();
+		$message = '';
+		$code = '';
+
+		if ( $invitation ) {
+			$message = $invitation->invitation_message;
+			$code = $invitation->code;
+		}
+
+		if ( ! empty( $data['invitation_valid'] ) ) {
+			$fields = array(
+				'invitation_code' => array(
+					'id' => 'invitation_code',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $code,
+				),
+				'remove_invitation_code' => array(
+					'id' => 'remove_invitation_code',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Remove', MS_TEXT_DOMAIN ),
+					'label_class' => 'inline-label',
+					'title' => sprintf(
+						__( 'Using invitation code %s.', MS_TEXT_DOMAIN ),
+						$code
+					),
+					'button_value' => 1,
+				),
+			);
+		} else {
+			$fields = array(
+				'invitation_code' => array(
+					'id' => 'invitation_code',
+					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'value' => $code,
+				),
+				'apply_invitation_code' => array(
+					'id' => 'apply_invitation_code',
+					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'value' => __( 'Apply Invitation', MS_TEXT_DOMAIN ),
+				),
+			);
+
+			if ( ! $message ) {
+				$message = __( 'You need an invitation to register for this Membership', MS_TEXT_DOMAIN );
+			}
+		}
+
+		$fields['membership_id'] = array(
+			'id' => 'membership_id',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $data['membership']->id,
+		);
+		$fields['move_from_id'] = array(
+			'id' => 'move_from_id',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $data['ms_relationship']->move_from_id,
+		);
+		$fields['step'] = array(
+			'id' => 'step',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => MS_Controller_Frontend::STEP_PAYMENT_TABLE,
+		);
+
+		if ( ! empty( $data['invitation_valid'] ) ) {
+			$class = 'ms-alert-success';
+		} else {
+			$class = 'ms-alert-error';
+		}
+		?>
+		<tr class="ms-invitation-code">
+			<td colspan="2">
+				<form method="post">
+					<?php if ( $message ) : ?>
+					<p class="ms-alert-box <?php echo esc_attr( $class ); ?>"><?php
+						echo $message;
+					?></p>
+					<?php endif; ?>
+					<div class="invitation-entry">
+						<?php if ( ! isset( $data['invitation_valid'] ) ) : ?>
+							<div class="invitation-question"><?php
+							_e( 'Have an invitation code?', MS_TEXT_DOMAIN );
+							?></div>
+						<?php endif;
+
+						foreach ( $fields as $field ) {
+							MS_Helper_Html::html_element( $field );
+						}
+						?>
+					</div></form>
+			</td>
+		</tr>
+		<?php
 	}
 
 }

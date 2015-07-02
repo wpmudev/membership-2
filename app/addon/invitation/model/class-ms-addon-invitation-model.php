@@ -12,6 +12,19 @@
 class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 
 	/**
+	 * Time in seconds to use the invitation after its been applied.
+	 * This prevents users from applying an invitation code and keeping the
+	 * invoice on "pending" status for too long.
+	 *
+	 * Default value 3600 means 1 hour (60 sec * 60 min)
+	 *
+	 * @since 1.0.1.0
+	 *
+	 * @var int
+	 */
+	const INVITATION_REDEMPTION_TIME = 3600;
+
+	/**
 	 * Model custom post type.
 	 *
 	 * Both static and class property are used to handle php 5.2 limitations.
@@ -195,7 +208,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * @param string $code The invitation code used to load model
 	 * @return MS_Model_Invitation The invitation model, or null if not found.
 	 */
-	public static function load_by_invitation_code( $code ) {
+	public static function load_by_code( $code ) {
 		$code = sanitize_text_field( $code );
 
 		$args = array(
@@ -219,12 +232,132 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 			$invitation_id = $item[0];
 		}
 
-		$model = MS_Factory::load( 'MS_Model_Invitation', $invitation_id );
+		$model = MS_Factory::load( 'MS_Addon_Invitation_Model', $invitation_id );
+		if ( ! $model->is_valid() ) {
+			$model->invitation_message = __( 'Invitation code not found.', MS_TEXT_DOMAIN );
+		}
 
 		return apply_filters(
-			'ms_addon_invitation_model_load_by_invitation_code',
+			'ms_addon_invitation_model_load_by_code',
 			$model,
 			$code
+		);
+	}
+
+	/**
+	 * Returns the name of the transient value where the current users
+	 * invitation details are stored.
+	 *
+	 * @since  1.0.1.0
+	 * @param  int $user_id
+	 * @param  int $membership_id
+	 * @return string The transient name.
+	 */
+	protected static function get_transient_name( $user_id, $membership_id ) {
+		global $blog_id;
+
+		$key = apply_filters(
+			'ms_addon_invitation_model_transient_name',
+			"ms_invitation_{$blog_id}_{$user_id}_{$membership_id}"
+		);
+
+		return substr( $key, 0, 40 );
+	}
+
+	/**
+	 * Save invitation application.
+	 *
+	 * Saving the application to keep track of the application in gateway return.
+	 * Using INVITATION_REDEMPTION_TIME to expire invitation application.
+	 *
+	 * This is a non-static function, as it saves the current object!
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param MS_Model_Relationship $subscription The subscription to apply the invitation.
+	 */
+	public function save_application( $subscription ) {
+		$membership = $subscription->get_membership();
+
+		$time = apply_filters(
+			'ms_addon_invitation_model_save_application_redemption_time',
+			self::INVITATION_REDEMPTION_TIME
+		);
+
+		// Grab the user account as we should be logged in by now.
+		$user = MS_Model_Member::get_current_member();
+
+		$key = self::get_transient_name( $user->id, $membership->id );
+
+		$transient = apply_filters(
+			'ms_addon_invitation_model_transient_value',
+			array(
+				'id' => $this->id,
+				'user_id' => $user->id,
+				'membership_id'	=> $membership->id,
+				'message' => $this->invitation_message,
+			)
+		);
+
+		MS_Factory::set_transient( $key, $transient, $time );
+		$this->save();
+
+		do_action(
+			'ms_addon_invitation_model_save_application',
+			$subscription,
+			$this
+		);
+	}
+
+	/**
+	 * Get user's invitation application.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $user_id The user id.
+	 * @param int $membership_id The membership id.
+	 * @return MS_Addon_Invitation_Model The invitation model object.
+	 */
+	public static function get_application( $user_id, $membership_id ) {
+		$key = self::get_transient_name( $user_id, $membership_id );
+
+		$transient = MS_Factory::get_transient( $key );
+
+		$invitation = null;
+		if ( is_array( $transient ) && ! empty( $transient['id'] ) ) {
+			$the_id = intval( $transient['id'] );
+			$invitation = MS_Factory::load( 'MS_Addon_Invitation_Model', $the_id );
+			$invitation->invitation_message = $transient['message'];
+		} else {
+			$invitation = MS_Factory::load( 'MS_Addon_Invitation_Model' );
+		}
+
+		return apply_filters(
+			'ms_addon_invitation_model_get_application',
+			$invitation,
+			$user_id,
+			$membership_id
+		);
+	}
+
+	/**
+	 * Remove user application for this invitation.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $user_id The user id.
+	 * @param int $membership_id The membership id.
+	 */
+	public static function remove_application( $user_id, $membership_id ) {
+		$key = self::get_transient_name( $user_id, $membership_id );
+
+		MS_Factory::delete_transient( $key );
+
+		do_action(
+			'ms_addon_invitation_model_remove_application',
+			$user_id,
+			$membership_id,
+			$this
 		);
 	}
 
@@ -246,12 +379,10 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * @param  int $membership_id
 	 * @return bool True if the invitation can be used for the membership.
 	 */
-	public function is_valid_invitation( $membership_id = 0 ) {
+	public function is_valid( $membership_id = 0 ) {
 		$valid = true;
-		$this->invitation_message = null;
 
 		if ( empty( $this->code ) ) {
-			$this->invitation_message = __( 'Invitation code not found.', MS_TEXT_DOMAIN );
 			$valid = false;
 		}
 
@@ -269,12 +400,16 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		} elseif ( ! $this->check_invitation_user_usage() ) {
 			$this->invitation_message = __( 'You have already used this invitation code.', MS_TEXT_DOMAIN );
 			$valid = false;
-		} else {
-			foreach ( $this->membership_id as $valid_id ) {
-				if ( 0 == $valid_id || $valid_id == $membership_id ) {
-					$membership_allowed = true;
-					break;
+		} elseif ( ! empty( $this->code ) ) {
+			if ( is_array( $this->membership_id ) ) {
+				foreach ( $this->membership_id as $valid_id ) {
+					if ( 0 == $valid_id || $valid_id == $membership_id ) {
+						$membership_allowed = true;
+						break;
+					}
 				}
+			} elseif ( '0' == $this->membership_id ) {
+				$membership_allowed = true;
 			}
 			if ( ! $membership_allowed ) {
 				$this->invitation_message = __( 'This Invitation is not valid for this membership.', MS_TEXT_DOMAIN );
@@ -283,7 +418,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		}
 
 		return apply_filters(
-			'ms_invitation_model_is_valid_invitation',
+			'ms_invitation_model_is_valid',
 			$valid,
 			$this
 		);
@@ -428,8 +563,16 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 					break;
 
 				case 'membership_id':
-					if ( ! $value || MS_Model_Membership::is_valid_membership( $value ) ) {
-						$this->$property = $value;
+					$value = lib2()->array->get( $value );
+					foreach ( $value as $ind => $id ) {
+						if ( ! MS_Model_Membership::is_valid_membership( $id ) ) {
+							unset( $value[ $ind ] );
+						}
+					}
+					if ( empty( $value ) ) {
+						$this->$property = array( 0 );
+					} else {
+						$this->$property = array_values( $value );
 					}
 					break;
 
