@@ -346,7 +346,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					$this
 				);
 
-				echo '' . $html;
+				echo $html;
 			}
 		}
 

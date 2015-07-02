@@ -124,8 +124,9 @@ class MS_Addon_Coupon extends MS_Addon {
 
 			// Show Coupon form in the payment-form (Frontend)
 			$this->add_action(
-				'ms_view_frontend_payment_after',
-				'payment_coupon_form'
+				'ms_view_frontend_payment_after_total_row',
+				'payment_coupon_form',
+				6, 3
 			);
 
 			// Update Coupon-Counter when invoice is paid
@@ -492,9 +493,13 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * Output a form where the member can enter a coupon code
 	 *
 	 * @since  1.0.0
+	 * @param  MS_Model_Relationship $subscription
+	 * @param  MS_Model_Invoice $invoice
+	 * @param  MS_View $view The parent view that renders the payment form.
 	 * @return string HTML code
 	 */
-	public function payment_coupon_form( $data ) {
+	public function payment_coupon_form( $subscription, $invoice, $view ) {
+		$data = $view->data;
 		$coupon = $data['coupon'];
 		$coupon_message = '';
 		$fields = array();
@@ -509,7 +514,9 @@ class MS_Addon_Coupon extends MS_Addon {
 				'remove_coupon_code' => array(
 					'id' => 'remove_coupon_code',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Remove Coupon', MS_TEXT_DOMAIN ),
+					'value' => __( 'Remove', MS_TEXT_DOMAIN ),
+					'label_class' => 'inline-label',
+					'title' => $coupon->coupon_message,
 					'button_value' => 1,
 				),
 			);
@@ -526,9 +533,8 @@ class MS_Addon_Coupon extends MS_Addon {
 					'value' => __( 'Apply Coupon', MS_TEXT_DOMAIN ),
 				),
 			);
+			$coupon_message = $coupon->coupon_message;
 		}
-
-		$coupon_message = $coupon->coupon_message;
 
 		$fields['membership_id'] = array(
 			'id' => 'membership_id',
@@ -553,6 +559,8 @@ class MS_Addon_Coupon extends MS_Addon {
 		}
 
 		?>
+		<tr class="ms-invitation-code">
+		<td colspan="2">
 		<div class="membership-coupon">
 			<div class="membership_coupon_form couponbar">
 				<form method="post">
@@ -572,10 +580,9 @@ class MS_Addon_Coupon extends MS_Addon {
 							MS_Helper_Html::html_element( $field );
 						}
 						?>
-					</div>
-				</form>
-			</div>
-		</div>
+					</div></form></div></div>
+		</td>
+		</tr>
 		<?php
 	}
 
@@ -589,7 +596,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	public function invoice_paid( $invoice, $member ) {
 		if ( $invoice->coupon_id ) {
 			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
-			$coupon->remove_coupon_application( $member->id, $invoice->membership_id );
+			$coupon->remove_application( $member->id, $invoice->membership_id );
 			$coupon->used++;
 			$coupon->save();
 		}
@@ -611,12 +618,12 @@ class MS_Addon_Coupon extends MS_Addon {
 		if ( isset( $_POST['apply_coupon_code'] ) ) {
 			$coupon = apply_filters(
 				'ms_addon_coupon_model',
-				MS_Addon_Coupon_Model::load_by_coupon_code( $_POST['coupon_code'] )
+				MS_Addon_Coupon_Model::load_by_code( $_POST['coupon_code'] )
 			);
 
-			$coupon->save_coupon_application( $subscription );
+			$coupon->save_application( $subscription );
 		} else {
-			$coupon = MS_Addon_Coupon_Model::get_coupon_application(
+			$coupon = MS_Addon_Coupon_Model::get_application(
 				$member->id,
 				$membership->id
 			);
@@ -628,13 +635,13 @@ class MS_Addon_Coupon extends MS_Addon {
 				);
 				$invoice->add_notes( $note );
 
-				$coupon->remove_coupon_application( $member->id, $membership->id );
+				$coupon->remove_application( $member->id, $membership->id );
 				$coupon = false;
 			}
 		}
 		self::the_coupon( $coupon );
 
-		if ( $coupon && $coupon->is_valid_coupon( $membership->id ) ) {
+		if ( $coupon && $coupon->is_valid( $membership->id ) ) {
 			$discount = $coupon->get_discount_value( $subscription );
 			$invoice->coupon_id = $coupon->id;
 			$invoice->discount = $discount;
@@ -669,7 +676,7 @@ class MS_Addon_Coupon extends MS_Addon {
 		$data['coupon_valid'] = false;
 
 		if ( ! empty( $_POST['coupon_code'] ) ) {
-			$coupon = MS_Addon_Coupon_Model::get_coupon_application(
+			$coupon = MS_Addon_Coupon_Model::get_application(
 				$member->id,
 				$membership_id
 			);

@@ -47,12 +47,25 @@ class MS_View_Frontend_Payment extends MS_View {
 		// Check if the user goes through a trial period before first payment.
 		$is_trial = $invoice->uses_trial;
 
-		if ( ! MS_Model_Member::is_admin_user()
+		$skip_form = ! MS_Model_Member::is_admin_user()
 			&& ! $cancel_warning
-			&& $membership->is_free()
-		) {
-			// No confirmation required. Simply register for this membership!
+			&& $membership->is_free();
 
+		/**
+		 * Filter the flag to allow Add-ons like "Invitation codes" to override
+		 * the state and force the form to display.
+		 *
+		 * @var bool
+		 */
+		$skip_form = apply_filters(
+			'ms_view_frontend_payment_skip_form',
+			$skip_form,
+			$invoice,
+			$this
+		);
+
+		if ( $skip_form ) {
+			// No confirmation required. Simply register for this membership!
 			$args = array();
 			$args['ms_relationship_id'] = $subscription->id;
 			$args['gateway'] = MS_Gateway_Free::ID;
@@ -71,6 +84,13 @@ class MS_View_Frontend_Payment extends MS_View {
 		}
 
 		$show_tax = MS_Model_Addon::is_enabled( MS_Addon_Taxamo::ID );
+
+		/**
+		 * Trigger an action before the payment form is displayed. This hook
+		 * can be used by Add-ons or plugins to initialize payment settings or
+		 * add custom code.
+		 */
+		do_action( 'ms_view_frontend_payment_form_start', $invoice, $this );
 
 		ob_start();
 		?>
@@ -215,10 +235,20 @@ class MS_View_Frontend_Payment extends MS_View {
 							</td>
 						</tr>
 					<?php endif; ?>
+
+					<?php
+					do_action(
+						'ms_view_frontend_payment_after_total_row',
+						$subscription,
+						$invoice,
+						$this
+					);
+					?>
+
 					<tr>
 						<td class="ms-desc-column" colspan="2">
 							<span class="ms-membership-description"><?php
-								echo '' . $subscription->get_payment_description( $invoice );
+								echo $subscription->get_payment_description( $invoice );
 							?></span>
 						</td>
 					</tr>
@@ -249,7 +279,8 @@ class MS_View_Frontend_Payment extends MS_View {
 					do_action(
 						'ms_view_frontend_payment_purchase_button',
 						$subscription,
-						$invoice
+						$invoice,
+						$this
 					);
 				endif;
 				?>
@@ -266,7 +297,12 @@ class MS_View_Frontend_Payment extends MS_View {
 		<div style="clear:both;"></div>
 		<?php
 
-		return ob_get_clean();
+		$html = apply_filters(
+			'ms_view_frontend_payment_form',
+			ob_get_clean(),
+			$this
+		);
+		return $html;
 	}
 
 }
