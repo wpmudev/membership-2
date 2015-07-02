@@ -2079,6 +2079,43 @@
 .ms-wrap.ms-billing .log-err .log-status {
   background-color: #800;
 }
+#wpwrap .ms-wrap.ms-billing .column-note,
+.ms-wrap.ms-billing .column-note {
+  position: relative;
+}
+#wpwrap .ms-wrap.ms-billing .more-details,
+.ms-wrap.ms-billing .more-details {
+  display: inline-block;
+  width: 16px;
+  text-align: center;
+}
+#wpwrap .ms-wrap.ms-billing .more-details .post-data,
+.ms-wrap.ms-billing .more-details .post-data {
+  display: none;
+  position: absolute;
+  top: 26px;
+  left: 0;
+  right: 0;
+  background: #333;
+  padding: 10px;
+  z-index: 2;
+  color: #EEE;
+  text-align: left;
+  white-space: pre;
+}
+#wpwrap .ms-wrap.ms-billing .more-details .post-data:before,
+.ms-wrap.ms-billing .more-details .post-data:before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: -10px;
+  border: 5px solid transparent;
+  border-bottom-color: #333;
+}
+#wpwrap .ms-wrap.ms-billing .more-details:hover .post-data,
+.ms-wrap.ms-billing .more-details:hover .post-data {
+  display: block;
+}
 
 /**
  * Special styles used on "Membership2" and "Accessible Content" pages

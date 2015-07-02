@@ -107,5 +107,40 @@
 				background-color: #800;
 			}
 		}
+
+		.column-note {
+			position: relative;
+		}
+
+		.more-details {
+			display: inline-block;
+			width: 16px;
+			text-align: center;
+
+			.post-data {
+				display: none;
+				position: absolute;
+				top: 26px;
+				left: 0;
+				right: 0;
+				background: #333;
+				padding: 10px;
+				z-index: 2;
+				color: #EEE;
+				text-align: left;
+				white-space: pre;
+			}
+			.post-data:before {
+				content: '';
+				position: absolute;
+				left: 9px;
+				top: -10px;
+				border: 5px solid transparent;
+				border-bottom-color: #333;
+			}
+			&:hover .post-data {
+				display: block;
+			}
+		}
 	}
 }
