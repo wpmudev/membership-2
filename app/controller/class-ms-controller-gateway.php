@@ -899,6 +899,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 */
 	public function setup_posttype() {
 		$args = array(
+			'label' => __( 'Membership2 Transaction Logs', MS_TEXT_DOMAIN ),
 			'supports'            => array(),
 			'hierarchical'        => false,
 			'public'              => false,
