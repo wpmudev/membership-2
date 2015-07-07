@@ -12,6 +12,7 @@ Change Log:
 - Improve the layout of the coupon fields during in the payment form
 - Fix possible memory issue that happened when updating the plugin
 - Fix the invitation code Add-on (integration in payment form was not working)
+- Fix a caching issue that caused problems with Subscriptions when memcache was enabled
 
 1.0.0.8
 ----------------------------------------------------------------------

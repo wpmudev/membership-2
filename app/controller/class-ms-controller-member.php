@@ -204,9 +204,13 @@ class MS_Controller_Member extends MS_Controller {
 		$this->_resp_reset();
 
 		$required = array( 'member' );
-		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'permission denied' ); }
-		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'subscribe: nonce' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'subscribe: required' ); }
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) {
+			$this->_resp_err( 'permission denied' );
+		} elseif ( $this->_resp_ok() && ! $this->verify_nonce() ) {
+			$this->_resp_err( 'subscribe: nonce' );
+		} elseif ( $this->_resp_ok() && ! self::validate_required( $required ) ) {
+			$this->_resp_err( 'subscribe: required' );
+		}
 
 		if ( $this->_resp_ok() ) {
 			$values = array();
@@ -221,7 +225,7 @@ class MS_Controller_Member extends MS_Controller {
 		}
 		$msg .= $this->_resp_code();
 
-		echo '' . $msg;
+		echo $msg;
 		exit;
 	}
 

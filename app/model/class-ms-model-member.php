@@ -835,6 +835,13 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public function __sleep() {
 		return array(
+			'id',
+			'username',
+			'email',
+			'name',
+			'first_name',
+			'last_name',
+			'subscriptions',
 			'is_member',
 			'active',
 			'gateway_profiles',
