@@ -72,7 +72,12 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'subject' => array(
 				'id' => 'subject',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Message Subject', MS_TEXT_DOMAIN ),
+				'title' => apply_filters(
+					'ms_translation_flag',
+					__( 'Message Subject', MS_TEXT_DOMAIN ),
+					'cpt',
+					'communication-subject'
+				),
 				'value' => $comm->subject,
 				'class' => 'ms-comm-subject widefat',
 			),
@@ -80,6 +85,12 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'email_body' => array(
 				'id' => 'email_body',
 				'type' => MS_Helper_Html::INPUT_TYPE_WP_EDITOR,
+				'title' => apply_filters(
+					'ms_translation_flag',
+					'',
+					'cpt',
+					'communication-body'
+				),
 				'value' => $comm->description,
 				'field_options' => array(
 					'media_buttons' => false,

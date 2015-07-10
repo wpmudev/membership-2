@@ -2205,6 +2205,7 @@
   /* SETTINGS GATEWAY */
   /* MEMBERS LIST */
   /* MEDIA /DOWNLOADS TAB */
+  /* AUTOMATED EMAIL RESPONSES */
 }
 .wpmui-wnd .ms-settings-wrapper,
 #wpwrap .ms-wrap .ms-settings-wrapper {
@@ -2738,6 +2739,11 @@
 .wpmui-wnd .wpmui-description-masked_url,
 #wpwrap .ms-wrap .wpmui-description-masked_url {
   display: inline-block;
+}
+.wpmui-wnd .ms-settings-messages_automated .wpmui-label-email_body .ms-wpml-support,
+#wpwrap .ms-wrap .ms-settings-messages_automated .wpmui-label-email_body .ms-wpml-support {
+  position: absolute;
+  margin-top: 24px;
 }
 
 .wpmui-wnd.ms-setup-done .the-title {

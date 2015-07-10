@@ -560,6 +560,14 @@
 	.wpmui-description-masked_url {
 		display: inline-block;
 	}
+
+	/* AUTOMATED EMAIL RESPONSES */
+	.ms-settings-messages_automated {
+		.wpmui-label-email_body .ms-wpml-support {
+			position: absolute;
+			margin-top: 24px;
+		}
+	}
 }
 
 .wpmui-wnd.ms-setup-done {

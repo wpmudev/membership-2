@@ -1,0 +1,74 @@
+.ms-wpml-support {
+	margin: 0 0 0 8px;
+	display: inline-block;
+	font-size: 12px;
+	padding: 0;
+	line-height: 20px;
+	vertical-align: top;
+	cursor: default;
+	position: relative;
+	z-index: 2;
+}
+
+.ms-wpml-support > .wpml-icon {
+	color: #21759B; /* The primary WPML brand color (blue) */
+}
+
+.ms-wpml-support.type-string > .wpml-icon {
+	color: #D54E21; /* The secondary WPML brand color (red) */
+}
+
+.ms-wpml-support.warning {
+	color: #AAA;
+}
+
+.ms-wpml-support.warning > .wpml-icon {
+	opacity: 0.5;
+}
+
+.ms-wpml-support .warning-icon {
+	position: absolute;
+	left: 10px;
+	top: 0;
+	z-index: 2;
+	color: #888;
+	font-size: 11px;
+}
+
+.ms-wpml-support:hover .warning-icon {
+	color: #B00;
+}
+
+.ms-wpml-support .details {
+	display: none;
+	position: absolute;
+	left: 20px;
+	top: 0;
+	padding: 0;
+	line-height: 16px;
+	color: #21759B; /* The primary WPML brand color (blue) */
+	background-color: rgba(255, 255, 255, 0.85);
+	margin: 2px 0 0 4px;
+	border-radius: 2px;
+	width: 200px;
+	text-align: center;
+	box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.15);
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.ms-wpml-support:hover .details {
+	display: block;
+}
+
+.ms-wpml-support .detail-title {
+	text-align: center;
+	padding: 3px;
+	font-weight: bold;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.ms-wpml-support .detail-infos {
+	text-align: left;
+	padding: 4px;
+	font-weight: normal;
+}

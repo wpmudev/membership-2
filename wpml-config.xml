@@ -1,0 +1,102 @@
+<wpml-config>
+	<custom-types>
+		<custom-type translate="1">ms_communication</custom-type>
+		<custom-type translate="0">ms_membership</custom-type>
+		<custom-type translate="0">ms_relationship</custom-type>
+		<custom-type translate="0">ms_invoice</custom-type>
+		<custom-type translate="0">ms_event</custom-type>
+		<custom-type translate="0">ms_transaction_log</custom-type>
+	</custom-types>
+
+	<custom-fields>
+		<custom-field action="ignore">_gateway_id</custom-field>
+		<custom-field action="ignore">_amount</custom-field>
+		<custom-field action="ignore">_invoice_id</custom-field>
+		<custom-field action="ignore">_method</custom-field>
+		<custom-field action="ignore">_post</custom-field>
+		<custom-field action="ignore">_subscription_id</custom-field>
+		<custom-field action="ignore">_success</custom-field>
+		<custom-field action="ignore">_url</custom-field>
+
+		<custom-field action="ignore">amount</custom-field>
+		<custom-field action="ignore">active</custom-field>
+		<custom-field action="ignore">coupon_id</custom-field>
+		<custom-field action="ignore">currency</custom-field>
+		<custom-field action="ignore">current_invoice_number</custom-field>
+		<custom-field action="ignore">custom_data</custom-field>
+		<custom-field action="ignore">date</custom-field>
+		<custom-field action="ignore">description</custom-field>
+		<custom-field action="ignore">disabled_gateways</custom-field>
+		<custom-field action="ignore">discount</custom-field>
+		<custom-field action="ignore">discount_type</custom-field>
+		<custom-field action="ignore">due_date</custom-field>
+		<custom-field action="ignore">duration</custom-field>
+		<custom-field action="ignore">expire_date</custom-field>
+		<custom-field action="ignore">external_id</custom-field>
+		<custom-field action="ignore">gateway_id</custom-field>
+		<custom-field action="ignore">id</custom-field>
+		<custom-field action="ignore">invoice_date</custom-field>
+		<custom-field action="ignore">invoice_number</custom-field>
+		<custom-field action="ignore">is_free</custom-field>
+		<custom-field action="ignore">is_setup_completed</custom-field>
+		<custom-field action="ignore">is_simulated</custom-field>
+		<custom-field action="ignore">max_uses</custom-field>
+		<custom-field action="ignore">membership_id</custom-field>
+		<custom-field action="ignore">move_from_id</custom-field>
+		<custom-field action="ignore">ms_relationship_id</custom-field>
+		<custom-field action="ignore">name</custom-field>
+		<custom-field action="ignore">notes</custom-field>
+		<custom-field action="ignore">on_end_membership_id</custom-field>
+		<custom-field action="ignore">payments</custom-field>
+		<custom-field action="ignore">payment_type</custom-field>
+		<custom-field action="ignore">pay_cycle_period</custom-field>
+		<custom-field action="ignore">pay_cycle_repetitions</custom-field>
+		<custom-field action="ignore">period</custom-field>
+		<custom-field action="ignore">period_date_end</custom-field>
+		<custom-field action="ignore">period_date_start</custom-field>
+		<custom-field action="ignore">period_enabled</custom-field>
+		<custom-field action="ignore">post_modified</custom-field>
+		<custom-field action="ignore">price</custom-field>
+		<custom-field action="ignore">price_date</custom-field>
+		<custom-field action="ignore">private</custom-field>
+		<custom-field action="ignore">pro_rate</custom-field>
+		<custom-field action="ignore">queue</custom-field>
+		<custom-field action="ignore">rule_values</custom-field>
+		<custom-field action="ignore">sent_queue</custom-field>
+		<custom-field action="ignore">short_description</custom-field>
+		<custom-field action="ignore">source</custom-field>
+		<custom-field action="ignore">start_date</custom-field>
+		<custom-field action="ignore">status</custom-field>
+		<custom-field action="ignore">subject</custom-field>
+		<custom-field action="ignore">subtotal</custom-field>
+		<custom-field action="ignore">tax_name</custom-field>
+		<custom-field action="ignore">tax_rate</custom-field>
+		<custom-field action="ignore">title</custom-field>
+		<custom-field action="ignore">topic</custom-field>
+		<custom-field action="ignore">total</custom-field>
+		<custom-field action="ignore">trial_ends</custom-field>
+		<custom-field action="ignore">trial_period</custom-field>
+		<custom-field action="ignore">trial_period_completed</custom-field>
+		<custom-field action="ignore">trial_period_enabled</custom-field>
+		<custom-field action="ignore">trial_price</custom-field>
+		<custom-field action="ignore">type</custom-field>
+		<custom-field action="ignore">used</custom-field>
+		<custom-field action="ignore">user_id</custom-field>
+		<custom-field action="ignore">uses_trial</custom-field>
+		<custom-field action="ignore">use_details</custom-field>
+	</custom-fields>
+
+	<admin-texts>
+		<key name="ms_model_settings">
+			<key name="protection_messages">
+				<key name="content" />
+				<key name="shortcode" />
+				<key name="more_tag" />
+			</key>
+		</key>
+		<key name="ms_gateway_*">
+			<key name="pay_button_url" />
+			<key name="payment_info" />
+		</key>
+	</admin-texts>
+</wpml-config>
