@@ -31,7 +31,7 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 			<script
 				src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 				data-key="<?php echo esc_attr( $gateway->get_publishable_key() ); ?>"
-				data-amount="<?php echo esc_attr( absint( $invoice->total * 100 ) ); //amount in cents ?>"
+				data-amount="<?php echo esc_attr( ceil(abs( $invoice->total * 100 )) ); //amount in cents ?>"
 				data-name="<?php echo esc_attr( bloginfo( 'name' ) ); ?>"
 				data-description="<?php echo esc_attr( strip_tags( $invoice->short_description ) ); ?>"
 				data-currency="<?php echo esc_attr( $invoice->currency ); ?>"
