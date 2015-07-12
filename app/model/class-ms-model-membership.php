@@ -1550,7 +1550,30 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get a list of all subscriptions to this membership.
+	 *
+	 * Note that this function will also return expired/cancelled subscriptions.
+	 *
+	 * @since 1.0.1.0
+	 * @api
+	 *
+	 * @return array All subscriptions.
+	 */
+	public function get_subscriptions() {
+		$subscriptions = MS_Model_Relationship::get_subscriptions(
+			array( 'membership_id' => $this->id )
+		);
+
+		return apply_filters(
+			'ms_model_membership_get_subscriptions',
+			$subscriptions
+		);
+	}
+
+	/**
 	 * Get members count of this membership.
+	 *
+	 * This will also count members that have cancelled/expired subscriptions.
 	 *
 	 * @since 1.0.0
 	 * @api
