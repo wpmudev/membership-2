@@ -1176,6 +1176,15 @@ class MS_Model_Member extends MS_Model {
 			} else {
 				$subscription = $this->subscriptions[ $membership_id ];
 			}
+
+			// Reset the status and start/expire dates when added by admin.
+			if ( 'admin' == $gateway_id ) {
+				$subscription->start_date = null; // Will calculate correct date.
+				$subscription->trial_expire_date = null;
+				$subscription->expire_date = null;
+				$subscription->status = MS_Model_Relationship::STATUS_ACTIVE;
+				$subscription->save();
+			}
 		}
 
 		return apply_filters(
