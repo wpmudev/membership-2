@@ -29,7 +29,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->run_action( 'set_current_user', 'init_adminbar' );
+		$this->run_action( 'init', 'init_adminbar', 1 );
 	}
 
 	/**

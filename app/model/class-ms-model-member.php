@@ -614,7 +614,8 @@ class MS_Model_Member extends MS_Model {
 				 *
 				 * @var string|bool A WordPress capability or boolean false.
 				 */
-				$capability = MS_Plugin::instance()->controller->capability;
+				$controller = MS_Plugin::instance()->controller;
+				$capability = $controller->capability;
 
 				if ( ! empty( $capability ) ) {
 					if ( empty( $user_id ) ) {

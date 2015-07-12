@@ -16,7 +16,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->init();
+		$this->run_action( 'init', 'init' );
 	}
 
 	/**

@@ -683,7 +683,7 @@ class MS_Plugin {
 	 * @return MS_Plugin
 	 */
 	public static function instance() {
-		if ( is_null( self::$instance ) ) {
+		if ( ! self::$instance ) {
 			self::$instance = new MS_Plugin();
 
 			self::$instance = apply_filters(
