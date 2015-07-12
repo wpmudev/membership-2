@@ -1,26 +1,5 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Displays the Setup form.
  * Used in both the success popup when creating the first membership and in the
  * settings page.
@@ -118,10 +97,10 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			<div class="ms-setup-site">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-admin-network"></i>
-					<?php _e( 'Select the Site that hosts Membership2 Pages', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Select the Site that hosts Membership 2 Pages', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<div class="ms-description">
-					<?php _e( 'When you change the site new Membership2 Pages are created on the selected site. You can customize or replace these pages at any time.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'When you change the site new Membership 2 Pages are created on the selected site. You can customize or replace these pages at any time.', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<?php
 				$site_options = MS_Helper_Settings::get_blogs();
@@ -129,7 +108,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					array(
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'id' => 'network_site',
-						'title' => __( 'Select the site that hosts the Membership2 Pages', MS_TEXT_DOMAIN ),
+						'title' => __( 'Select the site that hosts the Membership 2 Pages', MS_TEXT_DOMAIN ),
 						'value' => MS_Model_Pages::get_site_info( 'id' ),
 						'field_options' => $site_options,
 						'class' => 'ms-site-options',
@@ -178,75 +157,79 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			<div class="ms-setup-pages">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-admin-page"></i>
-					<?php _e( 'Membership2 Pages', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Membership 2 Pages', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<div class="ms-description">
-					<?php _e( 'Set Up Membership2 Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Set Up Membership 2 Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
 				</div>
 				<?php
 
-				$page_types = array_keys( $fields['pages'] );
-				$page_types_menu = array(
-					'memberships',
-					'register',
-					'account',
-				);
-				$page_types_rest = array_diff( $page_types, $page_types_menu );
-				$groups = array(
-					'in-menu' => $page_types_menu,
-					'no-menu' => $page_types_rest,
-				);
+				if ( is_array( $fields['pages'] ) ) {
+					$page_types = array_keys( $fields['pages'] );
+					$page_types_menu = array(
+						'memberships',
+						'register',
+						'account',
+					);
+					$page_types_rest = array_diff( $page_types, $page_types_menu );
+					$groups = array(
+						'in-menu' => $page_types_menu,
+						'no-menu' => $page_types_rest,
+					);
 
-				$pages_site_id = MS_Model_Pages::get_site_info( 'id' );
-				MS_Factory::select_blog( $pages_site_id );
+					$pages_site_id = MS_Model_Pages::get_site_info( 'id' );
+					MS_Factory::select_blog( $pages_site_id );
 
-				foreach ( $groups as $group_key => $group_items ) :
-					printf( '<div class="ms-pages-group %1$s">', esc_attr( $group_key ) );
+					foreach ( $groups as $group_key => $group_items ) :
+						printf( '<div class="ms-pages-group %1$s">', esc_attr( $group_key ) );
 
-					foreach ( $group_items as $key ) :
-						$field = $fields['pages'][$key];
-						?>
-						<div class="ms-settings-page-wrapper">
-							<?php MS_Helper_Html::html_element( $field ); ?>
-							<div class="ms-action">
-								<?php
-								MS_Helper_Html::html_link(
-									array(
-										'id' => 'url_page_' . $field['value'],
-										'url' => '',
-										'value' => __( 'View Page', MS_TEXT_DOMAIN ),
-										'target' => '_blank',
-										'data_ms' => array(
-											'base' => get_home_url(
-												$pages_site_id, 'index.php?page_id='
-											)
-										),
-									)
-								);
-								?>
-								<span> | </span>
-								<?php
-								MS_Helper_Html::html_link(
-									array(
-										'id' => 'edit_url_page_' . $field['value'],
-										'url' => '',
-										'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
-										'target' => '_blank',
-										'data_ms' => array(
-											'base' => get_admin_url(
-												$pages_site_id, 'post.php?action=edit&post='
-											)
-										),
-									)
-								);
-								?>
+						foreach ( $group_items as $key ) :
+							$field = $fields['pages'][$key];
+							?>
+							<div class="ms-settings-page-wrapper">
+								<?php MS_Helper_Html::html_element( $field ); ?>
+								<div class="ms-action">
+									<?php
+									MS_Helper_Html::html_link(
+										array(
+											'id' => 'url_page_' . $field['value'],
+											'url' => '',
+											'value' => __( 'View Page', MS_TEXT_DOMAIN ),
+											'target' => '_blank',
+											'data_ms' => array(
+												'base' => get_home_url(
+													$pages_site_id, 'index.php?page_id='
+												)
+											),
+										)
+									);
+									?>
+									<span> | </span>
+									<?php
+									MS_Helper_Html::html_link(
+										array(
+											'id' => 'edit_url_page_' . $field['value'],
+											'url' => '',
+											'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
+											'target' => '_blank',
+											'data_ms' => array(
+												'base' => get_admin_url(
+													$pages_site_id, 'post.php?action=edit&post='
+												)
+											),
+										)
+									);
+									?>
+								</div>
 							</div>
-						</div>
-						<?php
-					endforeach;
+							<?php
+						endforeach;
 
-					echo '</div>';
-				endforeach;
+						echo '</div>';
+					endforeach;
+				} else {
+					echo $fields['pages'];
+				}
 
 				MS_Factory::revert_blog();
 				?>
@@ -338,7 +321,11 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			'pages' => $pages,
 		);
 
-		return $fields;
+		return apply_filters(
+			'ms_view_settings_page_setup_prepare_fields',
+			$fields,
+			$this
+		);
 	}
 
 	/**

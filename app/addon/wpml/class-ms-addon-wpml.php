@@ -118,7 +118,7 @@ class MS_Addon_Wpml extends MS_Addon {
 				10, 2
 			);
 
-			// Fix the meta-box in the post-editor
+			// Fix stuff in the Membership 2 admin pages.
 			$this->add_filter(
 				'ms_model_pages_membership_page_id',
 				'translate_page_id',
@@ -134,6 +134,12 @@ class MS_Addon_Wpml extends MS_Addon {
 				'ms_model_pages_get_ms_page_url',
 				'translate_page_url',
 				10, 3
+			);
+
+			$this->add_filter(
+				'ms_view_settings_page_setup_prepare_fields',
+				'change_general_settings',
+				10, 2
 			);
 		} else {
 			$this->add_action( 'ms_model_addon_enable', 'enable_addon' );
@@ -386,6 +392,28 @@ class MS_Addon_Wpml extends MS_Addon {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Modify settings/fields before the Page-Setup Settings page is displayed.
+	 *
+	 * We use this filter to hide the "Membership 2 Pages" section when not in
+	 * default-language mode.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $fields List of HTML field defintions.
+	 * @param  MS_View_Settings $view
+	 * @return array Modified list of HTML field definitions.
+	 */
+	public function change_general_settings( $fields, $view ) {
+		if ( $this->current_lang != $this->default_lang ) {
+			$fields['pages'] = sprintf(
+				__( 'You can change your settings for the Membership 2 Pages only when you switch to your <b>default langauge</b> (%s)', MS_TEXT_DOMAIN ),
+				strtoupper( $this->default_lang )
+			);
+		}
+
+		return $fields;
 	}
 
 
