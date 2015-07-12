@@ -12,6 +12,7 @@ Change Log:
 - Add bulk actions to the Members admin page
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
+- Fix wrong subscription logic that activated Subscriptions without payment in a few cases
 - Fix possible memory issue that happened when updating the plugin
 - Fix the invitation code Add-on (integration in payment form was not working)
 - Fix a caching issue that caused problems with Subscriptions when memcache was enabled
