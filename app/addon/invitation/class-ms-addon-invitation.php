@@ -90,7 +90,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Invitation Codes', MS_TEXT_DOMAIN ) . ' (BETA)',
+			'name' => __( 'Invitation Codes', MS_TEXT_DOMAIN ),
 			'description' => __( 'Users need an invitation code to subscribe to a membership.', MS_TEXT_DOMAIN ),
 			'icon' => 'wpmui-fa wpmui-fa-unlock-alt',
 		);
