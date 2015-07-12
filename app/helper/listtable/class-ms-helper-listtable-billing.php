@@ -2,9 +2,7 @@
 /**
  * Membership List Table
  *
- *
- * @since 4.0.0
- *
+ * @since 1.0.0
  */
 class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
