@@ -224,13 +224,17 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed $item The table item to display.
+	 * @param mixed $member The table item to display.
 	 */
-	public function column_cb( $item ) {
-		$html = sprintf(
-			'<input type="checkbox" name="member_id[]" value="%s" />',
-			esc_attr( $item->id )
-		);
+	public function column_cb( $member ) {
+		if ( MS_Model_Member::is_admin_user( $member->id ) ) {
+			$html = '';
+		} else {
+			$html = sprintf(
+				'<input type="checkbox" name="member_id[]" value="%s" />',
+				esc_attr( $member->id )
+			);
+		}
 
 		return $html;
 	}
@@ -240,11 +244,11 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed $item The table item to display.
+	 * @param mixed $member The table item to display.
 	 */
-	public function column_infos( $item ) {
+	public function column_infos( $member ) {
 		$dialog_data = array(
-			'member_id' => $item->id,
+			'member_id' => $member->id,
 		);
 
 		$html = sprintf(
@@ -260,19 +264,19 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed $item The table item to display.
+	 * @param mixed $member The table item to display.
 	 */
-	public function column_username( $item ) {
+	public function column_username( $member ) {
 		$actions = array();
 		$actions['edit'] = sprintf(
 			'<a href="user-edit.php?user_id=%s">%s</a>',
-			esc_attr( $item->id ),
+			esc_attr( $member->id ),
 			__( 'Edit', MS_TEXT_DOMAIN )
 		);
 
 		$html = sprintf(
 			'%1$s %2$s',
-			$item->username,
+			$member->username,
 			$this->row_actions( $actions )
 		);
 
@@ -284,10 +288,10 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed $item The table item to display.
+	 * @param mixed $member The table item to display.
 	 */
-	public function column_email( $item ) {
-		$html = $item->email;
+	public function column_email( $member ) {
+		$html = $member->email;
 		return $html;
 	}
 
@@ -344,7 +348,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * Adds a class to the <tr> element
 	 *
 	 * @since  1.1.0
-	 * @param  object $item
+	 * @param  object $member
 	 */
 	protected function single_row_class( $member ) {
 		$subscriptions = $member->get_membership_ids();
@@ -364,14 +368,28 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * }
 	 */
 	public function get_bulk_actions() {
-		$actions = array(
-			// Removed in 1.1.0.3 - these actions were not supported anymore.
-			// TODO: Add correct Bulk actions, like in memberships-list.
+		$protect_key = __( 'Add Membership', MS_TEXT_DOMAIN );
+		$unprotect_key = __( 'Drop Membership', MS_TEXT_DOMAIN );
+		$bulk_actions = array(
+			'drop-all' => __( 'Drop all Memberships', MS_TEXT_DOMAIN ),
+			$protect_key => array(),
+			$unprotect_key => array(),
 		);
+
+		$args = array(
+			'include_guest' => 0,
+		);
+		$memberships = MS_Model_Membership::get_membership_names( $args );
+		$txt_add = __( 'Add: %s', MS_TEXT_DOMAIN );
+		$txt_rem = __( 'Drop: %s', MS_TEXT_DOMAIN );
+		foreach ( $memberships as $id => $name ) {
+			$bulk_actions[$protect_key]['add-' . $id] = sprintf( $txt_add, $name );
+			$bulk_actions[$unprotect_key]['drop-' . $id] = sprintf( $txt_rem, $name );
+		}
 
 		return apply_filters(
 			'ms_helper_listtable_member_get_bulk_actions',
-			$actions,
+			$bulk_actions,
 			$this
 		);
 	}

@@ -9,13 +9,14 @@ Change Log:
 - Add gateway: 2Checkout
 - Add new Add-on for WPML integration
 - Add an admin notice when no payment gateway is active but paid memberships exist
+- Add bulk actions to the Members admin page
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
 - Fix possible memory issue that happened when updating the plugin
 - Fix the invitation code Add-on (integration in payment form was not working)
 - Fix a caching issue that caused problems with Subscriptions when memcache was enabled
 - Fix wrong rounding-logic in Stripe gateway
-- Fix bug that prevented admin to change the recurring payment period-type to anything else than 'Days'
+- Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 
 1.0.0.8
 ----------------------------------------------------------------------

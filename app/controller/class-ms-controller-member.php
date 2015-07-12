@@ -108,12 +108,51 @@ class MS_Controller_Member extends MS_Controller {
 			}
 
 			// Execute list table bulk actions.
-			elseif ( $this->verify_nonce( 'bulk' )
-				&& self::validate_required( $fields_edit, 'POST' )
-			) {
-				$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
-				if ( 'toggle_activation' == $action ) {
-					$msg = $this->member_list_do_action( $action, $_POST['member_id'] );
+			elseif ( $this->verify_nonce( 'bulk' ) ) {
+				lib2()->array->equip_post( 'action', 'action2', 'member_id' );
+				$action = $_POST['action'];
+				if ( empty( $action ) || $action == '-1' ) {
+					$action = $_POST['action2'];
+				}
+				$members = $_POST['member_id'];
+
+				/*
+				 * The Bulk-Edit action is built like 'cmd-id'
+				 * e.g. 'add-123' will add membership 123 to the selected items.
+				 */
+				if ( empty( $action ) ) {
+					$cmd = array();
+				} elseif ( empty( $members ) ) {
+					$cmd = array();
+				} elseif ( '-1' == $action ) {
+					$cmd = array();
+				} else {
+					$cmd = explode( '-', $action );
+				}
+
+				if ( 2 == count( $cmd ) ) {
+					$action = $cmd[0];
+					$action_id = $cmd[1];
+
+					// Get a list of specified memberships...
+					if ( is_numeric( $action_id ) ) {
+						// ... either a single membership.
+						$memberships = array(
+							MS_Factory::load( 'MS_Model_Membership', $action_id ),
+						);
+					} elseif ( 'all' == $action_id ) {
+						// ... or all memberships.
+						$memberships = MS_Model_Membership::get_memberships();
+					}
+
+					// Loop defined memberships and add/remove members.
+					foreach ( $memberships as $membership ) {
+						$msg = $this->member_list_do_action(
+							$action,
+							$members,
+							$membership->id
+						);
+					}
 
 					$redirect = esc_url_raw(
 						add_query_arg( array( 'msg' => $msg ) )
