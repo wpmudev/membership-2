@@ -457,7 +457,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
 
 		$user_id = TData::id( 'user', 'editor' );
-		$membership_id = TData::id( 'membership', 'simple' );
+		$membership_id = TData::id( 'membership', 'simple-free' );
 		$subscription = TData::subscribe( $user_id, $membership_id );
 
 		// Brand new invoice, must be NEW
@@ -469,6 +469,22 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 
 		$invoice->pay_it( 'free', '' );
 		$this->assertEquals( MS_Model_Invoice::STATUS_PAID, $invoice->status );
+
+		// Also make sure that a non-free membership cannot be processed with
+		// the Free gateway:
+
+		$membership_id = TData::id( 'membership', 'simple' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		// Brand new invoice, must be NEW
+
+		$invoice = $subscription->get_current_invoice();
+		$this->assertEquals( MS_Model_Invoice::STATUS_NEW, $invoice->status );
+
+		// Invoice Status must be BILLED, because membership is not free!
+
+		$invoice->pay_it( 'free', '' );
+		$this->assertEquals( MS_Model_Invoice::STATUS_BILLED, $invoice->status );
 	}
 
 	/**

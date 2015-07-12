@@ -104,6 +104,14 @@ class TData {
 				'price' => 29,
 				'rule_values' => array(),
 			),
+			'simple-free' => array(
+				'name' => 'Simple Membership',
+				'type' => MS_Model_Membership::TYPE_STANDARD,
+				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_PERMANENT,
+				'is_free' => true,
+				'price' => 0,
+				'rule_values' => array(),
+			),
 			'simple-trial' => array(
 				'name' => 'Simple Membership with Trial',
 				'type' => MS_Model_Membership::TYPE_STANDARD,
