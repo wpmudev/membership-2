@@ -392,6 +392,12 @@ class MS_Model_Pages extends MS_Model_Option {
 	 */
 	static public function current_page( $page_id = false, $page_type = null ) {
 		static $Res = array();
+		$page_id = apply_filters(
+			'ms_model_pages_current_page_id',
+			$page_id,
+			$page_type
+		);
+
 		$key = json_encode( $page_id ) . json_encode( $page_type );
 
 		if ( ! isset( $Res[$key] ) ) {
@@ -436,7 +442,6 @@ class MS_Model_Pages extends MS_Model_Option {
 				$this_page
 			);
 		}
-
 		return $Res[$key];
 	}
 
@@ -452,8 +457,14 @@ class MS_Model_Pages extends MS_Model_Option {
 	 */
 	static public function is_membership_page( $page_id = null, $page_type = null ) {
 		$ms_page_type = false;
-		$page = self::current_page( $page_id );
 
+		$page_id = apply_filters(
+			'ms_model_pages_membership_page_id',
+			$page_id,
+			$page_type
+		);
+
+		$page = self::current_page( $page_id );
 		$site_id = self::get_site_info( 'id' );
 
 		if ( $site_id == get_current_blog_id() ) {
@@ -512,7 +523,8 @@ class MS_Model_Pages extends MS_Model_Option {
 				'ms_model_pages_get_ms_page_url',
 				$url,
 				$page_type,
-				$ssl
+				$ssl,
+				$site_id
 			);
 		}
 

@@ -59,7 +59,11 @@ class MS_Gateway_Authorize_View_Settings extends MS_View {
 
 			'pay_button_url' => array(
 				'id' => 'pay_button_url',
-				'title' => __( 'Payment button label or URL', MS_TEXT_DOMAIN ),
+				'title' => apply_filters(
+					'ms_translation_flag',
+					__( 'Payment button label or URL', MS_TEXT_DOMAIN ),
+					'gateway-button' . $gateway->id
+				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->pay_button_url,
 				'class' => 'ms-text-large',

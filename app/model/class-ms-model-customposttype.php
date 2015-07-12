@@ -137,8 +137,16 @@ class MS_Model_CustomPostType extends MS_Model {
 		$this->before_save();
 
 		$this->post_modified = gmdate( 'Y-m-d H:i:s' );
-
 		$class = get_class( $this );
+
+		/*
+		 * Serialize data that is later saved to the postmeta table.
+		 *
+		 * While data is serialized it can also modify the model data before
+		 * writing it to the posts table.
+		 */
+		$data = MS_Factory::serialize_model( $this );
+
 		$post = array(
 			'comment_status' => 'closed',
 			'ping_status' => 'closed',
@@ -158,9 +166,6 @@ class MS_Model_CustomPostType extends MS_Model {
 			$post[ 'ID' ] = $this->id;
 			wp_update_post( $post );
 		}
-
-		// save attributes in postmeta table
-		$data = MS_Factory::serialize_model( $this );
 
 		// We first remove any metadata of our custom post type that is not
 		// contained in the serialized data collection.

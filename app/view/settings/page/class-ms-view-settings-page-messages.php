@@ -88,7 +88,6 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 			$subtitle = apply_filters(
 				'ms_translation_flag',
 				__( 'Content protection message', MS_TEXT_DOMAIN ),
-				'string',
 				'message-protected'
 			);
 			MS_Helper_Html::settings_box(
@@ -101,7 +100,6 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 			$subtitle = apply_filters(
 				'ms_translation_flag',
 				__( 'Shortcode protection message', MS_TEXT_DOMAIN ),
-				'string',
 				'message-shortcode'
 			);
 			MS_Helper_Html::settings_box(
@@ -115,7 +113,6 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 				$subtitle = apply_filters(
 					'ms_translation_flag',
 					__( 'More tag protection message', MS_TEXT_DOMAIN ),
-					'string',
 					'message-more_tag'
 				);
 				MS_Helper_Html::settings_box(

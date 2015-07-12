@@ -186,7 +186,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	static public $ignore_fields = array(
 		'message',
-		'description',
 		'name',
 		'comm_vars',
 	);

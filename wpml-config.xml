@@ -1,6 +1,6 @@
 <wpml-config>
 	<custom-types>
-		<custom-type translate="1">ms_communication</custom-type>
+		<custom-type translate="0">ms_communication</custom-type>
 		<custom-type translate="0">ms_membership</custom-type>
 		<custom-type translate="0">ms_relationship</custom-type>
 		<custom-type translate="0">ms_invoice</custom-type>
@@ -85,18 +85,4 @@
 		<custom-field action="ignore">uses_trial</custom-field>
 		<custom-field action="ignore">use_details</custom-field>
 	</custom-fields>
-
-	<admin-texts>
-		<key name="ms_model_settings">
-			<key name="protection_messages">
-				<key name="content" />
-				<key name="shortcode" />
-				<key name="more_tag" />
-			</key>
-		</key>
-		<key name="ms_gateway_*">
-			<key name="pay_button_url" />
-			<key name="payment_info" />
-		</key>
-	</admin-texts>
 </wpml-config>

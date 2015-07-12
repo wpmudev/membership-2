@@ -73,8 +73,7 @@ class MS_Gateway_2checkout_View_Settings extends MS_View {
 				'title' => apply_filters(
 					'ms_translation_flag',
 					__( 'Payment button label or URL', MS_TEXT_DOMAIN ),
-					'string',
-					'communication-subject'
+					'gateway-button' . $gateway->id
 				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->pay_button_url,

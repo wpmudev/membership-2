@@ -109,14 +109,22 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 		$inp_name = array(
 			'name' => 'ms_name',
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Name:', MS_TEXT_DOMAIN ),
+			'title' => apply_filters(
+				'ms_translation_flag',
+				__( 'Name:', MS_TEXT_DOMAIN ),
+				'membership-name'
+			),
 			'value' => $membership->name,
 		);
 
 		$inp_description = array(
 			'name' => 'ms_description',
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
-			'title' => __( 'Description:', MS_TEXT_DOMAIN ),
+			'title' => apply_filters(
+				'ms_translation_flag',
+				__( 'Description:', MS_TEXT_DOMAIN ),
+				'membership-name'
+			),
 			'id' => 'description',
 			'value' => $membership->description,
 		);

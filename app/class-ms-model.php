@@ -42,6 +42,18 @@ class MS_Model extends MS_Hooker {
 	public $_in_cache = false;
 
 	/**
+	 * An array containing the serialized array which is stored in the DB.
+	 *
+	 * This data can be used to determine which fields have been changed since
+	 * the object was loaded from DB.
+	 *
+	 * This field is populated by MS_Factory::populate()
+	 *
+	 * @var array
+	 */
+	public $_saved_data = array();
+
+	/**
 	 * MS_Model Contstuctor
 	 *
 	 * @since 1.0.0
@@ -69,13 +81,39 @@ class MS_Model extends MS_Hooker {
 	 */
 	public function set_field( $field, $value ) {
 		// Don't deserialize values of "private" fields.
-		if ( '_' === $field[0] ) {
-			return;
+		if ( '_' !== $field[0] ) {
+
+			// Only set values of existing fields, don't create a new field.
+			if ( property_exists( $this, $field ) ) {
+				$this->$field = $value;
+			}
+		}
+	}
+
+	/**
+	 * Resets the fields value to the value that is stored in the DB.
+	 *
+	 * @since  1.0.1.0
+	 *
+	 * @param  string $field Name of the field.
+	 * @return mixed The reset value.
+	 */
+	public function reset_field( $field ) {
+		$result = null;
+
+		// Don't modify values of "private" fields.
+		if ( '_' !== $field[0] ) {
+
+			// Only reset values of existing fields.
+			if ( property_exists( $this, $field )
+				&& isset( $this->_saved_data[$field] )
+			) {
+				$this->$field = $this->_saved_data[$field];
+				$result = $this->$field;
+			}
 		}
 
-		if ( property_exists( $this, $field ) ) {
-			$this->$field = $value;
-		}
+		return $result;
 	}
 
 	/**

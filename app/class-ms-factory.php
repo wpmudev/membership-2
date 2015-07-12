@@ -184,11 +184,20 @@ class MS_Factory {
 			$obj->_in_cache = true;
 		}
 
-		self::$Singleton[ $key ] = apply_filters(
-			'ms_factory_set_' . $class,
+		$obj = apply_filters(
+			'ms_factory_set-' . strtolower( $class ),
 			$obj,
 			$model_id
 		);
+
+		$obj = apply_filters(
+			'ms_factory_set',
+			$obj,
+			$class,
+			$model_id
+		);
+
+		self::$Singleton[ $key ] = $obj;
 	}
 
 	/**
@@ -323,11 +332,10 @@ class MS_Factory {
 
 				if ( ! empty( $post ) && $model->get_post_type() === $post->post_type ) {
 					$post_meta = get_post_meta( $model_id );
+					$post_meta['id'] = array( $post->ID );
+					$post_meta['description'] = array( $post->post_content );
+					$post_meta['user_id'] = array( $post->post_author );
 					self::populate_model( $model, $post_meta, true );
-
-					$model->id = $post->ID;
-					$model->description = $post->post_content;
-					$model->user_id = $post->post_author;
 				} else {
 					$model->id = 0;
 				}
@@ -367,6 +375,7 @@ class MS_Factory {
 
 			if ( ! empty( $wp_user->ID ) ) {
 				$member_details = get_user_meta( $user_id );
+
 				$model->id = $wp_user->ID;
 				$model->username = $wp_user->user_login;
 				$model->email = $wp_user->user_email;
@@ -409,7 +418,9 @@ class MS_Factory {
 	 */
 	static public function populate_model( &$model, $settings, $postmeta = false ) {
 		$fields = $model->get_object_vars();
-		$vars = get_class_vars( get_class( $model ) );
+		$class = get_class( $model );
+		$vars = get_class_vars( $class );
+		$saved_data = array();
 
 		$ignore = isset( $vars['ignore_fields'] ) ? $vars['ignore_fields'] : array();
 		$ignore[] = 'instance'; // Don't deserialize the double-serialized model!
@@ -438,10 +449,40 @@ class MS_Factory {
 				}
 			}
 
+			$saved_data[ $field ] = $value;
 			if ( null !== $value ) {
 				$model->set_field( $field, $value );
 			}
 		}
+
+		$model->_saved_data = $saved_data;
+
+		/**
+		 * Filter the serialized data collection before it is returned.
+		 *
+		 * Typically it is written to database right after this function call,
+		 * so this hook allows us to modify data before it's written to the DB.
+		 *
+		 * @var object $model The completely populated object.
+		 * @var string $class Class name of the object.
+		 * @var array $settings The source data (serialized array).
+		 * @var bool|string $postmeta The post-meta flag defines how the
+		 *      $settings array is formatted.
+		 */
+		$model = apply_filters(
+			'ms_factory_populate',
+			$model,
+			$class,
+			$settings,
+			$postmeta
+		);
+
+		$model = apply_filters(
+			'ms_factory_populate-' . strtolower( $class ),
+			$model,
+			$settings,
+			$postmeta
+		);
 	}
 
 	/**
@@ -455,6 +496,7 @@ class MS_Factory {
 	static public function serialize_model( &$model ) {
 		$data = array();
 		$ignore = array();
+		$class = get_class( $model );
 
 		if ( is_object( $model ) ) {
 			if ( method_exists( $model, '__sleep' ) ) {
@@ -482,6 +524,29 @@ class MS_Factory {
 
 			$data[ $field ] = $model->$field;
 		}
+
+		/**
+		 * Filter the serialized data collection before it is returned.
+		 *
+		 * Typically it is written to database right after this function call,
+		 * so this hook allows us to modify data before it's written to the DB.
+		 *
+		 * @var array $data Serialized data array.
+		 * @var string $class Class name of the source object.
+		 * @var object $model The source object (unserialized)
+		 */
+		$data = apply_filters(
+			'ms_factory_serialize',
+			$data,
+			$class,
+			$model
+		);
+
+		$data = apply_filters(
+			'ms_factory_serialize-' . strtolower( $class ),
+			$data,
+			$model
+		);
 
 		ksort( $data );
 		return $data;

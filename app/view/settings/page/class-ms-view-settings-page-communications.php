@@ -75,7 +75,6 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'title' => apply_filters(
 					'ms_translation_flag',
 					__( 'Message Subject', MS_TEXT_DOMAIN ),
-					'cpt',
 					'communication-subject'
 				),
 				'value' => $comm->subject,
@@ -88,7 +87,6 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'title' => apply_filters(
 					'ms_translation_flag',
 					'',
-					'cpt',
 					'communication-body'
 				),
 				'value' => $comm->description,
