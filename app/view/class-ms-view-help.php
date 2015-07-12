@@ -1,26 +1,5 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Renders Help and Documentation Page.
  *
  * Extends MS_View for rendering methods and magic methods.
@@ -1575,10 +1554,6 @@ class MS_View_Help extends MS_View {
 		<p>
 			<strong><?php _ex( 'Reset', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
 			<?php _ex( 'Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is displayed that can be used to reset all Membership2 settings. Use this to clean all traces after testing the plugin.', 'help', MS_TEXT_DOMAIN ); ?>
-		</p>
-		<p>
-			<strong><?php _ex( 'Restore', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
-			<?php _ex( 'Open the Settings page and add <code>&restore=1</code> to the URL. In the prompt that is displayed you can select an existing DB Snapshot that can be restored. Use this if something goes wrong after an update. A new snapshot is generated <em>before</em> the plugin is updating the Database to a new version.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
 		<p>
 			<strong><?php _ex( 'Stop Emails', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
