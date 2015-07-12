@@ -15,6 +15,7 @@ Change Log:
 - Fix the invitation code Add-on (integration in payment form was not working)
 - Fix a caching issue that caused problems with Subscriptions when memcache was enabled
 - Fix wrong rounding-logic in Stripe gateway
+- Fix bug that prevented admin to change the recurring payment period-type to anything else than 'Days'
 
 1.0.0.8
 ----------------------------------------------------------------------

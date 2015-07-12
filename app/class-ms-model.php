@@ -252,7 +252,8 @@ class MS_Model extends MS_Hooker {
 	 * @param int $default The default value when not validated. Default to days.
 	 */
 	public function validate_period_type( $period_type, $default = MS_Helper_Period::PERIOD_TYPE_DAYS ) {
-		if ( ! in_array( $period_type, MS_Helper_Period::get_period_types() ) ) {
+		$valid_types = MS_Helper_Period::get_period_types();
+		if ( ! isset( $valid_types[$period_type] ) ) {
 			$period_type = $default;
 		}
 
