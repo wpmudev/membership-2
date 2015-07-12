@@ -1883,7 +1883,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		// If the start-date is not reached yet, then set membership to Pending.
-		if ( empty( $calc_status )
+		if ( ! $calc_status
 			&& ! empty( $this->start_date )
 			&& strtotime( $this->start_date ) > strtotime( MS_Helper_Period::current_date() )
 		) {
@@ -1891,44 +1891,68 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		if ( $check_trial ) {
-			if ( empty( $calc_status )
+			if ( ! $calc_status
 				&& strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL;
 			}
 
-			if ( empty( $calc_status )
+			if ( ! $calc_status
 				&& strtotime( $this->trial_expire_date ) < strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL_EXPIRED;
 			}
 		}
 
-		// Permanent memberships grant instant access, no matter what.
-		if ( empty( $calc_status )
-			&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
-		) {
-			$calc_status = self::STATUS_ACTIVE;
+		// Status an only become active when added by admin or invoice is paid.
+		$can_activate = false;
+		if ( 'admin' == $this->gateway_id ) {
+			$can_activate = true;
+		} elseif ( $membership->is_free() ) {
+			$can_activate = true;
+		} else {
+			$invoice = $this->get_current_invoice();
+			if ( 0 == $invoice->total ) {
+				$can_activate = true;
+			} else {
+				$last_payment = end( $this->payments );
+				$now = MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT );
+				if ( $now == $last_payment['date'] ) {
+					$can_activate = true;
+				}
+			}
 		}
 
-		// If expire date is empty and Active-state is requests then use active.
-		if ( empty( $calc_status )
-			&& empty( $this->expire_date )
-			&& self::STATUS_ACTIVE == $set_status
-		) {
-			$calc_status = self::STATUS_ACTIVE;
-		}
+		if ( $can_activate ) {
+			// Permanent memberships grant instant access, no matter what.
+			if ( ! $calc_status
+				&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
+			) {
+				$calc_status = self::STATUS_ACTIVE;
+			}
 
-		// If expire date is not reached then membership obviously is active.
-		if ( empty( $calc_status )
-			&& ! empty( $this->expire_date )
-			&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
-		) {
-			$calc_status = self::STATUS_ACTIVE;
+			// If expire date is empty and Active-state is requests then use active.
+			if ( ! $calc_status
+				&& empty( $this->expire_date )
+				&& self::STATUS_ACTIVE == $set_status
+			) {
+				$calc_status = self::STATUS_ACTIVE;
+			}
+
+			// If expire date is not reached then membership obviously is active.
+			if ( ! $calc_status
+				&& ! empty( $this->expire_date )
+				&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
+			) {
+				$calc_status = self::STATUS_ACTIVE;
+			}
+		} elseif ( ! $calc_status && self::STATUS_PENDING == $this->status ) {
+			// Invoice is not paid yet.
+			$calc_status = self::STATUS_PENDING;
 		}
 
 		// If no other condition was true then the expire date was reached.
-		if ( empty( $calc_status ) ) {
+		if ( ! $calc_status ) {
 			$calc_status = self::STATUS_EXPIRED;
 		}
 
