@@ -165,7 +165,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 *
 	 * @since  1.0.0.7
 	 */
-	public function search_box() {
+	public function search_box( $text = null, $input_id = 'search' ) {
 		// Do not display anything.
 		// Transaction logs cannot be searched currently
 	}
