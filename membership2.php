@@ -2,7 +2,7 @@
 /**
 Plugin Name: Membership 2 Pro
 Plugin URI:  https://premium.wpmudev.org/project/membership/
-Version:     1.0.0.8
+Version:     1.0.1.0
 Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
 Author:      WPMU DEV
 Author URI:  http://premium.wpmudev.org/
@@ -32,8 +32,7 @@ Text Domain: membership2
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
  * MA 02110-1301 USA
- *
-*/
+ */
 
 function membership2_init_app() {
 	/**
@@ -41,7 +40,7 @@ function membership2_init_app() {
 	 *
 	 * @since 1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.0.8' );
+	define( 'MS_PLUGIN_VERSION', '1.0.1.0' );
 
 	/**
 	 * Plugin text domain.
