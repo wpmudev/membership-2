@@ -45,11 +45,16 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since 2.0.0
 	 */
 	public function admin_init() {
-		$hook = MS_Controller_Plugin::admin_page_hook( 'members' );
+		$hooks = array(
+			MS_Controller_Plugin::admin_page_hook( 'members' ),
+			MS_Controller_Plugin::admin_page_hook( 'add-members' ),
+		);
 
-		$this->run_action( 'load-' . $hook, 'members_admin_page_process' );
-		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
-		$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+		foreach ( $hooks as $hook ) {
+			$this->run_action( 'load-' . $hook, 'members_admin_page_process' );
+			$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+			$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+		}
 	}
 
 	/**
@@ -192,7 +197,8 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Show member list.
 	 *
-	 * Menu Members, show all members available.
+	 * Menu "All Members", show all members available.
+	 * Called by MS_Controller_Plugin::route_submenu_request()
 	 *
 	 * @since 1.0.0
 	 */
@@ -201,6 +207,30 @@ class MS_Controller_Member extends MS_Controller {
 
 		$view = MS_Factory::create( 'MS_View_Member_List' );
 		$view->data = apply_filters( 'ms_view_member_list_data', $data );
+		$view->render();
+	}
+
+	/**
+	 * Show member editor.
+	 *
+	 * Menu "Add Member", add or edit a single member.
+	 * Called by MS_Controller_Plugin::route_submenu_request()
+	 *
+	 * @since 1.0.1.0
+	 */
+	public function admin_member_editor() {
+		$data = array();
+
+		if ( ! empty( $_REQUEST['user_id'] ) ) {
+			$data['user_id'] = intval( $_REQUEST['user_id'] );
+			$data['action'] = 'edit';
+		} else {
+			$data['user_id'] = 0;
+			$data['action'] = 'add';
+		}
+
+		$view = MS_Factory::create( 'MS_View_Member_Editor' );
+		$view->data = apply_filters( 'ms_view_member_editor_data', $data );
 		$view->render();
 	}
 

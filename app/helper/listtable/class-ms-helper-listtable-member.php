@@ -269,9 +269,17 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	public function column_username( $member ) {
 		$actions = array();
 		$actions['edit'] = sprintf(
-			'<a href="user-edit.php?user_id=%s">%s</a>',
-			esc_attr( $member->id ),
+			'<a href="%s">%s</a>',
+			MS_Controller_Plugin::get_admin_url(
+				'add-member',
+				array( 'user_id' => $member->id )
+			),
 			__( 'Edit', MS_TEXT_DOMAIN )
+		);
+		$actions['profile'] = sprintf(
+			'<a href="%s">%s</a>',
+			admin_url( 'user-edit.php?user_id=' . $member->id ),
+			__( 'Edit Profile', MS_TEXT_DOMAIN )
 		);
 
 		$html = sprintf(

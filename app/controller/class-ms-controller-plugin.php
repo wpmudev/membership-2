@@ -438,8 +438,12 @@ class MS_Controller_Plugin extends MS_Controller {
 				'slug' => 'protection',
 			),
 			'members' => array(
-				'title' => __( 'Members', MS_TEXT_DOMAIN ),
+				'title' => __( 'All Members', MS_TEXT_DOMAIN ),
 				'slug' => 'members',
+			),
+			'add-member' => array(
+				'title' => __( 'Add Member', MS_TEXT_DOMAIN ),
+				'slug' => 'add-member',
 			),
 			'billing' => false,
 			'addon' => array(
@@ -553,6 +557,11 @@ class MS_Controller_Plugin extends MS_Controller {
 				$handler = array(
 					'network',
 					array( $this->controllers['member'], 'admin_member_list' ),
+				);
+			} elseif ( self::is_page( 'add-member' ) ) {
+				$handler = array(
+					'network',
+					array( $this->controllers['member'], 'admin_member_editor' ),
 				);
 			} elseif ( self::is_page( 'addon' ) ) {
 				$handler = array(
