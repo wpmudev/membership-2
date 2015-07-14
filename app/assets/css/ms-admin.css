@@ -2176,12 +2176,21 @@
 #wpwrap .ms-wrap.ms-add-member .ms-field-group {
   float: left;
   width: 50%;
+  position: relative;
+}
+#wpwrap .ms-wrap.ms-add-member .ms-group-create {
+  border-right: 1px solid #E5E5E5;
 }
 #wpwrap .ms-wrap.ms-add-member .ms-field-group-inner {
   padding: 10px 20px;
+  position: relative;
+  z-index: 2;
 }
+#wpwrap .ms-wrap.ms-add-member .group-title,
 #wpwrap .ms-wrap.ms-add-member .group-title .wpmui-radio-caption {
   font-weight: bold;
+  display: block;
+  padding: 1px 0 6px;
 }
 #wpwrap .ms-wrap.ms-add-member .info-field {
   display: block;

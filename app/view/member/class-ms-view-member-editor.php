@@ -36,17 +36,18 @@ class MS_View_Member_Editor extends MS_View {
 			);
 			?>
 			<div class="ms-settings ms-add-member">
+			<?php foreach ( $groups as $class => $fields ) : ?>
+				<div class="ms-field-group ms-group-<?php echo esc_attr( $class ); ?>">
+				<div class="ms-field-group-inner">
 				<form method="post">
-					<?php
-					foreach ( $groups as $class => $fields ) {
-						echo '<div class="ms-field-group ms-group-' . $class . '"><div class="ms-field-group-inner">';
-						foreach ( $fields as $field ) {
-							MS_Helper_Html::html_element( $field );
-						}
-						echo '</div></div>';
-					}
-					?>
+				<?php
+				foreach ( $fields as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
+				?>
+				</div></div>
 				</form>
+			<?php endforeach; ?>
 			</div>
 		</div>
 		<?php
@@ -68,44 +69,46 @@ class MS_View_Member_Editor extends MS_View {
 		$fields = array();
 		$fields['create'] = array(
 			'title' => array(
-				'id' => 'create-type-add',
-				'name' => 'create-type',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'class' => 'group-title',
-				'value' => 'add',
-				'field_options' => array(
-					'add' => __( 'Create a new WordPress user', MS_TEXT_DOMAIN ),
-				),
+				'value' => __( 'Create a new WordPress user', MS_TEXT_DOMAIN ),
 			),
 			'username' => array(
 				'id' => 'username',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'User name:', MS_TEXT_DOMAIN ),
+				'title' => __( 'User name', MS_TEXT_DOMAIN ) . ' *',
+				'after' => ' ',
+				'class' => 'required',
 			),
 			'email' => array(
 				'id' => 'email',
 				'type' => MS_Helper_Html::INPUT_TYPE_EMAIL,
-				'title' => __( 'Email address:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Email address', MS_TEXT_DOMAIN ) . ' *',
+				'after' => ' ',
+				'class' => 'required',
 			),
 			'first_name' => array(
 				'id' => 'first_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'First name:', MS_TEXT_DOMAIN ),
+				'title' => __( 'First name', MS_TEXT_DOMAIN ),
 			),
 			'last_name' => array(
 				'id' => 'last_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Last name:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Last name', MS_TEXT_DOMAIN ),
 			),
 			'password' => array(
 				'id' => 'password',
 				'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
-				'title' => __( 'Password:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Password', MS_TEXT_DOMAIN ),
 			),
 			'info' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( 'We create a new WordPress user without sending a welcome email.', MS_TEXT_DOMAIN ),
+				'value' => __( 'We create a new WordPress user without sending a confirmation email.', MS_TEXT_DOMAIN ),
 				'class' => 'info-field',
+			),
+			'sep' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			),
 			'button' => array(
 				'id' => 'btn_create',
@@ -126,20 +129,18 @@ class MS_View_Member_Editor extends MS_View {
 
 		$fields['select'] = array(
 			'title' => array(
-				'id' => 'create-type-select',
-				'name' => 'create-type',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'class' => 'group-title',
-				'value' => '',
-				'field_options' => array(
-					'select' => __( 'Select an existing WordPress user', MS_TEXT_DOMAIN ),
-				),
+				'value' => __( 'Select an existing WordPress user', MS_TEXT_DOMAIN ),
 			),
 			'select_user' => array(
 				'id' => 'select_user',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Existing WordPress users:', MS_TEXT_DOMAIN ),
-				'class' => 'manual-init',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'title' => __( 'Existing WordPress users', MS_TEXT_DOMAIN ),
+				'class' => 'manual-init no-auto-init widefat',
+			),
+			'sep' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			),
 			'button' => array(
 				'id' => 'btn_select',

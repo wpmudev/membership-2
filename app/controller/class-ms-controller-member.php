@@ -12,13 +12,31 @@
 class MS_Controller_Member extends MS_Controller {
 
 	/**
-	 * AJAX action constants.
+	 * AJAX action constant: Edit subscriptions of a single member.
 	 *
 	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
 	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'member_subscriptions';
+
+	/**
+	 * AJAX action constant: Validate a user field before creating the user.
+	 *
+	 * @since  1.0.1.0
+	 *
+	 * @var string
+	 */
+	const AJAX_ACTION_VALIDATE_FIELD = 'member_validate_field';
+
+	/**
+	 * AJAX action constant: Search users via Ajax.
+	 *
+	 * @since  1.0.1.0
+	 *
+	 * @var string
+	 */
+	const AJAX_ACTION_SEARCH = 'member_search';
 
 	/**
 	 * Used on the Add Member screen to indicate that a new WP User should be
@@ -57,6 +75,16 @@ class MS_Controller_Member extends MS_Controller {
 			self::AJAX_ACTION_CHANGE_MEMBERSHIPS,
 			'ajax_action_change_memberships'
 		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_VALIDATE_FIELD,
+			'ajax_action_validate_field'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_SEARCH,
+			'ajax_action_search'
+		);
 	}
 
 	/**
@@ -66,13 +94,13 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function admin_init() {
 		$hooks = array(
-			MS_Controller_Plugin::admin_page_hook( 'members' ),
-			MS_Controller_Plugin::admin_page_hook( 'add-members' ),
+			'list' => MS_Controller_Plugin::admin_page_hook( 'members' ),
+			'editor' => MS_Controller_Plugin::admin_page_hook( 'add-member' ),
 		);
 
-		foreach ( $hooks as $hook ) {
-			$this->run_action( 'load-' . $hook, 'members_admin_page_process' );
-			$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		foreach ( $hooks as $key => $hook ) {
+			$this->run_action( 'load-' . $hook, 'members_admin_page_process_' . $key );
+			$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts_' . $key );
 			$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 		}
 	}
@@ -100,12 +128,9 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * Verifies GET and POST requests to manage members
 	 *
-	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member
-	 *     membership fields (active, memberships, start, end, gateway)
-	 *
 	 * @since  1.0.0
 	 */
-	public function members_admin_page_process() {
+	public function members_admin_page_process_list() {
 		$msg = 0;
 		$redirect = false;
 
@@ -215,6 +240,49 @@ class MS_Controller_Member extends MS_Controller {
 	}
 
 	/**
+	 * Manages membership actions for the ADD/EDIT screen.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function members_admin_page_process_editor() {
+		$msg = 0;
+		$redirect = false;
+
+		if ( $this->is_admin_user() ) {
+			$fields_add = array( 'username', 'email' );
+			$fields_select = array( 'select_user' );
+
+			// Process Action: Create new user.
+			if ( isset( $_POST['btn_create'] )
+				&& $this->verify_nonce()
+				&& self::validate_required( $fields_add, 'POST' )
+			) {
+				$msg = 3;
+
+				$redirect = esc_url_raw(
+					add_query_arg( array( 'msg' => $msg ) )
+				);
+			}
+			// Process Action: Select existing user.
+			elseif ( isset( $_POST['btn_select'] )
+				&& $this->verify_nonce()
+				&& self::validate_required( $fields_select, 'POST' )
+			) {
+				$msg = 3;
+
+				$redirect = esc_url_raw(
+					add_query_arg( array( 'msg' => $msg ) )
+				);
+			}
+		}
+
+		if ( $redirect ) {
+			wp_safe_redirect( $redirect );
+			exit;
+		}
+	}
+
+	/**
 	 * Show member list.
 	 *
 	 * Menu "All Members", show all members available.
@@ -292,6 +360,116 @@ class MS_Controller_Member extends MS_Controller {
 		$msg .= $this->_resp_code();
 
 		echo $msg;
+		exit;
+	}
+
+	/**
+	 * Handle Ajax validate field action.
+	 *
+	 * This function should validate the field value before the user is created
+	 * to make sure that the value is unique/valid.
+	 *
+	 * Related Action Hooks:
+	 * - wp_ajax_validate_field
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function ajax_action_validate_field() {
+		$msg = 0;
+		$this->_resp_reset();
+
+		$required = array( 'field', 'value' );
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) {
+			$this->_resp_err( 'permission denied' );
+		} elseif ( $this->_resp_ok() && ! self::validate_required( $required ) ) {
+			$this->_resp_err( 'validate: required' );
+		}
+
+		if ( $this->_resp_ok() ) {
+			$field = $_POST['field'];
+			$value = $_POST['value'];
+
+			if ( 'email' == $field ) {
+				if ( ! is_email( $value ) ) {
+					$msg = __( 'Invalid Email address', MS_TEXT_DOMAIN );
+				} elseif ( email_exists( $value ) ) {
+					$msg = __( 'Email already taken', MS_TEXT_DOMAIN );
+				} else {
+					$msg = 1;
+				}
+			} elseif ( 'username' == $field ) {
+				if ( username_exists( $value ) ) {
+					$msg = __( 'Username already taken', MS_TEXT_DOMAIN );
+				} else {
+					$msg = 1;
+				}
+			}
+		}
+		$msg .= $this->_resp_code();
+
+		echo $msg;
+		exit;
+	}
+
+	/**
+	 * Handle Ajax search users action.
+	 *
+	 * Related Action Hooks:
+	 * - wp_ajax_search
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function ajax_action_search() {
+		$res = (object) array(
+			'items' => array(),
+			'more' => false,
+		);
+		$this->_resp_reset();
+		$items_per_page = 20;
+
+		$required = array( 'q', 'p' );
+		if ( $this->_resp_ok() && ! $this->is_admin_user() ) {
+			$this->_resp_err( 'permission denied' );
+		} elseif ( $this->_resp_ok() && ! self::validate_required( $required, 'any' ) ) {
+			$this->_resp_err( 'search: required' );
+		}
+
+		if ( $this->_resp_ok() ) {
+			$term = $_REQUEST['q'];
+			$page = max( intval( $_REQUEST['p'] ) - 1, 0 );
+			$offset = $page * $items_per_page;
+
+			$args = array(
+				'search' => '*' . $term . '*',
+				'offset' => $offset,
+				'number' => $items_per_page + 1,
+				'fields' => array(
+					'ID',
+					'user_login',
+					'display_name',
+				),
+				'orderby' => 'display_name',
+			);
+			$users = get_users( $args );
+
+			if ( count( $users ) > $items_per_page ) {
+				$res->more = true;
+				array_pop( $users );
+			}
+
+			foreach ( $users as $user ) {
+				$res->items[] = array(
+					'id' => $user->ID,
+					'text' => sprintf(
+						'%s (%s)',
+						$user->display_name,
+						$user->user_login
+					),
+				);
+			}
+		}
+
+		echo json_encode( $res );
 		exit;
 	}
 
@@ -428,11 +606,11 @@ class MS_Controller_Member extends MS_Controller {
 	}
 
 	/**
-	 * Load Member manager specific scripts.
+	 * Load Member specific scripts for the LIST view.
 	 *
 	 * @since  1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts_list() {
 		$data = array(
 			'ms_init' => array(),
 		);
@@ -449,6 +627,22 @@ class MS_Controller_Member extends MS_Controller {
 				'select_user' => __( 'Select an User', MS_TEXT_DOMAIN ),
 			);
 		}
+
+		lib2()->ui->data( 'ms_data', $data );
+		wp_enqueue_script( 'ms-admin' );
+	}
+
+	/**
+	 * Load Member specific scripts for ADD/EDIT screen.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function enqueue_scripts_editor() {
+		$data = array(
+			'ms_init' => array(),
+		);
+
+		$data['ms_init'][] = 'view_member_editor';
 
 		lib2()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );

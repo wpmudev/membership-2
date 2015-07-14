@@ -32,14 +32,24 @@
 	.ms-field-group {
 		float: left;
 		width: 50%;
+		position: relative;
+	}
+
+	.ms-group-create {
+		border-right: 1px solid #E5E5E5;
 	}
 
 	.ms-field-group-inner {
 		padding: 10px 20px;
+		position: relative;
+		z-index: 2;
 	}
 
+	.group-title,
 	.group-title .wpmui-radio-caption {
 		font-weight: bold;
+		display: block;
+		padding: 1px 0 6px;
 	}
 
 	.info-field {

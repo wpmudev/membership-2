@@ -11,6 +11,7 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-help.js',
 				'app/assets/js/src/ms-view-billing-edit.js',
 				'app/assets/js/src/ms-view-member-date.js',
+				'app/assets/js/src/ms-view-member-editor.js',
 				'app/assets/js/src/ms-view-member-list.js',
 				'app/assets/js/src/ms-view-membership-add.js',
 				'app/assets/js/src/ms-view-membership-list.js',
