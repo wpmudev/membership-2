@@ -1,7 +1,6 @@
 /**
- * Special styles used on "Member" page
+ * Special styles used on "All Members" page
  */
-
 #wpwrap .ms-wrap.ms-member-list {
 	.column-infos {
 		width: 30px;
@@ -23,5 +22,29 @@
 		border-radius: 4px;
 		color: #FFF;
 		background: #888;
+	}
+}
+
+/**
+ * Special styles used on "Edit Member" page
+ */
+#wpwrap .ms-wrap.ms-add-member {
+	.ms-field-group {
+		float: left;
+		width: 50%;
+	}
+
+	.ms-field-group-inner {
+		padding: 10px 20px;
+	}
+
+	.group-title .wpmui-radio-caption {
+		font-weight: bold;
+	}
+
+	.info-field {
+		display: block;
+		padding: 10px 0;
+		font-style: italic;
 	}
 }
