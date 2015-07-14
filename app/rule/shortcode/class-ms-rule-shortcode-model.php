@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Shortcode Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -35,7 +14,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -44,7 +23,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	/**
 	 * Holds the membership-IDs of all memberships of the user.
 	 *
-	 * @since  1.1.1.2
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -53,7 +32,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	/**
 	 * Protect content shortcode.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -63,7 +42,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -76,7 +55,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 * This rule will return NULL (not relevant), because shortcodes are
 	 * replaced inside the page content instead of protecting the whole page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
@@ -91,7 +70,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 *
 	 * Add [ms-protect-content] shortcode to protect membership content inside post.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function protect_content() {
 		parent::protect_content();
@@ -126,7 +105,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 *
 	 * This shortcode is executed to replace a protected shortcode.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function do_protected_shortcode() {
 		$content = null;
@@ -153,7 +132,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 *
 	 * Verify if content is protected comparing to self::$membership_ids.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param array $atts The shortcode attributes.
 	 * @param string $content The content inside the shortcode.
@@ -254,7 +233,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 * The [ms-protected-content] shortcode is replaced with some debug values
 	 * for better understanding of the page structure.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 * @param array $atts The shortcode attributes.
 	 * @param string $content The content inside the shortcode.
 	 * @return string The shortcode output
@@ -373,7 +352,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 * Returns true when the current user is a member of one of the specified
 	 * memberships.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @return bool
 	 */
@@ -401,7 +380,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	/**
 	 * Get the total content count.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args. Not used.
 	 * @return int The total content count.
@@ -422,7 +401,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param $args The filter args
 	 *
 	 * @return array The contents array.

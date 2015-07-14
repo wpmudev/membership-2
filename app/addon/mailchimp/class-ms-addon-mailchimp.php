@@ -1,31 +1,8 @@
 <?php
 /**
- * An Addon controller.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
- */
-
-/**
  * Add-On controller for: MailChimp
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -35,7 +12,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * The Add-on ID
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	const ID = 'mailchimp';
 
@@ -49,7 +26,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -59,7 +36,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init() {
 		if ( self::is_active() ) {
@@ -104,7 +81,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Registers the Add-On
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */
@@ -196,7 +173,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Add mailchimp settings tab in settings page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @filter ms_controller_membership_get_tabs
 	 *
@@ -233,7 +210,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Add mailchimp views callback.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @filter ms_view_membership_edit_render_callback
 	 *
@@ -255,7 +232,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Get mailchimp api lib status.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return boolean true on successfully loaded api, false otherwise.
 	 */
@@ -276,7 +253,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Load the Mailchimp API
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return Mailchimp Object
 	 */
@@ -394,7 +371,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Subscribe a user to a Mailchimp list
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Member $member
 	 * @param int $list_id
@@ -453,7 +430,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Update a user data in a list
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $user_email
 	 * @param string $list_id

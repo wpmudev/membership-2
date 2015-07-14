@@ -4,7 +4,7 @@
  *
  * The primary entry point for managing Membership admin pages.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -14,7 +14,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * The current active tab in the vertical navigation.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Construct Settings manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -45,7 +45,7 @@ class MS_Controller_Settings extends MS_Controller {
 		 * This block calls the action 'ms_run_cron_services' which is defined
 		 * in MS_Model_Plugin. It will run all cron jobs and re-schedule them.
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 */
 		if ( isset( $_REQUEST['run_cron'] ) ) {
 			$url = esc_url_raw( remove_query_arg( 'run_cron' ) );
@@ -66,7 +66,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Initialize the admin-side functions.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_init() {
 		$hook = MS_Controller_Plugin::admin_page_hook( 'settings' );
@@ -81,7 +81,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Get settings model
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return MS_Model_Settings
 	 */
@@ -95,7 +95,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Related action hooks:
 	 * * wp_ajax_toggle_settings
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_toggle_settings() {
 		$msg = 0;
@@ -120,7 +120,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Related action hooks:
 	 * * wp_ajax_update_setting
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_update_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -150,7 +150,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Related action hooks:
 	 * * wp_ajax_update_custom_setting
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_update_custom_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -181,7 +181,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Related action hooks:
 	 * * wp_ajax_update_protection_msg
 	 *
-	 * @since 1.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_update_protection_msg() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -217,7 +217,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * Related Action Hooks:
 	 * - ms_controller_membership_setup_completed
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Membership $membership
 	 */
@@ -259,7 +259,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Get available tabs for editing the membership.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array The tabs configuration.
 	 */
@@ -300,7 +300,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Get the current active settings page/tab.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function get_active_tab() {
 		if ( null === $this->active_tab ) {
@@ -339,7 +339,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * Verifies GET and POST requests to manage settings.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_settings_manager() {
 		MS_Helper_Settings::print_admin_message();
@@ -443,7 +443,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * Menu Item: Membership > Settings
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_settings() {
 		lib2()->array->equip_get( 'action' );
@@ -496,7 +496,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Save general tab settings.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param string $settings Array of settings to which action will be taken.
@@ -545,7 +545,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Handle saving of Communication settings.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $fields The data to process.
 	 */
@@ -586,7 +586,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Load Membership admin scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
 		$active_tab = $this->get_active_tab();
@@ -629,7 +629,7 @@ class MS_Controller_Settings extends MS_Controller {
 	/**
 	 * Prepare WordPress to add our custom TinyMCE button to the WYSIWYG editor.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @see class-ms-view-settings-edit.php (function render_tab_messages_automated)
 	 * @see ms-view-settings-automated-msg.js
@@ -662,7 +662,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * **Hooks Filters: **
 	 * * mce_external_plugins
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param  array $plugin_array List of default TinyMCE plugin scripts.
 	 * @return array Updated list of TinyMCE plugin scripts.
@@ -684,7 +684,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * **Hooks Filters: **
 	 * * mce_buttons
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param  array $buttons List of default TinyMCE buttons.
 	 * @return array Updated list of TinyMCE buttons.

@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Special Pages Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.0.4
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -35,7 +14,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.4
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -44,7 +23,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Available special pages
 	 *
-	 * @since 1.0.4
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -53,7 +32,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Analysis information on which page type was detected.
 	 *
-	 * @since 1.0.4
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -62,7 +41,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Cache the result of is_special_page
 	 *
-	 * @since 1.0.4.4
+	 * @since  1.0.0
 	 *
 	 * @var bool
 	 */
@@ -71,7 +50,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Cache the result of has_rule_for_current_page
 	 *
-	 * @since 1.0.4.4
+	 * @since  1.0.0
 	 *
 	 * @var bool
 	 */
@@ -81,7 +60,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -92,7 +71,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 * Checks if the current page is a special page that can be handled by this
 	 * rule
 	 *
-	 * @since  1.0.4
+	 * @since  1.0.0
 	 *
 	 * @return bool
 	 */
@@ -114,7 +93,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Verify access to the current page.
 	 *
-	 * @since 1.0.4
+	 * @since  1.0.0
 	 *
 	 * @param int $id The page_id to verify access.
 	 * @return bool|null True if has access, false otherwise.
@@ -147,7 +126,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 * Checks if the current page is a special page and if the special page is
 	 * protected by this rule.
 	 *
-	 * @since  1.0.4
+	 * @since  1.0.0
 	 *
 	 * @return bool
 	 */
@@ -168,7 +147,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Checks if the current page can be accessed by the specified rules
 	 *
-	 * @since  1.0.4
+	 * @since  1.0.0
 	 *
 	 * @param  array $rules List of allowed pages.
 	 * @return bool
@@ -217,7 +196,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	/**
 	 * Returns a list of special pages that can be configured by this rule.
 	 *
-	 * @since  1.0.4
+	 * @since  1.0.0
 	 *
 	 * @return array List of special pages.
 	 */
@@ -304,7 +283,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 * Get the total content count.
 	 * Used in Dashboard to display how many special pages are protected.
 	 *
-	 * @since 1.0.4
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -326,7 +305,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 * Get content to protect.
 	 * Used in Dashboard to display a list of special pages.
 	 *
-	 * @since 1.0.4
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query

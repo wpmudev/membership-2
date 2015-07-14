@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Media Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -35,7 +14,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -44,7 +23,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Media protection type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $protection_type
 	 */
@@ -55,7 +34,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Media protection file change prefix.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -64,7 +43,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Media protection file seed/token.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -74,7 +53,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -88,7 +67,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * This rule will return NULL (not relevant), because the media-item is
 	 * protected via the download URL and not by protecting the current page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
@@ -107,7 +86,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Get the protection type available.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *     The protection type => Description.
@@ -140,7 +119,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Validate protection type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The protection type to validate.
 	 * @return boolean True if is valid.
@@ -166,7 +145,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * Related filter:
 	 * - init
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 */
 	public function buffer_start() {
 		ob_start( array( $this, 'protect_download_content' ) );
@@ -178,7 +157,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * Related filter:
 	 * - shutdown
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 */
 	public function buffer_end() {
 		if ( ob_get_level() ) {
@@ -189,7 +168,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function initialize() {
 		parent::protect_content();
@@ -215,7 +194,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * we cannot echo/output anything in this function! The return value of the
 	 * function will be displayed to the user.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $the_content The content before filter.
 	 * @return string The content with masked media url.
@@ -331,7 +310,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Extract filename and size extension info.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $file The filename to extract info from.
 	 * @return array {
@@ -379,7 +358,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Get attachment post_id using the filename.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $filename The filename to obtain the post_id.
 	 * @return int The post ID or 0 if not found.
@@ -446,7 +425,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * Realted Action Hooks:
 	 * - parse_request
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
@@ -525,7 +504,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Checks if the current user can access the specified attachment.
 	 *
-	 * @since  1.1.1.2
+	 * @since  1.0.0
 	 * @param  int $attachment_id
 	 * @return bool
 	 */
@@ -576,7 +555,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Restore filename from post_id.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @todo refactory hack to get extension.
 	 *
@@ -617,7 +596,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Output file to the browser.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $file The complete path to the file.
 	 */
@@ -693,7 +672,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Show no access image.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	private function show_no_access_image() {
 		$no_access_file = apply_filters(
@@ -709,7 +688,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array The contents array.
@@ -739,7 +718,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Get the total content count.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -761,7 +740,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	/**
 	 * Get the default query args.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $args The query post args.
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query

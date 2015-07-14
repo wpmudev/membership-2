@@ -2,7 +2,7 @@
 /**
  * Membership Menu Rule class.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -21,7 +21,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -31,7 +31,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -42,7 +42,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Initialize the rule
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function prepare_obj() {
 		$this->add_filter( 'ms_rule_menuitem_listtable_url', 'view_url' );
@@ -54,7 +54,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * This rule will return NULL (not relevant), because the menus are
 	 * protected via a wordpress hook instead of protecting the current page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
@@ -67,7 +67,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function protect_content() {
 		parent::protect_content();
@@ -79,7 +79,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Checks if the specified menu-ID is allowed by this rule.
 	 *
-	 * @since  1.0.4.3
+	 * @since  1.0.0
 	 *
 	 * @param  object $item The menu item object.
 	 * @return bool
@@ -105,7 +105,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * Relevant Action Hooks:
 	 * - wp_setup_nav_menu_item
 	 *
-	 * @since 1.0.4.3
+	 * @since  1.0.0
 	 *
 	 * @param array $item A single menu item.
 	 * @param mixed $args The menu select args.
@@ -134,7 +134,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * Relevant Action Hooks:
 	 * - wp_get_nav_menu_items
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param array $items The menu items.
 	 * @param object $menu The menu object.
@@ -162,7 +162,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * Reset the rule value data. This does not remove all items but only the
 	 * items that belong to the specified menu.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param $menu_id The menu_id to reset children menu item rules.
 	 * @return array The reset rule value.
 	 */
@@ -185,7 +185,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Menu table always displays all menu items on one page.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $option [description]
 	 * @return int Number of items to display on one page
 	 */
@@ -196,7 +196,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Customize the URL used for the view-list
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $url The URL
 	 * @return string The URL
 	 */
@@ -209,7 +209,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array The contents array.
@@ -253,7 +253,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Get the total content count.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 * @return int The total content count.
@@ -272,7 +272,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	/**
 	 * Get a list of all menus (only the menu details, without menu-items).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *      @type string $menu_id The menu id.

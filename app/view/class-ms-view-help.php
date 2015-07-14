@@ -4,7 +4,7 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @return object
  */
@@ -18,7 +18,7 @@ class MS_View_Help extends MS_View {
 	 * the navigation gets loaded with dynamic method calls.
 	 * e.g. if key is 'settings' then render_settings() gets called, if 'bob' then render_bob().
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @return object
 	 */
@@ -65,7 +65,7 @@ class MS_View_Help extends MS_View {
 	/**
 	 * Renders the General help contents
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function render_tab_general() {
@@ -137,7 +137,7 @@ class MS_View_Help extends MS_View {
 	/**
 	 * Renders the Shortcode help contents
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function render_tab_shortcodes() {
@@ -1521,7 +1521,7 @@ class MS_View_Help extends MS_View {
 	/**
 	 * Renders the Network-Wide Protection help contents
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function render_tab_network() {
@@ -1544,7 +1544,7 @@ class MS_View_Help extends MS_View {
 	/**
 	 * Renders the Advanced settings help contents
 	 *
-	 * @since  1.1.0.5
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function render_tab_advanced() {

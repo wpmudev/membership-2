@@ -4,7 +4,7 @@
  * Used in both the success popup when creating the first membership and in the
  * settings page.
  *
- * @since 1.1.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -20,7 +20,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 	/**
 	 * Displays the settings form.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function to_html() {
@@ -64,7 +64,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 	 * Display the full settings form, used either by first membership
 	 * "completed" popup and also by the general settings tab.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return string HTML code
 	 */
 	public function html_full_form() {
@@ -248,7 +248,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 	/**
 	 * Prepare the HTML fields that can be displayed
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @return array
 	 */
@@ -331,7 +331,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 	/**
 	 * Outputs the HTML code to toggle Membership2 menu items.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function show_menu_controls() {
@@ -367,7 +367,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 	 * Returns the height needed to display this dialog inside a popup without
 	 * adding scrollbars
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return int Popup height
 	 */
 	public function dialog_height() {

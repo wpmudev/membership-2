@@ -11,7 +11,7 @@
  * There are magic methods \_\_get() and \_\_set() that do some validation before
  * accessing the properties.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -20,7 +20,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Model custom post type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal  Use self::get_post_type() instead!
 	 * @var string $POST_TYPE
 	 */
@@ -29,7 +29,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_PENDING = 'pending';
@@ -37,7 +37,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_ACTIVE = 'active';
@@ -45,7 +45,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_TRIAL = 'trial';
@@ -53,7 +53,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_TRIAL_EXPIRED = 'trial_expired';
@@ -62,7 +62,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Membership Relationship Status constants.
 	 * Start-Date not reached yet.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_WAITING = 'waiting';
@@ -71,7 +71,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Membership Relationship Status constants.
 	 * End-Date reached.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_EXPIRED = 'expired';
@@ -79,7 +79,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_DEACTIVATED = 'deactivated';
@@ -87,7 +87,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_CANCELED = 'canceled';
@@ -95,7 +95,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The Membership ID.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $membership_id
 	 */
 	protected $membership_id;
@@ -103,7 +103,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The Payment Gateway ID.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $gateway_id
 	 */
 	protected $gateway_id;
@@ -111,7 +111,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The start date of the membership relationship.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $start_date
 	 */
 	protected $start_date;
@@ -119,7 +119,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The expire date of the membership relationship.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $expire_date
 	 */
 	protected $expire_date;
@@ -127,7 +127,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The trial expire date of the membership relationship.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $trial_expire_date
 	 */
 	protected $trial_expire_date;
@@ -137,7 +137,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Indicates if already used a trial period and can't have another trial period.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $trial_period_completed
 	 */
 	protected $trial_period_completed;
@@ -145,7 +145,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The status of the membership relationship.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $status
 	 */
 	protected $status;
@@ -155,7 +155,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * This is NOT the public invoice-number but an counter to determine how
 	 * many invoices were generated for this subscription already.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var $current_invoice_number
 	 */
 	protected $current_invoice_number = 1;
@@ -163,7 +163,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The moving/change/downgrade/upgrade from membership ID.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var string $move_from_id
 	 */
@@ -172,7 +172,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Where the data came from. Can only be changed by data import tool
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var string
 	 */
@@ -185,7 +185,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Also this information is displayed in the member-info popup (only for
 	 * admins; see MS_View_Member_Dialog)
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @var array {
 	 *      A list of all payments that were made [since 1.1.0]
 	 *
@@ -199,7 +199,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Flag that keeps track, if this subscription is a simulated or a real one.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var bool
 	 */
@@ -213,7 +213,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * This flag allows us to detect changes in the parent membership payment
 	 * options so we can update this membership accordingly.
 	 *
-	 * @since 1.0.0.6
+	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $payment_type = '';
@@ -221,7 +221,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The related membership model object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var MS_Model_Membership $membership
 	 */
 	private $membership;
@@ -234,7 +234,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns the post-type of the current object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The post-type name.
@@ -246,7 +246,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get custom register post type args for this model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public static function get_register_post_type_args() {
@@ -264,7 +264,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Don't persist this fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @var string[] The fields to ignore when persisting.
@@ -277,7 +277,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Return existing status types and names.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return array{
@@ -310,7 +310,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Search for existing relationship (unique object), creating if not exists.
 	 * Set initial status.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return MS_Model_Relationship The created relationship.
@@ -449,7 +449,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * "deactivated". To get a list of all relationships use this:
 	 * $args = array( 'status' => 'all' )
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param array $args The query post args
@@ -498,7 +498,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Retrieve membership relationship count.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -525,7 +525,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Retrieve membership relationship.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param int $user_id The user id
@@ -569,7 +569,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Merge received args to default ones.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -656,7 +656,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Cancel membership.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param bool $generate_event Optional. Defines if cancel events are generated.
@@ -708,7 +708,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Cancel membership and move to deactivated state.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 */
 	public function deactivate_membership() {
@@ -720,7 +720,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		/**
 		 * Documented in check_membership_status()
 		 *
-		 * @since 1.1.0.5
+		 * @since  1.0.0
 		 */
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
 			return false;
@@ -756,7 +756,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Only saves if is not admin user and not a visitor.
 	 * Don't save automatically assigned visitor/system memberships.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 */
 	public function save() {
@@ -777,7 +777,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Removes any unpaid invoice that belongs to this subscription.
 	 *
-	 * @since  1.1.1.3
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function remove_unpaid_invoices() {
@@ -798,7 +798,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *  .. The membership does not allow a trial period
 	 *  .. The current user already consumed trial period or is in trial period
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool True if trial eligible.
@@ -850,7 +850,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * then this function returns true.
 	 * If the subscription never was in trial status it returns false.
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -874,7 +874,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Set Membership Relationship start date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string $start_date Optional. The start date to set.
@@ -908,7 +908,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Validate to a date greater than start date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string $trial_expire_date Optional. The trial expire date to set.
@@ -965,7 +965,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Validate to a date greater than start date and trial expire date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string $expire_date Optional. The expire date to set.
@@ -1004,7 +1004,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Based in the membership definition.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  string $start_date Optional. The start date to calculate date from.
@@ -1062,7 +1062,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Based in the membership definition
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $start_date Optional. The start date to calculate date from.
@@ -1159,7 +1159,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Set initial membership period or renew periods.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function config_period() { // Needed because of status change.
@@ -1220,7 +1220,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Example: If the start_date is 14 days ago it will return the value 14.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return int Remaining days.
@@ -1241,7 +1241,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns the number of days until trial period ends.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return int Remaining days.
@@ -1262,7 +1262,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get number of days until this membership expires.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return int Remaining days.
@@ -1283,7 +1283,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get Member model of the subscription owner.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Member The member object.
@@ -1304,7 +1304,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Convenience function to access current invoice for this subscription.
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Invoice
@@ -1316,7 +1316,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Convenience function to access next invoice for this subscription.
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Invoice
@@ -1328,7 +1328,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Convenience function to access previous invoice for this subscription.
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Invoice
@@ -1340,7 +1340,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get a list of all invoices linked to this relationship
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Invoice[]
@@ -1367,7 +1367,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get related Membership model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Membership The membership model.
@@ -1393,7 +1393,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns true if the related membership is the base-membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -1405,7 +1405,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns true if the related membership is the guest-membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -1417,7 +1417,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns true if the related membership is the user-membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -1429,7 +1429,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns true if the related membership is a system membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -1441,7 +1441,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get related gateway model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Gateway
@@ -1461,7 +1461,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Note: Remember to prefix the $key with a unique string to prevent
 	 * conflicts with other plugins that also use this function.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1475,7 +1475,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Removes a custom data field from this object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1488,7 +1488,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns the value of a custom data field.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1503,7 +1503,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get textual payment information description.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  MS_Model_Invoice $invoice Optional. Specific invoice that defines
@@ -1675,7 +1675,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * This function also extends the expire_date for one period if the
 	 * membership payment-type is recurring or limited
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  float $amount The payment amount. Set to 0 for free subscriptions.
@@ -1748,7 +1748,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Validates every time.
 	 * Check for status that need membership verification for trial, active and expired.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal Use $this->status instead!
 	 *
 	 * @param string $status The status to set.
@@ -1788,7 +1788,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 * Trigger an action to allow other plugins to oberse a change in an
 		 * subscription status.
 		 *
-		 * @since 1.0.0.5
+		 * @since  1.0.0
 		 * @var MS_Model_Relationship The subscription model.
 		 * @var MS_Model_Member       The member who is affected.
 		 */
@@ -1807,7 +1807,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Verifies start and end date of a membership and updates status if expired.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal Use $this->status instead!
 	 *
 	 * @return string The current status.
@@ -1823,7 +1823,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns an i18n translated version of the subscription status.
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string
@@ -1854,7 +1854,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * Calculate status for the membership verifying the start date,
 	 * trial exire date and expire date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $set_status The set status to compare.
@@ -1864,7 +1864,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		/**
 		 * Documented in check_membership_status()
 		 *
-		 * @since 1.1.0.5
+		 * @since  1.0.0
 		 */
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
 			return $set_status;
@@ -2001,7 +2001,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * Save news when status change.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $new_status The status to change to.
@@ -2098,7 +2098,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Get a detailled status description.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The status description.
@@ -2168,7 +2168,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * This check is called via a cron job.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal  Used by Cron
 	 * @see MS_Model_Plugin::check_membership_status()
 	 */
@@ -2183,7 +2183,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 * Membership2 from sending *any* emails to users.
 		 * Also any currently enqueued message is removed from the queue
 		 *
-		 * @since 1.1.0.5
+		 * @since  1.0.0
 		 */
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
 			return false;
@@ -2504,7 +2504,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Returns property.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $property The name of a property.
@@ -2538,7 +2538,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Set specific property.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $property The name of a property to associate.

@@ -7,7 +7,7 @@
  * This file must define class MS_Gateway_<gateway_name>.
  * This object is reponsible to initialize the the gateway logic.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -16,7 +16,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * List of gateway files to load when plugin is initialized.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var array of file-paths
 	 */
@@ -24,7 +24,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 	/*
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $gateways
 	 */
 	protected static $_gateways = null;
@@ -32,7 +32,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * Load and get all registered gateways.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param bool $only_active Optional. When to return only activated gateways.
 	 */
 	public static function get_gateways( $only_active = false ) {
@@ -48,7 +48,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			/**
 			 * Register new gateways.
 			 *
-			 * @since 1.1.0
+			 * @since  1.0.0
 			 */
 			$gateways = apply_filters(
 				'ms_model_gateway_register',
@@ -81,7 +81,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * Checks if the specified gateway is active.
 	 *
-	 * @since  1.0.0.7
+	 * @since  1.0.0
 	 * @param  string $gateway_id The gateway ID.
 	 * @return bool True if the gateway is active.
 	 */
@@ -100,7 +100,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 * Checks the /app/gateway directory for a list of all gateways and loads
 	 * these files.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	static protected function load_core_gateways() {
 		$model = MS_Factory::load( 'MS_Model_Gateway' );
@@ -122,7 +122,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			/**
 			 * Allow other plugins/themes to register custom gateways
 			 *
-			 * @since 1.1.0
+			 * @since  1.0.0
 			 *
 			 * @var array
 			 */
@@ -158,7 +158,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		/**
 		 * Allow custom gateway-initialization code to run
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 */
 		do_action( 'ms_model_gateway_load' );
 	}
@@ -166,7 +166,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * Get all registered gateway names.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param bool $only_active Optional. False (default) returns only activated gateways.
 	 * @param bool $include_gateway_free Optional. True (default) includes Gateway Free.
 	 */
@@ -191,7 +191,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * Returns the gateway name for the specified gateway ID
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $gateway_id The gateway ID.
@@ -226,7 +226,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * Validate gateway.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param string $gateway_id The gateway ID to validate.
 	 */
 	public static function is_valid_gateway( $gateway_id ) {
@@ -241,7 +241,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 	/**
 	 * Gateway factory.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param string $gateway_id The gateway ID to create.
 	 */
 	public static function factory( $gateway_id ) {

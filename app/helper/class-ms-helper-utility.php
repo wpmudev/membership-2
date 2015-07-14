@@ -1,31 +1,8 @@
 <?php
 /**
- * This file defines the MS_Helper_Utility class.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
- */
-
-/**
  * This Helper creates additional utility functions.
  *
- * @since 4.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Helper
  */
@@ -40,7 +17,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 *
 	 * Note that we are not passing values here but references.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $arr1 First array to intersect.
 	 * @param mixed $arr2 Second array to intersect.
@@ -92,7 +69,7 @@ class MS_Helper_Utility extends MS_Helper {
 	/**
 	 * Get the current page URL.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string The URL.
 	 */
@@ -126,7 +103,7 @@ class MS_Helper_Utility extends MS_Helper {
 	/**
 	 * Replace http protocol to https
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $url the original url
 	 * @return string The changed url.
@@ -144,7 +121,7 @@ class MS_Helper_Utility extends MS_Helper {
 	/**
 	 * Returns user IP address.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @static
 	 * @access protected
@@ -203,7 +180,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 * Transforms the $key value into a color index. The same key will always
 	 * return the same color
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $key Some name/ID value
 	 * @return string HTML color code (#123456)
 	 */
@@ -231,7 +208,7 @@ class MS_Helper_Utility extends MS_Helper {
 	/**
 	 * Takes Hue/Saturation/Lightness color definition and returns a hex color code
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  float $h
 	 * @param  float $s
 	 * @param  float $l
@@ -269,7 +246,7 @@ class MS_Helper_Utility extends MS_Helper {
 	/**
 	 * Determine if the user currently is on the specified URL
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  string $url The URL to check
 	 * @return bool
@@ -297,7 +274,7 @@ if ( ! function_exists( 'array_unshift_assoc' ) ) {
 	 * Appends an item to the beginning of an associative array while preserving
 	 * the array keys.
 	 *
-	 * @since  1.0.3
+	 * @since  1.0.0
 	 * @param  array $arr
 	 * @param  scalar $key
 	 * @param  mixed $val

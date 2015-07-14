@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Comment Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -34,7 +13,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -43,7 +22,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Available special pages
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -52,7 +31,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Comment content ID.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $content_id
 	 */
@@ -61,7 +40,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Rule value constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -85,7 +64,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	 * Set to true, if the user did not specify any comment protection.
 	 * This means that the default logic should be used...
 	 *
-	 * @since  1.1.0.9
+	 * @since  1.0.0
 	 *
 	 * @var bool
 	 */
@@ -94,7 +73,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * The message displayed below the "read more" mark.
 	 *
-	 * @since 1.1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -106,7 +85,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	 * This rule will return NULL (not relevant), because the comments are
 	 * protected via WordPress hooks instead of protecting the whole page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
@@ -119,7 +98,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function protect_content() {
 		parent::protect_content();
@@ -218,7 +197,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Before the comment form is output we start buffering.
 	 *
-	 * @since  1.0.4.4
+	 * @since  1.0.0
 	 */
 	public function hide_form_start() {
 		ob_start();
@@ -227,7 +206,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * At the end of the comment form we clear the buffer: The form is gone!
 	 *
-	 * @since  1.0.4.4
+	 * @since  1.0.0
 	 */
 	public function hide_form_end() {
 		ob_end_clean();
@@ -239,7 +218,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	 * Related Action Hooks:
 	 * - the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The content to filter.
 	 */
@@ -263,7 +242,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	 * Related Action Hooks:
 	 * - the_content_more_link
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $more_tag_link the more tag link before filter.
 	 * @param string $more_tag The more tag content before filter.
@@ -288,7 +267,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	 * - the_content
 	 * - the_content_feed
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $the_content The post content before filter.
 	 * @return string The content replaced by more tag content.
@@ -313,7 +292,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Returns a list of special pages that can be configured by this rule.
 	 *
-	 * @since  1.0.4
+	 * @since  1.0.0
 	 *
 	 * @param  bool $flat If set to true then all pages are in the same
 	 *      hierarchy (no sub-arrays).
@@ -343,7 +322,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Count protection rules quantity.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return int $count The rule count result.
 	 */
@@ -360,7 +339,7 @@ class MS_Rule_Content_Model extends MS_Rule {
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args Optional. Not used.
 	 * @return array The content.

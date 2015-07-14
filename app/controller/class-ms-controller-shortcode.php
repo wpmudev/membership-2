@@ -2,7 +2,7 @@
 /**
  * Controller for managing Plugin Shortcodes.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -12,7 +12,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Prepare the shortcode hooks.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -22,7 +22,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Initialize the Shortcodes after we have determined the current user.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init() {
 		// By default assume no content for the protected-content code
@@ -157,7 +157,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 * This function is only called from the Frontend-Controller when the
 	 * Membership Page "Membership2" is displayed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function page_is_protected() {
 		remove_shortcode(
@@ -185,7 +185,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership register callback function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -242,7 +242,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership signup callback function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -319,7 +319,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership title shortcode callback function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -334,7 +334,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				array(
 					'id' => 0,
 					'label' => __( 'Membership title:', MS_TEXT_DOMAIN ),
-					'title' => '', // deprecated @since 1.1.0
+					'title' => '', // deprecated @since  1.0.0
 				),
 				$atts
 			)
@@ -371,7 +371,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership price shortcode callback function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -430,7 +430,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Buy membership button.
 	 *
-	 * @since 1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -483,7 +483,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership details shortcode callback function.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -532,7 +532,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Display the "Membership2" message.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -574,7 +574,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership login shortcode callback function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -647,7 +647,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership logout shortcode callback function.
 	 *
-	 * @since 1.0.1
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -679,7 +679,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership account page shortcode callback function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -771,7 +771,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Link to the Membership account page shortcode.
 	 *
-	 * @since 1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -806,7 +806,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Membership invoice shortcode callback function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -854,7 +854,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Text note shortcode callback function.
 	 *
-	 * @since 1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -892,7 +892,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		 * This gives translators the option to translate even custom messages
 		 * that are entered into the shortcode!
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 */
 		$content = sprintf(
 			'<p class="ms-alert-box %1$s">%2$s</p> ',
@@ -912,7 +912,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Display a green text note.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @deprecated  since 1.0.4.5
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
@@ -932,7 +932,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Display a red text note.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @deprecated  since 1.0.4.5
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
@@ -952,7 +952,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Shortcode callback: Show message only to certain users.
 	 *
-	 * @since 1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -1024,7 +1024,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	/**
 	 * Shortcode callback: Show member infos.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $atts Shortcode attributes.
 	 */
@@ -1128,7 +1128,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 *     All Shortcodes use this callback function
 	 *     when Content Protection is DISABLED!
 	 *
-	 * @since  1.0.4.3
+	 * @since  1.0.0
 	 * @param  mixed[] $atts Shortcode attributes.
 	 * @param  string $content
 	 * @return string
@@ -1168,7 +1168,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 *
 	 * This is used for Admin users to strip all content-protection tags.
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 * @param  mixed[] $atts Shortcode attributes.
 	 * @param  string $content
 	 * @return string

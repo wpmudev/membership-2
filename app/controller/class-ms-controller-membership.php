@@ -2,7 +2,7 @@
 /**
  * Controller for managing Memberships and Membership Rules.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -12,7 +12,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -22,7 +22,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Membership page step constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * The model to use for loading/saving Membership data.
 	 *
-	 * @since 4.0.0
+	 * @since  1.0.0
 	 * @var MS_Model_Membership
 	 */
 	private $model = null;
@@ -48,7 +48,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * The active page tab.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $active_tab;
@@ -56,7 +56,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Prepare the Membership manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -68,7 +68,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Initialize the admin-side functions.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_init() {
 		$hooks = array(
@@ -90,7 +90,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_toggle_membership
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_toggle_membership() {
 		$msg = 0;
@@ -122,7 +122,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_update_membership
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_update_membership() {
 		$msg = 0;
@@ -152,7 +152,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Load membership from request.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return MS_Model_Membership The membership model object.
 	 */
@@ -195,7 +195,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * Verifies GET and POST requests to manage memberships.
 	 * Redirect to next step after processing.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function membership_admin_page_process() {
 		$msg = 0;
@@ -409,7 +409,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Route page request to handling method.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function membership_admin_page_router() {
 		$this->wizard_tracker();
@@ -446,7 +446,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Mark membership setup as complete.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return int $msg The action status message code.
 	 */
@@ -472,7 +472,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Display Setup Membership2 page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function page_protected_content() {
 		$data = array();
@@ -487,7 +487,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Display Choose Membership Type page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function page_add() {
 		$data = array();
@@ -503,7 +503,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Display Membership List page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function page_ms_list() {
 		$membership = $this->load_membership();
@@ -525,7 +525,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Display Setup Payment page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function page_payment() {
 		$membership = $this->load_membership();
@@ -555,7 +555,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Display Membership Overview page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function page_ms_overview() {
 		$membership = $this->load_membership();
@@ -604,7 +604,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Display Membership News page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function page_ms_news() {
 		$data = array();
@@ -626,7 +626,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Display a welcome screen.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function page_welcome() {
 		$data = array();
@@ -641,7 +641,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Get Membership setup steps.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string[] The existing steps.
 	 */
@@ -672,7 +672,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Validate Membership setup step.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $step The step name to validate.
 	 * @return boolean True if valid step.
@@ -788,7 +788,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Get available tabs for Membership2 page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array The tabs configuration.
 	 */
@@ -957,7 +957,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Get the current membership page's active tab.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string The active tab.
 	 */
@@ -989,7 +989,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Execute action in Membership model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @todo There is no more bulk actions. Deprecate this method and create a specific one.
 	 *
@@ -1040,7 +1040,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Get Membership page bread crumbs.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array The bread crumbs array.
 	 */
@@ -1100,7 +1100,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Save membership general tab fields
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed[] $fields
 	 */
@@ -1161,7 +1161,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Load Membership manager specific styles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
 		switch ( $this->get_active_tab() ) {
@@ -1176,7 +1176,7 @@ class MS_Controller_Membership extends MS_Controller {
 	/**
 	 * Load Membership manager specific scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
 		/*

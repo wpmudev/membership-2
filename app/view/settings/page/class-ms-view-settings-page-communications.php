@@ -203,7 +203,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 	/**
 	 * Add short JS values in page footer.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function wp_footer() {
 		$comm = $this->data['comm'];

@@ -2,7 +2,7 @@
 /**
  * Membership Matching-List Table
  *
- * @since 1.0.4.2
+ * @since  1.0.0
  */
 class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 
@@ -24,7 +24,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	/**
 	 * Constructor.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model $model Model for the list data.
 	 * @param MS_Model_Membership $membership The associated membership.
@@ -37,7 +37,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	 * Defines available columns.
 	 * Generally this list will not change...
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_columns() {
@@ -55,7 +55,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	/**
 	 * Allows child classes to easily override the column captions.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @param  string $col
 	 * @return string
 	 */
@@ -74,7 +74,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	 * Define which columns are included in the list that are not displayed.
 	 * Usually this is an empty array.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_hidden_columns() {
@@ -87,7 +87,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	/**
 	 * Define which columns can be sorted.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_sortable_columns() {
@@ -100,7 +100,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	/**
 	 * Prepare the table contents so they can be displayed later.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 */
 	public function prepare_items() {
 		parent::prepare_items();
@@ -115,7 +115,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	/**
 	 * Renders the contents of the ITEM colum.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @param  mixed $item
 	 * @param  string $column_name
 	 * @return string HTML code
@@ -128,7 +128,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	/**
 	 * Renders the contents of the MATCH/REPLACE column.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @param  mixed $item
 	 * @param  string $column_name
 	 * @return string HTML code

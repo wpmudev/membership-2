@@ -6,7 +6,7 @@
  * Methods of this class will prepare objects for the database and
  * manipulate data to be used in a MS_Controller.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  */
@@ -15,7 +15,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * ID of the model object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int|string
 	 */
@@ -24,7 +24,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Model name.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ class MS_Model extends MS_Hooker {
 	 * This value is ONLY modified by MS_Factory::set_singleton(), so if it is
 	 * true it means that this object can be accessed via MS_Factory::load()
 	 *
-	 * @since 1.1.1.4
+	 * @since  1.0.0
 	 *
 	 * @var bool
 	 */
@@ -56,14 +56,14 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * MS_Model Contstuctor
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 
 		/**
 		 * Actions to execute when constructing the parent Model.
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 * @param object $this The MS_Model object.
 		 */
 		do_action( 'ms_model_construct', $this );
@@ -74,7 +74,7 @@ class MS_Model extends MS_Hooker {
 	 *
 	 * Used for loading from db.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $field
 	 * @param mixed $value
@@ -119,7 +119,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Called before saving model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function before_save() {
 		do_action( 'ms_model_before_save', $this );
@@ -128,7 +128,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Abstract method to save model data.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function save() {
 		throw new Exception( 'Method to be implemented in child class' );
@@ -137,7 +137,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Set the singleton instance if it is not yet defined.
 	 *
-	 * @since 1.1.1.4
+	 * @since  1.0.0
 	 */
 	public function store_singleton() {
 		if ( $this->_in_cache ) { return; }
@@ -147,7 +147,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Called after saving model data.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function after_save() {
 		do_action( 'ms_model_after_save', $this );
@@ -156,7 +156,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Get object properties.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array of fields.
 	 */
@@ -167,7 +167,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Validate dates used within models.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $date Date as a PHP date string
 	 * @param string $format Date format.
@@ -192,7 +192,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Validate time periods array structure.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $period Membership period to validate
 	 * @param int $default_period_unit Number of periods (e.g. number of days)
@@ -224,7 +224,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Validate period unit.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $period_unit The period quantity to validate.
 	 * @param int $default The default value when not validated. Default to 1.
@@ -246,7 +246,7 @@ class MS_Model extends MS_Hooker {
 	/**
 	 * Validate period type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $period_type The period type to validate.
 	 * @param int $default The default value when not validated. Default to days.

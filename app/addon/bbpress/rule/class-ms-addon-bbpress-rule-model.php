@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership bbPress Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -34,7 +13,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Custom Post Type names that are used by bbPress
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	const CPT_BB_FORUM = 'forum';
 	const CPT_BB_TOPIC = 'topic';
@@ -43,7 +22,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -52,7 +31,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Verify access to the current content.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $id The content post ID to verify access.
 	 * @return bool|null True if has access, false otherwise.
@@ -118,7 +97,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $ms_relationship Optional. Not used.
 	 */
@@ -134,7 +113,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 * Related Action Hooks:
 	 * - pre_get_posts
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
@@ -175,7 +154,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Get the current post id.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return int The post id, or null if it is not a post.
 	 */
@@ -197,7 +176,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Get the total content count.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -223,7 +202,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $args The default query post args.
 	 * @return array The content.
@@ -259,7 +238,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 *
 	 * Return default search arguments.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -287,7 +266,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	/**
 	 * Get BBPress custom post types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array The bbpress custom post types.
 	 */

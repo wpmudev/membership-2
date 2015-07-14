@@ -107,7 +107,7 @@ class MS_Helper_Membership extends MS_Helper {
 	 * Displays a PopUp to the user that shows a sumary of the setup wizard
 	 * including possible next steps for configuration.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  MS_Model_Membership $membership The membership that was created.
 	 */
 	public static function show_setup_note( $membership ) {

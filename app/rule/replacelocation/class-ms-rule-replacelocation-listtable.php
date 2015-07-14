@@ -1,31 +1,8 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership List Table
  *
- *
- * @since 4.0.0
- *
+ * @since  1.0.0
  */
 class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching {
 
@@ -34,7 +11,7 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 	/**
 	 * Constructor.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model $model Model for the list data.
 	 * @param MS_Model_Membership $membership The associated membership.
@@ -55,7 +32,7 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 	/**
 	 * Add the Access-column to the list table
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function customize_columns( $columns ) {
 		$columns['access'] = true;
@@ -65,7 +42,7 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 	/**
 	 * Override the column captions.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @param  string $col
 	 * @return string
 	 */
@@ -83,7 +60,7 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 	/**
 	 * No pagination for this rule
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return int
 	 */
 	protected function get_items_per_page() {
@@ -93,7 +70,7 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 	/**
 	 * This rule has no views
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_views() {

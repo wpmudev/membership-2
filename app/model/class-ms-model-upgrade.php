@@ -1,26 +1,5 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Upgrade DB model.
  *
  * Manages DB upgrading.
@@ -28,7 +7,7 @@
  * IMPORTANT: Make sure that the snapshot_data() function is up-to-date!
  * Things that are missed during back-up might be lost forever...
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -38,7 +17,7 @@ class MS_Model_Upgrade extends MS_Model {
 	/**
 	 * Initialize upgrading check.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public static function init() {
 		self::update();
@@ -54,7 +33,7 @@ class MS_Model_Upgrade extends MS_Model {
 	/**
 	 * Upgrade database.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param  bool $force Also execute update logic when version did not change.
 	 */
 	public static function update( $force = false ) {
@@ -203,7 +182,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * "protected-content" folder may survive the upgrade and needs to be
 	 * manually removed.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	static private function remove_old_copy() {
 		$new_dir = WP_PLUGIN_DIR . '/membership';
@@ -265,7 +244,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 *
 	 * Note: This function is not used currently...
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	static private function cleanup_db() {
 		global $wpdb;
@@ -348,7 +327,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Makes sure that network-wide protection works by ensuring that the plugin
 	 * is also network-activated.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	static private function check_network_setup() {
 		static $Network_Checked = false;
@@ -428,7 +407,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * - Each token has a timeout of max. 120 seconds.
 	 * - Each token can be used once only.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  string $action Like a nonce, this is the action to execute.
@@ -453,7 +432,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * $_GET['ms_token'] must match the current ms_token
 	 * $_POST['confirm'] must have value 'yes'
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  string $action Like a nonce, this is the action to execute.
@@ -488,7 +467,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * - The request is an wp-admin request
 	 * - The request is not an Ajax call
 	 *
-	 * @since  1.1.0.4
+	 * @since  1.0.0
 	 * @return bool True if all conditions are true
 	 */
 	static private function valid_user() {
@@ -505,7 +484,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Checks if valid reset-instructions are present. If yes, then whipe the
 	 * plugin settings.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	static public function maybe_reset() {
 		static $Reset_Done = false;
@@ -527,7 +506,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Checks if valid restore-options are specified. If they are, the snapshot
 	 * will be restored.
 	 *
-	 * @since  1.1.0.4
+	 * @since  1.0.0
 	 */
 	static private function maybe_restore() {
 		static $Restore_Done = false;

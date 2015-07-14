@@ -2,7 +2,7 @@
 /**
  * Render Membership Metabox
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage View
  */
@@ -11,7 +11,7 @@ class MS_View_Metabox extends MS_View {
 	/**
 	 * Create view output.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function to_html() {

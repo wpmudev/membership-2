@@ -4,7 +4,7 @@
  *
  * Singleton. Persisted by parent class MS_Model_Option.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -14,7 +14,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @staticvar MS_Model_Settings
 	 */
@@ -28,7 +28,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * - Shortcode content is protected
 	 * - Read-more content is protected
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	const PROTECTION_MSG_CONTENT = 'content';
 	const PROTECTION_MSG_SHORTCODE = 'shortcode';
@@ -37,7 +37,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * ID of the model object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -46,7 +46,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Model name.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Current db version.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -64,7 +64,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Plugin enabled status indicator.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -75,7 +75,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * Wizard mode.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -84,7 +84,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Is set to false when the first membership was created.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -93,7 +93,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Is set to false when the first paid membership was created.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -104,7 +104,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * Indicate which step of the wizard.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -115,7 +115,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * Wizard mode.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -126,7 +126,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * Wizard mode.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -135,7 +135,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * The currency used in the plugin.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -144,7 +144,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * The name used in the invoices.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -153,7 +153,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Global payments already set indicator.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var boolean
 	 */
@@ -162,7 +162,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Settings data for extensions/integrations.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -171,7 +171,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Protection Messages.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -180,7 +180,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * How menu items are protected.
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -189,7 +189,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Media / Downloads settings.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -204,7 +204,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * When data was imported a flag can be set here to remember that some
 	 * members come from there.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -216,7 +216,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * This defines a special view that is displayed when the plugin is loaded
 	 * instead of the default plugin page that would be displayed.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -225,7 +225,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Get protection message types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string[] The available protection message types.
 	 */
@@ -242,7 +242,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Validate protection message type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The protection message type to validate.
 	 * @return boolean True if valid.
@@ -259,7 +259,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Set protection message type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The protection message type.
 	 * @param string $msg The protection message.
@@ -280,7 +280,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Get protection message type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The protection message type.
 	 * @return string $msg The protection message.
@@ -306,7 +306,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Set custom setting.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $group The custom setting group.
 	 * @param string $field The custom setting field.
@@ -325,7 +325,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Get custom setting.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $group The custom setting group.
 	 * @param string $field The custom setting field.
@@ -389,7 +389,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Get available currencies.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *     @type string $currency The currency.
@@ -438,7 +438,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Set specific property.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
@@ -485,7 +485,7 @@ class MS_Model_Settings extends MS_Model_Option {
 	/**
 	 * Returns a specific property.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param  string $property The name of a property.
 	 * @return mixed $value The value of a property.

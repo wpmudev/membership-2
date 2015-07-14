@@ -2,7 +2,7 @@
 /**
  * Add-On controller for: Invitations
  *
- * @since 1.0.0.3
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -12,21 +12,21 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * The Add-on ID
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	const ID = 'invitation';
 
 	/**
 	 * The menu slug for the admin page to manage invitation codes.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	const SLUG = 'invitation';
 
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
-	 * @since  1.0.0.3
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -36,7 +36,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.0.0.3
+	 * @since  1.0.0
 	 */
 	public function init() {
 		if ( self::is_active() ) {
@@ -84,7 +84,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Registers the Add-On
 	 *
-	 * @since  1.0.0.3
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */
@@ -101,7 +101,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Add the Coupons menu item to the Membership2 menu.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param  array $items List of the current admin menu items.
 	 * @param  bool $limited_mode True means either First-Setup or site-admin
@@ -130,7 +130,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	 * The $handler value is ONLY changed when the current menu is displayed.
 	 * If another menu item was clicked then don't do anythign here!
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  array $handler {
 	 *         Menu-item handling information.
 	 *
@@ -152,7 +152,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Register the Coupon Post-Type; this is done in MS_Plugin.
 	 *
-	 * @since  1.0.0.3
+	 * @since  1.0.0
 	 * @param  array $cpts
 	 * @return array
 	 */
@@ -165,7 +165,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Add the Coupon Post-Type to the list of internal post-types.
 	 *
-	 * @since  1.0.0.3
+	 * @since  1.0.0
 	 * @param  array $cpts
 	 * @return array
 	 */
@@ -180,7 +180,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	 *
 	 * Verifies GET and POST requests to manage billing.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_manager() {
 		$edit_fields = array( 'submit', 'action', 'invitation_id' );
@@ -232,7 +232,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Perform actions for each invitation.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 * @param string $action The action to perform on selected coupons
 	 * @param int[] $coupons The list of coupons ids to process.
 	 */
@@ -256,7 +256,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Render the Invitation admin manager.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	public function admin_invitation() {
 		$isset = array( 'action', 'invitation_id' );
@@ -284,7 +284,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Save invitation using the invitation model.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param mixed $fields Invitation fields
 	 * @return boolean True in success saving.
@@ -319,7 +319,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Load specific styles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
@@ -332,7 +332,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	/**
 	 * Load specific scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {

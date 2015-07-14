@@ -1,39 +1,17 @@
 <?php
-/**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-
 class MS_Addon_BuddyPress extends MS_Addon {
 
 	/**
 	 * The Add-on ID
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	const ID = 'buddypress';
 
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -50,7 +28,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init() {
 		if ( self::is_active() ) {
@@ -93,7 +71,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * Registers the Add-On
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */
@@ -132,7 +110,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * Returns true, when the BuddyPress plugin is activated.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function buddypress_active() {
@@ -144,7 +122,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * Add buddypress rule tabs in membership level edit.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @filter ms_controller_membership_get_tabs
 	 *
@@ -163,7 +141,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * Display the BuddyPress registration form instead of the default
 	 * Membership2 registration form.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return string HTML code of the registration form or empty string to use
 	 *                the default form.
 	 */
@@ -197,7 +175,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * Redirects all output to the Buffer, so we can easily discard it later...
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function catch_nonce_field() {
 		ob_start();
@@ -213,7 +191,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * Note that the form is submitted to Membership2, so we need to
 	 * handle the background stuff. BuddyPress will not do it for us...
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function membership_fields() {
 		/*
@@ -252,7 +230,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * This preparation only ensures that the user can be created.
 	 * XProfile fields are not handled here...
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function prepare_create_user() {
 		$_REQUEST['first_name'] = $_REQUEST['signup_username'];
@@ -269,7 +247,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 *
 	 * @see bp-xprofile-screens.php function xprofile_screen_edit_profile()
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  WP_User $user The new user.
 	 */
 	public function save_custom_fields( $user ) {
@@ -321,7 +299,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * Automatically confirms new registrations.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  int $user_id The new User-ID
 	 */
 	public function disable_validation( $user_id ) {

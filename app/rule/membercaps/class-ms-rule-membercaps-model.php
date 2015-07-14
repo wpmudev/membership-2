@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Member Capabilities Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -35,7 +14,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -44,7 +23,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	/**
 	 * List of capabilities that are effectively used for the current user
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -61,7 +40,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -74,7 +53,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	/**
 	 * Initializes the object as early as possible
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function prepare_obj() {
 		$this->_content_array = null;
@@ -83,7 +62,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function protect_content() {
 		parent::protect_content();
@@ -95,7 +74,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function protect_admin_content() {
 		parent::protect_admin_content();
@@ -110,7 +89,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * Always returns null since this rule modifies the capabilities of the
 	 * current user and does not directly block access to any page.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
@@ -125,7 +104,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * Relevant Action Hooks:
 	 * - user_has_cap
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array   $allcaps An array of all the role's capabilities.
 	 * @param array   $caps    Actual capabilities for meta capability.
@@ -168,7 +147,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * Relevant Action Hooks:
 	 * - user_has_cap
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array   $allcaps An array of all the role's capabilities.
 	 * @param array   $caps    Actual capabilities for meta capability.
@@ -192,7 +171,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	/**
 	 * Get a simple array of capabilties (e.g. for display in select lists)
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @global array $menu
 	 *
 	 * @return array {
@@ -227,7 +206,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 			/**
 			 * Exclude certain capabilities for security reasons.
 			 *
-			 * @since 1.1.0
+			 * @since  1.0.0
 			 * @var array
 			 */
 			$exclude = apply_filters(
@@ -301,7 +280,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	/**
 	 * Get content to protect. An array of objects is returned.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param $args The query post args
 	 * @return array The contents array.
 	 */
@@ -334,7 +313,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 	 * Get the total content count.
 	 * Used in Dashboard to display how many special pages are protected.
 	 *
-	 * @since 1.0.4
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query

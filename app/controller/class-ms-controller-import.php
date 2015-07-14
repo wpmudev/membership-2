@@ -1,29 +1,8 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Class that handles Import/Export functions.
  *
- * @since 1.1.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Controller
  */
@@ -39,7 +18,7 @@ class MS_Controller_Import extends MS_Controller {
 	/**
 	 * Prepare the Import manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -53,7 +32,7 @@ class MS_Controller_Import extends MS_Controller {
 	/**
 	 * Initialize the admin-side functions.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_init() {
 		$tab_key = 'import'; // should be unique plugin-wide value of `&tab=`.
@@ -74,7 +53,7 @@ class MS_Controller_Import extends MS_Controller {
 	 *   OK:<number of successful commands>
 	 *   ERR
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 */
 	public function ajax_action_import() {
 		$res = 'ERR';
@@ -102,7 +81,7 @@ class MS_Controller_Import extends MS_Controller {
 	/**
 	 * Processes a single import command.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 * @param  array $item The import command.
 	 */
 	protected function process_item( $item, $source ) {
@@ -158,7 +137,7 @@ class MS_Controller_Import extends MS_Controller {
 		 * After the import action was complated notify other objects and
 		 * add-ons.
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 */
 		do_action( 'ms_import_action_' . $task, $item );
 
@@ -172,7 +151,7 @@ class MS_Controller_Import extends MS_Controller {
 	 * Import/Export tab provides a correct nonce. We will first find out which
 	 * action to execute and then handle all the details...
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function process() {
 		lib2()->array->equip_post( 'action', 'import_source' );

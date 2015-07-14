@@ -2,7 +2,7 @@
 /**
  * Membership List Table
  *
- * @since 1.0.0
+ * @since  1.0.0
  */
 class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 
@@ -50,7 +50,7 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 	/**
 	 * Prepare list items.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function prepare_items() {
 		$this->_column_headers = array(

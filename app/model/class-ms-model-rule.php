@@ -1,47 +1,26 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Rule Management class.
  *
- * @since 1.1.0
+ * @since  1.0.0
  */
 class MS_Model_Rule extends MS_Model {
 
 	/**
 	 * Access status constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var bool
 	 */
-	const RULE_VALUE_NO_ACCESS = FALSE;
-	const RULE_VALUE_HAS_ACCESS = TRUE;
-	const RULE_VALUE_UNDEFINED = NULL;
+	const RULE_VALUE_NO_ACCESS = false;
+	const RULE_VALUE_HAS_ACCESS = true;
+	const RULE_VALUE_UNDEFINED = null;
 
 	/**
 	 * Filter type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	const FILTER_PROTECTED = 'protected';
 	const FILTER_NOT_PROTECTED = 'not_protected';
@@ -50,7 +29,7 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Dripped type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string Available Drip-Types.
 	 */
 	const DRIPPED_TYPE_INSTANTLY = 'instantly';
@@ -61,7 +40,7 @@ class MS_Model_Rule extends MS_Model {
 	 * Collection of meta-information on a rule.
 	 * @see register_rule()
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @var array
 	 */
 	static protected $rule_meta = null;
@@ -69,7 +48,7 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Remember if we already called 'prepare_class'
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @var bool
 	 */
 	static protected $prepared = false;
@@ -83,7 +62,7 @@ class MS_Model_Rule extends MS_Model {
 	 * 1. Create a new file-structure in the app/rule/ directory
 	 * 2. Load the rule in this function
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	static public function prepare_class() {
 		MS_Factory::load( 'MS_Rule_Adminside' );
@@ -109,7 +88,7 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Makes sure all rules are registered.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	static private function prepare() {
 		if ( ! self::$prepared ) {
@@ -121,7 +100,7 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Register meta-information on a rule
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $id ID of the rule.
 	 * @param  string $class Name of the rule class, used to find Model-class.
 	 * @param  string $title Rule Title for display.
@@ -163,7 +142,7 @@ class MS_Model_Rule extends MS_Model {
 	 * First one has more priority than the last one.
 	 * This hierarchy is used to determine access to Membership2.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return array $rule_types {
 	 *     @type in $priority The rule type priority in the execution sequence.
 	 *     @type string $rule_type The rule type.
@@ -190,7 +169,7 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Rule types and respective classes.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return array {
 	 *     @type string $rule_type The rule type constant.
 	 *     @type string $class_name The rule type class.
@@ -216,7 +195,7 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Rule types and respective titles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return array {
 	 *     @type string $rule_type The rule type constant.
 	 *     @type string $rule_title The rule title.
@@ -244,7 +223,7 @@ class MS_Model_Rule extends MS_Model {
 	 *
 	 * Return only rule types with dripped rules.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return string[] $rule_type The rule type constant.
 	 */
 	public static function get_dripped_rule_types() {
@@ -267,7 +246,7 @@ class MS_Model_Rule extends MS_Model {
 	/**
 	 * Get dripped types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return array {
 	 *     @type string $dripped_type The dripped type constant.
 	 *     @type string $dripped_type_desc The dripped type description.

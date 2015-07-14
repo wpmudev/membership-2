@@ -1,38 +1,17 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Renders Admin Bar's simulation.
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 1.0.0
+ * @since  1.0.0
  */
 class MS_View_Adminbar extends MS_View {
 
 	/**
 	 * Overrides parent's to_html() method.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string
 	 */
@@ -169,7 +148,7 @@ class MS_View_Adminbar extends MS_View {
 	/**
 	 * Prepare html fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array
 	 */
@@ -249,7 +228,7 @@ class MS_View_Adminbar extends MS_View {
 	 * Output details on which membership denied or allowed access to the
 	 * current page
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $denied_url URL of the denied page (empty if not denied)
 	 * @param  int $membership_id Membership_id
 	 * @param  array $rules List of Rule_types
@@ -326,7 +305,7 @@ class MS_View_Adminbar extends MS_View {
 	/**
 	 * Output the JS and CSS needed for simulation infos
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	protected function output_scripts() {
 		?>

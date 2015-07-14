@@ -9,7 +9,7 @@ class MS_Addon_Wpml extends MS_Addon {
 	/**
 	 * The Add-on ID
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	const ID = 'addon_wpml';
 
@@ -37,7 +37,7 @@ class MS_Addon_Wpml extends MS_Addon {
 	/**
 	 * Checks if the current Add-on is enabled.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -54,7 +54,7 @@ class MS_Addon_Wpml extends MS_Addon {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init() {
 		static $Init_Done = false;
@@ -149,7 +149,7 @@ class MS_Addon_Wpml extends MS_Addon {
 	/**
 	 * Registers the Add-On.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */
@@ -321,7 +321,7 @@ class MS_Addon_Wpml extends MS_Addon {
 	/**
 	 * Load Coupon specific styles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
 		$plugin_url = MS_Plugin::instance()->url;

@@ -5,7 +5,7 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 1.1.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage View
  */
@@ -16,7 +16,7 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 	/**
 	 * Generate/Prepare the dialog attributes.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function prepare() {
 		$membership_id = $_POST['membership_id'];
@@ -52,7 +52,7 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 	/**
 	 * Save the gateway details.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function submit() {
@@ -98,7 +98,7 @@ class MS_View_Membership_Edit_Dialog extends MS_Dialog {
 	/**
 	 * Returns the contens of the dialog
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @return object
 	 */

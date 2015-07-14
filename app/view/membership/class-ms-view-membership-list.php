@@ -5,7 +5,7 @@ class MS_View_Membership_List extends MS_View {
 	/**
 	 * Create view output.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function to_html() {

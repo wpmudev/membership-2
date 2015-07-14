@@ -57,7 +57,7 @@
  *     // Same as above.
  *     if ( MS_Plugin::$api ) { ... }
  *
- * @since 2.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -85,7 +85,7 @@ class MS_Controller_Api extends MS_Controller {
 	/**
 	 * Construct Settings manager.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function __construct() {
@@ -122,7 +122,7 @@ class MS_Controller_Api extends MS_Controller {
 	 *     $member->has_membership( $membership_id )
 	 *     $member->get_subscription( $membership_id )
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  int $user_id User_id
@@ -142,7 +142,7 @@ class MS_Controller_Api extends MS_Controller {
 	/**
 	 * Returns the Member object of the current user.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Member The Member model.
@@ -167,7 +167,7 @@ class MS_Controller_Api extends MS_Controller {
 	 *     $membership->delete_custom_data( 'the_key' );
 	 *     $membership->save(); // Custom data is now deleted from database.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  int $membership_id A specific membership ID.
@@ -187,7 +187,7 @@ class MS_Controller_Api extends MS_Controller {
 	 * Each subscription also offers custom data fields
 	 * (see the details in get_membership() for details)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  int $user_id The user ID.
@@ -208,7 +208,7 @@ class MS_Controller_Api extends MS_Controller {
 	/**
 	 * Returns a list of all available Memberships.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  bool $list_all If set to true then also private and internal
@@ -313,7 +313,7 @@ class MS_Controller_Api extends MS_Controller {
 	 *     $user = MS_Plugin::$api->current_member();
 	 *     $user->dump();
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  mixed $data The value to dump to the output stream.

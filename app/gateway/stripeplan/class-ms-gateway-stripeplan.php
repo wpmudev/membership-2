@@ -4,7 +4,7 @@
  *
  * Persisted by parent class MS_Model_Option. Singleton.
  *
- * @since 2.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -15,7 +15,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -23,7 +23,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Instance of the shared stripe API integration
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @var MS_Gateway_Stripe_Api $api
 	 */
 	protected $_api;
@@ -31,7 +31,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Initialize the object.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		parent::after_load();
@@ -73,7 +73,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * This ID takes the current WordPress Site-URL into account to avoid
 	 * collissions when several Membership2 sites use the same stripe account.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  int $id The internal ID.
@@ -103,7 +103,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * This function is called when the gateway is activated and after a
 	 * membership was saved to database.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function update_stripe_data() {
 		if ( ! $this->active ) { return false; }
@@ -130,7 +130,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * This function is called when the gateway is activated and after a
 	 * membership was saved to database.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function update_stripe_data_membership( $membership ) {
 		if ( ! $this->active ) { return false; }
@@ -210,7 +210,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * This function is called when the gateway is activated and after a
 	 * coupon was saved to database.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function update_stripe_data_coupon( $coupon ) {
 		if ( ! $this->active ) { return false; }
@@ -254,7 +254,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Processes purchase action.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
 	public function process_purchase( $subscription ) {
@@ -339,7 +339,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Check if the subscription is still active.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 * @return bool True on success.
 	 */
@@ -421,7 +421,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * Checks if a subscription has reached the maximum paycycle repetitions.
 	 * If the last paycycle was paid then the subscription is cancelled.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @internal Called by process_purchase() and request_payment()
 	 *
 	 * @param  MS_Model_Relationship $subscription
@@ -448,7 +448,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * When a member cancels a subscription we need to notify Stripe to also
 	 * cancel the Stripe subscription.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Relationship $subscription The membership relationship.
 	 */
 	public function cancel_membership( $subscription ) {
@@ -475,7 +475,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Get Stripe publishable key.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The Stripe API publishable key.
@@ -488,7 +488,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Get Stripe secret key.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal The secret key should not be used outside this object!
 	 *
 	 * @return string The Stripe API secret key.
@@ -501,7 +501,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return boolean True if configured.
 	 */
 	public function is_configured() {

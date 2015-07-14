@@ -1,31 +1,8 @@
 <?php
 /**
- * This file defines the MS_Controller_Billing class.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
- */
-
-/**
  * Controller to manage billing and invoices.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -35,7 +12,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +23,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Prepare the Rule manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -67,7 +44,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_change_memberships
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_change_memberships() {
 		$msg = 0;
@@ -102,7 +79,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_update_matching
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 */
 	public function ajax_action_update_matching() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
@@ -138,7 +115,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * First reset all rules, then save the incoming rules.
 	 * The menu rule type is only reset for the parent menu_id group (clears all children submenus).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $rule_type The rule type to update.
 	 * @param string[] $rule_ids The content identifiers.
@@ -205,7 +182,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_update_dripped
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_update_dripped() {
 		$msg = MS_Helper_Membership::MEMBERSHIP_MSG_NOT_UPDATED;
@@ -289,7 +266,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * Related Action Hooks:
 	 * - ms_controller_membership_edit_manager
 
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function edit_rule_manager( $rule_type ) {
 		$redirect = false;
@@ -326,7 +303,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Execute action in Rule model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param int[] $items The item ids which action will be taken.
@@ -374,7 +351,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Assigns (or removes) memberships from a rule-item.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  string $rule_type [description]
 	 * @param  string $item [description]
@@ -410,7 +387,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Save Url Groups tab.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param array $fields The POST fields
 	 */
@@ -444,7 +421,7 @@ class MS_Controller_Rule extends MS_Controller {
 	/**
 	 * Get membership from request.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return MS_Model_Membership or null if not found.
 	 */

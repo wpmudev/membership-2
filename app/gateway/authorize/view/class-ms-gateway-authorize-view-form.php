@@ -167,7 +167,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 	/**
 	 * Renders Authorize.net CIM profiles.
 	 *
-	 * @since 3.5
+	 * @since  1.0.0
 	 *
 	 * @access protected
 	 */

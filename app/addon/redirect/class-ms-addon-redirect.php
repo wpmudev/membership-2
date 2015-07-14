@@ -1,31 +1,8 @@
 <?php
 /**
- * An Addon controller.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
- */
-
-/**
  * Add-On controller for: Redirect control
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -35,7 +12,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * The Add-on ID
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	const ID = 'addon_redirect';
 
@@ -45,7 +22,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -55,7 +32,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init() {
 		if ( self::is_active() ) {
@@ -96,7 +73,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Registers the Add-On
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */
@@ -120,7 +97,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Returns the Redirect-Settings model.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return MS_Addon_Redirect_Model
 	 */
 	static public function model() {
@@ -136,7 +113,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Add redirect settings tab in settings page.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array $tabs The current tabs.
 	 * @return array The filtered tabs.
@@ -156,7 +133,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Add redirect settings-view callback.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  array $callback The current function callback.
 	 * @param  string $tab The current membership rule tab.
@@ -175,7 +152,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Handle Ajax update custom setting action.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function ajax_save_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -198,7 +175,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Replaces the default "After Login" URL
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  string $url
 	 * @return string
@@ -219,7 +196,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	/**
 	 * Replaces the default "After Logout" URL
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  string $url
 	 * @return string

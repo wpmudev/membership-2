@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership URL Group Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -35,7 +14,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -44,7 +23,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * A list of all URLs that are allowed by the current membership.
 	 *
-	 * @since  1.0.4.4
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -54,7 +33,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -64,7 +43,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Verify access to the current content.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $id The post/CPT ID to verify access. Defaults to current URL.
 	 * @return bool|null True if has access, false otherwise.
@@ -118,7 +97,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Verify if current url has protection rules.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return boolean True if has access, false otherwise.
 	 */
@@ -142,7 +121,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Verify if a post/custom post type has protection rules.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return boolean True if has access, false otherwise.
 	 */
@@ -166,7 +145,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Check url expression match.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $url The url to match.
 	 * @param string[] $check_list The url list to verify match.
@@ -206,7 +185,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Count protection rules quantity.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param bool $has_access_only Optional. Count rules for has_access status only.
 	 * @return int $count The rule count result.
@@ -225,7 +204,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * Get the total content count.
 	 * Used in Dashboard to display how many special pages are protected.
 	 *
-	 * @since 1.0.4.4
+	 * @since  1.0.0
 	 *
 	 * @param $args Ignored
 	 * @return int The total content count.
@@ -243,7 +222,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param $args The filter args
 	 *
 	 * @return array The contents array.
@@ -276,7 +255,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Set access status to content.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $id The content id to set access to.
 	 * @param int $access The access status to set.
 	 */
@@ -308,7 +287,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * We don't use the PHP `serialize()` function to serialize the whole object
 	 * because a lot of unrequired and duplicate data will be serialized
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return array The serialized values of the Rule.
 	 */
 	public function serialize() {
@@ -321,7 +300,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * This function is used when de-serializing a membership to re-create the
 	 * rules associated with the membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $values A list of allowed IDs.
 	 */
 	public function populate( $values ) {
@@ -333,7 +312,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Adds a new URL to the rule
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $url
 	 */
 	public function add_url( $url ) {
@@ -350,7 +329,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * An URL can be deleted either by specifying an Hash (prefered) or the
 	 * plain-text URL. If a Hash value is specified the URL is always ignored.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $hash The URL-hash.
 	 * @param string $url Optional. The plain-text URL.
 	 */
@@ -367,7 +346,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Returns the URL from a specific hash value.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $hash The URL-hash.
 	 */
 	public function get_url_from_hash( $hash ) {
@@ -384,7 +363,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Returns a list with all protected URLs.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $hash The URL-hash.
 	 */
 	public function get_protected_urls() {
@@ -401,7 +380,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	/**
 	 * Returns a list with all accessible URLs.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $hash The URL-hash.
 	 */
 	public function get_accessible_urls() {

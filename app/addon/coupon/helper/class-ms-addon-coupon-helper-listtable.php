@@ -2,7 +2,7 @@
 /**
  * Membership List Table
  *
- * @since 1.0.0.3
+ * @since  1.0.0
  */
 class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 

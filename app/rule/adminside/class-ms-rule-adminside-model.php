@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Membership Admin Side Protection Rule class.
  *
  * Persisted by Membership class.
  *
- * @since 1.1
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -35,7 +14,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -44,7 +23,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	/**
 	 * An array of all menu items that are not allowed for the current user.
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -54,7 +33,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -64,7 +43,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	/**
 	 * Verify access to the current content.
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 *
 	 * @return bool|null True if has access, false otherwise.
 	 *     Null means: Rule not relevant for current page.
@@ -76,7 +55,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 */
 	public function protect_admin_content() {
 		parent::protect_admin_content();
@@ -105,7 +84,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	 * - user_admin_menu
 	 * - admin_menu
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 * @global array $menu
 	 */
 	public function prepare_protection( $ignore ) {
@@ -136,7 +115,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	 * - user_admin_menu
 	 * - admin_menu
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 * @global array $menu
 	 */
 	public function protect_menus( $ignore ) {
@@ -196,7 +175,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	/**
 	 * Get content to protect. An array of objects is returned.
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 * @param $args The query post args
 	 * @return array The contents array.
 	 */
@@ -309,7 +288,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 	/**
 	 * Get total content count.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param $args The query post args
 	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return int The content count.

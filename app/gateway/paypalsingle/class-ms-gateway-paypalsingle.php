@@ -9,7 +9,7 @@
  *
  * Persisted by parent class MS_Model_Option. Singleton.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -20,7 +20,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -28,7 +28,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	/**
 	 * Paypal merchant/seller's email.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var bool $paypal_email
 	 */
 	protected $paypal_email;
@@ -36,7 +36,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	/**
 	 * Paypal country site.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var bool $paypal_site
 	 */
 	protected $paypal_site;
@@ -46,7 +46,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	 * Hook to add custom transaction status.
 	 * This is called by the MS_Factory
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		parent::after_load();
@@ -61,7 +61,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	/**
 	 * Processes gateway IPN return.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function handle_return() {
 		$success = false;
@@ -283,7 +283,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	 * Get paypal country sites list.
 	 *
 	 * @see MS_Gateway::get_country_codes()
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_paypal_sites() {
@@ -296,7 +296,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return boolean
 	 */
@@ -321,7 +321,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @access public
 	 * @param string $name The name of a property to associate.

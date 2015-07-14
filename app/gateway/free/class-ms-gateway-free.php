@@ -6,7 +6,7 @@
  *
  * Persisted by parent class MS_Model_Option. Singleton.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -17,7 +17,7 @@ class MS_Gateway_Free extends MS_Gateway {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -26,7 +26,7 @@ class MS_Gateway_Free extends MS_Gateway {
 	 * Hook to show payment info.
 	 * This is called by the MS_Factory
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		parent::after_load();
@@ -41,7 +41,7 @@ class MS_Gateway_Free extends MS_Gateway {
 	/**
 	 * Return status if all fields are configured
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	public function is_configured() {
@@ -56,7 +56,7 @@ class MS_Gateway_Free extends MS_Gateway {
 	 *
 	 * We need to confirm that it's actually free and mark it paid.
 	 *
-	 * @since 1.1.1.3
+	 * @since  1.0.0
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
 	public function process_purchase( $subscription ) {

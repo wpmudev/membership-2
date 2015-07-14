@@ -6,7 +6,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		/**
 		 * Provide a customized invoice.
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 */
 		$html = apply_filters(
 			'ms_shortcode_custom_invoice',

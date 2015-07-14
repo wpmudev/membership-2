@@ -4,7 +4,7 @@
  *
  * Persisted by parent class MS_Model_Option. Singleton.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -15,7 +15,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -25,7 +25,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 *
 	 * @see https://support.stripe.com/questions/where-do-i-find-my-api-keys
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $test_secret_key
 	 */
 	protected $test_secret_key;
@@ -33,7 +33,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Stripe Secret key (live).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $secret_key
 	 */
 	protected $secret_key;
@@ -41,7 +41,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Stripe test publishable key (sandbox).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $test_publishable_key
 	 */
 	protected $test_publishable_key;
@@ -49,7 +49,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Stripe publishable key (live).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $publishable_key
 	 */
 	protected $publishable_key;
@@ -57,7 +57,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Instance of the shared stripe API integration
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @var MS_Gateway_Stripe_Api $api
 	 */
 	protected $_api = null;
@@ -65,7 +65,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Initialize the object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function after_load() {
@@ -82,7 +82,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Processes purchase action.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
@@ -169,7 +169,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Request automatic payment to the gateway.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
@@ -253,7 +253,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Get Stripe publishable key.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The Stripe API publishable key.
@@ -266,7 +266,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Get Stripe secret key.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal The secret key should not be used outside this object!
 	 *
 	 * @return string The Stripe API secret key.
@@ -279,7 +279,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return boolean True if configured.
@@ -299,7 +299,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	/**
 	 * Auto-update some fields of the _api instance if required.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $key Field name.

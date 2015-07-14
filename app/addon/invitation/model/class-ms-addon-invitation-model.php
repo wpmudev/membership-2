@@ -4,7 +4,7 @@
  *
  * Persisted by parent class MS_Model_Custom_Post_Type.
  *
- * @since 1.0.0.3
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -29,7 +29,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 *
 	 * Both static and class property are used to handle php 5.2 limitations.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 * @var string $POST_TYPE
 	 */
 	protected static $POST_TYPE = 'ms_invitation';
@@ -37,7 +37,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * invitation code text.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * invitation validation start date.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * invitation validation expiry date.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -66,7 +66,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 *
 	 * Zero value indicates that invitation is valid for any membership.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -75,7 +75,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Maximun times this invitation could be used.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -84,7 +84,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Number of times invitation was already used.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -93,7 +93,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Information on invitation use details.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -102,7 +102,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * invitation applied/error message.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -111,7 +111,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Not persisted fields.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @var string[]
 	 */
@@ -129,7 +129,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Returns the post-type of the current object.
 	 *
-	 * @since  1.0.0.3
+	 * @since  1.0.0
 	 * @return string The post-type name.
 	 */
 	public static function get_post_type() {
@@ -142,7 +142,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * For list table count.
 	 * Include expired invitation too.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 * @see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -167,7 +167,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Get invitations.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *        @see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -203,7 +203,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Load invitation using invitation code.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param string $code The invitation code used to load model
 	 * @return MS_Model_Invitation The invitation model, or null if not found.
@@ -272,7 +272,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 *
 	 * This is a non-static function, as it saves the current object!
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $subscription The subscription to apply the invitation.
 	 */
@@ -312,7 +312,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Get user's invitation application.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
@@ -343,7 +343,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Remove user application for this invitation.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
@@ -374,7 +374,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * Checks for maximun number of uses, date range, if the user has used it
 	 * and if it exists.
 	 *
-	 * @since  1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param  int $membership_id
 	 * @return bool True if the invitation can be used for the membership.
@@ -427,7 +427,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Checks to see if the user ID or IP is associated with the invitation code.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	public function check_invitation_user_usage() {
 		$user = MS_Model_Member::get_current_member();
@@ -448,7 +448,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * Retrieves either the current user ID (if logged in)
 	 * or the user IP (if not logged in)
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	public function get_invitation_user_id() {
 		$user = MS_Model_Member::get_current_member();
@@ -464,7 +464,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Apply use of invitation code.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	public function add_invitation_check() {
 		// get the user ID
@@ -484,7 +484,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Remove user application for this invitation.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	public function remove_invitation_check() {
 		// get the user ID
@@ -502,7 +502,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Returns property.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
@@ -535,7 +535,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	/**
 	 * Set specific property.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 *
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.

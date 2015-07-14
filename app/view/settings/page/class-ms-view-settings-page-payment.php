@@ -8,7 +8,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 	 * Creates an output buffer, outputs the HTML and grabs the buffer content before releasing it.
 	 * HTML contains the list of available payment gateways.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string
 	 */
@@ -105,7 +105,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 	/**
 	 * Displays the edit form for all payment gateways.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	protected function gateway_settings() {
 		$gateways = MS_Model_Gateway::get_gateways();

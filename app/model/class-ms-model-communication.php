@@ -4,7 +4,7 @@
  *
  * Persisted by parent class MS_Model_CustomPostType.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -16,7 +16,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Both static and class property are used to handle php 5.2 limitations.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $POST_TYPE
 	 */
 	protected static $POST_TYPE = 'ms_communication';
@@ -24,7 +24,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication types, static reference to loaded child objects.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var array $communications
 	 */
 	protected static $communications = array();
@@ -32,7 +32,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $type
 	 * @var string The communication type
 	 */
@@ -56,7 +56,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * These variables are used inside emails and are replaced by variable value.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see comm_vars
 	 * @var string The communication variable name.
 	 */
@@ -78,7 +78,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The communication type.
 	 */
 	protected $type;
@@ -86,7 +86,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Email subject.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The email subject.
 	 */
 	protected $subject;
@@ -94,7 +94,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Email body message.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The email body message.
 	 */
 	protected $message;
@@ -104,7 +104,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * When the communication has a period to consider.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var bool The period enabled status.
 	 */
 	protected $period_enabled = false;
@@ -112,7 +112,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * The communication period settings.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var array
 	 */
 	protected $period = array(
@@ -123,7 +123,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication enabled status.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The communication enabled status.
 	 */
 	protected $enabled;
@@ -131,7 +131,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication carbon copy enabled.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The communication carbon copy enabled status.
 	 */
 	protected $cc_enabled;
@@ -139,7 +139,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication copied recipient email.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The copied recipient email.
 	 */
 	protected $cc_email;
@@ -147,7 +147,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication variables.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The communication vars.
 	 */
 	protected $comm_vars = array();
@@ -155,7 +155,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication queue of emails to send.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The communication queue.
 	 */
 	protected $queue = array();
@@ -165,7 +165,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Keep for a limited history of sent emails.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The communication sent queue.
 	 */
 	protected $sent_queue = array();
@@ -173,7 +173,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication default content type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string The communication default content type.
 	 */
 	protected $content_type = 'text/html';
@@ -181,7 +181,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Don't persist this fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string[] The fields to ignore when persisting.
 	 */
 	static public $ignore_fields = array(
@@ -193,7 +193,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Returns the post-type of the current object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return string The post-type name.
 	 */
 	public static function get_post_type() {
@@ -203,7 +203,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Get custom register post type args for this model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
@@ -220,7 +220,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication constructor.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		$this->comm_vars = array(
@@ -247,7 +247,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Set description field to persist in WP column.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function before_save() {
 		parent::before_save();
@@ -259,7 +259,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Used by child classes to process communication queue.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		parent::after_load();
@@ -276,7 +276,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Get communication types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array The communication types.
 	 */
@@ -323,7 +323,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Get Communication types and respective classes.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *     Return array of $type => $class_name.
@@ -363,7 +363,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Get Communication types and respective titles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *     Return array of $type => $title.
@@ -409,7 +409,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Validate communication type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The type to validate.
 	 * @return bool True if is valid.
@@ -430,7 +430,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Load from DB if exists, create a new one if not.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The type of the communication.
 	 * @param boolean $create_if_not_exists Optional. Flag to create a comm type if not exists.
@@ -495,7 +495,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Create a new communication object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The type of the communication.
 	 * @param string $class The communication type class.
@@ -518,7 +518,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * To be overridden by children classes creating a new object with the default subject, message, enabled, etc.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function reset_to_default() {
 		do_action(
@@ -531,7 +531,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Retrieve and return all communication types objects.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param boolean $create_if_not_exists Optional. Flag to create a comm type if not exists.
 	 * @return MS_Model_Communication[] The communication objects array.
@@ -560,7 +560,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Override it in children classes.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string The description.
 	 */
@@ -579,7 +579,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Override this in child classes to customize the label.
 	 *
-	 * @since 1.1.0.9
+	 * @since  1.0.0
 	 * @param array $field A HTML definition, passed to lib2()->html->element()
 	 */
 	public function set_period_name( $field ) {
@@ -593,7 +593,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Send email and manage queue.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function process_communication() {
 		do_action(
@@ -606,7 +606,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		 * Membership2 from sending *any* emails to users.
 		 * Also any currently enqueued message is removed from the queue
 		 *
-		 * @since 1.1.0.5
+		 * @since  1.0.0
 		 */
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			$this->queue = array();
@@ -667,7 +667,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * Related Action Hooks:
 	 * - ms_model_event_{$comm_type}
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Event $event The event object.
 	 * @param MS_Model_Relationship $ms_relationship The membership relationship to send message to.
@@ -686,7 +686,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Add a message in the "send queue".
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $subscription_id The membership relationship ID to add to queue.
 	 */
@@ -696,7 +696,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		/**
 		 * Documented in process_communication()
 		 *
-		 * @since 1.1.0.5
+		 * @since  1.0.0
 		 */
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
@@ -748,7 +748,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Delete history of sent messages after max is reached.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $ms_relationship_id The membership relationship ID to remove from queue.
 	 */
@@ -783,7 +783,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Delete history of sent messages after max is reached.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $subscription The membership relationship to send message to.
 	 * @return bool True if successfully sent email.
@@ -931,7 +931,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Replace comm_vars with corresponding values.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $subscription The membership relationship to send message to.
 	 * @param WP_User $wp_user The wordpress user object to get info from.
@@ -1065,7 +1065,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Eg. text/html, text.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string
 	 */
@@ -1081,7 +1081,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param string $name The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */

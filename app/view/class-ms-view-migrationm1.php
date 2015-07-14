@@ -2,14 +2,14 @@
 /**
  * Special View that is displayed to complete the migration from M1.
  *
- * @since 1.0.0
+ * @since  1.0.0
  */
 class MS_View_MigrationM1 extends MS_View {
 
 	/**
 	 * Returns the HTML code of the view.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string

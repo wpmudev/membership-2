@@ -4,7 +4,7 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage View
@@ -14,7 +14,7 @@ class MS_Addon_Invitation_View_List extends MS_View {
 	/**
 	 * Create view output.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string
 	 */

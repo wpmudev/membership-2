@@ -2,7 +2,7 @@
 /**
  * Membership List Table
  *
- * @since 1.0.0
+ * @since  1.0.0
  */
 class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 

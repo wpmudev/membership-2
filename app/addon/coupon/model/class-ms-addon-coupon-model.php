@@ -4,7 +4,7 @@
  *
  * Persisted by parent class MS_Model_CustomPostType.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -16,7 +16,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * Both static and class property are used to handle php 5.2 limitations.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $POST_TYPE
 	 */
 	protected static $POST_TYPE = 'ms_coupon';
@@ -24,7 +24,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Coupon type constant: Discount by a fixed amount from membership price.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @see $discount_type
 	 * @var string
@@ -34,7 +34,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Coupon type constant: Discount a percentage of the membership price.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @see $discount_type
 	 * @var string
@@ -44,7 +44,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Coupon duration constant: Coupon is only applied to the first invoice.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 *
 	 * @see $duration
 	 * @var string
@@ -56,7 +56,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * Note: NOT IMPLEMENTED YET
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 *
 	 * @see $duration
 	 * @var string
@@ -70,7 +70,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * Default value 3600 means 1 hour (60 sec * 60 min)
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -79,7 +79,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Is set to true once the coupon is loaded from DB.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @var string
@@ -89,7 +89,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * The code that the user can enter to apply the coupon to a payment.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -100,7 +100,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * Defines, how the $discount property is interpreted.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -110,7 +110,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * Discount value. Depending on the $discount_type property this is either
 	 * a static amount or a percentage.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var number
 	 */
@@ -122,7 +122,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * Note: THIS IS NOT IMPLEMENTED YET. CURRENTLY ALL COUPONS ARE 'once'
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -131,7 +131,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Defines the earliest date when a coupon code can be used.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -141,7 +141,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * Defines the last date when a coupon code can be used.
 	 * This is optional and can be left empty for no end date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -152,7 +152,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * Zero value indicates that coupon is valid for any membership.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -171,7 +171,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * So max_uses means: Lock the code once max_uses payments were made with
 	 * the coupon for new invoices.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -182,7 +182,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * See notes of $max_uses for more details.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -194,7 +194,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * This message is set by the Coupon model when the coupon is applied.
 	 * It can be a success or error message (e.g. coupon expired, etc.)
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @var string
@@ -204,7 +204,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Stores the flag of the is_valid() test.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var   bool
 	 */
@@ -213,7 +213,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Not persisted fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string[]
 	 */
@@ -232,7 +232,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Returns the post-type of the current object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return string The post-type name.
 	 */
 	public static function get_post_type() {
@@ -242,7 +242,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Get custom register post type args for this model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
@@ -259,7 +259,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Defines and return discount types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *     The discount types array.
@@ -288,7 +288,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Verify if is a valid coupon type
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The discount type to validate.
 	 *
@@ -307,7 +307,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Defines and return discount types descriptions.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array The discount types description array
 	 */
@@ -328,7 +328,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * For list table count.
 	 * Include expired coupon too.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -358,7 +358,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * By default all available Coupons are returned. The result can be filtered
 	 * via the $args parameter that takes any WP_Query options.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  array $args The query post args
@@ -395,7 +395,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Load coupon using coupon code.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $code The coupon code used to load model
 	 * @return MS_Addon_Coupon_Model The coupon model, or null if not found.
@@ -464,7 +464,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * This is a non-static function, as it saves the current object!
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $subscription The subscription to apply the coupon.
 	 */
@@ -506,7 +506,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Get user's coupon application.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
@@ -537,7 +537,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Remove user application for this coupon.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
@@ -566,7 +566,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 *
 	 * Checks for maximun number of uses, date range and membership_id restriction.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $membership_id The membership id for which coupon is applied
 	 * @return boolean True if valid coupon.
@@ -624,7 +624,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Returns the result of the last is_valid() function call
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	public function was_valid() {
@@ -638,7 +638,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * If the membership price is free, the discount will be zero.
 	 * If discount is bigger than the price, the discount will be equal to the price.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $subscription The membership relationship to apply coupon.
 	 * @return float The discount value.
@@ -678,7 +678,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Returns property.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
@@ -734,7 +734,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Set specific property.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.

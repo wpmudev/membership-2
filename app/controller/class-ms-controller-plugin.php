@@ -4,7 +4,7 @@
  *
  * Responsible for flow control, navigation and invoking other controllers.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -14,7 +14,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Plugin Menu slug.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -23,7 +23,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * The slug of the top-level admin page
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Capability required to count as M2 'admin' user. Admin users have full
 	 * access to all M2 features.
 	 *
-	 * @since 1.0.8
+	 * @since  1.0.0
 	 *
 	 * @var $capability
 	 */
@@ -42,7 +42,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Instance of MS_Model_Plugin.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var $model
 	 */
@@ -51,7 +51,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Pointer array for other controllers.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var $controllers
 	 */
@@ -62,7 +62,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * It is set by self::route_submenu_request() and is used by
 	 * self::handle_submenu_request()
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -73,7 +73,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * Created by the MS_Plugin object during the setup_theme action.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -103,7 +103,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		 * Either by defining the constant in wp-config or by using the filter.
 		 * The constant takes priority over the filter.
 		 *
-		 * @since  1.0.0.8
+		 * @since  1.0.0
 		 */
 		if ( defined( 'MS_ADMIN_CAPABILITY' ) ) {
 			$this->capability = MS_ADMIN_CAPABILITY;
@@ -168,7 +168,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * This is done after admin_menu (when in admin site) or
 	 * after setup_theme (on front-end)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function run_admin_init() {
 		if ( ! is_admin() && ! is_network_admin() ) { return; }
@@ -241,7 +241,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Important: In order for this function to work as expected it needs to
 	 * be called *after* the admin-menu was registered!
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $subpage
 	 * @return string The internal hook name
 	 */
@@ -278,7 +278,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Adds Dashboard navigation menus.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function add_menu_pages() {
 		global $submenu;
@@ -394,7 +394,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Returns the admin menu items for setting up the plugin.
 	 * Helper function used by add_menu_pages
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return array
 	 */
 	private function get_setup_menu_pages() {
@@ -422,7 +422,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Returns the default admin menu items for Membership2.
 	 * Helper function used by add_menu_pages
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return array
 	 */
 	private function get_default_menu_pages() {
@@ -511,7 +511,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * This function will only handle submenu items of the Membership2 menu!
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function route_submenu_request() {
 		global $submenu;
@@ -589,7 +589,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		/**
 		 * Filter that allows Add-ons to add their own sub-menu handlers.
 		 *
-		 * @since  2.0.0
+		 * @since  1.0.0
 		 */
 		$handler = apply_filters(
 			'ms_route_submenu_request',
@@ -636,7 +636,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * This function was determined by the previous call to
 	 * self::route_submenu_request() during the admin_init hook.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function handle_submenu_request() {
 		if ( ! empty( $this->menu_handler ) ) {
@@ -648,7 +648,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Checks if the current user is on the specified Membership2 admin page.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $slug The membership2 slug (without the menu-slug prefix)
 	 * @return bool
 	 */
@@ -725,7 +725,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Get admin settings url.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 */
 	public static function get_admin_settings_url() {
@@ -743,7 +743,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * ** Hooks Actions/Filters: *
 	 * * single_template
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $template The template path to filter.
 	 * @return string The template path.
@@ -771,7 +771,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * Wrapper for MS_Model_Plugin->get_access_info()
 	 *
-	 * @since  1.0.2
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_access_info() {
@@ -783,7 +783,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * Wrapper for MS_Model_Plugin->get_admin_menu()
 	 *
-	 * @since  1.1
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_admin_menu() {
@@ -894,7 +894,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Adds CSS for Membership settings pages.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_plugin_admin_styles() {
 		lib2()->ui->css( 'ms-admin-styles' );
@@ -906,7 +906,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Adds CSS for Membership pages used in the front end.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return void
 	 */
@@ -917,7 +917,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Register JavasSript for Membership settings pages.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return void
 	 */
@@ -928,7 +928,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	/**
 	 * Adds JavasSript for Membership pages used in the front end.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return void
 	 */
@@ -940,7 +940,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * Adds a javascript to the page that will translate the jQuery validator
 	 * messages.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	static public function translate_jquery_validator() {
 		ob_start();

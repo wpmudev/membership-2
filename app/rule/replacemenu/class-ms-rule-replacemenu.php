@@ -12,7 +12,7 @@ class MS_Rule_ReplaceMenu extends MS_Controller {
 	/**
 	 * Setup the rule.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function prepare_obj() {
 		if ( MS_Rule_ReplaceMenu_Model::is_active() ) {
@@ -38,7 +38,7 @@ class MS_Rule_ReplaceMenu extends MS_Controller {
 	/**
 	 * Tells Membership2 Admin to display this form to manage this rule.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array $callback (Invalid callback)
 	 * @param array $data The data collection.
@@ -56,7 +56,7 @@ class MS_Rule_ReplaceMenu extends MS_Controller {
 	/**
 	 * Returns the ListTable object for this rule.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @return MS_Helper_ListTable
 	 */

@@ -4,7 +4,7 @@
  *
  * Persisted by parent class MS_Model_Transient.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -14,7 +14,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * The membership ID to simulate.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -23,7 +23,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Flag, if the simulation should display a datepicker or not.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @var bool
 	 */
 	protected $datepicker = false;
@@ -31,7 +31,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * The date to simulate.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * Determines if the current user is permitted to even think about using
 	 * simulation. If not allowed, then most of this class will not be used.
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	public static function can_simulate() {
@@ -67,7 +67,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Called after loading model data.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		if ( ! $this->can_simulate() ) { return false; }
@@ -93,7 +93,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Makes the current user a non-admin user during simulation
 	 *
-	 * @since  1.1
+	 * @since  1.0.0
 	 * @param  string $result Set to False to use default WordPress value.
 	 * @return string Empty value means "no Administrator on this installation".
 	 */
@@ -104,7 +104,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Add the simulated relationship to the current users memberships.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function add_simulation_membership( $subscriptions ) {
 		$subscription = false;
@@ -140,7 +140,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Check simulating status
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return bool True if currently simulating a membership.
 	 */
@@ -155,7 +155,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Start simulation date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	private function start_simulation() {
 		if ( ! self::can_simulate() ) {
@@ -182,7 +182,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 * Used Hooks filter/actions:
 	 * - ms_helper_period_current_date
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $current_date The date to filter.
 	 * @return string The filtered date.
@@ -198,7 +198,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Reset simulation.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function reset_simulation() {
 		if ( null === $this->membership_id ) { return; }
@@ -218,7 +218,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Checks if the currently simulated membership needs a datepicker or not.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string True if a datepicker is needed.
 	 */
@@ -250,7 +250,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Display some infos on the page on the current simulation
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function simulation_infos() {
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
@@ -273,7 +273,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Returns property associated with the render.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
@@ -307,7 +307,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $name The name of a property to associate.
 	 * @param mixed $value The value of a property.

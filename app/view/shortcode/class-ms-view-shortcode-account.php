@@ -8,7 +8,7 @@ class MS_View_Shortcode_Account extends MS_View {
 		/**
 		 * Provide a customized account page.
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 */
 		$html = apply_filters(
 			'ms_shortcode_custom_account',
@@ -56,7 +56,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right before the memberships list.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_memberships_top', $member, $this );
 
@@ -165,7 +165,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right after the memberships list.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_memberships_bottom', $member, $this );
 				?>
@@ -203,7 +203,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right before the profile overview.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_profile_top', $member, $this );
 				?>
@@ -221,7 +221,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right after the profile overview.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_profile_bottom', $member, $this );
 				?>
@@ -259,7 +259,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right before the invoice overview list.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_invoices_top', $member, $this );
 				?>
@@ -333,7 +333,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right after the invoices overview list.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_invoices_bottom', $member, $this );
 				?>
@@ -371,7 +371,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right before the activities overview list.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_activity_top', $member, $this );
 				?>
@@ -414,7 +414,7 @@ class MS_View_Shortcode_Account extends MS_View {
 				/**
 				 * Add custom content right after the activities overview list.
 				 *
-				 * @since  1.1.1.3
+				 * @since  1.0.0
 				 */
 				do_action( 'ms_view_account_activity_bottom', $member, $this );
 				?>

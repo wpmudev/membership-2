@@ -6,7 +6,7 @@ class MS_Widget_Login extends WP_Widget {
 	 * Constructor.
 	 * Sets up the widgets name etc.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct(
@@ -21,7 +21,7 @@ class MS_Widget_Login extends WP_Widget {
 	/**
 	 * Outputs the content of the widget.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array $args
 	 * @param array $instance
@@ -66,7 +66,7 @@ class MS_Widget_Login extends WP_Widget {
 	/**
 	 * Outputs the options form on admin
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array $instance The widget options
 	 */
@@ -162,7 +162,7 @@ class MS_Widget_Login extends WP_Widget {
 	/**
 	 * Processing widget options on save
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array $new_instance The new options
 	 * @param array $old_instance The previous options

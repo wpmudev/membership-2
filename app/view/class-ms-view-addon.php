@@ -4,7 +4,7 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 4.0.0
+ * @since  1.0.0
  *
  * @return object
  */
@@ -21,7 +21,7 @@ class MS_View_Addon extends MS_View {
 	 * @todo Could use callback functions to call dynamic methods from within the helper, thus
 	 * creating the navigation with a single method call and passing method pointers in the $tabs array.
 	 *
-	 * @since 4.0.0
+	 * @since  1.0.0
 	 *
 	 * @return object
 	 */

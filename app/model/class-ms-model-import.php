@@ -1,29 +1,8 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Base class for all import handlers.
  *
- * @since 1.1.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -35,7 +14,7 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 * This is used to render the Import-Preview view.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -44,7 +23,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Holds a list of all errors that happen during import.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -53,7 +32,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * The data source name.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -67,7 +46,7 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 * Logic has to be implemented by child classes.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @return bool
 	 */
@@ -81,7 +60,7 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 * Must be implemented by the child classes.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function present() {
@@ -93,7 +72,7 @@ class MS_Model_Import extends MS_Model {
 	 * If not an import object then FALSE will be returned, otherwise the
 	 * object itself.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  object $data Import object to test.
 	 * @return object|false
 	 */
@@ -121,7 +100,7 @@ class MS_Model_Import extends MS_Model {
 	 * The first action of the import process. This should prepare the site for
 	 * a new import.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 * @param  bool $clear If true then existing memberships will be deleted.
 	 */
 	public function start( $clear ) {
@@ -140,7 +119,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * The last action of the import process, responsible to clean up temp data.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 */
 	public function done() {
 		$this->clear_import_obj_cache();
@@ -149,7 +128,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Returns the import cache object.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 * @param  string $req_type The object type name that is requested.
 	 * @return array The full import object cache.
 	 */
@@ -164,7 +143,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Stores the import cache object.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 * @param  array The full import object cache.
 	 */
 	private function set_import_obj_cache( $cache ) {
@@ -174,7 +153,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Deletes the temporary import cache object.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 */
 	private function clear_import_obj_cache() {
 		delete_option( 'MS_Import_Obj_Cache' );
@@ -186,7 +165,7 @@ class MS_Model_Import extends MS_Model {
 	 * This is a temporary map of all objects created during import and
 	 * associates the real object ID with an import ID to recognize them again.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 * @param  string $type Object type ('memberhip', ...)
 	 * @param  string $import_id Import-ID
 	 * @param  any $obj The imported object
@@ -212,7 +191,7 @@ class MS_Model_Import extends MS_Model {
 	 * This is a temporary map of all objects created during import and
 	 * associates the real object ID with an import ID to recognize them again.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 * @param  string $type Object type ('memberhip', ...)
 	 * @param  string $import_id Import-ID
 	 * @return MS_Model The requested object
@@ -232,7 +211,7 @@ class MS_Model_Import extends MS_Model {
 	 * Removes all subscriptions and memberships from the current site.
 	 * This is done before the import if the "Replace existing data" flag is set.
 	 *
-	 * @since  1.1.1.5
+	 * @since  1.0.0
 	 */
 	protected function clear_memberships() {
 		// Delete all Relationships.
@@ -254,7 +233,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Import specific data: A single membership
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  object $obj The import object
 	 */
 	public function import_membership( $obj ) {
@@ -268,7 +247,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Makes sure the specified period-type is a recognized value.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $period_type An unvalidated period string
 	 * @return string A valid period-type string
 	 */
@@ -292,7 +271,7 @@ class MS_Model_Import extends MS_Model {
 	 * This is a separate function because it is used to populate normal
 	 * memberships and also child memberships
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	protected function populate_membership( &$membership, $obj ) {
 		$membership->name = $obj->name;
@@ -388,7 +367,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Import specific data: A single member
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  object $obj The import object
 	 */
 	public function import_member( $obj ) {
@@ -457,7 +436,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Import specific data: A single subscription (= relationship)
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  object $obj The import object
 	 */
 	protected function import_subscription( $member, $obj ) {
@@ -508,7 +487,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Import specific data: A single invoice
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  object $obj The import object
 	 */
 	protected function import_invoice( $subscription, $obj ) {
@@ -535,7 +514,7 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Import specific data: A single setting
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  object $obj The import object
 	 */
 	public function import_setting( $setting, $value ) {

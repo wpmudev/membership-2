@@ -1,28 +1,5 @@
 <?php
 /**
- * An Addon controller.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
- */
-
-/**
  * Add-On controller for: Taxamo
  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -42,7 +19,7 @@
  * generated in the future.
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -52,7 +29,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * The Add-on ID
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	const ID = 'addon_taxamo';
 
@@ -64,7 +41,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * HTML code that is output in the page footer when tax-editor dialog is
 	 * available.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	static protected $footer_html = '';
@@ -72,7 +49,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -82,7 +59,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init() {
 		if ( self::is_active() ) {
@@ -165,7 +142,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Registers the Add-On
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */
@@ -189,7 +166,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Returns the Taxamo-Settings model.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return MS_Addon_Taxamo_Model
 	 */
 	static public function model() {
@@ -205,7 +182,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Add taxamo settings tab in settings page.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array $tabs The current tabs.
 	 * @return array The filtered tabs.
@@ -225,7 +202,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Add taxamo settings-view callback.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  array $callback The current function callback.
 	 * @param  string $tab The current membership rule tab.
@@ -244,7 +221,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Handle Ajax update custom setting action.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function ajax_save_setting() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -268,7 +245,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Adds taxes to the net-amount.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  numeric $net_value Net value
 	 * @return numeric Gross value
 	 */
@@ -286,7 +263,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Return the tax-rate for the users country.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  numeric $rate Default rate (0)
 	 * @return numeric Tax rate to apply (e.g. 20 for 20%)
 	 */
@@ -299,7 +276,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Return the tax-name for the users country.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $name Default name (empty string)
 	 * @return string Tax display-name (e.g. 'EU Standard Tax (20 %)')
 	 */
@@ -312,7 +289,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Saves tax-profile to the invoice.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  MS_Model_Invoice $invoice The invoice object.
 	 * @return MS_Model_Invoice
 	 */
@@ -326,7 +303,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * When a payment was made via stripe we can use the card details as an
 	 * evidence for the tax-country.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  Stripe_Card $card The card details.
 	 */
 	public function stripe_card_profile( $card ) {
@@ -343,7 +320,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * When an invoice was paid we need to notify taxamo of the transaction.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  MS_Model_Invoice $invoice The processed invoice.
 	 */
 	public function invoice_paid( $invoice ) {
@@ -367,7 +344,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Load taxamo scripts.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @param  MS_Model_Invoice $invoice Optional. The invoice to edit.
 	 */
 	public function tax_editor( $invoice ) {
@@ -409,7 +386,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Outputs tax-editor code in the page footer.
 	 *
-	 * @since  12.0.0
+	 * @since  1.0.0
 	 */
 	public function tax_editor_footer() {
 		echo self::$footer_html;
@@ -425,7 +402,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	/**
 	 * Handle Ajax action to update a user tax-profile field.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_save_userprofile() {
 		$response = '';

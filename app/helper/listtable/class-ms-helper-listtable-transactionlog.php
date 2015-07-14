@@ -2,7 +2,7 @@
 /**
  * List of transaction protocol entries.
  *
- * @since 1.0.0.6
+ * @since  1.0.0
  */
 class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
@@ -22,7 +22,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Constructor, defines general list table attributes.
 	 *
-	 * @since 1.0.0.6
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		// 'singular' just added for fun...
@@ -38,7 +38,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Defines the columns of the list table
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_columns() {
@@ -70,7 +70,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Defines, which columns should be output as hidden columns.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_hidden_columns() {
@@ -83,7 +83,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Defines, which columns can be sorted.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_sortable_columns() {
@@ -96,7 +96,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Defines available bulk actions.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_bulk_actions() {
@@ -109,7 +109,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Loads the items that are displayed on the current list page.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 */
 	public function prepare_items() {
 		$this->_column_headers = array(
@@ -138,7 +138,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * Prepares the collection of query arguments used to filter list items.
 	 * These arguments are later passed to a WP_Query constructor.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @return array
 	 */
 	protected function get_query_args() {
@@ -163,7 +163,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Displays a custom search box for this list.
 	 *
-	 * @since  1.0.0.7
+	 * @since  1.0.0
 	 */
 	public function search_box( $text = null, $input_id = 'search' ) {
 		// Do not display anything.
@@ -173,7 +173,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Defines predefines filters for this list table.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_views() {
@@ -198,7 +198,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -210,7 +210,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -223,7 +223,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -257,7 +257,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -291,7 +291,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -303,7 +303,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -316,7 +316,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -342,7 +342,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Output column content
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  object $item The item that is displayed.
 	 * @return string The HTML code to output.
 	 */
@@ -372,7 +372,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	/**
 	 * Returns the total number of transaction logs in the database.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @return int
 	 */
 	protected function count_items() {
@@ -390,7 +390,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * Returns a list of transaction log items that will be displayed in the
 	 * listview.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @param  array $args Filter options.
 	 * @return array List of matching transaction log entries.
 	 */

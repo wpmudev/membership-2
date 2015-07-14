@@ -16,7 +16,7 @@ class MS_Rule_Url extends MS_Controller {
 	/**
 	 * Setup the rule.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function prepare_obj() {
 		if ( MS_Rule_Url_Model::is_active() ) {
@@ -44,7 +44,7 @@ class MS_Rule_Url extends MS_Controller {
 	/**
 	 * Tells Membership2 Admin to display this form to manage this rule.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param array $callback (Invalid callback)
 	 * @param array $data The data collection.
@@ -62,7 +62,7 @@ class MS_Rule_Url extends MS_Controller {
 	/**
 	 * Returns the ListTable object for this rule.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @return MS_Helper_ListTable
 	 */
@@ -76,7 +76,7 @@ class MS_Rule_Url extends MS_Controller {
 	 * Processes a form submit and changes the rule values, if valid form data
 	 * is found.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	private function process_form() {
 		$action = false;

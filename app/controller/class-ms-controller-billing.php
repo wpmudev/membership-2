@@ -1,31 +1,8 @@
 <?php
 /**
- * This file defines the MS_Controller_Billing class.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
- */
-
-/**
  * Controller to manage billing and invoices.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -35,7 +12,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Prepare the Billing manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -44,7 +21,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Initialize the admin-side functions.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_init() {
 		$hook = MS_Controller_Plugin::admin_page_hook( 'billing' );
@@ -57,7 +34,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Show admin notices.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 */
 	public function print_admin_message() {
@@ -69,7 +46,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 *
 	 * Verifies GET and POST requests to manage billing.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_billing_manager() {
 		$this->print_admin_message();
@@ -112,7 +89,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Sets up the 'Billing' navigation and list page.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_billing() {
 		$this->print_admin_message();
@@ -137,7 +114,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Perform actions for each invoice.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param string $action The action to perform on selected invoices.
 	 * @param int[] $invoice_ids The list of invoices ids to process.
 	 */
@@ -172,7 +149,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Save invoices using the invoices model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $fields Transaction fields
 	 */
@@ -230,7 +207,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Load Billing specific styles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
 		if ( empty( $_GET['action'] ) ) {
@@ -247,7 +224,7 @@ class MS_Controller_Billing extends MS_Controller {
 	/**
 	 * Load Billing specific scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {

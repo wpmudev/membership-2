@@ -4,7 +4,7 @@
  *
  * Manages the Member and the member's Memberships.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -14,7 +14,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -43,7 +43,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Prepare the Member manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -62,7 +62,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Initialize the admin-side functions.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_init() {
 		$hooks = array(
@@ -83,7 +83,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * This does NOT assign any membership to the user, but ensures that the
 	 * admin user appears in the Members-List
 	 *
-	 * @since 1.0.4.5
+	 * @since  1.0.0
 	 */
 	public function add_current_user() {
 		$member = MS_Factory::load(
@@ -103,7 +103,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @todo It got complex, maybe consider using ajax editing or create a new edit page with all member
 	 *     membership fields (active, memberships, start, end, gateway)
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function members_admin_page_process() {
 		$msg = 0;
@@ -220,7 +220,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * Menu "All Members", show all members available.
 	 * Called by MS_Controller_Plugin::route_submenu_request()
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_member_list() {
 		$data = array();
@@ -263,7 +263,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_change_memberships
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_change_memberships() {
 		$msg = 0;
@@ -298,7 +298,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Assigns (or removes) memberships to a Member.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  string $user_id
 	 * @param  array $memberships Memberships that will be assigned to the
@@ -346,7 +346,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Handles Member list actions.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param object[] $members Array of members.
@@ -421,7 +421,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Load Member manager specific styles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
 		lib2()->ui->add( 'jquery-ui' );
@@ -430,7 +430,7 @@ class MS_Controller_Member extends MS_Controller {
 	/**
 	 * Load Member manager specific scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
 		$data = array(

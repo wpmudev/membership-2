@@ -121,7 +121,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	/**
 	 * Generate a standalone "Sign up for Membership" button.
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @param  MS_Model_Membership $membership The membership to sign up for.
 	 * @param  string $label The button label.
@@ -151,7 +151,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 *
 	 * The URL can be used in a link or a form with only a submit button.
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 * @param  string $action
 	 * @return string The URL.
 	 */

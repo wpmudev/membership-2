@@ -1,31 +1,10 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Event model.
  *
  * Persisted by parent class MS_Model_CustomPostType.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -37,7 +16,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * Both static and class property are used to handle php 5.2 limitations.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -49,7 +28,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * @see $topic
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -61,7 +40,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Event type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -90,7 +69,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Event's membership ID.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -99,7 +78,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Event's ms relationship ID.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var int
 	 */
@@ -110,7 +89,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * Events are grouped by topic.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -119,7 +98,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Event type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -128,7 +107,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Event date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -137,7 +116,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Returns the post-type of the current object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return string The post-type name.
 	 */
 	public static function get_post_type() {
@@ -147,7 +126,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Get custom register post type args for this model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
@@ -164,7 +143,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Get Event types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *     array{
@@ -275,7 +254,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Get last event of specified type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Event The $event to search.
 	 * @return null|MS_Model_Event The found event, or null.
@@ -312,7 +291,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Verify if is a valid event type
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The event type to validate.
 	 * @return boolean True if valid.
@@ -326,7 +305,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Get topic from event.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The event type.
 	 * @return string the topic description.
@@ -345,7 +324,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Get event description.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The event type.
 	 * @return string the event description.
@@ -365,7 +344,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * Get the total event count.
 	 * For list table pagination.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param array $args The default query event args.
 	 * @return int The total count.
@@ -386,7 +365,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Get events.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -412,7 +391,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * Default search arguments for this custom post_type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $args The query post args
 	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
@@ -461,7 +440,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * Default search arguments for this custom post_type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type The event type.
 	 * @return mixed $data The additional data to create an event.
@@ -575,7 +554,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	/**
 	 * Verify if a event was already created in the same day.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Event $event The event to verify.
 	 * @param mixed $data The additional data.

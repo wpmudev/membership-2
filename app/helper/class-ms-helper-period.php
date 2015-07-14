@@ -2,8 +2,7 @@
 /**
  * Utilities class
  *
- * @since 1.0.0
- *
+ * @since  1.0.0
  */
 class MS_Helper_Period extends MS_Helper {
 
@@ -25,7 +24,7 @@ class MS_Helper_Period extends MS_Helper {
 	/**
 	 * Add a period interval to a date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $period_unit The period unit to add.
 	 * @param string $period_type The period type to add.
@@ -59,7 +58,7 @@ class MS_Helper_Period extends MS_Helper {
 	/**
 	 * Subtract a period interval to a date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $period_unit The period unit to subtract.
 	 * @param string $period_type The period type to subtract.
@@ -95,7 +94,7 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * Return (end_date - start_date) in period_type format
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param  Date $end_date The end date to subtract from in the format yyyy-mm-dd
 	 * @param  Date $start_date The start date to subtraction the format yyyy-mm-dd
@@ -132,7 +131,7 @@ class MS_Helper_Period extends MS_Helper {
 	 * This function can be used to compare multiple dates, like
 	 * $valid = is_after( $today, $date1, $date2, $date3 );
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 *
 	 * @param  string|Date $the_date Date value that is compared with other dates.
 	 * @param  string|Date $before_1 Comparison Date 1
@@ -178,7 +177,7 @@ class MS_Helper_Period extends MS_Helper {
 	/**
 	 * Return current date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string The current date.
 	 */
@@ -213,7 +212,7 @@ class MS_Helper_Period extends MS_Helper {
 	/**
 	 * Return current timestamp.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string The current date.
 	 */
@@ -227,7 +226,7 @@ class MS_Helper_Period extends MS_Helper {
 	/**
 	 * Return the existing period types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $type [all|singular|plural]
 	 * @return array The period types and descriptions.
@@ -267,7 +266,7 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * Convert period in week, month, years to days.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param $period The period to convert.
 	 *
@@ -358,7 +357,7 @@ class MS_Helper_Period extends MS_Helper {
 	 *   Month -> value will be between 1 - 24
 	 *   Year  -> value will be between 1 - 5
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 * @param  int $value The value to validate
 	 * @param  string $unit Period unit (D/W/M/Y or long days/weeks/...)
 	 * @return int The validated value

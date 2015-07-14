@@ -1,33 +1,10 @@
 <?php
 /**
- * This file defines the MS_Controller_Addon class.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Controller for Membership add-ons.
  *
  * Manages the activating and deactivating of Membership addons.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -37,7 +14,7 @@ class MS_Controller_Addon extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +23,7 @@ class MS_Controller_Addon extends MS_Controller {
 	/**
 	 * Prepare the Add-on manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -65,7 +42,7 @@ class MS_Controller_Addon extends MS_Controller {
 	/**
 	 * Initialize the admin-side functions.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_init() {
 		$hook = MS_Controller_Plugin::admin_page_hook( 'addon' );
@@ -80,7 +57,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_toggle_gateway
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_toggle_addon() {
 		$msg = 0;
@@ -115,7 +92,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 * Related Action Hooks:
 	 * - ms_controller_membership_setup_completed
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function auto_setup_addons( $membership ) {
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
@@ -127,7 +104,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 *
 	 * Handles activation/deactivation toggles and bulk update actions, then saves the model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_addon_process() {
 		/**
@@ -137,7 +114,7 @@ class MS_Controller_Addon extends MS_Controller {
 		 * This action uses the "raw" request objects which could lead to SQL injections / XSS.
 		 * By hooking this action you need to take **responsibility** for filtering user input.
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 * @param object $this The MS_Controller_Addon object.
 		 */
 		do_action( 'ms_controller_addon_admin_addon_process', $this );
@@ -161,7 +138,7 @@ class MS_Controller_Addon extends MS_Controller {
 	/**
 	 * Load and render the Add-on manager view.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_addon() {
 		// Reload the add-on list.
@@ -170,7 +147,7 @@ class MS_Controller_Addon extends MS_Controller {
 		/**
 		 * Create / Filter the Addon admin view.
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 * @param object $this The MS_Controller_Addon object.
 		 */
 		$view = MS_Factory::create( 'MS_View_Addon' );
@@ -187,7 +164,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 *
 	 * Saves activation/deactivation settings.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $action The action to perform on the add-on
 	 * @param object[] $addon_types The add-on or add-ons types to update.
@@ -221,7 +198,7 @@ class MS_Controller_Addon extends MS_Controller {
 	/**
 	 * Load Add-on specific scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
 		$data = array(

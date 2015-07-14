@@ -7,7 +7,7 @@
  *
  * @todo Create add methods to parent class or remove 'extends MS_Helper' to use standalone.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @return object
  */
@@ -51,7 +51,7 @@ class MS_Helper_Html extends MS_Helper {
 	 * Pass in array with field arguments. See $defaults for argmuments.
 	 * Use constants to specify field type. e.g. MS_Helper_Html::INPUT_TYPE_TEXT
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return void|string If $return param is false the HTML will be echo'ed,
 	 *           otherwise returned as string
@@ -309,7 +309,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * Pass in array with field arguments. See $defaults for argmuments.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return void But does output HTML.
 	 */
@@ -335,7 +335,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * Pass in array with link arguments. See $defaults for arguments.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string But does output HTML.
 	 */
@@ -363,7 +363,7 @@ class MS_Helper_Html extends MS_Helper {
 	 *
 	 * Returns the active tab key. Vertical tabs need to be wrapped in additional code.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param  array $tabs
 	 * @param  string $active_tab
@@ -416,7 +416,7 @@ class MS_Helper_Html extends MS_Helper {
 	/**
 	 * Method for outputting tooltips.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string But does output HTML.
 	 */

@@ -44,7 +44,7 @@ class MS_View_Member_List extends MS_View {
 	/**
 	 * Display a filter to select the current membership
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function membership_filter() {
 		$memberships = MS_Model_Membership::get_membership_names(

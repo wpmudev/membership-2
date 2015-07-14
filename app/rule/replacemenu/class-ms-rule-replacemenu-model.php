@@ -2,7 +2,7 @@
 /**
  * Membership Replace-Menu Rule class.
  *
- * @since 1.0.4.2
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -12,7 +12,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Rule type.
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @var string $rule_type
 	 */
@@ -34,7 +34,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -48,7 +48,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 * This rule will return NULL (not relevant), because the menus are
 	 * protected via a wordpress hook instead of protecting the current page.
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @param string $id The content id to verify access.
 	 * @return bool|null True if has access, false otherwise.
@@ -61,7 +61,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Set initial protection.
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 */
 	public function protect_content() {
 		parent::protect_content();
@@ -78,7 +78,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 * Relevant Action Hooks:
 	 * - wp_nav_menu_args
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @param mixed $args Attributes of the call to wp_nav_menu().
 	 * @return mixed The updated attributes.
@@ -116,7 +116,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Get menu array.
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *      @type string $menu_id The menu id.
@@ -154,7 +154,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Get content to protect.
 	 *
-	 * @since 1.0.4.2
+	 * @since  1.0.0
 	 * @param $args The query post args
 	 * @return array The contents array.
 	 */
@@ -206,7 +206,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Returns an array that contains menu_ids that should be replaced.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @return array {
 	 *     $original => $replacement
 	 * }
@@ -236,7 +236,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 * Returns an array of matching options that are displayed in a select
 	 * list for each item.
 	 *
-	 * @since  1.0.4.2
+	 * @since  1.0.0
 	 * @return array
 	 */
 	public function get_matching_options( $args = null ) {
@@ -257,7 +257,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Get rule value for a specific content.
 	 *
-	 * @since 1.1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param string $id The content id to get rule value for.
 	 * @return boolean The rule value for the requested content. Default $rule_value_default.
@@ -288,7 +288,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Set access status to content.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $id The content id to set access to.
 	 * @param int $access The access status to set.
 	 */
@@ -316,7 +316,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	/**
 	 * Give access to content.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @param string $id The content id to give access.
 	 */
 	public function give_access( $id ) {
@@ -342,7 +342,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 * We don't use the PHP `serialize()` function to serialize the whole object
 	 * because a lot of unrequired and duplicate data will be serialized
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return array The serialized values of the Rule.
 	 */
 	public function serialize() {
@@ -355,7 +355,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 * This function is used when de-serializing a membership to re-create the
 	 * rules associated with the membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $values A list of allowed IDs.
 	 */
 	public function populate( $values ) {

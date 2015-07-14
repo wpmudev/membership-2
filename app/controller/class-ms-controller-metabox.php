@@ -1,33 +1,10 @@
 <?php
 /**
- * This file defines the MS_Controller_Metabox class.
- *
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Creates the Membership access metabox.
  *
  * Creates simple access control UI for Posts/Page edit pages.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -37,7 +14,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -46,7 +23,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * The custom post type used with Memberships and access.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -55,7 +32,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * The metabox ID.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -64,7 +41,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * The metabox title.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -73,7 +50,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Context for showing the metabox.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -84,7 +61,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	 *
 	 * Effects position in the metabox hierarchy.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -93,7 +70,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Prepare the metabox.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -143,7 +120,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_ajax_toggle_metabox_access
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_toggle_metabox_access() {
 		$fields = array( 'membership_id', 'rule_type', 'post_id' );
@@ -177,7 +154,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Add the metabox for defined post types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function add_meta_boxes() {
 		foreach ( $this->post_types as $post_type ) {
@@ -202,7 +179,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Membership metabox callback function for displaying the UI.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param object $post The current post object.
 	 */
@@ -253,7 +230,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Get rule accordingly to post type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Membership The membership to get rule from.
 	 * @param string $post_type The post_type name of the queried post object.
@@ -300,7 +277,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Toggle membership access.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param int $post_id The post id or attachment id to save access to.
 	 * @param string $rule_type The membership rule type.
@@ -359,7 +336,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Determine whether Membership access can be changed or is read-only.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param string $post_type The post type of the post.
 	 * @return bool
 	 */
@@ -396,7 +373,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	 * without changing the page itself. Only after the user saves the content
 	 * it will affect the Membership page
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $content Default page content.
 	 * @return string Modified page content.
 	 */
@@ -432,7 +409,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	/**
 	 * Load Membership Metabox specific scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_enqueue_scripts() {
 		global $post_type;

@@ -5,7 +5,7 @@ class MS_View_Membership_Add extends MS_View {
 	/**
 	 * Create view output.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function to_html() {
@@ -61,6 +61,12 @@ class MS_View_Membership_Add extends MS_View {
 		return $html;
 	}
 
+	/**
+	 * Prepare the fields displayed in the form.
+	 *
+	 * @since  1.0.0
+	 * @return array
+	 */
 	public function prepare_fields() {
 		$membership = $this->data['membership'];
 

@@ -7,7 +7,7 @@
  *
  * Persisted by parent class MS_Model_Option. Singleton.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -18,7 +18,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -26,7 +26,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Authorize.net's Customer Information Manager wrapper.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $cim
 	 */
 	protected static $cim;
@@ -35,7 +35,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * Authorize.net API login IP.
 	 *
 	 * @see @link https://www.authorize.net/support/CP/helpfiles/Account/Settings/Security_Settings/General_Settings/API_Login_ID_and_Transaction_Key.htm
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $api_login_id
 	 */
 	protected $api_login_id;
@@ -43,7 +43,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Authorize.net API transaction key.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $api_transaction_key
 	 */
 	protected $api_transaction_key;
@@ -51,7 +51,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Authorize.net custom log file.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $log_file
 	 */
 	protected $log_file;
@@ -60,7 +60,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Initialize the object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		parent::after_load();
@@ -79,7 +79,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * transaction was successful. If it was we call `$invoice->changed()` which
 	 * will update the membership status accordingly.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
 	public function process_purchase( $subscription ) {
@@ -132,7 +132,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Request automatic payment to the gateway.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 * @return bool True on success.
 	 */
@@ -171,7 +171,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 *
 	 * Send to Authorize.net to process the payment immediatly.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Invoice $invoice The invoice to pay.
 	 * @param MS_Model_Member The member paying the invoice.
 	 * @return bool True on success, otherwise throws an exception.
@@ -251,7 +251,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 *
 	 * Save only 4 last digits and expire date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Member $member The member to save card info.
 	 */
 	public function save_card_info( $member ) {
@@ -287,7 +287,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Loads Authorize.net lib.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	protected function load_authorize_lib(){
 		do_action( 'ms_gateway_authorize_load_authorize_lib', $this );
@@ -298,7 +298,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Returns the instance of AuthorizeNetCIM class.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return AuthorizeNetCIM The instance of AuthorizeNetCIM class.
 	 */
@@ -329,7 +329,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Get saved customer information manager profile id.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param int $user_id The user Id.
 	 * @return string The CIM profile Id.
 	 */
@@ -350,7 +350,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Get saved customer information manager payment profile id.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param int $user_id The user Id.
 	 * @return string The CIM payment profile Id.
 	 */
@@ -371,7 +371,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Save CIM profile IDs.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Member $member The member to save CIM IDs.
 	 * @param string $cim_profile_id The CIM profile ID to save.
 	 * @param string $cim_payment_profile_id The CIM payment profile ID to save.
@@ -403,7 +403,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Get customer information manager profile from Authorize.net.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Member $member The member.
 	 * @return array The A.net payment profiles array structure.
@@ -437,7 +437,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Creates Authorize.net CIM profile for current user.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Member $member The member to create CIM profile to.
 	 */
 	protected function create_cim_profile( $member ) {
@@ -483,7 +483,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Updates CIM profile by adding a new credit card.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Member $member The member to update CIM profile.
 	 */
 	public function update_cim_profile( $member ) {
@@ -523,7 +523,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Creates CIM payment profile and fills it with posted credit card data.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return AuthorizeNetPaymentProfile The instance of AuthorizeNetPaymentProfile class.
 	 */
 	protected function create_cim_payment_profile() {
@@ -561,7 +561,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Initializes and returns Authorize.net CIM transaction object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param MS_Model_Member $member The member.
 	 * @return AuthorizeNetTransaction The instance of AuthorizeNetTransaction class.
 	 */
@@ -590,7 +590,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return boolean True if it is configured.
 	 */
 	public function is_configured() {

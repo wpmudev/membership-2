@@ -2,7 +2,7 @@
 /**
  * Add-On controller for: Coupons
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -12,21 +12,21 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * The Add-on ID
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	const ID = 'coupon';
 
 	/**
 	 * The menu slug for the admin page to manage invitation codes.
 	 *
-	 * @since 1.0.0.3
+	 * @since  1.0.0
 	 */
 	const SLUG = 'coupons';
 
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
@@ -37,7 +37,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * Saves a reference to the currently processed coupon in the registration
 	 * form.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var MS_Addon_Coupon_Model
 	 */
@@ -46,7 +46,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init() {
 		if ( self::is_active() ) {
@@ -133,7 +133,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * Sets or gets the coupon model that is processed in the current
 	 * registration form.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  MS_Addon_Coupon_Model $new_value
 	 * @return MS_Addon_Coupon_Model
 	 */
@@ -152,7 +152,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Registers the Add-On
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */
@@ -169,7 +169,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Add the Coupons menu item to the Membership2 menu.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @param  array $items List of the current admin menu items.
 	 * @param  bool $limited_mode True means either First-Setup or site-admin
@@ -198,7 +198,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * The $handler value is ONLY changed when the current menu is displayed.
 	 * If another menu item was clicked then don't do anythign here!
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  array $handler {
 	 *         Menu-item handling information.
 	 *
@@ -220,7 +220,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Register the Coupon Post-Type; this is done in MS_Plugin.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $cpts
 	 * @return array
 	 */
@@ -233,7 +233,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Add the Coupon Post-Type to the list of internal post-types
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $cpts
 	 * @return array
 	 */
@@ -248,7 +248,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 *
 	 * Verifies GET and POST requests to manage billing.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_manager() {
 		$edit_fields = array( 'submit', 'action', 'coupon_id' );
@@ -301,7 +301,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * Perform actions for each coupon.
 	 *
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @param string $action The action to perform on selected coupons
 	 * @param int[] $coupons The list of coupons ids to process.
 	 */
@@ -325,7 +325,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Render the Coupon admin manager.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function admin_coupon() {
 		$isset = array( 'action', 'coupon_id' );
@@ -353,7 +353,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Save coupon using the coupon model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $fields Coupon fields
 	 * @return boolean True in success saving.
@@ -388,7 +388,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Load Coupon specific styles.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
@@ -401,7 +401,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Load Coupon specific scripts.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
@@ -423,7 +423,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Insert Discount columns in the invoice table.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $columns
 	 * @param  string $currency
 	 * @return array
@@ -442,7 +442,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Return the column value for the custom billing columns.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  MS_Model $item List item that is parsed.
 	 * @param  string $column_name Column that is parsed.
 	 * @return string HTML code to display in the cell.
@@ -567,7 +567,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * When an invoice is paid, check if it did use a coupon. If yes, then update
 	 * the coupon counter.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  MS_Model_Invoice $invoice
 	 */
 	public function invoice_paid( $invoice, $member ) {
@@ -583,7 +583,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * Called by MS_Model_Invoice before a new invoice is saved. We apply the
 	 * coupon discount to the total amount, if a coupon was used.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  MS_Model_Invoice $invoice
 	 * @param  MS_Model_Relationship $subscription
 	 * @return MS_Model_Invoice
@@ -642,7 +642,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	/**
 	 * Add/Remove Coupon from the membership price in the frontend payment table.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $data
 	 * @param  int $membership_id
 	 * @param  MS_Model_Relationship $subscription

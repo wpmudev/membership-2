@@ -88,7 +88,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 				 * register_form Defined in wp-login.php which is only used for
 				 *              Single site registration process.
 				 *
-				 * @since 1.1.0
+				 * @since  1.0.0
 				 */
 				if ( is_multisite() ) {
 					$empty_error = new WP_Error();
@@ -105,7 +105,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 					/**
 					 * Display registration errors.
 					 *
-					 * @since 1.1.0
+					 * @since  1.0.0
 					 */
 					do_action( 'registration_errors', $this->error );
 				}

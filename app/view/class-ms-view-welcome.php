@@ -4,7 +4,7 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 1.1.0
+ * @since  1.0.0
  */
 class MS_View_Welcome extends MS_View {
 
@@ -16,7 +16,7 @@ class MS_View_Welcome extends MS_View {
 	 * the navigation gets loaded with dynamic method calls.
 	 * e.g. if key is 'settings' then render_settings() gets called, if 'bob' then render_bob().
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string
@@ -56,7 +56,7 @@ class MS_View_Welcome extends MS_View {
 	/**
 	 * Returns an array of form fields
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return array

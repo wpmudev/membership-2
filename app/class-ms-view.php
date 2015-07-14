@@ -5,7 +5,7 @@
  * All views will extend or inherit from the MS_View class.
  * Methods of this class will prepare and output views.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage View
  */
@@ -14,7 +14,7 @@ class MS_View extends MS_Hooker {
 	/**
 	 * The storage of all data associated with this render.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -23,7 +23,7 @@ class MS_View extends MS_Hooker {
 	/**
 	 * Flag is set to true while in Simulation mode.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 *
 	 * @var bool
 	 */
@@ -32,7 +32,7 @@ class MS_View extends MS_Hooker {
 	/**
 	 * Constructor.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param array $data The data what has to be associated with this render.
 	 */
@@ -44,7 +44,7 @@ class MS_View extends MS_Hooker {
 		/**
 		 * Actions to execute when constructing the parent View.
 		 *
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 * @param object $this The MS_View object.
 		 */
 		do_action( 'ms_view_construct', $this );
@@ -58,7 +58,7 @@ class MS_View extends MS_Hooker {
 	/**
 	 * Displays a note while simulation mode is enabled.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	protected function check_simulation() {
 		if ( self::$is_simulating ) :
@@ -89,7 +89,7 @@ class MS_View extends MS_Hooker {
 	 * Displays a warning if network-wide protection is enabled for a large
 	 * network.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	protected function check_network() {
 		if ( MS_Plugin::is_network_wide() && wp_is_large_network() ) :
@@ -109,7 +109,7 @@ class MS_View extends MS_Hooker {
 	/**
 	 * Builds template and return it as string.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string
 	 */
@@ -121,7 +121,7 @@ class MS_View extends MS_Hooker {
 	/**
 	 * Renders the template.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function render() {
 		$html = $this->to_html();

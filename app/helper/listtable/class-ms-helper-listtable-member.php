@@ -2,7 +2,7 @@
 /**
  * Members List Table.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Helper
@@ -19,7 +19,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Constructor.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct(){
 		parent::__construct(
@@ -51,7 +51,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Get list table columns.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *		Returns array of $id => $title.
@@ -82,7 +82,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Get list table sortable columns.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array {
 	 *		Returns array of $id => $title.
@@ -104,7 +104,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Prepare list items.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function prepare_items() {
 		$this->_column_headers = array(
@@ -147,7 +147,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Returns a query arg structure tailored to give the defined results
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 * @return array Query args
 	 */
 	protected function prepare_query_args( $args ) {
@@ -222,7 +222,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Display checkbox column.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $member The table item to display.
 	 */
@@ -242,7 +242,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Infos-Column
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $member The table item to display.
 	 */
@@ -262,7 +262,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Display Username column.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $member The table item to display.
 	 */
@@ -294,7 +294,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Display Email column.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $member The table item to display.
 	 */
@@ -306,7 +306,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Create membership column.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Member $member The member object.
 	 */
@@ -355,7 +355,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Adds a class to the <tr> element
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  object $member
 	 */
 	protected function single_row_class( $member ) {
@@ -368,7 +368,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Bulk actions options.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param array {
 	 *     @type string $action The action name.
@@ -405,7 +405,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * Add custom filters to the searchbox
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function searchbox_filters() {
 		lib2()->array->equip_request( 'search_options' );
@@ -429,7 +429,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * This list has no views.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return array
 	 */

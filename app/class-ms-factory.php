@@ -2,7 +2,7 @@
 /**
  * Factory class for all Models.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  */
@@ -11,7 +11,7 @@ class MS_Factory {
 	/**
 	 * Holds a list of all singleton objects
 	 *
-	 * @since 1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @var   array
 	 */
@@ -20,7 +20,7 @@ class MS_Factory {
 	/**
 	 * Used to cache the original blog-ID when using network-wide protection
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 *
 	 * @var   int[]
 	 */
@@ -30,7 +30,7 @@ class MS_Factory {
 	 * This is only used for Unit-Testing to reset all cached singleton
 	 * instances before running a new test.
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 */
 	static public function _reset() {
 		self::$Singleton = array();
@@ -40,7 +40,7 @@ class MS_Factory {
 	/**
 	 * Create an MS Object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $class The class to create object from.
 	 * @return object The created object.
@@ -94,7 +94,7 @@ class MS_Factory {
 	/**
 	 * Load a MS Object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $class The class to load object from.
 	 * @param int $model_id Retrieve model object using ID.
@@ -164,7 +164,7 @@ class MS_Factory {
 	 * This function was introduced to store the simulation subscription as
 	 * a singleton with subscription ID -1
 	 *
-	 * @since 1.1.0.9
+	 * @since  1.0.0
 	 * @param string $key
 	 * @param any $obj
 	 */
@@ -203,7 +203,7 @@ class MS_Factory {
 	/**
 	 * Clears the factory cache.
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 */
 	static public function clear() {
 		wp_cache_flush();
@@ -212,7 +212,7 @@ class MS_Factory {
 	/**
 	 * Initialize the object after it was created or loaded.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  MS_Hook &$obj Any Membership2 object to initialize.
 	 */
 	static private function prepare_obj( &$obj ) {
@@ -250,7 +250,7 @@ class MS_Factory {
 	 * To support network-wide protection we use our convenience function
 	 * self::get_option().
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_option $model The empty model instance.
 	 * @return MS_Model_Option The retrieved object.
@@ -282,7 +282,7 @@ class MS_Factory {
 	 * To support network-wide protection we use our convenience function
 	 * self::get_transient().
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Transient $model The empty model instance.
 	 * @return MS_Model_Transient The retrieved object.
@@ -311,7 +311,7 @@ class MS_Factory {
 	 * Load from post and postmeta.
 	 * For network-wide protection we get the data from first blog
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_CustomPostType $model The empty model instance.
 	 * @param int $model_id The model id to retrieve.
@@ -357,7 +357,7 @@ class MS_Factory {
 	 * Load from user and user meta.
 	 * This data is always network-wide.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Member $model The empty member instance.
 	 * @param int $user_id The user/member ID.
@@ -410,7 +410,7 @@ class MS_Factory {
 	/**
 	 * Populate fields of the model
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @param  MS_Model $model
 	 * @param  array $settings
@@ -488,7 +488,7 @@ class MS_Factory {
 	/**
 	 * Converts an MS_Model into an array
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 *
 	 * @param  MS_Model $model
 	 * @return array
@@ -561,7 +561,7 @@ class MS_Factory {
 	/**
 	 * Wrapper to get an option value (regards network-wide protection mode)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $key Option Key
 	 * @return mixed Option value
 	 */
@@ -578,7 +578,7 @@ class MS_Factory {
 	/**
 	 * Wrapper to delete an option value (regards network-wide protection mode)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $key Option Key
 	 */
 	static public function delete_option( $key ) {
@@ -592,7 +592,7 @@ class MS_Factory {
 	/**
 	 * Wrapper to update an option value (regards network-wide protection mode)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $key Option Key
 	 * @param  mixed $value New option value
 	 */
@@ -607,7 +607,7 @@ class MS_Factory {
 	/**
 	 * Wrapper to get an transient value (regards network-wide protection mode)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $key Transient Key
 	 * @return mixed Transient value
 	 */
@@ -624,7 +624,7 @@ class MS_Factory {
 	/**
 	 * Wrapper to delete an transient value (regards network-wide protection mode)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $key Transient Key
 	 */
 	static public function delete_transient( $key ) {
@@ -638,7 +638,7 @@ class MS_Factory {
 	/**
 	 * Wrapper to update an transient value (regards network-wide protection mode)
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $key Transient Key
 	 * @param  mixed $value New transient value
 	 */
@@ -659,7 +659,7 @@ class MS_Factory {
 	 * built-in function switch_to_blog() because it does not run all the
 	 * initialization logic (update user-roles, etc) when switching a blog.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	static public function select_blog( $site_id = null ) {
 		global $wpdb;
@@ -685,7 +685,7 @@ class MS_Factory {
 	/**
 	 * Reverts back to the original blog during network wide protection.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	static public function revert_blog() {
 		global $wpdb;
@@ -706,7 +706,7 @@ class MS_Factory {
 	 * original blog-id, even when switched to a different blog by calling
 	 * self::select_blog()
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return int The requested blog-ID.
 	 */
 	static public function current_blog_id() {

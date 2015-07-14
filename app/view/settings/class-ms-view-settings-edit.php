@@ -6,7 +6,7 @@
  *
  * @uses MS_Helper_Html Helper used to create form elements and vertical navigation.
  *
- * @since 1.0
+ * @since  1.0.0
  *
  * @return object
  */
@@ -23,7 +23,7 @@ class MS_View_Settings_Edit extends MS_View {
 	 * @todo Could use callback functions to call dynamic methods from within the helper, thus
 	 * creating the navigation with a single method call and passing method pointers in the $tabs array.
 	 *
-	 * @since 4.0.0
+	 * @since  1.0.0
 	 *
 	 * @return object
 	 */
@@ -83,7 +83,7 @@ class MS_View_Settings_Edit extends MS_View {
 	/**
 	 * Display advanced setting forms that can be triggered via an URL param.
 	 *
-	 * @since  1.1.0.5
+	 * @since  1.0.0
 	 *
 	 * @param  array $desc Array of items to display in the settings header.
 	 * @return array New Array of items to display. Might include a HTML form.
@@ -194,7 +194,7 @@ class MS_View_Settings_Edit extends MS_View {
 	 * The footer will show information on the next scheduled cron jobs and also
 	 * allow the user to run these jobs instantly.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  string $tab_name Name of the currently open settings-tab.
 	 */
 	protected function render_settings_footer( $tab_name ) {

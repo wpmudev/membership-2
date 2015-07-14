@@ -6,7 +6,7 @@
  *
  * Persisted by parent class MS_Model_Option. Singleton.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -17,7 +17,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -27,7 +27,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 	 *
 	 * The payment procedures like bank account, agency, etc.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $payment_info
 	 */
 	protected $payment_info;
@@ -37,7 +37,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 	 * Hook to show payment info.
 	 * This is called by the MS_Factory
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		parent::after_load();
@@ -65,7 +65,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 	 * * Hooks Actions: *
 	 * * ms_controller_gateway_purchase_info_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return string The payment info.
 	 */
 	public function purchase_info_content() {
@@ -122,7 +122,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return boolean True if configured.
 	 */
 	public function is_configured() {
@@ -145,7 +145,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @access public
 	 * @param string $property The name of a property to associate.

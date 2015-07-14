@@ -37,7 +37,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		 * - 'ms_shortcode_custom_form-reset'
 		 * - 'ms_shortcode_custom_form-lost'
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 */
 		$html = apply_filters(
 			'ms_shortcode_custom_form-' . $form,
@@ -199,7 +199,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		/**
 		 * Filter the default login form output arguments.
 		 *
-		 * @since 3.0.0
+		 * @since  1.0.0
 		 *
 		 * @see wp_login_form()
 		 *
@@ -331,7 +331,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		/**
 		 * Filter the default login form output arguments.
 		 *
-		 * @since 3.0.0
+		 * @since  1.0.0
 		 *
 		 * @see wp_login_form()
 		 *
@@ -390,7 +390,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				/**
 				 * Fires inside the lostpassword <form> tags, before the hidden fields.
 				 *
-				 * @since 2.1.0
+				 * @since  1.0.0
 				 */
 				do_action( 'lostpassword_form' ); ?>
 				<p class="submit">

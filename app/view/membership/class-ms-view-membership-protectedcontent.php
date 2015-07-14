@@ -5,7 +5,7 @@
  *
  * Extends MS_View for rendering methods and magic methods.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage View
  */
@@ -14,7 +14,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	/**
 	 * Create view output.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function to_html() {
@@ -87,7 +87,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	/**
 	 * Display a filter to select the current membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	protected function membership_filter() {
 		$memberships = MS_Model_Membership::get_membership_names(
@@ -142,7 +142,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 	 * user has 3 sites he can protect all pages on all sites but has to select
 	 * each site individually here.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	protected function site_filter() {
 		if ( ! MS_Plugin::is_network_wide() ) {

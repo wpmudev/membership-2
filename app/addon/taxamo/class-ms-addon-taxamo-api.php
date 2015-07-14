@@ -1,29 +1,8 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Taxamo API functions.
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
@@ -44,7 +23,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * is queried to get the default tax details for the country that
 	 * Taxamo automatically detects.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  numeric $amount The amount without taxes.
@@ -112,7 +91,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Creates a confirmed transaction in Taxamo.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  numeric $amount Transaction amount
 	 */
 	static public function register_payment( $amount, $label, $tax_rate, $invoice_id, $name, $email, $gateway ) {
@@ -150,7 +129,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Returns an object containing all tax-related user profile details.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return object {
@@ -222,7 +201,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * All fields that are included in the get_tax_profile() response are
 	 * valid field names. Exception: 'detected_country' cannot be changed.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string $field The field key.
@@ -282,7 +261,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * Validates the given VAT number and returns the country code if the number
 	 * is valid. Otherwise an empty string is returned.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $vat_number The VAT number to validate.
 	 * @return string Country code.
 	 */
@@ -303,7 +282,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Returns a list of all taxamo relevant EU countries.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $type [prefix|name|vat]
@@ -463,7 +442,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Determines the users country based on his IP address.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $mode [declared|vat|card|auto] Either the country from user
@@ -528,7 +507,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * Internal helper function that returns a user profile value either from
 	 * DB or from the session (depending if the user is logged in or not).
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  MS_Model_Member $member
@@ -552,7 +531,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * Internal helper function that saves a user profile value either to DB or
 	 * to the session (depending if the user is logged in or not).
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  MS_Model_Member $member
@@ -580,7 +559,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * Important: All calls to `taxamo()->` functions must be wrapped in
 	 * try..catch because an invalid API token will result in a fatal error.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @return Taxamo
 	 */
 	static protected function taxamo() {
@@ -610,7 +589,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	/**
 	 * Initializes the taxamo API object.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	static protected function init() {
 		self::taxamo();

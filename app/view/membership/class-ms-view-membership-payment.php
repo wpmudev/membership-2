@@ -5,7 +5,7 @@ class MS_View_Membership_Payment extends MS_View {
 	/**
 	 * Create view output.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function to_html() {
@@ -232,7 +232,7 @@ class MS_View_Membership_Payment extends MS_View {
 				 * This action allows other add-ons or plugins to display custom
 				 * options in the payment dialog.
 				 *
-				 * @since  2.0.0
+				 * @since  1.0.0
 				 */
 				do_action(
 					'ms_view_membership_payment_form',

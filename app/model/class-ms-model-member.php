@@ -11,7 +11,7 @@
  * There are magic methods \_\_get() and \_\_set() that do some validation before
  * accessing the properties.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -20,7 +20,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Members search constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	const SEARCH_ONLY_MEMBERS = 'only members';
@@ -28,7 +28,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Members search constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	const SEARCH_NOT_MEMBERS = 'not_members';
@@ -36,7 +36,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Members search constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	const SEARCH_ALL_USERS = 'all_users';
@@ -44,7 +44,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Cache for function is_admin_user()
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var bool[]
 	 */
@@ -53,7 +53,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Cache for function is_normal_admin()
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var bool[]
 	 */
@@ -62,7 +62,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Cache for function is_simulated_user()
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var bool[]
 	 */
@@ -71,7 +71,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Cache for function is_normal_user()
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var bool[]
 	 */
@@ -83,7 +83,7 @@ class MS_Model_Member extends MS_Model {
 	 * Note: This field is populated by MS_Factory when the Member instance is
 	 * created.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var array {
 	 *     @type int $membership_id The membership ID.
 	 *     @type MS_Model_Relationship The membership relationship model object.
@@ -97,7 +97,7 @@ class MS_Model_Member extends MS_Model {
 	 * Only members have access to memberships.
 	 * False indicates blocked members (if signed up for a membership).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var boolean
 	 */
 	protected $is_member = false;
@@ -109,7 +109,7 @@ class MS_Model_Member extends MS_Model {
 	 * status. False indicates blocked members (if signed up for a membership).
 	 * For further use. (For temporary member blocking).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var boolean
 	 */
 	protected $active = true;
@@ -120,7 +120,7 @@ class MS_Model_Member extends MS_Model {
 	 * Mapped from wordpress $wp_user object.
 	 * @see WP_User $user_login.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $username;
@@ -131,7 +131,7 @@ class MS_Model_Member extends MS_Model {
 	 * Mapped from wordpress $wp_user object.
 	 * @see WP_User $user_email.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $email;
@@ -142,7 +142,7 @@ class MS_Model_Member extends MS_Model {
 	 * Mapped from wordpress $wp_user object.
 	 * @see WP_User $user_nicename.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $name;
@@ -153,7 +153,7 @@ class MS_Model_Member extends MS_Model {
 	 * Mapped from wordpress $wp_user object.
 	 * @see WP_User $first_name
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $first_name;
@@ -164,7 +164,7 @@ class MS_Model_Member extends MS_Model {
 	 * Mapped from wordpress $wp_user object.
 	 * @see WP_User $last_name.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $last_name;
@@ -174,7 +174,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Used when registering.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var string
 	 */
@@ -185,7 +185,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Used when registering.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var string
 	 */
@@ -196,7 +196,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Save gateway IDs.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var array {
 	 *     Return structure: $gateway[ $field ] => $value;
 	 *
@@ -210,7 +210,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * The associated WP_User object
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 * @internal
 	 * @var WP_User
 	 */
@@ -223,7 +223,7 @@ class MS_Model_Member extends MS_Model {
 	 * This can be used to store additional information on user-level, e.g.
 	 * settings needed by some Add-ons or even by other plugins.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 *
 	 * @var array
 	 */
@@ -238,7 +238,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get current member.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return MS_Model_Member The current member.
@@ -250,7 +250,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Checks if user-signup is enabled for this site or not.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -282,7 +282,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Allows users to register for this site.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -308,7 +308,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get members total count.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query user args
@@ -331,7 +331,7 @@ class MS_Model_Member extends MS_Model {
 	 * Get members IDs.
 	 * The IDs are cached and only fetched once for each set of $args.
 	 *
-	 * @since 1.0.4.4
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query user args
@@ -365,7 +365,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get members.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query user args
@@ -391,7 +391,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get usernames.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query user args
@@ -440,7 +440,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Default search arguments for this model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query user args
@@ -511,7 +511,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Much of this logic is taken from wp-includes/pluggable.php
 	 *
-	 * @since  1.1.1.4
+	 * @since  1.0.0
 	 * @internal
 	 * @return int|false
 	 */
@@ -567,7 +567,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify is user is logged in.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return boolean True if user is logged in.
@@ -581,7 +581,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify is user is Admin user.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  int|false $user_id Optional. The user ID. Default to current user.
@@ -646,7 +646,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify is user is Admin user and simulation mode is deactivated.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int|false $user_id Optional. The user ID. Default to current user.
@@ -669,7 +669,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify is user is Admin user and simulation mode is active.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int|false $user_id Optional. The user ID. Default to current user.
@@ -692,7 +692,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify is user is not Admin user and simulation mode is deactivated.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int|false $user_id Optional. The user ID. Default to current user.
@@ -715,7 +715,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get email addresses of all admin users.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return string[] The admin emails.
@@ -746,7 +746,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get username from user_id.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $user_id The user ID to get username.
@@ -778,7 +778,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @todo Change this to use WP-Cron instead of own implementation...
 	 *
-	 * @since  1.0.4.4
+	 * @since  1.0.0
 	 * @internal
 	 */
 	static public function clean_db() {
@@ -830,7 +830,7 @@ class MS_Model_Member extends MS_Model {
 	 * Returns a list of variables that should be included in serialization,
 	 * i.e. these values are the only ones that are stored in DB
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @return array
 	 */
@@ -855,7 +855,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * We ensure that the custom_data field is an array.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 */
 	public function prepare_obj() {
 		parent::prepare_obj();
@@ -873,7 +873,7 @@ class MS_Model_Member extends MS_Model {
 	 * Set cache for further use in MS_Factory::load.
 	 * The usermeta are prefixed with 'ms_'.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Member The saved member object.
@@ -917,7 +917,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Create new WP user.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 * @throws Exception
 	 */
@@ -1032,7 +1032,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Marks the current user as "confirmed"
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function confirm() {
@@ -1046,7 +1046,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Sign on user.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 */
 	public function signon_user() {
@@ -1080,7 +1080,7 @@ class MS_Model_Member extends MS_Model {
 	 * Note: Remember to prefix the $key with a unique string to prevent
 	 * conflicts with other plugins that also use this function.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1093,7 +1093,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Removes a custom data field from this object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1105,7 +1105,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Returns the value of a custom data field.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1123,7 +1123,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Returns a list of all membership IDs of the current user.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return array
@@ -1145,7 +1145,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Only add a membership if a user is not already a member.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $membership_id The membership id to add to.
@@ -1202,7 +1202,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Only update the status to deactivated.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $membership_id The membership id to drop.
@@ -1231,7 +1231,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * The membership remains valid until expiration date.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $membership_id The membership id to drop.
@@ -1268,7 +1268,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Move a membership.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $old_membership_id The membership id to move from.
@@ -1306,7 +1306,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Canceled status is allowed until it expires.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $membership_id Optional. The specific membership to verify.
@@ -1359,7 +1359,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Return the subscription object for the specified membership.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $membership_id The specific membership to return.
@@ -1388,7 +1388,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * Delete all plugin related usermeta.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function delete_all_membership_usermeta() {
@@ -1405,7 +1405,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Returns the WP_User object that is linked to the current member
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return WP_User
@@ -1417,7 +1417,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify if current object is valid.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return boolean True if is valid.
@@ -1431,7 +1431,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get gateway profile.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string $gateway The gateway ID.
@@ -1462,7 +1462,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Set gateway profile.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string $gateway The gateway ID.
@@ -1484,7 +1484,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Validate member info.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return boolean True if validated.
@@ -1522,7 +1522,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Get specific property.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $name The name of a property to associate.
@@ -1553,7 +1553,7 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Set specific property.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $name The name of a property to associate.

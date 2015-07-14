@@ -2,7 +2,7 @@
 /**
  * Gateway controller.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -12,7 +12,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -22,7 +22,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Allowed actions to execute in template_redirect hook.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Prepare the gateway controller.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -68,7 +68,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - template_redirect
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function process_actions() {
 		$action = $this->get_action();
@@ -94,7 +94,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - wp_ajax_toggle_gateway
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function toggle_ajax_action() {
 		$msg = 0;
@@ -119,7 +119,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - wp_ajax_update_gateway
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function ajax_action_update_gateway() {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
@@ -148,7 +148,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - ms_controller_gateway_settings_render_view
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function gateway_settings_edit( $gateway_id ) {
 		if ( ! empty( $gateway_id )
@@ -203,7 +203,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Handle Payment Gateway list actions.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $action The action to execute.
 	 * @param int[] $gateways The gateways IDs to process.
@@ -227,7 +227,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					/**
 					 * Hook called after a gateway-status was toggled.
 					 *
-					 * @since 2.0.0
+					 * @since  1.0.0
 					 */
 					do_action( 'ms_gateway_toggle_' . $gateway_id, $gateway );
 					break;
@@ -255,7 +255,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					/**
 					 * Hook called after a gateway-settings were modified.
 					 *
-					 * @since 2.0.0
+					 * @since  1.0.0
 					 */
 					do_action( 'ms_gateway_changed_' . $gateway_id, $gateway );
 					break;
@@ -279,7 +279,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * - ms_view_frontend_payment_purchase_button
 	 * - ms_view_shortcode_invoice_purchase_button
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function purchase_button( $subscription, $invoice ) {
 		// Get only active gateways
@@ -358,7 +358,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - ms_view_shortcode_membershipsignup_cancel_button
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function cancel_button( $button, $ms_relationship ) {
 		$view = null;
@@ -408,7 +408,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - ms_controller_frontend_signup_gateway_form
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function gateway_form_mgr() {
 		// Display gateway form
@@ -424,7 +424,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related filter hooks:
 	 * - the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -488,7 +488,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related Action Hooks:
 	 * - ms_controller_frontend_signup_process_purchase
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function process_purchase() {
 		$fields = array( 'gateway', 'ms_relationship_id' );
@@ -598,7 +598,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Make sure that we respect the Single-Membership rule.
 	 * This rule is active when the "Multiple-Memberships" Add-on is DISABLED.
 	 *
-	 * @since  1.0.4
+	 * @since  1.0.0
 	 *
 	 * @param  MS_Model_Relationship $new_relationship
 	 */
@@ -630,7 +630,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * Related action hooks:
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -648,7 +648,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * Related action hooks:
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function purchase_error_content( $content ) {
 		return apply_filters(
@@ -672,7 +672,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @todo Review how this works when we use OAuth API's with gateways.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param WP_Query $wp_query The WordPress query object
 	 */
@@ -736,7 +736,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - ms_view_shortcode_account_card_info
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param mixed $data The data passed to hooked view.
 	 */
@@ -818,7 +818,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Related action hooks:
 	 * - template_redirect
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function update_card() {
 		if ( ! empty( $_POST['gateway'] ) ) {
@@ -922,7 +922,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * Saves transaction details to the database. The transaction logs can later
 	 * be displayed in the Billings section.
 	 *
-	 * @since  1.0.0.6
+	 * @since  1.0.0
 	 * @internal Action handler for 'ms_gateway_transaction_log'
 	 *
 	 *
@@ -975,7 +975,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	/**
 	 * Adds CSS and javascript
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function enqueue_scripts( $step = null ) {
 		if ( empty( $step ) && ! empty( $_POST['step'] ) ) {

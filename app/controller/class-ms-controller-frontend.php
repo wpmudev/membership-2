@@ -2,7 +2,7 @@
 /**
  * Creates the controller for Membership/User registration.
  *
- * @since 1.0.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -12,7 +12,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Signup/register process step constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -27,7 +27,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * AJAX action constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Whether Membership2 will handle the registration process or not.
 	 * This should not be changed directly but via filter ms_frontend_handle_registration
 	 *
-	 * @since 1.1.1.3
+	 * @since  1.0.0
 	 *
 	 * @var bool
 	 */
@@ -49,7 +49,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * User registration errors.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -58,7 +58,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Allowed actions to execute in template_redirect hook.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Prepare for Member registration.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -100,7 +100,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * handling the registration process. WordPress or other plugins can
 			 * register users in that case.
 			 *
-			 * @since 1.1.1.3
+			 * @since  1.0.0
 			 */
 			self::$handle_registration = apply_filters(
 				'ms_frontend_handle_registration',
@@ -126,7 +126,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Action Hooks:
 	 * - template_redirect
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function process_actions() {
 		$action = $this->get_action();
@@ -152,7 +152,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Action Hooks:
 	 * - template_redirect
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function check_for_membership_pages() {
 		global $post, $wp_query;
@@ -229,7 +229,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * current user is registered to. This allows webdesigners to adjust layout
 	 * or hide elements based on the membership a user has.
 	 *
-	 * @since  1.0.2
+	 * @since  1.0.0
 	 *
 	 * @param  array $class Class-names to attach to the body.
 	 * @return array Modified class-names to attach to the body.
@@ -251,7 +251,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * is a theme-specific scenario). Or if the page contains an excerpt and a
 	 * main content block, ...
 	 *
-	 * @since  1.0.4.6
+	 * @since  1.0.0
 	 * @param  string $content The page content
 	 * @return string Value of $content (unmodified)
 	 */
@@ -287,7 +287,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Handle entire signup process.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function signup_process() {
 		$step = $this->get_signup_step();
@@ -355,7 +355,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Get signup process step (multi step form).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return string The current signup step after validation.
 	 */
@@ -426,7 +426,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Filter Hooks:
 	 * * the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -450,7 +450,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * If Membership2 handles registration we can provide the registration
 	 * step via function param $step.
 	 *
-	 * @since  1.1.1.3
+	 * @since  1.0.0
 	 * @param  string $step Empty uses default step (choose_membership).
 	 *                      'choose_membership' show list of memberships.
 	 *                      'register' shows the registration form.
@@ -474,7 +474,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Filter Hooks:
 	 * - the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -494,7 +494,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		 * different registration form. If this filter returns any content, then
 		 * the default form will not be generated
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 * @var string
 		 */
 		$custom_code = apply_filters(
@@ -542,7 +542,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * On validation errors, step back to register form.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function register_user() {
 		do_action( 'ms_controller_frontend_register_user_before', $this );
@@ -615,7 +615,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Filter Hooks:
 	 * - the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -667,7 +667,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		 *
 		 * E.g. Coupon discount is applied by this hook.
 		 *
-		 * @since 1.1.0
+		 * @since  1.0.0
 		 */
 		$invoice = apply_filters(
 			'ms_signup_payment_details',
@@ -702,7 +702,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Handles membership_cancel action.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function membership_cancel() {
 		if ( ! empty( $_REQUEST['membership_id'] ) && $this->verify_nonce( null, 'any' ) ) {
@@ -720,7 +720,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Manage user account actions.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 */
 	public function user_account_mgr() {
@@ -819,7 +819,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Filter Hooks:
 	 * * the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -844,7 +844,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Filter Hooks:
 	 * * the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -865,7 +865,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Filter Hooks:
 	 * * the_content
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $content The page content to filter.
 	 * @return string The filtered content.
@@ -893,7 +893,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * - wp_signup_location
 	 * - register_url
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $url The url to filter.
 	 * @return The new signup url.
@@ -914,7 +914,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related Action Hooks:
 	 * - wp_login
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param type $login The login info.
 	 * @param WP_User $user The user to login.
@@ -941,7 +941,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * Only redirect when no previous redirect_to is set or when going to /wp-admin/.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @param string $redirect_to URL to redirect to.
 	 * @param string $request URL the user is coming from.
@@ -968,7 +968,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Adds CSS and JS for Membership special pages used in the front end.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return void
 	 */

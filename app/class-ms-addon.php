@@ -2,7 +2,7 @@
 /**
  * Add-On controller
  *
- * @since 1.1.0
+ * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Controller
@@ -26,7 +26,7 @@ abstract class MS_Addon extends MS_Controller {
 	/**
 	 * Initialize the Add-On.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -41,7 +41,7 @@ abstract class MS_Addon extends MS_Controller {
 	/**
 	 * Initializes the Add-on.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	public function init_addon() {
 		$this->init();
@@ -50,14 +50,14 @@ abstract class MS_Addon extends MS_Controller {
 	/**
 	 * Initializes the Add-on. Always executed.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 */
 	abstract public function init();
 
 	/**
 	 * Registers the Add-On
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @param  array $list The Add-Ons list.
 	 * @return array The updated Add-Ons list.
 	 */

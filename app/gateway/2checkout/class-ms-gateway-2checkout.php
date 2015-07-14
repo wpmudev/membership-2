@@ -2,7 +2,7 @@
 /**
  * Gateway: 2Checkout
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -13,7 +13,7 @@ class MS_Gateway_2checkout extends MS_Gateway {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -36,7 +36,7 @@ class MS_Gateway_2checkout extends MS_Gateway {
 	 * Hook to show payment info.
 	 * This is called by the MS_Factory
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function after_load() {
 		parent::after_load();
@@ -50,7 +50,7 @@ class MS_Gateway_2checkout extends MS_Gateway {
 	/**
 	 * Processes gateway IPN return.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function handle_return() {
 		$success = false;
@@ -232,7 +232,7 @@ class MS_Gateway_2checkout extends MS_Gateway {
 	/**
 	 * Verify required fields.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 *
 	 * @return boolean
 	 */

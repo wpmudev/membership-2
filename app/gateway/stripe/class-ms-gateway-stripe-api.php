@@ -1,32 +1,11 @@
 <?php
 /**
- * @copyright Incsub (http://incsub.com/)
- *
- * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 2, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
- * MA 02110-1301 USA
- *
-*/
-
-/**
  * Stripe Gateway API Integration.
  *
  * This object is shared between the Stripe Single and Stripe Subscription
  * gateways.
  *
- * @since 2.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -37,7 +16,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $instance
 	 */
 	public static $instance;
@@ -47,7 +26,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 *
 	 * @see https://support.stripe.com/questions/where-do-i-find-my-api-keys
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $test_secret_key
 	 */
 	protected $test_secret_key;
@@ -55,7 +34,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Stripe Secret key (live).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $secret_key
 	 */
 	protected $secret_key;
@@ -63,7 +42,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Stripe test publishable key (sandbox).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $test_publishable_key
 	 */
 	protected $test_publishable_key;
@@ -71,7 +50,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Stripe publishable key (live).
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $publishable_key
 	 */
 	protected $publishable_key;
@@ -79,7 +58,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Determines whether the API should use test or live keys to contact Stripe.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @var string
 	 */
 	public $mode = '';
@@ -87,7 +66,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Load Stripe lib.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function load_stripe_lib() {
@@ -102,7 +81,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Get Member's Stripe Customer Object, creates a new customer if not found.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param MS_Model_Member $member The member.
@@ -137,7 +116,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Get Member's Stripe Customer Object.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param MS_Model_Member $member The member.
@@ -169,7 +148,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Add card info to Stripe customer profile and to WordPress user meta.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param MS_Model_Member $member The member model.
@@ -202,7 +181,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		 * This action is used by the Taxamo Add-on to check additional country
 		 * evidence (CC country).
 		 *
-		 * @since 2.0.0
+		 * @since  1.0.0
 		 */
 		do_action( 'ms_gateway_stripe_credit_card_saved', $card, $member, $this );
 
@@ -231,7 +210,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 *
 	 * This means the money is instantly transferred to our own stripe account.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  Stripe_Customer $customer Stripe customer to charge.
@@ -269,7 +248,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 * If the specified customer did not subscribe to the membership then
 	 * boolean FALSE will be returned.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  Stripe_Customer $customer Stripe customer to charge.
@@ -322,7 +301,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Creates a subscription that starts immediately.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  Stripe_Customer $customer Stripe customer to charge.
@@ -378,7 +357,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Creates or updates the payment plan specified by the function parameter.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param array $plan_data The plan-object containing all details for Stripe.
@@ -428,7 +407,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Creates or updates the coupon specified by the function parameter.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param array $coupon_data The object containing all details for Stripe.
@@ -476,7 +455,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Get Stripe publishable key.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The Stripe API publishable key.
@@ -499,7 +478,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Get Stripe secret key.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal The secret key should not be used outside this object!
 	 *
 	 * @return string The Stripe API secret key.
@@ -523,7 +502,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 * Little hack to force the plugin to store/load the stripe_api data in same
 	 * option-field as the stripe-gateway settings.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @return string
 	 */
 	public function option_key() {
