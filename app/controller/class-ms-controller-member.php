@@ -21,6 +21,26 @@ class MS_Controller_Member extends MS_Controller {
 	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'member_subscriptions';
 
 	/**
+	 * Used on the Add Member screen to indicate that a new WP User should be
+	 * created and added to M2.
+	 *
+	 * @since 1.0.1.0
+	 *
+	 * @var   string
+	 */
+	const ACTION_ADD_MEMBER = 'member_add';
+
+	/**
+	 * Used on the Add Member screen to indicate that an existing WP User should
+	 * be added to M2.
+	 *
+	 * @since 1.0.1.0
+	 *
+	 * @var   string
+	 */
+	const ACTION_SELECT_MEMBER = 'member_select';
+
+	/**
 	 * Prepare the Member manager.
 	 *
 	 * @since 1.0.0

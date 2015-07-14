@@ -62,6 +62,9 @@ class MS_View_Member_Editor extends MS_View {
 	 * @return array
 	 */
 	public function prepare_fields_add() {
+		$action_add = MS_Controller_Member::ACTION_ADD_MEMBER;
+		$action_select = MS_Controller_Member::ACTION_SELECT_MEMBER;
+
 		$fields = array();
 		$fields['create'] = array(
 			'title' => array(
@@ -73,6 +76,11 @@ class MS_View_Member_Editor extends MS_View {
 				'field_options' => array(
 					'add' => __( 'Create a new WordPress user', MS_TEXT_DOMAIN ),
 				),
+			),
+			'username' => array(
+				'id' => 'username',
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' => __( 'User name:', MS_TEXT_DOMAIN ),
 			),
 			'email' => array(
 				'id' => 'email',
@@ -104,6 +112,16 @@ class MS_View_Member_Editor extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Create user', MS_TEXT_DOMAIN ) . ' &raquo;',
 			),
+			'action' => array(
+				'id' => 'action',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $action_add,
+			),
+			'_wpnonce' => array(
+				'id' => '_wpnonce',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => wp_create_nonce( $action_add ),
+			),
 		);
 
 		$fields['select'] = array(
@@ -121,11 +139,22 @@ class MS_View_Member_Editor extends MS_View {
 				'id' => 'select_user',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'title' => __( 'Existing WordPress users:', MS_TEXT_DOMAIN ),
+				'class' => 'manual-init',
 			),
 			'button' => array(
 				'id' => 'btn_select',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Select', MS_TEXT_DOMAIN ) . ' &raquo;',
+			),
+			'action' => array(
+				'id' => 'action',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $action_select,
+			),
+			'_wpnonce' => array(
+				'id' => '_wpnonce',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => wp_create_nonce( $action_select ),
 			),
 		);
 
