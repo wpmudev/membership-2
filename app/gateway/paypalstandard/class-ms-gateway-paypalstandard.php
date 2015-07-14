@@ -53,7 +53,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$this->id = self::ID;
 		$this->name = __( 'PayPal Standard Gateway', MS_TEXT_DOMAIN );
 		$this->group = 'PayPal';
-		$this->manual_payment = true;
+		$this->manual_payment = false; // Recurring charged automatically
 		$this->pro_rate = false;
 	}
 

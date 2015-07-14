@@ -68,7 +68,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$this->id = self::ID;
 		$this->name = __( 'Authorize.net Gateway', MS_TEXT_DOMAIN );
 		$this->group = 'Authorize.net';
-		$this->manual_payment = false;
+		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
 	}
 

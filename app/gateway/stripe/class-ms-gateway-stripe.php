@@ -75,7 +75,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$this->id = self::ID;
 		$this->name = __( 'Stripe Single Gateway', MS_TEXT_DOMAIN );
 		$this->group = 'Stripe';
-		$this->manual_payment = false;
+		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
 	}
 
