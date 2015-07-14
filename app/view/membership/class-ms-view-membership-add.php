@@ -2,12 +2,19 @@
 
 class MS_View_Membership_Add extends MS_View {
 
+	/**
+	 * Create view output.
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$cols = count( $fields['type']['field_options'] );
 		if ( $cols < 2 ) { $cols = 2; }
 		if ( $cols > 3 ) { $cols = 2; }
 
+		ob_start();
 		?>
 		<div class="ms-wrap">
 			<?php
@@ -49,6 +56,9 @@ class MS_View_Membership_Add extends MS_View {
 			</div>
 		</div>
 		<?php
+		$html = ob_get_clean();
+
+		return $html;
 	}
 
 	public function prepare_fields() {

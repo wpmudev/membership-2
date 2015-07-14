@@ -35,7 +35,7 @@ class MS_Gateway_Free extends MS_Gateway {
 		$this->name = __( 'Free Gateway', MS_TEXT_DOMAIN );
 		$this->group = '';
 		$this->active = true;
-		$this->manual_payment = true;
+		$this->manual_payment = true; // Recurring billed/paid manually
 	}
 
 	/**

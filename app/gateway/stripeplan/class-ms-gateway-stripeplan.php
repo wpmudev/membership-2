@@ -40,7 +40,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$this->id = self::ID;
 		$this->name = __( 'Stripe Subscriptions Gateway', MS_TEXT_DOMAIN );
 		$this->group = 'Stripe';
-		$this->manual_payment = false;
+		$this->manual_payment = false; // Recurring charged automatically
 		$this->pro_rate = true;
 		$this->unsupported_payment_types = array(
 			MS_Model_Membership::PAYMENT_TYPE_PERMANENT,

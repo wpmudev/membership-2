@@ -3,11 +3,10 @@
 class MS_View_Membership_News extends MS_View {
 
 	/**
-	 * Overrides parent's to_html() method.
+	 * Create view output.
 	 *
-	 * @since 1.0
-	 *
-	 * @return object
+	 * @since 1.0.0
+	 * @return string
 	 */
 	public function to_html() {
 		$list_table = MS_Factory::create( 'MS_Helper_ListTable_Event' );

@@ -260,7 +260,7 @@ class MS_Helper_Html extends MS_Helper {
 		do_action( 'ms_helper_settings_box_header_init', $title, $description, $state );
 
 		$handle = '';
-		if ( $state !== 'static' ) {
+		if ( 'static' !== $state ) {
 			$state = ('closed' === $state ? 'closed' : 'open');
 			$handle = sprintf(
 				'<div class="handlediv" title="%s"></div>',

@@ -46,7 +46,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 		$this->name = __( 'Manual Payment Gateway', MS_TEXT_DOMAIN );
 		$this->description = __( '(Bank orders, cash, etc)', MS_TEXT_DOMAIN );
 		$this->group = __( 'Manual Payment', MS_TEXT_DOMAIN );
-		$this->manual_payment = true;
+		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
 
 		if ( $this->active ) {

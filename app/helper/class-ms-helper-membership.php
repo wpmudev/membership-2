@@ -1,4 +1,7 @@
 <?php
+/**
+ * Helper for the Membership class.
+ */
 class MS_Helper_Membership extends MS_Helper {
 
 	const MEMBERSHIP_ACTION_SIGNUP = 'membership_signup';

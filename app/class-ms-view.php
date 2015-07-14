@@ -126,6 +126,6 @@ class MS_View extends MS_Hooker {
 	public function render() {
 		$html = $this->to_html();
 
-		echo '' . apply_filters( 'ms_view_render', $html );
+		echo apply_filters( 'ms_view_render', $html );
 	}
 }

@@ -2,6 +2,12 @@
 
 class MS_View_Membership_Payment extends MS_View {
 
+	/**
+	 * Create view output.
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$fields = $this->get_fields();
 		$wrapper_class = $this->data['is_global_payments_set'] ? '' : 'wide';
@@ -35,7 +41,7 @@ class MS_View_Membership_Payment extends MS_View {
 		<?php
 		$html = ob_get_clean();
 
-		echo '' . $html;
+		echo $html;
 	}
 
 	private function get_fields() {

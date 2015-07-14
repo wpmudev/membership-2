@@ -70,7 +70,7 @@ class MS_View_Membership_ProtectedContent extends MS_View {
 				'ms_view_membership_protected_' . $active_tab,
 				$html
 			);
-			echo '' . $html;
+			echo $html;
 			?>
 		</div>
 		<?php
