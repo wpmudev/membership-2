@@ -35,6 +35,11 @@ class MS_Model_Import_File extends MS_Model_Import {
 			return false;
 		}
 
+		if ( ! is_uploaded_file( $file['tmp_name'] ) ) {
+			self::_message( 'error', __( 'Uploaded file not found, please try again.', MS_TEXT_DOMAIN ) );
+			return false;
+		}
+
 		$content = file_get_contents( $file['tmp_name'] );
 		try {
 			$data = json_decode( $content );

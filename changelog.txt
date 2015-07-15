@@ -18,6 +18,7 @@ Change Log:
 - Fix a caching issue that caused problems with Subscriptions when memcache was enabled
 - Fix wrong rounding-logic in Stripe gateway
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
+- Fix a minor security hole in the data import module
 
 1.0.0.8
 ----------------------------------------------------------------------
