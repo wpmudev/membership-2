@@ -892,7 +892,6 @@ class MS_Model_Member extends MS_Model {
 			$wp_user->user_nicename = $this->username;
 			$wp_user->first_name = $this->first_name;
 			$wp_user->last_name = $this->last_name;
-			$wp_user->display_name = $this->username;
 
 			if ( ! empty( $this->password )
 				&& $this->password == $this->password2

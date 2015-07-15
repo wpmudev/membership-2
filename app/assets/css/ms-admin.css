@@ -2197,6 +2197,16 @@
   padding: 10px 0;
   font-style: italic;
 }
+#wpwrap .ms-wrap.ms-add-member .wpmui-checkbox-list,
+#wpwrap .ms-wrap.ms-add-member .wpmui-radio-wrapper {
+  border: 0;
+  max-height: none;
+  display: block;
+  padding: 0 5px;
+  background: transparent;
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
 
 /**
  * Special styles used on "Addons" page

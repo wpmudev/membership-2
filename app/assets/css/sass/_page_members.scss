@@ -57,4 +57,15 @@
 		padding: 10px 0;
 		font-style: italic;
 	}
+
+	.wpmui-checkbox-list,
+	.wpmui-radio-wrapper {
+		border: 0;
+		max-height: none;
+		display: block;
+		padding: 0 5px;
+		background: transparent;
+		margin-top: 6px;
+		margin-bottom: 10px;
+	}
 }

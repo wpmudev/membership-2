@@ -634,7 +634,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		$memberships = array();
 		foreach ( $items as $item ) {
-			$memberships[] = MS_Factory::load(
+			$memberships[$item->ID] = MS_Factory::load(
 				'MS_Model_Membership',
 				$item->ID
 			);

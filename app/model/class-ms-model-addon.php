@@ -397,6 +397,7 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[self::ADDON_MULTI_MEMBERSHIPS] = (object) array(
 			'name' => __( 'Multiple Memberships', MS_TEXT_DOMAIN ),
 			'description' => __( 'Your members can join more than one membership at the same time.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-forms',
 		);
 
 		$list[self::ADDON_TRIAL] = (object) array(

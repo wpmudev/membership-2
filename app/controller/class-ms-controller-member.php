@@ -49,6 +49,26 @@ class MS_Controller_Member extends MS_Controller {
 	const ACTION_ADD_MEMBER = 'member_add';
 
 	/**
+	 * Used on the Add Member screen to indicate that the submitted form details
+	 * should update an existing user.
+	 *
+	 * @since 1.0.1.0
+	 *
+	 * @var   string
+	 */
+	const ACTION_UPDATE_MEMBER = 'member_update';
+
+	/**
+	 * Used on the Add Member screen to trigger a new subscription action for an
+	 * existing user (user subscribes to one or multiple memberships)
+	 *
+	 * @since 1.0.1.0
+	 *
+	 * @var   string
+	 */
+	const ACTION_SUBSCRIBE_MEMBER = 'member_subscribe';
+
+	/**
 	 * Used on the Add Member screen to indicate that an existing WP User should
 	 * be added to M2.
 	 *
@@ -250,29 +270,71 @@ class MS_Controller_Member extends MS_Controller {
 
 		if ( $this->is_admin_user() ) {
 			$fields_add = array( 'username', 'email' );
-			$fields_select = array( 'select_user' );
+			$fields_select = array( 'user_id' );
+			$fields_update = array( 'user_id', 'email' );
+			$fields_subscribe = array( 'user_id', 'subscribe' );
 
 			// Process Action: Create new user.
 			if ( isset( $_POST['btn_create'] )
 				&& $this->verify_nonce()
 				&& self::validate_required( $fields_add, 'POST' )
 			) {
-				$msg = 3;
-
-				$redirect = esc_url_raw(
-					add_query_arg( array( 'msg' => $msg ) )
+				$data = array(
+					'user_login' => $_POST['username'],
+					'user_email' => $_POST['email'],
+					'first_name' => $_POST['first_name'],
+					'last_name' => $_POST['last_name'],
+					'user_pass' => $_POST['password'],
 				);
+				$user_id = wp_insert_user( $data );
+
+				if ( ! is_wp_error( $user_id ) ) {
+					$redirect = esc_url_raw(
+						add_query_arg( array( 'user_id' => $user_id ) )
+					);
+				}
 			}
+
 			// Process Action: Select existing user.
 			elseif ( isset( $_POST['btn_select'] )
 				&& $this->verify_nonce()
 				&& self::validate_required( $fields_select, 'POST' )
 			) {
-				$msg = 3;
+				$user_id = intval( $_POST['user_id'] );
 
 				$redirect = esc_url_raw(
-					add_query_arg( array( 'msg' => $msg ) )
+					add_query_arg( array( 'user_id' => $user_id ) )
 				);
+			}
+
+			// Process Action: Update existing user.
+			elseif ( isset( $_POST['btn_save'] )
+				&& $this->verify_nonce()
+				&& self::validate_required( $fields_update, 'POST' )
+			) {
+				$data = array(
+					'ID' => intval( $_POST['user_id'] ),
+					'user_email' => $_POST['email'],
+					'first_name' => $_POST['first_name'],
+					'last_name' => $_POST['last_name'],
+					'display_name' => $_POST['displayname'],
+				);
+				wp_update_user( $data );
+			}
+
+			// Process Action: Subscribe to a new membership.
+			elseif ( isset( $_POST['btn_subscribe'] )
+				&& $this->verify_nonce()
+				&& self::validate_required( $fields_subscribe, 'POST' )
+			) {
+				$user_id = intval( $_POST['user_id'] );
+				$memberships = $_POST['subscribe'];
+
+				$user = MS_Factory::load( 'MS_Model_Member', $user_id );
+				foreach ( $memberships as $membership_id ) {
+					$user->add_membership( $membership_id );
+				}
+				$user->save();
 			}
 		}
 
@@ -309,7 +371,7 @@ class MS_Controller_Member extends MS_Controller {
 	public function admin_member_editor() {
 		$data = array();
 
-		if ( ! empty( $_REQUEST['user_id'] ) ) {
+		if ( ! empty( $_REQUEST['user_id'] ) && intval( $_REQUEST['user_id'] ) ) {
 			$data['user_id'] = intval( $_REQUEST['user_id'] );
 			$data['action'] = 'edit';
 		} else {
