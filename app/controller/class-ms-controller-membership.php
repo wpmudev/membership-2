@@ -42,6 +42,9 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	const TAB_DETAILS = 'details';
 	const TAB_PAYMENT = 'payment';
+	const TAB_PAGES = 'pages';
+	const TAB_MESSAGES = 'messages';
+	const TAB_EMAILS = 'emails';
 
 	// Actions
 	const ACTION_SAVE = 'save_membership';
@@ -701,10 +704,20 @@ class MS_Controller_Membership extends MS_Controller {
 				self::TAB_PAYMENT => array(
 					'title' => __( 'Payment options', MS_TEXT_DOMAIN ),
 				),
+				self::TAB_PAGES => array(
+					'title' => __( 'Membership Pages', MS_TEXT_DOMAIN ),
+				),
+				self::TAB_MESSAGES => array(
+					'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ),
+				),
+				self::TAB_EMAILS => array(
+					'title' => __( 'Automated Email Responses', MS_TEXT_DOMAIN ),
+				),
 			);
 
 			if ( $membership->is_system() ) {
 				unset( $Tabs[self::TAB_PAYMENT] );
+				unset( $Tabs[self::TAB_EMAILS] );
 			} elseif ( $membership->is_free ) {
 				$Tabs[self::TAB_PAYMENT]['title'] = __( 'Access options', MS_TEXT_DOMAIN );
 			}
