@@ -25,13 +25,23 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const STEP_MS_LIST = 'ms_list';
-	const STEP_OVERVIEW = 'ms_overview';
-	const STEP_NEWS = 'ms_news';
+	const STEP_MS_LIST = 'list';
+	const STEP_EDIT = 'edit';
+	const STEP_OVERVIEW = 'overview';
+	const STEP_NEWS = 'news';
 	const STEP_WELCOME_SCREEN = 'welcome';
 	const STEP_ADD_NEW = 'add';
 	const STEP_PAYMENT = 'payment';
-	const STEP_EDIT = 'edit';
+
+	/**
+	 * Membership Editor tabs.
+	 *
+	 * @since 1.0.1.0
+	 *
+	 * @var   string
+	 */
+	const TAB_DETAILS = 'details';
+	const TAB_PAYMENT = 'payment';
 
 	// Actions
 	const ACTION_SAVE = 'save_membership';
@@ -415,7 +425,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function page_ms_list() {
+	public function page_list() {
 		$membership = $this->load_membership();
 
 		$data = array();
@@ -429,6 +439,23 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$view = MS_Factory::create( 'MS_View_Membership_List' );
 		$view->data = apply_filters( 'ms_view_membership_list_data', $data, $this );
+		$view->render();
+	}
+
+	/**
+	 * Display Membership Edit page.
+	 *
+	 * @since  1.0.0
+	 */
+	public function page_edit() {
+		$membership = $this->load_membership();
+
+		$data = array();
+		$data['tabs'] = $this->get_edit_tabs();
+		$data['membership'] = $membership;
+
+		$view = MS_Factory::create( 'MS_View_Membership_Edit' );
+		$view->data = apply_filters( 'ms_view_membership_edit_data', $data, $this );
 		$view->render();
 	}
 
@@ -457,7 +484,7 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 		}
 
-		$view = MS_Factory::create( 'MS_View_Membership_Payment' );
+		$view = MS_Factory::create( 'MS_View_Membership_PaymentSetup' );
 		$view->data = apply_filters( 'ms_view_membership_payment_data', $data, $this );
 		$view->render();
 	}
@@ -467,7 +494,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function page_ms_overview() {
+	public function page_overview() {
 		$membership = $this->load_membership();
 		$membership_id = $membership->id;
 
@@ -506,8 +533,8 @@ class MS_Controller_Membership extends MS_Controller {
 		);
 		$data['events'] = MS_Model_Event::get_events( $args );
 
-		$view = apply_filters( 'ms_view_membership_ms_overview', $view );
-		$view->data = apply_filters( 'ms_view_membership_ms_overview_data', $data, $this );
+		$view = apply_filters( 'ms_view_membership_overview', $view );
+		$view->data = apply_filters( 'ms_view_membership_overview_data', $data, $this );
 		$view->render();
 	}
 
@@ -516,14 +543,14 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function page_ms_news() {
+	public function page_news() {
 		$data = array();
 		$data['step'] = $this->get_step();
 		$data['action'] = '';
 		$data['membership'] = $this->load_membership();
 
 		$args = apply_filters(
-			'ms_controller_membership_page_ms_news_event_args',
+			'ms_controller_membership_page_news_event_args',
 			array( 'posts_per_page' => -1 )
 		);
 		$data['events'] = MS_Model_Event::get_events( $args );
@@ -556,25 +583,26 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return string[] The existing steps.
 	 */
 	public static function get_steps() {
-		static $steps;
+		static $Steps;
 
-		if ( empty( $steps ) ) {
-			$steps = array(
+		if ( empty( $Steps ) ) {
+			$Steps = array(
 				self::STEP_MS_LIST,
 				self::STEP_OVERVIEW,
+				self::STEP_EDIT,
 				self::STEP_NEWS,
 				self::STEP_ADD_NEW,
 				self::STEP_PAYMENT,
 			);
 
 			if ( MS_Plugin::is_wizard() ) {
-				$steps[] = self::STEP_WELCOME_SCREEN;
+				$Steps[] = self::STEP_WELCOME_SCREEN;
 			}
 		}
 
 		return apply_filters(
 			'ms_controller_membership_get_steps',
-			$steps
+			$Steps
 		);
 	}
 
@@ -641,12 +669,6 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		}
 
-		// Hack to use same page in two different menus
-		// TODO: FIX THIS !!!!
-		if ( MS_Controller_Plugin::is_page( 'protection' ) ) {
-			$step = 'protected_content'; // WRONG!
-		}
-
 		// Can't modify membership type
 		if ( self::STEP_ADD_NEW == $step && $membership->is_valid() ) {
 			$step = self::STEP_OVERVIEW;
@@ -657,6 +679,60 @@ class MS_Controller_Membership extends MS_Controller {
 			$step,
 			$this
 		);
+	}
+
+	/**
+	 * Get available tabs for Membership2 page.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return array The tabs configuration.
+	 */
+	public function get_edit_tabs() {
+		static $Tabs = null;
+
+		if ( null === $Tabs ) {
+			$membership = $this->load_membership();
+
+			$Tabs = array(
+				self::TAB_DETAILS => array(
+					'title' => __( 'Details', MS_TEXT_DOMAIN ),
+				),
+				self::TAB_PAYMENT => array(
+					'title' => __( 'Payment options', MS_TEXT_DOMAIN ),
+				),
+			);
+
+			if ( $membership->is_system() ) {
+				unset( $Tabs[self::TAB_PAYMENT] );
+			} elseif ( $membership->is_free ) {
+				$Tabs[self::TAB_PAYMENT]['title'] = __( 'Access options', MS_TEXT_DOMAIN );
+			}
+
+			// Allow Add-ons to add or remove rule tabs
+			$Tabs = apply_filters(
+				'ms_controller_membership_tabs',
+				$Tabs,
+				$membership_id
+			);
+
+			foreach ( $Tabs as $key => $tab ) {
+				if ( ! empty( $Tabs['key']['url'] ) ) { continue; }
+
+				$url = sprintf(
+					'%1$s?page=%2$s&step=%3$s&tab=%4$s&membership_id=%5$s',
+					admin_url( 'admin.php' ),
+					esc_attr( $_REQUEST['page'] ),
+					MS_Controller_Membership::STEP_EDIT,
+					$key,
+					$membership->id
+				);
+
+				$Tabs[$key]['url'] = $url;
+			}
+		}
+
+		return $Tabs;
 	}
 
 	/**
@@ -826,7 +902,8 @@ class MS_Controller_Membership extends MS_Controller {
 					$key = false;
 
 					// Very basic support for array updates.
-					// We only support updating arrays when one key is
+					// We only support updating 1-dimensional arrays with a
+					// specified key value.
 					if ( strpos( $field, '[' ) ) {
 						$field = str_replace( ']', '', $field );
 						list( $field, $key ) = explode( '[', $field, 2 );
@@ -912,7 +989,11 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_PAYMENT:
 				$data['ms_init'][] = 'view_membership_payment';
 				$data['ms_init'][] = 'view_settings_payment';
-				wp_enqueue_script( 'jquery-validate' );
+				break;
+
+			case self::STEP_EDIT:
+				$data['ms_init'][] = 'view_membership_payment';
+				$data['step'][] = $step;
 				break;
 
 			case self::STEP_MS_LIST:
@@ -923,6 +1004,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		lib2()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+		wp_enqueue_script( 'jquery-validate' );
 
 		do_action( 'ms_controller_membership_enqueue_scripts', $this );
 	}

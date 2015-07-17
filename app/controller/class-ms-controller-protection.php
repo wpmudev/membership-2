@@ -8,9 +8,6 @@
  */
 class MS_Controller_Protection extends MS_Controller {
 
-	// Actions
-	const ACTION_SAVE = 'save_membership';
-
 	/**
 	 * The model to use for loading/saving Membership data.
 	 *
@@ -82,7 +79,7 @@ class MS_Controller_Protection extends MS_Controller {
 			);
 
 			$this->model = apply_filters(
-				'ms_controller_membership_load_membership',
+				'ms_controller_protection_load_membership',
 				$this->model,
 				$this
 			);
@@ -104,7 +101,7 @@ class MS_Controller_Protection extends MS_Controller {
 
 		// MS_Controller_Rule is executed using this action.
 		do_action(
-			'ms_controller_membership_admin_page_process_' . $step,
+			'ms_controller_protection_admin_page_process_' . $step,
 			$this->get_active_tab()
 		);
 
@@ -308,12 +305,11 @@ class MS_Controller_Protection extends MS_Controller {
 
 			// Allow Add-ons to add or remove rule tabs
 			$tabs = apply_filters(
-				'ms_controller_membership_tabs',
+				'ms_controller_protection_tabs',
 				$tabs,
 				$membership_id
 			);
 
-			$url = admin_url( 'admin.php' );
 			$page = sanitize_html_class( $_GET['page'], MS_Controller_Plugin::MENU_SLUG . '-memberships' );
 			$rule_titles = MS_Model_Rule::get_rule_type_titles();
 
@@ -321,8 +317,9 @@ class MS_Controller_Protection extends MS_Controller {
 			foreach ( $tabs as $rule_type => $state ) {
 				if ( ! $state ) { continue; }
 
-				$url .= sprintf(
-					'?page=%s&tab=%s',
+				$url = sprintf(
+					'%s?page=%s&tab=%s',
+					admin_url( 'admin.php' ),
 					$page,
 					$rule_type
 				);
@@ -352,7 +349,7 @@ class MS_Controller_Protection extends MS_Controller {
 			}
 
 			$Tabs = apply_filters(
-				'ms_controller_membership_get_protection_tabs',
+				'ms_controller_protection_get_available_tabs',
 				$result,
 				$membership_id,
 				$this
@@ -384,7 +381,7 @@ class MS_Controller_Protection extends MS_Controller {
 		}
 
 		$this->active_tab = apply_filters(
-			'ms_controller_membership_get_active_tab',
+			'ms_controller_protection_get_active_tab',
 			$active_tab
 		);
 
@@ -399,7 +396,7 @@ class MS_Controller_Protection extends MS_Controller {
 	public function enqueue_styles() {
 		lib2()->ui->add( 'jquery-ui' );
 
-		do_action( 'ms_controller_membership_enqueue_styles', $this );
+		do_action( 'ms_controller_protection_enqueue_styles', $this );
 	}
 
 	/**
@@ -444,7 +441,7 @@ class MS_Controller_Protection extends MS_Controller {
 		lib2()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 
-		do_action( 'ms_controller_membership_enqueue_scripts', $this );
+		do_action( 'ms_controller_protection_enqueue_scripts', $this );
 	}
 
 }

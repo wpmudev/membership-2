@@ -2151,6 +2151,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$value = lib2()->array->get( $this->disabled_gateways );
 				break;
 
+			case 'is_paid':
+				$value = ! $this->is_free;
+				break;
+
+			case 'public':
+				$value = ! $this->private;
+				break;
+
 			default:
 				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;
@@ -2298,6 +2306,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 				case 'trial_period_type':
 					$this->trial_period['period_type'] = $this->validate_period_type( $value );
+					break;
+
+				case 'public':
+					$this->private = ! lib2()->is_true( $value );
+					break;
+
+				case 'is_paid':
+					$this->is_free = ! lib2()->is_true( $value );
 					break;
 			}
 		}

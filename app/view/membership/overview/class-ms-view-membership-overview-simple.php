@@ -28,6 +28,15 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			'membership_id' => $membership->id,
 		);
 
+		$edit_button = sprintf(
+			'<a href="?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s" class="button">%5$s</a>',
+			esc_attr( $_REQUEST['page'] ),
+			MS_Controller_Membership::STEP_EDIT,
+			MS_Controller_Membership::TAB_DETAILS,
+			esc_attr( $membership->id ),
+			'<i class="wpmui-fa wpmui-fa-pencil"></i> ' . __( 'Edit', MS_TEXT_DOMAIN )
+		);
+
 		ob_start();
 		?>
 		<div class="wrap ms-wrap ms-membership-overview">
@@ -50,7 +59,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 							sprintf(
 								__( 'Membership is %s', MS_TEXT_DOMAIN ),
 								'<span id="ms-membership-status-text" class="ms-nok">' .
-								__( 'Disabled', MS_TEXT_DOMAIN ) .
+								__( 'Inactive', MS_TEXT_DOMAIN ) .
 								'</span>'
 							)
 						);
@@ -58,10 +67,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 					</div>
 				</div>
 				<div class="ms-membership-edit-wrapper">
-					<a href="#" class="button" data-ms-dialog="View_Membership_Edit_Dialog" data-ms-data=<?php echo json_encode( $edit_args )?>>
-						<i class="wpmui-fa wpmui-fa-pencil handlediv"></i>
-						<?php _e( 'Edit', MS_TEXT_DOMAIN ); ?>
-					</a>
+					<?php echo $edit_button; ?>
 				</div>
 				<?php
 

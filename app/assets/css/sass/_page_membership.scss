@@ -253,16 +253,15 @@
 			z-index: 10;
 		}
 
-		.ms-item-name {
-			color: #4F7984;
-		}
-
-		.ms-trial-wrapper {
-			margin-top: 15px;
-		}
-
 		.ms-global-payment-wrapper .ms-header .wpmui-separator {
 			display: none;
+		}
+
+	}
+
+	.ms-payment-form {
+		.ms-trial-wrapper {
+			margin-top: 15px;
 		}
 
 		.ms-payment-gateways {
@@ -469,6 +468,19 @@
 	.ms-badge {
 		display: inline-block;
 		cursor: help;
+	}
+
+	.column-active {
+		width: 80px;
+	}
+
+	.column-members {
+		width: 100px;
+		text-align: center;
+	}
+
+	.column-price {
+		width: 250px;
 	}
 }
 

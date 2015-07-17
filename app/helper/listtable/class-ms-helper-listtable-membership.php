@@ -21,11 +21,11 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 	public function get_columns() {
 		$columns = array(
 			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
-			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
+			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
 			'members' => __( 'Members', MS_TEXT_DOMAIN ),
 			'price' => __( 'Payment', MS_TEXT_DOMAIN ),
-			'shortcode' => __( 'Membership Shortcode', MS_TEXT_DOMAIN ),
+			'shortcode' => __( 'Protection Shortcode', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(
@@ -105,17 +105,20 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		);
 
 		$actions['edit'] = sprintf(
-			'<span class="edit"><a href="#" data-ms-dialog="%s" data-ms-data="%s">%s</a></span>',
-			'View_Membership_Edit_Dialog',
-			esc_attr( json_encode( $edit_args ) ),
+			'<a href="?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s">%5$s</a>',
+			esc_attr( $_REQUEST['page'] ),
+			MS_Controller_Membership::STEP_EDIT,
+			MS_Controller_Membership::TAB_DETAILS,
+			esc_attr( $item->id ),
 			__( 'Edit', MS_TEXT_DOMAIN )
 		);
 
 		if ( ! $item->is_system() ) {
 			$actions['payment'] = sprintf(
-				'<a href="?page=%1$s&step=%2$s&membership_id=%3$s&tab=page&edit=1">%4$s</a>',
+				'<a href="?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s">%5$s</a>',
 				esc_attr( $_REQUEST['page'] ),
-				MS_Controller_Membership::STEP_PAYMENT,
+				MS_Controller_Membership::STEP_EDIT,
+				MS_Controller_Membership::TAB_PAYMENT,
 				esc_attr( $item->id ),
 				$item->is_free ? __( 'Access options', MS_TEXT_DOMAIN ) : __( 'Payment options', MS_TEXT_DOMAIN )
 			);

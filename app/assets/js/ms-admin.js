@@ -1435,7 +1435,7 @@ window.ms_init.view_membership_payment = function init () {
 
 	function payment_type() {
 		var me = jQuery( this ),
-			block = me.closest( '.inside' ),
+			block = me.closest( '.ms-payment-form' ),
 			pay_type = me.val(),
 			all_settings = block.find( '.ms-payment-type-wrapper' ),
 			active_settings = block.find( '.ms-payment-type-' + pay_type ),

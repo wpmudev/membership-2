@@ -1564,24 +1564,21 @@
   bottom: -60px;
   z-index: 10;
 }
-#wpwrap .ms-wrap .ms-membership-payment .ms-item-name {
-  color: #4F7984;
-}
-#wpwrap .ms-wrap .ms-membership-payment .ms-trial-wrapper {
-  margin-top: 15px;
-}
 #wpwrap .ms-wrap .ms-membership-payment .ms-global-payment-wrapper .ms-header .wpmui-separator {
   display: none;
 }
-#wpwrap .ms-wrap .ms-membership-payment .ms-payment-gateways .disabled-wrapper .wpmui-field-label {
+#wpwrap .ms-wrap .ms-payment-form .ms-trial-wrapper {
+  margin-top: 15px;
+}
+#wpwrap .ms-wrap .ms-payment-form .ms-payment-gateways .disabled-wrapper .wpmui-field-label {
   color: #AAA;
 }
-#wpwrap .ms-wrap .ms-membership-payment .ms-payment-gateways .wpmui-wrapper:after {
+#wpwrap .ms-wrap .ms-payment-form .ms-payment-gateways .wpmui-wrapper:after {
   clear: both;
   display: block;
   content: '';
 }
-#wpwrap .ms-wrap .ms-membership-payment .ms-payment-gateways .wpmui-field-label {
+#wpwrap .ms-wrap .ms-payment-form .ms-payment-gateways .wpmui-field-label {
   float: left;
   min-width: 200px;
   width: 40%;
@@ -1738,6 +1735,16 @@
 .ms-wrap .ms-membership-list .ms-badge {
   display: inline-block;
   cursor: help;
+}
+.ms-wrap .ms-membership-list .column-active {
+  width: 80px;
+}
+.ms-wrap .ms-membership-list .column-members {
+  width: 100px;
+  text-align: center;
+}
+.ms-wrap .ms-membership-list .column-price {
+  width: 250px;
 }
 
 /* Membership News ("Overview" page) */
