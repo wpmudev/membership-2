@@ -383,7 +383,7 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function admin_member_list() {
+	public function admin_page() {
 		$data = array();
 
 		$view = MS_Factory::create( 'MS_View_Member_List' );
@@ -399,7 +399,7 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * @since 1.0.1.0
 	 */
-	public function admin_member_editor() {
+	public function admin_page_editor() {
 		$data = array();
 
 		if ( ! empty( $_REQUEST['user_id'] ) && intval( $_REQUEST['user_id'] ) ) {

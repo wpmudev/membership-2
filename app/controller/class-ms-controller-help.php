@@ -34,7 +34,7 @@ class MS_Controller_Help extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function admin_help() {
+	public function admin_page() {
 		/**
 		 * Create / Filter the view.
 		 *

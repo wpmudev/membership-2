@@ -91,7 +91,7 @@ class MS_Controller_Billing extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function admin_billing() {
+	public function admin_page() {
 		$this->print_admin_message();
 
 		// Action view page request

@@ -140,7 +140,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function admin_addon() {
+	public function admin_page() {
 		// Reload the add-on list.
 		do_action( 'ms_model_addon_flush' );
 

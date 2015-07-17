@@ -535,7 +535,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			if ( ! $step_add || self::is_page( 'setup' ) ) {
 				$handler = array(
 					'any',
-					array( $this->controllers['membership'], 'membership_admin_page_router' ),
+					array( $this->controllers['membership'], 'admin_page_router' ),
 				);
 			} else {
 				$handler = array(
@@ -547,7 +547,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			if ( self::is_page( '' ) ) {
 				$handler = array(
 					'network',
-					array( $this->controllers['membership'], 'membership_admin_page_router' ),
+					array( $this->controllers['membership'], 'admin_page_router' ),
 				);
 			} elseif ( self::is_page( 'protection' ) ) {
 				$handler = array(
@@ -557,32 +557,32 @@ class MS_Controller_Plugin extends MS_Controller {
 			} elseif ( self::is_page( 'members' ) ) {
 				$handler = array(
 					'network',
-					array( $this->controllers['member'], 'admin_member_list' ),
+					array( $this->controllers['member'], 'admin_page' ),
 				);
 			} elseif ( self::is_page( 'add-member' ) ) {
 				$handler = array(
 					'network',
-					array( $this->controllers['member'], 'admin_member_editor' ),
+					array( $this->controllers['member'], 'admin_page_editor' ),
 				);
 			} elseif ( self::is_page( 'addon' ) ) {
 				$handler = array(
 					'network',
-					array( $this->controllers['addon'], 'admin_addon' ),
+					array( $this->controllers['addon'], 'admin_page' ),
 				);
 			} elseif ( self::is_page( 'settings' ) ) {
 				$handler = array(
 					'network',
-					array( $this->controllers['settings'], 'admin_settings' ),
+					array( $this->controllers['settings'], 'admin_page' ),
 				);
 			} elseif ( self::is_page( 'help' ) ) {
 				$handler = array(
 					'any',
-					array( $this->controllers['help'], 'admin_help' ),
+					array( $this->controllers['help'], 'admin_page' ),
 				);
 			} elseif ( self::is_page( 'billing' ) ) {
 				$handler = array(
 					'network',
-					array( $this->controllers['billing'], 'admin_billing' ),
+					array( $this->controllers['billing'], 'admin_page' ),
 				);
 			}
 		}

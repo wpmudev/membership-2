@@ -336,7 +336,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function membership_admin_page_router() {
+	public function admin_page_router() {
 		$this->wizard_tracker();
 		$step = $this->get_step();
 

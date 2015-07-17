@@ -445,7 +445,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function admin_settings() {
+	public function admin_page() {
 		lib2()->array->equip_get( 'action' );
 		$action = $_GET['action'];
 		$hook = 'ms_controller_settings_' . $this->active_tab . '_' . $action;
