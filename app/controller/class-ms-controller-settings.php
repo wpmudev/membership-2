@@ -24,6 +24,19 @@ class MS_Controller_Settings extends MS_Controller {
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
 
 	/**
+	 * Settings tabs.
+	 *
+	 * @since 1.0.1.0
+	 *
+	 * @var   string
+	 */
+	const TAB_GENERAL = 'general';
+	const TAB_PAYMENT = 'payment';
+	const TAB_MESSAGES = 'messages';
+	const TAB_EMAILS = 'emails';
+	const TAB_IMPORT = 'import';
+
+	/**
 	 * The current active tab in the vertical navigation.
 	 *
 	 * @since  1.0.0
@@ -265,19 +278,19 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function get_tabs() {
 		$tabs = array(
-			'general' => array(
+			self::TAB_GENERAL => array(
 				'title' => __( 'General', MS_TEXT_DOMAIN ),
 			),
-			'payment' => array(
+			self::TAB_PAYMENT => array(
 				'title' => __( 'Payment', MS_TEXT_DOMAIN ),
 			),
-			'messages-protection' => array(
+			self::TAB_MESSAGES => array(
 				'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ),
 			),
-			'messages-automated' => array(
+			self::TAB_EMAILS => array(
 				'title' => __( 'Automated Email Responses', MS_TEXT_DOMAIN ),
 			),
-			'import' => array(
+			self::TAB_IMPORT => array(
 				'title' => __( 'Import Tool', MS_TEXT_DOMAIN ),
 			),
 		);
@@ -353,7 +366,7 @@ class MS_Controller_Settings extends MS_Controller {
 			&& ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) )
 		) {
 			switch ( $this->active_tab ) {
-				case 'general':
+				case self::TAB_GENERAL:
 					lib2()->array->equip_request( 'action', 'network_site' );
 					$action = $_REQUEST['action'];
 
@@ -378,7 +391,7 @@ class MS_Controller_Settings extends MS_Controller {
 					}
 					break;
 
-				case 'messages-automated':
+				case self::TAB_EMAILS:
 					$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
 					if ( ! empty( $_GET['comm_type'] )
 						&& MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] )
@@ -416,15 +429,15 @@ class MS_Controller_Settings extends MS_Controller {
 					}
 					break;
 
-				case 'import':
+				case self::TAB_IMPORT:
 					$tool = MS_Factory::create( 'MS_Controller_Import' );
 
 					// Output is passed to the view via self::_message()
 					$tool->process();
 					break;
 
-				case 'payment':
-				case 'messages-protection':
+				case self::TAB_PAYMENT:
+				case self::TAB_MESSAGES:
 					break;
 
 				default:
@@ -466,7 +479,7 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 
 		switch ( $this->get_active_tab() ) {
-			case 'messages-automated':
+			case self::TAB_EMAILS:
 				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
 
 				$temp_type = isset( $_GET['comm_type'] ) ? $_GET['comm_type'] : '';
@@ -482,7 +495,7 @@ class MS_Controller_Settings extends MS_Controller {
 				$data['comm'] = $comm;
 				break;
 
-			case 'messages-protection':
+			case self::TAB_MESSAGES:
 				$data['membership'] = MS_Model_Membership::get_base();
 				break;
 		}
@@ -604,20 +617,20 @@ class MS_Controller_Settings extends MS_Controller {
 		$data['ms_init'][] = 'view_settings';
 
 		switch ( $active_tab ) {
-			case 'payment':
+			case self::TAB_PAYMENT:
 				add_thickbox();
 				$data['ms_init'][] = 'view_settings_payment';
 				break;
 
-			case 'messages-protection':
+			case self::TAB_MESSAGES:
 				$data['ms_init'][] = 'view_settings_protection';
 				break;
 
-			case 'messages-automated':
+			case self::TAB_EMAILS:
 				$data['ms_init'][] = 'view_settings_automated_msg';
 				break;
 
-			case 'general':
+			case self::TAB_GENERAL:
 				$data['ms_init'][] = 'view_settings_setup';
 				break;
 		}
@@ -649,7 +662,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		// Check the current tab.
 		switch ( $this->get_active_tab() ) {
-			case 'messages-automated':
+			case self::TAB_MESSAGES:
 				$this->add_filter( 'mce_external_plugins', 'add_variables_plugin' );
 				$this->add_filter( 'mce_buttons', 'register_variables_button' );
 				break;

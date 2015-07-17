@@ -280,7 +280,7 @@ class MS_View_Settings_Edit extends MS_View {
 	 *                               PROTECTION MESSAGE
 	 * ====================================================================== */
 
-	public function render_tab_messages_protection() {
+	public function render_tab_messages() {
 		$tab = MS_Factory::create( 'MS_View_Settings_Page_Messages' );
 		$tab->data = $this->data;
 
@@ -291,7 +291,7 @@ class MS_View_Settings_Edit extends MS_View {
 	 *                               AUTOMATED MESSAGES
 	 * ====================================================================== */
 
-	public function render_tab_messages_automated() {
+	public function render_tab_emails() {
 		$tab = MS_Factory::create( 'MS_View_Settings_Page_Communications' );
 		$tab->data = $this->data;
 
