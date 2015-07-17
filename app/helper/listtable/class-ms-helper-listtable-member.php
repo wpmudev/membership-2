@@ -184,6 +184,10 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 					);
 					break;
 			}
+
+			$args['posts_per_page'] = -1;
+			$args['number'] = false;
+			$args['offset'] = 0;
 		}
 
 		// Filter by membership_id and membership status

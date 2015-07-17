@@ -66,12 +66,26 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-			'number' => $per_page,
+			'posts_per_page' => $per_page,
 			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
 		if ( isset( $_REQUEST['membership_id'] ) ) {
 			$args['membership_id'] = $_REQUEST['membership_id'];
+		}
+
+		if ( ! empty( $_REQUEST['s'] ) ) {
+			$args['s'] = $_REQUEST['s'];
+			$this->search_string = $args['s'];
+			$args['posts_per_page'] = -1;
+			$args['number'] = false;
+			$args['offset'] = 0;
+		}
+
+		// Prepare order by statement.
+		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
+			$args['orderby'] = $_REQUEST['orderby'];
+			$args['order'] = $_REQUEST['order'];
 		}
 
 		$total_items = MS_Model_Event::get_event_count( $args );
