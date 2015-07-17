@@ -66,7 +66,7 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * @var   string
 	 */
-	const ACTION_SUBSCRIBE_MEMBER = 'member_subscribe';
+	const ACTION_MODIFY_SUBSCRIPTIONS = 'member_subscription';
 
 	/**
 	 * Used on the Add Member screen to indicate that an existing WP User should
@@ -272,6 +272,7 @@ class MS_Controller_Member extends MS_Controller {
 			$fields_add = array( 'username', 'email' );
 			$fields_select = array( 'user_id' );
 			$fields_update = array( 'user_id', 'email' );
+			$fields_modify = array( 'user_id', 'memberships' );
 			$fields_subscribe = array( 'user_id', 'subscribe' );
 
 			// Process Action: Create new user.
@@ -323,17 +324,47 @@ class MS_Controller_Member extends MS_Controller {
 			}
 
 			// Process Action: Subscribe to a new membership.
-			elseif ( isset( $_POST['btn_subscribe'] )
+			elseif ( isset( $_POST['btn_modify'] )
 				&& $this->verify_nonce()
-				&& self::validate_required( $fields_subscribe, 'POST' )
 			) {
 				$user_id = intval( $_POST['user_id'] );
-				$memberships = $_POST['subscribe'];
-
 				$user = MS_Factory::load( 'MS_Model_Member', $user_id );
-				foreach ( $memberships as $membership_id ) {
-					$user->add_membership( $membership_id );
+
+				// Modify existing subscriptions.
+				if ( self::validate_required( $fields_modify, 'POST' ) ) {
+					$memberships = lib2()->array->get( $_POST['memberships'] );
+
+					foreach ( $memberships as $membership_id ) {
+						if ( empty( $_POST['mem_' . $membership_id] ) ) { continue; }
+
+						$subscription = $user->get_subscription( $membership_id );
+						$data = $_POST['mem_' . $membership_id];
+
+						$subscription->start_date = $data['start'];
+						$subscription->expire_date = $data['expire'];
+						$subscription->status = $data['status'];
+						$subscription->save();
+					}
 				}
+
+				// Add new subscriptions.
+				if ( self::validate_required( $fields_subscribe, 'POST' ) ) {
+					$subscribe_to = $_POST['subscribe'];
+
+					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+						// Memberships is an array.
+						foreach ( $subscribe_to as $membership_id ) {
+							$user->add_membership( $membership_id, 'admin' );
+						}
+					} else {
+						// Memberships is a single ID.
+						foreach ( $user->subscriptions as $subscription ) {
+							$subscription->deactivate_membership( false );
+						}
+						$user->add_membership( $subscribe_to, 'admin' );
+					}
+				}
+
 				$user->save();
 			}
 		}

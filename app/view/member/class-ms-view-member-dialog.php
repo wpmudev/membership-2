@@ -36,7 +36,8 @@ class MS_View_Member_Dialog extends MS_Dialog {
 		);
 
 		// Dialog Size
-		$this->height = 390;
+		$this->width = 940;
+		$this->height = 500;
 
 		// Contents
 		$this->content = $this->get_contents( $data );

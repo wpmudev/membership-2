@@ -32,6 +32,14 @@ class MS_Dialog extends MS_Controller {
 	public $height = 100;
 
 	/**
+	 * Width of the dialog contents
+	 *
+	 * @since  1.0.1.0
+	 * @type int
+	 */
+	public $width = 0;
+
+	/**
 	 * The dialog contents (HTML Code)
 	 *
 	 * @since  1.0.0

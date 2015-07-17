@@ -2207,6 +2207,14 @@
   margin-top: 6px;
   margin-bottom: 10px;
 }
+#wpwrap .ms-wrap.ms-add-member .wpmui-html-table th {
+  width: 200px;
+  text-align: left;
+}
+#wpwrap .ms-wrap.ms-add-member .wpmui-html-table .wpmui-field-input {
+  margin-top: 0;
+  margin-bottom: 0;
+}
 
 /**
  * Special styles used on "Addons" page

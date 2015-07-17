@@ -180,6 +180,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 		if ( ! $include_gateway_free ) {
 			unset( $names[ MS_Gateway_Free::ID ] );
+		} else {
+			$names['admin'] = __( 'None (Admin)', MS_TEXT_DOMAIN );
 		}
 
 		return apply_filters(

@@ -68,4 +68,16 @@
 		margin-top: 6px;
 		margin-bottom: 10px;
 	}
+
+	.wpmui-html-table {
+		th {
+			width: 200px;
+			text-align: left;
+		}
+
+		.wpmui-field-input {
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+	}
 }

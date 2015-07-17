@@ -52,6 +52,7 @@ class MS_Controller_Dialog extends MS_Controller {
 				'title' => $dlg->title,
 				'content' => $dlg->content,
 				'height' => $dlg->height,
+				'width' => $dlg->width,
 				'modal' => $dlg->modal,
 			);
 		}

@@ -33,6 +33,7 @@ class MS_View_Member_Payment extends MS_Dialog {
 		);
 
 		// Dialog Size
+		$this->width = 940;
 		$this->height = 600;
 
 		// Contents

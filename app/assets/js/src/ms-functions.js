@@ -437,13 +437,14 @@ window.ms_functions = {
 
 				resp.title = resp.title || 'Dialog';
 				resp.height = resp.height || 100;
+				resp.width = resp.width > 0 ? resp.width : undefined;
 				resp.content = resp.content || '';
 				resp.modal = resp.modal || true;
 
 				dlg = wpmUi.popup()
 					.modal( true, ! resp.modal )
 					.title( resp.title )
-					.size( undefined, resp.height )
+					.size( resp.width, resp.height )
 					.content( resp.content )
 					.show();
 			}

@@ -176,7 +176,7 @@ class MS_View_Member_Editor extends MS_View {
 	 */
 	public function prepare_fields_edit() {
 		$action_update = MS_Controller_Member::ACTION_UPDATE_MEMBER;
-		$action_subscribe = MS_Controller_Member::ACTION_SUBSCRIBE_MEMBER;
+		$action_modify = MS_Controller_Member::ACTION_MODIFY_SUBSCRIPTIONS;
 
 		$user_id = $this->data['user_id'];
 		$user = MS_Factory::load( 'MS_Model_Member', $user_id );
@@ -270,13 +270,97 @@ class MS_View_Member_Editor extends MS_View {
 			'value' => __( 'Manage Subscriptions', MS_TEXT_DOMAIN ),
 		);
 		if ( $user->subscriptions ) {
+			$gateways = MS_Model_Gateway::get_gateway_names( false, true );
+
 			foreach ( $user->subscriptions as $subscription ) {
+				if ( MS_Model_Relationship::STATUS_DEACTIVATED == $subscription->status ) {
+					continue;
+				}
+
 				$the_membership = $subscription->get_membership();
 				unset( $unused_memberships[$the_membership->id] );
 
+				$status_options = array(
+					MS_Model_Relationship::STATUS_PENDING => __( 'Pending (activate on next payment)', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_WAITING => __( 'Waiting (activate on start date)', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_TRIAL => __( 'Trial Active', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_ACTIVE => __( 'Active', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_CANCELED => __( 'Cancelled (deactivate on expire date)', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_TRIAL_EXPIRED => __( 'Trial Expired (activate on next payment)', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_EXPIRED => __( 'Expired (no access) ', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_DEACTIVATED => __( 'Deactivated (no access)', MS_TEXT_DOMAIN ),
+				);
+
+				if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
+					|| ! $the_membership->trial_period_enabled
+				) {
+					unset( $status_options[MS_Model_Relationship::STATUS_TRIAL] );
+					unset( $status_options[MS_Model_Relationship::STATUS_TRIAL_EXPIRED] );
+				}
+
+				if ( isset( $gateways[ $subscription->gateway_id ] ) ) {
+					$gateway_name = $gateways[ $subscription->gateway_id ];
+				} elseif ( empty( $subscription->gateway_id ) ) {
+					$gateway_name = __( '- No Gateway -', MS_TEXT_DOMAIN );
+				} else {
+					$gateway_name = '(' . $subscription->gateway_id . ')';
+				}
+
+				$field_start = array(
+					'name' => 'mem_' . $the_membership->id . '[start]',
+					'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+					'value' => $subscription->start_date,
+				);
+				$field_expire = array(
+					'name' => 'mem_' . $the_membership->id . '[expire]',
+					'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+					'value' => $subscription->expire_date,
+				);
+				$field_status = array(
+					'name' => 'mem_' . $the_membership->id . '[status]',
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+					'value' => $subscription->status,
+					'field_options' => $status_options,
+				);
+
 				$fields['subscriptions'][] = array(
-					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-					'value' => $the_membership->get_name_tag(),
+					'name' => 'memberships[]',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $the_membership->id,
+				);
+
+				$fields['subscriptions'][] = array(
+					'title' => $the_membership->get_name_tag(),
+					'type' => MS_Helper_Html::TYPE_HTML_TABLE,
+					'value' => array(
+						array(
+							__( 'Subscription ID', MS_TEXT_DOMAIN ),
+							$subscription->id,
+						),
+						array(
+							__( 'Payment Gateway', MS_TEXT_DOMAIN ),
+							$gateway_name,
+						),
+						array(
+							__( 'Payment Type', MS_TEXT_DOMAIN ),
+							$subscription->get_payment_description( null, true ),
+						),
+						array(
+							__( 'Start Date', MS_TEXT_DOMAIN ) . ' <sup>*)</sup>',
+							MS_Helper_Html::html_element( $field_start, true ),
+						),
+						array(
+							__( 'Expire Date', MS_TEXT_DOMAIN ) . ' <sup>*)</sup>',
+							MS_Helper_Html::html_element( $field_expire, true ),
+						),
+						array(
+							__( 'Status', MS_TEXT_DOMAIN ) . ' <sup>*)</sup>',
+							MS_Helper_Html::html_element( $field_status, true ),
+						),
+					),
+					'field_options' => array(
+						'head_col' => true,
+					),
 				);
 			}
 		} else {
@@ -293,11 +377,9 @@ class MS_View_Member_Editor extends MS_View {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 				$field_type = MS_Helper_Html::INPUT_TYPE_CHECKBOX;
 				$group_title = __( 'Add Subscriptions', MS_TEXT_DOMAIN );
-				$button_label = __( 'Add Subscriptions', MS_TEXT_DOMAIN );
 			} else {
 				$field_type = MS_Helper_Html::INPUT_TYPE_RADIO;
 				$group_title = __( 'Set Subscription', MS_TEXT_DOMAIN );
-				$button_label = __( 'Set Subscription', MS_TEXT_DOMAIN );
 			}
 
 			$fields['subscriptions'][] = array(
@@ -321,22 +403,45 @@ class MS_View_Member_Editor extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $user->id,
 			);
+		}
+
+		if ( $user->subscriptions ) {
 			$fields['subscriptions'][] = array(
-				'id' => 'btn_subscribe',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => $button_label,
+				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			);
 			$fields['subscriptions'][] = array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $action_subscribe,
-			);
-			$fields['subscriptions'][] = array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => wp_create_nonce( $action_subscribe ),
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'value' => '<sup>*)</sup> ' . __( 'Subscription Dates and Status are validated when saved and might result in a different value then the one specified above.', MS_TEXT_DOMAIN ),
+				'class' => 'info-field',
 			);
 		}
+		$fields['subscriptions'][] = array(
+			'id' => 'btn_modify',
+			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+		);
+		$fields['subscriptions'][] = array(
+			'id' => 'history',
+			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'value' => '<i class="dashicons dashicons-id"></i>' . __( 'History and logs', MS_TEXT_DOMAIN ),
+			'url' => '#history',
+			'class' => 'button wpmui-field-input',
+			'config' => array(
+				'data-ms-dialog' => 'View_Member_Dialog',
+				'data-ms-data' => array( 'member_id' => $member->id ),
+			),
+		);
+		$fields['subscriptions'][] = array(
+			'id' => 'action',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $action_modify,
+		);
+
+		$fields['subscriptions'][] = array(
+			'id' => '_wpnonce',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => wp_create_nonce( $action_modify ),
+		);
 
 		return apply_filters(
 			'ms_view_member_editor_fields_edit',
