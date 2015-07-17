@@ -119,6 +119,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->dialogs                             = MS_Factory::load( 'MS_Controller_Dialog' );
 		$this->controllers['widget']               = MS_Factory::load( 'MS_Controller_Widget' );
 		$this->controllers['membership']           = MS_Factory::load( 'MS_Controller_Membership' );
+		$this->controllers['protection']           = MS_Factory::load( 'MS_Controller_Protection' );
 		$this->controllers['rule']                 = MS_Factory::load( 'MS_Controller_Rule' );
 		$this->controllers['member']               = MS_Factory::load( 'MS_Controller_Member' );
 		$this->controllers['billing']              = MS_Factory::load( 'MS_Controller_Billing' );
@@ -539,7 +540,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			} else {
 				$handler = array(
 					'site',
-					array( $this->controllers['membership'], 'page_protected_content' ),
+					array( $this->controllers['protection'], 'admin_page' ),
 				);
 			}
 		} else  {
@@ -551,7 +552,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			} elseif ( self::is_page( 'protection' ) ) {
 				$handler = array(
 					'site',
-					array( $this->controllers['membership'], 'page_protected_content' ),
+					array( $this->controllers['protection'], 'admin_page' ),
 				);
 			} elseif ( self::is_page( 'members' ) ) {
 				$handler = array(

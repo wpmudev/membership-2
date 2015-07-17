@@ -9,7 +9,7 @@
  * @package Membership2
  * @subpackage View
  */
-class MS_View_Membership_ProtectedContent extends MS_View {
+class MS_View_Protection extends MS_View {
 
 	/**
 	 * Create view output.
