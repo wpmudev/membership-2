@@ -33,7 +33,7 @@ class MS_Controller_Rule extends MS_Controller {
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
 
 		$this->add_action(
-			'ms_controller_membership_admin_page_process_' . MS_Controller_Membership::STEP_PROTECTED_CONTENT,
+			'ms_controller_protection_admin_page',
 			'edit_rule_manager'
 		);
 	}

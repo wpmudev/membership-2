@@ -7,8 +7,6 @@
  * @uses MS_Helper_Html Helper used to create form elements and vertical navigation.
  *
  * @since  1.0.0
- *
- * @return object
  */
 class MS_View_Settings_Edit extends MS_View {
 
@@ -64,7 +62,7 @@ class MS_View_Settings_Edit extends MS_View {
 				<?php
 				$html = call_user_func( $render_callback );
 				$html = apply_filters( 'ms_view_settings_' . $callback_name, $html );
-				echo '' . $html;
+				echo $html;
 				?>
 			</div>
 		</div>

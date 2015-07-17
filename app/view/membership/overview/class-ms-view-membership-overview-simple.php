@@ -402,7 +402,6 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 					$edit_url = MS_Controller_Plugin::get_admin_url(
 						'protection',
 						array(
-							'step' => MS_Controller_Membership::STEP_PROTECTED_CONTENT,
 							'tab' => $rule->rule_type,
 							'membership_id' => $membership_id,
 						)
