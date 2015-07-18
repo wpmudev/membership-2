@@ -16,25 +16,25 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Both static and class property are used to handle php 5.2 limitations.
 	 *
-	 * @since  1.0.0
-	 * @var string $POST_TYPE
+	 * @since 1.0.0
+	 * @var   string $POST_TYPE
 	 */
 	protected static $POST_TYPE = 'ms_communication';
 
 	/**
 	 * Communication types, static reference to loaded child objects.
 	 *
-	 * @since  1.0.0
-	 * @var array $communications
+	 * @since 1.0.0
+	 * @var   array $communications
 	 */
 	protected static $communications = array();
 
 	/**
 	 * Communication type constants.
 	 *
-	 * @since  1.0.0
-	 * @see $type
-	 * @var string The communication type
+	 * @since 1.0.0
+	 * @see   $type
+	 * @var   string The communication type
 	 */
 	const COMM_TYPE_REGISTRATION = 'type_registration';
 	const COMM_TYPE_REGISTRATION_FREE = 'type_registration_free';
@@ -56,9 +56,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * These variables are used inside emails and are replaced by variable value.
 	 *
-	 * @since  1.0.0
-	 * @see comm_vars
-	 * @var string The communication variable name.
+	 * @since 1.0.0
+	 * @see   comm_vars
+	 * @var   string The communication variable name.
 	 */
 	const COMM_VAR_MS_NAME = '%ms-name%';
 	const COMM_VAR_MS_INVOICE = '%ms-invoice%';
@@ -78,24 +78,24 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication type.
 	 *
-	 * @since  1.0.0
-	 * @var string The communication type.
+	 * @since 1.0.0
+	 * @var   string The communication type.
 	 */
 	protected $type;
 
 	/**
 	 * Email subject.
 	 *
-	 * @since  1.0.0
-	 * @var string The email subject.
+	 * @since 1.0.0
+	 * @var   string The email subject.
 	 */
 	protected $subject;
 
 	/**
 	 * Email body message.
 	 *
-	 * @since  1.0.0
-	 * @var string The email body message.
+	 * @since 1.0.0
+	 * @var   string The email body message.
 	 */
 	protected $message;
 
@@ -104,16 +104,16 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * When the communication has a period to consider.
 	 *
-	 * @since  1.0.0
-	 * @var bool The period enabled status.
+	 * @since 1.0.0
+	 * @var   bool The period enabled status.
 	 */
 	protected $period_enabled = false;
 
 	/**
 	 * The communication period settings.
 	 *
-	 * @since  1.0.0
-	 * @var array
+	 * @since 1.0.0
+	 * @var   array
 	 */
 	protected $period = array(
 		'period_unit' => 1,
@@ -123,32 +123,43 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Communication enabled status.
 	 *
-	 * @since  1.0.0
-	 * @var string The communication enabled status.
+	 * @since 1.0.0
+	 * @var   string The communication enabled status.
 	 */
 	protected $enabled;
 
 	/**
 	 * Communication carbon copy enabled.
 	 *
-	 * @since  1.0.0
-	 * @var string The communication carbon copy enabled status.
+	 * @since 1.0.0
+	 * @var   string The communication carbon copy enabled status.
 	 */
 	protected $cc_enabled;
 
 	/**
 	 * Communication copied recipient email.
 	 *
-	 * @since  1.0.0
-	 * @var string The copied recipient email.
+	 * @since 1.0.0
+	 * @var   string The copied recipient email.
 	 */
 	protected $cc_email;
 
 	/**
+	 * Defines a membership_id if this template overrides a default template.
+	 *
+	 * Default setting is 0, which indicates that the object is the default
+	 * template of the specific type.
+	 *
+	 * @since 1.0.1.0
+	 * @var   int
+	 */
+	protected $membership_id = 0;
+
+	/**
 	 * Communication variables.
 	 *
-	 * @since  1.0.0
-	 * @var string The communication vars.
+	 * @since 1.0.0
+	 * @var   string The communication vars.
 	 */
 	protected $comm_vars = array();
 
@@ -165,24 +176,24 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Keep for a limited history of sent emails.
 	 *
-	 * @since  1.0.0
-	 * @var string The communication sent queue.
+	 * @since 1.0.0
+	 * @var   string The communication sent queue.
 	 */
 	protected $sent_queue = array();
 
 	/**
 	 * Communication default content type.
 	 *
-	 * @since  1.0.0
-	 * @var string The communication default content type.
+	 * @since 1.0.0
+	 * @var   string The communication default content type.
 	 */
 	protected $content_type = 'text/html';
 
 	/**
 	 * Don't persist this fields.
 	 *
-	 * @since  1.0.0
-	 * @var string[] The fields to ignore when persisting.
+	 * @since 1.0.0
+	 * @var   string[] The fields to ignore when persisting.
 	 */
 	static public $ignore_fields = array(
 		'message',
@@ -245,26 +256,26 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Set description field to persist in WP column.
+	 * Customize the data that is written to the DB.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0.1.0
 	 */
-	public function before_save() {
-		parent::before_save();
-		$this->description = $this->message;
+	public function save_post_data( $post ) {
+		$post['post_content'] = $this->message;
+		$post['post_excerpt'] = $this->message;
+		$post['post_parent'] = intval( $this->membership_id );
+		return $post;
 	}
 
 	/**
 	 * Hook process communication actions.
 	 *
-	 * Used by child classes to process communication queue.
-	 *
-	 * @since  1.0.0
+	 * @since  1.0.1.0
 	 */
-	public function after_load() {
-		parent::after_load();
+	public function load_post_data( $post ) {
+		$this->message = $post->post_content;
+		$this->membership_id = intval( $post->post_parent );
 
-		$this->message = $this->description;
 		if ( $this->enabled ) {
 			$this->add_action(
 				'ms_cron_process_communications',
@@ -365,6 +376,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
+	 * @param  $membership Optional. If specified only Comm-Types relevant for
+	 *         that membership are returned.
 	 * @return array {
 	 *     Return array of $type => $title.
 	 *
@@ -372,31 +385,51 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *     @type string $title The title of the communication type.
 	 * }
 	 */
-	public static function get_communication_type_titles() {
-		static $type_titles;
+	public static function get_communication_type_titles( $membership = null ) {
+		$type_titles = array(
+			self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_AFTER_FINISHES => __( 'Subscription - After expired', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_CANCELLED => __( 'Subscription - Cancelled', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Subscription - Trial finished', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_INFO_UPDATE => __( 'Payment - Profile updated', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Payment - Credit Card expires', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_INVOICE => __( 'Payment - Receipt/Invoice', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_FAILED_PAYMENT => __( 'Payment - Failed', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Payment - Before due', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'Payment - After due', MS_TEXT_DOMAIN ),
+		);
 
-		if ( empty( $type_titles ) ) {
-			$type_titles = array(
-				self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_AFTER_FINISHES => __( 'Subscription - After expired', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_CANCELLED => __( 'Subscription - Cancelled', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Subscription - Trial finished', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_INFO_UPDATE => __( 'Payment - Profile updated', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Payment - Credit Card expires', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_INVOICE => __( 'Payment - Receipt/Invoice', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_FAILED_PAYMENT => __( 'Payment - Failed', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Payment - Before due', MS_TEXT_DOMAIN ),
-				self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'Payment - After due', MS_TEXT_DOMAIN ),
-			);
+		foreach ( $type_titles as $type => $title ) {
+			if ( ! self::is_valid_communication_type( $type ) ) {
+				unset( $type_titles[ $type ] );
+			}
+		}
 
-			foreach ( $type_titles as $type => $title ) {
-				if ( ! self::is_valid_communication_type( $type ) ) {
-					unset( $type_titles[ $type ] );
-				}
+		if ( $membership instanceof MS_Model_Membership ) {
+			if ( ! $membership->has_trial() ) {
+				unset( $type_titles[ self::COMM_TYPE_BEFORE_TRIAL_FINISHES ] );
+			}
+
+			if ( $membership->is_free() ) {
+				unset( $type_titles[ self::COMM_TYPE_REGISTRATION ] );
+				unset( $type_titles[ self::COMM_TYPE_INFO_UPDATE ] );
+				unset( $type_titles[ self::COMM_TYPE_CREDIT_CARD_EXPIRE ] );
+				unset( $type_titles[ self::COMM_TYPE_INVOICE ] );
+				unset( $type_titles[ self::COMM_TYPE_FAILED_PAYMENT ] );
+				unset( $type_titles[ self::COMM_TYPE_BEFORE_PAYMENT_DUE ] );
+				unset( $type_titles[ self::COMM_TYPE_AFTER_PAYMENT_DUE ] );
+			} else {
+				unset( $type_titles[ self::COMM_TYPE_REGISTRATION_FREE ] );
+			}
+
+			if ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
+				unset( $type_titles[ self::COMM_TYPE_BEFORE_FINISHES ] );
+				unset( $type_titles[ self::COMM_TYPE_FINISHED ] );
+				unset( $type_titles[ self::COMM_TYPE_AFTER_FINISHES ] );
 			}
 		}
 
@@ -432,23 +465,39 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $type The type of the communication.
-	 * @param boolean $create_if_not_exists Optional. Flag to create a comm type if not exists.
+	 * @param  string $type The type of the communication.
+	 * @param  MS_Model_Membership $membership Optional. If defined then we try
+	 *         to load the overridden template for that membership with fallback
+	 *         to the default template.
 	 * @return MS_Model_Communication The communication object.
 	 */
-	public static function get_communication( $type, $create_if_not_exists = false ) {
+	public static function get_communication( $type, $membership = null ) {
 		$model = null;
 
 		if ( self::is_valid_communication_type( $type ) ) {
-			if ( ! empty( self::$communications[ $type ] ) ) {
-				$model = self::$communications[ $type ];
+			$key = $type;
+			$membership_id = 0;
+
+			if ( $membership ) {
+				if ( $membership instanceof MS_Model_Membership ) {
+					$membership_id = $membership->id;
+				} elseif ( is_scalar( $membership ) ) {
+					$membership_id = $membership;
+				}
+				if ( $membership_id ) {
+					$key .= '_' . $membership_id;
+				}
+			}
+
+			if ( ! empty( self::$communications[ $key ] ) ) {
+				$model = self::$communications[ $key ];
 			} else {
 				$args = array(
 					'post_type' => self::get_post_type(),
 					'post_status' => 'any',
 					'fields' => 'ids',
-					'order' => 'DESC',
-					'orderby' => 'ID',
+					'posts_per_page' => 1,
+					'post_parent' => $membership_id,
 					'meta_query' => array(
 						array(
 							'key' => 'type',
@@ -465,28 +514,38 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 				MS_Factory::select_blog();
 				$query = new WP_Query( $args );
-				$item = $query->get_posts();
+				$items = $query->get_posts();
 				MS_Factory::revert_blog();
 
 				$comm_classes = self::get_communication_type_classes();
 
-				if ( ! empty( $item[0] ) ) {
+				if ( 1 == count( $items ) ) {
 					$model = MS_Factory::load(
 						$comm_classes[$type],
-						$item[0]
+						$items[0]  // This is the post_id
 					);
-				} elseif ( $create_if_not_exists ) {
+				} else {
 					$model = self::communication_factory(
 						$type,
-						$comm_classes[$type]
+						$membership_id
 					);
+				}
+
+				if ( $model ) {
+					self::$communications[$key] = $model;
 				}
 			}
 		}
 
+		if ( ! $model && $membership ) {
+			$model = self::get_communication( $type, null );
+		}
+
 		return apply_filters(
 			'ms_model_communication_get_communication_' . $type,
-			$model
+			$model,
+			$membership,
+			$key
 		);
 	}
 
@@ -497,13 +556,18 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $type The type of the communication.
-	 * @param string $class The communication type class.
+	 * @param  string $type The type of the communication.
+	 * @param  int $membership_id Optional. If specified then the template will
+	 *         override the default template for this membership only.
 	 * @return MS_Model_Communication The communication object.
 	 */
-	public static function communication_factory( $type, $class ) {
+	public static function communication_factory( $type, $membership_id = 0 ) {
+		$comm_classes = self::get_communication_type_classes();
+		$class = $comm_classes[$type];
+
 		$model = MS_Factory::create( $class );
 		$model->reset_to_default();
+		$model->membership_id = $membership_id;
 
 		return apply_filters(
 			'ms_model_communication_communication_factory',
@@ -533,19 +597,20 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param boolean $create_if_not_exists Optional. Flag to create a comm type if not exists.
+	 * @param  MS_Model_Membership $membership Optional. If defined then we try
+	 *         to load overridden messages for that membership with fallback to
+	 *         the default messages.
 	 * @return MS_Model_Communication[] The communication objects array.
 	 */
-	public static function load_communications( $create_if_not_exists = false ) {
+	public static function load_communications( $membership = null ) {
 		if ( empty( self::$communications ) ) {
 			$comm_types = self::get_communication_types();
 
 			foreach ( $comm_types as $type ) {
-				$comm = self::get_communication( $type, $create_if_not_exists );
-
-				if ( ! empty( $comm ) ) {
-					self::$communications[ $type ] = $comm;
-				}
+				$comm = self::get_communication(
+					$type,
+					$membership
+				);
 			}
 		}
 
@@ -556,12 +621,31 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns the title of the communication object.
+	 *
+	 * @since  1.0.1.0
+	 * @return string
+	 */
+	public function get_title() {
+		$result = '';
+		$titles = self::get_communication_type_titles();
+
+		if ( isset( $titles[ $this->type ] ) ) {
+			$result = $titles[ $this->type ];
+		}
+
+		return apply_filters(
+			'ms_model_communication_get_title',
+			$result
+		);
+	}
+
+	/**
 	 * Get communication description.
 	 *
 	 * Override it in children classes.
 	 *
 	 * @since  1.0.0
-	 *
 	 * @return string The description.
 	 */
 	public function get_description() {

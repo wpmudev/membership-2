@@ -337,7 +337,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 		$fields['action'] = array(
 			'id' => 'action',
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->data['action'],
+			'value' => $action,
 		);
 
 		// Get a list of all payment gateways.

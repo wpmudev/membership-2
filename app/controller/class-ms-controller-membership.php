@@ -58,6 +58,15 @@ class MS_Controller_Membership extends MS_Controller {
 	private $model = null;
 
 	/**
+	 * The current active tab in the vertical navigation.
+	 *
+	 * @since  1.0.1.0
+	 *
+	 * @var string
+	 */
+	private $active_tab = null;
+
+	/**
 	 * Prepare the Membership manager.
 	 *
 	 * @since  1.0.0
@@ -81,9 +90,16 @@ class MS_Controller_Membership extends MS_Controller {
 		);
 
 		foreach ( $hooks as $hook ) {
-			$this->run_action( 'load-' . $hook, 'membership_admin_page_process' );
+			$this->run_action( 'load-' . $hook, 'process_admin_page' );
 			$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 			$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
+
+			if ( self::TAB_EMAILS == $this->get_active_edit_tab() ) {
+				$this->run_action(
+					'admin_head-' . $hook,
+					array( 'MS_Controller_Communication', 'add_mce_buttons' )
+				);
+			}
 		}
 	}
 
@@ -198,7 +214,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function membership_admin_page_process() {
+	public function process_admin_page() {
 		$msg = 0;
 		$next_step = null;
 		$step = $this->get_step();
@@ -299,6 +315,10 @@ class MS_Controller_Membership extends MS_Controller {
 					$msg = $this->mark_setup_completed();
 					$completed = true;
 					break;
+
+				case self::STEP_EDIT:
+					$this->process_edit_page();
+					break;
 			}
 
 			if ( ! empty( $next_step ) ) {
@@ -341,6 +361,73 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		} else {
 			// No action request found.
+		}
+	}
+
+	/**
+	 * Process form data submitted via the edit page.
+	 *
+	 * When this function is called the nonce is already confirmed.
+	 *
+	 * @since  1.0.1.0
+	 */
+	protected function process_edit_page() {
+		$redirect = false;
+
+		switch ( $this->get_active_edit_tab() ) {
+			case self::TAB_MESSAGES:
+				break;
+
+			case self::TAB_EMAILS:
+				$fields_switch = array( 'comm_type' );
+				$fields_update = array( 'type', 'membership_id', 'subject', 'email_body' );
+
+				// Load comm type from user select
+				if ( self::validate_required( $fields_switch )
+					&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
+				) {
+					$redirect = esc_url_raw(
+						remove_query_arg(
+							'msg',
+							add_query_arg( 'comm_type', $_POST['comm_type'] )
+						)
+					);
+					break;
+				} elseif ( self::validate_required( $fields_update ) ) {
+					$comm = MS_Model_Communication::get_communication( $_POST['type'] );
+					if ( $comm->membership_id != $_POST['membership_id'] ) {
+						$comm = MS_Model_Communication::communication_factory(
+							$_POST['type'],
+							$_POST['membership_id']
+						);
+					}
+
+					lib2()->array->equip_post(
+						'enabled',
+						'period_unit',
+						'period_type',
+						'cc_enabled',
+						'cc_email'
+					);
+
+					$comm->enabled = ! empty( $_POST['enabled'] );
+					$comm->subject = $_POST['subject'];
+					$comm->message = $_POST['email_body'];
+					$comm->period = array(
+						'period_unit' => $_POST['period_unit'],
+						'period_type' => $_POST['period_type'],
+					);
+					$comm->cc_enabled = ! empty( $_POST['cc_enabled'] );
+					$comm->cc_email = $_POST['cc_email'];
+
+					$comm->save();
+				}
+				break;
+		}
+
+		if ( $redirect ) {
+			wp_safe_redirect( $redirect );
+			exit();
 		}
 	}
 
@@ -455,7 +542,26 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$data = array();
 		$data['tabs'] = $this->get_edit_tabs();
+		$data['settings'] = MS_Plugin::instance()->settings;
 		$data['membership'] = $membership;
+
+		switch ( $this->get_active_edit_tab() ) {
+			case self::TAB_EMAILS:
+				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+
+				$temp_type = isset( $_GET['comm_type'] ) ? $_GET['comm_type'] : '';
+				if ( MS_Model_Communication::is_valid_communication_type( $temp_type ) ) {
+					$type = $temp_type;
+				}
+
+				$comm = MS_Model_Communication::get_communication(
+					$type,
+					$membership
+				);
+
+				$data['comm'] = $comm;
+				break;
+		}
 
 		$view = MS_Factory::create( 'MS_View_Membership_Edit' );
 		$view->data = apply_filters( 'ms_view_membership_edit_data', $data, $this );
@@ -704,9 +810,11 @@ class MS_Controller_Membership extends MS_Controller {
 				self::TAB_PAYMENT => array(
 					'title' => __( 'Payment options', MS_TEXT_DOMAIN ),
 				),
+				/* Not yet finished... will be added soon.
 				self::TAB_PAGES => array(
 					'title' => __( 'Membership Pages', MS_TEXT_DOMAIN ),
 				),
+				*/
 				self::TAB_MESSAGES => array(
 					'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ),
 				),
@@ -725,8 +833,7 @@ class MS_Controller_Membership extends MS_Controller {
 			// Allow Add-ons to add or remove rule tabs
 			$Tabs = apply_filters(
 				'ms_controller_membership_tabs',
-				$Tabs,
-				$membership_id
+				$Tabs
 			);
 
 			foreach ( $Tabs as $key => $tab ) {
@@ -746,6 +853,39 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 
 		return $Tabs;
+	}
+
+	/**
+	 * Get the current active settings page/tab.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function get_active_edit_tab() {
+		if ( null === $this->active_tab ) {
+			if ( self::STEP_EDIT != $this->get_step() ) {
+				$this->active_tab = '';
+			} else {
+				$tabs = $this->get_edit_tabs();
+
+				reset( $tabs );
+				$first_key = key( $tabs );
+
+				// Setup navigation tabs.
+				lib2()->array->equip_get( 'tab' );
+				$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
+
+				if ( ! array_key_exists( $active_tab, $tabs ) ) {
+					$active_tab = $first_key;
+				}
+				$this->active_tab = $active_tab;
+			}
+		}
+
+		return apply_filters(
+			'ms_controller_membership_get_active_edit_tab',
+			$this->active_tab,
+			$this
+		);
 	}
 
 	/**
@@ -1006,7 +1146,16 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_EDIT:
 				$data['ms_init'][] = 'view_membership_payment';
-				$data['step'][] = $step;
+
+				switch ( $this->get_active_edit_tab() ) {
+					case self::TAB_MESSAGES:
+						$data['ms_init'][] = 'view_settings_protection';
+						break;
+
+					case self::TAB_EMAILS:
+						$data['ms_init'][] = 'view_settings_automated_msg';
+						break;
+				}
 				break;
 
 			case self::STEP_MS_LIST:

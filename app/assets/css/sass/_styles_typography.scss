@@ -2,6 +2,7 @@
  * Typographic styles
  */
 
+#wpwrap .ms-wrap,
 .ms-wrap,
 .ms-form {
 	/*font: normal 14px/20px 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
@@ -26,6 +27,28 @@
 
 	.ms-low {
 		opacity: 0.6;
+	}
+
+	.ms-block {
+		display: block;
+	}
+
+	.ms-tcenter {
+		text-align: center;
+	}
+
+	.ms-tright {
+		text-align: right;
+	}
+
+	.ms-spaced {
+		padding: 5px;
+	}
+
+	.ms-inline-block,
+	label.ms-inline-block {
+		display: inline-block;
+		width: auto;
 	}
 
 	.ms-description {

@@ -325,27 +325,39 @@ class MS_Gateway extends MS_Model_Option {
 	 * @since  1.0.0
 	 *
 	 * @access protected
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship.
+	 * @param MS_Model_Relationship $subscription The membership relationship.
 	 */
-	public function check_card_expiration( $ms_relationship ) {
+	public function check_card_expiration( $subscription ) {
 		do_action( 'ms_gateway_check_card_expiration_before', $this );
 
-		$member = MS_Factory::load( 'MS_Model_Member', $ms_relationship->user_id );
+		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
 		$card_exp = $member->get_gateway_profile( $this->id, 'card_exp' );
 
 		if ( ! empty( $card_exp ) ) {
-			$comm = MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE );
+			$comm = MS_Model_Communication::get_communication(
+				MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE
+			);
 
-			$days = MS_Helper_Period::get_period_in_days( $comm->period['period_unit'], $comm->period['period_type'] );
-			$card_expire_days = MS_Helper_Period::subtract_dates( $card_exp, MS_Helper_Period::current_date() );
+			$days = MS_Helper_Period::get_period_in_days(
+				$comm->period['period_unit'],
+				$comm->period['period_type']
+			);
+			$card_expire_days = MS_Helper_Period::subtract_dates(
+				$card_exp,
+				MS_Helper_Period::current_date()
+			);
 			if ( $card_expire_days < 0 || ( $days == $card_expire_days ) ) {
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE, $ms_relationship );
+				MS_Model_Event::save_event(
+					MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE,
+					$subscription
+				);
 			}
 		}
 
 		do_action(
 			'ms_gateway_check_card_expiration_after',
-			$this
+			$this,
+			$subscription
 		);
 	}
 

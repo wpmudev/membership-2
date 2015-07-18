@@ -816,7 +816,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$eligible = false;
 
-		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+		if ( ! $membership->has_trial() ) {
 			// Trial Membership is globally disabled.
 			$eligible = false;
 		} elseif ( self::STATUS_TRIAL == $this->status ) {
@@ -827,9 +827,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$eligible = false;
 		} elseif ( $this->trial_period_completed ) {
 			// Trial membership already consumed.
-			$eligible = false;
-		} elseif ( ! $membership->trial_period_enabled ) {
-			// Trial mode for this membership is disabled.
 			$eligible = false;
 		} else {
 			// All other cases: User can sign up for trial!
@@ -2189,15 +2186,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			return false;
 		}
 
-		$comms = MS_Model_Communication::load_communications();
+		$membership = $this->get_membership();
+		$remaining_days = $this->get_remaining_period();
+		$remaining_trial_days = $this->get_remaining_trial_period();
+
+		$comms = MS_Model_Communication::load_communications( $membership );
 		$invoice_before_days = 5;//@todo create a setting to configure this period.
 		$deactivate_expired_after_days = 30; //@todo create a setting to configure this period.
 		$deactivate_pending_after_days = 30; //@todo create a setting to configure this period.
 		$deactivate_trial_expired_after_days = 5; //@todo create a setting to configure this period.
-
-		$membership = $this->get_membership();
-		$remaining_days = $this->get_remaining_period();
-		$remaining_trial_days = $this->get_remaining_trial_period();
 
 		//@todo: Add a flag to subscriptions with sent communications. Then improve the conditions below to prevent multiple emails.
 

@@ -83,11 +83,33 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 
 	/* ====================================================================== *
-	 *                               ACCESS (alias for 'payment')
+	 *                               PAGES
 	 * ====================================================================== */
 
-	public function render_tab_access() {
-		$tab = MS_Factory::create( 'MS_View_Membership_Tab_Payment' );
+	public function render_tab_pages() {
+		$tab = MS_Factory::create( 'MS_View_Membership_Tab_Pages' );
+		$tab->data = $this->data;
+
+		return $tab->to_html();
+	}
+
+	/* ====================================================================== *
+	 *                               PROTECTION MESSAGES
+	 * ====================================================================== */
+
+	public function render_tab_messages() {
+		$tab = MS_Factory::create( 'MS_View_Settings_Page_Messages' );
+		$tab->data = $this->data;
+
+		return $tab->to_html();
+	}
+
+	/* ====================================================================== *
+	 *                               AUTOMATED MESSAGES
+	 * ====================================================================== */
+
+	public function render_tab_emails() {
+		$tab = MS_Factory::create( 'MS_View_Settings_Page_Communications' );
 		$tab->data = $this->data;
 
 		return $tab->to_html();

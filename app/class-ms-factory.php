@@ -336,6 +336,15 @@ class MS_Factory {
 					$post_meta['description'] = array( $post->post_content );
 					$post_meta['user_id'] = array( $post->post_author );
 					self::populate_model( $model, $post_meta, true );
+
+					/**
+					 * Allow child classes of the CustomPostType model to load
+					 * custom values from the posts/postmeta table
+					 *
+					 * @since  1.0.1.0
+					 */
+					$model->load_meta_data( $post_meta );
+					$model->load_post_data( $post );
 				} else {
 					$model->id = 0;
 				}

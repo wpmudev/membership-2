@@ -492,7 +492,7 @@ class MS_Controller_Plugin extends MS_Controller {
 				lib2()->ui->admin_message(
 					sprintf(
 						__( 'Oops, looks like you did not activate a payment gateway yet.<br />You need to set up and activate at least one gateway, otherwise your members cannot sign up to a paid membership.<br />%sFix this now &raquo;%s', MS_TEXT_DOMAIN ),
-						'<a href="' . self::get_admin_url( 'settings', array( 'tab' => 'payment' ) ) . '">',
+						'<a href="' . self::get_admin_url( 'settings', array( 'tab' => MS_Controller_Settings::TAB_PAYMENT ) ) . '">',
 						'</a>'
 					),
 					'err'

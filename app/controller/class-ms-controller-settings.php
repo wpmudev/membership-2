@@ -88,7 +88,12 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
 
 		// Add custom buttons to the MCE editor (insert variable).
-		$this->run_action( 'admin_head-' . $hook, 'add_mce_buttons' );
+		if ( self::TAB_EMAILS == $this->get_active_tab() ) {
+			$this->run_action(
+				'admin_head-' . $hook,
+				array( 'MS_Controller_Communication', 'add_mce_buttons' )
+			);
+		}
 	}
 
 	/**
@@ -202,20 +207,51 @@ class MS_Controller_Settings extends MS_Controller {
 		if ( ! $this->is_admin_user() ) {
 			return $msg;
 		}
-		$settings = $this->get_model();
 
-		$isset = array( 'type', 'value' );
-		if ( $this->verify_nonce()
-			&& self::validate_required( $isset, 'POST', false )
-			&& $this->is_admin_user()
-			&& MS_Model_Settings::is_valid_protection_msg_type( $_POST['type'] )
-		) {
-			$settings = MS_Factory::load( 'MS_Model_Settings' );
-			lib2()->array->strip_slashes( $_POST, 'value' );
+		$isset_update = array( 'type', 'value' );
+		$isset_toggle = array( 'field', 'value', 'membership_id' );
 
-			$settings->set_protection_message( $_POST['type'], $_POST['value'] );
-			$settings->save();
-			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+		// Update a message.
+		if ( $this->verify_nonce() && $this->is_admin_user() ) {
+			$settings = $this->get_model();
+
+			if ( self::validate_required( $isset_update, 'POST', false ) ) {
+				lib2()->array->strip_slashes( $_POST, 'value' );
+				lib2()->array->equip_post( 'membership_id' );
+
+				$settings->set_protection_message(
+					$_POST['type'],
+					$_POST['value'],
+					$_POST['membership_id']
+				);
+				$settings->save();
+				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+			}
+
+			// Toggle a override message flag.
+			elseif ( self::validate_required( $isset_toggle, 'POST', false ) ) {
+				$field = $_POST['field'];
+
+				if ( 0 === strpos( $field, 'override_' ) ) {
+					$type = substr( $field, 9 );
+					if ( lib2()->is_true( $_POST['value'] ) ) {
+						$settings->set_protection_message(
+							$type,
+							$settings->get_protection_message( $type ),
+							$_POST['membership_id']
+						);
+					} else {
+						$settings->set_protection_message(
+							$type,
+							null,
+							$_POST['membership_id']
+						);
+					}
+
+					$settings->save();
+					$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+				}
+			}
 		}
 
 		wp_die( $msg );
@@ -459,9 +495,7 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function admin_page() {
-		lib2()->array->equip_get( 'action' );
-		$action = $_GET['action'];
-		$hook = 'ms_controller_settings_' . $this->active_tab . '_' . $action;
+		$hook = 'ms_controller_settings-' . $this->active_tab;
 
 		do_action( $hook );
 
@@ -487,16 +521,9 @@ class MS_Controller_Settings extends MS_Controller {
 					$type = $temp_type;
 				}
 
-				$comm = apply_filters(
-					'membership_model_communication',
-					MS_Model_Communication::get_communication( $type, true )
-				);
+				$comm = MS_Model_Communication::get_communication( $type );
 
 				$data['comm'] = $comm;
-				break;
-
-			case self::TAB_MESSAGES:
-				$data['membership'] = MS_Model_Membership::get_base();
 				break;
 		}
 
@@ -569,21 +596,30 @@ class MS_Controller_Settings extends MS_Controller {
 			return $msg;
 		}
 
-		$comm = apply_filters(
-			'membership_model_communication',
-			MS_Model_Communication::get_communication( $type )
-		);
+		$comm = MS_Model_Communication::get_communication( $type );
 
 		if ( ! empty( $fields ) ) {
-			$period = array();
+			lib2()->array->equip(
+				$fields,
+				'enabled',
+				'subject',
+				'email_body',
+				'period_unit',
+				'period_type',
+				'cc_enabled',
+				'cc_email'
+			);
+
 			$comm->enabled = ! empty( $fields['enabled'] );
-			$comm->subject = @$fields['subject'];
-			$comm->message = @$fields['email_body'];
-			$period['period_unit'] = @$fields['period_unit'];
-			$period['period_type'] = @$fields['period_type'];
-			$comm->period = $period;
+			$comm->subject = $fields['subject'];
+			$comm->message = $fields['email_body'];
+			$comm->period = array(
+				'period_unit' => $fields['period_unit'],
+				'period_type' => $fields['period_type'],
+			);
 			$comm->cc_enabled = ! empty( $fields['cc_enabled'] );
-			$comm->cc_email = @$fields['cc_email'];
+			$comm->cc_email = $fields['cc_email'];
+
 			$comm->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
@@ -637,73 +673,5 @@ class MS_Controller_Settings extends MS_Controller {
 
 		lib2()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
-	}
-
-	/**
-	 * Prepare WordPress to add our custom TinyMCE button to the WYSIWYG editor.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @see class-ms-view-settings-edit.php (function render_tab_messages_automated)
-	 * @see ms-view-settings-automated-msg.js
-	 */
-	public function add_mce_buttons() {
-		// Check user permissions.
-		if ( ! current_user_can( 'edit_posts' )
-			&& ! current_user_can( 'edit_pages' )
-		) {
-			return;
-		}
-
-		// Check if WYSIWYG is enabled.
-		if ( 'true' != get_user_option( 'rich_editing' ) ) {
-			return;
-		}
-
-		// Check the current tab.
-		switch ( $this->get_active_tab() ) {
-			case self::TAB_MESSAGES:
-				$this->add_filter( 'mce_external_plugins', 'add_variables_plugin' );
-				$this->add_filter( 'mce_buttons', 'register_variables_button' );
-				break;
-		}
-	}
-
-	/**
-	 * Associate a javascript file with the new TinyMCE button.
-	 *
-	 * **Hooks Filters: **
-	 * * mce_external_plugins
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  array $plugin_array List of default TinyMCE plugin scripts.
-	 * @return array Updated list of TinyMCE plugin scripts.
-	 */
-	public function add_variables_plugin( $plugin_array ) {
-		$plugin_url = MS_Plugin::instance()->url;
-
-		// This is a dummy reference (ms-admin.js is always loaded)!
-		// Actually this line would not be needed, but WordPress will not show
-		// our button when this is missing...
-		$plugin_array['ms_variable'] = $plugin_url . 'app/assets/js/ms-admin.js';
-
-		return $plugin_array;
-	}
-
-	/**
-	 * Register new "Insert variables" button in the editor.
-	 *
-	 * **Hooks Filters: **
-	 * * mce_buttons
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  array $buttons List of default TinyMCE buttons.
-	 * @return array Updated list of TinyMCE buttons.
-	 */
-	public function register_variables_button( $buttons ) {
-		array_push( $buttons, 'ms_variable' );
-		return $buttons;
 	}
 }

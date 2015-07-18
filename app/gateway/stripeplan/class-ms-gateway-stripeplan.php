@@ -146,9 +146,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		) {
 			// Prepare the plan-data for Stripe.
 			$trial_days = null;
-			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
-				&& $membership->trial_period_enabled
-			) {
+			if ( $membership->has_trial() ) {
 				$trial_days = MS_Helper_Period::get_period_in_days(
 					$membership->trial_period_unit,
 					$membership->trial_period_type

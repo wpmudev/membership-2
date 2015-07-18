@@ -27,7 +27,7 @@ class MS_Model_Communication_After_Payment_Due extends MS_Model_Communication {
 	 */
 	public function set_period_name( $field ) {
 		$field['title'] = __( 'Message Delay', MS_TEXT_DOMAIN );
-		$field['desc'] = __( 'Use "0" to send instantly, or another value to delay the message.', MS_TEXT_DOMAIN );
+		$field['desc'] = __( 'Use "0" to send on due date, or another value to delay the message.', MS_TEXT_DOMAIN );
 
 		return $field;
 	}
@@ -40,7 +40,7 @@ class MS_Model_Communication_After_Payment_Due extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent a predefined number of days after the payment is due. You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN
+			'A payment reminder that is sent a predefined number of days after the payment is due (only if the invoice was not paid until then). You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN
 		);
 	}
 

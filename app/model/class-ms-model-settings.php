@@ -263,16 +263,33 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @param string $type The protection message type.
 	 * @param string $msg The protection message.
+	 * @param  MS_Model_Membership $membership Optional. If defined the
+	 *         protection message specific for this membership will be set.
 	 */
-	public function set_protection_message( $type, $msg ) {
+	public function set_protection_message( $type, $msg, $membership = null ) {
 		if ( self::is_valid_protection_msg_type( $type ) ) {
-			$this->protection_messages[ $type ] = stripslashes( wp_kses_post( $msg ) );
+			$key = $type;
+
+			if ( $membership ) {
+				if ( $membership instanceof MS_Model_Membership ) {
+					$key .= '_' . $membership->id;
+				} elseif ( is_scalar( $membership ) ) {
+					$key .= '_' . $membership;
+				}
+			}
+
+			if ( null === $msg ) {
+				unset( $this->protection_messages[ $key ] );
+			} else {
+				$this->protection_messages[ $key ] = stripslashes( wp_kses_post( $msg ) );
+			}
 		}
 
 		do_action(
 			'ms_model_settings_set_protection_message',
 			$type,
 			$msg,
+			$membership,
 			$this
 		);
 	}
@@ -282,14 +299,35 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $type The protection message type.
+	 * @param  string $type The protection message type.
+	 * @param  MS_Model_Membership $membership Optional. If defined the
+	 *         protection message specific for this membership will be returned.
+	 * @param  bool $found This is set to true if the specified membership did
+	 *         override this message.
 	 * @return string $msg The protection message.
 	 */
-	public function get_protection_message( $type ) {
+	public function get_protection_message( $type, $membership = null, &$found = null ) {
 		$msg = '';
+		$found = false;
 		if ( self::is_valid_protection_msg_type( $type ) ) {
-			if ( isset( $this->protection_messages[ $type ] ) ) {
-				$msg = $this->protection_messages[ $type ];
+			$key = $type;
+
+			if ( $membership ) {
+				if ( $membership instanceof MS_Model_Membership ) {
+					$key_override = $key . '_' . $membership->id;
+				} elseif ( is_scalar( $membership ) ) {
+					$key_override = $key . '_' . $membership;
+				} else {
+					$key_override = $key;
+				}
+				if ( isset( $this->protection_messages[ $key_override ] ) ) {
+					$key = $key_override;
+					$found = true;
+				}
+			}
+
+			if ( isset( $this->protection_messages[ $key ] ) ) {
+				$msg = $this->protection_messages[ $key ];
 			} else {
 				$msg = __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN );
 			}

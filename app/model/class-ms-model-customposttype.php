@@ -160,6 +160,15 @@ class MS_Model_CustomPostType extends MS_Model {
 			'post_modified' => $this->post_modified,
 		);
 
+		/**
+		 * Give child classes an easy way to modify the post and meta data right
+		 * before it is saved.
+		 *
+		 * @since 1.0.1.0
+		 */
+		$post = $this->save_post_data( $post );
+		$data = $this->save_meta_data( $data );
+
 		if ( empty( $this->id ) ) {
 			$this->id = wp_insert_post( $post );
 		} else {
@@ -190,6 +199,50 @@ class MS_Model_CustomPostType extends MS_Model {
 			 */
 			do_action( 'ms_saved_' . $class, $this );
 		}
+	}
+
+	/**
+	 * Prepare the post data right before it is saved to the wp_posts table.
+	 *
+	 * @see    self::save()
+	 * @since  1.0.1.0
+	 * @param  array $post Data collection passed to wp_update_post().
+	 * @return array Data collection passed to wp_update_post().
+	 */
+	protected function save_post_data( $post ) {
+		return $post;
+	}
+
+	/**
+	 * Prepare the meta data right before it is saved to the wp_postmeta table.
+	 *
+	 * @see    self::save()
+	 * @since  1.0.1.0
+	 * @param  array $data Key-Value pairs that represent metadata.
+	 * @return array Key-Value pairs that represent metadata.
+	 */
+	protected function save_meta_data( $data ) {
+		return $data;
+	}
+
+	/**
+	 * Populate the model with custom data from the wp_posts table.
+	 *
+	 * @see    MS_Factory::load_from_wp_custom_post_type()
+	 * @since  1.0.1.0
+	 * @param  array $post Data collection passed to wp_update_post().
+	 */
+	public function load_post_data( $post ) {
+	}
+
+	/**
+	 * Populate the model with custom data from the wp_postmeta table.
+	 *
+	 * @see    MS_Factory::load_from_wp_custom_post_type()
+	 * @since  1.0.1.0
+	 * @param  array $data Key-Value pairs that represent metadata.
+	 */
+	public function load_meta_data( $data ) {
 	}
 
 	/**

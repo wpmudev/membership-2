@@ -291,9 +291,7 @@ class MS_View_Member_Editor extends MS_View {
 					MS_Model_Relationship::STATUS_DEACTIVATED => __( 'Deactivated (no access)', MS_TEXT_DOMAIN ),
 				);
 
-				if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
-					|| ! $the_membership->trial_period_enabled
-				) {
+				if ( ! $the_membership->has_trial() ) {
 					unset( $status_options[MS_Model_Relationship::STATUS_TRIAL] );
 					unset( $status_options[MS_Model_Relationship::STATUS_TRIAL_EXPIRED] );
 				}

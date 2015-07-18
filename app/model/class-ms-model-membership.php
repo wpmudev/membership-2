@@ -1264,6 +1264,24 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns true if this membership is eligable for trial period.
+	 *
+	 * @since  1.0.1.0
+	 * @return bool
+	 */
+	public function has_trial() {
+		$result = $this->trial_period_enabled;
+
+		if ( $result ) {
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+				$result = false;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Checks if a specific payment gateway is allowed for the current
 	 * membership.
 	 *
