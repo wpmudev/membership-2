@@ -41,6 +41,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @var   string
 	 */
 	const TAB_DETAILS = 'details';
+	const TAB_TYPE = 'type';
 	const TAB_PAYMENT = 'payment';
 	const TAB_PAGES = 'pages';
 	const TAB_MESSAGES = 'messages';
@@ -375,6 +376,20 @@ class MS_Controller_Membership extends MS_Controller {
 		$redirect = false;
 
 		switch ( $this->get_active_edit_tab() ) {
+			case self::TAB_TYPE:
+				$fields_type = array( 'membership_id', 'type' );
+
+				if ( self::validate_required( $fields_type ) ) {
+					$id = intval( $_POST['membership_id'] );
+					$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+
+					if ( $membership->id == $id && ! $membership->is_system() ) {
+						$membership->type = $_POST['type'];
+						$membership->save();
+					}
+				}
+				break;
+
 			case self::TAB_MESSAGES:
 				break;
 
@@ -807,6 +822,9 @@ class MS_Controller_Membership extends MS_Controller {
 				self::TAB_DETAILS => array(
 					'title' => __( 'Details', MS_TEXT_DOMAIN ),
 				),
+				self::TAB_TYPE => array(
+					'title' => __( 'Membership Type', MS_TEXT_DOMAIN ),
+				),
 				self::TAB_PAYMENT => array(
 					'title' => __( 'Payment options', MS_TEXT_DOMAIN ),
 				),
@@ -824,6 +842,7 @@ class MS_Controller_Membership extends MS_Controller {
 			);
 
 			if ( $membership->is_system() ) {
+				unset( $Tabs[self::TAB_TYPE] );
 				unset( $Tabs[self::TAB_PAYMENT] );
 				unset( $Tabs[self::TAB_EMAILS] );
 			} elseif ( $membership->is_free ) {
@@ -1148,6 +1167,11 @@ class MS_Controller_Membership extends MS_Controller {
 				$data['ms_init'][] = 'view_membership_payment';
 
 				switch ( $this->get_active_edit_tab() ) {
+					case self::TAB_TYPE:
+						add_thickbox();
+						$data['ms_init'][] = 'view_membership_add';
+						break;
+
 					case self::TAB_MESSAGES:
 						$data['ms_init'][] = 'view_settings_protection';
 						break;

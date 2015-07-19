@@ -1213,7 +1213,7 @@ window.ms_init.view_membership_add = function init () {
 			el_public.removeClass( 'disabled ms-locked' );
 			el_paid.removeClass( 'disabled ms-locked' );
 		}
-	}).first().trigger( 'click' );
+	}).filter( ':checked' ).trigger( 'click' );
 
 	// Cancel the wizard.
 	jQuery( '#cancel' ).click( function() {

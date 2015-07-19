@@ -115,4 +115,15 @@ class MS_View_Membership_Edit extends MS_View {
 		return $tab->to_html();
 	}
 
+	/* ====================================================================== *
+	 *                               MEMBERSHIP TYPE
+	 * ====================================================================== */
+
+	public function render_tab_type() {
+		$tab = MS_Factory::create( 'MS_View_Membership_Tab_Type' );
+		$tab->data = $this->data;
+
+		return $tab->to_html();
+	}
+
 }

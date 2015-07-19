@@ -353,26 +353,30 @@ class MS_Controller_Settings extends MS_Controller {
 	 */
 	public function get_active_tab() {
 		if ( null === $this->active_tab ) {
-			$tabs = $this->get_tabs();
-
-			reset( $tabs );
-			$first_key = key( $tabs );
-
-			// Setup navigation tabs.
-			lib2()->array->equip_get( 'tab' );
-			$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
-
-			if ( ! array_key_exists( $active_tab, $tabs ) ) {
-				$new_url = esc_url_raw(
-					add_query_arg( array( 'tab' => $first_key ) )
-				);
-				wp_safe_redirect( $new_url );
-				exit;
+			if ( ! MS_Controller_Plugin::is_page( 'settings' ) ) {
+				$this->active_tab = '';
 			} else {
-				$this->active_tab = apply_filters(
-					'ms_controller_settings_get_active_tab',
-					$active_tab
-				);
+				$tabs = $this->get_tabs();
+
+				reset( $tabs );
+				$first_key = key( $tabs );
+
+				// Setup navigation tabs.
+				lib2()->array->equip_get( 'tab' );
+				$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
+
+				if ( ! array_key_exists( $active_tab, $tabs ) ) {
+					$new_url = esc_url_raw(
+						add_query_arg( array( 'tab' => $first_key ) )
+					);
+					wp_safe_redirect( $new_url );
+					exit;
+				} else {
+					$this->active_tab = apply_filters(
+						'ms_controller_settings_get_active_tab',
+						$active_tab
+					);
+				}
 			}
 		}
 

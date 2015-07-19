@@ -112,6 +112,7 @@
 .ms-wrap .ms-block,
 .ms-form .ms-block {
   display: block;
+  line-height: 1.5em;
 }
 #wpwrap .ms-wrap .ms-tcenter,
 .ms-wrap .ms-tcenter,
