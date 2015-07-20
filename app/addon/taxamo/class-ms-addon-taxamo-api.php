@@ -186,6 +186,11 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 					break;
 			}
 
+			// For users without a VAT number the vat_valid field is missing.
+			if ( empty( $Profile->vat_country->vat_valid ) ) {
+				$Profile->vat_country->vat_valid = false;
+			}
+
 			$Profile = apply_filters(
 				'ms_addon_taxamo_get_tax_profile',
 				$Profile

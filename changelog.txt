@@ -27,6 +27,7 @@ Change Log:
 - Fix wrong rounding-logic in Stripe gateway
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 - Fix a minor security hole in the data import module
+- Fix some PHP notices
 
 1.0.0.8
 ----------------------------------------------------------------------
