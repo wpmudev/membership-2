@@ -20,6 +20,10 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 	public function get_columns() {
 		$columns = array(
+			'priority' => sprintf(
+				'<span title="%s">#</span>',
+				__( 'Membership Order', MS_TEXT_DOMAIN )
+			),
 			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
 			'active' => __( 'Active', MS_TEXT_DOMAIN ),
 			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
@@ -45,28 +49,12 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		return apply_filters(
 			'membership_helper_listtable_membership_sortable_columns',
 			array(
+				'priority' => array( 'menu_order', true ),
 				'name' => array( 'name', true ),
 				'type_description' => array( 'type', true ),
 				'active' => array( 'active', true ),
 			)
 		);
-	}
-
-	public function column_active( $item ) {
-		$toggle = array(
-			'id' => 'ms-toggle-' . $item->id,
-			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'value' => $item->active,
-			'data_ms' => array(
-				'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
-				'field' => 'active',
-				'membership_id' => $item->id,
-			),
-		);
-
-		$html = MS_Helper_Html::html_element( $toggle, true );
-
-		return $html;
 	}
 
 	public function prepare_items() {
@@ -95,6 +83,16 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			'membership_helper_listtable_membership_items',
 			MS_Model_Membership::get_memberships( $args )
 		);
+	}
+
+	public function column_priority( $item ) {
+		$result = '-';
+
+		if ( ! $item->is_system() ) {
+			$result = $item->priority;
+		}
+
+		return $result;
 	}
 
 	public function column_name( $item ) {
@@ -172,6 +170,23 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			MS_Controller_Membership::STEP_OVERVIEW, // 6
 			esc_attr( $item->id )                    // 7
 		);
+	}
+
+	public function column_active( $item ) {
+		$toggle = array(
+			'id' => 'ms-toggle-' . $item->id,
+			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'value' => $item->active,
+			'data_ms' => array(
+				'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
+				'field' => 'active',
+				'membership_id' => $item->id,
+			),
+		);
+
+		$html = MS_Helper_Html::html_element( $toggle, true );
+
+		return $html;
 	}
 
 	public function column_members( $item, $column_name ) {

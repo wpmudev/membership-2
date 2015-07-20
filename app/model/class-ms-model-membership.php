@@ -142,6 +142,15 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $private = false;
 
 	/**
+	 * A priority value that is used to determine the effective override
+	 * settings if a user has multiple memberships.
+	 *
+	 * @since  1.0.1.0
+	 * @var int $priority
+	 */
+	protected $priority = 0;
+
+	/**
 	 * Membership free status.
 	 *
 	 * @since  1.0.0
@@ -551,8 +560,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'ms_model_membership_get_query_args_defaults',
 			array(
 				'post_type' => self::get_post_type(),
-				'order' => 'DESC',
-				'orderby' => 'name',
+				'order' => 'ASC',
+				'orderby' => 'menu_order',
 				'post_status' => 'any',
 				'post_per_page' => -1,
 				'nopaging' => true,
@@ -624,30 +633,33 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
 	static public function get_memberships( $args = null ) {
+		static $Membership_Query = array();
 		$args = self::get_query_args( $args );
-		$args['order'] = 'ASC';
+		$key = json_encode( $args );
 
-		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
-		$items = $query->get_posts();
-		MS_Factory::revert_blog();
+		if ( ! isset( $Membership_Query[$key] ) ) {
+			MS_Factory::select_blog();
+			$query = new WP_Query( $args );
+			$items = $query->get_posts();
+			MS_Factory::revert_blog();
 
-		$memberships = array();
-		foreach ( $items as $item ) {
-			$memberships[$item->ID] = MS_Factory::load(
-				'MS_Model_Membership',
-				$item->ID
-			);
+			$Membership_Query[$key] = array();
+			foreach ( $items as $item ) {
+				$Membership_Query[$key][] = MS_Factory::load(
+					'MS_Model_Membership',
+					$item->ID
+				);
+			}
 		}
 
 		return apply_filters(
 			'ms_model_membership_get_memberships',
-			$memberships,
+			$Membership_Query[$key],
 			$args
 		);
 	}
 
-	/*
+	/**
 	 * Returns a list of the dripped memberships.
 	 *
 	 * @since  1.0.0
@@ -679,6 +691,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 	/**
 	 * Get membership names.
+	 *
+	 * Note that this function returns an array with membership_id as index,
+	 * while the function get_memberships() returns an array with sort-order as
+	 * index.
 	 *
 	 * @since  1.0.0
 	 * @internal
@@ -723,11 +739,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @param bool $include_private If private memberships should be listed
 	 *     This param is only recognized in the admin section so admins can
 	 *     manually assign a private membership to a user.
-	 * @return array {
-	 *     Returns array of $membership_id => $membership
-	 *     @type int $membership_id The membership Id.
-	 *     @type MS_Model_Membership The membership model object.
-	 * }
+	 * @return array Returns sorted array of memberships. Sorted by priority.
 	 */
 	public static function get_signup_membership_list(
 		$args = null,
@@ -752,11 +764,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		// Retrieve memberships user is not part of, using selected args
 		$memberships = self::get_memberships( $args );
+		$order = array();
 
 		foreach ( $memberships as $key => $membership ) {
 			// Remove if not active.
 			if ( ! $membership->active ) {
 				unset( $memberships[ $key ] );
+				continue;
 			}
 
 			if ( $membership->private ) {
@@ -765,6 +779,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					$private[ $key ] = $memberships[ $key ];
 				}
 				unset( $memberships[ $key ] );
+				continue;
 			}
 		}
 
@@ -785,12 +800,31 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$memberships = array_merge( $memberships, $private );
 		}
 
+		// Sort memberships by priority.
+		usort(
+			$memberships,
+			array( __CLASS__, 'sort_by_priority' )
+		);
+
 		return apply_filters(
 			'ms_model_membership_get_signup_membership_list',
 			$memberships,
 			$exclude_ids,
 			$only_names
 		);
+	}
+
+	/**
+	 * Sort function used as second param by `uasort()` to sort a membership
+	 * list by priority.
+	 *
+	 * @since  1.0.1.0
+	 * @param  MS_Model_Membership $a
+	 * @param  MS_Model_Membership $b
+	 * @return int -1: a < b | 0: a = b | +1: a > b
+	 */
+	static public function sort_by_priority( $a, $b ) {
+		return $a->priority - $b->priority;
 	}
 
 	/**
@@ -1090,6 +1124,33 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Save custom values in the wp_posts table.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 */
+	public function save_post_data( $post ) {
+		if ( $this->is_system() ) {
+			$this->priority = 0;
+		} elseif ( $this->priority < 1 ) {
+			$this->priority = 1;
+		}
+
+		$post['menu_order'] = $this->priority;
+		return $post;
+	}
+
+	/**
+	 * Load custom values from the wp_posts table.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 */
+	public function load_post_data( $post ) {
+		$this->priority = $post->menu_order;
+	}
+
+	/**
 	 * Permanently delete the membership.
 	 *
 	 * @since  1.0.0
@@ -1109,13 +1170,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		if ( ! empty( $this->id ) ) {
 			if ( $this->get_members_count() > 0 ) {
-				$ms_relationships = MS_Model_Relationship::get_subscriptions(
+				$subscriptions = MS_Model_Relationship::get_subscriptions(
 					array( 'membership_id' => $this->id ),
 					true
 				);
 
-				foreach ( $ms_relationships as $ms_relationship ) {
-					$ms_relationship->delete();
+				foreach ( $subscriptions as $subscription ) {
+					$subscription->delete();
 				}
 			}
 

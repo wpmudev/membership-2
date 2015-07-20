@@ -265,21 +265,26 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$member = MS_Model_Member::get_current_member();
 		$data['member'] = $member;
-		$data['ms_relationships'] = array();
+		$data['subscriptions'] = array();
+		$exclude = array();
 
 		if ( $member->is_valid() ) {
 			// Get member's memberships, including pending relationships.
-			$data['ms_relationships'] = MS_Model_Relationship::get_subscriptions(
+			$data['subscriptions'] = MS_Model_Relationship::get_subscriptions(
 				array(
 					'user_id' => $data['member']->id,
 					'status' => 'valid',
 				)
 			);
+
+			foreach ( $data['subscriptions'] as $subscription ) {
+				$exclude[] = $subscription->membership_id;
+			}
 		}
 
 		$memberships = MS_Model_Membership::get_signup_membership_list(
 			null,
-			array_keys( $data['ms_relationships'] )
+			$exclude
 		);
 
 		$data['memberships'] = $memberships;
@@ -545,14 +550,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$member = MS_Model_Member::get_current_member();
 
 		if ( count( $member->subscriptions ) ) {
-			foreach ( $member->subscriptions as $subscription ) {
-				$protection_msg = $setting->get_protection_message(
-					MS_Model_Settings::PROTECTION_MSG_CONTENT,
-					$subscription->membership_id,
-					$found
-				);
-				if ( $found ) { break; }
-			}
+			$sub = $member->get_subscription( 'priority' );
+			$protection_msg = $setting->get_protection_message(
+				MS_Model_Settings::PROTECTION_MSG_CONTENT,
+				$sub->membership_id
+			);
 		} else {
 			$protection_msg = $setting->get_protection_message(
 				MS_Model_Settings::PROTECTION_MSG_CONTENT

@@ -215,11 +215,11 @@ class MS_Model_Import extends MS_Model {
 	 */
 	protected function clear_memberships() {
 		// Delete all Relationships.
-		$relationships = MS_Model_Relationship::get_subscriptions(
+		$subscriptions = MS_Model_Relationship::get_subscriptions(
 			array( 'status' => 'all' )
 		);
-		foreach ( $relationships as $relatioship ) {
-			$relatioship->delete();
+		foreach ( $subscriptions as $subscription ) {
+			$subscription->delete();
 		}
 
 		// Delete all Memberships.

@@ -661,16 +661,16 @@ class MS_Controller_Member extends MS_Controller {
 				case 'edit_date':
 					if ( is_array( $membership_id ) ) {
 						foreach ( $membership_id as $id ) {
-							$ms_relationship = $member->subscriptions[ $id ];
+							$subscription = $member->get_subscriptions( $id );
 							if ( ! empty( $_POST[ 'start_date_' . $id ] ) ){
-								$ms_relationship->start_date = $_POST[ 'start_date_' . $id ];
-								$ms_relationship->set_trial_expire_date();
+								$subscription->start_date = $_POST[ 'start_date_' . $id ];
+								$subscription->set_trial_expire_date();
 							}
 
 							if ( ! empty( $_POST[ 'expire_date_' . $id ] ) ){
-								$ms_relationship->expire_date = $_POST[ 'expire_date_' . $id ];
+								$subscription->expire_date = $_POST[ 'expire_date_' . $id ];
 							}
-							$ms_relationship->save();
+							$subscription->save();
 						}
 						$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
 					}

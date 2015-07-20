@@ -9,8 +9,8 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		?>
 		<div class="ms-membership-form-wrapper">
 			<?php
-			if ( count( $this->data['ms_relationships'] ) > 0 ) {
-				foreach ( $this->data['ms_relationships'] as $membership_id => $subscription ) {
+			if ( count( $this->data['subscriptions'] ) > 0 ) {
+				foreach ( $this->data['subscriptions'] as $subscription ) {
 					$msg = $subscription->get_status_description();
 
 					$membership = MS_Factory::load(

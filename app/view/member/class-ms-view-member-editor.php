@@ -180,9 +180,13 @@ class MS_View_Member_Editor extends MS_View {
 
 		$user_id = $this->data['user_id'];
 		$user = MS_Factory::load( 'MS_Model_Member', $user_id );
-		$unused_memberships = MS_Model_Membership::get_memberships(
+		$unused_memberships = array();
+		$temp_memberships = MS_Model_Membership::get_memberships(
 			array( 'include_guest' => 0 )
 		);
+		foreach ( $temp_memberships as $membership ) {
+			$unused_memberships[$membership->id] = $membership;
+		}
 
 		$fields = array();
 		$fields['editor'] = array(

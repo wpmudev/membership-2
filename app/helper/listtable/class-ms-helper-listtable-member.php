@@ -208,8 +208,8 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 				$filter
 			);
 
-			foreach ( $subscriptions as $ms_relationship ) {
-				$members[ $ms_relationship->user_id ] = $ms_relationship->user_id;
+			foreach ( $subscriptions as $subscription ) {
+				$members[ $subscription->user_id ] = $subscription->user_id;
 			}
 
 			// Workaround to invalidate query

@@ -1161,7 +1161,7 @@ class MS_Model_Member extends MS_Model {
 		$subscription = null;
 
 		if ( MS_Model_Membership::is_valid_membership( $membership_id ) ) {
-			if ( ! array_key_exists( $membership_id, $this->subscriptions ) ) {
+			if ( ! $this->get_subscription( $membership_id ) ) {
 				$subscription = MS_Model_Relationship::create_ms_relationship(
 					$membership_id,
 					$this->id,
@@ -1174,10 +1174,15 @@ class MS_Model_Member extends MS_Model {
 				}
 
 				if ( MS_Model_Relationship::STATUS_PENDING !== $subscription->status ) {
-					$this->subscriptions[ $membership_id ] = $subscription;
+					$this->subscriptions[] = $subscription;
+
+					usort(
+						$this->subscriptions,
+						array( __CLASS__, 'sort_by_priority' )
+					);
 				}
 			} else {
-				$subscription = $this->subscriptions[ $membership_id ];
+				$subscription = $this->get_subscriptions( $membership_id );
 			}
 
 			// Reset the status and start/expire dates when added by admin.
@@ -1211,15 +1216,16 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id The membership id to drop.
 	 */
 	public function drop_membership( $membership_id ) {
-		if ( array_key_exists( $membership_id,  $this->subscriptions ) ) {
+		$subscription = $this->get_subscription( $membership_id, $key );
+		if ( $subscription ) {
 			do_action(
 				'ms_model_membership_drop_membership',
-				$this->subscriptions[ $membership_id ],
+				$subscription,
 				$this
 			);
 
-			$this->subscriptions[ $membership_id ]->deactivate_membership();
-			unset( $this->subscriptions[ $membership_id ] );
+			$subscription->deactivate_membership();
+			unset( $this->subscriptions[$key] );
 		}
 
 		do_action(
@@ -1240,24 +1246,25 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $membership_id The membership id to drop.
 	 */
 	public function cancel_membership( $membership_id ) {
-		if ( array_key_exists( $membership_id, $this->subscriptions ) ) {
+		$subscription = $this->get_subscription( $membership_id );
+		if ( $subscription ) {
 			do_action(
 				'ms_model_membership_cancel_membership',
-				$this->subscriptions[ $membership_id ],
+				$subscription,
 				$this
 			);
 
-			$this->subscriptions[ $membership_id ]->cancel_membership();
+			$subscription->cancel_membership();
 		} else {
 			// The membership might be on status "PENDING" which is not included
 			// in $this->subscriptions.
-			$relationship = MS_Model_Relationship::get_subscription(
+			$subscription = MS_Model_Relationship::get_subscription(
 				$this->id,
 				$membership_id
 			);
 
-			if ( $relationship->user_id == $this->id ) {
-				$relationship->cancel_membership();
+			if ( $subscription->user_id == $this->id ) {
+				$subscription->cancel_membership();
 			}
 		}
 
@@ -1278,21 +1285,21 @@ class MS_Model_Member extends MS_Model {
 	 * @param int $mew_membership_id The membership id to move to.
 	 */
 	public function move_membership( $old_membership_id, $mew_membership_id ) {
-		if ( array_key_exists( $old_membership_id,  $this->subscriptions ) ) {
-			$move_from = $this->subscriptions[ $old_membership_id ];
-			$ms_relationship = MS_Model_Relationship::create_ms_relationship(
+		$old_subscription = $this->get_subscription( $old_membership_id );
+		if ( $old_subscription ) {
+			$new_subscription = MS_Model_Relationship::create_ms_relationship(
 				$mew_membership_id,
 				$this->id,
-				$move_from->gateway_id,
+				$old_subscription->gateway_id,
 				$old_membership_id
 			);
 
 			$this->cancel_membership( $old_membership_id );
-			$this->subscriptions[ $mew_membership_id ] = $ms_relationship;
+			$this->subscriptions[] = $new_subscription;
 
 			MS_Model_Event::save_event(
 				MS_Model_Event::TYPE_MS_MOVED,
-				$this->subscriptions[ $mew_membership_id ]
+				$new_subscription
 			);
 		}
 
@@ -1334,17 +1341,18 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		if ( ! empty( $membership_id ) ) {
+			$subscription = $this->get_subscription( $membership_id );
 			// Membership-ID specified: Check if user has this membership
-			if ( array_key_exists( $membership_id, $this->subscriptions )
-				&& in_array( $this->subscriptions[ $membership_id ]->get_status(), $allowed_status )
+			if ( $subscription
+				&& in_array( $subscription->get_status(), $allowed_status )
 			) {
 				$has_membership = true;
 			}
 		} elseif ( ! empty ( $this->subscriptions ) ) {
 			// No membership-ID: Check if user has *any* membership
-			foreach ( $this->subscriptions as $membership_relationship ) {
-				if ( $membership_relationship->is_system() ) { continue; }
-				if ( in_array( $membership_relationship->get_status(), $allowed_status ) ) {
+			foreach ( $this->subscriptions as $subscription ) {
+				if ( $subscription->is_system() ) { continue; }
+				if ( in_array( $subscription->get_status(), $allowed_status ) ) {
 					$has_membership = true;
 					break;
 				}
@@ -1365,16 +1373,34 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @api
 	 *
-	 * @param int $membership_id The specific membership to return.
+	 * @param  int|string $membership_id The specific membership to return.
+	 *         Value 'priority' will return the subcription with lowest priority.
 	 * @return MS_Model_Relationship The subscription object.
 	 */
-	public function get_subscription( $membership_id ) {
+	public function get_subscription( $membership_id, &$key = -1 ) {
 		$subscription = null;
+		$key = -1;
 
-		if ( ! empty( $membership_id ) ) {
+		if ( 'priority' == $membership_id ) {
+			// Find subscription with the lowest priority.
+			$cur_priority = -1;
+			foreach ( $this->subscriptions as $ind => $item ) {
+				$membership = $item->get_membership();
+				if ( ! $membership->active ) { continue; }
+				if ( $cur_priority < 0 || $membership->priority < $cur_priority ) {
+					$subscription = $item;
+					$cur_priority = $membership->priority;
+					$key = $ind;
+				}
+			}
+		} elseif ( ! empty( $membership_id ) ) {
 			// Membership-ID specified: Check if user has this membership
-			if ( array_key_exists( $membership_id, $this->subscriptions ) ) {
-				$subscription = $this->subscriptions[$membership_id];
+			foreach ( $this->subscriptions as $ind => $item ) {
+				if ( $item->membership_id == $membership_id ) {
+					$subscription = $item;
+					$key = $ind;
+					break;
+				}
 			}
 		}
 

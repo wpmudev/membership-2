@@ -452,12 +452,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @internal
 	 *
-	 * @param array $args The query post args
+	 * @param  array $args The query post args
 	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
-	 * @param bool $include_system Whether to include the base/guest memberships.
+	 * @param  bool $include_system Whether to include the base/guest memberships.
 	 * @return MS_Model_Relationship[] The array of membership relationships.
 	 */
-	public static function get_subscriptions( $args = null, $include_system = false ) {
+	public static function get_subscriptions( $args = null, $include_system = false, $ordered = false ) {
 		$args = self::get_query_args( $args );
 
 		MS_Factory::select_blog();
@@ -468,20 +468,20 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( ! empty( $posts ) ) {
 			foreach ( $posts as $post_id ) {
-				$ms_relationship = MS_Factory::load(
+				$subscription = MS_Factory::load(
 					'MS_Model_Relationship',
 					$post_id
 				);
 
 				// Remove System-Memberships
-				if ( $ms_relationship->is_system() && ! $include_system ) {
+				if ( $subscription->is_system() && ! $include_system ) {
 					continue;
 				}
 
 				if ( ! empty( $args['author'] ) ) {
-					$subscriptions[ $ms_relationship->membership_id ] = $ms_relationship;
+					$subscriptions[ $subscription->membership_id ] = $subscription;
 				} else {
-					$subscriptions[ $post_id ] = $ms_relationship;
+					$subscriptions[ $post_id ] = $subscription;
 				}
 			}
 		}
@@ -492,7 +492,26 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$args
 		);
 
+		// Sort the subscription list.
+		usort(
+			$subscriptions,
+			array( __CLASS__, 'sort_by_priority' )
+		);
+
 		return $subscriptions;
+	}
+
+	/**
+	 * Sort function used as second param by `uasort()` to sort a subscription
+	 * list by membership priority.
+	 *
+	 * @since  1.0.1.0
+	 * @param  MS_Model_Relationship $a
+	 * @param  MS_Model_Relationship $b
+	 * @return int -1: a < b | 0: a = b | +1: a > b
+	 */
+	static public function sort_by_priority( $a, $b ) {
+		return $a->get_membership()->priority - $b->get_membership()->priority;
 	}
 
 	/**

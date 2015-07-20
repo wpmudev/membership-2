@@ -1724,15 +1724,6 @@
 }
 
 /* Membership editor popup */
-.ms-edit-membership {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: #FDFDFD;
-  padding: 20px;
-}
 .ms-edit-membership .wpmui-form {
   padding: 0;
 }
@@ -1786,6 +1777,10 @@
 .ms-wrap .ms-membership-list .ms-badge {
   display: inline-block;
   cursor: help;
+}
+.ms-wrap .ms-membership-list .column-priority {
+  width: 45px;
+  text-align: center;
 }
 .ms-wrap .ms-membership-list .column-active {
   width: 80px;

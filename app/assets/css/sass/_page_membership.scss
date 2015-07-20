@@ -395,14 +395,6 @@
 
 /* Membership editor popup */
 .ms-edit-membership {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	background: #FDFDFD;
-	padding: 20px;
-
 	.wpmui-form {
 		padding: 0;
 	}
@@ -468,6 +460,11 @@
 	.ms-badge {
 		display: inline-block;
 		cursor: help;
+	}
+
+	.column-priority {
+		width: 45px;
+		text-align: center;
 	}
 
 	.column-active {

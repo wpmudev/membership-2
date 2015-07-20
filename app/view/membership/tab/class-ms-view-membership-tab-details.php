@@ -45,6 +45,15 @@ class MS_View_Membership_Tab_Details extends MS_View {
 						?>
 					</div>
 				</div>
+				<div class="ms-form wpmui-form wpmui-grid-8">
+					<div class="col-8">
+					<?php
+					if ( ! $membership->is_system() ) {
+						MS_Helper_Html::html_element( $field['priority'] );
+					}
+					?>
+					</div>
+				</div>
 			</form>
 		</div>
 		<?php
@@ -124,6 +133,31 @@ class MS_View_Membership_Tab_Details extends MS_View {
 			'value' => $membership->is_paid,
 			'ajax_data' => array( 1 ),
 		);
+
+		$priority_list = array();
+		$args = array( 'include_guest' => 0 );
+		$count = MS_Model_Membership::get_membership_count( $args );
+		for ( $i = 1; $i <= $count; $i += 1 ) {
+			$priority_list[$i] = $i;
+		}
+		$priority_list[$membership->priority] = $membership->priority;
+
+		$fields['priority'] = array(
+			'id' => 'priority',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'title' => __( 'Membership order', MS_TEXT_DOMAIN ),
+			'desc' => __( 'This defines the display order on the Membership Page.', MS_TEXT_DOMAIN ),
+			'class' => 'ms-priority',
+			'before' => __( 'Order', MS_TEXT_DOMAIN ),
+			'value' => $membership->priority,
+			'field_options' => $priority_list,
+			'ajax_data' => array( 1 ),
+		);
+
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+			$fields['priority']['desc'] .= '<br>' .
+				__( 'It also controlls which Protection Message is used in case a member has multiple memberships (the lowest value wins)', MS_TEXT_DOMAIN );
+		}
 
 		foreach ( $fields as $key => $field ) {
 			if ( ! empty( $field['ajax_data'] ) ) {
