@@ -446,6 +446,7 @@ class MS_View_Shortcode_Account extends MS_View {
 		</div>
 		<?php
 		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
 
 		return apply_filters(
 			'ms_shortcode_account',

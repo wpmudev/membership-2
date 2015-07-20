@@ -297,9 +297,12 @@ class MS_View_Frontend_Payment extends MS_View {
 		<div style="clear:both;"></div>
 		<?php
 
+		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
+
 		$html = apply_filters(
 			'ms_view_frontend_payment_form',
-			ob_get_clean(),
+			$html,
 			$this
 		);
 		return $html;

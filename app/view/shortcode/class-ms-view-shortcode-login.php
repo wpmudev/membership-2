@@ -1,7 +1,12 @@
 <?php
-
 class MS_View_Shortcode_Login extends MS_View {
 
+	/**
+	 * Returns the HTML code.
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$res_html = '';
 		$res_form = '';
@@ -129,6 +134,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		$html = str_replace( array( "\r\n", "\r", "\n" ), '', $html );
 
 		$html = '<div class="ms-membership-form-wrapper">' . $html . '</div>';
+		$html = apply_filters( 'ms_compact_code', $html );
 
 		/*
 		 * Possible filters to provide a customized login form:
@@ -308,7 +314,9 @@ class MS_View_Shortcode_Login extends MS_View {
 			</div>
 		</form>
 		<?php
-		return ob_get_clean();
+		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
+		return $html;
 	}
 
 	/**
@@ -411,7 +419,10 @@ class MS_View_Shortcode_Login extends MS_View {
 			</div>
 		</form>
 		<?php
-		return ob_get_clean();
+		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
+
+		return $html;
 	}
 
 	/**
@@ -551,6 +562,9 @@ class MS_View_Shortcode_Login extends MS_View {
 				value="<?php esc_attr_e( 'Reset Password' ); ?>"/></p>
 		</form>
 		<?php
-		return ob_get_clean();
+		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
+
+		return $html;
 	}
 }

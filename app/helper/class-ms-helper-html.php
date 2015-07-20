@@ -525,6 +525,13 @@ class MS_Helper_Html extends MS_Helper {
 		}
 	}
 
+	/**
+	 * Return bread crumb navigation HTML code.
+	 *
+	 * @since  1.0.0
+	 * @param  array $bread_crumbs
+	 * @return string
+	 */
 	public static function bread_crumbs( $bread_crumbs ) {
 		$crumbs = array();
 		$html = '';
@@ -559,6 +566,14 @@ class MS_Helper_Html extends MS_Helper {
 		printf( $html );
 	}
 
+	/**
+	 * Return HTML code that displays a human readable Period representation.
+	 *
+	 * @since  1.0.0
+	 * @param  array $period
+	 * @param  string $class
+	 * @return string
+	 */
 	public static function period_desc( $period, $class = '' ) {
 		$html = sprintf(
 			'<span class="ms-period-desc %s"> <span class="ms-period-unit">%s</span> <span class="ms-period-type">%s</span></span>',
@@ -568,6 +583,41 @@ class MS_Helper_Html extends MS_Helper {
 		);
 
 		return apply_filters( 'ms_helper_html_period_desc', $html );
+	}
+
+	/**
+	 * Removes lines breaks and tralining/leading whitespace.
+	 *
+	 * Use this function:   $code = apply_filters( 'ms_compact_code', $code );
+	 *
+	 * Intention of this function is to make HTML code compatible with certain
+	 * Themes that would add <br> tags at every newline, even when the newline
+	 * was inside an HTML tag.
+	 *
+	 * e.g.             <div class="myclass"
+	 *                  id="myid">
+	 *
+	 * was replaced by  <div class="myclass" <br>
+	 *                  id="myid">
+	 *
+	 * @since  1.0.1.0
+	 * @param  string $html HTML code.
+	 * @return string Compressed HTML code.
+	 */
+	public static function compact_code( $html ) {
+		$html = str_replace( array( "\r\n", "\r" ), "\n", $html );
+		$lines = explode( "\n", $html );
+		$new_lines = array();
+
+		foreach ( $lines as $i => $line ) {
+			$line = trim( $line );
+			if ( ! empty( $line ) ) {
+				$new_lines[] = $line;
+			}
+		}
+		$html = implode( ' ', $new_lines );
+
+		return $html;
 	}
 
 }

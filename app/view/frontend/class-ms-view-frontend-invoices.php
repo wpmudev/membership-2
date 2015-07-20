@@ -86,23 +86,9 @@ class MS_View_Frontend_Invoices extends MS_View {
 		</div>
 		<?php
 		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
 
 		return $html;
-	}
-
-	private function login_html() {
-		?>
-		<div class="ms-membership-form-wrapper">
-			<legend><?php _e( 'Your Account', MS_TEXT_DOMAIN ) ?></legend>
-			<div class="ms-alert-box ms-alert-error">
-				<?php _e( 'You are not currently logged in. Please login to view your membership information.', MS_TEXT_DOMAIN ); ?>
-			</div>
-			<?php
-			$redirect = esc_url_raw( add_query_arg( array() ) );
-			echo do_shortcode( "[ms-membership-login redirect='$redirect']" );
-			?>
-		</div>
-		<?php
 	}
 
 }

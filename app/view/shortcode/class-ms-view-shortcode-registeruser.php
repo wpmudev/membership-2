@@ -1,7 +1,12 @@
 <?php
-
 class MS_View_Shortcode_RegisterUser extends MS_View {
 
+	/**
+	 * Returns the HTML code.
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$fields = $this->prepare_fields();
 
@@ -56,7 +61,12 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		?>
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors(); ?>
-			<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo esc_url( $reg_url ); ?>" method="post">
+			<form
+				id="ms-shortcode-register-user-form"
+				class="form-membership"
+				action="<?php echo esc_url( $reg_url ); ?>"
+				method="post">
+
 				<?php wp_nonce_field( $this->data['action'] ); ?>
 				<?php if ( ! empty( $title ) ) : ?>
 					<legend>
@@ -123,6 +133,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		do_action( 'after_signup_form' );
 
 		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
 
 		return apply_filters(
 			'ms_shortcode_register',
@@ -131,6 +142,12 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		);
 	}
 
+	/**
+	 * Prepares the fields that are displayed in the form.
+	 *
+	 * @since  1.0.0
+	 * @return array
+	 */
 	public function prepare_fields() {
 		$data = $this->data;
 

@@ -15,8 +15,10 @@ Change Log:
 - Add an edit page to change the Membership Type at any time
 - Add an edit page to override Automated Email Responses for each Membership
 - Add an edit page to override Protection Messages for each Membership
+- Add a warning when using a wrong value in the PayPal Standard settings
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
+- Improve HTML output to be compatible with most themes (remove line breaks inside HTML tags)
 - Fix wrong subscription logic that activated Subscriptions without payment in a few cases
 - Fix possible memory issue that happened when updating the plugin
 - Fix the invitation code Add-on (integration in payment form was not working)

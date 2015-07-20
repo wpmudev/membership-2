@@ -1,7 +1,12 @@
 <?php
-
 class MS_View_Frontend_Profile extends MS_View {
 
+	/**
+	 * Return the HTML code.
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$fields = $this->prepare_fields();
 		$cancel = array(
@@ -12,6 +17,7 @@ class MS_View_Frontend_Profile extends MS_View {
 			'url' => esc_url_raw( remove_query_arg( array( 'action' ) ) ),
 			'class' => 'wpmui-field-button button',
 		);
+
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
@@ -35,9 +41,17 @@ class MS_View_Frontend_Profile extends MS_View {
 		</div>
 		<?php
 		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
+
 		return $html;
 	}
 
+	/**
+	 * Prepare the fields that are displayed in the form.
+	 *
+	 * @since  1.0.0
+	 * @return array
+	 */
 	public function prepare_fields() {
 		$member = $this->data['member'];
 

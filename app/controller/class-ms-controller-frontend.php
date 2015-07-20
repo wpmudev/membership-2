@@ -93,6 +93,12 @@ class MS_Controller_Frontend extends MS_Controller {
 			// Clears the shortcode memory at the beginning of the_content
 			$this->add_filter( 'the_content', 'clear_content_memory', 1 );
 
+			// Compact code for output on the front end.
+			add_filter(
+				'ms_compact_code',
+				array( 'MS_Helper_Html', 'compact_code' )
+			);
+
 			/**
 			 * This allows WordPress to provide the default register form.
 			 *

@@ -1,7 +1,12 @@
 <?php
-
 class MS_View_Shortcode_MembershipSignup extends MS_View {
 
+	/**
+	 * Return the HTML code.
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
@@ -110,6 +115,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		<div style="clear:both;"></div>
 		<?php
 		$html = ob_get_clean();
+		$html = apply_filters( 'ms_compact_code', $html );
 
 		return apply_filters(
 			'ms_shortcode_signup',
@@ -339,7 +345,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 * @param  string $action
 	 * @return array Field definitions
 	 */
-	private function prepare_fields( $membership_id, $action, $step ) {
+	protected function prepare_fields( $membership_id, $action, $step ) {
 		$fields = array(
 			'membership_id' => array(
 				'id' => 'membership_id',
