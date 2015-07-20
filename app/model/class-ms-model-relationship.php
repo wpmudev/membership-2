@@ -504,6 +504,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Sort function used as second param by `uasort()` to sort a subscription
 	 * list by membership priority.
+	 * Memberships with equal priority are sorted alphabeically.
 	 *
 	 * @since  1.0.1.0
 	 * @param  MS_Model_Relationship $a
@@ -511,7 +512,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int -1: a < b | 0: a = b | +1: a > b
 	 */
 	static public function sort_by_priority( $a, $b ) {
-		return $a->get_membership()->priority - $b->get_membership()->priority;
+		$m1 = $a->get_membership();
+		$m2 = $b->get_membership();
+
+		if ( $m1->priority == $m2->priority ) {
+			return $m1->name < $m2->name ? -1 : 1;
+		} else {
+			return $m1->priority - $m2->priority;
+		}
 	}
 
 	/**

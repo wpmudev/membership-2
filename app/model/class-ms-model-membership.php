@@ -817,6 +817,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Sort function used as second param by `uasort()` to sort a membership
 	 * list by priority.
+	 * Memberships with equal priority are sorted alphabeically.
 	 *
 	 * @since  1.0.1.0
 	 * @param  MS_Model_Membership $a
@@ -824,7 +825,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return int -1: a < b | 0: a = b | +1: a > b
 	 */
 	static public function sort_by_priority( $a, $b ) {
-		return $a->priority - $b->priority;
+		if ( $a->priority == $b->priority ) {
+			return $a->name < $b->name ? -1 : 1;
+		} else {
+			return $a->priority - $b->priority;
+		}
 	}
 
 	/**
