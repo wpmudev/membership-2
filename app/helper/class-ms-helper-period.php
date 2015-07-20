@@ -98,9 +98,11 @@ class MS_Helper_Period extends MS_Helper {
 	 *
 	 * @param  Date $end_date The end date to subtract from in the format yyyy-mm-dd
 	 * @param  Date $start_date The start date to subtraction the format yyyy-mm-dd
-	 * @return int The resulting of the date subtraction.
+	 * @param  int $precission Time constant HOURS_IN_SECONDS will return the
+	 *         difference in hours. Default is DAY_IN_SECONDS (return = days).
+	 * @return int The resulting difference of the date subtraction.
 	 */
-	public static function subtract_dates( $end_date, $start_date ) {
+	public static function subtract_dates( $end_date, $start_date, $precission = null ) {
 		if ( empty( $end_date ) ) {
 			// Empty end date is assumed to mean "never"
 			$end_date = '2999-12-31';
@@ -109,18 +111,18 @@ class MS_Helper_Period extends MS_Helper {
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
 
-		$days = intval(
-			( $end_date->format( 'U' ) - $start_date->format( 'U' ) ) /
-			86400 // = 60 * 60 * 24
-		);
-
-		if ( $days < 0 ) {
-			$days = 0;
+		if ( ! is_numeric( $precission ) || $precission <= 0 ) {
+			$precission = DAY_IN_SECONDS;
 		}
+
+		$result = absint(
+			( $end_date->format( 'U' ) - $start_date->format( 'U' ) ) /
+			$precission
+		);
 
 		return apply_filters(
 			'ms_helper_period_subtract_dates',
-			$days
+			$result
 		);
 	}
 
@@ -178,12 +180,12 @@ class MS_Helper_Period extends MS_Helper {
 	 * Return current date.
 	 *
 	 * @since  1.0.0
-	 *
+	 * @param  string $format A valid php date format. Default value is 'Y-m-d'.
 	 * @return string The current date.
 	 */
 	public static function current_date( $format = null, $ignore_filters = false ) {
 		static $Date = array();
-		$key = (string)$format . (int)$ignore_filters;
+		$key = (string) $format . (int) $ignore_filters;
 
 		if ( ! isset( $Date[$key] ) ) {
 			if ( empty( $format ) ) {
@@ -213,14 +215,27 @@ class MS_Helper_Period extends MS_Helper {
 	 * Return current timestamp.
 	 *
 	 * @since  1.0.0
-	 *
-	 * @return string The current date.
+	 * @param  string $format [ mysql | timestamp | date-format like 'Y-m-d' ].
+	 * @return string The current timestamp.
 	 */
-	public static function current_time( $type = 'mysql' ) {
-		return apply_filters(
-			'ms_helper_period_current_time',
-			current_time( $type, true )
-		);
+	public static function current_time( $format = 'mysql', $ignore_filters = false ) {
+		static $Time = array();
+		$key = (string) $format . (int) $ignore_filters;
+
+		if ( ! isset( $Time[$key] ) ) {
+			$time = current_time( $format, 1 );
+
+			if ( ! $ignore_filters ) {
+				$time = apply_filters(
+					'ms_helper_period_current_time',
+					$time
+				);
+			}
+
+			$Time[$key] = $time;
+		}
+
+		return $Time[$key];
 	}
 
 	/**
