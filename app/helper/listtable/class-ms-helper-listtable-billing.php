@@ -157,7 +157,16 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	public function column_user( $item, $column_name ) {
 		$member = MS_Factory::load( 'MS_Model_Member', $item->user_id );
-		$html = $member->username;
+
+		$html = sprintf(
+			'<a href="%s">%s</a>',
+			MS_Controller_Plugin::get_admin_url(
+				'add-member',
+				array( 'user_id' => $item->user_id )
+			),
+			$member->username
+		);
+
 		return $html;
 	}
 

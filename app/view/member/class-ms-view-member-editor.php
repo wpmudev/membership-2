@@ -430,7 +430,7 @@ class MS_View_Member_Editor extends MS_View {
 			'class' => 'button wpmui-field-input',
 			'config' => array(
 				'data-ms-dialog' => 'View_Member_Dialog',
-				'data-ms-data' => array( 'member_id' => $member->id ),
+				'data-ms-data' => array( 'member_id' => $user->id ),
 			),
 		);
 		$fields['subscriptions'][] = array(
