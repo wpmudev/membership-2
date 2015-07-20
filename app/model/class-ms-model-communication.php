@@ -201,6 +201,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		'comm_vars',
 	);
 
+
+	//
+	//
+	//
+	// -------------------------------------------------------------- COLLECTION
+
+
 	/**
 	 * Returns the post-type of the current object.
 	 *
@@ -229,59 +236,18 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Communication constructor.
+	 * Initializes the communications module.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0.1.0
 	 */
-	public function __construct() {
-		$this->comm_vars = array(
-			self::COMM_VAR_MS_NAME => __( 'Subscription: Membership Name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Subscription: Remaining days', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Subscription: Remaining trial days', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Subscription: Expiration date', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_INVOICE => __( 'Subscription: Current Invoice', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User: Display name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_FIRST_NAME => __( 'User: First name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USERNAME => __( 'User: Login name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_BLOG_URL => __( 'Site: URL', MS_TEXT_DOMAIN ),
+	public static function init() {
+		add_action(
+			'ms_model_event',
+			array( __CLASS__, 'process_event' ),
+			10, 2
 		);
 
-		if ( is_multisite() ) {
-			$this->comm_vars[self::COMM_VAR_NET_NAME] = __( 'Network: Name', MS_TEXT_DOMAIN );
-			$this->comm_vars[self::COMM_VAR_NET_URL] = __( 'Network: URL', MS_TEXT_DOMAIN );
-		}
-	}
-
-	/**
-	 * Customize the data that is written to the DB.
-	 *
-	 * @since  1.0.1.0
-	 */
-	public function save_post_data( $post ) {
-		$post['post_content'] = $this->message;
-		$post['post_excerpt'] = $this->message;
-		$post['post_parent'] = intval( $this->membership_id );
-		return $post;
-	}
-
-	/**
-	 * Hook process communication actions.
-	 *
-	 * @since  1.0.1.0
-	 */
-	public function load_post_data( $post ) {
-		$this->message = $post->post_content;
-		$this->membership_id = intval( $post->post_parent );
-
-		if ( $this->enabled ) {
-			$this->add_action(
-				'ms_cron_process_communications',
-				'process_communication'
-			);
-		}
+		self::load_communications();
 	}
 
 	/**
@@ -578,21 +544,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
-	 * Communication default communication.
-	 *
-	 * To be overridden by children classes creating a new object with the default subject, message, enabled, etc.
-	 *
-	 * @since  1.0.0
-	 */
-	public function reset_to_default() {
-		do_action(
-			'ms_model_communication_reset_to_default',
-			$this->type,
-			$this
-		);
-	}
-
-	/**
 	 * Retrieve and return all communication types objects.
 	 *
 	 * @since  1.0.0
@@ -617,6 +568,179 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_communication_communication_set_factory',
 			self::$communications
+		);
+	}
+
+	/**
+	 * Handles an event and process the correct communication if required.
+	 *
+	 * @since  1.0.1.0
+	 * @param  MS_Model_Event $event The event that is processed.
+	 * @param  mixed $data The data passed to the event handler.
+	 */
+	static public function process_event( $event, $data ) {
+		if ( $data instanceof MS_Model_Relationship ) {
+			$subscription = $data;
+			$membership = $data->get_membership();
+		} elseif ( $data instanceof MS_Model_Membership ) {
+			$subscription = false;
+			$membership = $data;
+		} else {
+			$subscription = false;
+			$membership = false;
+		}
+
+		$enqueue = array();
+		$process = array();
+
+		switch ( $event->type ) {
+			case MS_Model_Event::TYPE_MS_CANCELED:
+				$enqueue[] = self::COMM_TYPE_CANCELLED;
+				break;
+
+			case MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE:
+				$enqueue[] = self::COMM_TYPE_CREDIT_CARD_EXPIRE;
+				break;
+
+			case MS_Model_Event::TYPE_PAYMENT_FAILED:
+				$enqueue[] = self::COMM_TYPE_FAILED_PAYMENT;
+				break;
+
+			case MS_Model_Event::TYPE_MS_DEACTIVATED:
+				$enqueue[] = self::COMM_TYPE_FINISHED;
+				break;
+
+			case MS_Model_Event::TYPE_UPDATED_INFO:
+				$enqueue[] = self::COMM_TYPE_INFO_UPDATE;
+				break;
+
+			case MS_Model_Event::TYPE_PAID:
+				$enqueue[] = self::COMM_TYPE_INVOICE;
+				break;
+
+			case MS_Model_Event::TYPE_MS_SIGNED_UP:
+				$process[] = self::COMM_TYPE_REGISTRATION_FREE;
+				$process[] = self::COMM_TYPE_REGISTRATION;
+				break;
+
+			case MS_Model_Event::TYPE_MS_RENEWED:
+				$process[] = self::COMM_TYPE_RENEWED;
+				break;
+
+			case MS_Model_Event::TYPE_MS_MOVED:
+				break;
+			case MS_Model_Event::TYPE_MS_EXPIRED:
+				break;
+			case MS_Model_Event::TYPE_MS_TRIAL_EXPIRED:
+				break;
+			case MS_Model_Event::TYPE_MS_DROPPED:
+				break;
+			case MS_Model_Event::TYPE_MS_REGISTERED:
+				break;
+			case MS_Model_Event::TYPE_MS_BEFORE_FINISHES:
+				break;
+			case MS_Model_Event::TYPE_MS_AFTER_FINISHES:
+				break;
+			case MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES:
+				break;
+			case MS_Model_Event::TYPE_MS_TRIAL_FINISHED:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_PENDING:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_DENIED:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_AFTER_DUE:
+				break;
+		}
+
+		foreach ( $enqueue as $type ) {
+			$comm = self::get_communication( $type, $membership );
+			$comm->enqueue_messages( $event, $data );
+		}
+
+		foreach ( $process as $type ) {
+			$comm = self::get_communication( $type, $membership );
+			$comm->process_communication( $event, $data );
+		}
+	}
+
+
+	//
+	//
+	//
+	// ------------------------------------------------------------- SINGLE ITEM
+
+
+	/**
+	 * Communication constructor.
+	 *
+	 * @since  1.0.0
+	 */
+	public function __construct() {
+		$this->comm_vars = array(
+			self::COMM_VAR_MS_NAME => __( 'Subscription: Membership Name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Subscription: Remaining days', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Subscription: Remaining trial days', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Subscription: Expiration date', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_INVOICE => __( 'Subscription: Current Invoice', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User: Display name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_FIRST_NAME => __( 'User: First name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_USERNAME => __( 'User: Login name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_BLOG_URL => __( 'Site: URL', MS_TEXT_DOMAIN ),
+		);
+
+		if ( is_multisite() ) {
+			$this->comm_vars[self::COMM_VAR_NET_NAME] = __( 'Network: Name', MS_TEXT_DOMAIN );
+			$this->comm_vars[self::COMM_VAR_NET_URL] = __( 'Network: URL', MS_TEXT_DOMAIN );
+		}
+	}
+
+	/**
+	 * Customize the data that is written to the DB.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function save_post_data( $post ) {
+		$post['post_content'] = $this->message;
+		$post['post_excerpt'] = $this->message;
+		$post['post_parent'] = intval( $this->membership_id );
+		return $post;
+	}
+
+	/**
+	 * Hook process communication actions.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function load_post_data( $post ) {
+		$this->message = $post->post_content;
+		$this->membership_id = intval( $post->post_parent );
+
+		if ( $this->enabled ) {
+			$this->add_action(
+				'ms_cron_process_communications',
+				'process_queue'
+			);
+		}
+	}
+
+	/**
+	 * Communication default communication.
+	 *
+	 * To be overridden by children classes creating a new object with the default subject, message, enabled, etc.
+	 *
+	 * @since  1.0.0
+	 */
+	public function reset_to_default() {
+		do_action(
+			'ms_model_communication_reset_to_default',
+			$this->type,
+			$this
 		);
 	}
 
@@ -679,9 +803,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 */
-	public function process_communication() {
+	public function process_queue() {
 		do_action(
-			'ms_model_communication_process_communication_before',
+			'ms_model_communication_process_queue_before',
 			$this
 		);
 
@@ -701,33 +825,37 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 			// Max emails that are sent in one process call.
 			$max_emails_qty = apply_filters(
-				'ms_model_communication_process_communication_max_email_qty',
+				'ms_model_communication_process_queue_max_email_qty',
 				50
 			);
 			$count = 0;
 
 			// Email-processing timeout, in seconds.
 			$time_limit = apply_filters(
-				'ms_model_communication_process_communication_time_limit',
+				'ms_model_communication_process_queue_time_limit',
 				10
 			);
 			$start_time = time();
 
-			foreach ( $this->queue as $subscription_id => $date ) {
+			foreach ( $this->queue as $subscription_id => $timestamp ) {
 				if ( time() > $start_time + $time_limit
 					|| ++$count > $max_emails_qty
 				) {
 					break;
 				}
 
-				$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
+				$subscription = MS_Factory::load(
+					'MS_Model_Relationship',
+					$subscription_id
+				);
+
 				if ( $this->send_message( $subscription ) ) {
 					$this->remove_from_queue( $subscription_id );
 				} else {
 					do_action(
 						'lib2_debug_log',
 						sprintf(
-							__( '[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s', MS_TEXT_DOMAIN ),
+							'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
 							$this->type,
 							$subscription->id,
 							$subscription->user_id
@@ -740,7 +868,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$this->delete_object_lock();
 		}
 
-		do_action( 'ms_model_communication_process_communication_after', $this );
+		do_action( 'ms_model_communication_process_queue_after', $this );
 	}
 
 	/**
@@ -748,19 +876,16 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Action handler hooked up in child classes.
 	 *
-	 * Related Action Hooks:
-	 * - ms_model_event_{$comm_type}
-	 *
 	 * @since  1.0.0
-	 *
-	 * @param MS_Model_Event $event The event object.
-	 * @param MS_Model_Relationship $ms_relationship The membership relationship to send message to.
+	 * @api
+	 * @param  MS_Model_Event $event The event object.
+	 * @param  MS_Model_Relationship $subscription The subscription to send message to.
 	 */
-	public function enqueue_messages( $event, $ms_relationship ) {
+	public function enqueue_messages( $event, $subscription ) {
 		do_action( 'ms_model_communication_enqueue_messages_before', $this );
 
-		if (  $this->enabled ) {
-			$this->add_to_queue( $ms_relationship->id );
+		if ( $this->enabled ) {
+			$this->add_to_queue( $subscription->id );
 			$this->save();
 		}
 
@@ -768,17 +893,35 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Process a communication event.
+	 *
+	 * This is used to execute custom code before or instead of simply enqueuing
+	 * the communication.
+	 *
+	 * Common usage:
+	 * - Instantly send the message via $this->send_message()
+	 * - Only enqueue message for specific $subscriptions (e.g. free ones)
+	 *
+	 * @since  1.0.1.0
+	 * @param  MS_Model_Event $event
+	 * @param  MS_Model_Relationship $subscription
+	 */
+	public function process_communication( $event, $subscription ) {
+		// Can be overwritten in the child class for custom actions.
+	}
+
+	/**
 	 * Add a message in the "send queue".
 	 *
 	 * @since  1.0.0
-	 *
-	 * @param int $subscription_id The membership relationship ID to add to queue.
+	 * @api
+	 * @param  int $subscription_id The membership relationship ID to add to queue.
 	 */
 	public function add_to_queue( $subscription_id ) {
 		do_action( 'ms_model_communication_add_to_queue_before', $this );
 
 		/**
-		 * Documented in process_communication()
+		 * Documented in process_queue()
 		 *
 		 * @since  1.0.0
 		 */
@@ -796,9 +939,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			return false;
 		}
 
-		if ( $this->enabled
-			&& ! array_key_exists( $subscription_id, $this->queue )
-		) {
+		$is_enqueued = array_key_exists( $subscription_id, $this->queue );
+
+		if ( $this->enabled && ! $is_enqueued ) {
 			$can_add = true;
 
 			/*
@@ -818,9 +961,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			*/
 
 			if ( $can_add ) {
-				$this->queue[ $subscription_id ] = MS_Helper_Period::current_date(
-					MS_Helper_Period::DATE_FORMAT_SHORT
-				);
+				$this->queue[ $subscription_id ] = MS_Helper_Period::current_time();
 			}
 		}
 
@@ -834,20 +975,10 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param int $ms_relationship_id The membership relationship ID to remove from queue.
+	 * @param int $subscription_id The membership relationship ID to remove from queue.
 	 */
-	public function remove_from_queue( $ms_relationship_id ) {
+	public function remove_from_queue( $subscription_id ) {
 		do_action( 'ms_model_communication_remove_from_queue_before', $this );
-
-		$this->sent_queue[ $ms_relationship_id ] = MS_Helper_Period::current_date(
-			MS_Helper_Period::DATE_FORMAT_SHORT
-		);
-		unset( $this->queue[ $ms_relationship_id ] );
-
-		$max_history = apply_filters(
-			'ms_model_communication_sent_queue_max_history',
-			300
-		);
 
 		// Delete history
 		if ( count( $this->sent_queue ) > $max_history ) {
@@ -858,6 +989,14 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				true
 			);
 		}
+
+		$this->sent_queue[ $subscription_id ] = MS_Helper_Period::current_time();
+		unset( $this->queue[ $subscription_id ] );
+
+		$max_history = apply_filters(
+			'ms_model_communication_sent_queue_max_history',
+			200
+		);
 
 		do_action( 'ms_model_communication_remove_from_queue_after', $this );
 	}

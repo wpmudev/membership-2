@@ -19,23 +19,6 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	protected $type = self::COMM_TYPE_CREDIT_CARD_EXPIRE;
 
 	/**
-	 * Add action to credit card expire event.
-	 *
-	 * @since  1.0.0
-	 * @var string The communication type.
-	 */
-	public function after_load() {
-		parent::after_load();
-
-		if ( $this->enabled ) {
-			$this->add_action(
-				'ms_model_event_' . MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE,
-				'enqueue_messages', 10, 2
-			);
-		}
-	}
-
-	/**
 	 * Populates the field title/description of the Period before/after field
 	 * in the admin settings.
 	 *

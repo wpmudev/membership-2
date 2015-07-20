@@ -19,23 +19,6 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 	protected $type = self::COMM_TYPE_FAILED_PAYMENT;
 
 	/**
-	 * Add action to payment failed event.
-	 *
-	 * @since  1.0.0
-	 * @var string The communication type.
-	 */
-	public function after_load() {
-		parent::after_load();
-
-		if ( $this->enabled ) {
-			$this->add_action(
-				'ms_model_event_' . MS_Model_Event::TYPE_PAYMENT_FAILED,
-				'enqueue_messages', 10, 2
-			);
-		}
-	}
-
-	/**
 	 * Get communication description.
 	 *
 	 * @since  1.0.0

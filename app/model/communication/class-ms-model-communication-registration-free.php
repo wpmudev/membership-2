@@ -22,23 +22,6 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 	protected $type = self::COMM_TYPE_REGISTRATION_FREE;
 
 	/**
-	 * Add action to signup event.
-	 *
-	 * @since  1.0.0
-	 * @var string The communication type.
-	 */
-	public function after_load() {
-		parent::after_load();
-
-		if ( $this->enabled ) {
-			$this->add_action(
-				'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP,
-				'process_communication_registration', 10, 2
-			);
-		}
-	}
-
-	/**
 	 * Get communication description.
 	 *
 	 * @since  1.0.0
@@ -110,14 +93,10 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 	/**
 	 * Process communication registration.
 	 *
-	 * Related Action Hooks:
-	 * - ms_model_event_signed_up
-	 *
 	 * @since  1.0.0
-	 * @var string The communication type.
 	 */
-	public function process_communication_registration( $event, $ms_relationship ) {
-		$membership = $ms_relationship->get_membership();
+	public function process_communication( $event, $subscription ) {
+		$membership = $subscription->get_membership();
 		$is_free = $membership->is_free || (int) $membership->price * 100 == 0;
 
 		// Only process Free memberships here!
@@ -126,16 +105,16 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 
 		do_action(
 			'ms_model_communication_registration_process_before',
-			$ms_relationship,
+			$subscription,
 			$event,
 			$this
 		);
 
-		$this->send_message( $ms_relationship );
+		$this->send_message( $subscription );
 
 		do_action(
 			'ms_model_communication_registration_process_after',
-			$ms_relationship,
+			$subscription,
 			$event,
 			$this
 		);

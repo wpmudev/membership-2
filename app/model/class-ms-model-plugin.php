@@ -88,7 +88,7 @@ class MS_Model_Plugin extends MS_Model {
 
 		// Init gateways and communications to register actions/filters
 		$this->run_action( 'init', array( 'MS_Model_Gateway', 'get_gateways' ), 2 );
-		$this->run_action( 'init', array( 'MS_Model_Communication', 'load_communications' ), 2 );
+		$this->run_action( 'init', array( 'MS_Model_Communication', 'init' ), 2 );
 	}
 
 	/**

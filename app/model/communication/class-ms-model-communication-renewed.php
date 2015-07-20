@@ -22,23 +22,6 @@ class MS_Model_Communication_Renewed extends MS_Model_Communication {
 	protected $type = self::COMM_TYPE_RENEWED;
 
 	/**
-	 * Add action to renewal event.
-	 *
-	 * @since  1.0.0
-	 * @var string The communication type.
-	 */
-	public function after_load() {
-		parent::after_load();
-
-		if ( $this->enabled ) {
-			$this->add_action(
-				'ms_model_event_'. MS_Model_Event::TYPE_MS_RENEWED,
-				'process_communication_renewed', 10, 2
-			);
-		}
-	}
-
-	/**
 	 * Get communication description.
 	 *
 	 * @since  1.0.0
@@ -110,13 +93,9 @@ class MS_Model_Communication_Renewed extends MS_Model_Communication {
 	/**
 	 * Process communication registration.
 	 *
-	 * Related Action Hooks:
-	 * - ms_model_event_renewed
-	 *
 	 * @since  1.0.0
-	 * @var string The communication type.
 	 */
-	public function process_communication_renewed( $event, $subscription ) {
+	public function process_communication( $event, $subscription ) {
 		do_action(
 			'ms_model_communication_renewed_process_before',
 			$subscription,

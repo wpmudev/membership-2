@@ -19,23 +19,6 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 	protected $type = self::COMM_TYPE_FINISHED;
 
 	/**
-	 * Add action to deactivated event.
-	 *
-	 * @since  1.0.0
-	 * @var string The communication type.
-	 */
-	public function after_load() {
-		parent::after_load();
-
-		if ( $this->enabled ) {
-			$this->add_action(
-				'ms_model_event_' . MS_Model_Event::TYPE_MS_DEACTIVATED,
-				'enqueue_messages', 10, 2
-			);
-		}
-	}
-
-	/**
 	 * Get communication description.
 	 *
 	 * @since  1.0.0
