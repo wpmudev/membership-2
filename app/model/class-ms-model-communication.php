@@ -944,21 +944,42 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		if ( $this->enabled && ! $is_enqueued ) {
 			$can_add = true;
 
-			/*
-			 * Verify if it was recently sent.
-			 * Uncomment this if needing less emails.
+			/**
+			 * Check if email enqueuing is limited to prevent duplicate emails.
+			 *
+			 * Use setting `define( 'MS_DUPLICATE_EMAIL_HOURS', 24 )` to prevent
+			 * duplicate emails from being sent for 24 hours.
+			 *
+			 * @var int Number of hours
 			 */
-			/*
-			if ( array_key_exists( $subscription_id, $this->sent_queue ) ) {
-				$min_days_before_resend = apply_filters( 'ms_model_communication_add_to_queue_min_days_before_resend', 1 );
-				$sent_date = $this->sent_queue[ $subscription_id ];
-				$now = MS_Helper_Period::current_date( MS_Helper_Period::DATE_FORMAT_SHORT );
+			$pause_hours = 0;
+			if ( defined( 'MS_DUPLICATE_EMAIL_HOURS' ) && is_numeric( MS_DUPLICATE_EMAIL_HOURS ) ) {
+				$pause_hours = MS_DUPLICATE_EMAIL_HOURS;
+			}
+			if ( $pause_hours > 0 ) {
+				if ( array_key_exists( $subscription_id, $this->sent_queue ) ) {
+					$pause_hours = apply_filters(
+						'ms_model_communication_hours_before_resend',
+						$pause_hours
+					);
 
-				if ( MS_Helper_Period::subtract_dates( $now, $sent_date ) < $min_days_before_resend ) {
-					$can_add = false;
+					/*
+					 * The sent_queue is saved in DB and only contains messages
+					 * from the current Communications object. So
+					 * $subscription_id defines the email contents and receiver.
+					 */
+					$sent_date = $this->sent_queue[ $subscription_id ];
+					$now = MS_Helper_Period::current_time();
+
+					$current_delay = MS_Helper_Period::subtract_dates(
+						$now,
+						$sent_date,
+						HOURS_IN_SECONDS
+					);
+
+					$can_add = $current_delay >= $pause_hours;
 				}
 			}
-			*/
 
 			if ( $can_add ) {
 				$this->queue[ $subscription_id ] = MS_Helper_Period::current_time();

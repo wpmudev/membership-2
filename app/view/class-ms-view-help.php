@@ -1560,6 +1560,10 @@ class MS_View_Help extends MS_View {
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_STOP_EMAILS", true );</code> to force Procted Content to <em>not</em> send any emails to Members. This can be used when testing to prevent your users from getting email notifications.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
 		<p>
+			<strong><?php _ex( 'Reduce Emails', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'By default your members will get an email for every event that is handled (see the "Settings > Automated Email Responses" section). However, you can reduce the emails sent to your users by adding the following line to your wp-config.php <code>define( "MS_DUPLICATE_EMAIL_HOURS", 24 );</code>. This will prevent the same email being sent more than once every 24 hours.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
 			<strong><?php _ex( 'Lock Subscription Status', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_LOCK_SUBSCRIPTIONS", true );</code> to disable automatic status-checks of subscriptions. Registration is still possible, but after this the Subscription status will not change anymore. Effectively Subscriptions will not expire anymore.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
