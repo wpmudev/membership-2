@@ -480,7 +480,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 							$description = sprintf(
 								self::get_description( $type ),
 								$membership->name,
-								$invoice->id
+								$invoice ? $invoice->id : '-'
 							);
 						} else {
 							$description = sprintf(

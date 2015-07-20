@@ -904,14 +904,17 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$this->status = self::STATUS_BILLED;
 		}
 
-		/*
-		 * Process the payment and update the subscription.
-		 * This function will call the config_period() function to calculate the
-		 * new expire date of the subscription.
-		 *
-		 * All changes above are also saved at the end of changed()
-		 */
-		$this->changed();
+		// Manual gateway works differently. This conditon avoids infinite loop.
+		if ( MS_Gateway_Manual::ID != $gateway_id ) {
+			/*
+			 * Process the payment and update the subscription.
+			 * This function will call the config_period() function to calculate the
+			 * new expire date of the subscription.
+			 *
+			 * All changes above are also saved at the end of changed()
+			 */
+			$this->changed();
+		}
 
 		/**
 		 * Notify Add-ons that an invoice was paid.
@@ -994,6 +997,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					);
 					$member->is_member = true;
 					$member->active = true;
+
+					if ( MS_Gateway_Manual::ID == $this->gateway_id ) {
+						$this->pay_it( $this->gateway_id, '' );
+					}
+
 					break;
 
 				case self::STATUS_DENIED:
