@@ -41,7 +41,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	 */
 	protected $paypal_site;
 
-
 	/**
 	 * Hook to add custom transaction status.
 	 *
@@ -55,6 +54,21 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$this->group = 'PayPal';
 		$this->manual_payment = false; // Recurring charged automatically
 		$this->pro_rate = false;
+
+		if ( $this->active && strpos( $this->merchant_id, '@' ) ) {
+			$settings_url = MS_Controller_Plugin::get_admin_url(
+				'settings',
+				array( 'tab' => MS_Controller_Settings::TAB_PAYMENT )
+			);
+			lib2()->ui->admin_message(
+				sprintf(
+					__( 'Warning: You use your email address for the PayPal Standard gateway instead of your Merchant ID. Please check %syour payment settings%s and enter the Merchant ID instead', MS_TEXT_DOMAIN ),
+					'<a href="' . $settings_url . '">',
+					'</a>'
+				),
+				'err'
+			);
+		}
 	}
 
 	/**

@@ -792,6 +792,7 @@ input[type="image"] {
   left: -220px;
   margin: 0;
   top: 10px;
+  margin-right: 10px;
 }
 .wpmui-wnd .gateways .show-settings,
 #wpwrap .ms-wrap .gateways .show-settings {
