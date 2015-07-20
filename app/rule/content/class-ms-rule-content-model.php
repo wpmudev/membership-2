@@ -153,7 +153,8 @@ class MS_Rule_Content_Model extends MS_Rule {
 		// ********** READ MORE **********
 
 		$this->protection_message = MS_Plugin::instance()->settings->get_protection_message(
-			MS_Model_Settings::PROTECTION_MSG_MORE_TAG
+			MS_Model_Settings::PROTECTION_MSG_MORE_TAG,
+			$this->membership_id
 		);
 
 		if ( ! parent::has_access( self::MORE_LIMIT ) ) {

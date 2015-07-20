@@ -110,7 +110,10 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	public function do_protected_shortcode() {
 		$content = null;
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$msg = $settings->get_protection_message( MS_Model_Settings::PROTECTION_MSG_SHORTCODE );
+		$msg = $settings->get_protection_message(
+			MS_Model_Settings::PROTECTION_MSG_SHORTCODE,
+			$this->membership_id
+		);
 
 		if ( $msg ) {
 			$content = $msg;
@@ -162,7 +165,8 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 			if ( ! is_string( $msg ) || ! strlen( $msg ) ) {
 				$settings = MS_Factory::load( 'MS_Model_Settings' );
 				$msg = $settings->get_protection_message(
-					MS_Model_Settings::PROTECTION_MSG_SHORTCODE
+					MS_Model_Settings::PROTECTION_MSG_SHORTCODE,
+					$this->membership_id
 				);
 			}
 		}

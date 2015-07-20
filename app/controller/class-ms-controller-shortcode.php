@@ -542,9 +542,22 @@ class MS_Controller_Shortcode extends MS_Controller {
 		global $post;
 
 		$setting = MS_Plugin::instance()->settings;
-		$protection_msg = $setting->get_protection_message(
-			MS_Model_Settings::PROTECTION_MSG_CONTENT
-		);
+		$member = MS_Model_Member::get_current_member();
+
+		if ( count( $member->subscriptions ) ) {
+			foreach ( $member->subscriptions as $subscription ) {
+				$protection_msg = $setting->get_protection_message(
+					MS_Model_Settings::PROTECTION_MSG_CONTENT,
+					$subscription->membership_id,
+					$found
+				);
+				if ( $found ) { break; }
+			}
+		} else {
+			$protection_msg = $setting->get_protection_message(
+				MS_Model_Settings::PROTECTION_MSG_CONTENT
+			);
+		}
 
 		$html = '<div class="ms-protected-content">';
 		if ( ! empty( $protection_msg ) ) {
