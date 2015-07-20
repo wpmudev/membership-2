@@ -535,8 +535,10 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			if ( ! self::is_duplicate( $event, $data ) ) {
 				$event->save();
 
-				//  Hook to these actions to handle event notifications. e.g. auto communication.
-				do_action( "ms_model_event_$type", $event, $data );
+				// Hook to these actions to handle event notifications.
+				// e.g. auto communication.
+				do_action( 'ms_model_event', $event, $data );
+				do_action( 'ms_model_event_' . $type, $event, $data );
 			} else {
 				$event = null;
 			}
