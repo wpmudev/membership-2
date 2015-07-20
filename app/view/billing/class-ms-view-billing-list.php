@@ -23,7 +23,7 @@ class MS_View_Billing_List extends MS_View {
 
 		$buttons = array();
 
-		if ( 'logs' == $_GET['show'] ) {
+		if ( isset( $_GET['show'] ) && 'logs' == $_GET['show'] ) {
 			$title = __( 'Transaction Logs', MS_TEXT_DOMAIN );
 
 			$listview = MS_Factory::create( 'MS_Helper_ListTable_TransactionLog' );
