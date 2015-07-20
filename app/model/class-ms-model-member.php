@@ -496,6 +496,10 @@ class MS_Model_Member extends MS_Model {
 			unset( $args['meta_query'] );
 		}
 
+		if ( MS_Plugin::is_network_wide() ) {
+			$defaults['blog_id'] = false;
+		}
+
 		$args = wp_parse_args( $args, $defaults );
 
 		return apply_filters(

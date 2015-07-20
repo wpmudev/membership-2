@@ -12,12 +12,16 @@ Change Log:
 - Add an admin notice when no payment gateway is active but paid memberships exist
 - Add bulk actions to the Members admin page
 - Add a dedicated Edit Membership page with improved layout
+- Add an edit page to change the Membership Type at any time
+- Add an edit page to override Automated Email Responses for each Membership
+- Add an edit page to override Protection Messages for each Membership
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
 - Fix wrong subscription logic that activated Subscriptions without payment in a few cases
 - Fix possible memory issue that happened when updating the plugin
 - Fix the invitation code Add-on (integration in payment form was not working)
 - Fix a caching issue that caused problems with Subscriptions when memcache was enabled
+- Fix problem in network wide mode that would not display all Users in the Members page
 - Fix wrong rounding-logic in Stripe gateway
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 - Fix a minor security hole in the data import module
