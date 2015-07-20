@@ -43,6 +43,7 @@ class MS_Controller_Membership extends MS_Controller {
 	const TAB_DETAILS = 'details';
 	const TAB_TYPE = 'type';
 	const TAB_PAYMENT = 'payment';
+	const TAB_UPGRADE = 'upgrade';
 	const TAB_PAGES = 'pages';
 	const TAB_MESSAGES = 'messages';
 	const TAB_EMAILS = 'emails';
@@ -818,6 +819,9 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( null === $Tabs ) {
 			$membership = $this->load_membership();
 
+			$args = array( 'include_guest' => false );
+			$count = MS_Model_Membership::get_membership_count( $args );
+
 			$Tabs = array(
 				self::TAB_DETAILS => array(
 					'title' => __( 'Details', MS_TEXT_DOMAIN ),
@@ -827,6 +831,9 @@ class MS_Controller_Membership extends MS_Controller {
 				),
 				self::TAB_PAYMENT => array(
 					'title' => __( 'Payment options', MS_TEXT_DOMAIN ),
+				),
+				self::TAB_UPGRADE => array(
+					'title' => __( 'Upgrade paths', MS_TEXT_DOMAIN ),
 				),
 				/* Not yet finished... will be added soon.
 				self::TAB_PAGES => array(
@@ -847,6 +854,10 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $Tabs[self::TAB_EMAILS] );
 			} elseif ( $membership->is_free ) {
 				$Tabs[self::TAB_PAYMENT]['title'] = __( 'Access options', MS_TEXT_DOMAIN );
+			}
+
+			if ( $count < 2 ) {
+				unset( $Tabs[ self::TAB_UPGRADE ] );
 			}
 
 			// Allow Add-ons to add or remove rule tabs

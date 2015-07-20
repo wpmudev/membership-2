@@ -414,6 +414,66 @@
 		font-size: 13px;
 		font-weight: normal;
 	}
+
+	.wpmui-radio-slider-wrapper {
+		&.centered {
+			.wpmui-label-before {
+				width: 44%;
+				text-align: right;
+			}
+			.wpmui-label-after {
+				width: 44%;
+			}
+		}
+
+		&.membership-names {
+			&.off {
+				.wpmui-label-before .ms-membership {
+					background: #CCC !important;
+					box-shadow: none !important;
+					opacity: 0.6;
+				}
+
+				.wpmui-label-after .ms-membership {
+				}
+			}
+
+			&.on {
+				.wpmui-label-before .ms-membership {
+				}
+
+				.wpmui-label-after .ms-membership {
+					background: #CCC !important;
+					box-shadow: none !important;
+					opacity: 0.6;
+				}
+			}
+		}
+
+		&.reverse-wrapper {
+			&.off {
+				.wpmui-label-before .ms-membership {
+				}
+
+				.wpmui-label-after .ms-membership {
+					background: #CCC !important;
+					box-shadow: none !important;
+					opacity: 0.6;
+				}
+			}
+
+			&.on {
+				.wpmui-label-before .ms-membership {
+					background: #CCC !important;
+					box-shadow: none !important;
+					opacity: 0.6;
+				}
+
+				.wpmui-label-after .ms-membership {
+				}
+			}
+		}
+	}
 }
 
 

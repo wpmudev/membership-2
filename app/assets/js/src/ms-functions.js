@@ -114,7 +114,9 @@ window.ms_functions = {
 
 		if ( ! slider.hasClass( 'ms-processing' ) && ! slider.attr( 'readonly' ) ) {
 			slider.toggleClass( 'on' );
+			slider.toggleClass( 'off' );
 			slider.parent().toggleClass( 'on' );
+			slider.parent().toggleClass( 'off' );
 			slider.trigger( 'change' );
 
 			toggle = slider.children( '.wpmui-toggle' );
@@ -147,6 +149,7 @@ window.ms_functions = {
 						var is_err = fn.ajax_error( response, info_field );
 						if ( is_err ) {
 							slider.toggleClass( 'on' );
+							slider.toggleClass( 'off' );
 						}
 
 						info_field.removeClass( 'ms-processing' );

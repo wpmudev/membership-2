@@ -1108,6 +1108,39 @@
   font-size: 13px;
   font-weight: normal;
 }
+.wpmui-wnd .wpmui-radio-slider-wrapper.centered .wpmui-label-before,
+.ms-wrap .wpmui-radio-slider-wrapper.centered .wpmui-label-before {
+  width: 44%;
+  text-align: right;
+}
+.wpmui-wnd .wpmui-radio-slider-wrapper.centered .wpmui-label-after,
+.ms-wrap .wpmui-radio-slider-wrapper.centered .wpmui-label-after {
+  width: 44%;
+}
+.wpmui-wnd .wpmui-radio-slider-wrapper.membership-names.off .wpmui-label-before .ms-membership,
+.ms-wrap .wpmui-radio-slider-wrapper.membership-names.off .wpmui-label-before .ms-membership {
+  background: #CCC !important;
+  box-shadow: none !important;
+  opacity: 0.6;
+}
+.wpmui-wnd .wpmui-radio-slider-wrapper.membership-names.on .wpmui-label-after .ms-membership,
+.ms-wrap .wpmui-radio-slider-wrapper.membership-names.on .wpmui-label-after .ms-membership {
+  background: #CCC !important;
+  box-shadow: none !important;
+  opacity: 0.6;
+}
+.wpmui-wnd .wpmui-radio-slider-wrapper.reverse-wrapper.off .wpmui-label-after .ms-membership,
+.ms-wrap .wpmui-radio-slider-wrapper.reverse-wrapper.off .wpmui-label-after .ms-membership {
+  background: #CCC !important;
+  box-shadow: none !important;
+  opacity: 0.6;
+}
+.wpmui-wnd .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-before .ms-membership,
+.ms-wrap .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-before .ms-membership {
+  background: #CCC !important;
+  box-shadow: none !important;
+  opacity: 0.6;
+}
 
 /***
  * BUTTONS *

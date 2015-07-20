@@ -83,6 +83,17 @@ class MS_View_Membership_Edit extends MS_View {
 	}
 
 	/* ====================================================================== *
+	 *                               UPGRADE PATHS
+	 * ====================================================================== */
+
+	public function render_tab_upgrade() {
+		$tab = MS_Factory::create( 'MS_View_Membership_Tab_Upgrade' );
+		$tab->data = $this->data;
+
+		return $tab->to_html();
+	}
+
+	/* ====================================================================== *
 	 *                               PAGES
 	 * ====================================================================== */
 
