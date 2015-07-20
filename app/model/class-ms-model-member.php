@@ -1178,7 +1178,7 @@ class MS_Model_Member extends MS_Model {
 
 					usort(
 						$this->subscriptions,
-						array( __CLASS__, 'sort_by_priority' )
+						array( 'MS_Model_Relationship', 'sort_by_priority' )
 					);
 				}
 			} else {
