@@ -228,7 +228,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$save_data = array();
 
 		// Check if user came from WPMU Dashboard plugin
-		if ( ! MS_Plugin::is_wizard() ) {
+		if ( ! MS_Plugin::is_wizard() && isset( $_SERVER['HTTP_REFERER'] ) ) {
 			$referer = $_SERVER['HTTP_REFERER'];
 			$params = parse_url( $referer, PHP_URL_QUERY );
 			$fields = array();
@@ -1095,6 +1095,7 @@ class MS_Controller_Membership extends MS_Controller {
 					try {
 						$the_value = $membership->$field;
 						if ( $key ) {
+							$the_value = lib2()->array->get( $the_value );
 							$the_value[$key] = $value;
 						} else {
 							$the_value = $value;
@@ -1181,6 +1182,10 @@ class MS_Controller_Membership extends MS_Controller {
 					case self::TAB_TYPE:
 						add_thickbox();
 						$data['ms_init'][] = 'view_membership_add';
+						break;
+
+					case self::TAB_UPGRADE:
+						$data['ms_init'][] = 'view_membership_upgrade';
 						break;
 
 					case self::TAB_MESSAGES:

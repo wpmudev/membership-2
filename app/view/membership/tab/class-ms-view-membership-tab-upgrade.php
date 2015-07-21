@@ -26,7 +26,10 @@ class MS_View_Membership_Tab_Upgrade extends MS_View {
 		<div>
 			<p>
 			<?php
-			_e( 'Here you can define which members are allowed to subscribe to the current membership. By default anyone can subscribe.', MS_TEXT_DOMAIN );
+			printf(
+				__( 'Here you can define which members are allowed to subscribe to %s. By default anyone can subscribe.', MS_TEXT_DOMAIN ),
+				$membership->get_name_tag()
+			);
 			?>
 			</p>
 			<?php
@@ -48,47 +51,69 @@ class MS_View_Membership_Tab_Upgrade extends MS_View {
 	 * @return array
 	 */
 	protected function get_fields() {
-		$memberships = MS_Model_Membership::get_memberships();
+		$args = array( 'include_guest' => false );
+		$memberships = MS_Model_Membership::get_memberships( $args );
 		$membership = $this->data['membership'];
 		$action = MS_Controller_Membership::AJAX_ACTION_UPDATE_MEMBERSHIP;
 		$nonce = wp_create_nonce( $action );
 
 		$fields = array();
 
+		/*
+		 * The value of "allow_val" is negated, because the radio-slider is
+		 * reversed. So allow_val == false means that upgrading is allowed.
+		 *
+		 * This is just a UI tweak, the function ->update_allowed() returns true
+		 * when upgrading is allowed.
+		 */
+		$list = array();
+		$list['guest'] = array(
+			'allow' => __( 'Users without Membership can subscribe', MS_TEXT_DOMAIN ),
+			'allow_val' => ! $membership->update_allowed( 'guest' ),
+		);
 		foreach ( $memberships as $item ) {
 			if ( $item->id == $membership->id ) { continue; }
-			if ( $item->is_guest() ) { continue; }
 
-			$fields[] = array(
-				'id' => 'allow_' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'before' => sprintf(
-					__( '%s can subscribe', MS_TEXT_DOMAIN ),
+			$list[$item->id] = array(
+				'allow' => sprintf(
+					__( 'Members of %s can subscribe', MS_TEXT_DOMAIN ),
 					$item->get_name_tag()
 				),
-				'after' => sprintf(
-					__( '%s cannot subscribe', MS_TEXT_DOMAIN ),
-					$item->get_name_tag()
-				),
-				'class' => 'reverse',
-				'wrapper_class' => 'ms-block centered',
-				'ajax_data' => array( 1 ),
+				'allow_val' => ! $membership->update_allowed( $item->id ),
 			);
 
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+				$list[$item->id]['replace'] = sprintf(
+					__( 'Cancel %s on subscription', MS_TEXT_DOMAIN ),
+					$item->get_name_tag()
+				);
+				$list[$item->id]['replace_val'] = $membership->update_replace( $item->id );
+			}
+		}
+
+		foreach ( $list as $id => $data ) {
+			$fields[] = array(
+				'id' => 'deny_update[' . $id . ']',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => $data['allow'],
+				'value' => $data['allow_val'],
+				'before' => __( 'Allow', MS_TEXT_DOMAIN ),
+				'after' => __( 'Deny', MS_TEXT_DOMAIN ),
+				'class' => 'reverse',
+				'wrapper_class' => 'ms-block inline-label ms-allow',
+				'ajax_data' => array( 1 ),
+			);
+
+			if ( ! empty( $data['replace'] ) ) {
 				$fields[] = array(
-					'id' => 'update_mode_' . $item->id,
+					'id' => 'replace_update[' . $id . ']',
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'before' => sprintf(
-						__( 'Keep %s on subscription', MS_TEXT_DOMAIN ),
-						$item->get_name_tag()
-					),
-					'after' => sprintf(
-						__( 'Disable %s on subscription', MS_TEXT_DOMAIN ),
-						$item->get_name_tag()
-					),
+					'title' => $data['replace'],
+					'value' => $data['replace_val'],
+					'before' => __( 'Keep', MS_TEXT_DOMAIN ),
+					'after' => __( 'Cancel', MS_TEXT_DOMAIN ),
 					'class' => 'reverse',
-					'wrapper_class' => 'ms-block centered',
+					'wrapper_class' => 'ms-block inline-label ms-update-replace',
 					'ajax_data' => array( 1 ),
 				);
 			}

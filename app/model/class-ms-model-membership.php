@@ -320,6 +320,25 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $rule_values = array();
 
 	/**
+	 * Defines which members can NOT subscribe to the current membership.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var array
+	 */
+	protected $update_denied = array();
+
+	/**
+	 * Defines if the current membership replaces other memberships on
+	 * subscription.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var array
+	 */
+	protected $update_replace = array();
+
+	/**
 	 * Used in simulation mode explaining why a page is allowed or denied.
 	 *
 	 * @since  1.0.0
@@ -1086,6 +1105,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'on_end_membership_id',
 			'is_setup_completed',
 			'custom_data',
+			'update_denied',
+			'update_replace',
 		);
 	}
 
@@ -1345,6 +1366,48 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Returns the access flag, if a specific membership can subscribe to the
+	 * current membership.
+	 *
+	 * A special value for $id is 'guest', which is used for all users without
+	 * a normal membership (is_system() type memberships are not normal)
+	 *
+	 * @since  1.0.1.0
+	 * @param  int|string $id A membership ID or the value 'guest'.
+	 * @return bool True if the specified membership can subscribe.
+	 */
+	public function update_allowed( $id ) {
+		$denied = false;
+
+		if ( isset( $this->update_denied[$id] ) ) {
+			$denied = $this->update_denied[$id];
+		}
+
+		return ! $denied;
+	}
+
+	/**
+	 * Returns the update-replacement flag, which defines if the OLD membership
+	 * should be cancelled during subscription.
+	 *
+	 * This is used in cases where the new membership is an upgraded version of
+	 * the old membership and the user can only have one of both memberships.
+	 *
+	 * @since  1.0.1.0
+	 * @param  int|string $id A membership ID.
+	 * @return bool True if the specified membership should be cancelled.
+	 */
+	public function update_replace( $id ) {
+		$deny = false;
+
+		if ( isset( $this->update_replace[$id] ) ) {
+			$deny = $this->update_replace[$id];
+		}
+
+		return ! ! $deny;
 	}
 
 	/**
@@ -2399,6 +2462,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'is_paid':
 					$this->is_free = ! lib2()->is_true( $value );
 					break;
+
+				case 'deny_update':
+					foreach ( $value as $key => $state ) {
+						$this->update_denied[$key] = lib2()->is_true( $state );
+					}
+					break;
+
+				case 'replace_update':
+					foreach ( $value as $key => $state ) {
+						$this->update_replace[$key] = lib2()->is_true( $state );
+					}
+					break;
+
 			}
 		}
 

@@ -114,6 +114,11 @@
   display: block;
   line-height: 1.5em;
 }
+#wpwrap .ms-wrap .ms-block > *,
+.ms-wrap .ms-block > *,
+.ms-form .ms-block > * {
+  vertical-align: middle;
+}
 #wpwrap .ms-wrap .ms-tcenter,
 .ms-wrap .ms-tcenter,
 .ms-form .ms-tcenter {
@@ -1096,11 +1101,11 @@
  * RADIO SLIDER *
  ***/
 .wpmui-wnd .wpmui-radio-slider.ms-processing,
-.ms-wrap .wpmui-radio-slider.ms-processing {
+body #wpwrap .ms-wrap .wpmui-radio-slider.ms-processing {
   cursor: wait;
 }
 .wpmui-wnd h3 .wpmui-radio-slider-wrapper,
-.ms-wrap h3 .wpmui-radio-slider-wrapper {
+body #wpwrap .ms-wrap h3 .wpmui-radio-slider-wrapper {
   display: inline-block;
   position: relative;
   top: 8px;
@@ -1109,37 +1114,20 @@
   font-weight: normal;
 }
 .wpmui-wnd .wpmui-radio-slider-wrapper.centered .wpmui-label-before,
-.ms-wrap .wpmui-radio-slider-wrapper.centered .wpmui-label-before {
+body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.centered .wpmui-label-before {
   width: 44%;
   text-align: right;
 }
 .wpmui-wnd .wpmui-radio-slider-wrapper.centered .wpmui-label-after,
-.ms-wrap .wpmui-radio-slider-wrapper.centered .wpmui-label-after {
+body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.centered .wpmui-label-after {
   width: 44%;
 }
-.wpmui-wnd .wpmui-radio-slider-wrapper.membership-names.off .wpmui-label-before .ms-membership,
-.ms-wrap .wpmui-radio-slider-wrapper.membership-names.off .wpmui-label-before .ms-membership {
-  background: #CCC !important;
-  box-shadow: none !important;
-  opacity: 0.6;
-}
-.wpmui-wnd .wpmui-radio-slider-wrapper.membership-names.on .wpmui-label-after .ms-membership,
-.ms-wrap .wpmui-radio-slider-wrapper.membership-names.on .wpmui-label-after .ms-membership {
-  background: #CCC !important;
-  box-shadow: none !important;
-  opacity: 0.6;
-}
-.wpmui-wnd .wpmui-radio-slider-wrapper.reverse-wrapper.off .wpmui-label-after .ms-membership,
-.ms-wrap .wpmui-radio-slider-wrapper.reverse-wrapper.off .wpmui-label-after .ms-membership {
-  background: #CCC !important;
-  box-shadow: none !important;
-  opacity: 0.6;
-}
-.wpmui-wnd .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-before .ms-membership,
-.ms-wrap .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-before .ms-membership {
-  background: #CCC !important;
-  box-shadow: none !important;
-  opacity: 0.6;
+.wpmui-wnd .wpmui-radio-slider-wrapper.inline-label .wpmui-field-label,
+body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-label {
+  display: inline-block;
+  width: auto;
+  min-width: 300px;
+  margin-right: 10px;
 }
 
 /***

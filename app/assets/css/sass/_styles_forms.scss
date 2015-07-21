@@ -401,7 +401,7 @@
  ***/
 
 .wpmui-wnd,
-.ms-wrap {
+body #wpwrap .ms-wrap {
 	.wpmui-radio-slider.ms-processing {
 		cursor: wait;
 	}
@@ -426,51 +426,12 @@
 			}
 		}
 
-		&.membership-names {
-			&.off {
-				.wpmui-label-before .ms-membership {
-					background: #CCC !important;
-					box-shadow: none !important;
-					opacity: 0.6;
-				}
-
-				.wpmui-label-after .ms-membership {
-				}
-			}
-
-			&.on {
-				.wpmui-label-before .ms-membership {
-				}
-
-				.wpmui-label-after .ms-membership {
-					background: #CCC !important;
-					box-shadow: none !important;
-					opacity: 0.6;
-				}
-			}
-		}
-
-		&.reverse-wrapper {
-			&.off {
-				.wpmui-label-before .ms-membership {
-				}
-
-				.wpmui-label-after .ms-membership {
-					background: #CCC !important;
-					box-shadow: none !important;
-					opacity: 0.6;
-				}
-			}
-
-			&.on {
-				.wpmui-label-before .ms-membership {
-					background: #CCC !important;
-					box-shadow: none !important;
-					opacity: 0.6;
-				}
-
-				.wpmui-label-after .ms-membership {
-				}
+		&.inline-label {
+			.wpmui-field-label {
+				display: inline-block;
+				width: auto;
+				min-width: 300px;
+				margin-right: 10px;
 			}
 		}
 	}
