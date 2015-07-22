@@ -1413,6 +1413,62 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Checks if the current user is allowed to subscribe to the specified
+	 * membership.
+	 *
+	 * @since  1.0.1.0
+	 * @api
+	 * @param  int $membership_id A membership_id.
+	 * @return bool Whether subscription is allowed or not.
+	 */
+	public function can_subscribe_to( $membership_id ) {
+		static $Denied_Memberships = null;
+
+		if ( null === $Denied_Memberships ) {
+			$Denied_Memberships = array();
+			$active_memberships = array();
+
+			$all_memberships = MS_Model_Membership::get_memberships();
+			$active_status = array(
+				MS_Model_Relationship::STATUS_ACTIVE,
+				MS_Model_Relationship::STATUS_TRIAL,
+				MS_Model_Relationship::STATUS_CANCELED,
+			);
+
+			foreach ( $this->subscriptions as $sub ) {
+				if ( $sub->is_base() ) { continue; }
+				if ( ! in_array( $sub->status, $active_status ) ) { continue; }
+
+				$membership = $sub->get_membership();
+				$active_memberships[$membership->id] = $membership;
+			}
+
+			foreach ( $active_memberships as $membership ) {
+				$base_id = $membership->id;
+				if ( $membership->is_guest() || $membership->is_user() ) {
+					$base_id = 'guest';
+				}
+
+				foreach ( $all_memberships as $ms ) {
+					if ( isset( $active_memberships[$ms->id] ) ) { continue; }
+
+					$allowed = $ms->update_allowed( $base_id );
+					if ( ! $allowed ) {
+						$Denied_Memberships[$ms->id] = $allowed;
+					}
+				}
+			}
+		}
+
+		$allowed = true;
+		if ( isset( $Denied_Memberships[$membership_id] ) ) {
+			$allowed = $Denied_Memberships[$membership_id];
+		}
+
+		return $allowed;
+	}
+
+	/**
 	 * Delete member usermeta.
 	 *
 	 * Delete all plugin related usermeta.

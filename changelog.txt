@@ -15,6 +15,7 @@ Change Log:
 - Add an edit page to change the Membership Type at any time
 - Add an edit page to override Automated Email Responses for each Membership
 - Add an edit page to override Protection Messages for each Membership
+- Add a new settings page to define Upgrade Paths to each Membership
 - Add a warning when using a wrong value in the PayPal Standard settings
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form

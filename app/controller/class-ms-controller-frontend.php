@@ -297,6 +297,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function signup_process() {
 		$step = $this->get_signup_step();
+		$member = MS_Model_Member::get_current_member();
 
 		do_action( 'ms_frontend_register-' . $step );
 
@@ -325,9 +326,30 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			/**
 			 * Show payment table.
+			 *
+			 * The payment table is only available if the current user has
+			 * permission to subscribe to the specified membership.
 			 */
 			case self::STEP_PAYMENT_TABLE:
-				$this->add_filter( 'the_content', 'payment_table', 1 );
+				$add_filter = false;
+				if ( ! empty( $_REQUEST['membership_id'] ) ) {
+					$membership_id = $_REQUEST['membership_id'];
+					if ( $member->can_subscribe_to( $membership_id ) ) {
+						$add_filter = true;
+					}
+				}
+
+				if ( $add_filter ) {
+					$this->add_filter( 'the_content', 'payment_table', 1 );
+				} else {
+					wp_safe_redirect(
+						esc_url_raw(
+							add_query_arg(
+								array( 'step' => self::STEP_CHOOSE_MEMBERSHIP )
+							)
+						)
+					);
+				}
 				break;
 
 			/**

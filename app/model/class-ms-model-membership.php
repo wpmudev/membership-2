@@ -745,6 +745,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get membership eligible to signup.
 	 *
+	 * This function also checks for membership permissions and only display
+	 * memberships that are available for the current member.
+	 *
 	 * @since  1.0.0
 	 * @internal
 	 *
@@ -774,6 +777,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$not_in[] = MS_Model_Membership::get_guest()->id;
 		$not_in[] = MS_Model_Membership::get_user()->id;
 		$args['post__not_in'] = array_unique( $not_in );
+		$member = MS_Model_Member::get_current_member();
 
 		if ( ! is_admin() ) {
 			$include_private = false;
@@ -783,8 +787,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		// Retrieve memberships user is not part of, using selected args
 		$memberships = self::get_memberships( $args );
-		$order = array();
 
+		// Check the upgrade-paths settings
+		foreach ( $memberships as $key => $ms ) {
+			if ( ! $member->can_subscribe_to( $ms->id ) ) {
+				unset( $memberships[$key] );
+			}
+		}
+
+		// Filter memberships based on status.
+		$order = array();
 		foreach ( $memberships as $key => $membership ) {
 			// Remove if not active.
 			if ( ! $membership->active ) {

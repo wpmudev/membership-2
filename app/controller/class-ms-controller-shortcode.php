@@ -277,8 +277,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 				)
 			);
 
-			foreach ( $data['subscriptions'] as $subscription ) {
+			foreach ( $data['subscriptions'] as $key => $subscription ) {
 				$exclude[] = $subscription->membership_id;
+				if ( ! $member->can_subscribe_to( $subscription->membership_id ) ) {
+					unset( $data['subscriptions'][$key] );
+				}
 			}
 		}
 
