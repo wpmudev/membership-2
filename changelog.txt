@@ -27,6 +27,7 @@ Change Log:
 - Fix problem in network wide mode that would not display all Users in the Members page
 - Fix wrong rounding-logic in Stripe gateway
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
+- Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
 - Fix a minor security hole in the data import module
 - Fix some PHP notices
 

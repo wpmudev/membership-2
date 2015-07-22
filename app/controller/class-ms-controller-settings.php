@@ -614,7 +614,7 @@ class MS_Controller_Settings extends MS_Controller {
 				'cc_email'
 			);
 
-			$comm->enabled = ! empty( $fields['enabled'] );
+			$comm->enabled = lib2()->is_true( $fields['enabled'] );
 			$comm->subject = $fields['subject'];
 			$comm->message = $fields['email_body'];
 			$comm->period = array(
