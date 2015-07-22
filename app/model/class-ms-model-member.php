@@ -1422,11 +1422,29 @@ class MS_Model_Member extends MS_Model {
 	 * @return bool Whether subscription is allowed or not.
 	 */
 	public function can_subscribe_to( $membership_id ) {
-		static $Denied_Memberships = null;
+		static $Access_Flags = null;
 
-		if ( null === $Denied_Memberships ) {
-			$Denied_Memberships = array();
+		if ( null === $Access_Flags ) {
+			$Access_Flags = array();
 			$active_memberships = array();
+
+			/**
+			 * Controls how to handle conflicts in upgrade path settings when a
+			 * member has multiple memberships.
+			 *
+			 * Default is true:
+			 *     If one membership forbids the upgrade, then that's it.
+			 *
+			 * Custom set to false:
+			 *     If one membership allows the upgrade, then allow it.
+			 *
+			 * @since 1.0.1.0
+			 * @var   bool
+			 */
+			$prefer_forbidden = apply_filter(
+				'ms_model_member_can_subscribe_to_prefer_forbidden',
+				true
+			);
 
 			$all_memberships = MS_Model_Membership::get_memberships();
 			$active_status = array(
@@ -1452,20 +1470,31 @@ class MS_Model_Member extends MS_Model {
 				foreach ( $all_memberships as $ms ) {
 					if ( isset( $active_memberships[$ms->id] ) ) { continue; }
 
-					$allowed = $ms->update_allowed( $base_id );
-					if ( ! $allowed ) {
-						$Denied_Memberships[$ms->id] = $allowed;
+					$is_allowed = $ms->update_allowed( $base_id );
+
+					if ( ! isset( $Access_Flags[$ms->id] ) ) {
+						$Access_Flags[$ms->id] = $is_allowed;
+					} else {
+						if ( $prefer_forbidden && ! $is_allowed ) {
+							$Access_Flags[$ms->id] = $is_allowed;
+						} elseif ( ! $prefer_forbidden && $is_allowed ) {
+							$Access_Flags[$ms->id] = $is_allowed;
+						}
 					}
 				}
 			}
 		}
 
-		$allowed = true;
-		if ( isset( $Denied_Memberships[$membership_id] ) ) {
-			$allowed = $Denied_Memberships[$membership_id];
+		$result = true;
+		if ( isset( $Access_Flags[$membership_id] ) ) {
+			$result = $Access_Flags[$membership_id];
 		}
 
-		return $allowed;
+		return apply_filters(
+			'ms_model_member_can_subscribe_to',
+			$result,
+			$membership_id
+		);
 	}
 
 	/**
