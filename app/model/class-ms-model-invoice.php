@@ -749,38 +749,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		);
 		$invoice->invoice_number = $invoice_number;
 		$invoice->discount = 0;
-
-		$pro_rate = 0;
-		$gateway = MS_Model_Gateway::factory( $invoice->gateway_id );
-
-		// Calc pro rate discount if moving from another membership.
-		if (  MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_PRO_RATE )
-			&& $subscription->move_from_id
-			&& $gateway->name
-			&& $gateway->pro_rate
-		) {
-			$ids = explode( ',', $subscription->move_from_id );
-			foreach ( $ids as $id ) {
-				$move_from = MS_Model_Relationship::get_subscription(
-					$subscription->user_id,
-					$id
-				);
-
-				if ( $move_from->is_valid() ) {
-					$pro_rate += $move_from->calculate_pro_rate();
-				}
-			}
-		}
-
-		if ( $pro_rate ) {
-			$invoice->pro_rate = $pro_rate;
-			$notes[] = sprintf(
-				__( 'Pro rate discount: %s %s. ', MS_TEXT_DOMAIN ),
-				$invoice->currency,
-				$pro_rate
-			);
-		}
-
 		$invoice->notes = $notes;
 		$invoice->amount = $membership->price; // Without taxes!
 
@@ -816,58 +784,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		);
 	}
 
-	/**
-	 * Calculate pro rate value.
-	 *
-	 * Pro rate using remaining membership days.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @return float The pro rate value.
-	 */
-	public function calculate_pro_rate() {
-		$value = 0;
-		$membership = $this->get_membership();
-
-		if ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT !== $membership->payment_type ) {
-			$invoice = self::get_previous_invoice( $this );
-
-			if ( $invoice->is_paid() ) {
-				switch ( $this->status ) {
-					case MS_Model_Relationship::STATUS_TRIAL:
-						// No Pro-Rate given for trial memberships.
-						break;
-
-					case MS_Model_Relationship::STATUS_ACTIVE:
-					case MS_Model_Relationship::STATUS_WAITING:
-					case MS_Model_Relationship::STATUS_CANCELED:
-						$remaining_days = $this->get_remaining_period();
-						$total_days = MS_Helper_Period::subtract_dates(
-							$this->expire_date,
-							$this->start_date
-						);
-						$value = $remaining_days / $total_days;
-						$value *= $invoice->total;
-						break;
-
-					default:
-						// No Pro-Rate for other subscription status.
-						break;
-				}
-			}
-		}
-
-		return apply_filters(
-			'ms_model_invoice_calculate_pro_rate_value',
-			$value,
-			$this
-		);
-	}
 
 	//
 	//
 	//
 	// ------------------------------------------------------------- SINGLE ITEM
+
 
 	/**
 	 * Save model.

@@ -176,10 +176,16 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php if ( $invoice->discount ) : ?>
 						<tr>
 							<td class="ms-title-column">
-								<?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Coupon Discount', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class="ms-price-column">
-								<?php printf( '%s -%s', $invoice->currency, MS_Helper_Billing::format_price( $invoice->discount ) ); ?>
+								<?php
+								printf(
+									'%s -%s',
+									$invoice->currency,
+									MS_Helper_Billing::format_price( $invoice->discount )
+								);
+								?>
 							</td>
 						</tr>
 					<?php endif; ?>
@@ -187,10 +193,16 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php if ( $invoice->pro_rate ) : ?>
 						<tr>
 							<td class="ms-title-column">
-								<?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Pro-Rate Discount', MS_TEXT_DOMAIN ); ?>
 							</td>
 							<td class="ms-price-column">
-								<?php printf( '%s -%s', $invoice->currency, MS_Helper_Billing::format_price( $invoice->pro_rate ) ); ?>
+								<?php
+								printf(
+									'%s -%s',
+									$invoice->currency,
+									MS_Helper_Billing::format_price( $invoice->pro_rate )
+								);
+								?>
 							</td>
 						</tr>
 					<?php endif; ?>

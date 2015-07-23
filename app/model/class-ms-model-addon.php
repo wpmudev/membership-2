@@ -31,7 +31,6 @@ class MS_Model_Addon extends MS_Model_Option {
 	const ADDON_CPT_POST_BY_POST = 'cpt_post_by_post';
 	const ADDON_TRIAL = 'trial';
 	const ADDON_MEDIA = 'media';
-	const ADDON_PRO_RATE = 'pro_rate';
 	const ADDON_SHORTCODE = 'shortcode';
 	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
 	const ADDON_SPECIAL_PAGES = 'special_pages';

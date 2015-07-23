@@ -105,13 +105,19 @@ class MS_View_Membership_Tab_Upgrade extends MS_View {
 			);
 
 			if ( ! empty( $data['replace'] ) ) {
+				if ( MS_Addon_Prorate::is_active() ) {
+					$after_label = __( 'Cancel and Pro-Rate', MS_TEXT_DOMAIN );
+				} else {
+					$after_label = __( 'Cancel', MS_TEXT_DOMAIN );
+				}
+
 				$fields[] = array(
 					'id' => 'replace_update[' . $id . ']',
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 					'title' => $data['replace'],
 					'value' => $data['replace_val'],
 					'before' => __( 'Keep', MS_TEXT_DOMAIN ),
-					'after' => __( 'Cancel', MS_TEXT_DOMAIN ),
+					'after' => $after_label,
 					'class' => 'reverse',
 					'wrapper_class' => 'ms-block inline-label ms-update-replace',
 					'ajax_data' => array( 1 ),
