@@ -9,13 +9,16 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 */
 	public function to_html() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$member = $this->data['member'];
+		$subscriptions = $this->data['subscriptions'];
+		$memberships = $this->data['memberships'];
 
 		ob_start();
 		?>
 		<div class="ms-membership-form-wrapper">
 			<?php
-			if ( count( $this->data['subscriptions'] ) > 0 ) {
-				foreach ( $this->data['subscriptions'] as $subscription ) {
+			if ( count( $subscriptions ) > 0 ) {
+				foreach ( $subscriptions as $subscription ) {
 					$msg = $subscription->get_status_description();
 
 					$membership = MS_Factory::load(
@@ -55,7 +58,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 
 						case MS_Model_Relationship::STATUS_PENDING:
 							if ( $membership->is_free() ) {
-								$this->data['memberships'][] = $membership;
+								$memberships[] = $membership;
 							} else {
 								$this->membership_box_html(
 									$membership,
@@ -78,35 +81,41 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 				}
 			}
 
-			if ( $this->data['member']->has_membership() && ! empty( $this->data['memberships'] ) ) {
+			if ( $member->has_membership() && ! empty( $memberships ) ) {
 				?>
 				<legend class="ms-move-from">
-					<?php
-					if ( empty( $this->data['move_from_id'] ) ) {
-						_e( 'Add Membership Level', MS_TEXT_DOMAIN );
-					} else {
-						_e( 'Change Membership Level', MS_TEXT_DOMAIN );
-					}
-					?>
+					<?php _e( 'Available Memberships', MS_TEXT_DOMAIN ); ?>
 				</legend>
 				<?php
 			}
 			?>
 			<div class="ms-form-price-boxes">
 				<?php
-				do_action( 'ms_view_shortcode_membershipsignup_form_before_memberships' );
+				do_action(
+					'ms_view_shortcode_membershipsignup_form_before_memberships',
+					$this->data
+				);
 
-				if ( ! empty( $this->data['move_from_id'] ) ) {
-					$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
-				} else {
-					$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
+				foreach ( $memberships as $membership ) {
+					if ( ! empty( $membership->_move_from ) ) {
+						$action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
+					} else {
+						$action = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
+					}
+
+					$this->membership_box_html(
+						$membership,
+						$action,
+						null,
+						null
+					);
 				}
 
-				foreach ( $this->data['memberships'] as $membership ) {
-					$this->membership_box_html( $membership, $action, null, null );
-				}
+				do_action(
+					'ms_view_shortcode_membershipsignup_form_after_memberships',
+					$this->data
+				);
 
-				do_action( 'ms_view_shortcode_membershipsignup_form_after_memberships' );
 				do_action( 'ms_show_prices' );
 				?>
 			</div>
@@ -137,7 +146,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		$html = '';
 
 		$url = $this->get_action_url(
-			$membership->id,
+			$membership,
 			$this->data['action'],
 			$this->data['step']
 		);
@@ -161,11 +170,22 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 * @param  string $action
 	 * @return string The URL.
 	 */
-	public function get_action_url( $membership_id, $action, $step ) {
+	protected function get_action_url( $membership, $action, $step ) {
+		if ( $this->data['member'] ) {
+			$member = $this->data['member'];
+		} else {
+			$member = MS_Model_Member::get_current_member();
+		}
+
+		$membership->_move_from = $member->cancel_ids_on_subscription(
+			$membership->id
+		);
+
 		$fields = $this->prepare_fields(
-			$membership_id,
+			$membership->id,
 			$action,
-			$step
+			$step,
+			$membership->_move_from
 		);
 
 		if ( is_user_logged_in() ) {
@@ -180,7 +200,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			$url = esc_url_raw(
 				add_query_arg(
 					'membership_id',
-					$membership_id,
+					$membership->id,
 					$url
 				)
 			);
@@ -208,7 +228,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			'ms_view_shortcode_membershipsignup_action_url',
 			$url,
 			$action,
-			$membership_id,
+			$membership,
 			$this
 		);
 	}
@@ -228,7 +248,8 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		$fields = $this->prepare_fields(
 			$membership->id,
 			$action,
-			$this->data['step']
+			$this->data['step'],
+			$membership->_move_from
 		);
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
@@ -343,9 +364,11 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 *
 	 * @param  int $membership_id
 	 * @param  string $action
+	 * @param  string $step
+	 * @param  string $move_from_id
 	 * @return array Field definitions
 	 */
-	protected function prepare_fields( $membership_id, $action, $step ) {
+	protected function prepare_fields( $membership_id, $action, $step, $move_from_id = null ) {
 		$fields = array(
 			'membership_id' => array(
 				'id' => 'membership_id',
@@ -364,11 +387,15 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			),
 		);
 
-		if ( ! empty( $this->data['move_from_id'] ) ) {
+		if ( $move_from_id ) {
+			if ( is_array( $move_from_id ) ) {
+				$move_from_id = implode( ',', $move_from_id );
+			}
+
 			$fields['move_from_id'] = array(
 				'id' => 'move_from_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $this->data['move_from_id'],
+				'value' => $move_from_id,
 			);
 		}
 

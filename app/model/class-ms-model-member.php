@@ -1153,7 +1153,7 @@ class MS_Model_Member extends MS_Model {
 	 *
 	 * @param int $membership_id The membership id to add to.
 	 * @param string $gateway_id Optional. The gateway used to add the membership.
-	 * @param int $move_from_id Optional. The membership id to move from if any.
+	 * @param int|string $move_from_id Optional. The membership id(s) to cancel.
 	 *
 	 * @return object|null $subscription
 	 */
@@ -1413,6 +1413,32 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Returns a list of memberships for all active subscriptions of the member.
+	 *
+	 * @since  1.0.1.0
+	 * @return array
+	 */
+	protected function get_active_memberships() {
+		$active_memberships = array();
+
+		$active_status = array(
+			MS_Model_Relationship::STATUS_ACTIVE,
+			MS_Model_Relationship::STATUS_TRIAL,
+			MS_Model_Relationship::STATUS_CANCELED,
+		);
+
+		foreach ( $this->subscriptions as $sub ) {
+			if ( $sub->is_base() ) { continue; }
+			if ( ! in_array( $sub->status, $active_status ) ) { continue; }
+
+			$membership = $sub->get_membership();
+			$active_memberships[$membership->id] = $membership;
+		}
+
+		return $active_memberships;
+	}
+
+	/**
 	 * Checks if the current user is allowed to subscribe to the specified
 	 * membership.
 	 *
@@ -1426,7 +1452,8 @@ class MS_Model_Member extends MS_Model {
 
 		if ( null === $Access_Flags ) {
 			$Access_Flags = array();
-			$active_memberships = array();
+			$active_memberships = $this->get_active_memberships();
+			$all_memberships = MS_Model_Membership::get_memberships();
 
 			/**
 			 * Controls how to handle conflicts in upgrade path settings when a
@@ -1441,25 +1468,10 @@ class MS_Model_Member extends MS_Model {
 			 * @since 1.0.1.0
 			 * @var   bool
 			 */
-			$prefer_forbidden = apply_filter(
+			$prefer_forbidden = apply_filters(
 				'ms_model_member_can_subscribe_to_prefer_forbidden',
 				true
 			);
-
-			$all_memberships = MS_Model_Membership::get_memberships();
-			$active_status = array(
-				MS_Model_Relationship::STATUS_ACTIVE,
-				MS_Model_Relationship::STATUS_TRIAL,
-				MS_Model_Relationship::STATUS_CANCELED,
-			);
-
-			foreach ( $this->subscriptions as $sub ) {
-				if ( $sub->is_base() ) { continue; }
-				if ( ! in_array( $sub->status, $active_status ) ) { continue; }
-
-				$membership = $sub->get_membership();
-				$active_memberships[$membership->id] = $membership;
-			}
 
 			foreach ( $active_memberships as $membership ) {
 				$base_id = $membership->id;
@@ -1495,6 +1507,29 @@ class MS_Model_Member extends MS_Model {
 			$result,
 			$membership_id
 		);
+	}
+
+	/**
+	 * Returns an array of existing subscriptions that should be cancelled when
+	 * the user signs up to the specified membership.
+	 *
+	 * @since  1.0.1.0
+	 * @param  int $membership_id A membership ID.
+	 * @return array Might be an empty array or a list of membership IDs.
+	 */
+	public function cancel_ids_on_subscription( $membership_id ) {
+		$result = array();
+
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$active_memberships = $this->get_active_memberships();
+
+		foreach ( $active_memberships as $ms ) {
+			if ( $membership->update_replaces( $ms->id ) ) {
+				$result[] = $ms->id;
+			}
+		}
+
+		return $result;
 	}
 
 	/**

@@ -387,6 +387,17 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	protected $subscription_id = 0;
 
+	/**
+	 * This property is used to build the signup list (shortcode).
+	 *
+	 * It's a temporary value that is not saved to database.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var array
+	 */
+	public $_move_from = array();
+
 
 	//
 	//
@@ -1424,7 +1435,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @param  int|string $id A membership ID.
 	 * @return bool True if the specified membership should be cancelled.
 	 */
-	public function update_replace( $id ) {
+	public function update_replaces( $id ) {
 		$deny = false;
 
 		if ( isset( $this->update_replace[$id] ) ) {

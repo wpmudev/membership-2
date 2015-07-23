@@ -25,21 +25,44 @@ class MS_View_Frontend_Payment extends MS_View {
 		}
 
 		$cancel_warning = false;
-		if ( ! MS_Model_Member::is_admin_user()
-			&& ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
-		) {
-			// Member can only sign up to one membership.
-			$valid_status = array(
-				MS_Model_Relationship::STATUS_TRIAL,
-				MS_Model_Relationship::STATUS_ACTIVE,
-				MS_Model_Relationship::STATUS_PENDING,
-			);
+		if ( ! MS_Model_Member::is_admin_user() ) {
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+				// Member can only sign up to one membership.
+				$valid_status = array(
+					MS_Model_Relationship::STATUS_TRIAL,
+					MS_Model_Relationship::STATUS_ACTIVE,
+					MS_Model_Relationship::STATUS_PENDING,
+				);
 
-			foreach ( $this->data['member']->subscriptions as $tmp_subscription ) {
-				if ( $tmp_subscription->is_system() ) { continue; }
-				if ( in_array( $tmp_subscription->status, $valid_status ) ) {
-					$cancel_warning = true;
-					break;
+				foreach ( $this->data['member']->subscriptions as $tmp_subscription ) {
+					if ( $tmp_subscription->is_system() ) { continue; }
+					if ( in_array( $tmp_subscription->status, $valid_status ) ) {
+						$cancel_warning = __(
+							'Your other Memberships will be cancelled when you complete this payment.',
+							MS_TEXT_DOMAIN
+						);
+						break;
+					}
+				}
+			} elseif ( $subscription->move_from_id ) {
+				$move_from_ids = explode( ',', $subscription->move_from_id );
+				$names = array();
+				foreach ( $move_from_ids as $id ) {
+					$ms = MS_Factory::load( 'MS_Model_Membership', $id );
+					if ( $ms->is_system() ) { continue; }
+					$names[] = $ms->name;
+				}
+
+				if ( 1 == count( $names ) ) {
+					$cancel_warning = sprintf(
+						__( 'When you complete this payment your Membership "%s" will be cancelled.', MS_TEXT_DOMAIN ),
+						$names[0]
+					);
+				} elseif ( 1 < count( $names ) ) {
+					$cancel_warning = sprintf(
+						__( 'When you complete this payment the following Memberships will be cancelled: %s.', MS_TEXT_DOMAIN ),
+						implode( ', ', $names )
+					);
 				}
 			}
 		}
@@ -92,9 +115,15 @@ class MS_View_Frontend_Payment extends MS_View {
 		 */
 		do_action( 'ms_view_frontend_payment_form_start', $invoice, $this );
 
+		$classes = array(
+			'ms-membership-form-wrapper',
+			'ms-subscription-' . $subscription->id,
+			'ms-invoice-' . $invoice->id,
+		);
+
 		ob_start();
 		?>
-		<div class="ms-membership-form-wrapper">
+		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 			<legend><?php _e( 'Join Membership', MS_TEXT_DOMAIN ) ?></legend>
 			<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
 				<?php echo $msg; ?>
@@ -116,7 +145,7 @@ class MS_View_Frontend_Payment extends MS_View {
 						</td>
 						<td class="ms-desc-column">
 							<span class="ms-membership-description"><?php
-								echo '' . $membership->description;
+								echo $membership->description;
 							?></span>
 						</td>
 					</tr>
@@ -258,10 +287,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<tr>
 						<td class="ms-desc-warning" colspan="2">
 							<span class="ms-cancel-other-memberships"><?php
-								_e(
-									'Your other Memberships will be cancelled when you complete this payment.',
-									MS_TEXT_DOMAIN
-								);
+								echo $cancel_warning;
 							?></span>
 						</td>
 					</tr>

@@ -163,11 +163,28 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * The moving/change/downgrade/upgrade from membership ID.
 	 *
+	 * This can be a single ID or a comma separated list of IDs.
+	 *
+	 * The value is set by function self::create_ms_relationship()
+	 * It is used in MS_Model_Invoice:
+	 * 1. When creating the invoice the move_from_id define the Pro Rating.
+	 * 2. When an invoice is paid the move_from_id memberships are cancelled.
+	 *
 	 * @since  1.0.0
 	 * @internal
 	 * @var string $move_from_id
 	 */
-	protected $move_from_id;
+	protected $move_from_id = '';
+
+	/**
+	 * After the memberships specified by $move_from_id were cancelled their
+	 * IDs are stored in this property for logging purposes.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var string $cancelled_memberships
+	 */
+	protected $cancelled_memberships = '';
 
 	/**
 	 * Where the data came from. Can only be changed by data import tool
@@ -323,6 +340,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @internal
 	 *
+	 * @param  int $membership_id The Membership to subscribe to.
+	 * @param  int $user_id The user who subscribes to the membership.
+	 * @param  string $gateway_id The gateway which is used for payment.
+	 * @param  int|string $move_from_id A list of membership IDs to cancel on
+	 *         payment. This property is handled by the MS_Model_Invoice class.
 	 * @return MS_Model_Relationship The created relationship.
 	 */
 	public static function create_ms_relationship(

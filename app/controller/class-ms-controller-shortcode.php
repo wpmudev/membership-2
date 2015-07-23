@@ -291,6 +291,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		$data['memberships'] = $memberships;
+		$move_from_ids = array();
 
 		// When Multiple memberships is not enabled, a member should move to another membership.
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
@@ -305,9 +306,19 @@ class MS_Controller_Shortcode extends MS_Controller {
 				if ( $subscription->is_system() ) { continue; }
 
 				if ( in_array( $subscription->status, $valid_status ) ) {
-					$data['move_from_id'] = $subscription->membership_id;
-					break;
+					$move_from_ids[] = $subscription->membership_id;
 				}
+			}
+			foreach ( $data['memberships'] as $key => $membership ) {
+				$data['memberships'][$key]->_move_from = $move_from_ids;
+			}
+		} else {
+			foreach ( $data['memberships'] as $key => $membership ) {
+				$move_from_ids = $member->cancel_ids_on_subscription(
+					$membership->id
+				);
+
+				$data['memberships'][$key]->_move_from = $move_from_ids;
 			}
 		}
 

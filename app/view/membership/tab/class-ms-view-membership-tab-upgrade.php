@@ -87,7 +87,7 @@ class MS_View_Membership_Tab_Upgrade extends MS_View {
 					__( 'Cancel %s on subscription', MS_TEXT_DOMAIN ),
 					$item->get_name_tag()
 				);
-				$list[$item->id]['replace_val'] = $membership->update_replace( $item->id );
+				$list[$item->id]['replace_val'] = $membership->update_replaces( $item->id );
 			}
 		}
 
