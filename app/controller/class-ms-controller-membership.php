@@ -852,6 +852,7 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $Tabs[self::TAB_TYPE] );
 				unset( $Tabs[self::TAB_PAYMENT] );
 				unset( $Tabs[self::TAB_EMAILS] );
+				unset( $Tabs[ self::TAB_UPGRADE ] );
 			} elseif ( $membership->is_free ) {
 				$Tabs[self::TAB_PAYMENT]['title'] = __( 'Access options', MS_TEXT_DOMAIN );
 			}

@@ -171,10 +171,10 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 	 * @return string The URL.
 	 */
 	protected function get_action_url( $membership, $action, $step ) {
-		if ( $this->data['member'] ) {
-			$member = $this->data['member'];
-		} else {
+		if ( empty( $this->data['member'] ) ) {
 			$member = MS_Model_Member::get_current_member();
+		} else {
+			$member = $this->data['member'];
 		}
 
 		$membership->_move_from = $member->cancel_ids_on_subscription(

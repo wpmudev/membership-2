@@ -99,9 +99,8 @@ class MS_Controller_Protection extends MS_Controller {
 	public function admin_page_process() {
 		$membership = $this->load_membership();
 
-		// MS_Controller_Rule is executed using this action.
 		do_action(
-			'ms_controller_protection_admin_page_process_' . $step,
+			'ms_controller_protection_admin_page_process',
 			$this->get_active_tab()
 		);
 
