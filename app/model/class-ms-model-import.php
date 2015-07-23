@@ -359,6 +359,7 @@ class MS_Model_Import extends MS_Model {
 
 		// Remember where this membership comes from.
 		$membership->source = $this->source_key;
+		$membership->source_id = $obj->id;
 
 		// We set this last because it might change some other values as well...
 		$membership->type = $obj->type;
@@ -475,6 +476,7 @@ class MS_Model_Import extends MS_Model {
 
 		// Remember where this subscription comes from.
 		$subscription->source = $this->source_key;
+		$membership->source_id = $obj->id;
 		$subscription->save();
 
 		// Import invoices for this subscription

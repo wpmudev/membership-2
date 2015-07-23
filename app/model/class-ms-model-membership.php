@@ -290,6 +290,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $source = '';
 
 	/**
+	 * Relevant for imported items. This is the ID that was used by the import
+	 * source.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var string
+	 */
+	protected $source_id = '';
+
+	/**
 	 * Membership composite Rules.
 	 *
 	 * These are protection rules for this membership only.
@@ -1116,6 +1126,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'trial_period',
 			'on_end_membership_id',
 			'is_setup_completed',
+			'source',
+			'source_id',
 			'custom_data',
 			'update_denied',
 			'update_replace',

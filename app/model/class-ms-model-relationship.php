@@ -179,6 +179,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	protected $source = '';
 
 	/**
+	 * Relevant for imported items. This is the ID that was used by the import
+	 * source.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var string
+	 */
+	protected $source_id = '';
+
+	/**
 	 * The number of successful payments that were made for this subscription.
 	 *
 	 * We use this value to determine the end of a recurring payment plan.
