@@ -55,7 +55,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$this->manual_payment = false; // Recurring charged automatically
 		$this->pro_rate = false;
 
-		if ( $this->active && strpos( $this->merchant_id, '@' ) ) {
+		if ( $this->active && $this->is_live_mode() && strpos( $this->merchant_id, '@' ) ) {
 			$settings_url = MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => MS_Controller_Settings::TAB_PAYMENT )

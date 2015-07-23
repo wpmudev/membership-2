@@ -44,7 +44,7 @@ class MS_Gateway_Paypalstandard_View_Settings extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => __( 'PayPal Merchant Account ID', MS_TEXT_DOMAIN ),
 				'desc' => sprintf(
-					__( 'Note: This is <i>not the email address</i> but the merchant ID found in %syour PayPal profile%s.', MS_TEXT_DOMAIN ),
+					__( 'Note: This is <i>not the email address</i> but the merchant ID found in %syour PayPal profile%s. (in Sandbox mode use your Sandbox Email address)', MS_TEXT_DOMAIN ),
 					'<a href="https://www.paypal.com/webapps/customerprofile/summary.view" target="_blank">',
 					'</a>'
 				),
