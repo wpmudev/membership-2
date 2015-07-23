@@ -8,6 +8,8 @@ Change Log:
 ----------------------------------------------------------------------
 - Add gateway: 2Checkout
 - Add new Add-on for WPML integration
+- Add new Add-on to enable Pro-Rating when switching memberships
+- Add new Add-on to allow Search Engines to index protected content
 - Add a new Add/Edit Member page where subscription details can be modified
 - Add an admin notice when no payment gateway is active but paid memberships exist
 - Add bulk actions to the Members admin page
@@ -17,7 +19,6 @@ Change Log:
 - Add an edit page to override Protection Messages for each Membership
 - Add a new settings page to define Upgrade Paths to each Membership
 - Add a warning when using a wrong value in the PayPal Standard settings
-- Add new Add-on to enable Pro-Rating when switching memberships
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
 - Improve HTML output to be compatible with most themes (remove line breaks inside HTML tags)

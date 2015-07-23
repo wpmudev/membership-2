@@ -63,8 +63,8 @@ class MS_Model_Plugin extends MS_Model {
 		$this->add_action( 'admin_menu', 'store_admin_menu', 99999 );
 
 		// Register all Add-ons and load rules BEFORE the user is initialized.
-		$this->add_action( 'ms_load_member', 'load_addons' );
-		$this->add_action( 'ms_load_member', 'load_rules' );
+		$this->add_action( 'ms_load_member', 'load_addons', 1 );
+		$this->add_action( 'ms_load_member', 'load_rules', 1 );
 
 		// Setup the page protection AFTER the user was initialized.
 		$this->add_action( 'ms_init_done', 'setup_rules', 1 );
@@ -106,11 +106,6 @@ class MS_Model_Plugin extends MS_Model {
 
 		$this->member = MS_Model_Member::get_current_member();
 
-		// Deactivated status invalidates all memberships
-		if ( ! $this->member->is_member || ! $this->member->active ) {
-			$this->member->subscriptions = array();
-		}
-
 		if ( ! is_user_logged_in() ) {
 			// If a Guest-Membership exists we also assign it to the user.
 			$ms_guest = MS_Model_Membership::get_guest();
@@ -123,6 +118,8 @@ class MS_Model_Plugin extends MS_Model {
 			if ( $ms_user->is_valid() && $ms_user->active ) {
 				$this->member->add_membership( $ms_user->id );
 			}
+		} elseif ( ! $this->member->is_member || ! $this->member->active ) {
+			$this->member->subscriptions = array();
 		}
 
 		// No subscription: Assign the base membership, which only denies access.

@@ -919,7 +919,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *           memberships are not created.
 	 * @return MS_Model_Membership The Membership2.
 	 */
-	private static function _get_system_membership( $type, $create_missing = true ) {
+	public static function _get_system_membership( $type, $create_missing = true ) {
 		static $Special_Membership = array();
 		$comp_key = $type;
 		$membership = false;
@@ -972,14 +972,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$membership->save();
 			}
 
-			$Special_Membership[$comp_key] = apply_filters(
-				'ms_model_membership_get_system_membership',
-				$membership,
-				$type
-			);
+			$Special_Membership[$comp_key] = $membership;
 		}
 
-		return $Special_Membership[$comp_key];
+		return apply_filters(
+			'ms_model_membership_get_system_membership',
+			$Special_Membership[$comp_key],
+			$type
+		);
 	}
 
 	/**
@@ -1004,14 +1004,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			foreach ( $Base_Membership->_rules as $key => $rule ) {
 				$Base_Membership->_rules[$key]->is_base_rule = true;
 			}
-
-			$Base_Membership = apply_filters(
-				'ms_model_membership_get_base',
-				$Base_Membership
-			);
 		}
 
-		return $Base_Membership;
+		return apply_filters(
+			'ms_model_membership_get_base',
+			$Base_Membership
+		);
 	}
 
 	/**
@@ -1033,18 +1031,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				self::TYPE_GUEST,
 				false // Don't create this membership automatically
 			);
-
-			$Guest_Membership = apply_filters(
-				'ms_model_membership_get_guest',
-				$Guest_Membership
-			);
 		}
 
 		if ( ! $Guest_Membership ) {
 			$Guest_Membership = MS_Factory::create( 'MS_Model_Membership' );
 		}
 
-		return $Guest_Membership;
+		return apply_filters(
+			'ms_model_membership_get_guest',
+			$Guest_Membership
+		);
 	}
 
 	/**
@@ -1067,18 +1063,44 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				self::TYPE_USER,
 				false // Don't create this membership automatically
 			);
-
-			$User_Membership = apply_filters(
-				'ms_model_membership_get_user',
-				$User_Membership
-			);
 		}
 
 		if ( ! $User_Membership ) {
 			$User_Membership = MS_Factory::create( 'MS_Model_Membership' );
 		}
 
-		return $User_Membership;
+		return apply_filters(
+			'ms_model_membership_get_user',
+			$User_Membership
+		);
+	}
+
+	/**
+	 * Checks if the specified string is a valid Membership-Type identifier.
+	 *
+	 * @since  1.0.1.0
+	 * @param  string $type A string to check against all known membership types.
+	 * @return bool True if the string is a valid type.
+	 */
+	static public function is_valid_type( $type ) {
+		switch ( $type ) {
+			case self::TYPE_BASE:
+			case self::TYPE_GUEST:
+			case self::TYPE_USER:
+			case self::TYPE_DRIPPED:
+				$result = true;
+				break;
+
+			default:
+				$result = false;
+				break;
+		}
+
+		return apply_filters(
+			'ms_model_membership_is_valid_type',
+			$result,
+			$type
+		);
 	}
 
 
@@ -1875,13 +1897,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @return bool
 	 */
-	public function is_base() {
-		$res = $this->type == self::TYPE_BASE;
+	public function is_base( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_BASE;
 
 		return apply_filters(
 			'ms_model_membership_is_base',
 			$res,
-			$this
+			$type
 		);
 	}
 
@@ -1894,13 +1917,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @return bool
 	 */
-	public function is_guest() {
-		$res = $this->type == self::TYPE_GUEST;
+	public function is_guest( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_GUEST;
 
 		return apply_filters(
 			'ms_model_membership_is_guest',
 			$res,
-			$this
+			$type
 		);
 	}
 
@@ -1913,13 +1937,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @return bool
 	 */
-	public function is_user() {
-		$res = $this->type == self::TYPE_USER;
+	public function is_user( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_USER;
 
 		return apply_filters(
 			'ms_model_membership_is_user',
 			$res,
-			$this
+			$type
 		);
 	}
 
@@ -1931,13 +1956,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @return bool
 	 */
-	public function is_dripped() {
-		$res = $this->type == self::TYPE_DRIPPED;
+	public function is_dripped( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_DRIPPED;
 
 		return apply_filters(
 			'ms_model_membership_is_dripped',
 			$res,
-			$this
+			$type
 		);
 	}
 
@@ -1949,13 +1975,18 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @return bool
 	 */
-	public function is_system() {
-		$res = $this->is_base() || $this->is_guest() || $this->is_user();
+	public function is_system( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+
+		$res = false;
+		if ( $this->is_base( $type ) ) { $res = true; }
+		elseif ( $this->is_guest( $type ) ) { $res = true; }
+		elseif ( $this->is_user( $type ) ) { $res = true; }
 
 		return apply_filters(
 			'ms_model_membership_is_system',
 			$res,
-			$this
+			$type
 		);
 	}
 
@@ -2245,16 +2276,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		switch ( $property ) {
 			case 'type':
-				switch ( $this->type ) {
-					case self::TYPE_BASE:
-					case self::TYPE_GUEST:
-					case self::TYPE_USER:
-					case self::TYPE_DRIPPED:
-						break;
-
-					default:
-						$this->type = self::TYPE_STANDARD;
-						break;
+				if ( ! self::is_valid_type( $this->type ) ) {
+					$this->type = self::TYPE_STANDARD;
 				}
 
 				$value = $this->type;
@@ -2378,32 +2401,25 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					break;
 
 				case 'type':
-					switch ( $value ) {
-						case self::TYPE_BASE:
-						case self::TYPE_GUEST:
-						case self::TYPE_USER:
-							// Only one instance of these types can exist.
-							$existing = $this->_get_system_membership( $value, false );
+					if ( ! self::is_valid_type( $value ) ) {
+						$value = self::TYPE_STANDARD;
+					}
 
-							if ( $existing && $existing->id != $this->id ) {
-								$value = self::TYPE_STANDARD;
-							} else {
-								$this->active = true;
-								$this->private = true;
-								$this->is_free = true;
-								$this->price = 0;
-								$this->post_name = sanitize_html_class( $this->title );
-								$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
-								$this->post_author = get_current_user_id();
-							}
-							break;
+					if ( $this->is_system( $value ) ) {
+						// Only one instance of these types can exist.
+						$existing = $this->_get_system_membership( $value, false );
 
-						case self::TYPE_DRIPPED:
-							break;
-
-						default:
+						if ( $existing && $existing->id != $this->id ) {
 							$value = self::TYPE_STANDARD;
-							break;
+						} else {
+							$this->active = true;
+							$this->private = true;
+							$this->is_free = true;
+							$this->price = 0;
+							$this->post_name = sanitize_html_class( $this->title );
+							$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
+							$this->post_author = get_current_user_id();
+						}
 					}
 
 					$this->type = $value;
@@ -2412,13 +2428,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'payment_type':
 					$types = self::get_payment_types();
 					if ( array_key_exists( $value, $types ) ) {
-						#if ( $this->can_change_payment() ) {
-						#	$this->payment_type = $value;
-						#} elseif ( $this->payment_type != $value ) {
-						#	$error = 'Payment type cannot be changed after members have signed up.';
-						#	MS_Helper_Debug::log( $error );
-						#	throw new Exception( $error );
-						#}
 						$this->payment_type = $value;
 					} else {
 						throw new Exception( 'Invalid membership type.' );
