@@ -24,6 +24,7 @@ Change Log:
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
 - Improve HTML output to be compatible with most themes (remove line breaks inside HTML tags)
+- Improved third party library by adding a class prefix to avoid class collisions (Stripe, Mailchimp, AuthorizeNet)
 - Fix wrong subscription logic that activated Subscriptions without payment in a few cases
 - Fix possible memory issue that happened when updating the plugin
 - Fix bug that did not activate Subscription when an invoice was paid via Manual Gateway
