@@ -409,7 +409,7 @@ class MS_Controller_Settings extends MS_Controller {
 				 * @since  1.0.1.0
 				 */
 				do_action(
-					'ms_admin_settings_manager_' . $this->active_tab
+					'ms_admin_settings_manager-' . $this->active_tab
 				);
 				do_action(
 					'ms_admin_settings_manager',

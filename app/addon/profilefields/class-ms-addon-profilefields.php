@@ -46,7 +46,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 			);
 
 			$this->add_action(
-				'ms_admin_settings_manager_' . self::ID,
+				'ms_admin_settings_manager-' . self::ID,
 				'save_settings'
 			);
 
@@ -64,6 +64,27 @@ class MS_Addon_Profilefields extends MS_Addon {
 			$this->add_filter(
 				'ms_shortcode_register_form_rules',
 				'register_rules'
+			);
+
+			$this->add_action(
+				'signup_finished',
+				'save_xprofile'
+			);
+
+			$this->add_filter(
+				'ms_view_profile_fields',
+				'customize_profile_form',
+				10, 2
+			);
+
+			$this->add_filter(
+				'ms_view_profile_form_rules',
+				'profile_rules'
+			);
+
+			$this->add_action(
+				'ms_frontend_user_account_manager_submit-' . MS_Controller_Frontend::ACTION_EDIT_PROFILE,
+				'save_xprofile'
 			);
 		}
 	}
@@ -180,7 +201,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 					'label' => __( 'Website', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				),
-				'descirption' => array(
+				'description' => array(
 					'label' => __( 'Biographic Info', MS_TEXT_DOMAIN ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 				),
@@ -201,6 +222,20 @@ class MS_Addon_Profilefields extends MS_Addon {
 					'allowed_edit' => array( 'off', 'optional' ),
 				),
 			);
+
+			if ( is_user_logged_in() ) {
+				$member = MS_Model_Member::get_current_member();
+				$user = $member->get_user();
+
+				$Profile_Fields['username']['value'] = $member->username;
+				$Profile_Fields['first_name']['value'] = $member->first_name;
+				$Profile_Fields['last_name']['value'] = $member->last_name;
+				$Profile_Fields['email']['value'] = $member->email;
+				$Profile_Fields['nickname']['value'] = $member->get_meta( 'nickname' );
+				$Profile_Fields['display_name']['value'] = $user->display_name;
+				$Profile_Fields['website']['value'] = $user->user_url;
+				$Profile_Fields['description']['value'] = $member->get_meta( 'description' );
+			}
 
 			if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
 				$profile_groups = BP_XProfile_Group::get(
@@ -259,7 +294,6 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 * @return array Modified list of fields.
 	 */
 	public function customize_register_form( $fields, $view ) {
-		$all_fields = self::list_fields();
 		$settings = MS_Plugin::instance()->settings;
 		$config = $settings->get_custom_setting( 'profilefields', 'register' );
 		$data = $view->data;
@@ -269,15 +303,64 @@ class MS_Addon_Profilefields extends MS_Addon {
 			return $fields;
 		}
 
-		$membership_id = $fields['membership_id'];
-		$action = $fields['action'];
-		$step = $fields['step'];
+		$data['xprofile_field_ids'] = 'signup_profile_field_ids';
 
 		$custom_fields = array(
-			$membership_id,
-			$action,
-			$step,
+			$fields['membership_id'],
+			$fields['action'],
+			$fields['step'],
 		);
+
+		$custom_fields = $this->customize_form( $custom_fields, $data, $config );
+
+		return $custom_fields;
+	}
+
+	/**
+	 * Customizes the fields displayed in the profile form.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $fields List of default fields.
+	 * @param  MS_View $view The registration view.
+	 * @return array Modified list of fields.
+	 */
+	public function customize_profile_form( $fields, $view ) {
+		$settings = MS_Plugin::instance()->settings;
+		$config = $settings->get_custom_setting( 'profilefields', 'profile' );
+		$data = $view->data;
+
+		if ( empty( $config ) ) {
+			// No configuration defined yet, use default fields.
+			return $fields;
+		}
+
+		$data['xprofile_field_ids'] = 'xprofile_field_ids';
+
+		$submit_field = $fields['submit'];
+		$custom_fields = array(
+			$fields['_wpnonce'],
+			$fields['action'],
+		);
+
+		$custom_fields = $this->customize_form( $custom_fields, $data, $config );
+
+		$custom_fields[] = $submit_field;
+
+		return $custom_fields;
+	}
+
+	/**
+	 * Customizes the fields displayed in the registration form.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $fields List of default fields.
+	 * @param  array $data Configuration options (field values, titles, etc).
+	 * @param  array $config Form configuration from M2 Settings.
+	 * @return array Modified list of fields.
+	 */
+	protected function customize_form( $fields, $data, $config ) {
+		$all_fields = self::list_fields();
+		$xprofile_fields = array();
 
 		foreach ( $all_fields as $id => $defaults ) {
 			$setting = 'off';
@@ -289,7 +372,8 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 			if ( 0 === strpos( $id, 'xprofile_' ) ) {
 				$field_id = substr( $id, 9 );
-				$custom_fields[] = $this->render_xprofile_field( $field_id );
+				$fields[] = $this->render_xprofile_field( $field_id );
+				$xprofile_fields[] = $field_id;
 			} else {
 				$hint = '';
 				$label = $defaults['label'];
@@ -306,12 +390,14 @@ class MS_Addon_Profilefields extends MS_Addon {
 					$value = $data[$id];
 				} elseif ( isset( $data['value_' . $id] ) ) {
 					$value = $data['value_' . $id];
+				} elseif ( isset( $defaults['value'] ) ) {
+					$value = $defaults['value'];
 				}
 				if ( isset( $defaults['type'] ) ) {
 					$type = $defaults['type'];
 				}
 
-				$custom_fields[] = array(
+				$fields[] = array(
 					'id' => $id,
 					'title' => $label,
 					'placeholder' => $hint,
@@ -321,11 +407,19 @@ class MS_Addon_Profilefields extends MS_Addon {
 			}
 		}
 
-		return $custom_fields;
+		if ( count( $xprofile_fields ) ) {
+			$fields[] = array(
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' => $data['xprofile_field_ids'],
+				'value' => implode( ',', $xprofile_fields ),
+			);
+		}
+
+		return $fields;
 	}
 
 	/**
-	 * Modifies the JS validation rules that are used on the registration form.
+	 * Modifies the JS validation rules that are used in the registration form.
 	 *
 	 * @since  1.0.1.0
 	 * @param  array $rules The default validation rules.
@@ -334,29 +428,59 @@ class MS_Addon_Profilefields extends MS_Addon {
 	public function register_rules( $rules ) {
 		$settings = MS_Plugin::instance()->settings;
 		$config = $settings->get_custom_setting( 'profilefields', 'register' );
+
+		return $this->validation_rules( $config );
+	}
+
+	/**
+	 * Modifies the JS validation rules that are used in the profile form.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $rules The default validation rules.
+	 * @return array Modified rules.
+	 */
+	public function profile_rules( $rules ) {
+		$settings = MS_Plugin::instance()->settings;
+		$config = $settings->get_custom_setting( 'profilefields', 'profile' );
+
+		return $this->validation_rules( $config );
+	}
+
+	/**
+	 * Generates the JS validation rule object from given configuration.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $config The form configuration from M2 Settings.
+	 * @return array Modified rules.
+	 */
+	public function validation_rules( $config ) {
 		$rules = array();
 
 		foreach ( $config as $field => $setting ) {
 			if ( 'off' == $setting ) { continue; }
-			$rules[$field] = array();
+			$key = $field;
+			if ( 0 === strpos( $field, 'xprofile_' ) ) {
+				$key = 'field_' . substr( $field, 9 );
+			}
+			$rules[$key] = array();
 
 			if ( 'required' == $setting ) {
-				$rules[$field]['required'] = true;
+				$rules[$key]['required'] = true;
 			} else {
-				$rules[$field]['required'] = false;
+				$rules[$key]['required'] = false;
 			}
 
 			switch ( $field ) {
 				case 'email':
-					$rules[$field]['email'] = true;
+					$rules[$key]['email'] = true;
 					break;
 
 				case 'password':
-					$rules[$field]['minlength'] = 5;
+					$rules[$key]['minlength'] = 5;
 					break;
 
 				case 'password2':
-					$rules[$field]['equalTo'] = '#password';
+					$rules[$key]['equalTo'] = '#password';
 					break;
 			}
 		}
@@ -369,7 +493,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 * $_REQUEST parameters if required.
 	 *
 	 * @since  1.0.1.0
-	 * @param  MS_Controller_Frontent $controller
+	 * @param  MS_Controller_Frontend $controller
 	 */
 	public function register_user( $controller ) {
 		if ( ! isset( $_REQUEST['step'] ) ) {
@@ -400,7 +524,52 @@ class MS_Addon_Profilefields extends MS_Addon {
 	}
 
 	/**
+	 * Save data from the REQUEST collection to the XProfile fields.
+	 *
+	 * This action is called in two cases:
+	 * 1. After a new user was created in the Database.
+	 * 2. When the user saves his profile in M2 frontend.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function save_xprofile() {
+		$fields = false;
+		$user = false;
+
+		if ( ! isset( $_REQUEST['email'] ) ) {
+			// Seems like the user was not created by M2. Not our call.
+			return;
+		}
+		if ( isset( $_REQUEST['signup_profile_field_ids'] ) ) {
+			// A new user was created in the database. Great job!
+			$user = get_user_by( 'email', $_REQUEST['email'] );
+			$fields = explode( ',', $_REQUEST['signup_profile_field_ids'] );
+		} elseif ( isset( $_REQUEST['xprofile_field_ids'] ) ) {
+			// A new user was created in the database. Great job!
+			$user = MS_Model_Member::get_current_member()->get_user();
+			$fields = explode( ',', $_REQUEST['xprofile_field_ids'] );
+		}
+
+		if ( $fields && $user ) {
+			foreach ( $fields as $field_id ) {
+				if ( ! isset( $_REQUEST['field_' . $field_id] ) ) {
+					continue;
+				}
+
+				xprofile_set_field_data(
+					$field_id,
+					$user->ID,
+					$_REQUEST['field_' . $field_id]
+				);
+			}
+		}
+	}
+
+	/**
 	 * Generates the HTML code for a single XProfile input field.
+	 *
+	 * Code is taken from the BuddyPress default theme file:
+	 * plugins/buddypress/bp-themes/bp-default/registration/register.php
 	 *
 	 * @since  1.0.1.0
 	 * @param  int $field_id The XProfile field ID.
@@ -445,7 +614,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 					<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 					<?php bp_the_profile_field_options(); ?>
 
-					<?php if ( !bp_get_the_profile_field_is_required() ) : ?>
+					<?php if ( ! bp_get_the_profile_field_is_required() ) : ?>
 						<a class="clear-value" href="javascript:clear( '<?php bp_the_profile_field_input_name(); ?>' );"><?php _e( 'Clear', 'buddypress' ); ?></a>
 					<?php endif; ?>
 				</div>

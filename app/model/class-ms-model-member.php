@@ -1564,6 +1564,30 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Returns a value from the user-meta table.
+	 *
+	 * @since  1.0.1.0
+	 * @api
+	 * @param  string $key The meta-key.
+	 * @return mixed The meta-value.
+	 */
+	public function get_meta( $key ) {
+		return get_user_meta( $this->id, $key, true );
+	}
+
+	/**
+	 * Updates a value in the user-meta table.
+	 *
+	 * @since 1.0.1.0
+	 * @api
+	 * @param string $key The meta-key.
+	 * @param mixed $value The new meta-value.
+	 */
+	public function set_meta( $key, $value ) {
+		update_user_meta( $this->id, $key, $value );
+	}
+
+	/**
 	 * Verify if current object is valid.
 	 *
 	 * @since  1.0.0

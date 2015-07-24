@@ -118,7 +118,7 @@ class MS_View_Shortcode_Account extends MS_View {
 											$membership->id,
 											__( 'Pending', MS_TEXT_DOMAIN )
 										);
-										echo '' . do_shortcode( $code );
+										echo do_shortcode( $code );
 									} else {
 										echo esc_html( $subscription->status_text() );
 									}
@@ -440,7 +440,7 @@ class MS_View_Shortcode_Account extends MS_View {
 						esc_url( $redirect ),
 						esc_attr( $title )
 					);
-					echo '' . do_shortcode( $scode );
+					echo do_shortcode( $scode );
 				}
 			endif; ?>
 		</div>
@@ -455,6 +455,12 @@ class MS_View_Shortcode_Account extends MS_View {
 		);
 	}
 
+	/**
+	 * Prepare some fields that are displayed in the account overview.
+	 *
+	 * @since  1.0.0
+	 * @return array
+	 */
 	public function prepare_fields() {
 		$fields = array(
 			'personal_info' => array(
@@ -463,6 +469,12 @@ class MS_View_Shortcode_Account extends MS_View {
 				'username' => __( 'Username', MS_TEXT_DOMAIN ),
 				'email' => __( 'Email', MS_TEXT_DOMAIN ),
 			)
+		);
+
+		$fields = apply_filters(
+			'ms_shortcode_account_fields',
+			$fields,
+			$this
 		);
 
 		return $fields;

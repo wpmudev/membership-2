@@ -211,7 +211,7 @@ class MS_Controller_Frontend extends MS_Controller {
 					break;
 
 				case MS_Model_Pages::MS_PAGE_ACCOUNT:
-					$this->user_account_mgr();
+					$this->user_account_manager();
 					break;
 
 				case MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT:
@@ -749,11 +749,44 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Manage user account actions.
 	 *
 	 * @since  1.0.0
-	 *
+	 * @internal
 	 */
-	public function user_account_mgr() {
+	public function user_account_manager() {
 		$action = $this->get_action();
 		$member = MS_Model_Member::get_current_member();
+
+		/**
+		 * These actions are always executed when any user account page loads.
+		 *
+		 * @since  1.0.1.0
+		 */
+		do_action(
+			'ms_frontend_user_account_manager-' . $action,
+			$this
+		);
+		do_action(
+			'ms_frontend_user_account_manager',
+			$action,
+			$this
+		);
+
+		if ( $this->verify_nonce() ) {
+			/**
+			 * The following two actions are only executed when a form was
+			 * submitted on a user account page.
+			 *
+			 * @since  1.0.1.0
+			 */
+			do_action(
+				'ms_frontend_user_account_manager_submit-' . $action,
+				$this
+			);
+			do_action(
+				'ms_frontend_user_account_manager_submit',
+				$action,
+				$this
+			);
+		}
 
 		switch ( $action ) {
 			case self::ACTION_EDIT_PROFILE:
@@ -833,7 +866,6 @@ class MS_Controller_Frontend extends MS_Controller {
 				break;
 
 			default:
-				do_action( 'ms_controller_frontend_user_account_mgr_' . $action, $this );
 				$this->add_filter( 'the_content', 'user_account', 1 );
 				break;
 		}
