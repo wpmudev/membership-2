@@ -794,9 +794,6 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		if ( is_array( $exclude_ids ) ) {
 			$not_in = $exclude_ids;
 		}
-		$not_in[] = MS_Model_Membership::get_base()->id;
-		$not_in[] = MS_Model_Membership::get_guest()->id;
-		$not_in[] = MS_Model_Membership::get_user()->id;
 		$args['post__not_in'] = array_unique( $not_in );
 		$member = MS_Model_Member::get_current_member();
 
@@ -811,7 +808,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		// Check the upgrade-paths settings
 		foreach ( $memberships as $key => $ms ) {
-			if ( ! $member->can_subscribe_to( $ms->id ) ) {
+			if ( $ms->is_system() ) {
+				unset( $memberships[$key] );
+			} elseif ( ! $member->can_subscribe_to( $ms->id ) ) {
 				unset( $memberships[$key] );
 			}
 		}
