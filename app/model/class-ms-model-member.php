@@ -989,11 +989,21 @@ class MS_Model_Member extends MS_Model {
 
 		// Check the multisite Email-Domain limitation for new registrations.
 		if ( is_multisite() ) {
-			$domain_list = get_site_option( 'limited_email_domains' );
+			$limited_domains = get_site_option( 'limited_email_domains' );
+			$banned_domains = get_site_option( 'banned_email_domains' );
+			$email_domain = substr( strrchr( $this->email, '@' ), 1 );
 
-			if ( $domain_list && is_array( $domain_list ) ) {
-				$email_domain = substr( strrchr( $this->email, '@' ), 1 );
-				if ( ! in_array( $email_domain, $domain_list ) ) {
+			if ( $limited_domains && is_array( $limited_domains ) ) {
+				if ( ! in_array( $email_domain, $limited_domains ) ) {
+					$validation_errors->add(
+						'emaildomain',
+						__( 'That email domain is not allowed for registration, sorry.', MS_TEXT_DOMAIN )
+					);
+				}
+			}
+
+			if ( $banned_domains && is_array( $banned_domains ) ) {
+				if ( in_array( $email_domain, $banned_domains ) ) {
 					$validation_errors->add(
 						'emaildomain',
 						__( 'That email domain is not allowed for registration, sorry.', MS_TEXT_DOMAIN )
