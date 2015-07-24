@@ -1,6 +1,6 @@
 <?php
 
-class Mailchimp_Vip {
+class M2_Mailchimp_Vip {
     public function __construct(Mailchimp $master) {
         $this->master = $master;
     }

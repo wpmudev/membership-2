@@ -19,7 +19,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Mailchimp API object
 	 *
-	 * @var Mailchimp
+	 * @var M2_Mailchimp
 	 */
 	static protected $mailchimp_api = null;
 
@@ -255,7 +255,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @return Mailchimp Object
+	 * @return M2_Mailchimp Object
 	 */
 	public static function load_mailchimp_api() {
 		if ( empty( self::$mailchimp_api ) ) {
@@ -274,7 +274,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
 
-			$api = new Mailchimp(
+			$api = new M2_Mailchimp(
 				self::$settings->get_custom_setting( 'mailchimp', 'api_key' ),
 				$options
 			);

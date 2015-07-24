@@ -1,6 +1,6 @@
 <?php
 
-class Mailchimp_Reports {
+class M2_Mailchimp_Reports {
     public function __construct(Mailchimp $master) {
         $this->master = $master;
     }

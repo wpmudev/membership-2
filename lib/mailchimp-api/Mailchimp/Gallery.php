@@ -1,6 +1,6 @@
 <?php
 
-class Mailchimp_Gallery {
+class M2_Mailchimp_Gallery {
     public function __construct(Mailchimp $master) {
         $this->master = $master;
     }

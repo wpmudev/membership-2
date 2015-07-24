@@ -1,6 +1,6 @@
 <?php
 
-class Mailchimp_Folders {
+class M2_Mailchimp_Folders {
     public function __construct(Mailchimp $master) {
         $this->master = $master;
     }

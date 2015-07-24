@@ -1,6 +1,6 @@
 <?php
 
-class Mailchimp_Templates {
+class M2_Mailchimp_Templates {
     public function __construct(Mailchimp $master) {
         $this->master = $master;
     }

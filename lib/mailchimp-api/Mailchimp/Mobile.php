@@ -1,6 +1,6 @@
 <?php
 
-class Mailchimp_Mobile {
+class M2_Mailchimp_Mobile {
     public function __construct(Mailchimp $master) {
         $this->master = $master;
     }
