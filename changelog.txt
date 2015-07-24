@@ -31,6 +31,7 @@ Change Log:
 - Fix the invitation code Add-on (integration in payment form was not working)
 - Fix a caching issue that caused problems with Subscriptions when memcache was enabled
 - Fix problem in network wide mode that would not display all Users in the Members page
+- Fix registration logic to honor domain limitation for signup email addresses
 - Fix wrong rounding-logic in Stripe gateway
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 - Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
