@@ -29,7 +29,7 @@ class M2_Stripe_ApiRequestor
    */
   public static function apiUrl($url='')
   {
-    $apiBase = M2_M2_Stripe::$apiBase;
+    $apiBase = M2_Stripe::$apiBase;
     return "$apiBase$url";
   }
 
@@ -165,11 +165,11 @@ class M2_Stripe_ApiRequestor
   {
     $myApiKey = $this->_apiKey;
     if (!$myApiKey)
-      $myApiKey = M2_M2_Stripe::$apiKey;
+      $myApiKey = M2_Stripe::$apiKey;
 
     if (!$myApiKey) {
       $msg = 'No API key provided.  (HINT: set your API key using '
-           . '"M2_M2_Stripe::setApiKey(<API-KEY>)".  You can generate API keys from '
+           . '"M2_Stripe::setApiKey(<API-KEY>)".  You can generate API keys from '
            . 'the Stripe web interface.  See https://stripe.com/api for '
            . 'details, or email support@stripe.com if you have any questions.';
       throw new M2_Stripe_AuthenticationError($msg);

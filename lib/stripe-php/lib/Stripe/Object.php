@@ -135,6 +135,9 @@ class M2_Stripe_Object implements ArrayAccess
    */
   public static function scopedConstructFrom($class, $values, $apiKey=null)
   {
+    if ( false === stripos( $class, 'M2_' ) ) {
+      $class = 'M2_' . $class;
+    }
     $obj = new $class(isset($values['id']) ? $values['id'] : null, $apiKey);
     $obj->refreshFrom($values, $apiKey);
     return $obj;
@@ -184,7 +187,7 @@ class M2_Stripe_Object implements ArrayAccess
         continue;
 
       if (self::$nestedUpdatableAttributes->includes($k) && is_array($v)) {
-        $this->_values[$k] = M2_Stripe_Object::scopedConstructFrom('Stripe_AttachedObject', $v, $apiKey);
+        $this->_values[$k] = M2_Stripe_Object::scopedConstructFrom('M2_Stripe_AttachedObject', $v, $apiKey);
       } else {
         $this->_values[$k] = M2_Stripe_Util::convertToStripeObject($v, $apiKey);
       }

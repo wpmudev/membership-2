@@ -56,18 +56,18 @@ abstract class M2_Stripe_Util
   public static function convertToStripeObject($resp, $apiKey)
   {
     $types = array(
-      'card' => 'Stripe_Card',
-      'charge' => 'Stripe_Charge',
-      'customer' => 'Stripe_Customer',
-      'list' => 'Stripe_List',
-      'invoice' => 'Stripe_Invoice',
-      'invoiceitem' => 'Stripe_InvoiceItem',
-      'event' => 'Stripe_Event',
-      'transfer' => 'Stripe_Transfer',
-      'plan' => 'Stripe_Plan',
-      'recipient' => 'Stripe_Recipient',
-      'refund' => 'Stripe_Refund',
-      'subscription' => 'Stripe_Subscription'
+      'card' => 'M2_Stripe_Card',
+      'charge' => 'M2_Stripe_Charge',
+      'customer' => 'M2_Stripe_Customer',
+      'list' => 'M2_Stripe_List',
+      'invoice' => 'M2_Stripe_Invoice',
+      'invoiceitem' => 'M2_Stripe_InvoiceItem',
+      'event' => 'M2_Stripe_Event',
+      'transfer' => 'M2_Stripe_Transfer',
+      'plan' => 'M2_Stripe_Plan',
+      'recipient' => 'M2_Stripe_Recipient',
+      'refund' => 'M2_Stripe_Refund',
+      'subscription' => 'M2_Stripe_Subscription'
     );
     if (self::isList($resp)) {
       $mapped = array();
@@ -80,7 +80,7 @@ abstract class M2_Stripe_Util
           && isset($types[$resp['object']])) {
         $class = $types[$resp['object']];
       } else {
-        $class = 'Stripe_Object';
+        $class = 'M2_Stripe_Object';
       }
       return M2_Stripe_Object::scopedConstructFrom($class, $resp, $apiKey);
     } else {

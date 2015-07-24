@@ -43,7 +43,7 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 		$this->assertTrue( $gateway2->active );
 		$this->assertTrue( $gateway2->is_configured() );
 
-		$this->assertTrue( class_exists( 'Stripe' ) );
+		$this->assertTrue( class_exists( 'M2_Stripe' ) );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 				'cvc' => '314',
 			),
 		);
-		$res = Stripe_Token::create( $data );
+		$res = M2_Stripe_Token::create( $data );
 		$token = $res->id;
 
 		$form_data = array(
@@ -119,7 +119,7 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 			MS_Gateway_Stripe_Api::ID,
 			'customer_id'
 		);
-		$customer = Stripe_Customer::retrieve( $customer_id );
+		$customer = M2_Stripe_Customer::retrieve( $customer_id );
 		$invoice = $subscription->get_previous_invoice();
 		$stripe_sub_id = $invoice->external_id;
 		$stripe_sub = $customer->subscriptions->retrieve( $stripe_sub_id );

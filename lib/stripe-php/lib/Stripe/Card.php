@@ -24,11 +24,11 @@ class M2_Stripe_Card extends M2_Stripe_ApiResource
     if (isset($this['customer'])) {
 
       $parent = $this['customer'];
-      $base = self::classUrl('Stripe_Customer');
+      $base = self::classUrl('M2_Stripe_Customer');
     } else if (isset($this['recipient'])) {
 
       $parent = $this['recipient'];
-      $base = self::classUrl('Stripe_Recipient');
+      $base = self::classUrl('M2_Stripe_Recipient');
     } else {
 
       return null;

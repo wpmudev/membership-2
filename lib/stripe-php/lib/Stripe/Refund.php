@@ -19,7 +19,7 @@ class M2_Stripe_Refund extends M2_Stripe_ApiResource
     $id = M2_Stripe_ApiRequestor::utf8($id);
     $charge = M2_Stripe_ApiRequestor::utf8($charge);
 
-    $base = self::classUrl('Stripe_Charge');
+    $base = self::classUrl('M2_Stripe_Charge');
     $chargeExtn = urlencode($charge);
     $extn = urlencode($id);
     return "$base/$chargeExtn/refunds/$extn";

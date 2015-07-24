@@ -370,7 +370,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$all_items = lib2()->array->get( $all_items );
 
 		if ( ! isset( $all_items[$item_id] )
-			|| ! is_a( $all_items[$item_id], 'Stripe_Plan' )
+			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Plan' )
 		) {
 			try {
 				$item = M2_Stripe_Plan::retrieve( $item_id );
@@ -387,7 +387,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		 * Stripe can only update the plan-name, so we have to delete and
 		 * recreate the plan manually.
 		 */
-		if ( $item && is_a( $item, 'Stripe_Plan' ) ) {
+		if ( $item && is_a( $item, 'M2_Stripe_Plan' ) ) {
 			$item->delete();
 			$all_items[$item_id] = false;
 		}
@@ -420,7 +420,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$all_items = lib2()->array->get( $all_items );
 
 		if ( ! isset( $all_items[$item_id] )
-			|| ! is_a( $all_items[$item_id], 'Stripe_Coupon' )
+			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Coupon' )
 		) {
 			try {
 				$item = M2_Stripe_Coupon::retrieve( $item_id );
@@ -437,7 +437,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		 * Stripe can only update the coupon-name, so we have to delete and
 		 * recreate the coupon manually.
 		 */
-		if ( $item && is_a( $item, 'Stripe_Coupon' ) ) {
+		if ( $item && is_a( $item, 'M2_Stripe_Coupon' ) ) {
 			$item->delete();
 			$all_items[$item_id] = false;
 		}

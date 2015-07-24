@@ -20,7 +20,7 @@ class M2_Stripe_Subscription extends M2_Stripe_ApiResource
     $id = M2_Stripe_ApiRequestor::utf8($id);
     $customer = M2_Stripe_ApiRequestor::utf8($customer);
 
-    $base = self::classUrl('Stripe_Customer');
+    $base = self::classUrl('M2_Stripe_Customer');
     $customerExtn = urlencode($customer);
     $extn = urlencode($id);
     return "$base/$customerExtn/subscriptions/$extn";

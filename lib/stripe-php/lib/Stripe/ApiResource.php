@@ -4,6 +4,9 @@ abstract class M2_Stripe_ApiResource extends M2_Stripe_Object
 {
   protected static function _scopedRetrieve($class, $id, $apiKey=null)
   {
+    if ( false === stripos( $class, 'M2_' ) ) {
+      $class = 'M2_' . $class;
+    }
     $instance = new $class($id, $apiKey);
     $instance->refresh();
     return $instance;
@@ -40,6 +43,8 @@ abstract class M2_Stripe_ApiResource extends M2_Stripe_Object
     }
     if (substr($class, 0, strlen('Stripe')) == 'Stripe') {
       $class = substr($class, strlen('Stripe'));
+    } elseif (substr($class, 0, strlen('M2_Stripe')) == 'M2_Stripe') {
+      $class = substr($class, strlen('M2_Stripe'));
     }
     $class = str_replace('_', '', $class);
     $name = urlencode($class);
@@ -54,7 +59,8 @@ abstract class M2_Stripe_ApiResource extends M2_Stripe_Object
    */
   public static function classUrl($class)
   {
-    $base = self::_scopedLsb($class, 'className', $class);
+    $base = str_replace( 'M2_', '', $class );
+    $base = self::_scopedLsb($class, 'className', $base);
     return "/v1/${base}s";
   }
 
