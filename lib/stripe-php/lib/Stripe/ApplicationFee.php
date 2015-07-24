@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_ApplicationFee extends Stripe_ApiResource
+class M2_Stripe_ApplicationFee extends M2_Stripe_ApiResource
 {
   /**
    * This is a special case because the application fee endpoint has an

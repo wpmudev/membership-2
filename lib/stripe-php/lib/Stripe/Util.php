@@ -35,7 +35,7 @@ abstract class M2_Stripe_Util
       if ($k[0] == '_') {
         continue;
       }
-      if ($v instanceof Stripe_Object) {
+      if ($v instanceof M2_Stripe_Object) {
         $results[$k] = $v->__toArray(true);
       } else if (is_array($v)) {
         $results[$k] = self::convertStripeObjectToArray($v);
@@ -82,7 +82,7 @@ abstract class M2_Stripe_Util
       } else {
         $class = 'Stripe_Object';
       }
-      return Stripe_Object::scopedConstructFrom($class, $resp, $apiKey);
+      return M2_Stripe_Object::scopedConstructFrom($class, $resp, $apiKey);
     } else {
       return $resp;
     }

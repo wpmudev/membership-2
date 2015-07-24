@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_Card extends Stripe_ApiResource
+class M2_Stripe_Card extends M2_Stripe_ApiResource
 {
   public static function constructFrom($values, $apiKey=null)
   {
@@ -34,9 +34,9 @@ class M2_Stripe_Card extends Stripe_ApiResource
       return null;
     }
 
-    $parent = Stripe_ApiRequestor::utf8($parent);
+    $parent = M2_Stripe_ApiRequestor::utf8($parent);
     $class = get_class($this);
-    $id = Stripe_ApiRequestor::utf8($id);
+    $id = M2_Stripe_ApiRequestor::utf8($id);
 
     $parentExtn = urlencode($parent);
     $extn = urlencode($id);

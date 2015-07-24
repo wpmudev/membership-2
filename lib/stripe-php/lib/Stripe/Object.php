@@ -184,9 +184,9 @@ class M2_Stripe_Object implements ArrayAccess
         continue;
 
       if (self::$nestedUpdatableAttributes->includes($k) && is_array($v)) {
-        $this->_values[$k] = Stripe_Object::scopedConstructFrom('Stripe_AttachedObject', $v, $apiKey);
+        $this->_values[$k] = M2_Stripe_Object::scopedConstructFrom('Stripe_AttachedObject', $v, $apiKey);
       } else {
-        $this->_values[$k] = Stripe_Util::convertToStripeObject($v, $apiKey);
+        $this->_values[$k] = M2_Stripe_Util::convertToStripeObject($v, $apiKey);
       }
 
       $this->_transientValues->discard($k);
@@ -213,7 +213,7 @@ class M2_Stripe_Object implements ArrayAccess
 
     // Get nested updates.
     foreach (self::$nestedUpdatableAttributes->toArray() as $property) {
-      if (isset($this->$property) && $this->$property instanceOf Stripe_Object) {
+      if (isset($this->$property) && $this->$property instanceOf M2_Stripe_Object) {
         $params[$property] = $this->$property->serializeParameters();
       }
     }
@@ -250,7 +250,7 @@ class M2_Stripe_Object implements ArrayAccess
   public function __toArray($recursive=false)
   {
     if ($recursive) {
-      return Stripe_Util::convertStripeObjectToArray($this->_values);
+      return M2_Stripe_Util::convertStripeObjectToArray($this->_values);
     } else {
       return $this->_values;
     }
@@ -258,4 +258,4 @@ class M2_Stripe_Object implements ArrayAccess
 }
 
 
-Stripe_Object::init();
+M2_Stripe_Object::init();

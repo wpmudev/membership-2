@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_Subscription extends Stripe_ApiResource
+class M2_Stripe_Subscription extends M2_Stripe_ApiResource
 {
   /**
    * @return string The API URL for this Stripe subscription.
@@ -17,8 +17,8 @@ class M2_Stripe_Subscription extends Stripe_ApiResource
           null
       );
     }
-    $id = Stripe_ApiRequestor::utf8($id);
-    $customer = Stripe_ApiRequestor::utf8($customer);
+    $id = M2_Stripe_ApiRequestor::utf8($id);
+    $customer = M2_Stripe_ApiRequestor::utf8($customer);
 
     $base = self::classUrl('Stripe_Customer');
     $customerExtn = urlencode($customer);

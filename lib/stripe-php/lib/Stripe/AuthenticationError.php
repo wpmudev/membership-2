@@ -1,5 +1,5 @@
 <?php
 
-class M2_Stripe_AuthenticationError extends Stripe_Error
+class M2_Stripe_AuthenticationError extends M2_Stripe_Error
 {
 }

@@ -1,7 +1,7 @@
 <?php
 
 // e.g. metadata on Stripe objects.
-class M2_Stripe_AttachedObject extends Stripe_Object
+class M2_Stripe_AttachedObject extends M2_Stripe_Object
 {
   /**
    * Updates this object.

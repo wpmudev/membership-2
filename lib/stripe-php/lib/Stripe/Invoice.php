@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_Invoice extends Stripe_ApiResource
+class M2_Stripe_Invoice extends M2_Stripe_ApiResource
 {
   /**
    * @param array|null $params
@@ -49,7 +49,7 @@ class M2_Stripe_Invoice extends Stripe_ApiResource
     $requestor = new M2_Stripe_ApiRequestor($apiKey);
     $url = self::classUrl(get_class()) . '/upcoming';
     list($response, $apiKey) = $requestor->request('get', $url, $params);
-    return Stripe_Util::convertToStripeObject($response, $apiKey);
+    return M2_Stripe_Util::convertToStripeObject($response, $apiKey);
   }
 
   /**

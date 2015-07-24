@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_Plan extends Stripe_ApiResource
+class M2_Stripe_Plan extends M2_Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the plan to retrieve.

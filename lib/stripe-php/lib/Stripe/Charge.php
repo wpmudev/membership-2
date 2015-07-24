@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_Charge extends Stripe_ApiResource
+class M2_Stripe_Charge extends M2_Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the charge to retrieve.

@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_Refund extends Stripe_ApiResource
+class M2_Stripe_Refund extends M2_Stripe_ApiResource
 {
   /**
    * @return string The API URL for this Stripe refund.
@@ -16,8 +16,8 @@ class M2_Stripe_Refund extends Stripe_ApiResource
           null
       );
     }
-    $id = Stripe_ApiRequestor::utf8($id);
-    $charge = Stripe_ApiRequestor::utf8($charge);
+    $id = M2_Stripe_ApiRequestor::utf8($id);
+    $charge = M2_Stripe_ApiRequestor::utf8($charge);
 
     $base = self::classUrl('Stripe_Charge');
     $chargeExtn = urlencode($charge);

@@ -29,7 +29,7 @@ class M2_Stripe_ApiRequestor
    */
   public static function apiUrl($url='')
   {
-    $apiBase = Stripe::$apiBase;
+    $apiBase = M2_M2_Stripe::$apiBase;
     return "$apiBase$url";
   }
 
@@ -51,7 +51,7 @@ class M2_Stripe_ApiRequestor
 
   private static function _encodeObjects($d)
   {
-    if ($d instanceof Stripe_ApiResource) {
+    if ($d instanceof M2_Stripe_ApiResource) {
       return self::utf8($d->id);
     } else if ($d === true) {
       return 'true';
@@ -165,11 +165,11 @@ class M2_Stripe_ApiRequestor
   {
     $myApiKey = $this->_apiKey;
     if (!$myApiKey)
-      $myApiKey = Stripe::$apiKey;
+      $myApiKey = M2_M2_Stripe::$apiKey;
 
     if (!$myApiKey) {
       $msg = 'No API key provided.  (HINT: set your API key using '
-           . '"Stripe::setApiKey(<API-KEY>)".  You can generate API keys from '
+           . '"M2_M2_Stripe::setApiKey(<API-KEY>)".  You can generate API keys from '
            . 'the Stripe web interface.  See https://stripe.com/api for '
            . 'details, or email support@stripe.com if you have any questions.';
       throw new M2_Stripe_AuthenticationError($msg);
@@ -179,16 +179,16 @@ class M2_Stripe_ApiRequestor
     $params = self::_encodeObjects($params);
     $langVersion = phpversion();
     $uname = php_uname();
-    $ua = array('bindings_version' => Stripe::VERSION,
+    $ua = array('bindings_version' => M2_Stripe::VERSION,
                 'lang' => 'php',
                 'lang_version' => $langVersion,
                 'publisher' => 'stripe',
                 'uname' => $uname);
     $headers = array('X-Stripe-Client-User-Agent: ' . json_encode($ua),
-                     'User-Agent: Stripe/v1 PhpBindings/' . Stripe::VERSION,
+                     'User-Agent: Stripe/v1 PhpBindings/' . M2_Stripe::VERSION,
                      'Authorization: Bearer ' . $myApiKey);
-    if (Stripe::$apiVersion)
-      $headers[] = 'Stripe-Version: ' . Stripe::$apiVersion;
+    if (M2_Stripe::$apiVersion)
+      $headers[] = 'Stripe-Version: ' . M2_Stripe::$apiVersion;
     list($rbody, $rcode) = $this->_curlRequest(
         $method,
         $absUrl,
@@ -250,7 +250,7 @@ class M2_Stripe_ApiRequestor
     $opts[CURLOPT_TIMEOUT] = 80;
     $opts[CURLOPT_RETURNTRANSFER] = true;
     $opts[CURLOPT_HTTPHEADER] = $headers;
-    if (!Stripe::$verifySslCerts)
+    if (!M2_Stripe::$verifySslCerts)
       $opts[CURLOPT_SSL_VERIFYPEER] = false;
 
     curl_setopt_array($curl, $opts);
@@ -293,7 +293,7 @@ class M2_Stripe_ApiRequestor
    */
   public function handleCurlError($errno, $message)
   {
-    $apiBase = Stripe::$apiBase;
+    $apiBase = M2_Stripe::$apiBase;
     switch ($errno) {
     case CURLE_COULDNT_CONNECT:
     case CURLE_COULDNT_RESOLVE_HOST:
