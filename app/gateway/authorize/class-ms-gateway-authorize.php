@@ -300,7 +300,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @return AuthorizeNetCIM The instance of AuthorizeNetCIM class.
+	 * @return M2_AuthorizeNetCIM The instance of AuthorizeNetCIM class.
 	 */
 	protected function get_cim() {
 		$cim = null;
@@ -310,7 +310,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		} else {
 			$this->load_authorize_lib();
 
-			$cim = new AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
+			$cim = new M2_AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
 			$cim->setSandbox( $this->mode != self::MODE_LIVE );
 
 			if ( $this->log_file ) {
@@ -448,7 +448,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		$this->load_authorize_lib();
-		$customer = new AuthorizeNetCustomer();
+		$customer = new M2_AuthorizeNetCustomer();
 		$customer->merchantCustomerId = $member->id;
 		$customer->email = $member->email;
 		$customer->paymentProfiles[] = $this->create_cim_payment_profile();
@@ -524,12 +524,12 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * Creates CIM payment profile and fills it with posted credit card data.
 	 *
 	 * @since  1.0.0
-	 * @return AuthorizeNetPaymentProfile The instance of AuthorizeNetPaymentProfile class.
+	 * @return M2_AuthorizeNetPaymentProfile The instance of AuthorizeNetPaymentProfile class.
 	 */
 	protected function create_cim_payment_profile() {
 		$this->load_authorize_lib();
 
-		$payment = new AuthorizeNetPaymentProfile();
+		$payment = new M2_AuthorizeNetPaymentProfile();
 
 		// billing information
 		$payment->billTo->firstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
@@ -563,7 +563,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 *
 	 * @since  1.0.0
 	 * @param MS_Model_Member $member The member.
-	 * @return AuthorizeNetTransaction The instance of AuthorizeNetTransaction class.
+	 * @return M2_AuthorizeNetTransaction The instance of AuthorizeNetTransaction class.
 	 */
 	protected function get_cim_transaction( $member ) {
 		$this->load_authorize_lib();
@@ -575,7 +575,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			throw new Exception( __( 'CIM Payment profile not found', MS_TEXT_DOMAIN ) );
 		}
 
-		$transaction = new AuthorizeNetTransaction();
+		$transaction = new M2_AuthorizeNetTransaction();
 		$transaction->customerProfileId = $cim_profile_id;
 		$transaction->customerPaymentProfileId = $cim_payment_profile_id;
 

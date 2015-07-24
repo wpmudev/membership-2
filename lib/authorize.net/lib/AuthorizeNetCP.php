@@ -8,32 +8,32 @@
  * @link       http://www.authorize.net/support/CP_guide.pdf Card Present Guide
  */
 
- 
+
 /**
  * Builds and sends an AuthorizeNet CP Request.
  *
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetCP
  */
-class AuthorizeNetCP extends AuthorizeNetAIM
+class M2_AuthorizeNetCP extends M2_AuthorizeNetAIM
 {
-    
+
     const LIVE_URL = 'https://cardpresent.authorize.net/gateway/transact.dll';
-    
-    public $verify_x_fields = false; 
-    
+
+    public $verify_x_fields = false;
+
     /**
-     * Holds all the x_* name/values that will be posted in the request. 
+     * Holds all the x_* name/values that will be posted in the request.
      * Default values are provided for best practice fields.
      */
     protected $_x_post_fields = array(
-        "cpversion" => "1.0", 
+        "cpversion" => "1.0",
         "delim_char" => ",",
         "encap_char" => "|",
         "market_type" => "2",
         "response_format" => "1", // 0 - XML, 1 - NVP
         );
-    
+
     /**
      * Device Types (x_device_type)
      * 1 = Unknown
@@ -47,12 +47,12 @@ class AuthorizeNetCP extends AuthorizeNetAIM
      * 9 = Dial Terminal
      * 10 = Virtual Terminal
      */
-    
+
 	/**
      * Only used if merchant wants to send custom fields.
      */
     private $_custom_fields = array();
-	
+
     /**
      * Strip sentinels and set track1 field.
      *
@@ -62,10 +62,10 @@ class AuthorizeNetCP extends AuthorizeNetAIM
         if (preg_match('/^%.*\?$/', $track1data)) {
             $this->track1 = substr($track1data, 1, -1);
         } else {
-            $this->track1 = $track1data;    
+            $this->track1 = $track1data;
         }
     }
-    
+
     /**
      * Strip sentinels and set track2 field.
      *
@@ -75,22 +75,22 @@ class AuthorizeNetCP extends AuthorizeNetAIM
         if (preg_match('/^;.*\?$/', $track2data)) {
             $this->track2 = substr($track2data, 1, -1);
         } else {
-            $this->track2 = $track2data;    
+            $this->track2 = $track2data;
         }
     }
-    
+
     /**
      *
      *
      * @param string $response
-     * 
+     *
      * @return AuthorizeNetAIM_Response
      */
     protected function _handleResponse($response)
     {
-        return new AuthorizeNetCP_Response($response, $this->_x_post_fields['delim_char'], $this->_x_post_fields['encap_char'], $this->_custom_fields);
+        return new M2_AuthorizeNetCP_Response($response, $this->_x_post_fields['delim_char'], $this->_x_post_fields['encap_char'], $this->_custom_fields);
     }
-    
+
 }
 
 
@@ -100,7 +100,7 @@ class AuthorizeNetCP extends AuthorizeNetAIM
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetCP
  */
-class AuthorizeNetCP_Response extends AuthorizeNetResponse
+class M2_AuthorizeNetCP_Response extends M2_AuthorizeNetResponse
 {
     private $_response_array = array(); // An array with the split response.
 
@@ -115,15 +115,15 @@ class AuthorizeNetCP_Response extends AuthorizeNetResponse
     public function __construct($response, $delimiter, $encap_char, $custom_fields)
     {
         if ($response) {
-            
+
             // If it's an XML response
             if (substr($response, 0, 5) == "<?xml") {
-                
+
                 $this->xml = @simplexml_load_string($response);
                 // Set all fields
                 $this->version              = array_pop(array_slice(explode('"', $response), 1,1));
                 $this->response_code        = (string)$this->xml->ResponseCode;
-                
+
                 if ($this->response_code == 1) {
                     $this->response_reason_code = (string)$this->xml->Messages->Message->Code;
                     $this->response_reason_text = (string)$this->xml->Messages->Message->Description;
@@ -131,7 +131,7 @@ class AuthorizeNetCP_Response extends AuthorizeNetResponse
                     $this->response_reason_code = (string)$this->xml->Errors->Error->ErrorCode;
                     $this->response_reason_text = (string)$this->xml->Errors->Error->ErrorText;
                 }
-                
+
                 $this->authorization_code   = (string)$this->xml->AuthCode;
                 $this->avs_code             = (string)$this->xml->AVSResultCode;
                 $this->card_code_response   = (string)$this->xml->CVVResultCode;
@@ -142,10 +142,10 @@ class AuthorizeNetCP_Response extends AuthorizeNetResponse
                 $this->card_type            = (string)$this->xml->AccountType;
                 $this->test_mode            = (string)$this->xml->TestMode;
                 $this->ref_trans_id         = (string)$this->xml->RefTransID;
-                
-                
+
+
             } else { // If it's an NVP response
-                
+
                 // Split Array
                 $this->response = $response;
                 if ($encap_char) {
@@ -153,7 +153,7 @@ class AuthorizeNetCP_Response extends AuthorizeNetResponse
                 } else {
                     $this->_response_array = explode($delimiter, $response);
                 }
-                
+
                 /**
                  * If AuthorizeNet doesn't return a delimited response.
                  */
@@ -163,9 +163,9 @@ class AuthorizeNetCP_Response extends AuthorizeNetResponse
                     $this->error_message = "Unrecognized response from AuthorizeNet: $response";
                     return;
                 }
-                
-                
-                
+
+
+
                 // Set all fields
                 $this->version              = $this->_response_array[0];
                 $this->response_code        = $this->_response_array[1];
@@ -183,16 +183,16 @@ class AuthorizeNetCP_Response extends AuthorizeNetResponse
                 $this->requested_amount     = isset($this->_response_array[23]) ? $this->_response_array[23] : NULL;
                 $this->approved_amount      = isset($this->_response_array[24]) ? $this->_response_array[24] : NULL;
                 $this->card_balance         = isset($this->_response_array[25]) ? $this->_response_array[25] : NULL;
-    
-    
-                
+
+
+
             }
             $this->approved = ($this->response_code == self::APPROVED);
             $this->declined = ($this->response_code == self::DECLINED);
             $this->error    = ($this->response_code == self::ERROR);
             $this->held     = ($this->response_code == self::HELD);
 
-            
+
             if ($this->error) {
                 $this->error_message = "AuthorizeNet Error:
                 Response Code: ".$this->response_code."
@@ -200,14 +200,14 @@ class AuthorizeNetCP_Response extends AuthorizeNetResponse
                 Response Reason Text: ".$this->response_reason_text."
                 ";
             }
-            
+
         } else {
             $this->approved = false;
             $this->error = true;
             $this->error_message = "Error connecting to AuthorizeNet";
         }
     }
-    
+
     /**
      * Is the MD5 provided correct?
      *

@@ -10,6 +10,6 @@
  *
  * @package AuthorizeNet
  */
-class AuthorizeNetException extends Exception
+class M2_AuthorizeNetException extends Exception
 {
 }

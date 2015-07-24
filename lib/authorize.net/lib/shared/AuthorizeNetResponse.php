@@ -13,14 +13,14 @@
  * @package AuthorizeNet
  * @subpackage    AuthorizeNetResponse
  */
-class AuthorizeNetResponse
+class M2_AuthorizeNetResponse
 {
 
     const APPROVED = 1;
     const DECLINED = 2;
     const ERROR = 3;
     const HELD = 4;
-    
+
     public $approved;
     public $declined;
     public $error;

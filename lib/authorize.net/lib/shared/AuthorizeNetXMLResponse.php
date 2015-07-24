@@ -12,7 +12,7 @@
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetXML
  */
-class AuthorizeNetXMLResponse
+class M2_AuthorizeNetXMLResponse
 {
 
     public $xml; // Holds a SimpleXML Element with response.
@@ -27,12 +27,12 @@ class AuthorizeNetXMLResponse
         $this->response = $response;
         if ($response) {
             $this->xml = @simplexml_load_string($response);
-            
+
             // Remove namespaces for use with XPath.
             $this->xpath_xml = @simplexml_load_string(preg_replace('/ xmlns:xsi[^>]+/','',$response));
         }
     }
-    
+
     /**
      * Was the transaction successful?
      *
@@ -42,7 +42,7 @@ class AuthorizeNetXMLResponse
     {
         return ($this->getResultCode() == "Ok");
     }
-    
+
     /**
      * Run an xpath query on the cleaned XML response
      *
@@ -53,7 +53,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->xpath_xml->xpath($path);
     }
-    
+
     /**
      * Was there an error?
      *
@@ -66,14 +66,14 @@ class AuthorizeNetXMLResponse
 
     /**
      * @return string
-     */    
+     */
     public function getErrorMessage()
     {
-        return "Error: {$this->getResultCode()} 
+        return "Error: {$this->getResultCode()}
         Message: {$this->getMessageText()}
-        {$this->getMessageCode()}";    
+        {$this->getMessageCode()}";
     }
-    
+
     /**
      * @return string
      */
@@ -81,7 +81,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("refId");
     }
-    
+
     /**
      * @return string
      */
@@ -89,7 +89,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("resultCode");
     }
-    
+
     /**
      * @return string
      */
@@ -97,7 +97,7 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("code");
     }
-    
+
     /**
      * @return string
      */
@@ -105,14 +105,14 @@ class AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("text");
     }
-    
+
     /**
      * Grabs the contents of a unique element.
      *
      * @param  string
      * @return string
      */
-    protected function _getElementContents($elementName) 
+    protected function _getElementContents($elementName)
     {
         $start = "<$elementName>";
         $end = "</$elementName>";

@@ -13,23 +13,23 @@
  *
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetTD
- */ 
-class AuthorizeNetTD extends AuthorizeNetRequest
+ */
+class M2_AuthorizeNetTD extends M2_AuthorizeNetRequest
 {
 
     const LIVE_URL = "https://api.authorize.net/xml/v1/request.api";
     const SANDBOX_URL = "https://apitest.authorize.net/xml/v1/request.api";
-    
+
     private $_xml;
-    
+
     /**
-     * This function returns information about a settled batch: Batch ID, Settlement Time, & 
-     * Settlement State. If you specify includeStatistics, you also receive batch statistics 
+     * This function returns information about a settled batch: Batch ID, Settlement Time, &
+     * Settlement State. If you specify includeStatistics, you also receive batch statistics
      * by payment type.
      *
      *
-     * The detault date range is one day (the previous 24 hour period). The maximum date range is 31 
-     * days. The merchant time zone is taken into consideration when calculating the batch date range, 
+     * The detault date range is one day (the previous 24 hour period). The maximum date range is 31
+     * days. The merchant time zone is taken into consideration when calculating the batch date range,
      * unless the Z is specified in the first and last settlement date
      *
      * @param bool   $includeStatistics
@@ -51,7 +51,7 @@ class AuthorizeNetTD extends AuthorizeNetRequest
         $this->_xml->addChild("lastSettlementDate", $lastSettlementDate . $utc) : null);
         return $this->_sendRequest();
     }
-    
+
     /**
      * Return all settled batches for a certain month.
      *
@@ -82,7 +82,7 @@ class AuthorizeNetTD extends AuthorizeNetRequest
         $this->_xml->addChild("batchId", $batchId);
         return $this->_sendRequest();
     }
-    
+
     /**
      * Return all transactions for a certain day.
      *
@@ -104,7 +104,7 @@ class AuthorizeNetTD extends AuthorizeNetRequest
         $batches = $response->xpath("batchList/batch");
         foreach ($batches as $batch) {
             $batch_id = (string)$batch->batchId;
-            $request = new AuthorizeNetTD;
+            $request = new M2_AuthorizeNetTD;
             $tran_list = $request->getTransactionList($batch_id);
             $transactions = array_merge($transactions, $tran_list->xpath("transactions/transaction"));
         }
@@ -117,14 +117,14 @@ class AuthorizeNetTD extends AuthorizeNetRequest
      * @param int $transId
      *
      * @return AuthorizeNetTD_Response
-     */    
+     */
     public function getTransactionDetails($transId)
     {
         $this->_constructXml("getTransactionDetailsRequest");
         $this->_xml->addChild("transId", $transId);
         return $this->_sendRequest();
     }
-    
+
     /**
      * This function returns statistics about the settled batch specified by $batchId.
      *
@@ -138,7 +138,7 @@ class AuthorizeNetTD extends AuthorizeNetRequest
         $this->_xml->addChild("batchId", $batchId);
         return $this->_sendRequest();
     }
-    
+
     /**
      * This function returns the last 1000 unsettled transactions.
      *
@@ -150,7 +150,7 @@ class AuthorizeNetTD extends AuthorizeNetRequest
         $this->_constructXml("getUnsettledTransactionListRequest");
         return $this->_sendRequest();
     }
-    
+
     /**
      * @return string
      */
@@ -158,28 +158,28 @@ class AuthorizeNetTD extends AuthorizeNetRequest
     {
         return ($this->_sandbox ? self::SANDBOX_URL : self::LIVE_URL);
     }
-    
+
     /**
      *
      *
      * @param string $response
-     * 
+     *
      * @return AuthorizeNetTransactionDetails_Response
      */
     protected function _handleResponse($response)
     {
-        return new AuthorizeNetTD_Response($response);
+        return new M2_AuthorizeNetTD_Response($response);
     }
-    
+
     /**
      * Prepare the XML post string.
      */
     protected function _setPostString()
     {
         $this->_post_string = $this->_xml->asXML();
-        
+
     }
-    
+
     /**
      * Start the SimpleXMLElement that will be posted.
      *
@@ -193,7 +193,7 @@ class AuthorizeNetTD extends AuthorizeNetRequest
         $merchant->addChild('name',$this->_api_login);
         $merchant->addChild('transactionKey',$this->_transaction_key);
     }
-    
+
 }
 
 /**
@@ -202,8 +202,8 @@ class AuthorizeNetTD extends AuthorizeNetRequest
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetTD
  */
-class AuthorizeNetTD_Response extends AuthorizeNetXMLResponse
+class M2_AuthorizeNetTD_Response extends M2_AuthorizeNetXMLResponse
 {
-    
+
 
 }

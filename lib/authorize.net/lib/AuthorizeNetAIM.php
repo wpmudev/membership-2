@@ -5,7 +5,7 @@
  * Example Authorize and Capture Transaction against the Sandbox:
  * <code>
  * <?php require_once 'AuthorizeNet.php'
- * $sale = new AuthorizeNetAIM;
+ * $sale = new M2_AuthorizeNetAIM;
  * $sale->setFields(
  *     array(
  *    'amount' => '4.99',
@@ -23,8 +23,8 @@
  *
  * Note: To send requests to the live gateway, either define this:
  * define("AUTHORIZENET_SANDBOX", false);
- *   -- OR -- 
- * $sale = new AuthorizeNetAIM;
+ *   -- OR --
+ * $sale = new M2_AuthorizeNetAIM;
  * $sale->setSandbox(false);
  *
  * @package    AuthorizeNet
@@ -32,47 +32,47 @@
  * @link       http://www.authorize.net/support/AIM_guide.pdf AIM Guide
  */
 
- 
+
 /**
  * Builds and sends an AuthorizeNet AIM Request.
  *
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetAIM
  */
-class AuthorizeNetAIM extends AuthorizeNetRequest
+class M2_AuthorizeNetAIM extends M2_AuthorizeNetRequest
 {
 
     const LIVE_URL = 'https://secure.authorize.net/gateway/transact.dll';
     const SANDBOX_URL = 'https://test.authorize.net/gateway/transact.dll';
-    
+
     /**
-     * Holds all the x_* name/values that will be posted in the request. 
+     * Holds all the x_* name/values that will be posted in the request.
      * Default values are provided for best practice fields.
      */
     protected $_x_post_fields = array(
-        "version" => "3.1", 
+        "version" => "3.1",
         "delim_char" => ",",
         "delim_data" => "TRUE",
         "relay_response" => "FALSE",
         "encap_char" => "|",
         );
-        
+
     /**
      * Only used if merchant wants to send multiple line items about the charge.
      */
     private $_additional_line_items = array();
-    
+
     /**
      * Only used if merchant wants to send custom fields.
      */
     private $_custom_fields = array();
-    
+
     /**
      * Checks to make sure a field is actually in the API before setting.
      * Set to false to skip this check.
      */
     public $verify_x_fields = true;
-    
+
     /**
      * A list of all fields in the AIM API.
      * Used to warn user if they try to set a field not offered in the API.
@@ -91,10 +91,10 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
         "split_tender_id","state","tax","tax_exempt","test_request","tran_key",
         "trans_id","type","version","zip"
         );
-    
+
     /**
-     * Do an AUTH_CAPTURE transaction. 
-     * 
+     * Do an AUTH_CAPTURE transaction.
+     *
      * Required "x_" fields: card_num, exp_date, amount
      *
      * @param string $amount   The dollar amount to charge
@@ -111,7 +111,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
         $this->type = "AUTH_CAPTURE";
         return $this->_sendRequest();
     }
-    
+
     /**
      * Do a PRIOR_AUTH_CAPTURE transaction.
      *
@@ -168,7 +168,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
         $this->type = "VOID";
         return $this->_sendRequest();
     }
-    
+
     /**
      * Do a CAPTURE_ONLY transaction.
      *
@@ -190,7 +190,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
         $this->type = "CAPTURE_ONLY";
         return $this->_sendRequest();
     }
-    
+
     /**
      * Do a CREDIT transaction.
      *
@@ -210,7 +210,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
         $this->type = "CREDIT";
         return $this->_sendRequest();
     }
-    
+
     /**
      * Alternative syntax for setting x_ fields.
      *
@@ -219,11 +219,11 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
      * @param string $name
      * @param string $value
      */
-    public function __set($name, $value) 
+    public function __set($name, $value)
     {
         $this->setField($name, $value);
     }
-    
+
     /**
      * Quickly set multiple fields.
      *
@@ -239,7 +239,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
             $this->setField($key, $value);
         }
     }
-    
+
     /**
      * Quickly set multiple custom fields.
      *
@@ -252,10 +252,10 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
             $this->setCustomField($key, $value);
         }
     }
-    
+
     /**
      * Add a line item.
-     * 
+     *
      * @param string $item_id
      * @param string $item_name
      * @param string $item_description
@@ -273,7 +273,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
         }
         $this->_additional_line_items[] = $line_item;
     }
-    
+
     /**
      * Use ECHECK as payment type.
      */
@@ -291,7 +291,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
             )
         );
     }
-    
+
     /**
      * Set an individual name/value pair. This will append x_ to the name
      * before posting.
@@ -305,14 +305,14 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
             if (in_array($name, $this->_all_aim_fields)) {
                 $this->_x_post_fields[$name] = $value;
             } else {
-                throw new AuthorizeNetException("Error: no field $name exists in the AIM API.
+                throw new M2_AuthorizeNetException("Error: no field $name exists in the AIM API.
                 To set a custom field use setCustomField('field','value') instead.");
             }
         } else {
             $this->_x_post_fields[$name] = $value;
         }
     }
-    
+
     /**
      * Set a custom field. Note: the x_ prefix will not be added to
      * your custom field if you use this method.
@@ -324,7 +324,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
     {
         $this->_custom_fields[$name] = $value;
     }
-    
+
     /**
      * Unset an x_ field.
      *
@@ -334,19 +334,19 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
     {
         unset($this->_x_post_fields[$name]);
     }
-    
+
     /**
      *
      *
      * @param string $response
-     * 
+     *
      * @return AuthorizeNetAIM_Response
      */
     protected function _handleResponse($response)
     {
-        return new AuthorizeNetAIM_Response($response, $this->_x_post_fields['delim_char'], $this->_x_post_fields['encap_char'], $this->_custom_fields);
+        return new M2_AuthorizeNetAIM_Response($response, $this->_x_post_fields['delim_char'], $this->_x_post_fields['encap_char'], $this->_custom_fields);
     }
-    
+
     /**
      * @return string
      */
@@ -354,7 +354,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
     {
         return ($this->_sandbox ? self::SANDBOX_URL : self::LIVE_URL);
     }
-    
+
     /**
      * Converts the x_post_fields array into a string suitable for posting.
      */
@@ -384,7 +384,7 @@ class AuthorizeNetAIM extends AuthorizeNetRequest
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetAIM
  */
-class AuthorizeNetAIM_Response extends AuthorizeNetResponse
+class M2_AuthorizeNetAIM_Response extends M2_AuthorizeNetResponse
 {
     private $_response_array = array(); // An array with the split response.
 
@@ -399,7 +399,7 @@ class AuthorizeNetAIM_Response extends AuthorizeNetResponse
     public function __construct($response, $delimiter, $encap_char, $custom_fields)
     {
         if ($response) {
-            
+
             // Split Array
             $this->response = $response;
             if ($encap_char) {
@@ -407,7 +407,7 @@ class AuthorizeNetAIM_Response extends AuthorizeNetResponse
             } else {
                 $this->_response_array = explode($delimiter, $response);
             }
-            
+
             /**
              * If AuthorizeNet doesn't return a delimited response.
              */
@@ -417,9 +417,9 @@ class AuthorizeNetAIM_Response extends AuthorizeNetResponse
                 $this->error_message = "Unrecognized response from AuthorizeNet: $response";
                 return;
             }
-            
-            
-            
+
+
+
             // Set all fields
             $this->response_code        = $this->_response_array[0];
             $this->response_subcode     = $this->_response_array[1];
@@ -466,12 +466,12 @@ class AuthorizeNetAIM_Response extends AuthorizeNetResponse
             $this->split_tender_id      = $this->_response_array[52];
             $this->requested_amount     = $this->_response_array[53];
             $this->balance_on_card      = $this->_response_array[54];
-            
+
             $this->approved = ($this->response_code == self::APPROVED);
             $this->declined = ($this->response_code == self::DECLINED);
             $this->error    = ($this->response_code == self::ERROR);
             $this->held     = ($this->response_code == self::HELD);
-            
+
             // Set custom fields
             if ($count = count($custom_fields)) {
                 $custom_fields_response = array_slice($this->_response_array, -$count, $count);
@@ -481,7 +481,7 @@ class AuthorizeNetAIM_Response extends AuthorizeNetResponse
                     $i++;
                 }
             }
-            
+
             if ($this->error) {
                 $this->error_message = "AuthorizeNet Error:
                 Response Code: ".$this->response_code."

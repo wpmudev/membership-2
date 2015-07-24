@@ -5,32 +5,32 @@
  * @package    AuthorizeNet
  * @subpackage AuthorizeNetRequest
  */
-abstract class AuthorizeNetRequest
+abstract class M2_AuthorizeNetRequest
 {
-    
+
     protected $_api_login;
     protected $_transaction_key;
-    protected $_post_string; 
+    protected $_post_string;
     public $VERIFY_PEER = true; // attempt trust validation of SSL certificates when establishing secure connections.
     protected $_sandbox = true;
     protected $_log_file = false;
-    
+
     /**
      * Set the _post_string
      */
     abstract protected function _setPostString();
-    
+
     /**
      * Handle the response string
      */
     abstract protected function _handleResponse($string);
-    
+
     /**
      * Get the post url. We need this because until 5.3 you
      * you could not access child constants in a parent class.
      */
     abstract protected function _getPostUrl();
-    
+
     /**
      * Constructor.
      *
@@ -44,7 +44,7 @@ abstract class AuthorizeNetRequest
         $this->_sandbox = (defined('AUTHORIZENET_SANDBOX') ? AUTHORIZENET_SANDBOX : true);
         $this->_log_file = (defined('AUTHORIZENET_LOG_FILE') ? AUTHORIZENET_LOG_FILE : false);
     }
-    
+
     /**
      * Alter the gateway url.
      *
@@ -54,7 +54,7 @@ abstract class AuthorizeNetRequest
     {
         $this->_sandbox = $bool;
     }
-    
+
     /**
      * Set a log file.
      *
@@ -64,7 +64,7 @@ abstract class AuthorizeNetRequest
     {
         $this->_log_file = $filepath;
     }
-    
+
     /**
      * Return the post string.
      *
@@ -74,7 +74,7 @@ abstract class AuthorizeNetRequest
     {
         return $this->_post_string;
     }
-    
+
     /**
      * Posts the request to AuthorizeNet & returns response.
      *
@@ -99,25 +99,25 @@ abstract class AuthorizeNetRequest
 			}
 			return false;
         }
-        
+
         if (preg_match('/xml/',$post_url)) {
             curl_setopt($curl_request, CURLOPT_HTTPHEADER, Array("Content-Type: text/xml"));
         }
-        
+
         $response = curl_exec($curl_request);
-        
+
         if ($this->_log_file) {
-        
+
             if ($curl_error = curl_error($curl_request)) {
                 file_put_contents($this->_log_file, "----CURL ERROR----\n$curl_error\n\n", FILE_APPEND);
             }
             // Do not log requests that could contain CC info.
              file_put_contents($this->_log_file, "----Request----\n{$this->_post_string}\n", FILE_APPEND);
-            
+
             file_put_contents($this->_log_file, "----Response----\n$response\n\n", FILE_APPEND);
         }
         curl_close($curl_request);
-        
+
         return $this->_handleResponse($response);
     }
 
