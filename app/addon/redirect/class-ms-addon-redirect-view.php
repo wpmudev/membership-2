@@ -9,36 +9,34 @@ class MS_Addon_Redirect_View extends MS_View {
 		$fields = $this->prepare_fields();
 		ob_start();
 		?>
-		<div class="ms-wrap">
-			<div class="ms-settings">
-				<?php
-				MS_Helper_Html::settings_tab_header(
-					array(
-						'title' => __( 'Redirect Settings', MS_TEXT_DOMAIN ),
-						'desc' => array(
-							__( 'Specify your custom URLs here. You can use either an absolute URL (starting with "http://") or an site-relative path (like "/some-page/")', MS_TEXT_DOMAIN ),
+		<div class="ms-addon-wrap">
+			<?php
+			MS_Helper_Html::settings_tab_header(
+				array(
+					'title' => __( 'Redirect Settings', MS_TEXT_DOMAIN ),
+					'desc' => array(
+						__( 'Specify your custom URLs here. You can use either an absolute URL (starting with "http://") or an site-relative path (like "/some-page/")', MS_TEXT_DOMAIN ),
+						sprintf(
+							__( 'The URLs you specify here can always be overwritten in the %slogin shortcode%s using the redirect-attributes. Example: <code>[%s redirect_login="/welcome/" redirect_logout="/good-bye/"]</code>.', MS_TEXT_DOMAIN ),
 							sprintf(
-								__( 'The URLs you specify here can always be overwritten in the %slogin shortcode%s using the redirect-attributes. Example: <code>[%s redirect_login="/welcome/" redirect_logout="/good-bye/"]</code>.', MS_TEXT_DOMAIN ),
-								sprintf(
-									'<a href="%s#ms-membership-login" target="_blank">',
-									MS_Controller_Plugin::get_admin_url(
-										'help',
-										array( 'tab' => 'shortcodes')
-									)
-								),
-								'</a>',
-								MS_Helper_Shortcode::SCODE_LOGIN
+								'<a href="%s#ms-membership-login" target="_blank">',
+								MS_Controller_Plugin::get_admin_url(
+									'help',
+									array( 'tab' => 'shortcodes')
+								)
 							),
+							'</a>',
+							MS_Helper_Shortcode::SCODE_LOGIN
 						),
-					)
-				);
-				?>
+					),
+				)
+			);
+			?>
 
-				<form action="" method="post">
-					<?php MS_Helper_Html::settings_box( $fields ); ?>
-				</form>
-				<?php MS_Helper_Html::settings_footer(); ?>
-			</div>
+			<form action="" method="post">
+				<?php MS_Helper_Html::settings_box( $fields ); ?>
+			</form>
+			<?php MS_Helper_Html::settings_footer(); ?>
 		</div>
 		<?php
 		$html = ob_get_clean();
