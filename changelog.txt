@@ -20,6 +20,7 @@ Change Log:
 - Add an edit page to override Protection Messages for each Membership
 - Add a new settings page to define Upgrade Paths to each Membership
 - Add a warning when using a wrong value in the PayPal Standard settings
+- Add a few new API functions (see the API Docs link in the Help page)
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
 - Improve HTML output to be compatible with most themes (remove line breaks inside HTML tags)
@@ -33,7 +34,8 @@ Change Log:
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 - Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
 - Fix a minor security hole in the data import module
-- Fix some PHP notices
+- Fix a bunch of PHP notices and warnings
+- A lot of small improvements behind the scenes, cleanup and some new filters
 
 1.0.0.8
 ----------------------------------------------------------------------
