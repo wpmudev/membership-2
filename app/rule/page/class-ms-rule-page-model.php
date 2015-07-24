@@ -200,7 +200,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 		$offset = absint( $args['offset'] );
 		$limit = $offset + absint( $args['number'] );
 		$args['offset'] = 0;
-		$args['number'] = $limit;
+		$args['number'] = 0;
 
 		$args = $this->get_query_args( $args );
 

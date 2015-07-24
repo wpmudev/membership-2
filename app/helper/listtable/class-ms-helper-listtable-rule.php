@@ -214,6 +214,18 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			self::DEFAULT_PAGE_SIZE
 		);
 
+		/**
+		 * Custom filter to modify the items on all Protection Rule list tables.
+		 *
+		 * @since 1.0.1.0
+		 * @var   int
+		 */
+		$per_page = apply_filters(
+			'rule_items_per_page',
+			$per_page,
+			$this->id
+		);
+
 		$current_page = $this->get_pagenum();
 
 		$args = array(
