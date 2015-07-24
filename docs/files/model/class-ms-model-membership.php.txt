@@ -10,7 +10,7 @@
  * There are magic methods \_\_get() and \_\_set() that do some validation before
  * accessing the properties.
  *
- * @since 1.0.0
+ * @since  1.0.0
  * @package Membership2
  * @subpackage Model
  */
@@ -19,7 +19,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Model custom post type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal self::get_post_type() to get this value!
 	 *
 	 * @var string $POST_TYPE
@@ -29,7 +29,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Membership type constant.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $type  $type property.
 	 */
 	const TYPE_STANDARD = 'simple';
@@ -37,7 +37,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Membership type constant.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $type $type property.
 	 */
 	const TYPE_DRIPPED = 'dripped';
@@ -46,7 +46,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership type constant.
 	 * System membership, hidden, created automatically.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @see $type $type property.
 	 */
 	const TYPE_BASE = 'base';
@@ -55,7 +55,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership type constant.
 	 * Guest membership, only one membership possible.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @see $type $type property.
 	 */
 	const TYPE_GUEST = 'guest';
@@ -64,7 +64,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership type constant.
 	 * User membership, only one membership possible.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @see $type $type property.
 	 */
 	const TYPE_USER = 'user';
@@ -72,7 +72,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Membership payment type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $payment_type $payment_type property.
 	 */
 	const PAYMENT_TYPE_PERMANENT = 'permanent';
@@ -80,7 +80,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Membership payment type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $payment_type $payment_type property.
 	 */
 	const PAYMENT_TYPE_FINITE = 'finite';
@@ -88,7 +88,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Membership payment type constants.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $payment_type $payment_type property.
 	 */
 	const PAYMENT_TYPE_DATE_RANGE = 'date-range';
@@ -97,7 +97,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership payment type constants.
 	 * The only type that auto-renews without asking the user!
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $payment_type $payment_type property.
 	 */
 	const PAYMENT_TYPE_RECURRING = 'recurring';
@@ -106,7 +106,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership type.
 	 * Default is TYPE_STANDARD.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $type
 	 */
 	protected $type = self::TYPE_STANDARD;
@@ -115,7 +115,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership payment type.
 	 * Default is PAYMENT_TYPE_PERMANENT.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var string $payment_type
 	 */
 	protected $payment_type = self::PAYMENT_TYPE_PERMANENT;
@@ -124,7 +124,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership active status.
 	 * By default a new membership is active.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var bool $active
 	 */
 	protected $active = true;
@@ -136,15 +136,24 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Users can still stubscribe to the membership via the shortcode
 	 * [ms-membership-buy] or by otherwise reaching the subscription URL.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var bool $private
 	 */
 	protected $private = false;
 
 	/**
+	 * A priority value that is used to determine the effective override
+	 * settings if a user has multiple memberships.
+	 *
+	 * @since  1.0.1.0
+	 * @var int $priority
+	 */
+	protected $priority = 0;
+
+	/**
 	 * Membership free status.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var bool $free.
 	 */
 	protected $is_free = false;
@@ -152,7 +161,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Membership price.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var float $price.
 	 */
 	protected $price = 0;
@@ -160,7 +169,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * A list of disabled gateways.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @var array $disabled_gateways.
 	 */
 	protected $disabled_gateways = array();
@@ -169,7 +178,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership period for finite access.
 	 * Used for payment_type PAYMENT_TYPE_FINITE.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see $payment_type $payment_type property.
 	 * @var array $period {
 	 *		@type int $period_unit The period of time quantity.
@@ -182,7 +191,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership payment recurring period cycle.
 	 * Used for the payment_type PAYMENT_TYPE_RECURRING.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see  $payment_type $payment_type property.
 	 * @var array $pay_cycle_period {@see $period $period property}.
 	 */
@@ -192,7 +201,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Defines how many payments are made before the membership ends.
 	 * Used for the payment_type PAYMENT_TYPE_RECURRING.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @see  $payment_type $payment_type property.
 	 * @var int
 	 */
@@ -202,7 +211,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership start date for date range payment type.
 	 * Used for the payment_type PAYMENT_TYPE_DATE_RANGE.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see  $payment_type $payment_type property.
 	 * @var string The membership start date.
 	 */
@@ -212,7 +221,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership end date for date range payment type.
 	 * Used for the payment_type PAYMENT_TYPE_DATE_RANGE.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @see  $payment_type $payment_type property.
 	 * @var string The membership end date.
 	 */
@@ -222,7 +231,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership trial period enabled indicator.
 	 * Requires the Trial Period Add-on to work.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var bool $trial_period_enabled.
 	 */
 	protected $trial_period_enabled = false;
@@ -231,7 +240,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Membership trial price value.
 	 * Requires the Trial Period Add-on to work.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal This property has no effect yet.
 	 * @var float $trial_price.
 	 */
@@ -240,7 +249,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Membership trial period.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var array $trial_period {@see $period $period property}.
 	 */
 	protected $trial_period = array( 'period_unit' => 1, 'period_type' => 'days' );
@@ -253,7 +262,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @see MS_Model_Relationship::check_membership_status()
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @var int $on_end_membership_id.
 	 */
 	protected $on_end_membership_id = 0;
@@ -265,7 +274,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * the first time during the setup assistant, or later via the membership
 	 * list.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var bool $is_setup_completed.
 	 */
@@ -274,11 +283,21 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Where the data came from. Can only be changed by data import tool.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var string
 	 */
 	protected $source = '';
+
+	/**
+	 * Relevant for imported items. This is the ID that was used by the import
+	 * source.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var string
+	 */
+	protected $source_id = '';
 
 	/**
 	 * Membership composite Rules.
@@ -294,7 +313,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *   However, the $_rules property will only have ONE "page" rule, and that's
 	 *   the one for the currently visible site!
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var array MS_Rule[].
 	 */
@@ -304,16 +323,35 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Only used for serialization of the membership.
 	 * @see __sleep()
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var array
 	 */
 	protected $rule_values = array();
 
 	/**
+	 * Defines which members can NOT subscribe to the current membership.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var array
+	 */
+	protected $update_denied = array();
+
+	/**
+	 * Defines if the current membership replaces other memberships on
+	 * subscription.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var array
+	 */
+	protected $update_replace = array();
+
+	/**
 	 * Used in simulation mode explaining why a page is allowed or denied.
 	 *
-	 * @since 1.0.1
+	 * @since  1.0.0
 	 * @internal
 	 * @var array
 	 */
@@ -323,7 +361,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Similar to $_access_reason, but only contains the rules that denied page
 	 * access.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var array
 	 */
@@ -333,7 +371,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Similar to $_access_reason, but only contains the rules that allowed page
 	 * access.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @var array
 	 */
@@ -344,10 +382,21 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * This value will only have a value when the Membership is loaded within
 	 * the context of a subscription.
 	 *
-	 * @since 1.1.0.7
+	 * @since  1.0.0
 	 * @var   int
 	 */
 	protected $subscription_id = 0;
+
+	/**
+	 * This property is used to build the signup list (shortcode).
+	 *
+	 * It's a temporary value that is not saved to database.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 * @var array
+	 */
+	public $_move_from = array();
 
 
 	//
@@ -359,19 +408,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Returns the post-type of the current object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The post-type name.
 	 */
 	public static function get_post_type() {
-		return parent::_post_type( __CLASS__ );
+		return parent::_post_type( self::$POST_TYPE );
 	}
 
 	/**
 	 * Get custom register post type args for this model.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public static function get_register_post_type_args() {
@@ -399,7 +448,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get membership types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return array {
@@ -424,7 +473,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get membership payment types.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return array {
@@ -460,7 +509,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get available Memberships count.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -485,7 +534,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Find out if the installation has at least one paid membership
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return bool
@@ -503,9 +552,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			INNER JOIN {$wpdb->postmeta} priv ON priv.post_id = p.ID AND priv.meta_key = %s
 			INNER JOIN {$wpdb->postmeta} free ON free.post_id = p.ID AND free.meta_key = %s
 			INNER JOIN {$wpdb->postmeta} pric ON pric.post_id = p.ID AND pric.meta_key = %s
+			INNER JOIN {$wpdb->postmeta} acti ON acti.post_id = p.ID AND acti.meta_key = %s
 			WHERE
 				p.post_type = %s
 				AND priv.meta_value != '1'
+				AND acti.meta_value = '1'
 				AND NOT (
 					free.meta_value = '1'
 					OR pric.meta_value = '0'
@@ -517,6 +568,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				'private',       // INNER JOIN
 				'is_free',       // INNER JOIN
 				'price',         // INNER JOIN
+				'active',        // INNER JOIN
 				self::get_post_type() // WHERE condition
 			);
 
@@ -536,7 +588,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Default search arguments for this custom post_type.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -548,8 +600,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'ms_model_membership_get_query_args_defaults',
 			array(
 				'post_type' => self::get_post_type(),
-				'order' => 'DESC',
-				'orderby' => 'name',
+				'order' => 'ASC',
+				'orderby' => 'menu_order',
 				'post_status' => 'any',
 				'post_per_page' => -1,
 				'nopaging' => true,
@@ -559,6 +611,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		);
 
 		$args = wp_parse_args( $args, $defaults );
+
+		if ( isset( $args['active'] ) ) {
+			$args['meta_query']['active'] = array(
+				'key'     => 'active',
+				'value'   => 1,
+			);
+
+			if ( lib2()->is_true( $args['active'] ) ) {
+				$args['meta_query']['active']['compare'] = '=';
+			} else {
+				$args['meta_query']['active']['compare'] = '!=';
+			}
+		}
 
 		if ( ! lib2()->is_true( $args['include_base'] ) ) {
 			$args['meta_query']['base'] = array(
@@ -600,7 +665,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * To exclude the guest membership use:
 	 * $args = array( 'include_guest' => 0 )
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -608,33 +673,36 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
 	static public function get_memberships( $args = null ) {
+		static $Membership_Query = array();
 		$args = self::get_query_args( $args );
-		$args['order'] = 'ASC';
+		$key = json_encode( $args );
 
-		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
-		$items = $query->get_posts();
-		MS_Factory::revert_blog();
+		if ( ! isset( $Membership_Query[$key] ) ) {
+			MS_Factory::select_blog();
+			$query = new WP_Query( $args );
+			$items = $query->get_posts();
+			MS_Factory::revert_blog();
 
-		$memberships = array();
-		foreach ( $items as $item ) {
-			$memberships[] = MS_Factory::load(
-				'MS_Model_Membership',
-				$item->ID
-			);
+			$Membership_Query[$key] = array();
+			foreach ( $items as $item ) {
+				$Membership_Query[$key][] = MS_Factory::load(
+					'MS_Model_Membership',
+					$item->ID
+				);
+			}
 		}
 
 		return apply_filters(
 			'ms_model_membership_get_memberships',
-			$memberships,
+			$Membership_Query[$key],
 			$args
 		);
 	}
 
-	/*
+	/**
 	 * Returns a list of the dripped memberships.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -664,7 +732,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get membership names.
 	 *
-	 * @since 1.0.0
+	 * Note that this function returns an array with membership_id as index,
+	 * while the function get_memberships() returns an array with sort-order as
+	 * index.
+	 *
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -694,7 +766,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get membership eligible to signup.
 	 *
-	 * @since 1.0.0
+	 * This function also checks for membership permissions and only display
+	 * memberships that are available for the current member.
+	 *
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param $args The query post args
@@ -707,11 +782,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @param bool $include_private If private memberships should be listed
 	 *     This param is only recognized in the admin section so admins can
 	 *     manually assign a private membership to a user.
-	 * @return array {
-	 *     Returns array of $membership_id => $membership
-	 *     @type int $membership_id The membership Id.
-	 *     @type MS_Model_Membership The membership model object.
-	 * }
+	 * @return array Returns sorted array of memberships. Sorted by priority.
 	 */
 	public static function get_signup_membership_list(
 		$args = null,
@@ -723,10 +794,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		if ( is_array( $exclude_ids ) ) {
 			$not_in = $exclude_ids;
 		}
-		$not_in[] = MS_Model_Membership::get_base()->id;
-		$not_in[] = MS_Model_Membership::get_guest()->id;
-		$not_in[] = MS_Model_Membership::get_user()->id;
 		$args['post__not_in'] = array_unique( $not_in );
+		$member = MS_Model_Member::get_current_member();
 
 		if ( ! is_admin() ) {
 			$include_private = false;
@@ -737,10 +806,22 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		// Retrieve memberships user is not part of, using selected args
 		$memberships = self::get_memberships( $args );
 
+		// Check the upgrade-paths settings
+		foreach ( $memberships as $key => $ms ) {
+			if ( $ms->is_system() ) {
+				unset( $memberships[$key] );
+			} elseif ( ! $member->can_subscribe_to( $ms->id ) ) {
+				unset( $memberships[$key] );
+			}
+		}
+
+		// Filter memberships based on status.
+		$order = array();
 		foreach ( $memberships as $key => $membership ) {
 			// Remove if not active.
 			if ( ! $membership->active ) {
 				unset( $memberships[ $key ] );
+				continue;
 			}
 
 			if ( $membership->private ) {
@@ -749,6 +830,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					$private[ $key ] = $memberships[ $key ];
 				}
 				unset( $memberships[ $key ] );
+				continue;
 			}
 		}
 
@@ -769,6 +851,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$memberships = array_merge( $memberships, $private );
 		}
 
+		// Sort memberships by priority.
+		usort(
+			$memberships,
+			array( __CLASS__, 'sort_by_priority' )
+		);
+
 		return apply_filters(
 			'ms_model_membership_get_signup_membership_list',
 			$memberships,
@@ -778,11 +866,29 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Sort function used as second param by `uasort()` to sort a membership
+	 * list by priority.
+	 * Memberships with equal priority are sorted alphabeically.
+	 *
+	 * @since  1.0.1.0
+	 * @param  MS_Model_Membership $a
+	 * @param  MS_Model_Membership $b
+	 * @return int -1: a < b | 0: a = b | +1: a > b
+	 */
+	static public function sort_by_priority( $a, $b ) {
+		if ( $a->priority == $b->priority ) {
+			return $a->name < $b->name ? -1 : 1;
+		} else {
+			return $a->priority - $b->priority;
+		}
+	}
+
+	/**
 	 * Verify if membership is valid.
 	 *
 	 * Verify if membership was not deleted, trying to load from DB.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $membership_id The membership id to verify.
@@ -804,7 +910,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Create a new membership if membership does not exist.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param  string $type The membership to load [protected_content|role]
@@ -812,7 +918,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *           memberships are not created.
 	 * @return MS_Model_Membership The Membership2.
 	 */
-	private static function _get_system_membership( $type, $create_missing = true ) {
+	public static function _get_system_membership( $type, $create_missing = true ) {
 		static $Special_Membership = array();
 		$comp_key = $type;
 		$membership = false;
@@ -853,7 +959,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 			if ( ! empty( $base ) ) {
 				$membership = MS_Factory::load( 'MS_Model_Membership', $base->ID );
-			} else if ( $create_missing ) {
+			} elseif ( $create_missing ) {
 				$names = self::get_types();
 
 				$description = __( 'Membership2 Core Membership', MS_TEXT_DOMAIN );
@@ -865,14 +971,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$membership->save();
 			}
 
-			$Special_Membership[$comp_key] = apply_filters(
-				'ms_model_membership_get_system_membership',
-				$membership,
-				$type
-			);
+			$Special_Membership[$comp_key] = $membership;
 		}
 
-		return $Special_Membership[$comp_key];
+		return apply_filters(
+			'ms_model_membership_get_system_membership',
+			$Special_Membership[$comp_key],
+			$type
+		);
 	}
 
 	/**
@@ -881,7 +987,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Create a new membership if membership does not exist.
 	 * This is an internal membership which is never displayed anywhere.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Membership The base membership.
@@ -897,14 +1003,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			foreach ( $Base_Membership->_rules as $key => $rule ) {
 				$Base_Membership->_rules[$key]->is_base_rule = true;
 			}
-
-			$Base_Membership = apply_filters(
-				'ms_model_membership_get_base',
-				$Base_Membership
-			);
 		}
 
-		return $Base_Membership;
+		return apply_filters(
+			'ms_model_membership_get_base',
+			$Base_Membership
+		);
 	}
 
 	/**
@@ -912,7 +1016,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Create a new membership if membership does not exist.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $role A WordPress user-role.
@@ -926,18 +1030,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				self::TYPE_GUEST,
 				false // Don't create this membership automatically
 			);
-
-			$Guest_Membership = apply_filters(
-				'ms_model_membership_get_guest',
-				$Guest_Membership
-			);
 		}
 
 		if ( ! $Guest_Membership ) {
 			$Guest_Membership = MS_Factory::create( 'MS_Model_Membership' );
 		}
 
-		return $Guest_Membership;
+		return apply_filters(
+			'ms_model_membership_get_guest',
+			$Guest_Membership
+		);
 	}
 
 	/**
@@ -946,7 +1048,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Create a new membership if membership does not exist.
 	 *
-	 * @since 1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $role A WordPress user-role.
@@ -960,18 +1062,44 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				self::TYPE_USER,
 				false // Don't create this membership automatically
 			);
-
-			$User_Membership = apply_filters(
-				'ms_model_membership_get_user',
-				$User_Membership
-			);
 		}
 
 		if ( ! $User_Membership ) {
 			$User_Membership = MS_Factory::create( 'MS_Model_Membership' );
 		}
 
-		return $User_Membership;
+		return apply_filters(
+			'ms_model_membership_get_user',
+			$User_Membership
+		);
+	}
+
+	/**
+	 * Checks if the specified string is a valid Membership-Type identifier.
+	 *
+	 * @since  1.0.1.0
+	 * @param  string $type A string to check against all known membership types.
+	 * @return bool True if the string is a valid type.
+	 */
+	static public function is_valid_type( $type ) {
+		switch ( $type ) {
+			case self::TYPE_BASE:
+			case self::TYPE_GUEST:
+			case self::TYPE_USER:
+			case self::TYPE_DRIPPED:
+				$result = true;
+				break;
+
+			default:
+				$result = false;
+				break;
+		}
+
+		return apply_filters(
+			'ms_model_membership_is_valid_type',
+			$result,
+			$type
+		);
 	}
 
 
@@ -985,7 +1113,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Returns a list of variables that should be included in serialization,
 	 * i.e. these values are the only ones that are stored in DB
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @internal
 	 * @return array
 	 */
@@ -1030,14 +1158,18 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'trial_period',
 			'on_end_membership_id',
 			'is_setup_completed',
+			'source',
+			'source_id',
 			'custom_data',
+			'update_denied',
+			'update_replace',
 		);
 	}
 
 	/**
 	 * Set rules membership_id before saving.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function before_save() {
@@ -1051,7 +1183,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Save model and move the object to the singleton cache if required.
 	 *
-	 * @since 2.0.0
+	 * @since  1.0.0
 	 */
 	public function save() {
 		parent::save();
@@ -1064,7 +1196,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Network-wide mode: We are still in the switched blog (main site) so
 	 * there is no need to call MS_Factory::select_blog() in this function.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function after_save() {
@@ -1074,9 +1206,36 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Save custom values in the wp_posts table.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 */
+	public function save_post_data( $post ) {
+		if ( $this->is_system() ) {
+			$this->priority = 0;
+		} elseif ( $this->priority < 1 ) {
+			$this->priority = 1;
+		}
+
+		$post['menu_order'] = $this->priority;
+		return $post;
+	}
+
+	/**
+	 * Load custom values from the wp_posts table.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 */
+	public function load_post_data( $post ) {
+		$this->priority = $post->menu_order;
+	}
+
+	/**
 	 * Permanently delete the membership.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -1093,13 +1252,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		if ( ! empty( $this->id ) ) {
 			if ( $this->get_members_count() > 0 ) {
-				$ms_relationships = MS_Model_Relationship::get_subscriptions(
+				$subscriptions = MS_Model_Relationship::get_subscriptions(
 					array( 'membership_id' => $this->id ),
 					true
 				);
 
-				foreach ( $ms_relationships as $ms_relationship ) {
-					$ms_relationship->delete();
+				foreach ( $subscriptions as $subscription ) {
+					$subscription->delete();
 				}
 			}
 
@@ -1115,7 +1274,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Assure the membership rules get updated whenever Membership2 is changed.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function prepare_obj() {
@@ -1155,7 +1314,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Description to show in the admin list table.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The current payment type description.
@@ -1223,7 +1382,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * ... the price is 0.00
 	 * ... it is a parent membership that cannot be signed up for
 	 *
-	 * @since  1.0.4.7
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -1248,10 +1407,70 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns true if this membership is eligable for trial period.
+	 *
+	 * @since  1.0.1.0
+	 * @return bool
+	 */
+	public function has_trial() {
+		$result = $this->trial_period_enabled;
+
+		if ( $result ) {
+			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+				$result = false;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Returns the access flag, if a specific membership can subscribe to the
+	 * current membership.
+	 *
+	 * A special value for $id is 'guest', which is used for all users without
+	 * a normal membership (is_system() type memberships are not normal)
+	 *
+	 * @since  1.0.1.0
+	 * @param  int|string $id A membership ID or the value 'guest'.
+	 * @return bool True if the specified membership can subscribe.
+	 */
+	public function update_allowed( $id ) {
+		$denied = false;
+
+		if ( isset( $this->update_denied[$id] ) ) {
+			$denied = $this->update_denied[$id];
+		}
+
+		return ! $denied;
+	}
+
+	/**
+	 * Returns the update-replacement flag, which defines if the OLD membership
+	 * should be cancelled during subscription.
+	 *
+	 * This is used in cases where the new membership is an upgraded version of
+	 * the old membership and the user can only have one of both memberships.
+	 *
+	 * @since  1.0.1.0
+	 * @param  int|string $id A membership ID.
+	 * @return bool True if the specified membership should be cancelled.
+	 */
+	public function update_replaces( $id ) {
+		$deny = false;
+
+		if ( isset( $this->update_replace[$id] ) ) {
+			$deny = $this->update_replace[$id];
+		}
+
+		return ! ! $deny;
+	}
+
+	/**
 	 * Checks if a specific payment gateway is allowed for the current
 	 * membership.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @param  string $gateway_id The payment gateway ID.
 	 * @return bool
 	 */
@@ -1288,7 +1507,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Instances for other sites are not accessible.
 	 * -> This is why we do not use/need a site_id or similar in this function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string $rule_type The rule model type @see MS_Rule
@@ -1335,7 +1554,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Instances for other sites are not accessible.
 	 * -> This is why we do not use/need a site_id or similar in this function.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param string The rule model type @see MS_Rule
@@ -1355,7 +1574,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * The color is calculated from the membership-ID and therefore will never
 	 * change.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string Hex color, e.g. '#FFFFFF'
@@ -1368,7 +1587,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Returns a HTML tag that shows the membership name with the internal
 	 * membership color.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 */
 	public function get_name_tag() {
@@ -1385,7 +1604,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Echo a HTML tag that shows the membership name with the internal
 	 * membership color.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 */
 	public function name_tag() {
@@ -1395,7 +1614,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get current membership type description.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return string The membership type description.
@@ -1417,7 +1636,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Note: Remember to prefix the $key with a unique string to prevent
 	 * conflicts with other plugins that also use this function.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1431,7 +1650,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Removes a custom data field from this object.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1444,7 +1663,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Returns the value of a custom data field.
 	 *
-	 * @since  2.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key The field-key.
@@ -1462,7 +1681,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Merge every rule model with Membership2/visitor membership rules.
 	 * This ensure rules are consistent with Membership2 rules.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function merge_protection_rules() {
@@ -1499,7 +1718,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Memberships can be downgraded to the guest level protection.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return array {
@@ -1534,9 +1753,32 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get a list of all subscriptions to this membership.
+	 *
+	 * Note that this function will also return expired/cancelled subscriptions.
+	 *
+	 * @since 1.0.1.0
+	 * @api
+	 *
+	 * @return array All subscriptions.
+	 */
+	public function get_subscriptions() {
+		$subscriptions = MS_Model_Relationship::get_subscriptions(
+			array( 'membership_id' => $this->id )
+		);
+
+		return apply_filters(
+			'ms_model_membership_get_subscriptions',
+			$subscriptions
+		);
+	}
+
+	/**
 	 * Get members count of this membership.
 	 *
-	 * @since 1.0.0
+	 * This will also count members that have cancelled/expired subscriptions.
+	 *
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return int The members count.
@@ -1557,7 +1799,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Verify post and page rules if there is a dripped content.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return boolean
@@ -1586,7 +1828,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * First one has priority over the last one.
 	 * These rules are used to determine access.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	private function get_rules_hierarchy() {
@@ -1625,7 +1867,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * user: If setup_completed() returns true, then "Membership added" is
 	 * displayed, otherwise "Membership updated"
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return bool $marked True in the first time setup is finished.
@@ -1648,93 +1890,102 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Returns true if the membership the base membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @see  description of MS_Model_Membership::get_base()
 	 * @api
 	 *
 	 * @return bool
 	 */
-	public function is_base() {
-		$res = $this->type == self::TYPE_BASE;
+	public function is_base( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_BASE;
 
 		return apply_filters(
 			'ms_model_membership_is_base',
 			$res,
-			$this
+			$type
 		);
 	}
 
 	/**
 	 * Returns true if the membership the guest membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @see description of MS_Model_Membership::get_guest()
 	 * @api
 	 *
 	 * @return bool
 	 */
-	public function is_guest() {
-		$res = $this->type == self::TYPE_GUEST;
+	public function is_guest( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_GUEST;
 
 		return apply_filters(
 			'ms_model_membership_is_guest',
 			$res,
-			$this
+			$type
 		);
 	}
 
 	/**
 	 * Returns true if the membership the user membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @see  description of MS_Model_Membership::get_user()
 	 * @api
 	 *
 	 * @return bool
 	 */
-	public function is_user() {
-		$res = $this->type == self::TYPE_USER;
+	public function is_user( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_USER;
 
 		return apply_filters(
 			'ms_model_membership_is_user',
 			$res,
-			$this
+			$type
 		);
 	}
 
 	/**
 	 * Returns true if the membership a dripped membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
 	 */
-	public function is_dripped() {
-		$res = $this->type == self::TYPE_DRIPPED;
+	public function is_dripped( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+		$res = $type == self::TYPE_DRIPPED;
 
 		return apply_filters(
 			'ms_model_membership_is_dripped',
 			$res,
-			$this
+			$type
 		);
 	}
 
 	/**
 	 * Returns true if the membership the base or guest/user membership.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
 	 */
-	public function is_system() {
-		$res = $this->is_base() || $this->is_guest() || $this->is_user();
+	public function is_system( $type = null ) {
+		if ( ! $type ) { $type = $this->type; }
+
+		$res = false;
+		if ( $this->is_base( $type ) ) { $res = true; }
+		elseif ( $this->is_guest( $type ) ) { $res = true; }
+		elseif ( $this->is_user( $type ) ) { $res = true; }
 
 		return apply_filters(
 			'ms_model_membership_is_system',
 			$res,
-			$this
+			$type
 		);
 	}
 
@@ -1743,7 +1994,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * from database. If this function returns false, then the specified
 	 * membership-ID does not exist in DB.
 	 *
-	 * @since  1.1.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -1765,7 +2016,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * If 'has access' is found, it does have access.
 	 * Only for active memberships.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $post_id
@@ -1840,7 +2091,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Verify membership rules hierarchy for specific post or CPT.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param int $post_id ID of specific post
@@ -1899,7 +2150,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * Set up the membership. This is always done, regardless if the user is
 	 * a normal user or an Admin user.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param MS_Model_Relationship $subscription The membership relationship.
@@ -1932,7 +2183,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Hide restricted content for this membership.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function protect_content() {
@@ -1959,7 +2210,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Hide restricted content for this membership.
 	 *
-	 * @since 1.1
+	 * @since  1.0.0
 	 * @internal
 	 */
 	public function protect_admin_content() {
@@ -1988,7 +2239,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * (A) no payment details were saved yet  - OR -
 	 * (B) no members signed up for the memberhips
 	 *
-	 * @since  1.0.4.5
+	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return bool
@@ -2013,7 +2264,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Returns property associated with the render.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $property The name of a property.
@@ -2024,16 +2275,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		switch ( $property ) {
 			case 'type':
-				switch ( $this->type ) {
-					case self::TYPE_BASE:
-					case self::TYPE_GUEST:
-					case self::TYPE_USER:
-					case self::TYPE_DRIPPED:
-						break;
-
-					default:
-						$this->type = self::TYPE_STANDARD;
-						break;
+				if ( ! self::is_valid_type( $this->type ) ) {
+					$this->type = self::TYPE_STANDARD;
 				}
 
 				$value = $this->type;
@@ -2112,6 +2355,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$value = lib2()->array->get( $this->disabled_gateways );
 				break;
 
+			case 'is_paid':
+				$value = ! $this->is_free;
+				break;
+
+			case 'public':
+				$value = ! $this->private;
+				break;
+
 			default:
 				if ( property_exists( $this, $property ) ) {
 					$value = $this->$property;
@@ -2130,7 +2381,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @param string $property The name of a property to associate.
@@ -2149,32 +2400,25 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					break;
 
 				case 'type':
-					switch ( $value ) {
-						case self::TYPE_BASE:
-						case self::TYPE_GUEST:
-						case self::TYPE_USER:
-							// Only one instance of these types can exist.
-							$existing = $this->_get_system_membership( $value, false );
+					if ( ! self::is_valid_type( $value ) ) {
+						$value = self::TYPE_STANDARD;
+					}
 
-							if ( $existing && $existing->id != $this->id ) {
-								$value = self::TYPE_STANDARD;
-							} else {
-								$this->active = true;
-								$this->private = true;
-								$this->is_free = true;
-								$this->price = 0;
-								$this->post_name = sanitize_html_class( $this->title );
-								$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
-								$this->post_author = get_current_user_id();
-							}
-							break;
+					if ( $this->is_system( $value ) ) {
+						// Only one instance of these types can exist.
+						$existing = $this->_get_system_membership( $value, false );
 
-						case self::TYPE_DRIPPED:
-							break;
-
-						default:
+						if ( $existing && $existing->id != $this->id ) {
 							$value = self::TYPE_STANDARD;
-							break;
+						} else {
+							$this->active = true;
+							$this->private = true;
+							$this->is_free = true;
+							$this->price = 0;
+							$this->post_name = sanitize_html_class( $this->title );
+							$this->payment_type = self::PAYMENT_TYPE_PERMANENT;
+							$this->post_author = get_current_user_id();
+						}
 					}
 
 					$this->type = $value;
@@ -2183,13 +2427,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'payment_type':
 					$types = self::get_payment_types();
 					if ( array_key_exists( $value, $types ) ) {
-						if ( $this->can_change_payment() ) {
-							$this->payment_type = $value;
-						} elseif ( $this->payment_type != $value ) {
-							$error = 'Payment type cannot be changed after members have signed up.';
-							MS_Helper_Debug::log( $error );
-							throw new Exception( $error );
-						}
+						$this->payment_type = $value;
 					} else {
 						throw new Exception( 'Invalid membership type.' );
 					}
@@ -2259,6 +2497,27 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'trial_period_type':
 					$this->trial_period['period_type'] = $this->validate_period_type( $value );
 					break;
+
+				case 'public':
+					$this->private = ! lib2()->is_true( $value );
+					break;
+
+				case 'is_paid':
+					$this->is_free = ! lib2()->is_true( $value );
+					break;
+
+				case 'deny_update':
+					foreach ( $value as $key => $state ) {
+						$this->update_denied[$key] = lib2()->is_true( $state );
+					}
+					break;
+
+				case 'replace_update':
+					foreach ( $value as $key => $state ) {
+						$this->update_replace[$key] = lib2()->is_true( $state );
+					}
+					break;
+
 			}
 		}
 

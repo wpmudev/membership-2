@@ -106,7 +106,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">10</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">14</span>
                                 </a>
                             </li>
                             <li>
@@ -136,10 +136,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-772584364"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-476945984"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-772584364" class="accordion-body collapse in">
+            <div id="namespace-476945984" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -192,6 +192,7 @@ accessing the properties.</p>
                         <section class="row-fluid public">
                             <section class="span4">
                                                                     <a href="../classes/MS_Model_Relationship.html#method_get_post_type" class="">get_post_type()</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#method_sort_by_priority" class="">sort_by_priority()</a><br />
                                                                     <a href="../classes/MS_Model_Relationship.html#method_cancel_membership" class="">cancel_membership()</a><br />
                                                                     <a href="../classes/MS_Model_Relationship.html#method_deactivate_membership" class="">deactivate_membership()</a><br />
                                                                     <a href="../classes/MS_Model_Relationship.html#method_save" class="">save()</a><br />
@@ -250,6 +251,7 @@ accessing the properties.</p>
                                                                     <a href="../classes/MS_Model_Relationship.html#property_status" class="">$status</a><br />
                                                                     <a href="../classes/MS_Model_Relationship.html#property_current_invoice_number" class="">$current_invoice_number</a><br />
                                                                     <a href="../classes/MS_Model_Relationship.html#property_payments" class="">$payments</a><br />
+                                                                    <a href="../classes/MS_Model_Relationship.html#property_payment_type" class="">$payment_type</a><br />
                                                             </section>
                             <section class="span4">
                                 <em>N/A</em>
@@ -847,6 +849,40 @@ admins; see MS_View_Member_Dialog)</p>
         </aside>
     </div>
 
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_payment_type" name="property_payment_type" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$payment_type</h3>
+                <pre class="signature">$payment_type : string</pre>
+                <p><em>The payment type that this subscription was created with.</em></p>
+                <p>Since the user can change the payment_type of the membership any time
+we might end up with a subscription with an invalid expire date.</p>
+<p>This flag allows us to detect changes in the parent membership payment
+options so we can update this membership accordingly.</p>
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
                                                     <div class="row-fluid">
         <div class="span8 content class">
             <a id="property_membership" name="property_membership" class="anchor"></a>
@@ -915,7 +951,7 @@ admins; see MS_View_Member_Dialog)</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -924,6 +960,57 @@ admins; see MS_View_Member_Dialog)</p>
                         </th>
                         <td>
                                                                                             
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_sort_by_priority" name="method_sort_by_priority" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">sort_by_priority()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">sort_by_priority(\MS_Model_Relationship  <span class="argument">$a</span>, \MS_Model_Relationship  <span class="argument">$b</span>) : integer</pre>
+                <p><em>Sort function used as second param by `uasort()` to sort a subscription
+list by membership priority.</em></p>
+                <p>Memberships with equal priority are sorted alphabeically.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td><a href="../classes/MS_Model_Relationship.html">\MS_Model_Relationship</a></td>
+                                <td>$a </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td><a href="../classes/MS_Model_Relationship.html">\MS_Model_Relationship</a></td>
+                                <td>$b </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                            &mdash; <p>-1: a &lt; b | 0: a = b | +1: a &gt; b</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
                                                     </td>
                     </tr>
                             </table>
@@ -1139,7 +1226,7 @@ If the subscription never was in trial status it returns false.</p>
                             since
                         </th>
                         <td>
-                                                            1.1.1.4                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1516,7 +1603,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.1.4                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1567,7 +1654,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.1.4                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1618,7 +1705,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.1.4                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1661,7 +1748,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1748,7 +1835,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1791,7 +1878,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1834,7 +1921,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1877,7 +1964,7 @@ Default will be calculated based on start_date.</p></td>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1975,7 +2062,7 @@ conflicts with other plugins that also use this function.</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2024,7 +2111,7 @@ conflicts with other plugins that also use this function.</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2077,7 +2164,7 @@ or false if no value was set for the field.</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2196,7 +2283,7 @@ could also be TRIAL, in which case the returnv alue is false.</p>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2239,7 +2326,7 @@ could also be TRIAL, in which case the returnv alue is false.</p>
                             since
                         </th>
                         <td>
-                                                            1.1.1.4                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2347,7 +2434,7 @@ could also be TRIAL, in which case the returnv alue is false.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on June 4th, 2015 at 16:24.
+                    on July 24th, 2015 at 16:25.
                 </section>
             </section>
         </section>

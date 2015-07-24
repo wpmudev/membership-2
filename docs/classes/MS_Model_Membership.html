@@ -106,7 +106,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">10</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">14</span>
                                 </a>
                             </li>
                             <li>
@@ -136,10 +136,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-97492854"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-537006389"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-97492854" class="accordion-body collapse in">
+            <div id="namespace-537006389" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -191,15 +191,19 @@ accessing the properties.</p>
                         <section class="row-fluid public">
                             <section class="span4">
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_post_type" class="">get_post_type()</a><br />
-                                                                    <a href="../classes/MS_Model_Membership.html#method_get_dripped_memberships" class="">get_dripped_memberships()</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#method_sort_by_priority" class="">sort_by_priority()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_is_valid_membership" class="">is_valid_membership()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_base" class="">get_base()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_guest" class="">get_guest()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_user" class="">get_user()</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#method_is_valid_type" class="">is_valid_type()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_save" class="">save()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_delete" class="">delete()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_payment_type_desc" class="">get_payment_type_desc()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_is_free" class="">is_free()</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#method_has_trial" class="">has_trial()</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#method_update_allowed" class="">update_allowed()</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#method_update_replaces" class="">update_replaces()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_can_use_gateway" class="">can_use_gateway()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_rule" class="">get_rule()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_set_rule" class="">set_rule()</a><br />
@@ -211,6 +215,7 @@ accessing the properties.</p>
                                                                     <a href="../classes/MS_Model_Membership.html#method_delete_custom_data" class="">delete_custom_data()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_custom_data" class="">get_custom_data()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_after_ms_ends_options" class="">get_after_ms_ends_options()</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#method_get_subscriptions" class="">get_subscriptions()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_get_members_count" class="">get_members_count()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_has_dripped_content" class="">has_dripped_content()</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#method_is_base" class="">is_base()</a><br />
@@ -247,6 +252,7 @@ accessing the properties.</p>
                                                                     <a href="../classes/MS_Model_Membership.html#property_payment_type" class="">$payment_type</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_active" class="">$active</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_private" class="">$private</a><br />
+                                                                    <a href="../classes/MS_Model_Membership.html#property_priority" class="">$priority</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_is_free" class="">$is_free</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_price" class="">$price</a><br />
                                                                     <a href="../classes/MS_Model_Membership.html#property_disabled_gateways" class="">$disabled_gateways</a><br />
@@ -727,6 +733,38 @@ Users can still stubscribe to the membership via the shortcode
 
                                     <div class="row-fluid">
         <div class="span8 content class">
+            <a id="property_priority" name="property_priority" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$priority</h3>
+                <pre class="signature">$priority : integer</pre>
+                <p><em>A priority value that is used to determine the effective override
+settings if a user has multiple memberships.</em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
             <a id="property_is_free" name="property_is_free" class="anchor"></a>
             <article class="property">
                 <h3 class="protected ">$is_free</h3>
@@ -1151,7 +1189,7 @@ the context of a subscription.</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1168,25 +1206,34 @@ the context of a subscription.</p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method_get_dripped_memberships" name="method_get_dripped_memberships" class="anchor"></a>
+            <a id="method_sort_by_priority" name="method_sort_by_priority" class="anchor"></a>
             <article class="method">
-                <h3 class="public ">get_dripped_memberships()</h3>
+                <h3 class="public ">sort_by_priority()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">get_dripped_memberships(  <span class="argument">$args = null</span>) </pre>
-                <p><em></em></p>
-                
+                <pre class="signature" style="margin-right: 54px;">sort_by_priority(\MS_Model_Membership  <span class="argument">$a</span>, \MS_Model_Membership  <span class="argument">$b</span>) : integer</pre>
+                <p><em>Sort function used as second param by `uasort()` to sort a membership
+list by priority.</em></p>
+                <p>Memberships with equal priority are sorted alphabeically.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
                                                     <tr>
+                                <td><a href="../classes/MS_Model_Membership.html">\MS_Model_Membership</a></td>
+                                <td>$a </td>
                                 <td></td>
-                                <td>$args </td>
+                            </tr>
+                                                    <tr>
+                                <td><a href="../classes/MS_Model_Membership.html">\MS_Model_Membership</a></td>
+                                <td>$b </td>
                                 <td></td>
                             </tr>
                                             </table>
                 
                 
-                				
+                                    <h4>Returns</h4>
+                    integer
+                                            &mdash; <p>-1: a &lt; b | 0: a = b | +1: a &gt; b</p>
+                                    				
                             </article>
         </div>
         <aside class="span4 detailsbar">
@@ -1196,7 +1243,14 @@ the context of a subscription.</p>
                                                                             </dl>
             <h2>Tags</h2>
             <table class="table table-condensed">
-                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
+                                                    </td>
+                    </tr>
                             </table>
         </aside>
     </div>
@@ -1330,7 +1384,7 @@ This is an internal membership which is never displayed anywhere.</p>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1376,7 +1430,7 @@ to any membership.</em></p>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1385,6 +1439,51 @@ to any membership.</em></p>
                         </th>
                         <td>
                                                                                             
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_is_valid_type" name="method_is_valid_type" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">is_valid_type()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">is_valid_type(string  <span class="argument">$type</span>) : boolean</pre>
+                <p><em>Checks if the specified string is a valid Membership-Type identifier.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$type </td>
+                                <td><p>A string to check against all known membership types.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                            &mdash; <p>True if the string is a valid type.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
                                                     </td>
                     </tr>
                             </table>
@@ -1417,7 +1516,7 @@ to any membership.</em></p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                             </table>
@@ -1542,7 +1641,7 @@ to any membership.</em></p>
                             since
                         </th>
                         <td>
-                                                            1.0.4.7                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1551,6 +1650,133 @@ to any membership.</em></p>
                         </th>
                         <td>
                                                                                             
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_has_trial" name="method_has_trial" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">has_trial()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">has_trial() : boolean</pre>
+                <p><em>Returns true if this membership is eligable for trial period.</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_update_allowed" name="method_update_allowed" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">update_allowed()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">update_allowed(integer|string  <span class="argument">$id</span>) : boolean</pre>
+                <p><em>Returns the access flag, if a specific membership can subscribe to the
+current membership.</em></p>
+                <p>A special value for $id is 'guest', which is used for all users without
+a normal membership (is_system() type memberships are not normal)</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer|string</td>
+                                <td>$id </td>
+                                <td><p>A membership ID or the value 'guest'.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                            &mdash; <p>True if the specified membership can subscribe.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_update_replaces" name="method_update_replaces" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">update_replaces()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">update_replaces(integer|string  <span class="argument">$id</span>) : boolean</pre>
+                <p><em>Returns the update-replacement flag, which defines if the OLD membership
+should be cancelled during subscription.</em></p>
+                <p>This is used in cases where the new membership is an upgraded version of
+the old membership and the user can only have one of both memberships.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer|string</td>
+                                <td>$id </td>
+                                <td><p>A membership ID.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                            &mdash; <p>True if the specified membership should be cancelled.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
                                                     </td>
                     </tr>
                             </table>
@@ -1594,7 +1820,7 @@ membership.</em></p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                             </table>
@@ -1747,7 +1973,7 @@ change.</p>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1789,7 +2015,7 @@ membership color.</em></p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1831,7 +2057,7 @@ membership color.</em></p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1930,7 +2156,7 @@ conflicts with other plugins that also use this function.</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -1979,7 +2205,7 @@ conflicts with other plugins that also use this function.</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2032,7 +2258,7 @@ or false if no value was set for the field.</p>
                             since
                         </th>
                         <td>
-                                                            2.0.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2097,13 +2323,57 @@ Returns array of $membership_id =&gt; $description.
 
                                     <div class="row-fluid">
         <div class="span8 content class">
+            <a id="method_get_subscriptions" name="method_get_subscriptions" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">get_subscriptions()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">get_subscriptions() : array</pre>
+                <p><em>Get a list of all subscriptions to this membership.</em></p>
+                <p>Note that this function will also return expired/cancelled subscriptions.</p>
+
+                
+                
+                                    <h4>Returns</h4>
+                    array
+                                            &mdash; <p>All subscriptions.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
             <a id="method_get_members_count" name="method_get_members_count" class="anchor"></a>
             <article class="method">
                 <h3 class="public ">get_members_count()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">get_members_count() : integer</pre>
                 <p><em>Get members count of this membership.</em></p>
-                
+                <p>This will also count members that have cancelled/expired subscriptions.</p>
 
                 
                 
@@ -2188,10 +2458,18 @@ Returns array of $membership_id =&gt; $description.
             <article class="method">
                 <h3 class="public ">is_base()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">is_base() : boolean</pre>
+                <pre class="signature" style="margin-right: 54px;">is_base(  <span class="argument">$type = null</span>) : boolean</pre>
                 <p><em>Returns true if the membership the base membership.</em></p>
                 
 
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$type </td>
+                                <td></td>
+                            </tr>
+                                            </table>
                 
                 
                                     <h4>Returns</h4>
@@ -2212,7 +2490,7 @@ Returns array of $membership_id =&gt; $description.
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2233,10 +2511,18 @@ Returns array of $membership_id =&gt; $description.
             <article class="method">
                 <h3 class="public ">is_guest()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">is_guest() : boolean</pre>
+                <pre class="signature" style="margin-right: 54px;">is_guest(  <span class="argument">$type = null</span>) : boolean</pre>
                 <p><em>Returns true if the membership the guest membership.</em></p>
                 
 
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$type </td>
+                                <td></td>
+                            </tr>
+                                            </table>
                 
                 
                                     <h4>Returns</h4>
@@ -2257,7 +2543,7 @@ Returns array of $membership_id =&gt; $description.
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2278,10 +2564,18 @@ Returns array of $membership_id =&gt; $description.
             <article class="method">
                 <h3 class="public ">is_user()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">is_user() : boolean</pre>
+                <pre class="signature" style="margin-right: 54px;">is_user(  <span class="argument">$type = null</span>) : boolean</pre>
                 <p><em>Returns true if the membership the user membership.</em></p>
                 
 
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$type </td>
+                                <td></td>
+                            </tr>
+                                            </table>
                 
                 
                                     <h4>Returns</h4>
@@ -2302,7 +2596,7 @@ Returns array of $membership_id =&gt; $description.
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2323,10 +2617,18 @@ Returns array of $membership_id =&gt; $description.
             <article class="method">
                 <h3 class="public ">is_dripped()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">is_dripped() : boolean</pre>
+                <pre class="signature" style="margin-right: 54px;">is_dripped(  <span class="argument">$type = null</span>) : boolean</pre>
                 <p><em>Returns true if the membership a dripped membership.</em></p>
                 
 
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$type </td>
+                                <td></td>
+                            </tr>
+                                            </table>
                 
                 
                                     <h4>Returns</h4>
@@ -2345,7 +2647,7 @@ Returns array of $membership_id =&gt; $description.
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2366,10 +2668,18 @@ Returns array of $membership_id =&gt; $description.
             <article class="method">
                 <h3 class="public ">is_system()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">is_system() : boolean</pre>
+                <pre class="signature" style="margin-right: 54px;">is_system(  <span class="argument">$type = null</span>) : boolean</pre>
                 <p><em>Returns true if the membership the base or guest/user membership.</em></p>
                 
 
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$type </td>
+                                <td></td>
+                            </tr>
+                                            </table>
                 
                 
                                     <h4>Returns</h4>
@@ -2388,7 +2698,7 @@ Returns array of $membership_id =&gt; $description.
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2433,7 +2743,7 @@ membership-ID does not exist in DB.</em></p>
                             since
                         </th>
                         <td>
-                                                            1.1.0                                
+                                                            1.0.0                                
                                                     </td>
                     </tr>
                                     <tr>
@@ -2630,7 +2940,7 @@ Null means: Rule not relevant for current page.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on June 4th, 2015 at 16:24.
+                    on July 24th, 2015 at 16:25.
                 </section>
             </section>
         </section>
