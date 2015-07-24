@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Token extends Stripe_ApiResource
+class M2_Stripe_Token extends Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the token to retrieve.

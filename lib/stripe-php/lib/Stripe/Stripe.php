@@ -1,6 +1,6 @@
 <?php
 
-abstract class Stripe
+abstract class M2_Stripe
 {
   /**
    * @var string The Stripe API key to be used for requests.

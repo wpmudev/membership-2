@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Event extends Stripe_ApiResource
+class M2_Stripe_Event extends Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the event to retrieve.

@@ -1,5 +1,5 @@
 <?php
 
-class Stripe_ApiError extends Stripe_Error
+class M2_Stripe_ApiError extends Stripe_Error
 {
 }

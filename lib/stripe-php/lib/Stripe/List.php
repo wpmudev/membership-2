@@ -1,10 +1,10 @@
 <?php
 
-class Stripe_List extends Stripe_Object
+class M2_Stripe_List extends Stripe_Object
 {
   public function all($params=null)
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     list($response, $apiKey) = $requestor->request(
         'get',
         $this['url'],
@@ -15,7 +15,7 @@ class Stripe_List extends Stripe_Object
 
   public function create($params=null)
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     list($response, $apiKey) = $requestor->request(
         'post', $this['url'], $params
     );
@@ -24,7 +24,7 @@ class Stripe_List extends Stripe_Object
 
   public function retrieve($id, $params=null)
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $base = $this['url'];
     $id = Stripe_ApiRequestor::utf8($id);
     $extn = urlencode($id);

@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Util_Set
+class M2_Stripe_Util_Set
 {
   private $_elts;
 

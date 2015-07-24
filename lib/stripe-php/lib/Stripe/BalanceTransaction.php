@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_BalanceTransaction extends Stripe_ApiResource
+class M2_Stripe_BalanceTransaction extends Stripe_ApiResource
 {
   /**
    * @param string $class Ignored.

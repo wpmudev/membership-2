@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Charge extends Stripe_ApiResource
+class M2_Stripe_Charge extends Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the charge to retrieve.
@@ -54,7 +54,7 @@ class Stripe_Charge extends Stripe_ApiResource
    */
   public function refund($params=null)
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/refund';
     list($response, $apiKey) = $requestor->request('post', $url, $params);
     $this->refreshFrom($response, $apiKey);
@@ -68,7 +68,7 @@ class Stripe_Charge extends Stripe_ApiResource
    */
   public function capture($params=null)
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/capture';
     list($response, $apiKey) = $requestor->request('post', $url, $params);
     $this->refreshFrom($response, $apiKey);
@@ -82,7 +82,7 @@ class Stripe_Charge extends Stripe_ApiResource
    */
   public function updateDispute($params=null)
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/dispute';
     list($response, $apiKey) = $requestor->request('post', $url, $params);
     $this->refreshFrom(array('dispute' => $response), $apiKey, true);
@@ -94,7 +94,7 @@ class Stripe_Charge extends Stripe_ApiResource
    */
   public function closeDispute()
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/dispute/close';
     list($response, $apiKey) = $requestor->request('post', $url);
     $this->refreshFrom($response, $apiKey);

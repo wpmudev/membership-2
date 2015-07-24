@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_ApiRequestor
+class M2_Stripe_ApiRequestor
 {
   /**
    * @var string $apiKey The API key that's to be used to make requests.
@@ -133,7 +133,7 @@ class Stripe_ApiRequestor
     if (!is_array($resp) || !isset($resp['error'])) {
       $msg = "Invalid response object from API: $rbody "
            ."(HTTP response code was $rcode)";
-      throw new Stripe_ApiError($msg, $rcode, $rbody, $resp);
+      throw new M2_Stripe_ApiError($msg, $rcode, $rbody, $resp);
     }
 
     $error = $resp['error'];
@@ -144,20 +144,20 @@ class Stripe_ApiRequestor
     switch ($rcode) {
     case 400:
         if ($code == 'rate_limit') {
-          throw new Stripe_RateLimitError(
+          throw new M2_Stripe_RateLimitError(
               $msg, $param, $rcode, $rbody, $resp
           );
         }
     case 404:
-        throw new Stripe_InvalidRequestError(
+        throw new M2_Stripe_InvalidRequestError(
             $msg, $param, $rcode, $rbody, $resp
         );
     case 401:
-        throw new Stripe_AuthenticationError($msg, $rcode, $rbody, $resp);
+        throw new M2_Stripe_AuthenticationError($msg, $rcode, $rbody, $resp);
     case 402:
-        throw new Stripe_CardError($msg, $param, $code, $rcode, $rbody, $resp);
+        throw new M2_Stripe_CardError($msg, $param, $code, $rcode, $rbody, $resp);
     default:
-        throw new Stripe_ApiError($msg, $rcode, $rbody, $resp);
+        throw new M2_Stripe_ApiError($msg, $rcode, $rbody, $resp);
     }
   }
 
@@ -172,7 +172,7 @@ class Stripe_ApiRequestor
            . '"Stripe::setApiKey(<API-KEY>)".  You can generate API keys from '
            . 'the Stripe web interface.  See https://stripe.com/api for '
            . 'details, or email support@stripe.com if you have any questions.';
-      throw new Stripe_AuthenticationError($msg);
+      throw new M2_Stripe_AuthenticationError($msg);
     }
 
     $absUrl = $this->apiUrl($url);
@@ -205,7 +205,7 @@ class Stripe_ApiRequestor
     } catch (Exception $e) {
       $msg = "Invalid response body from API: $rbody "
            . "(HTTP response code was $rcode)";
-      throw new Stripe_ApiError($msg, $rcode, $rbody);
+      throw new M2_Stripe_ApiError($msg, $rcode, $rbody);
     }
 
     if ($rcode < 200 || $rcode >= 300) {
@@ -240,7 +240,7 @@ class Stripe_ApiRequestor
         $absUrl = "$absUrl?$encoded";
       }
     } else {
-      throw new Stripe_ApiError("Unrecognized method $method");
+      throw new M2_Stripe_ApiError("Unrecognized method $method");
     }
 
     $absUrl = self::utf8($absUrl);
@@ -317,7 +317,7 @@ class Stripe_ApiRequestor
     $msg .= " let us know at support@stripe.com.";
 
     $msg .= "\n\n(Network error [errno $errno]: $message)";
-    throw new Stripe_ApiConnectionError($msg);
+    throw new M2_Stripe_ApiConnectionError($msg);
   }
 
   private function checkSslCert($url)
@@ -349,7 +349,7 @@ class Stripe_ApiRequestor
         )));
     $result = stream_socket_client($url, $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $sslContext);
     if ($errno !== 0) {
-        throw new Stripe_ApiConnectionError(
+        throw new M2_Stripe_ApiConnectionError(
              "Could not connect to Stripe ($apiBase).  Please check your "
            . "internet connection and try again.  If this problem persists, "
            . "you should check Stripe's service status at "
@@ -365,7 +365,7 @@ class Stripe_ApiRequestor
     openssl_x509_export($cert, $pem_cert);
 
     if (self::isBlackListed($pem_cert)) {
-        throw new Stripe_ApiConnectionError(
+        throw new M2_Stripe_ApiConnectionError(
             "Invalid server certificate. You tried to connect to a server that has a " .
             "revoked SSL certificate, which means we cannot securely send data to " .
             "that server.  Please email support@stripe.com if you need help " .

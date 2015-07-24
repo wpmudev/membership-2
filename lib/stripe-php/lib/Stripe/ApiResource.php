@@ -1,6 +1,6 @@
 <?php
 
-abstract class Stripe_ApiResource extends Stripe_Object
+abstract class M2_Stripe_ApiResource extends Stripe_Object
 {
   protected static function _scopedRetrieve($class, $id, $apiKey=null)
   {
@@ -14,7 +14,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
    */
   public function refresh()
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl();
 
     list($response, $apiKey) = $requestor->request(
@@ -68,7 +68,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
     if ($id === null) {
       $message = "Could not determine which URL to request: "
                . "$class instance has invalid ID: $id";
-      throw new Stripe_InvalidRequestError($message, null);
+      throw new M2_Stripe_InvalidRequestError($message, null);
     }
     $id = Stripe_ApiRequestor::utf8($id);
     $base = $this->_lsb('classUrl', $class);
@@ -84,7 +84,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
                . "would be: \"StripeCharge::create(array('amount' => 100, "
                . "'currency' => 'usd', 'card' => array('number' => "
                . "4242424242424242, 'exp_month' => 5, 'exp_year' => 2015)))\")";
-      throw new Stripe_Error($message);
+      throw new M2_Stripe_Error($message);
     }
 
     if ($apiKey && !is_string($apiKey)) {
@@ -92,14 +92,14 @@ abstract class Stripe_ApiResource extends Stripe_Object
                . 'optional per-request apiKey, which must be a string.  '
                . '(HINT: you can set a global apiKey by '
                . '"Stripe::setApiKey(<apiKey>)")';
-      throw new Stripe_Error($message);
+      throw new M2_Stripe_Error($message);
     }
   }
 
   protected static function _scopedAll($class, $params=null, $apiKey=null)
   {
     self::_validateCall('all', $params, $apiKey);
-    $requestor = new Stripe_ApiRequestor($apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($apiKey);
     $url = self::_scopedLsb($class, 'classUrl', $class);
     list($response, $apiKey) = $requestor->request('get', $url, $params);
     return Stripe_Util::convertToStripeObject($response, $apiKey);
@@ -108,7 +108,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
   protected static function _scopedCreate($class, $params=null, $apiKey=null)
   {
     self::_validateCall('create', $params, $apiKey);
-    $requestor = new Stripe_ApiRequestor($apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($apiKey);
     $url = self::_scopedLsb($class, 'classUrl', $class);
     list($response, $apiKey) = $requestor->request('post', $url, $params);
     return Stripe_Util::convertToStripeObject($response, $apiKey);
@@ -117,7 +117,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
   protected function _scopedSave($class, $apiKey=null)
   {
     self::_validateCall('save');
-    $requestor = new Stripe_ApiRequestor($apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($apiKey);
     $params = $this->serializeParameters();
 
     if (count($params) > 0) {
@@ -131,7 +131,7 @@ abstract class Stripe_ApiResource extends Stripe_Object
   protected function _scopedDelete($class, $params=null)
   {
     self::_validateCall('delete');
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl();
     list($response, $apiKey) = $requestor->request('delete', $url, $params);
     $this->refreshFrom($response, $apiKey);

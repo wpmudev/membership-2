@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Refund extends Stripe_ApiResource
+class M2_Stripe_Refund extends Stripe_ApiResource
 {
   /**
    * @return string The API URL for this Stripe refund.
@@ -10,7 +10,7 @@ class Stripe_Refund extends Stripe_ApiResource
     $id = $this['id'];
     $charge = $this['charge'];
     if (!$id) {
-      throw new Stripe_InvalidRequestError(
+      throw new M2_Stripe_InvalidRequestError(
           "Could not determine which URL to request: " .
           "class instance has invalid ID: $id",
           null

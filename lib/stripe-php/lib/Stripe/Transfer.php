@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Transfer extends Stripe_ApiResource
+class M2_Stripe_Transfer extends Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the transfer to retrieve.
@@ -43,7 +43,7 @@ class Stripe_Transfer extends Stripe_ApiResource
    */
   public function cancel()
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/cancel';
     list($response, $apiKey) = $requestor->request('post', $url);
     $this->refreshFrom($response, $apiKey);

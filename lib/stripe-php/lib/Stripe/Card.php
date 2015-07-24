@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Card extends Stripe_ApiResource
+class M2_Stripe_Card extends Stripe_ApiResource
 {
   public static function constructFrom($values, $apiKey=null)
   {
@@ -18,19 +18,19 @@ class Stripe_Card extends Stripe_ApiResource
     if (!$id) {
       $msg = "Could not determine which URL to request: $class instance "
            . "has invalid ID: $id";
-      throw new Stripe_InvalidRequestError($msg, null);
+      throw new M2_Stripe_InvalidRequestError($msg, null);
     }
 
     if (isset($this['customer'])) {
-      
+
       $parent = $this['customer'];
       $base = self::classUrl('Stripe_Customer');
     } else if (isset($this['recipient'])) {
-      
+
       $parent = $this['recipient'];
       $base = self::classUrl('Stripe_Recipient');
     } else {
-      
+
       return null;
     }
 

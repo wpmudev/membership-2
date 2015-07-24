@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Coupon extends Stripe_ApiResource
+class M2_Stripe_Coupon extends Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the coupon to retrieve.

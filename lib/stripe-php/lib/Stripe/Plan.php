@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Plan extends Stripe_ApiResource
+class M2_Stripe_Plan extends Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the plan to retrieve.
@@ -36,7 +36,7 @@ class Stripe_Plan extends Stripe_ApiResource
     $class = get_class();
     return self::_scopedDelete($class, $params);
   }
-  
+
   /**
    * @return Stripe_Plan The saved plan.
    */
@@ -45,7 +45,7 @@ class Stripe_Plan extends Stripe_ApiResource
     $class = get_class();
     return self::_scopedSave($class);
   }
-  
+
   /**
    * @param array|null $params
    * @param string|null $apiKey

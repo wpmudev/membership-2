@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Account extends Stripe_SingletonApiResource
+class M2_Stripe_Account extends Stripe_SingletonApiResource
 {
   /**
     * @param string|null $apiKey

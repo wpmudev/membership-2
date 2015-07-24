@@ -1,6 +1,6 @@
 <?php
 
-abstract class Stripe_SingletonApiResource extends Stripe_ApiResource
+abstract class M2_Stripe_SingletonApiResource extends Stripe_ApiResource
 {
   protected static function _scopedSingletonRetrieve($class, $apiKey=null)
   {

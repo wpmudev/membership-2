@@ -1,8 +1,8 @@
 <?php
 
-class Stripe_CardError extends Stripe_Error
+class M2_Stripe_CardError extends Stripe_Error
 {
-  public function __construct($message, $param, $code, $httpStatus, 
+  public function __construct($message, $param, $code, $httpStatus,
       $httpBody, $jsonBody
   )
   {

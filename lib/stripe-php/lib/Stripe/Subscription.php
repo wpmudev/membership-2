@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Subscription extends Stripe_ApiResource
+class M2_Stripe_Subscription extends Stripe_ApiResource
 {
   /**
    * @return string The API URL for this Stripe subscription.
@@ -11,7 +11,7 @@ class Stripe_Subscription extends Stripe_ApiResource
     $customer = $this['customer'];
     $class = get_class($this);
     if (!$id) {
-      throw new Stripe_InvalidRequestError(
+      throw new M2_Stripe_InvalidRequestError(
           "Could not determine which URL to request: " .
           "class instance has invalid ID: $id",
           null
@@ -50,7 +50,7 @@ class Stripe_Subscription extends Stripe_ApiResource
    */
   public function deleteDiscount()
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/discount';
     list($response, $apiKey) = $requestor->request('delete', $url);
     $this->refreshFrom(array('discount' => null), $apiKey, true);

@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Error extends Exception
+class M2_Stripe_Error extends Exception
 {
   public function __construct($message, $httpStatus=null,
       $httpBody=null, $jsonBody=null

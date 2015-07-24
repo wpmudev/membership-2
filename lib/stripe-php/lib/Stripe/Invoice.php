@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Invoice extends Stripe_ApiResource
+class M2_Stripe_Invoice extends Stripe_ApiResource
 {
   /**
    * @param array|null $params
@@ -46,7 +46,7 @@ class Stripe_Invoice extends Stripe_ApiResource
    */
   public static function upcoming($params=null, $apiKey=null)
   {
-    $requestor = new Stripe_ApiRequestor($apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($apiKey);
     $url = self::classUrl(get_class()) . '/upcoming';
     list($response, $apiKey) = $requestor->request('get', $url, $params);
     return Stripe_Util::convertToStripeObject($response, $apiKey);
@@ -66,7 +66,7 @@ class Stripe_Invoice extends Stripe_ApiResource
    */
   public function pay()
   {
-    $requestor = new Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/pay';
     list($response, $apiKey) = $requestor->request('post', $url);
     $this->refreshFrom($response, $apiKey);

@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_InvalidRequestError extends Stripe_Error
+class M2_Stripe_InvalidRequestError extends Stripe_Error
 {
   public function __construct($message, $param, $httpStatus=null,
       $httpBody=null, $jsonBody=null

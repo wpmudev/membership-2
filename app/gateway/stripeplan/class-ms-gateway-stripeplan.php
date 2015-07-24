@@ -423,7 +423,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * @internal Called by process_purchase() and request_payment()
 	 *
 	 * @param  MS_Model_Relationship $subscription
-	 * @param  Stripe_Subscription $stripe_sub
+	 * @param  M2_Stripe_Subscription $stripe_sub
 	 */
 	protected function cancel_if_done( $subscription, $stripe_sub ) {
 		$membership = $subscription->get_membership();
