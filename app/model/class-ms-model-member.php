@@ -989,9 +989,19 @@ class MS_Model_Member extends MS_Model {
 
 		// Check the multisite Email-Domain limitation for new registrations.
 		if ( is_multisite() ) {
+			$illegal_names = get_site_option( 'illegal_names' );
 			$limited_domains = get_site_option( 'limited_email_domains' );
 			$banned_domains = get_site_option( 'banned_email_domains' );
 			$email_domain = substr( strrchr( $this->email, '@' ), 1 );
+
+			if ( $illegal_names && is_array( $illegal_names ) ) {
+				if ( in_array( $this->username, $illegal_names ) ) {
+					$validation_errors->add(
+						'illegalname',
+						__( 'The username is not valid, sorry.', MS_TEXT_DOMAIN )
+					);
+				}
+			}
 
 			if ( $limited_domains && is_array( $limited_domains ) ) {
 				if ( ! in_array( $email_domain, $limited_domains ) ) {
