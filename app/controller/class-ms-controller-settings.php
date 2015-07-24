@@ -400,88 +400,100 @@ class MS_Controller_Settings extends MS_Controller {
 		$msg = 0;
 		$redirect = false;
 
-		do_action( 'ms_controller_settings_admin_settings_manager_' . $this->active_tab );
+		if ( $this->is_admin_user() ) {
+			if ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) {
+				/**
+				 * After verifying permissions those filters can be used by Add-ons
+				 * to process their own settings form.
+				 *
+				 * @since  1.0.1.0
+				 */
+				do_action(
+					'ms_admin_settings_manager_' . $this->active_tab
+				);
+				do_action(
+					'ms_admin_settings_manager',
+					$this->active_tab
+				);
 
-		if ( $this->is_admin_user()
-			&& ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) )
-		) {
-			switch ( $this->active_tab ) {
-				case self::TAB_GENERAL:
-					lib2()->array->equip_request( 'action', 'network_site' );
-					$action = $_REQUEST['action'];
+				switch ( $this->active_tab ) {
+					case self::TAB_GENERAL:
+						lib2()->array->equip_request( 'action', 'network_site' );
+						$action = $_REQUEST['action'];
 
-					$redirect = esc_url_raw(
-						remove_query_arg( array( 'msg' => $msg ) )
-					);
+						$redirect = esc_url_raw(
+							remove_query_arg( array( 'msg' => $msg ) )
+						);
 
-					// See if we change settings for the network-wide mode.
-					if ( MS_Plugin::is_network_wide() ) {
-						$new_site_id = intval( $_REQUEST['network_site'] );
+						// See if we change settings for the network-wide mode.
+						if ( MS_Plugin::is_network_wide() ) {
+							$new_site_id = intval( $_REQUEST['network_site'] );
 
-						if ( 'network_site' == $action && ! empty( $new_site_id ) ) {
-							$old_site_id = MS_Model_Pages::get_setting( 'site_id' );
-							if ( $old_site_id != $new_site_id ) {
-								MS_Model_Pages::set_setting( 'site_id', $new_site_id );
-								$msg = MS_Helper_Settings::SETTINGS_MSG_SITE_UPDATED;
-								$redirect = esc_url_raw(
-									add_query_arg( array( 'msg' => $msg ) )
-								);
+							if ( 'network_site' == $action && ! empty( $new_site_id ) ) {
+								$old_site_id = MS_Model_Pages::get_setting( 'site_id' );
+								if ( $old_site_id != $new_site_id ) {
+									MS_Model_Pages::set_setting( 'site_id', $new_site_id );
+									$msg = MS_Helper_Settings::SETTINGS_MSG_SITE_UPDATED;
+									$redirect = esc_url_raw(
+										add_query_arg( array( 'msg' => $msg ) )
+									);
+								}
 							}
 						}
-					}
-					break;
-
-				case self::TAB_EMAILS:
-					$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
-					if ( ! empty( $_GET['comm_type'] )
-						&& MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] )
-					) {
-						$type = $_GET['comm_type'];
-					}
-
-					// Load comm type from user select
-					if ( self::validate_required( array( 'comm_type' ) )
-						&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
-					) {
-						$redirect = esc_url_raw(
-							remove_query_arg(
-								'msg',
-								add_query_arg( 'comm_type', $_POST['comm_type'] )
-							)
-						);
 						break;
-					}
 
-					$fields = array( 'type', 'subject', 'email_body' );
-					if ( isset( $_POST['save_email'] )
-						&& self::validate_required( $fields )
-					) {
-						$msg = $this->save_communication( $type, $_POST );
-						$redirect = esc_url_raw(
-							add_query_arg(
-								array(
-									'comm_type' => urlencode( $_POST['type'] ),
-									'msg' => $msg,
+					case self::TAB_EMAILS:
+						$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+						if ( ! empty( $_GET['comm_type'] )
+							&& MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] )
+						) {
+							$type = $_GET['comm_type'];
+						}
+
+						// Load comm type from user select
+						if ( self::validate_required( array( 'comm_type' ) )
+							&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
+						) {
+							$redirect = esc_url_raw(
+								remove_query_arg(
+									'msg',
+									add_query_arg( 'comm_type', $_POST['comm_type'] )
 								)
-							)
-						);
+							);
+							break;
+						}
+
+						$fields = array( 'type', 'subject', 'email_body' );
+						if ( isset( $_POST['save_email'] )
+							&& self::validate_required( $fields )
+						) {
+							$msg = $this->save_communication( $type, $_POST );
+							$redirect = esc_url_raw(
+								add_query_arg(
+									array(
+										'comm_type' => urlencode( $_POST['type'] ),
+										'msg' => $msg,
+									)
+								)
+							);
+							break;
+						}
 						break;
-					}
-					break;
 
-				case self::TAB_IMPORT:
-					$tool = MS_Factory::create( 'MS_Controller_Import' );
+					case self::TAB_IMPORT:
+						$tool = MS_Factory::create( 'MS_Controller_Import' );
 
-					// Output is passed to the view via self::_message()
-					$tool->process();
-					break;
+						// Output is passed to the view via self::_message()
+						$tool->process();
+						break;
 
-				case self::TAB_PAYMENT:
-				case self::TAB_MESSAGES:
-					break;
+					case self::TAB_PAYMENT:
+					case self::TAB_MESSAGES:
+						break;
 
-				default:
-					break;
+					default:
+						break;
+				}
 			}
 		}
 

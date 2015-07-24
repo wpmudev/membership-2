@@ -259,18 +259,51 @@
   margin-top: 0;
   margin-bottom: 0;
 }
-
 .ms-form-element label {
   display: inline;
 }
-
 .ms-form-element span {
   display: inline;
 }
-
-.ms-form-element input {
+.ms-form-element input,
+.ms-form-element select,
+.ms-form-element textarea {
+  min-width: 190px;
   margin: 0 0 0 1em;
   float: right;
+}
+.ms-form-element input[type=checkbox],
+.ms-form-element input[type=radio] {
+  width: auto;
+}
+.ms-form-element.ms-form-element-xprofile .description {
+  clear: both;
+  display: block;
+  color: #666;
+  font-style: italic;
+  text-align: left;
+}
+.ms-form-element.ms-form-element-xprofile .radio .label,
+.ms-form-element.ms-form-element-xprofile .checkbox .label {
+  display: inline;
+}
+.ms-form-element.ms-form-element-xprofile .radio label,
+.ms-form-element.ms-form-element-xprofile .checkbox label {
+  display: block;
+  min-width: 190px;
+  float: right;
+  clear: both;
+}
+.ms-form-element.ms-form-element-xprofile .datebox {
+  text-align: right;
+}
+.ms-form-element.ms-form-element-xprofile .datebox label {
+  float: left;
+}
+.ms-form-element.ms-form-element-xprofile .datebox select {
+  width: auto;
+  min-width: 0;
+  margin-right: 4px;
 }
 
 /* jQuery validation - on front end */

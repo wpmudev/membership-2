@@ -10,6 +10,11 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 	public function to_html() {
 		$fields = $this->prepare_fields();
 
+		$this->add_action(
+			'ms_shortcode_register_form_end',
+			'add_scripts'
+		);
+
 		// When redirecting to login form we want to keep the previously submitted form data.
 		$url_data = $_POST;
 		$url_data['do-login'] = '1';
@@ -70,12 +75,14 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 				<?php wp_nonce_field( $this->data['action'] ); ?>
 				<?php if ( ! empty( $title ) ) : ?>
 					<legend>
-						<?php echo '' . $title; ?>
+						<?php echo $title; ?>
 					</legend>
 				<?php endif; ?>
 
 				<?php foreach ( $fields as $field ) {
-					if ( MS_Helper_Html::INPUT_TYPE_HIDDEN == $field['type'] ) {
+					if ( is_string( $field ) ) {
+						MS_Helper_Html::html_element( $field );
+					} elseif ( MS_Helper_Html::INPUT_TYPE_HIDDEN == $field['type'] ) {
 						MS_Helper_Html::html_element( $field );
 					} else {
 						?>
@@ -119,6 +126,14 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 					 */
 					do_action( 'registration_errors', $this->error );
 				}
+
+				/**
+				 * This hook is intended to output hidden fields or JS code
+				 * at the end of the form tag.
+				 *
+				 * @since  1.0.1.0
+				 */
+				do_action( 'ms_shortcode_register_form_end', $this );
 				?>
 			</form>
 			<?php
@@ -219,15 +234,74 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			),
 		);
 
-		return $fields;
+		return apply_filters(
+			'ms_shortcode_register_form_fields',
+			$fields,
+			$this
+		);
+	}
+
+	/**
+	 * Outputs the javascript used by the registration form.
+	 *
+	 * @since 1.0.1.0
+	 */
+	static public function add_scripts() {
+		static $Scripts_Done = false;
+
+		// Make sure to only execute that function once.
+		if ( $Scripts_Done ) { return; }
+		$Scripts_Done = true;
+
+		$rule_data = array(
+			'username' => array(
+				'required' => true,
+			),
+			'password' => array(
+				'required' => true,
+				'minlength' => 5,
+			),
+			'password2' => array(
+				'required' => true,
+				'equalTo' => '#password',
+			),
+		);
+
+		/**
+		 * Allow other plugins or Add-ons to modify the validation rules on the
+		 * registration page.
+		 *
+		 * @since  1.0.1.0
+		 * @var  array
+		 */
+		$rule_data = apply_filters(
+			'ms_shortcode_register_form_rules',
+			$rule_data
+		);
+
+		ob_start();
+		?>
+		jQuery(function() {
+		var args = {
+			onkeyup: false,
+			errorClass: 'ms-validation-error',
+			rules: <?php echo json_encode( $rule_data ); ?>
+		};
+
+		jQuery( '#ms-shortcode-register-user-form' ).validate( args );
+		});
+		<?php
+		$script = ob_get_clean();
+		lib2()->ui->script( $script );
 	}
 
 	/**
 	 * Renders error messages.
 	 *
-	 * @access private
+	 * @since  1.0.0
+	 * @internal
 	 */
-	private function render_errors() {
+	protected function render_errors() {
 		if ( ! empty( $this->data['errors'] ) ) {
 			?>
 			<div class="ms-alert-box ms-alert-error">

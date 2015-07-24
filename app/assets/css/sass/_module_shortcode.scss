@@ -127,19 +127,65 @@
 		margin-top: 0;
 		margin-bottom: 0;
 	}
-}
 
-.ms-form-element label {
-	display: inline;
-}
+	label {
+		display: inline;
+	}
 
-.ms-form-element span {
-	display: inline;
-}
+	span {
+		display: inline;
+	}
 
-.ms-form-element input {
-	margin: 0 0 0 1em;
-	float: right;
+	input,
+	select,
+	textarea {
+		min-width: 190px;
+		margin: 0 0 0 1em;
+		float: right;
+	}
+
+	input[type=checkbox],
+	input[type=radio] {
+		width: auto;
+	}
+
+	&.ms-form-element-xprofile {
+		.description {
+			clear: both;
+			display: block;
+			color: #666;
+			font-style: italic;
+			text-align: left;
+		}
+
+		.radio,
+		.checkbox {
+			.label {
+				display: inline;
+			}
+
+			label {
+				display: block;
+				min-width: 190px;
+				float: right;
+				clear: both;
+			}
+		}
+
+		.datebox {
+			text-align: right;
+
+			label {
+				float: left;
+			}
+
+			select {
+				width: auto;
+				min-width: 0;
+				margin-right: 4px;
+			}
+		}
+	}
 }
 
 /* jQuery validation - on front end */

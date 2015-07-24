@@ -346,18 +346,43 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $group The custom setting group.
-	 * @param string $field The custom setting field.
+	 * @param string $group_name The custom setting group.
+	 * @param string $field_name The custom setting field.
 	 * @param mixed $value The custom setting value.
 	 */
-	public function set_custom_setting( $group, $field, $value ) {
-		$this->custom[ $group ][ $field ] = apply_filters(
+	public function set_custom_setting( $group_name, $field_name, $value ) {
+		$group = $this->custom[ $group_name ];
+
+		$field_value = apply_filters(
 			'ms_model_settings_set_custom_setting',
 			$value,
-			$group,
-			$field,
+			$group_name,
+			$field_name,
 			$this
 		);
+
+		$key = false;
+
+		// Very basic support for array updates.
+		// We only support updating 1-dimensional arrays with a
+		// specified key value.
+		if ( strpos( $field_name, '[' ) ) {
+			$field_name = str_replace( ']', '', $field_name );
+			list( $field_name, $key ) = explode( '[', $field_name, 2 );
+		}
+
+		if ( $key ) {
+			if ( empty( $group[ $field_name ] ) ) {
+				$group[ $field_name ] = array();
+			}
+			if ( is_array( $group[ $field_name ] ) ) {
+				$group[ $field_name ][ $key ] = $field_value;
+			}
+		} else {
+			$group[ $field_name ] = $field_value;
+		}
+
+		$this->custom[ $group_name ] = $group;
 	}
 
 	/**
@@ -365,22 +390,46 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $group The custom setting group.
-	 * @param string $field The custom setting field.
+	 * @param string $group_name The custom setting group.
+	 * @param string $field_name The custom setting field.
 	 * @return mixed $value The custom setting value.
 	 */
-	public function get_custom_setting( $group, $field ) {
+	public function get_custom_setting( $group_name, $field_name ) {
 		$value = '';
 
-		if ( ! empty( $this->custom[ $group ][ $field ] ) ) {
-			$value = $this->custom[ $group ][ $field ];
+		if ( isset( $this->custom[ $group_name ] ) ) {
+			$group = $this->custom[ $group_name ];
+		} else {
+			$group = array();
+		}
+
+		$key = false;
+
+		// Very basic support for array updates.
+		// We only support updating 1-dimensional arrays with a
+		// specified key value.
+		if ( strpos( $field_name, '[' ) ) {
+			$field_name = str_replace( ']', '', $field_name );
+			list( $key, $field_name ) = explode( '[', $field_name, 2 );
+		}
+
+		if ( $key ) {
+			if ( isset( $group[ $key ] ) ) {
+				$group = $group[ $key ];
+			} else {
+				$group = array();
+			}
+		}
+
+		if ( isset( $group[ $field_name ] ) ) {
+			$value = $group[ $field_name ];
 		}
 
 		return apply_filters(
 			'ms_model_settings_get_custom_setting',
 			$value,
-			$group,
-			$field,
+			$group_name,
+			$field_name,
 			$this
 		);
 	}
