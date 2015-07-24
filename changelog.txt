@@ -35,6 +35,7 @@ Change Log:
 - Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
 - Fix a minor security hole in the data import module
 - Fix a bunch of PHP notices and warnings
+- Fix a rare 403 error that happened when a user was accessing protected content
 - A lot of small improvements behind the scenes, cleanup and some new filters
 
 1.0.0.8

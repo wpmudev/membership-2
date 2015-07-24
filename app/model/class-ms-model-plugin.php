@@ -342,7 +342,7 @@ class MS_Model_Plugin extends MS_Model {
 			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
 				$no_access_page_url = esc_url_raw(
 					add_query_arg(
-						array( 'redirect_to' => $current_page_url ),
+						array( 'redirect_to' => urlencode( $current_page_url ) ),
 						$no_access_page_url
 					)
 				);
