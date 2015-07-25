@@ -20,7 +20,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected static $POST_TYPE;
+	protected static $POST_TYPE = '';
 
 	/**
 	 * ID of the model object.
@@ -31,16 +31,16 @@ class MS_Model_CustomPostType extends MS_Model {
 	 *
 	 * @var int
 	 */
-	protected $id;
+	protected $id = 0;
 
 	/**
-	 * Model name.
+	 * Model name (this is the post slug)
 	 *
 	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
-	protected $name;
+	protected $name = '';
 
 	/**
 	 * Model title.
@@ -51,7 +51,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 *
 	 * @var string
 	 */
-	protected $title;
+	protected $title = '';
 
 	/**
 	 * Model description.
@@ -62,7 +62,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 *
 	 * @var string
 	 */
-	protected $description;
+	protected $description = '';
 
 	/**
 	 * The user ID of the owner.
@@ -73,7 +73,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 *
 	 * @var int
 	 */
-	protected $user_id;
+	protected $user_id = 0;
 
 	/**
 	 * The last modified date.
@@ -84,7 +84,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 *
 	 * @var string
 	 */
-	protected $post_modified;
+	protected $post_modified = '';
 
 	/**
 	 * Custom data can be used by other plugins via the set_custom_data() and
@@ -104,7 +104,7 @@ class MS_Model_CustomPostType extends MS_Model {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	static public $ignore_fields = array();
 
@@ -129,8 +129,6 @@ class MS_Model_CustomPostType extends MS_Model {
 	 * Update WP cache.
 	 *
 	 * @since  1.0.0
-	 *
-	 * @var string[]
 	 */
 	public function save() {
 		MS_Factory::select_blog();

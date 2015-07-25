@@ -36,8 +36,6 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_action( 'init', 'setup_posttype' );
-
 		$this->add_action( 'template_redirect', 'process_actions', 1 );
 
 		$this->add_action( 'ms_controller_gateway_settings_render_view', 'gateway_settings_edit' );
@@ -890,35 +888,6 @@ class MS_Controller_Gateway extends MS_Controller {
 	}
 
 	/**
-	 * Register a custom post type that is used to log all gateway transactions.
-	 *
-	 * This is an internal post type that cannot be viewed/used by anyone.
-	 * The only way to access the data is the log-viewer in the Billings page.
-	 *
-	 * @since  1.0.1.0
-	 */
-	public function setup_posttype() {
-		$args = array(
-			'label' => __( 'Membership2 Transaction Logs', MS_TEXT_DOMAIN ),
-			'supports'            => array(),
-			'hierarchical'        => false,
-			'public'              => false,
-			'show_ui'             => false,
-			'show_in_menu'        => false,
-			'show_in_admin_bar'   => false,
-			'show_in_nav_menus'   => false,
-			'can_export'          => false,
-			'has_archive'         => false,
-			'exclude_from_search' => true,
-			'publicly_queryable'  => false,
-		);
-		register_post_type(
-			MS_Helper_ListTable_TransactionLog::POST_TYPE,
-			$args
-		);
-	}
-
-	/**
 	 * Saves transaction details to the database. The transaction logs can later
 	 * be displayed in the Billings section.
 	 *
@@ -927,7 +896,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 *
 	 * @param string $gateway_id The gateway ID.
-	 * @param string $method FOllowing values:
+	 * @param string $method Following values:
 	 *        "handle": IPN response
 	 *        "process": Process order (i.e. user comes from Payment screen)
 	 *        "request": Automatically request recurring payment
@@ -940,36 +909,15 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @param string $notes Additional text to describe the transaction or error.
 	 */
 	public function log_transaction( $gateway_id, $method, $success, $subscription_id, $invoice_id, $amount, $notes ) {
-		$post = array(
-			'post_content' => $notes,
-			'post_title' => 'Transaction Log',
-			'post_status' => 'draft',
-			'post_author' => 0,
-			'post_type' => 'ms_transaction_log',
-			'ping_status' => 'closed',
-			'comment_status' => 'closed',
-		);
-
-		$id = wp_insert_post( $post );
-
-		if ( $success ) {
-			$state = 'ok';
-		} elseif ( null === $success ) {
-			$state = 'ignored';
-		} else {
-			$state = 'err';
-		}
-
-		if ( $id ) {
-			add_post_meta( $id, '_gateway_id', $gateway_id, true );
-			add_post_meta( $id, '_method', $method, true );
-			add_post_meta( $id, '_success', $state, true );
-			add_post_meta( $id, '_subscription_id', $subscription_id, true );
-			add_post_meta( $id, '_invoice_id', $invoice_id, true );
-			add_post_meta( $id, '_amount', $amount, true );
-			add_post_meta( $id, '_url', lib2()->net->current_url(), true );
-			add_post_meta( $id, '_post', $_POST, true );
-		}
+		$log = MS_Factory::create( 'MS_Model_Transactionlog' );
+		$log->description = $notes;
+		$log->gateway_id = $gateway_id;
+		$log->method = $method;
+		$log->success = $success;
+		$log->subscription_id = $subscription_id;
+		$log->invoice_id = $invoice_id;
+		$log->amount = $amount;
+		$log->save();
 	}
 
 	/**

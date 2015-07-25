@@ -7,11 +7,6 @@
 class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 	/**
-	 * The post type that contains the transaction log items.
-	 */
-	const POST_TYPE = 'ms_transaction_log';
-
-	/**
 	 * This ID is used as class-name for the list output and also in various
 	 * filter names in MS_Helper_ListTable.
 	 *
@@ -118,36 +113,11 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			$this->get_sortable_columns(),
 		);
 
-		$args = $this->get_query_args();
-		$total_items = $this->count_items();
-
-		$this->items = apply_filters(
-			'ms_helper_listtable_transactionlog_items',
-			$this->get_items( $args )
-		);
-
-		$this->set_pagination_args(
-			array(
-				'total_items' => $total_items,
-				'per_page' => 20,
-			)
-		);
-	}
-
-	/**
-	 * Prepares the collection of query arguments used to filter list items.
-	 * These arguments are later passed to a WP_Query constructor.
-	 *
-	 * @since  1.0.0
-	 * @return array
-	 */
-	protected function get_query_args() {
-		$defaults = MS_Model_Invoice::get_query_args();
-
 		$per_page = $this->get_items_per_page(
 			'transactionlog_per_page',
 			self::DEFAULT_PAGE_SIZE
 		);
+
 		$current_page = $this->get_pagenum();
 
 		$args = array(
@@ -155,9 +125,19 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
-		$args = wp_parse_args( $args, $defaults );
+		$total_items = MS_Model_Transactionlog::get_item_count( $args );
 
-		return $args;
+		$this->items = apply_filters(
+			'ms_helper_listtable_transactionlog_items',
+			MS_Model_Transactionlog::get_items( $args )
+		);
+
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'per_page' => $per_page,
+			)
+		);
 	}
 
 	/**
@@ -192,7 +172,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string Class to be added to the table row.
 	 */
 	protected function single_row_class( $item ) {
-		return 'log-' . $item->status;
+		return 'log-' . $item->state;
 	}
 
 	/**
@@ -228,7 +208,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_status( $item, $column_name ) {
-		switch ( $item->status ) {
+		switch ( $item->state ) {
 			case 'ok':
 				$icon = 'wpmui-fa-check';
 				$hint = __( 'Success', MS_TEXT_DOMAIN );
@@ -347,9 +327,10 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_note( $item, $column_name ) {
-		if ( ! empty( $item->post_data ) ) {
+		$item_post_info = $item->post;
+		if ( ! empty( $item_post_info ) ) {
 			$post_data = array( 'POST data:' );
-			foreach ( $item->post_data as $key => $value ) {
+			foreach ( $item_post_info as $key => $value ) {
 				$post_data[] = "[$key] = \"$value\"";
 			}
 			$post_info = sprintf(
@@ -363,74 +344,10 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		$html = sprintf(
 			'<div class="detail-block">%1$s</div>',
-			$post_info . $item->note
+			$post_info . $item->description
 		);
 
 		return $html;
-	}
-
-	/**
-	 * Returns the total number of transaction logs in the database.
-	 *
-	 * @since  1.0.0
-	 * @return int
-	 */
-	protected function count_items() {
-		$count = wp_count_posts( self::POST_TYPE );
-
-		$log_count = 0;
-		foreach ( $count as $value ) {
-			$log_count += $value;
-		}
-
-		return $log_count;
-	}
-
-	/**
-	 * Returns a list of transaction log items that will be displayed in the
-	 * listview.
-	 *
-	 * @since  1.0.0
-	 * @param  array $args Filter options.
-	 * @return array List of matching transaction log entries.
-	 */
-	protected function get_items( $args ) {
-		$args['post_type'] = self::POST_TYPE;
-		if ( ! empty( $args['meta_query'] ) ) {
-			if ( is_array( $args['meta_query']['gateway_id'] ) ) {
-				$args['meta_query']['gateway_id']['key'] = '_gateway_id';
-			}
-		}
-
-		$query = new WP_Query( $args );
-		$item = array();
-
-		foreach ( $query->posts as $post ) {
-			$item = (object) array(
-				'id' => $post->ID,
-				'date' => $post->post_date,
-				'note' => $post->post_content,
-				'gateway_id' => get_post_meta( $post->ID, '_gateway_id', true ),
-				'method' => get_post_meta( $post->ID, '_method', true ),
-				'success' => get_post_meta( $post->ID, '_success', true ),
-				'subscription_id' => get_post_meta( $post->ID, '_subscription_id', true ),
-				'invoice_id' => get_post_meta( $post->ID, '_invoice_id', true ),
-				'amount' => get_post_meta( $post->ID, '_amount', true ),
-				'post_data' => get_post_meta( $post->ID, '_post', true ),
-			);
-
-			if ( lib2()->is_true( $item->success ) || 'ok' == $item->success ) {
-				$item->status = 'ok';
-			} elseif ( 'ignored' == $item->success ) {
-				$item->status = 'ignore';
-			} else {
-				$item->status = 'err';
-			}
-
-			$items[] = $item;
-		}
-
-		return $items;
 	}
 
 }

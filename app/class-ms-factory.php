@@ -22,7 +22,7 @@ class MS_Factory {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @var   int[]
+	 * @var   array
 	 */
 	static private $Prev_Blog_Id = array();
 
@@ -447,15 +447,25 @@ class MS_Factory {
 			if ( false === $postmeta ) {
 				if ( isset( $settings[ $field ] ) ) {
 					$value = $settings[ $field ];
+				} elseif ( isset( $settings[ '_' . $field ] ) ) {
+					$value = $settings[ '_' . $field ];
 				}
-			} else if ( true === $postmeta ) {
+			} elseif ( true === $postmeta ) {
 				if ( isset( $settings[ $field ][0] ) ) {
-					$value = maybe_unserialize( $settings[ $field ][ 0 ] );
+					$value = $settings[ $field ][ 0 ];
+				} elseif ( isset( $settings[ '_' . $field ][0] ) ) {
+					$value = $settings[ '_' . $field ][ 0 ];
 				}
-			} else if ( is_string( $postmeta ) ) {
+			} elseif ( is_string( $postmeta ) ) {
 				if ( isset( $settings[ $postmeta . $field ][0] ) ) {
-					$value = maybe_unserialize( $settings[ $postmeta . $field ][ 0 ] );
+					$value = $settings[ $postmeta . $field ][ 0 ];
+				} elseif ( isset( $settings[ '_' . $postmeta . $field ][0] ) ) {
+					$value = $settings[ '_' . $postmeta . $field ][ 0 ];
 				}
+			}
+
+			if ( $value ) {
+				$value = maybe_unserialize( $value );
 			}
 
 			$saved_data[ $field ] = $value;

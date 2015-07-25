@@ -1323,8 +1323,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Returns property associated with the render.
 	 *
 	 * @since  1.0.0
-	 *
-	 * @access public
+	 * @internal
 	 * @param string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
@@ -1391,8 +1390,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Set specific property.
 	 *
 	 * @since  1.0.0
-	 *
-	 * @access public
+	 * @internal
 	 * @param string $property The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
