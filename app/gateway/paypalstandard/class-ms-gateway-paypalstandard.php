@@ -78,6 +78,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	 */
 	public function handle_return() {
 		$success = false;
+		$ignore = false;
 		$exit = false;
 		$redirect = false;
 		$notes = '';
@@ -88,10 +89,44 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$invoice_id = 0;
 		$subscription_id = 0;
 		$amount = 0;
+		$transaction_type = '';
+		$payment_status = '';
+		$is_m1 = false;
 
-		if ( ( isset( $_POST['payment_status'] ) || isset( $_POST[ 'txn_type'] ) )
-			&& ! empty( $_POST['invoice'] )
-		) {
+		$fields_set = false;
+
+		if ( ! empty( $_POST[ 'txn_type'] ) ) {
+			$transaction_type = strtolower( $_POST[ 'txn_type'] );
+		}
+		if ( ! empty( $_POST[ 'payment_status'] ) ) {
+			$payment_status = strtolower( $_POST[ 'payment_status'] );
+		}
+
+		if ( $payment_status || $transaction_type ) {
+			if ( ! empty( $_POST['invoice'] ) ) {
+				// 'invoice' is set in all regular M2 subscriptions.
+				$fields_set = true;
+			} elseif ( ! empty( $_POST['custom'] ) ) {
+				// First: We cannot process this payment.
+				$fields_set = false;
+
+				// But let's check if it is an M1 payment.
+				$infos = explode( ':', $_POST['custom'] );
+				if ( count( $infos ) > 2 ) {
+					// $infos should contain [timestamp, user_id, sub_id, key]
+					$pay_types = array( 'subscr_signup', 'subscr_payment' );
+					$pay_stati = array( 'completed', 'processed' );
+
+					if ( in_array( $transaction_type, $pay_types ) ) {
+						$is_m1 = true;
+					} elseif ( in_array( $payment_status, $pay_stati ) ) {
+						$is_m1 = true;
+					}
+				}
+			}
+		}
+
+		if ( $fields_set ) {
 			if ( $this->is_live_mode() ) {
 				$domain = 'https://www.paypal.com';
 			} else {
@@ -127,14 +162,14 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				$subscription_id = $subscription->id;
 
 				// Process PayPal payment status
-				if ( ! empty( $_POST['payment_status'] ) ) {
+				if ( $payment_status ) {
 					$amount = (float) $_POST['mc_gross'];
 					$external_id = $_POST['txn_id'];
 
-					switch ( $_POST['payment_status'] ) {
+					switch ( $payment_status ) {
 						// Successful payment
-						case 'Completed':
-						case 'Processed':
+						case 'completed':
+						case 'processed':
 							if ( $amount == $invoice->total ) {
 								$success = true;
 								$notes .= __( 'Payment successful', MS_TEXT_DOMAIN );
@@ -144,55 +179,86 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							}
 							break;
 
-						case 'Reversed':
+						case 'reversed':
 							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back).', MS_TEXT_DOMAIN );
 							$status = MS_Model_Invoice::STATUS_DENIED;
+							$ignore = true;
 							break;
 
-						case 'Refunded':
+						case 'refunded':
 							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been refunded.', MS_TEXT_DOMAIN );
 							$status = MS_Model_Invoice::STATUS_DENIED;
+							$ignore = true;
 							break;
 
-						case 'Denied':
+						case 'denied':
 							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment Denied.', MS_TEXT_DOMAIN );
 							$status = MS_Model_Invoice::STATUS_DENIED;
+							$ignore = true;
 							break;
 
-						case 'Pending':
-							$pending_str = array(
-								'address' => __( 'Customer did not include a confirmed shipping address', MS_TEXT_DOMAIN ),
-								'authorization' => __( 'Funds not captured yet', MS_TEXT_DOMAIN ),
-								'echeck' => __( 'eCheck that has not cleared yet', MS_TEXT_DOMAIN ),
-								'intl' => __( 'Payment waiting for aproval by service provider', MS_TEXT_DOMAIN ),
-								'multi-currency' => __( 'Payment waiting for service provider to handle multi-currency process', MS_TEXT_DOMAIN ),
-								'unilateral' => __( 'Customer did not register or confirm his/her email yet', MS_TEXT_DOMAIN ),
-								'upgrade' => __( 'Waiting for service provider to upgrade the PayPal account', MS_TEXT_DOMAIN ),
-								'verify' => __( 'Waiting for service provider to verify his/her PayPal account', MS_TEXT_DOMAIN ),
-								'*' => '?',
-							);
-
+						case 'pending':
 							lib2()->array->strip_slashes( $_POST, 'pending_reason' );
-							$reason = $_POST['pending_reason'];
-							$notes_pay = __( 'Last transaction is pending. Reason: ', MS_TEXT_DOMAIN ) .
-								( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
+							$notes_pay = __( 'Last transaction is pending.', MS_TEXT_DOMAIN ) . ' ';
+
+							switch ( $_POST['pending_reason'] ) {
+								case 'address':
+									$notes_pay .= __( 'Customer did not include a confirmed shipping address', MS_TEXT_DOMAIN );
+									break;
+
+								case 'authorization':
+									$notes_pay .= __( 'Funds not captured yet', MS_TEXT_DOMAIN );
+									break;
+
+								case 'echeck':
+									$notes_pay .= __( 'The eCheck has not cleared yet', MS_TEXT_DOMAIN );
+									break;
+
+								case 'intl':
+									$notes_pay .= __( 'Payment waiting for approval by service provider', MS_TEXT_DOMAIN );
+									break;
+
+								case 'multi-currency':
+									$notes_pay .= __( 'Payment waiting for service provider to handle multi-currency process', MS_TEXT_DOMAIN );
+									break;
+
+								case 'unilateral':
+									$notes_pay .= __( 'Customer did not register or confirm his/her email yet', MS_TEXT_DOMAIN );
+									break;
+
+								case 'upgrade':
+									$notes_pay .= __( 'Waiting for service provider to upgrade the PayPal account', MS_TEXT_DOMAIN );
+									break;
+
+								case 'verify':
+									$notes_pay .= __( 'Waiting for service provider to verify his/her PayPal account', MS_TEXT_DOMAIN );
+									break;
+
+								default:
+									$notes_pay .= __( 'Unknown reason', MS_TEXT_DOMAIN );
+									break;
+							}
+
 							$status = MS_Model_Invoice::STATUS_PENDING;
+							$ignore = true;
 							break;
 
 						default:
-						case 'Partially-Refunded':
-						case 'In-Progress':
-							$notes_pay = __( 'Not handling payment_status: ', MS_TEXT_DOMAIN ) .
-								$_POST['payment_status'];
+						case 'partially-refunded':
+						case 'in-progress':
+							$notes_pay = sprintf(
+								__( 'Not handling payment_status: %s', MS_TEXT_DOMAIN ),
+								$payment_status
+							);
 							MS_Helper_Debug::log( $notes_pay );
-							$success = null;
+							$ignore = true;
 							break;
 					}
 				}
 
 				// Check for subscription details
-				if ( ! empty( $_POST['txn_type'] ) ) {
-					switch ( $_POST['txn_type'] ) {
+				if ( $transaction_type ) {
+					switch ( $transaction_type ) {
 						case 'subscr_signup':
 						case 'subscr_payment':
 							// Payment was received
@@ -200,14 +266,14 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							if ( 0 == $invoice->total ) {
 								$success = true;
 							} else {
-								if ( ! $success ) { $success = null; }
+								$ignore = true;
 							}
 							break;
 
 						case 'subscr_modify':
 							// Payment profile was modified
 							$notes_txn = __( 'Paypal subscription profile has been modified.', MS_TEXT_DOMAIN );
-							if ( ! $success ) { $success = null; }
+							$ignore = true;
 							break;
 
 						case 'recurring_payment_profile_canceled':
@@ -216,6 +282,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$notes_txn = __( 'Paypal subscription profile has been canceled.', MS_TEXT_DOMAIN );
 							$member->cancel_membership( $membership->id );
 							$member->save();
+							$ignore = true;
 							break;
 
 						case 'recurring_payment_suspended':
@@ -223,6 +290,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$notes_txn = __( 'Paypal subscription profile has been suspended.', MS_TEXT_DOMAIN );
 							$member->cancel_membership( $membership->id );
 							$member->save();
+							$ignore = true;
 							break;
 
 						case 'recurring_payment_suspended_due_to_max_failed_payment':
@@ -230,11 +298,13 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$notes_txn = __( 'Paypal subscription profile has failed.', MS_TEXT_DOMAIN );
 							$member->cancel_membership( $membership->id );
 							$member->save();
+							$ignore = true;
 							break;
 
 						case 'new_case':
 							// New Dispute was filed for a payment.
 							$status = MS_Model_Invoice::STATUS_DENIED;
+							$ignore = true;
 							break;
 
 						case 'subscr_eot':
@@ -254,14 +324,17 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							 *   3. subscr_eot (subscription ends)
 							 */
 							$notes_txn = __( 'No more payments will be made for this subscription.', MS_TEXT_DOMAIN );
-							if ( ! $success ) { $success = null; }
+							$ignore = true;
 							break;
 
 						default:
 							// Other event that we do not have a case for...
-							$notes_txn = __( 'Not handling txn_type: ', MS_TEXT_DOMAIN ) . $_POST['txn_type'];
+							$notes_txn = sprintf(
+								__( 'Not handling txn_type: %s', MS_TEXT_DOMAIN ),
+								$transaction_type
+							);
 							MS_Helper_Debug::log( $notes_txn );
-							if ( ! $success ) { $success = null; }
+							$ignore = true;
 							break;
 					}
 				}
@@ -291,29 +364,30 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				$reason = 'Unexpected transaction response';
 				switch ( true ) {
 					case is_wp_error( $response ):
-						$reason = 'Response is error';
+						$reason = 'PayPal did not verify this transaction: Unknown error';
 						break;
 
 					case 200 != $response['response']['code']:
-						$reason = 'Response code is ' . $response['response']['code'];
+						$reason = sprintf(
+							'PayPal did not verify the transaction: Code %s',
+							$response['response']['code']
+						);
 						break;
 
 					case empty( $response['body'] ):
-						$reason = 'Response is empty';
+						$reason = 'PayPal did not verify this transaction: Empty response';
 						break;
 
 					case 'VERIFIED' != $response['body']:
 						$reason = sprintf(
-							'Expected response "%s" but got "%s"',
-							'VERIFIED',
-							(string) $response['body']
+							'PayPal did not verify this transaction: "%s"',
+							$response['body']
 						);
 						break;
 
 					case $invoice->id != $invoice_id:
 						$reason = sprintf(
-							'Expected invoice_id "%s" but got "%s"',
-							$invoice->id,
+							'PayPal gave us an invalid invoice_id: "%s"',
 							$invoice_id
 						);
 						break;
@@ -334,14 +408,33 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
 				MS_Helper_Debug::log( $notes );
 				$redirect = home_url();
+			} elseif ( $is_m1 ) {
+				/*
+				 * The payment belongs to an imported M1 subscription and could
+				 * not be auto-matched.
+				 * Do not return an error code, but also do not modify any
+				 * invoice/subscription.
+				 */
+				$notes = 'M1 Payment detected. Manual matching required.';
+				$ignore = false;
+				$success = false;
 			} else {
+				if ( ! $payment_status && ! $transaction_type ) {
+					$notes = 'Error: payment_status and txn_type not specified. Cannot process.';
+				} elseif ( empty( $_POST['invoice'] ) && empty( $_POST['custom'] ) ) {
+					$notes = 'Error: No invoice or custom data specified.';
+				} else {
+					$notes = 'Error: Missing POST variables. Identification is not possible.';
+				}
+
 				// PayPal did provide invalid details...
 				status_header( 404 );
-				$notes = 'Error: Missing POST variables. Identification is not possible.';
 				MS_Helper_Debug::log( $notes );
 			}
 			$exit = true;
 		}
+
+		if ( $ignore && ! $success ) { $success = null; }
 
 		do_action(
 			'ms_gateway_transaction_log',
