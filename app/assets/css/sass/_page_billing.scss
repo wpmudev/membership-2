@@ -15,6 +15,12 @@
 		}
 
 		.transactions {
+			tr:hover {
+				td {
+					box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1) inset, 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset;
+				}
+			}
+
 			td {
 				padding: 6px;
 			}
@@ -96,6 +102,10 @@
 			.log-status {
 				background-color: #068;
 			}
+
+			.log-status-icon:before {
+				content: '\f00c';
+			}
 		}
 
 		.log-err {
@@ -106,11 +116,19 @@
 			.log-status {
 				background-color: #800;
 			}
+
+			.log-status-icon:before {
+				content: '\f071';
+			}
 		}
 
 		.log-ignore {
 			.log-status {
 				background-color: #888;
+			}
+
+			.log-status-icon:before {
+				content: '\f00d';
 			}
 		}
 
@@ -144,9 +162,39 @@
 				border: 5px solid transparent;
 				border-bottom-color: #333;
 			}
+			.post-data:after {
+				content: '';
+				position: absolute;
+				left: 0px;
+				right: 0px;
+				top: -25px;
+				height: 25px;
+			}
 			&:hover .post-data {
 				display: block;
 			}
+		}
+
+		.actions {
+			position: absolute;
+			right: 6px;
+			top: 6px;
+			display: none;
+			z-index: 5;
+		}
+
+		tr.log-err:hover .err-actions,
+		tr.log-ok:hover .ok-actions,
+		tr.log-ignore:hover .ignore-actions {
+			display: block;
+		}
+
+		tr:hover .wpmui-loading .actions {
+			display: hidden;
+		}
+
+		.wpmui-loading {
+			overflow: hidden;
 		}
 	}
 }

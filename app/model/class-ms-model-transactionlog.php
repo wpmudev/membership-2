@@ -68,7 +68,10 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 *
 	 * 'ok' means that an invoice was marked paid.
 	 * 'err' indicates an error or unknown input.
-	 * 'ignored' indicates a message that was processed but irrelevant.
+	 * 'ignore' indicates a message that was processed but irrelevant.
+	 *
+	 * Note: This is the state of the original transaction, not the state that
+	 * is displayed to the user. {@see $manual_state}
 	 *
 	 * @since 1.0.1.0
 	 * @var   string $state Access via $item->state (not $item->_state!)
@@ -90,6 +93,14 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @var   int
 	 */
 	protected $invoice_id = 0;
+
+	/**
+	 * The member associated with the transaction.
+	 *
+	 * @since 1.0.1.0
+	 * @var   int
+	 */
+	protected $member_id = 0;
 
 	/**
 	 * The transaction amount reported by the gateway.
@@ -116,6 +127,33 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @var   array
 	 */
 	protected $post = null;
+
+	/**
+	 * The manually overwritten state value.
+	 *
+	 * If this is empty then $state is the effective state value, otherwise this
+	 * flag indicates the state that is displayed to the user.
+	 *
+	 * @since 1.0.1.0
+	 * @var   string
+	 */
+	protected $manual_state = '';
+
+	/**
+	 * Timestamp of setting the $manual_state value.
+	 *
+	 * @since 1.0.1.0
+	 * @var   string
+	 */
+	protected $manual_date = '';
+
+	/**
+	 * User who changed the $manual_state value.
+	 *
+	 * @since 1.0.1.0
+	 * @var   int
+	 */
+	protected $manual_user = 0;
 
 
 	//
@@ -223,7 +261,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @since  1.0.1.0
 	 *
 	 * @param $args The query post args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 *        @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return array $args The parsed args.
 	 */
 	public static function get_query_args( $args ) {
@@ -233,6 +271,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			'fields' => 'ids',
 			'order' => 'DESC',
 			'orderby' => 'ID',
+			'posts_per_page' => 20,
 		);
 
 		if ( ! empty( $args['meta_query'] ) ) {
@@ -241,12 +280,72 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			}
 		}
 
+		if ( ! empty( $args['state'] ) ) {
+			$ids = self::get_state_ids( $args['state'] );
+			$args['post__in'] = $ids;
+		}
+
 		$args = wp_parse_args( $args, $defaults );
 
 		return apply_filters(
 			'ms_model_transactionlog_get_item_args',
 			$args
 		);
+	}
+
+	/**
+	 * Returns a list of post_ids that have the specified Transaction State.
+	 *
+	 * @since  1.0.1.0
+	 * @param  string $state A valid transaction state [err|ok|ignore].
+	 * @return array List of post_ids.
+	 */
+	static public function get_state_ids( $state ) {
+		global $wpdb;
+
+		$sql = "
+		SELECT p.ID
+		FROM
+			{$wpdb->posts} p
+			LEFT JOIN {$wpdb->postmeta} state1 ON
+				state1.post_id = p.ID AND state1.meta_key IN ('_success', 'success')
+			LEFT JOIN {$wpdb->postmeta} state2 ON
+				state2.post_id = p.ID AND state2.meta_key IN ('_manual_state', 'manual_state')
+		WHERE
+			p.post_type = %s
+		";
+
+		switch ( $state ) {
+			case 'err':
+				$sql .= "
+				AND (state1.meta_value IS NULL OR state1.meta_value IN ('','0','err'))
+				AND (state2.meta_value IS NULL OR state2.meta_value IN (''))
+				";
+				break;
+
+			case 'ok':
+				$sql .= "
+				AND (
+					state1.meta_value IN ('1','ok')
+					OR state2.meta_value IN ('1','ok')
+				)
+				";
+				break;
+
+			case 'ignore':
+				$sql .= "
+				AND (
+					state1.meta_value IN ('ignore')
+					OR state2.meta_value IN ('ignore')
+				)
+				";
+				break;
+		}
+
+		$sql = $wpdb->prepare( $sql, self::get_post_type() );
+		$ids = $wpdb->get_col( $sql );
+
+		return $ids;
 	}
 
 
@@ -275,6 +374,26 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public function prepare_obj() {
 		$this->set_state( $this->success );
+
+		if ( ! $this->member_id ) {
+			if ( $this->invoice_id ) {
+				$invoice = MS_Factory::load( 'MS_Model_Invoice', $this->invoice_id );
+				$this->member_id = $invoice->user_id;
+			} elseif ( MS_Gateway_Paypalstandard::ID == $this->gateway ) {
+				/*
+				 * Migration logic for M1 IPN messages:
+				 * M1 did use the "custom" field to link the transaction to a
+				 * subscription. The custom field contains these details:
+				 * timestamp : user_id : subscription_id : key
+				 */
+				if ( is_array( $this->post ) && ! empty( $this->post['custom'] ) ) {
+					$infos = explode( ':', $this->post['custom'] );
+					if ( count( $infos ) > 2 && is_numeric( $infos[1] ) ) {
+						$this->member_id = intval( $infos[1] );
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -285,6 +404,72 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public function load_post_data( $post ) {
 		$this->date = $post->post_date;
+	}
+
+	/**
+	 * Sets the manual-state value of the transaction log entry.
+	 *
+	 * @since  1.0.0
+	 * @param  string $state The new state of the item.
+	 * @return bool True on success.
+	 */
+	public function manual_state( $state ) {
+		if ( 'err' != $this->_state ) {
+			// Not allowed: Only error state can be manually corrected.
+			return false;
+		}
+
+		switch ( $state ) {
+			case 'ignore':
+				if ( $this->manual_state ) {
+					// Not allowed: Manual state was defined already.
+					return false;
+				}
+				break;
+
+			case 'clear':
+				if ( 'ignore' != $this->manual_state ) {
+					// Not allowed: Only "ingored" state can be cleared.
+					return false;
+				}
+				break;
+
+			default:
+				// Not allowed: Unknown state.
+				return false;
+		}
+
+		if ( 'clear' == $state ) {
+			$this->manual_state = '';
+			$this->manual_date = '';
+			$this->manual_user = 0;
+		} else {
+			$this->manual_state = $state;
+			$this->manual_date = MS_Helper_Period::current_time();
+			$this->manual_user = get_current_user_id();
+		}
+		return true;
+	}
+
+	/**
+	 * Returns the WP_User object for the manual user.
+	 *
+	 * @since  1.0.1.0
+	 * @return WP_User
+	 */
+	public function get_manual_user() {
+		$user = new WP_User( $this->manual_user );
+		return $user;
+	}
+
+	/**
+	 * Returns the Member object associated with this transaction.
+	 *
+	 * @since  1.0.1.0
+	 * @return MS_Model_Member
+	 */
+	public function get_member() {
+		return MS_Factory::load( 'MS_Model_Member', $this->member_id );
 	}
 
 	/**
@@ -300,7 +485,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 				$this->success = true;
 				break;
 
-			case 'ignored':
+			case 'ignore':
 				$this->_state = $value;
 				$this->success = null;
 				break;
@@ -321,8 +506,8 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 				break;
 
 			case null:
-				$this->_state = 'ignored';
-				$this->success = $value;
+				$this->_state = 'ignore';
+				$this->success = 'ignore';
 				break;
 
 			default:
@@ -343,7 +528,15 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 
 		switch ( $property ) {
 			case 'state':
-				$value = $this->_state;
+				if ( $this->manual_state ) {
+					$value = $this->manual_state;
+				} else {
+					$value = $this->_state;
+				}
+				break;
+
+			case 'is_manual':
+				$value = ! ! $this->manual_state;
 				break;
 
 			default:

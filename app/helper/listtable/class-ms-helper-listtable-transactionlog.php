@@ -125,6 +125,19 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			'offset' => ( $current_page - 1 ) * $per_page,
 		);
 
+		if ( ! empty( $_GET['state'] ) ) {
+			$args['state'] = $_GET['state'];
+		}
+
+		if ( ! empty( $_GET['gateway_id'] ) ) {
+			$args['meta_query'] = array(
+				'gateway_id' => array(
+					'key' => '_gateway_id',
+					'value' => $_GET['gateway_id'],
+				),
+			);
+		}
+
 		$total_items = MS_Model_Transactionlog::get_item_count( $args );
 
 		$this->items = apply_filters(
@@ -159,6 +172,26 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	public function get_views() {
 		$views = array();
 
+		$views['all'] = array(
+			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'url' => remove_query_arg( 'state' ),
+		);
+
+		$views['ok'] = array(
+			'label' => __( 'Successful', MS_TEXT_DOMAIN ),
+			'url' => add_query_arg( 'state', 'ok' ),
+		);
+
+		$views['err'] = array(
+			'label' => __( 'Failed', MS_TEXT_DOMAIN ),
+			'url' => add_query_arg( 'state', 'err' ),
+		);
+
+		$views['ignore'] = array(
+			'label' => __( 'Ignored', MS_TEXT_DOMAIN ),
+			'url' => add_query_arg( 'state', 'ignore' ),
+		);
+
 		return apply_filters(
 			'ms_helper_listtable_transactionlog_views',
 			$views
@@ -172,7 +205,13 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string Class to be added to the table row.
 	 */
 	protected function single_row_class( $item ) {
-		return 'log-' . $item->state;
+		$class = 'log-' . $item->state;
+
+		if ( $item->is_manual ) {
+			$class .= ' is-manual';
+		}
+
+		return $class;
 	}
 
 	/**
@@ -208,28 +247,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_status( $item, $column_name ) {
-		switch ( $item->state ) {
-			case 'ok':
-				$icon = 'wpmui-fa-check';
-				$hint = __( 'Success', MS_TEXT_DOMAIN );
-				break;
-
-			case 'ignore':
-				$icon = 'wpmui-fa-times';
-				$hint = __( 'Intentionally ignored', MS_TEXT_DOMAIN );
-				break;
-
-			default:
-				$icon = 'wpmui-fa-warning';
-				$hint = __( 'Error', MS_TEXT_DOMAIN );
-				break;
-		}
-
-		$html = sprintf(
-			'<span class="log-status" title="%2$s"><i class="wpmui-fa %1$s"></i></span>',
-			$icon,
-			$hint
-		);
+		$html = '<span class="log-status"><i class="wpmui-fa log-status-icon"></i></span>';
 
 		return $html;
 	}
@@ -327,24 +345,94 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_note( $item, $column_name ) {
-		$item_post_info = $item->post;
-		if ( ! empty( $item_post_info ) ) {
-			$post_data = array( 'POST data:' );
-			foreach ( $item_post_info as $key => $value ) {
-				$post_data[] = "[$key] = \"$value\"";
-			}
-			$post_info = sprintf(
-				'<div class="more-details">%2$s<div class="post-data">%1$s</div></div>',
-				implode( '<br>', $post_data ),
-				'<i class="wpmui-fa wpmui-fa-info-circle"></i>'
+		$extra_infos = '';
+		$row_actions = '';
+		$nonce_action = '';
+		$detail_lines = array();
+		$actions = array();
+
+		// 1. Prepare the "Additional Details" popup.
+		if ( $item->is_manual ) {
+			$detail_lines[] = __( 'Transaction state manually changed', MS_TEXT_DOMAIN );
+			$detail_lines[] = sprintf(
+				__( 'Modified on: %s', MS_TEXT_DOMAIN ),
+				$item->manual_date
 			);
-		} else {
-			$post_info = '';
+			$detail_lines[] = sprintf(
+				__( 'Modified by: %s', MS_TEXT_DOMAIN ),
+				$item->get_manual_user()->display_name
+			);
 		}
 
+		$item_post_info = $item->post;
+		if ( ! empty( $item_post_info ) ) {
+			if ( count( $detail_lines ) ) {
+				$detail_lines[] = '<hr>';
+			}
+			$detail_lines[] = __( 'POST data:', MS_TEXT_DOMAIN );
+			foreach ( $item_post_info as $key => $value ) {
+				$detail_lines[] = "[$key] = \"$value\"";
+			}
+		}
+
+		if ( count( $detail_lines ) ) {
+			$extra_infos = sprintf(
+				'<div class="more-details">%2$s<div class="post-data">%1$s</div></div>',
+				implode( '<br>', $detail_lines ),
+				'<i class="wpmui-fa wpmui-fa-info-circle"></i>'
+			);
+		}
+
+		// 2. Prepare the row actions.
+		if ( 'err' == $item->state ) {
+			$actions = array(
+				'action-ignore' => __( 'Ignore', MS_TEXT_DOMAIN ),
+				'action-link' => __( 'Link', MS_TEXT_DOMAIN ),
+			);
+		} elseif ( 'ignore' == $item->state && $item->is_manual ) {
+			$actions = array(
+				'action-clear' => __( 'Reset', MS_TEXT_DOMAIN ),
+			);
+			$nonce_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_LINK;
+		}
+
+		if ( count( $actions ) ) {
+			$nonces = array();
+			$nonces[] = wp_nonce_field(
+				MS_Controller_Billing::AJAX_ACTION_TRANSACTION_UPDATE,
+				'nonce_update',
+				false,
+				false
+			);
+			$nonces[] = wp_nonce_field(
+				MS_Controller_Billing::AJAX_ACTION_TRANSACTION_LINK,
+				'nonce_link',
+				false,
+				false
+			);
+			$action_tags = array();
+			foreach ( $actions as $class => $label ) {
+				$action_tags[] = sprintf(
+					'<a href="#" class="%s">%s</a>',
+					$class,
+					$label
+				);
+			}
+
+			$row_actions = sprintf(
+				'<div class="actions %1$s-actions">%2$s %3$s</div>',
+				$item->state,
+				implode( '', $nonces ),
+				implode( ' | ', $action_tags )
+			);
+		}
+
+		// 3. Combine the prepared parts.
 		$html = sprintf(
-			'<div class="detail-block">%1$s</div>',
-			$post_info . $item->description
+			'<div class="detail-block">%s %s %s</div>',
+			$extra_infos,
+			$item->description,
+			$row_actions
 		);
 
 		return $html;

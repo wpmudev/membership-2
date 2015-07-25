@@ -10,12 +10,40 @@
 class MS_Controller_Billing extends MS_Controller {
 
 	/**
+	 * Ajax action used in the transaction log list.
+	 * Sets the Manual-State flag of an transaction.
+	 *
+	 * @since 1.0.1.0
+	 * @var   string
+	 */
+	const AJAX_ACTION_TRANSACTION_UPDATE = 'transaction_update';
+
+	/**
+	 * Ajax action used in the transaction log list.
+	 * Returns a form to link a transaction with an invoice.
+	 *
+	 * @since 1.0.1.0
+	 * @var   string
+	 */
+	const AJAX_ACTION_TRANSACTION_LINK = 'transaction_link';
+
+	/**
 	 * Prepare the Billing manager.
 	 *
 	 * @since  1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_TRANSACTION_UPDATE,
+			'ajax_change_transaction'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_TRANSACTION_LINK,
+			'ajax_link_transaction'
+		);
 	}
 
 	/**
@@ -59,9 +87,7 @@ class MS_Controller_Billing extends MS_Controller {
 
 		$fields = array( 'user_id', 'membership_id' );
 
-		if ( self::validate_required( $fields )
-			&& $this->verify_nonce()
-		) {
+		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
 			// Save billing add/edit
 			$msg = $this->save_invoice( $_POST );
 
@@ -109,6 +135,69 @@ class MS_Controller_Billing extends MS_Controller {
 			$view = MS_Factory::create( 'MS_View_Billing_List' );
 			$view->render();
 		}
+	}
+
+	/**
+	 * Ajax action handler used by the transaction logs list to change a
+	 * transaction log entry.
+	 *
+	 * Sets the Manual-State flag of an transaction.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function ajax_change_transaction() {
+		$res = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
+		$fields = array( 'id', 'state' );
+
+		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
+			$id = intval( $_POST['id'] );
+			$state = $_POST['state'];
+
+			$log = MS_Factory::load( 'MS_Model_Transactionlog', $id );
+
+			if ( $log->manual_state( $state ) ) {
+				$log->save();
+				$res = MS_Helper_Billing::BILLING_MSG_UPDATED;
+			}
+		}
+
+		echo $res;
+		exit;
+	}
+
+	/**
+	 * Ajax action handler used by the transaction logs list to change a
+	 * transaction log entry.
+	 *
+	 * Returns a form to link a transaction with an invoice.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function ajax_link_transaction() {
+		$data = array();
+		$resp = '';
+		$fields = array( 'id' );
+
+		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
+			$id = intval( $_POST['id'] );
+
+			$log = MS_Factory::load( 'MS_Model_Transactionlog', $id );
+			if ( $log->member_id ) {
+				$data['member'] = $log->get_member();
+			} else {
+				$data['member'] = false;
+			}
+			$data['action'] = self::AJAX_ACTION_TRANSACTION_UPDATE;
+			$data['users'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
+
+			$view = MS_Factory::create( 'MS_View_Billing_Link' );
+			$view->data = apply_filters( 'ms_view_billing_link_data', $data );
+			$resp = $view->to_html();
+		}
+		else { $resp = 'err ';}
+
+		echo $resp;
+		exit;
 	}
 
 	/**
@@ -227,17 +316,24 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function enqueue_scripts() {
+		$data = array(
+			'ms_init' => array(),
+		);
+
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_script( 'jquery-validate' );
 
-			$data = array(
-				'ms_init' => array( 'view_billing_edit' ),
+			$data['ms_init'][] = 'view_billing_edit';
+		} elseif ( isset( $_GET['show'] ) && 'logs' == $_GET['show'] ) {
+			$data['ms_init'][] = 'view_billing_transactions';
+			$data['lang'] = array(
+				'link_title' => __( 'Link Transaction', MS_TEXT_DOMAIN ),
 			);
-
-			lib2()->ui->data( 'ms_data', $data );
-			wp_enqueue_script( 'ms-admin' );
 		}
+
+		lib2()->ui->data( 'ms_data', $data );
+		wp_enqueue_script( 'ms-admin' );
 	}
 
 }

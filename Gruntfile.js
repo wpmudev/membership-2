@@ -10,6 +10,7 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-controller-adminbar.js',
 				'app/assets/js/src/ms-view-help.js',
 				'app/assets/js/src/ms-view-billing-edit.js',
+				'app/assets/js/src/ms-view-billing-transactions.js',
 				'app/assets/js/src/ms-view-member-date.js',
 				'app/assets/js/src/ms-view-member-editor.js',
 				'app/assets/js/src/ms-view-member-list.js',

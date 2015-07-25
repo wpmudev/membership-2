@@ -23,6 +23,35 @@ class MS_View_Billing_List extends MS_View {
 
 		$buttons = array();
 
+		// Count invalid transactions.
+		$args = array( 'state' => 'err' );
+		$error_count = MS_Model_Transactionlog::get_item_count( $args );
+
+		if ( $error_count && ( empty( $_GET['state'] ) || 'err' != $_GET['state'] ) ) {
+			if ( 1 == $error_count ) {
+				$message = __( 'One transaction failed. Please %2$sreview the logs%3$s and decide if you want to ignore the transaction or manually assign it to an invoice.', MS_TEXT_DOMAIN );
+			} else {
+				$message = __( '%1$s transactions failed. Please %2$sreview the logs%3$s and decide if you want to ignore the transaction or manually assign it to an invoice.', MS_TEXT_DOMAIN );
+			}
+			$review_url = MS_Controller_Plugin::get_admin_url(
+				'billing',
+				array(
+					'show' => 'logs',
+					'state' => 'err',
+				)
+			);
+
+			lib2()->ui->admin_message(
+				sprintf(
+					$message,
+					$error_count,
+					'<a href="' . $review_url . '">',
+					'</a>'
+				),
+				'err'
+			);
+		}
+
 		if ( isset( $_GET['show'] ) && 'logs' == $_GET['show'] ) {
 			$title = __( 'Transaction Logs', MS_TEXT_DOMAIN );
 

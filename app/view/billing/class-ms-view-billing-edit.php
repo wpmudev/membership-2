@@ -77,7 +77,6 @@ class MS_View_Billing_Edit extends MS_View {
 				'id' => 'txt_membership',
 				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => $this->data['memberships'][ $invoice->membership_id ],
 			),
 			'txt_separator' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
@@ -175,6 +174,7 @@ class MS_View_Billing_Edit extends MS_View {
 		if ( $invoice->id > 0 ) {
 			$fields['user_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 			$fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
+			$fields['txt_membership']['value'] = $this->data['memberships'][ $invoice->membership_id ];
 		} else {
 			unset( $fields['txt_user'] );
 			unset( $fields['txt_membership'] );
