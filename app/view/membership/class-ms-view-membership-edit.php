@@ -40,7 +40,7 @@ class MS_View_Membership_Edit extends MS_View {
 			$tab_name = str_replace( '-', '_', $active_tab );
 			$callback_name = 'render_tab_' . $tab_name;
 			$render_callback = apply_filters(
-				'ms_view_settings_edit_render_callback',
+				'ms_view_membership_edit_render_callback',
 				array( $this, $callback_name ),
 				$active_tab,
 				$this->data

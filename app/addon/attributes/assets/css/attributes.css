@@ -1,0 +1,91 @@
+/**
+ * Custom CSS styles used by the add-on.
+ */
+
+/* Styles used on Plugin Settings page and in Membership Settings */
+
+#wpwrap .ms-settings-addon_attribute .wpmui-wrapper,
+.wpmui-wnd.attribute-editor .wpmui-wrapper {
+	position: relative;
+	display: block;
+	border-top: 1px solid #E5E5E5;
+	margin-top: 0;
+	margin-bottom: 6px;
+	padding-top: 6px;
+}
+
+#wpwrap .ms-settings-addon_attribute  .wpmui-wrapper:first-child,
+.wpmui-wnd.attribute-editor .wpmui-wrapper:first-child {
+	border: 0;
+	padding-top: 0;
+}
+
+#wpwrap .ms-settings-addon_attribute  .wpmui-field-label,
+#wpwrap .ms-settings-addon_attribute  .wpmui-field-description,
+.wpmui-wnd.attribute-editor .wpmui-field-label,
+.wpmui-wnd.attribute-editor .wpmui-field-description {
+	width: 40%;
+	margin-top: 0;
+}
+
+#wpwrap .ms-settings-addon_attribute  .wpmui-field-select,
+#wpwrap .ms-settings-addon_attribute  input.wpmui-field-input,
+#wpwrap .ms-settings-addon_attribute  textarea.wpmui-field-input,
+.wpmui-wnd.attribute-editor .wpmui-field-select,
+.wpmui-wnd.attribute-editor input.wpmui-field-input,
+.wpmui-wnd.attribute-editor textarea.wpmui-field-input {
+	position: absolute;
+	width: 58%;
+	top: 4px;
+	right: 0;
+	min-width: 100px;
+}
+
+#wpwrap .ms-settings-addon_attribute  .wpmui-wrapper:first-child .wpmui-field-input,
+.wpmui-wnd.attribute-editor .wpmui-wrapper:first-child .wpmui-field-input {
+	top: 0;
+}
+
+/* Only used on Plugin Settings page */
+
+#wpwrap .ms-settings .ms-group-editor {
+	display: none;
+}
+
+.wpmui-wnd.attribute-editor .button-link,
+.wpmui-wnd.attribute-editor .button-link:hover {
+	background: transparent;
+}
+
+.wpmui-wnd.attribute-editor .button-link.danger {
+	color: #A00;
+}
+
+.wpmui-wnd.attribute-editor .button-link.danger:hover {
+	color: #F00;
+}
+
+#wpwrap .ms-settings-addon_attribute .field-list tbody td:first-child {
+	cursor: pointer;
+	color: #0073AA;
+}
+
+#wpwrap .ms-settings-addon_attribute .field-list tbody td:first-child:hover {
+	color: #00A0D2;
+}
+
+/* Styles used only in Membership Settings */
+
+#wpwrap .ms-settings-addon_attribute .wpmui-wrapper {
+	border: 0;
+	margin-bottom: 15px;
+}
+
+#wpwrap .ms-settings-addon_attribute  .wpmui-textarea-wrapper {
+	height: 100px;
+}
+
+#wpwrap .ms-settings-addon_attribute  textarea.wpmui-field-input {
+	min-height: 100px;
+	max-height: 100px;
+}

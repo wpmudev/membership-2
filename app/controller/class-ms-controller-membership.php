@@ -76,8 +76,20 @@ class MS_Controller_Membership extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_MEMBERSHIP, 'ajax_action_toggle_membership' );
-		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_MEMBERSHIP, 'ajax_action_update_membership' );
+		$this->add_ajax_action(
+			self::AJAX_ACTION_TOGGLE_MEMBERSHIP,
+			'ajax_action_toggle_membership'
+		);
+		$this->add_ajax_action(
+			self::AJAX_ACTION_UPDATE_MEMBERSHIP,
+			'ajax_action_update_membership'
+		);
+
+		// Tries to auto-detect the currently displayed membership-ID.
+		$this->add_filter(
+			'ms_detect_membership_id',
+			'autodetect_membership'
+		);
 	}
 
 	/**
@@ -206,6 +218,70 @@ class MS_Controller_Membership extends MS_Controller {
 		}
 
 		return $this->model;
+	}
+
+	/**
+	 * Tries to auto-detect the currently displayed membership-ID.
+	 *
+	 * Use this function by calling the filter `ms_detect_membership_id`
+	 *
+	 * Detection logic:
+	 * 1. If a valid preferred value was specified then this value is used.
+	 * 2. Examine REQUEST data and look for membership/subscription/invoice.
+	 * 3. Check currently logged in user and use the top-priority subscription.
+	 *
+	 * @since  1.0.1.0
+	 * @param  int $preferred The preferred ID is only used if it is a valid ID.
+	 * @return int A valid Membership ID or 0 if all tests fail.
+	 */
+	public function autodetect_membership( $preferred = 0 ) {
+		static $Detected_Membership = null;
+
+		$membership_id = 0;
+
+		// Check 1: If the preferred value is correct use it.
+		if ( $preferred ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $preferred );
+			if ( $membership->id == $preferred ) {
+				$membership_id = $membership->id;
+			}
+		}
+
+		if ( ! $membership_id && null === $Detected_Membership ) {
+			// Check 2: Examine the REQUEST parameters to find a valid ID.
+			if ( ! $membership_id ) {
+				if ( isset( $_REQUEST['membership_id'] ) ) {
+					$membership_id = $_REQUEST['membership_id'];
+				} elseif ( isset( $_REQUEST['subscription_id'] ) ) {
+					$sub_id = $_REQUEST['subscription_id'];
+					$subscription = MS_Factory::load( 'MS_Model_Relationship', $sub_id );
+					$membership_id = $subscription->memberhip_id;
+				} elseif ( isset( $_REQUEST['invoice_id'] ) ) {
+					$inv_id = $_REQUEST['invoice_id'];
+					$invoice = MS_Factory::load( 'MS_Model_Invoice', $inv_id );
+					$membership_id = $invoice->memberhip_id;
+				}
+				$membership_id = intval( $membership_id );
+			}
+
+			// Check 3: Check subscriptions of the current user.
+			if ( ! $membership_id && is_user_logged_in() ) {
+				$member = MS_Model_Member::get_current_member();
+				$subscription = $member->get_subscription( 'priority' );
+				$membership_id = $subscription->membership_id;
+			}
+
+			$Detected_Membership = $membership_id;
+		}
+
+		if ( ! $membership_id ) {
+			$membership_id = $Detected_Membership;
+		}
+
+		return apply_filters(
+			'ms_controller_membership_autodetect_membership',
+			$membership_id
+		);
 	}
 
 	/**
@@ -1178,8 +1254,9 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::STEP_EDIT:
 				$data['ms_init'][] = 'view_membership_payment';
+				$tab = $this->get_active_edit_tab();
 
-				switch ( $this->get_active_edit_tab() ) {
+				switch ( $tab ) {
 					case self::TAB_TYPE:
 						add_thickbox();
 						$data['ms_init'][] = 'view_membership_add';
@@ -1197,6 +1274,11 @@ class MS_Controller_Membership extends MS_Controller {
 						$data['ms_init'][] = 'view_settings_automated_msg';
 						break;
 				}
+
+				do_action(
+					'ms_controller_membership_enqueue_scripts_tab-' . $tab,
+					$this
+				);
 				break;
 
 			case self::STEP_MS_LIST:
@@ -1209,7 +1291,14 @@ class MS_Controller_Membership extends MS_Controller {
 		wp_enqueue_script( 'ms-admin' );
 		wp_enqueue_script( 'jquery-validate' );
 
-		do_action( 'ms_controller_membership_enqueue_scripts', $this );
+		do_action(
+			'ms_controller_membership_enqueue_scripts',
+			$this
+		);
+		do_action(
+			'ms_controller_membership_enqueue_scripts-' . $step,
+			$this
+		);
 	}
 
 }

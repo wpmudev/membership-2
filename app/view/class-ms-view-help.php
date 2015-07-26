@@ -1007,6 +1007,15 @@ class MS_View_Help extends MS_View {
 			</div>
 		</div>
 
+		<?php
+		/**
+		 * Allow Add-ons to add their own shortcode documentation.
+		 *
+		 * @since  1.0.1.0
+		 */
+		do_action( 'ms_view_help_shortcodes-common' );
+		?>
+
 
 
 		<hr />
@@ -1165,6 +1174,14 @@ class MS_View_Help extends MS_View {
 			</div>
 		</div>
 
+		<?php
+		/**
+		 * Allow Add-ons to add their own shortcode documentation.
+		 *
+		 * @since  1.0.1.0
+		 */
+		do_action( 'ms_view_help_shortcodes-membership' );
+		?>
 
 
 		<hr />
@@ -1513,9 +1530,23 @@ class MS_View_Help extends MS_View {
 			</div>
 		</div>
 
+		<?php
+		/**
+		 * Allow Add-ons to add their own shortcode documentation.
+		 *
+		 * @since  1.0.1.0
+		 */
+		do_action( 'ms_view_help_shortcodes-other' );
+		?>
+
 		<hr />
 		<?php
-		return ob_get_clean();
+		$html = ob_get_clean();
+
+		return apply_filters(
+			'ms_view_help_shortcodes',
+			$html
+		);
 	}
 
 	/**

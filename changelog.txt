@@ -11,6 +11,7 @@ Change Log:
 - Add new Add-on to enable Pro-Rating when switching memberships
 - Add new Add-on to allow Search Engines to index protected content
 - Add new Add-on to customize the Registration Form and User Profile Fields
+- Add new Add-on that allows creation of custom Membership Attributes
 - Add a new Add/Edit Member page where subscription details can be modified
 - Add an admin notice when no payment gateway is active but paid memberships exist
 - Add bulk actions to the Members admin page

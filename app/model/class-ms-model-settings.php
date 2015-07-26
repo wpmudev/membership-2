@@ -351,7 +351,11 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @param mixed $value The custom setting value.
 	 */
 	public function set_custom_setting( $group_name, $field_name, $value ) {
-		$group = $this->custom[ $group_name ];
+		if ( isset( $this->custom[ $group_name ] ) ) {
+			$group = $this->custom[ $group_name ];
+		} else {
+			$group = array();
+		}
 
 		$field_value = apply_filters(
 			'ms_model_settings_set_custom_setting',
