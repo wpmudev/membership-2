@@ -235,6 +235,29 @@ class MS_Controller_Api extends MS_Controller {
 	}
 
 	/**
+	 * Tries to determine the currently displayed membership.
+	 *
+	 * Detection logic:
+	 * 1. If a valid preferred value was specified then this value is used.
+	 * 2. Examine REQUEST data and look for membership/subscription/invoice.
+	 * 3. Check currently logged in user and use the top-priority subscription.
+	 * 4. If no membership could be detected the response value is bool FALSE.
+	 *
+	 * @since  1.0.1.0
+	 * @return false|MS_Model_Membership The detected Membership or false.
+	 */
+	public function detect_membership() {
+		$result = false;
+
+		$membership_id = apply_filters( 'ms_detect_membership_id' );
+		if ( $membership_id ) {
+			$result = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Create your own payment gateway and hook it up with Memberhip 2 by using
 	 * this function!
 	 *
