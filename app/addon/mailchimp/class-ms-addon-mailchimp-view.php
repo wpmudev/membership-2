@@ -1,7 +1,13 @@
 <?php
 
-class MS_Addon_Mailchimp_View_Settings extends MS_View {
+class MS_Addon_Mailchimp_View extends MS_View {
 
+	/**
+	 * Returns the HTML code of the Settings form.
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
 	public function render_tab() {
 		$fields = $this->prepare_fields();
 		ob_start();
@@ -20,10 +26,16 @@ class MS_Addon_Mailchimp_View_Settings extends MS_View {
 		</div>
 		<?php
 		$html = ob_get_clean();
-		echo '' . $html;
+		echo $html;
 	}
 
-	public function prepare_fields() {
+	/**
+	 * Prepare fields that are displayed in the form.
+	 *
+	 * @since  1.0.1.0
+	 * @return array
+	 */
+	protected function prepare_fields() {
 		$api_status = MS_Addon_Mailchimp::get_api_status();
 		$settings = $this->data['settings'];
 

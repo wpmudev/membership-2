@@ -45,10 +45,12 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				'settings_tabs',
 				10, 2
 			);
+
 			$this->add_action(
 				'ms_controller_settings_enqueue_scripts_' . self::ID,
 				'enqueue_scripts'
 			);
+
 			$this->add_filter(
 				'ms_view_settings_edit_render_callback',
 				'manage_render_callback',
@@ -98,8 +100,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * A new user registered (not a Member yet).
 	 *
-	 * @param mixed $event
-	 * @param mixed $member
+	 * @since  1.0.0
+	 * @param  mixed $event
+	 * @param  mixed $member
 	 */
 	public function subscribe_registered( $event, $member ) {
 		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
@@ -112,8 +115,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * A user subscribed to a membership.
 	 *
-	 * @param mixed $event
-	 * @param mixed $member
+	 * @since  1.0.0
+	 * @param  mixed $event
+	 * @param  mixed $member
 	 */
 	public function subscribe_members( $event, $subscription ) {
 		$member = $subscription->get_member();
@@ -143,8 +147,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * A membership was deactivated (e.g. expired or manually cancelled)
 	 *
-	 * @param mixed $event
-	 * @param mixed $member
+	 * @since  1.0.0
+	 * @param  mixed $event
+	 * @param  mixed $member
 	 */
 	public function subscribe_deactivated( $event, $subscription ) {
 		$member = $subscription->get_member();
@@ -178,8 +183,8 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 *
 	 * @filter ms_controller_membership_get_tabs
 	 *
-	 * @param array $tabs The current tabs.
-	 * @param int $membership_id The membership id to edit
+	 * @param  array $tabs The current tabs.
+	 * @param  int $membership_id The membership id to edit
 	 * @return array The filtered tabs.
 	 */
 	public function settings_tabs( $tabs ) {
@@ -213,16 +218,16 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @filter ms_view_membership_edit_render_callback
+	 * @filter ms_view_settings_edit_render_callback
 	 *
-	 * @param array $callback The current function callback.
-	 * @param string $tab The current membership rule tab.
-	 * @param array $data The data shared to the view.
+	 * @param  array $callback The current function callback.
+	 * @param  string $tab The current membership rule tab.
+	 * @param  array $data The data shared to the view.
 	 * @return array The filtered callback.
 	 */
 	public function manage_render_callback( $callback, $tab, $data ) {
 		if ( self::ID == $tab ) {
-			$view = MS_Factory::load( 'MS_Addon_Mailchimp_View_Settings' );
+			$view = MS_Factory::load( 'MS_Addon_Mailchimp_View' );
 			$view->data = $data;
 			$callback = array( $view, 'render_tab' );
 		}
@@ -342,9 +347,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Check if a user is subscribed in the list
 	 *
-	 * @param String $user_email
-	 * @param String $list_id
-	 * @return Boolean. True if the user is subscribed already to the list
+	 * @param  string $user_email
+	 * @param  string $list_id
+	 * @return bool True if the user is subscribed already to the list
 	 */
 	public static function is_user_subscribed( $user_email, $list_id ) {
 		$subscribed = false;
@@ -374,8 +379,8 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param MS_Model_Member $member
-	 * @param int $list_id
+	 * @param  MS_Model_Member $member
+	 * @param  int $list_id
 	 */
 	public static function subscribe_user( $member, $list_id ) {
 		if ( is_email( $member->email ) && self::get_api_status() ) {
@@ -433,9 +438,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $user_email
-	 * @param string $list_id
-	 * @param Array $merge_vars {
+	 * @param  string $user_email
+	 * @param  string $list_id
+	 * @param  array $merge_vars {
 	 *     $FNAME => First name
 	 *     $LNAME => Last Name
 	 * }
@@ -455,9 +460,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Unsubscribe a user from a list
 	 *
-	 * @param string $user_email
-	 * @param string $list_id
-	 * @param boolean $delete True if the user is gonna be deleted from the list (not only unsubscribed)
+	 * @param  string $user_email
+	 * @param  string $list_id
+	 * @param  bool $delete True if the user is gonna be deleted from the list (not only unsubscribed)
 	 */
 	public static function unsubscribe_user( $user_email, $list_id, $delete = false ) {
 		if ( self::get_api_status() ) {
