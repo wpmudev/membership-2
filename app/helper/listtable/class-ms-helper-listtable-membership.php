@@ -98,10 +98,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 	public function column_name( $item ) {
 		$actions = array();
 
-		$edit_args = array(
-			'membership_id' => $item->id,
-		);
-
+		// Prepare the Membership actions.
 		$actions['edit'] = sprintf(
 			'<a href="?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s">%5$s</a>',
 			esc_attr( $_REQUEST['page'] ),
@@ -137,11 +134,12 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		);
 
 		$actions = apply_filters(
-			'ms_helper_listtable_' . $this->id . '_column_name_actions',
+			'ms_helper_listtable_membership_column_name_actions',
 			$actions,
 			$item
 		);
 
+		// Add the badge to special memberships.
 		if ( $item->is_guest() ) {
 			$badge = sprintf(
 				'<span class="ms-badge ms-guest-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
@@ -155,7 +153,12 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 				__( 'All logged-in users that have not signed up for any membership', MS_TEXT_DOMAIN )
 			);
 		} else {
-			$badge = '';
+			$badge = apply_filters(
+				'ms_helper_listtable_memberships_name_badge',
+				'',
+				$item,
+				$this
+			);
 		}
 
 		return sprintf(
@@ -214,7 +217,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		$html = '';
 
 		$html .= sprintf(
-			'<span class="ms-img-type-%1$s small"></span> ',
+			'<span class="ms-img-type ms-img-type-%1$s small"></span> ',
 			esc_attr( $item->type )
 		);
 

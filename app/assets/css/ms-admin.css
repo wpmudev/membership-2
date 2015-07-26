@@ -286,7 +286,7 @@
   cursor: pointer;
 }
 .ms-wrap .ms-badge {
-  background: #AAA;
+  background: #888;
   color: #FFF;
   border-radius: 3px;
   font-size: 10px;
@@ -1309,29 +1309,16 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   /* 40 x 32 */
   /* 16 x 16 */
 }
-.ms-wrap .ms-img-type-simple,
-.ms-wrap .ms-img-type-guest,
-.ms-wrap .ms-img-type-user,
-.ms-wrap .ms-img-type-dripped,
-.ms-wrap .ms-img-unlock,
-.ms-wrap .ms-img-lock,
-.ms-wrap .ms-img-lock-grey,
-.ms-wrap .ms-img-info,
-.ms-wrap .ms-img-question,
-.ms-wrap .ms-img-warning,
-.ms-wrap .ms-img-cancel {
+.ms-wrap .ms-img-type {
   display: inline-block;
   position: relative;
   overflow: hidden;
-  background: transparent url(../images/membership_sprite.png) no-repeat;
-  background: transparent url(../images/membership_sprite.svg) no-repeat;
-}
-.ms-wrap .ms-img-type-simple,
-.ms-wrap .ms-img-type-guest,
-.ms-wrap .ms-img-type-user,
-.ms-wrap .ms-img-type-dripped {
   width: 100px;
   height: 80px;
+  background: transparent url(../images/membership_sprite.png) no-repeat;
+  background: transparent url(../images/membership_sprite.svg) no-repeat;
+  background-position: 0 -20px;
+  /* default icon */
 }
 .ms-wrap .ms-img-type-simple {
   background-position: 0 -20px;
@@ -1345,9 +1332,11 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap .ms-img-type-dripped {
   background-position: -300px -10px;
 }
-.ms-wrap .small.ms-img-type-simple, .ms-wrap .small.ms-img-type-guest, .ms-wrap .small.ms-img-type-user, .ms-wrap .small.ms-img-type-dripped {
+.ms-wrap .small.ms-img-type {
   width: 40px;
   height: 33px;
+  background-position: -430px -33px;
+  /* default icon */
 }
 .ms-wrap .small.ms-img-type-simple {
   background-position: -430px -33px;
@@ -1361,11 +1350,8 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap .small.ms-img-type-dripped {
   background-position: -729px -33px;
 }
-.ms-wrap .wp-list-table .small.ms-img-type-simple, .ms-wrap .wp-list-table .small.ms-img-type-guest, .ms-wrap .wp-list-table .small.ms-img-type-user, .ms-wrap .wp-list-table .small.ms-img-type-dripped,
-.ms-wrap .widefat .small.ms-img-type-simple,
-.ms-wrap .widefat .small.ms-img-type-guest,
-.ms-wrap .widefat .small.ms-img-type-user,
-.ms-wrap .widefat .small.ms-img-type-dripped {
+.ms-wrap .wp-list-table .small.ms-img-type,
+.ms-wrap .widefat .small.ms-img-type {
   vertical-align: middle;
   margin-top: -5px;
 }

@@ -21,6 +21,7 @@ Change Log:
 - Add a new settings page to define Upgrade Paths to each Membership
 - Add a warning when using a wrong value in the PayPal Standard settings
 - Add a few new API functions (see the API Docs link in the Help page)
+- Add new functions to Payment Logs to manually handle invalid payments
 - Improve payment logs to display additional information for errors
 - Improve the layout of the coupon fields during in the payment form
 - Improve HTML output to be compatible with most themes (remove line breaks inside HTML tags)

@@ -87,6 +87,18 @@ class MS_Addon_Searchindex extends MS_Addon {
 				'get_types'
 			);
 
+			$this->add_filter(
+				'ms_helper_listtable_membership_column_name_actions',
+				'list_table_actions',
+				10, 2
+			);
+
+			$this->add_filter(
+				'ms_helper_listtable_memberships_name_badge',
+				'list_table_badge',
+				10, 2
+			);
+
 			$this->add_action(
 				'ms_init_done',
 				'apply_membership'
@@ -254,6 +266,44 @@ class MS_Addon_Searchindex extends MS_Addon {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Modify the list-table actions for the Search-index membership in the
+	 * Membership list.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $actions Actions displayed in the list.
+	 * @param  MS_Model_Membership $membership The membership that is parsed.
+	 * @return array Actions displayed in the list.
+	 */
+	public function list_table_actions( $actions, $membership ) {
+		if ( self::MEMBERSHIP_TYPE == $membership->type ) {
+			unset( $actions['delete'] );
+		}
+
+		return $actions;
+	}
+
+	/**
+	 * Define a custom Badge that is displayed next to the Membership name in
+	 * the Membership list.
+	 *
+	 * @since  1.0.1.0
+	 * @param  string $actions HTML code of the badge to display.
+	 * @param  MS_Model_Membership $membership The membership that is parsed.
+	 * @return string HTML code of the badge to display.
+	 */
+	public function list_table_badge( $badge, $membership ) {
+		if ( self::MEMBERSHIP_TYPE == $membership->type ) {
+			$badge = sprintf(
+				'<span class="ms-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
+				__( 'Search-Engine', MS_TEXT_DOMAIN ),
+				__( 'Define what content can be indexed by a Search Engine', MS_TEXT_DOMAIN )
+			);
+		}
+
+		return $badge;
 	}
 
 	/**

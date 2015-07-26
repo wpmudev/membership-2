@@ -3,34 +3,20 @@
  */
 
 .ms-wrap {
-	.ms-img-type-simple,
-	.ms-img-type-guest,
-	.ms-img-type-user,
-	.ms-img-type-dripped,
-	.ms-img-unlock,
-	.ms-img-lock,
-	.ms-img-lock-grey,
-	.ms-img-info,
-	.ms-img-question,
-	.ms-img-warning,
-	.ms-img-cancel {
+	.ms-img-type {
 		display: inline-block;
 		position: relative;
 		overflow: hidden;
+		width: 100px;
+		height: 80px;
 
 		background: transparent url(../images/membership_sprite.png) no-repeat;
 		background: transparent url(../images/membership_sprite.svg) no-repeat;
+
+		background-position: 0 -20px; /* default icon */
 	}
 
 	/* 100 x 80 */
-	.ms-img-type-simple,
-	.ms-img-type-guest,
-	.ms-img-type-user,
-	.ms-img-type-dripped {
-		width: 100px;
-		height: 80px;
-	}
-
 	.ms-img-type-simple {
 		background-position: 0 -20px;
 	}
@@ -49,12 +35,11 @@
 
 	/* 40 x 32 */
 	.small {
-		&.ms-img-type-simple,
-		&.ms-img-type-guest,
-		&.ms-img-type-user,
-		&.ms-img-type-dripped {
+		&.ms-img-type {
 			width: 40px;
 			height: 33px;
+
+			background-position: -430px -33px; /* default icon */
 		}
 
 		&.ms-img-type-simple {
@@ -77,10 +62,7 @@
 	.wp-list-table,
 	.widefat {
 		.small {
-			&.ms-img-type-simple,
-			&.ms-img-type-guest,
-			&.ms-img-type-user,
-			&.ms-img-type-dripped {
+			&.ms-img-type {
 				vertical-align: middle;
 				margin-top: -5px;
 			}
