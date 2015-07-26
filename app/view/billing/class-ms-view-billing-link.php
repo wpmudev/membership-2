@@ -19,39 +19,32 @@ class MS_View_Billing_Link extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$fields = $this->prepare_fields();
+		$groups = $this->prepare_fields();
 
 		ob_start();
 		// Render tabbed interface.
 		?>
 		<div>
-			<div class="link-member">
-			<?php
-			foreach ( $fields['member'] as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
-			?>
-			</div>
-			<div class="link-membership">
-			<?php
-			foreach ( $fields['membership'] as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
-			?>
-			</div>
-			<div class="link-invoice">
-			<?php
-			foreach ( $fields['invoice'] as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
-			?>
-			</div>
-			<div class="buttons">
-			<?php
-			foreach ( $fields['buttons'] as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
-			?>
+			<div class="wpmui-grid-8 ms-transaction-window">
+				<div class="the-details col-3">
+				<?php
+				foreach ( $groups['info'] as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
+				unset( $groups['info'] );
+				?>
+				</div>
+				<div class="the-form col-5">
+				<?php foreach ( $groups as $key => $fields ) : ?>
+				<div class="link-block link-<?php echo esc_attr( $key . ' ' . $key ); ?>">
+				<?php
+				foreach ( $fields as $field ) {
+					MS_Helper_Html::html_element( $field );
+				}
+				?>
+				</div>
+				<?php endforeach; ?>
+				</div>
 			</div>
 		</div>
 		<?php
@@ -70,13 +63,42 @@ class MS_View_Billing_Link extends MS_View {
 	function prepare_fields() {
 		$member = $this->data['member'];
 		$userlist = $this->data['users'];
-		$action = $this->data['action'];
+		$log = $this->data['log'];
+		$data_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_LINK_DATA;
+		$update_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_UPDATE;
 		$fields = array();
 
 		$member_id = 0;
 		if ( $member && $member->id ) {
 			$member_id = $member->id;
 		}
+
+		$fields['info'] = array(
+			'id' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'Transaction ID', MS_TEXT_DOMAIN ),
+				'value' => $log->id,
+			),
+			'gateway' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'Payment Gateway', MS_TEXT_DOMAIN ),
+				'value' => MS_Model_Gateway::get_name( $log->gateway_id, true ),
+			),
+			'amount' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'Transaction Amount', MS_TEXT_DOMAIN ),
+				'value' => MS_Helper_Billing::format_price( $log->amount ),
+			),
+			'details' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'title' => __( 'Transaction Details', MS_TEXT_DOMAIN ),
+				'value' => $log->description,
+			),
+			'sep' => array(
+				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+				'value' => 'vertical',
+			),
+		);
 
 		$fields['member'] = array(
 			'user_id' => array(
@@ -88,13 +110,10 @@ class MS_View_Billing_Link extends MS_View {
 			)
 		);
 
-		$fields['membership'] = array(
-			'separator' => array(
-				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-			),
-			'membership_id' => array(
-				'id' => 'user_id',
-				'title' => __( '2. Payment for Subscription', MS_TEXT_DOMAIN ),
+		$fields['subscription'] = array(
+			'subscription_id' => array(
+				'id' => 'subscription_id',
+				'title' => __( '2. Payment for subscription', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => 0,
 				'field_options' => array(),
@@ -102,28 +121,31 @@ class MS_View_Billing_Link extends MS_View {
 		);
 
 		$fields['invoice'] = array(
-			'separator' => array(
-				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-			),
 			'invoice_id' => array(
-				'id' => 'user_id',
-				'title' => __( '3. Payment for Invoice', MS_TEXT_DOMAIN ),
+				'id' => 'invoice_id',
+				'title' => __( '3. Link payment with invoice', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => 0,
 				'field_options' => array(),
+				'after' => __( 'The selected Invoice will be marked as "paid"', MS_TEXT_DOMAIN ),
 			)
 		);
 
 		$fields['buttons'] = array(
-			'_wpnonce' => array(
-				'id' => '_wpnonce',
+			'nonce_link_data' => array(
+				'id' => 'nonce_link_data',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => wp_create_nonce( $action ),
+				'value' => wp_create_nonce( $data_action ),
 			),
-			'action' => array(
-				'id' => 'action',
+			'nonce_update' => array(
+				'id' => 'nonce_update',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $action,
+				'value' => wp_create_nonce( $update_action ),
+			),
+			'log_id' => array(
+				'id' => 'log_id',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $log->id,
 			),
 			'cancel' => array(
 				'id' => 'cancel',

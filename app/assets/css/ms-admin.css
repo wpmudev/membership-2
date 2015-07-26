@@ -2244,6 +2244,22 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   overflow: hidden;
 }
 
+.ms-transaction-window .the-details .wpmui-wrapper {
+  display: block;
+  margin: 0 0 15px;
+}
+.ms-transaction-window .the-details .wpmui-html-text-wrapper label {
+  font-weight: bold;
+  font-size: 11px;
+  color: #AAA;
+}
+.ms-transaction-window .the-form select {
+  width: 100%;
+}
+.ms-transaction-window .the-form .link-block {
+  margin: 0 0 10px;
+}
+
 /**
  * Special styles used on "Membership2" and "Accessible Content" pages
  */

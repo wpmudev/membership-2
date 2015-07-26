@@ -434,6 +434,17 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 				}
 				break;
 
+			case 'ok':
+				if ( $this->manual ) {
+					// Not allowed: Manual state is already defined.
+					return false;
+				}
+				if ( ! $this->invoice_id || ! $this->subscription_id ) {
+					// Not allowed: Required data is missing for OK status.
+					return false;
+				}
+				break;
+
 			default:
 				// Not allowed: Unknown state.
 				return false;
@@ -470,6 +481,51 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public function get_member() {
 		return MS_Factory::load( 'MS_Model_Member', $this->member_id );
+	}
+
+	/**
+	 * Returns the Invoice model linked with the transaction.
+	 *
+	 * @since  1.0.1.0
+	 * @return bool|MS_Model_Invoice
+	 */
+	public function get_invoice() {
+		$result = false;
+
+		if ( $this->invoice_id ) {
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $this->invoice_id );
+			if ( $invoice->id == $this->invoice_id ) {
+				$result = $invoice;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Updates the subscription_id and member_id based on the specified ID.
+	 *
+	 * @since 1.0.1.0
+	 * @param int $id A valid subscriptin ID.
+	 */
+	protected function set_subscription( $id ) {
+		$subscription = MS_Factory::load( 'MS_Model_Relationship', $id );
+		$this->subscription_id = $subscription->id;
+		$this->member_id = $subscription->user_id;
+	}
+
+	/**
+	 * Updates the invoice_id, subscription_id and member_id based on the
+	 * specified ID.
+	 *
+	 * @since 1.0.1.0
+	 * @param int $id A valid invoice ID.
+	 */
+	protected function set_invoice( $id ) {
+		$invoice = MS_Factory::load( 'MS_Model_Invoice', $id );
+		$this->invoice_id = $invoice->id;
+		$this->subscription_id = $invoice->ms_relationship_id;
+		$this->member_id = $invoice->user_id;
 	}
 
 	/**
@@ -567,6 +623,14 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			case 'state':
 			case 'success':
 				$this->set_state( $value );
+				break;
+
+			case 'invoice_id':
+				$this->set_invoice( $value );
+				break;
+
+			case 'subscriptin_id':
+				$this->set_subscription( $value );
 				break;
 
 			default:

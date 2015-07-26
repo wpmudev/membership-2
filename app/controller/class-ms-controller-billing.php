@@ -28,6 +28,15 @@ class MS_Controller_Billing extends MS_Controller {
 	const AJAX_ACTION_TRANSACTION_LINK = 'transaction_link';
 
 	/**
+	 * Ajax action used in the transaction log list.
+	 * Returns a list of requested items.
+	 *
+	 * @since 1.0.1.0
+	 * @var   string
+	 */
+	const AJAX_ACTION_TRANSACTION_LINK_DATA = 'transaction_link_data';
+
+	/**
 	 * Prepare the Billing manager.
 	 *
 	 * @since  1.0.0
@@ -43,6 +52,11 @@ class MS_Controller_Billing extends MS_Controller {
 		$this->add_ajax_action(
 			self::AJAX_ACTION_TRANSACTION_LINK,
 			'ajax_link_transaction'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_TRANSACTION_LINK_DATA,
+			'ajax_link_data_transaction'
 		);
 	}
 
@@ -147,17 +161,35 @@ class MS_Controller_Billing extends MS_Controller {
 	 */
 	public function ajax_change_transaction() {
 		$res = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
-		$fields = array( 'id', 'state' );
+		$fields_state = array( 'id', 'state' );
+		$fields_link = array( 'id', 'link' );
 
-		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
-			$id = intval( $_POST['id'] );
-			$state = $_POST['state'];
+		if ( $this->verify_nonce() ) {
+			if ( self::validate_required( $fields_state ) ) {
+				$id = intval( $_POST['id'] );
+				$state = $_POST['state'];
 
-			$log = MS_Factory::load( 'MS_Model_Transactionlog', $id );
+				$log = MS_Factory::load( 'MS_Model_Transactionlog', $id );
 
-			if ( $log->manual_state( $state ) ) {
-				$log->save();
-				$res = MS_Helper_Billing::BILLING_MSG_UPDATED;
+				if ( $log->manual_state( $state ) ) {
+					$log->save();
+					$res = MS_Helper_Billing::BILLING_MSG_UPDATED;
+				}
+			} elseif ( self::validate_required( $fields_link ) ) {
+				$id = intval( $_POST['id'] );
+				$link = intval( $_POST['link'] );
+
+				$log = MS_Factory::load( 'MS_Model_Transactionlog', $id );
+
+				$log->invoice_id = $link;
+				if ( $log->manual_state( 'ok' ) ) {
+					$invoice = $log->get_invoice();
+					if ( $invoice ) {
+						$invoice->pay_it( $log->gateway_id, 'manual' );
+					}
+					$log->save();
+					$res = MS_Helper_Billing::BILLING_MSG_UPDATED;
+				}
 			}
 		}
 
@@ -187,16 +219,98 @@ class MS_Controller_Billing extends MS_Controller {
 			} else {
 				$data['member'] = false;
 			}
-			$data['action'] = self::AJAX_ACTION_TRANSACTION_UPDATE;
+			$data['log'] = $log;
 			$data['users'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
 
 			$view = MS_Factory::create( 'MS_View_Billing_Link' );
 			$view->data = apply_filters( 'ms_view_billing_link_data', $data );
 			$resp = $view->to_html();
 		}
-		else { $resp = 'err ';}
 
 		echo $resp;
+		exit;
+	}
+
+	/**
+	 * Ajax action handler used by the transaction logs list to change a
+	 * transaction log entry.
+	 *
+	 * Returns a list of requested items
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function ajax_link_data_transaction() {
+		$resp = array();
+		$fields = array( 'get', 'for' );
+
+		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
+			$type = $_POST['get'];
+			$id = intval( $_POST['for'] );
+			$settings = MS_Plugin::instance()->settings;
+
+			if ( 'subscriptions' == $type ) {
+				$member = MS_Factory::load( 'MS_Model_Member', $id );
+
+				$resp[0] = __( 'Select a subscription', MS_TEXT_DOMAIN );
+				foreach ( $member->subscriptions as $subscription ) {
+					if ( $subscription->is_system() ) { continue; }
+					if ( $subscription->is_expired() ) { continue; }
+
+					$membership = $subscription->get_membership();
+					if ( $membership->is_free() ) {
+						$price = __( 'Free', MS_TEXT_DOMAIN );
+					} else {
+						$price = sprintf(
+							'%s %s',
+							$settings->currency,
+							MS_Helper_Billing::format_price( $membership->price )
+						);
+					}
+					$line = sprintf(
+						__( 'Membership: %s, Base price: %s', MS_TEXT_DOMAIN ),
+						$membership->name,
+						$price
+					);
+					$resp[$subscription->id] = $line;
+				}
+				if ( 1 == count( $resp ) ) {
+					$resp[0] = __( 'No active subscriptions found', MS_TEXT_DOMAIN );
+				}
+			} elseif ( 'invoices' == $type ) {
+				$subscription = MS_Factory::load( 'MS_Model_Relationship', $id );
+				$invoices = $subscription->get_invoices();
+
+				$resp[0] = __( 'Select an invoice', MS_TEXT_DOMAIN );
+				$unpaid = array();
+				$paid = array();
+				foreach ( $invoices as $invoice ) {
+					$line = sprintf(
+						__( 'Invoice: %s from %s (%s)', MS_TEXT_DOMAIN ),
+						$invoice->get_invoice_number(),
+						$invoice->due_date,
+						$invoice->currency . ' ' .
+						MS_Helper_Billing::format_price( $invoice->total )
+					);
+					if ( $invoice->is_paid() ) {
+						$paid[$invoice->id] = $line;
+					} else {
+						$unpaid[$invoice->id] = $line;
+					}
+				}
+				if ( ! count( $unpaid ) && ! count( $paid ) ) {
+					$resp[0] = __( 'No invoices found', MS_TEXT_DOMAIN );
+				} else {
+					if ( count( $unpaid ) ) {
+						$resp[__( 'Unpaid Invoices', MS_TEXT_DOMAIN )] = $unpaid;
+					}
+					if ( count( $paid ) ) {
+						$resp[__( 'Paid Invoices', MS_TEXT_DOMAIN )] = $paid;
+					}
+				}
+			}
+		}
+
+		echo json_encode( $resp );
 		exit;
 	}
 

@@ -294,7 +294,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_gateway( $item, $column_name ) {
-		$html = $html = MS_Model_Gateway::get_name( $item->gateway_id, true );
+		$html = MS_Model_Gateway::get_name( $item->gateway_id, true );
 		return $html;
 	}
 

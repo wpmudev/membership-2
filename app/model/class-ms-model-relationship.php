@@ -900,6 +900,28 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns true if the current subscription is expired.
+	 *
+	 * @since  1.0.1.0
+	 * @return bool
+	 */
+	public function is_expired() {
+		$result = false;
+
+		if ( self::STATUS_EXPIRED == $this->status ) {
+			$result = true;
+		} elseif ( self::STATUS_TRIAL_EXPIRED == $this->status ) {
+			$result = true;
+		}
+
+		return apply_filters(
+			'ms_model_relationship_is_expired',
+			$result,
+			$this
+		);
+	}
+
+	/**
 	 * Checks if the current subscription consumes a trial period.
 	 *
 	 * When the subscription either is currently in trial or was in trial before

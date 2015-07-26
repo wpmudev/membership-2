@@ -198,3 +198,30 @@
 		}
 	}
 }
+
+.ms-transaction-window {
+	.the-details {
+		.wpmui-wrapper {
+			display: block;
+			margin: 0 0 15px;
+		}
+
+		.wpmui-html-text-wrapper {
+			label {
+				font-weight: bold;
+				font-size: 11px;
+				color: #AAA;
+			}
+		}
+	}
+
+	.the-form {
+		select {
+			width: 100%;
+		}
+
+		.link-block {
+			margin: 0 0 10px;
+		}
+	}
+}
