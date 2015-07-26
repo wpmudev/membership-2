@@ -79,6 +79,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		$list[ self::ID ] = (object) array(
 			'name' => __( 'BuddyPress Integration', MS_TEXT_DOMAIN ),
 			'description' => __( 'Integrate BuddyPress with Membership 2.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-groups',
 			'details' => array(
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,

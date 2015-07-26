@@ -89,6 +89,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		$list[ self::ID ] = (object) array(
 			'name' => __( 'MailChimp Integration', MS_TEXT_DOMAIN ),
 			'description' => __( 'Enable MailChimp integration.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-email',
 		);
 
 		return $list;

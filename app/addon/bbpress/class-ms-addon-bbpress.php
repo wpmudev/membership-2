@@ -54,6 +54,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 		$list[ self::ID ] = (object) array(
 			'name' => __( 'bbPress Integration', MS_TEXT_DOMAIN ),
 			'description' => __( 'Enable bbPress rules integration.', MS_TEXT_DOMAIN ),
+			'icon' => 'dashicons dashicons-format-chat',
 		);
 
 		if ( ! self::bbpress_active() ) {
