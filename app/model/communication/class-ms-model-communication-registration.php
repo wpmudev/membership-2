@@ -100,11 +100,10 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	 */
 	public function process_communication( $event, $subscription ) {
 		$membership = $subscription->get_membership();
-		$is_free = $membership->is_free || (int) $membership->price * 100 == 0;
 
 		// Only process Paid memberships here!
 		// Email for free memberships is in MS_Model_Communiction_Registration_Free
-		if ( $is_free ) { return; }
+		if ( $membership->is_free() ) { return; }
 
 		do_action(
 			'ms_model_communication_registration_process_before',

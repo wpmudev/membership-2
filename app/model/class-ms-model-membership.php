@@ -1391,7 +1391,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$result = false;
 
 		if ( $this->is_free ) { $result = true; }
-		elseif ( empty( $this->price ) ) { $result = true; }
+		elseif ( 0 == (int) ($this->price * 100) ) { $result = true; }
 
 		$result = apply_filters(
 			'ms_model_membership_is_free',
