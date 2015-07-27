@@ -17,6 +17,14 @@ class MS_Controller_Communication extends MS_Controller {
 	const AJAX_ACTION_UPDATE_COMM = 'update_comm';
 
 	/**
+	 * Save communication form.
+	 *
+	 * @since  1.0.1.0
+	 * @var  string
+	 */
+	const ACTION_SAVE_COMM = 'save_comm';
+
+	/**
 	 * Prepare Membership settings manager.
 	 *
 	 * @since  1.0.0
@@ -37,6 +45,111 @@ class MS_Controller_Communication extends MS_Controller {
 		);
 
 		do_action( 'ms_controller_communication_after', $this );
+	}
+
+	/**
+	 * Initialize the admin-side functions.
+	 *
+	 * @since  1.0.0
+	 */
+	public function admin_init() {
+		$tab = '';
+		if ( isset( $_GET['tab'] ) ) {
+			$tab = $_GET['tab'];
+		}
+
+		/*
+		 * Both in the Settings page and in the Membership Edit page the
+		 * communication tab has the same name ('emails'), so we can use this
+		 * info to better set-up our action hook.
+		 */
+		if ( MS_Controller_Settings::TAB_EMAILS == $tab ) {
+			$this->run_action(
+				'init',
+				'admin_manager'
+			);
+
+			// Add custom buttons to the MCE editor (insert variable).
+			$this->run_action(
+				'admin_head',
+				'add_mce_buttons'
+			);
+		}
+	}
+
+	/**
+	 * Manages communication actions.
+	 *
+	 * Verifies GET and POST requests to manage settings.
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function admin_manager() {
+		$msg = 0;
+		$redirect = false;
+
+		if ( $this->is_admin_user() && $this->verify_nonce() ) {
+			/**
+			 * After verifying permissions this filters can be used by Add-ons
+			 * to process their own settings.
+			 *
+			 * @since  1.0.1.0
+			 */
+			do_action( 'ms_admin_communication_manager' );
+
+			$fields = array( 'type', 'subject', 'email_body' );
+
+			if ( self::validate_required( array( 'comm_type' ) )
+				&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
+			) {
+				// Load comm type from user select.
+				$redirect = esc_url_raw(
+					remove_query_arg(
+						'msg',
+						add_query_arg( 'comm_type', $_POST['comm_type'] )
+					)
+				);
+			} elseif ( isset( $_POST['save_email'] )
+				&& self::validate_required( $fields )
+			) {
+				// Save email template form.
+				$default_type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+				if ( ! empty( $_REQUEST['membership_id'] ) ) {
+					$membership_id = intval( $_REQUEST['membership_id'] );
+					$comm_types = array_keys(
+						MS_Model_Communication::get_communication_type_titles(
+							$membership_id
+						)
+					);
+					$default_type = reset( $comm_types );
+				}
+
+				if ( ! empty( $_POST['type'] )
+					&& MS_Model_Communication::is_valid_communication_type( $_POST['type'] )
+				) {
+					$type = $_POST['type'];
+				} else {
+					$type = $default_type;
+				}
+
+				$msg = $this->save_communication( $type, $_POST );
+		#		lib2()->debug->dump( 'Saved things', $type, $_POST );
+		#		wp_die();
+				$redirect = esc_url_raw(
+					add_query_arg(
+						array(
+							'comm_type' => urlencode( $_POST['type'] ),
+							'msg' => $msg,
+						)
+					)
+				);
+			}
+		}
+
+		if ( $redirect ) {
+			wp_safe_redirect( $redirect );
+			exit();
+		}
 	}
 
 	/**
@@ -62,9 +175,19 @@ class MS_Controller_Communication extends MS_Controller {
 		) {
 			lib2()->array->strip_slashes( $_POST, 'value' );
 
-			$comm = MS_Model_Communication::get_communication( $_POST['type'] );
+			$membership_id = null;
+			if ( isset( $_POST['membership_id'] ) ) {
+				$membership_id = intval( $_POST['membership_id'] );
+			}
+			$type = $_POST['type'];
 			$field = $_POST['field'];
 			$value = $_POST['value'];
+
+			$comm = MS_Model_Communication::get_communication(
+				$type,
+				$membership_id
+			);
+
 			$comm->$field = $value;
 			$comm->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
@@ -114,6 +237,65 @@ class MS_Controller_Communication extends MS_Controller {
 		do_action(
 			'ms_controller_communication_auto_setup_communications_after',
 			$membership,
+			$this
+		);
+	}
+
+	/**
+	 * Handle saving of Communication settings.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param mixed[] $fields The data to process.
+	 */
+	public function save_communication( $type, $fields ) {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+
+		if ( ! $this->is_admin_user() ) {
+			return $msg;
+		}
+
+		$membership_id = null;
+		if ( isset( $_POST['membership_id'] ) ) {
+			$membership_id = intval( $_POST['membership_id'] );
+		}
+
+		$comm = MS_Model_Communication::get_communication(
+			$type,
+			$membership_id
+		);
+
+		if ( ! empty( $fields ) ) {
+			lib2()->array->equip(
+				$fields,
+				'enabled',
+				'subject',
+				'email_body',
+				'period_unit',
+				'period_type',
+				'cc_enabled',
+				'cc_email'
+			);
+
+			$comm->enabled = lib2()->is_true( $fields['enabled'] );
+			$comm->subject = $fields['subject'];
+			$comm->message = $fields['email_body'];
+			$comm->period = array(
+				'period_unit' => $fields['period_unit'],
+				'period_type' => $fields['period_type'],
+			);
+			$comm->cc_enabled = ! empty( $fields['cc_enabled'] );
+			$comm->cc_email = $fields['cc_email'];
+
+			$comm->save();
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+		}
+
+		return apply_filters(
+			'ms_controller_communication_save',
+			$msg,
+			$type,
+			$fields,
 			$this
 		);
 	}

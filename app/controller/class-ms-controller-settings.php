@@ -86,14 +86,6 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$this->run_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
-
-		// Add custom buttons to the MCE editor (insert variable).
-		if ( self::TAB_EMAILS == $this->get_active_tab() ) {
-			$this->run_action(
-				'admin_head-' . $hook,
-				array( 'MS_Controller_Communication', 'add_mce_buttons' )
-			);
-		}
 	}
 
 	/**
@@ -442,44 +434,6 @@ class MS_Controller_Settings extends MS_Controller {
 						}
 						break;
 
-					case self::TAB_EMAILS:
-						$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
-						if ( ! empty( $_GET['comm_type'] )
-							&& MS_Model_Communication::is_valid_communication_type( $_GET['comm_type'] )
-						) {
-							$type = $_GET['comm_type'];
-						}
-
-						// Load comm type from user select
-						if ( self::validate_required( array( 'comm_type' ) )
-							&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
-						) {
-							$redirect = esc_url_raw(
-								remove_query_arg(
-									'msg',
-									add_query_arg( 'comm_type', $_POST['comm_type'] )
-								)
-							);
-							break;
-						}
-
-						$fields = array( 'type', 'subject', 'email_body' );
-						if ( isset( $_POST['save_email'] )
-							&& self::validate_required( $fields )
-						) {
-							$msg = $this->save_communication( $type, $_POST );
-							$redirect = esc_url_raw(
-								add_query_arg(
-									array(
-										'comm_type' => urlencode( $_POST['type'] ),
-										'msg' => $msg,
-									)
-								)
-							);
-							break;
-						}
-						break;
-
 					case self::TAB_IMPORT:
 						$tool = MS_Factory::create( 'MS_Controller_Import' );
 
@@ -593,56 +547,6 @@ class MS_Controller_Settings extends MS_Controller {
 			'ms_controller_settings_save_general',
 			$msg,
 			$action,
-			$fields,
-			$this
-		);
-	}
-
-	/**
-	 * Handle saving of Communication settings.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param mixed[] $fields The data to process.
-	 */
-	public function save_communication( $type, $fields ) {
-		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-
-		if ( ! $this->is_admin_user() ) {
-			return $msg;
-		}
-
-		$comm = MS_Model_Communication::get_communication( $type );
-
-		if ( ! empty( $fields ) ) {
-			lib2()->array->equip(
-				$fields,
-				'enabled',
-				'subject',
-				'email_body',
-				'period_unit',
-				'period_type',
-				'cc_enabled',
-				'cc_email'
-			);
-
-			$comm->enabled = lib2()->is_true( $fields['enabled'] );
-			$comm->subject = $fields['subject'];
-			$comm->message = $fields['email_body'];
-			$comm->period = array(
-				'period_unit' => $fields['period_unit'],
-				'period_type' => $fields['period_type'],
-			);
-			$comm->cc_enabled = ! empty( $fields['cc_enabled'] );
-			$comm->cc_email = $fields['cc_email'];
-
-			$comm->save();
-			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-		}
-
-		return apply_filters(
-			'ms_controller_settings_save_communication',
-			$type,
 			$fields,
 			$this
 		);

@@ -639,11 +639,22 @@ class MS_Controller_Membership extends MS_Controller {
 
 		switch ( $this->get_active_edit_tab() ) {
 			case self::TAB_EMAILS:
-				$type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+				$default_type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+				if ( ! empty( $_REQUEST['membership_id'] ) ) {
+					$membership_id = intval( $_REQUEST['membership_id'] );
+					$comm_types = array_keys(
+						MS_Model_Communication::get_communication_type_titles(
+							$membership_id
+						)
+					);
+					$default_type = reset( $comm_types );
+				}
 
 				$temp_type = isset( $_GET['comm_type'] ) ? $_GET['comm_type'] : '';
 				if ( MS_Model_Communication::is_valid_communication_type( $temp_type ) ) {
 					$type = $temp_type;
+				} else {
+					$type = $default_type;
 				}
 
 				$comm = MS_Model_Communication::get_communication(

@@ -156,6 +156,17 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	protected $membership_id = 0;
 
 	/**
+	 * Defines if a membership specific message should be used (true) or the
+	 * default communication settings should be used (false).
+	 *
+	 * Only relevant when $membership_id is set.
+	 *
+	 * @since 1.0.1.0
+	 * @var   bool
+	 */
+	protected $override = false;
+
+	/**
 	 * Communication variables.
 	 *
 	 * @since 1.0.0
@@ -373,6 +384,10 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			if ( ! self::is_valid_communication_type( $type ) ) {
 				unset( $type_titles[ $type ] );
 			}
+		}
+
+		if ( $membership && is_numeric( $membership ) ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership );
 		}
 
 		if ( $membership instanceof MS_Model_Membership ) {
@@ -658,12 +673,17 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		foreach ( $enqueue as $type ) {
 			$comm = self::get_communication( $type, $membership );
 			$comm->enqueue_messages( $event, $data );
+			lib2()->debug->dump( 'Enqueue', $comm );
 		}
 
 		foreach ( $process as $type ) {
 			$comm = self::get_communication( $type, $membership );
 			$comm->process_communication( $event, $data );
+			lib2()->debug->dump( 'Process', $comm );
 		}
+
+		lib2()->debug->dump( $enqueue, $process );
+		wp_die( 'Process COM event ' . $event->type );
 	}
 
 
@@ -1058,7 +1078,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		);
 
 		$sent = false;
-
+lib2()->debug->dump( 'SEND MESSAGE', $this->type, $this->enabled );
 		if ( $this->enabled ) {
 			$wp_user = new WP_User( $subscription->user_id );
 
@@ -1348,48 +1368,46 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @param mixed $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
-		if ( property_exists( $this, $property ) ) {
-			switch ( $property ) {
-				case 'type':
-					if ( $this->is_valid_communication_type( $value ) ) {
-						$this->$property = $value;
-					}
-					break;
-
-				case 'subject':
-					$this->$property = sanitize_text_field( $value );
-					break;
-
-				case 'cc_email':
-					if ( is_email( $value ) ) {
-						$this->$property = $value;
-					}
-					break;
-
-				case 'enabled':
-				case 'cc_enabled':
-					$this->$property = lib2()->is_true( $value );
-					break;
-
-				case 'period':
-					$this->$property = $this->validate_period( $value );
-					break;
-
-				default:
+		switch ( $property ) {
+			case 'type':
+				if ( $this->is_valid_communication_type( $value ) ) {
 					$this->$property = $value;
-					break;
-			}
-		}
-		else {
-			switch ( $property ) {
-				case 'period_unit':
-					$this->period['period_unit'] = $this->validate_period_unit( $value );
-					break;
+				}
+				break;
 
-				case 'period_type':
-					$this->period['period_type'] = $this->validate_period_type( $value );
-					break;
-			}
+			case 'subject':
+				$this->$property = sanitize_text_field( $value );
+				break;
+
+			case 'cc_email':
+				if ( is_email( $value ) ) {
+					$this->$property = $value;
+				}
+				break;
+
+			case 'enabled':
+			case 'cc_enabled':
+			case 'override':
+				$this->$property = lib2()->is_true( $value );
+				break;
+
+			case 'period':
+				$this->$property = $this->validate_period( $value );
+				break;
+
+			case 'period_unit':
+				$this->period['period_unit'] = $this->validate_period_unit( $value );
+				break;
+
+			case 'period_type':
+				$this->period['period_type'] = $this->validate_period_type( $value );
+				break;
+
+			default:
+				if ( property_exists( $this, $property ) ) {
+					$this->$property = $value;
+				}
+				break;
 		}
 
 		do_action(

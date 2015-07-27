@@ -139,11 +139,17 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 	 */
 	protected function get_fields() {
 		$comm = $this->data['comm'];
+		$membership = false;
+		$membership_id = 0;
 
 		if ( isset( $this->data['membership'] ) ) {
 			$membership = $this->data['membership'];
-		} else {
-			$membership = false;
+
+			if ( $membership instanceof MS_Model_Membership ) {
+				$membership_id = $membership->id;
+			} else {
+				$membership = false;
+			}
 		}
 
 		lib2()->array->equip(
@@ -160,12 +166,6 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
 		$nonce = wp_create_nonce( $action );
 		$comm_titles = MS_Model_Communication::get_communication_type_titles( $membership );
-
-		$override = ! ! $comm->membership_id;
-		$membership_id = 0;
-		if ( $membership instanceof MS_Model_Membership ) {
-			$membership_id = $membership->id;
-		}
 
 		$fields = array(
 			'comm_type' => array(
@@ -184,7 +184,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'override' => array(
 				'id' => 'override',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $override,
+				'value' => $comm->override,
 				'before' => __( 'Use default template', MS_TEXT_DOMAIN ),
 				'after' => __( 'Define custom template', MS_TEXT_DOMAIN ),
 				'wrapper_class' => 'ms-block ms-tcenter',
@@ -194,6 +194,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 					'field' => 'override',
 					'action' => $action,
 					'_wpnonce' => $nonce,
+					'membership_id' => $membership_id,
 				),
 			),
 
@@ -216,11 +217,12 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'class' => 'state-slider',
 				'before' => '&nbsp;<i class="wpmui-fa wpmui-fa-ban"></i>',
 				'after' => '<i class="wpmui-fa wpmui-fa-envelope"></i>&nbsp;',
-				'data_ms' => array(
+				'ajax_data' => array(
 					'type' => $comm->type,
 					'field' => 'enabled',
 					'action' => $action,
 					'_wpnonce' => $nonce,
+					'membership_id' => $membership_id,
 				),
 			),
 
