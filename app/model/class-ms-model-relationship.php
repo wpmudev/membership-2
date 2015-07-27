@@ -2354,17 +2354,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
 				/*
-				 * Send period end communication.
-				 * Deactivate expired memberships after $deactivate_expired_after_days.
-				 * Create invoice.
-				 */
-
-				do_action(
-					'ms_check_membership_status-' . $this->status,
-					$this
-				);
-
-				/*
 				 * Make sure the expire date has a correct value, in case the user
 				 * changed the payment_type of the parent membership after this
 				 * subscription was created.
