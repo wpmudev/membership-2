@@ -592,19 +592,24 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$start_date = MS_Helper_Period::current_date();
 		$this->assertEquals( $start_date, $subscription->start_date );
 		$this->assertEquals( '', $subscription->expire_date );
+		$this->assertTrue( $invoice->is_paid() );
+		$this->assertEquals( 'active', $subscription->status );
 
 		// This check should not modify the subscription.
 		$subscription->check_membership_status();
 		$this->assertEquals( $start_date, $subscription->start_date );
 		$this->assertEquals( '', $subscription->expire_date );
+		$this->assertTrue( $invoice->is_paid() );
+		$this->assertEquals( 'active', $subscription->status );
 
 		// Now the user changes the membership to recurring.
 
-		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$membership = $subscription->get_membership();
 		$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;
 		$membership->pay_cycle_period_unit = 7;
 		$membership->pay_cycle_period_type = 'days';
 		$membership->save();
+		$this->assertEquals( MS_Model_Membership::PAYMENT_TYPE_RECURRING, $membership->payment_type );
 
 		// The membership status check is automaticaly done every six hours.
 		// It will update the subscription details to match the new payment type.
