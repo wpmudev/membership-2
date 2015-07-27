@@ -964,8 +964,10 @@ class MS_Rule extends MS_Model {
 	 */
 	public function set_access( $id, $access ) {
 		if ( $access ) {
+			$rule_usage = 1;
 			$this->rule_value[ $id ] = MS_Model_Rule::RULE_VALUE_HAS_ACCESS;
 		} else {
+			$rule_usage = 0;
 			unset( $this->rule_value[ $id ] );
 			unset( $this->dripped[ $id ] );
 		}
@@ -975,14 +977,15 @@ class MS_Rule extends MS_Model {
 			$base = MS_Model_Membership::get_base();
 			$base_rule = $base->get_rule( $this->rule_type );
 
-			$rule_usage = 0;
-			$all_memberships = MS_Model_Membership::get_memberships();
-			foreach ( $all_memberships as $membership ) {
-				if ( $membership->is_base ) { continue; }
-				$mem_rule = $membership->get_rule( $this->rule_type );
-				if ( ! $mem_rule->get_rule_value( $id ) ) { continue; }
+			if ( ! $rule_usage ) {
+				$all_memberships = MS_Model_Membership::get_memberships();
+				foreach ( $all_memberships as $membership ) {
+					if ( $membership->is_base ) { continue; }
+					$mem_rule = $membership->get_rule( $this->rule_type );
+					if ( ! $mem_rule->get_rule_value( $id ) ) { continue; }
 
-				$rule_usage += 1;
+					$rule_usage += 1;
+				}
 			}
 
 			if ( ! $rule_usage ) {
