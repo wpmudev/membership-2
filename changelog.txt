@@ -38,9 +38,10 @@ Change Log:
 - Fix wrong rounding-logic in Stripe gateway
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 - Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
+- Fix bug that would send some emails even when the 'MS_STOP_EMAILS' flag was active
 - Fix a minor security hole in the data import module
-- Fix a bunch of PHP notices and warnings
 - Fix a rare 403 error that happened when a user was accessing protected content
+- Fix a bunch of PHP notices and warnings
 - A lot of small improvements behind the scenes, cleanup and some new filters
 
 1.0.0.8

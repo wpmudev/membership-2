@@ -1033,6 +1033,24 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return bool True if successfully sent email.
 	 */
 	public function send_message( $subscription ) {
+		/**
+		 * Documented in process_queue()
+		 *
+		 * @since  1.0.1.0
+		 */
+		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
+			do_action(
+				'lib2_debug_log',
+				sprintf(
+					'Following Email was not sent: "%s" to user "%s".',
+					$this->type,
+					$subscription->user_id
+				)
+			);
+
+			return false;
+		}
+
 		do_action(
 			'ms_model_communication_send_message_before',
 			$subscription,
