@@ -940,6 +940,18 @@ class MS_Model_Member extends MS_Model {
 			'password2'  => __( 'Password confirmation', MS_TEXT_DOMAIN ),
 		);
 
+		/**
+		 * Filter the required field list to customize the fields that are
+		 * mandatory.
+		 *
+		 * @since 1.0.1.0
+		 * @var   array
+		 */
+		$required = apply_filters(
+			'ms_model_member_create_user_required_fields',
+			$required
+		);
+
 		foreach ( $required as $field => $message ) {
 			if ( empty( $this->$field ) ) {
 				$validation_errors->add(
@@ -1030,17 +1042,28 @@ class MS_Model_Member extends MS_Model {
 		// Compatibility with WangGuard
 		$_POST['user_email'] = $this->email;
 
-		$result = apply_filters(
-			'wpmu_validate_user_signup',
-			array(
-				'user_name' => $this->username,
-				'orig_username' => $this->username,
-				'user_email' => $this->email,
-				'errors' => $validation_errors,
-			)
+		$user_data = array(
+			'user_name' => $this->username,
+			'orig_username' => $this->username,
+			'user_email' => $this->email,
+			'errors' => $validation_errors,
 		);
 
-		$validation_errors = $result['errors'];
+		$user_data = apply_filters(
+			'wpmu_validate_user_signup',
+			$user_data
+		);
+
+		if ( is_wp_error( $user_data ) ) {
+			/*
+			 * Some plugins incorrectly return a WP_Error object as result of
+			 * the wpmu_validate_user_signup filter.
+			 */
+			$validation_errors = $user_data;
+		} else {
+			$validation_errors = $user_data['errors'];
+		}
+
 		$errors = $validation_errors->get_error_messages();
 
 		if ( ! empty( $errors ) ) {
