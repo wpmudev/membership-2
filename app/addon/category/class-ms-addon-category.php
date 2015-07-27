@@ -19,6 +19,16 @@ class MS_Addon_Category extends MS_Addon {
 	}
 
 	/**
+	 * Returns the Add-on ID (self::ID).
+	 *
+	 * @since  1.0.1.0
+	 * @return string
+	 */
+	public function get_id() {
+		return self::ID;
+	}
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.0.0

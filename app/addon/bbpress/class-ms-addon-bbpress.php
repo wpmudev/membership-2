@@ -26,6 +26,16 @@ class MS_Addon_Bbpress extends MS_Addon {
 	}
 
 	/**
+	 * Returns the Add-on ID (self::ID).
+	 *
+	 * @since  1.0.1.0
+	 * @return string
+	 */
+	public function get_id() {
+		return self::ID;
+	}
+
+	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.0.0
@@ -38,7 +48,11 @@ class MS_Addon_Bbpress extends MS_Addon {
 		);
 
 		if ( self::is_active() ) {
-			$this->add_filter( 'ms_controller_membership_tabs', 'rule_tabs' );
+			$this->add_filter(
+				'ms_controller_protection_tabs',
+				'rule_tabs'
+			);
+
 			MS_Factory::load( 'MS_Addon_Bbpress_Rule' );
 		}
 	}

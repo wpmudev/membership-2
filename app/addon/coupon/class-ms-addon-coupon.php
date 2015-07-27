@@ -34,6 +34,16 @@ class MS_Addon_Coupon extends MS_Addon {
 	}
 
 	/**
+	 * Returns the Add-on ID (self::ID).
+	 *
+	 * @since  1.0.1.0
+	 * @return string
+	 */
+	public function get_id() {
+		return self::ID;
+	}
+
+	/**
 	 * Saves a reference to the currently processed coupon in the registration
 	 * form.
 	 *
