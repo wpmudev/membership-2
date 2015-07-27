@@ -134,8 +134,8 @@ class MS_Addon_Attributes extends MS_Addon {
 
 			$this->add_filter(
 				'ms_membership_attr',
-				'get_attr',
-				10, 2
+				'get_attr_filter',
+				10, 3
 			);
 		}
 	}
@@ -325,6 +325,33 @@ class MS_Addon_Attributes extends MS_Addon {
 		}
 
 		return $res;
+	}
+
+	/**
+	 * Saves a custom attribute to the specified membership.
+	 *
+	 * @since 1.0.1.0
+	 * @param string $slug The field to update.
+	 * @param string $value The new value to assign.
+	 * @param int $membership_id The membership.
+	 */
+	static public function set_attr( $slug, $value, $membership_id = 0 ) {
+		if ( ! $membership_id ) {
+			$auto_id = apply_filters( 'ms_detect_membership_id' );
+			$membership = MS_Factory::load( 'MS_Model_Membership', $auto_id );
+		} elseif ( $membership_id instanceof MS_Model_Membership ) {
+			$membership = $membership_id;
+		} else {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		}
+
+		if ( $membership->is_valid() ) {
+			$membership->set_custom_data(
+				'attr_' . $_POST['field'],
+				$_POST['value']
+			);
+			$membership->save();
+		}
 	}
 
 
@@ -526,12 +553,7 @@ class MS_Addon_Attributes extends MS_Addon {
 
 		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
 			$id = intval( $_POST['membership_id'] );
-			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
-			$membership->set_custom_data(
-				'attr_' . $_POST['field'],
-				$_POST['value']
-			);
-			$membership->save();
+			self::set_attr( $_POST['field'], $_POST['value'], $id );
 			$res = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 
@@ -631,7 +653,7 @@ class MS_Addon_Attributes extends MS_Addon {
 						<code>slug</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
 						<strong><?php _ex( 'Required', 'help', MS_TEXT_DOMAIN ); ?></strong>.
-						<?php _ex( 'Slug of the custom attribute', 'help', MS_TEXT_DOMAIN ); ?>
+						<?php _ex( 'Slug of the custom attribute', 'help', MS_TEXT_DOMAIN ); ?>.
 					</li>
 					<li>
 						<code>id</code>
@@ -641,12 +663,12 @@ class MS_Addon_Attributes extends MS_Addon {
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							<?php _e( 'Automatic detection', MS_TEXT_DOMAIN ); ?>
 						</span><br />
-						<em><?php _ex( 'If not specified the plugin attempts to identify the currently displayed membership by examining the URL, request data and subscriptions of current member', 'help', MS_TEXT_DOMAIN ); ?></em>.
+						<em><?php _ex( 'If not specified the plugin attempts to identify the currently displayed membership by examining the URL, request data and subscriptions of the current member', 'help', MS_TEXT_DOMAIN ); ?></em>.
 					</li>
 					<li>
 						<code>title</code>
 						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Prefix the field title to the output.', 'help', MS_TEXT_DOMAIN ); ?>.
+						<?php _ex( 'Prefix the field title to the output', 'help', MS_TEXT_DOMAIN ); ?>.
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							no
@@ -655,7 +677,7 @@ class MS_Addon_Attributes extends MS_Addon {
 					<li>
 						<code>default</code>
 						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Default value to display if no membership was found or the membership did not define the attribute.', 'help', MS_TEXT_DOMAIN ); ?>.
+						<?php _ex( 'Default value to display if no membership was found or the membership did not define the attribute', 'help', MS_TEXT_DOMAIN ); ?>.
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
 							""
@@ -671,4 +693,47 @@ class MS_Addon_Attributes extends MS_Addon {
 		<?php
 	}
 
+	/**
+	 * Handles a filter function and returns a single membership attribute.
+	 *
+	 * @since  1.0.1.0
+	 * @param  string $default Default value.
+	 * @param  string $slug Attribute slug.
+	 * @param  int $membership_id Optional. Membership-ID.
+	 * @return string The attribute value.
+	 */
+	public function get_attr_filter( $default, $slug, $membership_id = 0 ) {
+		$val = self::get_attr( $slug, $membership_id );
+
+		if ( $val ) {
+			$default = $val;
+		}
+
+		return $default;
+	}
+
+}
+
+/**
+ * Convenience function to access a membership attribute value.
+ *
+ * @since  1.0.1.0
+ * @param  string $slug The attribute slug.
+ * @param  int $membership_id Membership ID.
+ * @return string|false The attribute value or false.
+ */
+function ms_membership_attr( $slug, $membership_id = 0 ) {
+	return MS_Addon_Attributes::get_attr( $slug, $membership_id );
+}
+
+/**
+ * Convenience function to modify a membership attribute value.
+ *
+ * @since  1.0.1.0
+ * @param  string $slug The attribute slug.
+ * @param  string $value The attribute value to assign.
+ * @param  int $membership_id Membership ID.
+ */
+function ms_membership_attr_set( $slug, $value, $membership_id = 0 ) {
+	MS_Addon_Attributes::set_attr( $slug, $value, $membership_id );
 }

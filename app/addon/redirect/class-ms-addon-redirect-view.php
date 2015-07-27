@@ -22,7 +22,7 @@ class MS_Addon_Redirect_View extends MS_View {
 								'<a href="%s#ms-membership-login" target="_blank">',
 								MS_Controller_Plugin::get_admin_url(
 									'help',
-									array( 'tab' => 'shortcodes')
+									array( 'tab' => 'shortcodes' )
 								)
 							),
 							'</a>',

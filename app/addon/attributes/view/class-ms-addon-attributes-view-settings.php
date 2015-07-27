@@ -29,6 +29,35 @@ class MS_Addon_Attributes_View_Settings extends MS_View {
 				}
 				echo '</div>';
 			}
+			MS_Helper_Html::html_separator();
+
+			$help_link = MS_Controller_Plugin::get_admin_url(
+				'help',
+				array( 'tab' => 'shortcodes' )
+			);
+
+			printf(
+				'<p>%s</p><ul><li>%s</li><li>%s</li><li>%s</li><li>%s</li></ul>',
+				__( 'How to use custom attribute values:', MS_TEXT_DOMAIN ),
+				sprintf(
+					__( 'Via the %sshortcode%s %s', MS_TEXT_DOMAIN ),
+					'<a href="' . $help_link . '#ms-membership-buy">',
+					'</a>',
+					'<code>[<b>' . MS_Addon_Attributes::SHORTCODE . '</b> slug="slug" id="..."]</code>'
+				),
+				sprintf(
+					__( 'Via WordPress filter %s', MS_TEXT_DOMAIN ),
+					'<code>$val = apply_filters( "<b>ms_membership_attr</b>", "", "slug", $membership_id );</code>'
+				),
+				sprintf(
+					__( 'Get via php function %s', MS_TEXT_DOMAIN ),
+					'<code>$val = <b>ms_membership_attr</b>( "slug", $membership_id );</code>'
+				),
+				sprintf(
+					__( 'Set via php function %s', MS_TEXT_DOMAIN ),
+					'<code>$val = <b>ms_membership_attr_set</b>( "slug", "value", $membership_id );</code>'
+				)
+			);
 			?>
 		</div>
 		<?php
