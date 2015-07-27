@@ -22,14 +22,6 @@ class MS_Addon_Searchindex extends MS_Addon {
 	const MEMBERSHIP_TYPE = 'searchindex';
 
 	/**
-	 * Ajax action used to update the addon settings.
-	 *
-	 * @since  1.0.1.0
-	 * @var  string
-	 */
-	const AJAX_UPDATE_SETTING = 'ms_searchindex_update';
-
-	/**
 	 * Holds the Special Membership. The value is assigned by the function
 	 * self::add_membership() and is used later in the apply_membership() function.
 	 *
@@ -74,10 +66,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 	public function init() {
 		if ( self::is_active() ) {
 			$this->first_click_free = lib2()->is_true(
-				self::$settings->get_custom_setting(
-					self::ID,
-					'first_click_free'
-				)
+				$this->get_setting( 'first_click_free' )
 			);
 
 			$this->add_filter(
@@ -112,11 +101,6 @@ class MS_Addon_Searchindex extends MS_Addon {
 			$this->add_action(
 				'ms_init_done',
 				'apply_membership'
-			);
-
-			$this->add_ajax_action(
-				self::AJAX_UPDATE_SETTING,
-				'ajax_update_settings'
 			);
 
 			// Last action in the init sequence.
@@ -165,7 +149,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 					'after' => __( 'Allow "First Click Free"', MS_TEXT_DOMAIN ),
 					'value' => $this->first_click_free,
 					'ajax_data' => array(
-						'action' => self::AJAX_UPDATE_SETTING,
+						'action' => $this->ajax_action(),
 						'field' => 'first_click_free',
 					),
 				),
@@ -173,33 +157,6 @@ class MS_Addon_Searchindex extends MS_Addon {
 		);
 
 		return $list;
-	}
-
-	/**
-	 * Ajax handler that updates the Add-on settings.
-	 *
-	 * @since  1.0.1.0
-	 */
-	public function ajax_update_settings() {
-		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
-		$fields = array( 'field', 'value' );
-
-		if ( $this->verify_nonce()
-			&& self::validate_required( $fields, 'POST', false )
-			&& $this->is_admin_user()
-		) {
-			self::$settings->set_custom_setting(
-				self::ID,
-				$_POST['field'],
-				$_POST['value']
-			);
-
-			self::$settings->save();
-			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
-		}
-
-		echo $msg;
-		exit;
 	}
 
 	/**
