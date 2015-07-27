@@ -221,10 +221,11 @@ class MS_Controller_Frontend extends MS_Controller {
 					break;
 
 				case MS_Model_Pages::MS_PAGE_REG_COMPLETE:
-					$this->add_filter( 'the_content', 'reg_complete_page', 1 );
+					// Do nothing...
 					break;
 
 				default:
+					// Do nothing...
 					break;
 			}
 		}
@@ -306,7 +307,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * Initial state.
 			 */
 			case self::STEP_CHOOSE_MEMBERSHIP:
-				$this->add_filter( 'the_content', 'choose_membership', 1 );
+				// Nothing, simply display Membership page.
 				break;
 
 			/**
@@ -447,33 +448,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	}
 
 	/**
-	 * Show choose membership form.
-	 *
-	 * Search for signup shortcode, injecting if not found.
-	 *
-	 * Related Filter Hooks:
-	 * * the_content
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param string $content The page content to filter.
-	 * @return string The filtered content.
-	 */
-	public function choose_membership( $content ) {
-		remove_filter( 'the_content', 'wpautop' );
-
-		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_SIGNUP, $content ) ) {
-			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_SIGNUP .']' );
-		}
-
-		return apply_filters(
-			'ms_controller_frontend_choose_membership_content',
-			$content,
-			$this
-		);
-	}
-
-	/**
 	 * Returns the URL to user registration page.
 	 * If Membership2 handles registration we can provide the registration
 	 * step via function param $step.
@@ -497,8 +471,6 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Show register user form.
 	 *
-	 * Search for register user shortcode, injecting if not found.
-	 *
 	 * Related Filter Hooks:
 	 * - the_content
 	 *
@@ -515,7 +487,9 @@ class MS_Controller_Frontend extends MS_Controller {
 
 		// Do not parse the form when building the excerpt
 		global $wp_current_filter;
-		if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) { return ''; }
+		if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) {
+			return '';
+		}
 
 		/**
 		 * Add-ons or other plugins can use this filter to define a completely
@@ -533,7 +507,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		);
 
 		if ( ! empty( $custom_code ) ) {
-			return $custom_code;
+			$content = $custom_code;
 		}
 
 		remove_filter( 'the_content', 'wpautop' );
@@ -866,81 +840,9 @@ class MS_Controller_Frontend extends MS_Controller {
 				break;
 
 			default:
-				$this->add_filter( 'the_content', 'user_account', 1 );
+				// Do nothing...
 				break;
 		}
-	}
-
-	/**
-	 * Show user account page.
-	 *
-	 * Search for account shortcode, injecting if not found.
-	 *
-	 * Related Filter Hooks:
-	 * * the_content
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param string $content The page content to filter.
-	 * @return string The filtered content.
-	 */
-	public function user_account( $content ) {
-		remove_filter( 'the_content', 'wpautop' );
-
-		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_MS_ACCOUNT, $content ) ) {
-			$content .= do_shortcode( '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT .']' );
-		}
-
-		return apply_filters(
-			'ms_controller_frontend_user_account',
-			$content,
-			$this
-		);
-	}
-
-	/**
-	 * Show registration complete page.
-	 *
-	 * Related Filter Hooks:
-	 * * the_content
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param string $content The page content to filter.
-	 * @return string The filtered content.
-	 */
-	public function reg_complete_page( $content ) {
-		return apply_filters(
-			'ms_controller_frontend_reg_complete_page',
-			$content,
-			$this
-		);
-	}
-
-	/**
-	 * Display login form.
-	 *
-	 * Search for login shortcode, injecting if not found.
-	 *
-	 * Related Filter Hooks:
-	 * * the_content
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param string $content The page content to filter.
-	 * @return string The filtered content.
-	 */
-	public function display_login_form( $content ) {
-		if ( ! MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $content ) ) {
-			$scode = '[' . MS_Helper_Shortcode::SCODE_LOGIN . ']';
-			$content = do_shortcode( $scode );
-		}
-
-		return apply_filters(
-			'ms_controller_frontend_display_login_form',
-			$content,
-			$this
-		);
 	}
 
 	/**
