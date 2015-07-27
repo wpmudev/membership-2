@@ -88,6 +88,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			 * It's save to redirect the request without losing form-data.
 			 */
 			if ( isset( $_GET['msg'] )
+				&& isset( $_SERVER['HTTP_REFERER'] )
 				&& MS_Helper_Utility::is_current_url( $_SERVER['HTTP_REFERER'] )
 			) {
 				// A msg is set AND the referer URL has the same msg flag!
