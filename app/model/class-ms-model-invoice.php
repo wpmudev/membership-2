@@ -907,7 +907,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 								$subscription->user_id,
 								$id
 							);
-							lib2()->debug->dump( 'cancel membership', $id );
 
 							if ( $move_from->is_valid() ) {
 								$move_from->cancel_membership();
@@ -930,7 +929,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					if ( MS_Gateway_Manual::ID == $this->gateway_id ) {
 						$this->pay_it( $this->gateway_id, '' );
 					}
-
 					break;
 
 				case self::STATUS_DENIED:
