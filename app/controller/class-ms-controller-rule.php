@@ -28,9 +28,18 @@ class MS_Controller_Rule extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->add_ajax_action( self::AJAX_ACTION_CHANGE_MEMBERSHIPS, 'ajax_action_change_memberships' );
-		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_MATCHING, 'ajax_action_update_matching' );
-		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_DRIPPED, 'ajax_action_update_dripped' );
+		$this->add_ajax_action(
+			self::AJAX_ACTION_CHANGE_MEMBERSHIPS,
+			'ajax_action_change_memberships'
+		);
+		$this->add_ajax_action(
+			self::AJAX_ACTION_UPDATE_MATCHING,
+			'ajax_action_update_matching'
+		);
+		$this->add_ajax_action(
+			self::AJAX_ACTION_UPDATE_DRIPPED,
+			'ajax_action_update_dripped'
+		);
 
 		$this->add_action(
 			'ms_controller_protection_admin_page',
@@ -51,9 +60,13 @@ class MS_Controller_Rule extends MS_Controller {
 		$this->_resp_reset();
 
 		$required = array( 'rule', 'item' );
-		if ( $this->_resp_ok() && ! $this->is_admin_user() ) { $this->_resp_err( 'permission denied' ); }
-		if ( $this->_resp_ok() && ! $this->verify_nonce() ) { $this->_resp_err( 'toggle-rule: nonce' ); }
-		if ( $this->_resp_ok() && ! self::validate_required( $required ) ) { $this->_resp_err( 'toggle-rule: required' ); }
+		if ( ! $this->is_admin_user() ) {
+			$this->_resp_err( 'permission denied' );
+		} elseif ( ! $this->verify_nonce() ) {
+			$this->_resp_err( 'toggle-rule: nonce' );
+		} elseif ( ! self::validate_required( $required ) ) {
+			$this->_resp_err( 'toggle-rule: required' );
+		}
 
 		if ( $this->_resp_ok() ) {
 			$values = array();
@@ -356,7 +369,7 @@ class MS_Controller_Rule extends MS_Controller {
 	 * @param  string $rule_type [description]
 	 * @param  string $item [description]
 	 * @param  array $memberships Memberships that will be assigned to the
-	 *                rule-item. Memberships that are not mentioned are removed.
+	 *               rule-item. Memberships that are not mentioned are removed.
 	 * @return string [description]
 	 */
 	private function assign_memberships( $rule_type, $item, $memberships ) {
