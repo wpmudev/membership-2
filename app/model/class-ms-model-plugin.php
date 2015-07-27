@@ -40,14 +40,6 @@ class MS_Model_Plugin extends MS_Model {
 		// Upgrade membership database if needs to.
 		MS_Model_Upgrade::init();
 
-		if ( ! MS_Plugin::is_enabled() ) { return; }
-
-		$this->add_filter( 'cron_schedules', 'cron_time_period' );
-		$this->add_filter( 'ms_run_cron_services', 'run_cron_services' );
-
-		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
-		$this->add_action( 'ms_cron_check_membership_status', 'check_membership_status' );
-
 		/*
 		 * Create our own copy of the full admin menu to be used in the
 		 * Membership2 settings.
@@ -84,7 +76,22 @@ class MS_Model_Plugin extends MS_Model {
 
 		// Initialize the current member
 		$this->run_action( 'init', 'init_member', 1 );
+
+		/*
+		 * ******************************************************************* *
+		 *   Hooks below are only set up when Content Protection is enabled
+		 * ******************************************************************* *
+		 */
+
+		if ( ! MS_Plugin::is_enabled() ) { return; }
+
+		// Setup the CRON hooks.
 		$this->run_action( 'init', 'setup_cron_services', 1 );
+		$this->add_filter( 'cron_schedules', 'cron_time_period' );
+		$this->add_filter( 'ms_run_cron_services', 'run_cron_services' );
+		$this->add_action( 'ms_cron_check_membership_status', 'check_membership_status' );
+
+		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 
 		// Init gateways and communications to register actions/filters
 		$this->run_action( 'init', array( 'MS_Model_Gateway', 'get_gateways' ), 2 );
@@ -106,27 +113,29 @@ class MS_Model_Plugin extends MS_Model {
 
 		$this->member = MS_Model_Member::get_current_member();
 
-		if ( ! is_user_logged_in() ) {
-			// If a Guest-Membership exists we also assign it to the user.
-			$ms_guest = MS_Model_Membership::get_guest();
-			if ( $ms_guest->is_valid() && $ms_guest->active ) {
-				$this->member->add_membership( $ms_guest->id );
+		if ( MS_Plugin::is_enabled() ) {
+			if ( ! is_user_logged_in() ) {
+				// If a Guest-Membership exists we also assign it to the user.
+				$ms_guest = MS_Model_Membership::get_guest();
+				if ( $ms_guest->is_valid() && $ms_guest->active ) {
+					$this->member->add_membership( $ms_guest->id );
+				}
+			} elseif ( ! $this->member->has_membership() ) {
+				// Apply User-Membership to logged-in users without subscriptions.
+				$ms_user = MS_Model_Membership::get_user();
+				if ( $ms_user->is_valid() && $ms_user->active ) {
+					$this->member->add_membership( $ms_user->id );
+				}
+			} elseif ( ! $this->member->is_member || ! $this->member->active ) {
+				$this->member->subscriptions = array();
 			}
-		} elseif ( ! $this->member->has_membership() ) {
-			// Apply User-Membership to logged-in users without subscriptions.
-			$ms_user = MS_Model_Membership::get_user();
-			if ( $ms_user->is_valid() && $ms_user->active ) {
-				$this->member->add_membership( $ms_user->id );
-			}
-		} elseif ( ! $this->member->is_member || ! $this->member->active ) {
-			$this->member->subscriptions = array();
-		}
 
-		// No subscription: Assign the base membership, which only denies access.
-		if ( ! $this->member->has_membership() ) {
-			$this->member->add_membership(
-				MS_Model_Membership::get_base()->id
-			);
+			// No subscription: Assign the base membership, which only denies access.
+			if ( ! $this->member->has_membership() ) {
+				$this->member->add_membership(
+					MS_Model_Membership::get_base()->id
+				);
+			}
 		}
 
 		/**

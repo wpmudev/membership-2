@@ -23,10 +23,11 @@ Change Log:
 - Add a warning when using a wrong value in the PayPal Standard settings
 - Add a few new API functions (see the API Docs link in the Help page)
 - Add new functions to Payment Logs to manually handle invalid payments
-- Improve payment logs to display additional information for errors
-- Improve the layout of the coupon fields during in the payment form
-- Improve HTML output to be compatible with most themes (remove line breaks inside HTML tags)
+- Improve payment logs to display additional/better information for errors
+- Improve the layout of the coupon fields in the payment confirmation form
+- Improve HTML output of shortcodes to be compatible with most themes (remove line breaks inside HTML tags)
 - Improved third party library by adding a class prefix to avoid class collisions (Stripe, Mailchimp, AuthorizeNet)
+- Improve the BuddyPress Add-on to optionally use the M2 registration page
 - Remove condition that auto-injected missing M2 shortcodes on Membership pages
 - Fix wrong subscription logic that activated Subscriptions without payment in a few cases
 - Fix possible memory issue that happened when updating the plugin
@@ -39,6 +40,8 @@ Change Log:
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 - Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
 - Fix bug that would send some emails even when the 'MS_STOP_EMAILS' flag was active
+- Fix plugin logic to allow changing Protection Rules even when Content Protection is disabled
+- Fix compatibility issue with WP Recaptcha during user registration
 - Fix a minor security hole in the data import module
 - Fix a rare 403 error that happened when a user was accessing protected content
 - Fix a bunch of PHP notices and warnings
