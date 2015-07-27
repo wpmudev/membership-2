@@ -67,7 +67,7 @@ class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 	 * @since  1.0.0
 	 * @return int
 	 */
-	protected function get_items_per_page() {
+	protected function get_items_per_page( $option, $default_value = null ) {
 		return 0;
 	}
 

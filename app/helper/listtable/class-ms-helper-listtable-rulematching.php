@@ -108,7 +108,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 		// Load the matching-list that is displayed for each item.
 		$this->matching_options = apply_filters(
 			'ms_helper_listtable_matching_' . $this->id . ' _matching',
-			$this->model->get_matching_options( $args )
+			$this->model->get_matching_options()
 		);
 	}
 

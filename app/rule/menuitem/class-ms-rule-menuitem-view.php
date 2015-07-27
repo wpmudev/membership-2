@@ -6,7 +6,8 @@ class MS_Rule_MenuItem_View extends MS_View {
 		$membership = MS_Model_Membership::get_base();
 		$menus = $membership->get_rule( MS_Rule_MenuItem::RULE_ID )->get_menu_array();
 
-		$menu_id = reset( array_keys( $menus ) );
+		$menu_ids = array_keys( $menus );
+		$menu_id = reset( $menu_ids );
 		if ( isset( $_REQUEST['menu_id'] ) ) {
 			$menu_id = $_REQUEST['menu_id'];
 		}
