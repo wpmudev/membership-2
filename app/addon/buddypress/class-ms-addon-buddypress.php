@@ -9,6 +9,15 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	const ID = 'buddypress';
 
 	/**
+	 * The flag to determine if we want to use the BuddyPress registration page
+	 * or default M2 registration page.
+	 *
+	 * @since  1.0.1.0
+	 * @var  bool
+	 */
+	protected $buddypress_registration = true;
+
+	/**
 	 * Checks if the current Add-on is enabled
 	 *
 	 * @since  1.0.0
@@ -42,23 +51,38 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
-			$this->add_filter( 'ms_controller_membership_tabs', 'rule_tabs' );
-			MS_Factory::load( 'MS_Addon_BuddyPress_Rule' );
+			$this->buddypress_registration = lib2()->is_true(
+				$this->get_setting( 'buddypress_registration' )
+			);
 
 			$this->add_filter(
-				'ms_frontend_custom_registration_form',
-				'registration_form'
+				'ms_controller_protection_tabs',
+				'rule_tabs'
 			);
 
-			$this->add_action(
-				'ms_controller_frontend_register_user_before',
-				'prepare_create_user'
-			);
+			MS_Factory::load( 'MS_Addon_BuddyPress_Rule' );
 
-			$this->add_action(
-				'ms_controller_frontend_register_user_complete',
-				'save_custom_fields'
-			);
+			/*
+			 * Using the BuddyPress registration form is optional.
+			 * These actions are only needed when the BuddyPress registration
+			 * form is used instead of the M2 registration form.
+			 */
+			if ( $this->buddypress_registration ) {
+				$this->add_filter(
+					'ms_frontend_custom_registration_form',
+					'registration_form'
+				);
+
+				$this->add_action(
+					'ms_controller_frontend_register_user_before',
+					'prepare_create_user'
+				);
+
+				$this->add_action(
+					'ms_controller_frontend_register_user_complete',
+					'save_custom_fields'
+				);
+			}
 
 			// Disable BuddyPress Email activation.
 			add_filter(
@@ -97,12 +121,18 @@ class MS_Addon_BuddyPress extends MS_Addon {
 					'desc' => __( 'Adds BuddyPress rules in the "Protection Rules" page.', MS_TEXT_DOMAIN ),
 				),
 				array(
-					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-					'title' => __( 'Registration page', MS_TEXT_DOMAIN ),
+					'id' => 'buddypress_registration',
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'title' => __( 'Use BuddyPress Registration', MS_TEXT_DOMAIN ),
 					'desc' =>
-						__( 'The BuddyPress registration page will be used instead of the default Membership 2 registration page.', MS_TEXT_DOMAIN ) .
+						__( 'Enable this option to use the BuddyPress registration page instead of the Membership 2 registration page.', MS_TEXT_DOMAIN ) .
 						'<br />' .
 						__( 'New users are automatically activated by Membership 2 and no confirmation email is sent to the user!', MS_TEXT_DOMAIN ),
+					'value' => $this->buddypress_registration,
+					'ajax_data' => array(
+						'action' => $this->ajax_action(),
+						'field' => 'buddypress_registration',
+					),
 				),
 			),
 		);
