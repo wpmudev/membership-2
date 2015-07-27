@@ -953,7 +953,7 @@ class MS_Model_Member extends MS_Model {
 		);
 
 		foreach ( $required as $field => $message ) {
-			if ( empty( $this->$field ) ) {
+			if ( empty( $this->$field ) && empty( $_POST[$field] ) ) {
 				$validation_errors->add(
 					$field,
 					sprintf(

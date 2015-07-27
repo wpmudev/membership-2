@@ -66,6 +66,11 @@ class MS_Addon_Profilefields extends MS_Addon {
 				10, 2
 			);
 
+			$this->add_filter(
+				'ms_model_member_create_user_required_fields',
+				'required_fields'
+			);
+
 			$this->add_action(
 				'ms_controller_frontend_register_user_before',
 				'register_user'
@@ -324,6 +329,35 @@ class MS_Addon_Profilefields extends MS_Addon {
 		$custom_fields = $this->customize_form( $custom_fields, $data, $config );
 
 		return $custom_fields;
+	}
+
+	/**
+	 * Filters the list of required fields that is checked during user
+	 * registration.
+	 *
+	 * @since  1.0.1.0
+	 * @param  array $fields List of field IDs.
+	 * @return array List of field IDs.
+	 */
+	public function required_fields( $fields ) {
+		$settings = MS_Plugin::instance()->settings;
+		$config = $settings->get_custom_setting( 'profilefields', 'register' );
+		$all_fields = self::list_fields();
+
+		$required = array();
+		foreach ( $config as $field => $setting ) {
+			if ( 'off' == $setting ) { continue; }
+			$key = $field;
+			if ( 0 === strpos( $field, 'xprofile_' ) ) {
+				$key = 'field_' . substr( $field, 9 );
+			}
+
+			if ( 'required' == $setting ) {
+				$required[$key] = $all_fields[$field]['label'];
+			}
+		}
+
+		return $required;
 	}
 
 	/**
