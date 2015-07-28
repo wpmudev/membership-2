@@ -540,7 +540,7 @@ class MS_Model_Plugin extends MS_Model {
 	}
 
 	/**
-	 * Runs a single Membership2 cron service and then re-schedules it.
+	 * Runs a single Membership 2 cron service and then re-schedules it.
 	 * This function is used to manually trigger the cron services.
 	 *
 	 * @since  1.0.0

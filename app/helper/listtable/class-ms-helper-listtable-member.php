@@ -278,7 +278,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 				'add-member',
 				array( 'user_id' => $member->id )
 			),
-			__( 'Edit', MS_TEXT_DOMAIN )
+			__( 'Subscription Details', MS_TEXT_DOMAIN )
 		);
 		$actions['profile'] = sprintf(
 			'<a href="%s">%s</a>',
