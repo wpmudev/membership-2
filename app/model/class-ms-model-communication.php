@@ -477,9 +477,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return array List of communication IDs.
 	 */
 	static protected function get_communication_ids( $membership ) {
-		if ( ! isset( self::$Communication_IDs['all'] ) ) {
+		if ( ! isset( self::$Communication_IDs[0] ) ) {
 			self::$Communication_IDs = array(
-				'all' => array(),
+				0 => array(),
 			);
 			$args = array(
 				'post_type' => self::get_post_type(),
@@ -499,10 +499,16 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			}
 		}
 
-		if ( null === $membership ) {
+		if ( $membership instanceof MS_Model_Membership ) {
+			$key = $membership->id;
+		} else {
+			$key = $membership;
+		}
+
+		if ( null === $key ) {
 			$result = self::$Communication_IDs;
-		} elseif ( isset( self::$Communication_IDs[$membership] ) ) {
-			$result = self::$Communication_IDs[$membership];
+		} elseif ( isset( self::$Communication_IDs[$key] ) ) {
+			$result = self::$Communication_IDs[$key];
 		} else {
 			$result = array();
 		}
@@ -635,8 +641,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$comm->membership_id = $membership_id;
 			}
 
-			self::$Communication_IDs[$comm->membership_id][$type] = $comm;
-			self::$Communication_IDs['all'][$type] = $comm;
+			self::$Communication_IDs[$comm->membership_id][$type] = $comm->id;
 
 			/*
 			 * If the Membership specific communication is not defined or it
@@ -644,8 +649,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			 * default communication object!
 			 */
 			$can_fallback = $membership && ! $no_fallback;
-			if ( $can_fallback && ! $model->override ) {
-				$model = self::get_communication( $type, null );
+			if ( $can_fallback && ! $comm->override ) {
+				$comm = self::get_communication( $type, null );
 			}
 		}
 
