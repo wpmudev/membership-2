@@ -1776,21 +1776,68 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	/**
 	 * Get members count of this membership.
 	 *
-	 * This will also count members that have cancelled/expired subscriptions.
+	 * This will also count members that have "cancelled" or "expired"
+	 * subscriptions but not "pending" or "deactivated".
+	 *
+	 * To change this use the filter parameter:
+	 * $args = array( 'status' => 'all' )
 	 *
 	 * @since  1.0.0
 	 * @api
 	 *
+	 * @param  array $args The query post args
 	 * @return int The members count.
 	 */
-	public function get_members_count() {
-		$count = MS_Model_Relationship::get_subscription_count(
-			array( 'membership_id' => $this->id )
+	public function get_members_count( $args = null ) {
+		$args = wp_parse_args(
+			array( 'membership_id' => $this->id ),
+			$args
 		);
+
+		$count = MS_Model_Relationship::get_subscription_count( $args );
 
 		return apply_filters(
 			'ms_model_membership_get_members_count',
-			$count
+			$count,
+			$args,
+			$this
+		);
+	}
+
+	/**
+	 * Get members list of this membership.
+	 *
+	 * This will also count members that have "cancelled" or "expired"
+	 * subscriptions but not "pending" or "deactivated".
+	 *
+	 * To change this use the filter parameter:
+	 * $args = array( 'status' => 'all' )
+	 *
+	 * @since  1.0.1.0
+	 * @api
+	 *
+	 * @param  array $args The query post args
+	 * @return array List of members.
+	 */
+	public function get_members( $args = null ) {
+		$args = wp_parse_args(
+			array( 'membership_id' => $this->id ),
+			$args
+		);
+		// Get a list of subscriptions.
+		$items = MS_Model_Relationship::get_subscriptions( $args );
+
+		// Get a list of members.
+		$result = array();
+		foreach ( $items as $item ) {
+			$result[$item->user_id] = $item->get_member();
+		}
+
+		return apply_filters(
+			'ms_model_membership_get_members',
+			$result,
+			$args,
+			$this
 		);
 	}
 
