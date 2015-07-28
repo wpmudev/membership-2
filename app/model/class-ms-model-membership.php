@@ -512,17 +512,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @internal
 	 *
-	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @param  $args The query post args
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return int The membership count.
 	 */
 	public static function get_membership_count( $args = null ) {
-		MS_Factory::select_blog();
-		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
-		MS_Factory::revert_blog();
-
-		$count = $query->found_posts;
+		$ids = self::get_membership_ids( $args );
+		$count = count( $ids );
 
 		return apply_filters(
 			'ms_model_membership_get_membership_count',
@@ -654,6 +650,52 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns a list of Membership IDs that match the given WP_Query arguments.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 *
+	 * @param  $args The query post args.
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array A list of membership IDs.
+	 */
+	static public function get_membership_ids( $args = null ) {
+		static $Membership_IDs = array();
+		$args = self::get_query_args( $args );
+		$key = md5( json_encode( $args ) );
+
+		if ( ! isset( $Membership_IDs[$key] ) ) {
+			$Membership_IDs[$key] = array();
+
+			MS_Factory::select_blog();
+			$query = new WP_Query( $args );
+			$items = $query->posts;
+			MS_Factory::revert_blog();
+
+			/**
+			 * We only cache the IDs to avoid re-querying the database.
+			 * The positive side effect is, that the memory used by the
+			 * membership list will be freed again after the calling function
+			 * is done with it.
+			 *
+			 * If we cache the whole list here, it would not occupy memory for
+			 * the whole request duration which can cause memory_limit errors.
+			 *
+			 * @see MS_Model_Relationship::get_subscriptions()
+			 */
+			foreach ( $items as $item ) {
+				$Membership_IDs[$key][] = $item->ID;
+			}
+		}
+
+		return apply_filters(
+			'ms_model_membership_get_membership_ids',
+			$Membership_IDs[$key],
+			$args
+		);
+	}
+
+	/**
 	 * Get Memberships models.
 	 *
 	 * When no $args are specified then all memberships except the base
@@ -668,33 +710,23 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @internal
 	 *
-	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @param  $args The query post args
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return MS_Model_Membership[] The selected memberships.
 	 */
 	static public function get_memberships( $args = null ) {
-		static $Membership_Query = array();
-		$args = self::get_query_args( $args );
-		$key = json_encode( $args );
+		$ids = self::get_membership_ids( $args );
 
-		if ( ! isset( $Membership_Query[$key] ) ) {
-			MS_Factory::select_blog();
-			$query = new WP_Query( $args );
-			$items = $query->get_posts();
-			MS_Factory::revert_blog();
-
-			$Membership_Query[$key] = array();
-			foreach ( $items as $item ) {
-				$Membership_Query[$key][] = MS_Factory::load(
-					'MS_Model_Membership',
-					$item->ID
-				);
-			}
+		foreach ( $ids as $id ) {
+			$memberships[] = MS_Factory::load(
+				'MS_Model_Membership',
+				$id
+			);
 		}
 
 		return apply_filters(
 			'ms_model_membership_get_memberships',
-			$Membership_Query[$key],
+			$memberships,
 			$args
 		);
 	}

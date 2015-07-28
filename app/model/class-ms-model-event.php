@@ -375,7 +375,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 		MS_Factory::select_blog();
 		$args = self::get_query_args( $args );
 		$query = new WP_Query( $args );
-		$items = $query->get_posts();
+		$items = $query->posts;
 		$events = array();
 		MS_Factory::revert_blog();
 

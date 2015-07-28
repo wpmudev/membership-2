@@ -497,7 +497,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
-		$items = $query->get_posts();
+		$items = $query->posts;
 		$invoices = array();
 		MS_Factory::revert_blog();
 
@@ -589,7 +589,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		MS_Factory::select_blog();
 		$args = apply_filters( 'ms_model_invoice_get_invoice_args', $args );
 		$query = new WP_Query( $args );
-		$item = $query->get_posts();
+		$item = $query->posts;
 		MS_Factory::revert_blog();
 
 		$invoice = null;

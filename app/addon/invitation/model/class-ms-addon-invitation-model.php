@@ -184,7 +184,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 
 		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
-		$items = $query->get_posts();
+		$items = $query->posts;
 		MS_Factory::revert_blog();
 
 		$invitations = array();
@@ -225,7 +225,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		);
 
 		$query = new WP_Query( $args );
-		$item = $query->get_posts();
+		$item = $query->posts;
 
 		$invitation_id = 0;
 		if ( ! empty( $item[0] ) ) {

@@ -376,7 +376,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 
 		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
-		$items = $query->get_posts();
+		$items = $query->posts;
 		MS_Factory::revert_blog();
 
 		$coupons = array();
@@ -418,7 +418,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 
 		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
-		$item = $query->get_posts();
+		$item = $query->posts;
 		$coupon_id = 0;
 		MS_Factory::revert_blog();
 

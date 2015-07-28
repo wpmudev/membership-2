@@ -211,7 +211,7 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 		$args = self::get_query_args( $args );
 
 		$query = new WP_Query( $args );
-		$posts = $query->get_posts();
+		$posts = $query->posts;
 
 		$contents = array();
 		foreach ( $posts as $content ) {

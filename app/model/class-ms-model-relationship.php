@@ -475,6 +475,49 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns a list of subscription IDs that match the specified attributes.
+	 *
+	 * @since  1.0.1.0
+	 * @internal
+	 *
+	 * @param  $args The query post args.
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array A list of subscription IDs.
+	 */
+	public static function get_subscription_ids( $args = null ) {
+		static $Subscription_IDs = array();
+		$args = self::get_query_args( $args );
+		$key = md5( json_encode( $args ) );
+
+		if ( ! isset( $Subscription_IDs[$key] ) ) {
+			$Subscription_IDs[$key] = array();
+
+			MS_Factory::select_blog();
+			$query = new WP_Query( $args );
+			$items = $query->posts;
+			MS_Factory::revert_blog();
+			$subscriptions = array();
+
+			/**
+			 * We only cache the IDs to avoid re-querying the database.
+			 * The positive side effect is, that the memory used by the
+			 * membership list will be freed again after the calling function
+			 * is done with it.
+			 *
+			 * If we cache the whole list here, it would not occupy memory for
+			 * the whole request duration which can cause memory_limit errors.
+			 *
+			 * @see MS_Model_Membership::get_memberships()
+			 */
+			foreach ( $items as $post_id ) {
+				$Subscription_IDs[$key][] = $post_id;
+			}
+		}
+
+		return $Subscription_IDs[$key];
+	}
+
+	/**
 	 * Retrieve membership relationships.
 	 *
 	 * By default returns a list of relationships that are not "pending" or
@@ -490,31 +533,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return MS_Model_Relationship[] The array of membership relationships.
 	 */
 	public static function get_subscriptions( $args = null, $include_system = false, $ordered = false ) {
-		$args = self::get_query_args( $args );
-
-		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
-		$posts = $query->get_posts();
-		MS_Factory::revert_blog();
+		$ids = self::get_subscription_ids( $args );
 		$subscriptions = array();
 
-		if ( ! empty( $posts ) ) {
-			foreach ( $posts as $post_id ) {
-				$subscription = MS_Factory::load(
-					'MS_Model_Relationship',
-					$post_id
-				);
+		foreach ( $ids as $id ) {
+			$subscription = MS_Factory::load(
+				'MS_Model_Relationship',
+				$id
+			);
 
-				// Remove System-Memberships
-				if ( $subscription->is_system() && ! $include_system ) {
-					continue;
-				}
+			// Remove System-Memberships
+			if ( $subscription->is_system() && ! $include_system ) {
+				continue;
+			}
 
-				if ( ! empty( $args['author'] ) ) {
-					$subscriptions[ $subscription->membership_id ] = $subscription;
-				} else {
-					$subscriptions[ $post_id ] = $subscription;
-				}
+			if ( ! empty( $args['author'] ) ) {
+				$subscriptions[ $subscription->membership_id ] = $subscription;
+			} else {
+				$subscriptions[ $id ] = $subscription;
 			}
 		}
 
@@ -560,19 +596,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @internal
 	 *
-	 * @param $args The query post args
+	 * @param  $args The query post args
 	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_Query
 	 * @return int The membership relationship count.
 	 */
 	public static function get_subscription_count( $args = null ) {
-		$args = apply_filters(
-			'ms_model_relationship_get_subscription_count_args',
-			self::get_query_args( $args )
-		);
-		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
-		$count = $query->found_posts;
-		MS_Factory::revert_blog();
+		$ids = self::get_subscription_ids( $args );
+		$count = count( $ids );
 
 		return apply_filters(
 			'ms_model_relationship_get_subscription_count',
@@ -604,7 +634,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		MS_Factory::select_blog();
 		$query = new WP_Query( $args );
-		$post = $query->get_posts();
+		$post = $query->posts;
 		MS_Factory::revert_blog();
 
 		$subscription = null;
