@@ -44,6 +44,12 @@ class MS_Controller_Communication extends MS_Controller {
 			'auto_setup_communications'
 		);
 
+		$this->add_action(
+			'ms_model_event',
+			'process_event',
+			10, 2
+		);
+
 		do_action( 'ms_controller_communication_after', $this );
 	}
 
@@ -133,8 +139,6 @@ class MS_Controller_Communication extends MS_Controller {
 				}
 
 				$msg = $this->save_communication( $type, $_POST );
-		#		lib2()->debug->dump( 'Saved things', $type, $_POST );
-		#		wp_die();
 				$redirect = esc_url_raw(
 					add_query_arg(
 						array(
@@ -149,6 +153,101 @@ class MS_Controller_Communication extends MS_Controller {
 		if ( $redirect ) {
 			wp_safe_redirect( $redirect );
 			exit();
+		}
+	}
+
+	/**
+	 * Handles an event and process the correct communication if required.
+	 *
+	 * @since  1.0.1.0
+	 * @param  MS_Model_Event $event The event that is processed.
+	 * @param  mixed $data The data passed to the event handler.
+	 */
+	public function process_event( $event, $data ) {
+		if ( $data instanceof MS_Model_Relationship ) {
+			$subscription = $data;
+			$membership = $data->get_membership();
+		} elseif ( $data instanceof MS_Model_Membership ) {
+			$subscription = false;
+			$membership = $data;
+		} else {
+			$subscription = false;
+			$membership = false;
+		}
+
+		$enqueue = array();
+		$process = array();
+
+		switch ( $event->type ) {
+			case MS_Model_Event::TYPE_MS_CANCELED:
+				$enqueue[] = MS_Model_Communication::COMM_TYPE_CANCELLED;
+				break;
+
+			case MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE:
+				$enqueue[] = MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE;
+				break;
+
+			case MS_Model_Event::TYPE_PAYMENT_FAILED:
+				$enqueue[] = MS_Model_Communication::COMM_TYPE_FAILED_PAYMENT;
+				break;
+
+			case MS_Model_Event::TYPE_MS_DEACTIVATED:
+				$enqueue[] = MS_Model_Communication::COMM_TYPE_FINISHED;
+				break;
+
+			case MS_Model_Event::TYPE_UPDATED_INFO:
+				$enqueue[] = MS_Model_Communication::COMM_TYPE_INFO_UPDATE;
+				break;
+
+			case MS_Model_Event::TYPE_PAID:
+				$enqueue[] = MS_Model_Communication::COMM_TYPE_INVOICE;
+				break;
+
+			case MS_Model_Event::TYPE_MS_SIGNED_UP:
+				$process[] = MS_Model_Communication::COMM_TYPE_REGISTRATION_FREE;
+				$process[] = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+				break;
+
+			case MS_Model_Event::TYPE_MS_RENEWED:
+				$process[] = MS_Model_Communication::COMM_TYPE_RENEWED;
+				break;
+
+			case MS_Model_Event::TYPE_MS_MOVED:
+				break;
+			case MS_Model_Event::TYPE_MS_EXPIRED:
+				break;
+			case MS_Model_Event::TYPE_MS_TRIAL_EXPIRED:
+				break;
+			case MS_Model_Event::TYPE_MS_DROPPED:
+				break;
+			case MS_Model_Event::TYPE_MS_REGISTERED:
+				break;
+			case MS_Model_Event::TYPE_MS_BEFORE_FINISHES:
+				break;
+			case MS_Model_Event::TYPE_MS_AFTER_FINISHES:
+				break;
+			case MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES:
+				break;
+			case MS_Model_Event::TYPE_MS_TRIAL_FINISHED:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_PENDING:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_DENIED:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE:
+				break;
+			case MS_Model_Event::TYPE_PAYMENT_AFTER_DUE:
+				break;
+		}
+
+		foreach ( $enqueue as $type ) {
+			$comm = MS_Model_Communication::get_communication( $type, $membership );
+			$comm->enqueue_messages( $event, $data );
+		}
+
+		foreach ( $process as $type ) {
+			$comm = MS_Model_Communication::get_communication( $type, $membership );
+			$comm->process_communication( $event, $data );
 		}
 	}
 
@@ -185,7 +284,8 @@ class MS_Controller_Communication extends MS_Controller {
 
 			$comm = MS_Model_Communication::get_communication(
 				$type,
-				$membership_id
+				$membership_id,
+				true
 			);
 
 			$comm->$field = $value;
@@ -262,7 +362,8 @@ class MS_Controller_Communication extends MS_Controller {
 
 		$comm = MS_Model_Communication::get_communication(
 			$type,
-			$membership_id
+			$membership_id,
+			true
 		);
 
 		if ( ! empty( $fields ) ) {

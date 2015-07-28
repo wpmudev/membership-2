@@ -469,52 +469,6 @@ class MS_Controller_Membership extends MS_Controller {
 
 			case self::TAB_MESSAGES:
 				break;
-
-			case self::TAB_EMAILS:
-				$fields_switch = array( 'comm_type' );
-				$fields_update = array( 'type', 'membership_id', 'subject', 'email_body' );
-
-				// Load comm type from user select
-				if ( self::validate_required( $fields_switch )
-					&& MS_Model_Communication::is_valid_communication_type( $_POST['comm_type'] )
-				) {
-					$redirect = esc_url_raw(
-						remove_query_arg(
-							'msg',
-							add_query_arg( 'comm_type', $_POST['comm_type'] )
-						)
-					);
-					break;
-				} elseif ( self::validate_required( $fields_update ) ) {
-					$comm = MS_Model_Communication::get_communication( $_POST['type'] );
-					if ( $comm->membership_id != $_POST['membership_id'] ) {
-						$comm = MS_Model_Communication::communication_factory(
-							$_POST['type'],
-							$_POST['membership_id']
-						);
-					}
-
-					lib2()->array->equip_post(
-						'enabled',
-						'period_unit',
-						'period_type',
-						'cc_enabled',
-						'cc_email'
-					);
-
-					$comm->enabled = ! empty( $_POST['enabled'] );
-					$comm->subject = $_POST['subject'];
-					$comm->message = $_POST['email_body'];
-					$comm->period = array(
-						'period_unit' => $_POST['period_unit'],
-						'period_type' => $_POST['period_type'],
-					);
-					$comm->cc_enabled = ! empty( $_POST['cc_enabled'] );
-					$comm->cc_email = $_POST['cc_email'];
-
-					$comm->save();
-				}
-				break;
 		}
 
 		if ( $redirect ) {
@@ -659,7 +613,8 @@ class MS_Controller_Membership extends MS_Controller {
 
 				$comm = MS_Model_Communication::get_communication(
 					$type,
-					$membership
+					$membership,
+					true
 				);
 
 				$data['comm'] = $comm;

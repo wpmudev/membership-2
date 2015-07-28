@@ -252,12 +252,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since  1.0.1.0
 	 */
 	public static function init() {
-		add_action(
-			'ms_model_event',
-			array( __CLASS__, 'process_event' ),
-			10, 2
-		);
-
 		self::load_communications();
 	}
 
@@ -450,9 +444,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @param  MS_Model_Membership $membership Optional. If defined then we try
 	 *         to load the overridden template for that membership with fallback
 	 *         to the default template.
+	 * @param  bool $no_fallback Optional. Default value is false.
+	 *         True: Always return a communication for specified membership_id
+	 *         False: Fallback to default message if membership_id does not
+	 *         override the requested message.
 	 * @return MS_Model_Communication The communication object.
 	 */
-	public static function get_communication( $type, $membership = null ) {
+	public static function get_communication( $type, $membership = null, $no_fallback = false ) {
 		$model = null;
 
 		if ( self::is_valid_communication_type( $type ) ) {
@@ -516,10 +514,30 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					self::$communications[$key] = $model;
 				}
 			}
-		}
 
-		if ( ! $model && $membership ) {
-			$model = self::get_communication( $type, null );
+			if ( $no_fallback ) {
+				/*
+				 * Create a new communication model for the specified
+				 * membership_id if we did not find an existing one.
+				 */
+				if ( ! $model ) {
+					$model = self::communication_factory(
+						$type,
+						$membership_id
+					);
+
+					self::$communications[$key] = $model;
+				}
+			} else {
+				/*
+				 * If the Membership specific communication is not defined or it
+				 * is configured to use the default communication then fetch the
+				 * default communication object!
+				 */
+				if ( $membership && ( ! $model || ! $model->override ) ) {
+					$model = self::get_communication( $type, null );
+				}
+			}
 		}
 
 		return apply_filters(
@@ -584,106 +602,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			'ms_model_communication_communication_set_factory',
 			self::$communications
 		);
-	}
-
-	/**
-	 * Handles an event and process the correct communication if required.
-	 *
-	 * @since  1.0.1.0
-	 * @param  MS_Model_Event $event The event that is processed.
-	 * @param  mixed $data The data passed to the event handler.
-	 */
-	static public function process_event( $event, $data ) {
-		if ( $data instanceof MS_Model_Relationship ) {
-			$subscription = $data;
-			$membership = $data->get_membership();
-		} elseif ( $data instanceof MS_Model_Membership ) {
-			$subscription = false;
-			$membership = $data;
-		} else {
-			$subscription = false;
-			$membership = false;
-		}
-
-		$enqueue = array();
-		$process = array();
-
-		switch ( $event->type ) {
-			case MS_Model_Event::TYPE_MS_CANCELED:
-				$enqueue[] = self::COMM_TYPE_CANCELLED;
-				break;
-
-			case MS_Model_Event::TYPE_CREDIT_CARD_EXPIRE:
-				$enqueue[] = self::COMM_TYPE_CREDIT_CARD_EXPIRE;
-				break;
-
-			case MS_Model_Event::TYPE_PAYMENT_FAILED:
-				$enqueue[] = self::COMM_TYPE_FAILED_PAYMENT;
-				break;
-
-			case MS_Model_Event::TYPE_MS_DEACTIVATED:
-				$enqueue[] = self::COMM_TYPE_FINISHED;
-				break;
-
-			case MS_Model_Event::TYPE_UPDATED_INFO:
-				$enqueue[] = self::COMM_TYPE_INFO_UPDATE;
-				break;
-
-			case MS_Model_Event::TYPE_PAID:
-				$enqueue[] = self::COMM_TYPE_INVOICE;
-				break;
-
-			case MS_Model_Event::TYPE_MS_SIGNED_UP:
-				$process[] = self::COMM_TYPE_REGISTRATION_FREE;
-				$process[] = self::COMM_TYPE_REGISTRATION;
-				break;
-
-			case MS_Model_Event::TYPE_MS_RENEWED:
-				$process[] = self::COMM_TYPE_RENEWED;
-				break;
-
-			case MS_Model_Event::TYPE_MS_MOVED:
-				break;
-			case MS_Model_Event::TYPE_MS_EXPIRED:
-				break;
-			case MS_Model_Event::TYPE_MS_TRIAL_EXPIRED:
-				break;
-			case MS_Model_Event::TYPE_MS_DROPPED:
-				break;
-			case MS_Model_Event::TYPE_MS_REGISTERED:
-				break;
-			case MS_Model_Event::TYPE_MS_BEFORE_FINISHES:
-				break;
-			case MS_Model_Event::TYPE_MS_AFTER_FINISHES:
-				break;
-			case MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES:
-				break;
-			case MS_Model_Event::TYPE_MS_TRIAL_FINISHED:
-				break;
-			case MS_Model_Event::TYPE_PAYMENT_PENDING:
-				break;
-			case MS_Model_Event::TYPE_PAYMENT_DENIED:
-				break;
-			case MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE:
-				break;
-			case MS_Model_Event::TYPE_PAYMENT_AFTER_DUE:
-				break;
-		}
-
-		foreach ( $enqueue as $type ) {
-			$comm = self::get_communication( $type, $membership );
-			$comm->enqueue_messages( $event, $data );
-			lib2()->debug->dump( 'Enqueue', $comm );
-		}
-
-		foreach ( $process as $type ) {
-			$comm = self::get_communication( $type, $membership );
-			$comm->process_communication( $event, $data );
-			lib2()->debug->dump( 'Process', $comm );
-		}
-
-		lib2()->debug->dump( $enqueue, $process );
-		wp_die( 'Process COM event ' . $event->type );
 	}
 
 
@@ -1078,7 +996,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		);
 
 		$sent = false;
-lib2()->debug->dump( 'SEND MESSAGE', $this->type, $this->enabled );
+
 		if ( $this->enabled ) {
 			$wp_user = new WP_User( $subscription->user_id );
 
@@ -1363,7 +1281,7 @@ lib2()->debug->dump( 'SEND MESSAGE', $this->type, $this->enabled );
 	/**
 	 * Validate specific property before set.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 * @param string $name The name of a property to associate.
 	 * @param mixed $value The value of a property.
 	 */
