@@ -1824,6 +1824,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			array( 'membership_id' => $this->id ),
 			$args
 		);
+
 		// Get a list of subscriptions.
 		$items = MS_Model_Relationship::get_subscriptions( $args );
 
