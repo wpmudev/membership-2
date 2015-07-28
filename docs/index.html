@@ -88,10 +88,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1346462628"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1715173176"></a>
                                 <a href="namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1346462628" class="accordion-body collapse in">
+            <div id="namespace-1715173176" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -152,7 +152,83 @@
             </div>
 
             
-            
+                        <div class="row-fluid">
+                <section class="span8 content namespace">
+                    <h2>Functions</h2>
+                </section>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                        <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_ms_has_membership" name="method_ms_has_membership" class="anchor"></a>
+            <article class="method">
+                <h3 class=" ">ms_has_membership()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">ms_has_membership(integer  <span class="argument">$id</span>) : boolean</pre>
+                <p><em>Template tag: Check if the current user has a specific membership.</em></p>
+                <p>Multiple memberships can be specified by adding more parameters to the
+function call.</p>
+<p>Examples:</p>
+<p>&lt;?php if ( ms_has_membership() ) : ?&gt; Current user has <em>any</em> membership?</p>
+<p>&lt;?php if ( ms_has_membership(100) ) : ?&gt;  Current user has membership 100?</p>
+<p>&lt;?php if ( ms_has_membership(100,110) ) : ?&gt;  Current user has membership 100 or 110?</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$id </td>
+                                <td><p>Optional. Membership-ID to check.
+If no value is specified the function will check if the member
+has any membership at all. Guest/Default memberships are ignored.</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                            &mdash; <p>True if the current member has any/the specified membership.</p>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                    <dt>File</dt>
+                    <dd><a href=""><div class="path-wrapper"></div></a></dd>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            package
+                        </th>
+                        <td>
+                                                                                            <p>Default</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            since
+                        </th>
+                        <td>
+                                                            1.0.1.0                                
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            api
+                        </th>
+                        <td>
+                                                                                            <p>Template Tag</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
         </div>
     </section>
 
@@ -192,7 +268,7 @@
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on July 24th, 2015 at 16:25.
+                    on July 28th, 2015 at 10:13.
                 </section>
             </section>
         </section>

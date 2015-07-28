@@ -355,24 +355,29 @@ class MS_Controller_Api extends MS_Controller {
 
 if ( ! function_exists( 'ms_has_membership' ) ) {
 	/**
-	 * Check if the current user has a specific membership.
+	 * Template tag: Check if the current user has a specific membership.
 	 *
 	 * Multiple memberships can be specified by adding more parameters to the
 	 * function call.
 	 *
 	 * Examples:
-	 * if ( ms_has_membership() ) // Current user has *any* membership?
-	 * if ( ms_has_membership(100) ) // Current user has membership 100?
-	 * if ( ms_has_membership(100,110) ) // Current user has membership 100 or 110?
+	 *
+	 * <?php if ( ms_has_membership() ) : ?> Current user has *any* membership?
+	 *
+	 * <?php if ( ms_has_membership(100) ) : ?>  Current user has membership 100?
+	 *
+	 * <?php if ( ms_has_membership(100,110) ) : ?>  Current user has membership 100 or 110?
 	 *
 	 * @since  1.0.1.0
-	 * @api
-	 * @param  int $membership_id Optional. Membership-ID to check.
+	 * @api Template Tag
+	 * @param  int $id Optional. Membership-ID to check.
 	 *         If no value is specified the function will check if the member
 	 *         has any membership at all. Guest/Default memberships are ignored.
+	 * @param  int $id2 Optional. You can specify multiple membership-IDs. Just
+	 *         add more parameters to the function call.
 	 * @return bool True if the current member has any/the specified membership.
 	 */
-	function ms_has_membership( $membership_id = 0 ) {
+	function ms_has_membership( $id = 0 ) {
 		$result = false;
 		$current_member = MS_Plugin::$api->get_current_member();
 

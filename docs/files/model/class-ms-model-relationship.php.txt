@@ -900,6 +900,28 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns true if the current subscription is expired.
+	 *
+	 * @since  1.0.1.0
+	 * @return bool
+	 */
+	public function is_expired() {
+		$result = false;
+
+		if ( self::STATUS_EXPIRED == $this->status ) {
+			$result = true;
+		} elseif ( self::STATUS_TRIAL_EXPIRED == $this->status ) {
+			$result = true;
+		}
+
+		return apply_filters(
+			'ms_model_relationship_is_expired',
+			$result,
+			$this
+		);
+	}
+
+	/**
 	 * Checks if the current subscription consumes a trial period.
 	 *
 	 * When the subscription either is currently in trial or was in trial before
@@ -2272,7 +2294,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
 					&& MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS )
 				) {
-
 					// Send trial end communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
 
@@ -2331,17 +2352,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_ACTIVE:
 			case self::STATUS_EXPIRED:
 			case self::STATUS_CANCELED:
-				/*
-				 * Send period end communication.
-				 * Deactivate expired memberships after $deactivate_expired_after_days.
-				 * Create invoice.
-				 */
-
-				do_action(
-					'ms_check_membership_status-' . $this->status,
-					$this
-				);
-
 				/*
 				 * Make sure the expire date has a correct value, in case the user
 				 * changed the payment_type of the parent membership after this
@@ -2529,7 +2539,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						 * confirms the payment in his account. So we set it
 						 * to "Pending" first.
 						 */
-						if ( $new_membership->is_free() ) {
+						if ( ! $new_membership->is_free() ) {
 							$new_subscription->status = self::STATUS_PENDING;
 						}
 					}
@@ -2539,6 +2549,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_PENDING:
 			case self::STATUS_DEACTIVATED:
 			default:
+				// Do nothing.
 				break;
 		}
 
