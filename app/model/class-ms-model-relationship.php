@@ -1421,7 +1421,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @api
 	 *
-	 * @return MS_Model_Invoice[]
+	 * @return MS_Model_Invoice[] List of invoices.
 	 */
 	public function get_invoices() {
 		$invoices = MS_Model_Invoice::get_invoices(
