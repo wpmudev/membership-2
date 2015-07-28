@@ -334,8 +334,8 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @internal
 	 *
-	 * @param $args The query user args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
+	 * @param  $args The query user args
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
 	 * @return array List of member IDs
 	 */
 	public static function get_member_ids( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
@@ -368,8 +368,8 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @internal
 	 *
-	 * @param $args The query user args
-	 *				@see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
+	 * @param  $args The query user args
+	 *         @see @link http://codex.wordpress.org/Class_Reference/WP_User_Query
 	 * @return MS_Model_Member[] The selected members.
 	 */
 	public static function get_members( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
