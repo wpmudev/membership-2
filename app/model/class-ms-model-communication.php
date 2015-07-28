@@ -22,6 +22,14 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	protected static $POST_TYPE = 'ms_communication';
 
 	/**
+	 * Holds a list of all Communication posts in the database.
+	 *
+	 * @since 1.0.1.0
+	 * @var   array $Communication_IDs
+	 */
+	protected static $Communication_IDs = array();
+
+	/**
 	 * Communication types, static reference to loaded child objects.
 	 *
 	 * @since 1.0.0
@@ -252,7 +260,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since  1.0.1.0
 	 */
 	public static function init() {
-		self::load_communications();
 	}
 
 	/**
@@ -434,6 +441,118 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get count of all pending email messages.
+	 *
+	 * @since  1.0.1.0
+	 * @return int
+	 */
+	static public function get_queue_count() {
+		$count = 0;
+		$memberships = self::get_communication_ids( null );
+
+		foreach ( $memberships as $ids ) {
+			foreach ( $ids as $id ) {
+				$comm = MS_Factory::load( 'MS_Model_Communication', $id );
+				$count += count( $comm->queue );
+			}
+		}
+
+		return apply_filters(
+			'ms_model_communication_get_queue_count',
+			$count,
+			$ids
+		);
+	}
+
+	/**
+	 * Returns a list of communication IDs for the specified membership.
+	 *
+	 * Possible values:
+	 *  null .. All communication IDs are returned.
+	 *  0 .. Global communication IDs are returned (defined in Settings page).
+	 *  <MembershipID> .. Communication IDs of that membership are returned.
+	 *
+	 * @since  1.0.1.0
+	 * @param  int $membership Indtifies a membership.
+	 * @return array List of communication IDs.
+	 */
+	static protected function get_communication_ids( $membership ) {
+		if ( ! isset( self::$Communication_IDs['all'] ) ) {
+			self::$Communication_IDs = array(
+				'all' => array(),
+			);
+			$args = array(
+				'post_type' => self::get_post_type(),
+				'post_status' => 'any',
+				'fields' => 'ids',
+				'posts_per_page' => -1,
+			);
+
+			MS_Factory::select_blog();
+			$query = new WP_Query( $args );
+			$items = $query->posts;
+			MS_Factory::revert_blog();
+
+			foreach ( $items as $id ) {
+				$comm = MS_Factory::load( 'MS_Model_Communication', $id );
+				self::$Communication_IDs[$comm->membership_id][$comm->type] = $id;
+			}
+		}
+
+		if ( null === $membership ) {
+			$result = self::$Communication_IDs;
+		} elseif ( isset( self::$Communication_IDs[$membership] ) ) {
+			$result = self::$Communication_IDs[$membership];
+		} else {
+			$result = array();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Retrieve and return all communication types objects.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  MS_Model_Membership $membership Optional. If defined then we try
+	 *         to load overridden messages for that membership with fallback to
+	 *         the default messages.
+	 * @return MS_Model_Communication[] The communication objects array.
+	 */
+	public static function get_communications( $membership = null ) {
+		$ids = self::get_communication_ids( $membership );
+		$result = array();
+
+		if ( null === $membership ) {
+			// All comm items are requested. Index is counter.
+			foreach ( $ids as $sub_list ) {
+				foreach ( $sub_list as $type => $id ) {
+					$result[] = MS_Factory::load( 'MS_Model_Communication', $id );
+				}
+			}
+		} else {
+			// A single membership is requested. Index is comm-type.
+			foreach ( $ids as $type => $id ) {
+				$result[$type] = MS_Factory::load( 'MS_Model_Communication', $id );
+			}
+
+			$types = self::get_communication_types();
+			foreach ( $types as $type ) {
+				if ( ! isset( $result[$type] ) ) {
+					$result[$type] = self::get_communication( $type, $membership );
+				}
+			}
+		}
+
+		return apply_filters(
+			'ms_model_communication_get_communications',
+			$result,
+			$membership
+		);
+	}
+
+	/**
 	 * Get communication type object.
 	 *
 	 * Load from DB if exists, create a new one if not.
@@ -451,8 +570,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return MS_Model_Communication The communication object.
 	 */
 	public static function get_communication( $type, $membership = null, $no_fallback = false ) {
-		$model = null;
-		$key = $type;
+		$comm = null;
+		$key = 'all';
+		$comm_id = 0;
 
 		if ( self::is_valid_communication_type( $type ) ) {
 			$membership_id = 0;
@@ -464,12 +584,16 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					$membership_id = $membership;
 				}
 				if ( $membership_id ) {
-					$key .= '_' . $membership_id;
+					$key = $membership_id;
 				}
 			}
 
-			if ( ! empty( self::$communications[ $key ] ) ) {
-				$model = self::$communications[ $key ];
+			if ( empty( self::$Communication_IDs[ $key ] ) ) {
+				self::$Communication_IDs[ $key ] = array();
+			}
+
+			if ( ! empty( self::$Communication_IDs[ $key ][ $type ] ) ) {
+				$comm_id = self::$Communication_IDs[ $key ][ $type ];
 			} else {
 				$args = array(
 					'post_type' => self::get_post_type(),
@@ -487,7 +611,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				);
 
 				$args = apply_filters(
-					'ms_model_communication_get_communication_args',
+					'ms_model_communication_get_communications_args',
 					$args
 				);
 
@@ -496,112 +620,40 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$items = $query->posts;
 				MS_Factory::revert_blog();
 
-				$comm_classes = self::get_communication_type_classes();
-
 				if ( 1 == count( $items ) ) {
-					$model = MS_Factory::load(
-						$comm_classes[$type],
-						$items[0]  // This is the post_id
-					);
-				} else {
-					$model = self::communication_factory(
-						$type,
-						$membership_id
-					);
-				}
-
-				if ( $model ) {
-					self::$communications[$key] = $model;
+					$comm_id = $items[0];
 				}
 			}
 
-			if ( $no_fallback ) {
-				/*
-				 * Create a new communication model for the specified
-				 * membership_id if we did not find an existing one.
-				 */
-				if ( ! $model ) {
-					$model = self::communication_factory(
-						$type,
-						$membership_id
-					);
-
-					self::$communications[$key] = $model;
-				}
+			$comm_classes = self::get_communication_type_classes();
+			$comm_class = $comm_classes[ $type ];
+			if ( $comm_id ) {
+				$comm = MS_Factory::load( $comm_class, $comm_id );
 			} else {
-				/*
-				 * If the Membership specific communication is not defined or it
-				 * is configured to use the default communication then fetch the
-				 * default communication object!
-				 */
-				if ( $membership && ( ! $model || ! $model->override ) ) {
-					$model = self::get_communication( $type, null );
-				}
+				$comm = MS_Factory::create( $comm_class );
+				$comm->reset_to_default();
+				$comm->membership_id = $membership_id;
+			}
+
+			self::$Communication_IDs[$comm->membership_id][$type] = $comm;
+			self::$Communication_IDs['all'][$type] = $comm;
+
+			/*
+			 * If the Membership specific communication is not defined or it
+			 * is configured to use the default communication then fetch the
+			 * default communication object!
+			 */
+			$can_fallback = $membership && ! $no_fallback;
+			if ( $can_fallback && ! $model->override ) {
+				$model = self::get_communication( $type, null );
 			}
 		}
 
 		return apply_filters(
 			'ms_model_communication_get_communication_' . $type,
-			$model,
+			$comm,
 			$membership,
-			$no_fallback,
-			$key
-		);
-	}
-
-	/**
-	 * Communication factory.
-	 *
-	 * Create a new communication object.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  string $type The type of the communication.
-	 * @param  int $membership_id Optional. If specified then the template will
-	 *         override the default template for this membership only.
-	 * @return MS_Model_Communication The communication object.
-	 */
-	public static function communication_factory( $type, $membership_id = 0 ) {
-		$comm_classes = self::get_communication_type_classes();
-		$class = $comm_classes[$type];
-
-		$model = MS_Factory::create( $class );
-		$model->reset_to_default();
-		$model->membership_id = $membership_id;
-
-		return apply_filters(
-			'ms_model_communication_communication_factory',
-			$model,
-			$type,
-			$class
-		);
-	}
-
-	/**
-	 * Retrieve and return all communication types objects.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  MS_Model_Membership $membership Optional. If defined then we try
-	 *         to load overridden messages for that membership with fallback to
-	 *         the default messages.
-	 * @return MS_Model_Communication[] The communication objects array.
-	 */
-	public static function load_communications( $membership = null ) {
-		if ( empty( self::$communications ) ) {
-			$comm_types = self::get_communication_types();
-
-			foreach ( $comm_types as $type ) {
-				$comm = self::get_communication(
-					$type,
-					$membership
-				);
-			}
-		}
-
-		return apply_filters(
-			'ms_model_communication_communication_set_factory',
-			self::$communications
+			$no_fallback
 		);
 	}
 
@@ -659,13 +711,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	public function load_post_data( $post ) {
 		$this->message = $post->post_content;
 		$this->membership_id = intval( $post->post_parent );
-
-		if ( $this->enabled ) {
-			$this->add_action(
-				'ms_cron_process_communications',
-				'process_queue'
-			);
-		}
 	}
 
 	/**
@@ -741,6 +786,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * Send email and manage queue.
 	 *
 	 * @since  1.0.0
+	 * @internal Called by MS_Controller_Communication::process_queue()
 	 */
 	public function process_queue() {
 		do_action(
@@ -759,7 +805,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$this->queue = array();
 		}
 
-		if ( $this->enabled && ! $this->check_object_lock() ) {
+		if ( $this->enabled && /*! $this->check_object_lock() &&*/ count( $this->queue ) ) {
 			$this->set_object_lock();
 
 			// Max emails that are sent in one process call.
@@ -777,6 +823,12 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$start_time = time();
 
 			foreach ( $this->queue as $subscription_id => $timestamp ) {
+				// Remove invalid subscription items from queue.
+				if ( ! $subscription_id || ! is_numeric( $subscription_id ) ) {
+					unset( $this->queue[ $subscription_id ] );
+					continue;
+				}
+
 				if ( time() > $start_time + $time_limit
 					|| ++$count > $max_emails_qty
 				) {
@@ -788,9 +840,10 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					$subscription_id
 				);
 
-				if ( $this->send_message( $subscription ) ) {
-					$this->remove_from_queue( $subscription_id );
-				} else {
+				$this->remove_from_queue( $subscription_id );
+				$was_sent = $this->send_message( $subscription );
+
+				if ( ! $was_sent ) {
 					do_action(
 						'lib2_debug_log',
 						sprintf(
@@ -1210,7 +1263,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 						&& ( $invoice->total > 0 || $invoice->uses_trial )
 					) {
 						$attr = array( 'post_id' => $invoice->id, 'pay_button' => 0 );
-						$scode = MS_Plugin::instance()->controller->controllers['membership_shortcode'];
+						$scode = MS_Factory::load( 'MS_Controller_Shortcode' );
 						$comm_vars[ $key ] = $scode->membership_invoice( $attr );
 					} else {
 						$comm_vars[ $key ] = '';

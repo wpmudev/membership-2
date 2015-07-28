@@ -50,6 +50,11 @@ class MS_Controller_Communication extends MS_Controller {
 			10, 2
 		);
 
+		$this->add_action(
+			'ms_cron_process_communications',
+			'process_queue'
+		);
+
 		do_action( 'ms_controller_communication_after', $this );
 	}
 
@@ -254,6 +259,21 @@ class MS_Controller_Communication extends MS_Controller {
 	}
 
 	/**
+	 * Send enqueued emails now.
+	 *
+	 * @since  1.0.1.0
+	 * @internal  Cron handler
+	 * @see  filter ms_cron_process_communications
+	 */
+	public function process_queue() {
+		$comms = MS_Model_Communication::get_communications( null );
+
+		foreach ( $comms as $comm ) {
+			$comm->process_queue();
+		}
+	}
+
+	/**
 	 * Handle Ajax update comm field action.
 	 *
 	 * Related Action Hooks:
@@ -321,12 +341,12 @@ class MS_Controller_Communication extends MS_Controller {
 	 */
 	public function auto_setup_communications( $membership ) {
 		/*
-		 * Note: We intentionally set the parameter to null. This
+		 * Note: We intentionally set the parameter to 0. This
 		 * function should set up default messages when first membership is
 		 * created. It should not override default messages with membership-
 		 * specific ones.
 		 */
-		$comms = MS_Model_Communication::load_communications( null );
+		$comms = MS_Model_Communication::get_communications( 0 );
 
 		// Private memberships don't have communications enabled
 		if ( ! $membership->is_private ) {

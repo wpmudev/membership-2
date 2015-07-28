@@ -245,9 +245,19 @@ class MS_View_Settings_Edit extends MS_View {
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			_e( 'Sending Email Responses is disabled.', MS_TEXT_DOMAIN );
 		} else {
+			$count = MS_Model_Communication::get_queue_count();
+			if ( ! $count ) {
+				$msg = __( 'No pending Email Responses found', MS_TEXT_DOMAIN );
+			} elseif ( 1 == $count ) {
+				$msg = __( 'Send 1 pending Email Response %1$s', MS_TEXT_DOMAIN );
+			} else {
+				$msg = __( 'Send %2$s pending Email Responses %1$s', MS_TEXT_DOMAIN );
+			}
+
 			printf(
-				__( 'Send pending Email Responses %s.' ),
-				'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>'
+				$msg,
+				'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>',
+				$count
 			);
 		}
 

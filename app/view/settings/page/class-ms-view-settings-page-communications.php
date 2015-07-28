@@ -165,14 +165,40 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 
 		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
 		$nonce = wp_create_nonce( $action );
-		$comm_titles = MS_Model_Communication::get_communication_type_titles( $membership );
+		$comm_titles = MS_Model_Communication::get_communication_type_titles(
+			$membership
+		);
+
+		$key_active = __( 'Send Email', MS_TEXT_DOMAIN );
+		$key_inactive = __( 'No Email', MS_TEXT_DOMAIN );
+		$key_skip = __( 'Use default template', MS_TEXT_DOMAIN );
+		$titles = array(
+			$key_active => array(),
+			$key_inactive => array(),
+			$key_skip => array(),
+		);
+		foreach ( $comm_titles as $type => $title ) {
+			$tmp_comm = MS_Model_Communication::get_communication(
+				$type,
+				$membership,
+				true
+			);
+
+			if ( $membership && ! $tmp_comm->override ) {
+				$titles[$key_skip][$type] = $title;
+			} elseif ( $tmp_comm->enabled ) {
+				$titles[$key_active][$type] = $title;
+			} else {
+				$titles[$key_inactive][$type] = $title;
+			}
+		}
 
 		$fields = array(
 			'comm_type' => array(
 				'id' => 'comm_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $comm->type,
-				'field_options' => $comm_titles,
+				'field_options' => $titles,
 			),
 
 			'switch_comm_type' => array(

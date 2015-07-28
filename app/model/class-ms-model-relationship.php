@@ -2301,7 +2301,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$remaining_days = $this->get_remaining_period();
 		$remaining_trial_days = $this->get_remaining_trial_period();
 
-		$comms = MS_Model_Communication::load_communications( $membership );
+		$comms = MS_Model_Communication::get_communications( $membership );
 		$invoice_before_days = 5;//@todo create a setting to configure this period.
 		$deactivate_expired_after_days = 30; //@todo create a setting to configure this period.
 		$deactivate_pending_after_days = 30; //@todo create a setting to configure this period.
