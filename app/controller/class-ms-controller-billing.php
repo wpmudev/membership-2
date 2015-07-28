@@ -252,9 +252,10 @@ class MS_Controller_Billing extends MS_Controller {
 				$member = MS_Factory::load( 'MS_Model_Member', $id );
 
 				$resp[0] = __( 'Select a subscription', MS_TEXT_DOMAIN );
+				$active = array();
+				$inactive = array();
 				foreach ( $member->subscriptions as $subscription ) {
 					if ( $subscription->is_system() ) { continue; }
-					if ( $subscription->is_expired() ) { continue; }
 
 					$membership = $subscription->get_membership();
 					if ( $membership->is_free() ) {
@@ -271,10 +272,21 @@ class MS_Controller_Billing extends MS_Controller {
 						$membership->name,
 						$price
 					);
-					$resp[$subscription->id] = $line;
+					if ( $subscription->is_expired() ) {
+						$inactive[$subscription->id] = $line;
+					} else {
+						$active[$subscription->id] = $line;
+					}
 				}
-				if ( 1 == count( $resp ) ) {
-					$resp[0] = __( 'No active subscriptions found', MS_TEXT_DOMAIN );
+				if ( ! count( $active ) && ! count( $inactive ) ) {
+					$resp[0] = __( 'No subscriptions found', MS_TEXT_DOMAIN );
+				} else {
+					if ( count( $active ) ) {
+						$resp[__( 'Active Subscriptions', MS_TEXT_DOMAIN )] = $active;
+					}
+					if ( count( $inactive ) ) {
+						$resp[__( 'Expired Subscriptions', MS_TEXT_DOMAIN )] = $inactive;
+					}
 				}
 			} elseif ( 'invoices' == $type ) {
 				$subscription = MS_Factory::load( 'MS_Model_Relationship', $id );
