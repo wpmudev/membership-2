@@ -72,21 +72,50 @@ class MS_View_Help extends MS_View {
 		ob_start();
 		?>
 		<h2>
-			<?php _ex( 'Overview', 'help', MS_TEXT_DOMAIN ); ?>
+			<?php /*_ex( 'Overview', 'help', MS_TEXT_DOMAIN ); */?>
+			<?php _e( 'You\'re awesome :)', MS_TEXT_DOMAIN ); ?><br />
 		</h2>
 		<p>
-			<?php _ex( 'Thank you for using Membership2!', 'help', MS_TEXT_DOMAIN ); ?>
-			<br />
-			<?php
-			if ( is_multisite() ) {
-				if ( MS_Plugin::is_network_wide() ) {
-					_ex( 'Your Protection mode is <strong>network-wide</strong>', 'help', MS_TEXT_DOMAIN );
-				} else {
-					_ex( 'Your Protection mode is <strong>site-wide</strong>', 'help', MS_TEXT_DOMAIN );
-				}
-			}
-			?>
+			<em><?php _e( 'Thank you for using Membership 2', MS_TEXT_DOMAIN ); ?></em>
+			<br/ ><br />
+			<?php _ex( 'Here is a quick overview:', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
+		<div>
+		<?php
+		printf(
+			_x( 'You use verion <strong>%s</strong> of Membership 2', 'help', MS_TEXT_DOMAIN ),
+			MS_PLUGIN_VERSION
+		);
+		if ( function_exists( 'membership2_init_pro_app' ) ) {
+			printf(
+				'<br />' .
+				_x( 'Hey, this is the <strong>PRO version</strong> of Membership 2 - thanks a lot for supporting us!', 'help', MS_TEXT_DOMAIN )
+			);
+		} else {
+			printf(
+				'<br />' .
+				_x( 'This is the <strong>Free version</strong> of Membership 2 - did you check out our %sPRO version%s already?', 'help', MS_TEXT_DOMAIN ),
+				'<a href="https://premium.wpmudev.org/project/membership/" target="_blank">',
+				'</a>'
+			);
+		}
+		if ( is_multisite() ) {
+			if ( MS_Plugin::is_network_wide() ) {
+				printf(
+					'<br />' .
+					_x( 'Your Protection mode is <strong>%s network-wide</strong>.', 'help', MS_TEXT_DOMAIN ),
+					'<i class="wpmui-fa wpmui-fa-globe"></i>'
+				);
+			} else {
+				printf(
+					'<br />' .
+					_x( 'Your Protection covers <strong>%s only this site</strong>.', 'help', MS_TEXT_DOMAIN ),
+					'<i class="wpmui-fa wpmui-fa-home"></i>'
+				);
+			}
+		}
+		?>
+		</div>
 		<?php MS_Helper_Html::html_separator(); ?>
 		<h2>
 			<?php _ex( 'Plugin menu', 'help', MS_TEXT_DOMAIN ); ?>
@@ -110,16 +139,24 @@ class MS_View_Help extends MS_View {
 				<td><?php _ex( 'Set the protection options, i.e. which pages are protected by which membership', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr class="alternate">
-				<td><span><?php _e( 'Members', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><span><?php _e( 'All Members', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Lists all your WordPress users and allows you to manage their Memberships', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
+				<td><span><?php _e( 'Add Member', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Create a new WP User or edit subscriptions of an existing user', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr class="alternate">
 				<td><span><?php _e( 'Billing', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Manage sent invoices, including details such as the payment status. <em>Only visible when you have at least one paid membership</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
-			<tr class="alternate">
+			<tr>
 				<td><span><?php _e( 'Coupons', MS_TEXT_DOMAIN ); ?></span></td>
 				<td><?php _ex( 'Manage your discount coupons. <em>Requires Add-on "Coupons"</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
+			</tr>
+			<tr class="alternate">
+				<td><span><?php _e( 'Invitation Codes', MS_TEXT_DOMAIN ); ?></span></td>
+				<td><?php _ex( 'Manage your invitation codes. <em>Requires Add-on "Invitation Codes"</em>', 'help', MS_TEXT_DOMAIN ); ?></td>
 			</tr>
 			<tr>
 				<td><span><?php _e( 'Add-ons', MS_TEXT_DOMAIN ); ?></span></td>

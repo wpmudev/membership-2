@@ -34,7 +34,7 @@ Text Domain: membership2
  * MA 02110-1301 USA
  */
 
-function membership2_init_app() {
+function membership2_init_pro_app() {
 	/**
 	 * Plugin version
 	 *
@@ -825,4 +825,4 @@ class MS_Plugin {
 	}
 }
 
-membership2_init_app();
+membership2_init_pro_app();
