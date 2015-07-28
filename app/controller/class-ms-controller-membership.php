@@ -268,7 +268,9 @@ class MS_Controller_Membership extends MS_Controller {
 			if ( ! $membership_id && is_user_logged_in() ) {
 				$member = MS_Model_Member::get_current_member();
 				$subscription = $member->get_subscription( 'priority' );
-				$membership_id = $subscription->membership_id;
+				if ( $subscription ) {
+					$membership_id = $subscription->membership_id;
+				}
 			}
 
 			$Detected_Membership = $membership_id;
