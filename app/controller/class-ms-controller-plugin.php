@@ -155,7 +155,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'ms_plugin_admin_setup', 'run_admin_init' );
 
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
-		$this->add_filter( 'single_template', 'custom_template' );
+		$this->add_filter( 'single_template', 'custom_single_template' );
+		$this->add_filter( 'page_template', 'custom_page_template' );
 
 		// Register styles and javascripts for use in front-end
 		$this->add_action( 'ms_register_public_scripts', 'register_public_scripts' );
@@ -738,31 +739,85 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	/**
-	 * Add custom template for invoice cpt.
-	 * This replaces the themes "Single" template with our invoice form when
-	 * an invoice is displayed.
+	 * Use a special template for our custom post types.
 	 *
-	 * ** Hooks Actions/Filters: *
-	 * * single_template
+	 * Invoices:
+	 * Replaces the themes "Single" template with our invoice template when an
+	 * invoice is displayed. The theme can override this by defining its own
+	 * m2-invoice.php / single-ms_invoice.php template.
 	 *
 	 * @since  1.0.0
+	 * @see filter single_template
 	 *
 	 * @param string $template The template path to filter.
 	 * @return string The template path.
 	 */
-	public function custom_template( $template ) {
+	public function custom_single_template( $default_template ) {
 		global $post;
+		$template = '';
 
 		// Checks for invoice single template.
 		if ( $post->post_type == MS_Model_Invoice::get_post_type() ) {
-			$invoice_template = apply_filters(
-				'ms_controller_plugin_invoice_template',
-				MS_Plugin::instance()->dir . 'app/template/single-invoice.php'
+			// First look for themes 'm2-invoice.php' template.
+			$template = get_query_template(
+				'm2',
+				'm2-invoice.php'
 			);
 
-			if ( file_exists( $invoice_template ) ) {
-				$template = $invoice_template;
+			// Second look for themes 'single-ms_invoice.php' template.
+			if ( ! $template && strpos( $default_template, '/single-ms_invoice.php' ) ) {
+				$template = $default_template;
 			}
+
+			// Last: Use the default M2 invoice template.
+			if ( ! $template ) {
+				$invoice_template = apply_filters(
+					'ms_controller_plugin_invoice_template',
+					MS_Plugin::instance()->dir . 'app/template/single-ms_invoice.php'
+				);
+
+				if ( file_exists( $invoice_template ) ) {
+					$template = $invoice_template;
+				}
+			}
+		}
+
+		if ( ! $template ) {
+			$template = $default_template;
+		}
+
+		return $template;
+	}
+
+	/**
+	 * Use a special template for our membership pages.
+	 *
+	 * Recognized templates are:
+	 *     m2-memberships.php
+	 *     m2-protected-content.php
+	 *     m2-account.php
+	 *     m2-register.php
+	 *     m2-registration-complete.php
+	 *
+	 * @since  1.0.1.0
+	 * @see filter page_template
+	 *
+	 * @param string $template The default template path to filter.
+	 * @return string The custom template path.
+	 */
+	public function custom_page_template( $default_template ) {
+		$template = '';
+
+		// Checks for invoice single template.
+		if ( $type = MS_Model_Pages::is_membership_page() ) {
+			$template = get_query_template(
+				'm2',
+				'm2-' . $type . '.php'
+			);
+		}
+
+		if ( ! $template ) {
+			$template = $default_template;
 		}
 
 		return $template;

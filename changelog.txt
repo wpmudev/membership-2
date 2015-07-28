@@ -24,6 +24,7 @@ Change Log:
 - Add a few new API functions (see the API Docs link in the Help page)
 - Add new functions to Payment Logs to manually handle invalid payments
 - Add new template tag function `ms_has_membership()`
+- Add template support so themes can define custom Membership pages (m2-account.php, m2-memberships.php, m2-protected-content.php, m2-register.php, m2-registration-complete.php, m2-invoice.php)
 - Improve payment logs to display additional/better information for errors
 - Improve the layout of the coupon fields in the payment confirmation form
 - Improve HTML output of shortcodes to be compatible with most themes (remove line breaks inside HTML tags)
