@@ -242,11 +242,13 @@ class MS_Controller_Communication extends MS_Controller {
 
 		foreach ( $enqueue as $type ) {
 			$comm = MS_Model_Communication::get_communication( $type, $membership );
+			if ( ! $comm ) { continue; }
 			$comm->enqueue_messages( $event, $data );
 		}
 
 		foreach ( $process as $type ) {
 			$comm = MS_Model_Communication::get_communication( $type, $membership );
+			if ( ! $comm ) { continue; }
 			$comm->process_communication( $event, $data );
 		}
 	}

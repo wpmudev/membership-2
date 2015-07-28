@@ -452,9 +452,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public static function get_communication( $type, $membership = null, $no_fallback = false ) {
 		$model = null;
+		$key = $type;
 
 		if ( self::is_valid_communication_type( $type ) ) {
-			$key = $type;
 			$membership_id = 0;
 
 			if ( $membership ) {
@@ -544,6 +544,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			'ms_model_communication_get_communication_' . $type,
 			$model,
 			$membership,
+			$no_fallback,
 			$key
 		);
 	}
