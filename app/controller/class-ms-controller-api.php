@@ -343,6 +343,7 @@ class MS_Controller_Api extends MS_Controller {
 	 */
 	public function debug( $data ) {
 		lib2()->debug->enable();
+		// Intended debug output, leave it here.
 		lib2()->debug->dump( $data );
 	}
 

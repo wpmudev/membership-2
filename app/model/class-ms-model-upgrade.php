@@ -24,7 +24,10 @@ class MS_Model_Upgrade extends MS_Model {
 
 		MS_Factory::load( 'MS_Model_Upgrade' );
 
+		// This function is intended for development/testing only!
 		self::maybe_restore();
+
+		// This is a hidden feature available in the Settings > General page.
 		add_action( 'init', array( __CLASS__, 'maybe_reset' ) );
 
 		do_action( 'ms_model_upgrade_init' );
@@ -507,6 +510,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * will be restored.
 	 *
 	 * @since  1.0.0
+	 * @internal This function is intended for development/testing only!
 	 */
 	static private function maybe_restore() {
 		static $Restore_Done = false;

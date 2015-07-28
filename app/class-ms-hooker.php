@@ -407,6 +407,7 @@ class MS_Hooker {
 	 */
 	public function dump() {
 		lib2()->debug->enable();
+		// Intended debug output, leave it here.
 		lib2()->debug->dump( $this );
 	}
 }
