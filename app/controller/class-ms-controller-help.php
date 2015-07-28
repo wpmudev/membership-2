@@ -70,6 +70,11 @@ class MS_Controller_Help extends MS_Controller {
 			'advanced' => array(
 				'title' => __( 'Advanced Settings', MS_TEXT_DOMAIN ),
 			),
+			'api' => array(
+				'title' => __( 'API Docs', MS_TEXT_DOMAIN ),
+				'url' => MS_Plugin::instance()->url . 'docs/namespaces/default.html',
+				'target' => '_blank',
+			),
 		);
 
 		if ( ! is_multisite() ) {
@@ -81,11 +86,13 @@ class MS_Controller_Help extends MS_Controller {
 		$page = sanitize_html_class( $_GET['page'], $def_key );
 
 		foreach ( $tabs as $key => $tab ) {
-			$tabs[ $key ]['url'] = sprintf(
-				'admin.php?page=%1$s&tab=%2$s',
-				esc_attr( $page ),
-				esc_attr( $key )
-			);
+			if ( empty( $tabs[ $key ]['url'] ) ) {
+				$tabs[ $key ]['url'] = sprintf(
+					'admin.php?page=%1$s&tab=%2$s',
+					esc_attr( $page ),
+					esc_attr( $key )
+				);
+			}
 		}
 
 		return apply_filters(

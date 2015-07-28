@@ -389,7 +389,9 @@ class MS_Helper_Html extends MS_Helper {
 			<ul id="sortable-units" class="ms-tabs" style="">
 				<?php foreach ( $tabs as $tab_name => $tab ) :
 					$tab_class = $tab_name == $active_tab ? 'active' : '';
+					$title = esc_html( $tab['title'] );
 					$url = $tab['url'];
+										$attributes = array();
 
 					foreach ( $persistent as $param ) {
 						lib2()->array->equip_request( $param );
@@ -398,10 +400,19 @@ class MS_Helper_Html extends MS_Helper {
 							add_query_arg( $param, $value, $url )
 						);
 					}
+
+					$attributes[] = 'class="ms-tab-link"';
+					$attributes[] = 'href="' . esc_url( $url ) .'"';
+					if ( isset( $tab['target'] ) ) {
+						$attributes[] = 'target="' . esc_attr( $tab['target'] ) .'"';
+						if ( '_blank' == $tab['target'] ) {
+							$title .= ' <i class="wpmui-fa wpmui-fa-external-link-square"></i>';
+						}
+					}
 					?>
-					<li class="ms-tab <?php echo esc_attr( $tab_class ); ?> ">
-						<a class="ms-tab-link" href="<?php echo esc_url( $url ); ?>">
-							<?php echo esc_html( $tab['title'] ); ?>
+					<li class="ms-tab <?php echo esc_attr( $tab_class ); ?>">
+						<a <?php echo implode( ' ', $attributes ); ?>>
+							<?php echo $title; ?>
 						</a>
 					</li>
 				<?php endforeach; ?>

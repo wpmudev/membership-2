@@ -1606,18 +1606,6 @@ class MS_View_Help extends MS_View {
 			<strong><?php _ex( 'Define Membership 2 Admin users', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
 			<?php _ex( 'By default all users with capability <code>manage_options</code> are considered Membership 2 admin users and have unlimited access to the whole site (including protected content). To change the required capability add the line <code>define( "MS_ADMIN_CAPABILITY", "manage_options" );</code> in wp-config.php. When you set the value to <code>false</code> then only the Superadmin has full access to the site.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
-
-		<hr />
-		<p>
-			<strong><?php _ex( 'Developer Docs', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
-			<?php
-			printf(
-				__( 'Membership2 comes with an easy to use API module that makes it simple to integrate it in other plugins. %sAPI documentation%s', 'help', MS_TEXT_DOMAIN ),
-				'<a href="' . MS_Plugin::instance()->url . 'docs/classes/MS_Controller_Api.html" target="_blank">',
-				'</a>'
-			);
-			?>
-		</p>
 		<hr />
 		<?php
 		return ob_get_clean();
