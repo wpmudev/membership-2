@@ -41,6 +41,33 @@
 	min-width: 100px;
 }
 
+#wpwrap .ms-settings-addon_attribute  .wpmui-radio-slider-wrapper .wpmui-radio-slider,
+.wpmui-wnd.attribute-editor .wpmui-radio-slider-wrapper .wpmui-radio-slider {
+	position: absolute;
+	top: 4px;
+	right: 25px;
+}
+
+#wpwrap .ms-settings-addon_attribute  .wpmui-radio-slider-wrapper .wpmui-label-before,
+.wpmui-wnd.attribute-editor .wpmui-radio-slider-wrapper .wpmui-label-before {
+	position: absolute;
+	top: 4px;
+	right: 70px;
+	width: 20px;
+	text-align: right;
+	margin-right: 0;
+}
+
+#wpwrap .ms-settings-addon_attribute  .wpmui-radio-slider-wrapper .wpmui-label-after,
+.wpmui-wnd.attribute-editor .wpmui-radio-slider-wrapper .wpmui-label-after {
+	position: absolute;
+	top: 4px;
+	right: 0;
+	width: 20px;
+	margin-right: 0;
+	margin-left: 0;
+}
+
 #wpwrap .ms-settings-addon_attribute  .wpmui-wrapper:first-child .wpmui-field-input,
 .wpmui-wnd.attribute-editor .wpmui-wrapper:first-child .wpmui-field-input {
 	top: 0;

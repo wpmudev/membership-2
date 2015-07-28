@@ -55,7 +55,7 @@ class MS_Addon_Attributes_View_Settings extends MS_View {
 				),
 				sprintf(
 					__( 'Set via php function %s', MS_TEXT_DOMAIN ),
-					'<code>$val = <b>ms_membership_attr_set</b>( "slug", "value", $membership_id );</code>'
+					'<code><b>ms_membership_attr_set</b>( "slug", $val, $membership_id );</code>'
 				)
 			);
 			?>
@@ -79,6 +79,7 @@ class MS_Addon_Attributes_View_Settings extends MS_View {
 			'text' => __( 'Simple text field', MS_TEXT_DOMAIN ),
 			'number' => __( 'Numeric field (integer)', MS_TEXT_DOMAIN ),
 			'textarea' => __( 'Multi-line text', MS_TEXT_DOMAIN ),
+			'bool' => __( 'Yes|No', MS_TEXT_DOMAIN ),
 		);
 
 		$field_def = MS_Addon_Attributes::list_field_def();

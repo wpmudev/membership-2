@@ -58,6 +58,8 @@ class MS_Addon_Attributes_View_Membership extends MS_View {
 
 		foreach ( $field_def as $field ) {
 			$field_type = MS_Helper_Html::INPUT_TYPE_TEXT;
+			$before = '';
+			$after = '';
 			$value = MS_Addon_Attributes::get_attr(
 				$field->slug,
 				$membership
@@ -71,6 +73,11 @@ class MS_Addon_Attributes_View_Membership extends MS_View {
 				case 'textarea':
 					$field_type = MS_Helper_Html::INPUT_TYPE_TEXT_AREA;
 					break;
+
+				case 'bool':
+					$field_type = MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER;
+					$before = __( 'No', MS_TEXT_DOMAIN );
+					$after = __( 'Yes', MS_TEXT_DOMAIN );
 			}
 
 			$fields[] = array(
@@ -79,6 +86,8 @@ class MS_Addon_Attributes_View_Membership extends MS_View {
 				'desc' => $field->info,
 				'type' => $field_type,
 				'value' => $value,
+				'before' => $before,
+				'after' => $after,
 				'ajax_data' => array(
 					'action' => $action,
 					'_wpnonce' => wp_create_nonce( $action ),

@@ -293,7 +293,7 @@ class MS_Addon_Attributes extends MS_Addon {
 			}
 		}
 
-		return $fields;
+		return $res;
 	}
 
 	/**
@@ -331,7 +331,18 @@ class MS_Addon_Attributes extends MS_Addon {
 		}
 
 		if ( $membership->is_valid() ) {
+			$field = self::get_field_def( $slug );
 			$res = $membership->get_custom_data( 'attr_' . $slug );
+
+			switch ( $field->type ) {
+				case 'bool':
+					$res = lib2()->is_true( $res );
+					break;
+
+				case 'number':
+					$res = intval( $res );
+					break;
+			}
 		}
 
 		return $res;
