@@ -127,7 +127,7 @@ class MS_Addon_Prorate extends MS_Addon {
 		if ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT !== $membership->payment_type ) {
 			$invoice = $subscription->get_previous_invoice();
 
-			if ( $invoice->is_paid() ) {
+			if ( $invoice && $invoice->is_paid() ) {
 				switch ( $subscription->status ) {
 					case MS_Model_Relationship::STATUS_TRIAL:
 						// No Pro-Rate given for trial memberships.
