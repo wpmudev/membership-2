@@ -31,16 +31,15 @@ class MS_Addon_Redirect_View extends MS_View {
 					),
 				)
 			);
-			?>
 
-			<form action="" method="post">
-				<?php MS_Helper_Html::settings_box( $fields ); ?>
-			</form>
-			<?php MS_Helper_Html::settings_footer(); ?>
+			foreach ( $fields as $field ) {
+				MS_Helper_Html::html_element( $field );
+			}
+			?>
 		</div>
 		<?php
 		$html = ob_get_clean();
-		echo '' . $html;
+		echo $html;
 	}
 
 	public function prepare_fields() {
