@@ -630,9 +630,22 @@ class MS_Controller_Frontend extends MS_Controller {
 
 		lib2()->array->equip_request( 'membership_id', 'move_from_id', 'ms_relationship_id' );
 
-		if ( ! empty( $_REQUEST['membership_id'] ) ) {
+		if ( ! empty( $_POST['ms_relationship_id'] ) ) {
+			// Error path, showing payment table again with error msg
+			$subscription = MS_Factory::load(
+				'MS_Model_Relationship',
+				absint( intval( $_POST['ms_relationship_id'] ) )
+			);
+			$membership = $subscription->get_membership();
+			$membership_id = $membership->id;
+
+			if ( ! empty( $_POST['error'] ) ) {
+				lib2()->array->strip_slashes( $_POST, 'error' );
+				$data['error'] = $_POST['error'];
+			}
+		} elseif ( ! empty( $_REQUEST['membership_id'] ) ) {
 			// First time loading
-			$membership_id = $_REQUEST['membership_id'];
+			$membership_id = intval( $_REQUEST['membership_id'] );
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 			$move_from_id = absint( $_REQUEST['move_from_id'] );
 			$subscription = MS_Model_Relationship::create_ms_relationship(
@@ -641,20 +654,6 @@ class MS_Controller_Frontend extends MS_Controller {
 				'',
 				$move_from_id
 			);
-		} elseif ( ! empty( $_POST['ms_relationship_id'] ) ) {
-			// Error path, showing payment table again with error msg
-			$subscription = MS_Factory::load(
-				'MS_Model_Relationship',
-				absint( $_POST['ms_relationship_id'] )
-			);
-			$membership = $subscription->get_membership();
-			$membership_id = $membership->id;
-
-			if ( ! empty( $_POST['error'] ) ) {
-				lib2()->array->strip_slashes( $_POST, 'error' );
-
-				$data['error'] = $_POST['error'];
-			}
 		} else {
 			MS_Helper_Debug::log( 'Error: missing POST params' );
 			MS_Helper_Debug::log( $_POST );

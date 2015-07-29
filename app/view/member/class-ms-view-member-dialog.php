@@ -204,10 +204,10 @@ class MS_View_Member_Dialog extends MS_Dialog {
 								?>
 							</td>
 							<td class="column-start">
-								<?php echo '' . $subscription->start_date; ?>
+								<?php echo $subscription->start_date; ?>
 							</td>
 							<td class="column-expire">
-								<?php echo '' . $subscription->expire_date; ?>
+								<?php echo $subscription->expire_date; ?>
 							</td>
 							<?php if ( $show_trial ) : ?>
 							<td class="column-trialexpire">
@@ -215,7 +215,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 								if ( $subscription->start_date == $subscription->trial_expire_date ) {
 									echo '-';
 								} else {
-									echo '' . $subscription->trial_expire_date;
+									echo $subscription->trial_expire_date;
 								}
 								?>
 							</td>

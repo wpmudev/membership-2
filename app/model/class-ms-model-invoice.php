@@ -917,8 +917,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 						$subscription->move_from_id = '';
 					}
 
-					// The trial period info gets updated after MS_Model_Relationship::config_period()
-					$trial_period = $subscription->is_trial_eligible();
+					// Update the current_invoice_number counter.
 					$subscription->current_invoice_number = max(
 						$subscription->current_invoice_number,
 						$this->invoice_number + 1
