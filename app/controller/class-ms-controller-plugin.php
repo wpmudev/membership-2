@@ -746,6 +746,11 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * invoice is displayed. The theme can override this by defining its own
 	 * m2-invoice.php / single-ms_invoice.php template.
 	 *
+	 * You can even specifiy a membership ID in the page template to create
+	 * a custom invoice form based on the membership that is billed.
+	 * Example:
+	 *     m2-invoice-100.php (Invoice form for membership 100)
+	 *
 	 * @since  1.0.0
 	 * @see filter single_template
 	 *
@@ -758,11 +763,21 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// Checks for invoice single template.
 		if ( $post->post_type == MS_Model_Invoice::get_post_type() ) {
-			// First look for themes 'm2-invoice.php' template.
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $post->ID );
+
+			// First look for themes 'm2-invoice-100.php' template (membership ID).
 			$template = get_query_template(
 				'm2',
-				'm2-invoice.php'
+				'm2-invoice-' . $invoice->membership_id .  '.php'
 			);
+
+			// Fallback to themes 'm2-invoice.php' template.
+			if ( ! $template ) {
+				$template = get_query_template(
+					'm2',
+					'm2-invoice.php'
+				);
+			}
 
 			// Second look for themes 'single-ms_invoice.php' template.
 			if ( ! $template && strpos( $default_template, '/single-ms_invoice.php' ) ) {
@@ -799,6 +814,14 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *     m2-register.php
 	 *     m2-registration-complete.php
 	 *
+	 * Note that certain pages receive a membership-ID when they are loaded
+	 * (like the m2-registration-complete or m2-register pages).
+	 * You can even specify special pages for each membership.
+	 *
+	 * Example:
+	 *     m2-register-100.php (register form for membership 100)
+	 *     m2-registration-complete-100.php (thank you page for membership 100)
+	 *
 	 * @since  1.0.1.0
 	 * @see filter page_template
 	 *
@@ -810,10 +833,21 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// Checks for invoice single template.
 		if ( $type = MS_Model_Pages::is_membership_page() ) {
-			$template = get_query_template(
-				'm2',
-				'm2-' . $type . '.php'
-			);
+			$membership_id = apply_filters( 'ms_detect_membership_id', 0, true );
+
+			if ( $membership_id ) {
+				$template = get_query_template(
+					'm2',
+					'm2-' . $type . '-' . $membership_id . '.php'
+				);
+			}
+
+			if ( ! $template ) {
+				$template = get_query_template(
+					'm2',
+					'm2-' . $type . '.php'
+				);
+			}
 		}
 
 		if ( ! $template ) {

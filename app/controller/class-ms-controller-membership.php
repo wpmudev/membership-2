@@ -232,11 +232,11 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @since  1.0.1.0
 	 * @param  int $preferred The preferred ID is only used if it is a valid ID.
+	 * @param  bool $no_member_check If set to true the member subscriptions are
+	 *         not checked, which means only REQUEST data is examined.
 	 * @return int A valid Membership ID or 0 if all tests fail.
 	 */
-	public function autodetect_membership( $preferred = 0 ) {
-		static $Detected_Membership = null;
-
+	public function autodetect_membership( $preferred = 0, $no_member_check = false ) {
 		$membership_id = 0;
 
 		// Check 1: If the preferred value is correct use it.
@@ -247,13 +247,17 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		}
 
-		if ( ! $membership_id && null === $Detected_Membership ) {
-			// Check 2: Examine the REQUEST parameters to find a valid ID.
+		// Check 2: Examine the REQUEST parameters to find a valid ID.
+		if ( ! $membership_id ) {
 			if ( ! $membership_id ) {
 				if ( isset( $_REQUEST['membership_id'] ) ) {
 					$membership_id = $_REQUEST['membership_id'];
 				} elseif ( isset( $_REQUEST['subscription_id'] ) ) {
 					$sub_id = $_REQUEST['subscription_id'];
+					$subscription = MS_Factory::load( 'MS_Model_Relationship', $sub_id );
+					$membership_id = $subscription->memberhip_id;
+				} elseif ( isset( $_REQUEST['ms_relationship_id'] ) ) {
+					$sub_id = $_REQUEST['ms_relationship_id'];
 					$subscription = MS_Factory::load( 'MS_Model_Relationship', $sub_id );
 					$membership_id = $subscription->memberhip_id;
 				} elseif ( isset( $_REQUEST['invoice_id'] ) ) {
@@ -263,26 +267,22 @@ class MS_Controller_Membership extends MS_Controller {
 				}
 				$membership_id = intval( $membership_id );
 			}
-
-			// Check 3: Check subscriptions of the current user.
-			if ( ! $membership_id && is_user_logged_in() ) {
-				$member = MS_Model_Member::get_current_member();
-				$subscription = $member->get_subscription( 'priority' );
-				if ( $subscription ) {
-					$membership_id = $subscription->membership_id;
-				}
-			}
-
-			$Detected_Membership = $membership_id;
 		}
 
-		if ( ! $membership_id ) {
-			$membership_id = $Detected_Membership;
+		// Check 3: Check subscriptions of the current user.
+		if ( ! $no_member_check && ! $membership_id && is_user_logged_in() ) {
+			$member = MS_Model_Member::get_current_member();
+			$subscription = $member->get_subscription( 'priority' );
+			if ( $subscription ) {
+				$membership_id = $subscription->membership_id;
+			}
 		}
 
 		return apply_filters(
 			'ms_controller_membership_autodetect_membership',
-			$membership_id
+			$membership_id,
+			$preferred,
+			$no_member_check
 		);
 	}
 
