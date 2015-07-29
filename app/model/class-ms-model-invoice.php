@@ -834,8 +834,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if ( MS_Gateway_Manual::ID != $gateway_id ) {
 			/*
 			 * Process the payment and update the subscription.
-			 * This function will call the config_period() function to calculate the
-			 * new expire date of the subscription.
+			 * This function will call the config_period() function to calculate
+			 * the new expire date of the subscription.
 			 *
 			 * All changes above are also saved at the end of changed()
 			 */
@@ -923,8 +923,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 						$subscription->current_invoice_number,
 						$this->invoice_number + 1
 					);
-					$member->is_member = true;
-					$member->active = true;
 
 					if ( MS_Gateway_Manual::ID == $this->gateway_id ) {
 						$this->pay_it( $this->gateway_id, '' );

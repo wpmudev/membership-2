@@ -395,7 +395,6 @@ class MS_Model_Import extends MS_Model {
 
 		// Import the member details.
 		$member->is_member = true;
-		$member->active = true;
 
 		$pay = $obj->payment;
 		if ( is_array( $pay ) ) { $pay = (object) $pay; }

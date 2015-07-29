@@ -92,27 +92,24 @@ class MS_Model_Member extends MS_Model {
 	protected $subscriptions = array();
 
 	/**
-	 * Indicator if the user is a valid Member.
+	 * Indicator if the user is an active M2 Member.
 	 *
-	 * Only members have access to memberships.
-	 * False indicates blocked members (if signed up for a membership).
+	 * This is a convenience/redudant flag to speed up SQL queries.
+	 * Actually everyone that has an active or trial status membership is
+	 * considered an active member.
+	 *
+	 * This flag is set when:
+	 * - In MS_Model_Relationship, when a payment is recorded
+	 *   via add_payment()
+	 *
+	 * This flag is reset when:
+	 * - In MS_Model_Relationship, when a subscription is deactivated
+	 *   via check_membership_status()
 	 *
 	 * @since  1.0.0
 	 * @var boolean
 	 */
 	protected $is_member = false;
-
-	/**
-	 * Active status.
-	 *
-	 * Staus to activate or deactivate a user independently of the membership
-	 * status. False indicates blocked members (if signed up for a membership).
-	 * For further use. (For temporary member blocking).
-	 *
-	 * @since  1.0.0
-	 * @var boolean
-	 */
-	protected $active = true;
 
 	/**
 	 * Member's username.
@@ -123,7 +120,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $username;
+	protected $username = '';
 
 	/**
 	 * Member's email.
@@ -134,7 +131,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $email;
+	protected $email = '';
 
 	/**
 	 * Member's name.
@@ -145,7 +142,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $name;
+	protected $name = '';
 
 	/**
 	 * Member's first name.
@@ -156,7 +153,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $first_name;
+	protected $first_name = '';
 
 	/**
 	 * Member's last name.
@@ -167,7 +164,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $last_name;
+	protected $last_name = '';
 
 	/**
 	 * Member's password.
@@ -178,7 +175,7 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 * @var string
 	 */
-	protected $password;
+	protected $password = '';
 
 	/**
 	 * Member's password confirmation.
@@ -189,7 +186,7 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 * @var string
 	 */
-	protected $password2;
+	protected $password2 = '';
 
 	/**
 	 * Member's gateway profiles info.
@@ -205,7 +202,7 @@ class MS_Model_Member extends MS_Model {
 	 *     @type mixed $value The field value to store.
 	 * }
 	 */
-	protected $gateway_profiles;
+	protected $gateway_profiles = array();
 
 	/**
 	 * The associated WP_User object
@@ -214,7 +211,7 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 * @var WP_User
 	 */
-	protected $wp_user;
+	protected $wp_user = null;
 
 	/**
 	 * Custom data can be used by other plugins via the set_custom_data() and

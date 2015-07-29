@@ -126,7 +126,7 @@ class MS_Model_Plugin extends MS_Model {
 				if ( $ms_user->is_valid() && $ms_user->active ) {
 					$this->member->add_membership( $ms_user->id );
 				}
-			} elseif ( ! $this->member->is_member || ! $this->member->active ) {
+			} elseif ( ! $this->member->is_member ) {
 				$this->member->subscriptions = array();
 			}
 

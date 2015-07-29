@@ -653,11 +653,6 @@ class MS_Controller_Member extends MS_Controller {
 					}
 					break;
 
-				case 'toggle_activation':
-					$member->active = ! $member->active;
-					$msg = MS_Helper_Member::MSG_MEMBER_UPDATED;
-					break;
-
 				case 'edit_date':
 					if ( is_array( $membership_id ) ) {
 						foreach ( $membership_id as $id ) {

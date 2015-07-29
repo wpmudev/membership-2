@@ -28,6 +28,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * Pending is the first status that means the member did not confirm his
+	 * intention to complete his payment/registration.
+	 *
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -36,6 +40,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * This status has a much higher value than PENDING, because it means that
+	 * the member already made a payment, but the subscription is not yet
+	 * activated because the start date was not reached.
+	 *
+	 * NO ACCESS.
+	 *
+	 * @since  1.0.0
+	 * @see $status $status property.
+	 */
+	const STATUS_WAITING = 'waiting';
+
+	/**
+	 * Membership Relationship Status constants.
+	 *
+	 * FULL ACCESS TO MEMBERSHIP CONTENTS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -45,6 +64,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
+	 * FULL ACCESS TO MEMBERSHIP CONTENTS.
+	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
@@ -52,6 +73,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * User cancelled his subscription but the end date of the current payment
+	 * period is not reached yet. The user has full access to the membership
+	 * contents until the end date is reached.
+	 *
+	 * FULL ACCESS TO MEMBERSHIP CONTENTS.
+	 *
+	 * @since  1.0.0
+	 * @see $status $status property.
+	 */
+	const STATUS_CANCELED = 'canceled';
+
+	/**
+	 * Membership Relationship Status constants.
+	 *
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -60,16 +96,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
-	 * Start-Date not reached yet.
+	 * End-Date reached. The subscription is available for renewal for a few
+	 * more days.
 	 *
-	 * @since  1.0.0
-	 * @see $status $status property.
-	 */
-	const STATUS_WAITING = 'waiting';
-
-	/**
-	 * Membership Relationship Status constants.
-	 * End-Date reached.
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -78,19 +108,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * Deactivated means, that we're completely done with this subscription.
+	 * It's not displayed for renewal and the member can be set to inactive now.
+	 *
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_DEACTIVATED = 'deactivated';
-
-	/**
-	 * Membership Relationship Status constants.
-	 *
-	 * @since  1.0.0
-	 * @see $status $status property.
-	 */
-	const STATUS_CANCELED = 'canceled';
 
 	/**
 	 * The Membership ID.
@@ -1845,6 +1871,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$this->save();
 
+		// Thanks for paying or for starting your trial period!
+		// You're officially active :)
+		$member = $this->get_member();
+		$member->is_member = true;
+		$member->save();
+
 		// Return true if the subscription is active.
 		$is_active = self::STATUS_ACTIVE == $this->status;
 		return $is_active;
@@ -2576,8 +2608,34 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				}
 				break;
 
-			case self::STATUS_PENDING:
 			case self::STATUS_DEACTIVATED:
+				/*
+				 * A subscription was finally deactivated.
+				 * Lets check if the member has any other active subscriptions,
+				 * or (if not) his account should be deactivated.
+				 *
+				 * First get a list of all subscriptions that do not have status
+				 * Pending / Deactivated.
+				 */
+				$subscriptions = self::get_subscriptions(
+					array( 'user_id' => $this->user_id )
+				);
+
+				// Check if there is a subscription that keeps the user active.
+				$deactivate = true;
+				foreach ( $subscriptions as $item ) {
+					if ( $item->id == $this->id ) { continue; }
+					$deactivate = false;
+				}
+
+				if ( $deactivate ) {
+					$member = $this->get_member();
+					$member->is_member = false;
+					$member->save();
+				}
+				break;
+
+			case self::STATUS_PENDING:
 			default:
 				// Do nothing.
 				break;
