@@ -577,6 +577,34 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test activation of admin-assigned memberships.
+	 * @test
+	 */
+	function limited_expire_date() {
+		$user_id = TData::id( 'user', 'editor' );
+		$membership_id = TData::id( 'membership', 'limited' );
+		$subscription = TData::subscribe( $user_id, $membership_id );
+
+		$start_date = MS_Helper_Period::current_date();
+		$limit_end = MS_Helper_Period::add_interval( 28, 'days', $start_date );
+
+		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( '', $subscription->expire_date );
+
+		// Pay for the subscription.
+
+		$invoice = $subscription->get_current_invoice();
+		$invoice->pay_it( 'stripe', 'external_123' );
+
+		// The subscription is paid, now the expire date should be set.
+
+		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status, 'Active status' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( $limit_end, $subscription->expire_date );
+	}
+
+	/**
 	 * Test changing the membership payment plan from permanent to recurring.
 	 * @test
 	 */
