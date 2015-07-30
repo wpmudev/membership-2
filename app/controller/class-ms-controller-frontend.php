@@ -241,13 +241,21 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @param  array $class Class-names to attach to the body.
 	 * @return array Modified class-names to attach to the body.
 	 */
-	public function body_class( $class ) {
-		$info = MS_Plugin::instance()->controller->get_access_info();
-		foreach ( $info['memberships'] as $membership_id ) {
-			$class[] = 'ms-' . absint( $membership_id );
+	public function body_class( $classes ) {
+		$member = MS_Model_Member::get_current_member();
+		if ( ! $member->is_logged_in() ) {
+			$classes[] = 'ms-guest';
+		} else {
+			$classes[] = 'ms-member';
+			$classes[] = 'ms-member-' . $member->id;
 		}
 
-		return $class;
+		$info = MS_Plugin::instance()->controller->get_access_info();
+		foreach ( $info['memberships'] as $membership_id ) {
+			$classes[] = 'ms-' . absint( $membership_id );
+		}
+
+		return $classes;
 	}
 
 	/**
