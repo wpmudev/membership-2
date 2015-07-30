@@ -565,11 +565,21 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$membership_id = TData::id( 'membership', 'free-limited' );
 		$subscription = TData::subscribe( $user_id, $membership_id );
 
-		// Because the membership is free we should have an active subscription
-		// with correct expire data already.
-
 		$start_date = MS_Helper_Period::current_date();
 		$limit_end = MS_Helper_Period::add_interval( 28, 'days', $start_date );
+
+		// Because the membership is non-admin it needs to be paid before the
+		// expire date is set.
+
+		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( '', $subscription->expire_date );
+
+		$invoice = $subscription->get_current_invoice();
+		$invoice->pay_it( 'free', '0' );
+
+		// Now the subscription was paid using the free gateway. This means it
+		// now has an active status and also expiration date.
 
 		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status, 'Active status' );
 		$this->assertEquals( $start_date, $subscription->start_date );
@@ -577,7 +587,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test activation of admin-assigned memberships.
+	 * Test expire date of limited-length memberships.
 	 * @test
 	 */
 	function limited_expire_date() {
