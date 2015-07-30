@@ -31,6 +31,7 @@ Change Log:
 - Improved third party library by adding a class prefix to avoid class collisions (Stripe, Mailchimp, AuthorizeNet)
 - Improve the BuddyPress Add-on to optionally use the M2 registration page
 - Improve caching and reduce SQL queries to make the plugin faster
+- Improve the Billings list (status-indicator, overdue payments, quick-pay for manual payment gateway)
 - Remove condition that auto-injected missing M2 shortcodes on Membership pages
 - Fix wrong subscription logic that activated Subscriptions without payment in a few cases
 - Fix possible memory issue that happened when updating the plugin

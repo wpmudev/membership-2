@@ -82,10 +82,9 @@ class MS_Gateway_Manual extends MS_Gateway {
 				<br />
 				<?php
 				printf(
-					'%s <a href="%s">%s</a>',
-					__( 'Edit it', MS_TEXT_DOMAIN ),
-					$link,
-					__( 'here.', MS_TEXT_DOMAIN )
+					__( 'Edit it %shere%s', MS_TEXT_DOMAIN ),
+					'<a href="' . $link . '">',
+					'</a>'
 				);
 				?>
 				<br /><br />
@@ -111,6 +110,11 @@ class MS_Gateway_Manual extends MS_Gateway {
 				$invoice->currency,
 				$invoice->total
 			);
+
+			// The user did make his intention to pay the invoice. Set status
+			// to billed.
+			$invoice->status = MS_Model_Invoice::STATUS_BILLED;
+			$invoice->save();
 		}
 
 		return apply_filters(

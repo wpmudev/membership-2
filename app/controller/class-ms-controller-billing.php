@@ -10,6 +10,22 @@
 class MS_Controller_Billing extends MS_Controller {
 
 	/**
+	 * Default action to open the invoice edit form.
+	 *
+	 * @since 1.0.1.0
+	 * @var   string
+	 */
+	const ACTION_EDIT = 'edit';
+
+	/**
+	 * Action used to quick-pay an invoice via a link in the billings list.
+	 *
+	 * @since 1.0.1.0
+	 * @var   string
+	 */
+	const ACTION_PAY_IT = 'pay_it';
+
+	/**
 	 * Ajax action used in the transaction log list.
 	 * Sets the Manual-State flag of an transaction.
 	 *
@@ -99,10 +115,14 @@ class MS_Controller_Billing extends MS_Controller {
 			return;
 		}
 
-		$fields = array( 'user_id', 'membership_id' );
+		$fields_edit = array( 'user_id', 'membership_id' );
+		$fields_pay = array( 'invoice_id' );
+		$fields_bulk = array( '$this->verify_nonce()' );
 
-		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
-			// Save billing add/edit
+		// Save details of a single invoice.
+		if ( $this->verify_nonce( self::ACTION_EDIT )
+			&& self::validate_required( $fields_edit )
+		) {
 			$msg = $this->save_invoice( $_POST );
 
 			$redirect = esc_url_raw(
@@ -111,13 +131,32 @@ class MS_Controller_Billing extends MS_Controller {
 					remove_query_arg( array( 'invoice_id') )
 				)
 			);
-		} elseif ( self::validate_required( array( 'invoice_id' ) )
-			&& $this->verify_nonce( 'bulk' )
+		}
+
+		// Quick-Pay an invoice.
+		elseif ( $this->verify_nonce( self::ACTION_PAY_IT, 'GET' )
+			&& self::validate_required( $fields_pay, 'GET' )
 		) {
-			// Execute bulk actions.
+			$msg = $this->billing_do_action( 'pay', $_GET['invoice_id'] );
+			$redirect = esc_url_raw(
+				add_query_arg(
+					array( 'msg' => $msg ),
+					remove_query_arg(
+						array( 'action', '_wpnonce', 'invoice_id' )
+					)
+				)
+			);
+		}
+
+		// Bulk edit invoices.
+		elseif ( $this->verify_nonce( 'bulk' )
+			&& self::validate_required( $fields_bulk )
+		) {
 			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->billing_do_action( $action, $_POST['invoice_id'] );
-			$redirect = esc_url_raw( add_query_arg( array( 'msg' => $msg ) ) );
+			$redirect = esc_url_raw(
+				add_query_arg( array( 'msg' => $msg ) )
+			);
 		}
 
 		if ( $redirect ) {
@@ -336,19 +375,31 @@ class MS_Controller_Billing extends MS_Controller {
 	public function billing_do_action( $action, $invoice_ids ) {
 		$msg = MS_Helper_Billing::BILLING_MSG_NOT_UPDATED;
 
-		if ( $this->is_admin_user() && is_array( $invoice_ids ) ) {
-			foreach ( $invoice_ids as $invoice_id ) {
-				switch ( $action ) {
-					case 'delete':
-						$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
-						$invoice->delete();
-						$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
-						break;
+		if ( ! is_array( $invoice_ids ) ) {
+			$invoice_ids = array( $invoice_ids );
+		}
 
-					default:
-						do_action( 'ms_controller_billing_do_action_' . $action, $invoice_ids );
-						break;
-				}
+		foreach ( $invoice_ids as $invoice_id ) {
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+
+			switch ( $action ) {
+				case 'pay':
+					$invoice->status = MS_Model_Invoice::STATUS_PAID;
+					$invoice->changed();
+					$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
+					break;
+
+				case 'delete':
+					$invoice->delete();
+					$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
+					break;
+
+				default:
+					do_action(
+						'ms_controller_billing_do_action_' . $action,
+						$invoice
+					);
+					break;
 			}
 		}
 
@@ -380,7 +431,11 @@ class MS_Controller_Billing extends MS_Controller {
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
 
-			$subscription = MS_Model_Relationship::get_subscription( $member->id, $membership_id );
+			$subscription = MS_Model_Relationship::get_subscription(
+				$member->id,
+				$membership_id
+			);
+
 			if ( empty( $subscription ) ) {
 				$subscription = MS_Model_Relationship::create_ms_relationship(
 					$membership_id,
@@ -392,7 +447,8 @@ class MS_Controller_Billing extends MS_Controller {
 				$subscription->save();
 			}
 
-			$invoice = MS_Factory::load( 'MS_Model_Invoice', $fields['invoice_id'] );
+			$invoice_id = intval( $fields['invoice_id'] );
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 			if ( ! $invoice->is_valid() ) {
 				$invoice = $subscription->get_current_invoice();
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;

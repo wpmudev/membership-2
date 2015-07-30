@@ -810,9 +810,13 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param  string $gateway_id The payment gateway.
 	 * @param  string $external_id Payment-ID provided by the gateway
 	 */
-	public function pay_it( $gateway_id, $external_id ) {
-		$this->gateway_id = $gateway_id;
-		$this->external_id = $external_id;
+	public function pay_it( $gateway_id = null, $external_id = null ) {
+		if ( $gateway_id ){
+			$this->gateway_id = $gateway_id;
+		}
+		if ( $external_id ) {
+			$this->external_id = $external_id;
+		}
 		$is_paid = false;
 
 		$subscription = $this->get_subscription();
@@ -890,7 +894,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 				case self::STATUS_PAID:
 					if ( $this->total > 0 ) {
-						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAID, $subscription );
+						MS_Model_Event::save_event(
+							MS_Model_Event::TYPE_PAID,
+							$subscription
+						);
 					}
 
 					do_action(
@@ -924,7 +931,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					);
 
 					if ( MS_Gateway_Manual::ID == $this->gateway_id ) {
-						$this->pay_it( $this->gateway_id, '' );
+						$this->pay_it( $this->gateway_id );
 					}
 					break;
 

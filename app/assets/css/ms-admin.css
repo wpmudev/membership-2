@@ -202,6 +202,11 @@
   height: 20px;
   line-height: 20px;
   box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  cursor: default;
 }
 #wpwrap .ms-wrap h3 .ms-membership,
 .ms-wrap h3 .ms-membership,
@@ -2033,6 +2038,11 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 /**
  * Special styles used on "Billing" page
  */
+#wpwrap .ms-wrap.ms-billing,
+.ms-wrap.ms-billing {
+  /* Invoice list */
+  /* Transaction Logs */
+}
 #wpwrap .ms-wrap.ms-billing .wpmui-label-txt_membership,
 .ms-wrap.ms-billing .wpmui-label-txt_membership {
   margin-top: 10px;
@@ -2042,6 +2052,129 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap.ms-billing .wpmui-label-txt_user,
 .ms-wrap.ms-billing .wpmui-label-txt_membership {
   font-weight: 600;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status,
+.ms-wrap.ms-billing .billings .payment-status {
+  font-size: 20px;
+  line-height: 20px;
+  position: relative;
+  border-radius: 10px;
+  display: inline-block;
+  cursor: default;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status:after,
+.ms-wrap.ms-billing .billings .payment-status:after {
+  content: attr(title);
+  display: none;
+  color: #FFF;
+  background: #888;
+  position: absolute;
+  left: 18px;
+  top: 0;
+  height: 20px;
+  line-height: 20px;
+  padding: 0 8px;
+  font-size: 11px;
+  border-radius: 0 10px 10px 0;
+  white-space: nowrap;
+  z-index: 2;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status:hover,
+.ms-wrap.ms-billing .billings .payment-status:hover {
+  color: #FFF;
+  background: #888;
+  border-radius: 10px 0 0 10px;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status:hover:after,
+.ms-wrap.ms-billing .billings .payment-status:hover:after {
+  display: block;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-paid,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-paid {
+  color: #1B5E20;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-paid:hover, #wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-paid:hover:after,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-paid:hover,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-paid:hover:after {
+  color: #FFF;
+  background: #1B5E20;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-pending, #wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-billed,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-pending,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-billed {
+  color: #F57C00;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-pending:hover, #wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-pending:hover:after, #wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-billed:hover, #wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-billed:hover:after,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-pending:hover,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-pending:hover:after,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-billed:hover,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-billed:hover:after {
+  color: #FFF;
+  background: #F57C00;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-new,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-new {
+  color: #BDBDBD;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-new:hover, #wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-new:hover:after,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-new:hover,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-new:hover:after {
+  color: #FFF;
+  background: #BDBDBD;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-denied,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-denied {
+  color: #FF3D00;
+}
+#wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-denied:hover, #wpwrap .ms-wrap.ms-billing .billings .payment-status.payment-status-denied:hover:after,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-denied:hover,
+.ms-wrap.ms-billing .billings .payment-status.payment-status-denied:hover:after {
+  color: #FFF;
+  background: #FF3D00;
+}
+#wpwrap .ms-wrap.ms-billing .billings .due-now,
+.ms-wrap.ms-billing .billings .due-now {
+  color: #FF3D00;
+  border-bottom: 1px dotted #FF3D00;
+  cursor: default;
+}
+#wpwrap .ms-wrap.ms-billing .billings .due-now:after,
+.ms-wrap.ms-billing .billings .due-now:after {
+  content: attr(title);
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 36px;
+  right: 0;
+  font-size: 11px;
+  z-index: 2;
+}
+#wpwrap .ms-wrap.ms-billing .billings .due-now:hover:after,
+.ms-wrap.ms-billing .billings .due-now:hover:after {
+  display: block;
+}
+#wpwrap .ms-wrap.ms-billing .billings .column-status,
+.ms-wrap.ms-billing .billings .column-status {
+  width: 80px;
+  text-align: center;
+}
+#wpwrap .ms-wrap.ms-billing .billings .column-total,
+.ms-wrap.ms-billing .billings .column-total {
+  text-align: right;
+}
+#wpwrap .ms-wrap.ms-billing .billings .column-total b,
+.ms-wrap.ms-billing .billings .column-total b {
+  font-size: 15px;
+  font-weight: bold;
+}
+#wpwrap .ms-wrap.ms-billing .billings .column-discount,
+.ms-wrap.ms-billing .billings .column-discount {
+  text-align: right;
+}
+#wpwrap .ms-wrap.ms-billing .billings .column-due_date,
+.ms-wrap.ms-billing .billings .column-due_date {
+  text-align: center;
+  position: relative;
 }
 #wpwrap .ms-wrap.ms-billing .transactions tr:hover td,
 .ms-wrap.ms-billing .transactions tr:hover td {

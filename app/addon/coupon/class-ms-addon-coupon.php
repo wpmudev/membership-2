@@ -97,11 +97,11 @@ class MS_Addon_Coupon extends MS_Addon {
 				10, 2
 			);
 
-			$this->add_filter(
+			/*$this->add_filter(
 				'ms_helper_listtable_billing-column_amount',
 				'billing_column_value',
 				10, 3
-			);
+			);*/
 
 			$this->add_filter(
 				'ms_helper_listtable_billing-column_discount',
@@ -440,8 +440,8 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function billing_columns( $columns, $currency ) {
 		$new_columns = array(
-			'amount' => sprintf( '%1$s (%2$s)', __( 'Amount', MS_TEXT_DOMAIN ), $currency ),
-			'discount' => sprintf( '%1$s (%2$s)', __( 'Discount', MS_TEXT_DOMAIN ), $currency ),
+			//'amount' => __( 'Amount', MS_TEXT_DOMAIN ),
+			'discount' => __( 'Discount', MS_TEXT_DOMAIN ),
 		);
 
 		lib2()->array->insert( $columns, 'after', 'status', $new_columns );
@@ -463,6 +463,8 @@ class MS_Addon_Coupon extends MS_Addon {
 		} else {
 			$value = '';
 		}
+		$currency = $item->currency;
+
 		$html = '';
 
 		if ( empty( $value ) ) {
@@ -470,7 +472,12 @@ class MS_Addon_Coupon extends MS_Addon {
 				$html = '-';
 			}
 		} else {
-			$html = MS_Helper_Billing::format_price( $value );
+			$value = MS_Helper_Billing::format_price( $value );
+			$html = sprintf(
+				'%1$s <small>%2$s</small>',
+				$value,
+				$currency
+			);
 		}
 
 		return $html;

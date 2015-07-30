@@ -100,9 +100,12 @@ class MS_Helper_Period extends MS_Helper {
 	 * @param  Date $start_date The start date to subtraction the format yyyy-mm-dd
 	 * @param  int $precission Time constant HOURS_IN_SECONDS will return the
 	 *         difference in hours. Default is DAY_IN_SECONDS (return = days).
+	 * @param  bool $real_diff If set to true then the result is negative if
+	 *         enddate is before startdate. Default is false, which will return
+	 *         the absolute difference which is always positive.
 	 * @return int The resulting difference of the date subtraction.
 	 */
-	public static function subtract_dates( $end_date, $start_date, $precission = null ) {
+	public static function subtract_dates( $end_date, $start_date, $precission = null, $real_diff = false ) {
 		if ( empty( $end_date ) ) {
 			// Empty end date is assumed to mean "never"
 			$end_date = '2999-12-31';
@@ -115,10 +118,14 @@ class MS_Helper_Period extends MS_Helper {
 			$precission = DAY_IN_SECONDS;
 		}
 
-		$result = absint(
+		$result = intval(
 			( $end_date->format( 'U' ) - $start_date->format( 'U' ) ) /
 			$precission
 		);
+
+		if ( ! $real_diff ) {
+			$result = abs( $result );
+		}
 
 		return apply_filters(
 			'ms_helper_period_subtract_dates',

@@ -14,6 +14,131 @@
 			font-weight: 600;
 		}
 
+		/* Invoice list */
+		.billings {
+			.payment-status {
+				font-size: 20px;
+				line-height: 20px;
+				position: relative;
+				border-radius: 10px;
+				display: inline-block;
+				cursor: default;
+
+				&:after {
+					content: attr(title);
+					display: none;
+					color: #FFF;
+					background: #888;
+					position: absolute;
+					left: 18px;
+					top: 0;
+					height: 20px;
+					line-height: 20px;
+					padding: 0 8px;
+					font-size: 11px;
+					border-radius: 0 10px 10px 0;
+					white-space: nowrap;
+					z-index: 2;
+				}
+
+				&:hover {
+					color: #FFF;
+					background: #888;
+					border-radius: 10px 0 0 10px;
+
+					&:after {
+						display: block;
+					}
+				}
+
+				&.payment-status-paid {
+					color: #1B5E20;
+
+					&:hover,
+					&:hover:after {
+						color: #FFF;
+						background: #1B5E20;
+					}
+				}
+
+				&.payment-status-pending,
+				&.payment-status-billed {
+					color: #F57C00;
+
+					&:hover,
+					&:hover:after {
+						color: #FFF;
+						background: #F57C00;
+					}
+				}
+
+				&.payment-status-new {
+					color: #BDBDBD;
+
+					&:hover,
+					&:hover:after {
+						color: #FFF;
+						background: #BDBDBD;
+					}
+				}
+
+				&.payment-status-denied {
+					color: #FF3D00;
+
+					&:hover,
+					&:hover:after {
+						color: #FFF;
+						background: #FF3D00;
+					}
+				}
+			}
+
+			.due-now {
+				color: #FF3D00;
+				border-bottom: 1px dotted #FF3D00;
+				cursor: default;
+
+				&:after {
+					content: attr(title);
+					display: none;
+					position: absolute;
+					left: 0;
+					top: 36px;
+					right: 0;
+					font-size: 11px;
+					z-index: 2;
+				}
+
+				&:hover:after {
+					display: block;
+				}
+			}
+
+			.column-status {
+				width: 80px;
+				text-align: center;
+			}
+
+			.column-total {
+				text-align: right;
+
+				b {
+					font-size: 15px;
+					font-weight: bold;
+				}
+			}
+
+			.column-discount {
+				text-align: right;
+			}
+
+			.column-due_date {
+				text-align: center;
+				position: relative;
+			}
+		}
+
+		/* Transaction Logs */
 		.transactions {
 			tr:hover {
 				td {

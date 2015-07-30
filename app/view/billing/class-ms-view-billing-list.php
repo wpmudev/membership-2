@@ -77,7 +77,10 @@ class MS_View_Billing_List extends MS_View {
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
 				'url' => MS_Controller_Plugin::get_admin_url(
 					'billing',
-					array( 'action' => 'edit', 'invoice_id' => 0 )
+					array(
+						'action' => MS_Controller_Billing::ACTION_EDIT,
+						'invoice_id' => 0,
+					)
 				),
 				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
 				'class' => 'button',
