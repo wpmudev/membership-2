@@ -1236,7 +1236,7 @@ class MS_Model_Member extends MS_Model {
 					);
 				}
 			} else {
-				$subscription = $this->get_subscriptions( $membership_id );
+				$subscription = $this->get_subscription( $membership_id );
 			}
 
 			// Reset the status and start/expire dates when added by admin.

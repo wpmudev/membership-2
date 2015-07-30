@@ -184,7 +184,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $current_date The date to filter.
+	 * @param  string $current_date The date to filter.
 	 * @return string The filtered date.
 	 */
 	public function simulate_date_filter( $current_date ) {
@@ -255,19 +255,32 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	public function simulation_infos() {
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
 		if ( defined( 'DOING_CRON' ) && DOING_CRON ) { return false; }
-		if ( ! did_action( 'wp_print_footer_scripts' ) ) { return false; }
 
-		$data = array();
-		$data['membership_id'] = $this->membership_id;
-		$data['subscription'] = $this->_subscription;
-		$data['simulate_date'] = $this->date;
-		$data['datepicker'] = $this->datepicker;
+		/*
+		 * The following condition is needed to bypass Upfront virtual pages.
+		 * By checking for the WordPress filters we can find out if the current
+		 * page is rendered by WordPress or not (...not means Upfront)
+		 */
+		$show_infos = true;
+		if ( ! is_admin() && ! did_action( 'wp_print_footer_scripts' ) ) {
+			$show_infos = false;
+		} elseif ( is_admin() && ! did_action( 'admin_print_footer_scripts' ) ) {
+			$show_infos = false;
+		}
 
-		$view = MS_Factory::create( 'MS_View_Adminbar' );
-		$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
-		$html = $view->to_html();
+		if ( $show_infos ) {
+			$data = array();
+			$data['membership_id'] = $this->membership_id;
+			$data['subscription'] = $this->_subscription;
+			$data['simulate_date'] = $this->date;
+			$data['datepicker'] = $this->datepicker;
 
-		echo $html;
+			$view = MS_Factory::create( 'MS_View_Adminbar' );
+			$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
+			$html = $view->to_html();
+
+			echo $html;
+		}
 	}
 
 	/**
@@ -275,7 +288,7 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $property The name of a property.
+	 * @param  string $property The name of a property.
 	 * @return mixed Returns mixed value of a property or NULL if a property doesn't exist.
 	 */
 	public function __get( $property ) {
