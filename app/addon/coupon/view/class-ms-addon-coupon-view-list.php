@@ -29,7 +29,7 @@ class MS_Addon_Coupon_View_List extends MS_View {
 			'url' => MS_Controller_Plugin::get_admin_url(
 				'coupons', array( 'action' => 'edit', 'coupon_id' => 0 )
 			),
-			'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+			'value' => __( 'Add New Coupon', MS_TEXT_DOMAIN ),
 			'class' => 'button',
 		);
 
