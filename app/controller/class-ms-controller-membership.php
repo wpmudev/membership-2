@@ -17,6 +17,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	const AJAX_ACTION_TOGGLE_MEMBERSHIP = 'toggle_membership';
 	const AJAX_ACTION_UPDATE_MEMBERSHIP = 'update_membership';
+	const AJAX_ACTION_SET_CUSTOM_FIELD = 'membership_set_custom_field';
 
 	/**
 	 * Membership page step constants.
@@ -83,6 +84,10 @@ class MS_Controller_Membership extends MS_Controller {
 		$this->add_ajax_action(
 			self::AJAX_ACTION_UPDATE_MEMBERSHIP,
 			'ajax_action_update_membership'
+		);
+		$this->add_ajax_action(
+			self::AJAX_ACTION_SET_CUSTOM_FIELD,
+			'ajax_action_set_custom_field'
 		);
 
 		// Tries to auto-detect the currently displayed membership-ID.
@@ -166,11 +171,48 @@ class MS_Controller_Membership extends MS_Controller {
 			&& self::validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			lib2()->array->strip_slashes( $_POST, 'value' );
+			lib2()->array->strip_slashes( $_POST, 'value', 'field' );
 
 			$msg = $this->save_membership(
 				array( $_POST['field'] => $_POST['value'] )
 			);
+		}
+
+		do_action(
+			'ms_controller_membership_ajax_action_update_membership',
+			$msg,
+			$this
+		);
+
+		wp_die( $msg );
+	}
+
+	/**
+	 * Ajax handler to update a custom field of the membership.
+	 *
+	 * Related Action Hooks:
+	 * - wp_ajax_membership_set_custom_field
+	 *
+	 * @since  1.0.1.0
+	 */
+	public function ajax_action_set_custom_field() {
+		$msg = 0;
+
+		$required = array( 'membership_id', 'field', 'value' );
+
+		if ( $this->verify_nonce()
+			&& self::validate_required( $required, 'POST', false )
+			&& $this->is_admin_user()
+		) {
+			lib2()->array->strip_slashes( $_POST, 'value', 'field' );
+			$membership = MS_Factory::load(
+				'MS_Model_Membership',
+				intval( $_POST['membership_id'] )
+			);
+			$membership->set_custom_data( $_POST['field'], $_POST['value'] );
+			$membership->save();
+
+			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_UPDATED;
 		}
 
 		do_action(
