@@ -80,7 +80,21 @@ class MS_Addon_Invitation extends MS_Addon {
 				'update_ms_posttypes'
 			);
 
+			// Display a "needs invitation" switch for each membership.
+			$this->add_action(
+				'ms_view_membership_tab_payment_form',
+				'membership_option',
+				10, 2
+			);
+
 			// ---------- FRONTEND ----------
+
+			// Prevent free memberships from auto-subscribing
+			$this->add_filter(
+				'ms_view_frontend_payment_skip_form',
+				'do_not_skip',
+				10, 3
+			);
 
 			// Check if an invitation code was specified or not.
 			$this->add_filter(
@@ -208,7 +222,9 @@ class MS_Addon_Invitation extends MS_Addon {
 			$redirect =	esc_url_raw(
 				add_query_arg(
 					array( 'msg' => $msg ),
-					remove_query_arg( array( 'invitation_id') )
+					remove_query_arg(
+						array( 'invitation_id')
+					)
 				)
 			);
 		} elseif ( self::validate_required( $action_fields, 'GET' )
@@ -327,6 +343,50 @@ class MS_Addon_Invitation extends MS_Addon {
 	}
 
 	/**
+	 * Displays a flag in the payment options page to enable/disable invitation
+	 * codes for a specific membership.
+	 *
+	 * @since  1.0.1.0
+	 * @param  MS_View $view The view that called the action.
+	 * @param  MS_Model_Membership $membership Membership being edited.
+	 */
+	public function membership_option( $view, $membership ) {
+		$action = MS_Controller_Membership::AJAX_ACTION_SET_CUSTOM_FIELD;
+		$nonce = wp_create_nonce( $action );
+
+		$fields = array(
+			array(
+				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+			),
+			array(
+				'id' => 'no_invitation',
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' => __( 'Does this Membership require an Invitation code?', MS_TEXT_DOMAIN ),
+				'value' => lib2()->is_true( $membership->get_custom_data( 'no_invitation' ) ),
+				'before' => sprintf(
+					'%s <i class="wpmui-fa wpmui-fa-lock"></i>',
+					__( 'Yes', MS_TEXT_DOMAIN )
+				),
+				'after' => sprintf(
+					'<i class="wpmui-fa wpmui-fa-unlock"></i> %s',
+					__( 'No (public membership)', MS_TEXT_DOMAIN )
+				),
+				'class' => 'reverse',
+				'ajax_data' => array(
+					'action' => $action,
+					'_wpnonce' => $nonce,
+					'membership_id' => $membership->id,
+					'field' => 'no_invitation',
+				),
+			),
+		);
+
+		foreach ( $fields as $field ) {
+			MS_Helper_Html::html_element( $field );
+		}
+	}
+
+	/**
 	 * Load specific styles.
 	 *
 	 * @since  1.0.0
@@ -350,16 +410,37 @@ class MS_Addon_Invitation extends MS_Addon {
 
 			wp_enqueue_script( 'jquery-validate' );
 			lib2()->ui->add( 'jquery-ui' );
-/*
-			wp_enqueue_script(
-				'ms-view-invitation-edit',
-				$plugin_url . '/app/addon/invitation/assets/js/edit.js',
-				array( 'jquery' )
-			);
-*/
 		}
 
 		do_action( 'ms_addon_invitation_enqueue_scripts', $this );
+	}
+
+	/**
+	 * Called right before the payment form on the front end is displayed.
+	 * We check if the user already specified an invitation code or not.
+	 *
+	 * If no code was specified then we remove all payment buttons and display
+	 * an input field for the invitation code instead.
+	 *
+	 * @since  1.0.1.0
+	 * @param  bool $flag The original Skip-Form flag.
+	 * @param  MS_Model_Invoice $invoice
+	 * @param  MS_View $view The parent view.
+	 * @return bool The modified Skip-Form flag.
+	 */
+	public function do_not_skip( $flag, $invoice, $view ) {
+		$membership = $invoice->get_membership();
+
+		$is_public = lib2()->is_true(
+			$membership->get_custom_data( 'no_invitation' )
+		);
+
+		if ( ! $is_public ) {
+			// Do not skip the form!
+			$flag = false;
+		}
+
+		return $flag;
 	}
 
 	/**
@@ -376,6 +457,17 @@ class MS_Addon_Invitation extends MS_Addon {
 	 * @param  MS_Model_Member $member
 	 */
 	public function check_invitation_code( $data, $membership_id, $subscription, $member ) {
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+
+		$is_public = lib2()->is_true(
+			$membership->get_custom_data( 'no_invitation' )
+		);
+
+		if ( $is_public ) {
+			// This membership is not require an invitation code.
+			return $data;
+		}
+
 		if ( ! empty( $_POST['invitation_code'] ) ) {
 			$invitation = apply_filters(
 				'ms_addon_invitation_model',

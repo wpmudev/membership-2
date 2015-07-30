@@ -19,8 +19,8 @@ class MS_Addon_Invitation_View_List extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		$coupon_list = MS_Factory::create( 'MS_Addon_Invitation_Helper_Listtable' );
-		$coupon_list->prepare_items();
+		$code_list = MS_Factory::create( 'MS_Addon_Invitation_Helper_Listtable' );
+		$code_list->prepare_items();
 
 		$title = __( 'Invitations', MS_TEXT_DOMAIN );
 		$add_new_button = array(
@@ -30,7 +30,7 @@ class MS_Addon_Invitation_View_List extends MS_View {
 				MS_Addon_Invitation::SLUG,
 				array( 'action' => 'edit', 'invitation_id' => 0 )
 			),
-			'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+			'value' => __( 'Add New Code', MS_TEXT_DOMAIN ),
 			'class' => 'button',
 		);
 
@@ -50,8 +50,13 @@ class MS_Addon_Invitation_View_List extends MS_View {
 			</div>
 
 			<form action="" method="post">
-				<?php $coupon_list->display(); ?>
+				<?php $code_list->display(); ?>
 			</form>
+			<p><em>
+				<?php
+				_e( 'By default all Memberships are protected and require an invitation code to register.<br>You can manually change this for individual memberships via a new setting in the "Payment Options" settings of each membership.', MS_TEXT_DOMAIN );
+				?>
+			</em></p>
 		</div>
 
 		<?php
