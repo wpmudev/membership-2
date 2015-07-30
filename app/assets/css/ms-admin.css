@@ -2260,6 +2260,14 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap.ms-billing .transactions .detail-block {
   min-width: 300px;
 }
+#wpwrap .ms-wrap.ms-billing .transactions .detail-block .actions,
+.ms-wrap.ms-billing .transactions .detail-block .actions {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  display: none;
+  z-index: 5;
+}
 #wpwrap .ms-wrap.ms-billing .log-ok td,
 .ms-wrap.ms-billing .log-ok td {
   background-color: rgba(100, 200, 255, 0.06);
@@ -2337,14 +2345,6 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 #wpwrap .ms-wrap.ms-billing .more-details:hover .post-data,
 .ms-wrap.ms-billing .more-details:hover .post-data {
   display: block;
-}
-#wpwrap .ms-wrap.ms-billing .actions,
-.ms-wrap.ms-billing .actions {
-  position: absolute;
-  right: 6px;
-  top: 6px;
-  display: none;
-  z-index: 5;
 }
 #wpwrap .ms-wrap.ms-billing tr.log-err:hover .err-actions,
 #wpwrap .ms-wrap.ms-billing tr.log-ok:hover .ok-actions,

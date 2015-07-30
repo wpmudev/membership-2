@@ -216,6 +216,14 @@
 			}
 			.detail-block {
 				min-width: 300px;
+
+				.actions {
+					position: absolute;
+					right: 6px;
+					top: 6px;
+					display: none;
+					z-index: 5;
+				}
 			}
 		}
 
@@ -298,14 +306,6 @@
 			&:hover .post-data {
 				display: block;
 			}
-		}
-
-		.actions {
-			position: absolute;
-			right: 6px;
-			top: 6px;
-			display: none;
-			z-index: 5;
 		}
 
 		tr.log-err:hover .err-actions,

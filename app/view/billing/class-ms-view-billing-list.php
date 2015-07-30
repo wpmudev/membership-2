@@ -82,7 +82,7 @@ class MS_View_Billing_List extends MS_View {
 						'invoice_id' => 0,
 					)
 				),
-				'value' => __( 'Add New', MS_TEXT_DOMAIN ),
+				'value' => __( 'Create new Invoice', MS_TEXT_DOMAIN ),
 				'class' => 'button',
 			);
 			$buttons[] = array(
@@ -98,7 +98,7 @@ class MS_View_Billing_List extends MS_View {
 			if ( ! empty( $_GET['gateway_id'] ) ) {
 				$gateway = MS_Model_Gateway::factory( $_GET['gateway_id'] );
 				if ( $gateway->name ) {
-					$title .= ' - '. $gateway->name;
+					$title .= ' - ' . $gateway->name;
 				}
 			}
 		}
@@ -123,11 +123,11 @@ class MS_View_Billing_List extends MS_View {
 				?>
 			</div>
 			<?php
+			$listview->views();
 			$listview->search_box(
 				__( 'User', MS_TEXT_DOMAIN ),
 				'search'
 			);
-			$listview->views();
 			?>
 			<form action="" method="post">
 				<?php $listview->display(); ?>

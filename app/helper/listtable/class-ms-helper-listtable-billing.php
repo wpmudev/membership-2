@@ -298,11 +298,14 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 	}
 
 	public function get_bulk_actions() {
+		$bulk_actions = array(
+			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
+		);
+
 		return apply_filters(
 			'ms_helper_listtable_billing_bulk_actions',
-			array(
-				'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
-			)
+			$bulk_actions,
+			$this
 		);
 	}
 
