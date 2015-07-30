@@ -436,8 +436,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Not found, create a new one.
 		if ( empty( $subscription ) ) {
 			$subscription = MS_Factory::create( 'MS_Model_Relationship' );
-			$subscription->membership_id = $membership_id;
-			$subscription->user_id = $user_id;
 			$subscription->status = self::STATUS_PENDING;
 			$subscription->is_simulated = $is_simulated;
 
@@ -447,6 +445,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		// Always update these fields.
+		$subscription->membership_id = $membership_id;
+		$subscription->user_id = $user_id;
 		$subscription->move_from_id = $move_from_id;
 		$subscription->gateway_id = $gateway_id;
 		$subscription->expire_date = '';
@@ -478,11 +478,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 		}
 
-		// Set the start/expire dates. Do this *after* the set_status() call!
 		$subscription->config_period();
 		$membership = $subscription->get_membership();
+		$subscription->payment_type = $membership->payment_type;
 
-		if ( 'admin' == $gateway_id || $membership->is_free() ) {
+		if ( 'admin' == $gateway_id ) {
 			$subscription->trial_period_completed = true;
 			$subscription->status = self::STATUS_ACTIVE;
 
@@ -1117,7 +1117,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$this->start_date,
 				$this->trial_expire_date
 			);
-
 			if ( ! $valid_date ) {
 				$expire_date = $this->calc_expire_date( $this->start_date );
 			}
