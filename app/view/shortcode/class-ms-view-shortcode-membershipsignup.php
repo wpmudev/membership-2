@@ -177,6 +177,13 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			$member = $this->data['member'];
 		}
 
+		if ( is_numeric( $membership ) ) {
+			$membership = MS_Factory::load(
+				'MS_Model_Membership',
+				$membership
+			);
+		}
+
 		$membership->_move_from = $member->cancel_ids_on_subscription(
 			$membership->id
 		);
@@ -196,7 +203,8 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 
 		$url = MS_Model_Pages::get_page_url( $current );
 
-		if ( $action === MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP ) {
+		if ( $action == MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP ) {
+			// Only add the membership_id to the URL.
 			$url = esc_url_raw(
 				add_query_arg(
 					'membership_id',
