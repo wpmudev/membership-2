@@ -1877,7 +1877,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$member->save();
 
 		// Return true if the subscription is active.
-		$is_active = self::STATUS_ACTIVE == $this->status;
+		$is_active = (self::STATUS_ACTIVE == $this->status);
 		return $is_active;
 	}
 
@@ -1904,11 +1904,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 		$membership = $this->get_membership();
 
-		if ( self::STATUS_PENDING == $this->status && $membership->is_free() ) {
-			// Skip "Pending" for free memberships.
-			$status = self::STATUS_ACTIVE;
-			$this->handle_status_change( $status );
-		} elseif ( in_array( $status, $ignored_status ) ) {
+		if ( in_array( $status, $ignored_status ) ) {
 			// No validation for this status.
 			$this->status = $status;
 		} else {
@@ -2121,6 +2117,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$calc_status = self::STATUS_CANCELED;
 			} elseif ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
 				// This membership has no expiration-time. Deactivate it!
+				$calc_status = self::STATUS_DEACTIVATED;
+			} elseif ( self::STATUS_WAITING == $calc_status ) {
+				// The membership did not yet start. Deactivate it!
 				$calc_status = self::STATUS_DEACTIVATED;
 			} else {
 				// Wait until the expiration date is reached...
