@@ -143,6 +143,13 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 				$this,
 				$membership
 			);
+
+			// Legacy action.
+			do_action(
+				'ms_view_membership_payment_form',
+				$this,
+				$membership
+			);
 			?>
 		</div>
 		<?php
