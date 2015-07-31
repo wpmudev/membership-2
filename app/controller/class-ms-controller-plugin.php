@@ -468,9 +468,15 @@ class MS_Controller_Plugin extends MS_Controller {
 		if ( $show_billing ) {
 			$bill_count = MS_Model_Invoice::get_unpaid_invoice_count( null, true );
 
+			if ( $bill_count > 0 ) {
+				$msg = '%1$s <span class="awaiting-mod count-%3$s"><span class="pending-count"><i class="hidden">(</i>%2$s<i class="hidden">)</i></span></span>';
+			} else {
+				$msg = '%1$s';
+			}
+
 			$pages['billing'] = array(
 				'title' => sprintf(
-					'%1$s <span class="awaiting-mod count-%3$s"><span class="pending-count"><i class="hidden">(</i>%2$s<i class="hidden">)</i></span></span>',
+					$msg,
 					__( 'Billing', MS_TEXT_DOMAIN ),
 					$bill_count,
 					sanitize_html_class( $bill_count, '0' )

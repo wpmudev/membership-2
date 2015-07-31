@@ -459,7 +459,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if ( $for_badge ) {
 			if ( $bill_count > 99 ) {
 				$res = '99+';
-			} elseif ( $bill_count ) {
+			} elseif ( ! $bill_count ) {
 				$res = '';
 			}
 		}
@@ -614,8 +614,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param MS_Model_Relationship $subscription The membership relationship.
-	 * @param boolean $create_missing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
+	 * @param  MS_Model_Relationship $subscription The membership relationship.
+	 * @param  bool $create_missing Optional. True to overwrite existing
+	 *         invoice or false to create a new one if doesn't exist.
 	 * @return MS_Model_Invoice
 	 */
 	public static function get_current_invoice( $subscription, $create_missing = true ) {
@@ -624,7 +625,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$subscription->current_invoice_number
 		);
 
-		if ( empty( $invoice ) && $create_missing ) {
+		if ( ! $invoice && $create_missing ) {
+			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
 				$subscription->current_invoice_number
@@ -644,8 +646,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param MS_Model_Relationship $subscription The membership relationship.
-	 * @param boolean $create_missing Optional. True to overwrite existing invoice or false to create a new one if doesn't exist.
+	 * @param  MS_Model_Relationship $subscription The membership relationship.
+	 * @param  bool $create_missing Optional. True to overwrite existing
+	 *         invoice or false to create a new one if doesn't exist.
 	 * @return MS_Model_Invoice
 	 */
 	public static function get_next_invoice( $subscription, $create_missing = true ) {
@@ -654,13 +657,18 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$subscription->current_invoice_number + 1
 		);
 
-		if ( empty( $invoice ) && $create_missing ) {
+		if ( ! $invoice && $create_missing ) {
+			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
 				$subscription->current_invoice_number + 1
 			);
 		}
 
+		/*
+		 * Since only the *first* invoice can have discount/pro-rating we
+		 * manually set those values to 0.
+		 */
 		$invoice->discount = 0;
 		$invoice->pro_rate = 0;
 		$invoice->notes = array();

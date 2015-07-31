@@ -314,6 +314,9 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		$views = array();
 
 		$args = $this->get_query_args();
+		if ( isset( $args['meta_query'] ) && isset( $args['meta_query']['status'] ) ) {
+			unset( $args['meta_query']['status'] );
+		}
 		$url = esc_url_raw( remove_query_arg( array( 'status', 'msg' ) ) );
 		$count = MS_Model_Invoice::get_invoice_count( $args );
 		$views['all'] = array(
@@ -343,6 +346,9 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		);
 
 		foreach ( $all_status as $status => $desc ) {
+			if ( 'billed' == $status ) { continue; }
+			if ( 'pending' == $status ) { continue; }
+
 			$args = $this->get_query_args();
 			$args['meta_query']['status']['value'] = $status;
 			$count = MS_Model_Invoice::get_invoice_count( $args );

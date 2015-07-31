@@ -1877,7 +1877,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$member->save();
 
 		// Return true if the subscription is active.
-		$is_active = (self::STATUS_ACTIVE == $this->status);
+		$paid_status = array(
+			self::STATUS_ACTIVE,
+			self::STATUS_WAITING,
+		);
+		$is_active = in_array( $this->status, $paid_status );
 		return $is_active;
 	}
 
