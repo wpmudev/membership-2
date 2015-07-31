@@ -1823,7 +1823,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		// Update the payment-gateway.
-		$this->gateway_id = $gateway;
+		if ( ! $this->gateway_id ) {
+			$this->gateway_id = $gateway;
+		} elseif ( MS_Gateway_Free::ID != $gateway ) {
+			// Don't change an existing gateway to "Free".
+			$this->gateway_id = $gateway;
+		}
 
 		if ( $amount > 0 ) {
 			$this->payments[] = array(

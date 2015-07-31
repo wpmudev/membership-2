@@ -733,8 +733,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice_number = $subscription->current_invoice_number;
 		}
 
+		$invoice = self::get_invoice( $subscription->id, $invoice_number );
+
 		// No existing invoice, create a new one.
-		if ( empty( $invoice ) ) {
+		if ( ! $invoice || ! $invoice->id ) {
 			$invoice = MS_Factory::create( 'MS_Model_Invoice' );
 			$invoice = apply_filters( 'ms_model_invoice', $invoice );
 		}
@@ -819,7 +821,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param  string $external_id Payment-ID provided by the gateway
 	 */
 	public function pay_it( $gateway_id = null, $external_id = null ) {
-		if ( $gateway_id ){
+		if ( $gateway_id ) {
 			$this->gateway_id = $gateway_id;
 		}
 		if ( $external_id ) {
@@ -932,11 +934,22 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 						$subscription->move_from_id = '';
 					}
 
-					// Update the current_invoice_number counter.
-					$subscription->current_invoice_number = max(
-						$subscription->current_invoice_number,
-						$this->invoice_number + 1
+					/*
+					 * Memberships with those payment types can have multiple
+					 * invoices for a single subscription.
+					 */
+					$multi_invoice = array(
+						MS_Model_Membership::PAYMENT_TYPE_RECURRING,
+						MS_Model_Membership::PAYMENT_TYPE_FINITE,
 					);
+
+					if ( in_array( $membership->payment_type, $multi_invoice ) ) {
+						// Update the current_invoice_number counter.
+						$subscription->current_invoice_number = max(
+							$subscription->current_invoice_number,
+							$this->invoice_number + 1
+						);
+					}
 
 					if ( MS_Gateway_Manual::ID == $this->gateway_id ) {
 						$this->pay_it( $this->gateway_id );
