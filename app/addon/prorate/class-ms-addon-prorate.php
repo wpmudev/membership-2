@@ -71,8 +71,13 @@ class MS_Addon_Prorate extends MS_Addon {
 	 * @return MS_Model_Invoice Modified Invoice.
 	 */
 	public function add_discount( $invoice ) {
+		// Only the first invoice can be pro-rated.
+		if ( $invoice->invoice_number > 1 ) { return $invoice; }
+
 		$subscription = $invoice->get_subscription();
 		$membership = $invoice->get_membership();
+
+		if ( ! $subscription->move_from_id ) { return $invoice; }
 		$ids = explode( ',', $subscription->move_from_id );
 
 		if ( empty( $ids ) ) { return $invoice; }
@@ -81,12 +86,14 @@ class MS_Addon_Prorate extends MS_Addon {
 		// Calc pro rate discount if moving from another membership.
 		$pro_rate = 0;
 		foreach ( $ids as $id ) {
+			if ( ! $id ) { continue; }
+
 			$move_from = MS_Model_Relationship::get_subscription(
 				$subscription->user_id,
 				$id
 			);
 
-			if ( $move_from->is_valid() ) {
+			if ( $move_from->is_valid() && $move_from->id == $id ) {
 				$pro_rate += $this->get_discount( $move_from );
 			}
 		}
@@ -94,17 +101,20 @@ class MS_Addon_Prorate extends MS_Addon {
 		$pro_rate = floatval(
 			apply_filters(
 				'ms_addon_prorate_apply_discount',
-				min( $pro_rate, $membership->price ),
+				abs( $pro_rate ),
 				$invoice
 			)
 		);
 
+		if ( $pro_rate > $invoice->amount ) {
+			$pro_rate = $invoice->amount;
+		}
+
 		if ( $pro_rate > 0 ) {
 			$invoice->pro_rate = $pro_rate;
 			$notes[] = sprintf(
-				__( 'Pro-Rate Discount: %s %s.', MS_TEXT_DOMAIN ) . ' ',
-				$invoice->currency,
-				$pro_rate
+				__( 'Pro-Rate Discount: %s.', MS_TEXT_DOMAIN ) . ' ',
+				$invoice->currency . ' ' . $pro_rate
 			);
 		}
 
