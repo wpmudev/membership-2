@@ -590,6 +590,8 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean True if user is admin.
 	 */
 	static public function is_admin_user( $user_id = false ) {
+		$cache_result = true;
+
 		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
 			$is_admin = false;
 			$default_user_id = null;
@@ -616,7 +618,13 @@ class MS_Model_Member extends MS_Model {
 				 * @var string|bool A WordPress capability or boolean false.
 				 */
 				$controller = MS_Plugin::instance()->controller;
-				$capability = $controller->capability;
+				if ( $controller ) {
+					$capability = $controller->capability;
+				} else {
+					// This is used in case the function is called too early.
+					$capability = 'manage_options';
+					$cache_result = false;
+				}
 
 				if ( ! empty( $capability ) ) {
 					if ( empty( $user_id ) ) {
@@ -634,14 +642,18 @@ class MS_Model_Member extends MS_Model {
 				);
 			}
 
-			self::$_is_admin_user[ $user_id ] = $is_admin;
+			if ( $cache_result ) {
+				self::$_is_admin_user[ $user_id ] = $is_admin;
 
-			if ( null !== $default_user_id ) {
-				self::$_is_admin_user[ $default_user_id ] = $is_admin;
+				if ( null !== $default_user_id ) {
+					self::$_is_admin_user[ $default_user_id ] = $is_admin;
+				}
 			}
+		} else {
+			$is_admin = self::$_is_admin_user[ $user_id ];
 		}
 
-		return self::$_is_admin_user[ $user_id ];
+		return $is_admin;
 	}
 
 	/**

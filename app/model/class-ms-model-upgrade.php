@@ -478,7 +478,7 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( ! is_admin() ) { return false; }
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
 		if ( defined( 'DOING_CRON' ) && DOING_CRON ) { return false; }
-		if ( ! MS_Model_Member::is_admin_user() ) { return false; }
+		if ( ! current_user_can( 'manage_options' ) ) { return false; }
 
 		return true;
 	}

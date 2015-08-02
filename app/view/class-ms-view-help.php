@@ -54,7 +54,7 @@ class MS_View_Help extends MS_View {
 				<?php
 				$html = call_user_func( $render_callback );
 				$html = apply_filters( 'ms_view_help_' . $callback_name, $html );
-				echo '' . $html;
+				echo $html;
 				?>
 			</div>
 		</div>
@@ -113,6 +113,31 @@ class MS_View_Help extends MS_View {
 					'<i class="wpmui-fa wpmui-fa-home"></i>'
 				);
 			}
+		}
+		$admin_cap = MS_Plugin::instance()->controller->capability;
+		if ( $admin_cap ) {
+			printf(
+				'<br />' .
+				_x( 'All users with capability <strong>%s</strong> are M2 Admin-users.', 'help', MS_TEXT_DOMAIN ),
+				$admin_cap
+			);
+		} else {
+			printf(
+				'<br />' .
+				_x( 'Only the <strong>Network-Admin</strong> can manage M2.', 'help', MS_TEXT_DOMAIN )
+			);
+		}
+		if ( defined( 'MS_STOP_EMAILS' ) && MS_STOP_EMAILS ) {
+			printf(
+				'<br />' .
+				_x( 'Currently M2 is configured to <strong>not send</strong> any emails.', 'help', MS_TEXT_DOMAIN )
+			);
+		}
+		if ( defined( 'MS_LOCK_SUBSCRIPTIONS' ) && MS_LOCK_SUBSCRIPTIONS ) {
+			printf(
+				'<br />' .
+				_x( 'Currently M2 is configured <strong>not expire/change</strong> any subscription status.', 'help', MS_TEXT_DOMAIN )
+			);
 		}
 		?>
 		</div>
