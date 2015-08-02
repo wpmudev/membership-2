@@ -47,6 +47,7 @@ Change Log:
 - Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
 - Fix bug that would send some emails even when the 'MS_STOP_EMAILS' flag was active
 - Fix plugin logic to allow changing Protection Rules even when Content Protection is disabled
+- Fix plugin translation using .mo files, added a readme file with instructions to /languages dir
 - Fix compatibility issue with WP Recaptcha during user registration
 - Fix a minor security hole in the data import module
 - Fix a rare 403 error that happened when a user was accessing protected content

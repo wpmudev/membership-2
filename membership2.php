@@ -34,6 +34,12 @@ Text Domain: membership2
  * MA 02110-1301 USA
  */
 
+/**
+ * Initializes constants and create the main plugin object MS_Plugin.
+ * This function is called *instantly* when this file was loaded.
+ *
+ * @since  1.0.0
+ */
 function membership2_init_pro_app() {
 	/**
 	 * Plugin version
@@ -91,6 +97,26 @@ function membership2_init_pro_app() {
 	}
 
 	add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
+
+	/**
+	 * translate_plugin adds correct hook to translate the plugin via the
+	 * WordPress function `load_text_domain`.
+	 *
+	 * Tipp:
+	 *   The translation files must have the filename [TEXT-DOMAIN]-[locale].mo
+	 *   Example: membership2-en_EN.mo  /  membership2-de_DE.mo
+	 *
+	 * Important:
+	 *   This function must be called instantly (i.e. BEFORE the hook
+	 *   `plugins_loaded` is fired!)
+	 *
+	 * @param  string $domain The plugins text-domain.
+	 * @param  string $rel_dir Translation directory, relative to WP_PLUGIN_DIR.
+	 */
+	lib2()->translate_plugin(
+		MS_TEXT_DOMAIN,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
 
 	/**
 	 * Create an instance of the plugin object.
@@ -277,24 +303,6 @@ class MS_Plugin {
 		$this->file = __FILE__;
 		$this->dir = plugin_dir_path( __FILE__ );
 		$this->url = plugin_dir_url( __FILE__ );
-
-		/**
-		 * Filter the languages path before loading the textdomain.
-		 *
-		 * @uses load_plugin_textdomain()
-		 *
-		 * @since  1.0.0
-		 * @param object $this The MS_Plugin object.
-		 */
-		load_plugin_textdomain(
-			MS_TEXT_DOMAIN,
-			false,
-			apply_filters(
-				'ms_plugin_languages_path',
-				$this->name . '/languages/',
-				$this
-			)
-		);
 
 		// Creates the class autoloader.
 		spl_autoload_register( array( $this, 'class_loader' ) );
