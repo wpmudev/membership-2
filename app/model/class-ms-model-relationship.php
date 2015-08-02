@@ -2004,7 +2004,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @param string $set_status The set status to compare.
 	 * @return string The calculated status.
 	 */
-	protected function calculate_status( $set_status = null ) {
+	protected function calculate_status( $set_status = null, $debug = false ) {
 		/**
 		 * Documented in check_membership_status()
 		 *
@@ -2016,6 +2016,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$membership = $this->get_membership();
 		$calc_status = null;
+		$debug_msg = array();
 		$check_trial = $this->is_trial_eligible();
 
 		if ( ! empty( $this->payments ) ) {
@@ -2032,6 +2033,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			&& strtotime( $this->start_date ) > strtotime( MS_Helper_Period::current_date() )
 		) {
 			$calc_status = self::STATUS_WAITING;
+			$debug_msg[] = '[WAITING: Start-date not reached]';
+		} elseif ( ! $calc_status && $debug ) {
+			$debug_msg[] = '[Not WAITING: No start-date or start-date reached]';
 		}
 
 		if ( $check_trial ) {
@@ -2039,31 +2043,55 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL;
+				$debug_msg[] = '[TRIAL: Trial-Expire date not reached]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not TRIAL: Trial-Expire date reached]';
 			}
 
 			if ( ! $calc_status
 				&& strtotime( $this->trial_expire_date ) < strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL_EXPIRED;
+				$debug_msg[] = '[TRIAL-EXPIRED: Trial-Expire date reached]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not TRIAL-EXPIRED: Trial-Expire date not reached]';
 			}
+		} elseif ( ! $calc_status && $debug ) {
+			$debug_msg[] = '[Skipped TRIAL status]';
 		}
 
 		// Status an only become active when added by admin or invoice is paid.
 		$can_activate = false;
 		if ( 'admin' == $this->gateway_id ) {
 			$can_activate = true;
+			$debug_msg[] = '[Can activate: Admin gateway]';
+		} elseif ( MS_Gateway_Free::ID == $this->gateway_id ) {
+			$can_activate = true;
+			$debug_msg[] = '[Can activate: Free gateway]';
 		} elseif ( $membership->is_free() ) {
 			$can_activate = true;
+			$debug_msg[] = '[Can activate: Free membership]';
 		} else {
 			$invoice = $this->get_current_invoice();
 			if ( 0 == $invoice->total ) {
 				$can_activate = true;
+				$debug_msg[] = '[Can activate: Free invoice]';
 			} else {
 				$last_payment = end( $this->payments );
 				$now = MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT );
-				if ( $now == $last_payment['date'] ) {
+				if ( $last_payment && $invoice->total == $last_payment['amount'] ) {
 					$can_activate = true;
+					$debug_msg[] = '[Can activate: Payment found]';
 				}
+			}
+
+			if ( ! $can_activate && $debug ) {
+				$debug_msg[] = sprintf(
+					'[Can not activate: Gateway: %s; Price: %s; Invoice: %s]',
+					$this->gateway_id,
+					$membership->price,
+					$invoice->total
+				);
 			}
 		}
 
@@ -2073,6 +2101,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
 			) {
 				$calc_status = self::STATUS_ACTIVE;
+				$debug_msg[] = '[ACTIVE(1): Payment-type is permanent]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not ACTIVE(1): Payment-type is not permanent]';
 			}
 
 			// If expire date is empty and Active-state is requests then use active.
@@ -2081,6 +2112,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& self::STATUS_ACTIVE == $set_status
 			) {
 				$calc_status = self::STATUS_ACTIVE;
+				$debug_msg[] = '[ACTIVE(2): Expire date empty and active requested]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not ACTIVE(2): Expire date set or wrong status-request]';
 			}
 
 			// If expire date is not reached then membership obviously is active.
@@ -2089,15 +2123,22 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_ACTIVE;
+				$debug_msg[] = '[ACTIVE(3): Expire date set and not reached]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not ACTIVE(3): Expire date set and reached]';
 			}
 		} elseif ( ! $calc_status && self::STATUS_PENDING == $this->status ) {
 			// Invoice is not paid yet.
 			$calc_status = self::STATUS_PENDING;
+			$debug_msg[] = '[PENDING: Cannot activate pending subscription]';
+		} elseif ( ! $calc_status && $debug ) {
+			$debug_msg[] = '[Not ACTIVE/PENDING: Cannot activate subscription]';
 		}
 
 		// If no other condition was true then the expire date was reached.
 		if ( ! $calc_status ) {
 			$calc_status = self::STATUS_EXPIRED;
+			$debug_msg[] = '[EXPIRED: Default status]';
 		}
 
 		// Did the user cancel the membership?
@@ -2134,6 +2175,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				// Wait until the expiration date is reached...
 				$calc_status = self::STATUS_CANCELED;
 			}
+		}
+
+		if ( $debug ) {
+			// Intended debug output, leave it here.
+			lib2()->debug->dump( $debug_msg );
 		}
 
 		return apply_filters(
@@ -2356,9 +2402,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 
 		// Update the Subscription status.
-		$cur_status = $this->calculate_status();
+		$next_status = $this->calculate_status( null );
 
-		switch ( $cur_status ) {
+		switch ( $next_status ) {
 			case self::STATUS_TRIAL:
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
 					&& MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS )
@@ -2403,8 +2449,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					 * request_payment()!
 					 */
 					if ( $gateway->request_payment( $this ) ) {
-						$cur_status = self::STATUS_ACTIVE;
-						$this->status = $cur_status;
+						$next_status = self::STATUS_ACTIVE;
+						$this->status = $next_status;
 						$this->config_period(); // Needed because of status change.
 					}
 
@@ -2450,7 +2496,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$remaining_days = $this->get_remaining_period();
 
 					// Recalculate the new Subscription status.
-					$cur_status = $this->calculate_status();
+					$next_status = $this->calculate_status();
 				}
 
 				/*
@@ -2649,7 +2695,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		// Save the new status.
-		$this->status = $cur_status;
+		$this->status = $next_status;
 		$this->save();
 
 		// Save the changed email queue.
