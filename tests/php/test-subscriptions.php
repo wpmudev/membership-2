@@ -178,7 +178,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		TData::enable_addon( MS_Model_Addon::ADDON_TRIAL );
 
 		$user_id = TData::id( 'user', 'editor' );
-		$membership_id = TData::id( 'membership', 'simple-trial' );
+		$membership_id = TData::id( 'membership', 'limited-trial' );
 		$subscription = TData::subscribe( $user_id, $membership_id );
 
 		// No invoice was paid yet, to the current invoice counter must be 1.
