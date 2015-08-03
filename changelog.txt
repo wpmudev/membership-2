@@ -46,6 +46,7 @@ Change Log:
 - Fix bug that prevented admin to change the recurring payment frequency to anything else than 'Days' in few cases
 - Fix a bug in Automated Email Response Settings that did always enable the email when saving changes
 - Fix bug that would send some emails even when the 'MS_STOP_EMAILS' flag was active
+- Fix bug that would always add M2 menu items when a new membership is created
 - Fix plugin logic to allow changing Protection Rules even when Content Protection is disabled
 - Fix plugin translation using .mo files, added a readme file with instructions to /languages dir
 - Fix compatibility issue with WP Recaptcha during user registration
