@@ -1767,7 +1767,7 @@ window.ms_init.view_membership_payment = function init () {
 	jQuery( '#currency' ).change( show_currency );
 
 	jQuery( '.wpmui-slider-trial_period_enabled' ).on( 'ms-radio-slider-updated', toggle_trial );
-	jQuery(document).on( 'ms-ajax-updated', '#enable_trial', reload_page );
+	jQuery(document).on( 'ms-ajax-updated', '#enable_trial_addon', reload_page );
 };
 /*global window:false */
 /*global document:false */
