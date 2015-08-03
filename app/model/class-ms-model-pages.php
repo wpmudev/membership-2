@@ -855,7 +855,7 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @return bool True means that at least one menu item was deleted.
 	 */
 	static public function drop_menu( $page_type ) {
-		$res = false;
+		$res = true;
 
 		if ( MS_Plugin::is_network_wide() ) {
 			return $res;
@@ -891,14 +891,14 @@ class MS_Model_Pages extends MS_Model_Option {
 					if ( $db_id ) {
 						if ( false !== wp_delete_post( $db_id ) ) {
 							self::set_setting( 'has_nav_' . $page_type, false );
-							$res = true;
+						} else {
+							$res = false;
 						}
 					}
 				}
-			} else {
-				// No menus defined.
-				$res = true;
 			}
+		} else {
+			$res = false;
 		}
 
 		return $res;
