@@ -16,52 +16,30 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	/**
 	 * Gateway singleton instance.
 	 *
-	 * @since  1.0.0
-	 * @var string $instance
+	 * @since 1.0.0
+	 * @var   string $instance
 	 */
 	public static $instance;
 
 	/**
-	 * Stripe test secret key (sandbox).
+	 * Holds a reference to the parent gateway (either stripe or stripeplan)
 	 *
-	 * @see https://support.stripe.com/questions/where-do-i-find-my-api-keys
-	 *
-	 * @since  1.0.0
-	 * @var string $test_secret_key
+	 * @since 1.0.1.0
+	 * @var   MS_Gateway_Stripe|MS_Gateway_Stripeplan
 	 */
-	protected $test_secret_key;
+	protected $_gateway = null;
 
 	/**
-	 * Stripe Secret key (live).
+	 * Sets the parent gateway of the API object.
 	 *
-	 * @since  1.0.0
-	 * @var string $secret_key
-	 */
-	protected $secret_key;
-
-	/**
-	 * Stripe test publishable key (sandbox).
+	 * The parent gateway object is used to fetch the API keys.
 	 *
-	 * @since  1.0.0
-	 * @var string $test_publishable_key
+	 * @since 1.0.1.0
+	 * @param MS_Gateway $gateway The parent gateway.
 	 */
-	protected $test_publishable_key;
-
-	/**
-	 * Stripe publishable key (live).
-	 *
-	 * @since  1.0.0
-	 * @var string $publishable_key
-	 */
-	protected $publishable_key;
-
-	/**
-	 * Determines whether the API should use test or live keys to contact Stripe.
-	 *
-	 * @since  1.0.0
-	 * @var string
-	 */
-	public $mode = '';
+	public function set_gateway( $gateway ) {
+		$this->_gateway = $gateway;
+	}
 
 	/**
 	 * Load Stripe lib.
@@ -72,7 +50,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	public function load_stripe_lib() {
 		require_once MS_Plugin::instance()->dir . '/lib/stripe-php/lib/Stripe.php';
 
-		$secret_key = $this->get_secret_key();
+		$secret_key = $this->_gateway->get_secret_key();
 		M2_Stripe::setApiKey( $secret_key );
 
 		do_action( 'ms_gateway_stripe_load_stripe_lib_after', $this );
@@ -449,52 +427,6 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 			'ms_stripeplan_coupons',
 			$all_items,
 			HOUR_IN_SECONDS
-		);
-	}
-
-	/**
-	 * Get Stripe publishable key.
-	 *
-	 * @since  1.0.0
-	 * @api
-	 *
-	 * @return string The Stripe API publishable key.
-	 */
-	public function get_publishable_key() {
-		$publishable_key = null;
-
-		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
-			$publishable_key = $this->publishable_key;
-		} else {
-			$publishable_key = $this->test_publishable_key;
-		}
-
-		return apply_filters(
-			'ms_gateway_stripe_get_publishable_key',
-			$publishable_key
-		);
-	}
-
-	/**
-	 * Get Stripe secret key.
-	 *
-	 * @since  1.0.0
-	 * @internal The secret key should not be used outside this object!
-	 *
-	 * @return string The Stripe API secret key.
-	 */
-	public function get_secret_key() {
-		$secret_key = null;
-
-		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
-			$secret_key = $this->secret_key;
-		} else {
-			$secret_key = $this->test_secret_key;
-		}
-
-		return apply_filters(
-			'ms_gateway_stripe_get_secret_key',
-			$secret_key
 		);
 	}
 

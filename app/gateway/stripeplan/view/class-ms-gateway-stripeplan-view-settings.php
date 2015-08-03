@@ -14,7 +14,11 @@ class MS_Gateway_Stripeplan_View_Settings extends MS_View {
 			$description = sprintf(
 				'%1$s<br />%2$s',
 				__( 'Best used for recurring payments.', MS_TEXT_DOMAIN ),
-				__( 'This gateway uses the same API Keys as the Stripe Single Gateway', MS_TEXT_DOMAIN )
+				sprintf(
+					__( 'You can find your Stripe API Keys in your %sAccount Settings%s.', MS_TEXT_DOMAIN ),
+					'<a href="https://dashboard.stripe.com/account/apikeys" target="_blank">',
+					'</a>'
+				)
 			);
 
 			MS_Helper_Html::settings_box_header( '', $description );
@@ -41,6 +45,42 @@ class MS_Gateway_Stripeplan_View_Settings extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $gateway->mode,
 				'field_options' => $gateway->get_mode_types(),
+				'class' => 'ms-text-large',
+				'ajax_data' => array( 1 ),
+			),
+
+			'test_secret_key' => array(
+				'id' => 'test_secret_key',
+				'title' => __( 'API Test Secret Key', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'value' => $gateway->test_secret_key,
+				'class' => 'ms-text-large',
+				'ajax_data' => array( 1 ),
+			),
+
+			'test_publishable_key' => array(
+				'id' => 'test_publishable_key',
+				'title' => __( 'API Test Publishable Key', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'value' => $gateway->test_publishable_key,
+				'class' => 'ms-text-large',
+				'ajax_data' => array( 1 ),
+			),
+
+			'secret_key' => array(
+				'id' => 'secret_key',
+				'title' => __( 'API Live Secret Key', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'value' => $gateway->secret_key,
+				'class' => 'ms-text-large',
+				'ajax_data' => array( 1 ),
+			),
+
+			'publishable_key' => array(
+				'id' => 'publishable_key',
+				'title' => __( 'API Live Publishable Key', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'value' => $gateway->publishable_key,
 				'class' => 'ms-text-large',
 				'ajax_data' => array( 1 ),
 			),

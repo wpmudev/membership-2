@@ -28,7 +28,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @since  1.0.0
 	 * @var string $test_secret_key
 	 */
-	protected $test_secret_key;
+	protected $test_secret_key = '';
 
 	/**
 	 * Stripe Secret key (live).
@@ -36,7 +36,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @since  1.0.0
 	 * @var string $secret_key
 	 */
-	protected $secret_key;
+	protected $secret_key = '';
 
 	/**
 	 * Stripe test publishable key (sandbox).
@@ -44,7 +44,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @since  1.0.0
 	 * @var string $test_publishable_key
 	 */
-	protected $test_publishable_key;
+	protected $test_publishable_key = '';
 
 	/**
 	 * Stripe publishable key (live).
@@ -52,7 +52,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @since  1.0.0
 	 * @var string $publishable_key
 	 */
-	protected $publishable_key;
+	protected $publishable_key = '';
 
 	/**
 	 * Instance of the shared stripe API integration
@@ -71,6 +71,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 		$this->_api = MS_Factory::load( 'MS_Gateway_Stripe_Api' );
+		$this->_api->set_gateway( $this );
 
 		$this->id = self::ID;
 		$this->name = __( 'Stripe Single Gateway', MS_TEXT_DOMAIN );
@@ -259,8 +260,18 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @return string The Stripe API publishable key.
 	 */
 	public function get_publishable_key() {
-		$this->_api->mode = $this->mode;
-		return $this->_api->get_publishable_key();
+		$publishable_key = null;
+
+		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
+			$publishable_key = $this->publishable_key;
+		} else {
+			$publishable_key = $this->test_publishable_key;
+		}
+
+		return apply_filters(
+			'ms_gateway_stripe_get_publishable_key',
+			$publishable_key
+		);
 	}
 
 	/**
@@ -271,9 +282,19 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 *
 	 * @return string The Stripe API secret key.
 	 */
-	protected function get_secret_key() {
-		$this->_api->mode = $this->mode;
-		return $this->_api->get_secret_key();
+	public function get_secret_key() {
+		$secret_key = null;
+
+		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
+			$secret_key = $this->secret_key;
+		} else {
+			$secret_key = $this->test_secret_key;
+		}
+
+		return apply_filters(
+			'ms_gateway_stripe_get_secret_key',
+			$secret_key
+		);
 	}
 
 	/**

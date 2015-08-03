@@ -21,6 +21,40 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	public static $instance;
 
 	/**
+	 * Stripe test secret key (sandbox).
+	 *
+	 * @see https://support.stripe.com/questions/where-do-i-find-my-api-keys
+	 *
+	 * @since  1.0.0
+	 * @var string $test_secret_key
+	 */
+	protected $test_secret_key = false;
+
+	/**
+	 * Stripe Secret key (live).
+	 *
+	 * @since  1.0.0
+	 * @var string $secret_key
+	 */
+	protected $secret_key = false;
+
+	/**
+	 * Stripe test publishable key (sandbox).
+	 *
+	 * @since  1.0.0
+	 * @var string $test_publishable_key
+	 */
+	protected $test_publishable_key = false;
+
+	/**
+	 * Stripe publishable key (live).
+	 *
+	 * @since  1.0.0
+	 * @var string $publishable_key
+	 */
+	protected $publishable_key = false;
+
+	/**
 	 * Instance of the shared stripe API integration
 	 *
 	 * @since  1.0.0
@@ -36,6 +70,18 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 		$this->_api = MS_Factory::load( 'MS_Gateway_Stripe_Api' );
+		$this->_api->set_gateway( $this );
+
+		// If the gateway is initialized for the first time then copy settings
+		// from the Stripe Single gateway.
+		if ( false === $this->test_secret_key ) {
+			$single = MS_Factory::load( 'MS_Gateway_Stripe' );
+			$this->test_secret_key = $single->test_secret_key;
+			$this->secret_key = $single->secret_key;
+			$this->test_publishable_key = $single->test_publishable_key;
+			$this->publishable_key = $single->publishable_key;
+			$this->save();
+		}
 
 		$this->id = self::ID;
 		$this->name = __( 'Stripe Subscriptions Gateway', MS_TEXT_DOMAIN );
@@ -479,8 +525,18 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * @return string The Stripe API publishable key.
 	 */
 	public function get_publishable_key() {
-		$this->_api->mode = $this->mode;
-		return $this->_api->get_publishable_key();
+		$publishable_key = null;
+
+		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
+			$publishable_key = $this->publishable_key;
+		} else {
+			$publishable_key = $this->test_publishable_key;
+		}
+
+		return apply_filters(
+			'ms_gateway_stripeplan_get_publishable_key',
+			$publishable_key
+		);
 	}
 
 	/**
@@ -491,15 +547,27 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 *
 	 * @return string The Stripe API secret key.
 	 */
-	protected function get_secret_key() {
-		$this->_api->mode = $this->mode;
-		return $this->_api->get_secret_key();
+	public function get_secret_key() {
+		$secret_key = null;
+
+		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
+			$secret_key = $this->secret_key;
+		} else {
+			$secret_key = $this->test_secret_key;
+		}
+
+		return apply_filters(
+			'ms_gateway_stripeplan_get_secret_key',
+			$secret_key
+		);
 	}
 
 	/**
 	 * Verify required fields.
 	 *
 	 * @since  1.0.0
+	 * @api
+	 *
 	 * @return boolean True if configured.
 	 */
 	public function is_configured() {
@@ -512,6 +580,30 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			'ms_gateway_stripeplan_is_configured',
 			$is_configured
 		);
+	}
+
+	/**
+	 * Auto-update some fields of the _api instance if required.
+	 *
+	 * @since  1.0.0
+	 * @internal
+	 *
+	 * @param string $key Field name.
+	 * @param mixed $value Field value.
+	 */
+	public function __set( $key, $value ) {
+		switch ( $key ) {
+			case 'test_secret_key':
+			case 'test_publishable_key':
+			case 'secret_key':
+			case 'publishable_key':
+				$this->_api->$key = $value;
+				break;
+		}
+
+		if ( property_exists( $this, $key ) ) {
+			$this->$key = $value;
+		}
 	}
 
 }
