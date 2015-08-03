@@ -2065,9 +2065,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( 'admin' == $this->gateway_id ) {
 			$can_activate = true;
 			$debug_msg[] = '[Can activate: Admin gateway]';
-		} elseif ( MS_Gateway_Free::ID == $this->gateway_id ) {
-			$can_activate = true;
-			$debug_msg[] = '[Can activate: Free gateway]';
 		} elseif ( $membership->is_free() ) {
 			$can_activate = true;
 			$debug_msg[] = '[Can activate: Free membership]';
