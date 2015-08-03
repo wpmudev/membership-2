@@ -71,7 +71,6 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 		$this->_api = MS_Factory::load( 'MS_Gateway_Stripe_Api' );
-		$this->_api->set_gateway( $this );
 
 		$this->id = self::ID;
 		$this->name = __( 'Stripe Single Gateway', MS_TEXT_DOMAIN );
@@ -99,7 +98,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$subscription,
 			$this
 		);
-		$this->_api->mode = $this->mode;
+		$this->_api->set_gateway( $this );
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
@@ -185,7 +184,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$subscription,
 			$this
 		);
-		$this->_api->mode = $this->mode;
+		$this->_api->set_gateway( $this );
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();

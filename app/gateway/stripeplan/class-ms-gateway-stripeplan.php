@@ -70,7 +70,6 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 		$this->_api = MS_Factory::load( 'MS_Gateway_Stripe_Api' );
-		$this->_api->set_gateway( $this );
 
 		// If the gateway is initialized for the first time then copy settings
 		// from the Stripe Single gateway.
@@ -153,7 +152,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 */
 	public function update_stripe_data() {
 		if ( ! $this->active ) { return false; }
-		$this->_api->mode = $this->mode;
+		$this->_api->set_gateway( $this );
 
 		// 1. Update all playment plans.
 		$memberships = MS_Model_Membership::get_memberships();
@@ -180,7 +179,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 */
 	public function update_stripe_data_membership( $membership ) {
 		if ( ! $this->active ) { return false; }
-		$this->_api->mode = $this->mode;
+		$this->_api->set_gateway( $this );
 
 		$plan_data = array(
 			'id' => self::get_the_id( $membership->id, 'plan' ),
@@ -258,7 +257,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 */
 	public function update_stripe_data_coupon( $coupon ) {
 		if ( ! $this->active ) { return false; }
-		$this->_api->mode = $this->mode;
+		$this->_api->set_gateway( $this );
 
 		$settings = MS_Plugin::instance()->settings;
 		$duration = 'once';
@@ -311,7 +310,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$subscription,
 			$this
 		);
-		$this->_api->mode = $this->mode;
+		$this->_api->set_gateway( $this );
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
@@ -396,7 +395,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$subscription,
 			$this
 		);
-		$this->_api->mode = $this->mode;
+		$this->_api->set_gateway( $this );
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
@@ -497,6 +496,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 */
 	public function cancel_membership( $subscription ) {
 		parent::cancel_membership( $subscription );
+		$this->_api->set_gateway( $this );
 
 		$customer = $this->_api->find_customer( $subscription->get_member() );
 		$membership = $subscription->get_membership();
