@@ -275,7 +275,7 @@ class MS_Model_Upgrade extends MS_Model {
 		$trash_ids = array();
 
 		// Delete membership meta-data from users.
-		$users = MS_Model_Member::get_members( );
+		$users = MS_Model_Member::get_members();
 		foreach ( $users as $user ) {
 			$user->delete_all_membership_usermeta();
 			$user->save();
