@@ -192,8 +192,10 @@ class TData {
 		$gateway->save();
 
 		$gateway = MS_Model_Gateway::factory( MS_Gateway_Stripeplan::ID );
-		$gateway->active = true;
 		$gateway->mode = MS_Gateway::MODE_SANDBOX;
+		$gateway->active = true;
+		$gateway->test_secret_key = 'sk_test_MSKvYHhIm3kKNr4tshnZHIEk';
+		$gateway->test_publishable_key = 'pk_test_h8fk0CAW287ToA3o6aeehThB';
 		$gateway->save();
 
 		// Clear the plugin Factory-Cache
