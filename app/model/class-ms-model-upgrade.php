@@ -61,7 +61,11 @@ class MS_Model_Upgrade extends MS_Model {
 
 		// Compare current src version to DB version:
 		// We only do UP-grades but no DOWN-grades!
-		$version_changed = $old_version && version_compare( $old_version, $new_version, 'lt' );
+		if ( $old_version ) {
+			$version_changed = version_compare( $old_version, $new_version, 'lt' );
+		} else {
+			$version_changed = true;
+		}
 
 		if ( $force || $version_changed ) {
 			$Done = true;
@@ -118,9 +122,9 @@ class MS_Model_Upgrade extends MS_Model {
 			 * ----- Version-Specific update logic -----------------------------
 			 */
 
-			// Upgrade from a 0.x version to 1.0.x or higher
-			if ( version_compare( $old_version, '1.0.0.0', 'lt' ) ) {
-				self::_upgrade_1_0_0_0();
+			// Upgrade from a 1.0.0.x version to 1.0.1.x or higher
+			if ( version_compare( $old_version, '1.0.1.0', 'lt' ) ) {
+				self::_upgrade_1_0_1_0();
 			}
 
 			/*
@@ -157,22 +161,38 @@ class MS_Model_Upgrade extends MS_Model {
 	#
 
 	/**
-	 * Upgrade from any 1.0.x version to a higher version.
+	 * Upgrade from any 1.0.0.x version to a higher version.
 	 */
-	static private function _upgrade_1_0_0_0() {
+	static private function _upgrade_1_0_1_0() {
+		lib2()->updates->clear();
+
 		/*
-		 * Demo update process
+		 * The "is_member" flag of users was not correctly saved when a
+		 * subscription was added via the M2 > Members page.
+		 * Fix this now.
 		 */
-		/*
 		{
-			lib2()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_check_membership_status' );
-			lib2()->updates->add( 'wp_clear_scheduled_hook', 'ms_cron_process_communications' );
+			global $wpdb;
+			$sql = "
+			SELECT DISTINCT usr.user_id
+			FROM
+				{$wpdb->posts} post
+				LEFT JOIN {$wpdb->usermeta} usr
+					ON usr.user_id = post.post_author
+					AND usr.meta_key = 'ms_is_member'
+			WHERE
+				post_type = 'ms_relationship'
+				AND (usr.meta_value IS NULL OR usr.meta_value != 1);
+			";
+			$result = $wpdb->get_col( $sql );
+			foreach ( $result as $user_id ) {
+				lib2()->updates->add( 'update_user_meta', $user_id, 'ms_is_member', true );
+			}
 		}
 
 		// Execute all queued actions!
 		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->execute();
-		*/
 	}
 
 	#
