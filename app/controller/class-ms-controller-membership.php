@@ -348,7 +348,7 @@ class MS_Controller_Membership extends MS_Controller {
 		$save_data = array();
 
 		// Check if user came from WPMU Dashboard plugin
-		if ( ! MS_Plugin::is_wizard() && isset( $_SERVER['HTTP_REFERER'] ) ) {
+		if ( ! $is_wizard && isset( $_SERVER['HTTP_REFERER'] ) ) {
 			$referer = $_SERVER['HTTP_REFERER'];
 			$params = parse_url( $referer, PHP_URL_QUERY );
 			$fields = array();
@@ -422,11 +422,6 @@ class MS_Controller_Membership extends MS_Controller {
 						$next_step = self::STEP_MS_LIST;
 						$msg = $this->mark_setup_completed();
 						$completed = true;
-					}
-
-					if ( $is_wizard ) {
-						// End the wizard!
-						$this->wizard_tracker( $next_step, true );
 					}
 					break;
 
@@ -571,10 +566,40 @@ class MS_Controller_Membership extends MS_Controller {
 
 		if ( $membership->setup_completed() ) {
 			$msg = MS_Helper_Membership::MEMBERSHIP_MSG_ADDED;
+
+			/**
+			 * Action run after a new membership was created.
+			 *
+			 * @since  1.0.1.0
+			 * @param  MS_Model_Membership $membership The new membership.
+			 */
 			do_action(
-				'ms_controller_membership_setup_completed',
+				'ms_controller_membership_created',
 				$membership
 			);
+
+			if ( MS_Plugin::is_wizard() ) {
+				$this->wizard_tracker( null, true );
+
+				/**
+				 * Action run after the first membership was created and the
+				 * setup wizard is completed.
+				 *
+				 * This hook is used by M2 to auto-setup some settings according
+				 * to the first membership that was created (e.g. create menu
+				 * items, enable Automatic Email Responses, etc.)
+				 *
+				 * This filter is only executed ONCE! To perform actions always
+				 * when a membership was created use the '_created' action above.
+				 *
+				 * @since  1.0.0
+				 * @param  MS_Model_Membership $membership The new membership.
+				 */
+				do_action(
+					'ms_controller_membership_setup_completed',
+					$membership
+				);
+			}
 		}
 
 		return apply_filters(
@@ -1017,7 +1042,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return string The current step.
 	 */
 	public function wizard_tracker( $step = null, $end_wizard = false ) {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$settings = MS_Plugin::instance()->settings;
 
 		if ( empty( $step ) ) {
 			$step = $this->get_step();

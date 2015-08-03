@@ -67,7 +67,10 @@ class MS_Controller_Settings extends MS_Controller {
 			exit;
 		}
 
-		$this->add_action( 'ms_controller_membership_setup_completed', 'auto_setup_settings' );
+		$this->add_action(
+			'ms_controller_membership_setup_completed',
+			'auto_setup_settings'
+		);
 
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
