@@ -137,9 +137,9 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param array $atts The shortcode attributes.
-	 * @param string $content The content inside the shortcode.
-	 * @param string $code The shortcode code.
+	 * @param  array $atts The shortcode attributes.
+	 * @param  string $content The content inside the shortcode.
+	 * @param  string $code The shortcode code.
 	 * @return string The shortcode output
 	 */
 	static public function protect_content_shortcode( $atts, $content = null, $code = '' ) {
@@ -164,9 +164,10 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		} else {
 			if ( ! is_string( $msg ) || ! strlen( $msg ) ) {
 				$settings = MS_Factory::load( 'MS_Model_Settings' );
+				$membership_id = apply_filters( 'ms_detect_membership_id', 0 );
 				$msg = $settings->get_protection_message(
 					MS_Model_Settings::PROTECTION_MSG_SHORTCODE,
-					$this->membership_id
+					$membership_id
 				);
 			}
 		}
