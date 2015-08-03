@@ -23,7 +23,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @internal
 	 */
-	const SEARCH_ONLY_MEMBERS = 'only members';
+	const SEARCH_ONLY_MEMBERS = 'only members'; //TODO: replace space with _ !!!!
 
 	/**
 	 * Members search constants.
@@ -337,6 +337,10 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_member_ids( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
 		static $Members = array();
+		if ( ! isset( $args['number'] ) ) {
+			$args['number'] = 0;
+		}
+
 		$key = json_encode( $args );
 
 		if ( ! isset( $Members[$key] ) ) {
