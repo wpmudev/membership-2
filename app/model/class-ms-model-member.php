@@ -1258,6 +1258,8 @@ class MS_Model_Member extends MS_Model {
 				$subscription->expire_date = null;
 				$subscription->status = MS_Model_Relationship::STATUS_ACTIVE;
 				$subscription->save();
+
+				$this->is_member = true;
 			}
 		}
 
@@ -1293,6 +1295,15 @@ class MS_Model_Member extends MS_Model {
 			$subscription->deactivate_membership();
 			unset( $this->subscriptions[$key] );
 		}
+
+		$is_member = false;
+		foreach ( $this->subscriptions as $subscription ) {
+			if ( ! $subscription->is_system() ) {
+				$is_member = true;
+				break;
+			}
+		}
+		$this->is_member = $is_member;
 
 		do_action(
 			'ms_model_membership_drop_membership',
