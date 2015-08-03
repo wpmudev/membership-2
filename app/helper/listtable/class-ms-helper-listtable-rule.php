@@ -552,7 +552,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'name' => 'delay_unit',
 			'class' => 'ms-text-small',
-			'placeholder' => '1',
+			'placeholder' => '0',
 		);
 
 		$field_delay_type = array(
