@@ -119,13 +119,17 @@ class MS_View extends MS_Hooker {
 	}
 
 	/**
-	 * Renders the template.
+	 * Output the rendered template to the browser.
 	 *
 	 * @since  1.0.0
 	 */
 	public function render() {
 		$html = $this->to_html();
 
-		echo apply_filters( 'ms_view_render', $html );
+		echo apply_filters(
+			'ms_view_render',
+			$html,
+			$this
+		);
 	}
 }

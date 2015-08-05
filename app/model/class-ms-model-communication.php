@@ -810,7 +810,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$this->queue = array();
 		}
 
-		if ( $this->enabled && /*! $this->check_object_lock() &&*/ count( $this->queue ) ) {
+		if ( $this->enabled && ! $this->check_object_lock() && count( $this->queue ) ) {
 			$this->set_object_lock();
 
 			// Max emails that are sent in one process call.

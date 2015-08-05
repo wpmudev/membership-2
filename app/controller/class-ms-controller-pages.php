@@ -109,7 +109,7 @@ class MS_Controller_Pages extends MS_Controller {
 			}
 		}
 
-		echo '' . $msg;
+		echo $msg;
 		exit;
 	}
 
@@ -135,7 +135,7 @@ class MS_Controller_Pages extends MS_Controller {
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 
-		echo '' . $msg . ':' . $content;
+		echo $msg . ':' . $content;
 		exit;
 	}
 

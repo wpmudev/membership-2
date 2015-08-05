@@ -72,7 +72,6 @@ class MS_View_Help extends MS_View {
 		ob_start();
 		?>
 		<h2>
-			<?php /*_ex( 'Overview', 'help', MS_TEXT_DOMAIN ); */?>
 			<?php _e( 'You\'re awesome :)', MS_TEXT_DOMAIN ); ?><br />
 		</h2>
 		<p>

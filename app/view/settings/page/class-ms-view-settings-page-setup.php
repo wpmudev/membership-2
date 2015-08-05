@@ -91,7 +91,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					);
 					?>
 				</div>
-				<?php echo '' . $this->show_menu_controls(); ?>
+				<?php echo $this->show_menu_controls(); ?>
 			</div>
 			<?php else : ?>
 			<div class="ms-setup-site">
