@@ -300,7 +300,9 @@ class MS_Model_Upgrade extends MS_Model {
 		 * Delete all plugin settings.
 		 * Settings are saved by classes that extend MS_Model_option
 		 */
-		foreach ( MS_Model_Gateway::get_gateways() as $option ) { $option->delete(); }
+		foreach ( MS_Model_Gateway::get_gateways() as $option ) {
+			$option->delete();
+		}
 		MS_Factory::load( 'MS_Model_Addon' )->delete();
 		MS_Factory::load( 'MS_Model_Pages' )->delete();
 		MS_Factory::load( 'MS_Model_Settings' )->delete();
@@ -319,9 +321,11 @@ class MS_Model_Upgrade extends MS_Model {
 			MS_Model_Communication::get_post_type(),
 			MS_Model_Event::get_post_type(),
 			MS_Model_Invoice::get_post_type(),
+			MS_Model_Transactionlog::get_post_type(),
 			MS_Model_Membership::get_post_type(),
 			MS_Model_Relationship::get_post_type(),
 			MS_Addon_Coupon_Model::get_post_type(),
+			MS_Addon_Invitation_Model::get_post_type(),
 		);
 
 		foreach ( $ms_posttypes as $type ) {
@@ -332,10 +336,18 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 
 		// Remove orphaned post-metadata.
-		$sql[] = "DELETE FROM $wpdb->postmeta WHERE NOT EXISTS (SELECT 1 FROM wp_posts tmp WHERE tmp.ID = post_id);";
+		$sql[] = "
+		DELETE FROM $wpdb->postmeta
+		WHERE NOT EXISTS (
+			SELECT 1 FROM $wpdb->posts tmp WHERE tmp.ID = post_id
+		);
+		";
 
 		// Clear all WP transient cache.
-		$sql[] = "DELETE FROM $wpdb->options WHERE option_name LIKE '_transient_%';";
+		$sql[] = "
+		DELETE FROM $wpdb->options
+		WHERE option_name LIKE '_transient_%';
+		";
 
 		foreach ( $sql as $s ) {
 			$wpdb->query( $s );
