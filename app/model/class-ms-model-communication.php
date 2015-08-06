@@ -715,6 +715,17 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Save the current communication item.
+	 *
+	 * This function allows us easier debugging of communication issues.
+	 *
+	 * @since  1.0.1.1
+	 */
+	public function save() {
+		parent::save();
+	}
+
+	/**
 	 * Customize the data that is written to the DB.
 	 *
 	 * @since  1.0.1.0
