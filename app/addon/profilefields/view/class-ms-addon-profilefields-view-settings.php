@@ -17,6 +17,7 @@ class MS_Addon_Profilefields_View_Settings extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-addon-wrap">
+			<form method="post">
 			<?php
 			MS_Helper_Html::settings_tab_header(
 				array( 'title' => __( 'Profile Fields Settings', MS_TEXT_DOMAIN ) )
@@ -26,6 +27,7 @@ class MS_Addon_Profilefields_View_Settings extends MS_View {
 				MS_Helper_Html::html_element( $field );
 			}
 			?>
+			</form>
 		</div>
 		<?php
 		$html = ob_get_clean();
