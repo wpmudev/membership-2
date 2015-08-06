@@ -46,6 +46,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	const COMM_TYPE_REGISTRATION = 'type_registration';
 	const COMM_TYPE_REGISTRATION_FREE = 'type_registration_free';
+	const COMM_TYPE_SIGNUP = 'type_signup';
 	const COMM_TYPE_RENEWED = 'renewed';
 	const COMM_TYPE_INVOICE = 'type_invoice';
 	const COMM_TYPE_BEFORE_FINISHES = 'type_before_finishes';
@@ -78,6 +79,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	const COMM_VAR_USER_FIRST_NAME = '%user-first-name%';
 	const COMM_VAR_USER_LAST_NAME = '%user-last-name%';
 	const COMM_VAR_USERNAME = '%username%';
+	const COMM_VAR_PASSWORD = '%password%';
 	const COMM_VAR_BLOG_NAME = '%blog-name%';
 	const COMM_VAR_BLOG_URL = '%blog-url%';
 	const COMM_VAR_NET_NAME = '%network-name%';
@@ -277,6 +279,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$Types = array(
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_REGISTRATION_FREE,
+					self::COMM_TYPE_SIGNUP,
 					self::COMM_TYPE_RENEWED,
 					self::COMM_TYPE_INVOICE,
 					self::COMM_TYPE_BEFORE_FINISHES,
@@ -328,6 +331,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$type_classes = array(
 				self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
 				self::COMM_TYPE_REGISTRATION_FREE => 'MS_Model_Communication_Registration_Free',
+				self::COMM_TYPE_SIGNUP => 'MS_Model_Communication_Signup',
 				self::COMM_TYPE_RENEWED => 'MS_Model_Communication_Renewed',
 				self::COMM_TYPE_INVOICE => 'MS_Model_Communication_Invoice',
 				self::COMM_TYPE_BEFORE_FINISHES => 'MS_Model_Communication_Before_Finishes',
@@ -367,6 +371,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		$type_titles = array(
 			self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', MS_TEXT_DOMAIN ),
 			self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_SIGNUP => __( 'Signup - User account created', MS_TEXT_DOMAIN ),
 			self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', MS_TEXT_DOMAIN ),
 			self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', MS_TEXT_DOMAIN ),
 			self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', MS_TEXT_DOMAIN ),
@@ -392,6 +397,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		}
 
 		if ( $membership instanceof MS_Model_Membership ) {
+			unset( $type_titles[ self::COMM_TYPE_SIGNUP ] );
+
 			if ( ! $membership->has_trial() ) {
 				unset( $type_titles[ self::COMM_TYPE_BEFORE_TRIAL_FINISHES ] );
 			}
@@ -685,10 +692,21 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			self::COMM_VAR_USER_FIRST_NAME => __( 'User: First name', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_USERNAME => __( 'User: Login name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_PASSWORD => __( 'User: Password', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_BLOG_URL => __( 'Site: URL', MS_TEXT_DOMAIN ),
 		);
+
+		if ( self::COMM_TYPE_SIGNUP != $this->type ) {
+			unset( $this->comm_vars[self::COMM_VAR_PASSWORD] );
+		} else {
+			unset( $this->comm_vars[self::COMM_VAR_MS_NAME] );
+			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_DAYS] );
+			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_TRIAL_DAYS] );
+			unset( $this->comm_vars[self::COMM_VAR_MS_EXPIRY_DATE] );
+			unset( $this->comm_vars[self::COMM_VAR_MS_INVOICE] );
+		}
 
 		if ( is_multisite() ) {
 			$this->comm_vars[self::COMM_VAR_NET_NAME] = __( 'Network: Name', MS_TEXT_DOMAIN );
@@ -1026,10 +1044,24 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param MS_Model_Relationship $subscription The membership relationship to send message to.
+	 * @param mixed $reference A reference to identify the member/subscription.
 	 * @return bool True if successfully sent email.
 	 */
-	public function send_message( $subscription ) {
+	public function send_message( $reference ) {
+		$user_id = 0;
+		$subscription = null;
+		$member = null;
+
+		if ( $reference instanceof MS_Model_Relationship ) {
+			$user_id = $reference->user_id;
+			$subscription = $reference;
+			$member = $subscription->get_member();
+		} elseif ( $reference instanceof MS_Model_Member ) {
+			$user_id = $reference->id;
+			$member = $reference;
+			$subscription = null;
+		}
+
 		/**
 		 * Documented in process_queue()
 		 *
@@ -1041,7 +1073,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				sprintf(
 					'Following Email was not sent: "%s" to user "%s".',
 					$this->type,
-					$subscription->user_id
+					$user_id
 				)
 			);
 
@@ -1050,6 +1082,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		do_action(
 			'ms_model_communication_send_message_before',
+			$member,
 			$subscription,
 			$this
 		);
@@ -1057,21 +1090,20 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		$sent = false;
 
 		if ( $this->enabled ) {
-			$wp_user = new WP_User( $subscription->user_id );
 
-			if ( ! is_email( $wp_user->user_email ) ) {
+			if ( ! is_email( $member->email ) ) {
 				do_action(
 					'lib2_debug_log',
 					sprintf(
 						'Invalid user email. User_id: %1$s, email: %2$s',
-						$subscription->user_id,
-						$wp_user->user_email
+						$user_id,
+						$member->email
 					)
 				);
 				return false;
 			}
 
-			$comm_vars = $this->get_comm_vars( $subscription, $wp_user );
+			$comm_vars = $this->get_comm_vars( $subscription, $member );
 
 			// Replace the email variables.
 			$message = str_replace(
@@ -1087,17 +1119,32 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			);
 
 			$html_message = wpautop( $message );
-			$text_message = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $message ) );
-			$subject = strip_tags( preg_replace( '/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is', '$0 [$1]', $subject ) );
+			$text_message = strip_tags(
+				preg_replace(
+					'/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is',
+					'$0 [$1]',
+					$message
+				)
+			);
+			$subject = strip_tags(
+				preg_replace(
+					'/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is',
+					'$0 [$1]',
+					$subject
+				)
+			);
 
 			$message = $text_message;
 
 			if ( 'text/html' == $this->get_mail_content_type() ) {
-				$this->add_filter( 'wp_mail_content_type', 'get_mail_content_type' );
+				$this->add_filter(
+					'wp_mail_content_type',
+					'get_mail_content_type'
+				);
 				$message = $html_message;
 			}
 
-			$recipients = array( $wp_user->user_email );
+			$recipients = array( $member->email );
 			if ( $this->cc_enabled ) {
 				$recipients[] = $this->cc_email;
 			}
@@ -1107,7 +1154,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 			if ( ! empty( $admin_emails[0] ) ) {
 				$headers = array(
-					sprintf( 'From: %s <%s> ', get_option( 'blogname' ), $admin_emails[0] )
+					sprintf(
+						'From: %s <%s> ',
+						get_option( 'blogname' ),
+						$admin_emails[0]
+					)
 				);
 			}
 
@@ -1179,7 +1230,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		}
 
 		do_action(
-			'ms_model_communication_send_message_before',
+			'ms_model_communication_send_message',
+			$member,
 			$subscription,
 			$this
 		);
@@ -1193,7 +1245,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $subscription The membership relationship to send message to.
-	 * @param WP_User $wp_user The wordpress user object to get info from.
+	 * @param MS_Model_Member $member The member object to get info from.
 	 * @return array {
 	 *     Returns array of ( $var_name => $var_replace ).
 	 *
@@ -1201,121 +1253,159 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *     @type string $var_replace The variable corresponding replace string.
 	 * }
 	 */
-	public function get_comm_vars( $subscription, $wp_user ) {
+	public function get_comm_vars( $subscription, $member ) {
 		$currency = MS_Plugin::instance()->settings->currency . ' ';
-		$membership = $subscription->get_membership();
-
 		$invoice = null;
+		$membership = null;
 
-		// First try to fetch the current invoice.
-		$invoice = $subscription->get_current_invoice( false );
-		$prev_invoice = $subscription->get_previous_invoice();
+		if ( $subscription && $subscription instanceof MS_Model_Relationship ) {
+			// First try to fetch the current invoice.
+			$invoice = $subscription->get_current_invoice( false );
+			$prev_invoice = $subscription->get_previous_invoice();
 
-		// If no current invoice exists then fetch the previous invoice.
-		if ( empty( $invoice ) ) {
-			$invoice = $prev_invoice;
+			// If no current invoice exists then fetch the previous invoice.
+			if ( empty( $invoice ) ) {
+				$invoice = $prev_invoice;
+			}
+
+			$membership = $subscription->get_membership();
 		}
 
 		$comm_vars = apply_filters(
 			'ms_model_communication_comm_vars',
-			$this->comm_vars
+			$this->comm_vars,
+			$this->type,
+			$member,
+			$subscription
 		);
 
+		$wp_user = $member->get_user();
+
 		foreach ( $comm_vars as $key => $description ) {
+			$var_value = '';
+
 			switch ( $key ) {
 				case self::COMM_VAR_BLOG_NAME:
-					$comm_vars[ $key ] = get_option( 'blogname' );
+					$var_value = get_option( 'blogname' );
 					break;
 
 				case self::COMM_VAR_BLOG_URL:
-					$comm_vars[ $key ] = get_option( 'home' );
+					$var_value = get_option( 'home' );
 					break;
 
 				case self::COMM_VAR_USERNAME:
-					$comm_vars[ $key ] = $wp_user->user_login;
+					$var_value = $member->username;
+					break;
+
+				case self::COMM_VAR_PASSWORD:
+					/**
+					 * $member->password is ONLY available in the same request
+					 * when the new user account was created! After this we only
+					 * have the encrypted password in the DB, and the plain-text
+					 * version will never be available again in code...
+					 *
+					 * @since 1.0.1.1
+					 */
+					if ( self::COMM_TYPE_SIGNUP == $this->type ) {
+						$var_value = $member->password;
+					}
 					break;
 
 				case self::COMM_VAR_USER_DISPLAY_NAME:
-					$comm_vars[ $key ] = $wp_user->display_name;
+					$var_value = $wp_user->display_name;
 					break;
 
 				case self::COMM_VAR_USER_FIRST_NAME:
-					$comm_vars[ $key ] = $wp_user->user_firstname;
+					$var_value = $member->first_name;
 					break;
 
 				case self::COMM_VAR_USER_LAST_NAME:
-					$comm_vars[ $key ] = $wp_user->user_lastname;
+					$var_value = $member->last_name;
 					break;
 
 				case self::COMM_VAR_NET_NAME:
-					$comm_vars[ $key ] = get_site_option( 'site_name' );
+					$var_value = get_site_option( 'site_name' );
 					break;
 
 				case self::COMM_VAR_NET_URL:
-					$comm_vars[ $key ] = get_site_option( 'siteurl' );
-					break;
-
-				case self::COMM_VAR_MS_NAME:
-					if ( $membership->name ) {
-						$comm_vars[ $key ] = $membership->name;
-					} else {
-						$comm_vars[ $key ] = '';
-					}
-					break;
-
-				case self::COMM_VAR_MS_INVOICE:
-					if ( isset( $invoice )
-						&& ( $invoice->total > 0 || $invoice->uses_trial )
-					) {
-						$attr = array( 'post_id' => $invoice->id, 'pay_button' => 0 );
-						$scode = MS_Factory::load( 'MS_Controller_Shortcode' );
-						$comm_vars[ $key ] = $scode->membership_invoice( $attr );
-					} else {
-						$comm_vars[ $key ] = '';
-					}
+					$var_value = get_site_option( 'siteurl' );
 					break;
 
 				case self::COMM_VAR_MS_ACCOUNT_PAGE_URL:
-					$comm_vars[ $key ] = sprintf(
+					$var_value = sprintf(
 						'<a href="%s">%s</a>',
 						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
 						__( 'account page', MS_TEXT_DOMAIN )
 					);
 					break;
 
+				// Needs: $membership
+				case self::COMM_VAR_MS_NAME:
+					if ( $membership && $membership->name ) {
+						$var_value = $membership->name;
+					}
+					break;
+
+				// Needs: $invoice
+				case self::COMM_VAR_MS_INVOICE:
+					if ( $invoice ) {
+						if ( $invoice->total > 0 || $invoice->uses_trial ) {
+							$attr = array(
+								'post_id' => $invoice->id,
+								'pay_button' => 0,
+							);
+							$scode = MS_Factory::load( 'MS_Controller_Shortcode' );
+							$var_value = $scode->membership_invoice( $attr );
+						}
+					}
+					break;
+
+				// Needs: $subscription
 				case self::COMM_VAR_MS_REMAINING_DAYS:
-					$days = $subscription->get_remaining_period();
-					$comm_vars[ $key ] = sprintf(
-						__( '%s day%s', MS_TEXT_DOMAIN ),
-						$days,
-						abs( $days ) > 1 ? 's': ''
-					);
+					if ( $subscription ) {
+						$days = $subscription->get_remaining_period();
+						$var_value = sprintf(
+							__( '%s day%s', MS_TEXT_DOMAIN ),
+							$days,
+							abs( $days ) > 1 ? 's': ''
+						);
+					}
 					break;
 
+				// Needs: $subscription
 				case self::COMM_VAR_MS_REMAINING_TRIAL_DAYS:
-					$days = $subscription->get_remaining_trial_period();
-					$comm_vars[ $key ] = sprintf(
-						__( '%s day%s', MS_TEXT_DOMAIN ),
-						$days,
-						abs( $days ) > 1 ? 's': ''
-					);
+					if ( $subscription ) {
+						$days = $subscription->get_remaining_trial_period();
+						$var_value = sprintf(
+							__( '%s day%s', MS_TEXT_DOMAIN ),
+							$days,
+							abs( $days ) > 1 ? 's': ''
+						);
+					}
 					break;
 
+				// Needs: $subscription
 				case self::COMM_VAR_MS_EXPIRY_DATE:
-					$comm_vars[ $key ] = $subscription->expire_date;
+					if ( $subscription ) {
+						$var_value = $subscription->expire_date;
+					}
 					break;
 			}
 
 			$comm_vars[ $key ] = apply_filters(
-				'ms_model_communication_send_message_comm_var_' . $key,
-				$comm_vars[ $key ],
-				$subscription
+				'ms_model_communication_send_message_comm_var-' . $key,
+				$var_value,
+				$this->type,
+				$member,
+				$subscription,
+				$invoice
 			);
 		}
 
 		return apply_filters(
 			'ms_model_communication_get_comm_vars',
-			$comm_vars
+			$comm_vars,
+			$member
 		);
 	}
 

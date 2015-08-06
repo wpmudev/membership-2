@@ -217,6 +217,10 @@ class MS_Controller_Communication extends MS_Controller {
 				$process[] = MS_Model_Communication::COMM_TYPE_RENEWED;
 				break;
 
+			case MS_Model_Event::TYPE_MS_REGISTERED:
+				$process[] = MS_Model_Communication::COMM_TYPE_SIGNUP;
+				break;
+
 			case MS_Model_Event::TYPE_MS_MOVED:
 				break;
 			case MS_Model_Event::TYPE_MS_EXPIRED:
@@ -224,8 +228,6 @@ class MS_Controller_Communication extends MS_Controller {
 			case MS_Model_Event::TYPE_MS_TRIAL_EXPIRED:
 				break;
 			case MS_Model_Event::TYPE_MS_DROPPED:
-				break;
-			case MS_Model_Event::TYPE_MS_REGISTERED:
 				break;
 			case MS_Model_Event::TYPE_MS_BEFORE_FINISHES:
 				break;
