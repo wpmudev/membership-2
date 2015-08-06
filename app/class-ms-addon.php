@@ -66,7 +66,9 @@ abstract class MS_Addon extends MS_Controller {
 	 * @since  1.0.1.0
 	 * @return string
 	 */
-	abstract public function get_id();
+	public function get_id() {
+		trigger_error( 'get_id() not implemented by Add-on', E_USER_WARNING );
+	}
 
 	/**
 	 * Initializes the Add-on. Always executed.

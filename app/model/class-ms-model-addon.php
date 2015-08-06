@@ -253,7 +253,10 @@ class MS_Model_Addon extends MS_Model_Option {
 
 			if ( file_exists( $addon ) ) {
 				if ( ! class_exists( $class ) ) {
-					include_once $addon;
+					try {
+						include_once $addon;
+					} catch ( Exception $ex ) {
+					}
 				}
 
 				if ( class_exists( $class ) ) {

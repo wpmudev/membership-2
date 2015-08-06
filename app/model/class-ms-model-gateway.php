@@ -146,7 +146,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 			if ( file_exists( $gateway_file ) ) {
 				if ( ! class_exists( $class ) ) {
-					include_once $gateway_file;
+					try {
+						include_once $gateway_file;
+					} catch ( Exception $ex ) {
+					}
 				}
 
 				if ( class_exists( $class ) ) {
