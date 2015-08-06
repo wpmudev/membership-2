@@ -117,7 +117,7 @@ class MS_Controller_Billing extends MS_Controller {
 
 		$fields_edit = array( 'user_id', 'membership_id' );
 		$fields_pay = array( 'invoice_id' );
-		$fields_bulk = array( '$this->verify_nonce()' );
+		$fields_bulk = array( 'action', 'action2', 'invoice_id' );
 
 		// Save details of a single invoice.
 		if ( $this->verify_nonce( self::ACTION_EDIT )

@@ -11,6 +11,7 @@ Change Log:
 - Fix the BuddyPress registration form/workflow
 - Fix the Profile Fields Add-on, now settings are actually saved
 - Fix Invitation Code Add-on to not automatically change existing codes upon saving
+- Fix bug that prevented deleting invoices
 - Fix a PHP warning on Membership 2 pages about "invalid argument in foreach"
 
 1.0.1.0
