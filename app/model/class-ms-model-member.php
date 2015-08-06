@@ -1081,7 +1081,11 @@ class MS_Model_Member extends MS_Model {
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
 		} else {
-			$user_id = wp_create_user( $this->username, $this->password, $this->email );
+			$user_id = wp_create_user(
+				$this->username,
+				$this->password,
+				$this->email
+			);
 
 			if ( is_wp_error( $user_id ) ) {
 				$validation_errors->add(
@@ -1096,6 +1100,7 @@ class MS_Model_Member extends MS_Model {
 					)
 				);
 			}
+
 			$this->id = $user_id;
 		}
 
