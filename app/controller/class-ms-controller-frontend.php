@@ -608,7 +608,6 @@ class MS_Controller_Frontend extends MS_Controller {
 		}
 		catch( Exception $e ) {
 			$this->register_errors = $e->getMessage();
-			MS_Helper_Debug::log( $this->register_errors );
 
 			// step back
 			$this->add_action( 'the_content', 'register_form', 1 );
