@@ -66,7 +66,7 @@ class MS_Addon_Invitation_View_Edit extends MS_View {
 	 */
 	function prepare_fields() {
 		$invitation = $this->data['invitation'];
-		if ( ! $invitation->is_valid() ) {
+		if ( ! $invitation->code ) {
 			$invitation->code = substr( md5( time() ), 0, 20 );
 		}
 
