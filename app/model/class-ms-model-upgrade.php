@@ -122,9 +122,14 @@ class MS_Model_Upgrade extends MS_Model {
 			 * ----- Version-Specific update logic -----------------------------
 			 */
 
-			// Upgrade from a 1.0.0.x version to 1.0.1.x or higher
+			// Upgrade from a 1.0.0.x version to 1.0.1.0 or higher
 			if ( version_compare( $old_version, '1.0.1.0', 'lt' ) ) {
 				self::_upgrade_1_0_1_0();
+			}
+
+			// Upgrade from 1.0.1.0 version to 1.0.1.1 or higher
+			if ( version_compare( $old_version, '1.0.1.1', 'lt' ) ) {
+				self::_upgrade_1_0_1_1();
 			}
 
 			/*
@@ -187,6 +192,50 @@ class MS_Model_Upgrade extends MS_Model {
 			$result = $wpdb->get_col( $sql );
 			foreach ( $result as $user_id ) {
 				lib2()->updates->add( 'update_user_meta', $user_id, 'ms_is_member', true );
+			}
+		}
+
+		// Execute all queued actions!
+		lib2()->updates->plugin( MS_TEXT_DOMAIN );
+		lib2()->updates->execute();
+	}
+
+	/**
+	 * Upgrade from 1.0.1.0 version to a higher version.
+	 */
+	static private function _upgrade_1_0_1_1() {
+		lib2()->updates->clear();
+
+		/*
+		 * A bug in 1.0.1 created multiple copies of email templates.
+		 * This update block will delete the duplicates again.
+		 */
+		{
+			global $wpdb;
+			$sql = "
+			SELECT ID
+			FROM {$wpdb->posts}
+			WHERE
+				post_type = 'ms_communication'
+				AND ID NOT IN (
+				SELECT
+					MIN( p.ID ) ID
+				FROM
+					{$wpdb->posts} p
+					INNER JOIN {$wpdb->postmeta} m1
+					ON m1.post_id = p.ID AND m1.meta_key = 'type'
+				WHERE
+					p.post_type = 'ms_communication'
+					AND LENGTH( m1.meta_value ) > 0
+				GROUP BY
+					m1.meta_value,
+					p.post_parent
+				);
+			";
+			$ids = $wpdb->get_col( $sql );
+
+			foreach ( $ids as $id ) {
+				lib2()->updates->add( 'wp_delete_post', $id, true );
 			}
 		}
 
