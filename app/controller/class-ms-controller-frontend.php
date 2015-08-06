@@ -514,29 +514,29 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this
 		);
 
-		if ( ! empty( $custom_code ) ) {
+		if ( $custom_code ) {
 			$content = $custom_code;
-		}
+		} else {
+			remove_filter( 'the_content', 'wpautop' );
 
-		remove_filter( 'the_content', 'wpautop' );
-
-		$did_form = MS_Helper_Shortcode::has_shortcode(
-			MS_Helper_Shortcode::SCODE_REGISTER_USER,
-			$content
-		);
-
-		if ( ! $did_form ) {
-			$scode = sprintf(
-				'[%s errors="%s"]',
+			$did_form = MS_Helper_Shortcode::has_shortcode(
 				MS_Helper_Shortcode::SCODE_REGISTER_USER,
-				str_replace( '"', "'", $this->register_errors )
+				$content
 			);
-			$reg_form = do_shortcode( $scode );
 
-			if ( ! MS_Model_Member::is_logged_in() ) {
-				$content = $reg_form;
-			} else {
-				$content .= $reg_form;
+			if ( ! $did_form ) {
+				$scode = sprintf(
+					'[%s errors="%s"]',
+					MS_Helper_Shortcode::SCODE_REGISTER_USER,
+					str_replace( '"', "'", $this->register_errors )
+				);
+				$reg_form = do_shortcode( $scode );
+
+				if ( ! MS_Model_Member::is_logged_in() ) {
+					$content = $reg_form;
+				} else {
+					$content .= $reg_form;
+				}
 			}
 		}
 

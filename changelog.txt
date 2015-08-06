@@ -4,6 +4,10 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.1.1
+----------------------------------------------------------------------
+- Fix the BuddyPress registration form/workflow
+
 1.0.1.0
 ----------------------------------------------------------------------
 - Add gateway: 2Checkout
