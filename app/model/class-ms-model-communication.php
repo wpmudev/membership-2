@@ -587,6 +587,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		$key = 'all';
 		$comm_id = 0;
 
+		/*
+		 * If the Membership specific communication is not defined or it
+		 * is configured to use the default communication then fetch the
+		 * default communication object!
+		 */
+		$can_fallback = $membership && ! $no_fallback;
+
 		if ( self::is_valid_communication_type( $type ) ) {
 			$membership_id = 0;
 
@@ -642,7 +649,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$comm_class = $comm_classes[ $type ];
 			if ( $comm_id ) {
 				$comm = MS_Factory::load( $comm_class, $comm_id );
-			} else {
+			} elseif ( ! $can_fallback ) {
 				$comm = MS_Factory::create( $comm_class );
 				$comm->reset_to_default();
 				$comm->membership_id = $membership_id;
@@ -650,13 +657,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 			self::$Communication_IDs[$comm->membership_id][$type] = $comm->id;
 
-			/*
-			 * If the Membership specific communication is not defined or it
-			 * is configured to use the default communication then fetch the
-			 * default communication object!
-			 */
-			$can_fallback = $membership && ! $no_fallback;
-			if ( $can_fallback && ! $comm->override ) {
+			// If no template found or defined then fallback to default template.
+			$should_fallback = ! $comm || ! $comm->override;
+			if ( $can_fallback && $should_fallback ) {
 				$comm = self::get_communication( $type, null );
 			}
 		}
