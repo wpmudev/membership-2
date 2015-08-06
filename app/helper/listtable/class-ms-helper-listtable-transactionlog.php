@@ -175,21 +175,31 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$views['all'] = array(
 			'label' => __( 'All', MS_TEXT_DOMAIN ),
 			'url' => remove_query_arg( 'state' ),
+			'count' => MS_Model_Transactionlog::get_item_count(),
 		);
 
 		$views['ok'] = array(
 			'label' => __( 'Successful', MS_TEXT_DOMAIN ),
 			'url' => add_query_arg( 'state', 'ok' ),
+			'count' => MS_Model_Transactionlog::get_item_count(
+				array( 'state' => 'ok' )
+			),
 		);
 
 		$views['err'] = array(
 			'label' => __( 'Failed', MS_TEXT_DOMAIN ),
 			'url' => add_query_arg( 'state', 'err' ),
+			'count' => MS_Model_Transactionlog::get_item_count(
+				array( 'state' => 'err' )
+			),
 		);
 
 		$views['ignore'] = array(
 			'label' => __( 'Ignored', MS_TEXT_DOMAIN ),
 			'url' => add_query_arg( 'state', 'ignore' ),
+			'count' => MS_Model_Transactionlog::get_item_count(
+				array( 'state' => 'ignore' )
+			),
 		);
 
 		return apply_filters(

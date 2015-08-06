@@ -212,15 +212,15 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_item_count( $args = null ) {
-		MS_Factory::select_blog();
-		$args = self::get_query_args( $args );
-		unset( $args['posts_per_page'] );
-		$query = new WP_Query( $args );
-		MS_Factory::revert_blog();
+		$args = lib2()->array->get( $args );
+		$args['posts_per_page'] = 0;
+		$items = self::get_items( $args );
+
+		$count = count( $items );
 
 		return apply_filters(
 			'ms_model_transactionlog_get_item_count',
-			$query->found_posts,
+			$count,
 			$args
 		);
 	}
@@ -243,6 +243,13 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		$items = array();
 
 		foreach ( $query->posts as $post_id ) {
+			if ( ! get_post_meta( $post_id, 'method', true ) &&
+				! get_post_meta( $post_id, 'method', true )
+			) {
+				// The log entry is incomplete. Do not load it.
+				continue;
+			}
+
 			$items[] = MS_Factory::load( 'MS_Model_Transactionlog', $post_id );
 		}
 
@@ -311,8 +318,11 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 				state1.post_id = p.ID AND state1.meta_key IN ('_success', 'success')
 			LEFT JOIN {$wpdb->postmeta} state2 ON
 				state2.post_id = p.ID AND state2.meta_key IN ('_manual_state', 'manual_state')
+			INNER JOIN {$wpdb->postmeta} method ON
+				method.post_id = p.ID AND method.meta_key IN ('_method', 'method')
 		WHERE
 			p.post_type = %s
+			AND LENGTH( method.meta_value ) > 0
 		";
 
 		switch ( $state ) {
@@ -344,6 +354,10 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 
 		$sql = $wpdb->prepare( $sql, self::get_post_type() );
 		$ids = $wpdb->get_col( $sql );
+
+		if ( ! count( $ids ) ) {
+			$ids = array( 0 );
+		}
 
 		return $ids;
 	}
