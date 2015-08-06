@@ -9,6 +9,7 @@ Change Log:
 - Add warning when BuddyPress pages conflict with M2 Membership pages
 - Fix the BuddyPress registration form/workflow
 - Fix the Profile Fields Add-on, now settings are actually saved
+- Fix a PHP warning on Membership 2 pages about "invalid argument in foreach"
 
 1.0.1.0
 ----------------------------------------------------------------------
