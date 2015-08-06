@@ -41,7 +41,6 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 		$this->subject = __( 'Your billing details have been changed.', MS_TEXT_DOMAIN );
 		$this->message = self::get_default_message();
 		$this->enabled = false;
-		$this->save();
 
 		do_action(
 			'ms_model_communication_reset_to_default_after',

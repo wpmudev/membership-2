@@ -47,7 +47,6 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 		);
 		$this->message = self::get_default_message();
 		$this->enabled = false;
-		$this->save();
 
 		do_action(
 			'ms_model_communication_reset_to_default_after',

@@ -57,7 +57,6 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 		$this->message = self::get_default_message();
 		$this->enabled = false;
 		$this->period_enabled = true;
-		$this->save();
 
 		do_action(
 			'ms_model_communication_reset_to_default_after',
