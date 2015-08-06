@@ -50,6 +50,8 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @since  1.0.0
 	 */
 	public function init() {
+		$this->collission_check();
+
 		if ( self::is_active() ) {
 			$this->buddypress_registration = lib2()->is_true(
 				$this->get_setting( 'buddypress_registration' )
@@ -99,6 +101,52 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				'bp_core_signup_user',
 				'disable_validation'
 			);
+		}
+	}
+
+	/**
+	 * Checks, if some BuddyPress pages overlap with M2 membership pages.
+	 *
+	 * In some cases people used the same page-ID for both BuddyPress
+	 * registration and M2 registration. This will cause problems and must be
+	 * resolved to have M2 and BuddyPress work symbiotically.
+	 *
+	 * @since  1.0.1.1
+	 */
+	protected function collission_check() {
+		$buddy_pages = MS_Factory::get_option( 'bp-pages' );
+
+		if ( ! is_array( $buddy_pages ) ) {
+			// Okay, no BuddyPress pages set up yet.
+			return;
+		}
+
+		$duplicates = array();
+		foreach ( $buddy_pages as $type => $page_id ) {
+			$collission = MS_Model_Pages::get_page_by( 'id', $page_id );
+			if ( $collission ) {
+				$title = $collission->post_title;
+				if ( ! $title ) {
+					$title = $collission->post_name;
+				}
+
+				$duplicates[] = sprintf( '%s - %s', $page_id, $title );
+			}
+		}
+
+		if ( count( $duplicates ) ) {
+			$msg = sprintf(
+				'%s<br><br>%s',
+				sprintf(
+					__( 'BuddyPress uses a page that is also used as a Membership page by Membership 2.<br>Please assign a different page for either %sMembership 2%s or %sBuddyPress%s to avoid conflicts.', MS_TEXT_DOMAIN ),
+					'<a href="' . MS_Controller_Plugin::get_admin_url( 'settings' ) . '">',
+					'</a>',
+					'<a href="' . admin_url( 'admin.php?page=bp-page-settings' ) . '">',
+					'</a>'
+				),
+				implode( '<br>', $duplicates )
+			);
+			lib2()->ui->admin_message( $msg, 'error' );
 		}
 	}
 

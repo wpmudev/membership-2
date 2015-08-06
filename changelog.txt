@@ -6,6 +6,7 @@ Change Log:
 
 1.0.1.1
 ----------------------------------------------------------------------
+- Add warning when BuddyPress pages conflict with M2 Membership pages
 - Fix the BuddyPress registration form/workflow
 
 1.0.1.0
