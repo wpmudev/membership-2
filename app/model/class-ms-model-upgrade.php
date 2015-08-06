@@ -219,6 +219,14 @@ class MS_Model_Upgrade extends MS_Model {
 		// Make sure that the current plugin is the official M2 one.
 		if ( false === strpos( MS_Plugin::instance()->dir, $new_dir ) ) {
 			// Cancel: This plugin is not the official plugin (maybe a backup or beta version)
+
+			if ( false !== strpos( MS_Plugin::instance()->dir, $old_dir ) ) {
+				lib2()->ui->admin_message(
+					__( '<b>Upgrade warning</b>:<br>The Membership 2 plugin is installed in an deprecated folder. Some users did report issues when the plugin is installed in this directory.<br>To fix this issue please follow these steps:<br><br>1. Delete* the old Membership Premium plugin if it is still installed.<br>2. Delete* the Membership 2 plugin.<br>3. Re-install Membership 2 from the WPMU Dashboard - your existing data is not affected by this.<br><br>*) <em>Only deactivating the plugins does not work, you have to delete them.</em>', MS_TEXT_DOMAIN ),
+					'error'
+				);
+			}
+
 			return;
 		}
 
