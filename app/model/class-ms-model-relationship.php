@@ -2083,6 +2083,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				// Check if any invoice was paid already.
 				for ( $ind = $this->current_invoice_number; $ind > 0; $ind -= 1 ) {
 					$invoice = MS_Model_Invoice::get_invoice( $this->id, $ind );
+					if ( ! $invoice ) { continue; }
 					if ( $invoice->uses_trial ) { continue; }
 					if ( $invoice->is_paid() ) {
 						$valid_payment = true;
