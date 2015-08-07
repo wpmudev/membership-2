@@ -144,7 +144,11 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		</div>
 		<?php
 		// Default WP action hook.
-		do_action( 'signup_blogform', array() );
+
+		// Intentionally removed, because this hook should be only used in the
+		// blog-signup form. Not during user registration.
+		//do_action( 'signup_blogform', array() );
+
 		do_action( 'after_signup_form' );
 
 		$html = ob_get_clean();

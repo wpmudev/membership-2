@@ -17,6 +17,7 @@ Change Log:
 - Fix a bug that would temporarily grant access to a membership when user cancels payment
 - Fix a bug that created duplicate email templates every time an email was sent
 - Fix a bug in the reset-script that would delete too much data in multisite installs (see Help > Advanced Settings)
+- Fix a wrong action hook used in registration form that would display wrong fields when certain plugins are activated
 - Fix a PHP warning on Membership 2 pages about "invalid argument in foreach"
 
 1.0.1.0
