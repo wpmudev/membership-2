@@ -2168,6 +2168,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			} elseif ( self::STATUS_WAITING == $calc_status ) {
 				// The membership did not yet start. Deactivate it!
 				$calc_status = self::STATUS_DEACTIVATED;
+			} elseif ( ! $this->expire_date ) {
+				// Membership without expire date cannot be cancelled. Deactivate it!
+				$calc_status = self::STATUS_DEACTIVATED;
 			} else {
 				// Wait until the expiration date is reached...
 				$calc_status = self::STATUS_CANCELED;

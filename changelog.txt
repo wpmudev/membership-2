@@ -13,6 +13,7 @@ Change Log:
 - Fix the Profile Fields Add-on, now settings are actually saved
 - Fix Invitation Code Add-on to not automatically change existing codes upon saving
 - Fix bug that prevented deleting invoices
+- Fix a bug that would temporarily grant access to a membership when user cancels payment
 - Fix a bug that created duplicate email templates every time an email was sent
 - Fix a bug in the reset-script that would delete too much data in multisite installs (see Help > Advanced Settings)
 - Fix a PHP warning on Membership 2 pages about "invalid argument in foreach"
