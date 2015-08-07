@@ -9,6 +9,7 @@ Change Log:
 - Add a new Automated Email Response: User account created (i.e. welcome email)
 - Add a warning when BuddyPress pages conflict with M2 Membership pages
 - Add a warning when M2 is installed in an deprecated directory (can cause conflicts)
+- Fix detection of valid subscriptions to fix issues with subscriptions getting expired too early
 - Fix the BuddyPress registration form/workflow
 - Fix the Profile Fields Add-on, now settings are actually saved
 - Fix Invitation Code Add-on to not automatically change existing codes upon saving

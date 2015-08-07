@@ -2069,17 +2069,31 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$can_activate = true;
 			$debug_msg[] = '[Can activate: Free membership]';
 		} else {
-			$invoice = $this->get_current_invoice();
-			if ( 0 == $invoice->total ) {
-				$can_activate = true;
-				$debug_msg[] = '[Can activate: Free invoice]';
-			} else {
-				$last_payment = end( $this->payments );
-				$now = MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT );
-				if ( $last_payment && $invoice->total == $last_payment['amount'] ) {
-					$can_activate = true;
+			$valid_payment = false;
+			// Check if there is *any* payment, no matter what height.
+			foreach ( $this->payments as $payment ) {
+				if ( ! isset( $payment['amount'] ) ) { continue; }
+				if ( floatval( $payment['amount'] ) > 0 ) {
+					$valid_payment = true;
 					$debug_msg[] = '[Can activate: Payment found]';
+					break;
 				}
+			}
+			if ( ! $valid_payment ) {
+				// Check if any invoice was paid already.
+				for ( $ind = $this->current_invoice_number; $ind > 0; $ind -= 1 ) {
+					$invoice = MS_Model_Invoice::get_invoice( $this->id, $ind );
+					if ( $invoice->uses_trial ) { continue; }
+					if ( $invoice->is_paid() ) {
+						$valid_payment = true;
+						$debug_msg[] = '[Can activate: Paid invoice found]';
+						break;
+					}
+				}
+			}
+
+			if ( $valid_payment ) {
+				$can_activate = true;
 			}
 
 			if ( ! $can_activate && $debug ) {
