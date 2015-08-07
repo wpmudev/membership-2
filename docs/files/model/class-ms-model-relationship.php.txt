@@ -28,6 +28,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * Pending is the first status that means the member did not confirm his
+	 * intention to complete his payment/registration.
+	 *
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -36,6 +40,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * This status has a much higher value than PENDING, because it means that
+	 * the member already made a payment, but the subscription is not yet
+	 * activated because the start date was not reached.
+	 *
+	 * NO ACCESS.
+	 *
+	 * @since  1.0.0
+	 * @see $status $status property.
+	 */
+	const STATUS_WAITING = 'waiting';
+
+	/**
+	 * Membership Relationship Status constants.
+	 *
+	 * FULL ACCESS TO MEMBERSHIP CONTENTS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -45,6 +64,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Membership Relationship Status constants.
 	 *
+	 * FULL ACCESS TO MEMBERSHIP CONTENTS.
+	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
@@ -52,6 +73,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * User cancelled his subscription but the end date of the current payment
+	 * period is not reached yet. The user has full access to the membership
+	 * contents until the end date is reached.
+	 *
+	 * FULL ACCESS TO MEMBERSHIP CONTENTS.
+	 *
+	 * @since  1.0.0
+	 * @see $status $status property.
+	 */
+	const STATUS_CANCELED = 'canceled';
+
+	/**
+	 * Membership Relationship Status constants.
+	 *
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -60,16 +96,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
-	 * Start-Date not reached yet.
+	 * End-Date reached. The subscription is available for renewal for a few
+	 * more days.
 	 *
-	 * @since  1.0.0
-	 * @see $status $status property.
-	 */
-	const STATUS_WAITING = 'waiting';
-
-	/**
-	 * Membership Relationship Status constants.
-	 * End-Date reached.
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
@@ -78,19 +108,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 	/**
 	 * Membership Relationship Status constants.
+	 * Deactivated means, that we're completely done with this subscription.
+	 * It's not displayed for renewal and the member can be set to inactive now.
+	 *
+	 * NO ACCESS.
 	 *
 	 * @since  1.0.0
 	 * @see $status $status property.
 	 */
 	const STATUS_DEACTIVATED = 'deactivated';
-
-	/**
-	 * Membership Relationship Status constants.
-	 *
-	 * @since  1.0.0
-	 * @see $status $status property.
-	 */
-	const STATUS_CANCELED = 'canceled';
 
 	/**
 	 * The Membership ID.
@@ -410,8 +436,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Not found, create a new one.
 		if ( empty( $subscription ) ) {
 			$subscription = MS_Factory::create( 'MS_Model_Relationship' );
-			$subscription->membership_id = $membership_id;
-			$subscription->user_id = $user_id;
 			$subscription->status = self::STATUS_PENDING;
 			$subscription->is_simulated = $is_simulated;
 
@@ -421,6 +445,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		// Always update these fields.
+		$subscription->membership_id = $membership_id;
+		$subscription->user_id = $user_id;
 		$subscription->move_from_id = $move_from_id;
 		$subscription->gateway_id = $gateway_id;
 		$subscription->expire_date = '';
@@ -452,11 +478,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 		}
 
-		// Set the start/expire dates. Do this *after* the set_status() call!
 		$subscription->config_period();
 		$membership = $subscription->get_membership();
+		$subscription->payment_type = $membership->payment_type;
 
-		if ( 'admin' == $gateway_id || $membership->is_free() ) {
+		if ( 'admin' == $gateway_id ) {
 			$subscription->trial_period_completed = true;
 			$subscription->status = self::STATUS_ACTIVE;
 
@@ -1091,7 +1117,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$this->start_date,
 				$this->trial_expire_date
 			);
-
 			if ( ! $valid_date ) {
 				$expire_date = $this->calc_expire_date( $this->start_date );
 			}
@@ -1798,7 +1823,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		// Update the payment-gateway.
-		$this->gateway_id = $gateway;
+		if ( ! $this->gateway_id ) {
+			$this->gateway_id = $gateway;
+		} elseif ( MS_Gateway_Free::ID != $gateway ) {
+			// Don't change an existing gateway to "Free".
+			$this->gateway_id = $gateway;
+		}
 
 		if ( $amount > 0 ) {
 			$this->payments[] = array(
@@ -1845,8 +1875,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$this->save();
 
+		// Thanks for paying or for starting your trial period!
+		// You're officially active :)
+		$member = $this->get_member();
+		$member->is_member = true;
+		$member->save();
+
 		// Return true if the subscription is active.
-		$is_active = self::STATUS_ACTIVE == $this->status;
+		$paid_status = array(
+			self::STATUS_ACTIVE,
+			self::STATUS_WAITING,
+		);
+		$is_active = in_array( $this->status, $paid_status );
 		return $is_active;
 	}
 
@@ -1873,11 +1913,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 		$membership = $this->get_membership();
 
-		if ( self::STATUS_PENDING == $this->status && $membership->is_free() ) {
-			// Skip "Pending" for free memberships.
-			$status = self::STATUS_ACTIVE;
-			$this->handle_status_change( $status );
-		} elseif ( in_array( $status, $ignored_status ) ) {
+		if ( in_array( $status, $ignored_status ) ) {
 			// No validation for this status.
 			$this->status = $status;
 		} else {
@@ -1968,7 +2004,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @param string $set_status The set status to compare.
 	 * @return string The calculated status.
 	 */
-	protected function calculate_status( $set_status = null ) {
+	protected function calculate_status( $set_status = null, $debug = false ) {
 		/**
 		 * Documented in check_membership_status()
 		 *
@@ -1980,6 +2016,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$membership = $this->get_membership();
 		$calc_status = null;
+		$debug_msg = array();
 		$check_trial = $this->is_trial_eligible();
 
 		if ( ! empty( $this->payments ) ) {
@@ -1996,6 +2033,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			&& strtotime( $this->start_date ) > strtotime( MS_Helper_Period::current_date() )
 		) {
 			$calc_status = self::STATUS_WAITING;
+			$debug_msg[] = '[WAITING: Start-date not reached]';
+		} elseif ( ! $calc_status && $debug ) {
+			$debug_msg[] = '[Not WAITING: No start-date or start-date reached]';
 		}
 
 		if ( $check_trial ) {
@@ -2003,31 +2043,73 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL;
+				$debug_msg[] = '[TRIAL: Trial-Expire date not reached]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not TRIAL: Trial-Expire date reached]';
 			}
 
 			if ( ! $calc_status
 				&& strtotime( $this->trial_expire_date ) < strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL_EXPIRED;
+				$debug_msg[] = '[TRIAL-EXPIRED: Trial-Expire date reached]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not TRIAL-EXPIRED: Trial-Expire date not reached]';
 			}
+		} elseif ( ! $calc_status && $debug ) {
+			$debug_msg[] = '[Skipped TRIAL status]';
 		}
 
 		// Status an only become active when added by admin or invoice is paid.
 		$can_activate = false;
 		if ( 'admin' == $this->gateway_id ) {
 			$can_activate = true;
+			$debug_msg[] = '[Can activate: Admin gateway]';
 		} elseif ( $membership->is_free() ) {
 			$can_activate = true;
+			$debug_msg[] = '[Can activate: Free membership]';
 		} else {
-			$invoice = $this->get_current_invoice();
-			if ( 0 == $invoice->total ) {
-				$can_activate = true;
-			} else {
-				$last_payment = end( $this->payments );
-				$now = MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT );
-				if ( $now == $last_payment['date'] ) {
-					$can_activate = true;
+			$valid_payment = false;
+			// Check if there is *any* payment, no matter what height.
+			foreach ( $this->payments as $payment ) {
+				if ( ! isset( $payment['amount'] ) ) { continue; }
+				if ( floatval( $payment['amount'] ) > 0 ) {
+					$valid_payment = true;
+					$debug_msg[] = '[Can activate: Payment found]';
+					break;
 				}
+			}
+			if ( ! $valid_payment ) {
+				// Check if any invoice was paid already.
+				for ( $ind = $this->current_invoice_number; $ind > 0; $ind -= 1 ) {
+					$invoice = MS_Model_Invoice::get_invoice( $this->id, $ind );
+					if ( $invoice->uses_trial ) { continue; }
+					if ( $invoice->is_paid() ) {
+						$valid_payment = true;
+						$debug_msg[] = '[Can activate: Paid invoice found]';
+						break;
+					}
+				}
+			}
+			if ( ! $valid_payment ) {
+				// Check if the current invoice is free.
+				$invoice = $this->get_current_invoice();
+				if ( 0 == $invoice->total ) {
+					$valid_payment = true;
+				}
+			}
+
+			if ( $valid_payment ) {
+				$can_activate = true;
+			}
+
+			if ( ! $can_activate && $debug ) {
+				$debug_msg[] = sprintf(
+					'[Can not activate: Gateway: %s; Price: %s; Invoice: %s]',
+					$this->gateway_id,
+					$membership->price,
+					$invoice->total
+				);
 			}
 		}
 
@@ -2037,6 +2119,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type
 			) {
 				$calc_status = self::STATUS_ACTIVE;
+				$debug_msg[] = '[ACTIVE(1): Payment-type is permanent]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not ACTIVE(1): Payment-type is not permanent]';
 			}
 
 			// If expire date is empty and Active-state is requests then use active.
@@ -2045,6 +2130,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& self::STATUS_ACTIVE == $set_status
 			) {
 				$calc_status = self::STATUS_ACTIVE;
+				$debug_msg[] = '[ACTIVE(2): Expire date empty and active requested]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not ACTIVE(2): Expire date set or wrong status-request]';
 			}
 
 			// If expire date is not reached then membership obviously is active.
@@ -2053,15 +2141,22 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_ACTIVE;
+				$debug_msg[] = '[ACTIVE(3): Expire date set and not reached]';
+			} elseif ( ! $calc_status && $debug ) {
+				$debug_msg[] = '[Not ACTIVE(3): Expire date set and reached]';
 			}
 		} elseif ( ! $calc_status && self::STATUS_PENDING == $this->status ) {
 			// Invoice is not paid yet.
 			$calc_status = self::STATUS_PENDING;
+			$debug_msg[] = '[PENDING: Cannot activate pending subscription]';
+		} elseif ( ! $calc_status && $debug ) {
+			$debug_msg[] = '[Not ACTIVE/PENDING: Cannot activate subscription]';
 		}
 
 		// If no other condition was true then the expire date was reached.
 		if ( ! $calc_status ) {
 			$calc_status = self::STATUS_EXPIRED;
+			$debug_msg[] = '[EXPIRED: Default status]';
 		}
 
 		// Did the user cancel the membership?
@@ -2091,10 +2186,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			} elseif ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT == $membership->payment_type ) {
 				// This membership has no expiration-time. Deactivate it!
 				$calc_status = self::STATUS_DEACTIVATED;
+			} elseif ( self::STATUS_WAITING == $calc_status ) {
+				// The membership did not yet start. Deactivate it!
+				$calc_status = self::STATUS_DEACTIVATED;
+			} elseif ( ! $this->expire_date ) {
+				// Membership without expire date cannot be cancelled. Deactivate it!
+				$calc_status = self::STATUS_DEACTIVATED;
 			} else {
 				// Wait until the expiration date is reached...
 				$calc_status = self::STATUS_CANCELED;
 			}
+		}
+
+		if ( $debug ) {
+			// Intended debug output, leave it here.
+			lib2()->debug->dump( $debug_msg );
 		}
 
 		return apply_filters(
@@ -2317,9 +2423,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 
 		// Update the Subscription status.
-		$cur_status = $this->calculate_status();
+		$next_status = $this->calculate_status( null );
 
-		switch ( $cur_status ) {
+		switch ( $next_status ) {
 			case self::STATUS_TRIAL:
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
 					&& MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS )
@@ -2364,8 +2470,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					 * request_payment()!
 					 */
 					if ( $gateway->request_payment( $this ) ) {
-						$cur_status = self::STATUS_ACTIVE;
-						$this->status = $cur_status;
+						$next_status = self::STATUS_ACTIVE;
+						$this->status = $next_status;
 						$this->config_period(); // Needed because of status change.
 					}
 
@@ -2411,7 +2517,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$remaining_days = $this->get_remaining_period();
 
 					// Recalculate the new Subscription status.
-					$cur_status = $this->calculate_status();
+					$next_status = $this->calculate_status();
 				}
 
 				/*
@@ -2576,15 +2682,41 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				}
 				break;
 
-			case self::STATUS_PENDING:
 			case self::STATUS_DEACTIVATED:
+				/*
+				 * A subscription was finally deactivated.
+				 * Lets check if the member has any other active subscriptions,
+				 * or (if not) his account should be deactivated.
+				 *
+				 * First get a list of all subscriptions that do not have status
+				 * Pending / Deactivated.
+				 */
+				$subscriptions = self::get_subscriptions(
+					array( 'user_id' => $this->user_id )
+				);
+
+				// Check if there is a subscription that keeps the user active.
+				$deactivate = true;
+				foreach ( $subscriptions as $item ) {
+					if ( $item->id == $this->id ) { continue; }
+					$deactivate = false;
+				}
+
+				if ( $deactivate ) {
+					$member = $this->get_member();
+					$member->is_member = false;
+					$member->save();
+				}
+				break;
+
+			case self::STATUS_PENDING:
 			default:
 				// Do nothing.
 				break;
 		}
 
 		// Save the new status.
-		$this->status = $cur_status;
+		$this->status = $next_status;
 		$this->save();
 
 		// Save the changed email queue.

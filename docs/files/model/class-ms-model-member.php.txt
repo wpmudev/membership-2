@@ -23,7 +23,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @internal
 	 */
-	const SEARCH_ONLY_MEMBERS = 'only members';
+	const SEARCH_ONLY_MEMBERS = 'only members'; //TODO: replace space with _ !!!!
 
 	/**
 	 * Members search constants.
@@ -92,27 +92,24 @@ class MS_Model_Member extends MS_Model {
 	protected $subscriptions = array();
 
 	/**
-	 * Indicator if the user is a valid Member.
+	 * Indicator if the user is an active M2 Member.
 	 *
-	 * Only members have access to memberships.
-	 * False indicates blocked members (if signed up for a membership).
+	 * This is a convenience/redudant flag to speed up SQL queries.
+	 * Actually everyone that has an active or trial status membership is
+	 * considered an active member.
+	 *
+	 * This flag is set when:
+	 * - In MS_Model_Relationship, when a payment is recorded
+	 *   via add_payment()
+	 *
+	 * This flag is reset when:
+	 * - In MS_Model_Relationship, when a subscription is deactivated
+	 *   via check_membership_status()
 	 *
 	 * @since  1.0.0
 	 * @var boolean
 	 */
 	protected $is_member = false;
-
-	/**
-	 * Active status.
-	 *
-	 * Staus to activate or deactivate a user independently of the membership
-	 * status. False indicates blocked members (if signed up for a membership).
-	 * For further use. (For temporary member blocking).
-	 *
-	 * @since  1.0.0
-	 * @var boolean
-	 */
-	protected $active = true;
 
 	/**
 	 * Member's username.
@@ -123,7 +120,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $username;
+	protected $username = '';
 
 	/**
 	 * Member's email.
@@ -134,7 +131,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $email;
+	protected $email = '';
 
 	/**
 	 * Member's name.
@@ -145,7 +142,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $name;
+	protected $name = '';
 
 	/**
 	 * Member's first name.
@@ -156,7 +153,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $first_name;
+	protected $first_name = '';
 
 	/**
 	 * Member's last name.
@@ -167,7 +164,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @var string
 	 */
-	protected $last_name;
+	protected $last_name = '';
 
 	/**
 	 * Member's password.
@@ -178,7 +175,7 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 * @var string
 	 */
-	protected $password;
+	protected $password = '';
 
 	/**
 	 * Member's password confirmation.
@@ -189,7 +186,7 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 * @var string
 	 */
-	protected $password2;
+	protected $password2 = '';
 
 	/**
 	 * Member's gateway profiles info.
@@ -205,7 +202,7 @@ class MS_Model_Member extends MS_Model {
 	 *     @type mixed $value The field value to store.
 	 * }
 	 */
-	protected $gateway_profiles;
+	protected $gateway_profiles = array();
 
 	/**
 	 * The associated WP_User object
@@ -214,7 +211,7 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 * @var WP_User
 	 */
-	protected $wp_user;
+	protected $wp_user = null;
 
 	/**
 	 * Custom data can be used by other plugins via the set_custom_data() and
@@ -340,6 +337,10 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_member_ids( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
 		static $Members = array();
+		if ( ! isset( $args['number'] ) ) {
+			$args['number'] = 0;
+		}
+
 		$key = json_encode( $args );
 
 		if ( ! isset( $Members[$key] ) ) {
@@ -593,6 +594,8 @@ class MS_Model_Member extends MS_Model {
 	 * @return boolean True if user is admin.
 	 */
 	static public function is_admin_user( $user_id = false ) {
+		$cache_result = true;
+
 		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
 			$is_admin = false;
 			$default_user_id = null;
@@ -619,7 +622,13 @@ class MS_Model_Member extends MS_Model {
 				 * @var string|bool A WordPress capability or boolean false.
 				 */
 				$controller = MS_Plugin::instance()->controller;
-				$capability = $controller->capability;
+				if ( $controller ) {
+					$capability = $controller->capability;
+				} else {
+					// This is used in case the function is called too early.
+					$capability = 'manage_options';
+					$cache_result = false;
+				}
 
 				if ( ! empty( $capability ) ) {
 					if ( empty( $user_id ) ) {
@@ -637,14 +646,18 @@ class MS_Model_Member extends MS_Model {
 				);
 			}
 
-			self::$_is_admin_user[ $user_id ] = $is_admin;
+			if ( $cache_result ) {
+				self::$_is_admin_user[ $user_id ] = $is_admin;
 
-			if ( null !== $default_user_id ) {
-				self::$_is_admin_user[ $default_user_id ] = $is_admin;
+				if ( null !== $default_user_id ) {
+					self::$_is_admin_user[ $default_user_id ] = $is_admin;
+				}
 			}
+		} else {
+			$is_admin = self::$_is_admin_user[ $user_id ];
 		}
 
-		return self::$_is_admin_user[ $user_id ];
+		return $is_admin;
 	}
 
 	/**
@@ -848,7 +861,6 @@ class MS_Model_Member extends MS_Model {
 			'last_name',
 			'subscriptions',
 			'is_member',
-			'active',
 			'gateway_profiles',
 			'custom_data',
 		);
@@ -1069,7 +1081,11 @@ class MS_Model_Member extends MS_Model {
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
 		} else {
-			$user_id = wp_create_user( $this->username, $this->password, $this->email );
+			$user_id = wp_create_user(
+				$this->username,
+				$this->password,
+				$this->email
+			);
 
 			if ( is_wp_error( $user_id ) ) {
 				$validation_errors->add(
@@ -1084,6 +1100,7 @@ class MS_Model_Member extends MS_Model {
 					)
 				);
 			}
+
 			$this->id = $user_id;
 		}
 
@@ -1240,7 +1257,7 @@ class MS_Model_Member extends MS_Model {
 					);
 				}
 			} else {
-				$subscription = $this->get_subscriptions( $membership_id );
+				$subscription = $this->get_subscription( $membership_id );
 			}
 
 			// Reset the status and start/expire dates when added by admin.
@@ -1250,6 +1267,8 @@ class MS_Model_Member extends MS_Model {
 				$subscription->expire_date = null;
 				$subscription->status = MS_Model_Relationship::STATUS_ACTIVE;
 				$subscription->save();
+
+				$this->is_member = true;
 			}
 		}
 
@@ -1285,6 +1304,15 @@ class MS_Model_Member extends MS_Model {
 			$subscription->deactivate_membership();
 			unset( $this->subscriptions[$key] );
 		}
+
+		$is_member = false;
+		foreach ( $this->subscriptions as $subscription ) {
+			if ( ! $subscription->is_system() ) {
+				$is_member = true;
+				break;
+			}
+		}
+		$this->is_member = $is_member;
 
 		do_action(
 			'ms_model_membership_drop_membership',

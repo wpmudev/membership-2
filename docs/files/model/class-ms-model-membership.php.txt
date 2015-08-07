@@ -716,6 +716,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	static public function get_memberships( $args = null ) {
 		$ids = self::get_membership_ids( $args );
+		$memberships = array();
 
 		foreach ( $ids as $id ) {
 			$memberships[] = MS_Factory::load(
