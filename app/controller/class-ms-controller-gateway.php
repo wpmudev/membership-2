@@ -535,9 +535,12 @@ class MS_Controller_Gateway extends MS_Controller {
 							array( 'ms_relationship_id' => $subscription->id )
 						);
 					}
-				} else {
+				} elseif ( MS_Gateway_Manual::ID == $gateway_id ) {
 					// For manual gateway payments.
 					$this->add_action( 'the_content', 'purchase_info_content' );
+				} else {
+					// Something went wrong, the payment was not successful.
+					$this->add_action( 'the_content', 'purchase_error_content' );
 				}
 			}
 			catch ( Exception $e ) {
