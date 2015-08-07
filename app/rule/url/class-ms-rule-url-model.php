@@ -154,7 +154,8 @@ class MS_Rule_Url_Model extends MS_Rule {
 	public function check_url_expression_match( $url, $check_list ) {
 		$match = false;
 
-		if ( is_array( $check_list ) && ! empty( $check_list ) ) {
+		$check_list = lib2()->array->get( $check_list );
+		if ( count( $check_list ) ) {
 			$check_list = array_map( 'strtolower', $check_list );
 			$check_list = array_map( 'trim', $check_list );
 
@@ -166,9 +167,10 @@ class MS_Rule_Url_Model extends MS_Rule {
 
 			$url = strtolower( $url );
 			foreach ( $check_list as $check ) {
+				if ( $match ) { break; }
+
 				if ( false !== strpos( $url, $check ) ) {
 					$match = true;
-					break;
 				}
 			}
 		}
