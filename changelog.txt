@@ -4,6 +4,11 @@ Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.1.2
+----------------------------------------------------------------------
+- Improved the details in the Pro-Rating Add-on with short instructions
+- Fix a bug in Pro-Rating Add-on to correctly apply discount from now on
+
 1.0.1.1
 ----------------------------------------------------------------------
 - Add a new Automated Email Response: User account created (i.e. welcome email)

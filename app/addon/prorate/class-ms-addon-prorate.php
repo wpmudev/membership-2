@@ -87,10 +87,11 @@ class MS_Addon_Prorate extends MS_Addon {
 	 * @return MS_Model_Invoice Modified Invoice.
 	 */
 	public function add_discount( $invoice ) {
-		// Only the first invoice can be pro-rated.
-		if ( $invoice->invoice_number > 1 ) { return $invoice; }
-
 		$subscription = $invoice->get_subscription();
+
+		// If memberships were already cancelled don't pro-rate again!
+		if ( $subscription->cancelled_memberships ) { return $invoice; }
+
 		$membership = $invoice->get_membership();
 
 		if ( ! $subscription->move_from_id ) { return $invoice; }
@@ -109,7 +110,7 @@ class MS_Addon_Prorate extends MS_Addon {
 				$id
 			);
 
-			if ( $move_from->is_valid() && $move_from->id == $id ) {
+			if ( $move_from->is_valid() && $move_from->membership_id == $id ) {
 				$pro_rate += $this->get_discount( $move_from );
 			}
 		}
