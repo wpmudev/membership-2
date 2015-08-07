@@ -9,6 +9,7 @@ Change Log:
 - Improved the details in the Pro-Rating Add-on with short instructions
 - Fix a bug in Pro-Rating Add-on to correctly apply discount from now on
 - Fix wrong signup-logic to instantly disable the old subscription on membership upgrade/downgrade
+- Fix a PHP error that occured when paying the first invoice of a member via manual gateway
 
 1.0.1.1
 ----------------------------------------------------------------------
