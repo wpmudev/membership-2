@@ -655,7 +655,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$comm->membership_id = $membership_id;
 			}
 
-			self::$Communication_IDs[$comm->membership_id][$type] = $comm->id;
+			if ( $comm ) {
+				self::$Communication_IDs[$comm->membership_id][$type] = $comm->id;
+			}
 
 			// If no template found or defined then fallback to default template.
 			$should_fallback = ! $comm || ! $comm->override;
