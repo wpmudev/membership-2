@@ -926,7 +926,15 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 							);
 
 							if ( $move_from->is_valid() ) {
-								$move_from->cancel_membership();
+								/**
+								 * @since 1.0.1.2 The old subscription will be
+								 * deactivated instantly, and not cancelled.
+								 * When the subscription is cancelled the user
+								 * still has full access to the membership
+								 * contents. When it is deactivated he cannot
+								 * access protected content anymore (instantly).
+								 */
+								$move_from->deactivate_membership();
 							}
 						}
 
