@@ -138,6 +138,17 @@ class MS_View_Help extends MS_View {
 				_x( 'Currently M2 is configured <strong>not expire/change</strong> any subscription status.', 'help', MS_TEXT_DOMAIN )
 			);
 		}
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			printf(
+				'<br />' .
+				_x( 'WP_DEBUG is <strong>enabled</strong> on this site.', 'help', MS_TEXT_DOMAIN )
+			);
+		} else {
+			printf(
+				'<br />' .
+				_x( 'WP_DEBUG is <strong>disabled</strong> on this site.', 'help', MS_TEXT_DOMAIN )
+			);
+		}
 		?>
 		</div>
 		<?php MS_Helper_Html::html_separator(); ?>
@@ -1666,6 +1677,10 @@ class MS_View_Help extends MS_View {
 		<p>
 			<strong><?php _ex( 'Define Membership 2 Admin users', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
 			<?php _ex( 'By default all users with capability <code>manage_options</code> are considered Membership 2 admin users and have unlimited access to the whole site (including protected content). To change the required capability add the line <code>define( "MS_ADMIN_CAPABILITY", "manage_options" );</code> in wp-config.php. When you set the value to <code>false</code> then only the Superadmin has full access to the site.', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Debugging incorrect page access', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( 'M2 has a small debugging tool built into it, that allows you to analyze access issues for the current user. To use this tool you have to set <code>define( "WP_DEBUG", true );</code> on your site. Next open the page that you want to analyze and add <code>?explain=access</code> to the page URL. As a result you will not see the normal page contents but a lot of useful details on the access permissions.', 'help', MS_TEXT_DOMAIN ); ?>
 		</p>
 		<hr />
 		<?php
