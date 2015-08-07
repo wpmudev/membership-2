@@ -59,6 +59,22 @@ class MS_Addon_Prorate extends MS_Addon {
 			'name' => __( 'Pro-Rating', MS_TEXT_DOMAIN ),
 			'description' => __( 'Pro-Rate previous payments when switching memberships.', MS_TEXT_DOMAIN ),
 			'icon' => 'wpmui-fa wpmui-fa-money',
+			'details' => array(
+				array(
+					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+					'value' => __( 'Pro-Rating is applied when a user upgrades/downgrades a membership. Not when he cancels and subscribes in two steps.<br><br>Reason:<br>When a user cancels a membership he keeps access to the membership until the current period expires (exception: permanent access expires instantly)', MS_TEXT_DOMAIN ),
+				),
+				array(
+					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+					'title' => '<b>' . __( 'When Multiple Memberships Add-on is disabled', MS_TEXT_DOMAIN ) . '</b>',
+					'value' => __( 'Changing a membership always expires the old memberships and adds a subscription for the the new membership <em>in one step</em>. Pro Rating is always applied here.', MS_TEXT_DOMAIN ),
+				),
+				array(
+					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+					'title' => '<b>' . __( 'When Multiple Memberships Add-on is enabled', MS_TEXT_DOMAIN ) . '</b>',
+					'value' => __( 'Only when you manually set the "Cancel and Pro-Rate" setting in the Upgrade Paths settings of the membership then the change is recognized as upgrade/downgrade. In this case the old membership is deactivated when the new subscription is created.<br>If you do not set this option the default logic applies: The user can access the old membership for the duration he paid, even when he cancels earlier. So no Pro-Rating then.', MS_TEXT_DOMAIN ),
+				),
+			),
 		);
 		return $list;
 	}
