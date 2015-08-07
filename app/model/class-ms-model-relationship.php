@@ -2091,6 +2091,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					}
 				}
 			}
+			if ( ! $valid_payment ) {
+				// Check if the current invoice is free.
+				$invoice = $this->get_current_invoice();
+				if ( 0 == $invoice->total ) {
+					$valid_payment = true;
+				}
+			}
 
 			if ( $valid_payment ) {
 				$can_activate = true;
