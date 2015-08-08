@@ -41,6 +41,22 @@ Text Domain: membership2
  * @since  1.0.0
  */
 function membership2_init_pro_app() {
+	if ( defined( 'MS_TEXT_DOMAIN' ) ) {
+		if ( is_admin() ) {
+			// Can happen in Multisite installs where a sub-site has activated the
+			// plugin and then the plugin is also activated in network-admin.
+			printf(
+				'<div class="notice error"><p><strong>%s</strong>: %s</p></div>',
+				sprintf(
+					__( 'Could not load the plugin %s, because another version of the plugin is already loaded', MS_TEXT_DOMAIN ),
+					'Membership 2 Pro'
+				),
+				MS_PLUGIN . ' (v' . MS_PLUGIN_VERSION . ')'
+			);
+		}
+		return;
+	}
+
 	/**
 	 * Plugin version
 	 *
@@ -96,8 +112,6 @@ function membership2_init_pro_app() {
 		require_once $path;
 	}
 
-	add_filter( 'ms_class_path_overrides', 'ms_class_path_overrides' );
-
 	/**
 	 * translate_plugin adds correct hook to translate the plugin via the
 	 * WordPress function `load_text_domain`.
@@ -129,37 +143,6 @@ function membership2_init_pro_app() {
 }
 
 /**
- * Hooks 'ms_class_path_overrides'.
- *
- * Overrides plugin class paths to adhere to naming conventions
- * where object names are separated by underscores or for special cases.
- *
- * @since  1.0.0
- *
- * @param  array $overrides Array passed in by filter.
- * @return array(class=>path) Classes with new file paths.
- */
-function ms_class_path_overrides( $overrides ) {
-	// MODELS
-	$models_base = 'app/model/';
-	$models = array(
-		'MS_Model_Communication_After_Finishes' => 'communication/class-ms-model-communication-after-finishes.php',
-		'MS_Model_Communication_After_Payment_Due' => 'communication/class-ms-model-communication-after-payment-due.php',
-		'MS_Model_Communication_Before_Finishes' => 'communication/class-ms-model-communication-before-finishes.php',
-		'MS_Model_Communication_Before_Payment_Due' => 'communication/class-ms-model-communication-before-payment-due.php',
-		'MS_Model_Communication_Before_Trial_Finishes' => 'communication/class-ms-model-communication-before-trial-finishes.php',
-		'MS_Model_Communication_Credit_Card_Expire' => 'communication/class-ms-model-communication-credit-card-expire.php',
-		'MS_Model_Communication_Failed_Payment' => 'communication/class-ms-model-communication-failed-payment.php',
-		'MS_Model_Communication_Info_Update' => 'communication/class-ms-model-communication-info-update.php',
-		'MS_Model_Communication_Registration_Free' => 'communication/class-ms-model-communication-registration-free.php',
-	);
-
-	foreach ( $models as $key => $path ) { $overrides[ $key ] = $models_base . $path; }
-
-	return $overrides;
-}
-
-/**
  * Primary Membership plugin class.
  *
  * Initialises the autoloader and required plugin hooks.
@@ -173,6 +156,7 @@ function ms_class_path_overrides( $overrides ) {
  *
  * @return object Plugin instance.
  */
+if ( ! class_exists( 'MS_Plugin' ) ) {
 class MS_Plugin {
 
 	/**
@@ -304,6 +288,11 @@ class MS_Plugin {
 		$this->dir = plugin_dir_path( __FILE__ );
 		$this->url = plugin_dir_url( __FILE__ );
 
+		add_filter(
+			'ms_class_path_overrides',
+			array( $this, 'ms_class_path_overrides' )
+		);
+
 		// Creates the class autoloader.
 		spl_autoload_register( array( $this, 'class_loader' ) );
 
@@ -383,6 +372,38 @@ class MS_Plugin {
 		 * @param object $this The MS_Plugin object.
 		 */
 		do_action( 'ms_plugin_construct_end', $this );
+	}
+
+	/**
+	 * Hooks 'ms_class_path_overrides'.
+	 *
+	 * Overrides plugin class paths to adhere to naming conventions
+	 * where object names are separated by underscores or for special cases.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  array $overrides Array passed in by filter.
+	 * @return array(class=>path) Classes with new file paths.
+	 */
+	public function ms_class_path_overrides( $overrides ) {
+		$models_base = 'app/model/';
+		$models = array(
+			'MS_Model_Communication_After_Finishes' => 'communication/class-ms-model-communication-after-finishes.php',
+			'MS_Model_Communication_After_Payment_Due' => 'communication/class-ms-model-communication-after-payment-due.php',
+			'MS_Model_Communication_Before_Finishes' => 'communication/class-ms-model-communication-before-finishes.php',
+			'MS_Model_Communication_Before_Payment_Due' => 'communication/class-ms-model-communication-before-payment-due.php',
+			'MS_Model_Communication_Before_Trial_Finishes' => 'communication/class-ms-model-communication-before-trial-finishes.php',
+			'MS_Model_Communication_Credit_Card_Expire' => 'communication/class-ms-model-communication-credit-card-expire.php',
+			'MS_Model_Communication_Failed_Payment' => 'communication/class-ms-model-communication-failed-payment.php',
+			'MS_Model_Communication_Info_Update' => 'communication/class-ms-model-communication-info-update.php',
+			'MS_Model_Communication_Registration_Free' => 'communication/class-ms-model-communication-registration-free.php',
+		);
+
+		foreach ( $models as $key => $path ) {
+			$overrides[ $key ] = $models_base . $path;
+		}
+
+		return $overrides;
 	}
 
 	/**
@@ -519,10 +540,17 @@ class MS_Plugin {
 	 * @param string $url The URL to load after flushing the rewrite rules.
 	 */
 	static public function flush_rewrite_rules( $url = false ) {
-		$refresh = lib2()->session->get( 'refresh_url_rules' );
+		if ( isset( $_GET['ms_flushed'] ) && 'yes' == $_GET['ms_flushed'] ) {
+			$refresh = true;
+		} else {
+			$refresh = lib2()->session->get( 'refresh_url_rules' );
+		}
+
 		if ( $refresh ) { return; }
 
 		lib2()->session->add( 'refresh_url_rules', true );
+
+		// The URL param is only to avoid cache.
 		$url = esc_url_raw(
 			add_query_arg( 'ms_ts', time(), $url )
 		);
@@ -539,16 +567,14 @@ class MS_Plugin {
 		$refresh = lib2()->session->get_clear( 'refresh_url_rules' );
 		if ( ! $refresh ) { return; }
 
-		// Flush WP rewrite rules.
-		flush_rewrite_rules();
-
 		// Set up the plugin specific rewrite rules again.
 		$this->add_rewrite_rules();
 		$this->add_rewrite_tags();
 
 		do_action( 'ms_plugin_flush_rewrite_rules', $this );
 
-		$url = esc_url_raw( remove_query_arg( 'ms_ts' ) );
+		$url = remove_query_arg( 'ms_ts' );
+		$url = esc_url_raw( add_query_arg( 'ms_flushed', 'yes', $url ) );
 		wp_safe_redirect( $url );
 		exit;
 	}
@@ -832,5 +858,6 @@ class MS_Plugin {
 		}
 	}
 }
+} // end: if ! class_exists
 
 membership2_init_pro_app();
