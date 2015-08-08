@@ -200,9 +200,20 @@ class MS_Controller_Frontend extends MS_Controller {
 						);
 						exit;
 					}
-					// no break;
+					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
+						$this->membership_cancel();
+					} else {
+						$this->signup_process();
+					}
+					break;
 
 				case MS_Model_Pages::MS_PAGE_REGISTER:
+					if ( MS_Model_Member::is_logged_in() ) {
+						wp_safe_redirect(
+							MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS )
+						);
+						exit;
+					}
 					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL == $this->get_action() ) {
 						$this->membership_cancel();
 					} else {

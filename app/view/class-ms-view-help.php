@@ -1686,4 +1686,66 @@ class MS_View_Help extends MS_View {
 		<?php
 		return ob_get_clean();
 	}
+
+	/**
+	 * Renders the Customize Membership 2 help contents
+	 *
+	 * @since  1.0.1.2
+	 * @return string
+	 */
+	public function render_tab_branding() {
+		ob_start();
+		?>
+		<h2><?php _ex( 'Template Hierarchy', 'help', MS_TEXT_DOMAIN ); ?></h2>
+		<p>
+			<?php
+			printf(
+				_x( 'By default Membership 2 will render the page contents defined in your %sMembership 2 Pages%s using the themes standard template for single pages. However, you can customize this very easy by creating special %stemplate files%s in the theme.', 'help', MS_TEXT_DOMAIN ),
+				'<a href="' . MS_Controller_Plugin::get_admin_url( 'settings' ) . '">',
+				'</a>',
+				'<a href="https://developer.wordpress.org/themes/basics/template-files/" target="_blank">',
+				'</a>'
+			);
+			?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Account Page', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( '1. <tt>m2-account.php</tt>', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '2. Default single-page template', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Membership List Page', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( '1. <tt>m2-memberships-100.php</tt> (Not the list, only checkout for Membership 100)', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '2. <tt>m2-memberships.php</tt>', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '3. Default single-page template', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Registration Page', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( '1. <tt>m2-register-100.php</tt> (Not the list, only checkout for Membership 100)', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '2. <tt>m2-register.php</tt>', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '3. Default single-page template', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Thank-You Page', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( '1. <tt>m2-registration-complete-100.php</tt> (After subscribing to Membership 100)', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '2. <tt>m2-registration-complete.php</tt>', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '3. Default single-page template', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Protected Content Page', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( '1. <tt>m2-protected-content-100.php</tt> (Page is protected by Membership 100)', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '2. <tt>m2-protected-content.php</tt>', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '3. Default single-page template', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Invoice Layout', 'help', MS_TEXT_DOMAIN ); ?></strong><br />
+			<?php _ex( '1. <tt>m2-invoice-100.php</tt> (Used by all invoices for Membership 100)', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '2. <tt>m2-invoice.php</tt>', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '3. <tt>single-ms_invoice.php</tt>', 'help', MS_TEXT_DOMAIN ); ?><br />
+			<?php _ex( '4. Default invoice template by Membership 2', 'help', MS_TEXT_DOMAIN ); ?>
+		</p>
+		<hr />
+		<?php
+		return ob_get_clean();
+	}
 }

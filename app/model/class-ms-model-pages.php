@@ -115,10 +115,10 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( empty( $Page_types ) ) {
 			$Page_types = array(
-				self::MS_PAGE_MEMBERSHIPS => __( 'Memberships', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_MEMBERSHIPS => __( 'Membership List', MS_TEXT_DOMAIN ),
 				self::MS_PAGE_PROTECTED_CONTENT => __( 'Protected Content', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REGISTER => __( 'Register', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REG_COMPLETE => __( 'Registration Complete', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_REGISTER => __( 'Registration', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_REG_COMPLETE => __( 'Thank-You Page', MS_TEXT_DOMAIN ),
 				self::MS_PAGE_ACCOUNT => __( 'Account', MS_TEXT_DOMAIN ),
 			);
 
@@ -143,10 +143,10 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( null === $Description ) {
 			$Description = array(
-				self::MS_PAGE_MEMBERSHIPS => __( 'A list with all public memberships.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_MEMBERSHIPS => __( '(Only for logged-in users) List the public memberships and signup.', MS_TEXT_DOMAIN ),
 				self::MS_PAGE_PROTECTED_CONTENT => __( 'Displayed when a user cannot access the requested page.', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REGISTER => __( 'Guests can register a new account here.', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REG_COMPLETE => __( 'Thank you page after registration is completed.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_REGISTER => __( '(Only for guests) List the public memberships and the registration form.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_REG_COMPLETE => __( 'Displayed after the user signed up for a membership.', MS_TEXT_DOMAIN ),
 				self::MS_PAGE_ACCOUNT => __( 'Shows details about the current user.', MS_TEXT_DOMAIN ),
 			);
 

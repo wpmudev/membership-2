@@ -70,6 +70,9 @@ class MS_Controller_Help extends MS_Controller {
 			'advanced' => array(
 				'title' => __( 'Advanced Settings', MS_TEXT_DOMAIN ),
 			),
+			'branding' => array(
+				'title' => __( 'Customize Membership 2', MS_TEXT_DOMAIN ),
+			),
 			'api' => array(
 				'title' => __( 'API Docs', MS_TEXT_DOMAIN ),
 				'url' => MS_Plugin::instance()->url . 'docs/namespaces/default.html',
