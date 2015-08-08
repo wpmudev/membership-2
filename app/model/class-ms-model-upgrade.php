@@ -152,6 +152,9 @@ class MS_Model_Upgrade extends MS_Model {
 				$force
 			);
 
+			$addons = MS_Factory::load( 'MS_Model_Addon' );
+			$addons->flush_list();
+
 			// This will reload the current page.
 			MS_Plugin::flush_rewrite_rules();
 		}
@@ -444,6 +447,7 @@ class MS_Model_Upgrade extends MS_Model {
 				}
 			}
 		}
+		return;
 	}
 
 	/**
@@ -586,7 +590,7 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( ! self::verify_token( 'reset' ) ) { return false; }
 
 			self::cleanup_db();
-			$msg = __( 'Your Membership2 data was reset!', MS_TEXT_DOMAIN );
+			$msg = __( 'Membership 2 successfully reset!', MS_TEXT_DOMAIN );
 			lib2()->ui->admin_message( $msg );
 
 			wp_safe_redirect( MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) );

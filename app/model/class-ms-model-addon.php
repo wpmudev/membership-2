@@ -307,12 +307,13 @@ class MS_Model_Addon extends MS_Model_Option {
 	 *
 	 * @var string $addon The add-on type.
 	 */
-	public function enable( $addon ) {
-		$this->refresh();
-		$this->active[ $addon ] = true;
-		$this->save();
+	static public function enable( $addon ) {
+		$model = MS_Factory::load( 'MS_Model_Addon' );
+		$model->refresh();
+		$model->active[ $addon ] = true;
+		$model->save();
 
-		do_action( 'ms_model_addon_enable', $addon, $this );
+		do_action( 'ms_model_addon_enable', $addon, $model );
 	}
 
 	/**
@@ -322,12 +323,13 @@ class MS_Model_Addon extends MS_Model_Option {
 	 *
 	 * @var string $addon The add-on type.
 	 */
-	public function disable( $addon ) {
-		$this->refresh();
-		unset( $this->active[ $addon ] );
-		$this->save();
+	static public function disable( $addon ) {
+		$model = MS_Factory::load( 'MS_Model_Addon' );
+		$model->refresh();
+		unset( $model->active[ $addon ] );
+		$model->save();
 
-		do_action( 'ms_model_addon_disable', $addon, $this );
+		do_action( 'ms_model_addon_disable', $addon, $model );
 	}
 
 	/**
@@ -337,18 +339,19 @@ class MS_Model_Addon extends MS_Model_Option {
 	 *
 	 * @var string $addon The add-on type.
 	 */
-	public function toggle_activation( $addon, $value = null ) {
+	static public function toggle_activation( $addon, $value = null ) {
+		$model = MS_Factory::load( 'MS_Model_Addon' );
 		if ( null === $value ) {
 			$value = self::is_enabled( $addon );
 		}
 
 		if ( $value ) {
-			$this->disable( $addon );
+			$model->disable( $addon );
 		} else {
-			$this->enable( $addon );
+			$model->enable( $addon );
 		}
 
-		do_action( 'ms_model_addon_toggle_activation', $addon, $this );
+		do_action( 'ms_model_addon_toggle_activation', $addon, $model );
 	}
 
 	/**

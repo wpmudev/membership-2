@@ -508,7 +508,7 @@ class MS_Plugin {
 		// Update the Membership2 database entries after activation.
 		MS_Model_Upgrade::update( true );
 
-		do_action( 'ms_plugin_activation ', $this );
+		do_action( 'ms_plugin_activation', $this );
 	}
 
 	/**

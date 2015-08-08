@@ -1,5 +1,5 @@
 Plugin Name: Membership 2
-Author: Fabio Jun, Rheinard Khorf, Philipp Stracker
+Author: Philipp Stracker, Fabio Jun, Rheinard Khorf
 
 Change Log:
 ----------------------------------------------------------------------
@@ -165,7 +165,7 @@ Membership2 1.0.0.0
 - Improve shortcode logic to not show duplicate login forms in rare, theme-specific cases
 - Fix bug that caused missing expiration date for admin-assigned memberships
 - Fix a rare error 'float expected but string found' in billings module
-- Fix minor issue with wrong filter parameter 
+- Fix minor issue with wrong filter parameter
 
 1.1.1.5
 ----------------------------------------------------------------------

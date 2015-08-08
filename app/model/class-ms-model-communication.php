@@ -1106,7 +1106,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		$sent = false;
 
 		if ( $this->enabled ) {
-
 			if ( ! is_email( $member->email ) ) {
 				do_action(
 					'lib2_debug_log',
