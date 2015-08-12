@@ -905,12 +905,12 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		wp_register_script(
 			'jquery-plugins',
-			$plugin_url . 'app/assets/js/jquery.plugins.js',
+			$plugin_url . 'app/assets/js/jquery.m2.plugins.js',
 			array( 'jquery' ), $version
 		);
 		wp_register_script(
 			'jquery-validate',
-			$plugin_url . 'app/assets/js/jquery.validate.js',
+			$plugin_url . 'app/assets/js/jquery.m2.validate.js',
 			array( 'jquery' ), $version
 		);
 	}
@@ -960,12 +960,12 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		wp_register_script(
 			'jquery-plugins',
-			$plugin_url . 'app/assets/js/jquery.plugins.js',
+			$plugin_url . 'app/assets/js/jquery.m2.plugins.js',
 			array( 'jquery' ), $version
 		);
 		wp_register_script(
 			'jquery-validate',
-			$plugin_url . 'app/assets/js/jquery.validate.js',
+			$plugin_url . 'app/assets/js/jquery.m2.validate.js',
 			array( 'jquery' ), $version
 		);
 	}

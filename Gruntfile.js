@@ -37,8 +37,8 @@ module.exports = function( grunt ) {
 				'app/assets/js/src/ms-view-frontend-profile.js',
 				'app/assets/js/src/ms-view-gateway-authorize.js'
 			],
-			'app/assets/js/jquery.plugins.js': [ 'app/assets/js/vendor/jquery.nearest.js' ],
-			'app/assets/js/jquery.validate.js': [ 'app/assets/js/vendor/jquery.validate.js' ],
+			'app/assets/js/jquery.m2.plugins.js': [ 'app/assets/js/vendor/jquery.nearest.js' ],
+			'app/assets/js/jquery.m2.validate.js': [ 'app/assets/js/vendor/jquery.validate.js' ],
 			'app/assets/js/ms-public-ajax.js': ['app/assets/js/src/ms-public-ajax.js']
 		},
 
