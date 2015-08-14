@@ -63,7 +63,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 			$this->add_filter(
 				'ms_shortcode_register_form_fields',
 				'customize_register_form',
-				10, 2
+				9, 2
 			);
 
 			$this->add_filter(
