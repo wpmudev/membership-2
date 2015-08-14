@@ -1116,6 +1116,14 @@ class MS_Model_Member extends MS_Model {
 	public function confirm() {
 		global $wpdb;
 
+		$auto_confirm = apply_filters(
+			'ms_model_member_auto_confirm',
+			true,
+			$this
+		);
+
+		if ( ! $auto_confirm ) { return; }
+
 		$sql = "UPDATE $wpdb->users SET user_status = 0 WHERE ID = %d";
 		$sql = $wpdb->prepare( $sql, $this->id );
 		$wpdb->query( $sql );
