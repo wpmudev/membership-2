@@ -14,7 +14,7 @@ window.ms_init.view_billing_transactions = function init() {
 	// Handle the "Reset" action.
 	function clear_line( ev ) {
 		var cell = jQuery( this ).closest( 'td' ),
-			nonce = cell.find( 'input[name=nonce_link]' ).val(),
+			nonce = cell.find( 'input[name=nonce_update]' ).val(),
 			row = cell.closest( '.item' ),
 			row_id = row.attr( 'id' ).replace( /^item-/, '' ),
 			data = {};
@@ -43,7 +43,7 @@ window.ms_init.view_billing_transactions = function init() {
 	// Handle the "Ignore" action.
 	function ignore_line( ev ) {
 		var cell = jQuery( this ).closest( 'td' ),
-			nonce = cell.find( 'input[name=nonce_link]' ).val(),
+			nonce = cell.find( 'input[name=nonce_update]' ).val(),
 			row = cell.closest( '.item' ),
 			row_id = row.attr( 'id' ).replace( /^item-/, '' ),
 			data = {};
