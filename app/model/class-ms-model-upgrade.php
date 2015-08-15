@@ -567,7 +567,13 @@ class MS_Model_Upgrade extends MS_Model {
 	 * @return bool True if all conditions are true
 	 */
 	static private function valid_user() {
-		if ( ! is_user_logged_in() ) { return false; }
+		/**
+		 * Determine user_id from request cookies.
+		 * @see wp-includes/pluggable.php wp_currentuserinfo()
+		 */
+		$user_id = apply_filters( 'determine_current_user', false );
+
+		if ( ! $user_id ) { return false; }
 		if ( ! is_admin() ) { return false; }
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
 		if ( defined( 'DOING_CRON' ) && DOING_CRON ) { return false; }
