@@ -7,7 +7,7 @@
  * @package Membership2
  * @subpackage Model
  */
-class MS_Addon_Taxamo_Model extends MS_Model_Settings {
+class MS_Addon_Taxamo_Model extends MS_Model_Option {
 
 	/**
 	 * Group name of the custom settings
