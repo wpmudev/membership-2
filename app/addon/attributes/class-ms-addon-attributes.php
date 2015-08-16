@@ -322,7 +322,7 @@ class MS_Addon_Attributes extends MS_Addon {
 		$res = false;
 
 		if ( ! $membership_id ) {
-			$auto_id = apply_filters( 'ms_detect_membership_id' );
+			$auto_id = apply_filters( 'ms_detect_membership_id', 0 );
 			$membership = MS_Factory::load( 'MS_Model_Membership', $auto_id );
 		} elseif ( $membership_id instanceof MS_Model_Membership ) {
 			$membership = $membership_id;
@@ -368,8 +368,8 @@ class MS_Addon_Attributes extends MS_Addon {
 
 		if ( $membership->is_valid() ) {
 			$membership->set_custom_data(
-				'attr_' . $_POST['field'],
-				$_POST['value']
+				'attr_' . $slug,
+				$value
 			);
 			$membership->save();
 		}
