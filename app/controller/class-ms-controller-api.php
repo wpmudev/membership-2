@@ -99,18 +99,57 @@ class MS_Controller_Api extends MS_Controller {
 		 *
 		 * Example:
 		 *   if ( apply_filters( 'ms_active', false ) ) { ... }
+		 *
+		 * @since  1.0.0
 		 */
 		add_filter( 'ms_active', '__return_true' );
 
 		/**
-		 * Make the API controller accessible via MS_Plugin::$api
+		 * Returns the API object.
+		 *
+		 * Example:
+		 *   $api = apply_filters( 'ms_api', false );
+		 *
+		 * Alternative:
+		 *   $api = MS_Plugin::$api;
+		 *
+		 * @since  1.0.1.2
+		 */
+		add_filter( 'ms_api', array( $this, 'return_api' ) );
+
+		/**
+		 * Make the API controller accessible via static property.
+		 *
+		 * Example:
+		 *   $api = MS_Plugin::$api;
+		 *
+		 * Alternative:
+		 *   $api = apply_filters( 'ms_api', false );
+		 *
+		 * @since  1.0.0
 		 */
 		MS_Plugin::set_api( $this );
 
 		/**
 		 * Notify other plugins that Membership2 is ready.
+		 *
+		 * @since  1.0.0
 		 */
 		do_action( 'ms_init', $this );
+	}
+
+	/**
+	 * Handles the call to 'ms_api' and returns the current instance.
+	 *
+	 * This allows an alternative access to the M2 API object.
+	 *
+	 * @since  1.0.0
+	 * @internal This is a filter handler and should not be called directly.
+	 *
+	 * @return MS_Controller_Api
+	 */
+	public function return_api() {
+		return $this;
 	}
 
 	/**
