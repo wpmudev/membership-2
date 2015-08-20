@@ -35,12 +35,22 @@ class MS_View_Adminbar extends MS_View {
 		$deciding_rule = false;
 
 		if ( isset( $details[1] ) && ! $details[1]['has_access'] ) {
-			$denied_url = $details[1]['url'];
-			$deciding_membership = $details[1]['deciding_membership'];
-			$deciding_rule = $details[1]['deciding_rule'];
+			if ( ! empty( $details[1]['url'] ) ) {
+				$denied_url = $details[1]['url'];
+			}
+			if ( ! empty( $details[1]['deciding_membership'] ) ) {
+				$deciding_membership = $details[1]['deciding_membership'];
+			}
+			if ( ! empty( $details[1]['deciding_rule'] ) ) {
+				$deciding_rule = $details[1]['deciding_rule'];
+			}
 		} elseif ( isset( $details[0] ) && $details[0]['has_access'] ) {
-			$deciding_membership = $details[0]['deciding_membership'];
-			$deciding_rule = $details[0]['deciding_rule'];
+			if ( ! empty( $details[0]['deciding_membership'] ) ) {
+				$deciding_membership = $details[0]['deciding_membership'];
+			}
+			if ( ! empty( $details[0]['deciding_rule'] ) ) {
+				$deciding_rule = $details[0]['deciding_rule'];
+			}
 		}
 
 		ob_start();
