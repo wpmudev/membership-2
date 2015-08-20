@@ -295,6 +295,7 @@ class MS_View_Shortcode_Login extends MS_View {
 					</label>
 				</p>
 				<?php endif; ?>
+				<?php do_action( 'login_form' );?>
 				<p class="login-submit">
 					<input
 						type="submit"
