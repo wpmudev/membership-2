@@ -447,11 +447,29 @@ class MS_View_Shortcode_Login extends MS_View {
 			ucfirst( $member->name )
 		);
 
+		$yourname = apply_filters(
+			'ms_shortcode_logout_message',
+			$yourname,
+			$member
+		);
+
+		$logout_text = apply_filters(
+			'ms_shortcode_logout_link_text',
+			__( 'Logout', MS_TEXT_DOMAIN ),
+			$member
+		);
+
+		$redirect_logout = apply_filters(
+			'ms_shortcode_logout_redirect',
+			$redirect_logout,
+			$member
+		);
+
 		$html = sprintf(
 			'%1$s <a class="login_button" href="%2$s">%3$s</a>',
 			$yourname,
 			wp_logout_url( $redirect_logout ),
-			__( 'Logout', MS_TEXT_DOMAIN )
+			$logout_text
 		);
 
 		if ( ! empty( $holder ) ) {
