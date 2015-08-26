@@ -297,15 +297,15 @@ class MS_Controller_Membership extends MS_Controller {
 				} elseif ( isset( $_REQUEST['subscription_id'] ) ) {
 					$sub_id = $_REQUEST['subscription_id'];
 					$subscription = MS_Factory::load( 'MS_Model_Relationship', $sub_id );
-					$membership_id = $subscription->memberhip_id;
+					$membership_id = $subscription->membership_id;
 				} elseif ( isset( $_REQUEST['ms_relationship_id'] ) ) {
 					$sub_id = $_REQUEST['ms_relationship_id'];
 					$subscription = MS_Factory::load( 'MS_Model_Relationship', $sub_id );
-					$membership_id = $subscription->memberhip_id;
+					$membership_id = $subscription->membership_id;
 				} elseif ( isset( $_REQUEST['invoice_id'] ) ) {
 					$inv_id = $_REQUEST['invoice_id'];
 					$invoice = MS_Factory::load( 'MS_Model_Invoice', $inv_id );
-					$membership_id = $invoice->memberhip_id;
+					$membership_id = $invoice->membership_id;
 				}
 				$membership_id = intval( $membership_id );
 			}

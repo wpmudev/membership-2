@@ -297,7 +297,7 @@ class MS_Controller_Api extends MS_Controller {
 	}
 
 	/**
-	 * Create your own payment gateway and hook it up with Memberhip 2 by using
+	 * Create your own payment gateway and hook it up with Membership 2 by using
 	 * this function!
 	 *
 	 * Creating your own payment gateway requires good php skills. To get you

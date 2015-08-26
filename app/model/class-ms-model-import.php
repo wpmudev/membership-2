@@ -166,7 +166,7 @@ class MS_Model_Import extends MS_Model {
 	 * associates the real object ID with an import ID to recognize them again.
 	 *
 	 * @since  1.0.0
-	 * @param  string $type Object type ('memberhip', ...)
+	 * @param  string $type Object type ('membership', ...)
 	 * @param  string $import_id Import-ID
 	 * @param  any $obj The imported object
 	 */
@@ -192,7 +192,7 @@ class MS_Model_Import extends MS_Model {
 	 * associates the real object ID with an import ID to recognize them again.
 	 *
 	 * @since  1.0.0
-	 * @param  string $type Object type ('memberhip', ...)
+	 * @param  string $type Object type ('membership', ...)
 	 * @param  string $import_id Import-ID
 	 * @return MS_Model The requested object
 	 */

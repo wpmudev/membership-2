@@ -2318,7 +2318,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * Payment details can only be changed when
 	 * (A) no payment details were saved yet  - OR -
-	 * (B) no members signed up for the memberhips
+	 * (B) no members signed up for the memberships
 	 *
 	 * @since  1.0.0
 	 * @api
