@@ -70,6 +70,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @var   string The communication variable name.
 	 */
 	const COMM_VAR_MS_NAME = '%ms-name%';
+	const COMM_VAR_MS_DESCRIPTION = '%ms-description%';
 	const COMM_VAR_MS_INVOICE = '%ms-invoice%';
 	const COMM_VAR_MS_ACCOUNT_PAGE_URL = '%ms-account-page-url%';
 	const COMM_VAR_MS_REMAINING_DAYS = '%ms-remaining-days%';
@@ -689,6 +690,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	public function __construct() {
 		$this->comm_vars = array(
 			self::COMM_VAR_MS_NAME => __( 'Subscription: Membership Name', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_DESCRIPTION => __( 'Subscription: Membership Description', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Subscription: Remaining days', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Subscription: Remaining trial days', MS_TEXT_DOMAIN ),
 			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Subscription: Expiration date', MS_TEXT_DOMAIN ),
@@ -703,14 +705,17 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			self::COMM_VAR_BLOG_URL => __( 'Site: URL', MS_TEXT_DOMAIN ),
 		);
 
-		if ( self::COMM_TYPE_SIGNUP != $this->type ) {
-			unset( $this->comm_vars[self::COMM_VAR_PASSWORD] );
-		} else {
+		if ( self::COMM_TYPE_SIGNUP == $this->type ) {
+			// For the signup email has no membership yet (user account created).
 			unset( $this->comm_vars[self::COMM_VAR_MS_NAME] );
+			unset( $this->comm_vars[self::COMM_VAR_MS_DESCRIPTION] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_DAYS] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_TRIAL_DAYS] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_EXPIRY_DATE] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_INVOICE] );
+		} else {
+			// Password is only available in the Signup email.
+			unset( $this->comm_vars[self::COMM_VAR_PASSWORD] );
 		}
 
 		if ( is_multisite() ) {
@@ -1358,6 +1363,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				case self::COMM_VAR_MS_NAME:
 					if ( $membership && $membership->name ) {
 						$var_value = $membership->name;
+					}
+					break;
+
+				// Needs: $membership
+				case self::COMM_VAR_MS_DESCRIPTION:
+					if ( $membership && $membership->description ) {
+						$var_value = $membership->description;
 					}
 					break;
 

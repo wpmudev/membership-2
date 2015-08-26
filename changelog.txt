@@ -6,6 +6,7 @@ Change Log:
 
 1.0.1.2
 ----------------------------------------------------------------------
+- Add new Variable for Automated Emails: Membership Description
 - Improved the details in the Pro-Rating Add-on with short instructions
 - Fix a bug in Pro-Rating Add-on to correctly apply discount from now on
 - Fix wrong signup-logic to instantly disable the old subscription on membership upgrade/downgrade
