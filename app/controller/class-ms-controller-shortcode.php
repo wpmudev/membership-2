@@ -528,7 +528,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$code = sprintf(
 				'%1$s %2$s',
 				$label,
-				$membership->description
+				$membership->get_description()
 			);
 
 			$code = trim( $code );

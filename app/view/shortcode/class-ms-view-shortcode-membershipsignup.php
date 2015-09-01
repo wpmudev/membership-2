@@ -297,7 +297,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
 				</div>
 				<div class="ms-price-details">
-					<div class="ms-description"><?php echo $membership->description; ?></div>
+					<div class="ms-description"><?php echo $membership->get_description(); ?></div>
 					<div class="ms-price price"><?php echo esc_html( $price ); ?></div>
 
 					<?php if ( $msg ) : ?>

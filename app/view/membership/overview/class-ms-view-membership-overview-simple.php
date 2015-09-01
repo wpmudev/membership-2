@@ -283,7 +283,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 	public function available_content_panel() {
 		$membership = $this->data['membership'];
 
-		$desc = $membership->description;
+		$desc = $membership->get_description();
 		$desc_empty_class = (empty( $desc ) ? '' : 'hidden');
 
 		?>

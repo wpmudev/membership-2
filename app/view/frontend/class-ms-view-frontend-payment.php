@@ -145,7 +145,7 @@ class MS_View_Frontend_Payment extends MS_View {
 						</td>
 						<td class="ms-desc-column">
 							<span class="ms-membership-description"><?php
-								echo $membership->description;
+								echo $membership->get_description();
 							?></span>
 						</td>
 					</tr>

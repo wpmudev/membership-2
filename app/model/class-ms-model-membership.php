@@ -1645,6 +1645,25 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns the parsed membership description for display. Shortcodes are
+	 * replaced and the content is filtered.
+	 *
+	 * @since  1.0.1.2
+	 * @return string The parsed membership description.
+	 */
+	public function get_description() {
+		$desc = apply_filters(
+			'ms_model_membership_get_description',
+			$this->description,
+			$this
+		);
+
+		$desc = do_shortcode( $desc );
+
+		return $desc;
+	}
+
+	/**
 	 * Get current membership type description.
 	 *
 	 * @since  1.0.0
