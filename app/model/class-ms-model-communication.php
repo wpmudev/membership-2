@@ -1369,7 +1369,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				// Needs: $membership
 				case self::COMM_VAR_MS_DESCRIPTION:
 					if ( $membership && $membership->description ) {
-						$var_value = $membership->description;
+						$var_value = $membership->get_description();
 					}
 					break;
 
