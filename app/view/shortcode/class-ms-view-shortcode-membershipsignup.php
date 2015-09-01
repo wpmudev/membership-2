@@ -355,7 +355,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 						MS_Helper_Html::html_element( $field );
 					}
 
-					MS_Helper_Html::html_element( $button );
+					echo apply_filters ('ms_view_shortcode_membershipsignup_form_button_html', MS_Helper_Html::html_element( $button, true ), $membership);
 					?>
 				</div>
 			</div>
