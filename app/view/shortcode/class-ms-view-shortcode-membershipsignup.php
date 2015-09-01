@@ -319,6 +319,24 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 						'class' => $class,
 					);
 
+					/**
+					 * Allow customizing the Signup button.
+					 *
+					 * Either adjust the array properties or return a valid HTML
+					 * string that will be directly output.
+					 *
+					 * @since  1.0.1.2
+					 * @param  array|string $button
+					 * @param  MS_Model_Membership $membership
+					 * @param  MS_Model_Subscription $subscription
+					 */
+					$button = apply_filters(
+						'ms_view_shortcode_membershipsignup_button',
+						$button,
+						$membership,
+						$subscription
+					);
+
 					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL === $action ) {
 						/**
 						 * PayPal Standard Gateway uses a special Cancel button.
