@@ -9,6 +9,7 @@ Change Log:
 - Add new Variable for Automated Emails: Membership Description
 - Improved the details in the Pro-Rating Add-on with short instructions
 - Fix the "Ignore" action in the Transaction log list
+- Fix protection bug that would hide custom posts in certain situations
 - Fix a bug in Pro-Rating Add-on to correctly apply discount from now on
 - Fix wrong signup-logic to instantly disable the old subscription on membership upgrade/downgrade
 - Fix a PHP error that occured when paying the first invoice of a member via manual gateway

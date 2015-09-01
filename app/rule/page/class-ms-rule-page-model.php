@@ -44,7 +44,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 	public function protect_content() {
 		parent::protect_content();
 
-		$this->add_filter( 'get_pages', 'protect_pages', 99 );
+		$this->add_filter( 'get_pages', 'protect_pages', 99, 2 );
 	}
 
 	/**
@@ -55,10 +55,16 @@ class MS_Rule_Page_Model extends MS_Rule {
 	 * Related action hook:
 	 * - get_pages
 	 *
-	 * @param array $pages The array of pages to filter.
+	 * @param  array $pages The array of pages to filter.
+	 * @param  array $args Array of arguments used by WP to filter the posts.
 	 * @return array Filtered array which doesn't include prohibited pages.
 	 */
-	public function protect_pages( $pages ) {
+	public function protect_pages( $pages, $args ) {
+		// Do not filter custom post types with this rule!
+		if ( 'page' != $args['post_type'] ) {
+			return $pages;
+		}
+
 		$rule_value = apply_filters(
 			'ms_rule_page_model_protect_pages_rule_value',
 			$this->rule_value
