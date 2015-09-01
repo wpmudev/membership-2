@@ -53,6 +53,21 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			'value' => $this->data['label_register'],
 		);
 
+		/**
+		 * The register button can be modified via a custom filter.
+		 * Either update the array properties or replace the array with some
+		 * HTML string that will be output.
+		 *
+		 * @since  1.0.1.2
+		 * @param  array|string $register_button
+		 * @param  array $data
+		 */
+		$register_button = apply_filters(
+			'ms_shortcode_register_button',
+			$register_button,
+			$this->data
+		);
+
 		$title = $this->data['title'];
 		ob_start();
 
