@@ -137,7 +137,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['help']                 = MS_Factory::load( 'MS_Controller_Help' );
 
 		// API should be the last Controller to create.
-		$this->controllers['api']                  = MS_Factory::load( 'MS_Controller_Api' );
+		$this->controllers['api']                  = MS_Controller_Api::instance();
 
 		// Register all available styles and scripts. Nothing is enqueued.
 		$this->add_action( 'wp_loaded', 'wp_loaded' );

@@ -7,6 +7,7 @@ Change Log:
 1.0.1.2
 ----------------------------------------------------------------------
 - Add new Variable for Automated Emails: Membership Description
+- Add API functions: ms_api, get_membership_id, add_subscription (see API Docs for details)
 - Improved the details in the Pro-Rating Add-on with short instructions
 - Fix the "Ignore" action in the Transaction log list
 - Fix protection bug that would hide custom posts in certain situations

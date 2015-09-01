@@ -49,13 +49,21 @@
  *     // Check if the API object is available.
  *     if ( apply_filters( 'ms_active', false ) ) { ... }
  *
- * To directly access the API object use the property `MS_Plugin::$api`.
- * Note: Before `ms_active` is called `MS_Plugin::$api` will return false.
- * This should only be used in rare cases when you know that the API is
- * available; it's better to use the action `ms_init` for API access.
+ * Different ways to access the M2 API object:
  *
- *     // Same as above.
- *     if ( MS_Plugin::$api ) { ... }
+ *     // 1. Our recommendation:
+ *     add_action( 'ms_init', 'my_api_hook' );
+ *     function my_api_hook( $api ) {
+ *     }
+ *
+ *     // 2. Use a procedural approach. Use in init hook or later!
+ *     $api = ms_api();
+ *
+ *     // 3. Not recommended: Direct access to the `$api` property:
+ *     $api = MS_Plugin::$api;
+ *
+ *     // 4. Not recommended: Singleton access:
+ *     $api = MS_Controller_Api::instance();
  *
  * @since  1.0.0
  *
@@ -83,12 +91,28 @@ class MS_Controller_Api extends MS_Controller {
 	protected $gateways = array();
 
 	/**
-	 * Construct Settings manager.
+	 * Returns the singleton object.
+	 *
+	 * @since  1.0.1.2
+	 * @return MS_Controller_Api
+	 */
+	static public function instance() {
+		static $Inst = null;
+
+		if ( null === $Inst ) {
+			$Inst = new MS_Controller_Api();
+		}
+
+		return $Inst;
+	}
+
+	/**
+	 * Private constructor: Singleton pattern.
 	 *
 	 * @since  1.0.0
 	 * @internal
 	 */
-	public function __construct() {
+	private function __construct() {
 		parent::__construct();
 
 		$this->settings = MS_Plugin::instance()->settings;
@@ -103,19 +127,6 @@ class MS_Controller_Api extends MS_Controller {
 		 * @since  1.0.0
 		 */
 		add_filter( 'ms_active', '__return_true' );
-
-		/**
-		 * Returns the API object.
-		 *
-		 * Example:
-		 *   $api = apply_filters( 'ms_api', false );
-		 *
-		 * Alternative:
-		 *   $api = MS_Plugin::$api;
-		 *
-		 * @since  1.0.1.2
-		 */
-		add_filter( 'ms_api', array( $this, 'return_api' ) );
 
 		/**
 		 * Make the API controller accessible via static property.
@@ -136,20 +147,6 @@ class MS_Controller_Api extends MS_Controller {
 		 * @since  1.0.0
 		 */
 		do_action( 'ms_init', $this );
-	}
-
-	/**
-	 * Handles the call to 'ms_api' and returns the current instance.
-	 *
-	 * This allows an alternative access to the M2 API object.
-	 *
-	 * @since  1.0.0
-	 * @internal This is a filter handler and should not be called directly.
-	 *
-	 * @return MS_Controller_Api
-	 */
-	public function return_api() {
-		return $this;
 	}
 
 	/**
@@ -209,12 +206,64 @@ class MS_Controller_Api extends MS_Controller {
 	 * @since  1.0.0
 	 * @api
 	 *
-	 * @param  int $membership_id A specific membership ID.
+	 * @param  int|string $membership_id The membership-ID or name/slug.
 	 * @return MS_Model_Membership The membership object.
 	 */
 	public function get_membership( $membership_id ) {
-		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		if ( ! is_numeric( $membership_id ) ) {
+			$membership_id = $this->get_membership_id( $membership_id );
+		}
+
+		$membership = MS_Factory::load( 'MS_Model_Membership', int( $membership_id ) );
+
 		return $membership;
+	}
+
+	/**
+	 * Returns the membership-ID that matches the specified Membership name or
+	 * slug.
+	 *
+	 * If multiple memberships have the same name then the one with the lowest
+	 * ID (= the oldest) will be returned.
+	 *
+	 * Name or slug are case-IN-sensitive ('slug' and 'SLUG' are identical)
+	 * Wildcards are not allowed, the string must match exactly.
+	 *
+	 * @since  1.0.1.2
+	 * @param  string $name_or_slug The Membership name or slug to search.
+	 * @return int|false The membership ID or false.
+	 */
+	public function get_membership_id( $name_or_slug ) {
+		global $wpdb;
+		$res = false;
+
+		$sql = "
+		SELECT ID
+		FROM {$wpdb->posts} p
+		INNER JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = %s
+		WHERE
+			p.post_type = %s
+			AND ( m.meta_value = %s OR p.post_name = %s )
+		ORDER BY ID
+		;";
+
+		MS_Factory::select_blog();
+		$sql = $wpdb->prepare(
+			$sql,
+			'name',
+			MS_Model_Membership::get_post_type(),
+			$name_or_slug,
+			$name_or_slug
+		);
+
+		$ids = $wpdb->get_col( $sql );
+		MS_Factory::revert_blog();
+
+		if ( is_array( $ids ) && count( $ids ) ) {
+			$res = reset( $ids );
+		}
+
+		return $res;
 	}
 
 	/**
@@ -230,18 +279,40 @@ class MS_Controller_Api extends MS_Controller {
 	 * @api
 	 *
 	 * @param  int $user_id The user ID.
-	 * @param  int $membership_id A specific membership ID.
+	 * @param  int|string $membership_id The membership-ID or name/slug.
 	 * @return MS_Model_Relationship|false The subscription object.
 	 */
 	public function get_subscription( $user_id, $membership_id ) {
 		$subscription = false;
 
+		$membership = $this->get_membership( $membership_id );
+
 		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
-		if ( $member && $member->has_membership( $membership_id ) ) {
-			$subscription = $member->get_subscription( $membership_id );
+		if ( $member && $member->has_membership( $membership->id ) ) {
+			$subscription = $member->get_subscription( $membership->id );
 		}
 
 		return $subscription;
+	}
+
+	/**
+	 * Add a new subscription for the specified user.
+	 *
+	 * If the membership is free the subscription instantly is ACTIVE.
+	 * Otherwise the subscription is set to PENDING until the user makes the
+	 * payment via the M2 checkout page.
+	 *
+	 * @since 1.0.1.2
+	 * @param int $user_id The User-ID.
+	 * @param int|string $membership_id The membership-ID or name/slug.
+	 */
+	public function add_subscription( $user_id, $membership_id ) {
+		$membership = $this->get_membership( $membership_id );
+
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		if ( $member ) {
+			$subscription = $member->add_subscription( $membership->id, '' );
+		}
 	}
 
 	/**
@@ -430,5 +501,30 @@ if ( ! function_exists( 'ms_has_membership' ) ) {
 		}
 
 		return $result;
+	}
+}
+
+if ( ! function_exists( 'ms_api' ) ) {
+	/**
+	 * Procedural way to load the API instance.
+	 *
+	 * Call this function inside the init hook or later. Using it earlier might
+	 * cause problems because other parts of M2 might not be completely
+	 * initialized.
+	 *
+	 * @since  1.0.1.2
+	 * @api
+	 * @return MS_Controller_Api
+	 */
+	function ms_api() {
+		if ( ! did_action( 'init' ) ) {
+			_doing_it_wrong(
+				'ms_api',
+				'ms_api() is called before the "init" hook, this is too early!',
+				'1.0.1.2'
+			);
+		}
+
+		return MS_Controller_Api::instance();
 	}
 }
