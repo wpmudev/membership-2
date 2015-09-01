@@ -478,10 +478,18 @@ class MS_Model_Import extends MS_Model {
 		$membership->source_id = $obj->id;
 		$subscription->save();
 
+		$is_paid = false;
+
 		// Import invoices for this subscription
 		foreach ( $obj->invoices as $invoice ) {
 			$invoice = (object) $invoice;
 			$this->import_invoice( $subscription, $invoice );
+			$is_paid = true;
+		}
+
+		// Add a payment for active subscriptions.
+		if ( ! $is_paid && MS_Model_Relationship::STATUS_ACTIVE == $subscription->status ) {
+			$subscription->add_payment( $membership->price, MS_Gateway_Admin::ID );
 		}
 	}
 
@@ -510,6 +518,8 @@ class MS_Model_Import extends MS_Model {
 		// Remember where this invoice comes from.
 		$ms_invoice->source = $this->source_key;
 		$ms_invoice->save();
+
+		$subscription->add_payment( $ms_invoice->amount, $ms_invoice->gateway_id );
 	}
 
 	/**

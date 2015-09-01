@@ -14,6 +14,7 @@ Change Log:
 - Fix wrong signup-logic to instantly disable the old subscription on membership upgrade/downgrade
 - Fix a PHP error that occured when paying the first invoice of a member via manual gateway
 - Fix displayed payment method for subscriptions in Member editor screen
+- Fix an issue that would not actiavte imported subscriptions
 - Small changes like fix some typos, add new filters and code cleanup
 
 1.0.1.1
