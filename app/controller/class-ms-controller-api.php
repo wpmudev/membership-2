@@ -70,7 +70,7 @@
  * @package Membership2
  * @subpackage Controller
  */
-class MS_Controller_Api extends MS_Controller {
+class MS_Controller_Api extends MS_Hooker {
 
 	/**
 	 * A reference to the Membership2 settings object.
@@ -112,9 +112,7 @@ class MS_Controller_Api extends MS_Controller {
 	 * @since  1.0.0
 	 * @internal
 	 */
-	private function __construct() {
-		parent::__construct();
-
+	protected function __construct() {
 		$this->settings = MS_Plugin::instance()->settings;
 
 		/**
@@ -148,6 +146,13 @@ class MS_Controller_Api extends MS_Controller {
 		 */
 		do_action( 'ms_init', $this );
 	}
+
+	/**
+	 * Maintain compatibility with MS_Controller interface.
+	 *
+	 * @since  1.0.1.2
+	 */
+	public function admin_init() { }
 
 	/**
 	 * Returns either the current member or the member with the specified id.
