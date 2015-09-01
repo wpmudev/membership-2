@@ -297,7 +297,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
 				</div>
 				<div class="ms-price-details">
-					<div class="ms-description"><?php echo '' . $membership->description; ?></div>
+					<div class="ms-description"><?php echo $membership->description; ?></div>
 					<div class="ms-price price"><?php echo esc_html( $price ); ?></div>
 
 					<?php if ( $msg ) : ?>
@@ -354,6 +354,13 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 					foreach ( $fields as $field ) {
 						MS_Helper_Html::html_element( $field );
 					}
+
+					/**
+					 * It's possible to add custom fields to the signup box.
+					 *
+					 * @since  1.0.1.2
+					 */
+					do_action( 'ms_shortcode_signup_form_end', $this );
 
 					MS_Helper_Html::html_element( $button );
 					?>

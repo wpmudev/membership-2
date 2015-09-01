@@ -102,6 +102,16 @@ class MS_Addon_Invitation extends MS_Addon {
 				'check_invitation_code',
 				10, 4
 			);
+
+			$this->add_filter(
+				'ms_shortcode_register_form_end',
+				'sticky_registration_invitation'
+			);
+
+			$this->add_filter(
+				'ms_shortcode_signup_form_end',
+				'sticky_registration_invitation'
+			);
 		}
 	}
 
@@ -444,6 +454,28 @@ class MS_Addon_Invitation extends MS_Addon {
 	}
 
 	/**
+	 * When an invitation code is passed to the registration form then make sure
+	 * that the invitation code is preserved upon registration.
+	 *
+	 * The code can be passed to the registration form either via URL param or
+	 * via a (hidden) form input value (i.e. GET or POST)
+	 *
+	 * @since  1.0.1.2
+	 * @filter ms_shortcode_register_form_end (MS_View_Shortcode_RegisterUser)
+	 * @filter ms_shortcode_signup_form_end (MS_View_Shortcode_MembershipSignup)
+	 */
+	public function sticky_registration_invitation() {
+		if ( isset( $_REQUEST['invitation_code'] ) ) {
+			$field = array(
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'name' => 'invitation_code',
+				'value' => $_REQUEST['invitation_code'],
+			);
+			MS_Helper_Html::html_element( $field );
+		}
+	}
+
+	/**
 	 * Called right before the payment form on the front end is displayed.
 	 * We check if the user already specified an invitation code or not.
 	 *
@@ -468,10 +500,11 @@ class MS_Addon_Invitation extends MS_Addon {
 			return $data;
 		}
 
-		if ( ! empty( $_POST['invitation_code'] ) ) {
+		// invitation_code can be set via URL param or input field in form.
+		if ( ! empty( $_REQUEST['invitation_code'] ) ) {
 			$invitation = apply_filters(
 				'ms_addon_invitation_model',
-				MS_Addon_Invitation_Model::load_by_code( $_POST['invitation_code'] )
+				MS_Addon_Invitation_Model::load_by_code( $_REQUEST['invitation_code'] )
 			);
 
 			$invitation->save_application( $subscription );
