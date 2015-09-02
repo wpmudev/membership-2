@@ -419,16 +419,18 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				$ignore = false;
 				$success = false;
 			} else {
-				if ( ! $payment_status && ! $transaction_type ) {
-					$notes = 'Error: payment_status and txn_type not specified. Cannot process.';
-				} elseif ( empty( $_POST['invoice'] ) && empty( $_POST['custom'] ) ) {
-					$notes = 'Error: No invoice or custom data specified.';
-				} else {
-					$notes = 'Error: Missing POST variables. Identification is not possible.';
-				}
+				// PayPal sent us a IPN notice about a non-Membership payment:
+				// Ignore it, but add it to the logs.
 
-				// PayPal did provide invalid details...
-				status_header( 404 );
+				if ( ! $payment_status && ! $transaction_type ) {
+					$notes = 'Ignored: payment_status and txn_type not specified. Cannot process.';
+				} elseif ( empty( $_POST['invoice'] ) && empty( $_POST['custom'] ) ) {
+					$notes = 'Ignored: No invoice or custom data specified.';
+				} else {
+					$notes = 'Ignored: Missing POST variables. Identification is not possible.';
+				}
+				$notes .= ' [Irrelevant IPN call]';
+
 				MS_Helper_Debug::log( $notes );
 			}
 			$exit = true;

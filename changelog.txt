@@ -13,6 +13,7 @@ Change Log:
 - Improve Membership Description to allow shortcodes
 - Fix the user-name variables in email/shortcodes (use display name instead of login name)
 - Fix the "Ignore" action in the Transaction log list
+- Fix an issue where M2 returns an error to PayPal when a non-M2 payment is made in the PayPal account
 - Fix protection bug that would hide custom posts in certain situations
 - Fix a bug in Pro-Rating Add-on to correctly apply discount from now on
 - Fix wrong signup-logic to instantly disable the old subscription on membership upgrade/downgrade
