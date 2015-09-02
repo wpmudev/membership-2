@@ -11,6 +11,7 @@ Change Log:
 - Improve Invitation code Add-on to accept an code via URL param &invitation_code=abc
 - Improved the details in the Pro-Rating Add-on with short instructions
 - Improve Membership Description to allow shortcodes
+- Fix the user-name variables in email/shortcodes (use display name instead of login name)
 - Fix the "Ignore" action in the Transaction log list
 - Fix protection bug that would hide custom posts in certain situations
 - Fix a bug in Pro-Rating Add-on to correctly apply discount from now on

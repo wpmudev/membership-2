@@ -388,10 +388,40 @@ class MS_Factory {
 				$model->id = $wp_user->ID;
 				$model->username = $wp_user->user_login;
 				$model->email = $wp_user->user_email;
-				$model->name = $wp_user->user_nicename;
+				$model->name = $wp_user->display_name;
 				$model->first_name = $wp_user->first_name;
 				$model->last_name = $wp_user->last_name;
 				$model->wp_user = $wp_user;
+
+				if ( ! $model->name ) {
+					if ( $model->first_name ) {
+						$model->name = $model->first_name . ' ' . $model->last_name;
+					} else {
+						$model->name = $wp_user->user_login;
+					}
+					$model->name = ucwords( strtolower( $model->name ) );
+				}
+				$model->name = trim( $model->name );
+
+				/**
+				 * Manually customize the display name of the user via a filter.
+				 *
+				 * @since  1.0.1.2
+				 * @param  string $name The default display name used by M2.
+				 * @param  WP_User $wp_user The user object used to populate the name.
+				 */
+				$model->name = apply_filters(
+					'ms_model_user_set_name',
+					$model->name,
+					$wp_user
+				);
+
+				// Remove automatic populated values from metadata, if present.
+				unset( $member_details['ms_username'] );
+				unset( $member_details['ms_email'] );
+				unset( $member_details['ms_name'] );
+				unset( $member_details['ms_first_name'] );
+				unset( $member_details['ms_last_name'] );
 
 				self::populate_model( $model, $member_details, 'ms_' );
 
