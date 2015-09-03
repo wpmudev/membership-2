@@ -219,7 +219,7 @@ class MS_Controller_Api extends MS_Hooker {
 			$membership_id = $this->get_membership_id( $membership_id );
 		}
 
-		$membership = MS_Factory::load( 'MS_Model_Membership', int( $membership_id ) );
+		$membership = MS_Factory::load( 'MS_Model_Membership', intval( $membership_id ) );
 
 		return $membership;
 	}
@@ -307,17 +307,26 @@ class MS_Controller_Api extends MS_Hooker {
 	 * Otherwise the subscription is set to PENDING until the user makes the
 	 * payment via the M2 checkout page.
 	 *
-	 * @since 1.0.1.2
-	 * @param int $user_id The User-ID.
-	 * @param int|string $membership_id The membership-ID or name/slug.
+	 * @since  1.0.1.2
+	 * @param  int $user_id The User-ID.
+	 * @param  int|string $membership_id The membership-ID or name/slug.
+	 * @return MS_Model_Relationship|null The new subscription object.
 	 */
 	public function add_subscription( $user_id, $membership_id ) {
+		$subscription = null;
 		$membership = $this->get_membership( $membership_id );
 
 		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $member ) {
 			$subscription = $member->add_membership( $membership->id, '' );
+
+			// Activate free memberships instantly.
+			if ( $membership->is_free() ) {
+				$subscription->add_payment( 0, MS_Gateway_Free::ID );
+			}
 		}
+
+		return $subscription;
 	}
 
 	/**
