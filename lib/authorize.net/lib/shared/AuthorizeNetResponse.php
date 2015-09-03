@@ -20,7 +20,7 @@ class M2_AuthorizeNetResponse
     const DECLINED = 2;
     const ERROR = 3;
     const HELD = 4;
-
+    
     public $approved;
     public $declined;
     public $error;

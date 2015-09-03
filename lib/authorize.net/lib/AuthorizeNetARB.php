@@ -16,8 +16,7 @@
  */
 class M2_AuthorizeNetARB extends M2_AuthorizeNetRequest
 {
-
-    const LIVE_URL = "https://api.authorize.net/xml/v1/request.api";
+    const LIVE_URL = "https://api2.authorize.net/xml/v1/request.api";
     const SANDBOX_URL = "https://apitest.authorize.net/xml/v1/request.api";
 
     private $_request_type;
@@ -40,7 +39,7 @@ class M2_AuthorizeNetARB extends M2_AuthorizeNetRequest
      *
      * @return AuthorizeNetARB_Response
      */
-    public function createSubscription(AuthorizeNet_Subscription $subscription)
+    public function createSubscription(M2_AuthorizeNet_Subscription $subscription)
     {
         $this->_request_type = "CreateSubscriptionRequest";
         $this->_request_payload .= $subscription->getXml();
@@ -88,6 +87,20 @@ class M2_AuthorizeNetARB extends M2_AuthorizeNetRequest
     {
         $this->_request_type = "CancelSubscriptionRequest";
         $this->_request_payload .= "<subscriptionId>$subscriptionId</subscriptionId>";
+        return $this->_sendRequest();
+    }
+
+     /**
+     * Create an ARB subscription
+     *
+     * @param AuthorizeNet_Subscription $subscription
+     *
+     * @return AuthorizeNetARB_Response
+     */
+    public function getSubscriptionList(M2_AuthorizeNetGetSubscriptionList $subscriptionList)
+    {
+        $this->_request_type = "GetSubscriptionListRequest";
+        $this->_request_payload .= $subscriptionList->getXml();
         return $this->_sendRequest();
     }
 
@@ -153,7 +166,7 @@ class M2_AuthorizeNetARB_Response extends M2_AuthorizeNetXMLResponse
      */
     public function getSubscriptionStatus()
     {
-        return $this->_getElementContents("Status");
+        return $this->_getElementContents("status");
     }
 
 }

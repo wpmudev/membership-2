@@ -27,7 +27,7 @@
 class M2_AuthorizeNetDPM extends M2_AuthorizeNetSIM_Form
 {
 
-    const LIVE_URL = 'https://secure.authorize.net/gateway/transact.dll';
+    const LIVE_URL = 'https://secure2.authorize.net/gateway/transact.dll';
     const SANDBOX_URL = 'https://test.authorize.net/gateway/transact.dll';
 
     /**
@@ -36,7 +36,7 @@ class M2_AuthorizeNetDPM extends M2_AuthorizeNetSIM_Form
      */
     public static function directPostDemo($url, $api_login_id, $transaction_key, $amount = "0.00", $md5_setting = "")
     {
-
+        
         // Step 1: Show checkout form to customer.
         if (!count($_POST) && !count($_GET))
         {
@@ -44,15 +44,15 @@ class M2_AuthorizeNetDPM extends M2_AuthorizeNetSIM_Form
             echo M2_AuthorizeNetDPM::getCreditCardForm($amount, $fp_sequence, $url, $api_login_id, $transaction_key);
         }
         // Step 2: Handle AuthorizeNet Transaction Result & return snippet.
-        elseif (count($_POST))
+        elseif (count($_POST)) 
         {
             $response = new M2_AuthorizeNetSIM($api_login_id, $md5_setting);
             if ($response->isAuthorizeNet())
             {
-                if ($response->approved)
+                if ($response->approved) 
                 {
                     // Do your processing here.
-                    $redirect_url = $url . '?response_code=1&transaction_id=' . $response->transaction_id;
+                    $redirect_url = $url . '?response_code=1&transaction_id=' . $response->transaction_id; 
                 }
                 else
                 {
@@ -80,7 +80,7 @@ class M2_AuthorizeNetDPM extends M2_AuthorizeNetSIM_Form
             }
         }
     }
-
+    
     /**
      * A snippet to send to AuthorizeNet to redirect the user back to the
      * merchant's server. Use this on your relay response page.
@@ -98,7 +98,7 @@ class M2_AuthorizeNetDPM extends M2_AuthorizeNetSIM_Form
                 </script>
                 </head><body><noscript><meta http-equiv=\"refresh\" content=\"1;url={$redirect_url}\"></noscript></body></html>";
     }
-
+    
     /**
      * Generate a sample form for use in a demo Direct Post implementation.
      *
@@ -129,7 +129,7 @@ class M2_AuthorizeNetDPM extends M2_AuthorizeNetSIM_Form
         );
         $hidden_fields = $sim->getHiddenFieldString();
         $post_url = ($test_mode ? self::SANDBOX_URL : self::LIVE_URL);
-
+        
         $form = '
         <style>
         fieldset {

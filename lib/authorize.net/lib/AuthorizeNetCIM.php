@@ -18,10 +18,10 @@
 class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
 {
 
-    const LIVE_URL = "https://api.authorize.net/xml/v1/request.api";
+    const LIVE_URL = "https://api2.authorize.net/xml/v1/request.api";
     const SANDBOX_URL = "https://apitest.authorize.net/xml/v1/request.api";
 
-
+    
     private $_xml;
     private $_refId = false;
     private $_validationMode = "none"; // "none","testMode","liveMode"
@@ -34,7 +34,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         'Refund',
         'Void',
     );
-
+    
     /**
      * Optional. Used if the merchant wants to set a reference ID.
      *
@@ -44,7 +44,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
     {
         $this->_refId = $refId;
     }
-
+    
     /**
      * Create a customer profile.
      *
@@ -61,7 +61,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_addObject($profile, $customerProfile);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Create a customer payment profile.
      *
@@ -80,7 +80,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_addObject($profile, $paymentProfile);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Create a shipping address.
      *
@@ -97,7 +97,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_addObject($address, $shippingAddress);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Create a transaction.
      *
@@ -116,7 +116,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_extraOptions = $extraOptionsString . "x_encap_char=|";
         return $this->_sendRequest();
     }
-
+    
     /**
      * Delete a customer profile.
      *
@@ -130,7 +130,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("customerProfileId", $customerProfileId);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Delete a payment profile.
      *
@@ -146,7 +146,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("customerPaymentProfileId", $customerPaymentProfileId);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Delete a shipping address.
      *
@@ -162,7 +162,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("customerAddressId", $customerAddressId);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Get all customer profile ids.
      *
@@ -173,7 +173,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_constructXml("getCustomerProfileIdsRequest");
         return $this->_sendRequest();
     }
-
+    
     /**
      * Get a customer profile.
      *
@@ -187,7 +187,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("customerProfileId", $customerProfileId);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Get a payment profile.
      *
@@ -203,7 +203,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("customerPaymentProfileId", $customerPaymentProfileId);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Get a shipping address.
      *
@@ -219,7 +219,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("customerAddressId", $customerAddressId);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Update a profile.
      *
@@ -236,7 +236,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_addObject($profile, $customerProfile);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Update a payment profile.
      *
@@ -257,7 +257,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_addObject($profile, $paymentProfile);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Update a shipping address.
      *
@@ -269,7 +269,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
      */
     public function updateCustomerShippingAddress($customerProfileId, $customerShippingAddressId, $shippingAddress)
     {
-
+        
         $this->_constructXml("updateCustomerShippingAddressRequest");
         $this->_xml->addChild("customerProfileId", $customerProfileId);
         $shippingAddress->customerAddressId = $customerShippingAddressId;
@@ -277,7 +277,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_addObject($sa, $shippingAddress);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Update the status of an existing order that contains multiple transactions with the same splitTenderId.
      *
@@ -293,7 +293,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("splitTenderStatus", $splitTenderStatus);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Validate a customer payment profile.
      *
@@ -315,7 +315,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $this->_xml->addChild("cardCode",$cardCode);
         return $this->_sendRequest();
     }
-
+    
     /**
      * Get hosted profile page request token
      *
@@ -340,7 +340,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
 
         return $this->_sendRequest();
     }
-
+    
      /**
      * @return string
      */
@@ -348,19 +348,19 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
     {
         return ($this->_sandbox ? self::SANDBOX_URL : self::LIVE_URL);
     }
-
+    
     /**
      *
      *
      * @param string $response
-     *
+     * 
      * @return AuthorizeNetCIM_Response
      */
     protected function _handleResponse($response)
     {
         return new M2_AuthorizeNetCIM_Response($response);
     }
-
+    
     /**
      * Prepare the XML post string.
      */
@@ -368,7 +368,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
     {
         ($this->_validationMode != "none" ? $this->_xml->addChild('validationMode',$this->_validationMode) : "");
         $this->_post_string = $this->_xml->asXML();
-
+        
         // Add extraOptions CDATA
         if ($this->_extraOptions) {
             $this->_xml->addChild("extraOptions");
@@ -379,7 +379,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         // don't use it.
         $this->_validationMode = "none";
     }
-
+    
     /**
      * Start the SimpleXMLElement that will be posted.
      *
@@ -394,12 +394,12 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         $merchant->addChild('transactionKey',$this->_transaction_key);
         ($this->_refId ? $this->_xml->addChild('refId',$this->_refId) : "");
     }
-
+    
     /**
      * Add an object to an SimpleXMLElement parent element.
      *
      * @param SimpleXMLElement $destination The parent element.
-     * @param Object           $object      An object, array or value.
+     * @param Object           $object      An object, array or value.  
      */
     private function _addObject($destination, $object)
     {
@@ -420,7 +420,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
             }
         }
     }
-
+    
     /**
      * Checks whether an array or object contains any values.
      *
@@ -442,7 +442,7 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         }
         return false;
     }
-
+    
 }
 
 /**
@@ -460,7 +460,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
     {
         return new M2_AuthorizeNetAIM_Response($this->_getElementContents("directResponse"), ",", "|", array());
     }
-
+    
     /**
      * @return array Array of AuthorizeNetAIM_Response objects for each payment profile.
      */
@@ -473,7 +473,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
         }
         return $return;
     }
-
+    
     /**
      * @return AuthorizeNetAIM_Response
      */
@@ -481,7 +481,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
     {
         return new M2_AuthorizeNetAIM_Response($this->_getElementContents("validationDirectResponse"), ",", "|", array());
     }
-
+    
     /**
      * @return array
      */
@@ -490,7 +490,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
         $ids = (array)$this->xml->ids;
         return $ids["numericString"];
     }
-
+    
     /**
      * @return array
      */
@@ -499,7 +499,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
         $ids = (array)$this->xml->customerPaymentProfileIdList;
         return $ids["numericString"];
     }
-
+    
     /**
      * @return array
      */
@@ -508,7 +508,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
         $ids = (array)$this->xml->customerShippingAddressIdList;
         return $ids["numericString"];
     }
-
+    
     /**
      * @return string
      */
@@ -516,7 +516,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("customerAddressId");
     }
-
+    
     /**
      * @return string
      */
@@ -524,7 +524,7 @@ class M2_AuthorizeNetCIM_Response extends M2_AuthorizeNetXMLResponse
     {
         return $this->_getElementContents("customerProfileId");
     }
-
+    
     /**
      * @return string
      */

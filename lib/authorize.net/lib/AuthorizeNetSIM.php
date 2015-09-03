@@ -30,13 +30,13 @@ class M2_AuthorizeNetSIM extends M2_AuthorizeNetResponse
         $this->api_login_id = ($api_login_id ? $api_login_id : (defined('AUTHORIZENET_API_LOGIN_ID') ? AUTHORIZENET_API_LOGIN_ID : ""));
         $this->md5_setting = ($md5_setting ? $md5_setting : (defined('AUTHORIZENET_MD5_SETTING') ? AUTHORIZENET_MD5_SETTING : ""));
         $this->response = $_POST;
-
+        
         // Set fields without x_ prefix
         foreach ($_POST as $key => $value) {
             $name = substr($key, 2);
             $this->$name = $value;
         }
-
+        
         // Set some human readable fields
         $map = array(
             'invoice_number' => 'x_invoice_num',
@@ -56,13 +56,13 @@ class M2_AuthorizeNetSIM extends M2_AuthorizeNetResponse
         foreach ($map as $key => $value) {
             $this->$key = (isset($_POST[$value]) ? $_POST[$value] : "");
         }
-
+        
         $this->approved = ($this->response_code == self::APPROVED);
         $this->declined = ($this->response_code == self::DECLINED);
         $this->error    = ($this->response_code == self::ERROR);
         $this->held     = ($this->response_code == self::HELD);
     }
-
+    
     /**
      * Verify the request is AuthorizeNet.
      *
@@ -72,7 +72,7 @@ class M2_AuthorizeNetSIM extends M2_AuthorizeNetResponse
     {
         return count($_POST) && $this->md5_hash && ($this->generateHash() == $this->md5_hash);
     }
-
+    
     /**
      * Generates an Md5 hash to compare against Authorize.Net's.
      *
@@ -156,7 +156,7 @@ class M2_AuthorizeNetSIM_Form
     public $x_type;
     public $x_version;
     public $x_zip;
-
+    
     /**
      * Constructor
      *
@@ -169,14 +169,14 @@ class M2_AuthorizeNetSIM_Form
         $this->x_version = "3.1";
         $this->x_delim_char = ",";
         $this->x_delim_data = "TRUE";
-
+        
         if ($fields) {
             foreach ($fields as $key => $value) {
                 $this->$key = $value;
             }
         }
     }
-
+    
     /**
      * Get a string of HTML hidden fields for use in a form.
      *
@@ -193,7 +193,7 @@ class M2_AuthorizeNetSIM_Form
         }
         return $string;
     }
-
+    
     /**
      * Generates a fingerprint needed for a hosted order form or DPM.
      *
@@ -210,9 +210,9 @@ class M2_AuthorizeNetSIM_Form
         $api_login_id = ($api_login_id ? $api_login_id : (defined('AUTHORIZENET_API_LOGIN_ID') ? AUTHORIZENET_API_LOGIN_ID : ""));
         $transaction_key = ($transaction_key ? $transaction_key : (defined('AUTHORIZENET_TRANSACTION_KEY') ? AUTHORIZENET_TRANSACTION_KEY : ""));
         if (function_exists('hash_hmac')) {
-            return hash_hmac("md5", $api_login_id . "^" . $fp_sequence . "^" . $fp_timestamp . "^" . $amount . "^", $transaction_key);
+            return hash_hmac("md5", $api_login_id . "^" . $fp_sequence . "^" . $fp_timestamp . "^" . $amount . "^", $transaction_key); 
         }
         return bin2hex(mhash(MHASH_MD5, $api_login_id . "^" . $fp_sequence . "^" . $fp_timestamp . "^" . $amount . "^", $transaction_key));
     }
-
+    
 }
