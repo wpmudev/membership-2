@@ -316,7 +316,7 @@ class MS_Controller_Api extends MS_Hooker {
 
 		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $member ) {
-			$subscription = $member->add_subscription( $membership->id, '' );
+			$subscription = $member->add_membership( $membership->id, '' );
 		}
 	}
 
