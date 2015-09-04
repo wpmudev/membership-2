@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - Add new Variable for Automated Emails: Membership Description
 - Add API functions: ms_api, get_membership_id, add_subscription (see API Docs for details)
+- Update the Authorize.Net library to latest version that uses the new API URLs
 - Improve Invitation code Add-on to accept an code via URL param &invitation_code=abc
 - Improved the details in the Pro-Rating Add-on with short instructions
 - Improve Membership Description to allow shortcodes
