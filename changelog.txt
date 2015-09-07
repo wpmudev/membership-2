@@ -21,6 +21,7 @@ Change Log:
 - Fix a PHP error that occured when paying the first invoice of a member via manual gateway
 - Fix displayed payment method for subscriptions in Member editor screen
 - Fix an issue that would not actiavte imported subscriptions
+- Fix issue that did not notify the blow admin of new user signups
 - Small changes like fix some typos, add new filters and code cleanup
 
 1.0.1.1
