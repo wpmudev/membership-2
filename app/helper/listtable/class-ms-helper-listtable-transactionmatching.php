@@ -561,31 +561,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		$detail_lines = array();
 
 		// 1. Prepare the "Additional Details" popup.
-		if ( $item->is_manual ) {
-			$detail_lines[] = __( 'Transaction state manually changed', MS_TEXT_DOMAIN );
-			$detail_lines[] = sprintf(
-				__( 'Modified on: %s', MS_TEXT_DOMAIN ),
-				$item->manual_date
-			);
-			$detail_lines[] = sprintf(
-				__( 'Modified by: %s', MS_TEXT_DOMAIN ),
-				$item->get_manual_user()->display_name
-			);
-		}
-
-		$item_post_info = $item->post;
-		if ( ! empty( $item_post_info ) ) {
-			if ( count( $detail_lines ) ) {
-				$detail_lines[] = '<hr>';
-			}
-			ksort( $item_post_info );
-			$ind = 0;
-			$detail_lines[] = __( 'POST data:', MS_TEXT_DOMAIN );
-			foreach ( $item_post_info as $key => $value ) {
-				$ind += 1;
-				$detail_lines[] = "<small style='display:inline-block;width:22px;'>$ind</small> [$key] = \"$value\"";
-			}
-		}
+		$detail_lines = MS_Helper_ListTable_TransactionLog::get_details( $item );
 
 		if ( count( $detail_lines ) ) {
 			$extra_infos = sprintf(

@@ -100,6 +100,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 		if ( isset( $_POST['mc_gross'] ) ) {
 			$amount = (float) $_POST['mc_gross'];
+		} elseif ( isset( $_POST['mc_amount3'] ) ) {
+			// mc_amount1 and mc_amount2 are for trial period prices.
+			$amount = (float) $_POST['mc_amount3'];
 		}
 		if ( ! empty( $_POST[ 'payment_status'] ) ) {
 			$payment_status = strtolower( $_POST[ 'payment_status'] );
@@ -222,7 +225,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 
 		// Step 2: If we have an invoice_id then process the payment.
-		if ( $invoice_id && $external_id ) {
+		if ( $invoice_id ) {
 			if ( $this->is_live_mode() ) {
 				$domain = 'https://www.paypal.com';
 			} else {
@@ -432,7 +435,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				if ( ! empty( $notes_pay ) ) { $invoice->add_notes( $notes_pay ); }
 				if ( ! empty( $notes_txn ) ) { $invoice->add_notes( $notes_txn ); }
 
-				$notes .= $notes_pay . ' | ' . $notes_txn;
+				if ( $notes_pay ) {
+					$notes .= ($notes ? ' | ' : '') . $notes_pay;
+				}
+				if ( $notes_txn ) {
+					$notes .= ($notes ? ' | ' : '') . $notes_txn;
+				}
 
 				$invoice->save();
 
@@ -475,9 +483,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						);
 						break;
 
-					case $invoice->id != $invoice_id:
+					case ! $invoice->id:
 						$reason = sprintf(
-							'PayPal gave us an invalid invoice_id: "%s"',
+							'Specified invoice does not exist: "%s"',
 							$invoice_id
 						);
 						break;
@@ -566,6 +574,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			$log->description = $notes;
 			if ( $success ) {
 				$log->manual_state( 'ok' );
+			} elseif ( $ignore ) {
+				$log->manual_state( 'ignore' );
 			}
 			$log->save();
 		}

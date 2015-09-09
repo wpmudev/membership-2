@@ -2392,6 +2392,39 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   top: -25px;
   height: 25px;
 }
+#wpwrap .ms-wrap.ms-billing .more-details .line .line-num,
+.ms-wrap.ms-billing .more-details .line .line-num {
+  display: inline-block;
+  width: 22px;
+  color: #999;
+}
+#wpwrap .ms-wrap.ms-billing .more-details .line .line-key:before,
+.ms-wrap.ms-billing .more-details .line .line-key:before {
+  content: '[ ';
+  color: #888;
+}
+#wpwrap .ms-wrap.ms-billing .more-details .line .line-key:after,
+.ms-wrap.ms-billing .more-details .line .line-key:after {
+  content: ' ]';
+  color: #888;
+}
+#wpwrap .ms-wrap.ms-billing .more-details .line .line-val:before,
+.ms-wrap.ms-billing .more-details .line .line-val:before {
+  content: ' =  "';
+  color: #888;
+}
+#wpwrap .ms-wrap.ms-billing .more-details .line .line-val:after,
+.ms-wrap.ms-billing .more-details .line .line-val:after {
+  content: '"';
+  color: #888;
+}
+#wpwrap .ms-wrap.ms-billing .more-details .line.is-id .line-key,
+.ms-wrap.ms-billing .more-details .line.is-id .line-key {
+  color: #000;
+  background: #CC8;
+  padding: 0 2px;
+  display: inline-block;
+}
 #wpwrap .ms-wrap.ms-billing .more-details:hover .post-data,
 .ms-wrap.ms-billing .more-details:hover .post-data {
   display: block;

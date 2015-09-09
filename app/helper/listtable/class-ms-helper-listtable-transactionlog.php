@@ -360,33 +360,10 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$nonce_action = '';
 		$detail_lines = array();
 		$actions = array();
+		$ind = 0;
 
 		// 1. Prepare the "Additional Details" popup.
-		if ( $item->is_manual ) {
-			$detail_lines[] = __( 'Transaction state manually changed', MS_TEXT_DOMAIN );
-			$detail_lines[] = sprintf(
-				__( 'Modified on: %s', MS_TEXT_DOMAIN ),
-				$item->manual_date
-			);
-			$detail_lines[] = sprintf(
-				__( 'Modified by: %s', MS_TEXT_DOMAIN ),
-				$item->get_manual_user()->display_name
-			);
-		}
-
-		$item_post_info = $item->post;
-		if ( ! empty( $item_post_info ) ) {
-			if ( count( $detail_lines ) ) {
-				$detail_lines[] = '<hr>';
-			}
-			ksort( $item_post_info );
-			$ind = 0;
-			$detail_lines[] = __( 'POST data:', MS_TEXT_DOMAIN );
-			foreach ( $item_post_info as $key => $value ) {
-				$ind += 1;
-				$detail_lines[] = "<small style='display:inline-block;width:22px;'>$ind</small> [$key] = \"$value\"";
-			}
-		}
+		$detail_lines = self::get_details( $item );
 
 		if ( count( $detail_lines ) ) {
 			$extra_infos = sprintf(
@@ -401,8 +378,13 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			$actions = array(
 				'action-ignore' => __( 'Ignore', MS_TEXT_DOMAIN ),
 				'action-link' => __( 'Link', MS_TEXT_DOMAIN ),
-				'action-retry' => __( 'Retry', MS_TEXT_DOMAIN ),
 			);
+
+			// We can only re-process the transaction if we have POST data.
+			$postdata = $item->post;
+			if ( is_array( $postdata ) && ! empty( $postdata ) ) {
+				$actions['action-retry'] = __( 'Retry', MS_TEXT_DOMAIN );
+			}
 		} elseif ( 'ignore' == $item->state && $item->is_manual ) {
 			$actions = array(
 				'action-clear' => __( 'Reset', MS_TEXT_DOMAIN ),
@@ -456,6 +438,81 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		);
 
 		return $html;
+	}
+
+	/**
+	 * Returns an array with additional details about the transaction.
+	 *
+	 * This function is used in the note-column and is shared in the objects for
+	 * TransactionLog and TransactionMatching.
+	 *
+	 * @since  1.0.1.2
+	 * @param  MS_Model_Transaction $item Transaction object.
+	 * @return array The transaction details.
+	 */
+	static public function get_details( $item ) {
+		$detail_lines = array();
+
+		if ( $item->is_manual ) {
+			$detail_lines[] = __( 'Transaction state manually changed', MS_TEXT_DOMAIN );
+			$detail_lines[] = sprintf(
+				__( 'Modified on: %s', MS_TEXT_DOMAIN ),
+				$item->manual_date
+			);
+			$detail_lines[] = sprintf(
+				__( 'Modified by: %s', MS_TEXT_DOMAIN ),
+				$item->get_manual_user()->display_name
+			);
+		}
+
+		$postdata = $item->post;
+		if ( ! empty( $postdata ) ) {
+			$id_fields = array();
+			switch ( $item->gateway_id ) {
+				case MS_Gateway_Paypalstandard::ID:
+					if ( isset( $postdata['invoice'] ) ) {
+						$id_fields[] = 'invoice';
+					} elseif ( isset( $postdata['custom'] ) ) {
+						$id_fields[] = 'custom';
+						$detail_lines[] = __( 'Imported subscription from old Membership plugin.', MS_TEXT_DOMAIN );
+					} elseif ( isset( $postdata['btn_id'] ) ) {
+						$id_fields[] = 'btn_id';
+						$id_fields[] = 'payer_email';
+						$detail_lines[] = __( 'Payment via a PayPal Payment button.', MS_TEXT_DOMAIN );
+					} elseif ( isset( $postdata['txn_type'] ) ) {
+						// Highlight invalid transactions.
+						if ( 'send_money' == $postdata['txn_type'] ) {
+							$id_fields[] = 'txn_type';
+							$detail_lines[] = __( 'Someone sent you money inside PayPal.<br>Plugin did not attempt to match payment to a subscription.', MS_TEXT_DOMAIN );
+						}
+					}
+					break;
+			}
+
+			if ( count( $detail_lines ) ) {
+				$detail_lines[] = '<hr>';
+			}
+			ksort( $postdata );
+			$detail_lines[] = __( 'POST data:', MS_TEXT_DOMAIN );
+			foreach ( $postdata as $key => $value ) {
+				$ind += 1;
+
+				$line_class = '';
+				if ( in_array( $key, $id_fields ) ) {
+					$line_class = 'is-id';
+				}
+
+				$detail_lines[] = sprintf(
+					'<span class="line %s"><small class="line-num">%s</small> <span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+					$line_class,
+					$ind,
+					$key,
+					$value
+				);
+			}
+		}
+
+		return $detail_lines;
 	}
 
 }

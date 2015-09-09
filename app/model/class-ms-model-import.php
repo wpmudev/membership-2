@@ -750,12 +750,18 @@ class MS_Model_Import extends MS_Model {
 			return $res;
 		}
 
+		$post_data = $log->post;
+		if ( empty( $post_data ) || ! is_array( $post_data ) ) {
+			// We do not have POST data available for the transaction.
+			// Re-Processing is not possible.
+			return $res;
+		}
+
 		$orig_post = $_POST;
 		$orig_req = $_REQUEST;
 
 		// Set up the PHP environment to process the transaction again.
 		$gateway = MS_Model_Gateway::factory( $log->gateway_id );
-		$post_data = $log->post;
 		$_POST = $post_data;
 		$_REQUEST = $post_data;
 

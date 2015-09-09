@@ -308,23 +308,61 @@
 				color: #EEE;
 				text-align: left;
 				white-space: pre;
+
+				&:before {
+					content: '';
+					position: absolute;
+					left: 9px;
+					top: -10px;
+					border: 5px solid transparent;
+					border-bottom-color: #333;
+				}
+				&:after {
+					content: '';
+					position: absolute;
+					left: 0px;
+					right: 0px;
+					top: -25px;
+					height: 25px;
+				}
 			}
-			.post-data:before {
-				content: '';
-				position: absolute;
-				left: 9px;
-				top: -10px;
-				border: 5px solid transparent;
-				border-bottom-color: #333;
+
+			.line {
+				.line-num {
+					display: inline-block;
+					width: 22px;
+					color: #999;
+				}
+				.line-key {
+					&:before {
+						content: '[ ';
+						color: #888;
+					}
+					&:after {
+						content: ' ]';
+						color: #888;
+					}
+				}
+				.line-val {
+					&:before {
+						content: ' =  "';
+						color: #888;
+					}
+					&:after {
+						content: '"';
+						color: #888;
+					}
+				}
+				&.is-id {
+					.line-key {
+						color: #000;
+						background: #CC8;
+						padding: 0 2px;
+						display: inline-block;
+					}
+				}
 			}
-			.post-data:after {
-				content: '';
-				position: absolute;
-				left: 0px;
-				right: 0px;
-				top: -25px;
-				height: 25px;
-			}
+
 			&:hover .post-data {
 				display: block;
 			}
