@@ -1358,29 +1358,45 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		switch ( $this->payment_type ) {
 			case self::PAYMENT_TYPE_FINITE:
-				$desc = sprintf(
-					__( 'For %1$s', MS_TEXT_DOMAIN ),
-					MS_Helper_Period::get_period_desc( $this->period )
-				);
+				if ( $has_payment ) {
+					$desc = sprintf(
+						__( 'Pay for %1$s', MS_TEXT_DOMAIN ),
+						MS_Helper_Period::get_period_desc( $this->period )
+					);
+				} else {
+					$desc = sprintf(
+						__( 'Free for %1$s', MS_TEXT_DOMAIN ),
+						MS_Helper_Period::get_period_desc( $this->period )
+					);
+				}
 				break;
 
 			case self::PAYMENT_TYPE_DATE_RANGE:
-				$desc = sprintf(
-					__( 'From %1$s to %2$s', MS_TEXT_DOMAIN ),
-					$this->period_date_start,
-					$this->period_date_end
-				);
+				if ( $has_payment ) {
+					$desc = sprintf(
+						__( 'Pay from %1$s to %2$s', MS_TEXT_DOMAIN ),
+						$this->period_date_start,
+						$this->period_date_end
+					);
+				} else {
+					$desc = sprintf(
+						__( 'Free from %1$s to %2$s', MS_TEXT_DOMAIN ),
+						$this->period_date_start,
+						$this->period_date_end
+					);
+				}
 				break;
 
 			case self::PAYMENT_TYPE_RECURRING:
-				$desc = __( 'Each %1$s', MS_TEXT_DOMAIN );
-
 				if ( $has_payment ) {
+					$desc = __( 'Pay each %1$s', MS_TEXT_DOMAIN );
 					if ( 1 == $this->pay_cycle_repetitions ) {
 						$desc = __( 'Single payment', MS_TEXT_DOMAIN );
 					} elseif ( $this->pay_cycle_repetitions > 1 ) {
 						$desc .= ', ' . __( '%2$s payments', MS_TEXT_DOMAIN );
 					}
+				} else {
+					$desc = __( 'Free access', MS_TEXT_DOMAIN );
 				}
 
 				$desc = sprintf(
@@ -1395,7 +1411,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				if ( $has_payment ) {
 					$desc = __( 'Single payment', MS_TEXT_DOMAIN );
 				} else {
-					$desc = __( 'Permanent access', MS_TEXT_DOMAIN );
+					$desc = __( 'Free access', MS_TEXT_DOMAIN );
 				}
 				break;
 		}
