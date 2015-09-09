@@ -232,17 +232,13 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 	public function get_views() {
 		$views = array();
 
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$lst = $settings->get_custom_setting( 'import_match' );
-		if ( ! is_array( $lst ) ) {
-			$lst = array();
-		}
+		if ( MS_Model_Import::can_match() ) {
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			$lst = $settings->get_custom_setting( 'import_match' );
+			if ( ! is_array( $lst ) ) {
+				$lst = array();
+			}
 
-		if ( empty( $lst ) ) {
-			$views['all'] = array(
-				'label' => __( 'No unmatched IDs found', MS_TEXT_DOMAIN ),
-			);
-		} else {
 			$views['label'] = array(
 				'label' => __( 'Undefined transactions:', MS_TEXT_DOMAIN ),
 			);
@@ -277,6 +273,29 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		parent::views();
 
 		if ( ! $this->source || ! $this->source_id ) {
+			if ( ! MS_Model_Import::can_match() ) {
+				$url = MS_Controller_Plugin::get_admin_url(
+					'billing',
+					array( 'show' => 'logs' )
+				);
+
+				echo '<p>';
+				_e( 'No suitable transaction found.', MS_TEXT_DOMAIN );
+				echo '</p><p>';
+				printf(
+					'<strong>%s</strong><br />',
+					__( 'Nothing to do right now:', MS_TEXT_DOMAIN )
+				);
+				_e( 'Transactions that can be automatically matched will appear here when they are processed by a payment gateway.<br>So simply check again later after new payments were made.', MS_TEXT_DOMAIN );
+				echo '</p><p>';
+				printf(
+					__( 'If you are impatient then "Retry" some error-state transactions in the %sTransaction Logs%s section and then see if they appear on this page.', MS_TEXT_DOMAIN ),
+					'<a href="' . $url . '">',
+					'</a>'
+				);
+				echo '</p>';
+			}
+
 			// Don't display anything if no matching source was selected.
 			return;
 		}

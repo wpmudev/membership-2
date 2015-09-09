@@ -147,16 +147,22 @@ class MS_View_Billing_List extends MS_View {
 
 		if ( 'matching' != $module ) {
 			if ( MS_Model_Import::can_match() ) {
-				$buttons[] = array(
-					'type' => MS_Helper_Html::TYPE_HTML_LINK,
-					'url' => MS_Controller_Plugin::get_admin_url(
-						'billing',
-						array( 'show' => 'matching' )
-					),
-					'value' => __( 'Setup automatic matching', MS_TEXT_DOMAIN ),
-					'class' => 'button',
-				);
+				$btn_label = __( 'Setup automatic matching', MS_TEXT_DOMAIN );
+				$btn_class = 'button';
+			} else {
+				$btn_label = '(' . __( 'Setup automatic matching', MS_TEXT_DOMAIN ) . ')';
+				$btn_class = 'button button-link';
 			}
+
+			$buttons[] = array(
+				'type' => MS_Helper_Html::TYPE_HTML_LINK,
+				'url' => MS_Controller_Plugin::get_admin_url(
+					'billing',
+					array( 'show' => 'matching' )
+				),
+				'value' => $btn_label,
+				'class' => $btn_class,
+			);
 		}
 
 		// Default list view part - dislay prepared values from above.
