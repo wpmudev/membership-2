@@ -8,10 +8,13 @@ Change Log:
 ----------------------------------------------------------------------
 - Add new Variable for Automated Emails: Membership Description
 - Add API functions: ms_api, get_membership_id, add_subscription (see API Docs for details)
+- Add a "Retry" function to Transaction logs to re-process a single transaction
+- Add a "Auto Matching" screen to the billings page to link M1 payments with memberships
 - Update the Authorize.Net library to latest version that uses the new API URLs
 - Improve Invitation code Add-on to accept an code via URL param &invitation_code=abc
 - Improved the details in the Pro-Rating Add-on with short instructions
 - Improve Membership Description to allow shortcodes
+- Improve transaction logs with more details and small layout improvements
 - Fix the user-name variables in email/shortcodes (use display name instead of login name)
 - Fix the "Ignore" action in the Transaction log list
 - Fix an issue where M2 returns an error to PayPal when a non-M2 payment is made in the PayPal account
