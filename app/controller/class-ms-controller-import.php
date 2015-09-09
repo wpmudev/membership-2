@@ -12,8 +12,14 @@ class MS_Controller_Import extends MS_Controller {
 	const ACTION_EXPORT = 'export';
 	const ACTION_PREVIEW = 'preview';
 
-	// Ajax action constants
+	// Ajax action: Import data.
 	const AJAX_ACTION_IMPORT = 'ms_import';
+
+	// Ajax action: Save an automatic transaction matching (Billings page).
+	const AJAX_ACTION_MATCH = 'ms_save_matching';
+
+	// Ajax action: Retry to process a single transaction (Billings page).
+	const AJAX_ACTION_RETRY = 'transaction_retry';
 
 	/**
 	 * Prepare the Import manager.
@@ -26,6 +32,16 @@ class MS_Controller_Import extends MS_Controller {
 		$this->add_ajax_action(
 			self::AJAX_ACTION_IMPORT,
 			'ajax_action_import'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_MATCH,
+			'ajax_action_match'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_RETRY,
+			'ajax_action_retry'
 		);
 	}
 
@@ -41,6 +57,77 @@ class MS_Controller_Import extends MS_Controller {
 			'ms_controller_settings_enqueue_scripts_' . $tab_key,
 			'enqueue_scripts'
 		);
+	}
+
+	/**
+	 * Handles the matching of transaction details with a membership.
+	 *
+	 * Expected output:
+	 *   OK:Message to display
+	 *   ERR
+	 *
+	 * @since  1.0.1.2
+	 */
+	public function ajax_action_match() {
+		$res = 'ERR';
+
+		if ( ! $this->is_admin_user() ) {
+			return;
+		}
+
+		$fields_match = array( 'match_with', 'source', 'source_id' );
+
+		// Save details of a single invoice.
+		if ( $this->verify_nonce()
+			&& self::validate_required( $fields_match )
+		) {
+			$source = $_POST['source'];
+			$source_id = $_POST['source_id'];
+			$match_id = $_POST['match_with'];
+
+			if ( MS_Model_Import::match_with_source( $match_id, $source_id, $source ) ) {
+				$res = 'OK:' . __( 'Matching details saved. Future transactions are automatically processed from now on!', MS_TEXT_DOMAIN );
+			}
+		}
+
+		echo $res;
+		exit;
+	}
+
+	/**
+	 * Retries to process a single error-state transaction.
+	 *
+	 * Expected output:
+	 *   OK
+	 *   ERR
+	 *
+	 * @since  1.0.1.2
+	 */
+	public function ajax_action_retry() {
+		$res = 'ERR';
+
+		if ( ! $this->is_admin_user() ) {
+			return;
+		}
+
+		$fields_retry = array( 'id' );
+
+		// Save details of a single invoice.
+		if ( $this->verify_nonce()
+			&& self::validate_required( $fields_retry )
+		) {
+			$log_id = intval( $_POST['id'] );
+
+			if ( MS_Model_Import::retry_to_process( $log_id ) ) {
+				$res = 'OK';
+			}
+
+			$log = MS_Factory::load( 'MS_Model_Transactionlog', $log_id );
+			$res .= ':' . $log->description;
+		}
+
+		echo $res;
+		exit;
 	}
 
 	/**

@@ -760,7 +760,7 @@ class MS_Helper_ListTable {
 		$per_page = (int) get_user_option( $option );
 
 		if ( empty( $per_page ) || $per_page < 1 ) {
-			if ( is_numeric( $default_value ) ) {
+			if ( $default_value && is_numeric( $default_value ) ) {
 				$per_page = $default_value;
 			} else {
 				$per_page = self::DEFAULT_PAGE_SIZE;
@@ -768,18 +768,17 @@ class MS_Helper_ListTable {
 		}
 
 		/**
-		 * Filter the number of items to be displayed on each page of the list table.
+		 * Filter the number of items to be displayed on each page of the list
+		 * table.
 		 *
-		 * The dynamic hook name, $option, refers to the per page option depending
-		 * on the type of list table in use. Possible values may include:
-		 * 'edit_comments_per_page', 'sites_network_per_page', 'site_themes_network_per_page',
-		 * 'themes_netework_per_page', 'users_network_per_page', 'edit_{$post_type}', etc.
+		 * The dynamic hook name, $option, refers to the per page option
+		 * depending on the type of list table in use.
 		 *
 		 * @since  1.0.0
 		 *
 		 * @param int $per_page Number of items to be displayed. Default 20.
 		 */
-		return (int) apply_filters( $option, $per_page, $default_value );
+		return intval( apply_filters( $option, $per_page, $default_value ) );
 	}
 
 	/**
@@ -889,7 +888,8 @@ class MS_Helper_ListTable {
 			);
 			$current_url = esc_url_raw(
 				remove_query_arg(
-					array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ), $current_url
+					array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ),
+					$current_url
 				)
 			);
 
@@ -919,7 +919,7 @@ class MS_Helper_ListTable {
 				'&lsaquo;'
 			);
 
-			if ( 'bottom' == $which ){
+			if ( 'bottom' == $which ) {
 				$html_current_page = $current;
 			} else {
 				$html_current_page = sprintf(

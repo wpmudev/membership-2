@@ -6,10 +6,109 @@
 /*global ms_functions:false */
 
 window.ms_init.view_billing_transactions = function init() {
-	var table = jQuery( '.wp-list-table.transactions' ),
+	var table = jQuery( '.wp-list-table.transactions, .wp-list-table.transaction_matches' ),
+		frm_match = jQuery( '.transaction-matching' ),
 		btn_clear = table.find( '.action-clear' ),
 		btn_ignore = table.find( '.action-ignore' ),
-		btn_link = table.find( '.action-link' );
+		btn_link = table.find( '.action-link' ),
+		btn_retry = table.find( '.action-retry' ),
+		btn_match = frm_match.find( '.action-match' );
+
+	// Handle the "Save Matching" action.
+	function save_matching( ev ) {
+		var ajax = wpmUi.ajax(),
+			data = ajax.extract_data( frm_match );
+
+		frm_match.addClass( 'wpmui-loading' );
+		jQuery.post(
+			window.ajaxurl,
+			data,
+			function(response) {
+				var message = '';
+
+				if ( response.indexOf( 'OK:' ) === 0 ) {
+					message = response.substr( 3 );
+					wpmUi.message( message );
+
+					// Start to process the transactions.
+					retry_transactions();
+				}
+			}
+		).always(function() {
+			frm_match.removeClass( 'wpmui-loading' );
+		});
+
+		return false;
+	}
+
+	// Retry to process all displayed transactions.
+	function retry_transactions() {
+		var rows = table.find( '.item' ),
+			nonce = frm_match.find( '.retry_nonce' ).val(),
+			action = frm_match.find( '.retry_action' ).val(),
+			progress = wpmUi.progressbar(),
+			counter = 0,
+			ajax_data = {},
+			queue = [];
+
+		ajax_data.action = action;
+		ajax_data._wpnonce = nonce;
+
+		// Collect all log-IDs in the queue.
+		rows.each(function() {
+			var row = jQuery( this ),
+				row_id = row.attr( 'id' ).replace( /^item-/, '' );
+
+			row.find( '.column-note' ).addClass( 'wpmui-loading' );
+			queue.push( row_id );
+		});
+
+		progress.value( 0 );
+		progress.max( queue.length );
+		progress.$().insertBefore( frm_match );
+		frm_match.hide();
+
+		// Process the queue.
+		function process_queue() {
+			if ( ! queue.length ) {
+				progress.$().remove();
+				return;
+			}
+
+			var id = queue.shift(),
+				data = jQuery.extend( {}, ajax_data ),
+				row = table.find( '#item-' + id );
+
+			data.id = id;
+			counter += 1;
+			progress.value( counter );
+
+			jQuery.post(
+				window.ajaxurl,
+				data,
+				function(response) {
+					var message = false;
+
+					if ( response.indexOf( 'OK:' ) === 0 ) {
+						message = response.substr( 3 );
+						row.removeClass( 'log-err' ).addClass( 'log-ok' );
+					} else if ( response.indexOf( 'ERR:' ) === 0 ) {
+						message = response.substr( 4 );
+					}
+
+					if ( message ) {
+						row.find( '.column-note .txt' ).text( message );
+					}
+
+					window.setTimeout( function() { process_queue(); }, 1 );
+				}
+			).always(function() {
+				row.find( '.column-note' ).removeClass( 'wpmui-loading' );
+			});
+		}
+
+		process_queue();
+	}
 
 	// Handle the "Reset" action.
 	function clear_line( ev ) {
@@ -61,6 +160,45 @@ window.ms_init.view_billing_transactions = function init() {
 			data,
 			function(response) {
 				row.removeClass( 'log-err' ).addClass( 'log-ignore is-manual' );
+			}
+		).always(function() {
+			cell.removeClass( 'wpmui-loading' );
+		});
+
+		return false;
+	}
+
+	// Handle the "Retry" action.
+	function retry_line( ev ) {
+		var cell = jQuery( this ).closest( 'td' ),
+			nonce = cell.find( 'input[name=nonce_retry]' ).val(),
+			row = cell.closest( '.item' ),
+			row_id = row.attr( 'id' ).replace( /^item-/, '' ),
+			data = {};
+
+		if ( ! row.hasClass( 'log-err' ) ) { return false; }
+
+		data.action = 'transaction_retry';
+		data._wpnonce = nonce;
+		data.id = row_id;
+
+		cell.addClass( 'wpmui-loading' );
+		jQuery.post(
+			window.ajaxurl,
+			data,
+			function(response) {
+				var message = false;
+
+				if ( response.indexOf( 'OK:' ) === 0 ) {
+					message = response.substr( 3 );
+					row.removeClass( 'log-err' ).addClass( 'log-ok' );
+				} else if ( response.indexOf( 'ERR:' ) === 0 ) {
+					message = response.substr( 4 );
+				}
+
+				if ( message ) {
+					row.find( '.column-note .txt' ).text( message );
+				}
 			}
 		).always(function() {
 			cell.removeClass( 'wpmui-loading' );
@@ -272,4 +410,6 @@ window.ms_init.view_billing_transactions = function init() {
 	btn_clear.click(clear_line);
 	btn_ignore.click(ignore_line);
 	btn_link.click(link_line);
+	btn_retry.click(retry_line);
+	btn_match.click(save_matching);
 };

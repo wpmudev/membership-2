@@ -62,8 +62,10 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	 * Processes gateway IPN return.
 	 *
 	 * @since  1.0.0
+	 * @param  MS_Model_Transactionlog $log Optional. A transaction log item
+	 *         that will be updated instead of creating a new log entry.
 	 */
-	public function handle_return() {
+	public function handle_return( $log = false ) {
 		$success = false;
 		$exit = false;
 		$redirect = false;
@@ -125,12 +127,11 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 					// Successful payment
 					case 'Completed':
 					case 'Processed':
+						$success = true;
 						if ( $amount == $invoice->total ) {
-							$success = true;
 							$notes .= __( 'Payment successful', MS_TEXT_DOMAIN );
 						} else {
-							$notes = __( 'Payment amount differs from invoice total.', MS_TEXT_DOMAIN );
-							$status = MS_Model_Invoice::STATUS_DENIED;
+							$notes .= __( 'Payment registered, though amount differs from invoice.', MS_TEXT_DOMAIN );
 						}
 						break;
 
@@ -254,29 +255,45 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			$exit = true;
 		}
 
-		do_action(
-			'ms_gateway_transaction_log',
-			self::ID, // gateway ID
-			'handle', // request|process|handle
-			$success, // success flag
-			$subscription_id, // subscription ID
-			$invoice_id, // invoice ID
-			$amount, // charged amount
-			$notes // Descriptive text
-		);
+		if ( ! $log ) {
+			do_action(
+				'ms_gateway_transaction_log',
+				self::ID, // gateway ID
+				'handle', // request|process|handle
+				$success, // success flag
+				$subscription_id, // subscription ID
+				$invoice_id, // invoice ID
+				$amount, // charged amount
+				$notes // Descriptive text
+			);
 
-		if ( $redirect ) {
-			wp_safe_redirect( $redirect );
-			exit;
-		}
-		if ( $exit ) {
-			exit;
+			if ( $redirect ) {
+				wp_safe_redirect( $redirect );
+				exit;
+			}
+			if ( $exit ) {
+				exit;
+			}
+		} else {
+			$log->invoice_id = $invoice_id;
+			$log->subscription_id = $subscription_id;
+			$log->amount = $amount;
+			$log->description = $notes;
+			if ( $success ) {
+				$log->manual_state( 'ok' );
+			}
+			$log->save();
 		}
 
 		do_action(
 			'ms_gateway_paypalsingle_handle_return_after',
-			$this
+			$this,
+			$log
 		);
+
+		if ( $log ) {
+			return $log;
+		}
 	}
 
 	/**

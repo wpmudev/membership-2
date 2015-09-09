@@ -213,7 +213,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public static function get_item_count( $args = null ) {
 		$args = lib2()->array->get( $args );
-		$args['posts_per_page'] = 0;
+		$args['posts_per_page'] = -1;
 		$items = self::get_items( $args );
 
 		$count = count( $items );
@@ -243,7 +243,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		$items = array();
 
 		foreach ( $query->posts as $post_id ) {
-			if ( ! get_post_meta( $post_id, 'method', true ) &&
+			if ( ! get_post_meta( $post_id, '_method', true ) &&
 				! get_post_meta( $post_id, 'method', true )
 			) {
 				// The log entry is incomplete. Do not load it.
@@ -289,7 +289,28 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 
 		if ( ! empty( $args['state'] ) ) {
 			$ids = self::get_state_ids( $args['state'] );
-			$args['post__in'] = $ids;
+			if ( ! empty( $args['post__in'] ) ) {
+				$ids = array_intersect( $args['post__in'], $ids );
+			}
+
+			if ( $ids ) {
+				$args['post__in'] = $ids;
+			} else {
+				$args['post__in'] = array( 0 );
+			}
+		}
+
+		if ( ! empty( $args['source'] ) ) {
+			$ids = self::get_matched_ids( $args['source'][0], $args['source'][1] );
+			if ( ! empty( $args['post__in'] ) ) {
+				$ids = array_intersect( $args['post__in'], $ids );
+			}
+
+			if ( $ids ) {
+				$args['post__in'] = $ids;
+			} else {
+				$args['post__in'] = array( 0 );
+			}
 		}
 
 		$args = wp_parse_args( $args, $defaults );
@@ -348,6 +369,62 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 					state1.meta_value IN ('ignore')
 					OR state2.meta_value IN ('ignore')
 				)
+				";
+				break;
+		}
+
+		$sql = $wpdb->prepare( $sql, self::get_post_type() );
+		$ids = $wpdb->get_col( $sql );
+
+		if ( ! count( $ids ) ) {
+			$ids = array( 0 );
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Returns a list of post_ids that have the specified source_id.
+	 *
+	 * This tries to find transactions for imported subscriptions.
+	 *
+	 * @since  1.0.1.2
+	 * @param  string $source_id Subscription ID before import; i.e. original ID.
+	 * @param  string $source The import source. Currently supported: 'm1'.
+	 * @return array List of post_ids.
+	 */
+	static public function get_matched_ids( $source_id, $source ) {
+		global $wpdb;
+
+		$sql = "
+		SELECT p.ID
+		FROM
+			{$wpdb->posts} p
+			LEFT JOIN {$wpdb->postmeta} form ON
+				form.post_id = p.ID AND form.meta_key IN ('_post', 'post')
+			LEFT JOIN {$wpdb->postmeta} gateway ON
+				gateway.post_id = p.ID AND gateway.meta_key IN ('_gateway_id', 'gateway_id')
+		WHERE
+			p.post_type = %s
+		";
+
+		$source_int = intval( $source_id );
+		$int_len = strlen( $source_int );
+
+		switch ( $source ) {
+			case 'm1':
+				$sql .= "
+				AND gateway.meta_value = 'paypalstandard'
+				AND form.meta_value LIKE '%%s:6:\"custom\";s:%%'
+				AND form.meta_value LIKE '%%:{$source_int}:%%'
+				";
+				break;
+
+			case 'pay_btn':
+				$sql .= "
+				AND gateway.meta_value = 'paypalstandard'
+				AND form.meta_value LIKE '%%s:6:\"btn_id\";s:{$int_len}:\"{$source_int}\";%%'
+				AND form.meta_value LIKE '%%s:11:\"payer_email\";%%'
 				";
 				break;
 		}
@@ -520,7 +597,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * Updates the subscription_id and member_id based on the specified ID.
 	 *
 	 * @since 1.0.1.0
-	 * @param int $id A valid subscriptin ID.
+	 * @param int $id A valid subscription ID.
 	 */
 	protected function set_subscription( $id ) {
 		$subscription = MS_Factory::load( 'MS_Model_Relationship', $id );
@@ -643,7 +720,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 				$this->set_invoice( $value );
 				break;
 
-			case 'subscriptin_id':
+			case 'subscription_id':
 				$this->set_subscription( $value );
 				break;
 

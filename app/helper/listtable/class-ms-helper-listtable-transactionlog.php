@@ -379,9 +379,12 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			if ( count( $detail_lines ) ) {
 				$detail_lines[] = '<hr>';
 			}
+			ksort( $item_post_info );
+			$ind = 0;
 			$detail_lines[] = __( 'POST data:', MS_TEXT_DOMAIN );
 			foreach ( $item_post_info as $key => $value ) {
-				$detail_lines[] = "[$key] = \"$value\"";
+				$ind += 1;
+				$detail_lines[] = "<small style='display:inline-block;width:22px;'>$ind</small> [$key] = \"$value\"";
 			}
 		}
 
@@ -398,6 +401,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			$actions = array(
 				'action-ignore' => __( 'Ignore', MS_TEXT_DOMAIN ),
 				'action-link' => __( 'Link', MS_TEXT_DOMAIN ),
+				'action-retry' => __( 'Retry', MS_TEXT_DOMAIN ),
 			);
 		} elseif ( 'ignore' == $item->state && $item->is_manual ) {
 			$actions = array(
@@ -420,6 +424,12 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 				false,
 				false
 			);
+			$nonces[] = wp_nonce_field(
+				MS_Controller_Import::AJAX_ACTION_RETRY,
+				'nonce_retry',
+				false,
+				false
+			);
 			$action_tags = array();
 			foreach ( $actions as $class => $label ) {
 				$action_tags[] = sprintf(
@@ -439,7 +449,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		// 3. Combine the prepared parts.
 		$html = sprintf(
-			'<div class="detail-block">%s %s %s</div>',
+			'<div class="detail-block">%s <span class="txt">%s</span> %s</div>',
 			$extra_infos,
 			$item->description,
 			$row_actions

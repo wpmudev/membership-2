@@ -519,7 +519,10 @@ class MS_Model_Import extends MS_Model {
 		$ms_invoice->source = $this->source_key;
 		$ms_invoice->save();
 
-		$subscription->add_payment( $ms_invoice->amount, $ms_invoice->gateway_id );
+		$subscription->add_payment(
+			$ms_invoice->amount,
+			$ms_invoice->gateway_id
+		);
 	}
 
 	/**
@@ -542,5 +545,400 @@ class MS_Model_Import extends MS_Model {
 				}
 				break;
 		}
+	}
+
+	/**
+	 * -------------------------------------------------------------------------
+	 * ACCESS IMPORTED DATA
+	 */
+
+	/**
+	 * Checks if the specified source/ID need matching.
+	 *
+	 * If the source or source_id is empty then the return value TRUE means that
+	 * there is *any* transaction that needs matching.
+	 *
+	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $source_id The M1 sub_id.
+	 * @param  string $source The import source.
+	 * @return bool True if the transaction details need matching.
+	 */
+	static public function can_match( $source_id = null, $source = null ) {
+		$res = false;
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		if ( empty( $source_id ) || empty( $source ) ) {
+			$src = $settings->get_custom_setting( 'import_match' );
+			$src = lib2()->array->get( $src );
+
+			foreach ( $src as $lst ) {
+				if ( is_array( $lst ) ) {
+					if ( count( $lst ) ) {
+						$res = true;
+						break;
+					}
+				}
+			}
+		} else {
+			$lst = $settings->get_custom_setting( 'import_match', $source );
+
+			if ( ! is_array( $lst ) ) {
+				$lst = array();
+			}
+
+			$res = in_array( $source_id, $lst );
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Remembers that the source_id needs to be matched with a membership_id to
+	 * complete the connected transaction.
+	 *
+	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $source_id The M1 sub_id.
+	 * @param  string $source The import source.
+	 */
+	static public function need_matching( $source_id, $source ) {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		$lst = $settings->get_custom_setting( 'import_match', $source );
+
+		if ( ! is_array( $lst ) ) {
+			$lst = array();
+		}
+
+		if ( ! in_array( $source_id, $lst ) ) {
+			$lst[] = $source_id;
+		}
+
+		$settings->set_custom_setting( 'import_match', $source, $lst );
+		$settings->save();
+	}
+
+	/**
+	 * Remove the source_id from the missing-matching-list again.
+	 *
+	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $source_id The M1 sub_id.
+	 * @param  string $source The import source.
+	 */
+	static public function dont_need_matching( $source_id, $source ) {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		$lst = $settings->get_custom_setting( 'import_match', $source );
+
+		if ( ! is_array( $lst ) ) {
+			$lst = array();
+		}
+
+		foreach ( $lst as $key => $id ) {
+			if ( $id == $source_id ) {
+				unset( $lst[$key] );
+			}
+		}
+
+		$settings->set_custom_setting( 'import_match', $source, $lst );
+		$settings->save();
+	}
+
+	/**
+	 * Save a permanent matching between the specified membership and the
+	 * transaction source.
+	 *
+	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $membership_id The M2 membership_id.
+	 * @param  string $source_id The matching-ID to identify transactions.
+	 * @param  string $source The matching-key to identify transactions.
+	 * @return bool True if the matching was saved.
+	 */
+	static public function match_with_source( $membership_id, $source_id, $source ) {
+		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+
+		if ( ! $membership || ! $membership->is_valid() ) {
+			return false;
+		}
+
+		// First make sure that no other membership is matched to the source.
+		$memberships = MS_Model_Membership::get_memberships();
+
+		foreach ( $memberships as $item ) {
+			if ( 'm1' == $source ) {
+				if ( $item->source_id == $source_id ) {
+					$item->source_id = '';
+					$item->save();
+				}
+			} else {
+				$data = $item->get_custom_data( 'matching' );
+				$changed = false;
+
+				if ( ! is_array( $data ) ) { continue; }
+				if ( empty( $data[$source] ) ) { continue; }
+				if ( ! is_array( $data[$source] ) ) { continue; }
+
+				foreach ( $data[$source] as $key => $id ) {
+					if ( $id == $source_id ) {
+						unset( $data[$source][$key] );
+						$changed = true;
+					}
+				}
+				if ( $changed ) {
+					$item->set_custom_data( 'matching', $data );
+					$item->save();
+				}
+			}
+		}
+
+		// Then add the matching to the specified membership.
+		if ( 'm1' == $source ) {
+			if ( $membership->source_id ) {
+				// This membership is already matched with an M1 sub_id.
+				return false;
+			}
+
+			$membership->source = 'membership';
+			$membership->source_id = $source_id;
+		} else {
+			$data = lib2()->array->get(
+				$membership->get_custom_data( 'matching' )
+			);
+
+			if ( empty( $data[$source] ) || ! array( $data[$source] ) ) {
+				$data[$source] = array();
+			}
+
+			$data[$source][] = $source_id;
+			$membership->set_custom_data( 'matching', $data );
+		}
+		$membership->save();
+
+		self::dont_need_matching( $source_id, $source );
+
+		return true;
+	}
+
+	/**
+	 * Tries to process a single transaction again.
+	 *
+	 * This function is only useful when the transaction matching was added
+	 * before callig it again.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $transaction_id The ID of the transaction log item.
+	 * @return bool True means that the transaction was processed.
+	 */
+	static public function retry_to_process( $transaction_id ) {
+		$res = false;
+		$log = MS_Factory::load( 'MS_Model_Transactionlog', $transaction_id );
+
+		if ( empty( $log ) || $log->id != $transaction_id ) {
+			// Could not find the requested transaction log item.
+			return $res;
+		}
+
+		if ( 'err' != $log->state ) {
+			// The transaction was already processed (automatically or manual).
+			return $res;
+		}
+
+		$orig_post = $_POST;
+		$orig_req = $_REQUEST;
+
+		// Set up the PHP environment to process the transaction again.
+		$gateway = MS_Model_Gateway::factory( $log->gateway_id );
+		$post_data = $log->post;
+		$_POST = $post_data;
+		$_REQUEST = $post_data;
+
+		$invoice = false;
+		switch ( $log->method ) {
+			case 'request':
+				// Intentionally not implemented:
+				// Request payment needs a subscription to work.
+				break;
+
+			case 'process':
+				// Intentionally not implemented:
+				// Request payment needs a subscription to work.
+				break;
+
+			case 'handle':
+				$log = $gateway->handle_return( $log );
+				break;
+		}
+
+		if ( 'ok' == $log->state ) {
+			$res = true;
+		}
+
+		$_POST = $orig_post;
+		$_REQUEST = $orig_req;
+
+		return $res;
+	}
+
+	/**
+	 * Find a M2 membership by the M1 sub_id.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $source_id The M1 sub_id.
+	 * @return MS_Model_Membership|null The M2 membership.
+	 */
+	static public function membership_by_source_id( $source_id ) {
+		$res = null;
+		$args = array( 'include_guest' => 0 );
+		$memberships = MS_Model_Membership::get_memberships( $args );
+
+		if ( ! is_numeric( $source_id ) || $source_id < 1 ) {
+			return $res;
+		}
+		$source_id = intval( $source_id );
+
+		foreach ( $memberships as $membership ) {
+			if ( $membership->source_id == $source_id ) {
+				$res = $membership;
+				break;
+			}
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Find a M2 membership by a custom matching ID.
+	 *
+	 * The matching key and matching ID are stored in the memberships custom
+	 * data array.
+	 *
+	 * See MS_Helper_Listtable_TransactionMatching for a list of matching_keys.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $matching_key The matching key.
+	 * @param  int $matching_id The matching ID.
+	 * @return MS_Model_Membership|null The M2 membership.
+	 */
+	static public function membership_by_matching( $matching_key, $matching_id ) {
+		$res = null;
+		$args = array( 'include_guest' => 0 );
+		$memberships = MS_Model_Membership::get_memberships( $args );
+
+		foreach ( $memberships as $membership ) {
+			$data = $membership->get_custom_data( 'matching' );
+			if ( empty( $data ) || ! is_array( $data ) ) { continue; }
+			if ( ! isset( $data[$matching_key] ) ) { continue; }
+			$ids = lib2()->array->get( $data[$matching_key] );
+
+			foreach ( $ids as $id ) {
+				if ( $matching_id == $id ) {
+					$res = $membership;
+					break 2;
+				}
+			}
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Tries to find a subscription based on the user-ID and M1 sub_id
+	 *
+	 * About matching types:
+	 * 'source' .. Default, which will check the memberships 'source_id'
+	 * attribute to find the matching membership.
+	 * Other values are looked up in the memberships custom data array.
+	 *
+	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $user_id The user-ID.
+	 * @param  string|int $matching_id The matching-ID (M1 sub_id, a btn_id, etc).
+	 * @param  string $type The matching type to apply. Default is 'source'.
+	 * @return MS_Model_Relationship|null The subscription object.
+	 */
+	static public function find_subscription( $user_id, $matching_id, $type = 'source' ) {
+		$res = null;
+
+		if ( ! is_numeric( $user_id ) ) {
+			// Seems like we got invalid values...
+			return $res;
+		}
+
+		$user_id = intval( $user_id );
+		$matching_id = trim( $matching_id );
+
+		if ( $user_id < 1 || empty( $matching_id ) ) {
+			// Seems like user or sub_id are empty or invalid.
+			return $res;
+		}
+
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		if ( $user_id != $member->id ) {
+			// The user_id is invalid.
+			return $res;
+		}
+
+		if ( 'source' == $type ) {
+			$membership = self::membership_by_source_id( $matching_id );
+		} else {
+			$membership = self::membership_by_matching( $type, $matching_id );
+		}
+
+		if ( ! $membership || ! $membership->is_valid() ) {
+			// The sub_id is invalid.
+			return $res;
+		}
+
+		// Finally we have a member and a membership. Fetch the subscription!
+		$res = $member->get_subscription( $membership->id );
+
+		return $res;
+	}
+
+	/**
+	 * Finds the first unpaid invoice of the specified subscription and returns
+	 * the invoice_id.
+	 *
+	 * If subscription is not valid the return value is 0.
+	 * If the subscription has no unpaid invoices then a new invoice is created.
+	 *
+	 * When importing subscriptions we cannot guarantee that each subscription
+	 * has an unpaid/next invoice, that's why we optionally create a new unpaid
+	 * invoice if none exists.
+	 *
+	 * @since  1.0.1.2
+	 * @param  mixed $subscription The subscription object.
+	 * @return int The first invoice that is not paid yet.
+	 */
+	static public function find_invoice_by_subscription( $subscription ) {
+		$invoice_id = 0;
+
+		if ( $subscription && is_a( $subscription, 'MS_Model_Relationship' ) ) {
+
+			// Try to find the first unpaid invoice for the subscription.
+			$invoices = $subscription->get_invoices();
+			foreach ( $invoices as $invoice ) {
+				if ( ! $invoice->is_paid() ) {
+					$invoice_id = $invoice->id;
+					break;
+				}
+			}
+
+			// If no unpaid invoice was found: Create one.
+			if ( ! $invoice_id ) {
+				$invoice = $subscription->get_next_invoice();
+				$invoice_id = $invoice->id;
+			}
+		}
+
+		return $invoice_id;
 	}
 }

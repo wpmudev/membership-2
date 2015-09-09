@@ -155,10 +155,10 @@ class MS_Model_Option extends MS_Model {
 	 * @since  1.0.0
 	 *
 	 * @param string $group_name The custom setting group.
-	 * @param string $field_name The custom setting field.
+	 * @param string $field_name Optional. The custom setting field.
 	 * @return mixed $value The custom setting value.
 	 */
-	public function get_custom_setting( $group_name, $field_name ) {
+	public function get_custom_setting( $group_name, $field_name = null ) {
 		$value = '';
 
 		if ( isset( $this->custom[ $group_name ] ) ) {
@@ -167,26 +167,26 @@ class MS_Model_Option extends MS_Model {
 			$group = array();
 		}
 
-		$key = false;
+		if ( $field_name ) {
+			// Very basic support for array updates.
+			// We only support updating 1-dimensional arrays with a
+			// specified key value.
+			if ( strpos( $field_name, '[' ) ) {
+				$field_name = str_replace( ']', '', $field_name );
+				list( $key, $field_name ) = explode( '[', $field_name, 2 );
 
-		// Very basic support for array updates.
-		// We only support updating 1-dimensional arrays with a
-		// specified key value.
-		if ( strpos( $field_name, '[' ) ) {
-			$field_name = str_replace( ']', '', $field_name );
-			list( $key, $field_name ) = explode( '[', $field_name, 2 );
-		}
-
-		if ( $key ) {
-			if ( isset( $group[ $key ] ) ) {
-				$group = $group[ $key ];
-			} else {
-				$group = array();
+				if ( isset( $group[ $key ] ) ) {
+					$group = $group[ $key ];
+				} else {
+					$group = array();
+				}
 			}
-		}
 
-		if ( isset( $group[ $field_name ] ) ) {
-			$value = $group[ $field_name ];
+			if ( isset( $group[ $field_name ] ) ) {
+				$value = $group[ $field_name ];
+			}
+		} else {
+			$value = $group;
 		}
 
 		return apply_filters(
