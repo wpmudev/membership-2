@@ -4,7 +4,7 @@ Author: Philipp Stracker, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
-1.0.1.2
+1.0.2.0
 ----------------------------------------------------------------------
 - Add new Variable for Automated Emails: Membership Description
 - Add API functions: ms_api, get_membership_id, add_subscription (see API Docs for details)
