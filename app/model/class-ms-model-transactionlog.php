@@ -129,6 +129,14 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	protected $post = null;
 
 	/**
+	 * A collection of all HTTP headers passed to the $url.
+	 *
+	 * @since 1.0.1.2
+	 * @var   array
+	 */
+	protected $headers = null;
+
+	/**
 	 * The manually overwritten state value.
 	 *
 	 * If this is empty then $state is the effective state value, otherwise this
@@ -447,13 +455,14 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 
 
 	/**
-	 * Constructor, initialize a new item.
+	 * Initializes variables right before saving the model.
 	 *
 	 * @since 1.0.1.0
 	 */
-	public function __construct() {
+	public function before_save() {
 		$this->url = lib2()->net->current_url();
 		$this->post = $_POST;
+		$this->headers = $this->get_headers();
 		$this->user_id = get_current_user_id();
 		$this->title = 'Transaction Log';
 	}
@@ -495,6 +504,30 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public function load_post_data( $post ) {
 		$this->date = $post->post_date;
+	}
+
+	/**
+	 * Returns a list of all HTTP headers.
+	 *
+	 * @since  1.0.1.2
+	 * @return array List of all incoming HTTP headers.
+	 */
+	protected function get_headers() {
+		$headers = array();
+
+		if ( function_exists( 'getallheaders' ) ) {
+			$headers = getallheaders();
+		} else {
+			foreach ( $_SERVER as $key => $value ) {
+				if ( 'HTTP_' == substr( $key, 0, 5 ) ) {
+					$key = str_replace( '_', ' ', substr( $key, 5 ) );
+					$key = str_replace( ' ', '-', ucwords( strtolower( $key ) ) );
+					$headers[ $key ] = $value;
+				}
+			}
+		}
+
+		return $headers;
 	}
 
 	/**
