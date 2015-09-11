@@ -366,10 +366,17 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$detail_lines = self::get_details( $item );
 
 		if ( count( $detail_lines ) ) {
+			$icon_class = '';
+			$post_data = $item->post;
+			if ( ! $post_data ) {
+				$icon_class = 'no-post';
+			}
+
 			$extra_infos = sprintf(
-				'<div class="more-details">%2$s<div class="post-data">%1$s</div></div>',
+				'<div class="more-details %3$s">%2$s<div class="post-data"><div class="inner">%1$s</div></div></div>',
 				implode( '<br>', $detail_lines ),
-				'<i class="wpmui-fa wpmui-fa-info-circle"></i>'
+				'<i class="wpmui-fa wpmui-fa-info-circle"></i>',
+				$icon_class
 			);
 		}
 
@@ -466,7 +473,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		}
 
 		$postdata = $item->post;
-		if ( ! empty( $postdata ) ) {
+		if ( ! empty( $postdata ) && is_array( $postdata ) ) {
 			$id_fields = array();
 			switch ( $item->gateway_id ) {
 				case MS_Gateway_Paypalstandard::ID:
@@ -511,6 +518,38 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 					$value
 				);
 			}
+		}
+
+		$headers = $item->headers;
+		if ( ! empty( $headers ) && is_array( $headers ) ) {
+			if ( count( $detail_lines ) ) {
+				$detail_lines[] = '<hr>';
+			}
+			ksort( $headers );
+			$ind = 0;
+			$detail_lines[] = __( 'HTTP Headers:', MS_TEXT_DOMAIN );
+			foreach ( $headers as $key => $value ) {
+				$ind += 1;
+
+				$detail_lines[] = sprintf(
+					'<span class="line"><small class="line-num">%s</small> <span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+					$ind,
+					$key,
+					$value
+				);
+			}
+		}
+
+		$req_url = $item->url;
+		if ( ! empty( $req_url ) ) {
+			if ( count( $detail_lines ) ) {
+				$detail_lines[] = '<hr>';
+			}
+			$detail_lines[] = sprintf(
+				'<span class="line"><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+				__( 'Request URL', MS_TEXT_DOMAIN ),
+				$req_url
+			);
 		}
 
 		return $detail_lines;

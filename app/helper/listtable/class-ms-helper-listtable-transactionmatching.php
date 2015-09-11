@@ -583,10 +583,17 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		$detail_lines = MS_Helper_ListTable_TransactionLog::get_details( $item );
 
 		if ( count( $detail_lines ) ) {
+			$icon_class = '';
+			$post_data = $item->post;
+			if ( ! $post_data ) {
+				$icon_class = 'no-post';
+			}
+
 			$extra_infos = sprintf(
-				'<div class="more-details">%2$s<div class="post-data">%1$s</div></div>',
+				'<div class="more-details %3$s">%2$s<div class="post-data"><div class="inner">%1$s</div></div></div>',
 				implode( '<br>', $detail_lines ),
-				'<i class="wpmui-fa wpmui-fa-info-circle"></i>'
+				'<i class="wpmui-fa wpmui-fa-info-circle"></i>',
+				$icon_class
 			);
 		}
 
