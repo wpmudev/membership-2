@@ -504,10 +504,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			if ( false === strpos( $u_agent, 'PayPal' ) ) {
 				// Very likely someone tried to open the URL manually. Redirect to home page
 				if ( ! $notes ) {
-					$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
+					$notes = 'Ignored: Missing POST variables. Redirect to Home-URL.';
 				}
 				MS_Helper_Debug::log( $notes );
 				$redirect = MS_Helper_Utility::home_url( '/' );
+				$ignore = true;
+				$success = false;
 			} elseif ( 'm1' == $ext_type ) {
 				/*
 				 * The payment belongs to an imported M1 subscription and could
@@ -537,7 +539,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				} else {
 					$notes = 'Ignored: Missing POST variables. Identification is not possible.';
 				}
-				$notes .= ' [Irrelevant IPN call]';
 
 				MS_Helper_Debug::log( $notes );
 				$ignore = true;
@@ -546,7 +547,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			$exit = true;
 		}
 
-		if ( $ignore && ! $success ) { $success = null; }
+		if ( $ignore && ! $success ) {
+			$success = null;
+			$notes .= ' [Irrelevant IPN call]';
+		}
 
 		if ( ! $log ) {
 			do_action(
