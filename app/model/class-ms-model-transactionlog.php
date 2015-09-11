@@ -460,6 +460,15 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @since 1.0.1.0
 	 */
 	public function before_save() {
+		// Translate a boolean success value to a string.
+		if ( true === $this->success ) {
+			$this->success = 'ok';
+		} elseif ( null === $this->success ) {
+			$this->success = 'ignore';
+		} elseif ( false === $this->success ) {
+			$this->success = 'err';
+		}
+
 		$this->url = lib2()->net->current_url();
 		$this->post = $_POST;
 		$this->headers = $this->get_headers();
