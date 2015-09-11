@@ -9,7 +9,7 @@ class MS_Gateway_Authorize_View_Button extends MS_View {
 		$gateway = $this->data['gateway'];
 
 		// Force ssl url
-		$action_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER, true );
+		$action_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS, true );
 		$action_url = apply_filters(
 			'ms_gateway_authorize_view_button_form_action_url',
 			$action_url

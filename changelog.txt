@@ -23,6 +23,7 @@ Change Log:
 - Fix a bug in Pro-Rating Add-on to correctly apply discount from now on
 - Fix wrong signup-logic to instantly disable the old subscription on membership upgrade/downgrade
 - Fix a PHP error that occured when paying the first invoice of a member via manual gateway
+- Fix a possible recursive redirection when showing the Autorize.Net payment form
 - Fix displayed payment method for subscriptions in Member editor screen
 - Fix an issue that would not actiavte imported subscriptions
 - Fix issue that did not notify the blow admin of new user signups
