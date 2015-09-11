@@ -493,6 +493,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 				$detail_lines[] = '<hr>';
 			}
 			ksort( $postdata );
+			$ind = 0;
 			$detail_lines[] = __( 'POST data:', MS_TEXT_DOMAIN );
 			foreach ( $postdata as $key => $value ) {
 				$ind += 1;

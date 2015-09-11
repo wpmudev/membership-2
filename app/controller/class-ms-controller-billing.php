@@ -508,6 +508,7 @@ class MS_Controller_Billing extends MS_Controller {
 
 			$data['ms_init'][] = 'view_billing_edit';
 		} else {
+			$module = '';
 			if ( isset( $_GET['show'] ) ) {
 				$module = $_GET['show'];
 			}
