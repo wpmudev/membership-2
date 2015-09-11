@@ -51,7 +51,7 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( ! self::valid_user() ) { return; }
 
 		// Check for correct network-wide protection setup.
-		self::check_network_setup();
+		self::check_settings();
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$old_version = $settings->version; // Old: The version in DB.
@@ -419,34 +419,53 @@ class MS_Model_Upgrade extends MS_Model {
 	}
 
 	/**
-	 * Makes sure that network-wide protection works by ensuring that the plugin
-	 * is also network-activated.
+	 * Checks several settings to make sure that M2 is fully working.
+	 *
+	 * A) Makes sure that network-wide protection works by ensuring that the
+	 *    plugin is also network-activated.
+	 * B) Checks if the permalink structure uses the post-name
 	 *
 	 * @since  1.0.0
 	 */
-	static private function check_network_setup() {
-		static $Network_Checked = false;
+	static private function check_settings() {
+		static $Setting_Check_Done = false;
 
-		if ( ! $Network_Checked ) {
-			$Network_Checked = true;
+		if ( ! $Setting_Check_Done ) {
+			$Setting_Check_Done = true;
 
-			// This is only relevant for multisite installations.
-			if ( ! is_multisite() ) { return; }
+			// A) Check plugin activation in network-wide mode.
+			if ( is_multisite() ) {
 
-			if ( MS_Plugin::is_network_wide() ) {
-				// This function does not exist in network admin
-				if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
-					require_once ABSPATH . '/wp-admin/includes/plugin.php';
-				}
+				if ( MS_Plugin::is_network_wide() ) {
+					// This function does not exist in network admin
+					if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+						require_once ABSPATH . '/wp-admin/includes/plugin.php';
+					}
 
-				if ( ! is_plugin_active_for_network( MS_PLUGIN ) ) {
-					activate_plugin( MS_PLUGIN, null, true );
-					lib2()->ui->admin_message(
-						__( 'Info: Membership2 is not activated network-wide', MS_TEXT_DOMAIN )
-					);
+					if ( ! is_plugin_active_for_network( MS_PLUGIN ) ) {
+						activate_plugin( MS_PLUGIN, null, true );
+						lib2()->ui->admin_message(
+							__( 'Info: Membership2 is not activated network-wide', MS_TEXT_DOMAIN )
+						);
+					}
 				}
 			}
+
+			// B) Check the Permalink settings.
+			if ( false === strpos( get_option( 'permalink_structure' ), '%postname%' ) ) {
+				lib2()->ui->admin_message(
+					sprintf(
+						__( 'Your %sPermalink structure%s should include the %sPost name%s to ensure Membership 2 is working correctly.', MS_TEXT_DOMAIN ),
+						'<a href="' . admin_url( 'options-permalink.php' ) . '">',
+						'</a>',
+						'<strong>',
+						'</strong>'
+					),
+					'err'
+				);
+			}
 		}
+
 		return;
 	}
 
