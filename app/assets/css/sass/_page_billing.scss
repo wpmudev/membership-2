@@ -296,6 +296,10 @@
 			width: 16px;
 			text-align: center;
 
+			&.no-post .wpmui-fa {
+				opacity: 0.5;
+			}
+
 			.post-data {
 				display: none;
 				position: absolute;
@@ -308,6 +312,10 @@
 				color: #EEE;
 				text-align: left;
 				white-space: pre;
+
+				.inner {
+					overflow: auto;
+				}
 
 				&:before {
 					content: '';
@@ -344,6 +352,8 @@
 					}
 				}
 				.line-val {
+					white-space: nowrap;
+
 					&:before {
 						content: ' =  "';
 						color: #888;
