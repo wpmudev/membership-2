@@ -202,7 +202,7 @@ class MS_Gateway_2checkout extends MS_Gateway {
 
 			$notes = 'Error: Missing POST variables. Identification is not possible.';
 			MS_Helper_Debug::log( $notes );
-			$redirect = home_url();
+			$redirect = MS_Helper_Utility::home_url( '/' );
 			$exit = true;
 		}
 

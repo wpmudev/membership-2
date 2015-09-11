@@ -205,7 +205,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 			$this->_content = array();
 			$front_type = get_option( 'show_on_front' );
 
-			$front_url = get_home_url();
+			$front_url = MS_Helper_Utility::home_url( '/' );
 			if ( 'page' === $front_type ) {
 				$home_url = get_permalink( get_option( 'page_for_posts' ) );
 			} else {

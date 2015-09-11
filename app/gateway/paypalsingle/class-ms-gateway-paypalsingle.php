@@ -246,7 +246,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				// Very likely someone tried to open the URL manually. Redirect to home page
 				$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
 				MS_Helper_Debug::log( $notes );
-				$redirect = home_url();
+				$redirect = MS_Helper_Utility::home_url( '/' );
 			} else {
 				status_header( 404 );
 				$notes = 'Error: Missing POST variables. Identification is not possible.';

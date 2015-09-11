@@ -197,7 +197,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 											'value' => __( 'View Page', MS_TEXT_DOMAIN ),
 											'target' => '_blank',
 											'data_ms' => array(
-												'base' => get_home_url(
+												'base' => MS_Helper_Utility::get_home_url(
 													$pages_site_id, 'index.php?page_id='
 												)
 											),

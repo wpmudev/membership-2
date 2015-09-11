@@ -601,7 +601,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			$url = $_REQUEST['redirect_to'];
 			$enforce = true; // This redirection was enforced via REUQEST param.
 		} else {
-			$url = home_url( '/' );
+			$url = MS_Helper_Utility::home_url( '/' );
 			$enforce = false; // This is the default redirection.
 		}
 

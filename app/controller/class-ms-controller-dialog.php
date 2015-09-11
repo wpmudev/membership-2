@@ -204,8 +204,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		if ( ! $allow ) {
 			$resp['error'] = __( 'Password reset is not allowed for this user', MS_TEXT_DOMAIN );
 			$this->respond( $resp );
-		}
-		else if ( is_wp_error( $allow ) ) {
+		} else if ( is_wp_error( $allow ) ) {
 			return $allow;
 		}
 
@@ -235,8 +234,10 @@ class MS_Controller_Dialog extends MS_Controller {
 			)
 		);
 
+		$schema = is_ssl() ? 'https' : 'http';
+
 		$message = __( 'Someone requested that the password be reset for the following account:' ) . "\r\n\r\n";
-		$message .= network_home_url( '/' ) . "\r\n\r\n";
+		$message .= network_home_url( '/', $schema ) . "\r\n\r\n";
 		$message .= sprintf( __( 'Username: %s' ), $user_login ) . "\r\n\r\n";
 		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.' ) . "\r\n\r\n";
 		$message .= __( 'To reset your password, visit the following address:' ) . "\r\n\r\n";

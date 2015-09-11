@@ -507,7 +507,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
 				}
 				MS_Helper_Debug::log( $notes );
-				$redirect = home_url();
+				$redirect = MS_Helper_Utility::home_url( '/' );
 			} elseif ( 'm1' == $ext_type ) {
 				/*
 				 * The payment belongs to an imported M1 subscription and could

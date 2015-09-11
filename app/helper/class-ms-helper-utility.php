@@ -267,6 +267,44 @@ class MS_Helper_Utility extends MS_Helper {
 		return ( $params == $Cur_url );
 	}
 
+	/**
+	 * Returns the *correct* home-url for front-end pages.
+	 *
+	 * By default the home_url() function ignores the is_ssl() flag when it's
+	 * called from the admin-dashboard. So when redirecting from dashboard to
+	 * the front-page it will usually always redirect to http:// even when the
+	 * front-end is on https:// - this function fixes this.
+	 *
+	 * @since  1.0.1.2
+	 * @param  string $path Argument passed to the home_url() function.
+	 * @return string The correct URL for a front-end page.
+	 */
+	static public function home_url( $path = '' ) {
+		return self::get_home_url( null, $path );
+	}
+
+	/**
+	 * Returns the *correct* home-url for front-end pages of a given site.
+	 *
+	 * {@see description of home_url above for details}
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $blog_id Blog-ID; by default the current blog is used.
+	 * @param  string $path Argument passed to the home_url() function.
+	 * @return string The correct URL for a front-end page.
+	 */
+	static public function get_home_url( $blog_id = null, $path = '' ) {
+		$schema = is_ssl() ? 'https' : 'http';
+		$url = get_home_url( $blog_id, $path, $schema );
+
+		return apply_filters(
+			'ms_helper_home_url',
+			$url,
+			$blog_id,
+			$path,
+			$schema
+		);
+	}
 }
 
 if ( ! function_exists( 'array_unshift_assoc' ) ) {
@@ -284,5 +322,32 @@ if ( ! function_exists( 'array_unshift_assoc' ) ) {
 		$arr = array_reverse( $arr, true );
 		$arr[$key] = $val;
 		return array_reverse( $arr, true );
+	}
+}
+
+if ( ! function_exists( 'ms_home_url' ) ) {
+	/**
+	 * Returns an URL for a front-end page with the correct URL schema.
+	 *
+	 * @since  1.0.1.2
+	 * @param  string $path Argument passed to the home_url() function.
+	 * @return string The correct URL for a front-end page.
+	 */
+	function ms_home_url( $path ) {
+		return MS_Helper_Utility::home_url( $path );
+	}
+}
+
+if ( ! function_exists( 'ms_get_home_url' ) ) {
+	/**
+	 * Returns an URL for a front-end page with the correct URL schema.
+	 *
+	 * @since  1.0.1.2
+	 * @param  int $blog_id Blog-ID; by default the current blog is used.
+	 * @param  string $path Argument passed to the home_url() function.
+	 * @return string The correct URL for a front-end page.
+	 */
+	function ms_get_home_url( $blog_id, $path ) {
+		return MS_Helper_Utility::get_home_url( $blog_id, $path );
 	}
 }

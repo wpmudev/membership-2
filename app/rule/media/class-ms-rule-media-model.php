@@ -97,9 +97,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 	public static function get_protection_types() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		$mask = $settings->downloads['masked_url'];
-		$example1 = home_url( $mask . date( '/Y/m/' ) . 'my-image.jpg' );
-		$example2 = home_url( $mask . '/ms_12345.jpg' );
-		$example3 = home_url( $mask . '/?ms_file=ms_12345.jpg' );
+		$example1 = MS_Helper_Utility::home_url( $mask . date( '/Y/m/' ) . 'my-image.jpg' );
+		$example2 = MS_Helper_Utility::home_url( $mask . '/ms_12345.jpg' );
+		$example3 = MS_Helper_Utility::home_url( $mask . '/?ms_file=ms_12345.jpg' );
 		$example1 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example1 . '</small>';
 		$example2 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example2 . '</small>';
 		$example3 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example3 . '</small>';

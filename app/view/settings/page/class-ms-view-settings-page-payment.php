@@ -133,7 +133,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 	}
 
 	protected function gateway_item_settings( $gateway ) {
-		$is_online = lib2()->net->is_online( home_url() );
+		$is_online = lib2()->net->is_online( MS_Helper_Utility::home_url( '/' ) );
 		$row_class = 'gateway-' . $gateway->id;
 		$active_class = 'ms-gateway-not-configured';
 

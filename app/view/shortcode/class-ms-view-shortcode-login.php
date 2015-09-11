@@ -440,7 +440,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		extract( $this->data );
 
 		if ( empty( $redirect_logout ) ) {
-			$redirect_logout = home_url();
+			$redirect_logout = MS_Helper_Utility::home_url( '/' );
 		}
 
 		$yourname = sprintf(

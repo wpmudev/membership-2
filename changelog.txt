@@ -25,6 +25,7 @@ Change Log:
 - Fix displayed payment method for subscriptions in Member editor screen
 - Fix an issue that would not actiavte imported subscriptions
 - Fix issue that did not notify the blow admin of new user signups
+- Fix wrong redirects/URLs on some SSL sites
 - Small changes like fix some typos, add new filters and code cleanup
 
 1.0.1.1
