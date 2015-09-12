@@ -30,6 +30,20 @@ class MS_Model_Upgrade extends MS_Model {
 		// This is a hidden feature available in the Settings > General page.
 		add_action( 'init', array( __CLASS__, 'maybe_reset' ) );
 
+		// Prevent WordPress from updating the Membership plugin when the
+		// WPMU DEV Dashboard is disabled.
+		if ( ! class_exists( 'WPMUDEV_Dashboard' ) ) {
+			add_filter(
+				'plugins_api',
+				array( __CLASS__, 'no_dash_plugins_api' ),
+				101, 3
+			);
+			add_filter(
+				'site_transient_update_plugins',
+				array( __CLASS__, 'no_dash_update_plugins' )
+			);
+		}
+
 		do_action( 'ms_model_upgrade_init' );
 	}
 
@@ -158,6 +172,54 @@ class MS_Model_Upgrade extends MS_Model {
 			// This will reload the current page.
 			MS_Plugin::flush_rewrite_rules();
 		}
+	}
+
+	/**
+	 * When WPMU DEV Dashboard is disabled this function will tell WordPress
+	 * to not update Membership 2.
+	 *
+	 * PRO ONLY!
+	 *
+	 * @since  1.0.1.2
+	 * @param  mixed $res False: Update plugin / True: WP ignores plugin.
+	 * @param  string $action
+	 * @param  object $args
+	 * @return mixed
+	 */
+	static public function no_dash_plugins_api( $res, $action, $args ) {
+		if ( ! empty( $args ) && is_object( $args ) ) {
+			if ( 'wpmudev_install-1003656' == $args->slug ) {
+				$res = true;
+			} elseif ( 'wpmudev_install-130' == $args->slug ) {
+				$res = true;
+			} elseif ( 'membership' == $args->slug ) {
+				$res = true;
+			}
+		}
+
+		return $res;
+	}
+
+	/**
+	 * Filter the site transient value right before it is returned by the
+	 * get_site_transient function.
+	 * We mark the Membership2 plugin for "no update".
+	 *
+	 * PRO ONLY!
+	 *
+	 * @since  1.0.1.2
+	 * @param  object $data
+	 * @return object
+	 */
+	static public function no_dash_update_plugins( $data ) {
+		if ( ! empty( $data ) && is_object( $data ) && ! empty( $data->response ) ) {
+			if ( isset( $data->response['membership/membership2.php'] ) ) {
+				$data->no_update['membership/membership2.php'] = $data->response['membership/membership2.php'];
+				unset( $data->response['membership/membership2.php'] );
+			}
+		}
+
+		return $data;
 	}
 
 
