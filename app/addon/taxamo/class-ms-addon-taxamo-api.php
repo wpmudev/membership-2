@@ -40,6 +40,8 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		static $Info = null;
 
 		if ( null === $Info ) {
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+
 			try {
 				$profile = self::get_tax_profile();
 				$tax_number = null;
@@ -57,7 +59,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 					,null // tax_deducted
 					,100 // amount
 					,$profile->tax_country->code // billing_country_code
-					,MS_Addon_Taxamo::model()->currency // currency_code
+					,$settings->currency // currency_code
 					,null // order_date
 				);
 
@@ -356,6 +358,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 		$amount = max( 0, floatval( $amount ) );
 		$tax_rate = max( 0, floatval( $tax_rate ) );
+		$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 
 		$tax_number = null;
 		$amount_key = 'total_amount';
@@ -427,7 +430,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		}
 
 		$transaction = array(
-			'currency_code' => MS_Addon_Taxamo::model()->currency,
+			'currency_code' => $invoice->currency,
 			'billing_country_code' => $profile->tax_country->code,
 			'tax_country_code' => $profile->tax_country->code,
 			'force_country_code' => $profile->tax_country->code,
