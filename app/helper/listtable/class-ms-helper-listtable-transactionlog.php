@@ -395,8 +395,8 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		// 2. Prepare the row actions.
 		if ( 'err' == $item->state ) {
 			$actions = array(
-				'action-ignore' => __( 'Ignore', MS_TEXT_DOMAIN ),
 				'action-link' => __( 'Link', MS_TEXT_DOMAIN ),
+				'action-ignore' => __( 'Ignore', MS_TEXT_DOMAIN ),
 			);
 
 			// We can only re-process the transaction if we have POST data.
