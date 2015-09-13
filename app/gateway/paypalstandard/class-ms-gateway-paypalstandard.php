@@ -150,7 +150,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						$subscription = MS_Model_Import::find_subscription(
 							$m1_user_id,
 							$m1_sub_id,
-							'source'
+							'source',
+							self::ID
 						);
 
 						if ( ! $subscription ) {
@@ -189,7 +190,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					$subscription = MS_Model_Import::find_subscription(
 						$user->ID,
 						$_POST['btn_id'],
-						'pay_btn'
+						'pay_btn',
+						self::ID
 					);
 
 					if ( ! $subscription ) {

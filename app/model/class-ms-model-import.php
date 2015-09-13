@@ -873,9 +873,10 @@ class MS_Model_Import extends MS_Model {
 	 * @param  int $user_id The user-ID.
 	 * @param  string|int $matching_id The matching-ID (M1 sub_id, a btn_id, etc).
 	 * @param  string $type The matching type to apply. Default is 'source'.
+	 * @param  string $gateway The payment gateway.
 	 * @return MS_Model_Relationship|null The subscription object.
 	 */
-	static public function find_subscription( $user_id, $matching_id, $type = 'source' ) {
+	static public function find_subscription( $user_id, $matching_id, $type = 'source', $gateway = 'admin' ) {
 		$res = null;
 
 		if ( ! is_numeric( $user_id ) ) {
@@ -910,6 +911,9 @@ class MS_Model_Import extends MS_Model {
 
 		// Finally we have a member and a membership. Fetch the subscription!
 		$res = $member->get_subscription( $membership->id );
+		if ( ! $res ) {
+			$res = $member->add_membership( $membership->id, $gateway );
+		}
 
 		return $res;
 	}
