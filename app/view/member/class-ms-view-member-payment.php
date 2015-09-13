@@ -90,12 +90,6 @@ class MS_View_Member_Payment extends MS_Dialog {
 			);
 		}
 
-		if ( ! empty( $pay_details ) ) {
-			$pay_details[] = array(
-				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
-			);
-		}
-
 		foreach ( $invoices as $invoice ) {
 			if ( isset( $gateways[ $invoice->gateway_id ] ) ) {
 				$gateway = $gateways[ $invoice->gateway_id ];
@@ -130,16 +124,21 @@ class MS_View_Member_Payment extends MS_Dialog {
 
 		ob_start();
 		?>
-		<div>
-			<?php
-			foreach ( $pay_details as $detail ) {
-				MS_Helper_Html::html_element( $detail );
-			}
-
-			foreach ( $inv_details as $detail ) {
-				MS_Helper_Html::html_element( $detail );
-			}
-			?>
+		<div class="wpmui-grid-8 ms-payment-infos">
+			<div class="col-5">
+				<?php
+				foreach ( $inv_details as $detail ) {
+					MS_Helper_Html::html_element( $detail );
+				}
+				?>
+			</div>
+			<div class="col-3">
+				<?php
+				foreach ( $pay_details as $detail ) {
+					MS_Helper_Html::html_element( $detail );
+				}
+				?>
+			</div>
 		</div>
 		<?php
 		$html = ob_get_clean();
