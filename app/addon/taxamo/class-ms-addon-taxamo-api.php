@@ -96,12 +96,25 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 * @since  1.0.0
 	 * @param  numeric $amount Transaction amount
 	 */
-	static public function register_payment( $amount, $label, $tax_rate, $invoice_id, $name, $email, $gateway ) {
+	static public function register_payment( $amount, $label, $tax_rate, $invoice_id, $name, $email, $gateway, $currency, $ip_addr ) {
 		try {
 			$profile = self::get_tax_profile();
 
+			if ( empty( $ip_addr ) ) {
+				$ip_addr = lib2()->net->current_ip()->ip;
+			}
+
 			// Register the transaction with Taxamo.
-			$transaction = self::prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email );
+			$transaction = self::prepare_transaction(
+				$amount,
+				$label,
+				$tax_rate,
+				$invoice_id,
+				$name,
+				$email,
+				$currency,
+				$ip_addr
+			);
 			$payload = array( 'transaction' => $transaction );
 			$resp = self::taxamo()->createTransaction( $payload );
 
@@ -352,13 +365,12 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	static protected function prepare_transaction( $amount, $label, $tax_rate, $invoice_id, $name, $email ) {
+	static protected function prepare_transaction( $amount, $label, $tax_rate, $invoice_num, $name, $email, $currency, $ip_addr ) {
 		self::taxamo();
 		$profile = self::get_tax_profile();
 
 		$amount = max( 0, floatval( $amount ) );
 		$tax_rate = max( 0, floatval( $tax_rate ) );
-		$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 
 		$tax_number = null;
 		$amount_key = 'total_amount';
@@ -375,7 +387,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			$amount_key => $amount,
 			'tax_rate' => $tax_rate,
 			'quantity' => 1,
-			'custom_id' => (string) $invoice_id,
+			'custom_id' => (string) $invoice_num,
 			'description' => (string) $label,
 		);
 
@@ -430,12 +442,12 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		}
 
 		$transaction = array(
-			'currency_code' => $invoice->currency,
+			'currency_code' => $currency,
 			'billing_country_code' => $profile->tax_country->code,
 			'tax_country_code' => $profile->tax_country->code,
 			'force_country_code' => $profile->tax_country->code,
-			'buyer_ip' => lib2()->net->current_ip()->ip,
-			'custom_id' => (string) $invoice_id,
+			'buyer_ip' => $ip_addr,
+			'custom_id' => (string) $invoice_num,
 			'buyer_name' => $name,
 			'buyer_email' => $email,
 			'buyer_tax_number' => $tax_number,

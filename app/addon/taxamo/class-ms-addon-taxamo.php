@@ -344,10 +344,12 @@ class MS_Addon_Taxamo extends MS_Addon {
 			$invoice->total,   // Transaction amount
 			$membership->name, // Transaction title
 			$invoice->tax_rate, // Tax-rate
-			$invoice->invoice_number, // Internal Transaction ID = Invoice Number
+			$invoice->get_invoice_number(), // Internal Transaction ID = Invoice Number
 			$member->full_name,  // Buyer name
 			$member->email,  // Buyer email
-			$invoice->gateway_id // Payment gateway
+			$invoice->gateway_id, // Payment gateway
+			$invoice->currency_code, // Currency of invoice
+			$invoice->checkout_ip // IP of the user
 		);
 	}
 
