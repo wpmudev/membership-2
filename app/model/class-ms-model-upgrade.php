@@ -146,6 +146,11 @@ class MS_Model_Upgrade extends MS_Model {
 				self::_upgrade_1_0_1_1();
 			}
 
+			// Upgrade from 1.0.1.x version to 1.0.2.0 or higher
+			if ( version_compare( $old_version, '1.0.2.0', 'lt' ) ) {
+				self::_upgrade_1_0_2_0();
+			}
+
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
@@ -307,6 +312,31 @@ class MS_Model_Upgrade extends MS_Model {
 		// Execute all queued actions!
 		lib2()->updates->plugin( MS_TEXT_DOMAIN );
 		lib2()->updates->execute();
+	}
+
+	/**
+	 * Upgrade from 1.0.1.1 version to a higher version.
+	 */
+	static private function _upgrade_1_0_2_0() {
+		lib2()->updates->clear();
+
+		/*
+		 * Transaction logs are a bit messed up because some meta-keys have an
+		 * underscore as prefix while other do not have it. This query removes
+		 * the underscore from all transaction-log meta key names.
+		 */
+		{
+			global $wpdb;
+			$sql = "
+			UPDATE {$wpdb->postmeta}
+			INNER JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id={$wpdb->posts}.ID
+			SET meta_key = SUBSTR(meta_key,2)
+			WHERE
+				{$wpdb->posts}.post_type = 'ms_transaction_log'
+				AND SUBSTR({$wpdb->postmeta}.meta_key,1,1) = '_'
+			";
+			$ids = $wpdb->query( $sql );
+		}
 	}
 
 	#
