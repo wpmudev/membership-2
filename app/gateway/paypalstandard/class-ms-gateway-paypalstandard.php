@@ -561,7 +561,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				$subscription_id, // subscription ID
 				$invoice_id, // invoice ID
 				$amount, // charged amount
-				$notes // Descriptive text
+				$notes, // Descriptive text
+				$external_id // External ID
 			);
 
 			if ( $redirect ) {
@@ -576,6 +577,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			$log->subscription_id = $subscription_id;
 			$log->amount = $amount;
 			$log->description = $notes;
+			$log->external_id = $external_id;
 			if ( $success ) {
 				$log->manual_state( 'ok' );
 			} elseif ( $ignore ) {

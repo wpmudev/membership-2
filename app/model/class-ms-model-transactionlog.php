@@ -131,7 +131,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	/**
 	 * A collection of all HTTP headers passed to the $url.
 	 *
-	 * @since 1.0.1.2
+	 * @since 1.0.2.0
 	 * @var   array
 	 */
 	protected $headers = null;
@@ -162,6 +162,14 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @var   int
 	 */
 	protected $manual_user = 0;
+
+	/**
+	 * The external transaction ID provided by the gateway.
+	 *
+	 * @since 1.0.2.0
+	 * @var   string
+	 */
+	protected $external_id = '';
 
 
 	//

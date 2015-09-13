@@ -91,6 +91,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$success = false;
 		$note = '';
 		$token = '';
+		$external_id = '';
 		$error = false;
 
 		do_action(
@@ -107,6 +108,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			lib2()->array->strip_slashes( $_POST, 'stripeToken' );
 
 			$token = $_POST['stripeToken'];
+			$external_id = $token;
 			try {
 				$customer = $this->_api->get_stripe_customer( $member, $token );
 
@@ -152,7 +154,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$subscription->id, // subscription ID
 			$invoice->id, // invoice ID
 			$invoice->total, // charged amount
-			$note // Descriptive text
+			$note, // Descriptive text
+			$external_id // External ID
 		);
 
 		if ( $error ) {
@@ -178,6 +181,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	public function request_payment( $subscription ) {
 		$was_paid = false;
 		$note = '';
+		$external_id = '';
 
 		do_action(
 			'ms_gateway_stripe_request_payment_before',
@@ -205,10 +209,11 @@ class MS_Gateway_Stripe extends MS_Gateway {
 							$invoice->currency,
 							$invoice->name
 						);
+						$external_id = $charge->id;
 
 						if ( true == $charge->paid ) {
 							$was_paid = true;
-							$invoice->pay_it( $this->id, $charge->id );
+							$invoice->pay_it( $this->id, $external_id );
 							$note = __( 'Payment successful', MS_TEXT_DOMAIN );
 						} else {
 							$note = __( 'Stripe payment failed', MS_TEXT_DOMAIN );
@@ -237,7 +242,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$subscription->id, // subscription ID
 			$invoice->id, // invoice ID
 			$invoice->total, // charged amount
-			$note // Descriptive text
+			$note, // Descriptive text
+			$external_id // External ID
 		);
 
 		do_action(

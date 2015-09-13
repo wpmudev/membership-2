@@ -254,7 +254,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$subscription->id, // subscription ID
 			$invoice->id, // invoice ID
 			$amount, // charged amount
-			$notes // Descriptive text
+			$notes, // Descriptive text
+			$external_id // External ID
 		);
 
 		// Restore the POST data in case it's used elsewhere.

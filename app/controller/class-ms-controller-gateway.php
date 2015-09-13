@@ -723,7 +723,8 @@ class MS_Controller_Gateway extends MS_Controller {
 					0, // subscription ID
 					0, // invoice ID
 					0, // charged amount
-					$note // Descriptive text
+					$note, // Descriptive text
+					'' // External ID
 				);
 			}
 		}
@@ -910,8 +911,9 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @param int $invoice_id
 	 * @param float $amount Payment amount.
 	 * @param string $notes Additional text to describe the transaction or error.
+	 * @param string $external_id The gateways transaction ID.
 	 */
-	public function log_transaction( $gateway_id, $method, $success, $subscription_id, $invoice_id, $amount, $notes ) {
+	public function log_transaction( $gateway_id, $method, $success, $subscription_id, $invoice_id, $amount, $notes, $external_id ) {
 		$log = MS_Factory::create( 'MS_Model_Transactionlog' );
 		$log->description = $notes;
 		$log->gateway_id = $gateway_id;
@@ -920,6 +922,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$log->subscription_id = $subscription_id;
 		$log->invoice_id = $invoice_id;
 		$log->amount = $amount;
+		$log->external_id = $external_id;
 		$log->save();
 	}
 
