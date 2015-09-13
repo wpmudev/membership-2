@@ -115,7 +115,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		$per_page = $this->get_items_per_page(
 			'transactionlog_per_page',
-			self::DEFAULT_PAGE_SIZE
+			50
 		);
 
 		$current_page = $this->get_pagenum();
