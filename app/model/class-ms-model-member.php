@@ -31,14 +31,6 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @internal
 	 */
-	const SEARCH_NOT_MEMBERS = 'not_members';
-
-	/**
-	 * Members search constants.
-	 *
-	 * @since  1.0.0
-	 * @internal
-	 */
 	const SEARCH_ALL_USERS = 'all_users';
 
 	/**
@@ -450,6 +442,8 @@ class MS_Model_Member extends MS_Model {
 	 * @return array $args The parsed args.
 	 */
 	public static function get_query_args( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS ) {
+		global $wpdb;
+
 		$defaults = apply_filters(
 			'ms_model_member_get_query_args_defaults',
 			array(
@@ -462,7 +456,7 @@ class MS_Model_Member extends MS_Model {
 		);
 
 		$args = lib2()->array->get( $args );
-		lib2()->array->equip( $args, 'meta_query' );
+		lib2()->array->equip( $args, 'meta_query', 'membership_id', 'subscription_status' );
 
 		if ( 'none' !== $args['meta_query'] ) {
 			$args['meta_query'] = lib2()->array->get( $args['meta_query'] );
@@ -477,24 +471,59 @@ class MS_Model_Member extends MS_Model {
 					);
 					break;
 
-				case self::SEARCH_NOT_MEMBERS:
-					/*
-					 * This does a recursive call to first get all member IDs
-					 */
-					$members = self::get_member_ids(
-						null,
-						self::SEARCH_ONLY_MEMBERS
-					);
-
-					$args['exclude'] = $members;
-					break;
-
 				case self::SEARCH_ALL_USERS:
 				default:
 					break;
 			}
 		} else {
 			unset( $args['meta_query'] );
+		}
+
+		// For performance reasons we execute a custom SQL to get relevant user_ids.
+		if ( ! empty( $args['membership_id'] )
+			|| ! empty( $args['subscription_status'] )
+			&& 'all' != $args['subscription_status']
+		) {
+			$membership_id = intval( $args['membership_id'] );
+			$status = $args['subscription_status'];
+
+			switch ( $status ) {
+				case 'expired':
+					$status_val = implode(
+						',',
+						array(
+							"'" . MS_Model_Relationship::STATUS_TRIAL_EXPIRED . "'",
+							"'" . MS_Model_Relationship::STATUS_EXPIRED . "'",
+						)
+					);
+					break;
+
+				default:
+					$status_val = $wpdb->prepare( " '%s' ", $status );
+					break;
+			}
+
+			$sql = "
+			SELECT DISTINCT usr.meta_value
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} mem ON mem.post_id=p.ID AND mem.meta_key='membership_id'
+			INNER JOIN {$wpdb->postmeta} sta ON sta.post_id=p.ID AND sta.meta_key='status'
+			INNER JOIN {$wpdb->postmeta} usr ON usr.post_id=p.ID AND usr.meta_key='user_id'
+			WHERE
+				p.post_type = %s
+				AND ('0' = %s OR mem.meta_value = %s)
+				AND ('' = %s OR sta.meta_value IN ({$status_val}))
+			";
+			$sql = $wpdb->prepare(
+				$sql,
+				MS_Model_Relationship::get_post_type(),
+				$membership_id,
+				$membership_id,
+				$status
+			);
+			$ids = $wpdb->get_col( $sql );
+			if ( empty( $ids ) || ! is_array( $ids ) ) { $ids = array( 0 ); }
+			$args['include'] = $ids;
 		}
 
 		if ( MS_Plugin::is_network_wide() ) {

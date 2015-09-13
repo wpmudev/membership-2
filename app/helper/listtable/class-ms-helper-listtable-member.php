@@ -196,29 +196,12 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$filter = array();
 
 		if ( ! empty( $membership_id ) ) {
-			$filter['membership_id'] = $membership_id;
+			$args['membership_id'] = $membership_id;
 		}
 
-		if ( ! empty( $status ) ) {
-			$filter['status'] = $status;
-		}
-
-		if ( ! empty( $filter ) ) {
-			$subscriptions = MS_Model_Relationship::get_subscriptions(
-				$filter
-			);
-
-			foreach ( $subscriptions as $subscription ) {
-				$members[ $subscription->user_id ] = $subscription->user_id;
-			}
-
-			// Workaround to invalidate query
-			if ( empty( $members ) ) {
-				$members[0] = 0;
-			}
-
-			$args['include'] = $members;
-		}
+		$status = $_REQUEST['status'];
+		if ( empty( $status ) ) { $status = MS_Model_Relationship::STATUS_ACTIVE; }
+		$args['subscription_status'] = $status;
 
 		return $args;
 	}
@@ -433,11 +416,83 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	/**
 	 * This list has no views.
 	 *
-	 * @since  1.0.0
+	 * @since  1.0.2.0
 	 *
 	 * @return array
 	 */
 	public function get_views() {
-		return array();
+		$views = array();
+		$args = array();
+		$count = 0;
+
+		$views['label'] = array(
+			'label' => __( 'Subscription Status:', MS_TEXT_DOMAIN ),
+		);
+
+		if ( empty( $_REQUEST['membership_id'] ) ) {
+			// All users
+			$url = esc_url_raw( add_query_arg( 'status', 'all' ) );
+			$views['all'] = array(
+				'url' => $url,
+				'label' => __( 'All users', MS_TEXT_DOMAIN ),
+			);
+		} else {
+			$args['membership_id'] = $_REQUEST['membership_id'];
+		}
+
+		// Active, Trial, Cancelled
+		$url = esc_url_raw( remove_query_arg( 'status' ) );
+		$args['subscription_status'] = MS_Model_Relationship::STATUS_ACTIVE;
+		$count = MS_Model_Member::get_members_count( $args );
+		$views['active'] = array(
+			'url' => $url,
+			'label' => __( 'Active subscription', MS_TEXT_DOMAIN ),
+			'count' => $count,
+		);
+
+		// Cancelled
+		$url = esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_CANCELED ) );
+		$args['subscription_status'] = MS_Model_Relationship::STATUS_CANCELED;
+		$count = MS_Model_Member::get_members_count( $args );
+		$views['cancelled'] = array(
+			'url' => $url,
+			'label' => __( 'Cancelled', MS_TEXT_DOMAIN ),
+			'count' => $count,
+		);
+
+		// Trial
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+			$url = esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_TRIAL ) );
+			$args['subscription_status'] = MS_Model_Relationship::STATUS_TRIAL;
+			$count = MS_Model_Member::get_members_count( $args );
+			$views['trial'] = array(
+				'url' => $url,
+				'label' => __( 'Trial', MS_TEXT_DOMAIN ),
+				'count' => $count,
+			);
+		}
+
+		// Expired, Trial-Expired
+		$url = esc_url_raw( add_query_arg( 'status', 'expired' ) );
+		$args['subscription_status'] = 'expired';
+		$count = MS_Model_Member::get_members_count( $args );
+		$views['expired'] = array(
+			'url' => $url,
+			'label' => __( 'Expired', MS_TEXT_DOMAIN ),
+			'count' => $count,
+		);
+
+		return $views;
+	}
+
+	/**
+	 * Return true if the current list is a view except "all"
+	 *
+	 * @since  1.0.2.0
+	 *
+	 * @return bool
+	 */
+	public function is_view() {
+		return ! empty( $_GET['status'] ) || ! empty( $_GET['membership_id'] );
 	}
 }

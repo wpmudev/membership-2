@@ -730,18 +730,34 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			// Allowed status filters:
 			// 'valid' .. all status values except Deactivated
 			// <any other value except 'all'>
-			if ( 'valid' === $args['status'] ) {
-				$args['meta_query']['status'] = array(
-					'key' => 'status',
-					'value' => self::STATUS_DEACTIVATED,
-					'compare' => 'NOT LIKE',
-				);
-			} elseif ( 'all' !== $args['status'] ) {
-				$args['meta_query']['status'] = array(
-					'key' => 'status',
-					'value' => $args['status'],
-					'compare' => 'LIKE',
-				);
+			switch ( $args['status'] ) {
+				case 'valid':
+					$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => self::STATUS_DEACTIVATED,
+						'compare' => 'NOT LIKE',
+					);
+					break;
+
+				case 'exp':
+					$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => array( self::STATUS_TRIAL_EXPIRED, self::STATUS_EXPIRED ),
+						'compare' => 'IN',
+					);
+					break;
+
+				case 'all':
+					// No params for this. We want all items!
+					break;
+
+				default:
+					$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => $args['status'],
+						'compare' => '=',
+					);
+					break;
 			}
 
 			// This is only reached when status === 'all'
