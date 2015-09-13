@@ -1922,6 +1922,29 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Returns a sanitized list of all payments.
+	 *
+	 * @since  1.0.2.0
+	 * @return array
+	 */
+	public function get_payments() {
+		$res = lib2()->array->get( $this->payments );
+
+		foreach ( $res as $key => $info ) {
+			if ( ! isset( $info['amount'] ) ) {
+				unset( $res[$key] );
+				continue;
+			}
+
+			if ( ! isset( $info['date'] ) ) { $res[$key]['date'] = ''; }
+			if ( ! isset( $info['gateway'] ) ) { $res[$key]['gateway'] = ''; }
+			if ( ! isset( $info['external_id'] ) ) { $res[$key]['external_id'] = ''; }
+		}
+
+		return $res;
+	}
+
+	/**
 	 * Set membership relationship status.
 	 *
 	 * Validates every time.
@@ -2102,9 +2125,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} else {
 			$valid_payment = false;
 			// Check if there is *any* payment, no matter what height.
-			foreach ( $this->payments as $payment ) {
-				if ( ! isset( $payment['amount'] ) ) { continue; }
-				if ( floatval( $payment['amount'] ) > 0 ) {
+			foreach ( $this->get_payments() as $payment ) {
+				if ( $payment['amount'] > 0 ) {
 					$valid_payment = true;
 					$debug_msg[] = '[Can activate: Payment found]';
 					break;
@@ -2567,7 +2589,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					 * When this limit is reached then we do not auto-renew the
 					 * subscription but expire it.
 					 */
-					$payments = lib2()->array->get( $this->payments );
+					$payments = $this->get_payments();
 					if ( count( $payments ) >= $membership->pay_cycle_repetitions ) {
 						$auto_renew = false;
 					}

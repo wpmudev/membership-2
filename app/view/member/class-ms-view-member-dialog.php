@@ -168,14 +168,12 @@ class MS_View_Member_Dialog extends MS_Dialog {
 					<?php
 					foreach ( $all_subscriptions as $subscription ) :
 						$membership = $subscription->get_membership();
-						$payments = $subscription->payments;
+						$payments = $subscription->get_payments();
 
 						$num_payments = count( $payments );
 						$amount_payments = 0;
 						foreach ( $payments as $payment ) {
-							if ( ! empty( $payment['amount'] ) ) {
-								$amount_payments += floatval( $payment['amount'] );
-							}
+							$amount_payments += $payment['amount'];
 						}
 
 						$subscription_info = array(

@@ -68,7 +68,7 @@ class MS_View_Member_Payment extends MS_Dialog {
 		$pay_details = array();
 		$inv_details = array();
 
-		foreach ( $subscription->payments as $payment ) {
+		foreach ( $subscription->get_payments() as $payment ) {
 			if ( isset( $gateways[ $payment['gateway'] ] ) ) {
 				$gateway = $gateways[ $payment['gateway'] ];
 			} else {

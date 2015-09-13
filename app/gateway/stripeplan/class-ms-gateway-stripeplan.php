@@ -477,7 +477,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			return;
 		}
 
-		$payments = $subscription->payments;
+		$payments = $subscription->get_payments();
 		if ( count( $payments ) < $membership->pay_cycle_repetitions ) {
 			return;
 		}
