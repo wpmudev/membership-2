@@ -447,6 +447,49 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		return $ids;
 	}
 
+	/**
+	 * Checks if the specified transaction was already successfully processed
+	 * to avoid duplicate payments.
+	 *
+	 * @since  1.0.2.0
+	 * @param  string $gateway The payment gateway ID.
+	 * @param  string $external_id The external transaction ID.
+	 * @return bool True if the transaction was processed/paid already.
+	 */
+	static public function was_processed( $gateway, $external_id ) {
+		global $wpdb;
+
+		$sql = "
+		SELECT COUNT(1)
+		FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} gateway ON
+				gateway.post_id=p.ID AND gateway.meta_key='gateway_id'
+			INNER JOIN {$wpdb->postmeta} ext_id ON
+				ext_id.post_id=p.ID AND ext_id.meta_key='external_id'
+			LEFT JOIN {$wpdb->postmeta} state1 ON
+				state1.post_id = p.ID AND state1.meta_key = 'success'
+			LEFT JOIN {$wpdb->postmeta} state2 ON
+				state2.post_id = p.ID AND state2.meta_key = 'manual_state'
+		WHERE
+			p.post_type = %s
+			AND gateway.meta_value = %s
+			AND ext_id.meta_value = %s
+			AND (
+				state1.meta_value IN ('1','ok')
+				OR state2.meta_value IN ('1','ok')
+			)
+		";
+		$sql = $wpdb->prepare(
+			$sql,
+			self::get_post_type(),
+			$gateway,
+			$external_id
+		);
+		$res = intval( $wpdb->get_var( $sql ) );
+
+		return $res > 0;
+	}
+
 
 	//
 	//

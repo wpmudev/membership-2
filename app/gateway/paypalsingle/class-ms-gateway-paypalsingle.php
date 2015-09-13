@@ -111,6 +111,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 
 			if ( ! is_wp_error( $response )
+				&& ! MS_Model_Transactionlog::was_processed( self::ID, $external_id )
 				&& 200 == $response['response']['code']
 				&& ! empty( $response['body'] )
 				&& 'VERIFIED' == $response['body']
@@ -229,6 +230,10 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 							$invoice->id,
 							$invoice_id
 						);
+						break;
+
+					case MS_Model_Transactionlog::was_processed( self::ID, $external_id ):
+						$reason = 'Duplicate: Already processed that transaction.';
 						break;
 				}
 

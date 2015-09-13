@@ -226,8 +226,15 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			}
 		}
 
-		// Step 2: If we have an invoice_id then process the payment.
-		if ( $invoice_id ) {
+		// Step 2a: Check if the txn_id was already processed by M2.
+		if ( MS_Model_Transactionlog::was_processed( self::ID, $external_id ) ) {
+			$notes = 'Duplicate: Already processed that transaction.';
+			$success = false;
+			$ignore = true;
+		}
+
+		// Step 2b: If we have an invoice_id then process the payment.
+		elseif ( $invoice_id ) {
 			if ( $this->is_live_mode() ) {
 				$domain = 'https://www.paypal.com';
 			} else {
@@ -498,7 +505,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 
 			$u_agent = $_SERVER['HTTP_USER_AGENT'];
-			if ( false === strpos( $u_agent, 'PayPal' ) ) {
+			if ( ! $log && false === strpos( $u_agent, 'PayPal' ) ) {
 				// Very likely someone tried to open the URL manually. Redirect to home page
 				if ( ! $notes ) {
 					$notes = 'Ignored: Missing POST variables. Redirect to Home-URL.';
@@ -528,8 +535,11 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				// PayPal sent us a IPN notice about a non-Membership payment:
 				// Ignore it, but add it to the logs.
 
-				if ( ! $payment_status && ! $transaction_type ) {
-					$notes = 'Ignored: payment_status and txn_type not specified. Cannot process.';
+				if ( ! empty( $notes ) ) {
+					// We already have an error message, do nothing.
+				}
+				elseif ( ! $payment_status || ! $transaction_type ) {
+					$notes = 'Ignored: Payment_status or txn_type not specified. Cannot process.';
 				} elseif ( empty( $_POST['invoice'] ) && empty( $_POST['custom'] ) ) {
 					$notes = 'Ignored: No invoice or custom data specified.';
 				} else {
