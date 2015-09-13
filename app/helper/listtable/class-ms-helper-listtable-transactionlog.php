@@ -123,18 +123,29 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$args = array(
 			'posts_per_page' => $per_page,
 			'offset' => ( $current_page - 1 ) * $per_page,
+			'meta_query' => array(),
 		);
 
 		if ( ! empty( $_GET['state'] ) ) {
 			$args['state'] = $_GET['state'];
 		}
 
+		if ( ! empty( $_GET['id'] ) ) {
+			$args['post__in'] = explode( ',', $_GET['id'] );
+		}
+
+		if ( ! empty( $_GET['invoice'] ) ) {
+			$args['meta_query']['invoice_id'] = array(
+				'key' => 'invoice_id',
+				'value' => explode( ',', $_GET['invoice'] ),
+				'compare' => 'IN',
+			);
+		}
+
 		if ( ! empty( $_GET['gateway_id'] ) ) {
-			$args['meta_query'] = array(
-				'gateway_id' => array(
-					'key' => 'gateway_id',
-					'value' => $_GET['gateway_id'],
-				),
+			$args['meta_query']['gateway_id'] = array(
+				'key' => 'gateway_id',
+				'value' => $_GET['gateway_id'],
 			);
 		}
 
@@ -171,16 +182,17 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 */
 	public function get_views() {
 		$views = array();
+		$base_url = remove_query_arg( array( 'state', 'id', 'invoice' ) );
 
 		$views['all'] = array(
 			'label' => __( 'All', MS_TEXT_DOMAIN ),
-			'url' => remove_query_arg( 'state' ),
+			'url' => $base_url,
 			'count' => MS_Model_Transactionlog::get_item_count(),
 		);
 
 		$views['ok'] = array(
 			'label' => __( 'Successful', MS_TEXT_DOMAIN ),
-			'url' => add_query_arg( 'state', 'ok' ),
+			'url' => add_query_arg( 'state', 'ok', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'ok' )
 			),
@@ -188,7 +200,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		$views['err'] = array(
 			'label' => __( 'Failed', MS_TEXT_DOMAIN ),
-			'url' => add_query_arg( 'state', 'err' ),
+			'url' => add_query_arg( 'state', 'err', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'err' )
 			),
@@ -196,7 +208,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		$views['ignore'] = array(
 			'label' => __( 'Ignored', MS_TEXT_DOMAIN ),
-			'url' => add_query_arg( 'state', 'ignore' ),
+			'url' => add_query_arg( 'state', 'ignore', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'ignore' )
 			),
