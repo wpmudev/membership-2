@@ -1819,14 +1819,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @param  float $amount The payment amount. Set to 0 for free subscriptions.
 	 * @param  string $gateway The payment gateway-ID.
+	 * @param  string $external_id A string that can identify the payment.
 	 * @return bool True if the subscription has ACTIVE status after payment.
 	 *         If the amount was 0 and membership uses a trial period the status
 	 *         could also be TRIAL, in which case the returnv alue is false.
 	 */
-	public function add_payment( $amount, $gateway ) {
-		if ( ! is_array( $this->payments ) ) {
-			$this->payments = array();
-		}
+	public function add_payment( $amount, $gateway, $external_id = '' ) {
+		$this->payments = lib2()->array->get( $this->payments );
 
 		// Update the payment-gateway.
 		if ( ! $this->gateway_id ) {
@@ -1841,6 +1840,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				'date' => MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT ),
 				'amount' => $amount,
 				'gateway' => $gateway,
+				'external_id' => $external_id,
 			);
 		}
 

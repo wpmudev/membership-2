@@ -82,6 +82,7 @@ class MS_View_Member_Payment extends MS_Dialog {
 					0 => array( 'Payment Date', $payment['date'] ),
 					1 => array( 'Payment Gateway', $gateway ),
 					2 => array( 'Amount', $payment['amount'] ),
+					3 => array( 'External ID', $payment['external_id'] ),
 				),
 				'field_options' => array(
 					'head_col' => true,

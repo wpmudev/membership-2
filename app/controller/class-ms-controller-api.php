@@ -322,7 +322,7 @@ class MS_Controller_Api extends MS_Hooker {
 
 			// Activate free memberships instantly.
 			if ( $membership->is_free() ) {
-				$subscription->add_payment( 0, MS_Gateway_Free::ID );
+				$subscription->add_payment( 0, MS_Gateway_Free::ID, 'free' );
 			}
 		}
 

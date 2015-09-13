@@ -489,7 +489,11 @@ class MS_Model_Import extends MS_Model {
 
 		// Add a payment for active subscriptions.
 		if ( ! $is_paid && MS_Model_Relationship::STATUS_ACTIVE == $subscription->status ) {
-			$subscription->add_payment( $membership->price, MS_Gateway_Admin::ID );
+			$subscription->add_payment(
+				$membership->price,
+				MS_Gateway_Admin::ID,
+				'imported'
+			);
 		}
 	}
 
@@ -521,7 +525,8 @@ class MS_Model_Import extends MS_Model {
 
 		$subscription->add_payment(
 			$ms_invoice->amount,
-			$ms_invoice->gateway_id
+			$ms_invoice->gateway_id,
+			'imported-' . $ms_invoice->id
 		);
 	}
 

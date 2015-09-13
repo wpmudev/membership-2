@@ -833,9 +833,17 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Save details on the payment.
 		if ( 0 == $this->total || MS_Gateway_Free::ID == $gateway_id ) {
-			$is_paid = $subscription->add_payment( 0, MS_Gateway_Free::ID );
+			$is_paid = $subscription->add_payment(
+				0,
+				MS_Gateway_Free::ID,
+				'free'
+			);
 		} else {
-			$is_paid = $subscription->add_payment( $this->total, $gateway_id );
+			$is_paid = $subscription->add_payment(
+				$this->total,
+				$gateway_id,
+				$external_id
+			);
 		}
 
 		if ( $is_paid ) {
