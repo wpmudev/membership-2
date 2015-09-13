@@ -120,6 +120,17 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				// BEST CASE:
 				// 'invoice' is set in all regular M2 subscriptions!
 				$invoice_id = intval( $_POST['invoice'] );
+
+				/*
+				 * PayPal only knows the first invoice of the subscription.
+				 * So we need to check: If the invoice is already paid then the
+				 * payment is for a follow-up invoice.
+				 */
+				$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+				if ( $invoice->is_paid() ) {
+					$subscription = $invoice->get_subscription();
+					$invoice_id = $subscription->first_unpaid_invoice();
+				}
 			} elseif ( ! empty( $_POST['custom'] ) ) {
 				// FALLBACK A:
 				// Maybe it's an imported M1 subscription.
@@ -168,9 +179,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							}
 						}
 
-						$invoice_id = MS_Model_Import::find_invoice_by_subscription(
-							$subscription
-						);
+						$invoice_id = $subscription->first_unpaid_invoice();
 
 						if ( ! $is_linked && ! $invoice_id ) {
 							MS_Model_Import::need_matching( $m1_sub_id, 'm1' );
@@ -209,9 +218,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						}
 					}
 
-					$invoice_id = MS_Model_Import::find_invoice_by_subscription(
-						$subscription
-					);
+					$invoice_id = $subscription->first_unpaid_invoice();
 
 					if ( ! $is_linked && ! $invoice_id ) {
 						MS_Model_Import::need_matching( $_POST['btn_id'], 'pay_btn' );

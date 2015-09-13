@@ -917,43 +917,4 @@ class MS_Model_Import extends MS_Model {
 
 		return $res;
 	}
-
-	/**
-	 * Finds the first unpaid invoice of the specified subscription and returns
-	 * the invoice_id.
-	 *
-	 * If subscription is not valid the return value is 0.
-	 * If the subscription has no unpaid invoices then a new invoice is created.
-	 *
-	 * When importing subscriptions we cannot guarantee that each subscription
-	 * has an unpaid/next invoice, that's why we optionally create a new unpaid
-	 * invoice if none exists.
-	 *
-	 * @since  1.0.1.2
-	 * @param  mixed $subscription The subscription object.
-	 * @return int The first invoice that is not paid yet.
-	 */
-	static public function find_invoice_by_subscription( $subscription ) {
-		$invoice_id = 0;
-
-		if ( $subscription && is_a( $subscription, 'MS_Model_Relationship' ) ) {
-
-			// Try to find the first unpaid invoice for the subscription.
-			$invoices = $subscription->get_invoices();
-			foreach ( $invoices as $invoice ) {
-				if ( ! $invoice->is_paid() ) {
-					$invoice_id = $invoice->id;
-					break;
-				}
-			}
-
-			// If no unpaid invoice was found: Create one.
-			if ( ! $invoice_id ) {
-				$invoice = $subscription->get_next_invoice();
-				$invoice_id = $invoice->id;
-			}
-		}
-
-		return $invoice_id;
-	}
 }

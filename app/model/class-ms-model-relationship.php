@@ -1498,6 +1498,36 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Finds the first unpaid invoice of the current subscription and returns
+	 * the invoice_id.
+	 *
+	 * If the subscription has no unpaid invoices then a new invoice is created!
+	 *
+	 * @since  1.0.2.0
+	 * @return int The first invoice that is not paid yet.
+	 */
+	static public function first_unpaid_invoice() {
+		$invoice_id = 0;
+
+		// Try to find the first unpaid invoice for the subscription.
+		$invoices = $this->get_invoices();
+		foreach ( $invoices as $invoice ) {
+			if ( ! $invoice->is_paid() ) {
+				$invoice_id = $invoice->id;
+				break;
+			}
+		}
+
+		// If no unpaid invoice was found: Create one.
+		if ( ! $invoice_id ) {
+			$invoice = $this->get_next_invoice();
+			$invoice_id = $invoice->id;
+		}
+
+		return $invoice_id;
+	}
+
+	/**
 	 * Get related Membership model.
 	 *
 	 * @since  1.0.0
