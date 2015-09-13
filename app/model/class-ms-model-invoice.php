@@ -412,7 +412,18 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Payment status filter.
 		if ( ! empty( $_REQUEST['status'] ) ) {
-			if ( 'open' === $_REQUEST['status'] ) {
+			if ( 'default' === $_REQUEST['status'] ) {
+				$args['meta_query']['status'] = array(
+					'key' => 'status',
+					'value' => array(
+						self::STATUS_BILLED,
+						self::STATUS_PENDING,
+						self::STATUS_PAID,
+						self::STATUS_DENIED,
+					),
+					'compare' => 'IN',
+				);
+			} elseif ( 'open' === $_REQUEST['status'] ) {
 				$args['meta_query']['status'] = array(
 					'key' => 'status',
 					'value' => array(
