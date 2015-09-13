@@ -254,7 +254,9 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	public function column_due_date( $item, $column_name ) {
 		$due_now = false;
-		if ( ! $item->is_paid() ) {
+		$is_paid = $item->is_paid();
+
+		if ( ! $is_paid ) {
 			$diff = MS_Helper_Period::subtract_dates(
 				$item->due_date,
 				MS_Helper_Period::current_date(),
@@ -264,18 +266,28 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			$due_now = ($diff < 0);
 		}
 
-		$date = MS_Helper_Period::format_date( $item->due_date );
+		$due_date = MS_Helper_Period::format_date( $item->due_date );
 
 		if ( $due_now ) {
 			$html = sprintf(
 				'<span class="due-now" title="%2$s">%1$s</span>',
-				$date,
+				$due_date,
 				__( 'Payment is overdue', MS_TEXT_DOMAIN )
+			);
+		} elseif ( $item->pay_date ) {
+			$pay_date = MS_Helper_Period::format_date( $item->pay_date, 'M j, Y' );
+			$html = sprintf(
+				'<span class="is-paid" title="%2$s">%1$s</span>',
+				$due_date,
+				sprintf(
+					__( 'Paid: %s', MS_TEXT_DOMAIN ),
+					$pay_date
+				)
 			);
 		} else {
 			$html = sprintf(
 				'<span>%1$s</span>',
-				$date
+				$due_date
 			);
 		}
 

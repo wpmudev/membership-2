@@ -210,7 +210,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	/**
 	 * Invoice date.
 	 *
-	 * This is the date when the invoice was created. It may be differe than the
+	 * This is the date when the INVOICE WAS CREATED. It may be differe than the
 	 * due date if the subscription uses a trial period.
 	 *
 	 * @since  1.0.0
@@ -219,13 +219,24 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $invoice_date = '';
 
 	/**
-	 * Invoice due date.
+	 * Defines date WHEN PAYMENT IS DUE.
 	 * When invoice uses_trial is true then this is the first day that is paid.
 	 *
 	 * @since  1.0.0
 	 * @var string
 	 */
 	protected $due_date = '';
+
+	/**
+	 * Date when the invoice was MARKED AS PAID.
+	 *
+	 * Note that free invoices do not have a pay-date! The pay-date is only set
+	 * when something was actually paid ;)
+	 *
+	 * @since  1.0.2.0
+	 * @var string
+	 */
+	protected $pay_date = '';
 
 	/**
 	 * Invoice notes.
@@ -825,6 +836,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 */
 	public function save() {
+		// Validate the pay_date attribute of the invoice.
+		$this->validate_pay_date();
+
 		parent::save();
 		parent::store_singleton();
 	}
@@ -866,6 +880,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		if ( $is_paid ) {
 			$this->status = self::STATUS_PAID;
+			$this->pay_date = MS_Helper_Period::current_date();
 		} else {
 			$this->status = self::STATUS_BILLED;
 		}
@@ -898,6 +913,27 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public function is_paid() {
 		return $this->status == self::STATUS_PAID;
+	}
+
+	/**
+	 * Makes sure that the pay_date attribtue has a valid value.
+	 *
+	 * @since  1.0.2.0
+	 */
+	protected function validate_pay_date() {
+		if ( $this->is_paid() && $this->amount ) {
+			if ( ! $this->pay_date ) {
+				$subscription = $this->get_subscription();
+				$payments = $subscription->get_payments();
+				$last_payment = end( $payments );
+				$this->pay_date = $last_payment['date'];
+				if ( ! $this->pay_date ) {
+					$this->pay_date = $this->due_date;
+				}
+			}
+		} elseif ( $this->pay_date ) {
+			$this->pay_date = '';
+		}
 	}
 
 	/**
@@ -1414,6 +1450,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				if ( empty( $value ) ) {
 					$value = get_the_date( 'Y-m-d', $this->id );
 				}
+				break;
+
+			case 'pay_date':
+				$this->validate_pay_date();
+				$value = $this->pay_date;
 				break;
 
 			case 'tax':

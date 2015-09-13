@@ -2153,6 +2153,28 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap.ms-billing .billings .due-now:hover:after {
   display: block;
 }
+#wpwrap .ms-wrap.ms-billing .billings .is-paid,
+.ms-wrap.ms-billing .billings .is-paid {
+  color: #004080;
+  border-bottom: 1px dotted #DDD;
+  cursor: default;
+}
+#wpwrap .ms-wrap.ms-billing .billings .is-paid:after,
+.ms-wrap.ms-billing .billings .is-paid:after {
+  content: attr(title);
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 32px;
+  right: 0;
+  font-size: 11px;
+  z-index: 2;
+  color: #888;
+}
+#wpwrap .ms-wrap.ms-billing .billings .is-paid:hover:after,
+.ms-wrap.ms-billing .billings .is-paid:hover:after {
+  display: block;
+}
 #wpwrap .ms-wrap.ms-billing .billings .column-status,
 .ms-wrap.ms-billing .billings .column-status {
   width: 80px;

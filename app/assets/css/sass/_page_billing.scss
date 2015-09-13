@@ -114,6 +114,28 @@
 				}
 			}
 
+			.is-paid {
+				color: #004080;
+				border-bottom: 1px dotted #DDD;
+				cursor: default;
+
+				&:after {
+					content: attr(title);
+					display: none;
+					position: absolute;
+					left: 0;
+					top: 32px;
+					right: 0;
+					font-size: 11px;
+					z-index: 2;
+					color: #888;
+				}
+
+				&:hover:after {
+					display: block;
+				}
+			}
+
 			.column-status {
 				width: 80px;
 				text-align: center;
