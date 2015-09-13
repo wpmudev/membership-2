@@ -233,9 +233,6 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				}
 
 				$notes = 'Response Error: ' . $reason;
-				MS_Helper_Debug::log( $notes );
-				MS_Helper_Debug::log( $response );
-				MS_Helper_Debug::log( $_POST );
 				$exit = true;
 			}
 		} else {
@@ -245,12 +242,10 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			if ( false === strpos( $u_agent, 'PayPal' ) ) {
 				// Very likely someone tried to open the URL manually. Redirect to home page
 				$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
-				MS_Helper_Debug::log( $notes );
 				$redirect = MS_Helper_Utility::home_url( '/' );
 			} else {
 				status_header( 404 );
 				$notes = 'Error: Missing POST variables. Identification is not possible.';
-				MS_Helper_Debug::log( $notes );
 			}
 			$exit = true;
 		}

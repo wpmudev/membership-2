@@ -343,7 +343,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 								__( 'Not handling payment_status: %s', MS_TEXT_DOMAIN ),
 								$payment_status
 							);
-							MS_Helper_Debug::log( $notes_pay );
 							$ignore = true;
 							break;
 					}
@@ -426,7 +425,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 								__( 'Not handling txn_type: %s', MS_TEXT_DOMAIN ),
 								$transaction_type
 							);
-							MS_Helper_Debug::log( $notes_txn );
 							$ignore = true;
 							break;
 					}
@@ -492,9 +490,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				}
 
 				$notes = 'Response Error: ' . $reason;
-				MS_Helper_Debug::log( $notes );
-				MS_Helper_Debug::log( $response );
-				MS_Helper_Debug::log( $_POST );
 				$exit = true;
 			}
 		} else {
@@ -506,7 +501,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				if ( ! $notes ) {
 					$notes = 'Ignored: Missing POST variables. Redirect to Home-URL.';
 				}
-				MS_Helper_Debug::log( $notes );
 				$redirect = MS_Helper_Utility::home_url( '/' );
 				$ignore = true;
 				$success = false;
@@ -540,7 +534,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					$notes = 'Ignored: Missing POST variables. Identification is not possible.';
 				}
 
-				MS_Helper_Debug::log( $notes );
 				$ignore = true;
 				$success = false;
 			}
