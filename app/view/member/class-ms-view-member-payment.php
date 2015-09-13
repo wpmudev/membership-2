@@ -114,6 +114,8 @@ class MS_View_Member_Payment extends MS_Dialog {
 					4 => array( 'Total billed', $invoice->total ),
 					5 => array( 'Status', $invoice->status ),
 					6 => array( 'Notes', $invoice->description ),
+					7 => array( 'Checkout IP', $invoice->checkout_ip ),
+					8 => array( 'Checkout Date', $invoice->checkout_date ),
 				),
 				'field_options' => array(
 					'head_col' => true,

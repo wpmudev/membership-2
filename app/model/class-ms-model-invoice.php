@@ -86,6 +86,24 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $user_id = 0;
 
 	/**
+	 * Log the users IP address once he visits the checkout page.
+	 * This way we can also see if the user visited the checkout page to pay the
+	 * invoice.
+	 *
+	 * @since  1.0.2.0
+	 * @var string
+	 */
+	protected $checkout_ip = '';
+
+	/**
+	 * Log the timestamp when the user visits the checkout page.
+	 *
+	 * @since  1.0.2.0
+	 * @var string
+	 */
+	protected $checkout_date = '';
+
+	/**
 	 * Membership Relationship ID.
 	 *
 	 * @since  1.0.0

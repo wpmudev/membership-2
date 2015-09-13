@@ -24,6 +24,15 @@ class MS_View_Frontend_Payment extends MS_View {
 			$msg = $this->data['error'];
 		}
 
+		/**
+		 * Log the users IP and current timestamp inside the invoice.
+		 *
+		 * @since 1.0.2.0
+		 */
+		$invoice->checkout_ip = lib2()->net->current_ip()->ip;
+		$invoice->checkout_date = date( 'Y-m-d H:i:s' );
+		$invoice->save();
+
 		$cancel_warning = false;
 		if ( ! MS_Model_Member::is_admin_user() ) {
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
