@@ -132,7 +132,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		if ( ! empty( $_GET['gateway_id'] ) ) {
 			$args['meta_query'] = array(
 				'gateway_id' => array(
-					'key' => '_gateway_id',
+					'key' => 'gateway_id',
 					'value' => $_GET['gateway_id'],
 				),
 			);

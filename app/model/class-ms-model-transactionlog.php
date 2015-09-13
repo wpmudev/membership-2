@@ -251,9 +251,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		$items = array();
 
 		foreach ( $query->posts as $post_id ) {
-			if ( ! get_post_meta( $post_id, '_method', true ) &&
-				! get_post_meta( $post_id, 'method', true )
-			) {
+			if ( ! get_post_meta( $post_id, 'method', true ) ) {
 				// The log entry is incomplete. Do not load it.
 				continue;
 			}
@@ -288,12 +286,6 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			'orderby' => 'ID',
 			'posts_per_page' => 20,
 		);
-
-		if ( ! empty( $args['meta_query'] ) ) {
-			if ( is_array( $args['meta_query']['gateway_id'] ) ) {
-				$args['meta_query']['gateway_id']['key'] = '_gateway_id';
-			}
-		}
 
 		if ( ! empty( $args['state'] ) ) {
 			$ids = self::get_state_ids( $args['state'] );
@@ -344,11 +336,11 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		FROM
 			{$wpdb->posts} p
 			LEFT JOIN {$wpdb->postmeta} state1 ON
-				state1.post_id = p.ID AND state1.meta_key IN ('_success', 'success')
+				state1.post_id = p.ID AND state1.meta_key = 'success'
 			LEFT JOIN {$wpdb->postmeta} state2 ON
-				state2.post_id = p.ID AND state2.meta_key IN ('_manual_state', 'manual_state')
+				state2.post_id = p.ID AND state2.meta_key = 'manual_state'
 			INNER JOIN {$wpdb->postmeta} method ON
-				method.post_id = p.ID AND method.meta_key IN ('_method', 'method')
+				method.post_id = p.ID AND method.meta_key = 'method'
 		WHERE
 			p.post_type = %s
 			AND LENGTH( method.meta_value ) > 0
@@ -409,9 +401,9 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		FROM
 			{$wpdb->posts} p
 			LEFT JOIN {$wpdb->postmeta} form ON
-				form.post_id = p.ID AND form.meta_key IN ('_post', 'post')
+				form.post_id = p.ID AND form.meta_key = 'post'
 			LEFT JOIN {$wpdb->postmeta} gateway ON
-				gateway.post_id = p.ID AND gateway.meta_key IN ('_gateway_id', 'gateway_id')
+				gateway.post_id = p.ID AND gateway.meta_key = 'gateway_id'
 		WHERE
 			p.post_type = %s
 		";
