@@ -469,11 +469,13 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			$this->success = 'err';
 		}
 
-		$this->url = lib2()->net->current_url();
-		$this->post = $_POST;
-		$this->headers = $this->get_headers();
-		$this->user_id = get_current_user_id();
-		$this->title = 'Transaction Log';
+		if ( ! $this->id ) {
+			$this->url = lib2()->net->current_url();
+			$this->post = $_POST;
+			$this->headers = $this->get_headers();
+			$this->user_id = get_current_user_id();
+			$this->title = 'Transaction Log';
+		}
 	}
 
 	/**
