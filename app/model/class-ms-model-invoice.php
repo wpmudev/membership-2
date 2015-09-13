@@ -45,6 +45,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	// User confirmed payment but gateway returned some error (dispute, wrong amount, etc).
 	const STATUS_DENIED = 'denied';
 
+	// Archived invoices are hidden from invoice lists, i.e. "deleted"
+	const STATUS_ARCHIVED = 'archived';
+
 	/**
 	 * External transaction ID.
 	 *
@@ -841,6 +844,32 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		parent::save();
 		parent::store_singleton();
+	}
+
+	/**
+	 * Move an invoice to tha archive - i.e. hide it from the user.
+	 *
+	 * @since  1.0.2.0
+	 */
+	public function archive() {
+		if ( $this->id ) {
+			$this->add_notes( '----------' );
+			$this->add_notes(
+				sprintf(
+					__( 'Archived on: %s', MS_TEXT_DOMAIN ),
+					MS_Helper_Period::current_date()
+				)
+			);
+			$this->add_notes(
+				sprintf(
+					__( 'Former status: %s', MS_TEXT_DOMAIN ),
+					$this->status
+				)
+			);
+
+			$this->status = self::STATUS_ARCHIVED;
+			$this->save();
+		}
 	}
 
 	/**

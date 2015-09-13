@@ -389,8 +389,8 @@ class MS_Controller_Billing extends MS_Controller {
 					$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
 					break;
 
-				case 'delete':
-					$invoice->delete();
+				case 'archive':
+					$invoice->archive();
 					$msg = MS_Helper_Billing::BILLING_MSG_DELETED;
 					break;
 

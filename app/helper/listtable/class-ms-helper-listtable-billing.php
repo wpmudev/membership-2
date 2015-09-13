@@ -217,6 +217,10 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 				$icon = '<i class="wpmui-fa wpmui-fa-times-circle"></i>';
 				break;
 
+			case MS_Model_Invoice::STATUS_ARCHIVED:
+				$icon = '<i class="wpmui-fa wpmui-fa-times-circle-o"></i>';
+				break;
+
 			default:
 				$icon = $item->status_text();
 				break;
@@ -311,7 +315,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	public function get_bulk_actions() {
 		$bulk_actions = array(
-			'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
+			'archive' => __( 'Remove', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(
