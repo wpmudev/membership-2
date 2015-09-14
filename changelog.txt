@@ -4,6 +4,10 @@ Author: Philipp Stracker, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.2.1
+----------------------------------------------------------------------
+- Fix parse error during user registration in older PHP versions
+ 
 1.0.2.0
 ----------------------------------------------------------------------
 - Add new filter in Members list to filter members by subscription status (active/expired)
@@ -22,7 +26,7 @@ Change Log:
 - Improve billings list to not show invoices with status "new" by default
 - Fix the user-name variables in email/shortcodes (use display name instead of login name)
 - Fix the "Ignore" action in the Transaction log list
-- Fix an issue where M2 returns an error to PayPal when a non-M2 payment is made in the PayPal account
+- Fix an issue where M2 returns an error to PayPal when a non-M2 payment is made Howin the PayPal account
 - Fix several issues in PayPal Standard gateway that would not process transactions correctly
 - Fix a bug in Pro-Rating Add-on to correctly apply discount from now on
 - Fix Taxamo Add-on to send the invoice-currency and correct user IP for PayPal IPN payments

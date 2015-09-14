@@ -187,7 +187,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					}
 					// end if: 'm1' == $ext_type
 				}
-			} elseif ( ! empty( $_POST['btn_id'] && ! empty( $_POST['payer_email'] ) ) ) {
+			} elseif ( ! empty( $_POST['btn_id'] ) && ! empty( $_POST['payer_email'] ) ) {
 				// FALLBACK B:
 				// Payment was made by a custom PayPal Payment button.
 				$user = get_user_by( 'email', $_POST['payer_email'] );
