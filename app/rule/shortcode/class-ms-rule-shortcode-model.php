@@ -266,6 +266,8 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 			$content
 		);
 
+		$content = do_shortcode( $content );
+
 		if ( ! $do_debug ) {
 			return $content;
 		}

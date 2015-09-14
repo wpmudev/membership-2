@@ -4,6 +4,10 @@ Author: Philipp Stracker, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.2.2
+----------------------------------------------------------------------
+- Fix ms-protect-content shortcode: Resolve shortcodes in protected content also for admin users
+
 1.0.2.1
 ----------------------------------------------------------------------
 - Fix parse error during user registration in older PHP versions
