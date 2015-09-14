@@ -50,7 +50,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
-		$this->add_action( 'ms_gateway_transaction_log', 'log_transaction', 10, 7 );
+		$this->add_action( 'ms_gateway_transaction_log', 'log_transaction', 10, 8 );
 
 		$this->add_action( 'ms_controller_frontend_enqueue_scripts', 'enqueue_scripts' );
 
