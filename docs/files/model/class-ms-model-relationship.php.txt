@@ -730,18 +730,34 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			// Allowed status filters:
 			// 'valid' .. all status values except Deactivated
 			// <any other value except 'all'>
-			if ( 'valid' === $args['status'] ) {
-				$args['meta_query']['status'] = array(
-					'key' => 'status',
-					'value' => self::STATUS_DEACTIVATED,
-					'compare' => 'NOT LIKE',
-				);
-			} elseif ( 'all' !== $args['status'] ) {
-				$args['meta_query']['status'] = array(
-					'key' => 'status',
-					'value' => $args['status'],
-					'compare' => 'LIKE',
-				);
+			switch ( $args['status'] ) {
+				case 'valid':
+					$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => self::STATUS_DEACTIVATED,
+						'compare' => 'NOT LIKE',
+					);
+					break;
+
+				case 'exp':
+					$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => array( self::STATUS_TRIAL_EXPIRED, self::STATUS_EXPIRED ),
+						'compare' => 'IN',
+					);
+					break;
+
+				case 'all':
+					// No params for this. We want all items!
+					break;
+
+				default:
+					$args['meta_query']['status'] = array(
+						'key' => 'status',
+						'value' => $args['status'],
+						'compare' => '=',
+					);
+					break;
 			}
 
 			// This is only reached when status === 'all'
@@ -1498,6 +1514,36 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Finds the first unpaid invoice of the current subscription and returns
+	 * the invoice_id.
+	 *
+	 * If the subscription has no unpaid invoices then a new invoice is created!
+	 *
+	 * @since  1.0.2.0
+	 * @return int The first invoice that is not paid yet.
+	 */
+	static public function first_unpaid_invoice() {
+		$invoice_id = 0;
+
+		// Try to find the first unpaid invoice for the subscription.
+		$invoices = $this->get_invoices();
+		foreach ( $invoices as $invoice ) {
+			if ( ! $invoice->is_paid() ) {
+				$invoice_id = $invoice->id;
+				break;
+			}
+		}
+
+		// If no unpaid invoice was found: Create one.
+		if ( ! $invoice_id ) {
+			$invoice = $this->get_next_invoice();
+			$invoice_id = $invoice->id;
+		}
+
+		return $invoice_id;
+	}
+
+	/**
 	 * Get related Membership model.
 	 *
 	 * @since  1.0.0
@@ -1661,7 +1707,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$total_price = MS_Helper_Billing::format_price( $total_price );
 		$trial_price = MS_Helper_Billing::format_price( $trial_price );
 
-		switch ( $membership->payment_type ){
+		$payment_type = $this->payment_type;
+		if ( ! $payment_type ) {
+			$payment_type = $membership->payment_type;
+		}
+
+		switch ( $payment_type ) {
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 				if ( 0 == $total_price ) {
 					if ( $short ) {
@@ -1773,7 +1824,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( $this->is_trial_eligible() && 0 != $total_price ) {
 			if ( 0 == absint( $trial_price ) ) {
 				if ( $short ) {
-					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type ) {
+					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $payment_type ) {
 						$lbl = __( 'after %4$s', MS_TEXT_DOMAIN );
 					} else {
 						$lbl = __( 'on %4$s', MS_TEXT_DOMAIN );
@@ -1799,7 +1850,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		return apply_filters(
 			'ms_model_relationship_get_payment_description',
 			$desc,
-			$membership
+			$membership,
+			$payment_type
 		);
 	}
 
@@ -1813,14 +1865,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @param  float $amount The payment amount. Set to 0 for free subscriptions.
 	 * @param  string $gateway The payment gateway-ID.
+	 * @param  string $external_id A string that can identify the payment.
 	 * @return bool True if the subscription has ACTIVE status after payment.
 	 *         If the amount was 0 and membership uses a trial period the status
 	 *         could also be TRIAL, in which case the returnv alue is false.
 	 */
-	public function add_payment( $amount, $gateway ) {
-		if ( ! is_array( $this->payments ) ) {
-			$this->payments = array();
-		}
+	public function add_payment( $amount, $gateway, $external_id = '' ) {
+		$this->payments = lib2()->array->get( $this->payments );
 
 		// Update the payment-gateway.
 		if ( ! $this->gateway_id ) {
@@ -1835,6 +1886,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				'date' => MS_Helper_Period::current_date( MS_Helper_Period::DATE_TIME_FORMAT ),
 				'amount' => $amount,
 				'gateway' => $gateway,
+				'external_id' => $external_id,
 			);
 		}
 
@@ -1879,6 +1931,31 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// You're officially active :)
 		$member = $this->get_member();
 		$member->is_member = true;
+
+		if ( self::STATUS_ACTIVE == $this->status ) {
+			/**
+			 * Make sure the new subscription is instantly available in the
+			 * member object.
+			 *
+			 * Before version 1.0.1.2 the new subscription was available in the
+			 * member object after the next page refresh.
+			 *
+			 * @since 1.0.1.2
+			 */
+			$found = false;
+			$subscriptions = $member->subscriptions;
+			foreach ( $subscriptions as $sub ) {
+				if ( $sub->membership_id == $this->membership_id ) {
+					$found = true;
+					break;
+				}
+			}
+			if ( ! $found ) {
+				$subscriptions[] = $this;
+				$member->subscriptions = $subscriptions;
+			}
+		}
+
 		$member->save();
 
 		// Return true if the subscription is active.
@@ -1888,6 +1965,29 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 		$is_active = in_array( $this->status, $paid_status );
 		return $is_active;
+	}
+
+	/**
+	 * Returns a sanitized list of all payments.
+	 *
+	 * @since  1.0.2.0
+	 * @return array
+	 */
+	public function get_payments() {
+		$res = lib2()->array->get( $this->payments );
+
+		foreach ( $res as $key => $info ) {
+			if ( ! isset( $info['amount'] ) ) {
+				unset( $res[$key] );
+				continue;
+			}
+
+			if ( ! isset( $info['date'] ) ) { $res[$key]['date'] = ''; }
+			if ( ! isset( $info['gateway'] ) ) { $res[$key]['gateway'] = ''; }
+			if ( ! isset( $info['external_id'] ) ) { $res[$key]['external_id'] = ''; }
+		}
+
+		return $res;
 	}
 
 	/**
@@ -2071,9 +2171,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} else {
 			$valid_payment = false;
 			// Check if there is *any* payment, no matter what height.
-			foreach ( $this->payments as $payment ) {
-				if ( ! isset( $payment['amount'] ) ) { continue; }
-				if ( floatval( $payment['amount'] ) > 0 ) {
+			foreach ( $this->get_payments() as $payment ) {
+				if ( $payment['amount'] > 0 ) {
 					$valid_payment = true;
 					$debug_msg[] = '[Can activate: Payment found]';
 					break;
@@ -2083,6 +2182,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				// Check if any invoice was paid already.
 				for ( $ind = $this->current_invoice_number; $ind > 0; $ind -= 1 ) {
 					$invoice = MS_Model_Invoice::get_invoice( $this->id, $ind );
+					if ( ! $invoice ) { continue; }
 					if ( $invoice->uses_trial ) { continue; }
 					if ( $invoice->is_paid() ) {
 						$valid_payment = true;
@@ -2535,7 +2635,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					 * When this limit is reached then we do not auto-renew the
 					 * subscription but expire it.
 					 */
-					$payments = lib2()->array->get( $this->payments );
+					$payments = $this->get_payments();
 					if ( count( $payments ) >= $membership->pay_cycle_repetitions ) {
 						$auto_renew = false;
 					}
