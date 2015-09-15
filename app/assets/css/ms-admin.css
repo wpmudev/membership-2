@@ -1804,6 +1804,42 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap .ms-membership-list .column-price {
   width: 250px;
 }
+.ms-wrap .ms-membership-list .ms-shortcodes {
+  position: relative;
+  display: block;
+}
+.ms-wrap .ms-membership-list .ms-shortcodes .label {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  line-height: 28px;
+  display: inline-block;
+  padding: 0 12px;
+  position: relative;
+}
+.ms-wrap .ms-membership-list .ms-shortcodes .inner {
+  display: none;
+  position: absolute;
+  background-color: #FAFAFA;
+  padding: 10px;
+  right: 0;
+  top: 28px;
+  width: 600px;
+  z-index: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #E5E5E5;
+}
+.ms-wrap .ms-membership-list .ms-shortcodes .inner > div {
+  line-height: 20px;
+  margin: 4px 0;
+}
+.ms-wrap .ms-membership-list .ms-shortcodes .ms-trigger:hover .label {
+  background-color: #FAFAFA;
+  border-color: #E5E5E5;
+  z-index: 2;
+}
+.ms-wrap .ms-membership-list .ms-shortcodes .ms-trigger:hover .inner {
+  display: block;
+}
 
 /* Membership News ("Overview" page) */
 #wpwrap .ms-wrap.ms-membership-news .the-title {

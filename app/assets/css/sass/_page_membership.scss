@@ -479,6 +479,50 @@
 	.column-price {
 		width: 250px;
 	}
+
+	.ms-shortcodes {
+		position: relative;
+		display: block;
+
+		.label {
+			border: 1px solid transparent;
+			border-bottom: 0;
+			line-height: 28px;
+			display: inline-block;
+			padding: 0 12px;
+			position: relative;
+		}
+
+		.inner {
+			display: none;
+			position: absolute;
+			background-color: #FAFAFA;
+			padding: 10px;
+			right: 0;
+			top: 28px;
+			width: 600px;
+			z-index: 1;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+			border: 1px solid #E5E5E5;
+
+			& > div {
+				line-height: 20px;
+				margin: 4px 0;
+			}
+		}
+
+		.ms-trigger:hover {
+			.label {
+				background-color: #FAFAFA;
+				border-color: #E5E5E5;
+				z-index: 2;
+			}
+
+			.inner {
+				display: block;
+			}
+		}
+	}
 }
 
 /* Membership News ("Overview" page) */

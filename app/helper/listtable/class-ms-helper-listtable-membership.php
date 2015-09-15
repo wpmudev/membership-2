@@ -29,7 +29,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
 			'members' => __( 'Members', MS_TEXT_DOMAIN ),
 			'price' => __( 'Payment', MS_TEXT_DOMAIN ),
-			'shortcode' => __( 'Protection Shortcode', MS_TEXT_DOMAIN ),
+			'shortcode' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
 		);
 
 		return apply_filters(
@@ -277,11 +277,66 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 	}
 
 	public function column_shortcode( $item, $column_name ) {
-		return sprintf(
-			'<code>[%1$s id="%2$s"]</code>',
-			MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE,
-			esc_attr( $item->id )
+		$shortcodes = array(
+			MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE => array(
+				'tag' => '[%1$s id="%2$s"][/%1$s]',
+				'label' => __( 'Protect content', MS_TEXT_DOMAIN ),
+			),
+			MS_Helper_Shortcode::SCODE_MS_TITLE => array(
+				'tag' => '[%1$s id="%2$s"]',
+				'label' => __( 'Membership Title', MS_TEXT_DOMAIN ),
+			),
+			MS_Helper_Shortcode::SCODE_MS_DETAILS => array(
+				'tag' => '[%1$s id="%2$s"]',
+				'label' => __( 'Membership Description', MS_TEXT_DOMAIN ),
+			),
+			MS_Helper_Shortcode::SCODE_MS_PRICE => array(
+				'tag' => '[%1$s id="%2$s"]',
+				'label' => __( 'Membership Price', MS_TEXT_DOMAIN ),
+			),
+			MS_Helper_Shortcode::SCODE_MS_BUY => array(
+				'tag' => '[%1$s id="%2$s"]',
+				'label' => __( 'Subscribe Button', MS_TEXT_DOMAIN ),
+			),
+			MS_Helper_Shortcode::SCODE_REGISTER_USER => array(
+				'tag' => '[%1$s membership_id="%2$s"]',
+				'label' => __( 'Registration form', MS_TEXT_DOMAIN ),
+			),
 		);
+		if ( $item->is_system() ) {
+			unset( $shortcodes[MS_Helper_Shortcode::SCODE_MS_TITLE] );
+			unset( $shortcodes[MS_Helper_Shortcode::SCODE_MS_DETAILS] );
+			unset( $shortcodes[MS_Helper_Shortcode::SCODE_MS_PRICE] );
+			unset( $shortcodes[MS_Helper_Shortcode::SCODE_MS_BUY] );
+			unset( $shortcodes[MS_Helper_Shortcode::SCODE_REGISTER_USER] );
+		}
+
+		$shortcodes = apply_filters(
+			'ms_helper_listtable_membership_shortcodes',
+			$shortcodes,
+			$item
+		);
+
+		$lines = array();
+		foreach ( $shortcodes as $code => $details ) {
+			$lines[] = sprintf(
+				'<div>%s: <code>%s</code></div>',
+				$details['label'],
+				sprintf(
+					$details['tag'],
+					$code,
+					esc_attr( $item->id )
+				)
+			);
+		}
+
+		$html = sprintf(
+			'<div class="ms-shortcodes"><span class="ms-trigger"><span class="label">%s</span><div class="inner">%s</div></span></div>',
+			__( 'Show', MS_TEXT_DOMAIN ) . ' <i class="wpmui-fa wpmui-fa-caret-down"></i>',
+			implode( '', $lines )
+		);
+
+		return $html;
 	}
 
 	public function get_bulk_actions() {
