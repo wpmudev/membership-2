@@ -208,7 +208,8 @@ class MS_Controller_Frontend extends MS_Controller {
 					break;
 
 				case MS_Model_Pages::MS_PAGE_REGISTER:
-					if ( MS_Model_Member::is_logged_in() ) {
+					$step = $this->get_signup_step();
+					if ( self::STEP_CHOOSE_MEMBERSHIP == $step && MS_Model_Member::is_logged_in() ) {
 						wp_safe_redirect(
 							MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS )
 						);
