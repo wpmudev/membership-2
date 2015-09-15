@@ -6,6 +6,8 @@ Change Log:
 
 1.0.2.2
 ----------------------------------------------------------------------
+- Improve the shortcode column in the admin membership list
+- Fix wrong registration workflow that showed membership list instead of payment form
 - Fix ms-protect-content shortcode: Resolve shortcodes in protected content also for admin users
 
 1.0.2.1
