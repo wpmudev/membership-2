@@ -429,8 +429,6 @@ class MS_Controller_Membership extends MS_Controller {
 					// Setup payment options
 
 					$next_step = self::STEP_MS_LIST;
-					$msg = $this->mark_setup_completed();
-					$completed = true;
 					break;
 
 				case self::STEP_EDIT:
