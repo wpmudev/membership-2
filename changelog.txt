@@ -9,6 +9,7 @@ Change Log:
 - Improve the shortcode column in the admin membership list
 - Fix wrong registration workflow that showed membership list instead of payment form
 - Fix ms-protect-content shortcode: Resolve shortcodes in protected content also for admin users
+- Fix bug in setup-wizard that sometimes did not finish after creating the first membership
 
 1.0.2.1
 ----------------------------------------------------------------------
