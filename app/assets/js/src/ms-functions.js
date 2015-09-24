@@ -656,4 +656,7 @@ jQuery( document ).ready( function() {
 	);
 
 	fn.init( 'body' );
+
+	// Add a global CSS class to the html tag
+	jQuery('html').addClass( 'ms-html' );
 });

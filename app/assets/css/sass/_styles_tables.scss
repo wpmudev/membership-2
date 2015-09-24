@@ -52,17 +52,11 @@
 
 		&.memberships {
 			td {
-				border-top: 1px solid #CCC;
+				border-top: 1px solid #E5E5E5;
 			}
 
 			tr:first-child td {
 				border-top: 0;
-			}
-
-			.ms-child-row {
-				td {
-					border-top: 1px solid #EEE;
-				}
 			}
 		}
 	}

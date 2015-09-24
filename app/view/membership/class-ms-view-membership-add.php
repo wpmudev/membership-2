@@ -104,6 +104,11 @@ class MS_View_Membership_Add extends MS_View {
 				'class' => 'ms-text-large',
 				'placeholder' => __( 'Choose a name that will identify this membership...', MS_TEXT_DOMAIN ),
 				'label_type' => 'h3',
+				'wrapper_class' => 'opt',
+				'after' => sprintf(
+					'<span class="locked-info">%1$s</span>',
+					__( 'Not available for this Membership', MS_TEXT_DOMAIN )
+				),
 			),
 
 			'config_fields' => array(
@@ -114,7 +119,7 @@ class MS_View_Membership_Add extends MS_View {
 					'desc' => __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', MS_TEXT_DOMAIN ),
 					'after' => sprintf(
 						'<span class="locked-info">%1$s</span>',
-						__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
+						__( 'Not available for this Membership', MS_TEXT_DOMAIN )
 					),
 					'value' => ! $membership->private,
 				),
@@ -131,7 +136,7 @@ class MS_View_Membership_Add extends MS_View {
 					'desc' => __( 'Choose this if you want to receive payments from members via Payment Gateways.', MS_TEXT_DOMAIN ),
 					'after' => sprintf(
 						'<span class="locked-info">%1$s</span>',
-						__( 'Not available for the Guest Membership', MS_TEXT_DOMAIN )
+						__( 'Not available for this Membership', MS_TEXT_DOMAIN )
 					),
 					'value' => ! $membership->is_free(),
 				),

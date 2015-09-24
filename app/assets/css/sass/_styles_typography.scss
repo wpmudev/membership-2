@@ -104,13 +104,14 @@
 		padding: 1px 5px;
 		font-size: 12px;
 		height: 20px;
-		line-height: 20px;
+		line-height: 18px;
 		box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		max-width: 100%;
 		cursor: default;
+		vertical-align: bottom;
 	}
 
 	h3 {
@@ -119,7 +120,8 @@
 			padding: 1px 6px;
 			font-size: 15px;
 			height: 22px;
-			line-height: 22px;
+			line-height: 20px;
+			vertical-align: bottom;
 		}
 	}
 }

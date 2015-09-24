@@ -61,11 +61,7 @@
   cursor: not-allowed;
 }
 
-/*
- * The default WordPress admin-footer sometimes gets in the way on the
- * Membership2 setting screens.
- */
-.wp-admin.toplevel_page_membership2 #wpfooter {
+.ms-html #wpfooter {
   z-index: -1;
   position: fixed;
   display: none;
@@ -200,13 +196,14 @@
   padding: 1px 5px;
   font-size: 12px;
   height: 20px;
-  line-height: 20px;
+  line-height: 18px;
   box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
   cursor: default;
+  vertical-align: bottom;
 }
 #wpwrap .ms-wrap h3 .ms-membership,
 .ms-wrap h3 .ms-membership,
@@ -215,7 +212,8 @@
   padding: 1px 6px;
   font-size: 15px;
   height: 22px;
-  line-height: 22px;
+  line-height: 20px;
+  vertical-align: bottom;
 }
 
 /**
@@ -258,13 +256,10 @@
   margin-right: 4px;
 }
 .ms-wrap .widefat.memberships td {
-  border-top: 1px solid #CCC;
+  border-top: 1px solid #E5E5E5;
 }
 .ms-wrap .widefat.memberships tr:first-child td {
   border-top: 0;
-}
-.ms-wrap .widefat.memberships .ms-child-row td {
-  border-top: 1px solid #EEE;
 }
 .ms-wrap .tablenav input,
 .ms-wrap .tablenav select,
@@ -1564,7 +1559,10 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 #wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .wpmui-field-description {
   padding-right: 40px;
 }
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .wpmui-label-after {
+#wpwrap .ms-wrap .ms-membership-add .opt {
+  display: block;
+}
+#wpwrap .ms-wrap .ms-membership-add .opt .wpmui-label-after {
   position: absolute;
   display: none;
   left: 0;
@@ -1573,19 +1571,19 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   bottom: 0;
   margin: 0;
 }
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .ms-locked {
+#wpwrap .ms-wrap .ms-membership-add .ms-locked {
   position: relative;
   cursor: not-allowed;
 }
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .ms-locked * {
+#wpwrap .ms-wrap .ms-membership-add .ms-locked * {
   cursor: not-allowed;
 }
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .ms-locked .wpmui-checkbox-caption,
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .ms-locked .wpmui-input-description {
+#wpwrap .ms-wrap .ms-membership-add .ms-locked .wpmui-checkbox-caption,
+#wpwrap .ms-wrap .ms-membership-add .ms-locked .wpmui-input-description {
   opacity: 0.45;
   cursor: not-allowed;
 }
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .ms-locked .wpmui-label-after .locked-info {
+#wpwrap .ms-wrap .ms-membership-add .ms-locked .wpmui-label-after .locked-info {
   position: absolute;
   background: #333;
   color: #EEE;
@@ -1599,11 +1597,11 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   font-size: 12px;
   box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, 0.35);
 }
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .ms-locked:hover .wpmui-label-after {
+#wpwrap .ms-wrap .ms-membership-add .ms-locked:hover .wpmui-label-after {
   display: block;
   opacity: 1;
 }
-#wpwrap .ms-wrap .ms-membership-add .ms-options-wrapper .ms-locked:hover .wpmui-label-after .locked-info {
+#wpwrap .ms-wrap .ms-membership-add .ms-locked:hover .wpmui-label-after .locked-info {
   opacity: 1;
   display: inline-block !important;
 }

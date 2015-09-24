@@ -8,6 +8,8 @@ window.ms_init.view_membership_add = function init () {
 	var chk_public = jQuery( 'input#public' ),
 		el_public = chk_public.closest( '.opt' ),
 		chk_paid = jQuery( 'input#paid' ),
+		inp_name = jQuery( 'input#name' ),
+		el_name = inp_name.closest( '.opt' ),
 		el_paid = chk_paid.closest( '.opt' );
 
 	jQuery( '#ms-choose-type-form' ).validate({
@@ -32,13 +34,19 @@ window.ms_init.view_membership_add = function init () {
 		if ( 'guest' === cur_type || 'user' === cur_type ) {
 			chk_public.prop( 'disabled', true );
 			chk_paid.prop( 'disabled', true );
+			inp_name.prop( 'readonly', true );
 			el_public.addClass( 'disabled ms-locked' );
 			el_paid.addClass( 'disabled ms-locked' );
+			el_name.addClass( 'disabled ms-locked' );
+			inp_name.val( current.next( '.wpmui-radio-caption' ).text() );
 		} else {
 			chk_public.prop( 'disabled', false );
 			chk_paid.prop( 'disabled', false );
+			inp_name.prop( 'readonly', false );
 			el_public.removeClass( 'disabled ms-locked' );
 			el_paid.removeClass( 'disabled ms-locked' );
+			el_name.removeClass( 'disabled ms-locked' );
+			inp_name.val( '' ).focus();
 		}
 	}).filter( ':checked' ).trigger( 'click' );
 

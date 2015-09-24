@@ -63,11 +63,7 @@
 	}
 }
 
-/*
- * The default WordPress admin-footer sometimes gets in the way on the
- * Membership2 setting screens.
- */
-.wp-admin.toplevel_page_membership2 {
+.ms-html {
 	#wpfooter {
 		z-index: -1;
 		position: fixed;
