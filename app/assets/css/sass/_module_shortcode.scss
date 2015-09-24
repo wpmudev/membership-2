@@ -61,25 +61,28 @@
 }
 
 .ms-alert-box {
-	padding: 10px 30px 10px 15px;
-	margin-bottom: 20px;
-
-	background-color: #fbfce3;
-	border: 1px solid #ecf088;
-	border-radius: 4px;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-	color: #c09853;
+	border-radius: 2px;
+	border: 0;
+	font-size: 15px;
+	border-top: 2px solid #AA6;
+	color: #775;
+	background-color: #fffff4;
+	box-shadow: 0 2px 2px -1px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04) inset;
+	padding: 10px 20px;
+	text-align: center;
+	margin: 0 0 20px;
+	text-shadow: 0 1px 0 #FFF;
 
 	&.ms-alert-success {
-		color: #468847;
-		background-color: #DEF7E4;
-		border-color: #8DE3A1;
+		border-top-color: #484;
+		color: #686;
+		background-color: #f4fff4;
 	}
 
 	&.ms-alert-error {
-		color: #B94A48;
-		background-color: #FCE5E3;
-		border-color: #F28F87;
+		border-top-color: #A44;
+		color: #511;
+		background-color: #fff4f4;
 	}
 }
 
