@@ -926,6 +926,15 @@ class MS_Model_Member extends MS_Model {
 	public function save() {
 		$class = get_class( $this );
 
+		/**
+		 * Tell WordPress core that we do NOT want to trigger the
+		 * Password-Reset email while updating the user now.
+		 * New since WordPress 4.3.0
+		 *
+		 * @since  1.0.2.2
+		 */
+		add_filter( 'send_password_change_email', '__return_false' );
+
 		if ( empty( $this->id ) ) {
 			$this->create_new_user();
 		}
@@ -955,6 +964,10 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		wp_cache_set( $this->id, $this, $class );
+
+		// Remove our "mute-password-reset-email" trigger again.
+		remove_filter( 'send_password_change_email', '__return_false' );
+
 		return apply_filters( 'ms_model_member_save', $this );
 	}
 
@@ -1110,6 +1123,21 @@ class MS_Model_Member extends MS_Model {
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
 		} else {
+			if ( ! $this->password ) {
+				/**
+				 * For some reason the user did not provide a password in the
+				 * registration form. We help out here by creating a password
+				 * for the little bugger and send him a password-reset email.
+				 *
+				 * So: Generate a STRONG password for the new user.
+				 *
+				 * Important: This password should be sent to the user via the
+				 * Email template "User Account Created"
+				 */
+				$this->password = wp_generate_password( 24 );
+				$this->password2 = $this->password;
+			}
+
 			$user_id = wp_create_user(
 				$this->username,
 				$this->password,
