@@ -14,6 +14,7 @@ Change Log:
 - Fix ms-protect-content shortcode: Resolve shortcodes in protected content also for admin users
 - Fix bug in setup-wizard that sometimes did not finish after creating the first membership
 - Fix issue where Manual Payment displayed price multiple times (e.g. when using Yoast SEO)
+- Fix an issue with Internet Explorer privacy settings that caused IE to reject M2 cookies
 
 1.0.2.1
 ----------------------------------------------------------------------

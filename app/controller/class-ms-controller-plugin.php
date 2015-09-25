@@ -78,6 +78,24 @@ class MS_Controller_Plugin extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
+		/**
+		 * Fix for IE: This is a privacy policy which states, that we do not
+		 * collect personal contact information without consent.
+		 *
+		 * Note that other plugins that output this header later will overwrite
+		 * it! So this is a default value if no other file sends the P3P header.
+		 *
+		 * @since  1.0.2.2
+		 */
+		$p3p_done = false;
+		foreach ( headers_list() as $header ) {
+			if ( false !== stripos( $header, 'P3P:' ) ) {
+				$p3p_done = true;
+				break;
+			}
+		}
+		if ( ! $p3p_done ) { header( 'P3P:CP="NOI"' ); }
+
 		/*
 		 * Remove the "&msg" attribute from the URL if it was already present in
 		 * the previous request.
