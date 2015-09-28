@@ -381,6 +381,73 @@ label.ms-validation-error:before {
   display: table;
   clear: both;
 }
+.ms-form #pass-strength-result {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  color: #23282d;
+  margin: -1px 0 0;
+  padding: 3px 5px;
+  text-align: center;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  opacity: 0;
+}
+.ms-form #pass-strength-result.short {
+  background-color: #f1adad;
+  border-color: #e35b5b;
+  opacity: 1;
+}
+.ms-form #pass-strength-result.bad {
+  background-color: #fbc5a9;
+  border-color: #f78b53;
+  opacity: 1;
+}
+.ms-form #pass-strength-result.good {
+  background-color: #ffe399;
+  border-color: #ffc733;
+  opacity: 1;
+}
+.ms-form #pass-strength-result.strong {
+  background-color: #c1e1b9;
+  border-color: #83c373;
+  opacity: 1;
+}
+.ms-form #pass1.short,
+.ms-form #pass1-text.short {
+  border-color: #e35b5b;
+}
+.ms-form #pass1.bad,
+.ms-form #pass1-text.bad {
+  border-color: #f78b53;
+}
+.ms-form #pass1.good,
+.ms-form #pass1-text.good {
+  border-color: #ffc733;
+}
+.ms-form #pass1.strong,
+.ms-form #pass1-text.strong {
+  border-color: #83c373;
+}
+.ms-form .pw-weak {
+  display: none;
+}
+.ms-form .indicator-hint {
+  padding-top: 8px;
+}
+.ms-form #pass1,
+.ms-form #pass1-text {
+  width: 100%;
+  text-align: center;
+}
+.ms-form #pass1,
+.ms-form .show-password #pass1-text {
+  display: block;
+}
+.ms-form .show-password #pass1,
+.ms-form #pass1-text {
+  display: none;
+}
 
 /* Account */
 .ms-card-info-wrapper {

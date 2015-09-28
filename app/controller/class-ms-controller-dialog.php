@@ -15,7 +15,7 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * Prepare the Dialog manager.
 	 *
 	 * @since  1.0.0
-	 * @access public
+	 * @internal
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -26,9 +26,9 @@ class MS_Controller_Dialog extends MS_Controller {
 		// Listen to Ajax requests that submit form data.
 		$this->add_ajax_action( 'ms_submit', 'ajax_submit' );
 
-		// Login.
-		$this->add_ajax_action( 'ms_login', 'ajax_login', false, true );
-		$this->add_ajax_action( 'ms_lostpass', 'ajax_lostpass', false, true );
+		// Login. For IE this hook is listening to guests + logged in users.
+		$this->add_ajax_action( 'ms_login', 'ajax_login', true, true );
+		$this->add_ajax_action( 'ms_lostpass', 'ajax_lostpass', true, true );
 	}
 
 	/**
@@ -36,7 +36,7 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * The process is terminated after this handler.
 	 *
 	 * @since  1.0.0
-	 * @access public
+	 * @internal
 	 */
 	public function ajax_dialog() {
 		$data = '';
@@ -65,7 +65,7 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * Typically this form is displayed inside a popup.
 	 *
 	 * @since  1.0.0
-	 * @access public
+	 * @internal
 	 */
 	public function ajax_submit() {
 		$data = '';
@@ -83,7 +83,7 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * Ajax handler. Used by shortcode `ms-membership-login` to login via ajax.
 	 *
 	 * @since  1.0.0
-	 * @access public
+	 * @internal
 	 */
 	public function ajax_login() {
 		$resp = array();
@@ -157,7 +157,7 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * Ajax handler. Used by shortcode `ms-membership-login` to recover password
 	 *
 	 * @since  1.0.0
-	 * @access public
+	 * @internal
 	 */
 	public function ajax_lostpass() {
 		global $wpdb, $wp_hasher;
@@ -213,13 +213,18 @@ class MS_Controller_Dialog extends MS_Controller {
 
 		do_action( 'retrieve_password_key', $user_login, $key );
 
-		// Now insert the key, hashed, into the DB.
+		// Now insert a hashed version of the key into the DB.
+		// Important: The has needs to include the time() value!
 		if ( empty( $wp_hasher ) ) {
 			require_once ABSPATH . WPINC . '/class-phpass.php';
 			$wp_hasher = new PasswordHash( 8, true );
 		}
-		$hashed = $wp_hasher->HashPassword( $key );
-		$wpdb->update( $wpdb->users, array( 'user_activation_key' => $hashed ), array( 'user_login' => $user_login ) );
+		$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
+		$wpdb->update(
+			$wpdb->users,
+			array( 'user_activation_key' => $hashed ),
+			array( 'user_login' => $user_login )
+		);
 
 		MS_Model_Pages::create_missing_pages();
 		$reset_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
@@ -236,12 +241,12 @@ class MS_Controller_Dialog extends MS_Controller {
 
 		$schema = is_ssl() ? 'https' : 'http';
 
-		$message = __( 'Someone requested that the password be reset for the following account:' ) . "\r\n\r\n";
-		$message .= network_home_url( '/', $schema ) . "\r\n\r\n";
-		$message .= sprintf( __( 'Username: %s' ), $user_login ) . "\r\n\r\n";
-		$message .= __( 'If this was a mistake, just ignore this email and nothing will happen.' ) . "\r\n\r\n";
-		$message .= __( 'To reset your password, visit the following address:' ) . "\r\n\r\n";
-		$message .= '<' . $reset_url . ">\r\n";
+		$message = sprintf(
+			__( 'Someone requested that the password be reset for the following account: %sIf this was a mistake, just ignore this email and nothing will happen.%s', MS_TEXT_DOMAIN ),
+			"<br>\r\n<br>\r\n" . network_home_url( '/', $schema ) . "<br>\r\n" .
+			sprintf( __( 'Your username: %s', MS_TEXT_DOMAIN ), $user_login ) . "<br>\r\n<br>\r\n",
+			"<br>\r\n<br>\r\n" . '<a href="' . $reset_url . '">' . __( 'Click here to reset your password', MS_TEXT_DOMAIN ) . "</a><br>\r\n" . $reset_url . "<br>\r\n"
+		);
 
 		if ( is_multisite() ) {
 			$blogname = $GLOBALS['current_site']->site_name;
