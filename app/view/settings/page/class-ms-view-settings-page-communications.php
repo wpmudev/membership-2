@@ -109,7 +109,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 	public function wp_footer() {
 		$comm = $this->data['comm'];
 		$vars = $comm->comm_vars;
-		$vars = lib2()->array->get( $vars );
+		$vars = lib3()->array->get( $vars );
 
 		/**
 		 * Print JS details for the custom TinyMCE "Insert Variable" button
@@ -152,7 +152,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			}
 		}
 
-		lib2()->array->equip(
+		lib3()->array->equip(
 			$comm,
 			'type',
 			'enabled',

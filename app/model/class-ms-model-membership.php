@@ -614,14 +614,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				'value'   => 1,
 			);
 
-			if ( lib2()->is_true( $args['active'] ) ) {
+			if ( lib3()->is_true( $args['active'] ) ) {
 				$args['meta_query']['active']['compare'] = '=';
 			} else {
 				$args['meta_query']['active']['compare'] = '!=';
 			}
 		}
 
-		if ( ! lib2()->is_true( $args['include_base'] ) ) {
+		if ( ! lib3()->is_true( $args['include_base'] ) ) {
 			$args['meta_query']['base'] = array(
 				'key'     => 'type',
 				'value'   => self::TYPE_BASE,
@@ -629,7 +629,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			);
 		}
 
-		if ( ! lib2()->is_true( $args['include_guest'] ) ) {
+		if ( ! lib3()->is_true( $args['include_guest'] ) ) {
 			$args['meta_query']['guest'] = array(
 				'key'     => 'type',
 				'value'   => self::TYPE_GUEST,
@@ -1158,7 +1158,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		 * Rules for the other sites are already in the $this->rule_values
 		 * array and were not de-serialized on page load.
 		 */
-		$this->rule_values = lib2()->array->get( $this->rule_values );
+		$this->rule_values = lib3()->array->get( $this->rule_values );
 		foreach ( $this->_rules as $rule_type => $rule ) {
 			$key = MS_Rule::rule_key( $rule_type );
 
@@ -1526,10 +1526,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function can_use_gateway( $gateway_id ) {
 		$result = true;
 
-		$this->disabled_gateways = lib2()->array->get( $this->disabled_gateways );
+		$this->disabled_gateways = lib3()->array->get( $this->disabled_gateways );
 		if ( isset( $this->disabled_gateways[$gateway_id] ) ) {
 			$state = $this->disabled_gateways[$gateway_id];
-			$result = ! lib2()->is_true( $state );
+			$result = ! lib3()->is_true( $state );
 		}
 
 		if ( $result ) {
@@ -2410,7 +2410,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			case 'active':
 			case 'private':
 			case 'is_free':
-				$value = lib2()->is_true( $this->$property );
+				$value = lib3()->is_true( $this->$property );
 				break;
 
 			case 'type_description':
@@ -2468,7 +2468,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				break;
 
 			case 'disabled_gateways':
-				$value = lib2()->array->get( $this->disabled_gateways );
+				$value = lib3()->array->get( $this->disabled_gateways );
 				break;
 
 			case 'is_paid':
@@ -2553,7 +2553,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'active':
 				case 'private':
 				case 'is_free':
-					$this->$property = lib2()->is_true( $value );
+					$this->$property = lib3()->is_true( $value );
 					break;
 
 				case 'price':
@@ -2615,22 +2615,22 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					break;
 
 				case 'public':
-					$this->private = ! lib2()->is_true( $value );
+					$this->private = ! lib3()->is_true( $value );
 					break;
 
 				case 'is_paid':
-					$this->is_free = ! lib2()->is_true( $value );
+					$this->is_free = ! lib3()->is_true( $value );
 					break;
 
 				case 'deny_update':
 					foreach ( $value as $key => $state ) {
-						$this->update_denied[$key] = lib2()->is_true( $state );
+						$this->update_denied[$key] = lib3()->is_true( $state );
 					}
 					break;
 
 				case 'replace_update':
 					foreach ( $value as $key => $state ) {
-						$this->update_replace[$key] = lib2()->is_true( $state );
+						$this->update_replace[$key] = lib3()->is_true( $state );
 					}
 					break;
 

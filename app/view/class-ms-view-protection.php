@@ -178,7 +178,7 @@ class MS_View_Protection extends MS_View {
 			</label>
 		</div>
 		<div>
-			<?php lib2()->html->element( $site_list ); ?>
+			<?php lib3()->html->element( $site_list ); ?>
 		</div>
 		<?php
 	}

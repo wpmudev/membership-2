@@ -35,7 +35,7 @@ class MS_Helper_Billing extends MS_Helper {
 		$contents = self::get_admin_message( $msg );
 
 		if ( $contents ) {
-			lib2()->ui->admin_message( $contents, $class );
+			lib3()->ui->admin_message( $contents, $class );
 		}
 	}
 

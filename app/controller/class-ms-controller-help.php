@@ -84,7 +84,7 @@ class MS_Controller_Help extends MS_Controller {
 			unset( $tabs['network'] );
 		}
 
-		lib2()->array->equip_get( 'page' );
+		lib3()->array->equip_get( 'page' );
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-help';
 		$page = sanitize_html_class( $_GET['page'], $def_key );
 
@@ -115,7 +115,7 @@ class MS_Controller_Help extends MS_Controller {
 			'ms_init' => array( 'view_help' ),
 		);
 
-		lib2()->ui->data( 'ms_data', $data );
+		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

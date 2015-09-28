@@ -445,7 +445,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'initial_setup':
 				case 'is_first_membership':
 				case 'hide_admin_bar':
-					$this->$property = lib2()->is_true( $value );
+					$this->$property = lib3()->is_true( $value );
 					break;
 
 				default:

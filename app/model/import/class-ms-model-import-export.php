@@ -197,7 +197,7 @@ class MS_Model_Import_Export extends MS_Model {
 			$data->coupons[] = $this->export_coupon( $coupon->id );
 		}
 
-		lib2()->net->file_download( json_encode( $data ), 'membership2-export.json' );
+		lib3()->net->file_download( json_encode( $data ), 'membership2-export.json' );
 	}
 
 	/**
@@ -416,7 +416,7 @@ class MS_Model_Import_Export extends MS_Model {
 		static $Counter = 10000;
 		static $Ids = array();
 
-		$Ids[$type] = lib2()->array->get( $Ids[$type] );
+		$Ids[$type] = lib3()->array->get( $Ids[$type] );
 		if ( ! isset( $Ids[$type][$internal_id] ) ) {
 			$Ids[$type][$internal_id] = $Counter;
 			$Counter += 1;

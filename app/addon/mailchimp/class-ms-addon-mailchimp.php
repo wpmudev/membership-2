@@ -219,7 +219,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			'ms_init' => array( 'view_settings_mailchimp' ),
 		);
 
-		lib2()->ui->data( 'ms_data', $data );
+		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 
@@ -398,7 +398,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				'mailchimp',
 				'auto_opt_in'
 			);
-			$auto_opt_in = lib2()->is_true( $auto_opt_in );
+			$auto_opt_in = lib3()->is_true( $auto_opt_in );
 
 			$update = apply_filters(
 				'ms_addon_mailchimp_subscribe_user_update',

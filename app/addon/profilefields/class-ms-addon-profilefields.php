@@ -256,10 +256,10 @@ class MS_Addon_Profilefields extends MS_Addon {
 				$profile_groups = BP_XProfile_Group::get(
 					array( 'fetch_fields' => true )
 				);
-				$profile_groups = lib2()->array->get( $profile_groups );
+				$profile_groups = lib3()->array->get( $profile_groups );
 
 				foreach ( $profile_groups as $profile_group ) {
-					$fields = lib2()->array->get( $profile_group->fields );
+					$fields = lib3()->array->get( $profile_group->fields );
 					foreach ( $fields as $field ) {
 						$Profile_Fields['xprofile_' . $field->id] = array(
 							'label' => $field->name,

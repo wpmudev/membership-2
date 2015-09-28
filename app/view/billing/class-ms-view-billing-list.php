@@ -47,7 +47,7 @@ class MS_View_Billing_List extends MS_View {
 					)
 				);
 
-				lib2()->ui->admin_message(
+				lib3()->ui->admin_message(
 					sprintf(
 						$message,
 						$error_count,

@@ -65,7 +65,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
-			$this->first_click_free = lib2()->is_true(
+			$this->first_click_free = lib3()->is_true(
 				$this->get_setting( 'first_click_free' )
 			);
 

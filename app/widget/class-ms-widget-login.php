@@ -32,11 +32,11 @@ class MS_Widget_Login extends WP_Widget {
 		$shortcode_args = '';
 
 		if ( ! empty( $instance['redirect_login'] ) ) {
-			$redirect_login = lib2()->net->expand_url( $instance['redirect_login'] );
+			$redirect_login = lib3()->net->expand_url( $instance['redirect_login'] );
 		}
 
 		if ( ! empty( $instance['redirect_logout'] ) ) {
-			$redirect_logout = lib2()->net->expand_url( $instance['redirect_logout'] );
+			$redirect_logout = lib3()->net->expand_url( $instance['redirect_logout'] );
 		}
 
 		if ( ! empty( $instance['shortcode_args'] ) ) {

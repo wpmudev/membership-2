@@ -53,7 +53,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		$this->collission_check();
 
 		if ( self::is_active() ) {
-			$this->buddypress_registration = lib2()->is_true(
+			$this->buddypress_registration = lib3()->is_true(
 				$this->get_setting( 'buddypress_registration' )
 			);
 
@@ -146,7 +146,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				),
 				implode( '<br>', $duplicates )
 			);
-			lib2()->ui->admin_message( $msg, 'error' );
+			lib3()->ui->admin_message( $msg, 'error' );
 		}
 	}
 

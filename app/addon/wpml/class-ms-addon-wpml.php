@@ -233,7 +233,7 @@ class MS_Addon_Wpml extends MS_Addon {
 	 */
 	protected function check_requirements() {
 		if ( ! self::wpml_active() ) {
-			lib2()->ui->admin_message(
+			lib3()->ui->admin_message(
 				sprintf(
 					'<b>%s</b><br>%s',
 					__( 'WPML not active!', MS_TEXT_DOMAIN ),
@@ -245,7 +245,7 @@ class MS_Addon_Wpml extends MS_Addon {
 		}
 
 		if ( version_compare( ICL_SITEPRESS_VERSION, '3.2', 'lt' ) ) {
-			lib2()->ui->admin_message(
+			lib3()->ui->admin_message(
 				sprintf(
 					'<b>%s</b><br>%s',
 					__( 'Great, you\'re using WPML!', MS_TEXT_DOMAIN ),
@@ -257,7 +257,7 @@ class MS_Addon_Wpml extends MS_Addon {
 		}
 
 		if ( ! defined( 'WPML_ST_VERSION' ) ) {
-			lib2()->ui->admin_message(
+			lib3()->ui->admin_message(
 				sprintf(
 					'<b>%s</b><br>%s',
 					__( 'Great, you\'re using WPML!', MS_TEXT_DOMAIN ),
@@ -270,7 +270,7 @@ class MS_Addon_Wpml extends MS_Addon {
 
 		if ( is_user_logged_in() ) {
 			if ( ! get_user_meta( get_current_user_id(), 'icl_admin_language_for_edit', true ) ) {
-				lib2()->ui->admin_message(
+				lib3()->ui->admin_message(
 					sprintf(
 						'<b>%s</b><br>%s',
 						__( 'Great, you\'re using WPML!', MS_TEXT_DOMAIN ),

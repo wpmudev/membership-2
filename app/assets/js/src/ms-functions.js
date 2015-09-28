@@ -30,7 +30,7 @@ window.ms_functions = {
 			if ( el.closest( '.no-auto-init' ).length ) { return; }
 			if ( el.closest( '.manual-init' ).length ) { return; }
 
-			el.select2( fn.chosen_options );
+			el.wpmuiSelect( fn.chosen_options );
 		});
 
 		// Initialize the datepickers.
@@ -196,7 +196,7 @@ window.ms_functions = {
 		}
 		data['action'] = 'ms_submit';
 
-		popup = me.parents( '.wpmui-wnd' );
+		popup = me.parents( '.wpmui-popup' );
 		is_popup = popup.length;
 		if ( ! is_popup ) {
 			info_field = fn.ajax_show_indicator( me );

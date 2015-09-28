@@ -16,7 +16,7 @@ window.ms_init.view_protected_content = function init () {
 			cell = jQuery( this ).closest( '.column-access' ),
 			row = cell.closest( 'tr.item' ),
 			list = cell.find( 'select.ms-memberships' ),
-			memberships = list.select2( 'val' ),
+			memberships = list.val(),
 			num_dripped = 0;
 
 		if ( memberships && memberships.length ) {
@@ -166,8 +166,8 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 
 		cell.addClass( 'ms-focused' )
 			.find( 'select.ms-memberships' )
-			.select2( 'focus' )
-			.select2( 'open' );
+			.wpmuiSelect( 'focus' )
+			.wpmuiSelect( 'open' );
 	}
 
 	// If the item is not protected by any membership it will chagne to public
@@ -175,7 +175,7 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 		var cell = jQuery( this ).closest( column_class ),
 			row = cell.closest( 'tr.item' ),
 			list = cell.find( 'select.ms-memberships' ),
-			memberships = list.select2( 'val' );
+			memberships = list.val();
 
 		cell.removeClass( 'ms-focused' );
 
@@ -215,7 +215,7 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 		);
 	});
 
-	jQuery( 'select.ms-memberships' ).select2({
+	jQuery( 'select.ms-memberships' ).wpmuiSelect({
 		formatResult: format_result,
 		formatSelection: format_tag,
 		escapeMarkup: function( m ) { return m; },

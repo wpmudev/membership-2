@@ -2,7 +2,7 @@
  * Settings module.
  */
 
-.wpmui-wnd,
+.wpmui-popup,
 #wpwrap .ms-wrap {
 	.ms-settings-wrapper {
 		position: relative;
@@ -571,7 +571,7 @@
 	}
 }
 
-.wpmui-wnd.ms-setup-done {
+.wpmui-popup.ms-setup-done {
 	.the-title {
 		display: block;
 		text-align: center;

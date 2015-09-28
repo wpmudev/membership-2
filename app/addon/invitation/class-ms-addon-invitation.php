@@ -151,7 +151,7 @@ class MS_Addon_Invitation extends MS_Addon {
 					'slug' => self::SLUG,
 				)
 			);
-			lib2()->array->insert( $items, 'before', 'addon', $menu_item );
+			lib3()->array->insert( $items, 'before', 'addon', $menu_item );
 		}
 
 		return $items;
@@ -372,7 +372,7 @@ class MS_Addon_Invitation extends MS_Addon {
 				'id' => 'no_invitation',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title' => __( 'Does this Membership require an Invitation code?', MS_TEXT_DOMAIN ),
-				'value' => lib2()->is_true( $membership->get_custom_data( 'no_invitation' ) ),
+				'value' => lib3()->is_true( $membership->get_custom_data( 'no_invitation' ) ),
 				'before' => sprintf(
 					'%s <i class="wpmui-fa wpmui-fa-lock"></i>',
 					__( 'Yes', MS_TEXT_DOMAIN )
@@ -403,7 +403,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	 */
 	public function enqueue_styles() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
-			lib2()->ui->add( 'jquery-ui' );
+			lib3()->ui->add( 'jquery-ui' );
 		}
 
 		do_action( 'ms_addon_invitation_enqueue_styles', $this );
@@ -419,7 +419,7 @@ class MS_Addon_Invitation extends MS_Addon {
 			$plugin_url = MS_Plugin::instance()->url;
 
 			wp_enqueue_script( 'jquery-validate' );
-			lib2()->ui->add( 'jquery-ui' );
+			lib3()->ui->add( 'jquery-ui' );
 		}
 
 		do_action( 'ms_addon_invitation_enqueue_scripts', $this );
@@ -441,7 +441,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	public function do_not_skip( $flag, $invoice, $view ) {
 		$membership = $invoice->get_membership();
 
-		$is_public = lib2()->is_true(
+		$is_public = lib3()->is_true(
 			$membership->get_custom_data( 'no_invitation' )
 		);
 
@@ -491,7 +491,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	public function check_invitation_code( $data, $membership_id, $subscription, $member ) {
 		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 
-		$is_public = lib2()->is_true(
+		$is_public = lib3()->is_true(
 			$membership->get_custom_data( 'no_invitation' )
 		);
 

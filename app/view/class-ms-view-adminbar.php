@@ -29,7 +29,7 @@ class MS_View_Adminbar extends MS_View {
 			$toggle_state = '';
 		}
 
-		$details = lib2()->session->get( 'ms-access' );
+		$details = lib3()->session->get( 'ms-access' );
 		$denied_url = false;
 		$deciding_membership = false;
 		$deciding_rule = false;

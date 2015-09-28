@@ -196,7 +196,7 @@ class MS_Addon_Redirect extends MS_Addon {
 			$new_url = $model->get( 'redirect_login' );
 
 			if ( ! empty( $new_url ) ) {
-				$url = lib2()->net->expand_url( $new_url );
+				$url = lib3()->net->expand_url( $new_url );
 			}
 		}
 
@@ -217,7 +217,7 @@ class MS_Addon_Redirect extends MS_Addon {
 			$new_url = $model->get( 'redirect_logout' );
 
 			if ( ! empty( $new_url ) ) {
-				$url = lib2()->net->expand_url( $new_url );
+				$url = lib3()->net->expand_url( $new_url );
 			}
 		}
 

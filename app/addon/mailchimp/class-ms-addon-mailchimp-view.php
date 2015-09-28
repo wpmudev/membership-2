@@ -40,7 +40,7 @@ class MS_Addon_Mailchimp_View extends MS_View {
 
 		$action = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
 		$auto_opt_in = $settings->get_custom_setting( 'mailchimp', 'auto_opt_in' );
-		$auto_opt_in = lib2()->is_true( $auto_opt_in );
+		$auto_opt_in = lib3()->is_true( $auto_opt_in );
 
 		$fields = array(
 			'mailchimp_api_test' => array(

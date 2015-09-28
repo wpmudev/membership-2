@@ -143,7 +143,7 @@ class MS_Controller_Settings extends MS_Controller {
 			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			lib2()->array->strip_slashes( $_POST, 'value' );
+			lib3()->array->strip_slashes( $_POST, 'value' );
 
 			$msg = $this->save_general(
 				$_POST['action'],
@@ -174,7 +174,7 @@ class MS_Controller_Settings extends MS_Controller {
 			&& $this->is_admin_user()
 		) {
 			$settings = $this->get_model();
-			lib2()->array->strip_slashes( $_POST, 'value' );
+			lib3()->array->strip_slashes( $_POST, 'value' );
 
 			$settings->set_custom_setting(
 				$_POST['group'],
@@ -211,8 +211,8 @@ class MS_Controller_Settings extends MS_Controller {
 			$settings = $this->get_model();
 
 			if ( self::validate_required( $isset_update, 'POST', false ) ) {
-				lib2()->array->strip_slashes( $_POST, 'value' );
-				lib2()->array->equip_post( 'membership_id' );
+				lib3()->array->strip_slashes( $_POST, 'value' );
+				lib3()->array->equip_post( 'membership_id' );
 
 				$settings->set_protection_message(
 					$_POST['type'],
@@ -229,7 +229,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 				if ( 0 === strpos( $field, 'override_' ) ) {
 					$type = substr( $field, 9 );
-					if ( lib2()->is_true( $_POST['value'] ) ) {
+					if ( lib3()->is_true( $_POST['value'] ) ) {
 						$settings->set_protection_message(
 							$type,
 							$settings->get_protection_message( $type ),
@@ -327,7 +327,7 @@ class MS_Controller_Settings extends MS_Controller {
 		);
 
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-settings';
-		lib2()->array->equip_get( 'page' );
+		lib3()->array->equip_get( 'page' );
 		$page = sanitize_html_class( $_GET['page'], $def_key );
 
 		foreach ( $tabs as $key => $tab ) {
@@ -357,7 +357,7 @@ class MS_Controller_Settings extends MS_Controller {
 				$first_key = key( $tabs );
 
 				// Setup navigation tabs.
-				lib2()->array->equip_get( 'tab' );
+				lib3()->array->equip_get( 'tab' );
 				$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
 
 				if ( ! array_key_exists( $active_tab, $tabs ) ) {
@@ -413,7 +413,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 				switch ( $this->active_tab ) {
 					case self::TAB_GENERAL:
-						lib2()->array->equip_request( 'action', 'network_site' );
+						lib3()->array->equip_request( 'action', 'network_site' );
 						$action = $_REQUEST['action'];
 
 						$redirect = esc_url_raw(
@@ -482,7 +482,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$data['message'] = self::_message();
 
 		if ( isset( $data['message']['error'] ) ) {
-			lib2()->ui->admin_message( $data['message']['error'], 'err' );
+			lib3()->ui->admin_message( $data['message']['error'], 'err' );
 		}
 
 		switch ( $this->get_active_tab() ) {
@@ -594,7 +594,7 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 		}
 
-		lib2()->ui->data( 'ms_data', $data );
+		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 }

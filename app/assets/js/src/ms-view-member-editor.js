@@ -96,7 +96,7 @@ window.ms_init.view_member_editor = function init () {
 	};
 	sel_user.removeClass( 'wpmui-hidden' );
 	window.console.log( chosen_options );
-	sel_user.select2( chosen_options );
+	sel_user.wpmuiSelect( chosen_options );
 
 	validate_buttons();
 };

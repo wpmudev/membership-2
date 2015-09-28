@@ -134,8 +134,8 @@ class MS_View_Settings_Edit extends MS_View {
 			);
 			$cancel_url = esc_url_raw( remove_query_arg( 'restore' ) );
 			$options = array();
-			$files = lib2()->updates->plugin( MS_TEXT_DOMAIN );
-			$files = lib2()->updates->list_files( 'json' );
+			$files = lib3()->updates->plugin( MS_TEXT_DOMAIN );
+			$files = lib3()->updates->list_files( 'json' );
 			foreach ( $files as $file ) {
 				$parts = explode( '-', $file );
 				if ( 3 == count( $parts ) ) {

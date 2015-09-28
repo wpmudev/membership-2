@@ -333,7 +333,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	public function create_or_update_plan( $plan_data ) {
 		$item_id = $plan_data['id'];
 		$all_items = MS_Factory::get_transient( 'ms_stripeplan_plans' );
-		$all_items = lib2()->array->get( $all_items );
+		$all_items = lib3()->array->get( $all_items );
 
 		if ( ! isset( $all_items[$item_id] )
 			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Plan' )
@@ -381,7 +381,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	public function create_or_update_coupon( $coupon_data ) {
 		$item_id = $coupon_data['id'];
 		$all_items = MS_Factory::get_transient( 'ms_stripeplan_plans' );
-		$all_items = lib2()->array->get( $all_items );
+		$all_items = lib3()->array->get( $all_items );
 
 		if ( ! isset( $all_items[$item_id] )
 			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Coupon' )

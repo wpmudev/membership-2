@@ -132,7 +132,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		}
 
 		$hash = strtolower( md5( $Base . $type . $id ) );
-		$hash = lib2()->convert(
+		$hash = lib3()->convert(
 			$hash,
 			'0123456789abcdef',
 			'0123456789ABCDEFGHIJKLMNOPQRSTUVXXYZabcdefghijklmnopqrstuvxxyz'
@@ -318,7 +318,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$token = '-';
 
 		if ( ! empty( $_POST['stripeToken'] ) ) {
-			lib2()->array->strip_slashes( $_POST, 'stripeToken' );
+			lib3()->array->strip_slashes( $_POST, 'stripeToken' );
 
 			$token = $_POST['stripeToken'];
 			$external_id = $token;

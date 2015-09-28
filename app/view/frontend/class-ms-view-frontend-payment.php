@@ -29,7 +29,7 @@ class MS_View_Frontend_Payment extends MS_View {
 		 *
 		 * @since 1.0.2.0
 		 */
-		$invoice->checkout_ip = lib2()->net->current_ip()->ip;
+		$invoice->checkout_ip = lib3()->net->current_ip()->ip;
 		$invoice->checkout_date = date( 'Y-m-d H:i:s' );
 		$invoice->save();
 

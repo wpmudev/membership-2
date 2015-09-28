@@ -515,7 +515,7 @@ class MS_Controller_Plugin extends MS_Controller {
 				break;
 			}
 			if ( ! $payment_possible ) {
-				lib2()->ui->admin_message(
+				lib3()->ui->admin_message(
 					sprintf(
 						__( 'Oops, looks like you did not activate a payment gateway yet.<br />You need to set up and activate at least one gateway, otherwise your members cannot sign up to a paid membership.<br />%sFix this now &raquo;%s', MS_TEXT_DOMAIN ),
 						'<a href="' . self::get_admin_url( 'settings', array( 'tab' => MS_Controller_Settings::TAB_PAYMENT ) ) . '">',
@@ -1012,10 +1012,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function enqueue_plugin_admin_styles() {
-		lib2()->ui->css( 'ms-admin-styles' );
-		lib2()->ui->add( 'core' );
-		lib2()->ui->add( 'select' );
-		lib2()->ui->add( 'fontawesome' );
+		lib3()->ui->css( 'ms-admin-styles' );
+		lib3()->ui->add( 'core' );
+		lib3()->ui->add( 'select' );
+		lib3()->ui->add( 'fontawesome' );
 	}
 
 	/**
@@ -1037,7 +1037,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_admin_scripts() {
-		lib2()->ui->add( 'select' );
+		lib3()->ui->add( 'select' );
 	}
 
 	/**
@@ -1080,6 +1080,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		});
 		<?php
 		$script = ob_get_clean();
-		lib2()->ui->script( $script );
+		lib3()->ui->script( $script );
 	}
 }

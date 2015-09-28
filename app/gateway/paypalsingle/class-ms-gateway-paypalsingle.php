@@ -80,7 +80,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			$this
 		);
 
-		lib2()->array->strip_slashes( $_POST, 'pending_reason' );
+		lib3()->array->strip_slashes( $_POST, 'pending_reason' );
 
 		if ( ( isset($_POST['payment_status'] ) || isset( $_POST['txn_type'] ) )
 			&& ! empty( $_POST['invoice'] )

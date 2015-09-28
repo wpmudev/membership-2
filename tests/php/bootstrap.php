@@ -41,7 +41,7 @@ function _manually_load_plugin() {
 
 	// Make sure plugin is installed here ...
 
-	lib2()->debug->disable();
+	lib3()->debug->disable();
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 

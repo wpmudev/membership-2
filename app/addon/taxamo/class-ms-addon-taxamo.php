@@ -242,7 +242,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 			&& $this->is_admin_user()
 		) {
 			$model = self::model();
-			lib2()->array->strip_slashes( $_POST, 'value' );
+			lib3()->array->strip_slashes( $_POST, 'value' );
 
 			$model->set( $_POST['field'], $_POST['value'] );
 			$model->save();

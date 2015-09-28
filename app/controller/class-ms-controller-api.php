@@ -466,9 +466,9 @@ class MS_Controller_Api extends MS_Hooker {
 	 * @param  mixed $data The value to dump to the output stream.
 	 */
 	public function debug( $data ) {
-		lib2()->debug->enable();
+		lib3()->debug->enable();
 		// Intended debug output, leave it here.
-		lib2()->debug->dump( $data );
+		lib3()->debug->dump( $data );
 	}
 
 }

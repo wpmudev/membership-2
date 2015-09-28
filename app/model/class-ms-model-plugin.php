@@ -289,11 +289,11 @@ class MS_Model_Plugin extends MS_Model {
 			$Info = apply_filters( 'ms_model_plugin_get_access_info', $Info );
 
 			if ( $simulation ) {
-				$access = lib2()->session->get_clear( 'ms-access' );
-				lib2()->session->add( 'ms-access', $Info );
+				$access = lib3()->session->get_clear( 'ms-access' );
+				lib3()->session->add( 'ms-access', $Info );
 				for ( $i = 0; $i < 9; $i += 1 ) {
 					if ( isset( $access[$i] ) ) {
-						lib2()->session->add( 'ms-access', $access[$i] );
+						lib3()->session->add( 'ms-access', $access[$i] );
 					}
 				}
 
@@ -303,7 +303,7 @@ class MS_Model_Plugin extends MS_Model {
 					echo '<p>To disable the URL param <code>?explain=access</code> you have to set <code>WP_DEBUG</code> to false.</p>';
 					echo '<hr><h3>Recent Access checks</h3>';
 
-					lib2()->debug->stacktrace_off();
+					lib3()->debug->stacktrace_off();
 					foreach ( $access as $item ) {
 						printf(
 							'<a href="%1$s">%1$s</a>: <strong>%2$s</strong>',
@@ -311,7 +311,7 @@ class MS_Model_Plugin extends MS_Model {
 							$item['has_access'] ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN )
 						);
 						// Intended debug output, leave it here.
-						lib2()->debug->dump( $item );
+						lib3()->debug->dump( $item );
 					}
 					wp_die( '' );
 				}

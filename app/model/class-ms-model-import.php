@@ -134,7 +134,7 @@ class MS_Model_Import extends MS_Model {
 	 */
 	private function get_import_obj_cache( $req_type ) {
 		$cache = get_option( 'MS_Import_Obj_Cache', false );
-		$cache = lib2()->array->get( $cache );
+		$cache = lib3()->array->get( $cache );
 		if ( ! isset( $cache[$req_type] ) ) { $cache[$req_type] = array(); }
 
 		return $cache;
@@ -373,7 +373,7 @@ class MS_Model_Import extends MS_Model {
 	 */
 	public function import_member( $obj ) {
 		$wpuser = get_user_by( 'email', $obj->email );
-		lib2()->array->equip( $obj, 'username', 'email', 'payment', 'subscriptions' );
+		lib3()->array->equip( $obj, 'username', 'email', 'payment', 'subscriptions' );
 
 		if ( $wpuser ) {
 			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
@@ -400,7 +400,7 @@ class MS_Model_Import extends MS_Model {
 		if ( is_array( $pay ) ) { $pay = (object) $pay; }
 		elseif ( ! is_object( $pay ) ) { $pay = (object) array(); }
 
-		lib2()->array->equip(
+		lib3()->array->equip(
 			$obj,
 			'stripe_card_exp',
 			'stripe_card_num',
@@ -576,7 +576,7 @@ class MS_Model_Import extends MS_Model {
 
 		if ( empty( $source_id ) || empty( $source ) ) {
 			$src = $settings->get_custom_setting( 'import_match' );
-			$src = lib2()->array->get( $src );
+			$src = lib3()->array->get( $src );
 
 			foreach ( $src as $lst ) {
 				if ( is_array( $lst ) ) {
@@ -713,7 +713,7 @@ class MS_Model_Import extends MS_Model {
 			$membership->source = 'membership';
 			$membership->source_id = $source_id;
 		} else {
-			$data = lib2()->array->get(
+			$data = lib3()->array->get(
 				$membership->get_custom_data( 'matching' )
 			);
 
@@ -846,7 +846,7 @@ class MS_Model_Import extends MS_Model {
 			$data = $membership->get_custom_data( 'matching' );
 			if ( empty( $data ) || ! is_array( $data ) ) { continue; }
 			if ( ! isset( $data[$matching_key] ) ) { continue; }
-			$ids = lib2()->array->get( $data[$matching_key] );
+			$ids = lib3()->array->get( $data[$matching_key] );
 
 			foreach ( $ids as $id ) {
 				if ( $matching_id == $id ) {

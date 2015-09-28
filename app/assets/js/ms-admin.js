@@ -70,7 +70,7 @@ window.ms_functions = {
 			if ( el.closest( '.no-auto-init' ).length ) { return; }
 			if ( el.closest( '.manual-init' ).length ) { return; }
 
-			el.select2( fn.chosen_options );
+			el.wpmuiSelect( fn.chosen_options );
 		});
 
 		// Initialize the datepickers.
@@ -236,7 +236,7 @@ window.ms_functions = {
 		}
 		data['action'] = 'ms_submit';
 
-		popup = me.parents( '.wpmui-wnd' );
+		popup = me.parents( '.wpmui-popup' );
 		is_popup = popup.length;
 		if ( ! is_popup ) {
 			info_field = fn.ajax_show_indicator( me );
@@ -1579,7 +1579,7 @@ window.ms_init.view_member_editor = function init () {
 	};
 	sel_user.removeClass( 'wpmui-hidden' );
 	window.console.log( chosen_options );
-	sel_user.select2( chosen_options );
+	sel_user.wpmuiSelect( chosen_options );
 
 	validate_buttons();
 };
@@ -1937,7 +1937,7 @@ window.ms_init.view_protected_content = function init () {
 			cell = jQuery( this ).closest( '.column-access' ),
 			row = cell.closest( 'tr.item' ),
 			list = cell.find( 'select.ms-memberships' ),
-			memberships = list.select2( 'val' ),
+			memberships = list.val(),
 			num_dripped = 0;
 
 		if ( memberships && memberships.length ) {
@@ -2087,8 +2087,8 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 
 		cell.addClass( 'ms-focused' )
 			.find( 'select.ms-memberships' )
-			.select2( 'focus' )
-			.select2( 'open' );
+			.wpmuiSelect( 'focus' )
+			.wpmuiSelect( 'open' );
 	}
 
 	// If the item is not protected by any membership it will chagne to public
@@ -2096,7 +2096,7 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 		var cell = jQuery( this ).closest( column_class ),
 			row = cell.closest( 'tr.item' ),
 			list = cell.find( 'select.ms-memberships' ),
-			memberships = list.select2( 'val' );
+			memberships = list.val();
 
 		cell.removeClass( 'ms-focused' );
 
@@ -2136,7 +2136,7 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 		);
 	});
 
-	jQuery( 'select.ms-memberships' ).select2({
+	jQuery( 'select.ms-memberships' ).wpmuiSelect({
 		formatResult: format_result,
 		formatSelection: format_tag,
 		escapeMarkup: function( m ) { return m; },

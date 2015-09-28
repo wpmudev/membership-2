@@ -23,7 +23,7 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	 * in the admin settings.
 	 *
 	 * @since  1.0.0
-	 * @param array $field A HTML definition, passed to lib2()->html->element()
+	 * @param array $field A HTML definition, passed to lib3()->html->element()
 	 */
 	public function set_period_name( $field ) {
 		$field['title'] = __( 'Notice Period', MS_TEXT_DOMAIN );

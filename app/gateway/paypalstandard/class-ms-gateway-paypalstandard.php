@@ -60,7 +60,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				'settings',
 				array( 'tab' => MS_Controller_Settings::TAB_PAYMENT )
 			);
-			lib2()->ui->admin_message(
+			lib3()->ui->admin_message(
 				sprintf(
 					__( 'Warning: You use your email address for the PayPal Standard gateway instead of your Merchant ID. Please check %syour payment settings%s and enter the Merchant ID instead', MS_TEXT_DOMAIN ),
 					'<a href="' . $settings_url . '">',
@@ -307,7 +307,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							break;
 
 						case 'pending':
-							lib2()->array->strip_slashes( $_POST, 'pending_reason' );
+							lib3()->array->strip_slashes( $_POST, 'pending_reason' );
 							$notes_pay = __( 'Last transaction is pending.', MS_TEXT_DOMAIN ) . ' ';
 
 							switch ( $_POST['pending_reason'] ) {

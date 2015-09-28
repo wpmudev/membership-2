@@ -437,7 +437,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 			}
 		}
 
-		$ip	= lib2()->net->current_ip()->ip;
+		$ip	= lib3()->net->current_ip()->ip;
 		if ( in_array( $ip, $this->use_details ) ) {
 			return false;
 		}
@@ -455,7 +455,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		$user_id = $user->id;
 
 		if ( ! $user->is_member ) {
-			$user_id = lib2()->net->current_ip()->ip;
+			$user_id = lib3()->net->current_ip()->ip;
 		}
 
 		return $user_id;
@@ -563,7 +563,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 					break;
 
 				case 'membership_id':
-					$value = lib2()->array->get( $value );
+					$value = lib3()->array->get( $value );
 					foreach ( $value as $ind => $id ) {
 						if ( ! MS_Model_Membership::is_valid_membership( $id ) ) {
 							unset( $value[ $ind ] );

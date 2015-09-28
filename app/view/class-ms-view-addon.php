@@ -49,7 +49,7 @@ class MS_View_Addon extends MS_View {
 				<?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ); ?>
 			</h2>
 			<form action="" method="post">
-				<?php lib2()->html->plugin_list( $items, $lang, $filters ); ?>
+				<?php lib3()->html->plugin_list( $items, $lang, $filters ); ?>
 			</form>
 		</div>
 		<?php

@@ -187,7 +187,7 @@ class MS_Addon_Attributes extends MS_Addon {
 		$res = false;
 
 		// Sanitize new field data.
-		lib2()->array->equip( $field, 'title', 'slug', 'type', 'info' );
+		lib3()->array->equip( $field, 'title', 'slug', 'type', 'info' );
 		$field = (object) $field;
 
 		$field->title = html_entity_decode( trim( $field->title ) );
@@ -203,7 +203,7 @@ class MS_Addon_Attributes extends MS_Addon {
 		// Load existing fields.
 		$settings = MS_Plugin::instance()->settings;
 		$fields = $settings->get_custom_setting( self::ID, 'fields' );
-		$fields = lib2()->array->get( $fields );
+		$fields = lib3()->array->get( $fields );
 
 		// Check for duplicates.
 		$duplicate = false;
@@ -252,7 +252,7 @@ class MS_Addon_Attributes extends MS_Addon {
 		// Load existing fields.
 		$settings = MS_Plugin::instance()->settings;
 		$fields = $settings->get_custom_setting( self::ID, 'fields' );
-		$fields = lib2()->array->get( $fields );
+		$fields = lib3()->array->get( $fields );
 
 		// Find the field and remove it.
 		foreach ( $fields as $index => $saved_field ) {
@@ -284,7 +284,7 @@ class MS_Addon_Attributes extends MS_Addon {
 
 		$settings = MS_Plugin::instance()->settings;
 		$fields = $settings->get_custom_setting( self::ID, 'fields' );
-		$fields = lib2()->array->get( $fields );
+		$fields = lib3()->array->get( $fields );
 
 		foreach ( $fields as $field ) {
 			if ( $field->slug == $slug ) {
@@ -305,7 +305,7 @@ class MS_Addon_Attributes extends MS_Addon {
 	static public function list_field_def() {
 		$settings = MS_Plugin::instance()->settings;
 		$fields = $settings->get_custom_setting( self::ID, 'fields' );
-		$fields = lib2()->array->get( $fields );
+		$fields = lib3()->array->get( $fields );
 
 		return $fields;
 	}
@@ -336,7 +336,7 @@ class MS_Addon_Attributes extends MS_Addon {
 
 			switch ( $field->type ) {
 				case 'bool':
-					$res = lib2()->is_true( $res );
+					$res = lib3()->is_true( $res );
 					break;
 
 				case 'number':
@@ -442,11 +442,11 @@ class MS_Addon_Attributes extends MS_Addon {
 			),
 		);
 
-		lib2()->ui->data( 'ms_data', $data );
-		lib2()->ui->add( 'jquery-ui' );
-		lib2()->ui->add( 'jquery-ui-sortable' );
-		lib2()->ui->add( $addon_url . 'assets/js/settings.js' );
-		lib2()->ui->add( $addon_url . 'assets/css/attributes.css' );
+		lib3()->ui->data( 'ms_data', $data );
+		lib3()->ui->add( 'jquery-ui' );
+		lib3()->ui->add( 'jquery-ui-sortable' );
+		lib3()->ui->add( $addon_url . 'assets/js/settings.js' );
+		lib3()->ui->add( $addon_url . 'assets/css/attributes.css' );
 	}
 
 	/**
@@ -459,8 +459,8 @@ class MS_Addon_Attributes extends MS_Addon {
 		$fields = array( 'title', 'slug', 'type' );
 
 		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
-			lib2()->array->equip_post( 'info', 'old_slug' );
-			lib2()->array->strip_slashes( $_POST, 'name', 'info' );
+			lib3()->array->equip_post( 'info', 'old_slug' );
+			lib3()->array->strip_slashes( $_POST, 'name', 'info' );
 			$field = array(
 				'title' => esc_attr( $_POST['title'] ),
 				'old_slug' => sanitize_html_class( $_POST['old_slug'] ),
@@ -560,7 +560,7 @@ class MS_Addon_Attributes extends MS_Addon {
 	public function enqueue_membership_scripts() {
 		$addon_url = MS_Plugin::instance()->url . '/app/addon/attributes/';
 
-		lib2()->ui->add( $addon_url . 'assets/css/attributes.css' );
+		lib3()->ui->add( $addon_url . 'assets/css/attributes.css' );
 	}
 
 	/**
@@ -634,7 +634,7 @@ class MS_Addon_Attributes extends MS_Addon {
 			}
 
 			// Prepare the field title.
-			if ( lib2()->is_true( $data['title'] ) ) {
+			if ( lib3()->is_true( $data['title'] ) ) {
 				$title = '<span class="ms-title">' . $field->title . '</span> ';
 			}
 		}

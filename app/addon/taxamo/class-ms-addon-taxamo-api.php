@@ -101,7 +101,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			$profile = self::get_tax_profile();
 
 			if ( empty( $ip_addr ) ) {
-				$ip_addr = lib2()->net->current_ip()->ip;
+				$ip_addr = lib3()->net->current_ip()->ip;
 			}
 
 			// Register the transaction with Taxamo.
@@ -167,7 +167,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			$member = MS_Model_Member::get_current_member();
 
 			$Profile = (object) array();
-			$Profile->detected_ip = lib2()->net->current_ip()->ip;
+			$Profile->detected_ip = lib3()->net->current_ip()->ip;
 			$Profile->detected_country = self::fetch_country( 'auto' );
 			$Profile->declared_country = self::fetch_country( 'declared' );
 			$Profile->vat_country = self::fetch_country( 'vat' );
@@ -482,7 +482,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		// If no country is stored use the API to determine it.
 		if ( $auto_detect ) {
 			try {
-				$ip_info = lib2()->net->current_ip();
+				$ip_info = lib3()->net->current_ip();
 				$data = (object)(array) self::taxamo()->locateGivenIP( $ip_info->ip );
 				$country = (object) array(
 					'code' => $data->country_code,
@@ -538,7 +538,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		if ( is_object( $member ) && $member->is_valid() ) {
 			$result = $member->get_custom_data( $key );
 		} else {
-			$result = lib2()->session->get( 'ms_' . $key );
+			$result = lib3()->session->get( 'ms_' . $key );
 			if ( is_array( $result ) && count( $result ) ) {
 				$result = $result[0];
 			}
@@ -565,8 +565,8 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			$member->set_custom_data( $key, $value );
 			$need_save = true;
 		} else {
-			lib2()->session->get_clear( 'ms_' . $key );
-			lib2()->session->add( 'ms_' . $key, $value );
+			lib3()->session->get_clear( 'ms_' . $key );
+			lib3()->session->add( 'ms_' . $key, $value );
 			$need_save = false;
 		}
 

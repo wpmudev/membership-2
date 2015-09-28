@@ -195,7 +195,7 @@ class MS_Addon_Coupon extends MS_Addon {
 					'slug' => self::SLUG,
 				)
 			);
-			lib2()->array->insert( $items, 'before', 'addon', $menu_item );
+			lib3()->array->insert( $items, 'before', 'addon', $menu_item );
 		}
 
 		return $items;
@@ -402,7 +402,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function enqueue_styles() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
-			lib2()->ui->add( 'jquery-ui' );
+			lib3()->ui->add( 'jquery-ui' );
 		}
 
 		do_action( 'ms_addon_coupon_enqueue_styles', $this );
@@ -418,7 +418,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			$plugin_url = MS_Plugin::instance()->url;
 
 			wp_enqueue_script( 'jquery-validate' );
-			lib2()->ui->add( 'jquery-ui' );
+			lib3()->ui->add( 'jquery-ui' );
 
 			wp_enqueue_script(
 				'ms-view-coupon-edit',
@@ -444,7 +444,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			'discount' => __( 'Discount', MS_TEXT_DOMAIN ),
 		);
 
-		lib2()->array->insert( $columns, 'after', 'status', $new_columns );
+		lib3()->array->insert( $columns, 'after', 'status', $new_columns );
 
 		return $columns;
 	}

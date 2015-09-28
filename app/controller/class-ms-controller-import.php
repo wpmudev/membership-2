@@ -174,7 +174,7 @@ class MS_Controller_Import extends MS_Controller {
 	protected function process_item( $item, $source ) {
 		$res = false;
 
-		lib2()->array->equip( $item, 'task', 'data' );
+		lib3()->array->equip( $item, 'task', 'data' );
 		$task = $item['task'];
 		$data = $item['data'];
 		$model = MS_Factory::create( 'MS_Model_Import' );
@@ -186,8 +186,8 @@ class MS_Controller_Import extends MS_Controller {
 		// Possible tasks are defined in ms-view-settings-import.js
 		switch ( $task ) {
 			case 'start':
-				lib2()->array->equip( $item, 'clear' );
-				$clear = lib2()->is_true( $item['clear'] );
+				lib3()->array->equip( $item, 'clear' );
+				$clear = lib3()->is_true( $item['clear'] );
 				$model->start( $clear );
 				$res = true;
 				break;
@@ -207,7 +207,7 @@ class MS_Controller_Import extends MS_Controller {
 				break;
 
 			case 'import-settings':
-				lib2()->array->equip( $item, 'setting', 'value' );
+				lib3()->array->equip( $item, 'setting', 'value' );
 				$setting = $item['setting'];
 				$value = $item['value'];
 				$model->import_setting( $setting, $value );
@@ -241,7 +241,7 @@ class MS_Controller_Import extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function process() {
-		lib2()->array->equip_post( 'action', 'import_source' );
+		lib3()->array->equip_post( 'action', 'import_source' );
 		$action = $_POST['action'];
 
 		if ( isset( $_POST['submit'] ) ) {
@@ -312,7 +312,7 @@ class MS_Controller_Import extends MS_Controller {
 			),
 		);
 
-		lib2()->ui->data( 'ms_data', $data );
+		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

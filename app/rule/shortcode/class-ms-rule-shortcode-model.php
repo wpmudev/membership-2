@@ -172,7 +172,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 			}
 		}
 
-		$access = lib2()->is_true( $access );
+		$access = lib3()->is_true( $access );
 
 		if ( ! $access ) {
 			// No access to member of membership_ids
@@ -286,7 +286,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		);
 		extract( $atts );
 
-		if ( lib2()->is_true( $access ) ) {
+		if ( lib3()->is_true( $access ) ) {
 			$msg_access = __( 'Visible for members of', MS_TEXT_DOMAIN );
 			$alt_msg1 = __( 'Other users will see', MS_TEXT_DOMAIN );
 			$alt_msg2 = __( 'Other uses will see nothing', MS_TEXT_DOMAIN );

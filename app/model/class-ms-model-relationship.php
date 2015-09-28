@@ -1871,7 +1871,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *         could also be TRIAL, in which case the returnv alue is false.
 	 */
 	public function add_payment( $amount, $gateway, $external_id = '' ) {
-		$this->payments = lib2()->array->get( $this->payments );
+		$this->payments = lib3()->array->get( $this->payments );
 
 		// Update the payment-gateway.
 		if ( ! $this->gateway_id ) {
@@ -1974,7 +1974,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return array
 	 */
 	public function get_payments() {
-		$res = lib2()->array->get( $this->payments );
+		$res = lib3()->array->get( $this->payments );
 
 		foreach ( $res as $key => $info ) {
 			if ( ! isset( $info['amount'] ) ) {
@@ -2300,7 +2300,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( $debug ) {
 			// Intended debug output, leave it here.
-			lib2()->debug->dump( $debug_msg );
+			lib3()->debug->dump( $debug_msg );
 		}
 
 		return apply_filters(
