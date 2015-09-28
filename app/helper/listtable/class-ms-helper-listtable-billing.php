@@ -331,7 +331,12 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 	}
 
 	public function get_views() {
-		$all_status = MS_Model_Invoice::get_status_types();
+		$all_status = array(
+			MS_Model_Invoice::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
+			MS_Model_Invoice::STATUS_NEW => __( 'Draft', MS_TEXT_DOMAIN ),
+			MS_Model_Invoice::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
+		);
+
 		$views = array();
 		$orig_status = '';
 
@@ -364,9 +369,6 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		);
 
 		foreach ( $all_status as $status => $desc ) {
-			if ( 'billed' == $status ) { continue; }
-			if ( 'pending' == $status ) { continue; }
-
 			$args = $this->get_query_args();
 			$args['meta_query']['status']['value'] = $status;
 			$count = MS_Model_Invoice::get_invoice_count( $args );
@@ -381,6 +383,9 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			} else {
 				$status_url = false;
 				$desc .= ' (0)';
+				if ( MS_Model_Invoice::STATUS_DENIED != $status ) {
+					$desc .= ' |';
+				}
 				$count = false;
 			}
 

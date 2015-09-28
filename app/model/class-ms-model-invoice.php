@@ -342,17 +342,33 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Get invoice status types.
 	 *
 	 * @since  1.0.0
+	 * @param  bool $extended Optional. If true, additional details will be
+	 *         returned, not only the status name.
+	 * @return array A list of status IDs with status name/description.
 	 */
-	public static function get_status_types() {
-		return apply_filters(
-			'ms_model_invoice_get_status_types',
-			array(
-				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
-				self::STATUS_NEW => __( 'New', MS_TEXT_DOMAIN ),
+	public static function get_status_types( $extended = false ) {
+		if ( $extended ) {
+			$result = array(
+				self::STATUS_NEW => __( 'Draft - Invoice is prepared but user cannot see it yet', MS_TEXT_DOMAIN ),
+				self::STATUS_BILLED => __( 'Billed - User can see the invoice and needs to pay', MS_TEXT_DOMAIN ),
+				self::STATUS_PENDING => __( 'Pending - Waiting for confirmation from payment gateway', MS_TEXT_DOMAIN ),
+				self::STATUS_PAID => __( 'Paid - Payment arrived on our account!', MS_TEXT_DOMAIN ),
+				self::STATUS_DENIED => __( 'Denied - Payment was denied', MS_TEXT_DOMAIN ),
+			);
+		} else {
+			$result = array(
+				self::STATUS_NEW => __( 'Draft', MS_TEXT_DOMAIN ),
 				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
 				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
+				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
 				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
-			)
+			);
+		}
+
+		return apply_filters(
+			'ms_model_invoice_get_status_types',
+			$result,
+			$extended
 		);
 	}
 

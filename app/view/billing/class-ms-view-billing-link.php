@@ -62,7 +62,7 @@ class MS_View_Billing_Link extends MS_View {
 	 */
 	function prepare_fields() {
 		$member = $this->data['member'];
-		$userlist = $this->data['users'];
+		$userlist = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
 		$log = $this->data['log'];
 		$data_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_LINK_DATA;
 		$update_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_UPDATE;

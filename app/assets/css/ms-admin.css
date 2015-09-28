@@ -125,6 +125,16 @@
 .ms-form .ms-tright {
   text-align: right;
 }
+#wpwrap .ms-wrap .ms-fright,
+.ms-wrap .ms-fright,
+.ms-form .ms-fright {
+  float: right;
+}
+#wpwrap .ms-wrap .ms-fleft,
+.ms-wrap .ms-fleft,
+.ms-form .ms-fleft {
+  float: left;
+}
 #wpwrap .ms-wrap .ms-spaced,
 .ms-wrap .ms-spaced,
 .ms-form .ms-spaced {
@@ -2074,18 +2084,31 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
  */
 #wpwrap .ms-wrap.ms-billing,
 .ms-wrap.ms-billing {
+  /* Edit single invoice */
   /* Invoice list */
   /* Transaction Logs */
 }
 #wpwrap .ms-wrap.ms-billing .wpmui-label-txt_membership,
-.ms-wrap.ms-billing .wpmui-label-txt_membership {
+#wpwrap .ms-wrap.ms-billing .wpmui-label-txt_created,
+.ms-wrap.ms-billing .wpmui-label-txt_membership,
+.ms-wrap.ms-billing .wpmui-label-txt_created {
   margin-top: 10px;
 }
 #wpwrap .ms-wrap.ms-billing .wpmui-label-txt_user,
 #wpwrap .ms-wrap.ms-billing .wpmui-label-txt_membership,
+#wpwrap .ms-wrap.ms-billing .wpmui-label-txt_created,
 .ms-wrap.ms-billing .wpmui-label-txt_user,
-.ms-wrap.ms-billing .wpmui-label-txt_membership {
+.ms-wrap.ms-billing .wpmui-label-txt_membership,
+.ms-wrap.ms-billing .wpmui-label-txt_created {
   font-weight: 600;
+}
+#wpwrap .ms-wrap.ms-billing .ms-transactions-link,
+.ms-wrap.ms-billing .ms-transactions-link {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  z-index: 1;
+  font-size: smaller;
 }
 #wpwrap .ms-wrap.ms-billing .billings .payment-status,
 .ms-wrap.ms-billing .billings .payment-status {

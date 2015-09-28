@@ -66,16 +66,56 @@ class MS_View_Billing_Edit extends MS_View {
 	function prepare_fields() {
 		$invoice = $this->data['invoice'];
 		$currency = MS_Plugin::instance()->settings->currency;
+		$user_name = '';
+		$transaction_link = '';
+		$user_id = 0;
+		$user_list = array();
+
+		if ( $invoice->id ) {
+			$member = $invoice->get_member();
+			$user_id = $member->id;
+			$user_name = $member->name;
+
+			$transaction_link = sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				MS_Controller_Plugin::get_admin_url(
+					'billing',
+					array( 'show' => 'logs', 'invoice' => $invoice->id )
+				),
+				__( 'Show Transactions', MS_TEXT_DOMAIN )
+			);
+		} else {
+			$user_list = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
+		}
+
 		$fields = array(
+			'link_transactions' => array(
+				'id' => 'link_transactions',
+				'title' => $transaction_link,
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'wrapper_class' => 'ms-transactions-link',
+			),
 			'txt_user' => array(
 				'id' => 'txt_user',
-				'title' => __( 'Username', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice for member', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => $this->data['users'][ $invoice->user_id ],
+				'value' => sprintf(
+					'<a href="%s">%s</a>',
+					MS_Controller_Plugin::get_admin_url(
+						'add-member',
+						array( 'user_id' => $user_id )
+					),
+					$user_name
+				),
 			),
 			'txt_membership' => array(
 				'id' => 'txt_membership',
-				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'title' => __( 'Payment for membership', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+			),
+			'txt_created' => array(
+				'id' => 'txt_created',
+				'title' => __( 'Invoice created on', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			),
 			'txt_separator' => array(
@@ -83,42 +123,44 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'status' => array(
 				'id' => 'status',
-				'title' => __( 'Status', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice status', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'field_options' => MS_Model_Invoice::get_status_types(),
+				'field_options' => MS_Model_Invoice::get_status_types( true ),
 				'value' => $invoice->status,
 			),
 			'user_id' => array(
 				'id' => 'user_id',
-				'title' => __( 'Username', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice for member', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $invoice->user_id,
-				'field_options' => $this->data['users'],
+				'field_options' => $user_list,
 			),
 			'membership_id' => array(
 				'id' => 'membership_id',
-				'title' => __( 'Membership', MS_TEXT_DOMAIN ),
+				'title' => __( 'Payment for membership', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $invoice->membership_id,
 				'field_options' => $this->data['memberships'],
 			),
-			'description' => array(
-				'id' => 'description',
-				'title' => __( 'Description', MS_TEXT_DOMAIN ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $invoice->description,
-			),
 			'amount' => array(
 				'id' => 'amount',
 				'title' => sprintf( __( 'Amount (%s)', MS_TEXT_DOMAIN ), $currency ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $invoice->amount,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
+				'value' => MS_Helper_Billing::format_price( $invoice->amount ),
+				'config' => array(
+					'step' => 'any',
+					'min' => 0,
+				),
 			),
 			'discount' => array(
 				'id' => 'discount',
 				'title' => sprintf( __( 'Discount (%s)', MS_TEXT_DOMAIN ), $currency ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'value' => $invoice->discount,
+				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
+				'value' => MS_Helper_Billing::format_price( $invoice->discount ),
+				'config' => array(
+					'step' => 'any',
+					'min' => 0,
+				),
 			),
 			'due_date' => array(
 				'id' => 'due_date',
@@ -126,10 +168,18 @@ class MS_View_Billing_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $invoice->due_date,
 			),
+			'description' => array(
+				'id' => 'description',
+				'title' => __( 'Description', MS_TEXT_DOMAIN ),
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'class' => 'widefat',
+				'value' => $invoice->description,
+			),
 			'notes' => array(
 				'id' => 'notes',
 				'title' => __( 'Notes', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
+				'class' => 'widefat',
 				'value' => $invoice->get_notes_desc(),
 			),
 			'invoice_id' => array(
@@ -175,9 +225,11 @@ class MS_View_Billing_Edit extends MS_View {
 			$fields['user_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 			$fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 			$fields['txt_membership']['value'] = $this->data['memberships'][ $invoice->membership_id ];
+			$fields['txt_created']['value'] = MS_Helper_Period::format_date( $invoice->invoice_date );
 		} else {
 			unset( $fields['txt_user'] );
 			unset( $fields['txt_membership'] );
+			unset( $fields['txt_created'] );
 			unset( $fields['txt_separator'] );
 		}
 

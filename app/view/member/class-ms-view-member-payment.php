@@ -113,6 +113,7 @@ class MS_View_Member_Payment extends MS_Dialog {
 				'type' => MS_Helper_Html::TYPE_HTML_TABLE,
 				'value' => array(
 					0 => array( 'Invoice ID', $invoice->id . $transaction_log ),
+					2 => array( 'Create Date', $invoice->invoice_date ),
 					1 => array( 'Payment Gateway', $gateway ),
 					2 => array( 'Due Date', $invoice->due_date ),
 					3 => array( 'Regular amount', $invoice->amount ),

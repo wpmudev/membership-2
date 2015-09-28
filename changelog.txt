@@ -8,6 +8,7 @@ Change Log:
 ----------------------------------------------------------------------
 - Improve the shortcode column in the admin membership list
 - Improve layout of the [ms-note] messages on front-end
+- Improve performance of the billings page, show additional details in edit-invoice screen
 - Fix wrong registration workflow that showed membership list instead of payment form
 - Fix the Reset Password workflow
 - Fix issue in WP 4.3 that sent password-reset emails during user registration

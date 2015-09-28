@@ -179,8 +179,9 @@ class MS_Controller_Billing extends MS_Controller {
 			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
 			$data['invoice'] = MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
 			$data['action'] = $_GET['action'];
-			$data['users'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
-			$data['memberships'] = MS_Model_Membership::get_membership_names( null );
+			$data['memberships'] = MS_Model_Membership::get_membership_names(
+				array( 'include_guest' => 0 )
+			);
 			$view = MS_Factory::create( 'MS_View_Billing_Edit' );
 			$view->data = apply_filters( 'ms_view_billing_edit_data',  $data );
 			$view->render();
@@ -259,7 +260,6 @@ class MS_Controller_Billing extends MS_Controller {
 				$data['member'] = false;
 			}
 			$data['log'] = $log;
-			$data['users'] = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
 
 			$view = MS_Factory::create( 'MS_View_Billing_Link' );
 			$view->data = apply_filters( 'ms_view_billing_link_data', $data );

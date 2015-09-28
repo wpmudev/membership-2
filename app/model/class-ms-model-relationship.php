@@ -1522,7 +1522,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.2.0
 	 * @return int The first invoice that is not paid yet.
 	 */
-	static public function first_unpaid_invoice() {
+	public function first_unpaid_invoice() {
 		$invoice_id = 0;
 
 		// Try to find the first unpaid invoice for the subscription.

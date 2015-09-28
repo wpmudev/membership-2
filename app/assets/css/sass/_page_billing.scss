@@ -5,13 +5,25 @@
 #wpwrap .ms-wrap,
 .ms-wrap {
 	&.ms-billing {
-		.wpmui-label-txt_membership {
+
+		/* Edit single invoice */
+		.wpmui-label-txt_membership,
+		.wpmui-label-txt_created {
 			margin-top: 10px;
 		}
 
 		.wpmui-label-txt_user,
-		.wpmui-label-txt_membership {
+		.wpmui-label-txt_membership,
+		.wpmui-label-txt_created {
 			font-weight: 600;
+		}
+
+		.ms-transactions-link {
+			position: absolute;
+			right: 20px;
+			top: 10px;
+			z-index: 1;
+			font-size: smaller;
 		}
 
 		/* Invoice list */
@@ -250,7 +262,6 @@
 					background-color: #FFF;
 				}
 			}
-
 		}
 
 		.transaction-matching {
