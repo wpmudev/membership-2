@@ -101,6 +101,8 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				'bp_core_signup_user',
 				'disable_validation'
 			);
+		} else {
+			$this->buddypress_registration = false;
 		}
 	}
 
