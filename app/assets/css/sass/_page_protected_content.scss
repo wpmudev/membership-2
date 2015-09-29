@@ -98,9 +98,11 @@
 			}
 
 			.wpmui-select-wrapper {
-				.wpmui-field-select {
+				.ms-memberships {
 					margin: 0;
 					width: 100%;
+					background: transparent;
+					border-color: transparent;
 				}
 
 				.wpmui-label-after {
@@ -130,16 +132,21 @@
 						margin: 0 1px 1px 0;
 						border-radius: 1px;
 						height: 30px;
-						line-height: 28px;
+						line-height: 30px;
 						white-space: nowrap;
 						overflow: hidden;
 						text-overflow: ellipsis;
 						max-width: 100%;
 						border: 0;
-						box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset;
+						box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset,
+						inset 0px -1px 1px rgba(0,0,0,0.5), /*bottom internal shadow*/
+						inset 0px 1px 1px rgba(255,255,255,0.8); /*top internal highlight*/
+
 
 						&:hover {
-							box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
+							box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.22) inset,
+							inset 0px -1px 1px rgba(0,0,0,0.5), /*bottom internal shadow*/
+							inset 0px 1px 1px rgba(255,255,255,0.8); /*top internal highlight*/
 
 							.select2-selection__choice__remove {
 								opacity: 1;
@@ -164,33 +171,18 @@
 			}
 		}
 
-		.ms-focused {
-			.wpmui-select-wrapper {
-				.wpmui-field-select,
-				.wpmui-field-select.select2-container-active {
-					.select2-choices {
-						background: #FFF;
-						border: 1px solid #5897fb;
-						box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-						-webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-					}
-				}
-			}
-		}
-
 		&:hover {
 			.ms-empty-note-wrapper .wpmui-label-after,
 			.wpmui-select-wrapper .wpmui-label-after {
 				display: inline-block;
 			}
+		}
 
-			.wpmui-select-wrapper {
-				.wpmui-field-select {
-					.select2-choices {
-						background: #fff;
-						border-color: #aaa;
-					}
-				}
+		&:hover .wpmui-select-wrapper,
+		.wpmui-select-wrapper .select2-container--open {
+			.wpmui-field-select.ms-memberships {
+				background: #FFF;
+				border-color: #5897fb;
 			}
 		}
 	}

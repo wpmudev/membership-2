@@ -199,31 +199,34 @@
 #wpwrap .ms-wrap .ms-membership,
 .ms-wrap .ms-membership,
 .ms-form .ms-membership {
+  cursor: default;
   display: inline-block;
-  border-radius: 3px;
+  font-size: 12px;
+  vertical-align: bottom;
   color: #FFF;
   background: #888888;
-  padding: 1px 5px;
-  font-size: 12px;
-  height: 20px;
-  line-height: 18px;
-  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
+  padding: 0 6px;
+  margin: 0 1px 1px 0;
+  border-radius: 1px;
+  height: 24px;
+  line-height: 24px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  cursor: default;
-  vertical-align: bottom;
+  border: 0;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
+  /*top internal highlight*/
 }
 #wpwrap .ms-wrap h3 .ms-membership,
 .ms-wrap h3 .ms-membership,
 .ms-form h3 .ms-membership {
-  border-radius: 4px;
-  padding: 1px 6px;
+  vertical-align: middle;
+  border-radius: 3px;
+  padding: 0 9px;
   font-size: 15px;
-  height: 22px;
-  line-height: 20px;
-  vertical-align: bottom;
+  height: 30px;
+  line-height: 30px;
 }
 
 /**
@@ -246,7 +249,7 @@
 .ms-wrap .widefat {
   margin: 10px 0;
 }
-.ms-wrap .widefat tbody th.check-column {
+.ms-wrap .widefat th.check-column {
   padding: 15px 0 14px;
 }
 .ms-wrap .widefat tfoot {
@@ -352,19 +355,24 @@
   min-width: 0;
 }
 #wpwrap .ms-wrap tr.inline-edit-row .ms-membership {
-  padding-right: 20px;
-  border-radius: 3px;
-  padding: 0 5px;
+  cursor: default;
   display: inline-block;
-  height: 28px;
-  line-height: 28px;
+  vertical-align: bottom;
   font-size: 12px;
   color: #FFF;
-  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  background: #888888;
+  padding: 0 6px;
+  margin: 0 1px 1px 0;
+  border-radius: 1px;
+  height: 24px;
+  line-height: 24px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   max-width: 100%;
+  border: 0;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
+  /*top internal highlight*/
 }
 #wpwrap .ms-wrap tr.inline-edit-row .dripped-form {
   padding: 0 0 5px 0;
@@ -730,12 +738,24 @@
 }
 #wpwrap .ms-wrap .ms-settings-title .ms-membership,
 .ms-wrap .ms-settings-title .ms-membership {
+  cursor: default;
   font-size: 24px;
-  line-height: 40px;
-  height: 40px;
-  border-radius: 6px;
+  color: #fff;
+  background: #888888;
   display: inline-block;
   vertical-align: middle;
+  padding: 0 12px;
+  margin: 0 1px 1px 0;
+  border-radius: 3px;
+  height: 40px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  border: 0;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
+  /*top internal highlight*/
 }
 #wpwrap .ms-wrap .ms-settings-desc,
 .ms-wrap .ms-settings-desc {
@@ -1862,9 +1882,11 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 #wpwrap .ms-wrap tr.ms-assigned .ms-empty-note-wrapper {
   display: none;
 }
-#wpwrap .ms-wrap tr.ms-assigned .wpmui-select-wrapper .wpmui-field-select {
+#wpwrap .ms-wrap tr.ms-assigned .wpmui-select-wrapper .ms-memberships {
   margin: 0;
   width: 100%;
+  background: transparent;
+  border-color: transparent;
 }
 #wpwrap .ms-wrap tr.ms-assigned .wpmui-select-wrapper .wpmui-label-after {
   display: none;
@@ -1891,16 +1913,18 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   margin: 0 1px 1px 0;
   border-radius: 1px;
   height: 30px;
-  line-height: 28px;
+  line-height: 30px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
   border: 0;
-  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
+  /*top internal highlight*/
 }
 #wpwrap .ms-wrap tr.ms-assigned .wpmui-select-wrapper .select2-selection__rendered .val:hover {
-  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.22) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
+  /*top internal highlight*/
 }
 #wpwrap .ms-wrap tr.ms-assigned .wpmui-select-wrapper .select2-selection__rendered .val:hover .select2-selection__choice__remove {
   opacity: 1;
@@ -1917,20 +1941,14 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   color: #FFF;
   opacity: 1;
 }
-#wpwrap .ms-wrap tr .ms-focused .wpmui-select-wrapper .wpmui-field-select .select2-choices,
-#wpwrap .ms-wrap tr .ms-focused .wpmui-select-wrapper .wpmui-field-select.select2-container-active .select2-choices {
-  background: #FFF;
-  border: 1px solid #5897fb;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
 #wpwrap .ms-wrap tr:hover .ms-empty-note-wrapper .wpmui-label-after,
 #wpwrap .ms-wrap tr:hover .wpmui-select-wrapper .wpmui-label-after {
   display: inline-block;
 }
-#wpwrap .ms-wrap tr:hover .wpmui-select-wrapper .wpmui-field-select .select2-choices {
-  background: #fff;
-  border-color: #aaa;
+#wpwrap .ms-wrap tr:hover .wpmui-select-wrapper .wpmui-field-select.ms-memberships,
+#wpwrap .ms-wrap tr .wpmui-select-wrapper .select2-container--open .wpmui-field-select.ms-memberships {
+  background: #FFF;
+  border-color: #5897fb;
 }
 
 .select2-dropdown.ms-memberships .select2-results .val {
