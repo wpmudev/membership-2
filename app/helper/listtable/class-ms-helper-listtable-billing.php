@@ -8,7 +8,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	protected $id = 'billing';
 
-	public function __construct(){
+	public function __construct() {
 		parent::__construct(
 			array(
 				'singular' => 'billing',
@@ -95,7 +95,10 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			MS_Model_Invoice::get_invoices( $args )
 		);
 
-		$per_page = $this->get_items_per_page( 'invoice_per_page', self::DEFAULT_PAGE_SIZE );
+		$per_page = $this->get_items_per_page(
+			'invoice_per_page',
+			self::DEFAULT_PAGE_SIZE
+		);
 		$this->set_pagination_args(
 			array(
 				'total_items' => $total_items,
@@ -108,7 +111,10 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 		$defaults = MS_Model_Invoice::get_query_args();
 		lib3()->array->equip_request( 's' );
 
-		$per_page = $this->get_items_per_page( 'invoice_per_page', self::DEFAULT_PAGE_SIZE );
+		$per_page = $this->get_items_per_page(
+			'invoice_per_page',
+			self::DEFAULT_PAGE_SIZE
+		);
 		$current_page = $this->get_pagenum();
 
 		$args = array(
