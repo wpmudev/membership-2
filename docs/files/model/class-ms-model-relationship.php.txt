@@ -304,7 +304,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Subscriptions', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Subscriptions', 'membership2' ),
 		);
 
 		return apply_filters(
@@ -341,14 +341,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public static function get_status_types() {
 		$status_types = array(
-			self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
-			self::STATUS_ACTIVE => __( 'Active', MS_TEXT_DOMAIN ),
-			self::STATUS_TRIAL => __( 'Trial', MS_TEXT_DOMAIN ),
-			self::STATUS_TRIAL_EXPIRED => __( 'Trial Expired', MS_TEXT_DOMAIN ),
-			self::STATUS_EXPIRED => __( 'Expired', MS_TEXT_DOMAIN ),
-			self::STATUS_DEACTIVATED => __( 'Deactivated', MS_TEXT_DOMAIN ),
-			self::STATUS_CANCELED => __( 'Canceled', MS_TEXT_DOMAIN ),
-			self::STATUS_WAITING => __( 'Not yet active', MS_TEXT_DOMAIN ),
+			self::STATUS_PENDING => __( 'Pending', 'membership2' ),
+			self::STATUS_ACTIVE => __( 'Active', 'membership2' ),
+			self::STATUS_TRIAL => __( 'Trial', 'membership2' ),
+			self::STATUS_TRIAL_EXPIRED => __( 'Trial Expired', 'membership2' ),
+			self::STATUS_EXPIRED => __( 'Expired', 'membership2' ),
+			self::STATUS_DEACTIVATED => __( 'Deactivated', 'membership2' ),
+			self::STATUS_CANCELED => __( 'Canceled', 'membership2' ),
+			self::STATUS_WAITING => __( 'Not yet active', 'membership2' ),
 		);
 
 		return apply_filters(
@@ -1522,7 +1522,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.2.0
 	 * @return int The first invoice that is not paid yet.
 	 */
-	static public function first_unpaid_invoice() {
+	public function first_unpaid_invoice() {
 		$invoice_id = 0;
 
 		// Try to find the first unpaid invoice for the subscription.
@@ -1716,15 +1716,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 				if ( 0 == $total_price ) {
 					if ( $short ) {
-						$lbl = __( 'Nothing (for ever)', MS_TEXT_DOMAIN );
+						$lbl = __( 'Nothing (for ever)', 'membership2' );
 					} else {
-						$lbl = __( 'You will pay nothing for permanent access.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay nothing for permanent access.', 'membership2' );
 					}
 				} else {
 					if ( $short ) {
-						$lbl  = __( '<span class="price">%1$s %2$s</span> (for ever)', MS_TEXT_DOMAIN );
+						$lbl  = __( '<span class="price">%1$s %2$s</span> (for ever)', 'membership2' );
 					} else {
-						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for permanent access.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for permanent access.', 'membership2' );
 					}
 				}
 
@@ -1738,15 +1738,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
 				if ( 0 == $total_price ) {
 					if ( $short ) {
-						$lbl = __( 'Nothing (until %4$s)', MS_TEXT_DOMAIN );
+						$lbl = __( 'Nothing (until %4$s)', 'membership2' );
 					} else {
-						$lbl = __( 'You will pay nothing for access until %3$s.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay nothing for access until %3$s.', 'membership2' );
 					}
 				} else {
 					if ( $short ) {
-						$lbl = __( '<span class="price">%1$s %2$s</span> (until %4$s)', MS_TEXT_DOMAIN );
+						$lbl = __( '<span class="price">%1$s %2$s</span> (until %4$s)', 'membership2' );
 					} else {
-						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', 'membership2' );
 					}
 				}
 
@@ -1762,15 +1762,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
 				if ( 0 == $total_price ) {
 					if ( $short ) {
-						$lbl = __( 'Nothing (%5$s - %6$s)', MS_TEXT_DOMAIN );
+						$lbl = __( 'Nothing (%5$s - %6$s)', 'membership2' );
 					} else {
-						$lbl = __( 'You will pay nothing for access from %3$s until %4$s.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay nothing for access from %3$s until %4$s.', 'membership2' );
 					}
 				} else {
 					if ( $short ) {
-						$lbl = __( '<span class="price">%1$s %2$s</span> (%5$s - %6$s)', MS_TEXT_DOMAIN );
+						$lbl = __( '<span class="price">%1$s %2$s</span> (%5$s - %6$s)', 'membership2' );
 					} else {
-						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> to access from %3$s until %4$s.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> to access from %3$s until %4$s.', 'membership2' );
 					}
 				}
 
@@ -1789,24 +1789,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				if ( 1 == $membership->pay_cycle_repetitions ) {
 					// Exactly 1 payment. Actually same as the "finite" type.
 					if ( $short ) {
-						$lbl = __( '<span class="price">%1$s %2$s</span> (once)', MS_TEXT_DOMAIN );
+						$lbl = __( '<span class="price">%1$s %2$s</span> (once)', 'membership2' );
 					} else {
-						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> once.', MS_TEXT_DOMAIN );
+						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> once.', 'membership2' );
 					}
 				} else {
 					if ( $membership->pay_cycle_repetitions > 1 ) {
 						// Fixed number of payments (more than 1)
 						if ( $short ) {
-							$lbl = __( '%4$s times <span class="price">%1$s %2$s</span> (each %3$s)', MS_TEXT_DOMAIN );
+							$lbl = __( '%4$s times <span class="price">%1$s %2$s</span> (each %3$s)', 'membership2' );
 						} else {
-							$lbl = __( 'You will make %4$s payments of <span class="price">%1$s %2$s</span>, one each %3$s.', MS_TEXT_DOMAIN );
+							$lbl = __( 'You will make %4$s payments of <span class="price">%1$s %2$s</span>, one each %3$s.', 'membership2' );
 						}
 					} else {
 						// Indefinite number of payments
 						if ( $short ) {
-							$lbl = __( '<span class="price">%1$s %2$s</span> (each %3$s)', MS_TEXT_DOMAIN );
+							$lbl = __( '<span class="price">%1$s %2$s</span> (each %3$s)', 'membership2' );
 						} else {
-							$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> each %3$s.', MS_TEXT_DOMAIN );
+							$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> each %3$s.', 'membership2' );
 						}
 					}
 				}
@@ -1825,17 +1825,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			if ( 0 == absint( $trial_price ) ) {
 				if ( $short ) {
 					if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $payment_type ) {
-						$lbl = __( 'after %4$s', MS_TEXT_DOMAIN );
+						$lbl = __( 'after %4$s', 'membership2' );
 					} else {
-						$lbl = __( 'on %4$s', MS_TEXT_DOMAIN );
+						$lbl = __( 'on %4$s', 'membership2' );
 					}
 				} else {
-					$trial_price = __( 'nothing', MS_TEXT_DOMAIN );
-					$lbl = __( 'The trial period of %1$s is for free.', MS_TEXT_DOMAIN );
+					$trial_price = __( 'nothing', 'membership2' );
+					$lbl = __( 'The trial period of %1$s is for free.', 'membership2' );
 				}
 			} else {
 				$trial_price = MS_Helper_Billing::format_price( $trial_price );
-				$lbl = __( 'For the trial period of %1$s you only pay <span class="price">%2$s %3$s</span>.', MS_TEXT_DOMAIN );
+				$lbl = __( 'For the trial period of %1$s you only pay <span class="price">%2$s %3$s</span>.', 'membership2' );
 			}
 
 			$desc .= sprintf(
@@ -1843,7 +1843,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$currency,
 				$trial_price,
-				MS_Helper_Period::format_date( $invoice->due_date, __( 'M j', MS_TEXT_DOMAIN ) )
+				MS_Helper_Period::format_date( $invoice->due_date, __( 'M j', 'membership2' ) )
 			);
 		}
 
@@ -1871,7 +1871,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *         could also be TRIAL, in which case the returnv alue is false.
 	 */
 	public function add_payment( $amount, $gateway, $external_id = '' ) {
-		$this->payments = lib2()->array->get( $this->payments );
+		$this->payments = lib3()->array->get( $this->payments );
 
 		// Update the payment-gateway.
 		if ( ! $this->gateway_id ) {
@@ -1974,7 +1974,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return array
 	 */
 	public function get_payments() {
-		$res = lib2()->array->get( $this->payments );
+		$res = lib3()->array->get( $this->payments );
 
 		foreach ( $res as $key => $info ) {
 			if ( ! isset( $info['amount'] ) ) {
@@ -2300,7 +2300,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( $debug ) {
 			// Intended debug output, leave it here.
-			lib2()->debug->dump( $debug_msg );
+			lib3()->debug->dump( $debug_msg );
 		}
 
 		return apply_filters(
@@ -2422,13 +2422,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		switch ( $this->status ) {
 			case self::STATUS_PENDING:
-				$desc = __( 'Pending payment.', MS_TEXT_DOMAIN );
+				$desc = __( 'Pending payment.', 'membership2' );
 				break;
 
 			case self::STATUS_TRIAL:
 				$desc = sprintf(
 					'%s <span class="ms-date">%s</span>',
-					__( 'Membership Trial expires on ', MS_TEXT_DOMAIN ),
+					__( 'Membership Trial expires on ', 'membership2' ),
 					MS_Helper_Period::format_date( $this->trial_expire_date )
 				);
 				break;
@@ -2437,12 +2437,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				if ( ! empty( $this->expire_date ) ) {
 					$desc = sprintf(
 						'%s <span class="ms-date">%s</span>',
-						__( 'Membership expires on ', MS_TEXT_DOMAIN ),
+						__( 'Membership expires on ', 'membership2' ),
 						MS_Helper_Period::format_date( $this->expire_date )
 					);
 				}
 				else {
-					$desc = __( 'Permanent access.', MS_TEXT_DOMAIN );
+					$desc = __( 'Permanent access.', 'membership2' );
 				}
 				break;
 
@@ -2450,7 +2450,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_EXPIRED:
 				$desc = sprintf(
 					'%s <span class="ms-date">%s</span>',
-					__( 'Membership expired since ', MS_TEXT_DOMAIN ),
+					__( 'Membership expired since ', 'membership2' ),
 					MS_Helper_Period::format_date( $this->expire_date )
 				);
 				break;
@@ -2458,13 +2458,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			case self::STATUS_CANCELED:
 				$desc = sprintf(
 					'%s <span class="ms-date">%s</span>',
-					__( 'Membership canceled, valid until it expires on ', MS_TEXT_DOMAIN ),
+					__( 'Membership canceled, valid until it expires on ', 'membership2' ),
 					MS_Helper_Period::format_date( $this->expire_date )
 				);
 				break;
 
 			case self::STATUS_DEACTIVATED:
-				$desc = __( 'Membership deactivated.', MS_TEXT_DOMAIN );
+				$desc = __( 'Membership deactivated.', 'membership2' );
 				break;
 		}
 

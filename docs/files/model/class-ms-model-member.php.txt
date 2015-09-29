@@ -399,7 +399,7 @@ class MS_Model_Member extends MS_Model {
 		$members = array();
 
 		if ( $return_array ) {
-			$members[0] = __( 'Select a user', MS_TEXT_DOMAIN );
+			$members[0] = __( 'Select a user', 'membership2' );
 		}
 
 		$args['fields'] = array( 'ID', 'user_login' );
@@ -455,11 +455,11 @@ class MS_Model_Member extends MS_Model {
 			)
 		);
 
-		$args = lib2()->array->get( $args );
-		lib2()->array->equip( $args, 'meta_query', 'membership_id', 'subscription_status' );
+		$args = lib3()->array->get( $args );
+		lib3()->array->equip( $args, 'meta_query', 'membership_id', 'subscription_status' );
 
 		if ( 'none' !== $args['meta_query'] ) {
-			$args['meta_query'] = lib2()->array->get( $args['meta_query'] );
+			$args['meta_query'] = lib3()->array->get( $args['meta_query'] );
 
 			switch ( $search_option ) {
 				case self::SEARCH_ONLY_MEMBERS:
@@ -926,6 +926,15 @@ class MS_Model_Member extends MS_Model {
 	public function save() {
 		$class = get_class( $this );
 
+		/**
+		 * Tell WordPress core that we do NOT want to trigger the
+		 * Password-Reset email while updating the user now.
+		 * New since WordPress 4.3.0
+		 *
+		 * @since  1.0.2.2
+		 */
+		add_filter( 'send_password_change_email', '__return_false' );
+
 		if ( empty( $this->id ) ) {
 			$this->create_new_user();
 		}
@@ -955,6 +964,10 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		wp_cache_set( $this->id, $this, $class );
+
+		// Remove our "mute-password-reset-email" trigger again.
+		remove_filter( 'send_password_change_email', '__return_false' );
+
 		return apply_filters( 'ms_model_member_save', $this );
 	}
 
@@ -968,17 +981,17 @@ class MS_Model_Member extends MS_Model {
 	private function create_new_user() {
 		// Check if the WordPress settings allow user registration.
 		if ( ! MS_Model_Member::can_register() ) {
-			throw new Exception( __( 'Registration is currently not allowed.', MS_TEXT_DOMAIN ), 1 );
+			throw new Exception( __( 'Registration is currently not allowed.', 'membership2' ), 1 );
 			return;
 		}
 
 		$validation_errors = new WP_Error();
 
 		$required = array(
-			'username' => __( 'Username', MS_TEXT_DOMAIN ),
-			'email' => __( 'Email address', MS_TEXT_DOMAIN ),
-			'password'   => __( 'Password', MS_TEXT_DOMAIN ),
-			'password2'  => __( 'Password confirmation', MS_TEXT_DOMAIN ),
+			'username' => __( 'Username', 'membership2' ),
+			'email' => __( 'Email address', 'membership2' ),
+			'password'   => __( 'Password', 'membership2' ),
+			'password2'  => __( 'Password confirmation', 'membership2' ),
 		);
 
 		/**
@@ -998,7 +1011,7 @@ class MS_Model_Member extends MS_Model {
 				$validation_errors->add(
 					$field,
 					sprintf(
-						__( 'Please ensure that the <span class="ms-bold">%s</span> information is completed.', MS_TEXT_DOMAIN ),
+						__( 'Please ensure that the <span class="ms-bold">%s</span> information is completed.', 'membership2' ),
 						$message
 					)
 				);
@@ -1008,35 +1021,35 @@ class MS_Model_Member extends MS_Model {
 		if ( $this->password != $this->password2 ) {
 			$validation_errors->add(
 				'passmatch',
-				__( 'Please ensure the passwords match.', MS_TEXT_DOMAIN )
+				__( 'Please ensure the passwords match.', 'membership2' )
 			);
 		}
 
 		if ( ! validate_username( $this->username ) ) {
 			$validation_errors->add(
 				'usernamenotvalid',
-				__( 'The username is not valid, sorry.', MS_TEXT_DOMAIN )
+				__( 'The username is not valid, sorry.', 'membership2' )
 			);
 		}
 
 		if ( username_exists( $this->username ) ) {
 			$validation_errors->add(
 				'usernameexists',
-				__( 'That username is already taken, sorry.', MS_TEXT_DOMAIN )
+				__( 'That username is already taken, sorry.', 'membership2' )
 			);
 		}
 
 		if ( ! is_email( $this->email ) ) {
 			$validation_errors->add(
 				'emailnotvalid',
-				__( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN )
+				__( 'The email address is not valid, sorry.', 'membership2' )
 			);
 		}
 
 		if ( email_exists( $this->email ) ) {
 			$validation_errors->add(
 				'emailexists',
-				__( 'That email address is already taken, sorry.', MS_TEXT_DOMAIN )
+				__( 'That email address is already taken, sorry.', 'membership2' )
 			);
 		}
 
@@ -1051,7 +1064,7 @@ class MS_Model_Member extends MS_Model {
 				if ( in_array( $this->username, $illegal_names ) ) {
 					$validation_errors->add(
 						'illegalname',
-						__( 'The username is not valid, sorry.', MS_TEXT_DOMAIN )
+						__( 'The username is not valid, sorry.', 'membership2' )
 					);
 				}
 			}
@@ -1060,7 +1073,7 @@ class MS_Model_Member extends MS_Model {
 				if ( ! in_array( $email_domain, $limited_domains ) ) {
 					$validation_errors->add(
 						'emaildomain',
-						__( 'That email domain is not allowed for registration, sorry.', MS_TEXT_DOMAIN )
+						__( 'That email domain is not allowed for registration, sorry.', 'membership2' )
 					);
 				}
 			}
@@ -1069,7 +1082,7 @@ class MS_Model_Member extends MS_Model {
 				if ( in_array( $email_domain, $banned_domains ) ) {
 					$validation_errors->add(
 						'emaildomain',
-						__( 'That email domain is not allowed for registration, sorry.', MS_TEXT_DOMAIN )
+						__( 'That email domain is not allowed for registration, sorry.', 'membership2' )
 					);
 				}
 			}
@@ -1110,6 +1123,21 @@ class MS_Model_Member extends MS_Model {
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
 		} else {
+			if ( ! $this->password ) {
+				/**
+				 * For some reason the user did not provide a password in the
+				 * registration form. We help out here by creating a password
+				 * for the little bugger and send him a password-reset email.
+				 *
+				 * So: Generate a STRONG password for the new user.
+				 *
+				 * Important: This password should be sent to the user via the
+				 * Email template "User Account Created"
+				 */
+				$this->password = wp_generate_password( 24 );
+				$this->password2 = $this->password;
+			}
+
 			$user_id = wp_create_user(
 				$this->username,
 				$this->password,
@@ -1792,14 +1820,14 @@ class MS_Model_Member extends MS_Model {
 		if ( ! is_email( $this->email ) ) {
 			$validation_errors->add(
 				'emailnotvalid',
-				__( 'The email address is not valid, sorry.', MS_TEXT_DOMAIN )
+				__( 'The email address is not valid, sorry.', 'membership2' )
 			);
 		}
 
 		if ( $this->password != $this->password2 ) {
 			$validation_errors->add(
 				'passmatch',
-				__( 'Please ensure the passwords match.', MS_TEXT_DOMAIN )
+				__( 'Please ensure the passwords match.', 'membership2' )
 			);
 		}
 

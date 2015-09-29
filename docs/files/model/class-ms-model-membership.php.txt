@@ -425,8 +425,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Memberships', MS_TEXT_DOMAIN ),
-			'description' => __( 'Memberships user can join to.', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Memberships', 'membership2' ),
+			'description' => __( 'Memberships user can join to.', 'membership2' ),
 			'show_ui' => false,
 			'show_in_menu' => false,
 			'menu_position' => 70, // below Users
@@ -460,11 +460,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	static public function get_types() {
 		$types = array(
-			self::TYPE_STANDARD => __( 'Standard Membership', MS_TEXT_DOMAIN ),
-			self::TYPE_DRIPPED => __( 'Dripped Content Membership', MS_TEXT_DOMAIN ),
-			self::TYPE_GUEST => __( 'Guest Membership', MS_TEXT_DOMAIN ),
-			self::TYPE_USER => __( 'Default Membership', MS_TEXT_DOMAIN ),
-			self::TYPE_BASE => __( 'System Membership', MS_TEXT_DOMAIN ),
+			self::TYPE_STANDARD => __( 'Standard Membership', 'membership2' ),
+			self::TYPE_DRIPPED => __( 'Dripped Content Membership', 'membership2' ),
+			self::TYPE_GUEST => __( 'Guest Membership', 'membership2' ),
+			self::TYPE_USER => __( 'Default Membership', 'membership2' ),
+			self::TYPE_BASE => __( 'System Membership', 'membership2' ),
 		);
 
 		return apply_filters( 'ms_model_membership_get_types', $types );
@@ -486,16 +486,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public static function get_payment_types( $type = 'paid' ) {
 		if ( 'free' == $type ) {
 			$payment_types = array(
-				self::PAYMENT_TYPE_PERMANENT => __( 'Permanent access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_FINITE => __( 'Finite access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_DATE_RANGE => __( 'Date range access', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_PERMANENT => __( 'Permanent access', 'membership2' ),
+				self::PAYMENT_TYPE_FINITE => __( 'Finite access', 'membership2' ),
+				self::PAYMENT_TYPE_DATE_RANGE => __( 'Date range access', 'membership2' ),
 			);
 		} else {
 			$payment_types = array(
-				self::PAYMENT_TYPE_PERMANENT => __( 'One payment for permanent access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_FINITE => __( 'One payment for finite access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_DATE_RANGE => __( 'One payment for date range access', MS_TEXT_DOMAIN ),
-				self::PAYMENT_TYPE_RECURRING => __( 'Recurring payments', MS_TEXT_DOMAIN ),
+				self::PAYMENT_TYPE_PERMANENT => __( 'One payment for permanent access', 'membership2' ),
+				self::PAYMENT_TYPE_FINITE => __( 'One payment for finite access', 'membership2' ),
+				self::PAYMENT_TYPE_DATE_RANGE => __( 'One payment for date range access', 'membership2' ),
+				self::PAYMENT_TYPE_RECURRING => __( 'Recurring payments', 'membership2' ),
 			);
 		}
 
@@ -614,14 +614,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				'value'   => 1,
 			);
 
-			if ( lib2()->is_true( $args['active'] ) ) {
+			if ( lib3()->is_true( $args['active'] ) ) {
 				$args['meta_query']['active']['compare'] = '=';
 			} else {
 				$args['meta_query']['active']['compare'] = '!=';
 			}
 		}
 
-		if ( ! lib2()->is_true( $args['include_base'] ) ) {
+		if ( ! lib3()->is_true( $args['include_base'] ) ) {
 			$args['meta_query']['base'] = array(
 				'key'     => 'type',
 				'value'   => self::TYPE_BASE,
@@ -629,7 +629,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			);
 		}
 
-		if ( ! lib2()->is_true( $args['include_guest'] ) ) {
+		if ( ! lib3()->is_true( $args['include_guest'] ) ) {
 			$args['meta_query']['guest'] = array(
 				'key'     => 'type',
 				'value'   => self::TYPE_GUEST,
@@ -873,7 +873,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$ms_names[ $ms->id ] = $ms->name;
 			}
 			if ( ! empty( $private ) ) {
-				$priv_key = __( 'Private Memberships', MS_TEXT_DOMAIN );
+				$priv_key = __( 'Private Memberships', 'membership2' );
 				$ms_names[ $priv_key ] = array();
 				foreach ( $private as $ms ) {
 					$ms_names[ $priv_key ][ $ms->id ] = $ms->name;
@@ -995,7 +995,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			} elseif ( $create_missing ) {
 				$names = self::get_types();
 
-				$description = __( 'Membership2 Core Membership', MS_TEXT_DOMAIN );
+				$description = __( 'Membership2 Core Membership', 'membership2' );
 				$membership = MS_Factory::create( 'MS_Model_Membership' );
 				$membership->name = $names[$type];
 				$membership->title = $names[$type];
@@ -1158,7 +1158,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		 * Rules for the other sites are already in the $this->rule_values
 		 * array and were not de-serialized on page load.
 		 */
-		$this->rule_values = lib2()->array->get( $this->rule_values );
+		$this->rule_values = lib3()->array->get( $this->rule_values );
 		foreach ( $this->_rules as $rule_type => $rule ) {
 			$key = MS_Rule::rule_key( $rule_type );
 
@@ -1353,19 +1353,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return string The current payment type description.
 	 */
 	public function get_payment_type_desc() {
-		$desc = __( 'N/A', MS_TEXT_DOMAIN );
+		$desc = __( 'N/A', 'membership2' );
 		$has_payment = ! $this->is_free();
 
 		switch ( $this->payment_type ) {
 			case self::PAYMENT_TYPE_FINITE:
 				if ( $has_payment ) {
 					$desc = sprintf(
-						__( 'Pay for %1$s', MS_TEXT_DOMAIN ),
+						__( 'Pay for %1$s', 'membership2' ),
 						MS_Helper_Period::get_period_desc( $this->period )
 					);
 				} else {
 					$desc = sprintf(
-						__( 'Free for %1$s', MS_TEXT_DOMAIN ),
+						__( 'Free for %1$s', 'membership2' ),
 						MS_Helper_Period::get_period_desc( $this->period )
 					);
 				}
@@ -1374,13 +1374,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			case self::PAYMENT_TYPE_DATE_RANGE:
 				if ( $has_payment ) {
 					$desc = sprintf(
-						__( 'Pay from %1$s to %2$s', MS_TEXT_DOMAIN ),
+						__( 'Pay from %1$s to %2$s', 'membership2' ),
 						$this->period_date_start,
 						$this->period_date_end
 					);
 				} else {
 					$desc = sprintf(
-						__( 'Free from %1$s to %2$s', MS_TEXT_DOMAIN ),
+						__( 'Free from %1$s to %2$s', 'membership2' ),
 						$this->period_date_start,
 						$this->period_date_end
 					);
@@ -1389,14 +1389,14 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 			case self::PAYMENT_TYPE_RECURRING:
 				if ( $has_payment ) {
-					$desc = __( 'Pay each %1$s', MS_TEXT_DOMAIN );
+					$desc = __( 'Pay each %1$s', 'membership2' );
 					if ( 1 == $this->pay_cycle_repetitions ) {
-						$desc = __( 'Single payment', MS_TEXT_DOMAIN );
+						$desc = __( 'Single payment', 'membership2' );
 					} elseif ( $this->pay_cycle_repetitions > 1 ) {
-						$desc .= ', ' . __( '%2$s payments', MS_TEXT_DOMAIN );
+						$desc .= ', ' . __( '%2$s payments', 'membership2' );
 					}
 				} else {
-					$desc = __( 'Free access', MS_TEXT_DOMAIN );
+					$desc = __( 'Free access', 'membership2' );
 				}
 
 				$desc = sprintf(
@@ -1409,9 +1409,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			case self::PAYMENT_TYPE_PERMANENT:
 			default:
 				if ( $has_payment ) {
-					$desc = __( 'Single payment', MS_TEXT_DOMAIN );
+					$desc = __( 'Single payment', 'membership2' );
 				} else {
-					$desc = __( 'Free access', MS_TEXT_DOMAIN );
+					$desc = __( 'Free access', 'membership2' );
 				}
 				break;
 		}
@@ -1526,10 +1526,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function can_use_gateway( $gateway_id ) {
 		$result = true;
 
-		$this->disabled_gateways = lib2()->array->get( $this->disabled_gateways );
+		$this->disabled_gateways = lib3()->array->get( $this->disabled_gateways );
 		if ( isset( $this->disabled_gateways[$gateway_id] ) ) {
 			$state = $this->disabled_gateways[$gateway_id];
-			$result = ! lib2()->is_true( $state );
+			$result = ! lib3()->is_true( $state );
 		}
 
 		if ( $result ) {
@@ -1797,7 +1797,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function get_after_ms_ends_options() {
 		$options = array(
-			0 => __( 'Restrict access to Visitor-Level', MS_TEXT_DOMAIN ),
+			0 => __( 'Restrict access to Visitor-Level', 'membership2' ),
 		);
 
 		$args = array(
@@ -1806,7 +1806,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$options += $this->get_membership_names( $args );
 		unset( $options[$this->id] );
 
-		$label = __( 'Change to: %s', MS_TEXT_DOMAIN );
+		$label = __( 'Change to: %s', 'membership2' );
 		foreach ( $options as $id => $option ) {
 			if ( $id > 0 ) {
 				$options[$id] = sprintf( $label, $option );
@@ -2155,15 +2155,15 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 				if ( null === $rule_access ) {
 					$this->_access_reason[] = sprintf(
-						__( 'Ignored: Rule "%s"', MS_TEXT_DOMAIN ),
+						__( 'Ignored: Rule "%s"', 'membership2' ),
 						$rule->rule_type
 					);
 					continue;
 				}
 
 				$this->_access_reason[] = sprintf(
-					__( '%s: Rule "%s"', MS_TEXT_DOMAIN ),
-					$rule_access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
+					__( '%s: Rule "%s"', 'membership2' ),
+					$rule_access ? __( 'Allow', 'membership2' ) : __( 'Deny', 'membership2' ),
 					$rule->rule_type
 				);
 
@@ -2410,7 +2410,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			case 'active':
 			case 'private':
 			case 'is_free':
-				$value = lib2()->is_true( $this->$property );
+				$value = lib3()->is_true( $this->$property );
 				break;
 
 			case 'type_description':
@@ -2468,7 +2468,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				break;
 
 			case 'disabled_gateways':
-				$value = lib2()->array->get( $this->disabled_gateways );
+				$value = lib3()->array->get( $this->disabled_gateways );
 				break;
 
 			case 'is_paid':
@@ -2553,7 +2553,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				case 'active':
 				case 'private':
 				case 'is_free':
-					$this->$property = lib2()->is_true( $value );
+					$this->$property = lib3()->is_true( $value );
 					break;
 
 				case 'price':
@@ -2615,22 +2615,22 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 					break;
 
 				case 'public':
-					$this->private = ! lib2()->is_true( $value );
+					$this->private = ! lib3()->is_true( $value );
 					break;
 
 				case 'is_paid':
-					$this->is_free = ! lib2()->is_true( $value );
+					$this->is_free = ! lib3()->is_true( $value );
 					break;
 
 				case 'deny_update':
 					foreach ( $value as $key => $state ) {
-						$this->update_denied[$key] = lib2()->is_true( $state );
+						$this->update_denied[$key] = lib3()->is_true( $state );
 					}
 					break;
 
 				case 'replace_update':
 					foreach ( $value as $key => $state ) {
-						$this->update_replace[$key] = lib2()->is_true( $state );
+						$this->update_replace[$key] = lib3()->is_true( $state );
 					}
 					break;
 
