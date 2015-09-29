@@ -159,15 +159,16 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 	// Change the table row to "protected"
 	function protect_item( ev ) {
 		var cell = jQuery( this ).closest( column_class ),
-			row = cell.closest( 'tr.item' );
+			row = cell.closest( 'tr.item' ),
+			inp = cell.find( 'select.ms-memberships' );
 
 		row.removeClass( 'ms-empty' )
 			.addClass( 'ms-assigned' );
 
-		cell.addClass( 'ms-focused' )
-			.find( 'select.ms-memberships' )
-			.wpmuiSelect( 'focus' )
-			.wpmuiSelect( 'open' );
+		cell.addClass( 'ms-focused' );
+
+		inp.wpmuiSelect( 'focus' );
+		inp.wpmuiSelect( 'open' );
 	}
 
 	// If the item is not protected by any membership it will chagne to public
@@ -193,12 +194,14 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 	}
 
 	// Format the memberships in the tag list (= selected items)
-	function format_tag( state ) {
+	function format_tag( state, container ) {
 		var attr,
 			original_option = state.element;
 
-		attr = 'class="val" style="background: ' + jQuery( original_option ).data( 'color' ) + '"';
-		return '<span ' + attr + '><span class="txt">' + state.text + '</span></span>';
+		container.css({ background: jQuery( original_option ).data( 'color' ) });
+		container.addClass( 'val' );
+
+		return '<span class="txt">' + state.text + '</span>';
 	}
 
 	// add hooks
@@ -216,9 +219,10 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 	});
 
 	jQuery( 'select.ms-memberships' ).wpmuiSelect({
-		formatResult: format_result,
-		formatSelection: format_tag,
+		templateResult: format_result,
+		templateSelection: format_tag,
 		escapeMarkup: function( m ) { return m; },
-		dropdownCssClass: 'ms-memberships'
+		dropdownCssClass: 'ms-memberships wpmui-select2',
+		width: '100%'
 	});
 };

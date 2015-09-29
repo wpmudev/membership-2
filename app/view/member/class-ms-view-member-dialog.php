@@ -137,7 +137,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 		ob_start();
 		?>
 		<div>
-			<form class="ms-form wpmui-ajax-update ms-edit-member" data-ajax="<?php echo esc_attr( 'save' ); ?>">
+			<form class="ms-form wpmui-ajax-update ms-edit-member" data-wpmui-ajax="<?php echo esc_attr( 'save' ); ?>">
 				<div class="ms-form wpmui-form wpmui-grid-8">
 					<table class="widefat">
 					<thead>

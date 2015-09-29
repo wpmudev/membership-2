@@ -520,12 +520,13 @@ class MS_Controller_Member extends MS_Controller {
 		$this->_resp_reset();
 		$items_per_page = 20;
 
-		$required = array( 'q', 'p' );
+		$required = array( 'q' );
 		if ( $this->_resp_ok() && ! $this->is_admin_user() ) {
 			$this->_resp_err( 'permission denied' );
 		} elseif ( $this->_resp_ok() && ! self::validate_required( $required, 'any' ) ) {
 			$this->_resp_err( 'search: required' );
 		}
+		if ( empty( $_REQUEST['p'] ) ) { $_REQUEST['p'] = 0; }
 
 		if ( $this->_resp_ok() ) {
 			$term = $_REQUEST['q'];

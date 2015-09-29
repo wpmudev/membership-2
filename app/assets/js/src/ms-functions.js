@@ -15,9 +15,7 @@ window.ms_functions = {
 
 	chosen_options: {
 		minimumResultsForSearch: 6,
-		dropdownAutoWidth: true,
-		dropdownCssClass: 'ms-select2',
-		containerCssClass: 'ms-select2'
+		width: 'auto'
 	},
 
 	// Initialize some UI components.
@@ -25,7 +23,7 @@ window.ms_functions = {
 		var fn = window.ms_functions;
 
 		// Initialize all select boxes.
-		jQuery( '.ms-wrap select, .ms-wrap .chosen-select', scope ).each(function() {
+		jQuery( '.ms-wrap select, .ms-select', scope ).each(function() {
 			var el = jQuery( this );
 			if ( el.closest( '.no-auto-init' ).length ) { return; }
 			if ( el.closest( '.manual-init' ).length ) { return; }
@@ -66,7 +64,7 @@ window.ms_functions = {
 			anim.addClass( 'wpmui-loading' );
 			info_field = fn.ajax_show_indicator( field );
 
-			data = field.data( 'ajax' );
+			data = field.data( 'wpmui-ajax' );
 
 			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
@@ -120,7 +118,7 @@ window.ms_functions = {
 			slider.trigger( 'change' );
 
 			toggle = slider.children( '.wpmui-toggle' );
-			data = toggle.data( 'ajax' );
+			data = toggle.data( 'wpmui-ajax' );
 			states = toggle.data( 'states' );
 
 			if ( null !== data && undefined !== data ) {

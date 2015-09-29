@@ -25,7 +25,7 @@ class MS_View_Membership_Tab_Details extends MS_View {
 		ob_start();
 		?>
 		<div>
-			<form class="ms-form wpmui-ajax-update ms-edit-membership" data-ajax="<?php echo esc_attr( 'save' ); ?>">
+			<form class="ms-form wpmui-ajax-update ms-edit-membership" data-wpmui-ajax="<?php echo esc_attr( 'save' ); ?>">
 				<div class="ms-form wpmui-form wpmui-grid-8">
 					<div class="col-5">
 						<?php

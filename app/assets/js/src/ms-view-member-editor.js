@@ -75,27 +75,24 @@ window.ms_init.view_member_editor = function init () {
 
 	chosen_options.minimumInputLength = 3;
 	chosen_options.multiple = false;
-	chosen_options.dropdownAutoWidth = true;
-	chosen_options.dropdownCssClass = 'ms-select2';
-	chosen_options.containerCssClass = 'ms-select2';
 	chosen_options.ajax = {
 		url: window.ajaxurl,
 		dataType: "json",
 		type: "GET",
-		quietMillis: 100,
-		data: function( term, page ) {
+		delay: 100,
+		data: function( params ) {
 			return {
 				action: "member_search",
-				q: term,
-				p: page
+				q: params.term,
+				p: params.page
 			};
 		},
-		results: function( data, page ) {
+		processResults: function( data, page ) {
 			return { results: data.items, more: data.more };
 		}
 	};
+
 	sel_user.removeClass( 'wpmui-hidden' );
-	window.console.log( chosen_options );
 	sel_user.wpmuiSelect( chosen_options );
 
 	validate_buttons();

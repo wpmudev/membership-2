@@ -18,7 +18,7 @@ window.ms_init.gateway_authorize = function init () {
 		}
 	};
 
-	jQuery( '.chosen-select' ).wpmuiSelect();
+	jQuery( '.ms-select' ).wpmuiSelect();
 
 	if ( jQuery( '#ms-authorize-cim-profiles-wrapper' ).is(':visible') ) {
 		jQuery( 'input[name="profile"]').change( function() {

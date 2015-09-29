@@ -75,7 +75,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 				'value' => $settings->currency,
 				'field_options' => $settings->get_currencies(),
 				'class' => '',
-				'class' => 'chosen-select',
+				'class' => 'ms-select',
 				'data_ms' => array(
 					'field' => 'currency',
 				),

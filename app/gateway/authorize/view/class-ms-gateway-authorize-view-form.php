@@ -154,7 +154,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 				'title' => __( 'Country', MS_TEXT_DOMAIN ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $this->data['countries'],
-				'class' => 'chosen-select',
+				'class' => 'ms-select',
 			),
 		);
 

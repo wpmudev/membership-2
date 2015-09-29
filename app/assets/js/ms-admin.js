@@ -55,9 +55,7 @@ window.ms_functions = {
 
 	chosen_options: {
 		minimumResultsForSearch: 6,
-		dropdownAutoWidth: true,
-		dropdownCssClass: 'ms-select2',
-		containerCssClass: 'ms-select2'
+		width: 'auto'
 	},
 
 	// Initialize some UI components.
@@ -65,7 +63,7 @@ window.ms_functions = {
 		var fn = window.ms_functions;
 
 		// Initialize all select boxes.
-		jQuery( '.ms-wrap select, .ms-wrap .chosen-select', scope ).each(function() {
+		jQuery( '.ms-wrap select, .ms-select', scope ).each(function() {
 			var el = jQuery( this );
 			if ( el.closest( '.no-auto-init' ).length ) { return; }
 			if ( el.closest( '.manual-init' ).length ) { return; }
@@ -106,7 +104,7 @@ window.ms_functions = {
 			anim.addClass( 'wpmui-loading' );
 			info_field = fn.ajax_show_indicator( field );
 
-			data = field.data( 'ajax' );
+			data = field.data( 'wpmui-ajax' );
 
 			if ( field.is( ':checkbox' ) ) {
 				data.value = field.prop( 'checked' );
@@ -160,7 +158,7 @@ window.ms_functions = {
 			slider.trigger( 'change' );
 
 			toggle = slider.children( '.wpmui-toggle' );
-			data = toggle.data( 'ajax' );
+			data = toggle.data( 'wpmui-ajax' );
 			states = toggle.data( 'states' );
 
 			if ( null !== data && undefined !== data ) {
@@ -1558,27 +1556,24 @@ window.ms_init.view_member_editor = function init () {
 
 	chosen_options.minimumInputLength = 3;
 	chosen_options.multiple = false;
-	chosen_options.dropdownAutoWidth = true;
-	chosen_options.dropdownCssClass = 'ms-select2';
-	chosen_options.containerCssClass = 'ms-select2';
 	chosen_options.ajax = {
 		url: window.ajaxurl,
 		dataType: "json",
 		type: "GET",
-		quietMillis: 100,
-		data: function( term, page ) {
+		delay: 100,
+		data: function( params ) {
 			return {
 				action: "member_search",
-				q: term,
-				p: page
+				q: params.term,
+				p: params.page
 			};
 		},
-		results: function( data, page ) {
+		processResults: function( data, page ) {
 			return { results: data.items, more: data.more };
 		}
 	};
+
 	sel_user.removeClass( 'wpmui-hidden' );
-	window.console.log( chosen_options );
 	sel_user.wpmuiSelect( chosen_options );
 
 	validate_buttons();
@@ -2080,15 +2075,16 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 	// Change the table row to "protected"
 	function protect_item( ev ) {
 		var cell = jQuery( this ).closest( column_class ),
-			row = cell.closest( 'tr.item' );
+			row = cell.closest( 'tr.item' ),
+			inp = cell.find( 'select.ms-memberships' );
 
 		row.removeClass( 'ms-empty' )
 			.addClass( 'ms-assigned' );
 
-		cell.addClass( 'ms-focused' )
-			.find( 'select.ms-memberships' )
-			.wpmuiSelect( 'focus' )
-			.wpmuiSelect( 'open' );
+		cell.addClass( 'ms-focused' );
+
+		inp.wpmuiSelect( 'focus' );
+		inp.wpmuiSelect( 'open' );
 	}
 
 	// If the item is not protected by any membership it will chagne to public
@@ -2114,12 +2110,14 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 	}
 
 	// Format the memberships in the tag list (= selected items)
-	function format_tag( state ) {
+	function format_tag( state, container ) {
 		var attr,
 			original_option = state.element;
 
-		attr = 'class="val" style="background: ' + jQuery( original_option ).data( 'color' ) + '"';
-		return '<span ' + attr + '><span class="txt">' + state.text + '</span></span>';
+		container.css({ background: jQuery( original_option ).data( 'color' ) });
+		container.addClass( 'val' );
+
+		return '<span class="txt">' + state.text + '</span>';
 	}
 
 	// add hooks
@@ -2137,10 +2135,11 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 	});
 
 	jQuery( 'select.ms-memberships' ).wpmuiSelect({
-		formatResult: format_result,
-		formatSelection: format_tag,
+		templateResult: format_result,
+		templateSelection: format_tag,
 		escapeMarkup: function( m ) { return m; },
-		dropdownCssClass: 'ms-memberships'
+		dropdownCssClass: 'ms-memberships wpmui-select2',
+		width: '100%'
 	});
 };
 
@@ -2264,7 +2263,7 @@ window.ms_init.view_settings = function init () {
 			// Update the view/edit links
 			actions.each(function() {
 				var link = jQuery( this ),
-					data = link.data('ajax'),
+					data = link.data( 'wpmui-ajax' ),
 					url = data.base + val;
 
 				if ( undefined === val || isNaN(val) || val < 1 ) {

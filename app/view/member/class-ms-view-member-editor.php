@@ -138,7 +138,7 @@ class MS_View_Member_Editor extends MS_View {
 			),
 			'select_user' => array(
 				'id' => 'user_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'title' => __( 'Existing WordPress users', MS_TEXT_DOMAIN ),
 				'class' => 'manual-init no-auto-init widefat',
 			),
