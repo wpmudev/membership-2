@@ -195,7 +195,7 @@ class MS_Model_Plugin extends MS_Model {
 				$Info['has_access'] = true;
 
 				if ( $simulation ) {
-					$Info['reason'][] = __( 'Allow: Admin-User always has access', MS_TEXT_DOMAIN );
+					$Info['reason'][] = __( 'Allow: Admin-User always has access', 'membership2' );
 				}
 
 				$memberships = MS_Model_Membership::get_memberships();
@@ -213,7 +213,7 @@ class MS_Model_Plugin extends MS_Model {
 					$Info['has_access'] = true;
 
 					if ( $simulation ) {
-						$Info['reason'][] = __( 'Allow: This is a Membership Page', MS_TEXT_DOMAIN );
+						$Info['reason'][] = __( 'Allow: This is a Membership Page', 'membership2' );
 					}
 				}
 
@@ -224,7 +224,7 @@ class MS_Model_Plugin extends MS_Model {
 					if ( ! $this->member->has_membership( $subscription->membership_id ) ) {
 						if ( $simulation ) {
 							$Info['reason'][] = sprintf(
-								__( 'Skipped: Not a member of "%s"', MS_TEXT_DOMAIN ),
+								__( 'Skipped: Not a member of "%s"', 'membership2' ),
 								$subscription->get_membership()->name
 							);
 						}
@@ -244,7 +244,7 @@ class MS_Model_Plugin extends MS_Model {
 						if ( null === $access ) {
 							if ( $simulation ) {
 								$Info['reason'][] = sprintf(
-									__( 'Ignored: Membership "%s"', MS_TEXT_DOMAIN ),
+									__( 'Ignored: Membership "%s"', 'membership2' ),
 									$membership->name
 								);
 								$Info['reason'][] = $membership->_access_reason;
@@ -254,8 +254,8 @@ class MS_Model_Plugin extends MS_Model {
 
 						if ( $simulation ) {
 							$Info['reason'][] = sprintf(
-								__( '%s: Membership "%s"', MS_TEXT_DOMAIN ),
-								$access ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN ),
+								__( '%s: Membership "%s"', 'membership2' ),
+								$access ? __( 'Allow', 'membership2' ) : __( 'Deny', 'membership2' ),
 								$membership->name
 							);
 
@@ -276,7 +276,7 @@ class MS_Model_Plugin extends MS_Model {
 					$Info['has_access'] = true;
 
 					if ( $simulation ) {
-						$Info['reason'][] = __( 'Allow: Page is not protected', MS_TEXT_DOMAIN );
+						$Info['reason'][] = __( 'Allow: Page is not protected', 'membership2' );
 					}
 				}
 
@@ -308,7 +308,7 @@ class MS_Model_Plugin extends MS_Model {
 						printf(
 							'<a href="%1$s">%1$s</a>: <strong>%2$s</strong>',
 							$item['url'],
-							$item['has_access'] ? __( 'Allow', MS_TEXT_DOMAIN ) : __( 'Deny', MS_TEXT_DOMAIN )
+							$item['has_access'] ? __( 'Allow', 'membership2' ) : __( 'Deny', 'membership2' )
 						);
 						// Intended debug output, leave it here.
 						lib3()->debug->dump( $item );
@@ -526,11 +526,11 @@ class MS_Model_Plugin extends MS_Model {
 
 		$periods['6hours'] = array(
 			'interval' => 6 * HOUR_IN_SECONDS,
-			'display' => __( 'Every 6 Hours', MS_TEXT_DOMAIN )
+			'display' => __( 'Every 6 Hours', 'membership2' )
 		);
 		$periods['30mins'] = array(
 			'interval' => 30 * MINUTE_IN_SECONDS,
-			'display' => __( 'Every 30 Mins', MS_TEXT_DOMAIN )
+			'display' => __( 'Every 30 Mins', 'membership2' )
 		);
 
 		return apply_filters(

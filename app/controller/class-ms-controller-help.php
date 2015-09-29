@@ -59,22 +59,22 @@ class MS_Controller_Help extends MS_Controller {
 	public function get_tabs() {
 		$tabs = array(
 			'general' => array(
-				'title' => __( 'General', MS_TEXT_DOMAIN ),
+				'title' => __( 'General', 'membership2' ),
 			),
 			'shortcodes' => array(
-				'title' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
+				'title' => __( 'Shortcodes', 'membership2' ),
 			),
 			'network' => array(
-				'title' => __( 'Network-Wide Protection', MS_TEXT_DOMAIN ),
+				'title' => __( 'Network-Wide Protection', 'membership2' ),
 			),
 			'advanced' => array(
-				'title' => __( 'Advanced Settings', MS_TEXT_DOMAIN ),
+				'title' => __( 'Advanced Settings', 'membership2' ),
 			),
 			'branding' => array(
-				'title' => __( 'Customize Membership 2', MS_TEXT_DOMAIN ),
+				'title' => __( 'Customize Membership 2', 'membership2' ),
 			),
 			'api' => array(
-				'title' => __( 'API Docs', MS_TEXT_DOMAIN ),
+				'title' => __( 'API Docs', 'membership2' ),
 				'url' => MS_Plugin::instance()->url . 'docs/namespaces/default.html',
 				'target' => '_blank',
 			),

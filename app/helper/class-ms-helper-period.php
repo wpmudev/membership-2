@@ -255,20 +255,20 @@ class MS_Helper_Period extends MS_Helper {
 	 */
 	public static function get_period_types( $type = 'all' ) {
 		$singular = array(
-			'1' . self::PERIOD_TYPE_DAYS => __( 'one day', MS_TEXT_DOMAIN ),
-			'1' . self::PERIOD_TYPE_WEEKS => __( 'one week', MS_TEXT_DOMAIN ),
-			'1' . self::PERIOD_TYPE_MONTHS => __( 'one month', MS_TEXT_DOMAIN ),
-			'1' . self::PERIOD_TYPE_YEARS => __( 'one year', MS_TEXT_DOMAIN ),
-			'1-' . self::PERIOD_TYPE_DAYS => __( 'day', MS_TEXT_DOMAIN ),
-			'1-' . self::PERIOD_TYPE_WEEKS => __( 'week', MS_TEXT_DOMAIN ),
-			'1-' . self::PERIOD_TYPE_MONTHS => __( 'month', MS_TEXT_DOMAIN ),
-			'1-' . self::PERIOD_TYPE_YEARS => __( 'year', MS_TEXT_DOMAIN ),
+			'1' . self::PERIOD_TYPE_DAYS => __( 'one day', 'membership2' ),
+			'1' . self::PERIOD_TYPE_WEEKS => __( 'one week', 'membership2' ),
+			'1' . self::PERIOD_TYPE_MONTHS => __( 'one month', 'membership2' ),
+			'1' . self::PERIOD_TYPE_YEARS => __( 'one year', 'membership2' ),
+			'1-' . self::PERIOD_TYPE_DAYS => __( 'day', 'membership2' ),
+			'1-' . self::PERIOD_TYPE_WEEKS => __( 'week', 'membership2' ),
+			'1-' . self::PERIOD_TYPE_MONTHS => __( 'month', 'membership2' ),
+			'1-' . self::PERIOD_TYPE_YEARS => __( 'year', 'membership2' ),
 		);
 		$plural = array(
-			self::PERIOD_TYPE_DAYS => __( 'days', MS_TEXT_DOMAIN ),
-			self::PERIOD_TYPE_WEEKS => __( 'weeks', MS_TEXT_DOMAIN ),
-			self::PERIOD_TYPE_MONTHS => __( 'months', MS_TEXT_DOMAIN ),
-			self::PERIOD_TYPE_YEARS => __( 'years', MS_TEXT_DOMAIN ),
+			self::PERIOD_TYPE_DAYS => __( 'days', 'membership2' ),
+			self::PERIOD_TYPE_WEEKS => __( 'weeks', 'membership2' ),
+			self::PERIOD_TYPE_MONTHS => __( 'months', 'membership2' ),
+			self::PERIOD_TYPE_YEARS => __( 'years', 'membership2' ),
 		);
 
 		switch ( $type ) {

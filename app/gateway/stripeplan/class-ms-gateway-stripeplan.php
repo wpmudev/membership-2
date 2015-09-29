@@ -83,7 +83,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		}
 
 		$this->id = self::ID;
-		$this->name = __( 'Stripe Subscriptions Gateway', MS_TEXT_DOMAIN );
+		$this->name = __( 'Stripe Subscriptions Gateway', 'membership2' );
 		$this->group = 'Stripe';
 		$this->manual_payment = false; // Recurring charged automatically
 		$this->pro_rate = true;
@@ -329,7 +329,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 					// Free, just process.
 					$invoice->changed();
 					$success = true;
-					$note = __( 'No payment for free membership', MS_TEXT_DOMAIN );
+					$note = __( 'No payment for free membership', 'membership2' );
 				} else {
 					// Get or create the subscription.
 					$stripe_sub = $this->_api->subscribe(
@@ -340,12 +340,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 					if ( 'active' == $stripe_sub->status ) {
 						$invoice->pay_it( $this->id, $stripe_sub->id );
 						$success = true;
-						$note = __( 'Payment successful', MS_TEXT_DOMAIN );
+						$note = __( 'Payment successful', 'membership2' );
 						$note .= ' - Token: ' . $token;
 
 						$this->cancel_if_done( $subscription, $stripe_sub );
 					} else {
-						$note = __( 'Stripe payment failed', MS_TEXT_DOMAIN );
+						$note = __( 'Stripe payment failed', 'membership2' );
 					}
 				}
 			} catch ( Exception $e ) {
@@ -412,7 +412,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 					if ( 0 == $invoice->total ) {
 						$invoice->changed();
 						$success = true;
-						$note = __( 'No payment for free membership', MS_TEXT_DOMAIN );
+						$note = __( 'No payment for free membership', 'membership2' );
 					} else {
 						// Get or create the subscription.
 						$stripe_sub = $this->_api->subscribe(
@@ -424,11 +424,11 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						if ( 'active' == $stripe_sub->status ) {
 							$was_paid = true;
 							$invoice->pay_it( $this->id, $external_id );
-							$note = __( 'Payment successful', MS_TEXT_DOMAIN );
+							$note = __( 'Payment successful', 'membership2' );
 
 							$this->cancel_if_done( $subscription, $stripe_sub );
 						} else {
-							$note = __( 'Stripe payment failed', MS_TEXT_DOMAIN );
+							$note = __( 'Stripe payment failed', 'membership2' );
 						}
 					}
 				} else {

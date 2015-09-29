@@ -23,8 +23,8 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 				<?php
 				MS_Helper_Html::settings_tab_header(
 					array(
-						'title' => __( 'Global Payment Settings', MS_TEXT_DOMAIN ),
-						'desc' => __( 'These are shared across all memberships.', MS_TEXT_DOMAIN ),
+						'title' => __( 'Global Payment Settings', 'membership2' ),
+						'desc' => __( 'These are shared across all memberships.', 'membership2' ),
 					)
 				);
 				?>
@@ -36,8 +36,8 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 				</div>
 
 				<div class="ms-group-head">
-					<div class="ms-bold"><?php _e( 'Payment Gateways', MS_TEXT_DOMAIN ); ?></div>
-					<div class="ms-description"><?php _e( 'You need to set-up at least one Payment Gateway to be able to process payments.', MS_TEXT_DOMAIN ); ?></div>
+					<div class="ms-bold"><?php _e( 'Payment Gateways', 'membership2' ); ?></div>
+					<div class="ms-description"><?php _e( 'You need to set-up at least one Payment Gateway to be able to process payments.', 'membership2' ); ?></div>
 				</div>
 
 				<div class="gateways">
@@ -71,7 +71,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 			'currency' => array(
 				'id' => 'currency',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Select payment currency', MS_TEXT_DOMAIN ),
+				'title' => __( 'Select payment currency', 'membership2' ),
 				'value' => $settings->currency,
 				'field_options' => $settings->get_currencies(),
 				'class' => '',
@@ -84,7 +84,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 			'invoice_sender_name' => array(
 				'id' => 'invoice_sender_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Invoice sender name', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice sender name', 'membership2' ),
 				'value' => $settings->invoice_sender_name,
 				'data_ms' => array(
 					'field' => 'invoice_sender_name',
@@ -163,7 +163,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 					'billing',
 					array( 'gateway_id' => $gateway->id )
 				),
-				__( 'View Transactions', MS_TEXT_DOMAIN )
+				__( 'View Transactions', 'membership2' )
 			),
 			sprintf(
 				'<a href="%1$s">%2$s</a>',
@@ -171,7 +171,7 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 					'billing',
 					array( 'show' => 'logs', 'gateway_id' => $gateway->id )
 				),
-				__( 'View Logs', MS_TEXT_DOMAIN )
+				__( 'View Logs', 'membership2' )
 			),
 		);
 
@@ -213,20 +213,20 @@ class MS_View_Settings_Page_Payment extends MS_View_Settings_Edit {
 				<span class="gateway-description">
 					<?php echo esc_html( $gateway->description ); ?>
 				</span>
-				<span class="wpmui-fa offline-flag" title="<?php echo __( 'Website seems to be not publicly available. This payment method might not work.', MS_TEXT_DOMAIN ); ?>">
+				<span class="wpmui-fa offline-flag" title="<?php echo __( 'Website seems to be not publicly available. This payment method might not work.', 'membership2' ); ?>">
 				</span>
 			</span>
 
 			<span class="mode">
-				<span class="mode-sandbox"><?php _e( 'Sandbox', MS_TEXT_DOMAIN ); ?></span>
-				<span class="mode-live"><?php _e( 'Live', MS_TEXT_DOMAIN ); ?></span>
+				<span class="mode-sandbox"><?php _e( 'Sandbox', 'membership2' ); ?></span>
+				<span class="mode-live"><?php _e( 'Live', 'membership2' ); ?></span>
 			</span>
 
 			<div class="ms-gateway-status <?php echo esc_attr( $active_class ); ?> ms-active-wrapper-<?php echo esc_attr( $gateway->id ); ?>">
 				<?php MS_Helper_Html::html_element( $toggle ); ?>
 				<div class="ms-gateway-setup-wrapper">
 					<label for="settings-<?php echo esc_attr( $gateway->id ); ?>" class="button">
-						<i class="wpmui-fa wpmui-fa-cog"></i> <?php _e( 'Configure', MS_TEXT_DOMAIN ); ?>
+						<i class="wpmui-fa wpmui-fa-cog"></i> <?php _e( 'Configure', 'membership2' ); ?>
 					</label>
 				</div>
 

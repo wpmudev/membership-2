@@ -130,7 +130,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Events', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Events', 'membership2' ),
 		);
 
 		return apply_filters(
@@ -159,15 +159,15 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_MS_REGISTERED => array(
 				'topic' => self::TOPIC_USER,
-				'desc' => __( 'Has registered.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Has registered.', 'membership2' ),
 			),
 			self::TYPE_UPDATED_INFO => array(
 				'topic' => self::TOPIC_USER,
-				'desc' => __( 'Has updated billing information.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Has updated billing information.', 'membership2' ),
 			),
 			self::TYPE_CREDIT_CARD_EXPIRE => array(
 				'topic' => self::TOPIC_USER,
-				'desc' => __( "Member's credit card expire warning date.", MS_TEXT_DOMAIN ),
+				'desc' => __( "Member's credit card expire warning date.", 'membership2' ),
 			),
 
 			/*
@@ -175,31 +175,31 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_MS_SIGNED_UP => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Has signed up to membership %s.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Has signed up to membership %s.', 'membership2' ),
 			),
 			self::TYPE_MS_MOVED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Has moved to membership %s.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Has moved to membership %s.', 'membership2' ),
 			),
 			self::TYPE_MS_EXPIRED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s has expired.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership %s has expired.', 'membership2' ),
 			),
 			self::TYPE_MS_DROPPED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s dropped.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership %s dropped.', 'membership2' ),
 			),
 			self::TYPE_MS_RENEWED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s renewed', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership %s renewed', 'membership2' ),
 			),
 			self::TYPE_MS_DEACTIVATED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s deactivated', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership %s deactivated', 'membership2' ),
 			),
 			self::TYPE_MS_CANCELED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s cancelled.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership %s cancelled.', 'membership2' ),
 			),
 
 			/*
@@ -207,16 +207,16 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_MS_BEFORE_FINISHES => array(
 				'topic' => self::TOPIC_WARNING,
-				'desc' => __( 'Membership %s about to finish warning date.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership %s about to finish warning date.', 'membership2' ),
 			),
 
 			self::TYPE_MS_AFTER_FINISHES => array(
 				'topic' => self::TOPIC_WARNING,
-				'desc' => __( 'Membership %s finished warning date.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership %s finished warning date.', 'membership2' ),
 			),
 			self::TYPE_MS_BEFORE_TRIAL_FINISHES => array(
 				'topic' => self::TOPIC_WARNING,
-				'desc' => __( 'Membership % s trial about to finish warning date.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Membership % s trial about to finish warning date.', 'membership2' ),
 			),
 
 			/*
@@ -224,27 +224,27 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_PAID => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Paid.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Invoice #%2$s for membership %1$s - Paid.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_FAILED => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Failed.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Failed.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_PENDING => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Pending.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Pending.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_DENIED => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Denied.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Denied.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_BEFORE_DUE => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s before due date for membership %1$s warning.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Invoice #%2$s before due date for membership %1$s warning.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_AFTER_DUE => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s after due date for membership %1$s warning.', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Invoice #%2$s after due date for membership %1$s warning.', 'membership2' ),
 			),
 		);
 

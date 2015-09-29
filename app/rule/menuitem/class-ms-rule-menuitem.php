@@ -19,7 +19,7 @@ class MS_Rule_MenuItem extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Menu Items', MS_TEXT_DOMAIN ),
+				__( 'Menu Items', 'membership2' ),
 				60
 			);
 		}

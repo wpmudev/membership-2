@@ -13,13 +13,13 @@ class MS_Helper_Billing extends MS_Helper {
 		$messages = apply_filters(
 			'ms_helper_billing_get_admin_messages',
 			array(
-				self::BILLING_MSG_ADDED => __( 'Added new invoice.', MS_TEXT_DOMAIN ),
-				self::BILLING_MSG_DELETED => __( 'Removed invoice(s).', MS_TEXT_DOMAIN ),
-				self::BILLING_MSG_UPDATED => __( 'Invoice details updated.', MS_TEXT_DOMAIN ),
-				self::BILLING_MSG_NOT_ADDED => __( 'Could not add invoice.', MS_TEXT_DOMAIN ),
-				self::BILLING_MSG_NOT_DELETED => __( 'Could not remove invoice(s).', MS_TEXT_DOMAIN ),
-				self::BILLING_MSG_NOT_UPDATED => __( 'Could not update invoice.', MS_TEXT_DOMAIN ),
-				self::BILLING_MSG_NOT_A_MEMBER => __( 'Did not add the invoice: User is not a member of selected Membership.', MS_TEXT_DOMAIN ),
+				self::BILLING_MSG_ADDED => __( 'Added new invoice.', 'membership2' ),
+				self::BILLING_MSG_DELETED => __( 'Removed invoice(s).', 'membership2' ),
+				self::BILLING_MSG_UPDATED => __( 'Invoice details updated.', 'membership2' ),
+				self::BILLING_MSG_NOT_ADDED => __( 'Could not add invoice.', 'membership2' ),
+				self::BILLING_MSG_NOT_DELETED => __( 'Could not remove invoice(s).', 'membership2' ),
+				self::BILLING_MSG_NOT_UPDATED => __( 'Could not update invoice.', 'membership2' ),
+				self::BILLING_MSG_NOT_A_MEMBER => __( 'Did not add the invoice: User is not a member of selected Membership.', 'membership2' ),
 			)
 		);
 

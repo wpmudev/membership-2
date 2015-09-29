@@ -26,7 +26,7 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent when a member automatic recurring payment fails.', MS_TEXT_DOMAIN
+			'Sent when a member automatic recurring payment fails.', 'membership2'
 		);
 	}
 
@@ -38,7 +38,7 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 	public function reset_to_default() {
 		parent::reset_to_default();
 
-		$this->subject = __( 'Your membership payment has failed', MS_TEXT_DOMAIN );
+		$this->subject = __( 'Your membership payment has failed', 'membership2' );
 		$this->message = self::get_default_message();
 		$this->enabled = false;
 
@@ -57,19 +57,19 @@ class MS_Model_Communication_Failed_Payment extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Unfortunately, your recurring payment for your %1$s membership at %2$s has failed.', MS_TEXT_DOMAIN ),
+			__( 'Unfortunately, your recurring payment for your %1$s membership at %2$s has failed.', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
 		$body_continue = sprintf(
-			__( 'To continue as a member, please review and edit your billing information as necessary in your account here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'To continue as a member, please review and edit your billing information as necessary in your account here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
-		$body_invoice = __( 'Here is your latest invoice which is due now:', MS_TEXT_DOMAIN );
+		$body_invoice = __( 'Here is your latest invoice which is due now:', 'membership2' );
 
 		$html = sprintf(
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s<br /><br />%4$s<br /><br />%5$s',

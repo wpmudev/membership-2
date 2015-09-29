@@ -13,8 +13,8 @@ class MS_View_Frontend_Profile extends MS_View {
 		$cancel = array(
 			'id' => 'cancel',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
-			'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+			'title' => __( 'Cancel', 'membership2' ),
+			'value' => __( 'Cancel', 'membership2' ),
 			'url' => esc_url_raw( remove_query_arg( array( 'action' ) ) ),
 			'class' => 'wpmui-field-button button',
 		);
@@ -29,7 +29,7 @@ class MS_View_Frontend_Profile extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors() ?>
 			<form id="ms-view-frontend-profile-form" class="form-membership" action="" method="post">
-				<legend><?php _e( 'Edit profile', MS_TEXT_DOMAIN ); ?></legend>
+				<legend><?php _e( 'Edit profile', 'membership2' ); ?></legend>
 				<?php foreach ( $fields as $field ) {
 					if ( is_string( $field ) ) {
 						MS_Helper_Html::html_element( $field );
@@ -70,38 +70,38 @@ class MS_View_Frontend_Profile extends MS_View {
 		$fields = array(
 			'first_name' => array(
 				'id' => 'first_name',
-				'title' => __( 'First Name', MS_TEXT_DOMAIN ),
+				'title' => __( 'First Name', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $member->first_name,
 			),
 			'last_name' => array(
 				'id' => 'last_name',
-				'title' => __( 'Last Name', MS_TEXT_DOMAIN ),
+				'title' => __( 'Last Name', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $member->last_name,
 			),
 			'email' => array(
 				'id' => 'email',
-				'title' => __( 'Email Address', MS_TEXT_DOMAIN ),
+				'title' => __( 'Email Address', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $member->email,
 			),
 			'password' => array(
 				'id' => 'password',
-				'title' => __( 'Password', MS_TEXT_DOMAIN ),
+				'title' => __( 'Password', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
 				'value' => '',
 			),
 			'password2' => array(
 				'id' => 'password2',
-				'title' => __( 'Confirm Password', MS_TEXT_DOMAIN ),
+				'title' => __( 'Confirm Password', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
 				'value' => '',
 			),
 			'submit' => array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save Changes', 'membership2' ),
 			),
 			'_wpnonce' => array(
 				'id' => '_wpnonce',

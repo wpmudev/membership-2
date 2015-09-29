@@ -61,27 +61,27 @@ class MS_View_Settings_Import extends MS_View {
 		ob_start();
 		MS_Helper_Html::settings_box(
 			$overview_box,
-			__( 'Import Overview', MS_TEXT_DOMAIN )
+			__( 'Import Overview', 'membership2' )
 		);
 
 		if ( ! $compact ) {
 			MS_Helper_Html::settings_box(
 				array( $fields['memberships'] ),
-				__( 'List of all Memberships', MS_TEXT_DOMAIN ),
+				__( 'List of all Memberships', 'membership2' ),
 				'',
 				'open'
 			);
 
 			MS_Helper_Html::settings_box(
 				array( $fields['members'] ),
-				__( 'List of all Members', MS_TEXT_DOMAIN ),
+				__( 'List of all Members', 'membership2' ),
 				'',
 				'open'
 			);
 
 			MS_Helper_Html::settings_box(
 				array( $fields['settings'] ),
-				__( 'Imported Settings', MS_TEXT_DOMAIN ),
+				__( 'Imported Settings', 'membership2' ),
 				'',
 				'open'
 			);
@@ -113,10 +113,10 @@ class MS_View_Settings_Import extends MS_View {
 		// Prepare the "Memberships" table
 		$memberships = array(
 			array(
-				__( 'Membership name', MS_TEXT_DOMAIN ),
-				__( 'Membership Type', MS_TEXT_DOMAIN ),
-				__( 'Payment Type', MS_TEXT_DOMAIN ),
-				__( 'Description', MS_TEXT_DOMAIN ),
+				__( 'Membership name', 'membership2' ),
+				__( 'Membership Type', 'membership2' ),
+				__( 'Payment Type', 'membership2' ),
+				__( 'Description', 'membership2' ),
 			),
 		);
 
@@ -154,10 +154,10 @@ class MS_View_Settings_Import extends MS_View {
 		// Prepare the "Members" table
 		$members = array(
 			array(
-				__( 'Username', MS_TEXT_DOMAIN ),
-				__( 'Email', MS_TEXT_DOMAIN ),
-				__( 'Subscriptions', MS_TEXT_DOMAIN ),
-				__( 'Invoices', MS_TEXT_DOMAIN ),
+				__( 'Username', 'membership2' ),
+				__( 'Email', 'membership2' ),
+				__( 'Subscriptions', 'membership2' ),
+				__( 'Invoices', 'membership2' ),
 			),
 		);
 
@@ -188,14 +188,14 @@ class MS_View_Settings_Import extends MS_View {
 					$code = '';
 					foreach ( $value as $addon => $state ) {
 						if ( $state ) {
-							$code .= __( 'Activate: ', MS_TEXT_DOMAIN );
+							$code .= __( 'Activate: ', 'membership2' );
 						} else {
-							$code .= __( 'Dectivate: ', MS_TEXT_DOMAIN );
+							$code .= __( 'Dectivate: ', 'membership2' );
 						}
 						$code .= $list[$addon]->name . '<br/>';
 					}
 					$settings[] = array(
-						__( 'Add-Ons', MS_TEXT_DOMAIN ),
+						__( 'Add-Ons', 'membership2' ),
 						$code,
 					);
 					break;
@@ -204,7 +204,7 @@ class MS_View_Settings_Import extends MS_View {
 		if ( empty( $settings ) ) {
 			$settings[] = array(
 				'',
-				__( '(No settings are changed)', MS_TEXT_DOMAIN ),
+				__( '(No settings are changed)', 'membership2' ),
 			);
 		}
 
@@ -243,23 +243,23 @@ class MS_View_Settings_Import extends MS_View {
 			'class' => 'ms-import-preview',
 			'value' => array(
 				array(
-					__( 'Data source', MS_TEXT_DOMAIN ),
+					__( 'Data source', 'membership2' ),
 					$data->source .
 					' &emsp; <small>' .
 					sprintf(
-						__( 'exported on %1$s', MS_TEXT_DOMAIN ),
+						__( 'exported on %1$s', 'membership2' ),
 						$data->export_time
 					) .
 					'</small>',
 				),
 				array(
-					__( 'Content', MS_TEXT_DOMAIN ),
+					__( 'Content', 'membership2' ),
 					sprintf(
 						_n(
 							'%1$s Membership',
 							'%1$s Memberships',
 							count( $data->memberships ),
-							MS_TEXT_DOMAIN
+							'membership2'
 						),
 						'<b>' . count( $data->memberships ) . '</b>'
 					) . ' / ' . sprintf(
@@ -267,7 +267,7 @@ class MS_View_Settings_Import extends MS_View {
 							'%1$s Member',
 							'%1$s Members',
 							count( $data->members ),
-							MS_TEXT_DOMAIN
+							'membership2'
 						),
 						'<b>' . count( $data->members ) . '</b>'
 					),
@@ -282,7 +282,7 @@ class MS_View_Settings_Import extends MS_View {
 
 		if ( ! empty( $notes ) ) {
 			$fields['details']['value'][] = array(
-				__( 'Please note', MS_TEXT_DOMAIN ),
+				__( 'Please note', 'membership2' ),
 				$notes,
 			);
 		}
@@ -296,8 +296,8 @@ class MS_View_Settings_Import extends MS_View {
 		$fields['batchsize'] = array(
 			'id' => 'batchsize',
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'title' => __( 'Batch size for import', MS_TEXT_DOMAIN ),
-			'desc' => __( 'Big batches will be processed faster but may result in PHP Memory errors.', MS_TEXT_DOMAIN ),
+			'title' => __( 'Batch size for import', 'membership2' ),
+			'desc' => __( 'Big batches will be processed faster but may result in PHP Memory errors.', 'membership2' ),
 			'value' => 30,
 			'field_options' => $batchsizes,
 			'class' => 'sel-batchsize',
@@ -306,7 +306,7 @@ class MS_View_Settings_Import extends MS_View {
 		$fields['clear_all'] = array(
 			'id' => 'clear_all',
 			'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-			'title' => __( 'Replace current content with import data (removes existing Memberships/Members before importing data)', MS_TEXT_DOMAIN ),
+			'title' => __( 'Replace current content with import data (removes existing Memberships/Members before importing data)', 'membership2' ),
 			'class' => 'widefat',
 		);
 
@@ -349,14 +349,14 @@ class MS_View_Settings_Import extends MS_View {
 		$fields['back'] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
 			'class' => 'wpmui-field-button button',
-			'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+			'value' => __( 'Cancel', 'membership2' ),
 			'url' => $_SERVER['REQUEST_URI'],
 		);
 
 		$fields['skip'] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
 			'class' => 'wpmui-field-button button',
-			'value' => __( 'Skip', MS_TEXT_DOMAIN ),
+			'value' => __( 'Skip', 'membership2' ),
 			'url' => MS_Controller_Plugin::get_admin_url(
 				false,
 				array( 'skip_import' => 1 )
@@ -366,7 +366,7 @@ class MS_View_Settings_Import extends MS_View {
 		$fields['import'] = array(
 			'id' => 'btn-import',
 			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-			'value' => __( 'Import', MS_TEXT_DOMAIN ),
+			'value' => __( 'Import', 'membership2' ),
 			'button_value' => MS_Controller_Import::AJAX_ACTION_IMPORT,
 			'button_type' => 'submit',
 		);
@@ -374,7 +374,7 @@ class MS_View_Settings_Import extends MS_View {
 		$fields['download'] = array(
 			'id' => 'btn-download',
 			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-			'value' => __( 'Download as Export File', MS_TEXT_DOMAIN ),
+			'value' => __( 'Download as Export File', 'membership2' ),
 			'class' => 'button-link',
 		);
 

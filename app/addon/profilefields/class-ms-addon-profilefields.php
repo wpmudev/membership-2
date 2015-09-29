@@ -113,8 +113,8 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Profile Fields', MS_TEXT_DOMAIN ),
-			'description' => __( 'Customize fields in the user profile and registration form.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Profile Fields', 'membership2' ),
+			'description' => __( 'Customize fields in the user profile and registration form.', 'membership2' ),
 			'icon' => 'dashicons dashicons-id',
 		);
 
@@ -134,7 +134,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 */
 	public function settings_tabs( $tabs ) {
 		$tabs[ self::ID  ] = array(
-			'title' => __( 'Profile Fields', MS_TEXT_DOMAIN ),
+			'title' => __( 'Profile Fields', 'membership2' ),
 			'url' => MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => self::ID )
@@ -178,34 +178,34 @@ class MS_Addon_Profilefields extends MS_Addon {
 		if ( null === $Profile_Fields ) {
 			$Profile_Fields = array(
 				'username' => array(
-					'label' => __( 'Username', MS_TEXT_DOMAIN ),
+					'label' => __( 'Username', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'default_reg' => 'required',
 					'allowed_reg' => array( 'off', 'required' ),
 					'allowed_edit' => array( 'off', 'readonly' ),
 				),
 				'first_name' => array(
-					'label' => __( 'First Name', MS_TEXT_DOMAIN ),
+					'label' => __( 'First Name', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'default_reg' => 'optional',
 					'default_edit' => 'optional',
 				),
 				'last_name' => array(
-					'label' => __( 'Last Name', MS_TEXT_DOMAIN ),
+					'label' => __( 'Last Name', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'default_reg' => 'optional',
 					'default_edit' => 'optional',
 				),
 				'nickname' => array(
-					'label' => __( 'Nickname', MS_TEXT_DOMAIN ),
+					'label' => __( 'Nickname', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				),
 				'display_name' => array(
-					'label' => __( 'Display As', MS_TEXT_DOMAIN ),
+					'label' => __( 'Display As', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				),
 				'email' => array(
-					'label' => __( 'Email', MS_TEXT_DOMAIN ),
+					'label' => __( 'Email', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_EMAIL,
 					'default_reg' => 'required',
 					'default_edit' => 'required',
@@ -213,15 +213,15 @@ class MS_Addon_Profilefields extends MS_Addon {
 					'allowed_edit' => array( 'required' ),
 				),
 				'website' => array(
-					'label' => __( 'Website', MS_TEXT_DOMAIN ),
+					'label' => __( 'Website', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				),
 				'description' => array(
-					'label' => __( 'Biographic Info', MS_TEXT_DOMAIN ),
+					'label' => __( 'Biographic Info', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 				),
 				'password' => array(
-					'label' => __( 'Password', MS_TEXT_DOMAIN ),
+					'label' => __( 'Password', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
 					'default_reg' => 'required',
 					'default_edit' => 'optional',
@@ -229,7 +229,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 					'allowed_edit' => array( 'off', 'optional' ),
 				),
 				'password2' => array(
-					'label' => __( 'Password Confirmation', MS_TEXT_DOMAIN ),
+					'label' => __( 'Password Confirmation', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
 					'default_reg' => 'required',
 					'default_edit' => 'optional',

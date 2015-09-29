@@ -86,7 +86,7 @@ class MS_Controller_Import extends MS_Controller {
 			$match_id = $_POST['match_with'];
 
 			if ( MS_Model_Import::match_with_source( $match_id, $source_id, $source ) ) {
-				$res = 'OK:' . __( 'Matching details saved. Future transactions are automatically processed from now on!', MS_TEXT_DOMAIN );
+				$res = 'OK:' . __( 'Matching details saved. Future transactions are automatically processed from now on!', 'membership2' );
 			}
 		}
 
@@ -264,7 +264,7 @@ class MS_Controller_Import extends MS_Controller {
 				} catch( Exception $ex ) {
 					self::_message(
 						'error',
-						__( 'Coming soon: This import source is not supported yet...', MS_TEXT_DOMAIN )
+						__( 'Coming soon: This import source is not supported yet...', 'membership2' )
 					);
 				}
 
@@ -301,14 +301,14 @@ class MS_Controller_Import extends MS_Controller {
 		$data = array(
 			'ms_init' => array( 'view_settings_import' ),
 			'lang' => array(
-				'progress_title' => __( 'Importing data...', MS_TEXT_DOMAIN ),
-				'close_progress' => __( 'Okay', MS_TEXT_DOMAIN ),
-				'import_done' => __( 'All done!', MS_TEXT_DOMAIN ),
-				'task_start' => __( 'Preparing...', MS_TEXT_DOMAIN ),
-				'task_done' => __( 'Cleaning up...', MS_TEXT_DOMAIN ),
-				'task_import_member' => __( 'Importing Member', MS_TEXT_DOMAIN ),
-				'task_import_membership' => __( 'Importing Membership', MS_TEXT_DOMAIN ),
-				'task_import_settings' => __( 'Importing Settings', MS_TEXT_DOMAIN ),
+				'progress_title' => __( 'Importing data...', 'membership2' ),
+				'close_progress' => __( 'Okay', 'membership2' ),
+				'import_done' => __( 'All done!', 'membership2' ),
+				'task_start' => __( 'Preparing...', 'membership2' ),
+				'task_done' => __( 'Cleaning up...', 'membership2' ),
+				'task_import_member' => __( 'Importing Member', 'membership2' ),
+				'task_import_membership' => __( 'Importing Membership', 'membership2' ),
+				'task_import_settings' => __( 'Importing Settings', 'membership2' ),
 			),
 		);
 

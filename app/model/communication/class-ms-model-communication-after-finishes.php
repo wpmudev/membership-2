@@ -26,8 +26,8 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	 * @param array $field A HTML definition, passed to lib3()->html->element()
 	 */
 	public function set_period_name( $field ) {
-		$field['title'] = __( 'Message Delay', MS_TEXT_DOMAIN );
-		$field['desc'] = __( 'Use "0" to send instantly, or another value to delay the message.', MS_TEXT_DOMAIN );
+		$field['title'] = __( 'Message Delay', 'membership2' );
+		$field['desc'] = __( 'Use "0" to send instantly, or another value to delay the message.', 'membership2' );
 
 		return $field;
 	}
@@ -40,7 +40,7 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent a predefined number of days after the membership finishes. You must decide how many days after a message is to be sent.', MS_TEXT_DOMAIN
+			'Sent a predefined number of days after the membership finishes. You must decide how many days after a message is to be sent.', 'membership2'
 		);
 	}
 
@@ -53,7 +53,7 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Reminder: your %s membership has ended', MS_TEXT_DOMAIN ),
+			__( 'Reminder: your %s membership has ended', 'membership2' ),
 			self::COMM_VAR_MS_NAME
 		);
 		$this->message = self::get_default_message();
@@ -75,17 +75,17 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'This is a reminder that your %1$s membership at %2$s has ended on %3$s.', MS_TEXT_DOMAIN ),
+			__( 'This is a reminder that your %1$s membership at %2$s has ended on %3$s.', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME,
 			self::COMM_VAR_MS_EXPIRY_DATE
 		);
 		$body_renew = sprintf(
-			__( 'You can renew your membership here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'You can renew your membership here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
 

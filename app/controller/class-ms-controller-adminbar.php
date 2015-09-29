@@ -220,11 +220,11 @@ class MS_Controller_Adminbar extends MS_Controller {
 					'ms_controller_adminbar_add_test_membership_node',
 					array(
 						'id'     => 'ms-test-memberships',
-						'title'  => __( 'Test Memberships', MS_TEXT_DOMAIN ),
+						'title'  => __( 'Test Memberships', 'membership2' ),
 						'href'   => $link_url,
 						'meta'   => array(
 							'class'    => 'ms-test-memberships',
-							'title'    => __( 'Membership Simulation Menu', MS_TEXT_DOMAIN ),
+							'title'    => __( 'Membership Simulation Menu', 'membership2' ),
 							'tabindex' => '1',
 						),
 					)
@@ -252,11 +252,11 @@ class MS_Controller_Adminbar extends MS_Controller {
 				'ms_controller_adminbar_add_unprotected_node',
 				array(
 					'id'     => 'ms-unprotected',
-					'title'  => __( 'Content Protection is disabled', MS_TEXT_DOMAIN ),
+					'title'  => __( 'Content Protection is disabled', 'membership2' ),
 					'href'   => $link_url,
 					'meta'   => array(
 						'class'    => 'ms-unprotected',
-						'title'    => __( 'Content of this site is unprotected', MS_TEXT_DOMAIN ),
+						'title'    => __( 'Content of this site is unprotected', 'membership2' ),
 						'tabindex' => '1',
 					),
 				)
@@ -290,7 +290,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 		$wp_admin_bar->add_menu(
 			array(
 				'id'    => 'membership-details',
-				'title' => __( 'Protection Details', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protection Details', 'membership2' ),
 				'href'  => '#',
 			)
 		);
@@ -369,7 +369,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 	public function enqueue_scripts() {
 		$data = array(
 			'ms_init' => array( 'controller_adminbar' ),
-			'switching_text' => __( 'Switching...', MS_TEXT_DOMAIN ),
+			'switching_text' => __( 'Switching...', 'membership2' ),
 		);
 
 		lib3()->ui->add( 'select' );

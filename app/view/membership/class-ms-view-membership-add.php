@@ -20,15 +20,15 @@ class MS_View_Membership_Add extends MS_View {
 			<?php
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
-					'desc' => __( 'First up, choose a name and a type for your membership site.', MS_TEXT_DOMAIN ),
+					'title' => __( 'Create New Membership', 'membership2' ),
+					'desc' => __( 'First up, choose a name and a type for your membership site.', 'membership2' ),
 				)
 			);
 			?>
 			<div class="ms-settings ms-membership-add ms-cols-<?php echo esc_attr( $cols ); ?>">
 				<form method="post" id="ms-choose-type-form">
 					<div class="ms-settings-row cf">
-						<h3><?php _e( 'Choose a membership type:', MS_TEXT_DOMAIN ); ?></h3>
+						<h3><?php _e( 'Choose a membership type:', 'membership2' ); ?></h3>
 						<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
 					</div>
 					<div class="ms-settings-row cf">
@@ -78,20 +78,20 @@ class MS_View_Membership_Add extends MS_View {
 				'class' => 'ms-choose-type',
 				'field_options' => array(
 					MS_Model_Membership::TYPE_STANDARD => array(
-						'text' => __( 'Standard Membership', MS_TEXT_DOMAIN ),
-						'desc' => __( 'Make your content available to Members and hidden to Guests (logged-out users).', MS_TEXT_DOMAIN ),
+						'text' => __( 'Standard Membership', 'membership2' ),
+						'desc' => __( 'Make your content available to Members and hidden to Guests (logged-out users).', 'membership2' ),
 					),
 					MS_Model_Membership::TYPE_DRIPPED => array(
-						'text' => __( 'Dripped Content Membership.', MS_TEXT_DOMAIN ),
-						'desc' => __( 'Set-up membership content to be released / made available in intervals.', MS_TEXT_DOMAIN ),
+						'text' => __( 'Dripped Content Membership.', 'membership2' ),
+						'desc' => __( 'Set-up membership content to be released / made available in intervals.', 'membership2' ),
 					),
 					MS_Model_Membership::TYPE_GUEST => array(
-						'text' => __( 'Guest Membership', MS_TEXT_DOMAIN ),
-						'desc' => __( 'Make your content available only to Guests (logged-out users).', MS_TEXT_DOMAIN ),
+						'text' => __( 'Guest Membership', 'membership2' ),
+						'desc' => __( 'Make your content available only to Guests (logged-out users).', 'membership2' ),
 					),
 					MS_Model_Membership::TYPE_USER => array(
-						'text' => __( 'Default Membership', MS_TEXT_DOMAIN ),
-						'desc' => __( 'Content is available to all logged-in users that did not join any other Membership yet.', MS_TEXT_DOMAIN ),
+						'text' => __( 'Default Membership', 'membership2' ),
+						'desc' => __( 'Content is available to all logged-in users that did not join any other Membership yet.', 'membership2' ),
 					),
 				),
 			),
@@ -99,15 +99,15 @@ class MS_View_Membership_Add extends MS_View {
 			'name' => array(
 				'id' => 'name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Name Your Membership:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Name Your Membership:', 'membership2' ),
 				'value' => $membership->name,
 				'class' => 'ms-text-large',
-				'placeholder' => __( 'Choose a name that will identify this membership...', MS_TEXT_DOMAIN ),
+				'placeholder' => __( 'Choose a name that will identify this membership...', 'membership2' ),
 				'label_type' => 'h3',
 				'wrapper_class' => 'opt',
 				'after' => sprintf(
 					'<span class="locked-info">%1$s</span>',
-					__( 'Not available for this Membership', MS_TEXT_DOMAIN )
+					__( 'Not available for this Membership', 'membership2' )
 				),
 			),
 
@@ -115,11 +115,11 @@ class MS_View_Membership_Add extends MS_View {
 				'public' => array(
 					'id' => 'public',
 					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-					'title' => __( 'Allow users to register for this membership.', MS_TEXT_DOMAIN ),
-					'desc' => __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', MS_TEXT_DOMAIN ),
+					'title' => __( 'Allow users to register for this membership.', 'membership2' ),
+					'desc' => __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', 'membership2' ),
 					'after' => sprintf(
 						'<span class="locked-info">%1$s</span>',
-						__( 'Not available for this Membership', MS_TEXT_DOMAIN )
+						__( 'Not available for this Membership', 'membership2' )
 					),
 					'value' => ! $membership->private,
 				),
@@ -132,11 +132,11 @@ class MS_View_Membership_Add extends MS_View {
 				'paid' => array(
 					'id' => 'paid',
 					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-					'title' => __( 'This is a paid membership.', MS_TEXT_DOMAIN ),
-					'desc' => __( 'Choose this if you want to receive payments from members via Payment Gateways.', MS_TEXT_DOMAIN ),
+					'title' => __( 'This is a paid membership.', 'membership2' ),
+					'desc' => __( 'Choose this if you want to receive payments from members via Payment Gateways.', 'membership2' ),
 					'after' => sprintf(
 						'<span class="locked-info">%1$s</span>',
-						__( 'Not available for this Membership', MS_TEXT_DOMAIN )
+						__( 'Not available for this Membership', 'membership2' )
 					),
 					'value' => ! $membership->is_free(),
 				),
@@ -172,7 +172,7 @@ class MS_View_Membership_Add extends MS_View {
 					'cancel' => array(
 						'id' => 'cancel',
 						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-						'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+						'value' => __( 'Cancel', 'membership2' ),
 						'data_ms' => array(
 							'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 							'field' => 'initial_setup',
@@ -182,7 +182,7 @@ class MS_View_Membership_Add extends MS_View {
 					'save' => array(
 						'id' => 'save',
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Save and continue', MS_TEXT_DOMAIN ) . ' &raquo;',
+						'value' => __( 'Save and continue', 'membership2' ) . ' &raquo;',
 					),
 			),
 		);

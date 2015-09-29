@@ -152,7 +152,7 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 			$fields['submit'] = array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Signup', MS_TEXT_DOMAIN ),
+				'value' => __( 'Signup', 'membership2' ),
 			);
 
 			if ( $gateway->pay_button_url ) {

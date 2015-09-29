@@ -16,7 +16,7 @@ class MS_View_Frontend_Payment extends MS_View {
 		$class = 'ms-alert-success';
 		$msg = __(
 			'Please check the details of the membership below and click ' .
-			'on the relevant button to complete the signup.', MS_TEXT_DOMAIN
+			'on the relevant button to complete the signup.', 'membership2'
 		);
 
 		if ( ! empty( $this->data['error'] ) ) {
@@ -48,7 +48,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					if ( in_array( $tmp_subscription->status, $valid_status ) ) {
 						$cancel_warning = __(
 							'Your other Memberships will be cancelled when you complete this payment.',
-							MS_TEXT_DOMAIN
+							'membership2'
 						);
 						break;
 					}
@@ -64,12 +64,12 @@ class MS_View_Frontend_Payment extends MS_View {
 
 				if ( 1 == count( $names ) ) {
 					$cancel_warning = sprintf(
-						__( 'When you complete this payment your Membership "%s" will be cancelled.', MS_TEXT_DOMAIN ),
+						__( 'When you complete this payment your Membership "%s" will be cancelled.', 'membership2' ),
 						$names[0]
 					);
 				} elseif ( 1 < count( $names ) ) {
 					$cancel_warning = sprintf(
-						__( 'When you complete this payment the following Memberships will be cancelled: %s.', MS_TEXT_DOMAIN ),
+						__( 'When you complete this payment the following Memberships will be cancelled: %s.', 'membership2' ),
 						implode( ', ', $names )
 					);
 				}
@@ -133,14 +133,14 @@ class MS_View_Frontend_Payment extends MS_View {
 		ob_start();
 		?>
 		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-			<legend><?php _e( 'Join Membership', MS_TEXT_DOMAIN ) ?></legend>
+			<legend><?php _e( 'Join Membership', 'membership2' ) ?></legend>
 			<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
 				<?php echo $msg; ?>
 			</p>
 			<table class="ms-purchase-table">
 				<tr>
 					<td class="ms-title-column">
-						<?php _e( 'Name', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'Name', 'membership2' ); ?>
 					</td>
 					<td class="ms-details-column">
 						<?php echo esc_html( $membership->name ); ?>
@@ -150,7 +150,7 @@ class MS_View_Frontend_Payment extends MS_View {
 				<?php if ( $membership->description ) : ?>
 					<tr>
 						<td class="ms-title-column">
-							<?php _e( 'Description', MS_TEXT_DOMAIN ); ?>
+							<?php _e( 'Description', 'membership2' ); ?>
 						</td>
 						<td class="ms-desc-column">
 							<span class="ms-membership-description"><?php
@@ -164,7 +164,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php if ( $invoice->discount || $invoice->pro_rate || $invoice->tax_rate ) : ?>
 					<tr>
 						<td class="ms-title-column">
-							<?php _e( 'Price', MS_TEXT_DOMAIN ); ?>
+							<?php _e( 'Price', 'membership2' ); ?>
 						</td>
 						<td class="ms-details-column">
 							<?php
@@ -175,7 +175,7 @@ class MS_View_Frontend_Payment extends MS_View {
 									MS_Helper_Billing::format_price( $membership->price )
 								);
 							} else {
-								_e( 'Free', MS_TEXT_DOMAIN );
+								_e( 'Free', 'membership2' );
 							}
 							?>
 						</td>
@@ -185,7 +185,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php if ( $invoice->discount ) : ?>
 						<tr>
 							<td class="ms-title-column">
-								<?php _e( 'Coupon Discount', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Coupon Discount', 'membership2' ); ?>
 							</td>
 							<td class="ms-price-column">
 								<?php
@@ -202,7 +202,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php if ( $invoice->pro_rate ) : ?>
 						<tr>
 							<td class="ms-title-column">
-								<?php _e( 'Pro-Rate Discount', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Pro-Rate Discount', 'membership2' ); ?>
 							</td>
 							<td class="ms-price-column">
 								<?php
@@ -221,7 +221,7 @@ class MS_View_Frontend_Payment extends MS_View {
 							<td class="ms-title-column">
 								<?php
 								printf(
-									__( 'Taxes %s', MS_TEXT_DOMAIN ),
+									__( 'Taxes %s', 'membership2' ),
 									'<a href="#" class="ms-tax-editor"><small>(' . $invoice->tax_name . ')</small></a>'
 								);
 								?>
@@ -240,7 +240,7 @@ class MS_View_Frontend_Payment extends MS_View {
 
 					<tr>
 						<td class="ms-title-column">
-							<?php _e( 'Total', MS_TEXT_DOMAIN ); ?>
+							<?php _e( 'Total', 'membership2' ); ?>
 						</td>
 						<td class="ms-price-column ms-total">
 							<?php
@@ -251,7 +251,7 @@ class MS_View_Frontend_Payment extends MS_View {
 									MS_Helper_Billing::format_price( $invoice->total )
 								);
 							} else {
-								_e( 'Free', MS_TEXT_DOMAIN );
+								_e( 'Free', 'membership2' );
 							}
 							?>
 						</td>
@@ -260,7 +260,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<?php if ( $is_trial ) : ?>
 						<tr>
 							<td class="ms-title-column">
-								<?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Payment due', 'membership2' ); ?>
 							</td>
 							<td class="ms-desc-column"><?php
 								echo MS_Helper_Period::format_date( $invoice->due_date );
@@ -268,7 +268,7 @@ class MS_View_Frontend_Payment extends MS_View {
 						</tr>
 						<tr>
 							<td class="ms-title-column">
-								<?php _e( 'Trial price', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Trial price', 'membership2' ); ?>
 							</td>
 							<td class="ms-desc-column">
 							<?php
@@ -279,7 +279,7 @@ class MS_View_Frontend_Payment extends MS_View {
 									MS_Helper_Billing::format_price( $invoice->trial_price )
 								);
 							} else {
-								_e( 'Free', MS_TEXT_DOMAIN );
+								_e( 'Free', 'membership2' );
 							}
 							?>
 							</td>
@@ -318,7 +318,7 @@ class MS_View_Frontend_Payment extends MS_View {
 					<tr>
 						<td class="ms-desc-adminnote" colspan="2">
 							<em><?php
-							_e( 'As admin user you already have access to this membership', MS_TEXT_DOMAIN );
+							_e( 'As admin user you already have access to this membership', 'membership2' );
 							?></em>
 						</td>
 					</tr>

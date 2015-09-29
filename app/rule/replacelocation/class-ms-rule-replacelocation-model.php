@@ -165,7 +165,7 @@ class MS_Rule_ReplaceLocation_Model extends MS_Rule {
 	 */
 	public function get_matching_options( $args = null ) {
 		$options = array(
-			0 => __( '( Default Menu )', MS_TEXT_DOMAIN ),
+			0 => __( '( Default Menu )', 'membership2' ),
 		);
 
 		$options += $this->get_menu_array();
@@ -191,7 +191,7 @@ class MS_Rule_ReplaceLocation_Model extends MS_Rule {
 	public function get_menu_array() {
 		if ( empty( $this->menus ) ) {
 			$this->menus = array(
-				__( 'No menus found.', MS_TEXT_DOMAIN ),
+				__( 'No menus found.', 'membership2' ),
 			);
 
 			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
@@ -226,7 +226,7 @@ class MS_Rule_ReplaceLocation_Model extends MS_Rule {
 	 */
 	public function get_nav_array() {
 		$contents = array(
-			__( 'No menus found.', MS_TEXT_DOMAIN ),
+			__( 'No menus found.', 'membership2' ),
 		);
 
 		$areas = get_registered_nav_menus();

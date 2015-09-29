@@ -100,12 +100,12 @@ class MS_Model_Upgrade extends MS_Model {
 			// Prepare the Update message.
 			if ( ! $version_changed ) {
 				$msg[] = sprintf(
-					__( '<strong>Membership 2</strong> is set up for version %1$s!' , MS_TEXT_DOMAIN ),
+					__( '<strong>Membership 2</strong> is set up for version %1$s!' , 'membership2' ),
 					$new_version
 				);
 			} else {
 				$msg[] = sprintf(
-					__( '<strong>Membership 2</strong> was updated to version %1$s!' , MS_TEXT_DOMAIN ),
+					__( '<strong>Membership 2</strong> was updated to version %1$s!' , 'membership2' ),
 					$new_version
 				);
 			}
@@ -118,7 +118,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 			if ( ! empty( $new_pages ) ) {
 				$msg[] = sprintf(
-					__( 'New Membership pages created: "%1$s".', MS_TEXT_DOMAIN ),
+					__( 'New Membership pages created: "%1$s".', 'membership2' ),
 					implode( '", "', $new_pages )
 				);
 			}
@@ -266,7 +266,7 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 
 		// Execute all queued actions!
-		lib3()->updates->plugin( MS_TEXT_DOMAIN );
+		lib3()->updates->plugin( 'membership2' );
 		lib3()->updates->execute();
 	}
 
@@ -310,7 +310,7 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 
 		// Execute all queued actions!
-		lib3()->updates->plugin( MS_TEXT_DOMAIN );
+		lib3()->updates->plugin( 'membership2' );
 		lib3()->updates->execute();
 	}
 
@@ -366,7 +366,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 			if ( false !== strpos( MS_Plugin::instance()->dir, $old_dir ) ) {
 				lib3()->ui->admin_message(
-					__( '<b>Upgrade warning</b>:<br>The Membership 2 plugin is installed in an deprecated folder. Some users did report issues when the plugin is installed in this directory.<br>To fix this issue please follow these steps:<br><br>1. Delete* the old Membership Premium plugin if it is still installed.<br>2. Delete* the Membership 2 plugin.<br>3. Re-install Membership 2 from the WPMU Dashboard - your existing data is not affected by this.<br><br>*) <em>Only deactivating the plugins does not work, you have to delete them.</em>', MS_TEXT_DOMAIN ),
+					__( '<b>Upgrade warning</b>:<br>The Membership 2 plugin is installed in an deprecated folder. Some users did report issues when the plugin is installed in this directory.<br>To fix this issue please follow these steps:<br><br>1. Delete* the old Membership Premium plugin if it is still installed.<br>2. Delete* the Membership 2 plugin.<br>3. Re-install Membership 2 from the WPMU Dashboard - your existing data is not affected by this.<br><br>*) <em>Only deactivating the plugins does not work, you have to delete them.</em>', 'membership2' ),
 					'error'
 				);
 			}
@@ -537,7 +537,7 @@ class MS_Model_Upgrade extends MS_Model {
 					if ( ! is_plugin_active_for_network( MS_PLUGIN ) ) {
 						activate_plugin( MS_PLUGIN, null, true );
 						lib3()->ui->admin_message(
-							__( 'Info: Membership2 is not activated network-wide', MS_TEXT_DOMAIN )
+							__( 'Info: Membership2 is not activated network-wide', 'membership2' )
 						);
 					}
 				}
@@ -547,7 +547,7 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( false === strpos( get_option( 'permalink_structure' ), '%postname%' ) ) {
 				lib3()->ui->admin_message(
 					sprintf(
-						__( 'Your %sPermalink structure%s should include the %sPost name%s to ensure Membership 2 is working correctly.', MS_TEXT_DOMAIN ),
+						__( 'Your %sPermalink structure%s should include the %sPost name%s to ensure Membership 2 is working correctly.', 'membership2' ),
 						'<a href="' . admin_url( 'options-permalink.php' ) . '">',
 						'</a>',
 						'<strong>',
@@ -707,7 +707,7 @@ class MS_Model_Upgrade extends MS_Model {
 			if ( ! self::verify_token( 'reset' ) ) { return false; }
 
 			self::cleanup_db();
-			$msg = __( 'Membership 2 successfully reset!', MS_TEXT_DOMAIN );
+			$msg = __( 'Membership 2 successfully reset!', 'membership2' );
 			lib3()->ui->admin_message( $msg );
 
 			wp_safe_redirect( MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) );
@@ -732,24 +732,24 @@ class MS_Model_Upgrade extends MS_Model {
 
 			if ( ! self::verify_token( 'restore' ) ) { return false; }
 
-			lib3()->updates->plugin( MS_TEXT_DOMAIN );
+			lib3()->updates->plugin( 'membership2' );
 			if ( lib3()->updates->restore( $snapshot ) ) {
 				printf(
 					'<p>' .
-					__( 'The Membership2 Snapshot "%s" was restored!', MS_TEXT_DOMAIN ) .
+					__( 'The Membership2 Snapshot "%s" was restored!', 'membership2' ) .
 					'</p>',
 					$snapshot
 				);
 
 				printf(
 					'<p><b>' .
-					__( 'To prevent auto-updating the DB again we stop here!', MS_TEXT_DOMAIN ) .
+					__( 'To prevent auto-updating the DB again we stop here!', 'membership2' ) .
 					'</b></p>'
 				);
 
 				printf(
 					'<p>' .
-					__( 'You now have the option to <br />(A) downgrade the plugin to an earlier version via FTP or <br />(B) to %sre-run the upgrade process%s.', MS_TEXT_DOMAIN ) .
+					__( 'You now have the option to <br />(A) downgrade the plugin to an earlier version via FTP or <br />(B) to %sre-run the upgrade process%s.', 'membership2' ) .
 					'</p>',
 					'<a href="' . MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) . '">',
 					'</a>'

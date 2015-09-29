@@ -43,9 +43,9 @@ class MS_Gateway_Manual extends MS_Gateway {
 		parent::after_load();
 
 		$this->id = self::ID;
-		$this->name = __( 'Manual Payment Gateway', MS_TEXT_DOMAIN );
-		$this->description = __( '(Bank orders, cash, etc)', MS_TEXT_DOMAIN );
-		$this->group = __( 'Manual Payment', MS_TEXT_DOMAIN );
+		$this->name = __( 'Manual Payment Gateway', 'membership2' );
+		$this->description = __( '(Bank orders, cash, etc)', 'membership2' );
+		$this->group = __( 'Manual Payment', 'membership2' );
 		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
 
@@ -87,21 +87,21 @@ class MS_Gateway_Manual extends MS_Gateway {
 				$link = MS_Controller_Plugin::get_admin_url( 'settings' );
 				ob_start();
 				?>
-					<?php _e( 'This is only an example of manual payment gateway instructions', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'This is only an example of manual payment gateway instructions', 'membership2' ); ?>
 					<br />
 					<?php
 					printf(
-						__( 'Edit it %shere%s', MS_TEXT_DOMAIN ),
+						__( 'Edit it %shere%s', 'membership2' ),
 						'<a href="' . $link . '">',
 						'</a>'
 					);
 					?>
 					<br /><br />
-					<?php _e( 'Name: Example name.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Name: Example name.', 'membership2' ); ?>
 					<br />
-					<?php _e( 'Bank: Example bank.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Bank: Example bank.', 'membership2' ); ?>
 					<br />
-					<?php _e( 'Bank account: Example bank account 1234.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Bank account: Example bank account 1234.', 'membership2' ); ?>
 					<br />
 				<?php
 				$this->payment_info = ob_get_clean();
@@ -117,7 +117,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 				$invoice = $subscription->get_current_invoice();
 				$this->payment_info .= sprintf(
 					'<div class="ms-manual-price">%s: <span class="ms-price">%s%s</span></div>',
-					__( 'Total value', MS_TEXT_DOMAIN ),
+					__( 'Total value', 'membership2' ),
 					$invoice->currency,
 					$invoice->total
 				);

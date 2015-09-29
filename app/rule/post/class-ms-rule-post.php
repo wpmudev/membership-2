@@ -19,7 +19,7 @@ class MS_Rule_Post extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Posts', MS_TEXT_DOMAIN ),
+				__( 'Posts', 'membership2' ),
 				11,
 				true // can be dripped
 			);

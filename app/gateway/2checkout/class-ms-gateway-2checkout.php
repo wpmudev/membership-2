@@ -42,8 +42,8 @@ class MS_Gateway_2checkout extends MS_Gateway {
 		parent::after_load();
 
 		$this->id = self::ID;
-		$this->name = __( '2Checkout', MS_TEXT_DOMAIN );
-		$this->group = __( '2Checkout', MS_TEXT_DOMAIN );
+		$this->name = __( '2Checkout', 'membership2' );
+		$this->group = __( '2Checkout', 'membership2' );
 		$this->manual_payment = false; // Recurring charged automatically
 	}
 

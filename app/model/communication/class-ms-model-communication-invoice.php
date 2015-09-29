@@ -25,7 +25,7 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 	 * @return string The description.
 	 */
 	public function get_description() {
-		return __( 'Sent each time a payment has been made.', MS_TEXT_DOMAIN );
+		return __( 'Sent each time a payment has been made.', 'membership2' );
 	}
 
 	/**
@@ -37,7 +37,7 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Your %s membership receipt', MS_TEXT_DOMAIN ),
+			__( 'Your %s membership receipt', 'membership2' ),
 			self::COMM_VAR_MS_NAME
 		);
 		$this->message = self::get_default_message();
@@ -58,15 +58,15 @@ class MS_Model_Communication_Invoice extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'We\'ve received your payment for your %1$s membership at %2$s. Thanks!', MS_TEXT_DOMAIN ),
+			__( 'We\'ve received your payment for your %1$s membership at %2$s. Thanks!', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
-		$body_invoice = __( 'Here are your latest payment details:', MS_TEXT_DOMAIN );
+		$body_invoice = __( 'Here are your latest payment details:', 'membership2' );
 
 		$html = sprintf(
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s<br /><br />%4$s',

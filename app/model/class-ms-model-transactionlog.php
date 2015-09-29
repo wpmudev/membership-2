@@ -196,7 +196,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Transaction Logs', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Transaction Logs', 'membership2' ),
 			'supports'            => array(),
 			'hierarchical'        => false,
 			'public'              => false,

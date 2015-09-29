@@ -11,8 +11,8 @@ class MS_Rule_Page_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Apply protection to Pages and and grant access to members', MS_TEXT_DOMAIN ),
-				'desc' => __( 'All pages that do not have Content Protection applied are visible to Everyone', MS_TEXT_DOMAIN ),
+				'title' => __( 'Apply protection to Pages and and grant access to members', 'membership2' ),
+				'desc' => __( 'All pages that do not have Content Protection applied are visible to Everyone', 'membership2' ),
 			),
 			MS_Rule_Page::RULE_ID,
 			$this
@@ -25,7 +25,7 @@ class MS_Rule_Page_View extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
+			$rule_listtable->search_box( __( 'Pages', 'membership2' ) );
 			?>
 			<form action="" method="post">
 				<?php

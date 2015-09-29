@@ -20,10 +20,10 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 
 	public function get_columns() {
 		$columns = array(
-			'post_modified' => __( 'Date', MS_TEXT_DOMAIN ),
-			'user_id' => __( 'Member', MS_TEXT_DOMAIN ),
-			'membership_id' => __( 'Membership', MS_TEXT_DOMAIN ),
-			'description' => __( 'Event', MS_TEXT_DOMAIN ),
+			'post_modified' => __( 'Date', 'membership2' ),
+			'user_id' => __( 'Member', 'membership2' ),
+			'membership_id' => __( 'Membership', 'membership2' ),
+			'description' => __( 'Event', 'membership2' ),
 		);
 
 		if ( isset( $_REQUEST['membership_id'] ) ) {

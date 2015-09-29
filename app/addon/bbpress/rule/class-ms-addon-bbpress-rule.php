@@ -18,7 +18,7 @@ class MS_Addon_Bbpress_Rule extends MS_Controller {
 		MS_Model_Rule::register_rule(
 			self::RULE_ID,
 			__CLASS__,
-			__( 'bbPress', MS_TEXT_DOMAIN ),
+			__( 'bbPress', 'membership2' ),
 			100
 		);
 

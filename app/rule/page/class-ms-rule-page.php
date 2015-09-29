@@ -19,7 +19,7 @@ class MS_Rule_Page extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Pages', MS_TEXT_DOMAIN ),
+				__( 'Pages', 'membership2' ),
 				50,
 				true // can be dripped
 			);

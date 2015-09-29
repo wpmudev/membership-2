@@ -19,7 +19,7 @@ class MS_Rule_Category extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Categories', MS_TEXT_DOMAIN ),
+				__( 'Categories', 'membership2' ),
 				20,
 				true
 			);

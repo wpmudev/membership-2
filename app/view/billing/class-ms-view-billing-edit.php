@@ -28,9 +28,9 @@ class MS_View_Billing_Edit extends MS_View {
 		);
 
 		if ( $this->data['invoice']->is_valid() ) {
-			$title = __( 'Edit Billing', MS_TEXT_DOMAIN );
+			$title = __( 'Edit Billing', 'membership2' );
 		} else {
-			$title = __( 'Add Billing', MS_TEXT_DOMAIN );
+			$title = __( 'Add Billing', 'membership2' );
 		}
 
 		ob_start();
@@ -82,7 +82,7 @@ class MS_View_Billing_Edit extends MS_View {
 					'billing',
 					array( 'show' => 'logs', 'invoice' => $invoice->id )
 				),
-				__( 'Show Transactions', MS_TEXT_DOMAIN )
+				__( 'Show Transactions', 'membership2' )
 			);
 		} else {
 			$user_list = MS_Model_Member::get_usernames( null, MS_Model_Member::SEARCH_ALL_USERS );
@@ -97,7 +97,7 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'txt_user' => array(
 				'id' => 'txt_user',
-				'title' => __( 'Invoice for member', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice for member', 'membership2' ),
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'value' => sprintf(
 					'<a href="%s">%s</a>',
@@ -110,12 +110,12 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'txt_membership' => array(
 				'id' => 'txt_membership',
-				'title' => __( 'Payment for membership', MS_TEXT_DOMAIN ),
+				'title' => __( 'Payment for membership', 'membership2' ),
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			),
 			'txt_created' => array(
 				'id' => 'txt_created',
-				'title' => __( 'Invoice created on', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice created on', 'membership2' ),
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			),
 			'txt_separator' => array(
@@ -123,28 +123,28 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'status' => array(
 				'id' => 'status',
-				'title' => __( 'Invoice status', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice status', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => MS_Model_Invoice::get_status_types( true ),
 				'value' => $invoice->status,
 			),
 			'user_id' => array(
 				'id' => 'user_id',
-				'title' => __( 'Invoice for member', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invoice for member', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $invoice->user_id,
 				'field_options' => $user_list,
 			),
 			'membership_id' => array(
 				'id' => 'membership_id',
-				'title' => __( 'Payment for membership', MS_TEXT_DOMAIN ),
+				'title' => __( 'Payment for membership', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $invoice->membership_id,
 				'field_options' => $this->data['memberships'],
 			),
 			'amount' => array(
 				'id' => 'amount',
-				'title' => sprintf( __( 'Amount (%s)', MS_TEXT_DOMAIN ), $currency ),
+				'title' => sprintf( __( 'Amount (%s)', 'membership2' ), $currency ),
 				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => MS_Helper_Billing::format_price( $invoice->amount ),
 				'config' => array(
@@ -154,7 +154,7 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'discount' => array(
 				'id' => 'discount',
-				'title' => sprintf( __( 'Discount (%s)', MS_TEXT_DOMAIN ), $currency ),
+				'title' => sprintf( __( 'Discount (%s)', 'membership2' ), $currency ),
 				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => MS_Helper_Billing::format_price( $invoice->discount ),
 				'config' => array(
@@ -164,20 +164,20 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'due_date' => array(
 				'id' => 'due_date',
-				'title' => __( 'Due date', MS_TEXT_DOMAIN ),
+				'title' => __( 'Due date', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $invoice->due_date,
 			),
 			'description' => array(
 				'id' => 'description',
-				'title' => __( 'Description', MS_TEXT_DOMAIN ),
+				'title' => __( 'Description', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'class' => 'widefat',
 				'value' => $invoice->description,
 			),
 			'notes' => array(
 				'id' => 'notes',
-				'title' => __( 'Notes', MS_TEXT_DOMAIN ),
+				'title' => __( 'Notes', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 				'class' => 'widefat',
 				'value' => $invoice->get_notes_desc(),
@@ -202,22 +202,22 @@ class MS_View_Billing_Edit extends MS_View {
 			),
 			'execute' => array(
 				'id' => 'execute',
-				'title' => __( 'Execute status change actions on Save (add/remove membership)', MS_TEXT_DOMAIN ),
+				'title' => __( 'Execute status change actions on Save (add/remove membership)', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'value' => true,
 			),
 			'cancel' => array(
 				'id' => 'cancel',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
-				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+				'title' => __( 'Cancel', 'membership2' ),
+				'value' => __( 'Cancel', 'membership2' ),
 				'url' => esc_url_raw( remove_query_arg( array( 'action', 'invoice_id' ) ) ),
 				'class' => 'wpmui-field-button button',
 			),
 			'submit' => array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save Changes', 'membership2' ),
 			),
 		);
 

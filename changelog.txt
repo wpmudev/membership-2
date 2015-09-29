@@ -18,6 +18,7 @@ Change Log:
 - Fix bug in setup-wizard that sometimes did not finish after creating the first membership
 - Fix issue where Manual Payment displayed price multiple times (e.g. when using Yoast SEO)
 - Fix an issue with Internet Explorer privacy settings that caused IE to reject M2 cookies
+- Replace text-domain constant MS_TEXT_DOMAIN with string 'membership2' to comply with WordPress standards
 - Update several background libraries (mainly select2, fontawesome, jQueryUI)
 
 1.0.2.1

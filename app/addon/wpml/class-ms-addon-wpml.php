@@ -166,14 +166,14 @@ class MS_Addon_Wpml extends MS_Addon {
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
 			'icon' => 'dashicons dashicons-translation',
-			'name' => __( 'WPML Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Use WPML to translate plugin messages.', MS_TEXT_DOMAIN ),
+			'name' => __( 'WPML Integration', 'membership2' ),
+			'description' => __( 'Use WPML to translate plugin messages.', 'membership2' ),
 		);
 
 		if ( ! self::wpml_active() ) {
 			$list[ self::ID ]->description .= sprintf(
 				'<br /><b>%s</b>',
-				__( 'Activate WPML to use this Add-on', MS_TEXT_DOMAIN )
+				__( 'Activate WPML to use this Add-on', 'membership2' )
 			);
 			$list[ self::ID ]->action = '-';
 		}
@@ -236,8 +236,8 @@ class MS_Addon_Wpml extends MS_Addon {
 			lib3()->ui->admin_message(
 				sprintf(
 					'<b>%s</b><br>%s',
-					__( 'WPML not active!', MS_TEXT_DOMAIN ),
-					__( 'Heads up: Activate the WPML plugin to enable all translation features of Membership 2 Pro.', MS_TEXT_DOMAIN )
+					__( 'WPML not active!', 'membership2' ),
+					__( 'Heads up: Activate the WPML plugin to enable all translation features of Membership 2 Pro.', 'membership2' )
 				),
 				'err'
 			);
@@ -248,8 +248,8 @@ class MS_Addon_Wpml extends MS_Addon {
 			lib3()->ui->admin_message(
 				sprintf(
 					'<b>%s</b><br>%s',
-					__( 'Great, you\'re using WPML!', MS_TEXT_DOMAIN ),
-					__( 'Heads up: Your version of WPML is outdated. Please update WPML to version <b>3.2 or higher</b> to enable all translation features of Membership 2 Pro.', MS_TEXT_DOMAIN )
+					__( 'Great, you\'re using WPML!', 'membership2' ),
+					__( 'Heads up: Your version of WPML is outdated. Please update WPML to version <b>3.2 or higher</b> to enable all translation features of Membership 2 Pro.', 'membership2' )
 				),
 				'err'
 			);
@@ -260,8 +260,8 @@ class MS_Addon_Wpml extends MS_Addon {
 			lib3()->ui->admin_message(
 				sprintf(
 					'<b>%s</b><br>%s',
-					__( 'Great, you\'re using WPML!', MS_TEXT_DOMAIN ),
-					__( 'Heads up: To enable all the translation features of Membership 2 Pro you need to activate the <b>WPML String Translation</b> module.', MS_TEXT_DOMAIN )
+					__( 'Great, you\'re using WPML!', 'membership2' ),
+					__( 'Heads up: To enable all the translation features of Membership 2 Pro you need to activate the <b>WPML String Translation</b> module.', 'membership2' )
 				),
 				'err'
 			);
@@ -273,9 +273,9 @@ class MS_Addon_Wpml extends MS_Addon {
 				lib3()->ui->admin_message(
 					sprintf(
 						'<b>%s</b><br>%s',
-						__( 'Great, you\'re using WPML!', MS_TEXT_DOMAIN ),
+						__( 'Great, you\'re using WPML!', 'membership2' ),
 						sprintf(
-							__( 'Heads up: For the best translation experience we recommend to enable "<b>Set admin language as editing language</b>" in your %suser profile%s.', MS_TEXT_DOMAIN ),
+							__( 'Heads up: For the best translation experience we recommend to enable "<b>Set admin language as editing language</b>" in your %suser profile%s.', 'membership2' ),
 							'<a href="' . get_edit_user_link() . '#wpml">',
 							'</a>'
 						)
@@ -307,11 +307,11 @@ class MS_Addon_Wpml extends MS_Addon {
 		$icon = '<i class="dashicons dashicons-translation wpml-icon"></i>';
 
 		if ( $supported ) {
-			$label = __( 'WPML Support', MS_TEXT_DOMAIN );
-			$info = __( 'Translate by using the language switch in the toolbar.', MS_TEXT_DOMAIN );
+			$label = __( 'WPML Support', 'membership2' );
+			$info = __( 'Translate by using the language switch in the toolbar.', 'membership2' );
 		} else {
-			$label = __( 'WPML not supported', MS_TEXT_DOMAIN );
-			$info = __( 'Required module missing', MS_TEXT_DOMAIN );
+			$label = __( 'WPML not supported', 'membership2' );
+			$info = __( 'Required module missing', 'membership2' );
 			$classes[] = 'warning';
 			$icon .= '<i class="wpmui-fa wpmui-fa-exclamation-circle warning-icon"></i>';
 		}
@@ -418,7 +418,7 @@ class MS_Addon_Wpml extends MS_Addon {
 	public function change_general_settings( $fields, $view ) {
 		if ( $this->current_lang != $this->default_lang ) {
 			$fields['pages'] = sprintf(
-				__( 'You can change your settings for the Membership 2 Pages only when you switch to your <b>default langauge</b> (%s)', MS_TEXT_DOMAIN ),
+				__( 'You can change your settings for the Membership 2 Pages only when you switch to your <b>default langauge</b> (%s)', 'membership2' ),
 				strtoupper( $this->default_lang )
 			);
 		}

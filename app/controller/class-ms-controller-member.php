@@ -484,15 +484,15 @@ class MS_Controller_Member extends MS_Controller {
 
 			if ( 'email' == $field ) {
 				if ( ! is_email( $value ) ) {
-					$msg = __( 'Invalid Email address', MS_TEXT_DOMAIN );
+					$msg = __( 'Invalid Email address', 'membership2' );
 				} elseif ( email_exists( $value ) ) {
-					$msg = __( 'Email already taken', MS_TEXT_DOMAIN );
+					$msg = __( 'Email already taken', 'membership2' );
 				} else {
 					$msg = 1;
 				}
 			} elseif ( 'username' == $field ) {
 				if ( username_exists( $value ) ) {
-					$msg = __( 'Username already taken', MS_TEXT_DOMAIN );
+					$msg = __( 'Username already taken', 'membership2' );
 				} else {
 					$msg = 1;
 				}
@@ -713,7 +713,7 @@ class MS_Controller_Member extends MS_Controller {
 			// Members list
 			$data['ms_init'][] = 'view_member_list';
 			$data['lang'] = array(
-				'select_user' => __( 'Select an User', MS_TEXT_DOMAIN ),
+				'select_user' => __( 'Select an User', 'membership2' ),
 			);
 		}
 

@@ -221,57 +221,57 @@ class MS_Rule_Special_Model extends MS_Rule {
 
 			// Archive pages
 			$this->_content['archive'] = (object) array(
-				'label' => __( 'Any Archive page', MS_TEXT_DOMAIN ),
+				'label' => __( 'Any Archive page', 'membership2' ),
 				'url' => '',
 			);
 			$this->_content['author'] = (object) array(
-				'label' => __( 'Author Archives', MS_TEXT_DOMAIN ),
+				'label' => __( 'Author Archives', 'membership2' ),
 				'url' => '',
 			);
 			$this->_content['date'] = (object) array(
-				'label' => __( 'Any Date or Time Archive', MS_TEXT_DOMAIN ),
+				'label' => __( 'Any Date or Time Archive', 'membership2' ),
 				'url' => '',
 			);
 			$this->_content['year'] = (object) array(
-				'label' => __( 'Archive: Year', MS_TEXT_DOMAIN ),
+				'label' => __( 'Archive: Year', 'membership2' ),
 				'url' => $arch_year,
 			);
 			$this->_content['month'] = (object) array(
-				'label' => __( 'Archive: Month', MS_TEXT_DOMAIN ),
+				'label' => __( 'Archive: Month', 'membership2' ),
 				'url' => $arch_month,
 			);
 			$this->_content['day'] = (object) array(
-				'label' => __( 'Archive: Day', MS_TEXT_DOMAIN ),
+				'label' => __( 'Archive: Day', 'membership2' ),
 				'url' => $arch_day,
 			);
 			$this->_content['time'] = (object) array(
-				'label' => __( 'Archive: Time', MS_TEXT_DOMAIN ),
+				'label' => __( 'Archive: Time', 'membership2' ),
 				'url' => $arch_hour,
 			);
 
 			// Singular pages
 			$this->_content['front'] = (object) array(
-				'label' => __( 'Front Page', MS_TEXT_DOMAIN ),
+				'label' => __( 'Front Page', 'membership2' ),
 				'url' => $front_url,
 			);
 			$this->_content['home'] = (object) array(
-				'label' => __( 'Blog Index', MS_TEXT_DOMAIN ),
+				'label' => __( 'Blog Index', 'membership2' ),
 				'url' => $home_url,
 			);
 			$this->_content['notfound'] = (object) array(
-				'label' => __( '404 Not Found', MS_TEXT_DOMAIN ),
+				'label' => __( '404 Not Found', 'membership2' ),
 				'url' => '',
 			);
 			$this->_content['search'] = (object) array(
-				'label' => __( 'Search Results', MS_TEXT_DOMAIN ),
+				'label' => __( 'Search Results', 'membership2' ),
 				'url' => '',
 			);
 			$this->_content['single'] = (object) array(
-				'label' => __( 'Any single page or post', MS_TEXT_DOMAIN ),
+				'label' => __( 'Any single page or post', 'membership2' ),
 				'url' => '',
 			);
 			$this->_content['attachment'] = (object) array(
-				'label' => __( 'Any attachment page', MS_TEXT_DOMAIN ),
+				'label' => __( 'Any attachment page', 'membership2' ),
 				'url' => '',
 			);
 		}

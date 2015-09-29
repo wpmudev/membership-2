@@ -32,7 +32,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 		$inv_title = sprintf(
 			'<a href="%s">%s</a>',
 			get_permalink( $invoice->id ),
-			esc_html( __( 'Invoice ', MS_TEXT_DOMAIN ) . $invoice_number )
+			esc_html( __( 'Invoice ', 'membership2' ) . $invoice_number )
 		);
 
 		if ( $invoice->amount > 0 ) {
@@ -42,7 +42,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 				MS_Helper_Billing::format_price( $invoice->amount )
 			);
 		} else {
-			$inv_amount = __( 'Free', MS_TEXT_DOMAIN );
+			$inv_amount = __( 'Free', 'membership2' );
 			$is_free = true;
 		}
 
@@ -116,7 +116,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			);
 			$trial_date .= sprintf(
 				' <small>(%s %s)</small>',
-				__( 'ends on', MS_TEXT_DOMAIN ),
+				__( 'ends on', 'membership2' ),
 				MS_Helper_Period::format_date( $invoice->trial_ends )
 			);
 		} else {
@@ -159,43 +159,43 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 					<?php if ( ! empty( $inv_from ) ) : ?>
 						<tr class="ms-inv-from">
-							<th><?php _e( 'Sender', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Sender', 'membership2' ); ?></th>
 							<td class="ms-inv-text"><?php echo $inv_from; ?></td>
 						</tr>
 					<?php endif; ?>
 
 					<tr class="ms-inv-to">
-						<th><?php _e( 'Invoice to', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Invoice to', 'membership2' ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_to; ?></td>
 					</tr>
 					<tr class="ms-inv-invoice-date">
-						<th><?php _e( 'Invoice date', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Invoice date', 'membership2' ); ?></th>
 						<td class="ms-inv-date"><?php echo $inv_date; ?></td>
 					</tr>
 					<?php if ( ! empty( $trial_date ) ) : ?>
 						<tr class="ms-inv-trial-end-date">
-							<th><?php _e( 'Trial period', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Trial period', 'membership2' ); ?></th>
 							<td class="ms-inv-date"><?php echo $trial_date; ?></td>
 						</tr>
 					<?php endif; ?>
 					<tr class="ms-inv-status space">
-						<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Status', 'membership2' ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_status; ?></td>
 					</tr>
 					<tr class="ms-inv-item-name alt sep">
-						<th><?php _e( 'Name', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Name', 'membership2' ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_item_name; ?></td>
 					</tr>
 
 					<?php if ( ! empty( $inv_details ) ) : ?>
 					<tr class="ms-inv-description alt">
-						<th><?php _e( 'Description', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Description', 'membership2' ); ?></th>
 						<td class="ms-inv-text"><?php echo $inv_details; ?></td>
 					</tr>
 					<?php endif; ?>
 
 					<tr class="ms-inv-amount alt space">
-						<th><?php _e( 'Amount', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Amount', 'membership2' ); ?></th>
 						<td class="ms-inv-price"><?php echo $inv_amount; ?></td>
 					</tr>
 
@@ -203,14 +203,14 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 					<?php if ( ! empty( $inv_discount ) ) : ?>
 						<tr class="ms-inv-discount <?php echo esc_attr( $sep ); $sep = ''; ?>">
-							<th><?php _e( 'Coupon discount', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Coupon discount', 'membership2' ); ?></th>
 							<td class="ms-inv-price"><?php echo $inv_discount; ?></td>
 						</tr>
 					<?php endif; ?>
 
 					<?php if ( ! empty( $inv_pro_rate ) ) : ?>
 						<tr class="ms-inv-pro-rate <?php echo esc_attr( $sep ); $sep = ''; ?>">
-							<th><?php _e( 'Pro rate discount', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Pro rate discount', 'membership2' ); ?></th>
 							<td class="ms-inv-price"><?php echo $inv_pro_rate; ?></td>
 						</tr>
 					<?php endif; ?>
@@ -219,7 +219,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 						<tr class="ms-inv-tax <?php echo esc_attr( $sep ); $sep = ''; ?>">
 							<th><?php
 							printf(
-								__( 'Taxes %s', MS_TEXT_DOMAIN ),
+								__( 'Taxes %s', 'membership2' ),
 								'<small>(' . $invoice->tax_name . ')</small>'
 							);
 							?></th>
@@ -229,12 +229,12 @@ class MS_View_Shortcode_Invoice extends MS_View {
 
 					<?php if ( ! $is_free ) : ?>
 						<tr class="ms-inv-due-date <?php echo esc_attr( $sep ); $sep = ''; ?>">
-							<th><?php _e( 'Payment due', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Payment due', 'membership2' ); ?></th>
 							<td class="ms-inv-date"><?php echo $inv_due_date; ?></td>
 						</tr>
 					<?php endif; ?>
 					<tr class="ms-inv-total <?php echo esc_attr( $sep ); $sep = ''; ?>">
-						<th><?php _e( 'Total', MS_TEXT_DOMAIN ); ?></th>
+						<th><?php _e( 'Total', 'membership2' ); ?></th>
 						<td class="ms-inv-price"><?php echo $inv_total; ?></td>
 					</tr>
 

@@ -70,14 +70,14 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		$columns = apply_filters(
 			'ms_helper_listtable_transactionmatching_columns',
 			array(
-				'id' => __( 'ID', MS_TEXT_DOMAIN ),
-				'date' => __( 'Time', MS_TEXT_DOMAIN ),
+				'id' => __( 'ID', 'membership2' ),
+				'date' => __( 'Time', 'membership2' ),
 				'status' => '',
 				'method' => '',
-				'gateway' => __( 'Gateway', MS_TEXT_DOMAIN ),
-				'amount' => __( 'Amount', MS_TEXT_DOMAIN ),
-				'invoice' => __( 'Invoice', MS_TEXT_DOMAIN ),
-				'note' => __( 'Details', MS_TEXT_DOMAIN ),
+				'gateway' => __( 'Gateway', 'membership2' ),
+				'amount' => __( 'Amount', 'membership2' ),
+				'invoice' => __( 'Invoice', 'membership2' ),
+				'note' => __( 'Details', 'membership2' ),
 			)
 		);
 
@@ -203,16 +203,16 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 	 * @return string The label.
 	 */
 	protected function get_source_label( $source, $source_id ) {
-		$label = __( 'Unknown ID: %s', MS_TEXT_DOMAIN );
+		$label = __( 'Unknown ID: %s', 'membership2' );
 
 		switch ( $source ) {
 			case 'pay_btn':
-				$label = __( 'PayPal Payment Button #%s', MS_TEXT_DOMAIN );
+				$label = __( 'PayPal Payment Button #%s', 'membership2' );
 				break;
 
 			case 'm1':
 			default:
-				$label = __( 'M1 Subscription Level #%s', MS_TEXT_DOMAIN );
+				$label = __( 'M1 Subscription Level #%s', 'membership2' );
 				break;
 		}
 
@@ -240,7 +240,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			}
 
 			$views['label'] = array(
-				'label' => __( 'Undefined transactions:', MS_TEXT_DOMAIN ),
+				'label' => __( 'Undefined transactions:', 'membership2' ),
 			);
 
 			foreach ( $lst as $source => $ids ) {
@@ -280,16 +280,16 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 				);
 
 				echo '<p>';
-				_e( 'No suitable transaction found.', MS_TEXT_DOMAIN );
+				_e( 'No suitable transaction found.', 'membership2' );
 				echo '</p><p>';
 				printf(
 					'<strong>%s</strong><br />',
-					__( 'Nothing to do right now:', MS_TEXT_DOMAIN )
+					__( 'Nothing to do right now:', 'membership2' )
 				);
-				_e( 'Transactions that can be automatically matched will appear here when they are processed by a payment gateway.<br>So simply check again later after new payments were made.', MS_TEXT_DOMAIN );
+				_e( 'Transactions that can be automatically matched will appear here when they are processed by a payment gateway.<br>So simply check again later after new payments were made.', 'membership2' );
 				echo '</p><p>';
 				printf(
-					__( 'If you are impatient then "Retry" some error-state transactions in the %sTransaction Logs%s section and then see if they appear on this page.', MS_TEXT_DOMAIN ),
+					__( 'If you are impatient then "Retry" some error-state transactions in the %sTransaction Logs%s section and then see if they appear on this page.', 'membership2' ),
 					'<a href="' . $url . '">',
 					'</a>'
 				);
@@ -321,7 +321,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 				$options[$item->id] = sprintf(
 					'%s &bull; %s',
 					$item->name,
-					__( 'Free', MS_TEXT_DOMAIN )
+					__( 'Free', 'membership2' )
 				);
 			} else {
 				$options[$item->id] = sprintf(
@@ -339,7 +339,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			'id' => 'match_with',
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'before' => sprintf(
-				__( '2. Link %s with', MS_TEXT_DOMAIN ),
+				__( '2. Link %s with', 'membership2' ),
 				'<b>' . $label . '</b>'
 			),
 			'field_options' => $options,
@@ -362,7 +362,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		$field_save = array(
 			'class' => 'action-match',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Save', MS_TEXT_DOMAIN ),
+			'value' => __( 'Save', 'membership2' ),
 		);
 		$field_retry_action = array(
 			'class' => 'retry_action',
@@ -389,7 +389,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			<div class="content">
 				<p><?php
 				printf(
-					__( '1. Below is a list of past "%s" transactions. Examine these transactions to find out which Membership they refer to.', MS_TEXT_DOMAIN ),
+					__( '1. Below is a list of past "%s" transactions. Examine these transactions to find out which Membership they refer to.', 'membership2' ),
 					'<b>' . $label . '</b>'
 				);
 				?></p>
@@ -399,15 +399,15 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 				?></p>
 				<div style="margin-left:14px">
 				<?php
-				_e( 'Notes:', MS_TEXT_DOMAIN );
+				_e( 'Notes:', 'membership2' );
 				?>
 				<br />
 				<?php
-				_e( 'This choice is saved so new transactions are processed automatically from now on.', MS_TEXT_DOMAIN );
+				_e( 'This choice is saved so new transactions are processed automatically from now on.', 'membership2' );
 				?>
 				<br />
 				<?php
-				_e( 'Upon saving all transactions below will be processed, this might take a while.', MS_TEXT_DOMAIN );
+				_e( 'Upon saving all transactions below will be processed, this might take a while.', 'membership2' );
 				?>
 				</div>
 			</div>
@@ -493,22 +493,22 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 	public function column_method( $item, $column_name ) {
 		$html = '<span class="log-method" data-info="%2$s"><i class="wpmui-fa wpmui-%1$s"></i></span>';
 		$icon = '';
-		$info = __( 'Unknown method', MS_TEXT_DOMAIN );
+		$info = __( 'Unknown method', 'membership2' );
 
 		switch ( $item->method ) {
 			case 'handle':
 				$icon = 'fa-cloud-download';
-				$info = __( 'Gateway called the IPN URL', MS_TEXT_DOMAIN );
+				$info = __( 'Gateway called the IPN URL', 'membership2' );
 				break;
 
 			case 'request':
 				$icon = 'fa-refresh';
-				$info = __( 'Plugin requested a recuring payment', MS_TEXT_DOMAIN );
+				$info = __( 'Plugin requested a recuring payment', 'membership2' );
 				break;
 
 			case 'process':
 				$icon = 'fa-shopping-cart';
-				$info = __( 'User entered payment details', MS_TEXT_DOMAIN );
+				$info = __( 'User entered payment details', 'membership2' );
 				break;
 		}
 

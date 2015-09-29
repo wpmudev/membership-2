@@ -12,8 +12,8 @@ class MS_Addon_BuddyPress_Rule_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'BuddyPress', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Protect the following BuddyPress content.', MS_TEXT_DOMAIN ),
+				'title' => __( 'BuddyPress', 'membership2' ),
+				'desc' => __( 'Protect the following BuddyPress content.', 'membership2' ),
 			),
 			MS_Addon_BuddyPress_Rule::RULE_ID,
 			$this

@@ -84,7 +84,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			if ( $member->has_membership() && ! empty( $memberships ) ) {
 				?>
 				<legend class="ms-move-from">
-					<?php _e( 'Available Memberships', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Available Memberships', 'membership2' ); ?>
 				</legend>
 				<?php
 			}
@@ -262,7 +262,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		if ( 0 == $membership->price ) {
-			$price = __( 'Free', MS_TEXT_DOMAIN );
+			$price = __( 'Free', 'membership2' );
 		} else {
 			$price = sprintf(
 				'%s %s',

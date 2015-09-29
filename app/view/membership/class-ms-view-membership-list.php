@@ -25,7 +25,7 @@ class MS_View_Membership_List extends MS_View {
 			'id' => 'create_new_ms_button',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
 			'url' => $this->data['create_new_url'],
-			'value' => __( 'Create New Membership', MS_TEXT_DOMAIN ),
+			'value' => __( 'Create New Membership', 'membership2' ),
 			'class' => 'button',
 		);
 
@@ -38,7 +38,7 @@ class MS_View_Membership_List extends MS_View {
 				array(
 				'title' => $title,
 				'desc' => array(
-						__( 'Here you can view and edit all the Memberships you have created.', MS_TEXT_DOMAIN ),
+						__( 'Here you can view and edit all the Memberships you have created.', 'membership2' ),
 						$admin_message,
 					)
 				)

@@ -20,17 +20,17 @@ class MS_Helper_Member extends MS_Helper {
 		$messages = apply_filters(
 			'ms_helper_member_get_admin_messages',
 			array(
-				self::MSG_MEMBER_ADDED => __( 'Membership added.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_DELETED => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_UPDATED => __( 'Member updated.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_ACTIVATION_TOGGLED => __( 'Member activation toggled.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_BULK_UPDATED => __( 'Members bulk updated.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_USER_ADDED => __( 'Users added to Membership2 member list.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_NOT_ADDED => __( 'Membership not added.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_NOT_DELETED => __( 'Membership not deleted.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_NOT_UPDATED => __( 'Member not updated.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_ACTIVATION_NOT_TOGGLED => __( 'Member activation not toggled.', MS_TEXT_DOMAIN ),
-				self::MSG_MEMBER_BULK_NOT_UPDATED => __( 'Members bulk not updated.', MS_TEXT_DOMAIN ),
+				self::MSG_MEMBER_ADDED => __( 'Membership added.', 'membership2' ),
+				self::MSG_MEMBER_DELETED => __( 'Membership deleted.', 'membership2' ),
+				self::MSG_MEMBER_UPDATED => __( 'Member updated.', 'membership2' ),
+				self::MSG_MEMBER_ACTIVATION_TOGGLED => __( 'Member activation toggled.', 'membership2' ),
+				self::MSG_MEMBER_BULK_UPDATED => __( 'Members bulk updated.', 'membership2' ),
+				self::MSG_MEMBER_USER_ADDED => __( 'Users added to Membership2 member list.', 'membership2' ),
+				self::MSG_MEMBER_NOT_ADDED => __( 'Membership not added.', 'membership2' ),
+				self::MSG_MEMBER_NOT_DELETED => __( 'Membership not deleted.', 'membership2' ),
+				self::MSG_MEMBER_NOT_UPDATED => __( 'Member not updated.', 'membership2' ),
+				self::MSG_MEMBER_ACTIVATION_NOT_TOGGLED => __( 'Member activation not toggled.', 'membership2' ),
+				self::MSG_MEMBER_BULK_NOT_UPDATED => __( 'Members bulk not updated.', 'membership2' ),
 			)
 		);
 

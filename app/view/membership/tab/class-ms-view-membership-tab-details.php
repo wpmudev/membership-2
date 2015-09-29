@@ -81,7 +81,7 @@ class MS_View_Membership_Tab_Details extends MS_View {
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'title' => apply_filters(
 				'ms_translation_flag',
-				__( 'Name:', MS_TEXT_DOMAIN ),
+				__( 'Name:', 'membership2' ),
 				'membership-name'
 			),
 			'value' => $membership->name,
@@ -93,7 +93,7 @@ class MS_View_Membership_Tab_Details extends MS_View {
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
 			'title' => apply_filters(
 				'ms_translation_flag',
-				__( 'Description:', MS_TEXT_DOMAIN ),
+				__( 'Description:', 'membership2' ),
 				'membership-name'
 			),
 			'value' => $membership->description,
@@ -103,9 +103,9 @@ class MS_View_Membership_Tab_Details extends MS_View {
 		$fields['active'] = array(
 			'id' => 'active',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'title' => __( 'This membership is active', MS_TEXT_DOMAIN ),
-			'before' => __( 'No', MS_TEXT_DOMAIN ),
-			'after' => __( 'Yes', MS_TEXT_DOMAIN ),
+			'title' => __( 'This membership is active', 'membership2' ),
+			'before' => __( 'No', 'membership2' ),
+			'after' => __( 'Yes', 'membership2' ),
 			'class' => 'ms-active',
 			'value' => $membership->active,
 			'ajax_data' => array( 1 ),
@@ -114,10 +114,10 @@ class MS_View_Membership_Tab_Details extends MS_View {
 		$fields['public'] = array(
 			'id' => 'public',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'title' => __( 'This membership is public', MS_TEXT_DOMAIN ),
-			'desc' => __( 'Users can see it listed on your site and can register for it', MS_TEXT_DOMAIN ),
-			'before' => __( 'No', MS_TEXT_DOMAIN ),
-			'after' => __( 'Yes', MS_TEXT_DOMAIN ),
+			'title' => __( 'This membership is public', 'membership2' ),
+			'desc' => __( 'Users can see it listed on your site and can register for it', 'membership2' ),
+			'before' => __( 'No', 'membership2' ),
+			'after' => __( 'Yes', 'membership2' ),
 			'class' => 'ms-public',
 			'value' => $membership->public,
 			'ajax_data' => array( 1 ),
@@ -126,9 +126,9 @@ class MS_View_Membership_Tab_Details extends MS_View {
 		$fields['paid'] = array(
 			'id' => 'is_paid',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'title' => __( 'This is a paid membership', MS_TEXT_DOMAIN ),
-			'before' => __( 'No', MS_TEXT_DOMAIN ),
-			'after' => __( 'Yes', MS_TEXT_DOMAIN ),
+			'title' => __( 'This is a paid membership', 'membership2' ),
+			'before' => __( 'No', 'membership2' ),
+			'after' => __( 'Yes', 'membership2' ),
 			'class' => 'ms-paid',
 			'value' => $membership->is_paid,
 			'ajax_data' => array( 1 ),
@@ -145,10 +145,10 @@ class MS_View_Membership_Tab_Details extends MS_View {
 		$fields['priority'] = array(
 			'id' => 'priority',
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'title' => __( 'Membership order', MS_TEXT_DOMAIN ),
-			'desc' => __( 'This defines the display order on the Membership Page.', MS_TEXT_DOMAIN ),
+			'title' => __( 'Membership order', 'membership2' ),
+			'desc' => __( 'This defines the display order on the Membership Page.', 'membership2' ),
 			'class' => 'ms-priority',
-			'before' => __( 'Order', MS_TEXT_DOMAIN ),
+			'before' => __( 'Order', 'membership2' ),
 			'value' => $membership->priority,
 			'field_options' => $priority_list,
 			'ajax_data' => array( 1 ),
@@ -156,7 +156,7 @@ class MS_View_Membership_Tab_Details extends MS_View {
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 			$fields['priority']['desc'] .= '<br>' .
-				__( 'It also controlls which Protection Message is used in case a member has multiple memberships (the lowest value wins)', MS_TEXT_DOMAIN );
+				__( 'It also controlls which Protection Message is used in case a member has multiple memberships (the lowest value wins)', 'membership2' );
 		}
 
 		foreach ( $fields as $key => $field ) {

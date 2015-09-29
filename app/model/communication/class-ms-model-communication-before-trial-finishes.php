@@ -26,8 +26,8 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	 * @param array $field A HTML definition, passed to lib3()->html->element()
 	 */
 	public function set_period_name( $field ) {
-		$field['title'] = __( 'Notice Period', MS_TEXT_DOMAIN );
-		$field['desc'] = __( 'Define, how many days in advance the user should be notified.', MS_TEXT_DOMAIN );
+		$field['title'] = __( 'Notice Period', 'membership2' );
+		$field['desc'] = __( 'Define, how many days in advance the user should be notified.', 'membership2' );
 
 		return $field;
 	}
@@ -40,7 +40,7 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	 */
 	public function get_description() {
 		return __(
-			'Sent a predefined number of days before the trial period finishes. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN
+			'Sent a predefined number of days before the trial period finishes. You must decide how many days beforehand a message is to be sent.', 'membership2'
 		);
 	}
 
@@ -53,7 +53,7 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Your %s membership trial will end soon', MS_TEXT_DOMAIN ),
+			__( 'Your %s membership trial will end soon', 'membership2' ),
 			self::COMM_VAR_MS_NAME
 		);
 		$this->message = self::get_default_message();
@@ -75,11 +75,11 @@ class MS_Model_Communication_Before_Trial_Finishes extends MS_Model_Communicatio
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'This is a reminder that your %1$s trial membership at %2$s wil end in %3$s.', MS_TEXT_DOMAIN ),
+			__( 'This is a reminder that your %1$s trial membership at %2$s wil end in %3$s.', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME,
 			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS

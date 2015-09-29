@@ -61,20 +61,20 @@ class MS_View_Shortcode_Account extends MS_View {
 				do_action( 'ms_view_account_memberships_top', $member, $this );
 
 				if ( MS_Model_Member::is_admin_user() ) {
-					_e( 'You are an admin user and have access to all memberships', MS_TEXT_DOMAIN );
+					_e( 'You are an admin user and have access to all memberships', 'membership2' );
 				} else {
 					if ( ! empty( $this->data['subscription'] ) ) {
 						?>
 						<table>
 							<tr>
 								<th class="ms-col-membership"><?php
-									_e( 'Membership name', MS_TEXT_DOMAIN );
+									_e( 'Membership name', 'membership2' );
 								?></th>
 								<th class="ms-col-status"><?php
-									_e( 'Status', MS_TEXT_DOMAIN );
+									_e( 'Status', 'membership2' );
 								?></th>
 								<th class="ms-col-expire-date"><?php
-									_e( 'Expire date', MS_TEXT_DOMAIN );
+									_e( 'Expire date', 'membership2' );
 								?></th>
 							</tr>
 							<?php
@@ -116,7 +116,7 @@ class MS_View_Shortcode_Account extends MS_View {
 											'[%s id="%s" label="%s"]',
 											MS_Helper_Shortcode::SCODE_MS_BUY,
 											$membership->id,
-											__( 'Pending', MS_TEXT_DOMAIN )
+											__( 'Pending', 'membership2' )
 										);
 										echo do_shortcode( $code );
 									} else {
@@ -136,7 +136,7 @@ class MS_View_Shortcode_Account extends MS_View {
 											MS_Helper_Period::format_date( $subscription->expire_date )
 										);
 									} else {
-										_e( 'Never', MS_TEXT_DOMAIN );
+										_e( 'Never', 'membership2' );
 									}
 									?></td>
 								</tr>
@@ -152,14 +152,14 @@ class MS_View_Shortcode_Account extends MS_View {
 								printf(
 									'<tr><td colspan="%1$s">%2$s</td></tr>',
 									$cols,
-									__( '(No Membership)', MS_TEXT_DOMAIN )
+									__( '(No Membership)', 'membership2' )
 								);
 							}
 							?>
 						</table>
 					<?php
 					} else {
-						_e( 'No memberships', MS_TEXT_DOMAIN );
+						_e( 'No memberships', 'membership2' );
 					}
 				}
 				/**
@@ -267,23 +267,23 @@ class MS_View_Shortcode_Account extends MS_View {
 					<thead>
 						<tr>
 							<th class="ms-col-invoice-no"><?php
-								_e( 'Invoice #', MS_TEXT_DOMAIN );
+								_e( 'Invoice #', 'membership2' );
 							?></th>
 							<th class="ms-col-invoice-status"><?php
-								_e( 'Status', MS_TEXT_DOMAIN );
+								_e( 'Status', 'membership2' );
 							?></th>
 							<th class="ms-col-invoice-total"><?php
 							printf(
 								'%s (%s)',
-								__( 'Total', MS_TEXT_DOMAIN ),
+								__( 'Total', 'membership2' ),
 								MS_Plugin::instance()->settings->currency
 							);
 							?></th>
 							<th class="ms-col-invoice-title"><?php
-								_e( 'Membership', MS_TEXT_DOMAIN );
+								_e( 'Membership', 'membership2' );
 							?></th>
 							<th class="ms-col-invoice-due"><?php
-								_e( 'Due date', MS_TEXT_DOMAIN );
+								_e( 'Due date', 'membership2' );
 							?></th>
 						</tr>
 					</thead>
@@ -321,7 +321,7 @@ class MS_View_Shortcode_Account extends MS_View {
 								echo esc_html(
 									MS_Helper_Period::format_date(
 										$invoice->due_date,
-										__( 'F j', MS_TEXT_DOMAIN )
+										__( 'F j', 'membership2' )
 									)
 								);
 							?></td>
@@ -379,10 +379,10 @@ class MS_View_Shortcode_Account extends MS_View {
 					<thead>
 						<tr>
 							<th class="ms-col-activity-date"><?php
-								_e( 'Date', MS_TEXT_DOMAIN );
+								_e( 'Date', 'membership2' );
 							?></th>
 							<th class="ms-col-activity-title"><?php
-								_e( 'Activity', MS_TEXT_DOMAIN );
+								_e( 'Activity', 'membership2' );
 							?></th>
 						</tr>
 					</thead>
@@ -399,7 +399,7 @@ class MS_View_Shortcode_Account extends MS_View {
 								echo esc_html(
 									MS_Helper_Period::format_date(
 										$event->post_modified,
-										__( 'F j (H:i)', MS_TEXT_DOMAIN )
+										__( 'F j (H:i)', 'membership2' )
 									)
 								);
 							?></td>
@@ -433,7 +433,7 @@ class MS_View_Shortcode_Account extends MS_View {
 
 				if ( ! $has_login_form ) {
 					$redirect = esc_url_raw( add_query_arg( array() ) );
-					$title = __( 'Your account', MS_TEXT_DOMAIN );
+					$title = __( 'Your account', 'membership2' );
 					$scode = sprintf(
 						'[%1$s redirect="%2$s" title="%3$s"]',
 						MS_Helper_Shortcode::SCODE_LOGIN,
@@ -464,10 +464,10 @@ class MS_View_Shortcode_Account extends MS_View {
 	public function prepare_fields() {
 		$fields = array(
 			'personal_info' => array(
-				'first_name' => __( 'First name', MS_TEXT_DOMAIN ),
-				'last_name' => __( 'Last name', MS_TEXT_DOMAIN ),
-				'username' => __( 'Username', MS_TEXT_DOMAIN ),
-				'email' => __( 'Email', MS_TEXT_DOMAIN ),
+				'first_name' => __( 'First name', 'membership2' ),
+				'last_name' => __( 'Last name', 'membership2' ),
+				'username' => __( 'Username', 'membership2' ),
+				'email' => __( 'Email', 'membership2' ),
 			)
 		);
 

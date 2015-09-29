@@ -10,11 +10,11 @@ class MS_Rule_MemberCaps_View extends MS_View {
 		$rule_listtable->prepare_items();
 
 		$header_data = array();
-		$header_data['title'] = __( 'Assign WordPress Capabilities to your Members', MS_TEXT_DOMAIN );
+		$header_data['title'] = __( 'Assign WordPress Capabilities to your Members', 'membership2' );
 		$header_data['desc'] = array(
-			__( 'Fine-tune member permissions by assigning certain Capabilities to each Membership. All Members of that Membership are granted the specified Capabilities.', MS_TEXT_DOMAIN ),
-			__( 'Important: All users that are not inside these Memberships will be striped of any Protected Capability!', MS_TEXT_DOMAIN ),
-			__( 'You should only use these rules if you know what you are doing! Granting the wrong capabilities makes your website prone to abuse. For a bit of security we already removed the most critical Capabilities from this list.', MS_TEXT_DOMAIN ),
+			__( 'Fine-tune member permissions by assigning certain Capabilities to each Membership. All Members of that Membership are granted the specified Capabilities.', 'membership2' ),
+			__( 'Important: All users that are not inside these Memberships will be striped of any Protected Capability!', 'membership2' ),
+			__( 'You should only use these rules if you know what you are doing! Granting the wrong capabilities makes your website prone to abuse. For a bit of security we already removed the most critical Capabilities from this list.', 'membership2' ),
 		);
 
 		$header_data = apply_filters(
@@ -31,7 +31,7 @@ class MS_Rule_MemberCaps_View extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Capability', MS_TEXT_DOMAIN ) );
+			$rule_listtable->search_box( __( 'Capability', 'membership2' ) );
 			?>
 			<form action="" method="post">
 				<?php

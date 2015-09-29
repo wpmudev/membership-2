@@ -10,15 +10,15 @@ class MS_Rule_Adminside_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Admin Page', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Admin Pages', MS_TEXT_DOMAIN );
-		$this->name['default_access'] = __( 'Handled by WordPress', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Admin Page', 'membership2' );
+		$this->name['plural'] = __( 'Admin Pages', 'membership2' );
+		$this->name['default_access'] = __( 'Handled by WordPress', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,
-			'name' => __( 'Admin Side Page', MS_TEXT_DOMAIN ),
+			'name' => __( 'Admin Side Page', 'membership2' ),
 			'access' => true,
 		);
 

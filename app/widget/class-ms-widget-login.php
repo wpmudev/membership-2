@@ -11,9 +11,9 @@ class MS_Widget_Login extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'ms_widget_login',
-			__( '[Membership2] Login', MS_TEXT_DOMAIN ),
+			__( '[Membership2] Login', 'membership2' ),
 			array(
-				'description' => __( 'Display a Login Form to all guests. Logged-in users will see a Logout link.', MS_TEXT_DOMAIN ),
+				'description' => __( 'Display a Login Form to all guests. Logged-in users will see a Logout link.', 'membership2' ),
 			)
 		);
 	}
@@ -71,7 +71,7 @@ class MS_Widget_Login extends WP_Widget {
 	 * @param array $instance The widget options
 	 */
 	public function form( $instance ) {
-		$title = __( 'Login', MS_TEXT_DOMAIN );
+		$title = __( 'Login', 'membership2' );
 		$redirect_login = '';
 		$redirect_logout = '';
 		$shortcode_args = '';
@@ -107,7 +107,7 @@ class MS_Widget_Login extends WP_Widget {
 			'id' => $this->get_field_id( 'title' ),
 			'name' => $this->get_field_name( 'title' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Title:', MS_TEXT_DOMAIN ),
+			'title' => __( 'Title:', 'membership2' ),
 			'value' => $title,
 			'class' => 'widefat',
 		);
@@ -116,7 +116,7 @@ class MS_Widget_Login extends WP_Widget {
 			'id' => $this->get_field_id( 'redirect_login' ),
 			'name' => $this->get_field_name( 'redirect_login' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Show this page after login:', MS_TEXT_DOMAIN ),
+			'title' => __( 'Show this page after login:', 'membership2' ),
 			'value' => $redirect_login,
 			'placeholder' => $placeholder_login,
 			'class' => 'widefat',
@@ -126,7 +126,7 @@ class MS_Widget_Login extends WP_Widget {
 			'id' => $this->get_field_id( 'redirect_logout' ),
 			'name' => $this->get_field_name( 'redirect_logout' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Show this page after logout:', MS_TEXT_DOMAIN ),
+			'title' => __( 'Show this page after logout:', 'membership2' ),
 			'value' => $redirect_logout,
 			'placeholder' => $placeholder_logout,
 			'class' => 'widefat',
@@ -136,9 +136,9 @@ class MS_Widget_Login extends WP_Widget {
 			'id' => $this->get_field_id( 'shortcode_args' ),
 			'name' => $this->get_field_name( 'shortcode_args' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Shortcode Options:', MS_TEXT_DOMAIN ),
+			'title' => __( 'Shortcode Options:', 'membership2' ),
 			'desc' => sprintf(
-				__( 'Arguments to pass to the %slogin shortcode%s', MS_TEXT_DOMAIN ),
+				__( 'Arguments to pass to the %slogin shortcode%s', 'membership2' ),
 				sprintf(
 					'<a href="%s#ms-membership-login" target="_blank">',
 					MS_Controller_Plugin::get_admin_url(

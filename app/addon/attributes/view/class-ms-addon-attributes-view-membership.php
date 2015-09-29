@@ -22,9 +22,9 @@ class MS_Addon_Attributes_View_Membership extends MS_View {
 			<?php
 			MS_Helper_Html::settings_tab_header(
 				array(
-					'title' => __( 'Custom Membership Attributes', MS_TEXT_DOMAIN ),
+					'title' => __( 'Custom Membership Attributes', 'membership2' ),
 					'desc' => sprintf(
-						__( 'You can manage custom attributes in %sthe plugin settings%s.', MS_TEXT_DOMAIN ),
+						__( 'You can manage custom attributes in %sthe plugin settings%s.', 'membership2' ),
 						'<a href="' . $manage_url . '">',
 						'</a>'
 					),
@@ -76,8 +76,8 @@ class MS_Addon_Attributes_View_Membership extends MS_View {
 
 				case 'bool':
 					$field_type = MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER;
-					$before = __( 'No', MS_TEXT_DOMAIN );
-					$after = __( 'Yes', MS_TEXT_DOMAIN );
+					$before = __( 'No', 'membership2' );
+					$after = __( 'Yes', 'membership2' );
 			}
 
 			$fields[] = array(

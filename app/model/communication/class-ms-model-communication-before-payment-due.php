@@ -26,8 +26,8 @@ class MS_Model_Communication_Before_Payment_Due extends MS_Model_Communication {
 	 * @param array $field A HTML definition, passed to lib3()->html->element()
 	 */
 	public function set_period_name( $field ) {
-		$field['title'] = __( 'Notice Period', MS_TEXT_DOMAIN );
-		$field['desc'] = __( 'Define, how many days in advance the user should be notified.', MS_TEXT_DOMAIN );
+		$field['title'] = __( 'Notice Period', 'membership2' );
+		$field['desc'] = __( 'Define, how many days in advance the user should be notified.', 'membership2' );
 
 		return $field;
 	}
@@ -40,7 +40,7 @@ class MS_Model_Communication_Before_Payment_Due extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent a predefined number of days before the payment is due. You must decide how many days beforehand a message is to be sent.', MS_TEXT_DOMAIN
+			'Sent a predefined number of days before the payment is due. You must decide how many days beforehand a message is to be sent.', 'membership2'
 		);
 	}
 
@@ -52,7 +52,7 @@ class MS_Model_Communication_Before_Payment_Due extends MS_Model_Communication {
 	public function reset_to_default() {
 		parent::reset_to_default();
 
-		$this->subject = __( 'Membership payment due soon', MS_TEXT_DOMAIN );
+		$this->subject = __( 'Membership payment due soon', 'membership2' );
 		$this->message = self::get_default_message();
 		$this->enabled = false;
 		$this->period_enabled = true;
@@ -72,16 +72,16 @@ class MS_Model_Communication_Before_Payment_Due extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'This is a reminder that the next payment for your %1$s membership at %2$s will be due on (%3$s).', MS_TEXT_DOMAIN ),
+			__( 'This is a reminder that the next payment for your %1$s membership at %2$s will be due on (%3$s).', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME,
 			self::COMM_VAR_MS_EXPIRY_DATE
 		);
-		$body_invoice = __( 'Here are your latest invoice details:', MS_TEXT_DOMAIN );
+		$body_invoice = __( 'Here are your latest invoice details:', 'membership2' );
 
 		$html = sprintf(
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s<br /><br />%4$s',

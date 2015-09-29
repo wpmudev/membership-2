@@ -19,7 +19,7 @@ class MS_Rule_ReplaceMenu extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Replace Menus', MS_TEXT_DOMAIN ),
+				__( 'Replace Menus', 'membership2' ),
 				62
 			);
 		}

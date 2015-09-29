@@ -26,9 +26,9 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 		);
 
 		if ( $this->data['coupon']->is_valid() ) {
-			$title = __( 'Edit Coupon', MS_TEXT_DOMAIN );
+			$title = __( 'Edit Coupon', 'membership2' );
 		} else {
-			$title = __( 'Add Coupon', MS_TEXT_DOMAIN );
+			$title = __( 'Add Coupon', 'membership2' );
 		}
 
 		ob_start();
@@ -66,14 +66,14 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 		$fields = array(
 			'code' => array(
 				'id' => 'code',
-				'title' => __( 'Coupon code', MS_TEXT_DOMAIN ),
+				'title' => __( 'Coupon code', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $coupon->code,
 				'class' => 'widefat',
 			),
 			'discount' => array(
 				'id' => 'discount',
-				'title' => __( 'Discount', MS_TEXT_DOMAIN ),
+				'title' => __( 'Discount', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $coupon->discount,
 				'config' => array(
@@ -83,35 +83,35 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			),
 			'discount_type' => array(
 				'id' => 'discount_type',
-				'title' => __( 'Discount Type', MS_TEXT_DOMAIN ),
+				'title' => __( 'Discount Type', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $coupon->get_discount_types(),
 				'value' => $coupon->discount_type,
 			),
 			'start_date' => array(
 				'id' => 'start_date',
-				'title' => __( 'Start date', MS_TEXT_DOMAIN ),
+				'title' => __( 'Start date', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => ( $coupon->start_date ) ? $coupon->start_date : MS_Helper_Period::current_date(),
 				'class' => 'ms-date',
 			),
 			'expire_date' => array(
 				'id' => 'expire_date',
-				'title' => __( 'Expire date', MS_TEXT_DOMAIN ),
+				'title' => __( 'Expire date', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $coupon->expire_date,
 				'class' => 'ms-date',
 			),
 			'membership_id' => array(
 				'id' => 'membership_id',
-				'title' => __( 'Coupon can be applied to these Memberships', MS_TEXT_DOMAIN ),
+				'title' => __( 'Coupon can be applied to these Memberships', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'field_options' => $this->data['memberships'],
 				'value' => $coupon->membership_id,
 			),
 			'max_uses' => array(
 				'id' => 'max_uses',
-				'title' => __( 'Max uses', MS_TEXT_DOMAIN ),
+				'title' => __( 'Max uses', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $coupon->max_uses,
 				'config' => array(
@@ -140,15 +140,15 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 			'cancel' => array(
 				'id' => 'cancel',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
-				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+				'title' => __( 'Cancel', 'membership2' ),
+				'value' => __( 'Cancel', 'membership2' ),
 				'url' => esc_url_raw( remove_query_arg( array( 'action', 'coupon_id' ) ) ),
 				'class' => 'wpmui-field-button button',
 			),
 			'submit' => array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save Changes', 'membership2' ),
 			),
 		);
 

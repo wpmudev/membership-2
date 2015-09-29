@@ -63,8 +63,8 @@ class MS_Addon_Wpbe extends MS_Addon {
 		// Don't register: Not completed yet...
 
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'WP Better Emails', MS_TEXT_DOMAIN ),
-			'description' => __( 'WP Better Emails integration.', MS_TEXT_DOMAIN ),
+			'name' => __( 'WP Better Emails', 'membership2' ),
+			'description' => __( 'WP Better Emails integration.', 'membership2' ),
 		);
 		*/
 		return $list;

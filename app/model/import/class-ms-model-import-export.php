@@ -158,11 +158,11 @@ class MS_Model_Import_Export extends MS_Model {
 		$data->plugin_version = MS_PLUGIN_VERSION;
 		$data->export_time = date( 'Y-m-d H:i' );
 		$data->notes = array(
-			__( 'Exported data:', MS_TEXT_DOMAIN ),
-			__( '- Memberships (without protection rules)', MS_TEXT_DOMAIN ),
-			__( '- Members (including Stripe/Authorize payment settings)', MS_TEXT_DOMAIN ),
-			__( '- Subscriptions (link between Members and Memberships)', MS_TEXT_DOMAIN ),
-			__( '- Invoices', MS_TEXT_DOMAIN ),
+			__( 'Exported data:', 'membership2' ),
+			__( '- Memberships (without protection rules)', 'membership2' ),
+			__( '- Members (including Stripe/Authorize payment settings)', 'membership2' ),
+			__( '- Subscriptions (link between Members and Memberships)', 'membership2' ),
+			__( '- Invoices', 'membership2' ),
 		);
 
 		$data->memberships = array();

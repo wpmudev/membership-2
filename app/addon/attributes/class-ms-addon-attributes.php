@@ -159,8 +159,8 @@ class MS_Addon_Attributes extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Membership Attributes', MS_TEXT_DOMAIN ),
-			'description' => __( 'Add custom attributes to your memberships that you can use in shortcodes and code.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Membership Attributes', 'membership2' ),
+			'description' => __( 'Add custom attributes to your memberships that you can use in shortcodes and code.', 'membership2' ),
 			'icon' => 'wpmui-fa wpmui-fa-tags',
 		);
 		return $list;
@@ -396,7 +396,7 @@ class MS_Addon_Attributes extends MS_Addon {
 	 */
 	public function add_settings_tab( $tabs ) {
 		$tabs[ self::ID ] = array(
-			'title' => __( 'Membership Attributes', MS_TEXT_DOMAIN ),
+			'title' => __( 'Membership Attributes', 'membership2' ),
 			'url' => MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => self::ID )
@@ -438,7 +438,7 @@ class MS_Addon_Attributes extends MS_Addon {
 
 		$data = array(
 			'lang' => array(
-				'edit_title' => __( 'Edit Attribute', MS_TEXT_DOMAIN ),
+				'edit_title' => __( 'Edit Attribute', 'membership2' ),
 			),
 		);
 
@@ -524,7 +524,7 @@ class MS_Addon_Attributes extends MS_Addon {
 	 */
 	public function add_membership_tab( $tabs ) {
 		$tabs[ self::ID ] = array(
-			'title' => __( 'Membership Attributes', MS_TEXT_DOMAIN ),
+			'title' => __( 'Membership Attributes', 'membership2' ),
 		);
 
 		return $tabs;
@@ -666,47 +666,47 @@ class MS_Addon_Attributes extends MS_Addon {
 		<div id="<?php echo self::SHORTCODE; ?>" class="ms-help-box">
 			<h3><code>[<?php echo self::SHORTCODE; ?>]</code></h3>
 
-			<?php _ex( 'Output the value of a Custom Membership Attribute.', 'help', MS_TEXT_DOMAIN ); ?>
-			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', MS_TEXT_DOMAIN ); ?></div>
+			<?php _ex( 'Output the value of a Custom Membership Attribute.', 'help', 'membership2' ); ?>
+			<div class="ms-help-toggle"><?php _ex( 'Expand', 'help', 'membership2' ); ?></div>
 			<div class="ms-help-details" style="display:none">
 				<ul>
 					<li>
 						<code>slug</code>
-						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<strong><?php _ex( 'Required', 'help', MS_TEXT_DOMAIN ); ?></strong>.
-						<?php _ex( 'Slug of the custom attribute', 'help', MS_TEXT_DOMAIN ); ?>.
+						<?php _ex( '(Text)', 'help', 'membership2' ); ?>
+						<strong><?php _ex( 'Required', 'help', 'membership2' ); ?></strong>.
+						<?php _ex( 'Slug of the custom attribute', 'help', 'membership2' ); ?>.
 					</li>
 					<li>
 						<code>id</code>
-						<?php _ex( '(Single ID)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'The membership ID', 'help', MS_TEXT_DOMAIN ); ?>.
+						<?php _ex( '(Single ID)', 'help', 'membership2' ); ?>
+						<?php _ex( 'The membership ID', 'help', 'membership2' ); ?>.
 						<span class="ms-help-default">
-							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
-							<?php _e( 'Automatic detection', MS_TEXT_DOMAIN ); ?>
+							<?php _ex( 'Default:', 'help', 'membership2' ); ?>
+							<?php _e( 'Automatic detection', 'membership2' ); ?>
 						</span><br />
-						<em><?php _ex( 'If not specified the plugin attempts to identify the currently displayed membership by examining the URL, request data and subscriptions of the current member', 'help', MS_TEXT_DOMAIN ); ?></em>.
+						<em><?php _ex( 'If not specified the plugin attempts to identify the currently displayed membership by examining the URL, request data and subscriptions of the current member', 'help', 'membership2' ); ?></em>.
 					</li>
 					<li>
 						<code>title</code>
-						<?php _ex( '(yes|no)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Prefix the field title to the output', 'help', MS_TEXT_DOMAIN ); ?>.
+						<?php _ex( '(yes|no)', 'help', 'membership2' ); ?>
+						<?php _ex( 'Prefix the field title to the output', 'help', 'membership2' ); ?>.
 						<span class="ms-help-default">
-							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							<?php _ex( 'Default:', 'help', 'membership2' ); ?>
 							no
 						</span>
 					</li>
 					<li>
 						<code>default</code>
-						<?php _ex( '(Text)', 'help', MS_TEXT_DOMAIN ); ?>
-						<?php _ex( 'Default value to display if no membership was found or the membership did not define the attribute', 'help', MS_TEXT_DOMAIN ); ?>.
+						<?php _ex( '(Text)', 'help', 'membership2' ); ?>
+						<?php _ex( 'Default value to display if no membership was found or the membership did not define the attribute', 'help', 'membership2' ); ?>.
 						<span class="ms-help-default">
-							<?php _ex( 'Default:', 'help', MS_TEXT_DOMAIN ); ?>
+							<?php _ex( 'Default:', 'help', 'membership2' ); ?>
 							""
 						</span>
 					</li>
 				</ul>
 
-				<p><em><?php _ex( 'Example:', 'help', MS_TEXT_DOMAIN ); ?></em></p>
+				<p><em><?php _ex( 'Example:', 'help', 'membership2' ); ?></em></p>
 				<p><code>[<?php echo self::SHORTCODE; ?> slug="intro"]</code></p>
 				<p><code>[<?php echo self::SHORTCODE; ?> slug="intro" id="5" default="An awesome offer!"]</code></p>
 			</div>

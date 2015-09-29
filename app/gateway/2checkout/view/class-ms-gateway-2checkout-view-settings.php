@@ -13,12 +13,12 @@ class MS_Gateway_2checkout_View_Settings extends MS_View {
 			<?php
 			$description = sprintf(
 				'%1$s<br />&nbsp;<br />%2$s <strong>%3$s</strong><br />%6$s <strong>%7$s</strong><br /><a href="%4$s" target="_blank">%5$s</a>',
-				__( 'In order for Membership 2 to function correctly you must setup an INS (Instant Notification Service) URL with 2Checkout. Make sure you add the following URLs to your 2Checkout "Notifications" section as well as the "Approved URL" in the Site Management section. The domain must be the same as the one registered with your Live account for production sites.', MS_TEXT_DOMAIN ),
-				__( 'Your Global Notifications URL is:', MS_TEXT_DOMAIN ),
+				__( 'In order for Membership 2 to function correctly you must setup an INS (Instant Notification Service) URL with 2Checkout. Make sure you add the following URLs to your 2Checkout "Notifications" section as well as the "Approved URL" in the Site Management section. The domain must be the same as the one registered with your Live account for production sites.', 'membership2' ),
+				__( 'Your Global Notifications URL is:', 'membership2' ),
 				$this->data['model']->get_return_url(),
 				'https://www.2checkout.com/documentation/notifications/',
-				__( 'Instructions &raquo;', MS_TEXT_DOMAIN ),
-				__( 'Your "Approved URL" is:', MS_TEXT_DOMAIN ),
+				__( 'Instructions &raquo;', 'membership2' ),
+				__( 'Your "Approved URL" is:', 'membership2' ),
 				MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REG_COMPLETE )
 			);
 
@@ -42,7 +42,7 @@ class MS_Gateway_2checkout_View_Settings extends MS_View {
 		$fields = array(
 			'seller_id' => array(
 				'id' => 'seller_id',
-				'title' => __( '2Checkout Account Number', MS_TEXT_DOMAIN ),
+				'title' => __( '2Checkout Account Number', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->seller_id,
 				'class' => 'ms-text-large',
@@ -51,7 +51,7 @@ class MS_Gateway_2checkout_View_Settings extends MS_View {
 
 			'secret_word' => array(
 				'id' => 'secret_word',
-				'title' => __( '2Checkout Secret Word', MS_TEXT_DOMAIN ),
+				'title' => __( '2Checkout Secret Word', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->secret_word,
 				'class' => 'ms-text-large',
@@ -61,7 +61,7 @@ class MS_Gateway_2checkout_View_Settings extends MS_View {
 			'mode' => array(
 				'id' => 'mode',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Payment Mode', MS_TEXT_DOMAIN ),
+				'title' => __( 'Payment Mode', 'membership2' ),
 				'value' => $gateway->mode,
 				'field_options' => $gateway->get_mode_types(),
 				'class' => 'ms-text-large',
@@ -72,7 +72,7 @@ class MS_Gateway_2checkout_View_Settings extends MS_View {
 				'id' => 'pay_button_url',
 				'title' => apply_filters(
 					'ms_translation_flag',
-					__( 'Payment button label or URL', MS_TEXT_DOMAIN ),
+					__( 'Payment button label or URL', 'membership2' ),
 					'gateway-button' . $gateway->id
 				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,

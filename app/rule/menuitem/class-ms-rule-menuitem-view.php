@@ -37,8 +37,8 @@ class MS_Rule_MenuItem_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Menu Items', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Protect individual menu items.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Menu Items', 'membership2' ),
+				'desc' => __( 'Protect individual menu items.', 'membership2' ),
 			),
 			MS_Rule_MenuItem::RULE_ID,
 			$this

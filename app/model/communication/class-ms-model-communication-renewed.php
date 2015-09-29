@@ -29,7 +29,7 @@ class MS_Model_Communication_Renewed extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent to the member when a previously expired or cancelled membership is renewed - triggered for both free and paid memberships.', MS_TEXT_DOMAIN
+			'Sent to the member when a previously expired or cancelled membership is renewed - triggered for both free and paid memberships.', 'membership2'
 		);
 	}
 
@@ -42,7 +42,7 @@ class MS_Model_Communication_Renewed extends MS_Model_Communication {
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Subscription renewed for %s', MS_TEXT_DOMAIN ),
+			__( 'Subscription renewed for %s', 'membership2' ),
 			self::COMM_VAR_BLOG_NAME
 		);
 		$this->message = self::get_default_message();
@@ -63,16 +63,16 @@ class MS_Model_Communication_Renewed extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Thanks for renewing your <strong>%1$s</strong> subscription over at %2$s!', MS_TEXT_DOMAIN ),
+			__( 'Thanks for renewing your <strong>%1$s</strong> subscription over at %2$s!', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
 		$body_account = sprintf(
-			__( 'You can review and edit your membership details here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'You can review and edit your membership details here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
 

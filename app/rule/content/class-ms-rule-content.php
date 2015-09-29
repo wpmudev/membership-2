@@ -19,7 +19,7 @@ class MS_Rule_Content extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Comments & More Tag', MS_TEXT_DOMAIN ),
+				__( 'Comments & More Tag', 'membership2' ),
 				80
 			);
 		}

@@ -13,7 +13,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 
 		// TODO: Fix that condition again.
 		$has_more = true;
-		$title = __( 'Protection Messages', MS_TEXT_DOMAIN );
+		$title = __( 'Protection Messages', 'membership2' );
 
 		if ( isset( $this->data['membership'] ) ) {
 			$membership = $this->data['membership'];
@@ -27,7 +27,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 				array( 'tab' => MS_Controller_Settings::TAB_MESSAGES )
 			);
 			$desc = sprintf(
-				__( 'Here you can override %sdefault settings%s for this membership.', MS_TEXT_DOMAIN ),
+				__( 'Here you can override %sdefault settings%s for this membership.', 'membership2' ),
 				'<a href="' . $settings_url . '">',
 				'</a>'
 			);
@@ -44,7 +44,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 			<?php
 			$subtitle = apply_filters(
 				'ms_translation_flag',
-				__( 'Content protection message', MS_TEXT_DOMAIN ),
+				__( 'Content protection message', 'membership2' ),
 				'message-protected'
 			);
 			MS_Helper_Html::settings_box(
@@ -56,7 +56,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 
 			$subtitle = apply_filters(
 				'ms_translation_flag',
-				__( 'Shortcode protection message', MS_TEXT_DOMAIN ),
+				__( 'Shortcode protection message', 'membership2' ),
 				'message-shortcode'
 			);
 			MS_Helper_Html::settings_box(
@@ -69,7 +69,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 			if ( $has_more ) {
 				$subtitle = apply_filters(
 					'ms_translation_flag',
-					__( 'More tag protection message', MS_TEXT_DOMAIN ),
+					__( 'More tag protection message', 'membership2' ),
 					'message-more_tag'
 				);
 				MS_Helper_Html::settings_box(
@@ -114,15 +114,15 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 		$groups['content'] = array(
 			'description' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( 'Message displayed when the whole page is protected via shortcode <code>[ms-protection-message]</code>.', MS_TEXT_DOMAIN ),
+				'value' => __( 'Message displayed when the whole page is protected via shortcode <code>[ms-protection-message]</code>.', 'membership2' ),
 				'wrapper_class' => 'ms-block ms-tcenter',
 			),
 			'override' => array(
 				'id' => 'override_content',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $override_content,
-				'before' => __( 'Use default message', MS_TEXT_DOMAIN ),
-				'after' => __( 'Define custom message', MS_TEXT_DOMAIN ),
+				'before' => __( 'Use default message', 'membership2' ),
+				'after' => __( 'Define custom message', 'membership2' ),
 				'wrapper_class' => 'ms-block ms-tcenter ms-spaced',
 				'class' => 'override-slider',
 				'ajax_data' => array( 1 ),
@@ -136,7 +136,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 			'save' => array(
 				'id' => 'save_content',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Save', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save', 'membership2' ),
 				'class' => 'button-primary',
 				'ajax_data' => array( 'type' => 'content' ),
 			),
@@ -151,15 +151,15 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 		$groups['shortcode'] = array(
 			'description' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( 'Message displayed in place of a protected shortcode output.', MS_TEXT_DOMAIN ),
+				'value' => __( 'Message displayed in place of a protected shortcode output.', 'membership2' ),
 				'wrapper_class' => 'ms-block ms-tcenter',
 			),
 			'override' => array(
 				'id' => 'override_shortcode',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $override_shortcode,
-				'before' => __( 'Use default message', MS_TEXT_DOMAIN ),
-				'after' => __( 'Define custom message', MS_TEXT_DOMAIN ),
+				'before' => __( 'Use default message', 'membership2' ),
+				'after' => __( 'Define custom message', 'membership2' ),
 				'wrapper_class' => 'ms-block ms-tcenter ms-spaced',
 				'class' => 'override-slider',
 				'ajax_data' => array( 1 ),
@@ -173,7 +173,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 			'save' => array(
 				'id' => 'save_content',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Save', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save', 'membership2' ),
 				'class' => 'button-primary',
 				'ajax_data' => array( 'type' => 'shortcode' ),
 			),
@@ -188,15 +188,15 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 		$groups['more_tag'] = array(
 			'description' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( 'Message displayed in place of the read-more contents.', MS_TEXT_DOMAIN ),
+				'value' => __( 'Message displayed in place of the read-more contents.', 'membership2' ),
 				'wrapper_class' => 'ms-block ms-tcenter',
 			),
 			'override' => array(
 				'id' => 'override_content',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $override_more_tag,
-				'before' => __( 'Use default message', MS_TEXT_DOMAIN ),
-				'after' => __( 'Define custom message', MS_TEXT_DOMAIN ),
+				'before' => __( 'Use default message', 'membership2' ),
+				'after' => __( 'Define custom message', 'membership2' ),
 				'wrapper_class' => 'ms-block ms-tcenter ms-spaced',
 				'class' => 'override-slider',
 				'ajax_data' => array( 1 ),
@@ -210,7 +210,7 @@ class MS_View_Settings_Page_Messages extends MS_View_Settings_Edit {
 			'save' => array(
 				'id' => 'save_content',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Save', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save', 'membership2' ),
 				'class' => 'button-primary',
 				'ajax_data' => array( 'type' => 'more_tag' ),
 			),

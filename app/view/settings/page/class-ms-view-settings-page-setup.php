@@ -51,7 +51,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 		$code = sprintf(
 			'<center>%1$s</center>',
 			sprintf(
-				__( 'You can now go to page %sProtection Rules%s to set up access levels for this Membership.', MS_TEXT_DOMAIN ),
+				__( 'You can now go to page %sProtection Rules%s to set up access levels for this Membership.', 'membership2' ),
 				sprintf( '<a href="%1$s">', MS_Controller_Plugin::get_admin_url( 'protection' ) ),
 				'</a>'
 			)
@@ -77,12 +77,12 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			<div class="ms-setup-nav">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-menu"></i>
-					<?php _e( 'Please select pages you want to appear in your Navigation', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Please select pages you want to appear in your Navigation', 'membership2' ); ?>
 				</div>
 				<div class="ms-description">
 					<?php
 					printf(
-						__( 'You can always change those later by going to %1$s in your admin sidebar.', MS_TEXT_DOMAIN ),
+						__( 'You can always change those later by going to %1$s in your admin sidebar.', 'membership2' ),
 						sprintf(
 							'<a href="%1$s" target="_blank">%2$s</a>',
 							admin_url( 'nav-menus.php' ),
@@ -97,10 +97,10 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			<div class="ms-setup-site">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-admin-network"></i>
-					<?php _e( 'Select the Site that hosts Membership 2 Pages', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Select the Site that hosts Membership 2 Pages', 'membership2' ); ?>
 				</div>
 				<div class="ms-description">
-					<?php _e( 'When you change the site new Membership 2 Pages are created on the selected site. You can customize or replace these pages at any time.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'When you change the site new Membership 2 Pages are created on the selected site. You can customize or replace these pages at any time.', 'membership2' ); ?>
 				</div>
 				<?php
 				$site_options = MS_Helper_Settings::get_blogs();
@@ -108,7 +108,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					array(
 						'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 						'id' => 'network_site',
-						'title' => __( 'Select the site that hosts the Membership 2 Pages', MS_TEXT_DOMAIN ),
+						'title' => __( 'Select the site that hosts the Membership 2 Pages', 'membership2' ),
 						'value' => MS_Model_Pages::get_site_info( 'id' ),
 						'field_options' => $site_options,
 						'class' => 'ms-site-options',
@@ -125,24 +125,24 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					),
 					array(
 						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => __( 'Save', MS_TEXT_DOMAIN ),
+						'value' => __( 'Save', 'membership2' ),
 					),
 					array(
 						'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 						'class' => 'ms-setup-pages-cancel',
-						'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+						'value' => __( 'Cancel', 'membership2' ),
 					),
 				);
 				?>
 				<div class="ms-setup-pages-site">
 					<div class="ms-setup-pages-site-info"><?php
 					printf(
-						__( 'Membership pages are located on site %s', MS_TEXT_DOMAIN ),
+						__( 'Membership pages are located on site %s', 'membership2' ),
 						'<strong>' . MS_Model_Pages::get_site_info( 'title' ) . '</strong>'
 					);
 					?>
 					<a href="#change-site" class="ms-setup-pages-change-site"><?php
-					_e( 'Change site...', MS_TEXT_DOMAIN );
+					_e( 'Change site...', 'membership2' );
 					?></a></div>
 					<div class="ms-setup-pages-site-form cf" style="display:none;">
 						<?php
@@ -157,10 +157,10 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			<div class="ms-setup-pages">
 				<div class="ms-title">
 					<i class="ms-icon dashicons dashicons-admin-page"></i>
-					<?php _e( 'Membership 2 Pages', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Membership 2 Pages', 'membership2' ); ?>
 				</div>
 				<div class="ms-description">
-					<?php _e( 'Set Up Membership 2 Pages that will be displayed on your website.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Set Up Membership 2 Pages that will be displayed on your website.', 'membership2' ); ?>
 				</div>
 				<?php
 
@@ -194,7 +194,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 										array(
 											'id' => 'url_page_' . $field['value'],
 											'url' => '',
-											'value' => __( 'View Page', MS_TEXT_DOMAIN ),
+											'value' => __( 'View Page', 'membership2' ),
 											'target' => '_blank',
 											'data_ms' => array(
 												'base' => MS_Helper_Utility::get_home_url(
@@ -210,7 +210,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 										array(
 											'id' => 'edit_url_page_' . $field['value'],
 											'url' => '',
-											'value' => __( 'Edit Page', MS_TEXT_DOMAIN ),
+											'value' => __( 'Edit Page', 'membership2' ),
 											'target' => '_blank',
 											'data_ms' => array(
 												'base' => get_admin_url(
@@ -306,7 +306,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 				'title' => $title,
 				'value' => $page_id,
 				'field_options' => array(
-					'no_item' => __( '- Select a page -', MS_TEXT_DOMAIN ),
+					'no_item' => __( '- Select a page -', 'membership2' ),
 				),
 				'ajax_data' => array(
 					'field' => $type,
@@ -347,7 +347,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			$button = array(
 				'id' => 'create_menu',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Okay, create the menu', MS_TEXT_DOMAIN ),
+				'value' => __( 'Okay, create the menu', 'membership2' ),
 				'ajax_data' => array(
 					'action' => MS_Controller_Pages::AJAX_ACTION_CREATE_MENU,
 					'_wpnonce' => wp_create_nonce( MS_Controller_Pages::AJAX_ACTION_CREATE_MENU ),
@@ -355,7 +355,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 			);
 			$code = sprintf(
 				'<div style="padding-left:10px"><p><em>%s</em></p><p>%s</p></div>',
-				__( 'Wait! You did not create a menu yet...<br>Let us create it now, so you can choose which pages to display to your visitors!', MS_TEXT_DOMAIN ),
+				__( 'Wait! You did not create a menu yet...<br>Let us create it now, so you can choose which pages to display to your visitors!', 'membership2' ),
 				MS_Helper_Html::html_element( $button, true )
 			);
 		}

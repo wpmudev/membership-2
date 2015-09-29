@@ -184,7 +184,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 		if ( ! $include_gateway_free ) {
 			unset( $names[ MS_Gateway_Free::ID ] );
 		} else {
-			$names['admin'] = __( 'None (Admin)', MS_TEXT_DOMAIN );
+			$names['admin'] = __( 'None (Admin)', 'membership2' );
 		}
 
 		return apply_filters(
@@ -216,7 +216,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			if ( ! isset( $Short_names[$gateway_id] ) ) {
 				$Short_names[$gateway_id] = trim(
 					str_replace(
-						__( 'Gateway', MS_TEXT_DOMAIN ),
+						__( 'Gateway', 'membership2' ),
 						'',
 						$the_name
 					)

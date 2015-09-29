@@ -66,15 +66,15 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'bbPress Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Enable bbPress rules integration.', MS_TEXT_DOMAIN ),
+			'name' => __( 'bbPress Integration', 'membership2' ),
+			'description' => __( 'Enable bbPress rules integration.', 'membership2' ),
 			'icon' => 'dashicons dashicons-format-chat',
 		);
 
 		if ( ! self::bbpress_active() ) {
 			$list[ self::ID ]->description .= sprintf(
 				'<br /><b>%s</b>',
-				__( 'Activate bbPress to use this Add-on', MS_TEXT_DOMAIN )
+				__( 'Activate bbPress to use this Add-on', 'membership2' )
 			);
 			$list[ self::ID ]->action = '-';
 		}

@@ -35,9 +35,9 @@ class MS_View_Billing_List extends MS_View {
 
 			if ( $error_count ) {
 				if ( 1 == $error_count ) {
-					$message = __( 'One transaction failed. Please %2$sreview the logs%3$s and decide if you want to ignore the transaction or manually assign it to an invoice.', MS_TEXT_DOMAIN );
+					$message = __( 'One transaction failed. Please %2$sreview the logs%3$s and decide if you want to ignore the transaction or manually assign it to an invoice.', 'membership2' );
 				} else {
-					$message = __( '%1$s transactions failed. Please %2$sreview the logs%3$s and decide if you want to ignore the transaction or manually assign it to an invoice.', MS_TEXT_DOMAIN );
+					$message = __( '%1$s transactions failed. Please %2$sreview the logs%3$s and decide if you want to ignore the transaction or manually assign it to an invoice.', 'membership2' );
 				}
 				$review_url = MS_Controller_Plugin::get_admin_url(
 					'billing',
@@ -63,7 +63,7 @@ class MS_View_Billing_List extends MS_View {
 		switch ( $module ) {
 			// Transaction logs.
 			case 'logs':
-				$title = __( 'Transaction Logs', MS_TEXT_DOMAIN );
+				$title = __( 'Transaction Logs', 'membership2' );
 
 				$listview = MS_Factory::create( 'MS_Helper_ListTable_TransactionLog' );
 				$listview->prepare_items();
@@ -73,14 +73,14 @@ class MS_View_Billing_List extends MS_View {
 					'url' => MS_Controller_Plugin::get_admin_url(
 						'billing'
 					),
-					'value' => __( 'Show Invoices', MS_TEXT_DOMAIN ),
+					'value' => __( 'Show Invoices', 'membership2' ),
 					'class' => 'button',
 				);
 				break;
 
 			// M1 Migration matching.
 			case 'matching':
-				$title = __( 'Automatic Transaction Matching', MS_TEXT_DOMAIN );
+				$title = __( 'Automatic Transaction Matching', 'membership2' );
 
 				$listview = MS_Factory::create( 'MS_Helper_ListTable_TransactionMatching' );
 				$listview->prepare_items();
@@ -90,7 +90,7 @@ class MS_View_Billing_List extends MS_View {
 					'url' => MS_Controller_Plugin::get_admin_url(
 						'billing'
 					),
-					'value' => __( 'Show Invoices', MS_TEXT_DOMAIN ),
+					'value' => __( 'Show Invoices', 'membership2' ),
 					'class' => 'button',
 				);
 				$buttons[] = array(
@@ -99,7 +99,7 @@ class MS_View_Billing_List extends MS_View {
 						'billing',
 						array( 'show' => 'logs' )
 					),
-					'value' => __( 'Show Transaction Logs', MS_TEXT_DOMAIN ),
+					'value' => __( 'Show Transaction Logs', 'membership2' ),
 					'class' => 'button',
 				);
 
@@ -108,7 +108,7 @@ class MS_View_Billing_List extends MS_View {
 			// Default billings list.
 			case 'billing':
 			default:
-				$title = __( 'Billing', MS_TEXT_DOMAIN );
+				$title = __( 'Billing', 'membership2' );
 
 				$listview = MS_Factory::create( 'MS_Helper_ListTable_Billing' );
 				$listview->prepare_items();
@@ -123,7 +123,7 @@ class MS_View_Billing_List extends MS_View {
 							'invoice_id' => 0,
 						)
 					),
-					'value' => __( 'Create new Invoice', MS_TEXT_DOMAIN ),
+					'value' => __( 'Create new Invoice', 'membership2' ),
 					'class' => 'button',
 				);
 				$buttons[] = array(
@@ -132,7 +132,7 @@ class MS_View_Billing_List extends MS_View {
 						'billing',
 						array( 'show' => 'logs' )
 					),
-					'value' => __( 'Show Transaction Logs', MS_TEXT_DOMAIN ),
+					'value' => __( 'Show Transaction Logs', 'membership2' ),
 					'class' => 'button',
 				);
 
@@ -147,10 +147,10 @@ class MS_View_Billing_List extends MS_View {
 
 		if ( 'matching' != $module ) {
 			if ( MS_Model_Import::can_match() ) {
-				$btn_label = __( 'Setup automatic matching', MS_TEXT_DOMAIN );
+				$btn_label = __( 'Setup automatic matching', 'membership2' );
 				$btn_class = 'button';
 			} else {
-				$btn_label = '(' . __( 'Setup automatic matching', MS_TEXT_DOMAIN ) . ')';
+				$btn_label = '(' . __( 'Setup automatic matching', 'membership2' ) . ')';
 				$btn_class = 'button button-link';
 			}
 
@@ -188,7 +188,7 @@ class MS_View_Billing_List extends MS_View {
 			<?php
 			$listview->views();
 			$listview->search_box(
-				__( 'User', MS_TEXT_DOMAIN ),
+				__( 'User', 'membership2' ),
 				'search'
 			);
 			?>

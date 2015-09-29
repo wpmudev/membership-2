@@ -18,7 +18,7 @@ class MS_Rule_Adminside extends MS_Controller {
 		MS_Model_Rule::register_rule(
 			self::RULE_ID,
 			__CLASS__,
-			__( 'Admin Side', MS_TEXT_DOMAIN ),
+			__( 'Admin Side', 'membership2' ),
 			10
 		);
 

@@ -20,7 +20,7 @@ class MS_Addon_Profilefields_View_Settings extends MS_View {
 			<form method="post">
 			<?php
 			MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'Profile Fields Settings', MS_TEXT_DOMAIN ) )
+				array( 'title' => __( 'Profile Fields Settings', 'membership2' ) )
 			);
 
 			foreach ( $fields as $field ) {
@@ -53,23 +53,23 @@ class MS_Addon_Profilefields_View_Settings extends MS_View {
 
 		$registration_options = array(
 			'off' => '-',
-			'optional' => __( 'Optional', MS_TEXT_DOMAIN ),
-			'required' => __( 'Required', MS_TEXT_DOMAIN ),
+			'optional' => __( 'Optional', 'membership2' ),
+			'required' => __( 'Required', 'membership2' ),
 		);
 
 		$profile_options = array(
 			'off' => '-',
-			'readonly' => __( 'Read-only', MS_TEXT_DOMAIN ),
-			'optional' => __( 'Optional', MS_TEXT_DOMAIN ),
-			'required' => __( 'Required', MS_TEXT_DOMAIN ),
+			'readonly' => __( 'Read-only', 'membership2' ),
+			'optional' => __( 'Optional', 'membership2' ),
+			'required' => __( 'Required', 'membership2' ),
 		);
 
 		$fields = array();
 		$rows = array();
 		$rows[] = array(
-			__( 'Field Name', MS_TEXT_DOMAIN ),
-			__( 'Registration Form', MS_TEXT_DOMAIN ),
-			__( 'Profile Form', MS_TEXT_DOMAIN ),
+			__( 'Field Name', 'membership2' ),
+			__( 'Registration Form', 'membership2' ),
+			__( 'Profile Form', 'membership2' ),
 		);
 
 		// Prepare the rows inside the table. Each row is a profile field.
@@ -168,7 +168,7 @@ class MS_Addon_Profilefields_View_Settings extends MS_View {
 		$fields[] = array(
 			'id' => 'save',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+			'value' => __( 'Save Changes', 'membership2' ),
 		);
 
 		// Save changes in case fields were initialized.

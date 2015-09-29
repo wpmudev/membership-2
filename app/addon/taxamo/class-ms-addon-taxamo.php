@@ -158,14 +158,14 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Taxamo', MS_TEXT_DOMAIN ),
-			'description' => __( 'Addresses EU VAT regulations.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Taxamo', 'membership2' ),
+			'description' => __( 'Addresses EU VAT regulations.', 'membership2' ),
 			'icon' => 'wpmui-fa wpmui-fa-euro',
 			'details' => array(
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-					'title' => __( 'Settings', MS_TEXT_DOMAIN ),
-					'desc' => __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', MS_TEXT_DOMAIN ),
+					'title' => __( 'Settings', 'membership2' ),
+					'desc' => __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', 'membership2' ),
 				),
 			),
 		);
@@ -199,7 +199,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 */
 	public function settings_tabs( $tabs ) {
 		$tabs[ self::ID ] = array(
-			'title' => __( 'Taxamo', MS_TEXT_DOMAIN ),
+			'title' => __( 'Taxamo', 'membership2' ),
 			'url' => MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => self::ID )

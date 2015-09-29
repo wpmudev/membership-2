@@ -28,19 +28,19 @@ class MS_Helper_Membership extends MS_Helper {
 		$messages = apply_filters(
 			'ms_helper_membership_get_admin_messages',
 			array(
-				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up your <b>%s</b> Membership.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_UPDATED => __( 'Membership <b>%s</b> updated.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_ACTIVATION_TOGGLED => __( 'Membership activation toggled.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_STATUS_TOGGLED => __( 'Membership status toggled.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_BULK_UPDATED => __( 'Memberships bulk updated.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_NOT_ADDED => __( 'Membership not added.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_NOT_DELETED => __( 'Membership not deleted.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_NOT_UPDATED => __( 'Membership not updated.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_ACTIVATION_NOT_TOGGLED => __( 'Membership activation not toggled.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_STATUS_NOT_TOGGLED => __( 'Membership status not toggled.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_BULK_NOT_UPDATED => __( 'Memberships bulk not updated.', MS_TEXT_DOMAIN ),
-				self::MEMBERSHIP_MSG_PARTIALLY_UPDATED => __( 'Memberships partially updated. Some fields could not be changed after members have signed up.', MS_TEXT_DOMAIN ),
+				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up your <b>%s</b> Membership.', 'membership2' ),
+				self::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', 'membership2' ),
+				self::MEMBERSHIP_MSG_UPDATED => __( 'Membership <b>%s</b> updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_ACTIVATION_TOGGLED => __( 'Membership activation toggled.', 'membership2' ),
+				self::MEMBERSHIP_MSG_STATUS_TOGGLED => __( 'Membership status toggled.', 'membership2' ),
+				self::MEMBERSHIP_MSG_BULK_UPDATED => __( 'Memberships bulk updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_NOT_ADDED => __( 'Membership not added.', 'membership2' ),
+				self::MEMBERSHIP_MSG_NOT_DELETED => __( 'Membership not deleted.', 'membership2' ),
+				self::MEMBERSHIP_MSG_NOT_UPDATED => __( 'Membership not updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_ACTIVATION_NOT_TOGGLED => __( 'Membership activation not toggled.', 'membership2' ),
+				self::MEMBERSHIP_MSG_STATUS_NOT_TOGGLED => __( 'Membership status not toggled.', 'membership2' ),
+				self::MEMBERSHIP_MSG_BULK_NOT_UPDATED => __( 'Memberships bulk not updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_PARTIALLY_UPDATED => __( 'Memberships partially updated. Some fields could not be changed after members have signed up.', 'membership2' ),
 			)
 		);
 
@@ -89,11 +89,11 @@ class MS_Helper_Membership extends MS_Helper {
 	}
 
 	public static function get_admin_title() {
-		$title = __( 'Memberships', MS_TEXT_DOMAIN );
+		$title = __( 'Memberships', 'membership2' );
 
 		$msg = self::get_msg_id();
 		if ( self::MEMBERSHIP_MSG_ADDED == $msg ) {
-			$title = __( 'Congratulations!', MS_TEXT_DOMAIN );
+			$title = __( 'Congratulations!', 'membership2' );
 		}
 		return apply_filters( 'ms_helper_membership_get_admin_title', $title );
 	}
@@ -115,9 +115,9 @@ class MS_Helper_Membership extends MS_Helper {
 
 		$popup['title'] = sprintf(
 			'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
-			__( 'Congratulations!', MS_TEXT_DOMAIN ),
+			__( 'Congratulations!', 'membership2' ),
 			sprintf(
-				__( 'You have successfully set up your <b>%1$s</b> Membership.', MS_TEXT_DOMAIN ),
+				__( 'You have successfully set up your <b>%1$s</b> Membership.', 'membership2' ),
 				$membership->name
 			)
 		);
@@ -137,8 +137,8 @@ class MS_Helper_Membership extends MS_Helper {
 			'<button type="button" class="button-primary close">%s</button>' .
 			'</div>',
 			MS_Controller_Plugin::get_admin_url( 'protection' ),
-			__( 'Set-up Access Levels', MS_TEXT_DOMAIN ),
-			__( 'Finish', MS_TEXT_DOMAIN )
+			__( 'Set-up Access Levels', 'membership2' ),
+			__( 'Finish', 'membership2' )
 		);
 
 		lib3()->html->popup( $popup );

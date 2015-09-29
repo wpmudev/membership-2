@@ -124,8 +124,8 @@ class MS_Addon_Invitation extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Invitation Codes', MS_TEXT_DOMAIN ),
-			'description' => __( 'Users need an invitation code to subscribe to a membership.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Invitation Codes', 'membership2' ),
+			'description' => __( 'Users need an invitation code to subscribe to a membership.', 'membership2' ),
 			'icon' => 'wpmui-fa wpmui-fa-unlock-alt',
 		);
 
@@ -147,7 +147,7 @@ class MS_Addon_Invitation extends MS_Addon {
 		if ( ! $limited_mode ) {
 			$menu_item = array(
 				self::ID => array(
-					'title' => __( 'Invitation Codes', MS_TEXT_DOMAIN ),
+					'title' => __( 'Invitation Codes', 'membership2' ),
 					'slug' => self::SLUG,
 				)
 			);
@@ -303,7 +303,7 @@ class MS_Addon_Invitation extends MS_Addon {
 			// Edit action view page request
 			$invitation_id = ! empty( $_GET['invitation_id'] ) ? $_GET['invitation_id'] : 0;
 			$data['invitation'] = MS_Factory::load( 'MS_Addon_Invitation_Model', $invitation_id );
-			$data['memberships'] = array( __( 'Any', MS_TEXT_DOMAIN ) );
+			$data['memberships'] = array( __( 'Any', 'membership2' ) );
 			$data['memberships'] += MS_Model_Membership::get_membership_names();
 			$data['action'] = $_GET['action'];
 
@@ -371,15 +371,15 @@ class MS_Addon_Invitation extends MS_Addon {
 			array(
 				'id' => 'no_invitation',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Does this Membership require an Invitation code?', MS_TEXT_DOMAIN ),
+				'title' => __( 'Does this Membership require an Invitation code?', 'membership2' ),
 				'value' => lib3()->is_true( $membership->get_custom_data( 'no_invitation' ) ),
 				'before' => sprintf(
 					'%s <i class="wpmui-fa wpmui-fa-lock"></i>',
-					__( 'Yes', MS_TEXT_DOMAIN )
+					__( 'Yes', 'membership2' )
 				),
 				'after' => sprintf(
 					'<i class="wpmui-fa wpmui-fa-unlock"></i> %s',
-					__( 'No (public membership)', MS_TEXT_DOMAIN )
+					__( 'No (public membership)', 'membership2' )
 				),
 				'class' => 'reverse',
 				'ajax_data' => array(
@@ -577,10 +577,10 @@ class MS_Addon_Invitation extends MS_Addon {
 				'remove_invitation_code' => array(
 					'id' => 'remove_invitation_code',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Remove', MS_TEXT_DOMAIN ),
+					'value' => __( 'Remove', 'membership2' ),
 					'label_class' => 'inline-label',
 					'title' => sprintf(
-						__( 'Using invitation code %s.', MS_TEXT_DOMAIN ),
+						__( 'Using invitation code %s.', 'membership2' ),
 						$code
 					),
 					'button_value' => 1,
@@ -596,12 +596,12 @@ class MS_Addon_Invitation extends MS_Addon {
 				'apply_invitation_code' => array(
 					'id' => 'apply_invitation_code',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Apply Invitation', MS_TEXT_DOMAIN ),
+					'value' => __( 'Apply Invitation', 'membership2' ),
 				),
 			);
 
 			if ( ! $message ) {
-				$message = __( 'You need an invitation to register for this Membership', MS_TEXT_DOMAIN );
+				$message = __( 'You need an invitation to register for this Membership', 'membership2' );
 			}
 		}
 
@@ -638,7 +638,7 @@ class MS_Addon_Invitation extends MS_Addon {
 					<div class="invitation-entry">
 						<?php if ( ! isset( $data['invitation_valid'] ) ) : ?>
 							<div class="invitation-question"><?php
-							_e( 'Have an invitation code?', MS_TEXT_DOMAIN );
+							_e( 'Have an invitation code?', 'membership2' );
 							?></div>
 						<?php endif;
 

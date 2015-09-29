@@ -22,14 +22,14 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		$columns = array(
 			'priority' => sprintf(
 				'<span title="%s">#</span>',
-				__( 'Membership Order', MS_TEXT_DOMAIN )
+				__( 'Membership Order', 'membership2' )
 			),
-			'name' => __( 'Membership Name', MS_TEXT_DOMAIN ),
-			'active' => __( 'Active', MS_TEXT_DOMAIN ),
-			'type_description' => __( 'Type of Membership', MS_TEXT_DOMAIN ),
-			'members' => __( 'Members', MS_TEXT_DOMAIN ),
-			'price' => __( 'Payment', MS_TEXT_DOMAIN ),
-			'shortcode' => __( 'Shortcodes', MS_TEXT_DOMAIN ),
+			'name' => __( 'Membership Name', 'membership2' ),
+			'active' => __( 'Active', 'membership2' ),
+			'type_description' => __( 'Type of Membership', 'membership2' ),
+			'members' => __( 'Members', 'membership2' ),
+			'price' => __( 'Payment', 'membership2' ),
+			'shortcode' => __( 'Shortcodes', 'membership2' ),
 		);
 
 		return apply_filters(
@@ -105,7 +105,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			MS_Controller_Membership::STEP_EDIT,
 			MS_Controller_Membership::TAB_DETAILS,
 			esc_attr( $item->id ),
-			__( 'Edit', MS_TEXT_DOMAIN )
+			__( 'Edit', 'membership2' )
 		);
 
 		if ( ! $item->is_system() ) {
@@ -115,7 +115,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 				MS_Controller_Membership::STEP_EDIT,
 				MS_Controller_Membership::TAB_PAYMENT,
 				esc_attr( $item->id ),
-				$item->is_free ? __( 'Access options', MS_TEXT_DOMAIN ) : __( 'Payment options', MS_TEXT_DOMAIN )
+				$item->is_free ? __( 'Access options', 'membership2' ) : __( 'Payment options', 'membership2' )
 			);
 		}
 
@@ -130,7 +130,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 				),
 				'delete'
 			),
-			__( 'Delete', MS_TEXT_DOMAIN )
+			__( 'Delete', 'membership2' )
 		);
 
 		$actions = apply_filters(
@@ -143,14 +143,14 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		if ( $item->is_guest() ) {
 			$badge = sprintf(
 				'<span class="ms-badge ms-guest-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
-				__( 'Guest', MS_TEXT_DOMAIN ),
-				__( 'All Logged-Out users are considered guests', MS_TEXT_DOMAIN )
+				__( 'Guest', 'membership2' ),
+				__( 'All Logged-Out users are considered guests', 'membership2' )
 			);
 		} elseif ( $item->is_user() ) {
 			$badge = sprintf(
 				'<span class="ms-badge ms-user-badge" data-wpmui-tooltip="%2$s" data-width="180">%1$s</span>',
-				__( 'Default', MS_TEXT_DOMAIN ),
-				__( 'All logged-in users that have not signed up for any membership', MS_TEXT_DOMAIN )
+				__( 'Default', 'membership2' ),
+				__( 'All logged-in users that have not signed up for any membership', 'membership2' )
 			);
 		} else {
 			$badge = apply_filters(
@@ -233,7 +233,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		if ( ! $item->is_system() && $item->private ) {
 			$html .= sprintf(
 				'<span class="ms-is-private">, <span>%1$s</span></span>',
-				__( 'Private', MS_TEXT_DOMAIN )
+				__( 'Private', 'membership2' )
 			);
 		}
 
@@ -255,7 +255,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			} else {
 				$html = sprintf(
 					'<span class="ms-bold">%1$s</span> (<span class="ms-payment">%2$s</span>)',
-					__( 'Free', MS_TEXT_DOMAIN ),
+					__( 'Free', 'membership2' ),
 					$item->get_payment_type_desc()
 				);
 			}
@@ -267,7 +267,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 			if ( $followup->is_valid() ) {
 				$html .= '<div class="ms-followup">' . sprintf(
-					__( 'Follow with: %1$s', MS_TEXT_DOMAIN ),
+					__( 'Follow with: %1$s', 'membership2' ),
 					'<span class="ms-color" style="background:' . $followup->get_color() . '">&nbsp;</span>' . $followup->name
 				) . '</div>';
 			}
@@ -280,27 +280,27 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		$shortcodes = array(
 			MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE => array(
 				'tag' => '[%1$s id="%2$s"][/%1$s]',
-				'label' => __( 'Protect content', MS_TEXT_DOMAIN ),
+				'label' => __( 'Protect content', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_TITLE => array(
 				'tag' => '[%1$s id="%2$s"]',
-				'label' => __( 'Membership Title', MS_TEXT_DOMAIN ),
+				'label' => __( 'Membership Title', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_DETAILS => array(
 				'tag' => '[%1$s id="%2$s"]',
-				'label' => __( 'Membership Description', MS_TEXT_DOMAIN ),
+				'label' => __( 'Membership Description', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_PRICE => array(
 				'tag' => '[%1$s id="%2$s"]',
-				'label' => __( 'Membership Price', MS_TEXT_DOMAIN ),
+				'label' => __( 'Membership Price', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_BUY => array(
 				'tag' => '[%1$s id="%2$s"]',
-				'label' => __( 'Subscribe Button', MS_TEXT_DOMAIN ),
+				'label' => __( 'Subscribe Button', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_REGISTER_USER => array(
 				'tag' => '[%1$s membership_id="%2$s"]',
-				'label' => __( 'Registration form', MS_TEXT_DOMAIN ),
+				'label' => __( 'Registration form', 'membership2' ),
 			),
 		);
 		if ( $item->is_system() ) {
@@ -332,7 +332,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 		$html = sprintf(
 			'<div class="ms-shortcodes"><span class="ms-trigger"><span class="label">%s</span><div class="inner">%s</div></span></div>',
-			__( 'Show', MS_TEXT_DOMAIN ) . ' <i class="wpmui-fa wpmui-fa-caret-down"></i>',
+			__( 'Show', 'membership2' ) . ' <i class="wpmui-fa wpmui-fa-caret-down"></i>',
 			implode( '', $lines )
 		);
 

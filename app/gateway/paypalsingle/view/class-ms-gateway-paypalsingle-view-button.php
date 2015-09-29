@@ -190,7 +190,7 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 			'id' => 'submit',
 			'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
 			'value' => 'https://www.paypalobjects.com/en_US/i/btn/x-click-but06.gif',
-			'alt' => __( 'PayPal - The safer, easier way to pay online', MS_TEXT_DOMAIN ),
+			'alt' => __( 'PayPal - The safer, easier way to pay online', 'membership2' ),
 		);
 
 		// custom pay button defined in gateway settings

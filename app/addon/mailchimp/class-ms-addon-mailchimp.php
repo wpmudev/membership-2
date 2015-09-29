@@ -99,8 +99,8 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'MailChimp Integration', MS_TEXT_DOMAIN ),
-			'description' => __( 'Enable MailChimp integration.', MS_TEXT_DOMAIN ),
+			'name' => __( 'MailChimp Integration', 'membership2' ),
+			'description' => __( 'Enable MailChimp integration.', 'membership2' ),
 			'icon' => 'dashicons dashicons-email',
 		);
 
@@ -199,7 +199,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public function settings_tabs( $tabs ) {
 		$tabs[ self::ID  ] = array(
-			'title' => __( 'MailChimp', MS_TEXT_DOMAIN ),
+			'title' => __( 'MailChimp', 'membership2' ),
 			'url' => MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => self::ID )
@@ -317,7 +317,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		static $Mail_lists = null;
 
 		if ( null === $Mail_lists ) {
-			$Mail_lists = array( 0 => __( 'none', MS_TEXT_DOMAIN ) );
+			$Mail_lists = array( 0 => __( 'none', 'membership2' ) );
 			if ( self::get_api_status() ) {
 				$page = 0;
 				$items_per_page = 25;

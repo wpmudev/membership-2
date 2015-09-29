@@ -15,8 +15,8 @@ class MS_Rule_Content_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Comments & More Tag', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Decide how to protect Comments and More Tag contents.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Comments & More Tag', 'membership2' ),
+				'desc' => __( 'Decide how to protect Comments and More Tag contents.', 'membership2' ),
 			),
 			MS_Rule_Content::RULE_ID,
 			$this
@@ -29,7 +29,7 @@ class MS_Rule_Content_View extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
+			$rule_listtable->search_box( __( 'Pages', 'membership2' ) );
 			?>
 			<form action="" method="post">
 				<?php

@@ -247,7 +247,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Email Templates', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Email Templates', 'membership2' ),
 		);
 
 		return apply_filters(
@@ -370,21 +370,21 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public static function get_communication_type_titles( $membership = null ) {
 		$type_titles = array(
-			self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_SIGNUP => __( 'Signup - User account created', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_AFTER_FINISHES => __( 'Subscription - After expired', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_CANCELLED => __( 'Subscription - Cancelled', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Subscription - Trial finished', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_INFO_UPDATE => __( 'Payment - Profile updated', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Payment - Credit Card expires', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_INVOICE => __( 'Payment - Receipt/Invoice', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_FAILED_PAYMENT => __( 'Payment - Failed', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Payment - Before due', MS_TEXT_DOMAIN ),
-			self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'Payment - After due', MS_TEXT_DOMAIN ),
+			self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', 'membership2' ),
+			self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', 'membership2' ),
+			self::COMM_TYPE_SIGNUP => __( 'Signup - User account created', 'membership2' ),
+			self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', 'membership2' ),
+			self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', 'membership2' ),
+			self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', 'membership2' ),
+			self::COMM_TYPE_AFTER_FINISHES => __( 'Subscription - After expired', 'membership2' ),
+			self::COMM_TYPE_CANCELLED => __( 'Subscription - Cancelled', 'membership2' ),
+			self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Subscription - Trial finished', 'membership2' ),
+			self::COMM_TYPE_INFO_UPDATE => __( 'Payment - Profile updated', 'membership2' ),
+			self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Payment - Credit Card expires', 'membership2' ),
+			self::COMM_TYPE_INVOICE => __( 'Payment - Receipt/Invoice', 'membership2' ),
+			self::COMM_TYPE_FAILED_PAYMENT => __( 'Payment - Failed', 'membership2' ),
+			self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Payment - Before due', 'membership2' ),
+			self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'Payment - After due', 'membership2' ),
 		);
 
 		foreach ( $type_titles as $type => $title ) {
@@ -689,20 +689,20 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public function __construct() {
 		$this->comm_vars = array(
-			self::COMM_VAR_MS_NAME => __( 'Subscription: Membership Name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_DESCRIPTION => __( 'Subscription: Membership Description', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Subscription: Remaining days', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Subscription: Remaining trial days', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Subscription: Expiration date', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_INVOICE => __( 'Subscription: Current Invoice', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User: Display name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_FIRST_NAME => __( 'User: First name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_USERNAME => __( 'User: Login name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_PASSWORD => __( 'User: Password', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', MS_TEXT_DOMAIN ),
-			self::COMM_VAR_BLOG_URL => __( 'Site: URL', MS_TEXT_DOMAIN ),
+			self::COMM_VAR_MS_NAME => __( 'Subscription: Membership Name', 'membership2' ),
+			self::COMM_VAR_MS_DESCRIPTION => __( 'Subscription: Membership Description', 'membership2' ),
+			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Subscription: Remaining days', 'membership2' ),
+			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Subscription: Remaining trial days', 'membership2' ),
+			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Subscription: Expiration date', 'membership2' ),
+			self::COMM_VAR_MS_INVOICE => __( 'Subscription: Current Invoice', 'membership2' ),
+			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User: Display name', 'membership2' ),
+			self::COMM_VAR_USER_FIRST_NAME => __( 'User: First name', 'membership2' ),
+			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', 'membership2' ),
+			self::COMM_VAR_USERNAME => __( 'User: Login name', 'membership2' ),
+			self::COMM_VAR_PASSWORD => __( 'User: Password', 'membership2' ),
+			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', 'membership2' ),
+			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', 'membership2' ),
+			self::COMM_VAR_BLOG_URL => __( 'Site: URL', 'membership2' ),
 		);
 
 		if ( self::COMM_TYPE_SIGNUP == $this->type ) {
@@ -719,8 +719,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		}
 
 		if ( is_multisite() ) {
-			$this->comm_vars[self::COMM_VAR_NET_NAME] = __( 'Network: Name', MS_TEXT_DOMAIN );
-			$this->comm_vars[self::COMM_VAR_NET_URL] = __( 'Network: URL', MS_TEXT_DOMAIN );
+			$this->comm_vars[self::COMM_VAR_NET_NAME] = __( 'Network: Name', 'membership2' );
+			$this->comm_vars[self::COMM_VAR_NET_URL] = __( 'Network: URL', 'membership2' );
 		}
 	}
 
@@ -801,7 +801,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return string The description.
 	 */
 	public function get_description() {
-		$description = __( 'Override this description in child class', MS_TEXT_DOMAIN );
+		$description = __( 'Override this description in child class', 'membership2' );
 
 		return apply_filters(
 			'ms_model_communication_get_description',
@@ -819,7 +819,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @param array $field A HTML definition, passed to lib3()->html->element()
 	 */
 	public function set_period_name( $field ) {
-		$field['title'] = __( 'Period before/after', MS_TEXT_DOMAIN );
+		$field['title'] = __( 'Period before/after', 'membership2' );
 
 		return $field;
 	}
@@ -1355,7 +1355,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					$var_value = sprintf(
 						'<a href="%s">%s</a>',
 						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT ),
-						__( 'account page', MS_TEXT_DOMAIN )
+						__( 'account page', 'membership2' )
 					);
 					break;
 
@@ -1392,7 +1392,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					if ( $subscription ) {
 						$days = $subscription->get_remaining_period();
 						$var_value = sprintf(
-							__( '%s day%s', MS_TEXT_DOMAIN ),
+							__( '%s day%s', 'membership2' ),
 							$days,
 							abs( $days ) > 1 ? 's': ''
 						);
@@ -1404,7 +1404,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					if ( $subscription ) {
 						$days = $subscription->get_remaining_trial_period();
 						$var_value = sprintf(
-							__( '%s day%s', MS_TEXT_DOMAIN ),
+							__( '%s day%s', 'membership2' ),
 							$days,
 							abs( $days ) > 1 ? 's': ''
 						);

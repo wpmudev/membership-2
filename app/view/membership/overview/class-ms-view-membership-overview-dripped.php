@@ -57,7 +57,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 			<div class="ms-half ms-available-soon space">
 				<div class="ms-bold">
 					<i class="dashicons dashicons-calendar ms-low"></i>
-					<?php _e( 'Available on a specific date:', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Available on a specific date:', 'membership2' ); ?>
 				</div>
 				<div class="inside">
 					<?php $this->content_box( $absolute ); ?>
@@ -67,7 +67,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 			<div class="ms-half ms-available">
 				<div class="ms-bold">
 					<i class="dashicons dashicons-clock ms-low"></i>
-					<?php _e( 'Relative to registration:', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Relative to registration:', 'membership2' ); ?>
 				</div>
 				<div class="inside">
 					<?php $this->content_box( $relative ); ?>
@@ -91,7 +91,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 							array(
 								'id' => 'edit_dripped',
 								'type' => MS_Helper_Html::TYPE_HTML_LINK,
-								'value' => __( 'Edit Dripped Content', MS_TEXT_DOMAIN ),
+								'value' => __( 'Edit Dripped Content', 'membership2' ),
 								'url' => $edit_url,
 								'class' => 'wpmui-field-button button',
 							)
@@ -110,7 +110,7 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 								array(
 									'id' => 'setup_payment',
 									'type' => MS_Helper_Html::TYPE_HTML_LINK,
-									'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+									'value' => __( 'Payment Options', 'membership2' ),
 									'url' => $payment_url,
 									'class' => 'wpmui-field-button button',
 								)
@@ -155,9 +155,9 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 			<thead>
 				<tr>
 					<th class="col-icon">&nbsp;</th>
-					<th class="col-text"><?php _e( 'Rule', MS_TEXT_DOMAIN ); ?></th>
-					<th class="col-text"><?php _e( 'Protected Item', MS_TEXT_DOMAIN ); ?></th>
-					<th class="col-date"><?php _e( 'Access', MS_TEXT_DOMAIN ); ?></th>
+					<th class="col-text"><?php _e( 'Rule', 'membership2' ); ?></th>
+					<th class="col-text"><?php _e( 'Protected Item', 'membership2' ); ?></th>
+					<th class="col-date"><?php _e( 'Access', 'membership2' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>

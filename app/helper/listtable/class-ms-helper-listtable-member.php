@@ -63,9 +63,9 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	public function get_columns() {
 		$columns = array(
 			'cb' => '<input type="checkbox" />',
-			'username' => __( 'Username', MS_TEXT_DOMAIN ),
-			'email' => __( 'E-mail', MS_TEXT_DOMAIN ),
-			'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
+			'username' => __( 'Username', 'membership2' ),
+			'email' => __( 'E-mail', 'membership2' ),
+			'membership' => __( 'Membership', 'membership2' ),
 			'infos' => '&nbsp;',
 		);
 
@@ -261,12 +261,12 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 				'add-member',
 				array( 'user_id' => $member->id )
 			),
-			__( 'Subscription Details', MS_TEXT_DOMAIN )
+			__( 'Subscription Details', 'membership2' )
 		);
 		$actions['profile'] = sprintf(
 			'<a href="%s">%s</a>',
 			admin_url( 'user-edit.php?user_id=' . $member->id ),
-			__( 'Edit Profile', MS_TEXT_DOMAIN )
+			__( 'Edit Profile', 'membership2' )
 		);
 
 		$html = sprintf(
@@ -299,7 +299,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 */
 	public function column_membership( $member ) {
 		if ( MS_Model_Member::is_admin_user( $member->id ) ) {
-			$html = '<b>' . __( 'Admin User', MS_TEXT_DOMAIN ) . '</b>';
+			$html = '<b>' . __( 'Admin User', 'membership2' ) . '</b>';
 		} else {
 			$subscriptions = $member->get_membership_ids();
 
@@ -363,10 +363,10 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * }
 	 */
 	public function get_bulk_actions() {
-		$protect_key = __( 'Add Membership', MS_TEXT_DOMAIN );
-		$unprotect_key = __( 'Drop Membership', MS_TEXT_DOMAIN );
+		$protect_key = __( 'Add Membership', 'membership2' );
+		$unprotect_key = __( 'Drop Membership', 'membership2' );
 		$bulk_actions = array(
-			'drop-all' => __( 'Drop all Memberships', MS_TEXT_DOMAIN ),
+			'drop-all' => __( 'Drop all Memberships', 'membership2' ),
 			$protect_key => array(),
 			$unprotect_key => array(),
 		);
@@ -375,8 +375,8 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			'include_guest' => 0,
 		);
 		$memberships = MS_Model_Membership::get_membership_names( $args );
-		$txt_add = __( 'Add: %s', MS_TEXT_DOMAIN );
-		$txt_rem = __( 'Drop: %s', MS_TEXT_DOMAIN );
+		$txt_add = __( 'Add: %s', 'membership2' );
+		$txt_rem = __( 'Drop: %s', 'membership2' );
 		foreach ( $memberships as $id => $name ) {
 			$bulk_actions[$protect_key]['add-' . $id] = sprintf( $txt_add, $name );
 			$bulk_actions[$unprotect_key]['drop-' . $id] = sprintf( $txt_rem, $name );
@@ -402,10 +402,10 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'value' => $_REQUEST['search_options'],
 			'field_options' => array(
-				'username'   => __( 'Username / E-mail', MS_TEXT_DOMAIN ),
-				'nickname'   => __( 'Nickname', MS_TEXT_DOMAIN ),
-				'first_name' => __( 'First Name', MS_TEXT_DOMAIN ),
-				'last_name'  => __( 'Last Name', MS_TEXT_DOMAIN ),
+				'username'   => __( 'Username / E-mail', 'membership2' ),
+				'nickname'   => __( 'Nickname', 'membership2' ),
+				'first_name' => __( 'First Name', 'membership2' ),
+				'last_name'  => __( 'Last Name', 'membership2' ),
 			),
 		);
 
@@ -426,7 +426,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$count = 0;
 
 		$views['label'] = array(
-			'label' => __( 'Subscription Status:', MS_TEXT_DOMAIN ),
+			'label' => __( 'Subscription Status:', 'membership2' ),
 		);
 
 		if ( empty( $_REQUEST['membership_id'] ) ) {
@@ -434,7 +434,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$url = esc_url_raw( add_query_arg( 'status', 'all' ) );
 			$views['all'] = array(
 				'url' => $url,
-				'label' => __( 'All users', MS_TEXT_DOMAIN ),
+				'label' => __( 'All users', 'membership2' ),
 			);
 		} else {
 			$args['membership_id'] = $_REQUEST['membership_id'];
@@ -446,7 +446,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$count = MS_Model_Member::get_members_count( $args );
 		$views['active'] = array(
 			'url' => $url,
-			'label' => __( 'Active subscription', MS_TEXT_DOMAIN ),
+			'label' => __( 'Active subscription', 'membership2' ),
 			'count' => $count,
 		);
 
@@ -456,7 +456,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$count = MS_Model_Member::get_members_count( $args );
 		$views['cancelled'] = array(
 			'url' => $url,
-			'label' => __( 'Cancelled', MS_TEXT_DOMAIN ),
+			'label' => __( 'Cancelled', 'membership2' ),
 			'count' => $count,
 		);
 
@@ -467,7 +467,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$count = MS_Model_Member::get_members_count( $args );
 			$views['trial'] = array(
 				'url' => $url,
-				'label' => __( 'Trial', MS_TEXT_DOMAIN ),
+				'label' => __( 'Trial', 'membership2' ),
 				'count' => $count,
 			);
 		}
@@ -478,7 +478,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$count = MS_Model_Member::get_members_count( $args );
 		$views['expired'] = array(
 			'url' => $url,
-			'label' => __( 'Expired', MS_TEXT_DOMAIN ),
+			'label' => __( 'Expired', 'membership2' ),
 			'count' => $count,
 		);
 

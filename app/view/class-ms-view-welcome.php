@@ -31,11 +31,11 @@ class MS_View_Welcome extends MS_View {
 		<div class="ms-wrap wrap">
 			<form class="ms-welcome-box" action="<?php echo esc_url( $setup_url ); ?>" method="POST">
 				<h2 class="ms-welcome-title">
-					<?php _e( 'Welcome!', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Welcome!', 'membership2' ); ?>
 				</h2>
 
 				<div class="ms-welcome-text">
-					<?php _e( 'Hello and welcome to <strong>Membership2</strong> by WPMU DEV. Please follow this simple set-up<br />wizard to help us determine the settings that are most relevant to your needs. Don\'t worry, you<br />can always change these settings in the future.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Hello and welcome to <strong>Membership2</strong> by WPMU DEV. Please follow this simple set-up<br />wizard to help us determine the settings that are most relevant to your needs. Don\'t worry, you<br />can always change these settings in the future.', 'membership2' ); ?>
 				</div>
 
 				<div class="ms-welcome-image-box">
@@ -74,7 +74,7 @@ class MS_View_Welcome extends MS_View {
 		);
 		$fields['button'] = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Let\'s get started', MS_TEXT_DOMAIN ) . ' &raquo;',
+			'value' => __( 'Let\'s get started', 'membership2' ) . ' &raquo;',
 			'class' => 'ms-welcome-start',
 		);
 

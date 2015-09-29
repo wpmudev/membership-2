@@ -253,10 +253,10 @@ class MS_Helper_ListTable {
 
 		if ( $this->need_pagination() || $this->is_search() ) {
 			if ( empty( $text ) ) {
-				$text = __( 'Search', MS_TEXT_DOMAIN );
+				$text = __( 'Search', 'membership2' );
 			} else {
 				$text = sprintf(
-					__( 'Search %1$s', MS_TEXT_DOMAIN ),
+					__( 'Search %1$s', 'membership2' ),
 					$text
 				);
 			}
@@ -295,7 +295,7 @@ class MS_Helper_ListTable {
 							remove_query_arg( $search_fields )
 						),
 						'<span class="dashicons dashicons-dismiss"></span>',
-						__( 'Clear search results', MS_TEXT_DOMAIN )
+						__( 'Clear search results', 'membership2' )
 					);
 					?>
 				</span>
@@ -1269,9 +1269,9 @@ class MS_Helper_ListTable {
 			<tr id="inline-edit" style="display:none" class="inline-edit-row"><td>
 			<?php $this->inline_edit(); ?>
 			<p class="submit inline-edit-save">
-				<a accesskey="c" href="#inline-edit" class="button-secondary cancel alignleft"><?php _e( 'Cancel', MS_TEXT_DOMAIN ); ?></a>
+				<a accesskey="c" href="#inline-edit" class="button-secondary cancel alignleft"><?php _e( 'Cancel', 'membership2' ); ?></a>
 				<input type="hidden" id="_wpnonce" name="_wpnonce" value="<?php echo esc_attr( $inline_nonce ); ?>">
-				<a accesskey="s" href="#inline-edit" class="button-primary save alignright"><?php _e( 'Update', MS_TEXT_DOMAIN ); ?></a>
+				<a accesskey="s" href="#inline-edit" class="button-primary save alignright"><?php _e( 'Update', 'membership2' ); ?></a>
 				<span class="error" style="display:none"></span>
 				<br class="clear">
 			</p>

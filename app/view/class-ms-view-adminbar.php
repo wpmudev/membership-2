@@ -59,25 +59,25 @@ class MS_View_Adminbar extends MS_View {
 		<div class="ms-sim-info <?php echo esc_attr( $toggle_state ); ?>">
 			<div class="ms-sim-block">
 				<h4 class="toggle-wrap">
-					<?php _e( 'Simulation Overview', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Simulation Overview', 'membership2' ); ?>
 					<span class="toggle"><i class="dashicons <?php echo esc_attr( $toggle_icon ); ?>"></i></span>
 				</h4>
 				<div class="ms-sim-body">
 					<form id="view-site-as" method="POST" class="inside">
 					<table cellspacing="0" cellpadding="0" width="100%" border="0">
 						<tr>
-							<th><?php _e( 'View as', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'View as', 'membership2' ); ?></th>
 							<td><?php MS_Helper_Html::html_element( $fields['membership_id'] ) ?></td>
 						</tr>
 						<?php if ( $this->data['datepicker'] ) : ?>
 						<tr>
-							<th><?php _e( 'View on', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'View on', 'membership2' ); ?></th>
 							<td><?php MS_Helper_Html::html_element( $fields['simulate_date'] ) ?></td>
 						</tr>
 						<?php endif; ?>
 						<tr>
 							<th>&nbsp;</th>
-							<td><button class="button"><?php _e( 'Update', MS_TEXT_DOMAIN ); ?></button></td>
+							<td><button class="button"><?php _e( 'Update', 'membership2' ); ?></button></td>
 						</tr>
 					</table>
 					<?php
@@ -87,33 +87,33 @@ class MS_View_Adminbar extends MS_View {
 					</form>
 
 					<h4 class="inside">
-						<?php _e( 'Simulated Membership', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'Simulated Membership', 'membership2' ); ?>
 					</h4>
 					<table cellspacing="0" cellpadding="0" width="100%" border="0" class="inside">
 						<tr>
-							<th><?php _e( 'Membership', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Membership', 'membership2' ); ?></th>
 							<td style="white-space: nowrap"><?php echo esc_html( $mem->name ); ?></td>
 						</tr>
 						<tr>
-							<th><?php _e( 'Type', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Type', 'membership2' ); ?></th>
 							<td><?php echo esc_html( $mem->get_type_description() ); ?></td>
 						</tr>
 						<tr>
-							<th><?php _e( 'Start Date', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Start Date', 'membership2' ); ?></th>
 							<td><?php echo esc_html( $sim->start_date ); ?></td>
 						</tr>
 						<tr>
-							<th><?php _e( 'Expire Date', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Expire Date', 'membership2' ); ?></th>
 							<td><?php echo esc_html( $sim->expire_date ); ?></td>
 						</tr>
 						<?php if ( $this->data['datepicker'] ) : ?>
 						<tr>
-							<th><?php _e( 'Simulated Date', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Simulated Date', 'membership2' ); ?></th>
 							<td><?php echo esc_html( MS_Helper_Period::current_date() ); ?></td>
 						</tr>
 						<?php endif; ?>
 						<tr>
-							<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Status', 'membership2' ); ?></th>
 							<td><?php
 							if ( MS_Model_Relationship::STATUS_ACTIVE == $sim->status ) {
 								$status_class = 'ms-sim-active';
@@ -128,11 +128,11 @@ class MS_View_Adminbar extends MS_View {
 							?></td>
 						</tr>
 						<tr>
-							<th><?php _e( 'Payment model', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Payment model', 'membership2' ); ?></th>
 							<td><?php echo esc_html( $pay_types[ $mem->payment_type ] ); ?></td>
 						</tr>
 						<tr>
-							<th><?php _e( 'Payment details', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Payment details', 'membership2' ); ?></th>
 							<td><?php echo esc_html( strip_tags( $sim->get_payment_description( null, true ) ) ); ?></td>
 						</tr>
 					</table>
@@ -172,11 +172,11 @@ class MS_View_Adminbar extends MS_View {
 
 		foreach ( $memberships as $membership ) {
 			if ( $base_id == $membership->id ) {
-				$label = __( '- No membership / Visitor -', MS_TEXT_DOMAIN );
+				$label = __( '- No membership / Visitor -', 'membership2' );
 			} else {
 				$label = $membership->name;
 				if ( ! $membership->active ) {
-					$label .= ' ' . __( '(Inactive)', MS_TEXT_DOMAIN );
+					$label .= ' ' . __( '(Inactive)', 'membership2' );
 				}
 			}
 
@@ -187,7 +187,7 @@ class MS_View_Adminbar extends MS_View {
 		$fields = array(
 			'exit_button' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Exit Test Mode', MS_TEXT_DOMAIN ),
+				'value' => __( 'Exit Test Mode', 'membership2' ),
 				'url' => MS_Controller_Adminbar::get_simulation_exit_url(),
 				'class' => 'button',
 			),
@@ -222,7 +222,7 @@ class MS_View_Adminbar extends MS_View {
 			'simulate_submit' => array(
 				'id' => 'simulate_submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Go', MS_TEXT_DOMAIN ),
+				'value' => __( 'Go', 'membership2' ),
 				'class' => 'ms-admin-bar-submit',
 			),
 		);
@@ -251,7 +251,7 @@ class MS_View_Adminbar extends MS_View {
 			<div class="ms-sim-denied">
 			<?php
 			printf(
-				__( 'Access denied by %s', MS_TEXT_DOMAIN ),
+				__( 'Access denied by %s', 'membership2' ),
 				'<b>' . esc_html( $membership->name ) . '</b>'
 			);
 			?>
@@ -273,7 +273,7 @@ class MS_View_Adminbar extends MS_View {
 						)
 					),
 					$rule_title[$rule_type],
-					__( 'Denied by Rule:', MS_TEXT_DOMAIN )
+					__( 'Denied by Rule:', 'membership2' )
 				);
 			}
 			?>
@@ -281,7 +281,7 @@ class MS_View_Adminbar extends MS_View {
 			<div class="ms-sim-allowed">
 			<?php
 			printf(
-				__( 'Access granted by %s', MS_TEXT_DOMAIN ),
+				__( 'Access granted by %s', 'membership2' ),
 				'<b>' . esc_html( $membership->name ) . '</b>'
 			);
 			?>
@@ -299,14 +299,14 @@ class MS_View_Adminbar extends MS_View {
 						)
 					),
 					$rule_title[$rule_type],
-					__( 'Allowed by Rule:', MS_TEXT_DOMAIN )
+					__( 'Allowed by Rule:', 'membership2' )
 				);
 			}
 			?>
 			</ul>
 		<?php } else { ?>
 			<div class="ms-sim-public">
-			<?php _e( 'Unprotected', MS_TEXT_DOMAIN ); ?>
+			<?php _e( 'Unprotected', 'membership2' ); ?>
 			</div>
 		<?php
 		}

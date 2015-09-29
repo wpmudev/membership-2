@@ -18,8 +18,8 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 	 */
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Menu', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Menus', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Menu', 'membership2' );
+		$this->name['plural'] = __( 'Menus', 'membership2' );
 
 		add_filter(
 			'ms_helper_listtable_' . $this->id . '_columns',
@@ -50,8 +50,8 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 		$label = '';
 
 		switch ( $col ) {
-			case 'item': $label = __( 'Menu', MS_TEXT_DOMAIN ); break;
-			case 'match': $label = __( 'Replace with this Menu', MS_TEXT_DOMAIN ); break;
+			case 'item': $label = __( 'Menu', 'membership2' ); break;
+			case 'match': $label = __( 'Replace with this Menu', 'membership2' ); break;
 		}
 
 		return $label;

@@ -23,13 +23,13 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 			'ms_addon_coupon_helper_listtyble_columns',
 			array(
 				'cb' => '<input type="checkbox" />',
-				'ccode' => __( 'Coupon Code', MS_TEXT_DOMAIN ),
-				'discount' => __( 'Discount', MS_TEXT_DOMAIN ),
-				'start_date' => __( 'Start date', MS_TEXT_DOMAIN ),
-				'expire_date' => __( 'Expire date', MS_TEXT_DOMAIN ),
-				'membership' => __( 'Membership', MS_TEXT_DOMAIN ),
-				'used' => __( 'Used', MS_TEXT_DOMAIN ),
-				'remaining_uses' => __( 'Remaining uses', MS_TEXT_DOMAIN ),
+				'ccode' => __( 'Coupon Code', 'membership2' ),
+				'discount' => __( 'Discount', 'membership2' ),
+				'start_date' => __( 'Start date', 'membership2' ),
+				'expire_date' => __( 'Expire date', 'membership2' ),
+				'membership' => __( 'Membership', 'membership2' ),
+				'used' => __( 'Used', 'membership2' ),
+				'remaining_uses' => __( 'Remaining uses', 'membership2' ),
 			)
 		);
 	}
@@ -92,7 +92,7 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 			esc_attr( $_REQUEST['page'] ),
 			'edit',
 			esc_attr( $item->id ),
-			__( 'Edit', MS_TEXT_DOMAIN )
+			__( 'Edit', 'membership2' )
 		);
 		$actions['delete'] = sprintf(
 			'<span class="delete"><a href="%s">%s</a></span>',
@@ -105,7 +105,7 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 				),
 				'delete'
 			),
-			__( 'Delete', MS_TEXT_DOMAIN )
+			__( 'Delete', 'membership2' )
 		);
 
 		return sprintf(
@@ -134,7 +134,7 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 		if ( $is_any ) {
 			$html = sprintf(
 				'<span class="ms-low">%s</span>',
-				__( 'Any', MS_TEXT_DOMAIN )
+				__( 'Any', 'membership2' )
 			);
 		}
 
@@ -171,7 +171,7 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 		if ( $item->expire_date ) {
 			$html = $item->expire_date;
 		} else {
-			$html = __( 'No expire', MS_TEXT_DOMAIN );
+			$html = __( 'No expire', 'membership2' );
 		}
 
 		return $html;
@@ -193,7 +193,7 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 		return apply_filters(
 			'ms_addon_coupon_helper_listtable_bulk_actions',
 			array(
-				'delete' => __( 'Delete', MS_TEXT_DOMAIN ),
+				'delete' => __( 'Delete', 'membership2' ),
 			)
 		);
 	}

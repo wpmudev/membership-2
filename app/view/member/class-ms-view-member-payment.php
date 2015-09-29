@@ -28,7 +28,7 @@ class MS_View_Member_Payment extends MS_Dialog {
 
 		// Dialog Title
 		$this->title = sprintf(
-			__( 'Subscription Details: %1$s', MS_TEXT_DOMAIN ),
+			__( 'Subscription Details: %1$s', 'membership2' ),
 			esc_html( $subscription->get_membership()->name )
 		);
 
@@ -76,7 +76,7 @@ class MS_View_Member_Payment extends MS_Dialog {
 			}
 
 			$pay_details[] = array(
-				'title' => __( 'Recorded Payment', MS_TEXT_DOMAIN ),
+				'title' => __( 'Recorded Payment', 'membership2' ),
 				'type' => MS_Helper_Html::TYPE_HTML_TABLE,
 				'value' => array(
 					0 => array( 'Payment Date', $payment['date'] ),
@@ -104,12 +104,12 @@ class MS_View_Member_Payment extends MS_Dialog {
 					'billing',
 					array( 'show' => 'logs', 'invoice' => $invoice->id )
 				),
-				__( 'Show Transaction', MS_TEXT_DOMAIN )
+				__( 'Show Transaction', 'membership2' )
 			);
 			$invoice_list[] = $invoice->id;
 
 			$inv_details[$invoice->id] = array(
-				'title' => sprintf( __( 'Invoice %s', MS_TEXT_DOMAIN ), $invoice->id ),
+				'title' => sprintf( __( 'Invoice %s', 'membership2' ), $invoice->id ),
 				'type' => MS_Helper_Html::TYPE_HTML_TABLE,
 				'value' => array(
 					0 => array( 'Invoice ID', $invoice->id . $transaction_log ),
@@ -140,7 +140,7 @@ class MS_View_Member_Payment extends MS_Dialog {
 		);
 		$transaction_log = array(
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => __( 'Show all Transactions for this subscription', MS_TEXT_DOMAIN ),
+			'value' => __( 'Show all Transactions for this subscription', 'membership2' ),
 			'url' => $transaction_url,
 			'target' => '_blank',
 		);

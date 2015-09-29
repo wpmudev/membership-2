@@ -41,14 +41,14 @@ Text Domain: membership2
  * @since  1.0.0
  */
 function membership2_init_pro_app() {
-	if ( defined( 'MS_TEXT_DOMAIN' ) ) {
+	if ( defined( 'MS_PLUGIN' ) ) {
 		if ( is_admin() ) {
 			// Can happen in Multisite installs where a sub-site has activated the
 			// plugin and then the plugin is also activated in network-admin.
 			printf(
 				'<div class="notice error"><p><strong>%s</strong>: %s</p></div>',
 				sprintf(
-					__( 'Could not load the plugin %s, because another version of the plugin is already loaded', MS_TEXT_DOMAIN ),
+					__( 'Could not load the plugin %s, because another version of the plugin is already loaded', 'membership2' ),
 					'Membership 2 Pro'
 				),
 				MS_PLUGIN . ' (v' . MS_PLUGIN_VERSION . ')'
@@ -63,13 +63,6 @@ function membership2_init_pro_app() {
 	 * @since  1.0.0
 	 */
 	define( 'MS_PLUGIN_VERSION', '1.0.2.2' );
-
-	/**
-	 * Plugin text domain.
-	 *
-	 * @since  1.0.0
-	 */
-	define( 'MS_TEXT_DOMAIN', 'membership2' );
 
 	/**
 	 * Plugin identifier constant.
@@ -677,7 +670,7 @@ class MS_Plugin {
 	 */
 	public function plugin_settings_link( $links ) {
 		if ( ! is_network_admin() ) {
-			$text = __( 'Settings', MS_TEXT_DOMAIN );
+			$text = __( 'Settings', 'membership2' );
 			$url = MS_Controller_Plugin::get_admin_url( 'settings' );
 
 			if ( $this->settings->initial_setup ) {

@@ -100,14 +100,14 @@ class MS_Rule_Media_Model extends MS_Rule {
 		$example1 = MS_Helper_Utility::home_url( $mask . date( '/Y/m/' ) . 'my-image.jpg' );
 		$example2 = MS_Helper_Utility::home_url( $mask . '/ms_12345.jpg' );
 		$example3 = MS_Helper_Utility::home_url( $mask . '/?ms_file=ms_12345.jpg' );
-		$example1 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example1 . '</small>';
-		$example2 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example2 . '</small>';
-		$example3 = '<br /><small>' . __( 'Example:', MS_TEXT_DOMAIN ) . ' ' . $example3 . '</small>';
+		$example1 = '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example1 . '</small>';
+		$example2 = '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example2 . '</small>';
+		$example3 = '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example3 . '</small>';
 
 		$protection_types = array(
-			self::PROTECTION_TYPE_BASIC => __( 'Basic protection (default)', MS_TEXT_DOMAIN ) . $example1,
-			self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', MS_TEXT_DOMAIN ) . $example2,
-			self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', MS_TEXT_DOMAIN ) . $example3,
+			self::PROTECTION_TYPE_BASIC => __( 'Basic protection (default)', 'membership2' ) . $example1,
+			self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', 'membership2' ) . $example2,
+			self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', 'membership2' ) . $example3,
 		);
 
 		return apply_filters(

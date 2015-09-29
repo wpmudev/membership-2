@@ -26,14 +26,14 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			$back_link = array(
 				'url' => $register_url,
 				'class' => 'alignleft',
-				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+				'value' => __( 'Cancel', 'membership2' ),
 			);
 
 			$html = do_shortcode(
 				sprintf(
 					'[%s show_note=false title="%s"]',
 					MS_Helper_Shortcode::SCODE_LOGIN,
-					__( 'Login', MS_TEXT_DOMAIN )
+					__( 'Login', 'membership2' )
 				)
 			);
 			$html .= MS_Helper_Html::html_link( $back_link, true );
@@ -41,10 +41,10 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		}
 
 		$login_link = array(
-			'title' => __( 'Login', MS_TEXT_DOMAIN ),
+			'title' => __( 'Login', 'membership2' ),
 			'url' => $login_url,
 			'class' => 'alignleft',
-			'value' => __( 'Already have a user account?', MS_TEXT_DOMAIN ),
+			'value' => __( 'Already have a user account?', 'membership2' ),
 		);
 
 		$register_button = array(

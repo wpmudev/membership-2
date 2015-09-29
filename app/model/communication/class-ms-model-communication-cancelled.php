@@ -26,8 +26,8 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	 * @param array $field A HTML definition, passed to lib3()->html->element()
 	 */
 	public function set_period_name( $field ) {
-		$field['title'] = __( 'Message Delay', MS_TEXT_DOMAIN );
-		$field['desc'] = __( 'Use "0" to send instantly, or another value to delay the message.', MS_TEXT_DOMAIN );
+		$field['title'] = __( 'Message Delay', 'membership2' );
+		$field['desc'] = __( 'Use "0" to send instantly, or another value to delay the message.', 'membership2' );
 
 		return $field;
 	}
@@ -39,7 +39,7 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	 * @return string The description.
 	 */
 	public function get_description() {
-		return __( 'Sent when membership is cancelled.', MS_TEXT_DOMAIN );
+		return __( 'Sent when membership is cancelled.', 'membership2' );
 	}
 
 	/**
@@ -51,7 +51,7 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Your %s membership was canceled', MS_TEXT_DOMAIN ),
+			__( 'Your %s membership was canceled', 'membership2' ),
 			self::COMM_VAR_MS_NAME
 		);
 		$this->message = self::get_default_message();
@@ -73,19 +73,19 @@ class MS_Model_Communication_Cancelled extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Your %1$s membership at %2$s was successfully cancelled.', MS_TEXT_DOMAIN ),
+			__( 'Your %1$s membership at %2$s was successfully cancelled.', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
 		$body_register = sprintf(
-			__( 'Should you change your mind, you can renew your membership here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'Should you change your mind, you can renew your membership here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
-		$body_payments = __( 'Here are your latest payment details:', MS_TEXT_DOMAIN );
+		$body_payments = __( 'Here are your latest payment details:', 'membership2' );
 
 		$html = sprintf(
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s<br /><br />%4$s<br /><br />%5$s',

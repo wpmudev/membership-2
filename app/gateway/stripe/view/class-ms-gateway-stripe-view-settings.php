@@ -13,9 +13,9 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 			<?php
 			$description = sprintf(
 				'%1$s<br />%2$s',
-				__( 'Best used for one-time payments.', MS_TEXT_DOMAIN ),
+				__( 'Best used for one-time payments.', 'membership2' ),
 				sprintf(
-					__( 'You can find your Stripe API Keys in your %sAccount Settings%s.', MS_TEXT_DOMAIN ),
+					__( 'You can find your Stripe API Keys in your %sAccount Settings%s.', 'membership2' ),
 					'<a href="https://dashboard.stripe.com/account/apikeys" target="_blank">',
 					'</a>'
 				)
@@ -41,7 +41,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 		$fields = array(
 			'mode' => array(
 				'id' => 'mode',
-				'title' => __( 'Mode', MS_TEXT_DOMAIN ),
+				'title' => __( 'Mode', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $gateway->mode,
 				'field_options' => $gateway->get_mode_types(),
@@ -51,7 +51,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 
 			'test_secret_key' => array(
 				'id' => 'test_secret_key',
-				'title' => __( 'API Test Secret Key', MS_TEXT_DOMAIN ),
+				'title' => __( 'API Test Secret Key', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->test_secret_key,
 				'class' => 'ms-text-large',
@@ -60,7 +60,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 
 			'test_publishable_key' => array(
 				'id' => 'test_publishable_key',
-				'title' => __( 'API Test Publishable Key', MS_TEXT_DOMAIN ),
+				'title' => __( 'API Test Publishable Key', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->test_publishable_key,
 				'class' => 'ms-text-large',
@@ -69,7 +69,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 
 			'secret_key' => array(
 				'id' => 'secret_key',
-				'title' => __( 'API Live Secret Key', MS_TEXT_DOMAIN ),
+				'title' => __( 'API Live Secret Key', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->secret_key,
 				'class' => 'ms-text-large',
@@ -78,7 +78,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 
 			'publishable_key' => array(
 				'id' => 'publishable_key',
-				'title' => __( 'API Live Publishable Key', MS_TEXT_DOMAIN ),
+				'title' => __( 'API Live Publishable Key', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->publishable_key,
 				'class' => 'ms-text-large',
@@ -89,7 +89,7 @@ class MS_Gateway_Stripe_View_Settings extends MS_View {
 				'id' => 'pay_button_url',
 				'title' => apply_filters(
 					'ms_translation_flag',
-					__( 'Payment button label or URL', MS_TEXT_DOMAIN ),
+					__( 'Payment button label or URL', 'membership2' ),
 					'gateway-button' . $gateway->id
 				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,

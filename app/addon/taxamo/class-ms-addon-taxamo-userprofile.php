@@ -16,7 +16,7 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 		<div class="ms-wrap <?php echo esc_attr( implode( ' ', $classes ) ); ?>">
 			<div class="modal-header">
 				<button type="button" class="close">&times;</button>
-				<h4 class="modal-title"><?php _e( 'Tax Settings', MS_TEXT_DOMAIN ); ?></h4>
+				<h4 class="modal-title"><?php _e( 'Tax Settings', 'membership2' ); ?></h4>
 			</div>
 			<div class="modal-body">
 
@@ -28,16 +28,16 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default close"><?php _e( 'Close', MS_TEXT_DOMAIN ); ?></button>
-				<button type="button" class="btn btn-primary save"><?php _e( 'Save', MS_TEXT_DOMAIN ); ?></button>
+				<button type="button" class="btn btn-default close"><?php _e( 'Close', 'membership2' ); ?></button>
+				<button type="button" class="btn btn-primary save"><?php _e( 'Save', 'membership2' ); ?></button>
 			</div>
 			<div class="loading-message">
-				<?php _e( 'Saving data, please wait...', MS_TEXT_DOMAIN ); ?>
+				<?php _e( 'Saving data, please wait...', 'membership2' ); ?>
 			</div>
 		</div>
 		<div class="body-messages">
 			<div class="ms-tax-loading-overlay"></div>
-			<div class="ms-tax-loading-message"><?php _e( 'Refreshing page, please wait...', MS_TEXT_DOMAIN ); ?></div>
+			<div class="ms-tax-loading-message"><?php _e( 'Refreshing page, please wait...', 'membership2' ); ?></div>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -64,26 +64,26 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 
 		$country_options = array(
 			'auto' => sprintf(
-				__( 'The detected country %s is correct.', MS_TEXT_DOMAIN ),
+				__( 'The detected country %s is correct.', 'membership2' ),
 				'<strong>' . $profile->detected_country->name . '</strong>'
 			),
-			'vat' => __( 'I have an EU VAT number and want to use it for tax declaration.', MS_TEXT_DOMAIN ),
-			'declared' => __( 'Manually declare my country of residence.', MS_TEXT_DOMAIN ),
+			'vat' => __( 'I have an EU VAT number and want to use it for tax declaration.', 'membership2' ),
+			'declared' => __( 'Manually declare my country of residence.', 'membership2' ),
 		);
 
 		$vat_details = '';
 		if ( ! empty( $profile->vat_number ) && $profile->vat_valid ) {
 			$vat_details = sprintf(
-				__( 'This is a valid VAT number of %s. By using this you are are now exempt of VAT.', MS_TEXT_DOMAIN ),
+				__( 'This is a valid VAT number of %s. By using this you are are now exempt of VAT.', 'membership2' ),
 				'<strong>' . $profile->vat_country->name . '</strong>'
 			);
 		} else {
-			$vat_details = __( 'VAT Number is invalid.', MS_TEXT_DOMAIN );
+			$vat_details = __( 'VAT Number is invalid.', 'membership2' );
 		}
 		if ( $profile->use_vat_number ) {
-			$tax_message = __( 'Valid EU VAT Number provided: You are exempt of VAT', MS_TEXT_DOMAIN );
+			$tax_message = __( 'Valid EU VAT Number provided: You are exempt of VAT', 'membership2' );
 		} else {
-			$tax_message = __( 'The country used for tax calculation is %s', MS_TEXT_DOMAIN );
+			$tax_message = __( 'The country used for tax calculation is %s', 'membership2' );
 		}
 
 		$fields['tax_country_label'] = array(
@@ -97,7 +97,7 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 		$fields['detected_country_label'] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			'title' => sprintf(
-				__( 'We have detected that your computer is located in %s', MS_TEXT_DOMAIN ),
+				__( 'We have detected that your computer is located in %s', 'membership2' ),
 				'<strong>' . $profile->detected_country->name . '</strong>'
 			),
 		);
@@ -116,8 +116,8 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 		$fields['declared_country_code'] = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'id' => 'declared_country',
-			'title' => __( 'My country of residence', MS_TEXT_DOMAIN ),
-			'desc' => __( 'I confirm that I am established, have my permanent address, or usually reside in the following country', MS_TEXT_DOMAIN ),
+			'title' => __( 'My country of residence', 'membership2' ),
+			'desc' => __( 'I confirm that I am established, have my permanent address, or usually reside in the following country', 'membership2' ),
 			'value' => $profile->declared_country->code,
 			'field_options' => $countries,
 			'wrapper_class' => 'manual_country_field',
@@ -125,8 +125,8 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 		$fields['vat_number'] = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			'id' => 'vat_number',
-			'title' => __( 'EU VAT Number', MS_TEXT_DOMAIN ),
-			'desc' => __( 'Fill this field if you are representing EU VAT payer', MS_TEXT_DOMAIN ),
+			'title' => __( 'EU VAT Number', 'membership2' ),
+			'desc' => __( 'Fill this field if you are representing EU VAT payer', 'membership2' ),
 			'wrapper_class' => 'vat_number_field',
 			'value' => $profile->vat_number,
 			'valid_country' => $profile->vat_country->vat_valid,

@@ -63,7 +63,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 		$this->data = $this->validate_object( $this->data );
 
 		if ( empty( $this->data ) ) {
-			self::_message( 'error', __( 'Hmmm, we could not import the Membership data...', MS_TEXT_DOMAIN ) );
+			self::_message( 'error', __( 'Hmmm, we could not import the Membership data...', 'membership2' ) );
 			return false;
 		}
 
@@ -112,14 +112,14 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 		$this->data->plugin_version = '3.5.x';
 		$this->data->export_time = date( 'Y-m-d H:i' );
 		$this->data->notes = array(
-			__( 'Exported data:', MS_TEXT_DOMAIN ),
-			__( '- Subscription Plans (without level rules)', MS_TEXT_DOMAIN ),
-			__( '- Members', MS_TEXT_DOMAIN ),
-			__( '- Registrations (link between Members and Subscription Plans)', MS_TEXT_DOMAIN ),
-			__( '- Transactions', MS_TEXT_DOMAIN ),
-			__( 'Each Subscription-Level is imported as a individual Membership.', MS_TEXT_DOMAIN ),
-			__( 'Transactions are converted to invoices. Data like tax-rate or applied coupons are not available.', MS_TEXT_DOMAIN ),
-			__( 'Please note that we cannot import recurring 2Checkout subscriptions to Membership2!', MS_TEXT_DOMAIN ),
+			__( 'Exported data:', 'membership2' ),
+			__( '- Subscription Plans (without level rules)', 'membership2' ),
+			__( '- Members', 'membership2' ),
+			__( '- Registrations (link between Members and Subscription Plans)', 'membership2' ),
+			__( '- Transactions', 'membership2' ),
+			__( 'Each Subscription-Level is imported as a individual Membership.', 'membership2' ),
+			__( 'Transactions are converted to invoices. Data like tax-rate or applied coupons are not available.', 'membership2' ),
+			__( 'Please note that we cannot import recurring 2Checkout subscriptions to Membership2!', 'membership2' ),
 		);
 
 		$this->data->memberships = array();

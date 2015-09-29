@@ -13,14 +13,14 @@ class MS_Rule_Url_View extends MS_View {
 			$add_fields = array(
 				'url' => array(
 					'id' => 'url_value',
-					'title' => __( 'Add new URL Address', MS_TEXT_DOMAIN ),
+					'title' => __( 'Add new URL Address', 'membership2' ),
 					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 					'class' => 'ms-text-medium',
 				),
 				'url_add' => array(
 					'id' => 'url_add',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Protect this URL', MS_TEXT_DOMAIN ),
+					'value' => __( 'Protect this URL', 'membership2' ),
 					'button_type' => 'button',
 				),
 				'url_action' => array(
@@ -39,10 +39,10 @@ class MS_Rule_Url_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'URL Restriction', MS_TEXT_DOMAIN ),
+				'title' => __( 'URL Restriction', 'membership2' ),
 				'desc' => array(
-					__( 'Specify URLs that you want to protect.', MS_TEXT_DOMAIN ),
-					__( 'e.g. <b>example.com/protectme/</b> will protect all URLs that contain <b>example.com/protectme/</b>, including any child page.', MS_TEXT_DOMAIN ),
+					__( 'Specify URLs that you want to protect.', 'membership2' ),
+					__( 'e.g. <b>example.com/protectme/</b> will protect all URLs that contain <b>example.com/protectme/</b>, including any child page.', 'membership2' ),
 				),
 				'class' => '',
 			),

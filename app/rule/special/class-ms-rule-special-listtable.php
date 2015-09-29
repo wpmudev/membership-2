@@ -10,15 +10,15 @@ class MS_Rule_Special_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Special Page', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Special Pages', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Special Page', 'membership2' );
+		$this->name['plural'] = __( 'Special Pages', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,
-			'name' => __( 'Page title', MS_TEXT_DOMAIN ),
-			'url' => __( 'Example', MS_TEXT_DOMAIN ),
+			'name' => __( 'Page title', 'membership2' ),
+			'url' => __( 'Example', 'membership2' ),
 			'access' => true,
 		);
 

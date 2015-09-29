@@ -19,7 +19,7 @@ class MS_Rule_CptGroup extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Custom Post Types', MS_TEXT_DOMAIN ),
+				__( 'Custom Post Types', 'membership2' ),
 				30,
 				true
 			);

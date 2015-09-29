@@ -22,7 +22,7 @@ class MS_View_Membership_News extends MS_View {
 		if ( isset( $_REQUEST['membership_id'] ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $_REQUEST['membership_id'] );
 			$title = sprintf(
-				__( '%s News', MS_TEXT_DOMAIN ),
+				__( '%s News', 'membership2' ),
 				$membership->get_name_tag()
 			);
 			$url = esc_url_raw(
@@ -34,12 +34,12 @@ class MS_View_Membership_News extends MS_View {
 			$back_link = array(
 				'id' => 'back',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( '&raquo; Back to Overview', MS_TEXT_DOMAIN ),
+				'value' => __( '&raquo; Back to Overview', 'membership2' ),
 				'url' => $url,
 				'class' => 'wpmui-field-button button',
 			);
 		} else {
-			$title = __( 'Membership News', MS_TEXT_DOMAIN );
+			$title = __( 'Membership News', 'membership2' );
 			$back_link = '';
 		}
 

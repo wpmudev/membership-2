@@ -8,12 +8,12 @@ class MS_Gateway_Stripe_View_Card extends MS_View {
 		ob_start();
 		?>
 			<div class="ms-wrap ms-card-info-wrapper">
-				<h2><?php _e( 'Credit card info', MS_TEXT_DOMAIN ); ?> </h2>
+				<h2><?php _e( 'Credit card info', 'membership2' ); ?> </h2>
 				<table class="ms-table">
 					<tbody>
 						<tr>
-							<th><?php _e( 'Card Number', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Card Expiration date', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Card Number', 'membership2' ); ?></th>
+							<th><?php _e( 'Card Expiration date', 'membership2' ); ?></th>
 						</tr>
 						<tr>
 							<td><?php echo '**** **** **** '. $this->data['stripe']['card_num']; ?></td>
@@ -32,10 +32,10 @@ class MS_Gateway_Stripe_View_Card extends MS_View {
 						data-key="<?php echo esc_attr( $this->data['publishable_key'] ); ?>"
 						data-amount="0"
 						data-name="<?php echo esc_attr( bloginfo( 'name' ) ); ?>"
-						data-description="<?php esc_attr_e( 'Just change card', MS_TEXT_DOMAIN ); ?>"
-						data-panel-label="<?php esc_attr_e( 'Change credit card', MS_TEXT_DOMAIN ); ?>"
+						data-description="<?php esc_attr_e( 'Just change card', 'membership2' ); ?>"
+						data-panel-label="<?php esc_attr_e( 'Change credit card', 'membership2' ); ?>"
 						data-email="<?php echo esc_attr( $this->data['member']->email ); ?>"
-						data-label="<?php esc_attr_e( 'Change card number', MS_TEXT_DOMAIN ); ?>"
+						data-label="<?php esc_attr_e( 'Change card number', 'membership2' ); ?>"
 						>
 					</script>
 				</form>

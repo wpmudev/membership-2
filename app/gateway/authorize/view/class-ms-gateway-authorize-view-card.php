@@ -9,12 +9,12 @@ class MS_Gateway_Authorize_View_Card extends MS_View {
 		ob_start();
 		?>
 			<div class='ms-wrap ms-card-info-wrapper'>
-				<h2><?php _e( 'Credit card info', MS_TEXT_DOMAIN ); ?> </h2>
+				<h2><?php _e( 'Credit card info', 'membership2' ); ?> </h2>
 				<table class="ms-table">
 					<tbody>
 						<tr>
-							<th><?php _e( 'Card Number', MS_TEXT_DOMAIN ); ?></th>
-							<th><?php _e( 'Card Expiration date', MS_TEXT_DOMAIN ); ?></th>
+							<th><?php _e( 'Card Number', 'membership2' ); ?></th>
+							<th><?php _e( 'Card Expiration date', 'membership2' ); ?></th>
 						</tr>
 						<tr>
 							<td><?php echo '**** **** **** ' . $this->data['authorize']['card_num']; ?></td>
@@ -64,7 +64,7 @@ class MS_Gateway_Authorize_View_Card extends MS_View {
 			'submit' => array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Change card number', MS_TEXT_DOMAIN ),
+				'value' => __( 'Change card number', 'membership2' ),
 			),
 		);
 

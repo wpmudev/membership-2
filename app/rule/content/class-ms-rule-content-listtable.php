@@ -10,14 +10,14 @@ class MS_Rule_Content_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Content Part', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Content Parts', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Content Part', 'membership2' );
+		$this->name['plural'] = __( 'Content Parts', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,
-			'name' => __( 'Content Part', MS_TEXT_DOMAIN ),
+			'name' => __( 'Content Part', 'membership2' ),
 			'access' => true,
 		);
 

@@ -102,7 +102,7 @@ class MS_Gateway_Authorize_View_Button extends MS_View {
 			$fields['submit'] = array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => $gateway->pay_button_url ? $gateway->pay_button_url : __( 'Signup', MS_TEXT_DOMAIN ),
+				'value' => $gateway->pay_button_url ? $gateway->pay_button_url : __( 'Signup', 'membership2' ),
 			);
 		}
 

@@ -31,7 +31,7 @@ class MS_Gateway_Authorize_View_Settings extends MS_View {
 		$fields = array(
 			'mode' => array(
 				'id' => 'mode',
-				'title' => __( 'Mode', MS_TEXT_DOMAIN ),
+				'title' => __( 'Mode', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $gateway->mode,
 				'field_options' => $gateway->get_mode_types(),
@@ -41,7 +41,7 @@ class MS_Gateway_Authorize_View_Settings extends MS_View {
 
 			'api_login_id' => array(
 				'id' => 'api_login_id',
-				'title' => __( 'API Login ID', MS_TEXT_DOMAIN ),
+				'title' => __( 'API Login ID', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->api_login_id,
 				'class' => 'ms-text-large',
@@ -50,7 +50,7 @@ class MS_Gateway_Authorize_View_Settings extends MS_View {
 
 			'api_transaction_key' => array(
 				'id' => 'api_transaction_key',
-				'title' => __( 'API Transaction Key', MS_TEXT_DOMAIN ),
+				'title' => __( 'API Transaction Key', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $gateway->api_transaction_key,
 				'class' => 'ms-text-large',
@@ -61,7 +61,7 @@ class MS_Gateway_Authorize_View_Settings extends MS_View {
 				'id' => 'pay_button_url',
 				'title' => apply_filters(
 					'ms_translation_flag',
-					__( 'Payment button label or URL', MS_TEXT_DOMAIN ),
+					__( 'Payment button label or URL', 'membership2' ),
 					'gateway-button' . $gateway->id
 				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,

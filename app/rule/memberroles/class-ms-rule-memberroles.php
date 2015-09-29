@@ -19,7 +19,7 @@ class MS_Rule_MemberRoles extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'User Roles', MS_TEXT_DOMAIN ),
+				__( 'User Roles', 'membership2' ),
 				2
 			);
 		}

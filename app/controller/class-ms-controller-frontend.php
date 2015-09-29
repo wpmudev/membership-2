@@ -502,7 +502,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	public function register_form( $content ) {
 		// Check if the WordPress settings allow user registration.
 		if ( ! MS_Model_Member::can_register() ) {
-			return __( 'Registration is currently not allowed.', MS_TEXT_DOMAIN );
+			return __( 'Registration is currently not allowed.', 'membership2' );
 		}
 
 		// Do not parse the form when building the excerpt
@@ -967,7 +967,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( $is_ms_page ) {
 			$data = array(
 				'ms_init' => array( 'shortcode' ),
-				'cancel_msg' => __( 'Are you sure you want to cancel?', MS_TEXT_DOMAIN ),
+				'cancel_msg' => __( 'Are you sure you want to cancel?', 'membership2' ),
 			);
 
 			lib3()->ui->css( 'ms-styles' );

@@ -34,21 +34,21 @@ class MS_Helper_Settings extends MS_Helper {
 				'ms_helper_membership_get_admin_messages',
 				array(
 					// Success response codes
-					self::SETTINGS_MSG_ADDED => __( 'Setting added.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_DELETED => __( 'Setting deleted.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_UPDATED => __( 'Setting updated.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_ACTIVATION_TOGGLED => __( 'Setting activation toggled.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_STATUS_TOGGLED => __( 'Setting status toggled.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_BULK_UPDATED => __( 'Bulk settings updated.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_SITE_UPDATED => __( 'Changed the network site that hosts Membership pages. Remember to check your Pages and change them if needed!', MS_TEXT_DOMAIN ),
+					self::SETTINGS_MSG_ADDED => __( 'Setting added.', 'membership2' ),
+					self::SETTINGS_MSG_DELETED => __( 'Setting deleted.', 'membership2' ),
+					self::SETTINGS_MSG_UPDATED => __( 'Setting updated.', 'membership2' ),
+					self::SETTINGS_MSG_ACTIVATION_TOGGLED => __( 'Setting activation toggled.', 'membership2' ),
+					self::SETTINGS_MSG_STATUS_TOGGLED => __( 'Setting status toggled.', 'membership2' ),
+					self::SETTINGS_MSG_BULK_UPDATED => __( 'Bulk settings updated.', 'membership2' ),
+					self::SETTINGS_MSG_SITE_UPDATED => __( 'Changed the network site that hosts Membership pages. Remember to check your Pages and change them if needed!', 'membership2' ),
 
 					// Error response messages
-					self::SETTINGS_MSG_NOT_ADDED => __( 'Setting not added.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_NOT_DELETED => __( 'Setting not deleted.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_NOT_UPDATED => __( 'Setting not updated.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_ACTIVATION_NOT_TOGGLED => __( 'Setting activation not toggled.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_STATUS_NOT_TOGGLED => __( 'Setting status not toggled.', MS_TEXT_DOMAIN ),
-					self::SETTINGS_MSG_BULK_NOT_UPDATED => __( 'Bulk settings not updated.', MS_TEXT_DOMAIN ),
+					self::SETTINGS_MSG_NOT_ADDED => __( 'Setting not added.', 'membership2' ),
+					self::SETTINGS_MSG_NOT_DELETED => __( 'Setting not deleted.', 'membership2' ),
+					self::SETTINGS_MSG_NOT_UPDATED => __( 'Setting not updated.', 'membership2' ),
+					self::SETTINGS_MSG_ACTIVATION_NOT_TOGGLED => __( 'Setting activation not toggled.', 'membership2' ),
+					self::SETTINGS_MSG_STATUS_NOT_TOGGLED => __( 'Setting status not toggled.', 'membership2' ),
+					self::SETTINGS_MSG_BULK_NOT_UPDATED => __( 'Bulk settings not updated.', 'membership2' ),
 				)
 			);
 		}

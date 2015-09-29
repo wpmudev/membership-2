@@ -23,7 +23,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 
 					<?php $this->render_cim_profiles() ?>
 					<div id="ms-authorize-card-wrapper">
-						<?php _e( 'Credit Card Information', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'Credit Card Information', 'membership2' ); ?>
 						<table class="form-table ms-form-table">
 							<tbody>
 								<tr>
@@ -44,7 +44,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 								</tr>
 							</tbody>
 						</table>
-						<?php _e( 'Billing Information', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'Billing Information', 'membership2' ); ?>
 						<table class="form-table ms-form-table">
 							<tbody>
 								<?php foreach ( $fields['billing'] as $field ): ?>
@@ -61,8 +61,8 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 						MS_Helper_Html::html_submit(
 							array(
 								'value' => ( 'update_card' == $this->data['action'] )
-									? __( 'Change card', MS_TEXT_DOMAIN )
-									: __( 'Pay now', MS_TEXT_DOMAIN ),
+									? __( 'Change card', 'membership2' )
+									: __( 'Pay now', 'membership2' ),
 							)
 						);
 					?>
@@ -105,12 +105,12 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 			),
 		);
 
-		$months = array( '' => __( 'Month', MS_TEXT_DOMAIN ) );
+		$months = array( '' => __( 'Month', 'membership2' ) );
 		for ( $i = 1, $date = new DateTime( '01-01-1970' ); $i <= 12; $date->setDate( 2013, ++$i, 1 ) ) {
 			$months[ $i ] = $date->format( 'm - M' );
 		}
 
-		$years = array( '' => __( 'Year', MS_TEXT_DOMAIN ) );
+		$years = array( '' => __( 'Year', 'membership2' ) );
 		for ( $i = gmdate( 'Y' ), $maxYear = $i + 15; $i <= $maxYear; $i++ ) {
 			$years[ $i ] = $i;
 		}
@@ -118,17 +118,17 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 		$fields['card'] = array(
 			'card_num' => array(
 				'id' => 'card_num',
-				'title' => __( 'Card Number', MS_TEXT_DOMAIN ),
+				'title' => __( 'Card Number', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
 			'card_code' => array(
 				'id' => 'card_code',
-				'title' => __( 'Security Code', MS_TEXT_DOMAIN ),
+				'title' => __( 'Security Code', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
 			'exp_month' => array(
 				'id' => 'exp_month',
-				'title' => __( 'Expiration Date', MS_TEXT_DOMAIN ),
+				'title' => __( 'Expiration Date', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $months,
 			),
@@ -141,17 +141,17 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 		$fields['billing'] = array(
 			'first_name' => array(
 				'id' => 'first_name',
-				'title' => __( 'First Name', MS_TEXT_DOMAIN ),
+				'title' => __( 'First Name', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
 			'last_name' => array(
 				'id' => 'last_name',
-				'title' => __( 'Last Name', MS_TEXT_DOMAIN ),
+				'title' => __( 'Last Name', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 			),
 			'country' => array(
 				'id' => 'country',
-				'title' => __( 'Country', MS_TEXT_DOMAIN ),
+				'title' => __( 'Country', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $this->data['countries'],
 				'class' => 'ms-select',
@@ -201,7 +201,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 				}
 			}
 		}
-		$options[ 0 ] = __( 'Enter a new credit card', MS_TEXT_DOMAIN );
+		$options[ 0 ] = __( 'Enter a new credit card', 'membership2' );
 		$cim = array(
 			'id' => 'profile',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
@@ -210,7 +210,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 		);
 		?>
 		<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
-			<div class="authorize-form-block-title"><?php _e( 'Credit card:', MS_TEXT_DOMAIN ); ?></div>
+			<div class="authorize-form-block-title"><?php _e( 'Credit card:', 'membership2' ); ?></div>
 			<?php MS_Helper_Html::html_element( $cim );?>
 		</div>
 		<?php

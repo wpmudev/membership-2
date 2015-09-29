@@ -16,10 +16,10 @@ class MS_View_Member_Editor extends MS_View {
 	public function to_html() {
 
 		if ( 'add' == $this->data['action'] ) {
-			$title = __( 'Add or Select Member', MS_TEXT_DOMAIN );
+			$title = __( 'Add or Select Member', 'membership2' );
 			$groups = $this->prepare_fields_add();
 		} else {
-			$title = __( 'Edit Member', MS_TEXT_DOMAIN );
+			$title = __( 'Edit Member', 'membership2' );
 			$groups = $this->prepare_fields_edit();
 		}
 
@@ -71,43 +71,43 @@ class MS_View_Member_Editor extends MS_View {
 			'title' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'class' => 'group-title',
-				'value' => __( 'Create a new WordPress user', MS_TEXT_DOMAIN ),
+				'value' => __( 'Create a new WordPress user', 'membership2' ),
 			),
 			'username' => array(
 				'id' => 'username',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'User name', MS_TEXT_DOMAIN ) . ' *',
+				'title' => __( 'User name', 'membership2' ) . ' *',
 				'after' => ' ',
 				'class' => 'required ms-text-medium',
 			),
 			'email' => array(
 				'id' => 'email',
 				'type' => MS_Helper_Html::INPUT_TYPE_EMAIL,
-				'title' => __( 'Email address', MS_TEXT_DOMAIN ) . ' *',
+				'title' => __( 'Email address', 'membership2' ) . ' *',
 				'after' => ' ',
 				'class' => 'required ms-text-medium',
 			),
 			'first_name' => array(
 				'id' => 'first_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'First name', MS_TEXT_DOMAIN ),
+				'title' => __( 'First name', 'membership2' ),
 				'class' => 'ms-text-medium',
 			),
 			'last_name' => array(
 				'id' => 'last_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Last name', MS_TEXT_DOMAIN ),
+				'title' => __( 'Last name', 'membership2' ),
 				'class' => 'ms-text-medium',
 			),
 			'password' => array(
 				'id' => 'password',
 				'type' => MS_Helper_Html::INPUT_TYPE_PASSWORD,
-				'title' => __( 'Password', MS_TEXT_DOMAIN ),
+				'title' => __( 'Password', 'membership2' ),
 				'class' => 'ms-text-medium',
 			),
 			'info' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( 'We create a new WordPress user without sending a confirmation email.', MS_TEXT_DOMAIN ),
+				'value' => __( 'We create a new WordPress user without sending a confirmation email.', 'membership2' ),
 				'class' => 'info-field',
 			),
 			'sep' => array(
@@ -116,7 +116,7 @@ class MS_View_Member_Editor extends MS_View {
 			'button' => array(
 				'id' => 'btn_create',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Create user', MS_TEXT_DOMAIN ) . ' &raquo;',
+				'value' => __( 'Create user', 'membership2' ) . ' &raquo;',
 			),
 			'action' => array(
 				'id' => 'action',
@@ -134,12 +134,12 @@ class MS_View_Member_Editor extends MS_View {
 			'title' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'class' => 'group-title',
-				'value' => __( 'Select an existing WordPress user', MS_TEXT_DOMAIN ),
+				'value' => __( 'Select an existing WordPress user', 'membership2' ),
 			),
 			'select_user' => array(
 				'id' => 'user_id',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Existing WordPress users', MS_TEXT_DOMAIN ),
+				'title' => __( 'Existing WordPress users', 'membership2' ),
 				'class' => 'manual-init no-auto-init widefat',
 			),
 			'sep' => array(
@@ -148,7 +148,7 @@ class MS_View_Member_Editor extends MS_View {
 			'button' => array(
 				'id' => 'btn_select',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Select', MS_TEXT_DOMAIN ) . ' &raquo;',
+				'value' => __( 'Select', 'membership2' ) . ' &raquo;',
 			),
 			'action' => array(
 				'id' => 'action',
@@ -193,12 +193,12 @@ class MS_View_Member_Editor extends MS_View {
 			'title' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 				'class' => 'group-title',
-				'value' => __( 'Basic Profile details', MS_TEXT_DOMAIN ),
+				'value' => __( 'Basic Profile details', 'membership2' ),
 			),
 			'username' => array(
 				'id' => 'username',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Username', MS_TEXT_DOMAIN ),
+				'title' => __( 'Username', 'membership2' ),
 				'value' => $user->username,
 				'class' => 'ms-text-medium',
 				'config' => array(
@@ -208,28 +208,28 @@ class MS_View_Member_Editor extends MS_View {
 			'email' => array(
 				'id' => 'email',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Email', MS_TEXT_DOMAIN ),
+				'title' => __( 'Email', 'membership2' ),
 				'value' => $user->email,
 				'class' => 'ms-text-medium',
 			),
 			'first_name' => array(
 				'id' => 'first_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'First Name', MS_TEXT_DOMAIN ),
+				'title' => __( 'First Name', 'membership2' ),
 				'value' => $user->first_name,
 				'class' => 'ms-text-medium',
 			),
 			'last_name' => array(
 				'id' => 'last_name',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Last Name', MS_TEXT_DOMAIN ),
+				'title' => __( 'Last Name', 'membership2' ),
 				'value' => $user->last_name,
 				'class' => 'ms-text-medium',
 			),
 			'displayname' => array(
 				'id' => 'displayname',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Display Name', MS_TEXT_DOMAIN ),
+				'title' => __( 'Display Name', 'membership2' ),
 				'value' => $user->get_user()->display_name,
 				'class' => 'ms-text-medium',
 			),
@@ -244,12 +244,12 @@ class MS_View_Member_Editor extends MS_View {
 			'button' => array(
 				'id' => 'btn_save',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save', 'membership2' ),
 			),
 			'profile' => array(
 				'id' => 'user_profile',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'value' => __( 'Full User Profile', MS_TEXT_DOMAIN ) . ' &raquo;',
+				'value' => __( 'Full User Profile', 'membership2' ) . ' &raquo;',
 				'url' => admin_url( 'user-edit.php?user_id=' . $user->id ),
 				'class' => 'button wpmui-field-input',
 			),
@@ -271,7 +271,7 @@ class MS_View_Member_Editor extends MS_View {
 		$fields['subscriptions'][] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			'class' => 'group-title',
-			'value' => __( 'Manage Subscriptions', MS_TEXT_DOMAIN ),
+			'value' => __( 'Manage Subscriptions', 'membership2' ),
 		);
 		if ( $user->subscriptions ) {
 			$gateways = MS_Model_Gateway::get_gateway_names( false, true );
@@ -285,14 +285,14 @@ class MS_View_Member_Editor extends MS_View {
 				unset( $unused_memberships[$the_membership->id] );
 
 				$status_options = array(
-					MS_Model_Relationship::STATUS_PENDING => __( 'Pending (activate on next payment)', MS_TEXT_DOMAIN ),
-					MS_Model_Relationship::STATUS_WAITING => __( 'Waiting (activate on start date)', MS_TEXT_DOMAIN ),
-					MS_Model_Relationship::STATUS_TRIAL => __( 'Trial Active', MS_TEXT_DOMAIN ),
-					MS_Model_Relationship::STATUS_ACTIVE => __( 'Active', MS_TEXT_DOMAIN ),
-					MS_Model_Relationship::STATUS_CANCELED => __( 'Cancelled (deactivate on expire date)', MS_TEXT_DOMAIN ),
-					MS_Model_Relationship::STATUS_TRIAL_EXPIRED => __( 'Trial Expired (activate on next payment)', MS_TEXT_DOMAIN ),
-					MS_Model_Relationship::STATUS_EXPIRED => __( 'Expired (no access) ', MS_TEXT_DOMAIN ),
-					MS_Model_Relationship::STATUS_DEACTIVATED => __( 'Deactivated (no access)', MS_TEXT_DOMAIN ),
+					MS_Model_Relationship::STATUS_PENDING => __( 'Pending (activate on next payment)', 'membership2' ),
+					MS_Model_Relationship::STATUS_WAITING => __( 'Waiting (activate on start date)', 'membership2' ),
+					MS_Model_Relationship::STATUS_TRIAL => __( 'Trial Active', 'membership2' ),
+					MS_Model_Relationship::STATUS_ACTIVE => __( 'Active', 'membership2' ),
+					MS_Model_Relationship::STATUS_CANCELED => __( 'Cancelled (deactivate on expire date)', 'membership2' ),
+					MS_Model_Relationship::STATUS_TRIAL_EXPIRED => __( 'Trial Expired (activate on next payment)', 'membership2' ),
+					MS_Model_Relationship::STATUS_EXPIRED => __( 'Expired (no access) ', 'membership2' ),
+					MS_Model_Relationship::STATUS_DEACTIVATED => __( 'Deactivated (no access)', 'membership2' ),
 				);
 
 				if ( ! $the_membership->has_trial() ) {
@@ -303,7 +303,7 @@ class MS_View_Member_Editor extends MS_View {
 				if ( isset( $gateways[ $subscription->gateway_id ] ) ) {
 					$gateway_name = $gateways[ $subscription->gateway_id ];
 				} elseif ( empty( $subscription->gateway_id ) ) {
-					$gateway_name = __( '- No Gateway -', MS_TEXT_DOMAIN );
+					$gateway_name = __( '- No Gateway -', 'membership2' );
 				} else {
 					$gateway_name = '(' . $subscription->gateway_id . ')';
 				}
@@ -336,27 +336,27 @@ class MS_View_Member_Editor extends MS_View {
 					'type' => MS_Helper_Html::TYPE_HTML_TABLE,
 					'value' => array(
 						array(
-							__( 'Subscription ID', MS_TEXT_DOMAIN ),
+							__( 'Subscription ID', 'membership2' ),
 							$subscription->id,
 						),
 						array(
-							__( 'Payment Gateway', MS_TEXT_DOMAIN ),
+							__( 'Payment Gateway', 'membership2' ),
 							$gateway_name,
 						),
 						array(
-							__( 'Payment Type', MS_TEXT_DOMAIN ),
+							__( 'Payment Type', 'membership2' ),
 							$subscription->get_payment_description( null, true ),
 						),
 						array(
-							__( 'Start Date', MS_TEXT_DOMAIN ) . ' <sup>*)</sup>',
+							__( 'Start Date', 'membership2' ) . ' <sup>*)</sup>',
 							MS_Helper_Html::html_element( $field_start, true ),
 						),
 						array(
-							__( 'Expire Date', MS_TEXT_DOMAIN ) . ' <sup>*)</sup>',
+							__( 'Expire Date', 'membership2' ) . ' <sup>*)</sup>',
 							MS_Helper_Html::html_element( $field_expire, true ),
 						),
 						array(
-							__( 'Status', MS_TEXT_DOMAIN ) . ' <sup>*)</sup>',
+							__( 'Status', 'membership2' ) . ' <sup>*)</sup>',
 							MS_Helper_Html::html_element( $field_status, true ),
 						),
 					),
@@ -368,7 +368,7 @@ class MS_View_Member_Editor extends MS_View {
 		} else {
 			$fields['subscriptions'][] = array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( 'This user does not have any subscriptions yet.', MS_TEXT_DOMAIN ),
+				'value' => __( 'This user does not have any subscriptions yet.', 'membership2' ),
 			);
 		}
 
@@ -378,10 +378,10 @@ class MS_View_Member_Editor extends MS_View {
 
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 				$field_type = MS_Helper_Html::INPUT_TYPE_CHECKBOX;
-				$group_title = __( 'Add Subscriptions', MS_TEXT_DOMAIN );
+				$group_title = __( 'Add Subscriptions', 'membership2' );
 			} else {
 				$field_type = MS_Helper_Html::INPUT_TYPE_RADIO;
-				$group_title = __( 'Set Subscription', MS_TEXT_DOMAIN );
+				$group_title = __( 'Set Subscription', 'membership2' );
 			}
 
 			$fields['subscriptions'][] = array(
@@ -413,19 +413,19 @@ class MS_View_Member_Editor extends MS_View {
 			);
 			$fields['subscriptions'][] = array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => '<sup>*)</sup> ' . __( 'Subscription Dates and Status are validated when saved and might result in a different value then the one specified above.', MS_TEXT_DOMAIN ),
+				'value' => '<sup>*)</sup> ' . __( 'Subscription Dates and Status are validated when saved and might result in a different value then the one specified above.', 'membership2' ),
 				'class' => 'info-field',
 			);
 		}
 		$fields['subscriptions'][] = array(
 			'id' => 'btn_modify',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+			'value' => __( 'Save Changes', 'membership2' ),
 		);
 		$fields['subscriptions'][] = array(
 			'id' => 'history',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => '<i class="dashicons dashicons-id"></i>' . __( 'History and logs', MS_TEXT_DOMAIN ),
+			'value' => '<i class="dashicons dashicons-id"></i>' . __( 'History and logs', 'membership2' ),
 			'url' => '#history',
 			'class' => 'button wpmui-field-input',
 			'config' => array(

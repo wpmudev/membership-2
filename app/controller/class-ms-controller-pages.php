@@ -155,7 +155,7 @@ class MS_Controller_Pages extends MS_Controller {
 				$url = MS_Controller_Plugin::get_admin_url( 'settings' );
 				$states['membership2'] = sprintf(
 					'<a style="%2$s" href="%3$s">%1$s</a>',
-					__( 'Membership2 Page', MS_TEXT_DOMAIN ),
+					__( 'Membership2 Page', 'membership2' ),
 					'background:#aaa;color:#fff;padding:1px 4px;border-radius:4px;font-size:0.8em',
 					$url
 				);

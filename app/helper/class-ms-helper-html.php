@@ -115,7 +115,7 @@ class MS_Helper_Html extends MS_Helper {
 		if ( true === $submit_info ) {
 			$submit_info = array(
 				'id' => 'next',
-				'value' => __( 'Next', MS_TEXT_DOMAIN ),
+				'value' => __( 'Next', 'membership2' ),
 				'action' => 'next',
 			);
 		}
@@ -151,9 +151,9 @@ class MS_Helper_Html extends MS_Helper {
 		}
 
 		$args = array(
-			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
-			'saved_text' => __( 'All changes saved.', MS_TEXT_DOMAIN ),
-			'error_text' => __( 'Could not save changes.', MS_TEXT_DOMAIN ),
+			'saving_text' => __( 'Saving changes...', 'membership2' ),
+			'saved_text' => __( 'All changes saved.', 'membership2' ),
+			'error_text' => __( 'Could not save changes.', 'membership2' ),
 			'fields' => $fields,
 		);
 		$args = apply_filters( 'ms_helper_html_settings_footer_args', $args );
@@ -316,7 +316,7 @@ class MS_Helper_Html extends MS_Helper {
 	public static function html_submit( $args = array(), $return = false ) {
 		$defaults = array(
 			'id'        => 'submit',
-			'value'     => __( 'Save Changes', MS_TEXT_DOMAIN ),
+			'value'     => __( 'Save Changes', 'membership2' ),
 			'class'     => 'button button-primary',
 		);
 		wp_parse_args( $args, $defaults );
@@ -479,9 +479,9 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	public static function save_text( $texts = array(), $animation = false, $return = false ) {
 		$defaults = array(
-			'saving_text' => __( 'Saving changes...', MS_TEXT_DOMAIN ),
-			'saved_text' => __( 'All changes saved.', MS_TEXT_DOMAIN ),
-			'error_text' => __( 'Could not save changes.', MS_TEXT_DOMAIN ),
+			'saving_text' => __( 'Saving changes...', 'membership2' ),
+			'saved_text' => __( 'All changes saved.', 'membership2' ),
+			'error_text' => __( 'Could not save changes.', 'membership2' ),
 		);
 		extract( wp_parse_args( $texts, $defaults ) );
 

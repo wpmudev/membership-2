@@ -8,29 +8,29 @@ class MS_View_Frontend_Invoices extends MS_View {
 		<div class="ms-account-wrapper">
 			<?php if ( MS_Model_Member::is_logged_in() ): ?>
 				<h2>
-					<?php _e( 'Invoice', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Invoice', 'membership2' ); ?>
 				</h2>
 				<table>
 					<thead>
 						<tr>
 							<th class="ms-col-invoice-no"><?php
-								_e( 'Invoice #', MS_TEXT_DOMAIN );
+								_e( 'Invoice #', 'membership2' );
 							?></th>
 							<th class="ms-col-invoice-status"><?php
-								_e( 'Status', MS_TEXT_DOMAIN );
+								_e( 'Status', 'membership2' );
 							?></th>
 							<th class="ms-col-invoice-total"><?php
 							printf(
 								'%s (%s)',
-								__( 'Total', MS_TEXT_DOMAIN ),
+								__( 'Total', 'membership2' ),
 								MS_Plugin::instance()->settings->currency
 							);
 							?></th>
 							<th class="ms-col-invoice-title"><?php
-								_e( 'Membership', MS_TEXT_DOMAIN );
+								_e( 'Membership', 'membership2' );
 							?></th>
 							<th class="ms-col-invoice-due"><?php
-								_e( 'Due date', MS_TEXT_DOMAIN );
+								_e( 'Due date', 'membership2' );
 							?></th>
 						</tr>
 					</thead>
@@ -68,7 +68,7 @@ class MS_View_Frontend_Invoices extends MS_View {
 								echo esc_html(
 									MS_Helper_Period::format_date(
 										$invoice->due_date,
-										__( 'F j', MS_TEXT_DOMAIN )
+										__( 'F j', 'membership2' )
 									)
 								);
 							?></td>
@@ -79,7 +79,7 @@ class MS_View_Frontend_Invoices extends MS_View {
 			<?php else : ?>
 				<?php
 				$redirect = esc_url_raw( add_query_arg( array() ) );
-				$title = __( 'Your account', MS_TEXT_DOMAIN );
+				$title = __( 'Your account', 'membership2' );
 				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
 				?>
 			<?php endif; ?>

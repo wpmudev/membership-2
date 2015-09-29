@@ -16,7 +16,7 @@ class MS_View_Membership_Tab_Type extends MS_View {
 		<div class="ms-membership-add ms-cols-2">
 			<form method="post" id="ms-choose-type-form">
 				<div class="ms-settings-row cf">
-					<h3><?php _e( 'Set the membership type:', MS_TEXT_DOMAIN ); ?></h3>
+					<h3><?php _e( 'Set the membership type:', 'membership2' ); ?></h3>
 					<?php MS_Helper_Html::html_element( $fields['type'] ); ?>
 				</div>
 				<div>
@@ -50,15 +50,15 @@ class MS_View_Membership_Tab_Type extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 				'value' => $membership->type,
 				'class' => 'ms-choose-type',
-				'after' => '<div class="ms-italic ms-block">' . __( 'Changing this option might result in loss or changes in your protection rules for this Membership.<br>Please check your rules after you save changes here.', MS_TEXT_DOMAIN ) . '</div>',
+				'after' => '<div class="ms-italic ms-block">' . __( 'Changing this option might result in loss or changes in your protection rules for this Membership.<br>Please check your rules after you save changes here.', 'membership2' ) . '</div>',
 				'field_options' => array(
 					MS_Model_Membership::TYPE_STANDARD => array(
-						'text' => __( 'Standard Membership', MS_TEXT_DOMAIN ),
-						'desc' => __( 'Make your content available to Members and hidden to Guests (logged-out users).', MS_TEXT_DOMAIN ),
+						'text' => __( 'Standard Membership', 'membership2' ),
+						'desc' => __( 'Make your content available to Members and hidden to Guests (logged-out users).', 'membership2' ),
 					),
 					MS_Model_Membership::TYPE_DRIPPED => array(
-						'text' => __( 'Dripped Content Membership.', MS_TEXT_DOMAIN ),
-						'desc' => __( 'Set-up membership content to be released / made available in intervals.', MS_TEXT_DOMAIN ),
+						'text' => __( 'Dripped Content Membership.', 'membership2' ),
+						'desc' => __( 'Set-up membership content to be released / made available in intervals.', 'membership2' ),
 					),
 				),
 			),
@@ -92,7 +92,7 @@ class MS_View_Membership_Tab_Type extends MS_View {
 				'save' => array(
 					'id' => 'save',
 					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-					'value' => __( 'Save', MS_TEXT_DOMAIN ),
+					'value' => __( 'Save', 'membership2' ),
 				),
 			),
 		);

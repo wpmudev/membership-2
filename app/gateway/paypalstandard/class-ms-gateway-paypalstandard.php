@@ -50,7 +50,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		parent::after_load();
 
 		$this->id = self::ID;
-		$this->name = __( 'PayPal Standard Gateway', MS_TEXT_DOMAIN );
+		$this->name = __( 'PayPal Standard Gateway', 'membership2' );
 		$this->group = 'PayPal';
 		$this->manual_payment = false; // Recurring charged automatically
 		$this->pro_rate = false;
@@ -62,7 +62,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			);
 			lib3()->ui->admin_message(
 				sprintf(
-					__( 'Warning: You use your email address for the PayPal Standard gateway instead of your Merchant ID. Please check %syour payment settings%s and enter the Merchant ID instead', MS_TEXT_DOMAIN ),
+					__( 'Warning: You use your email address for the PayPal Standard gateway instead of your Merchant ID. Please check %syour payment settings%s and enter the Merchant ID instead', 'membership2' ),
 					'<a href="' . $settings_url . '">',
 					'</a>'
 				),
@@ -282,69 +282,69 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						case 'processed':
 							$success = true;
 							if ( $amount == $invoice->total ) {
-								$notes .= __( 'Payment successful', MS_TEXT_DOMAIN );
+								$notes .= __( 'Payment successful', 'membership2' );
 							} else {
-								$notes .= __( 'Payment registered, though amount differs from invoice.', MS_TEXT_DOMAIN );
+								$notes .= __( 'Payment registered, though amount differs from invoice.', 'membership2' );
 							}
 							break;
 
 						case 'reversed':
-							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back).', MS_TEXT_DOMAIN );
+							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back).', 'membership2' );
 							$status = MS_Model_Invoice::STATUS_DENIED;
 							$ignore = true;
 							break;
 
 						case 'refunded':
-							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been refunded.', MS_TEXT_DOMAIN );
+							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been refunded.', 'membership2' );
 							$status = MS_Model_Invoice::STATUS_DENIED;
 							$ignore = true;
 							break;
 
 						case 'denied':
-							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment Denied.', MS_TEXT_DOMAIN );
+							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment Denied.', 'membership2' );
 							$status = MS_Model_Invoice::STATUS_DENIED;
 							$ignore = true;
 							break;
 
 						case 'pending':
 							lib3()->array->strip_slashes( $_POST, 'pending_reason' );
-							$notes_pay = __( 'Last transaction is pending.', MS_TEXT_DOMAIN ) . ' ';
+							$notes_pay = __( 'Last transaction is pending.', 'membership2' ) . ' ';
 
 							switch ( $_POST['pending_reason'] ) {
 								case 'address':
-									$notes_pay .= __( 'Customer did not include a confirmed shipping address', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Customer did not include a confirmed shipping address', 'membership2' );
 									break;
 
 								case 'authorization':
-									$notes_pay .= __( 'Funds not captured yet', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Funds not captured yet', 'membership2' );
 									break;
 
 								case 'echeck':
-									$notes_pay .= __( 'The eCheck has not cleared yet', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'The eCheck has not cleared yet', 'membership2' );
 									break;
 
 								case 'intl':
-									$notes_pay .= __( 'Payment waiting for approval by service provider', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Payment waiting for approval by service provider', 'membership2' );
 									break;
 
 								case 'multi-currency':
-									$notes_pay .= __( 'Payment waiting for service provider to handle multi-currency process', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Payment waiting for service provider to handle multi-currency process', 'membership2' );
 									break;
 
 								case 'unilateral':
-									$notes_pay .= __( 'Customer did not register or confirm his/her email yet', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Customer did not register or confirm his/her email yet', 'membership2' );
 									break;
 
 								case 'upgrade':
-									$notes_pay .= __( 'Waiting for service provider to upgrade the PayPal account', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Waiting for service provider to upgrade the PayPal account', 'membership2' );
 									break;
 
 								case 'verify':
-									$notes_pay .= __( 'Waiting for service provider to verify his/her PayPal account', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Waiting for service provider to verify his/her PayPal account', 'membership2' );
 									break;
 
 								default:
-									$notes_pay .= __( 'Unknown reason', MS_TEXT_DOMAIN );
+									$notes_pay .= __( 'Unknown reason', 'membership2' );
 									break;
 							}
 
@@ -356,7 +356,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						case 'partially-refunded':
 						case 'in-progress':
 							$notes_pay = sprintf(
-								__( 'Not handling payment_status: %s', MS_TEXT_DOMAIN ),
+								__( 'Not handling payment_status: %s', 'membership2' ),
 								$payment_status
 							);
 							$ignore = true;
@@ -370,7 +370,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						case 'subscr_signup':
 						case 'subscr_payment':
 							// Payment was received
-							$notes_txn = __( 'PayPal Subscripton has been created.', MS_TEXT_DOMAIN );
+							$notes_txn = __( 'PayPal Subscripton has been created.', 'membership2' );
 							if ( 0 == $invoice->total ) {
 								$success = true;
 							} else {
@@ -380,14 +380,14 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 						case 'subscr_modify':
 							// Payment profile was modified
-							$notes_txn = __( 'PayPal Subscription has been modified.', MS_TEXT_DOMAIN );
+							$notes_txn = __( 'PayPal Subscription has been modified.', 'membership2' );
 							$ignore = true;
 							break;
 
 						case 'recurring_payment_profile_canceled':
 						case 'subscr_cancel':
 							// Subscription was manually cancelled.
-							$notes_txn = __( 'PayPal Subscription has been canceled.', MS_TEXT_DOMAIN );
+							$notes_txn = __( 'PayPal Subscription has been canceled.', 'membership2' );
 							$member->cancel_membership( $membership->id );
 							$member->save();
 							$ignore = true;
@@ -395,7 +395,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 						case 'recurring_payment_suspended':
 							// Recurring subscription was manually suspended.
-							$notes_txn = __( 'PayPal Subscription has been suspended.', MS_TEXT_DOMAIN );
+							$notes_txn = __( 'PayPal Subscription has been suspended.', 'membership2' );
 							$member->cancel_membership( $membership->id );
 							$member->save();
 							$ignore = true;
@@ -403,7 +403,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 						case 'recurring_payment_suspended_due_to_max_failed_payment':
 							// Recurring subscription was automatically suspended.
-							$notes_txn = __( 'PayPal Subscription has failed.', MS_TEXT_DOMAIN );
+							$notes_txn = __( 'PayPal Subscription has failed.', 'membership2' );
 							$member->cancel_membership( $membership->id );
 							$member->save();
 							$ignore = true;
@@ -431,14 +431,14 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							 *   2. subscr_payment (payment confirmed)
 							 *   3. subscr_eot (subscription ends)
 							 */
-							$notes_txn = __( 'No more payments will be made for this subscription.', MS_TEXT_DOMAIN );
+							$notes_txn = __( 'No more payments will be made for this subscription.', 'membership2' );
 							$ignore = true;
 							break;
 
 						default:
 							// Other event that we do not have a case for...
 							$notes_txn = sprintf(
-								__( 'Not handling txn_type: %s', MS_TEXT_DOMAIN ),
+								__( 'Not handling txn_type: %s', 'membership2' ),
 								$transaction_type
 							);
 							$ignore = true;

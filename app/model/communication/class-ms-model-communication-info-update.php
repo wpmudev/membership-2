@@ -26,7 +26,7 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent when a member updates any personal information (e.g. credit card, name, address details etc.)', MS_TEXT_DOMAIN
+			'Sent when a member updates any personal information (e.g. credit card, name, address details etc.)', 'membership2'
 		);
 	}
 
@@ -38,7 +38,7 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	public function reset_to_default() {
 		parent::reset_to_default();
 
-		$this->subject = __( 'Your billing details have been changed.', MS_TEXT_DOMAIN );
+		$this->subject = __( 'Your billing details have been changed.', 'membership2' );
 		$this->message = self::get_default_message();
 		$this->enabled = false;
 
@@ -57,12 +57,12 @@ class MS_Model_Communication_Info_Update extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
-		$body_notice = __( 'This is to confirm that your billing information has been changed.', MS_TEXT_DOMAIN );
+		$body_notice = __( 'This is to confirm that your billing information has been changed.', 'membership2' );
 		$body_account = sprintf(
-			__( 'You can review your account details here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'You can review your account details here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
 

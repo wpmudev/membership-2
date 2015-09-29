@@ -18,8 +18,8 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 	 */
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Menu Location', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Menu Locations', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Menu Location', 'membership2' );
+		$this->name['plural'] = __( 'Menu Locations', 'membership2' );
 
 		add_filter(
 			'ms_helper_listtable_' . $this->id . '_columns',
@@ -50,8 +50,8 @@ class MS_Rule_ReplaceLocation_ListTable extends MS_Helper_ListTable_RuleMatching
 		$label = '';
 
 		switch ( $col ) {
-			case 'item': $label = __( 'Menu Location', MS_TEXT_DOMAIN ); break;
-			case 'match': $label = __( 'Show this menu to members', MS_TEXT_DOMAIN ); break;
+			case 'item': $label = __( 'Menu Location', 'membership2' ); break;
+			case 'match': $label = __( 'Show this menu to members', 'membership2' ); break;
 		}
 
 		return $label;

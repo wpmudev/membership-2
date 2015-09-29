@@ -713,7 +713,7 @@ class MS_Controller_Membership extends MS_Controller {
 		} else {
 			$data['show_next_button'] = array(
 				'id' => 'next',
-				'value' => __( 'Finish', MS_TEXT_DOMAIN ),
+				'value' => __( 'Finish', 'membership2' ),
 				'action' => 'next',
 			);
 		}
@@ -933,27 +933,27 @@ class MS_Controller_Membership extends MS_Controller {
 
 			$Tabs = array(
 				self::TAB_DETAILS => array(
-					'title' => __( 'Details', MS_TEXT_DOMAIN ),
+					'title' => __( 'Details', 'membership2' ),
 				),
 				self::TAB_TYPE => array(
-					'title' => __( 'Membership Type', MS_TEXT_DOMAIN ),
+					'title' => __( 'Membership Type', 'membership2' ),
 				),
 				self::TAB_PAYMENT => array(
-					'title' => __( 'Payment options', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment options', 'membership2' ),
 				),
 				self::TAB_UPGRADE => array(
-					'title' => __( 'Upgrade paths', MS_TEXT_DOMAIN ),
+					'title' => __( 'Upgrade paths', 'membership2' ),
 				),
 				/* Not yet finished... will be added soon.
 				self::TAB_PAGES => array(
-					'title' => __( 'Membership Pages', MS_TEXT_DOMAIN ),
+					'title' => __( 'Membership Pages', 'membership2' ),
 				),
 				*/
 				self::TAB_MESSAGES => array(
-					'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ),
+					'title' => __( 'Protection Messages', 'membership2' ),
 				),
 				self::TAB_EMAILS => array(
-					'title' => __( 'Automated Email Responses', MS_TEXT_DOMAIN ),
+					'title' => __( 'Automated Email Responses', 'membership2' ),
 				),
 			);
 
@@ -963,7 +963,7 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $Tabs[self::TAB_EMAILS] );
 				unset( $Tabs[ self::TAB_UPGRADE ] );
 			} elseif ( $membership->is_free ) {
-				$Tabs[self::TAB_PAYMENT]['title'] = __( 'Access options', MS_TEXT_DOMAIN );
+				$Tabs[self::TAB_PAYMENT]['title'] = __( 'Access options', 'membership2' );
 			}
 
 			if ( $count < 2 ) {
@@ -1131,7 +1131,7 @@ class MS_Controller_Membership extends MS_Controller {
 		switch ( $step ) {
 			case self::STEP_OVERVIEW:
 				$bread_crumbs['prev'] = array(
-					'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
+					'title' => __( 'Memberships', 'membership2' ),
 					'url' => MS_Controller_Plugin::get_admin_url(
 						false,
 						array( 'step' => self::STEP_MS_LIST )
@@ -1154,7 +1154,7 @@ class MS_Controller_Membership extends MS_Controller {
 					),
 				);
 				$bread_crumbs['current'] = array(
-					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment', 'membership2' ),
 				);
 				break;
 		}
@@ -1258,10 +1258,10 @@ class MS_Controller_Membership extends MS_Controller {
 		$data = array(
 			'ms_init' => array(),
 			'lang' => array(
-				'msg_delete' => __( 'Do you want to completely delete the membership <strong>%s</strong> including all subscriptions?', MS_TEXT_DOMAIN ),
-				'btn_delete' => __( 'Delete', MS_TEXT_DOMAIN ),
-				'btn_cancel' => __( 'Cancel', MS_TEXT_DOMAIN ),
-				'quickedit_error' => __( 'Error while saving changes.', MS_TEXT_DOMAIN ),
+				'msg_delete' => __( 'Do you want to completely delete the membership <strong>%s</strong> including all subscriptions?', 'membership2' ),
+				'btn_delete' => __( 'Delete', 'membership2' ),
+				'btn_cancel' => __( 'Cancel', 'membership2' ),
+				'quickedit_error' => __( 'Error while saving changes.', 'membership2' ),
 			),
 		);
 

@@ -34,7 +34,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			MS_Controller_Membership::STEP_EDIT,
 			MS_Controller_Membership::TAB_DETAILS,
 			esc_attr( $membership->id ),
-			'<i class="wpmui-fa wpmui-fa-pencil"></i> ' . __( 'Edit', MS_TEXT_DOMAIN )
+			'<i class="wpmui-fa wpmui-fa-pencil"></i> ' . __( 'Edit', 'membership2' )
 		);
 
 		ob_start();
@@ -48,18 +48,18 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 						printf(
 							'<div class="ms-active">%s</div>',
 							sprintf(
-								__( 'Membership is %s', MS_TEXT_DOMAIN ),
+								__( 'Membership is %s', 'membership2' ),
 								'<span id="ms-membership-status-text" class="ms-ok">' .
-								__( 'Active', MS_TEXT_DOMAIN ) .
+								__( 'Active', 'membership2' ) .
 								'</span>'
 							)
 						);
 						printf(
 							'<div>%s</div>',
 							sprintf(
-								__( 'Membership is %s', MS_TEXT_DOMAIN ),
+								__( 'Membership is %s', 'membership2' ),
 								'<span id="ms-membership-status-text" class="ms-nok">' .
-								__( 'Inactive', MS_TEXT_DOMAIN ) .
+								__( 'Inactive', 'membership2' ) .
 								'</span>'
 							)
 						);
@@ -72,13 +72,13 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				<?php
 
 				$title = sprintf(
-					__( '%s Overview', MS_TEXT_DOMAIN ),
+					__( '%s Overview', 'membership2' ),
 					$membership->get_name_tag()
 				);
 				$desc = array(
-					__( 'Here you find a summary of this membership, and alter any of its details.', MS_TEXT_DOMAIN ),
+					__( 'Here you find a summary of this membership, and alter any of its details.', 'membership2' ),
 					sprintf(
-						__( 'This is a %s', MS_TEXT_DOMAIN ),
+						__( 'This is a %s', 'membership2' ),
 						$membership->get_type_description()
 					),
 				);
@@ -108,7 +108,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		<div class="ms-half ms-settings-box">
 			<h3>
 				<i class="ms-low wpmui-fa wpmui-fa-globe"></i>
-				<?php _e( 'Recent News', MS_TEXT_DOMAIN ); ?>
+				<?php _e( 'Recent News', 'membership2' ); ?>
 			</h3>
 
 			<?php if ( ! empty( $this->data['events'] ) ) : ?>
@@ -125,7 +125,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 						array(
 							'id' => 'view_news',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
-							'value' => __( 'View More News', MS_TEXT_DOMAIN ),
+							'value' => __( 'View More News', 'membership2' ),
 							'url' => $url,
 							'class' => 'wpmui-field-button button',
 						)
@@ -135,7 +135,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			<?php else : ?>
 				<div class="inside group">
 					<p class="ms-italic">
-					<?php _e( 'There will be some interesting news here when your site gets going.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'There will be some interesting news here when your site gets going.', 'membership2' ); ?>
 					</p>
 				</div>
 			<?php endif; ?>
@@ -155,7 +155,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		<div class="ms-half ms-settings-box">
 			<h3>
 				<i class="ms-low wpmui-fa wpmui-fa-user"></i>
-				<?php printf( __( 'New Members (%s)', MS_TEXT_DOMAIN ), $count ); ?>
+				<?php printf( __( 'New Members (%s)', 'membership2' ), $count ); ?>
 			</h3>
 
 			<?php if ( $count > 0 ) : ?>
@@ -178,7 +178,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 						array(
 							'id' => 'edit_members',
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
-							'value' => __( 'All Members', MS_TEXT_DOMAIN ),
+							'value' => __( 'All Members', 'membership2' ),
 							'url' => $url,
 							'class' => 'wpmui-field-button button',
 						)
@@ -188,7 +188,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			<?php else : ?>
 				<div class="inside group">
 					<p class="ms-italic">
-					<?php _e( 'No members yet.', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'No members yet.', 'membership2' ); ?>
 					</p>
 				</div>
 			<?php endif; ?>
@@ -212,9 +212,9 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		<table class="ms-list-table widefat">
 			<thead>
 				<tr>
-					<th><?php _e( 'Date', MS_TEXT_DOMAIN ); ?></th>
-					<th><?php _e( 'Member', MS_TEXT_DOMAIN ); ?></th>
-					<th><?php _e( 'Event', MS_TEXT_DOMAIN ); ?></th>
+					<th><?php _e( 'Date', 'membership2' ); ?></th>
+					<th><?php _e( 'Member', 'membership2' ); ?></th>
+					<th><?php _e( 'Event', 'membership2' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -254,9 +254,9 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		?>
 		<table class="ms-list-table widefat">
 			<thead>
-				<th><?php _e( 'Member', MS_TEXT_DOMAIN ); ?></th>
-				<th><?php _e( 'Since', MS_TEXT_DOMAIN ); ?></th>
-				<th><?php _e( 'Status', MS_TEXT_DOMAIN ); ?></th>
+				<th><?php _e( 'Member', 'membership2' ); ?></th>
+				<th><?php _e( 'Since', 'membership2' ); ?></th>
+				<th><?php _e( 'Status', 'membership2' ); ?></th>
 			</thead>
 			<tbody>
 			<?php foreach ( $this->data['members'] as $member ) :
@@ -301,11 +301,11 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				<div class="clear"></div>
 				</div>
 				<div class="ms-overview-available-content-wrapper ms-overview-bottom">
-					<h3><i class="ms-img-unlock"></i> <?php _e( 'Available Content', MS_TEXT_DOMAIN ); ?></h3>
+					<h3><i class="ms-img-unlock"></i> <?php _e( 'Available Content', 'membership2' ); ?></h3>
 					<div class="ms-description ms-indented-description">
 					<?php
 					printf(
-						__( 'This is Membership2 which <span class="ms-bold">%s</span> members has access to.', MS_TEXT_DOMAIN ),
+						__( 'This is Membership2 which <span class="ms-bold">%s</span> members has access to.', 'membership2' ),
 						esc_html( $this->data['membership']->name )
 					);
 					?>
@@ -354,7 +354,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				array(
 					'id' => 'setup_payment',
 					'type' => MS_Helper_Html::TYPE_HTML_LINK,
-					'value' => __( 'Payment Options', MS_TEXT_DOMAIN ),
+					'value' => __( 'Payment Options', 'membership2' ),
 					'url' => $payment_url,
 					'class' => 'wpmui-field-button button',
 				)
@@ -418,7 +418,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 							'id' => 'edit_' . $rule->rule_type,
 							'type' => MS_Helper_Html::TYPE_HTML_LINK,
 							'title' => $title,
-							'value' => sprintf( __( 'Edit %s Access', MS_TEXT_DOMAIN ), $title ),
+							'value' => sprintf( __( 'Edit %s Access', 'membership2' ), $title ),
 							'url' => $edit_url,
 							'class' => 'wpmui-field-button button',
 						)

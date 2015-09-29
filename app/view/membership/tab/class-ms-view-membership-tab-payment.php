@@ -33,10 +33,10 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 			<?php if ( ! $membership->can_change_payment() ) : ?>
 				<div class="error below-h2">
 					<p>
-						<?php _e( 'This membership already has some paying members.', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'This membership already has some paying members.', 'membership2' ); ?>
 					</p>
 					<p>
-						<?php _e( 'Any changes will affect new invoices but not existing ones.', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'Any changes will affect new invoices but not existing ones.', 'membership2' ); ?>
 					</p>
 				</div>
 			<?php endif; ?>
@@ -103,15 +103,15 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 					<div class="ms-trial-wrapper">
 						<?php MS_Helper_Html::html_separator(); ?>
 						<h4>
-							<?php _e( 'Well done, you just created your first paid membership!', MS_TEXT_DOMAIN ); ?>
+							<?php _e( 'Well done, you just created your first paid membership!', 'membership2' ); ?>
 						</h4>
 						<p>
-							<?php _e( 'To give visitors an extra incentive to register for this Membership you can offer a free trial period for a limited time. Do you want to enable this feature now?', MS_TEXT_DOMAIN ); ?>
+							<?php _e( 'To give visitors an extra incentive to register for this Membership you can offer a free trial period for a limited time. Do you want to enable this feature now?', 'membership2' ); ?>
 						</p>
 						<p>
 							<?php MS_Helper_Html::html_element( $fields['enable_trial_addon'] ); ?><br />
-							<em><?php _e( 'This message is only displayed once. Ignore it if you do not want to use trial memberships.', MS_TEXT_DOMAIN ); ?></em><br />
-							<em><?php _e( 'You can change this feature anytime by visiting the Add-ons section.', MS_TEXT_DOMAIN ); ?></em>
+							<em><?php _e( 'This message is only displayed once. Ignore it if you do not want to use trial memberships.', 'membership2' ); ?></em><br />
+							<em><?php _e( 'You can change this feature anytime by visiting the Add-ons section.', 'membership2' ); ?></em>
 						</p>
 					</div>
 					<?php
@@ -122,7 +122,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 			<?php if ( $gateways_available ) : ?>
 			<div class="cf ms-payment-gateways">
 				<?php MS_Helper_Html::html_separator(); ?>
-				<p><strong><?php _e( 'Allowed payment gateways', MS_TEXT_DOMAIN ); ?></strong></p>
+				<p><strong><?php _e( 'Allowed payment gateways', 'membership2' ); ?></strong></p>
 				<?php foreach ( $fields['gateways'] as $field ) {
 					MS_Helper_Html::html_element( $field );
 				} ?>
@@ -176,7 +176,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 		$fields = array();
 		$fields['price'] = array(
 			'id' => 'price',
-			'title' => __( 'Payment Amount', MS_TEXT_DOMAIN ),
+			'title' => __( 'Payment Amount', 'membership2' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 			'before' => MS_Plugin::instance()->settings->currency_symbol,
 			'value' => $membership->price, // Without taxes
@@ -191,7 +191,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 
 		$fields['payment_type'] = array(
 			'id' => 'payment_type',
-			'title' => __( 'This Membership requires', MS_TEXT_DOMAIN ),
+			'title' => __( 'This Membership requires', 'membership2' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'value' => $membership->payment_type,
 			'field_options' => MS_Model_Membership::get_payment_types(),
@@ -200,7 +200,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 
 		$fields['period_unit'] = array(
 			'id' => 'period_unit',
-			'title' => __( 'Grant access for', MS_TEXT_DOMAIN ),
+			'title' => __( 'Grant access for', 'membership2' ),
 			'name' => '[period][period_unit]',
 			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 			'value' => $membership->period_unit,
@@ -224,7 +224,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 
 		$fields['pay_cycle_period_unit'] = array(
 			'id' => 'pay_cycle_period_unit',
-			'title' => __( 'Payment Frequency', MS_TEXT_DOMAIN ),
+			'title' => __( 'Payment Frequency', 'membership2' ),
 			'name' => '[pay_cycle_period][period_unit]',
 			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 			'value' => $membership->pay_cycle_period_unit,
@@ -248,10 +248,10 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 
 		$fields['pay_cycle_repetitions'] = array(
 			'id' => 'pay_cycle_repetitions',
-			'title' => __( 'Total Payments', MS_TEXT_DOMAIN ),
+			'title' => __( 'Total Payments', 'membership2' ),
 			'name' => '[pay_cycle_repetitions]',
 			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
-			'after' => __( 'payments (0 = unlimited)', MS_TEXT_DOMAIN ),
+			'after' => __( 'payments (0 = unlimited)', 'membership2' ),
 			'value' => $membership->pay_cycle_repetitions,
 			'class' => 'ms-text-small',
 			'config' => array(
@@ -264,10 +264,10 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 
 		$fields['period_date_start'] = array(
 			'id' => 'period_date_start',
-			'title' => __( 'Grant access from', MS_TEXT_DOMAIN ),
+			'title' => __( 'Grant access from', 'membership2' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 			'value' => $membership->period_date_start,
-			'placeholder' => __( 'Start Date...', MS_TEXT_DOMAIN ),
+			'placeholder' => __( 'Start Date...', 'membership2' ),
 			'ajax_data' => array( 1 ),
 		);
 
@@ -275,15 +275,15 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 			'id' => 'period_date_end',
 			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 			'value' => $membership->period_date_end,
-			'before' => _x( 'to', 'date range', MS_TEXT_DOMAIN ),
-			'placeholder' => __( 'End Date...', MS_TEXT_DOMAIN ),
+			'before' => _x( 'to', 'date range', 'membership2' ),
+			'placeholder' => __( 'End Date...', 'membership2' ),
 			'ajax_data' => array( 1 ),
 		);
 
 		$fields['on_end_membership_id'] = array(
 			'id' => 'on_end_membership_id',
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'title' => __( 'After this membership ends', MS_TEXT_DOMAIN ),
+			'title' => __( 'After this membership ends', 'membership2' ),
 			'value' => $membership->on_end_membership_id,
 			'field_options' => $membership->get_after_ms_ends_options(),
 			'ajax_data' => array( 1 ),
@@ -292,7 +292,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 		$fields['enable_trial_addon'] = array(
 			'id' => 'enable_trial_addon',
 			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-			'value' => __( 'Yes, enable Trial Memberships!', MS_TEXT_DOMAIN ),
+			'value' => __( 'Yes, enable Trial Memberships!', 'membership2' ),
 			'button_value' => 1,
 			'ajax_data' => array(
 				'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
@@ -305,8 +305,8 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 		$fields['trial_period_enabled'] = array(
 			'id' => 'trial_period_enabled',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'title' => '<strong>' . __( 'Trial Period', MS_TEXT_DOMAIN ) . '</strong>',
-			'after' => __( 'Offer Free Trial', MS_TEXT_DOMAIN ),
+			'title' => '<strong>' . __( 'Trial Period', 'membership2' ) . '</strong>',
+			'after' => __( 'Offer Free Trial', 'membership2' ),
 			'value' => $membership->trial_period_enabled,
 			'ajax_data' => array( 1 ),
 		);
@@ -314,7 +314,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 		$fields['trial_period_unit'] = array(
 			'id' => 'trial_period_unit',
 			'name' => '[trial_period][period_unit]',
-			'before' => __( 'The Trial is free and lasts for', MS_TEXT_DOMAIN ),
+			'before' => __( 'The Trial is free and lasts for', 'membership2' ),
 			'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 			'value' => $membership->trial_period_unit,
 			'class' => 'ms-text-small',
@@ -361,8 +361,8 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 				'id' => 'disabled-gateway-' . $gateway->id,
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title' => $gateway->name,
-				'before' => __( 'Available', MS_TEXT_DOMAIN ),
-				'after' => __( 'Not available', MS_TEXT_DOMAIN ),
+				'before' => __( 'Available', 'membership2' ),
+				'after' => __( 'Not available', 'membership2' ),
 				'value' => ! $membership->can_use_gateway( $gateway->id ),
 				'class' => 'reverse',
 				'wrapper_class' => 'ms-payment-type-wrapper ' . $wrapper_class,
@@ -380,7 +380,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 			$fields['price'] = '';
 			$fields['payment_type'] = array(
 				'id' => 'payment_type',
-				'title' => __( 'Access Structure:', MS_TEXT_DOMAIN ),
+				'title' => __( 'Access Structure:', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $membership->payment_type,
 				'field_options' => MS_Model_Membership::get_payment_types( 'free' ),

@@ -115,11 +115,11 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( empty( $Page_types ) ) {
 			$Page_types = array(
-				self::MS_PAGE_MEMBERSHIPS => __( 'Membership List', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_PROTECTED_CONTENT => __( 'Protected Content', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REGISTER => __( 'Registration', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REG_COMPLETE => __( 'Thank-You Page', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_ACCOUNT => __( 'Account', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_MEMBERSHIPS => __( 'Membership List', 'membership2' ),
+				self::MS_PAGE_PROTECTED_CONTENT => __( 'Protected Content', 'membership2' ),
+				self::MS_PAGE_REGISTER => __( 'Registration', 'membership2' ),
+				self::MS_PAGE_REG_COMPLETE => __( 'Thank-You Page', 'membership2' ),
+				self::MS_PAGE_ACCOUNT => __( 'Account', 'membership2' ),
 			);
 
 			$Page_types = apply_filters(
@@ -143,11 +143,11 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( null === $Description ) {
 			$Description = array(
-				self::MS_PAGE_MEMBERSHIPS => __( '(Only for logged-in users) List the public memberships and signup.', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_PROTECTED_CONTENT => __( 'Displayed when a user cannot access the requested page.', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REGISTER => __( '(Only for guests) List the public memberships and the registration form.', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_REG_COMPLETE => __( 'Displayed after the user signed up for a membership.', MS_TEXT_DOMAIN ),
-				self::MS_PAGE_ACCOUNT => __( 'Shows details about the current user.', MS_TEXT_DOMAIN ),
+				self::MS_PAGE_MEMBERSHIPS => __( '(Only for logged-in users) List the public memberships and signup.', 'membership2' ),
+				self::MS_PAGE_PROTECTED_CONTENT => __( 'Displayed when a user cannot access the requested page.', 'membership2' ),
+				self::MS_PAGE_REGISTER => __( '(Only for guests) List the public memberships and the registration form.', 'membership2' ),
+				self::MS_PAGE_REG_COMPLETE => __( 'Displayed after the user signed up for a membership.', 'membership2' ),
+				self::MS_PAGE_ACCOUNT => __( 'Shows details about the current user.', 'membership2' ),
 			);
 
 			$Description = apply_filters(
@@ -945,7 +945,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			case self::MS_PAGE_MEMBERSHIPS:
 				$lines[] = sprintf(
 					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
-					__( 'We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below.', MS_TEXT_DOMAIN )
+					__( 'We have the following subscriptions available for our site. You can renew, cancel or upgrade your subscriptions by using the forms below.', 'membership2' )
 				);
 				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
@@ -962,7 +962,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			case self::MS_PAGE_REGISTER:
 				$lines[] = sprintf(
 					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
-					__( 'We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details.', MS_TEXT_DOMAIN )
+					__( 'We have the following subscriptions available for our site. To join, simply click on the Sign Up button and then complete the registration details.', 'membership2' )
 				);
 				$lines[] = '['. MS_Helper_Shortcode::SCODE_SIGNUP .']';
 				break;
@@ -970,8 +970,8 @@ class MS_Model_Pages extends MS_Model_Option {
 			case self::MS_PAGE_REG_COMPLETE:
 				$lines[] = sprintf(
 					'['. MS_Helper_Shortcode::SCODE_NOTE .' type="info"]%1$s<br/>%2$s[/'. MS_Helper_Shortcode::SCODE_NOTE .']',
-					__( 'Your request to join the membership was successfully received!', MS_TEXT_DOMAIN ),
-					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', MS_TEXT_DOMAIN )
+					__( 'Your request to join the membership was successfully received!', 'membership2' ),
+					__( 'The Payment Gateway could take a couple of minutes to process and return the payment status.', 'membership2' )
 				);
 				$lines[] = '['. MS_Helper_Shortcode::SCODE_MS_ACCOUNT_LINK .']';
 				break;
@@ -995,7 +995,7 @@ class MS_Model_Pages extends MS_Model_Option {
 			return;
 		}
 
-		$menu_id = wp_create_nav_menu( __( 'Default Menu', MS_TEXT_DOMAIN ) );
+		$menu_id = wp_create_nav_menu( __( 'Default Menu', 'membership2' ) );
 
 		if ( ! is_numeric( $menu_id ) || $menu_id <= 0 ) {
 			return;

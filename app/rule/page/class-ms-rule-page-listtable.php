@@ -10,14 +10,14 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Page', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Pages', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Page', 'membership2' );
+		$this->name['plural'] = __( 'Pages', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,
-			'name' => __( 'Page title', MS_TEXT_DOMAIN ),
+			'name' => __( 'Page title', 'membership2' ),
 			'access' => true,
 			'dripped' => true,
 		);
@@ -33,12 +33,12 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 			sprintf(
 				'<a href="%s" target="_blank">%s</a>',
 				get_edit_post_link( $item->id, true ),
-				__( 'Edit', MS_TEXT_DOMAIN )
+				__( 'Edit', 'membership2' )
 			),
 			sprintf(
 				'<a href="%s" target="_blank">%s</a>',
 				get_permalink( $item->id ),
-				__( 'View', MS_TEXT_DOMAIN )
+				__( 'View', 'membership2' )
 			),
 		);
 
@@ -73,7 +73,7 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 		$filter_button = array(
 			'id' => 'filter_button',
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Filter', MS_TEXT_DOMAIN ),
+			'value' => __( 'Filter', 'membership2' ),
 			'button_type' => 'button',
 		);
 

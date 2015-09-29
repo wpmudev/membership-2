@@ -21,22 +21,22 @@ class MS_Model_Import_File extends MS_Model_Import {
 		self::_message( 'preview', false );
 
 		if ( empty( $_FILES ) || ! isset( $_FILES['upload'] ) ) {
-			self::_message( 'error', __( 'No file was uploaded, please try again.', MS_TEXT_DOMAIN ) );
+			self::_message( 'error', __( 'No file was uploaded, please try again.', 'membership2' ) );
 			return false;
 		}
 
 		$file = $_FILES['upload'];
 		if ( empty( $file['name'] ) ) {
-			self::_message( 'error', __( 'Please upload an export file.', MS_TEXT_DOMAIN ) );
+			self::_message( 'error', __( 'Please upload an export file.', 'membership2' ) );
 			return false;
 		}
 		if ( empty( $file['size'] ) ) {
-			self::_message( 'error', __( 'The uploaded file is empty, please try again.', MS_TEXT_DOMAIN ) );
+			self::_message( 'error', __( 'The uploaded file is empty, please try again.', 'membership2' ) );
 			return false;
 		}
 
 		if ( ! is_uploaded_file( $file['tmp_name'] ) ) {
-			self::_message( 'error', __( 'Uploaded file not found, please try again.', MS_TEXT_DOMAIN ) );
+			self::_message( 'error', __( 'Uploaded file not found, please try again.', 'membership2' ) );
 			return false;
 		}
 
@@ -50,7 +50,7 @@ class MS_Model_Import_File extends MS_Model_Import {
 		$data = $this->validate_object( $data );
 
 		if ( empty( $data ) ) {
-			self::_message( 'error', __( 'No valid export file uploaded, please try again.', MS_TEXT_DOMAIN ) );
+			self::_message( 'error', __( 'No valid export file uploaded, please try again.', 'membership2' ) );
 			return false;
 		}
 

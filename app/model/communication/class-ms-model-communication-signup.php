@@ -27,7 +27,7 @@ class MS_Model_Communication_Signup extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Welcome email sent to a user who created a new WordPress account.', MS_TEXT_DOMAIN
+			'Welcome email sent to a user who created a new WordPress account.', 'membership2'
 		);
 	}
 
@@ -40,7 +40,7 @@ class MS_Model_Communication_Signup extends MS_Model_Communication {
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Welcome to %s!', MS_TEXT_DOMAIN ),
+			__( 'Welcome to %s!', 'membership2' ),
 			self::COMM_VAR_BLOG_NAME
 		);
 		$this->message = self::get_default_message();
@@ -61,16 +61,16 @@ class MS_Model_Communication_Signup extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'welcome to %s! We have created a brand new account for you and you can head right over to %s and log in with your username and password.', MS_TEXT_DOMAIN ),
+			__( 'welcome to %s! We have created a brand new account for you and you can head right over to %s and log in with your username and password.', 'membership2' ),
 			self::COMM_VAR_BLOG_NAME,
 			self::COMM_VAR_BLOG_URL
 		);
 		$body_account = sprintf(
-			__( 'Username: %s<br>Password: %s', MS_TEXT_DOMAIN ),
+			__( 'Username: %s<br>Password: %s', 'membership2' ),
 			self::COMM_VAR_USERNAME,
 			self::COMM_VAR_PASSWORD
 		);

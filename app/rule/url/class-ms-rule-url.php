@@ -23,7 +23,7 @@ class MS_Rule_Url extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'URL Restrictions', MS_TEXT_DOMAIN ),
+				__( 'URL Restrictions', 'membership2' ),
 				0
 			);
 		}

@@ -66,7 +66,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		parent::after_load();
 
 		$this->id = self::ID;
-		$this->name = __( 'Authorize.net Gateway', MS_TEXT_DOMAIN );
+		$this->name = __( 'Authorize.net Gateway', 'membership2' );
 		$this->group = 'Authorize.net';
 		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
@@ -107,7 +107,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 			if ( $response->isError() ) {
 				throw new Exception(
-					__( 'The selected payment profile is invalid, enter a new credit card', MS_TEXT_DOMAIN )
+					__( 'The selected payment profile is invalid, enter a new credit card', 'membership2' )
 				);
 			}
 		} else {
@@ -190,7 +190,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		if ( 0 == $invoice->total ) {
-			$notes = __( 'Total is zero. Payment approved. Not sent to gateway.', MS_TEXT_DOMAIN );
+			$notes = __( 'Total is zero. Payment approved. Not sent to gateway.', 'membership2' );
 			$invoice->pay_it( MS_Gateway_Free::ID, '' );
 			$invoice->add_notes( $notes );
 			$invoice->save();
@@ -217,10 +217,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 					$external_id = $response->getTransactionResponse()->transaction_id;
 					$invoice->pay_it( $this->id, $external_id );
 					$success = true;
-					$notes = __( 'Payment successful', MS_TEXT_DOMAIN );
+					$notes = __( 'Payment successful', 'membership2' );
 				} else {
 					$notes = sprintf(
-						__( 'Payment Failed: code %s, subcode %s, reason code %, reason %s', MS_TEXT_DOMAIN ),
+						__( 'Payment Failed: code %s, subcode %s, reason code %, reason %s', 'membership2' ),
 						$transaction_response->response_code,
 						$transaction_response->response_subcode,
 						$transaction_response->response_reason_code,
@@ -228,7 +228,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 					);
 				}
 			} else {
-				$notes = __( 'Payment Failed: ', MS_TEXT_DOMAIN ) . $response->getMessageText();
+				$notes = __( 'Payment Failed: ', 'membership2' ) . $response->getMessageText();
 			}
 		}
 
@@ -488,7 +488,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				return;
 			} else {
 				throw new Exception(
-					__( 'Payment failed due to CIM profile not created: ', MS_TEXT_DOMAIN ) . $response->getMessageText()
+					__( 'Payment failed due to CIM profile not created: ', 'membership2' ) . $response->getMessageText()
 				);
 			}
 		}
@@ -531,7 +531,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		// If the error is not due to a duplicate customer payment profile.
 		if ( $response->isError() && 'E00039' != $response->xml->messages->message->code ) {
 			throw new Exception(
-				__( 'Payment failed due to CIM profile not updated: ', MS_TEXT_DOMAIN ) . $response->getMessageText()
+				__( 'Payment failed due to CIM profile not updated: ', 'membership2' ) . $response->getMessageText()
 			);
 		}
 
@@ -590,7 +590,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$cim_payment_profile_id = $this->get_cim_payment_profile_id( $member );
 
 		if ( empty( $cim_profile_id ) || empty( $cim_payment_profile_id ) ) {
-			throw new Exception( __( 'CIM Payment profile not found', MS_TEXT_DOMAIN ) );
+			throw new Exception( __( 'CIM Payment profile not found', 'membership2' ) );
 		}
 
 		$transaction = new M2_AuthorizeNetTransaction();

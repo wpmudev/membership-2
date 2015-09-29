@@ -32,7 +32,7 @@ class MS_View_Member_Subscription extends MS_Dialog {
 
 		// Dialog Title
 		$this->title = sprintf(
-			__( 'Subscription Details: %1$s', MS_TEXT_DOMAIN ),
+			__( 'Subscription Details: %1$s', 'membership2' ),
 			esc_html( $subscription->get_membership()->name )
 		);
 
@@ -71,7 +71,7 @@ class MS_View_Member_Subscription extends MS_Dialog {
 		if ( isset( $gateways[ $subscription->gateway_id ] ) ) {
 			$gateway = $gateways[ $subscription->gateway_id ];
 		} elseif ( empty( $subscription->gateway_id ) ) {
-			$gateway = __( '- No Gateway -', MS_TEXT_DOMAIN );
+			$gateway = __( '- No Gateway -', 'membership2' );
 		} else {
 			$gateway = '(' . $subscription->gateway_id . ')';
 		}
@@ -85,7 +85,7 @@ class MS_View_Member_Subscription extends MS_Dialog {
 		);
 
 		$sub_details = array(
-			'title' => __( 'Subscription Details', MS_TEXT_DOMAIN ),
+			'title' => __( 'Subscription Details', 'membership2' ),
 			'type' => MS_Helper_Html::TYPE_HTML_TABLE,
 			'value' => array(
 				array( 'Subscription ID', $subscription->id ),
@@ -105,7 +105,7 @@ class MS_View_Member_Subscription extends MS_Dialog {
 
 		foreach ( $events as $event ) {
 			$evt_details[] = array(
-				'title' => __( 'Event Details', MS_TEXT_DOMAIN ),
+				'title' => __( 'Event Details', 'membership2' ),
 				'type' => MS_Helper_Html::TYPE_HTML_TABLE,
 				'value' => array(
 					array( 'Event ID', $event->id ),

@@ -246,7 +246,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Coupons', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Coupons', 'membership2' ),
 		);
 
 		return apply_filters(
@@ -583,16 +583,16 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		$timestamp = MS_Helper_Period::current_time( 'timestamp' );
 
 		if ( empty( $this->code ) ) {
-			$this->coupon_message = __( 'Coupon code not found.', MS_TEXT_DOMAIN );
+			$this->coupon_message = __( 'Coupon code not found.', 'membership2' );
 			$valid = false;
 		} elseif ( $this->max_uses && $this->used >= $this->max_uses ) {
-			$this->coupon_message = __( 'No Coupons remaining for this code.', MS_TEXT_DOMAIN );
+			$this->coupon_message = __( 'No Coupons remaining for this code.', 'membership2' );
 			$valid = false;
 		} elseif ( ! empty( $this->start_date ) && strtotime( $this->start_date ) > $timestamp ) {
-			$this->coupon_message = __( 'This Coupon is not valid yet.', MS_TEXT_DOMAIN );
+			$this->coupon_message = __( 'This Coupon is not valid yet.', 'membership2' );
 			$valid = false;
 		} elseif ( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) < $timestamp ) {
-			$this->coupon_message = __( 'This Coupon has expired.', MS_TEXT_DOMAIN );
+			$this->coupon_message = __( 'This Coupon has expired.', 'membership2' );
 			$valid = false;
 		} else {
 			if ( is_array( $this->membership_id ) ) {
@@ -606,7 +606,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 				$membership_allowed = true;
 			}
 			if ( ! $membership_allowed ) {
-				$this->coupon_message = __( 'This Coupon is not valid for this membership.', MS_TEXT_DOMAIN );
+				$this->coupon_message = __( 'This Coupon is not valid for this membership.', 'membership2' );
 				$valid = false;
 			}
 		}
@@ -662,7 +662,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			}
 			$discount = $original_price - $price;
 			$this->coupon_message = sprintf(
-				__( 'Coupon applied: %1$s', MS_TEXT_DOMAIN ),
+				__( 'Coupon applied: %1$s', 'membership2' ),
 				$this->code
 			);
 		}
@@ -696,7 +696,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 				if ( $this->max_uses > 0 ) {
 					$value = $this->max_uses - $this->used;
 				} else {
-					$value = __( 'Unlimited', MS_TEXT_DOMAIN );
+					$value = __( 'Unlimited', 'membership2' );
 				}
 				break;
 

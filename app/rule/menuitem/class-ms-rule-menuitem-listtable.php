@@ -26,15 +26,15 @@ class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 		parent::__construct( $model );
 		$this->menus = $all_menus;
 		$this->menu_id = $menu_id;
-		$this->name['singular'] = __( 'Menu Item', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Menu Items', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Menu Item', 'membership2' );
+		$this->name['plural'] = __( 'Menu Items', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,
-			'title' => __( 'Menu Title', MS_TEXT_DOMAIN ),
-			'type' => __( 'Menu Type', MS_TEXT_DOMAIN ),
+			'title' => __( 'Menu Title', 'membership2' ),
+			'type' => __( 'Menu Type', 'membership2' ),
 			'access' => true,
 		);
 

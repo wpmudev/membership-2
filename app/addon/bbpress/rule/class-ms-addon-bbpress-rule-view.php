@@ -12,8 +12,8 @@ class MS_Addon_Bbpress_Rule_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'bbPress', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Protect the following bbPress content to members only.', MS_TEXT_DOMAIN ),
+				'title' => __( 'bbPress', 'membership2' ),
+				'desc' => __( 'Protect the following bbPress content to members only.', 'membership2' ),
 			),
 			MS_Addon_Bbpress_Rule::RULE_ID,
 			$this

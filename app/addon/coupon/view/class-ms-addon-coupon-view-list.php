@@ -22,14 +22,14 @@ class MS_Addon_Coupon_View_List extends MS_View {
 		$coupon_list = MS_Factory::create( 'MS_Addon_Coupon_Helper_Listtable' );
 		$coupon_list->prepare_items();
 
-		$title = __( 'Coupons', MS_TEXT_DOMAIN );
+		$title = __( 'Coupons', 'membership2' );
 		$add_new_button = array(
 			'id' => 'add_new',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
 			'url' => MS_Controller_Plugin::get_admin_url(
 				'coupons', array( 'action' => 'edit', 'coupon_id' => 0 )
 			),
-			'value' => __( 'Add New Coupon', MS_TEXT_DOMAIN ),
+			'value' => __( 'Add New Coupon', 'membership2' ),
 			'class' => 'button',
 		);
 

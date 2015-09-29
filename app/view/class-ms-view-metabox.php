@@ -20,14 +20,14 @@ class MS_View_Metabox extends MS_View {
 		<div id="ms-metabox-wrapper" class="ms_metabox ms-wrap">
 			<?php if ( ! empty( $this->data['special_page'] ) ) : ?>
 				<div>
-					<?php _e( 'Membership Special Page', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Membership Special Page', 'membership2' ); ?>
 				</div>
 			<?php else :
 				$membership_id = $this->data['base_id'];
 				$toggle = array(
 					'id' => sprintf( 'access_%s', $membership_id ),
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'title' => __( 'Enable Protection', MS_TEXT_DOMAIN ),
+					'title' => __( 'Enable Protection', 'membership2' ),
 					'value' => $this->data['is_protected'],
 					'class' => 'ms-protect-content',
 					'read_only' => ! empty( $this->data['read_only'] ),
@@ -46,10 +46,10 @@ class MS_View_Metabox extends MS_View {
 						<tbody>
 							<tr>
 								<th>
-									<?php _e( 'Membership', MS_TEXT_DOMAIN ); ?>
+									<?php _e( 'Membership', 'membership2' ); ?>
 								</th>
 								<th>
-									<?php _e( 'Access', MS_TEXT_DOMAIN ); ?>
+									<?php _e( 'Access', 'membership2' ); ?>
 								</th>
 							</tr>
 

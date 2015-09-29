@@ -80,7 +80,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 		}
 
 		if ( ! is_object( $Info ) ) { $Info = (object) array(); }
-		if ( ! isset( $Info->name ) ) { $Info->name = __( 'No Tax', MS_TEXT_DOMAIN ); }
+		if ( ! isset( $Info->name ) ) { $Info->name = __( 'No Tax', 'membership2' ); }
 		if ( ! isset( $Info->rate ) ) { $Info->rate = 0; }
 		if ( ! isset( $Info->amount ) ) { $Info->amount = 0; }
 		if ( ! isset( $Info->country ) ) { $Info->country = 'US'; }
@@ -125,7 +125,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 
 				// Register the payment.
 				$information = sprintf(
-					__( 'Invoice %1$s paid via %2$s.', MS_TEXT_DOMAIN ),
+					__( 'Invoice %1$s paid via %2$s.', 'membership2' ),
 					$invoice_id,
 					$gateway
 				);
@@ -341,8 +341,8 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 				self::$Countries_Prefix[$code] = $code . ' - ' . $item['name'];
 				self::$Countries_Vat[$item['vat']] = $code;
 			}
-			self::$Countries['XX'] = '- ' . __( 'Outside the EU', MS_TEXT_DOMAIN ) . ' -';
-			self::$Countries_Prefix['XX'] = '- ' . __( 'Outside the EU', MS_TEXT_DOMAIN ) . ' -';
+			self::$Countries['XX'] = '- ' . __( 'Outside the EU', 'membership2' ) . ' -';
+			self::$Countries_Prefix['XX'] = '- ' . __( 'Outside the EU', 'membership2' ) . ' -';
 		}
 
 		switch ( $type ) {

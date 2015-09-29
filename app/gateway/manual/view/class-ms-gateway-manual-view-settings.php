@@ -8,10 +8,10 @@ class MS_Gateway_Manual_View_Settings extends MS_View {
 
 		$msg = __(
 			'Instruct your users how to proceed with manual payments. This might include things like your bank account number and an email address where the payment confirmation should be sent.',
-			MS_TEXT_DOMAIN
+			'membership2'
 		) . '<br />&nbsp;<br /><em>' . __(
 			'When using this payment method the user will see the following payment instructions. Since the payment cannot be confirmed automatically his membership will <b>not</b> be activated instantly! You have to manually check if the payment was made and set the members bill to "paid" to complete the payment.',
-			MS_TEXT_DOMAIN
+			'membership2'
 		) .
 		'</em>';
 
@@ -42,7 +42,7 @@ class MS_Gateway_Manual_View_Settings extends MS_View {
 				'id' => 'payment_info',
 				'title' => apply_filters(
 					'ms_translation_flag',
-					__( 'Payment Info', MS_TEXT_DOMAIN ),
+					__( 'Payment Info', 'membership2' ),
 					'gateway-button' . $gateway->id
 				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT_AREA,
@@ -56,7 +56,7 @@ class MS_Gateway_Manual_View_Settings extends MS_View {
 				'id' => 'pay_button_url',
 				'title' => apply_filters(
 					'ms_translation_flag',
-					__( 'Payment button label or URL', MS_TEXT_DOMAIN ),
+					__( 'Payment button label or URL', 'membership2' ),
 					'gateway-button' . $gateway->id
 				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,

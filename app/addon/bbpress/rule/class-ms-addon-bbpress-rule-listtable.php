@@ -24,7 +24,7 @@ class MS_Addon_Bbpress_Rule_Listtable extends MS_Helper_ListTable_Rule {
 			'ms_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => true,
-				'name' => __( 'Name', MS_TEXT_DOMAIN ),
+				'name' => __( 'Name', 'membership2' ),
 				'access' => true,
 			)
 		);
@@ -52,12 +52,12 @@ class MS_Addon_Bbpress_Rule_Listtable extends MS_Helper_ListTable_Rule {
 			sprintf(
 				'<a href="%s">%s</a>',
 				get_edit_post_link( $item->id, true ),
-				__( 'Edit', MS_TEXT_DOMAIN )
+				__( 'Edit', 'membership2' )
 			),
 			sprintf(
 				'<a href="%s">%s</a>',
 				get_permalink( $item->id ),
-				__( 'View', MS_TEXT_DOMAIN )
+				__( 'View', 'membership2' )
 			),
 		);
 

@@ -10,17 +10,17 @@ class MS_Rule_Media_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Media File', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Media Files', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Media File', 'membership2' );
+		$this->name['plural'] = __( 'Media Files', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
 			'cb' => true,
-			'name' => __( 'Title', MS_TEXT_DOMAIN ),
+			'name' => __( 'Title', 'membership2' ),
 			'access' => true,
-			'file_type' => __( 'Type', MS_TEXT_DOMAIN ),
-			'post_date' => __( 'Added', MS_TEXT_DOMAIN ),
+			'file_type' => __( 'Type', 'membership2' ),
+			'post_date' => __( 'Added', 'membership2' ),
 			'dripped' => false,
 		);
 
@@ -45,12 +45,12 @@ class MS_Rule_Media_ListTable extends MS_Helper_ListTable_Rule {
 			sprintf(
 				'<a href="%s" target="_blank">%s</a>',
 				get_edit_post_link( $item->id, true ),
-				__( 'Edit', MS_TEXT_DOMAIN )
+				__( 'Edit', 'membership2' )
 			),
 			sprintf(
 				'<a href="%s" target="_blank">%s</a>',
 				get_permalink( $item->id ),
-				__( 'View', MS_TEXT_DOMAIN )
+				__( 'View', 'membership2' )
 			),
 		);
 		$actions = apply_filters(
@@ -69,7 +69,7 @@ class MS_Rule_Media_ListTable extends MS_Helper_ListTable_Rule {
 	public function column_post_date( $item, $column_name ) {
 		return MS_Helper_Period::format_date(
 			$item->post_date,
-			__( 'Y/m/d', MS_TEXT_DOMAIN )
+			__( 'Y/m/d', 'membership2' )
 		);
 	}
 

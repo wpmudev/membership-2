@@ -19,7 +19,7 @@ class MS_Rule_MemberCaps extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Capabilities', MS_TEXT_DOMAIN ),
+				__( 'Capabilities', 'membership2' ),
 				1
 			);
 		}

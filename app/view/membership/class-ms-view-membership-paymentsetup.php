@@ -25,7 +25,7 @@ class MS_View_Membership_PaymentSetup extends MS_View {
 			<?php
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+					'title' => __( 'Payment', 'membership2' ),
 					'title_icon_class' => 'wpmui-fa wpmui-fa-money',
 					'desc' => __( 'Set up your payment gateways and Membership Price' ),
 				)
@@ -116,7 +116,7 @@ class MS_View_Membership_PaymentSetup extends MS_View {
 		$membership = $this->data['membership'];
 
 		$title = sprintf(
-			__( 'Payment settings for %s', MS_TEXT_DOMAIN ),
+			__( 'Payment settings for %s', 'membership2' ),
 			$membership->get_name_tag()
 		);
 

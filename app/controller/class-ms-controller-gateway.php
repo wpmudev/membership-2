@@ -556,7 +556,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					case MS_Gateway_Stripe::ID:
 					case MS_Gateway_Stripeplan::ID:
 						$_POST['error'] = sprintf(
-							__( 'Error: %s', MS_TEXT_DOMAIN ),
+							__( 'Error: %s', 'membership2' ),
 							$e->getMessage()
 						);
 
@@ -654,7 +654,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function purchase_error_content( $content ) {
 		return apply_filters(
 			'ms_controller_gateway_purchase_error_content',
-			__( 'Sorry, your signup request has failed. Try again.', MS_TEXT_DOMAIN ),
+			__( 'Sorry, your signup request has failed. Try again.', 'membership2' ),
 			$content,
 			$this
 		);
@@ -707,10 +707,10 @@ class MS_Controller_Gateway extends MS_Controller {
 			} else {
 				// Log the payment attempt when the gateway is not active.
 				if ( MS_Model_Gateway::is_valid_gateway( $gateway ) ) {
-					$note = __( 'Gateway is inactive', MS_TEXT_DOMAIN );
+					$note = __( 'Gateway is inactive', 'membership2' );
 				} else {
 					$note = sprintf(
-						__( 'Unknown Gateway: %s', MS_TEXT_DOMAIN ),
+						__( 'Unknown Gateway: %s', 'membership2' ),
 						$gateway
 					);
 				}

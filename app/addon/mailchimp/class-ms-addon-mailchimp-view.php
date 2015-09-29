@@ -15,7 +15,7 @@ class MS_Addon_Mailchimp_View extends MS_View {
 		<div class="ms-addon-wrap">
 			<?php
 			MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'MailChimp Settings', MS_TEXT_DOMAIN ) )
+				array( 'title' => __( 'MailChimp Settings', 'membership2' ) )
 			);
 
 			foreach ( $fields as $field ) {
@@ -46,8 +46,8 @@ class MS_Addon_Mailchimp_View extends MS_View {
 			'mailchimp_api_test' => array(
 				'id' => 'mailchimp_api_test',
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'MailChimp API test status: ', MS_TEXT_DOMAIN ),
-				'value' => ( $api_status ) ? __( 'Verified', MS_TEXT_DOMAIN ) : __( 'Failed', MS_TEXT_DOMAIN ),
+				'title' => __( 'MailChimp API test status: ', 'membership2' ),
+				'value' => ( $api_status ) ? __( 'Verified', 'membership2' ) : __( 'Failed', 'membership2' ),
 				'class' => ( $api_status ) ? 'ms-ok' : 'ms-nok',
 			),
 
@@ -55,9 +55,9 @@ class MS_Addon_Mailchimp_View extends MS_View {
 				'id' => 'mailchimp_api_key',
 				'name' => 'custom[mailchimp][api_key]',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'MailChimp API Key', MS_TEXT_DOMAIN ),
+				'title' => __( 'MailChimp API Key', 'membership2' ),
 				'desc' => sprintf(
-					'<div>' . __( 'Visit <a href="%1$s">your API dashboard</a> to create an API Key.', MS_TEXT_DOMAIN ) . '</div>',
+					'<div>' . __( 'Visit <a href="%1$s">your API dashboard</a> to create an API Key.', 'membership2' ) . '</div>',
 					'http://admin.mailchimp.com/account/api" target="_blank'
 				),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'api_key' ),
@@ -77,8 +77,8 @@ class MS_Addon_Mailchimp_View extends MS_View {
 				'id' => 'auto_opt_in',
 				'name' => 'custom[mailchimp][auto_opt_in]',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Automatically opt-in new users to the mailing list.', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Users will not receive an email confirmation. You are responsible to inform your users.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Automatically opt-in new users to the mailing list.', 'membership2' ),
+				'desc' => __( 'Users will not receive an email confirmation. You are responsible to inform your users.', 'membership2' ),
 				'value' => $auto_opt_in,
 				'class' => 'inp-before',
 				'ajax_data' => array(
@@ -96,7 +96,7 @@ class MS_Addon_Mailchimp_View extends MS_View {
 				'id' => 'mail_list_registered',
 				'name' => 'custom[mailchimp][mail_list_registered]',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Registered users mailing list (not members)', MS_TEXT_DOMAIN ),
+				'title' => __( 'Registered users mailing list (not members)', 'membership2' ),
 				'field_options' => MS_Addon_Mailchimp::get_mail_lists(),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ),
 				'ajax_data' => array(
@@ -110,7 +110,7 @@ class MS_Addon_Mailchimp_View extends MS_View {
 				'id' => 'mail_list_members',
 				'name' => 'custom[mailchimp][mail_list_members]',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Members mailing list', MS_TEXT_DOMAIN ),
+				'title' => __( 'Members mailing list', 'membership2' ),
 				'field_options' => MS_Addon_Mailchimp::get_mail_lists(),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_members' ),
 				'ajax_data' => array(
@@ -124,7 +124,7 @@ class MS_Addon_Mailchimp_View extends MS_View {
 				'id' => 'mail_list_deactivated',
 				'name' => 'custom[mailchimp][mail_list_deactivated]',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'Deactivated memberships mailing list', MS_TEXT_DOMAIN ),
+				'title' => __( 'Deactivated memberships mailing list', 'membership2' ),
 				'field_options' => MS_Addon_Mailchimp::get_mail_lists(),
 				'value' => $settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ),
 				'ajax_data' => array(

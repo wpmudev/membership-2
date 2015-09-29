@@ -128,7 +128,7 @@ class MS_Controller_Dialog extends MS_Controller {
 
 		$user_signon = wp_signon( $info, false );
 		if ( is_wp_error( $user_signon ) ) {
-			$resp['error'] = __( 'Wrong username or password', MS_TEXT_DOMAIN );
+			$resp['error'] = __( 'Wrong username or password', 'membership2' );
 		} else {
 			$member = MS_Factory::load( 'MS_Model_Member', $user_signon->ID );
 
@@ -139,7 +139,7 @@ class MS_Controller_Dialog extends MS_Controller {
 			do_action( 'ms_model_member_signon_user', $user_signon, $member );
 
 			$resp['loggedin'] = true;
-			$resp['success'] = __( 'Logging in...', MS_TEXT_DOMAIN );
+			$resp['success'] = __( 'Logging in...', 'membership2' );
 
 			/**
 			 * Allows a custom redirection after login.
@@ -170,11 +170,11 @@ class MS_Controller_Dialog extends MS_Controller {
 		$errors = new WP_Error();
 
 		if ( empty( $_POST['user_login'] ) ) {
-			$resp['error'] = __( 'Enter a username or e-mail address.', MS_TEXT_DOMAIN );
+			$resp['error'] = __( 'Enter a username or e-mail address.', 'membership2' );
 		} else if ( strpos( $_POST['user_login'], '@' ) ) {
 			$user_data = get_user_by( 'email', trim( $_POST['user_login'] ) );
 			if ( empty( $user_data ) ) {
-				$resp['error'] = __( 'There is no user registered with that email address.', MS_TEXT_DOMAIN );
+				$resp['error'] = __( 'There is no user registered with that email address.', 'membership2' );
 			}
 		} else {
 			$login = trim( $_POST['user_login'] );
@@ -188,7 +188,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		}
 
 		if ( ! $user_data ) {
-			$resp['error'] = __( 'Invalid username or e-mail.', MS_TEXT_DOMAIN );
+			$resp['error'] = __( 'Invalid username or e-mail.', 'membership2' );
 			$this->respond( $resp );
 		}
 
@@ -202,7 +202,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		$allow = apply_filters( 'allow_password_reset', true, $user_data->ID );
 
 		if ( ! $allow ) {
-			$resp['error'] = __( 'Password reset is not allowed for this user', MS_TEXT_DOMAIN );
+			$resp['error'] = __( 'Password reset is not allowed for this user', 'membership2' );
 			$this->respond( $resp );
 		} else if ( is_wp_error( $allow ) ) {
 			return $allow;
@@ -242,10 +242,10 @@ class MS_Controller_Dialog extends MS_Controller {
 		$schema = is_ssl() ? 'https' : 'http';
 
 		$message = sprintf(
-			__( 'Someone requested that the password be reset for the following account: %sIf this was a mistake, just ignore this email and nothing will happen.%s', MS_TEXT_DOMAIN ),
+			__( 'Someone requested that the password be reset for the following account: %sIf this was a mistake, just ignore this email and nothing will happen.%s', 'membership2' ),
 			"<br>\r\n<br>\r\n" . network_home_url( '/', $schema ) . "<br>\r\n" .
-			sprintf( __( 'Your username: %s', MS_TEXT_DOMAIN ), $user_login ) . "<br>\r\n<br>\r\n",
-			"<br>\r\n<br>\r\n" . '<a href="' . $reset_url . '">' . __( 'Click here to reset your password', MS_TEXT_DOMAIN ) . "</a><br>\r\n" . $reset_url . "<br>\r\n"
+			sprintf( __( 'Your username: %s', 'membership2' ), $user_login ) . "<br>\r\n<br>\r\n",
+			"<br>\r\n<br>\r\n" . '<a href="' . $reset_url . '">' . __( 'Click here to reset your password', 'membership2' ) . "</a><br>\r\n" . $reset_url . "<br>\r\n"
 		);
 
 		if ( is_multisite() ) {
@@ -263,7 +263,7 @@ class MS_Controller_Dialog extends MS_Controller {
 			$resp['error'] = __( 'The e-mail could not be sent.' ) . '<br />' .
 				__( 'Possible reason: your host may have disabled the mail() function.' );
 		} else {
-			$resp['success'] = __( 'Check your e-mail for the confirmation link.', MS_TEXT_DOMAIN );
+			$resp['success'] = __( 'Check your e-mail for the confirmation link.', 'membership2' );
 		}
 
 		$this->respond( $resp );

@@ -26,9 +26,9 @@ class MS_Addon_Invitation_View_Edit extends MS_View {
 		);
 
 		if ( $this->data['invitation']->is_valid() ) {
-			$title = __( 'Edit Invitation Code', MS_TEXT_DOMAIN );
+			$title = __( 'Edit Invitation Code', 'membership2' );
 		} else {
-			$title = __( 'Add Invitation Code', MS_TEXT_DOMAIN );
+			$title = __( 'Add Invitation Code', 'membership2' );
 		}
 
 		ob_start();
@@ -73,35 +73,35 @@ class MS_Addon_Invitation_View_Edit extends MS_View {
 		$fields = array(
 			'code' => array(
 				'id' => 'code',
-				'title' => __( 'Invitation code', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invitation code', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'value' => $invitation->code,
 				'class' => 'widefat',
 			),
 			'start_date' => array(
 				'id' => 'start_date',
-				'title' => __( 'Start date', MS_TEXT_DOMAIN ),
+				'title' => __( 'Start date', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => ( $invitation->start_date ) ? $invitation->start_date : MS_Helper_Period::current_date(),
 				'class' => 'ms-date',
 			),
 			'expire_date' => array(
 				'id' => 'expire_date',
-				'title' => __( 'Expire date', MS_TEXT_DOMAIN ),
+				'title' => __( 'Expire date', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 				'value' => $invitation->expire_date,
 				'class' => 'ms-date',
 			),
 			'membership_id' => array(
 				'id' => 'membership_id',
-				'title' => __( 'Invitation can be applied to these Memberships', MS_TEXT_DOMAIN ),
+				'title' => __( 'Invitation can be applied to these Memberships', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'field_options' => $this->data['memberships'],
 				'value' => $invitation->membership_id,
 			),
 			'max_uses' => array(
 				'id' => 'max_uses',
-				'title' => __( 'Max uses', MS_TEXT_DOMAIN ),
+				'title' => __( 'Max uses', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_NUMBER,
 				'value' => $invitation->max_uses,
 				'config' => array(
@@ -130,15 +130,15 @@ class MS_Addon_Invitation_View_Edit extends MS_View {
 			'cancel' => array(
 				'id' => 'cancel',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
-				'title' => __( 'Cancel', MS_TEXT_DOMAIN ),
-				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+				'title' => __( 'Cancel', 'membership2' ),
+				'value' => __( 'Cancel', 'membership2' ),
 				'url' => remove_query_arg( array( 'action', 'invitation_id' ) ),
 				'class' => 'wpmui-field-button button',
 			),
 			'submit' => array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save Changes', 'membership2' ),
 			),
 		);
 

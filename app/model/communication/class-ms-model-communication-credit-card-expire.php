@@ -26,8 +26,8 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	 * @param array $field A HTML definition, passed to lib3()->html->element()
 	 */
 	public function set_period_name( $field ) {
-		$field['title'] = __( 'Notify Period', MS_TEXT_DOMAIN );
-		$field['desc'] = __( 'We want to notify the user some days in advance, so there is time to react.<br>Enter here, how many days in advance this message should be sent.', MS_TEXT_DOMAIN );
+		$field['title'] = __( 'Notify Period', 'membership2' );
+		$field['desc'] = __( 'We want to notify the user some days in advance, so there is time to react.<br>Enter here, how many days in advance this message should be sent.', 'membership2' );
 
 		return $field;
 	}
@@ -39,7 +39,7 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	 * @return string The description.
 	 */
 	public function get_description() {
-		return __( 'A notice to indicate that the member\'s credit card is about to expire.', MS_TEXT_DOMAIN );
+		return __( 'A notice to indicate that the member\'s credit card is about to expire.', 'membership2' );
 	}
 
 	/**
@@ -50,7 +50,7 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	public function reset_to_default() {
 		parent::reset_to_default();
 
-		$this->subject = __( 'Your credit card is about to expire', MS_TEXT_DOMAIN );
+		$this->subject = __( 'Your credit card is about to expire', 'membership2' );
 		$this->message = self::get_default_message();
 		$this->enabled = false;
 		$this->period_enabled = true;
@@ -66,12 +66,12 @@ class MS_Model_Communication_Credit_Card_Expire extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
-		$body_notice = __( 'This is a reminder that your credit card is about to expire.', MS_TEXT_DOMAIN );
+		$body_notice = __( 'This is a reminder that your credit card is about to expire.', 'membership2' );
 		$body_continue = sprintf(
-			__( 'To continue your %1$s membership at %2$s, please update your card details before your next payment is due here: %3$s', MS_TEXT_DOMAIN ),
+			__( 'To continue your %1$s membership at %2$s, please update your card details before your next payment is due here: %3$s', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME,
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL

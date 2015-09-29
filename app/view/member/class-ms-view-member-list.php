@@ -18,9 +18,9 @@ class MS_View_Member_List extends MS_View {
 			<?php
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Members', MS_TEXT_DOMAIN ),
+					'title' => __( 'Members', 'membership2' ),
 					'title_icon_class' => 'wpmui-fa wpmui-fa-users',
-					'desc' => __( 'Here you can manage the Memberships of existing Users.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Here you can manage the Memberships of existing Users.', 'membership2' ),
 				)
 			);
 
@@ -56,13 +56,13 @@ class MS_View_Member_List extends MS_View {
 		$links = array();
 
 		$links['all'] = array(
-			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'label' => __( 'All', 'membership2' ),
 			'url' => $url,
 		);
 
 		foreach ( $memberships as $id => $name ) {
 			if ( empty( $name ) ) {
-				$name = __( '(No Name)', MS_TEXT_DOMAIN );
+				$name = __( '(No Name)', 'membership2' );
 			}
 
 			$filter_url = esc_url_raw(

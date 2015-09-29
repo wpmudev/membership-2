@@ -8,16 +8,16 @@ class MS_View_Frontend_Activities extends MS_View {
 		<div class="ms-account-wrapper">
 			<?php if ( MS_Model_Member::is_logged_in() ) : ?>
 				<h2>
-					<?php _e( 'Activity', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Activity', 'membership2' ); ?>
 				</h2>
 				<table>
 					<thead>
 						<tr>
 							<th class="ms-col-activity-date"><?php
-								_e( 'Date', MS_TEXT_DOMAIN );
+								_e( 'Date', 'membership2' );
 							?></th>
 							<th class="ms-col-activity-title"><?php
-								_e( 'Activity', MS_TEXT_DOMAIN );
+								_e( 'Activity', 'membership2' );
 							?></th>
 						</tr>
 					</thead>
@@ -34,7 +34,7 @@ class MS_View_Frontend_Activities extends MS_View {
 								echo esc_html(
 									MS_Helper_Period::format_date(
 										$event->post_modified,
-										__( 'F j (H:i)', MS_TEXT_DOMAIN )
+										__( 'F j (H:i)', 'membership2' )
 									)
 								);
 							?></td>
@@ -48,7 +48,7 @@ class MS_View_Frontend_Activities extends MS_View {
 			<?php
 			else :
 				$redirect = esc_url_raw( add_query_arg( array() ) );
-				$title = __( 'Your account', MS_TEXT_DOMAIN );
+				$title = __( 'Your account', 'membership2' );
 				echo do_shortcode( "[ms-membership-login redirect='$redirect' title='$title']" );
 			endif;
 			?>

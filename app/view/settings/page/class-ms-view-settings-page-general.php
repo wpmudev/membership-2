@@ -9,8 +9,8 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 			'plugin_enabled' => array(
 				'id' => 'plugin_enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Content Protection', MS_TEXT_DOMAIN ),
-				'desc' => __( 'This setting toggles the content protection on this site.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Content Protection', 'membership2' ),
+				'desc' => __( 'This setting toggles the content protection on this site.', 'membership2' ),
 				'value' => MS_Plugin::is_enabled(),
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
@@ -21,8 +21,8 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 			'hide_admin_bar' => array(
 				'id' => 'hide_admin_bar',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'title' => __( 'Hide admin toolbar', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Hide the admin toolbar for non administrator users.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Hide admin toolbar', 'membership2' ),
+				'desc' => __( 'Hide the admin toolbar for non administrator users.', 'membership2' ),
 				'value' => $settings->hide_admin_bar,
 				'data_ms' => array(
 					'action' => MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,

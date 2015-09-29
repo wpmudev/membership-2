@@ -421,7 +421,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	private function get_setup_menu_pages() {
 		$pages = array(
 			'setup' => array(
-				'title' => __( 'Set-up', MS_TEXT_DOMAIN ),
+				'title' => __( 'Set-up', 'membership2' ),
 				'slug' => '',
 			),
 		);
@@ -431,7 +431,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$pages['setup']['slug'] = 'setup';
 
 			$pages[self::MENU_SLUG] = array(
-				'title' => __( 'Protection Rules', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protection Rules', 'membership2' ),
 				'slug' => '',
 			);
 		}
@@ -451,32 +451,32 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		$pages = array(
 			'memberships' => array(
-				'title' => __( 'Memberships', MS_TEXT_DOMAIN ),
+				'title' => __( 'Memberships', 'membership2' ),
 				'slug' => '',
 			),
 			'protected-content' => array(
-				'title' => __( 'Protection Rules', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protection Rules', 'membership2' ),
 				'slug' => 'protection',
 			),
 			'members' => array(
-				'title' => __( 'All Members', MS_TEXT_DOMAIN ),
+				'title' => __( 'All Members', 'membership2' ),
 				'slug' => 'members',
 			),
 			'add-member' => array(
-				'title' => __( 'Add Member', MS_TEXT_DOMAIN ),
+				'title' => __( 'Add Member', 'membership2' ),
 				'slug' => 'add-member',
 			),
 			'billing' => false,
 			'addon' => array(
-				'title' => __( 'Add-ons', MS_TEXT_DOMAIN ),
+				'title' => __( 'Add-ons', 'membership2' ),
 				'slug' => 'addon',
 			),
 			'settings' => array(
-				'title' => __( 'Settings', MS_TEXT_DOMAIN ),
+				'title' => __( 'Settings', 'membership2' ),
 				'slug' => 'settings',
 			),
 			'help' => array(
-				'title' => __( 'Help', MS_TEXT_DOMAIN ),
+				'title' => __( 'Help', 'membership2' ),
 				'slug' => 'help',
 			),
 		);
@@ -495,7 +495,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$pages['billing'] = array(
 				'title' => sprintf(
 					$msg,
-					__( 'Billing', MS_TEXT_DOMAIN ),
+					__( 'Billing', 'membership2' ),
 					$bill_count,
 					sanitize_html_class( $bill_count, '0' )
 				),
@@ -517,7 +517,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			if ( ! $payment_possible ) {
 				lib3()->ui->admin_message(
 					sprintf(
-						__( 'Oops, looks like you did not activate a payment gateway yet.<br />You need to set up and activate at least one gateway, otherwise your members cannot sign up to a paid membership.<br />%sFix this now &raquo;%s', MS_TEXT_DOMAIN ),
+						__( 'Oops, looks like you did not activate a payment gateway yet.<br />You need to set up and activate at least one gateway, otherwise your members cannot sign up to a paid membership.<br />%sFix this now &raquo;%s', 'membership2' ),
 						'<a href="' . self::get_admin_url( 'settings', array( 'tab' => MS_Controller_Settings::TAB_PAYMENT ) ) . '">',
 						'</a>'
 					),
@@ -1061,22 +1061,22 @@ class MS_Controller_Plugin extends MS_Controller {
 		ob_start();
 		?>
 		jQuery.extend( jQuery.validator.messages, {
-			required: "<?php _e( 'This field is required.', MS_TEXT_DOMAIN ); ?>",
-			remote: "<?php _e( 'Please fix this field.', MS_TEXT_DOMAIN ); ?>",
-			email: "<?php _e( 'Please enter a valid email address.', MS_TEXT_DOMAIN ); ?>",
-			url: "<?php _e( 'Please enter a valid URL.', MS_TEXT_DOMAIN ); ?>",
-			date: "<?php _e( 'Please enter a valid date.', MS_TEXT_DOMAIN ); ?>",
-			dateISO: "<?php _e( 'Please enter a valid date ( ISO ).', MS_TEXT_DOMAIN ); ?>",
-			number: "<?php _e( 'Please enter a valid number.', MS_TEXT_DOMAIN ); ?>",
-			digits: "<?php _e( 'Please enter only digits.', MS_TEXT_DOMAIN ); ?>",
-			creditcard: "<?php _e( 'Please enter a valid credit card number.', MS_TEXT_DOMAIN ); ?>",
-			equalTo: "<?php _e( 'Please enter the same value again.', MS_TEXT_DOMAIN ); ?>",
-			maxlength: jQuery.validator.format( "<?php _e( 'Please enter no more than {0} characters.', MS_TEXT_DOMAIN ); ?>" ),
-			minlength: jQuery.validator.format( "<?php _e( 'Please enter at least {0} characters.', MS_TEXT_DOMAIN ); ?>" ),
-			rangelength: jQuery.validator.format( "<?php _e( 'Please enter a value between {0} and {1} characters long.', MS_TEXT_DOMAIN ); ?>" ),
-			range: jQuery.validator.format( "<?php _e( 'Please enter a value between {0} and {1}.', MS_TEXT_DOMAIN ); ?>" ),
-			max: jQuery.validator.format( "<?php _e( 'Please enter a value less than or equal to {0}.', MS_TEXT_DOMAIN ); ?>" ),
-			min: jQuery.validator.format( "<?php _e( 'Please enter a value greater than or equal to {0}.', MS_TEXT_DOMAIN ); ?>" )
+			required: "<?php _e( 'This field is required.', 'membership2' ); ?>",
+			remote: "<?php _e( 'Please fix this field.', 'membership2' ); ?>",
+			email: "<?php _e( 'Please enter a valid email address.', 'membership2' ); ?>",
+			url: "<?php _e( 'Please enter a valid URL.', 'membership2' ); ?>",
+			date: "<?php _e( 'Please enter a valid date.', 'membership2' ); ?>",
+			dateISO: "<?php _e( 'Please enter a valid date ( ISO ).', 'membership2' ); ?>",
+			number: "<?php _e( 'Please enter a valid number.', 'membership2' ); ?>",
+			digits: "<?php _e( 'Please enter only digits.', 'membership2' ); ?>",
+			creditcard: "<?php _e( 'Please enter a valid credit card number.', 'membership2' ); ?>",
+			equalTo: "<?php _e( 'Please enter the same value again.', 'membership2' ); ?>",
+			maxlength: jQuery.validator.format( "<?php _e( 'Please enter no more than {0} characters.', 'membership2' ); ?>" ),
+			minlength: jQuery.validator.format( "<?php _e( 'Please enter at least {0} characters.', 'membership2' ); ?>" ),
+			rangelength: jQuery.validator.format( "<?php _e( 'Please enter a value between {0} and {1} characters long.', 'membership2' ); ?>" ),
+			range: jQuery.validator.format( "<?php _e( 'Please enter a value between {0} and {1}.', 'membership2' ); ?>" ),
+			max: jQuery.validator.format( "<?php _e( 'Please enter a value less than or equal to {0}.', 'membership2' ); ?>" ),
+			min: jQuery.validator.format( "<?php _e( 'Please enter a value greater than or equal to {0}.', 'membership2' ); ?>" )
 		});
 		<?php
 		$script = ob_get_clean();

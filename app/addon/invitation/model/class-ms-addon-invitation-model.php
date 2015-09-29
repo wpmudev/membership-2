@@ -234,7 +234,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 
 		$model = MS_Factory::load( 'MS_Addon_Invitation_Model', $invitation_id );
 		if ( ! $model->is_valid() ) {
-			$model->invitation_message = __( 'Invitation code not found.', MS_TEXT_DOMAIN );
+			$model->invitation_message = __( 'Invitation code not found.', 'membership2' );
 		}
 
 		return apply_filters(
@@ -389,16 +389,16 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		$timestamp = MS_Helper_Period::current_time( 'timestamp' );
 
 		if ( $this->max_uses && $this->used >= $this->max_uses ) {
-			$this->invitation_message = __( 'This invitation code is no longer valid.', MS_TEXT_DOMAIN );
+			$this->invitation_message = __( 'This invitation code is no longer valid.', 'membership2' );
 			$valid = false;
 		} elseif ( ! empty( $this->start_date ) && strtotime( $this->start_date ) > $timestamp ) {
-			$this->invitation_message = __( 'This invitation is not valid yet.', MS_TEXT_DOMAIN );
+			$this->invitation_message = __( 'This invitation is not valid yet.', 'membership2' );
 			$valid = false;
 		} elseif ( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) < $timestamp ) {
-			$this->invitation_message = __( 'This invitation has expired.', MS_TEXT_DOMAIN );
+			$this->invitation_message = __( 'This invitation has expired.', 'membership2' );
 			$valid = false;
 		} elseif ( ! $this->check_invitation_user_usage() ) {
-			$this->invitation_message = __( 'You have already used this invitation code.', MS_TEXT_DOMAIN );
+			$this->invitation_message = __( 'You have already used this invitation code.', 'membership2' );
 			$valid = false;
 		} elseif ( ! empty( $this->code ) ) {
 			if ( is_array( $this->membership_id ) ) {
@@ -412,7 +412,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 				$membership_allowed = true;
 			}
 			if ( ! $membership_allowed ) {
-				$this->invitation_message = __( 'This Invitation is not valid for this membership.', MS_TEXT_DOMAIN );
+				$this->invitation_message = __( 'This Invitation is not valid for this membership.', 'membership2' );
 				$valid = false;
 			}
 		}
@@ -513,7 +513,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 				if ( $this->max_uses > 0 ) {
 					$value = $this->max_uses - $this->used;
 				} else {
-					$value = __( 'Unlimited', MS_TEXT_DOMAIN );
+					$value = __( 'Unlimited', 'membership2' );
 				}
 				break;
 

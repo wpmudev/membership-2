@@ -320,8 +320,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Invoices', MS_TEXT_DOMAIN ),
-			'description' => __( 'Member Invoices', MS_TEXT_DOMAIN ),
+			'label' => __( 'Membership2 Invoices', 'membership2' ),
+			'description' => __( 'Member Invoices', 'membership2' ),
 			'public' => true,
 			'show_ui' => false,
 			'show_in_menu' => false,
@@ -349,19 +349,19 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_status_types( $extended = false ) {
 		if ( $extended ) {
 			$result = array(
-				self::STATUS_NEW => __( 'Draft - Invoice is prepared but user cannot see it yet', MS_TEXT_DOMAIN ),
-				self::STATUS_BILLED => __( 'Billed - User can see the invoice and needs to pay', MS_TEXT_DOMAIN ),
-				self::STATUS_PENDING => __( 'Pending - Waiting for confirmation from payment gateway', MS_TEXT_DOMAIN ),
-				self::STATUS_PAID => __( 'Paid - Payment arrived on our account!', MS_TEXT_DOMAIN ),
-				self::STATUS_DENIED => __( 'Denied - Payment was denied', MS_TEXT_DOMAIN ),
+				self::STATUS_NEW => __( 'Draft - Invoice is prepared but user cannot see it yet', 'membership2' ),
+				self::STATUS_BILLED => __( 'Billed - User can see the invoice and needs to pay', 'membership2' ),
+				self::STATUS_PENDING => __( 'Pending - Waiting for confirmation from payment gateway', 'membership2' ),
+				self::STATUS_PAID => __( 'Paid - Payment arrived on our account!', 'membership2' ),
+				self::STATUS_DENIED => __( 'Denied - Payment was denied', 'membership2' ),
 			);
 		} else {
 			$result = array(
-				self::STATUS_NEW => __( 'Draft', MS_TEXT_DOMAIN ),
-				self::STATUS_BILLED => __( 'Billed', MS_TEXT_DOMAIN ),
-				self::STATUS_PENDING => __( 'Pending', MS_TEXT_DOMAIN ),
-				self::STATUS_PAID => __( 'Paid', MS_TEXT_DOMAIN ),
-				self::STATUS_DENIED => __( 'Denied', MS_TEXT_DOMAIN ),
+				self::STATUS_NEW => __( 'Draft', 'membership2' ),
+				self::STATUS_BILLED => __( 'Billed', 'membership2' ),
+				self::STATUS_PENDING => __( 'Pending', 'membership2' ),
+				self::STATUS_PAID => __( 'Paid', 'membership2' ),
+				self::STATUS_DENIED => __( 'Denied', 'membership2' ),
 			);
 		}
 
@@ -811,7 +811,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->name = apply_filters(
 			'ms_model_invoice_name',
 			sprintf(
-				__( 'Invoice for %s - %s', MS_TEXT_DOMAIN ),
+				__( 'Invoice for %s - %s', 'membership2' ),
 				$membership->name,
 				$member->username
 			)
@@ -883,13 +883,13 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$this->add_notes( '----------' );
 			$this->add_notes(
 				sprintf(
-					__( 'Archived on: %s', MS_TEXT_DOMAIN ),
+					__( 'Archived on: %s', 'membership2' ),
 					MS_Helper_Period::current_date()
 				)
 			);
 			$this->add_notes(
 				sprintf(
-					__( 'Former status: %s', MS_TEXT_DOMAIN ),
+					__( 'Former status: %s', 'membership2' ),
 					$this->status
 				)
 			);

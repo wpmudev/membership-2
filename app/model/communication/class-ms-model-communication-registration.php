@@ -29,7 +29,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent when a member completes the signup for a paid membership.', MS_TEXT_DOMAIN
+			'Sent when a member completes the signup for a paid membership.', 'membership2'
 		);
 	}
 
@@ -42,7 +42,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Confirmation of your membership at %s', MS_TEXT_DOMAIN ),
+			__( 'Confirmation of your membership at %s', 'membership2' ),
 			self::COMM_VAR_BLOG_NAME
 		);
 		$this->message = self::get_default_message();
@@ -63,19 +63,19 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Great, you are now subscribed to the <strong>%1$s</strong> Membership at %2$s!', MS_TEXT_DOMAIN ),
+			__( 'Great, you are now subscribed to the <strong>%1$s</strong> Membership at %2$s!', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
 		$body_account = sprintf(
-			__( 'You can review and edit your membership details here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'You can review and edit your membership details here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
-		$body_invoice = __( 'Here are your latest payment information for your subscription:', MS_TEXT_DOMAIN );
+		$body_invoice = __( 'Here are your latest payment information for your subscription:', 'membership2' );
 
 		$html = sprintf(
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s<br /><br />%4$s<br /><br />%5$s',

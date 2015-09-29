@@ -19,7 +19,7 @@ class MS_Rule_ReplaceLocation extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Menu Locations', MS_TEXT_DOMAIN ),
+				__( 'Menu Locations', 'membership2' ),
 				61
 			);
 		}

@@ -19,7 +19,7 @@ class MS_Rule_Media extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Media Library Items', MS_TEXT_DOMAIN ),
+				__( 'Media Library Items', 'membership2' ),
 				90
 			);
 		}

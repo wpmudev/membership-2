@@ -30,7 +30,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 
 		// Dialog Title
 		$this->title = sprintf(
-			__( 'Profile: %1$s %2$s', MS_TEXT_DOMAIN ),
+			__( 'Profile: %1$s %2$s', 'membership2' ),
 			esc_html( $member->first_name ),
 			esc_html( $member->last_name )
 		);
@@ -121,7 +121,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 
 		$inp_save = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Save', MS_TEXT_DOMAIN ),
+			'value' => __( 'Save', 'membership2' ),
 			'class' => 'ms-submit-form',
 			'data' => array(
 				'form' => 'ms-edit-member',
@@ -130,7 +130,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 
 		$inp_cancel = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-			'value' => __( 'Close', MS_TEXT_DOMAIN ),
+			'value' => __( 'Close', 'membership2' ),
 			'class' => 'close',
 		);
 
@@ -143,24 +143,24 @@ class MS_View_Member_Dialog extends MS_Dialog {
 					<thead>
 						<tr>
 							<th class="column-membership">
-								<?php _e( 'Membership', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Membership', 'membership2' ); ?>
 							</th>
 							<th class="column-status">
-								<?php _e( 'Status', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Status', 'membership2' ); ?>
 							</th>
 							<th class="column-start">
-								<?php _e( 'Subscribed on', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Subscribed on', 'membership2' ); ?>
 							</th>
 							<th class="column-expire">
-								<?php _e( 'Expires on', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Expires on', 'membership2' ); ?>
 							</th>
 							<?php if ( $show_trial ) : ?>
 							<th class="column-trialexpire">
-								<?php _e( 'Trial until', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Trial until', 'membership2' ); ?>
 							</th>
 							<?php endif; ?>
 							<th class="column-payments">
-								<?php _e( 'Payments', MS_TEXT_DOMAIN ); ?>
+								<?php _e( 'Payments', 'membership2' ); ?>
 							</th>
 						</tr>
 					</thead>
@@ -197,7 +197,7 @@ class MS_View_Member_Dialog extends MS_Dialog {
 									esc_attr( json_encode( $subscription_info ) ),
 									esc_attr( json_encode( $update_info ) ),
 									'<i class="dashicons dashicons-update"></i>',
-									__( 'Check and update subscription status', MS_TEXT_DOMAIN )
+									__( 'Check and update subscription status', 'membership2' )
 								);
 								?>
 							</td>

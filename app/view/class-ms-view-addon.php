@@ -30,15 +30,15 @@ class MS_View_Addon extends MS_View {
 
 		$items = $this->data['addon']->get_addon_list();
 		$lang = (object) array(
-			'active_badge' => __( 'ACTIVE', MS_TEXT_DOMAIN ),
-			'show_details' => __( 'Details...', MS_TEXT_DOMAIN ),
-			'close_details' => __( 'Close', MS_TEXT_DOMAIN ),
+			'active_badge' => __( 'ACTIVE', 'membership2' ),
+			'show_details' => __( 'Details...', 'membership2' ),
+			'close_details' => __( 'Close', 'membership2' ),
 		);
 		$filters = array(
-			'all' => __( 'All', MS_TEXT_DOMAIN ),
-			'active' => __( 'Active', MS_TEXT_DOMAIN ),
-			'inactive' => __( 'Inactive', MS_TEXT_DOMAIN ),
-			'options' => __( 'With options', MS_TEXT_DOMAIN ),
+			'all' => __( 'All', 'membership2' ),
+			'active' => __( 'Active', 'membership2' ),
+			'inactive' => __( 'Inactive', 'membership2' ),
+			'options' => __( 'With options', 'membership2' ),
 		);
 
 		ob_start();
@@ -46,7 +46,7 @@ class MS_View_Addon extends MS_View {
 		<div class="ms-wrap ms-addon-list">
 			<h2 class="ms-settings-title">
 				<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>
-				<?php  _e( 'Membership Add-ons', MS_TEXT_DOMAIN ); ?>
+				<?php  _e( 'Membership Add-ons', 'membership2' ); ?>
 			</h2>
 			<form action="" method="post">
 				<?php lib3()->html->addon_list( $items, $lang, $filters ); ?>

@@ -10,7 +10,7 @@ class MS_Rule_Category_View extends MS_View {
 		$rule_listtable->prepare_items();
 
 		$header_data = array();
-		$header_data['title'] = __( 'Choose which Categories you want to protect', MS_TEXT_DOMAIN );
+		$header_data['title'] = __( 'Choose which Categories you want to protect', 'membership2' );
 		$header_data['desc'] = '';
 
 		$header_data = apply_filters(
@@ -27,7 +27,7 @@ class MS_Rule_Category_View extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Categories', MS_TEXT_DOMAIN ), 'search-cat' );
+			$rule_listtable->search_box( __( 'Categories', 'membership2' ), 'search-cat' );
 			?>
 			<form action="" method="post">
 				<?php

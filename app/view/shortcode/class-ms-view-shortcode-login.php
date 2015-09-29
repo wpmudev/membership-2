@@ -110,7 +110,7 @@ class MS_View_Shortcode_Login extends MS_View {
 					$link = sprintf(
 						'<a href="%1$s">%2$s</a>',
 						MS_Controller_Frontend::get_registration_url( 'register' ),
-						__( 'Register', MS_TEXT_DOMAIN )
+						__( 'Register', 'membership2' )
 					);
 
 					/**
@@ -127,8 +127,8 @@ class MS_View_Shortcode_Login extends MS_View {
 				'ms_ajax_login',
 				array(
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
-					'loadingmessage' => __( 'Please wait...', MS_TEXT_DOMAIN ),
-					'errormessage' => __( 'Request failed, please try again.', MS_TEXT_DOMAIN ),
+					'loadingmessage' => __( 'Please wait...', 'membership2' ),
+					'errormessage' => __( 'Request failed, please try again.', 'membership2' ),
 				)
 			);
 		}
@@ -167,7 +167,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		<legend><?php echo esc_html( $title ); ?></legend>
 		<?php if ( $show_note ) : ?>
 		<div class="ms-alert-box ms-alert-error">
-			<?php _e( 'Please log in to access this page.', MS_TEXT_DOMAIN ); ?>
+			<?php _e( 'Please log in to access this page.', 'membership2' ); ?>
 		</div>
 		<?php endif;
 
@@ -190,10 +190,10 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		$defaults = array(
 			'redirect_login' => $redirect_to,
-			'label_username' => __( 'Username', MS_TEXT_DOMAIN ),
-			'label_password' => __( 'Password', MS_TEXT_DOMAIN ),
-			'label_remember' => __( 'Remember Me', MS_TEXT_DOMAIN ),
-			'label_log_in' => __( 'Log In', MS_TEXT_DOMAIN ),
+			'label_username' => __( 'Username', 'membership2' ),
+			'label_password' => __( 'Password', 'membership2' ),
+			'label_remember' => __( 'Remember Me', 'membership2' ),
+			'label_log_in' => __( 'Log In', 'membership2' ),
 			'id_login_form' => 'loginform',
 			'id_username' => 'user_login',
 			'id_password' => 'user_pass',
@@ -280,7 +280,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="nav">
 						<p><a class="lost" href="#lostpassword">
-							<?php _e( 'Lost your password?', MS_TEXT_DOMAIN ); ?>
+							<?php _e( 'Lost your password?', 'membership2' ); ?>
 						</a></p>
 					</div>
 				<?php endif; ?>
@@ -312,7 +312,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				<div class="status" style="display:none"></div>
 			</div>
 			<div class="nav">
-				<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?', MS_TEXT_DOMAIN ); ?></a></p>
+				<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?', 'membership2' ); ?></a></p>
 			<?php endif; ?>
 			</div>
 		</form>
@@ -331,8 +331,8 @@ class MS_View_Shortcode_Login extends MS_View {
 	 */
 	private function lostpass_form() {
 		$defaults = array(
-			'label_lost_username' => __( 'Username or E-mail', MS_TEXT_DOMAIN ),
-			'label_lostpass' => __( 'Reset Password', MS_TEXT_DOMAIN ),
+			'label_lost_username' => __( 'Username or E-mail', 'membership2' ),
+			'label_lostpass' => __( 'Reset Password', 'membership2' ),
 			'id_lost_form' => 'lostpasswordform',
 			'id_lost_username' => 'user_login',
 			'id_lostpass' => 'wp-submit',
@@ -394,7 +394,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				<?php echo apply_filters( 'lostpass_form_middle', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="nav">
-						<p><a class="login" href="#login"><?php _e( 'Log in', MS_TEXT_DOMAIN ); ?></a></p>
+						<p><a class="login" href="#login"><?php _e( 'Log in', 'membership2' ); ?></a></p>
 					</div>
 				<?php endif; ?>
 				<?php
@@ -417,7 +417,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				<div class="status" style="display:none"></div>
 			</div>
 			<div class="nav">
-				<p><a class="login" href="#login"><?php _e( 'Log in', MS_TEXT_DOMAIN ); ?></a></p>
+				<p><a class="login" href="#login"><?php _e( 'Log in', 'membership2' ); ?></a></p>
 			<?php endif; ?>
 			</div>
 		</form>
@@ -446,7 +446,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		}
 
 		$yourname = sprintf(
-			__( 'You are logged in as %s.', MS_TEXT_DOMAIN ),
+			__( 'You are logged in as %s.', 'membership2' ),
 			ucfirst( $member->name )
 		);
 
@@ -458,7 +458,7 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		$logout_text = apply_filters(
 			'ms_shortcode_logout_link_text',
-			__( 'Logout', MS_TEXT_DOMAIN ),
+			__( 'Logout', 'membership2' ),
 			$member
 		);
 
@@ -523,13 +523,13 @@ class MS_View_Shortcode_Login extends MS_View {
 					$fatal_error = true;
 					$err_msg->add(
 						'password_expired_key',
-						__( 'Sorry, this reset-key is not valid anymore. Please request a new reset email and try again.', MS_TEXT_DOMAIN )
+						__( 'Sorry, this reset-key is not valid anymore. Please request a new reset email and try again.', 'membership2' )
 					);
 				} else {
 					$fatal_error = true;
 					$err_msg->add(
 						'password_invalid_key',
-						__( 'Sorry, we did not find a valid reset-key. Please request a new reset email and try again.', MS_TEXT_DOMAIN )
+						__( 'Sorry, we did not find a valid reset-key. Please request a new reset email and try again.', 'membership2' )
 					);
 				}
 			} else {
@@ -538,7 +538,7 @@ class MS_View_Shortcode_Login extends MS_View {
 					$pass1 = false;
 					$err_msg->add(
 						'password_reset_mismatch',
-						__( 'The passwords do not match, try again.', MS_TEXT_DOMAIN )
+						__( 'The passwords do not match, try again.', 'membership2' )
 					);
 				}
 			}
@@ -555,7 +555,7 @@ class MS_View_Shortcode_Login extends MS_View {
 					'[ms-note type="warning"]%s[/ms-note]<a href="%s">%s</a>',
 					$err_msg->get_error_message(),
 					$url,
-					__( 'Request a new password-reset key', MS_TEXT_DOMAIN )
+					__( 'Request a new password-reset key', 'membership2' )
 				);
 			} elseif ( $pass1 ) {
 				// This action is documented in wp-login.php
@@ -570,9 +570,9 @@ class MS_View_Shortcode_Login extends MS_View {
 
 				$Reset_Result = sprintf(
 					'[ms-note type="info"]%s[/ms-note]<a href="%s">%s</a>',
-					__( 'Your Password has been reset.', MS_TEXT_DOMAIN ),
+					__( 'Your Password has been reset.', 'membership2' ),
 					$url,
-					__( 'Login with your new password', MS_TEXT_DOMAIN )
+					__( 'Login with your new password', 'membership2' )
 				);
 			} else {
 				// This action is documented in wp-login.php
@@ -621,7 +621,7 @@ class MS_View_Shortcode_Login extends MS_View {
 
 						<button type="submit" name="wp-submit" id="wp-submit"
 						class="button button-primary button-large">
-						<?php _e( 'Reset Password', MS_TEXT_DOMAIN ); ?>
+						<?php _e( 'Reset Password', 'membership2' ); ?>
 						</button>
 					</p>
 				</form>

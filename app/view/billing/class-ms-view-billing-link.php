@@ -76,22 +76,22 @@ class MS_View_Billing_Link extends MS_View {
 		$fields['info'] = array(
 			'id' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'Transaction ID', MS_TEXT_DOMAIN ),
+				'title' => __( 'Transaction ID', 'membership2' ),
 				'value' => $log->id,
 			),
 			'gateway' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'Payment Gateway', MS_TEXT_DOMAIN ),
+				'title' => __( 'Payment Gateway', 'membership2' ),
 				'value' => MS_Model_Gateway::get_name( $log->gateway_id, true ),
 			),
 			'amount' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'Transaction Amount', MS_TEXT_DOMAIN ),
+				'title' => __( 'Transaction Amount', 'membership2' ),
 				'value' => MS_Helper_Billing::format_price( $log->amount ),
 			),
 			'details' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'Transaction Details', MS_TEXT_DOMAIN ),
+				'title' => __( 'Transaction Details', 'membership2' ),
 				'value' => $log->description,
 			),
 			'sep' => array(
@@ -103,7 +103,7 @@ class MS_View_Billing_Link extends MS_View {
 		$fields['member'] = array(
 			'user_id' => array(
 				'id' => 'user_id',
-				'title' => __( '1. Payment by user', MS_TEXT_DOMAIN ),
+				'title' => __( '1. Payment by user', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => $member_id,
 				'field_options' => $userlist,
@@ -113,7 +113,7 @@ class MS_View_Billing_Link extends MS_View {
 		$fields['subscription'] = array(
 			'subscription_id' => array(
 				'id' => 'subscription_id',
-				'title' => __( '2. Payment for subscription', MS_TEXT_DOMAIN ),
+				'title' => __( '2. Payment for subscription', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => 0,
 				'field_options' => array(),
@@ -123,11 +123,11 @@ class MS_View_Billing_Link extends MS_View {
 		$fields['invoice'] = array(
 			'invoice_id' => array(
 				'id' => 'invoice_id',
-				'title' => __( '3. Link payment with invoice', MS_TEXT_DOMAIN ),
+				'title' => __( '3. Link payment with invoice', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'value' => 0,
 				'field_options' => array(),
-				'after' => __( 'The selected Invoice will be marked as "paid"', MS_TEXT_DOMAIN ),
+				'after' => __( 'The selected Invoice will be marked as "paid"', 'membership2' ),
 			)
 		);
 
@@ -150,13 +150,13 @@ class MS_View_Billing_Link extends MS_View {
 			'cancel' => array(
 				'id' => 'cancel',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Cancel', MS_TEXT_DOMAIN ),
+				'value' => __( 'Cancel', 'membership2' ),
 				'class' => 'wpmui-field-button button close',
 			),
 			'submit' => array(
 				'id' => 'submit',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Save Transaction', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save Transaction', 'membership2' ),
 			),
 		);
 

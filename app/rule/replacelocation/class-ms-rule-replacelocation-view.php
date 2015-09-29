@@ -15,8 +15,8 @@ class MS_Rule_ReplaceLocation_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Menu Locations', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Replace or protect contents of WordPress menu locations.', MS_TEXT_DOMAIN ),
+				'title' => __( 'Menu Locations', 'membership2' ),
+				'desc' => __( 'Replace or protect contents of WordPress menu locations.', 'membership2' ),
 			),
 			MS_Rule_ReplaceLocation::RULE_ID,
 			$this

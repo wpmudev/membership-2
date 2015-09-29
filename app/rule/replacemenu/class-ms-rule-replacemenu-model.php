@@ -143,7 +143,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 
 			if ( empty( $this->menus ) ) {
 				$this->menus = array(
-					__( 'No menus found.', MS_TEXT_DOMAIN ),
+					__( 'No menus found.', 'membership2' ),
 				);
 			}
 		}
@@ -241,7 +241,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 */
 	public function get_matching_options( $args = null ) {
 		$options = array(
-			0 => __( '( No replacement )', MS_TEXT_DOMAIN ),
+			0 => __( '( No replacement )', 'membership2' ),
 		);
 
 		$options += $this->get_menus();

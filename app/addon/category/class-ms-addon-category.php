@@ -47,8 +47,8 @@ class MS_Addon_Category extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Category Protection', MS_TEXT_DOMAIN ),
-			'description' => __( 'Protect your posts by category.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Category Protection', 'membership2' ),
+			'description' => __( 'Protect your posts by category.', 'membership2' ),
 		);
 		return $list;
 	}

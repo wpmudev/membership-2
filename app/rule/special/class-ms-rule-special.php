@@ -19,7 +19,7 @@ class MS_Rule_Special extends MS_Controller {
 			MS_Model_Rule::register_rule(
 				self::RULE_ID,
 				__CLASS__,
-				__( 'Special Pages', MS_TEXT_DOMAIN ),
+				__( 'Special Pages', 'membership2' ),
 				10
 			);
 		}

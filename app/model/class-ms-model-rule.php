@@ -254,9 +254,9 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function get_dripped_types() {
 		$dripped_types = array(
-			self::DRIPPED_TYPE_INSTANTLY => __( 'Instantly', MS_TEXT_DOMAIN ),
-			self::DRIPPED_TYPE_SPEC_DATE => __( 'On specific Date', MS_TEXT_DOMAIN ),
-			self::DRIPPED_TYPE_FROM_REGISTRATION => __( 'Relative to Subscription', MS_TEXT_DOMAIN ),
+			self::DRIPPED_TYPE_INSTANTLY => __( 'Instantly', 'membership2' ),
+			self::DRIPPED_TYPE_SPEC_DATE => __( 'On specific Date', 'membership2' ),
+			self::DRIPPED_TYPE_FROM_REGISTRATION => __( 'Relative to Subscription', 'membership2' ),
 		);
 
 		return apply_filters(

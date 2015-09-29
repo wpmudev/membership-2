@@ -309,7 +309,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 
 		if ( empty( $contents ) ) {
 			$contents[] = array(
-				'label' => __( '(No Menus Available)', MS_TEXT_DOMAIN )
+				'label' => __( '(No Menus Available)', 'membership2' )
 			);
 		}
 

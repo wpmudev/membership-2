@@ -416,7 +416,7 @@ class MS_Controller_Protection extends MS_Controller {
 		$data = array(
 			'ms_init' => array(),
 			'lang' => array(
-				'quickedit_error' => __( 'Error while saving changes.', MS_TEXT_DOMAIN ),
+				'quickedit_error' => __( 'Error while saving changes.', 'membership2' ),
 			),
 			'dripped' => $dripped,
 		);
@@ -425,9 +425,9 @@ class MS_Controller_Protection extends MS_Controller {
 
 		switch ( $this->get_active_tab() ) {
 			case 'url':
-				$data['valid_rule_msg'] = __( 'Valid', MS_TEXT_DOMAIN );
-				$data['invalid_rule_msg'] = __( 'Invalid', MS_TEXT_DOMAIN );
-				$data['empty_msg'] = __( 'Before testing you have to first enter one or more Page URLs above.', MS_TEXT_DOMAIN );
+				$data['valid_rule_msg'] = __( 'Valid', 'membership2' );
+				$data['invalid_rule_msg'] = __( 'Invalid', 'membership2' );
+				$data['empty_msg'] = __( 'Before testing you have to first enter one or more Page URLs above.', 'membership2' );
 				$data['ms_init'][] = 'view_membership_urlgroup';
 				break;
 

@@ -24,14 +24,6 @@ class MS_Test_General extends WP_UnitTestCase {
 	}
 
 	/**
-	 * General check that simply determines if the plugin was loaded at all.
-	 * @test
-	 */
-	function text_domain_is_defined() {
-		$this->assertTrue( defined( 'MS_TEXT_DOMAIN' ), 'Check your site, MS_TEXT_DOMAIN is missing...' );
-	}
-
-	/**
 	 * Checks if shared-setup was working.
 	 * @test
 	 */

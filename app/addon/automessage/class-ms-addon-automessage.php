@@ -49,8 +49,8 @@ class MS_Addon_Automessage extends MS_Addon {
 		// Don't register: Not completed yet...
 
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Automessage', MS_TEXT_DOMAIN ),
-			'description' => __( 'Automessage integration.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Automessage', 'membership2' ),
+			'description' => __( 'Automessage integration.', 'membership2' ),
 		);
 		*/
 		return $list;

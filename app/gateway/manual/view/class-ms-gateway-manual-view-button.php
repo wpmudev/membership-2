@@ -102,7 +102,7 @@ class MS_Gateway_Manual_View_Button extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => $gateway->pay_button_url
 					? $gateway->pay_button_url
-					: __( 'Signup', MS_TEXT_DOMAIN ),
+					: __( 'Signup', 'membership2' ),
 			);
 		}
 

@@ -71,9 +71,9 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			)
 		);
 
-		$this->name['singular'] = __( 'Item', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Items', MS_TEXT_DOMAIN );
-		$this->name['default_access'] = __( 'Everyone', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Item', 'membership2' );
+		$this->name['plural'] = __( 'Items', 'membership2' );
+		$this->name['default_access'] = __( 'Everyone', 'membership2' );
 
 		$this->model = $model;
 		$this->membership = MS_Model_Membership::get_base();
@@ -110,9 +110,9 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			'ms_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => '<input type="checkbox" />',
-				'content' => __( 'Content', MS_TEXT_DOMAIN ),
-				'rule_type' => __( 'Rule type', MS_TEXT_DOMAIN ),
-				'dripped' => __( 'Dripped Content', MS_TEXT_DOMAIN ),
+				'content' => __( 'Content', 'membership2' ),
+				'rule_type' => __( 'Rule type', 'membership2' ),
+				'dripped' => __( 'Dripped Content', 'membership2' ),
 			)
 		);
 	}
@@ -138,17 +138,17 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$protect_key = __( 'Add Membership', MS_TEXT_DOMAIN );
-		$unprotect_key = __( 'Drop Membership', MS_TEXT_DOMAIN );
+		$protect_key = __( 'Add Membership', 'membership2' );
+		$unprotect_key = __( 'Drop Membership', 'membership2' );
 		$bulk_actions = array(
-			'rem-all' => __( 'Drop all Memberships', MS_TEXT_DOMAIN ),
+			'rem-all' => __( 'Drop all Memberships', 'membership2' ),
 			$protect_key => array(),
 			$unprotect_key => array(),
 		);
 
 		$memberships = MS_Model_Membership::get_membership_names();
-		$txt_add = __( 'Add: %s', MS_TEXT_DOMAIN );
-		$txt_rem = __( 'Drop: %s', MS_TEXT_DOMAIN );
+		$txt_add = __( 'Add: %s', 'membership2' );
+		$txt_rem = __( 'Drop: %s', 'membership2' );
 		foreach ( $memberships as $id => $name ) {
 			$bulk_actions[$protect_key]['add-' . $id] = sprintf( $txt_add, $name );
 			$bulk_actions[$unprotect_key]['rem-' . $id] = sprintf( $txt_rem, $name );
@@ -199,13 +199,13 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 		$is_dripped = in_array( $this->model->rule_type, MS_Model_Rule::get_dripped_rule_types() );
 		if ( $is_dripped ) {
-			$this->_column_headers[0]['dripped'] = __( 'Reveal Content', MS_TEXT_DOMAIN );
+			$this->_column_headers[0]['dripped'] = __( 'Reveal Content', 'membership2' );
 		} else {
 			unset( $this->_column_headers[0]['dripped'] );
 		}
 
 		if ( isset( $this->_column_headers[0]['access'] ) ) {
-			$this->_column_headers[0]['access'] = __( 'Who Has Access', MS_TEXT_DOMAIN );
+			$this->_column_headers[0]['access'] = __( 'Who Has Access', 'membership2' );
 		}
 
 		// Initialize current pagination Page
@@ -414,7 +414,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		}
 
 		if ( empty( $label ) ) {
-			$label = __( 'Set date...', MS_TEXT_DOMAIN );
+			$label = __( 'Set date...', 'membership2' );
 		}
 
 		$offset = 0;
@@ -545,7 +545,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$field_date = array(
 			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 			'name' => 'date',
-			'placeholder' => __( 'Date', MS_TEXT_DOMAIN ) . '...',
+			'placeholder' => __( 'Date', 'membership2' ) . '...',
 		);
 
 		$field_delay_unit = array(
@@ -559,14 +559,14 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'name' => 'delay_type',
 			'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
-			'after' => __( 'after subscription', MS_TEXT_DOMAIN ),
+			'after' => __( 'after subscription', 'membership2' ),
 		);
 
 		?>
 		<div>
 			<h4>
 				<span class="lbl-name"></span> -
-				<?php _e( 'Dripped Content Settings', MS_TEXT_DOMAIN ); ?>
+				<?php _e( 'Dripped Content Settings', 'membership2' ); ?>
 			</h4>
 		</div>
 		<fieldset>
@@ -592,7 +592,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			</div>
 			<div class="drip-col col-3">
 				<div class="drip-option <?php echo esc_attr( MS_Model_Rule::DRIPPED_TYPE_INSTANTLY ); ?>">
-					<?php _e( 'Instantly', MS_TEXT_DOMAIN ); ?>
+					<?php _e( 'Instantly', 'membership2' ); ?>
 				</div>
 				<div class="drip-option <?php echo esc_attr( MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE ); ?>">
 					<?php MS_Helper_Html::html_element( $field_date ); ?>
@@ -633,21 +633,21 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		 */
 		if ( empty( $_GET['membership_id'] ) ) {
 			if ( empty( $_GET['status'] ) ) {
-				$title = __( 'Showing <b>All</b> %1$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing <b>All</b> %1$s', 'membership2' );
 			} elseif ( MS_Model_Rule::FILTER_NOT_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All <b>Unprotected</b> %1$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing All <b>Unprotected</b> %1$s', 'membership2' );
 			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All <b>Protected</b> %1$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing All <b>Protected</b> %1$s', 'membership2' );
 			}
 		} else {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $_GET['membership_id'] );
 
 			if ( empty( $_GET['status'] ) ) {
-				$title = __( 'Showing <b>All</b> %1$s for %2$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing <b>All</b> %1$s for %2$s', 'membership2' );
 			} elseif ( MS_Model_Rule::FILTER_NOT_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All %1$s that are <b>not protected</b> by %2$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing All %1$s that are <b>not protected</b> by %2$s', 'membership2' );
 			} elseif ( MS_Model_Rule::FILTER_PROTECTED == $_GET['status'] ) {
-				$title = __( 'Showing All %1$s that are <b>protected</b> by %2$s', MS_TEXT_DOMAIN );
+				$title = __( 'Showing All %1$s that are <b>protected</b> by %2$s', 'membership2' );
 			}
 
 			$membership_name = $membership->name;
@@ -692,7 +692,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 
 		$views['all'] = array(
 			'url' => $url,
-			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'label' => __( 'All', 'membership2' ),
 			//'count' => $count['total'],
 		);
 
@@ -704,7 +704,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		);
 		$views['public'] = array(
 			'url' => $public_url,
-			'label' => __( 'Unprotected', MS_TEXT_DOMAIN ),
+			'label' => __( 'Unprotected', 'membership2' ),
 			//'count' => $count['restricted'],
 		);
 
@@ -716,7 +716,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		);
 		$views['protected'] = array(
 			'url' => $protected_url,
-			'label' => __( 'Protected', MS_TEXT_DOMAIN ),
+			'label' => __( 'Protected', 'membership2' ),
 			//'count' => $count['accessible'],
 		);
 

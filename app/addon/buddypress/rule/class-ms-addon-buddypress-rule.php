@@ -25,7 +25,7 @@ class MS_Addon_BuddyPress_Rule extends MS_Controller {
 		MS_Model_Rule::register_rule(
 			self::RULE_ID,
 			__CLASS__,
-			__( 'BuddyPress', MS_TEXT_DOMAIN ),
+			__( 'BuddyPress', 'membership2' ),
 			40 // must be lower than 50 (pages-rule is 50)
 		);
 

@@ -10,9 +10,9 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'URL', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'URLs', MS_TEXT_DOMAIN );
-		$this->name['default_access'] = __( 'Nobody', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'URL', 'membership2' );
+		$this->name['plural'] = __( 'URLs', 'membership2' );
+		$this->name['default_access'] = __( 'Nobody', 'membership2' );
 	}
 
 	public function get_columns() {
@@ -20,7 +20,7 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 			'membership_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => true,
-				'url' => __( 'Page URL', MS_TEXT_DOMAIN ),
+				'url' => __( 'Page URL', 'membership2' ),
 				'access' => true,
 			)
 		);
@@ -47,7 +47,7 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 			$actions['trash'] = sprintf(
 				'<a href="%s">%s</a>',
 				$trash_url,
-				__( 'Delete', MS_TEXT_DOMAIN )
+				__( 'Delete', 'membership2' )
 			);
 		}
 

@@ -41,7 +41,7 @@ class MS_View_Settings_Edit extends MS_View {
 
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Membership 2 Settings', MS_TEXT_DOMAIN ),
+					'title' => __( 'Membership 2 Settings', 'membership2' ),
 					'title_icon_class' => 'wpmui-fa wpmui-fa-cog',
 					'desc' => $desc,
 				)
@@ -134,7 +134,7 @@ class MS_View_Settings_Edit extends MS_View {
 			);
 			$cancel_url = esc_url_raw( remove_query_arg( 'restore' ) );
 			$options = array();
-			$files = lib3()->updates->plugin( MS_TEXT_DOMAIN );
+			$files = lib3()->updates->plugin( 'membership2' );
 			$files = lib3()->updates->list_files( 'json' );
 			foreach ( $files as $file ) {
 				$parts = explode( '-', $file );
@@ -203,22 +203,22 @@ class MS_View_Settings_Edit extends MS_View {
 
 		if ( $status_stamp > 0 ) {
 			$status_delay = sprintf(
-				__( 'in %s hrs %s min', MS_TEXT_DOMAIN ),
+				__( 'in %s hrs %s min', 'membership2' ),
 				floor( ($status_stamp - 1) / 3600 ),
 				date( 'i', $status_stamp )
 			);
 		} else {
-			$status_delay = __( '(now...)', MS_TEXT_DOMAIN );
+			$status_delay = __( '(now...)', 'membership2' );
 		}
 
 		if ( $email_stamp > 0 ) {
 			$email_delay = sprintf(
-				__( 'in %s hrs %s min', MS_TEXT_DOMAIN ),
+				__( 'in %s hrs %s min', 'membership2' ),
 				floor( ($email_stamp - 1) / 3600 ),
 				date( 'i', $email_stamp )
 			);
 		} else {
-			$email_delay = __( '(now...)', MS_TEXT_DOMAIN );
+			$email_delay = __( '(now...)', 'membership2' );
 		}
 
 		$status_url = esc_url_raw(
@@ -227,13 +227,13 @@ class MS_View_Settings_Edit extends MS_View {
 		$email_url = esc_url_raw(
 			add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) )
 		);
-		$lbl_run = __( 'Run now!', MS_TEXT_DOMAIN );
+		$lbl_run = __( 'Run now!', 'membership2' );
 
 		echo '<div class="cf ms-settings-footer"><div class="ms-tab-container">&nbsp;</div>';
 		echo '<div>';
 
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
-			_e( 'Membership Status Checks are disabled.', MS_TEXT_DOMAIN );
+			_e( 'Membership Status Checks are disabled.', 'membership2' );
 			echo ' ';
 		} else {
 			printf(
@@ -243,15 +243,15 @@ class MS_View_Settings_Edit extends MS_View {
 		}
 
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
-			_e( 'Sending Email Responses is disabled.', MS_TEXT_DOMAIN );
+			_e( 'Sending Email Responses is disabled.', 'membership2' );
 		} else {
 			$count = MS_Model_Communication::get_queue_count();
 			if ( ! $count ) {
-				$msg = __( 'No pending Email Responses found', MS_TEXT_DOMAIN );
+				$msg = __( 'No pending Email Responses found', 'membership2' );
 			} elseif ( 1 == $count ) {
-				$msg = __( 'Send 1 pending Email Response %1$s', MS_TEXT_DOMAIN );
+				$msg = __( 'Send 1 pending Email Response %1$s', 'membership2' );
 			} else {
-				$msg = __( 'Send %2$s pending Email Responses %1$s', MS_TEXT_DOMAIN );
+				$msg = __( 'Send %2$s pending Email Responses %1$s', 'membership2' );
 			}
 
 			printf(

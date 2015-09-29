@@ -29,7 +29,7 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 	 */
 	public function get_description() {
 		return __(
-			'Sent when a member completes the signup for a free membership.', MS_TEXT_DOMAIN
+			'Sent when a member completes the signup for a free membership.', 'membership2'
 		);
 	}
 
@@ -42,7 +42,7 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Confirmation of your membership at %s', MS_TEXT_DOMAIN ),
+			__( 'Confirmation of your membership at %s', 'membership2' ),
 			self::COMM_VAR_BLOG_NAME
 		);
 		$this->message = self::get_default_message();
@@ -63,16 +63,16 @@ class MS_Model_Communication_Registration_Free extends MS_Model_Communication_Re
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Thanks for subscribing to our free <strong>%1$s</strong> membership at %2$s!', MS_TEXT_DOMAIN ),
+			__( 'Thanks for subscribing to our free <strong>%1$s</strong> membership at %2$s!', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
 		$body_account = sprintf(
-			__( 'You can review and edit your membership details here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'You can review and edit your membership details here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
 

@@ -89,14 +89,14 @@ class MS_Addon_Redirect extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Redirect Control', MS_TEXT_DOMAIN ),
-			'description' => __( 'Define your individual URL to display after a user is logged-in or logged-out.', MS_TEXT_DOMAIN ),
+			'name' => __( 'Redirect Control', 'membership2' ),
+			'description' => __( 'Define your individual URL to display after a user is logged-in or logged-out.', 'membership2' ),
 			'icon' => 'wpmui-fa wpmui-fa-share',
 			'details' => array(
 				array(
 					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-					'title' => __( 'Settings', MS_TEXT_DOMAIN ),
-					'desc' => __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', MS_TEXT_DOMAIN ),
+					'title' => __( 'Settings', 'membership2' ),
+					'desc' => __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', 'membership2' ),
 				),
 			),
 		);
@@ -130,7 +130,7 @@ class MS_Addon_Redirect extends MS_Addon {
 	 */
 	public function settings_tabs( $tabs ) {
 		$tabs[ self::ID ] = array(
-			'title' => __( 'Redirect', MS_TEXT_DOMAIN ),
+			'title' => __( 'Redirect', 'membership2' ),
 			'url' => MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => self::ID )

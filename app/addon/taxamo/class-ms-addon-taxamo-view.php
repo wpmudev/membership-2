@@ -12,7 +12,7 @@ class MS_Addon_Taxamo_View extends MS_View {
 		<div class="ms-addon-wrap">
 			<?php
 			MS_Helper_Html::settings_tab_header(
-				array( 'title' => __( 'Taxamo Settings', MS_TEXT_DOMAIN ) )
+				array( 'title' => __( 'Taxamo Settings', 'membership2' ) )
 			);
 
 			foreach ( $fields as $field ) {
@@ -34,9 +34,9 @@ class MS_Addon_Taxamo_View extends MS_View {
 		$fields = array(
 			'info' => array(
 				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-				'title' => __( 'Setup Taxamo', MS_TEXT_DOMAIN ),
+				'title' => __( 'Setup Taxamo', 'membership2' ),
 				'desc' => sprintf(
-					__( 'Before you can use the <strong>Taxamo API</strong> you must <a href="%1$s">get an Taxamo account</a> here.<br />After you login to Taxamo you can <a href="%2$s">find your API keys here</a>.<br />Also remember to add your domain "<code>%3$s</code>" in <a href="%4$s">your taxamo javascript settings</a>!', MS_TEXT_DOMAIN ),
+					__( 'Before you can use the <strong>Taxamo API</strong> you must <a href="%1$s">get an Taxamo account</a> here.<br />After you login to Taxamo you can <a href="%2$s">find your API keys here</a>.<br />Also remember to add your domain "<code>%3$s</code>" in <a href="%4$s">your taxamo javascript settings</a>!', 'membership2' ),
 					'http://www.taxamo.com/" target="_blank',
 					'https://dashboard.taxamo.com/merchant/app.html#/account/api" target="_blank',
 					esc_html( $domain_name ),
@@ -52,8 +52,8 @@ class MS_Addon_Taxamo_View extends MS_View {
 			'is_live' => array(
 				'id' => 'is_live',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'before' => __( 'I\'m testing', MS_TEXT_DOMAIN ),
-				'after' => __( 'Live mode', MS_TEXT_DOMAIN ),
+				'before' => __( 'I\'m testing', 'membership2' ),
+				'after' => __( 'Live mode', 'membership2' ),
 				'value' => $model->get( 'is_live' ),
 				'ajax_data' => array(
 					'field' => 'is_live',
@@ -68,9 +68,9 @@ class MS_Addon_Taxamo_View extends MS_View {
 			'test_public_key' => array(
 				'id' => 'test_public_key',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Test mode', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Public Token', MS_TEXT_DOMAIN ),
-				'placeholder' => __( 'public_test_...', MS_TEXT_DOMAIN ),
+				'title' => __( 'Test mode', 'membership2' ),
+				'desc' => __( 'Public Token', 'membership2' ),
+				'placeholder' => __( 'public_test_...', 'membership2' ),
 				'value' => $model->get( 'test_public_key' ),
 				'class' => 'ms-text-large',
 				'ajax_data' => array(
@@ -82,8 +82,8 @@ class MS_Addon_Taxamo_View extends MS_View {
 			'test_private_key' => array(
 				'id' => 'test_private_key',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'desc' => __( 'Private Token', MS_TEXT_DOMAIN ),
-				'placeholder' => __( 'priv_test_...', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Private Token', 'membership2' ),
+				'placeholder' => __( 'priv_test_...', 'membership2' ),
 				'value' => $model->get( 'test_private_key' ),
 				'class' => 'ms-text-large',
 				'ajax_data' => array(
@@ -99,9 +99,9 @@ class MS_Addon_Taxamo_View extends MS_View {
 			'live_public_key' => array(
 				'id' => 'live_public_key',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Live mode', MS_TEXT_DOMAIN ),
-				'desc' => __( 'Public Token', MS_TEXT_DOMAIN ),
-				'placeholder' => __( 'public_...', MS_TEXT_DOMAIN ),
+				'title' => __( 'Live mode', 'membership2' ),
+				'desc' => __( 'Public Token', 'membership2' ),
+				'placeholder' => __( 'public_...', 'membership2' ),
 				'value' => $model->get( 'live_public_key' ),
 				'class' => 'ms-text-large',
 				'ajax_data' => array(
@@ -113,8 +113,8 @@ class MS_Addon_Taxamo_View extends MS_View {
 			'live_private_key' => array(
 				'id' => 'live_private_key',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'desc' => __( 'Private Token', MS_TEXT_DOMAIN ),
-				'placeholder' => __( 'priv_...', MS_TEXT_DOMAIN ),
+				'desc' => __( 'Private Token', 'membership2' ),
+				'placeholder' => __( 'priv_...', 'membership2' ),
 				'value' => $model->get( 'live_private_key' ),
 				'class' => 'ms-text-large',
 				'ajax_data' => array(

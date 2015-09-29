@@ -65,20 +65,20 @@ class MS_View extends MS_Hooker {
 		?>
 		<div class="error below-h2">
 			<p>
-				<strong><?php _e( 'You are in Simulation mode!', MS_TEXT_DOMAIN ); ?></strong>
+				<strong><?php _e( 'You are in Simulation mode!', 'membership2' ); ?></strong>
 			</p>
 			<p>
-				<?php _e( 'Content displayed here might be altered because of simulated restrictions.', MS_TEXT_DOMAIN ); ?><br />
+				<?php _e( 'Content displayed here might be altered because of simulated restrictions.', 'membership2' ); ?><br />
 				<?php
 				printf(
-					__( 'We recommend to %sExit Simulation%s before making any changes!', MS_TEXT_DOMAIN ),
+					__( 'We recommend to %sExit Simulation%s before making any changes!', 'membership2' ),
 					'<a href="' . MS_Controller_Adminbar::get_simulation_exit_url() . '">',
 					'</a>'
 				);
 				?>
 			</p>
 			<p>
-				<em><?php _e( 'This page is only available to Administrators - you can always see it, even during Simulation.', MS_TEXT_DOMAIN ); ?></em>
+				<em><?php _e( 'This page is only available to Administrators - you can always see it, even during Simulation.', 'membership2' ); ?></em>
 			</p>
 		</div>
 		<?php
@@ -96,10 +96,10 @@ class MS_View extends MS_Hooker {
 		?>
 			<div class="error below-h2">
 			<p>
-				<strong><?php _e( 'Warning!', MS_TEXT_DOMAIN ); ?></strong>
+				<strong><?php _e( 'Warning!', 'membership2' ); ?></strong>
 			</p>
 			<p>
-				<?php _e( 'This network has a large number of sites. Some features of network protection might be slow or unavailable.', MS_TEXT_DOMAIN ); ?>
+				<?php _e( 'This network has a large number of sites. Some features of network protection might be slow or unavailable.', 'membership2' ); ?>
 			</p>
 			</div>
 		<?php

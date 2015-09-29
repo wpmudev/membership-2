@@ -31,7 +31,7 @@ class MS_View_Membership_Edit extends MS_View {
 				array(
 					'title' => $membership->get_name_tag(),
 					'title_icon_class' => '',
-					'desc' => __( 'Edit Membership details and define Membership specific settings.', MS_TEXT_DOMAIN ),
+					'desc' => __( 'Edit Membership details and define Membership specific settings.', 'membership2' ),
 				)
 			);
 			$active_tab = MS_Helper_Html::html_admin_vertical_tabs( $tabs );

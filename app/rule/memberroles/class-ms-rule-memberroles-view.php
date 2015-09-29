@@ -9,10 +9,10 @@ class MS_Rule_MemberRoles_View extends MS_View {
 		$rule_listtable = new MS_Rule_MemberRoles_ListTable( $rule );
 		$rule_listtable->prepare_items();
 
-		$header_data['title'] = __( 'Assign WordPress User Roles to your Members', MS_TEXT_DOMAIN );
+		$header_data['title'] = __( 'Assign WordPress User Roles to your Members', 'membership2' );
 		$header_data['desc'] = array(
-			__( 'When assigning a Membership to any role, then this role will be added to all members of that Membership. You can even assign multiple roles to a single Membership.', MS_TEXT_DOMAIN ),
-			__( 'For security reasons the Administrator role cannot be assigned to a Membership.', MS_TEXT_DOMAIN ),
+			__( 'When assigning a Membership to any role, then this role will be added to all members of that Membership. You can even assign multiple roles to a single Membership.', 'membership2' ),
+			__( 'For security reasons the Administrator role cannot be assigned to a Membership.', 'membership2' ),
 		);
 
 		$header_data = apply_filters(
@@ -29,7 +29,7 @@ class MS_Rule_MemberRoles_View extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Capability', MS_TEXT_DOMAIN ) );
+			$rule_listtable->search_box( __( 'Capability', 'membership2' ) );
 			?>
 			<form action="" method="post">
 				<?php

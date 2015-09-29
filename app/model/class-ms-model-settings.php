@@ -320,7 +320,7 @@ class MS_Model_Settings extends MS_Model_Option {
 			if ( isset( $this->protection_messages[ $key ] ) ) {
 				$msg = $this->protection_messages[ $key ];
 			} else {
-				$msg = __( 'The content you are trying to access is only available to members. Sorry.', MS_TEXT_DOMAIN );
+				$msg = __( 'The content you are trying to access is only available to members. Sorry.', 'membership2' );
 			}
 		}
 
@@ -388,31 +388,31 @@ class MS_Model_Settings extends MS_Model_Option {
 			$Currencies = apply_filters(
 				'ms_model_settings_get_currencies',
 				array(
-					'AUD' => __( 'AUD - Australian Dollar', MS_TEXT_DOMAIN ),
-					'BRL' => __( 'BRL - Brazilian Real', MS_TEXT_DOMAIN ),
-					'CAD' => __( 'CAD - Canadian Dollar', MS_TEXT_DOMAIN ),
-					'CHF' => __( 'CHF - Swiss Franc', MS_TEXT_DOMAIN ),
-					'CZK' => __( 'CZK - Czech Koruna', MS_TEXT_DOMAIN ),
-					'DKK' => __( 'DKK - Danish Krone', MS_TEXT_DOMAIN ),
-					'EUR' => __( 'EUR - Euro', MS_TEXT_DOMAIN ),
-					'GBP' => __( 'GBP - Pound Sterling', MS_TEXT_DOMAIN ),
-					'HKD' => __( 'HKD - Hong Kong Dollar', MS_TEXT_DOMAIN ),
-					'HUF' => __( 'HUF - Hungarian Forint', MS_TEXT_DOMAIN ),
-					'ILS' => __( 'ILS - Israeli Shekel', MS_TEXT_DOMAIN ),
-					'JPY' => __( 'JPY - Japanese Yen', MS_TEXT_DOMAIN ),
-					'MYR' => __( 'MYR - Malaysian Ringgits', MS_TEXT_DOMAIN ),
-					'MXN' => __( 'MXN - Mexican Peso', MS_TEXT_DOMAIN ),
-					'NOK' => __( 'NOK - Norwegian Krone', MS_TEXT_DOMAIN ),
-					'NZD' => __( 'NZD - New Zealand Dollar', MS_TEXT_DOMAIN ),
-					'PHP' => __( 'PHP - Philippine Pesos', MS_TEXT_DOMAIN ),
-					'PLN' => __( 'PLN - Polish Zloty', MS_TEXT_DOMAIN ),
-					'RUB' => __( 'RUB - Russian Ruble', MS_TEXT_DOMAIN ),
-					'SEK' => __( 'SEK - Swedish Krona', MS_TEXT_DOMAIN ),
-					'SGD' => __( 'SGD - Singapore Dollar', MS_TEXT_DOMAIN ),
-					'TWD' => __( 'TWD - Taiwan New Dollars', MS_TEXT_DOMAIN ),
-					'THB' => __( 'THB - Thai Baht', MS_TEXT_DOMAIN ),
-					'USD' => __( 'USD - U.S. Dollar', MS_TEXT_DOMAIN ),
-					'ZAR' => __( 'ZAR - South African Rand', MS_TEXT_DOMAIN ),
+					'AUD' => __( 'AUD - Australian Dollar', 'membership2' ),
+					'BRL' => __( 'BRL - Brazilian Real', 'membership2' ),
+					'CAD' => __( 'CAD - Canadian Dollar', 'membership2' ),
+					'CHF' => __( 'CHF - Swiss Franc', 'membership2' ),
+					'CZK' => __( 'CZK - Czech Koruna', 'membership2' ),
+					'DKK' => __( 'DKK - Danish Krone', 'membership2' ),
+					'EUR' => __( 'EUR - Euro', 'membership2' ),
+					'GBP' => __( 'GBP - Pound Sterling', 'membership2' ),
+					'HKD' => __( 'HKD - Hong Kong Dollar', 'membership2' ),
+					'HUF' => __( 'HUF - Hungarian Forint', 'membership2' ),
+					'ILS' => __( 'ILS - Israeli Shekel', 'membership2' ),
+					'JPY' => __( 'JPY - Japanese Yen', 'membership2' ),
+					'MYR' => __( 'MYR - Malaysian Ringgits', 'membership2' ),
+					'MXN' => __( 'MXN - Mexican Peso', 'membership2' ),
+					'NOK' => __( 'NOK - Norwegian Krone', 'membership2' ),
+					'NZD' => __( 'NZD - New Zealand Dollar', 'membership2' ),
+					'PHP' => __( 'PHP - Philippine Pesos', 'membership2' ),
+					'PLN' => __( 'PLN - Polish Zloty', 'membership2' ),
+					'RUB' => __( 'RUB - Russian Ruble', 'membership2' ),
+					'SEK' => __( 'SEK - Swedish Krona', 'membership2' ),
+					'SGD' => __( 'SGD - Singapore Dollar', 'membership2' ),
+					'TWD' => __( 'TWD - Taiwan New Dollars', 'membership2' ),
+					'THB' => __( 'THB - Thai Baht', 'membership2' ),
+					'USD' => __( 'USD - U.S. Dollar', 'membership2' ),
+					'ZAR' => __( 'ZAR - South African Rand', 'membership2' ),
 				)
 			);
 		}

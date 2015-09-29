@@ -26,7 +26,7 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Sent as soon as the membership is deactivated.', MS_TEXT_DOMAIN
+			'Sent as soon as the membership is deactivated.', 'membership2'
 		);
 	}
 
@@ -39,7 +39,7 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 		parent::reset_to_default();
 
 		$this->subject = sprintf(
-			__( 'Your %s membership has ended', MS_TEXT_DOMAIN ),
+			__( 'Your %s membership has ended', 'membership2' ),
 			self::COMM_VAR_MS_NAME
 		);
 		$this->message = self::get_default_message();
@@ -60,17 +60,17 @@ class MS_Model_Communication_Finished extends MS_Model_Communication {
 	 */
 	public static function get_default_message() {
 		$subject = sprintf(
-			__( 'Hi %1$s,', MS_TEXT_DOMAIN ),
+			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Your %1$s membership at %2$s has ended on %3$s.', MS_TEXT_DOMAIN ),
+			__( 'Your %1$s membership at %2$s has ended on %3$s.', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME,
 			self::COMM_VAR_MS_EXPIRY_DATE
 		);
 		$body_renew = sprintf(
-			__( 'You can renew your membership here: %1$s', MS_TEXT_DOMAIN ),
+			__( 'You can renew your membership here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
 

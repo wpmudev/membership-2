@@ -310,19 +310,19 @@ class MS_Controller_Settings extends MS_Controller {
 	public function get_tabs() {
 		$tabs = array(
 			self::TAB_GENERAL => array(
-				'title' => __( 'General', MS_TEXT_DOMAIN ),
+				'title' => __( 'General', 'membership2' ),
 			),
 			self::TAB_PAYMENT => array(
-				'title' => __( 'Payment', MS_TEXT_DOMAIN ),
+				'title' => __( 'Payment', 'membership2' ),
 			),
 			self::TAB_MESSAGES => array(
-				'title' => __( 'Protection Messages', MS_TEXT_DOMAIN ),
+				'title' => __( 'Protection Messages', 'membership2' ),
 			),
 			self::TAB_EMAILS => array(
-				'title' => __( 'Automated Email Responses', MS_TEXT_DOMAIN ),
+				'title' => __( 'Automated Email Responses', 'membership2' ),
 			),
 			self::TAB_IMPORT => array(
-				'title' => __( 'Import Tool', MS_TEXT_DOMAIN ),
+				'title' => __( 'Import Tool', 'membership2' ),
 			),
 		);
 

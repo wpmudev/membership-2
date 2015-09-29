@@ -10,8 +10,8 @@ class MS_Rule_Category_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Category', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Categories', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Category', 'membership2' );
+		$this->name['plural'] = __( 'Categories', 'membership2' );
 	}
 
 	public function get_columns() {
@@ -19,7 +19,7 @@ class MS_Rule_Category_ListTable extends MS_Helper_ListTable_Rule {
 			"membership_helper_listtable_{$this->id}_columns",
 			array(
 				'cb' => true,
-				'name' => __( 'Category name', MS_TEXT_DOMAIN ),
+				'name' => __( 'Category name', 'membership2' ),
 				'access' => true,
 			)
 		);

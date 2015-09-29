@@ -63,8 +63,8 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 		$label = '';
 
 		switch ( $col ) {
-			case 'item': $label = __( 'Item', MS_TEXT_DOMAIN ); break;
-			case 'match': $label = __( 'Matching', MS_TEXT_DOMAIN ); break;
+			case 'item': $label = __( 'Item', 'membership2' ); break;
+			case 'match': $label = __( 'Matching', 'membership2' ); break;
 		}
 
 		return $label;

@@ -10,8 +10,8 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Custom Post', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Custom Posts', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Custom Post', 'membership2' );
+		$this->name['plural'] = __( 'Custom Posts', 'membership2' );
 	}
 
 	public function get_columns() {
@@ -19,8 +19,8 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 			"membership_helper_listtable_{$this->id}_columns",
 			array(
 				'cb' => true,
-				'post_title' => __( 'Custom Post Title', MS_TEXT_DOMAIN ),
-				'post_type' => __( 'Post Type', MS_TEXT_DOMAIN ),
+				'post_title' => __( 'Custom Post Title', 'membership2' ),
+				'post_type' => __( 'Post Type', 'membership2' ),
 				'access' => true,
 				'dripped' => true,
 			)
@@ -43,12 +43,12 @@ class MS_Rule_CptItem_ListTable extends MS_Helper_ListTable_Rule {
 			sprintf(
 				'<a href="%s">%s</a>',
 				get_edit_post_link( $item->id, true ),
-				__( 'Edit', MS_TEXT_DOMAIN )
+				__( 'Edit', 'membership2' )
 			),
 			sprintf(
 				'<a href="%s">%s</a>',
 				get_permalink( $item->id ),
-				__( 'View', MS_TEXT_DOMAIN )
+				__( 'View', 'membership2' )
 			),
 		);
 

@@ -75,7 +75,7 @@ class MS_Controller_Metabox extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		$this->metabox_title = __( 'Membership Access', MS_TEXT_DOMAIN );
+		$this->metabox_title = __( 'Membership Access', 'membership2' );
 
 		$post_types = array_merge(
 			array( 'page', 'post', 'attachment' ),
@@ -398,7 +398,7 @@ class MS_Controller_Metabox extends MS_Controller {
 					'<strong>Tipp</strong>:<br />' .
 					'The page content is reset to the default content but is <em>not saved yet</em>!<br />' .
 					'You can simply close this page to keep your current page contents.',
-					MS_TEXT_DOMAIN
+					'membership2'
 				)
 			);
 		}

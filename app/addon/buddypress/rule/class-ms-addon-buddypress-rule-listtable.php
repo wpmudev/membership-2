@@ -24,7 +24,7 @@ class MS_Addon_BuddyPress_Rule_ListTable extends MS_Helper_ListTable_Rule {
 			'ms_helper_listtable_' . $this->id . '_columns',
 			array(
 				'cb' => true,
-				'name' => __( 'Type', MS_TEXT_DOMAIN ),
+				'name' => __( 'Type', 'membership2' ),
 				'access' => true,
 			)
 		);

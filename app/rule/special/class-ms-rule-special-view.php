@@ -12,7 +12,7 @@ class MS_Rule_Special_View extends MS_View {
 		$header_data = apply_filters(
 			'ms_view_membership_protectedcontent_header',
 			array(
-				'title' => __( 'Choose Special WordPress Pages you want to protect', MS_TEXT_DOMAIN ),
+				'title' => __( 'Choose Special WordPress Pages you want to protect', 'membership2' ),
 				'desc' => '',
 			),
 			MS_Rule_Special::RULE_ID,
@@ -26,7 +26,7 @@ class MS_Rule_Special_View extends MS_View {
 			MS_Helper_Html::settings_tab_header( $header_data );
 
 			$rule_listtable->views();
-			$rule_listtable->search_box( __( 'Pages', MS_TEXT_DOMAIN ) );
+			$rule_listtable->search_box( __( 'Pages', 'membership2' ) );
 			?>
 			<form action="" method="post">
 				<?php

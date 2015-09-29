@@ -32,7 +32,7 @@ class MS_Gateway_Free extends MS_Gateway {
 		parent::after_load();
 
 		$this->id = self::ID;
-		$this->name = __( 'Free Gateway', MS_TEXT_DOMAIN );
+		$this->name = __( 'Free Gateway', 'membership2' );
 		$this->group = '';
 		$this->active = true;
 		$this->manual_payment = true; // Recurring billed/paid manually

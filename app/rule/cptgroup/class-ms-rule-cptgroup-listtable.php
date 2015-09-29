@@ -10,8 +10,8 @@ class MS_Rule_CptGroup_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'Custom Post Type', MS_TEXT_DOMAIN );
-		$this->name['plural'] = __( 'Custom Post Types', MS_TEXT_DOMAIN );
+		$this->name['singular'] = __( 'Custom Post Type', 'membership2' );
+		$this->name['plural'] = __( 'Custom Post Types', 'membership2' );
 	}
 
 	public function get_columns() {
@@ -19,7 +19,7 @@ class MS_Rule_CptGroup_ListTable extends MS_Helper_ListTable_Rule {
 			"membership_helper_listtable_{$this->id}_columns",
 			array(
 				'cb' => true,
-				'name' => __( 'Custom Post Type', MS_TEXT_DOMAIN ),
+				'name' => __( 'Custom Post Type', 'membership2' ),
 				'access' => true,
 				'dripped' => true,
 			)

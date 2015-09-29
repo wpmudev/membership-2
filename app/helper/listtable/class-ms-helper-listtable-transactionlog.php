@@ -42,14 +42,14 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$columns = apply_filters(
 			'ms_helper_listtable_transactionlog_columns',
 			array(
-				'id' => __( 'ID', MS_TEXT_DOMAIN ),
-				'date' => __( 'Time', MS_TEXT_DOMAIN ),
+				'id' => __( 'ID', 'membership2' ),
+				'date' => __( 'Time', 'membership2' ),
 				'status' => '',
 				'method' => '',
-				'gateway' => __( 'Gateway', MS_TEXT_DOMAIN ),
-				'amount' => __( 'Amount', MS_TEXT_DOMAIN ),
-				'invoice' => __( 'Invoice', MS_TEXT_DOMAIN ),
-				'note' => __( 'Details', MS_TEXT_DOMAIN ),
+				'gateway' => __( 'Gateway', 'membership2' ),
+				'amount' => __( 'Amount', 'membership2' ),
+				'invoice' => __( 'Invoice', 'membership2' ),
+				'note' => __( 'Details', 'membership2' ),
 			)
 		);
 
@@ -185,13 +185,13 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$base_url = remove_query_arg( array( 'state', 'id', 'invoice' ) );
 
 		$views['all'] = array(
-			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'label' => __( 'All', 'membership2' ),
 			'url' => $base_url,
 			'count' => MS_Model_Transactionlog::get_item_count(),
 		);
 
 		$views['ok'] = array(
-			'label' => __( 'Successful', MS_TEXT_DOMAIN ),
+			'label' => __( 'Successful', 'membership2' ),
 			'url' => add_query_arg( 'state', 'ok', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'ok' )
@@ -199,7 +199,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		);
 
 		$views['err'] = array(
-			'label' => __( 'Failed', MS_TEXT_DOMAIN ),
+			'label' => __( 'Failed', 'membership2' ),
 			'url' => add_query_arg( 'state', 'err', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'err' )
@@ -207,7 +207,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		);
 
 		$views['ignore'] = array(
-			'label' => __( 'Ignored', MS_TEXT_DOMAIN ),
+			'label' => __( 'Ignored', 'membership2' ),
 			'url' => add_query_arg( 'state', 'ignore', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'ignore' )
@@ -284,22 +284,22 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	public function column_method( $item, $column_name ) {
 		$html = '<span class="log-method" data-info="%2$s"><i class="wpmui-fa wpmui-%1$s"></i></span>';
 		$icon = '';
-		$info = __( 'Unknown method', MS_TEXT_DOMAIN );
+		$info = __( 'Unknown method', 'membership2' );
 
 		switch ( $item->method ) {
 			case 'handle':
 				$icon = 'fa-cloud-download';
-				$info = __( 'Gateway called the IPN URL', MS_TEXT_DOMAIN );
+				$info = __( 'Gateway called the IPN URL', 'membership2' );
 				break;
 
 			case 'request':
 				$icon = 'fa-refresh';
-				$info = __( 'Plugin requested a recuring payment', MS_TEXT_DOMAIN );
+				$info = __( 'Plugin requested a recuring payment', 'membership2' );
 				break;
 
 			case 'process':
 				$icon = 'fa-shopping-cart';
-				$info = __( 'User entered payment details', MS_TEXT_DOMAIN );
+				$info = __( 'User entered payment details', 'membership2' );
 				break;
 		}
 
@@ -395,18 +395,18 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		// 2. Prepare the row actions.
 		if ( 'err' == $item->state ) {
 			$actions = array(
-				'action-link' => __( 'Link', MS_TEXT_DOMAIN ),
-				'action-ignore' => __( 'Ignore', MS_TEXT_DOMAIN ),
+				'action-link' => __( 'Link', 'membership2' ),
+				'action-ignore' => __( 'Ignore', 'membership2' ),
 			);
 
 			// We can only re-process the transaction if we have POST data.
 			$postdata = $item->post;
 			if ( is_array( $postdata ) && ! empty( $postdata ) ) {
-				$actions['action-retry'] = __( 'Retry', MS_TEXT_DOMAIN );
+				$actions['action-retry'] = __( 'Retry', 'membership2' );
 			}
 		} elseif ( 'ignore' == $item->state && $item->is_manual ) {
 			$actions = array(
-				'action-clear' => __( 'Reset', MS_TEXT_DOMAIN ),
+				'action-clear' => __( 'Reset', 'membership2' ),
 			);
 			$nonce_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_LINK;
 		}
@@ -473,13 +473,13 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$detail_lines = array();
 
 		if ( $item->is_manual ) {
-			$detail_lines[] = __( 'Transaction state manually changed', MS_TEXT_DOMAIN );
+			$detail_lines[] = __( 'Transaction state manually changed', 'membership2' );
 			$detail_lines[] = sprintf(
-				__( 'Modified on: %s', MS_TEXT_DOMAIN ),
+				__( 'Modified on: %s', 'membership2' ),
 				$item->manual_date
 			);
 			$detail_lines[] = sprintf(
-				__( 'Modified by: %s', MS_TEXT_DOMAIN ),
+				__( 'Modified by: %s', 'membership2' ),
 				$item->get_manual_user()->display_name
 			);
 		}
@@ -493,16 +493,16 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 						$id_fields[] = 'invoice';
 					} elseif ( isset( $postdata['custom'] ) ) {
 						$id_fields[] = 'custom';
-						$detail_lines[] = __( 'Imported subscription from old Membership plugin.', MS_TEXT_DOMAIN );
+						$detail_lines[] = __( 'Imported subscription from old Membership plugin.', 'membership2' );
 					} elseif ( isset( $postdata['btn_id'] ) ) {
 						$id_fields[] = 'btn_id';
 						$id_fields[] = 'payer_email';
-						$detail_lines[] = __( 'Payment via a PayPal Payment button.', MS_TEXT_DOMAIN );
+						$detail_lines[] = __( 'Payment via a PayPal Payment button.', 'membership2' );
 					} elseif ( isset( $postdata['txn_type'] ) ) {
 						// Highlight invalid transactions.
 						if ( 'send_money' == $postdata['txn_type'] ) {
 							$id_fields[] = 'txn_type';
-							$detail_lines[] = __( 'Someone sent you money inside PayPal.<br>Plugin did not attempt to match payment to a subscription.', MS_TEXT_DOMAIN );
+							$detail_lines[] = __( 'Someone sent you money inside PayPal.<br>Plugin did not attempt to match payment to a subscription.', 'membership2' );
 						}
 					}
 					break;
@@ -513,7 +513,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			}
 			ksort( $postdata );
 			$ind = 0;
-			$detail_lines[] = __( 'POST data:', MS_TEXT_DOMAIN );
+			$detail_lines[] = __( 'POST data:', 'membership2' );
 			foreach ( $postdata as $key => $value ) {
 				$ind += 1;
 
@@ -539,7 +539,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			}
 			ksort( $headers );
 			$ind = 0;
-			$detail_lines[] = __( 'HTTP Headers:', MS_TEXT_DOMAIN );
+			$detail_lines[] = __( 'HTTP Headers:', 'membership2' );
 			foreach ( $headers as $key => $value ) {
 				$ind += 1;
 
@@ -559,7 +559,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			}
 			$detail_lines[] = sprintf(
 				'<span class="line"><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
-				__( 'Request URL', MS_TEXT_DOMAIN ),
+				__( 'Request URL', 'membership2' ),
 				$req_url
 			);
 		}

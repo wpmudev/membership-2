@@ -52,7 +52,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 		parent::after_load();
 
 		$this->id = self::ID;
-		$this->name = __( 'PayPal Single Gateway', MS_TEXT_DOMAIN );
+		$this->name = __( 'PayPal Single Gateway', 'membership2' );
 		$this->group = 'PayPal';
 		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
@@ -130,42 +130,42 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 					case 'Processed':
 						$success = true;
 						if ( $amount == $invoice->total ) {
-							$notes .= __( 'Payment successful', MS_TEXT_DOMAIN );
+							$notes .= __( 'Payment successful', 'membership2' );
 						} else {
-							$notes .= __( 'Payment registered, though amount differs from invoice.', MS_TEXT_DOMAIN );
+							$notes .= __( 'Payment registered, though amount differs from invoice.', 'membership2' );
 						}
 						break;
 
 					case 'Reversed':
-						$notes = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', MS_TEXT_DOMAIN );
+						$notes = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', 'membership2' );
 						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Refunded':
-						$notes = __( 'Last transaction has been reversed. Reason: Payment has been refunded', MS_TEXT_DOMAIN );
+						$notes = __( 'Last transaction has been reversed. Reason: Payment has been refunded', 'membership2' );
 						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Denied':
-						$notes = __( 'Last transaction has been reversed. Reason: Payment Denied', MS_TEXT_DOMAIN );
+						$notes = __( 'Last transaction has been reversed. Reason: Payment Denied', 'membership2' );
 						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Pending':
 						$pending_str = array(
-							'address' => __( 'Customer did not include a confirmed shipping address', MS_TEXT_DOMAIN ),
-							'authorization' => __( 'Funds not captured yet', MS_TEXT_DOMAIN ),
-							'echeck' => __( 'eCheck that has not cleared yet', MS_TEXT_DOMAIN ),
-							'intl' => __( 'Payment waiting for aproval by service provider', MS_TEXT_DOMAIN ),
-							'multi-currency' => __( 'Payment waiting for service provider to handle multi-currency process', MS_TEXT_DOMAIN ),
-							'unilateral' => __( 'Customer did not register or confirm his/her email yet', MS_TEXT_DOMAIN ),
-							'upgrade' => __( 'Waiting for service provider to upgrade the PayPal account', MS_TEXT_DOMAIN ),
-							'verify' => __( 'Waiting for service provider to verify his/her PayPal account', MS_TEXT_DOMAIN ),
+							'address' => __( 'Customer did not include a confirmed shipping address', 'membership2' ),
+							'authorization' => __( 'Funds not captured yet', 'membership2' ),
+							'echeck' => __( 'eCheck that has not cleared yet', 'membership2' ),
+							'intl' => __( 'Payment waiting for aproval by service provider', 'membership2' ),
+							'multi-currency' => __( 'Payment waiting for service provider to handle multi-currency process', 'membership2' ),
+							'unilateral' => __( 'Customer did not register or confirm his/her email yet', 'membership2' ),
+							'upgrade' => __( 'Waiting for service provider to upgrade the PayPal account', 'membership2' ),
+							'verify' => __( 'Waiting for service provider to verify his/her PayPal account', 'membership2' ),
 							'*' => '',
 						);
 
 						$reason = $_POST['pending_reason'];
-						$notes = __( 'Last transaction is pending. Reason: ', MS_TEXT_DOMAIN ) .
+						$notes = __( 'Last transaction is pending. Reason: ', 'membership2' ) .
 							( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
 						$status = MS_Model_Invoice::STATUS_PENDING;
 						break;
@@ -182,7 +182,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				) {
 					// Status: Dispute
 					$status = MS_Model_Invoice::STATUS_DENIED;
-					$notes = __( 'Dispute about this payment', MS_TEXT_DOMAIN );
+					$notes = __( 'Dispute about this payment', 'membership2' );
 				}
 
 				if ( ! empty( $notes ) ) { $invoice->add_notes( $notes ); }

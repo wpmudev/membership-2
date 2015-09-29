@@ -304,16 +304,16 @@ class MS_Rule_Content_Model extends MS_Rule {
 			$this->_content = array();
 
 			$this->_content[self::COMMENT_NO_ACCESS] = (object) array(
-				'label' => __( 'Comments: No Access', MS_TEXT_DOMAIN ),
+				'label' => __( 'Comments: No Access', 'membership2' ),
 			);
 			$this->_content[self::COMMENT_READ] = (object) array(
-				'label' => __( 'Comments: Read Only Access', MS_TEXT_DOMAIN ),
+				'label' => __( 'Comments: Read Only Access', 'membership2' ),
 			);
 			$this->_content[self::COMMENT_WRITE] = (object) array(
-				'label' => __( 'Comments: Read and Write Access', MS_TEXT_DOMAIN ),
+				'label' => __( 'Comments: Read and Write Access', 'membership2' ),
 			);
 			$this->_content[self::MORE_LIMIT] = (object) array(
-				'label' => __( 'Hide "read more" content', MS_TEXT_DOMAIN ),
+				'label' => __( 'Hide "read more" content', 'membership2' ),
 			);
 		}
 

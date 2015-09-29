@@ -16,11 +16,11 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 			'export' => array(
 				'id' => 'btn_export',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Generate Export', MS_TEXT_DOMAIN ),
+				'value' => __( 'Generate Export', 'membership2' ),
 				'desc' => __(
 					'Generate an export file with the current membership settings. ' .
 					'<em>Note that this is not a full backup of the plugin settings.</em>',
-					MS_TEXT_DOMAIN
+					'membership2'
 				),
 			),
 			'action' => array(
@@ -38,7 +38,7 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		$file_field = array(
 			'id' => 'upload',
 			'type' => MS_Helper_Html::INPUT_TYPE_FILE,
-			'title' => __( 'From export file', MS_TEXT_DOMAIN ),
+			'title' => __( 'From export file', 'membership2' ),
 		);
 		$import_options = array(
 			'file' => array(
@@ -46,7 +46,7 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 				'disabled' => ! MS_Model_Import_File::present(),
 			),
 			'membership' => array(
-				'text' => __( 'Membership (WPMU DEV)', MS_TEXT_DOMAIN ),
+				'text' => __( 'Membership (WPMU DEV)', 'membership2' ),
 				'disabled' => ! MS_Model_Import_Membership::present(),
 			),
 		);
@@ -62,17 +62,17 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 			'source' => array(
 				'id' => 'import_source',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-				'title' => __( 'Choose an import source', MS_TEXT_DOMAIN ),
+				'title' => __( 'Choose an import source', 'membership2' ),
 				'field_options' => $import_options,
 				'value' => $sel_source,
 			),
 			'import' => array(
 				'id' => 'btn_import',
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-				'value' => __( 'Preview Import', MS_TEXT_DOMAIN ),
+				'value' => __( 'Preview Import', 'membership2' ),
 				'desc' => __(
 					'Import data into this installation.',
-					MS_TEXT_DOMAIN
+					'membership2'
 				),
 			),
 			'action' => array(
@@ -90,7 +90,7 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		ob_start();
 
 		MS_Helper_Html::settings_tab_header(
-			array( 'title' => __( 'Import Tool', MS_TEXT_DOMAIN ) )
+			array( 'title' => __( 'Import Tool', 'membership2' ) )
 		);
 		?>
 
@@ -103,13 +103,13 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 				<form action="" method="post" enctype="multipart/form-data">
 					<?php MS_Helper_Html::settings_box(
 						$import_fields,
-						__( 'Import data', MS_TEXT_DOMAIN )
+						__( 'Import data', 'membership2' )
 					); ?>
 				</form>
 				<form action="" method="post">
 					<?php MS_Helper_Html::settings_box(
 						$export_fields,
-						__( 'Export data', MS_TEXT_DOMAIN )
+						__( 'Export data', 'membership2' )
 					); ?>
 				</form>
 			<?php endif; ?>

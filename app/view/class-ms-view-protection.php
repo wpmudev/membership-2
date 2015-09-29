@@ -22,7 +22,7 @@ class MS_View_Protection extends MS_View {
 		$this->check_network();
 
 		$desc = array(
-			__( 'Choose Pages, Categories etc. that you want to make <strong>unavailable</strong> to visitors, and non-members.', MS_TEXT_DOMAIN ),
+			__( 'Choose Pages, Categories etc. that you want to make <strong>unavailable</strong> to visitors, and non-members.', 'membership2' ),
 		);
 
 		ob_start();
@@ -32,7 +32,7 @@ class MS_View_Protection extends MS_View {
 			<?php
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => __( 'Set-up Protection Rules', MS_TEXT_DOMAIN ),
+					'title' => __( 'Set-up Protection Rules', 'membership2' ),
 					'desc' => $desc,
 				)
 			);
@@ -99,13 +99,13 @@ class MS_View_Protection extends MS_View {
 		$links = array();
 
 		$links['all'] = array(
-			'label' => __( 'All', MS_TEXT_DOMAIN ),
+			'label' => __( 'All', 'membership2' ),
 			'url' => $url,
 		);
 
 		foreach ( $memberships as $id => $name ) {
 			if ( empty( $name ) ) {
-				$name = __( '(No Name)', MS_TEXT_DOMAIN );
+				$name = __( '(No Name)', 'membership2' );
 			}
 
 			$links['ms-' . $id] = array(
@@ -174,7 +174,7 @@ class MS_View_Protection extends MS_View {
 		?>
 		<div class="ms-tab-container">
 			<label class="ms-tab-link" for="select-site">
-			<?php _e( 'Select Site', MS_TEXT_DOMAIN ); ?>
+			<?php _e( 'Select Site', 'membership2' ); ?>
 			</label>
 		</div>
 		<div>

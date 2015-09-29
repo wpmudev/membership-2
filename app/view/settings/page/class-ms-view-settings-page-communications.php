@@ -13,7 +13,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 		$fields = $this->get_fields();
 
 		$this->add_action( 'admin_footer', 'wp_footer' );
-		$title = __( 'Automated Email Responses', MS_TEXT_DOMAIN );
+		$title = __( 'Automated Email Responses', 'membership2' );
 
 		if ( isset( $this->data['membership'] ) ) {
 			$membership = $this->data['membership'];
@@ -27,7 +27,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				array( 'tab' => MS_Controller_Settings::TAB_EMAILS )
 			);
 			$desc = sprintf(
-				__( 'Here you can override %sdefault messages%s for this membership.', MS_TEXT_DOMAIN ),
+				__( 'Here you can override %sdefault messages%s for this membership.', 'membership2' ),
 				'<a href="' . $settings_url . '">',
 				'</a>'
 			);
@@ -72,7 +72,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				printf(
 					'<h3>%1$s %2$s: %3$s</h3><div class="ms-description" style="margin-bottom:20px;">%4$s</div>',
 					$comm->get_title(),
-					__( 'Message', MS_TEXT_DOMAIN ),
+					__( 'Message', 'membership2' ),
 					MS_Helper_Html::html_element( $fields['enabled'], true ),
 					$comm->get_description()
 				);
@@ -118,7 +118,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 		 * @see ms-view-settings-automated-msg.js
 		 */
 		$var_button = array(
-			'title' => __( 'Insert Membership Variables', MS_TEXT_DOMAIN ),
+			'title' => __( 'Insert Membership Variables', 'membership2' ),
 			'items' => $vars,
 		);
 
@@ -126,7 +126,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'<script>window.ms_data.var_button = %1$s;window.ms_data.lang_confirm = %2$s</script>',
 			json_encode( $var_button ),
 			json_encode(
-				__( 'You have made changes that are not saved yet. Do you want to discard those changes?', MS_TEXT_DOMAIN )
+				__( 'You have made changes that are not saved yet. Do you want to discard those changes?', 'membership2' )
 			)
 		);
 	}
@@ -169,9 +169,9 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			$membership
 		);
 
-		$key_active = __( 'Send Email', MS_TEXT_DOMAIN );
-		$key_inactive = __( 'No Email', MS_TEXT_DOMAIN );
-		$key_skip = __( 'Use default template', MS_TEXT_DOMAIN );
+		$key_active = __( 'Send Email', 'membership2' );
+		$key_inactive = __( 'No Email', 'membership2' );
+		$key_skip = __( 'Use default template', 'membership2' );
 		$titles = array(
 			$key_active => array(),
 			$key_inactive => array(),
@@ -204,15 +204,15 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'switch_comm_type' => array(
 				'id' => 'switch_comm_type',
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'value' => __( 'Load Template', MS_TEXT_DOMAIN ),
+				'value' => __( 'Load Template', 'membership2' ),
 			),
 
 			'override' => array(
 				'id' => 'override',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'value' => $comm->override,
-				'before' => __( 'Use default template', MS_TEXT_DOMAIN ),
-				'after' => __( 'Define custom template', MS_TEXT_DOMAIN ),
+				'before' => __( 'Use default template', 'membership2' ),
+				'after' => __( 'Define custom template', 'membership2' ),
 				'wrapper_class' => 'ms-block ms-tcenter',
 				'class' => 'override-slider',
 				'ajax_data' => array(
@@ -256,7 +256,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'period_unit' => array(
 				'id' => 'period_unit',
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'Period after/before', MS_TEXT_DOMAIN ),
+				'title' => __( 'Period after/before', 'membership2' ),
 				'value' => $comm->period['period_unit'],
 			),
 
@@ -272,7 +272,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' => apply_filters(
 					'ms_translation_flag',
-					__( 'Message Subject', MS_TEXT_DOMAIN ),
+					__( 'Message Subject', 'membership2' ),
 					'communication-subject'
 				),
 				'value' => $comm->subject,
@@ -297,7 +297,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			'cc_enabled' => array(
 				'id' => 'cc_enabled',
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-				'title' => __( 'Send copy to Administrator', MS_TEXT_DOMAIN ),
+				'title' => __( 'Send copy to Administrator', 'membership2' ),
 				'value' => $comm->cc_enabled,
 				'class' => 'ms-inline-block',
 			),
@@ -311,7 +311,7 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 
 			'save_email' => array(
 				'id' => 'save_email',
-				'value' => __( 'Save Changes', MS_TEXT_DOMAIN ),
+				'value' => __( 'Save Changes', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			),
 

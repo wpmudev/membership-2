@@ -383,7 +383,7 @@ class MS_Model_Import extends MS_Model {
 				$member = MS_Factory::load( 'MS_Model_Member', $wpuser );
 			} else {
 				$this->errors[] = sprintf(
-					__( 'Could not import Member <strong>%1$s</strong> (%2$s)', MS_TEXT_DOMAIN ),
+					__( 'Could not import Member <strong>%1$s</strong> (%2$s)', 'membership2' ),
 					esc_attr( $obj->username ),
 					esc_attr( $obj->email )
 				);
@@ -444,7 +444,7 @@ class MS_Model_Import extends MS_Model {
 
 		if ( empty( $membership ) ) {
 			$this->errors[] = sprintf(
-				__( 'Could not import a Membership for User <strong>%1$s</strong> (%2$s)', MS_TEXT_DOMAIN ),
+				__( 'Could not import a Membership for User <strong>%1$s</strong> (%2$s)', 'membership2' ),
 				esc_attr( $obj->username ),
 				esc_attr( $obj->email )
 			);
@@ -453,7 +453,7 @@ class MS_Model_Import extends MS_Model {
 
 		if ( $membership->is_base() ) {
 			$this->errors[] = sprintf(
-				__( 'Did not import the base membership %2$s for <strong>%1$s</strong>', MS_TEXT_DOMAIN ),
+				__( 'Did not import the base membership %2$s for <strong>%1$s</strong>', 'membership2' ),
 				esc_attr( $obj->username ),
 				esc_attr( $membership->name )
 			);
