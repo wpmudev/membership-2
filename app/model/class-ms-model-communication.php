@@ -47,6 +47,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	const COMM_TYPE_REGISTRATION = 'type_registration';
 	const COMM_TYPE_REGISTRATION_FREE = 'type_registration_free';
 	const COMM_TYPE_SIGNUP = 'type_signup';
+	const COMM_TYPE_RESETPASSWORD = 'type_resetpassword';
 	const COMM_TYPE_RENEWED = 'renewed';
 	const COMM_TYPE_INVOICE = 'type_invoice';
 	const COMM_TYPE_BEFORE_FINISHES = 'type_before_finishes';
@@ -81,6 +82,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	const COMM_VAR_USER_LAST_NAME = '%user-last-name%';
 	const COMM_VAR_USERNAME = '%username%';
 	const COMM_VAR_PASSWORD = '%password%';
+	const COMM_VAR_RESETURL = '%reset-url%';
 	const COMM_VAR_BLOG_NAME = '%blog-name%';
 	const COMM_VAR_BLOG_URL = '%blog-url%';
 	const COMM_VAR_NET_NAME = '%network-name%';
@@ -281,6 +283,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_REGISTRATION_FREE,
 					self::COMM_TYPE_SIGNUP,
+					self::COMM_TYPE_RESETPASSWORD,
 					self::COMM_TYPE_RENEWED,
 					self::COMM_TYPE_INVOICE,
 					self::COMM_TYPE_BEFORE_FINISHES,
@@ -333,6 +336,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
 				self::COMM_TYPE_REGISTRATION_FREE => 'MS_Model_Communication_Registration_Free',
 				self::COMM_TYPE_SIGNUP => 'MS_Model_Communication_Signup',
+				self::COMM_TYPE_RESETPASSWORD => 'MS_Model_Communication_Resetpass',
 				self::COMM_TYPE_RENEWED => 'MS_Model_Communication_Renewed',
 				self::COMM_TYPE_INVOICE => 'MS_Model_Communication_Invoice',
 				self::COMM_TYPE_BEFORE_FINISHES => 'MS_Model_Communication_Before_Finishes',
@@ -373,6 +377,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', 'membership2' ),
 			self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', 'membership2' ),
 			self::COMM_TYPE_SIGNUP => __( 'Signup - User account created', 'membership2' ),
+			self::COMM_TYPE_RESETPASSWORD => __( 'Signup - Forgot Password', 'membership2' ),
 			self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', 'membership2' ),
 			self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', 'membership2' ),
 			self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', 'membership2' ),
@@ -399,6 +404,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		if ( $membership instanceof MS_Model_Membership ) {
 			unset( $type_titles[ self::COMM_TYPE_SIGNUP ] );
+			unset( $type_titles[ self::COMM_TYPE_RESETPASSWORD ] );
 
 			if ( ! $membership->has_trial() ) {
 				unset( $type_titles[ self::COMM_TYPE_BEFORE_TRIAL_FINISHES ] );
@@ -700,22 +706,35 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', 'membership2' ),
 			self::COMM_VAR_USERNAME => __( 'User: Login name', 'membership2' ),
 			self::COMM_VAR_PASSWORD => __( 'User: Password', 'membership2' ),
+			self::COMM_VAR_RESETURL => __( 'User: Reset Password URL', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', 'membership2' ),
 			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', 'membership2' ),
 			self::COMM_VAR_BLOG_URL => __( 'Site: URL', 'membership2' ),
 		);
 
+		$has_membership = true;
 		if ( self::COMM_TYPE_SIGNUP == $this->type ) {
-			// For the signup email has no membership yet (user account created).
+			$has_membership = false;
+		} else {
+			// Password is only available in the Signup email.
+			unset( $this->comm_vars[self::COMM_VAR_PASSWORD] );
+		}
+
+		if ( self::COMM_TYPE_RESETPASSWORD == $this->type ) {
+			$has_membership = false;
+		} else {
+			// Reset-Key is only available in the Forgot Password email.
+			unset( $this->comm_vars[self::COMM_VAR_RESETURL] );
+		}
+
+		if ( ! $has_membership ) {
+			// If no membership context is available then remove those variables.
 			unset( $this->comm_vars[self::COMM_VAR_MS_NAME] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_DESCRIPTION] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_DAYS] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_TRIAL_DAYS] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_EXPIRY_DATE] );
 			unset( $this->comm_vars[self::COMM_VAR_MS_INVOICE] );
-		} else {
-			// Password is only available in the Signup email.
-			unset( $this->comm_vars[self::COMM_VAR_PASSWORD] );
 		}
 
 		if ( is_multisite() ) {
@@ -1231,16 +1250,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				)
 			);
 
-			/*
-			// -- Debugging code --
-			MS_Helper_Debug::log(
-				sprintf(
-					"Variables:\n%s",
-					print_r( $comm_vars, true )
-				)
-			);
-			//*/
-
 			if ( 'text/html' == $this->get_mail_content_type() ) {
 				$this->remove_filter(
 					'wp_mail_content_type',
@@ -1328,6 +1337,21 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					 */
 					if ( self::COMM_TYPE_SIGNUP == $this->type ) {
 						$var_value = $member->password;
+					}
+					break;
+
+				case self::COMM_VAR_RESETURL:
+					/**
+					 * The reset-URL is only available in the password reset
+					 * email template. Reason is, that only ONE valid URL can
+					 * exist at a time, so if every email would contain a
+					 * reset URL it would invalidate all previous reset URLs.
+					 *
+					 * @since 1.0.2.3
+					 */
+					if ( self::COMM_TYPE_RESETPASSWORD == $this->type ) {
+						$reset = $member->new_password_reset_key();
+						$var_value = $reset->url;
 					}
 					break;
 

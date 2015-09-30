@@ -1844,6 +1844,57 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Creates a new password-reset key and stores it in the DB.
+	 *
+	 * @since  1.0.2.3
+	 * @return object {
+	 *         The reset-key that can be sent to the user.
+	 *
+	 *         @var  key   The reset key
+	 *         @var  url   The full reset URL
+	 *  }
+	 */
+	public function new_password_reset_key() {
+		global $wpdb, $wp_hasher;
+
+		// Generate something random for a password reset key.
+		$key = wp_generate_password( 20, false );
+
+		do_action( 'retrieve_password_key', $this->username, $key );
+
+		// Now insert a hashed version of the key into the DB.
+		// Important: The has needs to include the time() value!
+		if ( empty( $wp_hasher ) ) {
+			require_once ABSPATH . WPINC . '/class-phpass.php';
+			$wp_hasher = new PasswordHash( 8, true );
+		}
+		$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
+		$wpdb->update(
+			$wpdb->users,
+			array( 'user_activation_key' => $hashed ),
+			array( 'user_login' => $this->username )
+		);
+
+		MS_Model_Pages::create_missing_pages();
+		$reset_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		$reset_url = esc_url_raw(
+			add_query_arg(
+				array(
+					'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,
+					'key' => $key,
+					'login' => rawurlencode( $this->username ),
+				),
+				$reset_url
+			)
+		);
+
+		return (object) array(
+			'key' => $key,
+			'url' => $reset_url,
+		);
+	}
+
+	/**
 	 * Get specific property.
 	 *
 	 * @since  1.0.0

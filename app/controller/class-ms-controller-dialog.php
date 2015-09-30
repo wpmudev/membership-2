@@ -160,7 +160,6 @@ class MS_Controller_Dialog extends MS_Controller {
 	 * @internal
 	 */
 	public function ajax_lostpass() {
-		global $wpdb, $wp_hasher;
 		$resp = array();
 
 		// First check the nonce, if it fails the function will break
@@ -204,64 +203,45 @@ class MS_Controller_Dialog extends MS_Controller {
 		if ( ! $allow ) {
 			$resp['error'] = __( 'Password reset is not allowed for this user', 'membership2' );
 			$this->respond( $resp );
-		} else if ( is_wp_error( $allow ) ) {
+		} elseif ( is_wp_error( $allow ) ) {
 			return $allow;
 		}
 
-		// Generate something random for a password reset key.
-		$key = wp_generate_password( 20, false );
+		// Save an event about the password reset; also send the email template.
+		$member = MS_Factory::load( 'MS_Model_Member', $user_data->ID );
+		MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RESETPASSWORD, $member );
 
-		do_action( 'retrieve_password_key', $user_login, $key );
+		// Send our default email if the user does not have a custom email template in place.
+		if ( ! apply_filters( 'ms_sent_reset_password_email', false ) ) {
+			// Get a new reset-key.
+			$reset = $member->new_password_reset_key();
 
-		// Now insert a hashed version of the key into the DB.
-		// Important: The has needs to include the time() value!
-		if ( empty( $wp_hasher ) ) {
-			require_once ABSPATH . WPINC . '/class-phpass.php';
-			$wp_hasher = new PasswordHash( 8, true );
-		}
-		$hashed = time() . ':' . $wp_hasher->HashPassword( $key );
-		$wpdb->update(
-			$wpdb->users,
-			array( 'user_activation_key' => $hashed ),
-			array( 'user_login' => $user_login )
-		);
+			$schema = is_ssl() ? 'https' : 'http';
 
-		MS_Model_Pages::create_missing_pages();
-		$reset_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
-		$reset_url = esc_url_raw(
-			add_query_arg(
-				array(
-					'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,
-					'key' => $key,
-					'login' => rawurlencode( $user_login ),
-				),
-				$reset_url
-			)
-		);
+			$message = sprintf(
+				__( 'Someone requested that the password be reset for the following account: %sIf this was a mistake, just ignore this email and nothing will happen.%s', 'membership2' ),
+				"\r\n\r\n" . network_home_url( '/', $schema ) . "\r\n" .
+				sprintf( __( 'Your username: %s', 'membership2' ), $user_login ) . "\r\n\r\n",
+				"\r\n\r\n" . $reset->url . "\r\n"
+			);
 
-		$schema = is_ssl() ? 'https' : 'http';
+			if ( is_multisite() ) {
+				$blogname = $GLOBALS['current_site']->site_name;
+			} else {
+				$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+			}
 
-		$message = sprintf(
-			__( 'Someone requested that the password be reset for the following account: %sIf this was a mistake, just ignore this email and nothing will happen.%s', 'membership2' ),
-			"<br>\r\n<br>\r\n" . network_home_url( '/', $schema ) . "<br>\r\n" .
-			sprintf( __( 'Your username: %s', 'membership2' ), $user_login ) . "<br>\r\n<br>\r\n",
-			"<br>\r\n<br>\r\n" . '<a href="' . $reset_url . '">' . __( 'Click here to reset your password', 'membership2' ) . "</a><br>\r\n" . $reset_url . "<br>\r\n"
-		);
+			$title = sprintf( __( '[%s] Password Reset' ), $blogname );
 
-		if ( is_multisite() ) {
-			$blogname = $GLOBALS['current_site']->site_name;
-		} else {
-			$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
-		}
+			$title = apply_filters( 'retrieve_password_title', $title );
+			$message = apply_filters( 'retrieve_password_message', $message, $reset->key, $reset->url );
 
-		$title = sprintf( __( '[%s] Password Reset' ), $blogname );
-
-		$title = apply_filters( 'retrieve_password_title', $title );
-		$message = apply_filters( 'retrieve_password_message', $message, $key, $reset_url );
-
-		if ( $message && ! wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
-			$resp['error'] = __( 'The e-mail could not be sent.' ) . '<br />' .
-				__( 'Possible reason: your host may have disabled the mail() function.' );
+			if ( $message && ! wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
+				$resp['error'] = __( 'The e-mail could not be sent.' ) . '<br />' .
+					__( 'Possible reason: your host may have disabled the mail() function.' );
+			} else {
+				$resp['success'] = __( 'Check your e-mail for the confirmation link.', 'membership2' );
+			}
 		} else {
 			$resp['success'] = __( 'Check your e-mail for the confirmation link.', 'membership2' );
 		}

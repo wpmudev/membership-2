@@ -54,6 +54,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	const TYPE_MS_DEACTIVATED = 'deactivated';
 	const TYPE_MS_CANCELED = 'canceled';
 	const TYPE_MS_REGISTERED = 'registered';
+	const TYPE_MS_RESETPASSWORD = 'resetpassword';
 	const TYPE_MS_BEFORE_FINISHES = 'before_finishes';
 	const TYPE_MS_AFTER_FINISHES = 'after_finishes';
 	const TYPE_MS_BEFORE_TRIAL_FINISHES = 'before_trial_finishes';
@@ -160,6 +161,10 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			self::TYPE_MS_REGISTERED => array(
 				'topic' => self::TOPIC_USER,
 				'desc' => __( 'Has registered.', 'membership2' ),
+			),
+			self::TYPE_MS_RESETPASSWORD => array(
+				'topic' => self::TOPIC_USER,
+				'desc' => __( 'Reset password.', 'membership2' ),
 			),
 			self::TYPE_UPDATED_INFO => array(
 				'topic' => self::TOPIC_USER,
