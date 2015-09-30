@@ -345,15 +345,17 @@ class MS_Addon_Profilefields extends MS_Addon {
 		$all_fields = self::list_fields();
 
 		$required = array();
-		foreach ( $config as $field => $setting ) {
-			if ( 'off' == $setting ) { continue; }
-			$key = $field;
-			if ( 0 === strpos( $field, 'xprofile_' ) ) {
-				$key = 'field_' . substr( $field, 9 );
-			}
+		if ( is_array( $config ) ) {
+			foreach ( $config as $field => $setting ) {
+				if ( 'off' == $setting ) { continue; }
+				$key = $field;
+				if ( 0 === strpos( $field, 'xprofile_' ) ) {
+					$key = 'field_' . substr( $field, 9 );
+				}
 
-			if ( 'required' == $setting ) {
-				$required[$key] = $all_fields[$field]['label'];
+				if ( 'required' == $setting ) {
+					$required[$key] = $all_fields[$field]['label'];
+				}
 			}
 		}
 
@@ -500,32 +502,34 @@ class MS_Addon_Profilefields extends MS_Addon {
 	public function validation_rules( $config ) {
 		$rules = array();
 
-		foreach ( $config as $field => $setting ) {
-			if ( 'off' == $setting ) { continue; }
-			$key = $field;
-			if ( 0 === strpos( $field, 'xprofile_' ) ) {
-				$key = 'field_' . substr( $field, 9 );
-			}
-			$rules[$key] = array();
+		if ( is_array( $config ) ) {
+			foreach ( $config as $field => $setting ) {
+				if ( 'off' == $setting ) { continue; }
+				$key = $field;
+				if ( 0 === strpos( $field, 'xprofile_' ) ) {
+					$key = 'field_' . substr( $field, 9 );
+				}
+				$rules[$key] = array();
 
-			if ( 'required' == $setting ) {
-				$rules[$key]['required'] = true;
-			} else {
-				$rules[$key]['required'] = false;
-			}
+				if ( 'required' == $setting ) {
+					$rules[$key]['required'] = true;
+				} else {
+					$rules[$key]['required'] = false;
+				}
 
-			switch ( $field ) {
-				case 'email':
-					$rules[$key]['email'] = true;
-					break;
+				switch ( $field ) {
+					case 'email':
+						$rules[$key]['email'] = true;
+						break;
 
-				case 'password':
-					$rules[$key]['minlength'] = 5;
-					break;
+					case 'password':
+						$rules[$key]['minlength'] = 5;
+						break;
 
-				case 'password2':
-					$rules[$key]['equalTo'] = '#password';
-					break;
+					case 'password2':
+						$rules[$key]['equalTo'] = '#password';
+						break;
+				}
 			}
 		}
 
@@ -594,7 +598,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 			$fields = explode( ',', $_REQUEST['xprofile_field_ids'] );
 		}
 
-		if ( $fields && $user ) {
+		if ( $fields && $user  && is_array( $fields ) ) {
 			foreach ( $fields as $field_id ) {
 				if ( ! isset( $_REQUEST['field_' . $field_id] ) ) {
 					continue;

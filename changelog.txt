@@ -7,6 +7,8 @@ Change Log:
 1.0.2.3
 ----------------------------------------------------------------------
 - Add new email template to customize the Forgot Password email
+- Fix PHP warnings caused by Profile Fields Add-on
+- Fix display of line-breaks in membership description on front-end
 
 1.0.2.2
 ----------------------------------------------------------------------
