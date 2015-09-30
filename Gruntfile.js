@@ -250,15 +250,16 @@ module.exports = function( grunt ) {
 					'**',
 					'!.git/**',
 					'!.git*',
-					'!node_modules/**',
-					'!release/**',
-					'!.sass-cache/**',
+					'!**/node_modules/**',
+					'!**/release/**',
+					'!**/.sass-cache/**',
 					'!**/package.json',
 					'!**/css/sass/**',
 					'!**/js/src/**',
 					'!**/js/vendor/**',
 					'!**/img/src/**',
-					'!**/Gruntfile.js'
+					'!**/Gruntfile.js',
+					'!**/.log'
 				],
 				dest: 'release/<%= pkg.version %>/'
 			}
