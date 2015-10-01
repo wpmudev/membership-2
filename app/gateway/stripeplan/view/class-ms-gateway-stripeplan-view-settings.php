@@ -89,7 +89,7 @@ class MS_Gateway_Stripeplan_View_Settings extends MS_View {
 				'id' => 'pay_button_url',
 				'title' => apply_filters(
 					'ms_translation_flag',
-					__( 'Payment button label or URL', 'membership2' ),
+					__( 'Payment button label', 'membership2' ),
 					'gateway-button' . $gateway->id
 				),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
