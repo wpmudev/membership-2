@@ -1674,7 +1674,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$this
 		);
 
-		$desc = do_shortcode( $desc );
+		$desc = do_shortcode( wpautop( $desc ) );
 
 		return $desc;
 	}
