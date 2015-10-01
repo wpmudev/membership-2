@@ -47,7 +47,21 @@ module.exports = function( grunt ) {
 			'app/assets/css/ms-public.css':         'app/assets/css/sass/ms-public.scss'
 		},
 
-		plugin_dir: 'membership/'
+		no_translation: [ // regex patterns to exclude from transation
+			'(^\.php)',
+			'lib/.*',
+			'release/.*',
+			'node_modules/.*',
+			'docs/.*',
+			'tests/.*',
+			'css/.*',
+			'js/.*'
+		],
+		translation_dir: 'languages/',
+		textdomain: 'membership2',
+
+		plugin_dir: 'membership/',
+		plugin_file: 'membership2.php'
 	};
 
 	// Project configuration
@@ -279,7 +293,26 @@ module.exports = function( grunt ) {
 			}
 		},
 
-		exec: {
+
+		makepot: {
+			target: {
+				options: {
+					cwd: '',
+					domainPath: paths.translation_dir,
+					exclude: paths.no_translation,
+					mainFile: paths.plugin_file,
+					potFilename: paths.textdomain +'.pot',
+					potHeaders: {
+						poedit: true, // Includes common Poedit headers.
+						'x-poedit-keywordslist': true // Include a list of all possible gettext functions.
+					},
+					type: 'wp-plugin' // wp-plugin or wp-theme
+				}
+			}
+		},
+
+
+		exec: { // Execute custom command to build the phpdocs for API
 			phpdoc: {
 				command: 'phpdoc -f ./app/controller/class-ms-controller-api.php -f ./app/model/class-ms-model-membership.php -f ./app/model/class-ms-model-relationship.php -f ./app/model/class-ms-model-member.php -t ./docs'
 			}
@@ -300,6 +333,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks('grunt-contrib-compress');
 	grunt.loadNpmTasks('grunt-phpunit');
 	grunt.loadNpmTasks('grunt-exec');
+	grunt.loadNpmTasks('grunt-wp-i18n');
 
 	grunt.registerTask( 'release_notes', 'Show release notes', function() {
 		grunt.log.subhead( 'Release notes' );
@@ -308,16 +342,15 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( '  3. Check EMAILS for high-priority bugs' );
 		grunt.log.writeln( '  4. Check FORUM for open threads' );
 		grunt.log.writeln( '  5. REPLY to forum threads + unsubscribe' );
-		grunt.log.writeln( '  6. Update the TRANSLATION files' );
-		grunt.log.writeln( '  7. Generate ARCHIVE' );
-		grunt.log.writeln( '  8. INSTALL on a clean WordPress installation' );
-		grunt.log.writeln( '  9. RELEASE the plugin!' );
+		grunt.log.writeln( '  6. Generate ARCHIVE' );
+		grunt.log.writeln( '  7. INSTALL on a clean WordPress installation' );
+		grunt.log.writeln( '  8. RELEASE the plugin!' );
 	});
 
 	// Default task.
 
 	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'] );
-	grunt.registerTask( 'build', ['phpunit', 'default', 'clean', 'copy', 'compress', 'release_notes'] );
+	grunt.registerTask( 'build', ['phpunit', 'default', 'makepot', 'clean', 'copy', 'compress', 'release_notes'] );
 	grunt.registerTask( 'test', ['phpunit', 'jshint'] );
 	grunt.registerTask( 'docs', ['exec:phpdoc'] );
 
