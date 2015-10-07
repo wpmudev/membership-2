@@ -278,7 +278,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$pg_memb = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 
 		// Publish special pages.
-		// Tipp: Only pages must be published that are added to the menu.
+		// Tip: Only pages must be published that are added to the menu.
 		wp_publish_post( $pg_acco->ID );
 		if ( ! $membership->private ) {
 			wp_publish_post( $pg_memb->ID );

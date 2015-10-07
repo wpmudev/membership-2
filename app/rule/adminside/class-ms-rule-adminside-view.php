@@ -15,7 +15,7 @@ class MS_Rule_Adminside_View extends MS_View {
 				'title' => __( 'Protect Admin Side pages', 'membership2' ),
 				'desc' => array(
 					__( 'Note that WordPress also restricts access to pages before Content Protection is applied.', 'membership2' ),
-					__( 'Tipp: Combine with the <b>User Role</b> rules to grant your members additional permission if required!', 'membership2' ),
+					__( 'Tip: Combine with the <b>User Role</b> rules to grant your members additional permission if required!', 'membership2' ),
 				),
 			),
 			MS_Rule_Adminside::RULE_ID,

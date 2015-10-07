@@ -129,7 +129,7 @@ function membership2_init_pro_app() {
 	/**
 	 * Translation.
 	 *
-	 * Tipp:
+	 * Tip:
 	 *   The translation files must have the filename [TEXT-DOMAIN]-[locale].mo
 	 *   Example: membership2-en_EN.mo  /  membership2-de_DE.mo
 	 */

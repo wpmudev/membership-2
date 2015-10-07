@@ -28,7 +28,7 @@ class MS_View_MigrationM1 extends MS_View {
 		$view = MS_Factory::create( 'MS_View_Settings_Import' );
 		$view->data = array( 'model' => $model, 'compact' => true );
 		$msg = __(
-			'Tipp: You can also import your data later by visiting the Admin page <b>Membership2 > Settings > Import Tool</b>.',
+			'Tip: You can also import your data later by visiting the Admin page <b>Membership2 > Settings > Import Tool</b>.',
 			'membership2'
 		);
 

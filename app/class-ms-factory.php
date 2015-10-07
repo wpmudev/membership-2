@@ -118,7 +118,7 @@ class MS_Factory {
 			 * The created object might be replaced by the load_from_...
 			 * function.
 			 *
-			 * Tipp: The __constructor() functions of these objects should not
+			 * Tip: The __constructor() functions of these objects should not
 			 * exist or contain very lightweight code, never attach any
 			 * filters/hooks, etc. as the object can be dumped a few lines later.
 			 */

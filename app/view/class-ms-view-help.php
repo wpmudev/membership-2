@@ -1362,7 +1362,7 @@ class MS_View_Help extends MS_View {
 				</ul>
 
 				<p>
-					<?php _ex( 'Tipp: If the user is not logged in this shortcode will also display the default login form. <em>If you provide your own login form via the shortcode [ms-membership-login] then this shortcode will not add a second login form.</em>', 'help', 'membership2' ); ?>
+					<?php _ex( 'Tip: If the user is not logged in this shortcode will also display the default login form. <em>If you provide your own login form via the shortcode [ms-membership-login] then this shortcode will not add a second login form.</em>', 'help', 'membership2' ); ?>
 				</p>
 
 				<p><em><?php _ex( 'Example:', 'help', 'membership2' ); ?></em></p>

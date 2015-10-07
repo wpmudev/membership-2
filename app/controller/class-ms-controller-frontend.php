@@ -505,7 +505,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			return __( 'Registration is currently not allowed.', 'membership2' );
 		}
 
-		// Do not parse the form when building the excerpt
+		// Do not parse the form when building the excerpt.
 		global $wp_current_filter;
 		if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) {
 			return '';
