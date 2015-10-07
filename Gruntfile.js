@@ -48,7 +48,7 @@ module.exports = function( grunt ) {
 		},
 
 		no_translation: [ // regex patterns to exclude from transation
-			'(^\.php)',
+			'(^.php)',
 			'lib/.*',
 			'release/.*',
 			'node_modules/.*',
