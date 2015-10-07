@@ -119,7 +119,7 @@ function membership2_init_pro_app() {
 	function _membership2_rating_message() {
 		return __( "Hey %s, you've been using %s for a while now, and we hope you're happy with it.", 'membership2' ) .
 			'<br />' .
-			__( "We've spent countless hours developing this plugin for you, and we would really appreciate it if you dropped us a quick rating!", 'membership2' );
+			__( "We're constantly working to improve our plugins, and it helps a lot when members just like you share feedback! Pretty please?", 'membership2' );
 	}
 	add_filter(
 		'wdev-rating-message-' . plugin_basename( __FILE__ ),
