@@ -7,6 +7,9 @@ Change Log:
 1.0.2.3
 ----------------------------------------------------------------------
 - Add new email template to customize the Forgot Password email
+- Improve transaction-logging for Authorize.Net payments
+- Improve UI of the Authorize.Net payment form on front end
+- Fix possible issue with Authorize.Net Gateway that might send empty form to the gateway
 - Fix PHP warnings caused by Profile Fields Add-on
 - Fix display of line-breaks in membership description on front-end
 

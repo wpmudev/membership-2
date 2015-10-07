@@ -205,10 +205,26 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$invoice->timestamp = time();
 			$invoice->save();
 
+			$_POST['API: 1 CustomerProfileID'] = $cim_transaction->customerProfileId;
+			$_POST['API: 2 PaymentProfileID'] = $cim_transaction->customerPaymentProfileId;
+			$_POST['API: 3 InvoiceNumber'] = $cim_transaction->order->invoiceNumber;
+
 			$response = $this->get_cim()->createCustomerProfileTransaction(
 				'AuthCapture',
 				$cim_transaction
 			);
+
+			if ( ! empty( $response->xml )
+				&& ! empty( $response->xml->messages )
+				&& ! empty( $response->xml->messages->message )
+			) {
+				$msg = $response->xml->messages->message;
+				$_POST['API: Response'] = $msg->code . ': ' . $msg->text;
+			} elseif( ! empty( $response->response ) ) {
+				$_POST['API: Response'] = $response->response;
+			} else {
+				$_POST['API: Response'] = '(Invalid response)';
+			}
 
 			if ( $response->isOk() ) {
 				$transaction_response = $response->getTransactionResponse();
@@ -237,7 +253,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		if ( isset( $_POST['card_num'] ) ) {
 			// Card Num   6789765435678765
 			// Becomes    ************8765
-			$card_num = $_POST['card_num'];
+			$card_num = str_replace( ' ', '', $_POST['card_num'] );
 			$_POST['card_num'] = str_pad(
 				substr( $card_num, -4 ),
 				strlen( $card_num ),
@@ -260,6 +276,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		// Restore the POST data in case it's used elsewhere.
 		$_POST['card_num'] = $card_num;
+		unset( $_POST['API: 1 CustomerProfileID'] );
+		unset( $_POST['API: 2 PaymentProfileID'] );
+		unset( $_POST['API: 3 InvoiceNumber'] );
+		unset( $_POST['API: Response'] );
 
 		return $success;
 	}
@@ -564,9 +584,9 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$payment->payment->creditCard->cardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
 		$payment->payment->creditCard->cardCode = trim( filter_input( INPUT_POST, 'card_code' ) );
 		$payment->payment->creditCard->expirationDate = sprintf(
-			'%04d-%02d',
-			filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT ),
-			substr( filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), -2 )
+			'%02d-%04d',
+			filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ),
+			filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT )
 		);
 
 		return apply_filters(
