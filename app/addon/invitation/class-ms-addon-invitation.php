@@ -304,7 +304,9 @@ class MS_Addon_Invitation extends MS_Addon {
 			$invitation_id = ! empty( $_GET['invitation_id'] ) ? $_GET['invitation_id'] : 0;
 			$data['invitation'] = MS_Factory::load( 'MS_Addon_Invitation_Model', $invitation_id );
 			$data['memberships'] = array( __( 'Any', 'membership2' ) );
-			$data['memberships'] += MS_Model_Membership::get_membership_names();
+			$data['memberships'] += MS_Model_Membership::get_membership_names(
+				array( 'include_guest' => 0 )
+			);
 			$data['action'] = $_GET['action'];
 
 			$view = MS_Factory::create( 'MS_Addon_Invitation_View_Edit' );

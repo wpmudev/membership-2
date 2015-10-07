@@ -347,7 +347,9 @@ class MS_Addon_Coupon extends MS_Addon {
 			$coupon_id = ! empty( $_GET['coupon_id'] ) ? $_GET['coupon_id'] : 0;
 			$data['coupon'] = MS_Factory::load( 'MS_Addon_Coupon_Model', $coupon_id );
 			$data['memberships'] = array( __( 'Any', 'membership2' ) );
-			$data['memberships'] += MS_Model_Membership::get_membership_names();
+			$data['memberships'] += MS_Model_Membership::get_membership_names(
+				array( 'include_guest' => 0 )
+			);
 			$data['action'] = $_GET['action'];
 
 			$view = MS_Factory::create( 'MS_Addon_Coupon_View_Edit' );

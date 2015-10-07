@@ -12,6 +12,7 @@ Change Log:
 - Fix possible issue with Authorize.Net Gateway that might send empty form to the gateway
 - Fix PHP warnings caused by Profile Fields Add-on
 - Fix display of line-breaks in membership description on front-end
+- Fix bug in invitation codes/coupons Add-on that randomly created empty codes
 
 1.0.2.2
 ----------------------------------------------------------------------

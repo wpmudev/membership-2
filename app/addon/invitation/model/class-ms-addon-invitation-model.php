@@ -273,10 +273,12 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * This is a non-static function, as it saves the current object!
 	 *
 	 * @since  1.0.0
-	 *
 	 * @param MS_Model_Relationship $subscription The subscription to apply the invitation.
 	 */
 	public function save_application( $subscription ) {
+		// Don't save empty invitations.
+		if ( empty( $this->code ) ) { return false; }
+
 		$membership = $subscription->get_membership();
 
 		$time = apply_filters(
