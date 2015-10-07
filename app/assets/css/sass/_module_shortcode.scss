@@ -383,3 +383,81 @@ input[type="image"] {
 	padding: 0;
 }
 
+#ms-authorize-cim-profiles-wrapper,
+#ms-authorize-card-wrapper {
+	border-radius: 5px;
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	border: 1px solid #ccc;
+	padding: 0;
+	margin-bottom: 20px;
+
+	table {
+		margin: 0;
+		border-radius: 4px;
+		overflow: hidden;
+		border: 0;
+	}
+
+	td {
+		border: 0;
+		padding: 8px 15px;
+
+		input,
+		select {
+			display: block;
+			width: 100%;
+		}
+	}
+
+	.wpmui-radio {
+		margin-right: 6px;
+		display: inline-block;
+		width: auto;
+		vertical-align: baseline;
+	}
+
+	.ms-card-info table {
+		border-radius: 0;
+		margin: 0;
+		padding: 0;
+
+		td {
+			padding: 0;
+		}
+	}
+
+	.ms-title-row {
+		background: #EEE;
+		font-weight: bold;
+		padding: 8px;
+	}
+
+	.ms-col-submit {
+		button {
+			display: block;
+			width: 100%;
+		}
+	}
+
+	.ms-col-card_num {
+		input {
+			width: 200px;
+		}
+	}
+
+	.ms-col-card_code {
+		input {
+			width: 60px;
+		}
+	}
+
+	.ms-col-expire select {
+		width: auto;
+		display: inline-block;
+	}
+
+	.ms-col-first_name,
+	.ms-col-last_name {
+		width: 50%;
+	}
+}

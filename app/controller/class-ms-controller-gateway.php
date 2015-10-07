@@ -358,16 +358,16 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function cancel_button( $button, $ms_relationship ) {
+	public function cancel_button( $button, $subscription ) {
 		$view = null;
 		$data = array();
-		$data['ms_relationship'] = $ms_relationship;
+		$data['ms_relationship'] = $subscription;
 		$new_button = null;
 
-		switch ( $ms_relationship->gateway_id ) {
+		switch ( $subscription->gateway_id ) {
 			case MS_Gateway_Paypalstandard::ID:
 				$view = MS_Factory::create( 'MS_Gateway_Paypalstandard_View_Cancel' );
-				$data['gateway'] = $ms_relationship->get_gateway();
+				$data['gateway'] = $subscription->get_gateway();
 				break;
 
 			case MS_Gateway_Authorize::ID:
@@ -380,11 +380,12 @@ class MS_Controller_Gateway extends MS_Controller {
 		}
 		$view = apply_filters( 'ms_gateway_view_cancel_button', $view );
 
-		if ( ! empty( $view ) ) {
+		if ( $view && is_a( $view, 'MS_View' ) ) {
 			$view->data = apply_filters(
 				'ms_gateway_view_cancel_button_data',
 				$data
 			);
+
 			$new_button = $view->get_button();
 		}
 
@@ -395,7 +396,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		return apply_filters(
 			'ms_controller_gateway_cancel_button',
 			$new_button,
-			$ms_relationship,
+			$subscription,
 			$this
 		);
 	}
@@ -424,11 +425,18 @@ class MS_Controller_Gateway extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $content The page content to filter.
+	 * @param  string $content The page content to filter.
 	 * @return string The filtered content.
 	 */
 	public function gateway_form( $content ) {
 		$data = array();
+		$html = '';
+
+		// Do not parse the form when building the excerpt.
+		global $wp_current_filter;
+		if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) {
+			return '';
+		}
 
 		$fields = array( 'gateway', 'ms_relationship_id' );
 		if ( self::validate_required( $fields )
@@ -436,15 +444,16 @@ class MS_Controller_Gateway extends MS_Controller {
 		) {
 			$data['gateway'] = $_POST['gateway'];
 			$data['ms_relationship_id'] = $_POST['ms_relationship_id'];
+			$view = null;
 
-			$ms_relationship = MS_Factory::load(
+			$subscription = MS_Factory::load(
 				'MS_Model_Relationship',
 				$_POST['ms_relationship_id']
 			);
 
 			switch ( $_POST['gateway'] ) {
 				case MS_Gateway_Authorize::ID:
-					$member = $ms_relationship->get_member();
+					$member = $subscription->get_member();
 					$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Form' );
 					$gateway = MS_Model_Gateway::factory( MS_Gateway_Authorize::ID );
 					$data['countries'] = $gateway->get_country_codes();
@@ -469,12 +478,25 @@ class MS_Controller_Gateway extends MS_Controller {
 					break;
 			}
 
-			$view = apply_filters( 'ms_gateway_view_form', $view );
-			$view->data = apply_filters( 'ms_gateway_view_form_data', $data );
+			$view = apply_filters(
+				'ms_gateway_view_form',
+				$view,
+				$_POST['gateway'],
+				$subscription
+			);
+
+			if ( $view && is_a( $view, 'MS_View' ) ) {
+				$view->data = apply_filters(
+					'ms_gateway_view_form_data',
+					$data
+				);
+
+				$html = $view->to_html();
+			}
 
 			return apply_filters(
 				'ms_controller_gateway_form',
-				$view->to_html(),
+				$html,
 				$this
 			);
 		}
@@ -941,6 +963,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		switch ( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:
+			case MS_Controller_Frontend::STEP_PROCESS_PURCHASE:
 				if ( MS_Gateway_Authorize::ID == $gateway_id ) {
 					wp_enqueue_script( 'jquery-validate' );
 
@@ -948,6 +971,8 @@ class MS_Controller_Gateway extends MS_Controller {
 						'ms_init' => array( 'gateway_authorize' ),
 					);
 
+					lib3()->ui->add( 'core' );
+					lib3()->ui->add( 'select' );
 					lib3()->ui->data( 'ms_data', $data );
 					wp_enqueue_script( 'ms-public' );
 				}

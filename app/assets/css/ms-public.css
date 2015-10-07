@@ -465,6 +465,81 @@ input[type="image"] {
   padding: 0;
 }
 
+#ms-authorize-cim-profiles-wrapper,
+#ms-authorize-card-wrapper {
+  border-radius: 5px;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  padding: 0;
+  margin-bottom: 20px;
+}
+#ms-authorize-cim-profiles-wrapper table,
+#ms-authorize-card-wrapper table {
+  margin: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 0;
+}
+#ms-authorize-cim-profiles-wrapper td,
+#ms-authorize-card-wrapper td {
+  border: 0;
+  padding: 8px 15px;
+}
+#ms-authorize-cim-profiles-wrapper td input,
+#ms-authorize-cim-profiles-wrapper td select,
+#ms-authorize-card-wrapper td input,
+#ms-authorize-card-wrapper td select {
+  display: block;
+  width: 100%;
+}
+#ms-authorize-cim-profiles-wrapper .wpmui-radio,
+#ms-authorize-card-wrapper .wpmui-radio {
+  margin-right: 6px;
+  display: inline-block;
+  width: auto;
+  vertical-align: baseline;
+}
+#ms-authorize-cim-profiles-wrapper .ms-card-info table,
+#ms-authorize-card-wrapper .ms-card-info table {
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+#ms-authorize-cim-profiles-wrapper .ms-card-info table td,
+#ms-authorize-card-wrapper .ms-card-info table td {
+  padding: 0;
+}
+#ms-authorize-cim-profiles-wrapper .ms-title-row,
+#ms-authorize-card-wrapper .ms-title-row {
+  background: #EEE;
+  font-weight: bold;
+  padding: 8px;
+}
+#ms-authorize-cim-profiles-wrapper .ms-col-submit button,
+#ms-authorize-card-wrapper .ms-col-submit button {
+  display: block;
+  width: 100%;
+}
+#ms-authorize-cim-profiles-wrapper .ms-col-card_num input,
+#ms-authorize-card-wrapper .ms-col-card_num input {
+  width: 200px;
+}
+#ms-authorize-cim-profiles-wrapper .ms-col-card_code input,
+#ms-authorize-card-wrapper .ms-col-card_code input {
+  width: 60px;
+}
+#ms-authorize-cim-profiles-wrapper .ms-col-expire select,
+#ms-authorize-card-wrapper .ms-col-expire select {
+  width: auto;
+  display: inline-block;
+}
+#ms-authorize-cim-profiles-wrapper .ms-col-first_name,
+#ms-authorize-cim-profiles-wrapper .ms-col-last_name,
+#ms-authorize-card-wrapper .ms-col-first_name,
+#ms-authorize-card-wrapper .ms-col-last_name {
+  width: 50%;
+}
+
 /**
  * Settings module.
  */

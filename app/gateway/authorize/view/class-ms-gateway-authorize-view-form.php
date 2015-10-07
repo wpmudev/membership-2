@@ -14,65 +14,82 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 		?>
 			<div class="ms-wrap">
 				<?php if ( $this->data['auth_error'] ): ?>
-					<div class="ms-validation-error"><p><?php echo '' . $this->data['auth_error']; ?></p></div>
+					<div class="ms-validation-error"><p><?php echo $this->data['auth_error']; ?></p></div>
 				<?php endif; ?>
 				<form id="ms-authorize-extra-form" method="post" class="ms-form">
 					<?php foreach ( $fields['hidden'] as $field ): ?>
 						<?php MS_Helper_Html::html_element( $field ); ?>
 					<?php endforeach;?>
 
-					<?php $this->render_cim_profiles() ?>
+					<?php $this->render_cim_profiles( $fields ); ?>
 					<div id="ms-authorize-card-wrapper">
-						<?php _e( 'Credit Card Information', 'membership2' ); ?>
 						<table class="form-table ms-form-table">
-							<tbody>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_element( $fields['card']['card_num'] ); ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_element( $fields['card']['card_code'] ); ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<?php MS_Helper_Html::html_element( $fields['card']['exp_month'] ); ?>
-										<?php MS_Helper_Html::html_element( $fields['card']['exp_year'] ); ?>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<?php _e( 'Billing Information', 'membership2' ); ?>
-						<table class="form-table ms-form-table">
-							<tbody>
-								<?php foreach ( $fields['billing'] as $field ): ?>
-									<tr>
-										<td>
-											<?php MS_Helper_Html::html_element( $field ); ?>
+							<tr>
+								<td class="ms-title-row" colspan="2">
+									<?php _e( 'Credit Card Information', 'membership2' ); ?>
+								</td>
+							</tr>
+							<tr>
+								<td class="ms-card-info" colspan="2">
+									<table border="0" width="100%" cellspacing="0" cellpadding="0">
+										<tr>
+										<td class="ms-col-card_num">
+											<?php MS_Helper_Html::html_element( $fields['card']['card_num'] ); ?>
 										</td>
-									</tr>
-								<?php endforeach; ?>
-							</tbody>
+										<td class="ms-col-card_code">
+											<?php MS_Helper_Html::html_element( $fields['card']['card_code'] ); ?>
+										</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td class="ms-col-expire" colspan="2">
+									<?php MS_Helper_Html::html_element( $fields['card']['exp_month'] ); ?>
+									<?php MS_Helper_Html::html_element( $fields['card']['exp_year'] ); ?>
+								</td>
+							</tr>
+							<tr>
+								<td class="ms-title-row" colspan="2">
+									<?php _e( 'Billing Information', 'membership2' ); ?>
+								</td>
+							</tr>
+							<tr>
+								<td class="ms-col-first_name">
+									<?php MS_Helper_Html::html_element( $fields['billing']['first_name'] ); ?>
+								</td>
+								<td class="ms-col-last_name">
+									<?php MS_Helper_Html::html_element( $fields['billing']['last_name'] ); ?>
+								</td>
+							</tr>
+							<tr>
+								<td class="ms-col-country" colspan="2">
+									<?php MS_Helper_Html::html_element( $fields['billing']['country'] ); ?>
+								</td>
+							</tr>
+							<?php if ( ! empty( $fields['extra'] ) ) : ?>
+							<?php foreach ( $fields['extra'] as $field ) : ?>
+							<tr>
+								<td class="ms-col-<?php echo esc_attr( $field['id'] ); ?>" colspan="2">
+									<?php MS_Helper_Html::html_element( $field ); ?>
+								</td>
+							</tr>
+							<?php endforeach; ?>
+							<?php endif; ?>
+							<tr>
+								<td class="ms-col-submit" colspan="2">
+									<?php MS_Helper_Html::html_element( $fields['submit'] ); ?>
+								</td>
+							</tr>
 						</table>
 					</div>
-					<?php
-						MS_Helper_Html::html_submit(
-							array(
-								'value' => ( 'update_card' == $this->data['action'] )
-									? __( 'Change card', 'membership2' )
-									: __( 'Pay now', 'membership2' ),
-							)
-						);
-					?>
 				</form>
 				<div class="clear"></div>
 			</div>
 		<?php
 		$html = ob_get_clean();
 
-		echo '' . $html;
+		echo $html;
 	}
 
 	public function prepare_fields() {
@@ -120,22 +137,28 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 				'id' => 'card_num',
 				'title' => __( 'Card Number', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' => '•••• •••• •••• ••••',
+				'maxlength' => 24, // 20 digits + 4 spaces
 			),
 			'card_code' => array(
 				'id' => 'card_code',
-				'title' => __( 'Security Code', 'membership2' ),
+				'title' => __( 'Card Code', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' => 'CVC',
+				'maxlength' => 4,
 			),
 			'exp_month' => array(
 				'id' => 'exp_month',
-				'title' => __( 'Expiration Date', 'membership2' ),
+				'title' => __( 'Expires', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $months,
+				'class' => 'ms-select',
 			),
 			'exp_year' => array(
 				'id' => 'exp_year',
 				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $years,
+				'class' => 'ms-select',
 			),
 		);
 		$fields['billing'] = array(
@@ -143,11 +166,13 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 				'id' => 'first_name',
 				'title' => __( 'First Name', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' => __( 'First Name', 'membership2' ),
 			),
 			'last_name' => array(
 				'id' => 'last_name',
 				'title' => __( 'Last Name', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' => __( 'Last Name', 'membership2' ),
 			),
 			'country' => array(
 				'id' => 'country',
@@ -157,6 +182,18 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 				'class' => 'ms-select',
 			),
 		);
+		$fields['submit'] = array(
+			'id' => 'submit',
+			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' => __( 'Pay now', 'membership2' ),
+		);
+
+		// Can be populated via the filter to add extra fields to the form.
+		$fields['extra'] = array();
+
+		if ( 'update_card' == $this->data['action'] ) {
+			$fields['submit']['value'] = __( 'Change card', 'membership2' );
+		}
 
 		return apply_filters(
 			'ms_gateway_authorize_view_form_prepare_fields',
@@ -171,7 +208,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 	 *
 	 * @access protected
 	 */
-	protected function render_cim_profiles() {
+	protected function render_cim_profiles( $fields ) {
 		// if profile is empty, then return
 		if ( empty( $this->data['cim_profiles'] ) ) {
 			return;
@@ -206,12 +243,28 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 			'id' => 'profile',
 			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
 			'field_options' => $options,
-			'value' => ( $this->data['cim_payment_profile_id'] ) ? $this->data['cim_payment_profile_id'] : $first_key,
+			'value' => $first_key,
 		);
+		if ( $this->data['cim_payment_profile_id'] ) {
+			$cim['value'] = $this->data['cim_payment_profile_id'];
+		}
 		?>
 		<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
-			<div class="authorize-form-block-title"><?php _e( 'Credit card:', 'membership2' ); ?></div>
-			<?php MS_Helper_Html::html_element( $cim );?>
+			<table>
+				<tr>
+					<td class="ms-title-row"><?php _e( 'Stored Credit Cards', 'membership2' ); ?></td>
+				</tr>
+				<tr>
+					<td class="ms-col-cim_profiles">
+					<?php MS_Helper_Html::html_element( $cim );?>
+					</td>
+				</tr>
+				<tr class="ms-row-submit">
+					<td class="ms-col-submit">
+						<?php MS_Helper_Html::html_element( $fields['submit'] ); ?>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<?php
 	}
