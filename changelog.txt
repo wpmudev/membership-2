@@ -13,6 +13,7 @@ Change Log:
 - Fix PHP warnings caused by Profile Fields Add-on
 - Fix display of line-breaks in membership description on front-end
 - Fix bug in invitation codes/coupons Add-on that randomly created empty codes
+- Fix invitation code Add-on so errors are not displayed for correct invitation codes during checkout
 
 1.0.2.2
 ----------------------------------------------------------------------

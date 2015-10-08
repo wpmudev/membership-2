@@ -583,7 +583,7 @@ class MS_Addon_Invitation extends MS_Addon {
 					'label_class' => 'inline-label',
 					'title' => sprintf(
 						__( 'Using invitation code %s.', 'membership2' ),
-						$code
+						'<strong>' . $code . '</strong>'
 					),
 					'button_value' => 1,
 				),
@@ -633,9 +633,9 @@ class MS_Addon_Invitation extends MS_Addon {
 			<td colspan="2">
 				<form method="post">
 					<?php if ( $message ) : ?>
-					<p class="ms-alert-box <?php echo esc_attr( $class ); ?>"><?php
-						echo $message;
-					?></p>
+					<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
+						<?php echo $message; ?>
+					</p>
 					<?php endif; ?>
 					<div class="invitation-entry">
 						<?php if ( ! isset( $data['invitation_valid'] ) ) : ?>
