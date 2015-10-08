@@ -205,9 +205,9 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$invoice->timestamp = time();
 			$invoice->save();
 
-			$_POST['API: 1 CustomerProfileID'] = $cim_transaction->customerProfileId;
-			$_POST['API: 2 PaymentProfileID'] = $cim_transaction->customerPaymentProfileId;
-			$_POST['API: 3 InvoiceNumber'] = $cim_transaction->order->invoiceNumber;
+			$_POST['API Out: CustomerProfileID'] = $cim_transaction->customerProfileId;
+			$_POST['API Out: PaymentProfileID'] = $cim_transaction->customerPaymentProfileId;
+			$_POST['API Out: InvoiceNumber'] = $cim_transaction->order->invoiceNumber;
 
 			$response = $this->get_cim()->createCustomerProfileTransaction(
 				'AuthCapture',
@@ -219,11 +219,18 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				&& ! empty( $response->xml->messages->message )
 			) {
 				$msg = $response->xml->messages->message;
-				$_POST['API: Response'] = $msg->code . ': ' . $msg->text;
-			} elseif( ! empty( $response->response ) ) {
-				$_POST['API: Response'] = $response->response;
+				$_POST['API Response: Short'] = $msg->code . ': ' . $msg->text;
 			} else {
-				$_POST['API: Response'] = '(Invalid response)';
+				$_POST['API Response: Short'] = '-';
+			}
+			if ( isset( $response->response ) ) {
+				if ( is_string( $response->response ) ) {
+					$_POST['API Response: XML'] = $response->response;
+				} else {
+					$_POST['API Response: XML'] = json_encode( $response->response );
+				}
+			} else {
+				$_POST['API Response: XML'] = json_encode( $response->response );
 			}
 
 			if ( $response->isOk() ) {
@@ -276,10 +283,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		// Restore the POST data in case it's used elsewhere.
 		$_POST['card_num'] = $card_num;
-		unset( $_POST['API: 1 CustomerProfileID'] );
-		unset( $_POST['API: 2 PaymentProfileID'] );
-		unset( $_POST['API: 3 InvoiceNumber'] );
-		unset( $_POST['API: Response'] );
+		unset( $_POST['API Out: CustomerProfileID'] );
+		unset( $_POST['API Out: PaymentProfileID'] );
+		unset( $_POST['API Out: InvoiceNumber'] );
+		unset( $_POST['API Response: Short'] );
+		unset( $_POST['API Response: XML'] );
 
 		return $success;
 	}
