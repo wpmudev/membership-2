@@ -286,7 +286,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				)
 			);
 
-			if ( ! class_exists( 'Mailchimp' ) ) {
+			if ( ! class_exists( 'M2_Mailchimp' ) ) {
 				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
 
