@@ -2341,6 +2341,11 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap.ms-billing .more-details .post-data .inner {
   overflow: auto;
 }
+#wpwrap .ms-wrap.ms-billing .more-details .post-data hr,
+.ms-wrap.ms-billing .more-details .post-data hr {
+  margin: 11px 0 -8px;
+  border-color: #444;
+}
 #wpwrap .ms-wrap.ms-billing .more-details .post-data:before,
 .ms-wrap.ms-billing .more-details .post-data:before {
   content: '';

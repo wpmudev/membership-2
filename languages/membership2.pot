@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.2\n"
+"Project-Id-Version: Membership 2 Pro Beta 1.0.2.3-beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-10-01 12:01:41+00:00\n"
+"POT-Creation-Date: 2015-10-08 18:16:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -61,7 +61,7 @@ msgid "No"
 msgstr ""
 
 #: app/addon/attributes/view/class-ms-addon-attributes-view-membership.php:80
-#: app/addon/invitation/class-ms-addon-invitation.php:378
+#: app/addon/invitation/class-ms-addon-invitation.php:380
 #: app/view/membership/tab/class-ms-view-membership-tab-details.php:108
 #: app/view/membership/tab/class-ms-view-membership-tab-details.php:120
 #: app/view/membership/tab/class-ms-view-membership-tab-details.php:131
@@ -374,31 +374,31 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:444
+#: app/addon/coupon/class-ms-addon-coupon.php:446
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:27
 #: app/addon/coupon/view/class-ms-addon-coupon-view-edit.php:76
 msgid "Discount"
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:511
-#: app/addon/invitation/class-ms-addon-invitation.php:580
+#: app/addon/coupon/class-ms-addon-coupon.php:513
+#: app/addon/invitation/class-ms-addon-invitation.php:582
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:329
 msgid "Remove"
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:527
+#: app/addon/coupon/class-ms-addon-coupon.php:529
 msgid "Apply Coupon"
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:569
+#: app/addon/coupon/class-ms-addon-coupon.php:571
 msgid "Have a coupon code?"
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:627
+#: app/addon/coupon/class-ms-addon-coupon.php:629
 msgid "Remove Coupon \"%s\""
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:644
+#: app/addon/coupon/class-ms-addon-coupon.php:646
 msgid "Apply Coupon \"%s\": Discount %s %s!"
 msgstr ""
 
@@ -452,32 +452,32 @@ msgstr ""
 msgid "Membership2 Coupons"
 msgstr ""
 
-#: app/addon/coupon/model/class-ms-addon-coupon-model.php:586
+#: app/addon/coupon/model/class-ms-addon-coupon-model.php:588
 msgid "Coupon code not found."
 msgstr ""
 
-#: app/addon/coupon/model/class-ms-addon-coupon-model.php:589
+#: app/addon/coupon/model/class-ms-addon-coupon-model.php:591
 msgid "No Coupons remaining for this code."
 msgstr ""
 
-#: app/addon/coupon/model/class-ms-addon-coupon-model.php:592
+#: app/addon/coupon/model/class-ms-addon-coupon-model.php:594
 msgid "This Coupon is not valid yet."
 msgstr ""
 
-#: app/addon/coupon/model/class-ms-addon-coupon-model.php:595
+#: app/addon/coupon/model/class-ms-addon-coupon-model.php:597
 msgid "This Coupon has expired."
 msgstr ""
 
-#: app/addon/coupon/model/class-ms-addon-coupon-model.php:609
+#: app/addon/coupon/model/class-ms-addon-coupon-model.php:611
 msgid "This Coupon is not valid for this membership."
 msgstr ""
 
-#: app/addon/coupon/model/class-ms-addon-coupon-model.php:665
+#: app/addon/coupon/model/class-ms-addon-coupon-model.php:667
 msgid "Coupon applied: %1$s"
 msgstr ""
 
-#: app/addon/coupon/model/class-ms-addon-coupon-model.php:699
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:516
+#: app/addon/coupon/model/class-ms-addon-coupon-model.php:701
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:527
 msgid "Unlimited"
 msgstr ""
 
@@ -531,27 +531,27 @@ msgstr ""
 msgid "Users need an invitation code to subscribe to a membership."
 msgstr ""
 
-#: app/addon/invitation/class-ms-addon-invitation.php:374
+#: app/addon/invitation/class-ms-addon-invitation.php:376
 msgid "Does this Membership require an Invitation code?"
 msgstr ""
 
-#: app/addon/invitation/class-ms-addon-invitation.php:382
+#: app/addon/invitation/class-ms-addon-invitation.php:384
 msgid "No (public membership)"
 msgstr ""
 
-#: app/addon/invitation/class-ms-addon-invitation.php:583
+#: app/addon/invitation/class-ms-addon-invitation.php:585
 msgid "Using invitation code %s."
 msgstr ""
 
-#: app/addon/invitation/class-ms-addon-invitation.php:599
+#: app/addon/invitation/class-ms-addon-invitation.php:601
 msgid "Apply Invitation"
 msgstr ""
 
-#: app/addon/invitation/class-ms-addon-invitation.php:604
+#: app/addon/invitation/class-ms-addon-invitation.php:606
 msgid "You need an invitation to register for this Membership"
 msgstr ""
 
-#: app/addon/invitation/class-ms-addon-invitation.php:641
+#: app/addon/invitation/class-ms-addon-invitation.php:643
 msgid "Have an invitation code?"
 msgstr ""
 
@@ -559,27 +559,31 @@ msgstr ""
 msgid "Invitation Code"
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:237
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:240
 msgid "Invitation code not found."
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:392
-msgid "This invitation code is no longer valid."
-msgstr ""
-
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:395
-msgid "This invitation is not valid yet."
-msgstr ""
-
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:398
-msgid "This invitation has expired."
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:341
+msgid "Invitation code is correct."
 msgstr ""
 
 #: app/addon/invitation/model/class-ms-addon-invitation-model.php:401
+msgid "This invitation code is no longer valid."
+msgstr ""
+
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:404
+msgid "This invitation is not valid yet."
+msgstr ""
+
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:407
+msgid "This invitation has expired."
+msgstr ""
+
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:410
 msgid "You have already used this invitation code."
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:415
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:426
 msgid "This Invitation is not valid for this membership."
 msgstr ""
 
@@ -689,6 +693,7 @@ msgstr ""
 #: app/addon/profilefields/class-ms-addon-profilefields.php:181
 #: app/controller/class-ms-controller-shortcode.php:638
 #: app/helper/listtable/class-ms-helper-listtable-member.php:66
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:630
 #: app/model/class-ms-model-member.php:991 app/view/class-ms-view-help.php:767
 #: app/view/member/class-ms-view-member-editor.php:201
 #: app/view/settings/class-ms-view-settings-import.php:157
@@ -699,7 +704,8 @@ msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:188
 #: app/controller/class-ms-controller-shortcode.php:212
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:144
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:167
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:169
 #: app/helper/listtable/class-ms-helper-listtable-member.php:407
 #: app/view/class-ms-view-help.php:415
 #: app/view/frontend/class-ms-view-frontend-profile.php:73
@@ -709,7 +715,8 @@ msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:194
 #: app/controller/class-ms-controller-shortcode.php:213
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:149
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:173
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:175
 #: app/helper/listtable/class-ms-helper-listtable-member.php:408
 #: app/view/class-ms-view-help.php:422
 #: app/view/frontend/class-ms-view-frontend-profile.php:79
@@ -727,6 +734,7 @@ msgid "Display As"
 msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:208
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:636
 #: app/view/member/class-ms-view-member-editor.php:211
 #: app/view/settings/class-ms-view-settings-import.php:158
 #: app/view/shortcode/class-ms-view-shortcode-account.php:470
@@ -909,7 +917,7 @@ msgstr ""
 #: app/addon/redirect/class-ms-addon-redirect.php:98
 #: app/addon/taxamo/class-ms-addon-taxamo.php:167
 #: app/controller/class-ms-controller-plugin.php:475
-#: app/view/class-ms-view-help.php:201 membership2.php:673
+#: app/view/class-ms-view-help.php:201 membership2.php:694
 msgid "Settings"
 msgstr ""
 
@@ -2196,19 +2204,19 @@ msgstr ""
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
-#: app/controller/class-ms-controller-gateway.php:559
+#: app/controller/class-ms-controller-gateway.php:581
 msgid "Error: %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-gateway.php:657
+#: app/controller/class-ms-controller-gateway.php:679
 msgid "Sorry, your signup request has failed. Try again."
 msgstr ""
 
-#: app/controller/class-ms-controller-gateway.php:710
+#: app/controller/class-ms-controller-gateway.php:732
 msgid "Gateway is inactive"
 msgstr ""
 
-#: app/controller/class-ms-controller-gateway.php:713
+#: app/controller/class-ms-controller-gateway.php:735
 msgid "Unknown Gateway: %s"
 msgstr ""
 
@@ -2697,7 +2705,7 @@ msgstr ""
 msgid "Total is zero. Payment approved. Not sent to gateway."
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:220
+#: app/gateway/authorize/class-ms-gateway-authorize.php:243
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:133
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:285
 #: app/gateway/stripe/class-ms-gateway-stripe.php:131
@@ -2707,23 +2715,23 @@ msgstr ""
 msgid "Payment successful"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:223
+#: app/gateway/authorize/class-ms-gateway-authorize.php:246
 msgid "Payment Failed: code %s, subcode %s, reason code %, reason %s"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:231
+#: app/gateway/authorize/class-ms-gateway-authorize.php:254
 msgid "Payment Failed: "
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:491
+#: app/gateway/authorize/class-ms-gateway-authorize.php:519
 msgid "Payment failed due to CIM profile not created: "
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:534
+#: app/gateway/authorize/class-ms-gateway-authorize.php:562
 msgid "Payment failed due to CIM profile not updated: "
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:593
+#: app/gateway/authorize/class-ms-gateway-authorize.php:621
 msgid "CIM Payment profile not found"
 msgstr ""
 
@@ -2733,7 +2741,7 @@ msgid "Credit card info"
 msgstr ""
 
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-card.php:16
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:121
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:138
 #: app/gateway/stripe/view/class-ms-gateway-stripe-view-card.php:15
 msgid "Card Number"
 msgstr ""
@@ -2748,48 +2756,48 @@ msgstr ""
 msgid "Change card number"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:26
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:29
 msgid "Credit Card Information"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:47
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:54
 msgid "Billing Information"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:64
-msgid "Change card"
-msgstr ""
-
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:65
-msgid "Pay now"
-msgstr ""
-
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:108
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:125
 msgid "Month"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:113
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:130
 msgid "Year"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:126
-msgid "Security Code"
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:145
+msgid "Card Code"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:131
-msgid "Expiration Date"
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:152
+msgid "Expires"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:154
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:179
 msgid "Country"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:204
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:188
+msgid "Pay now"
+msgstr ""
+
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:195
+msgid "Change card"
+msgstr ""
+
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:241
 msgid "Enter a new credit card"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:213
-msgid "Credit card:"
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:255
+msgid "Stored Credit Cards"
 msgstr ""
 
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-settings.php:34
@@ -3686,6 +3694,7 @@ msgid "Members"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:146
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:643
 msgid "Guest"
 msgstr ""
 
@@ -3907,29 +3916,45 @@ msgstr ""
 msgid "Modified by: %s"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:496
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:497
 msgid "Imported subscription from old Membership plugin."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:500
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:501
 msgid "Payment via a PayPal Payment button."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:505
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:506
 msgid ""
-"Someone sent you money inside PayPal.<br>Plugin did not attempt to match "
-"payment to a subscription."
+"Someone sent you money inside PayPal or PayPal re-sent a previous "
+"payment.<br>Plugin did not attempt to match payment to a subscription."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:516
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:528
 msgid "POST data:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:542
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:575
 msgid "HTTP Headers:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:562
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:598
+msgid "Cookies:"
+msgstr ""
+
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:617
+msgid "Logged in user:"
+msgstr ""
+
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:624
+msgid "User ID"
+msgstr ""
+
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:644
+msgid "Could not determine a logged in user"
+msgstr ""
+
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:655
 msgid "Request URL"
 msgstr ""
 
@@ -5493,7 +5518,7 @@ msgstr ""
 
 #: app/rule/adminside/class-ms-rule-adminside-view.php:18
 msgid ""
-"Tipp: Combine with the <b>User Role</b> rules to grant your members "
+"Tip: Combine with the <b>User Role</b> rules to grant your members "
 "additional permission if required!"
 msgstr ""
 
@@ -6292,7 +6317,7 @@ msgstr ""
 
 #: app/view/class-ms-view-migrationm1.php:30
 msgid ""
-"Tipp: You can also import your data later by visiting the Admin page "
+"Tip: You can also import your data later by visiting the Admin page "
 "<b>Membership2 > Settings > Import Tool</b>."
 msgstr ""
 
@@ -7534,8 +7559,20 @@ msgid ""
 "already loaded"
 msgstr ""
 
+#: membership2.php:120
+msgid ""
+"Hey %s, you've been using %s for a while now, and we hope you're happy with "
+"it."
+msgstr ""
+
+#: membership2.php:122
+msgid ""
+"We're constantly working to improve our plugins, and it helps a lot when "
+"members just like you share feedback!"
+msgstr ""
+
 #. Plugin Name of the plugin/theme
-msgid "Membership 2 Pro"
+msgid "Membership 2 Pro Beta"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
@@ -8278,7 +8315,7 @@ msgstr ""
 #: app/view/class-ms-view-help.php:1365
 msgctxt "help"
 msgid ""
-"Tipp: If the user is not logged in this shortcode will also display the "
+"Tip: If the user is not logged in this shortcode will also display the "
 "default login form. <em>If you provide your own login form via the "
 "shortcode [ms-membership-login] then this shortcode will not add a second "
 "login form.</em>"
