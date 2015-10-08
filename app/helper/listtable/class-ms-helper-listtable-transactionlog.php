@@ -485,6 +485,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		}
 
 		$postdata = $item->post;
+		$group = array();
 		if ( ! empty( $postdata ) && is_array( $postdata ) ) {
 			$id_fields = array();
 			switch ( $item->gateway_id ) {
@@ -502,19 +503,31 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 						// Highlight invalid transactions.
 						if ( 'send_money' == $postdata['txn_type'] ) {
 							$id_fields[] = 'txn_type';
-							$detail_lines[] = __( 'Someone sent you money inside PayPal.<br>Plugin did not attempt to match payment to a subscription.', 'membership2' );
+							$detail_lines[] = __( 'Someone sent you money inside PayPal or PayPal re-sent a previous payment.<br>Plugin did not attempt to match payment to a subscription.', 'membership2' );
 						}
 					}
 					break;
 			}
 
 			if ( count( $detail_lines ) ) {
-				$detail_lines[] = '<hr>';
+				$detail_lines[] = '<hr />';
 			}
 			ksort( $postdata );
 			$ind = 0;
-			$detail_lines[] = __( 'POST data:', 'membership2' );
 			foreach ( $postdata as $key => $value ) {
+				if ( strpos( $key, ':' ) > 0 ) {
+					$parts = explode( ':', $key );
+					if ( ! isset( $groups[ $parts[0] ] ) ) {
+						$groups[ $parts[0] ] = array();
+					}
+					$groups[ $parts[0] ][ $parts[1] ] = $value;
+					continue;
+				}
+
+				if ( 0 === $ind ) {
+					$detail_lines[] = __( 'POST data:', 'membership2' );
+				}
+
 				$ind += 1;
 
 				$line_class = '';
@@ -527,35 +540,115 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 					$line_class,
 					$ind,
 					$key,
-					$value
+					htmlspecialchars( $value )
 				);
+			}
+
+			foreach ( $groups as $group => $values ) {
+				$ind = 0;
+				foreach ( $values as $key => $value ) {
+					if ( 0 === $ind ) {
+						$detail_lines[] = '<hr />';
+						$detail_lines[] = $group . ':';
+					}
+
+					$ind += 1;
+
+					$detail_lines[] = sprintf(
+						'<span class="line"><small class="line-num">%s</small> <span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+						$ind,
+						$key,
+						htmlspecialchars( $value )
+					);
+				}
 			}
 		}
 
 		$headers = $item->headers;
+		$cookies = false;
 		if ( ! empty( $headers ) && is_array( $headers ) ) {
 			if ( count( $detail_lines ) ) {
-				$detail_lines[] = '<hr>';
+				$detail_lines[] = '<hr />';
 			}
 			ksort( $headers );
 			$ind = 0;
 			$detail_lines[] = __( 'HTTP Headers:', 'membership2' );
 			foreach ( $headers as $key => $value ) {
+				if ( 'Cookie' == $key ) {
+					$cookies = explode( ';', $value );
+					continue;
+				}
 				$ind += 1;
 
 				$detail_lines[] = sprintf(
 					'<span class="line"><small class="line-num">%s</small> <span class="line-key">%s</span> <span class="line-val">%s</span></span>',
 					$ind,
 					$key,
-					$value
+					htmlspecialchars( $value )
 				);
 			}
+		}
+
+		if ( ! empty( $cookies ) && is_array( $cookies ) ) {
+			if ( count( $detail_lines ) ) {
+				$detail_lines[] = '<hr />';
+			}
+			ksort( $cookies );
+			$ind = 0;
+			$detail_lines[] = __( 'Cookies:', 'membership2' );
+			foreach ( $cookies as $key => $value ) {
+				$ind += 1;
+				$parts = explode( '=', $value );
+				if ( count( $parts ) < 2 ) { continue; }
+
+				$detail_lines[] = sprintf(
+					'<span class="line"><small class="line-num">%s</small> <span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+					$ind,
+					array_shift( $parts ),
+					htmlspecialchars( implode( '=', $parts ) )
+				);
+			}
+		}
+
+		if ( count( $detail_lines ) ) {
+			$detail_lines[] = '<hr />';
+		}
+
+		$detail_lines[] = __( 'Logged in user:', 'membership2' );
+		$user_id = $item->user_id;
+		if ( $user_id ) {
+			$user = get_user_by( 'id', $user_id );
+			$detail_lines[] = sprintf(
+				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+				1,
+				__( 'User ID', 'membership2' ),
+				$user_id
+			);
+			$detail_lines[] = sprintf(
+				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+				2,
+				__( 'Username', 'membership2' ),
+				$user->user_login
+			);
+			$detail_lines[] = sprintf(
+				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+				3,
+				__( 'Email', 'membership2' ),
+				$user->user_email
+			);
+		} else {
+			$detail_lines[] = sprintf(
+				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+				1,
+				__( 'Guest', 'membership2' ),
+				__( 'Could not determine a logged in user', 'membership2' )
+			);
 		}
 
 		$req_url = $item->url;
 		if ( ! empty( $req_url ) ) {
 			if ( count( $detail_lines ) ) {
-				$detail_lines[] = '<hr>';
+				$detail_lines[] = '<hr />';
 			}
 			$detail_lines[] = sprintf(
 				'<span class="line"><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
