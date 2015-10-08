@@ -1,0 +1,14 @@
+Special test cases:
+
+-------------------------------------------------------------------------------
+
+Test 001:
+  Register a new account with a username that is already taken.
+Expected:
+  A message is displayed "The username is already taken"
+
+Related:
+  Also test with used email address, similar message should appear for "email address".
+  https://app.asana.com/0/10167801056814/45241575060225
+
+-------------------------------------------------------------------------------
