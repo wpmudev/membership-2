@@ -3,12 +3,23 @@ Special test cases:
 -------------------------------------------------------------------------------
 
 Test 001:
-  Register a new account with a username that is already taken.
-Expected:
-  A message is displayed "The username is already taken"
+  1. Membership2 > Settings > Edit the Register page
+  2. Replace default content with shortcode (enter valid membership ID) 
+     [ms-membership-register-user membership_id="14203"]
+  3. Visit registration page and try to register with existing username.
 
-Related:
-  Also test with used email address, similar message should appear for "email address".
+Correct:
+  A message is displayed "The username is already taken".
+  
+Wrong:
+  The page reloads and no error message is displayed.
+
+Notes:
+  Also test with used email address, similar message should appear for 
+  "email address".
   https://app.asana.com/0/10167801056814/45241575060225
+  
+  Problem only happened when the mentioned shortcode is used on the 
+  special M2 Register page!
 
 -------------------------------------------------------------------------------

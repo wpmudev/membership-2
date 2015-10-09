@@ -48,12 +48,13 @@ class MS_Controller_Frontend extends MS_Controller {
 
 	/**
 	 * User registration errors.
+	 * This variable is used by the class MS_View_Shortcode_RegisterUser.
 	 *
 	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
-	private $register_errors;
+	static public $register_errors;
 
 	/**
 	 * Allowed actions to execute in template_redirect hook.
@@ -522,7 +523,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$custom_code = apply_filters(
 			'ms_frontend_custom_registration_form',
 			'',
-			$this->register_errors,
+			self::$register_errors,
 			$this
 		);
 
@@ -538,9 +539,8 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			if ( ! $did_form ) {
 				$scode = sprintf(
-					'[%s errors="%s"]',
-					MS_Helper_Shortcode::SCODE_REGISTER_USER,
-					str_replace( '"', "'", $this->register_errors )
+					'[%s]',
+					MS_Helper_Shortcode::SCODE_REGISTER_USER
 				);
 				$reg_form = do_shortcode( $scode );
 
@@ -619,13 +619,13 @@ class MS_Controller_Frontend extends MS_Controller {
 			exit;
 		}
 		catch( Exception $e ) {
-			$this->register_errors = $e->getMessage();
+			self::$register_errors = $e->getMessage();
 
 			// step back
 			$this->add_action( 'the_content', 'register_form', 1 );
 			do_action(
 				'ms_controller_frontend_register_user_error',
-				$this->register_errors
+				self::$register_errors
 			);
 		}
 	}

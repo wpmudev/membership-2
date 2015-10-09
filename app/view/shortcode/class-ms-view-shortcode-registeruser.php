@@ -321,10 +321,12 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 	 * @internal
 	 */
 	protected function render_errors() {
-		if ( ! empty( $this->data['errors'] ) ) {
+		$errors = MS_Controller_Frontend::$register_errors;
+
+		if ( ! empty( $errors ) ) {
 			?>
 			<div class="ms-alert-box ms-alert-error">
-				<?php echo $this->data['errors']; ?>
+				<?php echo $errors; ?>
 			</div>
 			<?php
 		}

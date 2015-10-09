@@ -224,7 +224,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'hint_password2' => '',
 					'title' => __( 'Create an Account', 'membership2' ),
 					'loginlink' => true,
-					'errors' => '',
 				),
 				$atts
 			)
