@@ -14,9 +14,9 @@ Change Log:
 - Fix PHP warnings caused by Profile Fields Add-on
 - Fix display of line-breaks in membership description on front-end
 - Fix bug in invitation codes/coupons Add-on that randomly created empty codes
-- Fix invitation code Add-on so errors are not displayed for correct invitation codes during checkout
+- Fix invitation code Add-on so entering correct codes does not trigger an error message
 - Fix for caching issues on WP Engine
-- Fix rare issues when registering username that is already in use
+- Fix missing error messages when registering username that is already in use
 
 1.0.2.2
 ----------------------------------------------------------------------
