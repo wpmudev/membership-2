@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro Beta 1.0.2.3-beta\n"
+"Project-Id-Version: Membership 2 Pro 1.0.2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-10-08 18:16:33+00:00\n"
+"POT-Creation-Date: 2015-10-09 19:18:53+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -172,7 +172,7 @@ msgstr ""
 #: app/addon/invitation/view/class-ms-addon-invitation-view-edit.php:133
 #: app/addon/invitation/view/class-ms-addon-invitation-view-edit.php:134
 #: app/controller/class-ms-controller-membership.php:1263
-#: app/controller/class-ms-controller-shortcode.php:258
+#: app/controller/class-ms-controller-shortcode.php:257
 #: app/helper/class-ms-helper-listtable.php:1272
 #: app/view/billing/class-ms-view-billing-edit.php:212
 #: app/view/billing/class-ms-view-billing-edit.php:213
@@ -213,7 +213,7 @@ msgstr ""
 #: app/addon/bbpress/rule/class-ms-addon-bbpress-rule-listtable.php:55
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:95
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:94
-#: app/controller/class-ms-controller-shortcode.php:729
+#: app/controller/class-ms-controller-shortcode.php:728
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:108
 #: app/rule/cptitem/class-ms-rule-cptitem-listtable.php:46
 #: app/rule/media/class-ms-rule-media-listtable.php:48
@@ -691,7 +691,7 @@ msgid "Customize fields in the user profile and registration form."
 msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:181
-#: app/controller/class-ms-controller-shortcode.php:638
+#: app/controller/class-ms-controller-shortcode.php:637
 #: app/helper/listtable/class-ms-helper-listtable-member.php:66
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:630
 #: app/model/class-ms-model-member.php:991 app/view/class-ms-view-help.php:767
@@ -704,8 +704,8 @@ msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:188
 #: app/controller/class-ms-controller-shortcode.php:212
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:167
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:169
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:171
 #: app/helper/listtable/class-ms-helper-listtable-member.php:407
 #: app/view/class-ms-view-help.php:415
 #: app/view/frontend/class-ms-view-frontend-profile.php:73
@@ -715,8 +715,8 @@ msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:194
 #: app/controller/class-ms-controller-shortcode.php:213
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:173
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:175
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:177
 #: app/helper/listtable/class-ms-helper-listtable-member.php:408
 #: app/view/class-ms-view-help.php:422
 #: app/view/frontend/class-ms-view-frontend-profile.php:79
@@ -751,7 +751,7 @@ msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:224
 #: app/controller/class-ms-controller-shortcode.php:216
-#: app/controller/class-ms-controller-shortcode.php:639
+#: app/controller/class-ms-controller-shortcode.php:638
 #: app/model/class-ms-model-member.php:993 app/view/class-ms-view-help.php:443
 #: app/view/class-ms-view-help.php:775
 #: app/view/frontend/class-ms-view-frontend-profile.php:91
@@ -2195,7 +2195,7 @@ msgstr ""
 msgid "Check your e-mail for the confirmation link."
 msgstr ""
 
-#: app/controller/class-ms-controller-frontend.php:505
+#: app/controller/class-ms-controller-frontend.php:506
 #: app/model/class-ms-model-member.php:984
 msgid "Registration is currently not allowed."
 msgstr ""
@@ -2535,8 +2535,8 @@ msgstr ""
 msgid "Create an Account"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:256
-#: app/controller/class-ms-controller-shortcode.php:466
+#: app/controller/class-ms-controller-shortcode.php:255
+#: app/controller/class-ms-controller-shortcode.php:465
 #: app/gateway/2checkout/view/class-ms-gateway-2checkout-view-button.php:155
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-button.php:105
 #: app/gateway/free/view/class-ms-gateway-free-view-button.php:105
@@ -2545,100 +2545,100 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:257
-#: app/controller/class-ms-controller-shortcode.php:725
+#: app/controller/class-ms-controller-shortcode.php:256
+#: app/controller/class-ms-controller-shortcode.php:724
 #: app/view/class-ms-view-help.php:545 app/view/class-ms-view-help.php:1420
 msgid "Change"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:259
+#: app/controller/class-ms-controller-shortcode.php:258
 #: app/view/class-ms-view-help.php:563
 msgid "Renew"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:260
+#: app/controller/class-ms-controller-shortcode.php:259
 #: app/view/class-ms-view-help.php:572
 msgid "Complete Payment"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:355
+#: app/controller/class-ms-controller-shortcode.php:354
 #: app/view/class-ms-view-help.php:1123
 msgid "Membership title:"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:408
+#: app/controller/class-ms-controller-shortcode.php:407
 #: app/view/class-ms-view-help.php:1167
 msgid "Membership price:"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:519
+#: app/controller/class-ms-controller-shortcode.php:518
 #: app/view/class-ms-view-help.php:1203
 msgid "Membership details:"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:640
+#: app/controller/class-ms-controller-shortcode.php:639
 #: app/view/class-ms-view-help.php:783
 #: app/view/shortcode/class-ms-view-shortcode-login.php:195
 msgid "Remember Me"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:641
+#: app/controller/class-ms-controller-shortcode.php:640
 #: app/view/class-ms-view-help.php:791
 #: app/view/shortcode/class-ms-view-shortcode-login.php:196
 msgid "Log In"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:651
+#: app/controller/class-ms-controller-shortcode.php:650
 #: app/view/class-ms-view-help.php:873
 #: app/view/shortcode/class-ms-view-shortcode-login.php:334
 msgid "Username or E-mail"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:652
+#: app/controller/class-ms-controller-shortcode.php:651
 #: app/view/class-ms-view-help.php:881
 #: app/view/shortcode/class-ms-view-shortcode-login.php:335
 #: app/view/shortcode/class-ms-view-shortcode-login.php:624
 msgid "Reset Password"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:724
+#: app/controller/class-ms-controller-shortcode.php:723
 #: app/view/class-ms-view-help.php:1402
 msgid "Your Membership"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:728
+#: app/controller/class-ms-controller-shortcode.php:727
 #: app/view/class-ms-view-help.php:1442
 msgid "Personal details"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:733
+#: app/controller/class-ms-controller-shortcode.php:732
 #: app/view/class-ms-view-help.php:1482
 #: app/view/settings/class-ms-view-settings-import.php:160
 msgid "Invoices"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:734
-#: app/controller/class-ms-controller-shortcode.php:739
+#: app/controller/class-ms-controller-shortcode.php:733
+#: app/controller/class-ms-controller-shortcode.php:738
 #: app/view/class-ms-view-help.php:1509 app/view/class-ms-view-help.php:1558
 msgid "View all"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:738
+#: app/controller/class-ms-controller-shortcode.php:737
 #: app/view/class-ms-view-help.php:1531
 msgid "Activities"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:816
+#: app/controller/class-ms-controller-shortcode.php:815
 msgid "Visit your account page for more information."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1174
+#: app/controller/class-ms-controller-shortcode.php:1173
 msgid ""
 "Content Protection is disabled. Please enable the protection to see this "
 "shortcode."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1178
+#: app/controller/class-ms-controller-shortcode.php:1177
 msgid "This message is only displayed to Site Administrators"
 msgstr ""
 
@@ -2689,23 +2689,23 @@ msgstr ""
 msgid "Payment button label or URL"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:69
+#: app/gateway/authorize/class-ms-gateway-authorize.php:72
 msgid "Authorize.net Gateway"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:93
+#: app/gateway/authorize/class-ms-gateway-authorize.php:96
 msgid "You must use HTTPS in order to do this"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:110
+#: app/gateway/authorize/class-ms-gateway-authorize.php:113
 msgid "The selected payment profile is invalid, enter a new credit card"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:193
+#: app/gateway/authorize/class-ms-gateway-authorize.php:199
 msgid "Total is zero. Payment approved. Not sent to gateway."
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:243
+#: app/gateway/authorize/class-ms-gateway-authorize.php:250
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:133
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:285
 #: app/gateway/stripe/class-ms-gateway-stripe.php:131
@@ -2715,23 +2715,27 @@ msgstr ""
 msgid "Payment successful"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:246
+#: app/gateway/authorize/class-ms-gateway-authorize.php:253
 msgid "Payment Failed: code %s, subcode %s, reason code %, reason %s"
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:254
+#: app/gateway/authorize/class-ms-gateway-authorize.php:261
 msgid "Payment Failed: "
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:519
+#: app/gateway/authorize/class-ms-gateway-authorize.php:264
+msgid "Secure payment failed: No Card Code found"
+msgstr ""
+
+#: app/gateway/authorize/class-ms-gateway-authorize.php:535
 msgid "Payment failed due to CIM profile not created: "
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:562
+#: app/gateway/authorize/class-ms-gateway-authorize.php:578
 msgid "Payment failed due to CIM profile not updated: "
 msgstr ""
 
-#: app/gateway/authorize/class-ms-gateway-authorize.php:621
+#: app/gateway/authorize/class-ms-gateway-authorize.php:637
 msgid "CIM Payment profile not found"
 msgstr ""
 
@@ -2741,7 +2745,7 @@ msgid "Credit card info"
 msgstr ""
 
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-card.php:16
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:138
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:140
 #: app/gateway/stripe/view/class-ms-gateway-stripe-view-card.php:15
 msgid "Card Number"
 msgstr ""
@@ -2756,47 +2760,51 @@ msgstr ""
 msgid "Change card number"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:29
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:31
 msgid "Credit Card Information"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:54
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:56
 msgid "Billing Information"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:125
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:127
 msgid "Month"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:130
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:132
 msgid "Year"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:145
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:147
 msgid "Card Code"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:152
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:154
 msgid "Expires"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:179
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:181
 msgid "Country"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:188
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:190
 msgid "Pay now"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:195
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:197
 msgid "Change card"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:241
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:244
 msgid "Enter a new credit card"
 msgstr ""
 
-#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:255
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:256
+msgid "Enter the credit cards CVC code to verify the payment"
+msgstr ""
+
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:270
 msgid "Stored Credit Cards"
 msgstr ""
 
@@ -2812,6 +2820,23 @@ msgstr ""
 
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-settings.php:53
 msgid "API Transaction Key"
+msgstr ""
+
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-settings.php:75
+msgid "Secure Payments"
+msgstr ""
+
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-settings.php:84
+msgid ""
+"Default payment option: Credit card details need to be entered once and can "
+"be reused without entering the CVC number again."
+msgstr ""
+
+#: app/gateway/authorize/view/class-ms-gateway-authorize-view-settings.php:91
+msgid ""
+"Secure payment option: The user needs to enter the credit cards CVC number "
+"for every transaction - even for saved credit cards and every recurring "
+"payment."
 msgstr ""
 
 #: app/gateway/free/class-ms-gateway-free.php:35
@@ -7572,7 +7597,7 @@ msgid ""
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-msgid "Membership 2 Pro Beta"
+msgid "Membership 2 Pro"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
