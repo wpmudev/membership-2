@@ -29,7 +29,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @since  1.0.0
 	 * @var string $cim
 	 */
-	protected static $cim;
+	protected static $cim = '';
 
 	/**
 	 * Authorize.net API login IP.
@@ -38,7 +38,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @since  1.0.0
 	 * @var string $api_login_id
 	 */
-	protected $api_login_id;
+	protected $api_login_id = '';
 
 	/**
 	 * Authorize.net API transaction key.
@@ -46,15 +46,18 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @since  1.0.0
 	 * @var string $api_transaction_key
 	 */
-	protected $api_transaction_key;
+	protected $api_transaction_key = '';
 
 	/**
-	 * Authorize.net custom log file.
+	 * Secure transactions flag.
+	 * If set to true then each payment request will include the users credit
+	 * card verificaton code (CVC). This means that all recurring payments need
+	 * the user to enter the CVC code again.
 	 *
 	 * @since  1.0.0
-	 * @var string $log_file
+	 * @var bool $secure_cc
 	 */
-	protected $log_file;
+	protected $secure_cc = false;
 
 
 	/**
@@ -189,13 +192,16 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this
 		);
 
+		$need_code = lib3()->is_true( $this->secure_cc );
+		$have_code = ! empty( $_POST['card_code'] );
+
 		if ( 0 == $invoice->total ) {
 			$notes = __( 'Total is zero. Payment approved. Not sent to gateway.', 'membership2' );
 			$invoice->pay_it( MS_Gateway_Free::ID, '' );
 			$invoice->add_notes( $notes );
 			$invoice->save();
 			$invoice->changed();
-		} else {
+		} elseif ( ! $need_code || $have_code ) {
 			$amount = MS_Helper_Billing::format_price( $invoice->total );
 
 			$cim_transaction = $this->get_cim_transaction( $member );
@@ -205,6 +211,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$invoice->timestamp = time();
 			$invoice->save();
 
+			$_POST['API Out: Secure Payment'] = lib3()->is_true( $this->secure_cc );
 			$_POST['API Out: CustomerProfileID'] = $cim_transaction->customerProfileId;
 			$_POST['API Out: PaymentProfileID'] = $cim_transaction->customerPaymentProfileId;
 			$_POST['API Out: InvoiceNumber'] = $cim_transaction->order->invoiceNumber;
@@ -253,10 +260,13 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			} else {
 				$notes = __( 'Payment Failed: ', 'membership2' ) . $response->getMessageText();
 			}
+		} elseif ( $need_code && ! $have_code ) {
+			$notes = __( 'Secure payment failed: No Card Code found', 'membership2' );
 		}
 
 		// Mask the credit card number before logging it to database.
 		$card_num = '';
+		$card_code = '';
 		if ( isset( $_POST['card_num'] ) ) {
 			// Card Num   6789765435678765
 			// Becomes    ************8765
@@ -267,6 +277,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 				'*',
 				STR_PAD_LEFT
 			);
+		}
+		if ( isset( $_POST['card_code'] ) ) {
+			$card_code = $_POST['card_code'];
+			$_POST['card_code'] = str_repeat( '*', strlen( $card_code ) );
 		}
 
 		do_action(
@@ -283,9 +297,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 		// Restore the POST data in case it's used elsewhere.
 		$_POST['card_num'] = $card_num;
+		$_POST['card_code'] = $card_code;
 		unset( $_POST['API Out: CustomerProfileID'] );
 		unset( $_POST['API Out: PaymentProfileID'] );
 		unset( $_POST['API Out: InvoiceNumber'] );
+		unset( $_POST['API Out: Secure Payment'] );
 		unset( $_POST['API Response: Short'] );
 		unset( $_POST['API Response: XML'] );
 
@@ -359,8 +375,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$cim = new M2_AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
 			$cim->setSandbox( $this->mode != self::MODE_LIVE );
 
-			if ( $this->log_file ) {
-				$cim->setLogFile( $this->log_file );
+			if ( WDEV_DEBUG ) { // defined in wpmu-lib submodule.
+				$cim->setLogFile( WP_CONTENT_DIR . '/authorize-net.log' );
 			}
 			self::$cim = $cim;
 		}
@@ -624,6 +640,13 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$transaction = new M2_AuthorizeNetTransaction();
 		$transaction->customerProfileId = $cim_profile_id;
 		$transaction->customerPaymentProfileId = $cim_payment_profile_id;
+
+		// Include the card code if the secure-cc flag is enabled!
+		if ( lib3()->is_true( $this->secure_cc ) ) {
+			if ( ! empty( $_POST['card_code'] ) ) {
+				$transaction->cardCode = $_POST['card_code'];
+			}
+		}
 
 		return apply_filters(
 			'ms_gateway_authorize_get_cim_transaction',

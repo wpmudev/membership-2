@@ -121,9 +121,12 @@ window.ms_init.gateway_authorize = function init () {
 		jQuery( 'input[name="profile"]').change( function() {
 			if ( jQuery( this ).val() === '0' ) {
 				new_card.show();
+				profiles.find('.ms-row-card_cvc').hide();
+				profiles.find('.ms-row-card_cvc input').val('');
 				profiles.find('.ms-row-submit').hide();
 			} else {
 				new_card.hide();
+				profiles.find('.ms-row-card_cvc').show();
 				profiles.find('.ms-row-submit').show();
 			}
 		});

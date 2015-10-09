@@ -1169,8 +1169,10 @@ input[type="image"] {
   height: 100px;
 }
 
-.ms-settings-payment .ms-global-payment-wrapper .wpmui-field-input {
+.ms-settings-payment .ms-global-payment-wrapper .wpmui-field-input,
+.ms-settings-payment .ms-global-payment-wrapper .select2-container {
   width: 100%;
+  display: block;
 }
 .ms-settings-payment .ms-global-payment-wrapper th.column-active,
 .ms-settings-payment .ms-global-payment-wrapper td.column-active {

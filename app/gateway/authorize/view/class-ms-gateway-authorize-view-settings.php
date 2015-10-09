@@ -69,6 +69,28 @@ class MS_Gateway_Authorize_View_Settings extends MS_View {
 				'class' => 'ms-text-large',
 				'ajax_data' => array( 1 ),
 			),
+
+			'secure_cc' => array(
+				'id' => 'secure_cc',
+				'title' => __( 'Secure Payments', 'membership2' ),
+				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'value' => $gateway->secure_cc,
+				'ajax_data' => array( 1 ),
+			),
+
+			'secure_cc_off' => array(
+				'id' => 'secure_cc_off',
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'value' => __( 'Default payment option: Credit card details need to be entered once and can be reused without entering the CVC number again.', 'membership2' ),
+				'class' => 'hidden secure_cc_off',
+			),
+
+			'secure_cc_on' => array(
+				'id' => 'secure_cc_on',
+				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'value' => __( 'Secure payment option: The user needs to enter the credit cards CVC number for every transaction - even for saved credit cards and every recurring payment.', 'membership2' ),
+				'class' => 'hidden secure_cc_on',
+			),
 		);
 
 		// Process the fields and add missing default attributes.

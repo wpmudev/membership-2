@@ -665,8 +665,10 @@
 
 .ms-settings-payment {
 	.ms-global-payment-wrapper {
-		.wpmui-field-input {
+		.wpmui-field-input,
+		.select2-container {
 			width: 100%;
+			display: block;
 		}
 
 		th.column-active,

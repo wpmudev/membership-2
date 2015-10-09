@@ -16,12 +16,14 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 				<?php if ( $this->data['auth_error'] ): ?>
 					<div class="ms-validation-error"><p><?php echo $this->data['auth_error']; ?></p></div>
 				<?php endif; ?>
+
+				<?php $this->render_cim_profiles( $fields ); ?>
+
 				<form id="ms-authorize-extra-form" method="post" class="ms-form">
 					<?php foreach ( $fields['hidden'] as $field ): ?>
 						<?php MS_Helper_Html::html_element( $field ); ?>
 					<?php endforeach;?>
 
-					<?php $this->render_cim_profiles( $fields ); ?>
 					<div id="ms-authorize-card-wrapper">
 						<table class="form-table ms-form-table">
 							<tr>
@@ -214,6 +216,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 			return;
 		}
 
+		$gateway = MS_Model_Gateway::factory( MS_Gateway_Authorize::ID );
 		$cim_profiles = $this->data['cim_profiles'];
 
 		// if we have one record in profile, then wrap it into array to make it
@@ -248,24 +251,44 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 		if ( $this->data['cim_payment_profile_id'] ) {
 			$cim['value'] = $this->data['cim_payment_profile_id'];
 		}
+		$card_cvc = array(
+			'id' => 'card_code',
+			'title' => __( 'Enter the credit cards CVC code to verify the payment', 'membership2' ),
+			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+			'placeholder' => 'CVC',
+			'maxlength' => 4,
+		);
 		?>
-		<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
-			<table>
-				<tr>
-					<td class="ms-title-row"><?php _e( 'Stored Credit Cards', 'membership2' ); ?></td>
-				</tr>
-				<tr>
-					<td class="ms-col-cim_profiles">
-					<?php MS_Helper_Html::html_element( $cim );?>
-					</td>
-				</tr>
-				<tr class="ms-row-submit">
-					<td class="ms-col-submit">
-						<?php MS_Helper_Html::html_element( $fields['submit'] ); ?>
-					</td>
-				</tr>
-			</table>
-		</div>
+		<form id="ms-authorize-extra-form" method="post" class="ms-form">
+			<?php foreach ( $fields['hidden'] as $field ): ?>
+				<?php MS_Helper_Html::html_element( $field ); ?>
+			<?php endforeach;?>
+
+			<div id="ms-authorize-cim-profiles-wrapper" class="authorize-form-block">
+				<table>
+					<tr>
+						<td class="ms-title-row"><?php _e( 'Stored Credit Cards', 'membership2' ); ?></td>
+					</tr>
+					<tr>
+						<td class="ms-col-cim_profiles">
+						<?php MS_Helper_Html::html_element( $cim );?>
+						</td>
+					</tr>
+					<?php if ( lib3()->is_true( $gateway->secure_cc ) ) : ?>
+					<tr class="ms-row-card_cvc">
+						<td>
+						<?php MS_Helper_Html::html_element( $card_cvc ); ?>
+						</td>
+					</tr>
+					<?php endif; ?>
+					<tr class="ms-row-submit">
+						<td class="ms-col-submit">
+							<?php MS_Helper_Html::html_element( $fields['submit'] ); ?>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</form>
 		<?php
 	}
 }
