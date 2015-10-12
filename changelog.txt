@@ -12,6 +12,7 @@ Change Log:
 - Improve UI of the Authorize.Net payment form on front end
 - Fix possible issue with Authorize.Net Gateway that might send empty form to the gateway
 - Fix PHP warnings caused by Profile Fields Add-on
+- Fix a bug in the Taxamo-Addon to include correct currency code with transactions
 - Fix display of line-breaks in membership description on front-end
 - Fix bug in invitation codes/coupons Add-on that randomly created empty codes
 - Fix invitation code Add-on so entering correct codes does not trigger an error message

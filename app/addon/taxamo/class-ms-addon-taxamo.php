@@ -348,7 +348,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 			$member->full_name,  // Buyer name
 			$member->email,  // Buyer email
 			$invoice->gateway_id, // Payment gateway
-			$invoice->currency_code, // Currency of invoice
+			$invoice->currency, // Currency of invoice
 			$invoice->checkout_ip // IP of the user
 		);
 	}
