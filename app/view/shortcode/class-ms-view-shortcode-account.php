@@ -398,8 +398,7 @@ class MS_View_Shortcode_Account extends MS_View {
 							<td class="ms-col-activity-date"><?php
 								echo esc_html(
 									MS_Helper_Period::format_date(
-										$event->post_modified,
-										__( 'F j (H:i)', 'membership2' )
+										$event->post_modified
 									)
 								);
 							?></td>
