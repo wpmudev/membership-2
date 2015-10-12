@@ -401,7 +401,7 @@ class MS_Model_Import extends MS_Model {
 		elseif ( ! is_object( $pay ) ) { $pay = (object) array(); }
 
 		lib3()->array->equip(
-			$obj,
+			$pay,
 			'stripe_card_exp',
 			'stripe_card_num',
 			'stripe_customer',
@@ -481,17 +481,19 @@ class MS_Model_Import extends MS_Model {
 		$is_paid = false;
 
 		// Import invoices for this subscription
-		foreach ( $obj->invoices as $invoice ) {
-			$invoice = (object) $invoice;
-			$this->import_invoice( $subscription, $invoice );
-			$is_paid = true;
+		if ( ! empty( $obj->invoices ) && is_array( $obj->invoices ) ) {
+			foreach ( $obj->invoices as $invoice ) {
+				$invoice = (object) $invoice;
+				$this->import_invoice( $subscription, $invoice );
+				$is_paid = true;
+			}
 		}
 
 		// Add a payment for active subscriptions.
 		if ( ! $is_paid && MS_Model_Relationship::STATUS_ACTIVE == $subscription->status ) {
 			$subscription->add_payment(
 				$membership->price,
-				MS_Gateway_Admin::ID,
+				'admin',
 				'imported'
 			);
 		}
