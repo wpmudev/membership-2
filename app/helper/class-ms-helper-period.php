@@ -415,7 +415,8 @@ class MS_Helper_Period extends MS_Helper {
 			$format = get_option( 'date_format' );
 		}
 
-		$result = date_i18n( $format, strtotime( $date ) );
+		$result = self::get_date_time_value( $format, strtotime( $date ), true, true );
+		//$result = date_i18n( $format, strtotime( $date ) );
 
 		return apply_filters(
 			'ms_format_date',
@@ -423,5 +424,27 @@ class MS_Helper_Period extends MS_Helper {
 			$date,
 			$format
 		);
+	}
+	
+	public static function get_date_time_value( $format = null, $str = false, $date = true, $time = false, $gmt = true, $zone = false ){
+		$res = '';
+		if ( empty( $format ) ) {
+			$format = get_option( 'date_format' );
+		}
+		if ( $str == false ) {
+		    $str = current_time( 'timestamp' );
+		}
+		if ( $date ) {
+		    $res .= date_i18n( $format, $str );
+		}
+		if ( $gmt && $time ) {
+		    $res .= ' ' . date_i18n( get_option( 'time_format' ), $str + ( get_option( 'gmt_offset' ) * 3600 ) );
+		}elseif( $time ){
+			$res .= ' ' . date_i18n( get_option( 'time_format' ), $str );
+		}
+		if ( $zone ) {
+		    $res .= ' UTC ' . ( ( get_option( 'gmt_offset' ) > 0 ) ? '+ ' : '' ) . get_option( 'gmt_offset' );
+		}
+		return $res;
 	}
 }
