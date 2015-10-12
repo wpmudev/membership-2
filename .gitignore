@@ -5,3 +5,4 @@ node_modules
 release
 OK
 *.local
+.DS_Store
