@@ -378,7 +378,7 @@ class MS_Controller_Api extends MS_Hooker {
 			$result = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		}
 
-		return $result;
+		return apply_filters( 'ms_detect_membership_result', $result, $membership_id );
 	}
 
 	/**
