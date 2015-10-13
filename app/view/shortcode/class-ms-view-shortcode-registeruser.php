@@ -300,7 +300,9 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			'ms_shortcode_register_form_rules',
 			$rule_data
 		);
-
+		
+		wp_enqueue_script( 'jquery-validate' );
+		
 		ob_start();
 		?>
 		jQuery(function() {
