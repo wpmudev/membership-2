@@ -679,6 +679,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			return $content;
 		}
 
+		// Invalid membership ID was specified: Redirect to membership list.
+		if ( ! $subscription ) {
+			MS_Model_Pages::redirect_to( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+		}
+
 		$invoice = $subscription->get_current_invoice();
 
 		/**
