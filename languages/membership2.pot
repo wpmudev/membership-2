@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-10-09 19:18:53+00:00\n"
+"POT-Creation-Date: 2015-10-12 20:44:08+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -697,7 +697,7 @@ msgstr ""
 #: app/model/class-ms-model-member.php:991 app/view/class-ms-view-help.php:767
 #: app/view/member/class-ms-view-member-editor.php:201
 #: app/view/settings/class-ms-view-settings-import.php:157
-#: app/view/shortcode/class-ms-view-shortcode-account.php:469
+#: app/view/shortcode/class-ms-view-shortcode-account.php:468
 #: app/view/shortcode/class-ms-view-shortcode-login.php:193
 msgid "Username"
 msgstr ""
@@ -737,7 +737,7 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:636
 #: app/view/member/class-ms-view-member-editor.php:211
 #: app/view/settings/class-ms-view-settings-import.php:158
-#: app/view/shortcode/class-ms-view-shortcode-account.php:470
+#: app/view/shortcode/class-ms-view-shortcode-account.php:469
 msgid "Email"
 msgstr ""
 
@@ -6398,13 +6398,12 @@ msgid "Activity"
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-activities.php:37
-#: app/view/shortcode/class-ms-view-shortcode-account.php:402
 msgid "F j (H:i)"
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-activities.php:51
 #: app/view/frontend/class-ms-view-frontend-invoices.php:82
-#: app/view/shortcode/class-ms-view-shortcode-account.php:436
+#: app/view/shortcode/class-ms-view-shortcode-account.php:435
 msgid "Your account"
 msgstr ""
 
@@ -6506,12 +6505,12 @@ msgid "User name"
 msgstr ""
 
 #: app/view/member/class-ms-view-member-editor.php:93
-#: app/view/shortcode/class-ms-view-shortcode-account.php:467
+#: app/view/shortcode/class-ms-view-shortcode-account.php:466
 msgid "First name"
 msgstr ""
 
 #: app/view/member/class-ms-view-member-editor.php:99
-#: app/view/shortcode/class-ms-view-shortcode-account.php:468
+#: app/view/shortcode/class-ms-view-shortcode-account.php:467
 msgid "Last name"
 msgstr ""
 
