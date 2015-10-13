@@ -20,6 +20,9 @@ Change Log:
 - Fix missing error messages when registering username that is already in use
 - Fix wrong file-type displayed (always jpg) in the media protection add-on
 - Fix error during import "class MS_Gateway_Admin not found"
+- Fix incorrect message "BuddyPress uses Membership page"
+- Fix dates that displayed in GMT instead of local timezone
+- Fix bug that allowed logged-in users to register a new account
 
 1.0.2.2
 ----------------------------------------------------------------------

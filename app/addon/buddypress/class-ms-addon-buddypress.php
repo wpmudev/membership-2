@@ -50,8 +50,10 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @since  1.0.0
 	 */
 	public function init() {
-		
-		if ( self::buddypress_active() ) $this->collission_check();
+
+		if ( self::buddypress_active() ) {
+			$this->collission_check();
+		}
 
 		if ( self::is_active() ) {
 			$this->buddypress_registration = lib3()->is_true(

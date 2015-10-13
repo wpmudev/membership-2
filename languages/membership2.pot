@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-10-12 20:44:08+00:00\n"
+"POT-Creation-Date: 2015-10-13 10:42:10+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -184,7 +184,7 @@ msgstr ""
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:111
 #: app/view/settings/class-ms-view-settings-import.php:352
 #: app/view/settings/page/class-ms-view-settings-page-setup.php:133
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:29
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:32
 msgid "Cancel"
 msgstr ""
 
@@ -242,49 +242,49 @@ msgstr ""
 msgid "Protect the following bbPress content to members only."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:143
+#: app/addon/buddypress/class-ms-addon-buddypress.php:146
 msgid ""
 "BuddyPress uses a page that is also used as a Membership page by Membership "
 "2.<br>Please assign a different page for either %sMembership 2%s or "
 "%sBuddyPress%s to avoid conflicts."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:164
+#: app/addon/buddypress/class-ms-addon-buddypress.php:167
 msgid "BuddyPress Integration"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:165
+#: app/addon/buddypress/class-ms-addon-buddypress.php:168
 msgid "Integrate BuddyPress with Membership 2."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:170
+#: app/addon/buddypress/class-ms-addon-buddypress.php:173
 #: app/controller/class-ms-controller-plugin.php:434
 #: app/controller/class-ms-controller-plugin.php:458
 #: app/view/class-ms-view-help.php:173
 msgid "Protection Rules"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:171
+#: app/addon/buddypress/class-ms-addon-buddypress.php:174
 msgid "Adds BuddyPress rules in the \"Protection Rules\" page."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:176
+#: app/addon/buddypress/class-ms-addon-buddypress.php:179
 msgid "Use BuddyPress Registration"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:178
+#: app/addon/buddypress/class-ms-addon-buddypress.php:181
 msgid ""
 "Enable this option to use the BuddyPress registration page instead of the "
 "Membership 2 registration page."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:180
+#: app/addon/buddypress/class-ms-addon-buddypress.php:183
 msgid ""
 "New users are automatically activated by Membership 2 and no confirmation "
 "email is sent to the user!"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:193
+#: app/addon/buddypress/class-ms-addon-buddypress.php:196
 msgid "Activate BuddyPress to use this Add-on"
 msgstr ""
 
@@ -694,7 +694,7 @@ msgstr ""
 #: app/controller/class-ms-controller-shortcode.php:637
 #: app/helper/listtable/class-ms-helper-listtable-member.php:66
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:630
-#: app/model/class-ms-model-member.php:991 app/view/class-ms-view-help.php:767
+#: app/model/class-ms-model-member.php:996 app/view/class-ms-view-help.php:767
 #: app/view/member/class-ms-view-member-editor.php:201
 #: app/view/settings/class-ms-view-settings-import.php:157
 #: app/view/shortcode/class-ms-view-shortcode-account.php:468
@@ -752,7 +752,7 @@ msgstr ""
 #: app/addon/profilefields/class-ms-addon-profilefields.php:224
 #: app/controller/class-ms-controller-shortcode.php:216
 #: app/controller/class-ms-controller-shortcode.php:638
-#: app/model/class-ms-model-member.php:993 app/view/class-ms-view-help.php:443
+#: app/model/class-ms-model-member.php:998 app/view/class-ms-view-help.php:443
 #: app/view/class-ms-view-help.php:775
 #: app/view/frontend/class-ms-view-frontend-profile.php:91
 #: app/view/member/class-ms-view-member-editor.php:105
@@ -2200,7 +2200,7 @@ msgstr ""
 msgid "Registration is currently not allowed."
 msgstr ""
 
-#: app/controller/class-ms-controller-frontend.php:970
+#: app/controller/class-ms-controller-frontend.php:975
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
@@ -4517,46 +4517,50 @@ msgstr ""
 msgid "Select a user"
 msgstr ""
 
-#: app/model/class-ms-model-member.php:992
+#: app/model/class-ms-model-member.php:989
+msgid "You cannot register a new account, because you are already logged in."
+msgstr ""
+
+#: app/model/class-ms-model-member.php:997
 #: app/view/member/class-ms-view-member-editor.php:86
 msgid "Email address"
 msgstr ""
 
-#: app/model/class-ms-model-member.php:994
+#: app/model/class-ms-model-member.php:999
 msgid "Password confirmation"
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1014
+#: app/model/class-ms-model-member.php:1019
 msgid ""
 "Please ensure that the <span class=\"ms-bold\">%s</span> information is "
 "completed."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1024
-#: app/model/class-ms-model-member.php:1830
+#: app/model/class-ms-model-member.php:1029
+#: app/model/class-ms-model-member.php:1835
 msgid "Please ensure the passwords match."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1031
-#: app/model/class-ms-model-member.php:1067
+#: app/model/class-ms-model-member.php:1036
+#: app/model/class-ms-model-member.php:1072
 msgid "The username is not valid, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1038
+#: app/model/class-ms-model-member.php:1043
 msgid "That username is already taken, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1045
-#: app/model/class-ms-model-member.php:1823
+#: app/model/class-ms-model-member.php:1050
+#: app/model/class-ms-model-member.php:1828
 msgid "The email address is not valid, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1052
+#: app/model/class-ms-model-member.php:1057
 msgid "That email address is already taken, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1076
-#: app/model/class-ms-model-member.php:1085
+#: app/model/class-ms-model-member.php:1081
+#: app/model/class-ms-model-member.php:1090
 msgid "That email domain is not allowed for registration, sorry."
 msgstr ""
 
@@ -7539,13 +7543,13 @@ msgstr ""
 msgid "Available Memberships"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:36
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:44
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:39
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:47
 #: app/widget/class-ms-widget-login.php:74
 msgid "Login"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:47
+#: app/view/shortcode/class-ms-view-shortcode-registeruser.php:50
 msgid "Already have a user account?"
 msgstr ""
 
