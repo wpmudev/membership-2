@@ -888,7 +888,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 	 */
 	public function ms_note( $atts, $content = '' ) {
 		MS_Helper_Shortcode::did_shortcode( MS_Helper_Shortcode::SCODE_NOTE );
-
+		
+		lib3()->ui->css( 'ms-styles' );
+		
 		$atts = apply_filters(
 			'ms_controller_shortcode_note_atts',
 			shortcode_atts(

@@ -301,8 +301,6 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			$rule_data
 		);
 		
-		wp_enqueue_script( 'jquery-validate' );
-		
 		ob_start();
 		?>
 		jQuery(function() {
@@ -316,6 +314,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		});
 		<?php
 		$script = ob_get_clean();
+		lib3()->ui->js( 'jquery-validate' );
 		lib3()->ui->script( $script );
 	}
 
