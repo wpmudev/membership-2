@@ -985,6 +985,11 @@ class MS_Model_Member extends MS_Model {
 			return;
 		}
 
+		if ( is_user_logged_in() ) {
+			throw new Exception( __( 'You cannot register a new account, because you are already logged in.', 'membership2' ), 1 );
+			return;
+		}
+
 		$validation_errors = new WP_Error();
 
 		$required = array(
