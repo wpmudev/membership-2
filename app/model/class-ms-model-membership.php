@@ -1361,12 +1361,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				if ( $has_payment ) {
 					$desc = sprintf(
 						__( 'Pay for %1$s', 'membership2' ),
-						MS_Helper_Period::get_period_desc( $this->period )
+						MS_Helper_Period::get_period_desc( $this->period, true )
 					);
 				} else {
 					$desc = sprintf(
 						__( 'Free for %1$s', 'membership2' ),
-						MS_Helper_Period::get_period_desc( $this->period )
+						MS_Helper_Period::get_period_desc( $this->period, true )
 					);
 				}
 				break;
