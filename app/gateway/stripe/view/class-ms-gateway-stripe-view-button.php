@@ -20,6 +20,30 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 			$row_class .= ' sandbox-mode';
 		}
 
+		$stripe_data = array(
+			'name' => get_bloginfo( 'name' ),
+			'description' => strip_tags( $invoice->short_description ),
+			'label' => $gateway->pay_button_url,
+		);
+
+		/**
+		 * Users can change details (like the title or description) of the
+		 * stripe checkout popup.
+		 *
+		 * @since  1.0.2.4
+		 * @var array
+		 */
+		$stripe_data = apply_filters(
+			'ms_gateway_stripe_form_details',
+			$stripe_data,
+			$invoice
+		);
+
+		$stripe_data['email'] = $member->email;
+		$stripe_data['key'] = $gateway->get_publishable_key();
+		$stripe_data['currency'] = $invoice->currency;
+		$stripe_data['amount'] = ceil(abs( $invoice->total * 100 )); // Amount in cents.
+
 		ob_start();
 		?>
 		<form action="<?php echo esc_url( $action_url ); ?>" method="post">
@@ -30,16 +54,16 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 			?>
 			<script
 				src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-				data-key="<?php echo esc_attr( $gateway->get_publishable_key() ); ?>"
-				data-amount="<?php echo esc_attr( ceil(abs( $invoice->total * 100 )) ); //amount in cents ?>"
-				data-name="<?php echo esc_attr( bloginfo( 'name' ) ); ?>"
-				data-description="<?php echo esc_attr( strip_tags( $invoice->short_description ) ); ?>"
-				data-currency="<?php echo esc_attr( $invoice->currency ); ?>"
-				data-panel-label="<?php echo esc_attr( $gateway->pay_button_url ); ?>"
-				data-label="<?php echo esc_attr( $gateway->pay_button_url ); ?>"
-				data-email="<?php echo esc_attr( $member->email ); ?>"
-				>
-			</script>
+				<?php
+				foreach ( $stripe_data as $key => $value ) {
+					printf(
+						'data-%s="%s" ',
+						esc_attr( $key ),
+						esc_attr( $value )
+					);
+				}
+				?>
+			></script>
 		</form>
 		<?php
 		$payment_form = apply_filters(
