@@ -44,7 +44,7 @@ Change Log:
 1.0.2.1
 ----------------------------------------------------------------------
 - Fix parse error during user registration in older PHP versions
- 
+
 1.0.2.0
 ----------------------------------------------------------------------
 - Add new filter in Members list to filter members by subscription status (active/expired)

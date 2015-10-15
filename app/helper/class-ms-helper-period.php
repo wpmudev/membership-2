@@ -416,7 +416,6 @@ class MS_Helper_Period extends MS_Helper {
 		}
 
 		$result = self::get_date_time_value( $format, strtotime( $date ), true, true );
-		//$result = date_i18n( $format, strtotime( $date ) );
 
 		return apply_filters(
 			'ms_format_date',
@@ -425,26 +424,41 @@ class MS_Helper_Period extends MS_Helper {
 			$format
 		);
 	}
-	
-	public static function get_date_time_value( $format = null, $str = false, $date = true, $time = false, $gmt = true, $zone = false ){
+
+	public static function get_date_time_value( $format = null, $timestamp = false, $date = true, $time = false, $gmt = true, $zone = false ){
 		$res = '';
+
 		if ( empty( $format ) ) {
 			$format = get_option( 'date_format' );
 		}
-		if ( $str == false ) {
+
+		if ( $timestamp == false ) {
 		    $str = current_time( 'timestamp' );
 		}
+
 		if ( $date ) {
-		    $res .= date_i18n( $format, $str );
+		    $res .= date_i18n( $format, $timestamp );
 		}
-		if ( $gmt && $time ) {
-		    $res .= ' ' . date_i18n( get_option( 'time_format' ), $str + ( get_option( 'gmt_offset' ) * 3600 ) );
-		}elseif( $time ){
-			$res .= ' ' . date_i18n( get_option( 'time_format' ), $str );
+
+		if ( $time ) {
+			$zone_setting = floatval( get_option( 'gmt_offset' ) );
+
+			if ( $gmt ) {
+				$gm_offset = $zone_setting * 3600;
+			} else {
+				$gm_offset = 0;
+			}
+			$res .= ' ' . date_i18n( get_option( 'time_format' ), $timestamp + $gm_offset );
+
+			if ( $zone ) {
+				if ( $zone_setting ) {
+					$res .= ' UTC';
+				} else {
+			    	$res .= ' UTC ' . ( $zone_setting > 0 ? '+ ' : '- ' ) . $zone_setting;
+				}
+			}
 		}
-		if ( $zone ) {
-		    $res .= ' UTC ' . ( ( get_option( 'gmt_offset' ) > 0 ) ? '+ ' : '' ) . get_option( 'gmt_offset' );
-		}
+
 		return $res;
 	}
 }

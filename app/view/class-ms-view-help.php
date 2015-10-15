@@ -1631,6 +1631,7 @@ class MS_View_Help extends MS_View {
 		ob_start();
 		?>
 		<h2><?php _ex( 'Network-Wide Protection', 'help', 'membership2' ); ?></h2>
+		<?php if ( function_exists( 'membership2_init_pro_app' ) ) : ?>
 		<p>
 			<strong><?php _ex( 'Enable Network-Wide mode', 'help', 'membership2' ); ?></strong><br />
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_PROTECT_NETWORK", true );</code> to enable network wide protection. Important: Settings for Network-Wide mode are stored differently than normal (site-wide) settings. After switching to network wide mode the first time you have to set up the plugin again.<br />Note: The plugin will automatically enable itself network wide, you only need to add the option above.', 'help', 'membership2' ); ?>
@@ -1639,6 +1640,17 @@ class MS_View_Help extends MS_View {
 			<strong><?php _ex( 'Disable Network-Wide mode', 'help', 'membership2' ); ?></strong><br />
 			<?php _ex( 'Simply remove the line <code>define( "MS_PROTECT_NETWORK", true );</code> from wp-config.php to switch back to site-wide protection. All your previous Memberships will still be there (if you created site-wide memberships before enabling network-wide mode)<br />Note: After this change the plugin will still be enabled network wide, you have to go to Network Admin > Plugins and disable it if you only want to protect certain sites in your network.', 'help', 'membership2' ); ?>
 		</p>
+		<?php else : ?>
+		<p>
+			<?php
+			printf(
+				_x( 'Network wide protection is a Pro feature. %sRead more about the Pro Version here%s!', 'help', 'membership2' ),
+				'<a href="http://premium.wpmudev.org/project/membership" target="_blank">',
+				'</a>'
+			);
+			?>
+		</p>
+		<?php endif; ?>
 		<hr />
 		<?php
 		return ob_get_clean();

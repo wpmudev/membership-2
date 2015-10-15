@@ -273,7 +273,8 @@ module.exports = function( grunt ) {
 					'!**/js/vendor/**',
 					'!**/img/src/**',
 					'!**/Gruntfile.js',
-					'!**/.log'
+					'!**/.log',
+					'!tests/**'
 				],
 				dest: 'release/<%= pkg.version %>/'
 			}
