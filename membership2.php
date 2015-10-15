@@ -78,9 +78,7 @@ function membership2_init_pro_app() {
 	 */
 	define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
 
-	/**
-	 * Include WPMUDev Dashboard
-	 */
+	// WPMUDEV Dashboard
 	global $wpmudev_notices;
 	$wpmudev_notices[] = array(
 		'id' => 1003656,
@@ -110,7 +108,7 @@ function membership2_init_pro_app() {
 	do_action(
 		'wdev-register-plugin',
 		/*             Plugin ID */ plugin_basename( __FILE__ ),
-		/*          Plugin Title */ 'Membership 2 Pro',
+		/*          Plugin Title */ 'Membership 2',
 		/* https://wordpress.org */ '/plugins/membership/',
 		/*      Email Button CTA */ false,
 		/*  getdrip Plugin param */ false
