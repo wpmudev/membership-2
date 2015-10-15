@@ -800,6 +800,7 @@ class MS_Controller_Frontend extends MS_Controller {
 					try {
 						$member->validate_member_info();
 						$member->save();
+						do_action( 'ms_model_member_update_user', $member );
 						wp_safe_redirect(
 							esc_url_raw( remove_query_arg( 'action' ) )
 						);
