@@ -75,7 +75,7 @@ class MS_Model_Plugin extends MS_Model {
 		 */
 
 		// Initialize the current member
-		$this->run_action( 'init', 'init_member', 1 );
+		$this->run_action( 'init', 'init_member', 11 ); // Load AFTER the default hook.
 
 		/*
 		 * ******************************************************************* *
