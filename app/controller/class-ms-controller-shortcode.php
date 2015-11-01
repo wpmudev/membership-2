@@ -1023,11 +1023,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 				break;
 
 			case 'guest':
-				$access = ($user_type === 'guest' );
+				$access = ($user_type == 'guest' );
 				break;
 
 			case 'admin':
-				$access = ( $user_type === 'admin' );
+				$access = ( $user_type == 'admin' );
+				break;
+
+			case 'non-admin':
+				$access = ( $user_type != 'admin' );
 				break;
 		}
 
