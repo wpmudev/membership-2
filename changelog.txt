@@ -6,7 +6,9 @@ Change Log:
 
 1.0.2.4
 ----------------------------------------------------------------------
+- Add new option 'non-admin' to the shortcode [ms-user]
 - Fix a PHP notice in the login form
+- Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
 
 1.0.2.3
 ----------------------------------------------------------------------
