@@ -26,7 +26,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				$form = 'logout';
 			} elseif ( isset( $action ) && 'resetpass' === $action ) {
 				$form = 'reset';
-			} elseif ( 'lostpass' == $_GET['show'] ) {
+			} elseif ( isset( $_GET['show'] ) && 'lostpass' == $_GET['show'] ) {
 				$form = 'lost';
 			} else {
 				$form = 'login';

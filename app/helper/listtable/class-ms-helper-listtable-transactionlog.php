@@ -485,7 +485,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		}
 
 		$postdata = $item->post;
-		$group = array();
+		$groups = array();
 		if ( ! empty( $postdata ) && is_array( $postdata ) ) {
 			$id_fields = array();
 			switch ( $item->gateway_id ) {
