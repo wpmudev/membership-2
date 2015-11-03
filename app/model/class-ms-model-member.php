@@ -1404,12 +1404,6 @@ class MS_Model_Member extends MS_Model {
 	public function cancel_membership( $membership_id ) {
 		$subscription = $this->get_subscription( $membership_id );
 		if ( $subscription ) {
-			do_action(
-				'ms_model_membership_cancel_membership',
-				$subscription,
-				$this
-			);
-
 			$subscription->cancel_membership();
 		} else {
 			// The membership might be on status "PENDING" which is not included
