@@ -73,6 +73,15 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	}
 
 	/**
+	 * Support menu protection on admin-side.
+	 *
+	 * @since  1.0.2.4
+	 */
+	public function protect_admin_content() {
+		$this->protect_content();
+	}
+
+	/**
 	 * Replace specific menus for certain members.
 	 *
 	 * Relevant Action Hooks:

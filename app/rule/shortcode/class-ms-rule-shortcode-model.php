@@ -101,6 +101,15 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 	}
 
 	/**
+	 * Allow using the [ms-protect-content] shortcode on admin-side.
+	 *
+	 * @since  1.0.2.4
+	 */
+	public function protect_admin_content() {
+		$this->protect_content();
+	}
+
+	/**
 	 * Do protected shortcode [do_protected_shortcode].
 	 *
 	 * This shortcode is executed to replace a protected shortcode.
