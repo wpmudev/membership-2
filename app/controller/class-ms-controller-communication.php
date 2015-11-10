@@ -196,7 +196,7 @@ class MS_Controller_Communication extends MS_Controller {
 				$enqueue[] = MS_Model_Communication::COMM_TYPE_FAILED_PAYMENT;
 				break;
 
-			case MS_Model_Event::TYPE_MS_DEACTIVATED:
+				case MS_Model_Event::TYPE_MS_EXPIRED:
 				$enqueue[] = MS_Model_Communication::COMM_TYPE_FINISHED;
 				break;
 
@@ -227,7 +227,7 @@ class MS_Controller_Communication extends MS_Controller {
 
 			case MS_Model_Event::TYPE_MS_MOVED:
 				break;
-			case MS_Model_Event::TYPE_MS_EXPIRED:
+			case MS_Model_Event::TYPE_MS_DEACTIVATED:
 				break;
 			case MS_Model_Event::TYPE_MS_TRIAL_EXPIRED:
 				break;
