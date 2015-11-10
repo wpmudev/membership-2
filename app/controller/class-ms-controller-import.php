@@ -62,9 +62,13 @@ class MS_Controller_Import extends MS_Controller {
 	/**
 	 * Handles the matching of transaction details with a membership.
 	 *
-	 * Expected output:
-	 *   OK:Message to display
-	 *   ERR
+	 * Expected JSON output:
+	 * {
+	 *     @var bool  `success`
+	 *     @var array `data` {
+	 *         @var string  `message`
+	 *     }
+	 * }
 	 *
 	 * @since  1.0.1.2
 	 */
