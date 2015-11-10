@@ -425,8 +425,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			case 'm1':
 				$sql .= "
 				AND gateway.meta_value = 'paypalstandard'
-				AND form.meta_value LIKE '%%s:6:\"custom\";s:%%'
-				AND form.meta_value LIKE '%%:{$source_int}:%%'
+				AND form.meta_value REGEXP 's:6:\"custom\";s:[0-9]+:\"[0-9]+:[0-9]+:{$source_int}:'
 				";
 				break;
 
