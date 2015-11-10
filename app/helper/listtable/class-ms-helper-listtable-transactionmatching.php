@@ -311,24 +311,32 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 
 		$options = array( '0' => '-----' );
 		foreach ( $memberships as $item ) {
+			$warn = '';
 			if ( $item->is_system() ) { continue; }
 			if ( 'm1' == $this->source ) {
 				// Only one membership can be matched with a M1 sub_id.
-				if ( $item->source_id ) { continue; }
+				if ( $item->source_id ) {
+					$warn = sprintf(
+						'[' . __( 'M1 Level #%s', 'membership2' ) . ']',
+						$item->source_id
+					);
+				}
 			}
 
 			if ( $item->is_free() ) {
 				$options[$item->id] = sprintf(
-					'%s &bull; %s',
+					'%s &bull; %s %s',
 					$item->name,
-					__( 'Free', 'membership2' )
+					__( 'Free', 'membership2' ),
+					$warn
 				);
 			} else {
 				$options[$item->id] = sprintf(
-					'%s &bull; %s &bull; %s',
+					'%s &bull; %s &bull; %s %s',
 					$item->name,
 					$settings->currency . ' ' . MS_Helper_Billing::format_price( $item->price ),
-					$item->get_payment_type_desc()
+					$item->get_payment_type_desc(),
+					$warn
 				);
 			}
 		}
@@ -389,7 +397,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			<div class="content">
 				<p><?php
 				printf(
-					__( '1. Below is a list of past "%s" transactions. Examine these transactions to find out which Membership they refer to.', 'membership2' ),
+					__( '1. Below is a list of possible "%s" transactions. Examine these transactions to find out which Membership they refer to.', 'membership2' ),
 					'<b>' . $label . '</b>'
 				);
 				?></p>
