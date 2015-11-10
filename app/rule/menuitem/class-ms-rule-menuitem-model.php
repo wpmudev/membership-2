@@ -77,6 +77,15 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	}
 
 	/**
+	 * Support menu protection on admin-side.
+	 *
+	 * @since  1.0.2.4
+	 */
+	public function protect_admin_content() {
+		$this->protect_content();
+	}
+
+	/**
 	 * Checks if the specified menu-ID is allowed by this rule.
 	 *
 	 * @since  1.0.0

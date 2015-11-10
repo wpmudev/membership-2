@@ -7,8 +7,10 @@ Change Log:
 1.0.2.4
 ----------------------------------------------------------------------
 - Add new option 'non-admin' to the shortcode [ms-user]
+- Improve support for protection rules on admin-side (shortcode, menu-items)
 - Fix a PHP notice in the login form
 - Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
+- Fix error about undefined value 'user_id' when editing a user in M2
 
 1.0.2.3
 ----------------------------------------------------------------------
