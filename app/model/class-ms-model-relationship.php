@@ -1851,7 +1851,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			'ms_model_relationship_get_payment_description',
 			$desc,
 			$membership,
-			$payment_type
+			$payment_type,
+			$this,
+			$invoice,
+			$short
 		);
 	}
 
