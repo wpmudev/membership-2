@@ -333,7 +333,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * Returns a list of post_ids that have the specified Transaction State.
 	 *
 	 * @since  1.0.1.0
-	 * @param  string $state A valid transaction state [err|ok|ignore].
+	 * @param  string|array $state A valid transaction state [err|ok|ignore].
 	 * @return array List of post_ids.
 	 */
 	static public function get_state_ids( $state ) {
@@ -354,32 +354,34 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			AND LENGTH( method.meta_value ) > 0
 		";
 
-		switch ( $state ) {
-			case 'err':
-				$sql .= "
-				AND (state1.meta_value IS NULL OR state1.meta_value IN ('','0','err'))
-				AND (state2.meta_value IS NULL OR state2.meta_value IN (''))
-				";
-				break;
+		if ( ! is_array( $state ) ) { $state = array( $state ); }
+		$state_cond = array();
 
-			case 'ok':
-				$sql .= "
-				AND (
-					state1.meta_value IN ('1','ok')
-					OR state2.meta_value IN ('1','ok')
-				)
-				";
-				break;
+		foreach ( $state as $key ) {
+			switch ( $key ) {
+				case 'err':
+					$state_cond[] = "(
+						(state1.meta_value IS NULL OR state1.meta_value IN ('','0','err'))
+						AND (state2.meta_value IS NULL OR state2.meta_value IN (''))
+					)";
+					break;
 
-			case 'ignore':
-				$sql .= "
-				AND (
-					state1.meta_value IN ('ignore')
-					OR state2.meta_value IN ('ignore')
-				)
-				";
-				break;
+				case 'ok':
+					$state_cond[] = "(
+						state1.meta_value IN ('1','ok')
+						OR state2.meta_value IN ('1','ok')
+					)";
+					break;
+
+				case 'ignore':
+					$state_cond[] = "(
+						state1.meta_value IN ('ignore')
+						OR state2.meta_value IN ('ignore')
+					)";
+					break;
+			}
 		}
+		$sql .= 'AND (' . implode( ' OR ', $state_cond ) . ')';
 
 		$sql = $wpdb->prepare( $sql, self::get_post_type() );
 		$ids = $wpdb->get_col( $sql );

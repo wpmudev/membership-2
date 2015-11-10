@@ -152,7 +152,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			$this->source = $_GET['source'];
 			$this->source_id = $_GET['source_id'];
 
-			$args['state'] = 'err';
+			$args['state'] = array( 'err', 'ignore' );
 			$args['source'] = array( $this->source_id, $this->source );
 
 			$total_items = MS_Model_Transactionlog::get_item_count( $args );
