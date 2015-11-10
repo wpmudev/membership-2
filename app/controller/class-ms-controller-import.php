@@ -69,8 +69,6 @@ class MS_Controller_Import extends MS_Controller {
 	 * @since  1.0.1.2
 	 */
 	public function ajax_action_match() {
-		$res = 'ERR';
-
 		if ( ! $this->is_admin_user() ) {
 			return;
 		}
@@ -86,26 +84,33 @@ class MS_Controller_Import extends MS_Controller {
 			$match_id = $_POST['match_with'];
 
 			if ( MS_Model_Import::match_with_source( $match_id, $source_id, $source ) ) {
-				$res = 'OK:' . __( 'Matching details saved. Future transactions are automatically processed from now on!', 'membership2' );
+				wp_send_json_success(
+					array(
+						'message' => __( 'Matching details saved. Future transactions are automatically processed from now on!', 'membership2' ),
+					)
+				);
 			}
 		}
 
-		echo $res;
+		wp_send_json_error();
 		exit;
 	}
 
 	/**
 	 * Retries to process a single error-state transaction.
 	 *
-	 * Expected output:
-	 *   OK
-	 *   ERR
+	 * Expected JSON output:
+	 * {
+	 *     @var bool  `success`
+	 *     @var array `data` {
+	 *         @var string  `desc`
+	 *         @var string  `status`
+	 *     }
+	 * }
 	 *
 	 * @since  1.0.1.2
 	 */
 	public function ajax_action_retry() {
-		$res = 'ERR';
-
 		if ( ! $this->is_admin_user() ) {
 			return;
 		}
@@ -118,15 +123,18 @@ class MS_Controller_Import extends MS_Controller {
 		) {
 			$log_id = intval( $_POST['id'] );
 
-			if ( MS_Model_Import::retry_to_process( $log_id ) ) {
-				$res = 'OK';
-			}
+			MS_Model_Import::retry_to_process( $log_id );
 
 			$log = MS_Factory::load( 'MS_Model_Transactionlog', $log_id );
-			$res .= ':' . $log->description;
+			wp_send_json_success(
+				array(
+					'desc' => $log->description,
+					'state' => $log->state,
+				)
+			);
 		}
 
-		echo $res;
+		wp_send_json_error( array( 'desc' => '', 'status' => '' ) );
 		exit;
 	}
 

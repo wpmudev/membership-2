@@ -1081,16 +1081,14 @@ window.ms_init.view_billing_transactions = function init() {
 			window.ajaxurl,
 			data,
 			function(response) {
-				var message = '';
-
-				if ( response.indexOf( 'OK:' ) === 0 ) {
-					message = response.substr( 3 );
-					wpmUi.message( message );
+				if ( response.success ) {
+					wpmUi.message( response.data.message );
 
 					// Start to process the transactions.
 					retry_transactions();
 				}
-			}
+			},
+			'json'
 		).always(function() {
 			frm_match.removeClass( 'wpmui-loading' );
 		});
@@ -1102,13 +1100,12 @@ window.ms_init.view_billing_transactions = function init() {
 	function retry_transactions() {
 		var rows = table.find( '.item' ),
 			nonce = frm_match.find( '.retry_nonce' ).val(),
-			action = frm_match.find( '.retry_action' ).val(),
 			progress = wpmUi.progressbar(),
 			counter = 0,
 			ajax_data = {},
 			queue = [];
 
-		ajax_data.action = action;
+		ajax_data.action = 'transaction_retry';
 		ajax_data._wpnonce = nonce;
 
 		// Collect all log-IDs in the queue.
@@ -1144,21 +1141,15 @@ window.ms_init.view_billing_transactions = function init() {
 				window.ajaxurl,
 				data,
 				function(response) {
-					var message = false;
-
-					if ( response.indexOf( 'OK:' ) === 0 ) {
-						message = response.substr( 3 );
-						row.removeClass( 'log-err' ).addClass( 'log-ok' );
-					} else if ( response.indexOf( 'ERR:' ) === 0 ) {
-						message = response.substr( 4 );
-					}
-
-					if ( message ) {
-						row.find( '.column-note .txt' ).text( message );
+					if ( response.success && response.data.desc ) {
+						row.removeClass( 'log-err log-ignore log-ok' );
+						row.addClass( 'log-' + response.data.state );
+						row.find( '.column-note .txt' ).text( response.data.desc );
 					}
 
 					window.setTimeout( function() { process_queue(); }, 1 );
-				}
+				},
+				'json'
 			).always(function() {
 				row.find( '.column-note' ).removeClass( 'wpmui-loading' );
 			});
@@ -1233,7 +1224,7 @@ window.ms_init.view_billing_transactions = function init() {
 			row_id = row.attr( 'id' ).replace( /^item-/, '' ),
 			data = {};
 
-		if ( ! row.hasClass( 'log-err' ) ) { return false; }
+		if ( ! row.hasClass( 'log-err' ) && ! row.hasClass( 'log-ignore' ) ) { return false; }
 
 		data.action = 'transaction_retry';
 		data._wpnonce = nonce;
@@ -1244,19 +1235,13 @@ window.ms_init.view_billing_transactions = function init() {
 			window.ajaxurl,
 			data,
 			function(response) {
-				var message = false;
-
-				if ( response.indexOf( 'OK:' ) === 0 ) {
-					message = response.substr( 3 );
-					row.removeClass( 'log-err' ).addClass( 'log-ok' );
-				} else if ( response.indexOf( 'ERR:' ) === 0 ) {
-					message = response.substr( 4 );
+				if ( response.success && response.data.desc ) {
+					row.removeClass( 'log-err log-ignore log-ok' );
+					row.addClass( 'log-' + response.data.state );
+					row.find( '.column-note .txt' ).text( response.data.desc );
 				}
-
-				if ( message ) {
-					row.find( '.column-note .txt' ).text( message );
-				}
-			}
+			},
+			'json'
 		).always(function() {
 			cell.removeClass( 'wpmui-loading' );
 		});
