@@ -393,22 +393,27 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		}
 
 		// 2. Prepare the row actions.
+		$actions = array();
 		if ( 'err' == $item->state ) {
-			$actions = array(
-				'action-link' => __( 'Link', 'membership2' ),
-				'action-ignore' => __( 'Ignore', 'membership2' ),
-			);
+			$actions['action-link'] = __( 'Link', 'membership2' );
+			$actions['action-ignore'] = __( 'Ignore', 'membership2' );
 
 			// We can only re-process the transaction if we have POST data.
 			$postdata = $item->post;
 			if ( is_array( $postdata ) && ! empty( $postdata ) ) {
 				$actions['action-retry'] = __( 'Retry', 'membership2' );
 			}
-		} elseif ( 'ignore' == $item->state && $item->is_manual ) {
-			$actions = array(
-				'action-clear' => __( 'Reset', 'membership2' ),
-			);
-			$nonce_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_LINK;
+		} elseif ( 'ignore' == $item->state ) {
+			if ( $item->is_manual ) {
+				$actions['action-clear'] = __( 'Reset', 'membership2' );
+				$nonce_action = MS_Controller_Billing::AJAX_ACTION_TRANSACTION_LINK;
+			}
+
+			// We can only re-process the transaction if we have POST data.
+			$postdata = $item->post;
+			if ( is_array( $postdata ) && ! empty( $postdata ) ) {
+				$actions['action-retry'] = __( 'Retry', 'membership2' );
+			}
 		}
 
 		if ( count( $actions ) ) {

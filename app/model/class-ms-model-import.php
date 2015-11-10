@@ -707,11 +707,6 @@ class MS_Model_Import extends MS_Model {
 
 		// Then add the matching to the specified membership.
 		if ( 'm1' == $source ) {
-			if ( $membership->source_id ) {
-				// This membership is already matched with an M1 sub_id.
-				return false;
-			}
-
 			$membership->source = 'membership';
 			$membership->source_id = $source_id;
 		} else {
@@ -752,7 +747,7 @@ class MS_Model_Import extends MS_Model {
 			return $res;
 		}
 
-		if ( 'err' != $log->state ) {
+		if ( 'ok' == $log->state ) {
 			// The transaction was already processed (automatically or manual).
 			return $res;
 		}
@@ -772,7 +767,6 @@ class MS_Model_Import extends MS_Model {
 		$_POST = $post_data;
 		$_REQUEST = $post_data;
 
-		$invoice = false;
 		switch ( $log->method ) {
 			case 'request':
 				// Intentionally not implemented:
