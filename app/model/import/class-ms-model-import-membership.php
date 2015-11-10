@@ -44,7 +44,22 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 */
 	static public function did_import() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		return ! empty( $settings->import[ self::KEY ] );
+		$did_import = ! empty( $settings->import[ self::KEY ] );
+
+		/**
+		 * Allow users to manually declare that some M2 subscriptions were
+		 * imported from old Membership plugin.
+		 *
+		 * As a result M2 will additionally listen to the old M1 IPN URL for
+		 * PayPal payment notifications.
+		 *
+		 * @since  1.0.2.4
+		 * @param  bool $did_import
+		 */
+		return apply_filters(
+			'ms_did_import_m1_data',
+			$did_import
+		);
 	}
 
 	/**
