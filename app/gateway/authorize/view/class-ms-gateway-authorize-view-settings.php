@@ -74,7 +74,7 @@ class MS_Gateway_Authorize_View_Settings extends MS_View {
 				'id' => 'secure_cc',
 				'title' => __( 'Secure Payments', 'membership2' ),
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-				'value' => $gateway->secure_cc,
+				'value' => lib3()->is_true( $gateway->secure_cc ),
 				'ajax_data' => array( 1 ),
 			),
 
