@@ -8,10 +8,18 @@ Change Log:
 ----------------------------------------------------------------------
 - Add new option 'non-admin' to the shortcode [ms-user]
 - Improve support for protection rules on admin-side (shortcode, menu-items)
+- Improve payment-matching for imported subscriptions
+- Improve the transaction logs page and show better description for PayPal transactions
+- Improve and fix minor issues in PayPal Standard gateway, related to imported subscriptiond
 - Fix a PHP notice in the login form
 - Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
 - Fix error about undefined value 'user_id' when editing a user in M2
 - Fix error in Searchindex addon that (among others) caused a problem with Sitemaps
+- Fix bug that caused expiration emails to be sent multiple times
+- Fix small issues with formating some time/date values
+- Fix small issue in Authorize.Net payment settings that would not save Secure Payments setting
+- Fix wrong logic that would hide the Billing menu item if all paid memberships were private
+- Small clean-up, add new filters and filter-params, fix typos, ...
 
 1.0.2.3
 ----------------------------------------------------------------------
