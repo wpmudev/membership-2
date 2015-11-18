@@ -283,10 +283,10 @@ class MS_Addon_Searchindex extends MS_Addon {
 	public function apply_membership( $model ) {
 		if ( $this->is_searchengine() ) {
 			// A search engine crawls the site.
-			$this->member->add_membership( $this->membership->id );
+			$model->member->add_membership( $this->membership->id );
 		} elseif ( $this->is_first_click() ) {
 			// Current request is directly refererd by a search engine.
-			$this->member->add_membership( $this->membership->id );
+			$model->member->add_membership( $this->membership->id );
 		}
 	}
 

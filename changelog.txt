@@ -11,6 +11,7 @@ Change Log:
 - Fix a PHP notice in the login form
 - Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
 - Fix error about undefined value 'user_id' when editing a user in M2
+- Fix error in Searchindex addon that (among others) caused a problem with Sitemaps
 
 1.0.2.3
 ----------------------------------------------------------------------
