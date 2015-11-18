@@ -85,6 +85,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$redirect = false;
 		$notes = '';
 		$status = null;
+		$notes_err = '';
 		$notes_pay = '';
 		$notes_txn = '';
 		$external_id = null;
@@ -183,17 +184,18 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$is_linked = true;
 							$invoice_id = $subscription->first_unpaid_invoice();
 						} else {
-							$membership = MS_Model_Import::membership_by_source_id(
+							$membership = MS_Model_Import::membership_by_matching(
+								'm1',
 								$m1_sub_id
 							);
 
 							if ( $membership ) {
-								$notes = sprintf(
-									'Error: User is not subscribed to Membership %s.',
+								$notes_err = sprintf(
+									'User is not subscribed to Membership %s.',
 									$membership->id
 								);
 							} else {
-								$notes = 'Error: Could not determine a membership.';
+								$notes_err = 'Could not determine a membership.';
 							}
 						}
 
@@ -228,12 +230,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						);
 
 						if ( $membership ) {
-							$notes = sprintf(
-								'Error: User is not subscribed to Membership %s.',
+							$notes_err = sprintf(
+								'User is not subscribed to Membership %s.',
 								$membership->id
 							);
 						} else {
-							$notes = 'Error: Could not determine a membership.';
+							$notes_err = 'Could not determine a membership.';
 						}
 					}
 
@@ -243,8 +245,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						MS_Model_Import::need_matching( $_POST['btn_id'], 'pay_btn' );
 					}
 				} else {
-					$notes = sprintf(
-						'Error: Could not find user "%s".',
+					$notes_err = sprintf(
+						'Could not find user "%s".',
 						$_POST['payer_email']
 					);
 				}
@@ -651,7 +653,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * Do not return an error code, but also do not modify any
 				 * invoice/subscription.
 				 */
-				$notes = 'M1 Payment detected. Manual matching required.';
+				$notes = 'M1 Payment detected. Manual matching required. ' . $notes_err;
 				$ignore = false;
 				$success = false;
 			} elseif ( 'pay_btn' == $ext_type ) {
@@ -659,14 +661,17 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * The payment was made by a PayPal Payment button that was
 				 * created in the PayPal account and not by M1/M2.
 				 */
-				$notes = 'PayPal Payment button detected. Manual matching required.';
+				$notes = 'PayPal Payment button detected. Manual matching required. ' . $notes_err;
 				$ignore = false;
 				$success = false;
 			} else {
 				// PayPal sent us a IPN notice about a non-Membership payment:
 				// Ignore it, but add it to the logs.
 
-				if ( ! empty( $notes ) ) {
+				if ( ! empty( $notes_err ) ) {
+					// Use the notes_err.
+					$notes = $notes_err;
+				} if ( ! empty( $notes ) ) {
 					// We already have an error message, do nothing.
 				} elseif ( ! $transaction_type ) {
 					$notes = 'Ignored: txn_type not specified. Cannot process.';

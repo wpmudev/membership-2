@@ -690,17 +690,20 @@ class MS_Model_Import extends MS_Model {
 			$changed = false;
 
 			if ( ! is_array( $data ) ) { continue; }
-			if ( empty( $data[$source] ) ) { continue; }
-			if ( ! is_array( $data[$source] ) ) { continue; }
+			if ( ! isset( $data[$source] ) ) { continue; }
+			if ( ! is_array( $data[$source] ) ) {
+				unset( $data[$source] );
+				continue;
+			}
 
 			foreach ( $data[$source] as $key => $id ) {
 				if ( $id == $source_id ) {
 					unset( $data[$source][$key] );
+					$data[$source] = array_values( array_unique( $data[$source] ) );
 					$changed = true;
 				}
 			}
 			if ( $changed ) {
-				$data = array_keys( array_unique( $data ) );
 				$item->set_custom_data( 'matching', $data );
 				$item->save();
 			}
@@ -716,7 +719,8 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		$data[$source][] = $source_id;
-		$data = array_keys( array_unique( $data ) );
+		$data[$source] = array_values( array_unique( $data[$source] ) );
+
 		$membership->set_custom_data( 'matching', $data );
 		$membership->save();
 
