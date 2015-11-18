@@ -175,7 +175,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						$subscription = MS_Model_Import::find_subscription(
 							$m1_user_id,
 							$m1_sub_id,
-							'source',
+							'm1',
 							self::ID
 						);
 

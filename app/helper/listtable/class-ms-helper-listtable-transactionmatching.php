@@ -6,12 +6,6 @@
  *   m1       .. M1 subscription
  *   pay_btn  .. PayPal Payment Button
  *
- * Currently supported matching_keys
- *   pay_btn  .. PayPal Payment Button
- *
- * The M1 matching_key is saved in the memberships source_id and is referenced
- * in MS_Model_Import::find_subscription() as 'source' - and not as 'm1'!
- *
  * @since  1.0.1.2
  */
 class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
@@ -33,14 +27,14 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 	 *
 	 * @var string
 	 */
-	protected $source = false;
+	protected $matching_type = false;
 
 	/**
 	 * Currently selected source_id that should be matched.
 	 *
 	 * @var mixed
 	 */
-	protected $source_id = false;
+	protected $matching_type_id = false;
 
 	/**
 	 * Constructor, defines general list table attributes.
@@ -149,11 +143,11 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		);
 
 		if ( ! empty( $_GET['source'] ) && ! empty( $_GET['source_id'] ) ) {
-			$this->source = $_GET['source'];
-			$this->source_id = $_GET['source_id'];
+			$this->matching_type = $_GET['source'];
+			$this->matching_type_id = $_GET['source_id'];
 
 			$args['state'] = array( 'err', 'ignore' );
-			$args['source'] = array( $this->source_id, $this->source );
+			$args['source'] = array( $this->matching_type_id, $this->matching_type );
 
 			$total_items = MS_Model_Transactionlog::get_item_count( $args );
 
@@ -272,7 +266,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 	public function views() {
 		parent::views();
 
-		if ( ! $this->source || ! $this->source_id ) {
+		if ( ! $this->matching_type || ! $this->matching_type_id ) {
 			if ( ! MS_Model_Import::can_match() ) {
 				$url = MS_Controller_Plugin::get_admin_url(
 					'billing',
@@ -300,43 +294,31 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			return;
 		}
 
-		if ( ! MS_Model_Import::can_match( $this->source_id, $this->source ) ) {
+		if ( ! MS_Model_Import::can_match( $this->matching_type_id, $this->matching_type ) ) {
 			// For this transaction details is no matching possible right now.
 			return;
 		}
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$label = $this->get_source_label( $this->source, $this->source_id );
+		$label = $this->get_source_label( $this->matching_type, $this->matching_type_id );
 		$memberships = MS_Model_Membership::get_memberships();
 
 		$options = array( '0' => '-----' );
 		foreach ( $memberships as $item ) {
-			$warn = '';
 			if ( $item->is_system() ) { continue; }
-			if ( 'm1' == $this->source ) {
-				// Only one membership can be matched with a M1 sub_id.
-				if ( $item->source_id ) {
-					$warn = sprintf(
-						'[' . __( 'M1 Level #%s', 'membership2' ) . ']',
-						$item->source_id
-					);
-				}
-			}
 
 			if ( $item->is_free() ) {
 				$options[$item->id] = sprintf(
-					'%s &bull; %s %s',
+					'%s &bull; %s',
 					$item->name,
-					__( 'Free', 'membership2' ),
-					$warn
+					__( 'Free', 'membership2' )
 				);
 			} else {
 				$options[$item->id] = sprintf(
-					'%s &bull; %s &bull; %s %s',
+					'%s &bull; %s &bull; %s',
 					$item->name,
 					$settings->currency . ' ' . MS_Helper_Billing::format_price( $item->price ),
-					$item->get_payment_type_desc(),
-					$warn
+					$item->get_payment_type_desc()
 				);
 			}
 		}
@@ -360,12 +342,12 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		$field_source = array(
 			'id' => 'source',
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->source,
+			'value' => $this->matching_type,
 		);
 		$field_source_id = array(
 			'id' => 'source_id',
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $this->source_id,
+			'value' => $this->matching_type_id,
 		);
 		$field_save = array(
 			'class' => 'action-match',
@@ -432,7 +414,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 	 * @since  1.0.1.2
 	 */
 	public function display() {
-		if ( MS_Model_Import::can_match( $this->source_id, $this->source ) ) {
+		if ( MS_Model_Import::can_match( $this->matching_type_id, $this->matching_type ) ) {
 			parent::display();
 		}
 	}
