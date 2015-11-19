@@ -411,6 +411,10 @@ class MS_Gateway extends MS_Model_Option {
 	 * @return boolean True if is in live mode.
 	 */
 	public function is_live_mode() {
+		if ( empty( $this->mode ) ) {
+			$this->mode = self::MODE_SANDBOX;
+		}
+
 		$is_live_mode = ( self::MODE_SANDBOX !== $this->mode );
 
 		return apply_filters(

@@ -533,7 +533,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	public function get_publishable_key() {
 		$publishable_key = null;
 
-		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
+		if ( $this->is_live_mode() ) {
 			$publishable_key = $this->publishable_key;
 		} else {
 			$publishable_key = $this->test_publishable_key;
@@ -556,7 +556,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	public function get_secret_key() {
 		$secret_key = null;
 
-		if ( MS_Gateway::MODE_LIVE == $this->mode ) {
+		if ( $this->is_live_mode() ) {
 			$secret_key = $this->secret_key;
 		} else {
 			$secret_key = $this->test_secret_key;

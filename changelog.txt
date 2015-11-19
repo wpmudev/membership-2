@@ -11,6 +11,7 @@ Change Log:
 - Improve payment-matching for imported subscriptions
 - Improve the transaction logs page and show better description for PayPal transactions
 - Improve and fix minor issues in PayPal Standard gateway, related to imported subscriptiond
+- Fix incorrectly displayed "Live Mode" flag for payment gateways on initial setup
 - Fix a PHP notice in the login form
 - Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
 - Fix error about undefined value 'user_id' when editing a user in M2
