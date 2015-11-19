@@ -405,10 +405,14 @@ class MS_Helper_Period extends MS_Helper {
 	}
 
 	/**
-	 * Returns a formated date string
+	 * Returns a formatted date string in local timezone.
 	 *
-	 * @param  string $date The date value.
+	 * This function is intended for display to the user; do not store the
+	 * resulting value in the DB!
+	 *
+	 * @param  string $date The date value in UTC.
 	 * @param  string $format Optional the format to apply.
+	 * @return string The formatted timestamp in local timezone.
 	 */
 	public static function format_date( $date, $format = null ) {
 		if ( empty( $format ) ) {
