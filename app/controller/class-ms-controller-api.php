@@ -373,12 +373,22 @@ class MS_Controller_Api extends MS_Hooker {
 	public function detect_membership() {
 		$result = false;
 
-		$membership_id = apply_filters( 'ms_detect_membership_id', $membership_id );
+		$membership_id = apply_filters(
+			'ms_detect_membership_id',
+			false, // Do not suggest/force a membership ID.
+			false, // Also check the logged-in users subscriptions.
+			true   // Do not return system memberships.
+		);
 		if ( $membership_id ) {
 			$result = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			if ( $result->is_system() ) { $result = false; }
 		}
 
-		return apply_filters( 'ms_detect_membership_result', $result, $membership_id );
+		return apply_filters(
+			'ms_detect_membership_result',
+			$result,
+			$membership_id
+		);
 	}
 
 	/**

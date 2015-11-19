@@ -857,7 +857,12 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// Checks for invoice single template.
 		if ( $type = MS_Model_Pages::is_membership_page() ) {
-			$membership_id = apply_filters( 'ms_detect_membership_id', 0, true );
+			$membership_id = apply_filters(
+				'ms_detect_membership_id',
+				0,
+				true,
+				true
+			);
 
 			if ( $membership_id ) {
 				$template = get_query_template(

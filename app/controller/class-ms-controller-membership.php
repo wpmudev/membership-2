@@ -276,16 +276,22 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @param  int $preferred The preferred ID is only used if it is a valid ID.
 	 * @param  bool $no_member_check If set to true the member subscriptions are
 	 *         not checked, which means only REQUEST data is examined.
+	 * @param  bool $ignore_system If set to true, then the return value will
+	 *         never be a system-membership-ID (no auto-assigned membership).
 	 * @return int A valid Membership ID or 0 if all tests fail.
 	 */
-	public function autodetect_membership( $preferred = 0, $no_member_check = false ) {
+	public function autodetect_membership( $preferred = 0, $no_member_check = false, $ignore_system = false ) {
 		$membership_id = 0;
 
 		// Check 1: If the preferred value is correct use it.
 		if ( $preferred ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $preferred );
-			if ( $membership->id == $preferred ) {
-				$membership_id = $membership->id;
+
+			// Only use the membership_id if it's valid and not filtered by ignore_system.
+			if ( $membership->is_valid() && $membership->id == $preferred ) {
+				if ( ! $ignore_system || ! $membership->is_system() ) {
+					$membership_id = $membership->id;
+				}
 			}
 		}
 
@@ -309,6 +315,18 @@ class MS_Controller_Membership extends MS_Controller {
 				}
 				$membership_id = intval( $membership_id );
 			}
+
+			// Reset the membership_id if it's invalid or filtered by ignore_system.
+			if ( $membership_id ) {
+				$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+				if ( ! $membership->is_valid() ) {
+					$membership_id = 0;
+				} elseif ( $membership->id != $membership_id ) {
+					$membership_id = 0;
+				} elseif ( $ignore_system && $membership->is_system ) {
+					$membership_id = 0;
+				}
+			}
 		}
 
 		// Check 3: Check subscriptions of the current user.
@@ -317,6 +335,18 @@ class MS_Controller_Membership extends MS_Controller {
 			$subscription = $member->get_subscription( 'priority' );
 			if ( $subscription ) {
 				$membership_id = $subscription->membership_id;
+			}
+
+			// Reset the membership_id if it's invalid or filtered by ignore_system.
+			if ( $membership_id ) {
+				$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+				if ( ! $membership->is_valid() ) {
+					$membership_id = 0;
+				} elseif ( $membership->id != $membership_id ) {
+					$membership_id = 0;
+				} elseif ( $ignore_system && $membership->is_system ) {
+					$membership_id = 0;
+				}
 			}
 		}
 
