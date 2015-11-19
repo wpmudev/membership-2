@@ -415,7 +415,12 @@ class MS_Helper_Period extends MS_Helper {
 			$format = get_option( 'date_format' );
 		}
 
-		$result = date_i18n( $format, strtotime( $date ) );
+		// Convert the timestamp to local time.
+		$timestamp = strtotime( $date ); // Converting time to Unix timestamp
+		$offset = intval( get_option( 'gmt_offset' ) ) * 60 * 60; // Time offset in seconds
+		$local_timestamp = $timestamp + $offset;
+
+		$result = date_i18n( $format, $local_timestamp );
 
 		return apply_filters(
 			'ms_format_date',

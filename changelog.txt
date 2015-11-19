@@ -16,6 +16,7 @@ Change Log:
 - Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
 - Fix error about undefined value 'user_id' when editing a user in M2
 - Fix error in Searchindex addon that (among others) caused a problem with Sitemaps
+- Fix display of time values to show timtstamps in local time instead of UTC
 - Fix bug that caused expiration emails to be sent multiple times
 - Fix small issues with formating some time/date values
 - Fix small issue in Authorize.Net payment settings that would not save Secure Payments setting
