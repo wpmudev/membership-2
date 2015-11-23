@@ -1377,7 +1377,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public function get_current_period() {
 		$period_days = MS_Helper_Period::subtract_dates(
 			MS_Helper_Period::current_date(),
-			$this->start_date
+			$this->start_date,
+			DAY_IN_SECONDS, // return value in DAYS.
+			true // return negative value if first date is before second date.
 		);
 
 		return apply_filters(
@@ -1398,7 +1400,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public function get_remaining_trial_period() {
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->trial_expire_date,
-			MS_Helper_Period::current_date()
+			MS_Helper_Period::current_date(),
+			DAY_IN_SECONDS, // return value in DAYS.
+			true // return negative value if first date is before second date.
 		);
 
 		return apply_filters(
@@ -1419,7 +1423,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public function get_remaining_period() {
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->expire_date,
-			MS_Helper_Period::current_date()
+			MS_Helper_Period::current_date(),
+			DAY_IN_SECONDS, // return value in DAYS.
+			true // return negative value if first date is before second date.
 		);
 
 		return apply_filters(
@@ -2749,6 +2755,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$deactivate = true;
 					}
 				}
+				$next_status = $this->calculate_status( null );
 
 				if ( $deactivate ) {
 					$this->deactivate_membership();
