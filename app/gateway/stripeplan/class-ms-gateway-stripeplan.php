@@ -329,7 +329,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 					// Free, just process.
 					$invoice->changed();
 					$success = true;
-					$note = __( 'No payment for free membership', 'membership2' );
+					$note = __( 'No payment required for free membership', 'membership2' );
 				} else {
 					// Get or create the subscription.
 					$stripe_sub = $this->_api->subscribe(
@@ -337,15 +337,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						$invoice
 					);
 
-					if ( 'active' == $stripe_sub->status ) {
-						$invoice->pay_it( $this->id, $stripe_sub->id );
-						$success = true;
-						$note = __( 'Payment successful', 'membership2' );
-						$note .= ' - Token: ' . $token;
+					$note = $this->get_description_for_sub( $stripe_sub );
 
+					if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
+						$success = true;
+						$invoice->pay_it( $this->id, $stripe_sub->id );
 						$this->cancel_if_done( $subscription, $stripe_sub );
-					} else {
-						$note = __( 'Stripe payment failed', 'membership2' );
 					}
 				}
 			} catch ( Exception $e ) {
@@ -412,7 +409,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 					if ( 0 == $invoice->total ) {
 						$invoice->changed();
 						$success = true;
-						$note = __( 'No payment for free membership', 'membership2' );
+						$note = __( 'No payment required for free membership', 'membership2' );
 					} else {
 						// Get or create the subscription.
 						$stripe_sub = $this->_api->subscribe(
@@ -421,14 +418,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						);
 						$external_id = $stripe_sub->id;
 
-						if ( 'active' == $stripe_sub->status ) {
+						$note = $this->get_description_for_sub( $stripe_sub );
+
+						if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
 							$was_paid = true;
 							$invoice->pay_it( $this->id, $external_id );
-							$note = __( 'Payment successful', 'membership2' );
-
 							$this->cancel_if_done( $subscription, $stripe_sub );
-						} else {
-							$note = __( 'Stripe payment failed', 'membership2' );
 						}
 					}
 				} else {
@@ -464,6 +459,57 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		);
 
 		return $was_paid;
+	}
+
+	/**
+	 * Returns a description for the specified stripe subscription.
+	 * Also populates some $_POST fields to store additional details in the
+	 * transaction logs.
+	 *
+	 * @since  1.0.2.4
+	 * @param  StripeSubscription $stripe_sub
+	 * @return string
+	 */
+	protected function get_description_for_sub( $stripe_sub ) {
+		$note = '';
+
+		switch ( $stripe_sub->status ) {
+			case 'trialing': // During trial period.
+			case 'active':
+				$note = __( 'Payment successful', 'membership2' );
+				break;
+
+			case 'past_due':
+				$note = __( 'Stripe payment failed (payment is past due)', 'membership2' );
+				break;
+
+			case 'canceled':
+				$note = __( 'Stripe subscription canceled', 'membership2' );
+				break;
+
+			case 'unpaid':
+				$note = __( 'Payment failed, retry-attempts exhausted', 'membership2' );
+				break;
+
+			default:
+				$note = sprintf(
+					__( 'Stripe subscription is "%s"', 'membership2' ),
+					$stripe_sub->status
+				);
+				break;
+		}
+
+		$_POST['API Response: id'] = $stripe_sub->id;
+		$_POST['API Response: status'] = $stripe_sub->status;
+		$_POST['API Response: canceled_at'] = $stripe_sub->canceled_at;
+		$_POST['API Response: current_period_start'] = $stripe_sub->current_period_start;
+		$_POST['API Response: current_period_end'] = $stripe_sub->current_period_end;
+		$_POST['API Response: ended_at'] = $stripe_sub->ended_at;
+		$_POST['API Response: start'] = $stripe_sub->start;
+		$_POST['API Response: plan-id'] = $stripe_sub->plan->id;
+		$_POST['API Response: plan-name'] = $stripe_sub->plan->name;
+
+		return $note;
 	}
 
 	/**
