@@ -275,8 +275,8 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			$diff = MS_Helper_Period::subtract_dates(
 				$item->due_date,
 				MS_Helper_Period::current_date(),
-				null,
-				true
+				DAY_IN_SECONDS, // return value in DAYS.
+				true // return negative value if first date is before second date.
 			);
 			$due_now = ($diff < 0);
 		}
