@@ -11,16 +11,21 @@ Change Log:
 - Improve payment-matching for imported subscriptions
 - Improve the transaction logs page and show better description for PayPal transactions
 - Improve and fix minor issues in PayPal Standard gateway, related to imported subscriptiond
+- Improve the Edit-Member page to only offer valid subscription status options
+- Fix bug that caused expiration emails to be sent multiple times
 - Fix incorrectly displayed "Live Mode" flag for payment gateways on initial setup
 - Fix a PHP notice in the login form
 - Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
+- Fix issue in Account page that did not save the users email address
 - Fix error about undefined value 'user_id' when editing a user in M2
 - Fix error in Searchindex addon that (among others) caused a problem with Sitemaps
-- Fix bug that caused expiration emails to be sent multiple times
+- Fix issue in Profile-Fields Addon that would not save website/description
 - Fix small issues with formating some time/date values
 - Fix small issue in Authorize.Net payment settings that would not save Secure Payments setting
 - Fix wrong logic that would hide the Billing menu item if all paid memberships were private
-- Small clean-up, add new filters and filter-params, fix typos, ...
+- Fix small issue in URL-protection that ignored the last slash of the URL rule
+- Fix a issue that caused the modal background to stay open after closing popups in some cases
+- Small clean-up, add/update filters, fix typos, ...
 
 1.0.2.3
 ----------------------------------------------------------------------
