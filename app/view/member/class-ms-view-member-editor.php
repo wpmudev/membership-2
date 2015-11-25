@@ -284,7 +284,7 @@ class MS_View_Member_Editor extends MS_View {
 				$the_membership = $subscription->get_membership();
 				unset( $unused_memberships[$the_membership->id] );
 
-				$status_options = array(
+				$stati = array(
 					MS_Model_Relationship::STATUS_PENDING => __( 'Pending (activate on next payment)', 'membership2' ),
 					MS_Model_Relationship::STATUS_WAITING => __( 'Waiting (activate on start date)', 'membership2' ),
 					MS_Model_Relationship::STATUS_TRIAL => __( 'Trial Active', 'membership2' ),
@@ -294,6 +294,34 @@ class MS_View_Member_Editor extends MS_View {
 					MS_Model_Relationship::STATUS_EXPIRED => __( 'Expired (no access) ', 'membership2' ),
 					MS_Model_Relationship::STATUS_DEACTIVATED => __( 'Deactivated (no access)', 'membership2' ),
 				);
+
+				// Start date not yet reached:
+				if ( strtotime( $subscription->start_date ) > strtotime( MS_Helper_Period::current_date() ) ) {
+					$valid_stati = array(
+						MS_Model_Relationship::STATUS_WAITING => true,
+						MS_Model_Relationship::STATUS_DEACTIVATED => true,
+					);
+				}
+				// Expire date already reached:
+				elseif ( strtotime( $subscription->expire_date ) < strtotime( MS_Helper_Period::current_date() ) ) {
+					$valid_stati = array(
+						MS_Model_Relationship::STATUS_EXPIRED => true,
+						MS_Model_Relationship::STATUS_DEACTIVATED => true,
+					);
+				}
+				// Active subscription:
+				else {
+					$valid_stati = array(
+						MS_Model_Relationship::STATUS_PENDING => true,
+						MS_Model_Relationship::STATUS_TRIAL => true,
+						MS_Model_Relationship::STATUS_ACTIVE => true,
+						MS_Model_Relationship::STATUS_CANCELED => true,
+						MS_Model_Relationship::STATUS_TRIAL_EXPIRED => true,
+						MS_Model_Relationship::STATUS_DEACTIVATED => true,
+					);
+				}
+
+				$status_options = array_intersect_key( $stati, $valid_stati );
 
 				if ( ! $the_membership->has_trial() ) {
 					unset( $status_options[MS_Model_Relationship::STATUS_TRIAL] );
