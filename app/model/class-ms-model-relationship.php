@@ -2183,6 +2183,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} elseif ( $membership->is_free() ) {
 			$can_activate = true;
 			$debug_msg[] = '[Can activate: Free membership]';
+		} elseif ( ! empty( $this->source ) ) {
+			$can_activate = true;
+			$debug_msg[] = '[Can activate: Imported subscription]';
 		} else {
 			$valid_payment = false;
 			// Check if there is *any* payment, no matter what height.
