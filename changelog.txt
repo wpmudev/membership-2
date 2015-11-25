@@ -10,7 +10,7 @@ Change Log:
 - Improve support for protection rules on admin-side (shortcode, menu-items)
 - Improve payment-matching for imported subscriptions
 - Improve the transaction logs page and show better description for PayPal transactions
-- Improve and fix minor issues in PayPal Standard gateway, related to imported subscriptiond
+- Improve and fix minor issues in PayPal Standard gateway, related to imported subscriptions
 - Improve the Edit-Member page to only offer valid subscription status options
 - Fix bug that caused expiration emails to be sent multiple times
 - Fix incorrectly displayed "Live Mode" flag for payment gateways on initial setup
@@ -20,7 +20,7 @@ Change Log:
 - Fix error about undefined value 'user_id' when editing a user in M2
 - Fix error in Searchindex addon that (among others) caused a problem with Sitemaps
 - Fix issue in Profile-Fields Addon that would not save website/description
-- Fix small issues with formating some time/date values
+- Fix small issues with formatting some time/date values
 - Fix small issue in Authorize.Net payment settings that would not save Secure Payments setting
 - Fix wrong logic that would hide the Billing menu item if all paid memberships were private
 - Fix small issue in URL-protection that ignored the last slash of the URL rule
