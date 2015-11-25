@@ -101,9 +101,21 @@ class MS_Addon_Profilefields extends MS_Addon {
 				'ms_frontend_user_account_manager_submit-' . MS_Controller_Frontend::ACTION_EDIT_PROFILE,
 				'save_xprofile'
 			);
+			
+			$this->add_action(
+				'ms_model_member_create_new_user',
+				'save_user_meta_fields',
+				99, 1
+			);
+			
+			$this->add_action(
+				'ms_model_member_update_user',
+				'save_user_meta_fields',
+				99, 1
+			);
 		}
 	}
-
+	
 	/**
 	 * Registers the Add-On
 	 *
@@ -568,6 +580,23 @@ class MS_Addon_Profilefields extends MS_Addon {
 		// Password confirmation is optional.
 		if ( isset( $_REQUEST['password'] ) && ! isset( $_REQUEST['password2'] ) ) {
 			$_REQUEST['password2'] = $_REQUEST['password'];
+		}
+	}
+	
+	/**
+	 * Save default profile fields
+	 *
+	 * @since  1.0.2.4
+	 * @param  object $member The MS_Model_Member object
+	 */
+	public function save_user_meta_fields( $member ) {
+		if( isset( $_POST['website'] ) ) {
+			wp_update_user(
+					array( 'ID' => $member->id, 'user_url' => $_POST['website'] )
+				);
+		}
+		if( isset( $_POST['description'] ) ) {
+			update_user_meta( $member->id, 'description', $_POST['description'] );
 		}
 	}
 

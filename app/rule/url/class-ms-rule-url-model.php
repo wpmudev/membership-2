@@ -160,10 +160,10 @@ class MS_Rule_Url_Model extends MS_Rule {
 			$check_list = array_map( 'trim', $check_list );
 
 			// Straight match.
-			$check_list = array_merge(
+			/*$check_list = array_merge(
 				$check_list,
 				array_map( 'untrailingslashit', $check_list )
-			);
+			);*/
 
 			$url = strtolower( $url );
 			foreach ( $check_list as $check ) {

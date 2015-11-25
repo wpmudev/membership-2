@@ -300,7 +300,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			'ms_shortcode_register_form_rules',
 			$rule_data
 		);
-
+		
 		ob_start();
 		?>
 		jQuery(function() {
@@ -314,6 +314,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		});
 		<?php
 		$script = ob_get_clean();
+		lib3()->ui->js( 'jquery-validate' );
 		lib3()->ui->script( $script );
 	}
 
