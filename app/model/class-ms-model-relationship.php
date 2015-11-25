@@ -2752,22 +2752,32 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 						// Check if the payment was successful.
 						$remaining_days = $this->get_remaining_period();
+					}
 
-						/*
-						 * User did not renew the membership. Give him some time
-						 * to react before restricting his access.
-						 */
-						if ( $deactivate_expired_after_days < - $remaining_days ) {
-							$deactivate = true;
-						}
-					} else {
+					/*
+					 * User did not renew the membership. Give him some time to
+					 * react before restricting his access.
+					 */
+					if ( $deactivate_expired_after_days < - $remaining_days ) {
 						$deactivate = true;
 					}
 				}
+
 				$next_status = $this->calculate_status( null );
 
-				if ( $deactivate ) {
+				/*
+				 * When the subscription expires the first time then create a
+				 * new event that triggers the "Expired" email.
+				 */
+				if ( self::STATUS_EXPIRED == $next_status && $next_status != $this->status ) {
+					MS_Model_Event::save_event(
+						MS_Model_Event::TYPE_MS_EXPIRED,
+						$this
+					);
+				}
+				elseif ( $deactivate ) {
 					$this->deactivate_membership();
+					$next_status = $this->status;
 
 					// Move membership to configured membership.
 					$membership = $this->get_membership();
