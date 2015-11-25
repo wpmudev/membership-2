@@ -374,10 +374,10 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public static function get_communication_type_titles( $membership = null ) {
 		$type_titles = array(
-			self::COMM_TYPE_REGISTRATION => __( 'Signup - Completed with payment', 'membership2' ),
-			self::COMM_TYPE_REGISTRATION_FREE => __( 'Signup - Completed (free membership)', 'membership2' ),
 			self::COMM_TYPE_SIGNUP => __( 'Signup - User account created', 'membership2' ),
 			self::COMM_TYPE_RESETPASSWORD => __( 'Signup - Forgot Password', 'membership2' ),
+			self::COMM_TYPE_REGISTRATION => __( 'Subscription - Completed with payment', 'membership2' ),
+			self::COMM_TYPE_REGISTRATION_FREE => __( 'Subscription - Completed (free membership)', 'membership2' ),
 			self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', 'membership2' ),
 			self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', 'membership2' ),
 			self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', 'membership2' ),
