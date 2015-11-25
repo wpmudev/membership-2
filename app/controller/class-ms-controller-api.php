@@ -516,8 +516,14 @@ if ( ! function_exists( 'ms_has_membership' ) ) {
 		$result = false;
 		$current_member = MS_Plugin::$api->get_current_member();
 
+		if ( func_num_args() == 0 ) {
+			$args = array( 0 ); // ID 0 will check for _any_ membership.
+		} else {
+			$args = func_get_args();
+		}
+
 		// Check all params and return true if the member has any membership.
-		foreach ( func_get_args() as $check_id ) {
+		foreach ( $args as $check_id ) {
 			if ( $current_member->has_membership( $check_id ) ) {
 				$result = true;
 				break;
