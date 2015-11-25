@@ -1375,6 +1375,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int Remaining days.
 	 */
 	public function get_current_period() {
+		// @todo: Start date must be in same timezone as ::current_date()
+		//        Otherwise the result is wrong in some cases...
 		$period_days = MS_Helper_Period::subtract_dates(
 			MS_Helper_Period::current_date(),
 			$this->start_date,
@@ -1398,6 +1400,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int Remaining days.
 	 */
 	public function get_remaining_trial_period() {
+		// @todo: Trial-Expiration date must be in same timezone as ::current_date()
+		//        Otherwise the result is wrong in some cases...
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->trial_expire_date,
 			MS_Helper_Period::current_date(),
@@ -1421,6 +1425,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int Remaining days.
 	 */
 	public function get_remaining_period() {
+		// @todo: Expiration date must be in same timezone as ::current_date()
+		//        Otherwise the result is wrong in some cases...
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->expire_date,
 			MS_Helper_Period::current_date(),
