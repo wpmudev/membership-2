@@ -184,22 +184,31 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$is_linked = true;
 							$invoice_id = $subscription->first_unpaid_invoice();
 						} else {
-							$membership = MS_Model_Import::membership_by_matching(
-								'm1',
-								$m1_sub_id
-							);
-
-							if ( $membership ) {
-								$notes_err = sprintf(
-									'User is not subscribed to Membership %s.',
-									$membership->id
+							$user = get_user_by( 'ID', $m1_user_id );
+							if ( $user && $user->ID == $m1_user_id ) {
+								$membership = MS_Model_Import::membership_by_matching(
+									'm1',
+									$m1_sub_id
 								);
+
+								if ( $membership ) {
+									$notes_err = sprintf(
+										'User is not subscribed to Membership %s.',
+										$membership->id
+									);
+								} else {
+									$notes_err = 'Could not determine a membership.';
+								}
 							} else {
-								$notes_err = 'Could not determine a membership.';
+								$notes_err = sprintf(
+									'Could not find user with ID %s.',
+									$m1_user_id
+								);
+								$ignore = true; // We cannot fix this, so ignore it.
 							}
 						}
 
-						if ( ! $is_linked && ! $invoice_id ) {
+						if ( ! $ignore && ! $is_linked && ! $invoice_id ) {
 							MS_Model_Import::need_matching( $m1_sub_id, 'm1' );
 						}
 					}
@@ -654,7 +663,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * invoice/subscription.
 				 */
 				$notes = 'M1 Payment detected. Manual matching required. ' . $notes_err;
-				$ignore = false;
 				$success = false;
 			} elseif ( 'pay_btn' == $ext_type ) {
 				/*
@@ -662,7 +670,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * created in the PayPal account and not by M1/M2.
 				 */
 				$notes = 'PayPal Payment button detected. Manual matching required. ' . $notes_err;
-				$ignore = false;
 				$success = false;
 			} else {
 				// PayPal sent us a IPN notice about a non-Membership payment:
