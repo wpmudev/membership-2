@@ -74,7 +74,11 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		$title = $this->data['title'];
 		ob_start();
 
-		$reg_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
+		$reg_url = apply_filters(
+			'ms_shortcode_register_form_url',
+			MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER ),
+			$this->data
+		);
 		$reg_url = esc_url_raw(
 			add_query_arg( 'action', 'register_user', $reg_url )
 		);
