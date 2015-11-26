@@ -151,6 +151,11 @@ class MS_Model_Upgrade extends MS_Model {
 				self::_upgrade_1_0_2_0();
 			}
 
+			// Upgrade from 1.0.2.x version to 1.0.2.4 or higher
+			if ( version_compare( $old_version, '1.0.2.4', 'lt' ) ) {
+				self::_upgrade_1_0_2_4();
+			}
+
 			/*
 			 * ----- General update logic, executed on every update ------------
 			 */
@@ -336,6 +341,36 @@ class MS_Model_Upgrade extends MS_Model {
 				AND SUBSTR({$wpdb->postmeta}.meta_key,1,1) = '_'
 			";
 			$ids = $wpdb->query( $sql );
+		}
+	}
+
+	/**
+	 * Upgrade from 1.0.2.x version to 1.0.2.4 version.
+	 */
+	static private function _upgrade_1_0_2_4() {
+		lib3()->updates->clear();
+
+		/*
+		 * Transaction matching of M1 payments with M2 memberships has improved
+		 * so a single M2 membership can be matched with multiple transaction
+		 * types.
+		 */
+		{
+			$memberships = MS_Model_Membership::get_memberships();
+			foreach ( $memberships as $item ) {
+				$source_id = $membership->source_id;
+				if ( empty( $source_id ) ) { continue; }
+
+				$data = lib3()->array->get(
+					$membership->get_custom_data( 'matching' )
+				);
+
+				if ( ! isset( $data['m1'] ) ) { $data['m1'] = array(); }
+				$data['m1'] = lib3()->array->get( $data['m1'] );
+				$data['m1'][] = $source_id;
+				$membership->set_custom_data( 'matching', $data );
+				$membership->save();
+			}
 		}
 	}
 

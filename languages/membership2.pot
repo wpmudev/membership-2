@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.3\n"
+"Project-Id-Version: Membership 2 Pro 1.0.2.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-10-13 10:42:10+00:00\n"
+"POT-Creation-Date: 2015-11-25 19:43:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -160,7 +160,7 @@ msgstr ""
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:196
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:107
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:177
-#: app/controller/class-ms-controller-membership.php:1262
+#: app/controller/class-ms-controller-membership.php:1292
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:133
 #: app/rule/url/class-ms-rule-url-listtable.php:50
 msgid "Delete"
@@ -171,7 +171,7 @@ msgstr ""
 #: app/addon/coupon/view/class-ms-addon-coupon-view-edit.php:144
 #: app/addon/invitation/view/class-ms-addon-invitation-view-edit.php:133
 #: app/addon/invitation/view/class-ms-addon-invitation-view-edit.php:134
-#: app/controller/class-ms-controller-membership.php:1263
+#: app/controller/class-ms-controller-membership.php:1293
 #: app/controller/class-ms-controller-shortcode.php:257
 #: app/helper/class-ms-helper-listtable.php:1272
 #: app/view/billing/class-ms-view-billing-edit.php:212
@@ -512,7 +512,7 @@ msgstr ""
 #: app/helper/class-ms-helper-html.php:319
 #: app/view/billing/class-ms-view-billing-edit.php:220
 #: app/view/frontend/class-ms-view-frontend-profile.php:104
-#: app/view/member/class-ms-view-member-editor.php:423
+#: app/view/member/class-ms-view-member-editor.php:451
 #: app/view/settings/page/class-ms-view-settings-page-communications.php:314
 msgid "Save Changes"
 msgstr ""
@@ -681,20 +681,20 @@ msgstr ""
 msgid "none"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:116
-#: app/addon/profilefields/class-ms-addon-profilefields.php:137
+#: app/addon/profilefields/class-ms-addon-profilefields.php:128
+#: app/addon/profilefields/class-ms-addon-profilefields.php:149
 msgid "Profile Fields"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:117
+#: app/addon/profilefields/class-ms-addon-profilefields.php:129
 msgid "Customize fields in the user profile and registration form."
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:181
+#: app/addon/profilefields/class-ms-addon-profilefields.php:193
 #: app/controller/class-ms-controller-shortcode.php:637
 #: app/helper/listtable/class-ms-helper-listtable-member.php:66
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:630
-#: app/model/class-ms-model-member.php:996 app/view/class-ms-view-help.php:767
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:635
+#: app/model/class-ms-model-member.php:997 app/view/class-ms-view-help.php:767
 #: app/view/member/class-ms-view-member-editor.php:201
 #: app/view/settings/class-ms-view-settings-import.php:157
 #: app/view/shortcode/class-ms-view-shortcode-account.php:468
@@ -702,7 +702,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:188
+#: app/addon/profilefields/class-ms-addon-profilefields.php:200
 #: app/controller/class-ms-controller-shortcode.php:212
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:169
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:171
@@ -713,7 +713,7 @@ msgstr ""
 msgid "First Name"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:194
+#: app/addon/profilefields/class-ms-addon-profilefields.php:206
 #: app/controller/class-ms-controller-shortcode.php:213
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:175
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-form.php:177
@@ -724,35 +724,35 @@ msgstr ""
 msgid "Last Name"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:200
+#: app/addon/profilefields/class-ms-addon-profilefields.php:212
 #: app/helper/listtable/class-ms-helper-listtable-member.php:406
 msgid "Nickname"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:204
+#: app/addon/profilefields/class-ms-addon-profilefields.php:216
 msgid "Display As"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:208
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:636
+#: app/addon/profilefields/class-ms-addon-profilefields.php:220
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:641
 #: app/view/member/class-ms-view-member-editor.php:211
 #: app/view/settings/class-ms-view-settings-import.php:158
 #: app/view/shortcode/class-ms-view-shortcode-account.php:469
 msgid "Email"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:216
+#: app/addon/profilefields/class-ms-addon-profilefields.php:228
 msgid "Website"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:220
+#: app/addon/profilefields/class-ms-addon-profilefields.php:232
 msgid "Biographic Info"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:224
+#: app/addon/profilefields/class-ms-addon-profilefields.php:236
 #: app/controller/class-ms-controller-shortcode.php:216
 #: app/controller/class-ms-controller-shortcode.php:638
-#: app/model/class-ms-model-member.php:998 app/view/class-ms-view-help.php:443
+#: app/model/class-ms-model-member.php:999 app/view/class-ms-view-help.php:443
 #: app/view/class-ms-view-help.php:775
 #: app/view/frontend/class-ms-view-frontend-profile.php:91
 #: app/view/member/class-ms-view-member-editor.php:105
@@ -760,36 +760,36 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:232
+#: app/addon/profilefields/class-ms-addon-profilefields.php:244
 msgid "Password Confirmation"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:637
-#: app/addon/profilefields/class-ms-addon-profilefields.php:643
-#: app/addon/profilefields/class-ms-addon-profilefields.php:651
-#: app/addon/profilefields/class-ms-addon-profilefields.php:660
-#: app/addon/profilefields/class-ms-addon-profilefields.php:673
-#: app/addon/profilefields/class-ms-addon-profilefields.php:682
-#: app/addon/profilefields/class-ms-addon-profilefields.php:700
+#: app/addon/profilefields/class-ms-addon-profilefields.php:674
+#: app/addon/profilefields/class-ms-addon-profilefields.php:680
+#: app/addon/profilefields/class-ms-addon-profilefields.php:688
+#: app/addon/profilefields/class-ms-addon-profilefields.php:697
+#: app/addon/profilefields/class-ms-addon-profilefields.php:710
+#: app/addon/profilefields/class-ms-addon-profilefields.php:719
+#: app/addon/profilefields/class-ms-addon-profilefields.php:737
 msgid "(required)"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:666
+#: app/addon/profilefields/class-ms-addon-profilefields.php:703
 msgid "Clear"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:711
-#: app/addon/profilefields/class-ms-addon-profilefields.php:726
+#: app/addon/profilefields/class-ms-addon-profilefields.php:748
+#: app/addon/profilefields/class-ms-addon-profilefields.php:763
 msgid ""
 "This field can be seen by: <span "
 "class=\"current-visibility-level\">%s</span>"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:716
+#: app/addon/profilefields/class-ms-addon-profilefields.php:753
 msgid "Who can see this field?"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:721
+#: app/addon/profilefields/class-ms-addon-profilefields.php:758
 #: app/addon/taxamo/class-ms-addon-taxamo-userprofile.php:31
 #: app/view/class-ms-view-addon.php:35
 #: app/view/member/class-ms-view-member-dialog.php:133
@@ -917,7 +917,7 @@ msgstr ""
 #: app/addon/redirect/class-ms-addon-redirect.php:98
 #: app/addon/taxamo/class-ms-addon-taxamo.php:167
 #: app/controller/class-ms-controller-plugin.php:475
-#: app/view/class-ms-view-help.php:201 membership2.php:694
+#: app/view/class-ms-view-help.php:201 membership2.php:698
 msgid "Settings"
 msgstr ""
 
@@ -998,7 +998,7 @@ msgid "Tax Settings"
 msgstr ""
 
 #: app/addon/taxamo/class-ms-addon-taxamo-userprofile.php:32
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:365
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:355
 #: app/view/member/class-ms-view-member-dialog.php:124
 #: app/view/member/class-ms-view-member-editor.php:247
 #: app/view/membership/tab/class-ms-view-membership-tab-type.php:95
@@ -1202,823 +1202,823 @@ msgid ""
 "switch to your <b>default langauge</b> (%s)"
 msgstr ""
 
-#: app/class-ms-gateway.php:395
+#: app/class-ms-gateway.php:397
 msgid "Live Site"
 msgstr ""
 
-#: app/class-ms-gateway.php:396
+#: app/class-ms-gateway.php:398
 msgid "Sandbox Mode (test)"
 msgstr ""
 
-#: app/class-ms-gateway.php:434
+#: app/class-ms-gateway.php:440
 msgid "Override the is_configured method of the %s-gateway"
 msgstr ""
 
-#: app/class-ms-gateway.php:544
+#: app/class-ms-gateway.php:550
 msgid "Select country"
 msgstr ""
 
-#: app/class-ms-gateway.php:545
+#: app/class-ms-gateway.php:551
 msgid "Aland Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:546
+#: app/class-ms-gateway.php:552
 msgid "Albania"
 msgstr ""
 
-#: app/class-ms-gateway.php:547
+#: app/class-ms-gateway.php:553
 msgid "Algeria"
 msgstr ""
 
-#: app/class-ms-gateway.php:548
+#: app/class-ms-gateway.php:554
 msgid "American Samoa"
 msgstr ""
 
-#: app/class-ms-gateway.php:549
+#: app/class-ms-gateway.php:555
 msgid "Andorra"
 msgstr ""
 
-#: app/class-ms-gateway.php:550
+#: app/class-ms-gateway.php:556
 msgid "Anguilla"
 msgstr ""
 
-#: app/class-ms-gateway.php:551
+#: app/class-ms-gateway.php:557
 msgid "Antarctica"
 msgstr ""
 
-#: app/class-ms-gateway.php:552
+#: app/class-ms-gateway.php:558
 msgid "Antigua And Barbuda"
 msgstr ""
 
-#: app/class-ms-gateway.php:553
+#: app/class-ms-gateway.php:559
 msgid "Argentina"
 msgstr ""
 
-#: app/class-ms-gateway.php:554
+#: app/class-ms-gateway.php:560
 msgid "Armenia"
 msgstr ""
 
-#: app/class-ms-gateway.php:555
+#: app/class-ms-gateway.php:561
 msgid "Aruba"
 msgstr ""
 
-#: app/class-ms-gateway.php:556
+#: app/class-ms-gateway.php:562
 msgid "Australia"
 msgstr ""
 
-#: app/class-ms-gateway.php:557
+#: app/class-ms-gateway.php:563
 msgid "Austria"
 msgstr ""
 
-#: app/class-ms-gateway.php:558
+#: app/class-ms-gateway.php:564
 msgid "Azerbaijan"
 msgstr ""
 
-#: app/class-ms-gateway.php:559
+#: app/class-ms-gateway.php:565
 msgid "Bahamas"
 msgstr ""
 
-#: app/class-ms-gateway.php:560
+#: app/class-ms-gateway.php:566
 msgid "Bahrain"
 msgstr ""
 
-#: app/class-ms-gateway.php:561
+#: app/class-ms-gateway.php:567
 msgid "Bangladesh"
 msgstr ""
 
-#: app/class-ms-gateway.php:562
+#: app/class-ms-gateway.php:568
 msgid "Barbados"
 msgstr ""
 
-#: app/class-ms-gateway.php:563
+#: app/class-ms-gateway.php:569
 msgid "Belgium"
 msgstr ""
 
-#: app/class-ms-gateway.php:564
+#: app/class-ms-gateway.php:570
 msgid "Belize"
 msgstr ""
 
-#: app/class-ms-gateway.php:565
+#: app/class-ms-gateway.php:571
 msgid "Benin"
 msgstr ""
 
-#: app/class-ms-gateway.php:566
+#: app/class-ms-gateway.php:572
 msgid "Bermuda"
 msgstr ""
 
-#: app/class-ms-gateway.php:567
+#: app/class-ms-gateway.php:573
 msgid "Bhutan"
 msgstr ""
 
-#: app/class-ms-gateway.php:568
+#: app/class-ms-gateway.php:574
 msgid "Bosnia-herzegovina"
 msgstr ""
 
-#: app/class-ms-gateway.php:569
+#: app/class-ms-gateway.php:575
 msgid "Botswana"
 msgstr ""
 
-#: app/class-ms-gateway.php:570
+#: app/class-ms-gateway.php:576
 msgid "Bouvet Island"
 msgstr ""
 
-#: app/class-ms-gateway.php:571
+#: app/class-ms-gateway.php:577
 msgid "Brazil"
 msgstr ""
 
-#: app/class-ms-gateway.php:572
+#: app/class-ms-gateway.php:578
 msgid "British Indian Ocean Territory"
 msgstr ""
 
-#: app/class-ms-gateway.php:573
+#: app/class-ms-gateway.php:579
 msgid "Brunei Darussalam"
 msgstr ""
 
-#: app/class-ms-gateway.php:574
+#: app/class-ms-gateway.php:580
 msgid "Bulgaria"
 msgstr ""
 
-#: app/class-ms-gateway.php:575
+#: app/class-ms-gateway.php:581
 msgid "Burkina Faso"
 msgstr ""
 
-#: app/class-ms-gateway.php:576
+#: app/class-ms-gateway.php:582
 msgid "Canada"
 msgstr ""
 
-#: app/class-ms-gateway.php:577
+#: app/class-ms-gateway.php:583
 msgid "Cape Verde"
 msgstr ""
 
-#: app/class-ms-gateway.php:578
+#: app/class-ms-gateway.php:584
 msgid "Cayman Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:579
+#: app/class-ms-gateway.php:585
 msgid "Central African Republic"
 msgstr ""
 
-#: app/class-ms-gateway.php:580
+#: app/class-ms-gateway.php:586
 msgid "Chile"
 msgstr ""
 
-#: app/class-ms-gateway.php:581
+#: app/class-ms-gateway.php:587
 msgid "China"
 msgstr ""
 
-#: app/class-ms-gateway.php:582
+#: app/class-ms-gateway.php:588
 msgid "Christmas Island"
 msgstr ""
 
-#: app/class-ms-gateway.php:583
+#: app/class-ms-gateway.php:589
 msgid "Cocos (keeling) Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:584
+#: app/class-ms-gateway.php:590
 msgid "Colombia"
 msgstr ""
 
-#: app/class-ms-gateway.php:585
+#: app/class-ms-gateway.php:591
 msgid "Cook Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:586
+#: app/class-ms-gateway.php:592
 msgid "Costa Rica"
 msgstr ""
 
-#: app/class-ms-gateway.php:587
+#: app/class-ms-gateway.php:593
 msgid "Cyprus"
 msgstr ""
 
-#: app/class-ms-gateway.php:588
+#: app/class-ms-gateway.php:594
 msgid "Czech Republic"
 msgstr ""
 
-#: app/class-ms-gateway.php:589
+#: app/class-ms-gateway.php:595
 msgid "Denmark"
 msgstr ""
 
-#: app/class-ms-gateway.php:590
+#: app/class-ms-gateway.php:596
 msgid "Djibouti"
 msgstr ""
 
-#: app/class-ms-gateway.php:591
+#: app/class-ms-gateway.php:597
 msgid "Dominica"
 msgstr ""
 
-#: app/class-ms-gateway.php:592
+#: app/class-ms-gateway.php:598
 msgid "Dominican Republic"
 msgstr ""
 
-#: app/class-ms-gateway.php:593
+#: app/class-ms-gateway.php:599
 msgid "Ecuador"
 msgstr ""
 
-#: app/class-ms-gateway.php:594
+#: app/class-ms-gateway.php:600
 msgid "Egypt"
 msgstr ""
 
-#: app/class-ms-gateway.php:595
+#: app/class-ms-gateway.php:601
 msgid "El Salvador"
 msgstr ""
 
-#: app/class-ms-gateway.php:596
+#: app/class-ms-gateway.php:602
 msgid "Estonia"
 msgstr ""
 
-#: app/class-ms-gateway.php:597
+#: app/class-ms-gateway.php:603
 msgid "Falkland Islands (malvinas)"
 msgstr ""
 
-#: app/class-ms-gateway.php:598
+#: app/class-ms-gateway.php:604
 msgid "Faroe Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:599
+#: app/class-ms-gateway.php:605
 msgid "Fiji"
 msgstr ""
 
-#: app/class-ms-gateway.php:600
+#: app/class-ms-gateway.php:606
 msgid "Finland"
 msgstr ""
 
-#: app/class-ms-gateway.php:601
+#: app/class-ms-gateway.php:607
 msgid "France"
 msgstr ""
 
-#: app/class-ms-gateway.php:602
+#: app/class-ms-gateway.php:608
 msgid "French Guiana"
 msgstr ""
 
-#: app/class-ms-gateway.php:603
+#: app/class-ms-gateway.php:609
 msgid "French Polynesia"
 msgstr ""
 
-#: app/class-ms-gateway.php:604
+#: app/class-ms-gateway.php:610
 msgid "French Southern Territories"
 msgstr ""
 
-#: app/class-ms-gateway.php:605
+#: app/class-ms-gateway.php:611
 msgid "Gabon"
 msgstr ""
 
-#: app/class-ms-gateway.php:606
+#: app/class-ms-gateway.php:612
 msgid "Gambia"
 msgstr ""
 
-#: app/class-ms-gateway.php:607
+#: app/class-ms-gateway.php:613
 msgid "Georgia"
 msgstr ""
 
-#: app/class-ms-gateway.php:608
+#: app/class-ms-gateway.php:614
 msgid "Germany"
 msgstr ""
 
-#: app/class-ms-gateway.php:609
+#: app/class-ms-gateway.php:615
 msgid "Ghana"
 msgstr ""
 
-#: app/class-ms-gateway.php:610
+#: app/class-ms-gateway.php:616
 msgid "Gibraltar"
 msgstr ""
 
-#: app/class-ms-gateway.php:611
+#: app/class-ms-gateway.php:617
 msgid "Greece"
 msgstr ""
 
-#: app/class-ms-gateway.php:612
+#: app/class-ms-gateway.php:618
 msgid "Greenland"
 msgstr ""
 
-#: app/class-ms-gateway.php:613
+#: app/class-ms-gateway.php:619
 msgid "Grenada"
 msgstr ""
 
-#: app/class-ms-gateway.php:614
+#: app/class-ms-gateway.php:620
 msgid "Guadeloupe"
 msgstr ""
 
-#: app/class-ms-gateway.php:615
+#: app/class-ms-gateway.php:621
 msgid "Guam"
 msgstr ""
 
-#: app/class-ms-gateway.php:616
+#: app/class-ms-gateway.php:622
 msgid "Guernsey"
 msgstr ""
 
-#: app/class-ms-gateway.php:617
+#: app/class-ms-gateway.php:623
 msgid "Guyana"
 msgstr ""
 
-#: app/class-ms-gateway.php:618
+#: app/class-ms-gateway.php:624
 msgid "Heard Island And Mcdonald Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:619
+#: app/class-ms-gateway.php:625
 msgid "Holy See (vatican City State)"
 msgstr ""
 
-#: app/class-ms-gateway.php:620
+#: app/class-ms-gateway.php:626
 msgid "Honduras"
 msgstr ""
 
-#: app/class-ms-gateway.php:621
+#: app/class-ms-gateway.php:627
 msgid "Hong Kong"
 msgstr ""
 
-#: app/class-ms-gateway.php:622
+#: app/class-ms-gateway.php:628
 msgid "Hungary"
 msgstr ""
 
-#: app/class-ms-gateway.php:623
+#: app/class-ms-gateway.php:629
 msgid "Iceland"
 msgstr ""
 
-#: app/class-ms-gateway.php:624
+#: app/class-ms-gateway.php:630
 msgid "India"
 msgstr ""
 
-#: app/class-ms-gateway.php:625
+#: app/class-ms-gateway.php:631
 msgid "Indonesia"
 msgstr ""
 
-#: app/class-ms-gateway.php:626
+#: app/class-ms-gateway.php:632
 msgid "Ireland"
 msgstr ""
 
-#: app/class-ms-gateway.php:627
+#: app/class-ms-gateway.php:633
 msgid "Isle Of Man"
 msgstr ""
 
-#: app/class-ms-gateway.php:628
+#: app/class-ms-gateway.php:634
 msgid "Israel"
 msgstr ""
 
-#: app/class-ms-gateway.php:629
+#: app/class-ms-gateway.php:635
 msgid "Italy"
 msgstr ""
 
-#: app/class-ms-gateway.php:630
+#: app/class-ms-gateway.php:636
 msgid "Jamaica"
 msgstr ""
 
-#: app/class-ms-gateway.php:631
+#: app/class-ms-gateway.php:637
 msgid "Japan"
 msgstr ""
 
-#: app/class-ms-gateway.php:632
+#: app/class-ms-gateway.php:638
 msgid "Jersey"
 msgstr ""
 
-#: app/class-ms-gateway.php:633
+#: app/class-ms-gateway.php:639
 msgid "Jordan"
 msgstr ""
 
-#: app/class-ms-gateway.php:634
+#: app/class-ms-gateway.php:640
 msgid "Kazakhstan"
 msgstr ""
 
-#: app/class-ms-gateway.php:635
+#: app/class-ms-gateway.php:641
 msgid "Kiribati"
 msgstr ""
 
-#: app/class-ms-gateway.php:636
+#: app/class-ms-gateway.php:642
 msgid "Korea, Republic Of"
 msgstr ""
 
-#: app/class-ms-gateway.php:637
+#: app/class-ms-gateway.php:643
 msgid "Kuwait"
 msgstr ""
 
-#: app/class-ms-gateway.php:638
+#: app/class-ms-gateway.php:644
 msgid "Kyrgyzstan"
 msgstr ""
 
-#: app/class-ms-gateway.php:639
+#: app/class-ms-gateway.php:645
 msgid "Latvia"
 msgstr ""
 
-#: app/class-ms-gateway.php:640
+#: app/class-ms-gateway.php:646
 msgid "Lesotho"
 msgstr ""
 
-#: app/class-ms-gateway.php:641
+#: app/class-ms-gateway.php:647
 msgid "Liechtenstein"
 msgstr ""
 
-#: app/class-ms-gateway.php:642
+#: app/class-ms-gateway.php:648
 msgid "Lithuania"
 msgstr ""
 
-#: app/class-ms-gateway.php:643
+#: app/class-ms-gateway.php:649
 msgid "Luxembourg"
 msgstr ""
 
-#: app/class-ms-gateway.php:644
+#: app/class-ms-gateway.php:650
 msgid "Macao"
 msgstr ""
 
-#: app/class-ms-gateway.php:645
+#: app/class-ms-gateway.php:651
 msgid "Macedonia"
 msgstr ""
 
-#: app/class-ms-gateway.php:646
+#: app/class-ms-gateway.php:652
 msgid "Madagascar"
 msgstr ""
 
-#: app/class-ms-gateway.php:647
+#: app/class-ms-gateway.php:653
 msgid "Malawi"
 msgstr ""
 
-#: app/class-ms-gateway.php:648
+#: app/class-ms-gateway.php:654
 msgid "Malaysia"
 msgstr ""
 
-#: app/class-ms-gateway.php:649
+#: app/class-ms-gateway.php:655
 msgid "Malta"
 msgstr ""
 
-#: app/class-ms-gateway.php:650
+#: app/class-ms-gateway.php:656
 msgid "Marshall Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:651
+#: app/class-ms-gateway.php:657
 msgid "Martinique"
 msgstr ""
 
-#: app/class-ms-gateway.php:652
+#: app/class-ms-gateway.php:658
 msgid "Mauritania"
 msgstr ""
 
-#: app/class-ms-gateway.php:653
+#: app/class-ms-gateway.php:659
 msgid "Mauritius"
 msgstr ""
 
-#: app/class-ms-gateway.php:654
+#: app/class-ms-gateway.php:660
 msgid "Mayotte"
 msgstr ""
 
-#: app/class-ms-gateway.php:655
+#: app/class-ms-gateway.php:661
 msgid "Mexico"
 msgstr ""
 
-#: app/class-ms-gateway.php:656
+#: app/class-ms-gateway.php:662
 msgid "Micronesia, Federated States Of"
 msgstr ""
 
-#: app/class-ms-gateway.php:657
+#: app/class-ms-gateway.php:663
 msgid "Moldova, Republic Of"
 msgstr ""
 
-#: app/class-ms-gateway.php:658
+#: app/class-ms-gateway.php:664
 msgid "Monaco"
 msgstr ""
 
-#: app/class-ms-gateway.php:659
+#: app/class-ms-gateway.php:665
 msgid "Mongolia"
 msgstr ""
 
-#: app/class-ms-gateway.php:660
+#: app/class-ms-gateway.php:666
 msgid "Montenegro"
 msgstr ""
 
-#: app/class-ms-gateway.php:661
+#: app/class-ms-gateway.php:667
 msgid "Montserrat"
 msgstr ""
 
-#: app/class-ms-gateway.php:662
+#: app/class-ms-gateway.php:668
 msgid "Morocco"
 msgstr ""
 
-#: app/class-ms-gateway.php:663
+#: app/class-ms-gateway.php:669
 msgid "Mozambique"
 msgstr ""
 
-#: app/class-ms-gateway.php:664
+#: app/class-ms-gateway.php:670
 msgid "Namibia"
 msgstr ""
 
-#: app/class-ms-gateway.php:665
+#: app/class-ms-gateway.php:671
 msgid "Nauru"
 msgstr ""
 
-#: app/class-ms-gateway.php:666
+#: app/class-ms-gateway.php:672
 msgid "Nepal"
 msgstr ""
 
-#: app/class-ms-gateway.php:667
+#: app/class-ms-gateway.php:673
 msgid "Netherlands"
 msgstr ""
 
-#: app/class-ms-gateway.php:668
+#: app/class-ms-gateway.php:674
 msgid "Netherlands Antilles"
 msgstr ""
 
-#: app/class-ms-gateway.php:669
+#: app/class-ms-gateway.php:675
 msgid "New Caledonia"
 msgstr ""
 
-#: app/class-ms-gateway.php:670
+#: app/class-ms-gateway.php:676
 msgid "New Zealand"
 msgstr ""
 
-#: app/class-ms-gateway.php:671
+#: app/class-ms-gateway.php:677
 msgid "Nicaragua"
 msgstr ""
 
-#: app/class-ms-gateway.php:672
+#: app/class-ms-gateway.php:678
 msgid "Niger"
 msgstr ""
 
-#: app/class-ms-gateway.php:673
+#: app/class-ms-gateway.php:679
 msgid "Niue"
 msgstr ""
 
-#: app/class-ms-gateway.php:674
+#: app/class-ms-gateway.php:680
 msgid "Norfolk Island"
 msgstr ""
 
-#: app/class-ms-gateway.php:675
+#: app/class-ms-gateway.php:681
 msgid "Northern Mariana Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:676
+#: app/class-ms-gateway.php:682
 msgid "Norway"
 msgstr ""
 
-#: app/class-ms-gateway.php:677
+#: app/class-ms-gateway.php:683
 msgid "Oman"
 msgstr ""
 
-#: app/class-ms-gateway.php:678
+#: app/class-ms-gateway.php:684
 msgid "Palau"
 msgstr ""
 
-#: app/class-ms-gateway.php:679
+#: app/class-ms-gateway.php:685
 msgid "Palestine"
 msgstr ""
 
-#: app/class-ms-gateway.php:680
+#: app/class-ms-gateway.php:686
 msgid "Panama"
 msgstr ""
 
-#: app/class-ms-gateway.php:681
+#: app/class-ms-gateway.php:687
 msgid "Paraguay"
 msgstr ""
 
-#: app/class-ms-gateway.php:682
+#: app/class-ms-gateway.php:688
 msgid "Peru"
 msgstr ""
 
-#: app/class-ms-gateway.php:683
+#: app/class-ms-gateway.php:689
 msgid "Philippines"
 msgstr ""
 
-#: app/class-ms-gateway.php:684
+#: app/class-ms-gateway.php:690
 msgid "Pitcairn"
 msgstr ""
 
-#: app/class-ms-gateway.php:685
+#: app/class-ms-gateway.php:691
 msgid "Poland"
 msgstr ""
 
-#: app/class-ms-gateway.php:686
+#: app/class-ms-gateway.php:692
 msgid "Portugal"
 msgstr ""
 
-#: app/class-ms-gateway.php:687
+#: app/class-ms-gateway.php:693
 msgid "Puerto Rico"
 msgstr ""
 
-#: app/class-ms-gateway.php:688
+#: app/class-ms-gateway.php:694
 msgid "Qatar"
 msgstr ""
 
-#: app/class-ms-gateway.php:689
+#: app/class-ms-gateway.php:695
 msgid "Reunion"
 msgstr ""
 
-#: app/class-ms-gateway.php:690
+#: app/class-ms-gateway.php:696
 msgid "Romania"
 msgstr ""
 
-#: app/class-ms-gateway.php:691
+#: app/class-ms-gateway.php:697
 msgid "Russian Federation"
 msgstr ""
 
-#: app/class-ms-gateway.php:692
+#: app/class-ms-gateway.php:698
 msgid "Rwanda"
 msgstr ""
 
-#: app/class-ms-gateway.php:693
+#: app/class-ms-gateway.php:699
 msgid "Saint Helena"
 msgstr ""
 
-#: app/class-ms-gateway.php:694
+#: app/class-ms-gateway.php:700
 msgid "Saint Kitts And Nevis"
 msgstr ""
 
-#: app/class-ms-gateway.php:695
+#: app/class-ms-gateway.php:701
 msgid "Saint Lucia"
 msgstr ""
 
-#: app/class-ms-gateway.php:696
+#: app/class-ms-gateway.php:702
 msgid "Saint Pierre And Miquelon"
 msgstr ""
 
-#: app/class-ms-gateway.php:697
+#: app/class-ms-gateway.php:703
 msgid "Saint Vincent And The Grenadines"
 msgstr ""
 
-#: app/class-ms-gateway.php:698
+#: app/class-ms-gateway.php:704
 msgid "Samoa"
 msgstr ""
 
-#: app/class-ms-gateway.php:699
+#: app/class-ms-gateway.php:705
 msgid "San Marino"
 msgstr ""
 
-#: app/class-ms-gateway.php:700
+#: app/class-ms-gateway.php:706
 msgid "Sao Tome And Principe"
 msgstr ""
 
-#: app/class-ms-gateway.php:701
+#: app/class-ms-gateway.php:707
 msgid "Saudi Arabia"
 msgstr ""
 
-#: app/class-ms-gateway.php:702
+#: app/class-ms-gateway.php:708
 msgid "Senegal"
 msgstr ""
 
-#: app/class-ms-gateway.php:703
+#: app/class-ms-gateway.php:709
 msgid "Serbia"
 msgstr ""
 
-#: app/class-ms-gateway.php:704
+#: app/class-ms-gateway.php:710
 msgid "Seychelles"
 msgstr ""
 
-#: app/class-ms-gateway.php:705
+#: app/class-ms-gateway.php:711
 msgid "Singapore"
 msgstr ""
 
-#: app/class-ms-gateway.php:706
+#: app/class-ms-gateway.php:712
 msgid "Slovakia"
 msgstr ""
 
-#: app/class-ms-gateway.php:707
+#: app/class-ms-gateway.php:713
 msgid "Slovenia"
 msgstr ""
 
-#: app/class-ms-gateway.php:708
+#: app/class-ms-gateway.php:714
 msgid "Solomon Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:709
+#: app/class-ms-gateway.php:715
 msgid "South Africa"
 msgstr ""
 
-#: app/class-ms-gateway.php:710
+#: app/class-ms-gateway.php:716
 msgid "South Georgia And The South Sandwich Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:711
+#: app/class-ms-gateway.php:717
 msgid "Spain"
 msgstr ""
 
-#: app/class-ms-gateway.php:712
+#: app/class-ms-gateway.php:718
 msgid "Suriname"
 msgstr ""
 
-#: app/class-ms-gateway.php:713
+#: app/class-ms-gateway.php:719
 msgid "Svalbard And Jan Mayen"
 msgstr ""
 
-#: app/class-ms-gateway.php:714
+#: app/class-ms-gateway.php:720
 msgid "Swaziland"
 msgstr ""
 
-#: app/class-ms-gateway.php:715
+#: app/class-ms-gateway.php:721
 msgid "Sweden"
 msgstr ""
 
-#: app/class-ms-gateway.php:716
+#: app/class-ms-gateway.php:722
 msgid "Switzerland"
 msgstr ""
 
-#: app/class-ms-gateway.php:717
+#: app/class-ms-gateway.php:723
 msgid "Taiwan, Province Of China"
 msgstr ""
 
-#: app/class-ms-gateway.php:718
+#: app/class-ms-gateway.php:724
 msgid "Tanzania, United Republic Of"
 msgstr ""
 
-#: app/class-ms-gateway.php:719
+#: app/class-ms-gateway.php:725
 msgid "Thailand"
 msgstr ""
 
-#: app/class-ms-gateway.php:720
+#: app/class-ms-gateway.php:726
 msgid "Timor-leste"
 msgstr ""
 
-#: app/class-ms-gateway.php:721
+#: app/class-ms-gateway.php:727
 msgid "Togo"
 msgstr ""
 
-#: app/class-ms-gateway.php:722
+#: app/class-ms-gateway.php:728
 msgid "Tokelau"
 msgstr ""
 
-#: app/class-ms-gateway.php:723
+#: app/class-ms-gateway.php:729
 msgid "Tonga"
 msgstr ""
 
-#: app/class-ms-gateway.php:724
+#: app/class-ms-gateway.php:730
 msgid "Trinidad And Tobago"
 msgstr ""
 
-#: app/class-ms-gateway.php:725
+#: app/class-ms-gateway.php:731
 msgid "Tunisia"
 msgstr ""
 
-#: app/class-ms-gateway.php:726
+#: app/class-ms-gateway.php:732
 msgid "Turkey"
 msgstr ""
 
-#: app/class-ms-gateway.php:727
+#: app/class-ms-gateway.php:733
 msgid "Turkmenistan"
 msgstr ""
 
-#: app/class-ms-gateway.php:728
+#: app/class-ms-gateway.php:734
 msgid "Turks And Caicos Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:729
+#: app/class-ms-gateway.php:735
 msgid "Tuvalu"
 msgstr ""
 
-#: app/class-ms-gateway.php:730
+#: app/class-ms-gateway.php:736
 msgid "Uganda"
 msgstr ""
 
-#: app/class-ms-gateway.php:731
+#: app/class-ms-gateway.php:737
 msgid "Ukraine"
 msgstr ""
 
-#: app/class-ms-gateway.php:732
+#: app/class-ms-gateway.php:738
 msgid "United Arab Emirates"
 msgstr ""
 
-#: app/class-ms-gateway.php:733
+#: app/class-ms-gateway.php:739
 msgid "United Kingdom"
 msgstr ""
 
-#: app/class-ms-gateway.php:734
+#: app/class-ms-gateway.php:740
 msgid "United States"
 msgstr ""
 
-#: app/class-ms-gateway.php:735
+#: app/class-ms-gateway.php:741
 msgid "United States Minor Outlying Islands"
 msgstr ""
 
-#: app/class-ms-gateway.php:736
+#: app/class-ms-gateway.php:742
 msgid "Uruguay"
 msgstr ""
 
-#: app/class-ms-gateway.php:737
+#: app/class-ms-gateway.php:743
 msgid "Uzbekistan"
 msgstr ""
 
-#: app/class-ms-gateway.php:738
+#: app/class-ms-gateway.php:744
 msgid "Vanuatu"
 msgstr ""
 
-#: app/class-ms-gateway.php:739
+#: app/class-ms-gateway.php:745
 msgid "Venezuela"
 msgstr ""
 
-#: app/class-ms-gateway.php:740
+#: app/class-ms-gateway.php:746
 msgid "Viet Nam"
 msgstr ""
 
-#: app/class-ms-gateway.php:741
+#: app/class-ms-gateway.php:747
 msgid "Virgin Islands, British"
 msgstr ""
 
-#: app/class-ms-gateway.php:742
+#: app/class-ms-gateway.php:748
 msgid "Virgin Islands, U.s."
 msgstr ""
 
-#: app/class-ms-gateway.php:743
+#: app/class-ms-gateway.php:749
 msgid "Wallis And Futuna"
 msgstr ""
 
-#: app/class-ms-gateway.php:744
+#: app/class-ms-gateway.php:750
 msgid "Western Sahara"
 msgstr ""
 
-#: app/class-ms-gateway.php:745
+#: app/class-ms-gateway.php:751
 msgid "Zambia"
 msgstr ""
 
@@ -2093,7 +2093,7 @@ msgstr ""
 #: app/controller/class-ms-controller-billing.php:301
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:264
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:258
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:324
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:314
 #: app/view/frontend/class-ms-view-frontend-payment.php:178
 #: app/view/frontend/class-ms-view-frontend-payment.php:254
 #: app/view/frontend/class-ms-view-frontend-payment.php:282
@@ -2195,12 +2195,12 @@ msgstr ""
 msgid "Check your e-mail for the confirmation link."
 msgstr ""
 
-#: app/controller/class-ms-controller-frontend.php:506
-#: app/model/class-ms-model-member.php:984
+#: app/controller/class-ms-controller-frontend.php:507
+#: app/model/class-ms-model-member.php:985
 msgid "Registration is currently not allowed."
 msgstr ""
 
-#: app/controller/class-ms-controller-frontend.php:975
+#: app/controller/class-ms-controller-frontend.php:989
 msgid "Are you sure you want to cancel?"
 msgstr ""
 
@@ -2212,11 +2212,11 @@ msgstr ""
 msgid "Sorry, your signup request has failed. Try again."
 msgstr ""
 
-#: app/controller/class-ms-controller-gateway.php:732
+#: app/controller/class-ms-controller-gateway.php:729
 msgid "Gateway is inactive"
 msgstr ""
 
-#: app/controller/class-ms-controller-gateway.php:735
+#: app/controller/class-ms-controller-gateway.php:732
 msgid "Unknown Gateway: %s"
 msgstr ""
 
@@ -2249,135 +2249,135 @@ msgstr ""
 msgid "API Docs"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:89
+#: app/controller/class-ms-controller-import.php:93
 msgid ""
 "Matching details saved. Future transactions are automatically processed "
 "from now on!"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:267
+#: app/controller/class-ms-controller-import.php:279
 msgid "Coming soon: This import source is not supported yet..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:304
+#: app/controller/class-ms-controller-import.php:316
 #: app/view/class-ms-view-migrationm1.php:70
 msgid "Importing data..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:305
+#: app/controller/class-ms-controller-import.php:317
 #: app/view/class-ms-view-migrationm1.php:71
 msgid "Okay"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:306
+#: app/controller/class-ms-controller-import.php:318
 #: app/view/class-ms-view-migrationm1.php:72
 msgid "All done!"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:307
+#: app/controller/class-ms-controller-import.php:319
 #: app/view/class-ms-view-migrationm1.php:73
 msgid "Preparing..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:308
+#: app/controller/class-ms-controller-import.php:320
 #: app/view/class-ms-view-migrationm1.php:74
 msgid "Cleaning up..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:309
+#: app/controller/class-ms-controller-import.php:321
 #: app/view/class-ms-view-migrationm1.php:75
 msgid "Importing Member"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:310
+#: app/controller/class-ms-controller-import.php:322
 #: app/view/class-ms-view-migrationm1.php:76
 msgid "Importing Membership"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:311
+#: app/controller/class-ms-controller-import.php:323
 #: app/view/class-ms-view-migrationm1.php:77
 msgid "Importing Settings"
 msgstr ""
 
-#: app/controller/class-ms-controller-member.php:487
+#: app/controller/class-ms-controller-member.php:488
 msgid "Invalid Email address"
 msgstr ""
 
-#: app/controller/class-ms-controller-member.php:489
+#: app/controller/class-ms-controller-member.php:490
 msgid "Email already taken"
 msgstr ""
 
-#: app/controller/class-ms-controller-member.php:495
+#: app/controller/class-ms-controller-member.php:496
 msgid "Username already taken"
 msgstr ""
 
-#: app/controller/class-ms-controller-member.php:716
+#: app/controller/class-ms-controller-member.php:717
 msgid "Select an User"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:716
+#: app/controller/class-ms-controller-membership.php:746
 #: app/helper/class-ms-helper-membership.php:141
 msgid "Finish"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:936
+#: app/controller/class-ms-controller-membership.php:966
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:52
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:80
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:74
 msgid "Details"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:939
+#: app/controller/class-ms-controller-membership.php:969
 #: app/view/settings/class-ms-view-settings-import.php:117
 msgid "Membership Type"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:942
+#: app/controller/class-ms-controller-membership.php:972
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:118
 msgid "Payment options"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:945
+#: app/controller/class-ms-controller-membership.php:975
 msgid "Upgrade paths"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:953
+#: app/controller/class-ms-controller-membership.php:983
 #: app/controller/class-ms-controller-settings.php:319
 #: app/view/settings/page/class-ms-view-settings-page-messages.php:16
 msgid "Protection Messages"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:956
+#: app/controller/class-ms-controller-membership.php:986
 #: app/controller/class-ms-controller-settings.php:322
 #: app/view/settings/page/class-ms-view-settings-page-communications.php:16
 msgid "Automated Email Responses"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:966
+#: app/controller/class-ms-controller-membership.php:996
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:118
 msgid "Access options"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1134
+#: app/controller/class-ms-controller-membership.php:1164
 #: app/controller/class-ms-controller-plugin.php:454
 #: app/helper/class-ms-helper-membership.php:92
 #: app/view/class-ms-view-help.php:169
 msgid "Memberships"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1157
+#: app/controller/class-ms-controller-membership.php:1187
 #: app/controller/class-ms-controller-settings.php:316
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:31
 #: app/view/membership/class-ms-view-membership-paymentsetup.php:28
 msgid "Payment"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1261
+#: app/controller/class-ms-controller-membership.php:1291
 msgid ""
 "Do you want to completely delete the membership <strong>%s</strong> "
 "including all subscriptions?"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1264
+#: app/controller/class-ms-controller-membership.php:1294
 #: app/controller/class-ms-controller-protection.php:419
 msgid "Error while saving changes."
 msgstr ""
@@ -2427,67 +2427,67 @@ msgid ""
 "sign up to a paid membership.<br />%sFix this now &raquo;%s"
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1064
+#: app/controller/class-ms-controller-plugin.php:1069
 msgid "This field is required."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1065
+#: app/controller/class-ms-controller-plugin.php:1070
 msgid "Please fix this field."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1066
+#: app/controller/class-ms-controller-plugin.php:1071
 msgid "Please enter a valid email address."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1067
+#: app/controller/class-ms-controller-plugin.php:1072
 msgid "Please enter a valid URL."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1068
+#: app/controller/class-ms-controller-plugin.php:1073
 msgid "Please enter a valid date."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1069
+#: app/controller/class-ms-controller-plugin.php:1074
 msgid "Please enter a valid date ( ISO )."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1070
+#: app/controller/class-ms-controller-plugin.php:1075
 msgid "Please enter a valid number."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1071
+#: app/controller/class-ms-controller-plugin.php:1076
 msgid "Please enter only digits."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1072
+#: app/controller/class-ms-controller-plugin.php:1077
 msgid "Please enter a valid credit card number."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1073
+#: app/controller/class-ms-controller-plugin.php:1078
 msgid "Please enter the same value again."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1074
+#: app/controller/class-ms-controller-plugin.php:1079
 msgid "Please enter no more than {0} characters."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1075
+#: app/controller/class-ms-controller-plugin.php:1080
 msgid "Please enter at least {0} characters."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1076
+#: app/controller/class-ms-controller-plugin.php:1081
 msgid "Please enter a value between {0} and {1} characters long."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1077
+#: app/controller/class-ms-controller-plugin.php:1082
 msgid "Please enter a value between {0} and {1}."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1078
+#: app/controller/class-ms-controller-plugin.php:1083
 msgid "Please enter a value less than or equal to {0}."
 msgstr ""
 
-#: app/controller/class-ms-controller-plugin.php:1079
+#: app/controller/class-ms-controller-plugin.php:1084
 msgid "Please enter a value greater than or equal to {0}."
 msgstr ""
 
@@ -2537,7 +2537,7 @@ msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:255
 #: app/controller/class-ms-controller-shortcode.php:465
-#: app/gateway/2checkout/view/class-ms-gateway-2checkout-view-button.php:155
+#: app/gateway/2checkout/view/class-ms-gateway-2checkout-view-button.php:157
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-button.php:105
 #: app/gateway/free/view/class-ms-gateway-free-view-button.php:105
 #: app/gateway/manual/view/class-ms-gateway-manual-view-button.php:105
@@ -2632,13 +2632,13 @@ msgstr ""
 msgid "Visit your account page for more information."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1173
+#: app/controller/class-ms-controller-shortcode.php:1179
 msgid ""
 "Content Protection is disabled. Please enable the protection to see this "
 "shortcode."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1177
+#: app/controller/class-ms-controller-shortcode.php:1183
 msgid "This message is only displayed to Site Administrators"
 msgstr ""
 
@@ -2707,11 +2707,11 @@ msgstr ""
 
 #: app/gateway/authorize/class-ms-gateway-authorize.php:250
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:133
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:285
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:282
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:566
 #: app/gateway/stripe/class-ms-gateway-stripe.php:131
 #: app/gateway/stripe/class-ms-gateway-stripe.php:217
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:343
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:427
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:479
 msgid "Payment successful"
 msgstr ""
 
@@ -2904,7 +2904,7 @@ msgid "PayPal Single Gateway"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:135
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:287
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:568
 msgid "Payment registered, though amount differs from invoice."
 msgstr ""
 
@@ -2923,12 +2923,11 @@ msgid "Last transaction has been reversed. Reason: Payment Denied"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:156
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:315
 msgid "Customer did not include a confirmed shipping address"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:157
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:319
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:466
 msgid "Funds not captured yet"
 msgstr ""
 
@@ -2941,22 +2940,18 @@ msgid "Payment waiting for aproval by service provider"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:160
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:331
 msgid "Payment waiting for service provider to handle multi-currency process"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:161
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:335
 msgid "Customer did not register or confirm his/her email yet"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:162
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:339
 msgid "Waiting for service provider to upgrade the PayPal account"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:163
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:343
 msgid "Waiting for service provider to verify his/her PayPal account"
 msgstr ""
 
@@ -3010,66 +3005,144 @@ msgid ""
 "Merchant ID instead"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:292
-msgid ""
-"Last transaction has been reversed. Reason: Payment has been reversed "
-"(charge back)."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:276
+msgid "Subscripton has been created"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:298
-msgid "Last transaction has been reversed. Reason: Payment has been refunded."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:288
+msgid "Recurring payment successful"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:304
-msgid "Last transaction has been reversed. Reason: Payment Denied."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:294
+msgid "Subscription has been modified"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:311
-msgid "Last transaction is pending."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:299
+msgid "Payment failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:323
-msgid "The eCheck has not cleared yet"
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:306
+msgid "Subscription has been canceled"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:327
-msgid "Payment waiting for approval by service provider"
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:313
+msgid "Subscription has been suspended"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:347
-msgid "Unknown reason"
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:320
+msgid "Subscription has failed"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:329
+msgid "New Dispute filed: %s"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:333
+msgid "New Dispute filed"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:355
+msgid "Subscription ended"
 msgstr ""
 
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:359
-msgid "Not handling payment_status: %s"
+msgid "Recurring payment profile created"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:373
-msgid "PayPal Subscripton has been created."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:363
+msgid "Recurring payment failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:383
-msgid "PayPal Subscription has been modified."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:368
+msgid "Recurring payment profile cancelled"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:372
+msgid "Recurring payment profile expired"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:376
+msgid "Recurring payment profile skipped"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:386
+msgid "Outstanding payment of %s"
 msgstr ""
 
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:390
-msgid "PayPal Subscription has been canceled."
+msgid "Outstanding payment"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:398
-msgid "PayPal Subscription has been suspended."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:401
+msgid "Collecting payment of %s failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:406
-msgid "PayPal Subscription has failed."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:405
+msgid "Collecting payment failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:434
-msgid "No more payments will be made for this subscription."
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:413
+msgid "Money sent for: %s"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:417
+msgid "Money sent"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:424
+msgid "Not handling txn_type: %s"
 msgstr ""
 
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:441
-msgid "Not handling txn_type: %s"
+msgid "Last transaction has been reversed: Payment has been reversed (charge back)."
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:446
+msgid "Last transaction has been reversed: Payment has been refunded."
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:451
+msgid "Last transaction has been reversed: Payment Denied."
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:458
+msgid "Last transaction is pending."
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:462
+msgid "No confirmed shipping address"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:470
+msgid "eCheck has not cleared yet"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:474
+msgid "Pending approval by service provider"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:478
+msgid "Pending multi-currency process by service provider"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:482
+msgid "No confirmed email address"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:486
+msgid "Pending upgrade of PayPal account"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:490
+msgid "Pending verification of PayPal account"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:494
+msgid "Unknown reason"
+msgstr ""
+
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:505
+msgid "Not handling payment_status: %s"
 msgstr ""
 
 #: app/gateway/paypalstandard/view/class-ms-gateway-paypalstandard-view-settings.php:16
@@ -3107,15 +3180,11 @@ msgstr ""
 
 #: app/gateway/stripe/class-ms-gateway-stripe.php:119
 #: app/gateway/stripe/class-ms-gateway-stripe.php:204
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:332
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:415
 msgid "No payment for free membership"
 msgstr ""
 
 #: app/gateway/stripe/class-ms-gateway-stripe.php:135
 #: app/gateway/stripe/class-ms-gateway-stripe.php:219
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:348
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:431
 msgid "Stripe payment failed"
 msgstr ""
 
@@ -3167,6 +3236,27 @@ msgstr ""
 
 #: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:86
 msgid "Stripe Subscriptions Gateway"
+msgstr ""
+
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:332
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:412
+msgid "No payment required for free membership"
+msgstr ""
+
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:483
+msgid "Stripe payment failed (payment is past due)"
+msgstr ""
+
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:487
+msgid "Stripe subscription canceled"
+msgstr ""
+
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:491
+msgid "Payment failed, retry-attempts exhausted"
+msgstr ""
+
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:496
+msgid "Stripe subscription is \"%s\""
 msgstr ""
 
 #: app/gateway/stripeplan/view/class-ms-gateway-stripeplan-view-settings.php:16
@@ -3532,7 +3622,7 @@ msgstr ""
 #: app/view/class-ms-view-adminbar.php:116
 #: app/view/frontend/class-ms-view-frontend-invoices.php:20
 #: app/view/member/class-ms-view-member-dialog.php:149
-#: app/view/member/class-ms-view-member-editor.php:359
+#: app/view/member/class-ms-view-member-editor.php:387
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:259
 #: app/view/shortcode/class-ms-view-shortcode-account.php:74
 #: app/view/shortcode/class-ms-view-shortcode-account.php:273
@@ -3557,7 +3647,7 @@ msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:34
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:49
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:77
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:71
 #: app/model/class-ms-model-gateway.php:219
 msgid "Gateway"
 msgstr ""
@@ -3719,7 +3809,7 @@ msgid "Members"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:146
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:643
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:648
 msgid "Guest"
 msgstr ""
 
@@ -3864,23 +3954,23 @@ msgid "Matching"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:45
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:73
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:67
 msgid "ID"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:46
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:74
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:68
 msgid "Time"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:50
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:78
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:72
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:198
 msgid "Amount"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:51
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:79
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:73
 #: app/view/frontend/class-ms-view-frontend-invoices.php:11
 msgid "Invoice"
 msgstr ""
@@ -3894,22 +3984,22 @@ msgid "Ignored"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:287
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:496
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:486
 msgid "Unknown method"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:292
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:501
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:491
 msgid "Gateway called the IPN URL"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:297
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:506
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:496
 msgid "Plugin requested a recuring payment"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:302
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:511
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:501
 msgid "User entered payment details"
 msgstr ""
 
@@ -3921,126 +4011,127 @@ msgstr ""
 msgid "Ignore"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:405
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:404
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:415
 msgid "Retry"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:409
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:408
 msgid "Reset"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:476
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:481
 msgid "Transaction state manually changed"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:478
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:483
 msgid "Modified on: %s"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:482
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:487
 msgid "Modified by: %s"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:497
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:502
 msgid "Imported subscription from old Membership plugin."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:501
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:506
 msgid "Payment via a PayPal Payment button."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:506
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:511
 msgid ""
 "Someone sent you money inside PayPal or PayPal re-sent a previous "
 "payment.<br>Plugin did not attempt to match payment to a subscription."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:528
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:533
 msgid "POST data:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:575
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:580
 msgid "HTTP Headers:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:598
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:603
 msgid "Cookies:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:617
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:622
 msgid "Logged in user:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:624
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:629
 msgid "User ID"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:644
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:649
 msgid "Could not determine a logged in user"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:655
+#: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:660
 msgid "Request URL"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:206
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:200
 msgid "Unknown ID: %s"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:210
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:204
 msgid "PayPal Payment Button #%s"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:215
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:209
 msgid "M1 Subscription Level #%s"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:243
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:237
 msgid "Undefined transactions:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:283
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:277
 msgid "No suitable transaction found."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:287
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:281
 msgid "Nothing to do right now:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:289
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:283
 msgid ""
 "Transactions that can be automatically matched will appear here when they "
 "are processed by a payment gateway.<br>So simply check again later after "
 "new payments were made."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:292
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:286
 msgid ""
 "If you are impatient then \"Retry\" some error-state transactions in the "
 "%sTransaction Logs%s section and then see if they appear on this page."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:342
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:332
 msgid "2. Link %s with"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:392
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:382
 msgid ""
-"1. Below is a list of past \"%s\" transactions. Examine these transactions "
-"to find out which Membership they refer to."
+"1. Below is a list of possible \"%s\" transactions. Examine these "
+"transactions to find out which Membership they refer to."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:402
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:392
 msgid "Notes:"
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:406
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:396
 msgid ""
 "This choice is saved so new transactions are processed automatically from "
 "now on."
 msgstr ""
 
-#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:410
+#: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:400
 msgid ""
 "Upon saving all transactions below will be processed, this might take a "
 "while."
@@ -4215,19 +4306,19 @@ msgid "Membership2 Email Templates"
 msgstr ""
 
 #: app/model/class-ms-model-communication.php:377
-msgid "Signup - Completed with payment"
-msgstr ""
-
-#: app/model/class-ms-model-communication.php:378
-msgid "Signup - Completed (free membership)"
-msgstr ""
-
-#: app/model/class-ms-model-communication.php:379
 msgid "Signup - User account created"
 msgstr ""
 
-#: app/model/class-ms-model-communication.php:380
+#: app/model/class-ms-model-communication.php:378
 msgid "Signup - Forgot Password"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:379
+msgid "Subscription - Completed with payment"
+msgstr ""
+
+#: app/model/class-ms-model-communication.php:380
+msgid "Subscription - Completed (free membership)"
 msgstr ""
 
 #: app/model/class-ms-model-communication.php:381
@@ -4451,15 +4542,15 @@ msgstr ""
 msgid "None (Admin)"
 msgstr ""
 
-#: app/model/class-ms-model-import.php:386
+#: app/model/class-ms-model-import.php:387
 msgid "Could not import Member <strong>%1$s</strong> (%2$s)"
 msgstr ""
 
-#: app/model/class-ms-model-import.php:447
+#: app/model/class-ms-model-import.php:448
 msgid "Could not import a Membership for User <strong>%1$s</strong> (%2$s)"
 msgstr ""
 
-#: app/model/class-ms-model-import.php:456
+#: app/model/class-ms-model-import.php:457
 msgid "Did not import the base membership %2$s for <strong>%1$s</strong>"
 msgstr ""
 
@@ -4517,50 +4608,50 @@ msgstr ""
 msgid "Select a user"
 msgstr ""
 
-#: app/model/class-ms-model-member.php:989
+#: app/model/class-ms-model-member.php:990
 msgid "You cannot register a new account, because you are already logged in."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:997
+#: app/model/class-ms-model-member.php:998
 #: app/view/member/class-ms-view-member-editor.php:86
 msgid "Email address"
 msgstr ""
 
-#: app/model/class-ms-model-member.php:999
+#: app/model/class-ms-model-member.php:1000
 msgid "Password confirmation"
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1019
+#: app/model/class-ms-model-member.php:1020
 msgid ""
 "Please ensure that the <span class=\"ms-bold\">%s</span> information is "
 "completed."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1029
-#: app/model/class-ms-model-member.php:1835
+#: app/model/class-ms-model-member.php:1030
+#: app/model/class-ms-model-member.php:1830
 msgid "Please ensure the passwords match."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1036
-#: app/model/class-ms-model-member.php:1072
+#: app/model/class-ms-model-member.php:1037
+#: app/model/class-ms-model-member.php:1073
 msgid "The username is not valid, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1043
+#: app/model/class-ms-model-member.php:1044
 msgid "That username is already taken, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1050
-#: app/model/class-ms-model-member.php:1828
+#: app/model/class-ms-model-member.php:1051
+#: app/model/class-ms-model-member.php:1823
 msgid "The email address is not valid, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1057
+#: app/model/class-ms-model-member.php:1058
 msgid "That email address is already taken, sorry."
 msgstr ""
 
-#: app/model/class-ms-model-member.php:1081
-#: app/model/class-ms-model-member.php:1090
+#: app/model/class-ms-model-member.php:1082
+#: app/model/class-ms-model-member.php:1091
 msgid "That email domain is not allowed for registration, sorry."
 msgstr ""
 
@@ -4624,76 +4715,76 @@ msgstr ""
 msgid "Recurring payments"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:876
+#: app/model/class-ms-model-membership.php:873
 msgid "Private Memberships"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:998
+#: app/model/class-ms-model-membership.php:995
 msgid "Membership2 Core Membership"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1356
+#: app/model/class-ms-model-membership.php:1353
 msgid "N/A"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1363
+#: app/model/class-ms-model-membership.php:1360
 msgid "Pay for %1$s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1368
+#: app/model/class-ms-model-membership.php:1365
 msgid "Free for %1$s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1377
+#: app/model/class-ms-model-membership.php:1374
 msgid "Pay from %1$s to %2$s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1383
+#: app/model/class-ms-model-membership.php:1380
 msgid "Free from %1$s to %2$s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1392
+#: app/model/class-ms-model-membership.php:1389
 msgid "Pay each %1$s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1394
-#: app/model/class-ms-model-membership.php:1412
+#: app/model/class-ms-model-membership.php:1391
+#: app/model/class-ms-model-membership.php:1409
 msgid "Single payment"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1396
+#: app/model/class-ms-model-membership.php:1393
 msgid "%2$s payments"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1399
-#: app/model/class-ms-model-membership.php:1414
+#: app/model/class-ms-model-membership.php:1396
+#: app/model/class-ms-model-membership.php:1411
 msgid "Free access"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1800
+#: app/model/class-ms-model-membership.php:1797
 msgid "Restrict access to Visitor-Level"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1809
+#: app/model/class-ms-model-membership.php:1806
 msgid "Change to: %s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2158
+#: app/model/class-ms-model-membership.php:2155
 msgid "Ignored: Rule \"%s\""
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2165
+#: app/model/class-ms-model-membership.php:2162
 msgid "%s: Rule \"%s\""
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2166
+#: app/model/class-ms-model-membership.php:2163
 #: app/model/class-ms-model-plugin.php:258
 #: app/model/class-ms-model-plugin.php:311
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:100
 msgid "Allow"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2166
+#: app/model/class-ms-model-membership.php:2163
 #: app/model/class-ms-model-plugin.php:258
 #: app/model/class-ms-model-plugin.php:311
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:101
@@ -4818,133 +4909,133 @@ msgstr ""
 msgid "Not yet active"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1719
+#: app/model/class-ms-model-relationship.php:1731
 msgid "Nothing (for ever)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1721
+#: app/model/class-ms-model-relationship.php:1733
 msgid "You will pay nothing for permanent access."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1725
+#: app/model/class-ms-model-relationship.php:1737
 msgid "<span class=\"price\">%1$s %2$s</span> (for ever)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1727
+#: app/model/class-ms-model-relationship.php:1739
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> for permanent access."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1741
+#: app/model/class-ms-model-relationship.php:1753
 msgid "Nothing (until %4$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1743
+#: app/model/class-ms-model-relationship.php:1755
 msgid "You will pay nothing for access until %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1747
+#: app/model/class-ms-model-relationship.php:1759
 msgid "<span class=\"price\">%1$s %2$s</span> (until %4$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1749
+#: app/model/class-ms-model-relationship.php:1761
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> for access until %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1765
+#: app/model/class-ms-model-relationship.php:1777
 msgid "Nothing (%5$s - %6$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1767
+#: app/model/class-ms-model-relationship.php:1779
 msgid "You will pay nothing for access from %3$s until %4$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1771
+#: app/model/class-ms-model-relationship.php:1783
 msgid "<span class=\"price\">%1$s %2$s</span> (%5$s - %6$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1773
+#: app/model/class-ms-model-relationship.php:1785
 msgid ""
 "You will pay <span class=\"price\">%1$s %2$s</span> to access from %3$s "
 "until %4$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1792
+#: app/model/class-ms-model-relationship.php:1804
 msgid "<span class=\"price\">%1$s %2$s</span> (once)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1794
+#: app/model/class-ms-model-relationship.php:1806
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> once."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1800
+#: app/model/class-ms-model-relationship.php:1812
 msgid "%4$s times <span class=\"price\">%1$s %2$s</span> (each %3$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1802
+#: app/model/class-ms-model-relationship.php:1814
 msgid ""
 "You will make %4$s payments of <span class=\"price\">%1$s %2$s</span>, one "
 "each %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1807
+#: app/model/class-ms-model-relationship.php:1819
 msgid "<span class=\"price\">%1$s %2$s</span> (each %3$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1809
+#: app/model/class-ms-model-relationship.php:1821
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> each %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1828
+#: app/model/class-ms-model-relationship.php:1840
 msgid "after %4$s"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1830
+#: app/model/class-ms-model-relationship.php:1842
 msgid "on %4$s"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1833
+#: app/model/class-ms-model-relationship.php:1845
 msgid "nothing"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1834
+#: app/model/class-ms-model-relationship.php:1846
 msgid "The trial period of %1$s is for free."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1838
+#: app/model/class-ms-model-relationship.php:1850
 msgid ""
 "For the trial period of %1$s you only pay <span class=\"price\">%2$s "
 "%3$s</span>."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1846
+#: app/model/class-ms-model-relationship.php:1858
 msgid "M j"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2425
+#: app/model/class-ms-model-relationship.php:2443
 msgid "Pending payment."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2431
+#: app/model/class-ms-model-relationship.php:2449
 msgid "Membership Trial expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2440
+#: app/model/class-ms-model-relationship.php:2458
 msgid "Membership expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2445
+#: app/model/class-ms-model-relationship.php:2463
 msgid "Permanent access."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2453
+#: app/model/class-ms-model-relationship.php:2471
 msgid "Membership expired since "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2461
+#: app/model/class-ms-model-relationship.php:2479
 msgid "Membership canceled, valid until it expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2467
+#: app/model/class-ms-model-relationship.php:2485
 msgid "Membership deactivated."
 msgstr ""
 
@@ -5076,7 +5167,7 @@ msgstr ""
 msgid "New Membership pages created: \"%1$s\"."
 msgstr ""
 
-#: app/model/class-ms-model-upgrade.php:369
+#: app/model/class-ms-model-upgrade.php:404
 msgid ""
 "<b>Upgrade warning</b>:<br>The Membership 2 plugin is installed in an "
 "deprecated folder. Some users did report issues when the plugin is "
@@ -5088,29 +5179,29 @@ msgid ""
 "have to delete them.</em>"
 msgstr ""
 
-#: app/model/class-ms-model-upgrade.php:540
+#: app/model/class-ms-model-upgrade.php:575
 msgid "Info: Membership2 is not activated network-wide"
 msgstr ""
 
-#: app/model/class-ms-model-upgrade.php:550
+#: app/model/class-ms-model-upgrade.php:585
 msgid ""
 "Your %sPermalink structure%s should include the %sPost name%s to ensure "
 "Membership 2 is working correctly."
 msgstr ""
 
-#: app/model/class-ms-model-upgrade.php:710
+#: app/model/class-ms-model-upgrade.php:745
 msgid "Membership 2 successfully reset!"
 msgstr ""
 
-#: app/model/class-ms-model-upgrade.php:739
+#: app/model/class-ms-model-upgrade.php:774
 msgid "The Membership2 Snapshot \"%s\" was restored!"
 msgstr ""
 
-#: app/model/class-ms-model-upgrade.php:746
+#: app/model/class-ms-model-upgrade.php:781
 msgid "To prevent auto-updating the DB again we stop here!"
 msgstr ""
 
-#: app/model/class-ms-model-upgrade.php:752
+#: app/model/class-ms-model-upgrade.php:787
 msgid ""
 "You now have the option to <br />(A) downgrade the plugin to an earlier "
 "version via FTP or <br />(B) to %sre-run the upgrade process%s."
@@ -5443,7 +5534,7 @@ msgid "Username: %s<br>Password: %s"
 msgstr ""
 
 #: app/model/import/class-ms-model-import-export.php:161
-#: app/model/import/class-ms-model-import-membership.php:115
+#: app/model/import/class-ms-model-import-membership.php:130
 msgid "Exported data:"
 msgstr ""
 
@@ -5483,37 +5574,37 @@ msgstr ""
 msgid "No valid export file uploaded, please try again."
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:66
+#: app/model/import/class-ms-model-import-membership.php:81
 msgid "Hmmm, we could not import the Membership data..."
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:116
+#: app/model/import/class-ms-model-import-membership.php:131
 msgid "- Subscription Plans (without level rules)"
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:117
+#: app/model/import/class-ms-model-import-membership.php:132
 msgid "- Members"
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:118
+#: app/model/import/class-ms-model-import-membership.php:133
 msgid "- Registrations (link between Members and Subscription Plans)"
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:119
+#: app/model/import/class-ms-model-import-membership.php:134
 msgid "- Transactions"
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:120
+#: app/model/import/class-ms-model-import-membership.php:135
 msgid "Each Subscription-Level is imported as a individual Membership."
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:121
+#: app/model/import/class-ms-model-import-membership.php:136
 msgid ""
 "Transactions are converted to invoices. Data like tax-rate or applied "
 "coupons are not available."
 msgstr ""
 
-#: app/model/import/class-ms-model-import-membership.php:122
+#: app/model/import/class-ms-model-import-membership.php:137
 msgid ""
 "Please note that we cannot import recurring 2Checkout subscriptions to "
 "Membership2!"
@@ -5803,7 +5894,7 @@ msgstr ""
 msgid "Menu Type"
 msgstr ""
 
-#: app/rule/menuitem/class-ms-rule-menuitem-model.php:312
+#: app/rule/menuitem/class-ms-rule-menuitem-model.php:321
 msgid "(No Menus Available)"
 msgstr ""
 
@@ -5866,13 +5957,13 @@ msgstr ""
 msgid "Show this menu to members"
 msgstr ""
 
-#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:168
+#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:177
 msgid "( Default Menu )"
 msgstr ""
 
-#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:194
-#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:229
-#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:146
+#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:203
+#: app/rule/replacelocation/class-ms-rule-replacelocation-model.php:238
+#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:155
 msgid "No menus found."
 msgstr ""
 
@@ -5894,7 +5985,7 @@ msgstr ""
 msgid "Replace with this Menu"
 msgstr ""
 
-#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:244
+#: app/rule/replacemenu/class-ms-rule-replacemenu-model.php:253
 msgid "( No replacement )"
 msgstr ""
 
@@ -5912,43 +6003,43 @@ msgstr ""
 msgid "Shortcode"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:121
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:130
 msgid "Shortcode content protected."
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:195
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:204
 msgid "No access to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:219
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:228
 msgid "Content protected to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:290
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:299
 msgid "Visible for members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:291
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:300
 msgid "Other users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:292
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:301
 msgid "Other uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:294
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:303
 msgid "Hidden from members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:295
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:304
 msgid "Those users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:296
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:305
 msgid "Those uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:352
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:361
 msgid "This information is only displayed for admin users"
 msgstr ""
 
@@ -6125,7 +6216,7 @@ msgid "Transaction ID"
 msgstr ""
 
 #: app/view/billing/class-ms-view-billing-link.php:84
-#: app/view/member/class-ms-view-member-editor.php:343
+#: app/view/member/class-ms-view-member-editor.php:371
 msgid "Payment Gateway"
 msgstr ""
 
@@ -6234,12 +6325,12 @@ msgid "Simulated Membership"
 msgstr ""
 
 #: app/view/class-ms-view-adminbar.php:102
-#: app/view/member/class-ms-view-member-editor.php:351
+#: app/view/member/class-ms-view-member-editor.php:379
 msgid "Start Date"
 msgstr ""
 
 #: app/view/class-ms-view-adminbar.php:106
-#: app/view/member/class-ms-view-member-editor.php:355
+#: app/view/member/class-ms-view-member-editor.php:383
 msgid "Expire Date"
 msgstr ""
 
@@ -6582,39 +6673,39 @@ msgstr ""
 msgid "Deactivated (no access)"
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:306
+#: app/view/member/class-ms-view-member-editor.php:334
 #: app/view/member/class-ms-view-member-subscription.php:74
 msgid "- No Gateway -"
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:339
+#: app/view/member/class-ms-view-member-editor.php:367
 msgid "Subscription ID"
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:347
+#: app/view/member/class-ms-view-member-editor.php:375
 #: app/view/settings/class-ms-view-settings-import.php:118
 msgid "Payment Type"
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:371
+#: app/view/member/class-ms-view-member-editor.php:399
 msgid "This user does not have any subscriptions yet."
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:381
+#: app/view/member/class-ms-view-member-editor.php:409
 msgid "Add Subscriptions"
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:384
+#: app/view/member/class-ms-view-member-editor.php:412
 msgid "Set Subscription"
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:416
+#: app/view/member/class-ms-view-member-editor.php:444
 msgid ""
 "Subscription Dates and Status are validated when saved and might result in "
 "a different value then the one specified above."
 msgstr ""
 
-#: app/view/member/class-ms-view-member-editor.php:428
+#: app/view/member/class-ms-view-member-editor.php:456
 msgid "History and logs"
 msgstr ""
 
@@ -7587,13 +7678,13 @@ msgid ""
 "already loaded"
 msgstr ""
 
-#: membership2.php:120
+#: membership2.php:118
 msgid ""
 "Hey %s, you've been using %s for a while now, and we hope you're happy with "
 "it."
 msgstr ""
 
-#: membership2.php:122
+#: membership2.php:120
 msgid ""
 "We're constantly working to improve our plugins, and it helps a lot when "
 "members just like you share feedback!"
@@ -7986,7 +8077,7 @@ msgstr ""
 
 #: app/view/class-ms-view-help.php:298
 msgctxt "help"
-msgid "(all|loggedin|guest|admin)"
+msgid "(all|loggedin|guest|admin|non-admin)"
 msgstr ""
 
 #: app/view/class-ms-view-help.php:299
@@ -8455,12 +8546,12 @@ msgctxt "help"
 msgid "Network-Wide Protection"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1635
+#: app/view/class-ms-view-help.php:1636
 msgctxt "help"
 msgid "Enable Network-Wide mode"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1636
+#: app/view/class-ms-view-help.php:1637
 msgctxt "help"
 msgid ""
 "In wp-config.php add the line <code>define( \"MS_PROTECT_NETWORK\", true "
@@ -8471,12 +8562,12 @@ msgid ""
 "network wide, you only need to add the option above."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1639
+#: app/view/class-ms-view-help.php:1640
 msgctxt "help"
 msgid "Disable Network-Wide mode"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1640
+#: app/view/class-ms-view-help.php:1641
 msgctxt "help"
 msgid ""
 "Simply remove the line <code>define( \"MS_PROTECT_NETWORK\", true );</code> "
@@ -8488,17 +8579,24 @@ msgid ""
 "your network."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1656
+#: app/view/class-ms-view-help.php:1647
+msgctxt "help"
+msgid ""
+"Network wide protection is a Pro feature. %sRead more about the Pro Version "
+"here%s!"
+msgstr ""
+
+#: app/view/class-ms-view-help.php:1668
 msgctxt "help"
 msgid "Advanced Settings"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1658
+#: app/view/class-ms-view-help.php:1670
 msgctxt "help"
 msgid "Reset"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1659
+#: app/view/class-ms-view-help.php:1671
 msgctxt "help"
 msgid ""
 "Open the Settings page and add <code>&reset=1</code> to the URL. A prompt "
@@ -8506,12 +8604,12 @@ msgid ""
 "to clean all traces after testing the plugin."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1662
+#: app/view/class-ms-view-help.php:1674
 msgctxt "help"
 msgid "Stop Emails"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1663
+#: app/view/class-ms-view-help.php:1675
 msgctxt "help"
 msgid ""
 "In wp-config.php add the line <code>define( \"MS_STOP_EMAILS\", true "
@@ -8520,12 +8618,12 @@ msgid ""
 "email notifications."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1666
+#: app/view/class-ms-view-help.php:1678
 msgctxt "help"
 msgid "Reduce Emails"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1667
+#: app/view/class-ms-view-help.php:1679
 msgctxt "help"
 msgid ""
 "By default your members will get an email for every event that is handled "
@@ -8536,12 +8634,12 @@ msgid ""
 "24 hours."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1670
+#: app/view/class-ms-view-help.php:1682
 msgctxt "help"
 msgid "Lock Subscription Status"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1671
+#: app/view/class-ms-view-help.php:1683
 msgctxt "help"
 msgid ""
 "In wp-config.php add the line <code>define( \"MS_LOCK_SUBSCRIPTIONS\", true "
@@ -8550,12 +8648,12 @@ msgid ""
 "anymore. Effectively Subscriptions will not expire anymore."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1674
+#: app/view/class-ms-view-help.php:1686
 msgctxt "help"
 msgid "No Admin Shortcode Preview"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1675
+#: app/view/class-ms-view-help.php:1687
 msgctxt "help"
 msgid ""
 "By default the user will see additional information on the page when using "
@@ -8564,12 +8662,12 @@ msgid ""
 ");</code> in wp-config.php."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1678
+#: app/view/class-ms-view-help.php:1690
 msgctxt "help"
 msgid "Define Membership 2 Admin users"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1679
+#: app/view/class-ms-view-help.php:1691
 msgctxt "help"
 msgid ""
 "By default all users with capability <code>manage_options</code> are "
@@ -8580,12 +8678,12 @@ msgid ""
 "then only the Superadmin has full access to the site."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1682
+#: app/view/class-ms-view-help.php:1694
 msgctxt "help"
 msgid "Debugging incorrect page access"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1683
+#: app/view/class-ms-view-help.php:1695
 msgctxt "help"
 msgid ""
 "M2 has a small debugging tool built into it, that allows you to analyze "
@@ -8596,12 +8694,12 @@ msgid ""
 "useful details on the access permissions."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1699
+#: app/view/class-ms-view-help.php:1711
 msgctxt "help"
 msgid "Template Hierarchy"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1703
+#: app/view/class-ms-view-help.php:1715
 msgctxt "help"
 msgid ""
 "By default Membership 2 will render the page contents defined in your "
@@ -8610,121 +8708,121 @@ msgid ""
 "files%s in the theme."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1712
+#: app/view/class-ms-view-help.php:1724
 msgctxt "help"
 msgid "Account Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1713
+#: app/view/class-ms-view-help.php:1725
 msgctxt "help"
 msgid "1. <tt>m2-account.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1714
+#: app/view/class-ms-view-help.php:1726
 msgctxt "help"
 msgid "2. Default single-page template"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1717
+#: app/view/class-ms-view-help.php:1729
 msgctxt "help"
 msgid "Membership List Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1718
+#: app/view/class-ms-view-help.php:1730
 msgctxt "help"
 msgid ""
 "1. <tt>m2-memberships-100.php</tt> (Not the list, only checkout for "
 "Membership 100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1719
+#: app/view/class-ms-view-help.php:1731
 msgctxt "help"
 msgid "2. <tt>m2-memberships.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1720 app/view/class-ms-view-help.php:1726
 #: app/view/class-ms-view-help.php:1732 app/view/class-ms-view-help.php:1738
+#: app/view/class-ms-view-help.php:1744 app/view/class-ms-view-help.php:1750
 msgctxt "help"
 msgid "3. Default single-page template"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1723
+#: app/view/class-ms-view-help.php:1735
 msgctxt "help"
 msgid "Registration Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1724
+#: app/view/class-ms-view-help.php:1736
 msgctxt "help"
 msgid ""
 "1. <tt>m2-register-100.php</tt> (Not the list, only checkout for Membership "
 "100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1725
+#: app/view/class-ms-view-help.php:1737
 msgctxt "help"
 msgid "2. <tt>m2-register.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1729
+#: app/view/class-ms-view-help.php:1741
 msgctxt "help"
 msgid "Thank-You Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1730
+#: app/view/class-ms-view-help.php:1742
 msgctxt "help"
 msgid ""
 "1. <tt>m2-registration-complete-100.php</tt> (After subscribing to "
 "Membership 100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1731
+#: app/view/class-ms-view-help.php:1743
 msgctxt "help"
 msgid "2. <tt>m2-registration-complete.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1735
+#: app/view/class-ms-view-help.php:1747
 msgctxt "help"
 msgid "Protected Content Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1736
+#: app/view/class-ms-view-help.php:1748
 msgctxt "help"
 msgid ""
 "1. <tt>m2-protected-content-100.php</tt> (Page is protected by Membership "
 "100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1737
+#: app/view/class-ms-view-help.php:1749
 msgctxt "help"
 msgid "2. <tt>m2-protected-content.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1741
+#: app/view/class-ms-view-help.php:1753
 msgctxt "help"
 msgid "Invoice Layout"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1742
+#: app/view/class-ms-view-help.php:1754
 msgctxt "help"
 msgid "1. <tt>m2-invoice-100.php</tt> (Used by all invoices for Membership 100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1743
+#: app/view/class-ms-view-help.php:1755
 msgctxt "help"
 msgid "2. <tt>m2-invoice.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1744
+#: app/view/class-ms-view-help.php:1756
 msgctxt "help"
 msgid "3. <tt>single-ms_invoice.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1745
+#: app/view/class-ms-view-help.php:1757
 msgctxt "help"
 msgid "4. Default invoice template by Membership 2"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:711
+#: app/addon/profilefields/class-ms-addon-profilefields.php:748
 msgctxt "Change profile field visibility level"
 msgid "Change"
 msgstr ""

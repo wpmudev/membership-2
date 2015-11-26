@@ -247,7 +247,7 @@ class M2_Mailchimp {
             throw new M2_Mailchimp_Error('We received an unexpected error: ' . json_encode($result));
         }
 
-        $class = (isset(self::$error_map[$result['name']])) ? self::$error_map[$result['name']] : 'Mailchimp_Error';
+        $class = (isset(self::$error_map[$result['name']])) ? self::$error_map[$result['name']] : 'M2_Mailchimp_Error';
         return new $class($result['error'], $result['code']);
     }
 

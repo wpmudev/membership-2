@@ -1375,9 +1375,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int Remaining days.
 	 */
 	public function get_current_period() {
+		// @todo: Start date must be in same timezone as ::current_date()
+		//        Otherwise the result is wrong in some cases...
 		$period_days = MS_Helper_Period::subtract_dates(
 			MS_Helper_Period::current_date(),
-			$this->start_date
+			$this->start_date,
+			DAY_IN_SECONDS, // return value in DAYS.
+			true // return negative value if first date is before second date.
 		);
 
 		return apply_filters(
@@ -1396,9 +1400,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int Remaining days.
 	 */
 	public function get_remaining_trial_period() {
+		// @todo: Trial-Expiration date must be in same timezone as ::current_date()
+		//        Otherwise the result is wrong in some cases...
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->trial_expire_date,
-			MS_Helper_Period::current_date()
+			MS_Helper_Period::current_date(),
+			DAY_IN_SECONDS, // return value in DAYS.
+			true // return negative value if first date is before second date.
 		);
 
 		return apply_filters(
@@ -1417,9 +1425,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int Remaining days.
 	 */
 	public function get_remaining_period() {
+		// @todo: Expiration date must be in same timezone as ::current_date()
+		//        Otherwise the result is wrong in some cases...
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->expire_date,
-			MS_Helper_Period::current_date()
+			MS_Helper_Period::current_date(),
+			DAY_IN_SECONDS, // return value in DAYS.
+			true // return negative value if first date is before second date.
 		);
 
 		return apply_filters(
@@ -1851,7 +1863,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			'ms_model_relationship_get_payment_description',
 			$desc,
 			$membership,
-			$payment_type
+			$payment_type,
+			$this,
+			$invoice,
+			$short
 		);
 	}
 
@@ -2168,6 +2183,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} elseif ( $membership->is_free() ) {
 			$can_activate = true;
 			$debug_msg[] = '[Can activate: Free membership]';
+		} elseif ( ! empty( $this->source ) ) {
+			$can_activate = true;
+			$debug_msg[] = '[Can activate: Imported subscription]';
 		} else {
 			$valid_payment = false;
 			// Check if there is *any* payment, no matter what height.
@@ -2734,21 +2752,32 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 						// Check if the payment was successful.
 						$remaining_days = $this->get_remaining_period();
+					}
 
-						/*
-						 * User did not renew the membership. Give him some time
-						 * to react before restricting his access.
-						 */
-						if ( $deactivate_expired_after_days < - $remaining_days ) {
-							$deactivate = true;
-						}
-					} else {
+					/*
+					 * User did not renew the membership. Give him some time to
+					 * react before restricting his access.
+					 */
+					if ( $deactivate_expired_after_days < - $remaining_days ) {
 						$deactivate = true;
 					}
 				}
 
-				if ( $deactivate ) {
+				$next_status = $this->calculate_status( null );
+
+				/*
+				 * When the subscription expires the first time then create a
+				 * new event that triggers the "Expired" email.
+				 */
+				if ( self::STATUS_EXPIRED == $next_status && $next_status != $this->status ) {
+					MS_Model_Event::save_event(
+						MS_Model_Event::TYPE_MS_EXPIRED,
+						$this
+					);
+				}
+				elseif ( $deactivate ) {
 					$this->deactivate_membership();
+					$next_status = $this->status;
 
 					// Move membership to configured membership.
 					$membership = $this->get_membership();

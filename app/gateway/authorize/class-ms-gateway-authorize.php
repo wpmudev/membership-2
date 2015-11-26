@@ -373,7 +373,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this->load_authorize_lib();
 
 			$cim = new M2_AuthorizeNetCIM( $this->api_login_id, $this->api_transaction_key );
-			$cim->setSandbox( $this->mode != self::MODE_LIVE );
+			$cim->setSandbox( ! $this->is_live_mode() );
 
 			if ( WDEV_DEBUG ) { // defined in wpmu-lib submodule.
 				$cim->setLogFile( WP_CONTENT_DIR . '/authorize-net.log' );

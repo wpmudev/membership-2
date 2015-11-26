@@ -295,7 +295,7 @@ class MS_View_Help extends MS_View {
 				<ul>
 					<li>
 						<code>type</code>
-						<?php _ex( '(all|loggedin|guest|admin)', 'help', 'membership2' ); ?>
+						<?php _ex( '(all|loggedin|guest|admin|non-admin)', 'help', 'membership2' ); ?>
 						<?php _ex( 'Decide, which type of users will see the message', 'help', 'membership2' ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', 'membership2' ); ?>

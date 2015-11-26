@@ -720,9 +720,6 @@ class MS_Controller_Gateway extends MS_Controller {
 				case 'paypalexpress': $gateway = 'paypalstandard'; break; //M1
 			}
 
-			do_action( 'lib2_debug_log', 'Incoming Payment Notification for "' . $gateway . '"' );
-			do_action( 'lib2_debug_log', $_POST );
-
 			if ( MS_Model_Gateway::is_active( $gateway ) ) {
 				$action = 'ms_gateway_handle_payment_return_' . $gateway;
 				do_action( $action );

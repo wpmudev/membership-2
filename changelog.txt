@@ -4,6 +4,29 @@ Author: Philipp Stracker, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.2.4
+----------------------------------------------------------------------
+- Add new option 'non-admin' to the shortcode [ms-user]
+- Improve support for protection rules on admin-side (shortcode, menu-items)
+- Improve payment-matching for imported subscriptions
+- Improve the transaction logs page and show better description for PayPal transactions
+- Improve and fix minor issues in PayPal Standard gateway, related to imported subscriptions
+- Improve the Edit-Member page to only offer valid subscription status options
+- Fix bug that caused expiration emails to be sent multiple times
+- Fix incorrectly displayed "Live Mode" flag for payment gateways on initial setup
+- Fix a PHP notice in the login form
+- Fix BuddyPress XProfile issue (caused by M2 loading before BP was initialized)
+- Fix issue in Account page that did not save the users email address
+- Fix error about undefined value 'user_id' when editing a user in M2
+- Fix error in Searchindex addon that (among others) caused a problem with Sitemaps
+- Fix issue in Profile-Fields Addon that would not save website/description
+- Fix small issues with formatting some time/date values
+- Fix small issue in Authorize.Net payment settings that would not save Secure Payments setting
+- Fix wrong logic that would hide the Billing menu item if all paid memberships were private
+- Fix small issue in URL-protection that ignored the last slash of the URL rule
+- Fix a issue that caused the modal background to stay open after closing popups in some cases
+- Small clean-up, add/update filters, fix typos, ...
+
 1.0.2.3
 ----------------------------------------------------------------------
 - Add new email template to customize the Forgot Password email

@@ -1442,9 +1442,7 @@ class MS_Helper_ListTable {
 	 * @access protected
 	 */
 	protected function inline_edit() {
-		?>
-		Inline edit form
-		<?php
+		// No output here, must be implemented in the child class!
 	}
 
 	/**

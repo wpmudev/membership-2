@@ -373,12 +373,22 @@ class MS_Controller_Api extends MS_Hooker {
 	public function detect_membership() {
 		$result = false;
 
-		$membership_id = apply_filters( 'ms_detect_membership_id', $membership_id );
+		$membership_id = apply_filters(
+			'ms_detect_membership_id',
+			false, // Do not suggest/force a membership ID.
+			false, // Also check the logged-in users subscriptions.
+			true   // Do not return system memberships.
+		);
 		if ( $membership_id ) {
 			$result = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			if ( $result->is_system() ) { $result = false; }
 		}
 
-		return apply_filters( 'ms_detect_membership_result', $result, $membership_id );
+		return apply_filters(
+			'ms_detect_membership_result',
+			$result,
+			$membership_id
+		);
 	}
 
 	/**
@@ -505,9 +515,12 @@ if ( ! function_exists( 'ms_has_membership' ) ) {
 	function ms_has_membership( $id = 0 ) {
 		$result = false;
 		$current_member = MS_Plugin::$api->get_current_member();
-		
-		if( func_num_args() == 0 ) $args = array( 0 );
-		else $args = func_get_args();
+
+		if ( func_num_args() == 0 ) {
+			$args = array( 0 ); // ID 0 will check for _any_ membership.
+		} else {
+			$args = func_get_args();
+		}
 
 		// Check all params and return true if the member has any membership.
 		foreach ( $args as $check_id ) {

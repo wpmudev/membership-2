@@ -359,7 +359,8 @@ class MS_Model_Import extends MS_Model {
 
 		// Remember where this membership comes from.
 		$membership->source = $this->source_key;
-		$membership->source_id = $obj->id;
+		$matching = array( 'm1' => array( $obj->id ) );
+		$membership->set_custom_data( 'matching', $matching );
 
 		// We set this last because it might change some other values as well...
 		$membership->type = $obj->type;
@@ -475,7 +476,6 @@ class MS_Model_Import extends MS_Model {
 
 		// Remember where this subscription comes from.
 		$subscription->source = $this->source_key;
-		$membership->source_id = $obj->id;
 		$subscription->save();
 
 		$is_paid = false;
@@ -662,6 +662,13 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
 	 *
+	 * Structure of the custom_data element 'matching':
+	 *
+	 *   'matching' => array(
+	 *     'pay_btn' => array( btn1, btn2, ... ),
+	 *     'm1' => array( m1_id1, m1_id2, ... ),
+	 *   )
+	 *
 	 * @since  1.0.1.2
 	 * @param  int $membership_id The M2 membership_id.
 	 * @param  string $source_id The matching-ID to identify transactions.
@@ -679,53 +686,42 @@ class MS_Model_Import extends MS_Model {
 		$memberships = MS_Model_Membership::get_memberships();
 
 		foreach ( $memberships as $item ) {
-			if ( 'm1' == $source ) {
-				if ( $item->source_id == $source_id ) {
-					$item->source_id = '';
-					$item->save();
-				}
-			} else {
-				$data = $item->get_custom_data( 'matching' );
-				$changed = false;
+			$data = $item->get_custom_data( 'matching' );
+			$changed = false;
 
-				if ( ! is_array( $data ) ) { continue; }
-				if ( empty( $data[$source] ) ) { continue; }
-				if ( ! is_array( $data[$source] ) ) { continue; }
+			if ( ! is_array( $data ) ) { continue; }
+			if ( ! isset( $data[$source] ) ) { continue; }
+			if ( ! is_array( $data[$source] ) ) {
+				unset( $data[$source] );
+				continue;
+			}
 
-				foreach ( $data[$source] as $key => $id ) {
-					if ( $id == $source_id ) {
-						unset( $data[$source][$key] );
-						$changed = true;
-					}
+			foreach ( $data[$source] as $key => $id ) {
+				if ( $id == $source_id ) {
+					unset( $data[$source][$key] );
+					$data[$source] = array_values( array_unique( $data[$source] ) );
+					$changed = true;
 				}
-				if ( $changed ) {
-					$item->set_custom_data( 'matching', $data );
-					$item->save();
-				}
+			}
+			if ( $changed ) {
+				$item->set_custom_data( 'matching', $data );
+				$item->save();
 			}
 		}
 
 		// Then add the matching to the specified membership.
-		if ( 'm1' == $source ) {
-			if ( $membership->source_id ) {
-				// This membership is already matched with an M1 sub_id.
-				return false;
-			}
+		$data = lib3()->array->get(
+			$membership->get_custom_data( 'matching' )
+		);
 
-			$membership->source = 'membership';
-			$membership->source_id = $source_id;
-		} else {
-			$data = lib3()->array->get(
-				$membership->get_custom_data( 'matching' )
-			);
-
-			if ( empty( $data[$source] ) || ! array( $data[$source] ) ) {
-				$data[$source] = array();
-			}
-
-			$data[$source][] = $source_id;
-			$membership->set_custom_data( 'matching', $data );
+		if ( empty( $data[$source] ) || ! array( $data[$source] ) ) {
+			$data[$source] = array();
 		}
+
+		$data[$source][] = $source_id;
+		$data[$source] = array_values( array_unique( $data[$source] ) );
+
+		$membership->set_custom_data( 'matching', $data );
 		$membership->save();
 
 		self::dont_need_matching( $source_id, $source );
@@ -752,7 +748,7 @@ class MS_Model_Import extends MS_Model {
 			return $res;
 		}
 
-		if ( 'err' != $log->state ) {
+		if ( 'ok' == $log->state ) {
 			// The transaction was already processed (automatically or manual).
 			return $res;
 		}
@@ -772,7 +768,6 @@ class MS_Model_Import extends MS_Model {
 		$_POST = $post_data;
 		$_REQUEST = $post_data;
 
-		$invoice = false;
 		switch ( $log->method ) {
 			case 'request':
 				// Intentionally not implemented:
@@ -795,33 +790,6 @@ class MS_Model_Import extends MS_Model {
 
 		$_POST = $orig_post;
 		$_REQUEST = $orig_req;
-
-		return $res;
-	}
-
-	/**
-	 * Find a M2 membership by the M1 sub_id.
-	 *
-	 * @since  1.0.1.2
-	 * @param  int $source_id The M1 sub_id.
-	 * @return MS_Model_Membership|null The M2 membership.
-	 */
-	static public function membership_by_source_id( $source_id ) {
-		$res = null;
-		$args = array( 'include_guest' => 0 );
-		$memberships = MS_Model_Membership::get_memberships( $args );
-
-		if ( ! is_numeric( $source_id ) || $source_id < 1 ) {
-			return $res;
-		}
-		$source_id = intval( $source_id );
-
-		foreach ( $memberships as $membership ) {
-			if ( $membership->source_id == $source_id ) {
-				$res = $membership;
-				break;
-			}
-		}
 
 		return $res;
 	}
@@ -864,21 +832,18 @@ class MS_Model_Import extends MS_Model {
 	/**
 	 * Tries to find a subscription based on the user-ID and M1 sub_id
 	 *
-	 * About matching types:
-	 * 'source' .. Default, which will check the memberships 'source_id'
-	 * attribute to find the matching membership.
-	 * Other values are looked up in the memberships custom data array.
+	 * Matching values are looked up in the memberships custom data array.
 	 *
 	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
 	 *
 	 * @since  1.0.1.2
 	 * @param  int $user_id The user-ID.
 	 * @param  string|int $matching_id The matching-ID (M1 sub_id, a btn_id, etc).
-	 * @param  string $type The matching type to apply. Default is 'source'.
+	 * @param  string $type The matching type to apply. Default is 'm1'.
 	 * @param  string $gateway The payment gateway.
 	 * @return MS_Model_Relationship|null The subscription object.
 	 */
-	static public function find_subscription( $user_id, $matching_id, $type = 'source', $gateway = 'admin' ) {
+	static public function find_subscription( $user_id, $matching_id, $type = 'm1', $gateway = 'admin' ) {
 		$res = null;
 
 		if ( ! is_numeric( $user_id ) ) {
@@ -900,11 +865,7 @@ class MS_Model_Import extends MS_Model {
 			return $res;
 		}
 
-		if ( 'source' == $type ) {
-			$membership = self::membership_by_source_id( $matching_id );
-		} else {
-			$membership = self::membership_by_matching( $type, $matching_id );
-		}
+		$membership = self::membership_by_matching( $type, $matching_id );
 
 		if ( ! $membership || ! $membership->is_valid() ) {
 			// The sub_id is invalid.

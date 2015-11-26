@@ -946,6 +946,7 @@ class MS_Model_Member extends MS_Model {
 			$wp_user->user_nicename = $this->username;
 			$wp_user->first_name = $this->first_name;
 			$wp_user->last_name = $this->last_name;
+			$wp_user->user_email = $this->email;
 
 			if ( ! empty( $this->password )
 				&& $this->password == $this->password2
@@ -1404,12 +1405,6 @@ class MS_Model_Member extends MS_Model {
 	public function cancel_membership( $membership_id ) {
 		$subscription = $this->get_subscription( $membership_id );
 		if ( $subscription ) {
-			do_action(
-				'ms_model_membership_cancel_membership',
-				$subscription,
-				$this
-			);
-
 			$subscription->cancel_membership();
 		} else {
 			// The membership might be on status "PENDING" which is not included

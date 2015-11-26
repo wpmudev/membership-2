@@ -405,17 +405,26 @@ class MS_Helper_Period extends MS_Helper {
 	}
 
 	/**
-	 * Returns a formated date string
+	 * Returns a formatted date string in local timezone.
 	 *
-	 * @param  string $date The date value.
+	 * This function is intended for display to the user; do not store the
+	 * resulting value in the DB!
+	 *
+	 * @param  string $date The date value in UTC.
 	 * @param  string $format Optional the format to apply.
+	 * @return string The formatted timestamp in local timezone.
 	 */
 	public static function format_date( $date, $format = null ) {
 		if ( empty( $format ) ) {
 			$format = get_option( 'date_format' );
 		}
 
-		$result = self::get_date_time_value( $format, strtotime( $date ), true, true );
+		// Convert the timestamp to local time.
+		$timestamp = strtotime( $date ); // Converting time to Unix timestamp
+		$offset = intval( get_option( 'gmt_offset' ) ) * 60 * 60; // Time offset in seconds
+		$local_timestamp = $timestamp + $offset;
+
+		$result = date_i18n( $format, $local_timestamp );
 
 		return apply_filters(
 			'ms_format_date',
@@ -423,42 +432,5 @@ class MS_Helper_Period extends MS_Helper {
 			$date,
 			$format
 		);
-	}
-
-	public static function get_date_time_value( $format = null, $timestamp = false, $date = true, $time = false, $gmt = true, $zone = false ){
-		$res = '';
-
-		if ( empty( $format ) ) {
-			$format = get_option( 'date_format' );
-		}
-
-		if ( $timestamp == false ) {
-		    $str = current_time( 'timestamp' );
-		}
-
-		if ( $date ) {
-		    $res .= date_i18n( $format, $timestamp );
-		}
-
-		if ( $time ) {
-			$zone_setting = floatval( get_option( 'gmt_offset' ) );
-
-			if ( $gmt ) {
-				$gm_offset = $zone_setting * 3600;
-			} else {
-				$gm_offset = 0;
-			}
-			$res .= ' ' . date_i18n( get_option( 'time_format' ), $timestamp + $gm_offset );
-
-			if ( $zone ) {
-				if ( $zone_setting ) {
-					$res .= ' UTC';
-				} else {
-			    	$res .= ' UTC ' . ( $zone_setting > 0 ? '+ ' : '- ' ) . $zone_setting;
-				}
-			}
-		}
-
-		return $res;
 	}
 }

@@ -85,6 +85,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$redirect = false;
 		$notes = '';
 		$status = null;
+		$notes_err = '';
 		$notes_pay = '';
 		$notes_txn = '';
 		$external_id = null;
@@ -93,6 +94,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$amount = 0;
 		$transaction_type = '';
 		$payment_status = '';
+		$do_action = 'ignore';
 		$ext_type = false;
 
 		if ( ! empty( $_POST[ 'txn_type'] ) ) {
@@ -103,6 +105,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		} elseif ( isset( $_POST['mc_amount3'] ) ) {
 			// mc_amount1 and mc_amount2 are for trial period prices.
 			$amount = (float) $_POST['mc_amount3'];
+		} elseif ( isset( $_POST['amount'] ) ) {
+			// mc_amount1 and mc_amount2 are for trial period prices.
+			$amount = (float) $_POST['amount'];
 		}
 		if ( ! empty( $_POST[ 'payment_status'] ) ) {
 			$payment_status = strtolower( $_POST[ 'payment_status'] );
@@ -112,14 +117,22 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 		if ( ! empty( $_POST['mc_currency'] ) ) {
 			$currency = $_POST['mc_currency'];
+		} elseif ( ! empty( $_POST['currency_code'] ) ) {
+			$currency = $_POST['currency_code'];
 		}
 
 		// Step 1: Find the invoice_id and determine if payment is M2 or M1.
 		if ( $payment_status || $transaction_type ) {
+
 			if ( ! empty( $_POST['invoice'] ) ) {
+				$invoice_id = intval( $_POST['invoice'] );
+			} elseif ( ! empty( $_POST['rp_invoice'] ) ) {
+				$invoice_id = intval( $_POST['rp_invoice'] );
+			}
+
+			if ( $invoice_id ) {
 				// BEST CASE:
 				// 'invoice' is set in all regular M2 subscriptions!
-				$invoice_id = intval( $_POST['invoice'] );
 
 				/*
 				 * PayPal only knows the first invoice of the subscription.
@@ -131,10 +144,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					$subscription = $invoice->get_subscription();
 					$invoice_id = $subscription->first_unpaid_invoice();
 				}
+				$invoice_id = $invoice->id;
 			} elseif ( ! empty( $_POST['custom'] ) ) {
 				// FALLBACK A:
 				// Maybe it's an imported M1 subscription.
 				$infos = explode( ':', $_POST['custom'] );
+
 				if ( count( $infos ) > 2 ) {
 					// $infos should contain [timestamp, user_id, sub_id, key]
 
@@ -161,27 +176,39 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						$subscription = MS_Model_Import::find_subscription(
 							$m1_user_id,
 							$m1_sub_id,
-							'source',
+							'm1',
 							self::ID
 						);
 
-						if ( ! $subscription ) {
-							$membership = MS_Model_Import::membership_by_source(
-								$m1_sub_id
-							);
-
-							if ( $membership ) {
-								$is_linked = true;
-								$notes = sprintf(
-									'Error: User is not subscribed to Membership %s.',
-									$membership->id
+						if ( $subscription ) {
+							$is_linked = true;
+							$invoice_id = $subscription->first_unpaid_invoice();
+						} else {
+							$user = get_user_by( 'ID', $m1_user_id );
+							if ( $user && $user->ID == $m1_user_id ) {
+								$membership = MS_Model_Import::membership_by_matching(
+									'm1',
+									$m1_sub_id
 								);
+
+								if ( $membership ) {
+									$notes_err = sprintf(
+										'User is not subscribed to Membership %s.',
+										$membership->id
+									);
+								} else {
+									$notes_err = 'Could not determine a membership.';
+								}
+							} else {
+								$notes_err = sprintf(
+									'Could not find user with ID %s.',
+									$m1_user_id
+								);
+								$ignore = true; // We cannot fix this, so ignore it.
 							}
 						}
 
-						$invoice_id = $subscription->first_unpaid_invoice();
-
-						if ( ! $is_linked && ! $invoice_id ) {
+						if ( ! $ignore && ! $is_linked && ! $invoice_id ) {
 							MS_Model_Import::need_matching( $m1_sub_id, 'm1' );
 						}
 					}
@@ -203,18 +230,21 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						self::ID
 					);
 
-					if ( ! $subscription ) {
+					if ( $subscription ) {
+						$is_linked = true;
+					} else {
 						$membership = MS_Model_Import::membership_by_matching(
 							'pay_btn',
 							$_POST['btn_id']
 						);
 
 						if ( $membership ) {
-							$is_linked = true;
-							$notes = sprintf(
-								'Error: User is not subscribed to Membership %s.',
+							$notes_err = sprintf(
+								'User is not subscribed to Membership %s.',
 								$membership->id
 							);
+						} else {
+							$notes_err = 'Could not determine a membership.';
 						}
 					}
 
@@ -224,13 +254,267 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						MS_Model_Import::need_matching( $_POST['btn_id'], 'pay_btn' );
 					}
 				} else {
-					$notes = sprintf(
-						'Error: Could not find user "%s".',
+					$notes_err = sprintf(
+						'Could not find user "%s".',
 						$_POST['payer_email']
 					);
 				}
 				// end if: 'pay_btn' == $ext_type
 			}
+		}
+
+		// Check for subscription details
+		if ( $transaction_type ) {
+			switch ( $transaction_type ) {
+				/*
+				 * Certain transaction types are sufficient to mark a free
+				 * invoice as paid. To mark a non-free invoice as paid we need
+				 * the correct payment_status (checked below)
+				 */
+				case 'subscr_signup':
+					// Payment was received
+					$notes_txn = __( 'Subscripton has been created', 'membership2' );
+					$do_action = 'pay-free';
+					break;
+
+				case 'subscr_payment':
+					// Payment was received
+					$notes_txn = __( 'Payment successful', 'membership2' );
+					$do_action = 'pay-free';
+					break;
+
+				case 'recurring_payment':
+					// Payment was received
+					$notes_txn = __( 'Recurring payment successful', 'membership2' );
+					$do_action = 'pay-free';
+					break;
+
+				case 'subscr_modify':
+					// Payment profile was modified
+					$notes_txn = __( 'Subscription has been modified', 'membership2' );
+					break;
+
+				case 'subscr_failed':
+					// Payment profile was modified
+					$notes_txn = __( 'Payment failed', 'membership2' );
+					$do_action = 'error';
+					break;
+
+				case 'recurring_payment_profile_canceled':
+				case 'subscr_cancel':
+					// Subscription was manually cancelled.
+					$notes_txn = __( 'Subscription has been canceled', 'membership2' );
+					$do_action = 'cancel';
+					$payment_status = false; // Skip the payment_status check.
+					break;
+
+				case 'recurring_payment_suspended':
+					// Recurring subscription was manually suspended.
+					$notes_txn = __( 'Subscription has been suspended', 'membership2' );
+					$do_action = 'cancel';
+					$payment_status = false; // Skip the payment_status check.
+					break;
+
+				case 'recurring_payment_suspended_due_to_max_failed_payment':
+					// Recurring subscription was automatically suspended.
+					$notes_txn = __( 'Subscription has failed', 'membership2' );
+					$do_action = 'cancel';
+					$payment_status = false; // Skip the payment_status check.
+					break;
+
+				case 'new_case':
+					// New Dispute was filed for a payment.
+					if ( ! empty( $_POST['buyer_additional_information'] ) ) {
+						$notes_txn = sprintf(
+							__( 'New Dispute filed: %s', 'membership2' ),
+							$_POST['buyer_additional_information']
+						);
+					} else {
+						$notes_txn = __( 'New Dispute filed', 'membership2' );
+					}
+					$status = MS_Model_Invoice::STATUS_DENIED;
+					$do_action = 'error';
+					break;
+
+				case 'subscr_eot':
+					/*
+					 * Meaning: Subscription expired.
+					 *
+					 *   - after a one-time payment was made
+					 *   - after last transaction in a recurring subscription
+					 *   - payment failed
+					 *   - ...
+					 *
+					 * We do not handle this event...
+					 *
+					 * One time payment sends 3 messages:
+					 *   1. subscr_start (new subscription starts)
+					 *   2. subscr_payment (payment confirmed)
+					 *   3. subscr_eot (subscription ends)
+					 */
+					$notes_txn = __( 'Subscription ended', 'membership2' );
+					break;
+
+				case 'recurring_payment_profile_created':
+					$notes_txn = __( 'Recurring payment profile created', 'membership2' );
+					break;
+
+				case 'recurring_payment_failed':
+					$notes_txn = __( 'Recurring payment failed', 'membership2' );
+					$do_action = 'error';
+					break;
+
+				case 'recurring_payment_profile_cancel':
+					$notes_txn = __( 'Recurring payment profile cancelled', 'membership2' );
+					break;
+
+				case 'recurring_payment_expired':
+					$notes_txn = __( 'Recurring payment profile expired', 'membership2' );
+					break;
+
+				case 'recurring_payment_skipped':
+					$notes_txn = __( 'Recurring payment profile skipped', 'membership2' );
+					break;
+
+				case 'recurring_payment_outstanding_payment':
+					$os_amount = 0;
+					if ( ! empty( $_POST['outstanding_balance'] ) ) {
+						$os_amount = $_POST['outstanding_balance'];
+					}
+					if ( is_numeric( $os_amount) && floatval( $os_amount ) ) {
+						$notes_txn = sprintf(
+							__( 'Outstanding payment of %s', 'membership2' ),
+							trim( $currency . ' ' . $os_amount )
+						);
+					} else {
+						$notes_txn = __( 'Outstanding payment', 'membership2' );
+					}
+					break;
+
+				case 'recurring_payment_outstanding_payment_failed':
+					$os_amount = 0;
+					if ( ! empty( $_POST['outstanding_balance'] ) ) {
+						$os_amount = $_POST['outstanding_balance'];
+					}
+					if ( is_numeric( $os_amount) && floatval( $os_amount ) ) {
+						$notes_txn = sprintf(
+							__( 'Collecting payment of %s failed', 'membership2' ),
+							trim( $currency . ' ' . $os_amount )
+						);
+					} else {
+						$notes_txn = __( 'Collecting payment failed', 'membership2' );
+					}
+					$do_action = 'error';
+					break;
+
+				case 'send_money':
+					if ( ! empty( $_POST['memo'] ) ) {
+						$notes_txn = sprintf(
+							__( 'Money sent for: %s', 'membership2' ),
+							$_POST['memo']
+						);
+					} else {
+						$notes_txn = __( 'Money sent', 'membership2' );
+					}
+					break;
+
+				default:
+					// Other event that we do not have a case for...
+					$notes_txn = sprintf(
+						__( 'Not handling txn_type: %s', 'membership2' ),
+						$transaction_type
+					);
+					break;
+			}
+		}
+
+		// Process PayPal payment status
+		if ( $payment_status ) {
+			switch ( $payment_status ) {
+				// Successful payment
+				case 'completed':
+				case 'processed':
+					$do_action = 'pay';
+					break;
+
+				case 'reversed':
+					$notes_pay = __( 'Last transaction has been reversed: Payment has been reversed (charge back).', 'membership2' );
+					$status = MS_Model_Invoice::STATUS_DENIED;
+					break;
+
+				case 'refunded':
+					$notes_pay = __( 'Last transaction has been reversed: Payment has been refunded.', 'membership2' );
+					$status = MS_Model_Invoice::STATUS_DENIED;
+					break;
+
+				case 'denied':
+					$notes_pay = __( 'Last transaction has been reversed: Payment Denied.', 'membership2' );
+					$status = MS_Model_Invoice::STATUS_DENIED;
+					$do_action = 'error';
+					break;
+
+				case 'pending':
+					lib3()->array->strip_slashes( $_POST, 'pending_reason' );
+					$notes_pay = __( 'Last transaction is pending.', 'membership2' ) . ' ';
+
+					switch ( $_POST['pending_reason'] ) {
+						case 'address':
+							$notes_pay .= __( 'No confirmed shipping address', 'membership2' );
+							break;
+
+						case 'authorization':
+							$notes_pay .= __( 'Funds not captured yet', 'membership2' );
+							break;
+
+						case 'echeck':
+							$notes_pay .= __( 'eCheck has not cleared yet', 'membership2' );
+							break;
+
+						case 'intl':
+							$notes_pay .= __( 'Pending approval by service provider', 'membership2' );
+							break;
+
+						case 'multi-currency':
+							$notes_pay .= __( 'Pending multi-currency process by service provider', 'membership2' );
+							break;
+
+						case 'unilateral':
+							$notes_pay .= __( 'No confirmed email address', 'membership2' );
+							break;
+
+						case 'upgrade':
+							$notes_pay .= __( 'Pending upgrade of PayPal account', 'membership2' );
+							break;
+
+						case 'verify':
+							$notes_pay .= __( 'Pending verification of PayPal account', 'membership2' );
+							break;
+
+						default:
+							$notes_pay .= __( 'Unknown reason', 'membership2' );
+							break;
+					}
+
+					$status = MS_Model_Invoice::STATUS_PENDING;
+					break;
+
+				default:
+				case 'partially-refunded':
+				case 'in-progress':
+					$notes_pay = sprintf(
+						__( 'Not handling payment_status: %s', 'membership2' ),
+						$payment_status
+					);
+					break;
+			}
+		}
+
+		// Now we a good description of this IPN call.
+		if ( $notes_pay ) {
+			$notes .= ($notes ? ' | ' : '') . $notes_pay;
+		}
+		if ( $notes_txn ) {
+			$notes .= ($notes ? ' | ' : '') . $notes_txn;
 		}
 
 		// Step 2a: Check if the txn_id was already processed by M2.
@@ -274,187 +558,38 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				$member = $subscription->get_member();
 				$subscription_id = $subscription->id;
 
-				// Process PayPal payment status
-				if ( $payment_status ) {
-					switch ( $payment_status ) {
-						// Successful payment
-						case 'completed':
-						case 'processed':
+				// Process the IPN call. Until now we just collected details.
+				switch ( $do_action ) {
+					case 'pay':
+						$success = true;
+						if ( $amount == $invoice->total ) {
+							$notes_pay .= __( 'Payment successful', 'membership2' );
+						} else {
+							$notes_pay .= __( 'Payment registered, though amount differs from invoice.', 'membership2' );
+						}
+						break;
+
+					case 'pay-free':
+						if ( 0 == $invoice->total ) {
 							$success = true;
-							if ( $amount == $invoice->total ) {
-								$notes .= __( 'Payment successful', 'membership2' );
-							} else {
-								$notes .= __( 'Payment registered, though amount differs from invoice.', 'membership2' );
-							}
-							break;
-
-						case 'reversed':
-							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back).', 'membership2' );
-							$status = MS_Model_Invoice::STATUS_DENIED;
+						} else {
 							$ignore = true;
-							break;
+						}
+						break;
 
-						case 'refunded':
-							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment has been refunded.', 'membership2' );
-							$status = MS_Model_Invoice::STATUS_DENIED;
-							$ignore = true;
-							break;
+					case 'cancel':
+						$member->cancel_membership( $membership->id );
+						$member->save();
+						$ignore = true;
+						break;
 
-						case 'denied':
-							$notes_pay = __( 'Last transaction has been reversed. Reason: Payment Denied.', 'membership2' );
-							$status = MS_Model_Invoice::STATUS_DENIED;
-							$ignore = true;
-							break;
-
-						case 'pending':
-							lib3()->array->strip_slashes( $_POST, 'pending_reason' );
-							$notes_pay = __( 'Last transaction is pending.', 'membership2' ) . ' ';
-
-							switch ( $_POST['pending_reason'] ) {
-								case 'address':
-									$notes_pay .= __( 'Customer did not include a confirmed shipping address', 'membership2' );
-									break;
-
-								case 'authorization':
-									$notes_pay .= __( 'Funds not captured yet', 'membership2' );
-									break;
-
-								case 'echeck':
-									$notes_pay .= __( 'The eCheck has not cleared yet', 'membership2' );
-									break;
-
-								case 'intl':
-									$notes_pay .= __( 'Payment waiting for approval by service provider', 'membership2' );
-									break;
-
-								case 'multi-currency':
-									$notes_pay .= __( 'Payment waiting for service provider to handle multi-currency process', 'membership2' );
-									break;
-
-								case 'unilateral':
-									$notes_pay .= __( 'Customer did not register or confirm his/her email yet', 'membership2' );
-									break;
-
-								case 'upgrade':
-									$notes_pay .= __( 'Waiting for service provider to upgrade the PayPal account', 'membership2' );
-									break;
-
-								case 'verify':
-									$notes_pay .= __( 'Waiting for service provider to verify his/her PayPal account', 'membership2' );
-									break;
-
-								default:
-									$notes_pay .= __( 'Unknown reason', 'membership2' );
-									break;
-							}
-
-							$status = MS_Model_Invoice::STATUS_PENDING;
-							$ignore = true;
-							break;
-
-						default:
-						case 'partially-refunded':
-						case 'in-progress':
-							$notes_pay = sprintf(
-								__( 'Not handling payment_status: %s', 'membership2' ),
-								$payment_status
-							);
-							$ignore = true;
-							break;
-					}
-				}
-
-				// Check for subscription details
-				if ( $transaction_type ) {
-					switch ( $transaction_type ) {
-						case 'subscr_signup':
-						case 'subscr_payment':
-							// Payment was received
-							$notes_txn = __( 'PayPal Subscripton has been created.', 'membership2' );
-							if ( 0 == $invoice->total ) {
-								$success = true;
-							} else {
-								$ignore = true;
-							}
-							break;
-
-						case 'subscr_modify':
-							// Payment profile was modified
-							$notes_txn = __( 'PayPal Subscription has been modified.', 'membership2' );
-							$ignore = true;
-							break;
-
-						case 'recurring_payment_profile_canceled':
-						case 'subscr_cancel':
-							// Subscription was manually cancelled.
-							$notes_txn = __( 'PayPal Subscription has been canceled.', 'membership2' );
-							$member->cancel_membership( $membership->id );
-							$member->save();
-							$ignore = true;
-							break;
-
-						case 'recurring_payment_suspended':
-							// Recurring subscription was manually suspended.
-							$notes_txn = __( 'PayPal Subscription has been suspended.', 'membership2' );
-							$member->cancel_membership( $membership->id );
-							$member->save();
-							$ignore = true;
-							break;
-
-						case 'recurring_payment_suspended_due_to_max_failed_payment':
-							// Recurring subscription was automatically suspended.
-							$notes_txn = __( 'PayPal Subscription has failed.', 'membership2' );
-							$member->cancel_membership( $membership->id );
-							$member->save();
-							$ignore = true;
-							break;
-
-						case 'new_case':
-							// New Dispute was filed for a payment.
-							$status = MS_Model_Invoice::STATUS_DENIED;
-							$ignore = true;
-							break;
-
-						case 'subscr_eot':
-							/*
-							 * Meaning: Subscription expired.
-							 *
-							 *   - after a one-time payment was made
-							 *   - after last transaction in a recurring subscription
-							 *   - payment failed
-							 *   - ...
-							 *
-							 * We do not handle this event...
-							 *
-							 * One time payment sends 3 messages:
-							 *   1. subscr_start (new subscription starts)
-							 *   2. subscr_payment (payment confirmed)
-							 *   3. subscr_eot (subscription ends)
-							 */
-							$notes_txn = __( 'No more payments will be made for this subscription.', 'membership2' );
-							$ignore = true;
-							break;
-
-						default:
-							// Other event that we do not have a case for...
-							$notes_txn = sprintf(
-								__( 'Not handling txn_type: %s', 'membership2' ),
-								$transaction_type
-							);
-							$ignore = true;
-							break;
-					}
+					case 'ignore':
+						$ignore = true;
+						break;
 				}
 
 				if ( ! empty( $notes_pay ) ) { $invoice->add_notes( $notes_pay ); }
 				if ( ! empty( $notes_txn ) ) { $invoice->add_notes( $notes_txn ); }
-
-				if ( $notes_pay ) {
-					$notes .= ($notes ? ' | ' : '') . $notes_pay;
-				}
-				if ( $notes_txn ) {
-					$notes .= ($notes ? ' | ' : '') . $notes_txn;
-				}
 
 				$invoice->save();
 
@@ -513,7 +648,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 			$u_agent = $_SERVER['HTTP_USER_AGENT'];
 			if ( ! $log && false === strpos( $u_agent, 'PayPal' ) ) {
-				// Very likely someone tried to open the URL manually. Redirect to home page
+				// Very likely someone tried to open the URL manually. Redirect to home page.
 				if ( ! $notes ) {
 					$notes = 'Ignored: Missing POST variables. Redirect to Home-URL.';
 				}
@@ -527,26 +662,26 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * Do not return an error code, but also do not modify any
 				 * invoice/subscription.
 				 */
-				$notes = 'M1 Payment detected. Manual matching required.';
-				$ignore = false;
+				$notes = 'M1 Payment detected. Manual matching required. ' . $notes_err;
 				$success = false;
 			} elseif ( 'pay_btn' == $ext_type ) {
 				/*
 				 * The payment was made by a PayPal Payment button that was
 				 * created in the PayPal account and not by M1/M2.
 				 */
-				$notes = 'PayPal Payment button detected. Manual matching required.';
-				$ignore = false;
+				$notes = 'PayPal Payment button detected. Manual matching required. ' . $notes_err;
 				$success = false;
 			} else {
 				// PayPal sent us a IPN notice about a non-Membership payment:
 				// Ignore it, but add it to the logs.
 
-				if ( ! empty( $notes ) ) {
+				if ( ! empty( $notes_err ) ) {
+					// Use the notes_err.
+					$notes = $notes_err;
+				} if ( ! empty( $notes ) ) {
 					// We already have an error message, do nothing.
-				}
-				elseif ( ! $payment_status || ! $transaction_type ) {
-					$notes = 'Ignored: Payment_status or txn_type not specified. Cannot process.';
+				} elseif ( ! $transaction_type ) {
+					$notes = 'Ignored: txn_type not specified. Cannot process.';
 				} elseif ( empty( $_POST['invoice'] ) && empty( $_POST['custom'] ) ) {
 					$notes = 'Ignored: No invoice or custom data specified.';
 				} else {

@@ -115,6 +115,8 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 				'id' => 'email',
 				'value' => $member->email,
 			),
+			// @todo: https://app.asana.com/0/10167801056814/57017131724658
+			//        It seems the currency is not correctly transferred to 2Checkout
 			'currency' => array(
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'id' => 'currency',
