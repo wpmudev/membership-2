@@ -476,7 +476,7 @@ class MS_Controller_Member extends MS_Controller {
 		if ( $this->_resp_ok() && ! $this->is_admin_user() ) {
 			$this->_resp_err( 'permission denied' );
 		} elseif ( $this->_resp_ok() && ! self::validate_required( $required ) ) {
-			$this->_resp_err( 'validate: required' );
+			$this->_resp_err( __( 'This field is required.', 'membership2' ) );
 		}
 
 		if ( $this->_resp_ok() ) {
