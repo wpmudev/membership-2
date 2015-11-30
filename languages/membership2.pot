@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.5-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-11-30 21:08:15+00:00\n"
+"POT-Creation-Date: 2015-11-30 21:28:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -917,7 +917,7 @@ msgstr ""
 #: app/addon/redirect/class-ms-addon-redirect.php:98
 #: app/addon/taxamo/class-ms-addon-taxamo.php:167
 #: app/controller/class-ms-controller-plugin.php:475
-#: app/view/class-ms-view-help.php:201 membership2.php:698
+#: app/view/class-ms-view-help.php:201 membership2.php:699
 msgid "Settings"
 msgstr ""
 
@@ -4779,15 +4779,15 @@ msgid "%s: Rule \"%s\""
 msgstr ""
 
 #: app/model/class-ms-model-membership.php:2163
-#: app/model/class-ms-model-plugin.php:258
-#: app/model/class-ms-model-plugin.php:311
+#: app/model/class-ms-model-plugin.php:266
+#: app/model/class-ms-model-plugin.php:319
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:100
 msgid "Allow"
 msgstr ""
 
 #: app/model/class-ms-model-membership.php:2163
-#: app/model/class-ms-model-plugin.php:258
-#: app/model/class-ms-model-plugin.php:311
+#: app/model/class-ms-model-plugin.php:266
+#: app/model/class-ms-model-plugin.php:319
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:101
 msgid "Deny"
 msgstr ""
@@ -4858,35 +4858,42 @@ msgstr ""
 msgid "Default Menu"
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:198
+#: app/model/class-ms-model-plugin.php:103
+msgid ""
+"<b>Warning</b>: The old version of the Membership plugin is active and "
+"causes conflicts with the new Membership 2 plugin. Please disable the old "
+"Membership plugin."
+msgstr ""
+
+#: app/model/class-ms-model-plugin.php:206
 msgid "Allow: Admin-User always has access"
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:216
+#: app/model/class-ms-model-plugin.php:224
 msgid "Allow: This is a Membership Page"
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:227
+#: app/model/class-ms-model-plugin.php:235
 msgid "Skipped: Not a member of \"%s\""
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:247
+#: app/model/class-ms-model-plugin.php:255
 msgid "Ignored: Membership \"%s\""
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:257
+#: app/model/class-ms-model-plugin.php:265
 msgid "%s: Membership \"%s\""
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:279
+#: app/model/class-ms-model-plugin.php:287
 msgid "Allow: Page is not protected"
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:529
+#: app/model/class-ms-model-plugin.php:537
 msgid "Every 6 Hours"
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:533
+#: app/model/class-ms-model-plugin.php:541
 msgid "Every 30 Mins"
 msgstr ""
 
