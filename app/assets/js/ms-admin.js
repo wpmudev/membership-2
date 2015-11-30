@@ -647,13 +647,6 @@ jQuery( document ).ready( function() {
 			}
 		}
 	)
-        .on(
-		'change',
-		'input.wpmui-ajax-update[type="number"]',
-		function( ev ) {
-		    jQuery( this ).focus();
-		}
-	)
 	.on(
 		'focus',
 		'input.wpmui-ajax-update[type="number"]',

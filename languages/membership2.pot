@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.4\n"
+"Project-Id-Version: Membership 2 Pro 1.0.2.5-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-11-25 19:43:00+00:00\n"
+"POT-Creation-Date: 2015-11-30 21:08:15+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -192,15 +192,15 @@ msgstr ""
 msgid "Save Attribute"
 msgstr ""
 
-#: app/addon/bbpress/class-ms-addon-bbpress.php:69
+#: app/addon/bbpress/class-ms-addon-bbpress.php:70
 msgid "bbPress Integration"
 msgstr ""
 
-#: app/addon/bbpress/class-ms-addon-bbpress.php:70
+#: app/addon/bbpress/class-ms-addon-bbpress.php:71
 msgid "Enable bbPress rules integration."
 msgstr ""
 
-#: app/addon/bbpress/class-ms-addon-bbpress.php:77
+#: app/addon/bbpress/class-ms-addon-bbpress.php:78
 msgid "Activate bbPress to use this Add-on"
 msgstr ""
 
@@ -477,7 +477,7 @@ msgid "Coupon applied: %1$s"
 msgstr ""
 
 #: app/addon/coupon/model/class-ms-addon-coupon-model.php:701
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:527
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:533
 msgid "Unlimited"
 msgstr ""
 
@@ -513,7 +513,7 @@ msgstr ""
 #: app/view/billing/class-ms-view-billing-edit.php:220
 #: app/view/frontend/class-ms-view-frontend-profile.php:104
 #: app/view/member/class-ms-view-member-editor.php:451
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:314
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:316
 msgid "Save Changes"
 msgstr ""
 
@@ -567,23 +567,23 @@ msgstr ""
 msgid "Invitation code is correct."
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:401
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:403
 msgid "This invitation code is no longer valid."
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:404
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:406
 msgid "This invitation is not valid yet."
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:407
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:409
 msgid "This invitation has expired."
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:410
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:412
 msgid "You have already used this invitation code."
 msgstr ""
 
-#: app/addon/invitation/model/class-ms-addon-invitation-model.php:426
+#: app/addon/invitation/model/class-ms-addon-invitation-model.php:428
 msgid "This Invitation is not valid for this membership."
 msgstr ""
 
@@ -2299,6 +2299,11 @@ msgstr ""
 msgid "Importing Settings"
 msgstr ""
 
+#: app/controller/class-ms-controller-member.php:479
+#: app/controller/class-ms-controller-plugin.php:1069
+msgid "This field is required."
+msgstr ""
+
 #: app/controller/class-ms-controller-member.php:488
 msgid "Invalid Email address"
 msgstr ""
@@ -2425,10 +2430,6 @@ msgid ""
 "Oops, looks like you did not activate a payment gateway yet.<br />You need "
 "to set up and activate at least one gateway, otherwise your members cannot "
 "sign up to a paid membership.<br />%sFix this now &raquo;%s"
-msgstr ""
-
-#: app/controller/class-ms-controller-plugin.php:1069
-msgid "This field is required."
 msgstr ""
 
 #: app/controller/class-ms-controller-plugin.php:1070
@@ -6007,39 +6008,39 @@ msgstr ""
 msgid "Shortcode content protected."
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:204
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:205
 msgid "No access to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:228
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:229
 msgid "Content protected to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:299
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:300
 msgid "Visible for members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:300
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:301
 msgid "Other users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:301
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:302
 msgid "Other uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:303
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:304
 msgid "Hidden from members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:304
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:305
 msgid "Those users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:305
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:306
 msgid "Those uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:361
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:362
 msgid "This information is only displayed for admin users"
 msgstr ""
 
@@ -7263,36 +7264,36 @@ msgid ""
 "changes?"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:172
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:174
 msgid "Send Email"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:173
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:175
 msgid "No Email"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:174
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:214
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:176
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:216
 msgid "Use default template"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:207
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:209
 msgid "Load Template"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:215
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:217
 msgid "Define custom template"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:259
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:261
 msgid "Period after/before"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:275
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:277
 msgid "Message Subject"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-communications.php:300
+#: app/view/settings/page/class-ms-view-settings-page-communications.php:302
 msgid "Send copy to Administrator"
 msgstr ""
 
