@@ -479,8 +479,9 @@ class MS_Plugin {
 			'top'
 		);
 
-		// Alternative payment return URL: Membership
-		if ( MS_Model_Import_Membership::did_import() ) {
+		// Alternative payment return URL: Old Membership plugin.
+		$use_old_ipn = apply_filters( 'ms_legacy_paymentreturn_url', true );
+		if ( $use_old_ipn && ! class_exists( 'M_Membership' ) ) {
 			add_rewrite_rule(
 				'paymentreturn/(.+)/?',
 				'index.php?paymentgateway=$matches[1]',

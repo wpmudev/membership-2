@@ -96,6 +96,14 @@ class MS_Model_Plugin extends MS_Model {
 		// Init gateways and communications to register actions/filters
 		$this->run_action( 'init', array( 'MS_Model_Gateway', 'get_gateways' ), 2 );
 		$this->run_action( 'init', array( 'MS_Model_Communication', 'init' ), 2 );
+
+		// Old plugin is enabled? Show a warning!
+		if ( class_exists( 'M_Membership' ) ) {
+			lib3()->ui->admin_message(
+				__( '<b>Warning</b>: The old version of the Membership plugin is active and causes conflicts with the new Membership 2 plugin. Please disable the old Membership plugin.', 'membership2' ),
+				'red'
+			);
+		}
 	}
 
 	/**
