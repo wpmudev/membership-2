@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.5-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-11-30 21:28:31+00:00\n"
+"POT-Creation-Date: 2015-12-02 19:21:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -213,7 +213,7 @@ msgstr ""
 #: app/addon/bbpress/rule/class-ms-addon-bbpress-rule-listtable.php:55
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:95
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:94
-#: app/controller/class-ms-controller-shortcode.php:728
+#: app/controller/class-ms-controller-shortcode.php:737
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:108
 #: app/rule/cptitem/class-ms-rule-cptitem-listtable.php:46
 #: app/rule/media/class-ms-rule-media-listtable.php:48
@@ -242,50 +242,66 @@ msgstr ""
 msgid "Protect the following bbPress content to members only."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:146
+#: app/addon/buddypress/class-ms-addon-buddypress.php:158
 msgid ""
 "BuddyPress uses a page that is also used as a Membership page by Membership "
 "2.<br>Please assign a different page for either %sMembership 2%s or "
 "%sBuddyPress%s to avoid conflicts."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:167
+#: app/addon/buddypress/class-ms-addon-buddypress.php:179
 msgid "BuddyPress Integration"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:168
+#: app/addon/buddypress/class-ms-addon-buddypress.php:180
 msgid "Integrate BuddyPress with Membership 2."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:173
+#: app/addon/buddypress/class-ms-addon-buddypress.php:185
 #: app/controller/class-ms-controller-plugin.php:434
 #: app/controller/class-ms-controller-plugin.php:458
 #: app/view/class-ms-view-help.php:173
 msgid "Protection Rules"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:174
+#: app/addon/buddypress/class-ms-addon-buddypress.php:186
 msgid "Adds BuddyPress rules in the \"Protection Rules\" page."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:179
+#: app/addon/buddypress/class-ms-addon-buddypress.php:191
 msgid "Use BuddyPress Registration"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:181
+#: app/addon/buddypress/class-ms-addon-buddypress.php:193
 msgid ""
 "Enable this option to use the BuddyPress registration page instead of the "
 "Membership 2 registration page."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:183
+#: app/addon/buddypress/class-ms-addon-buddypress.php:195
 msgid ""
 "New users are automatically activated by Membership 2 and no confirmation "
 "email is sent to the user!"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:196
+#: app/addon/buddypress/class-ms-addon-buddypress.php:208
 msgid "Activate BuddyPress to use this Add-on"
+msgstr ""
+
+#: app/addon/buddypress/class-ms-addon-buddypress.php:304
+msgid "You have missed a required fields."
+msgstr ""
+
+#: app/addon/buddypress/class-ms-addon-buddypress.php:348
+msgid "Please make sure you enter your password twice"
+msgstr ""
+
+#: app/addon/buddypress/class-ms-addon-buddypress.php:353
+msgid "The passwords you entered do not match."
+msgstr ""
+
+#: app/addon/buddypress/class-ms-addon-buddypress.php:401
+msgid "This is a required field"
 msgstr ""
 
 #: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-listtable.php:27
@@ -691,7 +707,7 @@ msgid "Customize fields in the user profile and registration form."
 msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:193
-#: app/controller/class-ms-controller-shortcode.php:637
+#: app/controller/class-ms-controller-shortcode.php:646
 #: app/helper/listtable/class-ms-helper-listtable-member.php:66
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:635
 #: app/model/class-ms-model-member.php:997 app/view/class-ms-view-help.php:767
@@ -751,7 +767,7 @@ msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:236
 #: app/controller/class-ms-controller-shortcode.php:216
-#: app/controller/class-ms-controller-shortcode.php:638
+#: app/controller/class-ms-controller-shortcode.php:647
 #: app/model/class-ms-model-member.php:999 app/view/class-ms-view-help.php:443
 #: app/view/class-ms-view-help.php:775
 #: app/view/frontend/class-ms-view-frontend-profile.php:91
@@ -2537,7 +2553,7 @@ msgid "Create an Account"
 msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:255
-#: app/controller/class-ms-controller-shortcode.php:465
+#: app/controller/class-ms-controller-shortcode.php:474
 #: app/gateway/2checkout/view/class-ms-gateway-2checkout-view-button.php:157
 #: app/gateway/authorize/view/class-ms-gateway-authorize-view-button.php:105
 #: app/gateway/free/view/class-ms-gateway-free-view-button.php:105
@@ -2547,7 +2563,7 @@ msgid "Signup"
 msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:256
-#: app/controller/class-ms-controller-shortcode.php:724
+#: app/controller/class-ms-controller-shortcode.php:733
 #: app/view/class-ms-view-help.php:545 app/view/class-ms-view-help.php:1420
 msgid "Change"
 msgstr ""
@@ -2562,84 +2578,84 @@ msgstr ""
 msgid "Complete Payment"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:354
+#: app/controller/class-ms-controller-shortcode.php:363
 #: app/view/class-ms-view-help.php:1123
 msgid "Membership title:"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:407
+#: app/controller/class-ms-controller-shortcode.php:416
 #: app/view/class-ms-view-help.php:1167
 msgid "Membership price:"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:518
+#: app/controller/class-ms-controller-shortcode.php:527
 #: app/view/class-ms-view-help.php:1203
 msgid "Membership details:"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:639
+#: app/controller/class-ms-controller-shortcode.php:648
 #: app/view/class-ms-view-help.php:783
 #: app/view/shortcode/class-ms-view-shortcode-login.php:195
 msgid "Remember Me"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:640
+#: app/controller/class-ms-controller-shortcode.php:649
 #: app/view/class-ms-view-help.php:791
 #: app/view/shortcode/class-ms-view-shortcode-login.php:196
 msgid "Log In"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:650
+#: app/controller/class-ms-controller-shortcode.php:659
 #: app/view/class-ms-view-help.php:873
 #: app/view/shortcode/class-ms-view-shortcode-login.php:334
 msgid "Username or E-mail"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:651
+#: app/controller/class-ms-controller-shortcode.php:660
 #: app/view/class-ms-view-help.php:881
 #: app/view/shortcode/class-ms-view-shortcode-login.php:335
 #: app/view/shortcode/class-ms-view-shortcode-login.php:624
 msgid "Reset Password"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:723
+#: app/controller/class-ms-controller-shortcode.php:732
 #: app/view/class-ms-view-help.php:1402
 msgid "Your Membership"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:727
+#: app/controller/class-ms-controller-shortcode.php:736
 #: app/view/class-ms-view-help.php:1442
 msgid "Personal details"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:732
+#: app/controller/class-ms-controller-shortcode.php:741
 #: app/view/class-ms-view-help.php:1482
 #: app/view/settings/class-ms-view-settings-import.php:160
 msgid "Invoices"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:733
-#: app/controller/class-ms-controller-shortcode.php:738
+#: app/controller/class-ms-controller-shortcode.php:742
+#: app/controller/class-ms-controller-shortcode.php:747
 #: app/view/class-ms-view-help.php:1509 app/view/class-ms-view-help.php:1558
 msgid "View all"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:737
+#: app/controller/class-ms-controller-shortcode.php:746
 #: app/view/class-ms-view-help.php:1531
 msgid "Activities"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:815
+#: app/controller/class-ms-controller-shortcode.php:824
 msgid "Visit your account page for more information."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1179
+#: app/controller/class-ms-controller-shortcode.php:1188
 msgid ""
 "Content Protection is disabled. Please enable the protection to see this "
 "shortcode."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1183
+#: app/controller/class-ms-controller-shortcode.php:1192
 msgid "This message is only displayed to Site Administrators"
 msgstr ""
 
