@@ -152,16 +152,18 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 			}
 		}
 
-		lib3()->array->equip(
-			$comm,
-			'type',
-			'enabled',
-			'period',
-			'subject',
-			'description',
-			'cc_enabled',
-			'cc_email'
-		);
+                if ( version_compare( PHP_VERSION, '5.3' ) >= 0 ) {
+                    lib3()->array->equip(
+                            $comm,
+                            'type',
+                            'enabled',
+                            'period',
+                            'subject',
+                            'description',
+                            'cc_enabled',
+                            'cc_email'
+                    );
+                }
 
 		$action = MS_Controller_Communication::AJAX_ACTION_UPDATE_COMM;
 		$nonce = wp_create_nonce( $action );

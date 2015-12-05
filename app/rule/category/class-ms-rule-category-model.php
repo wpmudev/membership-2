@@ -54,7 +54,9 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
+            if( is_category() ) {
 		$post_type = self::get_post_type( $wp_query );
+            
 
 		/*
 		 * '' .. when post type is unknown assume 'post'
@@ -78,6 +80,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 			$wp_query,
 			$this
 		);
+            }
 	}
 
 	/**

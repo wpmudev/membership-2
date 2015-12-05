@@ -607,6 +607,14 @@ jQuery( document ).ready( function() {
 			}
 		}
 	)
+        .on(
+		'change',
+		'input.wpmui-ajax-update[type="number"]',
+		function( ev ) {
+			var el = jQuery( this );
+			el.focus();
+		}
+	)
 	.on(
 		'focus',
 		'input.wpmui-ajax-update[type="number"]',

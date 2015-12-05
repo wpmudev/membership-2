@@ -407,6 +407,10 @@ input[type="image"] {
 			display: block;
 			width: 100%;
 		}
+                
+                span.select2-container{
+                    width: 100px !important;
+                }
 	}
 
 	.wpmui-radio {

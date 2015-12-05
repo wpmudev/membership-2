@@ -1,4 +1,4 @@
-/*! Membership 2 Pro - v1.0.24
+/*! Membership 2 Pro - v1.0.25
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2015; * Licensed GPLv2+ */
 /*global window:false */
@@ -645,6 +645,14 @@ jQuery( document ).ready( function() {
 				el.data( 'val', el.val() );
 				fn.ajax_update( this );
 			}
+		}
+	)
+        .on(
+		'change',
+		'input.wpmui-ajax-update[type="number"]',
+		function( ev ) {
+			var el = jQuery( this );
+			el.focus();
 		}
 	)
 	.on(

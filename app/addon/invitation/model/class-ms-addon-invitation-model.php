@@ -357,10 +357,12 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * @param int $user_id The user id.
 	 * @param int $membership_id The membership id.
 	 */
-	public static function remove_application( $user_id, $membership_id ) {
+	public function remove_application( $user_id, $membership_id ) {
 		$key = self::get_transient_name( $user_id, $membership_id );
 
 		MS_Factory::delete_transient( $key );
+                
+                $this->remove_invitation_check();
 
 		do_action(
 			'ms_addon_invitation_model_remove_application',
@@ -425,7 +427,9 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 			if ( ! $membership_allowed ) {
 				$this->invitation_message = __( 'This Invitation is not valid for this membership.', 'membership2' );
 				$valid = false;
-			}
+			}else{
+                            $this->add_invitation_check();
+                        }
 		}
 
 		return apply_filters(
@@ -489,7 +493,8 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		// save the user ID to the usage field
 		$user = array( $user_id );
 		$this->use_details = array_merge( $this->use_details, $user );
-		$this->save();
+                if( ! empty( $this->id ) )
+                    $this->save();
 	}
 
 	/**
@@ -506,7 +511,8 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 			$this->used -= 1;
 			$key = array_search( $user_id, $this->use_details );
 			unset( $this->use_details[$key] );
-			$this->save();
+                        if( ! empty( $this->id ) )
+                            $this->save();
 		}
 	}
 

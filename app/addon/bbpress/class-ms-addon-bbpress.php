@@ -41,13 +41,14 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 * @since  1.0.0
 	 */
 	public function init() {
-		// Always remove bbpress from MS_Rule_CptGroup_Model.
-		$this->add_filter(
-			'ms_rule_cptgroup_model_get_excluded_content',
-			'exclude_bbpress_cpts'
-		);
-
+		
 		if ( self::is_active() ) {
+                        // Always remove bbpress from MS_Rule_CptGroup_Model.
+                        $this->add_filter(
+                                'ms_rule_cptgroup_model_get_excluded_content',
+                                'exclude_bbpress_cpts'
+                        );
+                    
 			$this->add_filter(
 				'ms_controller_protection_tabs',
 				'rule_tabs'

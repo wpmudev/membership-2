@@ -268,7 +268,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 		}
 
 		// Pagination
-		if ( ! empty( $args['posts_per_page'] ) ) {
+		if ( ! empty( $args['posts_per_page'] ) && $args['posts_per_page'] > 0 ) {
 			$total = $args['posts_per_page'];
 			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
 			$contents = array_slice( $contents, $offset, $total );

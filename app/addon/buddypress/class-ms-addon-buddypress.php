@@ -87,6 +87,18 @@ class MS_Addon_BuddyPress extends MS_Addon {
 					'ms_controller_frontend_register_user_complete',
 					'save_custom_fields'
 				);
+                                
+                                $this->add_action(
+                                        'wp',
+                                        'bp_m2_process_signup_errors'
+                                );
+                                
+                                $this->add_filter(
+                                    'ms_model_membership_create_new_user_validation_errors',
+                                    'check_bp_xprofile_validation',
+                                    10, 1
+                                );
+                                
 			}
 
 			// Disable BuddyPress Email activation.
@@ -108,7 +120,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 			$this->buddypress_registration = false;
 		}
 	}
-
+        
 	/**
 	 * Checks, if some BuddyPress pages overlap with M2 membership pages.
 	 *
@@ -265,6 +277,179 @@ class MS_Addon_BuddyPress extends MS_Addon {
 
 		return $code;
 	}
+        
+        /**
+         * Check buddypress xprofile field validation
+         * when using buddypress registration form on signup
+         *
+         * @since   1.0.2.5
+         * @return  object  Validation error object
+         */
+        public function check_bp_xprofile_validation( $validation_errors ) {
+            $bp = buddypress();
+            
+            // Make sure hidden field is passed and populated.
+            if ( isset( $_POST['signup_profile_field_ids'] ) && !empty( $_POST['signup_profile_field_ids'] ) ) {
+
+                    // Let's compact any profile field info into an array.
+                    $profile_field_ids = explode( ',', $_POST['signup_profile_field_ids'] );
+
+                    // Loop through the posted fields formatting any datebox values then validate the field.
+                    foreach ( (array) $profile_field_ids as $field_id ) {
+
+                            // Create errors for required fields without values.
+                            if ( xprofile_check_is_required_field( $field_id ) && empty( $_POST[ 'field_' . $field_id ] ) && ! bp_current_user_can( 'bp_moderate' ) ) {
+                                    $validation_errors->add(
+                                            'xprofile_' . $field_id,
+                                            __( 'You have missed a required fields.', 'membership2' )
+                                    );
+                            }
+                    }
+            }
+            
+            return $validation_errors;
+        }
+        
+        /**
+	 * Check the registration form error
+	 * when using buddypress registration form on signup
+	 *
+	 * @since  1.0.2.5
+	 * @return void
+	 */
+        public function bp_m2_process_signup_errors() {
+            if( is_user_logged_in() ) {
+                return;
+            }
+            
+            if( ! isset( $_POST['signup_username'] ) ) {
+                return;
+            }
+            
+            if( bp_is_current_component( 'register' ) ) {
+                return;
+            }
+            
+            $bp = buddypress();
+            
+            do_action( 'bp_signup_pre_validate' );
+            $account_details = bp_core_validate_user_signup( $_POST['signup_username'], $_POST['signup_email'] );
+            
+            if ( !empty( $account_details['errors']->errors['user_name'] ) ){
+                    $bp->signup->errors['signup_username'] = $account_details['errors']->errors['user_name'][0];
+            }
+
+            if ( !empty( $account_details['errors']->errors['user_email'] ) ) {
+                    $bp->signup->errors['signup_email'] = $account_details['errors']->errors['user_email'][0];
+            }
+
+            // Check that both password fields are filled in.
+            if ( empty( $_POST['signup_password'] ) || empty( $_POST['signup_password_confirm'] ) ) {
+                    $bp->signup->errors['signup_password'] = __( 'Please make sure you enter your password twice', 'membership2' );
+            }
+
+            // Check that the passwords match.
+            if ( ( !empty( $_POST['signup_password'] ) && !empty( $_POST['signup_password_confirm'] ) ) && $_POST['signup_password'] != $_POST['signup_password_confirm'] ) {
+                    $bp->signup->errors['signup_password'] = __( 'The passwords you entered do not match.', 'membership2' );
+            }
+
+            $bp->signup->username = $_POST['signup_username'];
+            $bp->signup->email = $_POST['signup_email'];
+
+            // Now we've checked account details, we can check profile information.
+            if ( bp_is_active( 'xprofile' ) ) {
+                $this->_check_xprofile_fields();
+            }
+
+            // Finally, let's check the blog details, if the user wants a blog and blog creation is enabled.
+            if ( isset( $_POST['signup_with_blog'] ) ) {
+                $this->_check_blog_fields();
+            }
+            
+            do_action( 'bp_signup_validate' );
+            
+            $this->_create_action_error_cb();
+            
+        }
+        
+        /**
+	 * Check the xprofile fields validation
+	 * when using buddypress registration form on signup
+	 *
+	 * @since  1.0.2.5
+	 * @return void
+	 */
+        private function _check_xprofile_fields() {
+            $bp = buddypress();
+            
+            // Make sure hidden field is passed and populated.
+            if ( isset( $_POST['signup_profile_field_ids'] ) && !empty( $_POST['signup_profile_field_ids'] ) ) {
+
+                    // Let's compact any profile field info into an array.
+                    $profile_field_ids = explode( ',', $_POST['signup_profile_field_ids'] );
+
+                    // Loop through the posted fields formatting any datebox values then validate the field.
+                    foreach ( (array) $profile_field_ids as $field_id ) {
+                            if ( !isset( $_POST['field_' . $field_id] ) ) {
+                                    if ( !empty( $_POST['field_' . $field_id . '_day'] ) && !empty( $_POST['field_' . $field_id . '_month'] ) && !empty( $_POST['field_' . $field_id . '_year'] ) ) {
+                                            $_POST['field_' . $field_id] = date( 'Y-m-d H:i:s', strtotime( $_POST['field_' . $field_id . '_day'] . $_POST['field_' . $field_id . '_month'] . $_POST['field_' . $field_id . '_year'] ) );
+                                    }
+                            }
+
+                            // Create errors for required fields without values.
+                            if ( xprofile_check_is_required_field( $field_id ) && empty( $_POST[ 'field_' . $field_id ] ) && ! bp_current_user_can( 'bp_moderate' ) ) {
+                                    $bp->signup->errors['field_' . $field_id] = __( 'This is a required field', 'membership2' );
+                            }
+                    }
+
+            // This situation doesn't naturally occur so bounce to website root.
+            } else {
+                    bp_core_redirect( bp_get_root_domain() );
+            }
+        }
+        
+        /**
+	 * Check blog fields validation
+	 * when using buddypress registration form on signup
+	 *
+	 * @since  1.0.2.5
+	 * @return void
+	 */
+        private function _check_blog_fields() {
+            $bp = buddypress();
+            
+            $active_signup = bp_core_get_root_option( 'registration' );
+
+            if ( 'blog' == $active_signup || 'all' == $active_signup ) {
+                    $blog_details = bp_core_validate_blog_signup( $_POST['signup_blog_url'], $_POST['signup_blog_title'] );
+
+                    // If there are errors with blog details, set them for display.
+                    if ( !empty( $blog_details['errors']->errors['blogname'] ) )
+                            $bp->signup->errors['signup_blog_url'] = $blog_details['errors']->errors['blogname'][0];
+
+                    if ( !empty( $blog_details['errors']->errors['blog_title'] ) )
+                            $bp->signup->errors['signup_blog_title'] = $blog_details['errors']->errors['blog_title'][0];
+            }
+        }
+        
+        /**
+	 * Create bp fields error callback action
+	 * when using buddypress registration form on signup
+	 *
+	 * @since  1.0.2.5
+	 * @return void
+	 */
+        private function _create_action_error_cb() {
+            $bp = buddypress();
+            
+            if ( ! empty( $bp->signup->errors ) ) {
+                // There is error, so show errors using action hook 
+                foreach ( (array) $bp->signup->errors as $fieldname => $error_message ) {
+                    add_action( 'bp_' . $fieldname . '_errors', create_function( '', 'echo apply_filters(\'bp_members_signup_error_message\', "<div class=\"error\">" . stripslashes( \'' . addslashes( $error_message ) . '\' ) . "</div>" );' ) );
+                }
+            }
+        }
+        
 
 	/**
 	 * Redirects all output to the Buffer, so we can easily discard it later...
