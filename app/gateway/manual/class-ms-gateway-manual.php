@@ -48,6 +48,11 @@ class MS_Gateway_Manual extends MS_Gateway {
 		$this->group = __( 'Manual Payment', 'membership2' );
 		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
+                /**
+                 * No sandbox option for manual payment gateway
+                 * The mode is always set to live
+                 */
+                $this->mode = 'live';
 
 		if ( $this->active ) {
 			$this->add_action(

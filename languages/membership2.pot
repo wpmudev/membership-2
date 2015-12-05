@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.5-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-12-02 19:21:09+00:00\n"
+"POT-Creation-Date: 2015-12-03 05:50:28+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2726,8 +2726,8 @@ msgstr ""
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:133
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:282
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:566
-#: app/gateway/stripe/class-ms-gateway-stripe.php:131
-#: app/gateway/stripe/class-ms-gateway-stripe.php:217
+#: app/gateway/stripe/class-ms-gateway-stripe.php:171
+#: app/gateway/stripe/class-ms-gateway-stripe.php:257
 #: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:479
 msgid "Payment successful"
 msgstr ""
@@ -3195,17 +3195,17 @@ msgstr ""
 msgid "Stripe Single Gateway"
 msgstr ""
 
-#: app/gateway/stripe/class-ms-gateway-stripe.php:119
-#: app/gateway/stripe/class-ms-gateway-stripe.php:204
+#: app/gateway/stripe/class-ms-gateway-stripe.php:159
+#: app/gateway/stripe/class-ms-gateway-stripe.php:244
 msgid "No payment for free membership"
 msgstr ""
 
-#: app/gateway/stripe/class-ms-gateway-stripe.php:135
-#: app/gateway/stripe/class-ms-gateway-stripe.php:219
+#: app/gateway/stripe/class-ms-gateway-stripe.php:175
+#: app/gateway/stripe/class-ms-gateway-stripe.php:259
 msgid "Stripe payment failed"
 msgstr ""
 
-#: app/gateway/stripe/class-ms-gateway-stripe.php:234
+#: app/gateway/stripe/class-ms-gateway-stripe.php:274
 msgid "Invoice already paid"
 msgstr ""
 
