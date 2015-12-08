@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.5-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2015-12-08 20:21:31+00:00\n"
+"POT-Creation-Date: 2015-12-08 22:16:07+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -6031,39 +6031,39 @@ msgstr ""
 msgid "Shortcode content protected."
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:205
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:206
 msgid "No access to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:229
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:230
 msgid "Content protected to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:300
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:301
 msgid "Visible for members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:301
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:302
 msgid "Other users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:302
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:303
 msgid "Other uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:304
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:305
 msgid "Hidden from members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:305
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:306
 msgid "Those users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:306
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:307
 msgid "Those uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:362
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:363
 msgid "This information is only displayed for admin users"
 msgstr ""
 
