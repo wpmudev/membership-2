@@ -173,8 +173,9 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		} else {
 			if ( ! is_string( $msg ) || ! strlen( $msg ) ) {
 				$settings = MS_Factory::load( 'MS_Model_Settings' );
-				//$membership_id = apply_filters( 'ms_detect_membership_id', 0 );
-                                $membership_id = $atts['id'];
+				// TO-DO: Need to think about logic here. Tracking ID: 70522969408012/53509795076060
+                                $membership_id = apply_filters( 'ms_detect_membership_id', 0 );
+                                //$membership_id = $atts['id'];
 				$msg = $settings->get_protection_message(
 					MS_Model_Settings::PROTECTION_MSG_SHORTCODE,
 					$membership_id
