@@ -9,7 +9,7 @@ ob_start();
 /**
  * The path to the WordPress tests checkout.
  */
-define( 'WP_TESTS_DIR', '/tmp/wordpress-tests-lib/' );
+define( 'WP_TESTS_DIR', '/srv/www/wptest/wordpress-develop/tests/phpunit/' );
 
 /**
  * The path to the main file of the plugin to test.
