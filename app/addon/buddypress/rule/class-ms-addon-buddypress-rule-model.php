@@ -18,6 +18,46 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	 * @var string $rule_type
 	 */
 	protected $rule_type = MS_Addon_BuddyPress_Rule::RULE_ID;
+        
+        public function __construct( $membership_id ) {
+            parent::__construct( $membership_id );
+            
+            $this->add_filter(
+                'ms_model_plugin_get_access_info',
+                'protect_member_page'
+            );
+        }
+        
+        public function protect_member_page( $Info ) {
+            $has_access = $Info['has_access'];
+            $admin_has_access = true;
+            
+            if ( is_buddypress() ) {
+                // Check if access to *all* BuddyPress pages is restricted
+                $has_access = parent::has_access(
+                        MS_Addon_BuddyPress_Rule::PROTECT_ALL,
+                        $admin_has_access
+                );
+            }
+            
+            if ( $has_access ) {
+                $component = bp_current_component();
+                
+                if ( ! empty( $component ) ) {
+                    if ( 'members' == $component || bp_is_user() ) {
+                        // Member listing or member profile access.
+                        $has_access = parent::has_access(
+                                MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS,
+                                $admin_has_access
+                        );
+                    }
+                }
+            }
+            
+            $Info['has_access'] = $has_access;
+            
+            return $Info;
+        }
 
 	/**
 	 * Verify access to the current content.
