@@ -19,6 +19,13 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	 */
 	protected $rule_type = MS_Addon_BuddyPress_Rule::RULE_ID;
         
+        /**
+	 * Rule type.
+	 *
+	 * @since  1.0.2.6
+	 *
+	 * @param int $membership_id
+	 */
         public function __construct( $membership_id ) {
             parent::__construct( $membership_id );
             
@@ -28,9 +35,20 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
             );
         }
         
+        /**
+         * Check access of members directory
+         *
+         * @since 1.0.2.6
+         *
+         * @param array $Info
+         */
         public function protect_member_page( $Info ) {
             $has_access = $Info['has_access'];
             $admin_has_access = true;
+            
+            if( ! $has_access ) {
+                return $Info;
+            }
             
             if ( is_buddypress() ) {
                 // Check if access to *all* BuddyPress pages is restricted
@@ -55,6 +73,8 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
             }
             
             $Info['has_access'] = $has_access;
+            $Info['reason'][] = 'Allow: BuddyPress Directory';
+            $Info['deciding_rule'][] = 'buddypress';
             
             return $Info;
         }
