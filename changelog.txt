@@ -6,6 +6,14 @@ Change Log:
 
 1.0.2.5
 ----------------------------------------------------------------------
+- Added: Addon - WP reCaptcha integration
+- Fixed: BuddyPress Members directory could not be protected
+- Fixed: Warning on edit membership screen when % sign is in the membership name
+- Fixed: Visitors coming from Google search links get blank page, Error 500
+- 
+
+1.0.2.5
+----------------------------------------------------------------------
 - Added: Constant M2_FORCE_NO_SSL to avoid forcing SSL in Stripe Live Mode
 - Fixed: Manual Payment Gateway always in Sandbox Mode
 - Fixed: Free Payment Gateway always in Sandbox Mode

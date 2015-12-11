@@ -15,7 +15,7 @@ class MS_Model_Plugin extends MS_Model {
 	 *
 	 * @var string $member
 	 */
-	private $member;
+	public $member;
 
 	/**
 	 * Full admin menu, used by the Adminside rule.
