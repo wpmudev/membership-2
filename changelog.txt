@@ -6,7 +6,28 @@ Change Log:
 
 1.0.2.5
 ----------------------------------------------------------------------
-- ...
+- Added: Constant M2_FORCE_NO_SSL to avoid forcing SSL in Stripe Live Mode
+- Fixed: Manual Payment Gateway always in Sandbox Mode
+- Fixed: Free Payment Gateway always in Sandbox Mode
+- Fixed: Membership Payment amount could not be saved in Firefox
+- Fixed: BuddyPress Integration - No xProfile field validation
+- Fixed: BuddyPress Integration - No validation error message shown
+- Fixed: Select drop down in Authorize.net checkout was broken
+- Fixed: JS conflict with Visual Composer
+- Fixed: JS conflict with Be Theme
+- Fixed: JS conflict with LayerSlider
+- Fixed: Pagination was not working for Classifieds plugin
+- Fixed: Search was not working on front-end
+- Fixed: Upgrade path settings for memberships were being ignored
+- Fixed: Junk error message on Add Member page
+- Fixed: Currency was always USD in 2CO gateway
+- Fixed: Search was not working in Members Capability page
+- Fixed: Invitation Code - Max uses features were ignored
+- Fixed: Invitation Code - New code created automatically if wrong code is provided
+- Fixed: Some post types were not working for protection
+- Fixed: Recurring events are not showing in event calendar (Events+)
+- Fixed: Menu item protection was not working for Guest Membership
+- Fixed: Force SSL on Stripe checkout page in Live Mode
 
 1.0.2.4
 ----------------------------------------------------------------------
