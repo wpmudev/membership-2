@@ -90,7 +90,7 @@ class MS_Helper_Html extends MS_Helper {
 			<?php if ( ! empty( $title_icon_class ) ) : ?>
 				<i class="<?php echo esc_attr( $title_icon_class ); ?>"></i>
 			<?php endif; ?>
-			<?php printf( $title ); ?>
+			<?php echo $title; ?>
 		</h2>
 		<div class="ms-settings-desc-wrapper">
 			<?php foreach ( $desc as $description ) : ?>
