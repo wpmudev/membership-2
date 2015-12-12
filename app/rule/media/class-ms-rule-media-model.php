@@ -175,8 +175,8 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			// Start buffering during init action, though output should only
-			// happen a lot later... This way we're save.
-			$this->add_action( 'init', 'buffer_start' );
+			// happen a lot later... This way we're safe.
+			$this->add_action( 'init', 'buffer_start', 9999 );
 
 			// Process the buffer right in the end.
 			$this->add_action( 'shutdown', 'buffer_end' );
@@ -369,7 +369,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 		global $wpdb;
 
 		// First let WordPress try to find the Attachment ID.
-		$id = url_to_postid( $url );
+		$id = $this->thumbnail_url_to_id($url);
 
 		if ( $id ) {
 			// Make sure the result ID is a valid attachment ID.
@@ -395,8 +395,8 @@ class MS_Rule_Media_Model extends MS_Rule {
 			if ( empty( $id ) ) {
 				$sql = "
 				SELECT wposts.ID
-				FROM $wpdb->posts wposts
-					INNER JOIN $wpdb->postmeta wpostmeta ON wposts.ID = wpostmeta.post_id
+				FROM $wpdb->posts as wposts
+					INNER JOIN $wpdb->postmeta as wpostmeta ON wposts.ID = wpostmeta.post_id
 				WHERE
 					wposts.post_type = 'attachment'
 					AND wpostmeta.meta_key = '_wp_attached_file'
@@ -416,6 +416,31 @@ class MS_Rule_Media_Model extends MS_Rule {
 			$this
 		);
 	}
+        
+        /**
+         * Fetch ID of an image from the image URL.
+         * The URL can contain the size
+         *
+         * @see http://stackoverflow.com/questions/10990808/wordpress-unique-scenario-get-attachment-id-by-url
+         */
+        public function thumbnail_url_to_id( $file_url ){
+            global $wpdb;
+            $filename = basename( $file_url );
+          
+            $rows = $wpdb->get_results( $wpdb->prepare( "
+            SELECT     wp_posts.ID, wp_postmeta.meta_value
+            FROM       wp_posts
+            INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id
+                                  AND wp_postmeta.meta_key = '_wp_attachment_metadata'
+                                  AND wp_postmeta.meta_value LIKE %s
+            ",'%"'.$filename.'"%'
+            ) );
+          
+            foreach( $rows as $row ){
+                $row -> meta_value = maybe_unserialize( $row -> meta_value );
+                return $row->ID;
+            }
+        }
 
 	/**
 	 * Handle protected media access.
@@ -445,14 +470,16 @@ class MS_Rule_Media_Model extends MS_Rule {
 			return;
 		}
 
-		if ( ! empty( $query->query_vars['protectedfile'] ) ) {
+		if ( ! empty( $query->query_vars['protectedfile'] ) && self::PROTECTION_TYPE_COMPLETE == $protection_type ) {
 			$requested_item = explode( '/', $query->query_vars['protectedfile'] );
 			$requested_item = array_pop( $requested_item );
 		} elseif ( ! empty( $_GET['ms_file'] )
 			&& self::PROTECTION_TYPE_HYBRID == $protection_type
 		) {
 			$requested_item = $_GET['ms_file'];
-		}
+		} else{
+                    $requested_item = MS_Helper_Utility::get_current_url();
+                }
 
 		if ( ! empty( $requested_item ) ) {
 			// At this point we know that the requested post is an attachment.
@@ -474,8 +501,20 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 				default:
 				case self::PROTECTION_TYPE_BASIC:
+                                    
+                                    $upload_dir = wp_upload_dir();
+                                    $original_url = $upload_dir['baseurl'];
+                                    $home = get_option( 'home' );
+                                    $original_url = explode( $home, $original_url );
+              
+                                    $furl = untrailingslashit( str_replace(
+                                                    '/' . $download_settings['masked_url'],
+                                                    $original_url[1],
+                                                    $requested_item
+                                                    ) );
+                                    
 					$home = untrailingslashit( get_option( 'home' ) );
-					$attachment_id = $this->get_attachment_id( $home . $f_info->filename );
+					$attachment_id = $this->get_attachment_id( $furl );
 					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
 					break;
 			}
