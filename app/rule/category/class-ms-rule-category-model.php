@@ -54,7 +54,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
-            if( is_category() ) {
+            if( is_category() || is_home() || is_search() ) {
 		$post_type = self::get_post_type( $wp_query );
             
 
