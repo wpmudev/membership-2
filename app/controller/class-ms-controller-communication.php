@@ -49,6 +49,13 @@ class MS_Controller_Communication extends MS_Controller {
 			'process_event',
 			10, 2
 		);
+                
+                // Works for user creation from admin only
+                $this->add_action(
+                        'user_register',
+                        'save_user_create_event',
+                        10, 1
+                );
 
 		$this->add_action(
 			'ms_cron_process_communications',
@@ -57,6 +64,21 @@ class MS_Controller_Communication extends MS_Controller {
 
 		do_action( 'ms_controller_communication_after', $this );
 	}
+        
+        /**
+         * Fires only at user creation from admin
+         * Create even to send notification email.
+         *
+         * @since 1.0.2.6
+         *
+         * @var int $user_id
+         */
+        public function save_user_create_event( $user_id ) {
+            if( is_admin() ) {
+                $member = MS_Factory::load( 'MS_Model_Member', $user_id );
+                MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $member );
+            }
+        }
 
 	/**
 	 * Initialize the admin-side functions.

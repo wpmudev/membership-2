@@ -16,7 +16,8 @@ Change Log:
 - Fixed: Membership pages links were broken when subsite is selected as host the M2 pages
 - Fixed: White screen in WP-Touch settings page
 - Fixed: XProfile Date field was not being saved in registration form
-- Fixed: Fixed: Category protected posts was being appeared in home and search page
+- Fixed: Category protected posts was being appeared in home and search page
+- Fixed: Confirmation emails not sent when registering new user from admin end
 
 1.0.2.5
 ----------------------------------------------------------------------
