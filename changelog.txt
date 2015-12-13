@@ -14,6 +14,8 @@ Change Log:
 - Fixed: Media Protection changing URL of non protected media items
 - Fixed: Media add-on changes attachment URLs but does not revert when disabled
 - Fixed: Membership pages links were broken when subsite is selected as host the M2 pages
+- Fixed: White screen in WP-Touch settings page
+- Fixed: XProfile Date field was not being saved in registration form
 
 1.0.2.5
 ----------------------------------------------------------------------

@@ -638,14 +638,33 @@ class MS_Addon_Profilefields extends MS_Addon {
 		if ( $fields && $user  && is_array( $fields ) ) {
 			foreach ( $fields as $field_id ) {
 				if ( ! isset( $_REQUEST['field_' . $field_id] ) ) {
+                                    
+                                    // Saving date fields manually
+                                    if ( isset( $_REQUEST['field_' . $field_id . '_day'] ) ) {
+                                        // 1987-02-23 00:00:00
+                                        $date = $_REQUEST['field_' . $field_id . '_day'] .
+                                            '-' .
+                                            $_REQUEST['field_' . $field_id . '_month'] .
+                                            '-' .
+                                            $_REQUEST['field_' . $field_id . '_year'];
+                                            
+                                        $value = date( 'Y-m-d', strtotime( $date ) ) . ' 00:00:00';
+                                        
+                                    }else{
 					continue;
-				}
+                                    }
+                                    
+				}else{
+                                    $value = $_REQUEST['field_' . $field_id];
+                                }
 
-				xprofile_set_field_data(
-					$field_id,
-					$user->ID,
-					$_REQUEST['field_' . $field_id]
-				);
+                                xprofile_set_field_data(
+                                    $field_id,
+                                    $user->ID,
+                                    $value
+                                );
+                                
+
 			}
 		}
 	}
