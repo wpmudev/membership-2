@@ -4,7 +4,7 @@ Author: Philipp Stracker, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
-1.0.2.5
+1.0.2.6
 ----------------------------------------------------------------------
 - Added: Addon - WP reCaptcha integration
 - Fixed: BuddyPress Members directory could not be protected
@@ -12,7 +12,7 @@ Change Log:
 - Fixed: Visitors coming from Google search links get blank page, Error 500
 - Fixed: Media Protection Add On
 - Fixed: Media Protection changing URL of non protected media items
-
+- Fixed: Membership pages links were broken when subsite is selected as host the M2 pages
 
 1.0.2.5
 ----------------------------------------------------------------------
