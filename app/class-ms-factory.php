@@ -723,11 +723,12 @@ class MS_Factory {
 			}
 			self::$Prev_Blog_Id[] = $GLOBALS['blog_id'];
 
-			if ( $GLOBALS['blog_id'] != $site_id ) {
+			/*if ( $GLOBALS['blog_id'] != $site_id ) {
 				$GLOBALS['blog_id'] = $site_id;
 				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
 				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
-			}
+			}*/
+                        switch_to_blog( $site_id );
 		}
 	}
 
@@ -742,11 +743,13 @@ class MS_Factory {
 		if ( MS_Plugin::is_network_wide() ) {
 			$site_id = array_pop( self::$Prev_Blog_Id );
 
-			if ( $site_id != $GLOBALS['blog_id'] ) {
+			/*if ( $site_id != $GLOBALS['blog_id'] ) {
 				$GLOBALS['blog_id'] = $site_id;
 				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
 				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
-			}
+			}*/
+                        
+                        restore_current_blog();
 		}
 	}
 

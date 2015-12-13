@@ -178,8 +178,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					);
 
 					$pages_site_id = MS_Model_Pages::get_site_info( 'id' );
-					//MS_Factory::select_blog( $pages_site_id );
-                                        switch_to_blog( $pages_site_id );
+					MS_Factory::select_blog( $pages_site_id );
 
 					foreach ( $groups as $group_key => $group_items ) :
 						printf( '<div class="ms-pages-group %1$s">', esc_attr( $group_key ) );
@@ -232,8 +231,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 					echo $fields['pages'];
 				}
 
-				//MS_Factory::revert_blog();
-                                restore_current_blog();
+				MS_Factory::revert_blog();
 				?>
 			</div>
 		</div>
