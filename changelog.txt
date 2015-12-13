@@ -12,6 +12,7 @@ Change Log:
 - Fixed: Visitors coming from Google search links get blank page, Error 500
 - Fixed: Media Protection Add On
 - Fixed: Media Protection changing URL of non protected media items
+- Fixed: Media add-on changes attachment URLs but does not revert when disabled
 - Fixed: Membership pages links were broken when subsite is selected as host the M2 pages
 
 1.0.2.5
