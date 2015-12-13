@@ -10,7 +10,9 @@ Change Log:
 - Fixed: BuddyPress Members directory could not be protected
 - Fixed: Warning on edit membership screen when % sign is in the membership name
 - Fixed: Visitors coming from Google search links get blank page, Error 500
-- Fixed: Media Protection AddOn
+- Fixed: Media Protection Add On
+- Fixed: Media Protection changing URL of non protected media items
+
 
 1.0.2.5
 ----------------------------------------------------------------------
