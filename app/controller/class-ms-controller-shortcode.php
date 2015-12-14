@@ -289,7 +289,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			$exclude
 		);
                 
-                if ( ! $member->is_valid() ) {
+                if ( ! $member->is_valid() || ! $member->has_membership() ) {
                     foreach( $memberships as $key => $membership ) {
                         if( isset( $membership->update_denied['guest'] ) && lib3()->is_true( $membership->update_denied['guest'] ) ) {
                             unset( $memberships[$key] );
