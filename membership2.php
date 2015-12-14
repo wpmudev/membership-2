@@ -62,7 +62,7 @@ function membership2_init_pro_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.2.4' );
+	define( 'MS_PLUGIN_VERSION', '1.0.2.6' );
 
 	/**
 	 * Plugin identifier constant.
