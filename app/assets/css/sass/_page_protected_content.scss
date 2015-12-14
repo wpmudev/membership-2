@@ -96,6 +96,14 @@
 			.ms-empty-note-wrapper {
 				display: none;
 			}
+                        
+                        .column-match{
+                            .wpmui-select-wrapper {
+                                .select2-selection__rendered {
+                                    color: #777;
+                                }
+                            }
+                        }
 
 			.wpmui-select-wrapper {
 				.ms-memberships {

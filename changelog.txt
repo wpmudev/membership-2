@@ -19,6 +19,7 @@ Change Log:
 - Fixed: Category protected posts was being appeared in home and search page
 - Fixed: Confirmation emails not sent when registering new user from admin end
 - Fixed: Upgrade path is ignored when a member is logged in but has no subscription
+- Fixed: UI Issue - Menu addon dropdown text was not readable
 
 1.0.2.5
 ----------------------------------------------------------------------
