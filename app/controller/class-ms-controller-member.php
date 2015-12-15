@@ -330,6 +330,8 @@ class MS_Controller_Member extends MS_Controller {
 				// REQUEST here: When editing a user the ID is sent in the URL.
 				$user_id = intval( $_REQUEST['user_id'] );
 				$user = MS_Factory::load( 'MS_Model_Member', $user_id );
+                                // We don't need need user_id here as this is an user modification
+                                $fields_modify = array( 'memberships' );
 
 				// Modify existing subscriptions.
 				if ( self::validate_required( $fields_modify, 'POST' ) ) {
