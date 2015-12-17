@@ -438,6 +438,25 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 			$this
 		);
 	}
+        
+        /**
+         * Generate the identifier pair with user id or ip and membership ID
+         *
+         * @since 1.0.2.6
+         * @param $ip bool
+         */
+        public function get_user_membership_pair( $ip = false ) {
+            
+            $user = MS_Model_Member::get_current_member();
+            
+            if( ! $ip ) {
+                $membership_id = isset( $_POST['membership_id'] ) ? $_POST['membership_id'] : 0;
+                return $user->id . '_' . $membership_id;
+            }else{
+                $ip	= lib3()->net->current_ip()->ip;
+                return $user->id . '_' . $ip;
+            }
+        }
 
 	/**
 	 * Checks to see if the user ID or IP is associated with the invitation code.
@@ -446,14 +465,15 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 */
 	public function check_invitation_user_usage() {
 		$user = MS_Model_Member::get_current_member();
+                
 		if ( $user->is_member ) {
-			if ( in_array( $user->id, $this->use_details ) ) {
+			if ( in_array( $this->get_user_membership_pair(), $this->use_details ) ) {
 				return false;
 			}
 		}
 
 		$ip	= lib3()->net->current_ip()->ip;
-		if ( in_array( $ip, $this->use_details ) ) {
+		if ( in_array( $this->get_user_membership_pair( true ), $this->use_details ) ) {
 			return false;
 		}
 		return true;
@@ -484,14 +504,14 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	public function add_invitation_check() {
 		// get the user ID
 		$user_id = $this->get_invitation_user_id();
-
+                
 		// if the user ID hasn't used this invitation already, increment.
-		if ( ! in_array( $user_id, $this->use_details ) ) {
+		if ( ! in_array( $this->get_user_membership_pair(), $this->use_details ) ) {
 			$this->used += 1;
 		}
 
 		// save the user ID to the usage field
-		$user = array( $user_id );
+		$user = array( $this->get_user_membership_pair() );
 		$this->use_details = array_merge( $this->use_details, $user );
                 if( ! empty( $this->id ) )
                     $this->save();
