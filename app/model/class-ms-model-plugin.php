@@ -33,7 +33,6 @@ class MS_Model_Plugin extends MS_Model {
 	 * @var array
 	 */
 	protected $admin_menu = array();
-        private $_process_per_batch;
 
 	/**
 	 * The number of members processed per batch
@@ -42,6 +41,7 @@ class MS_Model_Plugin extends MS_Model {
 	 *
 	 * @var $_process_per_batch
 	 */
+	private $_process_per_batch = 50;
 
 	/**
 	 * Prepare object.
@@ -50,8 +50,10 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function __construct() {
 		do_action( 'ms_model_plugin_constructor', $this );
-                
-                $this->_process_per_batch = 50;
+
+		if ( defined( 'MS_PROCESS_PER_BATCH' ) && MS_PROCESS_PER_BATCH ) {
+			$this->_process_per_batch = intval( MS_PROCESS_PER_BATCH );
+		}
 
 		// Upgrade membership database if needs to.
 		MS_Model_Upgrade::init();
@@ -635,10 +637,9 @@ class MS_Model_Plugin extends MS_Model {
 			return;
 		}
                 
-                $offset = MS_Factory::get_option( 'ms_batch_check_offset_flag' );
-                $offset = isset( $offset ) ? $offset : 0;
-                $posts_per_page = defined( 'MS_PROCESS_PER_BATCH' ) && MS_PROCESS_PER_BATCH ? MS_PROCESS_PER_BATCH : $this->_process_per_batch;
                 
+		$offset = (int) MS_Factory::get_option( 'ms_batch_check_offset_flag' );
+		$posts_per_page = $this->_process_per_batch;
 		$args = apply_filters(
 			'ms_model_plugin_check_membership_status_get_subscription_args',
 			array( 'status' => 'valid', 'posts_per_page' => $posts_per_page, 'offset' => $offset, 'nopaging' => false )
