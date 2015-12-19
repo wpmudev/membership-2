@@ -609,7 +609,7 @@ class MS_Model_Plugin extends MS_Model {
 		do_action( 'ms_model_plugin_setup_cron_services_before', $this );
 
 		$jobs = array(
-			'ms_cron_check_membership_status' => '30mins',
+			'ms_cron_check_membership_status' => '6hours',
 			'ms_cron_process_communications' => 'hourly',
 		);
 
@@ -636,27 +636,47 @@ class MS_Model_Plugin extends MS_Model {
 		if ( $this->member->is_simulated_user() ) {
 			return;
 		}
-                
-                
+
+		/*
+		 * For performance reasons we only process a small batch at once.
+		 * Here we find out, which subscriptions should be processed during
+		 * the current request.
+		 */
 		$offset = (int) MS_Factory::get_option( 'ms_batch_check_offset_flag' );
-		$posts_per_page = $this->_process_per_batch;
+
+		// Find the next X subscriptions from DB.
 		$args = apply_filters(
 			'ms_model_plugin_check_membership_status_get_subscription_args',
-			array( 'status' => 'valid', 'posts_per_page' => $posts_per_page, 'offset' => $offset, 'nopaging' => false )
+			array(
+				'status' => 'valid',
+				'orderby' => 'ID',
+				'posts_per_page' => $this->_process_per_batch,
+				'offset' => $offset,
+				'nopaging' => false,
+			)
 		);
 		$subscriptions = MS_Model_Relationship::get_subscriptions( $args );
-              
+
+		if ( count( $subscriptions ) < $this->_process_per_batch ) {
+			// We processed all subscriptions. Clean up.
+			MS_Factory::delete_option( 'ms_batch_check_offset_flag' );
+		} else {
+			// We did not process all subscriptions. Remember where to continue.
+			MS_Factory::update_option(
+				'ms_batch_check_offset_flag',
+				$offset + $this->_process_per_batch
+			);
+
+			// Re-scheduling the cron job will run it again on next page load.
+			$hook = 'ms_cron_check_membership_status';
+			wp_clear_scheduled_hook( $hook );
+			$this->setup_cron_services( $hook );
+		}
+
+		// Perform the actual status checks!
 		foreach ( $subscriptions as $subscription ) {
 			$subscription->check_membership_status();
 		}
-                
-                if( count( $subscriptions ) < $posts_per_page ) {
-                    $new_offset = 0;
-                }else{
-                    $new_offset = $offset + $posts_per_page;
-                }
-                
-                MS_Factory::update_option( 'ms_batch_check_offset_flag', $new_offset );
 
 		do_action( 'ms_model_plugin_check_membership_status_after', $this );
 	}
