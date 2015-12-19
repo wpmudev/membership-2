@@ -591,7 +591,9 @@ class MS_Controller_Frontend extends MS_Controller {
 			$user->signon_user();
 
 			if ( MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
+                            if( ! defined( 'MS_DISABLE_WP_WELCOME_EMAIL_NOTIFICATION' ) ){
 				wp_new_user_notification( $user->id, $user->password );
+                            }
 			}
 
 			do_action( 'ms_controller_frontend_register_user_complete', $user );

@@ -41,7 +41,7 @@ class MS_Model_Plugin extends MS_Model {
 	 *
 	 * @var $_process_per_batch
 	 */
-	private $_process_per_batch = 50;
+	private $_process_per_batch = 500;
 
 	/**
 	 * Prepare object.
@@ -50,7 +50,12 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function __construct() {
 		do_action( 'ms_model_plugin_constructor', $this );
-
+                
+                /**
+                 * Define MS_PROCESS_PER_BATCH, set the number of members will be processed per batch
+                 *
+                 * Default value is 500
+                 */
 		if ( defined( 'MS_PROCESS_PER_BATCH' ) && MS_PROCESS_PER_BATCH ) {
 			$this->_process_per_batch = intval( MS_PROCESS_PER_BATCH );
 		}

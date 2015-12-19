@@ -7,6 +7,10 @@ Change Log:
 1.0.2.6
 ----------------------------------------------------------------------
 - Added: Addon - WP reCaptcha integration
+- Added: Batch Process - Membership Status check, helpful for lots of members
+- Added: Constant `MS_PROCESS_PER_BATCH` to set number of members for processing per batch
+- Added: Constant 'MS_DISABLE_WP_WELCOME_EMAIL_NOTIFICATION' to disable WP default welcome on registration
+- Enhancement: Display warning in HELP page if cron jobs are disabled
 - Fixed: BuddyPress Members directory could not be protected
 - Fixed: Warning on edit membership screen when % sign is in the membership name
 - Fixed: Visitors coming from Google search links get blank page, Error 500
@@ -21,6 +25,10 @@ Change Log:
 - Fixed: Upgrade path is ignored when a member is logged in but has no subscription
 - Fixed: UI Issue - Menu addon dropdown text was not readable
 - Fixed: Subsite users subscription details can't be edited
+- Fixed: User could not use same invitation code for different memberships
+- Fixed: Login issue in IE-11
+
+
 
 1.0.2.5
 ----------------------------------------------------------------------
