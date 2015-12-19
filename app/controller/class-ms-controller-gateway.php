@@ -288,7 +288,14 @@ class MS_Controller_Gateway extends MS_Controller {
 		$is_free = false;
 		if ( $membership->is_free() ) { $is_free = true; }
 		elseif ( 0 == $invoice->total ) { $is_free = true; }
-		elseif ( $invoice->uses_trial ) { $is_free = true; }
+		elseif ( $invoice->uses_trial ) {
+                    if( defined( 'MS_PAYPAL_TRIAL_SUBSCRIPTION' ) && MS_PAYPAL_TRIAL_SUBSCRIPTION ) {
+                        $is_free = false;
+                    }else{
+                        $is_free = true;
+                    }
+                    
+                }
 
 		// show gateway purchase button for every active gateway
 		foreach ( $gateways as $gateway ) {

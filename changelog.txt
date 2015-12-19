@@ -10,6 +10,7 @@ Change Log:
 - Added: Batch Process - Membership Status check, helpful for lots of members
 - Added: Constant `MS_PROCESS_PER_BATCH` to set number of members for processing per batch
 - Added: Constant 'MS_DISABLE_WP_WELCOME_EMAIL_NOTIFICATION' to disable WP default welcome on registration
+- Added: Constant 'MS_PAYPAL_TRIAL_SUBSCRIPTION' to enable subscription for Paypal when trial mode is enabled
 - Enhancement: Display warning in HELP page if cron jobs are disabled
 - Fixed: BuddyPress Members directory could not be protected
 - Fixed: Warning on edit membership screen when % sign is in the membership name
