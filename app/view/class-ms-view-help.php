@@ -138,6 +138,12 @@ class MS_View_Help extends MS_View {
 				_x( 'Currently M2 is configured <strong>not expire/change</strong> any subscription status.', 'help', 'membership2' )
 			);
 		}
+		if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
+			printf(
+				'<br />' .
+				_x( 'Warning: DISABLE_WP_CRON is <strong>enabled</strong> on this site! M2 will not send all emails or change subscription status when expire date is reached!', 'help', 'membership2' )
+			);
+		}
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 			printf(
 				'<br />' .
