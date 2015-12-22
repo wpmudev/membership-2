@@ -680,6 +680,7 @@ class MS_Model_Plugin extends MS_Model {
 
 		// Perform the actual status checks!
 		foreach ( $subscriptions as $subscription ) {
+                    error_log( 'This is ' . $subscription->id );
 			$subscription->check_membership_status();
 		}
 
