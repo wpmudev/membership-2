@@ -67,7 +67,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 			self::COMM_VAR_USERNAME
 		);
 		$body_notice = sprintf(
-			__( 'Great, you are now subscribed to the <strong>%1$s</strong> Membership at %2$s!', 'membership2' ),
+			__( 'Thank you! Your <strong>%1$s</strong> Membership at %2$s is now activated!', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME
 		);
@@ -75,7 +75,7 @@ class MS_Model_Communication_Registration extends MS_Model_Communication {
 			__( 'You can review and edit your membership details here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
-		$body_invoice = __( 'Here are your latest payment information for your subscription:', 'membership2' );
+		$body_invoice = __( 'Here is the most recent payment information for your subscription:', 'membership2' );
 
 		$html = sprintf(
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s<br /><br />%4$s<br /><br />%5$s',
