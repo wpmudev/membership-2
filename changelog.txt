@@ -28,6 +28,9 @@ Change Log:
 - Fixed: Subsite users subscription details can't be edited
 - Fixed: User could not use same invitation code for different memberships
 - Fixed: Login issue in IE-11
+- Fixed: Welcome to BuddyPress Admin Item shows twice in Admin Side Protection Rules, when Admin Protection Add On is Active
+- Fixed: Typos in Automated Response Email Default Text
+
 
 
 
