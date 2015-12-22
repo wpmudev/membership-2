@@ -233,6 +233,14 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 					$children = $full_menu['sub'][$item[2]];
 
 					foreach ( $children as $pos => $child ) {
+                                                
+                                                // Same page name fix for BP title
+                                                if( $child[2] == 'bp-about' ) {
+                                                    $child[0] = 'Welcome to BuddyPress (About)';
+                                                }elseif( $child[2] == 'bp-credits' ){
+                                                    $child[0] = 'Welcome to BuddyPress (Credits)';
+                                                }
+                                                
 						$parts = explode( '<', $child[0] );
 						$child_name = trim( array_shift( $parts ) );
 
@@ -244,7 +252,7 @@ class MS_Rule_Adminside_Model extends MS_Rule {
 						}
 
 						if ( in_array( $child[2], $blacklist ) ) { continue; }
-
+                                
 						$Items[$item[2] . ':' . $child[2]] = (object) array(
 							'name' => $parent_name . ' &rarr; ' . $child_name,
 							'parent_id' => $item[2],
