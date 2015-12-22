@@ -32,8 +32,6 @@ Change Log:
 - Fixed: Typos in Automated Response Email Default Text
 
 
-
-
 1.0.2.5
 ----------------------------------------------------------------------
 - Added: Constant M2_FORCE_NO_SSL to avoid forcing SSL in Stripe Live Mode
