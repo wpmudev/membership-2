@@ -1,35 +1,32 @@
 Plugin Name: Membership 2
-Author: Philipp Stracker, Fabio Jun, Rheinard Khorf
+Author: Philipp Stracker, Ashok Kumar Nath, Fabio Jun, Rheinard Khorf
 
 Change Log:
 ----------------------------------------------------------------------
 
 1.0.2.6
 ----------------------------------------------------------------------
+- Added: Constant 'MS_DISABLE_WP_NEW_USER_NOTIFICATION' to disable WP default welcome on registration
+- Added: Constant 'MS_PAYPAL_TRIAL_SUBSCRIPTION' to enable subscription for Paypal when trial mode is enabled (works only at Paypal)
+- Added: Constant 'MS_PROCESS_PER_BATCH' to set number of members for processing per batch
 - Added: Addon - WP reCaptcha integration
-- Added: Batch Process - Membership Status check, helpful for lots of members
-- Added: Constant `MS_PROCESS_PER_BATCH` to set number of members for processing per batch
-- Added: Constant 'MS_DISABLE_WP_WELCOME_EMAIL_NOTIFICATION' to disable WP default welcome on registration
-- Added: Constant 'MS_PAYPAL_TRIAL_SUBSCRIPTION' to enable subscription for Paypal when trial mode is enabled
+- Added: Batch Process - Membership Status check, helpful when you have lots of members
 - Enhancement: Display warning in HELP page if cron jobs are disabled
-- Fixed: BuddyPress Members directory could not be protected
-- Fixed: Warning on edit membership screen when % sign is in the membership name
-- Fixed: Visitors coming from Google search links get blank page, Error 500
-- Fixed: Media Protection Add On
-- Fixed: Media Protection changing URL of non protected media items
-- Fixed: Media add-on changes attachment URLs but does not revert when disabled
-- Fixed: Membership pages links were broken when subsite is selected as host the M2 pages
-- Fixed: White screen in WP-Touch settings page
-- Fixed: XProfile Date field was not being saved in registration form
-- Fixed: Category protected posts was being appeared in home and search page
-- Fixed: Confirmation emails not sent when registering new user from admin end
-- Fixed: Upgrade path is ignored when a member is logged in but has no subscription
-- Fixed: UI Issue - Menu addon dropdown text was not readable
-- Fixed: Subsite users subscription details can't be edited
 - Fixed: User could not use same invitation code for different memberships
-- Fixed: Login issue in IE-11
-- Fixed: Welcome to BuddyPress Admin Item shows twice in Admin Side Protection Rules, when Admin Protection Add On is Active
+- Fixed: Confirmation emails not sent when registering new user from admin end
+- Fixed: Category protected posts was being appeared in home and search result page
+- Fixed: Warning on edit membership screen when % sign is in the membership name
+- Fixed: Subsite users subscription details can't be edited
+- Fixed: Visitors coming from search engines links get blank page, Error 500
+- Fixed: Upgrade path is ignored when a member is logged in but has no subscription
+- Fixed: Individual Media files protection doesn't work if embedded
+- Fixed: Media add-on changes attachment URLs but does not revert when disabled
+- Fixed: XProfile Date field was not being saved in registration form
+- Fixed: White screen in WP-Touch settings page
+- Fixed: BuddyPress Members directory could not be protected
+- Fixed: Media Protection changing URL of non protected media items
 - Fixed: Typos in Automated Response Email Default Text
+- Fixed: Welcome to BuddyPress Admin Item shows twice in Admin Side Protection Rules
 
 
 1.0.2.5

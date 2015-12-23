@@ -27,7 +27,7 @@ class MS_Model_Communication_Signup extends MS_Model_Communication {
 	 */
 	public function get_description() {
 		return __(
-			'Welcome email sent to a user who created a new WordPress account.', 'membership2'
+			'Welcome email sent after a new user account is created.', 'membership2'
 		);
 	}
 
