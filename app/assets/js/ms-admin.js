@@ -2775,3 +2775,57 @@ window.ms_init.view_settings_setup = function init () {
 	btn_site_edit.click( show_site_form );
 	btn_site_cancel.click( hide_site_form );
 };
+
+
+window.ms_init.view_settings_multicurrency = function init() {
+    var $ = jQuery,
+        data = {
+            'action' : 'ms_ajax_get_rate_changer'
+        };
+    
+    $.post( window.ajaxurl, data, function( response ) {
+        
+        var html = '<table cellspacing="5" cellpadding="5">';
+        
+        console.log( response );
+        var currencies = $.parseJSON( response );
+        
+        for( var key in currencies ) {
+            html += '<tr>';
+                html += '<td>';
+                    html += key;
+                html += '</td>';
+                html += '<td>';
+                    html += '<input data-currency="' + key + '" class="ms_currency" type="text" name="ms_currency[]" value="' + currencies[key] + '">';
+                html += '</td>';
+            html += '</tr>';
+        }
+        
+        html += '</table>';
+    
+        $( '.ms-settings-multicurrency .ms-settings-wrapper .ms_currency_rate' ).append( html );
+        
+    } );
+    
+    $( document ).on( 'blur', '.ms_currency', function() {
+        
+        var conversion = new Array();
+        var data = {
+            'action': 'ms_ajax_save_rate_changer',
+            'conversion': conversion
+        };
+        
+        $( '.ms_currency' ).each( function() {
+            conversion.push( {
+                'currency' : $( this ).data( 'currency' ),
+                'rate' : $( this ).val()
+            } );
+        } );
+        
+        $.post( window.ajaxurl, data, function( response ) {
+            console.log( response );
+        } );
+        
+    } ) ;
+    
+};
