@@ -25,6 +25,11 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 			'ms_helper_listtable_' . $this->id . '_columns',
 			array( $this, 'customize_columns' )
 		);
+                
+                add_filter(
+                    'bulk_actions-membership-2_page_membership2-protection',
+                    array( $this, 'replace_menu_disable_bulk_action' )
+                );
 
 		$this->editable = self::list_shows_base_items();
 	}
@@ -38,6 +43,13 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 		$columns['access'] = true;
 		return $columns;
 	}
+        
+        public function replace_menu_disable_bulk_action( $actions ) {
+            if( isset( $_REQUEST['tab'] ) && $_REQUEST['tab'] == 'replace_menu' ) {
+                return '';
+            }
+            return $actions;
+        }
 
 	/**
 	 * Override the column captions.
