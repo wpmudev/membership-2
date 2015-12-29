@@ -19,15 +19,21 @@ Change Log:
 - Fixed: Subsite users subscription details can't be edited
 - Fixed: Visitors coming from search engines links get blank page, Error 500
 - Fixed: Upgrade path is ignored when a member is logged in but has no subscription
-- Fixed: Individual Media files protection doesn't work if embedded
-- Fixed: Media add-on changes attachment URLs but does not revert when disabled
+- Fixed: Media Protection - Individual Media files protection doesn't work if embedded
+- Fixed: Media Protection - changes attachment URLs but does not revert when disabled
+- Fixed: Media Protection - changing URL of non protected media items
+- Fixed: Media Protection - Linked media URL was not masking
+- Fixed: Media Protection - Video file was not playing
 - Fixed: XProfile Date field was not being saved in registration form
 - Fixed: White screen in WP-Touch settings page
 - Fixed: BuddyPress Members directory could not be protected
-- Fixed: Media Protection changing URL of non protected media items
-- Fixed: Typos in Automated Response Email Default Text
+- Fixed: BuddyPress sitewide pages are not protected
 - Fixed: Welcome to BuddyPress Admin Item shows twice in Admin Side Protection Rules
-
+- Fixed: Typos in Automated Response Email Default Text
+- Fixed: Admin Protection - Direct link can be accessed
+- Fixed: Protected post are being appeared in feed
+- Fixed: Network Protection - Selected pages can't be viewed from network admin interface
+- Fixed: Inernal Server Error on adding a member in a multisite configuration
 
 1.0.2.5
 ----------------------------------------------------------------------
