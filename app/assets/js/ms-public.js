@@ -1,4 +1,4 @@
-/*! Membership 2 Pro - v1.0.25
+/*! Membership 2 Pro - v1.0.26
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2015; * Licensed GPLv2+ */
 /*global window:false */
