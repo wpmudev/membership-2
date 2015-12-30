@@ -44,6 +44,11 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 		return $columns;
 	}
         
+        /**
+	 * Remove bulk action feature
+	 *
+	 * @since  1.0.2.6
+	 */
         public function replace_menu_disable_bulk_action( $actions ) {
             if( isset( $_REQUEST['tab'] ) && $_REQUEST['tab'] == 'replace_menu' ) {
                 return '';
