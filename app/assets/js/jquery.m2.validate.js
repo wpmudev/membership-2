@@ -1,6 +1,6 @@
-/*! Membership 2 Pro - v1.0.26
+/*! Membership 2 Pro - v1.0.27
  * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2015; * Licensed GPLv2+ */
+ * Copyright (c) 2016; * Licensed GPLv2+ */
 /*!
  * jQuery Validation Plugin v1.13.0
  *
