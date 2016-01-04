@@ -6,7 +6,10 @@ Change Log:
 
 1.0.2.7
 ----------------------------------------------------------------------
-- Fixed: BuddyPress all page protection is not working
+- Fixed: BuddyPress all page protection is not working in BuddyPress Integration addon
+- Fixed: Warning when the table prefix is not default "wp_"
+- Fixed: Login on non-SSL page is broken when SSL forced for wp-admin
+- Fixed: "Already have an account" link not sending user to login form after failed register attempt
 
 
 1.0.2.6

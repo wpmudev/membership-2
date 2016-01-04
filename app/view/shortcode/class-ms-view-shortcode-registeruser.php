@@ -20,6 +20,12 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 
 		// When redirecting to login form we want to keep the previously submitted form data.
 		$url_data = $_POST;
+                // Removing unnecessary data
+                unset( $url_data['action'] );
+                unset( $url_data['step'] );
+                unset( $url_data['password'] );
+                unset( $url_data['password2'] );
+                
 		$url_data['do-login'] = '1';
 		$login_url = esc_url_raw( add_query_arg( $url_data ) );
 
