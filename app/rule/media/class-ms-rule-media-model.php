@@ -428,11 +428,11 @@ class MS_Rule_Media_Model extends MS_Rule {
             $filename = basename( $file_url );
           
             $rows = $wpdb->get_results( $wpdb->prepare( "
-            SELECT     wp_posts.ID, wp_postmeta.meta_value
-            FROM       wp_posts
-            INNER JOIN wp_postmeta ON wp_posts.ID = wp_postmeta.post_id
-                                  AND wp_postmeta.meta_key = '_wp_attachment_metadata'
-                                  AND wp_postmeta.meta_value LIKE %s
+            SELECT     {$wpdb->prefix}_posts.ID, {$wpdb->prefix}_postmeta.meta_value
+            FROM       {$wpdb->prefix}_posts
+            INNER JOIN {$wpdb->prefix}_postmeta ON {$wpdb->prefix}_posts.ID = {$wpdb->prefix}_postmeta.post_id
+                                  AND {$wpdb->prefix}_postmeta.meta_key = '_wp_attachment_metadata'
+                                  AND {$wpdb->prefix}_postmeta.meta_value LIKE %s
             ",'%"'.$filename.'"%'
             ) );
           
