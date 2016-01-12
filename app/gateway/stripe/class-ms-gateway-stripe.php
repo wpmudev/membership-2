@@ -108,9 +108,9 @@ class MS_Gateway_Stripe extends MS_Gateway {
              *
              * If the user has SSL certificate, this rule won't work
              */
-            if( ! defined( 'M2_FORCE_NO_SSL' ) || M2_FORCE_NO_SSL != false ){
+            if( ! defined( 'M2_FORCE_NO_SSL' ) ){
                 if ( $this->active && $this->is_live_mode() ) {
-                    if( $page_type == MS_Model_Pages::MS_PAGE_MEMBERSHIPS ) {
+                    if( $page_type == MS_Model_Pages::MS_PAGE_MEMBERSHIPS || $page_type == MS_Model_Pages::MS_PAGE_REGISTER ) {
                         $url = MS_Helper_Utility::get_ssl_url( $url );
                     }
                 }

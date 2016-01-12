@@ -613,7 +613,8 @@ class MS_Controller_Frontend extends MS_Controller {
 						array(
 							'step' => self::STEP_PAYMENT_TABLE,
 							'membership_id' => absint( $_REQUEST['membership_id'] ),
-						)
+						),
+                                                MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
 					)
 				);
 			}
