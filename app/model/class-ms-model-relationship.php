@@ -2737,9 +2737,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
 					}
 				} // -- End of advanced communications Add-on
-
+                                
+                                $payment_delay = ( defined( 'MS_PAYMENT_DELAY' ) ? ( int ) MS_PAYMENT_DELAY : 0 );
+                                
 				// Subscription ended. See if we can renew it.
-				if ( $remaining_days <= 0 ) {
+				if ( $remaining_days + $payment_delay <= 0 ) {
 					if ( $auto_renew ) {
 						/*
 						 * The membership can be renewed. Try to renew it

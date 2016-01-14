@@ -10,6 +10,10 @@ Change Log:
 - Fixed: Warning when the table prefix is not default "wp_"
 - Fixed: Login on non-SSL page is broken when SSL forced for wp-admin
 - Fixed: "Already have an account" link not sending user to login form after failed register attempt
+- Fixed: Live stripe doesn't force https
+- Fixed: Expired email sent even the user is not really expired
+- Fixed: Invitation code addon: conflict with Yoast SEO plugin
+- Fixed: Invitation code addon: 
 
 
 1.0.2.6

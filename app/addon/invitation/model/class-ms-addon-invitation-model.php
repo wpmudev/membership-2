@@ -408,9 +408,9 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		} elseif ( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) < $timestamp ) {
 			$this->invitation_message = __( 'This invitation has expired.', 'membership2' );
 			$valid = false;
-		} elseif ( ! $this->check_invitation_user_usage() ) {
+		/*} elseif ( ! $this->check_invitation_user_usage() ) {
 			$this->invitation_message = __( 'You have already used this invitation code.', 'membership2' );
-			$valid = false;
+			$valid = false;*/
 		} elseif ( $membership_id ) {
 			$membership_allowed = false;
 
@@ -428,8 +428,8 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 				$this->invitation_message = __( 'This Invitation is not valid for this membership.', 'membership2' );
 				$valid = false;
 			}else{
-                            $this->add_invitation_check();
-                        }
+                                $this->add_invitation_check();
+                        }  
 		}
 
 		return apply_filters(
@@ -438,42 +438,82 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 			$this
 		);
 	}
-        
-        /**
-         * Generate the identifier pair with user id or ip and membership ID
-         *
-         * @since 1.0.2.6
-         * @param $ip bool
-         */
-        public function get_user_membership_pair( $ip = false ) {
-            
-            $user = MS_Model_Member::get_current_member();
-            
-            if( ! $ip ) {
-                $membership_id = isset( $_POST['membership_id'] ) ? $_POST['membership_id'] : 0;
-                return $user->id . '_' . $membership_id;
-            }else{
-                $ip	= lib3()->net->current_ip()->ip;
-                return $user->id . '_' . $ip;
-            }
-        }
 
 	/**
+	 * Checks to see if the user ID or IP is associated with the invitation code.
+	 *
+	 * @since  1.0.2.7
+	 */
+	public function is_code_used_by_user() {
+		$user = MS_Model_Member::get_current_member();
+                $code = get_user_meta( $user->id, 'invitation_code_used', true );
+                $code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
+                
+		if ( $user->is_member ) {
+			if( in_array( $this->id, $code ) ) {
+                            return true;
+                        }
+		}
+                
+                return false;
+	}
+        
+        /**
+	 * Assign code to an user
+	 *
+	 * @since  1.0.2.7
+	 */
+	public function assign_used_code_to_user() {
+		$user = MS_Model_Member::get_current_member();
+                $code = get_user_meta( $user->id, 'invitation_code_used', true );
+                $code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
+                
+		if ( $user->is_member ) {
+			if( ! in_array( $this->id, $code ) && $this->id != '' ) {
+                            $code[] = $this->id;
+                            update_user_meta( $user->id, 'invitation_code_used', $code );
+                        }
+		}
+	}
+        
+        /**
+	 * Check if current code is used already
+	 *
+	 * @since  1.0.2.7
+	 */
+	public function remove_used_code_from_user() {
+		$user = MS_Model_Member::get_current_member();
+                $code = get_user_meta( $user->id, 'invitation_code_used', true );
+                $code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
+                
+		if ( $user->is_member ) {
+			if( in_array( $this->id, $code ) ) {
+                            $code = get_user_meta( $user_id, 'invitation_code_used', true );
+                            $code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
+                            //$code = array_filter( $code, function( $v ) { return $v != $this->id; } );
+                            if( ( $key = array_search( $this->id, $code ) ) !== false ) {
+                                unset( $code[$code] );
+                            }
+                            update_user_meta( $user->id, 'invitation_code_used', $code );
+                        }
+		}
+	}
+        
+        /**
 	 * Checks to see if the user ID or IP is associated with the invitation code.
 	 *
 	 * @since  1.0.0
 	 */
 	public function check_invitation_user_usage() {
 		$user = MS_Model_Member::get_current_member();
-                
 		if ( $user->is_member ) {
-			if ( in_array( $this->get_user_membership_pair(), $this->use_details ) ) {
+			if ( in_array( $user->id . '_' . $_POST['membership_id'], $this->use_details ) ) {
 				return false;
 			}
 		}
 
 		$ip	= lib3()->net->current_ip()->ip;
-		if ( in_array( $this->get_user_membership_pair( true ), $this->use_details ) ) {
+		if ( in_array( $ip, $this->use_details ) ) {
 			return false;
 		}
 		return true;
@@ -504,17 +544,20 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	public function add_invitation_check() {
 		// get the user ID
 		$user_id = $this->get_invitation_user_id();
-                
+
 		// if the user ID hasn't used this invitation already, increment.
-		if ( ! in_array( $this->get_user_membership_pair(), $this->use_details ) ) {
-			$this->used += 1;
+		//if ( ! in_array( $user_id . '_' . $_POST['membership_id'], $this->use_details ) ) {
+                if ( ! $this->is_code_used_by_user() ) {
+			$this->assign_used_code_to_user();
+                        $this->used += 1;
 		}
 
 		// save the user ID to the usage field
-		$user = array( $this->get_user_membership_pair() );
+		$user = array( $user_id . '_' . $_POST['membership_id'] );
 		$this->use_details = array_merge( $this->use_details, $user );
-                if( ! empty( $this->id ) )
+                if( ! empty( $this->id ) ) {
                     $this->save();
+                }
 	}
 
 	/**
@@ -527,12 +570,12 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		$user_id = $this->get_invitation_user_id();
 
 		// if the user ID exists in the usage array, remove it and decrement.
-		if ( in_array( $user_id, $this->use_details ) ) {
+		if ( $this->is_code_used_by_user() ) { 
 			$this->used -= 1;
-			$key = array_search( $user_id, $this->use_details );
+			$key = array_search( $user_id . '_' . $_POST['membership_id'], $this->use_details );
 			unset( $this->use_details[$key] );
-                        if( ! empty( $this->id ) )
-                            $this->save();
+                        $this->remove_used_code_from_user();
+			$this->save();
 		}
 	}
 
