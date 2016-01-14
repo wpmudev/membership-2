@@ -25,7 +25,11 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 						'MS_Model_Membership',
 						$subscription->membership_id
 					);
-
+                                        
+                                        $membership->_move_from = $member->cancel_ids_on_subscription(
+                                                $membership->id
+                                        );
+                                        
 					switch ( $subscription->status ) {
 						case MS_Model_Relationship::STATUS_CANCELED:
 							$this->membership_box_html(
@@ -60,9 +64,16 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 							if ( $membership->is_free() ) {
 								$memberships[] = $membership;
 							} else {
+                                                            
+                                                                if ( ! empty( $membership->_move_from ) ) {
+                                                                        $m_action = MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE;
+                                                                } else {
+                                                                        $m_action = MS_Helper_Membership::MEMBERSHIP_ACTION_PAY;
+                                                                }
+                                                            
 								$this->membership_box_html(
 									$membership,
-									MS_Helper_Membership::MEMBERSHIP_ACTION_PAY,
+									$m_action,
 									$msg,
 									$subscription
 								);
