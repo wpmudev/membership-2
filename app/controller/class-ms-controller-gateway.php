@@ -40,7 +40,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$this->add_action( 'ms_controller_gateway_settings_render_view', 'gateway_settings_edit' );
 
-		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'purchase_button', 10, 2 );
+		$this->add_action( 'ms_view_shortcode_invoice_purchase_button', 'invoice_purchase_button', 10, 2 );
 		$this->add_action( 'ms_view_frontend_payment_purchase_button', 'purchase_button', 10, 2 );
 
 		$this->add_action( 'ms_controller_frontend_signup_gateway_form', 'gateway_form_mgr', 1 );
@@ -311,6 +311,96 @@ class MS_Controller_Gateway extends MS_Controller {
 
 			// Free membership, show only free gateway
 			if ( $is_free ) {
+				if ( MS_Gateway_Free::ID !== $gateway->id ) {
+					continue;
+				}
+			}
+			// Skip free gateway
+			elseif ( MS_Gateway_Free::ID === $gateway->id ) {
+				continue;
+			}
+
+			$view_class = get_class( $gateway ) . '_View_Button';
+			$view = MS_Factory::create( $view_class );
+
+			if ( MS_Gateway_Authorize::ID == $gateway->id ) {
+				/**
+				 *  set additional step for authorize.net (gateway specific form)
+				 *  @todo change to use popup, instead of another step (like stripe)
+				 */
+				$data['step'] = 'gateway_form';
+			}
+
+			if ( ! empty( $view ) ) {
+				$view = apply_filters(
+					'ms_gateway_view_button',
+					$view,
+					$gateway->id
+				);
+
+				$view->data = apply_filters(
+					'ms_gateway_view_button_data',
+					$data,
+					$gateway->id
+				);
+
+				$html = apply_filters(
+					'ms_controller_gateway_purchase_button_'. $gateway->id,
+					$view->to_html(),
+					$subscription,
+					$this
+				);
+
+				echo $html;
+			}
+		}
+
+	}
+        
+        
+        /**
+	 * Show gateway purchase button in invoice
+	 *
+	 * Related action hooks:
+	 * - ms_view_frontend_payment_purchase_button
+	 * - ms_view_shortcode_invoice_purchase_button
+	 *
+	 * @since  1.0.2.7
+	 */
+	public function invoice_purchase_button( $subscription, $invoice ) {
+		// Get only active gateways
+		$gateways = MS_Model_Gateway::get_gateways( true );
+		$data = array();
+
+		$membership = $subscription->get_membership();
+		$is_free = false;
+                $is_trial = false;
+		if ( $membership->is_free() ) { $is_free = true; }
+		elseif ( 0 == $invoice->total ) { $is_free = true; }
+		elseif ( $invoice->uses_trial ) {
+                    if( defined( 'MS_PAYPAL_TRIAL_SUBSCRIPTION' ) && MS_PAYPAL_TRIAL_SUBSCRIPTION ) {
+                        $is_free = false;
+                    }else{
+                        $is_free = true;
+                        $is_trial = true;
+                    }
+                    
+                }
+
+		// show gateway purchase button for every active gateway
+		foreach ( $gateways as $gateway ) {
+			$view = null;
+
+			// Skip gateways that are not configured.
+			if ( ! $gateway->is_configured() ) { continue; }
+			if ( ! $membership->can_use_gateway( $gateway->id ) ) { continue; }
+
+			$data['ms_relationship'] = $subscription;
+			$data['gateway'] = $gateway;
+			$data['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
+
+			// Free membership, show only free gateway
+			if ( $is_free && ! $is_trial ) {
 				if ( MS_Gateway_Free::ID !== $gateway->id ) {
 					continue;
 				}

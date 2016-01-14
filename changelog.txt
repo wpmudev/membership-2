@@ -13,7 +13,9 @@ Change Log:
 - Fixed: Live stripe doesn't force https
 - Fixed: Expired email sent even the user is not really expired
 - Fixed: Invitation code addon: conflict with Yoast SEO plugin
-- Fixed: Invitation code addon: 
+- Fixed: Invitation code addon: usage count was not right when code was removed
+- Fixed: Multiple Membership: Membership was not removed when set as cancel in upgrade path and pay later
+- Fixed: Expired trial is not going to payment gateway when clicking sing up in invoice. 
 
 
 1.0.2.6
