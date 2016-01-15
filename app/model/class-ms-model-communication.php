@@ -916,15 +916,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$was_sent = $this->send_message( $subscription );
 
 				if ( ! $was_sent ) {
-					do_action(
-						'lib2_debug_log',
-						sprintf(
-							'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
-							$this->type,
-							$subscription->id,
-							$subscription->user_id
-						)
+					$msg = sprintf(
+						'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
+						$this->type,
+						$subscription->id,
+						$subscription->user_id
 					);
+					lib3()->debug->log( $msg );
 				}
 			}
 
@@ -991,14 +989,12 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		 */
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
-			do_action(
-				'lib2_debug_log',
-				sprintf(
-					'Following Email was not sent: "%s" to user "%s".',
-					$this->type,
-					$subscription->user_id
-				)
+			$msg = sprintf(
+				'Following Email was not sent: "%s" to user "%s".',
+				$this->type,
+				$subscription->user_id
 			);
+			lib3()->debug->log( $msg );
 
 			return false;
 		}
@@ -1117,14 +1113,12 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		 * @since  1.0.1.0
 		 */
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
-			do_action(
-				'lib2_debug_log',
-				sprintf(
-					'Following Email was not sent: "%s" to user "%s".',
-					$this->type,
-					$user_id
-				)
+			$msg = sprintf(
+				'Following Email was not sent: "%s" to user "%s".',
+				$this->type,
+				$user_id
 			);
+			lib3()->debug->log( $msg );
 
 			return false;
 		}
@@ -1140,14 +1134,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		if ( $this->enabled ) {
 			if ( ! is_email( $member->email ) ) {
-				do_action(
-					'lib2_debug_log',
-					sprintf(
-						'Invalid user email. User_id: %1$s, email: %2$s',
-						$user_id,
-						$member->email
-					)
+				$msg = sprintf(
+					'Invalid user email. User_id: %1$s, email: %2$s',
+					$user_id,
+					$member->email
 				);
+				lib3()->debug->log( $msg );
+
 				return false;
 			}
 
@@ -1249,15 +1242,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$sent = wp_mail( $recipients, $subject, $message, $headers );
 
 			// Log the outgoing email.
-			do_action(
-				'lib2_debug_log',
-				sprintf(
-					'Sent email [%s] to <%s>: %s',
-					$this->type,
-					implode( '>, <', $recipients ),
-					$sent ? 'OK' : 'ERR'
-				)
+			$msg = sprintf(
+				'Sent email [%s] to <%s>: %s',
+				$this->type,
+				implode( '>, <', $recipients ),
+				$sent ? 'OK' : 'ERR'
 			);
+			lib3()->debug->log( $msg );
 
 			if ( 'text/html' == $this->get_mail_content_type() ) {
 				$this->remove_filter(
