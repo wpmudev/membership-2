@@ -209,7 +209,8 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 
 		return apply_filters(
 			'ms_gateway_paypalsingle_view_prepare_fields',
-			$fields
+			$fields,
+                        $invoice
 		);
 	}
 }

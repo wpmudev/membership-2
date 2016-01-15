@@ -173,6 +173,11 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 			}
 		}
 
-		return $fields;
+		//return $fields;
+                return apply_filters(
+			'ms_gateway_2checkout_view_prepare_fields',
+			$fields,
+                        $invoice
+		);
 	}
 }

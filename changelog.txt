@@ -15,7 +15,9 @@ Change Log:
 - Fixed: Invitation code addon: conflict with Yoast SEO plugin
 - Fixed: Invitation code addon: usage count was not right when code was removed
 - Fixed: Multiple Membership: Membership was not removed when set as cancel in upgrade path and pay later
-- Fixed: Expired trial is not going to payment gateway when clicking sing up in invoice. 
+- Fixed: Expired trial is not going to payment gateway when clicking sing up in invoice.
+- Fixed: "Already have a user account" doesn't redirect to subscription after login
+- Fixed: Taxamo add on - tax was not added as tax in Paypal and 2checkout
 
 
 1.0.2.6
