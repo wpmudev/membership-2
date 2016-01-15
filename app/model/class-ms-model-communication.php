@@ -857,6 +857,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * Send email and manage queue.
 	 *
+	 * @uses self::send_message() to send the message.
+	 *
 	 * @since  1.0.0
 	 * @internal Called by MS_Controller_Communication::process_queue()
 	 */
@@ -1085,6 +1087,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Send email message.
 	 *
+	 * THIS IS THE ONLY PLACE IN THE M2 PLUGIN THAT WILL ACTUALLY SEND OUT AN
+	 * EMAIL! One exception: If the custom "Reset Password" template is
+	 * disabled then `class-ms-controller-dialog.php` will send a default reset
+	 * email using a different wp_mail() call.
+	 *
 	 * Delete history of sent messages after max is reached.
 	 *
 	 * @since  1.0.0
@@ -1096,6 +1103,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		$user_id = 0;
 		$subscription = null;
 		$member = null;
+		$sent = false;
 
 		if ( $reference instanceof MS_Model_Relationship ) {
 			$user_id = $reference->user_id;
@@ -1130,8 +1138,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$this
 		);
 
-		$sent = false;
-
 		if ( $this->enabled ) {
 			if ( ! is_email( $member->email ) ) {
 				$msg = sprintf(
@@ -1145,81 +1151,73 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			}
 
 			$comm_vars = $this->get_comm_vars( $subscription, $member );
+			$headers = array();
 
-			// Replace the email variables.
+			// Prepare the message: Replace variables.
 			$message = str_replace(
 				array_keys( $comm_vars ),
 				array_values( $comm_vars ),
 				stripslashes( $this->message )
 			);
 
+			// Prepare the subject: Replace variables and remove HTML tags.
 			$subject = str_replace(
 				array_keys( $comm_vars ),
 				array_values( $comm_vars ),
 				stripslashes( $this->subject )
 			);
+			$subject = strip_tags( $subject );
 
-			$html_message = wpautop( $message );
-			$text_message = strip_tags(
-				preg_replace(
-					'/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is',
-					'$0 [$1]',
+			// Set the content-type of the email without using WP hooks.
+			$content_type = $this->get_mail_content_type();
+			$headers[] = sprintf(
+				'Content-Type: %s; charset="UTF-8"',
+				$content_type
+			);
+
+			// Pre-process the message according to content-type.
+			if ( 'text/html' == $content_type ) {
+				$message = wpautop( $message );
+				$message = make_clickable( $message );
+			} else {
+				$message = preg_replace(
+					'/\<a .*?href=["\'](.*?)["\'].*?\>(.*?)\<\/a\>/is',
+					'$2 [$1]',
 					$message
-				)
-			);
-			$subject = strip_tags(
-				preg_replace(
-					'/\<a .*?href="(.*?)".*?\>.*?\<\/a\>/is',
-					'$0 [$1]',
-					$subject
-				)
-			);
-
-			$message = $text_message;
-
-			if ( 'text/html' == $this->get_mail_content_type() ) {
-				$this->add_filter(
-					'wp_mail_content_type',
-					'get_mail_content_type'
 				);
-				$message = $html_message;
+				$message = strip_tags( $message );
 			}
 
-			$recipients = array( $member->email );
-			if ( $this->cc_enabled ) {
-				$recipients[] = $this->cc_email;
-			}
-
+			// Prepare the FROM sender details.
 			$admin_emails = MS_Model_Member::get_admin_user_emails();
-			$headers = '';
-
 			if ( ! empty( $admin_emails[0] ) ) {
-				$headers = array(
-					sprintf(
-						'From: %s <%s> ',
-						get_option( 'blogname' ),
-						$admin_emails[0]
-					)
+				$headers[] = sprintf(
+					'From: %s <%s> ',
+					get_option( 'blogname' ),
+					$admin_emails[0]
 				);
 			}
 
+			// Prepare list of recipients.
+			$recipients = array( $member->email );
+			$cc_recipients = $this->cc_email;
+			if ( $this->cc_enabled && ! empty( $cc_recipients ) ) {
+				$recipients[] = $cc_recipients;
+			}
+
+			// Final step: Allow customization of all email parts.
 			$recipients = apply_filters(
 				'ms_model_communication_send_message_recipients',
 				$recipients,
 				$this,
 				$subscription
 			);
-			$html_message = apply_filters(
-				'ms_model_communication_send_message_html_message',
-				$html_message,
+			$message = apply_filters(
+				'ms_model_communication_send_message_contents',
+				$message,
 				$this,
-				$subscription
-			);
-			$text_message = apply_filters(
-				'ms_model_communication_send_message_text_message',
-				$text_message,
-				$this,
-				$subscription
+				$subscription,
+				$content_type
 			);
 			$subject = apply_filters(
 				'ms_model_communication_send_message_subject',
@@ -1235,11 +1233,27 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			);
 
 			/*
-			 * Send the mail.
+			 * Send the mail!
 			 * wp_mail will not throw an error, so no error-suppression/handling
 			 * is required here. On error the function response is FALSE.
 			 */
 			$sent = wp_mail( $recipients, $subject, $message, $headers );
+
+			/**
+			 * Broadcast that we just send an email to a member.
+			 *
+			 * @since  1.0.2.7
+			 */
+			do_action(
+				'ms_model_communication_after_send_message',
+				$sent,
+				$recipients,
+				$subject,
+				$message,
+				$headers,
+				$this,
+				$subscription
+			);
 
 			// Log the outgoing email.
 			$msg = sprintf(
@@ -1249,13 +1263,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$sent ? 'OK' : 'ERR'
 			);
 			lib3()->debug->log( $msg );
-
-			if ( 'text/html' == $this->get_mail_content_type() ) {
-				$this->remove_filter(
-					'wp_mail_content_type',
-					'get_mail_content_type'
-				);
-			}
 		}
 
 		do_action(
