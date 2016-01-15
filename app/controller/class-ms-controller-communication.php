@@ -1,5 +1,10 @@
 <?php
 /**
+ * Controller.
+ * @package  Membership2
+ */
+
+/**
  * Controller for Automated Communications.
  *
  * @since  1.0.0
@@ -49,13 +54,13 @@ class MS_Controller_Communication extends MS_Controller {
 			'process_event',
 			10, 2
 		);
-                
-                // Works for user creation from admin only
-                $this->add_action(
-                        'user_register',
-                        'save_user_create_event',
-                        10, 1
-                );
+
+		// Works for user creation from admin only.
+		$this->add_action(
+			'user_register',
+			'save_user_create_event',
+			10, 1
+		);
 
 		$this->add_action(
 			'ms_cron_process_communications',
@@ -64,21 +69,21 @@ class MS_Controller_Communication extends MS_Controller {
 
 		do_action( 'ms_controller_communication_after', $this );
 	}
-        
-        /**
-         * Fires only at user creation from admin
-         * Create even to send notification email.
-         *
-         * @since 1.0.2.6
-         *
-         * @var int $user_id
-         */
-        public function save_user_create_event( $user_id ) {
-            if( is_admin() ) {
-                $member = MS_Factory::load( 'MS_Model_Member', $user_id );
-                MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $member );
-            }
-        }
+
+	/**
+	 * Fires only at user creation from admin
+	 * Create even to send notification email.
+	 *
+	 * @since 1.0.2.6
+	 *
+	 * @param int $user_id The user that was created.
+	 */
+	public function save_user_create_event( $user_id ) {
+		if ( is_admin() ) {
+			$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $member );
+		}
+	}
 
 	/**
 	 * Initialize the admin-side functions.
@@ -188,7 +193,7 @@ class MS_Controller_Communication extends MS_Controller {
 	 *
 	 * @since  1.0.1.0
 	 * @param  MS_Model_Event $event The event that is processed.
-	 * @param  mixed $data The data passed to the event handler.
+	 * @param  mixed          $data The data passed to the event handler.
 	 */
 	public function process_event( $event, $data ) {
 		if ( $data instanceof MS_Model_Relationship ) {
@@ -218,7 +223,7 @@ class MS_Controller_Communication extends MS_Controller {
 				$enqueue[] = MS_Model_Communication::COMM_TYPE_FAILED_PAYMENT;
 				break;
 
-				case MS_Model_Event::TYPE_MS_EXPIRED:
+			case MS_Model_Event::TYPE_MS_EXPIRED:
 				$enqueue[] = MS_Model_Communication::COMM_TYPE_FINISHED;
 				break;
 
@@ -348,10 +353,12 @@ class MS_Controller_Communication extends MS_Controller {
 			$this
 		);
 
-		echo apply_filters(
-			'ms_controller_commnucation_ajax_action_update_communication_msg',
-			$msg,
-			$this
+		echo esc_js(
+			apply_filters(
+				'ms_controller_commnucation_ajax_action_update_communication_msg',
+				$msg,
+				$this
+			)
 		);
 		exit;
 	}
@@ -365,7 +372,7 @@ class MS_Controller_Communication extends MS_Controller {
 	 * - ms_controller_membership_setup_completed
 	 *
 	 * @since  1.0.0
-	 * @param MS_Model_Membership $membership
+	 * @param MS_Model_Membership $membership The related membership object.
 	 */
 	public function auto_setup_communications( $membership ) {
 		/*
@@ -393,6 +400,7 @@ class MS_Controller_Communication extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 *
+	 * @param string  $type The communication-type (internal ID).
 	 * @param mixed[] $fields The data to process.
 	 */
 	public function save_communication( $type, $fields ) {
@@ -516,5 +524,4 @@ class MS_Controller_Communication extends MS_Controller {
 		array_push( $buttons, 'ms_variable' );
 		return $buttons;
 	}
-
 }
