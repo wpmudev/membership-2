@@ -1775,4 +1775,30 @@ class MS_View_Help extends MS_View {
 		<?php
 		return ob_get_clean();
 	}
+
+	/**
+	 * Render the email history list.
+	 *
+	 * @since  1.0.2.7
+	 * @return string
+	 */
+	public function render_tab_emails() {
+		$listview = MS_Factory::create( 'MS_Helper_ListTable_CommunicationLog' );
+		$listview->prepare_items();
+
+		ob_start();
+		?>
+		<div class="wrap ms-wrap ms-communicationlog">
+			<?php
+			$listview->views();
+			?>
+			<form action="" method="post">
+				<?php $listview->display(); ?>
+			</form>
+		</div>
+		<?php
+		$html = ob_get_clean();
+
+		return $html;
+	}
 }

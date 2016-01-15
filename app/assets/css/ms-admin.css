@@ -432,6 +432,101 @@
   background: #8E9295;
 }
 
+/***
+ * Email-history list *
+ ***/
+.ms-wrap.ms-communicationlog .wp-list-table .column-id {
+  width: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms-wrap.ms-communicationlog .wp-list-table td.column-id {
+  font-size: 12px;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .column-date {
+  width: 120px;
+  white-space: nowrap;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .column-status {
+  width: 30px;
+  text-align: center;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .column-type {
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .detail-block {
+  min-width: 300px;
+  position: relative;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .txt-quickinfo {
+  padding-left: 4px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .txt-subject {
+  color: #999;
+  padding-left: 10px;
+  display: inline;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details {
+  float: left;
+  width: 16px;
+  text-align: center;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details .the-details {
+  display: none;
+  position: absolute;
+  top: 26px;
+  left: -6px;
+  right: 0;
+  background: #333;
+  padding: 10px;
+  z-index: 2;
+  color: #EEE;
+  text-align: left;
+  white-space: pre;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details .the-details .inner {
+  overflow: auto;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details .the-details hr {
+  margin: 11px 0 -8px;
+  border-color: #444;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details .the-details:before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: -10px;
+  border: 5px solid transparent;
+  border-bottom-color: #333;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details .the-details:after {
+  content: '';
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: -25px;
+  height: 25px;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details .line .line-num {
+  display: inline-block;
+  width: 22px;
+  color: #999;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details .line .line-val {
+  white-space: nowrap;
+}
+.ms-wrap.ms-communicationlog .wp-list-table .more-details:hover .the-details {
+  display: block;
+}
+
 /**
  * Navigational tabs.
  */

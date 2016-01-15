@@ -73,6 +73,9 @@ class MS_Controller_Help extends MS_Controller {
 			'branding' => array(
 				'title' => __( 'Customize Membership 2', 'membership2' ),
 			),
+			'emails' => array(
+				'title' => __( 'Email history', 'membership2' ),
+			),
 			'api' => array(
 				'title' => __( 'API Docs', 'membership2' ),
 				'url' => MS_Plugin::instance()->url . 'docs/namespaces/default.html',
@@ -82,6 +85,9 @@ class MS_Controller_Help extends MS_Controller {
 
 		if ( ! is_multisite() ) {
 			unset( $tabs['network'] );
+		}
+		if ( ! defined( 'MS_LOG_EMAILS' ) || ! MS_LOG_EMAILS ) {
+			unset( $tabs['emails'] );
 		}
 
 		lib3()->array->equip_get( 'page' );
