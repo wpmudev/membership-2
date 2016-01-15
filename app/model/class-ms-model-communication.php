@@ -1,5 +1,10 @@
 <?php
 /**
+ * Model.
+ * @package Membership2
+ */
+
+/**
  * Communication model.
  *
  * Persisted by parent class MS_Model_CustomPostType.
@@ -226,10 +231,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	);
 
 
-	//
-	//
-	//
-	// -------------------------------------------------------------- COLLECTION
+	/*
+	 *
+	 *
+	 * -------------------------------------------------------------- COLLECTION
+	 */
 
 
 	/**
@@ -363,8 +369,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param  $membership Optional. If specified only Comm-Types relevant for
-	 *         that membership are returned.
+	 * @param  mixed $membership Optional. If specified only Comm-Types relevant
+	 *               for that membership are returned.
 	 * @return array {
 	 *     Return array of $type => $title.
 	 *
@@ -509,7 +515,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 			foreach ( $items as $id ) {
 				$comm = MS_Factory::load( 'MS_Model_Communication', $id );
-				self::$Communication_IDs[$comm->membership_id][$comm->type] = $id;
+				self::$Communication_IDs[ $comm->membership_id ][ $comm->type ] = $id;
 			}
 		}
 
@@ -521,8 +527,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		if ( null === $key ) {
 			$result = self::$Communication_IDs;
-		} elseif ( isset( self::$Communication_IDs[$key] ) ) {
-			$result = self::$Communication_IDs[$key];
+		} elseif ( isset( self::$Communication_IDs[ $key ] ) ) {
+			$result = self::$Communication_IDs[ $key ];
 		} else {
 			$result = array();
 		}
@@ -554,13 +560,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		} else {
 			// A single membership is requested. Index is comm-type.
 			foreach ( $ids as $type => $id ) {
-				$result[$type] = MS_Factory::load( 'MS_Model_Communication', $id );
+				$result[ $type ] = MS_Factory::load( 'MS_Model_Communication', $id );
 			}
 
 			$types = self::get_communication_types();
 			foreach ( $types as $type ) {
-				if ( ! isset( $result[$type] ) ) {
-					$result[$type] = self::get_communication( $type, $membership );
+				if ( ! isset( $result[ $type ] ) ) {
+					$result[ $type ] = self::get_communication( $type, $membership );
 				}
 			}
 		}
@@ -579,11 +585,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param  string $type The type of the communication.
+	 * @param  string              $type The type of the communication.
 	 * @param  MS_Model_Membership $membership Optional. If defined then we try
 	 *         to load the overridden template for that membership with fallback
 	 *         to the default template.
-	 * @param  bool $no_fallback Optional. Default value is false.
+	 * @param  bool                $no_fallback Optional. Default value is false.
 	 *         True: Always return a communication for specified membership_id
 	 *         False: Fallback to default message if membership_id does not
 	 *         override the requested message.
@@ -634,7 +640,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 							'value' => $type,
 							'compare' => '=',
 						),
-					)
+					),
 				);
 
 				$args = apply_filters(
@@ -663,7 +669,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			}
 
 			if ( $comm ) {
-				self::$Communication_IDs[$comm->membership_id][$type] = $comm->id;
+				self::$Communication_IDs[ $comm->membership_id ][ $type ] = $comm->id;
 			}
 
 			// If no template found or defined then fallback to default template.
@@ -682,10 +688,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 
-	//
-	//
-	//
-	// ------------------------------------------------------------- SINGLE ITEM
+	/*
+	 *
+	 *
+	 * ------------------------------------------------------------- SINGLE ITEM
+	 */
 
 
 	/**
@@ -717,29 +724,29 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$has_membership = false;
 		} else {
 			// Password is only available in the Signup email.
-			unset( $this->comm_vars[self::COMM_VAR_PASSWORD] );
+			unset( $this->comm_vars[ self::COMM_VAR_PASSWORD ] );
 		}
 
 		if ( self::COMM_TYPE_RESETPASSWORD == $this->type ) {
 			$has_membership = false;
 		} else {
 			// Reset-Key is only available in the Forgot Password email.
-			unset( $this->comm_vars[self::COMM_VAR_RESETURL] );
+			unset( $this->comm_vars[ self::COMM_VAR_RESETURL ] );
 		}
 
 		if ( ! $has_membership ) {
 			// If no membership context is available then remove those variables.
-			unset( $this->comm_vars[self::COMM_VAR_MS_NAME] );
-			unset( $this->comm_vars[self::COMM_VAR_MS_DESCRIPTION] );
-			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_DAYS] );
-			unset( $this->comm_vars[self::COMM_VAR_MS_REMAINING_TRIAL_DAYS] );
-			unset( $this->comm_vars[self::COMM_VAR_MS_EXPIRY_DATE] );
-			unset( $this->comm_vars[self::COMM_VAR_MS_INVOICE] );
+			unset( $this->comm_vars[ self::COMM_VAR_MS_NAME ] );
+			unset( $this->comm_vars[ self::COMM_VAR_MS_DESCRIPTION ] );
+			unset( $this->comm_vars[ self::COMM_VAR_MS_REMAINING_DAYS ] );
+			unset( $this->comm_vars[ self::COMM_VAR_MS_REMAINING_TRIAL_DAYS ] );
+			unset( $this->comm_vars[ self::COMM_VAR_MS_EXPIRY_DATE ] );
+			unset( $this->comm_vars[ self::COMM_VAR_MS_INVOICE ] );
 		}
 
 		if ( is_multisite() ) {
-			$this->comm_vars[self::COMM_VAR_NET_NAME] = __( 'Network: Name', 'membership2' );
-			$this->comm_vars[self::COMM_VAR_NET_URL] = __( 'Network: URL', 'membership2' );
+			$this->comm_vars[ self::COMM_VAR_NET_NAME ] = __( 'Network: Name', 'membership2' );
+			$this->comm_vars[ self::COMM_VAR_NET_URL ] = __( 'Network: URL', 'membership2' );
 		}
 	}
 
@@ -757,6 +764,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Customize the data that is written to the DB.
 	 *
+	 * @param  WP_Post $post The post object.
 	 * @since  1.0.1.0
 	 */
 	public function save_post_data( $post ) {
@@ -769,6 +777,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	/**
 	 * Hook process communication actions.
 	 *
+	 * @param  WP_Post $post The post object.
 	 * @since  1.0.1.0
 	 */
 	public function load_post_data( $post ) {
@@ -835,7 +844,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * Override this in child classes to customize the label.
 	 *
 	 * @since  1.0.0
-	 * @param array $field A HTML definition, passed to lib3()->html->element()
+	 * @param array $field A HTML definition, passed to lib3()->html->element().
 	 */
 	public function set_period_name( $field ) {
 		$field['title'] = __( 'Period before/after', 'membership2' );
@@ -933,7 +942,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 * @api
-	 * @param  MS_Model_Event $event The event object.
+	 * @param  MS_Model_Event        $event The event object.
 	 * @param  MS_Model_Relationship $subscription The subscription to send message to.
 	 */
 	public function enqueue_messages( $event, $subscription ) {
@@ -958,8 +967,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * - Only enqueue message for specific $subscriptions (e.g. free ones)
 	 *
 	 * @since  1.0.1.0
-	 * @param  MS_Model_Event $event
-	 * @param  MS_Model_Relationship $subscription
+	 * @param  MS_Model_Event        $event The event object.
+	 * @param  MS_Model_Relationship $subscription The subscription object.
 	 */
 	public function process_communication( $event, $subscription ) {
 		// Can be overwritten in the child class for custom actions.
@@ -1056,7 +1065,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	public function remove_from_queue( $subscription_id ) {
 		do_action( 'ms_model_communication_remove_from_queue_before', $this );
 
-		// Delete history
+		// Delete history.
 		if ( count( $this->sent_queue ) > $max_history ) {
 			$this->sent_queue = array_slice(
 				$this->sent_queue,
@@ -1274,7 +1283,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 *
 	 * @param MS_Model_Relationship $subscription The membership relationship to send message to.
-	 * @param MS_Model_Member $member The member object to get info from.
+	 * @param MS_Model_Member       $member The member object to get info from.
 	 * @return array {
 	 *     Returns array of ( $var_name => $var_replace ).
 	 *
@@ -1383,21 +1392,21 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					);
 					break;
 
-				// Needs: $membership
+				// Needs: $membership.
 				case self::COMM_VAR_MS_NAME:
 					if ( $membership && $membership->name ) {
 						$var_value = $membership->name;
 					}
 					break;
 
-				// Needs: $membership
+				// Needs: $membership.
 				case self::COMM_VAR_MS_DESCRIPTION:
 					if ( $membership && $membership->description ) {
 						$var_value = $membership->get_description();
 					}
 					break;
 
-				// Needs: $invoice
+				// Needs: $invoice.
 				case self::COMM_VAR_MS_INVOICE:
 					if ( $invoice ) {
 						if ( $invoice->total > 0 || $invoice->uses_trial ) {
@@ -1411,7 +1420,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					}
 					break;
 
-				// Needs: $subscription
+				// Needs: $subscription.
 				case self::COMM_VAR_MS_REMAINING_DAYS:
 					if ( $subscription ) {
 						$days = $subscription->get_remaining_period();
@@ -1423,7 +1432,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					}
 					break;
 
-				// Needs: $subscription
+				// Needs: $subscription.
 				case self::COMM_VAR_MS_REMAINING_TRIAL_DAYS:
 					if ( $subscription ) {
 						$days = $subscription->get_remaining_trial_period();
@@ -1435,7 +1444,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					}
 					break;
 
-				// Needs: $subscription
+				// Needs: $subscription.
 				case self::COMM_VAR_MS_EXPIRY_DATE:
 					if ( $subscription ) {
 						$var_value = $subscription->expire_date;
@@ -1482,8 +1491,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * Validate specific property before set.
 	 *
 	 * @since 1.0.0
-	 * @param string $name The name of a property to associate.
-	 * @param mixed $value The value of a property.
+	 * @param string $property The name of a property to associate.
+	 * @param mixed  $value The value of a property.
 	 */
 	public function __set( $property, $value ) {
 		switch ( $property ) {
@@ -1535,5 +1544,4 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$this
 		);
 	}
-
 };
