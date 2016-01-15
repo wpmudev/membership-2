@@ -6,6 +6,7 @@ Change Log:
 
 1.0.2.7
 ----------------------------------------------------------------------
+- Added: Constant 'MS_LOG_EMAILS' to enable log and display email logs
 - Fixed: BuddyPress all page protection is not working in BuddyPress Integration addon
 - Fixed: Warning when the table prefix is not default "wp_"
 - Fixed: Login on non-SSL page is broken when SSL forced for wp-admin
