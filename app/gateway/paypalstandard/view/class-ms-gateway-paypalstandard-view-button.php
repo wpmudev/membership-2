@@ -404,7 +404,8 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 
 		return apply_filters(
 			'ms_gateway_paypalstandard_view_prepare_fields',
-			$fields
+			$fields,
+                        $invoice
 		);
 	}
 }
