@@ -1,5 +1,10 @@
 <?php
 /**
+ * View.
+ * @package Membership2
+ */
+
+/**
  * Renders Help and Documentation Page.
  *
  * Extends MS_View for rendering methods and magic methods.
@@ -1699,6 +1704,10 @@ class MS_View_Help extends MS_View {
 		<p>
 			<strong><?php _ex( 'Debugging incorrect page access', 'help', 'membership2' ); ?></strong><br />
 			<?php _ex( 'M2 has a small debugging tool built into it, that allows you to analyze access issues for the current user. To use this tool you have to set <code>define( "WP_DEBUG", true );</code> on your site. Next open the page that you want to analyze and add <code>?explain=access</code> to the page URL. As a result you will not see the normal page contents but a lot of useful details on the access permissions.', 'help', 'membership2' ); ?>
+		</p>
+		<p>
+			<strong><?php _ex( 'Keep a log of all outgoing emails', 'help', 'membership2' ); ?></strong><br />
+			<?php _ex( 'If you want to keep track of all the emails that M2 sends to your members then add the line <code>define( "MS_LOG_EMAILS", true );</code> to your wp-config.php. A new navigation link will be displayed here in the Help page to review the email history.', 'help', 'membership2' ); ?>
 		</p>
 		<hr />
 		<?php

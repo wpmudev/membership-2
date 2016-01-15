@@ -39,16 +39,19 @@ class MS_Controller_Communication extends MS_Controller {
 
 		do_action( 'ms_controller_communication_before', $this );
 
+		// Handle Ajax action from Admin-side to update communication templates.
 		$this->add_ajax_action(
 			self::AJAX_ACTION_UPDATE_COMM,
 			'ajax_action_update_communication'
 		);
 
+		// Triggered when first membership was created after installation.
 		$this->add_action(
 			'ms_controller_membership_setup_completed',
 			'auto_setup_communications'
 		);
 
+		// Observe all M2 events and send/enqueue messages if needed.
 		$this->add_action(
 			'ms_model_event',
 			'process_event',
@@ -62,9 +65,17 @@ class MS_Controller_Communication extends MS_Controller {
 			10, 1
 		);
 
+		// Frequently process messages that were enqueued earlier.
 		$this->add_action(
 			'ms_cron_process_communications',
 			'process_queue'
+		);
+
+		// Log emails that were sent via M2.
+		$this->add_action(
+			'ms_model_communication_after_send_message',
+			'log_sent_message',
+			10, 7
 		);
 
 		do_action( 'ms_controller_communication_after', $this );
@@ -454,6 +465,67 @@ class MS_Controller_Communication extends MS_Controller {
 			$fields,
 			$this
 		);
+	}
+
+	/**
+	 * Log sent messages to DB.
+	 *
+	 * @since  1.0.2.7
+	 * @param  bool                   $sent Status indicator.
+	 * @param  array                  $recipients List of email addresses.
+	 * @param  string                 $subject Email subject.
+	 * @param  string                 $message Full email message.
+	 * @param  array                  $headers Email headers.
+	 * @param  MS_Model_Communication $comm Object that sent the email.
+	 * @param  MS_Model_Relationship  $subscription Related subscriprion object.
+	 */
+	public function log_sent_message( $sent, $recipients, $subject, $message, $headers, $comm, $subscription ) {
+		if ( ! defined( 'MS_LOG_EMAILS' ) || ! MS_LOG_EMAILS ) { return; }
+
+		// Generate a basic back-trace.
+		$backtrace = debug_backtrace();
+		$trace = array();
+		$start_trace = false;
+
+		foreach ( $backtrace as $item ) {
+			if ( ! isset( $item['function'] ) ) { continue; }
+			if ( ! isset( $item['file'] ) ) { continue; }
+			if ( ! isset( $item['class'] ) ) { $item['class'] = ''; }
+			if ( ! isset( $item['type'] ) ) { $item['type'] = ''; }
+
+			// Skip irrelevant steps to keep the trace short.
+			if ( ! $start_trace ) {
+				if ( 'MS_Model_Communication' == $item['class'] ) {
+					$start_trace = true;
+				} else {
+					continue;
+				}
+			}
+
+			$trace[] = sprintf(
+				'%s (%s:%d)',
+				$item['class'] . $item['type'] . $item['function'],
+				basename( $item['file'] ),
+				$item['line']
+			);
+		}
+
+		$log = MS_Factory::create( 'MS_Model_Communicationlog' );
+
+		$log->name = $comm->type;
+		$log->sent = (int) $sent;
+		$log->title = $subject;
+		$log->subscription_id = $subscription->id;
+		$log->user_id = $subscription->user_id;
+		$log->trace = json_encode( $trace );
+
+		if ( is_array( $recipients ) ) {
+			$log->recipient = reset( $recipients );
+		} else {
+			$log->recipient = $recipients;
+		}
+
+		$log->save();
 	}
 
 	/**
