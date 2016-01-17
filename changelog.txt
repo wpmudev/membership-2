@@ -19,6 +19,8 @@ Change Log:
 - Fixed: Expired trial is not going to payment gateway when clicking sing up in invoice.
 - Fixed: "Already have a user account" doesn't redirect to subscription after login
 - Fixed: Taxamo add on - tax was not added as tax in Paypal and 2checkout
+- Fixed: User can't register in opera mini browser
+- Fixed: Admin account sees same total amount in checkout page for all memberships
 
 
 1.0.2.6
