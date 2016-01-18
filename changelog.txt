@@ -7,6 +7,7 @@ Change Log:
 1.0.2.7
 ----------------------------------------------------------------------
 - Added: Constant 'MS_LOG_EMAILS' to enable log and display email logs
+- Added: Constant 'MS_PROTECTED_MESSAGE_REVERSE_RULE' to implement reverse logic on membership based protection message
 - Fixed: BuddyPress all page protection is not working in BuddyPress Integration addon
 - Fixed: Warning when the table prefix is not default "wp_"
 - Fixed: Login on non-SSL page is broken when SSL forced for wp-admin
@@ -21,6 +22,9 @@ Change Log:
 - Fixed: Taxamo add on - tax was not added as tax in Paypal and 2checkout
 - Fixed: User can't register in opera mini browser
 - Fixed: Admin account sees same total amount in checkout page for all memberships
+- Fixed: Membership based protection message
+- Fixed: Advanced Menu Protection Replace Menu not working
+- Fixed: Simulation Box on frontend overlaps with navigation
 
 
 1.0.2.6
