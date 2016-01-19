@@ -375,11 +375,11 @@ class MS_Model_Plugin extends MS_Model {
                     foreach( $memberships as $membership_id ) {
                         $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
                         if( $membership->has_access_to_current_page() ) {
-                            $allowed_membershipsp[$membership->priority] = $membership_id;
+                            $allowed_memberships[$membership->priority] = $membership_id;
                         }
                     }
-                    
-                    $protected_membership_id = reset( $allowed_membershipsp );
+                    ksort( $allowed_memberships );
+                    $protected_membership_id = reset( $allowed_memberships );
                 }
 
 		// Admin user has access to everything.
