@@ -25,6 +25,8 @@ Change Log:
 - Fixed: Membership based protection message
 - Fixed: Advanced Menu Protection Replace Menu not working
 - Fixed: Simulation Box on frontend overlaps with navigation
+- Fixed: Content Protection Message based on membership protection
+- Fixed: Payment gateways sandbox mode is changed to live on update
 
 
 1.0.2.6

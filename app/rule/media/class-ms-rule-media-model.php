@@ -663,11 +663,11 @@ class MS_Rule_Media_Model extends MS_Rule {
 			header( 'Content-Length: ' . filesize( $file ) );
 		}
 
-		$last_modified = gmdate( 'D, d M Y H:i:s', filemtime( $file ) );
+		$last_modified = date_i18n( 'D, d M Y H:i:s', filemtime( $file ) );
 		$etag = '"' . md5( $last_modified ) . '"';
 		header( "Last-Modified: $last_modified GMT" );
 		header( 'ETag: ' . $etag );
-		header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
+		header( 'Expires: ' . date_i18n( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
 
 		// Support for Conditional GET
 		if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) ) {

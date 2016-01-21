@@ -134,7 +134,7 @@ class MS_Model_CustomPostType extends MS_Model {
 		MS_Factory::select_blog();
 		$this->before_save();
 
-		$this->post_modified = gmdate( 'Y-m-d H:i:s' );
+		$this->post_modified = date_i18n( 'Y-m-d H:i:s' );
 		$class = get_class( $this );
 
 		/*

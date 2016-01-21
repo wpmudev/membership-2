@@ -584,7 +584,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 		if ( in_array( $event->type, $check_events )
 			&& $last_event = self::get_last_event_of_type( $event )
 		) {
-			$event_date = gmdate( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->date ) );
+			$event_date = date_i18n( MS_Helper_Period::PERIOD_FORMAT, strtotime( $last_event->date ) );
 			if ( $event_date === MS_Helper_Period::current_date() ) {
 				$is_duplicate = true;
 			}
