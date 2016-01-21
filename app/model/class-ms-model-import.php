@@ -278,7 +278,7 @@ class MS_Model_Import extends MS_Model {
 		$membership->description = $obj->description;
 		$membership->active = (bool) $obj->active;
 		$membership->private = (bool) $obj->private;
-		$membership->is_free = (bool) $obj->free;
+		$membership->is_free = (bool) lib3()->is_true( $obj->free );
 		$membership->is_setup_complete = true;
 
 		if ( isset( $obj->period_type ) ) {
@@ -288,14 +288,14 @@ class MS_Model_Import extends MS_Model {
 			$obj->trial_period_type = $this->valid_period( $obj->trial_period_type );
 		}
 
-		if ( empty( $obj->pay_type ) ) {
-			$obj->pay_type = 'permanent';
+		if ( empty( $obj->payment_type ) ) {
+			$obj->payment_type = 'permanent';
 		}
 
 		$membership->period = array();
 		$membership->pay_cycle_period = array();
 
-		switch ( $obj->pay_type ) {
+		switch ( $obj->payment_type ) {
 			case 'finite':
 				$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_FINITE;
 				if ( isset( $obj->period_unit ) ) {

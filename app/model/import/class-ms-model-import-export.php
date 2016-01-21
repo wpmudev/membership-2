@@ -223,28 +223,28 @@ class MS_Model_Import_Export extends MS_Model {
 			$obj->price = $src->price;
 			$obj->trial = (bool) $src->trial_period_enabled;
 
-			switch ( $src->pay_type ) {
+			switch ( $src->payment_type ) {
 				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-					$obj->pay_type = 'finite';
+					$obj->payment_type = 'finite';
 					$obj->period_unit = $src->period['period_unit'];
 					$obj->period_type = $src->period['period_type'];
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
-					$obj->pay_type = 'date';
+					$obj->payment_type = 'date';
 					$obj->period_start = $src->period_date_start;
 					$obj->period_end = $src->period_date_end;
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-					$obj->pay_type = 'recurring';
+					$obj->payment_type = 'recurring';
 					$obj->period_unit = $src->pay_cycle_period['period_unit'];
 					$obj->period_type = $src->pay_cycle_period['period_type'];
 					$obj->period_repetition = $src->pay_cycle_repetition;
 					break;
 
 				default:
-					$obj->pay_type = 'permanent';
+					$obj->payment_type = 'permanent';
 					break;
 			}
 

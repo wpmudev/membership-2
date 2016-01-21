@@ -28,6 +28,9 @@ Change Log:
 - Fixed: Content Protection Message based on membership protection
 - Fixed: Payment gateways sandbox mode is changed to live on update
 - Fixed: Expired date mismatch with the original expired date in paypal
+- Fixed: Expiry date not set while Importing data
+- Fixed: Finite paid membership turned into free membership while importing data
+- Fixed: BuddyPress protection rules work as opposite
 
 
 1.0.2.6
