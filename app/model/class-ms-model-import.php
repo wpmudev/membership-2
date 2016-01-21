@@ -276,8 +276,8 @@ class MS_Model_Import extends MS_Model {
 	protected function populate_membership( &$membership, $obj ) {
 		$membership->name = $obj->name;
 		$membership->description = $obj->description;
-		$membership->active = (bool) $obj->active;
-		$membership->private = (bool) $obj->private;
+		$membership->active = (bool) lib3()->is_true( $obj->active );
+		$membership->private = (bool) lib3()->is_true( $obj->private );
 		$membership->is_free = (bool) lib3()->is_true( $obj->free );
 		$membership->is_setup_complete = true;
 
