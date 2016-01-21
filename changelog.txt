@@ -27,6 +27,7 @@ Change Log:
 - Fixed: Simulation Box on frontend overlaps with navigation
 - Fixed: Content Protection Message based on membership protection
 - Fixed: Payment gateways sandbox mode is changed to live on update
+- Fixed: Expired date mismatch with the original expired date in paypal
 
 
 1.0.2.6

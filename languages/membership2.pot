@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.7-beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-01-17 22:11:51+00:00\n"
+"POT-Creation-Date: 2016-01-21 16:44:01+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -206,14 +206,14 @@ msgstr ""
 
 #: app/addon/bbpress/rule/class-ms-addon-bbpress-rule-listtable.php:27
 #: app/view/frontend/class-ms-view-frontend-payment.php:143
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:186
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:187
 msgid "Name"
 msgstr ""
 
 #: app/addon/bbpress/rule/class-ms-addon-bbpress-rule-listtable.php:55
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:95
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:94
-#: app/controller/class-ms-controller-shortcode.php:737
+#: app/controller/class-ms-controller-shortcode.php:744
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:108
 #: app/rule/cptitem/class-ms-rule-cptitem-listtable.php:46
 #: app/rule/media/class-ms-rule-media-listtable.php:48
@@ -704,7 +704,7 @@ msgid "Customize fields in the user profile and registration form."
 msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:193
-#: app/controller/class-ms-controller-shortcode.php:646
+#: app/controller/class-ms-controller-shortcode.php:653
 #: app/helper/listtable/class-ms-helper-listtable-member.php:66
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:635
 #: app/model/class-ms-model-member.php:997 app/view/class-ms-view-help.php:778
@@ -764,7 +764,7 @@ msgstr ""
 
 #: app/addon/profilefields/class-ms-addon-profilefields.php:236
 #: app/controller/class-ms-controller-shortcode.php:216
-#: app/controller/class-ms-controller-shortcode.php:647
+#: app/controller/class-ms-controller-shortcode.php:654
 #: app/model/class-ms-model-member.php:999 app/view/class-ms-view-help.php:454
 #: app/view/class-ms-view-help.php:786
 #: app/view/frontend/class-ms-view-frontend-profile.php:91
@@ -2579,7 +2579,7 @@ msgid "Signup"
 msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:256
-#: app/controller/class-ms-controller-shortcode.php:733
+#: app/controller/class-ms-controller-shortcode.php:740
 #: app/view/class-ms-view-help.php:556 app/view/class-ms-view-help.php:1431
 msgid "Change"
 msgstr ""
@@ -2609,69 +2609,69 @@ msgstr ""
 msgid "Membership details:"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:648
+#: app/controller/class-ms-controller-shortcode.php:655
 #: app/view/class-ms-view-help.php:794
 #: app/view/shortcode/class-ms-view-shortcode-login.php:195
 msgid "Remember Me"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:649
+#: app/controller/class-ms-controller-shortcode.php:656
 #: app/view/class-ms-view-help.php:802
 #: app/view/shortcode/class-ms-view-shortcode-login.php:196
 msgid "Log In"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:659
+#: app/controller/class-ms-controller-shortcode.php:666
 #: app/view/class-ms-view-help.php:884
 #: app/view/shortcode/class-ms-view-shortcode-login.php:334
 msgid "Username or E-mail"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:660
+#: app/controller/class-ms-controller-shortcode.php:667
 #: app/view/class-ms-view-help.php:892
 #: app/view/shortcode/class-ms-view-shortcode-login.php:335
 #: app/view/shortcode/class-ms-view-shortcode-login.php:624
 msgid "Reset Password"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:732
+#: app/controller/class-ms-controller-shortcode.php:739
 #: app/view/class-ms-view-help.php:1413
 msgid "Your Membership"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:736
+#: app/controller/class-ms-controller-shortcode.php:743
 #: app/view/class-ms-view-help.php:1453
 msgid "Personal details"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:741
+#: app/controller/class-ms-controller-shortcode.php:748
 #: app/view/class-ms-view-help.php:1493
 #: app/view/settings/class-ms-view-settings-import.php:160
 msgid "Invoices"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:742
-#: app/controller/class-ms-controller-shortcode.php:747
+#: app/controller/class-ms-controller-shortcode.php:749
+#: app/controller/class-ms-controller-shortcode.php:754
 #: app/view/class-ms-view-help.php:1520 app/view/class-ms-view-help.php:1569
 msgid "View all"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:746
+#: app/controller/class-ms-controller-shortcode.php:753
 #: app/view/class-ms-view-help.php:1542
 msgid "Activities"
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:824
+#: app/controller/class-ms-controller-shortcode.php:831
 msgid "Visit your account page for more information."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1188
+#: app/controller/class-ms-controller-shortcode.php:1195
 msgid ""
 "Content Protection is disabled. Please enable the protection to see this "
 "shortcode."
 msgstr ""
 
-#: app/controller/class-ms-controller-shortcode.php:1192
+#: app/controller/class-ms-controller-shortcode.php:1199
 msgid "This message is only displayed to Site Administrators"
 msgstr ""
 
@@ -3538,51 +3538,51 @@ msgstr ""
 msgid "Set-up Access Levels"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:258
+#: app/helper/class-ms-helper-period.php:261
 msgid "one day"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:259
+#: app/helper/class-ms-helper-period.php:262
 msgid "one week"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:260
+#: app/helper/class-ms-helper-period.php:263
 msgid "one month"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:261
+#: app/helper/class-ms-helper-period.php:264
 msgid "one year"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:262
+#: app/helper/class-ms-helper-period.php:265
 msgid "day"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:263
+#: app/helper/class-ms-helper-period.php:266
 msgid "week"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:264
+#: app/helper/class-ms-helper-period.php:267
 msgid "month"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:265
+#: app/helper/class-ms-helper-period.php:268
 msgid "year"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:268
+#: app/helper/class-ms-helper-period.php:271
 msgid "days"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:269
+#: app/helper/class-ms-helper-period.php:272
 msgid "weeks"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:270
+#: app/helper/class-ms-helper-period.php:273
 msgid "months"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:271
+#: app/helper/class-ms-helper-period.php:274
 msgid "years"
 msgstr ""
 
@@ -3659,7 +3659,7 @@ msgstr ""
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:259
 #: app/view/shortcode/class-ms-view-shortcode-account.php:74
 #: app/view/shortcode/class-ms-view-shortcode-account.php:273
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:182
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:183
 msgid "Status"
 msgstr ""
 
@@ -3667,7 +3667,7 @@ msgstr ""
 #: app/view/frontend/class-ms-view-frontend-invoices.php:25
 #: app/view/frontend/class-ms-view-frontend-payment.php:243
 #: app/view/shortcode/class-ms-view-shortcode-account.php:278
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:237
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:238
 msgid "Total"
 msgstr ""
 
@@ -4000,7 +4000,7 @@ msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:50
 #: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:72
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:198
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:199
 msgid "Amount"
 msgstr ""
 
@@ -4927,11 +4927,11 @@ msgstr ""
 msgid "Allow: Page is not protected"
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:571
+#: app/model/class-ms-model-plugin.php:593
 msgid "Every 6 Hours"
 msgstr ""
 
-#: app/model/class-ms-model-plugin.php:575
+#: app/model/class-ms-model-plugin.php:597
 msgid "Every 30 Mins"
 msgstr ""
 
@@ -5717,19 +5717,19 @@ msgstr ""
 msgid "Content Parts"
 msgstr ""
 
-#: app/rule/content/class-ms-rule-content-model.php:307
+#: app/rule/content/class-ms-rule-content-model.php:331
 msgid "Comments: No Access"
 msgstr ""
 
-#: app/rule/content/class-ms-rule-content-model.php:310
+#: app/rule/content/class-ms-rule-content-model.php:334
 msgid "Comments: Read Only Access"
 msgstr ""
 
-#: app/rule/content/class-ms-rule-content-model.php:313
+#: app/rule/content/class-ms-rule-content-model.php:337
 msgid "Comments: Read and Write Access"
 msgstr ""
 
-#: app/rule/content/class-ms-rule-content-model.php:316
+#: app/rule/content/class-ms-rule-content-model.php:340
 msgid "Hide \"read more\" content"
 msgstr ""
 
@@ -6051,39 +6051,39 @@ msgstr ""
 msgid "Shortcode content protected."
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:206
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:210
 msgid "No access to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:230
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:234
 msgid "Content protected to members of: "
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:301
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:305
 msgid "Visible for members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:302
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:306
 msgid "Other users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:303
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:307
 msgid "Other uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:305
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:309
 msgid "Hidden from members of"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:306
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:310
 msgid "Those users will see"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:307
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:311
 msgid "Those uses will see nothing"
 msgstr ""
 
-#: app/rule/shortcode/class-ms-rule-shortcode-model.php:363
+#: app/rule/shortcode/class-ms-rule-shortcode-model.php:367
 msgid "This information is only displayed for admin users"
 msgstr ""
 
@@ -6243,7 +6243,7 @@ msgstr ""
 #: app/view/billing/class-ms-view-billing-edit.php:173
 #: app/view/frontend/class-ms-view-frontend-payment.php:153
 #: app/view/settings/class-ms-view-settings-import.php:119
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:192
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:193
 msgid "Description"
 msgstr ""
 
@@ -6582,12 +6582,12 @@ msgid "Pro-Rate Discount"
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-payment.php:224
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:222
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:223
 msgid "Taxes %s"
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-payment.php:271
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:232
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:233
 msgid "Payment due"
 msgstr ""
 
@@ -7572,31 +7572,31 @@ msgstr ""
 msgid "Invoice "
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:119
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:120
 msgid "ends on"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:162
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:163
 msgid "Sender"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:168
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:169
 msgid "Invoice to"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:172
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:173
 msgid "Invoice date"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:177
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:178
 msgid "Trial period"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:206
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:207
 msgid "Coupon discount"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:213
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:214
 msgid "Pro rate discount"
 msgstr ""
 
