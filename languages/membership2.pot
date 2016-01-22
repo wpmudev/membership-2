@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.7-beta\n"
+"Project-Id-Version: Membership 2 Pro 1.0.2.7-RC-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-01-21 16:44:01+00:00\n"
+"POT-Creation-Date: 2016-01-21 22:32:58+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -311,45 +311,45 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:368
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:355
 msgid "All BuddyPress Pages"
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:370
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:357
 msgid ""
 "Protect all BuddyPress pages. This rule can be combined with any of the "
 "other rules."
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:376
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:363
 msgid "Group creation"
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:378
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:365
 msgid "Only members can create new groups."
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:384
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:371
 msgid "Friendship request"
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:386
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:373
 msgid "Only allow members to send friendship requests."
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:392
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:379
 msgid "Private messaging"
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:394
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:381
 msgid "Only allow members to send private messages."
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:400
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:387
 msgid "Member listing"
 msgstr ""
 
-#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:402
+#: app/addon/buddypress/rule/class-ms-addon-buddypress-rule-model.php:389
 msgid "Only members can see the BuddyPress Member Directory and Member Profiles."
 msgstr ""
 

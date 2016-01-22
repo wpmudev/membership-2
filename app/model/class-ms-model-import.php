@@ -465,7 +465,7 @@ class MS_Model_Import extends MS_Model {
 		$subscription->status = $obj->status;
 		$subscription->gateway_id = $obj->gateway;
 		$subscription->start_date = $obj->start;
-		$subscription->expire_date = $obj->end;
+		$subscription->expire_date = $obj->start;
 
 		if ( isset( $obj->trial_finished ) ) {
 			$subscription->trial_period_completed = $obj->trial_finished;
