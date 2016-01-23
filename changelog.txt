@@ -30,6 +30,7 @@ Change Log:
 - Fixed: Expired date mismatch with the original expired date in paypal
 - Fixed: Expiry date not set while Importing data
 - Fixed: Finite paid membership turned into free membership while importing data
+- Fixed: Subscription period get doubles for a member while importing data
 - Fixed: BuddyPress protection rules work as opposite
 
 
