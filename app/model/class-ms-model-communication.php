@@ -1063,6 +1063,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	public function remove_from_queue( $subscription_id ) {
 		do_action( 'ms_model_communication_remove_from_queue_before', $this );
 
+		$max_history = apply_filters(
+			'ms_model_communication_sent_queue_max_history',
+			200
+		);
+
 		// Delete history.
 		if ( count( $this->sent_queue ) > $max_history ) {
 			$this->sent_queue = array_slice(
@@ -1075,11 +1080,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		$this->sent_queue[ $subscription_id ] = MS_Helper_Period::current_time();
 		unset( $this->queue[ $subscription_id ] );
-
-		$max_history = apply_filters(
-			'ms_model_communication_sent_queue_max_history',
-			200
-		);
 
 		do_action( 'ms_model_communication_remove_from_queue_after', $this );
 	}
