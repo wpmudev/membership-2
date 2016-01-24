@@ -149,7 +149,7 @@ class MS_Addon_Taxamo extends MS_Addon {
                         
                         $this->add_filter(
                                 'ms_gateway_paypalsingle_view_prepare_fields',
-                                'apply_tax_on_checkout_form',
+                                'apply_tax_on_pp_checkout_form',
                                 99, 2
                         );
                         
@@ -170,6 +170,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	}
         
         public function apply_tax_on_pp_checkout_form( $fields, $invoice ) {
+            // Setting tax info in pp form
             $fields['tax_rate'] = array(
 				'id' => 'tax_rate',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
@@ -178,8 +179,9 @@ class MS_Addon_Taxamo extends MS_Addon {
             $fields['amount'] = array(
 				'id' => 'amount',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => MS_Helper_Billing::format_price( $invoice->amount ),
+				'value' => number_format( ( float ) $invoice->amount, 2, '.', '' ),
 			);
+            
             return $fields;
         }
         

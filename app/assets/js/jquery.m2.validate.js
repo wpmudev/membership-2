@@ -1,4 +1,4 @@
-/*! Membership 2 Pro - v1.0.27
+/*! Membership 2 Pro - v1.0.27-RC-1
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2016; * Licensed GPLv2+ */
 /*!
@@ -976,6 +976,11 @@ $.extend( $.validator, {
 			// allows type="date" and others to be compared as strings
 			if ( /min|max/.test( method ) && ( type === null || /number|range|text/.test( type ) ) ) {
 				value = Number( value );
+                                
+                                // Support Opera Mini, which returns NaN for undefined minlength
+ 				if ( isNaN( value ) ) {
+ 					value = undefined;
+ 				}
 			}
 
 			if ( value || value === 0 ) {

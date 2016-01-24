@@ -245,11 +245,19 @@ class MS_View_Frontend_Payment extends MS_View {
 						<td class="ms-price-column ms-total">
 							<?php
 							if ( $invoice->total > 0 ) {
+                                                            if ( MS_Model_Member::is_admin_user() ) {
+                                                                printf(
+									'<span class="price">%s %s</span>',
+									$invoice->currency,
+									MS_Helper_Billing::format_price( $membership->price - $invoice->discount + $invoice->pro_rate + $invoice->tax )
+								);
+                                                            }else{
 								printf(
 									'<span class="price">%s %s</span>',
 									$invoice->currency,
 									MS_Helper_Billing::format_price( $invoice->total )
 								);
+                                                            }
 							} else {
 								_e( 'Free', 'membership2' );
 							}

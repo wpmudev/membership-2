@@ -51,7 +51,8 @@ class MS_Helper_Period extends MS_Helper {
 
 		return apply_filters(
 			'ms_helper_period_add_interval',
-			gmdate( self::PERIOD_FORMAT, $result )
+			//gmdate( self::PERIOD_FORMAT, $result )
+                        date_i18n( self::PERIOD_FORMAT, $result )
 		);
 	}
 
@@ -85,7 +86,8 @@ class MS_Helper_Period extends MS_Helper {
 
 		return apply_filters(
 			'ms_helper_period_subtract_interval',
-			gmdate( self::PERIOD_FORMAT, $result )
+			//gmdate( self::PERIOD_FORMAT, $result )
+                        date_i18n( self::PERIOD_FORMAT, $result )
 		);
 	}
 
@@ -204,7 +206,8 @@ class MS_Helper_Period extends MS_Helper {
 				$format
 			);
 
-			$date = gmdate( $format );
+			//$date = gmdate( $format );
+                        $date = date_i18n( $format );
 
 			if ( ! $ignore_filters ) {
 				$date = apply_filters(
@@ -421,10 +424,11 @@ class MS_Helper_Period extends MS_Helper {
 
 		// Convert the timestamp to local time.
 		$timestamp = strtotime( $date ); // Converting time to Unix timestamp
-		$offset = intval( get_option( 'gmt_offset' ) ) * 60 * 60; // Time offset in seconds
-		$local_timestamp = $timestamp + $offset;
+		//$offset = intval( get_option( 'gmt_offset' ) ) * 60 * 60; // Time offset in seconds
+		//$local_timestamp = $timestamp + $offset;
 
-		$result = date_i18n( $format, $local_timestamp );
+		//$result = date_i18n( $format, $local_timestamp );
+                $result = date_i18n( $format, $timestamp );
 
 		return apply_filters(
 			'ms_format_date',

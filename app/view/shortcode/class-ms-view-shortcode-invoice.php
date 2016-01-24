@@ -104,6 +104,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			'ms_invoice_due_date',
 			MS_Helper_Period::format_date( $invoice->due_date ),
 			$invoice,
+                        $this,
 			null
 		);
 

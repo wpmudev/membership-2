@@ -401,6 +401,17 @@ class MS_View_Adminbar extends MS_View {
 			margin-top: 0;
 			background: rgba(255,255,255,0.75);
 		}
+                
+                .ms-sim-info.collapsed h4.toggle-wrap {
+		    height: 28px;
+		    line-height: 20px;
+		}
+		.ms-sim-info.collapsed h4.toggle-wrap,
+		.ms-sim-info.collapsed {
+		    width: 160px;
+                    font-size: 12px;
+		}
+                
 		.ms-sim-info.collapsed {
 			bottom: auto;
 		}
@@ -691,6 +702,9 @@ class MS_View_Adminbar extends MS_View {
 				el.find( '.dashicons' ).toggleClass( 'dashicons-arrow-up dashicons-arrow-down' );
 				el.closest( '.ms-sim-info' ).toggleClass( 'collapsed' );
 			});
+                        if( jQuery( '.ms-sim-info' ).length ) {
+                            jQuery( '.ms-sim-info' ).addClass( 'collapsed' );
+                        }
 		});
 		</script>
 		<?php

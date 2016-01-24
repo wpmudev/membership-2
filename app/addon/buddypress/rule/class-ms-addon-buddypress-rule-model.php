@@ -35,11 +35,11 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
                 9999
             );*/
             
-            $this->add_filter(
+            /*$this->add_filter(
                 'ms_rule_page_model_has_access',
                 'override_ms_rule_page_model_has_access',
-                99, 3
-            );
+                999, 3
+            );*/
         }
         
         /**
@@ -184,19 +184,6 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
                                         MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS,
                                         $admin_has_access
                                 );
-                        } elseif ( 'messages' == $component ) {
-                                // Private messaging direct access.
-                                if ( 'compose' == $bp->current_action ) {
-                                        $has_access = parent::has_access(
-                                                MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG,
-                                                $admin_has_access
-                                        );
-                                }
-                        } elseif ( 'messages' == $component ) {
-                                // Don't modify, handled by MS_Addon_Buddypress_Rule_Group
-                        }  else {
-                                // Other BP pages can be handled by other rules.
-                                $has_access = null;
                         }
                 }
             }

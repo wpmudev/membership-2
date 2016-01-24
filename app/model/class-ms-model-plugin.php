@@ -368,6 +368,19 @@ class MS_Model_Plugin extends MS_Model {
 	 */
 	public function protect_current_page() {
 		do_action( 'ms_model_plugin_protect_current_page_before', $this );
+                
+                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
+                    $allowed_memberships = array();
+                    $memberships = MS_Model_Membership::get_membership_ids();
+                    foreach( $memberships as $membership_id ) {
+                        $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+                        if( $membership->has_access_to_current_page() ) {
+                            $allowed_memberships[$membership->priority] = $membership_id;
+                        }
+                    }
+                    ksort( $allowed_memberships );
+                    $protected_membership_id = reset( $allowed_memberships );
+                }
 
 		// Admin user has access to everything.
 		if ( $this->member->is_normal_admin() ) {
@@ -386,20 +399,29 @@ class MS_Model_Plugin extends MS_Model {
 
 			// Don't (re-)redirect the protection page.
 			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
+                            if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
 				$no_access_page_url = esc_url_raw(
+					add_query_arg(
+						array( 'redirect_to' => urlencode( $current_page_url ), 'membership_id' => $protected_membership_id ),
+						$no_access_page_url
+					)
+				);
+                            }else{
+                                $no_access_page_url = esc_url_raw(
 					add_query_arg(
 						array( 'redirect_to' => urlencode( $current_page_url ) ),
 						$no_access_page_url
 					)
 				);
+                            }
 
-				$no_access_page_url = apply_filters(
-					'ms_model_plugin_protected_content_page',
-					$no_access_page_url
-				);
-				wp_safe_redirect( $no_access_page_url );
+                            $no_access_page_url = apply_filters(
+                                    'ms_model_plugin_protected_content_page',
+                                    $no_access_page_url
+                            );
+                            wp_safe_redirect( $no_access_page_url );
 
-				exit;
+                            exit;
 			}
 		}
 

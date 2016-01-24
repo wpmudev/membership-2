@@ -161,6 +161,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 			'ms_rule_category_model_has_access',
 			$has_access,
 			$id,
+                        $admin_has_access,
 			$this
 		);
 	}

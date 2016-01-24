@@ -570,18 +570,25 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$setting = MS_Plugin::instance()->settings;
 		$member = MS_Model_Member::get_current_member();
-
-		if ( count( $member->subscriptions ) ) {
-			$sub = $member->get_subscription( 'priority' );
-			$protection_msg = $setting->get_protection_message(
-				MS_Model_Settings::PROTECTION_MSG_CONTENT,
-				$sub->membership_id
-			);
-		} else {
-			$protection_msg = $setting->get_protection_message(
-				MS_Model_Settings::PROTECTION_MSG_CONTENT
-			);
-		}
+                
+                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE && isset( $_REQUEST['membership_id'] ) ) {
+                    $protection_msg = $setting->get_protection_message(
+                            MS_Model_Settings::PROTECTION_MSG_CONTENT,
+                            $_REQUEST['membership_id']
+                    );
+                }else{
+                    if ( count( $member->subscriptions ) ) {
+                            $sub = $member->get_subscription( 'priority' );
+                            $protection_msg = $setting->get_protection_message(
+                                    MS_Model_Settings::PROTECTION_MSG_CONTENT,
+                                    $sub->membership_id
+                            );
+                    } else {
+                            $protection_msg = $setting->get_protection_message(
+                                    MS_Model_Settings::PROTECTION_MSG_CONTENT
+                            );
+                    }
+                }
 
 		$html = '<div class="ms-protected-content">';
 		if ( ! empty( $protection_msg ) ) {
