@@ -95,6 +95,7 @@ class MS_Controller_Membership extends MS_Controller {
 			'ms_detect_membership_id',
 			'autodetect_membership'
 		);
+                
 	}
 
 	/**
@@ -120,6 +121,11 @@ class MS_Controller_Membership extends MS_Controller {
 				);
 			}
 		}
+                
+                $this->add_action(
+                        'admin_action_membership_bulk_delete',
+                        'membership_bulk_delete'
+                );
 	}
 
 	/**
@@ -153,6 +159,35 @@ class MS_Controller_Membership extends MS_Controller {
 
 		wp_die( $msg );
 	}
+        
+        /**
+         * Bulk delete memberships
+         *
+         * @since 1.0.2.7
+         */
+        public function membership_bulk_delete() {
+            
+            if( ! isset( $_REQUEST['membership_ids'] ) ) {
+                wp_redirect( MS_Controller_Plugin::get_admin_url() );
+                exit;
+            }
+            
+            $membership_ids = explode( '-', $_REQUEST['membership_ids'] );
+            
+            foreach( $membership_ids as $membership_id ) {
+                $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+                try {
+                    $membership->delete();
+                }
+                catch( Exception $e ) {
+                    
+                }
+            }
+            
+            wp_redirect( MS_Controller_Plugin::get_admin_url() );
+            exit;
+            
+        }
 
 	/**
 	 * Handle Ajax toggle action.
@@ -669,6 +704,7 @@ class MS_Controller_Membership extends MS_Controller {
 			false,
 			array( 'step' => self::STEP_ADD_NEW )
 		);
+                $data['delete_url'] = admin_url( 'admin.php?action=membership_bulk_delete' );
 
 		$view = MS_Factory::create( 'MS_View_Membership_List' );
 		$view->data = apply_filters( 'ms_view_membership_list_data', $data, $this );

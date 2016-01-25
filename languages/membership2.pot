@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.7-RC-2\n"
+"Project-Id-Version: Membership 2 Pro 1.0.2.7-RC-3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-01-25 09:37:39+00:00\n"
+"POT-Creation-Date: 2016-01-25 18:50:36+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -711,7 +711,7 @@ msgstr ""
 #: app/view/member/class-ms-view-member-editor.php:201
 #: app/view/settings/class-ms-view-settings-import.php:157
 #: app/view/shortcode/class-ms-view-shortcode-account.php:468
-#: app/view/shortcode/class-ms-view-shortcode-login.php:193
+#: app/view/shortcode/class-ms-view-shortcode-login.php:194
 msgid "Username"
 msgstr ""
 
@@ -769,7 +769,7 @@ msgstr ""
 #: app/view/class-ms-view-help.php:786
 #: app/view/frontend/class-ms-view-frontend-profile.php:91
 #: app/view/member/class-ms-view-member-editor.php:105
-#: app/view/shortcode/class-ms-view-shortcode-login.php:194
+#: app/view/shortcode/class-ms-view-shortcode-login.php:195
 msgid "Password"
 msgstr ""
 
@@ -2611,26 +2611,26 @@ msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:655
 #: app/view/class-ms-view-help.php:794
-#: app/view/shortcode/class-ms-view-shortcode-login.php:195
+#: app/view/shortcode/class-ms-view-shortcode-login.php:196
 msgid "Remember Me"
 msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:656
 #: app/view/class-ms-view-help.php:802
-#: app/view/shortcode/class-ms-view-shortcode-login.php:196
+#: app/view/shortcode/class-ms-view-shortcode-login.php:197
 msgid "Log In"
 msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:666
 #: app/view/class-ms-view-help.php:884
-#: app/view/shortcode/class-ms-view-shortcode-login.php:334
+#: app/view/shortcode/class-ms-view-shortcode-login.php:335
 msgid "Username or E-mail"
 msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:667
 #: app/view/class-ms-view-help.php:892
-#: app/view/shortcode/class-ms-view-shortcode-login.php:335
-#: app/view/shortcode/class-ms-view-shortcode-login.php:624
+#: app/view/shortcode/class-ms-view-shortcode-login.php:336
+#: app/view/shortcode/class-ms-view-shortcode-login.php:625
 msgid "Reset Password"
 msgstr ""
 
@@ -2744,7 +2744,7 @@ msgstr ""
 #: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:566
 #: app/gateway/stripe/class-ms-gateway-stripe.php:171
 #: app/gateway/stripe/class-ms-gateway-stripe.php:257
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:479
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:519
 msgid "Payment successful"
 msgstr ""
 
@@ -3271,24 +3271,24 @@ msgstr ""
 msgid "Stripe Subscriptions Gateway"
 msgstr ""
 
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:332
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:412
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:372
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:452
 msgid "No payment required for free membership"
 msgstr ""
 
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:483
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:523
 msgid "Stripe payment failed (payment is past due)"
 msgstr ""
 
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:487
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:527
 msgid "Stripe subscription canceled"
 msgstr ""
 
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:491
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:531
 msgid "Payment failed, retry-attempts exhausted"
 msgstr ""
 
-#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:496
+#: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:536
 msgid "Stripe subscription is \"%s\""
 msgstr ""
 
@@ -7604,73 +7604,73 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:130
+#: app/view/shortcode/class-ms-view-shortcode-login.php:131
 msgid "Please wait..."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:131
+#: app/view/shortcode/class-ms-view-shortcode-login.php:132
 msgid "Request failed, please try again."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:170
+#: app/view/shortcode/class-ms-view-shortcode-login.php:171
 msgid "Please log in to access this page."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:283
-#: app/view/shortcode/class-ms-view-shortcode-login.php:315
+#: app/view/shortcode/class-ms-view-shortcode-login.php:284
+#: app/view/shortcode/class-ms-view-shortcode-login.php:316
 msgid "Lost your password?"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:397
-#: app/view/shortcode/class-ms-view-shortcode-login.php:420
+#: app/view/shortcode/class-ms-view-shortcode-login.php:398
+#: app/view/shortcode/class-ms-view-shortcode-login.php:421
 msgid "Log in"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:449
+#: app/view/shortcode/class-ms-view-shortcode-login.php:450
 msgid "You are logged in as %s."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:461
+#: app/view/shortcode/class-ms-view-shortcode-login.php:462
 msgid "Logout"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:526
+#: app/view/shortcode/class-ms-view-shortcode-login.php:527
 msgid ""
 "Sorry, this reset-key is not valid anymore. Please request a new reset "
 "email and try again."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:532
+#: app/view/shortcode/class-ms-view-shortcode-login.php:533
 msgid ""
 "Sorry, we did not find a valid reset-key. Please request a new reset email "
 "and try again."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:541
+#: app/view/shortcode/class-ms-view-shortcode-login.php:542
 msgid "The passwords do not match, try again."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:558
+#: app/view/shortcode/class-ms-view-shortcode-login.php:559
 msgid "Request a new password-reset key"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:573
+#: app/view/shortcode/class-ms-view-shortcode-login.php:574
 msgid "Your Password has been reset."
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:575
+#: app/view/shortcode/class-ms-view-shortcode-login.php:576
 msgid "Login with your new password"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:598
+#: app/view/shortcode/class-ms-view-shortcode-login.php:599
 msgid "New password"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:603
+#: app/view/shortcode/class-ms-view-shortcode-login.php:604
 msgid "Strength indicator"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-login.php:607
+#: app/view/shortcode/class-ms-view-shortcode-login.php:608
 msgid "Confirm new password"
 msgstr ""
 
