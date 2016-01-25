@@ -6,6 +6,7 @@ Change Log:
 
 1.0.2.7
 ----------------------------------------------------------------------
+- Added: Bulk Delete Membership feature
 - Added: Constant 'MS_LOG_EMAILS' to enable log and display email logs
 - Added: Constant 'MS_PROTECTED_MESSAGE_REVERSE_RULE' to implement reverse logic on membership based protection message
 - Fixed: BuddyPress all page protection is not working in BuddyPress Integration addon
