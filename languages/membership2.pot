@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.7-RC-3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-01-25 22:49:29+00:00\n"
+"POT-Creation-Date: 2016-01-26 15:24:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -160,7 +160,7 @@ msgstr ""
 #: app/addon/coupon/helper/class-ms-addon-coupon-helper-listtable.php:196
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:107
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:177
-#: app/controller/class-ms-controller-membership.php:1328
+#: app/controller/class-ms-controller-membership.php:1332
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:140
 #: app/rule/url/class-ms-rule-url-listtable.php:50
 msgid "Delete"
@@ -171,7 +171,7 @@ msgstr ""
 #: app/addon/coupon/view/class-ms-addon-coupon-view-edit.php:144
 #: app/addon/invitation/view/class-ms-addon-invitation-view-edit.php:133
 #: app/addon/invitation/view/class-ms-addon-invitation-view-edit.php:134
-#: app/controller/class-ms-controller-membership.php:1329
+#: app/controller/class-ms-controller-membership.php:1333
 #: app/controller/class-ms-controller-shortcode.php:257
 #: app/helper/class-ms-helper-listtable.php:1272
 #: app/view/billing/class-ms-view-billing-edit.php:212
@@ -2351,70 +2351,76 @@ msgstr ""
 msgid "Select an User"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:782
+#: app/controller/class-ms-controller-membership.php:785
 #: app/helper/class-ms-helper-membership.php:141
 msgid "Finish"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1002
+#: app/controller/class-ms-controller-membership.php:1005
 #: app/helper/listtable/class-ms-helper-listtable-communicationlog.php:52
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:52
 #: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:74
 msgid "Details"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1005
+#: app/controller/class-ms-controller-membership.php:1008
 #: app/view/settings/class-ms-view-settings-import.php:117
 msgid "Membership Type"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1008
+#: app/controller/class-ms-controller-membership.php:1011
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:125
 msgid "Payment options"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1011
+#: app/controller/class-ms-controller-membership.php:1014
 msgid "Upgrade paths"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1019
+#: app/controller/class-ms-controller-membership.php:1022
 #: app/controller/class-ms-controller-settings.php:319
 #: app/view/settings/page/class-ms-view-settings-page-messages.php:16
 msgid "Protection Messages"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1022
+#: app/controller/class-ms-controller-membership.php:1025
 #: app/controller/class-ms-controller-settings.php:322
 #: app/view/settings/page/class-ms-view-settings-page-communications.php:16
 msgid "Automated Email Responses"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1032
+#: app/controller/class-ms-controller-membership.php:1035
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:125
 msgid "Access options"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1200
+#: app/controller/class-ms-controller-membership.php:1203
 #: app/controller/class-ms-controller-plugin.php:454
 #: app/helper/class-ms-helper-membership.php:92
 #: app/view/class-ms-view-help.php:180
 msgid "Memberships"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1223
+#: app/controller/class-ms-controller-membership.php:1226
 #: app/controller/class-ms-controller-settings.php:316
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:32
 #: app/view/membership/class-ms-view-membership-paymentsetup.php:28
 msgid "Payment"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1327
+#: app/controller/class-ms-controller-membership.php:1330
 msgid ""
 "Do you want to completely delete the membership <strong>%s</strong> "
 "including all subscriptions?"
 msgstr ""
 
-#: app/controller/class-ms-controller-membership.php:1330
+#: app/controller/class-ms-controller-membership.php:1331
+msgid ""
+"Do you want to completely delete all selected memberships including all "
+"subscriptions?"
+msgstr ""
+
+#: app/controller/class-ms-controller-membership.php:1334
 #: app/controller/class-ms-controller-protection.php:419
 msgid "Error while saving changes."
 msgstr ""
