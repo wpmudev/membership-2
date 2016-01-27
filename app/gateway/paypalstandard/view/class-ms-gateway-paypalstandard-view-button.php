@@ -409,26 +409,27 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		);
                 
                 $custom_interval = $fields['p3']['value'] . $fields['t3']['value'];
-                $custom_period_type = $custom_period_type;
-                $custom_period_value = $custom_period_value;
-                $custom_membership_id = $membership->id;
-                $custom_price = $membership_price;
-                $custom_invoice_id = $invoice->id;
-                $custom_invoice_date = date_i18n( 'Y-m-d H:i:s', time() );
-                
-                $custom_pp_value = "Interval:{$custom_interval} ";
-                $custom_pp_value .= "Period Type:{$custom_period_type} ";
-                $custom_pp_value .= "Period Value:{$custom_period_value} ";
-                $custom_pp_value .= "Mem_ID:{$custom_membership_id} ";
-                $custom_pp_value .= "Price:{$custom_price} ";
-                $custom_pp_value .= "INV_ID:{$custom_invoice_id} ";
-                $custom_pp_value .= "INV_Date:{$custom_invoice_date}";
+                $custom_invoice_date = date( 'Y-m-d H:i:s' );
                 
                 $fields['custom'] = array(
                         'id' => 'custom',
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $custom_pp_value,
+			'value' => sprintf(
+                            '%1$s | %2$s | %3$s (%4$s) | ms_id %5$s ',
+                            $custom_invoice_date,
+                            $membership_price,
+                            $membership->payment_type,
+                            $custom_interval,
+                            $membership->id
+                        )
                 );
+                
+                // Added to return in correct URL
+                $fields['rm'] = array(
+			'id' => 'rm',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => 2,
+		);
 
 		if ( $gateway->is_live_mode() ) {
 			$this->data['action_url'] = 'https://www.paypal.com/cgi-bin/webscr';
