@@ -6,10 +6,10 @@ Change Log:
 
 1.0.2.7
 ----------------------------------------------------------------------
-- Added: Bulk Delete Membership feature
 - Added: Constant 'MS_LOG_EMAILS' to enable log and display email logs
 - Added: Constant 'MS_PROTECTED_MESSAGE_REVERSE_RULE' to implement reverse logic on membership based protection message
-- Fixed: BuddyPress all page protection is not working in BuddyPress Integration addon
+- Added: Bulk Delete Membership feature
+- Fixed: BuddyPress all page protection is not working in BuddyPress Integration addon (Member page is overwritten by page rule)
 - Fixed: Warning when the table prefix is not default "wp_"
 - Fixed: Login on non-SSL page is broken when SSL forced for wp-admin
 - Fixed: "Already have an account" link not sending user to login form after failed register attempt
@@ -31,8 +31,9 @@ Change Log:
 - Fixed: Expired date mismatch with the original expired date in paypal
 - Fixed: Expiry date not set while Importing data
 - Fixed: Finite paid membership turned into free membership while importing data
-- Fixed: Subscription period get doubles for a member while importing data
+- Fixed: Finite paid membership Subscription period get doubles for a member while importing data
 - Fixed: BuddyPress protection rules work as opposite
+- Fixed: Gateway mode changed into live mode when something is changed in settings
 
 
 1.0.2.6

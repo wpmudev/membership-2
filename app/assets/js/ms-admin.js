@@ -2699,7 +2699,7 @@ window.ms_init.view_settings_payment = function init() {
 
 			if ( 'sandbox' === data.value ) {
 				row.removeClass( 'is-live' ).addClass( 'is-sandbox' );
-			} else {
+			} else if ( 'live' === data.value ) {
 				row.removeClass( 'is-sandbox' ).addClass( 'is-live' );
 			}
 		} else {
@@ -2732,7 +2732,6 @@ window.ms_init.view_settings_payment = function init() {
 	}
 
 	jQuery( document ).on( 'ms-ajax-updated', toggle_status );
-
 	jQuery( document ).on( 'click', '.show-settings', change_icon );
 
 	jQuery( '.wpmui-slider-secure_cc' ).on( 'ms-ajax-done', toggle_description );

@@ -274,6 +274,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $period_type,
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 
 				// This makes the payments recurring!
 				$recurring = 1;
@@ -305,6 +308,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $period_type,
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 				break;
 
 			// == DATE RANGE
@@ -328,6 +334,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => 'D',
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 				break;
 
 			// == PERMANENT
@@ -352,6 +361,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => 'Y',
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 				break;
 		}
 
@@ -395,6 +407,28 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => $modify ? 2 : 0,
 		);
+                
+                $custom_interval = $fields['p3']['value'] . $fields['t3']['value'];
+                $custom_period_type = $custom_period_type;
+                $custom_period_value = $custom_period_value;
+                $custom_membership_id = $membership->id;
+                $custom_price = $membership_price;
+                $custom_invoice_id = $invoice->id;
+                $custom_invoice_date = date_i18n( 'Y-m-d H:i:s', time() );
+                
+                $custom_pp_value = "Interval:{$custom_interval} ";
+                $custom_pp_value .= "Period Type:{$custom_period_type} ";
+                $custom_pp_value .= "Period Value:{$custom_period_value} ";
+                $custom_pp_value .= "Mem_ID:{$custom_membership_id} ";
+                $custom_pp_value .= "Price:{$custom_price} ";
+                $custom_pp_value .= "INV_ID:{$custom_invoice_id} ";
+                $custom_pp_value .= "INV_Date:{$custom_invoice_date}";
+                
+                $fields['custom'] = array(
+                        'id' => 'custom',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $custom_pp_value,
+                );
 
 		if ( $gateway->is_live_mode() ) {
 			$this->data['action_url'] = 'https://www.paypal.com/cgi-bin/webscr';
