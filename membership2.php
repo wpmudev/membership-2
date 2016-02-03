@@ -1,17 +1,21 @@
 <?php
 /**
-Plugin Name: Membership 2 Pro
-Plugin URI:  https://premium.wpmudev.org/project/membership/
-Version:     1.0.2.7-RC-1
-Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
-Author:      WPMU DEV
-Author URI:  http://premium.wpmudev.org/
-WDP ID:      1003656
-License:     GNU General Public License (Version 2 - GPLv2)
-Text Domain: membership2
-*/
+ * Plugin Name: Membership 2 Pro
+ * Plugin URI:  https://premium.wpmudev.org/project/membership/
+ * Version:     1.0.2.7-RC-1
+ * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
+ * Author:      WPMU DEV
+ * Author URI:  http://premium.wpmudev.org/
+ * WDP ID:      1003656
+ * License:     GNU General Public License (Version 2 - GPLv2)
+ * Text Domain: membership2
+ *
+ * @package Membership2
+ */
 
 /**
+ * Copyright notice
+ *
  * @copyright Incsub (http://incsub.com/)
  *
  * Authors: Philipp Stracker, Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf, Ashok Kumar Nath
@@ -48,10 +52,10 @@ function membership2_init_pro_app() {
 			printf(
 				'<div class="notice error"><p><strong>%s</strong>: %s</p></div>',
 				sprintf(
-					__( 'Could not load the plugin %s, because another version of the plugin is already loaded', 'membership2' ),
+					esc_html__( 'Could not load the plugin %s, because another version of the plugin is already loaded', 'membership2' ),
 					'Membership 2 Pro'
 				),
-				MS_PLUGIN . ' (v' . MS_PLUGIN_VERSION . ')'
+				esc_html( MS_PLUGIN . ' (v' . MS_PLUGIN_VERSION . ')' )
 			);
 		}
 		return;
@@ -78,7 +82,7 @@ function membership2_init_pro_app() {
 	 */
 	define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
 
-	// WPMUDEV Dashboard
+	// WPMUDEV Dashboard.
 	global $wpmudev_notices;
 	$wpmudev_notices[] = array(
 		'id' => 1003656,
@@ -91,7 +95,7 @@ function membership2_init_pro_app() {
 			'membership-2_page_membership2-coupons',
 			'membership-2_page_membership2-addon',
 			'membership-2_page_membership2-settings',
-		)
+		),
 	);
 
 	$externals = array(
@@ -114,6 +118,11 @@ function membership2_init_pro_app() {
 		/*  getdrip Plugin param */ false
 	);
 
+	/**
+	 * Prepare rating message.
+	 *
+	 * @return string Message to display.
+	 */
 	function _membership2_rating_message() {
 		return __( "Hey %s, you've been using %s for a while now, and we hope you're happy with it.", 'membership2' ) .
 			'<br />' .
@@ -156,6 +165,8 @@ function membership2_init_pro_app() {
 	MS_Plugin::instance();
 }
 
+if ( ! class_exists( 'MS_Plugin' ) ) {
+
 /**
  * Primary Membership plugin class.
  *
@@ -170,7 +181,6 @@ function membership2_init_pro_app() {
  *
  * @return object Plugin instance.
  */
-if ( ! class_exists( 'MS_Plugin' ) ) {
 class MS_Plugin {
 
 	/**
@@ -289,6 +299,8 @@ class MS_Plugin {
 		do_action( 'ms_plugin_init', $this );
 
 		/**
+		 * Deprecated action.
+		 *
 		 * @since  1.0.0
 		 * @deprecated since 2.0.0
 		 */
@@ -332,7 +344,7 @@ class MS_Plugin {
 		add_action( 'init', array( $this, 'add_rewrite_rules' ), 1 );
 		add_action( 'init', array( $this, 'add_rewrite_tags' ), 1 );
 
-		// Plugin activation Hook
+		// Plugin activation Hook.
 		register_activation_hook(
 			__FILE__,
 			array( $this, 'plugin_activation' )
@@ -489,7 +501,7 @@ class MS_Plugin {
 			);
 		}
 
-		// Media / download
+		/* Media / download ----- */
 		$mmask = $settings->downloads['masked_url'];
 		$mtype = $settings->downloads['protection_type'];
 
@@ -508,7 +520,7 @@ class MS_Plugin {
 				);
 			}
 		}
-		// End: Media / download
+		/* End: Media / download ----- */
 
 		do_action( 'ms_plugin_add_rewrite_rules', $this );
 	}
@@ -525,7 +537,7 @@ class MS_Plugin {
 		// Gateway return - IPN.
 		add_rewrite_tag( '%paymentgateway%', '(.+)' );
 
-		// Media / download
+		// Media / download.
 		add_rewrite_tag( '%protectedfile%', '(.+)' );
 
 		do_action( 'ms_plugin_add_rewrite_tags', $this );
@@ -819,8 +831,8 @@ class MS_Plugin {
 	public static function get_modifier( $key ) {
 		$res = null;
 
-		if ( isset( self::$modifiers[$key] ) ) {
-			$res = self::$modifiers[$key];
+		if ( isset( self::$modifiers[ $key ] ) ) {
+			$res = self::$modifiers[ $key ];
 		} elseif ( defined( $key ) ) {
 			$res = constant( $key );
 		}
@@ -830,19 +842,19 @@ class MS_Plugin {
 
 	/**
 	 * Changes a modifier option.
-	 * @see get_modifier() for more details.
 	 *
+	 * @see get_modifier() for more details.
 	 * @since  1.0.0
 	 * @api
 	 *
 	 * @param  string $key Name of the modifier.
-	 * @param  mixed $value Value of the modifier. `null` unsets the modifier.
+	 * @param  mixed  $value Value of the modifier. `null` unsets the modifier.
 	 */
 	public static function set_modifier( $key, $value = null ) {
 		if ( null === $value ) {
-			unset( self::$modifiers[$key] );
+			unset( self::$modifiers[ $key ] );
 		} else {
-			self::$modifiers[$key] = $value;
+			self::$modifiers[ $key ] = $value;
 		}
 	}
 
