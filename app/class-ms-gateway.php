@@ -590,6 +590,7 @@ class MS_Gateway extends MS_Model_Option {
 				'CO' => __( 'Colombia', 'membership2' ),
 				'CK' => __( 'Cook Islands', 'membership2' ),
 				'CR' => __( 'Costa Rica', 'membership2' ),
+				'HR' => __( 'Croatia', 'membership2' ),
 				'CY' => __( 'Cyprus', 'membership2' ),
 				'CZ' => __( 'Czech Republic', 'membership2' ),
 				'DK' => __( 'Denmark', 'membership2' ),
