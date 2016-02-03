@@ -1,4 +1,4 @@
-/*! Membership 2 Pro - v1.0.27-RC-1
+/*! Membership 2 Pro - v1.0.27
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2016; * Licensed GPLv2+ */
 /*global window:false */
@@ -1688,6 +1688,53 @@ window.ms_init.view_membership_list = function init () {
 		}
 	});
 };
+
+window.ms_init.bulk_delete_membership = function() {
+    
+    var delete_url = jQuery( '.bulk_delete_memberships_button' ).attr( 'href' );
+    
+    var serealize_membership_ids = function() {
+        
+        var membership_ids = [];
+        jQuery( 'input.del_membership_ids:checked' ).each( function() {
+            membership_ids.push( jQuery( this ).val() );
+        } );
+        
+        if( membership_ids.length > 0 ){
+            return delete_url + '&membership_ids=' + membership_ids.join( '-' );
+        }else{
+            return delete_url;
+        }
+        
+    };
+    
+    function confirm_bulk_delete( ev ) {
+            var args,
+                    me = jQuery( this ),
+                    row = me.parents( 'tr' ),
+                    delete_url = me.attr( 'href' );
+
+            ev.preventDefault();
+            args = {
+                    message: ms_data.lang.msg_bulk_delete,
+                    buttons: [
+                            ms_data.lang.btn_delete,
+                            ms_data.lang.btn_cancel
+                    ],
+                    callback: function( key ) {
+                            if ( key === 0 ) {
+                                    window.location = serealize_membership_ids();
+                            }
+                    }
+            };
+            wpmUi.confirm( args );
+
+            return false;
+    }
+    
+    jQuery( '.bulk_delete_memberships_button' ).click( confirm_bulk_delete );
+        
+};
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
@@ -2652,7 +2699,7 @@ window.ms_init.view_settings_payment = function init() {
 
 			if ( 'sandbox' === data.value ) {
 				row.removeClass( 'is-live' ).addClass( 'is-sandbox' );
-			} else {
+			} else if ( 'live' === data.value ) {
 				row.removeClass( 'is-sandbox' ).addClass( 'is-live' );
 			}
 		} else {
@@ -2685,7 +2732,6 @@ window.ms_init.view_settings_payment = function init() {
 	}
 
 	jQuery( document ).on( 'ms-ajax-updated', toggle_status );
-
 	jQuery( document ).on( 'click', '.show-settings', change_icon );
 
 	jQuery( '.wpmui-slider-secure_cc' ).on( 'ms-ajax-done', toggle_description );

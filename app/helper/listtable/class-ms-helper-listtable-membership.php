@@ -20,6 +20,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 	public function get_columns() {
 		$columns = array(
+                        'cb'        => '<input type="checkbox" />',
 			'priority' => sprintf(
 				'<span title="%s">#</span>',
 				__( 'Membership Order', 'membership2' )
@@ -37,6 +38,12 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 			$columns
 		);
 	}
+        
+        public function column_cb( $item ) {
+            return sprintf(
+                '<input class="del_membership_ids" type="checkbox" name="memberships[]" value="%s" />', $item->id
+            );    
+        }
 
 	public function get_hidden_columns() {
 		return apply_filters(

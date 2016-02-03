@@ -43,3 +43,50 @@ window.ms_init.view_membership_list = function init () {
 		}
 	});
 };
+
+window.ms_init.bulk_delete_membership = function() {
+    
+    var delete_url = jQuery( '.bulk_delete_memberships_button' ).attr( 'href' );
+    
+    var serealize_membership_ids = function() {
+        
+        var membership_ids = [];
+        jQuery( 'input.del_membership_ids:checked' ).each( function() {
+            membership_ids.push( jQuery( this ).val() );
+        } );
+        
+        if( membership_ids.length > 0 ){
+            return delete_url + '&membership_ids=' + membership_ids.join( '-' );
+        }else{
+            return delete_url;
+        }
+        
+    };
+    
+    function confirm_bulk_delete( ev ) {
+            var args,
+                    me = jQuery( this ),
+                    row = me.parents( 'tr' ),
+                    delete_url = me.attr( 'href' );
+
+            ev.preventDefault();
+            args = {
+                    message: ms_data.lang.msg_bulk_delete,
+                    buttons: [
+                            ms_data.lang.btn_delete,
+                            ms_data.lang.btn_cancel
+                    ],
+                    callback: function( key ) {
+                            if ( key === 0 ) {
+                                    window.location = serealize_membership_ids();
+                            }
+                    }
+            };
+            wpmUi.confirm( args );
+
+            return false;
+    }
+    
+    jQuery( '.bulk_delete_memberships_button' ).click( confirm_bulk_delete );
+        
+};

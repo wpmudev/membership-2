@@ -110,7 +110,47 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			'ms_saved_MS_Addon_Coupon_Model',
 			'update_stripe_data_coupon'
 		);
+                
+                $this->add_filter(
+                        'ms_model_pages_get_ms_page_url',
+                        'ms_model_pages_get_ms_page_url_cb',
+                        99, 4
+                );
 	}
+        
+        /**
+	 * Force SSL when Stripe in Live mode
+	 *
+	 * @since  1.0.2.5
+	 *
+	 * @param String $url The modified or raw URL
+	 * @param String $page_type Check if this is a membership page
+	 * @param Bool $ssl If SSL enabled or not
+	 * @param Int $site_id The ID of site
+	 *
+	 * @return String $url Modified or raw URL
+	 */
+        public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
+            /**
+             * Constant M2_FORCE_NO_SSL
+             *
+             * It's needed, if :
+             *      - the user has no SSL
+             *      - the user has SSL but doesn't want to force
+             *      - The user has multiple gateways like Paypal and Stripe and doesn't want to force
+             *
+             * If the user has SSL certificate, this rule won't work
+             */
+            if( ! defined( 'M2_FORCE_NO_SSL' ) ){
+                if ( $this->active && $this->is_live_mode() ) {
+                    if( $page_type == MS_Model_Pages::MS_PAGE_MEMBERSHIPS || $page_type == MS_Model_Pages::MS_PAGE_REGISTER ) {
+                        $url = MS_Helper_Utility::get_ssl_url( $url );
+                    }
+                }
+            }
+            
+	    return $url;
+        }
 
 	/**
 	 * Creates the external Stripe-ID of the specified item.

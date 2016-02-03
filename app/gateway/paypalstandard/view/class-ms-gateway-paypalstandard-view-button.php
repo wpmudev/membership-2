@@ -274,6 +274,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $period_type,
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 
 				// This makes the payments recurring!
 				$recurring = 1;
@@ -305,6 +308,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $period_type,
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 				break;
 
 			// == DATE RANGE
@@ -328,6 +334,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => 'D',
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 				break;
 
 			// == PERMANENT
@@ -352,6 +361,9 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => 'Y',
 				);
+                                
+                                $custom_period_type = isset( $period_type ) ? $period_type : '';
+                                $custom_period_value = isset( $period_value ) ? $period_value : '';
 				break;
 		}
 
@@ -394,6 +406,29 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 			'id' => 'modify',
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => $modify ? 2 : 0,
+		);
+                
+                $custom_interval = $fields['p3']['value'] . $fields['t3']['value'];
+                $custom_invoice_date = date( 'Y-m-d H:i:s' );
+                
+                $fields['custom'] = array(
+                        'id' => 'custom',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => sprintf(
+                            '%1$s | %2$s | %3$s (%4$s) | ms_id %5$s ',
+                            $custom_invoice_date,
+                            $membership_price,
+                            $membership->payment_type,
+                            $custom_interval,
+                            $membership->id
+                        )
+                );
+                
+                // Added to return in correct URL
+                $fields['rm'] = array(
+			'id' => 'rm',
+			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => 2,
 		);
 
 		if ( $gateway->is_live_mode() ) {
