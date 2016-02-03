@@ -140,7 +140,7 @@ function membership2_init_pro_app() {
 	}
 	add_action( 'plugins_loaded', '_membership2_translate_plugin' );
 
-	if ( defined( 'WP_DEBUG' ) && WP_DEBUG || WDEV_DEBUG ) {
+	if ( (defined( 'WP_DEBUG' ) && WP_DEBUG) || (defined( 'DEV_DEBUG' ) && WDEV_DEBUG) ) {
 		// Load development/testing code before the plugin is initialized.
 		$testfile = dirname( __FILE__ ) . '/tests/wp/init.php';
 		if ( file_exists( $testfile ) ) { include $testfile; }
