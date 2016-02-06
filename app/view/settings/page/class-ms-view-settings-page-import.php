@@ -111,7 +111,7 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		<div>
 			<?php if ( $preview ) : ?>
 				<form action="" method="post">
-					<?php echo wp_kses_post( $preview ); ?>
+					<?php echo $preview; ?>
 				</form>
 			<?php else : ?>
 				<form action="" method="post" enctype="multipart/form-data">
