@@ -736,7 +736,7 @@ class MS_Model_Import extends MS_Model {
 			$membership->get_custom_data( 'matching' )
 		);
 
-		if ( empty( $data[$source] ) || ! array( $data[$source] ) ) {
+		if ( empty( $data[ $source ] ) || ! is_array( $data[ $source ] ) ) {
 			$data[ $source ] = array();
 		}
 
