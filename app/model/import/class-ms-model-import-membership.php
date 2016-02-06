@@ -180,7 +180,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 				WHEN 'finite' THEN 'finite'
 				WHEN 'serial' THEN 'recurring'
 				ELSE 'permanent'
-			END AS `pay_type`,
+			END AS `payment_type`,
 			suble.level_period AS `period_unit`,
 			suble.level_period_unit AS `period_type`
 		FROM `{$wpdb->prefix}m_subscriptions` subsc
