@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-01-27 20:40:41+00:00\n"
+"POT-Creation-Date: 2016-02-06 18:49:55+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -182,7 +182,7 @@ msgstr ""
 #: app/view/frontend/class-ms-view-frontend-profile.php:17
 #: app/view/membership/class-ms-view-membership-add.php:175
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:111
-#: app/view/settings/class-ms-view-settings-import.php:352
+#: app/view/settings/class-ms-view-settings-import.php:367
 #: app/view/settings/page/class-ms-view-settings-page-setup.php:133
 #: app/view/shortcode/class-ms-view-shortcode-registeruser.php:38
 msgid "Cancel"
@@ -709,7 +709,7 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:635
 #: app/model/class-ms-model-member.php:997 app/view/class-ms-view-help.php:778
 #: app/view/member/class-ms-view-member-editor.php:201
-#: app/view/settings/class-ms-view-settings-import.php:157
+#: app/view/settings/class-ms-view-settings-import.php:171
 #: app/view/shortcode/class-ms-view-shortcode-account.php:468
 #: app/view/shortcode/class-ms-view-shortcode-login.php:194
 msgid "Username"
@@ -749,7 +749,7 @@ msgstr ""
 #: app/addon/profilefields/class-ms-addon-profilefields.php:220
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:641
 #: app/view/member/class-ms-view-member-editor.php:211
-#: app/view/settings/class-ms-view-settings-import.php:158
+#: app/view/settings/class-ms-view-settings-import.php:172
 #: app/view/shortcode/class-ms-view-shortcode-account.php:469
 msgid "Email"
 msgstr ""
@@ -930,7 +930,7 @@ msgstr ""
 #: app/addon/redirect/class-ms-addon-redirect.php:98
 #: app/addon/taxamo/class-ms-addon-taxamo.php:232
 #: app/controller/class-ms-controller-plugin.php:475
-#: app/view/class-ms-view-help.php:212 membership2.php:699
+#: app/view/class-ms-view-help.php:212 membership2.php:711
 msgid "Settings"
 msgstr ""
 
@@ -1414,638 +1414,642 @@ msgid "Costa Rica"
 msgstr ""
 
 #: app/class-ms-gateway.php:593
-msgid "Cyprus"
+msgid "Croatia"
 msgstr ""
 
 #: app/class-ms-gateway.php:594
-msgid "Czech Republic"
+msgid "Cyprus"
 msgstr ""
 
 #: app/class-ms-gateway.php:595
-msgid "Denmark"
+msgid "Czech Republic"
 msgstr ""
 
 #: app/class-ms-gateway.php:596
-msgid "Djibouti"
+msgid "Denmark"
 msgstr ""
 
 #: app/class-ms-gateway.php:597
-msgid "Dominica"
+msgid "Djibouti"
 msgstr ""
 
 #: app/class-ms-gateway.php:598
-msgid "Dominican Republic"
+msgid "Dominica"
 msgstr ""
 
 #: app/class-ms-gateway.php:599
-msgid "Ecuador"
+msgid "Dominican Republic"
 msgstr ""
 
 #: app/class-ms-gateway.php:600
-msgid "Egypt"
+msgid "Ecuador"
 msgstr ""
 
 #: app/class-ms-gateway.php:601
-msgid "El Salvador"
+msgid "Egypt"
 msgstr ""
 
 #: app/class-ms-gateway.php:602
-msgid "Estonia"
+msgid "El Salvador"
 msgstr ""
 
 #: app/class-ms-gateway.php:603
-msgid "Falkland Islands (malvinas)"
+msgid "Estonia"
 msgstr ""
 
 #: app/class-ms-gateway.php:604
-msgid "Faroe Islands"
+msgid "Falkland Islands (malvinas)"
 msgstr ""
 
 #: app/class-ms-gateway.php:605
-msgid "Fiji"
+msgid "Faroe Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:606
-msgid "Finland"
+msgid "Fiji"
 msgstr ""
 
 #: app/class-ms-gateway.php:607
-msgid "France"
+msgid "Finland"
 msgstr ""
 
 #: app/class-ms-gateway.php:608
-msgid "French Guiana"
+msgid "France"
 msgstr ""
 
 #: app/class-ms-gateway.php:609
-msgid "French Polynesia"
+msgid "French Guiana"
 msgstr ""
 
 #: app/class-ms-gateway.php:610
-msgid "French Southern Territories"
+msgid "French Polynesia"
 msgstr ""
 
 #: app/class-ms-gateway.php:611
-msgid "Gabon"
+msgid "French Southern Territories"
 msgstr ""
 
 #: app/class-ms-gateway.php:612
-msgid "Gambia"
+msgid "Gabon"
 msgstr ""
 
 #: app/class-ms-gateway.php:613
-msgid "Georgia"
+msgid "Gambia"
 msgstr ""
 
 #: app/class-ms-gateway.php:614
-msgid "Germany"
+msgid "Georgia"
 msgstr ""
 
 #: app/class-ms-gateway.php:615
-msgid "Ghana"
+msgid "Germany"
 msgstr ""
 
 #: app/class-ms-gateway.php:616
-msgid "Gibraltar"
+msgid "Ghana"
 msgstr ""
 
 #: app/class-ms-gateway.php:617
-msgid "Greece"
+msgid "Gibraltar"
 msgstr ""
 
 #: app/class-ms-gateway.php:618
-msgid "Greenland"
+msgid "Greece"
 msgstr ""
 
 #: app/class-ms-gateway.php:619
-msgid "Grenada"
+msgid "Greenland"
 msgstr ""
 
 #: app/class-ms-gateway.php:620
-msgid "Guadeloupe"
+msgid "Grenada"
 msgstr ""
 
 #: app/class-ms-gateway.php:621
-msgid "Guam"
+msgid "Guadeloupe"
 msgstr ""
 
 #: app/class-ms-gateway.php:622
-msgid "Guernsey"
+msgid "Guam"
 msgstr ""
 
 #: app/class-ms-gateway.php:623
-msgid "Guyana"
+msgid "Guernsey"
 msgstr ""
 
 #: app/class-ms-gateway.php:624
-msgid "Heard Island And Mcdonald Islands"
+msgid "Guyana"
 msgstr ""
 
 #: app/class-ms-gateway.php:625
-msgid "Holy See (vatican City State)"
+msgid "Heard Island And Mcdonald Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:626
-msgid "Honduras"
+msgid "Holy See (vatican City State)"
 msgstr ""
 
 #: app/class-ms-gateway.php:627
-msgid "Hong Kong"
+msgid "Honduras"
 msgstr ""
 
 #: app/class-ms-gateway.php:628
-msgid "Hungary"
+msgid "Hong Kong"
 msgstr ""
 
 #: app/class-ms-gateway.php:629
-msgid "Iceland"
+msgid "Hungary"
 msgstr ""
 
 #: app/class-ms-gateway.php:630
-msgid "India"
+msgid "Iceland"
 msgstr ""
 
 #: app/class-ms-gateway.php:631
-msgid "Indonesia"
+msgid "India"
 msgstr ""
 
 #: app/class-ms-gateway.php:632
-msgid "Ireland"
+msgid "Indonesia"
 msgstr ""
 
 #: app/class-ms-gateway.php:633
-msgid "Isle Of Man"
+msgid "Ireland"
 msgstr ""
 
 #: app/class-ms-gateway.php:634
-msgid "Israel"
+msgid "Isle Of Man"
 msgstr ""
 
 #: app/class-ms-gateway.php:635
-msgid "Italy"
+msgid "Israel"
 msgstr ""
 
 #: app/class-ms-gateway.php:636
-msgid "Jamaica"
+msgid "Italy"
 msgstr ""
 
 #: app/class-ms-gateway.php:637
-msgid "Japan"
+msgid "Jamaica"
 msgstr ""
 
 #: app/class-ms-gateway.php:638
-msgid "Jersey"
+msgid "Japan"
 msgstr ""
 
 #: app/class-ms-gateway.php:639
-msgid "Jordan"
+msgid "Jersey"
 msgstr ""
 
 #: app/class-ms-gateway.php:640
-msgid "Kazakhstan"
+msgid "Jordan"
 msgstr ""
 
 #: app/class-ms-gateway.php:641
-msgid "Kiribati"
+msgid "Kazakhstan"
 msgstr ""
 
 #: app/class-ms-gateway.php:642
-msgid "Korea, Republic Of"
+msgid "Kiribati"
 msgstr ""
 
 #: app/class-ms-gateway.php:643
-msgid "Kuwait"
+msgid "Korea, Republic Of"
 msgstr ""
 
 #: app/class-ms-gateway.php:644
-msgid "Kyrgyzstan"
+msgid "Kuwait"
 msgstr ""
 
 #: app/class-ms-gateway.php:645
-msgid "Latvia"
+msgid "Kyrgyzstan"
 msgstr ""
 
 #: app/class-ms-gateway.php:646
-msgid "Lesotho"
+msgid "Latvia"
 msgstr ""
 
 #: app/class-ms-gateway.php:647
-msgid "Liechtenstein"
+msgid "Lesotho"
 msgstr ""
 
 #: app/class-ms-gateway.php:648
-msgid "Lithuania"
+msgid "Liechtenstein"
 msgstr ""
 
 #: app/class-ms-gateway.php:649
-msgid "Luxembourg"
+msgid "Lithuania"
 msgstr ""
 
 #: app/class-ms-gateway.php:650
-msgid "Macao"
+msgid "Luxembourg"
 msgstr ""
 
 #: app/class-ms-gateway.php:651
-msgid "Macedonia"
+msgid "Macao"
 msgstr ""
 
 #: app/class-ms-gateway.php:652
-msgid "Madagascar"
+msgid "Macedonia"
 msgstr ""
 
 #: app/class-ms-gateway.php:653
-msgid "Malawi"
+msgid "Madagascar"
 msgstr ""
 
 #: app/class-ms-gateway.php:654
-msgid "Malaysia"
+msgid "Malawi"
 msgstr ""
 
 #: app/class-ms-gateway.php:655
-msgid "Malta"
+msgid "Malaysia"
 msgstr ""
 
 #: app/class-ms-gateway.php:656
-msgid "Marshall Islands"
+msgid "Malta"
 msgstr ""
 
 #: app/class-ms-gateway.php:657
-msgid "Martinique"
+msgid "Marshall Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:658
-msgid "Mauritania"
+msgid "Martinique"
 msgstr ""
 
 #: app/class-ms-gateway.php:659
-msgid "Mauritius"
+msgid "Mauritania"
 msgstr ""
 
 #: app/class-ms-gateway.php:660
-msgid "Mayotte"
+msgid "Mauritius"
 msgstr ""
 
 #: app/class-ms-gateway.php:661
-msgid "Mexico"
+msgid "Mayotte"
 msgstr ""
 
 #: app/class-ms-gateway.php:662
-msgid "Micronesia, Federated States Of"
+msgid "Mexico"
 msgstr ""
 
 #: app/class-ms-gateway.php:663
-msgid "Moldova, Republic Of"
+msgid "Micronesia, Federated States Of"
 msgstr ""
 
 #: app/class-ms-gateway.php:664
-msgid "Monaco"
+msgid "Moldova, Republic Of"
 msgstr ""
 
 #: app/class-ms-gateway.php:665
-msgid "Mongolia"
+msgid "Monaco"
 msgstr ""
 
 #: app/class-ms-gateway.php:666
-msgid "Montenegro"
+msgid "Mongolia"
 msgstr ""
 
 #: app/class-ms-gateway.php:667
-msgid "Montserrat"
+msgid "Montenegro"
 msgstr ""
 
 #: app/class-ms-gateway.php:668
-msgid "Morocco"
+msgid "Montserrat"
 msgstr ""
 
 #: app/class-ms-gateway.php:669
-msgid "Mozambique"
+msgid "Morocco"
 msgstr ""
 
 #: app/class-ms-gateway.php:670
-msgid "Namibia"
+msgid "Mozambique"
 msgstr ""
 
 #: app/class-ms-gateway.php:671
-msgid "Nauru"
+msgid "Namibia"
 msgstr ""
 
 #: app/class-ms-gateway.php:672
-msgid "Nepal"
+msgid "Nauru"
 msgstr ""
 
 #: app/class-ms-gateway.php:673
-msgid "Netherlands"
+msgid "Nepal"
 msgstr ""
 
 #: app/class-ms-gateway.php:674
-msgid "Netherlands Antilles"
+msgid "Netherlands"
 msgstr ""
 
 #: app/class-ms-gateway.php:675
-msgid "New Caledonia"
+msgid "Netherlands Antilles"
 msgstr ""
 
 #: app/class-ms-gateway.php:676
-msgid "New Zealand"
+msgid "New Caledonia"
 msgstr ""
 
 #: app/class-ms-gateway.php:677
-msgid "Nicaragua"
+msgid "New Zealand"
 msgstr ""
 
 #: app/class-ms-gateway.php:678
-msgid "Niger"
+msgid "Nicaragua"
 msgstr ""
 
 #: app/class-ms-gateway.php:679
-msgid "Niue"
+msgid "Niger"
 msgstr ""
 
 #: app/class-ms-gateway.php:680
-msgid "Norfolk Island"
+msgid "Niue"
 msgstr ""
 
 #: app/class-ms-gateway.php:681
-msgid "Northern Mariana Islands"
+msgid "Norfolk Island"
 msgstr ""
 
 #: app/class-ms-gateway.php:682
-msgid "Norway"
+msgid "Northern Mariana Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:683
-msgid "Oman"
+msgid "Norway"
 msgstr ""
 
 #: app/class-ms-gateway.php:684
-msgid "Palau"
+msgid "Oman"
 msgstr ""
 
 #: app/class-ms-gateway.php:685
-msgid "Palestine"
+msgid "Palau"
 msgstr ""
 
 #: app/class-ms-gateway.php:686
-msgid "Panama"
+msgid "Palestine"
 msgstr ""
 
 #: app/class-ms-gateway.php:687
-msgid "Paraguay"
+msgid "Panama"
 msgstr ""
 
 #: app/class-ms-gateway.php:688
-msgid "Peru"
+msgid "Paraguay"
 msgstr ""
 
 #: app/class-ms-gateway.php:689
-msgid "Philippines"
+msgid "Peru"
 msgstr ""
 
 #: app/class-ms-gateway.php:690
-msgid "Pitcairn"
+msgid "Philippines"
 msgstr ""
 
 #: app/class-ms-gateway.php:691
-msgid "Poland"
+msgid "Pitcairn"
 msgstr ""
 
 #: app/class-ms-gateway.php:692
-msgid "Portugal"
+msgid "Poland"
 msgstr ""
 
 #: app/class-ms-gateway.php:693
-msgid "Puerto Rico"
+msgid "Portugal"
 msgstr ""
 
 #: app/class-ms-gateway.php:694
-msgid "Qatar"
+msgid "Puerto Rico"
 msgstr ""
 
 #: app/class-ms-gateway.php:695
-msgid "Reunion"
+msgid "Qatar"
 msgstr ""
 
 #: app/class-ms-gateway.php:696
-msgid "Romania"
+msgid "Reunion"
 msgstr ""
 
 #: app/class-ms-gateway.php:697
-msgid "Russian Federation"
+msgid "Romania"
 msgstr ""
 
 #: app/class-ms-gateway.php:698
-msgid "Rwanda"
+msgid "Russian Federation"
 msgstr ""
 
 #: app/class-ms-gateway.php:699
-msgid "Saint Helena"
+msgid "Rwanda"
 msgstr ""
 
 #: app/class-ms-gateway.php:700
-msgid "Saint Kitts And Nevis"
+msgid "Saint Helena"
 msgstr ""
 
 #: app/class-ms-gateway.php:701
-msgid "Saint Lucia"
+msgid "Saint Kitts And Nevis"
 msgstr ""
 
 #: app/class-ms-gateway.php:702
-msgid "Saint Pierre And Miquelon"
+msgid "Saint Lucia"
 msgstr ""
 
 #: app/class-ms-gateway.php:703
-msgid "Saint Vincent And The Grenadines"
+msgid "Saint Pierre And Miquelon"
 msgstr ""
 
 #: app/class-ms-gateway.php:704
-msgid "Samoa"
+msgid "Saint Vincent And The Grenadines"
 msgstr ""
 
 #: app/class-ms-gateway.php:705
-msgid "San Marino"
+msgid "Samoa"
 msgstr ""
 
 #: app/class-ms-gateway.php:706
-msgid "Sao Tome And Principe"
+msgid "San Marino"
 msgstr ""
 
 #: app/class-ms-gateway.php:707
-msgid "Saudi Arabia"
+msgid "Sao Tome And Principe"
 msgstr ""
 
 #: app/class-ms-gateway.php:708
-msgid "Senegal"
+msgid "Saudi Arabia"
 msgstr ""
 
 #: app/class-ms-gateway.php:709
-msgid "Serbia"
+msgid "Senegal"
 msgstr ""
 
 #: app/class-ms-gateway.php:710
-msgid "Seychelles"
+msgid "Serbia"
 msgstr ""
 
 #: app/class-ms-gateway.php:711
-msgid "Singapore"
+msgid "Seychelles"
 msgstr ""
 
 #: app/class-ms-gateway.php:712
-msgid "Slovakia"
+msgid "Singapore"
 msgstr ""
 
 #: app/class-ms-gateway.php:713
-msgid "Slovenia"
+msgid "Slovakia"
 msgstr ""
 
 #: app/class-ms-gateway.php:714
-msgid "Solomon Islands"
+msgid "Slovenia"
 msgstr ""
 
 #: app/class-ms-gateway.php:715
-msgid "South Africa"
+msgid "Solomon Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:716
-msgid "South Georgia And The South Sandwich Islands"
+msgid "South Africa"
 msgstr ""
 
 #: app/class-ms-gateway.php:717
-msgid "Spain"
+msgid "South Georgia And The South Sandwich Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:718
-msgid "Suriname"
+msgid "Spain"
 msgstr ""
 
 #: app/class-ms-gateway.php:719
-msgid "Svalbard And Jan Mayen"
+msgid "Suriname"
 msgstr ""
 
 #: app/class-ms-gateway.php:720
-msgid "Swaziland"
+msgid "Svalbard And Jan Mayen"
 msgstr ""
 
 #: app/class-ms-gateway.php:721
-msgid "Sweden"
+msgid "Swaziland"
 msgstr ""
 
 #: app/class-ms-gateway.php:722
-msgid "Switzerland"
+msgid "Sweden"
 msgstr ""
 
 #: app/class-ms-gateway.php:723
-msgid "Taiwan, Province Of China"
+msgid "Switzerland"
 msgstr ""
 
 #: app/class-ms-gateway.php:724
-msgid "Tanzania, United Republic Of"
+msgid "Taiwan, Province Of China"
 msgstr ""
 
 #: app/class-ms-gateway.php:725
-msgid "Thailand"
+msgid "Tanzania, United Republic Of"
 msgstr ""
 
 #: app/class-ms-gateway.php:726
-msgid "Timor-leste"
+msgid "Thailand"
 msgstr ""
 
 #: app/class-ms-gateway.php:727
-msgid "Togo"
+msgid "Timor-leste"
 msgstr ""
 
 #: app/class-ms-gateway.php:728
-msgid "Tokelau"
+msgid "Togo"
 msgstr ""
 
 #: app/class-ms-gateway.php:729
-msgid "Tonga"
+msgid "Tokelau"
 msgstr ""
 
 #: app/class-ms-gateway.php:730
-msgid "Trinidad And Tobago"
+msgid "Tonga"
 msgstr ""
 
 #: app/class-ms-gateway.php:731
-msgid "Tunisia"
+msgid "Trinidad And Tobago"
 msgstr ""
 
 #: app/class-ms-gateway.php:732
-msgid "Turkey"
+msgid "Tunisia"
 msgstr ""
 
 #: app/class-ms-gateway.php:733
-msgid "Turkmenistan"
+msgid "Turkey"
 msgstr ""
 
 #: app/class-ms-gateway.php:734
-msgid "Turks And Caicos Islands"
+msgid "Turkmenistan"
 msgstr ""
 
 #: app/class-ms-gateway.php:735
-msgid "Tuvalu"
+msgid "Turks And Caicos Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:736
-msgid "Uganda"
+msgid "Tuvalu"
 msgstr ""
 
 #: app/class-ms-gateway.php:737
-msgid "Ukraine"
+msgid "Uganda"
 msgstr ""
 
 #: app/class-ms-gateway.php:738
-msgid "United Arab Emirates"
+msgid "Ukraine"
 msgstr ""
 
 #: app/class-ms-gateway.php:739
-msgid "United Kingdom"
+msgid "United Arab Emirates"
 msgstr ""
 
 #: app/class-ms-gateway.php:740
-msgid "United States"
+msgid "United Kingdom"
 msgstr ""
 
 #: app/class-ms-gateway.php:741
-msgid "United States Minor Outlying Islands"
+msgid "United States"
 msgstr ""
 
 #: app/class-ms-gateway.php:742
-msgid "Uruguay"
+msgid "United States Minor Outlying Islands"
 msgstr ""
 
 #: app/class-ms-gateway.php:743
-msgid "Uzbekistan"
+msgid "Uruguay"
 msgstr ""
 
 #: app/class-ms-gateway.php:744
-msgid "Vanuatu"
+msgid "Uzbekistan"
 msgstr ""
 
 #: app/class-ms-gateway.php:745
-msgid "Venezuela"
+msgid "Vanuatu"
 msgstr ""
 
 #: app/class-ms-gateway.php:746
-msgid "Viet Nam"
+msgid "Venezuela"
 msgstr ""
 
 #: app/class-ms-gateway.php:747
-msgid "Virgin Islands, British"
+msgid "Viet Nam"
 msgstr ""
 
 #: app/class-ms-gateway.php:748
-msgid "Virgin Islands, U.s."
+msgid "Virgin Islands, British"
 msgstr ""
 
 #: app/class-ms-gateway.php:749
-msgid "Wallis And Futuna"
+msgid "Virgin Islands, U.s."
 msgstr ""
 
 #: app/class-ms-gateway.php:750
-msgid "Western Sahara"
+msgid "Wallis And Futuna"
 msgstr ""
 
 #: app/class-ms-gateway.php:751
+msgid "Western Sahara"
+msgstr ""
+
+#: app/class-ms-gateway.php:752
 msgid "Zambia"
 msgstr ""
 
@@ -2280,52 +2284,52 @@ msgstr ""
 msgid "API Docs"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:93
+#: app/controller/class-ms-controller-import.php:99
 msgid ""
 "Matching details saved. Future transactions are automatically processed "
 "from now on!"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:279
+#: app/controller/class-ms-controller-import.php:287
 msgid "Coming soon: This import source is not supported yet..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:316
+#: app/controller/class-ms-controller-import.php:324
 #: app/view/class-ms-view-migrationm1.php:70
 msgid "Importing data..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:317
+#: app/controller/class-ms-controller-import.php:325
 #: app/view/class-ms-view-migrationm1.php:71
 msgid "Okay"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:318
+#: app/controller/class-ms-controller-import.php:326
 #: app/view/class-ms-view-migrationm1.php:72
 msgid "All done!"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:319
+#: app/controller/class-ms-controller-import.php:327
 #: app/view/class-ms-view-migrationm1.php:73
 msgid "Preparing..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:320
+#: app/controller/class-ms-controller-import.php:328
 #: app/view/class-ms-view-migrationm1.php:74
 msgid "Cleaning up..."
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:321
+#: app/controller/class-ms-controller-import.php:329
 #: app/view/class-ms-view-migrationm1.php:75
 msgid "Importing Member"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:322
+#: app/controller/class-ms-controller-import.php:330
 #: app/view/class-ms-view-migrationm1.php:76
 msgid "Importing Membership"
 msgstr ""
 
-#: app/controller/class-ms-controller-import.php:323
+#: app/controller/class-ms-controller-import.php:331
 #: app/view/class-ms-view-migrationm1.php:77
 msgid "Importing Settings"
 msgstr ""
@@ -2364,7 +2368,7 @@ msgid "Details"
 msgstr ""
 
 #: app/controller/class-ms-controller-membership.php:1008
-#: app/view/settings/class-ms-view-settings-import.php:117
+#: app/view/settings/class-ms-view-settings-import.php:122
 msgid "Membership Type"
 msgstr ""
 
@@ -2543,7 +2547,7 @@ msgid "Before testing you have to first enter one or more Page URLs above."
 msgstr ""
 
 #: app/controller/class-ms-controller-settings.php:325
-#: app/view/settings/page/class-ms-view-settings-page-import.php:93
+#: app/view/settings/page/class-ms-view-settings-page-import.php:107
 msgid "Import Tool"
 msgstr ""
 
@@ -2652,7 +2656,7 @@ msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:748
 #: app/view/class-ms-view-help.php:1493
-#: app/view/settings/class-ms-view-settings-import.php:160
+#: app/view/settings/class-ms-view-settings-import.php:174
 msgid "Invoices"
 msgstr ""
 
@@ -3922,7 +3926,7 @@ msgid "Everyone"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-rule.php:113
-#: app/view/settings/class-ms-view-settings-import.php:256
+#: app/view/settings/class-ms-view-settings-import.php:270
 msgid "Content"
 msgstr ""
 
@@ -4587,15 +4591,15 @@ msgstr ""
 msgid "None (Admin)"
 msgstr ""
 
-#: app/model/class-ms-model-import.php:387
+#: app/model/class-ms-model-import.php:408
 msgid "Could not import Member <strong>%1$s</strong> (%2$s)"
 msgstr ""
 
-#: app/model/class-ms-model-import.php:448
+#: app/model/class-ms-model-import.php:473
 msgid "Could not import a Membership for User <strong>%1$s</strong> (%2$s)"
 msgstr ""
 
-#: app/model/class-ms-model-import.php:457
+#: app/model/class-ms-model-import.php:482
 msgid "Did not import the base membership %2$s for <strong>%1$s</strong>"
 msgstr ""
 
@@ -6248,7 +6252,7 @@ msgstr ""
 
 #: app/view/billing/class-ms-view-billing-edit.php:173
 #: app/view/frontend/class-ms-view-frontend-payment.php:153
-#: app/view/settings/class-ms-view-settings-import.php:119
+#: app/view/settings/class-ms-view-settings-import.php:124
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:193
 msgid "Description"
 msgstr ""
@@ -6733,7 +6737,7 @@ msgid "Subscription ID"
 msgstr ""
 
 #: app/view/member/class-ms-view-member-editor.php:375
-#: app/view/settings/class-ms-view-settings-import.php:118
+#: app/view/settings/class-ms-view-settings-import.php:123
 msgid "Payment Type"
 msgstr ""
 
@@ -7196,106 +7200,110 @@ msgstr ""
 msgid "Send %2$s pending Email Responses %1$s"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:64
+#: app/view/settings/class-ms-view-settings-import.php:68
 msgid "Import Overview"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:70
+#: app/view/settings/class-ms-view-settings-import.php:74
 msgid "List of all Memberships"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:77
+#: app/view/settings/class-ms-view-settings-import.php:81
 msgid "List of all Members"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:84
+#: app/view/settings/class-ms-view-settings-import.php:88
 msgid "Imported Settings"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:116
+#: app/view/settings/class-ms-view-settings-import.php:121
 #: app/view/shortcode/class-ms-view-shortcode-account.php:71
 msgid "Membership name"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:159
+#: app/view/settings/class-ms-view-settings-import.php:173
 msgid "Subscriptions"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:191
+#: app/view/settings/class-ms-view-settings-import.php:205
 msgid "Activate: "
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:193
+#: app/view/settings/class-ms-view-settings-import.php:207
 msgid "Dectivate: "
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:198
+#: app/view/settings/class-ms-view-settings-import.php:212
 msgid "Add-Ons"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:207
+#: app/view/settings/class-ms-view-settings-import.php:221
 msgid "(No settings are changed)"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:246
+#: app/view/settings/class-ms-view-settings-import.php:260
 msgid "Data source"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:250
+#: app/view/settings/class-ms-view-settings-import.php:264
 msgid "exported on %1$s"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:258
+#: app/view/settings/class-ms-view-settings-import.php:272
 msgid "%1$s Membership"
 msgid_plural "%1$s Memberships"
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/view/settings/class-ms-view-settings-import.php:266
+#: app/view/settings/class-ms-view-settings-import.php:280
 msgid "%1$s Member"
 msgid_plural "%1$s Members"
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/view/settings/class-ms-view-settings-import.php:285
+#: app/view/settings/class-ms-view-settings-import.php:299
 msgid "Please note"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:291
+#: app/view/settings/class-ms-view-settings-import.php:305
+msgid "Each item on its own"
+msgstr ""
+
+#: app/view/settings/class-ms-view-settings-import.php:306
 msgid "Small (10 items)"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:292
+#: app/view/settings/class-ms-view-settings-import.php:307
 msgid "Normal (30 items)"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:293
+#: app/view/settings/class-ms-view-settings-import.php:308
 msgid "Big (100 items)"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:299
+#: app/view/settings/class-ms-view-settings-import.php:314
 msgid "Batch size for import"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:300
+#: app/view/settings/class-ms-view-settings-import.php:315
 msgid "Big batches will be processed faster but may result in PHP Memory errors."
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:309
+#: app/view/settings/class-ms-view-settings-import.php:324
 msgid ""
 "Replace current content with import data (removes existing "
 "Memberships/Members before importing data)"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:359
+#: app/view/settings/class-ms-view-settings-import.php:374
 msgid "Skip"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:369
+#: app/view/settings/class-ms-view-settings-import.php:384
 msgid "Import"
 msgstr ""
 
-#: app/view/settings/class-ms-view-settings-import.php:377
+#: app/view/settings/class-ms-view-settings-import.php:392
 msgid "Download as Export File"
 msgstr ""
 
@@ -7366,35 +7374,41 @@ msgstr ""
 msgid "Hide the admin toolbar for non administrator users."
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:19
+#: app/view/settings/page/class-ms-view-settings-page-import.php:34
 msgid "Generate Export"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:41
+#: app/view/settings/page/class-ms-view-settings-page-import.php:35
+msgid ""
+"Generate an export file with the current membership settings. <em>Note that "
+"this is not a full backup of the plugin settings.</em>"
+msgstr ""
+
+#: app/view/settings/page/class-ms-view-settings-page-import.php:55
 msgid "From export file"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:49
+#: app/view/settings/page/class-ms-view-settings-page-import.php:63
 msgid "Membership (WPMU DEV)"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:65
+#: app/view/settings/page/class-ms-view-settings-page-import.php:79
 msgid "Choose an import source"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:72
+#: app/view/settings/page/class-ms-view-settings-page-import.php:86
 msgid "Preview Import"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:73
+#: app/view/settings/page/class-ms-view-settings-page-import.php:87
 msgid "Import data into this installation."
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:106
+#: app/view/settings/page/class-ms-view-settings-page-import.php:120
 msgid "Import data"
 msgstr ""
 
-#: app/view/settings/page/class-ms-view-settings-page-import.php:112
+#: app/view/settings/page/class-ms-view-settings-page-import.php:126
 msgid "Export data"
 msgstr ""
 
@@ -7726,19 +7740,19 @@ msgstr ""
 msgid "Arguments to pass to the %slogin shortcode%s"
 msgstr ""
 
-#: membership2.php:51
+#: membership2.php:55
 msgid ""
 "Could not load the plugin %s, because another version of the plugin is "
 "already loaded"
 msgstr ""
 
-#: membership2.php:118
+#: membership2.php:127
 msgid ""
 "Hey %s, you've been using %s for a while now, and we hope you're happy with "
 "it."
 msgstr ""
 
-#: membership2.php:120
+#: membership2.php:129
 msgid ""
 "We're constantly working to improve our plugins, and it helps a lot when "
 "members just like you share feedback!"
