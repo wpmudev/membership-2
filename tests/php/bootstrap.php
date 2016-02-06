@@ -9,7 +9,11 @@ ob_start();
 /**
  * The path to the WordPress tests checkout.
  */
-define( 'WP_TESTS_DIR', '/srv/www/wptest/wordpress-develop/tests/phpunit/' );
+if ( file_exists( '/srv/www/wptest/wordpress-develop/tests/phpunit/' ) ) {
+	define( 'WP_TESTS_DIR', '/srv/www/wptest/wordpress-develop/tests/phpunit/' );
+} else { // Without the "wptest" but with "trunk" subfolder...
+	define( 'WP_TESTS_DIR', '/srv/www/wordpress-develop/trunk/tests/phpunit/' );
+}
 
 /**
  * The path to the main file of the plugin to test.
