@@ -293,6 +293,7 @@ class MS_View_Settings_Import extends MS_View {
 		}
 
 		$batchsizes = array(
+			1 => __( 'Each item on its own' ),
 			10 => __( 'Small (10 items)' ),
 			30 => __( 'Normal (30 items)' ),
 			100 => __( 'Big (100 items)' ),
@@ -303,7 +304,7 @@ class MS_View_Settings_Import extends MS_View {
 			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
 			'title' => __( 'Batch size for import', 'membership2' ),
 			'desc' => __( 'Big batches will be processed faster but may result in PHP Memory errors.', 'membership2' ),
-			'value' => 30,
+			'value' => 10,
 			'field_options' => $batchsizes,
 			'class' => 'sel-batchsize',
 		);
