@@ -130,6 +130,15 @@ class MS_View_Settings_Import extends MS_View {
 				$item->type = MS_Model_Membership::TYPE_STANDARD;
 			}
 
+			if ( empty( $item->payment_type ) ) {
+				if ( ! empty( $item->pay_type ) ) {
+					// Compatibility with bug in old M1 export files.
+					$item->payment_type = $item->pay_type;
+				} else {
+					$item->payment_type = 'permanent';
+				}
+			}
+
 			switch ( $item->payment_type ) {
 				case 'recurring':
 					$payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;

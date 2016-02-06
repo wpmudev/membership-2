@@ -305,7 +305,12 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		if ( empty( $obj->payment_type ) ) {
-			$obj->payment_type = 'permanent';
+			if ( ! empty( $obj->pay_type ) ) {
+				// Compatibility with bug in old M1 export files.
+				$obj->payment_type = $obj->pay_type;
+			} else {
+				$obj->payment_type = 'permanent';
+			}
 		}
 
 		$membership->period = array();
