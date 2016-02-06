@@ -4,6 +4,13 @@ Author: Philipp Stracker, Ashok Kumar Nath, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.2.8 (UNRELEASAED)
+----------------------------------------------------------------------
+- Added: New import option to import each membership on its own, to prevent memory- or similar overflow issues.
+- Added: Settings for PayPal gateways now also list the country "Croatia".
+- Fixed: Import of M1 data now correctly creates recurring memberships.
+- Fixed: People who saw a PHP notice "WDEV_DEBUG is undefined": It's gone!
+
 1.0.2.7
 ----------------------------------------------------------------------
 - Added: Constant 'MS_LOG_EMAILS' to enable log and display email logs
