@@ -1,10 +1,14 @@
 <?php
 /**
+ * Model
+ *
+ * @package Membership2
+ */
+
+/**
  * Base class for all import handlers.
  *
  * @since  1.0.0
- * @package Membership2
- * @subpackage Model
  */
 class MS_Model_Import extends MS_Model {
 
@@ -47,8 +51,7 @@ class MS_Model_Import extends MS_Model {
 	 * Logic has to be implemented by child classes.
 	 *
 	 * @since  1.0.0
-	 *
-	 * @return bool
+	 * @throws Exception This function must be overwritten in child classes.
 	 */
 	public function prepare() {
 		throw new Exception( 'Method to be implemented in child class' );
@@ -135,7 +138,7 @@ class MS_Model_Import extends MS_Model {
 	private function get_import_obj_cache( $req_type ) {
 		$cache = get_option( 'MS_Import_Obj_Cache', false );
 		$cache = lib3()->array->get( $cache );
-		if ( ! isset( $cache[$req_type] ) ) { $cache[$req_type] = array(); }
+		if ( ! isset( $cache[ $req_type ] ) ) { $cache[ $req_type ] = array(); }
 
 		return $cache;
 	}
@@ -144,7 +147,7 @@ class MS_Model_Import extends MS_Model {
 	 * Stores the import cache object.
 	 *
 	 * @since  1.0.0
-	 * @param  array The full import object cache.
+	 * @param  array $cache The full import object cache.
 	 */
 	private function set_import_obj_cache( $cache ) {
 		update_option( 'MS_Import_Obj_Cache', $cache );
@@ -166,9 +169,9 @@ class MS_Model_Import extends MS_Model {
 	 * associates the real object ID with an import ID to recognize them again.
 	 *
 	 * @since  1.0.0
-	 * @param  string $type Object type ('membership', ...)
-	 * @param  string $import_id Import-ID
-	 * @param  any $obj The imported object
+	 * @param  string $type Object type ('membership', ...).
+	 * @param  string $import_id Import-ID.
+	 * @param  mixed  $obj The imported object.
 	 */
 	protected function store_import_obj( $type, $import_id, $obj ) {
 		$cache = $this->get_import_obj_cache( $type );
@@ -177,7 +180,7 @@ class MS_Model_Import extends MS_Model {
 		 * We store class-name and obj-ID in the array.
 		 * The object ID will be different from the import_id!
 		 */
-		$cache[$type][$import_id] = array(
+		$cache[ $type ][ $import_id ] = array(
 			'class' => get_class( $obj ),
 			'id' => $obj->id,
 		);
@@ -192,16 +195,16 @@ class MS_Model_Import extends MS_Model {
 	 * associates the real object ID with an import ID to recognize them again.
 	 *
 	 * @since  1.0.0
-	 * @param  string $type Object type ('membership', ...)
-	 * @param  string $import_id Import-ID
+	 * @param  string $type Object type ('membership', ...).
+	 * @param  string $import_id Import-ID.
 	 * @return MS_Model The requested object
 	 */
 	protected function get_import_obj( $type, $import_id ) {
 		$cache = $this->get_import_obj_cache( $type );
 
 		$obj = null;
-		if ( isset( $cache[$type][$import_id] ) ) {
-			$info = $cache[$type][$import_id];
+		if ( isset( $cache[ $type ][ $import_id ] ) ) {
+			$info = $cache[ $type ][ $import_id ];
 			$obj = MS_Factory::load( $info['class'], $info['id'] );
 		}
 		return $obj;
@@ -234,7 +237,7 @@ class MS_Model_Import extends MS_Model {
 	 * Import specific data: A single membership
 	 *
 	 * @since  1.0.0
-	 * @param  object $obj The import object
+	 * @param  object $obj The import object.
 	 */
 	public function import_membership( $obj ) {
 		$membership = MS_Factory::create( 'MS_Model_Membership' );
@@ -248,7 +251,7 @@ class MS_Model_Import extends MS_Model {
 	 * Makes sure the specified period-type is a recognized value.
 	 *
 	 * @since  1.0.0
-	 * @param  string $period_type An unvalidated period string
+	 * @param  string $period_type An unvalidated period string.
 	 * @return string A valid period-type string
 	 */
 	protected function valid_period( $period_type ) {
@@ -256,10 +259,21 @@ class MS_Model_Import extends MS_Model {
 
 		if ( strlen( $period_type ) > 0 ) {
 			switch ( $period_type[0] ) {
-				case 'd': $res = 'days'; break;
-				case 'w': $res = 'weeks'; break;
-				case 'm': $res = 'months'; break;
-				case 'y': $res = 'years'; break;
+				case 'd':
+					$res = 'days';
+					break;
+
+				case 'w':
+					$res = 'weeks';
+					break;
+
+				case 'm':
+					$res = 'months';
+					break;
+
+				case 'y':
+					$res = 'years';
+					break;
 			}
 		}
 
@@ -272,6 +286,8 @@ class MS_Model_Import extends MS_Model {
 	 * memberships and also child memberships
 	 *
 	 * @since  1.0.0
+	 * @param  object $membership The membership object to populate.
+	 * @param  object $obj The import data.
 	 */
 	protected function populate_membership( &$membership, $obj ) {
 		$membership->name = $obj->name;
@@ -370,7 +386,7 @@ class MS_Model_Import extends MS_Model {
 	 * Import specific data: A single member
 	 *
 	 * @since  1.0.0
-	 * @param  object $obj The import object
+	 * @param  object $obj The import object.
 	 */
 	public function import_member( $obj ) {
 		$wpuser = get_user_by( 'email', $obj->email );
@@ -398,8 +414,11 @@ class MS_Model_Import extends MS_Model {
 		$member->is_member = true;
 
 		$pay = $obj->payment;
-		if ( is_array( $pay ) ) { $pay = (object) $pay; }
-		elseif ( ! is_object( $pay ) ) { $pay = (object) array(); }
+		if ( is_array( $pay ) ) {
+			$pay = (object) $pay;
+		} elseif ( ! is_object( $pay ) ) {
+			$pay = (object) array();
+		}
 
 		lib3()->array->equip(
 			$pay,
@@ -427,7 +446,7 @@ class MS_Model_Import extends MS_Model {
 
 		$member->save();
 
-		// Import all memberships of the member
+		// Import all memberships of the member.
 		foreach ( $obj->subscriptions as $subscription ) {
 			$subscription = (object) $subscription;
 			$this->import_subscription( $member, $subscription );
@@ -438,7 +457,8 @@ class MS_Model_Import extends MS_Model {
 	 * Import specific data: A single subscription (= relationship)
 	 *
 	 * @since  1.0.0
-	 * @param  object $obj The import object
+	 * @param  object $member The associated Member.
+	 * @param  object $obj The import data.
 	 */
 	protected function import_subscription( $member, $obj ) {
 		$membership = $this->get_import_obj( 'membership', $obj->membership );
@@ -480,7 +500,7 @@ class MS_Model_Import extends MS_Model {
 
 		$is_paid = false;
 
-		// Import invoices for this subscription
+		// Import invoices for this subscription.
 		if ( ! empty( $obj->invoices ) && is_array( $obj->invoices ) ) {
 			foreach ( $obj->invoices as $invoice ) {
 				$invoice = (object) $invoice;
@@ -503,7 +523,8 @@ class MS_Model_Import extends MS_Model {
 	 * Import specific data: A single invoice
 	 *
 	 * @since  1.0.0
-	 * @param  object $obj The import object
+	 * @param  object $subscription The associated subscription.
+	 * @param  object $obj Import data.
 	 */
 	protected function import_invoice( $subscription, $obj ) {
 		$ms_invoice = MS_Model_Invoice::create_invoice( $subscription );
@@ -536,7 +557,8 @@ class MS_Model_Import extends MS_Model {
 	 * Import specific data: A single setting
 	 *
 	 * @since  1.0.0
-	 * @param  object $obj The import object
+	 * @param  object $setting The setting-key to import.
+	 * @param  object $value The setting-value to import.
 	 */
 	public function import_setting( $setting, $value ) {
 		switch ( $setting ) {
@@ -568,7 +590,7 @@ class MS_Model_Import extends MS_Model {
 	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
 	 *
 	 * @since  1.0.1.2
-	 * @param  int $source_id The M1 sub_id.
+	 * @param  int    $source_id The M1 sub_id.
 	 * @param  string $source The import source.
 	 * @return bool True if the transaction details need matching.
 	 */
@@ -608,7 +630,7 @@ class MS_Model_Import extends MS_Model {
 	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
 	 *
 	 * @since  1.0.1.2
-	 * @param  int $source_id The M1 sub_id.
+	 * @param  int    $source_id The M1 sub_id.
 	 * @param  string $source The import source.
 	 */
 	static public function need_matching( $source_id, $source ) {
@@ -634,7 +656,7 @@ class MS_Model_Import extends MS_Model {
 	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
 	 *
 	 * @since  1.0.1.2
-	 * @param  int $source_id The M1 sub_id.
+	 * @param  int    $source_id The M1 sub_id.
 	 * @param  string $source The import source.
 	 */
 	static public function dont_need_matching( $source_id, $source ) {
@@ -648,7 +670,7 @@ class MS_Model_Import extends MS_Model {
 
 		foreach ( $lst as $key => $id ) {
 			if ( $id == $source_id ) {
-				unset( $lst[$key] );
+				unset( $lst[ $key ] );
 			}
 		}
 
@@ -670,7 +692,7 @@ class MS_Model_Import extends MS_Model {
 	 *   )
 	 *
 	 * @since  1.0.1.2
-	 * @param  int $membership_id The M2 membership_id.
+	 * @param  int    $membership_id The M2 membership_id.
 	 * @param  string $source_id The matching-ID to identify transactions.
 	 * @param  string $source The matching-key to identify transactions.
 	 * @return bool True if the matching was saved.
@@ -690,16 +712,16 @@ class MS_Model_Import extends MS_Model {
 			$changed = false;
 
 			if ( ! is_array( $data ) ) { continue; }
-			if ( ! isset( $data[$source] ) ) { continue; }
-			if ( ! is_array( $data[$source] ) ) {
-				unset( $data[$source] );
+			if ( ! isset( $data[ $source ] ) ) { continue; }
+			if ( ! is_array( $data[ $source ] ) ) {
+				unset( $data[ $source ] );
 				continue;
 			}
 
-			foreach ( $data[$source] as $key => $id ) {
+			foreach ( $data[ $source ] as $key => $id ) {
 				if ( $id == $source_id ) {
-					unset( $data[$source][$key] );
-					$data[$source] = array_values( array_unique( $data[$source] ) );
+					unset( $data[ $source ][ $key ] );
+					$data[ $source ] = array_values( array_unique( $data[ $source ] ) );
 					$changed = true;
 				}
 			}
@@ -715,11 +737,11 @@ class MS_Model_Import extends MS_Model {
 		);
 
 		if ( empty( $data[$source] ) || ! array( $data[$source] ) ) {
-			$data[$source] = array();
+			$data[ $source ] = array();
 		}
 
-		$data[$source][] = $source_id;
-		$data[$source] = array_values( array_unique( $data[$source] ) );
+		$data[ $source ][] = $source_id;
+		$data[ $source ] = array_values( array_unique( $data[ $source ] ) );
 
 		$membership->set_custom_data( 'matching', $data );
 		$membership->save();
@@ -815,8 +837,8 @@ class MS_Model_Import extends MS_Model {
 		foreach ( $memberships as $membership ) {
 			$data = $membership->get_custom_data( 'matching' );
 			if ( empty( $data ) || ! is_array( $data ) ) { continue; }
-			if ( ! isset( $data[$matching_key] ) ) { continue; }
-			$ids = lib3()->array->get( $data[$matching_key] );
+			if ( ! isset( $data[ $matching_key ] ) ) { continue; }
+			$ids = lib3()->array->get( $data[ $matching_key ] );
 
 			foreach ( $ids as $id ) {
 				if ( $matching_id == $id ) {
@@ -837,8 +859,8 @@ class MS_Model_Import extends MS_Model {
 	 * See MS_Helper_Listtable_TransactionMatching for a list of sources.
 	 *
 	 * @since  1.0.1.2
-	 * @param  int $user_id The user-ID.
-	 * @param  string|int $matching_id The matching-ID (M1 sub_id, a btn_id, etc).
+	 * @param  int    $user_id The user-ID.
+	 * @param  string $matching_id The matching-ID (M1 sub_id, a btn_id, etc).
 	 * @param  string $type The matching type to apply. Default is 'm1'.
 	 * @param  string $gateway The payment gateway.
 	 * @return MS_Model_Relationship|null The subscription object.

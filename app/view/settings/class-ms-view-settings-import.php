@@ -1,10 +1,14 @@
 <?php
 /**
+ * View.
+ *
+ * @package Membership2
+ */
+
+/**
  * Displays the Import preview.
  *
  * @since  1.0.0
- * @package Membership2
- * @subpackage Model
  */
 class MS_View_Settings_Import extends MS_View {
 
@@ -31,7 +35,7 @@ class MS_View_Settings_Import extends MS_View {
 			);
 		}
 
-		// Converts object to array
+		// Converts object to array.
 		$data->memberships = (array) $data->memberships;
 		$data->members = (array) $data->members;
 
@@ -103,14 +107,15 @@ class MS_View_Settings_Import extends MS_View {
 	 *
 	 * @since  1.0.0
 	 *
+	 * @param  object $data The import data object.
 	 * @return array
 	 */
 	protected function prepare_fields( $data ) {
-		// List of known Membership types; used to display the nice-name
+		// List of known Membership types; used to display the nice-name.
 		$ms_types = MS_Model_Membership::get_types();
 		$ms_paytypes = MS_Model_Membership::get_payment_types();
 
-		// Prepare the "Memberships" table
+		// Prepare the "Memberships" table.
 		$memberships = array(
 			array(
 				__( 'Membership name', 'membership2' ),
@@ -121,7 +126,7 @@ class MS_View_Settings_Import extends MS_View {
 		);
 
 		foreach ( $data->memberships as $item ) {
-			if ( ! isset( $ms_types[$item->type] ) ) {
+			if ( ! isset( $ms_types[ $item->type ] ) ) {
 				$item->type = MS_Model_Membership::TYPE_STANDARD;
 			}
 
@@ -145,13 +150,13 @@ class MS_View_Settings_Import extends MS_View {
 
 			$memberships[] = array(
 				$item->name,
-				$ms_types[$item->type],
-				$ms_paytypes[$payment_type],
+				$ms_types[ $item->type ],
+				$ms_paytypes[ $payment_type ],
 				$item->description,
 			);
 		}
 
-		// Prepare the "Members" table
+		// Prepare the "Members" table.
 		$members = array(
 			array(
 				__( 'Username', 'membership2' ),
@@ -192,7 +197,7 @@ class MS_View_Settings_Import extends MS_View {
 						} else {
 							$code .= __( 'Dectivate: ', 'membership2' );
 						}
-						$code .= $list[$addon]->name . '<br/>';
+						$code .= $list[ $addon ]->name . '<br/>';
 					}
 					$settings[] = array(
 						__( 'Add-Ons', 'membership2' ),
@@ -211,7 +216,7 @@ class MS_View_Settings_Import extends MS_View {
 		// Prepare the return value.
 		$fields = array();
 
-		// Export-Notes
+		// Export-Notes.
 		$notes = '';
 		if ( isset( $data->notes ) ) {
 			if ( is_scalar( $data->notes ) ) {
@@ -277,7 +282,7 @@ class MS_View_Settings_Import extends MS_View {
 				'head_col' => true,
 				'head_row' => false,
 				'col_class' => array( 'preview-label', 'preview-data' ),
-			)
+			),
 		);
 
 		if ( ! empty( $notes ) ) {
@@ -318,7 +323,7 @@ class MS_View_Settings_Import extends MS_View {
 				'head_col' => false,
 				'head_row' => true,
 				'col_class' => array( 'preview-name', 'preview-type', 'preview-pay-type', 'preview-desc' ),
-			)
+			),
 		);
 
 		$fields['members'] = array(
@@ -329,7 +334,7 @@ class MS_View_Settings_Import extends MS_View {
 				'head_col' => false,
 				'head_row' => true,
 				'col_class' => array( 'preview-name', 'preview-email', 'preview-count', 'preview-count' ),
-			)
+			),
 		);
 
 		$fields['settings'] = array(
@@ -339,7 +344,7 @@ class MS_View_Settings_Import extends MS_View {
 			'field_options' => array(
 				'head_col' => true,
 				'head_row' => false,
-			)
+			),
 		);
 
 		$fields['sep'] = array(
@@ -380,5 +385,4 @@ class MS_View_Settings_Import extends MS_View {
 
 		return $fields;
 	}
-
 }

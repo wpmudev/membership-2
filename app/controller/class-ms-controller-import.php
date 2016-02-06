@@ -1,5 +1,11 @@
 <?php
 /**
+ * Controller.
+ *
+ * @package Membership2
+ */
+
+/**
  * Class that handles Import/Export functions.
  *
  * @since  1.0.0
@@ -51,7 +57,7 @@ class MS_Controller_Import extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function admin_init() {
-		$tab_key = 'import'; // should be unique plugin-wide value of `&tab=`.
+		$tab_key = 'import'; // Should be unique plugin-wide value of `&tab=`.
 
 		$this->run_action(
 			'ms_controller_settings_enqueue_scripts_' . $tab_key,
@@ -64,9 +70,9 @@ class MS_Controller_Import extends MS_Controller {
 	 *
 	 * Expected JSON output:
 	 * {
-	 *     @var bool  `success`
-	 *     @var array `data` {
-	 *         @var string  `message`
+	 *     success [bool]
+	 *     data [object] {
+	 *         message [string]
 	 *     }
 	 * }
 	 *
@@ -83,9 +89,9 @@ class MS_Controller_Import extends MS_Controller {
 		if ( $this->verify_nonce()
 			&& self::validate_required( $fields_match )
 		) {
-			$source = $_POST['source'];
-			$source_id = $_POST['source_id'];
-			$match_id = $_POST['match_with'];
+			$source = $_REQUEST['source'];
+			$source_id = $_REQUEST['source_id'];
+			$match_id = $_REQUEST['match_with'];
 
 			if ( MS_Model_Import::match_with_source( $match_id, $source_id, $source ) ) {
 				wp_send_json_success(
@@ -105,10 +111,10 @@ class MS_Controller_Import extends MS_Controller {
 	 *
 	 * Expected JSON output:
 	 * {
-	 *     @var bool  `success`
-	 *     @var array `data` {
-	 *         @var string  `desc`
-	 *         @var string  `status`
+	 *     success [bool]
+	 *     data [object] {
+	 *         desc [string]
+	 *         status [string]
 	 *     }
 	 * }
 	 *
@@ -159,7 +165,7 @@ class MS_Controller_Import extends MS_Controller {
 		$success = 0;
 
 		if ( ! isset( $_POST['items'] ) || ! isset( $_POST['source'] ) ) {
-			echo $res;
+			echo 'ERR';
 			exit;
 		}
 
@@ -173,7 +179,7 @@ class MS_Controller_Import extends MS_Controller {
 			}
 		}
 
-		echo $res . ':' . $success;
+		echo esc_html( $res . ':' . $success );
 		exit;
 	}
 
@@ -181,7 +187,9 @@ class MS_Controller_Import extends MS_Controller {
 	 * Processes a single import command.
 	 *
 	 * @since  1.0.0
-	 * @param  array $item The import command.
+	 * @param  array  $item The import command.
+	 * @param  string $source The import source.
+	 * @return bool
 	 */
 	protected function process_item( $item, $source ) {
 		$res = false;
@@ -195,7 +203,7 @@ class MS_Controller_Import extends MS_Controller {
 		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
 		MS_Plugin::set_modifier( 'MS_STOP_EMAILS', true );
 
-		// Possible tasks are defined in ms-view-settings-import.js
+		// Possible tasks are defined in ms-view-settings-import.js.
 		switch ( $task ) {
 			case 'start':
 				lib3()->array->equip( $item, 'clear' );
@@ -273,7 +281,7 @@ class MS_Controller_Import extends MS_Controller {
 
 				try {
 					$model = MS_Factory::create( $model_name );
-				} catch( Exception $ex ) {
+				} catch ( Exception $ex ) {
 					self::_message(
 						'error',
 						__( 'Coming soon: This import source is not supported yet...', 'membership2' )
@@ -327,5 +335,4 @@ class MS_Controller_Import extends MS_Controller {
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
-
 }

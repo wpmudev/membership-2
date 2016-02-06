@@ -1,7 +1,22 @@
 <?php
+/**
+ * View.
+ *
+ * @package Membership2
+ */
 
+/**
+ * Render the Settings > Import Tool pages.
+ */
 class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 
+	/**
+	 * Return the page contents.
+	 * Note: Return, not output!
+	 *
+	 * @since  1.0.0
+	 * @return string
+	 */
 	public function to_html() {
 		$export_action = MS_Controller_Import::ACTION_EXPORT;
 		$import_action = MS_Controller_Import::ACTION_PREVIEW;
@@ -18,8 +33,7 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Generate Export', 'membership2' ),
 				'desc' => __(
-					'Generate an export file with the current membership settings. ' .
-					'<em>Note that this is not a full backup of the plugin settings.</em>',
+					'Generate an export file with the current membership settings. <em>Note that this is not a full backup of the plugin settings.</em>',
 					'membership2'
 				),
 			),
@@ -52,10 +66,10 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		);
 
 		$sel_source = 'file';
-		if ( isset( $_POST['import_source'] )
-			&& isset( $import_options[ $_POST['import_source'] ] )
+		if ( isset( $_REQUEST['import_source'] )
+			&& isset( $import_options[ $_REQUEST['import_source'] ] )
 		) {
-			$sel_source = $_POST['import_source'];
+			$sel_source = $_REQUEST['import_source'];
 		}
 
 		$import_fields = array(
@@ -97,7 +111,7 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		<div>
 			<?php if ( $preview ) : ?>
 				<form action="" method="post">
-					<?php echo '' . $preview; ?>
+					<?php echo wp_kses_post( $preview ); ?>
 				</form>
 			<?php else : ?>
 				<form action="" method="post" enctype="multipart/form-data">
@@ -117,5 +131,4 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		<?php
 		return ob_get_clean();
 	}
-
 }
