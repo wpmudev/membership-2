@@ -366,7 +366,23 @@ class MS_Helper_Period extends MS_Helper {
 			$desc = '%1$s %2$s';
 		}
 		$desc = sprintf( $desc, $period_unit, $period_type );
-
+                
+                $desc = str_replace(
+                            array(
+                                'days',
+                                'weeks',
+                                'months',
+                                'years'
+                            ),
+                            array(
+                                __( 'days', 'membership2' ),
+                                __( 'weeks', 'membership2' ),
+                                __( 'months', 'membership2' ),
+                                __( 'years', 'membership2' )
+                            ),
+                            $desc
+                        );
+                
 		return apply_filters(
 			'ms_helper_period_get_period_desc',
 			$desc
