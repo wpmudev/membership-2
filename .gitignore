@@ -6,3 +6,5 @@ release
 OK
 *.local
 .DS_Store
+/nbproject/private/
+nbproject
