@@ -148,18 +148,12 @@ class MS_Controller_Dialog extends MS_Controller {
 			 * @since  1.0.0
 			 */
                         $enforce = false;
-                        if( wp_get_referer() ) {
-                            $resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', wp_get_referer(), $member );
-                            $resp['redirect'] = apply_filters(
-				'ms_url_after_login',
-				$resp['redirect'],
-				$enforce
-                            );
+                        if( isset( $_POST['redirect_to'] ) ) {
+                            $resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', $_POST['redirect_to'], $member );
                         }else{
-                            $resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', '', $member );
                             $resp['redirect'] = apply_filters(
 				'ms_url_after_login',
-				$resp['redirect'],
+				$_POST['redirect_to'],
 				$enforce
                             );
                         }
