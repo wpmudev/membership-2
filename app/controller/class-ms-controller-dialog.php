@@ -229,10 +229,11 @@ class MS_Controller_Dialog extends MS_Controller {
 			$schema = is_ssl() ? 'https' : 'http';
 
 			$message = sprintf(
-				__( 'Someone requested that the password be reset for the following account: %sIf this was a mistake, just ignore this email and nothing will happen.%s', 'membership2' ),
-				"\r\n\r\n" . network_home_url( '/', $schema ) . "\r\n" .
-				sprintf( __( 'Your username: %s', 'membership2' ), $user_login ) . "\r\n\r\n",
-				"\r\n\r\n" . $reset->url . "\r\n"
+				__( 'Someone has requested a password reset for the following account: %sIf this was a mistake, just ignore this email and nothing will happen.%s %s', 'membership2' ),
+				"\r\n\r\n" . network_home_url( '/', $schema ) . "\r\n\r\n" .
+				sprintf( __( 'Username: %s', 'membership2' ), $user_login ) . "\r\n\r\n",
+                                "\r\n\r\n" . __( 'To reset your password, visit the following address:', 'membership2' ) . "\r\n",
+				"\r\n<" . $reset->url . ">\r\n"
 			);
 
 			if ( is_multisite() ) {
