@@ -77,6 +77,18 @@ class MS_Addon_Redirect extends MS_Addon {
 				'filter_url_after_logout',
 				10, 2
 			);
+                        
+                        $this->add_filter(
+                            'login_redirect',
+                            'm2_login_redirect',
+                            999, 3
+                        );
+                        
+                        $this->add_action(
+                            'wp_logout',
+                            'm2_logout_redirect',
+                            999
+                        );
 		}
 	}
 
@@ -202,6 +214,24 @@ class MS_Addon_Redirect extends MS_Addon {
 
 		return $url;
 	}
+        
+        /**
+         * Login redirect
+         *
+         * @since 1.0.2.8
+         */
+        public function m2_login_redirect( $redirect_to, $request, $user ) {
+            if( isset( $user->ID ) && ! MS_Model_Member::is_admin_user( $user->ID ) ) {
+                $model = self::model();
+                $new_url = $model->get( 'redirect_login' );
+
+                if ( ! empty( $new_url ) ) {
+                        $redirect_to = lib3()->net->expand_url( $new_url );
+                }
+            }
+            
+            return $redirect_to;
+        }
 
 	/**
 	 * Replaces the default "After Logout" URL
@@ -223,5 +253,24 @@ class MS_Addon_Redirect extends MS_Addon {
 
 		return $url;
 	}
+        
+        /**
+         * Logout URL
+         *
+         * @since 1.0.2.8
+         */
+        public function m2_logout_redirect() {
+            $model = self::model();
+            $new_url = $model->get( 'redirect_logout' );
+
+            if ( ! empty( $new_url ) ) {
+                $logout_url = lib3()->net->expand_url( $new_url );
+            }else{
+                $logout_url = site_url();
+            }
+            
+            wp_redirect( $logout_url );
+            exit;
+        }
 
 }
