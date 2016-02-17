@@ -202,7 +202,11 @@ class MS_Helper_Utility extends MS_Helper {
 			$Colors[$key] = self::hsl2web( $h, $s / 100, $l / 100 );
 		}
 
-		return $Colors[$key];
+		return apply_filters(
+                            'ms_helper_color_index',
+                            $Colors[$key],
+                            $key
+                        );
 	}
 
 	/**

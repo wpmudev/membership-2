@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.7\n"
+"Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-02-06 18:49:55+00:00\n"
+"POT-Creation-Date: 2016-02-17 16:10:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -917,31 +917,31 @@ msgstr ""
 msgid "This page is displayed to users right after they did log out."
 msgstr ""
 
-#: app/addon/redirect/class-ms-addon-redirect.php:92
+#: app/addon/redirect/class-ms-addon-redirect.php:104
 msgid "Redirect Control"
 msgstr ""
 
-#: app/addon/redirect/class-ms-addon-redirect.php:93
+#: app/addon/redirect/class-ms-addon-redirect.php:105
 msgid ""
 "Define your individual URL to display after a user is logged-in or "
 "logged-out."
 msgstr ""
 
-#: app/addon/redirect/class-ms-addon-redirect.php:98
+#: app/addon/redirect/class-ms-addon-redirect.php:110
 #: app/addon/taxamo/class-ms-addon-taxamo.php:232
 #: app/controller/class-ms-controller-plugin.php:475
 #: app/view/class-ms-view-help.php:212 membership2.php:711
 msgid "Settings"
 msgstr ""
 
-#: app/addon/redirect/class-ms-addon-redirect.php:99
+#: app/addon/redirect/class-ms-addon-redirect.php:111
 #: app/addon/taxamo/class-ms-addon-taxamo.php:233
 msgid ""
 "When this Add-on is enabled you will see a new section in the \"Settings\" "
 "page with additional options."
 msgstr ""
 
-#: app/addon/redirect/class-ms-addon-redirect.php:133
+#: app/addon/redirect/class-ms-addon-redirect.php:145
 msgid "Redirect"
 msgstr ""
 
@@ -2181,48 +2181,48 @@ msgstr ""
 msgid "Logging in..."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:177
+#: app/controller/class-ms-controller-dialog.php:182
 msgid "Enter a username or e-mail address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:181
+#: app/controller/class-ms-controller-dialog.php:186
 msgid "There is no user registered with that email address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:195
+#: app/controller/class-ms-controller-dialog.php:200
 msgid "Invalid username or e-mail."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:209
+#: app/controller/class-ms-controller-dialog.php:214
 msgid "Password reset is not allowed for this user"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:227
+#: app/controller/class-ms-controller-dialog.php:232
 #: app/model/communication/class-ms-model-communication-resetpass.php:70
 msgid ""
 "Someone requested that the password be reset for the following account: "
 "%sIf this was a mistake, just ignore this email and nothing will happen.%s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:229
+#: app/controller/class-ms-controller-dialog.php:234
 #: app/model/communication/class-ms-model-communication-resetpass.php:72
 msgid "Your username: %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:239
+#: app/controller/class-ms-controller-dialog.php:244
 msgid "[%s] Password Reset"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:245
+#: app/controller/class-ms-controller-dialog.php:250
 msgid "The e-mail could not be sent."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:246
+#: app/controller/class-ms-controller-dialog.php:251
 msgid "Possible reason: your host may have disabled the mail() function."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:248
-#: app/controller/class-ms-controller-dialog.php:251
+#: app/controller/class-ms-controller-dialog.php:253
+#: app/controller/class-ms-controller-dialog.php:256
 msgid "Check your e-mail for the confirmation link."
 msgstr ""
 
@@ -3581,18 +3581,22 @@ msgid "year"
 msgstr ""
 
 #: app/helper/class-ms-helper-period.php:271
+#: app/helper/class-ms-helper-period.php:378
 msgid "days"
 msgstr ""
 
 #: app/helper/class-ms-helper-period.php:272
+#: app/helper/class-ms-helper-period.php:379
 msgid "weeks"
 msgstr ""
 
 #: app/helper/class-ms-helper-period.php:273
+#: app/helper/class-ms-helper-period.php:380
 msgid "months"
 msgstr ""
 
 #: app/helper/class-ms-helper-period.php:274
+#: app/helper/class-ms-helper-period.php:381
 msgid "years"
 msgstr ""
 

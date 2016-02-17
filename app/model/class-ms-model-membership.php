@@ -1626,7 +1626,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return string Hex color, e.g. '#FFFFFF'
 	 */
 	public function get_color() {
-		return MS_Helper_Utility::color_index( $this->type . $this->id );
+		return apply_filters(
+                                    'ms_model_membership_get_color',
+                                    MS_Helper_Utility::color_index( $this->type . $this->id ),
+                                    $this->type,
+                                    $this->id
+                                );
 	}
 
 	/**
