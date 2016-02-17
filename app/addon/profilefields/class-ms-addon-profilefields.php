@@ -606,6 +606,15 @@ class MS_Addon_Profilefields extends MS_Addon {
 				$_POST['description']
 			);
 		}
+                
+                if ( isset( $_POST['nickname'] ) ) {
+			wp_update_user(
+				array(
+					'ID' => $member->id,
+					'nickname' => $_POST['nickname']
+				)
+			);
+		}
 	}
 
 	/**

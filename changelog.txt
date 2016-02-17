@@ -8,10 +8,13 @@ Change Log:
 ----------------------------------------------------------------------
 - Added: New import option to import each membership on its own, to prevent memory- or similar overflow issues.
 - Added: Settings for PayPal gateways now also list the country "Croatia".
+- Added: Filters added 'ms_helper_color_index' and 'ms_model_membership_get_color'
 - Fixed: Import of M1 data now correctly creates recurring memberships.
 - Fixed: People who saw a PHP notice "WDEV_DEBUG is undefined": It's gone!
 - Fixed: Translation string missing.
 - Fixed: Redirect addon was not working
+- Fixed: Nickname was not saving when profile fields addon is activated
+
 
 1.0.2.7
 ----------------------------------------------------------------------
