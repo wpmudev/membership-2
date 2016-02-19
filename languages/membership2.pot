@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-02-17 16:10:05+00:00\n"
+"POT-Creation-Date: 2016-02-18 17:32:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -777,32 +777,32 @@ msgstr ""
 msgid "Password Confirmation"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:693
-#: app/addon/profilefields/class-ms-addon-profilefields.php:699
-#: app/addon/profilefields/class-ms-addon-profilefields.php:707
+#: app/addon/profilefields/class-ms-addon-profilefields.php:702
+#: app/addon/profilefields/class-ms-addon-profilefields.php:708
 #: app/addon/profilefields/class-ms-addon-profilefields.php:716
-#: app/addon/profilefields/class-ms-addon-profilefields.php:729
+#: app/addon/profilefields/class-ms-addon-profilefields.php:725
 #: app/addon/profilefields/class-ms-addon-profilefields.php:738
-#: app/addon/profilefields/class-ms-addon-profilefields.php:756
+#: app/addon/profilefields/class-ms-addon-profilefields.php:747
+#: app/addon/profilefields/class-ms-addon-profilefields.php:765
 msgid "(required)"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:722
+#: app/addon/profilefields/class-ms-addon-profilefields.php:731
 msgid "Clear"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:767
-#: app/addon/profilefields/class-ms-addon-profilefields.php:782
+#: app/addon/profilefields/class-ms-addon-profilefields.php:776
+#: app/addon/profilefields/class-ms-addon-profilefields.php:791
 msgid ""
 "This field can be seen by: <span "
 "class=\"current-visibility-level\">%s</span>"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:772
+#: app/addon/profilefields/class-ms-addon-profilefields.php:781
 msgid "Who can see this field?"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:777
+#: app/addon/profilefields/class-ms-addon-profilefields.php:786
 #: app/addon/taxamo/class-ms-addon-taxamo-userprofile.php:31
 #: app/view/class-ms-view-addon.php:35
 #: app/view/member/class-ms-view-member-dialog.php:133
@@ -2198,31 +2198,33 @@ msgid "Password reset is not allowed for this user"
 msgstr ""
 
 #: app/controller/class-ms-controller-dialog.php:232
-#: app/model/communication/class-ms-model-communication-resetpass.php:70
 msgid ""
-"Someone requested that the password be reset for the following account: "
-"%sIf this was a mistake, just ignore this email and nothing will happen.%s"
+"Someone has requested a password reset for the following account: %sIf this "
+"was a mistake, just ignore this email and nothing will happen.%s %s"
 msgstr ""
 
 #: app/controller/class-ms-controller-dialog.php:234
-#: app/model/communication/class-ms-model-communication-resetpass.php:72
-msgid "Your username: %s"
+msgid "Username: %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:244
+#: app/controller/class-ms-controller-dialog.php:235
+msgid "To reset your password, visit the following address:"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:245
 msgid "[%s] Password Reset"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:250
+#: app/controller/class-ms-controller-dialog.php:251
 msgid "The e-mail could not be sent."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:251
+#: app/controller/class-ms-controller-dialog.php:252
 msgid "Possible reason: your host may have disabled the mail() function."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:253
-#: app/controller/class-ms-controller-dialog.php:256
+#: app/controller/class-ms-controller-dialog.php:254
+#: app/controller/class-ms-controller-dialog.php:257
 msgid "Check your e-mail for the confirmation link."
 msgstr ""
 
@@ -4814,30 +4816,30 @@ msgstr ""
 msgid "Free access"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1797
+#: app/model/class-ms-model-membership.php:1802
 msgid "Restrict access to Visitor-Level"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:1806
+#: app/model/class-ms-model-membership.php:1811
 msgid "Change to: %s"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2155
+#: app/model/class-ms-model-membership.php:2160
 msgid "Ignored: Rule \"%s\""
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2162
+#: app/model/class-ms-model-membership.php:2167
 msgid "%s: Rule \"%s\""
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2163
+#: app/model/class-ms-model-membership.php:2168
 #: app/model/class-ms-model-plugin.php:290
 #: app/model/class-ms-model-plugin.php:341
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:100
 msgid "Allow"
 msgstr ""
 
-#: app/model/class-ms-model-membership.php:2163
+#: app/model/class-ms-model-membership.php:2168
 #: app/model/class-ms-model-plugin.php:290
 #: app/model/class-ms-model-plugin.php:343
 #: app/view/membership/tab/class-ms-view-membership-tab-upgrade.php:101
@@ -5567,6 +5569,16 @@ msgstr ""
 
 #: app/model/communication/class-ms-model-communication-resetpass.php:45
 msgid "Reset your password for %s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-resetpass.php:70
+msgid ""
+"Someone requested that the password be reset for the following account: "
+"%sIf this was a mistake, just ignore this email and nothing will happen.%s"
+msgstr ""
+
+#: app/model/communication/class-ms-model-communication-resetpass.php:72
+msgid "Your username: %s"
 msgstr ""
 
 #: app/model/communication/class-ms-model-communication-resetpass.php:73
@@ -8916,7 +8928,7 @@ msgctxt "help"
 msgid "4. Default invoice template by Membership 2"
 msgstr ""
 
-#: app/addon/profilefields/class-ms-addon-profilefields.php:767
+#: app/addon/profilefields/class-ms-addon-profilefields.php:776
 msgctxt "Change profile field visibility level"
 msgid "Change"
 msgstr ""

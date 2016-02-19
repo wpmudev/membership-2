@@ -193,6 +193,22 @@ class MS_Controller_Api extends MS_Hooker {
 
 		return $member;
 	}
+        
+        /**
+         * Returns if the member is admin or not
+         *
+         * @since 1.0.2.8
+         * @api
+         *
+         * @return bool
+         */
+        public function is_admin_user( $user_id = null ) {
+            if( $user_id == null ) {
+                $user_id = get_current_user_id();
+            }
+            
+            return MS_Model_Member::is_admin_user( $user_id );
+        }
 
 	/**
 	 * Returns a single membership object.
