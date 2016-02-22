@@ -548,6 +548,8 @@ class MS_Controller_Member extends MS_Controller {
 				'orderby' => 'display_name',
 			);
 			$users = get_users( $args );
+                        $admins = get_users( array( 'role' => 'administrator' ) );
+                        $users = array_udiff( $users, $admins, array( $this, 'compare_objects' ) );
 
 			if ( count( $users ) > $items_per_page ) {
 				$res->more = true;
@@ -569,6 +571,10 @@ class MS_Controller_Member extends MS_Controller {
 		echo json_encode( $res );
 		exit;
 	}
+        
+        public function compare_objects( $obj_a, $obj_b ) {
+            return $obj_a->ID - $obj_b->ID;
+        }
 
 	/**
 	 * Assigns (or removes) memberships to a Member.
