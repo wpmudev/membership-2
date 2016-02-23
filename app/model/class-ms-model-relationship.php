@@ -515,8 +515,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$args = self::get_query_args( $args );
 		$key = md5( json_encode( $args ) );
 
-		if ( ! isset( $Subscription_IDs[$key] ) ) {
-			$Subscription_IDs[$key] = array();
+		if ( ! isset( $Subscription_IDs[ $key ] ) ) {
+			$Subscription_IDs[ $key ] = array();
 
 			MS_Factory::select_blog();
 			$query = new WP_Query( $args );
@@ -536,11 +536,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			 * @see MS_Model_Membership::get_memberships()
 			 */
 			foreach ( $items as $post_id ) {
-				$Subscription_IDs[$key][] = $post_id;
+				$Subscription_IDs[ $key ][] = $post_id;
 			}
 		}
 
-		return $Subscription_IDs[$key];
+		return $Subscription_IDs[ $key ];
 	}
 
 	/**
@@ -822,8 +822,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			if ( $generate_event ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
 			}
-		}
-		catch ( Exception $e ) {
+		} catch ( Exception $e ) {
 			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
 		}
 
@@ -868,8 +867,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Model_Event::TYPE_MS_DEACTIVATED,
 				$this
 			);
-		}
-		catch( Exception $e ) {
+		} catch ( Exception $e ) {
 			MS_Helper_Debug::log(
 				'[Error deactivating membership]: '. $e->getMessage()
 			);
@@ -1311,7 +1309,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @internal
 	 */
-	public function config_period() { // Needed because of status change.
+	public function config_period() {
+		// Needed because of status change.
 		do_action(
 			'ms_model_relationship_config_period_before',
 			$this
@@ -1993,13 +1992,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		foreach ( $res as $key => $info ) {
 			if ( ! isset( $info['amount'] ) ) {
-				unset( $res[$key] );
+				unset( $res[ $key ] );
 				continue;
 			}
 
-			if ( ! isset( $info['date'] ) ) { $res[$key]['date'] = ''; }
-			if ( ! isset( $info['gateway'] ) ) { $res[$key]['gateway'] = ''; }
-			if ( ! isset( $info['external_id'] ) ) { $res[$key]['external_id'] = ''; }
+			if ( ! isset( $info['date'] ) ) { $res[ $key ]['date'] = ''; }
+			if ( ! isset( $info['gateway'] ) ) { $res[ $key ]['gateway'] = ''; }
+			if ( ! isset( $info['external_id'] ) ) { $res[ $key ]['external_id'] = ''; }
 		}
 
 		return $res;
@@ -2096,8 +2095,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$result = $this->status;
 
-		if ( isset( $Status[$this->status] ) ) {
-			$result = $Status[$this->status];
+		if ( isset( $Status[ $this->status ] ) ) {
+			$result = $Status[ $this->status ];
 		}
 
 		return apply_filters(
@@ -2458,8 +2457,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						__( 'Membership expires on ', 'membership2' ),
 						MS_Helper_Period::format_date( $this->expire_date )
 					);
-				}
-				else {
+				} else {
 					$desc = __( 'Permanent access.', 'membership2' );
 				}
 				break;
@@ -2693,7 +2691,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$comm->period['period_type']
 					);
 
-					if ( $remaining_days < 0 && $days == abs( $remaining_days ) ) {
+					if ( $remaining_days < 0 && abs( $remaining_days ) == $days ) {
 						$comm->add_to_queue( $this->id );
 						MS_Model_Event::save_event(
 							MS_Model_Event::TYPE_MS_AFTER_FINISHES,
@@ -2776,8 +2774,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						MS_Model_Event::TYPE_MS_EXPIRED,
 						$this
 					);
-				}
-				elseif ( $deactivate ) {
+				} elseif ( $deactivate ) {
 					$this->deactivate_membership();
 					$next_status = $this->status;
 
@@ -2936,5 +2933,4 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this
 		);
 	}
-
 }
