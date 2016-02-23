@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-02-23 15:00:18+00:00\n"
+"POT-Creation-Date: 2016-02-23 20:15:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2173,58 +2173,59 @@ msgstr ""
 msgid "Link Transaction"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:131
-msgid "Wrong username or password"
-msgstr ""
-
-#: app/controller/class-ms-controller-dialog.php:142
+#: app/controller/class-ms-controller-dialog.php:94
+#: app/controller/class-ms-controller-dialog.php:147
 msgid "Logging in..."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:182
+#: app/controller/class-ms-controller-dialog.php:136
+msgid "Wrong username or password"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:183
 msgid "Enter a username or e-mail address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:186
+#: app/controller/class-ms-controller-dialog.php:187
 msgid "There is no user registered with that email address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:200
+#: app/controller/class-ms-controller-dialog.php:201
 msgid "Invalid username or e-mail."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:214
+#: app/controller/class-ms-controller-dialog.php:215
 msgid "Password reset is not allowed for this user"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:232
+#: app/controller/class-ms-controller-dialog.php:233
 msgid ""
 "Someone has requested a password reset for the following account: %sIf this "
 "was a mistake, just ignore this email and nothing will happen.%s %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:234
+#: app/controller/class-ms-controller-dialog.php:235
 msgid "Username: %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:235
+#: app/controller/class-ms-controller-dialog.php:236
 msgid "To reset your password, visit the following address:"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:245
+#: app/controller/class-ms-controller-dialog.php:246
 msgid "[%s] Password Reset"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:251
+#: app/controller/class-ms-controller-dialog.php:252
 msgid "The e-mail could not be sent."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:252
+#: app/controller/class-ms-controller-dialog.php:253
 msgid "Possible reason: your host may have disabled the mail() function."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:254
-#: app/controller/class-ms-controller-dialog.php:257
+#: app/controller/class-ms-controller-dialog.php:255
+#: app/controller/class-ms-controller-dialog.php:258
 msgid "Check your e-mail for the confirmation link."
 msgstr ""
 
