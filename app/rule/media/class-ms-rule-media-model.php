@@ -180,7 +180,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 	public function initialize() {
 		parent::protect_content();
 
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) && ! is_admin() ) {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) && ( ! is_admin() && ! is_customize_preview() ) ) {
 			// Start buffering during init action, though output should only
 			// happen a lot later... This way we're safe.
 			$this->add_action( 'init', 'buffer_start', 9999 );
