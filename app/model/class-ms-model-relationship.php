@@ -1433,6 +1433,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			true // return negative value if first date is before second date.
 		);
 
+		/*
+		This setting adds X days to the remaining period. Reason for this is to
+		extend the remaining-period by a day or more so the payment gateway has
+		some extra time to process the payment.
+		This setting only affects M2-expiration, not the date on which the
+		payment gateway processes the next recurring-payment!
+		 */
+		if ( defined( 'MS_PAYMENT_DELAY' ) ) {
+			$period_days += max( 0, (int) MS_PAYMENT_DELAY );
+		}
+
 		return apply_filters(
 			'ms_model_relationship_get_remaining_period',
 			$period_days,
@@ -2252,10 +2263,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$debug_msg[] = '[Not ACTIVE(2): Expire date set or wrong status-request]';
 			}
 
-			// If expire date is not reached then membership obviously is active.
+			/*
+			If expire date is not reached then membership obviously is active.
+			Note: When remaining days is 0 then the user is on last day
+			of the subscription and should still have access.
+			*/
 			if ( ! $calc_status
 				&& ! empty( $this->expire_date )
-				&& strtotime( $this->expire_date ) >= strtotime( MS_Helper_Period::current_date() )
+				&& $this->get_remaining_period() >= 0
 			) {
 				$calc_status = self::STATUS_ACTIVE;
 				$debug_msg[] = '[ACTIVE(3): Expire date set and not reached]';
@@ -2735,11 +2750,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
 					}
 				} // -- End of advanced communications Add-on
-                                
-                                $payment_delay = ( defined( 'MS_PAYMENT_DELAY' ) ? ( int ) MS_PAYMENT_DELAY : 0 );
-                                
+
 				// Subscription ended. See if we can renew it.
-				if ( $remaining_days + $payment_delay <= 0 ) {
+				if ( $remaining_days <= 0 ) {
 					if ( $auto_renew ) {
 						/*
 						 * The membership can be renewed. Try to renew it
