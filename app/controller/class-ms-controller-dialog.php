@@ -122,8 +122,8 @@ class MS_Controller_Dialog extends MS_Controller {
 		// Nonce is checked, get the POST data and sign user on
 		$info = array(
 			'user_login' => $_POST['username'],
-			'user_password' => $_POST['password'],
-			'remember' => (bool) $_POST['remember'],
+			'user_password' => $_POST['password']
+			//'remember' => (bool) $_POST['remember'],
 		);
 
 		$user_signon = wp_signon( $info, false );
