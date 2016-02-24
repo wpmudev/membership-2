@@ -2539,10 +2539,30 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$remaining_trial_days = $this->get_remaining_trial_period();
 
 		$comms = MS_Model_Communication::get_communications( $membership );
-		$invoice_before_days = 5;//@todo create a setting to configure this period.
-		$deactivate_expired_after_days = 30; //@todo create a setting to configure this period.
-		$deactivate_pending_after_days = 30; //@todo create a setting to configure this period.
-		$deactivate_trial_expired_after_days = 5; //@todo create a setting to configure this period.
+
+		//@todo create settings to configure the following day-values via UI.
+		$invoice_before_days = apply_filters(
+			'ms_status_check-invoice_before_days',
+			5,
+			$this
+		);
+		$deactivate_expired_after_days = apply_filters(
+			'ms_status_check-deactivate_after_days',
+			30,
+			$this
+		);
+		$deactivate_trial_expired_after_days = apply_filters(
+			'ms_status_check-deactivate_trial_after_days',
+			5,
+			$this
+		);
+
+		// We need to create the new invoice based on original expiration date.
+		// So we add the same offset to the invoice_before days as we used to
+		// modify the remaining days.
+		if ( defined( 'MS_PAYMENT_DELAY' ) ) {
+			$invoice_before_days += max( 0, (int) MS_PAYMENT_DELAY );
+		}
 
 		//@todo: Add a flag to subscriptions with sent communications. Then improve the conditions below to prevent multiple emails.
 
