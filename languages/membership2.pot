@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta\n"
+"Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta-3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-02-23 21:56:01+00:00\n"
+"POT-Creation-Date: 2016-02-24 18:43:36+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2169,62 +2169,62 @@ msgstr ""
 msgid "Paid Invoices"
 msgstr ""
 
-#: app/controller/class-ms-controller-billing.php:519
+#: app/controller/class-ms-controller-billing.php:518
 msgid "Link Transaction"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:131
+#: app/controller/class-ms-controller-dialog.php:134 membership2.php:926
 msgid "Wrong username or password"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:142
+#: app/controller/class-ms-controller-dialog.php:145 membership2.php:929
 msgid "Logging in..."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:182
+#: app/controller/class-ms-controller-dialog.php:185
 msgid "Enter a username or e-mail address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:186
+#: app/controller/class-ms-controller-dialog.php:189
 msgid "There is no user registered with that email address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:200
+#: app/controller/class-ms-controller-dialog.php:203
 msgid "Invalid username or e-mail."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:214
+#: app/controller/class-ms-controller-dialog.php:217
 msgid "Password reset is not allowed for this user"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:232
+#: app/controller/class-ms-controller-dialog.php:235
 msgid ""
 "Someone has requested a password reset for the following account: %sIf this "
 "was a mistake, just ignore this email and nothing will happen.%s %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:234
+#: app/controller/class-ms-controller-dialog.php:237
 msgid "Username: %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:235
+#: app/controller/class-ms-controller-dialog.php:238
 msgid "To reset your password, visit the following address:"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:245
+#: app/controller/class-ms-controller-dialog.php:248
 msgid "[%s] Password Reset"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:251
+#: app/controller/class-ms-controller-dialog.php:254
 msgid "The e-mail could not be sent."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:252
+#: app/controller/class-ms-controller-dialog.php:255
 msgid "Possible reason: your host may have disabled the mail() function."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:254
 #: app/controller/class-ms-controller-dialog.php:257
+#: app/controller/class-ms-controller-dialog.php:260
 msgid "Check your e-mail for the confirmation link."
 msgstr ""
 
@@ -5073,31 +5073,31 @@ msgstr ""
 msgid "M j"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2457
+#: app/model/class-ms-model-relationship.php:2491
 msgid "Pending payment."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2463
+#: app/model/class-ms-model-relationship.php:2497
 msgid "Membership Trial expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2472
+#: app/model/class-ms-model-relationship.php:2506
 msgid "Membership expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2476
+#: app/model/class-ms-model-relationship.php:2510
 msgid "Permanent access."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2484
+#: app/model/class-ms-model-relationship.php:2518
 msgid "Membership expired since "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2492
+#: app/model/class-ms-model-relationship.php:2526
 msgid "Membership canceled, valid until it expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2498
+#: app/model/class-ms-model-relationship.php:2532
 msgid "Membership deactivated."
 msgstr ""
 
