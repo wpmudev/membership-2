@@ -189,7 +189,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				$invoice->save();
 
 				if ( $success ) {
-					$invoice->pay_it( $this->id, $external_id );
+					$invoice->pay_it( self::ID, $external_id );
 				} elseif ( ! empty( $status ) ) {
 					$invoice->status = $status;
 					$invoice->save();

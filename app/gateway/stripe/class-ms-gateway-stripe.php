@@ -77,14 +77,14 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$this->group = 'Stripe';
 		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
-                
+
                 $this->add_filter(
                         'ms_model_pages_get_ms_page_url',
                         'ms_model_pages_get_ms_page_url_cb',
                         99, 4
                 );
 	}
-        
+
         /**
 	 * Force SSL when Stripe in Live mode
 	 *
@@ -115,7 +115,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
                     }
                 }
             }
-            
+
 	    return $url;
         }
 
@@ -167,7 +167,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 					);
 
 					if ( true == $charge->paid ) {
-						$invoice->pay_it( $this->id, $charge->id );
+						$invoice->pay_it( self::ID, $charge->id );
 						$note = __( 'Payment successful', 'membership2' );
 						$note .= ' - Token: ' . $token;
 						$success = true;
@@ -253,7 +253,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 						if ( true == $charge->paid ) {
 							$was_paid = true;
-							$invoice->pay_it( $this->id, $external_id );
+							$invoice->pay_it( self::ID, $external_id );
 							$note = __( 'Payment successful', 'membership2' );
 						} else {
 							$note = __( 'Stripe payment failed', 'membership2' );

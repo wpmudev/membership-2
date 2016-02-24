@@ -245,7 +245,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 
 				if ( $transaction_response->approved ) {
 					$external_id = $response->getTransactionResponse()->transaction_id;
-					$invoice->pay_it( $this->id, $external_id );
+					$invoice->pay_it( self::ID, $external_id );
 					$success = true;
 					$notes = __( 'Payment successful', 'membership2' );
 				} else {
@@ -327,13 +327,13 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$exp_year = filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT );
 			$exp_month = substr( filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ), -2 );
 			$member->set_gateway_profile(
-				$this->id,
+				self::ID,
 				'card_exp',
 				gmdate( 'Y-m-t', strtotime( "{$exp_year}-{$exp_month}-01" ) )
 			);
 
 			$member->set_gateway_profile(
-				$this->id,
+				self::ID,
 				'card_num',
 				str_replace( 'XXXX', '', $profile['payment']['creditCard']['cardNumber'] )
 			);
@@ -397,7 +397,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 */
 	public function get_cim_profile_id( $member ) {
 		$cim_profile_id = $member->get_gateway_profile(
-			$this->id,
+			self::ID,
 			'cim_profile_id'
 		);
 
@@ -418,7 +418,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 */
 	public function get_cim_payment_profile_id( $member ) {
 		$cim_payment_profile_id = $member->get_gateway_profile(
-			$this->id,
+			self::ID,
 			'cim_payment_profile_id'
 		);
 
@@ -440,12 +440,12 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 */
 	protected function save_cim_profile( $member, $cim_profile_id, $cim_payment_profile_id ) {
 		$member->set_gateway_profile(
-			$this->id,
+			self::ID,
 			'cim_profile_id',
 			$cim_profile_id
 		);
 		$member->set_gateway_profile(
-			$this->id,
+			self::ID,
 			'cim_payment_profile_id',
 			$cim_payment_profile_id
 		);
