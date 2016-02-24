@@ -448,7 +448,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$subscription->membership_id = $membership_id;
 		$subscription->user_id = $user_id;
 		$subscription->move_from_id = $move_from_id;
-		$subscription->gateway_id = $gateway_id;
+		$subscription->set_gateway( $gateway_id );
 		$subscription->expire_date = '';
 
 		// Set initial state.
@@ -1899,12 +1899,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$this->payments = lib3()->array->get( $this->payments );
 
 		// Update the payment-gateway.
-		if ( ! $this->gateway_id ) {
-			$this->gateway_id = $gateway;
-		} elseif ( MS_Gateway_Free::ID != $gateway ) {
-			// Don't change an existing gateway to "Free".
-			$this->gateway_id = $gateway;
-		}
+		$this->set_gateway( $gateway );
 
 		if ( $amount > 0 ) {
 			$this->payments[] = array(
@@ -2086,6 +2081,45 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			'membership_model_relationship_get_status',
 			$this->status,
 			$this
+		);
+	}
+
+	/**
+	 * Change subscription to display a different payment gateway.
+	 * We do some validation here, to avoid "No Gateway" notifications...
+	 *
+	 * @since 1.0.2.8
+	 * @param string $new_gateway The new payment-gateway ID.
+	 */
+	public function set_gateway( $new_gateway ) {
+		$old_gateway = $this->gateway_id;
+
+		// Do not set subscription to "No Gateway".
+		if ( ! $new_gateway ) { return; }
+
+		// No change needed. Skip.
+		if ( $new_gateway == $old_gateway ) { return; }
+
+		// Don't change an non-free gateway to Free.
+		if ( $old_gateway && MS_Gateway_Free::ID == $new_gateway ) { return; }
+
+		// Okay, change the gateway and save the subscription!
+		$this->gateway_id = $new_gateway;
+		$this->save();
+
+		/**
+		 * Notify WP that a subscription changed the payment gateway.
+		 *
+		 * @since 1.0.2.8
+		 * @var object The subscription.
+		 * @var string New gateway ID.
+		 * @var string Previous gateway ID.
+		 */
+		do_action(
+			'ms_subscription_gateway_changed',
+			$this,
+			$new_gateway,
+			$old_gateway
 		);
 	}
 

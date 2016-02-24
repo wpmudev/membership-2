@@ -443,8 +443,7 @@ class MS_Controller_Billing extends MS_Controller {
 					$gateway_id
 				);
 			} else {
-				$subscription->gateway_id = $gateway_id;
-				$subscription->save();
+				$subscription->set_gateway( $gateway_id );
 			}
 
 			$invoice_id = intval( $fields['invoice_id'] );

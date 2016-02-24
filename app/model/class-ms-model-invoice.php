@@ -1096,34 +1096,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			}
 
 			$member->save();
-
-			/*
-			This prevents the parent-subscription from losing the gateway ID
-			that was used to pay previous invoices.
-			 */
-			if ( $this->gateway_id ) {
-				if ( $subscription->gateway_id != $this->gateway_id ) {
-					$old_gateway = $subscription->gateway_id;
-					$subscription->gateway_id = $this->gateway_id;
-					$subscription->save();
-
-					/**
-					 * Notify WP that a subscription changed the payment gateway.
-					 *
-					 * @var object The subscription.
-					 * @var string New gateway ID.
-					 * @var string Previous gateway ID.
-					 */
-					do_action(
-						'ms_subscription_gateway_changed',
-						$subscription,
-						$this->gateway_id,
-						$old_gateway
-					);
-				}
-			}
-
 			$this->save();
+
+			$subscription->set_gateway( $this->gateway_id );
 		}
 
 		return apply_filters(
