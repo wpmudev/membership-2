@@ -92,7 +92,7 @@ jQuery( function() {
 		jQuery.ajax({
 			type: 'POST',
 			dataType: 'json',
-			url: ms_ajax.ajaxurl,
+			url: ms_ajax.ajaxurl + '?ms_ajax=1',
 			data: data,
 			success: function( data ) {
 				enable_form( frm_current );

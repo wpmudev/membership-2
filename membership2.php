@@ -887,4 +887,70 @@ class MS_Plugin {
 }
 } // end: if ! class_exists
 
-membership2_init_pro_app();
+
+/**
+ * This is a hack to prevent cookie issue in IE11 and EDGE
+ * Need to refactor in later
+ *
+ * @since 1.0.2.9
+ */
+if( isset( $_REQUEST['ms_ajax'] ) ) {
+    if( $_REQUEST['ms_ajax'] == 1 ) {
+        add_action( 'wp_ajax_ms_login', 'ms_ajax_login' );
+        add_action( 'wp_ajax_nopriv_ms_login', 'ms_ajax_login' );
+        function ms_ajax_login() {
+            
+            $resp = array();
+            check_ajax_referer( 'ms-ajax-login' );
+            
+            if ( empty( $_POST['username'] ) && ! empty( $_POST['log'] ) ) {
+                    $_POST['username'] = $_POST['log'];
+            }
+            if ( empty( $_POST['password'] ) && ! empty( $_POST['pwd'] ) ) {
+                    $_POST['password'] = $_POST['pwd'];
+            }
+            if ( empty( $_POST['remember'] ) && ! empty( $_POST['rememberme'] ) ) {
+                    $_POST['remember'] = $_POST['rememberme'];
+            }
+
+            // Nonce is checked, get the POST data and sign user on
+            $info = array(
+                    'user_login' => $_POST['username'],
+                    'user_password' => $_POST['password'],
+                    'remember' => (bool) isset( $_POST['remember'] ) ? $_POST['remember'] : false,
+            );
+
+            $user_signon = wp_signon( $info, false );
+            
+            if ( is_wp_error( $user_signon ) ) {
+		$resp['error'] = __( 'Wrong username or password', 'membership2' );
+            }else{
+                $resp['loggedin'] = true;
+		$resp['success'] = __( 'Logging in...', 'membership2' );
+                
+                /**
+                * Allows a custom redirection after login.
+                * Empty value will use the default redirect option of the login form.
+                *
+                * @since  1.0.0
+                */
+               $enforce = false;
+               if( isset( $_POST['redirect_to'] ) ) {
+                   $resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', $_POST['redirect_to'], $user_signon->ID );
+               }else{
+                   $resp['redirect'] = apply_filters(
+                       'ms_url_after_login',
+                       $_POST['redirect_to'],
+                       $enforce
+                   );
+               }
+            }
+            
+            echo json_encode( $resp );
+	    exit();
+            
+        }
+    }
+}else{
+    membership2_init_pro_app();
+}

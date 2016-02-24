@@ -27,7 +27,10 @@ class MS_Controller_Dialog extends MS_Controller {
 		$this->add_ajax_action( 'ms_submit', 'ajax_submit' );
 
 		// Login. For IE this hook is listening to guests + logged in users.
-		$this->add_ajax_action( 'ms_login', 'ajax_login', true, true );
+                /**
+                 * This is moved to main plugin file to avoid IE11 and EDGE browser issue
+                 */
+		//$this->add_ajax_action( 'ms_login', 'ajax_login', true, true );
 		$this->add_ajax_action( 'ms_lostpass', 'ajax_lostpass', true, true );
 	}
 
