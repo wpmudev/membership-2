@@ -15,6 +15,7 @@ Change Log:
 - Fixed: Redirect addon was not working
 - Fixed: Nickname was not saving when profile fields addon is activated
 - Fixed: Missing string in default lost password default email
+- Fixed: Media protection was breakign images in customizer
 
 
 1.0.2.7

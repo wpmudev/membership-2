@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-02-18 17:32:56+00:00\n"
+"POT-Creation-Date: 2016-02-23 20:15:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2173,58 +2173,59 @@ msgstr ""
 msgid "Link Transaction"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:131
-msgid "Wrong username or password"
-msgstr ""
-
-#: app/controller/class-ms-controller-dialog.php:142
+#: app/controller/class-ms-controller-dialog.php:94
+#: app/controller/class-ms-controller-dialog.php:147
 msgid "Logging in..."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:182
+#: app/controller/class-ms-controller-dialog.php:136
+msgid "Wrong username or password"
+msgstr ""
+
+#: app/controller/class-ms-controller-dialog.php:183
 msgid "Enter a username or e-mail address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:186
+#: app/controller/class-ms-controller-dialog.php:187
 msgid "There is no user registered with that email address."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:200
+#: app/controller/class-ms-controller-dialog.php:201
 msgid "Invalid username or e-mail."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:214
+#: app/controller/class-ms-controller-dialog.php:215
 msgid "Password reset is not allowed for this user"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:232
+#: app/controller/class-ms-controller-dialog.php:233
 msgid ""
 "Someone has requested a password reset for the following account: %sIf this "
 "was a mistake, just ignore this email and nothing will happen.%s %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:234
+#: app/controller/class-ms-controller-dialog.php:235
 msgid "Username: %s"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:235
+#: app/controller/class-ms-controller-dialog.php:236
 msgid "To reset your password, visit the following address:"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:245
+#: app/controller/class-ms-controller-dialog.php:246
 msgid "[%s] Password Reset"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:251
+#: app/controller/class-ms-controller-dialog.php:252
 msgid "The e-mail could not be sent."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:252
+#: app/controller/class-ms-controller-dialog.php:253
 msgid "Possible reason: your host may have disabled the mail() function."
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:254
-#: app/controller/class-ms-controller-dialog.php:257
+#: app/controller/class-ms-controller-dialog.php:255
+#: app/controller/class-ms-controller-dialog.php:258
 msgid "Check your e-mail for the confirmation link."
 msgstr ""
 
@@ -2353,7 +2354,7 @@ msgstr ""
 msgid "Username already taken"
 msgstr ""
 
-#: app/controller/class-ms-controller-member.php:719
+#: app/controller/class-ms-controller-member.php:725
 msgid "Select an User"
 msgstr ""
 
@@ -4971,133 +4972,133 @@ msgstr ""
 msgid "Not yet active"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1731
+#: app/model/class-ms-model-relationship.php:1741
 msgid "Nothing (for ever)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1733
+#: app/model/class-ms-model-relationship.php:1743
 msgid "You will pay nothing for permanent access."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1737
+#: app/model/class-ms-model-relationship.php:1747
 msgid "<span class=\"price\">%1$s %2$s</span> (for ever)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1739
+#: app/model/class-ms-model-relationship.php:1749
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> for permanent access."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1753
+#: app/model/class-ms-model-relationship.php:1763
 msgid "Nothing (until %4$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1755
+#: app/model/class-ms-model-relationship.php:1765
 msgid "You will pay nothing for access until %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1759
+#: app/model/class-ms-model-relationship.php:1769
 msgid "<span class=\"price\">%1$s %2$s</span> (until %4$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1761
+#: app/model/class-ms-model-relationship.php:1771
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> for access until %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1777
+#: app/model/class-ms-model-relationship.php:1787
 msgid "Nothing (%5$s - %6$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1779
+#: app/model/class-ms-model-relationship.php:1789
 msgid "You will pay nothing for access from %3$s until %4$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1783
+#: app/model/class-ms-model-relationship.php:1793
 msgid "<span class=\"price\">%1$s %2$s</span> (%5$s - %6$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1785
+#: app/model/class-ms-model-relationship.php:1795
 msgid ""
 "You will pay <span class=\"price\">%1$s %2$s</span> to access from %3$s "
 "until %4$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1804
+#: app/model/class-ms-model-relationship.php:1814
 msgid "<span class=\"price\">%1$s %2$s</span> (once)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1806
+#: app/model/class-ms-model-relationship.php:1816
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> once."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1812
+#: app/model/class-ms-model-relationship.php:1822
 msgid "%4$s times <span class=\"price\">%1$s %2$s</span> (each %3$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1814
+#: app/model/class-ms-model-relationship.php:1824
 msgid ""
 "You will make %4$s payments of <span class=\"price\">%1$s %2$s</span>, one "
 "each %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1819
+#: app/model/class-ms-model-relationship.php:1829
 msgid "<span class=\"price\">%1$s %2$s</span> (each %3$s)"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1821
+#: app/model/class-ms-model-relationship.php:1831
 msgid "You will pay <span class=\"price\">%1$s %2$s</span> each %3$s."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1840
+#: app/model/class-ms-model-relationship.php:1850
 msgid "after %4$s"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1842
+#: app/model/class-ms-model-relationship.php:1852
 msgid "on %4$s"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1845
+#: app/model/class-ms-model-relationship.php:1855
 msgid "nothing"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1846
+#: app/model/class-ms-model-relationship.php:1856
 msgid "The trial period of %1$s is for free."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1850
+#: app/model/class-ms-model-relationship.php:1860
 msgid ""
 "For the trial period of %1$s you only pay <span class=\"price\">%2$s "
 "%3$s</span>."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:1858
+#: app/model/class-ms-model-relationship.php:1868
 msgid "M j"
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2443
+#: app/model/class-ms-model-relationship.php:2457
 msgid "Pending payment."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2449
+#: app/model/class-ms-model-relationship.php:2463
 msgid "Membership Trial expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2458
+#: app/model/class-ms-model-relationship.php:2472
 msgid "Membership expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2463
+#: app/model/class-ms-model-relationship.php:2476
 msgid "Permanent access."
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2471
+#: app/model/class-ms-model-relationship.php:2484
 msgid "Membership expired since "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2479
+#: app/model/class-ms-model-relationship.php:2492
 msgid "Membership canceled, valid until it expires on "
 msgstr ""
 
-#: app/model/class-ms-model-relationship.php:2485
+#: app/model/class-ms-model-relationship.php:2498
 msgid "Membership deactivated."
 msgstr ""
 
