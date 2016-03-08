@@ -32,7 +32,7 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The added date.
 	 */
 	public static function add_interval( $period_unit, $period_type, $start_date = null ) {
-		if ( empty ( $start_date ) ) {
+		if ( empty( $start_date ) ) {
 			$start_date = self::current_date();
 		}
 		if ( ! is_numeric( $start_date ) ) {
@@ -51,8 +51,7 @@ class MS_Helper_Period extends MS_Helper {
 
 		return apply_filters(
 			'ms_helper_period_add_interval',
-			//gmdate( self::PERIOD_FORMAT, $result )
-                        date_i18n( self::PERIOD_FORMAT, $result )
+			date_i18n( self::PERIOD_FORMAT, $result )
 		);
 	}
 
@@ -67,7 +66,7 @@ class MS_Helper_Period extends MS_Helper {
 	 * @return string The subtracted date.
 	 */
 	public static function subtract_interval( $period_unit, $period_type, $start_date = null ) {
-		if ( empty ( $start_date ) ) {
+		if ( empty( $start_date ) ) {
 			$start_date = self::current_date();
 		}
 		if ( ! is_numeric( $start_date ) ) {
@@ -86,8 +85,7 @@ class MS_Helper_Period extends MS_Helper {
 
 		return apply_filters(
 			'ms_helper_period_subtract_interval',
-			//gmdate( self::PERIOD_FORMAT, $result )
-                        date_i18n( self::PERIOD_FORMAT, $result )
+			date_i18n( self::PERIOD_FORMAT, $result )
 		);
 	}
 
@@ -113,6 +111,20 @@ class MS_Helper_Period extends MS_Helper {
 			$end_date = '2999-12-31';
 		}
 
+		// TODO: This could cause problems, since new DateTime() uses the servers
+		// timezone, not the WP timezone! This will lead to subscriptions
+		// expiring early in some countries...
+		//
+		// E.g. Server timezone is UTC
+		//      WP timezone is UTC -9
+		//      Expire date is '2016-03-01'
+		//
+		//      Resulting expire timestamp is:
+		//      2016-03-02 00:00:00 UTC
+		//
+		//      While actual timestamp should be:
+		//      2016-03-02 00:00:00 UTC-9
+		// (or) 2016-03-02 09:00:00 UTC
 		$end_date = new DateTime( $end_date );
 		$start_date = new DateTime( $start_date );
 
@@ -196,7 +208,7 @@ class MS_Helper_Period extends MS_Helper {
 		static $Date = array();
 		$key = (string) $format . (int) $ignore_filters;
 
-		if ( ! isset( $Date[$key] ) ) {
+		if ( ! isset( $Date[ $key ] ) ) {
 			if ( empty( $format ) ) {
 				$format = self::PERIOD_FORMAT;
 			}
@@ -206,8 +218,7 @@ class MS_Helper_Period extends MS_Helper {
 				$format
 			);
 
-			//$date = gmdate( $format );
-                        $date = date_i18n( $format );
+			$date = date_i18n( $format );
 
 			if ( ! $ignore_filters ) {
 				$date = apply_filters(
@@ -215,10 +226,10 @@ class MS_Helper_Period extends MS_Helper {
 					$date
 				);
 			}
-			$Date[$key] = $date;
+			$Date[ $key ] = $date;
 		}
 
-		return $Date[$key];
+		return $Date[ $key ];
 	}
 
 	/**
@@ -232,7 +243,7 @@ class MS_Helper_Period extends MS_Helper {
 		static $Time = array();
 		$key = (string) $format . (int) $ignore_filters;
 
-		if ( ! isset( $Time[$key] ) ) {
+		if ( ! isset( $Time[ $key ] ) ) {
 			$time = current_time( $format, 1 );
 
 			if ( ! $ignore_filters ) {
@@ -242,10 +253,10 @@ class MS_Helper_Period extends MS_Helper {
 				);
 			}
 
-			$Time[$key] = $time;
+			$Time[ $key ] = $time;
 		}
 
-		return $Time[$key];
+		return $Time[ $key ];
 	}
 
 	/**
@@ -358,31 +369,31 @@ class MS_Helper_Period extends MS_Helper {
 			$desc = '%2$s';
 
 			if ( $include_quanity_one ) {
-				$period_type = $types['1' . $period_type];
+				$period_type = $types[ '1' . $period_type ];
 			} else {
-				$period_type = $types['1-' . $period_type];
+				$period_type = $types[ '1-' . $period_type ];
 			}
 		} else {
 			$desc = '%1$s %2$s';
 		}
 		$desc = sprintf( $desc, $period_unit, $period_type );
-                
-                $desc = str_replace(
-                            array(
-                                'days',
-                                'weeks',
-                                'months',
-                                'years'
-                            ),
-                            array(
-                                __( 'days', 'membership2' ),
-                                __( 'weeks', 'membership2' ),
-                                __( 'months', 'membership2' ),
-                                __( 'years', 'membership2' )
-                            ),
-                            $desc
-                        );
-                
+
+		$desc = str_replace(
+			array(
+				'days',
+				'weeks',
+				'months',
+				'years',
+			),
+			array(
+				__( 'days', 'membership2' ),
+				__( 'weeks', 'membership2' ),
+				__( 'months', 'membership2' ),
+				__( 'years', 'membership2' ),
+			),
+			$desc
+		);
+
 		return apply_filters(
 			'ms_helper_period_get_period_desc',
 			$desc
@@ -440,11 +451,7 @@ class MS_Helper_Period extends MS_Helper {
 
 		// Convert the timestamp to local time.
 		$timestamp = strtotime( $date ); // Converting time to Unix timestamp
-		//$offset = intval( get_option( 'gmt_offset' ) ) * 60 * 60; // Time offset in seconds
-		//$local_timestamp = $timestamp + $offset;
-
-		//$result = date_i18n( $format, $local_timestamp );
-                $result = date_i18n( $format, $timestamp );
+		$result = date_i18n( $format, $timestamp );
 
 		return apply_filters(
 			'ms_format_date',
