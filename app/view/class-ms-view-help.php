@@ -1709,6 +1709,14 @@ class MS_View_Help extends MS_View {
 			<strong><?php _ex( 'Keep a log of all outgoing emails', 'help', 'membership2' ); ?></strong><br />
 			<?php _ex( 'If you want to keep track of all the emails that M2 sends to your members then add the line <code>define( "MS_LOG_EMAILS", true );</code> to your wp-config.php. A new navigation link will be displayed here in the Help page to review the email history.', 'help', 'membership2' ); ?>
 		</p>
+                <p>
+			<strong><?php _ex( 'Create subscription on trial when using Paypal', 'help', 'membership2' ); ?></strong><br />
+			<?php _ex( 'If you want to create subscription on trial period, use <code>define( "MS_PAYPAL_TRIAL_SUBSCRIPTION", true );</code> in wp-config.php file. Please note, it will work only if you use Paypal.', 'help', 'membership2' ); ?>
+		</p>
+                <p>
+			<strong><?php _ex( 'Disable default email on registration', 'help', 'membership2' ); ?></strong><br />
+			<?php _ex( 'To disable WP default email on registration from back end, use <code>define( "MS_DISABLE_WP_NEW_USER_NOTIFICATION", true );</code> in wp-config.php file.', 'help', 'membership2' ); ?>
+		</p>
 		<hr />
 		<?php
 		return ob_get_clean();
