@@ -1096,7 +1096,8 @@ class MS_Model_Member extends MS_Model {
 
 		$validation_errors = apply_filters(
 			'ms_model_membership_create_new_user_validation_errors',
-			$validation_errors
+			$validation_errors,
+                        $this
 		);
 
 		// Compatibility with WangGuard
