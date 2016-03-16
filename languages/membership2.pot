@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta-4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-03-01 20:05:34+00:00\n"
+"POT-Creation-Date: 2016-03-16 19:20:45+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -3550,55 +3550,55 @@ msgstr ""
 msgid "Set-up Access Levels"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:261
+#: app/helper/class-ms-helper-period.php:272
 msgid "one day"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:262
+#: app/helper/class-ms-helper-period.php:273
 msgid "one week"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:263
+#: app/helper/class-ms-helper-period.php:274
 msgid "one month"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:264
+#: app/helper/class-ms-helper-period.php:275
 msgid "one year"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:265
+#: app/helper/class-ms-helper-period.php:276
 msgid "day"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:266
+#: app/helper/class-ms-helper-period.php:277
 msgid "week"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:267
+#: app/helper/class-ms-helper-period.php:278
 msgid "month"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:268
+#: app/helper/class-ms-helper-period.php:279
 msgid "year"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:271
-#: app/helper/class-ms-helper-period.php:378
+#: app/helper/class-ms-helper-period.php:282
+#: app/helper/class-ms-helper-period.php:389
 msgid "days"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:272
-#: app/helper/class-ms-helper-period.php:379
+#: app/helper/class-ms-helper-period.php:283
+#: app/helper/class-ms-helper-period.php:390
 msgid "weeks"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:273
-#: app/helper/class-ms-helper-period.php:380
+#: app/helper/class-ms-helper-period.php:284
+#: app/helper/class-ms-helper-period.php:391
 msgid "months"
 msgstr ""
 
-#: app/helper/class-ms-helper-period.php:274
-#: app/helper/class-ms-helper-period.php:381
+#: app/helper/class-ms-helper-period.php:285
+#: app/helper/class-ms-helper-period.php:392
 msgid "years"
 msgstr ""
 
@@ -4683,7 +4683,7 @@ msgid ""
 msgstr ""
 
 #: app/model/class-ms-model-member.php:1030
-#: app/model/class-ms-model-member.php:1830
+#: app/model/class-ms-model-member.php:1831
 msgid "Please ensure the passwords match."
 msgstr ""
 
@@ -4697,7 +4697,7 @@ msgid "That username is already taken, sorry."
 msgstr ""
 
 #: app/model/class-ms-model-member.php:1051
-#: app/model/class-ms-model-member.php:1823
+#: app/model/class-ms-model-member.php:1824
 msgid "The email address is not valid, sorry."
 msgstr ""
 
@@ -8800,12 +8800,38 @@ msgid ""
 "page to review the email history."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1726
+#: app/view/class-ms-view-help.php:1713
+msgctxt "help"
+msgid "Create subscription on trial when using Paypal"
+msgstr ""
+
+#: app/view/class-ms-view-help.php:1714
+msgctxt "help"
+msgid ""
+"If you want to create subscription on trial period, use <code>define( "
+"\"MS_PAYPAL_TRIAL_SUBSCRIPTION\", true );</code> in wp-config.php file. "
+"Please note, it will work only if you use Paypal."
+msgstr ""
+
+#: app/view/class-ms-view-help.php:1717
+msgctxt "help"
+msgid "Disable default email on registration"
+msgstr ""
+
+#: app/view/class-ms-view-help.php:1718
+msgctxt "help"
+msgid ""
+"To disable WP default email on registration from back end, use "
+"<code>define( \"MS_DISABLE_WP_NEW_USER_NOTIFICATION\", true );</code> in "
+"wp-config.php file."
+msgstr ""
+
+#: app/view/class-ms-view-help.php:1734
 msgctxt "help"
 msgid "Template Hierarchy"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1730
+#: app/view/class-ms-view-help.php:1738
 msgctxt "help"
 msgid ""
 "By default Membership 2 will render the page contents defined in your "
@@ -8814,116 +8840,116 @@ msgid ""
 "files%s in the theme."
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1739
+#: app/view/class-ms-view-help.php:1747
 msgctxt "help"
 msgid "Account Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1740
+#: app/view/class-ms-view-help.php:1748
 msgctxt "help"
 msgid "1. <tt>m2-account.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1741
+#: app/view/class-ms-view-help.php:1749
 msgctxt "help"
 msgid "2. Default single-page template"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1744
+#: app/view/class-ms-view-help.php:1752
 msgctxt "help"
 msgid "Membership List Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1745
+#: app/view/class-ms-view-help.php:1753
 msgctxt "help"
 msgid ""
 "1. <tt>m2-memberships-100.php</tt> (Not the list, only checkout for "
 "Membership 100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1746
+#: app/view/class-ms-view-help.php:1754
 msgctxt "help"
 msgid "2. <tt>m2-memberships.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1747 app/view/class-ms-view-help.php:1753
-#: app/view/class-ms-view-help.php:1759 app/view/class-ms-view-help.php:1765
+#: app/view/class-ms-view-help.php:1755 app/view/class-ms-view-help.php:1761
+#: app/view/class-ms-view-help.php:1767 app/view/class-ms-view-help.php:1773
 msgctxt "help"
 msgid "3. Default single-page template"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1750
+#: app/view/class-ms-view-help.php:1758
 msgctxt "help"
 msgid "Registration Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1751
+#: app/view/class-ms-view-help.php:1759
 msgctxt "help"
 msgid ""
 "1. <tt>m2-register-100.php</tt> (Not the list, only checkout for Membership "
 "100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1752
+#: app/view/class-ms-view-help.php:1760
 msgctxt "help"
 msgid "2. <tt>m2-register.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1756
+#: app/view/class-ms-view-help.php:1764
 msgctxt "help"
 msgid "Thank-You Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1757
+#: app/view/class-ms-view-help.php:1765
 msgctxt "help"
 msgid ""
 "1. <tt>m2-registration-complete-100.php</tt> (After subscribing to "
 "Membership 100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1758
+#: app/view/class-ms-view-help.php:1766
 msgctxt "help"
 msgid "2. <tt>m2-registration-complete.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1762
+#: app/view/class-ms-view-help.php:1770
 msgctxt "help"
 msgid "Protected Content Page"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1763
+#: app/view/class-ms-view-help.php:1771
 msgctxt "help"
 msgid ""
 "1. <tt>m2-protected-content-100.php</tt> (Page is protected by Membership "
 "100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1764
+#: app/view/class-ms-view-help.php:1772
 msgctxt "help"
 msgid "2. <tt>m2-protected-content.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1768
+#: app/view/class-ms-view-help.php:1776
 msgctxt "help"
 msgid "Invoice Layout"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1769
+#: app/view/class-ms-view-help.php:1777
 msgctxt "help"
 msgid "1. <tt>m2-invoice-100.php</tt> (Used by all invoices for Membership 100)"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1770
+#: app/view/class-ms-view-help.php:1778
 msgctxt "help"
 msgid "2. <tt>m2-invoice.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1771
+#: app/view/class-ms-view-help.php:1779
 msgctxt "help"
 msgid "3. <tt>single-ms_invoice.php</tt>"
 msgstr ""
 
-#: app/view/class-ms-view-help.php:1772
+#: app/view/class-ms-view-help.php:1780
 msgctxt "help"
 msgid "4. Default invoice template by Membership 2"
 msgstr ""
