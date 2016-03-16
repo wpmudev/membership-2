@@ -66,7 +66,7 @@ function membership2_init_pro_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.2.8-Beta-4' );
+	define( 'MS_PLUGIN_VERSION', '1.0.2.8' );
 
 	/**
 	 * Plugin identifier constant.
@@ -149,7 +149,7 @@ function membership2_init_pro_app() {
 	}
 	add_action( 'plugins_loaded', '_membership2_translate_plugin' );
 
-	if ( (defined( 'WP_DEBUG' ) && WP_DEBUG) || (defined( 'DEV_DEBUG' ) && WDEV_DEBUG) ) {
+	if ( (defined( 'WP_DEBUG' ) && WP_DEBUG) || (defined( 'WDEV_DEBUG' ) && WDEV_DEBUG) ) {
 		// Load development/testing code before the plugin is initialized.
 		$testfile = dirname( __FILE__ ) . '/tests/wp/init.php';
 		if ( file_exists( $testfile ) ) { include $testfile; }
@@ -892,7 +892,7 @@ class MS_Plugin {
  * This is a hack to prevent cookie issue in IE11 and EDGE
  * Need to refactor in later
  *
- * @since 1.0.2.9
+ * @since 1.0.2.8
  */
 if( isset( $_REQUEST['ms_ajax'] ) ) {
     if( $_REQUEST['ms_ajax'] == 1 ) {

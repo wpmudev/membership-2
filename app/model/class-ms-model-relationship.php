@@ -2710,7 +2710,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				 * renew the subscription. All other types will expire when the
 				 * end date is reached.
 				 */
-				$auto_renew = ($membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING);
+				//$auto_renew = ($membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING);
+                                $auto_renew = false;
 				$deactivate = false;
 				$invoice = null;
 

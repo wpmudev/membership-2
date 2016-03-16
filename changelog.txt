@@ -4,20 +4,20 @@ Author: Philipp Stracker, Ashok Kumar Nath, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
-1.0.2.8 (UNRELEASAED)
+1.0.2.8
 ----------------------------------------------------------------------
 - Added: New import option to import each membership on its own, to prevent memory- or similar overflow issues.
 - Added: Settings for PayPal gateways now also list the country "Croatia".
-- Added: Filters added 'ms_helper_color_index' and 'ms_model_membership_get_color'
-- Improved: Memberships can't be assigned to admin users
-- Fixed: Front end login was not working in Internel Explorer and EDGE browser
+- Added: Filters  'ms_helper_color_index' and 'ms_model_membership_get_color'
+- Improved: Memberships can't be assigned to admin users any longer
+- Fixed: IE and Edge users can now log in from front end again
 - Fixed: Import of M1 data now correctly creates recurring memberships.
-- Fixed: People who saw a PHP notice "WDEV_DEBUG is undefined": It's gone!
-- Fixed: Translation string missing.
-- Fixed: Redirect addon was not working
-- Fixed: Nickname was not saving when profile fields addon is activated
-- Fixed: Missing string in default lost password default email
-- Fixed: Media protection was breakign images in customizer
+- Fixed: For people who saw a PHP notice "WDEV_DEBUG is undefined": It's gone!
+- Fixed: Missing translation string added.
+- Fixed: Redirect add on works properly again
+- Fixed: Nickname now saves when BuddyPress profile fields add on is activated
+- Fixed: Missing string in default lost password default email no longer missing
+- Fixed: Media protection no longer breaks images in customizer
 
 
 1.0.2.7
