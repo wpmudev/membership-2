@@ -2711,7 +2711,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				 * end date is reached.
 				 */
 				//$auto_renew = ($membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING);
-                                $auto_renew = false;
+                                if ( self::STATUS_CANCELED == $this->status ) {
+                                    $auto_renew = false;
+                                } else {
+                                    $auto_renew = ($membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING);
+                                }
 				$deactivate = false;
 				$invoice = null;
 
