@@ -301,101 +301,84 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 			'ms-status-' . ( $subscription ? $subscription->status : 'none' ),
 			'ms-subscription-' . ($subscription ? $subscription->id : 'none' ),
 		);
-		?>
-		<form action="<?php echo esc_url( $url ); ?>" class="ms-membership-form" method="post">
-			<div id="ms-membership-wrapper-<?php echo esc_attr( $membership->id ); ?>" class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-				<div class="ms-top-bar">
-					<h4><span class="ms-title"><?php echo esc_html( $membership->name ); ?></span></h4>
-				</div>
-				<div class="ms-price-details">
-					<div class="ms-description"><?php echo $membership->get_description(); ?></div>
-					<div class="ms-price price"><?php echo esc_html( $price ); ?></div>
+                
+                $action_url = esc_url( $url );
+                $membership_id = esc_attr( $membership->id );
+                $membership_wrapper_classes = esc_attr( implode( ' ', $classes ) );
+                $membership_name = esc_html( $membership->name );
+                $membership_description = $membership->get_description();
+                $membership_price = esc_html( $price );
+                
+                $class = apply_filters(
+                        'ms_view_shortcode_membershipsignup_form_button_class',
+                        'ms-signup-button ' . esc_attr( $action )
+                );
 
-					<?php if ( $msg ) : ?>
-						<div class="ms-bottom-msg"><?php echo '' . $msg; ?></div>
-					<?php endif; ?>
-				</div>
+                $button = array(
+                        'id' => 'submit',
+                        'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+                        'value' => esc_html( $this->data[ "{$action}_text" ] ),
+                        'class' => $class,
+                );
 
-				<div class="ms-bottom-bar">
-					<?php
-					$class = apply_filters(
-						'ms_view_shortcode_membershipsignup_form_button_class',
-						'ms-signup-button ' . esc_attr( $action )
-					);
+                /**
+                 * Allow customizing the Signup button.
+                 *
+                 * Either adjust the array properties or return a valid HTML
+                 * string that will be directly output.
+                 *
+                 * @since  1.0.1.2
+                 * @param  array|string $button
+                 * @param  MS_Model_Membership $membership
+                 * @param  MS_Model_Subscription $subscription
+                 */
+                $button = apply_filters(
+                        'ms_view_shortcode_membershipsignup_button',
+                        $button,
+                        $membership,
+                        $subscription
+                );
+                
+                if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL === $action ) {
+                        /**
+                         * PayPal Standard Gateway uses a special Cancel button.
+                         *
+                         * @see MS_Controller_Gateway
+                         */
+                        $button = apply_filters(
+                                'ms_view_shortcode_membershipsignup_cancel_button',
+                                $button,
+                                $subscription,
+                                $this
+                        );
+                } elseif ( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY === $action ) {
+                        // Paid membership: Display a Cancel button
 
-					$button = array(
-						'id' => 'submit',
-						'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-						'value' => esc_html( $this->data[ "{$action}_text" ] ),
-						'class' => $class,
-					);
+                        $cancel_action = MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL;
+                        $url = $this->get_action_url(
+                                $membership->id,
+                                $cancel_action,
+                                '' // step is not required for cancel
+                        );
 
-					/**
-					 * Allow customizing the Signup button.
-					 *
-					 * Either adjust the array properties or return a valid HTML
-					 * string that will be directly output.
-					 *
-					 * @since  1.0.1.2
-					 * @param  array|string $button
-					 * @param  MS_Model_Membership $membership
-					 * @param  MS_Model_Subscription $subscription
-					 */
-					$button = apply_filters(
-						'ms_view_shortcode_membershipsignup_button',
-						$button,
-						$membership,
-						$subscription
-					);
-
-					if ( MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL === $action ) {
-						/**
-						 * PayPal Standard Gateway uses a special Cancel button.
-						 *
-						 * @see MS_Controller_Gateway
-						 */
-						$button = apply_filters(
-							'ms_view_shortcode_membershipsignup_cancel_button',
-							$button,
-							$subscription,
-							$this
-						);
-					} elseif ( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY === $action ) {
-						// Paid membership: Display a Cancel button
-
-						$cancel_action = MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL;
-						$url = $this->get_action_url(
-							$membership->id,
-							$cancel_action,
-							'' // step is not required for cancel
-						);
-
-						$link = array(
-							'url' => $url,
-							'class' => 'ms-cancel-button button',
-							'value' => esc_html( $this->data[ "{$cancel_action}_text" ] ),
-						);
-						MS_Helper_Html::html_link( $link );
-					}
-
-					wp_nonce_field( $fields['action']['value'] );
-
-					foreach ( $fields as $field ) {
-						MS_Helper_Html::html_element( $field );
-					}
-
-					/**
-					 * It's possible to add custom fields to the signup box.
-					 *
-					 * @since  1.0.1.2
-					 */
-					do_action( 'ms_shortcode_signup_form_end', $this );
-
-					MS_Helper_Html::html_element( $button );
-					?>
-				</div>
-			</div>
-		</form>
+                        $link = array(
+                                'url' => $url,
+                                'class' => 'ms-cancel-button button',
+                                'value' => esc_html( $this->data[ "{$cancel_action}_text" ] ),
+                        );
+                        
+                }
+                
+                ?>
+                <form action="<?php echo $action_url; ?>" class="ms-membership-form" method="post">
+                    <?php
+                        wp_nonce_field( $fields['action']['value'] );
+                        
+                        if( $path = MS_Helper_Template::template_exists( 'membership_box_html.php' ) ) {
+                            require $path;
+                        }
+                    ?>
+                </form>
 		<?php
 		do_action( 'ms_show_prices' );
 	}

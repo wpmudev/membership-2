@@ -4,6 +4,11 @@ Author: Philipp Stracker, Ashok Kumar Nath, Fabio Jun, Rheinard Khorf
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.2.9
+----------------------------------------------------------------------
+- Fixed: Version change
+
+
 1.0.2.8
 ----------------------------------------------------------------------
 - Added: New import option to import each membership on its own, to prevent memory- or similar overflow issues.
