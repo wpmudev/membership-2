@@ -1,20 +1,10 @@
-<?php if ( ! empty( $title ) ) : ?>
-        <legend><?php echo $title; ?></legend>
+<?php if ( is_ms_registration_form_title_exists() ) : ?>
+        <legend><?php echo get_ms_registration_form_title(); ?></legend>
 <?php endif; ?>
 
-<?php foreach ( $fields as $field ) {
-        if ( is_string( $field ) ) {
-                MS_Helper_Html::html_element( $field );
-        } elseif ( MS_Helper_Html::INPUT_TYPE_HIDDEN == $field['type'] ) {
-                MS_Helper_Html::html_element( $field );
-        } else {
-                ?>
-                <div class="ms-form-element ms-form-element-<?php echo esc_attr( $field['id'] ); ?>">
-                        <?php MS_Helper_Html::html_element( $field ); ?>
-                </div>
-                <?php
-        }
-}
+<?php
+
+echo get_ms_registration_form_fields();
 
 echo '<div class="ms-extra-fields">';
 
@@ -30,24 +20,13 @@ echo '<div class="ms-extra-fields">';
  *
  * @since  1.0.0
  */
-if ( is_multisite() ) {
-        do_action( 'signup_extra_fields', $empty_error );
-} else {
-        do_action( 'register_form' ); // Always on the register form.
-}
+ms_registration_form_extra_fields();
 
 echo '</div>';
 
-MS_Helper_Html::html_element( $register_button );
+echo get_ms_registration_form_register_button();
 
-if ( is_wp_error( $m2_reg_error ) ) {
-        /**
-         * Display registration errors.
-         *
-         * @since  1.0.0
-         */
-        do_action( 'registration_errors', $m2_reg_error );
-}
+ms_registration_form_error();
 
 /**
  * This hook is intended to output hidden fields or JS code
@@ -59,6 +38,6 @@ do_action( 'ms_shortcode_register_form_end', $m2_reg_obj );
 ?>
 <br><br>
 <?php
-if ( $login_link_exists ) {
-        MS_Helper_Html::html_link( $login_link );
+if ( is_ms_registration_form_login_link_exists() ) {
+        echo get_ms_registration_form_login_link();
 }

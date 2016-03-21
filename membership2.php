@@ -44,6 +44,7 @@
  *
  * @since  1.0.0
  */
+
 function membership2_init_pro_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
 		if ( is_admin() ) {
@@ -961,3 +962,5 @@ if( isset( $_REQUEST['ms_ajax'] ) ) {
 }else{
     membership2_init_pro_app();
 }
+
+require_once plugin_dir_path( __FILE__ ) . 'app/functions/template-functions.php';

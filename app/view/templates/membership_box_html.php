@@ -1,37 +1,32 @@
-<div id="ms-membership-wrapper-<?php echo $membership_id; ?>" class="<?php echo $membership_wrapper_classes; ?>">
+<div id="ms-membership-wrapper-<?php echo get_ms_single_box_membership_id(); ?>" class="<?php echo get_ms_single_box_wrapper_classes(); ?>">
         <div class="ms-top-bar">
-                <h4><span class="ms-title"><?php echo $membership_name; ?></span></h4>
+                <h4><span class="ms-title"><?php echo get_ms_single_box_membership_name(); ?></span></h4>
         </div>
         <div class="ms-price-details">
-                <div class="ms-description"><?php echo $membership_description; ?></div>
-                <div class="ms-price price"><?php echo $membership_price; ?></div>
+                <div class="ms-description"><?php echo get_ms_single_box_membership_description(); ?></div>
+                <div class="ms-price price"><?php echo get_ms_single_box_membership_price(); ?></div>
 
-                <?php if ( $msg ) : ?>
-                        <div class="ms-bottom-msg"><?php echo '' . $msg; ?></div>
+                <?php if ( is_ms_single_box_msg() ) : ?>
+                        <div class="ms-bottom-msg"><?php echo get_ms_single_box_msg(); ?></div>
                 <?php endif; ?>
         </div>
 
         <div class="ms-bottom-bar">
                 <?php
-                if ( MS_Helper_Membership::MEMBERSHIP_ACTION_PAY === $action ) {
-                    MS_Helper_Html::html_link( $link );
+                if ( is_ms_single_box_action_pay() ) {
+                    echo get_ms_single_box_payment_btn();
                 }
                 
-                /**
-                 * This is generating HTML, you can customize the fields in template in theme
-                 */
-                foreach ( $fields as $field ) {
-                        MS_Helper_Html::html_element( $field );
-                }
+                echo get_ms_single_box_hidden_fields();
 
                 /**
                  * It's possible to add custom fields to the signup box.
                  *
                  * @since  1.0.1.2
                  */
-                do_action( 'ms_shortcode_signup_form_end', $this );
+                do_action( 'ms_shortcode_signup_form_end', $m2_obj );
 
-                MS_Helper_Html::html_element( $button );
+                echo get_ms_single_box_btn();
                 ?>
         </div>
 </div>

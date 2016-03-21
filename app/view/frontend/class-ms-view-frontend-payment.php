@@ -191,6 +191,38 @@ class MS_View_Frontend_Payment extends MS_View {
                 $invoice_payment_description = $subscription->get_payment_description( $invoice );
                 $m2_obj_data = $this->data;
                 
+                $template_data = array(
+                                'membership_wrapper_class' => $membership_wrapper_class,
+                                'alert_box_class' => $alert_box_class,
+                                'msg' => $msg,
+                                'membership_name' => $membership_name,
+                                'is_membership_description' => $is_membership_description,
+                                'membership_description' => $membership_description,
+                                'is_membership_free' => $is_membership_free,
+                                'invoice_discount' => $invoice_discount,
+                                'invoice_pro_rate' => $invoice_pro_rate,
+                                'invoice_tax_rate' => $invoice_tax_rate,
+                                'membership_price' => $membership_price,
+                                'membership_formatted_price' => $membership_formatted_price,
+                                'invoice_formatted_discount' => $invoice_formatted_discount,
+                                'invoice_formatted_pro_rate' => $invoice_formatted_pro_rate,
+                                'show_tax' => $show_tax,
+                                'invoice_tax_name' => $invoice_tax_name,
+                                'invoice_formatted_tax' => $invoice_formatted_tax,
+                                'invoice_total' => $invoice_total,
+                                'is_ms_admin_user' => $is_ms_admin_user,
+                                'invoice_formatted_total_for_admin' => $invoice_formatted_total_for_admin,
+                                'invoice_formatted_total' => $invoice_formatted_total,
+                                'is_trial' => $is_trial,
+                                'invoice_formatted_due_date' => $invoice_formatted_due_date,
+                                'invoice_trial_price' => $invoice_trial_price,
+                                'invoice_formatted_trial_price' => $invoice_formatted_trial_price,
+                                'invoice_payment_description' => $invoice_payment_description,
+                                'cancel_warning' => $cancel_warning
+                            );
+                
+                ms_payment_prepare( $template_data );
+                
                 if( $path = MS_Helper_Template::template_exists( 'membership_frontend_payment.php' ) ) {
                     require $path;
                 }
