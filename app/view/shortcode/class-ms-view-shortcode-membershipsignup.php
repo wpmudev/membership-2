@@ -379,10 +379,11 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
                                     'action' => $action,
                                     'link' => $link,
                                     'fields' => $fields,
-                                    'button' => $button
+                                    'button' => $button,
+                                    'm2_obj' => $m2_obj
                                 );
-                $m2_obj = $this;
-                ms_single_box_prepare( $template_data );
+                MS_Helper_Template::$ms_single_box = $template_data;
+                
                 ?>
                 <form action="<?php echo $action_url; ?>" class="ms-membership-form" method="post">
                     <?php

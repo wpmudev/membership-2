@@ -187,9 +187,7 @@ class MS_View_Frontend_Payment extends MS_View {
                                                         $invoice->currency,
                                                         MS_Helper_Billing::format_price( $invoice->trial_price )
                                                 );
-                $m2_obj = $this;
                 $invoice_payment_description = $subscription->get_payment_description( $invoice );
-                $m2_obj_data = $this->data;
                 
                 $template_data = array(
                                 'membership_wrapper_class' => $membership_wrapper_class,
@@ -218,11 +216,13 @@ class MS_View_Frontend_Payment extends MS_View {
                                 'invoice_trial_price' => $invoice_trial_price,
                                 'invoice_formatted_trial_price' => $invoice_formatted_trial_price,
                                 'invoice_payment_description' => $invoice_payment_description,
-                                'cancel_warning' => $cancel_warning
+                                'cancel_warning' => $cancel_warning,
+                                'm2_payment_obj' => $this,
+                                'subscription' => $subscription,
+                                'invoice' > $invoice
                             );
                 
-                ms_payment_prepare( $template_data );
-                
+                MS_Helper_Template::$ms_front_payment = $template_data;
                 if( $path = MS_Helper_Template::template_exists( 'membership_frontend_payment.php' ) ) {
                     require $path;
                 }

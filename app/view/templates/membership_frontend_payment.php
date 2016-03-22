@@ -124,9 +124,9 @@
                         <?php
                         do_action(
                                 'ms_view_frontend_payment_after_total_row',
-                                $subscription,
-                                $invoice,
-                                $m2_obj
+                                get_ms_payment_subscription(),
+                                get_ms_payment_invoice(),
+                                get_ms_payment_obj()
                         );
                         ?>
 
@@ -160,20 +160,20 @@
                 <?php else :
                         do_action(
                                 'ms_view_frontend_payment_purchase_button',
-                                $subscription,
-                                $invoice,
-                                $m2_obj
+                                get_ms_payment_subscription(),
+                                get_ms_payment_invoice(),
+                                get_ms_payment_obj()
                         );
                 endif;
                 ?>
         </table>
 </div>
 <?php
-do_action( 'ms_view_frontend_payment_after', $m2_obj_data, $m2_obj );
+do_action( 'ms_view_frontend_payment_after', get_ms_payment_obj_data(), get_ms_payment_obj() );
 do_action( 'ms_show_prices' );
 
 if ( is_ms_pm_show_tax() ) {
-        do_action( 'ms_tax_editor', $invoice );
+        do_action( 'ms_tax_editor', get_ms_payment_invoice() );
 }
 ?>
 <div style="clear:both;"></div>

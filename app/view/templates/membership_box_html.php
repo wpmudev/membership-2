@@ -24,7 +24,7 @@
                  *
                  * @since  1.0.1.2
                  */
-                do_action( 'ms_shortcode_signup_form_end', $m2_obj );
+                do_action( 'ms_shortcode_signup_form_end', get_ms_single_box_membership_obj() );
 
                 echo get_ms_single_box_btn();
                 ?>

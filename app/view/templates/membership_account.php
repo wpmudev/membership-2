@@ -1,16 +1,16 @@
 <div class="ms-account-wrapper">
-        <?php if ( $is_user_logged_in ) : ?>
+        <?php if ( ms_is_user_logged_in() ) : ?>
 
                 <?php
                 // ================================================= MEMBERSHIPS
-                if ( $show_membership ) : ?>
+                if ( ms_is_user_logged_in() ) : ?>
                 <div id="account-membership">
                 <h2>
                         <?php
-                        echo $membership_title;
+                        echo get_ms_ac_title();
                         
-                        if ( $show_membership_change ) {
-                                echo $signup_modified_url;
+                        if ( show_membership_change_link() ) {
+                                echo get_ms_ac_signup_modified_url();
                         }
                         ?>
                 </h2>
@@ -20,12 +20,12 @@
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_memberships_top', $member, $m2_obj );
+                do_action( 'ms_view_account_memberships_top', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
 
-                if ( MS_Model_Member::is_admin_user() ) {
+                if ( is_ms_admin_user() ) {
                         _e( 'You are an admin user and have access to all memberships', 'membership2' );
                 } else {
-                        if ( ! empty( $m2_subscriptions ) ) {
+                        if ( has_ms_ac_subscriptions() ) {
                                 ?>
                                 <table>
                                         <tr>
@@ -41,6 +41,7 @@
                                         </tr>
                                         <?php
                                         $empty = true;
+                                        $m2_subscriptions = get_ms_ac_subscriptions();
                                         foreach ( $m2_subscriptions as $subscription ) :
                                                 $empty = false;
                                                 ms_account_the_membership( $subscription );
@@ -68,25 +69,23 @@
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_memberships_bottom', $member, $m2_obj );
+                do_action( 'ms_view_account_memberships_bottom', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 </div>
                 <?php
                 endif;
-                // END: if ( $show_membership )
-                // =============================================================
                 ?>
 
                 <?php
                 // ===================================================== PROFILE
-                if ( $show_profile ) : ?>
+                if ( is_ms_ac_show_profile() ) : ?>
                 <div id="account-profile">
                 <h2>
                         <?php
-                        echo $profile_title;
+                        echo get_ms_ac_profile_title();
 
-                        if ( $show_profile_change ) {
-                                echo $profile_change_formatted_label;
+                        if ( is_ms_ac_show_profile_change() ) {
+                                echo get_ms_ac_profile_change_link();
                         }
                         ?>
                 </h2>
@@ -96,25 +95,26 @@
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_profile_top', $member, $m2_obj );
+                do_action( 'ms_view_account_profile_top', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 <table>
-                        <?php foreach ( $fields['personal_info'] as $field => $title ) : ?>
+                        <?php $profile_fields = get_ms_ac_profile_fields(); ?>
+                        <?php foreach ( $profile_fields as $field => $title ) : ?>
                                 <tr>
                                         <th class="ms-label-title"><?php echo esc_html( $title ); ?>: </th>
-                                        <td class="ms-label-field"><?php echo esc_html( $m2_obj->data['member']->$field ); ?></td>
+                                        <td class="ms-label-field"><?php echo esc_html( get_ms_ac_profile_info( $field ) ); ?></td>
                                 </tr>
                         <?php endforeach; ?>
                 </table>
                 <?php
-                do_action( 'ms_view_shortcode_account_card_info', $m2_obj->data );
+                do_action( 'ms_view_shortcode_account_card_info', get_ms_ac_data() );
 
                 /**
                  * Add custom content right after the profile overview.
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_profile_bottom', $member, $m2_obj );
+                do_action( 'ms_view_account_profile_bottom', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 </div>
                 <?php
@@ -125,14 +125,14 @@
 
                 <?php
                 // ==================================================== INVOICES
-                if ( $show_invoices ) : ?>
+                if ( is_ms_ac_show_invoices() ) : ?>
                 <div id="account-invoices">
                 <h2>
                         <?php
-                        echo $invoices_title;
+                        echo get_ms_ac_invoices_title();
 
-                        if ( $show_all_invoices ) {
-                                echo $invoices_details_formatted_label;
+                        if ( is_ms_ac_show_all_invoices() ) {
+                                echo get_ms_ac_invoices_detail_label();
                         }
                         ?>
                 </h2>
@@ -142,7 +142,7 @@
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_invoices_top', $member, $m2_obj );
+                do_action( 'ms_view_account_invoices_top', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 <table>
                         <thead>
@@ -169,7 +169,8 @@
                                 </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ( $m2_obj->data['invoices'] as $invoice ) :
+                        <?php $m2_invoices = get_ms_ac_invoices(); ?>
+                        <?php foreach ( $m2_invoices as $invoice ) :
                                 ms_account_the_invoice( $invoice );
                                 ?>
                                 <tr class="<?php echo get_ms_invoice_classes(); ?>">
@@ -188,25 +189,23 @@
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_invoices_bottom', $member, $m2_obj );
+                do_action( 'ms_view_account_invoices_bottom', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 </div>
                 <?php
                 endif;
-                // END: if ( $show_invoices )
-                // =============================================================
                 ?>
 
                 <?php
                 // ==================================================== ACTIVITY
-                if ( $show_activity ) : ?>
+                if ( is_ms_ac_show_activity() ) : ?>
                 <div id="account-activity">
                 <h2>
                         <?php
-                        echo $activity_title;
+                        echo get_ms_ac_activity_title();
 
-                        if ( $show_all_activities ) {
-                                echo $activity_details_formatted_label;
+                        if ( is_ms_ac_show_all_activities() ) {
+                                echo get_ms_ac_activity_details_label();
                         }
                         ?>
                 </h2>
@@ -216,7 +215,7 @@
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_activity_top', $member, $m2_obj );
+                do_action( 'ms_view_account_activity_top', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 <table>
                         <thead>
@@ -230,7 +229,8 @@
                                 </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ( $m2_obj->data['events'] as $event ) :
+                        <?php $m2_events = get_ms_ac_events(); ?>
+                        <?php foreach ( $m2_events as $event ) :
                                 ms_account_the_event( $event );
                                 ?>
                                 <tr class="<?php echo get_ms_event_classes(); ?>">
@@ -246,19 +246,17 @@
                  *
                  * @since  1.0.0
                  */
-                do_action( 'ms_view_account_activity_bottom', $member, $m2_obj );
+                do_action( 'ms_view_account_activity_bottom', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 </div>
                 <?php
                 endif;
-                // END: if ( $show_activity )
-                // =============================================================
                 ?>
 
         <?php else :
                 
-                if ( ! $has_login_form ) {
-                        echo $login_form_sc;
+                if ( ! has_ms_ac_login_form() ) {
+                        echo get_ms_ac_login_form();
                 }
         endif; ?>
 </div>

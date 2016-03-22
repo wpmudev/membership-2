@@ -34,7 +34,7 @@ ms_registration_form_error();
  *
  * @since  1.0.1.0
  */
-do_action( 'ms_shortcode_register_form_end', $m2_reg_obj );
+do_action( 'ms_shortcode_register_form_end', ms_registration_form_prepare() );
 ?>
 <br><br>
 <?php

@@ -9,6 +9,11 @@ class MS_Helper_Template extends MS_Helper {
     const TARGET_DIRECTORY = 'membership2';
     const TEMPLATE_DIRECTORY = 'app/view/templates/';
     
+    static public $ms_single_box;
+    static public $ms_registration_form;
+    static public $ms_front_payment;
+    static public $ms_account;
+    
     public function get_template_dir() {
         return MS_PLUGIN_DIR . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY;
     }

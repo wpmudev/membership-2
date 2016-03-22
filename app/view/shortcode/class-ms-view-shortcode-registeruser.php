@@ -105,7 +105,6 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
                             }
                             
                             $m2_reg_error = $this->error;
-                            $m2_obj = $m2_reg_obj;
                             
                             $template_data = array(
                                             'title' => $title,
@@ -114,9 +113,11 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
                                             'register_button' => $register_button,
                                             'm2_reg_error' => $m2_reg_error,
                                             'login_link_exists' => $login_link_exists,
-                                            'login_link' => $login_link
+                                            'login_link' => $login_link,
+                                            'm2_obj' => $this
                                         );
-                            ms_registration_form_prepare( $template_data );
+                            
+                            MS_Helper_Template::$ms_registration_form = $template_data;
                             ?>
                             <form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo $reg_action_url; ?>" method="post">
                             <?php
