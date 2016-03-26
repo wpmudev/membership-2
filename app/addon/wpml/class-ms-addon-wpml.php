@@ -392,7 +392,7 @@ class MS_Addon_Wpml extends MS_Addon {
 			);
 
 			if ( $tr_post_id ) {
-				$url = get_permalink( $tr_page_id );
+				$url = get_permalink( $tr_post_id );
 
 				if ( null === $ssl ) { $ssl = is_ssl(); }
 				if ( $ssl ) {
