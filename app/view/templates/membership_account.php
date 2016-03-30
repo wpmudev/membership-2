@@ -107,6 +107,9 @@
                         <?php endforeach; ?>
                 </table>
                 <?php
+                do_action( 'ms_view_account_profile_before_card', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
+                
+                
                 do_action( 'ms_view_shortcode_account_card_info', get_ms_ac_data() );
 
                 /**
