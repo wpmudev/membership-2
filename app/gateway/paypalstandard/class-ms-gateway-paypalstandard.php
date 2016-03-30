@@ -184,7 +184,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 							$is_linked = true;
 							$invoice_id = $subscription->first_unpaid_invoice();
 						} else {
-							$user = get_user_by( 'ID', $m1_user_id );
+							$user = get_user_by( 'id', $m1_user_id );
+
 							if ( $user && $user->ID == $m1_user_id ) {
 								$membership = MS_Model_Import::membership_by_matching(
 									'm1',
