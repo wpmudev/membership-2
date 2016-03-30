@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Membership 2 Pro
  * Plugin URI:  https://premium.wpmudev.org/project/membership/
- * Version:     1.0.2.8-Beta-4
+ * Version:     1.0.3-Beta-1
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
  * Author URI:  http://premium.wpmudev.org/
@@ -44,6 +44,7 @@
  *
  * @since  1.0.0
  */
+
 function membership2_init_pro_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
 		if ( is_admin() ) {
@@ -66,7 +67,7 @@ function membership2_init_pro_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.2.8' );
+	define( 'MS_PLUGIN_VERSION', '1.0.3-Beta-1' );
 
 	/**
 	 * Plugin identifier constant.
@@ -81,6 +82,13 @@ function membership2_init_pro_app() {
 	 * @since  1.0.0
 	 */
 	define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
+        
+        /**
+	 * Plugin name dir constant.
+	 *
+	 * @since  1.0.3
+	 */
+	define( 'MS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 	// WPMUDEV Dashboard.
 	global $wpmudev_notices;
@@ -954,3 +962,5 @@ if( isset( $_REQUEST['ms_ajax'] ) ) {
 }else{
     membership2_init_pro_app();
 }
+
+require_once plugin_dir_path( __FILE__ ) . 'app/functions/template-functions.php';

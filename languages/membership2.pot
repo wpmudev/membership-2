@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.2.8-Beta-4\n"
+"Project-Id-Version: Membership 2 Pro 1.0.3-Beta-1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-03-16 19:20:45+00:00\n"
+"POT-Creation-Date: 2016-03-23 17:22:46+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -205,8 +205,9 @@ msgid "Activate bbPress to use this Add-on"
 msgstr ""
 
 #: app/addon/bbpress/rule/class-ms-addon-bbpress-rule-listtable.php:27
-#: app/view/frontend/class-ms-view-frontend-payment.php:143
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:187
+#: app/view/templates/membership_frontend_payment.php:9
+#: backup/membership_frontend_payment.php:13
 msgid "Name"
 msgstr ""
 
@@ -434,7 +435,8 @@ msgstr ""
 #: app/addon/coupon/view/class-ms-addon-coupon-view-edit.php:100
 #: app/addon/invitation/helper/class-ms-addon-invitation-helper-listtable.php:28
 #: app/addon/invitation/view/class-ms-addon-invitation-view-edit.php:90
-#: app/view/shortcode/class-ms-view-shortcode-account.php:77
+#: app/view/templates/membership_account.php:39
+#: backup/membership_account.php:48
 msgid "Expire date"
 msgstr ""
 
@@ -446,7 +448,8 @@ msgstr ""
 #: app/view/class-ms-view-adminbar.php:94 app/view/class-ms-view-metabox.php:49
 #: app/view/frontend/class-ms-view-frontend-invoices.php:30
 #: app/view/member/class-ms-view-member-dialog.php:146
-#: app/view/shortcode/class-ms-view-shortcode-account.php:283
+#: app/view/templates/membership_account.php:164
+#: backup/membership_account.php:254
 msgid "Membership"
 msgstr ""
 
@@ -710,7 +713,7 @@ msgstr ""
 #: app/model/class-ms-model-member.php:997 app/view/class-ms-view-help.php:778
 #: app/view/member/class-ms-view-member-editor.php:201
 #: app/view/settings/class-ms-view-settings-import.php:171
-#: app/view/shortcode/class-ms-view-shortcode-account.php:468
+#: app/view/shortcode/class-ms-view-shortcode-account.php:146
 #: app/view/shortcode/class-ms-view-shortcode-login.php:194
 msgid "Username"
 msgstr ""
@@ -750,7 +753,7 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-transactionlog.php:641
 #: app/view/member/class-ms-view-member-editor.php:211
 #: app/view/settings/class-ms-view-settings-import.php:172
-#: app/view/shortcode/class-ms-view-shortcode-account.php:469
+#: app/view/shortcode/class-ms-view-shortcode-account.php:147
 msgid "Email"
 msgstr ""
 
@@ -930,7 +933,7 @@ msgstr ""
 #: app/addon/redirect/class-ms-addon-redirect.php:110
 #: app/addon/taxamo/class-ms-addon-taxamo.php:232
 #: app/controller/class-ms-controller-plugin.php:475
-#: app/view/class-ms-view-help.php:212 membership2.php:711
+#: app/view/class-ms-view-help.php:212 membership2.php:719
 msgid "Settings"
 msgstr ""
 
@@ -2125,11 +2128,14 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:264
 #: app/helper/listtable/class-ms-helper-listtable-membership.php:265
 #: app/helper/listtable/class-ms-helper-listtable-transactionmatching.php:314
-#: app/view/frontend/class-ms-view-frontend-payment.php:178
-#: app/view/frontend/class-ms-view-frontend-payment.php:262
-#: app/view/frontend/class-ms-view-frontend-payment.php:290
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:45
 #: app/view/shortcode/class-ms-view-shortcode-membershipsignup.php:276
+#: app/view/templates/membership_frontend_payment.php:40
+#: app/view/templates/membership_frontend_payment.php:93
+#: app/view/templates/membership_frontend_payment.php:117
+#: backup/membership_frontend_payment.php:48
+#: backup/membership_frontend_payment.php:132
+#: backup/membership_frontend_payment.php:160
 msgid "Free"
 msgstr ""
 
@@ -2173,11 +2179,11 @@ msgstr ""
 msgid "Link Transaction"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:134 membership2.php:926
+#: app/controller/class-ms-controller-dialog.php:134 membership2.php:934
 msgid "Wrong username or password"
 msgstr ""
 
-#: app/controller/class-ms-controller-dialog.php:145 membership2.php:929
+#: app/controller/class-ms-controller-dialog.php:145 membership2.php:937
 msgid "Logging in..."
 msgstr ""
 
@@ -2685,6 +2691,27 @@ msgstr ""
 
 #: app/controller/class-ms-controller-shortcode.php:1199
 msgid "This message is only displayed to Site Administrators"
+msgstr ""
+
+#: app/functions/template-functions.php:512
+#: app/model/class-ms-model-invoice.php:362
+#: app/model/class-ms-model-relationship.php:344
+#: backup/membership_account.php:90
+msgid "Pending"
+msgstr ""
+
+#: app/functions/template-functions.php:548 backup/membership_account.php:110
+msgid "Never"
+msgstr ""
+
+#: app/functions/template-functions.php:564 backup/membership_account.php:126
+msgid "(No Membership)"
+msgstr ""
+
+#: app/functions/template-functions.php:695
+#: app/view/frontend/class-ms-view-frontend-invoices.php:71
+#: backup/membership_account.php:295
+msgid "F j"
 msgstr ""
 
 #: app/gateway/2checkout/class-ms-gateway-2checkout.php:45
@@ -3658,7 +3685,8 @@ msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:28
 #: app/view/frontend/class-ms-view-frontend-invoices.php:17
-#: app/view/shortcode/class-ms-view-shortcode-account.php:270
+#: app/view/templates/membership_account.php:151
+#: backup/membership_account.php:241
 msgid "Invoice #"
 msgstr ""
 
@@ -3673,24 +3701,27 @@ msgstr ""
 #: app/view/member/class-ms-view-member-dialog.php:149
 #: app/view/member/class-ms-view-member-editor.php:387
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:259
-#: app/view/shortcode/class-ms-view-shortcode-account.php:74
-#: app/view/shortcode/class-ms-view-shortcode-account.php:273
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:183
+#: app/view/templates/membership_account.php:36
+#: app/view/templates/membership_account.php:154
+#: backup/membership_account.php:45 backup/membership_account.php:244
 msgid "Status"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:32
 #: app/view/frontend/class-ms-view-frontend-invoices.php:25
-#: app/view/frontend/class-ms-view-frontend-payment.php:243
-#: app/view/shortcode/class-ms-view-shortcode-account.php:278
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:238
+#: app/view/templates/membership_account.php:159
+#: app/view/templates/membership_frontend_payment.php:82
+#: backup/membership_account.php:249 backup/membership_frontend_payment.php:113
 msgid "Total"
 msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:33
 #: app/view/billing/class-ms-view-billing-edit.php:167
 #: app/view/frontend/class-ms-view-frontend-invoices.php:33
-#: app/view/shortcode/class-ms-view-shortcode-account.php:286
+#: app/view/templates/membership_account.php:167
+#: backup/membership_account.php:257
 msgid "Due date"
 msgstr ""
 
@@ -3753,7 +3784,8 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-rule.php:548
 #: app/view/frontend/class-ms-view-frontend-activities.php:17
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:215
-#: app/view/shortcode/class-ms-view-shortcode-account.php:382
+#: app/view/templates/membership_account.php:224
+#: backup/membership_account.php:353
 msgid "Date"
 msgstr ""
 
@@ -4639,12 +4671,6 @@ msgstr ""
 
 #: app/model/class-ms-model-invoice.php:361
 msgid "Billed"
-msgstr ""
-
-#: app/model/class-ms-model-invoice.php:362
-#: app/model/class-ms-model-relationship.php:344
-#: app/view/shortcode/class-ms-view-shortcode-account.php:119
-msgid "Pending"
 msgstr ""
 
 #: app/model/class-ms-model-invoice.php:814
@@ -6267,9 +6293,10 @@ msgid "Discount (%s)"
 msgstr ""
 
 #: app/view/billing/class-ms-view-billing-edit.php:173
-#: app/view/frontend/class-ms-view-frontend-payment.php:153
 #: app/view/settings/class-ms-view-settings-import.php:124
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:193
+#: app/view/templates/membership_frontend_payment.php:19
+#: backup/membership_frontend_payment.php:23
 msgid "Description"
 msgstr ""
 
@@ -6558,7 +6585,8 @@ msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-activities.php:11
 #: app/view/frontend/class-ms-view-frontend-activities.php:20
-#: app/view/shortcode/class-ms-view-shortcode-account.php:385
+#: app/view/templates/membership_account.php:227
+#: backup/membership_account.php:356
 msgid "Activity"
 msgstr ""
 
@@ -6568,13 +6596,9 @@ msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-activities.php:51
 #: app/view/frontend/class-ms-view-frontend-invoices.php:82
-#: app/view/shortcode/class-ms-view-shortcode-account.php:435
+#: app/view/shortcode/class-ms-view-shortcode-account.php:89
+#: backup/membership_account.php:406
 msgid "Your account"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-invoices.php:71
-#: app/view/shortcode/class-ms-view-shortcode-account.php:324
-msgid "F j"
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-payment.php:49
@@ -6591,38 +6615,10 @@ msgid ""
 "%s."
 msgstr ""
 
-#: app/view/frontend/class-ms-view-frontend-payment.php:136
-msgid "Join Membership"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-payment.php:167
-msgid "Price"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-payment.php:188
-msgid "Coupon Discount"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-payment.php:205
-msgid "Pro-Rate Discount"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-payment.php:224
+#: app/view/frontend/class-ms-view-frontend-payment.php:156
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:223
+#: backup/membership_frontend_payment.php:94
 msgid "Taxes %s"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-payment.php:271
-#: app/view/shortcode/class-ms-view-shortcode-invoice.php:233
-msgid "Payment due"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-payment.php:279
-msgid "Trial price"
-msgstr ""
-
-#: app/view/frontend/class-ms-view-frontend-payment.php:329
-msgid "As admin user you already have access to this membership"
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-profile.php:32
@@ -6670,12 +6666,12 @@ msgid "User name"
 msgstr ""
 
 #: app/view/member/class-ms-view-member-editor.php:93
-#: app/view/shortcode/class-ms-view-shortcode-account.php:466
+#: app/view/shortcode/class-ms-view-shortcode-account.php:144
 msgid "First name"
 msgstr ""
 
 #: app/view/member/class-ms-view-member-editor.php:99
-#: app/view/shortcode/class-ms-view-shortcode-account.php:467
+#: app/view/shortcode/class-ms-view-shortcode-account.php:145
 msgid "Last name"
 msgstr ""
 
@@ -7233,7 +7229,8 @@ msgid "Imported Settings"
 msgstr ""
 
 #: app/view/settings/class-ms-view-settings-import.php:121
-#: app/view/shortcode/class-ms-view-shortcode-account.php:71
+#: app/view/templates/membership_account.php:33
+#: backup/membership_account.php:42
 msgid "Membership name"
 msgstr ""
 
@@ -7592,22 +7589,6 @@ msgid ""
 "choose which pages to display to your visitors!"
 msgstr ""
 
-#: app/view/shortcode/class-ms-view-shortcode-account.php:64
-msgid "You are an admin user and have access to all memberships"
-msgstr ""
-
-#: app/view/shortcode/class-ms-view-shortcode-account.php:139
-msgid "Never"
-msgstr ""
-
-#: app/view/shortcode/class-ms-view-shortcode-account.php:155
-msgid "(No Membership)"
-msgstr ""
-
-#: app/view/shortcode/class-ms-view-shortcode-account.php:162
-msgid "No memberships"
-msgstr ""
-
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:35
 msgid "Invoice "
 msgstr ""
@@ -7638,6 +7619,12 @@ msgstr ""
 
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:214
 msgid "Pro rate discount"
+msgstr ""
+
+#: app/view/shortcode/class-ms-view-shortcode-invoice.php:233
+#: app/view/templates/membership_frontend_payment.php:102
+#: backup/membership_frontend_payment.php:141
+msgid "Payment due"
 msgstr ""
 
 #: app/view/shortcode/class-ms-view-shortcode-login.php:113
@@ -7728,6 +7715,46 @@ msgstr ""
 msgid "Already have a user account?"
 msgstr ""
 
+#: app/view/templates/membership_account.php:26
+#: backup/membership_account.php:35
+msgid "You are an admin user and have access to all memberships"
+msgstr ""
+
+#: app/view/templates/membership_account.php:64
+#: backup/membership_account.php:133
+msgid "No memberships"
+msgstr ""
+
+#: app/view/templates/membership_frontend_payment.php:2
+#: backup/membership_frontend_payment.php:6
+msgid "Join Membership"
+msgstr ""
+
+#: app/view/templates/membership_frontend_payment.php:33
+#: backup/membership_frontend_payment.php:37
+msgid "Price"
+msgstr ""
+
+#: app/view/templates/membership_frontend_payment.php:50
+#: backup/membership_frontend_payment.php:58
+msgid "Coupon Discount"
+msgstr ""
+
+#: app/view/templates/membership_frontend_payment.php:61
+#: backup/membership_frontend_payment.php:75
+msgid "Pro-Rate Discount"
+msgstr ""
+
+#: app/view/templates/membership_frontend_payment.php:110
+#: backup/membership_frontend_payment.php:149
+msgid "Trial price"
+msgstr ""
+
+#: app/view/templates/membership_frontend_payment.php:156
+#: backup/membership_frontend_payment.php:199
+msgid "As admin user you already have access to this membership"
+msgstr ""
+
 #: app/widget/class-ms-widget-login.php:14
 msgid "[Membership2] Login"
 msgstr ""
@@ -7756,19 +7783,19 @@ msgstr ""
 msgid "Arguments to pass to the %slogin shortcode%s"
 msgstr ""
 
-#: membership2.php:55
+#: membership2.php:56
 msgid ""
 "Could not load the plugin %s, because another version of the plugin is "
 "already loaded"
 msgstr ""
 
-#: membership2.php:127
+#: membership2.php:135
 msgid ""
 "Hey %s, you've been using %s for a while now, and we hope you're happy with "
 "it."
 msgstr ""
 
-#: membership2.php:129
+#: membership2.php:137
 msgid ""
 "We're constantly working to improve our plugins, and it helps a lot when "
 "members just like you share feedback!"

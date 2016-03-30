@@ -73,11 +73,12 @@ class MS_Rule_Post_Model extends MS_Rule {
 	 */
 	public function find_protected_posts( $wp_query ) {
 		// List rather than on a single post
-		if ( ! $wp_query->is_singular
+		if ( ( ! $wp_query->is_singular
 			&& empty( $wp_query->query_vars['pagename'] )
 			&& ( ! isset( $wp_query->query_vars['post_type'] )
 				|| in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) )
-			)
+			) )
+                        || is_home()
 		) {
 			foreach ( $this->rule_value as $id => $value ) {
 				if ( $this->has_access( $id ) ) {

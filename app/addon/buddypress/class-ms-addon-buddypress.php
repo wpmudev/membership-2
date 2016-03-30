@@ -16,6 +16,15 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @var  bool
 	 */
 	protected $buddypress_registration = true;
+        
+        /**
+	 * The flag to determine if we want to show the BuddyPress xprofile fields
+	 * M2 Account page.
+	 *
+	 * @since  1.0.3
+	 * @var  bool
+	 */
+	protected $buddypress_xprofile = false;
 
 	/**
 	 * Checks if the current Add-on is enabled
@@ -59,6 +68,10 @@ class MS_Addon_BuddyPress extends MS_Addon {
 			$this->buddypress_registration = lib3()->is_true(
 				$this->get_setting( 'buddypress_registration' )
 			);
+                        
+                        $this->buddypress_xprofile = lib3()->is_true(
+				$this->get_setting( 'buddypress_xprofile' )
+			);
 
 			$this->add_filter(
 				'ms_controller_protection_tabs',
@@ -100,6 +113,14 @@ class MS_Addon_BuddyPress extends MS_Addon {
                                 );
                                 
 			}
+                        
+                        if ( $this->buddypress_xprofile ) {
+                            $this->add_action(
+                                'ms_view_account_profile_before_card',
+                                'bp_xprofile_into_account_page',
+                                10, 2
+                            );
+                        }
 
 			// Disable BuddyPress Email activation.
 			add_filter(
@@ -199,6 +220,18 @@ class MS_Addon_BuddyPress extends MS_Addon {
 						'field' => 'buddypress_registration',
 					),
 				),
+                                array(
+					'id' => 'buddypress_xprofile',
+					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'title' => __( 'Show xProfile Fields', 'membership2' ),
+					'desc' =>
+						__( 'Show BuddyPress xprofile fields in membership account page', 'membership2' ),
+					'value' => $this->buddypress_xprofile,
+					'ajax_data' => array(
+						'action' => $this->ajax_action(),
+						'field' => 'buddypress_xprofile',
+					),
+				),
 			),
 		);
 
@@ -242,6 +275,63 @@ class MS_Addon_BuddyPress extends MS_Addon {
 
 		return $tabs;
 	}
+        
+        /**
+         * Show BP xprofile field value in M2 account page
+         *
+         * @since 1.0.3
+         *
+         * @param object $member Current Member Account
+         * @param object $account Account object
+         */
+        public function bp_xprofile_into_account_page( $member, $account ) {
+            
+            ob_start();
+            
+            $profile_groups = BP_XProfile_Group::get(
+		array( 'fetch_fields' => true )
+	    );
+	    $profile_groups = lib3()->array->get( $profile_groups );
+            $disallowed_fields = array();
+            $disallowed_fields = apply_filters(
+                                    'ms_bp_profile_fields_account_disallowed_fields',
+                                    $disallowed_fields
+                                );
+            
+            ?>
+            <div id="m2-bp-profile">
+                <h2><?php _e( 'Extra Profile Information', 'membership2' ) ?></h2>
+                <table>
+                    <?php foreach ( $profile_groups as $profile_group ) { ?>
+                    <?php
+                        $fields = lib3()->array->get( $profile_group->fields );
+                        foreach ( $fields as $field ) {
+                            if( in_array( $field->name, $disallowed_fields ) ) continue;
+                        ?>
+                        <tr>
+                            <th class="ms-label-title"><?php echo esc_html( $field->name ); ?>: </th>
+                            <td class="ms-label-field">
+                                <?php bp_profile_field_data( array( 'user_id' => get_current_user_id(), 'field' => $field->name ) ); ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
+                    <?php } ?>
+                </table>
+            </div>
+            <?php
+            
+            $output = ob_get_contents();
+            ob_end_clean();
+            
+            $output = apply_filters(
+                        'ms_bp_profile_fields_account',
+                        $output,
+                        $profile_groups,
+                        $disallowed_fields
+                    );
+            
+            echo $output;
+        }
 
 	/**
 	 * Display the BuddyPress registration form instead of the default

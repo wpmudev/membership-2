@@ -562,7 +562,14 @@ class MS_Addon_Coupon extends MS_Addon {
 				<form method="post">
 					<?php if ( $coupon_message ) : ?>
 						<p class="ms-alert-box <?php echo esc_attr( $class ); ?>"><?php
-							echo '' . $coupon_message;
+                                                    if ( ! empty( $_POST['remove_coupon_code'] ) ) {
+                                                        printf(
+                                                                __( 'Coupon removed: "%s"', 'membership2' ),
+                                                                $coupon->code
+                                                                );
+                                                    }else{
+                                                        echo '' . $coupon_message;
+                                                    }
 						?></p>
 					<?php endif; ?>
 					<div class="coupon-entry">

@@ -131,226 +131,101 @@ class MS_View_Frontend_Payment extends MS_View {
 		);
 
 		ob_start();
-		?>
-		<div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
-			<legend><?php _e( 'Join Membership', 'membership2' ) ?></legend>
-			<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
-				<?php echo $msg; ?>
-			</p>
-			<table class="ms-purchase-table">
-				<tr>
-					<td class="ms-title-column">
-						<?php _e( 'Name', 'membership2' ); ?>
-					</td>
-					<td class="ms-details-column">
-						<?php echo esc_html( $membership->name ); ?>
-					</td>
-				</tr>
-
-				<?php if ( $membership->description ) : ?>
-					<tr>
-						<td class="ms-title-column">
-							<?php _e( 'Description', 'membership2' ); ?>
-						</td>
-						<td class="ms-desc-column">
-							<span class="ms-membership-description"><?php
-								echo $membership->get_description();
-							?></span>
-						</td>
-					</tr>
-				<?php endif; ?>
-
-				<?php if ( ! $membership->is_free() ) : ?>
-					<?php if ( $invoice->discount || $invoice->pro_rate || $invoice->tax_rate ) : ?>
-					<tr>
-						<td class="ms-title-column">
-							<?php _e( 'Price', 'membership2' ); ?>
-						</td>
-						<td class="ms-details-column">
-							<?php
-							if ( $membership->price > 0 ) {
-								printf(
-									'<span class="price">%s %s</span>',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $membership->price )
-								);
-							} else {
-								_e( 'Free', 'membership2' );
-							}
-							?>
-						</td>
-					</tr>
-					<?php endif; ?>
-
-					<?php if ( $invoice->discount ) : ?>
-						<tr>
-							<td class="ms-title-column">
-								<?php _e( 'Coupon Discount', 'membership2' ); ?>
-							</td>
-							<td class="ms-price-column">
-								<?php
-								printf(
-									'%s -%s',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $invoice->discount )
-								);
-								?>
-							</td>
-						</tr>
-					<?php endif; ?>
-
-					<?php if ( $invoice->pro_rate ) : ?>
-						<tr>
-							<td class="ms-title-column">
-								<?php _e( 'Pro-Rate Discount', 'membership2' ); ?>
-							</td>
-							<td class="ms-price-column">
-								<?php
-								printf(
-									'%s -%s',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $invoice->pro_rate )
-								);
-								?>
-							</td>
-						</tr>
-					<?php endif; ?>
-
-					<?php if ( $show_tax ) : ?>
-						<tr>
-							<td class="ms-title-column">
-								<?php
-								printf(
-									__( 'Taxes %s', 'membership2' ),
-									'<a href="#" class="ms-tax-editor"><small>(' . $invoice->tax_name . ')</small></a>'
-								);
-								?>
-							</td>
-							<td class="ms-price-column">
-								<?php
-								printf(
-									'%s %s',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $invoice->tax )
-								);
-								?>
-							</td>
-						</tr>
-					<?php endif; ?>
-
-					<tr>
-						<td class="ms-title-column">
-							<?php _e( 'Total', 'membership2' ); ?>
-						</td>
-						<td class="ms-price-column ms-total">
-							<?php
-							if ( $invoice->total > 0 ) {
-                                                            if ( MS_Model_Member::is_admin_user() ) {
-                                                                printf(
-									'<span class="price">%s %s</span>',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $membership->price - $invoice->discount + $invoice->pro_rate + $invoice->tax )
-								);
-                                                            }else{
-								printf(
-									'<span class="price">%s %s</span>',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $invoice->total )
-								);
-                                                            }
-							} else {
-								_e( 'Free', 'membership2' );
-							}
-							?>
-						</td>
-					</tr>
-
-					<?php if ( $is_trial ) : ?>
-						<tr>
-							<td class="ms-title-column">
-								<?php _e( 'Payment due', 'membership2' ); ?>
-							</td>
-							<td class="ms-desc-column"><?php
-								echo MS_Helper_Period::format_date( $invoice->due_date );
-							?></td>
-						</tr>
-						<tr>
-							<td class="ms-title-column">
-								<?php _e( 'Trial price', 'membership2' ); ?>
-							</td>
-							<td class="ms-desc-column">
-							<?php
-							if ( $invoice->trial_price > 0 ) {
-								printf(
-									'<span class="price">%s %s</span>',
-									$invoice->currency,
-									MS_Helper_Billing::format_price( $invoice->trial_price )
-								);
-							} else {
-								_e( 'Free', 'membership2' );
-							}
-							?>
-							</td>
-						</tr>
-					<?php endif; ?>
-
-					<?php
-					do_action(
-						'ms_view_frontend_payment_after_total_row',
-						$subscription,
-						$invoice,
-						$this
-					);
-					?>
-
-					<tr>
-						<td class="ms-desc-column" colspan="2">
-							<span class="ms-membership-description"><?php
-								echo $subscription->get_payment_description( $invoice );
-							?></span>
-						</td>
-					</tr>
-				<?php endif; ?>
-
-				<?php if ( $cancel_warning ) : ?>
-					<tr>
-						<td class="ms-desc-warning" colspan="2">
-							<span class="ms-cancel-other-memberships"><?php
-								echo $cancel_warning;
-							?></span>
-						</td>
-					</tr>
-				<?php endif;
-
-				if ( MS_Model_Member::is_admin_user() ) : ?>
-					<tr>
-						<td class="ms-desc-adminnote" colspan="2">
-							<em><?php
-							_e( 'As admin user you already have access to this membership', 'membership2' );
-							?></em>
-						</td>
-					</tr>
-				<?php else :
-					do_action(
-						'ms_view_frontend_payment_purchase_button',
-						$subscription,
-						$invoice,
-						$this
-					);
-				endif;
-				?>
-			</table>
-		</div>
-		<?php
-		do_action( 'ms_view_frontend_payment_after', $this->data, $this );
-		do_action( 'ms_show_prices' );
-
-		if ( $show_tax ) {
-			do_action( 'ms_tax_editor', $invoice );
-		}
-		?>
-		<div style="clear:both;"></div>
-		<?php
+		
+                $membership_wrapper_class = esc_attr( implode( ' ', $classes ) );
+                $alert_box_class = esc_attr( $class );
+                $membership_name = esc_html( $membership->name );
+                $is_membership_description = $membership->description;
+                $membership_description = $membership->get_description();
+                $is_membership_free = $membership->is_free();
+                $invoice_discount = $invoice->discount;
+                $invoice_pro_rate = $invoice->pro_rate;
+                $invoice_tax_rate = $invoice->tax_rate;
+                $invoice_discount = $invoice->discount;
+                $invoice_formatted_discount = sprintf(
+                                                        '%s -%s',
+                                                        $invoice->currency,
+                                                        MS_Helper_Billing::format_price( $invoice->discount )
+                                                );
+                $invoice_formatted_pro_rate = sprintf(
+                                                        '%s -%s',
+                                                        $invoice->currency,
+                                                        MS_Helper_Billing::format_price( $invoice->pro_rate )
+                                                );
+                $invoice_tax_name = sprintf(
+                                                        __( 'Taxes %s', 'membership2' ),
+                                                        '<a href="#" class="ms-tax-editor"><small>(' . $invoice->tax_name . ')</small></a>'
+                                                );
+                $invoice_formatted_tax = sprintf(
+                                                        '%s %s',
+                                                        $invoice->currency,
+                                                        MS_Helper_Billing::format_price( $invoice->tax )
+                                                );
+                $invoice_total = $invoice->total;
+                $is_ms_admin_user = MS_Model_Member::is_admin_user();
+                $invoice_formatted_total_for_admin = sprintf(
+                                                        '<span class="price">%s %s</span>',
+                                                        $invoice->currency,
+                                                        MS_Helper_Billing::format_price( $membership->price - $invoice->discount + $invoice->pro_rate + $invoice->tax )
+                                                );
+                $invoice_formatted_total = sprintf(
+                                                        '<span class="price">%s %s</span>',
+                                                        $invoice->currency,
+                                                        MS_Helper_Billing::format_price( $invoice->total )
+                                                );
+                $membership_price = $membership->price;
+                $membership_formatted_price = sprintf(
+                                                        '<span class="price">%s %s</span>',
+                                                        $invoice->currency,
+                                                        MS_Helper_Billing::format_price( $membership->price )
+                                                );
+                
+                $invoice_formatted_due_date = MS_Helper_Period::format_date( $invoice->due_date );
+                $invoice_trial_price = $invoice->trial_price;
+                $invoice_formatted_trial_price = sprintf(
+                                                        '<span class="price">%s %s</span>',
+                                                        $invoice->currency,
+                                                        MS_Helper_Billing::format_price( $invoice->trial_price )
+                                                );
+                $invoice_payment_description = $subscription->get_payment_description( $invoice );
+                
+                $template_data = array(
+                                'membership_wrapper_class' => $membership_wrapper_class,
+                                'alert_box_class' => $alert_box_class,
+                                'msg' => $msg,
+                                'membership_name' => $membership_name,
+                                'is_membership_description' => $is_membership_description,
+                                'membership_description' => $membership_description,
+                                'is_membership_free' => $is_membership_free,
+                                'invoice_discount' => $invoice_discount,
+                                'invoice_pro_rate' => $invoice_pro_rate,
+                                'invoice_tax_rate' => $invoice_tax_rate,
+                                'membership_price' => $membership_price,
+                                'membership_formatted_price' => $membership_formatted_price,
+                                'invoice_formatted_discount' => $invoice_formatted_discount,
+                                'invoice_formatted_pro_rate' => $invoice_formatted_pro_rate,
+                                'show_tax' => $show_tax,
+                                'invoice_tax_name' => $invoice_tax_name,
+                                'invoice_formatted_tax' => $invoice_formatted_tax,
+                                'invoice_total' => $invoice_total,
+                                'is_ms_admin_user' => $is_ms_admin_user,
+                                'invoice_formatted_total_for_admin' => $invoice_formatted_total_for_admin,
+                                'invoice_formatted_total' => $invoice_formatted_total,
+                                'is_trial' => $is_trial,
+                                'invoice_formatted_due_date' => $invoice_formatted_due_date,
+                                'invoice_trial_price' => $invoice_trial_price,
+                                'invoice_formatted_trial_price' => $invoice_formatted_trial_price,
+                                'invoice_payment_description' => $invoice_payment_description,
+                                'cancel_warning' => $cancel_warning,
+                                'm2_payment_obj' => $this,
+                                'subscription' => $subscription,
+                                'invoice' > $invoice
+                            );
+                
+                MS_Helper_Template::$ms_front_payment = $template_data;
+                if( $path = MS_Helper_Template::template_exists( 'membership_frontend_payment.php' ) ) {
+                    require $path;
+                }
 
 		$html = ob_get_clean();
 		$html = apply_filters( 'ms_compact_code', $html );
