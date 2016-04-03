@@ -8,11 +8,12 @@ Change Log:
 ----------------------------------------------------------------------
 - Added: Template system, now M2 pages (Membership List, Payment Form, Registration Page, Account Page) can be overwritten from theme
 - Added: Option to show BP XProfile fields in M2 account page
-- Added: ms_get_blog_list_args filter added to show non-public blogs in protectin rules page in admin
+- Added: ms_get_blog_list_args filter added to show non-public blogs in protectin rules page in network admin
+- Fixed: Test Memberships was not working (simulation mode)
 - Fixed: Protected posts appears in archive page
 - Fixed: Conflict with WPEngine Deployment
 - Fixed: Wrong message when a coupon is removed
-- Fixed: 
+- Fixed: Wrong logic on category protection for multiple membership
 
 1.0.2.9
 ----------------------------------------------------------------------
