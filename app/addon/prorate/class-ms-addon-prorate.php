@@ -20,7 +20,7 @@ class MS_Addon_Prorate extends MS_Addon {
 	 * @return bool
 	 */
 	static public function is_active() {
-		return MS_Model_Addon::is_enabled( self::ID );
+		return false;
 	}
 
 	/**
@@ -39,12 +39,7 @@ class MS_Addon_Prorate extends MS_Addon {
 	 * @since  1.0.1.0
 	 */
 	public function init() {
-		if ( self::is_active() ) {
-			$this->add_filter(
-				'ms_model_invoice_create_before_save',
-				'add_discount'
-			);
-		}
+		MS_Model_Addon::disable( self::ID );
 	}
 
 	/**
@@ -75,115 +70,9 @@ class MS_Addon_Prorate extends MS_Addon {
 					'value' => __( 'Only when you manually set the "Cancel and Pro-Rate" setting in the Upgrade Paths settings of the membership then the change is recognized as upgrade/downgrade. In this case the old membership is deactivated when the new subscription is created.<br>If you do not set this option the default logic applies: The user can access the old membership for the duration he paid, even when he cancels earlier. So no Pro-Rating then.', 'membership2' ),
 				),
 			),
+			'action' => array( __( 'Pro Version', 'membership2' ) ),
 		);
 		return $list;
-	}
-
-	/**
-	 * Adds the Pro-Rating discount to an invoice.
-	 *
-	 * @since  1.0.1.0
-	 * @param  MS_Model_Invoice $invoice
-	 * @return MS_Model_Invoice Modified Invoice.
-	 */
-	public function add_discount( $invoice ) {
-		$subscription = $invoice->get_subscription();
-
-		// If memberships were already cancelled don't pro-rate again!
-		if ( $subscription->cancelled_memberships ) { return $invoice; }
-
-		$membership = $invoice->get_membership();
-
-		if ( ! $subscription->move_from_id ) { return $invoice; }
-		$ids = explode( ',', $subscription->move_from_id );
-
-		if ( empty( $ids ) ) { return $invoice; }
-		if ( $membership->is_free() ) { return $invoice; }
-
-		// Calc pro rate discount if moving from another membership.
-		$pro_rate = 0;
-		foreach ( $ids as $id ) {
-			if ( ! $id ) { continue; }
-
-			$move_from = MS_Model_Relationship::get_subscription(
-				$subscription->user_id,
-				$id
-			);
-
-			if ( $move_from->is_valid() && $move_from->membership_id == $id ) {
-				$pro_rate += $this->get_discount( $move_from );
-			}
-		}
-
-		$pro_rate = floatval(
-			apply_filters(
-				'ms_addon_prorate_apply_discount',
-				abs( $pro_rate ),
-				$invoice
-			)
-		);
-
-		if ( $pro_rate > $invoice->amount ) {
-			$pro_rate = $invoice->amount;
-		}
-
-		if ( $pro_rate > 0 ) {
-			$invoice->pro_rate = $pro_rate;
-			$notes[] = sprintf(
-				__( 'Pro-Rate Discount: %s.', 'membership2' ) . ' ',
-				$invoice->currency . ' ' . $pro_rate
-			);
-		}
-
-		return $invoice;
-	}
-
-	/**
-	 * Calculate pro rate value.
-	 *
-	 * Pro rate using remaining membership days.
-	 *
-	 * @since  1.0.1.0
-	 *
-	 * @return float The pro rate value.
-	 */
-	protected function get_discount( $subscription ) {
-		$value = 0;
-		$membership = $subscription->get_membership();
-
-		if ( MS_Model_Membership::PAYMENT_TYPE_PERMANENT !== $membership->payment_type ) {
-			$invoice = $subscription->get_previous_invoice();
-
-			if ( $invoice && $invoice->is_paid() ) {
-				switch ( $subscription->status ) {
-					case MS_Model_Relationship::STATUS_TRIAL:
-						// No Pro-Rate given for trial memberships.
-						break;
-
-					case MS_Model_Relationship::STATUS_ACTIVE:
-					case MS_Model_Relationship::STATUS_WAITING:
-					case MS_Model_Relationship::STATUS_CANCELED:
-						$remaining_days = $subscription->get_remaining_period();
-						$total_days = MS_Helper_Period::subtract_dates(
-							$subscription->expire_date,
-							$subscription->start_date
-						);
-						$value = $remaining_days / $total_days;
-						$value *= $invoice->total;
-						break;
-
-					default:
-						// No Pro-Rate for other subscription status.
-						break;
-				}
-			}
-		}
-
-		return apply_filters(
-			'ms_addon_prorate_get_discount',
-			$value,
-			$subscription
-		);
 	}
 
 }

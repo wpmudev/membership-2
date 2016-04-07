@@ -258,8 +258,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		try {
 			self::load_mailchimp_api();
 			$status = true;
-		}
-		catch( Exception $e ) {
+		} catch ( Exception $e ) {
 			MS_Helper_Debug::log( $e );
 		}
 
