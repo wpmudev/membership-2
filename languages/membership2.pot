@@ -2,9 +2,9 @@
 # This file is distributed under the GNU General Public License (Version 2 - GPLv2).
 msgid ""
 msgstr ""
-"Project-Id-Version: Membership 2 Pro 1.0.3-Beta-1\n"
+"Project-Id-Version: Membership 2 Pro 1.0.3-Beta-2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/membership2\n"
-"POT-Creation-Date: 2016-03-23 17:22:46+00:00\n"
+"POT-Creation-Date: 2016-04-03 17:57:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -243,65 +243,77 @@ msgstr ""
 msgid "Protect the following bbPress content to members only."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:158
+#: app/addon/buddypress/class-ms-addon-buddypress.php:179
 msgid ""
 "BuddyPress uses a page that is also used as a Membership page by Membership "
 "2.<br>Please assign a different page for either %sMembership 2%s or "
 "%sBuddyPress%s to avoid conflicts."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:179
+#: app/addon/buddypress/class-ms-addon-buddypress.php:200
 msgid "BuddyPress Integration"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:180
+#: app/addon/buddypress/class-ms-addon-buddypress.php:201
 msgid "Integrate BuddyPress with Membership 2."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:185
+#: app/addon/buddypress/class-ms-addon-buddypress.php:206
 #: app/controller/class-ms-controller-plugin.php:434
 #: app/controller/class-ms-controller-plugin.php:458
 #: app/view/class-ms-view-help.php:184
 msgid "Protection Rules"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:186
+#: app/addon/buddypress/class-ms-addon-buddypress.php:207
 msgid "Adds BuddyPress rules in the \"Protection Rules\" page."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:191
+#: app/addon/buddypress/class-ms-addon-buddypress.php:212
 msgid "Use BuddyPress Registration"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:193
+#: app/addon/buddypress/class-ms-addon-buddypress.php:214
 msgid ""
 "Enable this option to use the BuddyPress registration page instead of the "
 "Membership 2 registration page."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:195
+#: app/addon/buddypress/class-ms-addon-buddypress.php:216
 msgid ""
 "New users are automatically activated by Membership 2 and no confirmation "
 "email is sent to the user!"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:208
+#: app/addon/buddypress/class-ms-addon-buddypress.php:226
+msgid "Show xProfile Fields"
+msgstr ""
+
+#: app/addon/buddypress/class-ms-addon-buddypress.php:228
+msgid "Show BuddyPress xprofile fields in membership account page"
+msgstr ""
+
+#: app/addon/buddypress/class-ms-addon-buddypress.php:241
 msgid "Activate BuddyPress to use this Add-on"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:304
+#: app/addon/buddypress/class-ms-addon-buddypress.php:303
+msgid "Extra Profile Information"
+msgstr ""
+
+#: app/addon/buddypress/class-ms-addon-buddypress.php:394
 msgid "You have missed a required fields."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:348
+#: app/addon/buddypress/class-ms-addon-buddypress.php:438
 msgid "Please make sure you enter your password twice"
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:353
+#: app/addon/buddypress/class-ms-addon-buddypress.php:443
 msgid "The passwords you entered do not match."
 msgstr ""
 
-#: app/addon/buddypress/class-ms-addon-buddypress.php:401
+#: app/addon/buddypress/class-ms-addon-buddypress.php:491
 msgid "This is a required field"
 msgstr ""
 
@@ -408,15 +420,19 @@ msgstr ""
 msgid "Apply Coupon"
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:571
+#: app/addon/coupon/class-ms-addon-coupon.php:567
+msgid "Coupon removed: \"%s\""
+msgstr ""
+
+#: app/addon/coupon/class-ms-addon-coupon.php:578
 msgid "Have a coupon code?"
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:629
+#: app/addon/coupon/class-ms-addon-coupon.php:636
 msgid "Remove Coupon \"%s\""
 msgstr ""
 
-#: app/addon/coupon/class-ms-addon-coupon.php:646
+#: app/addon/coupon/class-ms-addon-coupon.php:653
 msgid "Apply Coupon \"%s\": Discount %s %s!"
 msgstr ""
 
@@ -448,7 +464,7 @@ msgstr ""
 #: app/view/class-ms-view-adminbar.php:94 app/view/class-ms-view-metabox.php:49
 #: app/view/frontend/class-ms-view-frontend-invoices.php:30
 #: app/view/member/class-ms-view-member-dialog.php:146
-#: app/view/templates/membership_account.php:164
+#: app/view/templates/membership_account.php:167
 #: backup/membership_account.php:254
 msgid "Membership"
 msgstr ""
@@ -2779,8 +2795,8 @@ msgstr ""
 
 #: app/gateway/authorize/class-ms-gateway-authorize.php:250
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:133
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:282
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:566
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:283
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:567
 #: app/gateway/stripe/class-ms-gateway-stripe.php:171
 #: app/gateway/stripe/class-ms-gateway-stripe.php:257
 #: app/gateway/stripeplan/class-ms-gateway-stripeplan.php:519
@@ -2976,7 +2992,7 @@ msgid "PayPal Single Gateway"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:135
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:568
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:569
 msgid "Payment registered, though amount differs from invoice."
 msgstr ""
 
@@ -2999,7 +3015,7 @@ msgid "Customer did not include a confirmed shipping address"
 msgstr ""
 
 #: app/gateway/paypalsingle/class-ms-gateway-paypalsingle.php:157
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:466
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:467
 msgid "Funds not captured yet"
 msgstr ""
 
@@ -3077,143 +3093,143 @@ msgid ""
 "Merchant ID instead"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:276
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:277
 msgid "Subscripton has been created"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:288
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:289
 msgid "Recurring payment successful"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:294
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:295
 msgid "Subscription has been modified"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:299
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:300
 msgid "Payment failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:306
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:307
 msgid "Subscription has been canceled"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:313
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:314
 msgid "Subscription has been suspended"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:320
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:321
 msgid "Subscription has failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:329
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:330
 msgid "New Dispute filed: %s"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:333
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:334
 msgid "New Dispute filed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:355
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:356
 msgid "Subscription ended"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:359
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:360
 msgid "Recurring payment profile created"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:363
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:364
 msgid "Recurring payment failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:368
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:369
 msgid "Recurring payment profile cancelled"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:372
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:373
 msgid "Recurring payment profile expired"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:376
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:377
 msgid "Recurring payment profile skipped"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:386
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:387
 msgid "Outstanding payment of %s"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:390
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:391
 msgid "Outstanding payment"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:401
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:402
 msgid "Collecting payment of %s failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:405
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:406
 msgid "Collecting payment failed"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:413
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:414
 msgid "Money sent for: %s"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:417
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:418
 msgid "Money sent"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:424
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:425
 msgid "Not handling txn_type: %s"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:441
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:442
 msgid "Last transaction has been reversed: Payment has been reversed (charge back)."
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:446
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:447
 msgid "Last transaction has been reversed: Payment has been refunded."
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:451
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:452
 msgid "Last transaction has been reversed: Payment Denied."
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:458
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:459
 msgid "Last transaction is pending."
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:462
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:463
 msgid "No confirmed shipping address"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:470
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:471
 msgid "eCheck has not cleared yet"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:474
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:475
 msgid "Pending approval by service provider"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:478
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:479
 msgid "Pending multi-currency process by service provider"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:482
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:483
 msgid "No confirmed email address"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:486
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:487
 msgid "Pending upgrade of PayPal account"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:490
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:491
 msgid "Pending verification of PayPal account"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:494
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:495
 msgid "Unknown reason"
 msgstr ""
 
-#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:505
+#: app/gateway/paypalstandard/class-ms-gateway-paypalstandard.php:506
 msgid "Not handling payment_status: %s"
 msgstr ""
 
@@ -3685,7 +3701,7 @@ msgstr ""
 
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:28
 #: app/view/frontend/class-ms-view-frontend-invoices.php:17
-#: app/view/templates/membership_account.php:151
+#: app/view/templates/membership_account.php:154
 #: backup/membership_account.php:241
 msgid "Invoice #"
 msgstr ""
@@ -3703,7 +3719,7 @@ msgstr ""
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:259
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:183
 #: app/view/templates/membership_account.php:36
-#: app/view/templates/membership_account.php:154
+#: app/view/templates/membership_account.php:157
 #: backup/membership_account.php:45 backup/membership_account.php:244
 msgid "Status"
 msgstr ""
@@ -3711,7 +3727,7 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:32
 #: app/view/frontend/class-ms-view-frontend-invoices.php:25
 #: app/view/shortcode/class-ms-view-shortcode-invoice.php:238
-#: app/view/templates/membership_account.php:159
+#: app/view/templates/membership_account.php:162
 #: app/view/templates/membership_frontend_payment.php:82
 #: backup/membership_account.php:249 backup/membership_frontend_payment.php:113
 msgid "Total"
@@ -3720,7 +3736,7 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-billing.php:33
 #: app/view/billing/class-ms-view-billing-edit.php:167
 #: app/view/frontend/class-ms-view-frontend-invoices.php:33
-#: app/view/templates/membership_account.php:167
+#: app/view/templates/membership_account.php:170
 #: backup/membership_account.php:257
 msgid "Due date"
 msgstr ""
@@ -3784,7 +3800,7 @@ msgstr ""
 #: app/helper/listtable/class-ms-helper-listtable-rule.php:548
 #: app/view/frontend/class-ms-view-frontend-activities.php:17
 #: app/view/membership/overview/class-ms-view-membership-overview-simple.php:215
-#: app/view/templates/membership_account.php:224
+#: app/view/templates/membership_account.php:227
 #: backup/membership_account.php:353
 msgid "Date"
 msgstr ""
@@ -6585,7 +6601,7 @@ msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-activities.php:11
 #: app/view/frontend/class-ms-view-frontend-activities.php:20
-#: app/view/templates/membership_account.php:227
+#: app/view/templates/membership_account.php:230
 #: backup/membership_account.php:356
 msgid "Activity"
 msgstr ""
