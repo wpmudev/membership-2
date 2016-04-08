@@ -369,6 +369,13 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
                         
                 }
                 
+                /**
+                 * If membership is not active, we won't allow to renew
+                 */
+                if( ! $membership->active ) {
+                    $button = '';
+                }
+                
                 $template_data = array(
                                     'membership_id' => $membership_id,
                                     'membership_wrapper_classes' => $membership_wrapper_classes,
