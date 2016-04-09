@@ -14,6 +14,8 @@ Change Log:
 - Fixed: Conflict with WPEngine Deployment
 - Fixed: Wrong message when a coupon is removed
 - Fixed: Wrong logic on category protection for multiple membership
+- Fixed: Inactive Memberships still available for renewal
+- Fixed: BP activation page is always protected in multisite
 
 1.0.2.9
 ----------------------------------------------------------------------

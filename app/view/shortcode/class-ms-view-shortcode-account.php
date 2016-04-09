@@ -24,6 +24,8 @@ class MS_View_Shortcode_Account extends MS_View {
 
 		$member = MS_Model_Member::get_current_member();
 		$fields = $this->prepare_fields();
+                
+                $this->data = apply_filters( 'ms_shortcode_account_atts_pre', $this->data );
 
 		// Extract shortcode options.
 		extract( $this->data );
