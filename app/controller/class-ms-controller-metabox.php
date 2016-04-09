@@ -157,6 +157,19 @@ class MS_Controller_Metabox extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function add_meta_boxes() {
+            
+                if( defined( 'MS_CPT_ENABLE_ACCESS_BOX' ) && MS_CPT_ENABLE_ACCESS_BOX ) {
+                    $post_types = array_merge(
+                            array( 'page', 'post', 'attachment' ),
+                            MS_Rule_CptGroup_Model::get_custom_post_types()
+                    );
+    
+                    $this->post_types = apply_filters(
+                            'ms_controller_membership_metabox_add_meta_boxes_post_types',
+                            $post_types
+                    );
+                }
+            
 		foreach ( $this->post_types as $post_type ) {
 			if ( ! $this->is_read_only( $post_type ) ) {
 				add_meta_box(
