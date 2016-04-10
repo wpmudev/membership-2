@@ -87,9 +87,33 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				'subscribe_deactivated',
 				10, 2
 			);
+                        
+                        $this->add_filter(
+                                'ms_view_membership_details_tab',
+                                'mc_fields_for_ms',
+                                10, 3
+                        );
+                        
+                        $this->add_filter(
+                                'ms_view_membership_edit_to_html',
+                                'mc_custom_html',
+                                10, 3
+                        );
+                        
+                        $this->add_action(
+                                'ms_model_membership__set_after',
+                                'ms_model_membership__set_after_cb',
+                                10, 3
+                        );
+                        
+                        $this->add_action(
+                                'ms_model_membership__get',
+                                'ms_model_membership__get_cb',
+                                10, 3
+                        );
 		}
 	}
-
+        
 	/**
 	 * Registers the Add-On
 	 *
@@ -130,6 +154,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @param  mixed $member
 	 */
 	public function subscribe_members( $event, $subscription ) {
+            
 		$member = $subscription->get_member();
 
 		/** Verify if is subscribed to registered mail list and remove it. */
@@ -147,7 +172,15 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		}
 
 		/** Subscribe to members mail list. */
-		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' ) ) {
+                $custom_list_id = get_option( 'ms_mc_m_id_' . $subscription->membership_id );
+                
+                if( isset( $custom_list_id ) && $custom_list_id != 0 ) {
+                    $list_id = $custom_list_id;
+                }else{
+                    $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
+                }
+                
+		if ( $list_id ) {
 			if ( ! self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::subscribe_user( $member, $list_id );
 			}
@@ -313,11 +346,15 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 *
 	 * @return Array Lists info
 	 */
-	public static function get_mail_lists() {
+	public static function get_mail_lists( $default = null ) {
 		static $Mail_lists = null;
+                
+                if( $default == null ) {
+                    $default = __( 'None', 'membership2' );
+                }
 
 		if ( null === $Mail_lists ) {
-			$Mail_lists = array( 0 => __( 'none', 'membership2' ) );
+			$Mail_lists = array( 0 => $default );
 			if ( self::get_api_status() ) {
 				$page = 0;
 				$items_per_page = 25;
@@ -483,4 +520,101 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			);
 		}
 	}
+        
+        /**
+         * Add additional field to show a list of mailchimp list
+         *
+         * @since 1.0.3.0
+         */
+        public function mc_fields_for_ms( $fields, $membership, $data ) {
+            
+            $mail_list = self::get_mail_lists( __( 'Default', 'membership2' ) );
+            
+            $fields['ms_mc'] = array(
+			'id' => 'ms_mc',
+			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+			'title' => __( 'Mailchimp List', 'membership2' ),
+			'desc' => __( 'You can select a list for this membership.', 'membership2' ),
+			'class' => 'ms-mc',
+			'before' => __( 'Select a list', 'membership2' ),
+			'value' => $membership->ms_mc,
+			'field_options' => $mail_list,
+			'ajax_data' => array( 1 ),
+		);
+            
+            return $fields;
+            
+        }
+        
+        /**
+         * Modify the edit membership basic settings page
+         *
+         * @since 1.0.3.0
+         */
+        public function mc_custom_html( $html, $field, $membership ) {
+            ob_start();
+		?>
+		<div>
+			<form class="ms-form wpmui-ajax-update ms-edit-membership" data-wpmui-ajax="<?php echo esc_attr( 'save' ); ?>">
+				<div class="ms-form wpmui-form wpmui-grid-8">
+					<div class="col-5">
+						<?php
+						MS_Helper_Html::html_element( $field['name'] );
+						if ( ! $membership->is_system() ) {
+							MS_Helper_Html::html_element( $field['description'] );
+						}
+						?>
+					</div>
+					<div class="col-3">
+						<?php
+						MS_Helper_Html::html_element( $field['active'] );
+						if ( ! $membership->is_system() ) {
+							MS_Helper_Html::html_element( $field['public'] );
+							MS_Helper_Html::html_element( $field['paid'] );
+						}
+						?>
+					</div>
+				</div>
+				<div class="ms-form wpmui-form wpmui-grid-8">
+					<div class="col-8">
+					<?php
+					if ( ! $membership->is_system() ) {
+						MS_Helper_Html::html_element( $field['priority'] );
+					}
+                                        echo '<hr>';
+                                        MS_Helper_Html::html_element( $field['ms_mc'] );
+					?>
+					</div>
+				</div>
+			</form>
+		</div>
+		<?php
+		$output = ob_get_clean();
+                
+                return $output;
+        }
+        
+        /**
+         * Save custom list for individual membership
+         *
+         * @since 1.0.3.0
+         */
+        public function ms_model_membership__set_after_cb( $property, $value, $membership ) {
+            if( $property == 'ms_mc' ) {
+                update_option( 'ms_mc_m_id_' . $membership->id, $value );
+            }
+        }
+        
+        /**
+         * Retrieve custom list for indiviaul membership
+         *
+         * @since 1.0.3.0
+         */
+        public function ms_model_membership__get_cb( $value, $property, $membership ) {
+            if( $property == 'ms_mc' ) {
+                return get_option( 'ms_mc_m_id_' . $membership->id );
+            }
+            
+            return $value;
+        }
 }
