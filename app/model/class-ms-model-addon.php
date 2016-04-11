@@ -133,21 +133,21 @@ class MS_Model_Addon extends MS_Model_Option {
 
 			// Sanitation and populate default fields.
 			foreach ( $addons as $key => $data ) {
-				self::$_registered[$key] = $data->name;
+				self::$_registered[ $key ] = $data->name;
 
-				$addons[$key]->id = $key;
-				$addons[$key]->active = self::is_enabled( $key );
-				$addons[$key]->title = $data->name;
+				$addons[ $key ]->id = $key;
+				$addons[ $key ]->active = self::is_enabled( $key );
+				$addons[ $key ]->title = $data->name;
 
-				if ( isset( $addons[$key]->icon ) ) {
-					$addons[$key]->icon = '<i class="' . $addons[$key]->icon . '"></i>';
+				if ( isset( $addons[ $key ]->icon ) ) {
+					$addons[ $key ]->icon = '<i class="' . $addons[ $key ]->icon . '"></i>';
 				} else {
-					$addons[$key]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
+					$addons[ $key ]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
 				}
 
-				if ( empty( $addons[$key]->action ) ) {
-					$addons[$key]->action = array();
-					$addons[$key]->action[] = array(
+				if ( empty( $addons[ $key ]->action ) ) {
+					$addons[ $key ]->action = array();
+					$addons[ $key ]->action[] = array(
 						'id' => 'ms-toggle-' . $key,
 						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'value' => self::is_enabled( $key ),
@@ -158,7 +158,7 @@ class MS_Model_Addon extends MS_Model_Option {
 							'addon' => $key,
 						),
 					);
-					$addons[$key]->action[] = MS_Helper_Html::save_text( null, false, true );
+					$addons[ $key ]->action[] = MS_Helper_Html::save_text( null, false, true );
 				}
 
 				/**
@@ -166,16 +166,16 @@ class MS_Model_Addon extends MS_Model_Option {
 				 *
 				 * @since  1.0.0
 				 */
-				$addons[$key]->action = apply_filters(
+				$addons[ $key ]->action = apply_filters(
 					'ms_model_addon_action-' . $key,
-					$addons[$key]->action,
-					$addons[$key]
+					$addons[ $key ]->action,
+					$addons[ $key ]
 				);
 			}
 
 			natcasesort( self::$_registered );
 			foreach ( self::$_registered as $key => $dummy ) {
-				self::$_registered[$key] = $addons[$key];
+				self::$_registered[ $key ] = $addons[ $key ];
 			}
 
 			/**
@@ -212,18 +212,24 @@ class MS_Model_Addon extends MS_Model_Option {
 		$model = MS_Factory::load( 'MS_Model_Addon' );
 		$root_path = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
 		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $root_path ) );
-		$addon_dir = $plugin_dir . 'app/addon/';
+
+		$addon_dirs = array(
+			$plugin_dir . 'premium/addon/',
+			$plugin_dir . 'app/addon/',
+		);
 
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...
 			self::$_reload_files = false;
 
-			$mask = $root_path . $addon_dir . '*/class-ms-addon-*.php';
-			$addons = glob( $mask );
+			foreach ( $addon_dirs as $addon_dir ) {
+				$mask = $root_path . $addon_dir . '*/class-ms-addon-*.php';
+				$addons = glob( $mask );
 
-			$model->addon_files = array();
-			foreach ( $addons as $file ) {
-				$model->addon_files[] = substr( $file, strlen( $root_path ) );
+				$model->addon_files = array();
+				foreach ( $addons as $file ) {
+					$model->addon_files[] = substr( $file, strlen( $root_path ) );
+				}
 			}
 
 			/**
@@ -399,28 +405,28 @@ class MS_Model_Addon extends MS_Model_Option {
 			__( 'Options available', 'membership2' )
 		);
 
-		$list[self::ADDON_MULTI_MEMBERSHIPS] = (object) array(
+		$list[ self::ADDON_MULTI_MEMBERSHIPS ] = (object) array(
 			'name' => __( 'Multiple Memberships', 'membership2' ),
 			'description' => __( 'Your members can join more than one membership at the same time.', 'membership2' ),
 			'icon' => 'dashicons dashicons-forms',
 		);
 
-		$list[self::ADDON_TRIAL] = (object) array(
+		$list[ self::ADDON_TRIAL ] = (object) array(
 			'name' => __( 'Trial Period', 'membership2' ),
 			'description' => __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership.', 'membership2' ),
 		);
 
-		$list[self::ADDON_POST_BY_POST] = (object) array(
+		$list[ self::ADDON_POST_BY_POST ] = (object) array(
 			'name' => __( 'Individual Posts', 'membership2' ),
 			'description' => __( 'Protect individual Posts instead of Categories.', 'membership2' ),
 		);
 
-		$list[self::ADDON_CPT_POST_BY_POST] = (object) array(
+		$list[ self::ADDON_CPT_POST_BY_POST ] = (object) array(
 			'name' => __( 'Individual Custom Posts', 'membership2' ),
 			'description' => __( 'Protect individual Posts of a Custom Post Type.', 'membership2' ),
 		);
 
-		$list[self::ADDON_MEDIA] = (object) array(
+		$list[ self::ADDON_MEDIA ] = (object) array(
 			'name' => __( 'Media Protection', 'membership2' ),
 			'description' => __( 'Protect Images and other Media-Library content.', 'membership2' ),
 			'footer' => $options_text,
@@ -468,31 +474,31 @@ class MS_Model_Addon extends MS_Model_Option {
 			),
 		);
 
-		$list[self::ADDON_SHORTCODE] = (object) array(
+		$list[ self::ADDON_SHORTCODE ] = (object) array(
 			'name' => __( 'Shortcode Protection', 'membership2' ),
 			'description' => __( 'Protect Shortcode-Output via Memberships.', 'membership2' ),
 			'icon' => 'dashicons dashicons-editor-code',
 		);
 
-		$list[self::ADDON_URL_GROUPS] = (object) array(
+		$list[ self::ADDON_URL_GROUPS ] = (object) array(
 			'name' => __( 'URL Protection', 'membership2' ),
 			'description' => __( 'URL Protection will protect pages by the URL. This rule overrides all other rules, so use it carefully.', 'membership2' ),
 			'icon' => 'dashicons dashicons-admin-links',
 		);
 
-		$list[self::ADDON_AUTO_MSGS_PLUS] = (object) array(
+		$list[ self::ADDON_AUTO_MSGS_PLUS ] = (object) array(
 			'name' => __( 'Additional Automated Messages', 'membership2' ),
 			'description' => __( 'Send your members automated Email responses for various additional events.', 'membership2' ),
 			'icon' => 'dashicons dashicons-email',
 		);
 
-		$list[self::ADDON_SPECIAL_PAGES] = (object) array(
+		$list[ self::ADDON_SPECIAL_PAGES ] = (object) array(
 			'name' => __( 'Protect Special Pages', 'membership2' ),
 			'description' => __( 'Change protection of special pages such as the search results.', 'membership2' ),
 			'icon' => 'dashicons dashicons-admin-home',
 		);
 
-		$list[self::ADDON_ADV_MENUS] = (object) array(
+		$list[ self::ADDON_ADV_MENUS ] = (object) array(
 			'name' => __( 'Advanced menu protection', 'membership2' ),
 			'description' => __( 'Adds a new option to the General Settings that controls how WordPress menus are protected.<br />Protect individual Menu-Items, replace the contents of WordPress Menu-Locations or replace each Menu individually.', 'membership2' ),
 			'footer' => $options_text,
@@ -517,13 +523,13 @@ class MS_Model_Addon extends MS_Model_Option {
 		);
 
 		// New since 1.1
-		$list[self::ADDON_ADMINSIDE] = (object) array(
+		$list[ self::ADDON_ADMINSIDE ] = (object) array(
 			'name' => __( 'Admin Side Protection', 'membership2' ),
 			'description' => __( 'Control the pages and even Meta boxes that members can access on the admin side.', 'membership2' ),
 			'icon' => 'dashicons dashicons-admin-network',
 		);
 
-		$list[self::ADDON_MEMBERCAPS] = (object) array(
+		$list[ self::ADDON_MEMBERCAPS ] = (object) array(
 			'name' => __( 'Member Capabilities', 'membership2' ),
 			'description' => __( 'Manage user-capabilities on membership level.', 'membership2' ),
 			'footer' => $options_text,
@@ -548,5 +554,4 @@ class MS_Model_Addon extends MS_Model_Option {
 
 		return $list;
 	}
-
 }

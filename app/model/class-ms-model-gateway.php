@@ -56,8 +56,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 			);
 
 			foreach ( $gateways as $key => $class ) {
-				self::$_gateways
-				[$key] = MS_Factory::load( $class );
+				self::$_gateways[ $key ] = MS_Factory::load( $class );
 			}
 		}
 
@@ -106,17 +105,24 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$model = MS_Factory::load( 'MS_Model_Gateway' );
 		$root_path = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
 		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $root_path ) );
-		$gateway_dir = $plugin_dir . 'app/gateway/';
+
+		$gateway_dirs = array(
+			$plugin_dir . 'premium/gateway/',
+			$plugin_dir . 'app/gateway/',
+		);
 
 		if ( empty( $model->gateway_files ) || is_admin() ) {
 			// In Admin dashboard we always refresh the gateway-list...
+			//
+			foreach ( $gateway_dirs as $gateway_dir ) {
 
-			$mask = $root_path . $gateway_dir . '*/class-ms-gateway-*.php';
-			$gateways = glob( $mask );
+				$mask = $root_path . $gateway_dir . '*/class-ms-gateway-*.php';
+				$gateways = glob( $mask );
 
-			$model->gateway_files = array();
-			foreach ( $gateways as $file ) {
-				$model->gateway_files[] = substr( $file, strlen( $root_path ) );
+				$model->gateway_files = array();
+				foreach ( $gateways as $file ) {
+					$model->gateway_files[] = substr( $file, strlen( $root_path ) );
+				}
 			}
 
 			/**
@@ -208,13 +214,13 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$known_names = self::get_gateway_names();
 		$the_name = '-';
 
-		if ( isset( $known_names[$gateway_id] ) ) {
-			$the_name = $known_names[$gateway_id];
+		if ( isset( $known_names[ $gateway_id ] ) ) {
+			$the_name = $known_names[ $gateway_id ];
 		}
 
 		if ( $get_short ) {
-			if ( ! isset( $Short_names[$gateway_id] ) ) {
-				$Short_names[$gateway_id] = trim(
+			if ( ! isset( $Short_names[ $gateway_id ] ) ) {
+				$Short_names[ $gateway_id ] = trim(
 					str_replace(
 						__( 'Gateway', 'membership2' ),
 						'',
@@ -222,7 +228,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 					)
 				);
 			}
-			$the_name = $Short_names[$gateway_id];
+			$the_name = $Short_names[ $gateway_id ];
 		}
 
 		return $the_name;
@@ -265,5 +271,4 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$gateway_id
 		);
 	}
-
 }
