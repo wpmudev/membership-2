@@ -378,16 +378,26 @@ module.exports = function( grunt ) {
 
 		// BUILD - Create a zip-version of the plugin.
 		compress: {
-			main: {
+			pro: {
 				options: {
 					mode: 'zip',
-					archive: './release/<%= pkg.name %>-<%= pkg.version %>.zip'
+					archive: './release/<%= pkg.name %>-pro-<%= pkg.version %>.zip'
 				},
 				expand: true,
-				cwd: 'release/<%= pkg.version %>/',
+				cwd: 'release/<%= pkg.version %>-pro/',
 				src: [ '**/*' ],
 				dest: conf.plugin_dir
-			}
+			},
+			free: {
+				options: {
+					mode: 'zip',
+					archive: './release/<%= pkg.name %>-free-<%= pkg.version %>.zip'
+				},
+				expand: true,
+				cwd: 'release/<%= pkg.version %>-free/',
+				src: [ '**/*' ],
+				dest: conf.plugin_dir
+			},
 		},
 
 		// BUILD - update the translation index .po file.
