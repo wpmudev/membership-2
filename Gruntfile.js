@@ -121,10 +121,10 @@ module.exports = function( grunt ) {
 					'!Gruntfile.js',
 					'!package.json',
 					'!build/**',
-					'!tests/**'
-					'!.git/**'
-					'!.git'
-					'!.log',
+					'!tests/**',
+					'!.git/**',
+					'!.git',
+					'!.log'
 				],
 				dest: './'
 			}
