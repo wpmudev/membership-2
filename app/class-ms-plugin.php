@@ -142,9 +142,9 @@ class MS_Plugin {
 		$this->id = MS_PLUGIN;
 		$this->name = MS_PLUGIN_NAME;
 		$this->version = MS_PLUGIN_VERSION;
-		$this->file = __FILE__;
-		$this->dir = plugin_dir_path( __FILE__ );
-		$this->url = plugin_dir_url( __FILE__ );
+		$this->file = MS_PLUGIN_FILE;
+		$this->dir = plugin_dir_path( MS_PLUGIN_FILE );
+		$this->url = plugin_dir_url( MS_PLUGIN_FILE );
 
 		// Might refresh the Rewrite-Rules and reloads the page.
 		add_action(
@@ -166,7 +166,7 @@ class MS_Plugin {
 
 		// Plugin activation Hook.
 		register_activation_hook(
-			__FILE__,
+			MS_PLUGIN_FILE,
 			array( $this, 'plugin_activation' )
 		);
 

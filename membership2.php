@@ -93,6 +93,13 @@ function membership2_init_app() {
 	);
 
 	/**
+	 * Plugin main-file.
+	 *
+	 * @since  1.0.3.0
+	 */
+	define( 'MS_PLUGIN_FILE', __FILE__ );
+
+	/**
 	 * Plugin identifier constant.
 	 *
 	 * @since  1.0.0
@@ -121,7 +128,7 @@ function membership2_init_app() {
 	// Pro-Only configuration.
 	$cta_label = false;
 	$drip_param = false;
-	$externals[] = dirname( __FILE__ ) . '/premium/lib/wpmudev-dashboard/wpmudev-dash-notification.php';
+	$externals[] = dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php';
 
 	// WPMUDEV Dashboard.
 	global $wpmudev_notices;

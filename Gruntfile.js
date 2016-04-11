@@ -83,6 +83,7 @@ module.exports = function( grunt ) {
 			exclude_free: [
 				'./test',
 				'./premium',
+				'./lib/wpmudev-dashboard',
 			],
 			base: 'free-pro-integration',
 			pro: 'm2-pro',
