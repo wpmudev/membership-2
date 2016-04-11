@@ -210,8 +210,8 @@ class MS_Model_Addon extends MS_Model_Option {
 	 */
 	static protected function load_core_addons() {
 		$model = MS_Factory::load( 'MS_Model_Addon' );
-		$root_path = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
-		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $root_path ) );
+		$content_dir = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
+		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
 		$addon_dirs = array(
 			$plugin_dir . 'premium/addon/',
@@ -221,14 +221,14 @@ class MS_Model_Addon extends MS_Model_Option {
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...
 			self::$_reload_files = false;
+			$model->addon_files = array();
 
 			foreach ( $addon_dirs as $addon_dir ) {
-				$mask = $root_path . $addon_dir . '*/class-ms-addon-*.php';
+				$mask = $content_dir . $addon_dir . '*/class-ms-addon-*.php';
 				$addons = glob( $mask );
 
-				$model->addon_files = array();
 				foreach ( $addons as $file ) {
-					$model->addon_files[] = substr( $file, strlen( $root_path ) );
+					$model->addon_files[] = substr( $file, strlen( $content_dir ) );
 				}
 			}
 
@@ -249,7 +249,7 @@ class MS_Model_Addon extends MS_Model_Option {
 
 		// Loop all recignized Add-ons and initialize them.
 		foreach ( $model->addon_files as $file ) {
-			$addon = $root_path . $file;
+			$addon = $content_dir . $file;
 
 			// Get class-name from file-name
 			$class = basename( $file );

@@ -103,8 +103,8 @@ class MS_Model_Gateway extends MS_Model_Option {
 	 */
 	static protected function load_core_gateways() {
 		$model = MS_Factory::load( 'MS_Model_Gateway' );
-		$root_path = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
-		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $root_path ) );
+		$content_dir = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
+		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
 		$gateway_dirs = array(
 			$plugin_dir . 'premium/gateway/',
@@ -113,15 +113,14 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 		if ( empty( $model->gateway_files ) || is_admin() ) {
 			// In Admin dashboard we always refresh the gateway-list...
-			//
-			foreach ( $gateway_dirs as $gateway_dir ) {
+			$model->gateway_files = array();
 
-				$mask = $root_path . $gateway_dir . '*/class-ms-gateway-*.php';
+			foreach ( $gateway_dirs as $gateway_dir ) {
+				$mask = $content_dir . $gateway_dir . '*/class-ms-gateway-*.php';
 				$gateways = glob( $mask );
 
-				$model->gateway_files = array();
 				foreach ( $gateways as $file ) {
-					$model->gateway_files[] = substr( $file, strlen( $root_path ) );
+					$model->gateway_files[] = substr( $file, strlen( $content_dir ) );
 				}
 			}
 
@@ -142,7 +141,7 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 		// Loop all recignized Gateways and initialize them.
 		foreach ( $model->gateway_files as $file ) {
-			$gateway_file = $root_path . $file;
+			$gateway_file = $content_dir . $file;
 
 			// Get class-name from file-name
 			$class = basename( $file );
