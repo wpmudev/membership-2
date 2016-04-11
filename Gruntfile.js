@@ -105,7 +105,7 @@ module.exports = function( grunt ) {
 			],
 			main_pro: 'membership2.php',
 			main_free: 'membership.php',
-			base: 'free-pro-integration',
+			base: 'master',
 			pro: 'm2-pro',
 			free: 'm2-free',
 		},
