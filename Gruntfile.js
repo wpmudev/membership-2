@@ -77,11 +77,10 @@ module.exports = function( grunt ) {
 		// BUILD branches.
 		plugin_branches: {
 			exclude_pro: [
-				'./test',
 				'./readme.txt',
+				'./screenshot-*',
 			],
 			exclude_free: [
-				'./test',
 				'./premium',
 				'./lib/wpmudev-dashboard',
 			],
@@ -102,6 +101,8 @@ module.exports = function( grunt ) {
 				'!.git',
 				'!.log'
 			],
+			main_pro: 'membership2.php',
+			main_free: 'membership.php',
 			base: 'free-pro-integration',
 			pro: 'm2-pro',
 			free: 'm2-free',
@@ -447,6 +448,26 @@ module.exports = function( grunt ) {
 			}
 		},
 
+		// BUILD: Rename the main plugin file.
+		rename: {
+			pro: {
+				files: [
+					{
+						src: conf.plugin_file,
+						dest: conf.plugin_branches.main_pro
+					}
+				],
+			},
+			free: {
+				files: [
+					{
+						src: conf.plugin_file,
+						dest: conf.plugin_branches.main_free
+					}
+				],
+			},
+		},
+
 		// BUILD: Git control (check out branch).
 		gitcheckout: {
 			pro: {
@@ -546,6 +567,7 @@ module.exports = function( grunt ) {
 			// Remove code and files that does not belong to this version.
 			grunt.task.run( 'replace:' + branch );
 			grunt.task.run( 'clean:' + branch );
+			grunt.task.run( 'rename:' + branch );
 
 			// Add the processes/cleaned files to the target branch.
 			grunt.task.run( 'gitadd:' + branch );
