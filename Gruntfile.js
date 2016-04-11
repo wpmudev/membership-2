@@ -84,7 +84,7 @@ module.exports = function( grunt ) {
 				'./test',
 				'./premium',
 			],
-			base: 'master',
+			base: 'free-pro-integration',
 			pro: 'm2-pro',
 			free: 'm2-free',
 		},
