@@ -70,17 +70,19 @@ module.exports = function( grunt ) {
 
 		// SASS files to process. Resulting CSS files will be minified as well.
 		css_files_compile: {
-			'{css}/ms-admin.css':          '{css}/sass/ms-admin.scss',
-			'{css}/ms-public.css':         '{css}/sass/ms-public.scss'
+			'{css}/ms-admin.css':          '{css}/src/ms-admin.scss',
+			'{css}/ms-public.css':         '{css}/src/ms-public.scss'
 		},
 
 		// BUILD branches.
 		plugin_branches: {
 			exclude_pro: [
+				'./README.MD',
 				'./readme.txt',
 				'./screenshot-*',
 			],
 			exclude_free: [
+				'./README.MD',
 				'./premium',
 				'./lib/wpmudev-dashboard',
 			],
