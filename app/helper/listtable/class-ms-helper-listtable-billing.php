@@ -321,7 +321,11 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 			$html = $item->column_name;
 		}
 
-		return $html;
+		return apply_filters(
+                            'ms_helper_listtable_billing_default_column',
+                            $html,
+                            $this
+                        );
 	}
 
 	public function get_bulk_actions() {

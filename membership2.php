@@ -65,6 +65,7 @@
  *
  * @since  1.0.0
  */
+
 function membership2_init_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
 		if ( is_admin() ) {
@@ -113,6 +114,13 @@ function membership2_init_app() {
 	 * @since  1.0.0
 	 */
 	define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
+
+	/**
+	 * Plugin name dir constant.
+	 *
+	 * @since  1.0.3
+	 */
+	define( 'MS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 	$externals = array(
 		dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
@@ -397,9 +405,9 @@ if ( isset( $_REQUEST['ms_ajax'] ) ) {
 
 			// Nonce is checked, get the POST data and sign user on
 			$info = array(
-					'user_login' => $_POST['username'],
-					'user_password' => $_POST['password'],
-					'remember' => (bool) isset( $_POST['remember'] ) ? $_POST['remember'] : false,
+				'user_login' => $_POST['username'],
+				'user_password' => $_POST['password'],
+				'remember' => (bool) isset( $_POST['remember'] ) ? $_POST['remember'] : false,
 			);
 
 			$user_signon = wp_signon( $info, false );

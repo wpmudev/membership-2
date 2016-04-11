@@ -7,7 +7,24 @@ Change Log:
 
 1.0.3.0
 ----------------------------------------------------------------------
-- Remove filter `ms_class_file_override`
+- Added: Template system, now M2 pages (Membership List, Payment Form, Registration Page, Account Page) can be overwritten from theme
+- Added: Option to select different list for different membership in Mailchimp addon
+- Added: Option to show BP XProfile fields in M2 account page
+- Added: ms_get_blog_list_args filter added to show non-public blogs in protectin rules page in network admin
+- Added: Define 'MS_CPT_ENABLE_ACCESS_BOX' to enable protection meta box in custom post type
+- Added: Filter 'ms_helper_listtable_billing_default_column' added for default column in billing table
+- Fixed: Test Memberships was not working (simulation mode)
+- Fixed: Protected posts appears in archive page
+- Fixed: Conflict with WPEngine Deployment
+- Fixed: Wrong message when a coupon is removed
+- Fixed: Wrong logic on category protection for multiple membership
+- Fixed: Inactive Memberships still available for renewal
+- Fixed: BP activation page is always protected in multisite
+- Removed: Filter `ms_class_file_override`
+
+1.0.2.9
+----------------------------------------------------------------------
+- Fixed: Version change
 
 1.0.2.8
 ----------------------------------------------------------------------
@@ -23,7 +40,6 @@ Change Log:
 - Fixed: Nickname now saves when BuddyPress profile fields add on is activated
 - Fixed: Missing string in default lost password default email no longer missing
 - Fixed: Media protection no longer breaks images in customizer
-
 
 1.0.2.7
 ----------------------------------------------------------------------
@@ -53,7 +69,6 @@ Change Log:
 - Fixed: Finite paid membership turned into free membership while importing data
 - Fixed: Finite paid membership subscription period gets doubled for a member while importing data
 - Fixed: Gateway mode changed into Live mode when something is changed in settings
-
 
 1.0.2.6
 ----------------------------------------------------------------------

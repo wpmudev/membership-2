@@ -2,6 +2,8 @@
 /**
  * Primary controller for Membership Plugin.
  *
+ * This controller is created during the `setup_theme` hook!
+ *
  * Responsible for flow control, navigation and invoking other controllers.
  *
  * @since  1.0.0
@@ -156,6 +158,9 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// API should be the last Controller to create.
 		$this->controllers['api']                  = MS_Controller_Api::instance();
+
+		// Load the template-tags.
+		require_once MS_Plugin::instance()->dir . 'app/template/template-tags.php';
 
 		// Register all available styles and scripts. Nothing is enqueued.
 		$this->add_action( 'wp_loaded', 'wp_loaded' );
@@ -399,9 +404,9 @@ class MS_Controller_Plugin extends MS_Controller {
 			 * is an absolute URL.
 			 */
 			if ( $menu_link ) {
-				$item = end( $submenu[self::$base_slug] );
-				$key = key( $submenu[self::$base_slug] );
-				$submenu[self::$base_slug][$key][2] = $menu_link;
+				$item = end( $submenu[ self::$base_slug ] );
+				$key = key( $submenu[ self::$base_slug ] );
+				$submenu[ self::$base_slug ][ $key ][2] = $menu_link;
 			}
 		}
 
@@ -430,7 +435,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		if ( MS_Controller_Membership::STEP_ADD_NEW == $step ) {
 			$pages['setup']['slug'] = 'setup';
 
-			$pages[self::MENU_SLUG] = array(
+			$pages[ self::MENU_SLUG ] = array(
 				'title' => __( 'Protection Rules', 'membership2' ),
 				'slug' => '',
 			);
@@ -548,8 +553,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		if ( ! isset( $_GET['page'] ) ) { return; }
 		if ( $_GET['page'] === self::$base_slug ) {
 			$handle_it = true;
-		} elseif ( isset( $submenu[self::$base_slug] ) ) {
-			foreach ( $submenu[self::$base_slug] as $item ) {
+		} elseif ( isset( $submenu[ self::$base_slug ] ) ) {
+			foreach ( $submenu[ self::$base_slug ] as $item ) {
 				if ( $_GET['page'] === $item[2] ) { $handle_it = true; break; }
 			}
 		}
@@ -569,7 +574,7 @@ class MS_Controller_Plugin extends MS_Controller {
 					array( $this->controllers['protection'], 'admin_page' ),
 				);
 			}
-		} else  {
+		} else {
 			if ( self::is_page( '' ) ) {
 				$handler = array(
 					'network',

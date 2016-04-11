@@ -8,3 +8,5 @@ OK
 .DS_Store
 /nbproject/private/
 nbproject
+backup
+/backup/*

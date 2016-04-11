@@ -143,6 +143,10 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 				}
 			}
 		}
+                
+                if( 'activate' == bp_current_component() ) {
+                    $has_access = true;
+                }
 
 		return apply_filters(
 			'ms_rule_buddypress_has_access',

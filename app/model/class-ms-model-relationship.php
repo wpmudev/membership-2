@@ -1228,7 +1228,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 * payment notifications, the expire date is equal to trial expire date.
 		 */
 		if ( $this->is_trial_eligible() ) {
-			$expire_date = $start_date;
+                    
+                        $period_unit = MS_Helper_Period::get_period_value(
+                                $membership->period,
+                                'period_unit'
+                        );
+                        $period_type = MS_Helper_Period::get_period_value(
+                                $membership->period,
+                                'period_type'
+                        );
+                        $expire_date = MS_Helper_Period::add_interval(
+                                $period_unit,
+                                $period_type,
+                                $start_date
+                        );
+                        
+                        if( empty( $expire_date ) ) {
+                            $expire_date = $start_date;
+                        }
 		} else {
 			if ( $paid ) {
 				/*
@@ -1853,7 +1870,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					}
 				} else {
 					$trial_price = __( 'nothing', 'membership2' );
-					$lbl = __( 'The trial period of %1$s is for free.', 'membership2' );
+					//$lbl = __( 'The trial period of %1$s is for free.', 'membership2' );
+                                        $lbl = __( 'Your %1$s free trial ends on %5$s and then you will be billed.', 'membership2' );
 				}
 			} else {
 				$trial_price = MS_Helper_Billing::format_price( $trial_price );
@@ -1865,7 +1883,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$currency,
 				$trial_price,
-				MS_Helper_Period::format_date( $invoice->due_date, __( 'M j', 'membership2' ) )
+				MS_Helper_Period::format_date( $invoice->due_date, __( 'M j', 'membership2' ) ),
+                                MS_Helper_Period::format_date( $invoice->trial_ends )
 			);
 		}
 

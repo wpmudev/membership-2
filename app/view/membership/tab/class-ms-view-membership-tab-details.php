@@ -59,7 +59,7 @@ class MS_View_Membership_Tab_Details extends MS_View {
 		<?php
 		$html = ob_get_clean();
 
-		return apply_filters( 'ms_view_membership_edit_to_html', $html );
+		return apply_filters( 'ms_view_membership_edit_to_html', $html, $field, $membership );
 	}
 
 	/**
@@ -133,7 +133,7 @@ class MS_View_Membership_Tab_Details extends MS_View {
 			'value' => $membership->is_paid,
 			'ajax_data' => array( 1 ),
 		);
-
+                
 		$priority_list = array();
 		$args = array( 'include_guest' => 0 );
 		$count = MS_Model_Membership::get_membership_count( $args );
@@ -158,6 +158,13 @@ class MS_View_Membership_Tab_Details extends MS_View {
 			$fields['priority']['desc'] .= '<br>' .
 				__( 'It also controlls which Protection Message is used in case a member has multiple memberships (the lowest value wins)', 'membership2' );
 		}
+                
+                $fields = apply_filters(
+                            'ms_view_membership_details_tab',
+                            $fields,
+                            $membership,
+                            $this->data
+                        );
 
 		foreach ( $fields as $key => $field ) {
 			if ( ! empty( $field['ajax_data'] ) ) {
@@ -173,7 +180,7 @@ class MS_View_Membership_Tab_Details extends MS_View {
 				$fields[ $key ]['ajax_data']['membership_id'] = $membership->id;
 			}
 		}
-
+                
 		return $fields;
 	}
 

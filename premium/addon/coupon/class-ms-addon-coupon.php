@@ -17,20 +17,13 @@ class MS_Addon_Coupon extends MS_Addon {
 	const ID = 'coupon';
 
 	/**
-	 * The menu slug for the admin page to manage invitation codes.
-	 *
-	 * @since  1.0.0
-	 */
-	const SLUG = 'coupons';
-
-	/**
 	 * Checks if the current Add-on is enabled
 	 *
 	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
-		return MS_Model_Addon::is_enabled( self::ID );
+		return false;
 	}
 
 	/**
@@ -44,119 +37,12 @@ class MS_Addon_Coupon extends MS_Addon {
 	}
 
 	/**
-	 * Saves a reference to the currently processed coupon in the registration
-	 * form.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @var MS_Addon_Coupon_Model
-	 */
-	private static $the_coupon = null;
-
-	/**
 	 * Initializes the Add-on. Always executed.
 	 *
 	 * @since  1.0.0
 	 */
 	public function init() {
-		if ( self::is_active() ) {
-			$hook = 'membership-2_page_' . MS_Controller_Plugin::MENU_SLUG . '-' . self::SLUG;
-
-			$this->add_action( 'load-' . $hook, 'admin_manager' );
-			$this->add_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
-			$this->add_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
-
-			// Add Coupon menu item to Membership2 menu (Admin)
-			$this->add_filter(
-				'ms_plugin_menu_pages',
-				'menu_item',
-				10, 3
-			);
-
-			// Handle the submenu item - display the add-on page.
-			$this->add_filter(
-				'ms_route_submenu_request',
-				'route_submenu_request'
-			);
-
-			// Tell Membership2 about the Coupon Post Type
-			$this->add_filter(
-				'ms_plugin_register_custom_post_types',
-				'register_ms_posttypes'
-			);
-
-			$this->add_filter(
-				'ms_rule_cptgroup_model_get_ms_post_types',
-				'update_ms_posttypes'
-			);
-
-			// Show Coupon columns in the billing list (Admin)
-			$this->add_filter(
-				'ms_helper_listtable_billing_get_columns',
-				'billing_columns',
-				10, 2
-			);
-
-			/*$this->add_filter(
-				'ms_helper_listtable_billing-column_amount',
-				'billing_column_value',
-				10, 3
-			);*/
-
-			$this->add_filter(
-				'ms_helper_listtable_billing-column_discount',
-				'billing_column_value',
-				10, 3
-			);
-
-			// Show Coupon form in the payment-form (Frontend)
-			$this->add_action(
-				'ms_view_frontend_payment_after_total_row',
-				'payment_coupon_form',
-				6, 3
-			);
-
-			// Update Coupon-Counter when invoice is paid
-			$this->add_action(
-				'ms_model_invoice_changed-paid',
-				'invoice_paid',
-				10, 2
-			);
-
-			// Apply Coupon-Discount to invoice
-			$this->add_filter(
-				'ms_signup_payment_details',
-				'apply_discount',
-				10, 2
-			);
-
-			// Add/Remove coupon discount in the payment table frontend.
-			$this->add_filter(
-				'ms_view_frontend_payment_data',
-				'process_payment_table',
-				10, 4
-			);
-		}
-	}
-
-	/**
-	 * Sets or gets the coupon model that is processed in the current
-	 * registration form.
-	 *
-	 * @since  1.0.0
-	 * @param  MS_Addon_Coupon_Model $new_value
-	 * @return MS_Addon_Coupon_Model
-	 */
-	static private function the_coupon( $new_value = null ) {
-		if ( $new_value !== null ) {
-			self::$the_coupon = $new_value;
-		} else {
-			if ( null === self::$the_coupon ) {
-				self::$the_coupon = MS_Factory::load( 'MS_Addon_Coupon_Model' );
-			}
-		}
-
-		return self::$the_coupon;
+		MS_Model_Addon::disable( self::ID );
 	}
 
 	/**
@@ -171,6 +57,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			'name' => __( 'Coupon', 'membership2' ),
 			'description' => __( 'Enable discount coupons.', 'membership2' ),
 			'icon' => 'wpmui-fa wpmui-fa-ticket',
+			'action' => array( __( 'Pro Version', 'membership2' ) ),
 		);
 
 		return $list;
@@ -193,7 +80,7 @@ class MS_Addon_Coupon extends MS_Addon {
 				self::ID => array(
 					'title' => __( 'Coupons', 'membership2' ),
 					'slug' => self::SLUG,
-				)
+				),
 			);
 			lib3()->array->insert( $items, 'before', 'addon', $menu_item );
 		}
@@ -235,7 +122,7 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @return array
 	 */
 	public function register_ms_posttypes( $cpts ) {
-		$cpts[MS_Addon_Coupon_Model::get_post_type()] = MS_Addon_Coupon_Model::get_register_post_type_args();
+		$cpts[ MS_Addon_Coupon_Model::get_post_type() ] = MS_Addon_Coupon_Model::get_register_post_type_args();
 
 		return $cpts;
 	}
@@ -276,7 +163,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			$redirect =	esc_url_raw(
 				add_query_arg(
 					array( 'msg' => $msg ),
-					remove_query_arg( array( 'coupon_id') )
+					remove_query_arg( array( 'coupon_id' ) )
 				)
 			);
 		} elseif ( self::validate_required( $action_fields, 'GET' )
@@ -296,7 +183,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			&& $this->is_admin_user()
 		) {
 			// Execute bulk actions.
-			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			$action = (-1 != $_POST['action'] ? $_POST['action'] : $_POST['action2']);
 			$msg = $this->coupon_do_action( $action, $_POST['coupon_id'] );
 			$redirect = esc_url_raw( add_query_arg( array( 'msg' => $msg ) ) );
 		}
@@ -442,7 +329,6 @@ class MS_Addon_Coupon extends MS_Addon {
 	 */
 	public function billing_columns( $columns, $currency ) {
 		$new_columns = array(
-			//'amount' => __( 'Amount', 'membership2' ),
 			'discount' => __( 'Discount', 'membership2' ),
 		);
 
@@ -561,8 +447,16 @@ class MS_Addon_Coupon extends MS_Addon {
 			<div class="membership_coupon_form couponbar">
 				<form method="post">
 					<?php if ( $coupon_message ) : ?>
-						<p class="ms-alert-box <?php echo esc_attr( $class ); ?>"><?php
-							echo '' . $coupon_message;
+						<p class="ms-alert-box <?php echo esc_attr( $class ); ?>">
+						<?php
+						if ( ! empty( $_POST['remove_coupon_code'] ) ) {
+							printf(
+								__( 'Coupon removed: "%s"', 'membership2' ),
+								$coupon->code
+							);
+						} else {
+							echo $coupon_message;
+						}
 						?></p>
 					<?php endif; ?>
 					<div class="coupon-entry">
@@ -570,8 +464,8 @@ class MS_Addon_Coupon extends MS_Addon {
 							<div class="coupon-question"><?php
 							_e( 'Have a coupon code?', 'membership2' );
 							?></div>
-						<?php endif;
-
+						<?php endif; ?>
+						<?php
 						foreach ( $fields as $field ) {
 							MS_Helper_Html::html_element( $field );
 						}
@@ -686,5 +580,4 @@ class MS_Addon_Coupon extends MS_Addon {
 
 		return $data;
 	}
-
 }
