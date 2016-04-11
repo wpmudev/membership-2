@@ -547,7 +547,6 @@ module.exports = function( grunt ) {
 
 	// Development tasks.
 	grunt.registerTask( 'default', ['clean:temp', 'jshint', 'concat', 'uglify', 'sass', 'autoprefixer', 'cssmin'] );
-	grunt.registerTask( 'build', ['phpunit', 'default', 'makepot', 'clean', 'copy', 'compress'] );
 	grunt.registerTask( 'test', ['phpunit', 'jshint'] );
 	grunt.registerTask( 'docs', ['exec:phpdoc'] );
 
