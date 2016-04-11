@@ -10,7 +10,7 @@
  * Author URI:  http://premium.wpmudev.org/
  * WDP ID:      1003656
  * License:     GPL2
- * License UII: http://opensource.org/licenses/GPL-2.0
+ * License URI: http://opensource.org/licenses/GPL-2.0
  * Text Domain: membership2
  *
  * @package Membership2
@@ -21,13 +21,13 @@
  * Plugin Name: Membership 2
  * Plugin URI:  https://wordpress.org/plugins/membership
  * Version:     4.0.1.0
- * Build Stamp: BUILDSTAMP
+ * Build Stamp: BUILDTIME
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
  * Author URI:  http://premium.wpmudev.org/
  * WDP ID:      1003656
  * License:     GPL2
- * License UII: http://opensource.org/licenses/GPL-2.0
+ * License URI: http://opensource.org/licenses/GPL-2.0
  * Text Domain: membership2
  *
  * @package Membership2

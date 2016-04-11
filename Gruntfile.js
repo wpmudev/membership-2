@@ -113,13 +113,13 @@ module.exports = function( grunt ) {
 				{ match: /BUILDTIME/g, replace: buildtime },
 				{ match: /\/\* start:pro \*\//g, replace: '' },
 				{ match: /\/\* end:pro \*\//g, replace: '' },
-				{ match: /\/\* start:free \*[^\*]+\* end:free \*\//mg, replace: '' },
+				{ match: /\/\* start:free \*[^]+\* end:free \*\//mg, replace: '' },
 			],
 			free: [
 				{ match: /BUILDTIME/g, replace: buildtime },
 				{ match: /\/\* start:free \*\//g, replace: '' },
 				{ match: /\/\* end:free \*\//g, replace: '' },
-				{ match: /\/\* start:pro \*[^\*]+\* end:pro \*\//mg, replace: '' },
+				{ match: /\/\* start:pro \*[^]+\* end:pro \*\//mg, replace: '' },
 			],
 			// Files to apply above patterns to (not only php files).
 			files: {
