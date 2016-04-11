@@ -85,6 +85,23 @@ module.exports = function( grunt ) {
 				'./premium',
 				'./lib/wpmudev-dashboard',
 			],
+			include_files: [
+				'**',
+				'!**/css/sass/**',
+				'!**/js/src/**',
+				'!**/js/vendor/**',
+				'!**/img/src/**',
+				'!node_modules/**',
+				'!.sass-cache/**',
+				'!release/**',
+				'!Gruntfile.js',
+				'!package.json',
+				'!build/**',
+				'!tests/**',
+				'!.git/**',
+				'!.git',
+				'!.log'
+			],
 			base: 'free-pro-integration',
 			pro: 'm2-pro',
 			free: 'm2-free',
@@ -108,21 +125,19 @@ module.exports = function( grunt ) {
 			files: {
 				expand: true,
 				src: [
-					'**',
-					'!**/css/sass/**',
-					'!**/js/src/**',
-					'!**/js/vendor/**',
-					'!**/img/src/**',
+					'**/*.php',
+					'**/*.css',
+					'**/*.js',
+					'**/*.html',
+					'**/*.txt',
 					'!node_modules/**',
-					'!.sass-cache/**',
+					'!lib/**',
+					'!docs/**',
 					'!release/**',
 					'!Gruntfile.js',
-					'!package.json',
 					'!build/**',
 					'!tests/**',
-					'!.git/**',
-					'!.git',
-					'!.log'
+					'!.git/**'
 				],
 				dest: './'
 			}
@@ -365,11 +380,11 @@ module.exports = function( grunt ) {
 		// BUILD - Copy all plugin files to the release subdirectory.
 		copy: {
 			pro: {
-				src: conf.plugin_patterns.files.src,
+				src: conf.plugin_branches.include_files,
 				dest: 'release/<%= pkg.version %>-pro/'
 			},
 			free: {
-				src: conf.plugin_patterns.files.src,
+				src: conf.plugin_branches.include_files,
 				dest: 'release/<%= pkg.version %>-free/'
 			},
 		},
