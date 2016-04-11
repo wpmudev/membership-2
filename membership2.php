@@ -86,8 +86,11 @@ function membership2_init_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.3.0' );
-	define( 'MS_PLUGIN_VERSION', '4.0.1.0' );
+	define(
+		'MS_PLUGIN_VERSION'
+		/* start:pro */, '1.0.3.0'/* end:pro */
+		/* start:free */, '4.0.1.0'/* end:free */
+	);
 
 	/**
 	 * Plugin identifier constant.
@@ -102,6 +105,23 @@ function membership2_init_app() {
 	 * @since  1.0.0
 	 */
 	define( 'MS_PLUGIN_NAME', dirname( MS_PLUGIN ) );
+
+	$externals = array(
+		dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
+		dirname( __FILE__ ) . '/lib/wdev-frash/module.php',
+	);
+
+	/* start:free */
+	// Free-version configuration
+	$cta_label = __( 'Get Members!', 'membership2' );
+	$drip_param = 'Membership';
+	/* end:free */
+
+	/* start:pro */
+	// Pro-Only configuration.
+	$cta_label = false;
+	$drip_param = false;
+	$externals[] = dirname( __FILE__ ) . '/premium/lib/wpmudev-dashboard/wpmudev-dash-notification.php';
 
 	// WPMUDEV Dashboard.
 	global $wpmudev_notices;
@@ -118,25 +138,20 @@ function membership2_init_app() {
 			'membership-2_page_membership2-settings',
 		),
 	);
-
-	$externals = array(
-		dirname( __FILE__ ) . '/premium/lib/wpmudev-dashboard/wpmudev-dash-notification.php',
-		dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
-		dirname( __FILE__ ) . '/lib/wdev-frash/module.php',
-	);
+	/* end:pro */
 
 	foreach ( $externals as $path ) {
 		if ( file_exists( $path ) ) { require_once $path; }
 	}
 
-	// Register the current plugin.
+	// Register the current plugin, for pro and free plugins!
 	do_action(
 		'wdev-register-plugin',
 		/*             Plugin ID */ plugin_basename( __FILE__ ),
 		/*          Plugin Title */ 'Membership 2',
 		/* https://wordpress.org */ '/plugins/membership/',
-		/*      Email Button CTA */ false,
-		/*  getdrip Plugin param */ false
+		/*      Email Button CTA */ $cta_label,
+		/*  getdrip Plugin param */ $drip_param
 	);
 
 	/**

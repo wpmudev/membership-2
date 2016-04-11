@@ -490,6 +490,7 @@ class MS_Plugin {
 	 *         True means that memberships are shared among all network sites.
 	 */
 	public static function is_network_wide() {
+		/* start:pro */
 		static $Networkwide = null;
 
 		if ( null === $Networkwide ) {
@@ -505,6 +506,10 @@ class MS_Plugin {
 		}
 
 		return $Networkwide;
+		/* end:pro */
+
+		// Free plugin always returns false (this is a pro feature).
+		return false;
 	}
 
 	/**
