@@ -110,19 +110,21 @@ module.exports = function( grunt ) {
 			files: {
 				expand: true,
 				src: [
-					'**/*.php',
-					'**/*.css',
-					'**/*.js',
-					'**/*.html',
-					'**/*.txt',
+					'**',
+					'!**/css/sass/**',
+					'!**/js/src/**',
+					'!**/js/vendor/**',
+					'!**/img/src/**',
 					'!node_modules/**',
-					'!vendor/**',
-					'!language/**',
+					'!.sass-cache/**',
 					'!release/**',
-					'!asset/file/**',
 					'!Gruntfile.js',
+					'!package.json',
 					'!build/**',
+					'!tests/**'
 					'!.git/**'
+					'!.git'
+					'!.log',
 				],
 				dest: './'
 			}
@@ -364,25 +366,14 @@ module.exports = function( grunt ) {
 
 		// BUILD - Copy all plugin files to the release subdirectory.
 		copy: {
-			main: {
-				src:  [
-					'**',
-					'!.git/**',
-					'!.git*',
-					'!**/node_modules/**',
-					'!**/release/**',
-					'!**/.sass-cache/**',
-					'!**/package.json',
-					'!**/css/sass/**',
-					'!**/js/src/**',
-					'!**/js/vendor/**',
-					'!**/img/src/**',
-					'!**/Gruntfile.js',
-					'!**/.log',
-					'!tests/**'
-				],
-				dest: 'release/<%= pkg.version %>/'
-			}
+			pro: {
+				src: conf.plugin_patterns.files.src,
+				dest: 'release/<%= pkg.version %>-pro/'
+			},
+			free: {
+				src: conf.plugin_patterns.files.src,
+				dest: 'release/<%= pkg.version %>-free/'
+			},
 		},
 
 		// BUILD - Create a zip-version of the plugin.
