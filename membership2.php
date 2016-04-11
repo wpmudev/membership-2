@@ -225,13 +225,13 @@ class MS_Loader {
 	 * @since  1.0.0
 	 */
 	public function __construct() {
-
 		add_filter(
 			'ms_class_path_overrides',
 			array( $this, 'ms_class_path_overrides' )
 		);
 
 		// Creates the class autoloader.
+		// Special: Method `class_loader` can be private and it will work here!
 		spl_autoload_register( array( $this, 'class_loader' ) );
 	}
 
