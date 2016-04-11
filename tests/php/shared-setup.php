@@ -35,7 +35,7 @@ class TData {
 			),
 			'editor' => array(
 				'role' => 'editor',
-			)
+			),
 		);
 		foreach ( $users as $login => $data ) {
 			$defaults = array(
@@ -62,7 +62,7 @@ class TData {
 				}
 			}
 
-			self::$ids['user'][$login] = $id;
+			self::$ids['user'][ $login ] = $id;
 		}
 
 		// create demo posts
@@ -92,7 +92,7 @@ class TData {
 				}
 			}
 
-			self::$ids['post'][$slug] = $id;
+			self::$ids['post'][ $slug ] = $id;
 		}
 
 		// create demo memberships
@@ -145,8 +145,8 @@ class TData {
 				'payment_type' => MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE,
 				'price' => 39,
 				'rule_values' => array(),
-				'period_date_start' => date( 'Y-m-d', time() + self::ONE_DAY ), // Starts tomorrow
-				'period_date_end' => date( 'Y-m-d', time() + 10 * self::ONE_DAY ) , // Ends in 10 days
+				'period_date_start' => date( 'Y-m-d', time() + self::ONE_DAY ), // Starts tomorrow.
+				'period_date_end' => date( 'Y-m-d', time() + 10 * self::ONE_DAY ), // Ends in 10 days.
 				'trial_period_enabled' => true,
 				// Note: Trial is longer than the access period:
 				'trial_period' => array( 'period_unit' => 14, 'period_type' => 'days' ),
@@ -180,7 +180,7 @@ class TData {
 			$item->save();
 			$id = $item->id;
 
-			self::$ids['membership'][$key] = $id;
+			self::$ids['membership'][ $key ] = $id;
 		}
 
 		// Prepare Payment Gateways.
