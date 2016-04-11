@@ -1,17 +1,37 @@
 <?php
+/* start:pro */
 /**
  * Plugin Name: Membership 2 Pro
  * Plugin URI:  https://premium.wpmudev.org/project/membership/
- * Version:     1.0.2.8-Beta-4
+ * Version:     1.0.3.0-Beta-4
+ * Build Stamp: BUILDSTAMP
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
  * Author URI:  http://premium.wpmudev.org/
  * WDP ID:      1003656
- * License:     GNU General Public License (Version 2 - GPLv2)
+ * License:     GPL2
+ * License UII: http://opensource.org/licenses/GPL-2.0
  * Text Domain: membership2
  *
  * @package Membership2
  */
+/* end:pro *//* start:free */
+/**
+ * Plugin Name: Membership 2
+ * Plugin URI:  https://wordpress.org/plugins/membership
+ * Version:     4.0.1.0
+ * Build Stamp: BUILDSTAMP
+ * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
+ * Author:      WPMU DEV
+ * Author URI:  http://premium.wpmudev.org/
+ * WDP ID:      1003656
+ * License:     GPL2
+ * License UII: http://opensource.org/licenses/GPL-2.0
+ * Text Domain: membership2
+ *
+ * @package Membership2
+ */
+/* end:free */
 
 /**
  * Copyright notice
@@ -44,7 +64,7 @@
  *
  * @since  1.0.0
  */
-function membership2_init_pro_app() {
+function membership2_init_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
 		if ( is_admin() ) {
 			// Can happen in Multisite installs where a sub-site has activated the
@@ -66,7 +86,8 @@ function membership2_init_pro_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.2.8' );
+	define( 'MS_PLUGIN_VERSION', '1.0.3.0' );
+	define( 'MS_PLUGIN_VERSION', '4.0.1.0' );
 
 	/**
 	 * Plugin identifier constant.
@@ -287,30 +308,37 @@ class MS_Loader {
 			 */
 
 			$path_array = explode( '_', $class );
-			array_shift( $path_array );
+			array_shift( $path_array ); // Remove the 'MS' prefix from path.
 			$alt_dir = array_pop( $path_array );
 			$sub_path = implode( '/', $path_array );
 
 			$filename = str_replace( '_', '-', 'class-' . $class . '.php' );
-			$file_path = $basedir . '/app/' . strtolower( $sub_path . '/' . $filename );
-			$file_path_alt = $basedir . '/app/' . strtolower( $sub_path . '/' . $alt_dir . '/' . $filename );
+			$file_path = strtolower( $sub_path . '/' . $filename );
+			$file_path_alt = strtolower( $sub_path . '/' . $alt_dir . '/' . $filename );
 
-			/**
-			 * Overrides the filename and path.
-			 *
-			 * @since  1.0.0
-			 * @param object $this The MS_Plugin object.
-			 */
-			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
-			$file_path_alt = apply_filters( 'ms_class_file_override', $file_path_alt, $this );
+			// First check if we have a premium version of the class.
+			$pro_path1 = $basedir . '/premium/' . $file_path;
+			$pro_path2 = $basedir . '/premium/' . $file_path_alt;
 
-			if ( is_file( $file_path ) ) {
-				include_once $file_path;
-			} elseif ( is_file( $file_path_alt ) ) {
-				include_once $file_path_alt;
+			if ( is_file( $pro_path1 ) ) {
+				include_once $pro_path1;
+				return true;
+			} elseif ( is_file( $pro_path2 ) ) {
+				include_once $pro_path2;
+				return true;
 			}
 
-			return true;
+			// If no premium class is found check for default app class.
+			$file_path1 = $basedir . '/app/' . $file_path;
+			$file_path2 = $basedir . '/app/' . $file_path_alt;
+
+			if ( is_file( $file_path1 ) ) {
+				include_once $file_path1;
+				return true;
+			} elseif ( is_file( $file_path2 ) ) {
+				include_once $file_path2;
+				return true;
+			}
 		}
 
 		return false;
@@ -388,4 +416,4 @@ if ( isset( $_REQUEST['ms_ajax'] ) ) {
 	}
 }
 
-membership2_init_pro_app();
+membership2_init_app();

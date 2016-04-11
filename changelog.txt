@@ -1,8 +1,13 @@
 Plugin Name: Membership 2
-Author: Philipp Stracker, Ashok Kumar Nath, Fabio Jun, Rheinard Khorf
+Author:      Ashok Kumar Nath, Philipp Stracker
+Build Stamp: BUILDSTAMP
 
 Change Log:
 ----------------------------------------------------------------------
+
+1.0.3.0
+----------------------------------------------------------------------
+- Remove filter `ms_class_file_override`
 
 1.0.2.8
 ----------------------------------------------------------------------
