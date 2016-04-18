@@ -109,7 +109,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
                             $template_data = array(
                                             'title' => $title,
                                             'fields' => $fields,
-                                            'empty_error' => $empty_error,
+                                            'empty_error' => isset( $empty_error ) ? $empty_error : '',
                                             'register_button' => $register_button,
                                             'm2_reg_error' => $m2_reg_error,
                                             'login_link_exists' => $login_link_exists,

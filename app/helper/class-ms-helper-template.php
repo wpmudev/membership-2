@@ -14,7 +14,7 @@ class MS_Helper_Template extends MS_Helper {
     static public $ms_front_payment = array();
     static public $ms_account = array();
     
-    public function get_template_dir() {
+    public static function get_template_dir() {
         return MS_PLUGIN_DIR . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY;
     }
     

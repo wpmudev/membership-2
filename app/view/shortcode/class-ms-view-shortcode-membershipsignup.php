@@ -384,10 +384,10 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
                                     'membership_price' => $membership_price,
                                     'msg' => $msg,
                                     'action' => $action,
-                                    'link' => $link,
+                                    'link' => isset( $link ) ? $link : '',
                                     'fields' => $fields,
                                     'button' => $button,
-                                    'm2_obj' => $m2_obj
+                                    'm2_obj' => $this
                                 );
                 MS_Helper_Template::$ms_single_box = $template_data;
                 
