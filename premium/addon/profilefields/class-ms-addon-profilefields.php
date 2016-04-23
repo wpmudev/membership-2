@@ -188,6 +188,47 @@ class MS_Addon_Profilefields extends MS_Addon {
 		static $Profile_Fields = null;
 
 		if ( null === $Profile_Fields ) {
+                    
+                        $public_display = array();
+                        
+                        if ( is_user_logged_in() ) {
+				$member = MS_Model_Member::get_current_member();
+				$user = $member->get_user();
+                                
+                                $public_display['display_nickname']  = $user->nickname;
+                                $public_display['display_username']  = $member->username;
+                                echo $member->first_name;
+                                if ( isset($member->first_name) || ! empty( $member->first_name ) || $member->first_name != '' ) {
+                                    $public_display['display_firstname'] = $member->first_name;
+                                }
+        
+                                if ( isset($member->last_name) || ! empty( $member->last_name ) || $member->last_name != '' ) {
+                                    $public_display['display_lastname'] = $member->last_name;
+                                }
+        
+                                if (
+                                    ( isset($member->first_name) || ! empty( $member->first_name ) || $member->first_name != '' )
+                                    &&
+                                    ( isset($member->last_name) || ! empty( $member->last_name ) || $member->last_name != '' )
+                                )
+                                {
+                                    $public_display['display_firstlast'] = $member->first_name . ' ' . $member->last_name;
+                                    $public_display['display_lastfirst'] = $member->last_name . ' ' . $member->first_name;
+                                }
+        
+                                if ( ! in_array( $user->display_name, $public_display ) ) 
+                                    $public_display = array( 'display_displayname' => $user->display_name ) + $public_display;
+        
+                                $public_display = array_map( 'trim', $public_display );
+                                //$public_display = array_unique( $public_display );
+                                
+                        }
+                        
+                        foreach( $public_display as $key => $val ) {
+                            unset( $public_display[$key] );
+                            $public_display[$val] = $val;
+                        }
+                        
 			$Profile_Fields = array(
 				'username' => array(
 					'label' => __( 'Username', 'membership2' ),
@@ -214,7 +255,10 @@ class MS_Addon_Profilefields extends MS_Addon {
 				),
 				'display_name' => array(
 					'label' => __( 'Display As', 'membership2' ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+                                        'class' => 'ms-text-large',
+                                        'value' => isset( $user->display_name ) ? $user->display_name : '',
+                                        'field_options' => $public_display,
 				),
 				'email' => array(
 					'label' => __( 'Email', 'membership2' ),
@@ -461,7 +505,10 @@ class MS_Addon_Profilefields extends MS_Addon {
 					'placeholder' => $hint,
 					'type' => $type,
 					'value' => $value,
+                                        'field_options' => isset( $defaults['field_options'] ) ? $defaults['field_options'] : array()
 				);
+                                
+                                
 			}
 		}
 

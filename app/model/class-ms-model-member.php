@@ -1920,6 +1920,11 @@ class MS_Model_Member extends MS_Model {
 						$value = trim( $this->username );
 					}
 					break;
+                                    
+                                case 'display_name':
+                                        $user = get_userdata( $this->id );
+                                        $value = $user->display_name;
+                                        break;
 			}
 		}
 
@@ -1958,6 +1963,12 @@ class MS_Model_Member extends MS_Model {
 					$this->$property = $value;
 					break;
 			}
-		}
+		}else{
+                    if( $property == 'display_name' )
+                    {
+                        wp_update_user( array( 'ID' => $this->id, 'display_name' => $value ) );
+                    }
+                    
+                }
 	}
 }

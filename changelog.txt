@@ -22,6 +22,9 @@ Change Log:
 - Fixed: Inactive Memberships still available for renewal
 - Fixed: BP activation page is always protected in multisite
 - Fixed: Some unexpected notices and warnings
+
+- Fixed: Display name was not being saved from edit account page
+
 - Removed: Filter `ms_class_file_override`
 
 1.0.2.9

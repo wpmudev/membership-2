@@ -796,7 +796,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				if ( $this->verify_nonce() ) {
 					if ( is_array( $_POST ) ) {
 						foreach ( $_POST as $field => $value ) {
-							$member->$field = $value;
+                                                        $member->$field = $value;
 						}
 					}
 
