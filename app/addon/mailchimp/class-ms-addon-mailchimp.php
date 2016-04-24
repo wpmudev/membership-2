@@ -139,11 +139,15 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @param  mixed $member
 	 */
 	public function subscribe_registered( $event, $member ) {
+            try{
 		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
 			if ( ! self::is_user_subscribed( $member->email, $list_id ) ) {
 				self::subscribe_user( $member, $list_id );
 			}
 		}
+            }catch( Exception $e ){
+                MS_Helper_Debug::log( $e->getMessage() );
+            }
 	}
 
 	/**
@@ -154,22 +158,31 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @param  mixed $member
 	 */
 	public function subscribe_members( $event, $subscription ) {
+            try{
 
 		$member = $subscription->get_member();
+                
+                $mail_list_registered = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' );
+                $mail_list_deactivated = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' );
+                $mail_list_members = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
+                
+                if( $mail_list_members != $mail_list_registered ) {
+                    /** Verify if is subscribed to registered mail list and remove it. */
+                    if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
+                            if ( self::is_user_subscribed( $member->email, $list_id ) ) {
+                                    self::unsubscribe_user( $member->email, $list_id );
+                            }
+                    }
+                }
 
-		/** Verify if is subscribed to registered mail list and remove it. */
-		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
-			if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-				self::unsubscribe_user( $member->email, $list_id );
-			}
-		}
-
-		/** Verify if is subscribed to deactivated mail list and remove it. */
-		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
-			if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-				self::unsubscribe_user( $member->email, $list_id );
-			}
-		}
+		if( $mail_list_members != $mail_list_deactivated ) {
+                    /** Verify if is subscribed to deactivated mail list and remove it. */
+                    if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
+                            if ( self::is_user_subscribed( $member->email, $list_id ) ) {
+                                    self::unsubscribe_user( $member->email, $list_id );
+                            }
+                    }
+                }
 
 		/** Subscribe to members mail list. */
 		$custom_list_id = get_option( 'ms_mc_m_id_' . $subscription->membership_id );
@@ -185,6 +198,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				self::subscribe_user( $member, $list_id );
 			}
 		}
+            }catch( Exception $e ){
+                MS_Helper_Debug::log( $e->getMessage() );
+            }
 	}
 
 	/**
@@ -195,21 +211,30 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @param  mixed $member
 	 */
 	public function subscribe_deactivated( $event, $subscription ) {
+            try{
 		$member = $subscription->get_member();
+                
+                $mail_list_registered = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' );
+                $mail_list_deactivated = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' );
+                $mail_list_members = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
 
-		// Verify if is subscribed to registered mail list and remove it.
-		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
-			if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-				self::unsubscribe_user( $member->email, $list_id );
-			}
-		}
+		if( $mail_list_deactivated == $mail_list_registered ) {
+                    // Verify if is subscribed to registered mail list and remove it.
+                    if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
+                            if ( self::is_user_subscribed( $member->email, $list_id ) ) {
+                                    self::unsubscribe_user( $member->email, $list_id );
+                            }
+                    }
+                }
 
-		// Verify if is subscribed to members mail list and remove it.
-		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' ) ) {
-			if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-				self::unsubscribe_user( $member->email, $list_id );
-			}
-		}
+		if( $mail_list_deactivated == $mail_list_members ) {
+                    // Verify if is subscribed to members mail list and remove it.
+                    if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' ) ) {
+                            if ( self::is_user_subscribed( $member->email, $list_id ) ) {
+                                    self::unsubscribe_user( $member->email, $list_id );
+                            }
+                    }
+                }
 
 		// Subscribe to deactiveted members mail list.
 		if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
@@ -217,6 +242,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				self::subscribe_user( $member, $list_id );
 			}
 		}
+            }catch( Exception $e ){
+                MS_Helper_Debug::log( $e->getMessage() );
+            }
 	}
 
 	/**
@@ -477,6 +505,10 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				( ! $auto_opt_in ),
 				$update
 			);
+                        
+                        if( ! $res ){
+                            echo self::$mailchimp_api->errorMessage();
+                        }
 		}
 	}
 
