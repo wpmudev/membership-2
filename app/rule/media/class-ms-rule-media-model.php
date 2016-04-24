@@ -549,7 +549,6 @@ class MS_Rule_Media_Model extends MS_Rule {
 					$file = trailingslashit( $upload_dir['basedir'] ) . $the_file;
 					$this->output_file( $file );
 				} else {
-                                        do_action( 'ms_show_no_access_image' );
 					$this->show_no_access_image();
 				}
 			}

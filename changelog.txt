@@ -24,6 +24,7 @@ Change Log:
 - Fixed: Some unexpected notices and warnings
 
 - Fixed: Display name was not being saved from edit account page
+- Fixed: Buddy Press extended profile fields data not showing on Membership 2 My Account page
 
 - Removed: Filter `ms_class_file_override`
 

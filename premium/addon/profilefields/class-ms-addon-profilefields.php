@@ -748,7 +748,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-				<textarea rows="5" cols="40" name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_edit_value(); ?></textarea>
+				<textarea rows="5" cols="40" name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>"><?php echo xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ); ?></textarea>
 
 			<?php } elseif ( 'selectbox' == bp_get_the_profile_field_type() ) { ?>
 
@@ -811,7 +811,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-				<input type="<?php bp_the_profile_field_type() ?>" name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" value="<?php bp_the_profile_field_edit_value(); ?>" />
+				<input type="<?php bp_the_profile_field_type() ?>" name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" value="<?php echo strip_tags( xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ) ); ?>" />
 
 			<?php } ?>
 
