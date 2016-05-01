@@ -13,6 +13,14 @@ class MS_Addon_Useractivation_View_List extends MS_View {
     
     public function to_html() {
         
+        if( isset( $_REQUEST['action'] ) && $_REQUEST['action'] == 'm2_approve' )
+        {
+            if( isset( $_REQUEST['user_id'] ) && $_REQUEST['user_id'] > 0 )
+            {
+                MS_Addon_Useractivation_Model::approve_user( $_REQUEST['user_id'] );
+            }
+        }
+        
         $members = MS_Factory::create( 'MS_Addon_Useractivation_Helper_Listtable' );
 	$members->prepare_items();
         

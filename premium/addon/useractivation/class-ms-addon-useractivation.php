@@ -76,6 +76,11 @@ class MS_Addon_Useractivation extends MS_Addon {
                 'user_approval_message'
             );
             
+            $this->add_action(
+                'the_title',
+                'user_approval_title'
+            );
+            
             $this->add_filter(
                 'ms_plugin_menu_pages',
                 'menu_item',
@@ -85,6 +90,17 @@ class MS_Addon_Useractivation extends MS_Addon {
             $this->add_filter(
                 'ms_route_submenu_request',
                 'route_submenu_request'
+            );
+            
+            $this->add_filter(
+                'ms_rule_has_access',
+                'ms_rule_has_access_cb',
+                20, 4
+            );
+            
+            $this->add_action(
+                'template_redirect',
+                'template_redirect_cb'
             );
             
             /*$this->add_action(
@@ -197,22 +213,13 @@ class MS_Addon_Useractivation extends MS_Addon {
             if( $membership->is_free )
             {
                 update_user_meta( $event->user_id, self::META_SLUG, current_user_can( 'create_users' ) );
-                /*$redirect = add_query_arg(
-                                array(
-                                    'current_step' => 'm2-user-approval'
-                                ),
-                                MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
-                            );
-                
-                wp_safe_redirect( $redirect );
-                exit;*/
             }
             else
             {
                 update_user_meta( $event->user_id, self::META_SLUG, true );
             }
+            
         }
-        //$membership_id = $request['membership_id'];
         
     }
     
@@ -228,10 +235,23 @@ class MS_Addon_Useractivation extends MS_Addon {
     {
         if( isset( $_REQUEST['current_step'] ) && $_REQUEST['current_step'] == 'm2-user-approval' )
         {
-            return __( 'Your registration is under approval. An admin will check and aprrove your account. You will be informed via email.' );
+            return __( 'Your registration is under approval. An admin will check and aprrove your account. You will be informed via email.', 'membership2' );
         }
         
         return $content;
+    }
+    
+    /**
+     *
+     */
+    public function user_approval_title( $title )
+    {
+        if( isset( $_REQUEST['current_step'] ) && $_REQUEST['current_step'] == 'm2-user-approval' )
+        {
+            return __( 'Pending membership', 'membership2' );
+        }
+        
+        return $title;
     }
     
     /**
@@ -323,5 +343,47 @@ class MS_Addon_Useractivation extends MS_Addon {
     {
         $view = MS_Factory::create( 'MS_Addon_Useractivation_View_List' );
 	$view->render();
+    }
+    
+    /**
+     * Check if user is active
+     *
+     * @since 1.0.3
+     */
+    public function is_current_user_active()
+    {
+        if( is_super_admin() ) return true;
+        
+        $user_id = get_current_user_id();
+        $h = get_user_meta( $user_id, self::META_SLUG, true );
+        
+        return get_user_meta( $user_id, self::META_SLUG, true );
+    }
+    
+    /**
+     * Check and change access based on permission
+     *
+     * @since 1.0.3
+     */
+    public function ms_rule_has_access_cb( $access, $id, $rule_type, $obj )
+    {
+        if( $this->is_current_user_active() ) return $access;
+        
+        return ! $access;
+    }
+    
+    public function template_redirect_cb()
+    {
+        if( ! $this->is_current_user_active() && ! isset( $_REQUEST['current_step'] ) )
+        {
+            wp_safe_redirect(
+                add_query_arg(
+                    array(
+                        'current_step' => 'm2-user-approval'
+                    ),
+                    MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS )
+                )
+            );
+        }
     }
 }

@@ -24,7 +24,7 @@ class MS_Addon_Useractivation_Model extends MS_Model_Member {
         $sql = $wpdb->prepare(
                     "SELECT COUNT(*) FROM $wpdb->usermeta WHERE meta_key='%s' AND meta_value='%s'",
                     MS_Addon_Useractivation::META_SLUG,
-                    true
+                    FALSE
                 );
         $query = $wpdb->get_var( $sql );
         
@@ -38,7 +38,7 @@ class MS_Addon_Useractivation_Model extends MS_Model_Member {
         $sql = $wpdb->prepare(
                     "SELECT * FROM $wpdb->usermeta WHERE meta_key='%s' AND meta_value='%s'",
                     MS_Addon_Useractivation::META_SLUG,
-                    true
+                    false
                 );
         $users = $wpdb->get_results( $sql, ARRAY_A );
         
@@ -48,6 +48,21 @@ class MS_Addon_Useractivation_Model extends MS_Model_Member {
         }
         
         return $members;
+    }
+    
+    public static function approve_user( $user_id )
+    {
+        if( is_array( $user_id ) )
+        {
+            foreach( $user_id as $user )
+            {
+                update_user_meta( $user, MS_Addon_Useractivation::META_SLUG, true );
+            }
+        }
+        else
+        {
+            update_user_meta( $user_id, MS_Addon_Useractivation::META_SLUG, true );
+        }
     }
     
     

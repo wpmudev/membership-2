@@ -75,29 +75,46 @@ class MS_Addon_Useractivation_Helper_Listtable extends MS_Helper_ListTable {
     
     public function column_cb( $item ) {
         return sprintf(
-            '<input type="checkbox" name="invitation_id[]" value="%1$s" />',
+            '<input type="checkbox" name="user_id[]" value="%1$s" />',
             esc_attr( $item->id )
         );
+    }
+    
+    public function column_username( $item )
+    {
+        $actions['edit'] = sprintf(
+            '<a href="?page=%s&action=%s&user_id=%s">%s</a>',
+            esc_attr( $_REQUEST['page'] ),
+            'm2_approve',
+            esc_attr( $item->id ),
+            __( 'Approve', 'membership2' )
+        );
+        
+        return sprintf(
+                    '%1$s %2$s',
+                    $item->username,
+                    $this->row_actions( $actions )
+		);
     }
     
     public function column_default( $item, $column_name )
     {
         switch( $column_name )
-        {
-            case 'username':
-                return $item->username;
-                break;
-            
+        {   
             case 'email':
                 return $item->email;
                 break;
             
             case 'membership':
                 $subscriptions = $item->get_membership_ids();
-
-                echo "<pre>";
-print_r($subscriptions);
-echo "</pre>";
+                $memberships = array();
+                foreach( $subscriptions as $subscription )
+                {
+                    $membership = MS_Factory::load( 'MS_Model_Membership', $subscription );
+                    $memberships[] = $membership->name;
+                }
+                
+                return implode( ', ', $memberships );
                 break;
             
             default:
@@ -105,4 +122,13 @@ echo "</pre>";
         }
     }
     
+    
+    public function get_bulk_actions() {
+        return apply_filters(
+            'ms_addon_useractivation_helper_listtable_bulk_actions',
+            array(
+                'm2_approve' => __( 'Approve', 'membership2' ),
+            )
+        );
+    }
 }
