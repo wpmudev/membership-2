@@ -354,6 +354,8 @@ class MS_Addon_Useractivation extends MS_Addon {
     {
         if( is_super_admin() ) return true;
         
+        if( ! is_user_logged_in() ) return true;
+        
         $user_id = get_current_user_id();
         $h = get_user_meta( $user_id, self::META_SLUG, true );
         
