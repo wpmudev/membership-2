@@ -61,9 +61,9 @@ class MS_Addon_Useractivation extends MS_Addon {
         if ( self::is_active() ) {
             
             $this->add_action(
+                'ms_model_event_' . MS_Model_Event::TYPE_MS_SIGNED_UP,
                 'ms_model_event_save_event',
-                'ms_model_event_save_event',
-                20, 3
+                20, 2
             );
             
             /*$this->add_action(
@@ -203,24 +203,18 @@ class MS_Addon_Useractivation extends MS_Addon {
      *
      * @since 1.0.3
      */
-    public function ms_model_event_save_event( $event, $type, $data ) {
+    public function ms_model_event_save_event( $event, $data ) {
+        $membership_id = $event->membership_id;
+        $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
         
-        if( $type == MS_Model_Event::TYPE_MS_SIGNED_UP )
+        if( $membership->is_free )
         {
-            $membership_id = $event->membership_id;
-            $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-            
-            if( $membership->is_free )
-            {
-                update_user_meta( $event->user_id, self::META_SLUG, current_user_can( 'create_users' ) );
-            }
-            else
-            {
-                update_user_meta( $event->user_id, self::META_SLUG, true );
-            }
-            
+            update_user_meta( $event->user_id, self::META_SLUG, current_user_can( 'create_users' ) );
         }
-        
+        else
+        {
+            update_user_meta( $event->user_id, self::META_SLUG, true );
+        }
     }
     
     /**
@@ -376,6 +370,21 @@ class MS_Addon_Useractivation extends MS_Addon {
     
     public function template_redirect_cb()
     {
+        global $wpdb;
+        
+        $user_id = get_current_user_id();
+        $sql = $wpdb->prepare(
+                    "SELECT * FROM $wpdb->usermeta WHERE meta_key='%s' AND user_id='%d'",
+                    self::META_SLUG,
+                    $user_id
+                );
+        $users = $wpdb->get_results( $sql, ARRAY_A );
+        
+        if( count( $users ) <= 0 )
+        {
+            return;
+        }
+        
         if( ! $this->is_current_user_active() && ! isset( $_REQUEST['current_step'] ) )
         {
             wp_safe_redirect(

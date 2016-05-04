@@ -1,6 +1,6 @@
 <?php
 /**
- * Invitation model.
+ * User Activation model.
  *
  * Persisted by parent class MS_Model_Member.
  *
