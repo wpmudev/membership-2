@@ -1766,12 +1766,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for permanent access.', 'membership2' );
 					}
 				}
-
-				$desc = sprintf(
+                                
+                                if( MS_Model_Member::is_admin_user() )
+                                {
+                                    $desc = __( 'Admin has no fees!', 'membership' );
+                                }
+                                else
+                                {
+                                    $desc = sprintf(
 					$lbl,
 					$currency,
 					$total_price
-				);
+                                    );
+                                }
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
