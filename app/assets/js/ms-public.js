@@ -1,4 +1,4 @@
-/*! Membership 2 Pro - v1.0.30-Beta-3
+/*! Membership 2 Pro - v1.0.30
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2016; * Licensed GPLv2+ */
 /*global window:false */
@@ -72,7 +72,7 @@ window.ms_init.frontend_profile = function init () {
 				'minlength': 5,
 			},
 			'password2': {
-				'equalTo': '#password',
+				'equalTo': '.ms-form-element #password',
 			},
 		},
 	};

@@ -144,7 +144,7 @@ class MS_View_Frontend_Profile extends MS_View {
 				'minlength' => 5,
 			),
 			'password2' => array(
-				'equalTo' => '#password',
+				'equalTo' => '.ms-form-element #password',
 			),
 		);
 

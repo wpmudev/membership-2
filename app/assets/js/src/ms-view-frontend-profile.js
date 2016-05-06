@@ -17,7 +17,7 @@ window.ms_init.frontend_profile = function init () {
 				'minlength': 5,
 			},
 			'password2': {
-				'equalTo': '#password',
+				'equalTo': '.ms-form-element #password',
 			},
 		},
 	};

@@ -586,7 +586,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 						break;
 
 					case 'password2':
-						$rules[$key]['equalTo'] = '#password';
+						$rules[$key]['equalTo'] = '.ms-form-element #password';
 						break;
 				}
 			}

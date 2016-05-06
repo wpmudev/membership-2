@@ -259,7 +259,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			),
 			'password2' => array(
 				'required' => true,
-				'equalTo' => '#password',
+				'equalTo' => '.ms-form-element #password',
 			),
 		);
 
