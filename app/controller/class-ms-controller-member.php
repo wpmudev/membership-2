@@ -105,6 +105,11 @@ class MS_Controller_Member extends MS_Controller {
 			self::AJAX_ACTION_SEARCH,
 			'ajax_action_search'
 		);
+                
+                $this->add_action(
+                    'delete_user',
+                    'remove_membership_from_user'
+                );
 	}
 
 	/**
@@ -142,6 +147,25 @@ class MS_Controller_Member extends MS_Controller {
 		$member->is_member = true;
 		$member->save();
 	}
+        
+        /**
+         * Remove membership for an user
+         *
+         * @since 1.0.3
+         */
+        public function remove_membership_from_user( $user_id )
+        {
+            $member = MS_Factory::load( 'MS_Model_Member', $user_id );
+            $memberships_ids = ( array ) $member->get_membership_ids();
+            
+            if( ! empty( $memberships_ids ) )
+            {
+                foreach( $memberships_ids as $memberships_id )
+                {
+                    $member->drop_membership( $memberships_id );
+                }
+            }
+        }
 
 	/**
 	 * Manages membership actions.
