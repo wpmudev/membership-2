@@ -92,15 +92,27 @@ class MS_Addon_Useractivation extends MS_Addon {
                 'route_submenu_request'
             );
             
-            $this->add_filter(
+            /*$this->add_filter(
                 'ms_rule_has_access',
                 'ms_rule_has_access_cb',
                 20, 4
-            );
+            );*/
             
-            $this->add_action(
+            /*$this->add_action(
                 'template_redirect',
                 'template_redirect_cb'
+            );*/
+            
+            $this->add_filter(
+                'ms_model_membership_has_access_to_post',
+                'check_post_access',
+                20, 2
+            );
+            
+            $this->add_filter(
+                'ms_model_membership_has_access_to_current_page',
+                'check_current_page_access',
+                20, 3
             );
             
             /*$this->add_action(
@@ -351,7 +363,6 @@ class MS_Addon_Useractivation extends MS_Addon {
         if( ! is_user_logged_in() ) return true;
         
         $user_id = get_current_user_id();
-        $h = get_user_meta( $user_id, self::META_SLUG, true );
         
         return get_user_meta( $user_id, self::META_SLUG, true );
     }
@@ -396,5 +407,25 @@ class MS_Addon_Useractivation extends MS_Addon {
                 )
             );
         }
+    }
+    
+    public function check_post_access( $has_access, $membership )
+    {
+        if( ! $this->is_current_user_active() && ! isset( $_REQUEST['current_step'] ) )
+        {
+            return false;
+        }
+        
+        return $has_access;
+    }
+    
+    public function check_current_page_access( $has_access, $post_id, $membership )
+    {
+        if( ! $this->is_current_user_active() && ! isset( $_REQUEST['current_step'] ) )
+        {
+            return false;
+        }
+        
+        return $has_access;
     }
 }
