@@ -66,21 +66,6 @@ class MS_Addon_Useractivation extends MS_Addon {
                 20, 2
             );
             
-            /*$this->add_action(
-                'wp_authenticate_user',
-                'wp_authenticate_user'
-            );*/
-            
-            $this->add_action(
-                'the_content',
-                'user_approval_message'
-            );
-            
-            $this->add_action(
-                'the_title',
-                'user_approval_title'
-            );
-            
             $this->add_filter(
                 'ms_plugin_menu_pages',
                 'menu_item',
@@ -91,17 +76,6 @@ class MS_Addon_Useractivation extends MS_Addon {
                 'ms_route_submenu_request',
                 'route_submenu_request'
             );
-            
-            /*$this->add_filter(
-                'ms_rule_has_access',
-                'ms_rule_has_access_cb',
-                20, 4
-            );*/
-            
-            /*$this->add_action(
-                'template_redirect',
-                'template_redirect_cb'
-            );*/
             
             $this->add_filter(
                 'ms_model_membership_has_access_to_post',
@@ -115,96 +89,16 @@ class MS_Addon_Useractivation extends MS_Addon {
                 20, 3
             );
             
-            /*$this->add_action(
-                'user_row_actions',
-                'user_row_actions'
+            $this->add_action(
+                'wp_footer',
+                'show_notes_to_unapproved_members'
             );
             
             $this->add_action(
-                'ms_user_row_actions',
-                'user_row_actions'
+                'ms_user_approve_new_user',
+                'send_notification'
             );
             
-            
-            
-            
-            
-            $this->add_action(
-                'shake_error_codes',
-                'shake_error_codes'
-            );
-            
-            $this->add_action(
-                'admin_menu',
-                'admin_menu'
-            );
-            
-            $this->add_action(
-                'admin_print_scripts-users.php',
-                'admin_print_scripts_users_php'
-            );
-            
-            $this->add_action(
-                'admin_print_scripts-site-users.php',
-                'admin_print_scripts_users_php'
-            );
-            
-            $this->add_action(
-                'admin_print_styles-settings_page_wp-approve-user',
-                'admin_print_styles_settings_page_wp_approve-user'
-            );
-            
-            $this->add_action(
-                'admin_action_wpau_approve',
-                'admin_action_wpau_approve'
-            );
-            
-            $this->add_action(
-                'admin_action_wpau_bulk_approve',
-                'admin_action_wpau_bulk_approve'
-            );
-            
-            $this->add_action(
-                'admin_action_wpau_unapprove',
-                'admin_action_wpau_unapprove'
-            );
-            
-            $this->add_action(
-                'admin_action_wpau_bulk_unapprove',
-                'admin_action_wpau_bulk_unapprove'
-            );
-            
-            $this->add_action(
-                'admin_action_wpau_update',
-                'admin_action_wpau_update'
-            );
-            
-            $this->add_action(
-                'wpau_approve',
-                'wpau_approve'
-            );
-            
-            $this->add_action(
-                'delete_user',
-                'delete_user'
-            );
-            
-            $this->add_action(
-                'admin_init',
-                'admin_init'
-            );
-            
-            if ( is_admin() ) {
-                $this->add_action(
-                    'views_users',
-                    'views_users'
-                );
-                
-                $this->add_action(
-                    'pre_user_query',
-                    'pre_user_query'
-                );
-            }*/
         }
     }
     
@@ -222,77 +116,15 @@ class MS_Addon_Useractivation extends MS_Addon {
         if( $membership->is_free )
         {
             update_user_meta( $event->user_id, self::META_SLUG, current_user_can( 'create_users' ) );
+            if( ! current_user_can( 'create_users' ) )
+            {
+                do_action( 'ms_user_approve_new_user', $event->user_id, $membership );
+            }
         }
         else
         {
             update_user_meta( $event->user_id, self::META_SLUG, true );
         }
-    }
-    
-    /**
-     * Show the message to the users of
-     * free membership just after registration. We are
-     * redirecting them to a different page instead of
-     * immediatte login.
-     *
-     * @since 1.0.3
-     */
-    public function user_approval_message( $content )
-    {
-        if( isset( $_REQUEST['current_step'] ) && $_REQUEST['current_step'] == 'm2-user-approval' )
-        {
-            return __( 'Your registration is under approval. An admin will check and aprrove your account. You will be informed via email.', 'membership2' );
-        }
-        
-        return $content;
-    }
-    
-    /**
-     *
-     */
-    public function user_approval_title( $title )
-    {
-        if( isset( $_REQUEST['current_step'] ) && $_REQUEST['current_step'] == 'm2-user-approval' )
-        {
-            return __( 'Pending membership', 'membership2' );
-        }
-        
-        return $title;
-    }
-    
-    /**
-     * Check if the user is already active when he
-     * tries to login, set an error based on the saved meta value.
-     *
-     * Super Admin user will be skipped.
-     *
-     * @since 1.0.3
-     */
-    public function wp_authenticate_user( $userdata ) {
-        
-        $meta_slug = get_user_meta( $userdata->ID, self::META_SLUG, true );
-        
-        if( is_wp_error( $userdata ) )
-        {
-            return $userdata;
-        }
-        
-        if( $userdata->user_email == get_bloginfo( 'admin_email' ) )
-        {
-            return $userdata;
-        }
-        
-        if( isset( $meta_slug ) && $meta_slug )
-        {
-            return $userdata;
-        }
-        
-        $userdata = new WP_Error(
-                        'm2_confirmation_error',
-                        __( '<strong>ERROR:</strong> Your account has to be confirmed by an administrator before you can login.', 'membership2' )
-                    );
-
-        return $userdata;
     }
     
     /**
@@ -368,64 +200,128 @@ class MS_Addon_Useractivation extends MS_Addon {
     }
     
     /**
-     * Check and change access based on permission
+     * Check post access
      *
      * @since 1.0.3
      */
-    public function ms_rule_has_access_cb( $access, $id, $rule_type, $obj )
+    public function check_post_access( $has_access, $membership )
     {
-        if( $this->is_current_user_active() ) return $access;
+        if( ! $this->is_current_user_active() )
+        {
+            return false;
+        }
         
-        return ! $access;
+        return $has_access;
     }
     
-    public function template_redirect_cb()
+    /**
+     * Check current page access
+     *
+     * @since 1.0.3
+     */
+    public function check_current_page_access( $has_access, $post_id, $membership )
     {
-        global $wpdb;
+        if( ! $this->is_current_user_active() )
+        {
+            return false;
+        }
         
-        $user_id = get_current_user_id();
-        $sql = $wpdb->prepare(
-                    "SELECT * FROM $wpdb->usermeta WHERE meta_key='%s' AND user_id='%d'",
-                    self::META_SLUG,
-                    $user_id
+        return $has_access;
+    }
+    
+    /**
+     * Show unapproved user note
+     *
+     * @since 1.0.3
+     */
+    private function _unapproved_user_note()
+    {
+        return apply_filters(
+                    'ms_user_activation_unapproved_user_note',
+                    __( 'Your membership request is still under approval. An admin will review and make the decision.', 'membership2' )
                 );
-        $users = $wpdb->get_results( $sql, ARRAY_A );
-        
-        if( count( $users ) <= 0 )
+    }
+    
+    /**
+     * Show note to unapproved members in footer
+     *
+     * @since 1.0.3
+     */
+    public function show_notes_to_unapproved_members()
+    {
+        if( $this->is_current_user_active() )
         {
             return;
         }
+        ?>
+        <script type="text/javascript">
+        jQuery( function( $ ) {
+            var html = '<div class="ms_unapproved_members_note">';
+                html += '<?php echo $this->_unapproved_user_note() ?>';
+            html += '</div>';
+            
+            $( 'body' ).append( html ).css( {
+                paddingBottom: $( '.ms_unapproved_members_note' ).outerHeight()
+            } );
+        } );
+        </script>
         
-        if( ! $this->is_current_user_active() && ! isset( $_REQUEST['current_step'] ) )
-        {
-            wp_safe_redirect(
-                add_query_arg(
-                    array(
-                        'current_step' => 'm2-user-approval'
-                    ),
-                    MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_MEMBERSHIPS )
-                )
-            );
+        <style>
+        .ms_unapproved_members_note{
+            position: fixed;
+            width: 100%;
+            padding: 15px 20px;
+            text-align: center;
+            background: #345678;
+            color: #fff;
+            font-size: 14px;
+            bottom: 0;
+            left: 0;
         }
+        </style>
+        <?php
     }
     
-    public function check_post_access( $has_access, $membership )
+    /**
+     * Send notifications
+     *
+     * @since 1.0.3
+     */
+    public function send_notification( $user_id, $membership )
     {
-        if( ! $this->is_current_user_active() && ! isset( $_REQUEST['current_step'] ) )
+        $user = new WP_User( $user_id );
+        $to = $user->user_email;
+        $subject = get_bloginfo( 'name' ) . __( ' :: Your membership request is under approval.', 'membership2' );
+        $body = __( 'Dear ' . $user->display_name . ', your membership request is under approval. An admin will review and make a decision. Thank you.' );
+        
+        $subject = apply_filters( 'ms_user_activation_user_notification_subject', $subject );
+        $body = apply_filters( 'ms_user_activation_user_notification_body', $body );
+        
+        wp_mail(
+            $to,
+            $subject,
+            $body
+        );
+        
+        $super_admins = get_super_admins();
+        $admins = array();
+        foreach( $super_admins as $super_admin )
         {
-            return false;
+            $admin_user = get_user_by( 'login', $super_admin );
+            $admins[] = $admin_user->user_email;
         }
         
-        return $has_access;
-    }
-    
-    public function check_current_page_access( $has_access, $post_id, $membership )
-    {
-        if( ! $this->is_current_user_active() && ! isset( $_REQUEST['current_step'] ) )
-        {
-            return false;
-        }
+        $subject = get_bloginfo( 'name' ) . __( ' :: A New membership request is under approval.', 'membership2' );
+        $body = __( 'Dear Admin, A new membership request is under approval. You can check it here: ' . admin_url( 'admin.php?page=membership2-' . self::SLUG ) . '. Thank you.' );
         
-        return $has_access;
+        $subject = apply_filters( 'ms_user_activation_admin_notification_subject', $subject );
+        $body = apply_filters( 'ms_user_activation_admin_notification_body', $body );
+        
+        wp_mail(
+            $admins,
+            $subject,
+            $body
+        );
+        
     }
 }
