@@ -683,44 +683,49 @@ class MS_Rule_Media_Model extends MS_Rule {
 		if ( false === strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS' ) ) {
 			header( 'Content-Length: ' . filesize( $file ) );
 		}
+                
+                if( ! defined( 'M2_MEDIA_ETAG_DISABLED' ) )
+                {
+                    if( ! defined( 'M2_MEDIA_ETAG' ) ) define( 'M2_MEDIA_ETAG', 'm2_media_addon_etag' );
 
-		$last_modified = date_i18n( 'D, d M Y H:i:s', filemtime( $file ) );
-		$etag = '"' . md5( $last_modified ) . '"';
-		header( "Last-Modified: $last_modified GMT" );
-		header( 'ETag: ' . $etag );
-		header( 'Expires: ' . date_i18n( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
-
-		// Support for Conditional GET.
-		if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) ) {
-			$client_etag = stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] );
-		} else {
-			$client_etag = false;
-		}
-
-		if ( ! isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ) {
-			$_SERVER['HTTP_IF_MODIFIED_SINCE'] = false;
-		}
-
-		$client_last_modified = trim( $_SERVER['HTTP_IF_MODIFIED_SINCE'] );
-		// If string is empty, return 0. If not, attempt to parse into a timestamp.
-		$client_modified_timestamp = $client_last_modified ? strtotime( $client_last_modified ) : 0;
-
-		// Make a timestamp for our most recent modification...
-		$modified_timestamp = strtotime( $last_modified );
-
-		if ( $client_last_modified && $client_etag ) {
-			$valid_etag = ( $client_modified_timestamp >= $modified_timestamp )
-				&& ( $client_etag === $etag );
-		} else {
-			$valid_etag = ( $client_modified_timestamp >= $modified_timestamp )
-				|| ( $client_etag === $etag );
-		}
-
-		if ( $valid_etag ) {
-			status_header( 304 );
-			exit;
-		}
-
+                    $last_modified = date_i18n( 'D, d M Y H:i:s', filemtime( $file ) );
+                    $etag = '"' . md5( $last_modified ) . '"';
+                    header( "Last-Modified: $last_modified GMT" );
+                    header( 'ETag: ' . $etag );
+                    header( 'Expires: ' . date_i18n( 'D, d M Y H:i:s', time() + 100000000 ) . ' GMT' );
+    
+                    // Support for Conditional GET.
+                    if ( isset( $_SERVER['HTTP_IF_NONE_MATCH'] ) ) {
+                            $client_etag = stripslashes( $_SERVER['HTTP_IF_NONE_MATCH'] );
+                    } else {
+                            $client_etag = false;
+                    }
+    
+                    if ( ! isset( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ) ) {
+                            $_SERVER['HTTP_IF_MODIFIED_SINCE'] = false;
+                    }
+    
+                    $client_last_modified = trim( $_SERVER['HTTP_IF_MODIFIED_SINCE'] );
+                    // If string is empty, return 0. If not, attempt to parse into a timestamp.
+                    $client_modified_timestamp = $client_last_modified ? strtotime( $client_last_modified ) : 0;
+    
+                    // Make a timestamp for our most recent modification...
+                    $modified_timestamp = strtotime( $last_modified );
+    
+                    if ( $client_last_modified && $client_etag ) {
+                            $valid_etag = ( $client_modified_timestamp >= $modified_timestamp )
+                                    && ( $client_etag === $etag );
+                    } else {
+                            $valid_etag = ( $client_modified_timestamp >= $modified_timestamp )
+                                    || ( $client_etag === $etag );
+                    }
+    
+                    if ( $valid_etag ) {
+                            status_header( 304 );
+                            exit;
+                    }
+                }
+                
 		// If we made it this far, just serve the file.
 		readfile( $file );
 
