@@ -720,10 +720,10 @@ class MS_Rule_Media_Model extends MS_Rule {
                                     || ( $client_etag === $etag );
                     }
     
-                    if ( $valid_etag ) {
+                    /*if ( $valid_etag ) {
                             status_header( 304 );
                             exit;
-                    }
+                    }*/
                 }
                 
 		// If we made it this far, just serve the file.
