@@ -26,7 +26,7 @@ Change Log:
 - Fixed: Price on SignUp page not shows correctly for the administrator
 - Fixed: Deleting an user doesn't not remove the membership information from Membership page
 - Fixed: JS Conflict for #password ID
-
+- Fixed: Media Protection doesn't work in some cases
 - Fixed: Display name was not being saved from edit account page
 - Fixed: Buddy Press extended profile fields data not showing on Membership 2 My Account page
 
