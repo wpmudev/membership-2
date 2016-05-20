@@ -309,9 +309,19 @@ class MS_Addon_BuddyPress extends MS_Addon {
                             if( in_array( $field->name, $disallowed_fields ) ) continue;
                         ?>
                         <tr>
-                            <th class="ms-label-title"><?php echo esc_html( $field->name ); ?>: </th>
+                            <th class="ms-label-title"><?php echo esc_html( $field->name ); ?> : </th>
                             <td class="ms-label-field">
-                                <?php bp_profile_field_data( array( 'user_id' => get_current_user_id(), 'field' => $field->name ) ); ?>
+                                <?php
+                                    $user_data = bp_get_profile_field_data( array( 'user_id' => get_current_user_id(), 'field' => $field->name ) );
+                                    if( is_array( $user_data ) )
+                                    {
+                                        echo implode( ', ', $user_data );
+                                    }
+                                    else
+                                    {
+                                        echo $user_data;
+                                    }
+                                ?>
                             </td>
                         </tr>
                         <?php } ?>
