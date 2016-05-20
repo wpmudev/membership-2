@@ -123,8 +123,9 @@ class MS_Controller_Gateway extends MS_Controller {
 		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 
 		$fields = array( 'action', 'gateway_id', 'field', 'value' );
+                
 		if ( $this->verify_nonce()
-			&& self::validate_required( $fields )
+			&& ( self::validate_required( $fields ) || $_POST['field'] == 'pay_button_url' )
 			&& $this->is_admin_user()
 		) {
 			lib3()->array->strip_slashes( $_POST, 'value' );
