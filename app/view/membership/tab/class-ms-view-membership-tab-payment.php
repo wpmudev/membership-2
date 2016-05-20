@@ -30,7 +30,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 		ob_start();
 		?>
 		<div class="ms-payment-form">
-			<?php if ( ! $membership->can_change_payment() ) : ?>
+			<?php if ( ! $membership->can_change_payment() && ! $membership->is_free() ) : ?>
 				<div class="error below-h2">
 					<p>
 						<?php _e( 'This membership already has some paying members.', 'membership2' ); ?>
