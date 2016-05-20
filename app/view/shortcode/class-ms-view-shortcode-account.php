@@ -36,7 +36,7 @@ class MS_View_Shortcode_Account extends MS_View {
                 MS_Helper_Template::$ms_account['m2_account_obj'] = $this;
                 MS_Helper_Template::$ms_account['member'] = $member;
                 MS_Helper_Template::$ms_account['is_user_logged_in'] = MS_Model_Member::is_logged_in();
-                MS_Helper_Template::$ms_account['m2_subscriptions'] = $this->data['subscription'];
+                MS_Helper_Template::$ms_account['m2_subscriptions'] = isset( $this->data['subscription'] ) ? $this->data['subscription'] : new stdClass();
                 MS_Helper_Template::$ms_account['fields'] = $fields;
                 
                 $signup_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
