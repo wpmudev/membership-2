@@ -30,7 +30,7 @@ Change Log:
 - Fixed: Display name was not being saved from edit account page
 - Fixed: Buddy Press extended profile fields data not showing on Membership 2 My Account page
 - Fixed: Cannot remove value for payment button in payment gateway settings
-
+- Fixed: Free membership setup with Membership 2 Pro shows still payment information
 - Removed: Filter `ms_class_file_override`
 
 1.0.2.9
