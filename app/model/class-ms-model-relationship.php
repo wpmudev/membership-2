@@ -2724,6 +2724,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// We need to create the new invoice based on original expiration date.
 		// So we add the same offset to the invoice_before days as we used to
 		// modify the remaining days.
+		// @see This negates the effect we use in get_remaining_period()
 		if ( defined( 'MS_PAYMENT_DELAY' ) ) {
 			$days->invoice_before += max( 0, (int) MS_PAYMENT_DELAY );
 		}
