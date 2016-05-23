@@ -2677,25 +2677,31 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		$membership = $this->get_membership();
-		$remaining_days = $this->get_remaining_period();
-		$remaining_trial_days = $this->get_remaining_trial_period();
-
 		$comms = MS_Model_Communication::get_communications( $membership );
 
+		// Collection of all day-values.
+		$days = (object) array(
+			'remaining' => $this->get_remaining_period(),
+			'remaining_trial' => $this->get_remaining_trial_period(),
+			'invoice_before' => 5,
+			'deactivate_expired_after' => 30,
+			'deactivate_trial_expired_after' => 5,
+		);
+
 		//@todo create settings to configure the following day-values via UI.
-		$invoice_before_days = apply_filters(
+		$days->invoice_before = apply_filters(
 			'ms_status_check-invoice_before_days',
-			5,
+			$days->invoice_before,
 			$this
 		);
-		$deactivate_expired_after_days = apply_filters(
+		$days->deactivate_expired_after = apply_filters(
 			'ms_status_check-deactivate_after_days',
-			30,
+			$days->deactivate_expired_after,
 			$this
 		);
-		$deactivate_trial_expired_after_days = apply_filters(
+		$days->deactivate_trial_expired_after = apply_filters(
 			'ms_status_check-deactivate_trial_after_days',
-			5,
+			$days->deactivate_trial_expired_after,
 			$this
 		);
 
@@ -2703,25 +2709,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// So we add the same offset to the invoice_before days as we used to
 		// modify the remaining days.
 		if ( defined( 'MS_PAYMENT_DELAY' ) ) {
-			$invoice_before_days += max( 0, (int) MS_PAYMENT_DELAY );
+			$days->invoice_before += max( 0, (int) MS_PAYMENT_DELAY );
 		}
-
-		//@todo: Add a flag to subscriptions with sent communications. Then improve the conditions below to prevent multiple emails.
 
 		do_action(
 			'ms_check_membership_status-' . $this->status,
 			$this,
-			$remaining_days,
-			$remaining_trial_days
-		);
-
-		// Collection of all day-values.
-		$days = (object) array(
-			'remaining' => $remaining_days,
-			'remaining_trial' => $remaining_trial_days,
-			'invoice_before' => $invoice_before_days,
-			'deactivate_expired_after' => $deactivate_expired_after_days,
-			'deactivate_trial_expired_after' => $deactivate_trial_expired_after_days,
+			$days
 		);
 
 		// Update the Subscription status.
