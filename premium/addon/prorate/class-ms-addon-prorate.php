@@ -163,7 +163,7 @@ class MS_Addon_Prorate extends MS_Addon {
 					case MS_Model_Relationship::STATUS_ACTIVE:
 					case MS_Model_Relationship::STATUS_WAITING:
 					case MS_Model_Relationship::STATUS_CANCELED:
-						$remaining_days = $subscription->get_remaining_period();
+						$remaining_days = $subscription->get_remaining_period( 0 );
 						$total_days = MS_Helper_Period::subtract_dates(
 							$subscription->expire_date,
 							$subscription->start_date
@@ -185,5 +185,4 @@ class MS_Addon_Prorate extends MS_Addon {
 			$subscription
 		);
 	}
-
 }

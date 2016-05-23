@@ -98,7 +98,7 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 		$today = date( 'Y-m-d' );
 		$subscription->expire_date = $today;
 		$this->assertEquals( $today, $subscription->expire_date );
-		$this->assertEquals( 0, $subscription->get_remaining_period() );
+		$this->assertEquals( 0, $subscription->get_remaining_period( 0 ) );
 
 		// Trigger next payment and validate it.
 		$subscription->check_membership_status();
@@ -107,7 +107,7 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 		// Modify the expiration date to trigger another payment.
 		$subscription->expire_date = $today;
 		$this->assertEquals( $today, $subscription->expire_date );
-		$this->assertEquals( 0, $subscription->get_remaining_period() );
+		$this->assertEquals( 0, $subscription->get_remaining_period( 0 ) );
 
 		// Trigger next payment and validate it.
 		// THIS TIME NO PAYMENT SHOULD BE MADE because paycycle_repetitions = 2!
@@ -129,5 +129,4 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 		// Clean up.
 		$customer->delete();
 	}
-
 }

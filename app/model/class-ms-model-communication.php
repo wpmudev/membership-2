@@ -1453,7 +1453,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				// Needs: $subscription.
 				case self::COMM_VAR_MS_REMAINING_DAYS:
 					if ( $subscription ) {
-						$days = $subscription->get_remaining_period();
+						$days = $subscription->get_remaining_period( 0 );
 						$var_value = sprintf(
 							__( '%s day%s', 'membership2' ),
 							$days,
