@@ -2746,7 +2746,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						false
 					);
 
-					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) {
+					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
 						// Send trial end communication.
 						$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
 
