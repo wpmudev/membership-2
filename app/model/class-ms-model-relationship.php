@@ -1522,9 +1522,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @return int Remaining days.
 	 */
-	public function get_remaining_period() {
-		// @todo: Expiration date must be in same timezone as ::current_date()
-		//        Otherwise the result is wrong in some cases...
+	public function get_remaining_period( $grace_period = 1 ) {
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->expire_date,
 			MS_Helper_Period::current_date(),
@@ -1533,15 +1531,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 
 		/*
-		This setting adds X days to the remaining period. Reason for this is to
-		extend the remaining-period by a day or more so the payment gateway has
-		some extra time to process the payment.
-		This setting only affects M2-expiration, not the date on which the
-		payment gateway processes the next recurring-payment!
+		 * Extend the grace-period by some extra days.
+		 * Used to bypass timezone differences between this site and gateways.
 		 */
 		if ( defined( 'MS_PAYMENT_DELAY' ) ) {
-			$period_days += max( 0, (int) MS_PAYMENT_DELAY );
+			$grace_period += max( 0, (int) MS_PAYMENT_DELAY );
 		}
+
+		/*
+		 * Add some extra days to allow payment gateways to process the payment
+		 * before setting the subscription to expired.
+		 */
+		$period_days += (int) $grace_period;
 
 		return apply_filters(
 			'ms_model_relationship_get_remaining_period',
@@ -2340,7 +2341,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$debug_msg[] = '[Can activate: Imported subscription]';
 		} else {
 			$valid_payment = false;
-			// Check if there is *any* payment, no matter what height.
+			// Check if there is *any* payment, no matter what abount.
 			foreach ( $this->get_payments() as $payment ) {
 				if ( $payment['amount'] > 0 ) {
 					$valid_payment = true;
@@ -2405,14 +2406,29 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$debug_msg[] = '[Not ACTIVE(2): Expire date set or wrong status-request]';
 			}
 
+			/**
+			 * The grace-period extends the subscriptions `active` by the given
+			 * number of days to allow payment gateways some extra time to
+			 * report any payments, before actually expiring the subscription.
+			 *
+			 * @since  1.0.3.0
+			 * @param  int                   $grace_period Number of days to extend `active` state.
+			 * @param  MS_Model_Relationship $subscription The processed subscription.
+			 */
+			$grace_period = apply_filters(
+				'ms_subscription_expiration_grace_period',
+				1,
+				$this
+			);
+
 			/*
-			If expire date is not reached then membership obviously is active.
-			Note: When remaining days is 0 then the user is on last day
-			of the subscription and should still have access.
-			*/
+			 * If expire date is not reached then membership obviously is active.
+			 * Note: When remaining days is 0 then the user is on last day
+			 * of the subscription and should still have access.
+			 */
 			if ( ! $calc_status
 				&& ! empty( $this->expire_date )
-				&& $this->get_remaining_period() >= 0
+				&& $this->get_remaining_period( $grace_period ) >= 0
 			) {
 				$calc_status = self::STATUS_ACTIVE;
 				$debug_msg[] = '[ACTIVE(3): Expire date set and not reached]';
@@ -2971,6 +2987,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				} // -- End of advanced communications Add-on
 
 				// Subscription ended. See if we can renew it.
+				// Note that remaining == 0 on the exact expiration day.
 				if ( $days->remaining <= 0 ) {
 					if ( $auto_renew ) {
 						/*
