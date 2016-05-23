@@ -1131,6 +1131,30 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			return false;
 		}
 
+		// Prevent duplicate messages.
+		if ( $subscription ) {
+			$delay = $subscription->seconds_since_last_email( $this->type );
+
+			/**
+			 * Allow other plugins to customize the duration for ignoring
+			 * duplicate emails. This is supposed to be a value in seconds,
+			 * so 60 will prevent duplicate emails for 1 minute.
+			 *
+			 * @since  1.0.3.0
+			 * @param  int                   $duration     Duration to skip duplicate emails. Default: 1 day.
+			 * @param  string                $type         Type of the email that is about to be sent.
+			 * @param  MS_Model_Relationship $subscription The subscription.
+			 */
+			$ignore_duration = (int) apply_filters(
+				'ms_communication_send_email_ignore_duration',
+				DAY_IN_SECONDS,
+				$this->type,
+				$subscription
+			);
+
+			if ( $delay < $ignore_duration ) { return false; }
+		}
+
 		do_action(
 			'ms_model_communication_send_message_before',
 			$member,

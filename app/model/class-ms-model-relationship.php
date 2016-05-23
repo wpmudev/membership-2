@@ -272,6 +272,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	protected $payment_type = '';
 
 	/**
+	 * Stores a list of all automated emails that were sent to the member.
+	 * We do not store the full email content, only the timestamp and type of
+	 * the email (e.g. "expired"). We use this log to prevent sending duplicate
+	 * emails to the member.
+	 *
+	 * @since  1.0.3.0
+	 * @var array
+	 */
+	protected $email_log = array();
+
+	/**
 	 * The related membership model object.
 	 *
 	 * @since  1.0.0
@@ -1020,6 +1031,77 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Log outgoing email - this is to prevent sending duplicate messages.
+	 *
+	 * @since  1.0.0
+	 * @param  string $type The message type.
+	 */
+	public function log_email( $type ) {
+		// Do not log those emails, because sending those is important, even
+		// if they are triggered more than once.
+		$do_not_log = array(
+			MS_Model_Communication::COMM_TYPE_INFO_UPDATE,
+			MS_Model_Communication::COMM_TYPE_CREDIT_CARD_EXPIRE,
+			MS_Model_Communication::COMM_TYPE_FAILED_PAYMENT,
+		);
+
+		/**
+		 * The ignore-list can be modified by plugins.
+		 *
+		 * @since  1.0.3.0
+		 * @param  array                 $do_log_log List of not-logged email types.
+		 * @param  string                $type       Email-Type that is logged.
+		 * @param  MS_Model_Relationship $this       This subscription.
+		 */
+		$do_not_log = apply_filters(
+			'ms_subscription_ignored_log_emails',
+			$do_not_log,
+			$type,
+			$this
+		);
+
+		// Exit here if the email type is in the "do-no-log" list.
+		if ( in_array( $type, $do_not_log ) ) { return; }
+
+		// `array_unshift`: Insert the new item at the BEGINNING of the array.
+		$item = array(
+			'time' => time(),
+			'type' => $type,
+		);
+		$this->email_log = array_unshift( $item, $this->email_log );
+
+		// Limit the log to 100 entries avoid long lists. 100 is already huge...
+		$this->email_log = array_slice( $this->email_log, 0, 100, true );
+	}
+
+	/**
+	 * Returns the number of seconds since the last email of the given type
+	 * was sent.
+	 *
+	 * For example if checking for "expired" and the last expired email was
+	 * sent today at 14:04, and not it is 20:04 then the return value would be
+	 * 21.600 (= 6 hours * 60 minutes * 60 seconds)
+	 *
+	 * @since  1.0.0
+	 * @param  string $type Email type.
+	 * @return int    Number of seconds that passed since the last email of the
+	 *                given type was sent. If the type was never sent then the
+	 *                return value is boolean FALSE.
+	 */
+	public function seconds_since_last_email( $type ) {
+		$res = false;
+
+		foreach ( $this->email_log as $item ) {
+			if ( $item['type'] == $type ) {
+				$res = time() - (int) $item['time'];
+				break;
+			}
+		}
+
+		return $res;
+	}
+
+	/**
 	 * Set Membership Relationship start date.
 	 *
 	 * @since  1.0.0
@@ -1228,7 +1310,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 * payment notifications, the expire date is equal to trial expire date.
 		 */
 		if ( $this->is_trial_eligible() ) {
-                    
+
                         $period_unit = MS_Helper_Period::get_period_value(
                                 $membership->period,
                                 'period_unit'
@@ -1242,7 +1324,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
                                 $period_type,
                                 $start_date
                         );
-                        
+
                         if( empty( $expire_date ) ) {
                             $expire_date = $start_date;
                         }
@@ -1766,7 +1848,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for permanent access.', 'membership2' );
 					}
 				}
-                                
+
                                 if( MS_Model_Member::is_admin_user() )
                                 {
                                     $desc = __( 'Admin has no fees!', 'membership' );
