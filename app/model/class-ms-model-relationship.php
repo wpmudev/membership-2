@@ -1311,23 +1311,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 */
 		if ( $this->is_trial_eligible() ) {
 
-                        $period_unit = MS_Helper_Period::get_period_value(
-                                $membership->period,
-                                'period_unit'
-                        );
-                        $period_type = MS_Helper_Period::get_period_value(
-                                $membership->period,
-                                'period_type'
-                        );
-                        $expire_date = MS_Helper_Period::add_interval(
-                                $period_unit,
-                                $period_type,
-                                $start_date
-                        );
+			$period_unit = MS_Helper_Period::get_period_value(
+				$membership->period,
+				'period_unit'
+			);
+			$period_type = MS_Helper_Period::get_period_value(
+				$membership->period,
+				'period_type'
+			);
+			$expire_date = MS_Helper_Period::add_interval(
+				$period_unit,
+				$period_type,
+				$start_date
+			);
 
-                        if( empty( $expire_date ) ) {
-                            $expire_date = $start_date;
-                        }
+			if ( empty( $expire_date ) ) {
+				$expire_date = $start_date;
+			}
 		} else {
 			if ( $paid ) {
 				/*
@@ -1849,18 +1849,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					}
 				}
 
-                                if( MS_Model_Member::is_admin_user() )
-                                {
-                                    $desc = __( 'Admin has no fees!', 'membership' );
-                                }
-                                else
-                                {
-                                    $desc = sprintf(
-					$lbl,
-					$currency,
-					$total_price
-                                    );
-                                }
+				if ( MS_Model_Member::is_admin_user() ) {
+					$desc = __( 'Admin has no fees!', 'membership' );
+				} else {
+					$desc = sprintf(
+						$lbl,
+						$currency,
+						$total_price
+					);
+				}
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_FINITE:
@@ -1960,7 +1957,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				} else {
 					$trial_price = __( 'nothing', 'membership2' );
 					//$lbl = __( 'The trial period of %1$s is for free.', 'membership2' );
-                                        $lbl = __( 'Your %1$s free trial ends on %5$s and then you will be billed.', 'membership2' );
+										$lbl = __( 'Your %1$s free trial ends on %5$s and then you will be billed.', 'membership2' );
 				}
 			} else {
 				$trial_price = MS_Helper_Billing::format_price( $trial_price );
@@ -1972,8 +1969,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
 				$currency,
 				$trial_price,
-				MS_Helper_Period::format_date( $invoice->due_date, __( 'M j', 'membership2' ) ),
-                                MS_Helper_Period::format_date( $invoice->trial_ends )
+				MS_Helper_Period::format_date(
+					$invoice->due_date,
+					__( 'M j', 'membership2' )
+				),
+				MS_Helper_Period::format_date( $invoice->trial_ends )
 			);
 		}
 
@@ -2813,19 +2813,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$next_status = $this->calculate_status();
 				}
 
+				$deactivate = false;
+				$invoice = null;
+				$auto_renew = false;
+
 				/*
 				 * Only "Recurring" memberships will ever try to automatically
 				 * renew the subscription. All other types will expire when the
 				 * end date is reached.
 				 */
-				//$auto_renew = ($membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING);
-                                if ( self::STATUS_CANCELED == $this->status ) {
-                                    $auto_renew = false;
-                                } else {
-                                    $auto_renew = ($membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING);
-                                }
-				$deactivate = false;
-				$invoice = null;
+				if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING ) {
+					$auto_renew = true;
+				}
+
+				if ( $auto_renew && self::STATUS_CANCELED == $this->status ) {
+					// Cancelled subscriptions are never renewed.
+					$auto_renew = false;
+				}
 
 				if ( $auto_renew && $membership->pay_cycle_repetitions > 0 ) {
 					/*
@@ -2922,6 +2926,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				if ( $remaining_days <= 0 ) {
 					if ( $auto_renew ) {
 						/*
+						 * Yay, active subscription found! Let's get the cash :)
+						 *
 						 * The membership can be renewed. Try to renew it
 						 * automatically by requesting the next payment from the
 						 * payment gateway (only works if gateway supports this)
