@@ -2715,36 +2715,62 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$remaining_trial_days
 		);
 
+		// Collection of all day-values.
+		$days = (object) array(
+			'remaining' => $remaining_days,
+			'remaining_trial' => $remaining_trial_days,
+			'invoice_before' => $invoice_before_days,
+			'deactivate_expired_after' => $deactivate_expired_after_days,
+			'deactivate_trial_expired_after' => $deactivate_trial_expired_after_days,
+		);
+
 		// Update the Subscription status.
 		$next_status = $this->calculate_status( null );
 
 		switch ( $next_status ) {
 			case self::STATUS_TRIAL:
-				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )
-					&& MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS )
-				) {
-					// Send trial end communication.
-					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
+				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
 
-					if ( $comm->enabled ) {
-						$days = MS_Helper_Period::get_period_in_days(
-							$comm->period['period_unit'],
-							$comm->period['period_type']
-						);
-						//@todo: This will send out the reminder multiple times on the reminder-day (4 times or more often)
-						if ( $days == $remaining_trial_days ) {
-							$comm->add_to_queue( $this->id );
-							MS_Model_Event::save_event(
-								MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES,
-								$this
+					/**
+					 * Todo: Move the advanced communication code into some addon
+					 *       file and use this action to trigger the messages.
+					 *
+					 * Filter documented in class-ms-model-relationship.php
+					 */
+					do_action(
+						'ms_relationship_status_check_communication',
+						$next_status,
+						$days,
+						$membership,
+						$this,
+						false
+					);
+
+					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) {
+						// Send trial end communication.
+						$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_TRIAL_FINISHES ];
+
+						if ( $comm->enabled ) {
+							$comm_days = MS_Helper_Period::get_period_in_days(
+								$comm->period['period_unit'],
+								$comm->period['period_type']
 							);
+
+							/*
+							 * This condition will be true for 24 hours, but this is
+							 * no problem, since the send_email function has a
+							 * condition to prevent duplicate emails for 24 hours.
+							 */
+							if ( $comm_days == $days->remaining_trial ) {
+								$comm->add_to_queue( $this->id );
+								MS_Model_Event::save_event(
+									MS_Model_Event::TYPE_MS_BEFORE_TRIAL_FINISHES,
+									$this
+								);
+							}
 						}
 					}
 				}
-
-				// Check for card expiration
-				$gateway = $this->get_gateway();
-				$gateway->check_card_expiration( $this );
 				break;
 
 			case self::STATUS_TRIAL_EXPIRED:
@@ -2772,9 +2798,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$gateway->check_card_expiration( $this );
 
 					// Deactivate expired memberships after a period of time.
-					if ( $deactivate_trial_expired_after_days < - $remaining_trial_days ) {
+					if ( $days->deactivate_trial_expired_after < - $days->remaining_trial ) {
 						$this->deactivate_membership();
 					}
+
+					/**
+					 * Filter documented in class-ms-model-relationship.php
+					 */
+					do_action(
+						'ms_relationship_status_check_communication',
+						$next_status,
+						$days,
+						$membership,
+						$this,
+						false
+					);
 				}
 				break;
 
@@ -2807,7 +2845,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					}
 
 					// Recalculate the days until the subscription expires.
-					$remaining_days = $this->get_remaining_period();
+					$days->remaining = $this->get_remaining_period();
 
 					// Recalculate the new Subscription status.
 					$next_status = $this->calculate_status();
@@ -2843,26 +2881,42 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					}
 				}
 
-				if ( $auto_renew ) {
-					if ( $remaining_days < $invoice_before_days ) {
-						// Create a new invoice.
-						$invoice = $this->get_next_invoice();
-					} else {
-						$invoice = $this->get_current_invoice();
-					}
+				if ( $auto_renew && $days->remaining < $days->invoice_before ) {
+					// Create a new invoice a few days before expiration.
+					$invoice = $this->get_next_invoice();
 				} else {
 					$invoice = $this->get_current_invoice();
 				}
+
+				/**
+				 * Todo: Move the advanced communication code into some addon
+				 *       file and use this action to trigger the messages.
+				 *
+				 * @since  1.0.3.0
+				 * @param  string                $status       The new status of the subscription.
+				 * @param  object                $days         List of day-settings (expire-in, etc.)
+				 * @param  MS_Model_Membership   $membership   The membership.
+				 * @param  MS_Model_Relationship $subscription The subscription.
+				 * @param  MS_Model_Invoice      $invoice      The current invoice.
+				 */
+				do_action(
+					'ms_relationship_status_check_communication',
+					$next_status,
+					$days,
+					$membership,
+					$this,
+					$invoice
+				);
 
 				// Advanced communications Add-on.
 				if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_AUTO_MSGS_PLUS ) ) {
 					// Before finishes communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_FINISHES ];
-					$days = MS_Helper_Period::get_period_in_days(
+					$comm_days = MS_Helper_Period::get_period_in_days(
 						$comm->period['period_unit'],
 						$comm->period['period_type']
 					);
-					if ( $days == $remaining_days ) {
+					if ( $comm_days == $days->remaining ) {
 						$comm->add_to_queue( $this->id );
 						MS_Model_Event::save_event(
 							MS_Model_Event::TYPE_MS_BEFORE_FINISHES,
@@ -2872,12 +2926,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// After finishes communication.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_FINISHES ];
-					$days = MS_Helper_Period::get_period_in_days(
+					$comm_days = MS_Helper_Period::get_period_in_days(
 						$comm->period['period_unit'],
 						$comm->period['period_type']
 					);
 
-					if ( $remaining_days < 0 && abs( $remaining_days ) == $days ) {
+					if ( $days->remaining < 0 && abs( $days->remaining ) == $comm_days ) {
 						$comm->add_to_queue( $this->id );
 						MS_Model_Event::save_event(
 							MS_Model_Event::TYPE_MS_AFTER_FINISHES,
@@ -2887,7 +2941,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// Before payment due.
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_BEFORE_PAYMENT_DUE ];
-					$days = MS_Helper_Period::get_period_in_days(
+					$comm_days = MS_Helper_Period::get_period_in_days(
 						$comm->period['period_unit'],
 						$comm->period['period_type']
 					);
@@ -2897,7 +2951,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					);
 
 					if ( MS_Model_Invoice::STATUS_BILLED == $invoice->status
-						&& $days == $invoice_days
+						&& $comm_days == $invoice_days
 					) {
 						$comm->add_to_queue( $this->id );
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_BEFORE_DUE, $this );
@@ -2905,7 +2959,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 					// After payment due event
 					$comm = $comms[ MS_Model_Communication::COMM_TYPE_AFTER_PAYMENT_DUE ];
-					$days = MS_Helper_Period::get_period_in_days(
+					$comm_days = MS_Helper_Period::get_period_in_days(
 						$comm->period['period_unit'],
 						$comm->period['period_type']
 					);
@@ -2915,7 +2969,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					);
 
 					if ( MS_Model_Invoice::STATUS_BILLED == $invoice->status
-						&& $days == $invoice_days
+						&& $comm_days == $invoice_days
 					) {
 						$comm->add_to_queue( $this->id );
 						MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_AFTER_DUE, $this );
@@ -2923,7 +2977,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				} // -- End of advanced communications Add-on
 
 				// Subscription ended. See if we can renew it.
-				if ( $remaining_days <= 0 ) {
+				if ( $days->remaining <= 0 ) {
 					if ( $auto_renew ) {
 						/*
 						 * Yay, active subscription found! Let's get the cash :)
@@ -2937,14 +2991,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$gateway->request_payment( $this );
 
 						// Check if the payment was successful.
-						$remaining_days = $this->get_remaining_period();
+						$days->remaining = $this->get_remaining_period();
 					}
 
 					/*
 					 * User did not renew the membership. Give him some time to
 					 * react before restricting his access.
 					 */
-					if ( $deactivate_expired_after_days < - $remaining_days ) {
+					if ( $days->deactivate_expired_after < - $days->remaining ) {
 						$deactivate = true;
 					}
 				}
