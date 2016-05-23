@@ -1152,7 +1152,15 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$subscription
 			);
 
-			if ( $delay < $ignore_duration ) { return false; }
+			if ( $delay < $ignore_duration ) {
+				$msg = sprintf(
+					'Intentionally skip duplicate email: "%s" to user "%s".',
+					$this->type,
+					$user_id
+				);
+				lib3()->debug->log( $msg );
+				return false;
+			}
 		}
 
 		do_action(
