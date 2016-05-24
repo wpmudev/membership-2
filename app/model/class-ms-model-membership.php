@@ -349,6 +349,16 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	protected $update_replace = array();
 
 	/**
+	 * An internal counter that is increased every time membership details are
+	 * changed.
+	 *
+	 * @since 1.0.3.0
+	 * @internal
+	 * @var int
+	 */
+	protected $revision = 0;
+
+	/**
 	 * Used in simulation mode explaining why a page is allowed or denied.
 	 *
 	 * @since  1.0.0
@@ -661,8 +671,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$args = self::get_query_args( $args );
 		$key = md5( json_encode( $args ) );
 
-		if ( ! isset( $Membership_IDs[$key] ) ) {
-			$Membership_IDs[$key] = array();
+		if ( ! isset( $Membership_IDs[ $key ] ) ) {
+			$Membership_IDs[ $key ] = array();
 
 			MS_Factory::select_blog();
 			$query = new WP_Query( $args );
@@ -681,13 +691,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			 * @see MS_Model_Relationship::get_subscriptions()
 			 */
 			foreach ( $items as $item ) {
-				$Membership_IDs[$key][] = $item->ID;
+				$Membership_IDs[ $key ][] = $item->ID;
 			}
 		}
 
 		return apply_filters(
 			'ms_model_membership_get_membership_ids',
-			$Membership_IDs[$key],
+			$Membership_IDs[ $key ],
 			$args
 		);
 	}
@@ -839,9 +849,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		// Check the upgrade-paths settings
 		foreach ( $memberships as $key => $ms ) {
 			if ( $ms->is_system() ) {
-				unset( $memberships[$key] );
+				unset( $memberships[ $key ] );
 			} elseif ( ! $member->can_subscribe_to( $ms->id ) ) {
-				unset( $memberships[$key] );
+				unset( $memberships[ $key ] );
 			}
 		}
 
@@ -953,7 +963,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$comp_key = $type;
 		$membership = false;
 
-		if ( ! isset( $Special_Membership[$comp_key] ) ) {
+		if ( ! isset( $Special_Membership[ $comp_key ] ) ) {
 			$membership = false;
 			global $wpdb;
 
@@ -994,19 +1004,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 				$description = __( 'Membership2 Core Membership', 'membership2' );
 				$membership = MS_Factory::create( 'MS_Model_Membership' );
-				$membership->name = $names[$type];
-				$membership->title = $names[$type];
+				$membership->name = $names[ $type ];
+				$membership->title = $names[ $type ];
 				$membership->description = $description;
 				$membership->type = $type;
 				$membership->save();
 			}
 
-			$Special_Membership[$comp_key] = $membership;
+			$Special_Membership[ $comp_key ] = $membership;
 		}
 
 		return apply_filters(
 			'ms_model_membership_get_system_membership',
-			$Special_Membership[$comp_key],
+			$Special_Membership[ $comp_key ],
 			$type
 		);
 	}
@@ -1031,7 +1041,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			);
 
 			foreach ( $Base_Membership->_rules as $key => $rule ) {
-				$Base_Membership->_rules[$key]->is_base_rule = true;
+				$Base_Membership->_rules[ $key ]->is_base_rule = true;
 			}
 		}
 
@@ -1159,9 +1169,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		foreach ( $this->_rules as $rule_type => $rule ) {
 			$key = MS_Rule::rule_key( $rule_type );
 
-			$this->rule_values[$key] = $rule->serialize();
-			if ( empty( $this->rule_values[$key] ) ) {
-				unset( $this->rule_values[$key] );
+			$this->rule_values[ $key ] = $rule->serialize();
+			if ( empty( $this->rule_values[ $key ] ) ) {
+				unset( $this->rule_values[ $key ] );
 			}
 		}
 
@@ -1193,6 +1203,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'custom_data',
 			'update_denied',
 			'update_replace',
+			'revision',
 		);
 	}
 
@@ -1207,6 +1218,10 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		foreach ( $this->_rules as $rule ) {
 			$rule->membership_id = $this->id;
+		}
+
+		if ( $this->is_valid() ) {
+			$this->check_revision();
 		}
 	}
 
@@ -1250,6 +1265,82 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		$post['menu_order'] = $this->priority;
 		return $post;
+	}
+
+	/**
+	 * Called by the before_save() function to detect what kind of revision
+	 * was made (i.e. which values were changed).
+	 *
+	 * This is used by the stripe gateway to sync membership infos with Stripe.
+	 *
+	 * @since  1.0.3.0
+	 */
+	public function check_revision() {
+		// Changes of these values are not counted as "revision".
+		$ignore = array(
+			'revision',
+			'id',
+			'is_setup_completed',
+			'post_modified',
+			'source',
+			'source_id',
+			'subscription_id',
+			'title',
+			'user_id',
+		);
+
+		$new_revision = false;
+		$changes = array();
+		if ( empty( $this->revision ) ) { $this->revision = 0; }
+
+		foreach ( $this->_saved_data as $field => $old_value ) {
+			if ( in_array( $field, $ignore ) ) { continue; }
+
+			$new_value = $this->$field;
+			if ( ! is_scalar( $old_value ) ) {
+				$old_value = json_encode( $old_value );
+			}
+			if ( ! is_scalar( $new_value ) ) {
+				$new_value = json_encode( $new_value );
+			}
+
+			if ( $old_value == $new_value ) { continue; }
+
+			$new_revision = true;
+			$changes[] = $field;
+
+			/**
+			 * Notification that a specific field of the membership changed.
+			 *
+			 * @since  1.0.3.0
+			 * @param  MS_Model_Membership The membership object (this).
+			 * @param  mixed               The old value, might be serialized.
+			 * @param  mixed               The new value.
+			 */
+			do_action(
+				'ms_model_membership_revision_change-' . $field,
+				$this,
+				$old_value,
+				$this->$field
+			);
+		}
+
+		if ( $new_revision ) {
+			$this->revision += 1;
+
+			/**
+			 * Notification that any field of the membership has changed.
+			 *
+			 * @since  1.0.3.0
+			 * @param  MS_Model_Membership The membership object (this).
+			 * @param  array               List of changed fields (only field-names).
+			 */
+			do_action(
+				'ms_model_membership_revision_change',
+				$this,
+				$changes
+			);
+		}
 	}
 
 	/**
@@ -1436,8 +1527,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function is_free() {
 		$result = false;
 
-		if ( $this->is_free ) { $result = true; }
-		elseif ( 0 == (int) ($this->price * 100) ) { $result = true; }
+		if ( $this->is_free ) {
+			$result = true;
+		} elseif ( 0 == (int) ($this->price * 100) ) {
+			$result = true;
+		}
 
 		$result = apply_filters(
 			'ms_model_membership_is_free',
@@ -1484,8 +1578,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function update_allowed( $id ) {
 		$denied = false;
 
-		if ( isset( $this->update_denied[$id] ) ) {
-			$denied = $this->update_denied[$id];
+		if ( isset( $this->update_denied[ $id ] ) ) {
+			$denied = $this->update_denied[ $id ];
 		}
 
 		return ! $denied;
@@ -1505,8 +1599,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	public function update_replaces( $id ) {
 		$deny = false;
 
-		if ( isset( $this->update_replace[$id] ) ) {
-			$deny = $this->update_replace[$id];
+		if ( isset( $this->update_replace[ $id ] ) ) {
+			$deny = $this->update_replace[ $id ];
 		}
 
 		return ! ! $deny;
@@ -1524,8 +1618,8 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		$result = true;
 
 		$this->disabled_gateways = lib3()->array->get( $this->disabled_gateways );
-		if ( isset( $this->disabled_gateways[$gateway_id] ) ) {
-			$state = $this->disabled_gateways[$gateway_id];
+		if ( isset( $this->disabled_gateways[ $gateway_id ] ) ) {
+			$state = $this->disabled_gateways[ $gateway_id ];
 			$result = ! lib3()->is_true( $state );
 		}
 
@@ -1627,11 +1721,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function get_color() {
 		return apply_filters(
-                                    'ms_model_membership_get_color',
-                                    MS_Helper_Utility::color_index( $this->type . $this->id ),
-                                    $this->type,
-                                    $this->id
-                                );
+			'ms_model_membership_get_color',
+			MS_Helper_Utility::color_index( $this->type . $this->id ),
+			$this->type,
+			$this->id
+		);
 	}
 
 	/**
@@ -1640,10 +1734,26 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 * @api
+	 * @param  bool   $with_tooltip Whether to add tooltip with Membership infos.
+	 * @return string The title HTML code.
 	 */
-	public function get_name_tag() {
+	public function get_name_tag( $with_tooltip = false ) {
+		if ( $with_tooltip ) {
+			$tooltip = sprintf(
+				__( 'Revision: %s | Type: %s', 'membership2' ),
+				$this->revision,
+				$this->type
+			);
+			$tag = sprintf(
+				'<span class="ms-membership" style="background:%%2$s" title="%s">%%1$s</span>',
+				$tooltip
+			);
+		} else {
+			$tag = '<span class="ms-membership" style="background:%2$s">%1$s</span>';
+		}
+
 		$code = sprintf(
-			'<span class="ms-membership" style="background:%2$s">%1$s</span>',
+			$tag,
 			esc_html( $this->name ),
 			$this->get_color()
 		);
@@ -1770,8 +1880,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$rule = $this->get_rule( $rule_type );
 				$rule->protect_undefined_items( $base_rule, true );
 				$this->set_rule( $rule_type, $rule );
-			}
-			catch( Exception $e ) {
+			} catch ( Exception $e ) {
 				MS_Helper_Debug::log( $e );
 			}
 		}
@@ -1806,12 +1915,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'include_guest' => false,
 		);
 		$options += $this->get_membership_names( $args );
-		unset( $options[$this->id] );
+		unset( $options[ $this->id ] );
 
 		$label = __( 'Change to: %s', 'membership2' );
 		foreach ( $options as $id => $option ) {
 			if ( $id > 0 ) {
-				$options[$id] = sprintf( $label, $option );
+				$options[ $id ] = sprintf( $label, $option );
 			}
 		}
 
@@ -1901,7 +2010,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		// Get a list of members.
 		$result = array();
 		foreach ( $items as $item ) {
-			$result[$item->user_id] = $item->get_member();
+			$result[ $item->user_id ] = $item->get_member();
 		}
 
 		return apply_filters(
@@ -2016,7 +2125,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function is_base( $type = null ) {
 		if ( ! $type ) { $type = $this->type; }
-		$res = $type == self::TYPE_BASE;
+		$res = (self::TYPE_BASE == $type);
 
 		return apply_filters(
 			'ms_model_membership_is_base',
@@ -2036,7 +2145,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function is_guest( $type = null ) {
 		if ( ! $type ) { $type = $this->type; }
-		$res = $type == self::TYPE_GUEST;
+		$res = (self::TYPE_GUEST == $type);
 
 		return apply_filters(
 			'ms_model_membership_is_guest',
@@ -2056,7 +2165,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function is_user( $type = null ) {
 		if ( ! $type ) { $type = $this->type; }
-		$res = $type == self::TYPE_USER;
+		$res = (self::TYPE_USER == $type);
 
 		return apply_filters(
 			'ms_model_membership_is_user',
@@ -2075,7 +2184,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function is_dripped( $type = null ) {
 		if ( ! $type ) { $type = $this->type; }
-		$res = $type == self::TYPE_DRIPPED;
+		$res = (self::TYPE_DRIPPED == $type);
 
 		return apply_filters(
 			'ms_model_membership_is_dripped',
@@ -2096,9 +2205,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		if ( ! $type ) { $type = $this->type; }
 
 		$res = false;
-		if ( $this->is_base( $type ) ) { $res = true; }
-		elseif ( $this->is_guest( $type ) ) { $res = true; }
-		elseif ( $this->is_user( $type ) ) { $res = true; }
+		if ( $this->is_base( $type ) ) {
+			$res = true;
+		} elseif ( $this->is_guest( $type ) ) {
+			$res = true;
+		} elseif ( $this->is_user( $type ) ) {
+			$res = true;
+		}
 
 		return apply_filters(
 			'ms_model_membership_is_system',
@@ -2626,13 +2739,13 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 				case 'deny_update':
 					foreach ( $value as $key => $state ) {
-						$this->update_denied[$key] = lib3()->is_true( $state );
+						$this->update_denied[ $key ] = lib3()->is_true( $state );
 					}
 					break;
 
 				case 'replace_update':
 					foreach ( $value as $key => $state ) {
-						$this->update_replace[$key] = lib3()->is_true( $state );
+						$this->update_replace[ $key ] = lib3()->is_true( $state );
 					}
 					break;
 
@@ -2646,5 +2759,4 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$this
 		);
 	}
-
 }

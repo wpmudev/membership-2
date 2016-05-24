@@ -24,10 +24,6 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			$status_class = 'ms-active';
 		}
 
-		$edit_args = array(
-			'membership_id' => $membership->id,
-		);
-
 		$edit_button = sprintf(
 			'<a href="?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s" class="button">%5$s</a>',
 			esc_attr( $_REQUEST['page'] ),
@@ -73,7 +69,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 
 				$title = sprintf(
 					__( '%s Overview', 'membership2' ),
-					$membership->get_name_tag()
+					$membership->get_name_tag( true )
 				);
 				$desc = array(
 					__( 'Here you find a summary of this membership, and alter any of its details.', 'membership2' ),
@@ -221,7 +217,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			<?php foreach ( $this->data['events'] as $event ) :
 				$item += 1;
 				if ( $item > $max_items ) { break; }
-				$class = ($class == 'alternate' ? '' : 'alternate' );
+				$class = ('alternate' == $class ? '' : 'alternate' );
 				?>
 				<tr class="<?php echo esc_attr( $class ); ?>">
 					<td><?php
@@ -262,7 +258,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			<?php foreach ( $this->data['members'] as $member ) :
 				$item += 1;
 				if ( $item > $max_items ) { break; }
-				$class = ($class == 'alternate' ? '' : 'alternate' );
+				$class = ('alternate' == $class ? '' : 'alternate' );
 				$subscription = $member->get_subscription( $membership_id );
 				?>
 				<tr class="<?php echo esc_attr( $class ); ?>">
@@ -291,7 +287,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 			<div class="ms-settings">
 				<div class="ms-overview-top">
 					<div class="ms-settings-desc ms-description membership-description">
-						<?php echo '' . $desc; ?>
+						<?php echo $desc; ?>
 					</div>
 					<?php
 					MS_Helper_Html::html_separator();
@@ -379,8 +375,8 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 		$membership_id = $this->data['membership']->id;
 
 		$row_items += 1;
-		$new_row = ($row_items % 4 === 0);
-		$show_sep = (($row_items - 1) % 4 === 0);
+		$new_row = (0 == $row_items % 4);
+		$show_sep = (0 == ($row_items - 1) % 4);
 
 		if ( $show_sep && $row_items > 1 ) {
 			MS_Helper_Html::html_separator();

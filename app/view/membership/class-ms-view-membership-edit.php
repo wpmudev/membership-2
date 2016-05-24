@@ -27,9 +27,17 @@ class MS_View_Membership_Edit extends MS_View {
 		?>
 		<div class="ms-wrap wrap">
 			<?php
+			$membership_name = sprintf(
+				'<a href="?page=%1$s&step=%2$s&tab=%3$s&membership_id=%4$s">%5$s</a>',
+				esc_attr( $_REQUEST['page'] ),
+				MS_Controller_Membership::STEP_OVERVIEW,
+				MS_Controller_Membership::TAB_DETAILS,
+				esc_attr( $membership->id ),
+				$membership->get_name_tag( true )
+			);
 			MS_Helper_Html::settings_header(
 				array(
-					'title' => $membership->get_name_tag(),
+					'title' => $membership_name,
 					'title_icon_class' => '',
 					'desc' => __( 'Edit Membership details and define Membership specific settings.', 'membership2' ),
 				)
@@ -136,5 +144,4 @@ class MS_View_Membership_Edit extends MS_View {
 
 		return $tab->to_html();
 	}
-
 }

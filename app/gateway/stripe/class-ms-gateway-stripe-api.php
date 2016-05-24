@@ -194,13 +194,12 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 * @return M2_Stripe_Charge The resulting charge object.
 	 */
 	public function charge( $customer, $amount, $currency, $description ) {
-                
-                $amount = apply_filters(
-                    'ms_gateway_stripe_charge_amount',
-                    $amount,
-                    $currency
-                );
-                
+		$amount = apply_filters(
+			'ms_gateway_stripe_charge_amount',
+			$amount,
+			$currency
+		);
+
 		$charge = M2_Stripe_Charge::create(
 			array(
 				'customer' => $customer->id,
@@ -235,10 +234,8 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 * @return M2_Stripe_Subscription|false The resulting charge object.
 	 */
 	public function get_subscription( $customer, $membership ) {
-		$plan_id = MS_Gateway_Stripeplan::get_the_id(
-			$membership->id,
-			'plan'
-		);
+		$plan_id = MS_Gateway_Stripeplan::get_plan_id( $membership );
+		$plan_id_legacy = MS_Gateway_Stripeplan::get_plan_id( $membership, true );
 
 		/*
 		 * Check all subscriptions of the customer and find the subscription
@@ -257,7 +254,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 			$has_more = $active_subs->has_more;
 
 			foreach ( $active_subs->data as $sub ) {
-				if ( $sub->plan->id == $plan_id ) {
+				if ( $sub->plan->id == $plan_id || $sub->plan->id == $plan_id_legacy ) {
 					$subscription = $sub;
 					$has_more = false;
 					break 2;
@@ -287,17 +284,22 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 */
 	public function subscribe( $customer, $invoice ) {
 		$membership = $invoice->get_membership();
-		$plan_id = MS_Gateway_Stripeplan::get_the_id(
-			$membership->id,
-			'plan'
-		);
-
 		$subscription = self::get_subscription( $customer, $membership );
 
 		/*
 		 * If no active subscription was found for the membership create it.
 		 */
 		if ( ! $subscription ) {
+			/*
+			 * If the membership was changed since last user made a subscription we
+			 * will sync the changes *now* with stripe. We do not do this instantly
+			 * when the membership is edited, otherwise we might end up with lot of
+			 * payment-plans on Stripe that have no subscribers. This way we create
+			 * the plan just-in-time when we also have at least one subscriber :)
+			 */
+			$this->_gateway->update_stripe_data_membership( $membership );
+			$plan_id = MS_Gateway_Stripeplan::get_plan_id( $membership );
+
 			$tax_percent = null;
 			$coupon_id = null;
 
@@ -305,9 +307,8 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 				$tax_percent = floatval( $invoice->tax_rate );
 			}
 			if ( $invoice->coupon_id ) {
-				$coupon_id = MS_Gateway_Stripeplan::get_the_id(
-					$invoice->coupon_id,
-					'coupon'
+				$coupon_id = MS_Gateway_Stripeplan::get_coupon_id(
+					$invoice->coupon_id
 				);
 			}
 
@@ -342,32 +343,39 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$all_items = MS_Factory::get_transient( 'ms_stripeplan_plans' );
 		$all_items = lib3()->array->get( $all_items );
 
-		if ( ! isset( $all_items[$item_id] )
-			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Plan' )
+		if ( ! isset( $all_items[ $item_id ] )
+			|| ! is_a( $all_items[ $item_id ], 'M2_Stripe_Plan' )
 		) {
 			try {
 				$item = M2_Stripe_Plan::retrieve( $item_id );
-			} catch( Exception $e ) {
+			} catch ( Exception $e ) {
 				// If the plan does not exist then stripe will throw an Exception.
 				$item = false;
 			}
-			$all_items[$item_id] = $item;
+			$all_items[ $item_id ] = $item;
 		} else {
-			$item = $all_items[$item_id];
+			$item = $all_items[ $item_id ];
 		}
 
 		/*
-		 * Stripe can only update the plan-name, so we have to delete and
-		 * recreate the plan manually.
+		 * Note that stripe can only update the plan-name of a saved plan.
+		 * This is why $item_id is a hash that is built from the membership
+		 * payment details and membership ID, but NOT from the name.
+		 *
+		 * This means:
+		 * - When payment details are changed then $item_id changes.
+		 *   As a result we will create a new plan and keep the old one in
+		 *   Stripe to preserve existing subscriptions.
+		 * - When only the name changes $item_id is same as before.
+		 *   In this case we can update the plan instead of creating a new one.
 		 */
 		if ( $item && is_a( $item, 'M2_Stripe_Plan' ) ) {
-			$item->delete();
-			$all_items[$item_id] = false;
-		}
-
-		if ( $plan_data['amount'] > 0 ) {
+			$item->name = $plan_data['name'];
+			$all_items[ $item_id ] = $item;
+			$item->save();
+		} elseif ( $plan_data['amount'] > 0 ) {
 			$item = M2_Stripe_Plan::create( $plan_data );
-			$all_items[$item_id] = $item;
+			$all_items[ $item_id ] = $item;
 		}
 
 		MS_Factory::set_transient(
@@ -390,18 +398,18 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$all_items = MS_Factory::get_transient( 'ms_stripeplan_plans' );
 		$all_items = lib3()->array->get( $all_items );
 
-		if ( ! isset( $all_items[$item_id] )
-			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Coupon' )
+		if ( ! isset( $all_items[ $item_id ] )
+			|| ! is_a( $all_items[ $item_id ], 'M2_Stripe_Coupon' )
 		) {
 			try {
 				$item = M2_Stripe_Coupon::retrieve( $item_id );
-			} catch( Exception $e ) {
+			} catch ( Exception $e ) {
 				// If the coupon does not exist then stripe will throw an Exception.
 				$item = false;
 			}
-			$all_items[$item_id] = $item;
+			$all_items[ $item_id ] = $item;
 		} else {
-			$item = $all_items[$item_id];
+			$item = $all_items[ $item_id ];
 		}
 
 		/*
@@ -410,11 +418,11 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		 */
 		if ( $item && is_a( $item, 'M2_Stripe_Coupon' ) ) {
 			$item->delete();
-			$all_items[$item_id] = false;
+			$all_items[ $item_id ] = false;
 		}
 
 		$item = M2_Stripe_Coupon::create( $coupon_data );
-		$all_items[$item_id] = $item;
+		$all_items[ $item_id ] = $item;
 
 		MS_Factory::set_transient(
 			'ms_stripeplan_coupons',

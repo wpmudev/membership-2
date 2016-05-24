@@ -88,7 +88,7 @@ module.exports = function( grunt ) {
 			],
 			include_files: [
 				'**',
-				'!**/css/sass/**',
+				'!**/css/src/**',
 				'!**/js/src/**',
 				'!**/js/vendor/**',
 				'!**/img/src/**',
@@ -333,7 +333,7 @@ module.exports = function( grunt ) {
 		watch:  {
 			sass: {
 				files: [
-					conf.css_folder + 'sass/**/*.scss'
+					conf.css_folder + 'src/**/*.scss'
 				],
 				tasks: ['sass', 'autoprefixer'],
 				options: {
