@@ -70,7 +70,7 @@ jQuery( function() {
 		sts_login.removeClass( 'error' ).text( '' );
 		set_focus();
 	});
-        
+
 	// Login Handler
 	frm_login.on( 'submit', function( ev ){
 		var key, data = {},
@@ -88,7 +88,7 @@ jQuery( function() {
 			}
 		}
 		data['action'] = 'ms_login'; // calls wp_ajax_nopriv_ms_login
-                
+
 		jQuery.ajax({
 			type: 'POST',
 			dataType: 'json',

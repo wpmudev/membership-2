@@ -218,6 +218,11 @@
   box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
   /*top internal highlight*/
 }
+#wpwrap .ms-wrap a .ms-membership,
+.ms-wrap a .ms-membership,
+.ms-form a .ms-membership {
+  cursor: pointer;
+}
 #wpwrap .ms-wrap h3 .ms-membership,
 .ms-wrap h3 .ms-membership,
 .ms-form h3 .ms-membership {
@@ -373,6 +378,9 @@
   border: 0;
   box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
   /*top internal highlight*/
+}
+#wpwrap .ms-wrap tr.inline-edit-row a .ms-membership {
+  cursor: pointer;
 }
 #wpwrap .ms-wrap tr.inline-edit-row .dripped-form {
   padding: 0 0 5px 0;
@@ -851,6 +859,10 @@
   border: 0;
   box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.15) inset, inset 0px -1px 1px rgba(0, 0, 0, 0.5), inset 0px 1px 1px rgba(255, 255, 255, 0.8);
   /*top internal highlight*/
+}
+#wpwrap .ms-wrap .ms-settings-title a .ms-membership,
+.ms-wrap .ms-settings-title a .ms-membership {
+  cursor: pointer;
 }
 #wpwrap .ms-wrap .ms-settings-desc,
 .ms-wrap .ms-settings-desc {
@@ -1812,6 +1824,9 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .ms-wrap .ms-membership-list .ms-membership {
   margin-right: 10px;
   font-weight: bold;
+}
+.ms-wrap .ms-membership-list a .ms-membership {
+  cursor: pointer;
 }
 .ms-wrap .ms-membership-list .row-actions {
   margin-left: 23px;
