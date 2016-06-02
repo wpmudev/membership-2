@@ -262,7 +262,6 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * @since  1.0.0
 	 */
 	public function update_stripe_data_membership( $membership ) {
-debug_log( '=> Stripe upd. plan start' );
 		if ( ! $this->active ) { return false; }
 		$this->_api->set_gateway( $this );
 
@@ -271,7 +270,6 @@ debug_log( '=> Stripe upd. plan start' );
 			'amount' => 0,
 		);
 
-debug_log( '=> Stripe upd. plan getting there...' );
 		if ( ! $membership->is_free()
 			&& $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_RECURRING
 		) {
@@ -318,7 +316,6 @@ debug_log( '=> Stripe upd. plan getting there...' );
 
 			// Check if the plan needs to be updated.
 			$serialized_data = json_encode( $plan_data );
-debug_log( '=> Stripe upd. plan NOW', $plan_data );
 			$this->_api->create_or_update_plan( $plan_data );
 		}
 	}
@@ -637,7 +634,6 @@ debug_log( '=> Stripe upd. plan NOW', $plan_data );
 			);
 		}
 
-debug_log( '=== Cancel subscription', $stripe_sub );
 		if ( $stripe_sub ) {
 			$stripe_sub->cancel(
 				array( 'at_period_end' => true )
