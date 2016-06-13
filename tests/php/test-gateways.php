@@ -94,20 +94,31 @@ class MS_Test_Gateways extends WP_UnitTestCase {
 		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status );
 		$this->assertEquals( 1, count( $subscription->get_payments() ) );
 
-		// Modify the expiration date to trigger another payment.
+		// Modify the expiration date: Expire date grants 1 extra day!
 		$today = date( 'Y-m-d' );
+		$yesterday = date( 'Y-m-d', time() - 86400 );
+		$subscription->start_date = $yesterday;
 		$subscription->expire_date = $today;
 		$this->assertEquals( $today, $subscription->expire_date );
-		$this->assertEquals( 0, $subscription->get_remaining_period( 0 ) );
+		$this->assertEquals( 1, $subscription->get_remaining_period() );
+
+		// Make sure, no payment is collected!
+		$subscription->check_membership_status();
+		$this->assertEquals( 1, count( $subscription->get_payments() ) );
+
+		// Modify the expiration date: Trigger next payment
+		$subscription->expire_date = $yesterday;
+		$this->assertEquals( $yesterday, $subscription->expire_date );
+		$this->assertEquals( 0, $subscription->get_remaining_period() );
 
 		// Trigger next payment and validate it.
 		$subscription->check_membership_status();
 		$this->assertEquals( 2, count( $subscription->get_payments() ) );
 
 		// Modify the expiration date to trigger another payment.
-		$subscription->expire_date = $today;
-		$this->assertEquals( $today, $subscription->expire_date );
-		$this->assertEquals( 0, $subscription->get_remaining_period( 0 ) );
+		$subscription->expire_date = $yesterday;
+		$this->assertEquals( $yesterday, $subscription->expire_date );
+		$this->assertEquals( 0, $subscription->get_remaining_period() );
 
 		// Trigger next payment and validate it.
 		// THIS TIME NO PAYMENT SHOULD BE MADE because paycycle_repetitions = 2!

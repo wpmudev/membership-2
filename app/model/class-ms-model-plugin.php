@@ -699,12 +699,14 @@ class MS_Model_Plugin extends MS_Model {
 			wp_clear_scheduled_hook( $hook );
 			$this->setup_cron_services( $hook );
 		}
+                
+                $_SESSION['m2_status_check'] = 'inv';
 
 		// Perform the actual status checks!
 		foreach ( $subscriptions as $subscription ) {
 			$subscription->check_membership_status();
 		}
-
+                
 		do_action( 'ms_model_plugin_check_membership_status_after', $this );
 	}
 

@@ -111,6 +111,15 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 		if ( ! empty( $_POST[ 'payment_status'] ) ) {
 			$payment_status = strtolower( $_POST[ 'payment_status'] );
+                        
+                        /**
+                         * Sandbox fix
+                         *
+                         * @see https://github.com/woothemes/woocommerce/blob/fa30a38c58373d9c3706cc0b7ae22032de3a2985/includes/gateways/paypal/includes/class-wc-gateway-paypal-ipn-handler.php#L55
+                         */
+                        if ( ! $this->is_live_mode() && 'pending' == $payment_status ) {
+				$payment_status = 'completed';
+			}
 		}
 		if ( ! empty( $_POST['txn_id'] ) ) {
 			$external_id = $_POST['txn_id'];
