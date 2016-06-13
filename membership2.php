@@ -68,6 +68,8 @@
 
 function membership2_init_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
+		/* start:pro */$plugin_name = 'Membership 2 Pro';/* end:pro */
+		/* start:free */$plugin_name = 'Membership 2 (Free)';/* end:free */
 		if ( is_admin() ) {
 			// Can happen in Multisite installs where a sub-site has activated the
 			// plugin and then the plugin is also activated in network-admin.
@@ -75,7 +77,7 @@ function membership2_init_app() {
 				'<div class="notice error"><p><strong>%s</strong>: %s</p></div>',
 				sprintf(
 					esc_html__( 'Could not load the plugin %s, because another version of the plugin is already loaded', 'membership2' ),
-					'Membership 2 Pro'
+					$plugin_name
 				),
 				esc_html( MS_PLUGIN . ' (v' . MS_PLUGIN_VERSION . ')' )
 			);
@@ -347,6 +349,7 @@ class MS_Loader {
 			$file_path = strtolower( $sub_path . '/' . $filename );
 			$file_path_alt = strtolower( $sub_path . '/' . $alt_dir . '/' . $filename );
 
+			/* start:pro */
 			// First check if we have a premium version of the class.
 			$pro_path1 = $basedir . '/premium/' . $file_path;
 			$pro_path2 = $basedir . '/premium/' . $file_path_alt;
@@ -358,6 +361,7 @@ class MS_Loader {
 				include_once $pro_path2;
 				return true;
 			}
+			/* end:pro */
 
 			// If no premium class is found check for default app class.
 			$file_path1 = $basedir . '/app/' . $file_path;
@@ -447,4 +451,27 @@ if ( isset( $_REQUEST['ms_ajax'] ) ) {
 	}
 }
 
+
+/* start:free */
+function membership2_init_old_app() {
+	require_once 'app_old/membership.php';
+}
+
+function membership2_is_old_app() {
+	return true != get_option( 'm2_use_new_version' );
+}
+
+function membership2_use_m2() {
+	update_option( 'm2_use_new_version', true );
+}
+
+if ( membership2_is_old_app() ) {
+	membership2_init_old_app();
+} else {
+	membership2_init_app();
+}
+/* end:free */
+
+/* start:pro */
 membership2_init_app();
+/* end:pro */
