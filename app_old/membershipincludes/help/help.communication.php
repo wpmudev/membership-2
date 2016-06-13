@@ -1,0 +1,4 @@
+<h2><?php _e('Communications', 'membership'); ?></h2>
+<p><?php _e('The communications system enables you to set up messages to be sent to a member at certain points during the lifetime of their membership. Messages can be sent immediately on sign-up as well as any number of days after they signed up. You can even send messages to a user as they move towards the expiration of their subscription.', 'membership'); ?></p>
+<h2><?php _e('Active / Inactive', 'membership'); ?></h2>
+<p><?php _e('Only messages that are active will be sent, to activate a message you should click on the Activate link underneath the messages subject. You can deactivate a currently active message at any time by clicking the Deactivate link, this will stop the message from being sent but will not delete it, so you can reactivate it again at a later time.', 'membership'); ?></p>

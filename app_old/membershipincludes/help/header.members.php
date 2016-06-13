@@ -1,0 +1,1 @@
+<p><?php _e('This is where you can view a list of your current members and their status, subscriptions and levels. You can move a user to a subscription, or deactivate their accounts from this page.', 'membership'); ?></p>

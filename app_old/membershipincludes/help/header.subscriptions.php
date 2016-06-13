@@ -1,0 +1,1 @@
+<p><?php _e('This is where you manage the available subscriptions on your site. Subscriptions control which level a user is on at any point during their membership, and how much they are charged. In order for a subscription to be visible (and selectable) to a potential member they must be Active and Public.', 'membership'); ?></p>

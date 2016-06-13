@@ -1,0 +1,155 @@
+/* Thanks to Kevin D. Lyons for the Form HTML and CSS  */
+.membership_cart_billing {
+
+}
+.purchase-wrapper {
+padding: 10px;
+border: 1px solid #d6d6d6;
+border-radius: 10px;
+background: #efefef
+}
+
+.purchase-item {
+background: #a0a0a0;
+padding: 10px;
+border-radius: 5px;
+font-size: 130%;
+font-weight: 700;
+color: #fff;
+margin-bottom: 10px;
+}
+
+.purchase-item-details {
+float: left;
+}
+
+.purchase-item-price {
+text-align: right;
+}
+
+.buynow {
+background: #fff;
+padding: 10px;
+border-radius: 5px;
+border: 1px solid #d6d6d6;
+}
+
+.auth-header {
+font-size: 120%;
+margin-bottom: 5px;
+font-weight: 700;
+}
+
+.auth-body {
+background: #EFEFEF;
+padding: 10px;
+border-radius: 5px;
+}
+
+.auth-billing {
+padding: 5px;
+background: white;
+border-radius: 3px;
+margin-bottom: 10px;
+}
+
+.auth-billing-name {
+font-size: 110%;
+margin-bottom: 10px;
+}
+.auth-billing-fname .input_field {
+	width: 160px;
+}
+.auth-billing-fname-label {
+float: left;
+padding-top: 5px;
+margin-right: 10px;
+}
+
+.auth-billing-fname {
+float: left;
+margin-right: 15px;
+}
+.auth-billing-lname .input_field {
+	width: 160px;
+}
+.auth-billing-lname-label {
+float: left;
+padding-top: 5px;
+margin-right: 10px;
+}
+.auth-billing-address .input_field {
+	width: 460px;
+}
+.auth-billing-address-label {
+float: left;
+padding-top: 5px;
+margin-right: 30px;
+}
+.auth-billing-zip .input_field {
+	width: 80px;
+}
+.auth-billing-zip-label {
+float: left;
+padding-top: 5px;
+margin-right: 10px;
+}
+
+.auth-cc {
+padding: 5px;
+background: white;
+border-radius: 3px;
+margin-bottom: 10px;
+}
+.auth-exp {
+padding: 10px 10px 0 5px;
+background: white;
+border-radius: 3px;
+margin-bottom: 10px;
+}
+.auth-sec {
+padding: 10px 10px 0 5px;
+background: white;
+border-radius: 3px;
+margin-bottom: 10px;
+}
+
+.cardimage {
+height: 23px;
+width: 157px;
+display: inline-table;
+margin-left: 20px;
+}
+
+.auth-exp-input .inputLabel {
+	margin: 0 5px 0 20px;
+}
+
+#membership-wrapper select, #membership-wrapper input[type="file"] {
+	height: 28px;
+	width: 100px;
+}
+
+.auth-cc-label {
+}
+
+.auth-exp-label {
+	float: left;
+	padding-top: 2px;
+}
+
+.auth-sec-label {
+	float: left;
+	margin-right: 10px;
+	padding-top: 5px;
+}
+
+.auth-submit-button {
+	text-align: right;
+}
+.membership_payment_form.authorizenet {
+	width: 100%;
+}
+.auth-sec-input .input_field {
+	width: 70px;
+}

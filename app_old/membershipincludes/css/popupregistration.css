@@ -1,0 +1,190 @@
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/popupregistration.css?ver=3.5 */
+
+#fancybox-content div.header {
+	width: 730px !Important;
+	background: #333;
+	padding: 10px;
+}
+
+#fancybox-content div.header h1 {
+	color: #fff;
+	font: 16px "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+
+#fancybox-content div div.leftside {
+	float: left;
+	width: 340px;
+	padding: 10px;
+	border-right: 1px dashed #ddd;
+	overflow: hidden;
+}
+
+#fancybox-content div div.leftside p {
+	font-size: 14px;
+}
+
+#fancybox-content div div.rightside {
+	float: right;
+	width: 350px;
+	padding: 10px;
+	overflow: hidden;
+}
+
+#fancybox-content div {
+	overflow: hidden;
+}
+
+#fancybox-wrap {
+	z-index: 9999;
+}
+
+form#reg-form, form#login-form  {
+	margin: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	background: #fff;
+}
+
+#reg-form div label, #login-form div label {
+	display: block;
+	font: bold 14px "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+
+#reg-form div input.regtext, #login-form div input.regtext {
+	width: 280px;
+	background: none repeat scroll 0 0 #FBFBFB;
+    border: 1px solid #E5E5E5;
+    box-shadow: 1px 1px 2px rgba(200, 200, 200, 0.2) inset;
+    font-size: 22px;
+    font-weight: 200;
+    line-height: 1;
+    margin-bottom: 16px;
+    margin-right: 6px;
+    margin-top: 2px;
+    outline: medium none;
+    padding: 3px;
+}
+
+#reg-form p, #login-form p {
+	overflow: hidden;
+	display: block;
+	clear: both;
+	margin-top: 10px;
+}
+
+#reg-form p input.button, #login-form p input.button {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+
+p.error {
+	background: #d61d19;
+	color: #fff;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	padding-right: 10px;
+	display: none;
+}
+
+#fancybox-content div div.fullwidth {
+	width: 730px;
+	padding: 10px;
+}
+
+table.purchasetable {
+	width: 730px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ddd;
+}
+
+table.purchasetable td {
+	padding: 10px;
+	vertical-align: top;
+}
+
+td.detailscolumn {
+	width: 375px;
+	border-right: 1px dashed #ddd;
+}
+
+td.pricecolumn {
+	width: 150px;
+	text-align: right;
+	border-right: 1px dashed #ddd;
+	font-weight: bold;
+}
+
+td.buynowcolumn {
+	text-align: right;
+}
+
+#fancybox-content div div.fullwidth table.purchasetable tbody tr td.buynowcolumn form input {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+#fancybox-content div div.fullwidth p {
+	font-size: 14px;
+}
+
+#fancybox-content div div.rightside p {
+	font-size: 14px;
+}
+
+#fancybox-content div div.fullwidth table.purchasetable tbody tr {
+	border-bottom: 1px dashed #ddd;
+}
+
+#fancybox-content {
+	min-height: 400px;
+}
+
+#fancybox-content .alert {
+  padding: 10px 30px 10px 15px;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  background-color: #fbfce3;
+  border: 1px solid #ecf088;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+#fancybox-content .alert{
+  color: #c09853;
+}
+
+#fancybox-content .alert .close {
+  position: relative;
+  top: -2px;
+  right: -21px;
+  line-height: 18px;
+}
+
+#fancybox-content .alert-success {
+  background-color: #def7e4;
+  border-color: #8de3a1;
+}
+
+#fancybox-content .alert-success, #fancybox-content .alert-success .alert-heading {
+  color: #468847;
+}
+
+#fancybox-content .alert-danger, #fancybox-content .alert-error {
+  background-color: #fce5e3;
+  border-color: #f28f87;
+}
+
+#fancybox-content div.alert-error,
+#fancybox-content div.alert-error .alert-heading {
+  color: #b94a48;
+}
+
+#coupon_code {
+	width: 70%;
+}
+

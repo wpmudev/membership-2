@@ -1,0 +1,18 @@
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/options.css?ver=1 */
+
+#wpbody-content div.wrap.nosubsub form h3 {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	background-color: #eaeaea;
+	text-shadow: #fffeff 1px 1px 0;
+}
+
+input.wide {
+	width: 80%;
+}
+
+#wpbody-content div.wrap.nosubsub form p {
+	padding-left: 10px;
+}
+

@@ -77,6 +77,7 @@ module.exports = function( grunt ) {
 		// BUILD branches.
 		plugin_branches: {
 			exclude_pro: [
+				'./app_old',
 				'./README.MD',
 				'./readme.txt',
 				'./screenshot-*',

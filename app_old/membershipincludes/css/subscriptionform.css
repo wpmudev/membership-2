@@ -1,0 +1,403 @@
+/* @override http://dev.site/wp-content/plugins/membership/membershipincludes/css/subscriptionform.css?ver=3.5 */
+
+#reg-form .formleft td label {
+    display:inline;
+  }
+
+  #reg-form table {
+    clear: both;
+  }
+
+  .error {
+    background-color: #ffebe8;
+	border-color: #c00;
+	border-width: 1px;
+  	border-style: solid;
+  	padding: 0.5em !important;
+  	margin: 5px;
+  	clear: both;
+}
+.error ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  #reg-form .discount {
+    background-color: #C6FFB4;
+	  border-color: #008000;
+	  border-width: 1px;
+  	border-style: solid;
+  	padding: 0.5em !important;
+  	margin: 5px 15px 2px;
+  	clear: both;
+  	-moz-border-radius: 3px;
+  	-khtml-border-radius: 3px;
+  	-webkit-border-radius: 3px;
+  	border-radius: 3px;
+  }
+  #reg-form a#login_right {
+
+  }
+  #reg-form .cctext:hover {
+    background-color: #FCEC8F;
+    border:1px solid #DFBE06;
+  }
+  #reg-form span.subads {
+    margin-left: 30px;
+    display:block;
+  }
+  #reg-form span.sub_discount {
+    margin-left: 30px;
+    display:block;
+    color: #008000;
+  }
+  #reg-form div#reg_tos {
+    width: 95%;
+    height: 150px;
+    overflow: auto;
+    background-color: white;
+    padding: 10px;
+    border: 1px inset gray;
+    color: #353535;
+    clear: both;
+  }
+  #reg-form p.pass_hint {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    font-size: 10px;
+  }
+  #reg-form a.regbutton {
+    text-decoration: none;
+  }
+#reg-signup {
+	margin: 0px;
+	padding: 0px 0px 20px;
+	float: left;
+	width: 90%;
+}
+
+.paymentfullwidth {
+	margin: 0px 0px 2em;
+	float: left;
+	width: 95%;
+	background: transparent;
+	overflow: hidden;
+	padding: 10px;
+	position: relative;
+	margin-top: 0px;
+	margin-bottom: 20px;
+	float: left;
+	background: #ffffff;
+	width: 95%;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-box-shadow: 0 1px 5px rgba(0,0,0,1);
+	-webkit-box-shadow: 0 1px 5px rgba(0,0,0,1);
+}
+
+.paymentfullwidth table.purchasetable {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ddd;
+}
+
+.paymentfullwidth table.purchasetable td {
+	padding: 10px;
+	vertical-align: top;
+}
+
+.paymentfullwidth td.detailscolumn {
+	width: 375px;
+	border-right: 1px dashed #ddd;
+}
+
+.paymentfullwidth td.pricecolumn {
+	width: 150px;
+	text-align: right;
+	border-right: 1px dashed #ddd;
+	font-weight: bold;
+}
+
+.paymentfullwidth td.buynowcolumn {
+	text-align: right;
+}
+
+.paymentfullwidth table.purchasetable tbody tr td.buynowcolumn form input {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+.paymentfullwidth p {
+	font-size: 14px;
+}
+
+.paymentfullwidth table.purchasetable tbody tr {
+	border-bottom: 1px dashed #ddd;
+}
+
+#reg-form {
+	
+}
+
+#reg-form .formleft {
+	margin: 0px;
+	float: left;
+	background: #FFFFFF;
+	width: 100%;
+}
+#reg-form .formright {
+	margin: 0px;
+	float: right;
+	width: 250px;
+}
+#reg-form .formleft label {
+	font-size: 13px;
+	font-weight: bold;
+	color: #111;
+	font-family: Helvetica, Arial, sans-serif;
+	display: block;
+}
+#reg-form .formleft span {
+	color: #d74746;
+	text-decoration: none;
+}
+#reg-form .regtext {
+	padding: 3px !important;
+	width: 200px;
+	margin-bottom: 20px;
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	background: #FFFFFF;
+	border: 1px solid #CCCCCC;
+}
+#reg-form .alignleft {
+	margin: 0px;
+	padding: 0px;
+	float: left;
+	width: 45%;
+}
+#reg-form .regarea {
+	padding: 1px;
+	width: 400px;
+	margin-bottom: 20px;
+	font-family: Arial, sans-serif;
+	font-size: 13px;
+	float: left;
+	height: 100px;
+	color: #111;
+	line-height: 18px;
+}
+#reg-form .formleft h2 {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0px 0px 15px;
+	padding: 0px;
+	font-family: Arial, sans-serif;
+	float: left;
+	width: 100%;
+}
+
+div.subscription h3 {
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0px 0px 5px !Important;
+	padding: 0px;
+	font-family: Arial, sans-serif;
+	float: left;
+	width: 100%;
+}
+
+#reg-form .formleft p {
+	margin: 0px 0px 15px;
+	padding: 0px;
+	float: left;
+	width: 100%;
+
+}
+
+#reg-form .formleft .regbutton {
+	font-size: 15px;
+	padding: 5px 12px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: bold;
+}
+
+div.subscription {
+	overflow: hidden;
+	float: left;
+	width: 98%;
+	padding: 5px;
+	border: 1px solid #ddd;
+}
+
+div.subscription p {
+	margin: 0px 0px 15px;
+	padding: 0px;
+	width: 100%;
+	font-size: smaller;
+}
+
+div.subscription div.description {
+	overflow: hidden;
+	float: left;
+	width: 70%;
+}
+
+div.priceforms {
+	float: right;
+	width: 25%;
+}
+
+.cardimage {
+	height: 23px;
+	width: 157px;
+	display: inline-table;
+}
+
+.nocard {
+	background-position: 0px 0px !important;
+}
+
+.visa_card {
+	background-position: 0px -23px !important;
+}
+
+.mastercard {
+	background-position: 0px -46px !important;
+}
+
+.discover_card {
+	background-position: 0px -69px !important;
+}
+
+.amex {
+	background-position: 0px -92px !important;
+}
+
+div.message.hidden {
+    display: none;
+}
+
+/* Price boxes */
+div.priceboxes {
+	position: relative;
+	width: 99%;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+	padding: 20px 0 0;
+}
+
+div.pricebox {
+	position: relative;
+	margin-top: 0px;
+	margin-bottom: 20px;
+	float: left;
+	background: #ffffff;
+	width: 99%;
+	border: 1px solid #ddd;
+}
+
+div.topbar {
+	position: relative;
+	top: 0;
+	width: 100%;
+	background: #eee;
+	text-align: left;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: #434343;
+	font: bold 19px Verdana, Geneva, sans-serif;
+	overflow: hidden;
+}
+
+div.bottombar {
+	position: relative;
+	bottom: 0;
+	width: 100%;
+	background: #f6f6f6;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: #434343;
+	font: 15px Verdana, Geneva, sans-serif;
+	overflow: hidden;
+	margin-top: 0px;
+}
+
+div.pricebox div.topbar span.title {
+	margin-left: 10px;
+	float: left;
+}
+
+div.priceboxes div.topbar span.price {
+	color: #000;
+	float: right;
+	margin-right: 10px;
+}
+
+div.pricebox div.bottombar span.price {
+	margin-left: 10px;
+	float: left;
+}
+
+div.priceboxes div.bottombar span.link {
+	float: right;
+	margin-right: 10px;
+}
+
+.pricedetails {
+	position: relative;
+	list-style-type: none;
+	text-align: left;
+	margin-right: 0;
+	margin-left: 0;
+	padding: 10px;
+}
+
+.clear {
+	clear: both;
+}
+
+#membership-wrapper .purchasetable .buynowcolumn {
+	text-align: right;
+	vertical-align: top;
+}
+
+#membership-wrapper .purchasetable .detailscolumn {
+	text-align: left;
+	vertical-align: top;
+}
+
+#membership-wrapper .purchasetable .pricecolumn {
+	text-align: right;
+	vertical-align: top;
+}
+
+div.couponbar {
+	background: #f6f6f6;
+	padding: 10px;
+	color: #434343;
+	font: 15px Verdana, Geneva, sans-serif;
+}
+
+div.couponbar form {
+	width: 100%;
+}
+
+#coupon_code {
+	display: inline;
+}
+
+#submit_coupon_code {
+	float: right;
+	display: inline;	
+}
+div.couponQuestion {
+	
+}
+div.couponQuestion {
+	
+}
+
+
