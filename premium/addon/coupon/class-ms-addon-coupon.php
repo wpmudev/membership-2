@@ -57,7 +57,6 @@ class MS_Addon_Coupon extends MS_Addon {
 			'name' => __( 'Coupon', 'membership2' ),
 			'description' => __( 'Enable discount coupons.', 'membership2' ),
 			'icon' => 'wpmui-fa wpmui-fa-ticket',
-			'action' => array( __( 'Pro Version', 'membership2' ) ),
 		);
 
 		return $list;

@@ -106,10 +106,13 @@ class MS_Model_Gateway extends MS_Model_Option {
 		$content_dir = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
 		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
-		$gateway_dirs = array(
-			$plugin_dir . 'premium/gateway/',
-			$plugin_dir . 'app/gateway/',
-		);
+		$gateway_dirs = array();
+		/* start:pro */
+		// Sequence is important: First Premium!
+		$gateway_dirs[] = $plugin_dir . 'premium/gateway/';
+		/* end:pro */
+
+		$gateway_dirs[] = $plugin_dir . 'app/gateway/';
 
 		if ( empty( $model->gateway_files ) || is_admin() ) {
 			// In Admin dashboard we always refresh the gateway-list...
@@ -120,7 +123,11 @@ class MS_Model_Gateway extends MS_Model_Option {
 				$gateways = glob( $mask );
 
 				foreach ( $gateways as $file ) {
-					$model->gateway_files[] = substr( $file, strlen( $content_dir ) );
+					$gateway = basename( $file );
+					if ( empty( $model->gateway_files[ $gateway ] ) ) {
+						$gateway_path = substr( $file, strlen( $content_dir ) );
+						$model->gateway_files[ $gateway ] = $gateway_path;
+					}
 				}
 			}
 

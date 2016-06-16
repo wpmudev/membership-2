@@ -345,33 +345,25 @@ class MS_Loader {
 			$sub_path = implode( '/', $path_array );
 
 			$filename = str_replace( '_', '-', 'class-' . $class . '.php' );
-			$file_path = strtolower( $sub_path . '/' . $filename );
-			$file_path_alt = strtolower( $sub_path . '/' . $alt_dir . '/' . $filename );
+			$file_path = trim( strtolower( $sub_path . '/' . $filename ), '/' );
+			$file_path_alt = trim( strtolower( $sub_path . '/' . $alt_dir . '/' . $filename ), '/' );
+			$candidates = array();
 
 			/* start:pro */
 			// First check if we have a premium version of the class.
-			$pro_path1 = $basedir . '/premium/' . $file_path;
-			$pro_path2 = $basedir . '/premium/' . $file_path_alt;
-
-			if ( is_file( $pro_path1 ) ) {
-				include_once $pro_path1;
-				return true;
-			} elseif ( is_file( $pro_path2 ) ) {
-				include_once $pro_path2;
-				return true;
-			}
+			$candidates[] = $basedir . '/premium/' . $file_path;
+			$candidates[] = $basedir . '/premium/' . $file_path_alt;
 			/* end:pro */
 
 			// If no premium class is found check for default app class.
-			$file_path1 = $basedir . '/app/' . $file_path;
-			$file_path2 = $basedir . '/app/' . $file_path_alt;
+			$candidates[] = $basedir . '/app/' . $file_path;
+			$candidates[] = $basedir . '/app/' . $file_path_alt;
 
-			if ( is_file( $file_path1 ) ) {
-				include_once $file_path1;
-				return true;
-			} elseif ( is_file( $file_path2 ) ) {
-				include_once $file_path2;
-				return true;
+			foreach ( $candidates as $path ) {
+				if ( is_file( $path ) ) {
+					include_once $path;
+					return true;
+				}
 			}
 		}
 
@@ -466,8 +458,7 @@ function membership2_use_m2() {
 
 if ( membership2_is_old_app() ) {
 	membership2_init_old_app();
-} else {
-	membership2_init_app();
+	return;
 }
 /* end:free */
 

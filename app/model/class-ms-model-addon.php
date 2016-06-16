@@ -213,10 +213,13 @@ class MS_Model_Addon extends MS_Model_Option {
 		$content_dir = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
 		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
-		$addon_dirs = array(
-			$plugin_dir . 'premium/addon/',
-			$plugin_dir . 'app/addon/',
-		);
+		$addon_dirs = array();
+		/* start:pro */
+		// Sequence is important: First Premium!
+		$addon_dirs[] = $plugin_dir . 'premium/addon/';
+		/* end:pro */
+
+		$addon_dirs[] = $plugin_dir . 'app/addon/';
 
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...
@@ -228,7 +231,11 @@ class MS_Model_Addon extends MS_Model_Option {
 				$addons = glob( $mask );
 
 				foreach ( $addons as $file ) {
-					$model->addon_files[] = substr( $file, strlen( $content_dir ) );
+					$addon = basename( $file );
+					if ( empty( $model->addon_files[ $addon ] ) ) {
+						$addon_path = substr( $file, strlen( $content_dir ) );
+						$model->addon_files[ $addon ] = $addon_path;
+					}
 				}
 			}
 

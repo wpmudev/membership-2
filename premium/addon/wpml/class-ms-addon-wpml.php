@@ -54,7 +54,6 @@ class MS_Addon_Wpml extends MS_Addon {
 			'icon' => 'dashicons dashicons-translation',
 			'name' => __( 'WPML Integration', 'membership2' ),
 			'description' => __( 'Use WPML to translate plugin messages.', 'membership2' ),
-			'action' => array( __( 'Pro Version', 'membership2' ) ),
 		);
 
 		return $list;
