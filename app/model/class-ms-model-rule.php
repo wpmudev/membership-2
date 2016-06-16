@@ -65,11 +65,13 @@ class MS_Model_Rule extends MS_Model {
 	 * @since  1.0.0
 	 */
 	static public function prepare_class() {
+		/* start:pro */
 		MS_Factory::load( 'MS_Rule_Adminside' );
-		MS_Factory::load( 'MS_Rule_Category' );
-		MS_Factory::load( 'MS_Rule_Content' );
 		MS_Factory::load( 'MS_Rule_CptItem' );
 		MS_Factory::load( 'MS_Rule_CptGroup' );
+		/* end:pro */
+		MS_Factory::load( 'MS_Rule_Category' );
+		MS_Factory::load( 'MS_Rule_Content' );
 		MS_Factory::load( 'MS_Rule_Media' );
 		MS_Factory::load( 'MS_Rule_MemberCaps' );
 		MS_Factory::load( 'MS_Rule_MemberRoles' );
@@ -264,5 +266,4 @@ class MS_Model_Rule extends MS_Model {
 			$dripped_types
 		);
 	}
-
 }
