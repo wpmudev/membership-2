@@ -110,6 +110,9 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 
 == Changelog ==
 
+= 4.0.1.1 =
+* Fix a fatal error.
+
 = 4.0.1.0 =
 * Added: Template system, now M2 pages (Membership List, Payment Form, Registration Page, Account Page) can be overwritten from theme
 * Added: Option to select different list for different membership in Mailchimp addon

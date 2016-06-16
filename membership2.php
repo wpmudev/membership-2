@@ -15,12 +15,11 @@
  *
  * @package Membership2
  */
-/* end:pro */
-/* start:free */
+/* end:pro *//* start:free */
 /**
  * Plugin Name: Membership 2
  * Plugin URI:  https://wordpress.org/plugins/membership
- * Version:     4.0.1.0
+ * Version:     4.0.1.1
  * Build Stamp: BUILDTIME
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
