@@ -110,6 +110,7 @@ module.exports = function( grunt ) {
 				'!tests/**',
 				'!.git/**',
 				'!.git',
+				'!**/.svn/**',
 				'!.log'
 			],
 			main_pro: 'membership2.php',
