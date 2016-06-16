@@ -5,6 +5,10 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.3.1
+----------------------------------------------------------------------
+- Unlock some Add-ons again, that were accidentally displayed as "Pro Only"!
+
 1.0.3.0
 ----------------------------------------------------------------------
 - Added: Template system, now M2 pages (Membership List, Payment Form, Registration Page, Account Page) can be overwritten from theme
