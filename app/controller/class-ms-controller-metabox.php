@@ -77,12 +77,16 @@ class MS_Controller_Metabox extends MS_Controller {
 
 		$this->metabox_title = __( 'Membership Access', 'membership2' );
 
+		$extra = array();
+
 		/* start:pro */
+		$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
+		/* end:pro */
+
 		$post_types = array_merge(
 			array( 'page', 'post', 'attachment' ),
-			MS_Rule_CptGroup_Model::get_custom_post_types()
+			$extra
 		);
-		/* end:pro */
 
 		$this->post_types = apply_filters(
 			'ms_controller_membership_metabox_add_meta_boxes_post_types',
