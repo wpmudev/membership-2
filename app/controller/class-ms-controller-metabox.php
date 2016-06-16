@@ -77,10 +77,12 @@ class MS_Controller_Metabox extends MS_Controller {
 
 		$this->metabox_title = __( 'Membership Access', 'membership2' );
 
+		/* start:pro */
 		$post_types = array_merge(
 			array( 'page', 'post', 'attachment' ),
 			MS_Rule_CptGroup_Model::get_custom_post_types()
 		);
+		/* end:pro */
 
 		$this->post_types = apply_filters(
 			'ms_controller_membership_metabox_add_meta_boxes_post_types',
@@ -157,19 +159,24 @@ class MS_Controller_Metabox extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function add_meta_boxes() {
-            
-                if( defined( 'MS_CPT_ENABLE_ACCESS_BOX' ) && MS_CPT_ENABLE_ACCESS_BOX ) {
-                    $post_types = array_merge(
-                            array( 'page', 'post', 'attachment' ),
-                            MS_Rule_CptGroup_Model::get_custom_post_types()
-                    );
-    
-                    $this->post_types = apply_filters(
-                            'ms_controller_membership_metabox_add_meta_boxes_post_types',
-                            $post_types
-                    );
-                }
-            
+		if ( defined( 'MS_CPT_ENABLE_ACCESS_BOX' ) && MS_CPT_ENABLE_ACCESS_BOX ) {
+			$extra = array();
+
+			/* start:pro */
+			$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
+			/* end:pro */
+
+			$post_types = array_merge(
+				array( 'page', 'post', 'attachment' ),
+				$extra
+			);
+
+			$this->post_types = apply_filters(
+				'ms_controller_membership_metabox_add_meta_boxes_post_types',
+				$post_types
+			);
+		}
+
 		foreach ( $this->post_types as $post_type ) {
 			if ( ! $this->is_read_only( $post_type ) ) {
 				add_meta_box(
@@ -266,15 +273,17 @@ class MS_Controller_Metabox extends MS_Controller {
 				break;
 
 			default:
+				$rule = $membership->get_rule( $post_type );
+
+				/* start:pro */
 				if ( in_array( $post_type, MS_Rule_CptGroup_Model::get_custom_post_types() ) ) {
 					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 						$rule = $membership->get_rule( MS_Rule_CptItem::RULE_ID );
 					} else {
 						$rule = $membership->get_rule( MS_Rule_CptGroup::RULE_ID );
 					}
-				} else {
-					$rule = $membership->get_rule( $post_type );
 				}
+				/* end:pro */
 				break;
 		}
 
@@ -360,12 +369,14 @@ class MS_Controller_Metabox extends MS_Controller {
 			$read_only = true;
 		} elseif ( 'attachment' == $post_type ) {
 			$read_only = true;
+			/* start:pro */
 		} elseif ( in_array( $post_type, MS_Rule_CptGroup_Model::get_custom_post_types() ) ) {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$read_only = false;
 			} else {
 				$read_only = true;
 			}
+			/* end:pro */
 		} else {
 			$read_only = false;
 		}
@@ -434,5 +445,4 @@ class MS_Controller_Metabox extends MS_Controller {
 			wp_enqueue_script( 'ms-admin' );
 		}
 	}
-
 }
