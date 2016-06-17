@@ -5,6 +5,10 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.3.2
+----------------------------------------------------------------------
+- Fix wrong display in Help page (Pro plugin said "you are using the free plugin")
+
 1.0.3.1
 ----------------------------------------------------------------------
 - Unlock some Add-ons again, that were accidentally displayed as "Pro Only"!

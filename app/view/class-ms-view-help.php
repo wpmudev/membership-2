@@ -90,7 +90,7 @@ class MS_View_Help extends MS_View {
 			_x( 'You use verion <strong>%s</strong> of Membership 2', 'help', 'membership2' ),
 			MS_PLUGIN_VERSION
 		);
-		if ( function_exists( 'membership2_init_pro_app' ) ) {
+		if ( MS_IS_PRO ) {
 			printf(
 				'<br />' .
 				_x( 'Hey, this is the <strong>PRO version</strong> of Membership 2 - thanks a lot for supporting us!', 'help', 'membership2' )
@@ -1642,7 +1642,7 @@ class MS_View_Help extends MS_View {
 		ob_start();
 		?>
 		<h2><?php _ex( 'Network-Wide Protection', 'help', 'membership2' ); ?></h2>
-		<?php if ( function_exists( 'membership2_init_pro_app' ) ) : ?>
+		<?php if ( MS_IS_PRO ) : ?>
 		<p>
 			<strong><?php _ex( 'Enable Network-Wide mode', 'help', 'membership2' ); ?></strong><br />
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_PROTECT_NETWORK", true );</code> to enable network wide protection. Important: Settings for Network-Wide mode are stored differently than normal (site-wide) settings. After switching to network wide mode the first time you have to set up the plugin again.<br />Note: The plugin will automatically enable itself network wide, you only need to add the option above.', 'help', 'membership2' ); ?>

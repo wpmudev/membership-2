@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Membership 2 Pro
  * Plugin URI:  https://premium.wpmudev.org/project/membership/
- * Version:     1.0.3.1
+ * Version:     1.0.3.2
  * Build Stamp: BUILDTIME
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
@@ -93,6 +93,19 @@ function membership2_init_app() {
 		'MS_PLUGIN_VERSION'
 		/* start:pro */, '1.0.3.0'/* end:pro */
 		/* start:free */, '4.0.1.0'/* end:free */
+	);
+
+	/**
+	 * Free or pro plugin?
+	 * This only affects some display settings, it does not really lock/unlock
+	 * any premium features...
+	 *
+	 * @since  1.0.3.2
+	 */
+	define(
+		'MS_IS_PRO'
+		/* start:pro */,true/* end:pro */
+		/* start:free */,false/* end:free */
 	);
 
 	/**
