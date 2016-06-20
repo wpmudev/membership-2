@@ -1,6 +1,5 @@
 <?php
-/* start:pro */
-/**
+/* start:pro *//**
  * Plugin Name: Membership 2 Pro
  * Plugin URI:  https://premium.wpmudev.org/project/membership/
  * Version:     1.0.3.2
@@ -14,9 +13,7 @@
  * Text Domain: membership2
  *
  * @package Membership2
- */
-/* end:pro *//* start:free */
-/**
+ *//* end:pro *//* start:free *//**
  * Plugin Name: Membership 2
  * Plugin URI:  https://wordpress.org/plugins/membership
  * Version:     4.0.1.1
@@ -30,8 +27,7 @@
  * Text Domain: membership2
  *
  * @package Membership2
- */
-/* end:free */
+ *//* end:free */
 
 /**
  * Copyright notice
@@ -67,8 +63,8 @@
 
 function membership2_init_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
-		/* start:pro */$plugin_name = 'Membership 2 Pro';/* end:pro */
 		/* start:free */$plugin_name = 'Membership 2 (Free)';/* end:free */
+		/* start:pro */$plugin_name = 'Membership 2 Pro';/* end:pro */
 		if ( is_admin() ) {
 			// Can happen in Multisite installs where a sub-site has activated the
 			// plugin and then the plugin is also activated in network-admin.
