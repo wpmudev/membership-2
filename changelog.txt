@@ -7,7 +7,11 @@ Change Log:
 
 1.0.3.2
 ----------------------------------------------------------------------
-- Fix wrong display in Help page (Pro plugin said "you are using the free plugin")
+- Small Bugfixes
+
+- Fixed: Problems with the two Add-ons; WPML and Coupons.
+- Fixed: Wrong display in Help page; Pro plugin said "you are using the free plugin".
+- Improved: Compatibility with Domain Mapping plugin.
 
 1.0.3.1
 ----------------------------------------------------------------------
