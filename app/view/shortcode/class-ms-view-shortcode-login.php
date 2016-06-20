@@ -127,7 +127,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				'ms_ajax_login',
 				array(
 					//'ajaxurl' => admin_url( 'admin-ajax.php' ),
-                                        'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
+					'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
 					'loadingmessage' => __( 'Please wait...', 'membership2' ),
 					'errormessage' => __( 'Request failed, please try again.', 'membership2' ),
 				)
@@ -318,6 +318,18 @@ class MS_View_Shortcode_Login extends MS_View {
 			</div>
 		</form>
 		<?php
+
+		/**
+		 * Fire the login-footer action, which is usually done in the page footer
+		 * of the wp-login.php page. This hook is used by other plugins to include
+		 * custom javascript or CSS on the login page.
+		 *
+		 * We need it specifically for our Domain Mapping plugin.
+		 *
+		 * @since  1.0.3.2
+		 */
+		do_action( 'login_footer' );
+
 		$html = ob_get_clean();
 		$html = apply_filters( 'ms_compact_code', $html );
 		return $html;
@@ -596,7 +608,7 @@ class MS_View_Shortcode_Login extends MS_View {
 						value="<?php echo esc_attr( $rp_login ); ?>" autocomplete="off"/>
 
 					<p class="user-pass1-wrap">
-						<label for="pass1"><?php _e('New password') ?></label><br />
+						<label for="pass1"><?php _e( 'New password' ) ?></label><br />
 						<div class="wp-pwd">
 							<span class="password-input-wrapper">
 								<input type="password" data-reveal="1" data-pw="<?php echo esc_attr( wp_generate_password( 16 ) ); ?>" name="pass1" id="pass1" class="input" size="20" value="" autocomplete="off" aria-describedby="pass-strength-result" />
@@ -605,7 +617,7 @@ class MS_View_Shortcode_Login extends MS_View {
 						</div>
 					</p>
 					<p class="user-pass2-wrap">
-						<label for="pass2"><?php _e('Confirm new password') ?></label><br />
+						<label for="pass2"><?php _e( 'Confirm new password' ) ?></label><br />
 						<input type="password" name="pass2" id="pass2" class="input" size="20" value="" autocomplete="off" />
 					</p>
 
@@ -636,5 +648,4 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		return $Reset_Result;
 	}
-
 }
