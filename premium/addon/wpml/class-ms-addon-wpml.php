@@ -14,13 +14,41 @@ class MS_Addon_Wpml extends MS_Addon {
 	const ID = 'addon_wpml';
 
 	/**
+	 * WPML Translation context.
+	 *
+	 * @since 1.0.1.0
+	 */
+	const CONTEXT = 'Membership 2';
+
+	/**
+	 * Value from WPML: The site default language.
+	 *
+	 * @var string
+	 */
+	protected $default_lang = '';
+
+	/**
+	 * Value from WPML: Currently selected language.
+	 *
+	 * @var string
+	 */
+	protected $current_lang = '';
+
+	/**
 	 * Checks if the current Add-on is enabled.
 	 *
 	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function is_active() {
-		return false;
+		if ( ! self::wpml_active()
+			&& MS_Model_Addon::is_enabled( self::ID )
+		) {
+			$model = MS_Factory::load( 'MS_Model_Addon' );
+			$model->disable( self::ID );
+		}
+
+		return MS_Model_Addon::is_enabled( self::ID );
 	}
 
 	/**
@@ -39,7 +67,93 @@ class MS_Addon_Wpml extends MS_Addon {
 	 * @since  1.0.0
 	 */
 	public function init() {
-		MS_Model_Addon::disable( self::ID );
+		static $Init_Done = false;
+
+		if ( $Init_Done ) { return; }
+		$Init_Done = true;
+
+		if ( self::is_active() ) {
+			$this->init_settings();
+
+			$this->check_requirements();
+			$this->add_action( 'admin_print_styles', 'enqueue_styles' );
+			$this->add_filter( 'ms_translation_flag', 'show_flag', 10, 2 );
+
+			// Load translations from DB.
+			$this->add_filter(
+				'ms_factory_populate',
+				'populate_communication',
+				10, 4
+			);
+
+			$this->add_filter(
+				'ms_factory_populate',
+				'populate_gateway',
+				10, 4
+			);
+
+			$this->add_filter(
+				'ms_factory_populate-ms_model_membership',
+				'populate_membership',
+				10, 3
+			);
+
+			$this->run_action(
+				'plugins_loaded',
+				'translate_settings'
+			);
+
+			// Save translations to DB.
+			$this->add_filter(
+				'ms_factory_serialize',
+				'serialize_communication',
+				10, 3
+			);
+
+			$this->add_filter(
+				'ms_factory_serialize',
+				'serialize_gateway',
+				10, 3
+			);
+
+			$this->add_filter(
+				'ms_factory_serialize-ms_model_membership',
+				'serialize_membership',
+				10, 2
+			);
+
+			$this->add_filter(
+				'ms_factory_serialize-ms_model_settings',
+				'serialize_settings',
+				10, 2
+			);
+
+			// Fix stuff in the Membership 2 admin pages.
+			$this->add_filter(
+				'ms_model_pages_membership_page_id',
+				'translate_page_id',
+				10, 2
+			);
+			$this->add_filter(
+				'ms_model_pages_current_page_id',
+				'translate_page_id',
+				10, 2
+			);
+
+			$this->add_filter(
+				'ms_model_pages_get_ms_page_url',
+				'translate_page_url',
+				10, 3
+			);
+
+			$this->add_filter(
+				'ms_view_settings_page_setup_prepare_fields',
+				'change_general_settings',
+				10, 2
+			);
+		} else {
+			$this->add_action( 'ms_model_addon_enable', 'enable_addon' );
+		}
 	}
 
 	/**
@@ -55,6 +169,14 @@ class MS_Addon_Wpml extends MS_Addon {
 			'name' => __( 'WPML Integration', 'membership2' ),
 			'description' => __( 'Use WPML to translate plugin messages.', 'membership2' ),
 		);
+
+		if ( ! self::wpml_active() ) {
+			$list[ self::ID ]->description .= sprintf(
+				'<br /><b>%s</b>',
+				__( 'Activate WPML to use this Add-on', 'membership2' )
+			);
+			$list[ self::ID ]->action = '-';
+		}
 
 		return $list;
 	}
