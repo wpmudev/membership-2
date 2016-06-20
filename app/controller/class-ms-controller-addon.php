@@ -125,7 +125,7 @@ class MS_Controller_Addon extends MS_Controller {
 		if ( $this->verify_nonce( 'bulk' )
 			&& self::validate_required( $fields )
 		) {
-			$action = $_POST['action'] != -1 ? $_POST['action'] : $_POST['action2'];
+			$action = -1 != $_POST['action'] ? $_POST['action'] : $_POST['action2'];
 			$msg = $this->save_addon( $action, $_POST['addon'] );
 			wp_safe_redirect(
 				esc_url_raw( add_query_arg( array( 'msg' => $msg ) ) )
@@ -171,7 +171,7 @@ class MS_Controller_Addon extends MS_Controller {
 	 */
 	public function save_addon( $action, $addon_types ) {
 		if ( ! $this->is_admin_user() ) {
-			return;
+			return false;
 		}
 
 		$addon = MS_Factory::load( 'MS_Model_Addon' );
@@ -208,5 +208,4 @@ class MS_Controller_Addon extends MS_Controller {
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
-
 }
