@@ -8,7 +8,7 @@ Author URI: http://caffeinatedb.com
 
 class membershipleveltext extends WP_Widget {
 
-	function __construct($id_base, $name, $widget_options = array(), $control_options = array()) {
+	function __construct() {
 		$locale = apply_filters( 'membership_locale', get_locale() );
 		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
 
@@ -144,7 +144,7 @@ class membershipleveltext extends WP_Widget {
 
 class membershipsubtext extends WP_Widget {
 
-	function __construct( $id_base, $name, $widget_options = array(), $control_options = array()  ) {
+	function __construct() {
 		$locale = apply_filters( 'membership_locale', get_locale() );
 		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
 
