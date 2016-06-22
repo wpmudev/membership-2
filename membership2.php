@@ -471,6 +471,4 @@ if ( ! defined( 'IS_UNIT_TEST' ) && membership2_is_old_app() ) {
 }
 /* end:free */
 
-/* start:pro */
 membership2_init_app();
-/* end:pro */
