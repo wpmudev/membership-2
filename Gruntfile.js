@@ -390,13 +390,13 @@ module.exports = function( grunt ) {
 			release_pro: {
 				src: [
 					'release/<%= pkg.version %>-pro/',
-					'release/<%= pkg.version %>-pro-<%= pkg.version %>.zip'
+					'release/<%= pkg.name %>-pro-<%= pkg.version %>.zip'
 				]
 			},
 			release_free: {
 				src: [
 					'release/<%= pkg.version %>-free/',
-					'release/<%= pkg.version %>-free-<%= pkg.version %>.zip'
+					'release/<%= pkg.name %>-free-<%= pkg.version %>.zip'
 				]
 			},
 			pro: conf.plugin_branches.exclude_pro,
