@@ -126,7 +126,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		 *
 		 * @since  1.0.0
 		 */
-		if ( defined( 'MS_ADMIN_CAPABILITY' ) ) {
+		if ( defined( 'MS_ADMIN_CAPABILITY' ) && MS_ADMIN_CAPABILITY ) {
 			$this->capability = MS_ADMIN_CAPABILITY;
 		} else {
 			$this->capability = apply_filters(
