@@ -2,7 +2,7 @@
 Contributors: WPMUDEV
 Tags: Content Protection, Control Access, Membership, Membership 2, Multisite Membership, Paid Membership, Pay Wall, Paying Users, Registration, Restrict Content, Subscription, WordPress Membership, WPMU DEV
 Requires at least: 3.7
-Tested up to: 4.5.2
+Tested up to: 4.5.3
 Stable tag: trunk
 
 Membership 2 transforms your WordPress website into a fully functional membership site.
@@ -109,6 +109,10 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 11. Convince your users with a modern, clean and professional checkout form
 
 == Changelog ==
+
+= 4.0.1.2 =
+* Fixed a minor issue in Help page.
+* Improve compatibility with WPMUDEV Domain Mapping plugin.
 
 = 4.0.1.1 =
 * Fix a fatal error.
