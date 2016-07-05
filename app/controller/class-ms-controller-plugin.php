@@ -166,7 +166,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'wp_loaded', 'wp_loaded' );
 
 		// Setup plugin admin UI.
-		if( ! is_multisie() )
+		if( ! is_multisite() )
                 {
                     $this->add_action( 'admin_menu', 'add_menu_pages' );
                 }
