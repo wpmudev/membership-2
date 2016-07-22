@@ -2,7 +2,7 @@
 
 The **only** development branch for M2 is `master`. This branch ultimately is responsible for creating the production branches that are finally published.
 
-Production branches are automatically built, based on the master branch. Any changes made to those other branches will be overwritten!
+Production branches are automatically built, based on the master branch. Any changes made to those other branches will be **overwritten**!
 
 **Remember:** `master` is the ONLY branch that should be edited and forked!
 
@@ -23,9 +23,13 @@ Production branches are always supposed to be stable and can be released/publish
 
 M2 Pro is the official premium plugin that lives on WPMU DEV.
 
+It uses libraries that are not included in the free version (like WPMU DEV Notification integration) and has all features.
+
 ## M2 (m2-free)  
 
 M2 is the free limited version that gets published to the WordPress plugin directory.
+
+It includes a special module to display up to 2 notifications to the user: Right after installation (sign up to a newsletter) and after seven days (rate plugin on wp.org)
 
 
 -----
@@ -91,7 +95,7 @@ Only edit/create javascript and css files inside the `/src` folders:
 * `app/assets/js/src/*` for javascript.
 * `app/assets/css/src/*` for css. Use .scss extension (SASS)!
 
-Important: Those folders are scanned and processed when running grunt. Files in base of `app/assets/js/` and `app/assets/css/` are _overwritten_ by grunt.
+Important: Those folders are scanned and processed when running grunt. Files in base of `app/assets/js/` and `app/assets/css/` are ****overwritten**** by grunt.
 
 *Note:*
 There is a hardcoded list of js and scss files that are monitored and compiled by grunt. If you add a new js or scss file then you need to edit `Gruntfile.js` and add the new file to the file list in `js_files_concat` or `css_files_compile`.
