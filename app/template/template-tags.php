@@ -205,7 +205,7 @@ if ( ! function_exists( 'ms_registration_form_error' ) ) {
 
 if ( ! function_exists( 'is_ms_registration_form_login_link_exists' ) ) {
 	function is_ms_registration_form_login_link_exists() {
-		return isset( MS_Helper_Template::$ms_registration_form['login_link_exists'] );
+		return lib3()->is_true( MS_Helper_Template::$ms_registration_form['login_link_exists'] );
 	}
 }
 
