@@ -1,5 +1,7 @@
 # README
 
+*Similar structure as: Membership 2, Popup, Custom Sidebars, CoursePress*
+
 The **only** development branch for M2 is `master`. This branch ultimately is responsible for creating the production branches that are finally published.
 
 Production branches are automatically built, based on the master branch. Any changes made to those other branches will be **overwritten**!
@@ -144,7 +146,7 @@ Many tasks as well as basic quality control are done via grunt. Below is a list 
 
 ### Grunt Task Runner  
 
-**ALWAYS** use Grunt to build M2 production branches. Use the following commands:  
+**ALWAYS** use Grunt to build the production branches. Use the following commands:  
 
 Category | Command | Action
 ---------| ------- | ------
@@ -157,18 +159,6 @@ Build | `grunt build` | Runs all default tasks + lang, builds all production ver
 Build | `grunt build:pro` | Same as build, but only build the pro plugin version.
 Build | `grunt build:free` | Same as build, but only build the free plugin version.
 
-
-### Update product versions
-
-The example shows how to update the Pro-version, but the process for free version is identical.
-
-1. **Switch** to branch `master`
-1. Run **grunt** command `$ grunt build:pro`
-1. **Switch** to branch `m2-pro`
-1. Do a git **pull**, *possibly some conflicts are identified!*
-1. Do NOT resolve the conflicts, but **revert** the conflicting files to last version!!
-> Grunt already committed the correct file version to git. The conflicts are irrelevant!
-1. Now **commit** and **push** the changes to bitbucket
 
 ### Set up grunt
 
@@ -267,3 +257,51 @@ $ svn up
 ### Unit testing notes
 
 Introduction to unit testing in WordPress: http://codesymphony.co/writing-wordpress-plugin-unit-tests/
+
+----
+
+# RELEASE
+
+### 1. Build the release version
+
+1.) Switch to `master` branch.
+
+2.) Make sure the version number in **main plugin file** is correct and that the version in file `pacakge.json` matches the plugin version. (in package.json you have x.y.z format, so "1.2.3.4" becomes "1.2.34" here)
+
+3.) Then run `grunt build` (or `grunt build:pro` / free). This will create a .zip archive of the release files and update the `m2-pro`/`-free` branches.
+
+4.) Only in `master` branch: There is a folder called `release/` which contains the release files as .zip archive.
+
+5.a) **PRO**: Simply upload the zip file from the `release/` folder. The `m2-pro` branch is not even needed.
+
+5.b) **FREE**: (First set up a mixed repo as described below) After you built the free version, switch to the `m2-free` branch and then commit those files to wp.org repository using SVN.
+
+##### Setting up the mixed repo in same folder (SVN + GIT)
+
+For wp.org releases I found the easiest solution is to have a "mixed" working copy, that contains both .git and .svn files. This way we only have one place where code is stored. Bitbucket is our main version control. SVN is only used/updated when a new version of the free version should be published.
+
+This is the one-time setup routine I used to create this mixed working copy:
+
+1. Get a working copy of the GIT repo in local folder `.../membership`
+2. Get a working copy of the SVN repo in local folder `.../membership-svn`
+3. Now copy all files/folders (also hidden ones) from `membership-svn` into `membership`. Important: Only add/overwrite files. Do not delete the .git folder/files!!
+4. Verify in SVN that the membership folder now is a valid SVN repo. Now you can delete the poup-svn folder again.
+5. Now make sure that the .gitignore file contians the entry `.svn`
+6. When .gitignore is correct then revert all files in git to restore the master-branch. This will cause a lot of edits show up in SVN, but ignore those. The only time you want to use SVN is after you switched to the `membership-free` branch. ONLY THEN commit changes to SVN/wp.org!!
+7. 
+
+### 2. Update product versions
+
+The example shows how to update the Pro-version, but the process for free version is identical.
+
+1. **Switch** to branch `master`
+1. Run **grunt** command `$ grunt build:pro`
+1. **Switch** to branch `m2-pro`
+1. Do a git **pull**, *possibly some conflicts are identified!*
+1. Do NOT resolve the conflicts, but **revert** the conflicting files to last version!!
+> Grunt already committed the correct file version to git. The conflicts are irrelevant!
+1. Now **commit** and **push** the changes to bitbucket
+
+
+
+
