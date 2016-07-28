@@ -60,7 +60,7 @@ class MS_Addon_Wprecaptcha extends MS_Addon {
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
 			'name' => __( 'WP reCaptcha Integration', 'membership2' ),
-			'description' => __( 'Enable <a href="https://wordpress.org/plugins/wp-recaptcha/" target="_blank">WP reCaptcha</a> integration.', 'membership2' ),
+			'description' => __( 'Enable WP reCaptcha (inactive) integration.', 'membership2' ),
 			'icon' => 'dashicons dashicons-format-chat',
 		);
 
