@@ -1144,7 +1144,7 @@ class MS_Model_Member extends MS_Model {
 				$this->password = wp_generate_password( 24 );
 				$this->password2 = $this->password;
 			}
-
+                        
 			$user_id = wp_create_user(
 				$this->username,
 				$this->password,
@@ -1164,6 +1164,13 @@ class MS_Model_Member extends MS_Model {
 					)
 				);
 			}
+                        else
+                        {
+                            if( isset( $_POST['display_name'] ) && $_POST['display_name'] != '' )
+                            {
+                                wp_update_user( array( 'ID' => $user_id, 'display_name' => $_POST['display_name'] ) );
+                            }
+                        }
 
 			$this->id = $user_id;
 		}

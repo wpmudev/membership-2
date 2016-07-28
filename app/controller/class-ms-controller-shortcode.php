@@ -17,6 +17,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this->run_action( 'init', 'init' );
+                // Enqueue scripts.
+		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 	}
 
 	/**
@@ -801,7 +803,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 				'posts_per_page' => $data['limit_activities'],
 			)
 		);
-
+                
 		$view = MS_Factory::create( 'MS_View_Shortcode_Account' );
 		$view->data = apply_filters(
 			'ms_view_shortcode_account_data',
@@ -1226,5 +1228,11 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function hide_shortcode( $atts, $content = '' ) {
 		return do_shortcode( $content );
 	}
+        
+        public function enqueue_scripts()
+        {
+            $data['ms_init'][] = 'frontend_register';
+	    lib3()->ui->data( 'ms_data', $data );
+        }
 
 }
