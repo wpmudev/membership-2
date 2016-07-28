@@ -431,6 +431,12 @@ if ( ! function_exists( 'get_ms_ac_title' ) ) {
 	}
 }
 
+if ( ! function_exists( 'ms_show_users_membership' ) ) {
+	function ms_show_users_membership() {
+		return lib3()->is_true( MS_Helper_Template::$ms_account['show_membership'] );
+	}
+}
+
 if ( ! function_exists( 'show_membership_change_link' ) ) {
 	function show_membership_change_link() {
 		return lib3()->is_true( MS_Helper_Template::$ms_account['show_membership_change'] );

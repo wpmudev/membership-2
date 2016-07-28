@@ -1,9 +1,7 @@
 <div class="ms-account-wrapper">
         <?php if ( ms_is_user_logged_in() ) : ?>
-
-                <?php
-                // ================================================= MEMBERSHIPS
-                if ( ms_is_user_logged_in() ) : ?>
+                
+                <?php if( ms_show_users_membership() ) : ?>
                 <div id="account-membership">
                 <h2>
                         <?php
@@ -72,9 +70,8 @@
                 do_action( 'ms_view_account_memberships_bottom', get_ms_ac_member_obj(), get_ms_ac_account_obj() );
                 ?>
                 </div>
-                <?php
-                endif;
-                ?>
+                <?php endif; ?>
+                
 
                 <?php
                 // ===================================================== PROFILE
