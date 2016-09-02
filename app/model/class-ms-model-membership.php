@@ -446,6 +446,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'publicly_queryable' => false,
 			'supports' => false,
 			'hierarchical' => false,
+                        'exclude_from_search' => true
 		);
 
 		return apply_filters(

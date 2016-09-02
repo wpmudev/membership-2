@@ -247,6 +247,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	public static function get_register_post_type_args() {
 		$args = array(
 			'label' => __( 'Membership2 Coupons', 'membership2' ),
+                        'exclude_from_search' => true
 		);
 
 		return apply_filters(
