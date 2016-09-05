@@ -163,6 +163,11 @@ class MS_Controller_Metabox extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function add_meta_boxes() {
+                
+                // Disable meta box for non-M2 admin
+                $user_id = get_current_user_id();
+                if( ! MS_Model_Member::is_admin_user( $user_id ) ) return;
+            
 		if ( defined( 'MS_CPT_ENABLE_ACCESS_BOX' ) && MS_CPT_ENABLE_ACCESS_BOX ) {
 			$extra = array();
 
