@@ -205,6 +205,18 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 
 		return $args;
 	}
+        
+        public function column_default( $member, $column_name )
+        {
+            $html = '';
+            
+            return apply_filters(
+                'ms_helper_listtable_member_default_value',
+                $member,
+                $column_name,
+                $html
+            );
+        }
 
 	/**
 	 * Display checkbox column.
