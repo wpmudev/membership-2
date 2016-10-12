@@ -726,8 +726,8 @@ class MS_Model_Upgrade extends MS_Model {
                 /**
                  * BuddyPress notices hack
                  */
-                $bp = buddypress();
-                if( $bp )
+                $bp = function_exists( 'buddypress' ) ? buddypress() : null;
+                if( null != $bp )
                 {
                         if ( ! did_action( 'init' ) ) { return false; }
                 }
