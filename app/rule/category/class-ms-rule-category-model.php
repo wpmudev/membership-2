@@ -107,7 +107,9 @@ class MS_Rule_Category_Model extends MS_Rule {
 
 		foreach ( $terms as $key => $term ) {
 			if ( ! empty( $term->taxonomy ) && 'category' === $term->taxonomy ) {
-				if ( $this->has_access( $term->term_id ) ) {
+                                $has_access = $this->has_access( $term->term_id );
+                                if( $has_access == NULL ) $has_access = true;
+				if ( $has_access ) {
 					$new_terms[ $key ] = $term;
 				}
 			} else {
