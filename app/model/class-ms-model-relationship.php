@@ -2695,6 +2695,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$membership = $this->get_membership();
 		$comms = MS_Model_Communication::get_communications( $membership );
+		
+		//Check if requires invitation code
+		$is_public = lib3()->is_true(
+			$membership->get_custom_data( 'no_invitation' )
+		);
 
 		// Collection of all day-values.
 		$days = (object) array(
@@ -2802,7 +2807,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					 */
 					if ( $gateway->request_payment( $this ) ) {
 						$next_status = self::STATUS_ACTIVE;
-						$this->status = $next_status;
+						if( $is_public )
+							$this->status = $next_status;
 						$this->config_period(); // Needed because of status change.
 					}
 
@@ -3098,7 +3104,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Save the new status.
 		$this->status = $next_status;
-		$this->save();
+		if( $is_public ) $this->save();
 
 		// Save the changed email queue.
 		foreach ( $comms as $comm ) {
