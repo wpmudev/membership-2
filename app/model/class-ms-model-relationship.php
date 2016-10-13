@@ -2935,11 +2935,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$comm->period['period_type']
 					);
 					if ( $comm_days == $days->remaining ) {
-						$comm->add_to_queue( $this->id );
-						MS_Model_Event::save_event(
-							MS_Model_Event::TYPE_MS_BEFORE_FINISHES,
-							$this
-						);
+						$member = $this->get_member();
+						if(!$member->get_meta( 'ms_comm_before_finishes_sent_'.strtotime($this->expire_date) ) ){
+							$comm->add_to_queue( $this->id );
+							MS_Model_Event::save_event(
+								MS_Model_Event::TYPE_MS_BEFORE_FINISHES,
+								$this
+							);
+							// Mark the member as has received message.
+							$member->set_meta('ms_comm_before_finishes_sent_'.strtotime($this->expire_date),1);
+						}
 					}
 
 					// After finishes communication.
