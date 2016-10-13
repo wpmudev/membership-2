@@ -179,6 +179,9 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$args = $this->get_query_args( $args );
+                $args['hierarchical'] = true;
+                $args['order']               = 'ASC';
+                $args['orderby']             = 'ID';
 
 		$categories = get_categories( $args );
 		$cont = array();
