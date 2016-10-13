@@ -1376,7 +1376,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					 * @since 1.0.1.1
 					 */
 					if ( self::COMM_TYPE_SIGNUP == $this->type ) {
-						$var_value = $member->password;
+						$var_value = ( !empty( $member->password ) ? $member->password : ( isset( $_POST['password'] ) && !empty( $_POST['password'] ) ? sanitize_text_field( $_POST['password'] ) : ( isset( $_POST['pass1'] ) && !empty( $_POST['pass1']) ? sanitize_text_field( $_POST['pass1'] ) : '' ) ) );
 					}
 					break;
 
