@@ -15,7 +15,7 @@ if(!class_exists('M_Membership')) {
 
 		var $levels = array();
 
-		function M_Membership( $id, $name = '' ) {
+		function __construct( $id, $name = '' ) {
 
 			global $wpdb;
 

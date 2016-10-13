@@ -197,7 +197,7 @@ class MS_Addon_Profilefields extends MS_Addon {
                                 
                                 $public_display['display_nickname']  = $user->nickname;
                                 $public_display['display_username']  = $member->username;
-                                echo $member->first_name;
+                                //echo $member->first_name;
                                 if ( isset($member->first_name) || ! empty( $member->first_name ) || $member->first_name != '' ) {
                                     $public_display['display_firstname'] = $member->first_name;
                                 }

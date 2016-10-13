@@ -256,6 +256,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	public static function get_register_post_type_args() {
 		$args = array(
 			'label' => __( 'Membership2 Email Templates', 'membership2' ),
+                        'exclude_from_search' => true
 		);
 
 		return apply_filters(
@@ -1152,7 +1153,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$subscription
 			);
 
-			if ( $delay < $ignore_duration ) {
+			if ( is_numeric( $delay ) && $delay < $ignore_duration ) {
 				$msg = sprintf(
 					'Intentionally skip duplicate email: "%s" to user "%s".',
 					$this->type,

@@ -89,7 +89,8 @@ jQuery(function() {
 				if ( ! response.ok ) { return false; }
 
 				refresh_list( response.items );
-				popup.close();
+				//popup.close();
+                                jQuery( '.popup-close' ).click();
 			},
 			'json'
 		).complete(function() {
@@ -117,7 +118,8 @@ jQuery(function() {
 				if ( ! response.ok ) { return false; }
 
 				refresh_list( response.items );
-				popup.close();
+				//popup.close();
+                                jQuery( '.popup-close' ).click();
 			},
 			'json'
 		).complete(function() {

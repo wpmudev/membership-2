@@ -132,6 +132,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	public static function get_register_post_type_args() {
 		$args = array(
 			'label' => __( 'Membership2 Events', 'membership2' ),
+                        'exclude_from_search' => true
 		);
 
 		return apply_filters(

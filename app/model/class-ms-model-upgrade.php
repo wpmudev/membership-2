@@ -723,6 +723,14 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( ! is_admin() ) { return false; }
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
 		if ( defined( 'DOING_CRON' ) && DOING_CRON ) { return false; }
+                /**
+                 * BuddyPress notices hack
+                 */
+                $bp = function_exists( 'buddypress' ) ? buddypress() : null;
+                if( null != $bp )
+                {
+                        if ( ! did_action( 'init' ) ) { return false; }
+                }
 		if ( ! current_user_can( 'manage_options' ) ) { return false; }
 
 		return true;

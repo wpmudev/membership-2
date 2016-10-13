@@ -434,7 +434,7 @@ class MS_Addon_Attributes extends MS_Addon {
 	 * @since  1.0.1.0
 	 */
 	public function enqueue_settings_scripts() {
-		$addon_url = MS_Plugin::instance()->url . '/app/addon/attributes/';
+		$addon_url = MS_Plugin::instance()->url . '/premium/addon/attributes/';
 
 		$data = array(
 			'lang' => array(

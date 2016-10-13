@@ -54,6 +54,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
+            // To protect unnecessary protection of other content
             if( is_category() || is_home() || is_search() ) {
 		$post_type = self::get_post_type( $wp_query );
             
@@ -106,7 +107,9 @@ class MS_Rule_Category_Model extends MS_Rule {
 
 		foreach ( $terms as $key => $term ) {
 			if ( ! empty( $term->taxonomy ) && 'category' === $term->taxonomy ) {
-				if ( $this->has_access( $term->term_id ) ) {
+                                $has_access = $this->has_access( $term->term_id );
+                                if( $has_access == NULL ) $has_access = true;
+				if ( $has_access ) {
 					$new_terms[ $key ] = $term;
 				}
 			} else {
@@ -131,7 +134,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id, $admin_has_access = true ) {
-		$has_access = null;
+		$has_access = true;
 
 		$taxonomies = get_object_taxonomies( get_post_type() );
 
@@ -176,6 +179,9 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$args = $this->get_query_args( $args );
+                $args['hierarchical'] = true;
+                $args['order']               = 'ASC';
+                $args['orderby']             = 'ID';
 
 		$categories = get_categories( $args );
 		$cont = array();

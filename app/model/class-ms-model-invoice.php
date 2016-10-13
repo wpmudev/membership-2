@@ -329,6 +329,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'publicly_queryable' => true,
 			'supports' => false,
 			'hierarchical' => false,
+                        'exclude_from_search' => true
 		);
 
 		return apply_filters(
