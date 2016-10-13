@@ -8,8 +8,7 @@ Author URI: http://caffeinatedb.com
 
 class membershipleveltext extends WP_Widget {
 
-	function membershipleveltext() {
-
+	function __construct() {
 		$locale = apply_filters( 'membership_locale', get_locale() );
 		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
 
@@ -18,7 +17,8 @@ class membershipleveltext extends WP_Widget {
 
 		$widget_ops = array( 'classname' => 'membershipleveltext', 'description' => __('Membership Level Text', 'membership') );
 		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipleveltext');
-		$this->WP_Widget( 'membershipleveltext', __('Membership Level Text', 'membership'), $widget_ops, $control_ops );
+		parent::__construct('membershipleveltext', __('Membership Level Text', 'membership'), $widget_ops, $control_ops);
+
 	}
 
 	function widget( $args, $instance ) {
@@ -144,8 +144,7 @@ class membershipleveltext extends WP_Widget {
 
 class membershipsubtext extends WP_Widget {
 
-	function membershipsubtext() {
-
+	function __construct() {
 		$locale = apply_filters( 'membership_locale', get_locale() );
 		$mofile = membership_dir( "membershipincludes/languages/membership-$locale.mo" );
 
@@ -154,7 +153,8 @@ class membershipsubtext extends WP_Widget {
 
 		$widget_ops = array( 'classname' => 'membershipsubtext', 'description' => __('Membership Subscription Text', 'membership') );
 		$control_ops = array('width' => 400, 'height' => 350, 'id_base' => 'membershipsubtext');
-		$this->WP_Widget( 'membershipsubtext', __('Membership Subscription Text', 'membership'), $widget_ops, $control_ops );
+		parent::__construct( 'membershipsubtext', __('Membership Subscription Text', 'membership'), $widget_ops, $control_ops);
+
 	}
 
 	function widget( $args, $instance ) {

@@ -16,7 +16,7 @@ if(!class_exists('M_Gateway')) {
 		var $tables = array('subscription_transaction');
 		var $subscription_transaction;
 
-		function M_Gateway() {
+		function __construct() {
 
 			global $wpdb;
 
