@@ -5,12 +5,16 @@ ob_start();
 /**
  * Set up environment for my plugin's tests suite.
  */
+$_tests_dir = getenv( 'WP_TESTS_DIR' );
+if ( ! $_tests_dir ) {
+	$_tests_dir = '/tmp/wordpress-tests-lib/';
+}
 
 /**
  * The path to the WordPress tests checkout.
  */
-if ( file_exists( '/srv/www/wptest/wordpress-develop/tests/phpunit/' ) ) {
-	define( 'WP_TESTS_DIR', '/srv/www/wptest/wordpress-develop/tests/phpunit/' );
+if ( file_exists( $_tests_dir ) ) {
+	define( 'WP_TESTS_DIR', '/tmp/wordpress-tests-lib/' );
 } else { // Without the "wptest" but with "trunk" subfolder...
 	define( 'WP_TESTS_DIR', '/srv/www/wordpress-develop/trunk/tests/phpunit/' );
 }
