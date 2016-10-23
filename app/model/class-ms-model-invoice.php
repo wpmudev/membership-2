@@ -1111,6 +1111,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 			$subscription->set_gateway( $this->gateway_id );
 			$subscription->save();
+		}
 		return apply_filters(
 			'ms_model_invoice_changed',
 			$this,
