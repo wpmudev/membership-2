@@ -87,7 +87,7 @@ function membership2_init_app() {
 	 */
 	define(
 		'MS_PLUGIN_VERSION'
-		/* start:pro */, '1.0.3.0'/* end:pro */
+		/* start:pro */, '1.0.3.4'/* end:pro */
 		/* start:free */, '4.0.1.0'/* end:free */
 	);
 
