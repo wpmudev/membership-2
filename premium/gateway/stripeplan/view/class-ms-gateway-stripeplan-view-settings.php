@@ -85,6 +85,15 @@ class MS_Gateway_Stripeplan_View_Settings extends MS_View {
 				'ajax_data' => array( 1 ),
 			),
 
+			'vendor_logo' => array(
+				'id' => 'vendor_logo',
+				'title' => __( 'Vendor Logo (Must be at least 128px by 128px)', 'membership2' ),
+				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+				'value' => $gateway->vendor_logo,
+				'class' => 'ms-text-large',
+				'ajax_data' => array( 1 ),
+			),
+
 			'pay_button_url' => array(
 				'id' => 'pay_button_url',
 				'title' => apply_filters(
