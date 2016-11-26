@@ -12,6 +12,25 @@
 class MS_Rule_CptItem_Model extends MS_Rule {
 
 	/**
+	 * A list of all posts that are allowed by any MS_Rule_CptItem_Model.
+	 * (this logic is needed to merge rules if multiple memberships is enabled)
+	 *
+	 * @since  1.0.0
+	 * @var   array
+	 */
+	static protected $allowed_ids = array();
+
+	/**
+	 * A list of all posts that are not available by any MS_Rule_CptItem_Model.
+	 * (this logic is needed to merge rules if multiple memberships is enabled)
+	 *
+	 * @since  1.0.0
+	 * @var   array
+	 */
+	static protected $denied_ids = array();
+	
+
+	/**
 	 * Rule type.
 	 *
 	 * @since  1.0.0
@@ -44,19 +63,24 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 		 */
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 			parent::protect_content();
+			$this->add_action( 'parse_query', 'find_protected_posts', 97 );
 			$this->add_action( 'parse_query', 'protect_posts', 98 );
+			
 		}
 	}
 
 	/**
-	 * Adds filter for posts query to remove all protected custom post types.
+	 * Protect CPT from showing.
+	 *
+	 * Related Action Hooks:
+	 * - parse_query
 	 *
 	 * @since  1.0.0
 	 *
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
-	public function protect_posts( &$wp_query ) {
-		$post_types = $wp_query->get( 'post_type' );
+	public function find_protected_posts( $wp_query ) {
+		$post_types = $wp_query->get( 'post_type' );		
 
 		// There was one case where this was needed...
 		if ( empty( $post_types )
@@ -80,6 +104,11 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 				$post_types = array( $post_types );
 			}
 
+			$allowed_posts = $wp_query->query_vars['post__in'];
+			if ( ! is_array( $allowed_posts ) ) {
+				$allowed_posts = array();
+			}
+
 			$denied_posts = $wp_query->query_vars['post__not_in'];
 			if ( ! is_array( $denied_posts ) ) {
 				$denied_posts = array();
@@ -92,18 +121,47 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 				 */
 				if ( ! in_array( $post_type, $excluded ) ) {
 					foreach ( $this->rule_value as $id => $value ) {
-						if ( ! parent::has_access( $id ) ) {
-							$denied_posts[] = $id;
+						if ( $this->has_access( $id ) ) {
+							self::$allowed_ids[] = $id;
+						} else {
+							self::$denied_ids[] = $id;
 						}
 					}
 				}
-			}
+			}			
+		}
+	}		
 
-			if ( ! empty( $denied_posts ) ) {
-				$denied_posts = array_unique( $denied_posts );
-				$wp_query->set( 'post__not_in', $denied_posts );
+	/**
+	 * Adds filter for posts query to remove all protected custom post types.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param WP_Query $query The WP_Query object to filter.
+	 */
+	public function protect_posts( &$wp_query ) {
+		if ( empty( self::$denied_ids ) && empty( self::$allowed_ids ) ) {
+			return $wp_query;
+		}
+
+		if ( ! empty( self::$denied_ids ) ) {
+			// Remove duplicate entries from the ID arrays.
+			self::$denied_ids = array_unique( self::$denied_ids, SORT_NUMERIC );
+			self::$allowed_ids = array_unique( self::$allowed_ids, SORT_NUMERIC );
+
+			// Remove any post that is allowed from the denied_ids list.
+			self::$denied_ids = array_diff(
+				self::$denied_ids,
+				self::$allowed_ids
+			);
+
+			if ( ! empty( self::$denied_ids ) ) {
+				$wp_query->set( 'post__not_in', self::$denied_ids );
 			}
 		}
+
+		self::$denied_ids = array();
+		self::$allowed_ids = array();
 
 		do_action(
 			'ms_rule_custom_post_type_protect_posts',
