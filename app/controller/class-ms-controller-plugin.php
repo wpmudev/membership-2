@@ -710,6 +710,23 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	/**
+	 * Checks if the current user is on any Membership2 admin page.
+	 *
+	 * @since  1.0.0
+	 * @return bool
+	 */
+	public static function is_admin_page( ) {
+		$curpage = false;
+		if ( isset( $_REQUEST['page'] ) ) {
+			$curpage = sanitize_html_class( $_REQUEST['page'] );
+		}
+
+		$slug = self::$base_slug;
+	
+		return (strpos($curpage, $slug) !== false);
+	}	
+
+	/**
 	 * Get admin url.
 	 *
 	 * @since  1.0.0
@@ -946,11 +963,14 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/js/jquery.m2.plugins.js',
 			array( 'jquery' ), $version
 		);
-		wp_register_script(
-			'jquery-validate',
-			$plugin_url . 'app/assets/js/jquery.m2.validate.js',
-			array( 'jquery' ), $version
-		);
+
+		if( self::is_admin_page( ) ){
+			wp_register_script(
+				'jquery-validate',
+				$plugin_url . 'app/assets/js/jquery.m2.validate.js',
+				array( 'jquery' ), $version
+			);
+		}
 	}
 
 	/**
