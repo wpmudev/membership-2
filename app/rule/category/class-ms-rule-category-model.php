@@ -19,6 +19,8 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 */
 	protected $rule_type = MS_Rule_Category::RULE_ID;
 
+        static public $All_Categories;
+
 	/**
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
@@ -179,11 +181,12 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$args = $this->get_query_args( $args );
-                $args['hierarchical'] = true;
-                $args['order']               = 'ASC';
-                $args['orderby']             = 'ID';
+                $args['parent'] = 0;
+                //$args['hierarchical'] = true;
+                //$args['order']               = 'ASC';
+                //$args['orderby']             = 'ID';
 
-		$categories = get_categories( $args );
+		$categories = $this->hierarchical_category_tree( $args );
 		$cont = array();
 
 		foreach ( $categories as $key => $category ) {
@@ -206,6 +209,22 @@ class MS_Rule_Category_Model extends MS_Rule {
 
 		return $cont;
 	}
+
+        public function hierarchical_category_tree( $args = array() ) {
+                $categories = get_categories( $args );
+
+                if( $categories )
+                {
+                        foreach( $categories as $key => $category )
+                        {
+                                self::$All_Categories[] = $category;
+                                $args['parent'] = $category->term_id;
+                                $this->hierarchical_category_tree( $args );
+                        }
+                }
+
+                return self::$All_Categories;
+        }
 
 	/**
 	 * Get the total content count.
