@@ -439,13 +439,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Try to reuse existing db record to keep history.
 		$subscription = self::get_subscription( $user_id, $membership_id );
 
-                if( $subscription instanceof MS_Model_Relationship )
+                /*if( $subscription instanceof MS_Model_Relationship )
                 {
                         $invoice = $subscription->get_current_invoice();
                         $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
                         $invoice->amount = $membership->price;
                         $invoice->save();
-                }
+                }*/
 
 		if ( 'simulation' == $gateway_id ) {
 			$is_simulated = true;
