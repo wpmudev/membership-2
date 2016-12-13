@@ -808,4 +808,17 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			$this
 		);
 	}
+
+	/**
+	 * Check if property isset.
+	 *
+	 * @since  1.0.0
+	 * @internal
+	 *
+	 * @param string $property The name of a property.
+	 * @return mixed Returns true/false.
+	 */
+	public function __isset( $property ) {
+		return isset($this->$property);
+	}		
 }

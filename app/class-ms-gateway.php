@@ -532,6 +532,19 @@ class MS_Gateway extends MS_Model_Option {
 	}
 
 	/**
+	 * Check if property isset.
+	 *
+	 * @since  1.0.0
+	 * @internal
+	 *
+	 * @param string $property The name of a property.
+	 * @return mixed Returns true/false.
+	 */
+	public function __isset( $property ) {
+		return isset($this->$property);
+	}			
+
+	/**
 	 * Get countries code and names.
 	 *
 	 * @since  1.0.0
