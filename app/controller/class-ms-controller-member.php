@@ -179,11 +179,11 @@ class MS_Controller_Member extends MS_Controller {
 		*/
 		function members_admin_page_screen_option() {
 			$option = 'per_page';
-			$args   = [
+			$args   = array(
 				'label'   => 'Members',
 				'default' => 20,
 				'option'  => 'members_per_page'
-			];
+			);
 
 			add_screen_option( $option, $args );
 		}	
