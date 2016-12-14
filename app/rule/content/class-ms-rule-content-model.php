@@ -125,8 +125,8 @@ class MS_Rule_Content_Model extends MS_Rule {
 		}
 
 		// Find the most generous comment access rule.
-		$has_full = $this->get_rule_value( self::COMMENT_WRITE );
-		$has_read = $this->get_rule_value( self::COMMENT_READ );
+		$has_full = is_user_logged_in() && $this->get_rule_value( self::COMMENT_WRITE );
+		$has_read = is_user_logged_in() && $this->get_rule_value( self::COMMENT_READ );
 		$has_none = $this->get_rule_value( self::COMMENT_NO_ACCESS );
 
 		if ( true === $has_full ) {
