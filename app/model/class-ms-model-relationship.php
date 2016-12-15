@@ -1889,8 +1889,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$lbl,
 					$currency,
 					$total_price,
-					MS_Helper_Period::format_date( $this->calc_expire_date( $this->expire_date ) ),
-					$this->calc_expire_date( $this->expire_date )
+					MS_Helper_Period::format_date( $this->calc_expire_date( MS_Helper_Period::current_time() ) ),
+					$this->calc_expire_date( MS_Helper_Period::current_time() )
 				);
 				break;
 
