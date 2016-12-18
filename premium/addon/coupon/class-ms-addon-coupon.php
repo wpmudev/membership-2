@@ -136,6 +136,13 @@ class MS_Addon_Coupon extends MS_Addon {
 				'process_payment_table',
 				10, 4
 			);
+			
+			$this->add_filter(
+				'ms_model_relationship_get_payment_description/recurring',
+				'payment_description_recurring',
+				10, 6
+			);
+
 		}
 	}
 
@@ -694,5 +701,61 @@ class MS_Addon_Coupon extends MS_Addon {
 		}
 
 		return $data;
+	}
+	
+	/**
+	 * Sets the payment description on checkout page if a valid coupon is applied
+	 *
+	 * @since  1.0.3.5
+	 * @param  String $desc
+	 * @param  Boolean $short
+	 * @param  String $currency
+	 * @param  String $total_price Price where discount has already been applied
+	 * @param  MS_Model_Membership $membership
+	 * @param  MS_Model_Invoice $invoice
+	 * @return String Payment description
+	 */
+	public function payment_description_recurring( $desc, $short, $currency, $total_price, $membership, $invoice ){
+
+		if ( 1 == $membership->pay_cycle_repetitions ) return $desc;
+
+		if ( isset( $_POST['apply_coupon_code'] ) && ! empty( $_POST['coupon_code'] ) && ! empty( $_REQUEST['membership_id'] ) ) {
+
+			$coupon = apply_filters(
+				'ms_addon_coupon_model',
+				MS_Addon_Coupon_Model::load_by_code( $_POST['coupon_code'] )
+			);
+
+			if ( ! $coupon || ! $coupon->is_valid( $membership->id ) ) return $desc; 
+
+			$lbl = '';
+			if ( $membership->pay_cycle_repetitions > 1 ) {
+				// Fixed number of payments (more than 1)
+				if ( $short ) {
+					$lbl = __( '<span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> (each %4$s)', 'membership2' );
+				} else {
+					$lbl = __( 'First payment <span class="price">%1$s %2$s</span> and then you will make %5$s payments of <span class="price">%1$s %3$s</span>, one each %4$s.', 'membership2' );
+				}
+			} else {
+				// Indefinite number of payments
+				if ( $short ) {
+					$lbl = __( '<span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> (each %4$s)', 'membership2' );
+				} else {
+					$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> each %4$s.', 'membership2' );
+				}
+			}
+
+			$desc = sprintf(
+				$lbl,
+				$currency,
+				$total_price,
+				$membership->price,				
+				MS_Helper_Period::get_period_desc( $membership->pay_cycle_period ),
+				$membership->pay_cycle_repetitions - 1
+			);
+			
+		}
+
+		return $desc;
 	}
 }
