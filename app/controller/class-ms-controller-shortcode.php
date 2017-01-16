@@ -482,6 +482,12 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( ! empty( $id ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
+                        
+                        if ( ! $membership->active )
+                        {
+                            return __( 'Sorry! The membership you are trying to register is not active.', 'membership2' );
+                        }
+                        
 			$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
 			$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 

@@ -43,6 +43,9 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 		$stripe_data['key'] = $gateway->get_publishable_key();
 		$stripe_data['currency'] = $invoice->currency;
 		$stripe_data['amount'] = ceil(abs( $invoice->total * 100 )); // Amount in cents.
+		$stripe_data['image'] = $gateway->get_vendor_logo();
+		$stripe_data['locale'] = 'auto';
+		$stripe_data['zip-code'] = 'true';
                 
                 $stripe_data = apply_filters(
 			'ms_gateway_stripe_form_details_after',

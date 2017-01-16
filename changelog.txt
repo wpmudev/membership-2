@@ -7,8 +7,32 @@ Change Log:
 
 1.0.3.4
 ----------------------------------------------------------------------
+- Added: WP reCaptcha notices
+- Added: Adding default column in Member table
+- Added: Adding default column in Billing table
+- Added: Hierarchical category in protection rule - category protection addon
+- Added: New Custom Logo in stripe checkout
 - Fixed: MS_PROTECT_NETWORK still adding membership menu in subsite.
 - Fixed: BuddyPress protection rule for "All BP pages" is now working.
+- Fixed: Fatal error: Undefined function is_multisie()
+- Fixed: Remove/hide option in the login link in shortcode
+- Fixed: show_membership attribute fixed in account shortcode
+- Fixed: Display name was not saving in membership form
+- Fixed: Some post content get protected when category protection is enabled
+- Fixed: Show table view even if there is no data in the table
+- Fixed: Fix automated email responses not sent after payment
+- Fixed: Unable to edit or create membership attributes
+- Fixed: Membership name was appearing in wordpress search result
+- Fixed: Meta box was appearing for non-admin users
+- Fixed: ms-membership-buy shortcode was allowing registration
+- Fixed: "Subscription - Before expires" email sent multiple times
+- Fixed: Pending membership switch to Active automatically
+- Fixed: Category protection addon is not working in some sites
+- Fixed: Conflict with BuddyPress - Current User notice
+- Fixed: Enabling Category protection addon doesnt show categories in widget
+- Fixed: Capability lost in Member capabilities addon
+- Fixed: Membership 2 Pro Automated Email No Password Variable
+
 
 1.0.3.3
 ----------------------------------------------------------------------

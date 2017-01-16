@@ -508,4 +508,17 @@ class MS_Model_Settings extends MS_Model_Option {
 
 		return apply_filters( 'ms_model_settings__get', $value, $property, $this );
 	}
+
+	/**
+	 * Check if property isset.
+	 *
+	 * @since  1.0.0
+	 * @internal
+	 *
+	 * @param string $property The name of a property.
+	 * @return mixed Returns true/false.
+	 */
+	public function __isset( $property ) {
+		return isset($this->$property);
+	}	
 }

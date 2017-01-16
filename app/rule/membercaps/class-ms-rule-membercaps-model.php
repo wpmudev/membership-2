@@ -125,16 +125,16 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 
 		if ( null === self::$real_caps ) {
 			// First get a list of the users default capabilities.
-			self::$real_caps = $allcaps;
+			self::$real_caps[$user->ID] = $allcaps;
 
 			// Use the permissions of the first rule without checking.
 			foreach ( $caps as $key => $value ) {
-				self::$real_caps[$key] = $value;
+				self::$real_caps[$user->ID][$key] = $value;
 			}
 		} else {
 			// Only add additional capabilities from now on...
 			foreach ( $caps as $key => $value ) {
-				if ( $value ) { self::$real_caps[$key] = 1; }
+				if ( $value ) { self::$real_caps[$user->ID][$key] = 1; }
 			}
 		}
 
@@ -157,7 +157,7 @@ class MS_Rule_MemberCaps_Model extends MS_Rule {
 		if ( ! isset( self::$real_caps[$user->ID] ) ) {
 			self::$real_caps[$user->ID] = $allcaps;
 		}
-
+                
 		return apply_filters(
 			'ms_rule_membercaps_model_modify_caps',
 			self::$real_caps[$user->ID],

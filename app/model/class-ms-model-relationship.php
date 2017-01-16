@@ -316,6 +316,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public static function get_register_post_type_args() {
 		$args = array(
 			'label' => __( 'Membership2 Subscriptions', 'membership2' ),
+                        'exclude_from_search' => true
 		);
 
 		return apply_filters(
@@ -437,6 +438,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Try to reuse existing db record to keep history.
 		$subscription = self::get_subscription( $user_id, $membership_id );
+
+                /*if( $subscription instanceof MS_Model_Relationship )
+                {
+                        $invoice = $subscription->get_current_invoice();
+                        $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+                        $invoice->amount = $membership->price;
+                        $invoice->save();
+                }*/
 
 		if ( 'simulation' == $gateway_id ) {
 			$is_simulated = true;
@@ -2694,6 +2703,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$membership = $this->get_membership();
 		$comms = MS_Model_Communication::get_communications( $membership );
+		
+		//Check if requires invitation code
+		$is_public = lib3()->is_true(
+			$membership->get_custom_data( 'no_invitation' )
+		);
 
 		// Collection of all day-values.
 		$days = (object) array(
@@ -2801,7 +2815,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					 */
 					if ( $gateway->request_payment( $this ) ) {
 						$next_status = self::STATUS_ACTIVE;
-						$this->status = $next_status;
+						if( $is_public )
+							$this->status = $next_status;
 						$this->config_period(); // Needed because of status change.
 					}
 
@@ -2928,11 +2943,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$comm->period['period_type']
 					);
 					if ( $comm_days == $days->remaining ) {
-						$comm->add_to_queue( $this->id );
-						MS_Model_Event::save_event(
-							MS_Model_Event::TYPE_MS_BEFORE_FINISHES,
-							$this
-						);
+						$member = $this->get_member();
+						if(!$member->get_meta( 'ms_comm_before_finishes_sent_'.strtotime($this->expire_date) ) ){
+							$comm->add_to_queue( $this->id );
+							MS_Model_Event::save_event(
+								MS_Model_Event::TYPE_MS_BEFORE_FINISHES,
+								$this
+							);
+							// Mark the member as has received message.
+							$member->set_meta('ms_comm_before_finishes_sent_'.strtotime($this->expire_date),1);
+						}
 					}
 
 					// After finishes communication.
@@ -3097,7 +3117,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Save the new status.
 		$this->status = $next_status;
-		$this->save();
+		if( $is_public ) $this->save();
 
 		// Save the changed email queue.
 		foreach ( $comms as $comm ) {
@@ -3143,6 +3163,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this
 		);
 	}
+
+	/**
+	 * Check if property isset.
+	 *
+	 * @since  1.0.0
+	 * @internal
+	 *
+	 * @param string $property The name of a property.
+	 * @return mixed Returns true/false.
+	 */
+	public function __isset( $property ) {
+		return isset($this->$property);
+	}	
 
 	/**
 	 * Set specific property.

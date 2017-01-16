@@ -446,6 +446,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			'publicly_queryable' => false,
 			'supports' => false,
 			'hierarchical' => false,
+                        'exclude_from_search' => true
 		);
 
 		return apply_filters(
@@ -2759,4 +2760,17 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$this
 		);
 	}
+	
+	/**
+	 * Check if property isset.
+	 *
+	 * @since  1.0.0
+	 * @internal
+	 *
+	 * @param string $property The name of a property.
+	 * @return mixed Returns true/false.
+	 */
+	public function __isset( $property ) {
+		return isset($this->$property);
+	}		
 }

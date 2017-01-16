@@ -593,7 +593,7 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			if ( MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
                             if( ! defined( 'MS_DISABLE_WP_NEW_USER_NOTIFICATION' ) ){
-				wp_new_user_notification( $user->id, $user->password );
+				wp_new_user_notification( $user->id );
                             }
 			}
 

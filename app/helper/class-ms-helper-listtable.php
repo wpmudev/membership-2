@@ -377,7 +377,7 @@ class MS_Helper_ListTable {
 		$this->list_head();
 
 		if ( ! $this->has_items() && ! $this->is_search() && ! $this->is_view() ) {
-			return '';
+			//return '';
 		}
 
 		$views = $this->get_views();

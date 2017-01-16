@@ -15,8 +15,7 @@ class MS_View_Frontend_Payment extends MS_View {
 
 		$class = 'ms-alert-success';
 		$msg = __(
-			'Please check the details of the membership below and click ' .
-			'on the relevant button to complete the signup.', 'membership2'
+			'Please check the details of the membership below and click on the relevant button to complete the signup.', 'membership2'
 		);
 
 		if ( ! empty( $this->data['error'] ) ) {
