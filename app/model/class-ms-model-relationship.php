@@ -2890,11 +2890,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					// Recalculate the new Subscription status.
 					$next_status = $this->calculate_status();
 				}
-
+				
 				$deactivate = false;
 				$invoice = null;
 				$auto_renew = false;
-
+				
 				/*
 				 * Only "Recurring" memberships will ever try to automatically
 				 * renew the subscription. All other types will expire when the
@@ -2925,9 +2925,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					// Create a new invoice a few days before expiration.
 					$invoice = $this->get_next_invoice();
 				} else {
-					$invoice = $this->get_current_invoice();
+					// set to false to avoid creation of new invoice
+					$invoice = $this->get_current_invoice(false);
 				}
-
 				/**
 				 * Todo: Move the advanced communication code into some addon
 				 *       file and use this action to trigger the messages.
@@ -3047,10 +3047,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					if ( $days->deactivate_expired_after < - $days->remaining ) {
 						$deactivate = true;
 					}
+					
+					// if there was another membership configured when this membership ends
+					$new_membership_id = (int) $membership->on_end_membership_id;
+					if ( $days->remaining == 0 && $new_membership_id > 0 ) {
+						$deactivate = true;
+					}
 				}
 
 				$next_status = $this->calculate_status( null );
-
+				
 				/*
 				 * When the subscription expires the first time then create a
 				 * new event that triggers the "Expired" email.
@@ -3065,8 +3071,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$next_status = $this->status;
 
 					// Move membership to configured membership.
-					$membership = $this->get_membership();
-
 					$new_membership = MS_Factory::load(
 						'MS_Model_Membership',
 						$membership->on_end_membership_id
