@@ -1946,13 +1946,22 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					}
 				}
 
-				$desc .= sprintf(
-					$lbl,
+				$desc = apply_filters( 
+					'ms_model_relationship_get_payment_description/recurring',
+					sprintf(
+						$lbl,
+						$currency,
+						$total_price,
+						MS_Helper_Period::get_period_desc( $membership->pay_cycle_period ),
+						$membership->pay_cycle_repetitions
+					),
+					$short,
 					$currency,
 					$total_price,
-					MS_Helper_Period::get_period_desc( $membership->pay_cycle_period ),
-					$membership->pay_cycle_repetitions
-				);
+					$membership,
+					$invoice
+				 );
+
 				break;
 		}
 
