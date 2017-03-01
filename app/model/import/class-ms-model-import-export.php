@@ -255,7 +255,7 @@ class MS_Model_Import_Export extends MS_Model {
 			}
 		}
 
-		return $obj;
+		return apply_filters( 'ms_export/export_membership', $obj, $src, $membership_id, $this );
 	}
 
 	/**
@@ -293,7 +293,7 @@ class MS_Model_Import_Export extends MS_Model {
 			$obj->subscriptions[] = $this->export_relationship( $registration );
 		}
 
-		return $obj;
+		return apply_filters( 'ms_export/export_member', $obj, $src, $member_id, $this );
 	}
 
 	/**
@@ -323,7 +323,7 @@ class MS_Model_Import_Export extends MS_Model {
 			$obj->invoices[] = $this->export_invoice( $invoice );
 		}
 
-		return $obj;
+		return apply_filters( 'ms_export/export_relationship', $obj, $src, $this );
 	}
 
 	/**
@@ -352,7 +352,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->due = $src->due_date;
 		$obj->notes = $src->notes;
 
-		return $obj;
+		return apply_filters( 'ms_export/export_invoice', $obj, $src, $this );
 	}
 
 	/**
@@ -379,7 +379,7 @@ class MS_Model_Import_Export extends MS_Model {
 
 		$obj->max_uses = intval( $src->max_uses ) - intval( $src->used );
 
-		return $obj;
+		return apply_filters( 'ms_export/export_coupon', $obj, $src, $coupon_id, $this );
 	}
 
 	/**
@@ -397,7 +397,7 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj->currency = $src->currency;
 		$obj->invoice_sender = $src->invoice_sender_name;
 
-		return $obj;
+		return apply_filters( 'ms_export/export_settings', $obj, $src );
 	}
 
 	/**
