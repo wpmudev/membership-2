@@ -17,7 +17,7 @@
 
 /* Define general layout states */
 .ms-wrap {
-  margin: 10px 20px 0 2px;
+  margin: 40px 20px 0 2px;
   position: relative;
 }
 .ms-wrap input,
@@ -291,7 +291,7 @@
   margin-bottom: 0 !important;
 }
 .ms-wrap .tablenav.bottom {
-  display: none;
+  /* display: none; */
 }
 .ms-wrap .subsubsub {
   cursor: default;

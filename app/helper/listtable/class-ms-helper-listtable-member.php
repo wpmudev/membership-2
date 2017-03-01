@@ -96,6 +96,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			'ms_helper_listtable_member_get_sortable_columns',
 			array(
 				'username' => 'login',
+				'name' => 'last_name',
 				'email' => 'email',
 			)
 		);
@@ -113,9 +114,11 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$this->get_sortable_columns(),
 		);
 
+		$per_page = $this->get_items_per_page( 'members_per_page', self::DEFAULT_PAGE_SIZE );
+
 		$per_page = apply_filters(
 			'ms_helper_listtable_member_items_per_page',
-			self::DEFAULT_PAGE_SIZE
+			$per_page
 		);
 		$current_page = $this->get_pagenum();
 
@@ -301,6 +304,18 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$html = $member->email;
 		return $html;
 	}
+
+	/**
+	 * Display Name column.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param mixed $member The table item to display.
+	 */
+	public function column_name( $member ) {
+		$html = $member->first_name . ' ' . $member->last_name;
+		return $html;
+	}	
 
 	/**
 	 * Create membership column.
