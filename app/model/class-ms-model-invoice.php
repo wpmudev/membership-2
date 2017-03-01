@@ -855,6 +855,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->total_amount_changed();
 
 		$invoice->save();
+	
+		//If gateway is admin then set the invoice as paid.
+		if ( 'admin' == $invoice->gateway_id) {
+			$invoice->pay_it( $invoice->gateway_id );
+		}
 
 		return apply_filters(
 			'ms_model_relationship_create_invoice',
