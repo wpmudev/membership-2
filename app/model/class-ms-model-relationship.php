@@ -2713,10 +2713,15 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$membership = $this->get_membership();
 		$comms = MS_Model_Communication::get_communications( $membership );
 		
-		//Check if requires invitation code
-		$is_public = lib3()->is_true(
-			$membership->get_custom_data( 'no_invitation' )
-		);
+		// Check first (invitation code) data really exist
+		$invitation_code = $membership->get_custom_data( 'no_invitation' );
+		if ( $invitation_code === false || !MS_Addon_Invitation::is_active() ) {
+			// no data found so let's set public to 'true' by default
+			$is_public = true;
+		} else {
+			//now we can check if requires invitation code
+			$is_public = lib3()->is_true($invitation_code);
+		}
 
 		// Collection of all day-values.
 		$days = (object) array(
