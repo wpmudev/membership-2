@@ -108,6 +108,109 @@ class MS_View_Billing_List extends MS_View {
 			// Default billings list.
 			case 'billing':
 			default:
+
+
+
+
+                /**
+                 * For testing purpose this code will be here. Later on it will move to a separate method.
+                 *
+                 * Step 1:
+                 * First we need to get his subscription, and get the number of invoices for that sub
+                 * We match the number in current_invoice_number to the total number of invoices
+                 *
+                 * Step 2:
+                 * Associate with Stripe for the last invoice
+                 *
+                 * NOTE: only will work for single subscriptions
+                 */
+
+
+                /**
+                 * Because the issue is only with recurring payments, we get all memberships
+                 * with a price and recurring payment.
+                 */
+                $paid_memberships = MS_Model_Membership::get_memberships( array(
+                    'meta_query' => array(
+                        array(
+                            'key' => 'price',
+                            'value' => 0,
+                            'compare' => '>',
+                        ),
+                        array(
+                            'key' => 'payment_type',
+                            'value' => 'recurring',
+                        ),
+                    ),
+                ) );
+
+                // Loop over the memberships.
+                foreach ( $paid_memberships as $membership ) {
+
+                    // Bug only applies to Stripe.
+                    if ( ! $membership->can_use_gateway( 'stripeplan' ) ) {
+                        return;
+                    }
+
+                    // Get all the members in the selected membership.
+                    $members = $membership->get_members( array(
+                        'status' => 'all',
+                    ) );
+
+                    // Loop through all the memebers.
+                    /*
+                    foreach ( $members as $member ) {
+                        $subscription = $member->get_subscription( $membership->id );
+
+                        // Check if the bug is present.
+                        if ( $subscription->current_invoice_number < count( $subscription->get_invoices() ) ) {
+                            $subscription->current_invoice_number = count( $subscription->get_invoices() );
+                            $subscription->save();
+                        }
+                    }
+                    */
+
+                    // TODO: loop through all the members, not just 'av3nger' ( user_id == 3 )
+                    $member = $members[7];
+                    $subscription = $member->get_subscription( $membership->id );
+
+                    /**
+                     * The very dirty solution: we set current_invoice_number = count( $subscription->get_invoices() ).
+                     * I still need to figure out how invoices are synced. Now I have 2 invoices in the system for
+                     * the user, but 3 invoices on Stripe.
+                     *
+                     * IDEA: We can calculate the number of invoices without querying Stripe API this way.
+                     * Get the start_date and expire_date... then get $subscription->payments, the amount of
+                     * payments needs to be equal to:
+                     * Number_of_days_from_start_date / MS_Model_Membership::pay_cycle_period (converted to days)
+                     *
+                     * For debug purposes we'll just echo the values.
+                     */
+
+                    /*
+                    if ( $subscription->current_invoice_number < count( $subscription->get_invoices() ) ) {
+                        $subscription->current_invoice_number = count( $subscription->get_invoices() );
+                        $subscription->save();
+                    }*/
+
+                    echo 'current_invoice_number variable: ' . $subscription->current_invoice_number . '<br>';
+                    echo 'current invoice number ' . count( $subscription->get_current_invoice( false ) ) . '<br>';
+                    echo 'next invoice number ' . count( $subscription->get_next_invoice() ) . '<br>';
+                    echo 'first unpaid invoice number ' . count( $subscription->first_unpaid_invoice() ) . '<br>';
+                    echo 'total invoices ' . count( $subscription->get_invoices() ) . '<br>';
+
+                    //var_dump( $subscription->get_next_invoice() );
+                    //var_dump( $subscription->get_invoices() );
+                    //var_dump( $subscription );
+
+
+
+                }
+
+
+
+
+
 				$title = __( 'Billing', 'membership2' );
 
 				$listview = MS_Factory::create( 'MS_Helper_ListTable_Billing' );
