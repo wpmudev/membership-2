@@ -30,6 +30,9 @@ class MS_Model_Upgrade extends MS_Model {
 		// This is a hidden feature available in the Settings > General page.
 		add_action( 'init', array( __CLASS__, 'maybe_reset' ) );
 
+		// This is a hidden feature available in Settings > General page.
+        add_action( 'init', array( __CLASS__, 'maybe_fix_stripe_subs' ) );
+
 		// Prevent WordPress from updating the Membership plugin when the
 		// WPMU DEV Dashboard is disabled.
 		if ( ! class_exists( 'WPMUDEV_Dashboard' ) ) {
@@ -545,6 +548,52 @@ class MS_Model_Upgrade extends MS_Model {
 		exit;
 	}
 
+	static private function fix_subs() {
+        /**
+         * Because the issue is only with recurring payments, we get all memberships
+         * with a price and recurring payment.
+         */
+        $paid_memberships = MS_Model_Membership::get_memberships( array(
+            'meta_query' => array(
+                array(
+                    'key' => 'price',
+                    'value' => 0,
+                    'compare' => '>',
+                ),
+                array(
+                    'key' => 'payment_type',
+                    'value' => 'recurring',
+                ),
+            ),
+        ) );
+
+        // Loop over the memberships.
+        foreach ( $paid_memberships as $membership ) {
+
+            // Bug only applies to Stripe.
+            if ( ! $membership->can_use_gateway( 'stripeplan' ) ) {
+                return;
+            }
+
+            // Get all the members in the selected membership.
+            $members = $membership->get_members( array(
+                'status' => 'all',
+            ) );
+
+            // Loop through all the members.
+            foreach ( $members as $member ) {
+                $subscription = $member->get_subscription( $membership->id );
+
+                // Check if the bug is present.
+                if ( $subscription && ( $subscription->current_invoice_number < count( $subscription->get_invoices() ) ) ) {
+                    //$subscription->current_invoice_number = count( $subscription->get_invoices() );
+                    //$subscription->save();
+                }
+            }
+
+        }
+    }
+
 	/**
 	 * Checks several settings to make sure that M2 is fully working.
 	 *
@@ -757,6 +806,22 @@ class MS_Model_Upgrade extends MS_Model {
 			exit;
 		}
 	}
+
+	static public function maybe_fix_stripe_subs() {
+	    static $Fix_Done = false;
+
+	    if ( ! $Fix_Done ) {
+            $Fix_Done = true;
+            if ( ! self::verify_token( 'fixsub' ) ) { return false; }
+
+            self::fix_subs();
+            $msg = __( 'Membership 2 subscriptions fixed!', 'membership2' );
+            lib3()->ui->admin_message( $msg );
+
+            wp_safe_redirect( MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) );
+            exit;
+        }
+    }
 
 	/**
 	 * Checks if valid restore-options are specified. If they are, the snapshot
