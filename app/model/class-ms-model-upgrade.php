@@ -793,7 +793,7 @@ class MS_Model_Upgrade extends MS_Model {
 	}
 
 	/**
-	 * Checks if valid reset-instructions are present. If yes, then whipe the
+	 * Checks if valid reset-instructions are present. If yes, then wipe the
 	 * plugin settings.
 	 *
 	 * @since  1.0.0
