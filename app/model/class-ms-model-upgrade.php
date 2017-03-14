@@ -548,6 +548,11 @@ class MS_Model_Upgrade extends MS_Model {
 		exit;
 	}
 
+    /**
+     * Fix subscriptions with issue where Stripe payments would not go active.
+     *
+     * @since 1.0.3.4
+     */
 	static private function fix_subs() {
         /**
          * Because the issue is only with recurring payments, we get all memberships
@@ -592,6 +597,8 @@ class MS_Model_Upgrade extends MS_Model {
             }
 
         }
+
+        return;
     }
 
 	/**
@@ -807,6 +814,12 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 	}
 
+    /**
+     * Checks if valid fixsub-instructions are present. If yes, then fix the
+     * plugin subscriptions.
+     *
+     * @since  1.0.3.4
+     */
 	static public function maybe_fix_stripe_subs() {
 	    static $Fix_Done = false;
 
