@@ -915,21 +915,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 	}
 
-
-
-
-    public function bug_validation( $gateway_id = null ) {
-        $gateway = MS_Model_Gateway::factory( $gateway_id );
-        
-        return $gateway;
-
-            //M2_Stripe_Invoice::retrieve();
-
-    }
-
-
-
-
 	/**
 	 * Registers the payment and marks the invoice as paid.
 	 *

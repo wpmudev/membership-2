@@ -158,7 +158,6 @@ class MS_View_Billing_List extends MS_View {
                     ) );
 
                     // Loop through all the members.
-                    /*
                     foreach ( $members as $member ) {
                         $subscription = $member->get_subscription( $membership->id );
 
@@ -168,61 +167,6 @@ class MS_View_Billing_List extends MS_View {
                             $subscription->save();
                         }
                     }
-                    */
-
-                    // TODO: loop through all the members, not just 'av3nger' ( user_id == 3 )
-                    $member = $members[8];
-                    $subscription = $member->get_subscription( $membership->id );
-
-                    /**
-                     * The very dirty solution: we set current_invoice_number = count( $subscription->get_invoices() ).
-                     * I still need to figure out how invoices are synced. Now I have 2 invoices in the system for
-                     * the user, but 3 invoices on Stripe.
-                     *
-                     * IDEA: We can calculate the number of invoices without querying Stripe API this way.
-                     * Get the start_date and expire_date... then get $subscription->payments, the amount of
-                     * payments needs to be equal to:
-                     * Number_of_days_from_start_date / MS_Model_Membership::pay_cycle_period (converted to days)
-                     *
-                     * For debug purposes we'll just echo the values.
-                     */
-
-
-                    echo 'current_invoice_number variable: ' . $subscription->current_invoice_number . '<br>';
-                    echo 'current invoice number ' . count( $subscription->get_current_invoice( false ) ) . '<br>';
-                    // This function creates a new invoice
-                    //echo 'next invoice number ' . count( $subscription->get_next_invoice() ) . '<br>';
-                    echo 'first unpaid invoice number ' . count( $subscription->first_unpaid_invoice() ) . '<br>';
-                    echo 'total invoices ' . count( $subscription->get_invoices() ) . '<br>';
-
-/*
-                    // Get the last invoice in the system.
-                    $last_invoice = array_shift( $subscription->get_invoices() );
-
-                    if ( ! $last_invoice->is_paid() ) {
-                        //var_dump( $last_invoice->bug_validation( $last_invoice->gateway_id ) );
-                    }
-                    */
-
-
-                    //var_dump( $subscription->get_payments() );
-
-
-
-
-
-
-
-
-
-                    //var_dump( $subscription->validate_last_invoice() );
-
-                    //var_dump( $last_invoice->status_text() );
-                    //var_dump( $subscription->get_next_invoice() );
-                    //var_dump( array_shift( $subscription->get_invoices() ) );
-                    //var_dump( $subscription );
-
-
 
                 }
 
