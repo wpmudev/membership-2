@@ -591,8 +591,8 @@ class MS_Model_Upgrade extends MS_Model {
 
                 // Check if the bug is present.
                 if ( $subscription && ( $subscription->current_invoice_number < count( $subscription->get_invoices() ) ) ) {
-                    //$subscription->current_invoice_number = count( $subscription->get_invoices() );
-                    //$subscription->save();
+                    $subscription->current_invoice_number = count( $subscription->get_invoices() );
+                    $subscription->save();
                 }
             }
 
