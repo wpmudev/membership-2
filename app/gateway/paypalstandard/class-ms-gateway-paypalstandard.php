@@ -102,7 +102,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 		if ( isset( $_POST['mc_gross'] ) ) {
 			$amount = (float) $_POST['mc_gross'];
-		} elseif ( isset( $_POST['mc_amount3'] ) ) {
+		}elseif ( isset( $_POST['mc_amount3'] ) ) {
 			// mc_amount1 and mc_amount2 are for trial period prices.
 			$amount = (float) $_POST['mc_amount3'];
 		} elseif ( isset( $_POST['amount'] ) ) {
@@ -112,12 +112,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		if ( ! empty( $_POST[ 'payment_status'] ) ) {
 			$payment_status = strtolower( $_POST[ 'payment_status'] );
                         
-                        /**
-                         * Sandbox fix
-                         *
-                         * @see https://github.com/woothemes/woocommerce/blob/fa30a38c58373d9c3706cc0b7ae22032de3a2985/includes/gateways/paypal/includes/class-wc-gateway-paypal-ipn-handler.php#L55
-                         */
-                        if ( ! $this->is_live_mode() && 'pending' == $payment_status ) {
+			/**
+			* Sandbox fix
+			*
+			* @see https://github.com/woothemes/woocommerce/blob/fa30a38c58373d9c3706cc0b7ae22032de3a2985/includes/gateways/paypal/includes/class-wc-gateway-paypal-ipn-handler.php#L55
+			*/
+			if ( ! $this->is_live_mode() && 'pending' == $payment_status ) {
 				$payment_status = 'completed';
 			}
 		}
@@ -580,7 +580,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						break;
 
 					case 'pay-free':
-						if ( 0 == $invoice->total ) {
+						if($subscription->is_trial_eligible()){
+							$total = $invoice->trial_price;
+						}else{
+							$total = $invoice->total;
+						}
+						if ( 0 == $total ) {
 							$success = true;
 						} else {
 							$ignore = true;
