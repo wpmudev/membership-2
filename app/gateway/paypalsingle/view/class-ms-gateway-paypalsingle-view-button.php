@@ -109,6 +109,11 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $membership->name,
 			),
+			'no_shipping' => array(
+				'id' => 'no_shipping',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => 1,
+			),
 			'amount' => array(
 				'id' => 'amount',
 				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
