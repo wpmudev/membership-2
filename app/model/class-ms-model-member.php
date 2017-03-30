@@ -1838,10 +1838,18 @@ class MS_Model_Member extends MS_Model {
 				__( 'Please ensure the passwords match.', 'membership2' )
 			);
 		}
+		
+		$validation_errors = apply_filters(
+			'ms_model_member_validate_member_info_errors_obj',
+			$validation_errors,
+			$this
+		);
 
 		$errors = apply_filters(
 			'ms_model_member_validate_member_info_errors',
-			$validation_errors->get_error_messages()
+			$validation_errors->get_error_messages(),
+			$validation_errors,
+			$this
 		);
 
 		if ( ! empty( $errors ) ) {
