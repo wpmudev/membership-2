@@ -399,12 +399,17 @@ class MS_Controller_Plugin extends MS_Controller {
 				$slug .= '-' . $page['slug'];
 			}
 
+			$page_title = apply_filters( 'ms_admin_submenu_page_title_' . $slug, $page['title'], $slug, self::$base_slug );
+			$menu_title = apply_filters( 'ms_admin_submenu_menu_title_' . $slug, $page['title'], $slug, self::$base_slug );
+			$capability = apply_filters( 'ms_admin_submenu_capability_' . $slug, $this->capability, $slug, self::$base_slug );
+			$submenu_slug = apply_filters( 'ms_admin_submenu_slug_' . $slug, $slug, self::$base_slug );
+
 			add_submenu_page(
 				self::$base_slug,
-				strip_tags( $page['title'] ),
-				$page['title'],
-				$this->capability,
-				$slug,
+				strip_tags( $page_title ),
+				$menu_title,
+				$capability,
+				$submenu_slug,
 				array( $this, 'handle_submenu_request' )
 			);
 
