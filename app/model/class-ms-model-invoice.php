@@ -243,11 +243,13 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 	/**
 	 * Invoice notes.
+	 * When adding notes we are assigning an array, so it only makes sense to set 
+	 * this by default as an array
 	 *
 	 * @since  1.0.0
-	 * @var string
+	 * @var array
 	 */
-	protected $notes = '';
+	protected $notes = array();
 
 	/**
 	 * Invoice number.
@@ -797,7 +799,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
                 }
                 unset( $_SESSION['m2_status_check'] );
                 
-		$notes = null;
+		$notes = array();
 
 		if ( empty( $invoice_number ) ) {
 			$invoice_number = $subscription->current_invoice_number;
