@@ -206,7 +206,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		if ( empty( $status ) ) { $status = MS_Model_Relationship::STATUS_ACTIVE; }
 		$args['subscription_status'] = $status;
 
-		return $args;
+		return apply_filters( 'ms_helper_listable_member_prepare_args', $args, $status );
 	}
         
         public function column_default( $member, $column_name )
@@ -469,6 +469,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 
 		// Active, Trial, Cancelled
 		$url = esc_url_raw( remove_query_arg( 'status' ) );
+		$url = esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_ACTIVE ) );
 		$args['subscription_status'] = MS_Model_Relationship::STATUS_ACTIVE;
 		$count = MS_Model_Member::get_members_count( $args );
 		$views['active'] = array(
