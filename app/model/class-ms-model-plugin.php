@@ -390,6 +390,18 @@ class MS_Model_Plugin extends MS_Model {
 		$access = $this->get_access_info();
 
 		if ( ! $access['has_access'] ) {
+
+                        if ( $auth = filter_input( INPUT_GET, 'auth' ) ) {
+                                //set cookie when mapped domains
+                                $user_id = wp_validate_auth_cookie( $auth, 'auth' );
+                                if ( $user_id ) {
+                                        wp_set_auth_cookie( $user_id );
+
+                                        wp_redirect( get_permalink() );
+                                        exit;
+                                }
+                        }
+
 			MS_Model_Pages::create_missing_pages();
 			$no_access_page_url = MS_Model_Pages::get_page_url(
 				MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT,
