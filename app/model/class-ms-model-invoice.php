@@ -789,15 +789,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice = null;
 		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
                 
-                if( isset( $_SESSION['m2_status_check'] ) && $_SESSION['m2_status_check'] == 'inv' )
-                {
-                    $invoice_status = self::STATUS_BILLED;
-                }
-                else
-                {
-                    $invoice_status = self::STATUS_NEW;
-                }
-                unset( $_SESSION['m2_status_check'] );
+		if( isset( $_SESSION['m2_status_check'] ) && $_SESSION['m2_status_check'] == 'inv' ){
+			$invoice_status = self::STATUS_BILLED;
+		}else{
+			$invoice_status = self::STATUS_NEW;
+		}
+		unset( $_SESSION['m2_status_check'] );
                 
 		$notes = array();
 

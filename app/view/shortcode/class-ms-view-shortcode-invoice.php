@@ -104,7 +104,7 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			'ms_invoice_due_date',
 			MS_Helper_Period::format_date( $invoice->due_date ),
 			$invoice,
-                        $this,
+            $this,
 			null
 		);
 
@@ -112,8 +112,8 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			$trial_date = apply_filters(
 				'ms_invoice_trial_date',
 				MS_Helper_Period::get_period_desc( $membership->trial_period, true ),
-				$trial_invoice,
-				$invoice
+				$invoice,
+				$this
 			);
 			$trial_date .= sprintf(
 				' <small>(%s %s)</small>',
