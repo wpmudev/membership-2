@@ -115,6 +115,12 @@ class MS_Model extends MS_Hooker {
 
 		return $result;
 	}
+	
+	
+	MEETING IN MOBILE      
+	
+	
+	
 
 	/**
 	 * Called before saving model.
