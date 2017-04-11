@@ -7641,9 +7641,7 @@ msgid "Your account"
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-payment.php:18
-msgid ""
-"Please check the details of the membership below and click on the relevant button "
-"to complete the signup."
+msgid "Please check the details of the membership below and click on the relevant button to complete the signup."
 msgstr ""
 
 #: app/view/frontend/class-ms-view-frontend-payment.php:51
