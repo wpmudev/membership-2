@@ -957,10 +957,11 @@ class MS_Controller_Plugin extends MS_Controller {
 		$version = MS_Plugin::instance()->version;
 
 		// The main plugin script.
+		// Dont add dependants that hav not already loaded - Paul Kevin
 		wp_register_script(
 			'ms-admin',
 			$plugin_url . 'app/assets/js/ms-admin.js',
-			array( 'jquery', 'jquery-validate', 'm2-jquery-plugins' ), $version
+			array( 'jquery' ), $version
 		);
 
 		wp_register_script(
@@ -1082,6 +1083,12 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_admin_scripts() {
+		//Missing scripts needed for the meta box
+		lib3()->ui->js( 'm2-jquery-plugins' );
+		if( self::is_admin_page( ) ){
+			lib3()->ui->js( 'jquery-validate' );
+		}
+		lib3()->ui->js( 'ms-admin-scripts' );
 		lib3()->ui->add( 'select' );
 	}
 
