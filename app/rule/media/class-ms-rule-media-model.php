@@ -519,7 +519,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 					$request_name = pathinfo($request_name); //Get the info the of the requested file
 					$attachment_id = str_replace("ms_","",$request_name['filename']); //Remove the prefix since we always have ms_ and get the attachment id
 					
-					//$attachment_id -= (int) self::FILE_PROTECTION_INCREMENT; //I dont know why this was here
+					$attachment_id = $attachment_id - (int) self::FILE_PROTECTION_INCREMENT; //I dont know why this was here
 
 					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
 					break;
