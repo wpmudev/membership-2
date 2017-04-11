@@ -1132,6 +1132,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param string $notes
 	 */
 	public function add_notes( $notes ) {
+                if ( is_string( $this->notes ) ) {
+                    $this->notes = empty($this->notes) ? array() : (array)$this->notes;
+                }
 		$this->notes[] = apply_filters(
 			'ms_model_invoice_add_notes',
 			$notes,
