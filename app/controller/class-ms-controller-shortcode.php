@@ -591,6 +591,36 @@ class MS_Controller_Shortcode extends MS_Controller {
                                     MS_Model_Settings::PROTECTION_MSG_CONTENT,
                                     $sub->membership_id
                             );
+							if ( MS_Model_Pages::is_membership_page( $post->ID ) ){
+
+                            	$post_id = url_to_postid( $_GET['redirect_to'] );
+
+                            	$All_Memberships = MS_Model_Membership::get_memberships();
+
+                            	foreach ( $All_Memberships as $membership ) {
+                            		
+                            		if( $setting->membership_has_protection_type( MS_Model_Settings::PROTECTION_MSG_CONTENT, $membership ) ){
+
+                            			foreach ( $membership->rule_values as $post_type => $protected_items ) {
+										
+											if( in_array( $post_id, $protected_items ) ){
+											
+												$raw_message = $setting->get_protection_message(
+			                                        MS_Model_Settings::PROTECTION_MSG_CONTENT,
+			                                        $membership->id
+				                                );
+
+				                                $protection_msg .= apply_filters( 'ms_protection_msg_content/membership_msg', wpautop( $raw_message ), $membership );
+																						
+											}
+
+										}
+
+                            		}
+									
+								}
+
+                            }
                     } else {
                             $protection_msg = $setting->get_protection_message(
                                     MS_Model_Settings::PROTECTION_MSG_CONTENT
@@ -776,25 +806,36 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$data['limit_invoices'] = absint( $data['limit_invoices'] );
 		$data['limit_activities'] = absint( $data['limit_activities'] );
+		
+		/**
+		 * Alot of time the member is not defined and it shows all invoices and activities of all members
+		 * So we check if the member is defined. IF not we get the current member
+		 * Paul Kevin
+		 */
+		if(!isset($data['member'])){
+			$data['member'] = MS_Model_Member::get_current_member();
+		}
 
-		$data['member'] = MS_Model_Member::get_current_member();
-		$data['membership'] = array();
+		if( $data['member']->id != '' ){
+			$data['member'] = MS_Model_Member::get_current_member();
+			$data['membership'] = array();
 
-		$subscriptions = MS_Model_Relationship::get_subscriptions(
-			array(
-				'user_id' => $data['member']->id,
-				'status' => 'all',
-			)
-		);
-		if ( is_array( $subscriptions ) ) {
-			foreach ( $subscriptions as $subscription ) {
-				// Do not display system-memberships in Account
-				if ( $subscription->is_system() ) { continue; }
+			$subscriptions = MS_Model_Relationship::get_subscriptions(
+				array(
+					'user_id' => $data['member']->id,
+					'status' => 'all',
+				)
+			);
+			if ( is_array( $subscriptions ) && !empty( $subscriptions ) ) {
+				foreach ( $subscriptions as $subscription ) {
+					// Do not display system-memberships in Account
+					if ( $subscription->is_system() ) { continue; }
 
-				// Do not display deactivated memberships in Account
-				if ( $subscription->get_status() == MS_Model_Relationship::STATUS_DEACTIVATED ) { continue; }
+					// Do not display deactivated memberships in Account
+					if ( $subscription->get_status() == MS_Model_Relationship::STATUS_DEACTIVATED ) { continue; }
 
-				$data['subscription'][] = $subscription;
+					$data['subscription'][] = $subscription;
+				}
 			}
 		}
 

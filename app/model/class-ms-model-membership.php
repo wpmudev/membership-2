@@ -2438,6 +2438,19 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Check protection for front-end.
+	 *
+	 * Return if content is restricted for this membership.
+	 *
+	 * @since  1.0.0
+	 * @internal
+	 */
+	public function has_access_to_content( $id ) {
+		$rules = $this->get_rules_hierarchy();
+		return $rules['content']->get_rule_value($id);
+	}	
+
+	/**
 	 * Set initial protection for admin side.
 	 *
 	 * Hide restricted content for this membership.

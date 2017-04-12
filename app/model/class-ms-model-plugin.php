@@ -512,6 +512,25 @@ class MS_Model_Plugin extends MS_Model {
 
 		do_action( 'ms_setup_protection', $this );
 
+		// If multi membership addon is active and member has at least one membership with allow access then no need to protect content
+		$disable_protection = false;
+		if ( ! $this->member->is_normal_admin() && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+
+			foreach ( $this->member->subscriptions as $subscription ) {
+				// Verify status of the membership.
+				// Only active, trial or canceled (until it expires) status memberships.
+				if ( ! $this->member->has_membership( $subscription->membership_id ) ) {
+					continue;
+				}
+
+				$membership = $subscription->get_membership();
+				$membership->initialize( $subscription );
+						
+				$disable_protection = $disable_protection || $membership->has_access_to_content( MS_Rule_Content_Model::MORE_LIMIT );
+			}
+
+		}		
+
 		// Search permissions through all memberships joined.
 		foreach ( $this->member->subscriptions as $subscription ) {
 			// Verify status of the membership.
@@ -524,7 +543,7 @@ class MS_Model_Plugin extends MS_Model {
 			$membership->initialize( $subscription );
 
 			// Protection is not applied for Admin users.
-			if ( ! $this->member->is_normal_admin() ) {
+			if ( ! $this->member->is_normal_admin() && ! $disable_protection ) {
 				$membership->protect_content();
 			}
 		}

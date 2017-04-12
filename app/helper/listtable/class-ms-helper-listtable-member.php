@@ -96,6 +96,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			'ms_helper_listtable_member_get_sortable_columns',
 			array(
 				'username' => 'login',
+				'name' => 'last_name',
 				'email' => 'email',
 			)
 		);
@@ -113,9 +114,11 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$this->get_sortable_columns(),
 		);
 
+		$per_page = $this->get_items_per_page( 'members_per_page', self::DEFAULT_PAGE_SIZE );
+
 		$per_page = apply_filters(
 			'ms_helper_listtable_member_items_per_page',
-			self::DEFAULT_PAGE_SIZE
+			$per_page
 		);
 		$current_page = $this->get_pagenum();
 
@@ -203,7 +206,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		if ( empty( $status ) ) { $status = MS_Model_Relationship::STATUS_ACTIVE; }
 		$args['subscription_status'] = $status;
 
-		return $args;
+		return apply_filters( 'ms_helper_listable_member_prepare_args', $args, $status );
 	}
         
         public function column_default( $member, $column_name )
@@ -301,6 +304,18 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$html = $member->email;
 		return $html;
 	}
+
+	/**
+	 * Display Name column.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param mixed $member The table item to display.
+	 */
+	public function column_name( $member ) {
+		$html = $member->first_name . ' ' . $member->last_name;
+		return $html;
+	}	
 
 	/**
 	 * Create membership column.
@@ -454,6 +469,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 
 		// Active, Trial, Cancelled
 		$url = esc_url_raw( remove_query_arg( 'status' ) );
+		$url = esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_ACTIVE ) );
 		$args['subscription_status'] = MS_Model_Relationship::STATUS_ACTIVE;
 		$count = MS_Model_Member::get_members_count( $args );
 		$views['active'] = array(

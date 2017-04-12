@@ -308,7 +308,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$this->_api->set_gateway( $this );
 
 		$settings = MS_Plugin::instance()->settings;
-		$duration = 'once';
+		$duration = 'forever';
 		$percent_off = null;
 		$amount_off = null;
 

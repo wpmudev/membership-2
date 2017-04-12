@@ -546,10 +546,10 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * @param int $membership_id The membership id.
 	 */
 	public function remove_application( $user_id, $membership_id ) {
-		$key = self::get_transient_name( $user->id, $membership->id );
+		$key = self::get_transient_name( $user_id, $membership_id );
 
 		MS_Factory::delete_transient( $key );
-                
+
 		do_action(
 			'ms_addon_coupon_model_remove_application',
 			$user_id,
@@ -584,6 +584,9 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		}
 
 		$timestamp = MS_Helper_Period::current_time( 'timestamp' );
+		// append time on date range for accurate comparison
+		$start_date_timestamp = strtotime( $this->start_date . '00:00:00' );
+		$expire_date_timestamp = strtotime( $this->expire_date . '23:59:59' );
 
 		if ( empty( $this->code ) ) {
 			$this->coupon_message = __( 'Coupon code not found.', 'membership2' );
@@ -591,10 +594,10 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		} elseif ( $this->max_uses && $this->used >= $this->max_uses ) {
 			$this->coupon_message = __( 'No Coupons remaining for this code.', 'membership2' );
 			$valid = false;
-		} elseif ( ! empty( $this->start_date ) && strtotime( $this->start_date ) > $timestamp ) {
+		} elseif ( ! empty( $this->start_date ) && $start_date_timestamp > $timestamp ) {
 			$this->coupon_message = __( 'This Coupon is not valid yet.', 'membership2' );
 			$valid = false;
-		} elseif ( ! empty( $this->expire_date ) && strtotime( $this->expire_date ) < $timestamp ) {
+		} elseif ( ! empty( $this->expire_date ) && $expire_date_timestamp < $timestamp ) {
 			$this->coupon_message = __( 'This Coupon has expired.', 'membership2' );
 			$valid = false;
 		} else {
@@ -769,7 +772,10 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 
 				case 'expire_date':
 					$this->$property = $this->validate_date( $value );
-					if ( strtotime( $this->$property ) < strtotime( $this->start_date ) ) {
+					// append time for accurate comparison https://app.asana.com/0/10167801056814/195621111592959/f
+					$start_date_timestamp = strtotime( $this->start_date . '00:00:00' );
+					$expire_date_timestamp = strtotime( $this->$property . '23:59:59' );
+					if ( $expire_date_timestamp < $start_date_timestamp ) {
 						$this->$property = null;
 					}
 					break;

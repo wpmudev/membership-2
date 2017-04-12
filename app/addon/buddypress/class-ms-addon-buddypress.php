@@ -123,20 +123,25 @@ class MS_Addon_BuddyPress extends MS_Addon {
                         }
 
 			// Disable BuddyPress Email activation.
-			add_filter(
-				'bp_core_signup_send_activation_key',
-				'__return_false'
-			);
+            if( $this->buddypress_registration ) {
+				add_filter(
+					'bp_core_signup_send_activation_key',
+					'__return_false'
+				);
 
-			add_filter(
-				'bp_registration_needs_activation',
-				'__return_false'
-			);
+				add_filter(
+					'bp_registration_needs_activation',
+					'__return_false'
+				);
 
-			$this->add_action(
-				'bp_core_signup_user',
-				'disable_validation'
-			);
+				$this->add_action(
+					'bp_core_signup_user',
+					'disable_validation'
+				);
+
+			}	
+
+			
 		} else {
 			$this->buddypress_registration = false;
 		}

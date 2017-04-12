@@ -1120,7 +1120,13 @@ class MS_Helper_ListTable {
 			}
 
 			if ( isset( $sortable[$column_key] ) ) {
-				list( $orderby, $desc_first ) = $sortable[$column_key];
+				if( is_array($sortable[$column_key] ) ){
+					list( $orderby, $desc_first ) = $sortable[$column_key];
+				} else {
+					$orderby = $sortable[$column_key];
+					$desc_first = false;
+				}
+					
 
 				if ( $current_orderby == $orderby ) {
 					$order = 'asc' == $current_order ? 'desc' : 'asc';

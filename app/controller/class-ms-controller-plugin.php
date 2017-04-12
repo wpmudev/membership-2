@@ -399,12 +399,17 @@ class MS_Controller_Plugin extends MS_Controller {
 				$slug .= '-' . $page['slug'];
 			}
 
+			$page_title = apply_filters( 'ms_admin_submenu_page_title_' . $slug, $page['title'], $slug, self::$base_slug );
+			$menu_title = apply_filters( 'ms_admin_submenu_menu_title_' . $slug, $page['title'], $slug, self::$base_slug );
+			$capability = apply_filters( 'ms_admin_submenu_capability_' . $slug, $this->capability, $slug, self::$base_slug );
+			$submenu_slug = apply_filters( 'ms_admin_submenu_slug_' . $slug, $slug, self::$base_slug );
+
 			add_submenu_page(
 				self::$base_slug,
-				strip_tags( $page['title'] ),
-				$page['title'],
-				$this->capability,
-				$slug,
+				strip_tags( $page_title ),
+				$menu_title,
+				$capability,
+				$submenu_slug,
 				array( $this, 'handle_submenu_request' )
 			);
 
@@ -710,6 +715,23 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	/**
+	 * Checks if the current user is on any Membership2 admin page.
+	 *
+	 * @since  1.0.0
+	 * @return bool
+	 */
+	public static function is_admin_page( ) {
+		$curpage = false;
+		if ( isset( $_REQUEST['page'] ) ) {
+			$curpage = sanitize_html_class( $_REQUEST['page'] );
+		}
+
+		$slug = self::$base_slug;
+	
+		return (strpos($curpage, $slug) !== false);
+	}	
+
+	/**
 	 * Get admin url.
 	 *
 	 * @since  1.0.0
@@ -935,10 +957,11 @@ class MS_Controller_Plugin extends MS_Controller {
 		$version = MS_Plugin::instance()->version;
 
 		// The main plugin script.
+		// Dont add dependants that hav not already loaded - Paul Kevin
 		wp_register_script(
 			'ms-admin',
 			$plugin_url . 'app/assets/js/ms-admin.js',
-			array( 'jquery', 'jquery-validate', 'm2-jquery-plugins' ), $version
+			array( 'jquery' ), $version
 		);
 
 		wp_register_script(
@@ -946,11 +969,14 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/js/jquery.m2.plugins.js',
 			array( 'jquery' ), $version
 		);
-		wp_register_script(
-			'jquery-validate',
-			$plugin_url . 'app/assets/js/jquery.m2.validate.js',
-			array( 'jquery' ), $version
-		);
+
+		if( self::is_admin_page( ) ){
+			wp_register_script(
+				'jquery-validate',
+				$plugin_url . 'app/assets/js/jquery.m2.validate.js',
+				array( 'jquery' ), $version
+			);
+		}
 	}
 
 	/**
@@ -1057,6 +1083,12 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return void
 	 */
 	public function enqueue_plugin_admin_scripts() {
+		//Missing scripts needed for the meta box
+		lib3()->ui->js( 'm2-jquery-plugins' );
+		if( self::is_admin_page( ) ){
+			lib3()->ui->js( 'jquery-validate' );
+		}
+		lib3()->ui->js( 'ms-admin-scripts' );
 		lib3()->ui->add( 'select' );
 	}
 
