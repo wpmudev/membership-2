@@ -179,6 +179,38 @@ class MS_View_Settings_Edit extends MS_View {
 			);
 		}
 
+        // A "Fix subscriptions" button that can be added via URL param
+        // Intentionally not translated (purpose is dev/testing)
+        if ( ! empty( $_GET['fixsub'] ) ) {
+            $fix_url = MS_Controller_Plugin::get_admin_url(
+                'settings',
+                array( 'fixsub' => 1 )
+            );
+            $fix_url = esc_url_raw(
+                add_query_arg(
+                    MS_Model_Upgrade::get_token( 'fixsub' ),
+                    $fix_url
+                )
+            );
+            $cancel_url = esc_url_raw( remove_query_arg( 'fixsub' ) );
+
+            $desc[] = sprintf(
+                '<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
+                'Careful: This might change the subscription status of some members!',
+                sprintf(
+                    '<form method="POST" action="%s" style="padding:20px 0">' .
+                    '<label style="line-height:28px">' .
+                    '<input type="checkbox" name="confirm" value="yes" /> Yes, fix subscriptions!' .
+                    '</label><p>' .
+                    '<button class="button-primary">Do it!</button> ' .
+                    '<a href="%s" class="button">Cancel</a>' .
+                    '</p></form>',
+                    $fix_url,
+                    $cancel_url
+                )
+            );
+        }
+
 		return $desc;
 	}
 

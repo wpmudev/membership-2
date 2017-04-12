@@ -132,7 +132,7 @@ class MS_Gateway_2checkout extends MS_Gateway {
 						break;
 
 					case 'RECURRING_RESTARTED':
-						$notes = 'Ignored: Recurring payments started';
+						$notes = 'Ignored: Recurring payments restarted';
 						$success = null;
 						break;
 
