@@ -1124,6 +1124,7 @@ class MS_Helper_ListTable {
 					list( $orderby, $desc_first ) = $sortable[$column_key];
 				} else {
 					$orderby = $sortable[$column_key];
+					$desc_first = false;
 				}
 					
 

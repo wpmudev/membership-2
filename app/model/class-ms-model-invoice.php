@@ -243,11 +243,13 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 	/**
 	 * Invoice notes.
+	 * When adding notes we are assigning an array, so it only makes sense to set 
+	 * this by default as an array
 	 *
 	 * @since  1.0.0
-	 * @var string
+	 * @var array
 	 */
-	protected $notes = '';
+	protected $notes = array();
 
 	/**
 	 * Invoice number.
@@ -787,17 +789,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice = null;
 		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
                 
-                if( isset( $_SESSION['m2_status_check'] ) && $_SESSION['m2_status_check'] == 'inv' )
-                {
-                    $invoice_status = self::STATUS_BILLED;
-                }
-                else
-                {
-                    $invoice_status = self::STATUS_NEW;
-                }
-                unset( $_SESSION['m2_status_check'] );
+		if( isset( $_SESSION['m2_status_check'] ) && $_SESSION['m2_status_check'] == 'inv' ){
+			$invoice_status = self::STATUS_BILLED;
+		}else{
+			$invoice_status = self::STATUS_NEW;
+		}
+		unset( $_SESSION['m2_status_check'] );
                 
-		$notes = null;
+		$notes = array();
 
 		if ( empty( $invoice_number ) ) {
 			$invoice_number = $subscription->current_invoice_number;
@@ -1132,6 +1131,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param string $notes
 	 */
 	public function add_notes( $notes ) {
+                if ( is_string( $this->notes ) ) {
+                    $this->notes = empty($this->notes) ? array() : (array)$this->notes;
+                }
 		$this->notes[] = apply_filters(
 			'ms_model_invoice_add_notes',
 			$notes,

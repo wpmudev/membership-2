@@ -14,7 +14,11 @@ jQuery(function() {
 		var wnd, row,
 			me = jQuery( this );
 
-		if ( popup ) { return false; }
+		//Clear popup
+		//Sometimes the onclode does not work
+		if ( popup ) { 
+			popup = null;
+		 }
 
 		popup = wpmUi.popup();
 		popup.onclose( destroy_editor );
