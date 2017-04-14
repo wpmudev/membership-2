@@ -596,6 +596,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 					$sub->membership_id
 				);
 				
+				/**
+				 * Removed code edited by Panos
+				 *
 				if ( MS_Model_Pages::is_membership_page( $post->ID ) ){
 
 					$post_id = url_to_postid( $_GET['redirect_to'] );
@@ -618,6 +621,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 						}
 					}
 				}
+				*/
 			}
 			else {
 				$protection_msg = $setting->get_protection_message(
