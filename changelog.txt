@@ -8,7 +8,13 @@ Change Log:
 1.0.3.5
 ----------------------------------------------------------------------
 - Fixed: Post protection option could not be changed from post edit screen
+
+- Fixed: Duplicate Content Protection Message when custom message is enabled
+
+
+
 - Fixed: Resolved some notices
+
 
 
 1.0.3.4
