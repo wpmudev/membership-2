@@ -5,6 +5,11 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.3.5
+----------------------------------------------------------------------
+- Fixed: Post protection option could not be changed from post edit screen
+
+
 1.0.3.4
 ----------------------------------------------------------------------
 - Added: WP reCaptcha notices
@@ -12,9 +17,7 @@ Change Log:
 - Added: Adding default column in Billing table
 - Added: Hierarchical category in protection rule - category protection addon
 - Added: New Custom Logo in stripe checkout
-
 - Improved: Paypal Ship option is supressed from Paypal page
-
 - Fixed: MS_PROTECT_NETWORK still adding membership menu in subsite.
 - Fixed: BuddyPress protection rule for "All BP pages" is now working.
 - Fixed: Fatal error: Undefined function is_multisie()
