@@ -483,6 +483,7 @@ if ( ! function_exists( 'ms_account_the_membership' ) ) {
 if ( ! function_exists( 'prepare_ms_account_classes' ) ) {
 	function prepare_ms_account_classes() {
 		$subscription = MS_Helper_Template::$ms_account['subscription'];
+		$membership = $subscription->get_membership();
 		return array(
 			'ms-subscription-' . $subscription->id,
 			'ms-status-' . $subscription->status,
