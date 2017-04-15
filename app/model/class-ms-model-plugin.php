@@ -369,18 +369,18 @@ class MS_Model_Plugin extends MS_Model {
 	public function protect_current_page() {
 		do_action( 'ms_model_plugin_protect_current_page_before', $this );
                 
-                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
-                    $allowed_memberships = array();
-                    $memberships = MS_Model_Membership::get_membership_ids();
-                    foreach( $memberships as $membership_id ) {
-                        $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-                        if( $membership->has_access_to_current_page() ) {
-                            $allowed_memberships[$membership->priority] = $membership_id;
-                        }
-                    }
-                    ksort( $allowed_memberships );
-                    $protected_membership_id = reset( $allowed_memberships );
-                }
+		if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
+			$allowed_memberships = array();
+			$memberships = MS_Model_Membership::get_membership_ids();
+			foreach( $memberships as $membership_id ) {
+				$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+				if( $membership->has_access_to_current_page() ) {
+					$allowed_memberships[$membership->priority] = $membership_id;
+				}
+			}
+			ksort( $allowed_memberships );
+			$protected_membership_id = reset( $allowed_memberships );
+		}
 
 		// Admin user has access to everything.
 		if ( $this->member->is_normal_admin() ) {
