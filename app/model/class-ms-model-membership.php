@@ -2267,6 +2267,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			// If 'has access' is found in the hierarchy, it does have access.
 			$rules = $this->get_rules_hierarchy();
 			foreach ( $rules as $rule ) {
+                                $rule->_allow_without_rule = false;
 				$rule_access = $rule->has_access( $post_id );
 
 				if ( null === $rule_access ) {
