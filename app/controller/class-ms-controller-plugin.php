@@ -173,6 +173,7 @@ class MS_Controller_Plugin extends MS_Controller {
                 else
                 {
                     if ( MS_Plugin::is_network_wide() ) {
+                        $this->add_action( 'admin_menu', 'add_menu_pages' ); //for page of Protection Rules
                         $this->add_action( 'network_admin_menu', 'add_menu_pages' );
                     }
                     else
