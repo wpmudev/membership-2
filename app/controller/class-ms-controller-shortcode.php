@@ -579,54 +579,56 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$setting = MS_Plugin::instance()->settings;
 		$member = MS_Model_Member::get_current_member();
                 
-                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE && isset( $_REQUEST['membership_id'] ) ) {
-                    $protection_msg = $setting->get_protection_message(
-                            MS_Model_Settings::PROTECTION_MSG_CONTENT,
-                            $_REQUEST['membership_id']
-                    );
-                }else{
-                    if ( count( $member->subscriptions ) ) {
-                            $sub = $member->get_subscription( 'priority' );
-                            $protection_msg = $setting->get_protection_message(
-                                    MS_Model_Settings::PROTECTION_MSG_CONTENT,
-                                    $sub->membership_id
-                            );
-							if ( MS_Model_Pages::is_membership_page( $post->ID ) ){
+		if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE && isset( $_REQUEST['membership_id'] ) ) {
 
-                            	$post_id = url_to_postid( $_GET['redirect_to'] );
+			$protection_msg = $setting->get_protection_message(
+				MS_Model_Settings::PROTECTION_MSG_CONTENT,
+				$_REQUEST['membership_id']
+			);
+			
+		}
+		else{
+			if ( count( $member->subscriptions ) ) {
 
-                            	$All_Memberships = MS_Model_Membership::get_memberships();
+				$sub = $member->get_subscription( 'priority' );
+				$protection_msg = $setting->get_protection_message(
+					MS_Model_Settings::PROTECTION_MSG_CONTENT,
+					$sub->membership_id
+				);
+				
+				/**
+				 * Removed code edited by Panos
+				 *
+				if ( MS_Model_Pages::is_membership_page( $post->ID ) ){
 
-                            	foreach ( $All_Memberships as $membership ) {
-                            		
-                            		if( $setting->membership_has_protection_type( MS_Model_Settings::PROTECTION_MSG_CONTENT, $membership ) ){
+					$post_id = url_to_postid( $_GET['redirect_to'] );
+					$All_Memberships = MS_Model_Membership::get_memberships();
 
-                            			foreach ( $membership->rule_values as $post_type => $protected_items ) {
-										
-											if( in_array( $post_id, $protected_items ) ){
-											
-												$raw_message = $setting->get_protection_message(
-			                                        MS_Model_Settings::PROTECTION_MSG_CONTENT,
-			                                        $membership->id
-				                                );
+					foreach ( $All_Memberships as $membership ) {	
+						if( $setting->membership_has_protection_type( MS_Model_Settings::PROTECTION_MSG_CONTENT, $membership ) ){
+							foreach ( $membership->rule_values as $post_type => $protected_items ) {
+								if( in_array( $post_id, $protected_items ) ){
 
-				                                $protection_msg .= apply_filters( 'ms_protection_msg_content/membership_msg', wpautop( $raw_message ), $membership );
-																						
-											}
+									$raw_message = $setting->get_protection_message(
+										MS_Model_Settings::PROTECTION_MSG_CONTENT,
+										$membership->id
+									);
 
-										}
+									$protection_msg .= apply_filters( 'ms_protection_msg_content/membership_msg', wpautop( $raw_message ), $membership );
 
-                            		}
-									
 								}
-
-                            }
-                    } else {
-                            $protection_msg = $setting->get_protection_message(
-                                    MS_Model_Settings::PROTECTION_MSG_CONTENT
-                            );
-                    }
-                }
+							}
+						}
+					}
+				}
+				*/
+			}
+			else {
+				$protection_msg = $setting->get_protection_message(
+					MS_Model_Settings::PROTECTION_MSG_CONTENT
+				);
+			}
+		}	
 
 		$html = '<div class="ms-protected-content">';
 		if ( ! empty( $protection_msg ) ) {

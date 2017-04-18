@@ -369,18 +369,18 @@ class MS_Model_Plugin extends MS_Model {
 	public function protect_current_page() {
 		do_action( 'ms_model_plugin_protect_current_page_before', $this );
                 
-                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
-                    $allowed_memberships = array();
-                    $memberships = MS_Model_Membership::get_membership_ids();
-                    foreach( $memberships as $membership_id ) {
-                        $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-                        if( $membership->has_access_to_current_page() ) {
-                            $allowed_memberships[$membership->priority] = $membership_id;
-                        }
-                    }
-                    ksort( $allowed_memberships );
-                    $protected_membership_id = reset( $allowed_memberships );
-                }
+		if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
+			$allowed_memberships = array();
+			$memberships = MS_Model_Membership::get_membership_ids();
+			foreach( $memberships as $membership_id ) {
+				$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+				if( $membership->has_access_to_current_page() ) {
+					$allowed_memberships[$membership->priority] = $membership_id;
+				}
+			}
+			ksort( $allowed_memberships );
+			$protected_membership_id = reset( $allowed_memberships );
+		}
 
 		// Admin user has access to everything.
 		if ( $this->member->is_normal_admin() ) {
@@ -390,6 +390,18 @@ class MS_Model_Plugin extends MS_Model {
 		$access = $this->get_access_info();
 
 		if ( ! $access['has_access'] ) {
+
+                        if ( $auth = filter_input( INPUT_GET, 'auth' ) ) {
+                                //set cookie when mapped domains
+                                $user_id = wp_validate_auth_cookie( $auth, 'auth' );
+                                if ( $user_id ) {
+                                        wp_set_auth_cookie( $user_id );
+
+                                        wp_redirect( get_permalink() );
+                                        exit;
+                                }
+                        }
+
 			MS_Model_Pages::create_missing_pages();
 			$no_access_page_url = MS_Model_Pages::get_page_url(
 				MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT,
