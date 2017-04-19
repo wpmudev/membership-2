@@ -7,6 +7,7 @@ Change Log:
 
 1.0.3.5
 ----------------------------------------------------------------------
+- Added: Added a filter "ms_rule_url_model_exception_rule" to set exception for URL restriction addon
 - Improved: Remove Paypal "Ship to my billing address" option from express gateway as this is digital product
 - Fixed: Fatal error - Uncaught Error: [] operator not supported for strings
 - Fixed: Post protection option could not be changed from post edit screen
