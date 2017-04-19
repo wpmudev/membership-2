@@ -17,7 +17,12 @@ Change Log:
 - Fixed: Duplicate Content Protection Message when custom message is enabled
 - Fixed: Images are not getting load if media protection is enabled
 - Fixed: Applying Membership 2 Coupon is giving fatal error in PHP 7.1.3
+- Fixed: Membership was not showing in account page
+
+
+
 - Fixed: Resolved some notices
+
 
 
 
