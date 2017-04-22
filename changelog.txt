@@ -9,6 +9,8 @@ Change Log:
 ----------------------------------------------------------------------
 - Added: Added a filter "ms_rule_url_model_exception_rule" to set exception for URL restriction addon
 - Improved: Remove Paypal "Ship to my billing address" option from express gateway as this is digital product
+- Improved: wp_get_sites() deprecated function is replaced with get_sites()
+- Fixed: Protection rule could not be access from subsites when network protection was enabled
 - Fixed: Fatal error - Uncaught Error: [] operator not supported for strings
 - Fixed: Post protection option could not be changed from post edit screen
 - Fixed: Issue with MS_PAYPAL_TRIAL_SUBSCRIPTION when trial is enabled, members account was not activated
