@@ -58,6 +58,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 			} else {
 				$url = MS_Helper_Utility::get_current_url();
 			}
+			$url = apply_filters( 'ms_rule_url_model_exception_rule', $url );
 
 			if ( ! $this->has_rule_for_url( $url ) ) { return null; }
 

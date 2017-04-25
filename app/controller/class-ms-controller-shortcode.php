@@ -808,36 +808,27 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$data['limit_invoices'] = absint( $data['limit_invoices'] );
 		$data['limit_activities'] = absint( $data['limit_activities'] );
-		
-		/**
-		 * Alot of time the member is not defined and it shows all invoices and activities of all members
-		 * So we check if the member is defined. IF not we get the current member
-		 * Paul Kevin
-		 */
-		if(!isset($data['member'])){
-			$data['member'] = MS_Model_Member::get_current_member();
-		}
 
-		if( $data['member']->id != '' ){
+		if( ! isset( $data['member'] ) || $data['member']->id != '' ){
 			$data['member'] = MS_Model_Member::get_current_member();
 			$data['membership'] = array();
+		}
 
-			$subscriptions = MS_Model_Relationship::get_subscriptions(
-				array(
-					'user_id' => $data['member']->id,
-					'status' => 'all',
-				)
-			);
-			if ( is_array( $subscriptions ) && !empty( $subscriptions ) ) {
-				foreach ( $subscriptions as $subscription ) {
-					// Do not display system-memberships in Account
-					if ( $subscription->is_system() ) { continue; }
+		$subscriptions = MS_Model_Relationship::get_subscriptions(
+			array(
+				'user_id' => $data['member']->id,
+				'status' => 'all',
+			)
+		);
+		if ( is_array( $subscriptions ) && !empty( $subscriptions ) ) {
+			foreach ( $subscriptions as $subscription ) {
+				// Do not display system-memberships in Account
+				if ( $subscription->is_system() ) { continue; }
 
-					// Do not display deactivated memberships in Account
-					if ( $subscription->get_status() == MS_Model_Relationship::STATUS_DEACTIVATED ) { continue; }
+				// Do not display deactivated memberships in Account
+				if ( $subscription->get_status() == MS_Model_Relationship::STATUS_DEACTIVATED ) { continue; }
 
-					$data['subscription'][] = $subscription;
-				}
+				$data['subscription'][] = $subscription;
 			}
 		}
 

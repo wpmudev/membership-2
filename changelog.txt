@@ -7,8 +7,23 @@ Change Log:
 
 1.0.3.5
 ----------------------------------------------------------------------
+- Added: Added a filter "ms_rule_url_model_exception_rule" to set exception for URL restriction addon
+- Improved: Remove Paypal "Ship to my billing address" option from express gateway as this is digital product
+- Improved: wp_get_sites() deprecated function is replaced with get_sites()
+- Fixed: Protection rule could not be access from subsites when network protection was enabled
+- Fixed: Fatal error - Uncaught Error: [] operator not supported for strings
 - Fixed: Post protection option could not be changed from post edit screen
+- Fixed: Issue with MS_PAYPAL_TRIAL_SUBSCRIPTION when trial is enabled, members account was not activated
+- Fixed: Selection sliders were not working in some cases
+- Fixed: Second attribute could not be created
+- Fixed: New members not being added by M2 2Checkout Gateway
+- Fixed: Duplicate Content Protection Message when custom message is enabled
+- Fixed: Images are not getting load if media protection is enabled
+- Fixed: Applying Membership 2 Coupon is giving fatal error in PHP 7.1.3
+- Fixed: Membership was not showing in account page
 - Fixed: Resolved some notices
+
+
 
 
 1.0.3.4

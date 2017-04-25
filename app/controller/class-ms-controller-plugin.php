@@ -167,19 +167,16 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// Setup plugin admin UI.
 		if( ! is_multisite() )
-                {
-                    $this->add_action( 'admin_menu', 'add_menu_pages' );
-                }
-                else
-                {
-                    if ( MS_Plugin::is_network_wide() ) {
-                        $this->add_action( 'network_admin_menu', 'add_menu_pages' );
-                    }
-                    else
-                    {
-                        $this->add_action( 'admin_menu', 'add_menu_pages' );
-                    }
-                }
+		{
+			$this->add_action( 'admin_menu', 'add_menu_pages' );
+		}
+		else
+		{
+			if ( MS_Plugin::is_network_wide() ) {
+				$this->add_action( 'network_admin_menu', 'add_menu_pages' );
+			}
+			$this->add_action( 'admin_menu', 'add_menu_pages' );
+		}
 
 		// Select the right page to display.
 		$this->add_action( 'admin_init', 'route_submenu_request' );
