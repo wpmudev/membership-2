@@ -1421,6 +1421,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			// At this point we have an empty rule-instance
 			$rule = $this->get_rule( $rule_type );
 
+                        //clear role rules if not member
+                        if ( 'memberroles' === $key && $this->is_base() ) {
+                            $values = array();
+                        }
+
 			// Now we populate that rule-instance with site-specific settings.
 			$rule->populate( $values );
 		}
