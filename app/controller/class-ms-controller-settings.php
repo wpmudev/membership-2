@@ -606,17 +606,16 @@ class MS_Controller_Settings extends MS_Controller {
 	 * This actions is called once the switch in the settings is toggled
 	 * It calls th action in MS_Model_Plugin
 	 * 
+	 * @since 1.0.3.6
 	 */
 	public function ajax_action_toggle_cron(){
-		$response = array( 'success' => false );
-		//TODO : Fix the nonce check
-		if ( $this->verify_nonce()
+		if ( $this->verify_nonce( 'toggle_settings' )
 			&& $this->is_admin_user()
 		) {
-			$response = array( 'success' => true );
-			do_action( 'ms_toggle_cron', 'ms' );
+			do_action( 'ms_toggle_cron', null );
+			wp_send_json_success();
 		}
-		wp_send_json( $response );
+		wp_send_json_error();
 		
 	}
 }
