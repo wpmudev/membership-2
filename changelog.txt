@@ -5,6 +5,9 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 
+1.0.3.6
+- Added: Added setting to enable or disable cron usage for communication
+
 1.0.3.5
 ----------------------------------------------------------------------
 - Added: Added a filter "ms_rule_url_model_exception_rule" to set exception for URL restriction addon

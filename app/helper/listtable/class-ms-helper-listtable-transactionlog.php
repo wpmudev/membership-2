@@ -623,24 +623,26 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$user_id = $item->user_id;
 		if ( $user_id ) {
 			$user = get_user_by( 'id', $user_id );
-			$detail_lines[] = sprintf(
-				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
-				1,
-				__( 'User ID', 'membership2' ),
-				$user_id
-			);
-			$detail_lines[] = sprintf(
-				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
-				2,
-				__( 'Username', 'membership2' ),
-				$user->user_login
-			);
-			$detail_lines[] = sprintf(
-				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
-				3,
-				__( 'Email', 'membership2' ),
-				$user->user_email
-			);
+			if ( $user ) {
+				$detail_lines[] = sprintf(
+					'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+					1,
+					__( 'User ID', 'membership2' ),
+					$user_id
+				);
+				$detail_lines[] = sprintf(
+					'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+					2,
+					__( 'Username', 'membership2' ),
+					$user->user_login
+				);
+				$detail_lines[] = sprintf(
+					'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
+					3,
+					__( 'Email', 'membership2' ),
+					$user->user_email
+				);
+			}
 		} else {
 			$detail_lines[] = sprintf(
 				'<span class="line"><small class="line-num">%s</small><span class="line-key">%s</span> <span class="line-val">%s</span></span>',
