@@ -680,7 +680,7 @@ class MS_Model_Plugin extends MS_Model {
 					wp_schedule_event( time(), $interval, $hook );
 				}
 			} else {
-				if ( wp_next_scheduled( $hook ) ) {
+				if ( $hook == 'ms_cron_process_communications' && wp_next_scheduled( $hook ) ) {
 					wp_clear_scheduled_hook( $hook );
 				}
 			}
@@ -741,7 +741,7 @@ class MS_Model_Plugin extends MS_Model {
 			$this->setup_cron_services( $hook );
 		}
                 
-                $_SESSION['m2_status_check'] = 'inv';
+        $_SESSION['m2_status_check'] = 'inv';
 
 		// Perform the actual status checks!
 		foreach ( $subscriptions as $subscription ) {
