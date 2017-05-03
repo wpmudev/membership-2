@@ -70,19 +70,25 @@ class MS_Addon_Wprecaptcha extends MS_Addon {
 				__( 'Activate WP reCaptcha to use this Add-on', 'membership2' )
 			);
 			$list[ self::ID ]->action = '-';
+		} else {
+			
+			$list[ self::ID ]->description = sprintf(
+				'<b>%s</b>',
+				__( 'WP reCaptcha integrated', 'membership2' )
+			);
 		}
 
 		return $list;
 	}
 
 	/**
-	 * Returns true, when the BuddyPress plugin is activated.
+	 * Returns true, when the WP_reCaptcha plugin is activated.
 	 *
 	 * @since  1.0.0
 	 * @return bool
 	 */
 	static public function wp_recaptcha_active() {
-		return class_exists( 'ReCAPTCHAPlugin' );
+		return class_exists( 'WP_reCaptcha' );
 	}
 
 	public function check_captcha_validation( $errors ) {
