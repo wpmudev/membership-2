@@ -74,7 +74,7 @@ class MS_Addon_Wprecaptcha extends MS_Addon {
 			
 			$list[ self::ID ]->description = sprintf(
 				'<b>%s</b>',
-				__( 'WP reCaptcha integrated', 'membership2' )
+				__( 'WP reCaptcha activated', 'membership2' )
 			);
 		}
 
@@ -101,7 +101,7 @@ class MS_Addon_Wprecaptcha extends MS_Addon {
 		$valid = WP_reCaptcha::instance()->recaptcha_check();
 		
 		if ( ! $valid ) {
-			$errors->add( 'captcha_wrong', __( 'Invalid Captcha', 'membership2' ) );
+			$errors->add( 'captcha_error', __( 'Invalid Captcha', 'membership2' ) );
 		} 
 
 		return $errors;
