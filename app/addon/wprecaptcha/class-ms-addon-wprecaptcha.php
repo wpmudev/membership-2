@@ -92,23 +92,28 @@ class MS_Addon_Wprecaptcha extends MS_Addon {
 	}
 
 	public function check_captcha_validation( $errors ) {
-		$options = WPPlugin::retrieve_options( 'recaptcha_options' );
 
-		if ( empty( $_POST['g-recaptcha-response'] ) ) {
-			$errors->add( 'blank_captcha', $options['no_response_error'] );
+		if ( empty( $_POST['g-recaptcha-response'] ) || empty( $_POST['recaptcha_challenge_field'] ) ) {
+			$errors->add( 'blank_captcha', __( 'No response', 'membership2' ) );
 			return $errors;
 		}
 
-		$reCaptchaLib = new ReCaptcha( $options['secret'] );
+		$reCaptchaLib = null;
 
-		$response = $reCaptchaLib->verifyResponse(
-			$_SERVER['REMOTE_ADDR'],
-			$_POST['g-recaptcha-response']
-		);
-
-		// response is bad, add incorrect response error
-		if ( ! $response->success ) {
-			$errors->add( 'captcha_wrong', $response->error );
+		if ( ! empty( $_POST['g-recaptcha-response'] ) ){
+			$reCaptchaLib = new WP_reCaptcha_NoCaptcha();
+		} else if ( ! empty( $_POST['recaptcha_challenge_field'] ) ){
+			$reCaptchaLib = new WP_reCaptcha_ReCaptcha();
+		}
+		
+		if ( $reCaptchaLib != null ) {
+			if ( ! $reCaptchaLib->check() ) {
+				$errors->add( 'captcha_wrong', $response->error );
+			} else {
+				$errors->add( 'captcha_error', __( 'General Error', 'membership2' ) );
+			}
+		} else {
+			$errors->add( 'captcha_error', __( 'Response Error', 'membership2' ) );
 		}
 
 		return $errors;
