@@ -98,23 +98,11 @@ class MS_Addon_Wprecaptcha extends MS_Addon {
 			return $errors;
 		}
 
-		$reCaptchaLib = null;
-
-		if ( ! empty( $_POST['g-recaptcha-response'] ) ){
-			$reCaptchaLib = new WP_reCaptcha_NoCaptcha();
-		} else if ( ! empty( $_POST['recaptcha_challenge_field'] ) ){
-			$reCaptchaLib = new WP_reCaptcha_ReCaptcha();
-		}
+		$valid = WP_reCaptcha::instance()->recaptcha_check();
 		
-		if ( $reCaptchaLib != null ) {
-			if ( ! $reCaptchaLib->check() ) {
-				$errors->add( 'captcha_wrong', $response->error );
-			} else {
-				$errors->add( 'captcha_error', __( 'General Error', 'membership2' ) );
-			}
-		} else {
-			$errors->add( 'captcha_error', __( 'Response Error', 'membership2' ) );
-		}
+		if ( ! $valid ) {
+			$errors->add( 'captcha_wrong', __( 'Invalid Captcha', 'membership2' ) );
+		} 
 
 		return $errors;
 	}
