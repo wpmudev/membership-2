@@ -22,6 +22,7 @@ class MS_Controller_Settings extends MS_Controller {
 	const AJAX_ACTION_UPDATE_SETTING = 'update_setting';
 	const AJAX_ACTION_UPDATE_CUSTOM_SETTING = 'update_custom_setting';
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
+	const AJAX_ACTION_TOGGLE_CRON = 'toggle_cron';
 
 	/**
 	 * Settings tabs.
@@ -76,6 +77,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
+		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_CRON, 'ajax_action_toggle_cron' );
 
 	}
 
@@ -596,5 +598,24 @@ class MS_Controller_Settings extends MS_Controller {
 
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+	}
+	
+	/**
+	 * Toggle Cron once enabled or disabled
+	 *
+	 * This actions is called once the switch in the settings is toggled
+	 * It calls th action in MS_Model_Plugin
+	 * 
+	 * @since 1.0.3.6
+	 */
+	public function ajax_action_toggle_cron(){
+		if ( $this->verify_nonce( 'toggle_settings' )
+			&& $this->is_admin_user()
+		) {
+			do_action( 'ms_toggle_cron', null );
+			wp_send_json_success();
+		}
+		wp_send_json_error();
+		
 	}
 }

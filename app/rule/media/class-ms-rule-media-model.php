@@ -219,9 +219,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 			return $the_content;
 		}
 
-		$upload_dir = wp_upload_dir();
-		$original_url = trailingslashit( $upload_dir['baseurl'] );
-		$new_path = trailingslashit(
+		$upload_dir 	= wp_upload_dir();
+		$original_url 	= trailingslashit( $upload_dir['baseurl'] );
+		$new_path 		= trailingslashit(
 			trailingslashit( get_option( 'home' ) ) .
 			$download_settings['masked_url']
 		);
