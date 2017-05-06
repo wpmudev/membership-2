@@ -113,6 +113,7 @@ class MS_Model_Plugin extends MS_Model {
 		$this->add_filter( 'cron_schedules', 'cron_time_period' );
 		$this->add_filter( 'ms_run_cron_services', 'run_cron_services' );
 		$this->add_action( 'ms_cron_check_membership_status', 'check_membership_status' );
+		$this->add_action( 'ms_toggle_cron', 'setup_cron_services', 1 );
 
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 
@@ -670,11 +671,20 @@ class MS_Model_Plugin extends MS_Model {
 			'ms_cron_check_membership_status' => '6hours',
 			'ms_cron_process_communications' => 'hourly',
 		);
+		
+		$settings = MS_Factory::load( 'MS_Model_settings' );
 
 		foreach ( $jobs as $hook => $interval ) {
-			if ( ! wp_next_scheduled( $hook ) || $hook == $reschedule ) {
-				wp_schedule_event( time(), $interval, $hook );
+			if ( $settings->enable_cron_use ) {
+				if ( ! wp_next_scheduled( $hook ) || $hook == $reschedule ) {
+					wp_schedule_event( time(), $interval, $hook );
+				}
+			} else {
+				if ( $hook == 'ms_cron_process_communications' && wp_next_scheduled( $hook ) ) {
+					wp_clear_scheduled_hook( $hook );
+				}
 			}
+			
 		}
 
 		do_action( 'ms_model_plugin_setup_cron_services_after', $this );
@@ -731,7 +741,7 @@ class MS_Model_Plugin extends MS_Model {
 			$this->setup_cron_services( $hook );
 		}
                 
-                $_SESSION['m2_status_check'] = 'inv';
+        $_SESSION['m2_status_check'] = 'inv';
 
 		// Perform the actual status checks!
 		foreach ( $subscriptions as $subscription ) {

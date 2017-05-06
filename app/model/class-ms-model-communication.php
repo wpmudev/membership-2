@@ -937,6 +937,31 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Process Message directly without sending to queue
+	 *
+	 * @api
+	 * @param  MS_Model_Relationship $subscription The subscription to send message to.
+	 */
+	public function process_message_direct( $subscription ){
+		if ( $this->enabled ) {
+			if ( $subscription ) {
+
+				$was_sent = $this->send_message( $subscription );
+
+				if ( ! $was_sent ) {
+					$msg = sprintf(
+						'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
+						$this->type,
+						$subscription->id,
+						$subscription->user_id
+					);
+					lib3()->debug->log( $msg );
+				}
+			}
+		}
+	}
+
+	/**
 	 * Enqueue a message in the "send queue".
 	 *
 	 * Action handler hooked up in child classes.
@@ -949,9 +974,16 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	public function enqueue_messages( $event, $subscription ) {
 		do_action( 'ms_model_communication_enqueue_messages_before', $this );
 
+		$settings = MS_Factory::load( 'MS_Model_settings' );
+
 		if ( $this->enabled ) {
-			$this->add_to_queue( $subscription->id );
-			$this->save();
+			if ( $settings->enable_cron_use ) {
+				$this->add_to_queue( $subscription->id );
+				$this->save();
+			} else {
+				//Process messaging directly if cron is disabled
+				$this->process_message_direct( $subscription->id );
+			}
 		}
 
 		do_action( 'ms_model_communication_enqueue_messages_after', $this );

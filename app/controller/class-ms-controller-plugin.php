@@ -1085,7 +1085,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		if( self::is_admin_page( ) ){
 			lib3()->ui->js( 'jquery-validate' );
 		}
-		lib3()->ui->js( 'ms-admin-scripts' );
+		lib3()->ui->js( 'ms-admin' );
 		lib3()->ui->add( 'select' );
 	}
 
