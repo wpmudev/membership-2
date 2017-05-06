@@ -135,14 +135,14 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id, $admin_has_access = true ) {
-		$has_access = null;
-		$allowed = null;
+		$has_access = false;
+		$allowed = false;
 		$forbidden = false;
 
 		$taxonomies = get_object_taxonomies( get_post_type() );
 
 		// Verify post access accordingly to category rules.
-		if ( false === empty( $id )
+		if ( !empty( $id )
 			|| ( is_single() && in_array( 'category', $taxonomies ) )
 		) {
 			if ( empty( $id ) ) {
