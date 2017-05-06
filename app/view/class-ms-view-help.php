@@ -1681,6 +1681,10 @@ class MS_View_Help extends MS_View {
 			<strong><?php _ex( 'Reset', 'help', 'membership2' ); ?></strong><br />
 			<?php _ex( 'Open the Settings page and add <code>&reset=1</code> to the URL. A prompt is displayed that can be used to reset all Membership2 settings. Use this to clean all traces after testing the plugin.', 'help', 'membership2' ); ?>
 		</p>
+        <p>
+            <strong><?php _ex( 'Fix subscriptions', 'help', 'membership2' ); ?></strong><br />
+            <?php _ex( 'Open the Settings page and add <code>&fixsub=1</code> to the URL. A prompt is displayed that can be used to fix Membership2 subscriptions. Use this to fix subscriptions that are out of sync with Stripe.', 'help', 'membership2' ); ?>
+        </p>
 		<p>
 			<strong><?php _ex( 'Stop Emails', 'help', 'membership2' ); ?></strong><br />
 			<?php _ex( 'In wp-config.php add the line <code>define( "MS_STOP_EMAILS", true );</code> to force Procted Content to <em>not</em> send any emails to Members. This can be used when testing to prevent your users from getting email notifications.', 'help', 'membership2' ); ?>

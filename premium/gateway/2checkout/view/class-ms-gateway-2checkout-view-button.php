@@ -139,9 +139,40 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 			),
 		);
 
-		if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type ) {
-			#'li_0_reccurance' = '2 days'   // Can use # Week / # Month / # Year
-			#'li_0_duration' = 'Forever'    // Same as _recurrence, with additional "Forever" option
+		//Set up payment parameters for the different payment types
+		switch ( $membership->payment_type ) {
+			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
+				$period_type = MS_Helper_Period::get_period_value(
+					$membership->pay_cycle_period,
+					'period_type'
+				);
+				$original_period_type = ucfirst($period_type[0]);
+				$period_type = strtoupper( $period_type[0] );
+				$period_value = MS_Helper_Period::get_period_value(
+					$membership->pay_cycle_period,
+					'period_unit'
+				);
+				$period_value = MS_Helper_Period::validate_range(
+					$period_value,
+					$period_type
+				);
+
+				//Recurrence of subscription
+				$fields['li_0_recurrence'] = array(
+					'id' => 'li_0_recurrence',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => $period_value.' '.$original_period_type,
+				);
+
+				//Set duration to continue billing until cancelled
+				$fields['li_0_duration'] = array(
+					'id' => 'li_0_duration',
+					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'value' => 'Forever',
+				);
+
+				break;
+			
 		}
 
 		if ( false !== strpos( $gateway->pay_button_url, '://' ) ) {

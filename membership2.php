@@ -2,7 +2,7 @@
 /* start:pro *//**
  * Plugin Name: Membership 2 Pro
  * Plugin URI:  https://premium.wpmudev.org/project/membership/
- * Version:     1.0.3.4
+ * Version:     1.0.3.5
  * Build Stamp: BUILDTIME
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
@@ -87,7 +87,7 @@ function membership2_init_app() {
 	 */
 	define(
 		'MS_PLUGIN_VERSION'
-		/* start:pro */, '1.0.3.4'/* end:pro */
+		/* start:pro */, '1.0.3.5'/* end:pro */
 		/* start:free */, '4.0.1.3'/* end:free */
 	);
 
@@ -443,6 +443,14 @@ if ( isset( $_REQUEST['ms_ajax'] ) ) {
 						$enforce
 					);
 				}
+
+                                //checking domains
+                                $url1 = parse_url( home_url() );
+                                $url2 = parse_url( $resp['redirect'] );
+                                if (strpos($url2['host'], $url1['host']) === false) {
+                                    //add 'auth' param for set cookie when mapped domains
+                                    $resp['redirect'] = add_query_arg( array('auth' => wp_generate_auth_cookie( $user_signon->ID, time() + MINUTE_IN_SECONDS )), $resp['redirect']);
+                                }
 			}
 
 			echo json_encode( $resp );
