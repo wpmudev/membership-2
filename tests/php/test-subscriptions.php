@@ -236,7 +236,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$invoice2->pay_it( 'stripe', 'external_123' );
 		$this->assertEquals( MS_Model_Relationship::STATUS_ACTIVE, $subscription->status, 'Active status' );
 		$this->assertEquals( $start_date, $subscription->start_date );
-		$this->assertEquals( $trial_end, $subscription->expire_date );
+		$this->assertEquals( '', $subscription->expire_date );
 		$this->assertEquals( $trial_end, $subscription->trial_expire_date );
 	}
 
