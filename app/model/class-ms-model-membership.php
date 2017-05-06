@@ -1422,7 +1422,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$rule = $this->get_rule( $rule_type );
 
                         //clear role rules if not member
-                        if ( 'memberroles' === $key && $this->is_base() ) {
+                        if ( MS_Rule_MemberRoles::RULE_ID === $key && $this->is_base() ) {
                             $values = array();
                         }
 
