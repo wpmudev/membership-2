@@ -3092,14 +3092,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						/*
 						 * If the new membership is paid we want that the user
 						 * confirms the payment in his account. So we set it
-						 * to "Pending" first.
+						 * to "Pending" first. If its free we set it as active
 						 */
 						if ( ! $new_membership->is_free() ) {
 							$new_subscription->status = self::STATUS_PENDING;
 						} else {
 							$new_subscription->status = self::STATUS_ACTIVE;
-                                                }
-                                                $new_subscription->save();
+                        }
+                        $new_subscription->save();
 					}
 				}
 				break;
