@@ -84,6 +84,14 @@ class MS_Rule extends MS_Model {
 	 */
 	protected $_subscription_id = 0;
 
+        /**
+	 * Allow access without protection rule
+	 *
+	 * @since  1.0.3.6
+	 * @var   bool
+	 */
+        protected $_allow_without_rule = true;
+
 	/**
 	 * Class constructor.
 	 *
@@ -574,12 +582,16 @@ class MS_Rule extends MS_Model {
 	 *             no matter how protection is set up. False will ignore the
 	 *             admin status and check protection rules normaly.
 	 *
-	 * @return boolean TRUE if has access, FALSE otherwise.
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page
+         *         When $this->_allow_without_rule = false - you can not allow access unless there is not protection rule,
+         *         protection rule can be in other modules
 	 */
 	public function has_access( $id, $admin_has_access = true ) {
 		if ( $admin_has_access && MS_Model_Member::is_normal_admin() ) {
 			return true;
 		}
+                $only_this = $this->_allow_without_rule;
 
 		/*
 		 * $access will be one of these:
@@ -593,9 +605,11 @@ class MS_Rule extends MS_Model {
 			/*
 			 * Base rule ..
 			 *   - The meaning of TRUE/FALSE is inverted
-			 *   - NULL is always "allowed"
+			 *   - NULL is always "allowed" for $only_this
 			 */
-			$access = ! $access;
+                         if ( $only_this || MS_Model_Rule::RULE_VALUE_UNDEFINED !== $access ) {
+                            $access = ! $access;
+                         }
 		} else {
 			// Apply dripped-content rules if neccessary.
 			if ( $access && $this->has_dripped_rules( $id ) ) {
@@ -615,14 +629,16 @@ class MS_Rule extends MS_Model {
 				$access = strtotime( $now ) >= strtotime( $avail_date );
 			}
 
-			if ( MS_Model_Rule::RULE_VALUE_UNDEFINED === $access ) {
+			if ( $only_this && MS_Model_Rule::RULE_VALUE_UNDEFINED === $access ) {
 				// NULL .. "not-denied" is translated to "allowed"
 				$access = true;
-			}
+                        }
 		}
 
-		// At this point $access can either be TRUE or FALSE, not NULL!
-		$access = (bool) $access;
+                if ( $only_this ) {
+                    // At this point $access can either be TRUE or FALSE, not NULL!
+                    $access = (bool) $access;
+                }
 
 		return apply_filters(
 			'ms_rule_has_access',
