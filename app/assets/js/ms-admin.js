@@ -2344,9 +2344,9 @@ window.ms_init.view_settings = function init () {
 	function hide_footer( ev, data ) {
 		// Show/Hide the footer for Membership2.
 		if ( !data.value ) {
-			jQuery( '.ms-settings-footer' ).hide();
+			jQuery( '.ms-settings-email-cron' ).hide();
 		} else {
-			jQuery( '.ms-settings-footer' ).show();
+			jQuery( '.ms-settings-email-cron' ).show();
 		}
 		var ajax_data = jQuery( '.wpmui-slider-enable_cron_use .wpmui-toggle').attr('data-wpmui-ajax');
 		ajax_data = JSON.parse(ajax_data);

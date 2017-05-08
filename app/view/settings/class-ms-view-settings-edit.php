@@ -262,9 +262,8 @@ class MS_View_Settings_Edit extends MS_View {
 		);
 		$lbl_run = __( 'Run now!', 'membership2' );
 
-		$show_css = ( !$show ) ? 'style="display:none"' : ''; 
 
-		echo '<div class="cf ms-settings-footer" '.$show_css.'><div class="ms-tab-container">&nbsp;</div>';
+		echo '<div class="cf ms-settings-footer"><div class="ms-tab-container">&nbsp;</div>';
 		echo '<div>';
 
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
@@ -280,20 +279,23 @@ class MS_View_Settings_Edit extends MS_View {
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			_e( 'Sending Email Responses is disabled.', 'membership2' );
 		} else {
-			$count = MS_Model_Communication::get_queue_count();
-			if ( ! $count ) {
-				$msg = __( 'No pending Email Responses found', 'membership2' );
-			} elseif ( 1 == $count ) {
-				$msg = __( 'Send 1 pending Email Response %1$s', 'membership2' );
-			} else {
-				$msg = __( 'Send %2$s pending Email Responses %1$s', 'membership2' );
+			if ( !$show ) {
+				$count = MS_Model_Communication::get_queue_count();
+				if ( ! $count ) {
+					$msg = __( 'No pending Email Responses found', 'membership2' );
+				} elseif ( 1 == $count ) {
+					$msg = __( 'Send 1 pending Email Response %1$s', 'membership2' );
+				} else {
+					$msg = __( 'Send %2$s pending Email Responses %1$s', 'membership2' );
+				}
+				echo '<span class="ms-settings-email-cron">';
+				printf(
+					$msg,
+					'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>',
+					$count
+				);
+				echo '</span>';
 			}
-
-			printf(
-				$msg,
-				'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>',
-				$count
-			);
 		}
 
 		echo '</div></div>';
