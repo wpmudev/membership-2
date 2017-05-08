@@ -681,6 +681,7 @@ class MS_Model_Plugin extends MS_Model {
 				}
 			} else {
 				if ( $hook == 'ms_cron_process_communications' && wp_next_scheduled( $hook ) ) {
+					do_action( 'ms_cron_process_communications' ); //Send any pending emails 
 					wp_clear_scheduled_hook( $hook );
 				}
 			}

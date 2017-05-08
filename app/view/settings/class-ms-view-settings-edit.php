@@ -232,7 +232,6 @@ class MS_View_Settings_Edit extends MS_View {
 		if ( 'general' != $tab_name ) { return; }
 
 		$status_stamp = wp_next_scheduled( 'ms_cron_check_membership_status' ) - time();
-		$email_stamp = wp_next_scheduled( 'ms_cron_process_communications' ) - time();
 
 		if ( $status_stamp > 0 ) {
 			$status_delay = sprintf(
@@ -244,22 +243,10 @@ class MS_View_Settings_Edit extends MS_View {
 			$status_delay = __( '(now...)', 'membership2' );
 		}
 
-		if ( $email_stamp > 0 ) {
-			$email_delay = sprintf(
-				__( 'in %s hrs %s min', 'membership2' ),
-				floor( ($email_stamp - 1) / 3600 ),
-				date( 'i', $email_stamp )
-			);
-		} else {
-			$email_delay = __( '(now...)', 'membership2' );
-		}
-
 		$status_url = esc_url_raw(
 			add_query_arg( array( 'run_cron' => 'ms_cron_check_membership_status' ) )
 		);
-		$email_url = esc_url_raw(
-			add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) )
-		);
+		
 		$lbl_run = __( 'Run now!', 'membership2' );
 
 
@@ -279,6 +266,23 @@ class MS_View_Settings_Edit extends MS_View {
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			_e( 'Sending Email Responses is disabled.', 'membership2' );
 		} else {
+			
+			$email_stamp = wp_next_scheduled( 'ms_cron_process_communications' ) - time();
+			
+			if ( $email_stamp > 0 ) {
+				$email_delay = sprintf(
+					__( 'in %s hrs %s min', 'membership2' ),
+					floor( ($email_stamp - 1) / 3600 ),
+					date( 'i', $email_stamp )
+				);
+			} else {
+				$email_delay = __( '(now...)', 'membership2' );
+			}
+			
+			$email_url = esc_url_raw(
+				add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) )
+			);
+			
 			if ( !$show ) {
 				$count = MS_Model_Communication::get_queue_count();
 				if ( ! $count ) {
