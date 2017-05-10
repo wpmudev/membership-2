@@ -960,7 +960,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery' ), $version
 		);
 
-		if( self::is_admin_page( ) ){
+		if ( !wp_script_is( 'jquery-validate', 'registered' ) ){
 			wp_register_script(
 				'jquery-validate',
 				$plugin_url . 'app/assets/js/jquery.m2.validate.js',
