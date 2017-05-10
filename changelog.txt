@@ -9,6 +9,7 @@ Change Log:
 - Added: Added setting to enable or disable cron usage for communication
 - Added: Emails can now be sent directly or scheduled through the setting
 - Added: Integration with new reCaptcha plugin to the reCaptcha Addon
+- Added: Option for Admin created members to generate an invoice to the membership
 - Fixed: Multiple Invoice creation
 - Fixed: Invoice status not changing for free payments
 - Fixed: Protection with many addons enabled

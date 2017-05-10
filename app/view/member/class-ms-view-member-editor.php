@@ -337,31 +337,31 @@ class MS_View_Member_Editor extends MS_View {
 				}
 
 				$field_start = array(
-					'name' => 'mem_' . $the_membership->id . '[start]',
-					'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+					'name' 	=> 'mem_' . $the_membership->id . '[start]',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 					'value' => $subscription->start_date,
 				);
 				$field_expire = array(
-					'name' => 'mem_' . $the_membership->id . '[expire]',
-					'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+					'name' 	=> 'mem_' . $the_membership->id . '[expire]',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_DATEPICKER,
 					'value' => $subscription->expire_date,
 				);
 				$field_status = array(
-					'name' => 'mem_' . $the_membership->id . '[status]',
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'value' => $subscription->status,
+					'name' 			=> 'mem_' . $the_membership->id . '[status]',
+					'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+					'value' 		=> $subscription->status,
 					'field_options' => $status_options,
 				);
 
 				$fields['subscriptions'][] = array(
-					'name' => 'memberships[]',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'name' 	=> 'memberships[]',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $the_membership->id,
 				);
 
 				$fields['subscriptions'][] = array(
 					'title' => $the_membership->get_name_tag(),
-					'type' => MS_Helper_Html::TYPE_HTML_TABLE,
+					'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
 					'value' => array(
 						array(
 							__( 'Subscription ID', 'membership2' ),
@@ -395,7 +395,7 @@ class MS_View_Member_Editor extends MS_View {
 			}
 		} else {
 			$fields['subscriptions'][] = array(
-				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 				'value' => __( 'This user does not have any subscriptions yet.', 'membership2' ),
 			);
 		}
@@ -404,19 +404,22 @@ class MS_View_Member_Editor extends MS_View {
 		if ( count( $unused_memberships ) ) {
 			$options = array();
 
+			$new_member = false;
+
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
-				$field_type = MS_Helper_Html::INPUT_TYPE_CHECKBOX;
-				$group_title = __( 'Add Subscriptions', 'membership2' );
+				$field_type 	= MS_Helper_Html::INPUT_TYPE_CHECKBOX;
+				$group_title 	= __( 'Add Subscriptions', 'membership2' );
 			} else {
-				$field_type = MS_Helper_Html::INPUT_TYPE_RADIO;
-				$group_title = __( 'Set Subscription', 'membership2' );
+				$field_type 	= MS_Helper_Html::INPUT_TYPE_RADIO;
+				$group_title 	= __( 'Set Subscription', 'membership2' );
+				$new_member 	= true;
 			}
 
 			$fields['subscriptions'][] = array(
 				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			);
 			$fields['subscriptions'][] = array(
-				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 				'class' => 'group-title',
 				'value' => $group_title,
 			);
@@ -424,15 +427,27 @@ class MS_View_Member_Editor extends MS_View {
 				$options[$the_membership->id] = $the_membership->get_name_tag();
 			}
 			$fields['subscriptions'][] = array(
-				'id' => 'subscribe',
-				'type' => $field_type,
+				'id' 			=> 'subscribe',
+				'type' 			=> $field_type,
 				'field_options' => $options,
 			);
 			$fields['subscriptions'][] = array(
-				'id' => 'user_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'user_id',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $user->id,
 			);
+
+			//Add option to create an invoice. 
+			//Manually created memberships do not create invoices
+			if ( $new_member ) {
+				$fields['subscriptions'][] = array(
+					'title' => __( 'Create Invoice', 'membership2' ),
+					'desc' 	=> __( 'Manually create an invoice for the new membership to the user.', 'membership2' ),
+					'name' 	=> 'create_invoice',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+					'value' => false,
+				);
+			}
 		}
 
 		if ( $user->subscriptions ) {

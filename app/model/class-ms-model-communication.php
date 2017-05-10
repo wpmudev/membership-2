@@ -925,7 +925,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 						$subscription->id,
 						$subscription->user_id
 					);
-					lib3()->debug->log( $msg );
+					$this->log( $msg );
 				}
 			}
 
@@ -944,7 +944,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public function process_message_direct( $subscription ){
 		if ( $this->enabled ) {
-			if ( $subscription ) {
+			if ( $subscription && is_object( $subscription ) ) {
 
 				$was_sent = $this->send_message( $subscription );
 
@@ -955,7 +955,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 						$subscription->id,
 						$subscription->user_id
 					);
-					lib3()->debug->log( $msg );
+					$this->log( $msg );
 				}
 			}
 		}
@@ -1029,7 +1029,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$this->type,
 				$subscription->user_id
 			);
-			lib3()->debug->log( $msg );
+			$this->log( $msg );
 
 			return false;
 		}
@@ -1159,7 +1159,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$this->type,
 				$user_id
 			);
-			lib3()->debug->log( $msg );
+			$this->log( $msg );
 
 			return false;
 		}
@@ -1191,7 +1191,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					$this->type,
 					$user_id
 				);
-				lib3()->debug->log( $msg );
+				$this->log( $msg );
 				return false;
 			}
 		}
@@ -1203,14 +1203,14 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$this
 		);
 
-		if ( $this->enabled ) {
+		if ( $this->enabled && is_object( $member ) ) {
 			if ( ! is_email( $member->email ) ) {
 				$msg = sprintf(
 					'Invalid user email. User_id: %1$s, email: %2$s',
 					$user_id,
 					$member->email
 				);
-				lib3()->debug->log( $msg );
+				$this->log( $msg );
 
 				return false;
 			}
@@ -1327,7 +1327,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				implode( '>, <', $recipients ),
 				$sent ? 'OK' : 'ERR'
 			);
-			lib3()->debug->log( $msg );
+			$this->log( $msg );
 		}
 
 		do_action(

@@ -691,7 +691,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
-				$subscription->current_invoice_number
+				$subscription->current_invoice_number 
 			);
 		}
 
