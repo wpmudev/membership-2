@@ -847,9 +847,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice,
 			$subscription
 		);
-
-		$invoice->save();
-
+		
 		// Refresh the tax-rate and payment description.
 		$invoice->total_amount_changed();
 

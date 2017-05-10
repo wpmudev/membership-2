@@ -466,9 +466,9 @@ class MS_Factory {
 		$ignore[] = 'actions';
 		$ignore[] = 'filters';
 		$ignore[] = 'ignore_fields';
-                if ( !empty( $model->current_invoice_number ) ) {
-                    $ignore[] = 'current_invoice_number';
-                }
+		if ( !empty( $model->current_invoice_number ) ) {
+			$ignore[] = 'current_invoice_number';
+		}
 
 		foreach ( $fields as $field => $val ) {
 			if ( '_' === $field[0] || in_array( $field, $ignore ) ) {
