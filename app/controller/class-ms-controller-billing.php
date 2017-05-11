@@ -446,6 +446,10 @@ class MS_Controller_Billing extends MS_Controller {
 				$subscription->set_gateway( $gateway_id );
 			}
 
+			if ( ! isset( $fields['modify_date'] ) || ! $fields['modify_date'] ) {
+				$subscription->set_recalculate_expire_date( false );
+			}
+
 			$invoice_id = intval( $fields['invoice_id'] );
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 			if ( ! $invoice->is_valid() ) {
