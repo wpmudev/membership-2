@@ -422,7 +422,7 @@ class MS_Controller_Member extends MS_Controller {
 						$user->add_membership( $subscribe_to, 'admin' );
 
 						if ( isset ( $_POST['create_invoice'] ) && $_POST['create_invoice'] ) {
-							
+							//Get the payment mode for the membership
 							$subscription 		= $user->get_subscription( $subscribe_to );
 							$subscription->set_recalculate_expire_date( false ); //Dont adjust the subscription expire date
 							$invoice 			= $subscription->get_current_invoice();

@@ -6,7 +6,8 @@
 
 window.ms_init.view_protected_content = function init () {
 	var table = jQuery( '.wp-list-table' ),
-		sel_network_site = jQuery( '#select-site' );
+		sel_network_site = jQuery( '#select-site' ),
+		setup_editor;
 
 	window.ms_init.memberships_column( '.column-access' );
 
@@ -100,7 +101,7 @@ window.ms_init.view_protected_content = function init () {
 	}
 
 	// Set up the event-handlers of the inline editor.
-	function setup_editor( form ) {
+	setup_editor = function( form ) {
 		var sel_type = form.find( 'select.dripped_type' ),
 			inp_date = form.find( '.wpmui-datepicker' );
 
@@ -116,7 +117,7 @@ window.ms_init.view_protected_content = function init () {
 
 		// Datepicker
 		inp_date.ms_datepicker();
-	}
+	};
 
 	// The table was updated, at least one row needs to be re-initalized.
 	function update_table( ev, row ) {
