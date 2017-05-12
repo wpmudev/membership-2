@@ -201,12 +201,14 @@ class MS_Model_Upgrade extends MS_Model {
 	 */
 	static public function no_dash_plugins_api( $res, $action, $args ) {
 		if ( ! empty( $args ) && is_object( $args ) ) {
-			if ( 'wpmudev_install-1003656' == $args->slug ) {
-				$res = true;
-			} elseif ( 'wpmudev_install-130' == $args->slug ) {
-				$res = true;
-			} elseif ( 'membership' == $args->slug ) {
-				$res = true;
+			if ( isset( $args->slug ) ) {
+				if ( 'wpmudev_install-1003656' == $args->slug ) {
+					$res = true;
+				} elseif ( 'wpmudev_install-130' == $args->slug ) {
+					$res = true;
+				} elseif ( 'membership' == $args->slug ) {
+					$res = true;
+				}
 			}
 		}
 
