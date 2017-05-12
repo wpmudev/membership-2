@@ -1047,11 +1047,15 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function enqueue_plugin_admin_styles() {
-		lib3()->ui->css( 'ms-admin-styles' );
-		lib3()->ui->add( 'core' );
-		lib3()->ui->add( 'select' );
-		lib3()->ui->add( 'fontawesome' );
+	public function enqueue_plugin_admin_styles( $hook ) {
+		//Load only on membership pages
+		$screen = get_current_screen();
+		if ( strpos( $screen->id , 'membership2') !== false ) {
+			lib3()->ui->css( 'ms-admin-styles' );
+			lib3()->ui->add( 'core' );
+			lib3()->ui->add( 'select' );
+			lib3()->ui->add( 'fontawesome' );
+		}
 	}
 
 	/**
