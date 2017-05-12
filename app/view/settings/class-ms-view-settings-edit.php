@@ -283,7 +283,7 @@ class MS_View_Settings_Edit extends MS_View {
 				add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) )
 			);
 			
-			if ( !$show ) {
+			if ( $show ) {
 				$count = MS_Model_Communication::get_queue_count();
 				if ( ! $count ) {
 					$msg = __( 'No pending Email Responses found', 'membership2' );
