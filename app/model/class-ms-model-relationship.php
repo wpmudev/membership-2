@@ -1404,19 +1404,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-					$period_unit = MS_Helper_Period::get_period_value(
-						$membership->pay_cycle_period,
-						'period_unit'
-					);
-					$period_type = MS_Helper_Period::get_period_value(
-						$membership->pay_cycle_period,
-						'period_type'
-					);
-					$expire_date = MS_Helper_Period::add_interval(
-						$period_unit,
-						$period_type,
-						$start_date
-					);
+					if ( $this->recalculate_expire_date ) {
+						$period_unit = MS_Helper_Period::get_period_value(
+							$membership->pay_cycle_period,
+							'period_unit'
+						);
+						$period_type = MS_Helper_Period::get_period_value(
+							$membership->pay_cycle_period,
+							'period_type'
+						);
+						$expire_date = MS_Helper_Period::add_interval(
+							$period_unit,
+							$period_type,
+							$start_date
+						);
+					} else {
+						$expire_date = $this->expire_date;
+					}
 					break;
 			}
 		}
