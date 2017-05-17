@@ -367,6 +367,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			$ping = $api->helper->ping();
 
 			if ( is_wp_error( $ping ) ) {
+				$this->log( $ping->get_error_message() );
 				throw new Exception( $ping );
 			}
 
@@ -445,6 +446,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			$results = self::$mailchimp_api->lists->memberInfo( $list_id, $emails );
 
 			if ( is_wp_error( $results ) ) {
+				$this->log( $results->get_error_message() );
 				// MS_Helper_Debug::log( $results );
 			} elseif ( ! empty( $results['success_count'] )
 				&& ! empty( $results['data'][0]['status'] )

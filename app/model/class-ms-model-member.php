@@ -1207,7 +1207,7 @@ class MS_Model_Member extends MS_Model {
 		$user = new WP_User( $this->id );
 
 		if ( ! headers_sent() ) {
-			$user = @wp_signon(
+			$user = wp_signon(
 				array(
 					'user_login'    => $this->username,
 					'user_password' => $this->password,
@@ -1217,6 +1217,7 @@ class MS_Model_Member extends MS_Model {
 
 			// Stop here in case the login failed.
 			if ( is_wp_error( $user ) ) {
+				$this->log( 'An error occured login '.$user->get_error_message() );
 				return $user;
 			}
 		}
