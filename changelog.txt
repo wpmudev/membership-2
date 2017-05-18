@@ -11,6 +11,7 @@ Change Log:
 - Added: Integration with new reCaptcha plugin to the reCaptcha Addon
 - Added: Option for Admin created members to generate an invoice to the membership
 - Added: Option for manual invoice created to keep the expire date of the membership the same
+- Added: Addon to hide protected pages from visitor search
 - Fixed: Multiple Invoice creation
 - Fixed: Invoice status not changing for free payments
 - Fixed: Protection with many addons enabled
