@@ -18,8 +18,8 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @var string $rule_type
 	 */
 	protected $rule_type = MS_Rule_Category::RULE_ID;
-
-        static public $All_Categories;
+	
+	static public $All_Categories;
 
 	/**
 	 * Returns the active flag for a specific rule.
@@ -56,9 +56,9 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 * @param WP_Query $query The WP_Query object to filter.
 	 */
 	public function protect_posts( $wp_query ) {
-		// To protect unnecessary protection of other content
-		if ( is_category() || is_home() || is_search() ) {
+        if( is_category() || is_home() || is_search() ) {
 			$post_type = self::get_post_type( $wp_query );
+
 
 			/*
 			 * '' .. when post type is unknown assume 'post'
@@ -82,7 +82,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 				$wp_query,
 				$this
 			);
-		}
+        }
 	}
 
 	/**
@@ -98,7 +98,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 		$new_terms = array();
 
 		// Bail - not fetching category taxonomy.
-		if ( ! in_array( 'category', $taxonomies ) ) {
+		if ( ! in_array( 'category', $taxonomies ) || in_the_loop() || is_main_query () ) {
 			return $terms;
 		}
 
@@ -108,9 +108,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 
 		foreach ( $terms as $key => $term ) {
 			if ( ! empty( $term->taxonomy ) && 'category' === $term->taxonomy ) {
-				$has_access = $this->has_access( $term->term_id );
-				if( is_null($has_access) ) $has_access = true;
-				if ( $has_access ) {
+				if ( $this->has_access( $term->term_id ) ) {
 					$new_terms[ $key ] = $term;
 				}
 			} else {
@@ -135,14 +133,12 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 *     Null means: Rule not relevant for current page.
 	 */
 	public function has_access( $id, $admin_has_access = true ) {
-		$has_access = false;
-		$allowed = false;
-		$forbidden = false;
+		$has_access = null;
 
 		$taxonomies = get_object_taxonomies( get_post_type() );
 
 		// Verify post access accordingly to category rules.
-		if ( !empty( $id )
+		if ( ! empty( $id )
 			|| ( is_single() && in_array( 'category', $taxonomies ) )
 		) {
 			if ( empty( $id ) ) {
@@ -154,10 +150,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 				$has_access = parent::has_access( $category_id, $admin_has_access );
 
 				if ( $has_access ) {
-					$allowed = true;
-				}
-				if ( false === $has_access ) {
-					$forbidden = true;
+					break;
 				}
 			}
 		} elseif ( is_category() ) {
@@ -166,14 +159,11 @@ class MS_Rule_Category_Model extends MS_Rule {
 			$has_access = parent::has_access( $category, $admin_has_access );
 		}
 
-		// Prioritize restriction
-		$has_access = $forbidden ? false : $allowed;
-
 		return apply_filters(
 			'ms_rule_category_model_has_access',
 			$has_access,
 			$id,
-			$admin_has_access,
+                        $admin_has_access,
 			$this
 		);
 	}
@@ -188,10 +178,6 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 */
 	public function get_contents( $args = null ) {
 		$args = $this->get_query_args( $args );
-		$args['parent'] = 0;
-		//$args['hierarchical'] = true;
-		//$args['order']               = 'ASC';
-		//$args['orderby']             = 'ID';
 
 		$categories = $this->hierarchical_category_tree( $args );
 		$cont = array();
@@ -216,14 +202,13 @@ class MS_Rule_Category_Model extends MS_Rule {
 
 		return $cont;
 	}
-
+	
+	
 	public function hierarchical_category_tree( $args = array() ) {
 		$categories = get_categories( $args );
 
-		if( $categories )
-		{
-			foreach( $categories as $key => $category )
-			{
+		if( $categories ) {
+			foreach( $categories as $key => $category ) {
 				self::$All_Categories[] = $category;
 				$args['parent'] = $category->term_id;
 				$this->hierarchical_category_tree( $args );
