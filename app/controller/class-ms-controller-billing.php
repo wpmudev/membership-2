@@ -427,6 +427,8 @@ class MS_Controller_Billing extends MS_Controller {
 			&& ! empty( $fields['user_id'] )
 			&& ! empty( $fields['membership_id'] )
 		) {
+
+			
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
@@ -452,6 +454,7 @@ class MS_Controller_Billing extends MS_Controller {
 
 			$invoice_id = intval( $fields['invoice_id'] );
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+			$this->log( 'Manual invoice creation' );
 			if ( ! $invoice->is_valid() ) {
 				$invoice = $subscription->get_current_invoice();
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;

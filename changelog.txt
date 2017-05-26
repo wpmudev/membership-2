@@ -16,6 +16,7 @@ Change Log:
 - Fixed: Invoice status not changing for free payments
 - Fixed: Protection with many addons enabled
 - Fixed: Mailchimp list for deactivated users with drop down memberships
+- Fixed: MEmbership Script and Style conflict on other admin pages
 
 1.0.3.5
 ----------------------------------------------------------------------
