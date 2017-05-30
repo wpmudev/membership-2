@@ -163,7 +163,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 			$url = strtolower( $url );
 
 			$url 	= strtolower( $url );
-			$parts 	= parse_url($url);
+			$parts 	= parse_url( $url );
 
 			//Remove https port from the url
 			if( ( isset( $parts['port'] ) && isset( $parts['scheme'] ) ) && ( $parts['scheme'] == 'https' && $parts['port'] = '443' ) ) {

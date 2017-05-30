@@ -393,14 +393,14 @@ class MS_Model_Plugin extends MS_Model {
 		if ( ! $access['has_access'] ) {
 
 			if ( $auth = filter_input( INPUT_GET, 'auth' ) ) {
-					//set cookie when mapped domains
-					$user_id = wp_validate_auth_cookie( $auth, 'auth' );
-					if ( $user_id ) {
-							wp_set_auth_cookie( $user_id );
+				//set cookie when mapped domains
+				$user_id = wp_validate_auth_cookie( $auth, 'auth' );
+				if ( $user_id ) {
+						wp_set_auth_cookie( $user_id );
 
-							wp_redirect( get_permalink() );
-							exit;
-					}
+						wp_redirect( get_permalink() );
+						exit;
+				}
 			}
 
 			MS_Model_Pages::create_missing_pages();
@@ -412,25 +412,25 @@ class MS_Model_Plugin extends MS_Model {
 
 			// Don't (re-)redirect the protection page.
 			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
-                            if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
-				$no_access_page_url = esc_url_raw(
-					add_query_arg(
-						array( 'redirect_to' => urlencode( $current_page_url ), 'membership_id' => $protected_membership_id ),
-						$no_access_page_url
-					)
-				);
-             }else{
-                $no_access_page_url = esc_url_raw(
-					add_query_arg(
-						array( 'redirect_to' => urlencode( $current_page_url ) ),
-						$no_access_page_url
-					)
-				);
-             }
+                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
+					$no_access_page_url = esc_url_raw(
+						add_query_arg(
+							array( 'redirect_to' => urlencode( $current_page_url ), 'membership_id' => $protected_membership_id ),
+							$no_access_page_url
+						)
+					);
+				} else {
+					$no_access_page_url = esc_url_raw(
+						add_query_arg(
+							array( 'redirect_to' => urlencode( $current_page_url ) ),
+							$no_access_page_url
+						)
+					);
+				}
 
 				$no_access_page_url = apply_filters(
-						'ms_model_plugin_protected_content_page',
-						$no_access_page_url
+					'ms_model_plugin_protected_content_page',
+					$no_access_page_url
 				);
 				wp_safe_redirect( $no_access_page_url );
 
