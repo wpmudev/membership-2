@@ -322,7 +322,7 @@ class MS_Helper_Utility extends MS_Helper {
 			return "";
 		}
 
-		return ( isset($parts['scheme'] ) ? "{$parts['scheme']}:" : '' ) . 
+		return ( isset( $parts['scheme'] ) ? "{$parts['scheme']}:" : '' ) . 
 				( (isset($parts['user'] ) || isset( $parts['host'] ) ) ? '//' : '' ) . 
 				( isset($parts['user'] ) ? "{$parts['user']}" : '' ) . 
 				( isset($parts['pass'] ) ? ":{$parts['pass']}" : '' ) . 

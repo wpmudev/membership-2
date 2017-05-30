@@ -165,9 +165,12 @@ class MS_Rule_Url_Model extends MS_Rule {
 			$url 	= strtolower( $url );
 			$parts 	= parse_url($url);
 
-			unset( $parts['port'] ); //remove port
+			//Remove https port from the url
+			if( ( isset( $parts['port'] ) && isset( $parts['scheme'] ) ) && ( $parts['scheme'] == 'https' && $parts['port'] = '443' ) ) {
+				unset( $parts['port'] ); //remove port
+				$url = MS_Helper_Utility::build_url( $urlParts );
+			}
 			
-			$url = MS_Helper_Utility::build_url( $urlParts );
 
 			foreach ( $check_list as $check ) {
 				if (false === empty($check) && 1 === preg_match( '@' . trim($check) . '@',  $url) ) {
