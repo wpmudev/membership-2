@@ -983,6 +983,12 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			} else {
 				//Process messaging directly if cron is disabled
 				$this->process_message_direct( $subscription->id );
+				$timestamp = absint( MS_Factory::get_transient( 'ms_communication_membership_process' ) );
+				$elapsed = time() - $timestamp;
+				if ( $elapsed >= 21600 ) {
+					do_action( 'ms_cron_check_membership_status' ); //maybe check the membership
+					MS_Factory::set_transient( 'ms_communication_membership_process', time(), 21600 );
+				} 
 			}
 		}
 
