@@ -155,11 +155,20 @@ class MS_Rule_Url_Model extends MS_Rule {
 		$match = false;
 
 		$check_list = lib3()->array->get( $check_list );
+
 		if ( count( $check_list ) ) {
 			$check_list = array_map( 'strtolower', $check_list );
 			$check_list = array_map( 'trim', $check_list );
 
 			$url = strtolower( $url );
+
+			$url 	= strtolower( $url );
+			$parts 	= parse_url($url);
+
+			unset( $parts['port'] ); //remove port
+			
+			$url = MS_Helper_Utility::build_url( $urlParts );
+
 			foreach ( $check_list as $check ) {
 				if (false === empty($check) && 1 === preg_match( '@' . trim($check) . '@',  $url) ) {
 					$match = true;

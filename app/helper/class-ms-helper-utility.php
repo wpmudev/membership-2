@@ -309,6 +309,30 @@ class MS_Helper_Utility extends MS_Helper {
 			$schema
 		);
 	}
+
+	/**
+	 * Build URL From parts
+	 *
+	 * @since 1.0.3.7
+	 *
+	 * @return String
+	 */
+	static public function build_url( $parts = array() ) {
+		if ( empty( $parts ) ){
+			return "";
+		}
+
+		return ( isset($parts['scheme'] ) ? "{$parts['scheme']}:" : '' ) . 
+				( (isset($parts['user'] ) || isset( $parts['host'] ) ) ? '//' : '' ) . 
+				( isset($parts['user'] ) ? "{$parts['user']}" : '' ) . 
+				( isset($parts['pass'] ) ? ":{$parts['pass']}" : '' ) . 
+				( isset($parts['user'] ) ? '@' : '' ) . 
+				( isset($parts['host'] ) ? "{$parts['host']}" : '' ) . 
+				( isset($parts['port'] ) ? ":{$parts['port']}" : '' ) . 
+				( isset($parts['path'] ) ? "{$parts['path']}" : '' ) . 
+				( isset($parts['query'] ) ? "?{$parts['query']}" : '' ) . 
+				( isset($parts['fragment'] ) ? "#{$parts['fragment']}" : '' );
+	}
 }
 
 if ( ! function_exists( 'array_unshift_assoc' ) ) {

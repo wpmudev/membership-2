@@ -392,16 +392,16 @@ class MS_Model_Plugin extends MS_Model {
 
 		if ( ! $access['has_access'] ) {
 
-                        if ( $auth = filter_input( INPUT_GET, 'auth' ) ) {
-                                //set cookie when mapped domains
-                                $user_id = wp_validate_auth_cookie( $auth, 'auth' );
-                                if ( $user_id ) {
-                                        wp_set_auth_cookie( $user_id );
+			if ( $auth = filter_input( INPUT_GET, 'auth' ) ) {
+					//set cookie when mapped domains
+					$user_id = wp_validate_auth_cookie( $auth, 'auth' );
+					if ( $user_id ) {
+							wp_set_auth_cookie( $user_id );
 
-                                        wp_redirect( get_permalink() );
-                                        exit;
-                                }
-                        }
+							wp_redirect( get_permalink() );
+							exit;
+					}
+			}
 
 			MS_Model_Pages::create_missing_pages();
 			$no_access_page_url = MS_Model_Pages::get_page_url(
@@ -419,22 +419,22 @@ class MS_Model_Plugin extends MS_Model {
 						$no_access_page_url
 					)
 				);
-                            }else{
-                                $no_access_page_url = esc_url_raw(
+             }else{
+                $no_access_page_url = esc_url_raw(
 					add_query_arg(
 						array( 'redirect_to' => urlencode( $current_page_url ) ),
 						$no_access_page_url
 					)
 				);
-                            }
+             }
 
-                            $no_access_page_url = apply_filters(
-                                    'ms_model_plugin_protected_content_page',
-                                    $no_access_page_url
-                            );
-                            wp_safe_redirect( $no_access_page_url );
+				$no_access_page_url = apply_filters(
+						'ms_model_plugin_protected_content_page',
+						$no_access_page_url
+				);
+				wp_safe_redirect( $no_access_page_url );
 
-                            exit;
+				exit;
 			}
 		}
 
