@@ -940,11 +940,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				'free'
 			);
 		} else {
-			$is_paid = $subscription->add_payment(
-				$this->total,
-				$gateway_id,
-				$external_id
-			);
+			//Admin created invoices should still be marked as billed until paid
+			if ( !empty( $gateway_id ) && ( $gateway_id != 'admin' ) ) {
+				$is_paid = $subscription->add_payment(
+					$this->total,
+					$gateway_id,
+					$external_id
+				);
+			}
 		}
 
 		if ( $is_paid ) {
