@@ -160,8 +160,6 @@ class MS_Rule_Url_Model extends MS_Rule {
 			$check_list = array_map( 'strtolower', $check_list );
 			$check_list = array_map( 'trim', $check_list );
 
-			$url = strtolower( $url );
-
 			$url 	= strtolower( $url );
 			$parts 	= parse_url( $url );
 
