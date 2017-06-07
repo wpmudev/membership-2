@@ -168,7 +168,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 			//Remove https port from the url
 			if( ( isset( $parts['port'] ) && isset( $parts['scheme'] ) ) && ( $parts['scheme'] == 'https' && $parts['port'] = '443' ) ) {
 				unset( $parts['port'] ); //remove port
-				$url = MS_Helper_Utility::build_url( $urlParts );
+				$url = MS_Helper_Utility::build_url( $parts );
 			}
 			
 
