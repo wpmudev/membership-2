@@ -21,6 +21,7 @@ Change Log:
 - Fixed: URL Protection Addon on https
 - Fixed: Media Protection Addon
 - Fixed: Invoices with no gateways no longer checked by cron and not automatically marked PAID
+- Fixed: Editing Subscription detailes for administrators.
 - Other minor enhancements/fixes
 
 1.0.3.5
