@@ -12,6 +12,7 @@ Change Log:
 - Added: Option for Admin created members to generate an invoice to the membership
 - Added: Option for manual invoice created to keep the expire date of the membership the same
 - Added: Addon to hide protected pages from visitor search
+- Added: Plugin deactivation hook to clear Membership Crons
 - Fixed: Multiple Invoice creation
 - Fixed: Invoice status not changing for free payments
 - Fixed: Protection with many addons enabled
@@ -20,6 +21,7 @@ Change Log:
 - Fixed: URL Protection Addon on https
 - Fixed: Media Protection Addon
 - Fixed: Invoices with no gateways no longer checked by cron and not automatically marked PAID
+- Other minor enhancements/fixes
 
 1.0.3.5
 ----------------------------------------------------------------------

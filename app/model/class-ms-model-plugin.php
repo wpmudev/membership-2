@@ -667,10 +667,7 @@ class MS_Model_Plugin extends MS_Model {
 	public function setup_cron_services( $reschedule = null ) {
 		do_action( 'ms_model_plugin_setup_cron_services_before', $this );
 
-		$jobs = array(
-			'ms_cron_check_membership_status' => '6hours',
-			'ms_cron_process_communications' => 'hourly',
-		);
+		$jobs = self::cron_jobs();
 		
 		$settings = MS_Factory::load( 'MS_Model_settings' );
 
@@ -689,6 +686,20 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		do_action( 'ms_model_plugin_setup_cron_services_after', $this );
+	}
+
+	/**
+	 * Plugin cron jobs
+	 *
+	 * @since 1.0.3.6
+	 *
+	 * @return Array
+	 */
+	public static function cron_jobs() {
+		return array(
+			'ms_cron_check_membership_status' => '6hours',
+			'ms_cron_process_communications' => 'hourly',
+		);
 	}
 
 	/**
