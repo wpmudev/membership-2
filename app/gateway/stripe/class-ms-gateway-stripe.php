@@ -86,11 +86,11 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
 
-                $this->add_filter(
-                        'ms_model_pages_get_ms_page_url',
-                        'ms_model_pages_get_ms_page_url_cb',
-                        99, 4
-                );
+		$this->add_filter(
+				'ms_model_pages_get_ms_page_url',
+				'ms_model_pages_get_ms_page_url_cb',
+				99, 4
+		);
 	}
 
         /**
@@ -105,7 +105,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 *
 	 * @return String $url Modified or raw URL
 	 */
-        public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
+    public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
             /**
              * Constant M2_FORCE_NO_SSL
              *
@@ -125,7 +125,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
             }
 
 	    return $url;
-        }
+    }
 
 	/**
 	 * Processes purchase action.

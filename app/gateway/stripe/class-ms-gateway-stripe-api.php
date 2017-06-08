@@ -195,11 +195,11 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 */
 	public function charge( $customer, $amount, $currency, $description ) {
                 
-                $amount = apply_filters(
-                    'ms_gateway_stripe_charge_amount',
-                    $amount,
-                    $currency
-                );
+		$amount = apply_filters(
+			'ms_gateway_stripe_charge_amount',
+			$amount,
+			$currency
+		);
                 
 		$charge = M2_Stripe_Charge::create(
 			array(
