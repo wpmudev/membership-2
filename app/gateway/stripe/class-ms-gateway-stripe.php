@@ -152,6 +152,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
 
+		$note = 'Stripe Processing';
+
 		if ( ! empty( $_POST['stripeToken'] ) ) {
 			lib3()->array->strip_slashes( $_POST, 'stripeToken' );
 
@@ -186,13 +188,12 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			} catch ( Exception $e ) {
 				$note = 'Stripe error: '. $e->getMessage();
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::log( $note );
 				$error = $e;
 			}
 		} else {
 			$note = 'Stripe gateway token not found.';
-			MS_Helper_Debug::log( $note );
 		}
+		MS_Helper_Debug::log( $note );
 
 		do_action(
 			'ms_gateway_transaction_log',

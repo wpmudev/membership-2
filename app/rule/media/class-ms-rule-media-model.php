@@ -596,11 +596,23 @@ class MS_Rule_Media_Model extends MS_Rule {
 				$access = true;
 			} else {
 				$member = MS_Model_Member::get_current_member();
-				foreach ( $member->subscriptions as $subscription ) {
-					$membership = $subscription->get_membership();
-					$access = $membership->has_access_to_post( $parent_id );
-					if ( $access ) { break; }
+				$cache_key = 'ms_media_protection_member_'.$member->id.'_'.$attachment_id;
+				$member_has_access = wp_cache_get( $cache_key, 'ms_media_protection_member' );
+
+				if ( false !== $member_has_access ) {
+					$access = $member_has_access;
+				} else {
+					foreach ( $member->subscriptions as $subscription ) {
+						$membership = $subscription->get_membership();
+						$access = $membership->has_access_to_post( $parent_id );
+						if ( $access ) { 
+							wp_cache_set( $cache_key, true , 'ms_media_protection_member' );
+							break; 
+						}
+					}
 				}
+				
+				
 			}
 		} else {
 			/*
@@ -608,10 +620,20 @@ class MS_Rule_Media_Model extends MS_Rule {
 			 * Each Attachment can be protected individually.
 			 */
 			$member = MS_Model_Member::get_current_member();
-			foreach ( $member->subscriptions as $subscription ) {
-				$rule = $subscription->get_membership()->get_rule( MS_Rule_Media::RULE_ID );
-				$access = $rule->has_access( $attachment_id );
-				if ( $access ) { break; }
+			$cache_key = 'ms_media_protection_addon_member_'.$member->id.'_'.$attachment_id;
+			$member_has_access = wp_cache_get( $cache_key, 'ms_media_protection_member' );
+
+			if ( false !== $member_has_access ) {
+				$access = $member_has_access;
+			} else {
+				foreach ( $member->subscriptions as $subscription ) {
+					$rule = $subscription->get_membership()->get_rule( MS_Rule_Media::RULE_ID );
+					$access = $rule->has_access( $attachment_id );
+					if ( $access ) { 
+						wp_cache_set( $cache_key, true , 'ms_media_protection_member' );
+						break; 
+					}
+				}
 			}
 		}
 
