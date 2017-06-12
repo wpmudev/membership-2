@@ -671,18 +671,18 @@ class MS_Model_Plugin extends MS_Model {
 		
 		$settings = MS_Factory::load( 'MS_Model_settings' );
 
-		foreach ( $jobs as $hook => $interval ) {
-			if ( $settings->enable_cron_use ) {
-				if ( ! wp_next_scheduled( $hook ) || $hook == $reschedule ) {
-					wp_schedule_event( time(), $interval, $hook );
-				}
-			} else {
-				if ( $hook == 'ms_cron_process_communications' && wp_next_scheduled( $hook ) ) {
-					do_action( 'ms_cron_process_communications' ); //Send any pending emails 
-					wp_clear_scheduled_hook( $hook );
-				}
+		if ( !$settings->enable_cron_use ) {
+			if ( wp_next_scheduled( 'ms_cron_process_communications' ) ) {
+				do_action( 'ms_cron_process_communications' ); //Send any pending emails 
+				wp_clear_scheduled_hook( 'ms_cron_process_communications' );
+				unset( $jobs['ms_cron_process_communications'] );
 			}
-			
+		}
+
+		foreach ( $jobs as $hook => $interval ) {
+			if ( ! wp_next_scheduled( $hook ) || $hook == $reschedule ) {
+				wp_schedule_event( time(), $interval, $hook );
+			}
 		}
 
 		do_action( 'ms_model_plugin_setup_cron_services_after', $this );
