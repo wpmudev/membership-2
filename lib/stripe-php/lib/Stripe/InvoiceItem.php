@@ -1,6 +1,6 @@
 <?php
 
-class M2_Stripe_InvoiceItem extends M2_Stripe_ApiResource
+class Stripe_InvoiceItem extends Stripe_ApiResource
 {
   /**
    * @param string $id The ID of the invoice item to retrieve.

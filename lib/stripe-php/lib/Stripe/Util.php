@@ -1,6 +1,6 @@
 <?php
 
-abstract class M2_Stripe_Util
+abstract class Stripe_Util
 {
   /**
    * Whether the provided array (or other) is a list rather than a dictionary.
@@ -35,7 +35,7 @@ abstract class M2_Stripe_Util
       if ($k[0] == '_') {
         continue;
       }
-      if ($v instanceof M2_Stripe_Object) {
+      if ($v instanceof Stripe_Object) {
         $results[$k] = $v->__toArray(true);
       } else if (is_array($v)) {
         $results[$k] = self::convertStripeObjectToArray($v);
@@ -56,18 +56,22 @@ abstract class M2_Stripe_Util
   public static function convertToStripeObject($resp, $apiKey)
   {
     $types = array(
-      'card' => 'M2_Stripe_Card',
-      'charge' => 'M2_Stripe_Charge',
-      'customer' => 'M2_Stripe_Customer',
-      'list' => 'M2_Stripe_List',
-      'invoice' => 'M2_Stripe_Invoice',
-      'invoiceitem' => 'M2_Stripe_InvoiceItem',
-      'event' => 'M2_Stripe_Event',
-      'transfer' => 'M2_Stripe_Transfer',
-      'plan' => 'M2_Stripe_Plan',
-      'recipient' => 'M2_Stripe_Recipient',
-      'refund' => 'M2_Stripe_Refund',
-      'subscription' => 'M2_Stripe_Subscription'
+      'card' => 'Stripe_Card',
+      'charge' => 'Stripe_Charge',
+      'coupon' => 'Stripe_Coupon',
+      'customer' => 'Stripe_Customer',
+      'list' => 'Stripe_List',
+      'invoice' => 'Stripe_Invoice',
+      'invoiceitem' => 'Stripe_InvoiceItem',
+      'event' => 'Stripe_Event',
+      'transfer' => 'Stripe_Transfer',
+      'plan' => 'Stripe_Plan',
+      'recipient' => 'Stripe_Recipient',
+      'refund' => 'Stripe_Refund',
+      'subscription' => 'Stripe_Subscription',
+      'fee_refund' => 'Stripe_ApplicationFeeRefund',
+      'bitcoin_receiver' => 'Stripe_BitcoinReceiver',
+      'bitcoin_transaction' => 'Stripe_BitcoinTransaction'
     );
     if (self::isList($resp)) {
       $mapped = array();
@@ -80,9 +84,9 @@ abstract class M2_Stripe_Util
           && isset($types[$resp['object']])) {
         $class = $types[$resp['object']];
       } else {
-        $class = 'M2_Stripe_Object';
+        $class = 'Stripe_Object';
       }
-      return M2_Stripe_Object::scopedConstructFrom($class, $resp, $apiKey);
+      return Stripe_Object::scopedConstructFrom($class, $resp, $apiKey);
     } else {
       return $resp;
     }

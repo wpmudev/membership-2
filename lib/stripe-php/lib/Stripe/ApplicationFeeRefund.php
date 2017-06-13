@@ -1,6 +1,6 @@
 <?php
 
-class Stripe_Refund extends Stripe_ApiResource
+class Stripe_ApplicationFeeRefund extends Stripe_ApiResource
 {
   /**
    * @return string The API URL for this Stripe refund.
@@ -8,7 +8,7 @@ class Stripe_Refund extends Stripe_ApiResource
   public function instanceUrl()
   {
     $id = $this['id'];
-    $charge = $this['charge'];
+    $fee = $this['fee'];
     if (!$id) {
       throw new Stripe_InvalidRequestError(
           "Could not determine which URL to request: " .
@@ -17,16 +17,16 @@ class Stripe_Refund extends Stripe_ApiResource
       );
     }
     $id = Stripe_ApiRequestor::utf8($id);
-    $charge = Stripe_ApiRequestor::utf8($charge);
+    $fee = Stripe_ApiRequestor::utf8($fee);
 
-    $base = self::classUrl('Stripe_Charge');
-    $chargeExtn = urlencode($charge);
+    $base = self::classUrl('Stripe_ApplicationFee');
+    $feeExtn = urlencode($fee);
     $extn = urlencode($id);
-    return "$base/$chargeExtn/refunds/$extn";
+    return "$base/$feeExtn/refunds/$extn";
   }
 
   /**
-   * @return Stripe_Refund The saved refund.
+   * @return Stripe_ApplicationFeeRefund The saved refund.
    */
   public function save()
   {
