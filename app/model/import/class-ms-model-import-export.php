@@ -189,12 +189,14 @@ class MS_Model_Import_Export extends MS_Model {
 		$obj = array();
 		$data->settings = $this->export_settings();
 
-		// Export Coupons.
-		$coupons = MS_Addon_Coupon_Model::get_coupons( array( 'nopaging' => true ) );
-		$data->coupons = array();
-		foreach ( $coupons as $coupon ) {
-			if ( intval( $coupon->max_uses ) <= intval( $coupon->used ) ) { continue; }
-			$data->coupons[] = $this->export_coupon( $coupon->id );
+		if ( MS_IS_PRO == true ){
+			// Export Coupons.
+			$coupons = MS_Addon_Coupon_Model::get_coupons( array( 'nopaging' => true ) );
+			$data->coupons = array();
+			foreach ( $coupons as $coupon ) {
+				if ( intval( $coupon->max_uses ) <= intval( $coupon->used ) ) { continue; }
+				$data->coupons[] = $this->export_coupon( $coupon->id );
+			}
 		}
 
 		lib3()->net->file_download( json_encode( $data ), 'membership2-export.json' );
