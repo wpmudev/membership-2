@@ -80,7 +80,9 @@ class MS_Controller_Metabox extends MS_Controller {
 		$extra = array();
 
 		/* start:pro */
-		$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
+		if ( class_exists( 'MS_Rule_CptGroup_Model' ) ) {
+			$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
+		}
 		/* end:pro */
 
 		$post_types = array_merge(
