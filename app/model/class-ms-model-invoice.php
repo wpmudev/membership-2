@@ -809,9 +809,15 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice = MS_Factory::create( 'MS_Model_Invoice' );
 			$invoice = apply_filters( 'ms_model_invoice', $invoice );
 		}
-
 		// Update invoice info.
 		$invoice->ms_relationship_id = $subscription->id;
+
+		$gateway_names = MS_Model_Gateway::get_gateway_names( true );
+		if ( isset( $gateway_names[ $subscription->gateway_id ] ) ) {
+			if ( $subscription->gateway_id != 'admin' ) {
+				$invoice->gateway_id = $subscription->gateway_id;
+			}
+		}
 		$invoice->gateway_id = $subscription->gateway_id;
 		$invoice->status = $invoice_status;
 		$invoice->invoice_date = MS_Helper_Period::current_date();

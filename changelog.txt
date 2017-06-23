@@ -14,6 +14,7 @@ Change Log:
 - Added: Addon to hide protected pages from visitor search
 - Added: Plugin deactivation hook to clear Membership Crons
 - Fixed: Multiple Invoice creation
+- Fixed: Default gateway on invoice
 - Fixed: Invoice status not changing for free payments
 - Fixed: Protection with many addons enabled
 - Fixed: Mailchimp list for deactivated users with drop down memberships

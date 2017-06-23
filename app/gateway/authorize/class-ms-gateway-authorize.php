@@ -125,6 +125,9 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$invoice->changed();
 		}
 
+		$invoice->gateway_id = self::ID;
+		$invoice->save();
+
 		return apply_filters(
 			'ms_gateway_authorize_process_purchase',
 			$invoice,

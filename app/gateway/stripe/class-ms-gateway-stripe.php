@@ -193,6 +193,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		} else {
 			$note = 'Stripe gateway token not found.';
 		}
+		$invoice->gateway_id = self::ID;
+		$invoice->save();
 		MS_Helper_Debug::log( $note );
 
 		do_action(
@@ -282,6 +284,9 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$was_paid = true;
 			$note = __( 'Invoice already paid', 'membership2' );
 		}
+
+		$invoice->gateway_id = self::ID;
+		$invoice->save();
 
 		do_action(
 			'ms_gateway_transaction_log',
