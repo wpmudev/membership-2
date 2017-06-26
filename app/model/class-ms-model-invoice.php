@@ -691,7 +691,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
-				$subscription->current_invoice_number
+				$subscription->current_invoice_number 
 			);
 		}
 
@@ -809,9 +809,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice = MS_Factory::create( 'MS_Model_Invoice' );
 			$invoice = apply_filters( 'ms_model_invoice', $invoice );
 		}
-
 		// Update invoice info.
 		$invoice->ms_relationship_id = $subscription->id;
+
 		$invoice->gateway_id = $subscription->gateway_id;
 		$invoice->status = $invoice_status;
 		$invoice->invoice_date = MS_Helper_Period::current_date();
@@ -847,9 +847,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice,
 			$subscription
 		);
-
-		$invoice->save();
-
+		
 		// Refresh the tax-rate and payment description.
 		$invoice->total_amount_changed();
 
@@ -942,11 +940,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				'free'
 			);
 		} else {
-			$is_paid = $subscription->add_payment(
-				$this->total,
-				$gateway_id,
-				$external_id
-			);
+			//Admin created invoices should still be marked as billed until paid
+			if ( !empty( $gateway_id ) ) {
+				$is_paid = $subscription->add_payment(
+					$this->total,
+					$gateway_id,
+					$external_id
+				);
+			}
 		}
 
 		if ( $is_paid ) {

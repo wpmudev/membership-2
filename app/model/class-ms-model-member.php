@@ -1163,14 +1163,11 @@ class MS_Model_Member extends MS_Model {
 						$validation_errors->get_error_messages()
 					)
 				);
+			} else {
+				if( isset( $_POST['display_name'] ) && $_POST['display_name'] != '' ) {
+					wp_update_user( array( 'ID' => $user_id, 'display_name' => $_POST['display_name'] ) );
+				}
 			}
-                        else
-                        {
-                            if( isset( $_POST['display_name'] ) && $_POST['display_name'] != '' )
-                            {
-                                wp_update_user( array( 'ID' => $user_id, 'display_name' => $_POST['display_name'] ) );
-                            }
-                        }
 
 			$this->id = $user_id;
 		}
@@ -1210,7 +1207,7 @@ class MS_Model_Member extends MS_Model {
 		$user = new WP_User( $this->id );
 
 		if ( ! headers_sent() ) {
-			$user = @wp_signon(
+			$user = wp_signon(
 				array(
 					'user_login'    => $this->username,
 					'user_password' => $this->password,
@@ -1220,6 +1217,7 @@ class MS_Model_Member extends MS_Model {
 
 			// Stop here in case the login failed.
 			if ( is_wp_error( $user ) ) {
+				$this->log( 'An error occured login '.$user->get_error_message() );
 				return $user;
 			}
 		}

@@ -588,14 +588,14 @@ class MS_Controller_Frontend extends MS_Controller {
 
 			// Default WP action hook
 			do_action( 'signup_finished' );
-                        do_action( 'ms_controller_frontend_register_user_before_login', $user, $_REQUEST, $this );
+            do_action( 'ms_controller_frontend_register_user_before_login', $user, $_REQUEST, $this );
 
 			$user->signon_user();
 
 			if ( MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
-                            if( ! defined( 'MS_DISABLE_WP_NEW_USER_NOTIFICATION' ) ){
-				wp_new_user_notification( $user->id );
-                            }
+                if ( ! defined( 'MS_DISABLE_WP_NEW_USER_NOTIFICATION' ) ) {
+					wp_new_user_notification( $user->id );
+                }
 			}
 
 			do_action( 'ms_controller_frontend_register_user_complete', $user, $_REQUEST, $this );
@@ -616,7 +616,7 @@ class MS_Controller_Frontend extends MS_Controller {
 							'step' => self::STEP_PAYMENT_TABLE,
 							'membership_id' => absint( $_REQUEST['membership_id'] ),
 						),
-                                                MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
+                        MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
 					)
 				);
 			}

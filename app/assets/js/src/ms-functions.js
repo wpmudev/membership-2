@@ -186,7 +186,7 @@ window.ms_functions = {
 			if ( undefined === data[field_key] ) {
 				data[field_key] = field_value;
 			} else {
-				if ( ! data[field_key] instanceof Array ) {
+				if ( ! ( data[field_key] instanceof Array ) ) {
 					data[field_key] = [ data[field_key] ];
 				}
 				data[field_key].push( field_value );

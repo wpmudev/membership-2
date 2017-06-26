@@ -111,11 +111,27 @@ class MS_Helper_Settings extends MS_Helper {
 				$args['archived'] = false;
 				$args['mature'] = false;
 			}
-			$sites = wp_get_sites( $args );
+			
+			global $wp_version;
+			$version_safe = false;
+			if ( version_compare( $wp_version, '4.6.0', '>=' ) )
+			{
+				$version_safe = true;
+			}
+			
+			if( $version_safe )
+			{
+				$sites = get_sites( $args );
+			}
+			else
+			{
+				$sites = wp_get_sites( $args );
+			}
+			
 			$List[$key] = array();
 
 			foreach ( $sites as $site_data ) {
-				$blog_id = $site_data['blog_id'];
+				$blog_id = $version_safe ? $site_data->blog_id : $site_data['blog_id'];
 
 				if ( isset( $List['_cache'][$blog_id] ) ) {
 					$title = $List['_cache'][$blog_id];

@@ -66,11 +66,25 @@ window.ms_init.view_settings = function init () {
 		}
 	}
 
+	function hide_footer( ev, data ) {
+		// Show/Hide the footer for Membership2.
+		if ( !data.value ) {
+			jQuery( '.ms-settings-email-cron' ).hide();
+		} else {
+			jQuery( '.ms-settings-email-cron' ).show();
+		}
+		var ajax_data = jQuery( '.wpmui-slider-enable_cron_use .wpmui-toggle').attr('data-wpmui-ajax');
+		ajax_data = JSON.parse(ajax_data);
+		jQuery.post(window.ajaxurl,{'action' : 'toggle_cron', '_wpnonce' : ajax_data._wpnonce }, function(){});
+	}
+
 	// Reload the page when Wizard mode is activated.
 	jQuery( '#initial_setup' ).on( 'ms-ajax-updated', reload_window );
 
 	// Hide/Show the "Test Membership" button in the toolbar.
 	jQuery( '.wpmui-slider-plugin_enabled').on( 'ms-radio-slider-updated', update_toolbar );
+	//Hide/Show footer when the cron is enabled or disabled
+	jQuery( '.wpmui-slider-enable_cron_use').on( 'ms-radio-slider-updated', hide_footer );
 
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );

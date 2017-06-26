@@ -409,9 +409,9 @@ if ( isset( $_REQUEST['ms_ajax'] ) ) {
 
 			// Nonce is checked, get the POST data and sign user on
 			$info = array(
-				'user_login' => $_POST['username'],
+				'user_login' 	=> $_POST['username'],
 				'user_password' => $_POST['password'],
-				'remember' => (bool) isset( $_POST['remember'] ) ? $_POST['remember'] : false,
+				'remember' 		=> (bool) isset( $_POST['remember'] ) ? $_POST['remember'] : false,
 			);
 
 			$user_signon = wp_signon( $info, false );
@@ -444,13 +444,13 @@ if ( isset( $_REQUEST['ms_ajax'] ) ) {
 					);
 				}
 
-                                //checking domains
-                                $url1 = parse_url( home_url() );
-                                $url2 = parse_url( $resp['redirect'] );
-                                if (strpos($url2['host'], $url1['host']) === false) {
-                                    //add 'auth' param for set cookie when mapped domains
-                                    $resp['redirect'] = add_query_arg( array('auth' => wp_generate_auth_cookie( $user_signon->ID, time() + MINUTE_IN_SECONDS )), $resp['redirect']);
-                                }
+				//checking domains
+				$url1 = parse_url( home_url() );
+				$url2 = parse_url( $resp['redirect'] );
+				if (strpos($url2['host'], $url1['host']) === false) {
+					//add 'auth' param for set cookie when mapped domains
+					$resp['redirect'] = add_query_arg( array('auth' => wp_generate_auth_cookie( $user_signon->ID, time() + MINUTE_IN_SECONDS )), $resp['redirect']);
+				}
 			}
 
 			echo json_encode( $resp );

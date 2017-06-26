@@ -186,7 +186,6 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				}
 
 				if ( ! empty( $notes ) ) { $invoice->add_notes( $notes ); }
-				$invoice->save();
 
 				if ( $success ) {
 					$invoice->pay_it( self::ID, $external_id );
@@ -240,6 +239,8 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				$notes = 'Response Error: ' . $reason;
 				$exit = true;
 			}
+			$invoice->gateway_id = self::ID;
+			$invoice->save();
 		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 

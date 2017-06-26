@@ -113,6 +113,7 @@ class MS_Model_Plugin extends MS_Model {
 		$this->add_filter( 'cron_schedules', 'cron_time_period' );
 		$this->add_filter( 'ms_run_cron_services', 'run_cron_services' );
 		$this->add_action( 'ms_cron_check_membership_status', 'check_membership_status' );
+		$this->add_action( 'ms_toggle_cron', 'setup_cron_services', 1 );
 
 		$this->add_action( 'template_redirect', 'protect_current_page', 1 );
 
@@ -391,16 +392,16 @@ class MS_Model_Plugin extends MS_Model {
 
 		if ( ! $access['has_access'] ) {
 
-                        if ( $auth = filter_input( INPUT_GET, 'auth' ) ) {
-                                //set cookie when mapped domains
-                                $user_id = wp_validate_auth_cookie( $auth, 'auth' );
-                                if ( $user_id ) {
-                                        wp_set_auth_cookie( $user_id );
+			if ( $auth = filter_input( INPUT_GET, 'auth' ) ) {
+				//set cookie when mapped domains
+				$user_id = wp_validate_auth_cookie( $auth, 'auth' );
+				if ( $user_id ) {
+						wp_set_auth_cookie( $user_id );
 
-                                        wp_redirect( get_permalink() );
-                                        exit;
-                                }
-                        }
+						wp_redirect( get_permalink() );
+						exit;
+				}
+			}
 
 			MS_Model_Pages::create_missing_pages();
 			$no_access_page_url = MS_Model_Pages::get_page_url(
@@ -411,29 +412,29 @@ class MS_Model_Plugin extends MS_Model {
 
 			// Don't (re-)redirect the protection page.
 			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
-                            if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
-				$no_access_page_url = esc_url_raw(
-					add_query_arg(
-						array( 'redirect_to' => urlencode( $current_page_url ), 'membership_id' => $protected_membership_id ),
-						$no_access_page_url
-					)
-				);
-                            }else{
-                                $no_access_page_url = esc_url_raw(
-					add_query_arg(
-						array( 'redirect_to' => urlencode( $current_page_url ) ),
-						$no_access_page_url
-					)
-				);
-                            }
+                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
+					$no_access_page_url = esc_url_raw(
+						add_query_arg(
+							array( 'redirect_to' => urlencode( $current_page_url ), 'membership_id' => $protected_membership_id ),
+							$no_access_page_url
+						)
+					);
+				} else {
+					$no_access_page_url = esc_url_raw(
+						add_query_arg(
+							array( 'redirect_to' => urlencode( $current_page_url ) ),
+							$no_access_page_url
+						)
+					);
+				}
 
-                            $no_access_page_url = apply_filters(
-                                    'ms_model_plugin_protected_content_page',
-                                    $no_access_page_url
-                            );
-                            wp_safe_redirect( $no_access_page_url );
+				$no_access_page_url = apply_filters(
+					'ms_model_plugin_protected_content_page',
+					$no_access_page_url
+				);
+				wp_safe_redirect( $no_access_page_url );
 
-                            exit;
+				exit;
 			}
 		}
 
@@ -666,10 +667,17 @@ class MS_Model_Plugin extends MS_Model {
 	public function setup_cron_services( $reschedule = null ) {
 		do_action( 'ms_model_plugin_setup_cron_services_before', $this );
 
-		$jobs = array(
-			'ms_cron_check_membership_status' => '6hours',
-			'ms_cron_process_communications' => 'hourly',
-		);
+		$jobs = self::cron_jobs();
+		
+		$settings = MS_Factory::load( 'MS_Model_settings' );
+
+		if ( !$settings->enable_cron_use ) {
+			if ( wp_next_scheduled( 'ms_cron_process_communications' ) ) {
+				do_action( 'ms_cron_process_communications' ); //Send any pending emails 
+				wp_clear_scheduled_hook( 'ms_cron_process_communications' );
+				unset( $jobs['ms_cron_process_communications'] );
+			}
+		}
 
 		foreach ( $jobs as $hook => $interval ) {
 			if ( ! wp_next_scheduled( $hook ) || $hook == $reschedule ) {
@@ -678,6 +686,20 @@ class MS_Model_Plugin extends MS_Model {
 		}
 
 		do_action( 'ms_model_plugin_setup_cron_services_after', $this );
+	}
+
+	/**
+	 * Plugin cron jobs
+	 *
+	 * @since 1.0.3.6
+	 *
+	 * @return Array
+	 */
+	public static function cron_jobs() {
+		return array(
+			'ms_cron_check_membership_status' => '6hours',
+			'ms_cron_process_communications' => 'hourly',
+		);
 	}
 
 	/**
@@ -731,7 +753,7 @@ class MS_Model_Plugin extends MS_Model {
 			$this->setup_cron_services( $hook );
 		}
                 
-                $_SESSION['m2_status_check'] = 'inv';
+        $_SESSION['m2_status_check'] = 'inv';
 
 		// Perform the actual status checks!
 		foreach ( $subscriptions as $subscription ) {

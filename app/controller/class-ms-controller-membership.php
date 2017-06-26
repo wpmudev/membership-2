@@ -17,7 +17,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	const AJAX_ACTION_TOGGLE_MEMBERSHIP = 'toggle_membership';
 	const AJAX_ACTION_UPDATE_MEMBERSHIP = 'update_membership';
-	const AJAX_ACTION_SET_CUSTOM_FIELD = 'membership_set_custom_field';
+	const AJAX_ACTION_SET_CUSTOM_FIELD 	= 'membership_set_custom_field';
 
 	/**
 	 * Membership page step constants.
@@ -26,13 +26,13 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const STEP_MS_LIST = 'list';
-	const STEP_EDIT = 'edit';
-	const STEP_OVERVIEW = 'overview';
-	const STEP_NEWS = 'news';
-	const STEP_WELCOME_SCREEN = 'welcome';
-	const STEP_ADD_NEW = 'add';
-	const STEP_PAYMENT = 'payment';
+	const STEP_MS_LIST 			= 'list';
+	const STEP_EDIT 			= 'edit';
+	const STEP_OVERVIEW 		= 'overview';
+	const STEP_NEWS 			= 'news';
+	const STEP_WELCOME_SCREEN 	= 'welcome';
+	const STEP_ADD_NEW 			= 'add';
+	const STEP_PAYMENT 			= 'payment';
 
 	/**
 	 * Membership Editor tabs.
@@ -41,13 +41,13 @@ class MS_Controller_Membership extends MS_Controller {
 	 *
 	 * @var   string
 	 */
-	const TAB_DETAILS = 'details';
-	const TAB_TYPE = 'type';
-	const TAB_PAYMENT = 'payment';
-	const TAB_UPGRADE = 'upgrade';
-	const TAB_PAGES = 'pages';
-	const TAB_MESSAGES = 'messages';
-	const TAB_EMAILS = 'emails';
+	const TAB_DETAILS 	= 'details';
+	const TAB_TYPE 		= 'type';
+	const TAB_PAYMENT 	= 'payment';
+	const TAB_UPGRADE 	= 'upgrade';
+	const TAB_PAGES 	= 'pages';
+	const TAB_MESSAGES 	= 'messages';
+	const TAB_EMAILS 	= 'emails';
 
 	// Actions
 	const ACTION_SAVE = 'save_membership';

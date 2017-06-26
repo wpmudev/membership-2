@@ -132,6 +132,18 @@ class MS_Model_Settings extends MS_Model_Option {
 	 */
 	protected $hide_admin_bar = true;
 
+
+	/**
+	 * Enable use of cron when performing backen actions
+	 *
+	 * Wizard mode.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @var boolean
+	 */
+	protected $enable_cron_use = true;
+
 	/**
 	 * The currency used in the plugin.
 	 *
@@ -432,14 +444,14 @@ class MS_Model_Settings extends MS_Model_Option {
 	* @param MS_Model_Membership $membership
 	* 
 	* @return bool
-	*
-	public function membership_has_protection_type( $type, $membership ){
-
-		if( ! $type || ! $membership ) return false;
-
-		return isset( $this->protection_messages[ $type . '_' . $membership->id ] );
-
-	}*/
+	*/
+	//public function membership_has_protection_type( $type, $membership ){
+	//
+	//	if( ! $type || ! $membership ) return false;
+	//
+	//	return isset( $this->protection_messages[ $type . '_' . $membership->id ] );
+	//
+	//}
 
 	/**
 	 * Set specific property.
@@ -465,6 +477,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'plugin_enabled':
 				case 'initial_setup':
 				case 'is_first_membership':
+				case 'enable_cron_use':
 				case 'hide_admin_bar':
 					$this->$property = lib3()->is_true( $value );
 					break;

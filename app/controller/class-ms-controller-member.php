@@ -324,11 +324,11 @@ class MS_Controller_Member extends MS_Controller {
 		$redirect = false;
 
 		if ( $this->is_admin_user() ) {
-			$fields_add = array( 'username', 'email' );
-			$fields_select = array( 'user_id' );
-			$fields_update = array( 'user_id', 'email' );
-			$fields_modify = array( 'user_id', 'memberships' );
-			$fields_subscribe = array( 'user_id', 'subscribe' );
+			$fields_add 		= array( 'username', 'email' );
+			$fields_select 		= array( 'user_id' );
+			$fields_update 		= array( 'user_id', 'email' );
+			$fields_modify 		= array( 'user_id', 'memberships' );
+			$fields_subscribe 	= array( 'user_id', 'subscribe' );
 
 			// Process Action: Create new user.
 			if ( isset( $_POST['btn_create'] )
@@ -336,11 +336,11 @@ class MS_Controller_Member extends MS_Controller {
 				&& self::validate_required( $fields_add, 'POST' )
 			) {
 				$data = array(
-					'user_login' => $_POST['username'],
-					'user_email' => $_POST['email'],
-					'first_name' => $_POST['first_name'],
-					'last_name' => $_POST['last_name'],
-					'user_pass' => $_POST['password'],
+					'user_login' 	=> sanitize_text_field( $_POST['username'] ),
+					'user_email' 	=> sanitize_text_field( $_POST['email'] ),
+					'first_name' 	=> sanitize_text_field( $_POST['first_name'] ),
+					'last_name' 	=> sanitize_text_field( $_POST['last_name'] ),
+					'user_pass' 	=> $_POST['password'],
 				);
 				$user_id = wp_insert_user( $data );
 
@@ -370,10 +370,10 @@ class MS_Controller_Member extends MS_Controller {
 			) {
 				$data = array(
 					'ID' => intval( $_POST['user_id'] ),
-					'user_email' => $_POST['email'],
-					'first_name' => $_POST['first_name'],
-					'last_name' => $_POST['last_name'],
-					'display_name' => $_POST['displayname'],
+					'user_email' 	=> sanitize_text_field( $_POST['email'] ),
+					'first_name' 	=> sanitize_text_field( $_POST['first_name'] ),
+					'last_name' 	=> sanitize_text_field( $_POST['last_name'] ),
+					'display_name' 	=> sanitize_text_field( $_POST['displayname'] ),
 				);
 				wp_update_user( $data );
 			}
@@ -385,8 +385,8 @@ class MS_Controller_Member extends MS_Controller {
 				// REQUEST here: When editing a user the ID is sent in the URL.
 				$user_id = intval( $_REQUEST['user_id'] );
 				$user = MS_Factory::load( 'MS_Model_Member', $user_id );
-                                // We don't need need user_id here as this is an user modification
-                                $fields_modify = array( 'memberships' );
+				// We don't need need user_id here as this is an user modification
+				$fields_modify 	= array( 'memberships' );
 
 				// Modify existing subscriptions.
 				if ( self::validate_required( $fields_modify, 'POST' ) ) {
@@ -398,16 +398,16 @@ class MS_Controller_Member extends MS_Controller {
 						$subscription = $user->get_subscription( $membership_id );
 						$data = $_POST['mem_' . $membership_id];
 
-						$subscription->start_date = $data['start'];
-						$subscription->expire_date = $data['expire'];
-						$subscription->status = $data['status'];
+						$subscription->start_date 	= $data['start'];
+						$subscription->expire_date 	= $data['expire'];
+						$subscription->status 		= $data['status'];
 						$subscription->save();
 					}
 				}
 
 				// Add new subscriptions.
 				if ( self::validate_required( $fields_subscribe, 'POST' ) ) {
-					$subscribe_to = $_POST['subscribe'];
+					$subscribe_to 	= $_POST['subscribe'];
 
 					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 						// Memberships is an array.
@@ -420,6 +420,21 @@ class MS_Controller_Member extends MS_Controller {
 							$subscription->deactivate_membership( false );
 						}
 						$user->add_membership( $subscribe_to, 'admin' );
+
+						if ( isset ( $_POST['create_invoice'] ) && $_POST['create_invoice'] ) {
+							//Get the payment mode for the membership
+							$subscription 		= $user->get_subscription( $subscribe_to );
+							$subscription->set_recalculate_expire_date( false ); //Dont adjust the subscription expire date
+							$invoice 			= $subscription->get_current_invoice();
+							$this->payment_info .= sprintf(
+								'<div class="ms-manual-price">%s: <span class="ms-price">%s%s</span></div>',
+								__( 'Total value', 'membership2' ),
+								$invoice->currency,
+								$invoice->total
+							);
+							$invoice->status = MS_Model_Invoice::STATUS_BILLED;
+							$invoice->save();
+						}
 					}
 				}
 
@@ -460,8 +475,11 @@ class MS_Controller_Member extends MS_Controller {
 	public function admin_page_editor() {
 		$data = array();
 
-		if ( ! empty( $_REQUEST['user_id'] ) && intval( $_REQUEST['user_id'] ) ) {
-			$data['user_id'] = intval( $_REQUEST['user_id'] );
+		if ( ! empty( $_REQUEST['user_id'] ) && ( $user_id = intval( $_REQUEST['user_id'] ) ) ) {
+			if ( user_can( $user_id, 'administrator' ) ) {
+				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+			}
+			$data['user_id'] = $user_id;
 			$data['action'] = 'edit';
 		} else {
 			$data['user_id'] = 0;

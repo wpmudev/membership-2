@@ -79,7 +79,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 
 		$title = $this->data['title'];
                 
-                wp_enqueue_style( 'ms-styles' );
+        wp_enqueue_style( 'ms-styles' );
                 
 		ob_start();
                 
@@ -100,39 +100,39 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		<div class="ms-membership-form-wrapper">
 			<?php $this->render_errors(); ?>
                         
-                        <?php
-                            
-                            $login_link_exists = $this->data['loginlink'];
-                            $reg_action_url = esc_url( $reg_url );
-                            
-                            if ( is_multisite() ) {
-                                $empty_error = new WP_Error();
-                            }
-                            
-                            $m2_reg_error = $this->error;
-                            
-                            $template_data = array(
-                                            'title' => $title,
-                                            'fields' => $fields,
-                                            'empty_error' => isset( $empty_error ) ? $empty_error : '',
-                                            'register_button' => $register_button,
-                                            'm2_reg_error' => $m2_reg_error,
-                                            'login_link_exists' => $login_link_exists,
-                                            'login_link' => $login_link,
-                                            'm2_obj' => $this
-                                        );
-                            
-                            MS_Helper_Template::$ms_registration_form = $template_data;
-                            ?>
-                            <form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo $reg_action_url; ?>" method="post">
-                            <?php
-                                wp_nonce_field( $this->data['action'] );
-                                
-                                if( $path = MS_Helper_Template::template_exists( 'membership_registration_form.php' ) ) {
-                                    require $path;
-                                }
-                            ?>
-                            </form>
+		<?php
+			
+		$login_link_exists = $this->data['loginlink'];
+		$reg_action_url = esc_url( $reg_url );
+		
+		if ( is_multisite() ) {
+			$empty_error = new WP_Error();
+		}
+		
+		$m2_reg_error = $this->error;
+		
+		$template_data = array(
+						'title' => $title,
+						'fields' => $fields,
+						'empty_error' => isset( $empty_error ) ? $empty_error : '',
+						'register_button' => $register_button,
+						'm2_reg_error' => $m2_reg_error,
+						'login_link_exists' => $login_link_exists,
+						'login_link' => $login_link,
+						'm2_obj' => $this
+					);
+		
+		MS_Helper_Template::$ms_registration_form = $template_data;
+		?>
+		<form id="ms-shortcode-register-user-form" class="form-membership" action="<?php echo $reg_action_url; ?>" method="post">
+		<?php
+			wp_nonce_field( $this->data['action'] );
+			
+			if( $path = MS_Helper_Template::template_exists( 'membership_registration_form.php' ) ) {
+				require $path;
+			}
+		?>
+		</form>
                             
 		</div>
 		<?php

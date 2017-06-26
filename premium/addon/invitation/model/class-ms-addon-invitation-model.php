@@ -470,9 +470,9 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
                 
 		if ( $user->is_member ) {
 			if( ! in_array( $this->id, $code ) && $this->id != '' ) {
-                            $code[] = $this->id;
-                            update_user_meta( $user->id, 'invitation_code_used', $code );
-                        }
+				$code[] = $this->id;
+				update_user_meta( $user->id, 'invitation_code_used', $code );
+			}
 		}
 	}
         
@@ -488,14 +488,14 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
                 
 		if ( $user->is_member ) {
 			if( in_array( $this->id, $code ) ) {
-                            $code = get_user_meta( $user_id, 'invitation_code_used', true );
-                            $code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
-                            //$code = array_filter( $code, function( $v ) { return $v != $this->id; } );
-                            if( ( $key = array_search( $this->id, $code ) ) !== false ) {
-                                unset( $code[$code] );
-                            }
-                            update_user_meta( $user->id, 'invitation_code_used', $code );
-                        }
+				$code = get_user_meta( $user_id, 'invitation_code_used', true );
+				$code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
+				//$code = array_filter( $code, function( $v ) { return $v != $this->id; } );
+				if( ( $key = array_search( $this->id, $code ) ) !== false ) {
+					unset( $code[$code] );
+				}
+				update_user_meta( $user->id, 'invitation_code_used', $code );
+			}
 		}
 	}
         
@@ -547,17 +547,17 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 
 		// if the user ID hasn't used this invitation already, increment.
 		//if ( ! in_array( $user_id . '_' . $_POST['membership_id'], $this->use_details ) ) {
-                if ( ! $this->is_code_used_by_user() ) {
+        if ( ! $this->is_code_used_by_user() ) {
 			$this->assign_used_code_to_user();
-                        $this->used += 1;
+            $this->used += 1;
 		}
 
 		// save the user ID to the usage field
 		$user = array( $user_id . '_' . $_POST['membership_id'] );
 		$this->use_details = array_merge( $this->use_details, $user );
-                if( ! empty( $this->id ) ) {
-                    $this->save();
-                }
+		if( ! empty( $this->id ) ) {
+			$this->save();
+		}
 	}
 
 	/**

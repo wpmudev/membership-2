@@ -29,8 +29,9 @@ class MS_View_Settings_Edit extends MS_View {
 		$this->check_simulation();
 
 		// Setup navigation tabs.
-		$tabs = $this->data['tabs'];
-		$desc = array();
+		$tabs 		= $this->data['tabs'];
+		$settings 	= $this->data['settings'];
+		$desc 		= array();
 
 		ob_start();
 		// Render tabbed interface.
@@ -67,7 +68,7 @@ class MS_View_Settings_Edit extends MS_View {
 			</div>
 		</div>
 		<?php
-		$this->render_settings_footer( $tab_name );
+		$this->render_settings_footer( $tab_name , $settings->enable_cron_use );
 
 		$html = ob_get_clean();
 
@@ -227,11 +228,10 @@ class MS_View_Settings_Edit extends MS_View {
 	 * @since  1.0.0
 	 * @param  string $tab_name Name of the currently open settings-tab.
 	 */
-	protected function render_settings_footer( $tab_name ) {
+	protected function render_settings_footer( $tab_name , $show = true ) {
 		if ( 'general' != $tab_name ) { return; }
 
 		$status_stamp = wp_next_scheduled( 'ms_cron_check_membership_status' ) - time();
-		$email_stamp = wp_next_scheduled( 'ms_cron_process_communications' ) - time();
 
 		if ( $status_stamp > 0 ) {
 			$status_delay = sprintf(
@@ -243,23 +243,12 @@ class MS_View_Settings_Edit extends MS_View {
 			$status_delay = __( '(now...)', 'membership2' );
 		}
 
-		if ( $email_stamp > 0 ) {
-			$email_delay = sprintf(
-				__( 'in %s hrs %s min', 'membership2' ),
-				floor( ($email_stamp - 1) / 3600 ),
-				date( 'i', $email_stamp )
-			);
-		} else {
-			$email_delay = __( '(now...)', 'membership2' );
-		}
-
 		$status_url = esc_url_raw(
 			add_query_arg( array( 'run_cron' => 'ms_cron_check_membership_status' ) )
 		);
-		$email_url = esc_url_raw(
-			add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) )
-		);
+		
 		$lbl_run = __( 'Run now!', 'membership2' );
+
 
 		echo '<div class="cf ms-settings-footer"><div class="ms-tab-container">&nbsp;</div>';
 		echo '<div>';
@@ -277,20 +266,40 @@ class MS_View_Settings_Edit extends MS_View {
 		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 			_e( 'Sending Email Responses is disabled.', 'membership2' );
 		} else {
-			$count = MS_Model_Communication::get_queue_count();
-			if ( ! $count ) {
-				$msg = __( 'No pending Email Responses found', 'membership2' );
-			} elseif ( 1 == $count ) {
-				$msg = __( 'Send 1 pending Email Response %1$s', 'membership2' );
+			
+			$email_stamp = wp_next_scheduled( 'ms_cron_process_communications' ) - time();
+			
+			if ( $email_stamp > 0 ) {
+				$email_delay = sprintf(
+					__( 'in %s hrs %s min', 'membership2' ),
+					floor( ($email_stamp - 1) / 3600 ),
+					date( 'i', $email_stamp )
+				);
 			} else {
-				$msg = __( 'Send %2$s pending Email Responses %1$s', 'membership2' );
+				$email_delay = __( '(now...)', 'membership2' );
 			}
-
-			printf(
-				$msg,
-				'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>',
-				$count
+			
+			$email_url = esc_url_raw(
+				add_query_arg( array( 'run_cron' => 'ms_cron_process_communications' ) )
 			);
+			
+			if ( $show ) {
+				$count = MS_Model_Communication::get_queue_count();
+				if ( ! $count ) {
+					$msg = __( 'No pending Email Responses found', 'membership2' );
+				} elseif ( 1 == $count ) {
+					$msg = __( 'Send 1 pending Email Response %1$s', 'membership2' );
+				} else {
+					$msg = __( 'Send %2$s pending Email Responses %1$s', 'membership2' );
+				}
+				echo '<span class="ms-settings-email-cron">';
+				printf(
+					$msg,
+					'<a href="' . $email_url . '"title="' . $lbl_run . '">' . $email_delay . '</a>',
+					$count
+				);
+				echo '</span>';
+			}
 		}
 
 		echo '</div></div>';

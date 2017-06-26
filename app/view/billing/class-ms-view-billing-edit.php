@@ -206,6 +206,12 @@ class MS_View_Billing_Edit extends MS_View {
 				'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'value' => true,
 			),
+			'modify_date' => array(
+				'title' => __( 'Extend the expire date of the active membership once paid', 'membership2' ),
+				'name' 	=> 'modify_date',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+				'value' => true,
+			),
 			'cancel' => array(
 				'id' => 'cancel',
 				'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -226,6 +232,7 @@ class MS_View_Billing_Edit extends MS_View {
 			$fields['membership_id']['type'] = MS_Helper_Html::INPUT_TYPE_HIDDEN;
 			$fields['txt_membership']['value'] = $this->data['memberships'][ $invoice->membership_id ];
 			$fields['txt_created']['value'] = MS_Helper_Period::format_date( $invoice->invoice_date );
+			unset( $fields['modify_date'] );
 		} else {
 			unset( $fields['txt_user'] );
 			unset( $fields['txt_membership'] );

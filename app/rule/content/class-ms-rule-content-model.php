@@ -152,28 +152,28 @@ class MS_Rule_Content_Model extends MS_Rule {
 
 		// ********** READ MORE **********
                 
-                if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
-                    
-                    $rule = MS_Factory::load( 'MS_Rule_Content_Model' );
-                    $allowed_memberships = $rule->get_memberships( self::MORE_LIMIT );
-                    if( ! is_array( $allowed_memberships ) ) $allowed_memberships = array();
-                    
-                    $sorted_membership = array();
-                    foreach( $allowed_memberships as $allowed_membership_id => $allowed_membership_name ) {
-                        $m_obj = MS_Factory::load( 'MS_Model_Membership', $allowed_membership_id );
-                        $key = $m_obj->priority;
-                        
-                        while( array_key_exists( $key, $sorted_membership ) ) {
-                            $key++;
-                        }
-                        
-                        $sorted_membership[$key] = $allowed_membership_id;
-                    }
-                    $protected_membership_id = reset( $sorted_membership );
-                    
-                }else{
-                    $protected_membership_id = $this->membership_id;
-                }
+		if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE ) {
+			
+			$rule = MS_Factory::load( 'MS_Rule_Content_Model' );
+			$allowed_memberships = $rule->get_memberships( self::MORE_LIMIT );
+			if( ! is_array( $allowed_memberships ) ) $allowed_memberships = array();
+			
+			$sorted_membership = array();
+			foreach( $allowed_memberships as $allowed_membership_id => $allowed_membership_name ) {
+				$m_obj = MS_Factory::load( 'MS_Model_Membership', $allowed_membership_id );
+				$key = $m_obj->priority;
+				
+				while( array_key_exists( $key, $sorted_membership ) ) {
+					$key++;
+				}
+				
+				$sorted_membership[$key] = $allowed_membership_id;
+			}
+			$protected_membership_id = reset( $sorted_membership );
+			
+		}else{
+			$protected_membership_id = $this->membership_id;
+		}
                 
 		$this->protection_message = MS_Plugin::instance()->settings->get_protection_message(
 			MS_Model_Settings::PROTECTION_MSG_MORE_TAG,

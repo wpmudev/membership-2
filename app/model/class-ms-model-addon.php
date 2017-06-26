@@ -27,6 +27,7 @@ class MS_Model_Addon extends MS_Model_Option {
 	 */
 	const ADDON_MULTI_MEMBERSHIPS = 'multi_memberships';
 	const ADDON_POST_BY_POST = 'post_by_post';
+	const ADDON_HIDE_PAGES_FROM_SEARCH = 'hide_pages_from_search';
 	const ADDON_URL_GROUPS = 'url_groups';
 	const ADDON_CPT_POST_BY_POST = 'cpt_post_by_post';
 	const ADDON_TRIAL = 'trial';
@@ -426,6 +427,11 @@ class MS_Model_Addon extends MS_Model_Option {
 		$list[ self::ADDON_POST_BY_POST ] = (object) array(
 			'name' => __( 'Individual Posts', 'membership2' ),
 			'description' => __( 'Protect individual Posts instead of Categories.', 'membership2' ),
+		);
+
+		$list[ self::ADDON_HIDE_PAGES_FROM_SEARCH ] = (object) array(
+			'name' => __( 'Hide Pages From Search', 'membership2' ),
+			'description' => __( 'Exclude protected pages from site search.', 'membership2' ),
 		);
 
 		$list[ self::ADDON_CPT_POST_BY_POST ] = (object) array(

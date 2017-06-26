@@ -1,9 +1,9 @@
 <?php
 
-class M2_Stripe_ApplicationFee extends M2_Stripe_ApiResource
+class Stripe_ApplicationFee extends Stripe_ApiResource
 {
   /**
-   * This is a special case because the application fee endpoint has an
+   * This is a special case because the application fee endpoint has an 
    *    underscore in it. The parent `className` function strips underscores.
    *
    * @return string The name of the class.
@@ -44,7 +44,7 @@ class M2_Stripe_ApplicationFee extends M2_Stripe_ApiResource
    */
   public function refund($params=null)
   {
-    $requestor = new M2_Stripe_ApiRequestor($this->_apiKey);
+    $requestor = new Stripe_ApiRequestor($this->_apiKey);
     $url = $this->instanceUrl() . '/refund';
     list($response, $apiKey) = $requestor->request('post', $url, $params);
     $this->refreshFrom($response, $apiKey);

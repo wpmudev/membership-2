@@ -170,6 +170,12 @@ class MS_Plugin {
 			array( $this, 'plugin_activation' )
 		);
 
+		//Plugin deactivation hook
+		register_deactivation_hook(
+			MS_PLUGIN_FILE,
+			array( $this, 'plugin_deactivation' )
+		);
+
 		/**
 		 * Hooks init to create the primary plugin controller.
 		 *
@@ -345,6 +351,20 @@ class MS_Plugin {
 		MS_Model_Upgrade::update( true );
 
 		do_action( 'ms_plugin_activation', $this );
+	}
+
+	/**
+	 * Actions executed in plugin deactivation
+	 *
+	 * @since 1.0.3.6
+	 */
+	public function plugin_deactivation() {
+		$jobs = MS_Model_Plugin::cron_jobs();
+		foreach ( $jobs as $hook => $interval ) {
+			if ( wp_next_scheduled( $hook ) ) {
+				wp_clear_scheduled_hook( $hook );
+			}
+		}
 	}
 
 	/**

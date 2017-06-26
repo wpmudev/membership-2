@@ -12,7 +12,8 @@ window.ms_init.view_billing_transactions = function init() {
 		btn_ignore = table.find( '.action-ignore' ),
 		btn_link = table.find( '.action-link' ),
 		btn_retry = table.find( '.action-retry' ),
-		btn_match = frm_match.find( '.action-match' );
+		btn_match = frm_match.find( '.action-match' ),
+		retry_transactions, show_link_dialog, append_option;
 
 	// Handle the "Save Matching" action.
 	function save_matching( ev ) {
@@ -40,7 +41,7 @@ window.ms_init.view_billing_transactions = function init() {
 	}
 
 	// Retry to process all displayed transactions.
-	function retry_transactions() {
+	retry_transactions = function() {
 		var rows = table.find( '.item' ),
 			nonce = frm_match.find( '.retry_nonce' ).val(),
 			progress = wpmUi.progressbar(),
@@ -99,7 +100,7 @@ window.ms_init.view_billing_transactions = function init() {
 		}
 
 		process_queue();
-	}
+	};
 
 	// Handle the "Reset" action.
 	function clear_line( ev ) {
@@ -223,7 +224,7 @@ window.ms_init.view_billing_transactions = function init() {
 	}
 
 	// Display the Transaction-Link popup.
-	function show_link_dialog( row, data ) {
+	show_link_dialog = function( row, data ) {
 		var sel_user, sel_subscription, sel_invoice, nonce_data, nonce_update,
 			row_user, row_subscription, row_invoice, btn_submit, log_id,
 			popup = wpmUi.popup(),
@@ -373,9 +374,9 @@ window.ms_init.view_billing_transactions = function init() {
 		if ( ! isNaN( sel_user.val() ) && sel_user.val() > 0 ) {
 			load_subscriptions();
 		}
-	}
+	};
 
-	function append_option( container, val, label ) {
+	append_option = function( container, val, label ) {
 		if ( typeof label === 'object' ) {
 			var group = jQuery( '<optgroup></optgroup>' );
 			group.attr( 'label', val );
@@ -390,7 +391,7 @@ window.ms_init.view_billing_transactions = function init() {
 				.html( label )
 			);
 		}
-	}
+	};
 
 	btn_clear.click(clear_line);
 	btn_ignore.click(ignore_line);

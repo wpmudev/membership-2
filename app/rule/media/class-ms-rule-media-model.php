@@ -219,9 +219,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 			return $the_content;
 		}
 
-		$upload_dir = wp_upload_dir();
-		$original_url = trailingslashit( $upload_dir['baseurl'] );
-		$new_path = trailingslashit(
+		$upload_dir 	= wp_upload_dir();
+		$original_url 	= trailingslashit( $upload_dir['baseurl'] );
+		$new_path 		= trailingslashit(
 			trailingslashit( get_option( 'home' ) ) .
 			$download_settings['masked_url']
 		);
@@ -514,12 +514,17 @@ class MS_Rule_Media_Model extends MS_Rule {
 						'',
 						$f_info->filename
 					);
-					
-					$request_name = basename($attachment_id); //Get the name of the requested file
-					$request_name = pathinfo($request_name); //Get the info the of the requested file
-					$attachment_id = str_replace("ms_","",$request_name['filename']); //Remove the prefix since we always have ms_ and get the attachment id
-					
-					$attachment_id = $attachment_id - (int) self::FILE_PROTECTION_INCREMENT; //I dont know why this was here
+
+					if( $protection_type == self::PROTECTION_TYPE_COMPLETE ){
+						
+						$request_name = basename( $attachment_id ); // Get the name of the requested file
+
+						$request_name = pathinfo( $request_name ); // Get the info the of the requested file
+						
+						$attachment_id = str_replace( 'ms_','',$request_name['filename'] ); // Remove the prefix since we always have ms_ and get the attachment id.
+					}
+
+					$attachment_id = $attachment_id - (int) self::FILE_PROTECTION_INCREMENT;
 
 					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
 					break;
@@ -591,11 +596,23 @@ class MS_Rule_Media_Model extends MS_Rule {
 				$access = true;
 			} else {
 				$member = MS_Model_Member::get_current_member();
-				foreach ( $member->subscriptions as $subscription ) {
-					$membership = $subscription->get_membership();
-					$access = $membership->has_access_to_post( $parent_id );
-					if ( $access ) { break; }
+				$cache_key = 'ms_media_protection_member_'.$member->id.'_'.$attachment_id;
+				$member_has_access = wp_cache_get( $cache_key, 'ms_media_protection_member' );
+
+				if ( false !== $member_has_access ) {
+					$access = $member_has_access;
+				} else {
+					foreach ( $member->subscriptions as $subscription ) {
+						$membership = $subscription->get_membership();
+						$access = $membership->has_access_to_post( $parent_id );
+						if ( $access ) { 
+							wp_cache_set( $cache_key, true , 'ms_media_protection_member' );
+							break; 
+						}
+					}
 				}
+				
+				
 			}
 		} else {
 			/*
@@ -603,10 +620,20 @@ class MS_Rule_Media_Model extends MS_Rule {
 			 * Each Attachment can be protected individually.
 			 */
 			$member = MS_Model_Member::get_current_member();
-			foreach ( $member->subscriptions as $subscription ) {
-				$rule = $subscription->get_membership()->get_rule( MS_Rule_Media::RULE_ID );
-				$access = $rule->has_access( $attachment_id );
-				if ( $access ) { break; }
+			$cache_key = 'ms_media_protection_addon_member_'.$member->id.'_'.$attachment_id;
+			$member_has_access = wp_cache_get( $cache_key, 'ms_media_protection_member' );
+
+			if ( false !== $member_has_access ) {
+				$access = $member_has_access;
+			} else {
+				foreach ( $member->subscriptions as $subscription ) {
+					$rule = $subscription->get_membership()->get_rule( MS_Rule_Media::RULE_ID );
+					$access = $rule->has_access( $attachment_id );
+					if ( $access ) { 
+						wp_cache_set( $cache_key, true , 'ms_media_protection_member' );
+						break; 
+					}
+				}
 			}
 		}
 

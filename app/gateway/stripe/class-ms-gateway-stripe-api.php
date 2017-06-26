@@ -41,7 +41,9 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		static $Stripe_Loaded = false;
 
 		if ( ! $Stripe_Loaded ) {
-			require_once MS_Plugin::instance()->dir . '/lib/stripe-php/lib/Stripe.php';
+			if ( ! class_exists( 'Stripe' ) ) {
+				require_once MS_Plugin::instance()->dir . '/lib/stripe-php/lib/Stripe.php';
+			}
 
 			do_action(
 				'ms_gateway_stripe_load_stripe_lib_after',
@@ -54,7 +56,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$this->_gateway = $gateway;
 
 		$secret_key = $this->_gateway->get_secret_key();
-		M2_Stripe::setApiKey( $secret_key );
+		Stripe::setApiKey( $secret_key );
 	}
 
 	/**
@@ -70,7 +72,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$customer = $this->find_customer( $member );
 
 		if ( empty( $customer ) ) {
-			$customer = M2_Stripe_Customer::create(
+			$customer = Stripe_Customer::create(
 				array(
 					'card' => $token,
 					'email' => $member->email,
@@ -103,7 +105,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$customer = null;
 
 		if ( ! empty( $customer_id ) ) {
-			$customer = M2_Stripe_Customer::retrieve( $customer_id );
+			$customer = Stripe_Customer::retrieve( $customer_id );
 
 			// Seems like the customer was manually deleted on Stripe website.
 			if ( isset( $customer->deleted ) && $customer->deleted ) {
@@ -195,13 +197,13 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 	 */
 	public function charge( $customer, $amount, $currency, $description ) {
                 
-                $amount = apply_filters(
-                    'ms_gateway_stripe_charge_amount',
-                    $amount,
-                    $currency
-                );
+		$amount = apply_filters(
+			'ms_gateway_stripe_charge_amount',
+			$amount,
+			$currency
+		);
                 
-		$charge = M2_Stripe_Charge::create(
+		$charge = Stripe_Charge::create(
 			array(
 				'customer' => $customer->id,
 				'amount' => intval( $amount * 100 ), // Amount in cents!
@@ -343,10 +345,10 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$all_items = lib3()->array->get( $all_items );
 
 		if ( ! isset( $all_items[$item_id] )
-			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Plan' )
+			|| ! is_a( $all_items[$item_id], 'Stripe_Plan' )
 		) {
 			try {
-				$item = M2_Stripe_Plan::retrieve( $item_id );
+				$item = Stripe_Plan::retrieve( $item_id );
 			} catch( Exception $e ) {
 				// If the plan does not exist then stripe will throw an Exception.
 				$item = false;
@@ -360,13 +362,13 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		 * Stripe can only update the plan-name, so we have to delete and
 		 * recreate the plan manually.
 		 */
-		if ( $item && is_a( $item, 'M2_Stripe_Plan' ) ) {
+		if ( $item && is_a( $item, 'Stripe_Plan' ) ) {
 			$item->delete();
 			$all_items[$item_id] = false;
 		}
 
 		if ( $plan_data['amount'] > 0 ) {
-			$item = M2_Stripe_Plan::create( $plan_data );
+			$item = Stripe_Plan::create( $plan_data );
 			$all_items[$item_id] = $item;
 		}
 
@@ -391,10 +393,10 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		$all_items = lib3()->array->get( $all_items );
 
 		if ( ! isset( $all_items[$item_id] )
-			|| ! is_a( $all_items[$item_id], 'M2_Stripe_Coupon' )
+			|| ! is_a( $all_items[$item_id], 'Stripe_Coupon' )
 		) {
 			try {
-				$item = M2_Stripe_Coupon::retrieve( $item_id );
+				$item = Stripe_Coupon::retrieve( $item_id );
 			} catch( Exception $e ) {
 				// If the coupon does not exist then stripe will throw an Exception.
 				$item = false;
@@ -408,12 +410,12 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		 * Stripe can only update the coupon-name, so we have to delete and
 		 * recreate the coupon manually.
 		 */
-		if ( $item && is_a( $item, 'M2_Stripe_Coupon' ) ) {
+		if ( $item && is_a( $item, 'Stripe_Coupon' ) ) {
 			$item->delete();
 			$all_items[$item_id] = false;
 		}
 
-		$item = M2_Stripe_Coupon::create( $coupon_data );
+		$item = Stripe_Coupon::create( $coupon_data );
 		$all_items[$item_id] = $item;
 
 		MS_Factory::set_transient(

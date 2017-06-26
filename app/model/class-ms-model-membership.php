@@ -1421,6 +1421,11 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			// At this point we have an empty rule-instance
 			$rule = $this->get_rule( $rule_type );
 
+			//clear role rules if not member
+			if ( MS_Rule_MemberRoles::RULE_ID === $key && $this->is_base() ) {
+				$values = array();
+			}
+
 			// Now we populate that rule-instance with site-specific settings.
 			$rule->populate( $values );
 		}
@@ -2267,6 +2272,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			// If 'has access' is found in the hierarchy, it does have access.
 			$rules = $this->get_rules_hierarchy();
 			foreach ( $rules as $rule ) {
+                                $rule->_allow_without_rule = false;
 				$rule_access = $rule->has_access( $post_id );
 
 				if ( null === $rule_access ) {

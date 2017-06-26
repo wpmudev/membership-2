@@ -166,19 +166,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'wp_loaded', 'wp_loaded' );
 
 		// Setup plugin admin UI.
-		if( ! is_multisite() )
-                {
-                    $this->add_action( 'admin_menu', 'add_menu_pages' );
-                }
-                else
-                {
-                    if ( MS_Plugin::is_network_wide() ) {
-                        $this->add_action( 'network_admin_menu', 'add_menu_pages' );
-                    }
-                    else
-                    {
-                        $this->add_action( 'admin_menu', 'add_menu_pages' );
-                    }
+                $this->add_action( 'admin_menu', 'add_menu_pages' ); //for multisite, it needs too for Protection Rules page
+		if ( is_multisite() && MS_Plugin::is_network_wide() ) {
+                    $this->add_action( 'network_admin_menu', 'add_menu_pages' );
                 }
 
 		// Select the right page to display.
@@ -727,9 +717,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		}
 
 		$slug = self::$base_slug;
-	
+
 		return (strpos($curpage, $slug) !== false);
-	}	
+	}
 
 	/**
 	 * Get admin url.
@@ -970,7 +960,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery' ), $version
 		);
 
-		if( self::is_admin_page( ) ){
+		if ( !wp_script_is( 'jquery-validate', 'registered' ) ){
 			wp_register_script(
 				'jquery-validate',
 				$plugin_url . 'app/assets/js/jquery.m2.validate.js',
@@ -1057,11 +1047,15 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @since  1.0.0
 	 */
-	public function enqueue_plugin_admin_styles() {
-		lib3()->ui->css( 'ms-admin-styles' );
-		lib3()->ui->add( 'core' );
-		lib3()->ui->add( 'select' );
-		lib3()->ui->add( 'fontawesome' );
+	public function enqueue_plugin_admin_styles( $hook ) {
+		//Load only on membership pages
+		$screen = get_current_screen();
+		if ( strpos( $screen->id , 'membership2') !== false ) {
+			lib3()->ui->css( 'ms-admin-styles' );
+			lib3()->ui->add( 'core' );
+			lib3()->ui->add( 'select' );
+			lib3()->ui->add( 'fontawesome' );
+		}
 	}
 
 	/**
@@ -1088,7 +1082,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		if( self::is_admin_page( ) ){
 			lib3()->ui->js( 'jquery-validate' );
 		}
-		lib3()->ui->js( 'ms-admin-scripts' );
+		lib3()->ui->js( 'ms-admin' );
 		lib3()->ui->add( 'select' );
 	}
 

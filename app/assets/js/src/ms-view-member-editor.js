@@ -10,7 +10,8 @@ window.ms_init.view_member_editor = function init () {
 		sel_user = jQuery( '.ms-group-select #user_id' ),
 		btn_add = jQuery( '#btn_create' ),
 		btn_select = jQuery( '#btn_select' ),
-		chosen_options = {};
+		chosen_options = {},
+		validate_buttons;
 
 	function validate_field( fieldname, field ) {
 		var value = field.val(),
@@ -45,7 +46,7 @@ window.ms_init.view_member_editor = function init () {
 		);
 	}
 
-	function validate_buttons() {
+	validate_buttons = function() {
 		if ( txt_username.hasClass( 'valid' ) && txt_email.hasClass( 'valid' ) ) {
 			btn_add.prop( 'disabled', false );
 			btn_add.removeClass( 'disabled' );
@@ -61,7 +62,7 @@ window.ms_init.view_member_editor = function init () {
 			btn_select.prop( 'disabled', true );
 			btn_select.addClass( 'disabled' );
 		}
-	}
+	};
 
 	txt_username.change(function() {
 		validate_field( 'username', txt_username );

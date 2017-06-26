@@ -423,4 +423,15 @@ class MS_Hooker {
 		// Intended debug output, leave it here.
 		lib3()->debug->dump( $this );
 	}
+
+	/**
+	 * Log current action
+	 *
+	 * @param String $message - Message to be logged
+	 */
+	public function log( $message ) {
+		if( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) { 
+			lib3()->debug->log( '[M2]' . $message );
+		}
+	}
 }

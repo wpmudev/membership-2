@@ -86,11 +86,11 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$this->manual_payment = true; // Recurring billed/paid manually
 		$this->pro_rate = true;
 
-                $this->add_filter(
-                        'ms_model_pages_get_ms_page_url',
-                        'ms_model_pages_get_ms_page_url_cb',
-                        99, 4
-                );
+		$this->add_filter(
+				'ms_model_pages_get_ms_page_url',
+				'ms_model_pages_get_ms_page_url_cb',
+				99, 4
+		);
 	}
 
         /**
@@ -105,7 +105,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 *
 	 * @return String $url Modified or raw URL
 	 */
-        public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
+    public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
             /**
              * Constant M2_FORCE_NO_SSL
              *
@@ -125,7 +125,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
             }
 
 	    return $url;
-        }
+    }
 
 	/**
 	 * Processes purchase action.
@@ -151,6 +151,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 		$member = $subscription->get_member();
 		$invoice = $subscription->get_current_invoice();
+
+		$note = 'Stripe Processing';
 
 		if ( ! empty( $_POST['stripeToken'] ) ) {
 			lib3()->array->strip_slashes( $_POST, 'stripeToken' );
@@ -186,13 +188,14 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			} catch ( Exception $e ) {
 				$note = 'Stripe error: '. $e->getMessage();
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::log( $note );
 				$error = $e;
 			}
 		} else {
 			$note = 'Stripe gateway token not found.';
-			MS_Helper_Debug::log( $note );
 		}
+		$invoice->gateway_id = self::ID;
+		$invoice->save();
+		MS_Helper_Debug::log( $note );
 
 		do_action(
 			'ms_gateway_transaction_log',
@@ -281,6 +284,9 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			$was_paid = true;
 			$note = __( 'Invoice already paid', 'membership2' );
 		}
+
+		$invoice->gateway_id = self::ID;
+		$invoice->save();
 
 		do_action(
 			'ms_gateway_transaction_log',

@@ -290,6 +290,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	private $membership;
 
+	/**
+	 *
+	 * Recalculate the subscription expire date.
+	 * Set to false if you just want to the invoice to change for the current
+	 * invoice
+	 *
+	 * @author Paul Kevin
+	 * @since 1.0.3.6
+	 * @var Boolean
+	 */
+	private $recalculate_expire_date = true;
+
 	//
 	//
 	//
@@ -1222,7 +1234,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$this->start_date,
 				$this->trial_expire_date
 			);
-			if ( ! $valid_date ) {
+			if ( ! $valid_date && $this->recalculate_expire_date ) {
 				$expire_date = $this->calc_expire_date( $this->start_date );
 			}
 		} else {
@@ -1339,6 +1351,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 		} else {
 			if ( $paid ) {
+				
 				/*
 				 * Always extend the membership from current date or later, even if
 				 * the specified start-date is in the past.
@@ -1351,6 +1364,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				if ( MS_Helper_Period::is_after( $today, $start_date ) ) {
 					$start_date = $today;
 				}
+				//$this->log( 'calc_expire_date :: Today '.$today );
+				//$this->log( 'calc_expire_date :: Start Date '.$start_date  );
 			}
 
 			/*
@@ -1364,19 +1379,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-					$period_unit = MS_Helper_Period::get_period_value(
-						$membership->period,
-						'period_unit'
-					);
-					$period_type = MS_Helper_Period::get_period_value(
-						$membership->period,
-						'period_type'
-					);
-					$expire_date = MS_Helper_Period::add_interval(
-						$period_unit,
-						$period_type,
-						$start_date
-					);
+					if ( $this->recalculate_expire_date ) {
+						$period_unit = MS_Helper_Period::get_period_value(
+							$membership->period,
+							'period_unit'
+						);
+						$period_type = MS_Helper_Period::get_period_value(
+							$membership->period,
+							'period_type'
+						);
+						$expire_date = MS_Helper_Period::add_interval(
+							$period_unit,
+							$period_type,
+							$start_date
+						);
+					} else {
+						$expire_date = $this->expire_date;
+					}
+					//$this->log( 'calc_expire_date :: New Expire Date '.$expire_date  );
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE:
@@ -1384,19 +1404,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-					$period_unit = MS_Helper_Period::get_period_value(
-						$membership->pay_cycle_period,
-						'period_unit'
-					);
-					$period_type = MS_Helper_Period::get_period_value(
-						$membership->pay_cycle_period,
-						'period_type'
-					);
-					$expire_date = MS_Helper_Period::add_interval(
-						$period_unit,
-						$period_type,
-						$start_date
-					);
+					if ( $this->recalculate_expire_date ) {
+						$period_unit = MS_Helper_Period::get_period_value(
+							$membership->pay_cycle_period,
+							'period_unit'
+						);
+						$period_type = MS_Helper_Period::get_period_value(
+							$membership->pay_cycle_period,
+							'period_type'
+						);
+						$expire_date = MS_Helper_Period::add_interval(
+							$period_unit,
+							$period_type,
+							$start_date
+						);
+					} else {
+						$expire_date = $this->expire_date;
+					}
 					break;
 			}
 		}
@@ -2055,10 +2079,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			$this->set_status( self::STATUS_TRIAL );
 		} else {
+			
 			/*
 			 * Important:
-			 * FIRST set the SUBSCRIPTION STATUS, otherwise the expire date is
-			 * based on start_date instead of trial_expire_date!
+			 * FIRST set the EXPIRE DATE, otherwise  %ms-expiry-date% doesn't available
+			 *  for Subscription - Completed with payment Message emails
 			 */
 			$this->set_status( self::STATUS_ACTIVE );
 
@@ -2223,6 +2248,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Do not set subscription to "No Gateway".
 		if ( ! $new_gateway ) { return; }
+
+		//Incase the gateway is admin, we need to st it to the default active gateway
+		if ( $new_gateway == 'admin' ) {
+			$gateway_names = MS_Model_Gateway::get_gateway_names( true );
+			if ( count ( $gateway_names ) == 1 ) {
+				$new_gateway = key( $gateway_names );
+			}
+		}
 
 		// No change needed. Skip.
 		if ( $new_gateway == $old_gateway ) { return; }
@@ -2875,7 +2908,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						default:
 							// Either keep the current expire date (if valid) or
 							// calculate a new expire date, based on current date.
-							if ( ! $this->expire_date ) {
+							if ( ! $this->expire_date && $this->recalculate_expire_date ) {
 								$this->expire_date = $this->calc_expire_date(
 									MS_Helper_Period::current_date()
 								);
@@ -3091,11 +3124,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						/*
 						 * If the new membership is paid we want that the user
 						 * confirms the payment in his account. So we set it
-						 * to "Pending" first.
+						 * to "Pending" first. If its free we set it as active
 						 */
 						if ( ! $new_membership->is_free() ) {
 							$new_subscription->status = self::STATUS_PENDING;
-						}
+						} else {
+							$new_subscription->status = self::STATUS_ACTIVE;
+                        }
+                        $new_subscription->save();
 					}
 				}
 				break;
@@ -3146,6 +3182,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			'ms_model_relationship_check_membership_status_after',
 			$this
 		);
+	}
+
+	/**
+	 * Set the expire date recalculation
+	 *
+	 * @param Boolean $recalculate - true to recalculate the expire date
+	 * @author Paul Kevin
+	 */
+	public function set_recalculate_expire_date( $recalculate ) {
+		$this->recalculate_expire_date = $recalculate;
 	}
 
 	/**

@@ -36,11 +36,11 @@ class MS_Gateway_Free extends MS_Gateway {
 		$this->group = '';
 		$this->active = true;
 		$this->manual_payment = true; // Recurring billed/paid manually
-                /**
-                 * No sandbox option for manual payment gateway
-                 * The mode is always set to live
-                 */
-                $this->mode = 'live';
+		/**
+		 * No sandbox option for manual payment gateway
+		 * The mode is always set to live
+		 */
+		$this->mode = 'live';
 	}
 
 	/**
