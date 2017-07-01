@@ -193,15 +193,15 @@ class MS_Gateway_2checkout extends MS_Gateway {
 				}
 
 				$notes = 'Response Error: ' . $reason;
-				MS_Helper_Debug::log( $notes );
-				MS_Helper_Debug::log( $response );
+				MS_Helper_Debug::debug_log( $notes );
+				MS_Helper_Debug::debug_log( $response );
 				$exit = true;
 			}
 		} else {
 			// Did not find expected POST variables. Possible access attempt from a non PayPal site.
 
 			$notes = 'Error: Missing POST variables. Identification is not possible.';
-			MS_Helper_Debug::log( $notes );
+			MS_Helper_Debug::debug_log( $notes );
 			$redirect = MS_Helper_Utility::home_url( '/' );
 			$exit = true;
 		}

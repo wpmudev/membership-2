@@ -665,7 +665,7 @@ class MS_Controller_Gateway extends MS_Controller {
 					$this->add_action( 'the_content', 'purchase_error_content' );
 				}
 			} catch ( Exception $e ) {
-				MS_Helper_Debug::log( $e->getMessage() );
+				MS_Helper_Debug::debug_log( $e->getMessage() );
 
 				switch ( $gateway_id ) {
 					case MS_Gateway_Authorize::ID:
@@ -695,7 +695,7 @@ class MS_Controller_Gateway extends MS_Controller {
 				}
 			}
 		} else {
-			MS_Helper_Debug::log( 'Error Code ' . $err );
+			MS_Helper_Debug::debug_log( 'Error Code ' . $err );
 
 			$this->add_action( 'the_content', 'purchase_error_content' );
 		}

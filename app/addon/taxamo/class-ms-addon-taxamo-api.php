@@ -75,7 +75,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 				}
 			}
 			catch ( Exception $ex ) {
-				MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
+				MS_Helper_Debug::debug_log( 'Taxamo error: ' . $ex->getMessage() );
 			}
 		}
 
@@ -137,7 +137,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			}
 		}
 		catch ( Exception $ex ) {
-			MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
+			MS_Helper_Debug::debug_log( 'Taxamo error: ' . $ex->getMessage() );
 		}
 	}
 
@@ -493,7 +493,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 				$member = null;
 			}
 			catch ( Exception $ex ) {
-				MS_Helper_Debug::log( 'Taxamo error: ' . $ex->getMessage() );
+				MS_Helper_Debug::debug_log( 'Taxamo error: ' . $ex->getMessage() );
 			}
 		} else {
 			// Try to get the stored country from user-meta or session (for guest)

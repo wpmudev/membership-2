@@ -249,7 +249,7 @@ class MS_Model_Pages extends MS_Model_Option {
 				$result = $pages[ $page_type ];
 			}
 		} else {
-			MS_Helper_Debug::log( 'ms_model_pages_get_page error: invalid page type: ' . $page_type );
+			MS_Helper_Debug::debug_log( 'ms_model_pages_get_page error: invalid page type: ' . $page_type );
 		}
 
 		return apply_filters(

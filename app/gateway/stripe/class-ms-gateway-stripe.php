@@ -195,7 +195,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		}
 		$invoice->gateway_id = self::ID;
 		$invoice->save();
-		MS_Helper_Debug::log( $note );
+		MS_Helper_Debug::debug_log( $note );
 
 		do_action(
 			'ms_gateway_transaction_log',
@@ -272,12 +272,12 @@ class MS_Gateway_Stripe extends MS_Gateway {
 					}
 				} else {
 					$note = "Stripe customer is empty for user $member->username";
-					MS_Helper_Debug::log( $note );
+					MS_Helper_Debug::debug_log( $note );
 				}
 			} catch ( Exception $e ) {
 				$note = 'Stripe error: '. $e->getMessage();
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::log( $note );
+				MS_Helper_Debug::debug_log( $note );
 			}
 		} else {
 			// Invoice was already paid earlier.

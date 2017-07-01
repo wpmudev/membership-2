@@ -437,7 +437,7 @@ class MS_Gateway extends MS_Model_Option {
 	 * @return boolean
 	 */
 	public function is_configured() {
-		MS_Helper_Debug::log(
+		MS_Helper_Debug::debug_log(
 			sprintf(
 				__( 'Override the is_configured method of the %s-gateway', 'membership2' ),
 				$this->id

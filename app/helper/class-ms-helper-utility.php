@@ -31,7 +31,7 @@ class MS_Helper_Utility extends MS_Helper {
 			$arr2 = (string) $arr2;
 			return $arr1 == $arr2 ? $arr1 : false;
 		} elseif ( is_array( $arr1 ) !== is_array( $arr2 ) ) {
-			MS_Helper_Debug::log(
+			MS_Helper_Debug::debug_log(
 				'WARNING: MS_Helper_Utility::array_intersect_assoc_deep() - ' .
 				'Both params need to be of same type (array or string).',
 				true

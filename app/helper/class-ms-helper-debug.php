@@ -31,7 +31,7 @@ class MS_Helper_Debug extends MS_Helper {
 	 * @since  1.0.0
 	 * @param  mixed $message Array, object or text to output to log.
 	 */
-	public static function log( $message, $echo_file = false ) {
+	public static function debug_log( $message, $echo_file = false ) {
 		if ( ! WP_DEBUG && ! WDEV_DEBUG ) { return; }
 
 		if ( defined( 'DEBUG_BACKTRACE_IGNORE_ARGS' ) ) {
@@ -92,5 +92,5 @@ class MS_Helper_Debug extends MS_Helper {
 
 }
 
-MS_Helper_Debug::log( '**************************** REQUEST START ****************************' );
-MS_Helper_Debug::log( '***** URL: ' . lib3()->net->current_url() );
+MS_Helper_Debug::debug_log( '**************************** REQUEST START ****************************' );
+MS_Helper_Debug::debug_log( '***** URL: ' . lib3()->net->current_url() );
