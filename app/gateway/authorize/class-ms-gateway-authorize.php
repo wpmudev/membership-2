@@ -521,7 +521,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$response = $this->get_cim()->createCustomerProfile( $customer );
 
 		if ( $response->isError() ) {
-			MS_Helper_Debug::log( $response );
+			MS_Helper_Debug::debug_log( $response );
 
 			// Duplicate record, delete the old one.
 			if ( 'E00039' == $response->xml->messages->message->code ) {

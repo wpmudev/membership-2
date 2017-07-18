@@ -146,7 +146,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::log( $e->getMessage() );
+			// MS_Helper_Debug::debug_log( $e->getMessage() );
 		}
 	}
 
@@ -198,7 +198,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::log( $e->getMessage() );
+			// MS_Helper_Debug::debug_log( $e->getMessage() );
 		}
 	}
 
@@ -251,7 +251,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::log( $e->getMessage() );
+			// MS_Helper_Debug::debug_log( $e->getMessage() );
 		}
 	}
 
@@ -328,7 +328,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			self::load_mailchimp_api();
 			$status = true;
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::log( $e );
+			// MS_Helper_Debug::debug_log( $e );
 		}
 
 		return $status;
@@ -409,7 +409,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 					if ( is_wp_error( $lists ) ) {
 						$has_more = false;
-						// MS_Helper_Debug::log( $lists );
+						// MS_Helper_Debug::debug_log( $lists );
 					} else {
 						$has_more = count( $lists['data'] ) >= $items_per_page;
 						foreach ( $lists['data'] as $list ) {
@@ -447,7 +447,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 			if ( is_wp_error( $results ) ) {
 				$this->log( $results->get_error_message() );
-				// MS_Helper_Debug::log( $results );
+				// MS_Helper_Debug::debug_log( $results );
 			} elseif ( ! empty( $results['success_count'] )
 				&& ! empty( $results['data'][0]['status'] )
 				&& 'subscribed' == $results['data'][0]['status']

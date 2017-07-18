@@ -1025,7 +1025,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		);
 
 		if ( ! $this->ms_relationship_id ) {
-			MS_Helper_Debug::log( 'Cannot process transaction: No relationship defined (inv #' . $this->id  .')' );
+			MS_Helper_Debug::debug_log( 'Cannot process transaction: No relationship defined (inv #' . $this->id  .')' );
 		} else {
 			$subscription = $this->get_subscription();
 			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );

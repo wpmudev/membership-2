@@ -530,7 +530,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 					break;
 
 				default:
-					MS_Helper_Debug::log( "Event topic not implemented: '$event->topic'" );
+					MS_Helper_Debug::debug_log( "Event topic not implemented: '$event->topic'" );
 					break;
 			}
 

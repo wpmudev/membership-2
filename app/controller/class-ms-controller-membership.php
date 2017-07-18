@@ -606,10 +606,10 @@ class MS_Controller_Membership extends MS_Controller {
 					'ms_controller_membership_admin_page_router_' . $step,
 					$this
 				);
-				MS_Helper_Debug::log( "Method $method not found for step $step" );
+				MS_Helper_Debug::debug_log( "Method $method not found for step $step" );
 			}
 		} else {
-			MS_Helper_Debug::log( "Invalid step: $step" );
+			MS_Helper_Debug::debug_log( "Invalid step: $step" );
 		}
 
 		do_action(

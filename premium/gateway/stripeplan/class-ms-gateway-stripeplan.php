@@ -396,12 +396,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			} catch ( Exception $e ) {
 				$note = 'Stripe error: '. $e->getMessage();
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::log( $note );
+				MS_Helper_Debug::debug_log( $note );
 				$error = $e;
 			}
 		} else {
 			$note = 'Stripe gateway token not found.';
-			MS_Helper_Debug::log( $note );
+			MS_Helper_Debug::debug_log( $note );
 		}
 
 		do_action(
@@ -475,12 +475,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						}
 					}
 				} else {
-					MS_Helper_Debug::log( "Stripe customer is empty for user $member->username" );
+					MS_Helper_Debug::debug_log( "Stripe customer is empty for user $member->username" );
 				}
 			} catch ( Exception $e ) {
 				$note = 'Stripe error: '. $e->getMessage();
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::log( $note );
+				MS_Helper_Debug::debug_log( $note );
 			}
 		} else {
 			// Invoice was already paid earlier.

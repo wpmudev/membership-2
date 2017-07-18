@@ -420,7 +420,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			);
 		} else {
 			$subscription = null;
-			MS_Helper_Debug::log(
+			MS_Helper_Debug::debug_log(
 				'Invalid membership_id: ' .
 				"$membership_id, ms_relationship not created for $user_id, $gateway_id, $move_from_id"
 			);
@@ -855,7 +855,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
 			}
 		} catch ( Exception $e ) {
-			MS_Helper_Debug::log( '[Error canceling membership]: '. $e->getMessage() );
+			MS_Helper_Debug::debug_log( '[Error canceling membership]: '. $e->getMessage() );
 		}
 
 		do_action(
@@ -900,7 +900,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$this
 			);
 		} catch ( Exception $e ) {
-			MS_Helper_Debug::log(
+			MS_Helper_Debug::debug_log(
 				'[Error deactivating membership]: '. $e->getMessage()
 			);
 		}
@@ -3213,7 +3213,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			default:
 				if ( ! property_exists( $this, $property ) ) {
-					MS_Helper_Debug::log( 'Property does not exist: ' . $property );
+					MS_Helper_Debug::debug_log( 'Property does not exist: ' . $property );
 				} else {
 					$value = $this->$property;
 				}

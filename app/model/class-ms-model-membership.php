@@ -1887,7 +1887,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$rule->protect_undefined_items( $base_rule, true );
 				$this->set_rule( $rule_type, $rule );
 			} catch ( Exception $e ) {
-				MS_Helper_Debug::log( $e );
+				MS_Helper_Debug::debug_log( $e );
 			}
 		}
 

@@ -399,7 +399,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				break;
 
 			default:
-				MS_Helper_Debug::log( "No handler for step: $step" );
+				MS_Helper_Debug::debug_log( "No handler for step: $step" );
 				break;
 		}
 	}
@@ -680,8 +680,8 @@ class MS_Controller_Frontend extends MS_Controller {
 				$move_from_id
 			);
 		} else {
-			MS_Helper_Debug::log( 'Error: missing POST params' );
-			MS_Helper_Debug::log( $_POST );
+			MS_Helper_Debug::debug_log( 'Error: missing POST params' );
+			MS_Helper_Debug::debug_log( $_POST );
 			return $content;
 		}
 
