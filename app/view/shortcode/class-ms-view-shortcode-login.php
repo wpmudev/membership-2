@@ -68,7 +68,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			}
 
 			//Filter to use ajax login
-			$ajax_login = apply_filters( 'ms_shortcode_login_ajax_login', true );
+			$ajax_login = apply_filters( 'ms_shortcode_ajax_login', true );
 
 			// Build the Login Form.
 			$res_form .= $prefix;
