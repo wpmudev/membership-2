@@ -67,10 +67,18 @@ class MS_View_Shortcode_Login extends MS_View {
 				$redirect_login = MS_Helper_Utility::get_current_url();
 			}
 
+			//Filter to use ajax login
+			$ajax_login = apply_filters( 'ms_shortcode_ajax_login', true );
+
 			// Build the Login Form.
 			$res_form .= $prefix;
-			$res_form .= $this->login_form( $redirect_login );
-			$res_form .= $this->lostpass_form();
+			if ( $ajax_login ) {
+				$res_form .= $this->login_form( $redirect_login );
+				$res_form .= $this->lostpass_form();
+			} else {
+				$res_form .= wp_login_form( false, $redirect_login );
+				$res_form .= '<br/><a href="'.wp_lostpassword_url( get_bloginfo('url') ).'" title="'.__( 'Lost Password', 'membership2' ).'">'.__( 'Lost Password', 'membership2' ).'</a>';
+			}
 
 			// Wrap form in optional wrappers.
 			if ( ! empty( $wrapwith ) ) {
@@ -126,7 +134,6 @@ class MS_View_Shortcode_Login extends MS_View {
 			lib3()->ui->data(
 				'ms_ajax_login',
 				array(
-					//'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
 					'loadingmessage' => __( 'Please wait...', 'membership2' ),
 					'errormessage' => __( 'Request failed, please try again.', 'membership2' ),

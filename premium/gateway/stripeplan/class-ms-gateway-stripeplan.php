@@ -138,7 +138,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 *
 	 * @return String $url Modified or raw URL
 	 */
-		public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
+	public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
 			/**
 			 * Constant M2_FORCE_NO_SSL
 			 *
@@ -158,7 +158,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			}
 
 		return $url;
-		}
+	}
 
 	/**
 	 * Creates the external Stripe-ID of the specified item.
