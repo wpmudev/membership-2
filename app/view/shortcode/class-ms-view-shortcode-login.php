@@ -570,6 +570,11 @@ class MS_View_Shortcode_Login extends MS_View {
 						remove_query_arg( array( 'action', 'key', 'login' ) )
 					)
 				);
+				
+				$url = apply_filters(
+					'ms_sc_login_pw_reset_url',
+					$url
+				);
 
 				$Reset_Result = sprintf(
 					'[ms-note type="warning"]%s[/ms-note]<a href="%s">%s</a>',
@@ -586,6 +591,11 @@ class MS_View_Shortcode_Login extends MS_View {
 				// All done! Show success message and link to login form
 				$url = esc_url_raw(
 					remove_query_arg( array( 'action', 'key', 'login' ) )
+				);
+				
+				$url = apply_filters(
+					'ms_sc_login_new_login_url',
+					$url
 				);
 
 				$Reset_Result = sprintf(

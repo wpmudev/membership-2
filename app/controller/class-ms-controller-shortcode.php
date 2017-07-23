@@ -289,7 +289,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$memberships = MS_Model_Membership::get_signup_membership_list(
 			null,
 			$exclude
-		);
+		);echo '<pre>';print_r($memberships);echo '</pre>';
                 
                 if ( ! $member->is_valid() || ! $member->has_membership() ) {
                     foreach( $memberships as $key => $membership ) {
