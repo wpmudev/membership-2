@@ -76,7 +76,7 @@ class MS_View_Shortcode_Login extends MS_View {
 				$res_form .= $this->login_form( $redirect_login );
 				$res_form .= $this->lostpass_form();
 			} else {
-				$res_form .= wp_login_form( false, $redirect_login );
+				$res_form .= wp_login_form( array( 'echo' => false, 'redirect' => $redirect_login ) );
 				$res_form .= '<br/><a href="'.wp_lostpassword_url( get_bloginfo('url') ).'" title="'.__( 'Lost Password', 'membership2' ).'">'.__( 'Lost Password', 'membership2' ).'</a>';
 			}
 
