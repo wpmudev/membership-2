@@ -52,7 +52,7 @@ class MS_Loader {
 		);
 
 
-		$models_base = 'model/';
+		$models_base = 'app/model/';
 		$models = array(
 			'MS_Model_Communication_After_Finishes'         => 'communication/class-ms-model-communication-after-finishes.php',
 			'MS_Model_Communication_After_Payment_Due'      => 'communication/class-ms-model-communication-after-payment-due.php',

@@ -89,6 +89,7 @@ module.exports = function( grunt ) {
 			exclude_free: [
 				'./README.MD',
 				'./premium',
+				'./membership2.php',
 				'./lib/wpmudev-dashboard',
 				'./app/assets/css/src/**',
 				'./app/assets/js/src/**',
