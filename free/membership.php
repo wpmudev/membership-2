@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Membership 2 Pro
- * Plugin URI:  https://premium.wpmudev.org/project/membership/
- * Version:     1.0.3.5
+ * Plugin Name: Membership 2
+ * Plugin URI:  https://wordpress.org/plugins/membership
+ * Version:     4.0.1.3
  * Build Stamp: BUILDTIME
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
@@ -49,7 +49,7 @@
 
 function membership2_init_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
-		$plugin_name = 'Membership 2 Pro';
+		$plugin_name = 'Membership 2 (Free)';
 		if ( is_admin() ) {
 			// Can happen in Multisite installs where a sub-site has activated the
 			// plugin and then the plugin is also activated in network-admin.
@@ -70,7 +70,7 @@ function membership2_init_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.3.5' );
+	define( 'MS_PLUGIN_VERSION', '4.0.1.3' );
 
 	/**
 	 * Free or pro plugin?
@@ -79,7 +79,7 @@ function membership2_init_app() {
 	 *
 	 * @since  1.0.3.2
 	 */
-	define( 'MS_IS_PRO', true );
+	define( 'MS_IS_PRO', false );
 
 	/**
 	 * Plugin main-file.
@@ -119,26 +119,10 @@ function membership2_init_app() {
 		dirname( __FILE__ ) . '/lib/wdev-frash/module.php',
 	);
 
-	// Pro-Only configuration.
-	$cta_label = false;
-	$drip_param = false;
-	$externals[] = dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php';
+	// Free-version configuration
+	$cta_label = __( 'Get Members!', 'membership2' );
+	$drip_param = 'Membership';
 
-	// WPMUDEV Dashboard.
-	global $wpmudev_notices;
-	$wpmudev_notices[] = array(
-		'id' => 1003656,
-		'name' => 'Membership 2 Pro',
-		'screens' => array(
-			'toplevel_page_membership-2',
-			'membership-2_page_membership2-members',
-			'membership-2_page_membership2-setup',
-			'membership-2_page_membership2-billing',
-			'membership-2_page_membership2-coupons',
-			'membership-2_page_membership2-addon',
-			'membership-2_page_membership2-settings',
-		),
-	);
 
 	foreach ( $externals as $path ) {
 		if ( file_exists( $path ) ) { require_once $path; }
@@ -205,7 +189,6 @@ function membership2_init_app() {
 	 */
 	MS_Plugin::instance();
 }
-
 
 /**
  * This is a hack to prevent cookie issue in IE11 and EDGE
@@ -285,6 +268,24 @@ if ( isset( $_REQUEST['ms_ajax'] ) ) {
 			exit();
 		}
 	}
+}
+
+
+function membership2_init_old_app() {
+	require_once 'app_old/membership.php';
+}
+
+function membership2_is_old_app() {
+	return true != get_option( 'm2_use_new_version' );
+}
+
+function membership2_use_m2() {
+	update_option( 'm2_use_new_version', true );
+}
+
+if ( ! defined( 'IS_UNIT_TEST' ) && membership2_is_old_app() ) {
+	membership2_init_old_app();
+	return;
 }
 
 membership2_init_app();
