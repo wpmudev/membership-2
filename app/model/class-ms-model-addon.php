@@ -215,11 +215,11 @@ class MS_Model_Addon extends MS_Model_Option {
 		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
 		$addon_dirs = array();
-		/* start:pro */
-		// Sequence is important: First Premium!
-		$addon_dirs[] = $plugin_dir . 'premium/addon/';
-		/* end:pro */
-
+		
+		if ( is_dir( $plugin_dir . 'premium/addon/' ) ) {
+			$addon_dirs[] = $plugin_dir . 'premium/addon/';
+		}
+		
 		$addon_dirs[] = $plugin_dir . 'app/addon/';
 
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
