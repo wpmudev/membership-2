@@ -38,6 +38,7 @@ class MS_Loader {
         $core_base = 'app/core/';
 		$core = array(
 			'MS_Addon' 		=> 'class-ms-addon.php',
+            'MS_Auth' 		=> 'class-ms-auth.php',
 			'MS_Controller' => 'class-ms-controller.php',
 			'MS_Dialog' 	=> 'class-ms-dialog.php',
 			'MS_Factory' 	=> 'class-ms-factory.php',
@@ -165,6 +166,6 @@ class MS_Loader {
 		}
 
 		return false;
-	}
+    }
 };
 ?>
