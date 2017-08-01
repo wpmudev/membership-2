@@ -2,9 +2,10 @@
   "name": "membership2",
   "title": "Membership 2 Pro",
   "description": "The most powerful, easy to use and flexible membership plugin for WordPress sites available.",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "homepage": "https://premium.wpmudev.org/project/membership/",
-  "author": [
+  "authors": [
+    { "name": "Paul Kevin" },
     { "name": "Ashok Kumar Nath" },
     { "name": "Philipp Stracker" }
   ],
