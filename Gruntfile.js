@@ -78,6 +78,7 @@ module.exports = function( grunt ) {
 		plugin_branches: {
 			exclude_pro: [
 				'./app_old',
+				'./free',
 				'./README.MD',
 				'./readme.txt',
 				'./screenshot-*',
@@ -89,6 +90,7 @@ module.exports = function( grunt ) {
 			exclude_free: [
 				'./README.MD',
 				'./premium',
+				'./free',
 				'./membership2.php',
 				'./lib/wpmudev-dashboard',
 				'./app/assets/css/src/**',
@@ -187,7 +189,8 @@ module.exports = function( grunt ) {
 		},
 
 		plugin_dir: 'membership/',
-		plugin_file: 'membership2.php'
+		plugin_file: 'membership2.php',
+		free_plugin_file: 'free/membership.php'
 	};
 	// -------------------------------------------------------------------------
 	var key, ind, newkey, newval;
@@ -489,7 +492,7 @@ module.exports = function( grunt ) {
 			free: {
 				files: [
 					{
-						src: conf.plugin_file,
+						src: conf.free_plugin_file,
 						dest: conf.plugin_branches.main_free
 					}
 				],

@@ -139,13 +139,13 @@ class MS_Loader {
 
 			$path_array = explode( '_', $class );
 			array_shift( $path_array ); // Remove the 'MS' prefix from path.
-			$alt_dir = array_pop( $path_array );
-			$sub_path = implode( '/', $path_array );
+			$alt_dir 	= array_pop( $path_array );
+			$sub_path 	= implode( '/', $path_array );
 
-			$filename = str_replace( '_', '-', 'class-' . $class . '.php' );
-			$file_path = trim( strtolower( $sub_path . '/' . $filename ), '/' );
-			$file_path_alt = trim( strtolower( $sub_path . '/' . $alt_dir . '/' . $filename ), '/' );
-			$candidates = array();
+			$filename 		= str_replace( '_', '-', 'class-' . $class . '.php' );
+			$file_path 		= trim( strtolower( $sub_path . '/' . $filename ), '/' );
+			$file_path_alt 	= trim( strtolower( $sub_path . '/' . $alt_dir . '/' . $filename ), '/' );
+			$candidates 	= array();
 
             if ( is_dir( MS_PLUGIN_BASE_DIR . '/premium' ) ) {
                 $candidates[] = MS_PLUGIN_BASE_DIR . '/premium/' . $file_path;

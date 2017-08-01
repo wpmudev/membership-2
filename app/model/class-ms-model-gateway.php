@@ -108,9 +108,10 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 		$gateway_dirs = array();
 		
-		if ( is_dir( $plugin_dir . 'premium/gateway/' ) ) {
-			$gateway_dirs[] = $plugin_dir . 'premium/gateway/';
-		}
+		/* start:pro */
+		// Sequence is important: First Premium!
+		$gateway_dirs[] = $plugin_dir . 'premium/gateway/';
+		/* end:pro */
 
 		$gateway_dirs[] = $plugin_dir . 'app/gateway/';
 
