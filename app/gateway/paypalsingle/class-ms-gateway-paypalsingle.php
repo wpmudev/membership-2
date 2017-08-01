@@ -86,9 +86,9 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			&& ! empty( $_POST['invoice'] )
 		) {
 			if ( $this->is_live_mode() ) {
-				$domain = 'https://www.paypal.com';
+				$domain = 'https://ipnpb.paypal.com';
 			} else {
-				$domain = 'https://www.sandbox.paypal.com';
+				$domain = 'https://ipnpb.sandbox.paypal.com';
 			}
 
 			// Ask PayPal to validate our $_POST data.

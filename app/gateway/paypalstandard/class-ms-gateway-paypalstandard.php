@@ -96,7 +96,11 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$payment_status = '';
 		$do_action = 'ignore';
 		$ext_type = false;
+		$sandbox = false;
 
+		if ( ! empty( $_POST[ 'test_ipn'] ) ) {
+			$sandbox = ($_POST[ 'test_ipn'] == 1);
+		}
 		if ( ! empty( $_POST[ 'txn_type'] ) ) {
 			$transaction_type = strtolower( $_POST[ 'txn_type'] );
 		}
@@ -117,7 +121,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			*
 			* @see https://github.com/woothemes/woocommerce/blob/fa30a38c58373d9c3706cc0b7ae22032de3a2985/includes/gateways/paypal/includes/class-wc-gateway-paypal-ipn-handler.php#L55
 			*/
-			if ( ! $this->is_live_mode() && 'pending' == $payment_status ) {
+			if ( $sandbox && 'pending' == $payment_status ) {
 				$payment_status = 'completed';
 			}
 		}
@@ -129,6 +133,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		} elseif ( ! empty( $_POST['currency_code'] ) ) {
 			$currency = $_POST['currency_code'];
 		}
+		
 
 		// Step 1: Find the invoice_id and determine if payment is M2 or M1.
 		if ( $payment_status || $transaction_type ) {
@@ -536,10 +541,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 		// Step 2b: If we have an invoice_id then process the payment.
 		elseif ( $invoice_id ) {
-			if ( $this->is_live_mode() ) {
-				$domain = 'https://www.paypal.com';
+			if ( !$sandbox ) {
+				$domain = 'https://ipnpb.paypal.com';
 			} else {
-				$domain = 'https://www.sandbox.paypal.com';
+				$domain = 'https://ipnpb.sandbox.paypal.com';
 			}
 
 			// PayPal post authenticity verification.
