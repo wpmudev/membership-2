@@ -566,6 +566,7 @@ class MS_Model_Addon extends MS_Model_Option {
 				),
 			),
 		);
+		
 
 		return $list;
 	}

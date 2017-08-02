@@ -67,9 +67,9 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'bbPress Integration', 'membership2' ),
-			'description' => __( 'Enable bbPress rules integration.', 'membership2' ),
-			'icon' => 'dashicons dashicons-format-chat',
+			'name' 			=> __( 'bbPress Integration', 'membership2' ),
+			'description' 	=> __( 'Enable bbPress rules integration.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-format-chat',
 		);
 
 		if ( ! self::bbpress_active() ) {
@@ -105,7 +105,7 @@ class MS_Addon_Bbpress extends MS_Addon {
 	 * @return array The filtered tabs.
 	 */
 	public function rule_tabs( $tabs ) {
-		$rule = MS_Addon_Bbpress_Rule::RULE_ID;
+		$rule 			= MS_Addon_Bbpress_Rule::RULE_ID;
 		$tabs[ $rule  ] = true;
 
 		return $tabs;

@@ -4,6 +4,8 @@ Build Stamp: BUILDTIME
 
 Change Log:
 ----------------------------------------------------------------------
+1.0.4
+- Added : WP Rest
 
 1.0.3.6
 - Added: Added setting to enable or disable cron usage for email sending
