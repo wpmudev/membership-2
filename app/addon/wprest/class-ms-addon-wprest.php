@@ -30,6 +30,13 @@ class MS_Addon_WPRest extends MS_Addon {
 	 */
 	const ID = 'addon_wprest';
 
+	/**
+	 * Membership API Object
+	 *
+	 * @since  1.0.4
+	 */
+	protected $api = null;
+
 
     /**
 	 * Checks if the current Add-on is enabled
@@ -59,17 +66,35 @@ class MS_Addon_WPRest extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
+			$this->api = ms_api();
             $this->add_action( 'rest_api_init', 'register_routes' );
         }
 	}
 
     function register_routes() {
         //Action to register route
+		register_rest_route( $this->get_namespace(), '/memberships', array(
+			'method' 	=> WP_REST_Server::READABLE,
+			'callback' 	=> array( $this, 'list_memberships' )
+		));
+
         do_action( 'ms_addon_wprest_register_route', $this->get_namespace() );
     }
 
+	/**
+	 * Current namespace
+	 *
+	 * @return String
+	 */
     protected function get_namespace() {
-		return self::API_NAMESPACE . '/v' . self::API_VERSION;
+		return apply_filters( 'ms_membership_rest_namespace', self::API_NAMESPACE . '/v' . self::API_VERSION );
+	}
+
+	/**
+	 * List Memberships
+	 */
+	function list_memberships() {
+		return $this->api->list_memberships();
 	}
 
 	/**
