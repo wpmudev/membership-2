@@ -82,39 +82,27 @@ class MS_Addon_WPRest extends MS_Addon {
 
         //Action to register route
 		register_rest_route( $this->get_namespace(), '/membership/list', array(
-			'method' 	=> WP_REST_Server::READABLE,
-			'callback' 	=> array( $this, 'list_memberships' ),
-			'args' => array(
-				'pass_key' 	=> array(
-					'required' => true,
-					'sanitize_callback' => 'sanitize_text_field',
-					'type' => 'string',
-					'description' => __( 'API Access Code' ),
-				)
-			)
+			'method' 				=> WP_REST_Server::READABLE,
+			'callback' 				=> array( $this, 'list_memberships' ),
+			'permission_callback' 	=> array( $this, 'validate_request' )
 		));
 
 		register_rest_route( $this->get_namespace(), '/membership/assign', array(
-			'methods' 	=> WP_REST_Server::CREATABLE,
-			'callback' 	=> array( $this, 'add_subscription' ),
-			'args' => array(
-				'pass_key' 	=> array(
-					'required' => true,
+			'methods' 				=> WP_REST_Server::CREATABLE,
+			'callback' 				=> array( $this, 'add_subscription' ),
+			'permission_callback' 	=> array( $this, 'validate_request' ),
+			'args' 					=> array(
+				'user_id' 		=> array(
+					'required' 			=> true,
 					'sanitize_callback' => 'sanitize_text_field',
-					'type' => 'string',
-					'description' => __( 'API Access Code' ),
-				),
-				'user_id' => array(
-					'required' => true,
-					'sanitize_callback' => 'sanitize_text_field',
-					'type' => 'int',
-					'description' => __( 'The user id' ),
+					'type' 				=> 'int',
+					'description' 		=> __( 'The user id' ),
 				),
 				'membership_id' => array(
-					'required' => true,
+					'required' 			=> true,
 					'sanitize_callback' => 'sanitize_text_field',
-					'type' => 'int',
-					'description' => __( 'The Membership ID' ),
+					'type' 				=> 'int',
+					'description' 		=> __( 'The Membership ID' ),
 				),
 			)
 		));
@@ -142,7 +130,6 @@ class MS_Addon_WPRest extends MS_Addon {
 	 * @return array
 	 */
 	function list_memberships( $request ) {
-		$this->validate_passkey( $request );
 		return $this->api->list_memberships();
 	}
 
@@ -152,7 +139,6 @@ class MS_Addon_WPRest extends MS_Addon {
 	 * @param WP_REST_Request $request
 	 */
 	function add_subscription( $request ){
-		$this->validate_passkey( $request );
 		$user_id 		= $request->get_param( 'user_id' );
 		$membership_id 	= $request->get_param( 'membership_id' );
 		return $this->api->add_subscription( $user_id, $membership_id );
@@ -204,16 +190,12 @@ class MS_Addon_WPRest extends MS_Addon {
 		return $list;
 	}
 
-	/**
-	 * @param string $client_id
-	 *
-	 * @return bool
-	 */
-	function validate_passkey( $request, $param = 'pass_key' ) {
-		$pass_key = $request->get_param( $param );
+	function validate_request( $request ) {
+		$pass_key = $request->get_param( 'pass_key' );
 		if ( $pass_key != $this->plugin_settings->wprest['api_passkey'] ) {
-			wp_send_json_error( __( "Invalid request, you are not allowed to make this request", "membership2" ) );
+			return new WP_Error( 'rest_user_cannot_view',  __( "Invalid request, you are not allowed to make this request", "membership2" ), array( 'status' => rest_authorization_required_code() ) );
 		}
+		return true;
 	}
 }
 ?>
