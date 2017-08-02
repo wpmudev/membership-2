@@ -202,6 +202,18 @@ class MS_Model_Settings extends MS_Model_Option {
 	);
 
 	/**
+	 * Default WP Rest settings
+	 *
+	 * @since 1.0.4
+	 *
+	 * @var array
+	 */
+	protected $wprest = array(
+		'api_namespace' => MS_Addon_WPRest::API_NAMESPACE,
+		'api_passkey' 	=> '123456789'
+	);
+
+	/**
 	 * Import flags
 	 *
 	 * When data was imported a flag can be set here to remember that some
@@ -497,6 +509,15 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'masked_url':
 					$this->downloads['masked_url'] = sanitize_text_field( $value );
 					break;
+
+				case 'api_namespace' :
+					$this->wprest['api_namespace'] = sanitize_text_field( $value );
+					break;
+				
+				case 'api_passkey' :
+					$this->wprest['api_passkey'] = sanitize_text_field( $value );
+					break;
+					
 			}
 		}
 	}
