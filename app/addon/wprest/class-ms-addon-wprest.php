@@ -14,14 +14,14 @@ class MS_Addon_WPRest extends MS_Addon {
      *
      * @since  1.0.4
      */
-    const VERSION = '1';
+    const API_VERSION = '1';
 
     /**
      * Rest API Namespace
      *
      * @since  1.0.4
      */
-	const NAMESPACE = 'membership2';
+	const API_NAMESPACE = 'membership2';
 
     /**
 	 * The Add-on ID
@@ -69,7 +69,7 @@ class MS_Addon_WPRest extends MS_Addon {
     }
 
     protected function get_namespace() {
-		return self::NAMESPACE . '/v' . self::VERSION;
+		return self::API_NAMESPACE . '/v' . self::API_VERSION;
 	}
 
 	/**
