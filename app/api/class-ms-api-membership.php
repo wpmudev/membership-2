@@ -63,17 +63,11 @@ class MS_Api_Membership extends MS_Api {
 			'permission_callback' 	=> array( $this, 'validate_request' )
 		));
 
-        register_rest_route( $namepace, '/membership/subscribe', array(
-			'methods' 				=> WP_REST_Server::CREATABLE,
-			'callback' 				=> array( $this, 'subscribe' ),
+		register_rest_route( $namepace, '/membership/get', array(
+			'method' 				=> WP_REST_Server::READABLE,
+			'callback' 				=> array( $this, 'get_membership' ),
 			'permission_callback' 	=> array( $this, 'validate_request' ),
 			'args' 					=> array(
-				'user_id' 		=> array(
-					'required' 			=> true,
-					'sanitize_callback' => 'sanitize_text_field',
-					'type' 				=> 'int',
-					'description' 		=> __( 'The user id' ),
-				),
 				'membership_id' => array(
 					'required' 			=> true,
 					'sanitize_callback' => 'sanitize_text_field',
@@ -82,16 +76,96 @@ class MS_Api_Membership extends MS_Api {
 				),
 			)
 		));
+
+        register_rest_route( $namepace, '/membership/subscription', array(
+			array(
+				'methods' 				=> WP_REST_Server::CREATABLE,
+				'callback' 				=> array( $this, 'subscribe' ),
+				'permission_callback' 	=> array( $this, 'validate_request' ),
+				'args' 					=> array(
+					'user_id' 		=> array(
+						'required' 			=> true,
+						'sanitize_callback' => 'sanitize_text_field',
+						'type' 				=> 'int',
+						'description' 		=> __( 'The user id' ),
+					),
+					'membership_id' => array(
+						'required' 			=> true,
+						'sanitize_callback' => 'sanitize_text_field',
+						'type' 				=> 'int',
+						'description' 		=> __( 'The Membership ID' ),
+					),
+				)
+			),
+			array(
+				'methods' 				=> WP_REST_Server::READABLE,
+				'callback' 				=> array( $this, 'get_subscription' ),
+				'permission_callback' 	=> array( $this, 'validate_request' ),
+				'args' 					=> array(
+					'user_id' 		=> array(
+						'required' 			=> true,
+						'sanitize_callback' => 'sanitize_text_field',
+						'type' 				=> 'int',
+						'description' 		=> __( 'The user id' ),
+					),
+					'membership_id' => array(
+						'required' 			=> true,
+						'sanitize_callback' => 'sanitize_text_field',
+						'type' 				=> 'int',
+						'description' 		=> __( 'The Membership ID' ),
+					),
+				)
+			)
+		));
 	}
 
+	/**
+	 * List Memberships
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return MS_Model_Membership[] List of all available Memberships.
+	 */
     function list( $request ) {
         return $this->api->list_memberships();
     }
 
+	/**
+	 * Get Membership
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return MS_Model_Membership The membership object.
+	 */
+	function get_membership( $request ) {
+		$membership_id 	= $request->get_param( 'membership_id' );
+		return $this->api->get_membership( $membership_id );
+	}
+
+	/**
+	 * Add subscription
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return MS_Model_Relationship|false The subscription object.
+	 */
     function subscribe( $request ) {
         $user_id 		= $request->get_param( 'user_id' );
 		$membership_id 	= $request->get_param( 'membership_id' );
 		return $this->api->add_subscription( $user_id, $membership_id );
     }
+
+	/**
+	 * Get subscription
+	 *
+	 * @param WP_REST_Request $request
+	 *
+	 * @return MS_Model_Relationship|false The subscription object.
+	 */
+	function get_subscription( $request ) {
+		$user_id 		= $request->get_param( 'user_id' );
+		$membership_id 	= $request->get_param( 'membership_id' );
+		return $this->api->get_subscription( $user_id, $membership_id );
+	}
 }
 ?>

@@ -71,6 +71,7 @@ class MS_Addon_WPRest extends MS_Addon {
 	 * @since  1.0.4
 	 */
     function register_routes() {
+		//Action is set in each of the API classes in the /app/api directory
         do_action( 'ms_addon_wprest_register_route', $this->get_namespace(), $this->plugin_settings->wprest['api_passkey'] );
     }
 
