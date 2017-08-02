@@ -97,6 +97,15 @@ class MS_Plugin {
 	 */
 	private $addon;
 
+
+	/**
+	 * The plugin api
+	 *
+	 * @since  1.0.4
+	 * @var   MS_Model_Ap
+	 */
+	private $api_model;
+
 	/**
 	 * The main controller of the plugin.
 	 *
@@ -139,12 +148,12 @@ class MS_Plugin {
 		do_action( 'ms_plugin_construct_start', $this );
 
 		/** Setup plugin properties */
-		$this->id = MS_PLUGIN;
-		$this->name = MS_PLUGIN_NAME;
-		$this->version = MS_PLUGIN_VERSION;
-		$this->file = MS_PLUGIN_FILE;
-		$this->dir = plugin_dir_path( MS_PLUGIN_FILE );
-		$this->url = plugin_dir_url( MS_PLUGIN_FILE );
+		$this->id 		= MS_PLUGIN;
+		$this->name 	= MS_PLUGIN_NAME;
+		$this->version 	= MS_PLUGIN_VERSION;
+		$this->file 	= MS_PLUGIN_FILE;
+		$this->dir 		= plugin_dir_path( MS_PLUGIN_FILE );
+		$this->url 		= plugin_dir_url( MS_PLUGIN_FILE );
 
 		// Might refresh the Rewrite-Rules and reloads the page.
 		add_action(
@@ -204,6 +213,13 @@ class MS_Plugin {
 		 */
 		$this->addon = MS_Factory::load( 'MS_Model_Addon' );
 
+		/**
+		 * Creates and sets up Rest API classes
+		 *
+		 * Snce 1.0.4
+		 */
+		$this->api_model = MS_Factory::load( 'MS_Model_Api' );
+
 		add_filter(
 			'plugin_action_links_' . MS_PLUGIN,
 			array( $this, 'plugin_settings_link' )
@@ -257,11 +273,11 @@ class MS_Plugin {
 		$cpts = apply_filters(
 			'ms_plugin_register_custom_post_types',
 			array(
-				MS_Model_Membership::get_post_type() => MS_Model_Membership::get_register_post_type_args(),
-				MS_Model_Relationship::get_post_type() => MS_Model_Relationship::get_register_post_type_args(),
-				MS_Model_Invoice::get_post_type() => MS_Model_Invoice::get_register_post_type_args(),
+				MS_Model_Membership::get_post_type() 	=> MS_Model_Membership::get_register_post_type_args(),
+				MS_Model_Relationship::get_post_type() 	=> MS_Model_Relationship::get_register_post_type_args(),
+				MS_Model_Invoice::get_post_type() 		=> MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::get_post_type() => MS_Model_Communication::get_register_post_type_args(),
-				MS_Model_Event::get_post_type() => MS_Model_Event::get_register_post_type_args(),
+				MS_Model_Event::get_post_type() 		=> MS_Model_Event::get_register_post_type_args(),
 			)
 		);
 

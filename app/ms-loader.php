@@ -38,6 +38,7 @@ class MS_Loader {
         $core_base = 'app/core/';
 		$core = array(
 			'MS_Addon' 		=> 'class-ms-addon.php',
+			'MS_Api' 		=> 'class-ms-api.php',
             'MS_Auth' 		=> 'class-ms-auth.php',
 			'MS_Controller' => 'class-ms-controller.php',
 			'MS_Dialog' 	=> 'class-ms-dialog.php',

@@ -52,6 +52,7 @@ class MS_Factory {
 			'MS_Model_Addon',
 			'MS_Model_Rule',
 			'MS_Model_Simulate',
+			'MS_Model_Api'
 		);
 
 		$class = trim( $class );

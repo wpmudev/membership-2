@@ -222,7 +222,7 @@ class MS_Model_Addon extends MS_Model_Option {
 		$addon_dirs[] = $plugin_dir . 'premium/addon/';
 		/* end:pro */
 		
-		$addon_dirs[] = $plugin_dir . 'app/addon/';
+		$addon_dirs[] = $plugin_dir . 'app/addon';
 
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...
