@@ -95,7 +95,7 @@ class MS_Addon_WPRest extends MS_Addon {
 		));
 
 		register_rest_route( $this->get_namespace(), '/membership/assign', array(
-			'method' 	=> WP_REST_Server::READABLE,
+			'methods' 	=> WP_REST_Server::CREATABLE,
 			'callback' 	=> array( $this, 'add_subscription' ),
 			'args' => array(
 				'pass_key' 	=> array(
