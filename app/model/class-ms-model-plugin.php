@@ -487,7 +487,7 @@ class MS_Model_Plugin extends MS_Model {
 	public function load_apis() {
 		do_action( 'ms_load_apis', $this );
 
-		// Initialize all Add-ons.
+		// Initialize all api endpoints
 		MS_Model_Api::load_api_routes();
 	}
 

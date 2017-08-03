@@ -84,7 +84,7 @@ class MS_Model_Api extends MS_Model_Option {
 					$apiclass = basename( $file );
 					if ( empty( $model->api_files[ $apiclass ] ) ) {
 						$api_path = substr( $file, strlen( $content_dir ) );
-						$model->api_files[ $addon ] = $api_path;
+						$model->api_files[ $apiclass ] = $api_path;
 					}
 				}
 
