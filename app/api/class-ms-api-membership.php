@@ -11,12 +11,7 @@
  */
 class MS_Api_Membership extends MS_Api {
 
-    /**
-	 * Membership API Object
-	 *
-	 * @since  1.0.4
-	 */
-	protected $api = null;
+	const BASE_API_ROUTE = "/membership/";
 
     /**
 	 * Singletone instance of the plugin.
@@ -55,66 +50,23 @@ class MS_Api_Membership extends MS_Api {
 	 */
 	function set_up_route( $namepace ) {
 
-        $this->api = ms_api();
-
-        register_rest_route( $namepace, '/membership/list', array(
+        register_rest_route( $namepace, self::BASE_API_ROUTE . 'list', array(
 			'method' 				=> WP_REST_Server::READABLE,
 			'callback' 				=> array( $this, 'list' ),
 			'permission_callback' 	=> array( $this, 'validate_request' )
 		));
 
-		register_rest_route( $namepace, '/membership/get', array(
+		register_rest_route( $namepace, self::BASE_API_ROUTE .  'get', array(
 			'method' 				=> WP_REST_Server::READABLE,
 			'callback' 				=> array( $this, 'get_membership' ),
 			'permission_callback' 	=> array( $this, 'validate_request' ),
 			'args' 					=> array(
-				'membership_id' => array(
+				'param' => array(
 					'required' 			=> true,
 					'sanitize_callback' => 'sanitize_text_field',
-					'type' 				=> 'int',
-					'description' 		=> __( 'The Membership ID' ),
+					'type' 				=> 'int|string',
+					'description' 		=> __( 'The Membership ID or name or slug' ),
 				),
-			)
-		));
-
-        register_rest_route( $namepace, '/membership/subscription', array(
-			array(
-				'methods' 				=> WP_REST_Server::CREATABLE,
-				'callback' 				=> array( $this, 'subscribe' ),
-				'permission_callback' 	=> array( $this, 'validate_request' ),
-				'args' 					=> array(
-					'user_id' 		=> array(
-						'required' 			=> true,
-						'sanitize_callback' => 'sanitize_text_field',
-						'type' 				=> 'int',
-						'description' 		=> __( 'The user id' ),
-					),
-					'membership_id' => array(
-						'required' 			=> true,
-						'sanitize_callback' => 'sanitize_text_field',
-						'type' 				=> 'int',
-						'description' 		=> __( 'The Membership ID' ),
-					),
-				)
-			),
-			array(
-				'methods' 				=> WP_REST_Server::READABLE,
-				'callback' 				=> array( $this, 'get_subscription' ),
-				'permission_callback' 	=> array( $this, 'validate_request' ),
-				'args' 					=> array(
-					'user_id' 		=> array(
-						'required' 			=> true,
-						'sanitize_callback' => 'sanitize_text_field',
-						'type' 				=> 'int',
-						'description' 		=> __( 'The user id' ),
-					),
-					'membership_id' => array(
-						'required' 			=> true,
-						'sanitize_callback' => 'sanitize_text_field',
-						'type' 				=> 'int',
-						'description' 		=> __( 'The Membership ID' ),
-					),
-				)
 			)
 		));
 	}
@@ -127,7 +79,15 @@ class MS_Api_Membership extends MS_Api {
 	 * @return MS_Model_Membership[] List of all available Memberships.
 	 */
     function list( $request ) {
-        return $this->api->list_memberships();
+		$list = MS_Model_Membership::get_memberships( array(
+			'include_base' => false,
+			'include_guest' => true,
+		) );
+		foreach ( $list as $key => $item ) {
+			if ( ! $item->active ) { unset( $list[$key] ); }
+			elseif ( $item->private ) { unset( $list[$key] ); }
+		}
+        return $list;
     }
 
 	/**
@@ -137,35 +97,13 @@ class MS_Api_Membership extends MS_Api {
 	 *
 	 * @return MS_Model_Membership The membership object.
 	 */
-	function get_membership( $request ) {
-		$membership_id 	= $request->get_param( 'membership_id' );
-		return $this->api->get_membership( $membership_id );
-	}
-
-	/**
-	 * Add subscription
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return MS_Model_Relationship|false The subscription object.
-	 */
-    function subscribe( $request ) {
-        $user_id 		= $request->get_param( 'user_id' );
-		$membership_id 	= $request->get_param( 'membership_id' );
-		return $this->api->add_subscription( $user_id, $membership_id );
-    }
-
-	/**
-	 * Get subscription
-	 *
-	 * @param WP_REST_Request $request
-	 *
-	 * @return MS_Model_Relationship|false The subscription object.
-	 */
-	function get_subscription( $request ) {
-		$user_id 		= $request->get_param( 'user_id' );
-		$membership_id 	= $request->get_param( 'membership_id' );
-		return $this->api->get_subscription( $user_id, $membership_id );
+	function get_membership( $request) {
+		$param = $request->get_param( 'param' );
+		if ( !is_numeric( $param ) ) {
+			$param =  MS_Model_Membership::get_membership_id( $param );
+		}
+		$membership = MS_Factory::load( 'MS_Model_Membership', intval( $param ) );
+		return $membership;
 	}
 }
 ?>
