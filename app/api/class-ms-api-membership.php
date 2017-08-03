@@ -56,7 +56,7 @@ class MS_Api_Membership extends MS_Api {
 			'permission_callback' 	=> array( $this, 'validate_request' )
 		));
 
-		register_rest_route( $namepace, self::BASE_API_ROUTE .  'get', array(
+		register_rest_route( $namepace, self::BASE_API_ROUTE . 'get', array(
 			'method' 				=> WP_REST_Server::READABLE,
 			'callback' 				=> array( $this, 'get_membership' ),
 			'permission_callback' 	=> array( $this, 'validate_request' ),
