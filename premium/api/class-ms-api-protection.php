@@ -35,7 +35,7 @@ class MS_Api_Protection extends MS_Api {
 	 */
 	public static function instance() {
 		if ( ! self::$instance ) {
-			self::$instance = new MS_Api_Membership();
+			self::$instance = new MS_Api_Protection();
 		}
 
 		return self::$instance;
