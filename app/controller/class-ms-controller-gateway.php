@@ -1054,8 +1054,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$step = $_POST['step'];
 		}
 
-		lib3()->array->equip_post( 'gateway' );
-		$gateway_id = $_POST['gateway'];
+		$gateway_id = isset( $_POST['gateway'] ) ? $_POST['gateway'] : 0 ;
 
 		switch ( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:
