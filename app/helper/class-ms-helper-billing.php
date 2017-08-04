@@ -1,4 +1,12 @@
 <?php
+
+/**
+ * Billing Helper class
+ *
+ * @since  1.0.0
+ * @package Membership2
+ * @subpackage Helper
+ */
 class MS_Helper_Billing extends MS_Helper {
 
 	const BILLING_MSG_ADDED = 1;

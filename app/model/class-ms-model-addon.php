@@ -483,7 +483,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'id' 	=> 'direct_access',
 					'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
 					'title' => __( 'Prevent direct file access', 'membership2' ),
-					'desc' 	=> __( 'Prevnt direct access to files in your uploads directory except the extensions listed. This will add or modify a .htaccess file in your uploads directory ', 'membership2' ),
+					'desc' 	=> __( 'Prevent direct access to files in your uploads directory except the extensions listed. This will add or modify a .htaccess file in your uploads directory ', 'membership2' ),
 					'value' => implode( ",", $direct_access ),
 					'data_ms' => array(
 						'field' 	=> 'direct_access',

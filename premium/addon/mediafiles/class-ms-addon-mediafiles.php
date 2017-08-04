@@ -76,5 +76,4 @@ class MS_Addon_Mediafiles extends MS_Addon {
 
 		return $enabled;
 	}
-
 }
