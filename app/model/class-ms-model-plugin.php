@@ -80,7 +80,6 @@ class MS_Model_Plugin extends MS_Model {
 		// Register all Add-ons and load rules BEFORE the user is initialized.
 		$this->add_action( 'ms_load_member', 'load_addons', 1 );
 		$this->add_action( 'ms_load_member', 'load_rules', 1 );
-		$this->add_action( 'ms_load_member', 'load_apis', 1 );
 
 		// Setup the page protection AFTER the user was initialized.
 		$this->add_action( 'ms_init_done', 'setup_rules', 1 );
@@ -474,21 +473,6 @@ class MS_Model_Plugin extends MS_Model {
 		foreach ( $rule_types as $rule_type ) {
 			$rule = $base->get_rule( $rule_type );
 		}
-	}
-
-	/**
-	 * Load all the api routes by the plugin
-	 *
-	 * Related Action Hooks:
-	 * - ms_load_member
-	 *
-	 * @since  1.0.4
-	 */
-	public function load_apis() {
-		do_action( 'ms_load_apis', $this );
-
-		// Initialize all api endpoints
-		MS_Model_Api::load_api_routes();
 	}
 
 	/**

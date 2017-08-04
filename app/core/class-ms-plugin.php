@@ -99,14 +99,6 @@ class MS_Plugin {
 
 
 	/**
-	 * The plugin api
-	 *
-	 * @since  1.0.4
-	 * @var   MS_Model_Ap
-	 */
-	private $api_model;
-
-	/**
 	 * The main controller of the plugin.
 	 *
 	 * @since  1.0.0
@@ -212,13 +204,6 @@ class MS_Plugin {
 		 * @param object $this The MS_Plugin object.
 		 */
 		$this->addon = MS_Factory::load( 'MS_Model_Addon' );
-
-		/**
-		 * Creates and sets up Rest API classes
-		 *
-		 * Snce 1.0.4
-		 */
-		$this->api_model = MS_Factory::load( 'MS_Model_Api' );
 
 		add_filter(
 			'plugin_action_links_' . MS_PLUGIN,

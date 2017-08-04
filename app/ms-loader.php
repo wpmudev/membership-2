@@ -38,7 +38,6 @@ class MS_Loader {
         $core_base = 'app/core/';
 		$core = array(
 			'MS_Addon' 		=> 'class-ms-addon.php',
-			'MS_Api' 		=> 'class-ms-api.php',
             'MS_Auth' 		=> 'class-ms-auth.php',
 			'MS_Controller' => 'class-ms-controller.php',
 			'MS_Dialog' 	=> 'class-ms-dialog.php',
@@ -69,6 +68,11 @@ class MS_Loader {
         foreach ( $core as $key => $path ) {
 			$overrides[ $key ] = $core_base . $path;
 		}
+
+		/* start:pro */
+		$overrides[ 'MS_Api' ] 			= 'premium/core/class-ms-api.php';
+		$overrides[ 'MS_Model_Api' ] 	= 'premium/model/class-ms-model-api.php';
+		/* end:pro */
 
 		foreach ( $models as $key => $path ) {
 			$overrides[ $key ] = $models_base . $path;

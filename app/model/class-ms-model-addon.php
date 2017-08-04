@@ -410,6 +410,12 @@ class MS_Model_Addon extends MS_Model_Option {
 	static private function get_core_list() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
+		$direct_access = array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
+		if ( isset( $settings->downloads['direct_access'] ) ) {
+			$direct_access = $settings->downloads['direct_access'];
+		}
+		
+
 		$options_text = sprintf(
 			'<i class="dashicons dashicons dashicons-admin-settings"></i> %s',
 			__( 'Options available', 'membership2' )
@@ -471,6 +477,18 @@ class MS_Model_Addon extends MS_Model_Option {
 						'field' => 'protection_type',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 						'_wpnonce' => true, // Nonce will be generated from 'action'
+					),
+				),
+				array(
+					'id' 	=> 'direct_access',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => __( 'Prevent direct file access', 'membership2' ),
+					'desc' 	=> __( 'Prevnt direct access to files in your uploads directory except the extensions listed. This will add or modify a .htaccess file in your uploads directory ', 'membership2' ),
+					'value' => implode( ",", $direct_access ),
+					'data_ms' => array(
+						'field' 	=> 'direct_access',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					),
 				),
 				array(

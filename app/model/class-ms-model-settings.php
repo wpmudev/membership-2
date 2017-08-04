@@ -197,8 +197,9 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var array
 	 */
 	protected $downloads = array(
-		'protection_type' => MS_Rule_Media_Model::PROTECTION_TYPE_COMPLETE,
-		'masked_url' => 'downloads',
+		'protection_type' 	=> MS_Rule_Media_Model::PROTECTION_TYPE_COMPLETE,
+		'masked_url' 		=> 'downloads',
+		'direct_access' 	=> array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' ),
 	);
 
 	/**
@@ -508,6 +509,10 @@ class MS_Model_Settings extends MS_Model_Option {
 
 				case 'masked_url':
 					$this->downloads['masked_url'] = sanitize_text_field( $value );
+					break;
+
+				case 'direct_access':
+					$this->downloads['direct_access'] = explode( ",", sanitize_text_field( $value ) );
 					break;
 
 				case 'api_namespace' :

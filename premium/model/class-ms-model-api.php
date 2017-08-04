@@ -69,27 +69,24 @@ class MS_Model_Api extends MS_Model_Option {
         $content_dir    = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
 		$plugin_dir     = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
-        $api_dirs       = array();
-        $api_dirs[]     = $plugin_dir . 'app/api/';
+        $api_dir    	= $plugin_dir . 'premium/api/';
 
         if ( empty( $model->api_files ) || self::$_reload_files ) {
             self::$_reload_files = false;
 			$model->api_files = array();
 
-            foreach ( $api_dirs as $api_dir ) {
-				$mask = $content_dir . $api_dir . '*/class-ms-api-*.php';
-				$apis = glob( $mask );
+			$mask = $content_dir . $api_dir . '*/class-ms-api-*.php';
+			$apis = glob( $mask );
 
-				foreach ( $apis as $file ) {
-					$apiclass = basename( $file );
-					if ( empty( $model->api_files[ $apiclass ] ) ) {
-						$api_path = substr( $file, strlen( $content_dir ) );
-						$model->api_files[ $apiclass ] = $api_path;
-					}
+			foreach ( $apis as $file ) {
+				$apiclass = basename( $file );
+				if ( empty( $model->api_files[ $apiclass ] ) ) {
+					$api_path = substr( $file, strlen( $content_dir ) );
+					$model->api_files[ $apiclass ] = $api_path;
 				}
-
-                $model->save();
 			}
+
+			$model->save();
         }
 
 
