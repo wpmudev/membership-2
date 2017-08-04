@@ -605,7 +605,6 @@ class MS_Plugin {
 			$settings 		= MS_Factory::load( 'MS_Model_Settings' );
 			$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
 			if ( isset( $settings->downloads['direct_access'] ) ) {
-				MS_Helper_Media::clear_htaccess();
 				$direct_access = $settings->downloads['direct_access'];
 			}
 			MS_Helper_Media::write_htaccess_rule( $direct_access );

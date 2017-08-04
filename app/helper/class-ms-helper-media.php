@@ -20,6 +20,7 @@ class MS_Helper_Media extends MS_Helper {
 			$new_rule = array(
 				PHP_EOL. "## Membership 2 - Media Protection ##" . PHP_EOL,
 				"Options -Indexes" .PHP_EOL,
+                "Deny from all" .PHP_EOL,
 				"<FilesMatch '\.(" . implode( '|', $files ) . ")$'>" .PHP_EOL .
 				"Order Allow,Deny" .PHP_EOL . 
 				"Allow from all" .PHP_EOL .
@@ -82,5 +83,6 @@ class MS_Helper_Media extends MS_Helper {
         }
         return true;
     }
+
 }
 ?>
