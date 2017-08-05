@@ -315,7 +315,7 @@ class MS_Plugin {
 				);
 			}
 		}
-		$this->toggle_media_htaccess( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) );
+		//$this->toggle_media_htaccess( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) );
 		/* End: Media / download ----- */
 
 		do_action( 'ms_plugin_add_rewrite_rules', $this );
