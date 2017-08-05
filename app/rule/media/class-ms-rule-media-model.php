@@ -189,7 +189,6 @@ class MS_Rule_Media_Model extends MS_Rule {
 			$this->add_action( 'shutdown', 'buffer_end' );
 
 			$this->add_action( 'parse_request', 'handle_download_protection', 3 );
-			//$this->add_filter( 'wp_get_attachment_url', 'change_attachemnt_url' );
 		}
 	}
 
@@ -570,47 +569,6 @@ class MS_Rule_Media_Model extends MS_Rule {
 			$query,
 			$this
 		);
-	}
-
-	public function change_attachemnt_url( $url ) {
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			$id 		= $this->thumbnail_url_to_id( $url );
-			$file_info 	= pathinfo( $url );
-			if ( $id ) {
-				$the_file = $this->restore_filename( $id );
-				if ( ! empty( $the_file ) ) {
-					$download_settings = MS_Plugin::instance()->settings->downloads;
-					$new_path 		= trailingslashit(
-						trailingslashit( get_option( 'home' ) ) .
-						$download_settings['masked_url']
-					);
-					// We have a protected file - so we'll mask it!
-					switch ( $download_settings['protection_type'] ) {
-						case self::PROTECTION_TYPE_COMPLETE:
-							$protected_filename = self::FILE_PROTECTION_PREFIX .
-								( $id + (int) self::FILE_PROTECTION_INCREMENT ) .
-								'.' . pathinfo( $file_info['filename'], PATHINFO_EXTENSION );
-
-							$url = $new_path . $protected_filename;
-							break;
-
-						case self::PROTECTION_TYPE_HYBRID:
-							$protected_filename = self::FILE_PROTECTION_PREFIX .
-								($post_id + (int) self::FILE_PROTECTION_INCREMENT ) .
-								'.' . pathinfo( $file_info['filename'], PATHINFO_EXTENSION );
-
-							$url = $new_path . $protected_filename;
-							break;
-
-						case self::PROTECTION_TYPE_BASIC:
-						default:
-							$url = $new_path;
-						break;
-					}
-				}
-			}
-		}
-		return $url;
 	}
 
 	/**
