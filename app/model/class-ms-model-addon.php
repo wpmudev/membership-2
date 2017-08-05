@@ -492,6 +492,18 @@ class MS_Model_Addon extends MS_Model_Option {
 					),
 				),
 				array(
+					'id' 	=> 'regenerate_htaccess',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'title' => __( 'Regenerate htaccess file', 'membership2' ),
+					'desc' 	=> __( 'This will clear and update the Membership rules in the htaccess file in the uploads directory. The file will be cleared once this addon is deactivated', 'membership2' ),
+					'value' => __( 'Update htaccess', 'membership2' ),
+					'data_ms' => array(
+						'field' 	=> 'regenerate_htaccess',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_TOGGLE_PROTECTION_FILE,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					),
+				),
+				array(
 					'id' => 'advanced',
 					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 					'title' => __( 'Protect Individual Media files', 'membership2' ),
@@ -587,5 +599,24 @@ class MS_Model_Addon extends MS_Model_Option {
 		
 
 		return $list;
+	}
+
+
+	/**
+	 * Toggle Media htaccess creation
+	 *
+	 * @since 1.0.4
+	 */
+	public static function toggle_media_htaccess() {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+			$settings 		= MS_Factory::load( 'MS_Model_Settings' );
+			$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
+			if ( isset( $settings->downloads['direct_access'] ) ) {
+				$direct_access = $settings->downloads['direct_access'];
+			}
+			MS_Helper_Media::write_htaccess_rule( $direct_access );
+		} else {
+			MS_Helper_Media::clear_htaccess();
+		}
 	}
 }

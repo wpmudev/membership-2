@@ -18,11 +18,12 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_TOGGLE_SETTINGS = 'toggle_settings';
-	const AJAX_ACTION_UPDATE_SETTING = 'update_setting';
-	const AJAX_ACTION_UPDATE_CUSTOM_SETTING = 'update_custom_setting';
-	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
-	const AJAX_ACTION_TOGGLE_CRON = 'toggle_cron';
+	const AJAX_ACTION_TOGGLE_SETTINGS 			= 'toggle_settings';
+	const AJAX_ACTION_UPDATE_SETTING 			= 'update_setting';
+	const AJAX_ACTION_UPDATE_CUSTOM_SETTING 	= 'update_custom_setting';
+	const AJAX_ACTION_UPDATE_PROTECTION_MSG 	= 'update_protection_msg';
+	const AJAX_ACTION_TOGGLE_CRON 				= 'toggle_cron';
+	const AJAX_ACTION_TOGGLE_PROTECTION_FILE 	= 'toggle_protection_file';
 
 	/**
 	 * Settings tabs.
@@ -78,7 +79,8 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_CRON, 'ajax_action_toggle_cron' );
-
+		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_PROTECTION_FILE, 'ajax_action_toggle_protection_file' );
+		
 	}
 
 	/**
@@ -178,13 +180,13 @@ class MS_Controller_Settings extends MS_Controller {
 			$settings = $this->get_model();
 			lib3()->array->strip_slashes( $_POST, 'value' );
 
-			$settings->set_custom_setting(
-				$_POST['group'],
-				$_POST['field'],
-				$_POST['value']
-			);
+			$group = $_POST['group'];
+			$field = $_POST['field'];
+			$value = $_POST['value'];
+			$settings->set_custom_setting( $group, $field, $value );
 			$settings->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+
 		}
 
 		wp_die( $msg );
@@ -617,5 +619,25 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 		wp_send_json_error();
 		
+	}
+
+	/**
+	 * Toggle protection file creation or update
+	 * This creates or modifies the .htaccess file in the uploads directory
+	 *
+	 * @since 1.0.4
+	 */
+	public function ajax_action_toggle_protection_file() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if ( $this->verify_nonce( 'toggle_protection_file' )
+			&& $this->is_admin_user()
+		) {
+			$response = MS_Helper_Media::clear_htaccess();
+			if ( !is_wp_error( $response ) ) {
+				MS_Model_Addon::toggle_media_htaccess();
+				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+			}
+		}
+		wp_die( $msg );
 	}
 }

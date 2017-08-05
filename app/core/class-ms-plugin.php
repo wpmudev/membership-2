@@ -315,7 +315,6 @@ class MS_Plugin {
 				);
 			}
 		}
-		//$this->toggle_media_htaccess( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) );
 		/* End: Media / download ----- */
 
 		do_action( 'ms_plugin_add_rewrite_rules', $this );
@@ -591,26 +590,6 @@ class MS_Plugin {
 	 */
 	public static function set_api( $controller ) {
 		self::$api = $controller;
-	}
-
-	/**
-	 * Toggle Media htaccess creation
-	 *
-	 * @param bool $enabled
-	 *
-	 * @since 1.0.4
-	 */
-	public function toggle_media_htaccess( $enabled = false ) {
-		if ( $enabled ) {
-			$settings 		= MS_Factory::load( 'MS_Model_Settings' );
-			$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
-			if ( isset( $settings->downloads['direct_access'] ) ) {
-				$direct_access = $settings->downloads['direct_access'];
-			}
-			MS_Helper_Media::write_htaccess_rule( $direct_access );
-		} else {
-			MS_Helper_Media::clear_htaccess();
-		}
 	}
 
 	/**
