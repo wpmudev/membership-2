@@ -9,9 +9,7 @@
  * @package Membership2
  * @subpackage Api
  */
-class MS_Api_Protection extends MS_Api {
-
-    const BASE_API_ROUTE = "/protection/";
+class MS_Api_Post_Protection {
 
     /**
 	 * Singletone instance of the plugin.
@@ -31,25 +29,15 @@ class MS_Api_Protection extends MS_Api {
 	 * @static
 	 * @access public
 	 *
-	 * @return MS_Api
+	 * @return MS_Api_Post_Protection
 	 */
 	public static function instance() {
 		if ( ! self::$instance ) {
-			self::$instance = new MS_Api_Protection();
+			self::$instance = new MS_Api_Post_Protection();
 		}
 
 		return self::$instance;
 	}
-
-    /**
-	 * Set up the api routes
-	 *
-	 * @param String $namepace - the parent namespace
-	 *
-	 * @since 1.0.4
-	 */
-	function set_up_route( $namepace ) {
-		
-    }
+    
 }
 ?>
