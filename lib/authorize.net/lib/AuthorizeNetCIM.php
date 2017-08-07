@@ -372,7 +372,8 @@ class M2_AuthorizeNetCIM extends M2_AuthorizeNetRequest
         // Add extraOptions CDATA
         if ($this->_extraOptions) {
             $this->_xml->addChild("extraOptions");
-            $this->_post_string = str_replace(array("<extraOptions></extraOptions>","<extraOptions/>"),'<extraOptions><![CDATA[' . $this->_extraOptions . ']]></extraOptions>', $this->_xml->asXML());
+            //$this->_post_string = str_replace(array("<extraOptions></extraOptions>","<extraOptions/>"),'<extraOptions><![CDATA[' . $this->_extraOptions . ']]></extraOptions>', $this->_xml->asXML());
+            $this->_post_string = str_replace("<extraOptions/>",'<extraOptions><![CDATA[' . $this->_extraOptions . ']]></extraOptions>', $this->_xml->asXML());
             $this->_extraOptions = false;
         }
         // Blank out our validation mode, so that we don't include it in calls that
