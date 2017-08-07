@@ -152,10 +152,10 @@ class MS_Loader {
 			$file_path_alt 	= trim( strtolower( $sub_path . '/' . $alt_dir . '/' . $filename ), '/' );
 			$candidates 	= array();
 
-            if ( is_dir( MS_PLUGIN_BASE_DIR . '/premium' ) ) {
-                $candidates[] = MS_PLUGIN_BASE_DIR . '/premium/' . $file_path;
-			    $candidates[] = MS_PLUGIN_BASE_DIR . '/premium/' . $file_path_alt;
-            }
+            /* start:pro */
+			$candidates[] = MS_PLUGIN_BASE_DIR . '/premium/' . $file_path;
+			$candidates[] = MS_PLUGIN_BASE_DIR . '/premium/' . $file_path_alt;
+            /* end:pro */
 
 			// If no premium class is found check for default app class.
 			$candidates[] = MS_PLUGIN_BASE_DIR . '/app/' . $file_path;
