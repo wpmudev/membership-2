@@ -219,10 +219,12 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$_POST['API Out: PaymentProfileID'] = $cim_transaction->customerPaymentProfileId;
 			$_POST['API Out: InvoiceNumber'] = $cim_transaction->order->invoiceNumber;
 
+			$duplicate_window = apply_filters( 'ms_auth_net_duplicate_transaction_duration', 7200 );
+
 			$response = $this->get_cim()->createCustomerProfileTransaction(
 				'AuthCapture',
 				$cim_transaction,
-				'x_duplicate_window=7200'
+				'x_duplicate_window='.$duplicate_window
 			);
 
 			if ( ! empty( $response->xml )

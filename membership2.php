@@ -195,12 +195,6 @@ function membership2_init_app() {
 
 	// Initialize the M2 class loader.
 	$loader = new MS_Loader();
-
-	/**
-	 * Ajax Logins
-	 */
-	MS_Auth::check_ms_ajax();
-
 	/**
 	 * Create an instance of the plugin object.
 	 *
@@ -209,6 +203,13 @@ function membership2_init_app() {
 	 * @since  1.0.0
 	 */
 	MS_Plugin::instance();
+
+	/**
+	 * Ajax Logins
+	 *
+	 * @since 1.0.4
+	 */
+	MS_Auth::check_ms_ajax();
 }
 
 membership2_init_app();
