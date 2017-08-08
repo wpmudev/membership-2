@@ -1934,10 +1934,10 @@ class MS_Model_Member extends MS_Model {
 					}
 					break;
                                     
-                                case 'display_name':
-                                        $user = get_userdata( $this->id );
-                                        $value = $user->display_name;
-                                        break;
+				case 'display_name':
+					$user = get_userdata( $this->id );
+					$value = $user->display_name;
+					break;
 			}
 		}
 
@@ -1977,12 +1977,11 @@ class MS_Model_Member extends MS_Model {
 					break;
 			}
 		}else{
-                    if( $property == 'display_name' )
-                    {
-                        wp_update_user( array( 'ID' => $this->id, 'display_name' => $value ) );
-                    }
-                    
-                }
+			if( $property == 'display_name' ) {
+				wp_update_user( array( 'ID' => $this->id, 'display_name' => $value ) );
+			}
+			
+		}
 	}
 	
 	/**
