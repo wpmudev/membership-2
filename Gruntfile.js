@@ -129,7 +129,9 @@ module.exports = function( grunt ) {
 				'!**/.svn/**',
 				'!.log',
 				'!docs/phpdoc-**',
-				'!bitbucket-pipelines.yml'
+				'!bitbucket-pipelines.yml',
+				'!vendor/**',
+				'!composer**'
 			],
 			main_pro: 'membership2.php',
 			main_free: 'membership.php',

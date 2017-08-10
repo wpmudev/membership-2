@@ -69,11 +69,6 @@ class MS_Loader {
 			$overrides[ $key ] = $core_base . $path;
 		}
 
-		/* start:pro */
-		$overrides[ 'MS_Api' ] 			= 'premium/core/class-ms-api.php';
-		$overrides[ 'MS_Model_Api' ] 	= 'premium/model/class-ms-model-api.php';
-		/* end:pro */
-
 		foreach ( $models as $key => $path ) {
 			$overrides[ $key ] = $models_base . $path;
 		}
@@ -152,14 +147,12 @@ class MS_Loader {
 			$file_path_alt 	= trim( strtolower( $sub_path . '/' . $alt_dir . '/' . $filename ), '/' );
 			$candidates 	= array();
 
-            /* start:pro */
-			$candidates[] = MS_PLUGIN_BASE_DIR . '/premium/' . $file_path;
-			$candidates[] = MS_PLUGIN_BASE_DIR . '/premium/' . $file_path_alt;
-            /* end:pro */
+			$paths 			= self::load_paths();
 
-			// If no premium class is found check for default app class.
-			$candidates[] = MS_PLUGIN_BASE_DIR . '/app/' . $file_path;
-			$candidates[] = MS_PLUGIN_BASE_DIR . '/app/' . $file_path_alt;
+			foreach( $paths as $type => $path ) {
+				$candidates[] = MS_PLUGIN_BASE_DIR . '/' . $path . '/' . $file_path;
+				$candidates[] = MS_PLUGIN_BASE_DIR . '/' . $path . '/' . $file_path_alt;
+			}
 
 			foreach ( $candidates as $path ) {
                 $current_file = basename( $path ); 
@@ -172,5 +165,17 @@ class MS_Loader {
 
 		return false;
     }
+
+	/**
+	 * Load plugin paths
+	 *
+	 * @since 1.0.4
+	 *
+	 * @return Array
+	 */
+	public static function load_paths() {
+		$paths = array( 'app' );
+		return apply_filters( 'ms_plugin_loader_paths', $paths );
+	}
 };
 ?>

@@ -191,6 +191,20 @@ function membership2_init_app() {
 		if ( file_exists( $testfile ) ) { include $testfile; }
 	}
 
+	add_filter( 'ms_plugin_loader_paths', 'ms_premium_add_premium_path' );
+	function ms_premium_add_premium_path ( $paths ) {
+		array_unshift( $paths, "premium" );
+		return $paths;
+	}
+
+
+	add_filter( 'ms_class_path_overrides', 'ms_premium_ms_class_path_overrides' );
+	function ms_premium_ms_class_path_overrides ( $overrides ) {
+		$overrides[ 'MS_Api' ] 			= 'premium/core/class-ms-api.php';
+		$overrides[ 'MS_Model_Api' ] 	= 'premium/model/class-ms-model-api.php';
+		return $overrides;
+	}
+
 	include MS_PLUGIN_BASE_DIR . '/app/ms-loader.php';
 
 	// Initialize the M2 class loader.

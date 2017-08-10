@@ -210,19 +210,16 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @since  1.0.0
 	 */
 	static protected function load_core_addons() {
-		$model = MS_Factory::load( 'MS_Model_Addon' );
-		$content_dir = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
-		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
+		$model 			= MS_Factory::load( 'MS_Model_Addon' );
+		$content_dir 	= trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
+		$plugin_dir 	= substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
-		$addon_dirs = array();
-		
-
-		/* start:pro */
-		// Sequence is important: First Premium!
-		$addon_dirs[] = $plugin_dir . 'premium/addon/';
-		/* end:pro */
-		
-		$addon_dirs[] = $plugin_dir . 'app/addon';
+		$addon_dirs 	= array();
+		$paths 			= MS_Loader::load_paths();
+				
+		foreach( $paths as $path ) {
+			$addon_dirs[] = $plugin_dir . $path . '/addon/';
+		}
 
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...

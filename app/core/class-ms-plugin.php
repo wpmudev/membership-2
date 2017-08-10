@@ -144,7 +144,7 @@ class MS_Plugin {
 		$this->name 	= MS_PLUGIN_NAME;
 		$this->version 	= MS_PLUGIN_VERSION;
 		$this->file 	= MS_PLUGIN_FILE;
-		$this->dir 		= plugin_dir_path( MS_PLUGIN_FILE );
+		$this->dir 		= MS_PLUGIN_DIR;
 		$this->url 		= plugin_dir_url( MS_PLUGIN_FILE );
 
 		// Might refresh the Rewrite-Rules and reloads the page.
