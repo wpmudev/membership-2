@@ -85,6 +85,9 @@ module.exports = function( grunt ) {
 				'./app/assets/js/src/**',
 				'./app/assets/js/vendor/**',
 				'./app/assets/img/src/**',
+				'./docs/phpdoc-**',
+				'bitbucket-pipelines.yml',
+				'./vendor',
 			],
 			exclude_free: [
 				'./README.MD',
@@ -94,6 +97,9 @@ module.exports = function( grunt ) {
 				'./app/assets/js/src/**',
 				'./app/assets/js/vendor/**',
 				'./app/assets/img/src/**',
+				'./docs/phpdoc-**',
+				'bitbucket-pipelines.yml',
+				'./vendor',
 			],
 			include_files: [
 				'**',
