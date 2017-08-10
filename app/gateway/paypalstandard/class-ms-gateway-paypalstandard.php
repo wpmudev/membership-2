@@ -537,9 +537,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		// Step 2b: If we have an invoice_id then process the payment.
 		elseif ( $invoice_id ) {
 			if ( $this->is_live_mode() ) {
-				$domain = 'https://www.paypal.com';
+				$domain = 'https://ipnpb.paypal.com';
 			} else {
-				$domain = 'https://www.sandbox.paypal.com';
+				$domain = 'https://ipnpb.sandbox.paypal.com';
 			}
 
 			// PayPal post authenticity verification.
