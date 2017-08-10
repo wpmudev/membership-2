@@ -1191,22 +1191,19 @@ class MS_Rule extends MS_Model {
 
 			case MS_Model_Rule::FILTER_NOT_PROTECTED;
 				if ( ! empty( $args['membership_id'] ) ) {
-					$include = array_diff( $base_items, $child_items );
-					if ( empty( $include ) && empty( $exclude ) ) {
-						$include = array( -1 );
-					}
+					$exclude = $base_items;
 				} else {
 					$exclude = $child_items;
-					if ( empty( $include ) && empty( $exclude ) ) {
-						$exclude = array( -1 );
-					}
+				}
+				if ( empty( $include ) && empty( $exclude ) ) {
+					$exclude = array( -1 );
 				}
 				break;
 
 			default:
 				// If not visitor membership, just show all Membership2
 				if ( ! $child_rule->is_base_rule ) {
-					$include = $base_items;
+					$exclude = array_diff( $base_items, $child_items );
 				}
 				break;
 		}
