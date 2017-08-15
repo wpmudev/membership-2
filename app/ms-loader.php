@@ -32,7 +32,7 @@ class MS_Loader {
 	 * @since  1.0.0
 	 *
 	 * @param  array $overrides Array passed in by filter.
-	 * @return array(class=>path) Classes with new file paths.
+	 * @return array{class=>path} Classes with new file paths.
 	 */
 	public function ms_class_path_overrides( $overrides ) {
         $core_base = 'app/core/';

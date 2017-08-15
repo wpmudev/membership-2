@@ -317,13 +317,6 @@ class MS_Plugin {
 		}
 		/* End: Media / download ----- */
 
-		//Web Hook
-		add_rewrite_rule(
-			'ms-web-hook/(.+)/?',
-			'index.php?mswebhook=$matches[1]',
-			'top'
-		);
-
 		do_action( 'ms_plugin_add_rewrite_rules', $this );
 	}
 
@@ -341,9 +334,6 @@ class MS_Plugin {
 
 		// Media / download.
 		add_rewrite_tag( '%protectedfile%', '(.+)' );
-
-		//Gateway Web Hooks
-		add_rewrite_tag( '%mswebhook%', '(.+)' );
 
 		do_action( 'ms_plugin_add_rewrite_tags', $this );
 	}

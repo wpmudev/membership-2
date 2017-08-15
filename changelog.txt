@@ -5,7 +5,7 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 1.0.4
-- Added: Premium WP Rest Addon
+- New: Premium WP Rest Addon
 - Added: Advanced media protection
 - Added: New filter ms_frontend_controller_change_signup_url to allow disabling Membership login
 - Added: Column on user list with Membership name

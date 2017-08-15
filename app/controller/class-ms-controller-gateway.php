@@ -49,7 +49,6 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 
-		$this->add_action( 'pre_get_posts', 'handle_webhook', 1 );
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 		$this->add_action( 'ms_gateway_transaction_log', 'log_transaction', 10, 8 );
 
@@ -782,55 +781,6 @@ class MS_Controller_Gateway extends MS_Controller {
 		);
 	}
 
-	/**
-	 * Handle Web Hook
-	 * Use by gateways that have webhooks 
-	 * /ms-web-hook/XYZ becomes index.php?mswebhook=XYZ
-	 *
-	 * @since  1.0.4
-	 *
-	 * @param WP_Query $wp_query The WordPress query object
-	 */
-	public function handle_webhook( $wp_query ) {
-		// Do not check custom loops.
-		if ( ! $wp_query->is_main_query() ) { return; }
-
-		if ( ! empty( $wp_query->query_vars['mswebhook'] ) ) {
-			$gateway = $wp_query->query_vars['mswebhook'];
-
-			switch ( $gateway ) {
-				case 'stripe': $gateway = 'stripe'; break;
-				case 'stripe_plan': $gateway = 'stripeplan'; break;
-			}
-
-			if ( MS_Model_Gateway::is_active( $gateway ) ) {
-				$action = 'ms_gateway_handle_webhook_' . $gateway;
-				do_action( $action );
-			} else {
-				// Log the payment attempt when the gateway is not active.
-				if ( MS_Model_Gateway::is_valid_gateway( $gateway ) ) {
-					$note = __( 'Gateway is inactive', 'membership2' );
-				} else {
-					$note = sprintf(
-						__( 'Unknown Gateway: %s', 'membership2' ),
-						$gateway
-					);
-				}
-
-				do_action(
-					'ms_gateway_transaction_log',
-					$gateway, // gateway ID
-					'handle', // request|process|handle
-					false, // success flag
-					0, // subscription ID
-					0, // invoice ID
-					0, // charged amount
-					$note, // Descriptive text
-					'' // External ID
-				);
-			}
-		}
-	}
 
 	/**
 	 * Handle payment gateway return IPNs.

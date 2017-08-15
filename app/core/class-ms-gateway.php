@@ -173,7 +173,7 @@ class MS_Gateway extends MS_Model_Option {
 			$this->add_action(
 				'ms_gateway_handle_payment_return_' . $this->id,
 				'handle_return'
-			);
+			); 
 		}
 
 		$this->add_filter( 'ms_model_gateway_register', 'register' );
