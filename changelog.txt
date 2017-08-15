@@ -9,8 +9,6 @@ Change Log:
 - Added: Advanced media protection
 - Added: New filter ms_frontend_controller_change_signup_url to allow disabling Membership login
 - Added: Column on user list with Membership name
-
-1.0.3.6
 - Added: Added setting to enable or disable cron usage for email sending
 - Added: Emails can now be sent directly or using the WordPress cron
 - Added: Integration with new reCaptcha plugin to the reCaptcha Addon
