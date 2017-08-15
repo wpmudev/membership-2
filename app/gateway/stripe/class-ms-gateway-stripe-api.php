@@ -294,7 +294,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 			'plan'
 		);
 
-		$subscription = self::get_subscription( $customer, $membership );
+		$subscription = $this->get_subscription( $customer, $membership );
 
 		/*
 		 * If no active subscription was found for the membership create it.
