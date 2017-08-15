@@ -173,7 +173,12 @@ class MS_Gateway extends MS_Model_Option {
 			$this->add_action(
 				'ms_gateway_handle_payment_return_' . $this->id,
 				'handle_return'
-			); 
+			);
+
+			$this->add_action(
+				'ms_gateway_handle_webhook_' . $this->id,
+				'handle_webhook'
+			);
 		}
 
 		$this->add_filter( 'ms_model_gateway_register', 'register' );
@@ -248,6 +253,18 @@ class MS_Gateway extends MS_Model_Option {
 			'ms_gateway_handle_return',
 			$this,
 			$log
+		);
+	}
+
+	/**
+	 * Process WebHook requests
+	 *
+	 * @since 1.0.4
+	 */
+	public function handle_webhook() {
+		do_action(
+			'ms_gateway_handle_webhook',
+			$this
 		);
 	}
 

@@ -443,4 +443,42 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 
 		return $key;
 	}
+
+	/**
+	 * Get invoice from an event
+	 *
+	 * @param Object $event - current event
+	 * 
+	 * @since 1.0.4
+	 * @return bool|object
+	 */
+	public function get_invoice_from_event( $event ) {
+		$invoice = false;
+		try {
+			$invoice = $event->data->object;
+		} catch (Exception $e) {
+			// something failed, perhaps log a notice or email the site admin
+			$invoice = false;
+		}
+		return $invoice;
+	}
+
+	/**
+	 * Get customer from invoice
+	 *
+	 * @param Object $invoice - Stripe_Invoice
+	 * 
+	 * @since 1.0.4
+	 * @return bool|object
+	 */
+	 public function get_customer_from_invoice( $invoice ) {
+		$customer = false;
+		try {
+			$customer = Stripe_Customer::retrieve( $invoice->customer );
+		} catch (Exception $e) {
+			// something failed, perhaps log a notice or email the site admin
+			$customer = false;
+		}
+		return $customer;
+	}
 }

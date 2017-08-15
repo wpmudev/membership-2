@@ -343,6 +343,84 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	}
 
 	/**
+	 * Process Stripe WebHook requests
+	 *
+	 * @since 1.0.4
+	 */
+	public function handle_webhook() {
+		do_action(
+			'ms_gateway_handle_webhook_before',
+			$this
+		);
+
+		$this->_api->set_gateway( $this );
+
+		// retrieve the request's body and parse it as JSON
+		$body = @file_get_contents( 'php://input' );
+		// grab the event information
+		$event_json = json_decode( $body );
+
+		if( isset( $event_json->id ) ) {
+			try {
+				$event_id 	= $event_json->id;
+				$event 		= Stripe_Event::retrieve( $event_id );
+				if ( $event ) {
+					$stripe_invoice 	= $this->_api->get_invoice_from_event( $event );
+					if ( $stripe_invoice ) {
+						$stripe_customer 	= $this->_api->get_customer_from_invoice( $stripe_invoice->customer );
+						$email 				= $stripe_customer->email;
+
+						if ( !function_exists( 'get_user_by' ) ) {
+							include_once( ABSPATH . 'wp-includes/pluggable.php' );
+						}
+
+						$user 	= get_user_by( 'email', $email );
+						$member = MS_Factory::load( 'MS_Model_Member', $user->ID );
+
+						if ( $member ) {
+							$invoice 		= false;
+							$subscription 	= false;
+							foreach ( $member->subscriptions as $sub ){
+								$subscription = $sub;
+							}
+							if ( $subscription ) {
+								$invoice = $subscription->get_current_invoice();
+
+								if ( $invoice ) {
+									if ( 0 == $invoice->total ) {
+										// Free, just process.
+										$invoice->changed();
+										$success = true;
+										$note = __( 'No payment required for free membership', 'membership2' );
+									} else {
+										if( $event->type == 'invoice.payment_succeeded') {
+											$success = true;
+											$invoice->pay_it( self::ID, $event_id );
+										} else {
+
+										}
+									}
+								}
+							}
+
+						}
+						
+					}
+				}
+			} catch (Exception $e) {
+				$note = 'Stripe error webhook: '. $e->getMessage();
+				MS_Helper_Debug::debug_log( $note );
+				$error = $e;
+			}
+		}
+
+		do_action(
+			'ms_gateway_handle_webhook_after',
+			$this
+		);
+	}
+
+	/**
 	 * Processes purchase action.
 	 *
 	 * @since  1.0.0
