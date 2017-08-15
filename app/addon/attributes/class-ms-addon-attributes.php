@@ -51,10 +51,10 @@ class MS_Addon_Attributes extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Membership Attributes', 'membership2' ),
-			'description' => __( 'Add custom attributes to your memberships that you can use in shortcodes and code.', 'membership2' ),
-			'icon' => 'wpmui-fa wpmui-fa-tags',
-			'action' => array( __( 'Pro Version', 'membership2' ) ),
+			'name' 			=> __( 'Membership Attributes', 'membership2' ),
+			'description' 	=> __( 'Add custom attributes to your memberships that you can use in shortcodes and code.', 'membership2' ),
+			'icon' 			=> 'wpmui-fa wpmui-fa-tags',
+			'action' 		=> array( __( 'Pro Version', 'membership2' ) ),
 		);
 		return $list;
 	}

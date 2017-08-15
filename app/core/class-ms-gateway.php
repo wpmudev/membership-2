@@ -654,6 +654,7 @@ class MS_Gateway extends MS_Model_Option {
 				'JE' => __( 'Jersey', 'membership2' ),
 				'JO' => __( 'Jordan', 'membership2' ),
 				'KZ' => __( 'Kazakhstan', 'membership2' ),
+				'KE' => __( 'Kenya', 'membership2' ),
 				'KI' => __( 'Kiribati', 'membership2' ),
 				'KR' => __( 'Korea, Republic Of', 'membership2' ),
 				'KW' => __( 'Kuwait', 'membership2' ),

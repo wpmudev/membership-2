@@ -37,7 +37,7 @@ class MS_Addon_Mediafiles extends MS_Addon {
 	public function init() {
 		// This Add-on has no real logic.
 		// It is only a switch that is used in the MS_Rule_Category files...
-
+		MS_Model_Addon::toggle_media_htaccess();
 		$this->add_filter(
 			'ms_model_addon_is_enabled_' . self::ID,
 			'is_enabled'
@@ -76,5 +76,4 @@ class MS_Addon_Mediafiles extends MS_Addon {
 
 		return $enabled;
 	}
-
 }

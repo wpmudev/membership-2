@@ -113,6 +113,9 @@ class MS_Controller_Member extends MS_Controller {
 
 		$this->add_filter( 'set-screen-option', array($this, 'members_admin_page_set_screen_option') , 10, 3);
 
+		$this->add_filter( 'manage_users_columns', array($this, 'manage_users_columns') , 10, 1);
+		$this->add_filter( 'manage_users_sortable_columns', array($this, 'manage_users_columns') , 10, 1);
+		$this->add_filter( 'manage_users_custom_column', array($this, 'manage_users_custom_column') , 10, 3);
 	}
 
 	/**
@@ -817,6 +820,72 @@ class MS_Controller_Member extends MS_Controller {
 
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+	}
+
+	/**
+	 * Add Membership column after the Role column
+	 *
+	 * @param Array $columns - current columns
+	 *
+	 * @return Array
+	 */
+	public function manage_users_columns( $columns ) {
+		$new_columns = array();
+
+        $columns_4 = array_slice( $columns, 0, 5 );
+        $columns_5 = array_slice( $columns, 5 );
+        
+        $new_columns = $columns_4 + array( 'membership' => __('Membership' , 'membership2' ) ) + $columns_5;
+		
+        return $new_columns;
+	}
+
+	/**
+	 * Add Membership column to users list
+	 *
+	 * @param string $output      Custom column output. Default empty.
+	 * @param string $column_name Column name.
+	 * @param int    $user_id     ID of the currently-listed user.
+	 *
+	 * @return String
+	 */
+	public function manage_users_custom_column( $value, $column_name, $user_id ) {
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+        $subscription = $member->get_subscription( 'priority' );
+        if( $subscription ) {
+            $membership = $subscription->get_membership();
+            $color 		= MS_Helper_Utility::color_index( $membership->type . $membership->id );
+            $html = '<span class="ms-color" style="
+                background-color:'.$color.';
+                width: 20px;
+                float: left;
+                margin-right: 5px;
+                border-radius: 45px;
+                box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
+                ">&nbsp;
+                </span>';
+			$url = MS_Controller_Plugin::get_admin_url(
+				'members',
+				array( 'membership_id' => $membership->id )
+			);
+			$view_url = sprintf(
+					'<a href="%1$s" title="%2$s">%3$s</a>',
+					$url,
+					__( 'View Members', 'membership' ),
+					$membership->name
+				);
+            $html .= '<span style="font-weight:bold;">'. $view_url .'</span>';
+            $value = $html;
+        }
+
+        if( empty( $value ) ) {
+            $value = __('None');
+            if( user_can( $user_id, 'manage_options' ) ) {
+                $value = '<span style="font-weight:bold;">' . __('None (Admin User)') . '</span>';
+            }
+        }
+
+        return $value;
 	}
 
 }

@@ -210,17 +210,16 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @since  1.0.0
 	 */
 	static protected function load_core_addons() {
-		$model = MS_Factory::load( 'MS_Model_Addon' );
-		$content_dir = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
-		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
+		$model 			= MS_Factory::load( 'MS_Model_Addon' );
+		$content_dir 	= trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
+		$plugin_dir 	= substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
-		$addon_dirs = array();
-		/* start:pro */
-		// Sequence is important: First Premium!
-		$addon_dirs[] = $plugin_dir . 'premium/addon/';
-		/* end:pro */
-
-		$addon_dirs[] = $plugin_dir . 'app/addon/';
+		$addon_dirs 	= array();
+		$paths 			= MS_Loader::load_paths();
+				
+		foreach( $paths as $path ) {
+			$addon_dirs[] = $plugin_dir . $path . '/addon/';
+		}
 
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...
@@ -408,6 +407,12 @@ class MS_Model_Addon extends MS_Model_Option {
 	static private function get_core_list() {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
+		$direct_access = array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
+		if ( isset( $settings->downloads['direct_access'] ) ) {
+			$direct_access = $settings->downloads['direct_access'];
+		}
+		
+
 		$options_text = sprintf(
 			'<i class="dashicons dashicons dashicons-admin-settings"></i> %s',
 			__( 'Options available', 'membership2' )
@@ -469,6 +474,30 @@ class MS_Model_Addon extends MS_Model_Option {
 						'field' => 'protection_type',
 						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 						'_wpnonce' => true, // Nonce will be generated from 'action'
+					),
+				),
+				array(
+					'id' 	=> 'direct_access',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' => __( 'Prevent direct file access', 'membership2' ),
+					'desc' 	=> __( 'Prevent direct access to files in your uploads directory except the extensions listed. This will add or modify a .htaccess file in your uploads directory ', 'membership2' ),
+					'value' => implode( ",", $direct_access ),
+					'data_ms' => array(
+						'field' 	=> 'direct_access',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					),
+				),
+				array(
+					'id' 	=> 'regenerate_htaccess',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'title' => __( 'Regenerate htaccess file', 'membership2' ),
+					'desc' 	=> __( 'This will clear and update the Membership rules in the htaccess file in the uploads directory. The file will be cleared once this addon is deactivated', 'membership2' ),
+					'value' => __( 'Update htaccess', 'membership2' ),
+					'data_ms' => array(
+						'field' 	=> 'regenerate_htaccess',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_TOGGLE_PROTECTION_FILE,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					),
 				),
 				array(
@@ -564,7 +593,27 @@ class MS_Model_Addon extends MS_Model_Option {
 				),
 			),
 		);
+		
 
 		return $list;
+	}
+
+
+	/**
+	 * Toggle Media htaccess creation
+	 *
+	 * @since 1.0.4
+	 */
+	public static function toggle_media_htaccess() {
+		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+			$settings 		= MS_Factory::load( 'MS_Model_Settings' );
+			$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
+			if ( isset( $settings->downloads['direct_access'] ) ) {
+				$direct_access = $settings->downloads['direct_access'];
+			}
+			MS_Helper_Media::write_htaccess_rule( $direct_access );
+		} else {
+			MS_Helper_Media::clear_htaccess();
+		}
 	}
 }

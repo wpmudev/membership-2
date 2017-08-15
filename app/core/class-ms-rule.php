@@ -84,13 +84,13 @@ class MS_Rule extends MS_Model {
 	 */
 	protected $_subscription_id = 0;
 
-        /**
+    /**
 	 * Allow access without protection rule
 	 *
 	 * @since  1.0.3.6
 	 * @var   bool
 	 */
-        protected $_allow_without_rule = true;
+    protected $_allow_without_rule = true;
 
 	/**
 	 * Class constructor.
@@ -591,7 +591,7 @@ class MS_Rule extends MS_Model {
 		if ( $admin_has_access && MS_Model_Member::is_normal_admin() ) {
 			return true;
 		}
-                $only_this = $this->_allow_without_rule;
+        $only_this = $this->_allow_without_rule;
 
 		/*
 		 * $access will be one of these:
@@ -607,9 +607,9 @@ class MS_Rule extends MS_Model {
 			 *   - The meaning of TRUE/FALSE is inverted
 			 *   - NULL is always "allowed" for $only_this
 			 */
-                         if ( $only_this || MS_Model_Rule::RULE_VALUE_UNDEFINED !== $access ) {
-                            $access = ! $access;
-                         }
+            if ( $only_this || MS_Model_Rule::RULE_VALUE_UNDEFINED !== $access ) {
+            	$access = ! $access;
+            }
 		} else {
 			// Apply dripped-content rules if neccessary.
 			if ( $access && $this->has_dripped_rules( $id ) ) {
@@ -635,10 +635,10 @@ class MS_Rule extends MS_Model {
                         }
 		}
 
-                if ( $only_this ) {
-                    // At this point $access can either be TRUE or FALSE, not NULL!
-                    $access = (bool) $access;
-                }
+		if ( $only_this ) {
+			// At this point $access can either be TRUE or FALSE, not NULL!
+			$access = (bool) $access;
+		}
 
 		return apply_filters(
 			'ms_rule_has_access',

@@ -194,21 +194,21 @@ class MS_Controller_Api extends MS_Hooker {
 		return $member;
 	}
         
-        /**
-         * Returns if the member is admin or not
-         *
-         * @since 1.0.2.8
-         * @api
-         *
-         * @return bool
-         */
-        public function is_admin_user( $user_id = null ) {
-            if( $user_id == null ) {
-                $user_id = get_current_user_id();
-            }
-            
-            return MS_Model_Member::is_admin_user( $user_id );
-        }
+	/**
+	 * Returns if the member is admin or not
+	 *
+	 * @since 1.0.2.8
+	 * @api
+	 *
+	 * @return bool
+	 */
+	public function is_admin_user( $user_id = null ) {
+		if( $user_id == null ) {
+			$user_id = get_current_user_id();
+		}
+		
+		return MS_Model_Member::is_admin_user( $user_id );
+	}
 
 	/**
 	 * Returns a single membership object.
@@ -255,36 +255,7 @@ class MS_Controller_Api extends MS_Hooker {
 	 * @return int|false The membership ID or false.
 	 */
 	public function get_membership_id( $name_or_slug ) {
-		global $wpdb;
-		$res = false;
-
-		$sql = "
-		SELECT ID
-		FROM {$wpdb->posts} p
-		INNER JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = %s
-		WHERE
-			p.post_type = %s
-			AND ( m.meta_value = %s OR p.post_name = %s )
-		ORDER BY ID
-		;";
-
-		MS_Factory::select_blog();
-		$sql = $wpdb->prepare(
-			$sql,
-			'name',
-			MS_Model_Membership::get_post_type(),
-			$name_or_slug,
-			$name_or_slug
-		);
-
-		$ids = $wpdb->get_col( $sql );
-		MS_Factory::revert_blog();
-
-		if ( is_array( $ids ) && count( $ids ) ) {
-			$res = reset( $ids );
-		}
-
-		return $res;
+		return MS_Model_Membership::get_membership_id( $name_or_slug );
 	}
 
 	/**
@@ -329,7 +300,7 @@ class MS_Controller_Api extends MS_Hooker {
 	 * @return MS_Model_Relationship|null The new subscription object.
 	 */
 	public function add_subscription( $user_id, $membership_id ) {
-		$subscription = null;
+		$subscription = false;
 		$membership = $this->get_membership( $membership_id );
 
 		$member = MS_Factory::load( 'MS_Model_Member', $user_id );

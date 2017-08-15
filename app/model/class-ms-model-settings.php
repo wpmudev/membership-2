@@ -197,8 +197,21 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var array
 	 */
 	protected $downloads = array(
-		'protection_type' => MS_Rule_Media_Model::PROTECTION_TYPE_COMPLETE,
-		'masked_url' => 'downloads',
+		'protection_type' 	=> MS_Rule_Media_Model::PROTECTION_TYPE_COMPLETE,
+		'masked_url' 		=> 'downloads',
+		'direct_access' 	=> array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' ),
+	);
+
+	/**
+	 * Default WP Rest settings
+	 *
+	 * @since 1.0.4
+	 *
+	 * @var array
+	 */
+	protected $wprest = array(
+		'api_namespace' => MS_Addon_WPRest::API_NAMESPACE,
+		'api_passkey' 	=> '123456789'
 	);
 
 	/**
@@ -497,6 +510,19 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'masked_url':
 					$this->downloads['masked_url'] = sanitize_text_field( $value );
 					break;
+
+				case 'direct_access':
+					$this->downloads['direct_access'] = explode( ",", sanitize_text_field( $value ) );
+					break;
+
+				case 'api_namespace' :
+					$this->wprest['api_namespace'] = sanitize_text_field( $value );
+					break;
+				
+				case 'api_passkey' :
+					$this->wprest['api_passkey'] = sanitize_text_field( $value );
+					break;
+					
 			}
 		}
 	}

@@ -97,6 +97,7 @@ class MS_Plugin {
 	 */
 	private $addon;
 
+
 	/**
 	 * The main controller of the plugin.
 	 *
@@ -139,12 +140,12 @@ class MS_Plugin {
 		do_action( 'ms_plugin_construct_start', $this );
 
 		/** Setup plugin properties */
-		$this->id = MS_PLUGIN;
-		$this->name = MS_PLUGIN_NAME;
-		$this->version = MS_PLUGIN_VERSION;
-		$this->file = MS_PLUGIN_FILE;
-		$this->dir = plugin_dir_path( MS_PLUGIN_FILE );
-		$this->url = plugin_dir_url( MS_PLUGIN_FILE );
+		$this->id 		= MS_PLUGIN;
+		$this->name 	= MS_PLUGIN_NAME;
+		$this->version 	= MS_PLUGIN_VERSION;
+		$this->file 	= MS_PLUGIN_FILE;
+		$this->dir 		= MS_PLUGIN_DIR;
+		$this->url 		= plugin_dir_url( MS_PLUGIN_FILE );
 
 		// Might refresh the Rewrite-Rules and reloads the page.
 		add_action(
@@ -257,11 +258,11 @@ class MS_Plugin {
 		$cpts = apply_filters(
 			'ms_plugin_register_custom_post_types',
 			array(
-				MS_Model_Membership::get_post_type() => MS_Model_Membership::get_register_post_type_args(),
-				MS_Model_Relationship::get_post_type() => MS_Model_Relationship::get_register_post_type_args(),
-				MS_Model_Invoice::get_post_type() => MS_Model_Invoice::get_register_post_type_args(),
+				MS_Model_Membership::get_post_type() 	=> MS_Model_Membership::get_register_post_type_args(),
+				MS_Model_Relationship::get_post_type() 	=> MS_Model_Relationship::get_register_post_type_args(),
+				MS_Model_Invoice::get_post_type() 		=> MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::get_post_type() => MS_Model_Communication::get_register_post_type_args(),
-				MS_Model_Event::get_post_type() => MS_Model_Event::get_register_post_type_args(),
+				MS_Model_Event::get_post_type() 		=> MS_Model_Event::get_register_post_type_args(),
 			)
 		);
 
@@ -316,6 +317,13 @@ class MS_Plugin {
 		}
 		/* End: Media / download ----- */
 
+		//Web Hook
+		add_rewrite_rule(
+			'ms-web-hook/(.+)/?',
+			'index.php?mswebhook=$matches[1]',
+			'top'
+		);
+
 		do_action( 'ms_plugin_add_rewrite_rules', $this );
 	}
 
@@ -333,6 +341,9 @@ class MS_Plugin {
 
 		// Media / download.
 		add_rewrite_tag( '%protectedfile%', '(.+)' );
+
+		//Gateway Web Hooks
+		add_rewrite_tag( '%mswebhook%', '(.+)' );
 
 		do_action( 'ms_plugin_add_rewrite_tags', $this );
 	}

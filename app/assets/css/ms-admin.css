@@ -291,7 +291,7 @@
   margin-bottom: 0 !important;
 }
 .ms-wrap .tablenav.bottom {
-  /* display: none; */
+  display: none;
 }
 .ms-wrap .subsubsub {
   cursor: default;
@@ -1982,6 +1982,7 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   font-style: normal;
   vertical-align: top;
   text-align: center;
+  -webkit-transition: color .1s ease-in 0;
   transition: color .1s ease-in 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -2667,6 +2668,9 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
   z-index: 10;
   cursor: not-allowed;
   background: rgba(0, 0, 0, 0.1);
+}
+.ms-wrap.ms-addon-list .wpmui-input-direct_access {
+  width: 100%;
 }
 
 /**

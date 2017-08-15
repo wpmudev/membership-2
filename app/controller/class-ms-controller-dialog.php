@@ -141,8 +141,8 @@ class MS_Controller_Dialog extends MS_Controller {
 			do_action( 'wp_login', $member->username, $user_signon );
 			do_action( 'ms_model_member_signon_user', $user_signon, $member );
 
-			$resp['loggedin'] = true;
-			$resp['success'] = __( 'Logging in...', 'membership2' );
+			$resp['loggedin'] 	= true;
+			$resp['success'] 	= __( 'Logging in...', 'membership2' );
 
 			/**
 			 * Allows a custom redirection after login.
@@ -150,16 +150,12 @@ class MS_Controller_Dialog extends MS_Controller {
 			 *
 			 * @since  1.0.0
 			 */
-                        $enforce = false;
-                        if( isset( $_POST['redirect_to'] ) ) {
-                            $resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', $_POST['redirect_to'], $member );
-                        }else{
-                            $resp['redirect'] = apply_filters(
-				'ms_url_after_login',
-				$_POST['redirect_to'],
-				$enforce
-                            );
-                        }
+			$enforce = false;
+			if( isset( $_POST['redirect_to'] ) ) {
+				$resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', $_POST['redirect_to'], $member );
+			}else{
+				$resp['redirect'] = apply_filters( 'ms_url_after_login', $_POST['redirect_to'], $enforce );
+            }
 			
 		}
 

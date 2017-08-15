@@ -703,6 +703,54 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		);
 	}
 
+
+	/**
+	 * Returns the membership-ID that matches the specified Membership name or
+	 * slug.
+	 *
+	 * If multiple memberships have the same name then the one with the lowest
+	 * ID (= the oldest) will be returned.
+	 *
+	 * Name or slug are case-IN-sensitive ('slug' and 'SLUG' are identical)
+	 * Wildcards are not allowed, the string must match exactly.
+	 *
+	 * @since  1.0.4
+	 * @param  string $name_or_slug The Membership name or slug to search.
+	 * @return int|false The membership ID or false.
+	 */
+	public function get_membership_id( $name_or_slug ) {
+		global $wpdb;
+		$res = false;
+
+		$sql = "
+		SELECT ID
+		FROM {$wpdb->posts} p
+		INNER JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = %s
+		WHERE
+			p.post_type = %s
+			AND ( m.meta_value = %s OR p.post_name = %s )
+		ORDER BY ID
+		;";
+
+		MS_Factory::select_blog();
+		$sql = $wpdb->prepare(
+			$sql,
+			'name',
+			self::get_post_type(),
+			$name_or_slug,
+			$name_or_slug
+		);
+
+		$ids = $wpdb->get_col( $sql );
+		MS_Factory::revert_blog();
+
+		if ( is_array( $ids ) && count( $ids ) ) {
+			$res = reset( $ids );
+		}
+
+		return $res;
+	}
+
 	/**
 	 * Get Memberships models.
 	 *

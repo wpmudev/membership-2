@@ -2,8 +2,14 @@
   "name": "membership2",
   "title": "Membership 2 Pro",
   "description": "The most powerful, easy to use and flexible membership plugin for WordPress sites available.",
-  "version": "1.0.3.6",
+  "version": "1.0.4",
   "homepage": "https://premium.wpmudev.org/project/membership/",
+  "scripts": {
+    "build": "grunt build",
+    "build:pro": "grunt build:pro",
+    "build:free": "grunt build:free",
+    "test": "grunt test"
+  },
   "authors": [
     { "name": "Paul Kevin" },
     { "name": "Ashok Kumar Nath" },
