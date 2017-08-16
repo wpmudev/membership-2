@@ -876,6 +876,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			if ( MS_Model_Gateway::is_active( $gateway ) ) {
 				$action = 'ms_gateway_handle_webhook_' . $gateway;
 				do_action( $action );
+				wp_send_json_success();
 			} else {
 				// Log the payment attempt when the gateway is not active.
 				if ( MS_Model_Gateway::is_valid_gateway( $gateway ) ) {

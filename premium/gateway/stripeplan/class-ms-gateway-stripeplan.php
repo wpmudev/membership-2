@@ -357,6 +357,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 
 		// retrieve the request's body and parse it as JSON
 		$body = @file_get_contents( 'php://input' );
+
+		$this->log( $body );
 		// grab the event information
 		$event_json = json_decode( $body );
 
