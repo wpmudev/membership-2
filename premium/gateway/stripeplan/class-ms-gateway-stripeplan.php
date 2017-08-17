@@ -386,7 +386,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 								$subscription = $sub;
 							}
 							if ( $subscription ) {
-								$invoice = $subscription->get_current_invoice();
+								$membership = $subscription->get_membership();
+								$invoice 	= $subscription->get_current_invoice();
 
 								if ( $invoice ) {
 									if ( 0 == $invoice->total ) {
@@ -395,11 +396,20 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 										$success = true;
 										$note = __( 'No payment required for free membership', 'membership2' );
 									} else {
-										if( $event->type == 'invoice.payment_succeeded') {
-											$success = true;
-											$invoice->pay_it( self::ID, $event_id );
-										} else {
-
+										switch ( $event->type ){
+											case 'invoice.payment_succeeded' :
+												$success = true;
+												$invoice->pay_it( self::ID, $event_id );
+											break;
+											case 'customer.subscription.deleted' :
+											case 'invoice.payment_failed' :
+												$success = false;
+												$member->cancel_membership( $membership->id );
+												$member->save();
+											break;
+											default : 
+												$note = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event_type );
+											break;
 										}
 									}
 								}
