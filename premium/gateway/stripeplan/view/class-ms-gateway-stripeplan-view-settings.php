@@ -12,11 +12,17 @@ class MS_Gateway_Stripeplan_View_Settings extends MS_View {
 		<form class="ms-gateway-settings-form ms-form">
 			<?php
 			$description = sprintf(
-				'%1$s<br />%2$s',
+				'%1$s<br />%2$s<br />%3$s',
 				__( 'Best used for recurring payments.', 'membership2' ),
 				sprintf(
 					__( 'You can find your Stripe API Keys in your %sAccount Settings%s.', 'membership2' ),
 					'<a href="https://dashboard.stripe.com/account/apikeys" target="_blank">',
+					'</a>'
+				),
+				sprintf(
+					__( 'Set up the url <strong>%s</strong> in your %sStripe Webhook Settings%s', 'membership2' ),
+					site_url( 'ms-web-hook/stripe' ),
+					'<a href="https://dashboard.stripe.com/account/webhooks" target="_blank">',
 					'</a>'
 				)
 			);
