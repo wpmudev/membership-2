@@ -396,19 +396,32 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 										$success = true;
 										$note = __( 'No payment required for free membership', 'membership2' );
 									} else {
+										$stripe_sub = $this->_api->subscribe(
+											$stripe_customer,
+											$invoice
+										);
+					
+										$note = $this->get_description_for_sub( $stripe_sub );
 										switch ( $event->type ){
 											case 'invoice.payment_succeeded' :
 												$success = true;
-												$invoice->pay_it( self::ID, $event_id );
+												$invoice->pay_it( self::ID, $stripe_sub->id );
+												$this->cancel_if_done( $subscription, $stripe_sub );
 											break;
 											case 'customer.subscription.deleted' :
 											case 'invoice.payment_failed' :
 												$success = false;
 												$member->cancel_membership( $membership->id );
 												$member->save();
+												$this->cancel_if_done( $subscription, $stripe_sub );
 											break;
 											default : 
 												$note = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event_type );
+												if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
+													$success = true;
+													$invoice->pay_it( self::ID, $stripe_sub->id );
+													$this->cancel_if_done( $subscription, $stripe_sub );
+												}
 											break;
 										}
 									}
@@ -524,7 +537,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 * @return bool True on success.
 	 */
-	public function request_payment( $subscription ) {
+	public function request_payment_old( $subscription ) {
 		$was_paid = false;
 		$note = '';
 		$external_id = '';
