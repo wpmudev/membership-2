@@ -387,7 +387,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 							}
 							if ( $subscription ) {
 								$membership = $subscription->get_membership();
-								$invoice 	= $subscription->get_current_invoice();
+								$invoice 	= $subscription->get_next_invoice();
 
 								if ( $invoice ) {
 									$invoice->ms_relationship_id = $membership->id;
@@ -413,7 +413,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 											case 'customer.subscription.deleted' :
 											case 'invoice.payment_failed' :
 												$success = false;
-												$member->cancel_membership( $membership->id );
+												$member->cancel_membership( $subscription );
 												$member->save();
 												$this->cancel_if_done( $subscription, $stripe_sub );
 											break;
