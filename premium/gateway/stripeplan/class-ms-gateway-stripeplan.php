@@ -349,11 +349,14 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 */
 	public function handle_webhook() {
 		do_action(
-			'ms_gateway_handle_webhook_before',
+			'ms_gateway_handle_stripe_webhook_before',
 			$this
 		);
 
 		$this->_api->set_gateway( $this );
+
+		$secret_key = $this->get_secret_key();
+		Stripe::setApiKey( $secret_key );
 
 		// retrieve the request's body and parse it as JSON
 		$body = @file_get_contents( 'php://input' );
@@ -367,77 +370,79 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$event_id 	= $event_json->id;
 				$event 		= Stripe_Event::retrieve( $event_id );
 				if ( $event ) {
-					$stripe_invoice 	= $this->_api->get_invoice_from_event( $event );
+					$stripe_invoice = $event->data->object;;
 					if ( $stripe_invoice ) {
-						$stripe_customer 	= $this->_api->get_customer_from_invoice( $stripe_invoice->customer );
-						$email 				= $stripe_customer->email;
-
-						if ( !function_exists( 'get_user_by' ) ) {
-							include_once( ABSPATH . 'wp-includes/pluggable.php' );
-						}
-
-						$user 	= get_user_by( 'email', $email );
-						$member = MS_Factory::load( 'MS_Model_Member', $user->ID );
-
-						if ( $member ) {
-							$invoice 		= false;
-							$subscription 	= false;
-							foreach ( $member->subscriptions as $sub ){
-								$subscription = $sub;
+						$stripe_customer 	= Stripe_Customer::retrieve( $stripe_invoice->customer );
+						if ( $stripe_customer ) {
+							$email 	= $stripe_customer->email;
+							
+							if ( !function_exists( 'get_user_by' ) ) {
+								include_once( ABSPATH . 'wp-includes/pluggable.php' );
 							}
-							if ( $subscription ) {
-								$membership = $subscription->get_membership();
-								$invoice 	= $subscription->get_next_invoice();
-
-								if ( $invoice ) {
-									$invoice->ms_relationship_id = $membership->id;
-									$this->log( 'Got invoice ' . $invoice->id . ' on ' . $event->type );
-									if ( 0 == $invoice->total ) {
-										// Free, just process.
-										$invoice->changed();
-										$success = true;
-										$note = __( 'No payment required for free membership', 'membership2' );
-									} else {
-										$stripe_sub = $this->_api->subscribe(
-											$stripe_customer,
-											$invoice
-										);
-					
-										$note = $this->get_description_for_sub( $stripe_sub );
-										switch ( $event->type ){
-											case 'invoice.payment_succeeded' :
+	
+							$user 	= get_user_by( 'email', $email );
+							$member = MS_Factory::load( 'MS_Model_Member', $user->ID );
+	
+							if ( $member ) {
+								$invoice 	= false;
+								foreach ( $member->subscriptions as $subscription ){
+									if ( $subscription ) {
+										$membership = $subscription->get_membership();
+										$invoice 	= $subscription->get_next_invoice();
+										if ( $invoice ) {
+											$invoice->ms_relationship_id = $membership->id;
+											$this->log( 'Got invoice ' . $invoice->id . ' on ' . $event->type );
+											if ( 0 == $invoice->total ) {
+												// Free, just process.
+												$invoice->changed();
 												$success = true;
-												$invoice->pay_it( self::ID, $stripe_sub->id );
-												$this->cancel_if_done( $subscription, $stripe_sub );
-											break;
-											case 'customer.subscription.deleted' :
-											case 'invoice.payment_failed' :
-												$success = false;
-												$member->cancel_membership( $subscription );
-												$member->save();
-												$this->cancel_if_done( $subscription, $stripe_sub );
-											break;
-											default : 
-												$note = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event_type );
-												if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
-													$success = true;
-													$invoice->pay_it( self::ID, $stripe_sub->id );
-													$this->cancel_if_done( $subscription, $stripe_sub );
+												$note = __( 'No payment required for free membership', 'membership2' );
+											} else {
+												
+												switch ( $event->type ){
+													case 'invoice.payment_succeeded' :
+														$stripe_sub = $this->_api->subscribe(
+															$stripe_customer,
+															$invoice
+														);
+														$note = $this->get_description_for_sub( $stripe_sub );
+														$success = true;
+														$invoice->pay_it( self::ID, $stripe_sub->id );
+														$this->cancel_if_done( $subscription, $stripe_sub );
+													break;
+													case 'customer.subscription.deleted' :
+													case 'invoice.payment_failed' :
+														$success = false;
+														$member->cancel_membership( $subscription );
+														$member->save();
+													break;
+													default : 
+														$stripe_sub = $this->_api->subscribe(
+															$stripe_customer,
+															$invoice
+														);
+									
+														$note = $this->get_description_for_sub( $stripe_sub );
+														$note = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event_type );
+														if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
+															$success = true;
+															$invoice->pay_it( self::ID, $stripe_sub->id );
+															$this->cancel_if_done( $subscription, $stripe_sub );
+														}
+													break;
 												}
-											break;
+											}
+										} else {
+											$this->log( 'Did not get invoice');
 										}
 									}
-								} else {
-									$this->log( 'Did not get invoice');
 								}
 							} else {
-								$this->log( 'Did not get subscription');
+								$this->log( 'Did not get member');
 							}
-
 						} else {
-							$this->log( 'Did not get member');
+							$this->log( 'Did not get customer');
 						}
-						
 					} else {
 						$this->log( 'Did not find stripe invoice' );
 					}
@@ -451,7 +456,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		}
 
 		do_action(
-			'ms_gateway_handle_webhook_after',
+			'ms_gateway_handle_stripe_webhook_after',
 			$this
 		);
 	}
