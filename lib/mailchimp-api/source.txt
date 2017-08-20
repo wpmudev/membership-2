@@ -1,2 +1,0 @@
-Library source:
-https://bitbucket.org/mailchimp/mailchimp-api-php/

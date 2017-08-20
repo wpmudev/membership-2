@@ -357,19 +357,11 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			if ( ! class_exists( 'M2_Mailchimp' ) ) {
 				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
+			$api_key = self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
+			$exploded = explode( '-', $api_key );
+			$data_center = end( $exploded );
 
-			$api = new M2_Mailchimp(
-				self::$settings->get_custom_setting( 'mailchimp', 'api_key' ),
-				$options
-			);
-
-			// Pinging the server
-			$ping = $api->helper->ping();
-
-			if ( is_wp_error( $ping ) ) {
-				$this->log( $ping->get_error_message() );
-				throw new Exception( $ping );
-			}
+			$api = new M2_Mailchimp( $api_key, $data_center );
 
 			self::$mailchimp_api = $api;
 		}
@@ -398,10 +390,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				$iterations = 0;
 
 				do {
-					$lists = self::$mailchimp_api->lists->getList(
-						array(),
-						$page,
-						$items_per_page
+					$lists = self::$mailchimp_api->get_lists(
+						$items_per_page,
+						$page
 					);
 
 					$page += 1;
@@ -439,20 +430,14 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		$subscribed = false;
 
 		if ( is_email( $user_email ) && self::get_api_status() ) {
-			$emails = array(
-				array( 'email' => $user_email ),
-			);
 
-			$results = self::$mailchimp_api->lists->memberInfo( $list_id, $emails );
+			$results = self::$mailchimp_api->check_email( $list_id, $user_email );
 
-			if ( is_wp_error( $results ) ) {
-				$this->log( $results->get_error_message() );
-				// MS_Helper_Debug::debug_log( $results );
-			} elseif ( ! empty( $results['success_count'] )
-				&& ! empty( $results['data'][0]['status'] )
-				&& 'subscribed' == $results['data'][0]['status']
-			) {
+			if ( !is_wp_error( $results ) ) {
 				$subscribed = true;
+			} else {
+				$this->log( $results->get_error_message() );
+				
 			}
 		}
 
@@ -482,14 +467,14 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				$list_id
 			);
 
+			$subscribe_data = array(
+				'email_address' => $member->email,
+				'status'        => ( $auto_opt_in ) ? 'subscribed' : 'pending'
+			);
+
 			$merge_vars = array();
 			$merge_vars['FNAME'] = $member->first_name;
 			$merge_vars['LNAME'] = $member->last_name;
-
-			if ( $auto_opt_in ) {
-				$merge_vars['optin_ip'] = $_SERVER['REMOTE_ADDR'];
-				$merge_vars['optin_time'] = MS_Helper_Period::current_time();
-			}
 
 			if ( empty( $merge_vars['FNAME'] ) ) {
 				unset( $merge_vars['FNAME'] );
@@ -505,19 +490,13 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				$list_id
 			);
 
-			$email_field = array( 'email' => $member->email );
+			$subscribe_data['merge_fields'] = $merge_vars;
 
-			$res = self::$mailchimp_api->lists->subscribe(
-				$list_id,
-				$email_field,
-				$merge_vars,
-				'html',
-				( ! $auto_opt_in ),
-				$update
-			);
 
-			if ( ! $res ) {
-				echo self::$mailchimp_api->errorMessage();
+			$res = self::$mailchimp_api->subscribe( $list_id, $subscribe_data );
+
+			if ( is_wp_error( $res ) ) {
+				echo $res->errorMessage();
 			}
 		}
 	}
@@ -538,9 +517,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		if ( self::get_api_status() ) {
 			$merge_vars['update_existing'] = true;
 
-			return self::$mailchimp_api->lists->updateMember(
+			return self::$mailchimp_api->update_subscription(
 				$list_id,
-				array( 'email' => $user_email ),
+				$user_email,
 				$merge_vars
 			);
 		}
@@ -555,10 +534,10 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public static function unsubscribe_user( $user_email, $list_id, $delete = false ) {
 		if ( self::get_api_status() ) {
-			return self::$mailchimp_api->lists->unsubscribe(
+			return self::$mailchimp_api->unsubscribe(
 				$list_id,
-				array( 'email' => $user_email ),
-				$delete
+				$user_email,
+				array()
 			);
 		}
 	}
