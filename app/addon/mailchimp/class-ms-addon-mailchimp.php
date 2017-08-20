@@ -515,7 +515,6 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public static function update_user( $user_email, $list_id, $merge_vars ) {
 		if ( self::get_api_status() ) {
-			$merge_vars['update_existing'] = true;
 
 			return self::$mailchimp_api->update_subscription(
 				$list_id,

@@ -210,7 +210,7 @@ function membership2_use_m2() {
 	update_option( 'm2_use_new_version', true );
 }
 
-if ( ! defined( 'IS_UNIT_TEST' ) && membership2_is_old_app() ) {
+if ( ! defined( 'IS_UNIT_TEST' ) && membership2_is_old_app() && is_dir( 'app_old ' ) ) {
 	membership2_init_old_app();
 	return;
 }
