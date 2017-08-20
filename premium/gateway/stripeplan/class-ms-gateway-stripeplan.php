@@ -730,7 +730,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		parent::cancel_membership( $subscription );
 		$this->_api->set_gateway( $this );
 
-		$customer = $this->_api->find_customer( $subscription->get_member() );
+		$customer 	= $this->_api->find_customer( $subscription->get_member() );
 		$membership = $subscription->get_membership();
 		$stripe_sub = false;
 
