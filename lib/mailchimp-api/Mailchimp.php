@@ -2,6 +2,7 @@
 
 /**
  * MailChimp API
+ * MailChimp API integration
  *
  * @author Paul Kevin
  * @since 1.0.4
@@ -24,10 +25,10 @@ class M2_Mailchimp {
      * @param $api_key
      */
 	function __construct( $api_key, $data_center ) {
-		$this->_api_key = $api_key;
+		$this->_api_key 	= $api_key;
 		$this->_data_center = $data_center;
-        $this->_endpoint = str_replace( '<dc>', $data_center, $this->_endpoint );
-        $this->_user = wp_get_current_user()->display_name;
+        $this->_endpoint 	= str_replace( '<dc>', $data_center, $this->_endpoint );
+        $this->_user 		= wp_get_current_user()->display_name;
 	}
 	
 	/**
@@ -42,10 +43,10 @@ class M2_Mailchimp {
         $url = trailingslashit( $this->_endpoint )  . $action;
 		
         $_args = array(
-            "method" => $verb,
-            "headers" =>  array(
+            "method" 	=> $verb,
+            "headers" 	=>  array(
 				'Authorization' => 'apikey '. $this->_api_key,
-                'Content-Type' => 'application/json;charset=utf-8'
+                'Content-Type' 	=> 'application/json;charset=utf-8'
             )
         );
 
@@ -61,7 +62,7 @@ class M2_Mailchimp {
             return json_decode(  wp_remote_retrieve_body( $res ) );
 
         $err = new WP_Error();
-        $err->add($res['response']['code'], $res['response']['message'] );
+        $err->add( $res['response']['code'], $res['response']['message'] );
         return  $err;
     }
 
@@ -118,9 +119,9 @@ class M2_Mailchimp {
      */
     public function get_lists( $count = 10, $offset = 0 ) {
         return $this->_get( 'lists', array(
-            'user' => $this->_user . ':' . $this->_api_key,
-			'count' => ( $count > 0 ) ? ( $count * 10 ) : 10,
-			'offset' => $offset,
+            'user' 		=> $this->_user . ':' . $this->_api_key,
+			'count' 	=> ( $count > 0 ) ? ( $count * 10 ) : 10,
+			'offset' 	=> $offset,
         ) );
     }
     
@@ -208,7 +209,8 @@ class M2_Mailchimp {
 	/**
      * Remove subscriber
      *
-     * @param $list_id
+	 * @param $list_id
+	 * @param $email
      * @param $data
      * @return array|mixed|object|WP_Error
      */

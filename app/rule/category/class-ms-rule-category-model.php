@@ -57,6 +57,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 	 */
 	public function protect_posts( $wp_query ) {
         if( is_category() || is_home() || is_search() ) {
+
 			$post_type = self::get_post_type( $wp_query );
 
 
@@ -71,7 +72,9 @@ class MS_Rule_Category_Model extends MS_Rule {
 				$categories = array();
 
 				foreach ( $contents as $content ) {
-					$categories[] = absint( $content->term_id );
+					if ( $this->has_access( $content->term_id ) ) {
+						$categories[] = absint( $content->term_id );
+					}
 				}
 
 				$wp_query->query_vars['category__in'] = $categories;
