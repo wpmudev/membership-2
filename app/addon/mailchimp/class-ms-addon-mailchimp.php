@@ -527,16 +527,15 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	/**
 	 * Unsubscribe a user from a list
 	 *
+	 * @since 1.0.4
 	 * @param  string $user_email
 	 * @param  string $list_id
-	 * @param  bool $delete True if the user is gonna be deleted from the list (not only unsubscribed)
 	 */
-	public static function unsubscribe_user( $user_email, $list_id, $delete = false ) {
+	public static function unsubscribe_user( $user_email, $list_id ) {
 		if ( self::get_api_status() ) {
 			return self::$mailchimp_api->unsubscribe(
 				$list_id,
-				$user_email,
-				array()
+				$user_email
 			);
 		}
 	}

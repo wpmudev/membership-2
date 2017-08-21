@@ -214,7 +214,7 @@ class M2_Mailchimp {
      * @param $data
      * @return array|mixed|object|WP_Error
      */
-	 public function unsubscribe( $list_id, $email, $data ){
+	 public function unsubscribe( $list_id, $email, $data = array() ){
 		$md5_email = md5( strtolower( $email ) );
         return $this->_delete( 'lists/'. $list_id .'/members/' . $md5_email, array(
             "body" =>  $data

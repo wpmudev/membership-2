@@ -396,42 +396,56 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 												// Free, just process.
 												$invoice->changed();
 												$success = true;
-												$note = __( 'No payment required for free membership', 'membership2' );
+												$notes = __( 'No payment required for free membership', 'membership2' );
 											} else {
 												
 												switch ( $event->type ){
 													case 'invoice.payment_succeeded' :
-														$stripe_sub = $this->_api->subscribe(
+														$stripe_sub = $this->_api->get_subscription(
 															$stripe_customer,
-															$invoice
+															$membership
 														);
-														$note = $this->get_description_for_sub( $stripe_sub );
+														$notes = $this->get_description_for_sub( $stripe_sub );
 														$success = true;
 														$invoice->pay_it( self::ID, $stripe_sub->id );
 														$this->cancel_if_done( $subscription, $stripe_sub );
 													break;
 													case 'customer.subscription.deleted' :
 													case 'invoice.payment_failed' :
+														$notes .= __( 'Membership cancelled via webhook', 'membership2' );
 														$success = false;
 														$member->cancel_membership( $subscription );
 														$member->save();
 													break;
 													default : 
-														$stripe_sub = $this->_api->subscribe(
+														$stripe_sub = $this->_api->get_subscription(
 															$stripe_customer,
-															$invoice
+															$membership
 														);
 									
-														$note = $this->get_description_for_sub( $stripe_sub );
-														$note = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event_type );
+														$notes = $this->get_description_for_sub( $stripe_sub );
+														$notes .= sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event_type );
 														if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
+															$notes .= sprintf( __( 'Subscription active for "%s"', 'membership2' ), $subscription->id );
 															$success = true;
 															$invoice->pay_it( self::ID, $stripe_sub->id );
 															$this->cancel_if_done( $subscription, $stripe_sub );
+														} else if ( 'canceled' == $stripe_sub->status ){
+															$notes .= sprintf( __( 'Subscription cancelled for "%s"', 'membership2' ), $subscription->id );
+															$success = false;
+															$member->cancel_membership( $subscription );
+															$member->save();
+														} else {
+															$status = MS_Model_Invoice::STATUS_PENDING;
+															$invoice->status = $status;
+															$invoice->save();
+															$invoice->changed();
 														}
 													break;
 												}
 											}
+											$invoice->add_notes( $notes );
+											$invoice->save();
 										} else {
 											$this->log( 'Did not get invoice');
 										}
