@@ -6,10 +6,10 @@ class MS_View_Shortcode_Account extends MS_View {
         global $post;
 
 		/**
-				* Provide a customized account page.
-				*
-				* @since  1.0.0
-				*/
+		* Provide a customized account page.
+		*
+		* @since  1.0.0
+		*/
 		$html = apply_filters(
 				'ms_shortcode_custom_account',
 				'',

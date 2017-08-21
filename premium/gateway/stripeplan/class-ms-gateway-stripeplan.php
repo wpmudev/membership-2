@@ -407,6 +407,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 														);
 														$notes = $this->get_description_for_sub( $stripe_sub );
 														$success = true;
+														$invoice->status = MS_Model_Invoice::STATUS_PAID;
 														$invoice->pay_it( self::ID, $stripe_sub->id );
 														$this->cancel_if_done( $subscription, $stripe_sub );
 													break;
@@ -414,6 +415,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 													case 'invoice.payment_failed' :
 														$notes .= __( 'Membership cancelled via webhook', 'membership2' );
 														$success = false;
+														$invoice->status = MS_Model_Invoice::STATUS_DENIED;
 														$member->cancel_membership( $subscription );
 														$member->save();
 													break;
@@ -424,10 +426,11 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 														);
 									
 														$notes = $this->get_description_for_sub( $stripe_sub );
-														$notes .= sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event_type );
+														$notes .= sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event->type );
 														if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
 															$notes .= sprintf( __( 'Subscription active for "%s"', 'membership2' ), $subscription->id );
 															$success = true;
+															$invoice->status = MS_Model_Invoice::STATUS_PAID;
 															$invoice->pay_it( self::ID, $stripe_sub->id );
 															$this->cancel_if_done( $subscription, $stripe_sub );
 														} else if ( 'canceled' == $stripe_sub->status ){
@@ -436,8 +439,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 															$member->cancel_membership( $subscription );
 															$member->save();
 														} else {
-															$status = MS_Model_Invoice::STATUS_PENDING;
-															$invoice->status = $status;
+															$invoice->status = MS_Model_Invoice::STATUS_PENDING;
 															$invoice->save();
 															$invoice->changed();
 														}

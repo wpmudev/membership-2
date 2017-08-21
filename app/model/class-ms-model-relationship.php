@@ -2102,33 +2102,36 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		// Thanks for paying or for starting your trial period!
 		// You're officially active :)
 		$member = $this->get_member();
-		$member->is_member = true;
-
-		if ( self::STATUS_ACTIVE == $this->status ) {
-			/**
-			 * Make sure the new subscription is instantly available in the
-			 * member object.
-			 *
-			 * Before version 1.0.1.2 the new subscription was available in the
-			 * member object after the next page refresh.
-			 *
-			 * @since 1.0.1.2
-			 */
-			$found = false;
-			$subscriptions = $member->subscriptions;
-			foreach ( $subscriptions as $sub ) {
-				if ( $sub->membership_id == $this->membership_id ) {
-					$found = true;
-					break;
+		if ( $member ) {
+			$member->is_member = true;
+	
+			if ( self::STATUS_ACTIVE == $this->status ) {
+				/**
+					* Make sure the new subscription is instantly available in the
+					* member object.
+					*
+					* Before version 1.0.1.2 the new subscription was available in the
+					* member object after the next page refresh.
+					*
+					* @since 1.0.1.2
+					*/
+				$found = false;
+				$subscriptions = $member->subscriptions;
+				foreach ( $subscriptions as $sub ) {
+					if ( $sub->membership_id == $this->membership_id ) {
+						$found = true;
+						break;
+					}
+				}
+				if ( ! $found ) {
+					$subscriptions[] = $this;
+					$member->subscriptions = $subscriptions;
 				}
 			}
-			if ( ! $found ) {
-				$subscriptions[] = $this;
-				$member->subscriptions = $subscriptions;
-			}
+	
+			$member->save();
 		}
-
-		$member->save();
+		
 
 		// Return true if the subscription is active.
 		$paid_status = array(
