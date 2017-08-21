@@ -642,6 +642,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			try {
 				$invoice = $gateway->process_purchase( $subscription );
 
+				$this->check_future_subscription_date( $invoice, $subscription );
+				
 				// If invoice is successfully paid, redirect to welcome page.
 				if ( $invoice->is_paid()
 					|| ( $invoice->uses_trial
@@ -715,6 +717,33 @@ class MS_Controller_Gateway extends MS_Controller {
 			'ms_controller_gateway_process_purchase_after',
 			$this
 		);
+	}
+
+	/**
+	 * Check if a subscription set for a future date is being paid for now
+	 * If payment is being done before the due date, we have to adjust the 
+	 * subscription date to match the payment gateway
+	 *
+	 * @since 1.0.4
+	 *
+	 * @param MS_Model_Invoice $invoice - the current invoice
+	 * @param MS_Model_Relationship $subscription - the subscription being paid for
+	 */
+	private function check_future_subscription_date( $invoice, $subscription ) {
+		//Incase they are paying for a subscription before the start date, we adjust the dates
+		$current_date = MS_Helper_Period::current_date( null, true );
+		
+		$valid_date = MS_Helper_Period::is_after(
+			$subscription->start_date,
+			$current_date
+		);
+
+		if ( $valid_date ) {
+			$expire_date = $subscription->calc_expire_date( $current_date, $invoice->is_paid() );
+			$subscription->start_date = $current_date;
+			$subscription->expire_date = $expire_date;
+			$subscription->save();
+		}
 	}
 
 	/**
