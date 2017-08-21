@@ -1,6 +1,6 @@
-/*! Membership 2 Pro - v1.0.32
+/*! Membership 2 Pro - v1.0.4
  * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2016; * Licensed GPLv2+ */
+ * Copyright (c) 2017; * Licensed GPLv2+ */
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
@@ -97,6 +97,8 @@ window.ms_functions = {
 				anim = anim.parents( '.wpmui-radio-slider-wrapper' ).first();
 			} else if ( anim.parents( '.wpmui-input-wrapper' ).length ) {
 				anim = anim.parents( '.wpmui-input-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-select-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-select-wrapper' ).first();
 			} else if ( anim.parents( 'label' ).length ) {
 				anim = anim.parents( 'label' ).first();
 			}
@@ -226,7 +228,7 @@ window.ms_functions = {
 			if ( undefined === data[field_key] ) {
 				data[field_key] = field_value;
 			} else {
-				if ( ! data[field_key] instanceof Array ) {
+				if ( ! ( data[field_key] instanceof Array ) ) {
 					data[field_key] = [ data[field_key] ];
 				}
 				data[field_key].push( field_value );
@@ -1077,7 +1079,8 @@ window.ms_init.view_billing_transactions = function init() {
 		btn_ignore = table.find( '.action-ignore' ),
 		btn_link = table.find( '.action-link' ),
 		btn_retry = table.find( '.action-retry' ),
-		btn_match = frm_match.find( '.action-match' );
+		btn_match = frm_match.find( '.action-match' ),
+		retry_transactions, show_link_dialog, append_option;
 
 	// Handle the "Save Matching" action.
 	function save_matching( ev ) {
@@ -1105,7 +1108,7 @@ window.ms_init.view_billing_transactions = function init() {
 	}
 
 	// Retry to process all displayed transactions.
-	function retry_transactions() {
+	retry_transactions = function() {
 		var rows = table.find( '.item' ),
 			nonce = frm_match.find( '.retry_nonce' ).val(),
 			progress = wpmUi.progressbar(),
@@ -1164,7 +1167,7 @@ window.ms_init.view_billing_transactions = function init() {
 		}
 
 		process_queue();
-	}
+	};
 
 	// Handle the "Reset" action.
 	function clear_line( ev ) {
@@ -1288,7 +1291,7 @@ window.ms_init.view_billing_transactions = function init() {
 	}
 
 	// Display the Transaction-Link popup.
-	function show_link_dialog( row, data ) {
+	show_link_dialog = function( row, data ) {
 		var sel_user, sel_subscription, sel_invoice, nonce_data, nonce_update,
 			row_user, row_subscription, row_invoice, btn_submit, log_id,
 			popup = wpmUi.popup(),
@@ -1438,9 +1441,9 @@ window.ms_init.view_billing_transactions = function init() {
 		if ( ! isNaN( sel_user.val() ) && sel_user.val() > 0 ) {
 			load_subscriptions();
 		}
-	}
+	};
 
-	function append_option( container, val, label ) {
+	append_option = function( container, val, label ) {
 		if ( typeof label === 'object' ) {
 			var group = jQuery( '<optgroup></optgroup>' );
 			group.attr( 'label', val );
@@ -1455,7 +1458,7 @@ window.ms_init.view_billing_transactions = function init() {
 				.html( label )
 			);
 		}
-	}
+	};
 
 	btn_clear.click(clear_line);
 	btn_ignore.click(ignore_line);
@@ -1484,7 +1487,8 @@ window.ms_init.view_member_editor = function init () {
 		sel_user = jQuery( '.ms-group-select #user_id' ),
 		btn_add = jQuery( '#btn_create' ),
 		btn_select = jQuery( '#btn_select' ),
-		chosen_options = {};
+		chosen_options = {},
+		validate_buttons;
 
 	function validate_field( fieldname, field ) {
 		var value = field.val(),
@@ -1519,7 +1523,7 @@ window.ms_init.view_member_editor = function init () {
 		);
 	}
 
-	function validate_buttons() {
+	validate_buttons = function() {
 		if ( txt_username.hasClass( 'valid' ) && txt_email.hasClass( 'valid' ) ) {
 			btn_add.prop( 'disabled', false );
 			btn_add.removeClass( 'disabled' );
@@ -1535,7 +1539,7 @@ window.ms_init.view_member_editor = function init () {
 			btn_select.prop( 'disabled', true );
 			btn_select.addClass( 'disabled' );
 		}
-	}
+	};
 
 	txt_username.change(function() {
 		validate_field( 'username', txt_username );
@@ -1962,7 +1966,8 @@ window.ms_init.view_membership_payment = function init () {
 
 window.ms_init.view_protected_content = function init () {
 	var table = jQuery( '.wp-list-table' ),
-		sel_network_site = jQuery( '#select-site' );
+		sel_network_site = jQuery( '#select-site' ),
+		setup_editor;
 
 	window.ms_init.memberships_column( '.column-access' );
 
@@ -2056,7 +2061,7 @@ window.ms_init.view_protected_content = function init () {
 	}
 
 	// Set up the event-handlers of the inline editor.
-	function setup_editor( form ) {
+	setup_editor = function( form ) {
 		var sel_type = form.find( 'select.dripped_type' ),
 			inp_date = form.find( '.wpmui-datepicker' );
 
@@ -2072,7 +2077,7 @@ window.ms_init.view_protected_content = function init () {
 
 		// Datepicker
 		inp_date.ms_datepicker();
-	}
+	};
 
 	// The table was updated, at least one row needs to be re-initalized.
 	function update_table( ev, row ) {
@@ -2340,7 +2345,7 @@ window.ms_init.view_settings = function init () {
 			jQuery( '#wp-admin-bar-ms-test-memberships' ).hide();
 		}
 	}
-	
+
 	function hide_footer( ev, data ) {
 		// Show/Hide the footer for Membership2.
 		if ( !data.value ) {
