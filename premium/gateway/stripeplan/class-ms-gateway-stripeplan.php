@@ -369,6 +369,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			try {
 				$event_id 	= $event_json->id;
 				$event 		= Stripe_Event::retrieve( $event_id );
+				$log 		= false;
 				if ( $event ) {
 					if ( isset( $event->data->object->id ) && $stripe_invoice ) {
 						$stripe_customer 	= Stripe_Customer::retrieve( $stripe_invoice->customer );
@@ -410,6 +411,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 														$invoice->status = MS_Model_Invoice::STATUS_PAID;
 														$invoice->pay_it( self::ID, $stripe_sub->id );
 														$this->cancel_if_done( $subscription, $stripe_sub );
+														$log = true;
 													break;
 													case 'customer.subscription.deleted' :
 													case 'invoice.payment_failed' :
@@ -418,6 +420,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 														$invoice->status = MS_Model_Invoice::STATUS_DENIED;
 														$member->cancel_membership( $subscription );
 														$member->save();
+														$log = true;
 													break;
 													default : 
 														$stripe_sub = $this->_api->get_subscription(
@@ -448,18 +451,21 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 											}
 											$invoice->add_notes( $notes );
 											$invoice->save();
-
-											do_action(
-												'ms_gateway_transaction_log',
-												self::ID, // gateway ID
-												'handle', // request|process|handle
-												$success, // success flag
-												$subscription->id, // subscription ID
-												$invoice->id, // invoice ID
-												$invoice->total, // charged amount
-												$notes, // Descriptive text
-												'' // External ID
-											);
+											
+											if ( $log  ) {
+												do_action(
+													'ms_gateway_transaction_log',
+													self::ID, // gateway ID
+													'handle', // request|process|handle
+													$success, // success flag
+													$subscription->id, // subscription ID
+													$invoice->id, // invoice ID
+													$invoice->total, // charged amount
+													$notes, // Descriptive text
+													'' // External ID
+												);
+											}
+											
 										} else {
 											$this->log( 'Did not get invoice');
 										}

@@ -615,7 +615,6 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					$invoice->pay_it( self::ID, $external_id );
 				} elseif ( ! empty( $status ) ) {
 					$invoice->status = $status;
-					$invoice->save();
 					$invoice->changed();
 				}
 

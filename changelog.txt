@@ -26,9 +26,8 @@ Change Log:
 - Fixed: Membership Script and Style conflict on other admin pages
 - Fixed: URL Protection Addon on https
 - Fixed: Media Protection Addon
-- Fixed: Invoices with no gateways no longer checked by cron and not automatically marked PAID
 - Fixed: Editing Subscription detailes for administrators.
-- Fixed: Stripe API upgraded
+- Fixed: Stripe API lib upgraded
 - Fixed: Export for free version
 - Other minor enhancements/fixes
 

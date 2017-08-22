@@ -974,16 +974,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	public function enqueue_messages( $event, $subscription ) {
 		do_action( 'ms_model_communication_enqueue_messages_before', $this );
 
-		$settings = MS_Factory::load( 'MS_Model_settings' );
-
 		if ( $this->enabled ) {
-			if ( $settings->enable_cron_use ) {
-				$this->add_to_queue( $subscription->id );
-				$this->save();
-			} else {
-				//Process messaging directly if cron is disabled
-				$this->process_message_direct( $subscription->id );
-			}
+			$this->add_to_queue( $subscription->id );
+			$this->save();
 		}
 
 		do_action( 'ms_model_communication_enqueue_messages_after', $this );
@@ -1016,70 +1009,80 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public function add_to_queue( $subscription_id ) {
 		do_action( 'ms_model_communication_add_to_queue_before', $this );
-
 		/**
-		 * Documented in process_queue()
+		 * Check if cron is enabled 
 		 *
-		 * @since  1.0.0
+		 * @since 1.0.4
 		 */
-		if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
-			$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
-			$msg = sprintf(
-				'Following Email was not sent: "%s" to user "%s".',
-				$this->type,
-				$subscription->user_id
-			);
-			$this->log( $msg );
-
-			return false;
-		}
-
-		$is_enqueued = array_key_exists( $subscription_id, $this->queue );
-
-		if ( $this->enabled && ! $is_enqueued ) {
-			$can_add = true;
-
+		$settings = MS_Factory::load( 'MS_Model_settings' );
+		if ( $settings->enable_cron_use ) {
+			$this->process_message_direct( $subscription->id );
+		} else {
 			/**
-			 * Check if email enqueuing is limited to prevent duplicate emails.
-			 *
-			 * Use setting `define( 'MS_DUPLICATE_EMAIL_HOURS', 24 )` to prevent
-			 * duplicate emails from being sent for 24 hours.
-			 *
-			 * @var int Number of hours
-			 */
-			$pause_hours = 0;
-			if ( defined( 'MS_DUPLICATE_EMAIL_HOURS' ) && is_numeric( MS_DUPLICATE_EMAIL_HOURS ) ) {
-				$pause_hours = MS_DUPLICATE_EMAIL_HOURS;
+			* Documented in process_queue()
+			*
+			* @since  1.0.0
+			*/
+			if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
+				$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
+				$msg = sprintf(
+					'Following Email was not sent: "%s" to user "%s".',
+					$this->type,
+					$subscription->user_id
+				);
+				$this->log( $msg );
+
+				return false;
 			}
-			if ( $pause_hours > 0 ) {
-				if ( array_key_exists( $subscription_id, $this->sent_queue ) ) {
-					$pause_hours = apply_filters(
-						'ms_model_communication_hours_before_resend',
-						$pause_hours
-					);
 
-					/*
-					 * The sent_queue is saved in DB and only contains messages
-					 * from the current Communications object. So
-					 * $subscription_id defines the email contents and receiver.
-					 */
-					$sent_date = $this->sent_queue[ $subscription_id ];
-					$now = MS_Helper_Period::current_time();
+			$is_enqueued = array_key_exists( $subscription_id, $this->queue );
 
-					$current_delay = MS_Helper_Period::subtract_dates(
-						$now,
-						$sent_date,
-						HOURS_IN_SECONDS
-					);
+			if ( $this->enabled && ! $is_enqueued ) {
+				$can_add = true;
 
-					$can_add = $current_delay >= $pause_hours;
+				/**
+				* Check if email enqueuing is limited to prevent duplicate emails.
+				*
+				* Use setting `define( 'MS_DUPLICATE_EMAIL_HOURS', 24 )` to prevent
+				* duplicate emails from being sent for 24 hours.
+				*
+				* @var int Number of hours
+				*/
+				$pause_hours = 0;
+				if ( defined( 'MS_DUPLICATE_EMAIL_HOURS' ) && is_numeric( MS_DUPLICATE_EMAIL_HOURS ) ) {
+					$pause_hours = MS_DUPLICATE_EMAIL_HOURS;
+				}
+				if ( $pause_hours > 0 ) {
+					if ( array_key_exists( $subscription_id, $this->sent_queue ) ) {
+						$pause_hours = apply_filters(
+							'ms_model_communication_hours_before_resend',
+							$pause_hours
+						);
+
+						/*
+						* The sent_queue is saved in DB and only contains messages
+						* from the current Communications object. So
+						* $subscription_id defines the email contents and receiver.
+						*/
+						$sent_date = $this->sent_queue[ $subscription_id ];
+						$now = MS_Helper_Period::current_time();
+
+						$current_delay = MS_Helper_Period::subtract_dates(
+							$now,
+							$sent_date,
+							HOURS_IN_SECONDS
+						);
+
+						$can_add = $current_delay >= $pause_hours;
+					}
+				}
+
+				if ( $can_add ) {
+					$this->queue[ $subscription_id ] = MS_Helper_Period::current_time();
 				}
 			}
-
-			if ( $can_add ) {
-				$this->queue[ $subscription_id ] = MS_Helper_Period::current_time();
-			}
 		}
+		
 
 		do_action( 'ms_model_communication_add_to_queue_after', $this );
 	}
