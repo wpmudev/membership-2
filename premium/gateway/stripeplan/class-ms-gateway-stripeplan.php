@@ -389,8 +389,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 										$membership = $subscription->get_membership();
 										$invoice 	= $subscription->get_next_invoice();
 										if ( $invoice ) {
-											$invoice->ms_relationship_id = $membership->id;
-											$this->log( 'Got invoice ' . $invoice->id . ' on ' . $event->type );
+											$invoice->ms_relationship_id 	= $subscription->id;
+											$invoice->membership_id 		= $membership->id;
 											if ( 0 == $invoice->total ) {
 												// Free, just process.
 												$invoice->changed();
@@ -405,6 +405,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 															$membership
 														);
 														$notes = $this->get_description_for_sub( $stripe_sub );
+														$notes .= __( 'Payment successful', 'membership2' );
 														$success = true;
 														$invoice->status = MS_Model_Invoice::STATUS_PAID;
 														$invoice->pay_it( self::ID, $stripe_sub->id );
