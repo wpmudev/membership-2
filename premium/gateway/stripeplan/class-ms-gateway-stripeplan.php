@@ -370,8 +370,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$event_id 	= $event_json->id;
 				$event 		= Stripe_Event::retrieve( $event_id );
 				if ( $event ) {
-					$stripe_invoice = $event->data->object;;
-					if ( $stripe_invoice ) {
+					if ( isset( $event->data->object->id ) && $stripe_invoice ) {
 						$stripe_customer 	= Stripe_Customer::retrieve( $stripe_invoice->customer );
 						if ( $stripe_customer ) {
 							$email 	= $stripe_customer->email;
@@ -382,7 +381,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	
 							$user 	= get_user_by( 'email', $email );
 							$member = MS_Factory::load( 'MS_Model_Member', $user->ID );
-	
+							$success = false;
 							if ( $member ) {
 								$invoice 	= false;
 								foreach ( $member->subscriptions as $subscription ){
@@ -448,6 +447,18 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 											}
 											$invoice->add_notes( $notes );
 											$invoice->save();
+
+											do_action(
+												'ms_gateway_transaction_log',
+												self::ID, // gateway ID
+												'handle', // request|process|handle
+												$success, // success flag
+												$subscription->id, // subscription ID
+												$invoice->id, // invoice ID
+												$invoice->total, // charged amount
+												$notes, // Descriptive text
+												'' // External ID
+											);
 										} else {
 											$this->log( 'Did not get invoice');
 										}
