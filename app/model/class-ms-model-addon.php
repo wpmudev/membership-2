@@ -593,16 +593,19 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @since 1.0.4
 	 */
 	public static function toggle_media_htaccess( $settings = false ) {
-		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			if ( !$settings )
-				$settings 	= MS_Factory::load( 'MS_Model_Settings' );
-			$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
-			if ( isset( $settings->downloads['direct_access'] ) ) {
-				$direct_access = $settings->downloads['direct_access'];
+		if ( MS_Helper_Media::get_server() === 'apache' ) {
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+				if ( !$settings )
+					$settings 	= MS_Factory::load( 'MS_Model_Settings' );
+				$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
+				if ( isset( $settings->downloads['direct_access'] ) ) {
+					$direct_access = $settings->downloads['direct_access'];
+				}
+				MS_Helper_Media::write_htaccess_rule( $direct_access );
+			} else {
+				MS_Helper_Media::clear_htaccess();
 			}
-			MS_Helper_Media::write_htaccess_rule( $direct_access );
-		} else {
-			MS_Helper_Media::clear_htaccess();
 		}
+		
 	}
 }

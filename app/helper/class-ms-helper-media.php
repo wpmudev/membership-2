@@ -82,7 +82,27 @@ class MS_Helper_Media extends MS_Helper {
             }
         }
         return true;
-    }
+	}
+	
+	/**
+	 * Get the active server
+	 *
+	 * @since 1.0.4
+	 *
+	 * @return String
+	 */
+	public static function get_server() {
+		global $is_nginx, $is_IIS, $is_iis7;
+		$active_server = 'apache';
+		if ( $is_nginx ) {
+			$active_server = 'nginx';
+		} else if ( $is_IIS ) {
+			$active_server = 'iis';
+		} else if ( $is_iis7 ) {
+			$active_server = 'iis-7';
+		}
+		return $active_server;
+	}
 
 }
 ?>
