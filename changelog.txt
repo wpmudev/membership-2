@@ -6,7 +6,7 @@ Change Log:
 ----------------------------------------------------------------------
 1.0.4
 - Added: Premium WP Rest Addon
-- Added: Advanced media protection
+- Added: Advanced media protection settings
 - Added: New filter ms_frontend_controller_change_signup_url to allow disabling Membership login
 - Added: Column on admin user list with Membership name
 - Added: Added setting to enable or disable cron usage for email sending

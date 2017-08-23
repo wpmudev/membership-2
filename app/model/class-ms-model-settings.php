@@ -203,6 +203,15 @@ class MS_Model_Settings extends MS_Model_Option {
 	);
 
 	/**
+	 * Global payments already set indicator.
+	 *
+	 * @since  1.0.4
+	 *
+	 * @var boolean
+	 */
+	 protected $is_advanced_media_protection = false;
+
+	/**
 	 * Default WP Rest settings
 	 *
 	 * @since 1.0.4
@@ -509,6 +518,16 @@ class MS_Model_Settings extends MS_Model_Option {
 
 				case 'masked_url':
 					$this->downloads['masked_url'] = sanitize_text_field( $value );
+					break;
+
+				case 'advanced_media_protection':
+					$create_htaccess = lib3()->is_true( $value );
+					if ( $create_htaccess ) {
+						MS_Model_Addon::toggle_media_htaccess( $this );
+					} else {
+						MS_Helper_Media::clear_htaccess();
+					}
+					$this->is_advanced_media_protection = $create_htaccess;
 					break;
 
 				case 'direct_access':

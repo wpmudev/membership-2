@@ -445,71 +445,59 @@ class MS_Model_Addon extends MS_Model_Option {
 		);
 
 		$list[ self::ADDON_MEDIA ] = (object) array(
-			'name' => __( 'Media Protection', 'membership2' ),
-			'description' => __( 'Protect Images and other Media-Library content.', 'membership2' ),
-			'footer' => $options_text,
-			'icon' => 'dashicons dashicons-admin-media',
-			'class' => 'ms-options',
-			'details' => array(
+			'name' 			=> __( 'Media Protection', 'membership2' ),
+			'description' 	=> __( 'Protect Images and other Media-Library content.', 'membership2' ),
+			'footer' 		=> $options_text,
+			'icon' 			=> 'dashicons dashicons-admin-media',
+			'class' 		=> 'ms-options',
+			'details' 		=> array(
 				array(
-					'id' => 'masked_url',
-					'before' => esc_html( trailingslashit( get_option( 'home' ) ) ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Mask download URL:', 'membership2' ),
-					'value' => $settings->downloads['masked_url'],
-					'data_ms' => array(
-						'field' => 'masked_url',
-						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'_wpnonce' => true, // Nonce will be generated from 'action'
-					),
-				),
-				array(
-					'id' => 'protection_type',
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-					'title' => __( 'Protection method', 'membership2' ),
-					'desc' => __( 'You can change the way that Membership2 changes the default URL to your WordPress media library files.<br>This is done for increased protection by hiding the real filename and path.', 'membership2' ),
-					'value' => $settings->downloads['protection_type'],
-					'field_options' => MS_Rule_Media_Model::get_protection_types(),
-					'data_ms' => array(
-						'field' => 'protection_type',
-						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'_wpnonce' => true, // Nonce will be generated from 'action'
-					),
-				),
-				array(
-					'id' 	=> 'direct_access',
-					'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Prevent direct file access', 'membership2' ),
-					'desc' 	=> __( 'Prevent direct access to files in your uploads directory except the extensions listed. This will add or modify a .htaccess file in your uploads directory ', 'membership2' ),
-					'value' => implode( ",", $direct_access ),
-					'data_ms' => array(
-						'field' 	=> 'direct_access',
+					'id' 		=> 'masked_url',
+					'before' 	=> esc_html( trailingslashit( get_option( 'home' ) ) ),
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' 	=> __( 'Mask download URL:', 'membership2' ),
+					'value' 	=> $settings->downloads['masked_url'],
+					'data_ms' 	=> array(
+						'field' 	=> 'masked_url',
 						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					),
 				),
 				array(
-					'id' 	=> 'regenerate_htaccess',
-					'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
-					'title' => __( 'Regenerate htaccess file', 'membership2' ),
-					'desc' 	=> __( 'This will clear and update the Membership rules in the htaccess file in the uploads directory. The file will be cleared once this addon is deactivated', 'membership2' ),
-					'value' => __( 'Update htaccess', 'membership2' ),
-					'data_ms' => array(
-						'field' 	=> 'regenerate_htaccess',
-						'action' 	=> MS_Controller_Settings::AJAX_ACTION_TOGGLE_PROTECTION_FILE,
+					'id' 		=> 'protection_type',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO,
+					'title' 	=> __( 'Protection method', 'membership2' ),
+					'desc' 		=> __( 'You can change the way that Membership2 changes the default URL to your WordPress media library files.<br>This is done for increased protection by hiding the real filename and path.', 'membership2' ),
+					'value' 	=> $settings->downloads['protection_type'],
+					'field_options' => MS_Rule_Media_Model::get_protection_types(),
+					'data_ms' 	=> array(
+						'field' 	=> 'protection_type',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					),
 				),
 				array(
-					'id' => 'advanced',
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'title' => __( 'Protect Individual Media files', 'membership2' ),
-					'desc' => __( 'Enable this to display a new tab in "Membership2" where you can manually modify access to each media library item.<br>Default: When this option is disabled then the parent-post controls the access to the media file.', 'membership2' ),
-					'value' => self::is_enabled( MS_Addon_Mediafiles::ID ),
-					'data_ms' => array(
-						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-						'field' => 'active',
-						'addon' => MS_Addon_Mediafiles::ID,
+					'id' 		=> 'advanced_protection',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'title' 	=> __( 'Advanced Media Protection', 'membership2' ),
+					'desc' 		=> __( 'Enable this to add a new tab in "Membership2" where you can manually set advanced media protection for all your uploaded files', 'membership2' ),
+					'value' 	=> $settings->is_advanced_media_protection,
+					'data_ms' 	=> array(
+						'field' 	=> 'advanced_media_protection',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					),
+				),
+				array(
+					'id' 		=> 'advanced',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'title' 	=> __( 'Protect Individual Media files', 'membership2' ),
+					'desc' 		=> __( 'Enable this to display a new tab in "Membership2" where you can manually modify access to each media library item.<br>Default: When this option is disabled then the parent-post controls the access to the media file.', 'membership2' ),
+					'value' 	=> self::is_enabled( MS_Addon_Mediafiles::ID ),
+					'data_ms' 	=> array(
+						'action' 	=> MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' 	=> 'active',
+						'addon' 	=> MS_Addon_Mediafiles::ID,
 						'_wpnonce' => true, // Nonce will be generated from 'action'
 					),
 				),
@@ -604,9 +592,10 @@ class MS_Model_Addon extends MS_Model_Option {
 	 *
 	 * @since 1.0.4
 	 */
-	public static function toggle_media_htaccess() {
+	public static function toggle_media_htaccess( $settings = false ) {
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
-			$settings 		= MS_Factory::load( 'MS_Model_Settings' );
+			if ( !$settings )
+				$settings 	= MS_Factory::load( 'MS_Model_Settings' );
 			$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
 			if ( isset( $settings->downloads['direct_access'] ) ) {
 				$direct_access = $settings->downloads['direct_access'];
