@@ -240,6 +240,8 @@ class MS_Rule_Media_Model extends MS_Rule {
 			)
 		);
 
+		
+
 		$matches = array();
 		if ( preg_match_all( $url_exp, $the_content, $matches ) ) {
 			$home = untrailingslashit( get_option( 'home' ) );
@@ -258,6 +260,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 				foreach ( $links as $key => $link ) {
 					// Ignore all external links.
 					if ( 0 !== strpos( $link, $home ) ) { continue; }
+
+					//Ignore BBpress avatars
+					if ( strpos( $link, 'avatars' ) !== false) { continue; }
 
 					// The file is on local site - is it a valid attachment?
 					$file = basename( $paths[ $key ] );

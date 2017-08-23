@@ -370,6 +370,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$event_id 	= $event_json->id;
 				$event 		= Stripe_Event::retrieve( $event_id );
 				$log 		= false;
+				$invoice 	= false;
 				if ( $event ) {
 					if ( isset( $event->data->object->id ) && $stripe_invoice ) {
 						$stripe_customer 	= Stripe_Customer::retrieve( $stripe_invoice->customer );
@@ -384,91 +385,71 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 							$member = MS_Factory::load( 'MS_Model_Member', $user->ID );
 							$success = false;
 							if ( $member ) {
-								$invoice 	= false;
+								
 								foreach ( $member->subscriptions as $subscription ){
 									if ( $subscription ) {
 										$membership = $subscription->get_membership();
-										$invoice 	= $subscription->get_next_invoice();
-										if ( $invoice ) {
-											$invoice->ms_relationship_id 	= $subscription->id;
-											$invoice->membership_id 		= $membership->id;
-											if ( 0 == $invoice->total ) {
-												// Free, just process.
-												$invoice->changed();
-												$success = true;
-												$notes = __( 'No payment required for free membership', 'membership2' );
-											} else {
-												
-												switch ( $event->type ){
-													case 'invoice.payment_succeeded' :
+										switch ( $event->type ){
+											case 'invoice.payment_succeeded' :
+												$invoice 	= $subscription->get_next_invoice();
+												if ( $invoice ) {
+													$invoice->ms_relationship_id 	= $subscription->id;
+													$invoice->membership_id 		= $membership->id;
+													if ( 0 == $invoice->total ) {
+														// Free, just process.
+														$invoice->changed();
+														$success = true;
+														$notes = __( 'No payment required for free membership', 'membership2' );
+													} else {
 														$stripe_sub = $this->_api->get_subscription(
 															$stripe_customer,
 															$membership
 														);
+														$reference = $event_id;
+														if ( $stripe_sub ) {
+															$reference = $stripe_sub->id;
+															$this->cancel_if_done( $subscription, $stripe_sub );
+														}
 														$notes = $this->get_description_for_sub( $stripe_sub );
 														$notes .= __( 'Payment successful', 'membership2' );
 														$success = true;
 														$invoice->status = MS_Model_Invoice::STATUS_PAID;
-														$invoice->pay_it( self::ID, $stripe_sub->id );
-														$this->cancel_if_done( $subscription, $stripe_sub );
+														$invoice->pay_it( self::ID, $reference );
+														
 														$log = true;
-													break;
-													case 'customer.subscription.deleted' :
-													case 'invoice.payment_failed' :
-														$notes .= __( 'Membership cancelled via webhook', 'membership2' );
-														$success = false;
-														$invoice->status = MS_Model_Invoice::STATUS_DENIED;
-														$member->cancel_membership( $subscription );
-														$member->save();
-														$log = true;
-													break;
-													default : 
-														$stripe_sub = $this->_api->get_subscription(
-															$stripe_customer,
-															$membership
-														);
-									
-														$notes = $this->get_description_for_sub( $stripe_sub );
-														$notes .= sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event->type );
-														if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
-															$notes .= sprintf( __( 'Subscription active for "%s"', 'membership2' ), $subscription->id );
-															$success = true;
-															$invoice->status = MS_Model_Invoice::STATUS_PAID;
-															$invoice->pay_it( self::ID, $stripe_sub->id );
-															$this->cancel_if_done( $subscription, $stripe_sub );
-														} else if ( 'canceled' == $stripe_sub->status ){
-															$notes .= sprintf( __( 'Subscription cancelled for "%s"', 'membership2' ), $subscription->id );
-															$success = false;
-															$member->cancel_membership( $subscription );
-															$member->save();
-														} else {
-															$invoice->status = MS_Model_Invoice::STATUS_PENDING;
-															$invoice->save();
-															$invoice->changed();
-														}
-													break;
+													}
+													$invoice->add_notes( $notes );
+													$invoice->save();
+												}else {
+													$this->log( 'Did not get invoice');
 												}
-											}
-											$invoice->add_notes( $notes );
-											$invoice->save();
-											
-											if ( $log  ) {
-												do_action(
-													'ms_gateway_transaction_log',
-													self::ID, // gateway ID
-													'handle', // request|process|handle
-													$success, // success flag
-													$subscription->id, // subscription ID
-													$invoice->id, // invoice ID
-													$invoice->total, // charged amount
-													$notes, // Descriptive text
-													'' // External ID
-												);
-											}
-											
-										} else {
-											$this->log( 'Did not get invoice');
+											break;
+											case 'customer.subscription.deleted' :
+											case 'invoice.payment_failed' :
+												$notes .= __( 'Membership cancelled via webhook', 'membership2' );
+												$success = false;
+												$member->cancel_membership( $subscription );
+												$member->save();
+											break;
+											default : 
+												$notes = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event->type );
+											break;
 										}
+									}
+									
+									
+									if ( $log && $invoice ) {
+										do_action(
+											'ms_gateway_transaction_log',
+											self::ID, // gateway ID
+											'handle', // request|process|handle
+											$success, // success flag
+											$subscription->id, // subscription ID
+											$invoice->id, // invoice ID
+											$invoice->total, // charged amount
+											$notes, // Descriptive text
+											'' // External ID
+										);
 									}
 								}
 							} else {
