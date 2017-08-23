@@ -7,7 +7,7 @@
  * This file must define class MS_Api_<api_name>.
  * This object is reponsible to initialize the the api class logic.
  *
- * @since  1.0.0
+ * @since  1.0.4
  *
  * @package Membership2
  * @subpackage Model

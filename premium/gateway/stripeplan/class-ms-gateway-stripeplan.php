@@ -428,7 +428,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 											case 'invoice.payment_failed' :
 												$notes .= __( 'Membership cancelled via webhook', 'membership2' );
 												$success = false;
-												$member->cancel_membership( $subscription );
+												$member->cancel_membership( $membership->id );
 												$member->save();
 											break;
 											default : 

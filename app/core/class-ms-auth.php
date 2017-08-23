@@ -4,7 +4,7 @@
  *
  * Handle the ajax login
  *
- * @since  1.0.3.7
+ * @since  1.0.4
  */
 class MS_Auth {
 
@@ -37,7 +37,7 @@ class MS_Auth {
                     $info = array(
                         'user_login' 	=> $_POST['username'],
                         'user_password' => $_POST['password'],
-                        'remember' 		=> (bool) isset( $_POST['remember'] ) ? $_POST['remember'] : false,
+                        'remember' 		=> isset( $_POST['remember'] ),
                     );
 
                     $user_signon = wp_signon( $info, false );
@@ -68,15 +68,22 @@ class MS_Auth {
                                 $_POST['redirect_to'],
                                 $enforce
                             );
-                        }
+						}
+						
+						/**
+						 * After login success action
+						 *
+						 * @since 1.0.4
+						 */
+						do_action( 'ms_ajax_after_login_success', $user_signon );
 
                         //checking domains
                         if ( is_plugin_active_for_network( 'domain-mapping/domain-mapping.php' ) ) {
                             $url1 = parse_url( home_url() );
                             $url2 = parse_url( $resp['redirect'] );
-                            if (strpos($url2['host'], $url1['host']) === false) {
+                            if ( strpos( $url2['host'], $url1['host'] ) === false ) {
                                 //add 'auth' param for set cookie when mapped domains
-                                $resp['redirect'] = add_query_arg( array('auth' => wp_generate_auth_cookie( $user_signon->ID, time() + MINUTE_IN_SECONDS )), $resp['redirect']);
+                                $resp['redirect'] = add_query_arg( array('auth' => wp_generate_auth_cookie( $user_signon->ID, time() + MINUTE_IN_SECONDS ) ), $resp['redirect'] );
                             }
                         }
                     }

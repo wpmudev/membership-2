@@ -17,7 +17,8 @@ Change Log:
 - Added: Addon to hide protected pages from visitor search
 - Added: Plugin deactivation hook to clear Membership Crons
 - Added: Stripe Plan webhooks
-- Fixed: Changed Mailchimp API to latest version
+- Added: Some code refactoring for premium classes
+- Fixed: Upgraded Mailchimp API to 3.0
 - Fixed: Multiple Invoice creation
 - Fixed: Default gateway on invoice
 - Fixed: Invoice status not changing for free payments
