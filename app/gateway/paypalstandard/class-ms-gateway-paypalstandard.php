@@ -155,126 +155,133 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 */
 				$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 				if ( $invoice->is_paid() ) {
-					$subscription = $invoice->get_subscription();
-					$invoice_id = $subscription->first_unpaid_invoice();
+					$subscription 	= $invoice->get_subscription();
+					$invoice_id 	= $subscription->first_unpaid_invoice();
+				} else {
+					$invoice_id = $invoice->id;
 				}
-				$invoice_id = $invoice->id;
-			} elseif ( ! empty( $_POST['custom'] ) ) {
-				// FALLBACK A:
-				// Maybe it's an imported M1 subscription.
-				$infos = explode( ':', $_POST['custom'] );
+				
+			} 
+			
+			//It might be set in the post, but we might not have that invoice
+			if ( !$invoice_id ) {
+				if ( ! empty( $_POST['custom'] ) ) {
+					// FALLBACK A:
+					// Maybe it's an imported M1 subscription.
+					$infos = explode( ':', $_POST['custom'] );
 
-				if ( count( $infos ) > 2 ) {
-					// $infos should contain [timestamp, user_id, sub_id, key]
+					if ( count( $infos ) > 2 ) {
+						// $infos should contain [timestamp, user_id, sub_id, key]
 
-					$m1_user_id = intval( $infos[1] );
-					$m1_sub_id = intval( $infos[2] ); // Roughtly equals M2 membership->id.
+						$m1_user_id = intval( $infos[1] );
+						$m1_sub_id = intval( $infos[2] ); // Roughtly equals M2 membership->id.
 
-					// M1 payments use the following type/status values.
-					$pay_types = array( 'subscr_signup', 'subscr_payment' );
-					$pay_stati = array( 'completed', 'processed' );
+						// M1 payments use the following type/status values.
+						$pay_types = array( 'subscr_signup', 'subscr_payment' );
+						$pay_stati = array( 'completed', 'processed' );
 
-					if ( $m1_user_id > 0 && $m1_sub_id > 0 ) {
-						if ( in_array( $transaction_type, $pay_types ) ) {
-							$ext_type = 'm1';
-						} elseif ( in_array( $payment_status, $pay_stati ) ) {
-							$ext_type = 'm1';
+						if ( $m1_user_id > 0 && $m1_sub_id > 0 ) {
+							if ( in_array( $transaction_type, $pay_types ) ) {
+								$ext_type = 'm1';
+							} elseif ( in_array( $payment_status, $pay_stati ) ) {
+								$ext_type = 'm1';
+							}
 						}
-					}
 
-					if ( 'm1' == $ext_type ) {
+						if ( 'm1' == $ext_type ) {
+							$is_linked = false;
+
+							// Seems to be a valid M1 payment:
+							// Find the associated imported subscription!
+							$subscription = MS_Model_Import::find_subscription(
+								$m1_user_id,
+								$m1_sub_id,
+								'm1',
+								self::ID
+							);
+
+							if ( $subscription ) {
+								$is_linked = true;
+								$invoice_id = $subscription->first_unpaid_invoice();
+							} else {
+								$user = get_user_by( 'id', $m1_user_id );
+
+								if ( $user && $user->ID == $m1_user_id ) {
+									$membership = MS_Model_Import::membership_by_matching(
+										'm1',
+										$m1_sub_id
+									);
+
+									if ( $membership ) {
+										$notes_err = sprintf(
+											'User is not subscribed to Membership %s.',
+											$membership->id
+										);
+									} else {
+										$notes_err = 'Could not determine a membership.';
+									}
+								} else {
+									$notes_err = sprintf(
+										'Could not find user with ID %s.',
+										$m1_user_id
+									);
+									$ignore = true; // We cannot fix this, so ignore it.
+								}
+							}
+
+							if ( ! $ignore && ! $is_linked && ! $invoice_id ) {
+								MS_Model_Import::need_matching( $m1_sub_id, 'm1' );
+							}
+						}
+						// end if: 'm1' == $ext_type
+					}
+				} elseif ( ! empty( $_POST['btn_id'] ) && ! empty( $_POST['payer_email'] ) ) {
+					// FALLBACK B:
+					// Payment was made by a custom PayPal Payment button.
+					$user = get_user_by( 'email', $_POST['payer_email'] );
+
+					if ( $user && $user->ID ) {
+						$ext_type = 'pay_btn';
 						$is_linked = false;
 
-						// Seems to be a valid M1 payment:
-						// Find the associated imported subscription!
 						$subscription = MS_Model_Import::find_subscription(
-							$m1_user_id,
-							$m1_sub_id,
-							'm1',
+							$user->ID,
+							$_POST['btn_id'],
+							'pay_btn',
 							self::ID
 						);
 
 						if ( $subscription ) {
 							$is_linked = true;
-							$invoice_id = $subscription->first_unpaid_invoice();
 						} else {
-							$user = get_user_by( 'id', $m1_user_id );
+							$membership = MS_Model_Import::membership_by_matching(
+								'pay_btn',
+								$_POST['btn_id']
+							);
 
-							if ( $user && $user->ID == $m1_user_id ) {
-								$membership = MS_Model_Import::membership_by_matching(
-									'm1',
-									$m1_sub_id
-								);
-
-								if ( $membership ) {
-									$notes_err = sprintf(
-										'User is not subscribed to Membership %s.',
-										$membership->id
-									);
-								} else {
-									$notes_err = 'Could not determine a membership.';
-								}
-							} else {
+							if ( $membership ) {
 								$notes_err = sprintf(
-									'Could not find user with ID %s.',
-									$m1_user_id
+									'User is not subscribed to Membership %s.',
+									$membership->id
 								);
-								$ignore = true; // We cannot fix this, so ignore it.
+							} else {
+								$notes_err = 'Could not determine a membership.';
 							}
 						}
 
-						if ( ! $ignore && ! $is_linked && ! $invoice_id ) {
-							MS_Model_Import::need_matching( $m1_sub_id, 'm1' );
+						$invoice_id = $subscription->first_unpaid_invoice();
+
+						if ( ! $is_linked && ! $invoice_id ) {
+							MS_Model_Import::need_matching( $_POST['btn_id'], 'pay_btn' );
 						}
-					}
-					// end if: 'm1' == $ext_type
-				}
-			} elseif ( ! empty( $_POST['btn_id'] ) && ! empty( $_POST['payer_email'] ) ) {
-				// FALLBACK B:
-				// Payment was made by a custom PayPal Payment button.
-				$user = get_user_by( 'email', $_POST['payer_email'] );
-
-				if ( $user && $user->ID ) {
-					$ext_type = 'pay_btn';
-					$is_linked = false;
-
-					$subscription = MS_Model_Import::find_subscription(
-						$user->ID,
-						$_POST['btn_id'],
-						'pay_btn',
-						self::ID
-					);
-
-					if ( $subscription ) {
-						$is_linked = true;
 					} else {
-						$membership = MS_Model_Import::membership_by_matching(
-							'pay_btn',
-							$_POST['btn_id']
+						$notes_err = sprintf(
+							'Could not find user "%s".',
+							$_POST['payer_email']
 						);
-
-						if ( $membership ) {
-							$notes_err = sprintf(
-								'User is not subscribed to Membership %s.',
-								$membership->id
-							);
-						} else {
-							$notes_err = 'Could not determine a membership.';
-						}
 					}
-
-					$invoice_id = $subscription->first_unpaid_invoice();
-
-					if ( ! $is_linked && ! $invoice_id ) {
-						MS_Model_Import::need_matching( $_POST['btn_id'], 'pay_btn' );
-					}
-				} else {
-					$notes_err = sprintf(
-						'Could not find user "%s".',
-						$_POST['payer_email']
-					);
+					// end if: 'pay_btn' == $ext_type
 				}
-				// end if: 'pay_btn' == $ext_type
 			}
 		}
 
