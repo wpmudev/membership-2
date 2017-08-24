@@ -9,6 +9,13 @@
  */
 class MS_Addon_WPRest extends MS_Addon {
 
+	/**
+     * Rest API Namespace
+     *
+     * @since  1.0.4
+     */
+	 const API_NAMESPACE = 'membership2/v1';
+
     /**
 	 * The Add-on ID
 	 *
