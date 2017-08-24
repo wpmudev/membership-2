@@ -92,6 +92,7 @@ module.exports = function( grunt ) {
 			],
 			exclude_free: [
 				'./README.MD',
+				'./changelog.txt',
 				'./premium',
 				'./free',
 				'./membership2.php',

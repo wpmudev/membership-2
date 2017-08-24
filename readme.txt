@@ -2,7 +2,7 @@
 Contributors: WPMUDEV
 Tags: Content Protection, Control Access, Membership, Membership 2, Multisite Membership, Paid Membership, Pay Wall, Paying Users, Registration, Restrict Content, Subscription, WordPress Membership, WPMU DEV
 Requires at least: 3.7
-Tested up to: 4.5.3
+Tested up to: 4.8.1
 Stable tag: trunk
 
 Membership 2 transforms your WordPress website into a fully functional membership site.
@@ -109,6 +109,49 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 11. Convince your users with a modern, clean and professional checkout form
 
 == Changelog ==
+
+= 4.0.2 =
+* Added: Advanced media protection settings
+* Added: New filter ms_frontend_controller_change_signup_url to allow disabling Membership login
+* Added: Column on admin user list with Membership name
+* Added: Added setting to enable or disable cron usage for email sending
+* Added: Emails can now be sent directly or using the WordPress cron
+* Added: Integration with new reCaptcha plugin to the reCaptcha Addon
+* Added: Option for Admin created members to generate an invoice to the membership
+* Added: Option for manual invoice created to keep the expire date of the membership the same
+* Added: Addon to hide protected pages from visitor search
+* Added: Plugin deactivation hook to clear Membership Crons
+* Fixed: Upgraded Mailchimp API to 3.0
+* Fixed: Multiple Invoice creation
+* Fixed: Default gateway on invoice
+* Fixed: Invoice status not changing for free payments
+* Fixed: Protection with many addons enabled
+* Fixed: Mailchimp list for deactivated users with drop down memberships
+* Fixed: Membership Script and Style conflict on other admin pages
+* Fixed: URL Protection Addon on https
+* Fixed: Media Protection Addon
+* Fixed: Editing Subscription details for administrators.
+* Fixed: Stripe API lib upgraded
+* Fixed: Login and reset password form header texts on switching
+* Other minor enhancements/fixes
+
+= 4.0.1.3 =
+* Added: Added a filter "ms_rule_url_model_exception_rule" to set exception for URL restriction addon
+* Improved: Remove Paypal "Ship to my billing address" option from express gateway as this is digital product
+* Improved: wp_get_sites() deprecated function is replaced with get_sites()
+* Fixed: Protection rule could not be access from subsites when network protection was enabled
+* Fixed: Fatal error * Uncaught Error: [] operator not supported for strings
+* Fixed: Post protection option could not be changed from post edit screen
+* Fixed: Issue with MS_PAYPAL_TRIAL_SUBSCRIPTION when trial is enabled, members account was not activated
+* Fixed: Selection sliders were not working in some cases
+* Fixed: Second attribute could not be created
+* Fixed: New members not being added by M2 2Checkout Gateway
+* Fixed: Duplicate Content Protection Message when custom message is enabled
+* Fixed: Images are not getting load if media protection is enabled
+* Fixed: Applying Membership 2 Coupon is giving fatal error in PHP 7.1.3
+* Fixed: Membership was not showing in account page
+* Fixed: Resolved some notices
+
 
 = 4.0.1.2 =
 * Fixed a minor issue in Help page.

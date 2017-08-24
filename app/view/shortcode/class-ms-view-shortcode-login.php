@@ -134,9 +134,11 @@ class MS_View_Shortcode_Login extends MS_View {
 			lib3()->ui->data(
 				'ms_ajax_login',
 				array(
-					'ajaxurl' => admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
-					'loadingmessage' => __( 'Please wait...', 'membership2' ),
-					'errormessage' => __( 'Request failed, please try again.', 'membership2' ),
+					'loginmessage' 		=> __( 'Please log in to access this page.', 'membership2' ),
+					'resetmessage' 		=> __( 'Please enter your details to reset your password', 'membership2' ),
+					'ajaxurl' 			=> admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
+					'loadingmessage' 	=> __( 'Please wait...', 'membership2' ),
+					'errormessage' 		=> __( 'Request failed, please try again.', 'membership2' ),
 				)
 			);
 		}
@@ -174,7 +176,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		?>
 		<legend><?php echo esc_html( $title ); ?></legend>
 		<?php if ( $show_note ) : ?>
-		<div class="ms-alert-box ms-alert-error">
+		<div class="ms-alert-box ms-alert-error ms-auth-header">
 			<?php _e( 'Please log in to access this page.', 'membership2' ); ?>
 		</div>
 		<?php endif;
