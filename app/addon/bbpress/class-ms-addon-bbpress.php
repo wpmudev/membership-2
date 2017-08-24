@@ -54,6 +54,15 @@ class MS_Addon_Bbpress extends MS_Addon {
 				'rule_tabs'
 			);
 
+			//Dripped content register rule
+			MS_Model_Rule::register_rule(
+				self::ID,
+				__CLASS__,
+				__( 'bbPress', 'membership2' ),
+				50,
+				true // can be dripped
+			);
+
 			MS_Factory::load( 'MS_Addon_Bbpress_Rule' );
 		}
 	}

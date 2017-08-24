@@ -154,13 +154,16 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * payment is for a follow-up invoice.
 				 */
 				$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
-				if ( $invoice->is_paid() ) {
-					$subscription 	= $invoice->get_subscription();
-					$invoice_id 	= $subscription->first_unpaid_invoice();
+				if ( $invoice->id ) {
+					if ( $invoice->is_paid() ) {
+						$subscription 	= $invoice->get_subscription();
+						$invoice_id 	= $subscription->first_unpaid_invoice();
+					} else {
+						$invoice_id = $invoice->id;
+					}
 				} else {
-					$invoice_id = $invoice->id;
+					$invoice_id = $subscription->first_unpaid_invoice();
 				}
-				
 			} 
 			
 			//It might be set in the post, but we might not have that invoice

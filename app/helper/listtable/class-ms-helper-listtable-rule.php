@@ -356,7 +356,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			'id' => 'ms-empty-' . $item->id,
 			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
 			'value' => $this->name['default_access'],
-			'after' => 'Modify Access',
+			'after' => __( 'Modify Access' , 'membership2' ),
 			'class' => 'ms-empty-note',
 		);
 

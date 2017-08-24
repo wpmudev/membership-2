@@ -23,9 +23,10 @@ class MS_Addon_Bbpress_Rule_Listtable extends MS_Helper_ListTable_Rule {
 		return apply_filters(
 			'ms_helper_listtable_' . $this->id . '_columns',
 			array(
-				'cb' => true,
-				'name' => __( 'Name', 'membership2' ),
-				'access' => true,
+				'cb' 		=> true,
+				'name' 		=> __( 'Name', 'membership2' ),
+				'access' 	=> true,
+				'dripped' 	=> true,
 			)
 		);
 	}
