@@ -372,7 +372,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$log 		= false;
 				$invoice 	= false;
 				if ( $event ) {
-					if ( isset( $event->data->object->id ) && $stripe_invoice ) {
+					$stripe_invoice = $event->data->object;
+					if ( $stripe_invoice && isset( $stripe_invoice->id ) ) {
 						$stripe_customer 	= Stripe_Customer::retrieve( $stripe_invoice->customer );
 						if ( $stripe_customer ) {
 							$email 	= $stripe_customer->email;
