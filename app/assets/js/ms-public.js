@@ -1,6 +1,6 @@
-/*! Membership 2 Pro - v1.0.32
+/*! Membership 2 Pro - v1.0.4
  * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2016; * Licensed GPLv2+ */
+ * Copyright (c) 2017; * Licensed GPLv2+ */
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
@@ -83,7 +83,8 @@ window.ms_init.frontend_profile = function init () {
 window.ms_init.frontend_register = function init()
 {
     var $ = jQuery,
-        _options = '';
+        _options = '',
+		first_last_name;
         
     if( $( '#ms-shortcode-register-user-form #display_name' ).length )
     {
@@ -152,7 +153,7 @@ window.ms_init.frontend_register = function init()
             } );
         }
         
-        var first_last_name = function()
+        first_last_name = function()
         {
             var fname = $( '#first_name' ).val(),
                 lname = $( '#last_name' ).val();
