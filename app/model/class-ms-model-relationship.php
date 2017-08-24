@@ -942,7 +942,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @internal
 	 */
 	public function remove_unpaid_invoices() {
-		$invoices = $this->get_invoices();
+		$invoices = $this->get_invoices( 'paid' );
 
 		foreach ( $invoices as $invoice ) {
 			if ( 'paid' != $invoice->status ) {
@@ -1379,23 +1379,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-					if ( $this->recalculate_expire_date ) {
-						$period_unit = MS_Helper_Period::get_period_value(
-							$membership->period,
-							'period_unit'
-						);
-						$period_type = MS_Helper_Period::get_period_value(
-							$membership->period,
-							'period_type'
-						);
-						$expire_date = MS_Helper_Period::add_interval(
-							$period_unit,
-							$period_type,
-							$start_date
-						);
-					} else {
-						$expire_date = $this->expire_date;
-					}
+					$expire_date = $this->expire_date;
 					//$this->log( 'calc_expire_date :: New Expire Date '.$expire_date  );
 					break;
 
@@ -1649,7 +1633,24 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *
 	 * @return MS_Model_Invoice[] List of invoices.
 	 */
-	public function get_invoices() {
+	public function get_invoices( $status = '' ) {
+		$args = array(
+			'nopaging' => true,
+			'meta_query' => array(
+				array(
+					'key'   => 'ms_relationship_id',
+					'value' => $this->id,
+				)
+			),
+		);
+
+		if ( !empty( $status ) ) {
+			$args['meta_query'][] = array(
+				'key'   	=> 'status',
+				'value' 	=> $status,
+				'compare' 	=> '!=',
+			);
+		}
 		$invoices = MS_Model_Invoice::get_invoices(
 			array(
 				'nopaging' => true,
@@ -1657,6 +1658,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					array(
 						'key'   => 'ms_relationship_id',
 						'value' => $this->id,
+					),
+					array(
+						'key'   	=> 'status',
+						'value' 	=> $status,
+						'compare' 	=> '=',
 					),
 				),
 			)
@@ -1680,8 +1686,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public function first_unpaid_invoice() {
 		$invoice_id = 0;
 
-		// Try to find the first unpaid invoice for the subscription.
-		$invoices = $this->get_invoices();
+		// list all unpaid invoices
+		$invoices = $this->get_invoices( 'paid' );
 		foreach ( $invoices as $invoice ) {
 			if ( ! $invoice->is_paid() ) {
 				$invoice_id = $invoice->id;
@@ -2756,12 +2762,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$is_public = true;
 		} else {
 			//now we can check if requires invitation code
-			$is_public = lib3()->is_true($invitation_code);
+			$is_public = lib3()->is_true( $invitation_code );
+		}
+
+		$grace_period = 1;
+		if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
+			$grace_period = 0;
 		}
 
 		// Collection of all day-values.
 		$days = (object) array(
-			'remaining' => $this->get_remaining_period(),
+			'remaining' => $this->get_remaining_period( $grace_period ),
 			'remaining_trial' => $this->get_remaining_trial_period(),
 			'invoice_before' => 5,
 			'deactivate_expired_after' => 30,
@@ -2801,6 +2812,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Update the Subscription status.
 		$next_status = $this->calculate_status( null );
+
+		$deactivate = false;
+		$invoice = null;
+		$auto_renew = false;
 
 		switch ( $next_status ) {
 			case self::STATUS_TRIAL:
@@ -2907,6 +2922,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 							$this->expire_date = false;
 							break;
+							
 
 						default:
 							// Either keep the current expire date (if valid) or
@@ -2927,9 +2943,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$next_status = $this->calculate_status();
 				}
 				
-				$deactivate = false;
-				$invoice = null;
-				$auto_renew = false;
+				
 				
 				/*
 				 * Only "Recurring" memberships will ever try to automatically
@@ -3092,6 +3106,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				}
 
 				$next_status = $this->calculate_status( null );
+
+				if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE && $this->expire_date) {
+					if ( strtotime( $this->expire_date ) < strtotime( MS_Helper_Period::current_date() ) ) {
+						$next_status 	= self::STATUS_EXPIRED;
+					}
+				}
+				
 				
 				/*
 				 * When the subscription expires the first time then create a
