@@ -1379,7 +1379,23 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					break;
 
 				case MS_Model_Membership::PAYMENT_TYPE_FINITE:
-					$expire_date = $this->expire_date;
+					if ( $this->recalculate_expire_date ) {
+						$period_unit = MS_Helper_Period::get_period_value(
+							$membership->period,
+							'period_unit'
+						);
+						$period_type = MS_Helper_Period::get_period_value(
+							$membership->period,
+							'period_type'
+						);
+						$expire_date = MS_Helper_Period::add_interval(
+							$period_unit,
+							$period_type,
+							$start_date
+						);
+					} else {
+						$expire_date = $this->expire_date;
+					}
 					//$this->log( 'calc_expire_date :: New Expire Date '.$expire_date  );
 					break;
 
@@ -2765,14 +2781,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$is_public = lib3()->is_true( $invitation_code );
 		}
 
-		$grace_period = 1;
-		if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
-			$grace_period = 0;
-		}
-
 		// Collection of all day-values.
 		$days = (object) array(
-			'remaining' => $this->get_remaining_period( $grace_period ),
+			'remaining' => $this->get_remaining_period(),
 			'remaining_trial' => $this->get_remaining_trial_period(),
 			'invoice_before' => 5,
 			'deactivate_expired_after' => 30,
@@ -2812,10 +2823,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Update the Subscription status.
 		$next_status = $this->calculate_status( null );
-
-		$deactivate = false;
-		$invoice = null;
-		$auto_renew = false;
 
 		switch ( $next_status ) {
 			case self::STATUS_TRIAL:
@@ -2922,7 +2929,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						case MS_Model_Membership::PAYMENT_TYPE_PERMANENT:
 							$this->expire_date = false;
 							break;
-							
 
 						default:
 							// Either keep the current expire date (if valid) or
@@ -2943,7 +2949,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$next_status = $this->calculate_status();
 				}
 				
-				
+				$deactivate = false;
+				$invoice = null;
+				$auto_renew = false;
 				
 				/*
 				 * Only "Recurring" memberships will ever try to automatically
@@ -3107,12 +3115,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 				$next_status = $this->calculate_status( null );
 
-				if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE && $this->expire_date) {
+				if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
 					if ( strtotime( $this->expire_date ) < strtotime( MS_Helper_Period::current_date() ) ) {
-						$next_status 	= self::STATUS_EXPIRED;
+						$next_status = self::STATUS_EXPIRED;
 					}
 				}
-				
 				
 				/*
 				 * When the subscription expires the first time then create a
