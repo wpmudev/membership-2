@@ -210,10 +210,8 @@ class MS_Controller_Protection extends MS_Controller {
 				MS_Rule_Page::RULE_ID => true,
 				MS_Rule_Post::RULE_ID => true,
 				MS_Rule_Category::RULE_ID => true,
-				/* start:pro */
 				MS_Rule_CptItem::RULE_ID => true,
 				MS_Rule_CptGroup::RULE_ID => true,
-				/* end:pro */
 				MS_Rule_Content::RULE_ID => true,
 				MS_Rule_Media::RULE_ID => true,
 				MS_Rule_MenuItem::RULE_ID => true,

@@ -285,8 +285,6 @@ class MS_Controller_Metabox extends MS_Controller {
 
 			default:
 				$rule = $membership->get_rule( $post_type );
-
-				/* start:pro */
 				if ( in_array( $post_type, MS_Rule_CptGroup_Model::get_custom_post_types() ) ) {
 					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 						$rule = $membership->get_rule( MS_Rule_CptItem::RULE_ID );
@@ -294,7 +292,6 @@ class MS_Controller_Metabox extends MS_Controller {
 						$rule = $membership->get_rule( MS_Rule_CptGroup::RULE_ID );
 					}
 				}
-				/* end:pro */
 				break;
 		}
 
