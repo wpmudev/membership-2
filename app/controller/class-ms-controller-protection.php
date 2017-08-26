@@ -244,14 +244,11 @@ class MS_Controller_Protection extends MS_Controller {
 				$tabs[ MS_Rule_Media::RULE_ID ] = false;
 			}
 
-			/* start:pro */
-			// Either "CPT Group" or "CPT Posts"
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$tabs[ MS_Rule_CptGroup::RULE_ID ] = false;
 			} else {
 				$tabs[ MS_Rule_CptItem::RULE_ID ] = false;
 			}
-			/* end:pro */
 
 			// Either "Menu Item" or "Menus" or "Menu Location"
 			switch ( $settings->menu_protection ) {

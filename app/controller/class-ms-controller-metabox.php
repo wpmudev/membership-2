@@ -79,11 +79,7 @@ class MS_Controller_Metabox extends MS_Controller {
 
 		$extra = array();
 
-		/* start:pro */
-		if ( class_exists( 'MS_Rule_CptGroup_Model' ) ) {
-			$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
-		}
-		/* end:pro */
+		$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
 
 		$post_types = array_merge(
 			array( 'page', 'post', 'attachment' ),
@@ -173,9 +169,7 @@ class MS_Controller_Metabox extends MS_Controller {
 		if ( defined( 'MS_CPT_ENABLE_ACCESS_BOX' ) && MS_CPT_ENABLE_ACCESS_BOX ) {
 			$extra = array();
 
-			/* start:pro */
 			$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
-			/* end:pro */
 
 			$post_types = array_merge(
 				array( 'page', 'post', 'attachment' ),
@@ -377,14 +371,12 @@ class MS_Controller_Metabox extends MS_Controller {
 			$read_only = true;
 		} elseif ( 'attachment' == $post_type ) {
 			$read_only = true;
-			/* start:pro */
 		} elseif ( in_array( $post_type, MS_Rule_CptGroup_Model::get_custom_post_types() ) ) {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$read_only = false;
 			} else {
 				$read_only = true;
 			}
-			/* end:pro */
 		} else {
 			$read_only = false;
 		}
