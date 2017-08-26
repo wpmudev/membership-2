@@ -134,6 +134,7 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Fixed: Stripe API lib upgraded
 * Fixed: Login and reset password form header texts on switching
 * Fixed: bbPress dripped membership protection rules
+* Fixed: Custom Post Types
 * Other minor enhancements/fixes
 
 = 4.0.1.3 =

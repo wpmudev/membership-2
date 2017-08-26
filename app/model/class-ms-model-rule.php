@@ -66,6 +66,8 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	static public function prepare_class() {
 		do_action( 'ms_model_rule_prepare_class' );
+		MS_Factory::load( 'MS_Rule_CptItem' );
+		MS_Factory::load( 'MS_Rule_CptGroup' );
 		MS_Factory::load( 'MS_Rule_Category' );
 		MS_Factory::load( 'MS_Rule_Content' );
 		MS_Factory::load( 'MS_Rule_Media' );

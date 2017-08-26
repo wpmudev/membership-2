@@ -80,8 +80,6 @@ class MS_Premium_Loader {
      */
     function load_premium_addons() {
         MS_Factory::load( 'MS_Rule_Adminside' );
-		MS_Factory::load( 'MS_Rule_CptItem' );
-		MS_Factory::load( 'MS_Rule_CptGroup' );
     }
 }
 
