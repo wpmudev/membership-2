@@ -359,6 +359,9 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			'after' => __( 'Modify Access' , 'membership2' ),
 			'class' => 'ms-empty-note',
 		);
+		if ( !empty( $rule->rule_value ) && array_key_exists( $item->id, $rule->rule_value ) ) {
+			$public['value'] = __( 'None (assigned Membership was deleted)', 'membership2' );
+		}
 
 		$list = array(
 			'id' => 'ms-memberships-' . $item->id,
