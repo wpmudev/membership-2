@@ -392,41 +392,40 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 										$membership = $subscription->get_membership();
 										switch ( $event->type ){
 											case 'invoice.payment_succeeded' :
-												if( strtotime( $subscription->start_date ) < strtotime( MS_Helper_Period::current_date() ) ){
-													$invoice_id = $subscription->first_unpaid_invoice();
-													if ( $invoice_id ) {
-														$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
-														$invoice->ms_relationship_id 	= $subscription->id;
-														$invoice->membership_id 		= $membership->id;
-														if ( 0 == $invoice->total ) {
-															// Free, just process.
-															$invoice->changed();
-															$success = true;
-															$notes = __( 'No payment required for free membership', 'membership2' );
-														} else {
-															$stripe_sub = $this->_api->get_subscription(
-																$stripe_customer,
-																$membership
-															);
-															$reference = $event_id;
-															if ( $stripe_sub ) {
-																$reference = $stripe_sub->id;
-																$this->cancel_if_done( $subscription, $stripe_sub );
-															}
-															$notes = $this->get_description_for_sub( $stripe_sub );
-															$notes .= __( 'Payment successful', 'membership2' );
-															$success = true;
-															$invoice->status = MS_Model_Invoice::STATUS_PAID;
-															$invoice->pay_it( self::ID, $reference );
-															
-															$log = true;
+												$invoice_id = $subscription->first_unpaid_invoice();
+												if ( $invoice_id ) {
+													$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+													$invoice->ms_relationship_id 	= $subscription->id;
+													$invoice->membership_id 		= $membership->id;
+													if ( 0 == $invoice->total ) {
+														// Free, just process.
+														$invoice->changed();
+														$success = true;
+														$notes = __( 'No payment required for free membership', 'membership2' );
+													} else {
+														$stripe_sub = $this->_api->get_subscription(
+															$stripe_customer,
+															$membership
+														);
+														$reference = $event_id;
+														if ( $stripe_sub ) {
+															$reference = $stripe_sub->id;
+															$this->cancel_if_done( $subscription, $stripe_sub );
 														}
-														$invoice->add_notes( $notes );
-														$invoice->save();
-													}else {
-														$this->log( 'Did not get invoice');
+														$notes = $this->get_description_for_sub( $stripe_sub );
+														$notes .= __( 'Payment successful', 'membership2' );
+														$success = true;
+														$invoice->status = MS_Model_Invoice::STATUS_PAID;
+														$invoice->pay_it( self::ID, $reference );
+														
+														$log = true;
 													}
+													$invoice->add_notes( $notes );
+													$invoice->save();
+												}else {
+													$this->log( 'Did not get invoice');
 												}
+												
 											break;
 											case 'customer.subscription.deleted' :
 											case 'invoice.payment_failed' :
