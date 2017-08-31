@@ -1667,22 +1667,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				'compare' 	=> '!=',
 			);
 		}
-		$invoices = MS_Model_Invoice::get_invoices(
-			array(
-				'nopaging' => true,
-				'meta_query' => array(
-					array(
-						'key'   => 'ms_relationship_id',
-						'value' => $this->id,
-					),
-					array(
-						'key'   	=> 'status',
-						'value' 	=> $status,
-						'compare' 	=> '=',
-					),
-				),
-			)
-		);
+		$invoices = MS_Model_Invoice::get_invoices( $args );
 
 		return apply_filters(
 			'ms_model_relationship_get_invoices',
