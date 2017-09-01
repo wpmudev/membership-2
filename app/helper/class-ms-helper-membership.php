@@ -28,19 +28,19 @@ class MS_Helper_Membership extends MS_Helper {
 		$messages = apply_filters(
 			'ms_helper_membership_get_admin_messages',
 			array(
-				self::MEMBERSHIP_MSG_ADDED => __( 'You have successfully set up your <b>%s</b> Membership.', 'membership2' ),
-				self::MEMBERSHIP_MSG_DELETED => __( 'Membership deleted.', 'membership2' ),
-				self::MEMBERSHIP_MSG_UPDATED => __( 'Membership <b>%s</b> updated.', 'membership2' ),
-				self::MEMBERSHIP_MSG_ACTIVATION_TOGGLED => __( 'Membership activation toggled.', 'membership2' ),
-				self::MEMBERSHIP_MSG_STATUS_TOGGLED => __( 'Membership status toggled.', 'membership2' ),
-				self::MEMBERSHIP_MSG_BULK_UPDATED => __( 'Memberships bulk updated.', 'membership2' ),
-				self::MEMBERSHIP_MSG_NOT_ADDED => __( 'Membership not added.', 'membership2' ),
-				self::MEMBERSHIP_MSG_NOT_DELETED => __( 'Membership not deleted.', 'membership2' ),
-				self::MEMBERSHIP_MSG_NOT_UPDATED => __( 'Membership not updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_ADDED 					=> __( 'You have successfully set up your <b>%s</b> Membership.', 'membership2' ),
+				self::MEMBERSHIP_MSG_DELETED 				=> __( 'Membership deleted.', 'membership2' ),
+				self::MEMBERSHIP_MSG_UPDATED 				=> __( 'Membership <b>%s</b> updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_ACTIVATION_TOGGLED 	=> __( 'Membership activation toggled.', 'membership2' ),
+				self::MEMBERSHIP_MSG_STATUS_TOGGLED 		=> __( 'Membership status toggled.', 'membership2' ),
+				self::MEMBERSHIP_MSG_BULK_UPDATED 			=> __( 'Memberships bulk updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_NOT_ADDED 				=> __( 'Membership not added.', 'membership2' ),
+				self::MEMBERSHIP_MSG_NOT_DELETED 			=> __( 'Membership not deleted.', 'membership2' ),
+				self::MEMBERSHIP_MSG_NOT_UPDATED 			=> __( 'Membership not updated.', 'membership2' ),
 				self::MEMBERSHIP_MSG_ACTIVATION_NOT_TOGGLED => __( 'Membership activation not toggled.', 'membership2' ),
-				self::MEMBERSHIP_MSG_STATUS_NOT_TOGGLED => __( 'Membership status not toggled.', 'membership2' ),
-				self::MEMBERSHIP_MSG_BULK_NOT_UPDATED => __( 'Memberships bulk not updated.', 'membership2' ),
-				self::MEMBERSHIP_MSG_PARTIALLY_UPDATED => __( 'Memberships partially updated. Some fields could not be changed after members have signed up.', 'membership2' ),
+				self::MEMBERSHIP_MSG_STATUS_NOT_TOGGLED 	=> __( 'Membership status not toggled.', 'membership2' ),
+				self::MEMBERSHIP_MSG_BULK_NOT_UPDATED 		=> __( 'Memberships bulk not updated.', 'membership2' ),
+				self::MEMBERSHIP_MSG_PARTIALLY_UPDATED 		=> __( 'Memberships partially updated. Some fields could not be changed after members have signed up.', 'membership2' ),
 			)
 		);
 
@@ -111,27 +111,26 @@ class MS_Helper_Membership extends MS_Helper {
 	 * @param  MS_Model_Membership $membership The membership that was created.
 	 */
 	public static function show_setup_note( $membership ) {
-		$popup = array();
+		$popup 			= array();
+		$setup 			= MS_Factory::create( 'MS_View_Settings_Page_Setup' );
 
-		$popup['title'] = sprintf(
-			'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
-			__( 'Congratulations!', 'membership2' ),
-			sprintf(
-				__( 'You have successfully set up your <b>%1$s</b> Membership.', 'membership2' ),
-				$membership->name
-			)
-		);
 
-		$setup = MS_Factory::create( 'MS_View_Settings_Page_Setup' );
+		$popup['title'] 	= sprintf(
+				'<i class="dashicons dashicons-yes"></i> %1$s<div class="subtitle">%2$s</div>',
+				__( 'Congratulations!', 'membership2' ),
+				sprintf(
+					__( 'You have successfully set up your <b>%1$s</b> Membership.', 'membership2' ),
+					$membership->name
+				)
+			);
+		$popup['modal'] 	= true;
+		$popup['close'] 	= false;
+		$popup['sticky'] 	= false;
+		$popup['class'] 	= 'ms-setup-done';
+		$popup['body'] 		= $setup->to_html();
+		$popup['height'] 	= $setup->dialog_height();
 
-		$popup['modal'] = true;
-		$popup['close'] = false;
-		$popup['sticky'] = false;
-		$popup['class'] = 'ms-setup-done';
-		$popup['body'] = $setup->to_html();
-		$popup['height'] = $setup->dialog_height();
-
-		$popup['body'] .= sprintf(
+		$popup['body'] 		.= sprintf(
 			'<div class="buttons">' .
 			'<a href="%s" class="button">%s</a> ' .
 			'<button type="button" class="button-primary close">%s</button>' .

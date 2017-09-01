@@ -46,7 +46,7 @@ class MS_Addon_Bbpress_Rule extends MS_Controller {
 		$view = MS_Factory::load( 'MS_Addon_Bbpress_Rule_View' );
 
 		$view->data = $data;
-		$callback = array( $view, 'to_html' );
+		$callback 	= array( $view, 'to_html' );
 
 		return $callback;
 	}
