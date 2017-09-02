@@ -12,7 +12,7 @@ class MS_Rule_Page_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Apply protection to Pages and grant access to members', 'membership2' ),
-				'desc' => __( 'All pages that do not have Content Protection applied are visible to Everyone', 'membership2' ),
+				'desc' 	=> __( 'All pages that do not have Content Protection applied are visible to Everyone', 'membership2' ),
 			),
 			MS_Rule_Page::RULE_ID,
 			$this

@@ -182,7 +182,7 @@ class MS_Model_Import extends MS_Model {
 		 */
 		$cache[ $type ][ $import_id ] = array(
 			'class' => get_class( $obj ),
-			'id' => $obj->id,
+			'id' 	=> $obj->id,
 		);
 
 		$this->set_import_obj_cache( $cache );
@@ -204,8 +204,8 @@ class MS_Model_Import extends MS_Model {
 
 		$obj = null;
 		if ( isset( $cache[ $type ][ $import_id ] ) ) {
-			$info = $cache[ $type ][ $import_id ];
-			$obj = MS_Factory::load( $info['class'], $info['id'] );
+			$info 	= $cache[ $type ][ $import_id ];
+			$obj 	= MS_Factory::load( $info['class'], $info['id'] );
 		}
 		return $obj;
 	}
@@ -290,12 +290,12 @@ class MS_Model_Import extends MS_Model {
 	 * @param  object $obj The import data.
 	 */
 	protected function populate_membership( &$membership, $obj ) {
-		$membership->name = $obj->name;
-		$membership->description = $obj->description;
-		$membership->active = (bool) lib3()->is_true( $obj->active );
-		$membership->private = (bool) lib3()->is_true( $obj->private );
-		$membership->is_free = (bool) lib3()->is_true( $obj->free );
-		$membership->is_setup_complete = true;
+		$membership->name 				= $obj->name;
+		$membership->description 		= $obj->description;
+		$membership->active 			= (bool) lib3()->is_true( $obj->active );
+		$membership->private			= (bool) lib3()->is_true( $obj->private );
+		$membership->is_free 			= (bool) lib3()->is_true( $obj->free );
+		$membership->is_setup_complete 	= true;
 
 		if ( isset( $obj->period_type ) ) {
 			$obj->period_type = $this->valid_period( $obj->period_type );
@@ -486,11 +486,11 @@ class MS_Model_Import extends MS_Model {
 			return;
 		}
 
-		$subscription = $member->add_membership( $membership->id );
-		$subscription->status = $obj->status;
-		$subscription->gateway_id = $obj->gateway;
-		$subscription->start_date = $obj->start;
-        $subscription->expire_date = $obj->end;
+		$subscription 				= $member->add_membership( $membership->id );
+		$subscription->status 		= $obj->status;
+		$subscription->gateway_id 	= $obj->gateway;
+		$subscription->start_date 	= $obj->start;
+        $subscription->expire_date 	= $obj->end;
 
 		if ( isset( $obj->trial_finished ) ) {
 			$subscription->trial_period_completed = $obj->trial_finished;
@@ -535,23 +535,23 @@ class MS_Model_Import extends MS_Model {
 	 * @param  object $obj Import data.
 	 */
 	protected function import_invoice( $subscription, $obj ) {
-		$ms_invoice = MS_Model_Invoice::create_invoice( $subscription );
+		$ms_invoice 				= MS_Model_Invoice::create_invoice( $subscription );
 		$ms_invoice->invoice_number = $obj->invoice_number;
-		$ms_invoice->external_id = $obj->external_id;
-		$ms_invoice->gateway_id = $obj->gateway;
-		$ms_invoice->status = $obj->status;
-		$ms_invoice->coupon_id = $obj->coupon;
-		$ms_invoice->currency = $obj->currency;
-		$ms_invoice->amount = $obj->amount;
-		$ms_invoice->discount = $obj->discount;
-		$ms_invoice->pro_rate = $obj->discount2;
-		$ms_invoice->total = $obj->total;
-		$ms_invoice->trial_period = $obj->for_trial;
-		$ms_invoice->due_date = $obj->due;
-		$ms_invoice->notes = $obj->notes;
+		$ms_invoice->external_id 	= $obj->external_id;
+		$ms_invoice->gateway_id 	= $obj->gateway;
+		$ms_invoice->status 		= $obj->status;
+		$ms_invoice->coupon_id 		= $obj->coupon;
+		$ms_invoice->currency 		= $obj->currency;
+		$ms_invoice->amount 		= $obj->amount;
+		$ms_invoice->discount 		= $obj->discount;
+		$ms_invoice->pro_rate 		= $obj->discount2;
+		$ms_invoice->total 			= $obj->total;
+		$ms_invoice->trial_period 	= $obj->for_trial;
+		$ms_invoice->due_date 		= $obj->due;
+		$ms_invoice->notes 			= $obj->notes;
 
 		// Remember where this invoice comes from.
-		$ms_invoice->source = $this->source_key;
+		$ms_invoice->source 		= $this->source_key;
 		$ms_invoice->save();
 
 		$subscription->add_payment(

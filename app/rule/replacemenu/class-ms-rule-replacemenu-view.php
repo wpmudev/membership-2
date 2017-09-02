@@ -16,7 +16,7 @@ class MS_Rule_ReplaceMenu_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Replace Menus', 'membership2' ),
-				'desc' => __( 'Replace or protect WordPress menus.', 'membership2' ),
+				'desc' 	=> __( 'Replace or protect WordPress menus.', 'membership2' ),
 			),
 			MS_Rule_ReplaceMenu::RULE_ID,
 			$this

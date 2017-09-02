@@ -11,16 +11,16 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 	public function __construct( $model ) {
 		parent::__construct( $model );
 		$this->name['singular'] = __( 'Post', 'membership2' );
-		$this->name['plural'] = __( 'Posts', 'membership2' );
+		$this->name['plural'] 	= __( 'Posts', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
-			'cb' => true,
-			'name' => __( 'Post title', 'membership2' ),
-			'access' => true,
+			'cb' 		=> true,
+			'name' 		=> __( 'Post title', 'membership2' ),
+			'access' 	=> true,
 			'post_date' => __( 'Post date', 'membership2' ),
-			'dripped' => true,
+			'dripped' 	=> true,
 		);
 
 		return apply_filters(
@@ -33,8 +33,8 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 		return apply_filters(
 			'membership_helper_listtable_' . $this->id . '_sortable_columns',
 			array(
-				'name' => array( 'name', false ),
-				'dripped' => array( 'dripped', false ),
+				'name' 		=> array( 'name', false ),
+				'dripped' 	=> array( 'dripped', false ),
 			)
 		);
 	}
@@ -81,8 +81,8 @@ class MS_Rule_Post_ListTable extends MS_Helper_ListTable_Rule {
 		}
 
 		$filter_button = array(
-			'id' => 'filter_button',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'id' 	=> 'filter_button',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			'value' => __( 'Filter', 'membership2' ),
 			'class' => 'button',
 		);

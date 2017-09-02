@@ -110,7 +110,7 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 			$replacements = $this->get_replacements();
 
 			if ( isset( $replacements[ $id ] ) ) {
-				$args['menu'] = $replacements[ $id ];
+				$args['menu'] 			= $replacements[ $id ];
 				$args['theme_location'] = '';
 			}
 		}
@@ -222,9 +222,9 @@ class MS_Rule_ReplaceMenu_Model extends MS_Rule {
 	 */
 	protected function get_replacements() {
 		if ( ! is_array( $this->replacements ) ) {
-			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$base_rule 			= MS_Model_Membership::get_base()->get_rule( $this->rule_type );
 			$this->replacements = array();
-			$menus = $this->get_menus();
+			$menus 				= $this->get_menus();
 
 			foreach ( $menus as $menu_id => $name ) {
 				$replace = $this->get_rule_value( $menu_id );

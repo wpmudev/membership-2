@@ -16,12 +16,12 @@ class MS_Rule_Media_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function get_columns() {
 		$columns = array(
-			'cb' => true,
-			'name' => __( 'Title', 'membership2' ),
-			'access' => true,
+			'cb' 		=> true,
+			'name' 		=> __( 'Title', 'membership2' ),
+			'access' 	=> true,
 			'file_type' => __( 'Type', 'membership2' ),
 			'post_date' => __( 'Added', 'membership2' ),
-			'dripped' => false,
+			'dripped' 	=> false,
 		);
 
 		return apply_filters(
@@ -77,21 +77,21 @@ class MS_Rule_Media_ListTable extends MS_Helper_ListTable_Rule {
 		$meta = wp_get_attachment_metadata( $item->id );
 
 		if ( isset( $meta['file'] ) ) {
-			$type = wp_check_filetype( $meta['file'] );
+			$type 		= wp_check_filetype( $meta['file'] );
 		} else {
-			$the_file = get_attached_file( $item->id );
-			$ext = pathinfo( $the_file, PATHINFO_EXTENSION );
+			$the_file 	= get_attached_file( $item->id );
+			$ext 		= pathinfo( $the_file, PATHINFO_EXTENSION );
 
 			if ( $ext ) {
 				$type = array(
-					'ext' => $ext,
-					'type' => filetype( $the_file ),
+					'ext' 	=> $ext,
+					'type' 	=> filetype( $the_file ),
 				);
 			} else {
 				// Fallback to 'jpg' if filetype cannot be determined.
 				$type = array(
-					'ext' => 'jpg',
-					'type' => 'image/jpeg',
+					'ext' 	=> 'jpg',
+					'type' 	=> 'image/jpeg',
 				);
 			}
 		}

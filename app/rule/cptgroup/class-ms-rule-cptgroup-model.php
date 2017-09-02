@@ -179,8 +179,8 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 		}
 
 		foreach ( $cpts as $key => $content ) {
-			$contents[ $key ] = new StdClass();
-			$contents[ $key ]->id = $key;
+			$contents[ $key ] 		= new StdClass();
+			$contents[ $key ]->id 	= $key;
 			$contents[ $key ]->name = $content;
 			$contents[ $key ]->type = MS_Rule_CptGroup::RULE_ID;
 

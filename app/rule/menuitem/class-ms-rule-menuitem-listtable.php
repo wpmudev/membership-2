@@ -24,18 +24,18 @@ class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model, $all_menus, $menu_id ) {
 		parent::__construct( $model );
-		$this->menus = $all_menus;
-		$this->menu_id = $menu_id;
+		$this->menus 			= $all_menus;
+		$this->menu_id 			= $menu_id;
 		$this->name['singular'] = __( 'Menu Item', 'membership2' );
-		$this->name['plural'] = __( 'Menu Items', 'membership2' );
+		$this->name['plural'] 	= __( 'Menu Items', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
-			'cb' => true,
-			'title' => __( 'Menu Title', 'membership2' ),
-			'type' => __( 'Menu Type', 'membership2' ),
-			'access' => true,
+			'cb' 		=> true,
+			'title' 	=> __( 'Menu Title', 'membership2' ),
+			'type' 		=> __( 'Menu Type', 'membership2' ),
+			'access' 	=> true,
 		);
 
 		return apply_filters(

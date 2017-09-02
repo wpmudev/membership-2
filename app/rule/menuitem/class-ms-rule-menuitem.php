@@ -48,7 +48,7 @@ class MS_Rule_MenuItem extends MS_Controller {
 		$view = MS_Factory::load( 'MS_Rule_MenuItem_View' );
 
 		$view->data = $data;
-		$callback = array( $view, 'to_html' );
+		$callback 	= array( $view, 'to_html' );
 
 		return $callback;
 	}

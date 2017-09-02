@@ -31,9 +31,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 *
 	 * @var string $protection_type
 	 */
-	const PROTECTION_TYPE_BASIC = 'protection_type_basic';
-	const PROTECTION_TYPE_COMPLETE = 'protection_type_complete';
-	const PROTECTION_TYPE_HYBRID = 'protection_type_hybrid';
+	const PROTECTION_TYPE_BASIC 	= 'protection_type_basic';
+	const PROTECTION_TYPE_COMPLETE 	= 'protection_type_complete';
+	const PROTECTION_TYPE_HYBRID 	= 'protection_type_hybrid';
 
 	/**
 	 * Media protection file change prefix.
@@ -102,19 +102,19 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 * }
 	 */
 	public static function get_protection_types() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$mask = $settings->downloads['masked_url'];
-		$example1 = MS_Helper_Utility::home_url( $mask . date( '/Y/m/' ) . 'my-image.jpg' );
-		$example2 = MS_Helper_Utility::home_url( $mask . '/ms_12345.jpg' );
-		$example3 = MS_Helper_Utility::home_url( $mask . '/?ms_file=ms_12345.jpg' );
-		$example1 = '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example1 . '</small>';
-		$example2 = '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example2 . '</small>';
-		$example3 = '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example3 . '</small>';
+		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
+		$mask 		= $settings->downloads['masked_url'];
+		$example1 	= MS_Helper_Utility::home_url( $mask . date( '/Y/m/' ) . 'my-image.jpg' );
+		$example2 	= MS_Helper_Utility::home_url( $mask . '/ms_12345.jpg' );
+		$example3 	= MS_Helper_Utility::home_url( $mask . '/?ms_file=ms_12345.jpg' );
+		$example1 	= '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example1 . '</small>';
+		$example2 	= '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example2 . '</small>';
+		$example3 	= '<br /><small>' . __( 'Example:', 'membership2' ) . ' ' . $example3 . '</small>';
 
 		$protection_types = array(
-			self::PROTECTION_TYPE_BASIC => __( 'Basic protection (default)', 'membership2' ) . $example1,
-			self::PROTECTION_TYPE_COMPLETE => __( 'Complete protection', 'membership2' ) . $example2,
-			self::PROTECTION_TYPE_HYBRID => __( 'Hybrid protection', 'membership2' ) . $example3,
+			self::PROTECTION_TYPE_BASIC 	=> __( 'Basic protection (default)', 'membership2' ) . $example1,
+			self::PROTECTION_TYPE_COMPLETE 	=> __( 'Complete protection', 'membership2' ) . $example2,
+			self::PROTECTION_TYPE_HYBRID 	=> __( 'Hybrid protection', 'membership2' ) . $example3,
 		);
 
 		return apply_filters(
@@ -337,31 +337,31 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 */
 	public function extract_file_info( $file ) {
 		// See if the filename has a size extension and if so, strip it out.
-		$filename_exp_full = '/(.+)\-(\d+[x]\d+)\.(.+)$/';
-		$filename_exp_min = '/(.+)\.(.+)$/';
+		$filename_exp_full 	= '/(.+)\-(\d+[x]\d+)\.(.+)$/';
+		$filename_exp_min 	= '/(.+)\.(.+)$/';
 		$filematch = array();
 
 		if ( preg_match( $filename_exp_full, $file, $filematch ) ) {
 			// Image with an image size attached.
-			$type = strtolower( $filematch[3] );
-			$filename = $filematch[1] . '.' . $type;
+			$type 			= strtolower( $filematch[3] );
+			$filename 		= $filematch[1] . '.' . $type;
 			$size_extension = '-' . $filematch[2];
 		} elseif ( preg_match( $filename_exp_min, $file, $filematch ) ) {
 			// Image without an image size definition.
-			$type = strtolower( $filematch[2] );
-			$filename = $filematch[1] . '.' . $type;
+			$type 			= strtolower( $filematch[2] );
+			$filename 		= $filematch[1] . '.' . $type;
 			$size_extension = '';
 		} else {
 			// Image without an extension.
-			$type = '';
-			$filename = $file;
+			$type 			= '';
+			$filename 		= $file;
 			$size_extension = '';
 		}
 
 		$info = (object) array(
-			'filename' => $filename,
-			'size_extension' => $size_extension,
-			'type' => $type,
+			'filename' 			=> $filename,
+			'size_extension' 	=> $size_extension,
+			'type' 				=> $type,
 		);
 
 		return apply_filters(
@@ -396,9 +396,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 		} else {
 			// Manual attempt: Get the filename from the URL and use a custom query.
 			if ( null === $Uploads_Url ) {
-				$uploads = wp_upload_dir();
-				$Uploads_Url = trailingslashit( $uploads['baseurl'] );
-				$Uploads_Url_Len = strlen( $Uploads_Url );
+				$uploads 			= wp_upload_dir();
+				$Uploads_Url 		= trailingslashit( $uploads['baseurl'] );
+				$Uploads_Url_Len 	= strlen( $Uploads_Url );
 			}
 
 			if ( false !== strpos( $url, $Uploads_Url ) ) {
@@ -418,8 +418,8 @@ class MS_Rule_Media_Model extends MS_Rule {
 					AND wpostmeta.meta_key = '_wp_attached_file'
 					AND wpostmeta.meta_value = %s
 				";
-				$sql = $wpdb->prepare( $sql, $url );
-				$id = $wpdb->get_var( $sql );
+				$sql 	= $wpdb->prepare( $sql, $url );
+				$id 	= $wpdb->get_var( $sql );
 
 				wp_cache_set( $url, $id, 'ms_attachment_id' );
 			}
@@ -486,10 +486,10 @@ class MS_Rule_Media_Model extends MS_Rule {
 			$this
 		);
 
-		$the_file = false;
-		$requested_item = false;
-		$download_settings = MS_Plugin::instance()->settings->downloads;
-		$protection_type = $download_settings['protection_type'];
+		$the_file 			= false;
+		$requested_item 	= false;
+		$download_settings 	= MS_Plugin::instance()->settings->downloads;
+		$protection_type 	= $download_settings['protection_type'];
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
 			return;
@@ -522,24 +522,24 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 					if( $protection_type == self::PROTECTION_TYPE_COMPLETE ){
 						
-						$request_name = basename( $attachment_id ); // Get the name of the requested file
+						$request_name 	= basename( $attachment_id ); // Get the name of the requested file
 
-						$request_name = pathinfo( $request_name ); // Get the info the of the requested file
+						$request_name 	= pathinfo( $request_name ); // Get the info the of the requested file
 						
-						$attachment_id = str_replace( 'ms_','',$request_name['filename'] ); // Remove the prefix since we always have ms_ and get the attachment id.
+						$attachment_id 	= str_replace( 'ms_','',$request_name['filename'] ); // Remove the prefix since we always have ms_ and get the attachment id.
 					}
 
-					$attachment_id = $attachment_id - (int) self::FILE_PROTECTION_INCREMENT;
+					$attachment_id = ( int ) $attachment_id - ( int ) self::FILE_PROTECTION_INCREMENT;
 
 					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
 					break;
 
 				default:
 				case self::PROTECTION_TYPE_BASIC:
-					$upload_dir = wp_upload_dir();
-					$original_url = $upload_dir['baseurl'];
-					$home = get_option( 'home' );
-					$original_url = explode( $home, $original_url );
+					$upload_dir 	= wp_upload_dir();
+					$original_url 	= $upload_dir['baseurl'];
+					$home 			= get_option( 'home' );
+					$original_url 	= explode( $home, $original_url );
 
 					$furl = untrailingslashit(
 						str_replace(
@@ -549,9 +549,9 @@ class MS_Rule_Media_Model extends MS_Rule {
 						)
 					);
 
-					$home = untrailingslashit( get_option( 'home' ) );
-					$attachment_id = $this->get_attachment_id( $furl );
-					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
+					$home 			= untrailingslashit( get_option( 'home' ) );
+					$attachment_id 	= $this->get_attachment_id( $furl );
+					$the_file 		= $this->restore_filename( $attachment_id, $f_info->size_extension );
 					break;
 			}
 
@@ -561,7 +561,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 			) {
 				if ( $this->can_access_file( $attachment_id ) ) {
 					$upload_dir = wp_upload_dir();
-					$file = trailingslashit( $upload_dir['basedir'] ) . $the_file;
+					$file 		= trailingslashit( $upload_dir['basedir'] ) . $the_file;
 					$this->output_file( $file );
 				} else {
 					$this->show_no_access_image();
@@ -600,16 +600,16 @@ class MS_Rule_Media_Model extends MS_Rule {
 			if ( ! $parent_id ) {
 				$access = true;
 			} else {
-				$member = MS_Model_Member::get_current_member();
-				$cache_key = 'ms_media_protection_member_'.$member->id.'_'.$attachment_id;
-				$member_has_access = wp_cache_get( $cache_key, 'ms_media_protection_member' );
+				$member 			= MS_Model_Member::get_current_member();
+				$cache_key 			= 'ms_media_protection_member_'.$member->id.'_'.$attachment_id;
+				$member_has_access 	= wp_cache_get( $cache_key, 'ms_media_protection_member' );
 
 				if ( false !== $member_has_access ) {
 					$access = $member_has_access;
 				} else {
 					foreach ( $member->subscriptions as $subscription ) {
 						$membership = $subscription->get_membership();
-						$access = $membership->has_access_to_post( $parent_id );
+						$access 	= $membership->has_access_to_post( $parent_id );
 						if ( $access ) { 
 							wp_cache_set( $cache_key, true , 'ms_media_protection_member' );
 							break; 
@@ -624,15 +624,15 @@ class MS_Rule_Media_Model extends MS_Rule {
 			 * Advanced protection mode (via Add-on):
 			 * Each Attachment can be protected individually.
 			 */
-			$member = MS_Model_Member::get_current_member();
-			$cache_key = 'ms_media_protection_addon_member_'.$member->id.'_'.$attachment_id;
-			$member_has_access = wp_cache_get( $cache_key, 'ms_media_protection_member' );
+			$member 			= MS_Model_Member::get_current_member();
+			$cache_key 			= 'ms_media_protection_addon_member_'.$member->id.'_'.$attachment_id;
+			$member_has_access 	= wp_cache_get( $cache_key, 'ms_media_protection_member' );
 
 			if ( false !== $member_has_access ) {
 				$access = $member_has_access;
 			} else {
 				foreach ( $member->subscriptions as $subscription ) {
-					$rule = $subscription->get_membership()->get_rule( MS_Rule_Media::RULE_ID );
+					$rule 	= $subscription->get_membership()->get_rule( MS_Rule_Media::RULE_ID );
 					$access = $rule->has_access( $attachment_id );
 					if ( $access ) { 
 						wp_cache_set( $cache_key, true , 'ms_media_protection_member' );
@@ -798,10 +798,10 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 		$contents = array();
 		foreach ( $posts as $content ) {
-			$content->id = $content->ID;
-			$content->type = MS_Rule_Media::RULE_ID;
-			$content->name = $content->post_name;
-			$content->access = $this->can_access_file( $content->id );
+			$content->id 		= $content->ID;
+			$content->type 		= MS_Rule_Media::RULE_ID;
+			$content->name 		= $content->post_name;
+			$content->access 	= $this->can_access_file( $content->id );
 
 			$contents[ $content->id ] = $content;
 		}
@@ -847,10 +847,10 @@ class MS_Rule_Media_Model extends MS_Rule {
 	 */
 	public function get_query_args( $args = null ) {
 		$defaults = array(
-			'orderby' => 'post_date',
-			'order' => 'DESC',
-			'post_type' => 'attachment',
-			'post_status' => 'any',
+			'orderby' 		=> 'post_date',
+			'order' 		=> 'DESC',
+			'post_type' 	=> 'attachment',
+			'post_status' 	=> 'any',
 		);
 		$args = wp_parse_args( $args, $defaults );
 

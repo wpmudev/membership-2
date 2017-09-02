@@ -12,7 +12,7 @@ class MS_Rule_Media_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Choose Files from your Media Library that you want to protect', 'membership2' ),
-				'desc' => '',
+				'desc' 	=> '',
 			),
 			MS_Rule_Media::RULE_ID,
 			$this

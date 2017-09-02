@@ -46,10 +46,10 @@ class MS_Rule_CptItem extends MS_Controller {
 	 * @return array Correct callback.
 	 */
 	public function handle_render_callback( $callback, $data ) {
-		$view = MS_Factory::load( 'MS_Rule_CptItem_View' );
+		$view 		= MS_Factory::load( 'MS_Rule_CptItem_View' );
 
 		$view->data = $data;
-		$callback = array( $view, 'to_html' );
+		$callback 	= array( $view, 'to_html' );
 
 		return $callback;
 	}

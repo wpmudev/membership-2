@@ -49,22 +49,22 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @see   $type
 	 * @var   string The communication type
 	 */
-	const COMM_TYPE_REGISTRATION = 'type_registration';
-	const COMM_TYPE_REGISTRATION_FREE = 'type_registration_free';
-	const COMM_TYPE_SIGNUP = 'type_signup';
-	const COMM_TYPE_RESETPASSWORD = 'type_resetpassword';
-	const COMM_TYPE_RENEWED = 'renewed';
-	const COMM_TYPE_INVOICE = 'type_invoice';
-	const COMM_TYPE_BEFORE_FINISHES = 'type_before_finishes';
-	const COMM_TYPE_FINISHED = 'type_finished';
-	const COMM_TYPE_AFTER_FINISHES = 'type_after_finishes';
-	const COMM_TYPE_CANCELLED = 'type_cancelled';
-	const COMM_TYPE_BEFORE_TRIAL_FINISHES = 'type_before_trial_finishes';
-	const COMM_TYPE_INFO_UPDATE = 'type_info_update';
-	const COMM_TYPE_CREDIT_CARD_EXPIRE = 'type_credit_card_expire';
-	const COMM_TYPE_FAILED_PAYMENT = 'type_failed_payment';
-	const COMM_TYPE_BEFORE_PAYMENT_DUE = 'type_before_payment_due';
-	const COMM_TYPE_AFTER_PAYMENT_DUE = 'type_after_payment_due';
+	const COMM_TYPE_REGISTRATION 			= 'type_registration';
+	const COMM_TYPE_REGISTRATION_FREE 		= 'type_registration_free';
+	const COMM_TYPE_SIGNUP 					= 'type_signup';
+	const COMM_TYPE_RESETPASSWORD 			= 'type_resetpassword';
+	const COMM_TYPE_RENEWED 				= 'renewed';
+	const COMM_TYPE_INVOICE 				= 'type_invoice';
+	const COMM_TYPE_BEFORE_FINISHES 		= 'type_before_finishes';
+	const COMM_TYPE_FINISHED 				= 'type_finished';
+	const COMM_TYPE_AFTER_FINISHES 			= 'type_after_finishes';
+	const COMM_TYPE_CANCELLED 				= 'type_cancelled';
+	const COMM_TYPE_BEFORE_TRIAL_FINISHES 	= 'type_before_trial_finishes';
+	const COMM_TYPE_INFO_UPDATE 			= 'type_info_update';
+	const COMM_TYPE_CREDIT_CARD_EXPIRE 		= 'type_credit_card_expire';
+	const COMM_TYPE_FAILED_PAYMENT 			= 'type_failed_payment';
+	const COMM_TYPE_BEFORE_PAYMENT_DUE 		= 'type_before_payment_due';
+	const COMM_TYPE_AFTER_PAYMENT_DUE 		= 'type_after_payment_due';
 
 	/**
 	 * Communication variable constants.
@@ -75,23 +75,23 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @see   comm_vars
 	 * @var   string The communication variable name.
 	 */
-	const COMM_VAR_MS_NAME = '%ms-name%';
-	const COMM_VAR_MS_DESCRIPTION = '%ms-description%';
-	const COMM_VAR_MS_INVOICE = '%ms-invoice%';
-	const COMM_VAR_MS_ACCOUNT_PAGE_URL = '%ms-account-page-url%';
-	const COMM_VAR_MS_REMAINING_DAYS = '%ms-remaining-days%';
-	const COMM_VAR_MS_REMAINING_TRIAL_DAYS = '%ms-remaining-trial-days%';
-	const COMM_VAR_MS_EXPIRY_DATE = '%ms-expiry-date%';
-	const COMM_VAR_USER_DISPLAY_NAME = '%user-display-name%';
-	const COMM_VAR_USER_FIRST_NAME = '%user-first-name%';
-	const COMM_VAR_USER_LAST_NAME = '%user-last-name%';
-	const COMM_VAR_USERNAME = '%username%';
-	const COMM_VAR_PASSWORD = '%password%';
-	const COMM_VAR_RESETURL = '%reset-url%';
-	const COMM_VAR_BLOG_NAME = '%blog-name%';
-	const COMM_VAR_BLOG_URL = '%blog-url%';
-	const COMM_VAR_NET_NAME = '%network-name%';
-	const COMM_VAR_NET_URL = '%network-url%';
+	const COMM_VAR_MS_NAME 					= '%ms-name%';
+	const COMM_VAR_MS_DESCRIPTION 			= '%ms-description%';
+	const COMM_VAR_MS_INVOICE 				= '%ms-invoice%';
+	const COMM_VAR_MS_ACCOUNT_PAGE_URL 		= '%ms-account-page-url%';
+	const COMM_VAR_MS_REMAINING_DAYS 		= '%ms-remaining-days%';
+	const COMM_VAR_MS_REMAINING_TRIAL_DAYS 	= '%ms-remaining-trial-days%';
+	const COMM_VAR_MS_EXPIRY_DATE 			= '%ms-expiry-date%';
+	const COMM_VAR_USER_DISPLAY_NAME 		= '%user-display-name%';
+	const COMM_VAR_USER_FIRST_NAME 			= '%user-first-name%';
+	const COMM_VAR_USER_LAST_NAME 			= '%user-last-name%';
+	const COMM_VAR_USERNAME 				= '%username%';
+	const COMM_VAR_PASSWORD 				= '%password%';
+	const COMM_VAR_RESETURL 				= '%reset-url%';
+	const COMM_VAR_BLOG_NAME 				= '%blog-name%';
+	const COMM_VAR_BLOG_URL 				= '%blog-url%';
+	const COMM_VAR_NET_NAME 				= '%network-name%';
+	const COMM_VAR_NET_URL 					= '%network-url%';
 
 	/**
 	 * Communication type.
@@ -255,8 +255,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Email Templates', 'membership2' ),
-                        'exclude_from_search' => true
+			'label' 				=> __( 'Membership2 Email Templates', 'membership2' ),
+            'exclude_from_search' 	=> true
 		);
 
 		return apply_filters(
@@ -340,22 +340,22 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		if ( empty( $type_classes ) ) {
 			$type_classes = array(
-				self::COMM_TYPE_REGISTRATION => 'MS_Model_Communication_Registration',
-				self::COMM_TYPE_REGISTRATION_FREE => 'MS_Model_Communication_Registration_Free',
-				self::COMM_TYPE_SIGNUP => 'MS_Model_Communication_Signup',
-				self::COMM_TYPE_RESETPASSWORD => 'MS_Model_Communication_Resetpass',
-				self::COMM_TYPE_RENEWED => 'MS_Model_Communication_Renewed',
-				self::COMM_TYPE_INVOICE => 'MS_Model_Communication_Invoice',
-				self::COMM_TYPE_BEFORE_FINISHES => 'MS_Model_Communication_Before_Finishes',
-				self::COMM_TYPE_FINISHED => 'MS_Model_Communication_Finished',
-				self::COMM_TYPE_AFTER_FINISHES => 'MS_Model_Communication_After_Finishes',
-				self::COMM_TYPE_CANCELLED => 'MS_Model_Communication_Cancelled',
-				self::COMM_TYPE_BEFORE_TRIAL_FINISHES => 'MS_Model_Communication_Before_Trial_Finishes',
-				self::COMM_TYPE_INFO_UPDATE => 'MS_Model_Communication_Info_Update',
-				self::COMM_TYPE_CREDIT_CARD_EXPIRE => 'MS_Model_Communication_Credit_Card_Expire',
-				self::COMM_TYPE_FAILED_PAYMENT => 'MS_Model_Communication_Failed_Payment',
-				self::COMM_TYPE_BEFORE_PAYMENT_DUE => 'MS_Model_Communication_Before_Payment_Due',
-				self::COMM_TYPE_AFTER_PAYMENT_DUE => 'MS_Model_Communication_After_Payment_Due',
+				self::COMM_TYPE_REGISTRATION 			=> 'MS_Model_Communication_Registration',
+				self::COMM_TYPE_REGISTRATION_FREE 		=> 'MS_Model_Communication_Registration_Free',
+				self::COMM_TYPE_SIGNUP 					=> 'MS_Model_Communication_Signup',
+				self::COMM_TYPE_RESETPASSWORD 			=> 'MS_Model_Communication_Resetpass',
+				self::COMM_TYPE_RENEWED 				=> 'MS_Model_Communication_Renewed',
+				self::COMM_TYPE_INVOICE 				=> 'MS_Model_Communication_Invoice',
+				self::COMM_TYPE_BEFORE_FINISHES 		=> 'MS_Model_Communication_Before_Finishes',
+				self::COMM_TYPE_FINISHED 				=> 'MS_Model_Communication_Finished',
+				self::COMM_TYPE_AFTER_FINISHES 			=> 'MS_Model_Communication_After_Finishes',
+				self::COMM_TYPE_CANCELLED 				=> 'MS_Model_Communication_Cancelled',
+				self::COMM_TYPE_BEFORE_TRIAL_FINISHES 	=> 'MS_Model_Communication_Before_Trial_Finishes',
+				self::COMM_TYPE_INFO_UPDATE 			=> 'MS_Model_Communication_Info_Update',
+				self::COMM_TYPE_CREDIT_CARD_EXPIRE 		=> 'MS_Model_Communication_Credit_Card_Expire',
+				self::COMM_TYPE_FAILED_PAYMENT 			=> 'MS_Model_Communication_Failed_Payment',
+				self::COMM_TYPE_BEFORE_PAYMENT_DUE 		=> 'MS_Model_Communication_Before_Payment_Due',
+				self::COMM_TYPE_AFTER_PAYMENT_DUE 		=> 'MS_Model_Communication_After_Payment_Due',
 			);
 		}
 
@@ -381,22 +381,22 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public static function get_communication_type_titles( $membership = null ) {
 		$type_titles = array(
-			self::COMM_TYPE_SIGNUP => __( 'Signup - User account created', 'membership2' ),
-			self::COMM_TYPE_RESETPASSWORD => __( 'Signup - Forgot Password', 'membership2' ),
-			self::COMM_TYPE_REGISTRATION => __( 'Subscription - Completed with payment', 'membership2' ),
-			self::COMM_TYPE_REGISTRATION_FREE => __( 'Subscription - Completed (free membership)', 'membership2' ),
-			self::COMM_TYPE_RENEWED => __( 'Subscription - Renewed', 'membership2' ),
-			self::COMM_TYPE_BEFORE_FINISHES => __( 'Subscription - Before expires', 'membership2' ),
-			self::COMM_TYPE_FINISHED => __( 'Subscription - Expired', 'membership2' ),
-			self::COMM_TYPE_AFTER_FINISHES => __( 'Subscription - After expired', 'membership2' ),
-			self::COMM_TYPE_CANCELLED => __( 'Subscription - Cancelled', 'membership2' ),
-			self::COMM_TYPE_BEFORE_TRIAL_FINISHES => __( 'Subscription - Trial finished', 'membership2' ),
-			self::COMM_TYPE_INFO_UPDATE => __( 'Payment - Profile updated', 'membership2' ),
-			self::COMM_TYPE_CREDIT_CARD_EXPIRE => __( 'Payment - Credit Card expires', 'membership2' ),
-			self::COMM_TYPE_INVOICE => __( 'Payment - Receipt/Invoice', 'membership2' ),
-			self::COMM_TYPE_FAILED_PAYMENT => __( 'Payment - Failed', 'membership2' ),
-			self::COMM_TYPE_BEFORE_PAYMENT_DUE => __( 'Payment - Before due', 'membership2' ),
-			self::COMM_TYPE_AFTER_PAYMENT_DUE => __( 'Payment - After due', 'membership2' ),
+			self::COMM_TYPE_SIGNUP 					=> __( 'Signup - User account created', 'membership2' ),
+			self::COMM_TYPE_RESETPASSWORD 			=> __( 'Signup - Forgot Password', 'membership2' ),
+			self::COMM_TYPE_REGISTRATION 			=> __( 'Subscription - Completed with payment', 'membership2' ),
+			self::COMM_TYPE_REGISTRATION_FREE 		=> __( 'Subscription - Completed (free membership)', 'membership2' ),
+			self::COMM_TYPE_RENEWED 				=> __( 'Subscription - Renewed', 'membership2' ),
+			self::COMM_TYPE_BEFORE_FINISHES 		=> __( 'Subscription - Before expires', 'membership2' ),
+			self::COMM_TYPE_FINISHED 				=> __( 'Subscription - Expired', 'membership2' ),
+			self::COMM_TYPE_AFTER_FINISHES 			=> __( 'Subscription - After expired', 'membership2' ),
+			self::COMM_TYPE_CANCELLED 				=> __( 'Subscription - Cancelled', 'membership2' ),
+			self::COMM_TYPE_BEFORE_TRIAL_FINISHES 	=> __( 'Subscription - Trial finished', 'membership2' ),
+			self::COMM_TYPE_INFO_UPDATE 			=> __( 'Payment - Profile updated', 'membership2' ),
+			self::COMM_TYPE_CREDIT_CARD_EXPIRE 		=> __( 'Payment - Credit Card expires', 'membership2' ),
+			self::COMM_TYPE_INVOICE 				=> __( 'Payment - Receipt/Invoice', 'membership2' ),
+			self::COMM_TYPE_FAILED_PAYMENT 			=> __( 'Payment - Failed', 'membership2' ),
+			self::COMM_TYPE_BEFORE_PAYMENT_DUE 		=> __( 'Payment - Before due', 'membership2' ),
+			self::COMM_TYPE_AFTER_PAYMENT_DUE 		=> __( 'Payment - After due', 'membership2' ),
 		);
 
 		foreach ( $type_titles as $type => $title ) {
@@ -503,10 +503,10 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				0 => array(),
 			);
 			$args = array(
-				'post_type' => self::get_post_type(),
-				'post_status' => 'any',
-				'fields' => 'ids',
-				'posts_per_page' => -1,
+				'post_type' 		=> self::get_post_type(),
+				'post_status' 		=> 'any',
+				'fields' 			=> 'ids',
+				'posts_per_page' 	=> -1,
 			);
 
 			MS_Factory::select_blog();
@@ -597,9 +597,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return MS_Model_Communication The communication object.
 	 */
 	public static function get_communication( $type, $membership = null, $no_fallback = false ) {
-		$comm = null;
-		$key = 'all';
-		$comm_id = 0;
+		$comm 		= null;
+		$key 		= 'all';
+		$comm_id 	= 0;
 
 		/*
 		 * If the Membership specific communication is not defined or it
@@ -630,17 +630,17 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$comm_id = self::$Communication_IDs[ $key ][ $type ];
 			} else {
 				$args = array(
-					'post_type' => self::get_post_type(),
-					'post_status' => 'any',
-					'fields' => 'ids',
-					'posts_per_page' => 1,
-					'post_parent' => $membership_id,
-					'meta_query' => array(
-						array(
-							'key' => 'type',
-							'value' => $type,
-							'compare' => '=',
-						),
+					'post_type' 		=> self::get_post_type(),
+					'post_status' 		=> 'any',
+					'fields' 			=> 'ids',
+					'posts_per_page' 	=> 1,
+					'post_parent' 		=> $membership_id,
+					'meta_query' 		=> array(
+							array(
+								'key' 		=> 'type',
+								'value' 	=> $type,
+								'compare' 	=> '=',
+							),
 					),
 				);
 
@@ -703,21 +703,21 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	public function __construct() {
 		$this->comm_vars = array(
-			self::COMM_VAR_MS_NAME => __( 'Subscription: Membership Name', 'membership2' ),
-			self::COMM_VAR_MS_DESCRIPTION => __( 'Subscription: Membership Description', 'membership2' ),
-			self::COMM_VAR_MS_REMAINING_DAYS => __( 'Subscription: Remaining days', 'membership2' ),
-			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS => __( 'Subscription: Remaining trial days', 'membership2' ),
-			self::COMM_VAR_MS_EXPIRY_DATE => __( 'Subscription: Expiration date', 'membership2' ),
-			self::COMM_VAR_MS_INVOICE => __( 'Subscription: Current Invoice', 'membership2' ),
-			self::COMM_VAR_USER_DISPLAY_NAME => __( 'User: Display name', 'membership2' ),
-			self::COMM_VAR_USER_FIRST_NAME => __( 'User: First name', 'membership2' ),
-			self::COMM_VAR_USER_LAST_NAME => __( 'User: Last name', 'membership2' ),
-			self::COMM_VAR_USERNAME => __( 'User: Login name', 'membership2' ),
-			self::COMM_VAR_PASSWORD => __( 'User: Password', 'membership2' ),
-			self::COMM_VAR_RESETURL => __( 'User: Reset Password URL', 'membership2' ),
-			self::COMM_VAR_MS_ACCOUNT_PAGE_URL => __( 'Site: User Account URL', 'membership2' ),
-			self::COMM_VAR_BLOG_NAME => __( 'Site: Name', 'membership2' ),
-			self::COMM_VAR_BLOG_URL => __( 'Site: URL', 'membership2' ),
+			self::COMM_VAR_MS_NAME 					=> __( 'Subscription: Membership Name', 'membership2' ),
+			self::COMM_VAR_MS_DESCRIPTION 			=> __( 'Subscription: Membership Description', 'membership2' ),
+			self::COMM_VAR_MS_REMAINING_DAYS 		=> __( 'Subscription: Remaining days', 'membership2' ),
+			self::COMM_VAR_MS_REMAINING_TRIAL_DAYS 	=> __( 'Subscription: Remaining trial days', 'membership2' ),
+			self::COMM_VAR_MS_EXPIRY_DATE 			=> __( 'Subscription: Expiration date', 'membership2' ),
+			self::COMM_VAR_MS_INVOICE 				=> __( 'Subscription: Current Invoice', 'membership2' ),
+			self::COMM_VAR_USER_DISPLAY_NAME 		=> __( 'User: Display name', 'membership2' ),
+			self::COMM_VAR_USER_FIRST_NAME 			=> __( 'User: First name', 'membership2' ),
+			self::COMM_VAR_USER_LAST_NAME 			=> __( 'User: Last name', 'membership2' ),
+			self::COMM_VAR_USERNAME 				=> __( 'User: Login name', 'membership2' ),
+			self::COMM_VAR_PASSWORD 				=> __( 'User: Password', 'membership2' ),
+			self::COMM_VAR_RESETURL 				=> __( 'User: Reset Password URL', 'membership2' ),
+			self::COMM_VAR_MS_ACCOUNT_PAGE_URL 		=> __( 'Site: User Account URL', 'membership2' ),
+			self::COMM_VAR_BLOG_NAME 				=> __( 'Site: Name', 'membership2' ),
+			self::COMM_VAR_BLOG_URL 				=> __( 'Site: URL', 'membership2' ),
 		);
 
 		$has_membership = true;
@@ -747,7 +747,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		if ( is_multisite() ) {
 			$this->comm_vars[ self::COMM_VAR_NET_NAME ] = __( 'Network: Name', 'membership2' );
-			$this->comm_vars[ self::COMM_VAR_NET_URL ] = __( 'Network: URL', 'membership2' );
+			$this->comm_vars[ self::COMM_VAR_NET_URL ] 	= __( 'Network: URL', 'membership2' );
 		}
 	}
 
@@ -769,9 +769,9 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since  1.0.1.0
 	 */
 	public function save_post_data( $post ) {
-		$post['post_content'] = $this->message;
-		$post['post_excerpt'] = $this->message;
-		$post['post_parent'] = intval( $this->membership_id );
+		$post['post_content'] 	= $this->message;
+		$post['post_excerpt'] 	= $this->message;
+		$post['post_parent'] 	= intval( $this->membership_id );
 		return $post;
 	}
 
@@ -782,8 +782,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since  1.0.1.0
 	 */
 	public function load_post_data( $post ) {
-		$this->message = $post->post_content;
-		$this->membership_id = intval( $post->post_parent );
+		$this->message 			= $post->post_content;
+		$this->membership_id 	= intval( $post->post_parent );
 	}
 
 	/**
@@ -1136,19 +1136,19 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return bool True if successfully sent email.
 	 */
 	public function send_message( $reference ) {
-		$user_id = 0;
-		$subscription = null;
-		$member = null;
-		$sent = false;
+		$user_id 		= 0;
+		$subscription 	= null;
+		$member 		= null;
+		$sent 			= false;
 
 		if ( $reference instanceof MS_Model_Relationship ) {
-			$user_id = $reference->user_id;
-			$subscription = $reference;
-			$member = $subscription->get_member();
+			$user_id 		= $reference->user_id;
+			$subscription 	= $reference;
+			$member 		= $subscription->get_member();
 		} elseif ( $reference instanceof MS_Model_Member ) {
-			$user_id = $reference->id;
-			$member = $reference;
-			$subscription = null;
+			$user_id 		= $reference->id;
+			$member			= $reference;
+			$subscription 	= null;
 		}
 
 		/**
@@ -1358,8 +1358,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * }
 	 */
 	public function get_comm_vars( $subscription, $member ) {
-		$currency = MS_Plugin::instance()->settings->currency . ' ';
-		$invoice = null;
+		$currency 	= MS_Plugin::instance()->settings->currency . ' ';
+		$invoice 	= null;
 		$membership = null;
 
 		if ( $subscription && $subscription instanceof MS_Model_Relationship ) {

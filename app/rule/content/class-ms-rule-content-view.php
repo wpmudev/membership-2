@@ -16,7 +16,7 @@ class MS_Rule_Content_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Comments & More Tag', 'membership2' ),
-				'desc' => __( 'Decide how to protect Comments and More Tag contents.', 'membership2' ),
+				'desc' 	=> __( 'Decide how to protect Comments and More Tag contents.', 'membership2' ),
 			),
 			MS_Rule_Content::RULE_ID,
 			$this

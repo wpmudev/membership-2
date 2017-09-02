@@ -146,8 +146,8 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 
 		if ( ! empty( self::$denied_ids ) ) {
 			// Remove duplicate entries from the ID arrays.
-			self::$denied_ids = array_unique( self::$denied_ids, SORT_NUMERIC );
-			self::$allowed_ids = array_unique( self::$allowed_ids, SORT_NUMERIC );
+			self::$denied_ids 	= array_unique( self::$denied_ids, SORT_NUMERIC );
+			self::$allowed_ids 	= array_unique( self::$allowed_ids, SORT_NUMERIC );
 
 			// Remove any post that is allowed from the denied_ids list.
 			self::$denied_ids = array_diff(
@@ -160,8 +160,8 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 			}
 		}
 
-		self::$denied_ids = array();
-		self::$allowed_ids = array();
+		self::$denied_ids 	= array();
+		self::$allowed_ids 	= array();
 
 		do_action(
 			'ms_rule_custom_post_type_protect_posts',
@@ -247,9 +247,9 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 	 */
 	public function get_content_count( $args = null ) {
 		unset( $args['posts_per_page'] );
-		$args = $this->get_query_args( $args );
-		$items = get_posts( $args );
-		$count = count( $items );
+		$args 	= $this->get_query_args( $args );
+		$items 	= get_posts( $args );
+		$count 	= count( $items );
 
 		return apply_filters(
 			'ms_rule_custom_post_type_gget_content_count',
@@ -275,14 +275,14 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 			return array();
 		}
 
-		$args = $this->get_query_args( $args );
-		$contents = get_posts( $args );
-		$result = array();
+		$args 		= $this->get_query_args( $args );
+		$contents 	= get_posts( $args );
+		$result 	= array();
 
 		foreach ( $contents as $content ) {
-			$content->id = $content->ID;
-			$content->type = MS_Rule_CptItem::RULE_ID;
-			$content->access = $this->get_rule_value( $content->id );
+			$content->id 		= $content->ID;
+			$content->type 		= MS_Rule_CptItem::RULE_ID;
+			$content->access 	= $this->get_rule_value( $content->id );
 
 			$result[ $content->id ] = $content;
 		}

@@ -166,11 +166,11 @@ class MS_Model_Communicationlog extends MS_Model_CustomPostType {
 	 */
 	public static function get_query_args( $args ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'post_status' => 'any',
-			'fields' => 'ids',
-			'order' => 'DESC',
-			'orderby' => 'ID',
+			'post_type' 	=> self::get_post_type(),
+			'post_status' 	=> 'any',
+			'fields' 		=> 'ids',
+			'order' 		=> 'DESC',
+			'orderby' 		=> 'ID',
 			'posts_per_page' => 20,
 		);
 

@@ -233,13 +233,13 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 			if ( ! empty( $items ) ) {
 				foreach ( $items as $item ) {
 					$item_id = $item->ID;
-					$contents[ $item_id ] = $item;
-					$contents[ $item_id ]->id = $item_id;
-					$contents[ $item_id ]->title = esc_html( $item->title );
-					$contents[ $item_id ]->name = esc_html( $item->title );
-					$contents[ $item_id ]->parent_id = $menu_id;
-					$contents[ $item_id ]->type = MS_Rule_MenuItem::RULE_ID;
-					$contents[ $item_id ]->access = $this->get_rule_value( $contents[ $item_id ]->id );
+					$contents[ $item_id ] 				= $item;
+					$contents[ $item_id ]->id 			= $item_id;
+					$contents[ $item_id ]->title 		= esc_html( $item->title );
+					$contents[ $item_id ]->name 		= esc_html( $item->title );
+					$contents[ $item_id ]->parent_id 	= $menu_id;
+					$contents[ $item_id ]->type 		= MS_Rule_MenuItem::RULE_ID;
+					$contents[ $item_id ]->access 		= $this->get_rule_value( $contents[ $item_id ]->id );
 				}
 			}
 		}
@@ -310,7 +310,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 
 				$contents[ $nav->term_id ] = array(
 					'label' => $nav->name,
-					'url' => $menu_url,
+					'url' 	=> $menu_url,
 					'count' => $total,
 				);
 			}

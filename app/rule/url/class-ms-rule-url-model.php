@@ -242,13 +242,13 @@ class MS_Rule_Url_Model extends MS_Rule {
 				continue;
 			}
 
-			$content = new StdClass();
-			$content->id = $hash;
-			$content->type = MS_Rule_Url::RULE_ID;
-			$content->name = $protected_urls[$hash];
-			$content->url = $protected_urls[$hash];
-			$content->access = $this->get_rule_value( $content->id );
-			$contents[] = $content;
+			$content 			= new StdClass();
+			$content->id 		= $hash;
+			$content->type 		= MS_Rule_Url::RULE_ID;
+			$content->name 		= $protected_urls[$hash];
+			$content->url 		= $protected_urls[$hash];
+			$content->access 	= $this->get_rule_value( $content->id );
+			$contents[] 		= $content;
 		}
 
 		return apply_filters(
@@ -279,8 +279,8 @@ class MS_Rule_Url_Model extends MS_Rule {
 		if ( empty( $access ) ) {
 			$this->delete_url( $hash );
 		} else {
-			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
-			$url = $base_rule->get_url_from_hash( $hash );
+			$base_rule 	= MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$url 		= $base_rule->get_url_from_hash( $hash );
 			$this->add_url( $url );
 		}
 
@@ -375,7 +375,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 		static $Protected_Urls = null;
 
 		if ( null === $Protected_Urls ) {
-			$base_rule = MS_Model_Membership::get_base()->get_rule( $this->rule_type );
+			$base_rule 		= MS_Model_Membership::get_base()->get_rule( $this->rule_type );
 			$Protected_Urls = $base_rule->rule_value;
 		}
 

@@ -135,9 +135,9 @@ class MS_Rule_Special_Model extends MS_Rule {
 			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES ) ) {
 				$this->_has_rule = false;
 			} else {
-				$base = $this->get_membership()->get_base();
-				$base_rule = $base->get_rule( $this->rule_type );
-				$this->_has_rule = $this->check_current_page( $base_rule->rule_value );
+				$base 				= $this->get_membership()->get_base();
+				$base_rule 			= $base->get_rule( $this->rule_type );
+				$this->_has_rule 	= $this->check_current_page( $base_rule->rule_value );
 			}
 		}
 
@@ -165,19 +165,19 @@ class MS_Rule_Special_Model extends MS_Rule {
 			 * so we have to define a hierarchy which flag is actually used.
 			 */
 			switch ( $key ) {
-				case 'front': $result = is_front_page(); break;
-				case 'home': $result = is_home(); break;
-				case 'notfound': $result = is_404(); break;
-				case 'search': $result = is_search(); break;
-				case 'attachment': $result = is_attachment(); break;
-				case 'single': $result = is_singular(); break;
-				case 'archive': $result = is_archive(); break;
-				case 'author': $result = is_author(); break;
-				case 'date': $result = is_date(); break;
-				case 'year': $result = is_year(); break;
-				case 'month': $result = is_month(); break;
-				case 'day': $result = is_day(); break;
-				case 'time': $result = is_time(); break;
+				case 'front': $result 		= is_front_page(); break;
+				case 'home': $result 		= is_home(); break;
+				case 'notfound': $result 	= is_404(); break;
+				case 'search': $result 		= is_search(); break;
+				case 'attachment': $result 	= is_attachment(); break;
+				case 'single': $result 		= is_singular(); break;
+				case 'archive': $result 	= is_archive(); break;
+				case 'author': $result 		= is_author(); break;
+				case 'date': $result 		= is_date(); break;
+				case 'year': $result 		= is_year(); break;
+				case 'month': $result 		= is_month(); break;
+				case 'day': $result 		= is_day(); break;
+				case 'time': $result 		= is_time(); break;
 			}
 
 			if ( $result ) {
@@ -203,76 +203,75 @@ class MS_Rule_Special_Model extends MS_Rule {
 	protected function get_special_pages() {
 		if ( ! is_array( $this->_content ) ) {
 			$this->_content = array();
-			$front_type = get_option( 'show_on_front' );
-
-			$front_url = MS_Helper_Utility::home_url( '/' );
+			$front_type 	= get_option( 'show_on_front' );
+			$front_url 		= MS_Helper_Utility::home_url( '/' );
 			if ( 'page' === $front_type ) {
 				$home_url = get_permalink( get_option( 'page_for_posts' ) );
 			} else {
 				$home_url = $front_url;
 			}
 
-			$arch_year = get_year_link( '' );
+			$arch_year 	= get_year_link( '' );
 			$arch_month = get_month_link( '', '' );
-			$arch_day = get_day_link( '', '', '' );
-			$arch_hour = esc_url_raw(
+			$arch_day 	= get_day_link( '', '', '' );
+			$arch_hour 	= esc_url_raw(
 				add_query_arg( 'hour', '15', $arch_day )
 			);
 
 			// Archive pages
 			$this->_content['archive'] = (object) array(
 				'label' => __( 'Any Archive page', 'membership2' ),
-				'url' => '',
+				'url' 	=> '',
 			);
 			$this->_content['author'] = (object) array(
 				'label' => __( 'Author Archives', 'membership2' ),
-				'url' => '',
+				'url' 	=> '',
 			);
 			$this->_content['date'] = (object) array(
 				'label' => __( 'Any Date or Time Archive', 'membership2' ),
-				'url' => '',
+				'url' 	=> '',
 			);
 			$this->_content['year'] = (object) array(
 				'label' => __( 'Archive: Year', 'membership2' ),
-				'url' => $arch_year,
+				'url' 	=> $arch_year,
 			);
 			$this->_content['month'] = (object) array(
 				'label' => __( 'Archive: Month', 'membership2' ),
-				'url' => $arch_month,
+				'url' 	=> $arch_month,
 			);
 			$this->_content['day'] = (object) array(
 				'label' => __( 'Archive: Day', 'membership2' ),
-				'url' => $arch_day,
+				'url' 	=> $arch_day,
 			);
 			$this->_content['time'] = (object) array(
 				'label' => __( 'Archive: Time', 'membership2' ),
-				'url' => $arch_hour,
+				'url' 	=> $arch_hour,
 			);
 
 			// Singular pages
 			$this->_content['front'] = (object) array(
 				'label' => __( 'Front Page', 'membership2' ),
-				'url' => $front_url,
+				'url' 	=> $front_url,
 			);
 			$this->_content['home'] = (object) array(
 				'label' => __( 'Blog Index', 'membership2' ),
-				'url' => $home_url,
+				'url' 	=> $home_url,
 			);
 			$this->_content['notfound'] = (object) array(
 				'label' => __( '404 Not Found', 'membership2' ),
-				'url' => '',
+				'url' 	=> '',
 			);
 			$this->_content['search'] = (object) array(
 				'label' => __( 'Search Results', 'membership2' ),
-				'url' => '',
+				'url' 	=> '',
 			);
 			$this->_content['single'] = (object) array(
 				'label' => __( 'Any single page or post', 'membership2' ),
-				'url' => '',
+				'url' 	=> '',
 			);
 			$this->_content['attachment'] = (object) array(
 				'label' => __( 'Any attachment page', 'membership2' ),
-				'url' => '',
+				'url' 	=> '',
 			);
 		}
 
@@ -332,12 +331,12 @@ class MS_Rule_Special_Model extends MS_Rule {
 				}
 			}
 
-			$content->id = $id;
-			$content->type = MS_Rule_Special::RULE_ID;
-			$content->name = $data->label;
-			$content->post_title = $data->label;
-			$content->url = $data->url;
-			$content->access = $this->get_rule_value( $content->id );
+			$content->id 			= $id;
+			$content->type 			= MS_Rule_Special::RULE_ID;
+			$content->name 			= $data->label;
+			$content->post_title 	= $data->label;
+			$content->url 			= $data->url;
+			$content->access 		= $this->get_rule_value( $content->id );
 
 			$contents[ $content->id ] = $content;
 		}
@@ -352,9 +351,9 @@ class MS_Rule_Special_Model extends MS_Rule {
 		}
 
 		if ( ! empty( $args['posts_per_page'] ) ) {
-			$total = $args['posts_per_page'];
-			$offset = ! empty( $args['offset'] ) ? $args['offset'] : 0;
-			$contents = array_slice( $contents, $offset, $total );
+			$total 		= $args['posts_per_page'];
+			$offset 	= ! empty( $args['offset'] ) ? $args['offset'] : 0;
+			$contents 	= array_slice( $contents, $offset, $total );
 		}
 
 		return apply_filters(
