@@ -137,10 +137,10 @@ class MS_Loader {
 			 * Use /app/ path and class-name to build the file-name.
 			 */
 
-			$path_array = explode( '_', $class );
+			$path_array 	= explode( '_', $class );
 			array_shift( $path_array ); // Remove the 'MS' prefix from path.
-			$alt_dir 	= array_pop( $path_array );
-			$sub_path 	= implode( '/', $path_array );
+			$alt_dir 		= array_pop( $path_array );
+			$sub_path 		= implode( '/', $path_array );
 
 			$filename 		= str_replace( '_', '-', 'class-' . $class . '.php' );
 			$file_path 		= trim( strtolower( $sub_path . '/' . $filename ), '/' );

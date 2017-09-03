@@ -41,10 +41,10 @@ class MS_Gateway extends MS_Model_Option {
 	 * @see $mode
 	 * @var string The operation mode.
 	 */
-	const MODE_SANDBOX = 'sandbox';
-	const MODE_LIVE    = 'live';
+	const MODE_SANDBOX 	= 'sandbox';
+	const MODE_LIVE    	= 'live';
 
-	const ID = 'admin';
+	const ID 			= 'admin';
 
 	/**
 	 * Singleton object.
@@ -192,10 +192,10 @@ class MS_Gateway extends MS_Model_Option {
 	 * @return array The updated gateway list.
 	 */
 	public function register( $list ) {
-		$class = get_class( $this );
-		$id = constant( $class . '::ID' );
+		$class 		= get_class( $this );
+		$id 		= constant( $class . '::ID' );
 
-		$list[$id] = $class;
+		$list[$id] 	= $class;
 
 		return $list;
 	}
@@ -413,8 +413,8 @@ class MS_Gateway extends MS_Model_Option {
 	 */
 	public function get_mode_types() {
 		$mode_types = array(
-			self::MODE_LIVE => __( 'Live Site', 'membership2' ),
-			self::MODE_SANDBOX => __( 'Sandbox Mode (test)', 'membership2' ),
+			self::MODE_LIVE 	=> __( 'Live Site', 'membership2' ),
+			self::MODE_SANDBOX 	=> __( 'Sandbox Mode (test)', 'membership2' ),
 		);
 
 		return apply_filters(

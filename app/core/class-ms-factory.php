@@ -102,13 +102,13 @@ class MS_Factory {
 	 * @return object The retrieved model.
 	 */
 	public static function load( $class, $model_id = 0, $context = null ) {
-		$model = null;
-		$class = trim( $class );
-		$model_id = intval( $model_id );
+		$model 		= null;
+		$class 		= trim( $class );
+		$model_id 	= intval( $model_id );
 
 		$key = strtolower( $class . '-' . $model_id );
 		if ( null !== $context ) {
-			$key .= '-' . $context;
+			$key 	.= '-' . $context;
 		}
 
 		if ( class_exists( $class ) && ! isset( self::$Singleton[$key] ) ) {
@@ -217,8 +217,8 @@ class MS_Factory {
 	 * @param  MS_Hook &$obj Any Membership2 object to initialize.
 	 */
 	static private function prepare_obj( &$obj ) {
-		static $Init_Obj = array();
-		static $Init_Class = array();
+		static $Init_Obj 	= array();
+		static $Init_Class 	= array();
 
 		// This case only happens during plugin-updates but needs to be handled.
 		if ( is_a( $obj, '__PHP_Incomplete_Class' ) ) {
@@ -257,13 +257,13 @@ class MS_Factory {
 	 * @return MS_Model_Option The retrieved object.
 	 */
 	protected static function load_from_wp_option( $model ) {
-		$class = get_class( $model );
+		$class 		= get_class( $model );
 
 		$option_key = $model->option_key();
-		$cache = wp_cache_get( $option_key, 'MS_Model_Option' );
+		$cache 		= wp_cache_get( $option_key, 'MS_Model_Option' );
 
 		if ( $cache ) {
-			$model = $cache;
+			$model 	= $cache;
 		} else {
 			$settings = self::get_option( $option_key );
 			self::populate_model( $model, $settings );
@@ -332,10 +332,10 @@ class MS_Factory {
 				$post = get_post( $model_id );
 
 				if ( ! empty( $post ) && $model->get_post_type() === $post->post_type ) {
-					$post_meta = get_post_meta( $model_id );
-					$post_meta['id'] = array( $post->ID );
-					$post_meta['description'] = array( $post->post_content );
-					$post_meta['user_id'] = array( $post->post_author );
+					$post_meta 					= get_post_meta( $model_id );
+					$post_meta['id'] 			= array( $post->ID );
+					$post_meta['description'] 	= array( $post->post_content );
+					$post_meta['user_id'] 		= array( $post->post_author );
 					self::populate_model( $model, $post_meta, true );
 
 					/**
@@ -386,13 +386,13 @@ class MS_Factory {
 			if ( ! empty( $wp_user->ID ) ) {
 				$member_details = get_user_meta( $user_id );
 
-				$model->id = $wp_user->ID;
-				$model->username = $wp_user->user_login;
-				$model->email = $wp_user->user_email;
-				$model->name = $wp_user->display_name;
-				$model->first_name = $wp_user->first_name;
-				$model->last_name = $wp_user->last_name;
-				$model->wp_user = $wp_user;
+				$model->id 			= $wp_user->ID;
+				$model->username 	= $wp_user->user_login;
+				$model->email 		= $wp_user->user_email;
+				$model->name 		= $wp_user->display_name;
+				$model->first_name 	= $wp_user->first_name;
+				$model->last_name 	= $wp_user->last_name;
+				$model->wp_user 	= $wp_user;
 
 				if ( ! $model->name ) {
 					if ( $model->first_name ) {
@@ -457,16 +457,16 @@ class MS_Factory {
 	 * @param  bool $postmeta
 	 */
 	static public function populate_model( &$model, $settings, $postmeta = false ) {
-		$fields = $model->get_object_vars();
-		$class = get_class( $model );
-		$vars = get_class_vars( $class );
+		$fields 	= $model->get_object_vars();
+		$class 		= get_class( $model );
+		$vars 		= get_class_vars( $class );
 		$saved_data = array();
 
-		$ignore = isset( $vars['ignore_fields'] ) ? $vars['ignore_fields'] : array();
-		$ignore[] = 'instance'; // Don't deserialize the double-serialized model!
-		$ignore[] = 'actions';
-		$ignore[] = 'filters';
-		$ignore[] = 'ignore_fields';
+		$ignore 	= isset( $vars['ignore_fields'] ) ? $vars['ignore_fields'] : array();
+		$ignore[] 	= 'instance'; // Don't deserialize the double-serialized model!
+		$ignore[] 	= 'actions';
+		$ignore[] 	= 'filters';
+		$ignore[] 	= 'ignore_fields';
 		if ( !empty( $model->current_invoice_number ) ) {
 			$ignore[] = 'current_invoice_number';
 		}
@@ -547,9 +547,9 @@ class MS_Factory {
 	 * @return array
 	 */
 	static public function serialize_model( &$model ) {
-		$data = array();
+		$data 	= array();
 		$ignore = array();
-		$class = get_class( $model );
+		$class 	= get_class( $model );
 
 		if ( is_object( $model ) ) {
 			if ( method_exists( $model, '__sleep' ) ) {
@@ -558,13 +558,13 @@ class MS_Factory {
 				$fields = $model->get_object_vars();
 			}
 
-			$vars = get_class_vars( get_class( $model ) );
+			$vars 		= get_class_vars( get_class( $model ) );
 
-			$ignore = isset( $vars['ignore_fields'] ) ? $vars['ignore_fields'] : array();
-			$ignore[] = 'instance'; // Don't double-serialize the model!
-			$ignore[] = 'actions';
-			$ignore[] = 'filters';
-			$ignore[] = 'ignore_fields';
+			$ignore 	= isset( $vars['ignore_fields'] ) ? $vars['ignore_fields'] : array();
+			$ignore[] 	= 'instance'; // Don't double-serialize the model!
+			$ignore[] 	= 'actions';
+			$ignore[] 	= 'filters';
+			$ignore[] 	= 'ignore_fields';
 		} else {
 			// Value does not need to be serialized.
 			return $model;
@@ -727,12 +727,7 @@ class MS_Factory {
 			}
 			self::$Prev_Blog_Id[] = $GLOBALS['blog_id'];
 
-			/*if ( $GLOBALS['blog_id'] != $site_id ) {
-				$GLOBALS['blog_id'] = $site_id;
-				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
-				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
-			}*/
-                        switch_to_blog( $site_id );
+			switch_to_blog( $site_id );
 		}
 	}
 
@@ -747,13 +742,7 @@ class MS_Factory {
 		if ( MS_Plugin::is_network_wide() ) {
 			$site_id = array_pop( self::$Prev_Blog_Id );
 
-			/*if ( $site_id != $GLOBALS['blog_id'] ) {
-				$GLOBALS['blog_id'] = $site_id;
-				$wpdb->set_blog_id( $GLOBALS['blog_id'] );
-				$GLOBALS['table_prefix'] = $wpdb->get_blog_prefix();
-			}*/
-                        
-                        restore_current_blog();
+			restore_current_blog();
 		}
 	}
 

@@ -39,16 +39,13 @@ abstract class MS_Addon extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 
-		self::$model = MS_Factory::load( 'MS_Model_Addon' );
+		self::$model 	= MS_Factory::load( 'MS_Model_Addon' );
 		self::$settings = MS_Factory::load( 'MS_Model_Settings' );
 
 		$this->add_filter( 'ms_model_addon_register', 'register' );
 		$this->add_action( 'ms_model_addon_initialize', 'init_addon' );
 
-		$this->add_ajax_action(
-			$this->ajax_action(),
-			'ajax_update_settings'
-		);
+		$this->add_ajax_action( $this->ajax_action(), 'ajax_update_settings' );
 	}
 
 	/**
@@ -119,7 +116,7 @@ abstract class MS_Addon extends MS_Controller {
 	 * @since  1.0.1.0
 	 */
 	public function ajax_update_settings() {
-		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		$msg 	= MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
 		$fields = array( 'field', 'value' );
 
 		if ( $this->verify_nonce()

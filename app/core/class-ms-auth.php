@@ -43,10 +43,10 @@ class MS_Auth {
                     $user_signon = wp_signon( $info, false );
 
                     if ( is_wp_error( $user_signon ) ) {
-                        $resp['error'] = __( 'Wrong username or password', 'membership2' );
+                        $resp['error'] 		= __( 'Wrong username or password', 'membership2' );
                     } else {
-                        $resp['loggedin'] = true;
-                        $resp['success'] = __( 'Logging in...', 'membership2' );
+                        $resp['loggedin'] 	= true;
+                        $resp['success'] 	= __( 'Logging in...', 'membership2' );
 
                         /**
                         * Allows a custom redirection after login.

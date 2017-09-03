@@ -255,8 +255,8 @@ class MS_Rule extends MS_Model {
 			// Some rules have no site_id prefix (like URL rules)
 			if ( 2 == count( $parts ) ) {
 				list( $site_id, $type ) = $parts;
-				$site_id = intval( $site_id );
-				$res = (MS_Factory::current_blog_id() == $site_id );
+				$site_id 	= intval( $site_id );
+				$res 		= (MS_Factory::current_blog_id() == $site_id );
 			}
 		}
 
@@ -333,7 +333,7 @@ class MS_Rule extends MS_Model {
 	public function prepare_rule( $subscription = false ) {
 		if ( $subscription ) {
 			$this->_subscription_id = $subscription->id;
-			$this->membership_id = $subscription->membership_id;
+			$this->membership_id 	= $subscription->membership_id;
 		}
 
 		do_action(
@@ -502,10 +502,10 @@ class MS_Rule extends MS_Model {
 				) {
 					$this->give_access( $data['id'] );
 					$this->dripped[ $data['id'] ] = array(
-						'type' => $data['dripped'][0],
-						'date' => $data['dripped'][1],
-						'delay_unit' => $data['dripped'][2],
-						'delay_type' => $data['dripped'][3],
+						'type' 			=> $data['dripped'][0],
+						'date' 			=> $data['dripped'][1],
+						'delay_unit' 	=> $data['dripped'][2],
+						'delay_type' 	=> $data['dripped'][3],
 					);
 				}
 			}
@@ -632,7 +632,7 @@ class MS_Rule extends MS_Model {
 			if ( $only_this && MS_Model_Rule::RULE_VALUE_UNDEFINED === $access ) {
 				// NULL .. "not-denied" is translated to "allowed"
 				$access = true;
-                        }
+            }
 		}
 
 		if ( $only_this ) {
@@ -691,10 +691,10 @@ class MS_Rule extends MS_Model {
 		$this->dripped[ $item_id ] = apply_filters(
 			'ms_rule_set_dripped_value',
 			array(
-				'type' => $drip_type,
-				'date' => $date,
-				'delay_unit' => $delay_unit,
-				'delay_type' => $delay_type,
+				'type' 			=> $drip_type,
+				'date' 			=> $date,
+				'delay_unit' 	=> $delay_unit,
+				'delay_type' 	=> $delay_type,
 			),
 			$this
 		);
@@ -738,9 +738,9 @@ class MS_Rule extends MS_Model {
 						$start_date = MS_Helper_Period::current_date( null, false );
 					}
 
-					$period_unit = $drip_data['delay_unit'];
-					$period_type = $drip_data['delay_type'];
-					$avail_date = MS_Helper_Period::add_interval(
+					$period_unit 	= $drip_data['delay_unit'];
+					$period_type 	= $drip_data['delay_type'];
+					$avail_date 	= MS_Helper_Period::add_interval(
 						$period_unit,
 						$period_type,
 						$start_date
@@ -846,11 +846,11 @@ class MS_Rule extends MS_Model {
 		}
 
 		$args['posts_per_page'] = 0;
-		$args['offset'] = false;
-		$total = $this->get_content_count( $args );
-		$contents = $this->get_contents( $args );
-		$count_accessible = 0;
-		$count_restricted = 0;
+		$args['offset'] 		= false;
+		$total 					= $this->get_content_count( $args );
+		$contents 				= $this->get_contents( $args );
+		$count_accessible 		= 0;
+		$count_restricted 		= 0;
 
 		if ( ! is_array( $this->rule_value ) ) {
 			$this->rule_value = array();
@@ -871,9 +871,9 @@ class MS_Rule extends MS_Model {
 		}
 
 		$count = array(
-			'total' => $total,
-			'accessible' => $count_accessible,
-			'restricted' => $count_restricted,
+			'total' 		=> $total,
+			'accessible' 	=> $count_accessible,
+			'restricted' 	=> $count_restricted,
 		);
 
 		return apply_filters( 'ms_rule_count_item_access', $count );
@@ -1091,11 +1091,11 @@ class MS_Rule extends MS_Model {
 		switch ( $args_type ) {
 			case 'get_pages':
 				$defaults = array(
-					'number' => false,
-					'hierarchical' => 1,
-					'sort_column' => 'post_title',
-					'sort_order' => 'ASC',
-					'post_type' => 'page',
+					'number' 		=> false,
+					'hierarchical' 	=> 1,
+					'sort_column' 	=> 'post_title',
+					'sort_order' 	=> 'ASC',
+					'post_type' 	=> 'page',
 				);
 				$args['exclude'] = $filter->exclude;
 				$args['include'] = $filter->include;
@@ -1118,12 +1118,12 @@ class MS_Rule extends MS_Model {
 			case 'wp_query':
 			default:
 				$defaults = array(
-					'posts_per_page' => -1,
-					'ignore_sticky_posts' => true,
-					'offset' => 0,
-					'orderby' => 'ID',
-					'order' => 'DESC',
-					'post_status' => 'publish',
+					'posts_per_page' 		=> -1,
+					'ignore_sticky_posts' 	=> true,
+					'offset'		 		=> 0,
+					'orderby' 				=> 'ID',
+					'order' 				=> 'DESC',
+					'post_status' 			=> 'publish',
 				);
 				$args['post__not_in'] = $filter->exclude;
 				$args['post__in'] = $filter->include;
@@ -1156,9 +1156,9 @@ class MS_Rule extends MS_Model {
 	 */
 	public function get_exclude_include( $args ) {
 		// Filter for Membership and Protection status via 'exclude'/'include'
-		$include = array();
-		$exclude = array();
-		$base_rule = $this;
+		$include 	= array();
+		$exclude 	= array();
+		$base_rule 	= $this;
 		$child_rule = $this;
 
 		if ( ! $this->is_base_rule ) {
@@ -1172,8 +1172,8 @@ class MS_Rule extends MS_Model {
 			$child_rule = $child_membership->get_rule( $this->rule_type );
 		}
 
-		$base_items = array_keys( $base_rule->rule_value, true );
-		$child_items = array_keys( $child_rule->rule_value, true );
+		$base_items 	= array_keys( $base_rule->rule_value, true );
+		$child_items 	= array_keys( $child_rule->rule_value, true );
 
 		$status = ! empty( $args['rule_status'] ) ? $args['rule_status'] : null;
 

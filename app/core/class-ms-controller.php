@@ -152,7 +152,7 @@ class MS_Controller extends MS_Hooker {
 	 * @return bool True all fields are validated
 	 */
 	static public function validate_required( $fields, $request_method = 'POST', $not_empty = true ) {
-		$validated = true;
+		$validated 		= true;
 		$request_fields = null;
 
 		switch ( $request_method ) {
@@ -204,7 +204,7 @@ class MS_Controller extends MS_Hooker {
 	 * @return mixed The value of the request field.
 	 */
 	static public function get_request_field( $id, $default = '', $request_method = 'POST' ) {
-		$value = $default;
+		$value 			= $default;
 		$request_fields = null;
 
 		switch ( $request_method ) {
@@ -285,8 +285,8 @@ class MS_Controller extends MS_Hooker {
 	 * @param  string $code Optional error code
 	 */
 	protected function _resp_err( $code = '' ) {
-		$this->_resp_valid = false;
-		$this->_resp_code = (string) $code;
+		$this->_resp_valid 	= false;
+		$this->_resp_code 	= (string) $code;
 	}
 
 }
