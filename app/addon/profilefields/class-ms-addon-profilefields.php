@@ -54,10 +54,10 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Profile Fields', 'membership2' ),
-			'description' => __( 'Customize fields in the user profile and registration form.', 'membership2' ),
-			'icon' => 'dashicons dashicons-id',
-			'action' => array( __( 'Pro Version', 'membership2' ) ),
+			'name' 			=> __( 'Profile Fields', 'membership2' ),
+			'description' 	=> __( 'Customize fields in the user profile and registration form.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-id',
+			'action' 		=> array( __( 'Pro Version', 'membership2' ) ),
 		);
 
 		return $list;

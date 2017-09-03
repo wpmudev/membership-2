@@ -523,15 +523,18 @@ class MS_Rule_Media_Model extends MS_Rule {
 					if( $protection_type == self::PROTECTION_TYPE_COMPLETE ){
 						
 						$request_name 	= basename( $attachment_id ); // Get the name of the requested file
-
 						$request_name 	= pathinfo( $request_name ); // Get the info the of the requested file
 						
-						$attachment_id 	= str_replace( 'ms_','',$request_name['filename'] ); // Remove the prefix since we always have ms_ and get the attachment id.
+						if ( isset( $request_name['filename'] ) ) {
+							$attachment_id 	= str_replace( 'ms_', '', $request_name['filename'] ); // Remove the prefix since we always have ms_ and get the attachment id.
+						}
 					}
+					
+					if ( $attachment_id ){
+						$attachment_id = ( int ) $attachment_id - ( int ) self::FILE_PROTECTION_INCREMENT;
 
-					$attachment_id = ( int ) $attachment_id - ( int ) self::FILE_PROTECTION_INCREMENT;
-
-					$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
+						$the_file = $this->restore_filename( $attachment_id, $f_info->size_extension );
+					}
 					break;
 
 				default:

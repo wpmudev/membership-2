@@ -13,7 +13,7 @@ class MS_Addon_BuddyPress_Rule_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'BuddyPress', 'membership2' ),
-				'desc' => __( 'Protect the following BuddyPress content.', 'membership2' ),
+				'desc' 	=> __( 'Protect the following BuddyPress content.', 'membership2' ),
 			),
 			MS_Addon_BuddyPress_Rule::RULE_ID,
 			$this

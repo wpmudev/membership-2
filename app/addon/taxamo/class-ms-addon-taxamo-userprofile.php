@@ -53,14 +53,14 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 		$invoice_id = false;
 
 		if ( isset( $this->data['invoice'] ) ) {
-			$invoice = $this->data['invoice'];
+			$invoice 	= $this->data['invoice'];
 			$invoice_id = $invoice->id;
 		}
 
-		$profile = MS_Addon_Taxamo_Api::get_tax_profile();
-		$countries = MS_Addon_Taxamo_Api::get_country_codes();
-		$action = MS_Addon_Taxamo::AJAX_SAVE_USERPROFILE;
-		$nonce = wp_create_nonce( $action );
+		$profile 	= MS_Addon_Taxamo_Api::get_tax_profile();
+		$countries 	= MS_Addon_Taxamo_Api::get_country_codes();
+		$action 	= MS_Addon_Taxamo::AJAX_SAVE_USERPROFILE;
+		$nonce 		= wp_create_nonce( $action );
 
 		$country_options = array(
 			'auto' => sprintf(
@@ -102,49 +102,49 @@ class MS_Addon_Taxamo_Userprofile extends MS_View {
 			),
 		);
 		$fields['detected_country'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'id' => 'detected_country',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> 'detected_country',
 			'value' => $profile->detected_country->code,
 		);
 		$fields['country_choice'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-			'id' => 'country_choice',
-			'class' => 'country_choice',
-			'value' => $profile->country_choice,
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_RADIO,
+			'id' 			=> 'country_choice',
+			'class' 		=> 'country_choice',
+			'value' 		=> $profile->country_choice,
 			'field_options' => $country_options,
 		);
 		$fields['declared_country_code'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'id' => 'declared_country',
-			'title' => __( 'My country of residence', 'membership2' ),
-			'desc' => __( 'I confirm that I am established, have my permanent address, or usually reside in the following country', 'membership2' ),
-			'value' => $profile->declared_country->code,
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'id' 			=> 'declared_country',
+			'title' 		=> __( 'My country of residence', 'membership2' ),
+			'desc' 			=> __( 'I confirm that I am established, have my permanent address, or usually reside in the following country', 'membership2' ),
+			'value' 		=> $profile->declared_country->code,
 			'field_options' => $countries,
 			'wrapper_class' => 'manual_country_field',
 		);
 		$fields['vat_number'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'id' => 'vat_number',
-			'title' => __( 'EU VAT Number', 'membership2' ),
-			'desc' => __( 'Fill this field if you are representing EU VAT payer', 'membership2' ),
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+			'id' 			=> 'vat_number',
+			'title' 		=> __( 'EU VAT Number', 'membership2' ),
+			'desc' 			=> __( 'Fill this field if you are representing EU VAT payer', 'membership2' ),
 			'wrapper_class' => 'vat_number_field',
-			'value' => $profile->vat_number,
+			'value' 		=> $profile->vat_number,
 			'valid_country' => $profile->vat_country->vat_valid,
-			'after' => $vat_details,
+			'after' 		=> $vat_details,
 		);
 		$fields['invoice_id'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'id' => 'invoice_id',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> 'invoice_id',
 			'value' => $invoice_id,
 		);
 		$fields['action'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'id' => 'action',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> 'action',
 			'value' => $action,
 		);
 		$fields['_wpnonce'] = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'id' => '_wpnonce',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> '_wpnonce',
 			'value' => $nonce,
 		);
 

@@ -123,9 +123,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'MailChimp Integration', 'membership2' ),
-			'description' => __( 'Enable MailChimp integration.', 'membership2' ),
-			'icon' => 'dashicons dashicons-email',
+			'name' 			=> __( 'MailChimp Integration', 'membership2' ),
+			'description' 	=> __( 'Enable MailChimp integration.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-email',
 		);
 
 		return $list;
@@ -161,9 +161,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		try {
 			$member = $subscription->get_member();
 
-			$mail_list_registered = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' );
-			$mail_list_deactivated = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' );
-			$mail_list_members = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
+			$mail_list_registered 	= self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' );
+			$mail_list_deactivated 	= self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' );
+			$mail_list_members 		= self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
 
 			if ( $mail_list_members != $mail_list_registered ) {
 				/** Verify if is subscribed to registered mail list and remove it. */
@@ -221,9 +221,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			);
 			if ( !$new_membership->is_valid() ) {
 
-				$mail_list_registered = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' );
-				$mail_list_deactivated = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' );
-				$mail_list_members = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
+				$mail_list_registered 	= self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' );
+				$mail_list_deactivated 	= self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' );
+				$mail_list_members 		= self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
 
 				if ( $mail_list_deactivated == $mail_list_registered ) {
 					// Verify if is subscribed to registered mail list and remove it.
@@ -269,7 +269,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	public function settings_tabs( $tabs ) {
 		$tabs[ self::ID  ] = array(
 			'title' => __( 'MailChimp', 'membership2' ),
-			'url' => MS_Controller_Plugin::get_admin_url(
+			'url' 	=> MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => self::ID )
 			),
@@ -306,9 +306,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public function manage_render_callback( $callback, $tab, $data ) {
 		if ( self::ID == $tab ) {
-			$view = MS_Factory::load( 'MS_Addon_Mailchimp_View' );
+			$view 		= MS_Factory::load( 'MS_Addon_Mailchimp_View' );
 			$view->data = $data;
-			$callback = array( $view, 'render_tab' );
+			$callback 	= array( $view, 'render_tab' );
 		}
 
 		return $callback;
@@ -346,20 +346,20 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			$options = apply_filters(
 				'ms_addon_mailchimp_load_mailchimp_api_options',
 				array(
-					'timeout' => false,
-					'ssl_verifypeer' => false,
-					'ssl_verifyhost' => false,
-					'ssl_cainfo' => false,
-					'debug' => false,
+					'timeout' 			=> false,
+					'ssl_verifypeer' 	=> false,
+					'ssl_verifyhost' 	=> false,
+					'ssl_cainfo' 		=> false,
+					'debug' 			=> false,
 				)
 			);
 
 			if ( ! class_exists( 'M2_Mailchimp' ) ) {
 				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
-			$api_key = self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
-			$exploded = explode( '-', $api_key );
-			$data_center = end( $exploded );
+			$api_key 		= self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
+			$exploded 		= explode( '-', $api_key );
+			$data_center 	= end( $exploded );
 
 			$api = new M2_Mailchimp( $api_key, $data_center );
 
@@ -385,9 +385,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			$Mail_lists = array( 0 => $default );
 
 			if ( self::get_api_status() ) {
-				$page = 0;
+				$page 			= 0;
 				$items_per_page = 25;
-				$iterations = 0;
+				$iterations 	= 0;
 
 				do {
 					$lists = self::$mailchimp_api->get_lists(
@@ -550,15 +550,15 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		$mail_list = self::get_mail_lists( __( 'Default', 'membership2' ) );
 
 		$fields['ms_mc'] = array(
-			'id' => 'ms_mc',
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'title' => __( 'Mailchimp List', 'membership2' ),
-			'desc' => __( 'You can select a list for this membership.', 'membership2' ),
-			'class' => 'ms-mc',
-			'before' => __( 'Select a list', 'membership2' ),
-			'value' => $membership->ms_mc,
+			'id' 			=> 'ms_mc',
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'title' 		=> __( 'Mailchimp List', 'membership2' ),
+			'desc' 			=> __( 'You can select a list for this membership.', 'membership2' ),
+			'class' 		=> 'ms-mc',
+			'before' 		=> __( 'Select a list', 'membership2' ),
+			'value' 		=> $membership->ms_mc,
 			'field_options' => $mail_list,
-			'ajax_data' => array( 1 ),
+			'ajax_data' 	=> array( 1 ),
 		);
 
 		return $fields;

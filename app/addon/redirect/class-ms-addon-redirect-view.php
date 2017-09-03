@@ -14,7 +14,7 @@ class MS_Addon_Redirect_View extends MS_View {
 			MS_Helper_Html::settings_tab_header(
 				array(
 					'title' => __( 'Redirect Settings', 'membership2' ),
-					'desc' => array(
+					'desc' 	=> array(
 						__( 'Specify your custom URLs here. You can use either an absolute URL (starting with "http://") or an site-relative path (like "/some-page/")', 'membership2' ),
 						sprintf(
 							__( 'The URLs you specify here can always be overwritten in the %slogin shortcode%s using the redirect-attributes. Example: <code>[%s redirect_login="/welcome/" redirect_logout="/good-bye/"]</code>.', 'membership2' ),
@@ -49,30 +49,30 @@ class MS_Addon_Redirect_View extends MS_View {
 
 		$fields = array(
 			'redirect_login' => array(
-				'id' => 'redirect_login',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'After Login', 'membership2' ),
-				'desc' => __( 'This page is displayed to users right after login.', 'membership2' ),
-				'placeholder' => MS_Model_Pages::get_url_after_login( false ),
-				'value' => $model->get( 'redirect_login' ),
-				'class' => 'ms-text-large',
-				'ajax_data' => array(
-					'field' => 'redirect_login',
-					'action' => $action,
+				'id' 			=> 'redirect_login',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' 		=> __( 'After Login', 'membership2' ),
+				'desc' 			=> __( 'This page is displayed to users right after login.', 'membership2' ),
+				'placeholder' 	=> MS_Model_Pages::get_url_after_login( false ),
+				'value' 		=> $model->get( 'redirect_login' ),
+				'class' 		=> 'ms-text-large',
+				'ajax_data' 	=> array(
+					'field' 		=> 'redirect_login',
+					'action' 		=> $action,
 				),
 			),
 
 			'redirect_logout' => array(
-				'id' => 'redirect_logout',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'After Logout', 'membership2' ),
-				'desc' => __( 'This page is displayed to users right after they did log out.', 'membership2' ),
-				'placeholder' => MS_Model_Pages::get_url_after_logout( false ),
-				'value' => $model->get( 'redirect_logout' ),
-				'class' => 'ms-text-large',
-				'ajax_data' => array(
-					'field' => 'redirect_logout',
-					'action' => $action,
+				'id' 			=> 'redirect_logout',
+				'type'			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' 		=> __( 'After Logout', 'membership2' ),
+				'desc' 			=> __( 'This page is displayed to users right after they did log out.', 'membership2' ),
+				'placeholder' 	=> MS_Model_Pages::get_url_after_logout( false ),
+				'value' 		=> $model->get( 'redirect_logout' ),
+				'class' 		=> 'ms-text-large',
+				'ajax_data' 	=> array(
+					'field' 		=> 'redirect_logout',
+					'action' 		=> $action,
 				),
 			),
 		);
