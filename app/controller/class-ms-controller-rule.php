@@ -16,9 +16,9 @@ class MS_Controller_Rule extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_CHANGE_MEMBERSHIPS = 'ms_rule_change_memberships';
-	const AJAX_ACTION_UPDATE_MATCHING = 'ms_rule_update_matching';
-	const AJAX_ACTION_UPDATE_DRIPPED = 'ms_rule_update_dripped';
+	const AJAX_ACTION_CHANGE_MEMBERSHIPS 	= 'ms_rule_change_memberships';
+	const AJAX_ACTION_UPDATE_MATCHING 		= 'ms_rule_update_matching';
+	const AJAX_ACTION_UPDATE_DRIPPED 		= 'ms_rule_update_dripped';
 
 	/**
 	 * Prepare the Rule manager.
@@ -208,17 +208,17 @@ class MS_Controller_Rule extends MS_Controller {
 		);
 
 		if ( ! $this->verify_nonce( 'inline' ) ) {
-			$this->_resp_err( 'Invalid Nonce' );
+			$this->_resp_err( __( 'Invalid Nonce', 'membership2' ) );
 		} elseif ( ! $this->is_admin_user() ) {
-			$this->_resp_err( 'Access Denied' );
+			$this->_resp_err( __( 'Access Denied', 'membership2' ) );
 		} elseif ( ! self::validate_required( $fields, 'POST', false ) ) {
-			$this->_resp_err( 'Missing Data' );
+			$this->_resp_err( __( 'Missing Data', 'membership2' ) );
 		}
 
 		if ( $this->_resp_ok() ) {
-			$ids = $_POST['membership_ids'];
-			$rule_type = $_POST['rule_type'];
-			$item_id = $_POST['item_id'];
+			$ids 		= $_POST['membership_ids'];
+			$rule_type 	= $_POST['rule_type'];
+			$item_id 	= $_POST['item_id'];
 
 			if ( ! is_array( $ids ) ) {
 				$ids = explode( ',', $ids );

@@ -206,36 +206,36 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_register_user_atts',
 			shortcode_atts(
 				array(
-					'first_name' => substr( trim( $_REQUEST['first_name'] ), 0, 50 ),
-					'last_name' => substr( trim( $_REQUEST['last_name'] ), 0, 50 ),
-					'username' => substr( trim( $_REQUEST['username'] ), 0, 50 ),
-					'email' => substr( trim( $_REQUEST['email'] ), 0, 50 ),
-					'membership_id' => trim( $_REQUEST['membership_id'] ),
-					'label_first_name' => __( 'First Name', 'membership2' ),
-					'label_last_name' => __( 'Last Name', 'membership2' ),
-					'label_username' => __( 'Choose a Username', 'membership2' ),
-					'label_email' => __( 'Email Address', 'membership2' ),
-					'label_password' => __( 'Password', 'membership2' ),
-					'label_password2' => __( 'Confirm Password', 'membership2' ),
-					'label_register' => __( 'Register My Account', 'membership2' ),
-					'hint_first_name' => '',
-					'hint_last_name' => '',
-					'hint_username' => '',
-					'hint_email' => '',
-					'hint_password' => '',
-					'hint_password2' => '',
-					'title' => __( 'Create an Account', 'membership2' ),
-					'loginlink' => true,
+					'first_name' 		=> substr( trim( $_REQUEST['first_name'] ), 0, 50 ),
+					'last_name' 		=> substr( trim( $_REQUEST['last_name'] ), 0, 50 ),
+					'username' 			=> substr( trim( $_REQUEST['username'] ), 0, 50 ),
+					'email' 			=> substr( trim( $_REQUEST['email'] ), 0, 50 ),
+					'membership_id' 	=> trim( $_REQUEST['membership_id'] ),
+					'label_first_name' 	=> __( 'First Name', 'membership2' ),
+					'label_last_name' 	=> __( 'Last Name', 'membership2' ),
+					'label_username' 	=> __( 'Choose a Username', 'membership2' ),
+					'label_email' 		=> __( 'Email Address', 'membership2' ),
+					'label_password' 	=> __( 'Password', 'membership2' ),
+					'label_password2' 	=> __( 'Confirm Password', 'membership2' ),
+					'label_register' 	=> __( 'Register My Account', 'membership2' ),
+					'hint_first_name' 	=> '',
+					'hint_last_name' 	=> '',
+					'hint_username' 	=> '',
+					'hint_email' 		=> '',
+					'hint_password' 	=> '',
+					'hint_password2' 	=> '',
+					'title' 			=> __( 'Create an Account', 'membership2' ),
+					'loginlink' 		=> true,
 				),
 				$atts
 			)
 		);
-		$data['action'] = 'register_user';
-		$data['step'] = MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
-		$data['loginlink'] = lib3()->is_true( $data['loginlink'] );
+		$data['action'] 	= 'register_user';
+		$data['step'] 		= MS_Controller_Frontend::STEP_REGISTER_SUBMIT;
+		$data['loginlink'] 	= lib3()->is_true( $data['loginlink'] );
 
-		$view = MS_Factory::create( 'MS_View_Shortcode_RegisterUser' );
-		$view->data = apply_filters( 'ms_view_shortcode_registeruser_data', $data, $this );
+		$view 				= MS_Factory::create( 'MS_View_Shortcode_RegisterUser' );
+		$view->data 		= apply_filters( 'ms_view_shortcode_registeruser_data', $data, $this );
 
 		return $view->to_html();
 	}
@@ -254,27 +254,27 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_signup_atts',
 			shortcode_atts(
 				array(
-					MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP . '_text' => __( 'Signup', 'membership2' ),
-					MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE . '_text' => __( 'Change', 'membership2' ),
-					MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL . '_text' => __( 'Cancel', 'membership2' ),
-					MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW . '_text' => __( 'Renew', 'membership2' ),
-					MS_Helper_Membership::MEMBERSHIP_ACTION_PAY . '_text' => __( 'Complete Payment', 'membership2' ),
+					MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP . '_text' 	=> __( 'Signup', 'membership2' ),
+					MS_Helper_Membership::MEMBERSHIP_ACTION_MOVE . '_text' 		=> __( 'Change', 'membership2' ),
+					MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL . '_text' 	=> __( 'Cancel', 'membership2' ),
+					MS_Helper_Membership::MEMBERSHIP_ACTION_RENEW . '_text' 	=> __( 'Renew', 'membership2' ),
+					MS_Helper_Membership::MEMBERSHIP_ACTION_PAY . '_text' 		=> __( 'Complete Payment', 'membership2' ),
 				),
 				$atts
 			)
 		);
 
-		$member = MS_Model_Member::get_current_member();
-		$data['member'] = $member;
-		$data['subscriptions'] = array();
-		$exclude = array();
+		$member 				= MS_Model_Member::get_current_member();
+		$data['member'] 		= $member;
+		$data['subscriptions'] 	= array();
+		$exclude 				= array();
 
 		if ( $member->is_valid() ) {
 			// Get member's memberships, including pending relationships.
 			$data['subscriptions'] = MS_Model_Relationship::get_subscriptions(
 				array(
-					'user_id' => $data['member']->id,
-					'status' => 'valid',
+					'user_id' 	=> $data['member']->id,
+					'status' 	=> 'valid',
 				)
 			);
 
@@ -333,9 +333,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 
 		$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
-		$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
+		$data['step'] 	= MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
-		$view = MS_Factory::create( 'MS_View_Shortcode_MembershipSignup' );
+		$view 		= MS_Factory::create( 'MS_View_Shortcode_MembershipSignup' );
 		$view->data = apply_filters(
 			'ms_view_shortcode_membershipsignup_data',
 			$data,
@@ -361,7 +361,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_title_atts',
 			shortcode_atts(
 				array(
-					'id' => 0,
+					'id' 	=> 0,
 					'label' => __( 'Membership title:', 'membership2' ),
 					'title' => '', // deprecated @since  1.0.0
 				),
@@ -372,7 +372,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		if ( ! empty( $id ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
-			$code = sprintf(
+			$code 		= sprintf(
 				'%1$s %2$s',
 				$label,
 				$membership->name
@@ -413,9 +413,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_price_atts',
 			shortcode_atts(
 				array(
-					'id' => 0,
-					'currency' => true,
-					'label' => __( 'Membership price:', 'membership2' ),
+					'id' 		=> 0,
+					'currency' 	=> true,
+					'label' 	=> __( 'Membership price:', 'membership2' ),
 				),
 				$atts
 			)
@@ -472,7 +472,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_buy_atts',
 			shortcode_atts(
 				array(
-					'id' => 0,
+					'id' 	=> 0,
 					'label' => __( 'Signup', 'membership2' ),
 				),
 				$atts
@@ -483,15 +483,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 		if ( ! empty( $id ) ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $id );
                         
-                        if ( ! $membership->active )
-                        {
-                            return __( 'Sorry! The membership you are trying to register is not active.', 'membership2' );
-                        }
+			if ( ! $membership->active ){
+				return __( 'Sorry! The membership you are trying to register is not active.', 'membership2' );
+			}
                         
 			$data['action'] = MS_Helper_Membership::MEMBERSHIP_ACTION_SIGNUP;
-			$data['step'] = MS_Controller_Frontend::STEP_PAYMENT_TABLE;
+			$data['step'] 	= MS_Controller_Frontend::STEP_PAYMENT_TABLE;
 
-			$view = MS_Factory::create( 'MS_View_Shortcode_MembershipSignup' );
+			$view 		= MS_Factory::create( 'MS_View_Shortcode_MembershipSignup' );
 			$view->data = apply_filters(
 				'ms_view_shortcode_membershipsignup_data',
 				$data,
@@ -531,7 +530,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_details_atts',
 			shortcode_atts(
 				array(
-					'id' => 0,
+					'id' 	=> 0,
 					'label' => __( 'Membership details:', 'membership2' ),
 				),
 				$atts
@@ -576,8 +575,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		global $post;
 
-		$setting = MS_Plugin::instance()->settings;
-		$member = MS_Model_Member::get_current_member();
+		$setting 	= MS_Plugin::instance()->settings;
+		$member 	= MS_Model_Member::get_current_member();
                 
 		if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE && isset( $_REQUEST['membership_id'] ) ) {
 
@@ -595,33 +594,6 @@ class MS_Controller_Shortcode extends MS_Controller {
 					MS_Model_Settings::PROTECTION_MSG_CONTENT,
 					$sub->membership_id
 				);
-				
-				/**
-				 * Removed code edited by Panos
-				 *
-				if ( MS_Model_Pages::is_membership_page( $post->ID ) ){
-
-					$post_id = url_to_postid( $_GET['redirect_to'] );
-					$All_Memberships = MS_Model_Membership::get_memberships();
-
-					foreach ( $All_Memberships as $membership ) {	
-						if( $setting->membership_has_protection_type( MS_Model_Settings::PROTECTION_MSG_CONTENT, $membership ) ){
-							foreach ( $membership->rule_values as $post_type => $protected_items ) {
-								if( in_array( $post_id, $protected_items ) ){
-
-									$raw_message = $setting->get_protection_message(
-										MS_Model_Settings::PROTECTION_MSG_CONTENT,
-										$membership->id
-									);
-
-									$protection_msg .= apply_filters( 'ms_protection_msg_content/membership_msg', wpautop( $raw_message ), $membership );
-
-								}
-							}
-						}
-					}
-				}
-				*/
 			}
 			else {
 				$protection_msg = $setting->get_protection_message(
@@ -714,13 +686,13 @@ class MS_Controller_Shortcode extends MS_Controller {
 			)
 		);
 
-		$data['header'] = lib3()->is_true( $data['header'] );
-		$data['register'] = lib3()->is_true( $data['register'] );
-		$data['show_note'] = lib3()->is_true( $data['show_note'] );
-		$data['show_labels'] = lib3()->is_true( $data['show_labels'] );
-		$data['show_remember'] = lib3()->is_true( $data['show_remember'] );
+		$data['header'] 		= lib3()->is_true( $data['header'] );
+		$data['register'] 		= lib3()->is_true( $data['register'] );
+		$data['show_note'] 		= lib3()->is_true( $data['show_note'] );
+		$data['show_labels'] 	= lib3()->is_true( $data['show_labels'] );
+		$data['show_remember'] 	= lib3()->is_true( $data['show_remember'] );
 		$data['value_remember'] = lib3()->is_true( $data['value_remember'] );
-		$data['autofocus'] = lib3()->is_true( $data['autofocus'] );
+		$data['autofocus'] 		= lib3()->is_true( $data['autofocus'] );
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_login_data', $data, $this );
@@ -751,8 +723,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 		);
 
 		// The form attribute triggers the logout-link to be displayed.
-		$data['form'] = 'logout';
-		$data['redirect_logout'] = $data['redirect'];
+		$data['form'] 				= 'logout';
+		$data['redirect_logout'] 	= $data['redirect'];
 
 		$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 		$view->data = apply_filters( 'ms_view_shortcode_logout_data', $data, $this );
@@ -774,50 +746,50 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_membership_account_atts',
 			shortcode_atts(
 				array(
-					'show_membership' => true,
-					'show_membership_change' => true,
-					'membership_title' => __( 'Your Membership', 'membership2' ),
-					'membership_change_label' => __( 'Change', 'membership2' ),
-					'show_profile' => true,
-					'show_profile_change' => true,
-					'profile_title' => __( 'Personal details', 'membership2' ),
-					'profile_change_label' => __( 'Edit', 'membership2' ),
-					'show_invoices' => true,
-					'limit_invoices' => 10,
-					'show_all_invoices' => true,
-					'invoices_title' => __( 'Invoices', 'membership2' ),
-					'invoices_details_label' => __( 'View all', 'membership2' ),
-					'show_activity' => true,
-					'limit_activities' => 10,
-					'show_all_activities' => true,
-					'activity_title' => __( 'Activities', 'membership2' ),
-					'activity_details_label' => __( 'View all', 'membership2' ),
+					'show_membership' 			=> true,
+					'show_membership_change' 	=> true,
+					'membership_title' 			=> __( 'Your Membership', 'membership2' ),
+					'membership_change_label' 	=> __( 'Change', 'membership2' ),
+					'show_profile' 				=> true,
+					'show_profile_change' 		=> true,
+					'profile_title' 			=> __( 'Personal details', 'membership2' ),
+					'profile_change_label' 		=> __( 'Edit', 'membership2' ),
+					'show_invoices' 			=> true,
+					'limit_invoices' 			=> 10,
+					'show_all_invoices' 		=> true,
+					'invoices_title' 			=> __( 'Invoices', 'membership2' ),
+					'invoices_details_label' 	=> __( 'View all', 'membership2' ),
+					'show_activity' 			=> true,
+					'limit_activities' 			=> 10,
+					'show_all_activities' 		=> true,
+					'activity_title'			=> __( 'Activities', 'membership2' ),
+					'activity_details_label' 	=> __( 'View all', 'membership2' ),
 				),
 				$atts
 			)
 		);
 
-		$data['show_membership'] = lib3()->is_true( $data['show_membership'] );
+		$data['show_membership'] 		= lib3()->is_true( $data['show_membership'] );
 		$data['show_membership_change'] = lib3()->is_true( $data['show_membership_change'] );
-		$data['show_profile'] = lib3()->is_true( $data['show_profile'] );
-		$data['show_profile_change'] = lib3()->is_true( $data['show_profile_change'] );
-		$data['show_invoices'] = lib3()->is_true( $data['show_invoices'] );
-		$data['show_all_invoices'] = lib3()->is_true( $data['show_all_invoices'] );
-		$data['show_activity'] = lib3()->is_true( $data['show_activity'] );
-		$data['show_all_activities'] = lib3()->is_true( $data['show_all_activities'] );
+		$data['show_profile'] 			= lib3()->is_true( $data['show_profile'] );
+		$data['show_profile_change'] 	= lib3()->is_true( $data['show_profile_change'] );
+		$data['show_invoices'] 			= lib3()->is_true( $data['show_invoices'] );
+		$data['show_all_invoices'] 		= lib3()->is_true( $data['show_all_invoices'] );
+		$data['show_activity'] 			= lib3()->is_true( $data['show_activity'] );
+		$data['show_all_activities'] 	= lib3()->is_true( $data['show_all_activities'] );
 
-		$data['limit_invoices'] = absint( $data['limit_invoices'] );
-		$data['limit_activities'] = absint( $data['limit_activities'] );
+		$data['limit_invoices'] 		= absint( $data['limit_invoices'] );
+		$data['limit_activities'] 		= absint( $data['limit_activities'] );
 
 		if( ! isset( $data['member'] ) || $data['member']->id != '' ){
-			$data['member'] = MS_Model_Member::get_current_member();
+			$data['member'] 	= MS_Model_Member::get_current_member();
 			$data['membership'] = array();
 		}
 
 		$subscriptions = MS_Model_Relationship::get_subscriptions(
 			array(
-				'user_id' => $data['member']->id,
-				'status' => 'all',
+				'user_id' 	=> $data['member']->id,
+				'status' 	=> 'all',
 			)
 		);
 		if ( is_array( $subscriptions ) && !empty( $subscriptions ) ) {
@@ -839,8 +811,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$data['events'] = MS_Model_Event::get_events(
 			array(
-				'author' => $data['member']->id,
-				'posts_per_page' => $data['limit_activities'],
+				'author' 			=> $data['member']->id,
+				'posts_per_page' 	=> $data['limit_activities'],
 			)
 		);
                 
@@ -903,9 +875,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_invoice_atts',
 			shortcode_atts(
 				array(
-					'post_id' => 0,
-					'id' => 0,
-					'pay_button' => 1,
+					'post_id' 		=> 0,
+					'id' 			=> 0,
+					'pay_button' 	=> 1,
 				),
 				$atts,
 				MS_Helper_Shortcode::SCODE_MS_INVOICE
@@ -917,14 +889,14 @@ class MS_Controller_Shortcode extends MS_Controller {
 		}
 
 		if ( ! empty( $data['post_id'] ) ) {
-			$invoice = MS_Factory::load( 'MS_Model_Invoice', $data['post_id'] );
-			$subscription = MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
+			$invoice 					= MS_Factory::load( 'MS_Model_Invoice', $data['post_id'] );
+			$subscription 				= MS_Factory::load( 'MS_Model_Relationship', $invoice->ms_relationship_id );
 
-			$data['invoice'] = $invoice;
-			$data['member'] = MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
-			$data['ms_relationship'] = $subscription;
-			$data['membership'] = $subscription->get_membership();
-			$data['gateway'] = MS_Model_Gateway::factory( $invoice->gateway_id );
+			$data['invoice'] 			= $invoice;
+			$data['member'] 			= MS_Factory::load( 'MS_Model_Member', $invoice->user_id );
+			$data['ms_relationship'] 	= $subscription;
+			$data['membership'] 		= $subscription->get_membership();
+			$data['gateway'] 			= MS_Model_Gateway::factory( $invoice->gateway_id );
 
 			$view = MS_Factory::create( 'MS_View_Shortcode_Invoice' );
 			$view->data = apply_filters(
@@ -953,7 +925,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_note_atts',
 			shortcode_atts(
 				array(
-					'type' => 'info',
+					'type' 	=> 'info',
 					'class' => '',
 				),
 				$atts,
@@ -1127,15 +1099,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 			'ms_controller_shortcode_member_info_atts',
 			shortcode_atts(
 				array(
-					'value' => 'fullname',
-					'before' => '<span>',
-					'after' => '</span>',
-					'default' => '',
-					'custom_field' => '',  // used for: custom
-					'list_before' => '', // used for: membership
-					'list_after' => '', // used for: membership
-					'list_separator' => ', ', // used for: membership
-					'user' => 0, // user-id; 0 = current user
+					'value' 			=> 'fullname',
+					'before' 			=> '<span>',
+					'after' 			=> '</span>',
+					'default' 			=> '',
+					'custom_field' 		=> '',  // used for: custom
+					'list_before' 		=> '', // used for: membership
+					'list_after' 		=> '', // used for: membership
+					'list_separator' 	=> ', ', // used for: membership
+					'user' 				=> 0, // user-id; 0 = current user
 				),
 				$atts
 			)

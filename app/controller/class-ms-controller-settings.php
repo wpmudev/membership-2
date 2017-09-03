@@ -276,11 +276,11 @@ class MS_Controller_Settings extends MS_Controller {
 		// Create special pages.
 		MS_Model_Pages::create_missing_pages();
 
-		$pg_prot_cont = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
-		$pg_acco = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
-		$pg_regi = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REGISTER );
-		$pg_regi_comp = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE );
-		$pg_memb = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+		$pg_prot_cont 	= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
+		$pg_acco 		= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		$pg_regi 		= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REGISTER );
+		$pg_regi_comp 	= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE );
+		$pg_memb 		= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 
 		// Publish special pages.
 		// Tip: Only pages must be published that are added to the menu.
@@ -404,8 +404,8 @@ class MS_Controller_Settings extends MS_Controller {
 	public function admin_settings_manager() {
 		MS_Helper_Settings::print_admin_message();
 		$this->get_active_tab();
-		$msg = 0;
-		$redirect = false;
+		$msg 		= 0;
+		$redirect 	= false;
 
 		if ( $this->is_admin_user() ) {
 			if ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) {
@@ -484,12 +484,12 @@ class MS_Controller_Settings extends MS_Controller {
 
 		do_action( $hook );
 
-		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
-		$view = apply_filters( $hook . '_view', $view );
+		$view 				= MS_Factory::create( 'MS_View_Settings_Edit' );
+		$view 				= apply_filters( $hook . '_view', $view );
 
-		$data = array();
-		$data['tabs'] = $this->get_tabs();
-		$data['settings'] = $this->get_model();
+		$data 				= array();
+		$data['tabs'] 		= $this->get_tabs();
+		$data['settings'] 	= $this->get_model();
 
 		$data['message'] = self::_message();
 

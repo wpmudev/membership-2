@@ -170,8 +170,8 @@ class MS_Controller_Api extends MS_Hooker {
 	 * @return MS_Model_Member|false The Member model.
 	 */
 	public function get_member( $user_id ) {
-		$user_id = absint( $user_id );
-		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		$user_id 	= absint( $user_id );
+		$member 	= MS_Factory::load( 'MS_Model_Member', $user_id );
 
 		if ( ! $member->is_valid() ) {
 			$member = false;
@@ -275,9 +275,8 @@ class MS_Controller_Api extends MS_Hooker {
 	 * @return MS_Model_Relationship|false The subscription object.
 	 */
 	public function get_subscription( $user_id, $membership_id ) {
-		$subscription = false;
-
-		$membership = $this->get_membership( $membership_id );
+		$subscription 	= false;
+		$membership 	= $this->get_membership( $membership_id );
 
 		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $member && $member->has_membership( $membership->id ) ) {
@@ -300,8 +299,8 @@ class MS_Controller_Api extends MS_Hooker {
 	 * @return MS_Model_Relationship|null The new subscription object.
 	 */
 	public function add_subscription( $user_id, $membership_id ) {
-		$subscription = false;
-		$membership = $this->get_membership( $membership_id );
+		$subscription 	= false;
+		$membership 	= $this->get_membership( $membership_id );
 
 		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $member ) {
@@ -330,7 +329,7 @@ class MS_Controller_Api extends MS_Hooker {
 	 */
 	public function list_memberships( $list_all = false ) {
 		$args = array(
-			'include_base' => false,
+			'include_base' 	=> false,
 			'include_guest' => true,
 		);
 		$list = MS_Model_Membership::get_memberships( $args );
@@ -500,7 +499,7 @@ if ( ! function_exists( 'ms_has_membership' ) ) {
 	 * @return bool True if the current member has any/the specified membership.
 	 */
 	function ms_has_membership( $id = 0 ) {
-		$result = false;
+		$result 		= false;
 		$current_member = MS_Plugin::$api->get_current_member();
 
 		if ( func_num_args() == 0 ) {

@@ -16,13 +16,13 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const STEP_CHOOSE_MEMBERSHIP = 'choose_membership';
-	const STEP_REGISTER_FORM = 'register';
-	const STEP_REGISTER_FORM_ALT = 'register_form';
-	const STEP_REGISTER_SUBMIT = 'register_submit';
-	const STEP_PAYMENT_TABLE = 'payment_table';
-	const STEP_GATEWAY_FORM = 'gateway_form';
-	const STEP_PROCESS_PURCHASE = 'process_purchase';
+	const STEP_CHOOSE_MEMBERSHIP 	= 'choose_membership';
+	const STEP_REGISTER_FORM 		= 'register';
+	const STEP_REGISTER_FORM_ALT 	= 'register_form';
+	const STEP_REGISTER_SUBMIT 		= 'register_submit';
+	const STEP_PAYMENT_TABLE 		= 'payment_table';
+	const STEP_GATEWAY_FORM 		= 'gateway_form';
+	const STEP_PROCESS_PURCHASE 	= 'process_purchase';
 
 	/**
 	 * AJAX action constants.
@@ -31,10 +31,10 @@ class MS_Controller_Frontend extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const ACTION_EDIT_PROFILE = 'edit_profile';
-	const ACTION_VIEW_INVOICES = 'view_invoices';
-	const ACTION_VIEW_ACTIVITIES = 'view_activities';
-	const ACTION_VIEW_RESETPASS = 'rp';
+	const ACTION_EDIT_PROFILE 		= 'edit_profile';
+	const ACTION_VIEW_INVOICES 		= 'view_invoices';
+	const ACTION_VIEW_ACTIVITIES	= 'view_activities';
+	const ACTION_VIEW_RESETPASS 	= 'rp';
 
 	/**
 	 * Whether Membership2 will handle the registration process or not.
@@ -187,12 +187,12 @@ class MS_Controller_Frontend extends MS_Controller {
 			// Fix the main query flags for best theme support:
 			// Our Membership-Pages are always single pages...
 
-			$wp_query->is_single = false;
-			$wp_query->is_page = true;
-			$wp_query->is_singular = true;
-			$wp_query->is_home = false;
+			$wp_query->is_single 	= false;
+			$wp_query->is_page 		= true;
+			$wp_query->is_singular 	= true;
+			$wp_query->is_home 		= false;
 			$wp_query->is_frontpage = false;
-			$wp_query->tax_query = null;
+			$wp_query->tax_query 	= null;
 
 			$the_type = MS_Model_Pages::get_page_type( $the_page );
 			switch ( $the_type ) {
@@ -320,7 +320,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function signup_process() {
-		$step = $this->get_signup_step();
+		$step 	= $this->get_signup_step();
 		$member = MS_Model_Member::get_current_member();
 
 		do_action( 'ms_frontend_register-' . $step );
@@ -648,10 +648,10 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @return string The filtered content.
 	 */
 	public function payment_table( $content ) {
-		$data = array();
-		$subscription = null;
-		$member = MS_Model_Member::get_current_member();
-		$membership_id = 0;
+		$data 			= array();
+		$subscription 	= null;
+		$member 		= MS_Model_Member::get_current_member();
+		$membership_id 	= 0;
 
 		lib3()->array->equip_request( 'membership_id', 'move_from_id', 'ms_relationship_id' );
 
@@ -661,8 +661,8 @@ class MS_Controller_Frontend extends MS_Controller {
 				'MS_Model_Relationship',
 				absint( intval( $_POST['ms_relationship_id'] ) )
 			);
-			$membership = $subscription->get_membership();
-			$membership_id = $membership->id;
+			$membership 	= $subscription->get_membership();
+			$membership_id 	= $membership->id;
 
 			if ( ! empty( $_POST['error'] ) ) {
 				lib3()->array->strip_slashes( $_POST, 'error' );
@@ -670,10 +670,10 @@ class MS_Controller_Frontend extends MS_Controller {
 			}
 		} elseif ( ! empty( $_REQUEST['membership_id'] ) ) {
 			// First time loading
-			$membership_id = intval( $_REQUEST['membership_id'] );
-			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			$move_from_id = absint( $_REQUEST['move_from_id'] );
-			$subscription = MS_Model_Relationship::create_ms_relationship(
+			$membership_id 	= intval( $_REQUEST['membership_id'] );
+			$membership 	= MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			$move_from_id 	= absint( $_REQUEST['move_from_id'] );
+			$subscription 	= MS_Model_Relationship::create_ms_relationship(
 				$membership_id,
 				$member->id,
 				'',
@@ -708,10 +708,10 @@ class MS_Controller_Frontend extends MS_Controller {
 		);
 		$invoice->save();
 
-		$data['invoice'] = $invoice;
-		$data['membership'] = $membership;
-		$data['member'] = $member;
-		$data['ms_relationship'] = $subscription;
+		$data['invoice'] 			= $invoice;
+		$data['membership'] 		= $membership;
+		$data['member'] 			= $member;
+		$data['ms_relationship'] 	= $subscription;
 
 		$view = MS_Factory::load( 'MS_View_Frontend_Payment' );
 		$view->data = apply_filters(
@@ -737,8 +737,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function membership_cancel() {
 		if ( ! empty( $_REQUEST['membership_id'] ) && $this->verify_nonce( null, 'any' ) ) {
-			$membership_id = absint( $_REQUEST['membership_id'] );
-			$member = MS_Model_Member::get_current_member();
+			$membership_id 	= absint( $_REQUEST['membership_id'] );
+			$member 		= MS_Model_Member::get_current_member();
 			$member->cancel_membership( $membership_id );
 			$member->save();
 

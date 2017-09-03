@@ -111,11 +111,11 @@ class MS_Controller_Member extends MS_Controller {
 			'remove_membership_from_user'
 		);
 
-		$this->add_filter( 'set-screen-option', array($this, 'members_admin_page_set_screen_option') , 10, 3);
+		$this->add_filter( 'set-screen-option', array($this, 'members_admin_page_set_screen_option' ) , 10, 3 );
 
-		$this->add_filter( 'manage_users_columns', array($this, 'manage_users_columns') , 10, 1);
-		$this->add_filter( 'manage_users_sortable_columns', array($this, 'manage_users_columns') , 10, 1);
-		$this->add_filter( 'manage_users_custom_column', array($this, 'manage_users_custom_column') , 10, 3);
+		$this->add_filter( 'manage_users_columns', array($this, 'manage_users_columns' ) , 10, 1 );
+		$this->add_filter( 'manage_users_sortable_columns', array($this, 'manage_users_columns' ) , 10, 1 );
+		$this->add_filter( 'manage_users_custom_column', array($this, 'manage_users_custom_column' ) , 10, 3 );
 	}
 
 	/**
@@ -125,8 +125,8 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function admin_init() {
 		$hooks = array(
-			'list' => MS_Controller_Plugin::admin_page_hook( 'members' ),
-			'editor' => MS_Controller_Plugin::admin_page_hook( 'add-member' ),
+			'list' 		=> MS_Controller_Plugin::admin_page_hook( 'members' ),
+			'editor' 	=> MS_Controller_Plugin::admin_page_hook( 'add-member' ),
 		);
 
 		$this->add_action( 'load-' . $hooks['list'], 'members_admin_page_screen_option' );
@@ -156,49 +156,46 @@ class MS_Controller_Member extends MS_Controller {
 		$member->save();
 	}
         
-        /**
-         * Remove membership for an user
-         *
-         * @since 1.0.3
-         */
-        public function remove_membership_from_user( $user_id )
-        {
-            $member = MS_Factory::load( 'MS_Model_Member', $user_id );
-            $memberships_ids = ( array ) $member->get_membership_ids();
-            
-            if( ! empty( $memberships_ids ) )
-            {
-                foreach( $memberships_ids as $memberships_id )
-                {
-                    $member->drop_membership( $memberships_id );
-                }
-            }
-        }
+	/**
+	 * Remove membership for an user
+	 *
+	 * @since 1.0.3
+	 */
+	public function remove_membership_from_user( $user_id ) {
+		$member 			= MS_Factory::load( 'MS_Model_Member', $user_id );
+		$memberships_ids 	= ( array ) $member->get_membership_ids();
+		
+		if( ! empty( $memberships_ids ) ) {
+			foreach( $memberships_ids as $memberships_id ) {
+				$member->drop_membership( $memberships_id );
+			}
+		}
+	}
 
-		/**
-		* Add pagination members screen option
-		*
-		* @since 1.0.3
-		*/
-		function members_admin_page_screen_option() {
-			$option = 'per_page';
-			$args   = array(
-				'label'   => 'Members',
-				'default' => 20,
-				'option'  => 'members_per_page'
-			);
+	/**
+	 * Add pagination members screen option
+	 *
+	 * @since 1.0.3
+	 */
+	function members_admin_page_screen_option() {
+		$option = 'per_page';
+		$args   = array(
+			'label'   => 'Members',
+			'default' => 20,
+			'option'  => 'members_per_page'
+		);
 
-			add_screen_option( $option, $args );
-		}	
+		add_screen_option( $option, $args );
+	}	
 
-		/**
-		* Set pagination members screen option
-		*
-		* @since 1.0.3
-		*/
-		public static function members_admin_page_set_screen_option( $status, $option, $value ) {
-			return $value;
-		}	
+	/**
+	 * Set pagination members screen option
+	 *
+	 * @since 1.0.3
+	 */
+	public static function members_admin_page_set_screen_option( $status, $option, $value ) {
+		return $value;
+	}	
 			
 
 	/**
@@ -209,12 +206,12 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function members_admin_page_process_list() {
-		$msg = 0;
-		$redirect = false;
+		$msg 		= 0;
+		$redirect 	= false;
 
 		if ( $this->is_admin_user() ) {
-			$fields_new = array( 'new_member', 'action' );
-			$fields_edit = array( 'member_id', 'action' );
+			$fields_new 	= array( 'new_member', 'action' );
+			$fields_edit 	= array( 'member_id', 'action' );
 
 			// Execute list table single action.
 			if ( $this->verify_nonce( null, 'GET' )
@@ -482,11 +479,11 @@ class MS_Controller_Member extends MS_Controller {
 			if ( user_can( $user_id, 'administrator' ) ) {
 				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 			}
-			$data['user_id'] = $user_id;
-			$data['action'] = 'edit';
+			$data['user_id'] 	= $user_id;
+			$data['action'] 	= 'edit';
 		} else {
-			$data['user_id'] = 0;
-			$data['action'] = 'add';
+			$data['user_id'] 	= 0;
+			$data['action'] 	= 'add';
 		}
 
 		$view = MS_Factory::create( 'MS_View_Member_Editor' );
@@ -594,7 +591,7 @@ class MS_Controller_Member extends MS_Controller {
 	public function ajax_action_search() {
 		$res = (object) array(
 			'items' => array(),
-			'more' => false,
+			'more' 	=> false,
 		);
 		$this->_resp_reset();
 		$items_per_page = 20;
@@ -793,11 +790,11 @@ class MS_Controller_Member extends MS_Controller {
 		if ( 'edit_date' == $_GET['action'] ) {
 			// Start and expire date edit
 			wp_enqueue_script( 'jquery-ui-datepicker' );
-			$data['ms_init'][] = 'view_member_date';
+			$data['ms_init'][] 	= 'view_member_date';
 		} else {
 			// Members list
-			$data['ms_init'][] = 'view_member_list';
-			$data['lang'] = array(
+			$data['ms_init'][] 	= 'view_member_list';
+			$data['lang'] 		= array(
 				'select_user' => __( 'Select an User', 'membership2' ),
 			);
 		}
@@ -830,10 +827,9 @@ class MS_Controller_Member extends MS_Controller {
 	 * @return Array
 	 */
 	public function manage_users_columns( $columns ) {
-		$new_columns = array();
-
-        $columns_4 = array_slice( $columns, 0, 5 );
-        $columns_5 = array_slice( $columns, 5 );
+		$new_columns 	= array();
+        $columns_4 		= array_slice( $columns, 0, 5 );
+        $columns_5 		= array_slice( $columns, 5 );
         
         $new_columns = $columns_4 + array( 'membership' => __('Membership' , 'membership2' ) ) + $columns_5;
 	
@@ -851,8 +847,8 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function manage_users_custom_column( $value, $column_name, $user_id ) {
 		if ( 'membership' == $column_name ) {
-			$member = MS_Factory::load( 'MS_Model_Member', $user_id );
-			$subscription = $member->get_subscription( 'priority' );
+			$member 		= MS_Factory::load( 'MS_Model_Member', $user_id );
+			$subscription 	= $member->get_subscription( 'priority' );
 			if ( $subscription ) {
 				$membership = $subscription->get_membership();
 				$color 		= MS_Helper_Utility::color_index( $membership->type . $membership->id );
@@ -880,9 +876,9 @@ class MS_Controller_Member extends MS_Controller {
 			}
 
 			if( empty( $value ) ) {
-				$value = __( 'None' , 'membership' );
+				$value 		= __( 'None' , 'membership' );
 				if( user_can( $user_id, 'manage_options' ) ) {
-					$value = '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership' ) . '</span>';
+					$value 	= '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership' ) . '</span>';
 				}
 			}
 

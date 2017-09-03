@@ -26,11 +26,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		// Listen to Ajax requests that submit form data.
 		$this->add_ajax_action( 'ms_submit', 'ajax_submit' );
 
-		// Login. For IE this hook is listening to guests + logged in users.
-                /**
-                 * This is moved to main plugin file to avoid IE11 and EDGE browser issue
-                 */
-		//$this->add_ajax_action( 'ms_login', 'ajax_login', true, true );
+		//Password reset
 		$this->add_ajax_action( 'ms_lostpass', 'ajax_lostpass', true, true );
 	}
 
@@ -80,86 +76,6 @@ class MS_Controller_Dialog extends MS_Controller {
 		}
 
 		$this->respond( $data );
-	}
-
-	/**
-	 * Ajax handler. Used by shortcode `ms-membership-login` to login via ajax.
-	 *
-	 * @since  1.0.0
-	 * @internal
-	 */
-	public function ajax_login() {
-		$resp = array();
-
-		// First check the nonce, if it fails the function will break
-		check_ajax_referer( 'ms-ajax-login' );
-
-		/*
-		 * The login fields have alternative names:
-		 * - username or log
-		 * - password or pwd
-		 * - remember or rememberme
-		 */
-		lib3()->array->equip_post(
-			'username',
-			'password',
-			'remember',
-			'log',
-			'pwd',
-			'rememberme'
-		);
-
-		if ( empty( $_POST['username'] ) && ! empty( $_POST['log'] ) ) {
-			$_POST['username'] = $_POST['log'];
-		}
-		if ( empty( $_POST['password'] ) && ! empty( $_POST['pwd'] ) ) {
-			$_POST['password'] = $_POST['pwd'];
-		}
-		if ( empty( $_POST['remember'] ) && ! empty( $_POST['rememberme'] ) ) {
-			$_POST['remember'] = $_POST['rememberme'];
-		}
-
-		lib3()->array->equip_post( 'username', 'password', 'remember' );
-		lib3()->array->strip_slashes( $_POST, 'password' );
-
-		// Nonce is checked, get the POST data and sign user on
-		$info = array(
-			'user_login' => $_POST['username'],
-			'user_password' => $_POST['password'],
-			'remember' => (bool) $_POST['remember'],
-		);
-
-		$user_signon = wp_signon( $info, false );
-		if ( is_wp_error( $user_signon ) ) {
-			$resp['error'] = __( 'Wrong username or password', 'membership2' );
-		} else {
-			$member = MS_Factory::load( 'MS_Model_Member', $user_signon->ID );
-
-			// Also used in class-ms-model-member.php (signon_user)
-			wp_set_current_user( $member->id );
-			wp_set_auth_cookie( $member->id );
-			do_action( 'wp_login', $member->username, $user_signon );
-			do_action( 'ms_model_member_signon_user', $user_signon, $member );
-
-			$resp['loggedin'] 	= true;
-			$resp['success'] 	= __( 'Logging in...', 'membership2' );
-
-			/**
-			 * Allows a custom redirection after login.
-			 * Empty value will use the default redirect option of the login form.
-			 *
-			 * @since  1.0.0
-			 */
-			$enforce = false;
-			if( isset( $_POST['redirect_to'] ) ) {
-				$resp['redirect'] = apply_filters( 'ms-ajax-login-redirect', $_POST['redirect_to'], $member );
-			}else{
-				$resp['redirect'] = apply_filters( 'ms_url_after_login', $_POST['redirect_to'], $enforce );
-            }
-			
-		}
-
-		$this->respond( $resp );
 	}
 
 	/**
@@ -223,7 +139,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		// Send our default email if the user does not have a custom email template in place.
 		if ( ! apply_filters( 'ms_sent_reset_password_email', false ) ) {
 			// Get a new reset-key.
-			$reset = $member->new_password_reset_key();
+			$reset 	= $member->new_password_reset_key();
 
 			$schema = is_ssl() ? 'https' : 'http';
 
@@ -241,10 +157,9 @@ class MS_Controller_Dialog extends MS_Controller {
 				$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 			}
 
-			$title = sprintf( __( '[%s] Password Reset' ), $blogname );
-
-			$title = apply_filters( 'retrieve_password_title', $title );
-			$message = apply_filters( 'retrieve_password_message', $message, $reset->key, $reset->url );
+			$title 		= sprintf( __( '[%s] Password Reset' ), $blogname );
+			$title 		= apply_filters( 'retrieve_password_title', $title );
+			$message 	= apply_filters( 'retrieve_password_message', $message, $reset->key, $reset->url );
 
 			if ( $message && ! wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
 				$resp['error'] = __( 'The e-mail could not be sent.' ) . '<br />' .

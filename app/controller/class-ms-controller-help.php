@@ -41,11 +41,10 @@ class MS_Controller_Help extends MS_Controller {
 		 * @since  1.0.0
 		 * @param object $this The MS_Controller_Help object.
 		 */
-		$view = MS_Factory::create( 'MS_View_Help' );
-		$data = array();
-		$data['tabs'] = $this->get_tabs();
-
-		$view->data = apply_filters( 'ms_view_help_data', $data );
+		$view 			= MS_Factory::create( 'MS_View_Help' );
+		$data 			= array();
+		$data['tabs'] 	= $this->get_tabs();
+		$view->data 	= apply_filters( 'ms_view_help_data', $data );
 		$view->render();
 	}
 
@@ -58,28 +57,28 @@ class MS_Controller_Help extends MS_Controller {
 	 */
 	public function get_tabs() {
 		$tabs = array(
-			'general' => array(
-				'title' => __( 'General', 'membership2' ),
+			'general' 	=> array(
+				'title' 	=> __( 'General', 'membership2' ),
 			),
 			'shortcodes' => array(
-				'title' => __( 'Shortcodes', 'membership2' ),
+				'title' 	=> __( 'Shortcodes', 'membership2' ),
 			),
-			'network' => array(
-				'title' => __( 'Network-Wide Protection', 'membership2' ),
+			'network' 	=> array(
+				'title' 	=> __( 'Network-Wide Protection', 'membership2' ),
 			),
-			'advanced' => array(
-				'title' => __( 'Advanced Settings', 'membership2' ),
+			'advanced' 	=> array(
+				'title' 	=> __( 'Advanced Settings', 'membership2' ),
 			),
-			'branding' => array(
-				'title' => __( 'Customize Membership 2', 'membership2' ),
+			'branding' 	=> array(
+				'title' 	=> __( 'Customize Membership 2', 'membership2' ),
 			),
-			'emails' => array(
-				'title' => __( 'Email history', 'membership2' ),
+			'emails' 	=> array(
+				'title' 	=> __( 'Email history', 'membership2' ),
 			),
-			'api' => array(
-				'title' => __( 'API Docs', 'membership2' ),
-				'url' => MS_Plugin::instance()->url . 'docs/namespaces/default.html',
-				'target' => '_blank',
+			'api' 		=> array(
+				'title' 	=> __( 'API Docs', 'membership2' ),
+				'url' 		=> MS_Plugin::instance()->url . 'docs/namespaces/default.html',
+				'target' 	=> '_blank',
 			),
 		);
 
@@ -91,8 +90,8 @@ class MS_Controller_Help extends MS_Controller {
 		}
 
 		lib3()->array->equip_get( 'page' );
-		$def_key = MS_Controller_Plugin::MENU_SLUG . '-help';
-		$page = sanitize_html_class( $_GET['page'], $def_key );
+		$def_key 	= MS_Controller_Plugin::MENU_SLUG . '-help';
+		$page 		= sanitize_html_class( $_GET['page'], $def_key );
 
 		foreach ( $tabs as $key => $tab ) {
 			if ( empty( $tabs[ $key ]['url'] ) ) {

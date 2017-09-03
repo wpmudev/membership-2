@@ -178,9 +178,8 @@ class MS_Controller_Adminbar extends MS_Controller {
 	private function remove_admin_bar_nodes( $exclude = array() ) {
 		global $wp_admin_bar;
 
-		$nodes = $wp_admin_bar->get_nodes();
-
-		$exclude = apply_filters(
+		$nodes 		= $wp_admin_bar->get_nodes();
+		$exclude 	= apply_filters(
 			'ms_controller_adminbar_remove_admin_bar_nodes_exclude',
 			$exclude,
 			$nodes

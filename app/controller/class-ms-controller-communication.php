@@ -208,14 +208,14 @@ class MS_Controller_Communication extends MS_Controller {
 	 */
 	public function process_event( $event, $data ) {
 		if ( $data instanceof MS_Model_Relationship ) {
-			$subscription = $data;
-			$membership = $data->get_membership();
+			$subscription 	= $data;
+			$membership 	= $data->get_membership();
 		} elseif ( $data instanceof MS_Model_Membership ) {
-			$subscription = false;
-			$membership = $data;
+			$subscription 	= false;
+			$membership 	= $data;
 		} else {
-			$subscription = false;
-			$membership = false;
+			$subscription 	= false;
+			$membership 	= false;
 		}
 
 		$enqueue = array();
@@ -344,9 +344,9 @@ class MS_Controller_Communication extends MS_Controller {
 			if ( isset( $_POST['membership_id'] ) ) {
 				$membership_id = intval( $_POST['membership_id'] );
 			}
-			$type = $_POST['type'];
-			$field = $_POST['field'];
-			$value = $_POST['value'];
+			$type 	= $_POST['type'];
+			$field 	= $_POST['field'];
+			$value 	= $_POST['value'];
 
 			$comm = MS_Model_Communication::get_communication(
 				$type,
@@ -444,15 +444,15 @@ class MS_Controller_Communication extends MS_Controller {
 				'cc_email'
 			);
 
-			$comm->enabled = lib3()->is_true( $fields['enabled'] );
-			$comm->subject = $fields['subject'];
-			$comm->message = $fields['email_body'];
-			$comm->period = array(
-				'period_unit' => $fields['period_unit'],
-				'period_type' => $fields['period_type'],
+			$comm->enabled 	= lib3()->is_true( $fields['enabled'] );
+			$comm->subject 	= $fields['subject'];
+			$comm->message 	= $fields['email_body'];
+			$comm->period 	= array(
+				'period_unit' 	=> $fields['period_unit'],
+				'period_type' 	=> $fields['period_type'],
 			);
-			$comm->cc_enabled = ! empty( $fields['cc_enabled'] );
-			$comm->cc_email = $fields['cc_email'];
+			$comm->cc_enabled 	= ! empty( $fields['cc_enabled'] );
+			$comm->cc_email 	= $fields['cc_email'];
 
 			$comm->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
@@ -512,12 +512,12 @@ class MS_Controller_Communication extends MS_Controller {
 
 		$log = MS_Factory::create( 'MS_Model_Communicationlog' );
 
-		$log->name = $comm->type;
-		$log->sent = (int) $sent;
-		$log->title = $subject;
-		$log->subscription_id = $subscription->id;
-		$log->user_id = $subscription->user_id;
-		$log->trace = json_encode( $trace );
+		$log->name 				= $comm->type;
+		$log->sent 				= (int) $sent;
+		$log->title 			= $subject;
+		$log->subscription_id 	= $subscription->id;
+		$log->user_id 			= $subscription->user_id;
+		$log->trace 			= json_encode( $trace );
 
 		if ( is_array( $recipients ) ) {
 			$log->recipient = reset( $recipients );

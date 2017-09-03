@@ -166,10 +166,10 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'wp_loaded', 'wp_loaded' );
 
 		// Setup plugin admin UI.
-                $this->add_action( 'admin_menu', 'add_menu_pages' ); //for multisite, it needs too for Protection Rules page
+        $this->add_action( 'admin_menu', 'add_menu_pages' ); //for multisite, it needs too for Protection Rules page
 		if ( is_multisite() && MS_Plugin::is_network_wide() ) {
-                    $this->add_action( 'network_admin_menu', 'add_menu_pages' );
-                }
+             $this->add_action( 'network_admin_menu', 'add_menu_pages' );
+        }
 
 		// Select the right page to display.
 		$this->add_action( 'admin_init', 'route_submenu_request' );
@@ -389,10 +389,10 @@ class MS_Controller_Plugin extends MS_Controller {
 				$slug .= '-' . $page['slug'];
 			}
 
-			$page_title = apply_filters( 'ms_admin_submenu_page_title_' . $slug, $page['title'], $slug, self::$base_slug );
-			$menu_title = apply_filters( 'ms_admin_submenu_menu_title_' . $slug, $page['title'], $slug, self::$base_slug );
-			$capability = apply_filters( 'ms_admin_submenu_capability_' . $slug, $this->capability, $slug, self::$base_slug );
-			$submenu_slug = apply_filters( 'ms_admin_submenu_slug_' . $slug, $slug, self::$base_slug );
+			$page_title 	= apply_filters( 'ms_admin_submenu_page_title_' . $slug, $page['title'], $slug, self::$base_slug );
+			$menu_title 	= apply_filters( 'ms_admin_submenu_menu_title_' . $slug, $page['title'], $slug, self::$base_slug );
+			$capability 	= apply_filters( 'ms_admin_submenu_capability_' . $slug, $this->capability, $slug, self::$base_slug );
+			$submenu_slug 	= apply_filters( 'ms_admin_submenu_slug_' . $slug, $slug, self::$base_slug );
 
 			add_submenu_page(
 				self::$base_slug,
@@ -409,8 +409,8 @@ class MS_Controller_Plugin extends MS_Controller {
 			 * is an absolute URL.
 			 */
 			if ( $menu_link ) {
-				$item = end( $submenu[ self::$base_slug ] );
-				$key = key( $submenu[ self::$base_slug ] );
+				$item 	= end( $submenu[ self::$base_slug ] );
+				$key 	= key( $submenu[ self::$base_slug ] );
 				$submenu[ self::$base_slug ][ $key ][2] = $menu_link;
 			}
 		}
@@ -432,7 +432,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$pages = array(
 			'setup' => array(
 				'title' => __( 'Set-up', 'membership2' ),
-				'slug' => '',
+				'slug' 	=> '',
 			),
 		);
 
@@ -442,7 +442,7 @@ class MS_Controller_Plugin extends MS_Controller {
 
 			$pages[ self::MENU_SLUG ] = array(
 				'title' => __( 'Protection Rules', 'membership2' ),
-				'slug' => '',
+				'slug' 	=> '',
 			);
 		}
 
@@ -460,41 +460,41 @@ class MS_Controller_Plugin extends MS_Controller {
 		$show_billing = false;
 
 		$pages = array(
-			'memberships' => array(
-				'title' => __( 'Memberships', 'membership2' ),
-				'slug' => '',
+			'memberships' 		=> array(
+				'title' 			=> __( 'Memberships', 'membership2' ),
+				'slug' 				=> '',
 			),
 			'protected-content' => array(
-				'title' => __( 'Protection Rules', 'membership2' ),
-				'slug' => 'protection',
+				'title' 			=> __( 'Protection Rules', 'membership2' ),
+				'slug' 				=> 'protection',
 			),
-			'members' => array(
-				'title' => __( 'All Members', 'membership2' ),
-				'slug' => 'members',
+			'members' 			=> array(
+				'title' 			=> __( 'All Members', 'membership2' ),
+				'slug' 				=> 'members',
 			),
-			'add-member' => array(
-				'title' => __( 'Add Member', 'membership2' ),
-				'slug' => 'add-member',
+			'add-member' 		=> array(
+				'title' 			=> __( 'Add Member', 'membership2' ),
+				'slug' 				=> 'add-member',
 			),
-			'billing' => false,
-			'addon' => array(
-				'title' => __( 'Add-ons', 'membership2' ),
-				'slug' => 'addon',
+			'billing' 			=> false,
+			'addon' 			=> array(
+				'title' 			=> __( 'Add-ons', 'membership2' ),
+				'slug' 				=> 'addon',
 			),
-			'settings' => array(
-				'title' => __( 'Settings', 'membership2' ),
-				'slug' => 'settings',
+			'settings' 			=> array(
+				'title' 			=> __( 'Settings', 'membership2' ),
+				'slug' 				=> 'settings',
 			),
-			'help' => array(
-				'title' => __( 'Help', 'membership2' ),
-				'slug' => 'help',
+			'help' 				=> array(
+				'title' 			=> __( 'Help', 'membership2' ),
+				'slug' 				=> 'help',
 			),
 		);
 
-		$show_billing = MS_Model_Membership::have_paid_membership();
+		$show_billing 		= MS_Model_Membership::have_paid_membership();
 
 		if ( $show_billing ) {
-			$bill_count = MS_Model_Invoice::get_unpaid_invoice_count( null, true );
+			$bill_count 	= MS_Model_Invoice::get_unpaid_invoice_count( null, true );
 
 			if ( $bill_count > 0 ) {
 				$msg = '%1$s <span class="awaiting-mod count-%3$s"><span class="pending-count"><i class="hidden">(</i>%2$s<i class="hidden">)</i></span></span>';
@@ -517,8 +517,8 @@ class MS_Controller_Plugin extends MS_Controller {
 			 * gateways - if not then users cannot sign up for a membership.
 			 * Show a notice if no payment gateway is configured/activated.
 			 */
-			$gateways = MS_Model_Gateway::get_gateways( true );
-			$payment_possible = false;
+			$gateways 			= MS_Model_Gateway::get_gateways( true );
+			$payment_possible 	= false;
 			foreach ( $gateways as $key => $gateway ) {
 				if ( 'free' == $key ) { continue; }
 				$payment_possible = true;
@@ -552,8 +552,8 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function route_submenu_request() {
 		global $submenu;
-		$handler = null;
-		$handle_it = false;
+		$handler 	= null;
+		$handle_it 	= false;
 
 		if ( ! isset( $_GET['page'] ) ) { return; }
 		if ( $_GET['page'] === self::$base_slug ) {
@@ -644,8 +644,8 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// Handle the target attribute specified in $handler[0]
 		if ( MS_Plugin::is_network_wide() && 'any' != $handler[0] ) {
-			$redirect = false;
-			$admin_script = 'admin.php?' . $_SERVER['QUERY_STRING'];
+			$redirect 		= false;
+			$admin_script 	= 'admin.php?' . $_SERVER['QUERY_STRING'];
 
 			if ( 'network' == $handler[0] && ! is_network_admin() ) {
 				$redirect = network_admin_url( $admin_script );
@@ -718,7 +718,7 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		$slug = self::$base_slug;
 
-		return (strpos($curpage, $slug) !== false);
+		return ( strpos( $curpage, $slug ) !== false );
 	}
 
 	/**
@@ -944,7 +944,7 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function register_admin_scripts() {
 		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
+		$version 	= MS_Plugin::instance()->version;
 
 		// The main plugin script.
 		// Dont add dependants that hav not already loaded - Paul Kevin

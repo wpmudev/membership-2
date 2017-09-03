@@ -15,17 +15,17 @@
 class MS_Controller_Import extends MS_Controller {
 
 	// Action definitions.
-	const ACTION_EXPORT = 'export';
-	const ACTION_PREVIEW = 'preview';
+	const ACTION_EXPORT 		= 'export';
+	const ACTION_PREVIEW 		= 'preview';
 
 	// Ajax action: Import data.
-	const AJAX_ACTION_IMPORT = 'ms_import';
+	const AJAX_ACTION_IMPORT 	= 'ms_import';
 
 	// Ajax action: Save an automatic transaction matching (Billings page).
-	const AJAX_ACTION_MATCH = 'ms_save_matching';
+	const AJAX_ACTION_MATCH 	= 'ms_save_matching';
 
 	// Ajax action: Retry to process a single transaction (Billings page).
-	const AJAX_ACTION_RETRY = 'transaction_retry';
+	const AJAX_ACTION_RETRY 	= 'transaction_retry';
 
 	/**
 	 * Prepare the Import manager.
@@ -89,9 +89,9 @@ class MS_Controller_Import extends MS_Controller {
 		if ( $this->verify_nonce()
 			&& self::validate_required( $fields_match )
 		) {
-			$source = $_REQUEST['source'];
-			$source_id = $_REQUEST['source_id'];
-			$match_id = $_REQUEST['match_with'];
+			$source 	= $_REQUEST['source'];
+			$source_id 	= $_REQUEST['source_id'];
+			$match_id 	= $_REQUEST['match_with'];
 
 			if ( MS_Model_Import::match_with_source( $match_id, $source_id, $source ) ) {
 				wp_send_json_success(
@@ -138,7 +138,7 @@ class MS_Controller_Import extends MS_Controller {
 			$log = MS_Factory::load( 'MS_Model_Transactionlog', $log_id );
 			wp_send_json_success(
 				array(
-					'desc' => $log->description,
+					'desc' 	=> $log->description,
 					'state' => $log->state,
 				)
 			);
@@ -161,18 +161,18 @@ class MS_Controller_Import extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function ajax_action_import() {
-		$res = 'ERR';
-		$success = 0;
+		$res 		= 'ERR';
+		$success 	= 0;
 
 		if ( ! isset( $_POST['items'] ) || ! isset( $_POST['source'] ) ) {
 			echo 'ERR';
 			exit;
 		}
 
-		$batch = $_POST['items'];
+		$batch 	= $_POST['items'];
 		$source = $_POST['source'];
 
-		$res = 'OK';
+		$res 	= 'OK';
 		foreach ( $batch as $item ) {
 			if ( $this->process_item( $item, $source ) ) {
 				$success += 1;
@@ -195,9 +195,9 @@ class MS_Controller_Import extends MS_Controller {
 		$res = false;
 
 		lib3()->array->equip( $item, 'task', 'data' );
-		$task = $item['task'];
-		$data = $item['data'];
-		$model = MS_Factory::create( 'MS_Model_Import' );
+		$task 	= $item['task'];
+		$data 	= $item['data'];
+		$model 	= MS_Factory::create( 'MS_Model_Import' );
 		$model->source_key = $source;
 
 		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
@@ -229,9 +229,9 @@ class MS_Controller_Import extends MS_Controller {
 			case 'import-settings':
 				lib3()->array->equip( $item, 'setting', 'value' );
 				$setting = $item['setting'];
-				$value = $item['value'];
+				$value 	= $item['value'];
 				$model->import_setting( $setting, $value );
-				$res = true;
+				$res 	= true;
 				break;
 
 			case 'done':
@@ -275,12 +275,12 @@ class MS_Controller_Import extends MS_Controller {
 				break;
 
 			case self::ACTION_PREVIEW:
-				$view = MS_Factory::create( 'MS_View_Settings_Import' );
+				$view 		= MS_Factory::create( 'MS_View_Settings_Import' );
 				$model_name = 'MS_Model_Import_' . $_POST['import_source'];
-				$model = null;
+				$model 		= null;
 
 				try {
-					$model = MS_Factory::create( $model_name );
+					$model 	= MS_Factory::create( $model_name );
 				} catch ( Exception $ex ) {
 					self::_message(
 						'error',
@@ -319,16 +319,16 @@ class MS_Controller_Import extends MS_Controller {
 	 */
 	public function enqueue_scripts() {
 		$data = array(
-			'ms_init' => array( 'view_settings_import' ),
-			'lang' => array(
-				'progress_title' => __( 'Importing data...', 'membership2' ),
-				'close_progress' => __( 'Okay', 'membership2' ),
-				'import_done' => __( 'All done!', 'membership2' ),
-				'task_start' => __( 'Preparing...', 'membership2' ),
-				'task_done' => __( 'Cleaning up...', 'membership2' ),
-				'task_import_member' => __( 'Importing Member', 'membership2' ),
-				'task_import_membership' => __( 'Importing Membership', 'membership2' ),
-				'task_import_settings' => __( 'Importing Settings', 'membership2' ),
+			'ms_init' 	=> array( 'view_settings_import' ),
+			'lang' 		=> array(
+				'progress_title' 			=> __( 'Importing data...', 'membership2' ),
+				'close_progress' 			=> __( 'Okay', 'membership2' ),
+				'import_done' 				=> __( 'All done!', 'membership2' ),
+				'task_start' 				=> __( 'Preparing...', 'membership2' ),
+				'task_done' 				=> __( 'Cleaning up...', 'membership2' ),
+				'task_import_member' 		=> __( 'Importing Member', 'membership2' ),
+				'task_import_membership' 	=> __( 'Importing Membership', 'membership2' ),
+				'task_import_settings' 		=> __( 'Importing Settings', 'membership2' ),
 			),
 		);
 
