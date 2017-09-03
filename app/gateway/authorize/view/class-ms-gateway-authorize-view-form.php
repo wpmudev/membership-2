@@ -98,28 +98,28 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 		$currency = MS_Plugin::instance()->settings->currency;
 		$fields['hidden'] = array(
 			'gateway' => array(
-				'id' => 'gateway',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'gateway',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['gateway'],
 			),
 			'ms_relationship_id' => array(
-				'id' => 'ms_relationship_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'ms_relationship_id',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['ms_relationship_id'],
 			),
 			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> '_wpnonce',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => wp_create_nonce( "{$this->data['gateway']}_{$this->data['ms_relationship_id']}" ),
 			),
 			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'action',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['action'],
 			),
 			'step' => array(
-				'id' => 'step',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'step',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => MS_Controller_Frontend::STEP_PROCESS_PURCHASE,
 			),
 		);
@@ -136,58 +136,58 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 
 		$fields['card'] = array(
 			'card_num' => array(
-				'id' => 'card_num',
-				'title' => __( 'Card Number', 'membership2' ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'placeholder' => '•••• •••• •••• ••••',
-				'maxlength' => 24, // 20 digits + 4 spaces
+				'id' 			=> 'card_num',
+				'title' 		=> __( 'Card Number', 'membership2' ),
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' 	=> '•••• •••• •••• ••••',
+				'maxlength' 	=> 24, // 20 digits + 4 spaces
 			),
 			'card_code' => array(
-				'id' => 'card_code',
-				'title' => __( 'Card Code', 'membership2' ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'placeholder' => 'CVC',
-				'maxlength' => 4,
+				'id' 			=> 'card_code',
+				'title' 		=> __( 'Card Code', 'membership2' ),
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' 	=> 'CVC',
+				'maxlength' 	=> 4,
 			),
 			'exp_month' => array(
-				'id' => 'exp_month',
-				'title' => __( 'Expires', 'membership2' ),
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'id' 			=> 'exp_month',
+				'title' 		=> __( 'Expires', 'membership2' ),
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $months,
-				'class' => 'ms-select',
+				'class' 		=> 'ms-select',
 			),
 			'exp_year' => array(
-				'id' => 'exp_year',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'id' 			=> 'exp_year',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $years,
-				'class' => 'ms-select',
+				'class' 		=> 'ms-select',
 			),
 		);
 		$fields['billing'] = array(
-			'first_name' => array(
-				'id' => 'first_name',
-				'title' => __( 'First Name', 'membership2' ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'placeholder' => __( 'First Name', 'membership2' ),
+			'first_name' 		=> array(
+				'id' 			=> 'first_name',
+				'title' 		=> __( 'First Name', 'membership2' ),
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' 	=> __( 'First Name', 'membership2' ),
 			),
 			'last_name' => array(
-				'id' => 'last_name',
-				'title' => __( 'Last Name', 'membership2' ),
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'placeholder' => __( 'Last Name', 'membership2' ),
+				'id' 			=> 'last_name',
+				'title' 		=> __( 'Last Name', 'membership2' ),
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'placeholder' 	=> __( 'Last Name', 'membership2' ),
 			),
 			'country' => array(
-				'id' => 'country',
-				'title' => __( 'Country', 'membership2' ),
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'id' 			=> 'country',
+				'title' 		=> __( 'Country', 'membership2' ),
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
 				'field_options' => $this->data['countries'],
-				'class' => 'ms-select',
+				'class' 		=> 'ms-select',
 			),
 		);
 		$fields['submit'] = array(
-			'id' => 'submit',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Pay now', 'membership2' ),
+			'id' 		=> 'submit',
+			'type' 		=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' 	=> __( 'Pay now', 'membership2' ),
 		);
 
 		// Can be populated via the filter to add extra fields to the form.
@@ -252,11 +252,11 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 			$cim['value'] = $this->data['cim_payment_profile_id'];
 		}
 		$card_cvc = array(
-			'id' => 'card_code',
-			'title' => __( 'Enter the credit cards CVC code to verify the payment', 'membership2' ),
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'placeholder' => 'CVC',
-			'maxlength' => 4,
+			'id' 			=> 'card_code',
+			'title' 		=> __( 'Enter the credit cards CVC code to verify the payment', 'membership2' ),
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+			'placeholder' 	=> 'CVC',
+			'maxlength' 	=> 4,
 		);
 		?>
 		<form id="ms-authorize-extra-form" method="post" class="ms-form">

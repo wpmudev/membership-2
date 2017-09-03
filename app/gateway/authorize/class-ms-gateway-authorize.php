@@ -68,11 +68,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
-		$this->id = self::ID;
-		$this->name = __( 'Authorize.net Gateway', 'membership2' );
-		$this->group = 'Authorize.net';
-		$this->manual_payment = true; // Recurring billed/paid manually
-		$this->pro_rate = true;
+		$this->id 				= self::ID;
+		$this->name 			= __( 'Authorize.net Gateway', 'membership2' );
+		$this->group 			= 'Authorize.net';
+		$this->manual_payment 	= true; // Recurring billed/paid manually
+		$this->pro_rate 		= true;
 	}
 
 	/**
@@ -96,8 +96,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership' ) );
 		}
 
-		$invoice = $subscription->get_current_invoice();
-		$member = $subscription->get_member();
+		$invoice 	= $subscription->get_current_invoice();
+		$member 	= $subscription->get_member();
 
 		// manage authorize customer profile
 		$cim_profile_id = $this->get_cim_profile_id( $member );
@@ -151,8 +151,8 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this
 		);
 
-		$member = $subscription->get_member();
-		$invoice = $subscription->get_current_invoice();
+		$member 	= $subscription->get_member();
+		$invoice 	= $subscription->get_current_invoice();
 
 		if ( ! $invoice->is_paid() ) {
 			// Not paid yet, request the transaction.
@@ -183,10 +183,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @return bool True on success, otherwise throws an exception.
 	 */
 	protected function online_purchase( &$invoice, $member, $log_action ) {
-		$success = false;
-		$notes = '';
-		$amount = 0;
-		$subscription = $invoice->get_subscription();
+		$success 		= false;
+		$notes 			= '';
+		$amount 		= 0;
+		$subscription 	= $invoice->get_subscription();
 
 		do_action(
 			'ms_gateway_authorize_online_purchase_before',
@@ -214,10 +214,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$invoice->timestamp = time();
 			$invoice->save();
 
-			$_POST['API Out: Secure Payment'] = lib3()->is_true( $this->secure_cc );
-			$_POST['API Out: CustomerProfileID'] = $cim_transaction->customerProfileId;
-			$_POST['API Out: PaymentProfileID'] = $cim_transaction->customerPaymentProfileId;
-			$_POST['API Out: InvoiceNumber'] = $cim_transaction->order->invoiceNumber;
+			$_POST['API Out: Secure Payment'] 		= lib3()->is_true( $this->secure_cc );
+			$_POST['API Out: CustomerProfileID'] 	= $cim_transaction->customerProfileId;
+			$_POST['API Out: PaymentProfileID'] 	= $cim_transaction->customerPaymentProfileId;
+			$_POST['API Out: InvoiceNumber'] 		= $cim_transaction->order->invoiceNumber;
 
 			$duplicate_window = apply_filters( 'ms_auth_net_duplicate_transaction_duration', 7200 );
 
@@ -243,7 +243,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 					$_POST['API Response: XML'] = json_encode( $response->response );
 				}
 			} else {
-				$_POST['API Response: XML'] = json_encode( $response->response );
+				$_POST['API Response: XML'] 	= json_encode( $response->response );
 			}
 
 			if ( $response->isOk() ) {
@@ -516,10 +516,10 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		$this->load_authorize_lib();
-		$customer = new M2_AuthorizeNetCustomer();
-		$customer->merchantCustomerId = $member->id;
-		$customer->email = $member->email;
-		$customer->paymentProfiles[] = $this->create_cim_payment_profile();
+		$customer 						= new M2_AuthorizeNetCustomer();
+		$customer->merchantCustomerId 	= $member->id;
+		$customer->email 				= $member->email;
+		$customer->paymentProfiles[] 	= $this->create_cim_payment_profile();
 
 		$response = $this->get_cim()->createCustomerProfile( $customer );
 
@@ -600,20 +600,20 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$payment = new M2_AuthorizeNetPaymentProfile();
 
 		// billing information
-		$payment->billTo->firstName = substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
-		$payment->billTo->lastName = substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
-		$payment->billTo->company = substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
-		$payment->billTo->address = substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
-		$payment->billTo->city = substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
-		$payment->billTo->state = substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
-		$payment->billTo->zip = substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
-		$payment->billTo->country = substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
-		$payment->billTo->phoneNumber = substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
+		$payment->billTo->firstName 	= substr( trim( filter_input( INPUT_POST, 'first_name' ) ), 0, 50 );
+		$payment->billTo->lastName 		= substr( trim( filter_input( INPUT_POST, 'last_name' ) ), 0, 50 );
+		$payment->billTo->company 		= substr( trim( filter_input( INPUT_POST, 'company' ) ), 0, 50 );
+		$payment->billTo->address 		= substr( trim( filter_input( INPUT_POST, 'address' ) ), 0, 60 );
+		$payment->billTo->city 			= substr( trim( filter_input( INPUT_POST, 'city' ) ), 0, 40 );
+		$payment->billTo->state 		= substr( trim( filter_input( INPUT_POST, 'state' ) ), 0, 40 );
+		$payment->billTo->zip 			= substr( trim( filter_input( INPUT_POST, 'zip' ) ), 0, 20 );
+		$payment->billTo->country 		= substr( trim( filter_input( INPUT_POST, 'country' ) ), 0, 60 );
+		$payment->billTo->phoneNumber 	= substr( trim( filter_input( INPUT_POST, 'phone' ) ), 0, 25 );
 
 		// card information
-		$payment->payment->creditCard->cardNumber = preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
-		$payment->payment->creditCard->cardCode = trim( filter_input( INPUT_POST, 'card_code' ) );
-		$payment->payment->creditCard->expirationDate = sprintf(
+		$payment->payment->creditCard->cardNumber 		= preg_replace( '/\D/', '', filter_input( INPUT_POST, 'card_num' ) );
+		$payment->payment->creditCard->cardCode 		= trim( filter_input( INPUT_POST, 'card_code' ) );
+		$payment->payment->creditCard->expirationDate 	= sprintf(
 			'%02d-%04d',
 			filter_input( INPUT_POST, 'exp_month', FILTER_VALIDATE_INT ),
 			filter_input( INPUT_POST, 'exp_year', FILTER_VALIDATE_INT )
