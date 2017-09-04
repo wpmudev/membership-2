@@ -410,8 +410,8 @@ module.exports = function( grunt ) {
 			},
 			release_free: {
 				src: [
-					'release/<%= pkg.free-version %>-free/',
-					'release/<%= pkg.name %>-free-<%= pkg.free-version %>.zip'
+					'release/<%= pkg.freeVersion %>-free/',
+					'release/<%= pkg.name %>-free-<%= pkg.freeVersion %>.zip'
 				]
 			},
 			pro: conf.plugin_branches.exclude_pro,
@@ -426,7 +426,7 @@ module.exports = function( grunt ) {
 			},
 			free: {
 				src: conf.plugin_branches.include_files,
-				dest: 'release/<%= pkg.free-version %>-free/'
+				dest: 'release/<%= pkg.freeVersion %>-free/'
 			},
 		},
 
@@ -445,10 +445,10 @@ module.exports = function( grunt ) {
 			free: {
 				options: {
 					mode: 'zip',
-					archive: './release/<%= pkg.name %>-free-<%= pkg.free-version %>.zip'
+					archive: './release/<%= pkg.name %>-free-<%= pkg.freeVersion %>.zip'
 				},
 				expand: true,
-				cwd: 'release/<%= pkg.free-version %>-free/',
+				cwd: 'release/<%= pkg.freeVersion %>-free/',
 				src: [ '**/*' ],
 				dest: conf.plugin_dir
 			},
