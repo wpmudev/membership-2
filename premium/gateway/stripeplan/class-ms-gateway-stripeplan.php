@@ -270,18 +270,18 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$membership->pay_cycle_period_unit
 			);
 
-			$settings = MS_Plugin::instance()->settings;
-			$plan_data['amount'] = absint( $membership->price * 100 );
-			$plan_data['currency'] = $settings->currency;
-			$plan_data['name'] = $membership->name;
-			$plan_data['interval'] = $interval;
-			$plan_data['interval_count'] = $interval_count;
+			$settings 						= MS_Plugin::instance()->settings;
+			$plan_data['amount'] 			= absint( $membership->price * 100 );
+			$plan_data['currency'] 			= $settings->currency;
+			$plan_data['name'] 				= $membership->name;
+			$plan_data['interval'] 			= $interval;
+			$plan_data['interval_count'] 	= $interval_count;
 			$plan_data['trial_period_days'] = $trial_days;
 
 			// Check if the plan needs to be updated.
-			$serialized_data = json_encode( $plan_data );
-			$temp_key = substr( 'ms-stripe-' . $plan_data['id'], 0, 45 );
-			$temp_data = MS_Factory::get_transient( $temp_key );
+			$serialized_data 	= json_encode( $plan_data );
+			$temp_key 			= substr( 'ms-stripe-' . $plan_data['id'], 0, 45 );
+			$temp_data 			= MS_Factory::get_transient( $temp_key );
 
 			if ( $temp_data != $serialized_data ) {
 				MS_Factory::set_transient(
@@ -319,17 +319,17 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		}
 
 		$coupon_data = array(
-			'id' => self::get_the_id( $coupon->id, 'coupon' ),
-			'duration' => $duration,
-			'amount_off' => $amount_off,
-			'percent_off' => $percent_off,
-			'currency' => $settings->currency,
+			'id' 			=> self::get_the_id( $coupon->id, 'coupon' ),
+			'duration' 		=> $duration,
+			'amount_off' 	=> $amount_off,
+			'percent_off' 	=> $percent_off,
+			'currency' 		=> $settings->currency,
 		);
 
 		// Check if the plan needs to be updated.
-		$serialized_data = json_encode( $coupon_data );
-		$temp_key = substr( 'ms-stripe-' . $coupon_data['id'], 0, 45 );
-		$temp_data = MS_Factory::get_transient( $temp_key );
+		$serialized_data 	= json_encode( $coupon_data );
+		$temp_key 			= substr( 'ms-stripe-' . $coupon_data['id'], 0, 45 );
+		$temp_data 			= MS_Factory::get_transient( $temp_key );
 
 		if ( $temp_data != $serialized_data ) {
 			MS_Factory::set_transient(
@@ -382,15 +382,22 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 								include_once( ABSPATH . 'wp-includes/pluggable.php' );
 							}
 	
-							$user 	= get_user_by( 'email', $email );
-							$member = MS_Factory::load( 'MS_Model_Member', $user->ID );
-							$success = false;
+							$user 		= get_user_by( 'email', $email );
+							$member 	= MS_Factory::load( 'MS_Model_Member', $user->ID );
+							$success 	= false;
 							if ( $member ) {
 								
 								foreach ( $member->subscriptions as $subscription ){
 									if ( $subscription ) {
 										$membership = $subscription->get_membership();
 										switch ( $event->type ){
+											case 'invoice.created' :
+												$subscription->check_membership_status();
+												if ( $subscription->trial_period_completed ) {
+													$subscription->status = MS_Model_Relationship::STATUS_PENDING;
+													$subscription->save();
+												}
+											break;
 											case 'invoice.payment_succeeded' :
 												$invoice_id = $subscription->first_unpaid_invoice();
 												if ( $invoice_id ) {
@@ -429,7 +436,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 											break;
 											case 'customer.subscription.deleted' :
 											case 'invoice.payment_failed' :
-												$notes .= __( 'Membership cancelled via webhook', 'membership2' );
+												$notes .= __( 'Membership cancelled or Payment failed via webhook', 'membership2' );
 												$success = false;
 												$member->cancel_membership( $membership->id );
 												$member->save();

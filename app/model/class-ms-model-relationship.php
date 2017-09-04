@@ -1698,7 +1698,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// If no unpaid invoice was found: Create one.
 		if ( ! $invoice_id ) {
-			$invoice = $this->get_next_invoice();
+			$invoice 	= $this->get_next_invoice();
 			$invoice_id = $invoice->id;
 		}
 
@@ -2754,7 +2754,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		$membership = $this->get_membership();
-		$comms = MS_Model_Communication::get_communications( $membership );
+		$comms 		= MS_Model_Communication::get_communications( $membership );
 		
 		// Check first (invitation code) data really exist
 		$invitation_code = $membership->get_custom_data( 'no_invitation' );
@@ -2933,9 +2933,13 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					// Recalculate the new Subscription status.
 					$next_status = $this->calculate_status();
 				}
+
+				if ( $this->payment_type === MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
+					$days->remaining = $this->get_remaining_period( 0 );
+				}
 				
 				$deactivate = false;
-				$invoice = null;
+				$invoice 	= null;
 				$auto_renew = false;
 				
 				/*
