@@ -337,8 +337,8 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_coupon_count( $args = null ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'post_status' => 'any',
+			'post_type' 	=> self::get_post_type(),
+			'post_status' 	=> 'any',
 		);
 
 		MS_Factory::select_blog();
@@ -368,10 +368,10 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_coupons( $args = null ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 10,
-			'post_status' => 'any',
-			'order' => 'DESC',
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 10,
+			'post_status' 		=> 'any',
+			'order' 			=> 'DESC',
 		);
 		$args = wp_parse_args( $args, $defaults );
 
@@ -405,11 +405,11 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		$code = sanitize_text_field( $code );
 
 		$args = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 1,
-			'post_status' => 'any',
-			'fields' => 'ids',
-			'meta_query' => array(
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 1,
+			'post_status' 		=> 'any',
+			'fields' 			=> 'ids',
+			'meta_query' 		=> array(
 				array(
 					'key'     => 'code',
 					'value'   => $code,
@@ -473,7 +473,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		if ( empty( $this->code ) ) { return false; }
 
 		$membership = $subscription->get_membership();
-		$discount = $this->get_discount_value( $subscription );
+		$discount 	= $this->get_discount_value( $subscription );
 
 		$time = apply_filters(
 			'ms_addon_coupon_model_save_application_redemption_time',
@@ -481,18 +481,17 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		);
 
 		// Grab the user account as we should be logged in by now.
-		$user = MS_Model_Member::get_current_member();
-
-		$key = self::get_transient_name( $user->id, $membership->id );
+		$user 	= MS_Model_Member::get_current_member();
+		$key 	= self::get_transient_name( $user->id, $membership->id );
 
 		$transient = apply_filters(
 			'ms_addon_coupon_model_transient_value',
 			array(
-				'id' => $this->id,
-				'user_id' => $user->id,
+				'id' 			=> $this->id,
+				'user_id' 		=> $user->id,
 				'membership_id'	=> $membership->id,
-				'discount' => $discount,
-				'message' => $this->coupon_message,
+				'discount' 		=> $discount,
+				'message' 		=> $this->coupon_message,
 			)
 		);
 

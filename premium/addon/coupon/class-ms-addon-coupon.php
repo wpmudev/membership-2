@@ -609,7 +609,7 @@ class MS_Addon_Coupon extends MS_Addon {
 		if ( $invoice->coupon_id ) {
 			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
 			$coupon->remove_application( $member->id, $invoice->membership_id );
-			$coupon->used++;
+			$coupon->used = $coupon->used + 1;
 			$coupon->save();
 		}
 	}

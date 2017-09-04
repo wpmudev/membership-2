@@ -120,9 +120,9 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		);
 
 		$this->add_filter(
-				'ms_model_pages_get_ms_page_url',
-				'ms_model_pages_get_ms_page_url_cb',
-				99, 4
+			'ms_model_pages_get_ms_page_url',
+			'ms_model_pages_get_ms_page_url_cb',
+			99, 4
 		);
 	}
 
