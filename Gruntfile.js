@@ -199,7 +199,7 @@ module.exports = function( grunt ) {
 
 		plugin_dir: 'membership/',
 		plugin_file: 'membership2.php',
-		free_plugin_file: '../free/membership.php'
+		free_plugin_file: './free/membership.php'
 	};
 	// -------------------------------------------------------------------------
 	var key, ind, newkey, newval;

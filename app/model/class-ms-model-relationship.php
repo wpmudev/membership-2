@@ -1687,7 +1687,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public function first_unpaid_invoice() {
 		$invoice_id = 0;
 
-		// list all unpaid invoices
+		// list all unpaid invoices where status != paid
 		$invoices = $this->get_invoices( 'paid' );
 		foreach ( $invoices as $invoice ) {
 			if ( ! $invoice->is_paid() ) {
@@ -1915,7 +1915,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', 'membership2' );
 					}
 				}
-
+				$this->recalculate_expire_date = false;
 				$desc .= sprintf(
 					$lbl,
 					$currency,
@@ -1939,7 +1939,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> to access from %3$s until %4$s.', 'membership2' );
 					}
 				}
-
+				
 				$desc .= sprintf(
 					$lbl,
 					$currency,
@@ -2768,11 +2768,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Collection of all day-values.
 		$days = (object) array(
-			'remaining' => $this->get_remaining_period(),
-			'remaining_trial' => $this->get_remaining_trial_period(),
-			'invoice_before' => 5,
-			'deactivate_expired_after' => 30,
-			'deactivate_trial_expired_after' => 5,
+			'remaining' 						=> $this->get_remaining_period(),
+			'remaining_trial' 					=> $this->get_remaining_trial_period(),
+			'invoice_before' 					=> 5,
+			'deactivate_expired_after' 			=> 30,
+			'deactivate_trial_expired_after' 	=> 5,
 		);
 
 		//@todo create settings to configure the following day-values via UI.
@@ -2919,6 +2919,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 							// Either keep the current expire date (if valid) or
 							// calculate a new expire date, based on current date.
 							if ( ! $this->expire_date && $this->recalculate_expire_date ) {
+								if ( $this->payment_type === MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
+									$this->recalculate_expire_date = false;
+								}
 								$this->expire_date = $this->calc_expire_date(
 									MS_Helper_Period::current_date()
 								);
@@ -2935,6 +2938,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				}
 
 				if ( $this->payment_type === MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
+					$this->recalculate_expire_date = false;
 					$days->remaining = $this->get_remaining_period( 0 );
 				}
 				

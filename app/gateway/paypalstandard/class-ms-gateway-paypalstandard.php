@@ -161,10 +161,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					} else {
 						$invoice_id = $invoice->id;
 					}
-				} else {
-					$invoice_id = $subscription->first_unpaid_invoice();
 				}
-			} 
+			}
 			
 			//It might be set in the post, but we might not have that invoice
 			if ( !$invoice_id ) {
@@ -578,10 +576,15 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				&& 'VERIFIED' == $response['body']
 				&& $invoice->id == $invoice_id
 			) {
+				
 				$subscription = $invoice->get_subscription();
 				$membership = $subscription->get_membership();
 				$member = $subscription->get_member();
 				$subscription_id = $subscription->id;
+
+				if ( $invoice->is_paid() ) {
+					$invoice 	= $subscription->get_next_invoice();
+				}
 
 				// Process the IPN call. Until now we just collected details.
 				switch ( $do_action ) {
@@ -595,9 +598,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						break;
 
 					case 'pay-free':
-						if($subscription->is_trial_eligible()){
+						if ( $subscription->is_trial_eligible() ) {
 							$total = $invoice->trial_price;
-						}else{
+						} else {
 							$total = $invoice->total;
 						}
 						if ( 0 == $total ) {
