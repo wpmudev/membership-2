@@ -1320,11 +1320,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return string The calculated expire date.
 	 */
 	public function calc_expire_date( $start_date = null, $paid = false ) {
-		$membership = $this->get_membership();
-		$gateway = $this->get_gateway();
+		$membership 	= $this->get_membership();
+		$gateway 		= $this->get_gateway();
 
-		$start_date = $this->calc_trial_expire_date( $start_date );
-		$expire_date = null;
+		$start_date 	= $this->calc_trial_expire_date( $start_date );
+		$expire_date 	= null;
 
 		/*
 		 * When in trial period and gateway does not send automatic recurring
@@ -1915,13 +1915,22 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> for access until %3$s.', 'membership2' );
 					}
 				}
-				$this->recalculate_expire_date = false;
+				
+				//$this->recalculate_expire_date = false;
+
+				if ( empty( $this->expire_date ) || strtotime( $this->start_date ) > strtotime( $this->expire_date ) ) {
+					$expire_date = $this->calc_expire_date( MS_Helper_Period::current_time() );
+				} else {
+					$expire_date = $this->expire_date;
+				}
+				
+				
 				$desc .= sprintf(
 					$lbl,
 					$currency,
 					$total_price,
-					MS_Helper_Period::format_date( $this->calc_expire_date( MS_Helper_Period::current_time() ) ),
-					$this->calc_expire_date( MS_Helper_Period::current_time() )
+					MS_Helper_Period::format_date( $expire_date ),
+					$expire_date
 				);
 				break;
 
@@ -2919,9 +2928,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 							// Either keep the current expire date (if valid) or
 							// calculate a new expire date, based on current date.
 							if ( ! $this->expire_date && $this->recalculate_expire_date ) {
-								if ( $this->payment_type === MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
-									$this->recalculate_expire_date = false;
-								}
 								$this->expire_date = $this->calc_expire_date(
 									MS_Helper_Period::current_date()
 								);
@@ -2937,7 +2943,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$next_status = $this->calculate_status();
 				}
 
-				if ( $this->payment_type === MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
+				if ( !empty( $this->expire_date ) && $this->payment_type === MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
 					$this->recalculate_expire_date = false;
 					$days->remaining = $this->get_remaining_period( 0 );
 				}
@@ -3101,7 +3107,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					
 					// if there was another membership configured when this membership ends
 					$new_membership_id = (int) $membership->on_end_membership_id;
-					if ( $days->remaining == 0 && $new_membership_id > 0 ) {
+					if ( $days->remaining <= 0 && $new_membership_id > 0 ) {
 						$deactivate = true;
 					}
 				}
@@ -3109,7 +3115,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$next_status = $this->calculate_status( null );
 
 				if ( $membership->payment_type == MS_Model_Membership::PAYMENT_TYPE_FINITE ) {
-					if ( strtotime( $this->expire_date ) < strtotime( MS_Helper_Period::current_date() ) ) {
+					if ( !empty( $this->expire_date ) && strtotime( $this->expire_date ) < strtotime( MS_Helper_Period::current_date() ) ) {
 						$next_status = self::STATUS_EXPIRED;
 					}
 				}
