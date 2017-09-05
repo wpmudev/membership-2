@@ -3,7 +3,7 @@ Contributors: WPMUDEV
 Tags: Content Protection, Control Access, Membership, Membership 2, Multisite Membership, Paid Membership, Pay Wall, Paying Users, Registration, Restrict Content, Subscription, WordPress Membership, WPMU DEV
 Requires at least: 3.7
 Tested up to: 4.8.1
-Stable tag: trunk
+Stable tag: 4.1
 
 Membership 2 transforms your WordPress website into a fully functional membership site.
 
@@ -110,7 +110,7 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 
 == Changelog ==
 
-= 4.0.2 =
+= 4.1 =
 * Added: Advanced media protection settings
 * Added: New filter ms_frontend_controller_change_signup_url to allow disabling Membership login
 * Added: Column on admin user list with Membership name
