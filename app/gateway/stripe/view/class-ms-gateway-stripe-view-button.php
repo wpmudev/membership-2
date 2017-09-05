@@ -3,11 +3,11 @@
 class MS_Gateway_Stripe_View_Button extends MS_View {
 
 	public function to_html() {
-		$fields = $this->prepare_fields();
-		$subscription = $this->data['ms_relationship'];
-		$invoice = $subscription->get_current_invoice();
-		$member = MS_Model_Member::get_current_member();
-		$gateway = $this->data['gateway'];
+		$fields 		= $this->prepare_fields();
+		$subscription 	= $this->data['ms_relationship'];
+		$invoice 		= $subscription->get_current_invoice();
+		$member 		= MS_Model_Member::get_current_member();
+		$gateway 		= $this->data['gateway'];
 
 		// Stripe is using Ajax, so the URL is empty.
 		$action_url = apply_filters(
@@ -15,15 +15,15 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 			''
 		);
 
-		$row_class = 'gateway_' . $gateway->id;
+		$row_class 	= 'gateway_' . $gateway->id;
 		if ( ! $gateway->is_live_mode() ) {
 			$row_class .= ' sandbox-mode';
 		}
 
 		$stripe_data = array(
-			'name' => get_bloginfo( 'name' ),
-			'description' => strip_tags( $invoice->short_description ),
-			'label' => $gateway->pay_button_url,
+			'name' 			=> get_bloginfo( 'name' ),
+			'description' 	=> strip_tags( $invoice->short_description ),
+			'label' 		=> $gateway->pay_button_url,
 		);
 
 		/**
@@ -39,19 +39,18 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 			$invoice
 		);
 
-		$stripe_data['email'] = $member->email;
-		$stripe_data['key'] = $gateway->get_publishable_key();
-		$stripe_data['currency'] = $invoice->currency;
-		$stripe_data['amount'] = ceil(abs( $invoice->total * 100 )); // Amount in cents.
-		$stripe_data['image'] = $gateway->get_vendor_logo();
-		$stripe_data['locale'] = 'auto';
-		$stripe_data['zip-code'] = 'true';
+		$stripe_data['email'] 		= $member->email;
+		$stripe_data['key'] 		= $gateway->get_publishable_key();
+		$stripe_data['currency'] 	= $invoice->currency;
+		$stripe_data['amount'] 		= ceil(abs( $invoice->total * 100 )); // Amount in cents.
+		$stripe_data['image'] 		= $gateway->get_vendor_logo();
+		$stripe_data['locale'] 		= 'auto';
+		$stripe_data['zip-code'] 	= 'true';
                 
-                $stripe_data = apply_filters(
-			'ms_gateway_stripe_form_details_after',
-			$stripe_data,
-			$invoice
-		);
+        $stripe_data 				= apply_filters('ms_gateway_stripe_form_details_after',
+														$stripe_data,
+														$invoice
+													);
 
 		ob_start();
 		?>
@@ -107,26 +106,26 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 		$subscription = $this->data['ms_relationship'];
 
 		$fields = array(
-			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'_wpnonce' 			=> array(
+				'id' 	=> '_wpnonce',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => wp_create_nonce(
 					$gateway->id . '_' . $subscription->id
 				),
 			),
-			'gateway' => array(
-				'id' => 'gateway',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'gateway' 			=> array(
+				'id' 	=> 'gateway',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $gateway->id,
 			),
 			'ms_relationship_id' => array(
-				'id' => 'ms_relationship_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'ms_relationship_id',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $subscription->id,
 			),
-			'step' => array(
-				'id' => 'step',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'step' 				=> array(
+				'id' 	=> 'step',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['step'],
 			),
 		);

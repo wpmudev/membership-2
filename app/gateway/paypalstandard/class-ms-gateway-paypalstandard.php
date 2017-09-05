@@ -49,11 +49,11 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
-		$this->id = self::ID;
-		$this->name = __( 'PayPal Standard Gateway', 'membership2' );
-		$this->group = 'PayPal';
-		$this->manual_payment = false; // Recurring charged automatically
-		$this->pro_rate = false;
+		$this->id 				= self::ID;
+		$this->name 			= __( 'PayPal Standard Gateway', 'membership2' );
+		$this->group 			= 'PayPal';
+		$this->manual_payment	= false; // Recurring charged automatically
+		$this->pro_rate 		= false;
 
 		if ( $this->active && $this->is_live_mode() && strpos( $this->merchant_id, '@' ) ) {
 			$settings_url = MS_Controller_Plugin::get_admin_url(
@@ -79,42 +79,42 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	 *         that will be updated instead of creating a new log entry.
 	 */
 	public function handle_return( $log = false ) {
-		$success = false;
-		$ignore = false;
-		$exit = false;
-		$redirect = false;
-		$notes = '';
-		$status = null;
-		$notes_err = '';
-		$notes_pay = '';
-		$notes_txn = '';
-		$external_id = null;
-		$invoice_id = 0;
-		$subscription_id = 0;
-		$amount = 0;
-		$transaction_type = '';
-		$payment_status = '';
-		$do_action = 'ignore';
-		$ext_type = false;
-		$sandbox = false;
+		$success 			= false;
+		$ignore 			= false;
+		$exit 				= false;
+		$redirect 			= false;
+		$notes 				= '';
+		$status 			= null;
+		$notes_err 			= '';
+		$notes_pay 			= '';
+		$notes_txn 			= '';
+		$external_id 		= null;
+		$invoice_id 		= 0;
+		$subscription_id 	= 0;
+		$amount 			= 0;
+		$transaction_type 	= '';
+		$payment_status 	= '';
+		$do_action 			= 'ignore';
+		$ext_type 			= false;
+		$sandbox 			= false;
 
 		if ( ! empty( $_POST[ 'test_ipn'] ) ) {
-			$sandbox = ($_POST[ 'test_ipn'] == 1);
+			$sandbox 			= ( $_POST[ 'test_ipn'] == 1 );
 		}
 		if ( ! empty( $_POST[ 'txn_type'] ) ) {
-			$transaction_type = strtolower( $_POST[ 'txn_type'] );
+			$transaction_type 	= strtolower( $_POST[ 'txn_type'] );
 		}
 		if ( isset( $_POST['mc_gross'] ) ) {
-			$amount = (float) $_POST['mc_gross'];
+			$amount 			= (float) $_POST['mc_gross'];
 		}elseif ( isset( $_POST['mc_amount3'] ) ) {
 			// mc_amount1 and mc_amount2 are for trial period prices.
-			$amount = (float) $_POST['mc_amount3'];
+			$amount 			= (float) $_POST['mc_amount3'];
 		} elseif ( isset( $_POST['amount'] ) ) {
 			// mc_amount1 and mc_amount2 are for trial period prices.
-			$amount = (float) $_POST['amount'];
+			$amount 			= (float) $_POST['amount'];
 		}
 		if ( ! empty( $_POST[ 'payment_status'] ) ) {
-			$payment_status = strtolower( $_POST[ 'payment_status'] );
+			$payment_status 	= strtolower( $_POST[ 'payment_status'] );
                         
 			/**
 			* Sandbox fix
@@ -126,12 +126,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			}
 		}
 		if ( ! empty( $_POST['txn_id'] ) ) {
-			$external_id = $_POST['txn_id'];
+			$external_id 		= $_POST['txn_id'];
 		}
 		if ( ! empty( $_POST['mc_currency'] ) ) {
-			$currency = $_POST['mc_currency'];
+			$currency 			= $_POST['mc_currency'];
 		} elseif ( ! empty( $_POST['currency_code'] ) ) {
-			$currency = $_POST['currency_code'];
+			$currency 			= $_POST['currency_code'];
 		}
 		
 
@@ -139,9 +139,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		if ( $payment_status || $transaction_type ) {
 
 			if ( ! empty( $_POST['invoice'] ) ) {
-				$invoice_id = intval( $_POST['invoice'] );
+				$invoice_id 	= intval( $_POST['invoice'] );
 			} elseif ( ! empty( $_POST['rp_invoice'] ) ) {
-				$invoice_id = intval( $_POST['rp_invoice'] );
+				$invoice_id 	= intval( $_POST['rp_invoice'] );
 			}
 
 			if ( $invoice_id ) {
@@ -153,13 +153,13 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * So we need to check: If the invoice is already paid then the
 				 * payment is for a follow-up invoice.
 				 */
-				$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+				$invoice 	= MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 				if ( $invoice->id != 0 ) {
 					if ( $invoice->is_paid() ) {
 						$subscription 	= $invoice->get_subscription();
 						$invoice_id 	= $subscription->first_unpaid_invoice();
 					} else {
-						$invoice_id = $invoice->id;
+						$invoice_id 	= $invoice->id;
 					}
 				}
 			}
@@ -242,10 +242,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					$user = get_user_by( 'email', $_POST['payer_email'] );
 
 					if ( $user && $user->ID ) {
-						$ext_type = 'pay_btn';
-						$is_linked = false;
+						$ext_type 		= 'pay_btn';
+						$is_linked 		= false;
 
-						$subscription = MS_Model_Import::find_subscription(
+						$subscription 	= MS_Model_Import::find_subscription(
 							$user->ID,
 							$_POST['btn_id'],
 							'pay_btn',
@@ -253,7 +253,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						);
 
 						if ( $subscription ) {
-							$is_linked = true;
+							$is_linked 	= true;
 						} else {
 							$membership = MS_Model_Import::membership_by_matching(
 								'pay_btn',
@@ -326,22 +326,22 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				case 'recurring_payment_profile_canceled':
 				case 'subscr_cancel':
 					// Subscription was manually cancelled.
-					$notes_txn = __( 'Subscription has been canceled', 'membership2' );
-					$do_action = 'cancel';
+					$notes_txn 		= __( 'Subscription has been canceled', 'membership2' );
+					$do_action 		= 'cancel';
 					$payment_status = false; // Skip the payment_status check.
 					break;
 
 				case 'recurring_payment_suspended':
 					// Recurring subscription was manually suspended.
-					$notes_txn = __( 'Subscription has been suspended', 'membership2' );
-					$do_action = 'cancel';
+					$notes_txn 		= __( 'Subscription has been suspended', 'membership2' );
+					$do_action 		= 'cancel';
 					$payment_status = false; // Skip the payment_status check.
 					break;
 
 				case 'recurring_payment_suspended_due_to_max_failed_payment':
 					// Recurring subscription was automatically suspended.
-					$notes_txn = __( 'Subscription has failed', 'membership2' );
-					$do_action = 'cancel';
+					$notes_txn 		= __( 'Subscription has failed', 'membership2' );
+					$do_action 		= 'cancel';
 					$payment_status = false; // Skip the payment_status check.
 					break;
 
@@ -355,8 +355,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					} else {
 						$notes_txn = __( 'New Dispute filed', 'membership2' );
 					}
-					$status = MS_Model_Invoice::STATUS_DENIED;
-					$do_action = 'error';
+					$status 	= MS_Model_Invoice::STATUS_DENIED;
+					$do_action 	= 'error';
 					break;
 
 				case 'subscr_eot':
@@ -461,19 +461,19 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					break;
 
 				case 'reversed':
-					$notes_pay = __( 'Last transaction has been reversed: Payment has been reversed (charge back).', 'membership2' );
-					$status = MS_Model_Invoice::STATUS_DENIED;
+					$notes_pay 	= __( 'Last transaction has been reversed: Payment has been reversed (charge back).', 'membership2' );
+					$status 	= MS_Model_Invoice::STATUS_DENIED;
 					break;
 
 				case 'refunded':
-					$notes_pay = __( 'Last transaction has been reversed: Payment has been refunded.', 'membership2' );
-					$status = MS_Model_Invoice::STATUS_DENIED;
+					$notes_pay 	= __( 'Last transaction has been reversed: Payment has been refunded.', 'membership2' );
+					$status 	= MS_Model_Invoice::STATUS_DENIED;
 					break;
 
 				case 'denied':
-					$notes_pay = __( 'Last transaction has been reversed: Payment Denied.', 'membership2' );
-					$status = MS_Model_Invoice::STATUS_DENIED;
-					$do_action = 'error';
+					$notes_pay 	= __( 'Last transaction has been reversed: Payment Denied.', 'membership2' );
+					$status 	= MS_Model_Invoice::STATUS_DENIED;
+					$do_action 	= 'error';
 					break;
 
 				case 'pending':
@@ -534,10 +534,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 
 		// Now we a good description of this IPN call.
 		if ( $notes_pay ) {
-			$notes .= ($notes ? ' | ' : '') . $notes_pay;
+			$notes .= ( $notes ? ' | ' : '' ) . $notes_pay;
 		}
 		if ( $notes_txn ) {
-			$notes .= ($notes ? ' | ' : '') . $notes_txn;
+			$notes .= ( $notes ? ' | ' : '' ) . $notes_txn;
 		}
 
 		// Step 2a: Check if the txn_id was already processed by M2.
@@ -556,15 +556,15 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			}
 
 			// PayPal post authenticity verification.
-			$ipn_data = (array) stripslashes_deep( $_POST );
-			$ipn_data['cmd'] = '_notify-validate';
-			$response = wp_remote_post(
+			$ipn_data 			= (array) stripslashes_deep( $_POST );
+			$ipn_data['cmd'] 	= '_notify-validate';
+			$response 			= wp_remote_post(
 				$domain . '/cgi-bin/webscr',
 				array(
-					'timeout' => 60,
-					'sslverify' => false,
-					'httpversion' => '1.1',
-					'body' => $ipn_data,
+					'timeout' 		=> 60,
+					'sslverify' 	=> false,
+					'httpversion' 	=> '1.1',
+					'body' 			=> $ipn_data,
 				)
 			);
 
@@ -577,10 +577,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				&& $invoice->id == $invoice_id
 			) {
 				
-				$subscription = $invoice->get_subscription();
-				$membership = $subscription->get_membership();
-				$member = $subscription->get_member();
-				$subscription_id = $subscription->id;
+				$subscription 		= $invoice->get_subscription();
+				$membership 		= $subscription->get_membership();
+				$member 			= $subscription->get_member();
+				$subscription_id 	= $subscription->id;
 
 				if ( $invoice->is_paid() ) {
 					$invoice 	= $subscription->get_next_invoice();
@@ -672,8 +672,8 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 						break;
 				}
 
-				$notes = 'Response Error: ' . $reason;
-				$exit = true;
+				$notes 	= 'Response Error: ' . $reason;
+				$exit 	= true;
 			}
 			$invoice->gateway_id = self::ID;
 			$invoice->save();
@@ -686,9 +686,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				if ( ! $notes ) {
 					$notes = 'Ignored: Missing POST variables. Redirect to Home-URL.';
 				}
-				$redirect = MS_Helper_Utility::home_url( '/' );
-				$ignore = true;
-				$success = false;
+				$redirect 	= MS_Helper_Utility::home_url( '/' );
+				$ignore 	= true;
+				$success 	= false;
 			} elseif ( 'm1' == $ext_type ) {
 				/*
 				 * The payment belongs to an imported M1 subscription and could
@@ -696,15 +696,15 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 * Do not return an error code, but also do not modify any
 				 * invoice/subscription.
 				 */
-				$notes = 'M1 Payment detected. Manual matching required. ' . $notes_err;
-				$success = false;
+				$notes 		= 'M1 Payment detected. Manual matching required. ' . $notes_err;
+				$success 	= false;
 			} elseif ( 'pay_btn' == $ext_type ) {
 				/*
 				 * The payment was made by a PayPal Payment button that was
 				 * created in the PayPal account and not by M1/M2.
 				 */
-				$notes = 'PayPal Payment button detected. Manual matching required. ' . $notes_err;
-				$success = false;
+				$notes 		= 'PayPal Payment button detected. Manual matching required. ' . $notes_err;
+				$success 	= false;
 			} else {
 				// PayPal sent us a IPN notice about a non-Membership payment:
 				// Ignore it, but add it to the logs.
@@ -722,15 +722,15 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 					$notes = 'Ignored: Missing POST variables. Identification is not possible.';
 				}
 
-				$ignore = true;
-				$success = false;
+				$ignore 	= true;
+				$success 	= false;
 			}
 			$exit = true;
 		}
 
 		if ( $ignore && ! $success ) {
-			$success = null;
-			$notes .= ' [Irrelevant IPN call]';
+			$success 	= null;
+			$notes 		.= ' [Irrelevant IPN call]';
 		}
 
 		if ( ! $log ) {
@@ -754,11 +754,11 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				exit;
 			}
 		} else {
-			$log->invoice_id = $invoice_id;
-			$log->subscription_id = $subscription_id;
-			$log->amount = $amount;
-			$log->description = $notes;
-			$log->external_id = $external_id;
+			$log->invoice_id 		= $invoice_id;
+			$log->subscription_id 	= $subscription_id;
+			$log->amount 			= $amount;
+			$log->description 		= $notes;
+			$log->external_id 		= $external_id;
 			if ( $success ) {
 				$log->manual_state( 'ok' );
 			} elseif ( $ignore ) {
@@ -798,11 +798,11 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 	 * @return boolean
 	 */
 	public function is_configured() {
-		$is_configured = true;
-		$required = array( 'merchant_id', 'paypal_site' );
+		$is_configured 	= true;
+		$required 		= array( 'merchant_id', 'paypal_site' );
 
 		foreach ( $required as $field ) {
-			$value = $this->$field;
+			$value 		= $this->$field;
 			if ( empty( $value ) ) {
 				$is_configured = false;
 				break;

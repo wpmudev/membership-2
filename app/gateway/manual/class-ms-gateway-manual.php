@@ -42,17 +42,17 @@ class MS_Gateway_Manual extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
-		$this->id = self::ID;
-		$this->name = __( 'Manual Payment Gateway', 'membership2' );
-		$this->description = __( '(Bank orders, cash, etc)', 'membership2' );
-		$this->group = __( 'Manual Payment', 'membership2' );
-		$this->manual_payment = true; // Recurring billed/paid manually
-		$this->pro_rate = true;
+		$this->id 				= self::ID;
+		$this->name 			= __( 'Manual Payment Gateway', 'membership2' );
+		$this->description 		= __( '(Bank orders, cash, etc)', 'membership2' );
+		$this->group 			= __( 'Manual Payment', 'membership2' );
+		$this->manual_payment 	= true; // Recurring billed/paid manually
+		$this->pro_rate 		= true;
 		/**
 		 * No sandbox option for manual payment gateway
 		 * The mode is always set to live
 		 */
-		$this->mode = 'live';
+		$this->mode 			= 'live';
 
 		if ( $this->active ) {
 			$this->add_action(
@@ -115,11 +115,11 @@ class MS_Gateway_Manual extends MS_Gateway {
 			$this->payment_info = wpautop( $this->payment_info );
 
 			if ( ! empty( $_POST['ms_relationship_id'] ) ) {
-				$subscription = MS_Factory::load(
+				$subscription 		= MS_Factory::load(
 					'MS_Model_Relationship',
 					$_POST['ms_relationship_id']
 				);
-				$invoice = $subscription->get_current_invoice();
+				$invoice 			= $subscription->get_current_invoice();
 				$this->payment_info .= sprintf(
 					'<div class="ms-manual-price">%s: <span class="ms-price">%s%s</span></div>',
 					__( 'Total value', 'membership2' ),
@@ -147,8 +147,8 @@ class MS_Gateway_Manual extends MS_Gateway {
 	 * @return boolean True if configured.
 	 */
 	public function is_configured() {
-		$is_configured = true;
-		$required = array( 'payment_info' );
+		$is_configured 	= true;
+		$required 		= array( 'payment_info' );
 
 		foreach ( $required as $field ) {
 			if ( empty( $this->$field ) ) {

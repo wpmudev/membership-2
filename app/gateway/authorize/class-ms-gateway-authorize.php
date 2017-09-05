@@ -477,11 +477,11 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	 * @return array The A.net payment profiles array structure.
 	 */
 	public function get_cim_profile( $member ) {
-		$cim_profiles = array();
+		$cim_profiles 	= array();
 		$cim_profile_id = $this->get_cim_profile_id( $member );
 
 		if ( $cim_profile_id ) {
-			$response = $this->get_cim()->getCustomerProfile( $cim_profile_id );
+			$response 	= $this->get_cim()->getCustomerProfile( $cim_profile_id );
 
 			if ( $response->isOk() ) {
 				$cim_profiles = json_decode( json_encode( $response->xml->profile ), true );
@@ -543,7 +543,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			}
 		}
 
-		$cim_profile_id = $response->getCustomerProfileId();
+		$cim_profile_id 		= $response->getCustomerProfileId();
 		$cim_payment_profile_id = $response->getCustomerPaymentProfileIds();
 		$this->save_cim_profile( $member, $cim_profile_id, $cim_payment_profile_id );
 	}
@@ -561,7 +561,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this
 		);
 
-		$cim_profile_id = $this->get_cim_profile_id( $member );
+		$cim_profile_id 		= $this->get_cim_profile_id( $member );
 		$cim_payment_profile_id = $this->get_cim_payment_profile_id( $member );
 
 		if ( empty( $cim_payment_profile_id ) ) {
@@ -636,16 +636,16 @@ class MS_Gateway_Authorize extends MS_Gateway {
 	protected function get_cim_transaction( $member ) {
 		$this->load_authorize_lib();
 
-		$cim_profile_id = $this->get_cim_profile_id( $member );
+		$cim_profile_id 		= $this->get_cim_profile_id( $member );
 		$cim_payment_profile_id = $this->get_cim_payment_profile_id( $member );
 
 		if ( empty( $cim_profile_id ) || empty( $cim_payment_profile_id ) ) {
 			throw new Exception( __( 'CIM Payment profile not found', 'membership2' ) );
 		}
 
-		$transaction = new M2_AuthorizeNetTransaction();
-		$transaction->customerProfileId = $cim_profile_id;
-		$transaction->customerPaymentProfileId = $cim_payment_profile_id;
+		$transaction 							= new M2_AuthorizeNetTransaction();
+		$transaction->customerProfileId 		= $cim_profile_id;
+		$transaction->customerPaymentProfileId 	= $cim_payment_profile_id;
 
 		// Include the card code if the secure-cc flag is enabled!
 		if ( lib3()->is_true( $this->secure_cc ) ) {

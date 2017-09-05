@@ -245,8 +245,8 @@ class MS_Controller extends MS_Hooker {
 	 * @since  1.0.0
 	 */
 	protected function _resp_reset() {
-		$this->_resp_valid = true;
-		$this->_resp_code = '';
+		$this->_resp_valid 	= true;
+		$this->_resp_code 	= '';
 	}
 
 	/**

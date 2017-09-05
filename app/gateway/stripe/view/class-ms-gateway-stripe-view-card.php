@@ -48,27 +48,27 @@ class MS_Gateway_Stripe_View_Card extends MS_View {
 
 	private function prepare_fields() {
 		$fields = array(
-			'gateway' => array(
-				'id' => 'gateway',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'gateway' 			=> array(
+				'id' 	=> 'gateway',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['gateway']->id,
 			),
 
 			'ms_relationship_id' => array(
-				'id' => 'ms_relationship_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'ms_relationship_id',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['ms_relationship_id'],
 			),
 
-			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'_wpnonce' 			=> array(
+				'id' 	=> '_wpnonce',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => wp_create_nonce( 'update_card' ),
 			),
 
-			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'action' 			=> array(
+				'id' 	=> 'action',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => 'update_card',
 			),
 		);

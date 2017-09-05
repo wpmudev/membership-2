@@ -17,12 +17,12 @@ class MS_Gateway_Paypalstandard_View_Cancel extends MS_View {
 	 * @return string
 	 */
 	public function get_button() {
-		$gateway = $this->data['gateway'];
-		$button = null;
+		$gateway 	= $this->data['gateway'];
+		$button 	= null;
 
 		if ( ! empty( $this->data['ms_relationship'] ) ) {
-			$subscription = $this->data['ms_relationship'];
-			$membership = $subscription->get_membership();
+			$subscription 	= $this->data['ms_relationship'];
+			$membership 	= $subscription->get_membership();
 
 			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING == $membership->payment_type
 				|| $membership->has_trial()
@@ -33,9 +33,9 @@ class MS_Gateway_Paypalstandard_View_Cancel extends MS_View {
 					$cancel_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 				}
 
-				$button = array(
-					'type' => MS_Helper_Html::TYPE_HTML_LINK,
-					'url' => $cancel_url . '?cmd=_subscr-find&alias=' . $gateway->merchant_id,
+				$button 		= array(
+					'type' 	=> MS_Helper_Html::TYPE_HTML_LINK,
+					'url' 	=> $cancel_url . '?cmd=_subscr-find&alias=' . $gateway->merchant_id,
 					'value' => '<img src="https://www.paypal.com/en_US/i/btn/btn_unsubscribe_LG.gif" alt="" />',
 				);
 			}
