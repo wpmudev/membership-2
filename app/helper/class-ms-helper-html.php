@@ -14,36 +14,36 @@
 class MS_Helper_Html extends MS_Helper {
 
 	/* Constants for default HTML input elements. */
-	const INPUT_TYPE_HIDDEN = 'hidden';
-	const INPUT_TYPE_TEXT_AREA = 'textarea';
-	const INPUT_TYPE_SELECT = 'select';
-	const INPUT_TYPE_RADIO = 'radio';
-	const INPUT_TYPE_SUBMIT = 'submit';
-	const INPUT_TYPE_BUTTON = 'button';
-	const INPUT_TYPE_CHECKBOX = 'checkbox';
-	const INPUT_TYPE_IMAGE = 'image';
+	const INPUT_TYPE_HIDDEN 		= 'hidden';
+	const INPUT_TYPE_TEXT_AREA 		= 'textarea';
+	const INPUT_TYPE_SELECT 		= 'select';
+	const INPUT_TYPE_RADIO 			= 'radio';
+	const INPUT_TYPE_SUBMIT 		= 'submit';
+	const INPUT_TYPE_BUTTON 		= 'button';
+	const INPUT_TYPE_CHECKBOX 		= 'checkbox';
+	const INPUT_TYPE_IMAGE 			= 'image';
 	// Different input types
-	const INPUT_TYPE_TEXT = 'text';
-	const INPUT_TYPE_PASSWORD = 'password';
-	const INPUT_TYPE_NUMBER = 'number';
-	const INPUT_TYPE_EMAIL = 'email';
-	const INPUT_TYPE_URL = 'url';
-	const INPUT_TYPE_TIME = 'time';
-	const INPUT_TYPE_SEARCH = 'search';
-	const INPUT_TYPE_FILE = 'file';
+	const INPUT_TYPE_TEXT 			= 'text';
+	const INPUT_TYPE_PASSWORD 		= 'password';
+	const INPUT_TYPE_NUMBER 		= 'number';
+	const INPUT_TYPE_EMAIL 			= 'email';
+	const INPUT_TYPE_URL 			= 'url';
+	const INPUT_TYPE_TIME 			= 'time';
+	const INPUT_TYPE_SEARCH 		= 'search';
+	const INPUT_TYPE_FILE 			= 'file';
 
 	/* Constants for advanced HTML input elements. */
-	const INPUT_TYPE_WP_EDITOR = 'wp_editor';
-	const INPUT_TYPE_DATEPICKER = 'datepicker';
-	const INPUT_TYPE_RADIO_SLIDER = 'radio_slider';
-	const INPUT_TYPE_TAG_SELECT = 'tag_select';
-	const INPUT_TYPE_WP_PAGES = 'wp_pages';
+	const INPUT_TYPE_WP_EDITOR 		= 'wp_editor';
+	const INPUT_TYPE_DATEPICKER 	= 'datepicker';
+	const INPUT_TYPE_RADIO_SLIDER 	= 'radio_slider';
+	const INPUT_TYPE_TAG_SELECT 	= 'tag_select';
+	const INPUT_TYPE_WP_PAGES 		= 'wp_pages';
 
 	/* Constants for default HTML elements. */
-	const TYPE_HTML_LINK = 'html_link';
-	const TYPE_HTML_SEPARATOR = 'html_separator';
-	const TYPE_HTML_TEXT = 'html_text';
-	const TYPE_HTML_TABLE = 'html_table';
+	const TYPE_HTML_LINK 			= 'html_link';
+	const TYPE_HTML_SEPARATOR 		= 'html_separator';
+	const TYPE_HTML_TEXT 			= 'html_text';
+	const TYPE_HTML_TABLE 			= 'html_table';
 
 	/**
 	 * Method for creating HTML elements/fields.
@@ -71,10 +71,10 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	public static function settings_header( $args = null ) {
 		$defaults = array(
-			'title' => '',
-			'title_icon_class' => '',
-			'desc' => '',
-			'bread_crumbs' => null,
+			'title' 			=> '',
+			'title_icon_class' 	=> '',
+			'desc' 				=> '',
+			'bread_crumbs' 		=> null,
 		);
 		$args = wp_parse_args( $args, $defaults );
 		$args = apply_filters( 'ms_helper_html_settings_header_args', $args );
@@ -114,9 +114,9 @@ class MS_Helper_Html extends MS_Helper {
 		// Default Submit-Button is "Next >>"
 		if ( true === $submit_info ) {
 			$submit_info = array(
-				'id' => 'next',
-				'value' => __( 'Next', 'membership2' ),
-				'action' => 'next',
+				'id' 		=> 'next',
+				'value' 	=> __( 'Next', 'membership2' ),
+				'action' 	=> 'next',
 			);
 		}
 
@@ -127,13 +127,13 @@ class MS_Helper_Html extends MS_Helper {
 		if ( $submit_info ) {
 			$submit_fields = array(
 				'next' => array(
-					'id' => @$submit_info['id'],
-					'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+					'id' 	=> @$submit_info['id'],
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 					'value' => @$submit_info['value'],
 				),
 				'action' => array(
-					'id' => 'action',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+					'id' 	=> 'action',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => @$submit_info['action'],
 				),
 				'_wpnonce' => array(
@@ -151,13 +151,13 @@ class MS_Helper_Html extends MS_Helper {
 		}
 
 		$args = array(
-			'saving_text' => __( 'Saving changes...', 'membership2' ),
-			'saved_text' => __( 'All changes saved.', 'membership2' ),
-			'error_text' => __( 'Could not save changes.', 'membership2' ),
-			'fields' => $fields,
+			'saving_text'	=> __( 'Saving changes...', 'membership2' ),
+			'saved_text' 	=> __( 'All changes saved.', 'membership2' ),
+			'error_text' 	=> __( 'Could not save changes.', 'membership2' ),
+			'fields' 		=> $fields,
 		);
-		$args = apply_filters( 'ms_helper_html_settings_footer_args', $args );
-		$fields = $args['fields'];
+		$args 				= apply_filters( 'ms_helper_html_settings_footer_args', $args );
+		$fields 			= $args['fields'];
 		unset( $args['fields'] );
 
 		?>
@@ -178,7 +178,7 @@ class MS_Helper_Html extends MS_Helper {
 	public static function settings_tab_header( $args = null ) {
 		$defaults = array(
 			'title' => '',
-			'desc' => array(),
+			'desc' 	=> array(),
 			'class' => '',
 		);
 
@@ -388,10 +388,10 @@ class MS_Helper_Html extends MS_Helper {
 		<div class="ms-tab-container">
 			<ul id="sortable-units" class="ms-tabs" style="">
 				<?php foreach ( $tabs as $tab_name => $tab ) :
-					$tab_class = $tab_name == $active_tab ? 'active' : '';
-					$title = esc_html( $tab['title'] );
-					$url = $tab['url'];
-										$attributes = array();
+					$tab_class	= $tab_name == $active_tab ? 'active' : '';
+					$title 		= esc_html( $tab['title'] );
+					$url 		= $tab['url'];
+					$attributes = array();
 
 					foreach ( $persistent as $param ) {
 						lib3()->array->equip_request( $param );

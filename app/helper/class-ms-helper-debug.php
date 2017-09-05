@@ -40,22 +40,22 @@ class MS_Helper_Debug extends MS_Helper {
 			$trace = debug_backtrace();
 		}
 
-		$exception = new Exception();
-		$debug = array_shift( $trace );
-		$caller = array_shift( $trace );
-		$exception = $exception->getTrace();
-		$callee = array_shift( $exception );
+		$exception 	= new Exception();
+		$debug 		= array_shift( $trace );
+		$caller 	= array_shift( $trace );
+		$exception 	= $exception->getTrace();
+		$callee 	= array_shift( $exception );
 
-		$msg = isset( $caller['class'] ) ? $caller['class'] . '[' . $callee['line'] . ']: ' : '';
+		$msg 		= isset( $caller['class'] ) ? $caller['class'] . '[' . $callee['line'] . ']: ' : '';
 
 		if ( is_array( $message ) || is_object( $message ) ) {
-			$msg .= print_r( $message, true );
+			$msg 	.= print_r( $message, true );
 		} else {
-			$msg .= $message;
+			$msg 	.= $message;
 		}
 
 		if ( $echo_file ) {
-			$msg .= "\nIn " . $callee['file'] . ' on line ' . $callee['line'];
+			$msg 	.= "\nIn " . $callee['file'] . ' on line ' . $callee['line'];
 		}
 
 		error_log( $msg );
