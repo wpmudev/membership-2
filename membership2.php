@@ -117,12 +117,11 @@ function membership2_init_app() {
 	$externals = array(
 		dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
 		dirname( __FILE__ ) . '/lib/wdev-frash/module.php',
+		dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php'
 	);
 
-	// Pro-Only configuration.
-	$cta_label = false;
+	$cta_label 	= false;
 	$drip_param = false;
-	$externals[] = dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php';
 
 	// WPMUDEV Dashboard.
 	global $wpmudev_notices;

@@ -4,13 +4,14 @@
  *
  * Handle the ajax login
  *
- * @since  1.0.4
+ * @since  1.1
  */
 class MS_Auth {
 
     /**
      * Handle Ajax Login requests
-     *
+	 *
+	 * @since 1.1
      */
     public static function check_ms_ajax() {
 
