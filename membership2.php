@@ -70,7 +70,7 @@ function membership2_init_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.0.4' );
+	define( 'MS_PLUGIN_VERSION', '1.1' );
 
 	/**
 	 * Free or pro plugin?
