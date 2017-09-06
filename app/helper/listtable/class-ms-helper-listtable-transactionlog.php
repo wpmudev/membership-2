@@ -42,14 +42,14 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$columns = apply_filters(
 			'ms_helper_listtable_transactionlog_columns',
 			array(
-				'id' => __( 'ID', 'membership2' ),
-				'date' => __( 'Time', 'membership2' ),
-				'status' => '',
-				'method' => '',
-				'gateway' => __( 'Gateway', 'membership2' ),
-				'amount' => __( 'Amount', 'membership2' ),
-				'invoice' => __( 'Invoice', 'membership2' ),
-				'note' => __( 'Details', 'membership2' ),
+				'id' 		=> __( 'ID', 'membership2' ),
+				'date' 		=> __( 'Time', 'membership2' ),
+				'status' 	=> '',
+				'method' 	=> '',
+				'gateway' 	=> __( 'Gateway', 'membership2' ),
+				'amount' 	=> __( 'Amount', 'membership2' ),
+				'invoice' 	=> __( 'Invoice', 'membership2' ),
+				'note' 		=> __( 'Details', 'membership2' ),
 			)
 		);
 
@@ -121,9 +121,9 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-			'posts_per_page' => $per_page,
-			'offset' => ( $current_page - 1 ) * $per_page,
-			'meta_query' => array(),
+			'posts_per_page' 	=> $per_page,
+			'offset' 			=> ( $current_page - 1 ) * $per_page,
+			'meta_query' 		=> array(),
 		);
 
 		if ( ! empty( $_GET['state'] ) ) {
@@ -136,15 +136,15 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		if ( ! empty( $_GET['invoice'] ) ) {
 			$args['meta_query']['invoice_id'] = array(
-				'key' => 'invoice_id',
-				'value' => explode( ',', $_GET['invoice'] ),
-				'compare' => 'IN',
+				'key' 		=> 'invoice_id',
+				'value' 	=> explode( ',', $_GET['invoice'] ),
+				'compare' 	=> 'IN',
 			);
 		}
 
 		if ( ! empty( $_GET['gateway_id'] ) ) {
 			$args['meta_query']['gateway_id'] = array(
-				'key' => 'gateway_id',
+				'key' 	=> 'gateway_id',
 				'value' => $_GET['gateway_id'],
 			);
 		}
@@ -158,8 +158,8 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items,
-				'per_page' => $per_page,
+				'total_items' 	=> $total_items,
+				'per_page' 		=> $per_page,
 			)
 		);
 	}
@@ -181,18 +181,18 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return array
 	 */
 	public function get_views() {
-		$views = array();
-		$base_url = remove_query_arg( array( 'state', 'id', 'invoice' ) );
+		$views 		= array();
+		$base_url 	= remove_query_arg( array( 'state', 'id', 'invoice' ) );
 
 		$views['all'] = array(
 			'label' => __( 'All', 'membership2' ),
-			'url' => $base_url,
+			'url' 	=> $base_url,
 			'count' => MS_Model_Transactionlog::get_item_count(),
 		);
 
 		$views['ok'] = array(
 			'label' => __( 'Successful', 'membership2' ),
-			'url' => add_query_arg( 'state', 'ok', $base_url ),
+			'url' 	=> add_query_arg( 'state', 'ok', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'ok' )
 			),
@@ -200,7 +200,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		$views['err'] = array(
 			'label' => __( 'Failed', 'membership2' ),
-			'url' => add_query_arg( 'state', 'err', $base_url ),
+			'url' 	=> add_query_arg( 'state', 'err', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'err' )
 			),
@@ -208,7 +208,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 
 		$views['ignore'] = array(
 			'label' => __( 'Ignored', 'membership2' ),
-			'url' => add_query_arg( 'state', 'ignore', $base_url ),
+			'url' 	=> add_query_arg( 'state', 'ignore', $base_url ),
 			'count' => MS_Model_Transactionlog::get_item_count(
 				array( 'state' => 'ignore' )
 			),
@@ -367,19 +367,19 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 * @return string The HTML code to output.
 	 */
 	public function column_note( $item, $column_name ) {
-		$extra_infos = '';
-		$row_actions = '';
-		$nonce_action = '';
-		$detail_lines = array();
-		$actions = array();
-		$ind = 0;
+		$extra_infos 	= '';
+		$row_actions 	= '';
+		$nonce_action 	= '';
+		$detail_lines 	= array();
+		$actions 		= array();
+		$ind 			= 0;
 
 		// 1. Prepare the "Additional Details" popup.
 		$detail_lines = self::get_details( $item );
 
 		if ( count( $detail_lines ) ) {
 			$icon_class = '';
-			$post_data = $item->post;
+			$post_data 	= $item->post;
 			if ( ! $post_data ) {
 				$icon_class = 'no-post';
 			}
@@ -395,8 +395,8 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		// 2. Prepare the row actions.
 		$actions = array();
 		if ( 'err' == $item->state ) {
-			$actions['action-link'] = __( 'Link', 'membership2' );
-			$actions['action-ignore'] = __( 'Ignore', 'membership2' );
+			$actions['action-link'] 	= __( 'Link', 'membership2' );
+			$actions['action-ignore'] 	= __( 'Ignore', 'membership2' );
 
 			// We can only re-process the transaction if we have POST data.
 			$postdata = $item->post;
@@ -496,18 +496,18 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			switch ( $item->gateway_id ) {
 				case MS_Gateway_Paypalstandard::ID:
 					if ( isset( $postdata['invoice'] ) ) {
-						$id_fields[] = 'invoice';
+						$id_fields[] 	= 'invoice';
 					} elseif ( isset( $postdata['custom'] ) ) {
-						$id_fields[] = 'custom';
+						$id_fields[] 	= 'custom';
 						$detail_lines[] = __( 'Imported subscription from old Membership plugin.', 'membership2' );
 					} elseif ( isset( $postdata['btn_id'] ) ) {
-						$id_fields[] = 'btn_id';
-						$id_fields[] = 'payer_email';
+						$id_fields[] 	= 'btn_id';
+						$id_fields[] 	= 'payer_email';
 						$detail_lines[] = __( 'Payment via a PayPal Payment button.', 'membership2' );
 					} elseif ( isset( $postdata['txn_type'] ) ) {
 						// Highlight invalid transactions.
 						if ( 'send_money' == $postdata['txn_type'] ) {
-							$id_fields[] = 'txn_type';
+							$id_fields[] 	= 'txn_type';
 							$detail_lines[] = __( 'Someone sent you money inside PayPal or PayPal re-sent a previous payment.<br>Plugin did not attempt to match payment to a subscription.', 'membership2' );
 						}
 					}

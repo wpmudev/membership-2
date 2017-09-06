@@ -113,7 +113,7 @@ class MS_Helper_Html extends MS_Helper {
 	public static function settings_footer( $fields = null, $submit_info = null ) {
 		// Default Submit-Button is "Next >>"
 		if ( true === $submit_info ) {
-			$submit_info = array(
+			$submit_info 		= array(
 				'id' 		=> 'next',
 				'value' 	=> __( 'Next', 'membership2' ),
 				'action' 	=> 'next',
@@ -126,19 +126,19 @@ class MS_Helper_Html extends MS_Helper {
 
 		if ( $submit_info ) {
 			$submit_fields = array(
-				'next' => array(
+				'next' 			=> array(
 					'id' 	=> @$submit_info['id'],
 					'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 					'value' => @$submit_info['value'],
 				),
-				'action' => array(
+				'action' 		=> array(
 					'id' 	=> 'action',
 					'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => @$submit_info['action'],
 				),
-				'_wpnonce' => array(
-					'id' => '_wpnonce',
-					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'_wpnonce' 		=> array(
+					'id' 	=> '_wpnonce',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => wp_create_nonce( @$submit_info['action'] ),
 				),
 			);
@@ -234,8 +234,8 @@ class MS_Helper_Html extends MS_Helper {
 		// If its a fields array, great, if not, make a fields array.
 		$fields = $fields_in;
 		if ( ! is_array( $fields_in ) ) {
-			$fields = array();
-			$fields[] = $fields_in;
+			$fields 	= array();
+			$fields[] 	= $fields_in;
 		}
 
 		self::settings_box_header( $title, $description, $state, $class );
@@ -261,7 +261,7 @@ class MS_Helper_Html extends MS_Helper {
 
 		$handle = '';
 		if ( 'static' !== $state ) {
-			$state = ('closed' === $state ? 'closed' : 'open');
+			$state 	= ('closed' === $state ? 'closed' : 'open');
 			$handle = sprintf(
 				'<div class="handlediv" title="%s"></div>',
 				__( 'Click to toggle' ) // Intentionally no text-domain, so we use WordPress default translation.
@@ -395,8 +395,8 @@ class MS_Helper_Html extends MS_Helper {
 
 					foreach ( $persistent as $param ) {
 						lib3()->array->equip_request( $param );
-						$value = $_REQUEST[ $param ];
-						$url = esc_url_raw(
+						$value 	= $_REQUEST[ $param ];
+						$url 	= esc_url_raw(
 							add_query_arg( $param, $value, $url )
 						);
 					}
@@ -406,7 +406,7 @@ class MS_Helper_Html extends MS_Helper {
 					if ( isset( $tab['target'] ) ) {
 						$attributes[] = 'target="' . esc_attr( $tab['target'] ) .'"';
 						if ( '_blank' == $tab['target'] ) {
-							$title .= ' <i class="wpmui-fa wpmui-fa-external-link-square"></i>';
+							$title 	.= ' <i class="wpmui-fa wpmui-fa-external-link-square"></i>';
 						}
 					}
 					?>
@@ -462,7 +462,7 @@ class MS_Helper_Html extends MS_Helper {
 	public static function html_separator( $type = 'horizontal' ) {
 		lib3()->html->element(
 			array(
-				'type' => self::TYPE_HTML_SEPARATOR,
+				'type' 	=> self::TYPE_HTML_SEPARATOR,
 				'value' => $type,
 			)
 		);
@@ -479,9 +479,9 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	public static function save_text( $texts = array(), $animation = false, $return = false ) {
 		$defaults = array(
-			'saving_text' => __( 'Saving changes...', 'membership2' ),
-			'saved_text' => __( 'All changes saved.', 'membership2' ),
-			'error_text' => __( 'Could not save changes.', 'membership2' ),
+			'saving_text' 	=> __( 'Saving changes...', 'membership2' ),
+			'saved_text' 	=> __( 'All changes saved.', 'membership2' ),
+			'error_text' 	=> __( 'Could not save changes.', 'membership2' ),
 		);
 		extract( wp_parse_args( $texts, $defaults ) );
 
@@ -545,7 +545,7 @@ class MS_Helper_Html extends MS_Helper {
 	 */
 	public static function bread_crumbs( $bread_crumbs ) {
 		$crumbs = array();
-		$html = '';
+		$html 	= '';
 
 		if ( is_array( $bread_crumbs ) ) {
 			foreach ( $bread_crumbs as $key => $bread_crumb ) {
@@ -567,9 +567,9 @@ class MS_Helper_Html extends MS_Helper {
 			}
 
 			if ( count( $crumbs ) > 0 ) {
-				$html = '<div class="ms-bread-crumb">';
-				$html .= implode( '<span class="ms-bread-crumb-sep"> &raquo; </span>', $crumbs );
-				$html .= '</div>';
+				$html 	= '<div class="ms-bread-crumb">';
+				$html 	.= implode( '<span class="ms-bread-crumb-sep"> &raquo; </span>', $crumbs );
+				$html 	.= '</div>';
 			}
 		}
 		$html = apply_filters( 'ms_helper_html_bread_crumbs', $html );
@@ -616,9 +616,9 @@ class MS_Helper_Html extends MS_Helper {
 	 * @return string Compressed HTML code.
 	 */
 	public static function compact_code( $html ) {
-		$html = str_replace( array( "\r\n", "\r" ), "\n", $html );
-		$lines = explode( "\n", $html );
-		$new_lines = array();
+		$html 		= str_replace( array( "\r\n", "\r" ), "\n", $html );
+		$lines 		= explode( "\n", $html );
+		$new_lines 	= array();
 
 		foreach ( $lines as $i => $line ) {
 			$line = trim( $line );

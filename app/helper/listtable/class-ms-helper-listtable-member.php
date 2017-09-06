@@ -43,7 +43,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		foreach ( $memberships as $item ) {
 			self::$memberships[$item->id] = (object) array(
 				'label' => $item->name,
-				'attr' => sprintf( 'data-color="%1$s"', $item->get_color() ),
+				'attr' 	=> sprintf( 'data-color="%1$s"', $item->get_color() ),
 			);
 		}
 	}
@@ -62,15 +62,17 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'cb' => '<input type="checkbox" />',
-			'username' => __( 'Username', 'membership2' ),
-			'email' => __( 'E-mail', 'membership2' ),
-			'membership' => __( 'Membership', 'membership2' ),
-			'infos' => '&nbsp;',
+			'cb' 			=> '<input type="checkbox" />',
+			'username' 		=> __( 'Username', 'membership2' ),
+			'email' 		=> __( 'E-mail', 'membership2' ),
+			'membership' 	=> __( 'Membership', 'membership2' ),
+			'infos' 		=> '&nbsp;',
 		);
 
 		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-			unset( $columns['trial'] );
+			if ( isset( $columns['trial'] ) ) {
+				unset( $columns['trial'] );
+			}
 		}
 
 		return apply_filters(
@@ -95,9 +97,9 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		return apply_filters(
 			'ms_helper_listtable_member_get_sortable_columns',
 			array(
-				'username' => 'login',
-				'name' => 'last_name',
-				'email' => 'email',
+				'username' 	=> 'login',
+				'name' 		=> 'last_name',
+				'email' 	=> 'email',
 			)
 		);
 	}
@@ -135,8 +137,8 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items,
-				'per_page' => $per_page,
+				'total_items' 	=> $total_items,
+				'per_page' 		=> $per_page,
 			)
 		);
 
@@ -163,15 +165,15 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 
 		// Prepare order by statement.
 		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
-			$args['orderby'] = $_REQUEST['orderby'];
-			$args['order'] = $_REQUEST['order'];
+			$args['orderby'] 	= $_REQUEST['orderby'];
+			$args['order'] 		= $_REQUEST['order'];
 		}
 
 		// Filter by search-term
 		$search_filter = $_REQUEST['s'];
 		if ( ! empty( $search_filter ) ) {
-			$this->search_string = $search_filter;
-			$search_option = $_REQUEST['search_options'];
+			$this->search_string 	= $search_filter;
+			$search_option 			= $_REQUEST['search_options'];
 
 			switch ( $search_option ) {
 				case 'email':
@@ -181,22 +183,22 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 
 				default:
 					$args['meta_query'][ $search_option ] = array(
-						'key' => $search_option,
-						'value' => $search_filter,
-						'compare' => 'LIKE',
+						'key' 		=> $search_option,
+						'value' 	=> $search_filter,
+						'compare' 	=> 'LIKE',
 					);
 					break;
 			}
 
 			$args['posts_per_page'] = -1;
-			$args['number'] = false;
-			$args['offset'] = 0;
+			$args['number'] 		= false;
+			$args['offset'] 		= 0;
 		}
 
 		// Filter by membership_id and membership status
-		$membership_id = $_REQUEST['membership_id'];
-		$members = array();
-		$filter = array();
+		$membership_id 	= $_REQUEST['membership_id'];
+		$members 		= array();
+		$filter 		= array();
 
 		if ( ! empty( $membership_id ) ) {
 			$args['membership_id'] = $membership_id;
@@ -333,23 +335,23 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$subscriptions = $member->get_membership_ids();
 
 			$visitor = array(
-				'id' => 'ms-empty-' . $member->id,
-				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'id' 	=> 'ms-empty-' . $member->id,
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 				'value' => __( '(Visitor)' ),
 				'after' => 'Edit',
 				'class' => 'ms-empty-note',
 			);
 
 			$list = array(
-				'id' => 'ms-memberships-' . $member->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $subscriptions,
+				'id' 			=> 'ms-memberships-' . $member->id,
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' 		=> $subscriptions,
 				'field_options' => self::$memberships,
-				'multiple' => true,
-				'class' => 'ms-memberships',
-				'ajax_data' => array(
-					'action' => MS_Controller_Member::AJAX_ACTION_CHANGE_MEMBERSHIPS,
-					'member' => $member->id,
+				'multiple' 		=> true,
+				'class' 		=> 'ms-memberships',
+				'ajax_data' 	=> array(
+					'action' 		=> MS_Controller_Member::AJAX_ACTION_CHANGE_MEMBERSHIPS,
+					'member' 		=> $member->id,
 				),
 			);
 
@@ -375,8 +377,8 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * @param  object $member
 	 */
 	protected function single_row_class( $member ) {
-		$subscriptions = $member->get_membership_ids();
-		$class = empty( $subscriptions ) ? 'ms-empty' : 'ms-assigned';
+		$subscriptions 	= $member->get_membership_ids();
+		$class 			= empty( $subscriptions ) ? 'ms-empty' : 'ms-assigned';
 
 		return $class;
 	}
@@ -392,23 +394,23 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * }
 	 */
 	public function get_bulk_actions() {
-		$protect_key = __( 'Add Membership', 'membership2' );
-		$unprotect_key = __( 'Drop Membership', 'membership2' );
-		$bulk_actions = array(
-			'drop-all' => __( 'Drop all Memberships', 'membership2' ),
-			$protect_key => array(),
-			$unprotect_key => array(),
+		$protect_key 	= __( 'Add Membership', 'membership2' );
+		$unprotect_key 	= __( 'Drop Membership', 'membership2' );
+		$bulk_actions 	= array(
+				'drop-all' 		=> __( 'Drop all Memberships', 'membership2' ),
+				$protect_key 	=> array(),
+				$unprotect_key 	=> array(),
 		);
 
 		$args = array(
 			'include_guest' => 0,
 		);
-		$memberships = MS_Model_Membership::get_membership_names( $args );
-		$txt_add = __( 'Add: %s', 'membership2' );
-		$txt_rem = __( 'Drop: %s', 'membership2' );
+		$memberships 	= MS_Model_Membership::get_membership_names( $args );
+		$txt_add 		= __( 'Add: %s', 'membership2' );
+		$txt_rem 		= __( 'Drop: %s', 'membership2' );
 		foreach ( $memberships as $id => $name ) {
-			$bulk_actions[$protect_key]['add-' . $id] = sprintf( $txt_add, $name );
-			$bulk_actions[$unprotect_key]['drop-' . $id] = sprintf( $txt_rem, $name );
+			$bulk_actions[$protect_key]['add-' . $id] 		= sprintf( $txt_add, $name );
+			$bulk_actions[$unprotect_key]['drop-' . $id] 	= sprintf( $txt_rem, $name );
 		}
 
 		return apply_filters(
@@ -427,9 +429,9 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		lib3()->array->equip_request( 'search_options' );
 
 		$search_options = array(
-			'id' => 'search_options',
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'value' => $_REQUEST['search_options'],
+			'id' 			=> 'search_options',
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' 		=> $_REQUEST['search_options'],
 			'field_options' => array(
 				'username'   => __( 'Username / E-mail', 'membership2' ),
 				'nickname'   => __( 'Nickname', 'membership2' ),
@@ -450,9 +452,9 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * @return array
 	 */
 	public function get_views() {
-		$views = array();
-		$args = array();
-		$count = 0;
+		$views 	= array();
+		$args 	= array();
+		$count 	= 0;
 
 		$views['label'] = array(
 			'label' => __( 'Subscription Status:', 'membership2' ),
@@ -462,7 +464,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			// All users
 			$url = esc_url_raw( add_query_arg( 'status', 'all' ) );
 			$views['all'] = array(
-				'url' => $url,
+				'url' 	=> $url,
 				'label' => __( 'All users', 'membership2' ),
 			);
 		} else {
@@ -473,41 +475,41 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$url = esc_url_raw( remove_query_arg( 'status' ) );
 		$url = esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_ACTIVE ) );
 		$args['subscription_status'] = MS_Model_Relationship::STATUS_ACTIVE;
-		$count = MS_Model_Member::get_members_count( $args );
-		$views['active'] = array(
-			'url' => $url,
+		$count 				= MS_Model_Member::get_members_count( $args );
+		$views['active'] 	= array(
+			'url' 	=> $url,
 			'label' => __( 'Active subscription', 'membership2' ),
 			'count' => $count,
 		);
 
 		// Cancelled
-		$url = esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_CANCELED ) );
+		$url 	= esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_CANCELED ) );
 		$args['subscription_status'] = MS_Model_Relationship::STATUS_CANCELED;
-		$count = MS_Model_Member::get_members_count( $args );
+		$count 				= MS_Model_Member::get_members_count( $args );
 		$views['cancelled'] = array(
-			'url' => $url,
+			'url' 	=> $url,
 			'label' => __( 'Cancelled', 'membership2' ),
 			'count' => $count,
 		);
 
 		// Trial
 		if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-			$url = esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_TRIAL ) );
+			$url 	= esc_url_raw( add_query_arg( 'status', MS_Model_Relationship::STATUS_TRIAL ) );
 			$args['subscription_status'] = MS_Model_Relationship::STATUS_TRIAL;
-			$count = MS_Model_Member::get_members_count( $args );
+			$count 			= MS_Model_Member::get_members_count( $args );
 			$views['trial'] = array(
-				'url' => $url,
+				'url' 	=> $url,
 				'label' => __( 'Trial', 'membership2' ),
 				'count' => $count,
 			);
 		}
 
 		// Expired, Trial-Expired
-		$url = esc_url_raw( add_query_arg( 'status', 'expired' ) );
+		$url 	= esc_url_raw( add_query_arg( 'status', 'expired' ) );
 		$args['subscription_status'] = 'expired';
-		$count = MS_Model_Member::get_members_count( $args );
-		$views['expired'] = array(
-			'url' => $url,
+		$count 				= MS_Model_Member::get_members_count( $args );
+		$views['expired'] 	= array(
+			'url' 	=> $url,
 			'label' => __( 'Expired', 'membership2' ),
 			'count' => $count,
 		);

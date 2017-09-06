@@ -8,41 +8,41 @@
  */
 class MS_Helper_Shortcode extends MS_Helper {
 
-	const SCODE_REGISTER_USER = 'ms-membership-register-user';
+	const SCODE_REGISTER_USER 	= 'ms-membership-register-user';
 
-	const SCODE_SIGNUP = 'ms-membership-signup';
+	const SCODE_SIGNUP 			= 'ms-membership-signup';
 
-	const SCODE_MS_TITLE = 'ms-membership-title';
+	const SCODE_MS_TITLE 		= 'ms-membership-title';
 
-	const SCODE_MS_DETAILS = 'ms-membership-details';
+	const SCODE_MS_DETAILS 		= 'ms-membership-details';
 
-	const SCODE_MS_PRICE = 'ms-membership-price';
+	const SCODE_MS_PRICE 		= 'ms-membership-price';
 
-	const SCODE_MS_BUY = 'ms-membership-buy';
+	const SCODE_MS_BUY 			= 'ms-membership-buy';
 
-	const SCODE_PROTECTED = 'ms-protection-message';
+	const SCODE_PROTECTED 		= 'ms-protection-message';
 
-	const SCODE_LOGIN = 'ms-membership-login';
+	const SCODE_LOGIN 			= 'ms-membership-login';
 
-	const SCODE_LOGOUT = 'ms-membership-logout';
+	const SCODE_LOGOUT 			= 'ms-membership-logout';
 
-	const SCODE_MS_ACCOUNT = 'ms-membership-account';
+	const SCODE_MS_ACCOUNT 		= 'ms-membership-account';
 
 	const SCODE_MS_ACCOUNT_LINK = 'ms-membership-account-link';
 
-	const SCODE_MS_INVOICE = 'ms-invoice';
+	const SCODE_MS_INVOICE 		= 'ms-invoice';
 
-	const SCODE_NOTE = 'ms-note';
+	const SCODE_NOTE 			= 'ms-note';
 
-	const SCODE_USER = 'ms-user';
+	const SCODE_USER 			= 'ms-user';
 
-	const SCODE_MEMBER_INFO = 'ms-member-info';
-
-	// deprecated, replaced by SCODE_NOTE
-	const SCODE_GREEN_NOTE = 'ms-green-note';
+	const SCODE_MEMBER_INFO 	= 'ms-member-info';
 
 	// deprecated, replaced by SCODE_NOTE
-	const SCODE_RED_NOTE = 'ms-red-note';
+	const SCODE_GREEN_NOTE 		= 'ms-green-note';
+
+	// deprecated, replaced by SCODE_NOTE
+	const SCODE_RED_NOTE 		= 'ms-red-note';
 
 	/**
 	 * Holds an array of all replaced Membership2 shortcodes.

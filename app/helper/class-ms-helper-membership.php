@@ -4,25 +4,25 @@
  */
 class MS_Helper_Membership extends MS_Helper {
 
-	const MEMBERSHIP_ACTION_SIGNUP = 'membership_signup';
-	const MEMBERSHIP_ACTION_MOVE = 'membership_move';
-	const MEMBERSHIP_ACTION_CANCEL = 'membership_cancel';
-	const MEMBERSHIP_ACTION_RENEW = 'membership_renew';
-	const MEMBERSHIP_ACTION_PAY = 'membership_pay';
+	const MEMBERSHIP_ACTION_SIGNUP 	= 'membership_signup';
+	const MEMBERSHIP_ACTION_MOVE 	= 'membership_move';
+	const MEMBERSHIP_ACTION_CANCEL 	= 'membership_cancel';
+	const MEMBERSHIP_ACTION_RENEW 	= 'membership_renew';
+	const MEMBERSHIP_ACTION_PAY 	= 'membership_pay';
 
-	const MEMBERSHIP_MSG_ADDED = 1;
-	const MEMBERSHIP_MSG_DELETED = 2;
-	const MEMBERSHIP_MSG_UPDATED = 3;
-	const MEMBERSHIP_MSG_ACTIVATION_TOGGLED = 4;
-	const MEMBERSHIP_MSG_STATUS_TOGGLED = 5;
-	const MEMBERSHIP_MSG_BULK_UPDATED = 6;
-	const MEMBERSHIP_MSG_NOT_ADDED = -1;
-	const MEMBERSHIP_MSG_NOT_DELETED = -2;
-	const MEMBERSHIP_MSG_NOT_UPDATED = -3;
+	const MEMBERSHIP_MSG_ADDED 					= 1;
+	const MEMBERSHIP_MSG_DELETED 				= 2;
+	const MEMBERSHIP_MSG_UPDATED 				= 3;
+	const MEMBERSHIP_MSG_ACTIVATION_TOGGLED 	= 4;
+	const MEMBERSHIP_MSG_STATUS_TOGGLED 		= 5;
+	const MEMBERSHIP_MSG_BULK_UPDATED 			= 6;
+	const MEMBERSHIP_MSG_NOT_ADDED 				= -1;
+	const MEMBERSHIP_MSG_NOT_DELETED 			= -2;
+	const MEMBERSHIP_MSG_NOT_UPDATED 			= -3;
 	const MEMBERSHIP_MSG_ACTIVATION_NOT_TOGGLED = -4;
-	const MEMBERSHIP_MSG_STATUS_NOT_TOGGLED = -5;
-	const MEMBERSHIP_MSG_BULK_NOT_UPDATED = -6;
-	const MEMBERSHIP_MSG_PARTIALLY_UPDATED = -8;
+	const MEMBERSHIP_MSG_STATUS_NOT_TOGGLED 	= -5;
+	const MEMBERSHIP_MSG_BULK_NOT_UPDATED 		= -6;
+	const MEMBERSHIP_MSG_PARTIALLY_UPDATED 		= -8;
 
 	public static function get_admin_messages( $msg = 0 ) {
 		$messages = apply_filters(
@@ -52,9 +52,8 @@ class MS_Helper_Membership extends MS_Helper {
 	}
 
 	public static function print_admin_message() {
-		$msg = self::get_msg_id();
-
-		$class = ( $msg > 0 ) ? 'updated' : 'error';
+		$msg 	= self::get_msg_id();
+		$class 	= ( $msg > 0 ) ? 'updated' : 'error';
 
 		if ( $msg = self::get_admin_messages( $msg ) ) {
 			lib3()->ui->admin_message( $msg, $class );
@@ -62,7 +61,7 @@ class MS_Helper_Membership extends MS_Helper {
 	}
 
 	public static function get_admin_message( $args = null, $membership = null ) {
-		$msg = '';
+		$msg 	= '';
 		$msg_id = self::get_msg_id();
 
 		if ( $msg = self::get_admin_messages( $msg_id ) ) {
@@ -89,9 +88,8 @@ class MS_Helper_Membership extends MS_Helper {
 	}
 
 	public static function get_admin_title() {
-		$title = __( 'Memberships', 'membership2' );
-
-		$msg = self::get_msg_id();
+		$title 	= __( 'Memberships', 'membership2' );
+		$msg 	= self::get_msg_id();
 		if ( self::MEMBERSHIP_MSG_ADDED == $msg ) {
 			$title = __( 'Congratulations!', 'membership2' );
 		}

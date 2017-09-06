@@ -71,8 +71,8 @@ class MS_Helper_Media extends MS_Helper {
         $ht_file        = $uploads_dir . DIRECTORY_SEPARATOR . '.htaccess';
         if ( !empty( $rules ) ) {
             if ( file_exists( $ht_file ) ) {
-                $ht_config = file( $ht_file );
-                $contains_search = array_diff( $rules, $ht_config );
+                $ht_config 			= file( $ht_file );
+                $contains_search 	= array_diff( $rules, $ht_config );
                 if ( count( $contains_search ) == 0 || ( count( $contains_search ) == count( $rules ) ) ) {
                     $ht_config = array_merge( $ht_config, array( implode( '', $rules ) ) );
                     @file_put_contents( $ht_file, implode( '', $ht_config ) );

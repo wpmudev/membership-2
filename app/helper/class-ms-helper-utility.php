@@ -164,11 +164,11 @@ class MS_Helper_Utility extends MS_Helper {
 	 */
 	public static function register_post_type( $post_type, $args = null ) {
 		$defaults = array(
-			'public' => false,
-			'has_archive' => false,
-			'publicly_queryable' => false,
-			'supports' => false,
-			'hierarchical' => false,
+			'public' 				=> false,
+			'has_archive' 			=> false,
+			'publicly_queryable' 	=> false,
+			'supports' 				=> false,
+			'hierarchical' 			=> false,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -202,11 +202,7 @@ class MS_Helper_Utility extends MS_Helper {
 			$Colors[$key] = self::hsl2web( $h, $s / 100, $l / 100 );
 		}
 
-		return apply_filters(
-                            'ms_helper_color_index',
-                            $Colors[$key],
-                            $key
-                        );
+		return apply_filters( 'ms_helper_color_index', $Colors[$key], $key );
 	}
 
 	/**
@@ -299,7 +295,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 */
 	static public function get_home_url( $blog_id = null, $path = '' ) {
 		$schema = is_ssl() ? 'https' : 'http';
-		$url = get_home_url( $blog_id, $path, $schema );
+		$url 	= get_home_url( $blog_id, $path, $schema );
 
 		return apply_filters(
 			'ms_helper_home_url',
@@ -347,8 +343,8 @@ if ( ! function_exists( 'array_unshift_assoc' ) ) {
 	 * @return array
 	 */
 	function array_unshift_assoc( &$arr, $key, $val ) {
-		$arr = array_reverse( $arr, true );
-		$arr[$key] = $val;
+		$arr 		= array_reverse( $arr, true );
+		$arr[$key] 	= $val;
 		return array_reverse( $arr, true );
 	}
 }
