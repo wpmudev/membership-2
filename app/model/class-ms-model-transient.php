@@ -22,7 +22,7 @@ class MS_Model_Transient extends MS_Model {
 		$this->before_save();
 
 		$option_key = $this->option_key();
-		$settings = array();
+		$settings 	= array();
 
 		$data = MS_Factory::serialize_model( $this );
 		foreach ( $data as $field => $val ) {

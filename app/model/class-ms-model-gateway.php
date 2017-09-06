@@ -120,14 +120,14 @@ class MS_Model_Gateway extends MS_Model_Option {
 			$model->gateway_files = array();
 
 			foreach ( $gateway_dirs as $gateway_dir ) {
-				$mask = $content_dir . $gateway_dir . '*/class-ms-gateway-*.php';
-				$gateways = glob( $mask );
+				$mask 		= $content_dir . $gateway_dir . '*/class-ms-gateway-*.php';
+				$gateways 	= glob( $mask );
 
 				foreach ( $gateways as $file ) {
 					$gateway = basename( $file );
 					if ( empty( $model->gateway_files[ $gateway ] ) ) {
-						$gateway_path = substr( $file, strlen( $content_dir ) );
-						$model->gateway_files[ $gateway ] = $gateway_path;
+						$gateway_path 						= substr( $file, strlen( $content_dir ) );
+						$model->gateway_files[ $gateway ] 	= $gateway_path;
 					}
 				}
 			}
@@ -149,13 +149,13 @@ class MS_Model_Gateway extends MS_Model_Option {
 
 		// Loop all recignized Gateways and initialize them.
 		foreach ( $model->gateway_files as $file ) {
-			$gateway_file = $content_dir . $file;
+			$gateway_file 	= $content_dir . $file;
 
 			// Get class-name from file-name
-			$class = basename( $file );
-			$class = str_replace( '.php', '', $class );
-			$class = implode( '_', array_map( 'ucfirst', explode( '-', $class ) ) );
-			$class = substr( $class, 6 ); // remove 'Class_' prefix
+			$class 			= basename( $file );
+			$class 			= str_replace( '.php', '', $class );
+			$class 			= implode( '_', array_map( 'ucfirst', explode( '-', $class ) ) );
+			$class 			= substr( $class, 6 ); // remove 'Class_' prefix
 
 			if ( file_exists( $gateway_file ) ) {
 				if ( ! class_exists( $class ) ) {

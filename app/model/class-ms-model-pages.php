@@ -27,11 +27,11 @@ class MS_Model_Pages extends MS_Model_Option {
 	 *
 	 * @var string
 	 */
-	const MS_PAGE_MEMBERSHIPS = 'memberships';
+	const MS_PAGE_MEMBERSHIPS 		= 'memberships';
 	const MS_PAGE_PROTECTED_CONTENT = 'protected-content';
-	const MS_PAGE_ACCOUNT = 'account';
-	const MS_PAGE_REGISTER = 'register';
-	const MS_PAGE_REG_COMPLETE = 'registration-complete';
+	const MS_PAGE_ACCOUNT 			= 'account';
+	const MS_PAGE_REGISTER 			= 'register';
+	const MS_PAGE_REG_COMPLETE 		= 'registration-complete';
 
 	/**
 	 * Association between membership page-types and WordPress post_ids.
@@ -115,11 +115,11 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( empty( $Page_types ) ) {
 			$Page_types = array(
-				self::MS_PAGE_MEMBERSHIPS => __( 'Membership List', 'membership2' ),
+				self::MS_PAGE_MEMBERSHIPS 		=> __( 'Membership List', 'membership2' ),
 				self::MS_PAGE_PROTECTED_CONTENT => __( 'Protected Content', 'membership2' ),
-				self::MS_PAGE_REGISTER => __( 'Registration', 'membership2' ),
-				self::MS_PAGE_REG_COMPLETE => __( 'Thank-You Page', 'membership2' ),
-				self::MS_PAGE_ACCOUNT => __( 'Account', 'membership2' ),
+				self::MS_PAGE_REGISTER 			=> __( 'Registration', 'membership2' ),
+				self::MS_PAGE_REG_COMPLETE 		=> __( 'Thank-You Page', 'membership2' ),
+				self::MS_PAGE_ACCOUNT 			=> __( 'Account', 'membership2' ),
 			);
 
 			$Page_types = apply_filters(
@@ -143,11 +143,11 @@ class MS_Model_Pages extends MS_Model_Option {
 
 		if ( null === $Description ) {
 			$Description = array(
-				self::MS_PAGE_MEMBERSHIPS => __( '(Only for logged-in users) List the public memberships and signup.', 'membership2' ),
+				self::MS_PAGE_MEMBERSHIPS		=> __( '(Only for logged-in users) List the public memberships and signup.', 'membership2' ),
 				self::MS_PAGE_PROTECTED_CONTENT => __( 'Displayed when a user cannot access the requested page.', 'membership2' ),
-				self::MS_PAGE_REGISTER => __( '(Only for guests) List the public memberships and the registration form.', 'membership2' ),
-				self::MS_PAGE_REG_COMPLETE => __( 'Displayed after the user signed up for a membership.', 'membership2' ),
-				self::MS_PAGE_ACCOUNT => __( 'Shows details about the current user.', 'membership2' ),
+				self::MS_PAGE_REGISTER 			=> __( '(Only for guests) List the public memberships and the registration form.', 'membership2' ),
+				self::MS_PAGE_REG_COMPLETE 		=> __( 'Displayed after the user signed up for a membership.', 'membership2' ),
+				self::MS_PAGE_ACCOUNT 			=> __( 'Shows details about the current user.', 'membership2' ),
 			);
 
 			$Description = apply_filters(
@@ -286,8 +286,8 @@ class MS_Model_Pages extends MS_Model_Option {
 
 			foreach ( $ms_pages as $type => $page ) {
 				switch ( $field ) {
-					case 'id':   $found = ($value === absint( $page->ID ) ); break;
-					case 'slug': $found = ($value === $page->post_name ); break;
+					case 'id':   $found = ( $value === absint( $page->ID ) ); break;
+					case 'slug': $found = ( $value === $page->post_name ); break;
 				}
 
 				if ( $found ) {
@@ -569,11 +569,11 @@ class MS_Model_Pages extends MS_Model_Option {
 	 */
 	static public function get_url_after_login( $filter = true ) {
 		if ( isset( $_REQUEST['redirect_to'] ) ) {
-			$url = $_REQUEST['redirect_to'];
-			$enforce = true; // This redirection was enforced via REUQEST param.
+			$url 		= $_REQUEST['redirect_to'];
+			$enforce 	= true; // This redirection was enforced via REUQEST param.
 		} else {
-			$url = self::get_page_url( self::MS_PAGE_ACCOUNT );
-			$enforce = false; // This is the default redirection.
+			$url 		= self::get_page_url( self::MS_PAGE_ACCOUNT );
+			$enforce 	= false; // This is the default redirection.
 		}
 
 		if ( $filter ) {
@@ -598,11 +598,11 @@ class MS_Model_Pages extends MS_Model_Option {
 	 */
 	static public function get_url_after_logout( $filter = true ) {
 		if ( isset( $_REQUEST['redirect_to'] ) ) {
-			$url = $_REQUEST['redirect_to'];
-			$enforce = true; // This redirection was enforced via REUQEST param.
+			$url 		= $_REQUEST['redirect_to'];
+			$enforce 	= true; // This redirection was enforced via REUQEST param.
 		} else {
-			$url = MS_Helper_Utility::home_url( '/' );
-			$enforce = false; // This is the default redirection.
+			$url 		= MS_Helper_Utility::home_url( '/' );
+			$enforce 	= false; // This is the default redirection.
 		}
 
 		if ( $filter ) {
@@ -627,8 +627,8 @@ class MS_Model_Pages extends MS_Model_Option {
 	static public function get_page_type( $page_id ) {
 		static $Types = array();
 
-		$page_id = self::get_page_id( $page_id );
-		$pages = self::get_pages();
+		$page_id 	= self::get_page_id( $page_id );
+		$pages 		= self::get_pages();
 
 		if ( ! isset( $Types[$page_id] ) ) {
 			$type = '';
@@ -656,20 +656,20 @@ class MS_Model_Pages extends MS_Model_Option {
 	 * @return array|false Titles of the created pages
 	 */
 	static public function create_missing_pages() {
-		static $Done = false;
-		$res = false;
+		static $Done 	= false;
+		$res 			= false;
 
 		if ( $Done ) { return $res; }
-		$Done = true;
+		$Done 			= true;
 
-		$user_id = get_current_user_id();
+		$user_id 		= get_current_user_id();
 		if ( empty( $user_id ) ) { return $res; }
 
-		$types = self::get_page_types();
+		$types 			= self::get_page_types();
 
-		$res = array();
+		$res 			= array();
 
-		$site_id = self::get_setting( 'site_id' );
+		$site_id 		= self::get_setting( 'site_id' );
 		MS_Factory::select_blog( $site_id );
 
 		foreach ( $types as $type => $title ) {
@@ -687,12 +687,12 @@ class MS_Model_Pages extends MS_Model_Option {
 			// If the post_id does not exist then create a new page
 			if ( empty( $page_id ) ) {
 				$data = array(
-					'post_title' => $title,
-					'post_name' => $type,
-					'post_content' => self::get_default_content( $type ),
-					'post_type' => 'page',
-					'post_status' => 'publish',
-					'post_author' => $user_id,
+					'post_title' 	=> $title,
+					'post_name' 	=> $type,
+					'post_content' 	=> self::get_default_content( $type ),
+					'post_type' 	=> 'page',
+					'post_status' 	=> 'publish',
+					'post_author' 	=> $user_id,
 				);
 				$new_id = wp_insert_post( $data );
 
@@ -797,15 +797,15 @@ class MS_Model_Pages extends MS_Model_Option {
 					foreach ( $navs as $nav ) {
 						$args['meta_query'] = array(
 							array(
-								'key' => '_menu_item_object_id',
+								'key' 	=> '_menu_item_object_id',
 								'value' => $ms_page->ID,
 							),
 							array(
-								'key' => '_menu_item_object',
+								'key' 	=> '_menu_item_object',
 								'value' => $object_type,
 							),
 							array(
-								'key' => '_menu_item_type',
+								'key' 	=> '_menu_item_type',
 								'value' => 'post_type',
 							),
 						);
@@ -816,14 +816,14 @@ class MS_Model_Pages extends MS_Model_Option {
 						$menu_item = apply_filters(
 							'ms_model_settings_create_menu_item',
 							array(
-								'menu-item-object-id' => $ms_page->ID,
-								'menu-item-object' => 'page',
-								'menu-item-parent-id' => 0,
-								'menu-item-position' => 0,
-								'menu-item-type' => 'post_type',
-								'menu-item-title' => $ms_page->post_title,
-								'menu-item-url' => $page_url,
-								'menu-item-status' => 'publish',
+								'menu-item-object-id' 	=> $ms_page->ID,
+								'menu-item-object' 		=> 'page',
+								'menu-item-parent-id' 	=> 0,
+								'menu-item-position' 	=> 0,
+								'menu-item-type' 		=> 'post_type',
+								'menu-item-title' 		=> $ms_page->post_title,
+								'menu-item-url' 		=> $page_url,
+								'menu-item-status' 		=> 'publish',
 							)
 						);
 
@@ -862,31 +862,31 @@ class MS_Model_Pages extends MS_Model_Option {
 		}
 
 		if ( self::is_valid_type( $page_type ) ) {
-			$ms_page = self::get_page( $page_type, true );
-			$navs = wp_get_nav_menus( array( 'orderby' => 'name' ) );
+			$ms_page 	= self::get_page( $page_type, true );
+			$navs 		= wp_get_nav_menus( array( 'orderby' => 'name' ) );
 
 			if ( ! empty( $navs ) ) {
 				foreach ( $navs as $nav ) {
 					$args['meta_query'] = array(
 						array(
-							'key' => '_menu_item_object_id',
+							'key' 	=> '_menu_item_object_id',
 							'value' => $ms_page->ID,
 						),
 						array(
-							'key' => '_menu_item_object',
+							'key' 	=> '_menu_item_object',
 							'value' => 'page',
 						),
 						array(
-							'key' => '_menu_item_type',
+							'key' 	=> '_menu_item_type',
 							'value' => 'post_type',
 						),
 					);
 
 					// Search for existing menu item and create it if not found
-					$items = wp_get_nav_menu_items( $nav, $args );
+					$items 	= wp_get_nav_menu_items( $nav, $args );
 
-					$item = ! is_array( $items ) ? false : array_shift( $items );
-					$db_id = empty( $item ) ? 0 : $item->db_id;
+					$item 	= ! is_array( $items ) ? false : array_shift( $items );
+					$db_id 	= empty( $item ) ? 0 : $item->db_id;
 
 					if ( $db_id ) {
 						if ( false !== wp_delete_post( $db_id ) ) {
@@ -1002,11 +1002,11 @@ class MS_Model_Pages extends MS_Model_Option {
 		}
 
 		// Use the new menu in the menu-location of the theme.
-		$locations = get_theme_mod( 'nav_menu_locations' );
+		$locations 				= get_theme_mod( 'nav_menu_locations' );
 		if ( is_array( $locations ) && count( $locations ) > 0 ) {
 			reset( $locations );
-			$first = key( $locations );
-			$locations[$first] = $menu_id;
+			$first 				= key( $locations );
+			$locations[$first] 	= $menu_id;
 			set_theme_mod( 'nav_menu_locations', $locations );
 		}
 
@@ -1041,10 +1041,10 @@ class MS_Model_Pages extends MS_Model_Option {
 
 			// Add the page to our new menu!
 			$item = array(
-				'menu-item-object-id' => $page->ID,
-				'menu-item-object' => $page->post_type,
-				'menu-item-type' => 'post_type',
-				'menu-item-status' => $page->post_status,
+				'menu-item-object-id' 	=> $page->ID,
+				'menu-item-object' 		=> $page->post_type,
+				'menu-item-type' 		=> 'post_type',
+				'menu-item-status' 		=> $page->post_status,
 			);
 			wp_update_nav_menu_item( $menu_id, 0, $item );
 		}

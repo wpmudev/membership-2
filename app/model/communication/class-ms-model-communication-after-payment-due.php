@@ -27,7 +27,7 @@ class MS_Model_Communication_After_Payment_Due extends MS_Model_Communication {
 	 */
 	public function set_period_name( $field ) {
 		$field['title'] = __( 'Message Delay', 'membership2' );
-		$field['desc'] = __( 'Use "0" to send on due date, or another value to delay the message.', 'membership2' );
+		$field['desc'] 	= __( 'Use "0" to send on due date, or another value to delay the message.', 'membership2' );
 
 		return $field;
 	}
@@ -52,10 +52,10 @@ class MS_Model_Communication_After_Payment_Due extends MS_Model_Communication {
 	public function reset_to_default() {
 		parent::reset_to_default();
 
-		$this->subject = __( 'Membership payment due', 'membership2' );
-		$this->message = self::get_default_message();
-		$this->enabled = false;
-		$this->period_enabled = true;
+		$this->subject 			= __( 'Membership payment due', 'membership2' );
+		$this->message 			= self::get_default_message();
+		$this->enabled 			= false;
+		$this->period_enabled 	= true;
 
 		do_action( 'ms_model_communication_reset_to_default_after', $this->type, $this );
 	}

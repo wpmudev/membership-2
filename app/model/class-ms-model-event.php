@@ -268,12 +268,12 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	public static function get_last_event_of_type( $event ) {
 		$found = null;
 
-		$args['posts_per_page'] = 1;
-		$args['meta_query']['type'] = array(
+		$args['posts_per_page'] 		= 1;
+		$args['meta_query']['type'] 	= array(
 			'key' 	=> 'type',
 			'value' => $event->type,
 		);
-		$args['meta_query']['user_id'] = array(
+		$args['meta_query']['user_id'] 	= array(
 			'key' 	=> 'user_id',
 			'value' => $event->user_id,
 		);
@@ -336,9 +336,8 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return string the event description.
 	 */
 	public static function get_description( $type ) {
-		$desc = '';
-
-		$types = self::get_event_types();
+		$desc 	= '';
+		$types 	= self::get_event_types();
 		if ( ! empty( $types[ $type ]['desc'] ) ) {
 			$desc = $types[ $type ]['desc'];
 		}
@@ -510,21 +509,21 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 							$type
 						);
 					} elseif ( $data instanceof MS_Model_Relationship ) {
-						$subscription 	= $data;
-						$membership 	= $subscription->get_membership();
-						$member 		= MS_Factory::load(
-							'MS_Model_Member',
-							$subscription->user_id
-						);
+						$subscription 				= $data;
+						$membership 				= $subscription->get_membership();
+						$member 					= MS_Factory::load(
+														'MS_Model_Member',
+														$subscription->user_id
+													 );
 						$event->user_id 			= $subscription->user_id;
 						$event->membership_id 		= $subscription->membership_id;
 						$event->ms_relationship_id 	= $subscription->id;
-						$event->name = sprintf(
-							'user: %s, membership: %s, type: %s',
-							$member->name,
-							$membership->name,
-							$type
-						);
+						$event->name 				= sprintf(
+														'user: %s, membership: %s, type: %s',
+														$member->name,
+														$membership->name,
+														$type
+													 );
 					}
 					$description = self::get_description( $type );
 					break;

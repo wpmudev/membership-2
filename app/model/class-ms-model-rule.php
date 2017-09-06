@@ -13,18 +13,18 @@ class MS_Model_Rule extends MS_Model {
 	 *
 	 * @var bool
 	 */
-	const RULE_VALUE_NO_ACCESS = false;
+	const RULE_VALUE_NO_ACCESS 	= false;
 	const RULE_VALUE_HAS_ACCESS = true;
-	const RULE_VALUE_UNDEFINED = null;
+	const RULE_VALUE_UNDEFINED 	= null;
 
 	/**
 	 * Filter type constants.
 	 *
 	 * @since  1.0.0
 	 */
-	const FILTER_PROTECTED = 'protected';
-	const FILTER_NOT_PROTECTED = 'not_protected';
-	const FILTER_DRIPPED = 'dripped';
+	const FILTER_PROTECTED 		= 'protected';
+	const FILTER_NOT_PROTECTED 	= 'not_protected';
+	const FILTER_DRIPPED 		= 'dripped';
 
 	/**
 	 * Dripped type constants.
@@ -32,9 +32,9 @@ class MS_Model_Rule extends MS_Model {
 	 * @since  1.0.0
 	 * @var string Available Drip-Types.
 	 */
-	const DRIPPED_TYPE_INSTANTLY = 'instantly';
-	const DRIPPED_TYPE_SPEC_DATE = 'specific_date';
-	const DRIPPED_TYPE_FROM_REGISTRATION = 'from_registration';
+	const DRIPPED_TYPE_INSTANTLY 			= 'instantly';
+	const DRIPPED_TYPE_SPEC_DATE 			= 'specific_date';
+	const DRIPPED_TYPE_FROM_REGISTRATION 	= 'from_registration';
 
 	/**
 	 * Collection of meta-information on a rule.
@@ -109,26 +109,26 @@ class MS_Model_Rule extends MS_Model {
 	static public function register_rule( $id, $class, $title, $priority = 0, $dripped = false ) {
 		if ( ! is_array( self::$rule_meta ) ) {
 			self::$rule_meta = array(
-				'title' => array(),
-				'class' => array(),
-				'model_class' => array(),
-				'order' => array(),
-				'dripped' => array(),
+				'title' 		=> array(),
+				'class' 		=> array(),
+				'model_class' 	=> array(),
+				'order' 		=> array(),
+				'dripped' 		=> array(),
 			);
 		}
 
-		self::$rule_meta['title'][ $id ] = $title;
-		self::$rule_meta['class'][ $id ] = $class;
-		self::$rule_meta['model_class'][ $id ] = $class . '_Model';
+		self::$rule_meta['title'][ $id ] 		= $title;
+		self::$rule_meta['class'][ $id ] 		= $class;
+		self::$rule_meta['model_class'][ $id ] 	= $class . '_Model';
 
 		if ( $dripped ) {
 			self::$rule_meta['dripped'][] = $id;
 		}
 
-		$priority = min( $priority, 999 );
-		$priority = max( $priority, 0 );
+		$priority 		= min( $priority, 999 );
+		$priority 		= max( $priority, 0 );
 
-		$real_priority = $priority * 20;
+		$real_priority 	= $priority * 20;
 		while ( isset( self::$rule_meta['order'][ $real_priority ] ) ) {
 			$real_priority += 1;
 		}
@@ -154,13 +154,13 @@ class MS_Model_Rule extends MS_Model {
 		if ( null === $Types ) {
 			self::prepare();
 
-			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			$settings 	= MS_Factory::load( 'MS_Model_Settings' );
 			$rule_types = self::$rule_meta['order'];
 
 			$rule_types = apply_filters( 'ms_rule_get_rule_types', $rule_types );
-			$rule_type = ksort( $rule_types );
+			$rule_type 	= ksort( $rule_types );
 
-			$Types = $rule_types;
+			$Types 		= $rule_types;
 		}
 
 		return $Types;
@@ -254,9 +254,9 @@ class MS_Model_Rule extends MS_Model {
 	 */
 	public static function get_dripped_types() {
 		$dripped_types = array(
-			self::DRIPPED_TYPE_INSTANTLY => __( 'Instantly', 'membership2' ),
-			self::DRIPPED_TYPE_SPEC_DATE => __( 'On specific Date', 'membership2' ),
-			self::DRIPPED_TYPE_FROM_REGISTRATION => __( 'Relative to Subscription', 'membership2' ),
+			self::DRIPPED_TYPE_INSTANTLY 			=> __( 'Instantly', 'membership2' ),
+			self::DRIPPED_TYPE_SPEC_DATE 			=> __( 'On specific Date', 'membership2' ),
+			self::DRIPPED_TYPE_FROM_REGISTRATION 	=> __( 'Relative to Subscription', 'membership2' ),
 		);
 
 		return apply_filters(

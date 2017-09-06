@@ -468,13 +468,13 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return int
 	 */
 	static public function get_queue_count() {
-		$count = 0;
-		$memberships = self::get_communication_ids( null );
+		$count 			= 0;
+		$memberships 	= self::get_communication_ids( null );
 
 		foreach ( $memberships as $ids ) {
 			foreach ( $ids as $id ) {
-				$comm = MS_Factory::load( 'MS_Model_Communication', $id );
-				$count += count( $comm->queue );
+				$comm 	= MS_Factory::load( 'MS_Model_Communication', $id );
+				$count 	+= count( $comm->queue );
 			}
 		}
 
@@ -548,7 +548,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @return MS_Model_Communication[] The communication objects array.
 	 */
 	public static function get_communications( $membership = null ) {
-		$ids = self::get_communication_ids( $membership );
+		$ids 	= self::get_communication_ids( $membership );
 		$result = array();
 
 		if ( null === $membership ) {
@@ -659,8 +659,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				}
 			}
 
-			$comm_classes = self::get_communication_type_classes();
-			$comm_class = $comm_classes[ $type ];
+			$comm_classes 	= self::get_communication_type_classes();
+			$comm_class 	= $comm_classes[ $type ];
 			if ( $comm_id ) {
 				$comm = MS_Factory::load( $comm_class, $comm_id );
 			} elseif ( ! $can_fallback ) {
@@ -1064,10 +1064,10 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 						* from the current Communications object. So
 						* $subscription_id defines the email contents and receiver.
 						*/
-						$sent_date = $this->sent_queue[ $subscription_id ];
-						$now = MS_Helper_Period::current_time();
+						$sent_date 		= $this->sent_queue[ $subscription_id ];
+						$now 			= MS_Helper_Period::current_time();
 
-						$current_delay = MS_Helper_Period::subtract_dates(
+						$current_delay 	= MS_Helper_Period::subtract_dates(
 							$now,
 							$sent_date,
 							HOURS_IN_SECONDS
@@ -1218,27 +1218,27 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				return false;
 			}
 
-			$comm_vars = $this->get_comm_vars( $subscription, $member );
-			$headers = array();
+			$comm_vars 		= $this->get_comm_vars( $subscription, $member );
+			$headers 		= array();
 
 			// Prepare the message: Replace variables.
-			$message = str_replace(
+			$message 		= str_replace(
 				array_keys( $comm_vars ),
 				array_values( $comm_vars ),
 				stripslashes( $this->message )
 			);
 
 			// Prepare the subject: Replace variables and remove HTML tags.
-			$subject = str_replace(
+			$subject 		= str_replace(
 				array_keys( $comm_vars ),
 				array_values( $comm_vars ),
 				stripslashes( $this->subject )
 			);
-			$subject = strip_tags( $subject );
+			$subject 		= strip_tags( $subject );
 
 			// Set the content-type of the email without using WP hooks.
-			$content_type = $this->get_mail_content_type();
-			$headers[] = sprintf(
+			$content_type 	= $this->get_mail_content_type();
+			$headers[] 		= sprintf(
 				'Content-Type: %s; charset="UTF-8"',
 				$content_type
 			);
@@ -1267,33 +1267,33 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			}
 
 			// Prepare list of recipients.
-			$recipients = array( $member->email );
-			$cc_recipients = $this->cc_email;
+			$recipients 	= array( $member->email );
+			$cc_recipients 	= $this->cc_email;
 			if ( $this->cc_enabled && ! empty( $cc_recipients ) ) {
 				$recipients[] = $cc_recipients;
 			}
 
 			// Final step: Allow customization of all email parts.
-			$recipients = apply_filters(
+			$recipients 	= apply_filters(
 				'ms_model_communication_send_message_recipients',
 				$recipients,
 				$this,
 				$subscription
 			);
-			$message = apply_filters(
+			$message 		= apply_filters(
 				'ms_model_communication_send_message_contents',
 				$message,
 				$this,
 				$subscription,
 				$content_type
 			);
-			$subject = apply_filters(
+			$subject 		= apply_filters(
 				'ms_model_communication_send_message_subject',
 				$subject,
 				$this,
 				$subscription
 			);
-			$headers = apply_filters(
+			$headers 		= apply_filters(
 				'ms_model_communication_send_message_headers',
 				$headers,
 				$this,
@@ -1305,7 +1305,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			 * wp_mail will not throw an error, so no error-suppression/handling
 			 * is required here. On error the function response is FALSE.
 			 */
-			$sent = wp_mail( $recipients, $subject, $message, $headers );
+			$sent 	= wp_mail( $recipients, $subject, $message, $headers );
 
 			/**
 			 * Broadcast that we just send an email to a member.
@@ -1364,8 +1364,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 		if ( $subscription && $subscription instanceof MS_Model_Relationship ) {
 			// First try to fetch the current invoice.
-			$invoice = $subscription->get_current_invoice( false );
-			$prev_invoice = $subscription->get_previous_invoice();
+			$invoice 		= $subscription->get_current_invoice( false );
+			$prev_invoice 	= $subscription->get_previous_invoice();
 
 			// If no current invoice exists then fetch the previous invoice.
 			if ( empty( $invoice ) ) {
@@ -1425,8 +1425,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					 * @since 1.0.2.3
 					 */
 					if ( self::COMM_TYPE_RESETPASSWORD == $this->type ) {
-						$reset = $member->new_password_reset_key();
-						$var_value = $reset->url;
+						$reset 		= $member->new_password_reset_key();
+						$var_value 	= $reset->url;
 					}
 					break;
 
@@ -1476,12 +1476,12 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				case self::COMM_VAR_MS_INVOICE:
 					if ( $invoice ) {
 						if ( $invoice->total > 0 || $invoice->uses_trial ) {
-							$attr = array(
-								'post_id' => $invoice->id,
-								'pay_button' => 0,
+							$attr 		= array(
+								'post_id' 		=> $invoice->id,
+								'pay_button' 	=> 0,
 							);
-							$scode = MS_Factory::load( 'MS_Controller_Shortcode' );
-							$var_value = $scode->membership_invoice( $attr );
+							$scode 		= MS_Factory::load( 'MS_Controller_Shortcode' );
+							$var_value 	= $scode->membership_invoice( $attr );
 						}
 					}
 					break;
@@ -1489,8 +1489,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				// Needs: $subscription.
 				case self::COMM_VAR_MS_REMAINING_DAYS:
 					if ( $subscription ) {
-						$days = $subscription->get_remaining_period( 0 );
-						$var_value = sprintf(
+						$days 		= $subscription->get_remaining_period( 0 );
+						$var_value 	= sprintf(
 							__( '%s day%s', 'membership2' ),
 							$days,
 							abs( $days ) > 1 ? 's': ''
@@ -1501,8 +1501,8 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				// Needs: $subscription.
 				case self::COMM_VAR_MS_REMAINING_TRIAL_DAYS:
 					if ( $subscription ) {
-						$days = $subscription->get_remaining_trial_period();
-						$var_value = sprintf(
+						$days 		= $subscription->get_remaining_trial_period();
+						$var_value 	= sprintf(
 							__( '%s day%s', 'membership2' ),
 							$days,
 							abs( $days ) > 1 ? 's': ''

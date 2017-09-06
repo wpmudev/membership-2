@@ -43,7 +43,7 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 * @return bool
 	 */
 	static public function did_import() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
 		$did_import = ! empty( $settings->import[ self::KEY ] );
 
 		/**
@@ -116,17 +116,17 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 * @return object
 	 */
 	protected function prepare_import_struct() {
-		$this->data = (object) array();
+		$this->data 			= (object) array();
 
 		$this->data->source_key = self::KEY;
-		$this->data->source = sprintf(
+		$this->data->source 	= sprintf(
 			'%s (%s)',
 			'Membership Premium',
 			'WPMUDEV'
 		);
 		$this->data->plugin_version = '3.5.x';
-		$this->data->export_time = date( 'Y-m-d H:i' );
-		$this->data->notes = array(
+		$this->data->export_time 	= date( 'Y-m-d H:i' );
+		$this->data->notes 			= array(
 			__( 'Exported data:', 'membership2' ),
 			__( '- Subscription Plans (without level rules)', 'membership2' ),
 			__( '- Members', 'membership2' ),
@@ -137,9 +137,9 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 			__( 'Please note that we cannot import recurring 2Checkout subscriptions to Membership2!', 'membership2' ),
 		);
 
-		$this->data->memberships = array();
-		$this->data->members = array();
-		$this->data->settings = array();
+		$this->data->memberships 	= array();
+		$this->data->members 		= array();
+		$this->data->settings 		= array();
 
 		$this->add_memberships();
 		$this->add_members();
@@ -327,8 +327,8 @@ class MS_Model_Import_Membership extends MS_Model_Import {
 	 * @param  string $name The add-on name
 	 */
 	protected function activate_addon( $name ) {
-		$this->data->settings['addons'] = lib3()->array->get( $this->data->settings['addons'] );
-		$this->data->settings['addons'][$name] = true;
+		$this->data->settings['addons'] 		= lib3()->array->get( $this->data->settings['addons'] );
+		$this->data->settings['addons'][$name] 	= true;
 	}
 
 }

@@ -200,9 +200,8 @@ class MS_Model_Import extends MS_Model {
 	 * @return MS_Model The requested object
 	 */
 	protected function get_import_obj( $type, $import_id ) {
-		$cache = $this->get_import_obj_cache( $type );
-
-		$obj = null;
+		$cache 	= $this->get_import_obj_cache( $type );
+		$obj 	= null;
 		if ( isset( $cache[ $type ][ $import_id ] ) ) {
 			$info 	= $cache[ $type ][ $import_id ];
 			$obj 	= MS_Factory::load( $info['class'], $info['id'] );
@@ -298,7 +297,7 @@ class MS_Model_Import extends MS_Model {
 		$membership->is_setup_complete 	= true;
 
 		if ( isset( $obj->period_type ) ) {
-			$obj->period_type = $this->valid_period( $obj->period_type );
+			$obj->period_type 		= $this->valid_period( $obj->period_type );
 		}
 		if ( isset( $obj->trial_period_type ) ) {
 			$obj->trial_period_type = $this->valid_period( $obj->trial_period_type );
@@ -313,8 +312,8 @@ class MS_Model_Import extends MS_Model {
 			}
 		}
 
-		$membership->period = array();
-		$membership->pay_cycle_period = array();
+		$membership->period 			= array();
+		$membership->pay_cycle_period 	= array();
 
 		switch ( $obj->payment_type ) {
 			case 'finite':
@@ -343,15 +342,15 @@ class MS_Model_Import extends MS_Model {
 			case 'date':
 				$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE;
 				if ( isset( $obj->period_start ) ) {
-					$membership->period_date_start = $obj->period_start;
+					$membership->period_date_start 		= $obj->period_start;
 				}
 				if ( isset( $obj->period_end ) ) {
-					$membership->period_date_end = $obj->period_end;
+					$membership->period_date_end 		= $obj->period_end;
 				}
 				break;
 
 			default:
-				$membership->payment_type = MS_Model_Membership::PAYMENT_TYPE_PERMANENT;
+				$membership->payment_type 	= MS_Model_Membership::PAYMENT_TYPE_PERMANENT;
 				break;
 		}
 
@@ -366,21 +365,21 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		if ( $membership->trial_period_enabled ) {
-			$membership->trial_period = array();
+			$membership->trial_period 						= array();
 			if ( isset( $obj->trial_price ) ) {
-				$membership->trial_price = $obj->trial_price;
+				$membership->trial_price 					= $obj->trial_price;
 			}
 			if ( isset( $obj->trial_period_unit ) ) {
-				$membership->trial_period['period_unit'] = $obj->trial_period_unit;
+				$membership->trial_period['period_unit'] 	= $obj->trial_period_unit;
 			}
 			if ( isset( $obj->trial_period_type ) ) {
-				$membership->trial_period['period_type'] = $obj->trial_period_type;
+				$membership->trial_period['period_type'] 	= $obj->trial_period_type;
 			}
 		}
 
 		// Remember where this membership comes from.
 		$membership->source = $this->source_key;
-		$matching = array( 'm1' => array( $obj->id ) );
+		$matching 			= array( 'm1' => array( $obj->id ) );
 		$membership->set_custom_data( 'matching', $matching );
 
 		// We set this last because it might change some other values as well...
@@ -642,9 +641,9 @@ class MS_Model_Import extends MS_Model {
 	 * @param  string $source The import source.
 	 */
 	static public function need_matching( $source_id, $source ) {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
 
-		$lst = $settings->get_custom_setting( 'import_match', $source );
+		$lst 		= $settings->get_custom_setting( 'import_match', $source );
 
 		if ( ! is_array( $lst ) ) {
 			$lst = array();
@@ -668,9 +667,9 @@ class MS_Model_Import extends MS_Model {
 	 * @param  string $source The import source.
 	 */
 	static public function dont_need_matching( $source_id, $source ) {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
 
-		$lst = $settings->get_custom_setting( 'import_match', $source );
+		$lst 		= $settings->get_custom_setting( 'import_match', $source );
 
 		if ( ! is_array( $lst ) ) {
 			$lst = array();
@@ -706,18 +705,18 @@ class MS_Model_Import extends MS_Model {
 	 * @return bool True if the matching was saved.
 	 */
 	static public function match_with_source( $membership_id, $source_id, $source ) {
-		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$membership 	= MS_Factory::load( 'MS_Model_Membership', $membership_id );
 
 		if ( ! $membership || ! $membership->is_valid() ) {
 			return false;
 		}
 
 		// First make sure that no other membership is matched to the source.
-		$memberships = MS_Model_Membership::get_memberships();
+		$memberships 	= MS_Model_Membership::get_memberships();
 
 		foreach ( $memberships as $item ) {
-			$data = $item->get_custom_data( 'matching' );
-			$changed = false;
+			$data 		= $item->get_custom_data( 'matching' );
+			$changed 	= false;
 
 			if ( ! is_array( $data ) ) { continue; }
 			if ( ! isset( $data[ $source ] ) ) { continue; }
@@ -748,8 +747,8 @@ class MS_Model_Import extends MS_Model {
 			$data[ $source ] = array();
 		}
 
-		$data[ $source ][] = $source_id;
-		$data[ $source ] = array_values( array_unique( $data[ $source ] ) );
+		$data[ $source ][] 	= $source_id;
+		$data[ $source ] 	= array_values( array_unique( $data[ $source ] ) );
 
 		$membership->set_custom_data( 'matching', $data );
 		$membership->save();
@@ -790,13 +789,13 @@ class MS_Model_Import extends MS_Model {
 			return $res;
 		}
 
-		$orig_post = $_POST;
-		$orig_req = $_REQUEST;
+		$orig_post 	= $_POST;
+		$orig_req 	= $_REQUEST;
 
 		// Set up the PHP environment to process the transaction again.
-		$gateway = MS_Model_Gateway::factory( $log->gateway_id );
-		$_POST = $post_data;
-		$_REQUEST = $post_data;
+		$gateway 	= MS_Model_Gateway::factory( $log->gateway_id );
+		$_POST 		= $post_data;
+		$_REQUEST 	= $post_data;
 
 		switch ( $log->method ) {
 			case 'request':
@@ -818,8 +817,8 @@ class MS_Model_Import extends MS_Model {
 			$res = true;
 		}
 
-		$_POST = $orig_post;
-		$_REQUEST = $orig_req;
+		$_POST 		= $orig_post;
+		$_REQUEST 	= $orig_req;
 
 		return $res;
 	}
@@ -838,9 +837,9 @@ class MS_Model_Import extends MS_Model {
 	 * @return MS_Model_Membership|null The M2 membership.
 	 */
 	static public function membership_by_matching( $matching_key, $matching_id ) {
-		$res = null;
-		$args = array( 'include_guest' => 0 );
-		$memberships = MS_Model_Membership::get_memberships( $args );
+		$res 			= null;
+		$args 			= array( 'include_guest' => 0 );
+		$memberships 	= MS_Model_Membership::get_memberships( $args );
 
 		foreach ( $memberships as $membership ) {
 			$data = $membership->get_custom_data( 'matching' );
@@ -881,21 +880,21 @@ class MS_Model_Import extends MS_Model {
 			return $res;
 		}
 
-		$user_id = intval( $user_id );
-		$matching_id = trim( $matching_id );
+		$user_id 		= intval( $user_id );
+		$matching_id 	= trim( $matching_id );
 
 		if ( $user_id < 1 || empty( $matching_id ) ) {
 			// Seems like user or sub_id are empty or invalid.
 			return $res;
 		}
 
-		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		$member 		= MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $user_id != $member->id ) {
 			// The user_id is invalid.
 			return $res;
 		}
 
-		$membership = self::membership_by_matching( $type, $matching_id );
+		$membership 	= self::membership_by_matching( $type, $matching_id );
 
 		if ( ! $membership || ! $membership->is_valid() ) {
 			// The sub_id is invalid.
@@ -903,7 +902,7 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		// Finally we have a member and a membership. Fetch the subscription!
-		$res = $member->get_subscription( $membership->id );
+		$res 			= $member->get_subscription( $membership->id );
 		if ( ! $res ) {
 			$res = $member->add_membership( $membership->id, $gateway );
 		}

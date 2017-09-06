@@ -30,9 +30,9 @@ class MS_Model_Settings extends MS_Model_Option {
 	 *
 	 * @since  1.0.0
 	 */
-	const PROTECTION_MSG_CONTENT = 'content';
-	const PROTECTION_MSG_SHORTCODE = 'shortcode';
-	const PROTECTION_MSG_MORE_TAG = 'more_tag';
+	const PROTECTION_MSG_CONTENT 	= 'content';
+	const PROTECTION_MSG_SHORTCODE 	= 'shortcode';
+	const PROTECTION_MSG_MORE_TAG 	= 'more_tag';
 
 	/**
 	 * ID of the model object.
@@ -332,22 +332,22 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @return string $msg The protection message.
 	 */
 	public function get_protection_message( $type, $membership = null, &$found = null ) {
-		$msg = '';
-		$found = false;
+		$msg 	= '';
+		$found 	= false;
 		if ( self::is_valid_protection_msg_type( $type ) ) {
 			$key = $type;
 
 			if ( $membership ) {
 				if ( $membership instanceof MS_Model_Membership ) {
-					$key_override = $key . '_' . $membership->id;
+					$key_override 	= $key . '_' . $membership->id;
 				} elseif ( is_scalar( $membership ) ) {
-					$key_override = $key . '_' . $membership;
+					$key_override 	= $key . '_' . $membership;
 				} else {
-					$key_override = $key;
+					$key_override 	= $key;
 				}
 				if ( isset( $this->protection_messages[ $key_override ] ) ) {
-					$key = $key_override;
-					$found = true;
+					$key 			= $key_override;
+					$found 			= true;
 				}
 			}
 
@@ -389,8 +389,8 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @return string Name of the view to display.
 	 */
 	static public function get_special_view() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$view = $settings->special_view;
+		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
+		$view 		= $settings->special_view;
 		return $view;
 	}
 

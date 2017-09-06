@@ -41,7 +41,7 @@ class MS_Model_Option extends MS_Model {
 
 		$option_key = $this->option_key();
 
-		$settings = MS_Factory::serialize_model( $this );
+		$settings 	= MS_Factory::serialize_model( $this );
 		MS_Factory::update_option( $option_key, $settings );
 
 		$this->instance = $this;
@@ -58,7 +58,7 @@ class MS_Model_Option extends MS_Model {
 	public function refresh() {
 		$option_key = $this->option_key();
 
-		$settings = MS_Factory::get_option( $option_key );
+		$settings 	= MS_Factory::get_option( $option_key );
 		MS_Factory::populate_model( $this, $settings );
 
 		wp_cache_set( $option_key, $this, 'MS_Model_Option' );
@@ -131,22 +131,22 @@ class MS_Model_Option extends MS_Model {
 		// We only support updating 1-dimensional arrays with a
 		// specified key value.
 		if ( strpos( $field_name, '[' ) ) {
-			$field_name = str_replace( ']', '', $field_name );
-			list( $field_name, $key ) = explode( '[', $field_name, 2 );
+			$field_name 				= str_replace( ']', '', $field_name );
+			list( $field_name, $key ) 	= explode( '[', $field_name, 2 );
 		}
 
 		if ( $key ) {
 			if ( empty( $group[ $field_name ] ) ) {
-				$group[ $field_name ] = array();
+				$group[ $field_name ] 			= array();
 			}
 			if ( is_array( $group[ $field_name ] ) ) {
-				$group[ $field_name ][ $key ] = $field_value;
+				$group[ $field_name ][ $key ] 	= $field_value;
 			}
 		} else {
-			$group[ $field_name ] = $field_value;
+			$group[ $field_name ] 				= $field_value;
 		}
 
-		$this->custom[ $group_name ] = $group;
+		$this->custom[ $group_name ] 			= $group;
 	}
 
 	/**
