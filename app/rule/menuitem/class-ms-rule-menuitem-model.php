@@ -35,8 +35,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * @return bool
 	 */
 	static public function is_active() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		return 'item' == $settings->menu_protection;
+		return MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADV_MENUS );
 	}
 
 	/**
