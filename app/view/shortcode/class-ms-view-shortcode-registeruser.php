@@ -279,14 +279,18 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		ob_start();
 		?>
 		jQuery(function() {
-		var args = {
-			onkeyup: false,
-			errorClass: 'ms-validation-error',
-			rules: <?php echo json_encode( $rule_data ); ?>
-		};
+			var args = {
+				onkeyup: false,
+				errorClass: 'ms-validation-error',
+				rules: <?php echo json_encode( $rule_data ); ?>
+			};
 
-		jQuery( '#ms-shortcode-register-user-form' ).validate( args );
+			jQuery( '#ms-shortcode-register-user-form' ).validate( args );
+			jQuery( document ).on( 'submit', '#ms-shortcode-register-user-form', function(){
+				jQuery( this ).find( 'button[type="submit"]' ).prop("disabled",true);
+			});
 		});
+		
 		<?php
 		$script = ob_get_clean();
 		lib3()->ui->js( 'jquery-validate' );
