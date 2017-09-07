@@ -135,7 +135,16 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Fixed: Login and reset password form header texts on switching
 * Fixed: bbPress dripped membership protection rules
 * Fixed: Custom Post Types
-* Other minor enhancements/fixes
+* Fixed: Manually changing status of membership to pending
+* Fixed: Membership Admin edit page Payment options ajax animation
+* Fixed: Javascript web browser console error
+* Fixed: CSS interfering with WP media library
+* Fixed: Authorize.net integration
+* Fixed: PayPal integration with recurring payments
+* Fixed: PayPal invoice creation
+* Fixed: Posts from a protected category from being displayed in the search
+* Fixed: Finite Memberships not expired after the expiration date 
+* Fixed: Translation of some hardcoded Strings
 
 = 4.0.1.3 =
 * Added: Added a filter "ms_rule_url_model_exception_rule" to set exception for URL restriction addon
