@@ -4,6 +4,9 @@ Build Stamp: BUILDTIME
 
 Change Log:
 ----------------------------------------------------------------------
+1.1.1
+- Fixed: Menu Protection items not showing to all users except admin
+
 1.1
 - Added: Premium WP Rest Addon
 - Added: Advanced media protection settings

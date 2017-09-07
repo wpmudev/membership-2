@@ -110,6 +110,9 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 
 == Changelog ==
 
+= 4.1.1 =
+* Fixed: Menu Protection items not showing to all users except admin
+
 = 4.1 =
 * Added: Advanced media protection settings
 * Added: New filter ms_frontend_controller_change_signup_url to allow disabling Membership login
