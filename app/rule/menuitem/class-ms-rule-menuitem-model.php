@@ -35,8 +35,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 * @return bool
 	 */
 	static public function is_active() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		return 'item' == $settings->menu_protection;
+		return MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_ADV_MENUS );
 	}
 
 	/**
@@ -71,9 +70,9 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 */
 	public function protect_content() {
 		parent::protect_content();
-
 		$this->add_filter( 'wp_setup_nav_menu_item', 'prepare_menuitem', 10, 3 );
 		$this->add_filter( 'wp_get_nav_menu_items', 'protect_menuitems', 10, 3 );
+		
 	}
 
 	/**
