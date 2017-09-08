@@ -390,7 +390,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				$iterations 	= 0;
 
 				do {
-					$lists = self::$mailchimp_api->get_lists(
+					$response = self::$mailchimp_api->get_lists(
 						$items_per_page,
 						$page
 					);
@@ -398,12 +398,14 @@ class MS_Addon_Mailchimp extends MS_Addon {
 					$page += 1;
 					$iterations += 1;
 
-					if ( is_wp_error( $lists ) ) {
+					if ( is_wp_error( $response ) ) {
 						$has_more = false;
 						// MS_Helper_Debug::debug_log( $lists );
 					} else {
-						$has_more = count( $lists['data'] ) >= $items_per_page;
-						foreach ( $lists['data'] as $list ) {
+						$lists   = $response->lists;
+						$has_more = count( $lists ) >= $items_per_page;
+						foreach( $lists as $list ) {
+							$list = (array) $list;
 							$Mail_lists[ $list['id'] ] = $list['name'];
 						}
 					}

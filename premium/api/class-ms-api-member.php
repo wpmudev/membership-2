@@ -230,7 +230,7 @@ class MS_Api_Member extends MS_Api {
         $user_id 		= $request->get_param( 'user_id' );
 		$membership_id 	= $request->get_param( 'membership_id' );
 		$membership 	= MS_Factory::load( 'MS_Model_Membership', intval( $membership_id ) );
-		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		$member 		= MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $member ) {
 			$subscription = $member->add_membership( $membership->id, '' );
 
@@ -257,7 +257,7 @@ class MS_Api_Member extends MS_Api {
 		$membership_id 	= $request->get_param( 'membership_id' );
 		$membership 	= MS_Factory::load( 'MS_Model_Membership', intval( $membership_id ) );
 
-		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		$member 		= MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $member && $member->has_membership( $membership->id ) ) {
 			$subscription = $member->get_subscription( $membership->id );
 			return $subcription;

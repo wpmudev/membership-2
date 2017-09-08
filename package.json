@@ -2,8 +2,8 @@
   "name": "membership2",
   "title": "Membership 2 Pro",
   "description": "The most powerful, easy to use and flexible membership plugin for WordPress sites available.",
-  "version": "1.1.1",
-  "freeVersion": "4.1.1",
+  "version": "1.1.2",
+  "freeVersion": "4.1.2",
   "homepage": "https://premium.wpmudev.org/project/membership/",
   "scripts": {
     "build": "grunt build",
