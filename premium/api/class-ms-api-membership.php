@@ -80,7 +80,7 @@ class MS_Api_Membership extends MS_Api {
 	 */
     function list( $request ) {
 		$list = MS_Model_Membership::get_memberships( array(
-			'include_base' => false,
+			'include_base' 	=> false,
 			'include_guest' => true,
 		) );
 		foreach ( $list as $key => $item ) {
@@ -98,9 +98,9 @@ class MS_Api_Membership extends MS_Api {
 	 * @return MS_Model_Membership The membership object.
 	 */
 	function get_membership( $request) {
-		$param = $request->get_param( 'param' );
+		$param 		= $request->get_param( 'param' );
 		if ( !is_numeric( $param ) ) {
-			$param =  MS_Model_Membership::get_membership_id( $param );
+			$param 	=  MS_Model_Membership::get_membership_id( $param );
 		}
 		$membership = MS_Factory::load( 'MS_Model_Membership', intval( $param ) );
 		return $membership;

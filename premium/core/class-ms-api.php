@@ -75,7 +75,7 @@ class MS_Api extends MS_Hooker {
 		if ( $pass_key != $this->pass_key ) {
 			return new WP_Error( 'rest_user_cannot_view',  __( "Invalid request, you are not allowed to make this request", "membership2" ), array( 'status' => rest_authorization_required_code() ) );
 		}
-		return true;
+		return apply_filters( 'ms_api_validate_request', true );
 	}
 }
 ?>

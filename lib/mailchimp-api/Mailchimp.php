@@ -58,12 +58,17 @@ class M2_Mailchimp {
 
         $res = wp_remote_request( $url, $_args );
 
-        if( $res['response']['code'] <= 204 )
-            return json_decode(  wp_remote_retrieve_body( $res ) );
+		if ( !is_wp_error( $res ) ) {
+			if( $res['response']['code'] <= 204 )
+            	return json_decode(  wp_remote_retrieve_body( $res ) );
 
-        $err = new WP_Error();
-        $err->add( $res['response']['code'], $res['response']['message'] );
-        return  $err;
+			$err = new WP_Error();
+			$err->add( $res['response']['code'], $res['response']['message'] );
+			return  $err;
+		} else {
+			return $res;
+		}
+        
     }
 
     /**
