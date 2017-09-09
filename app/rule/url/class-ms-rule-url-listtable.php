@@ -22,6 +22,7 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 				'cb' 		=> true,
 				'url' 		=> __( 'Page URL', 'membership2' ),
 				'access' 	=> true,
+				'dripped' 	=> true,
 			)
 		);
 	}
@@ -56,6 +57,7 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 			$actions,
 			$item
 		);
+
 
 		return sprintf(
 			'%1$s %2$s',

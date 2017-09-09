@@ -637,7 +637,7 @@ class MS_Model_Upgrade extends MS_Model {
 			}
 
 			// B) Check the Permalink settings.
-			if ( false === strpos( get_option( 'permalink_structure' ), '%postname%' ) ) {
+			/*if ( false === strpos( get_option( 'permalink_structure' ), '%postname%' ) ) {
 				lib3()->ui->admin_message(
 					sprintf(
 						__( 'Your %sPermalink structure%s should include the %sPost name%s to ensure Membership 2 is working correctly.', 'membership2' ),
@@ -645,6 +645,20 @@ class MS_Model_Upgrade extends MS_Model {
 						'</a>',
 						'<strong>',
 						'</strong>'
+					),
+					'err'
+				);
+			}*/
+
+			if ( false === ( get_option('permalink_structure') ) ) {
+				lib3()->ui->admin_message(
+					sprintf(
+						__( 'You need to enable %sPretty Permalinks%s in your %sPermalink structure%s to ensure Membership 2 is working correctly.', 'membership2' ),
+						'<strong>',
+						'</strong>',
+						'<a href="' . admin_url( 'options-permalink.php' ) . '">',
+						'</a>'
+						
 					),
 					'err'
 				);

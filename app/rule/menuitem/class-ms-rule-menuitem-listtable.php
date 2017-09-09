@@ -36,6 +36,7 @@ class MS_Rule_MenuItem_ListTable extends MS_Helper_ListTable_Rule {
 			'title' 	=> __( 'Menu Title', 'membership2' ),
 			'type' 		=> __( 'Menu Type', 'membership2' ),
 			'access' 	=> true,
+			'dripped' 	=> true,
 		);
 
 		return apply_filters(

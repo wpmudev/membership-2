@@ -20,7 +20,8 @@ class MS_Rule_MenuItem extends MS_Controller {
 				self::RULE_ID,
 				__CLASS__,
 				__( 'Menu Items', 'membership2' ),
-				60
+				60,
+				true
 			);
 		}
 
