@@ -6,6 +6,7 @@ Change Log:
 ----------------------------------------------------------------------
 1.1.2
 - Fixed: MailChimp Addon list function
+- Fixed: CSS for Membership addon attribute modal
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

@@ -3,7 +3,7 @@ Contributors: WPMUDEV
 Tags: Content Protection, Control Access, Membership, Membership 2, Multisite Membership, Paid Membership, Pay Wall, Paying Users, Registration, Restrict Content, Subscription, WordPress Membership, WPMU DEV
 Requires at least: 3.7
 Tested up to: 4.8.1
-Stable tag: 4.1.1
+Stable tag: 4.1.2
 
 Membership 2 transforms your WordPress website into a fully functional membership site.
 
@@ -109,6 +109,9 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 11. Convince your users with a modern, clean and professional checkout form
 
 == Changelog ==
+
+= 4.1.2 =
+* Fixed MailChimp addon
 
 = 4.1.1 =
 * Fixed: Menu Protection items not showing to all users except admin
