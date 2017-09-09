@@ -810,6 +810,13 @@
   margin: 0 auto;
 }
 
+.attribute-editor {
+  min-width: 262px;
+}
+.attribute-editor .buttons {
+  text-align: left;
+}
+
 /**
  * Navigational elements.
  */
