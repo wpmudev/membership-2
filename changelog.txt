@@ -6,7 +6,9 @@ Change Log:
 ----------------------------------------------------------------------
 1.1.2
 - Fixed: MailChimp Addon list function
-- Fixed: CSS for Membership addon attribute modal
+- Fixed: Styling for Membership Attributes Pop
+- Fixed: Dripped Membership Url protection and menu protection
+- Fixed: Buddypress media protection conflict
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

@@ -111,7 +111,8 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 == Changelog ==
 
 = 4.1.2 =
-* Fixed MailChimp addon
+* Fixed: MailChimp addon
+* Fixed: Dripped Membership protection rules
 
 = 4.1.1 =
 * Fixed: Menu Protection items not showing to all users except admin
