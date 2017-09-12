@@ -132,6 +132,14 @@ class MS_Model_Upgrade extends MS_Model {
 				self::remove_old_copy();
 			}
 
+			$database_set 	= MS_Helper_Database_Install::install();
+			$error_msg 		= '';
+
+			if ( ! $database_set ) {
+				$error_msg = __( '<strong>Membership 2</strong> tables were not installed correctly' , 'membership2' );
+			}
+
+			$settings->database_set = $database_set;
 			// Note: We do not create menu items on upgrade! Users might have
 			// intentionally removed the items from the menu...
 
@@ -169,6 +177,10 @@ class MS_Model_Upgrade extends MS_Model {
 			// Display a message after the page is reloaded.
 			if ( ! $is_new_setup ) {
 				lib3()->ui->admin_message( implode( '<br>', $msg ), '', '', 'ms-update' );
+			}
+
+			if ( ! $database_set ) {
+				lib3()->ui->admin_message( $error_msg, '', '', 'error' );
 			}
 
 			do_action(

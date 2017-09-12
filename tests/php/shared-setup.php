@@ -13,6 +13,9 @@ class TData {
 	 * @since  1.0.0
 	 */
 	public static function reset() {
+		//Clear custom tables
+		MS_Helper_Database_Install::uninstall();
+
 		global $wpdb;
 
 		// wipe all existing data.
@@ -94,6 +97,9 @@ class TData {
 
 			self::$ids['post'][ $slug ] = $id;
 		}
+
+		//Create tables
+		MS_Helper_Database_Install::install();
 
 		// create demo memberships
 		$memberships = array(
