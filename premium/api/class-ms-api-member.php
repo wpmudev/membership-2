@@ -69,6 +69,13 @@ class MS_Api_Member extends MS_Api {
                     'validate_callback' => 'is_numeric',
 					'description' 		=> __( 'Current page' ),
 				),
+				'membership_id'	=> array(
+					'required' 			=> false,
+					'sanitize_callback' => 'sanitize_text_field',
+					'type' 				=> 'int',
+                    'validate_callback' => 'is_numeric',
+					'description' 		=> __( 'Optional Membership ID' ),
+				),
                 'status' 	=> array(
 					'required' 			=> false,
 					'sanitize_callback' => 'sanitize_text_field',
@@ -164,22 +171,21 @@ class MS_Api_Member extends MS_Api {
 	 * @return MS_Model_Member[] List of all available Memberships.
 	 */
     function list( $request ) {
-        $per_page 	= $request->get_param( 'per_page' );
-        $page 	    = $request->get_param( 'page' );
-        $status 	= $request->get_param( 'status' );
-        if ( empty( $per_page ) ) {
-            $per_page = 10;
-        }
-
-        if ( empty( $status ) ) {
-            $status = MS_Model_Relationship::STATUS_ACTIVE;
-        }
+        $per_page 		= $request->get_param( 'per_page' );
+        $page 	    	= $request->get_param( 'page' );
+		$status 		= $request->get_param( 'status' );
+		$membership_id 	= $request->get_param( 'membership_id' );
+		$per_page 		= ( empty( $per_page ) ) ? 10 : $per_page;
+		$status 		= ( empty( $status ) ) ? MS_Model_Relationship::STATUS_ACTIVE : $status;
 
         $args = array(
 			'number'                => $per_page,
 			'offset'                => ( $page - 1 ) * $per_page,
             'subscription_status'   => $status
 		);
+		if ( empty( $membership_id ) || intval( $membership_id ) > 0 ) {
+			$args['membership_id'] = $membership_id;
+		}
         return MS_Model_Member::get_members( $args );;
     }
 

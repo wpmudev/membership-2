@@ -134,6 +134,8 @@ class MS_Factory {
 				$model = self::load_from_wp_user( $model, $model_id );
 			} elseif ( $model instanceof MS_Model_Transient ) {
 				$model = self::load_from_wp_transient( $model, $model_id );
+			} elseif ( $model instanceof MS_Model_Entity ) {
+				$model = self::load_from_custom_table( $model, $model_id );
 			}
 
 			/*
@@ -438,6 +440,65 @@ class MS_Factory {
 			$model,
 			$class,
 			$user_id
+		);
+	}
+
+
+	/**
+	 * Load MS_Model_Entity Objects.
+	 *
+	 * Load from post and postmeta.
+	 * For network-wide protection we get the data from first blog
+	 *
+	 * @since  1.2
+	 *
+	 * @param MS_Model_Entity $model The empty model instance.
+	 * @param int $model_id The model id to retrieve.
+	 *
+	 * @return MS_Model_Entity The retrieved object.
+	 */
+	 public static function load_from_custom_table( $model, $model_id = 0 ) {
+		$class = get_class( $model );
+
+		if ( ! empty( $model_id ) ) {
+			$cache = wp_cache_get( $model_id, $class );
+			if ( $cache ) {
+				$model = $cache;
+			} else {
+				self::select_blog();
+				$object = $model->get( $model_id );
+
+				if ( ! empty( $object ) ) {
+					$object_meta 		= MS_Helper_Database_TableMeta::meta( MS_Helper_Database_TableMeta::MEMBERSHIP_TYPE, $model_id );
+					$object_variables 	= get_object_vars( $object ); //Get all vars from the table and assign to the object
+					$object_meta 		= array_merge( $object_meta, $object_variables );
+					$new_object_meta 	= array();
+					foreach( $object_meta as $key => $value ){
+						$new_object_meta[$key] = ( is_array( $value ) ) ? $value : array( $value );
+					}
+					$new_object_meta['id'] 	= array( $object->ID );
+					self::populate_model( $model, $new_object_meta, true );
+
+					/**
+					 * Allow child classes of the CustomDbTableType model to load
+					 * custom values from the custom tables
+					 *
+					 * @since  1.2
+					 */
+					$model->load_meta_data( $new_object_meta );
+					$model->load_table_data( $object );
+				} else {
+					$model->id = 0;
+				}
+				self::revert_blog();
+			}
+		}
+
+		return apply_filters(
+			'ms_factory_load_from_custom_table',
+			$model,
+			$class,
+			$model_id
 		);
 	}
 

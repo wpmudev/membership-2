@@ -100,12 +100,11 @@ class MS_Helper_Database extends MS_Helper {
     public static function generate_slug( $table_name, $title, $field ='title' ) {
         global $wpdb;
 
-        $sanitized_title = sanitize_title( $title );
-        
-        $title  = $wpdb->esc_like( $sanitized_title );
-        $title  = '%' . $title . '%';
-        $sql    = "SELECT count(ID) FROM $table_name WHERE $field LIKE %s";
-        $total  = $wpdb->get_var( $wpdb->prepare( $sql, $title ) );
+        $sanitized_title 	= sanitize_title( $title );
+        $title  			= $wpdb->esc_like( $sanitized_title );
+        $title  			= '%' . $title . '%';
+        $sql    			= "SELECT count(ID) FROM $table_name WHERE $field LIKE %s";
+        $total  			= $wpdb->get_var( $wpdb->prepare( $sql, $title ) );
 
         if ( $total > 0 ) {
             return sprintf( "%s-%d", $sanitized_title, ( $total + 1 ) );
