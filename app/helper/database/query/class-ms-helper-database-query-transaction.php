@@ -4,14 +4,14 @@
  *
  * Handle Transaction queries
  *
- * @since  1.0.3.7
+ * @since  1.2
  */
 class MS_Helper_Database_Query_Transaction extends MS_Helper_Database_Query_Base_Core {
 
     /**
      * Initialize default options for the Query object
      *
-     * @since 1.0.3.7
+     * @since 1.2
      */
     function init_query_options() {
         $this->table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
@@ -35,7 +35,7 @@ class MS_Helper_Database_Query_Transaction extends MS_Helper_Database_Query_Base
     /**
      * Custom where clause in query
      *
-     * @since 1.0.3.7
+     * @since 1.2
      */
     function custom_where_clause( $where, $vars, $wpdb ) {
 
@@ -65,7 +65,7 @@ class MS_Helper_Database_Query_Transaction extends MS_Helper_Database_Query_Base
     /**
 	 * Returns a list of object_ids that have the specified Transaction State.
 	 *
-	 * @since  1.0.3.7
+	 * @since  1.2
 	 * @param  string|array $state A valid transaction state [err|ok|ignore].
 	 * @return array List of object_ids.
 	 */
@@ -129,7 +129,7 @@ class MS_Helper_Database_Query_Transaction extends MS_Helper_Database_Query_Base
 	 *
 	 * This tries to find transactions for imported subscriptions.
 	 *
-	 * @since  1.0.3.7
+	 * @since  1.2
 	 * @param  string $source_id Subscription ID before import; i.e. original ID.
 	 * @param  string $source The import source. Currently supported: 'm1'.
 	 * @return array List of object_ids.
@@ -178,7 +178,7 @@ class MS_Helper_Database_Query_Transaction extends MS_Helper_Database_Query_Base
 	 * Checks if the specified transaction was already successfully processed
 	 * to avoid duplicate payments.
 	 *
-	 * @since  1.0.3.7
+	 * @since  1.2
 	 * @param  string $gateway The payment gateway ID.
 	 * @param  string $external_id The external transaction ID.
 	 * @return bool True if the transaction was processed/paid already.

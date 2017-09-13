@@ -255,8 +255,7 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 			MS_Model_Membership::get_post_type(),
 			MS_Model_Invoice::get_post_type(),
 			MS_Model_Communication::get_post_type(),
-			MS_Model_Relationship::get_post_type(),
-			MS_Model_Event::get_post_type(),
+			MS_Model_Relationship::get_post_type()
 		);
 
 		return apply_filters(

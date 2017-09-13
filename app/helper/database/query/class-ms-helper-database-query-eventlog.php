@@ -4,14 +4,14 @@
  *
  * Handle Eventlog queries
  *
- * @since  1.0.3.7
+ * @since  1.2
  */
 class MS_Helper_Database_Query_Eventlog extends MS_Helper_Database_Query_Base_Core {
 
     /**
      * Initialize default options for the Query object
      *
-     * @since 1.0.3.7
+     * @since 1.2
      */
     function init_query_options() {
         $this->table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
@@ -34,7 +34,7 @@ class MS_Helper_Database_Query_Eventlog extends MS_Helper_Database_Query_Base_Co
     /**
      * Custom where clause in query
      *
-     * @since 1.0.3.7
+     * @since 1.2
      */
     function custom_where_clause( $where, $vars, $wpdb ) {
 

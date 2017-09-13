@@ -262,7 +262,6 @@ class MS_Plugin {
 				MS_Model_Relationship::get_post_type() 	=> MS_Model_Relationship::get_register_post_type_args(),
 				MS_Model_Invoice::get_post_type() 		=> MS_Model_Invoice::get_register_post_type_args(),
 				MS_Model_Communication::get_post_type() => MS_Model_Communication::get_register_post_type_args(),
-				MS_Model_Event::get_post_type() 		=> MS_Model_Event::get_register_post_type_args(),
 			)
 		);
 

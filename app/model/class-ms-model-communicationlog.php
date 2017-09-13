@@ -7,22 +7,11 @@
 /**
  * Email Log Model.
  *
- * Persisted by parent class MS_Model_CustomPostType.
+ * Persisted by parent class MS_Model_Entity.
  *
- * @since  1.0.2.7
+ * @since  1.1.2
  */
-class MS_Model_Communicationlog extends MS_Model_CustomPostType {
-
-	/**
-	 * Model custom post type.
-	 *
-	 * Both static and class property are used to handle php 5.2 limitations.
-	 *
-	 * @since  1.0.2.7
-	 *
-	 * @var string
-	 */
-	protected static $POST_TYPE = 'ms_communication_log';
+class MS_Model_Communicationlog extends MS_Model_Entity {
 
 	/**
 	 * Response of wp_mail, indicates if the email was sent successfully.
@@ -57,50 +46,14 @@ class MS_Model_Communicationlog extends MS_Model_CustomPostType {
 	protected $trace = '';
 
 
-	/*
-	 *
-	 *
-	 * -------------------------------------------------------------- COLLECTION
-	 */
-
-
 	/**
-	 * Returns the post-type of the current object.
+	 * Set model variables needed
 	 *
-	 * @since  1.0.2.7
-	 * @return string The post-type name.
+	 * @since 1.2
 	 */
-	public static function get_post_type() {
-		return parent::_post_type( self::$POST_TYPE );
-	}
-
-	/**
-	 * Get custom register post type args for this model.
-	 *
-	 * @since  1.0.2.7
-	 * @return array Post Type details.
-	 */
-	public static function get_register_post_type_args() {
-		$args = array(
-			'label' => __( 'Membership2 Communication Logs', 'membership2' ),
-			'supports'            => array(),
-			'hierarchical'        => false,
-			'public'              => false,
-			'show_ui'             => false,
-			'show_in_menu'        => false,
-			'show_in_admin_bar'   => false,
-			'show_in_nav_menus'   => false,
-			'can_export'          => false,
-			'has_archive'         => false,
-			'exclude_from_search' => true,
-			'publicly_queryable'  => false,
-		);
-
-		return apply_filters(
-			'ms_customposttype_register_args',
-			$args,
-			self::get_post_type()
-		);
+	 function _before_prepare_obj() {
+		$this->has_meta  	= false;
+		$this->table_name 	= MS_Helper_Database::get_table_name( MS_Helper_Database::COMMUNICATION_LOG );
 	}
 
 	/**
@@ -113,11 +66,10 @@ class MS_Model_Communicationlog extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_item_count( $args = null ) {
-		$args = lib3()->array->get( $args );
-		$args['posts_per_page'] = -1;
-		$items = self::get_items( $args );
-
-		$count = count( $items );
+		$args 				= lib3()->array->get( $args );
+		$args['per_page'] 	= -1;
+		$items 				= self::get_items( $args );
+		$count 				= count( $items );
 
 		return apply_filters(
 			'ms_model_communicationlog_get_item_count',
@@ -137,8 +89,8 @@ class MS_Model_Communicationlog extends MS_Model_CustomPostType {
 	 */
 	public static function get_items( $args = null ) {
 		MS_Factory::select_blog();
-		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
+		$args 	= self::get_query_args( $args );
+		$query 	= new MS_Helper_Database_Query_Communication_Log( $args );
 		MS_Factory::revert_blog();
 
 		$items = array();
@@ -166,12 +118,10 @@ class MS_Model_Communicationlog extends MS_Model_CustomPostType {
 	 */
 	public static function get_query_args( $args ) {
 		$defaults = array(
-			'post_type' 	=> self::get_post_type(),
-			'post_status' 	=> 'any',
 			'fields' 		=> 'ids',
 			'order' 		=> 'DESC',
 			'orderby' 		=> 'ID',
-			'posts_per_page' => 20,
+			'per_page' 		=> 20,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -182,6 +132,25 @@ class MS_Model_Communicationlog extends MS_Model_CustomPostType {
 		);
 	}
 
+
+	/**
+	 * Save the current communication log item.
+	 * Called in parent class
+	 *
+	 * @since  1.2
+	 */
+	function _save() {
+
+		$this->_maybe_persist( array(
+			'sent' 				=> $this->sent,
+			'recipient' 		=> $this->recipient,
+			'subscription_id' 	=> $this->subscription_id,
+			'trace' 			=> $this->trace,
+			'title'				=> $this->title,
+			'author' 			=> $this->user_id,
+			'date_created' 		=> MS_Helper_Period::current_date( 'Y-m-d H:i:s' )
+		) );
+	}
 
 	/*
 	 *

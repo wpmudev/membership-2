@@ -2,25 +2,14 @@
 /**
  * Transaction Log Model.
  *
- * Persisted by parent class MS_Model_CustomPostType.
+ * Persisted by parent class MS_Model_Entity.
  *
- * @since  1.0.1.0
+ * @since  1.1.2
  *
  * @package Membership2
  * @subpackage Model
  */
-class MS_Model_Transactionlog extends MS_Model_CustomPostType {
-
-	/**
-	 * Model custom post type.
-	 *
-	 * Both static and class property are used to handle php 5.2 limitations.
-	 *
-	 * @since  1.0.1.0
-	 *
-	 * @var string
-	 */
-	protected static $POST_TYPE = 'ms_transaction_log';
+class MS_Model_Transactionlog extends MS_Model_Entity {
 
 	/**
 	 * Timestamp of the transaction.
@@ -179,41 +168,17 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 
 
 	/**
-	 * Returns the post-type of the current object.
+	 * Set model variables needed
 	 *
-	 * @since  1.0.1.0
-	 * @return string The post-type name.
+	 * @since 1.1.2
 	 */
-	public static function get_post_type() {
-		return parent::_post_type( self::$POST_TYPE );
-	}
-
-	/**
-	 * Get custom register post type args for this model.
-	 *
-	 * @since  1.0.1.0
-	 * @return array Post Type details.
-	 */
-	public static function get_register_post_type_args() {
-		$args = array(
-			'label' => __( 'Membership2 Transaction Logs', 'membership2' ),
-			'supports'            => array(),
-			'hierarchical'        => false,
-			'public'              => false,
-			'show_ui'             => false,
-			'show_in_menu'        => false,
-			'show_in_admin_bar'   => false,
-			'show_in_nav_menus'   => false,
-			'can_export'          => false,
-			'has_archive'         => false,
-			'exclude_from_search' => true,
-			'publicly_queryable'  => false,
-		);
-
-		return apply_filters(
-			'ms_customposttype_register_args',
-			$args,
-			self::get_post_type()
+	 function _before_prepare_obj() {
+		$this->has_meta  	= true;
+		$this->table_name 	= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
+		$this->meta_name 	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
+		$this->ignore_meta 	= array(
+			'id', 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id','member_id','amount','data',
+			'author', 'date_created', 'last_updated'
 		);
 	}
 
@@ -228,11 +193,10 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_item_count( $args = null ) {
-		$args = lib3()->array->get( $args );
-		$args['posts_per_page'] = -1;
-		$items = self::get_items( $args );
-
-		$count = count( $items );
+		$args 				= lib3()->array->get( $args );
+		$args['per_page'] 	= -1;
+		$items 				= self::get_items( $args );
+		$count 				= count( $items );
 
 		return apply_filters(
 			'ms_model_transactionlog_get_item_count',
@@ -253,18 +217,19 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	public static function get_items( $args = null ) {
 		MS_Factory::select_blog();
 		$args 	= self::get_query_args( $args );
-		$query 	= new WP_Query( $args );
+		$query 	= new MS_Helper_Database_Query_Transaction( $args );
 		MS_Factory::revert_blog();
 
-		$items = array();
+		$items 	= array();
 
-		foreach ( $query->posts as $post_id ) {
-			if ( ! get_post_meta( $post_id, 'method', true ) ) {
+		foreach ( $query->objects as $object_id ) {
+			$transaction_log = MS_Factory::load( 'MS_Model_Transactionlog', $object_id );
+			if ( empty( $transaction_log->method ) ) {
 				// The log entry is incomplete. Do not load it.
 				continue;
 			}
 
-			$items[] = MS_Factory::load( 'MS_Model_Transactionlog', $post_id );
+			$items[] = $transaction_log;
 		}
 
 		return apply_filters(
@@ -287,37 +252,35 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public static function get_query_args( $args ) {
 		$defaults = array(
-			'post_type' 		=> self::get_post_type(),
-			'post_status' 		=> 'any',
 			'fields' 			=> 'ids',
 			'order' 			=> 'DESC',
 			'orderby' 			=> 'ID',
-			'posts_per_page' 	=> 20,
+			'per_page' 			=> 20,
 		);
 
 		if ( ! empty( $args['state'] ) ) {
 			$ids = self::get_state_ids( $args['state'] );
-			if ( ! empty( $args['post__in'] ) ) {
-				$ids = array_intersect( $args['post__in'], $ids );
+			if ( ! empty( $args['object__in'] ) ) {
+				$ids = array_intersect( $args['object__in'], $ids );
 			}
 
 			if ( $ids ) {
-				$args['post__in'] = $ids;
+				$args['object__in'] = $ids;
 			} else {
-				$args['post__in'] = array( 0 );
+				$args['object__in'] = array( 0 );
 			}
 		}
 
 		if ( ! empty( $args['source'] ) ) {
 			$ids = self::get_matched_ids( $args['source'][0], $args['source'][1] );
-			if ( ! empty( $args['post__in'] ) ) {
-				$ids = array_intersect( $args['post__in'], $ids );
+			if ( ! empty( $args['object__in'] ) ) {
+				$ids = array_intersect( $args['object__in'], $ids );
 			}
 
 			if ( $ids ) {
-				$args['post__in'] = $ids;
+				$args['object__in'] = $ids;
 			} else {
-				$args['post__in'] = array( 0 );
+				$args['object__in'] = array( 0 );
 			}
 		}
 
@@ -337,55 +300,8 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return array List of post_ids.
 	 */
 	static public function get_state_ids( $state ) {
-		global $wpdb;
-
-		$sql = "
-		SELECT p.ID
-		FROM
-			{$wpdb->posts} p
-			LEFT JOIN {$wpdb->postmeta} state1 ON
-				state1.post_id = p.ID AND state1.meta_key = 'success'
-			LEFT JOIN {$wpdb->postmeta} state2 ON
-				state2.post_id = p.ID AND state2.meta_key = 'manual_state'
-			INNER JOIN {$wpdb->postmeta} method ON
-				method.post_id = p.ID AND method.meta_key = 'method'
-		WHERE
-			p.post_type = %s
-			AND LENGTH( method.meta_value ) > 0
-		";
-
-		if ( ! is_array( $state ) ) { $state = array( $state ); }
-		$state_cond = array();
-
-		foreach ( $state as $key ) {
-			switch ( $key ) {
-				case 'err':
-					$state_cond[] = "(
-						(state1.meta_value IS NULL OR state1.meta_value IN ('','0','err'))
-						AND (state2.meta_value IS NULL OR state2.meta_value IN (''))
-					)";
-					break;
-
-				case 'ok':
-					$state_cond[] = "(
-						state1.meta_value IN ('1','ok')
-						OR state2.meta_value IN ('1','ok')
-					)";
-					break;
-
-				case 'ignore':
-					$state_cond[] = "(
-						state1.meta_value IN ('ignore')
-						OR state2.meta_value IN ('ignore')
-					)";
-					break;
-			}
-		}
-		$sql .= 'AND (' . implode( ' OR ', $state_cond ) . ')';
-
-		$sql = $wpdb->prepare( $sql, self::get_post_type() );
-		$ids = $wpdb->get_col( $sql );
-
+		$ids = MS_Helper_Database_Query_Transaction::get_state_ids( $state );
+		
 		if ( ! count( $ids ) ) {
 			$ids = array( 0 );
 		}
@@ -404,43 +320,8 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return array List of post_ids.
 	 */
 	static public function get_matched_ids( $source_id, $source ) {
-		global $wpdb;
-
-		$sql = "
-		SELECT p.ID
-		FROM
-			{$wpdb->posts} p
-			LEFT JOIN {$wpdb->postmeta} form ON
-				form.post_id = p.ID AND form.meta_key = 'post'
-			LEFT JOIN {$wpdb->postmeta} gateway ON
-				gateway.post_id = p.ID AND gateway.meta_key = 'gateway_id'
-		WHERE
-			p.post_type = %s
-		";
-
-		$source_int = intval( $source_id );
-		$int_len = strlen( $source_int );
-
-		switch ( $source ) {
-			case 'm1':
-				$sql .= "
-				AND gateway.meta_value = 'paypalstandard'
-				AND form.meta_value REGEXP 's:6:\"custom\";s:[0-9]+:\"[0-9]+:[0-9]+:{$source_int}:'
-				";
-				break;
-
-			case 'pay_btn':
-				$sql .= "
-				AND gateway.meta_value = 'paypalstandard'
-				AND form.meta_value LIKE '%%s:6:\"btn_id\";s:{$int_len}:\"{$source_int}\";%%'
-				AND form.meta_value LIKE '%%s:11:\"payer_email\";%%'
-				";
-				break;
-		}
-
-		$sql = $wpdb->prepare( $sql, self::get_post_type() );
-		$ids = $wpdb->get_col( $sql );
-
+		$ids = MS_Helper_Database_Query_Transaction::get_matched_ids( $source_id, $source );
+		
 		if ( ! count( $ids ) ) {
 			$ids = array( 0 );
 		}
@@ -458,36 +339,8 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return bool True if the transaction was processed/paid already.
 	 */
 	static public function was_processed( $gateway, $external_id ) {
-		global $wpdb;
-
-		$sql = "
-		SELECT COUNT(1)
-		FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} gateway ON
-				gateway.post_id=p.ID AND gateway.meta_key='gateway_id'
-			INNER JOIN {$wpdb->postmeta} ext_id ON
-				ext_id.post_id=p.ID AND ext_id.meta_key='external_id'
-			LEFT JOIN {$wpdb->postmeta} state1 ON
-				state1.post_id = p.ID AND state1.meta_key = 'success'
-			LEFT JOIN {$wpdb->postmeta} state2 ON
-				state2.post_id = p.ID AND state2.meta_key = 'manual_state'
-		WHERE
-			p.post_type = %s
-			AND gateway.meta_value = %s
-			AND ext_id.meta_value = %s
-			AND (
-				state1.meta_value IN ('1','ok')
-				OR state2.meta_value IN ('1','ok')
-			)
-		";
-		$sql = $wpdb->prepare(
-			$sql,
-			self::get_post_type(),
-			$gateway,
-			$external_id
-		);
-		$res = intval( $wpdb->get_var( $sql ) );
-
+		$res = MS_Helper_Database_Query_Transaction::was_processed( $gateway, $external_id );
+		
 		return $res > 0;
 	}
 
@@ -520,6 +373,29 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 			$this->user_id 	= get_current_user_id();
 			$this->title 	= 'Transaction Log';
 		}
+	}
+
+	/**
+	 * Save the curent transaction log
+	 * use save() function to save with meta values
+	 *
+	 * @since 1.0.3.7
+	 */
+	function _save() {
+		
+		$this->_maybe_persist( array(
+			'gateway_id' 		=> $this->gateway_id,
+			'method' 			=> $this->method,
+			'success' 			=> $this->success,
+			'subscription_id' 	=> $this->subscription_id,
+			'invoice_id' 		=> $this->invoice_id,
+			'member_id' 		=> $this->member_id,
+			'amount' 			=> $this->amount,
+			'data' 				=> $this->data,
+			'author' 			=> $this->user_id,
+			'date_created' 		=> MS_Helper_Period::current_date( 'Y-m-d H:i:s' ),
+			'last_updated'  	=> MS_Helper_Period::current_date( 'Y-m-d H:i:s' )
+		) );
 	}
 
 	/**
@@ -672,7 +548,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		$result = false;
 
 		if ( $this->invoice_id ) {
-			$invoice = MS_Factory::load( 'MS_Model_Invoice', $this->invoice_id );
+			$invoice 	= MS_Factory::load( 'MS_Model_Invoice', $this->invoice_id );
 			if ( $invoice->id == $this->invoice_id ) {
 				$result = $invoice;
 			}
@@ -747,6 +623,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 
 			default:
 				// Unrecognized values are not saved.
+				break;
 		}
 	}
 
@@ -837,6 +714,6 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return mixed Returns true/false.
 	 */
 	public function __isset( $property ) {
-		return isset($this->$property);
+		return isset( $this->$property );
 	}		
 }

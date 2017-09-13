@@ -2,26 +2,14 @@
 /**
  * Event model.
  *
- * Persisted by parent class MS_Model_CustomPostType.
+ * Persisted by parent class MS_Model_Entity.
  *
  * @since  1.0.0
  *
  * @package Membership2
  * @subpackage Model
  */
-class MS_Model_Event extends MS_Model_CustomPostType {
-
-	/**
-	 * Model custom post type.
-	 *
-	 * Both static and class property are used to handle php 5.2 limitations.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @var string
-	 */
-	protected static $POST_TYPE = 'ms_event';
-
+class MS_Model_Event extends MS_Model_Entity {
 
 	/**
 	 * Event topic constants.
@@ -114,32 +102,15 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 */
 	protected $date;
 
-	/**
-	 * Returns the post-type of the current object.
-	 *
-	 * @since  1.0.0
-	 * @return string The post-type name.
-	 */
-	public static function get_post_type() {
-		return parent::_post_type( self::$POST_TYPE );
-	}
 
 	/**
-	 * Get custom register post type args for this model.
+	 * Set model variables needed
 	 *
-	 * @since  1.0.0
+	 * @since 1.1.2
 	 */
-	public static function get_register_post_type_args() {
-		$args = array(
-			'label' 				=> __( 'Membership2 Events', 'membership2' ),
-            'exclude_from_search' 	=> true
-		);
-
-		return apply_filters(
-			'ms_customposttype_register_args',
-			$args,
-			self::get_post_type()
-		);
+	 function _before_prepare_obj() {
+		$this->has_meta  	= false;
+		$this->table_name 	= MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
 	}
 
 	/**
@@ -268,21 +239,12 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	public static function get_last_event_of_type( $event ) {
 		$found = null;
 
-		$args['posts_per_page'] 		= 1;
-		$args['meta_query']['type'] 	= array(
-			'key' 	=> 'type',
-			'value' => $event->type,
-		);
-		$args['meta_query']['user_id'] 	= array(
-			'key' 	=> 'user_id',
-			'value' => $event->user_id,
-		);
+		$args['per_page'] 	= 1;
+		$args['event_type'] = $event->type;
+		$args['user_id'] 	= $event->user_id;
 
 		if ( ! empty( $event->ms_relationship_id ) ) {
-			$args['meta_query']['ms_relationship_id'] = array(
-				'key' 	=> 'ms_relationship_id',
-				'value' => $event->ms_relationship_id,
-			);
+			$args['ms_relationship_id'] = $event->ms_relationship_id;
 		}
 
 		$events = self::get_events( apply_filters( 'ms_model_events_get_events_args', $args ) );
@@ -357,7 +319,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	public static function get_event_count( $args = null ) {
 		MS_Factory::select_blog();
 		$args 	= self::get_query_args( $args );
-		$query 	= new WP_Query( $args );
+		$query 	= new MS_Helper_Database_Query_Eventlog( $args );
 		MS_Factory::revert_blog();
 
 		return apply_filters(
@@ -379,7 +341,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	public static function get_events( $args = null ) {
 		MS_Factory::select_blog();
 		$args 	= self::get_query_args( $args );
-		$query 	= new WP_Query( $args );
+		$query 	= new MS_Helper_Database_Query_Eventlog( $args );
 		$items 	= $query->posts;
 		$events = array();
 		MS_Factory::revert_blog();
@@ -404,35 +366,19 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 */
 	public static function get_query_args( $args ) {
 		$defaults = array(
-			'post_type' 		=> self::get_post_type(),
-			'posts_per_page' 	=> 10,
+			'per_page' 			=> 10,
 			'fields' 			=> 'ids',
-			'post_status' 		=> 'any',
 			'order' 			=> 'DESC',
 		);
 
 		if ( ! empty( $args['topic'] ) ) {
-			$args['meta_query']['topic'] = array(
-				'key' 	=> 'topic',
-				'value' => $args['topic'],
-			);
+			$args['event_topic'] = $args['topic'];
 			unset( $args['topic'] );
 		}
 
-		if ( ! empty( $args['membership_id'] ) ) {
-			$args['meta_query']['membership_id'] = array(
-				'key' 	=> 'membership_id',
-				'value' => $args['membership_id'],
-			);
-			unset( $args['membership_id'] );
-		}
-
 		if ( ! empty( $args['relationship_id'] ) ) {
-			$args['meta_query']['relationship_id'] = array(
-				'key' 	=> 'ms_relationship_id',
-				'value' => $args['relationship_id'],
-			);
-			unset( $args['membership_id'] );
+			$args['ms_relationship_id'] = $args['relationship_id'];
+			unset( $args['relationship_id'] );
 		}
 
 		$args = wp_parse_args( $args, $defaults );
@@ -591,5 +537,38 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 		}
 
 		return apply_filters( 'ms_model_event_is_duplicate', $is_duplicate, $event, $data );
+	}
+
+
+	/**
+	 * Save the curent event
+	 * use save() function to save with meta values
+	 *
+	 * @since 1.1.2
+	 */
+	 function _save() {
+
+		$this->_maybe_persist( array(
+			'name'					=> $this->name,
+			'membership_id' 		=> $this->membership_id,
+			'ms_relationship_id' 	=> $this->ms_relationship_id,
+			'user_id' 				=> $this->user_id,
+			'event_topic' 			=> $this->topic,
+			'event_type' 			=> $this->type,
+			'description' 			=> $this->description,
+			'date_created' 			=> MS_Helper_Period::current_date( 'Y-m-d H:i:s' )
+		) );
+	}
+
+	/**
+	 * Load custom values from the table.
+	 *
+	 * @since  1.1.2
+	 * @internal
+	 */
+	 public function load_table_data( $object ) {
+		$this->topic 	= $object->event_topic;
+		$this->type 	= $object->event_type;
+		$this->date 	= $object->date_created;
 	}
 }
